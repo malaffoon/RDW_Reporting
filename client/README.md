@@ -3,19 +3,21 @@
 #!bash
 ng build
 ```
-### Run ###
-```
-#!bash
-ng serve
-```
 ### Test ###
 ```
 #!bash
 ng test
 ```
+### Run ###
+```
+#!bash
+ng serve
+open http://localhost:4200
+```
 ### Integration Test ###
 ```
 #!bash
+# application must be running
 ng e2e
 ```
 ### Background ###
