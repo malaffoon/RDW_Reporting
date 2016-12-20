@@ -1,24 +1,40 @@
 package rdw.reporting.web.security;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 
 	public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
 
-		// The method is supposed to identify local account of user referenced by
-		// data in the SAML assertion and return UserDetails object describing the user.
+		final Collection<GrantedAuthority> authorities = new HashSet<>();
+		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-		// In a real scenario, this implementation has to locate user in a arbitrary
-		// dataStore based on information present in the SAMLCredential and
-		// returns such a date in a form of application specific UserDetails object.
-		// return new User(userID, "<abc123>", true, true, true, true, authorities);
+		/*
+			todo: parse sbacTenancyChain into authorities
+		 */
+		final String[] tenancyChain = credential.getAttributeAsStringArray("sbacTenancyChain");
 
-		return credential;
+		return User.builder()
+			.id(credential.getAttributeAsString("sbacUUID"))
+			.email(credential.getAttributeAsString("mail"))
+			.givenName(credential.getAttributeAsString("givenName"))
+			.username(credential.getNameID().getValue())
+			.password("[REDACTED]")
+			.enabled(true)
+			.credentialsNonExpired(true)
+			.accountNonExpired(true)
+			.accountNonLocked(true)
+			.authorities(authorities)
+			.build();
 	}
 
 }
