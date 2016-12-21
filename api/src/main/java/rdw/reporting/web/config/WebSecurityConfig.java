@@ -442,10 +442,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers("/").permitAll()
-			.antMatchers("/error").permitAll()
 			.antMatchers("/saml/**").permitAll()
-			.antMatchers("/static/**").permitAll()
-			.antMatchers("/proctor").authenticated()
+			.antMatchers("/api/**").authenticated()
 			.anyRequest().permitAll();
 		http
 			.logout()
