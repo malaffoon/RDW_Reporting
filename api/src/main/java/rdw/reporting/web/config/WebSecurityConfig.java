@@ -49,6 +49,7 @@ import rdw.reporting.web.security.SAMLUserDetailsServiceImpl;
 
 import java.util.*;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
