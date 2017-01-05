@@ -24,6 +24,7 @@
       "environments": {
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",
+        "standalone": "environments/environment.standalone.ts",
         "prod": "environments/environment.prod.ts"
       }
     }
