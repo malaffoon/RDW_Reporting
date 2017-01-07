@@ -1,37 +1,46 @@
-import {Injectable} from "@angular/core";
-import {Response, ResponseOptions, RequestMethod} from "@angular/http";
+import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {environment} from "../../environments/environment";
 import {students} from "./data/students";
 import {assessment} from "./data/assessment";
 
-@Injectable()
-export class StandaloneService {
+let getRequestSignature = (methodCode, url) => {
+  let requestMethodById = [];
+  requestMethodById[RequestMethod.Get] = 'GET';
+  requestMethodById[RequestMethod.Post] = 'POST';
+  return `${requestMethodById[methodCode]} ${url}`;
+};
 
-  constructor(backend: MockBackend) {
-    backend.connections.subscribe(connection => {
+export let standaloneProviders = [
+  MockBackend,
+  BaseRequestOptions,
+  {
+    provide: Http,
+    deps: [MockBackend, BaseRequestOptions, XHRBackend],
+    useFactory: (mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) => {
 
-      let body: any;
+      mockBackend.connections.subscribe(connection => {
 
-      let requestSignature: string = `${connection.request.method} ${connection.request.url}`;
+        let body: any = null;
+        let requestSignature: string = getRequestSignature(connection.request.method, connection.request.url);
+        if (requestSignature == `${getRequestSignature(RequestMethod.Get, environment.apiURL)}/students`) {
+          body = students;
+        } else if (new RegExp(`${getRequestSignature(RequestMethod.Get, environment.apiURL)}/assessments/\\d+`, 'g').test(requestSignature)) {
+          body = assessment;
+        }
 
-      if (requestSignature == `${RequestMethod.Get} ${environment.apiURL}/students`) {
-        body = students;
-      } else if (new RegExp(`${RequestMethod.Get} ${environment.apiURL}/assessments/\\d+`, 'g').test(requestSignature)) {
-        body = assessment;
-      }
+        if (body != null) {
+          console.debug(`[StandaloneService] serving mock for "${requestSignature}":`, body);
+          connection.mockRespond(new Response(new ResponseOptions({body: body})));
+        } else {
+          console.debug(`[StandaloneService] no mock for "${requestSignature}"`);
+          let realHttp = new Http(realBackend, options);
+          realHttp.get(connection.request.url).subscribe(response => connection.mockRespond(response));
+        }
 
-      let requestMethodById = [];
-      requestMethodById[RequestMethod.Get] = 'GET';
-      requestMethodById[RequestMethod.Post] = 'POST';
-      let readableRequestSignature = `${requestMethodById[connection.request.method]} ${connection.request.url}`;
+      });
 
-      body
-        ? console.debug(`[StandaloneService] serving "${readableRequestSignature}":`, body)
-        : console.error(`[StandaloneService] failed to serve: "${readableRequestSignature}"`);
-
-      connection.mockRespond(new Response(new ResponseOptions({body: body})));
-    });
+      return new Http(mockBackend, options);
+    }
   }
-
-}
+];

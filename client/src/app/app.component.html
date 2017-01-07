@@ -1,6 +1,10 @@
-<h1>{{title}}</h1>
+<h1>{{ 'HELLO' | translate }}</h1>
+<!-- todo: refactor to directive/component -->
+<select #languageSelect (change)="translate.use(languageSelect.value)">
+  <option *ngFor="let language of translate.getLangs()" [value]="language" [selected]="language === translate.currentLang">{{ language }}</option>
+</select>
 <nav>
   <a routerLink="/students">Students</a>
-  <a routerLink="['/assessments', 1]">Assessment 1</a>
+  <a routerLink="/assessments/1">Assessment 1</a>
 </nav>
 <router-outlet></router-outlet>
