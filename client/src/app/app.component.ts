@@ -1,5 +1,5 @@
 import {Component, Optional} from "@angular/core";
-import {StandaloneService} from "./standalone/standalone.service";
+import {TranslateService} from 'ng2-translate';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +8,13 @@ import {StandaloneService} from "./standalone/standalone.service";
 })
 export class AppComponent {
 
-  title: string = 'Reporting Client';
+  constructor(private translate: TranslateService) {
 
-  constructor(@Optional() standaloneService: StandaloneService){}
+    let languages = ['en', 'ja'];
+    let defaultLanguage = languages[0];
+    translate.addLangs(languages);
+    translate.setDefaultLang(defaultLanguage);
+    translate.use(languages.indexOf(translate.getBrowserLang()) != -1 ? translate.getBrowserLang() : defaultLanguage);
 
+  }
 }

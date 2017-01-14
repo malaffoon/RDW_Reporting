@@ -1,32 +1,15 @@
 import {BrowserModule} from "@angular/platform-browser";
 import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {Http, BaseRequestOptions, HttpModule} from "@angular/http";
-import {MockBackend} from "@angular/http/testing";
+import {Http, HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
 import {AppComponent} from "./app.component";
 import {StudentsComponent} from "./students/students.component";
 import {AssessmentComponent} from "./assessment/assessment.component";
 import {AssessmentService} from "./shared/assessment.service";
-import {StandaloneService} from "./standalone/standalone.service";
+import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 import {environment} from "../environments/environment";
-
-
-let conditionalServices = [];
-if (environment.standalone) {
-  conditionalServices = [
-    MockBackend,
-    BaseRequestOptions,
-    {
-      provide: Http,
-      deps: [MockBackend, BaseRequestOptions],
-      useFactory: (backend, options) => {
-        return new Http(backend, options);
-      }
-    },
-    StandaloneService
-  ];
-}
+import {standaloneProviders} from "./standalone/standalone.service";
 
 let routes = [
   {
@@ -44,6 +27,10 @@ let routes = [
   }
 ];
 
+export function createTranslateLoader(http: Http) {
+  return new TranslateStaticLoader(http, 'assets/i18n', '.json');
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,9 +41,14 @@ let routes = [
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    TranslateModule.forRoot({
+      provide: TranslateLoader,
+      useFactory: (createTranslateLoader),
+      deps: [Http]
+    })
   ],
-  providers: [AssessmentService, ...conditionalServices],
+  providers: [AssessmentService, ...(environment.standalone ? standaloneProviders : [])],
   bootstrap: [AppComponent]
 })
 export class AppModule {
