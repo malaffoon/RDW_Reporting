@@ -1,4 +1,4 @@
-package rdw.reporting.web.security;
+package rdw.reporting.security;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;

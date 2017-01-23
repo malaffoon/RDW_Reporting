@@ -1,4 +1,4 @@
-package rdw.reporting.web.config;
+package rdw.reporting.config;
 
 import lombok.Getter;
 import lombok.Setter;

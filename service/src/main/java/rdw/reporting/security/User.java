@@ -1,4 +1,4 @@
-package rdw.reporting.web.security;
+package rdw.reporting.security;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
