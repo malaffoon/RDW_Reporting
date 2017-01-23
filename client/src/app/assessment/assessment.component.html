@@ -1,3 +1,216 @@
-<div *ngIf="assessment">
-  <p>Assessment {{assessment.id}}</p>
+<div class="ica-report performance-level-{{assessment.taker.performance.level}} assessment-type-{{assessment.metadata.subject}}">
+  <div class="row report-row">
+    <div class="col-sm-3">
+
+      <div class="assessment">
+        <h1 class="assessment-heading" aria-role="heading" attr.aria-label="{{assessment.metadata.subject}}">
+          {{'assessment_report.assessment.subjects.' + assessment.metadata.subject | translate}}
+        </h1>
+        <h5 class="assessment-type">
+          {{'assessment_report.assessment.types.' + assessment.metadata.type | translate}}
+        </h5>
+        <h5 class="assessment-period">
+          {{assessment.metadata.period}}
+        </h5>
+        <div class="assessment-date">
+          <span>{{'assessment_report.labels.date' | translate}}:</span> {{assessment.administration.date |
+          date:'MM/dd/yyyy'}}
+        </div>
+        <hr>
+        <div class="psychometric" [innerHTML]="'assessment_report.labels.psychometric_implications' | translate"></div>
+        <hr>
+        <div class="policy" [innerHTML]="'assessment_report.labels.policy_content' | translate"></div>
+      </div>
+
+    </div>
+    <div class="col-sm-9">
+      <div class="performance">
+        <div class="row">
+          <div class="col-sm-6">
+
+            <div>
+              <strong class="performance-heading">
+                {{'assessment_report.labels.overall_score' | translate}}
+              </strong>
+              <strong class="performance-score badge">
+                {{assessment.taker.performance.score.value}}
+              </strong>
+              <strong class="performance-level">
+                {{'assessment_report.assessment.performance_levels.' + assessment.taker.performance.level + '.name' |
+                translate}}
+              </strong>
+            </div>
+
+          </div>
+          <div class="col-sm-6">
+
+            <div class="performance-level-info">
+              <p
+                [innerHTML]="'assessment_report.assessment.performance_levels.' + assessment.taker.performance.level + '.description' | translate"></p>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+
+            <!-- confidence graph -->
+            <div class="confidence-bar clearfix">
+
+              <div class="confidence-bar-segment performance-level-0" [style.width]="assessment.confidence.segments[0].width + '%'">
+                <div class="cut-point cut-point-start">
+                  <div class="cut-point-line"></div>
+                  <div class="cut-point-label">{{assessment.confidence.start}}</div>
+                </div>
+                <div class="cut-point">
+                  <div class="cut-point-line"></div>
+                  <div class="cut-point-label">{{assessment.confidence.segments[0].point}}</div>
+                </div>
+              </div>
+              <div class="confidence-bar-segment performance-level-1" [style.width]="assessment.confidence.segments[1].width + '%'">
+                <div class="cut-point">
+                  <div class="cut-point-line"></div>
+                  <div class="cut-point-label">{{assessment.confidence.segments[1].point}}</div>
+                </div>
+              </div>
+              <div class="confidence-bar-segment performance-level-2" [style.width]="assessment.confidence.segments[2].width + '%'">
+                <div class="cut-point">
+                  <div class="cut-point-line"></div>
+                  <div class="cut-point-label">{{assessment.confidence.segments[2].point}}</div>
+                </div>
+              </div>
+              <div class="confidence-bar-segment performance-level-3" [style.width]="assessment.confidence.segments[3].width + '%'">
+                <div class="cut-point">
+                  <div class="cut-point-line"></div>
+                  <div class="cut-point-label">{{assessment.confidence.segments[3].point}}</div>
+                </div>
+              </div>
+
+              <div class="score" [style.left]="assessment.confidence.scorePosition + '%'">
+                <div class="score-label">
+                  {{assessment.confidence.score}}
+                </div>
+                <div class="score-pointer">
+                  <div class="score-pointer-head"></div>
+                  <div class="score-pointer-body"></div>
+                </div>
+              </div>
+
+              <div class="error-band">
+                <div class="error-band-left" *ngIf="assessment.confidence.minimumScorePosition > 0">
+                  <div class="error-band-mask" [style.width]="assessment.confidence.minimumScorePosition + '%'">
+                    <div class="error-band-label" *ngIf="assessment.confidence.scorePosition >= 75">
+                      <div class="error-band-label-text">{{'assessment_report.labels.error_band' | translate}}</div>
+                      <div class="error-band-label-pointer"></div>
+                    </div>
+                  </div>
+                  <div class="error-band-bracket"></div>
+                </div>
+
+                <div class="error-band-right" *ngIf="assessment.confidence.maximumScorePosition < 100">
+                  <div class="error-band-mask" [style.width]="(100 - assessment.confidence.maximumScorePosition) + '%'">
+                    <div class="error-band-label" *ngIf="assessment.confidence.scorePosition < 75">
+                      <div class="error-band-label-text">{{'assessment_report.labels.error_band' | translate}}</div>
+                      <div class="error-band-label-pointer"></div>
+                    </div>
+                  </div>
+                  <div class="error-band-bracket"></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        <div class="row claims-row">
+          <div *ngFor="let claim of assessment.taker.performance.claims"
+               class="col-sm-{{assessment.taker.performance.claims.length == 3 ? 4 : 3}}">
+
+            <div class="claim claim-type-{{claim.id}} claim-performance-level-{{claim.performance}}">
+              <div class="claim-heading">
+                <div class="claim-heading-icon-container">
+                  <span class="icon"></span>
+                </div>
+                <div class="claim-heading-text-container">
+                  <h5>{{'assessment_report.claim.types.' + claim.id + '.name' | translate}}</h5>
+                </div>
+              </div>
+              <div class="claim-body">
+                <span class="icon"></span>
+                {{'assessment_report.claim.performance_levels.' + claim.performance | translate}}
+              </div>
+              <div class="claim-footer">
+                {{'assessment_report.claim.types.' + claim.id + '.description' | translate}}
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+
+            <!-- standardized? -->
+            <div *ngIf="assessment.administration.standardized" class="alert alert-warning standardized-alert">
+              <div class="alert-icon-container">
+                <span class="icon"></span>
+              </div>
+              <div class="alert-text-container">
+                <strong>{{'assessment_report.labels.standard_test_label' | translate}} - </strong>
+                {{'assessment_report.labels.standard_test_text' | translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+
+            <!-- valid? -->
+            <div *ngIf="!assessment.administration.valid" class="alert alert-warning invalid-alert">
+              <div class="alert-icon-container">
+                <span class="icon"></span>
+              </div>
+              <div class="alert-text-container">
+                <strong>{{'assessment_report.labels.invalid_test_label' | translate}} - </strong>
+                {{'assessment_report.labels.invalid_test_text' | translate}}
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+
+            <!-- complete? -->
+            <div *ngIf="!assessment.administration.complete" class="alert alert-warning partial-alert">
+              <div class="alert-icon-container">
+                <span class="icon"></span>
+              </div>
+              <div class="alert-text-container">
+                <strong>{{'assessment_report.labels.partial_test_label' | translate}} - </strong>
+                {{'assessment_report.labels.partial_test_text' | translate}}
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+
+            <!-- accommodations -->
+            <div class="accommodations" aria-labelledby="accommodationScreenReader0">
+              <h4 class="accommodations-heading">{{'assessment_report.labels.accommodations.heading' | translate}}</h4>
+              <p class="accommodations-label"
+                 [innerHTML]="'assessment_report.labels.accommodations.section' | translate"></p>
+              <div>
+                <span *ngFor="let accommodation of assessment.taker.accommodations" class="accommodation badge">
+                  {{'assessment_report.assessment.accommodations.' + accommodation | translate}}
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
