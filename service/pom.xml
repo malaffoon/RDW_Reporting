@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.smarterbalanced</groupId>
-	<artifactId>rdw-reporting-ui</artifactId>
+	<artifactId>rdw-reporting-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Reporting UI</name>
-	<description>Reporting UI for Data Warehouse</description>
+	<name>Reporting Service</name>
+	<description>Reporting Service for Data Warehouse</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -76,6 +76,12 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.4.1212</version>
+		</dependency>
+		<dependency>
+			<groupId>org.immutables</groupId>
+			<artifactId>value</artifactId>
+			<version>2.4.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
