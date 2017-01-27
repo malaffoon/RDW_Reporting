@@ -19,7 +19,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class DataSourceConfiguration {
 
     @Bean(name = "queryDataSource")
-    @ConfigurationProperties
+    @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource queriesDataSource() {
         return DataSourceBuilder
                 .create()

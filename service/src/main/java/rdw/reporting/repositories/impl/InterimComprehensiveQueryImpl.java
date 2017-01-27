@@ -1,5 +1,6 @@
 package rdw.reporting.repositories.impl;
 
+import com.sun.javafx.binding.StringFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,7 +29,9 @@ public class InterimComprehensiveQueryImpl implements InterimComprehensiveQuery{
             "edware_ca.dim_student.last_name AS last_name, \n" +
             "edware_ca.fact_asmt_outcome_vw.enrl_grade AS grade, \n" +
             "edware_ca.fact_asmt_outcome_vw.district_id AS district_id, \n" +
+            "edware_ca.dim_inst_hier.district_name AS district_name, \n" +
             "edware_ca.fact_asmt_outcome_vw.school_id AS school_id, \n" +
+            "edware_ca.dim_inst_hier.school_name AS school_name, \n" +
             "edware_ca.fact_asmt_outcome_vw.state_code AS state_code, \n" +
             "edware_ca.fact_asmt_outcome_vw.date_taken AS date_taken, \n" +
             "edware_ca.dim_asmt.asmt_subject AS asmt_subject, \n" +
@@ -101,7 +104,7 @@ public class InterimComprehensiveQueryImpl implements InterimComprehensiveQuery{
             "edware_ca.fact_asmt_outcome_vw.acc_speech_to_text_nonembed AS acc_speech_to_text_nonembed, \n" +
             "edware_ca.fact_asmt_outcome_vw.acc_streamline_mode AS acc_streamline_mode, \n" +
             "edware_ca.fact_asmt_outcome_vw.administration_condition AS administration_condition, \n" +
-            "coalesce(edware_ca.fact_asmt_outcome_vw.complete, true) AS complete, \n";
+            "coalesce(edware_ca.fact_asmt_outcome_vw.complete, true) AS complete \n";
 
     @Autowired
     public InterimComprehensiveQueryImpl(@Qualifier("queryJdbcTemplate") NamedParameterJdbcTemplate queryJdbcTemplate) {
@@ -112,12 +115,12 @@ public class InterimComprehensiveQueryImpl implements InterimComprehensiveQuery{
     public Optional<ICA> getICAById(String studentId) {
         final SqlParameterSource parameters = new MapSqlParameterSource("studentId",studentId);
         // "3efe8485-9c16-4381-ab78-692353104cce"  as a sample student ID
-        String querySQL =
-                "SELECT \n" +
+        String querySQL = "SELECT \n" +
                         EXAM_QUERY_COLUMN_LIST +
                         "FROM edware_ca.fact_asmt_outcome_vw \n" +
                         "JOIN edware_ca.dim_student ON edware_ca.fact_asmt_outcome_vw.student_rec_id = edware_ca.dim_student.student_rec_id \n" +
                         "JOIN edware_ca.dim_asmt ON edware_ca.dim_asmt.asmt_rec_id = edware_ca.fact_asmt_outcome_vw.asmt_rec_id \n" +
+                        "JOIN edware_ca.dim_inst_hier ON edware_ca.dim_inst_hier.district_id = edware_ca.fact_asmt_outcome_vw.district_id AND  edware_ca.dim_inst_hier.school_id = edware_ca.fact_asmt_outcome_vw.school_id \n" +
                         "WHERE edware_ca.fact_asmt_outcome_vw.state_code IN ('CA') AND edware_ca.fact_asmt_outcome_vw.student_id = :studentId \n" +
                         "   AND edware_ca.fact_asmt_outcome_vw.rec_status = 'C' \n" +
                         "   AND (edware_ca.fact_asmt_outcome_vw.asmt_type IN ( 'SUMMATIVE') \n" +
@@ -144,8 +147,38 @@ public class InterimComprehensiveQueryImpl implements InterimComprehensiveQuery{
     private class ICARowMapper implements RowMapper<ICA> {
         @Override
         public ICA mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new ICA.Builder()
-                    .withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
+            ICA ica = new ICA();
+            ica.setMetadataId(rs.getString("student_id"))
+                    .setMetadataSubject(rs.getString("asmt_subject"))
+                    .setMetadataType(rs.getString("asmt_type"))
+                    .setMetadataPeriod(rs.getString("asmt_period"))
+                    .setMetadataDate(rs.getString("date_taken"),"yyyyMMdd")
+                    .setMetadataGrade(rs.getString("asmt_grade"))
+                    .setMetadataLocationDistrict(rs.getString("district_name"))
+                    .setMetadataLocationState(rs.getString("state_code"))
+                    .setMetadataLocationInstitution(rs.getString("school_name"))
+                    .setMetadataScoreMinimum(rs.getInt("asmt_score_min"))
+                    .setMetadataScoreMaximum(rs.getInt("asmt_score_max"))
+                    .setMetadataScoreCutPoints(rs.getInt("asmt_cut_point_1"),
+                            rs.getInt("asmt_cut_point_2"),
+                            rs.getInt("asmt_cut_point_3"),
+                            rs.getInt("asmt_cut_point_4"))
+                    .setStudentName(String.format("%s %s %s", rs.getString("first_name"),
+                                                                        rs.getString("middle_name"),
+                                                                        rs.getString("last_name")))
+                    .setStudentAccommodations(new int[]{1,3,5,7})
+                    .setStudentPerformanceLevel(rs.getInt("asmt_perf_lvl"))
+                    .setStudentPerformanceComplete(rs.getBoolean("complete"))
+                    .setStudentPerformanceValid(true)
+                    .setStudentPerformanceScore(rs.getInt("asmt_score"),
+                                                rs.getInt("asmt_score_range_min"),
+                                                rs.getInt("asmt_score_range_max"))
+                    .addStudentPerformanceClaims(0, rs.getInt("asmt_claim_1_score"))
+                    .addStudentPerformanceClaims(1, rs.getInt("asmt_claim_2_score"))
+                    .addStudentPerformanceClaims(2, rs.getInt("asmt_claim_3_score"))
+                    .addStudentPerformanceClaims(3, rs.getInt("asmt_claim_4_score"));
+
+                    /*.withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
                     .withSessionId(UuidAdapter.getUUIDFromBytes(rs.getBytes("session_id")))
                     .withBrowserId(UuidAdapter.getUUIDFromBytes(rs.getBytes("browser_id")))
                     .withAssessmentId(rs.getString("assessment_id"))
@@ -177,8 +210,8 @@ public class InterimComprehensiveQueryImpl implements InterimComprehensiveQuery{
                     .withAbnormalStarts(rs.getInt("abnormal_starts"))
                     .withWaitingForSegmentApproval(rs.getBoolean("waiting_for_segment_approval"))
                     .withCurrentSegmentPosition(rs.getInt("current_segment_position"))
-                    .withCustomAccommodation(rs.getBoolean("custom_accommodations"))
-                    .build();
+                    .withCustomAccommodation(rs.getBoolean("custom_accommodations"));*/
+                    return ica;
         }
     }
 }
