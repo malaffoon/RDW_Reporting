@@ -3,6 +3,7 @@ import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {Http, HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
+import {PadStartPipe} from "./pad-start.pipe";
 import {AppComponent} from "./app.component";
 import {StudentsComponent} from "./students/students.component";
 import {AssessmentComponent} from "./assessment/assessment.component";
@@ -33,6 +34,7 @@ export function createTranslateLoader(http: Http) {
 
 @NgModule({
   declarations: [
+    PadStartPipe,
     AppComponent,
     StudentsComponent,
     AssessmentComponent

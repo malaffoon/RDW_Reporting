@@ -5,10 +5,7 @@ import {students} from "./data/students";
 import {assessment} from "./data/assessment";
 
 let getRequestSignature = (methodCode, url) => {
-  let requestMethodById = [];
-  requestMethodById[RequestMethod.Get] = 'GET';
-  requestMethodById[RequestMethod.Post] = 'POST';
-  return `${requestMethodById[methodCode]} ${url}`;
+  return `${RequestMethod[methodCode].toUpperCase()} ${url}`;
 };
 
 export let standaloneProviders = [
