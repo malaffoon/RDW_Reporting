@@ -1,4 +1,4 @@
-package rdw.reporting.web.security;
+package rdw.reporting.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

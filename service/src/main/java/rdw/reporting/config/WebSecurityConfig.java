@@ -1,4 +1,4 @@
-package rdw.reporting.web.config;
+package rdw.reporting.config;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -45,7 +45,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import rdw.reporting.web.security.SAMLUserDetailsServiceImpl;
+import rdw.reporting.security.SAMLUserDetailsServiceImpl;
 
 import java.util.*;
 
