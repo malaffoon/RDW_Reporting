@@ -3,7 +3,6 @@ import {Http, Headers} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
-import {environment} from "../../environments/environment";
 
 @Injectable()
 export class AssessmentService {
@@ -13,7 +12,7 @@ export class AssessmentService {
 
   getAssessment(id: string): Observable<Object> {
     return this.http
-      .get(`${environment.apiURL}/assessments/${id}`, new Headers({
+      .get(`/api/assessments/${id}`, new Headers({
         'Content-Type': 'application/json'
       }))
       .map(response => response.json())
@@ -22,7 +21,7 @@ export class AssessmentService {
 
   getAssessmentsByStudents(): Observable<Object[]> {
     return this.http
-      .get(`${environment.apiURL}/students`, new Headers({
+      .get(`/api/students`, new Headers({
         'Content-Type': 'application/json'
       }))
       .map(response => response.json())

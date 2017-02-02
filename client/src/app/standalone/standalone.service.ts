@@ -1,12 +1,7 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
-import {environment} from "../../environments/environment";
 import {students} from "./data/students";
 import {assessment} from "./data/assessment";
-
-let getRequestSignature = (methodCode, url) => {
-  return `${RequestMethod[methodCode].toUpperCase()} ${url}`;
-};
 
 export let standaloneProviders = [
   MockBackend,
@@ -19,10 +14,10 @@ export let standaloneProviders = [
       mockBackend.connections.subscribe(connection => {
 
         let body: any = null;
-        let requestSignature: string = getRequestSignature(connection.request.method, connection.request.url);
-        if (requestSignature == `${getRequestSignature(RequestMethod.Get, environment.apiURL)}/students`) {
+        let requestSignature: string = `${RequestMethod[connection.request.method].toUpperCase()} ${connection.request.url}`;
+        if (requestSignature == `${RequestMethod[RequestMethod.Get].toUpperCase()} /api/students`) {
           body = students;
-        } else if (new RegExp(`${getRequestSignature(RequestMethod.Get, environment.apiURL)}/assessments/\\d+`, 'g').test(requestSignature)) {
+        } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/assessments/\\d+`, 'g').test(requestSignature)) {
           body = assessment;
         }
 
@@ -32,7 +27,7 @@ export let standaloneProviders = [
         } else {
           console.debug(`[StandaloneService] no mock for "${requestSignature}"`);
           let realHttp = new Http(realBackend, options);
-          realHttp.get(connection.request.url).subscribe(response => connection.mockRespond(response));
+          realHttp.request(connection.request).subscribe(response => connection.mockRespond(response));
         }
 
       });
