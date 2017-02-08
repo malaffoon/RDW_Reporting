@@ -16,16 +16,10 @@ export class AssessmentService {
         'Content-Type': 'application/json'
       }))
       .map(response => response.json())
-      .catch(error => Observable.throw(error.json().error || 'Server error'));
-  }
-
-  getAssessmentsByStudents(): Observable<Object[]> {
-    return this.http
-      .get(`/api/students`, new Headers({
-        'Content-Type': 'application/json'
-      }))
-      .map(response => response.json())
-      .catch(error => Observable.throw(error.json().error || 'Server error'));
+      .catch(error => {
+        console.log('-> error', error)
+        return Observable.throw(error.json().error || 'Server error')
+      });
   }
 
 }

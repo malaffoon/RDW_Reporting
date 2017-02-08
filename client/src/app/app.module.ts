@@ -5,22 +5,28 @@ import {Http, HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
 import {PadStartPipe} from "./pad-start.pipe";
 import {AppComponent} from "./app.component";
-import {StudentsComponent} from "./students/students.component";
 import {AssessmentComponent} from "./assessment/assessment.component";
 import {AssessmentService} from "./shared/assessment.service";
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 import {environment} from "../environments/environment";
 import {standaloneProviders} from "./standalone/standalone.service";
+import {GroupComponent} from "./group/group.component";
+import {GroupService} from "./group/group.service";
+import {GroupsComponent} from "./group/groups.component";
 
 let routes = [
   {
     path: '',
-    redirectTo: '/students',
+    redirectTo: '/groups',
     pathMatch: 'full'
   },
   {
-    path: 'students',
-    component: StudentsComponent
+    path: 'groups',
+    component: GroupsComponent
+  },
+  {
+    path: 'groups/:groupId',
+    component: GroupComponent
   },
   {
     path: 'assessments/:assessmentId',
@@ -36,8 +42,9 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     PadStartPipe,
     AppComponent,
-    StudentsComponent,
-    AssessmentComponent
+    AssessmentComponent,
+    GroupComponent,
+    GroupsComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +57,11 @@ export function createTranslateLoader(http: Http) {
       deps: [Http]
     })
   ],
-  providers: [AssessmentService, ...(environment.standalone ? standaloneProviders : [])],
+  providers: [
+    AssessmentService,
+    GroupService,
+    ...(environment.standalone ? standaloneProviders : [])
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

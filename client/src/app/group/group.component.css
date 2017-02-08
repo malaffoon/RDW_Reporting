@@ -1,0 +1,8 @@
+h3 {
+  margin-bottom: 24px;
+}
+
+.students {
+  max-height: 390px;
+  overflow-y: scroll;
+}
