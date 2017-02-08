@@ -15,7 +15,9 @@ export let standaloneProviders = [
 
         let body: any = null;
         let requestSignature: string = `${RequestMethod[connection.request.method].toUpperCase()} ${connection.request.url}`;
-        if (requestSignature == `${RequestMethod[RequestMethod.Get].toUpperCase()} /api/students`) {
+        if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/translations/\\w+`, 'g').test(requestSignature)) {
+          connection.request.url = connection.request.url.replace('/api/translations', '/assets/i18n') + '.json';
+        } else if (requestSignature == `${RequestMethod[RequestMethod.Get].toUpperCase()} /api/students`) {
           body = students;
         } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/assessments/\\d+`, 'g').test(requestSignature)) {
           body = assessment;
