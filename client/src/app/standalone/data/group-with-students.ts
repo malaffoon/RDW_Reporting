@@ -2,7 +2,7 @@ function randomId() {
   return Math.random().toString().substring(10);
 }
 
-export const group = {
+export const group_with_students = {
   id: randomId(),
   name: 'Anderson, Mary 4th Grade Math Noon',
   students: [
