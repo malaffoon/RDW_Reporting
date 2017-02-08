@@ -1,0 +1,18 @@
+<div class="groups-view">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+
+      <a routerLink="/groups"><span class="glyphicon glyphicon-chevron-left"></span>My Groups</a>
+
+      <div *ngIf="group" class="group-view">
+        <h3>{{group.name}}</h3>
+
+        <div *ngIf="group.students" class="students list-group">
+          <a *ngFor="let student of group.students" class="student list-group-item" routerLink="/students/{{student.id}}">
+            {{student.lastName}}, {{student.firstName}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

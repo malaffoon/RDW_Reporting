@@ -1,7 +1,7 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {groups} from "./data/groups";
-import {group} from "./data/group";
+import {group_with_students} from "./data/group-with-students";
 import {assessment} from "./data/assessment";
 
 export let standaloneProviders = [
@@ -20,8 +20,8 @@ export let standaloneProviders = [
           connection.request.url = connection.request.url.replace('/api/translations', '/assets/i18n') + '.json';
         } else if (requestSignature == `${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups`) {
           body = groups;
-        } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups/\\d+`, 'g').test(requestSignature)) {
-          body = group;
+        } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups/\\d+/students`, 'g').test(requestSignature)) {
+          body = group_with_students;
         } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/assessments/\\d+`, 'g').test(requestSignature)) {
           body = assessment;
         }

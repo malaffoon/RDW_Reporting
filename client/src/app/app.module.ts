@@ -3,16 +3,16 @@ import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {Http, HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
-import {PadStartPipe} from "./pad-start.pipe";
+import {PadStartPipe} from "./shared/pad-start.pipe";
 import {AppComponent} from "./app.component";
 import {AssessmentComponent} from "./assessment/assessment.component";
-import {AssessmentService} from "./shared/assessment.service";
+import {DataService} from "./shared/data.service";
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 import {environment} from "../environments/environment";
 import {standaloneProviders} from "./standalone/standalone.service";
-import {GroupComponent} from "./group/group.component";
-import {GroupService} from "./group/group.service";
-import {GroupsComponent} from "./group/groups.component";
+import {StudentsComponent} from "./students/students.component";
+import {GroupsComponent} from "./groups/groups.component";
+import { AssessmentsComponent } from './assessments/assessments.component';
 
 let routes = [
   {
@@ -25,8 +25,16 @@ let routes = [
     component: GroupsComponent
   },
   {
-    path: 'groups/:groupId',
-    component: GroupComponent
+    path: 'groups/:groupId/students',
+    component: StudentsComponent
+  },
+  {
+    path: 'groups/:groupId/students/:studentId/assessments',
+    component: AssessmentsComponent
+  },
+  {
+    path: 'groups/:groupId/assessments', // aggregate
+    component: AssessmentsComponent
   },
   {
     path: 'assessments/:assessmentId',
@@ -43,8 +51,9 @@ export function createTranslateLoader(http: Http) {
     PadStartPipe,
     AppComponent,
     AssessmentComponent,
-    GroupComponent,
-    GroupsComponent
+    StudentsComponent,
+    GroupsComponent,
+    AssessmentsComponent
   ],
   imports: [
     BrowserModule,
@@ -58,11 +67,9 @@ export function createTranslateLoader(http: Http) {
     })
   ],
   providers: [
-    AssessmentService,
-    GroupService,
+    DataService,
     ...(environment.standalone ? standaloneProviders : [])
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

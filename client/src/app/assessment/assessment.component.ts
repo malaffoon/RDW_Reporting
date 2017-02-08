@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import "rxjs/add/operator/switchMap";
-import {AssessmentService} from "../shared/assessment.service";
+import {DataService} from "../shared/data.service";
 
 @Component({
   selector: 'app-assessment',
@@ -12,13 +12,12 @@ export class AssessmentComponent implements OnInit {
 
   assessment: any = null;
 
-  constructor(private route: ActivatedRoute, private assessmentService: AssessmentService) {
-  }
+  constructor(private service: DataService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.params
       .subscribe(params => {
-        this.assessmentService.getAssessment(params['assessmentId'])
+        this.service.getAssessment(params['assessmentId'])
           .subscribe(assessment => {
               let end = assessment['metadata'].score.maximum;
               let start = assessment['metadata'].score.minimum;
