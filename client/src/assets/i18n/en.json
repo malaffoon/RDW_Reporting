@@ -1,5 +1,27 @@
 {
   "HELLO": "HELLO WORLD!",
+
+  "assessment": {
+    "types": [
+      {
+        "shortName": "SUMMATIVE",
+        "name": "Summative"
+      },
+      {
+        "shortName": "ICA",
+        "name": "Interim Comprehensive Assessment"
+      },
+      {
+        "shortName": "IAB",
+        "name": "Interim Assessment Block"
+      }
+    ],
+    "subjects": [
+      "MATH",
+      "ELA/Literacy"
+    ]
+  },
+
   "assessment_report": {
     "logo": {
       "text": "",

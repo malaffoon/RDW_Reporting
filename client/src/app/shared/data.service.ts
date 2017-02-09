@@ -3,7 +3,7 @@ import {Http, Headers} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
-import {Assessment} from "./assessment";
+import {Exam} from "./exam";
 import {Group} from "./group";
 
 @Injectable()
@@ -35,7 +35,7 @@ export class DataService {
       .map(response => response.json());
   }
 
-  getAssessment(id: string): Observable<Assessment> {
+  getAssessment(id: string): Observable<Exam> {
     return this.http
       .get(`/api/assessments/${id}`)
       .map(response => response.json());

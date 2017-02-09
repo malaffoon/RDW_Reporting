@@ -3,8 +3,8 @@ import {TestBed, async} from "@angular/core/testing";
 import {AppComponent} from "./app.component";
 import {RouterTestingModule} from "@angular/router/testing";
 import {StudentsComponent} from "./students/students.component";
-import {AssessmentComponent} from "./assessment/assessment.component";
-import {AssessmentService} from "./shared/assessment.service";
+import {ExamComponent} from "./exam/exam.component";
+import {AssessmentService} from "./shared/exam.service";
 import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
@@ -15,7 +15,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         StudentsComponent,
-        AssessmentComponent
+        ExamComponent
       ],
       imports: [
         BrowserModule,
@@ -33,7 +33,7 @@ describe('AppComponent', () => {
           },
           {
             path: 'assessments/:assessmentId',
-            component: AssessmentComponent
+            component: ExamComponent
           }
         ])
       ],

@@ -1,6 +1,4 @@
-function randomId() {
-  return Math.random().toString().substring(10);
-}
+import {randomId} from "./support/generator";
 
 export const groups = [
   {

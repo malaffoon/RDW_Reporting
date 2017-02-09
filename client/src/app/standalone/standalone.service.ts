@@ -1,8 +1,8 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {groups} from "./data/groups";
-import {group_with_students} from "./data/group-with-students";
-import {assessment} from "./data/assessment";
+import {group} from "./data/group";
+import {exam} from "./data/exam";
 
 export let standaloneProviders = [
   MockBackend,
@@ -21,9 +21,11 @@ export let standaloneProviders = [
         } else if (requestSignature == `${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups`) {
           body = groups;
         } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups/\\d+/students`, 'g').test(requestSignature)) {
-          body = group_with_students;
-        } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/assessments/\\d+`, 'g').test(requestSignature)) {
-          body = assessment;
+          body = group;
+        } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups/\\d+/students/\\d+/exams`, 'g').test(requestSignature)) {
+          body = group;
+        } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/exams/\\d+`, 'g').test(requestSignature)) {
+          body = exam;
         }
 
         if (body != null) {

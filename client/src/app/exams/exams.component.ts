@@ -3,12 +3,15 @@ import {DataService} from "../shared/data.service";
 import {ActivatedRoute} from "@angular/router";
 import {Group} from "../shared/group";
 
+/**
+ * Should split into two components for simplicity
+ */
 @Component({
   selector: 'app-assessments',
-  templateUrl: './assessments.component.html',
-  styleUrls: ['./assessments.component.css']
+  templateUrl: 'exams.component.html',
+  styleUrls: ['exams.component.css']
 })
-export class AssessmentsComponent implements OnInit {
+export class ExamsComponent implements OnInit {
 
   private group: Group;
 

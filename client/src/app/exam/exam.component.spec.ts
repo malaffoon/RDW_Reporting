@@ -1,9 +1,9 @@
 /* tslint:disable:no-unused-variable */
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {ActivatedRoute} from "@angular/router";
-import {AssessmentComponent} from "./assessment.component";
+import {ExamComponent} from "./exam.component";
 import {Observable} from "rxjs/Rx";
-import {AssessmentService} from "../shared/assessment.service";
+import {AssessmentService} from "../shared/exam.service";
 import {HttpModule} from "@angular/http";
 import {By} from "@angular/platform-browser";
 import {Injectable} from "@angular/core";
@@ -23,9 +23,9 @@ class MockAssessmentService {
   }
 }
 
-describe('AssessmentComponent', () => {
-  let component: AssessmentComponent;
-  let fixture: ComponentFixture<AssessmentComponent>;
+describe('ExamComponent', () => {
+  let component: ExamComponent;
+  let fixture: ComponentFixture<ExamComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,7 +33,7 @@ describe('AssessmentComponent', () => {
         HttpModule
       ],
       declarations: [
-        AssessmentComponent
+        ExamComponent
       ],
       providers: [
         {provide: AssessmentService, useClass: MockAssessmentService},
@@ -43,7 +43,7 @@ describe('AssessmentComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AssessmentComponent);
+    fixture = TestBed.createComponent(ExamComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -52,8 +52,8 @@ describe('AssessmentComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should reflect assessment specified in URI parameters', () => {
-    expect(fixture.debugElement.query(By.css('p')).nativeElement.textContent).toContain('Assessment 5');
+  it('should reflect exam specified in URI parameters', () => {
+    expect(fixture.debugElement.query(By.css('p')).nativeElement.textContent).toContain('Exam 5');
   })
 
 });

@@ -9,7 +9,7 @@
  performance...
  */
 
-// export const assessment = {
+// export const exam = {
 //   metadata: {
 //     id: 1,
 //     subject: "ELA",
@@ -90,7 +90,7 @@
 //   }
 // };
 
-export const assessment = {
+export const exam = {
   "metadata": {
     "id": "72d8248d-0e8f-404b-8763-a5b7bcdaf535",
     "subject": "ELA",
