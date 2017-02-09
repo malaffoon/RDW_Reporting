@@ -4,9 +4,9 @@ import "rxjs/add/operator/switchMap";
 import {DataService} from "../shared/data.service";
 
 @Component({
-  selector: 'app-assessment',
+  selector: 'exam-component',
   templateUrl: 'exam.component.html',
-  styleUrls: ['exam.component.css']
+  styleUrls: ['exam.component.less']
 })
 export class ExamComponent implements OnInit {
 
