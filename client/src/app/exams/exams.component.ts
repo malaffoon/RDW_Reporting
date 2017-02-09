@@ -7,9 +7,9 @@ import {Group} from "../shared/group";
  * Should split into two components for simplicity
  */
 @Component({
-  selector: 'app-assessments',
+  selector: 'exams-component',
   templateUrl: 'exams.component.html',
-  styleUrls: ['exams.component.css']
+  styleUrls: ['exams.component.less']
 })
 export class ExamsComponent implements OnInit {
 

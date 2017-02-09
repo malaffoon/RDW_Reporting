@@ -4,9 +4,9 @@ import {DataService} from "../shared/data.service";
 import {Group} from "../shared/group";
 
 @Component({
-  selector: 'app-group',
+  selector: 'students-component',
   templateUrl: 'students.component.html',
-  styleUrls: ['students.component.css']
+  styleUrls: ['students.component.less']
 })
 export class StudentsComponent implements OnInit {
 

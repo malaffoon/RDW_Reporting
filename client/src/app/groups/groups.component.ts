@@ -3,9 +3,9 @@ import {DataService} from "../shared/data.service";
 import {Group} from "../shared/group";
 
 @Component({
-  selector: 'app-group',
+  selector: 'groups-component',
   templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.css']
+  styleUrls: ['groups.component.less']
 })
 export class GroupsComponent implements OnInit {
 
