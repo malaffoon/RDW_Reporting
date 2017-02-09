@@ -1,9 +1,12 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-
-import { ExamsComponent } from './exams.component';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {ExamsComponent} from "./exams.component";
+import {BrowserModule} from "@angular/platform-browser";
+import {RouterTestingModule} from "@angular/router/testing";
+import {RouterModule} from "@angular/router";
+import {HttpModule, Http} from "@angular/http";
+import {DataService} from "../shared/data.service";
+import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 
 describe('ExamsComponent', () => {
   let component: ExamsComponent;
@@ -11,9 +14,10 @@ describe('ExamsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExamsComponent ]
-    })
-    .compileComponents();
+      declarations: [ExamsComponent],
+      imports: [BrowserModule, RouterModule, HttpModule, RouterTestingModule.withRoutes([])],
+      providers: [DataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

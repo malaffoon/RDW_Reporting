@@ -23,19 +23,19 @@ export class DataService {
       .map(response => response.json());
   }
 
-  getGroupAssessments(id: string): Observable<Group> {
+  getGroupExams(id: string): Observable<Group> {
     return this.http
-      .get(`/api/groups/${id}/assessments`)
+      .get(`/api/groups/${id}/exams`)
       .map(response => response.json());
   }
 
-  getStudentAssessments(groupId: string, studentId: string): Observable<Group> {
+  getStudentExams(groupId: string, studentId: string): Observable<Group> {
     return this.http
-      .get(`/api/groups/${groupId}/students/${studentId}/assessments`)
+      .get(`/api/groups/${groupId}/students/${studentId}/exams`)
       .map(response => response.json());
   }
 
-  getAssessment(id: string): Observable<Exam> {
+  getExam(id: string): Observable<Exam> {
     return this.http
       .get(`/api/assessments/${id}`)
       .map(response => response.json());

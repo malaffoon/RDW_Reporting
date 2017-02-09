@@ -1,9 +1,11 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-
-import { GroupsComponent } from './groups.component';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {GroupsComponent} from "./groups.component";
+import {DataService} from "../shared/data.service";
+import {BrowserModule} from "@angular/platform-browser";
+import {RouterModule} from "@angular/router";
+import {HttpModule} from "@angular/http";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
@@ -11,9 +13,10 @@ describe('GroupsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupsComponent ]
-    })
-    .compileComponents();
+      declarations: [GroupsComponent],
+      imports: [BrowserModule, RouterModule, HttpModule, RouterTestingModule.withRoutes([])],
+      providers: [DataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

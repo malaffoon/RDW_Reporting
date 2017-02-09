@@ -13,34 +13,8 @@ import {standaloneProviders} from "./standalone/standalone.service";
 import {StudentsComponent} from "./students/students.component";
 import {GroupsComponent} from "./groups/groups.component";
 import {ExamsComponent} from "./exams/exams.component";
+import {routes} from "./shared/routes";
 
-let routes = [
-  {
-    path: '',
-    redirectTo: '/groups',
-    pathMatch: 'full'
-  },
-  {
-    path: 'groups',
-    component: GroupsComponent
-  },
-  {
-    path: 'groups/:groupId/students',
-    component: StudentsComponent
-  },
-  {
-    path: 'groups/:groupId/students/:studentId/exams',
-    component: ExamsComponent
-  },
-  {
-    path: 'groups/:groupId/exams',
-    component: ExamsComponent
-  },
-  {
-    path: 'exams/:examId',
-    component: ExamComponent
-  }
-];
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');

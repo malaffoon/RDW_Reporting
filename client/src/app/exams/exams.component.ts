@@ -27,7 +27,7 @@ export class ExamsComponent implements OnInit {
         if (studentId == null) {
 
           // aggregate
-          this.service.getGroupAssessments(groupId)
+          this.service.getGroupExams(groupId)
             .subscribe(group => {
               this.group = group;
             });
@@ -35,7 +35,7 @@ export class ExamsComponent implements OnInit {
         } else {
 
           // individual
-          this.service.getStudentAssessments(groupId, studentId)
+          this.service.getStudentExams(groupId, studentId)
             .subscribe(group => {
               this.group = group;
             });

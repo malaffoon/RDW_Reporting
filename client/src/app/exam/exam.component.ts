@@ -17,7 +17,7 @@ export class ExamComponent implements OnInit {
   ngOnInit() {
     this.route.params
       .subscribe(params => {
-        this.service.getAssessment(params['examId'])
+        this.service.getExam(params['examId'])
           .subscribe(assessment => {
               let end = assessment['metadata'].score.maximum;
               let start = assessment['metadata'].score.minimum;

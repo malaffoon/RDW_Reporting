@@ -4,41 +4,41 @@ import {AppComponent} from "./app.component";
 import {RouterTestingModule} from "@angular/router/testing";
 import {StudentsComponent} from "./students/students.component";
 import {ExamComponent} from "./exam/exam.component";
-import {AssessmentService} from "./shared/exam.service";
 import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule} from "@angular/forms";
-import {HttpModule} from "@angular/http";
+import {HttpModule, Http} from "@angular/http";
+import {DataService} from "./shared/data.service";
+import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
+import {ExamsComponent} from "./exams/exams.component";
+import {GroupsComponent} from "./groups/groups.component";
+import {PadStartPipe} from "./shared/pad-start.pipe";
+import {Observable} from "rxjs";
+import {routes} from "./shared/routes";
 
 describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
+        PadStartPipe,
         AppComponent,
+        ExamComponent,
         StudentsComponent,
-        ExamComponent
+        GroupsComponent,
+        ExamsComponent
       ],
       imports: [
         BrowserModule,
         FormsModule,
         HttpModule,
-        RouterTestingModule.withRoutes([
-          {
-            path: '',
-            redirectTo: '/students',
-            pathMatch: 'full'
-          },
-          {
-            path: 'students',
-            component: StudentsComponent
-          },
-          {
-            path: 'assessments/:assessmentId',
-            component: ExamComponent
-          }
-        ])
+        RouterTestingModule.withRoutes(routes),
+        TranslateModule.forRoot({
+          provide: TranslateLoader,
+          useFactory: (http: Http) => new TranslateStaticLoader(http, 'assets/i18n', '.json'),
+          deps: [Http]
+        })
       ],
       providers: [
-        AssessmentService
+        DataService
       ]
     });
   });
