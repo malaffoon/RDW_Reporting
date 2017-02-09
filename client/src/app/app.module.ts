@@ -5,42 +5,16 @@ import {Http, HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
 import {PadStartPipe} from "./shared/pad-start.pipe";
 import {AppComponent} from "./app.component";
-import {AssessmentComponent} from "./assessment/assessment.component";
+import {ExamComponent} from "./exam/exam.component";
 import {DataService} from "./shared/data.service";
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 import {environment} from "../environments/environment";
 import {standaloneProviders} from "./standalone/standalone.service";
 import {StudentsComponent} from "./students/students.component";
 import {GroupsComponent} from "./groups/groups.component";
-import { AssessmentsComponent } from './assessments/assessments.component';
+import {ExamsComponent} from "./exams/exams.component";
+import {routes} from "./shared/routes";
 
-let routes = [
-  {
-    path: '',
-    redirectTo: '/groups',
-    pathMatch: 'full'
-  },
-  {
-    path: 'groups',
-    component: GroupsComponent
-  },
-  {
-    path: 'groups/:groupId/students',
-    component: StudentsComponent
-  },
-  {
-    path: 'groups/:groupId/students/:studentId/assessments',
-    component: AssessmentsComponent
-  },
-  {
-    path: 'groups/:groupId/assessments', // aggregate
-    component: AssessmentsComponent
-  },
-  {
-    path: 'assessments/:assessmentId',
-    component: AssessmentComponent
-  }
-];
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -50,10 +24,10 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     PadStartPipe,
     AppComponent,
-    AssessmentComponent,
+    ExamComponent,
     StudentsComponent,
     GroupsComponent,
-    AssessmentsComponent
+    ExamsComponent
   ],
   imports: [
     BrowserModule,
@@ -72,4 +46,5 @@ export function createTranslateLoader(http: Http) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

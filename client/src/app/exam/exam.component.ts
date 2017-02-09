@@ -5,10 +5,10 @@ import {DataService} from "../shared/data.service";
 
 @Component({
   selector: 'app-assessment',
-  templateUrl: './assessment.component.html',
-  styleUrls: ['./assessment.component.css']
+  templateUrl: 'exam.component.html',
+  styleUrls: ['exam.component.css']
 })
-export class AssessmentComponent implements OnInit {
+export class ExamComponent implements OnInit {
 
   assessment: any = null;
 
@@ -17,7 +17,7 @@ export class AssessmentComponent implements OnInit {
   ngOnInit() {
     this.route.params
       .subscribe(params => {
-        this.service.getAssessment(params['assessmentId'])
+        this.service.getExam(params['examId'])
           .subscribe(assessment => {
               let end = assessment['metadata'].score.maximum;
               let start = assessment['metadata'].score.minimum;

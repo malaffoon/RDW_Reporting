@@ -1,10 +1,10 @@
-import {Assessment} from "./assessment";
+import {Exam} from "./exam";
 
 export interface Student {
 
   readonly id: number;
   readonly firstName: string;
   readonly lastName: string;
-  readonly assessments?: Array<Assessment>;
+  readonly exams?: Array<Exam>;
 
 }

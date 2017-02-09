@@ -3,12 +3,15 @@ import {DataService} from "../shared/data.service";
 import {ActivatedRoute} from "@angular/router";
 import {Group} from "../shared/group";
 
+/**
+ * Should split into two components for simplicity
+ */
 @Component({
   selector: 'app-assessments',
-  templateUrl: './assessments.component.html',
-  styleUrls: ['./assessments.component.css']
+  templateUrl: 'exams.component.html',
+  styleUrls: ['exams.component.css']
 })
-export class AssessmentsComponent implements OnInit {
+export class ExamsComponent implements OnInit {
 
   private group: Group;
 
@@ -24,7 +27,7 @@ export class AssessmentsComponent implements OnInit {
         if (studentId == null) {
 
           // aggregate
-          this.service.getGroupAssessments(groupId)
+          this.service.getGroupExams(groupId)
             .subscribe(group => {
               this.group = group;
             });
@@ -32,7 +35,7 @@ export class AssessmentsComponent implements OnInit {
         } else {
 
           // individual
-          this.service.getStudentAssessments(groupId, studentId)
+          this.service.getStudentExams(groupId, studentId)
             .subscribe(group => {
               this.group = group;
             });
