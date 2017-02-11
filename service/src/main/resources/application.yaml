@@ -1,0 +1,36 @@
+# SAML
+saml:
+  key-store-file: file:</path/to/my-saml-keystore.jks>
+  key-store-password: <my_keystore_password>
+  private-key-entry-alias: <my_private_key_alias>
+  private-key-entry-password: <my_private_key_password>
+  idp-metadata-url: https://<idp_host>:<idp_port>/auth/saml2/jsp/exportmetadata.jsp?realm=/<my_realm>
+  sp-entity-id: <my_service_provider_entity_id>
+
+# SQL
+repository:
+  group:
+    getGroupSummaries:
+      >
+      select
+        reporting.roster.id as id,
+        reporting.roster.name as name,
+        count(*) as size
+      from reporting.student
+      join reporting.roster_membership on reporting.student.id=reporting.roster_membership.student_id
+      join reporting.roster on reporting.roster_membership.roster_id=reporting.roster.id
+      where reporting.roster.id in (select roster_id from reporting.user_roster where user_login=:user_login)
+
+    getGroup:
+      >
+      select
+        reporting.student.id as id,
+        reporting.student.ssid as ssid,
+        reporting.student.first_name as first_name,
+        reporting.student.last_or_surname as last_or_surname,
+        reporting.roster.id as group_id,
+        reporting.roster.name as group_name
+      from reporting.student
+      join reporting.roster_membership on reporting.student.id=reporting.roster_membership.student_id
+      join reporting.roster on reporting.roster_membership.roster_id=reporting.roster.id
+      where reporting.roster.id in (select roster_id from reporting.user_roster where roster_id=:id and user_login=:user_login)
