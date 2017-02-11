@@ -31,9 +31,4 @@ public class GroupController {
 			.orElseThrow(ResourceNotFoundException::new);
 	}
 
-	@ExceptionHandler
-	public void onException(Exception exception) {
-		System.out.println("HI");
-	}
-
 }
