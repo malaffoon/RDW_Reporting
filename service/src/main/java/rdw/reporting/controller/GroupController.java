@@ -26,8 +26,8 @@ public class GroupController {
 	}
 
 	@RequestMapping(value = "/{id}/students")
-	public Group getGroup(@AuthenticationPrincipal User user, @PathVariable String id) {
-		return service.getGroup(user, Long.parseLong(id))
+	public Group getGroup(@AuthenticationPrincipal User user, @PathVariable long id) {
+		return service.getGroup(user, id)
 			.orElseThrow(ResourceNotFoundException::new);
 	}
 
