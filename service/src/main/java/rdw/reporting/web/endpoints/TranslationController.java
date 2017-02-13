@@ -2,7 +2,7 @@ package rdw.reporting.web.endpoints;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import rdw.reporting.services.TranslationService;
+import rdw.reporting.service.TranslationService;
 
 import java.util.Locale;
 import java.util.Map;

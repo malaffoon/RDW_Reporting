@@ -1,22 +1,21 @@
-package rdw.reporting.repositories.impl;
+package rdw.reporting.repository;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.springframework.stereotype.Repository;
 import rdw.reporting.models.ImmutableTranslation;
 import rdw.reporting.models.Translation;
-import rdw.reporting.repositories.TranslationRepository;
 
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static rdw.reporting.support.ImmutableCollectors.toImmutableSet;
 
 @Repository
 public class TranslationRepositoryStub implements TranslationRepository {
 
-	private final ImmutableSet<Translation> stubTranslations = ImmutableSet.of(
+	private final Set<Translation> stubTranslations = Sets.newHashSet(
 		ImmutableTranslation.builder().code("HELLO").locale(Locale.ENGLISH).message("Hello World").build(),
 		ImmutableTranslation.builder().code("HELLO").locale(Locale.JAPANESE).message("こんにちは世界").build()
 	);
@@ -29,7 +28,7 @@ public class TranslationRepositoryStub implements TranslationRepository {
 		checkNotNull(locale, "Argument \"locale\" must not be null");
 		return stubTranslations.stream()
 			.filter(translation -> locale.equals(translation.getLocale()))
-			.collect(toImmutableSet());
+			.collect(Collectors.toSet());
 	}
 
 }
