@@ -1,4 +1,4 @@
-package rdw.reporting.repositories;
+package rdw.reporting.repository;
 
 import rdw.reporting.models.Translation;
 
