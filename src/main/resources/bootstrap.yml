@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: configuration-service
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${CONFIG_SERVICE_REPO:file://${user.home}/smarter_app/sbac-config-repo}
+          username: ${GIT_USER:test}
+          password: ${GIT_PASSWORD:test}
+
+server:
+  port: ${SERVER_PORT:8888}
+
+encrypt:
+  key: ${ENCRYPT_KEY:secret-key}  # the ENCRYPT_KEY env var must match what the client services are using
