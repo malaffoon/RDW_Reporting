@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-oraclejdk8:slim
+FROM anapsix/alpine-java:8_jdk_unlimited
 
 VOLUME /tmp
 ADD docker-startup.sh /
