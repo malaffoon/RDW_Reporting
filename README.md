@@ -18,8 +18,8 @@ mvn package
 ### Run ###
 ```
 #!bash
-java -jar target/rdw-reporting-ui*.jar --spring.config.location=/opt/rdw-reporting-ui/config/application.properties
-open http://localhost:6543
+java -jar target/rdw-reporting-ui*.jar --spring.config.location=/opt/rdw-reporting-ui/config/application.yaml
+open http://localhost:8080
 ```
 ### Background ###
 This project was created on Mac OS with the below instructions:
