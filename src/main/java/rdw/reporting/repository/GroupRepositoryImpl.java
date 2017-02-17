@@ -38,7 +38,7 @@ public class GroupRepositoryImpl implements GroupRepository {
 		return Sets.newHashSet(
 			jdbcTemplate.query(
 				getGroupSummaries,
-				ImmutableMap.of("user_login", user.getId()),
+				ImmutableMap.of("user_login", user.getUsername()),
 				(RowMapper<GroupSummary>) (row, i) -> ImmutableGroupSummary.builder()
 					.id(row.getLong("id"))
 					.name(row.getString("name"))
@@ -54,7 +54,7 @@ public class GroupRepositoryImpl implements GroupRepository {
 			getGroup,
 			ImmutableMap.of(
 				"id", id,
-				"user_login", user.getId()
+				"user_login", user.getUsername()
 			),
 			(row, index) -> {
 				group.name(row.getString("group_name"));

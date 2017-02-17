@@ -1,0 +1,93 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.1.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+    }
+}
+
+plugins {
+  id "com.moowork.node" version "1.1.1"
+  id 'org.springframework.boot' version '1.5.1.RELEASE'
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'org.smarterapp'
+version = '0.0.1-SNAPSHOT'
+
+description = """Reporting Service"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+     maven { url "https://repository.apache.org/content/repositories/snapshots/" }
+}
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version:'1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:'1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version:'1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:'1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.4.3.RELEASE'
+    compile group: 'org.springframework.security.extensions', name: 'spring-security-saml2-core', version:'1.0.2.RELEASE'
+    compile group: 'org.projectlombok', name: 'lombok', version:'1.16.12'
+    compile group: 'com.google.guava', name: 'guava', version:'20.0'
+    compile group: 'org.postgresql', name: 'postgresql', version:'9.4.1212'
+    compile 'mysql:mysql-connector-java:+'
+    compile("org.immutables:value:2.4.3")
+    compile("com.itextpdf:itextpdf:5.5.10")
+    compile("com.itextpdf:itext-pdfa:5.5.10")
+    compile("com.itextpdf:itext-xtra:5.5.10")
+    compile("com.itextpdf.tool:xmlworker:5.5.10")
+    compile ("org.immutables:value:2.4.0")
+    runtime group: 'org.springframework.boot', name: 'spring-boot-devtools', version:'1.4.3.RELEASE'
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.4.3.RELEASE') {
+        exclude(module: 'commons-logging')
+    }
+}
+
+node {
+    version = '7.5.0'
+    npmVersion = '4.0.5'
+    download = true
+    workDir = file("${project.projectDir}/src/main/webapp")
+    nodeModulesDir = file("${project.projectDir}/src/main/webapp")
+}
+
+//Hopefully this allows us to hot add resources
+bootRun {
+    addResources = true
+}
+
+
+//This is the build task for the Front End (Fe) and only compiles when the inputs change
+task buildFe(type: NpmTask) {
+    inputs.files(fileTree('src/main/webapp/node_modules'))
+    inputs.files(fileTree('src/main/webapp/src'))
+    inputs.files(fileTree('src/main/webapp/e2e'))
+    inputs.file('src/main/webapp/package.json')
+    inputs.file('src/main/webapp/karma.conf.js')
+    inputs.file('src/main/webapp/angular-cli.json')
+    inputs.file('src/main/webapp/tslint.json')
+    inputs.file('src/main/webapp/protractor.conf.js')
+
+    outputs.dir('build/resources/static')
+
+    dependsOn npm_install
+    args = ['run', 'build']
+}
+
+//The jar task build the jar file, and that file needs to contain the front end resources, so we need to
+//run the buildFe task before we make the jar
+jar.dependsOn buildFe
