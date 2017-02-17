@@ -1,6 +1,6 @@
-package rdw.reporting.repositories;
+package rdw.reporting.repository;
 
-import rdw.reporting.models.ICA;
+import rdw.reporting.model.ICA;
 
 import java.util.Optional;
 

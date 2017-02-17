@@ -11,12 +11,15 @@ buildscript {
 }
 
 plugins {
-  id "com.moowork.node" version "1.1.1"
-  id 'org.springframework.boot' version '1.5.1.RELEASE'
+    id "com.moowork.node" version "1.1.1"
+    id 'org.springframework.boot' version '1.5.1.RELEASE'
+    id "net.ltgt.apt" version "0.9"
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: "net.ltgt.apt"
 
 group = 'org.smarterapp'
 version = '0.0.1-SNAPSHOT'
@@ -35,26 +38,28 @@ repositories {
      maven { url "https://repository.apache.org/content/repositories/snapshots/" }
 }
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version:'1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:'1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version:'1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:'1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.4.3.RELEASE'
-    compile group: 'org.springframework.security.extensions', name: 'spring-security-saml2-core', version:'1.0.2.RELEASE'
-    compile group: 'org.projectlombok', name: 'lombok', version:'1.16.12'
-    compile group: 'com.google.guava', name: 'guava', version:'20.0'
-    compile group: 'org.postgresql', name: 'postgresql', version:'9.4.1212'
-    compile 'mysql:mysql-connector-java:+'
+    compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-jdbc')
+    compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE')
+    compile('org.projectlombok:lombok:1.16.12')
+    compile('com.google.guava:guava:20.0')
+    compile('org.postgresql:postgresql:9.4.1212')
+    compile('mysql:mysql-connector-java:+')
     compile("org.immutables:value:2.4.3")
     compile("com.itextpdf:itextpdf:5.5.10")
     compile("com.itextpdf:itext-pdfa:5.5.10")
     compile("com.itextpdf:itext-xtra:5.5.10")
     compile("com.itextpdf.tool:xmlworker:5.5.10")
     compile ("org.immutables:value:2.4.0")
-    runtime group: 'org.springframework.boot', name: 'spring-boot-devtools', version:'1.4.3.RELEASE'
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.4.3.RELEASE') {
+    compile ('org.yaml:snakeyaml:+')
+    runtime ('org.springframework.boot:spring-boot-devtools')
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
     }
+    testCompile "junit:junit:4.11"
 }
 
 node {

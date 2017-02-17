@@ -2,8 +2,8 @@ package rdw.reporting.repository;
 
 import com.google.common.collect.Sets;
 import org.springframework.stereotype.Repository;
-import rdw.reporting.models.ImmutableTranslation;
-import rdw.reporting.models.Translation;
+import rdw.reporting.model.ImmutableTranslation;
+import rdw.reporting.model.Translation;
 
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
