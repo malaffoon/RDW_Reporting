@@ -1,6 +1,6 @@
 package rdw.reporting.service;
 
-import rdw.reporting.models.Translation;
+import rdw.reporting.model.Translation;
 
 import javax.validation.constraints.NotNull;
 import java.util.Locale;

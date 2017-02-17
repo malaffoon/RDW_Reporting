@@ -1,4 +1,4 @@
-package rdw.reporting.models;
+package rdw.reporting.model;
 
 import org.immutables.value.Value;
 

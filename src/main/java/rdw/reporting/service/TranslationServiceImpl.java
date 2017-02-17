@@ -2,7 +2,7 @@ package rdw.reporting.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rdw.reporting.models.Translation;
+import rdw.reporting.model.Translation;
 import rdw.reporting.repository.TranslationRepository;
 
 import javax.validation.constraints.NotNull;

@@ -1,12 +1,11 @@
-package rdw.reporting.repositories.impl;
+package rdw.reporting.repository.impl;
 
-import com.sun.javafx.binding.StringFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
-import rdw.reporting.models.ICA;
-import rdw.reporting.repositories.InterimComprehensiveQuery;
+import rdw.reporting.model.ICA;
+import rdw.reporting.repository.InterimComprehensiveQuery;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

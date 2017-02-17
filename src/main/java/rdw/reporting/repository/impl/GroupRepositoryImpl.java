@@ -1,4 +1,4 @@
-package rdw.reporting.repository;
+package rdw.reporting.repository.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import rdw.reporting.model.*;
+import rdw.reporting.repository.GroupRepository;
 import rdw.reporting.security.User;
 
 import javax.validation.constraints.NotNull;
