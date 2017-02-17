@@ -65,18 +65,29 @@ node {
     nodeModulesDir = file("${project.projectDir}/src/main/webapp")
 }
 
+//Hopefully this allows us to hot add resources
 bootRun {
     addResources = true
 }
 
-task bundle(type: NpmTask) {
-    inputs.files(fileTree('node_modules'))
+
+//This is the build task for the Front End (Fe) and only compiles when the inputs change
+task buildFe(type: NpmTask) {
+    inputs.files(fileTree('src/main/webapp/node_modules'))
     inputs.files(fileTree('src/main/webapp/src'))
+    inputs.files(fileTree('src/main/webapp/e2e'))
     inputs.file('src/main/webapp/package.json')
-    inputs.file('webpack.config.js')
+    inputs.file('src/main/webapp/karma.conf.js')
+    inputs.file('src/main/webapp/angular-cli.json')
+    inputs.file('src/main/webapp/tslint.json')
+    inputs.file('src/main/webapp/protractor.conf.js')
 
     outputs.dir('build/resources/static')
 
     dependsOn npm_install
     args = ['run', 'build']
 }
+
+//The jar task build the jar file, and that file needs to contain the front end resources, so we need to
+//run the buildFe task before we make the jar
+jar.dependsOn buildFe
