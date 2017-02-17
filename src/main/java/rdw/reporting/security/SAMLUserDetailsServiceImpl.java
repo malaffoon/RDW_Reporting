@@ -20,7 +20,7 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 		final List<Tenancy> tenancyChain = Stream.of(credential.getAttributeAsStringArray("sbacTenancyChain"))
 			.map(rawTenancy -> {
 				final List<String> values = Splitter.on("|").trimResults().splitToList(rawTenancy);
-				return Tenancy.builder()
+				return ImmutableTenancy.builder()
 					.roleId(values.get(1))
 					.name(values.get(2))
 					.level(values.get(3))
@@ -46,7 +46,7 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 			TODO: map sbacTenancyChain to authorities (roles and permissions)
 		 */
 
-		return User.builder()
+		return ImmutableUser.builder()
 			.id(credential.getAttributeAsString("sbacUUID"))
 			.email(credential.getAttributeAsString("mail"))
 			.givenName(credential.getAttributeAsString("givenName"))

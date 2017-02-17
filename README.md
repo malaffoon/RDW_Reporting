@@ -37,5 +37,5 @@ brew tap pivotal/tap
 brew install springboot
 
 # create spring boot app in directory called "api"
-spring init --dependencies=web,security,aop,lombok,devtools --groupId=rdw.reporting.web --artifactId=rdw-reporting-ui api
+spring init --dependencies=web,security,aop,devtools --groupId=rdw.reporting.web --artifactId=rdw-reporting-ui api
 ```

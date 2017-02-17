@@ -1,46 +1,43 @@
 package rdw.reporting.config;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import org.immutables.value.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 @ConfigurationProperties(prefix = "saml")
-@Getter
-@Setter
-@ToString
-public class SAMLProperties {
+@Value.Modifiable
+@Value.Style(passAnnotations = {Component.class, ConfigurationProperties.class})
+public interface SAMLProperties {
 
 	/**
 	 * The full file path to the Java KeyStore (JKS) file.
 	 */
-	private String keyStoreFile;
+	String getKeyStoreFile();
 
 	/**
 	 * Password for the JKS File.
 	 */
-	private String keyStorePassword;
+	String getKeyStorePassword();
 
 	/**
 	 * Private key alias in JKS used for SAML signing.
 	 */
-	private String privateKeyEntryAlias;
+	String getPrivateKeyEntryAlias();
 
 	/**
 	 * Private kel alias password. May be same as JKS file password.
 	 */
-	private String privateKeyEntryPassword;
+	String getPrivateKeyEntryPassword();
 
 	/**
 	 * Identity provider metadata URL.
 	 */
-	private String idpMetadataUrl;
+	String getIdpMetadataUrl();
 
 	/**
 	 * Service Provider entity id as registered in the IDP circle of trust.
 	 */
-	private String spEntityId;
+	String getSpEntityId();
 
 }

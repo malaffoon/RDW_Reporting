@@ -1,30 +1,27 @@
 package rdw.reporting.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import org.immutables.value.Value;
 
-@Getter
-@Builder
-@AllArgsConstructor
-public class Tenancy {
+@Value.Immutable
+@Value.Style(get = {"get*", "is*"})
+public interface Tenancy {
 
-	private String roleId;
-	private String name;
-	private String level;
-	private String clientId;
-	private String client;
-	private String groupOfStatesId;
-	private String groupOfStates;
-	private String stateId;
-	private String state;
-	private String groupOfDistrictsId;
-	private String groupOfDistricts;
-	private String districtId;
-	private String district;
-	private String groupOfInstitutionsId;
-	private String groupOfInstitutions;
-	private String institutionId;
-	private String institution;
+	String getRoleId();
+	@Value.Auxiliary String getName();
+	@Value.Auxiliary String getLevel();
+	@Value.Auxiliary String getClientId();
+	@Value.Auxiliary String getClient();
+	@Value.Auxiliary String getGroupOfStatesId();
+	@Value.Auxiliary String getGroupOfStates();
+	@Value.Auxiliary String getStateId();
+	@Value.Auxiliary String getState();
+	@Value.Auxiliary String getGroupOfDistrictsId();
+	@Value.Auxiliary String getGroupOfDistricts();
+	@Value.Auxiliary String getDistrictId();
+	@Value.Auxiliary String getDistrict();
+	@Value.Auxiliary String getGroupOfInstitutionsId();
+	@Value.Auxiliary String getGroupOfInstitutions();
+	@Value.Auxiliary String getInstitutionId();
+	@Value.Auxiliary String getInstitution();
 
 }
