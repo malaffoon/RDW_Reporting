@@ -16,7 +16,6 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('home')
     this.service.getGroupSummaries()
       .subscribe(groups => {
           this.groups = sortOn(groups, group => group.name);

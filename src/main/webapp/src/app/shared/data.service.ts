@@ -18,12 +18,6 @@ export class DataService {
       .map(response => response.json());
   }
 
-  groupAndStudentSummaries(): Observable<GroupsAndStudents> {
-    return this.http
-      .get(`/api/groupAndStudentSummaries`)
-      .map(response => response.json());
-  }
-
   getGroup(id: string): Observable<Group> {
     return this.http
       .get(`/api/groups/${id}/students`)
@@ -44,7 +38,7 @@ export class DataService {
 
   getExam(id: string): Observable<Exam> {
     return this.http
-      .get(`/api/assessments/${id}`)
+      .get(`/api/exams/${id}`)
       .map(response => response.json());
   }
 
