@@ -1,11 +1,10 @@
 import {Injectable} from "@angular/core";
-import {Http, Headers} from "@angular/http";
+import {Http} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 import {Exam} from "./exam";
 import {Group} from "./group";
-import {GroupsAndStudents} from "./groups-and-students";
 
 @Injectable()
 export class DataService {
