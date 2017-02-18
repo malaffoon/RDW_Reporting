@@ -14,6 +14,7 @@ import {StudentsComponent} from "./students/students.component";
 import {GroupsComponent} from "./groups/groups.component";
 import {ExamsComponent} from "./exams/exams.component";
 import {routes} from "./shared/routes";
+import { HomeComponent } from './home/home.component';
 
 
 export function createTranslateLoader(http: Http) {
@@ -27,7 +28,8 @@ export function createTranslateLoader(http: Http) {
     ExamComponent,
     StudentsComponent,
     GroupsComponent,
-    ExamsComponent
+    ExamsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

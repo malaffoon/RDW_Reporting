@@ -5,15 +5,22 @@ import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 import {Exam} from "./exam";
 import {Group} from "./group";
+import {GroupsAndStudents} from "./groups-and-students";
 
 @Injectable()
 export class DataService {
 
   constructor(private http: Http) {}
 
-  getGroups(): Observable<Array<Group>> {
+  getGroupSummaries(): Observable<Array<Group>> {
     return this.http
-      .get(`/api/groups`)
+      .get(`/api/groupSummaries`)
+      .map(response => response.json());
+  }
+
+  groupAndStudentSummaries(): Observable<GroupsAndStudents> {
+    return this.http
+      .get(`/api/groupAndStudentSummaries`)
       .map(response => response.json());
   }
 

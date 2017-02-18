@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {DataService} from "../shared/data.service";
 import {Group} from "../shared/group";
+import {sortOn} from "../shared/comparators";
 
 @Component({
   selector: 'students-component',
@@ -18,7 +19,8 @@ export class StudentsComponent implements OnInit {
     this.route.params
       .subscribe(params => {
         this.service.getGroup(params['groupId'])
-          .subscribe(group => {
+          .subscribe((group: any) => {
+              group.students = sortOn(group.students, student => student.lastName, student => student.firstName);
               this.group = group;
             },
             error => {

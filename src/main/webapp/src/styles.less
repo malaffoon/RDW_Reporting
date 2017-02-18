@@ -1,1 +1,125 @@
 /* You can add global styles to this file, and also import other style files */
+@font-xs: 75%;
+@font-sm: 86%;
+@gray1: #f3f3f3;
+@gray2: #eee;
+@gray3: #686868;
+@gray4: #7a7a7a;
+
+.font-sm {
+  font-size: @font-sm;
+}
+.font-xs {
+  font-size: @font-xs;
+}
+
+/* styles to allow icons in inputs */
+.inner-addon {
+  position: relative;
+  .glyphicon {
+    position: absolute;
+    padding: 10px;
+    pointer-events: none;
+  }
+}
+
+.left-addon {
+  .glyphicon {
+    left: 0;
+  }
+  input {
+    padding-left: 30px;
+  }
+}
+
+.right-addon {
+  .glyphicon {
+    right: 0;
+  }
+  input {
+    padding-right: 30px;
+  }
+}
+
+/* custom styles */
+
+body {
+  background: @gray1;
+  color: @gray3;
+  padding-top: 92px;
+}
+
+.navigation {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
+  margin-bottom: 0;
+  padding: 16px 0 8px 0;
+  .logo {
+    width: 170px;
+  }
+  .title {
+    display: inline-block;
+    color: #43B02A;
+    font-weight: normal;
+    font-size: 150%;
+    margin: 10px 0 10px 32px;
+  }
+  .welcome-message {
+    .font-sm;
+    text-align: right;
+    i {
+      margin-right: 6px;
+    }
+  }
+  .search-box {
+    .font-sm;
+    .search {
+      font-size: 100%;
+      width: 360px;
+    }
+  }
+  .navbar-brand,
+  .navbar-form {
+    padding: 0;
+  }
+}
+
+.breadcrumbs {
+  .font-xs;
+  background: @gray2;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.715);
+  color: @gray4;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  padding: 12px 0;
+  .breadcrumb-link-separator>i {
+    margin: 0 4px;
+  }
+}
+
+.card {
+  background-color: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
+  padding: 32px;
+  h2 {
+    margin: 0 0 24px 0;
+  }
+  .list-group {
+    margin-bottom: 0;
+  }
+  .list-group-item {
+    color: @gray3;
+  }
+  .search-box {
+    margin-bottom: 20px;
+  }
+}
+
+.home-view,
+.students-view {
+  padding-top: 32px;
+}
+
