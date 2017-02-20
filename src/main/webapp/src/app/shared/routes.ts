@@ -2,12 +2,12 @@ import {GroupsComponent} from "../groups/groups.component";
 import {StudentsComponent} from "../students/students.component";
 import {ExamsComponent} from "../exams/exams.component";
 import {ExamComponent} from "../exam/exam.component";
+import {HomeComponent} from "../home/home.component";
 
 export const routes = [
   {
     path: '',
-    redirectTo: '/groups',
-    pathMatch: 'full'
+    component: HomeComponent
   },
   {
     path: 'groups',

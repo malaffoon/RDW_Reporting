@@ -1,27 +1,43 @@
-<div class="container">
-
-  <div class="hidden">
-
-    <h1>{{ 'HELLO' | translate }}</h1>
-
-    <!-- todo: refactor to directive/component -->
-    <select #languageSelect (change)="translate.use(languageSelect.value)">
-      <option *ngFor="let language of translate.getLangs()" [value]="language" [selected]="language === translate.currentLang">{{ language }}</option>
-    </select>
-
-  </div>
-
-  <div class="row">
-    <div class="col-sm-3 col-sm-offset-9">
-      <div class="form-group">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Quick Search">
-          <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+<nav class="navigation navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" routerLink="/">
+        <img class="logo" src="/assets/image/logo-1364x433.png" alt="Smarter Balanced"/>
+      </a>
+      <h1 class="title">Interim Item Reporting</h1>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <div class="navbar-right">
+        <div class="welcome-message">
+          <i class="glyphicon glyphicon-user"></i><span *ngIf="user">Welcome {{user.firstName}} {{user.lastName}}</span>
         </div>
+        <form class="navbar-form">
+          <div class="inner-addon left-addon search-box">
+            <label class="sr-only" for="search">Search</label>
+            <i class="glyphicon glyphicon-search"></i>
+            <input class="search form-control" id="search" type="text" placeholder="Search" autocomplete="off">
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</nav>
 
-  <router-outlet></router-outlet>
-
+<div class="hidden">
+  <h1>{{ 'HELLO' | translate }}</h1>
+  <!-- todo: refactor to directive/component -->
+  <select #languageSelect (change)="translate.use(languageSelect.value)">
+    <option *ngFor="let language of translate.getLangs()" [value]="language" [selected]="language === translate.currentLang">
+      {{ language }}
+    </option>
+  </select>
 </div>
+
+<router-outlet></router-outlet>
+

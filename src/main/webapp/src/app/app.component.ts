@@ -8,6 +8,8 @@ import {TranslateService} from 'ng2-translate';
 })
 export class AppComponent {
 
+  user : any;
+
   constructor(private translate: TranslateService) {
 
     let languages = ['en', 'ja'];
@@ -16,5 +18,12 @@ export class AppComponent {
     translate.setDefaultLang(defaultLanguage);
     translate.use(languages.indexOf(translate.getBrowserLang()) != -1 ? translate.getBrowserLang() : defaultLanguage);
 
+  }
+
+  ngOnInit() {
+    this.user = {
+      firstName: 'Terry',
+      lastName: 'McManus'
+    };
   }
 }

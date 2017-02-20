@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http, Headers} from "@angular/http";
+import {Http} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
@@ -11,9 +11,9 @@ export class DataService {
 
   constructor(private http: Http) {}
 
-  getGroups(): Observable<Array<Group>> {
+  getGroupSummaries(): Observable<Array<Group>> {
     return this.http
-      .get(`/api/groups`)
+      .get(`/api/groupSummaries`)
       .map(response => response.json());
   }
 
@@ -37,7 +37,7 @@ export class DataService {
 
   getExam(id: string): Observable<Exam> {
     return this.http
-      .get(`/api/assessments/${id}`)
+      .get(`/api/exams/${id}`)
       .map(response => response.json());
   }
 
