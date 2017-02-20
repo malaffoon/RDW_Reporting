@@ -176,40 +176,7 @@ public class InterimComprehensiveQueryImpl implements InterimComprehensiveQuery{
                     .addStudentPerformanceClaims(1, rs.getInt("asmt_claim_2_score"))
                     .addStudentPerformanceClaims(2, rs.getInt("asmt_claim_3_score"))
                     .addStudentPerformanceClaims(3, rs.getInt("asmt_claim_4_score"));
-
-                    /*.withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
-                    .withSessionId(UuidAdapter.getUUIDFromBytes(rs.getBytes("session_id")))
-                    .withBrowserId(UuidAdapter.getUUIDFromBytes(rs.getBytes("browser_id")))
-                    .withAssessmentId(rs.getString("assessment_id"))
-                    .withAssessmentKey(rs.getString("assessment_key"))
-                    .withAssessmentWindowId(rs.getString("assessment_window_id"))
-                    .withAssessmentAlgorithm(rs.getString("assessment_algorithm"))
-                    .withEnvironment(rs.getString("environment"))
-                    .withStudentId(rs.getLong("student_id"))
-                    .withLoginSSID(rs.getString("login_ssid"))
-                    .withStudentName(rs.getString("student_name"))
-                    .withLanguageCode(rs.getString("language_code"))
-                    .withMaxItems(rs.getInt("max_items"))
-                    .withAttempts(rs.getInt("attempts"))
-                    .withClientName(rs.getString("client_name"))
-                    .withSubject(rs.getString("subject"))
-                    .withDateStarted(mapTimestampToJodaInstant(rs, "date_started"))
-                    .withDateChanged(mapTimestampToJodaInstant(rs, "date_changed"))
-                    .withDateDeleted(mapTimestampToJodaInstant(rs, "date_deleted"))
-                    .withDateScored(mapTimestampToJodaInstant(rs, "date_scored"))
-                    .withDateCompleted(mapTimestampToJodaInstant(rs, "date_completed"))
-                    .withCreatedAt(mapTimestampToJodaInstant(rs, "created_at"))
-                    .withDateJoined(mapTimestampToJodaInstant(rs, "date_joined"))
-                    .withExpireFrom(mapTimestampToJodaInstant(rs, "expire_from"))
-                    .withStatus(new ExamStatusCode(
-                            rs.getString("status"),
-                            ExamStatusStage.fromType(rs.getString("stage"))
-                    ), mapTimestampToJodaInstant(rs, "status_change_date"))
-                    .withStatusChangeReason(rs.getString("status_change_reason"))
-                    .withAbnormalStarts(rs.getInt("abnormal_starts"))
-                    .withWaitingForSegmentApproval(rs.getBoolean("waiting_for_segment_approval"))
-                    .withCurrentSegmentPosition(rs.getInt("current_segment_position"))
-                    .withCustomAccommodation(rs.getBoolean("custom_accommodations"));*/
+            
                     return ica;
         }
     }
