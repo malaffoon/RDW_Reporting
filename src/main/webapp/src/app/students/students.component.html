@@ -23,7 +23,7 @@
             <input class="search form-control" id="search" type="text" placeholder="Search" autocomplete="off">
           </div>
           <div *ngIf="group.students" class="studentSummaries list-group">
-            <a *ngFor="let student of group.students" class="student list-group-item" routerLink="/groups/{{group.id}}/studentSummaries/{{student.id}}/exams">
+            <a *ngFor="let student of group.students" class="student list-group-item" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">
               {{student.lastName}}, {{student.firstName}} <span class="ssid pull-right">{{student.ssid}}</span>
             </a>
           </div>

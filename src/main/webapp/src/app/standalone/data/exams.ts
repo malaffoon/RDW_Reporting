@@ -113,13 +113,13 @@ export const exams = [
     date: new Date(2017, 1, 20),
     performance: 2,
     score: 2520,
-    grade: 4,
+    grade: 5,
     assessment: {
       id: randomId(),
-      type: AssessmentType.IAB,
+      type: AssessmentType.ICA,
       name: 'Operations and Algebraic Thinking',
       grade: 5,
-      academicYear: 2016,
+      academicYear: 2017,
       subject: AssessmentSubjectType.MATH
     }
   }

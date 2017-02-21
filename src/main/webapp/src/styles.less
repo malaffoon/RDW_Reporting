@@ -12,6 +12,10 @@
 .font-xs {
   font-size: @font-xs;
 }
+.pop-out {
+  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
+}
+
 
 /* styles to allow icons in inputs */
 .inner-addon {
@@ -99,10 +103,10 @@ body {
 }
 
 .card {
-  background-color: #fff;
+  .pop-out;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
   border-radius: 5px;
-  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
   padding: 32px;
   h2 {
     margin: 0 0 24px 0;
@@ -119,7 +123,33 @@ body {
 }
 
 .home-view,
-.students-view {
+.students-view,
+.exams-view {
   padding-top: 32px;
 }
 
+.exams-view {
+  .tab-content {
+    .form-inline {
+      float: right;
+    }
+  }
+}
+
+.tab-container {
+  .nav-tabs {
+    padding-left: 32px;
+  }
+  .tab-content {
+    .pop-out;
+    background-color: #fff;
+    padding: 32px;
+    h2 {
+      margin: 0 0 20px 0;
+      display: inline-block;
+    }
+    table, p {
+      margin-bottom: 0;
+    }
+  }
+}

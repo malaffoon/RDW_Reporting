@@ -3,6 +3,7 @@ import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {Http, HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
+import {TabsModule} from "ng2-bootstrap/tabs";
 import {PadStartPipe} from "./shared/pad-start.pipe";
 import {AppComponent} from "./app.component";
 import {ExamComponent} from "./exam/exam.component";
@@ -14,7 +15,7 @@ import {StudentsComponent} from "./students/students.component";
 import {GroupsComponent} from "./groups/groups.component";
 import {ExamsComponent} from "./exams/exams.component";
 import {routes} from "./shared/routes";
-import { HomeComponent } from './home/home.component';
+import {HomeComponent} from "./home/home.component";
 
 
 export function createTranslateLoader(http: Http) {
@@ -40,7 +41,8 @@ export function createTranslateLoader(http: Http) {
       provide: TranslateLoader,
       useFactory: (createTranslateLoader),
       deps: [Http]
-    })
+    }),
+    TabsModule.forRoot()
   ],
   providers: [
     DataService,
