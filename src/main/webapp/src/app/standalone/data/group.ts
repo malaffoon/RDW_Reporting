@@ -4,6 +4,7 @@ import {randomId, randomSsid} from "./support/generator";
 export const group = {
   id: randomId(),
   name: 'Anderson, Mary 4th Grade Math Noon',
+  exams: exams,
   students: [
     {
       firstName: "David",

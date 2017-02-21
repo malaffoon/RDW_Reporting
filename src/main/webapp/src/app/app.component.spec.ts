@@ -9,7 +9,7 @@ import {FormsModule} from "@angular/forms";
 import {HttpModule, Http} from "@angular/http";
 import {DataService} from "./shared/data.service";
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
-import {ExamsComponent} from "./exams/exams.component";
+import {ExamsComponent} from "./student-exams/student-exams.component";
 import {GroupsComponent} from "./groups/groups.component";
 import {PadStartPipe} from "./shared/pad-start.pipe";
 import {Observable} from "rxjs";

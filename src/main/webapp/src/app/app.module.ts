@@ -12,11 +12,10 @@ import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-trans
 import {environment} from "../environments/environment";
 import {standaloneProviders} from "./standalone/standalone.service";
 import {StudentsComponent} from "./students/students.component";
-import {GroupsComponent} from "./groups/groups.component";
-import {ExamsComponent} from "./exams/exams.component";
+import {StudentExamsComponent} from "./student-exams/student-exams.component";
+import {GroupExamsComponent} from "./group-exams/group-exams.component";
 import {routes} from "./shared/routes";
 import {HomeComponent} from "./home/home.component";
-
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -26,11 +25,10 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     PadStartPipe,
     AppComponent,
-    ExamComponent,
+    HomeComponent,
     StudentsComponent,
-    GroupsComponent,
-    ExamsComponent,
-    HomeComponent
+    StudentExamsComponent,
+    GroupExamsComponent
   ],
   imports: [
     BrowserModule,
