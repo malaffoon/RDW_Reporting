@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,11 +24,6 @@ public class GroupRepositoryImpl implements GroupRepository {
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final String getGroupSummaries;
 	private final String getGroup;
-
-
-    Environment env;
-
-    private ConfigurableApplicationContext applicationContext;
 
 	@Autowired
 	public GroupRepositoryImpl(
