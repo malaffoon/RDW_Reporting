@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -27,17 +25,11 @@ public class GroupRepositoryImpl implements GroupRepository {
 	private final String getGroupSummaries;
 	private final String getGroup;
 
-    Environment env;
-
-    private ConfigurableApplicationContext applicationContext;
-
 	@Autowired
 	public GroupRepositoryImpl(
 		@NotNull NamedParameterJdbcTemplate jdbcTemplate,
 		@NotNull @Value("${group.getGroupSummaries.sql}") String getGroupSummaries,
-		@NotNull @Value("${group.getGroup.sql}") String getGroup,
-        ConfigurableApplicationContext context,
-        Environment env) {
+		@NotNull @Value("${group.getGroup.sql}") String getGroup) {
 		this.jdbcTemplate = checkNotNull(jdbcTemplate);
 		this.getGroupSummaries = checkNotNull(getGroupSummaries);
 		this.getGroup = checkNotNull(getGroup);
@@ -47,7 +39,6 @@ public class GroupRepositoryImpl implements GroupRepository {
 		return Sets.newHashSet(
 			jdbcTemplate.query(
 					getGroupSummaries,
-
 				ImmutableMap.of("user_login", user.getUsername()),
 				(RowMapper<GroupSummary>) (row, i) -> ImmutableGroupSummary.builder()
 					.id(row.getLong("id"))
