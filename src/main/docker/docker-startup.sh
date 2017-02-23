@@ -6,4 +6,4 @@
 #
 #-----------------------------------------------------------------------------------------------------------------------
 
-java -jar /configuration-service.jar
+java $JAVA_OPTS -jar /configuration-service.jar
