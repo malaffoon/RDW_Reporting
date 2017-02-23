@@ -5,12 +5,19 @@
 @gray2: #eee;
 @gray3: #686868;
 @gray4: #7a7a7a;
+@gray5: #d4d4d4;
+@blue1: #008AB1;
 
 .font-sm {
   font-size: @font-sm;
 }
+
 .font-xs {
   font-size: @font-xs;
+}
+
+.pop-out {
+  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
 }
 
 /* styles to allow icons in inputs */
@@ -47,6 +54,16 @@ body {
   background: @gray1;
   color: @gray3;
   padding-top: 92px;
+}
+
+h2 {
+  color: @blue1;
+  font-family: "PT Sans Caption",sans-serif;
+  font-size: 175%;
+}
+
+.table > thead > tr > th {
+  vertical-align: top;
 }
 
 .navigation {
@@ -93,17 +110,43 @@ body {
   color: @gray4;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
   padding: 12px 0;
-  .breadcrumb-link-separator>i {
+  .breadcrumb-link-separator > i {
     margin: 0 4px;
   }
 }
 
-.card {
+/* "sticky" footer */
+@footer-height: 45px;
+html, body {
+  height: 100%;
+}
+.page-view {
+  min-height: 100%;
+  margin-bottom: -@footer-height;
+}
+.page-view:after {
+  content: "";
+  display: block;
+}
+.footer, .page-view:after {
+  height: @footer-height;
+}
+.footer {
+  color: @gray4;
   background-color: #fff;
+  padding: 10px 0;
+  font-size: 10px;
+  border-top: 1px solid @gray5;
+  box-shadow: 0 -0.125em 0.25em 0 rgba(0,0,0,0.075);
+}
+
+.card {
+  .pop-out;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
   border-radius: 5px;
-  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
   padding: 32px;
+  margin-bottom: 20px;
   h2 {
     margin: 0 0 24px 0;
   }
@@ -118,8 +161,111 @@ body {
   }
 }
 
-.home-view,
-.students-view {
+.home-view {
+  padding-top: 72px;
+}
+
+.students-view,
+.student-exams-view {
   padding-top: 32px;
 }
 
+.group-exams-view {
+  padding-top: 20px;
+}
+
+.student-exams-view,
+.group-exams-view {
+  .form-inline {
+    float: right;
+  }
+}
+
+.group-exams-view {
+  h2 {
+    display: inline-block;
+    margin: 0 0 20px 0;
+  }
+}
+
+.group-exams-card {
+  .table-wrapper {
+    height: 208px;
+    overflow: auto;
+  }
+}
+
+.student-exam-items-view {
+  h2 {
+    display: inline-block;
+  }
+  .exam-attributes {
+    float: right;
+    margin-top: 20px;
+    .exam-attribute {
+      margin-left: 20px;
+      .attribute-value {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.expandable {
+  position: relative;
+  .expand-control {
+    position: absolute;
+    top: 52px;
+    right: 12px;
+    cursor: pointer;
+  }
+}
+
+.student-exam-items-card {
+  .table {
+    margin-bottom:0;
+  }
+}
+
+.tab-container {
+  .nav-tabs {
+    padding-left: 32px;
+  }
+  .tab-content {
+    .pop-out;
+    background-color: #fff;
+    padding: 32px;
+    h2 {
+      display: inline-block;
+      margin: 0 0 20px 0;
+    }
+    table, p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.combined-selected-assessments {
+  margin-top: 24px;
+  .total-students,
+  .average-scale-score {
+    color: #43B02A;
+    font-size: 500%;
+  }
+  .table > thead > tr > th {
+    font-size: 125%;
+  }
+  .table > thead > tr > th,
+  .table > tbody > tr > td {
+    border: none;
+  }
+  table {
+    th:nth-child(1),
+    th:nth-child(2) {
+      width: 25%;
+    }
+    th:nth-child(3) {
+      width: 50%
+    }
+  }
+}

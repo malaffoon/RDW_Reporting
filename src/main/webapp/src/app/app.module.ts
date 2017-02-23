@@ -3,6 +3,7 @@ import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {Http, HttpModule} from "@angular/http";
 import {RouterModule} from "@angular/router";
+import {TabsModule} from "ng2-bootstrap/tabs";
 import {PadStartPipe} from "./shared/pad-start.pipe";
 import {AppComponent} from "./app.component";
 import {ExamComponent} from "./exam/exam.component";
@@ -11,11 +12,12 @@ import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-trans
 import {environment} from "../environments/environment";
 import {standaloneProviders} from "./standalone/standalone.service";
 import {StudentsComponent} from "./students/students.component";
-import {GroupsComponent} from "./groups/groups.component";
-import {ExamsComponent} from "./exams/exams.component";
+import {StudentExamsComponent} from "./student-exams/student-exams.component";
+import {GroupExamsComponent} from "./group-exams/group-exams.component";
 import {routes} from "./shared/routes";
-import { HomeComponent } from './home/home.component';
-
+import {HomeComponent} from "./home/home.component";
+import { StudentExamItemsComponent } from './student-exam-items/student-exam-items.component';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -25,11 +27,12 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     PadStartPipe,
     AppComponent,
-    ExamComponent,
+    HomeComponent,
     StudentsComponent,
-    GroupsComponent,
-    ExamsComponent,
-    HomeComponent
+    StudentExamsComponent,
+    GroupExamsComponent,
+    StudentExamItemsComponent,
+    BreadcrumbsComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ export function createTranslateLoader(http: Http) {
       provide: TranslateLoader,
       useFactory: (createTranslateLoader),
       deps: [Http]
-    })
+    }),
+    TabsModule.forRoot()
   ],
   providers: [
     DataService,

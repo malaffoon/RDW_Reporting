@@ -35,6 +35,12 @@ export class DataService {
       .map(response => response.json());
   }
 
+  getStudentExam(groupId: string, studentId: string, examId: string): Observable<Group> {
+    return this.http
+      .get(`/api/groups/${groupId}/students/${studentId}/exams/${examId}`)
+      .map(response => response.json());
+  }
+
   getExam(id: string): Observable<Exam> {
     return this.http
       .get(`/api/exams/${id}`)

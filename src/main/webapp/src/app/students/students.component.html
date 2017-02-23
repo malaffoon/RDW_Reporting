@@ -1,16 +1,5 @@
-<div class="breadcrumbs">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="breadcrumb-links">
-          <a class="breadcrumb-link" routerLink="/"><i class="glyphicon glyphicon-home"></i></a>
-          <span class="breadcrumb-link-separator"><i class="glyphicon glyphicon-menu-right"></i></span>
-          <span class="breadcrumb-link active">{{group.name}}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<breadcrumbs [values]="context.breadcrumbs"></breadcrumbs>
+
 <div class="students-view">
   <div class="container">
     <div class="row">
@@ -23,7 +12,7 @@
             <input class="search form-control" id="search" type="text" placeholder="Search" autocomplete="off">
           </div>
           <div *ngIf="group.students" class="studentSummaries list-group">
-            <a *ngFor="let student of group.students" class="student list-group-item" routerLink="/groups/{{group.id}}/studentSummaries/{{student.id}}/exams">
+            <a *ngFor="let student of group.students" class="student list-group-item" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">
               {{student.lastName}}, {{student.firstName}} <span class="ssid pull-right">{{student.ssid}}</span>
             </a>
           </div>

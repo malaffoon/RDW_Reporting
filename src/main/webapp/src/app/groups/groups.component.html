@@ -4,7 +4,7 @@
       <div *ngIf="groups" class="groups-view">
         <h3>My Groups</h3>
         <div class="groups list-group">
-          <a *ngFor="let group of groups" class="group list-group-item" routerLink="/groups/{{group.id}}/students">
+          <a *ngFor="let group of groups" class="group list-group-item" routerLink="/groups/{{group.id}}/studentSummaries">
             {{group.name}}
           </a>
         </div>

@@ -21,6 +21,10 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       }
     } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups/\\d+/students/\\d+/exams`, 'g').test(requestSignature)) {
       body = group;
+    } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups/\\d+/students/\\d+/exams/\\d+/items`, 'g').test(requestSignature)) {
+      body = group;
+    } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/groups/\\d+/exams`, 'g').test(requestSignature)) {
+      body = group;
     } else if (new RegExp(`${RequestMethod[RequestMethod.Get].toUpperCase()} /api/exams/\\d+`, 'g').test(requestSignature)) {
       body = exam;
     }
