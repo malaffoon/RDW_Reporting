@@ -1,51 +1,38 @@
-<div class="breadcrumbs">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="breadcrumb-links">
-          <a class="breadcrumb-link" routerLink="/"><i class="glyphicon glyphicon-home"></i></a>
-          <span class="breadcrumb-link-separator"><i class="glyphicon glyphicon-menu-right"></i></span>
-          <a class="breadcrumb-link" routerLink="/groups/{{group.id}}/students">{{group.name}}</a>
-          <span class="breadcrumb-link-separator"><i class="glyphicon glyphicon-menu-right"></i></span>
-          <span class="breadcrumb-link active">{{group.students[0].lastName}}, {{group.students[0].firstName}}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<breadcrumbs [values]="context.breadcrumbs"></breadcrumbs>
+
 <div class="student-exams-view">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
 
-        <tabset *ngIf="group.students">
+        <tabset *ngIf="context.group.students">
           <tab heading="Student Test History">
             <div class="exams exams-all">
-              <h2>{{group.students[0].lastName}}, {{group.students[0].firstName}}</h2>
+              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
               <form class="form-inline">
-                <div class="form-group" *ngIf="categories.all.sortedAcademicYears.length > 1">
+                <div class="form-group" *ngIf="context.categories.all.sortedAcademicYears.length > 1">
                   <label for="tab1-academic-year-filter" class="sr-only"></label>
                   <select id="tab1-academic-year-filter" class="form-control">
                     <option>Academic Year</option>
-                    <option *ngFor="let year of categories.all.sortedAcademicYears">{{year}}</option>
+                    <option *ngFor="let year of context.categories.all.sortedAcademicYears">{{year}}</option>
                   </select>
                 </div>
-                <div class="form-group" *ngIf="categories.all.sortedAssessmentTypes.length > 1">
+                <div class="form-group" *ngIf="context.categories.all.sortedAssessmentTypes.length > 1">
                   <label for="tab1-assessment-type-filter" class="sr-only"></label>
                   <select id="tab1-assessment-type-filter" class="form-control">
                     <option>Assessment Type</option>
-                    <option *ngFor="let type of categories.all.sortedAssessmentTypes">{{type}}</option>
+                    <option *ngFor="let type of context.categories.all.sortedAssessmentTypes">{{type}}</option>
                   </select>
                 </div>
-                <div class="form-group" *ngIf="categories.all.sortedEnrolledGrades.length > 1">
+                <div class="form-group" *ngIf="context.categories.all.sortedEnrolledGrades.length > 1">
                   <label for="tab1-enrolled-grade-filter" class="sr-only"></label>
                   <select id="tab1-enrolled-grade-filter" class="form-control">
                     <option>Enrolled Grade</option>
-                    <option *ngFor="let grade of categories.all.sortedEnrolledGrades">{{grade}}</option>
+                    <option *ngFor="let grade of context.categories.all.sortedEnrolledGrades">{{grade}}</option>
                   </select>
                 </div>
               </form>
-              <table *ngIf="categories.all.exams.length" class="table table-striped">
+              <table *ngIf="context.categories.all.exams.length" class="table table-striped">
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -58,9 +45,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let exam of categories.all.exams">
+                  <tr *ngFor="let exam of context.categories.all.exams">
                     <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
-                    <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}} {{exam.assessment.name}}</td>
+                    <td>
+                      <a routerLink="/groups/{{context.group.id}}/students/{{context.student.id}}/exams/{{exam.id}}/items">
+                        Grade {{exam.assessment.grade}}
+                        {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}}
+                        {{exam.assessment.name}}
+                      </a>
+                    </td>
                     <td>{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
                     <td>{{'assessment.subjects.' + exam.assessment.subject | translate}}</td>
                     <td class="text-center">{{exam.grade}}</td>
@@ -69,31 +62,31 @@
                   </tr>
                 </tbody>
               </table>
-              <p *ngIf="!categories.all.exams.length">
+              <p *ngIf="!context.categories.all.exams.length">
                 There are no exams in this category.
               </p>
             </div>
           </tab>
           <tab heading="IAB">
             <div class="exams exams-iab">
-              <h2>{{group.students[0].lastName}}, {{group.students[0].firstName}}</h2>
+              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
               <form class="form-inline">
-                <div class="form-group" *ngIf="categories.iab.sortedAcademicYears.length > 1">
+                <div class="form-group" *ngIf="context.categories.iab.sortedAcademicYears.length > 1">
                   <label for="tab2-academic-year-filter" class="sr-only"></label>
                   <select id="tab2-academic-year-filter" class="form-control">
                     <option>Academic Year</option>
-                    <option *ngFor="let year of categories.iab.sortedAcademicYears">{{year}}</option>
+                    <option *ngFor="let year of context.categories.iab.sortedAcademicYears">{{year}}</option>
                   </select>
                 </div>
-                <div class="form-group" *ngIf="categories.iab.sortedEnrolledGrades.length > 1">
+                <div class="form-group" *ngIf="context.categories.iab.sortedEnrolledGrades.length > 1">
                   <label for="tab2-enrolled-grade-filter" class="sr-only"></label>
                   <select id="tab2-enrolled-grade-filter" class="form-control">
                     <option>Enrolled Grade</option>
-                    <option *ngFor="let grade of categories.iab.sortedEnrolledGrades">{{grade}}</option>
+                    <option *ngFor="let grade of context.categories.iab.sortedEnrolledGrades">{{grade}}</option>
                   </select>
                 </div>
               </form>
-              <table *ngIf="categories.iab.exams.length" class="table table-striped">
+              <table *ngIf="context.categories.iab.exams.length" class="table table-striped">
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -106,7 +99,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let exam of categories.iab.exams">
+                  <tr *ngFor="let exam of context.categories.iab.exams">
                     <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
                     <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}} {{exam.assessment.name}}</td>
                     <td>{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
@@ -117,31 +110,31 @@
                   </tr>
                 </tbody>
               </table>
-              <p *ngIf="!categories.iab.exams.length">
+              <p *ngIf="!context.categories.iab.exams.length">
                 There are no exams in this category.
               </p>
             </div>
           </tab>
           <tab heading="ICA">
             <div class="exams exams-ica">
-              <h2>{{group.students[0].lastName}}, {{group.students[0].firstName}}</h2>
+              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
               <form class="form-inline">
-                <div class="form-group" *ngIf="categories.ica.sortedAcademicYears.length > 1">
+                <div class="form-group" *ngIf="context.categories.ica.sortedAcademicYears.length > 1">
                   <label for="tab3-academic-year-filter" class="sr-only"></label>
                   <select id="tab3-academic-year-filter" class="form-control">
                     <option>Academic Year</option>
-                    <option *ngFor="let year of categories.ica.sortedAcademicYears">{{year}}</option>
+                    <option *ngFor="let year of context.categories.ica.sortedAcademicYears">{{year}}</option>
                   </select>
                 </div>
-                <div class="form-group" *ngIf="categories.ica.sortedEnrolledGrades.length > 1">
+                <div class="form-group" *ngIf="context.categories.ica.sortedEnrolledGrades.length > 1">
                   <label for="tab3-enrolled-grade-filter" class="sr-only"></label>
                   <select id="tab3-enrolled-grade-filter" class="form-control">
                     <option>Enrolled Grade</option>
-                    <option *ngFor="let grade of categories.ica.sortedEnrolledGrades">{{grade}}</option>
+                    <option *ngFor="let grade of context.categories.ica.sortedEnrolledGrades">{{grade}}</option>
                   </select>
                 </div>
               </form>
-              <table *ngIf="categories.ica.exams.length" class="table table-striped">
+              <table *ngIf="context.categories.ica.exams.length" class="table table-striped">
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -154,7 +147,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let exam of categories.ica.exams">
+                  <tr *ngFor="let exam of context.categories.ica.exams">
                     <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
                     <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}} {{exam.assessment.name}}</td>
                     <td>{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
@@ -165,31 +158,31 @@
                   </tr>
                 </tbody>
               </table>
-              <p *ngIf="!categories.ica.exams.length">
+              <p *ngIf="!context.categories.ica.exams.length">
                 There are no exams in this category.
               </p>
             </div>
           </tab>
           <tab heading="Summative">
             <div class="exams exams-summative">
-              <h2>{{group.students[0].lastName}}, {{group.students[0].firstName}}</h2>
+              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
               <form class="form-inline">
-                <div class="form-group" *ngIf="categories.summative.sortedAcademicYears.length > 1">
+                <div class="form-group" *ngIf="context.categories.summative.sortedAcademicYears.length > 1">
                   <label for="tab4-academic-year-filter" class="sr-only"></label>
                   <select id="tab4-academic-year-filter" class="form-control">
                     <option>Academic Year</option>
-                    <option *ngFor="let year of categories.summative.sortedAcademicYears">{{year}}</option>
+                    <option *ngFor="let year of context.categories.summative.sortedAcademicYears">{{year}}</option>
                   </select>
                 </div>
-                <div class="form-group" *ngIf="categories.summative.sortedEnrolledGrades.length > 1">
+                <div class="form-group" *ngIf="context.categories.summative.sortedEnrolledGrades.length > 1">
                   <label for="tab4-enrolled-grade-filter" class="sr-only"></label>
                   <select id="tab4-enrolled-grade-filter" class="form-control">
                     <option>Enrolled Grade</option>
-                    <option *ngFor="let grade of categories.summative.sortedEnrolledGrades">{{grade}}</option>
+                    <option *ngFor="let grade of context.categories.summative.sortedEnrolledGrades">{{grade}}</option>
                   </select>
                 </div>
               </form>
-              <table *ngIf="categories.summative.exams.length" class="table table-striped">
+              <table *ngIf="context.categories.summative.exams.length" class="table table-striped">
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -202,7 +195,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let exam of categories.summative.exams">
+                  <tr *ngFor="let exam of context.categories.summative.exams">
                     <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
                     <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}} {{exam.assessment.name}}</td>
                     <td>{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
@@ -213,13 +206,13 @@
                   </tr>
                 </tbody>
               </table>
-              <p *ngIf="!categories.summative.exams.length">
+              <p *ngIf="!context.categories.summative.exams.length">
                 There are no exams in this category.
               </p>
             </div>
           </tab>
           <tab heading="Student Details">
-            <h2>{{group.students[0].lastName}}, {{group.students[0].firstName}}</h2>
+            <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
           </tab>
         </tabset>
 

@@ -16,6 +16,8 @@ import {StudentExamsComponent} from "./student-exams/student-exams.component";
 import {GroupExamsComponent} from "./group-exams/group-exams.component";
 import {routes} from "./shared/routes";
 import {HomeComponent} from "./home/home.component";
+import { StudentExamItemsComponent } from './student-exam-items/student-exam-items.component';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -28,7 +30,9 @@ export function createTranslateLoader(http: Http) {
     HomeComponent,
     StudentsComponent,
     StudentExamsComponent,
-    GroupExamsComponent
+    GroupExamsComponent,
+    StudentExamItemsComponent,
+    BreadcrumbsComponent
   ],
   imports: [
     BrowserModule,

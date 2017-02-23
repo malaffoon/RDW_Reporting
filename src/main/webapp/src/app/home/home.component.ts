@@ -10,7 +10,7 @@ import {sortOn} from "../shared/comparators";
 })
 export class HomeComponent implements OnInit {
 
-  groups: Array<Group>;
+  private groups: Array<Group>;
 
   constructor(private service: DataService) {
   }

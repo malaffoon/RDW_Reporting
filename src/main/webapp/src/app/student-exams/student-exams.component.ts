@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {DataService} from "../shared/data.service";
 import {ActivatedRoute} from "@angular/router";
 import {Group} from "../shared/group";
+import {BreadcrumbsComponent} from "../breadcrumbs/breadcrumbs.component";
 
 /**
  * Should split into two components for simplicity
@@ -13,8 +14,7 @@ import {Group} from "../shared/group";
 })
 export class StudentExamsComponent implements OnInit {
 
-  private group: Group;
-  private categories: any;
+  private context: any;
 
   constructor(private service: DataService, private route: ActivatedRoute) {
   }
@@ -25,6 +25,8 @@ export class StudentExamsComponent implements OnInit {
         this.service.getStudentExams(params['groupId'], params['studentId'])
           .subscribe(group => {
 
+            let student = group.students[0];
+
             let categories = {
               all: {exams: [], academicYears: new Set(), enrolledGrades: new Set(), assessmentTypes: new Set()},
               iab: {exams: [], academicYears: new Set(), enrolledGrades: new Set()},
@@ -32,7 +34,7 @@ export class StudentExamsComponent implements OnInit {
               summative: {exams: [], academicYears: new Set(), enrolledGrades: new Set()}
             };
 
-            group.students[0].exams.forEach(exam => {
+            student.exams.forEach(exam => {
               categories.all.exams.push(exam);
               categories.all.academicYears.add(exam.assessment.academicYear);
               categories.all.enrolledGrades.add(exam.grade);
@@ -52,8 +54,16 @@ export class StudentExamsComponent implements OnInit {
               }
             }
 
-            this.group = group;
-            this.categories = categories;
+            this.context = {
+              group: group,
+              student: student,
+              categories: categories,
+              breadcrumbs: [
+                {name: group.name, path: `/groups/${group.id}/students`},
+                {name: `${student.lastName}, ${student.firstName}`}
+              ]
+            };
+
           });
       })
   }

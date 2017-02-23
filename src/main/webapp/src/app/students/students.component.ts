@@ -11,7 +11,8 @@ import {sortOn} from "../shared/comparators";
 })
 export class StudentsComponent implements OnInit {
 
-  group: Group = null;
+  private group: Group = null;
+  private context: any;
 
   constructor(private service: DataService, private route: ActivatedRoute) {}
 
@@ -22,6 +23,11 @@ export class StudentsComponent implements OnInit {
           .subscribe((group: any) => {
               group.students = sortOn(group.students, student => student.lastName, student => student.firstName);
               this.group = group;
+              this.context = {
+                breadcrumbs: [
+                  {name: group.name}
+                ]
+              }
             },
             error => {
               console.error(error);
