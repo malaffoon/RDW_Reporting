@@ -9,10 +9,12 @@
           <div *ngIf="group.students.length > 10" class="inner-addon left-addon search-box">
             <label class="sr-only" for="search">Search</label>
             <i class="glyphicon glyphicon-search"></i>
-            <input class="search form-control" id="search" type="text" placeholder="Search" autocomplete="off">
+            <input class="search form-control" id="search" type="text" placeholder="Search" autocomplete="off"
+                   [value]="x?x:''"
+                   (input)="x = $event.target.value">
           </div>
           <div *ngIf="group.students" class="studentSummaries list-group">
-            <a *ngFor="let student of group.students" class="student list-group-item" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">
+            <a #link *ngFor="let student of group.students | search:(x?x:''):['lastName', 'firstName', 'ssid']" class="student list-group-item" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">
               {{student.lastName}}, {{student.firstName}} <span class="ssid pull-right">{{student.ssid}}</span>
             </a>
           </div>

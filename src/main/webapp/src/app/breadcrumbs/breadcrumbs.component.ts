@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {Breadcrumb} from "./breadcrumb";
 
 @Component({
   selector: 'breadcrumbs',
@@ -6,20 +7,16 @@ import {Component, Input} from '@angular/core';
 })
 export class BreadcrumbsComponent {
 
-  links: Array<any>;
-  location: string;
+  private crumbs: Array<any> = [{name: 'Groups', path: '/', first: true, active: true}];
 
-  @Input('values')
+  @Input()
   set values(values: Array<any>) {
-    let copy = values.concat();
-    this.location = copy.pop().name;
-    this.links = copy;
+    let copy = this.crumbs.concat(values);
+    copy[0].active = false;
+    copy[copy.length - 1].active = true;
+    this.crumbs = copy;
+
+    console.log('crumbs:', this.crumbs)
   }
 
 }
-
-class Breadcrumb {
-  readonly path?: string;
-  readonly name: string;
-}
-

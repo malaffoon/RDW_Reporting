@@ -1,8 +1,9 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, EventEmitter, Output} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {DataService} from "../shared/data.service";
 import {Group} from "../shared/group";
 import {sortOn} from "../shared/comparators";
+import {Student} from "../shared/student";
 
 @Component({
   selector: 'students-component',
