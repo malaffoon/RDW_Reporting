@@ -3,23 +3,50 @@
 <div class="students-view">
   <div class="container">
     <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <div *ngIf="group" class="card students-card">
-          <h2>{{group.name}}</h2>
-          <div *ngIf="group.students.length > 10" class="inner-addon left-addon search-box">
-            <label class="sr-only" for="search">Search</label>
-            <i class="glyphicon glyphicon-search"></i>
-            <input class="search form-control" id="search" type="text" placeholder="Search" autocomplete="off"
-                   [value]="x?x:''"
-                   (input)="x = $event.target.value">
-          </div>
-          <div *ngIf="group.students" class="studentSummaries list-group">
-            <a #link *ngFor="let student of group.students | search:(x?x:''):['lastName', 'firstName', 'ssid']" class="student list-group-item" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">
-              {{student.lastName}}, {{student.firstName}} <span class="ssid pull-right">{{student.ssid}}</span>
+      <div class="col-md-12">
+
+        <div class="row">
+          <div class="col-md-8">
+            <h2>{{group.name}}</h2>
+            <a class="btn btn-primary" routerLink="/groups/{{group.id}}/exams">
+              <i class="glyphicon glyphicon-stats"></i> {{'labels.aggregate.link' | translate}}
             </a>
           </div>
+          <div class="col-md-4">
+            <div *ngIf="group.students.length > 10" class="inner-addon left-addon search-box">
+              <label class="sr-only" for="search">{{'prompt.search' | translate}}</label>
+              <i class="glyphicon glyphicon-search"></i>
+              <input class="search form-control" id="search" type="text" placeholder="{{'prompt.search' | translate}}" autocomplete="off"
+                     [value]="x?x:''"
+                     (input)="x = $event.target.value">
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="group" class="card students-card">
+
+          <!--<div *ngIf="group.students" class="studentSummaries list-group">-->
+          <!--<a #link *ngFor="let student of group.students | search:(x?x:''):['lastName', 'firstName', 'ssid']" class="student list-group-item" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">-->
+          <!--{{student.lastName}}, {{student.firstName}} <span class="ssid pull-right">{{student.ssid}}</span>-->
+          <!--</a>-->
+          <!--</div>-->
+
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>{{'labels.student.name' | translate}}</th>
+                <th class="text-center">{{'labels.student.ssid' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of group.students | search:(x?x:''):['lastName', 'firstName', 'ssid']">
+                <td><a routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">{{student.lastName}},
+                  {{student.firstName}}</a></td>
+                <td class="text-center">{{student.ssid}}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-</div>

@@ -7,7 +7,13 @@ import {Breadcrumb} from "./breadcrumb";
 })
 export class BreadcrumbComponent {
 
-  @Input('value')
-  private crumb: Breadcrumb;
+  @Input()
+  private crumb: any;
+
+  @Input()
+  private first: boolean;
+
+  @Input()
+  private active: boolean;
 
 }

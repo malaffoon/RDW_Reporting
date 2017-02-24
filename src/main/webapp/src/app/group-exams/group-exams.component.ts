@@ -34,7 +34,7 @@ export class GroupExamsComponent implements OnInit {
             this.group = group;
             this.context = {
               breadcrumbs: [
-                {name: group.name}
+                {name: group.name, path: `/groups/${group.id}/exams`}
               ]
             }
           });

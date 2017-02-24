@@ -1,27 +1,112 @@
 {
   "HELLO": "HELLO WORLD!",
-
+  "welcome": "Welcome",
+  "application": {
+    "title": "Interim Item Reporting"
+  },
   "assessment": {
     "types": [
       {
         "shortName": "SUMMATIVE",
-        "name": "Summative"
+        "name": "Summative",
+        "performanceLevels": [
+          "Level 1",
+          "Level 2",
+          "Level 3",
+          "Level 4"
+        ]
       },
       {
         "shortName": "ICA",
-        "name": "Interim Comprehensive Assessment"
+        "name": "Interim Comprehensive Assessment",
+        "performanceLevels": [
+          "Level 1",
+          "Level 2",
+          "Level 3",
+          "Level 4"
+        ]
       },
       {
         "shortName": "IAB",
-        "name": "Interim Assessment Block"
+        "name": "Interim Assessment Block",
+        "performanceLevels": [
+          "Below Standard",
+          "Near Standard",
+          "Above Standard"
+        ]
       }
     ],
     "subjects": [
-      "MATH",
-      "ELA/Literacy"
+      {
+        "shortName": "MATH",
+        "name": "Mathematics"
+      },
+      {
+        "shortName": "ELA",
+        "name": "ELA/Literacy"
+      }
     ]
   },
+  "messages": {
+    "noExams": "There are no exams associated with your account.",
+    "noExamsInCategory": "There are no exams in this category."
+  },
+  "prompt": {
+    "search": "Search"
+  },
+  "labels": {
+    "aggregate": {
+      "link": "Aggregate",
+      "selectedAssessments": "Combined Selected Assessments",
+      "itemsByPointsEarned": "Items By Points Earned",
+      "selectedRecords": "Records Selected",
+      "totalStudents": "Total # of Students",
+      "averageScaleScore": "Average Scale Score",
+      "percentOfStandard": "% of Standard"
 
+    },
+    "assessment": {
+      "name": "Assessment",
+      "academicYear": "School Year",
+      "subject": "Subject",
+      "grade": "Grade",
+      "type": "Assessment Type"
+    },
+    "exam": {
+      "date": "Date",
+      "grade": "Enrolled Grade",
+      "performance": "Performance",
+      "score": "Scale Score",
+      "session": "Session",
+      "category": {
+        "all": "Student Test History",
+        "iab": "IAB",
+        "ica": "ICA",
+        "summative": "Summative"
+      },
+      "performanceCategory": {
+        "below": "% Below",
+        "near": "% Near",
+        "above": "% Above"
+      }
+    },
+    "groups": "Groups",
+    "group": {
+      "name": "Group",
+      "size": "Students"
+    },
+    "district": {
+      "name": "District"
+    },
+    "school": {
+      "name": "School"
+    },
+    "student": {
+      "name": "Student",
+      "ssid": "SSID",
+      "details": "Student Details"
+    }
+  },
   "assessment_report": {
     "logo": {
       "text": "",

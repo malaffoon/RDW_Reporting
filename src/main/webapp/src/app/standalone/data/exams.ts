@@ -125,7 +125,8 @@ export const exams = [
     students: intBetween(10, 40),
     below: 30,
     near: 50,
-    above: 20
+    above: 20,
+    averagePerformance: 1
   };
   return exam;
 });

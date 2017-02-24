@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="breadcrumb-links">
-          <breadcrumb *ngFor="let crumb of crumbs" [value]="crumb"></breadcrumb>
+          <breadcrumb *ngFor="let crumb of crumbs; let first = first; let last = last" [crumb]="crumb" [first]="first" [active]="last"></breadcrumb>
         </div>
       </div>
     </div>

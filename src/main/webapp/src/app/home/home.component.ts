@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {DataService} from "../shared/data.service";
 import {Group} from "../shared/group";
-import {sortOn} from "../shared/comparators";
+import {sortAscOn} from "../shared/comparators";
 
 @Component({
   selector: 'app-home',
@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.service.getGroupSummaries()
       .subscribe(groups => {
-          this.groups = sortOn(groups, group => group.name);
+          this.groups = sortAscOn(groups, group => group.name);
         },
         error => {
           console.error(error);

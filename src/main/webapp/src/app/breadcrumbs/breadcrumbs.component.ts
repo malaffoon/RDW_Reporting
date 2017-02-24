@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {Breadcrumb} from "./breadcrumb";
+import {Component, Input, OnInit} from "@angular/core";
+import {TranslateService} from "ng2-translate";
 
 @Component({
   selector: 'breadcrumbs',
@@ -7,16 +7,16 @@ import {Breadcrumb} from "./breadcrumb";
 })
 export class BreadcrumbsComponent {
 
-  private crumbs: Array<any> = [{name: 'Groups', path: '/', first: true, active: true}];
+  private crumbs: Array<any> = [];
+
+  constructor(private translate: TranslateService) {}
 
   @Input()
   set values(values: Array<any>) {
-    let copy = this.crumbs.concat(values);
-    copy[0].active = false;
-    copy[copy.length - 1].active = true;
-    this.crumbs = copy;
-
-    console.log('crumbs:', this.crumbs)
+    this.translate.get('labels.groups')
+      .subscribe(value => {
+        this.crumbs = [{path: '/', name: value}].concat(values);
+      });
   }
 
 }

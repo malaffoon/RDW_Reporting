@@ -10,24 +10,16 @@
       <a class="navbar-brand" routerLink="/">
         <img class="logo" src="/assets/image/logo-1364x433.png" alt="Smarter Balanced"/>
       </a>
-      <h1 class="title">Interim Item Reporting</h1>
+      <h1 class="title">{{'application.title' | translate}}</h1>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <div class="navbar-right">
-        <div class="welcome-message">
-          <form name="logoutForm" method="post" action="/logout">
-            <a href="javascript:void(0)" onclick="window.document.logoutForm.submit()">
-              <i class="glyphicon glyphicon-user"></i><span *ngIf="user">Welcome {{user.firstName}} {{user.lastName}}</span>
-            </a>
-          </form>
-        </div>
-        <form class="navbar-form">
-          <div class="inner-addon left-addon search-box">
-            <label class="sr-only" for="search">Search</label>
-            <i class="glyphicon glyphicon-search"></i>
-            <input class="search form-control" id="search" type="text" placeholder="Search" autocomplete="off">
-          </div>
-        </form>
+        <span class="welcome-message">
+          <i class="glyphicon glyphicon-user"></i><span *ngIf="user">{{'welcome' | translate}} {{user.firstName}} {{user.lastName}}</span>
+        </span>
+        <span class="link-divider">|</span>
+        <a href="javascript:void(0)" onclick="window.document.logoutForm.submit()">Logout</a>
+        <form name="logoutForm" method="post" action="/logout"></form>
       </div>
     </div>
   </div>

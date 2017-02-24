@@ -3,6 +3,7 @@ import {DataService} from "../shared/data.service";
 import {ActivatedRoute} from "@angular/router";
 import {Group} from "../shared/group";
 import {BreadcrumbsComponent} from "../breadcrumbs/breadcrumbs.component";
+import {sortOn, sortDescOn} from "../shared/comparators";
 
 /**
  * Should split into two components for simplicity
@@ -34,7 +35,7 @@ export class StudentExamsComponent implements OnInit {
               summative: {exams: [], academicYears: new Set(), enrolledGrades: new Set()}
             };
 
-            student.exams.forEach(exam => {
+            sortDescOn(student.exams, exam => exam.date).forEach(exam => {
               categories.all.exams.push(exam);
               categories.all.academicYears.add(exam.assessment.academicYear);
               categories.all.enrolledGrades.add(exam.grade);

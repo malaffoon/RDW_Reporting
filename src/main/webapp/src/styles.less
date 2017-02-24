@@ -6,6 +6,9 @@
 @gray3: #686868;
 @gray4: #7a7a7a;
 @gray5: #d4d4d4;
+@gray6: #e6e6e6;
+@gray7: #f8f8f8;
+@gray8: #f3f3f3;
 @blue1: #008AB1;
 
 .font-sm {
@@ -53,17 +56,32 @@
 body {
   background: @gray1;
   color: @gray3;
-  padding-top: 92px;
+  padding-top: 88px;
 }
 
 h2 {
   color: @blue1;
-  font-family: "PT Sans Caption",sans-serif;
+  font-family: "PT Sans Caption", sans-serif;
   font-size: 175%;
+  display: inline-block;
+  margin: 0 0 20px 0;
 }
 
-.table > thead > tr > th {
-  vertical-align: top;
+.table {
+  border: 1px solid @gray5;
+  color: #000;
+  > thead > tr > th {
+    background-color: @gray6;
+    vertical-align: top;
+  }
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: @gray7;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: @gray8;
 }
 
 .navigation {
@@ -71,7 +89,7 @@ h2 {
   border-bottom: 1px solid #ccc;
   box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
   margin-bottom: 0;
-  padding: 16px 0 8px 0;
+  padding: 16px 0 20px 0;
   .logo {
     width: 170px;
   }
@@ -100,6 +118,9 @@ h2 {
   .navbar-form {
     padding: 0;
   }
+  .link-divider {
+    margin: 0 6px;
+  }
 }
 
 .breadcrumbs {
@@ -123,24 +144,28 @@ h2 {
 html, body {
   height: 100%;
 }
+
 .page-view {
   min-height: 100%;
   margin-bottom: -@footer-height;
 }
+
 .page-view:after {
   content: "";
   display: block;
 }
+
 .footer, .page-view:after {
   height: @footer-height;
 }
+
 .footer {
   color: @gray4;
   background-color: #fff;
   padding: 10px 0;
   font-size: 10px;
   border-top: 1px solid @gray5;
-  box-shadow: 0 -0.125em 0.25em 0 rgba(0,0,0,0.075);
+  box-shadow: 0 -0.125em 0.25em 0 rgba(0, 0, 0, 0.075);
 }
 
 .card {
@@ -153,7 +178,7 @@ html, body {
   h2 {
     margin: 0 0 24px 0;
   }
-  .list-group {
+  .table {
     margin-bottom: 0;
   }
   .list-group-item {
@@ -164,13 +189,10 @@ html, body {
   }
 }
 
-.home-view {
-  padding-top: 72px;
-}
-
+.home-view,
 .students-view,
 .student-exams-view {
-  padding-top: 32px;
+  padding-top: 24px;
 }
 
 .group-exams-view {
@@ -185,9 +207,13 @@ html, body {
 }
 
 .group-exams-view {
-  h2 {
-    display: inline-block;
-    margin: 0 0 20px 0;
+  .tab-container {
+    .table {
+      border: none;
+      > thead > tr > th {
+        background-color: transparent;
+      }
+    }
   }
 }
 
@@ -221,12 +247,6 @@ html, body {
     top: 52px;
     right: 12px;
     cursor: pointer;
-  }
-}
-
-.student-exam-items-card {
-  .table {
-    margin-bottom:0;
   }
 }
 
@@ -271,4 +291,55 @@ html, body {
       width: 50%
     }
   }
+}
+
+@color-danger: #a20137;
+@color-below: #63666b;
+@color-near: #00639a;
+@color-above: #006d33;
+
+.table {
+  .badge {
+    border-radius: 3px;
+    color: #fff;
+  }
+  //.badge.performance-level-0 {
+  //  background-color: @color-danger;
+  //}
+  //.badge.performance-level-1 {
+  //  background-color: @color-below;
+  //}
+  //.badge.performance-level-2 {
+  //  background-color: @color-near;
+  //}
+  //.badge.performance-level-3 {
+  //  background-color: @color-above;
+  //}
+  .assessment-type-0,
+  .assessment-type-1 {
+    .badge.performance-level-0 {
+      background-color: @color-danger;
+    }
+    .badge.performance-level-1 {
+      background-color: @color-below;
+    }
+    .badge.performance-level-2 {
+      background-color: @color-near;
+    }
+    .badge.performance-level-3 {
+      background-color: @color-above;
+    }
+  }
+  .assessment-type-2 {
+    .badge.performance-level-0 {
+      background-color: @color-below;
+    }
+    .badge.performance-level-1 {
+      background-color: @color-near;
+    }
+    .badge.performance-level-2 {
+      background-color: @color-above;
+    }
+  }
+
 }

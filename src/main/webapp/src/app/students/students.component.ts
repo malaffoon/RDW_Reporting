@@ -1,9 +1,8 @@
-import {Component, OnInit, EventEmitter, Output} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {DataService} from "../shared/data.service";
 import {Group} from "../shared/group";
-import {sortOn} from "../shared/comparators";
-import {Student} from "../shared/student";
+import {sortAscOn} from "../shared/comparators";
 
 @Component({
   selector: 'students-component',
@@ -15,14 +14,15 @@ export class StudentsComponent implements OnInit {
   private group: Group = null;
   private context: any;
 
-  constructor(private service: DataService, private route: ActivatedRoute) {}
+  constructor(private service: DataService, private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this.route.params
       .subscribe(params => {
         this.service.getGroup(params['groupId'])
           .subscribe((group: any) => {
-              group.students = sortOn(group.students, student => student.lastName, student => student.firstName);
+              group.students = sortAscOn(group.students, student => student.lastName, student => student.firstName);
               this.group = group;
               this.context = {
                 breadcrumbs: [
