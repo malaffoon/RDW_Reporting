@@ -1,219 +1,25 @@
-<breadcrumbs [values]="context.breadcrumbs"></breadcrumbs>
+<breadcrumbs [values]="(context|async)?.breadcrumbs"></breadcrumbs>
 
 <div class="student-exams-view">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
 
-        <tabset *ngIf="context.group.students">
+        <tabset *ngIf="(context|async)?.group.students">
           <tab heading="{{'labels.exam.category.all' | translate}}">
-            <div class="exams exams-all">
-              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
-              <form class="form-inline">
-                <div class="form-group" *ngIf="context.categories.all.sortedAcademicYears.length > 1">
-                  <label for="tab1-academic-year-filter" class="sr-only">{{'labels.assessment.academicYear' | translate}}</label>
-                  <select id="tab1-academic-year-filter" class="form-control">
-                    <option>{{'labels.assessment.academicYear' | translate}}</option>
-                    <option *ngFor="let year of context.categories.all.sortedAcademicYears">{{year}}</option>
-                  </select>
-                </div>
-                <div class="form-group" *ngIf="context.categories.all.sortedAssessmentTypes.length > 1">
-                  <label for="tab1-assessment-type-filter" class="sr-only">{{'labels.assessment.type' | translate}}</label>
-                  <select id="tab1-assessment-type-filter" class="form-control">
-                    <option>{{'labels.assessment.type' | translate}}</option>
-                    <option *ngFor="let type of context.categories.all.sortedAssessmentTypes">{{'assessment.types.' + type + '.shortName' | translate}}</option>
-                  </select>
-                </div>
-                <div class="form-group" *ngIf="context.categories.all.sortedEnrolledGrades.length > 1">
-                  <label for="tab1-enrolled-grade-filter" class="sr-only">{{'labels.exam.grade' | translate}}</label>
-                  <select id="tab1-enrolled-grade-filter" class="form-control">
-                    <option>{{'labels.exam.grade' | translate}}</option>
-                    <option *ngFor="let grade of context.categories.all.sortedEnrolledGrades">{{grade}}</option>
-                  </select>
-                </div>
-              </form>
-              <table *ngIf="context.categories.all.exams.length" class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>{{'labels.exam.date' | translate}}</th>
-                    <th>{{'labels.assessment.name' | translate}}</th>
-                    <th>{{'labels.assessment.academicYear' | translate}}</th>
-                    <th>{{'labels.assessment.subject' | translate}}</th>
-                    <th class="text-center">{{'labels.exam.grade' | translate}}</th>
-                    <th>{{'labels.exam.performance' | translate}}</th>
-                    <th class="text-center">{{'labels.exam.score' | translate}}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let exam of context.categories.all.exams" class="assessment-type-{{exam.assessment.type}}">
-                    <td>{{exam.date | date:'dd-MMM-yy'}}</td>
-                    <td>
-                      <a routerLink="/groups/{{context.group.id}}/students/{{context.student.id}}/exams/{{exam.id}}/items">
-                        {{'labels.assessment.grade' | translate}}
-                        {{exam.assessment.grade}}
-                        {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}}
-                        {{exam.assessment.name}}
-                      </a>
-                    </td>
-                    <td>{{exam.assessment.academicYear}} - {{(exam.assessment.academicYear + 1).toString().substr(-2)}}</td>
-                    <td>{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</td>
-                    <td class="text-center">{{exam.grade}}</td>
-                    <td>{{'assessment.types.' + exam.assessment.type + '.performanceLevels.' + exam.performance | translate}}</td>
-                    <td class="text-center"><span class="badge performance-level-{{exam.performance}}">{{exam.score}}</span></td>
-                  </tr>
-                </tbody>
-              </table>
-              <p *ngIf="!context.categories.all.exams.length">
-                {{'messages.noExamsInCategory' | translate}}
-              </p>
-            </div>
+           <student-exams-categorized [category]="(context|async)?.categories.all" [context]="(context|async)"></student-exams-categorized>
           </tab>
-          <tab heading="IAB">
-            <div class="exams exams-iab">
-              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
-              <form class="form-inline">
-                <div class="form-group" *ngIf="context.categories.iab.sortedAcademicYears.length > 1">
-                  <label for="tab2-academic-year-filter" class="sr-only"></label>
-                  <select id="tab2-academic-year-filter" class="form-control">
-                    <option>School Year</option>
-                    <option *ngFor="let year of context.categories.iab.sortedAcademicYears">{{year}}</option>
-                  </select>
-                </div>
-                <div class="form-group" *ngIf="context.categories.iab.sortedEnrolledGrades.length > 1">
-                  <label for="tab2-enrolled-grade-filter" class="sr-only"></label>
-                  <select id="tab2-enrolled-grade-filter" class="form-control">
-                    <option>Enrolled Grade</option>
-                    <option *ngFor="let grade of context.categories.iab.sortedEnrolledGrades">{{grade}}</option>
-                  </select>
-                </div>
-              </form>
-              <table *ngIf="context.categories.iab.exams.length" class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Assessment</th>
-                    <th>School Year</th>
-                    <th>Subject</th>
-                    <th class="text-center">Enrolled Grade</th>
-                    <th>Performance</th>
-                    <th class="text-center">Scale Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let exam of context.categories.iab.exams">
-                    <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
-                    <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}} {{exam.assessment.name}}</td>
-                    <td>{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
-                    <td>{{'assessment.subjects.' + exam.assessment.subject | translate}}</td>
-                    <td class="text-center">{{exam.grade}}</td>
-                    <td>{{'assessment_report.claim.performance_levels.' + exam.performance | translate}}</td>
-                    <td class="text-center">{{exam.score}}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p *ngIf="!context.categories.iab.exams.length">
-                There are no exams in this category.
-              </p>
-            </div>
+          <tab heading="{{'labels.exam.category.iab' | translate}}">
+            <student-exams-categorized [category]="(context|async)?.categories.iab" [context]="(context|async)"></student-exams-categorized>
           </tab>
-          <tab heading="ICA">
-            <div class="exams exams-ica">
-              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
-              <form class="form-inline">
-                <div class="form-group" *ngIf="context.categories.ica.sortedAcademicYears.length > 1">
-                  <label for="tab3-academic-year-filter" class="sr-only"></label>
-                  <select id="tab3-academic-year-filter" class="form-control">
-                    <option>School Year</option>
-                    <option *ngFor="let year of context.categories.ica.sortedAcademicYears">{{year}}</option>
-                  </select>
-                </div>
-                <div class="form-group" *ngIf="context.categories.ica.sortedEnrolledGrades.length > 1">
-                  <label for="tab3-enrolled-grade-filter" class="sr-only"></label>
-                  <select id="tab3-enrolled-grade-filter" class="form-control">
-                    <option>Enrolled Grade</option>
-                    <option *ngFor="let grade of context.categories.ica.sortedEnrolledGrades">{{grade}}</option>
-                  </select>
-                </div>
-              </form>
-              <table *ngIf="context.categories.ica.exams.length" class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Assessment</th>
-                    <th>School Year</th>
-                    <th>Subject</th>
-                    <th class="text-center">Enrolled Grade</th>
-                    <th>Performance</th>
-                    <th class="text-center">Scale Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let exam of context.categories.ica.exams">
-                    <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
-                    <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}} {{exam.assessment.name}}</td>
-                    <td>{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
-                    <td>{{'assessment.subjects.' + exam.assessment.subject | translate}}</td>
-                    <td class="text-center">{{exam.grade}}</td>
-                    <td>{{'assessment_report.claim.performance_levels.' + exam.performance | translate}}</td>
-                    <td class="text-center">{{exam.score}}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p *ngIf="!context.categories.ica.exams.length">
-                There are no exams in this category.
-              </p>
-            </div>
+          <tab heading="{{'labels.exam.category.ica' | translate}}">
+            <student-exams-categorized [category]="(context|async)?.categories.ica" [context]="(context|async)"></student-exams-categorized>
           </tab>
-          <tab heading="Summative">
-            <div class="exams exams-summative">
-              <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
-              <form class="form-inline">
-                <div class="form-group" *ngIf="context.categories.summative.sortedAcademicYears.length > 1">
-                  <label for="tab4-academic-year-filter" class="sr-only"></label>
-                  <select id="tab4-academic-year-filter" class="form-control">
-                    <option>School Year</option>
-                    <option *ngFor="let year of context.categories.summative.sortedAcademicYears">{{year}}</option>
-                  </select>
-                </div>
-                <div class="form-group" *ngIf="context.categories.summative.sortedEnrolledGrades.length > 1">
-                  <label for="tab4-enrolled-grade-filter" class="sr-only"></label>
-                  <select id="tab4-enrolled-grade-filter" class="form-control">
-                    <option>Enrolled Grade</option>
-                    <option *ngFor="let grade of context.categories.summative.sortedEnrolledGrades">{{grade}}</option>
-                  </select>
-                </div>
-              </form>
-              <table *ngIf="context.categories.summative.exams.length" class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Assessment</th>
-                    <th>School Year</th>
-                    <th>Subject</th>
-                    <th class="text-center">Enrolled Grade</th>
-                    <th>Performance</th>
-                    <th class="text-center">Scale Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let exam of context.categories.summative.exams">
-                    <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
-                    <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}} {{exam.assessment.name}}</td>
-                    <td>{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
-                    <td>{{'assessment.subjects.' + exam.assessment.subject | translate}}</td>
-                    <td class="text-center">{{exam.grade}}</td>
-                    <td>{{'assessment_report.claim.performance_levels.' + exam.performance | translate}}</td>
-                    <td class="text-center">{{exam.score}}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p *ngIf="!context.categories.summative.exams.length">
-                There are no exams in this category.
-              </p>
-            </div>
+          <tab heading="{{'labels.exam.category.summative' | translate}}">
+            <student-exams-categorized [category]="(context|async)?.categories.summative" [context]="(context|async)"></student-exams-categorized>
           </tab>
-          <tab heading="Student Details">
-            <h2>{{context.student.lastName}}, {{context.student.firstName}}</h2>
+          <tab heading="{{'labels.student.details' | translate}}">
+            <h2>{{(context|async)?.student.lastName}}, {{(context|async)?.student.firstName}}</h2>
           </tab>
         </tabset>
 

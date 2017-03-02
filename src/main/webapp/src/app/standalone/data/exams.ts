@@ -10,7 +10,7 @@ export const exams = [
     score: 2321,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 1,
       type: AssessmentType.IAB,
       name: 'Number and Operations - Fractions',
       grade: 4,
@@ -25,7 +25,7 @@ export const exams = [
     score: 2339,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 2,
       type: AssessmentType.IAB,
       name: 'Measurement and Data',
       grade: 4,
@@ -40,7 +40,7 @@ export const exams = [
     score: 2344,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 3,
       type: AssessmentType.IAB,
       name: 'Geometry',
       grade: 4,
@@ -54,7 +54,7 @@ export const exams = [
     score: 2378,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 1,
       type: AssessmentType.IAB,
       name: 'Number and Operations - Fractions',
       grade: 4,
@@ -68,7 +68,7 @@ export const exams = [
     score: 2447,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 2,
       type: AssessmentType.IAB,
       name: 'Measurement and Data',
       grade: 4,
@@ -82,7 +82,7 @@ export const exams = [
     score: 2595,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 3,
       type: AssessmentType.IAB,
       name: 'Geometry',
       grade: 4,
@@ -96,7 +96,7 @@ export const exams = [
     score: 2520,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 4,
       type: AssessmentType.IAB,
       name: 'Mathematics Performance Task',
       grade: 4,
@@ -110,7 +110,7 @@ export const exams = [
     score: 2520,
     grade: 5,
     assessment: {
-      id: randomId(),
+      id: 5,
       type: AssessmentType.ICA,
       name: 'Operations and Algebraic Thinking',
       grade: 5,

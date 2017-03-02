@@ -16,9 +16,6 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = groups;
     } else if (new RegExp(`GET /api/groups/\\d+/students`, 'g').test(requestSignature)) {
       body = group;
-      if (group.students.length < 10) {
-        group.students = group.students.concat(group.students);
-      }
     } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams`, 'g').test(requestSignature)) {
       body = group;
     } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/items`, 'g').test(requestSignature)) {

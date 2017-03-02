@@ -64,7 +64,7 @@ h2 {
   font-family: "PT Sans Caption", sans-serif;
   font-size: 175%;
   display: inline-block;
-  margin: 0 0 20px 0;
+  margin: 4px 0 20px 0;
 }
 
 .table {
@@ -168,6 +168,15 @@ html, body {
   box-shadow: 0 -0.125em 0.25em 0 rgba(0, 0, 0, 0.075);
 }
 
+.page-heading {
+  .btn {
+    margin: -6px 0 0 20px;
+  }
+  .controls {
+
+  }
+}
+
 .card {
   .pop-out;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -191,23 +200,32 @@ html, body {
 
 .home-view,
 .students-view,
-.student-exams-view {
-  padding-top: 24px;
-}
-
+.student-exams-view,
+.student-exam-items-view,
 .group-exams-view {
   padding-top: 20px;
 }
 
-.student-exams-view,
-.group-exams-view {
+.student-exams-view {
   .form-inline {
     float: right;
   }
 }
 
 .group-exams-view {
-  .tab-container {
+  .table-wrapper {
+    max-height: 312px;
+    overflow: auto;
+  }
+  .tab-content {
+    min-height: 256px;
+  }
+  .select-exam-promt {
+    font-size: 150%;
+    margin-top: 80px;
+    opacity: 0.5;
+  }
+  .combined-selected-assessments {
     .table {
       border: none;
       > thead > tr > th {
@@ -218,19 +236,17 @@ html, body {
 }
 
 .group-exams-card {
-  .table-wrapper {
-    height: 208px;
-    overflow: auto;
+  .table > tbody > tr {cursor:default}
+  .table > tbody > tr.disabled {cursor: not-allowed}
+  .disabled {
+    opacity: 0.25;
   }
 }
 
 .student-exam-items-view {
-  h2 {
-    display: inline-block;
-  }
   .exam-attributes {
     float: right;
-    margin-top: 20px;
+    margin-top: 8px;
     .exam-attribute {
       margin-left: 20px;
       .attribute-value {
@@ -266,6 +282,10 @@ html, body {
       margin-bottom: 0;
     }
   }
+}
+
+.tab-header {
+  margin: 0 0 24px 0;
 }
 
 .combined-selected-assessments {

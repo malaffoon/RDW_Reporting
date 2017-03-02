@@ -49,7 +49,9 @@
   },
   "messages": {
     "noExams": "There are no exams associated with your account.",
-    "noExamsInCategory": "There are no exams in this category."
+    "noExamsMatchingCriteria": "There are no exams matching this criteria.",
+    "noExamsSelected": "Please select from the assessments above",
+    "notApplicable": "N/A"
   },
   "prompt": {
     "search": "Search"
@@ -62,8 +64,9 @@
       "selectedRecords": "Records Selected",
       "totalStudents": "Total # of Students",
       "averageScaleScore": "Average Scale Score",
-      "percentOfStandard": "% of Standard"
-
+      "percentOfStandard": "% of Standard",
+      "count": "Count",
+      "percent": "Percent"
     },
     "assessment": {
       "name": "Assessment",
@@ -78,6 +81,7 @@
       "performance": "Performance",
       "score": "Scale Score",
       "session": "Session",
+      "attempt": "Attempt #",
       "category": {
         "all": "Student Test History",
         "iab": "IAB",
@@ -89,6 +93,17 @@
         "near": "% Near",
         "above": "% Above"
       }
+    },
+    "item": {
+      "number": "Item #",
+      "claim": "Claim",
+      "target": "Target",
+      "pointCategories": [
+        "Count 0 Points Earned",
+        "Count 1 Points Earned",
+        "Count 2 Points Earned",
+        "Count 3 Points Earned"
+      ]
     },
     "groups": "Groups",
     "group": {

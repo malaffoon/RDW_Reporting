@@ -1,26 +1,28 @@
-<breadcrumbs></breadcrumbs>
+<breadcrumbs [values]="[]"></breadcrumbs>
 
 <div class="home-view">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
 
-        <div class="row">
-          <div class="col-md-8">
-            <h2>{{'labels.groups' | translate}}</h2>
-          </div>
-          <div class="col-md-4">
-            <div *ngIf="groups.length > 1" class="inner-addon left-addon search-box">
-              <label class="sr-only" for="search">{{'prompt.search' | translate}}</label>
-              <i class="glyphicon glyphicon-search"></i>
-              <input class="search form-control" id="search" type="text" placeholder="{{'prompt.search' | translate}}" autocomplete="off"
-                     [value]="x?x:''"
-                     (input)="x = $event.target.value">
+        <div class="page-heading">
+          <div class="row">
+            <div class="col-md-8">
+              <h2>{{'labels.groups' | translate}}</h2>
+            </div>
+            <div class="col-md-4">
+              <div class="controls">
+                <div *ngIf="(groups|async)?.length > 2" class="inner-addon left-addon search-box">
+                  <label class="sr-only" for="search">{{'prompt.search' | translate}}</label>
+                  <i class="glyphicon glyphicon-search"></i>
+                  <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'prompt.search' | translate}}" autocomplete="off">
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div *ngIf="groups" class="card groups-card">
+        <div class="card groups-card">
 
 
 
@@ -41,7 +43,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let group of groups | search:(x?x:''):['name']">
+              <tr *ngFor="let group of groups | async | search:searchTerm:['name']">
                 <td><a routerLink="/groups/{{group.id}}/students">{{group.name}}</a></td>
                 <td>{{group.district}}</td>
                 <td>{{group.school}}</td>
