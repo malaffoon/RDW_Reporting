@@ -51,7 +51,7 @@
     "noExams": "There are no exams associated with your account.",
     "noExamsMatchingCriteria": "There are no exams matching this criteria.",
     "noExamsSelected": "Please select from the assessments above",
-    "notApplicable": "N/A"
+    "notApplicable": "-"
   },
   "prompt": {
     "search": "Search"

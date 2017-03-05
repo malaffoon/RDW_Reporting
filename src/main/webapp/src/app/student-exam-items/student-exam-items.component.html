@@ -1,23 +1,23 @@
-<breadcrumbs [values]="(context|async)?.breadcrumbs"></breadcrumbs>
+<breadcrumbs [values]="breadcrumbs"></breadcrumbs>
 
-<div class="student-exam-items-view">
+<div *ngIf="exam" class="student-exam-items-view">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
 
         <div class="page-heading">
 
-          <h2>{{'labels.assessment.grade' | translate}} {{(context|async)?.exam.assessment.grade}} {{(context|async)?.exam.assessment.name}}</h2>
+          <h2>{{'labels.assessment.grade' | translate}} {{exam.assessment.grade}} {{exam.assessment.name}}</h2>
 
           <span class="exam-attributes">
-            <span class="exam-attribute"><span>Subject:</span> <span class="attribute-value">{{'assessment.subjects.' + (context|async)?.exam.assessment.subject + '.shortName' | translate}}</span></span>
-            <span class="exam-attribute"><span>Academic Year:</span> <span class="attribute-value">{{(context|async)?.exam.assessment.academicYear}}</span></span>
-            <span class="exam-attribute"><span>Date:</span> <span class="attribute-value">{{(context|async)?.exam.date | date:'MM/dd/yyyy'}}</span></span>
+            <span class="exam-attribute"><span>Subject:</span> <span class="attribute-value">{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</span></span>
+            <span class="exam-attribute"><span>Academic Year:</span> <span class="attribute-value">{{exam.assessment.academicYear}}</span></span>
+            <span class="exam-attribute"><span>Date:</span> <span class="attribute-value">{{exam.date | date:'MM/dd/yyyy'}}</span></span>
           </span>
 
         </div>
 
-        <div *ngIf="(context|async)?.exam" class="card student-exam-items-card">
+        <div class="card student-exam-items-card">
           <table class="table table-striped">
             <thead>
               <tr>
@@ -28,7 +28,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of (context|async)?.exam.assessment.items">
+              <tr *ngFor="let item of items">
                 <td class="text-center">{{item.number}}</td>
                 <td>{{item.claim}}/{{item.target}}</td>
                 <td class="text-center">{{item.score}}</td>
@@ -44,7 +44,9 @@
           </span>
           <tabset>
             <tab heading="Item Viewer">
-
+              <div style="overflow-x:hidden;overflow-y:scroll">
+                <img src="../../assets/image/IRIS2.png" style="width:50%;margin:-64px -90px">
+              </div>
             </tab>
             <tab heading="Rubric and Exemplar">
 

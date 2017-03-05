@@ -206,9 +206,20 @@ html, body {
   padding-top: 20px;
 }
 
+.student-exams-view,
+.group-exams-view {
+  .page-heading {
+    .form-inline {
+      float: right;
+    }
+  }
+}
+
 .student-exams-view {
-  .form-inline {
-    float: right;
+  .tab-content {
+    .form-inline {
+      float: right;
+    }
   }
 }
 
@@ -216,9 +227,6 @@ html, body {
   .table-wrapper {
     max-height: 312px;
     overflow: auto;
-  }
-  .tab-content {
-    min-height: 256px;
   }
   .select-exam-promt {
     font-size: 150%;
@@ -236,10 +244,17 @@ html, body {
 }
 
 .group-exams-card {
-  .table > tbody > tr {cursor:default}
-  .table > tbody > tr.disabled {cursor: not-allowed}
-  .disabled {
-    opacity: 0.25;
+  .table > tbody > tr {
+    cursor: default
+  }
+  .table > tbody > tr.disabled {
+    cursor: not-allowed
+  }
+  tr.disabled {
+    color: @gray5;
+    .badge {
+      opacity: 0.25;
+    }
   }
 }
 
@@ -274,6 +289,7 @@ html, body {
     .pop-out;
     background-color: #fff;
     padding: 32px;
+    min-height: 256px;
     h2 {
       display: inline-block;
       margin: 0 0 20px 0;
@@ -362,4 +378,62 @@ html, body {
     }
   }
 
+}
+
+/*
+  color rules need to account for 1,2,3[4?] segment cases
+ */
+.horizontal-bar-chart {
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 6px 0;
+  }
+  margin-top: 18px;
+  .segment,
+  .segment-label {
+    margin: 0 3px;
+    float: left;
+  }
+  .segment {
+    color: #fff;
+    height: 60px;
+    font-size: 175%;
+    .segment-text {
+      margin-top:12px;
+    }
+  }
+  .segment-labels {
+    margin-top: 12px;
+  }
+  .segment-label {
+    font-size: 125%;
+  }
+  .segment.segment-0 {
+    background-color: @color-below;
+    :after {
+      margin-top: -12px;
+      content: "";
+      display: block;
+      float: left;
+      border-top: 30px solid #fff;
+      border-bottom: 30px solid #fff;
+      border-right: 20px solid @color-below;
+    }
+  }
+  .segment.segment-1 {
+    background-color: @color-near;
+  }
+  .segment.segment-2 {
+    background-color: @color-above;
+    :after {
+      margin-top: -12px;
+      content: "";
+      display: block;
+      float: right;
+      border-top: 30px solid #fff;
+      border-bottom: 30px solid #fff;
+      border-left: 20px solid @color-above;
+    }
+  }
 }

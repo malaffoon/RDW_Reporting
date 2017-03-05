@@ -15,6 +15,10 @@ curl <saml_jks_url> > /opt/rdw-reporting-ui/config/saml.jks
 #!bash
 mvn package
 ```
+### Run in Development Mode
+```
+mvn spring-boot:run -Drun.arguments="--spring.config.location=/opt/rdw-reporting-ui/config/application.yaml"
+```
 ### Run ###
 ```
 #!bash

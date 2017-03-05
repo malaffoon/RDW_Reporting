@@ -15,8 +15,7 @@ export const exams = [
       name: 'Number and Operations - Fractions',
       grade: 4,
       academicYear: 2016,
-      subject: AssessmentSubjectType.MATH,
-      items: iab_items
+      subject: AssessmentSubjectType.MATH
     }
   },
   {
@@ -120,13 +119,6 @@ export const exams = [
   }
 ].map((exam:any) => {
   exam.id = randomId();
-  exam.session = 'ma-01';
-  exam.aggregate = {
-    students: intBetween(10, 40),
-    below: 30,
-    near: 50,
-    above: 20,
-    averagePerformance: 1
-  };
+  exam.items = iab_items;
   return exam;
 });

@@ -47,8 +47,18 @@ export class GroupExamsComponent implements OnInit {
             (values, exam) => values.add(exam.assessment.type), new Set())).sort();
 
           // data prep
+          let mockExams = [
+            {session: 'ma-01', students: {total: 20, below: .25, near: .5, above: 0.25, averagePerformance: 1, averageScore: 2321}},
+            {session: 'ma-02', students: {total: 15, below: .15, near: .1, above: 0.75, averagePerformance: 1, averageScore: 2339}},
+            {session: 'ma-03', students: {total: 31, below: .75, near: .1, above: 0.15, averagePerformance: 1, averageScore: 2344}},
+            {session: 'ma-04', students: {total: 17, below: .25, near: .5, above: 0.25, averagePerformance: 1, averageScore: 2378}},
+            {session: 'ma-05', students: {total: 8, below: .15, near: .25, above: 0.6, averagePerformance: 1, averageScore: 2595}},
+            {session: 'ma-06', students: {total: 10, below: .1, near: .4, above: 0.5, averagePerformance: 1, averageScore: 2520}},
+            {session: 'ma-07', students: {total: 10, below: .1, near: .4, above: 0.5, averagePerformance: 1, averageScore: 2520}},
+            {session: 'ma-08', students: {total: 10, below: .1, near: .4, above: 0.5, averagePerformance: 1, averageScore: 2520}}
+          ];
 
-          this.group.exams.forEach(exam => exam.totalStudents = Math.floor(Math.random() * 40));
+          this.group.exams = this.group.exams.map((exam, index) => Object.assign(exam, mockExams[index]));
 
           this.itemsByPointsEarned = [
             {name: 'Concepts and Procedures', target: 'Target F', studentsByScore: [3, 9]},
@@ -137,9 +147,23 @@ export class GroupExamsComponent implements OnInit {
     if (exams.length == 0) {
       this.combinedSelectedAssessments = null;
     } else {
+
+      let segments = [{label:'Below', value: 0}, {label: 'Near', value: 0}, {label: 'Above', value:0}];
+
+      exams.forEach(exam => {
+        segments[0].value += exam.students.below;
+        segments[1].value += exam.students.near;
+        segments[2].value += exam.students.above;
+      });
+
+      segments.forEach((segment:any) => {
+        segment.value = Math.floor((segment.value * 100) / exams.length);
+      });
+
       this.combinedSelectedAssessments = {
-        totalStudents: exams.reduce((value, exam) => value + exam.totalStudents, 0),
-        averageScaleScore: Math.floor(exams.reduce((value, exam) => value + exam.score, 0) / exams.length)
+        totalStudents: exams.reduce((value, exam) => value + exam.students.total, 0),
+        averageScaleScore: Math.floor(exams.reduce((value, exam) => value + exam.students.averageScore, 0) / exams.length),
+        segments: segments
       };
     }
   }

@@ -44,6 +44,7 @@
               <tr>
                 <th>{{'labels.student.name' | translate}}</th>
                 <th class="text-center">{{'labels.student.ssid' | translate}}</th>
+                <th style="width:66%"></th>
               </tr>
             </thead>
             <tbody>
@@ -51,6 +52,7 @@
                 <td><a routerLink="/groups/{{(context|async)?.group.id}}/students/{{student.id}}/exams">{{student.lastName}},
                   {{student.firstName}}</a></td>
                 <td class="text-center">{{student.ssid}}</td>
+                <td></td>
               </tr>
             </tbody>
           </table>

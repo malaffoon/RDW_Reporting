@@ -56,7 +56,7 @@
                   <td><input type="checkbox" [disabled]="exam.disabled" [checked]="exam.checked"/></td>
                   <td>{{exam.date | date:'dd-MMM-yy'}}</td>
                   <td class="text-center">{{exam.session}}</td>
-                  <td class="text-center">{{exam.aggregate.students}}</td>
+                  <td class="text-center">{{exam.students.total}}</td>
                   <td>
                     {{'labels.assessment.grade' | translate}}
                     {{exam.assessment.grade}}
@@ -67,10 +67,10 @@
                     1).toString().substr(-2)}}
                   </td>
                   <td>{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</td>
-                  <td class="text-center">{{exam.aggregate.below}}%</td>
-                  <td class="text-center">{{exam.aggregate.near}}%</td>
-                  <td class="text-center">{{exam.aggregate.above}}%</td>
-                  <td class="text-center"><span class="badge performance-level-{{exam.aggregate.averagePerformance}}">{{exam.score}}</span>
+                  <td class="text-center">{{exam.students.below | percent}}</td>
+                  <td class="text-center">{{exam.students.near | percent}}</td>
+                  <td class="text-center">{{exam.students.above | percent}}</td>
+                  <td class="text-center"><span class="badge performance-level-{{exam.students.averagePerformance}}">{{exam.students.averageScore}}</span>
                   </td>
                 </tr>
               </tbody>
@@ -98,7 +98,43 @@
                     <tr>
                       <td class="text-center total-students">{{combinedSelectedAssessments.totalStudents}}</td>
                       <td class="text-center average-scale-score">{{combinedSelectedAssessments.averageScaleScore}}</td>
-                      <td class="text-center"></td>
+                      <td class="text-center">
+
+                        <div class="horizontal-bar-chart">
+                          <div class="segments clearfix">
+                            <div *ngFor="let segment of combinedSelectedAssessments.segments; let index = index" class="segment segment-{{index}}" [style.width]="segment.value * 0.95 + '%'">
+                              <div class="segment-text text-center" *ngIf="segment.value > 15">{{segment.value}}%</div>
+                              <div class="segment-text text-center" *ngIf="segment.value <= 15"></div>
+                            </div>
+                          </div>
+                          <div class="segment-labels clearfix">
+                            <div *ngFor="let segment of combinedSelectedAssessments.segments; let index = index" class="segment-label segment-{{index}}" [style.width]="segment.value * 0.95 + '%'">
+                              <span class="segment-label-text text-center">{{segment.label}}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--<div class="horizontal-bar-chart">-->
+                        <!--<table>-->
+                        <!--<colgroup>-->
+                        <!--<col span="1" *ngFor="let segment of combinedSelectedAssessments.segments" [width]="segment.value + '%'">-->
+                        <!--</colgroup>-->
+                        <!--<tbody>-->
+                        <!--<tr class="segments">-->
+                        <!--<td *ngFor="let segment of combinedSelectedAssessments.segments; let index = index">-->
+                        <!--<div class="segment segment-{{index}}">{{segment.value}}%</div>-->
+                        <!--</td>-->
+                        <!--</tr>-->
+                        <!--<tr class="segment-labels">-->
+                        <!--<td *ngFor="let segment of combinedSelectedAssessments.segments" class="segment-label">-->
+                        <!--{{segment.label}}-->
+                        <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                        <!--</table>-->
+                        <!--</div>-->
+
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -112,20 +148,20 @@
 
             <div *ngIf="selectedExams.size" class="items-by-points-earned">
               <div class="tab-header">
-              <form class="form-inline text-right">
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="countOrPercent" checked [(ngModel)]="count" [value]="true">
-                    {{'labels.aggregate.count' | translate}}
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="countOrPercent" [(ngModel)]="count" [value]="false">
-                    {{'labels.aggregate.percent' | translate}}
-                  </label>
-                </div>
-              </form>
+                <form class="form-inline text-right">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="countOrPercent" checked [(ngModel)]="count" [value]="true">
+                      {{'labels.aggregate.count' | translate}}
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="countOrPercent" [(ngModel)]="count" [value]="false">
+                      {{'labels.aggregate.percent' | translate}}
+                    </label>
+                  </div>
+                </form>
               </div>
               <div class="table-wrapper">
                 <table class="table table-striped">
@@ -145,7 +181,7 @@
                       <td>{{item.name}}</td>
                       <td *ngFor="let score of [0,1,2,3]" class="text-center">
                         <span *ngIf="item.studentsByScore[score] === undefined">{{'messages.notApplicable' | translate}}</span>
-                        <a *ngIf="item.studentsByScore[score] !== undefined" routerLink="/groups/{{(context|async)?.group.id}}/exams/{{item.exam.id}}/items/{{item.id}}/score/{{score}}/students">
+                        <a *ngIf="item.studentsByScore[score] !== undefined" routerLink="/groups/{{group.id}}/exams/{{item.exam.id}}/items/{{item.id}}/score/{{score}}/students">
                           {{count ? item.studentsByScore[score] : (item.percentStudentsByScore[score] | percent)}}
                         </a>
                       </td>
