@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.service.getGroupSummaries().subscribe(groups => {
-      this.groups = Observable.of(sortAscOn(groups, group => group.name));
+      this.groups = Observable.of(groups);
     })
   }
 

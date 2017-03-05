@@ -1,6 +1,7 @@
 import {randomId} from "./support/generator";
+import {sortAscOn} from "../../shared/comparators";
 
-export const groups = [
+export const groups = sortAscOn([
   {
     name: 'Anderson, Mary 4th Grade Math Noon',
     size: 27
@@ -20,4 +21,4 @@ export const groups = [
     school: 'Vista Elementary',
     subject: "Mathematics"
   })
-});
+}), group => group.name);

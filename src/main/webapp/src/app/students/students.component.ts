@@ -17,7 +17,6 @@ export class StudentsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.service.getGroup(params['groupId']).subscribe((group: any) => {
-        group.students = sortAscOn(group.students, student => student.lastName, student => student.firstName);
         this.context = Observable.of({
           group: group,
           breadcrumbs: [
