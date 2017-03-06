@@ -5,8 +5,7 @@ import {DataService} from "../shared/data.service";
 
 @Component({
   selector: 'exam-component',
-  templateUrl: 'exam.component.html',
-  styleUrls: ['exam.component.less']
+  templateUrl: 'exam.component.html'
 })
 export class ExamComponent implements OnInit {
 

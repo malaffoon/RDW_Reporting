@@ -1,28 +1,23 @@
 import {Component, OnInit} from "@angular/core";
 import {DataService} from "../shared/data.service";
 import {Group} from "../shared/group";
-import {sortOn} from "../shared/comparators";
+import {sortAscOn} from "../shared/comparators";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.less']
+  templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit {
 
-  private groups: Array<Group>;
+  private groups: Observable<Array<Group>>;
 
-  constructor(private service: DataService) {
-  }
+  constructor(private service: DataService) {}
 
   ngOnInit() {
-    this.service.getGroupSummaries()
-      .subscribe(groups => {
-          this.groups = sortOn(groups, group => group.name);
-        },
-        error => {
-          console.error(error);
-        })
+    this.service.getGroupSummaries().subscribe(groups => {
+      this.groups = Observable.of(groups);
+    })
   }
 
 }

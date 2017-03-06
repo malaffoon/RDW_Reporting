@@ -1,4 +1,5 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input} from "@angular/core";
+import {TranslateService} from "ng2-translate";
 
 @Component({
   selector: 'breadcrumbs',
@@ -6,20 +7,16 @@ import {Component, Input} from '@angular/core';
 })
 export class BreadcrumbsComponent {
 
-  links: Array<any>;
-  location: string;
+  private crumbs: Array<any> = [];
 
-  @Input('values')
+  constructor(private translate: TranslateService) {
+  }
+
+  @Input()
   set values(values: Array<any>) {
-    let copy = values.concat();
-    this.location = copy.pop().name;
-    this.links = copy;
+    this.translate.get('labels.groups').subscribe(value => {
+      this.crumbs = [{path: '/', name: value}].concat(values);
+    });
   }
 
 }
-
-class Breadcrumb {
-  readonly path?: string;
-  readonly name: string;
-}
-

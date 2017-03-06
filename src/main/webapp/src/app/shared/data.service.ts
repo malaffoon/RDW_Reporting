@@ -17,33 +17,39 @@ export class DataService {
       .map(response => response.json());
   }
 
-  getGroup(id: string): Observable<Group> {
+  getGroup(id: number): Observable<Group> {
     return this.http
       .get(`/api/groups/${id}/students`)
       .map(response => response.json());
   }
 
-  getGroupExams(id: string): Observable<Group> {
+  getGroupExams(id: number): Observable<Group> {
     return this.http
       .get(`/api/groups/${id}/exams`)
       .map(response => response.json());
   }
 
-  getStudentExams(groupId: string, studentId: string): Observable<Group> {
+  getStudentExams(groupId: number, studentId: number): Observable<Group> {
     return this.http
       .get(`/api/groups/${groupId}/students/${studentId}/exams`)
       .map(response => response.json());
   }
 
-  getStudentExam(groupId: string, studentId: string, examId: string): Observable<Group> {
+  getStudentExam(groupId: number, studentId: number, examId: number): Observable<Group> {
     return this.http
       .get(`/api/groups/${groupId}/students/${studentId}/exams/${examId}`)
       .map(response => response.json());
   }
 
-  getExam(id: string): Observable<Exam> {
+  getExam(id: number): Observable<Exam> {
     return this.http
       .get(`/api/exams/${id}`)
+      .map(response => response.json());
+  }
+
+  getStudentsWithItemScore(groupId: number, examId: number, itemId: number, score: number) {
+    return this.http
+      .get(`/api/groups/${groupId}/exams/${examId}/items/${itemId}/score/${score}/students`)
       .map(response => response.json());
   }
 

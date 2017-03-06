@@ -13,12 +13,21 @@ export function greaterThan(a, b) {
 }
 
 export let lessThanComparator = comparator(lessThan);
+export let greaterThanComparator = comparator(greaterThan);
 
-export function sortOn(sortable, ...getters) {
+export function sortAscOn(sortable, ...getters) {
+  return sortOn(sortable, lessThanComparator, getters);
+}
+
+export function sortDescOn(sortable, ...getters) {
+  return sortOn(sortable, greaterThanComparator, getters);
+}
+
+export function sortOn(sortable, order, getters) {
   return sortable.sort((a, b) => {
     for (let i = 0; i < getters.length; i++) {
       let getter = getters[i];
-      let comparison = lessThanComparator(getter(a), getter(b));
+      let comparison = order(getter(a), getter(b));
       if (comparison != 0) {
         return comparison;
       }

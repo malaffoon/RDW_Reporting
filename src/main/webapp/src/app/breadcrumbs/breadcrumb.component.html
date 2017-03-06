@@ -1,0 +1,13 @@
+<span class="breadcrumb-link-container" *ngIf="active">
+  <span class="breadcrumb-link active">
+    <i *ngIf="first" class="glyphicon glyphicon-home"></i>{{crumb.name}}
+  </span>
+</span>
+<span class="breadcrumb-link-container" *ngIf="!active">
+  <a class="breadcrumb-link" routerLink="{{crumb.path}}">
+    <i *ngIf="first" class="glyphicon glyphicon-home"></i>{{crumb.name}}
+  </a>
+  <span class="breadcrumb-link-separator">
+    <i class="glyphicon glyphicon-menu-right"></i>
+  </span>
+</span>

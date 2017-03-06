@@ -6,7 +6,6 @@ import {RouterModule} from "@angular/router";
 import {TabsModule} from "ng2-bootstrap/tabs";
 import {PadStartPipe} from "./shared/pad-start.pipe";
 import {AppComponent} from "./app.component";
-import {ExamComponent} from "./exam/exam.component";
 import {DataService} from "./shared/data.service";
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 import {environment} from "../environments/environment";
@@ -18,6 +17,11 @@ import {routes} from "./shared/routes";
 import {HomeComponent} from "./home/home.component";
 import { StudentExamItemsComponent } from './student-exam-items/student-exam-items.component';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
+import {SearchPipe} from "./search.pipe";
+import {BreadcrumbComponent} from "./breadcrumbs/breadcrumb.component";
+import {FilterPipe} from "./filter.pipe";
+import {StudentExamsCategorizedComponent} from "./student-exams/student-exams-categorized.component";
+import {StudentsWithItemScoreComponent} from "./students-with-item-score/students-with-item-score.component";
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -26,13 +30,18 @@ export function createTranslateLoader(http: Http) {
 @NgModule({
   declarations: [
     PadStartPipe,
+    SearchPipe,
+    FilterPipe,
     AppComponent,
     HomeComponent,
     StudentsComponent,
     StudentExamsComponent,
+    StudentExamsCategorizedComponent,
     GroupExamsComponent,
     StudentExamItemsComponent,
-    BreadcrumbsComponent
+    StudentsWithItemScoreComponent,
+    BreadcrumbsComponent,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,

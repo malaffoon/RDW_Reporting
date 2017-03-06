@@ -9,7 +9,7 @@ import {Group} from "../shared/group";
 })
 export class GroupsComponent implements OnInit {
 
-  groups: Array<Group> = null;
+  private groups: Array<Group> = null;
 
   constructor(private service: DataService) {}
 

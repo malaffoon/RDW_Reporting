@@ -1,41 +1,45 @@
 <breadcrumbs [values]="breadcrumbs"></breadcrumbs>
 
-<div *ngIf="exam" class="student-exam-items-view">
+<div *ngIf="item" class="student-exam-items-view">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
 
         <div class="page-heading">
 
-          <h2>{{'labels.assessment.grade' | translate}} {{exam.assessment.grade}} {{exam.assessment.name}}</h2>
+          <h2>{{'labels.item.number' | translate}} {{item.number}}</h2>
 
-          <span class="exam-attributes">
-            <span class="exam-attribute"><span>Subject:</span> <span class="attribute-value">{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</span></span>
-            <span class="exam-attribute"><span>Academic Year:</span> <span class="attribute-value">{{exam.assessment.academicYear}}</span></span>
-            <span class="exam-attribute"><span>Date:</span> <span class="attribute-value">{{exam.date | date:'MM/dd/yyyy'}}</span></span>
-          </span>
+          <!--<span>{{item.name}}/{{item.target}}</span>-->
+          <!--<span>Max Score: {{item.maximumScore}}</span>-->
+          <!--<span>Selected Students: {{items.length}}</span>-->
 
         </div>
 
-        <div class="card student-exam-items-card">
+        <div *ngIf="items" class="card student-exam-items-card">
+          <div class="table-wrapper">
           <table class="table table-striped">
             <thead>
               <tr>
-                <th class="text-center">Item #</th>
-                <th>Claim/Target</th>
+                <th>{{'labels.student.name' | translate}}</th>
+                <th class="text-center">{{'labels.exam.grade' | translate}}</th>
                 <th class="text-center">Student Score</th>
-                <th class="text-center">Max Score</th>
+                <th>{{'labels.exam.date' | translate}}</th>
+                <th>{{'labels.exam.session' | translate}}</th>
+                <th class="text-center">{{'labels.exam.attempt' | translate}}</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of items">
-                <td class="text-center">{{item.number}}</td>
-                <td>{{item.claim}}/{{item.target}}</td>
+                <td>{{item.student.lastName}}, {{item.student.firstName}}</td>
+                <td class="text-center">{{item.exam.grade}}</td>
                 <td class="text-center">{{item.score}}</td>
-                <td class="text-center">{{item.maximumScore}}</td>
+                <td>{{item.exam.date | date:'dd-MMM-yy'}}</td>
+                <td>{{item.exam.session}}</td>
+                <td class="text-center">{{item.exam.attempt}}</td>
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
 
         <div class="expandable">

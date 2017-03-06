@@ -1,97 +1,234 @@
-<breadcrumbs [values]="context.breadcrumbs"></breadcrumbs>
+<breadcrumbs [values]="breadcrumbs"></breadcrumbs>
 
-<div class="group-exams-view">
+<div *ngIf="group" class="group-exams-view">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
 
-        <h2>{{group.name}}</h2>
+        <div class="page-heading">
 
-        <div class="form-inline">
-          <div class="form-group" *ngIf="group.sortedAcademicYears.length > 1">
-            <label for="academic-year-filter" class="sr-only"></label>
-            <select id="academic-year-filter" class="form-control">
-              <option>Academic Year</option>
-              <option *ngFor="let year of group.sortedAcademicYears">{{year}}</option>
-            </select>
+          <h2>{{group.name}}</h2>
+
+          <div class="form-inline">
+            <div class="form-group" *ngIf="academicYearFilterOptions.length > 1">
+              <label for="academic-year-filter" class="sr-only">{{'labels.assessment.academicYear' | translate}}</label>
+              <select (change)="onAcademicYearChange($event.target.value)" name="academic-year-filter" id="academic-year-filter" class="form-control">
+                <option [value]="null">{{'labels.assessment.academicYear' | translate}}</option>
+                <option *ngFor="let year of academicYearFilterOptions" [value]="year">{{year}} - {{(year +
+                  1).toString().substr(-2)}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group" *ngIf="assessmentTypeFilterOptions.length > 1">
+              <label for="assessment-type-filter" class="sr-only">{{'labels.assessment.type' | translate}}</label>
+              <select (change)="onAssessmentTypeChange($event.target.value)" name="assessment-type-filter" id="assessment-type-filter" class="form-control">
+                <option [value]="null">{{'labels.assessment.type' | translate}}</option>
+                <option *ngFor="let type of assessmentTypeFilterOptions" [value]="type">{{'assessment.types.' + type +
+                  '.shortName' | translate}}
+                </option>
+              </select>
+            </div>
           </div>
-          <div class="form-group" *ngIf="group.sortedAssessmentTypes.length > 1">
-            <label for="assessment-type-filter" class="sr-only"></label>
-            <select id="assessment-type-filter" class="form-control">
-              <option>Assessment Type</option>
-              <option *ngFor="let type of group.sortedAssessmentTypes">{{type}}</option>
-            </select>
-          </div>
+
         </div>
 
         <div class="card group-exams-card">
           <div class="table-wrapper">
-            <table *ngIf="group.exams.length" class="table table-striped table-condensed">
+            <table *ngIf="filteredExams.length" class="table table-striped">
               <thead>
                 <tr>
-                  <th><input type="checkbox"/></th>
-                  <th>Date</th>
-                  <th class="text-center">Session</th>
-                  <th class="text-center"># Students</th>
-                  <th>Assessment</th>
-                  <th class="text-center">Academic Year</th>
-                  <th>Subject</th>
-                  <th class="text-center">% Below</th>
-                  <th class="text-center">% Near</th>
-                  <th class="text-center">% Above</th>
-                  <th class="text-center">Scale Score</th>
+                  <th></th>
+                  <th>{{'labels.exam.date' | translate}}</th>
+                  <th class="text-center">{{'labels.exam.session' | translate}}</th>
+                  <th class="text-center">{{'labels.group.size' | translate}}</th>
+                  <th>{{'labels.assessment.name' | translate}}</th>
+                  <th class="text-center">{{'labels.assessment.academicYear' | translate}}</th>
+                  <th>{{'labels.assessment.subject' | translate}}</th>
+                  <th class="text-center">{{'labels.exam.performanceCategory.below' | translate}}</th>
+                  <th class="text-center">{{'labels.exam.performanceCategory.near' | translate}}</th>
+                  <th class="text-center">{{'labels.exam.performanceCategory.above' | translate}}</th>
+                  <th class="text-center">{{'labels.exam.score' | translate}}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let exam of group.exams">
-                  <td><input type="checkbox"/></td>
-                  <td>{{exam.date | date:'MM/dd/yyyy'}}</td>
+                <tr *ngFor="let exam of filteredExams" class="assessment-type-{{exam.assessment.type}}"
+                    [ngClass]="{disabled:exam.disabled}" (click)="onExamClick($event, exam)">
+                  <td><input type="checkbox" [disabled]="exam.disabled" [checked]="exam.checked"/></td>
+                  <td>{{exam.date | date:'dd-MMM-yy'}}</td>
                   <td class="text-center">{{exam.session}}</td>
-                  <td class="text-center">{{exam.aggregate.students}}</td>
-                  <td>Grade {{exam.assessment.grade}} {{'assessment.types.' + exam.assessment.type + '.shortName' |
-                    translate}} {{exam.assessment.name}}
+                  <td class="text-center">{{exam.students.total}}</td>
+                  <td>
+                    {{'labels.assessment.grade' | translate}}
+                    {{exam.assessment.grade}}
+                    {{'assessment.types.' + exam.assessment.type + '.shortName' | translate}}
+                    {{exam.assessment.name}}
                   </td>
-                  <td class="text-center">{{exam.assessment.academicYear}} - {{exam.assessment.academicYear + 1}}</td>
-                  <td>{{'assessment.subjects.' + exam.assessment.subject | translate}}</td>
-                  <td class="text-center">{{exam.aggregate.below}}%</td>
-                  <td class="text-center">{{exam.aggregate.near}}%</td>
-                  <td class="text-center">{{exam.aggregate.above}}%</td>
-                  <td class="text-center">{{exam.score}}</td>
+                  <td class="text-center">{{exam.assessment.academicYear}} - {{(exam.assessment.academicYear +
+                    1).toString().substr(-2)}}
+                  </td>
+                  <td>{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</td>
+                  <td class="text-center">{{exam.students.below | percent}}</td>
+                  <td class="text-center">{{exam.students.near | percent}}</td>
+                  <td class="text-center">{{exam.students.above | percent}}</td>
+                  <td class="text-center"><span class="badge performance-level-{{exam.students.averagePerformance}}">{{exam.students.averageScore}}</span>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p *ngIf="!group.exams.length">
-            No exams to report.
+          <p *ngIf="!filteredExams.length">
+            {{'messages.noExams' | translate}}
           </p>
         </div>
 
         <tabset>
-          <tab heading="Combined Selected Assessments">
-            <div class="combined-selected-assessments">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th class="text-center">Total # of Students</th>
-                  <th class="text-center">Average Scale Score</th>
-                  <th class="text-center">% of Standard</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-center total-students">27</td>
-                  <td class="text-center average-scale-score">2393</td>
-                  <td class="text-center">(graph)</td>
-                </tr>
-              </tbody>
-            </table>
+          <tab heading="{{'labels.aggregate.selectedAssessments' | translate}}">
+            <div *ngIf="combinedSelectedAssessments" class="combined-selected-assessments">
+              <div class="tab-header"></div>
+              <div class="table-wrapper">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="text-center">{{'labels.aggregate.totalStudents' | translate}}</th>
+                      <th class="text-center">{{'labels.aggregate.averageScaleScore' | translate}}</th>
+                      <th class="text-center">{{'labels.aggregate.percentOfStandard' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="text-center total-students">{{combinedSelectedAssessments.totalStudents}}</td>
+                      <td class="text-center average-scale-score">{{combinedSelectedAssessments.averageScaleScore}}</td>
+                      <td class="text-center">
+
+                        <div class="horizontal-bar-chart">
+                          <div class="segments clearfix">
+                            <div *ngFor="let segment of combinedSelectedAssessments.segments; let index = index" class="segment segment-{{index}}" [style.width]="segment.value * 0.95 + '%'">
+                              <div class="segment-text text-center" *ngIf="segment.value > 15">{{segment.value}}%</div>
+                              <div class="segment-text text-center" *ngIf="segment.value <= 15"></div>
+                            </div>
+                          </div>
+                          <div class="segment-labels clearfix">
+                            <div *ngFor="let segment of combinedSelectedAssessments.segments; let index = index" class="segment-label segment-{{index}}" [style.width]="segment.value * 0.95 + '%'">
+                              <span class="segment-label-text text-center">{{segment.label}}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--<div class="horizontal-bar-chart">-->
+                        <!--<table>-->
+                        <!--<colgroup>-->
+                        <!--<col span="1" *ngFor="let segment of combinedSelectedAssessments.segments" [width]="segment.value + '%'">-->
+                        <!--</colgroup>-->
+                        <!--<tbody>-->
+                        <!--<tr class="segments">-->
+                        <!--<td *ngFor="let segment of combinedSelectedAssessments.segments; let index = index">-->
+                        <!--<div class="segment segment-{{index}}">{{segment.value}}%</div>-->
+                        <!--</td>-->
+                        <!--</tr>-->
+                        <!--<tr class="segment-labels">-->
+                        <!--<td *ngFor="let segment of combinedSelectedAssessments.segments" class="segment-label">-->
+                        <!--{{segment.label}}-->
+                        <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                        <!--</table>-->
+                        <!--</div>-->
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+            <p *ngIf="!combinedSelectedAssessments" class="text-center select-exam-promt">
+              {{'messages.noExamsSelected' | translate}}
+            </p>
           </tab>
-          <tab heading="Items By Points Earned">
+          <tab heading="{{'labels.aggregate.itemsByPointsEarned' | translate}}">
 
+            <div *ngIf="selectedExams.size" class="items-by-points-earned">
+              <div class="tab-header">
+                <form class="form-inline text-right">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="countOrPercent" checked [(ngModel)]="count" [value]="true">
+                      {{'labels.aggregate.count' | translate}}
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="countOrPercent" [(ngModel)]="count" [value]="false">
+                      {{'labels.aggregate.percent' | translate}}
+                    </label>
+                  </div>
+                </form>
+              </div>
+              <div class="table-wrapper">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th class="text-center">{{'labels.item.number' | translate}}</th>
+                      <th>{{'labels.item.claim' | translate}}/{{'labels.item.target' | translate}}</th>
+                      <th class="text-center">{{'labels.item.pointCategories.0' | translate}}</th>
+                      <th class="text-center">{{'labels.item.pointCategories.1' | translate}}</th>
+                      <th class="text-center">{{'labels.item.pointCategories.2' | translate}}</th>
+                      <th class="text-center">{{'labels.item.pointCategories.3' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of itemsByPointsEarned">
+                      <td class="text-center">{{item.number}}</td>
+                      <td>{{item.name}}</td>
+                      <td *ngFor="let score of [0,1,2,3]" class="text-center">
+                        <span *ngIf="item.studentsByScore[score] === undefined">{{'messages.notApplicable' | translate}}</span>
+                        <a *ngIf="item.studentsByScore[score] !== undefined" routerLink="/groups/{{group.id}}/exams/{{item.exam.id}}/items/{{item.id}}/score/{{score}}/students">
+                          {{count ? item.studentsByScore[score] : (item.percentStudentsByScore[score] | percent)}}
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <p *ngIf="!selectedExams.size" class="text-center select-exam-promt">
+              {{'messages.noExamsSelected' | translate}}
+            </p>
           </tab>
-          <tab heading="Records Selected">
-
+          <tab heading="{{'labels.aggregate.selectedRecords' | translate}}">
+            <div *ngIf="selectedExams.size" class="selected-records">
+              <div class="tab-header"></div>
+              <div class="table-wrapper">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>{{'labels.student.name' | translate}}</th>
+                      <th class="text-center">{{'labels.exam.grade' | translate}}</th>
+                      <th>{{'labels.exam.performance' | translate}}</th>
+                      <th class="text-center">{{'labels.exam.score' | translate}}</th>
+                      <th>{{'labels.exam.date' | translate}}</th>
+                      <th>{{'labels.exam.session' | translate}}</th>
+                      <th class="text-center">{{'labels.exam.attempt' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let exam of selectedRecords">
+                      <td>{{exam.student.lastName}}, {{exam.student.firstName}}</td>
+                      <td class="text-center">{{exam.grade}}</td>
+                      <td>{{'assessment.types.' + selectedAssessment.type + '.performanceLevels.' + exam.performance |
+                        translate}}
+                      </td>
+                      <td class="text-center">{{exam.score}}</td>
+                      <td>{{exam.date | date:'dd-MMM-yy'}}</td>
+                      <td>{{exam.session}}</td>
+                      <td class="text-center">{{exam.attempt}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <p *ngIf="!selectedExams.size" class="text-center select-exam-promt">
+              {{'messages.noExamsSelected' | translate}}
+            </p>
           </tab>
         </tabset>
 

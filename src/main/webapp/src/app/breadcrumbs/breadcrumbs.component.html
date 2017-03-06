@@ -3,17 +3,7 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="breadcrumb-links">
-          <span class="breadcrumb-link-container">
-            <a class="breadcrumb-link" routerLink="/"><i class="glyphicon glyphicon-home"></i></a>
-            <span class="breadcrumb-link-separator"><i class="glyphicon glyphicon-menu-right"></i></span>
-          </span>
-          <span class="breadcrumb-link-container" *ngFor="let link of links">
-            <a class="breadcrumb-link" routerLink="{{link.path}}">{{link.name}}</a>
-            <span class="breadcrumb-link-separator"><i class="glyphicon glyphicon-menu-right"></i></span>
-          </span>
-          <span class="breadcrumb-link-container">
-            <span class="breadcrumb-link active">{{location}}</span>
-          </span>
+          <breadcrumb *ngFor="let crumb of crumbs; let first = first; let last = last" [crumb]="crumb" [first]="first" [active]="last"></breadcrumb>
         </div>
       </div>
     </div>

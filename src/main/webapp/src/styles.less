@@ -6,6 +6,9 @@
 @gray3: #686868;
 @gray4: #7a7a7a;
 @gray5: #d4d4d4;
+@gray6: #e6e6e6;
+@gray7: #f8f8f8;
+@gray8: #f3f3f3;
 @blue1: #008AB1;
 
 .font-sm {
@@ -53,17 +56,32 @@
 body {
   background: @gray1;
   color: @gray3;
-  padding-top: 92px;
+  padding-top: 88px;
 }
 
 h2 {
   color: @blue1;
-  font-family: "PT Sans Caption",sans-serif;
+  font-family: "PT Sans Caption", sans-serif;
   font-size: 175%;
+  display: inline-block;
+  margin: 4px 0 20px 0;
 }
 
-.table > thead > tr > th {
-  vertical-align: top;
+.table {
+  border: 1px solid @gray5;
+  color: #000;
+  > thead > tr > th {
+    background-color: @gray6;
+    vertical-align: top;
+  }
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: @gray7;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: @gray8;
 }
 
 .navigation {
@@ -71,7 +89,7 @@ h2 {
   border-bottom: 1px solid #ccc;
   box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
   margin-bottom: 0;
-  padding: 16px 0 8px 0;
+  padding: 16px 0 20px 0;
   .logo {
     width: 170px;
   }
@@ -100,6 +118,9 @@ h2 {
   .navbar-form {
     padding: 0;
   }
+  .link-divider {
+    margin: 0 6px;
+  }
 }
 
 .breadcrumbs {
@@ -110,6 +131,9 @@ h2 {
   color: @gray4;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
   padding: 12px 0;
+  .breadcrumb-link > i {
+    margin-right: 6px;
+  }
   .breadcrumb-link-separator > i {
     margin: 0 4px;
   }
@@ -120,24 +144,37 @@ h2 {
 html, body {
   height: 100%;
 }
+
 .page-view {
   min-height: 100%;
   margin-bottom: -@footer-height;
 }
+
 .page-view:after {
   content: "";
   display: block;
 }
+
 .footer, .page-view:after {
   height: @footer-height;
 }
+
 .footer {
   color: @gray4;
   background-color: #fff;
   padding: 10px 0;
   font-size: 10px;
   border-top: 1px solid @gray5;
-  box-shadow: 0 -0.125em 0.25em 0 rgba(0,0,0,0.075);
+  box-shadow: 0 -0.125em 0.25em 0 rgba(0, 0, 0, 0.075);
+}
+
+.page-heading {
+  .btn {
+    margin: -6px 0 0 20px;
+  }
+  .controls {
+
+  }
 }
 
 .card {
@@ -150,7 +187,7 @@ html, body {
   h2 {
     margin: 0 0 24px 0;
   }
-  .list-group {
+  .table {
     margin-bottom: 0;
   }
   .list-group-item {
@@ -161,47 +198,70 @@ html, body {
   }
 }
 
-.home-view {
-  padding-top: 72px;
-}
-
+.home-view,
 .students-view,
-.student-exams-view {
-  padding-top: 32px;
-}
-
+.student-exams-view,
+.student-exam-items-view,
 .group-exams-view {
   padding-top: 20px;
 }
 
 .student-exams-view,
 .group-exams-view {
-  .form-inline {
-    float: right;
+  .page-heading {
+    .form-inline {
+      float: right;
+    }
+  }
+}
+
+.student-exams-view {
+  .tab-content {
+    .form-inline {
+      float: right;
+    }
   }
 }
 
 .group-exams-view {
-  h2 {
-    display: inline-block;
-    margin: 0 0 20px 0;
+  .table-wrapper {
+    max-height: 312px;
+    overflow: auto;
+  }
+  .select-exam-promt {
+    font-size: 150%;
+    margin-top: 80px;
+    opacity: 0.5;
+  }
+  .combined-selected-assessments {
+    .table {
+      border: none;
+      > thead > tr > th {
+        background-color: transparent;
+      }
+    }
   }
 }
 
 .group-exams-card {
-  .table-wrapper {
-    height: 208px;
-    overflow: auto;
+  .table > tbody > tr {
+    cursor: default
+  }
+  .table > tbody > tr.disabled {
+    cursor: not-allowed
+  }
+  tr.disabled {
+    color: @gray5;
+    .badge {
+      opacity: 0.25;
+    }
   }
 }
 
 .student-exam-items-view {
-  h2 {
-    display: inline-block;
-  }
   .exam-attributes {
     float: right;
-    margin-top: 20px;
+    margin-top: 8px;
     .exam-attribute {
       margin-left: 20px;
       .attribute-value {
@@ -221,12 +281,6 @@ html, body {
   }
 }
 
-.student-exam-items-card {
-  .table {
-    margin-bottom:0;
-  }
-}
-
 .tab-container {
   .nav-tabs {
     padding-left: 32px;
@@ -235,6 +289,7 @@ html, body {
     .pop-out;
     background-color: #fff;
     padding: 32px;
+    min-height: 256px;
     h2 {
       display: inline-block;
       margin: 0 0 20px 0;
@@ -243,6 +298,10 @@ html, body {
       margin-bottom: 0;
     }
   }
+}
+
+.tab-header {
+  margin: 0 0 24px 0;
 }
 
 .combined-selected-assessments {
@@ -266,6 +325,115 @@ html, body {
     }
     th:nth-child(3) {
       width: 50%
+    }
+  }
+}
+
+@color-danger: #a20137;
+@color-below: #63666b;
+@color-near: #00639a;
+@color-above: #006d33;
+
+.table {
+  .badge {
+    border-radius: 3px;
+    color: #fff;
+  }
+  //.badge.performance-level-0 {
+  //  background-color: @color-danger;
+  //}
+  //.badge.performance-level-1 {
+  //  background-color: @color-below;
+  //}
+  //.badge.performance-level-2 {
+  //  background-color: @color-near;
+  //}
+  //.badge.performance-level-3 {
+  //  background-color: @color-above;
+  //}
+  .assessment-type-0,
+  .assessment-type-1 {
+    .badge.performance-level-0 {
+      background-color: @color-danger;
+    }
+    .badge.performance-level-1 {
+      background-color: @color-below;
+    }
+    .badge.performance-level-2 {
+      background-color: @color-near;
+    }
+    .badge.performance-level-3 {
+      background-color: @color-above;
+    }
+  }
+  .assessment-type-2 {
+    .badge.performance-level-0 {
+      background-color: @color-below;
+    }
+    .badge.performance-level-1 {
+      background-color: @color-near;
+    }
+    .badge.performance-level-2 {
+      background-color: @color-above;
+    }
+  }
+
+}
+
+/*
+  color rules need to account for 1,2,3[4?] segment cases
+ */
+.horizontal-bar-chart {
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 6px 0;
+  }
+  margin-top: 18px;
+  .segment,
+  .segment-label {
+    margin: 0 3px;
+    float: left;
+  }
+  .segment {
+    color: #fff;
+    height: 60px;
+    font-size: 175%;
+    .segment-text {
+      margin-top:12px;
+    }
+  }
+  .segment-labels {
+    margin-top: 12px;
+  }
+  .segment-label {
+    font-size: 125%;
+  }
+  .segment.segment-0 {
+    background-color: @color-below;
+    :after {
+      margin-top: -12px;
+      content: "";
+      display: block;
+      float: left;
+      border-top: 30px solid #fff;
+      border-bottom: 30px solid #fff;
+      border-right: 20px solid @color-below;
+    }
+  }
+  .segment.segment-1 {
+    background-color: @color-near;
+  }
+  .segment.segment-2 {
+    background-color: @color-above;
+    :after {
+      margin-top: -12px;
+      content: "";
+      display: block;
+      float: right;
+      border-top: 30px solid #fff;
+      border-bottom: 30px solid #fff;
+      border-left: 20px solid @color-above;
     }
   }
 }

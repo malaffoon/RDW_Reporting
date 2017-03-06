@@ -10,13 +10,12 @@ export const exams = [
     score: 2321,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 1,
       type: AssessmentType.IAB,
       name: 'Number and Operations - Fractions',
       grade: 4,
       academicYear: 2016,
-      subject: AssessmentSubjectType.MATH,
-      items: iab_items
+      subject: AssessmentSubjectType.MATH
     }
   },
   {
@@ -25,7 +24,7 @@ export const exams = [
     score: 2339,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 2,
       type: AssessmentType.IAB,
       name: 'Measurement and Data',
       grade: 4,
@@ -40,7 +39,7 @@ export const exams = [
     score: 2344,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 3,
       type: AssessmentType.IAB,
       name: 'Geometry',
       grade: 4,
@@ -54,7 +53,7 @@ export const exams = [
     score: 2378,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 1,
       type: AssessmentType.IAB,
       name: 'Number and Operations - Fractions',
       grade: 4,
@@ -68,7 +67,7 @@ export const exams = [
     score: 2447,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 2,
       type: AssessmentType.IAB,
       name: 'Measurement and Data',
       grade: 4,
@@ -82,7 +81,7 @@ export const exams = [
     score: 2595,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 3,
       type: AssessmentType.IAB,
       name: 'Geometry',
       grade: 4,
@@ -96,7 +95,7 @@ export const exams = [
     score: 2520,
     grade: 4,
     assessment: {
-      id: randomId(),
+      id: 4,
       type: AssessmentType.IAB,
       name: 'Mathematics Performance Task',
       grade: 4,
@@ -110,7 +109,7 @@ export const exams = [
     score: 2520,
     grade: 5,
     assessment: {
-      id: randomId(),
+      id: 5,
       type: AssessmentType.ICA,
       name: 'Operations and Algebraic Thinking',
       grade: 5,
@@ -120,12 +119,6 @@ export const exams = [
   }
 ].map((exam:any) => {
   exam.id = randomId();
-  exam.session = 'ma-01';
-  exam.aggregate = {
-    students: intBetween(10, 40),
-    below: 30,
-    near: 50,
-    above: 20
-  };
+  exam.items = iab_items;
   return exam;
 });
