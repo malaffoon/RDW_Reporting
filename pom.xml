@@ -19,11 +19,14 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
-    <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
     <unit-tests.skip>false</unit-tests.skip>
     <integration-tests.skip>true</integration-tests.skip>
     <docker.image.prefix>fwsbac</docker.image.prefix>
     <spring.cloud.config.version>1.2.2.RELEASE</spring.cloud.config.version>
+
+    <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+    <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
+    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -46,6 +49,31 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven.release.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven.source.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-toolchains-plugin</artifactId>
+          <version>${maven.toolchains.plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -55,7 +83,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -92,6 +119,16 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagNameFormat>@{project.version}</tagNameFormat>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>com.spotify</groupId>
         <artifactId>docker-maven-plugin</artifactId>
         <version>0.4.13</version>
@@ -113,4 +150,20 @@
       </plugin>
     </plugins>
   </build>
+
+  <scm>
+    <connection>scm:git:https://github.com/SmarterApp/SS_ConfigurationService.git</connection>
+    <developerConnection>scm:git:git://github.com/SmarterApp/SS_ConfigurationService.git</developerConnection>
+    <url>https://github.com/SmarterApp/SS_ConfigurationService</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>central</id>
+      <name>airdev-releases</name>
+      <url>https://airdev.jfrog.io/airdev/libs-releases-local</url>
+    </repository>
+  </distributionManagement>
+
 </project>
