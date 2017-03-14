@@ -6,6 +6,7 @@ import {Pipe, PipeTransform, Injectable} from "@angular/core";
 })
 export class SearchPipe implements PipeTransform {
   transform(items: any[], search: string, on:any): any[] {
+    search = search || '';
     let searchCharacters = search.toLowerCase().split('').filter(character => !/\s/.test(character));
     return items.filter((item: any) => {
 

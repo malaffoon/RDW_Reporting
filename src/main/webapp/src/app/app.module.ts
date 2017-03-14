@@ -19,7 +19,6 @@ import { StudentExamItemsComponent } from './student-exam-items/student-exam-ite
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import {SearchPipe} from "./search.pipe";
 import {BreadcrumbComponent} from "./breadcrumbs/breadcrumb.component";
-import {FilterPipe} from "./filter.pipe";
 import {StudentExamsCategorizedComponent} from "./student-exams/student-exams-categorized.component";
 import {StudentsWithItemScoreComponent} from "./students-with-item-score/students-with-item-score.component";
 
@@ -31,7 +30,6 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     PadStartPipe,
     SearchPipe,
-    FilterPipe,
     AppComponent,
     HomeComponent,
     StudentsComponent,
