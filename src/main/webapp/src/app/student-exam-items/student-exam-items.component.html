@@ -17,31 +17,45 @@
 
         </div>
 
-        <div class="card student-exam-items-card">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th class="text-center">Item #</th>
-                <th>Claim/Target</th>
-                <th class="text-center">Student Score</th>
-                <th class="text-center">Max Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of items">
-                <td class="text-center">{{item.number}}</td>
-                <td>{{item.claim}}/{{item.target}}</td>
-                <td class="text-center">{{item.score}}</td>
-                <td class="text-center">{{item.maximumScore}}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card student-exam-items-card" [ngClass]="{sm: size == 0, md: size == 1, lg: size == 2}">
+          <!--<a class="expand-control">-->
+            <!--<i class="glyphicon glyphicon-resize-full" (click)="toggleWindowSize()"></i>-->
+          <!--</a>-->
+          <span class="window-controls">
+            <a class="window-control window-size-control window-size-control-sm" [ngClass]="{disabled:size == 0}">
+              <i class="glyphicon glyphicon-collapse-up" (click)="size = 0"></i>
+            </a>
+            <a class="window-control window-size-control window-size-control-md" [ngClass]="{disabled:size == 1}">
+              <i class="glyphicon glyphicon-unchecked" (click)="size = 1"></i>
+            </a>
+            <a class="window-control window-size-control window-size-control-lg" [ngClass]="{disabled:size == 2}">
+              <i class="glyphicon glyphicon-collapse-down" (click)="size = 2"></i>
+            </a>
+          </span>
+          <div class="table-wrapper">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="text-center">Item #</th>
+                  <th>Claim/Target</th>
+                  <th class="text-center">Student Score</th>
+                  <th class="text-center">Max Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of items">
+                  <td class="text-center">{{item.number}}</td>
+                  <td>{{item.claim}}/{{item.target}}</td>
+                  <td class="text-center">{{item.score}}</td>
+                  <td class="text-center">{{item.maximumScore}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="expandable">
-          <span class="expand-control">
-            <i class="glyphicon glyphicon-resize-full"></i>
-          </span>
+
           <tabset>
             <tab heading="Item Viewer">
               <div style="overflow-x:hidden;overflow-y:scroll">

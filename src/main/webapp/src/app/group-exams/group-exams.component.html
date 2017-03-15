@@ -47,7 +47,7 @@
                   <th class="text-center">{{'labels.exam.performanceCategory.below' | translate}}</th>
                   <th class="text-center">{{'labels.exam.performanceCategory.near' | translate}}</th>
                   <th class="text-center">{{'labels.exam.performanceCategory.above' | translate}}</th>
-                  <th class="text-center">{{'labels.exam.score' | translate}}</th>
+                  <th class="text-center">{{'labels.aggregate.averageScaleScore' | translate}}</th>
                 </tr>
               </thead>
               <tbody>
@@ -91,7 +91,7 @@
                     <tr>
                       <th class="text-center">{{'labels.aggregate.totalStudents' | translate}}</th>
                       <th class="text-center">{{'labels.aggregate.averageScaleScore' | translate}}</th>
-                      <th class="text-center">{{'labels.aggregate.percentOfStandard' | translate}}</th>
+                      <th class="text-center">{{'labels.aggregate.performanceCategories' | translate}}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -103,8 +103,8 @@
                         <div class="horizontal-bar-chart">
                           <div class="segments clearfix">
                             <div *ngFor="let segment of combinedSelectedAssessments.segments; let index = index" class="segment segment-{{index}}" [style.width]="segment.value * 0.95 + '%'">
-                              <div class="segment-text text-center" *ngIf="segment.value > 15">{{segment.value}}%</div>
-                              <div class="segment-text text-center" *ngIf="segment.value <= 15"></div>
+                              <div class="segment-text text-center" *ngIf="segment.value">{{segment.value}}%</div>
+                              <!--<div class="segment-text text-center" *ngIf="segment.value"></div>-->
                             </div>
                           </div>
                           <div class="segment-labels clearfix">
@@ -152,13 +152,14 @@
                   <div class="radio">
                     <label>
                       <input type="radio" name="countOrPercent" checked [(ngModel)]="count" [value]="true">
-                      {{'labels.aggregate.count' | translate}}
+                      {{'labels.item.pointFormats.0' | translate}} {{'labels.item.pointFormat' | translate}}
                     </label>
                   </div>
+                  <br>
                   <div class="radio">
                     <label>
                       <input type="radio" name="countOrPercent" [(ngModel)]="count" [value]="false">
-                      {{'labels.aggregate.percent' | translate}}
+                      {{'labels.item.pointFormats.1' | translate}} {{'labels.item.pointFormat' | translate}}
                     </label>
                   </div>
                 </form>
@@ -168,20 +169,17 @@
                   <thead>
                     <tr>
                       <th class="text-center">{{'labels.item.number' | translate}}</th>
-                      <th>{{'labels.item.claim' | translate}}/{{'labels.item.target' | translate}}</th>
-                      <th class="text-center">{{'labels.item.pointCategories.0' | translate}}</th>
-                      <th class="text-center">{{'labels.item.pointCategories.1' | translate}}</th>
-                      <th class="text-center">{{'labels.item.pointCategories.2' | translate}}</th>
-                      <th class="text-center">{{'labels.item.pointCategories.3' | translate}}</th>
+                      <th>{{'labels.item.claim' | translate}}</th>
+                      <th *ngFor="let score of [0,1,2,3]" class="text-center">{{score}} {{'labels.item.points' | translate}}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of itemsByPointsEarned">
                       <td class="text-center">{{item.number}}</td>
-                      <td>{{item.name}}</td>
+                      <td><a routerLink="/groups/{{group.id}}/exams/{{item.exam.id}}/items/{{item.id}}">{{item.name}}</a></td>
                       <td *ngFor="let score of [0,1,2,3]" class="text-center">
                         <span *ngIf="item.studentsByScore[score] === undefined">{{'messages.notApplicable' | translate}}</span>
-                        <a *ngIf="item.studentsByScore[score] !== undefined" routerLink="/groups/{{group.id}}/exams/{{item.exam.id}}/items/{{item.id}}/score/{{score}}/students">
+                        <a *ngIf="item.studentsByScore[score] !== undefined" routerLink="/groups/{{group.id}}/exams/{{item.exam.id}}/items/{{item.id}}/score/{{score}}">
                           {{count ? item.studentsByScore[score] : (item.percentStudentsByScore[score] | percent)}}
                         </a>
                       </td>

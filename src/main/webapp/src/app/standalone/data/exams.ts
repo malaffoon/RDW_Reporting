@@ -110,7 +110,7 @@ export const exams = [
     grade: 5,
     assessment: {
       id: 5,
-      type: AssessmentType.ICA,
+      type: AssessmentType.IAB,
       name: 'Operations and Algebraic Thinking',
       grade: 5,
       academicYear: 2017,

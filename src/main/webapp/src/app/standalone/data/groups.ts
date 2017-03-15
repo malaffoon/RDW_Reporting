@@ -3,11 +3,11 @@ import {sortAscOn} from "../../shared/comparators";
 
 export const groups = sortAscOn([
   {
-    name: 'Anderson, Mary 4th Grade Math Noon',
+    name: 'Anderson, Mary Grade 4 Math Noon',
     size: 27
   },
   {
-    name: 'Anderson, Mary 4th Grade Math Morning',
+    name: 'Anderson, Mary Grade 4 Math Morning',
     size: 13
   },
   {
