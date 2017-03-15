@@ -31,8 +31,11 @@ export class GroupExamsComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.service.getGroupExams(params['groupId']).subscribe((group: any) => {
+      this.service.getGroupExams(params['groupId']).subscribe((data: any) => {
         this.translate.get('labels.aggregate.link').subscribe(breadcrumbName => {
+
+          let group = data.group;
+          let assessment_results = data.assessment_results;
 
           this.breadcrumbs = [
             {name: group.name, path: `/groups/${group.id}/students`},
@@ -41,10 +44,10 @@ export class GroupExamsComponent implements OnInit {
 
           this.group = group;
 
-          this.academicYearFilterOptions = Array.from(group.exams.reduce(
+          this.academicYearFilterOptions = Array.from(assessment_results.reduce(
             (values, exam) => values.add(exam.assessment.academicYear), new Set())).sort();
 
-          this.assessmentTypeFilterOptions = Array.from(group.exams.reduce(
+          this.assessmentTypeFilterOptions = Array.from(assessment_results.reduce(
             (values, exam) => values.add(exam.assessment.type), new Set())).sort();
 
           // data prep

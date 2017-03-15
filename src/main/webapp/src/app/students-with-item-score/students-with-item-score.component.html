@@ -11,11 +11,11 @@
 
           <!--<span>{{item.name}}/{{item.target}}</span>-->
           <!--<span>Max Score: {{item.maximumScore}}</span>-->
-          <!--<span>Selected Students: {{items.length}}</span>-->
+          <!--<span>Selected Students: {{mock_item_results.length}}</span>-->
 
         </div>
 
-        <div *ngIf="items" class="card student-exam-items-card">
+        <div *ngIf="item.results" class="card student-exam-items-card">
           <div class="table-wrapper">
           <table class="table table-striped">
             <thead>
@@ -29,7 +29,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of items">
+              <tr *ngFor="let item of item.results">
                 <td>{{item.student.lastName}}, {{item.student.firstName}}</td>
                 <td class="text-center">{{item.exam.grade}}</td>
                 <td class="text-center">{{item.score}}</td>

@@ -10,19 +10,16 @@ import {Observable} from "rxjs";
 })
 export class StudentsComponent implements OnInit {
 
-  private context: Observable<any>;
+  private breadcrumbs = [];
+  private group;
 
   constructor(private service: DataService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.service.getGroup(params['groupId']).subscribe((group: any) => {
-        this.context = Observable.of({
-          group: group,
-          breadcrumbs: [
-            {name: group.name}
-          ]
-        });
+      this.service.getGroup(params['groupId']).subscribe(group => {
+        this.breadcrumbs = [{name: group.name}];
+        this.group = group;
       })
     })
   }

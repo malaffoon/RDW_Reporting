@@ -16,16 +16,19 @@ export class StudentExamItemsComponent implements OnInit {
   private student: any;
   private exam: any;
   private items = [];
+  private size = 1;
 
   constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService) {
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.service.getStudentExam(params['groupId'], params['studentId'], params['examId']).subscribe(group => {
+      this.service.getStudentExam(params['groupId'], params['studentId'], params['examId']).subscribe((data:any) => {
         this.translate.get('labels.assessment.grade').subscribe(breadcrumbName => {
-          let student = group.students[0];
-          let exam = group.students[0].exams[0];
+          let group = data.group;
+          let student = data.student;
+          let exam = data.exam;
+          let items = data.items;
           this.breadcrumbs = [
             {name: group.name, path: `/groups/${group.id}/students`},
             {
@@ -37,10 +40,18 @@ export class StudentExamItemsComponent implements OnInit {
           this.group = group;
           this.student = student;
           this.exam = exam;
-          this.items = iab_items;
+          this.items = items;
         })
       })
     });
+  }
+
+  private toggleWindowSize() {
+    this.size++;
+    if (this.size > 2) {
+      this.size = 0;
+    }
+    console.log('size', this.size);
   }
 
 }

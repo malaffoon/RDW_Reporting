@@ -2,8 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {DataService} from "../shared/data.service";
 import {TranslateService} from "ng2-translate";
-import {group} from "../standalone/data/group";
-import {item_1, items as mock_items} from "../standalone/data/data";
+import {mock_item} from "../standalone/data/data";
 
 @Component({
   selector: 'students-with-item-score',
@@ -12,9 +11,7 @@ import {item_1, items as mock_items} from "../standalone/data/data";
 export class GroupExamItemComponent implements OnInit {
 
   private breadcrumbs = [];
-
   private item = null;
-  private items = [];
 
   constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService) {
   }
@@ -22,27 +19,34 @@ export class GroupExamItemComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
 
-      // branch behavior on presence of params['score']
+      let groupId = params['groupId'];
+      let examId = params['examId'];
 
-      //this.service.getGroupExamItemWithScore(params['groupId'], params['examId'], params['itemId'], params['score']).subscribe(group => {
+      (params['score'] == null
+          ? this.service.getGroupExamItem(groupId, examId, params['itemId'])
+          : this.service.getGroupExamItemWithScore(groupId, examId, params['itemId'], params['score'])
+      ).subscribe(data => {
         this.translate.get('labels.assessment.grade').subscribe(breadcrumbName => {
 
-          let exam = group.exams[0];
+          let group = data.group;
+          let exam = data.item.exam;
+          let item = Object.assign({}, data.item);
 
-          let item = item_1;
-          let items = mock_items.filter(item => item.score == parseInt(params['score']));
+          // only necessary in mock so move to standalone service
+          if (params['score'] != null) {
+            item.results = mock_item.results.filter(item => item.score == parseInt(params['score']));
+          }
 
           this.breadcrumbs = [
-            {name: group.name, path: `/groups/${group.id}/students`},
-            {name: 'Aggregate', path: `/groups/${group.id}/exams`},
+            {name: group.name, path: `/groups/${groupId}/students`},
+            {name: 'Aggregate', path: `/groups/${groupId}/exams`},
             {name: `${breadcrumbName} ${exam.assessment.grade} ${exam.assessment.name} #${item.number}`}
           ];
 
           this.item = item;
-          this.items = items;
 
         });
-      //})
+      })
     });
   }
 

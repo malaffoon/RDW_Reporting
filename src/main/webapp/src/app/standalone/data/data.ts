@@ -3,6 +3,16 @@ import {randomId, randomSsid} from "./support/generator";
 import {AssessmentType} from "../../shared/assessment-type.enum";
 import {AssessmentSubjectType} from "../../shared/assessment-subject-type.enum";
 
+/*
+  item_result
+    item
+      results (reverse)
+
+  assessment_result
+    assessment
+      results (reverse)
+ */
+
 export const iab_items = [
   {
     claim: 'Concepts and Procedures',
@@ -149,12 +159,13 @@ export const exams_of_student = [
     date: new Date(2017, 1, 20),
     performance: 2,
     score: 2520,
-    grade: 5,
+    grade: 4,
     assessment: assessments[4]
   }
 ].map((exam: any, index: number) => {
   exam.id = randomId();
   exam.items = iab_items;
+  return exam;
 });
 
 export const students = [
@@ -174,6 +185,8 @@ export const students = [
 });
 
 sortAscOn(students, student => student.lastName, student => student.firstName);
+
+export const mock_student = students[0];
 
 export const groups = [
   {name: 'Anderson, Mary Grade 4 Math Noon', size: 27},
@@ -200,9 +213,9 @@ export const exams_of_group = [
   {date: new Date(2016, 3, 20), assessment: assessments[3], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}},
   {date: new Date(2016, 2, 2), assessment: assessments[2], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}},
   {date: new Date(2016, 1, 12), assessment: assessments[4], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}}
-].map((exam:any, index: number) => {
+].map((exam:any, index: number, exams:Array<any>) => {
   exam.id = randomId();
-  exam.session = 'ma-0' + (index + 1);
+  exam.session = 'ma-0' + (exams.length - index);
   exam.grade = 4;
   exam.attempt = 1;
   return exam;
@@ -261,7 +274,7 @@ export const items_by_points_earned = [
   return item;
 });
 
-export const item_1 = {
+export const mock_item:any = {
   number: 1,
   name: 'Concepts and Procedures',
   target: 'Target F',
@@ -269,7 +282,7 @@ export const item_1 = {
   exam: exams_of_group[0]
 };
 
-export const items = [
+export const mock_item_results = [
   {attempt: 1},
   {attempt: 1},
   {attempt: 2},
@@ -280,7 +293,8 @@ export const items = [
 ].map((object:any, index:number) => {
   object.student = students[index];
   object.score = index < 2 ? 0 : 1;
-  return Object.assign(object, item_1);
+  return Object.assign(object, mock_item);
 });
 
+mock_item.results = mock_item_results;
 

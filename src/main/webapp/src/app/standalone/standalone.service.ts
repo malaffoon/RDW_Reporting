@@ -1,6 +1,6 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
-import {groups} from "./data/data";
+import {groups, mock_item, exams_of_group, mock_student, exams_of_student, iab_items} from "./data/data";
 import {group} from "./data/data";
 import {exam} from "./data/exam";
 
@@ -14,14 +14,36 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       connection.request.url = connection.request.url.replace('/api/translations', '/assets/i18n') + '.json';
     } else if (requestSignature == `GET /api/groupSummaries`) {
       body = groups;
+    } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+`, 'g').test(requestSignature)) {
+      body = {
+        group: group,
+        student: mock_student,
+        exam: exams_of_student[0],
+        items: iab_items
+      };
+    } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams`, 'g').test(requestSignature)) {
+      body = {
+        group: group,
+        student: mock_student,
+        exams: exams_of_student
+      };
     } else if (new RegExp(`GET /api/groups/\\d+/students`, 'g').test(requestSignature)) {
       body = group;
-    } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams`, 'g').test(requestSignature)) {
-      body = group;
-    } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/items`, 'g').test(requestSignature)) {
-      body = group;
+    } else if (new RegExp(`GET /api/groups/\\d+/exams/\\d+/items/\\d+/score/\\d+`, 'g').test(requestSignature)) {
+      body = {
+        group: group,
+        item: mock_item
+      };
+    } else if (new RegExp(`GET /api/groups/\\d+/exams/\\d+/items/\\d+`, 'g').test(requestSignature)) {
+      body = {
+        group: group,
+        item: mock_item
+      };
     } else if (new RegExp(`GET /api/groups/\\d+/exams`, 'g').test(requestSignature)) {
-      body = group;
+      body = {
+        group: group,
+        assessment_results: exams_of_group
+      };
     } else if (new RegExp(`GET /api/exams/\\d+`, 'g').test(requestSignature)) {
       body = exam;
     }

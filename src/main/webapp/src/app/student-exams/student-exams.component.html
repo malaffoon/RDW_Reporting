@@ -1,25 +1,25 @@
-<breadcrumbs [values]="(context|async)?.breadcrumbs"></breadcrumbs>
+<breadcrumbs [values]="breadcrumbs"></breadcrumbs>
 
 <div class="student-exams-view">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
 
-        <tabset *ngIf="(context|async)?.group.students">
+        <tabset *ngIf="group.students">
           <tab heading="{{'labels.exam.category.all' | translate}}">
-           <student-exams-categorized [category]="(context|async)?.categories.all" [context]="(context|async)"></student-exams-categorized>
+           <student-exams-categorized [category]="categories.all" [context]="{student: student, group: group}"></student-exams-categorized>
           </tab>
           <tab heading="{{'labels.exam.category.iab' | translate}}">
-            <student-exams-categorized [category]="(context|async)?.categories.iab" [context]="(context|async)"></student-exams-categorized>
+            <student-exams-categorized [category]="categories.iab" [context]="{student: student, group: group}"></student-exams-categorized>
           </tab>
           <tab heading="{{'labels.exam.category.ica' | translate}}">
-            <student-exams-categorized [category]="(context|async)?.categories.ica" [context]="(context|async)"></student-exams-categorized>
+            <student-exams-categorized [category]="categories.ica" [context]="{student: student, group: group}"></student-exams-categorized>
           </tab>
           <tab heading="{{'labels.exam.category.summative' | translate}}">
-            <student-exams-categorized [category]="(context|async)?.categories.summative" [context]="(context|async)"></student-exams-categorized>
+            <student-exams-categorized [category]="categories.summative" [context]="{student: student, group: group}"></student-exams-categorized>
           </tab>
           <tab heading="{{'labels.student.details' | translate}}">
-            <h2>{{(context|async)?.student.lastName}}, {{(context|async)?.student.firstName}}</h2>
+            <h2>{{student.lastName}}, {{student.firstName}}</h2>
           </tab>
         </tabset>
 
