@@ -64,9 +64,7 @@
       "selectedRecords": "Records Selected",
       "totalStudents": "Total # of Students",
       "averageScaleScore": "Average Scale Score",
-      "percentOfStandard": "% of Standard",
-      "count": "Count",
-      "percent": "Percent"
+      "performanceCategories": "Performance Categories"
     },
     "assessment": {
       "name": "Assessment",
@@ -98,14 +96,14 @@
       "number": "Item #",
       "claim": "Claim",
       "target": "Target",
-      "pointCategories": [
-        "Count 0 Points Earned",
-        "Count 1 Points Earned",
-        "Count 2 Points Earned",
-        "Count 3 Points Earned"
-      ]
+      "points": "Points",
+      "pointFormats": [
+        "Number",
+        "Percent"
+      ],
+      "pointFormat": "of students"
     },
-    "groups": "Groups",
+    "groups": "My Groups",
     "group": {
       "name": "Group",
       "size": "Students"

@@ -1,7 +1,7 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
-import {groups} from "./data/groups";
-import {group} from "./data/group";
+import {groups} from "./data/data";
+import {group} from "./data/data";
 import {exam} from "./data/exam";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {

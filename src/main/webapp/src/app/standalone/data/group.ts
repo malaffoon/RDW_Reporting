@@ -4,7 +4,7 @@ import {sortAscOn} from "../../shared/comparators";
 
 export const group = {
   id: randomId(),
-  name: 'Anderson, Mary 4th Grade Math Noon',
+  name: 'Anderson, Mary Grade 4 Math Noon',
   exams: exams,
   students: sortAscOn([
     {

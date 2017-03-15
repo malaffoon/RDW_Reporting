@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {DataService} from "../shared/data.service";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateService} from "ng2-translate";
+import {items_by_points_earned, exams_of_sessions, exams_of_group} from "../standalone/data/data";
 
 @Component({
   selector: 'group-exams-component',
@@ -47,44 +48,9 @@ export class GroupExamsComponent implements OnInit {
             (values, exam) => values.add(exam.assessment.type), new Set())).sort();
 
           // data prep
-          let mockExams = [
-            {session: 'ma-01', students: {total: 20, below: .25, near: .5, above: 0.25, averagePerformance: 1, averageScore: 2321}},
-            {session: 'ma-02', students: {total: 15, below: .15, near: .1, above: 0.75, averagePerformance: 1, averageScore: 2339}},
-            {session: 'ma-03', students: {total: 31, below: .75, near: .1, above: 0.15, averagePerformance: 1, averageScore: 2344}},
-            {session: 'ma-04', students: {total: 17, below: .25, near: .5, above: 0.25, averagePerformance: 1, averageScore: 2378}},
-            {session: 'ma-05', students: {total: 8, below: .15, near: .25, above: 0.6, averagePerformance: 1, averageScore: 2595}},
-            {session: 'ma-06', students: {total: 10, below: .1, near: .4, above: 0.5, averagePerformance: 1, averageScore: 2520}},
-            {session: 'ma-07', students: {total: 10, below: .1, near: .4, above: 0.5, averagePerformance: 1, averageScore: 2520}},
-            {session: 'ma-08', students: {total: 10, below: .1, near: .4, above: 0.5, averagePerformance: 1, averageScore: 2520}}
-          ];
-
-          this.group.exams = this.group.exams.map((exam, index) => Object.assign(exam, mockExams[index]));
-
-          this.itemsByPointsEarned = [
-            {name: 'Concepts and Procedures', target: 'Target F', studentsByScore: [3, 9]},
-            {name: 'Problem Solving', target: 'Target A', studentsByScore: [6, 3, 3]},
-            {name: 'Concepts and Procedures', target: 'Target F', studentsByScore: [3, 9]},
-            {name: 'Communicating Reasoning', target: 'Target E', studentsByScore: [7, 5]},
-            {name: 'Concepts and Procedures', target: 'Target G', studentsByScore: [3, 6, 3]},
-            {name: 'Concepts and Procedures', target: 'Target G', studentsByScore: [3, 9]},
-            {name: 'Concepts and Procedures', target: 'Target F', studentsByScore: [3, 9]}
-          ].map((item: any, index) => {
-            item.number = index + 1;
-            item.id = index;
-            item.exam = {id: 1};
-            item.percentStudentsByScore = item.studentsByScore.map((count, index, counts) => count / counts.reduce((total, count) => total + count), 0);
-            return item;
-          });
-
-          this.selectedRecords = [
-            {student: {lastName: 'Hayden', firstName: 'David'}, grade: 3, performance: 0, score: 2321, date: new Date(2017, 10, 14), session: 'ma-06', attempt: 1, assessment: {type: 0}},
-            {student: {lastName: 'Roach', firstName: 'Clementine'}, grade: 4, performance: 0, score: 2339, date: new Date(2017, 10, 14), session: 'ma-06', attempt: 1, assessment: {type: 0}},
-            {student: {lastName: 'Valenzuela', firstName: 'Hasad'}, grade: 4, performance: 0, score: 2344, date: new Date(2017, 10, 15), session: 'ma-08', attempt: 2, assessment: {type: 0}},
-            {student: {lastName: 'Smith', firstName: 'Joe'}, grade: 4, performance: 0, score: 2378, date: new Date(2017, 10, 15), session: 'ma-08', attempt: 2, assessment: {type: 0}},
-            {student: {lastName: 'Cleveland', firstName: 'Joseph'}, grade: 4, performance: 1, score: 2447, date: new Date(2017, 10, 15), session: 'ma-08', attempt: 2, assessment: {type: 0}},
-            {student: {lastName: 'Blankenship', firstName: 'Sara'}, grade: 4, performance: 2, score: 2595, date: new Date(2017, 10, 15), session: 'ma-08', attempt: 2, assessment: {type: 0}},
-            {student: {lastName: 'Todd', firstName: 'Linus'}, grade: 4, performance: 2, score: 2520, date: new Date(2017, 10, 15), session: 'ma-08', attempt: 2, assessment: {type: 0}}
-          ];
+          this.group.exams = exams_of_group;
+          this.itemsByPointsEarned = items_by_points_earned;
+          this.selectedRecords = exams_of_sessions;
 
           this.filter();
         });

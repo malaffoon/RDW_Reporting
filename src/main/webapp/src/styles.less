@@ -384,48 +384,77 @@ html, body {
   color rules need to account for 1,2,3[4?] segment cases
  */
 .horizontal-bar-chart {
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 6px 0;
-  }
+   table {
+     width: 100%;
+     border-collapse: separate;
+     border-spacing: 6px 0;
+   }
+   margin-top: 18px;
+   .segment,
+   .segment-label {
+     margin: 0 3px;
+     float: left;
+   }
+   .segment {
+     color: #fff;
+     height: 60px;
+     .segment-text {
+       margin-top: 12px;
+       font-size: 125%;
+       text-shadow: 1px 1px 3px #000;
+     }
+   }
+   .segment-labels {
+     margin-top: 12px;
+   }
+   .segment-label {
+     font-size: 125%;
+   }
+   .segment.segment-0 {
+     background-color: @color-below;
+     :after {
+       margin-top: -12px;
+       content: "";
+       display: block;
+       float: left;
+       border-top: 30px solid #fff;
+       border-bottom: 30px solid #fff;
+       border-right: 20px solid @color-below;
+     }
+   }
+   .segment.segment-1 {
+     background-color: @color-near;
+   }
+   .segment.segment-2 {
+     background-color: @color-above;
+     :after {
+       margin-top: -12px;
+       content: "";
+       display: block;
+       float: right;
+       border-top: 30px solid #fff;
+       border-bottom: 30px solid #fff;
+       border-left: 20px solid @color-above;
+     }
+   }
+ }
+
+
+.stacked-horizontal-bar-chart {
   margin-top: 18px;
-  .segment,
-  .segment-label {
-    margin: 0 3px;
-    float: left;
-  }
-  .segment {
-    color: #fff;
-    height: 60px;
-    font-size: 175%;
-    .segment-text {
-      margin-top:12px;
-    }
-  }
-  .segment-labels {
-    margin-top: 12px;
-  }
-  .segment-label {
-    font-size: 125%;
-  }
-  .segment.segment-0 {
-    background-color: @color-below;
-    :after {
+  /*.bars {
+    clip-path: url("#stacked-horizontal-bar-chart-clip-path")
+  }*/
+  .bars>.mask {
+    /*:after {
       margin-top: -12px;
-      content: "";
+      content: " ";
       display: block;
       float: left;
       border-top: 30px solid #fff;
       border-bottom: 30px solid #fff;
-      border-right: 20px solid @color-below;
+      border-right: 20px solid transparent;
     }
-  }
-  .segment.segment-1 {
-    background-color: @color-near;
-  }
-  .segment.segment-2 {
-    background-color: @color-above;
     :after {
       margin-top: -12px;
       content: "";
@@ -433,7 +462,44 @@ html, body {
       float: right;
       border-top: 30px solid #fff;
       border-bottom: 30px solid #fff;
-      border-left: 20px solid @color-above;
+      border-left: 20px solid transparent;
     }
+  */
+
+  }
+  .bar,
+  .bar-label {
+    float: left;
+  }
+  .bar {
+    color: #fff;
+    height: 60px;
+    .bar-text {
+      margin-top: 12px;
+      font-size: 125%;
+      text-shadow: 1px 1px 2px #000;
+    }
+  }
+  .bar-labels {
+    margin-top: 12px;
+  }
+  .bar-label {
+    font-size: 125%;
+  }
+  .bar-text,
+  .bar-label {
+    text-align: center;
+  }
+  .bar.bar-0 {
+    background-color: @color-danger;
+  }
+  .bar.bar-1 {
+    background-color: @color-below;
+  }
+  .bar.bar-2 {
+    background-color: @color-near;
+  }
+  .bar.bar-3 {
+    background-color: @color-above;
   }
 }
