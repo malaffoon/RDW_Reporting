@@ -5,10 +5,10 @@ import {sortAscOn} from "../shared/comparators";
 import {Observable} from "rxjs";
 
 @Component({
-  selector: 'students-component',
-  templateUrl: 'students.component.html'
+  selector: 'group-students-component',
+  templateUrl: 'group-students.component.html'
 })
-export class StudentsComponent implements OnInit {
+export class GroupStudentsComponent implements OnInit {
 
   private breadcrumbs = [];
   private group;

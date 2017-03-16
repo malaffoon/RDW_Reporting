@@ -1,25 +1,21 @@
 import {Component, OnInit} from "@angular/core";
 import {DataService} from "../shared/data.service";
-import {Group} from "../shared/group";
 
 @Component({
-  selector: 'groups-component',
-  templateUrl: './groups.component.html'
+  selector: 'groups',
+  templateUrl: 'groups.component.html'
 })
 export class GroupsComponent implements OnInit {
 
-  private groups: Array<Group> = null;
+  private breadcrumbs = [];
+  private groups = [];
 
   constructor(private service: DataService) {}
 
   ngOnInit() {
-    this.service.getGroupSummaries()
-      .subscribe(groups => {
-          this.groups = groups;
-        },
-        error => {
-          console.error(error);
-        })
+    this.service.getGroupSummaries().subscribe(groups => {
+      this.groups = groups;
+    })
   }
 
 }

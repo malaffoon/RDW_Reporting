@@ -1,18 +1,18 @@
-import {HomeComponent} from "../home/home.component";
-import {StudentsComponent} from "../students/students.component";
+import {GroupsComponent} from "../groups/groups.component";
+import {GroupStudentsComponent} from "../group-students/group-students.component";
 import {StudentExamsComponent} from "../student-exams/student-exams.component";
 import {GroupExamsComponent} from "../group-exams/group-exams.component";
 import {StudentExamItemsComponent} from "../student-exam-items/student-exam-items.component";
-import {GroupExamItemComponent} from "../students-with-item-score/students-with-item-score.component";
+import {GroupExamItemComponent} from "../group-exam-item/group-exam-item.component";
 
 export const routes = [
   {
     path: '',
-    component: HomeComponent
+    component: GroupsComponent
   },
   {
     path: 'groups/:groupId/students',
-    component: StudentsComponent
+    component: GroupStudentsComponent
   },
   {
     path: 'groups/:groupId/exams',

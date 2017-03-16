@@ -1,4 +1,4 @@
-import {Component, Optional} from "@angular/core";
+import {Component} from "@angular/core";
 import {TranslateService} from 'ng2-translate';
 
 @Component({
@@ -7,7 +7,7 @@ import {TranslateService} from 'ng2-translate';
 })
 export class AppComponent {
 
-  user : any;
+  private user;
 
   constructor(private translate: TranslateService) {
 

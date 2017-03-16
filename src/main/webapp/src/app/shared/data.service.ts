@@ -3,8 +3,6 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
-import {Exam} from "./exam";
-import {Group} from "./group";
 
 @Injectable()
 export class DataService {
@@ -17,15 +15,15 @@ export class DataService {
       .map(response => response.json());
   }
 
-  getGroupSummaries(): Observable<Array<Group>> {
+  getGroupSummaries(): Observable<Array<any>> {
     return this.get(`/api/groupSummaries`);
   }
 
-  getGroup(id: number): Observable<Group> {
+  getGroup(id: number): Observable<any> {
     return this.get(`/api/groups/${id}/students`);
   }
 
-  getGroupExams(id: number): Observable<Group> {
+  getGroupExams(id: number): Observable<any> {
     return this.get(`/api/groups/${id}/exams`);
   }
 
@@ -37,15 +35,15 @@ export class DataService {
     return this.get(`/api/groups/${groupId}/exams/${examId}/items/${itemId}`);
   }
 
-  getStudentExams(groupId: number, studentId: number): Observable<Group> {
+  getStudentExams(groupId: number, studentId: number): Observable<any> {
     return this.get(`/api/groups/${groupId}/students/${studentId}/exams`);
   }
 
-  getStudentExam(groupId: number, studentId: number, examId: number): Observable<Group> {
+  getStudentExam(groupId: number, studentId: number, examId: number): Observable<any> {
     return this.get(`/api/groups/${groupId}/students/${studentId}/exams/${examId}`);
   }
 
-  getExam(id: number): Observable<Exam> {
+  getExam(id: number): Observable<any> {
     return this.get(`/api/exams/${id}`);
   }
 
