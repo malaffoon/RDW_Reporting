@@ -11,6 +11,8 @@ import {mock_item} from "../standalone/data/data";
 export class GroupExamItemComponent implements OnInit {
 
   private breadcrumbs = [];
+  private group = null;
+  private exam = null;
   private item = null;
 
   constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService) {
@@ -43,7 +45,9 @@ export class GroupExamItemComponent implements OnInit {
             {name: `${breadcrumbName} ${exam.assessment.grade} ${exam.assessment.name} #${item.number}`}
           ];
 
+          this.group = group;
           this.item = item;
+          this.exam = exam;
 
         });
       })
