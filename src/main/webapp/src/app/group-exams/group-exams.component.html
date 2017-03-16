@@ -67,9 +67,9 @@
                     1).toString().substr(-2)}}
                   </td>
                   <td>{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</td>
-                  <td class="text-center">{{exam.students.below | percent}}</td>
-                  <td class="text-center">{{exam.students.near | percent}}</td>
-                  <td class="text-center">{{exam.students.above | percent}}</td>
+                  <td class="text-center">{{exam.students.below | percent:'1.0-0'}}</td>
+                  <td class="text-center">{{exam.students.near | percent:'1.0-0'}}</td>
+                  <td class="text-center">{{exam.students.above | percent:'1.0-0'}}</td>
                   <td class="text-center"><span class="badge performance-level-{{exam.students.averagePerformance}}">{{exam.students.averageScore}}</span>
                   </td>
                 </tr>
@@ -148,14 +148,15 @@
 
             <div *ngIf="selectedExams.size" class="items-by-points-earned">
               <div class="tab-header">
-                <form class="form-inline text-right">
+                {{(selectionSummary.end == null ? 'labels.aggregate.selectionSummary' : 'labels.aggregate.selectionSummaryWithDateRange') | translate:selectionSummary}}
+                <form class="form-inline pull-right">
                   <div class="radio">
                     <label>
                       <input type="radio" name="countOrPercent" checked [(ngModel)]="count" [value]="true">
-                      {{'labels.item.pointFormats.0' | translate}} {{'labels.item.pointFormat' | translate}}
+                      {{'labels.item.pointFormats.0' | translate}}
                     </label>
                   </div>
-                  <br>
+                  &nbsp;
                   <div class="radio">
                     <label>
                       <input type="radio" name="countOrPercent" [(ngModel)]="count" [value]="false">
@@ -180,7 +181,7 @@
                       <td *ngFor="let score of [0,1,2,3]" class="text-center">
                         <span *ngIf="item.studentsByScore[score] === undefined">{{'messages.notApplicable' | translate}}</span>
                         <a *ngIf="item.studentsByScore[score] !== undefined" routerLink="/groups/{{group.id}}/exams/{{item.exam.id}}/items/{{item.id}}/score/{{score}}">
-                          {{count ? item.studentsByScore[score] : (item.percentStudentsByScore[score] | percent)}}
+                          {{count ? item.studentsByScore[score] : (item.percentStudentsByScore[score] | percent:'1.0-0')}}
                         </a>
                       </td>
                     </tr>
@@ -194,7 +195,9 @@
           </tab>
           <tab heading="{{'labels.aggregate.selectedRecords' | translate}}">
             <div *ngIf="selectedExams.size" class="selected-records">
-              <div class="tab-header"></div>
+              <div class="tab-header">
+                {{(selectionSummary.end == null ? 'labels.aggregate.selectionSummary' : 'labels.aggregate.selectionSummaryWithDateRange') | translate:selectionSummary}}
+              </div>
               <div class="table-wrapper">
                 <table class="table table-striped">
                   <thead>

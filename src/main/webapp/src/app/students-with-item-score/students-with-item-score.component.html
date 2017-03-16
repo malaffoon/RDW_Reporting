@@ -7,11 +7,13 @@
 
         <div class="page-heading">
 
-          <h2>{{'labels.item.number' | translate}} {{item.number}}</h2>
+          <h2>{{'labels.item.number' | translate}}{{item.number}} {{item.name}}</h2>
 
-          <!--<span>{{item.name}}/{{item.target}}</span>-->
-          <!--<span>Max Score: {{item.maximumScore}}</span>-->
-          <!--<span>Selected Students: {{mock_item_results.length}}</span>-->
+          <span class="attributes">
+            <span class="attribute"><span>Subject:</span> <span class="attribute-value">{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</span></span>
+            <span class="attribute"><span>Target:</span> <span class="attribute-value">{{item.target}}</span></span>
+            <span class="attribute"><span>Max Score:</span> <span class="attribute-value">{{item.maximumScore}}</span></span>
+          </span>
 
         </div>
 

@@ -3,6 +3,8 @@ import {DataService} from "../shared/data.service";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateService} from "ng2-translate";
 import {items_by_points_earned, exams_of_sessions, exams_of_group} from "../standalone/data/data";
+import {sortDescOn} from "../shared/comparators";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'group-exams-component',
@@ -25,6 +27,8 @@ export class GroupExamsComponent implements OnInit {
   private itemsByPointsEarned = [];
   private combinedSelectedAssessments = null;
   private selectedRecords = [];
+
+  private selectionSummary = null;
 
   constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService) {
   }
@@ -115,6 +119,7 @@ export class GroupExamsComponent implements OnInit {
 
     if (exams.length == 0) {
       this.combinedSelectedAssessments = null;
+      this.selectionSummary = null;
     } else {
 
       let segments = [{label:'Below', value: 0}, {label: 'Near', value: 0}, {label: 'Above', value:0}];
@@ -134,6 +139,22 @@ export class GroupExamsComponent implements OnInit {
         averageScaleScore: Math.floor(exams.reduce((value, exam) => value + exam.students.averageScore, 0) / exams.length),
         segments: segments
       };
+
+      // date range
+      let examsSortedByDate = sortDescOn(exams.slice(), exam => exam.date);
+
+      this.translate.get('assessment.subjects.' + this.selectedAssessment.subject +'.shortName').subscribe(subjectName => {
+        this.selectionSummary = {
+          total: exams.reduce((total:any, exam:any) => total + exam.students.total, 0),
+          start: new DatePipe(this.translate.currentLang).transform(examsSortedByDate[0].date, 'dd-MMM-yy'),
+          end: examsSortedByDate.length < 2 ? null : new DatePipe(this.translate.currentLang).transform(examsSortedByDate[examsSortedByDate.length - 1].date, 'dd-MMM-yy'),
+          assessmentGrade: this.selectedAssessment.grade,
+          assessmentName: this.selectedAssessment.name,
+          assessmentAcademicYear: this.selectedAssessment.academicYear,
+          assessmentSubject: subjectName
+        }
+      })
+
     }
   }
 

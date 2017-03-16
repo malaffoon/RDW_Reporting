@@ -1,6 +1,5 @@
 {
-  "HELLO": "HELLO WORLD!",
-  "welcome": "Welcome",
+  "welcome": "Welcome {{firstName}} {{lastName}}",
   "application": {
     "title": "Interim Item Reporting"
   },
@@ -64,7 +63,9 @@
       "selectedRecords": "Records Selected",
       "totalStudents": "Total # of Students",
       "averageScaleScore": "Average Scale Score",
-      "performanceCategories": "Performance Categories"
+      "performanceCategories": "Performance Categories",
+      "selectionSummary": "Selected: {{total}} assessment taken on {{start}} Grade {{assessmentGrade}} {{assessmentName}} {{assessmentAcademicYear}} {{assessmentSubject}}",
+      "selectionSummaryWithDateRange": "Selected: {{total}} assessments taken from {{start}}, {{end}} Grade {{assessmentGrade}} {{assessmentName}} {{assessmentAcademicYear}} {{assessmentSubject}}"
     },
     "assessment": {
       "name": "Assessment",
