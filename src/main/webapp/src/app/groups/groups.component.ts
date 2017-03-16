@@ -4,8 +4,7 @@ import {Group} from "../shared/group";
 
 @Component({
   selector: 'groups-component',
-  templateUrl: './groups.component.html',
-  styleUrls: ['groups.component.less']
+  templateUrl: './groups.component.html'
 })
 export class GroupsComponent implements OnInit {
 

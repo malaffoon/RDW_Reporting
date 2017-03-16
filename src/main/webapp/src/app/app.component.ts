@@ -3,8 +3,7 @@ import {TranslateService} from 'ng2-translate';
 
 @Component({
   selector: 'app-component',
-  templateUrl: './app.component.html',
-  styleUrls: ['app.component.less']
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
 
