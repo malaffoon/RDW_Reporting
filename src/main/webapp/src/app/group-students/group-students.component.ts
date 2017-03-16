@@ -12,14 +12,19 @@ export class GroupStudentsComponent implements OnInit {
 
   private breadcrumbs = [];
   private group;
+  private students;
 
   constructor(private service: DataService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.service.getGroup(params['groupId']).subscribe(group => {
+      this.service.getGroup(params['groupId']).subscribe(data => {
+        let group = data.group;
+        let students = data.students;
+
         this.breadcrumbs = [{name: group.name}];
         this.group = group;
+        this.students = students;
       })
     })
   }

@@ -204,6 +204,8 @@ export const groups = [
 
 sortAscOn(groups, group => group.name);
 
+export const mock_group = groups[0];
+
 export const exams_of_group = [
   {date: new Date(2017, 1, 15), assessment: assessments[0], students: {total: 6, below: .33, near: .33, above: .33, averagePerformance: 1, averageScore: 2350}},
   {date: new Date(2017, 1, 14), assessment: assessments[0], students: {total: 2, below: 0, near: .5, above: .5, averagePerformance: 2, averageScore: 2400}},

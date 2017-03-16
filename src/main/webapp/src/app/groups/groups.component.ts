@@ -13,7 +13,7 @@ export class GroupsComponent implements OnInit {
   constructor(private service: DataService) {}
 
   ngOnInit() {
-    this.service.getGroupSummaries().subscribe(groups => {
+    this.service.getGroups().subscribe(groups => {
       this.groups = groups;
     })
   }
