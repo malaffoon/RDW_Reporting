@@ -2,8 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {DataService} from "../shared/data.service";
 import {TranslateService} from "ng2-translate";
-import {Observable} from "rxjs";
-import {iab_items} from "../standalone/data/iab-items";
 
 @Component({
   selector: 'student-exam-items',
