@@ -1,14 +1,13 @@
-import {Component, Optional} from "@angular/core";
+import {Component} from "@angular/core";
 import {TranslateService} from 'ng2-translate';
 
 @Component({
   selector: 'app-component',
-  templateUrl: './app.component.html',
-  styleUrls: ['app.component.less']
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
 
-  user : any;
+  private user;
 
   constructor(private translate: TranslateService) {
 

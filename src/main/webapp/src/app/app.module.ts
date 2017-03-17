@@ -10,17 +10,17 @@ import {DataService} from "./shared/data.service";
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 import {environment} from "../environments/environment";
 import {standaloneProviders} from "./standalone/standalone.service";
-import {StudentsComponent} from "./students/students.component";
+import {GroupStudentsComponent} from "./group-students/group-students.component";
 import {StudentExamsComponent} from "./student-exams/student-exams.component";
 import {GroupExamsComponent} from "./group-exams/group-exams.component";
 import {routes} from "./shared/routes";
-import {HomeComponent} from "./home/home.component";
-import { StudentExamItemsComponent } from './student-exam-items/student-exam-items.component';
-import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
+import {GroupsComponent} from "./groups/groups.component";
+import {StudentExamItemsComponent} from "./student-exam-items/student-exam-items.component";
+import {BreadcrumbsComponent} from "./breadcrumbs/breadcrumbs.component";
 import {SearchPipe} from "./search.pipe";
 import {BreadcrumbComponent} from "./breadcrumbs/breadcrumb.component";
 import {StudentExamsCategorizedComponent} from "./student-exams/student-exams-categorized.component";
-import {GroupExamItemComponent} from "./students-with-item-score/students-with-item-score.component";
+import {GroupExamItemComponent} from "./group-exam-item/group-exam-item.component";
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -31,8 +31,8 @@ export function createTranslateLoader(http: Http) {
     PadStartPipe,
     SearchPipe,
     AppComponent,
-    HomeComponent,
-    StudentsComponent,
+    GroupsComponent,
+    GroupStudentsComponent,
     StudentExamsComponent,
     StudentExamsCategorizedComponent,
     GroupExamsComponent,

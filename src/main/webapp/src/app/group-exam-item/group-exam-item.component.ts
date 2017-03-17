@@ -5,8 +5,8 @@ import {TranslateService} from "ng2-translate";
 import {mock_item} from "../standalone/data/data";
 
 @Component({
-  selector: 'students-with-item-score',
-  templateUrl: 'students-with-item-score.component.html'
+  selector: 'group-exam-item',
+  templateUrl: 'group-exam-item.component.html'
 })
 export class GroupExamItemComponent implements OnInit {
 

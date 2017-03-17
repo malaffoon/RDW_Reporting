@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {Breadcrumb} from "./breadcrumb";
 
 @Component({
   selector: 'breadcrumb',

@@ -6,7 +6,7 @@ import {Observable} from "rxjs";
 import {iab_items} from "../standalone/data/iab-items";
 
 @Component({
-  selector: 'app-student-exam-items',
+  selector: 'student-exam-items',
   templateUrl: './student-exam-items.component.html'
 })
 export class StudentExamItemsComponent implements OnInit {

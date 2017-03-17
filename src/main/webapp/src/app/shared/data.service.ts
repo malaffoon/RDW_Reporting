@@ -3,8 +3,6 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
-import {Exam} from "./exam";
-import {Group} from "./group";
 
 @Injectable()
 export class DataService {
@@ -13,40 +11,40 @@ export class DataService {
 
   private get(url): Observable<any> {
     return this.http
-      .get(url)
+      .get(`/api${url}`)
       .map(response => response.json());
   }
 
-  getGroupSummaries(): Observable<Array<Group>> {
-    return this.get(`/api/groupSummaries`);
+  getGroups(): Observable<Array<any>> {
+    return this.get(`/groups`);
   }
 
-  getGroup(id: number): Observable<Group> {
-    return this.get(`/api/groups/${id}/students`);
+  getGroup(id: number): Observable<any> {
+    return this.get(`/groups/${id}/students`);
   }
 
-  getGroupExams(id: number): Observable<Group> {
-    return this.get(`/api/groups/${id}/exams`);
-  }
-
-  getGroupExamItemWithScore(groupId: number, examId: number, itemId: number, score: number) {
-    return this.get(`/api/groups/${groupId}/exams/${examId}/items/${itemId}/score/${score}`);
+  getGroupExams(id: number): Observable<any> {
+    return this.get(`/groups/${id}/exams`);
   }
 
   getGroupExamItem(groupId: number, examId: number, itemId: number) {
-    return this.get(`/api/groups/${groupId}/exams/${examId}/items/${itemId}`);
+    return this.get(`/groups/${groupId}/exams/${examId}/items/${itemId}`);
   }
 
-  getStudentExams(groupId: number, studentId: number): Observable<Group> {
-    return this.get(`/api/groups/${groupId}/students/${studentId}/exams`);
+  getGroupExamItemWithScore(groupId: number, examId: number, itemId: number, score: number) {
+    return this.get(`/groups/${groupId}/exams/${examId}/items/${itemId}/score/${score}`);
   }
 
-  getStudentExam(groupId: number, studentId: number, examId: number): Observable<Group> {
-    return this.get(`/api/groups/${groupId}/students/${studentId}/exams/${examId}`);
+  getStudentExams(groupId: number, studentId: number): Observable<any> {
+    return this.get(`/groups/${groupId}/students/${studentId}/exams`);
   }
 
-  getExam(id: number): Observable<Exam> {
-    return this.get(`/api/exams/${id}`);
+  getStudentExam(groupId: number, studentId: number, examId: number): Observable<any> {
+    return this.get(`/groups/${groupId}/students/${studentId}/exams/${examId}`);
+  }
+
+  getExam(id: number): Observable<any> {
+    return this.get(`/exams/${id}`);
   }
 
 }
