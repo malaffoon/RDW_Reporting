@@ -21,6 +21,7 @@ import {SearchPipe} from "./search.pipe";
 import {BreadcrumbComponent} from "./breadcrumbs/breadcrumb.component";
 import {StudentExamsCategorizedComponent} from "./student-exams/student-exams-categorized.component";
 import {GroupExamItemComponent} from "./group-exam-item/group-exam-item.component";
+import { HomeComponent } from './home/home.component';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -39,7 +40,8 @@ export function createTranslateLoader(http: Http) {
     StudentExamItemsComponent,
     GroupExamItemComponent,
     BreadcrumbsComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

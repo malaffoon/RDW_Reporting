@@ -105,6 +105,7 @@
       "pointFormat": "of students"
     },
     "groups": "My Groups",
+    "home" : "Home",
     "group": {
       "name": "Group",
       "size": "Students"
