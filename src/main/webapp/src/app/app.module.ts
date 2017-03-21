@@ -15,6 +15,7 @@ import {StudentExamsComponent} from "./student-exams/student-exams.component";
 import {GroupExamsComponent} from "./group-exams/group-exams.component";
 import {routes} from "./shared/routes";
 import {GroupsComponent} from "./groups/groups.component";
+import {HomeComponent} from "./home/home.component";
 import {StudentExamItemsComponent} from "./student-exam-items/student-exam-items.component";
 import {BreadcrumbsComponent} from "./breadcrumbs/breadcrumbs.component";
 import {SearchPipe} from "./search.pipe";
@@ -42,6 +43,7 @@ export function createTranslateLoader(http: Http) {
     GroupExamItemComponent,
     BreadcrumbsComponent,
     BreadcrumbComponent,
+    HomeComponent,
     StudentExamReportComponent,
     IabReportComponent
   ],

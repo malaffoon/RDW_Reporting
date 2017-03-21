@@ -1,3 +1,4 @@
+import {HomeComponent} from "../home/home.component";
 import {GroupsComponent} from "../groups/groups.component";
 import {GroupStudentsComponent} from "../group-students/group-students.component";
 import {StudentExamsComponent} from "../student-exams/student-exams.component";
@@ -9,6 +10,10 @@ import {StudentExamReportComponent} from "../student-exam-report/student-exam-re
 export const routes = [
   {
     path: '',
+    component: HomeComponent
+  },
+  {
+    path: 'groups',
     component: GroupsComponent
   },
   {

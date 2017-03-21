@@ -14,8 +14,8 @@ export class BreadcrumbsComponent {
 
   @Input()
   set values(values: Array<any>) {
-    this.translate.get('labels.groups').subscribe(value => {
-      this.crumbs = [{path: '/', name: value}].concat(values);
+    this.translate.get(['labels.home', 'labels.groups']).subscribe((values) => {
+      this.crumbs = [{path: '/', name: values['labels.home']}, {path:'/groups', name: values['labels.groups'] }].concat(values);
     });
   }
 
