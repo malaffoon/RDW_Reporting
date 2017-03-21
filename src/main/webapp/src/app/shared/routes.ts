@@ -5,6 +5,7 @@ import {StudentExamsComponent} from "../student-exams/student-exams.component";
 import {GroupExamsComponent} from "../group-exams/group-exams.component";
 import {StudentExamItemsComponent} from "../student-exam-items/student-exam-items.component";
 import {GroupExamItemComponent} from "../group-exam-item/group-exam-item.component";
+import {StudentExamReportComponent} from "../student-exam-report/student-exam-report.component";
 
 export const routes = [
   {
@@ -38,5 +39,9 @@ export const routes = [
   {
     path: 'groups/:groupId/students/:studentId/exams/:examId/items',
     component: StudentExamItemsComponent
+  },
+  {
+    path: 'groups/:groupId/students/:studentId/exams/:examId/report',
+    component: StudentExamReportComponent
   }
 ];

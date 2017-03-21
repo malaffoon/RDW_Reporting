@@ -9,6 +9,8 @@
 
           <h2>{{'labels.assessment.grade' | translate}} {{exam.assessment.grade}} {{exam.assessment.name}}</h2>
 
+          <a class="btn btn-default" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams/{{exam.id}}/report">Report</a>
+
           <span class="attributes">
             <span class="attribute"><span>Subject:</span> <span class="attribute-value">{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</span></span>
             <span class="attribute"><span>Academic Year:</span> <span class="attribute-value">{{exam.assessment.academicYear}}</span></span>

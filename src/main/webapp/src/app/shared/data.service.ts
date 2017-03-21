@@ -43,8 +43,8 @@ export class DataService {
     return this.get(`/groups/${groupId}/students/${studentId}/exams/${examId}`);
   }
 
-  getExam(id: number): Observable<any> {
-    return this.get(`/exams/${id}`);
+  getStudentExamReport(groupId: number, studentId: number, examId: number): Observable<any> {
+    return this.get(`/groups/${groupId}/students/${studentId}/exams/${examId}/report`);
   }
 
 }

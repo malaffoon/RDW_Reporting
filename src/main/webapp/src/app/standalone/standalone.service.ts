@@ -12,6 +12,10 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       connection.request.url = connection.request.url.replace('/api/translations', '/assets/i18n') + '.json';
     } else if (requestSignature == `GET /api/groups`) {
       body = groups;
+    } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/report`, 'g').test(requestSignature)) {
+      body = {
+        //report
+      };
     } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+`, 'g').test(requestSignature)) {
       body = {
         group: mock_group,
