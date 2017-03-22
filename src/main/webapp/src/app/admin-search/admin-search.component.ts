@@ -13,18 +13,25 @@ export class AdminSearchComponent implements OnInit {
   private students;
   private group;
   private searchTerm : string;
+  private breadcrumbs = [];
 
   constructor(private translate: TranslateService, private service : DataService, private route : ActivatedRoute, private router : Router) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe( res => {
-      this.searchTerm = res['q'];
-      if(this.searchTerm)
-        this.search(this.searchTerm);
-    });
 
     this.translate.get('labels.search').subscribe( (searchContent) => {
       this.content = searchContent;
+      this.route.queryParams.subscribe( res => {
+        this.searchTerm = res['q'];
+        if(this.searchTerm) {
+          this.search(this.searchTerm);
+          this.breadcrumbs = [{name: this.content.results }];
+        }
+        else{
+          this.breadcrumbs = [];
+          this.students = undefined;
+        }
+      });
     })
   }
 
