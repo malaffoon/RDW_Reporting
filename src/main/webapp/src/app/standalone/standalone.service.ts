@@ -54,13 +54,11 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
     }
     else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
-      let studentsResult = new List<any>(students)
-        .Where(x =>
-            x.ssid.toString().startsWith(query)
+      let studentsResult = students.filter(x => 
+          x.ssid.toString().startsWith(query)
           || x.firstName.toLowerCase().startsWith(query)
           || x.lastName.toLowerCase().startsWith(query)
-        )
-        .ToArray();
+      );
 
       body = {
         group: mock_group,
