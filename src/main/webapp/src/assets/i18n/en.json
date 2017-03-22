@@ -115,7 +115,7 @@
     },
     "search" : {
       "title":"Student Search",
-      "placeholder": "Search by student id",
+      "placeholder": "Search by student ssid or name",
       "search_button": "Go"
     },
     "school": {

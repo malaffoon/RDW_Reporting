@@ -1,6 +1,7 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students} from "./data/data";
+import {List} from "linqts";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
 
@@ -9,7 +10,6 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
     let body: any = null;
     let requestSignature: string = `${RequestMethod[connection.request.method].toUpperCase()} ${connection.request.url}`;
 
-    console.log(requestSignature);
     if (new RegExp(`GET /api/translations/\\w+`, 'g').test(requestSignature)) {
       connection.request.url = connection.request.url.replace('/api/translations', '/assets/i18n') + '.json';
     } else if (requestSignature == `GET /api/groups`) {
@@ -51,11 +51,20 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
         group: mock_group,
         assessment_results: exams_of_group
       };
-    } //GET /api/students/search?ssid=21
+    }
     else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
+      let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
+      let studentsResult = new List<any>(students)
+        .Where(x =>
+            x.ssid.toString().startsWith(query)
+          || x.firstName.toLowerCase().startsWith(query)
+          || x.lastName.toLowerCase().startsWith(query)
+        )
+        .ToArray();
+
       body = {
         group: mock_group,
-        students: students
+        students: studentsResult
       };
     }
 
