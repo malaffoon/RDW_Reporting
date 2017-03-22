@@ -24,6 +24,7 @@ import {StudentExamsCategorizedComponent} from "./student-exams/student-exams-ca
 import {GroupExamItemComponent} from "./group-exam-item/group-exam-item.component";
 import {StudentExamReportComponent} from "./student-exam-report/student-exam-report.component";
 import {IabReportComponent} from "./student-exam-report/iab-report.component";
+import { AdminSearchComponent } from './admin-search/admin-search.component';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -45,7 +46,8 @@ export function createTranslateLoader(http: Http) {
     BreadcrumbComponent,
     HomeComponent,
     StudentExamReportComponent,
-    IabReportComponent
+    IabReportComponent,
+    AdminSearchComponent
   ],
   imports: [
     BrowserModule,

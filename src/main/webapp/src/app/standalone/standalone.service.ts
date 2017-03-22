@@ -8,6 +8,8 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
 
     let body: any = null;
     let requestSignature: string = `${RequestMethod[connection.request.method].toUpperCase()} ${connection.request.url}`;
+
+    console.log(requestSignature);
     if (new RegExp(`GET /api/translations/\\w+`, 'g').test(requestSignature)) {
       connection.request.url = connection.request.url.replace('/api/translations', '/assets/i18n') + '.json';
     } else if (requestSignature == `GET /api/groups`) {
@@ -48,6 +50,12 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = {
         group: mock_group,
         assessment_results: exams_of_group
+      };
+    } //GET /api/students/search?ssid=21
+    else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
+      body = {
+        group: mock_group,
+        students: students
       };
     }
 

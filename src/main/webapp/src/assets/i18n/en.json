@@ -113,6 +113,11 @@
     "district": {
       "name": "District"
     },
+    "search" : {
+      "title":"Student Search",
+      "placeholder": "Search by student id",
+      "search_button": "Go"
+    },
     "school": {
       "name": "School"
     },
