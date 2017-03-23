@@ -10,6 +10,7 @@
           <h2>{{'labels.assessment.grade' | translate}} {{exam.assessment.grade}} {{exam.assessment.name}}</h2>
 
           <a class="btn btn-default" routerLink="/groups/{{group.id}}/students/{{student.id}}/exams/{{exam.id}}/report">Report</a>
+          <a class="btn btn-default" (click)="callIris()">Call IRiS</a>
 
           <span class="attributes">
             <span class="attribute"><span>Subject:</span> <span class="attribute-value">{{'assessment.subjects.' + exam.assessment.subject + '.shortName' | translate}}</span></span>
@@ -61,7 +62,9 @@
           <tabset>
             <tab heading="Item Viewer">
               <div style="overflow-x:hidden;overflow-y:scroll">
-                <img src="../../assets/image/IRIS2.png" style="width:50%;margin:-64px -90px">
+                <iframe #irisframe src="https://tds-stage.smarterbalanced.org/iris/" width="1000" height="650" frameborder="0"></iframe>
+
+                <!--<img src="../../assets/image/IRIS2.png" style="width:50%;margin:-64px -90px">-->
               </div>
             </tab>
             <tab heading="Rubric and Exemplar">
