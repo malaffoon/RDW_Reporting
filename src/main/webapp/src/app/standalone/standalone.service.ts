@@ -1,7 +1,6 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students} from "./data/data";
-import {List} from "linqts";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
 
