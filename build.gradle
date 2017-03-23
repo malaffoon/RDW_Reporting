@@ -47,7 +47,7 @@ dependencies {
     compile('org.projectlombok:lombok:1.16.12')
     compile('com.google.guava:guava:20.0')
     compile('org.postgresql:postgresql:9.4.1212')
-    compile('mysql:mysql-connector-java:+')
+    compile('mysql:mysql-connector-java:5.1.39')
     compile("org.immutables:value:2.4.3")
     compile("com.itextpdf:itextpdf:5.5.10")
     compile("com.itextpdf:itext-pdfa:5.5.10")
@@ -73,8 +73,13 @@ node {
 //Hopefully this allows us to hot add resources
 bootRun {
     addResources = true
+    if ( project.hasProperty('jvmArgs') ) {
+        jvmArgs project.jvmArgs.split('\\s+')
+    }
 }
-
+bootRepackage {
+    mainClass = 'org.opentestsystem.rdw.reporting.Application'
+}
 
 //This is the build task for the Front End (Fe) and only compiles when the inputs change
 task buildFe(type: NpmTask) {
