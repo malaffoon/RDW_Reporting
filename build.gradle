@@ -1,25 +1,32 @@
 buildscript {
-    ext {
-        springBootVersion = '1.5.1.RELEASE'
-    }
     repositories {
-        mavenCentral()
+        mavenLocal()
+        jcenter()
+        maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+        classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+        classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
     }
 }
 
 plugins {
     id "com.moowork.node" version "1.1.1"
-    id 'org.springframework.boot' version '1.5.1.RELEASE'
     id "net.ltgt.apt" version "0.9"
 }
 
+apply plugin: 'idea'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'idea'
 apply plugin: "net.ltgt.apt"
+
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
 
 group = 'org.opentestsystem.rdw.reporting'
 version = '0.0.1-SNAPSHOT'
@@ -33,10 +40,10 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
-        
-     maven { url "http://repo.maven.apache.org/maven2" }
-     maven { url "https://repository.apache.org/content/repositories/snapshots/" }
+    mavenLocal()
+    mavenCentral()
 }
+
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-aop')
     compile('org.springframework.boot:spring-boot-starter-actuator')
@@ -46,15 +53,13 @@ dependencies {
     compile('org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE')
     compile('org.projectlombok:lombok:1.16.12')
     compile('com.google.guava:guava:20.0')
-    compile('org.postgresql:postgresql:9.4.1212')
-    compile('mysql:mysql-connector-java:5.1.39')
+    compile('mysql:mysql-connector-java')
     compile("org.immutables:value:2.4.3")
     compile("com.itextpdf:itextpdf:5.5.10")
     compile("com.itextpdf:itext-pdfa:5.5.10")
     compile("com.itextpdf:itext-xtra:5.5.10")
     compile("com.itextpdf.tool:xmlworker:5.5.10")
     compile ("org.immutables:value:2.4.0")
-    compile ('org.yaml:snakeyaml:+')
     runtime ('org.springframework.boot:spring-boot-devtools')
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
