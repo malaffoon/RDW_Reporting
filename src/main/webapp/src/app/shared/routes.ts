@@ -7,6 +7,7 @@ import {StudentExamItemsComponent} from "../student-exam-items/student-exam-item
 import {GroupExamItemComponent} from "../group-exam-item/group-exam-item.component";
 import {StudentExamReportComponent} from "../student-exam-report/student-exam-report.component";
 import {AdminSearchComponent} from "../admin-search/admin-search.component";
+import {IrisPocComponent} from "../iris-poc/iris-poc.component";
 
 export const routes = [
   {
@@ -48,5 +49,9 @@ export const routes = [
   {
     path: 'groups/:groupId/students/:studentId/exams/:examId/report',
     component: StudentExamReportComponent
+  },
+  {
+    path: 'irispoc',
+    component: IrisPocComponent
   }
 ];

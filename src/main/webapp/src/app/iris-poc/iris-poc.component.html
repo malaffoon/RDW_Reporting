@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <input type="text" [(ngModel)]="token"/>
+      <div class="col-md-6">
+      </div>
+      <a class="btn btn-default" (click)="callIris()">GO</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <iframe #irisframe src="/iris" width="1000" height="650" frameborder="0"></iframe>
+    </div>
+  </div>
+</div>
