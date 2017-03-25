@@ -5,7 +5,6 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath('io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE')
         classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE')
         classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
     }
@@ -46,16 +45,20 @@ repositories {
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-aop' 
-    compile 'org.springframework.boot:spring-boot-starter-actuator' 
-    compile 'org.springframework.boot:spring-boot-starter-jdbc' 
-    compile 'org.springframework.boot:spring-boot-starter-security' 
-    compile 'org.springframework.boot:spring-boot-starter-web' 
-    compile 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE' 
-    compile 'org.projectlombok:lombok:1.16.12' 
-    compile 'com.google.guava:guava:20.0' 
-    compile 'mysql:mysql-connector-java' 
-    compile 'org.immutables:value:2.4.3' 
+    compile 'org.springframework.boot:spring-boot-starter-aop'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+
+    // handy for creating metadata with @ConfigurationProperties
+    optional 'org.springframework.boot:spring-boot-configuration-processor'
+
+    compile 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE'
+
+    compile 'com.google.guava:guava:20.0'
+    compile 'mysql:mysql-connector-java'
+
     runtime 'org.springframework.boot:spring-boot-devtools'
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
@@ -74,7 +77,7 @@ node {
 //Hopefully this allows us to hot add resources
 bootRun {
     addResources = true
-    if ( project.hasProperty('jvmArgs') ) {
+    if (project.hasProperty('jvmArgs')) {
         jvmArgs project.jvmArgs.split('\\s+')
     }
 }
