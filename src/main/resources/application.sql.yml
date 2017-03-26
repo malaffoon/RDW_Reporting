@@ -1,4 +1,4 @@
-group:
-  findAll:
-    sql: >
+sql:
+  group:
+    findAll: >-
         select id, name from user_roster ur join roster r on r.id = ur.roster_id where user_login=:user_login
