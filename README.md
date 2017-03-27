@@ -14,6 +14,38 @@ mkdir -p /opt/rdw-reporting-ui/config
 curl <application_properties_url> > /opt/rdw-reporting-ui/config/application.yaml
 curl <saml_jks_url> > /opt/rdw-reporting-ui/config/saml.jks
 ```
+
+#### MySQL
+MySQL is required for building (integration tests) and running these applications. There are various ways to install it; please be sure 
+to install version 5.6 which is older and not the default! Here are the basic brew instructions:
+```bash
+brew update
+brew install mysql@5.6
+```
+At the end of the install, there is a suggestion to add the mysql location to the path:
+```bash
+echo 'export PATH="/usr/local/opt/mysql@5.6/bin:$PATH"' >> ~/.bash_profile
+```
+
+The applications depend on the database being configured properly. This is done using RDW_Schema.
+```bash
+git clone https://github.com/SmarterApp/RDW_Schema
+cd RDW_Schema
+git checkout develop
+cd reporting
+../scripts/migrate
+```
+
+### Building
+RDW_Reporting apps make use of RDW_Common modules. Because there is no common artifact repository, you must do something
+to make the artifacts available. You could make an uber project in your IDE. Or you could build common locally:
+```bash
+git clone https://github.com/SmarterApp/RDW_Common
+cd RDW_Common
+git checkout develop
+./gradlew build install
+```
+
 ### Setup IntelliJ
 If you are opening this for the first time, have IDEA open the build.gradle file as a new project
 
