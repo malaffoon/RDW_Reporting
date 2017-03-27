@@ -5,7 +5,6 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath('io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE')
         classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE')
         classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
     }
@@ -46,21 +45,22 @@ repositories {
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-aop' 
-    compile 'org.springframework.boot:spring-boot-starter-actuator' 
-    compile 'org.springframework.boot:spring-boot-starter-jdbc' 
-    compile 'org.springframework.boot:spring-boot-starter-security' 
-    compile 'org.springframework.boot:spring-boot-starter-web' 
-    compile 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE' 
-    compile 'org.projectlombok:lombok:1.16.12' 
-    compile 'com.google.guava:guava:20.0' 
-    compile 'mysql:mysql-connector-java' 
-    compile 'org.immutables:value:2.4.3' 
-    compile 'com.itextpdf:itextpdf:5.5.10' 
-    compile 'com.itextpdf:itext-pdfa:5.5.10' 
-    compile 'com.itextpdf:itext-xtra:5.5.10' 
-    compile 'com.itextpdf.tool:xmlworker:5.5.10' 
-    compile 'org.immutables:value:2.4.0'
+    compile 'org.springframework.boot:spring-boot-starter-aop'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+
+    // handy for creating metadata with @ConfigurationProperties
+    optional 'org.springframework.boot:spring-boot-configuration-processor'
+
+    compile 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE'
+
+    compile 'com.google.guava:guava:20.0'
+    compile 'mysql:mysql-connector-java'
+
+    compile 'org.opentestsystem.rdw.common:rdw-common-utils:0.0.1-SNAPSHOT'
+
     runtime 'org.springframework.boot:spring-boot-devtools'
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
@@ -79,7 +79,7 @@ node {
 //Hopefully this allows us to hot add resources
 bootRun {
     addResources = true
-    if ( project.hasProperty('jvmArgs') ) {
+    if (project.hasProperty('jvmArgs')) {
         jvmArgs project.jvmArgs.split('\\s+')
     }
 }
@@ -104,7 +104,7 @@ task buildFe(type: NpmTask) {
     args = ['run', 'build']
 }
 
-//The jar task build the jar file, and that file needs to contain the front end resources, so we need to
-//run the buildFe task before we make the jar
-jar.dependsOn buildFe
-bootRun.dependsOn buildFe
+// The processResources task takes care of gathering all of the resources in the project to the target directory. 
+// In order to get the front end resources in to the final jar, the front end needs to be built
+// before all of the other resources are processed in order to get the static resouces in the right place
+processResources.dependsOn buildFe
