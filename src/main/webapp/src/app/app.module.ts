@@ -9,7 +9,7 @@ import {AppComponent} from "./app.component";
 import {DataService} from "./shared/data.service";
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from "ng2-translate";
 import {environment} from "../environments/environment";
-import {standaloneProviders} from "./standalone/standalone.service";
+// import {standaloneProviders} from "./standalone/standalone.service";
 import {GroupStudentsComponent} from "./group-students/group-students.component";
 import {StudentExamsComponent} from "./student-exams/student-exams.component";
 import {GroupExamsComponent} from "./group-exams/group-exams.component";
@@ -65,7 +65,7 @@ export function createTranslateLoader(http: Http) {
   ],
   providers: [
     DataService,
-    ...(environment.standalone ? standaloneProviders : [])
+    ...(environment.standalone ? [] : [])
   ],
   bootstrap: [AppComponent]
 })
