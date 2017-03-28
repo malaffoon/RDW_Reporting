@@ -17,11 +17,15 @@ export class StudentExamItemsComponent implements OnInit{
   private exam: any;
   private items = [];
   private size = 1;
+  private _irisFrame;
+  private irisIsLoading = true;
 
   @ViewChild('irisframe')
-    set irisFrames(value: ElementRef){
-    if(value && value.nativeElement)
-      IRiS.setFrame(value.nativeElement)
+    set irisFrame(value: ElementRef){
+      if(value && value.nativeElement) {
+        this._irisFrame = value.nativeElement;
+        IRiS.setFrame(value.nativeElement)
+      }
   }
 
   constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService) {
@@ -35,6 +39,7 @@ export class StudentExamItemsComponent implements OnInit{
           let student = data.student;
           let exam = data.exam;
           let items = data.items;
+
           this.breadcrumbs = [
             {name: group.name, path: `/groups/${group.id}/students`},
             {
@@ -43,6 +48,10 @@ export class StudentExamItemsComponent implements OnInit{
             },
             {name: `${breadcrumbName} ${exam.assessment.grade} ${exam.assessment.name}`}
           ];
+
+          if(items.length > 0)
+            this.selectRow(items[0]);
+
           this.group = group;
           this.student = student;
           this.exam = exam;
@@ -53,14 +62,18 @@ export class StudentExamItemsComponent implements OnInit{
   }
 
   irisframeOnLoad(){
-    this.loadItem();
+    if(this.items.length > 0)
+      this.selectRow(this.items[0]);
+
+    this.irisIsLoading = false;
   }
 
-  loadItem() {
-    let vendorId = '2B3C34BF-064C-462A-93EA-41E9E3EB8333';
-    let token = '{"passage":{"autoLoad":"false"},"items":[{"response":"<p>alla</p>","id":"I-187-2700"}]}';
+  selectRow(item){
+    for(var i in this.items){
+      this.items[i].selected = this.items[i] === item;
+    }
 
-    IRiS.loadToken(vendorId, token);
+    IRiS.loadToken(item.irisInfo.vendorId, item.irisInfo.token);
   }
 
   private toggleWindowSize() {
