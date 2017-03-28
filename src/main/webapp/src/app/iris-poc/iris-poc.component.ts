@@ -1,7 +1,3 @@
-/// <reference path="../../vendor/iris/jquery.js" />
-/// <reference path="../../vendor/iris/util_xdm.js" />
-/// <reference path="../../vendor/iris/client.js" />
-
 declare var IRiS : any;
 
 import {Component, OnInit, ElementRef, ViewChild} from "@angular/core";
