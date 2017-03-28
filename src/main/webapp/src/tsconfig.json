@@ -4,7 +4,7 @@
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowJs": true,
+    "allowJs": false,
     "lib": ["es6", "dom"],
     "mapRoot": "./",
     "module": "es6",

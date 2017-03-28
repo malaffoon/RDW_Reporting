@@ -19,6 +19,7 @@ export class IrisPocComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.callIris();
   }
 
   callIris() {
