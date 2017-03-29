@@ -11,6 +11,9 @@
 @gray8: #f3f3f3;
 @blue1: #008AB1;
 @light-green: #43B02A;
+@green: #1f6735;
+@color-selected: #d3eacc;
+@color-hovered: #ededed;
 
 .font-sm {
   font-size: @font-sm;
@@ -523,10 +526,32 @@ html, body {
 
 .margin-right-20 { margin-right: 20px; }
 
+.color-checkmark {color: @green; }
 .color-light-green {color: @light-green }
 .overflow-hidden { overflow:hidden !important; }
 .text-align-center { text-align: center; }
 .card-watermark {
   font-size: 216px;
   color: @gray1;
+}
+
+.selectable-row{
+  cursor: pointer;
+}
+
+.selectable-row:hover {
+  background-color: @color-hovered !important;
+}
+
+.selected-row {
+  cursor: pointer;
+  background-color: @color-selected !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.width-sm {
+  width:20px;
 }

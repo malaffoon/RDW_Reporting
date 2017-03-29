@@ -32,8 +32,8 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       };
     } else if (new RegExp(`GET /api/groups/\\d+/students`, 'g').test(requestSignature)) {
       body = {
-        group: mock_group,
-        students: students
+        students: students,
+        group: mock_group
       };
     } else if (new RegExp(`GET /api/groups/\\d+/exams/\\d+/items/\\d+/score/\\d+`, 'g').test(requestSignature)) {
       body = {
@@ -53,7 +53,7 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
     }
     else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
-      let studentsResult = students.filter(x => 
+      let studentsResult = students.filter(x =>
           x.ssid.toString().startsWith(query)
           || x.firstName.toLowerCase().startsWith(query)
           || x.lastName.toLowerCase().startsWith(query)
