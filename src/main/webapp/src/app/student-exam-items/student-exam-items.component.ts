@@ -13,10 +13,7 @@ declare var IRiS : any;
 export class StudentExamItemsComponent implements OnInit {
 
   private breadcrumbs = [];
-  private group: any;
-  private student: any;
-  private exam: any;
-  private items = [];
+  private model : any;
   private size = 1;
   private _irisFrame;
   private irisIsLoading = true;
@@ -43,49 +40,49 @@ export class StudentExamItemsComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.service.getStudentExam(params['groupId'], params['studentId'], params['examId']).subscribe((data:any) => {
-        this.translate.get('labels.assessment.grade').subscribe(breadcrumbName => {
-          let group = data.group;
-          let student = data.student;
-          let exam = data.exam;
-          let items = data.items;
+        this.translate.get('labels.assessment.grade').subscribe(currentTitle => {
 
-          this.breadcrumbs = [
-            {name: group.name, path: `/groups/${group.id}/students`},
-            {
-              name: `${student.lastName}, ${student.firstName}`,
-              path: `/groups/${group.id}/students/${student.id}/exams`
-            },
-            {name: `${breadcrumbName} ${exam.assessment.grade} ${exam.assessment.name}`}
-          ];
+          this.model = Object.assign({}, data); // This only does a shallow copy.
 
-          if(items.length > 0)
-            this.selectRow(items[0]);
+          // Until a deep copy is available, iterate and copy each item in children arrays.
+          this.model.items = [];
+          for(var i in data.items){
+            this.model.items.push(Object.assign({}, data.items[i]));
+          }
 
-          this.group = group;
-          this.student = student;
-          this.exam = exam;
-          this.items = items;
+          this.breadcrumbs = this.getBreadCrumbs(currentTitle, this.model)
         })
       })
     });
   }
 
+  getBreadCrumbs(currentTitle, model) {
+    return [
+      {name: model.group.name, path: `/groups/${model.group.id}/students`},
+      {
+        name: `${model.student.lastName}, ${model.student.firstName}`,
+        path: `/groups/${model.group.id}/students/${model.student.id}/exams`
+      },
+      {name: `${currentTitle} ${model.exam.assessment.grade} ${model.exam.assessment.name}`}
+    ];
+  }
+
   irisframeOnLoad(){
-    if(this.items.length > 0)
-      this.selectRow(this.items[0]);
+    if(this.model.items.length > 0)
+      this.selectRow(this.model.items[0]);
 
     this.irisIsLoading = false;
   }
 
   hoverRow(item) {
-    for(var i in this.items){
-      this.items[i].hovered = this.items[i] === item;
+    for(var i in this.model.items){
+      this.model.items[i].hovered = this.model.items[i] === item;
     }
   }
 
   selectRow(item){
-    for(var i in this.items){
-      this.items[i].selected = this.items[i] === item;
+    for(var i in this.model.items){
+      this.model.items[i].selected = this.model.items[i] === item;
     }
 
     IRiS.loadToken(item.irisInfo.vendorId, item.irisInfo.token);

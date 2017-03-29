@@ -23,7 +23,7 @@ export const iab_items = [
     maximumScore: 1,
     irisInfo: {
       vendorId: commonVendorId,
-      token: '{"passage":{"autoLoad":"false"},"items":[{"response":"<p>alla</p>","id":"I-187-2700"}]}'
+      token: '{"passage":{"autoLoad":"false"},"items":[{"response":"<p>test</p>","id":"I-187-2703"}],"layout":"WAI"}'
     }
   },
   {
@@ -63,7 +63,7 @@ export const iab_items = [
     maximumScore: 1,
     irisInfo: {
       vendorId: commonVendorId,
-      token: '{"passage":{"autoLoad":"false"},"items":[{"response":"<p>test</p>","id":"I-187-2703"}],"layout":"WAI"}'
+      token: '{"passage":{"autoLoad":"false"},"items":[{"response":"<p>alla</p>","id":"I-187-2700"}]}'
     }
   },
   {
