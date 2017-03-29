@@ -61,8 +61,7 @@
             <tab heading="Item Viewer">
               <div style="overflow-x:hidden;overflow-y:scroll">
                 <div *ngIf="irisIsLoading" class="text-align-center">Initializing Item Viewer...  Please wait.</div>
-
-                <iframe #irisframe [src]="safeIrisUrl" width="1000" height="500" frameborder="0"></iframe>
+                <iframe #irisframe [src]="safeIrisUrl" [ngClass]="{'md': size !=0, lg: size == 0}" width="1000" frameborder="0"></iframe>
               </div>
             </tab>
             <tab heading="Rubric and Exemplar">
