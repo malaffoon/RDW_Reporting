@@ -20,9 +20,6 @@
         </div>
 
         <div class="card student-exam-items-card" [ngClass]="{sm: size == 0, '': size == 1, lg: size == 2}">
-          <!--<a class="expand-control">-->
-            <!--<i class="glyphicon glyphicon-resize-full" (click)="toggleWindowSize()"></i>-->
-          <!--</a>-->
           <span class="window-controls">
             <a class="window-control window-size-control window-size-control-sm" [ngClass]="{disabled:size == 0}">
               <i class="glyphicon glyphicon-collapse-up" (click)="size = 0"></i>
@@ -46,7 +43,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="cursor-pointer" *ngFor="let item of model.items" [ngClass]="{'selected-row':item.selected, 'hovered-row':item.hovered && !item.selected }" (mouseover)="hoverRow(item)" (click)="selectRow(item)">
+                <tr *ngFor="let item of model.items" [ngClass]="{'selected-row':item.selected, 'selectable-row': !item.selected }" (click)="selectRow(item)">
                   <td class="text-right width-sm"><i *ngIf="item.selected" class="glyphicon glyphicon-ok color-checkmark"></i></td>
                   <td class="text-center">{{item.number}}</td>
                   <td>{{item.claim}}/{{item.target}}</td>

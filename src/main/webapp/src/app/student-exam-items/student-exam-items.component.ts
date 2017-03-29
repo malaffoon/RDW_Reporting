@@ -74,12 +74,6 @@ export class StudentExamItemsComponent implements OnInit {
     this.irisIsLoading = false;
   }
 
-  hoverRow(item) {
-    for(var i in this.model.items){
-      this.model.items[i].hovered = this.model.items[i] === item;
-    }
-  }
-
   selectRow(item){
     for(var i in this.model.items){
       this.model.items[i].selected = this.model.items[i] === item;

@@ -535,11 +535,17 @@ html, body {
   color: @gray1;
 }
 
-.selected-row {
-  background-color: @color-selected !important;
+.selectable-row{
+  cursor: pointer;
 }
-.hovered-row {
+
+.selectable-row:hover {
   background-color: @color-hovered !important;
+}
+
+.selected-row {
+  cursor: pointer;
+  background-color: @color-selected !important;
 }
 
 .cursor-pointer {
