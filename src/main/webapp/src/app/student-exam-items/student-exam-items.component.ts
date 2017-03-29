@@ -1,4 +1,5 @@
-import {Component, OnInit, ElementRef, ViewChild } from "@angular/core";
+import {Component, OnInit, ElementRef, ViewChild, AfterViewInit} from "@angular/core";
+import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import {ActivatedRoute} from "@angular/router";
 import {DataService} from "../shared/data.service";
 import {TranslateService} from "ng2-translate";
@@ -9,7 +10,7 @@ declare var IRiS : any;
   selector: 'student-exam-items',
   templateUrl: './student-exam-items.component.html'
 })
-export class StudentExamItemsComponent implements OnInit{
+export class StudentExamItemsComponent implements OnInit {
 
   private breadcrumbs = [];
   private group: any;
@@ -20,18 +21,26 @@ export class StudentExamItemsComponent implements OnInit{
   private _irisFrame;
   private irisIsLoading = true;
 
+  // TODO:  How is this configured?
+  private irisUrl = "https://tds-stage.smarterbalanced.org/iris/";
+  private safeIrisUrl : SafeResourceUrl;
+
   @ViewChild('irisframe')
     set irisFrame(value: ElementRef){
       if(value && value.nativeElement) {
         this._irisFrame = value.nativeElement;
         IRiS.setFrame(value.nativeElement)
+
+        this._irisFrame.addEventListener('load', this.irisframeOnLoad.bind(this));
       }
   }
 
-  constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService) {
+  constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService, private sanitizer : DomSanitizer) {
   }
 
   ngOnInit() {
+    this.safeIrisUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.irisUrl);
+
     this.route.params.subscribe(params => {
       this.service.getStudentExam(params['groupId'], params['studentId'], params['examId']).subscribe((data:any) => {
         this.translate.get('labels.assessment.grade').subscribe(breadcrumbName => {
@@ -66,6 +75,12 @@ export class StudentExamItemsComponent implements OnInit{
       this.selectRow(this.items[0]);
 
     this.irisIsLoading = false;
+  }
+
+  hoverRow(item) {
+    for(var i in this.items){
+      this.items[i].hovered = this.items[i] === item;
+    }
   }
 
   selectRow(item){

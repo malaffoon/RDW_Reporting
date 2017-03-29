@@ -38,20 +38,20 @@
             <table class="table table-striped">
               <thead>
                 <tr>
+                  <th class="text-center width-sm"></th>
                   <th class="text-center">Item #</th>
                   <th>Claim/Target</th>
                   <th class="text-center">Student Score</th>
                   <th class="text-center">Max Score</th>
-                  <th class="text-center"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="cursor-pointer" *ngFor="let item of items" [ngClass]="{'selected-row':item.selected }" (click)="selectRow(item)">
+                <tr class="cursor-pointer" *ngFor="let item of items" [ngClass]="{'selected-row':item.selected, 'hovered-row':item.hovered && !item.selected }" (mouseover)="hoverRow(item)" (click)="selectRow(item)">
+                  <td class="text-right width-sm"><i *ngIf="item.selected" class="glyphicon glyphicon-ok color-checkmark"></i></td>
                   <td class="text-center">{{item.number}}</td>
                   <td>{{item.claim}}/{{item.target}}</td>
                   <td class="text-center">{{item.score}}</td>
                   <td class="text-center">{{item.maximumScore}}</td>
-                  <td> <i *ngIf="item.selected" class="glyphicon glyphicon-ok color-checkmark"></i>  </td>
                 </tr>
               </tbody>
             </table>
@@ -63,8 +63,9 @@
           <tabset>
             <tab heading="Item Viewer">
               <div style="overflow-x:hidden;overflow-y:scroll">
-                <span *ngIf="irisIsLoading" class="text-align-center">Initializing Item Viewer...  Please wait.</span>
-                <iframe #irisframe (load)="irisframeOnLoad()" src="https://tds-stage.smarterbalanced.org/iris/" width="1000" height="500" frameborder="0"></iframe>
+                <div *ngIf="irisIsLoading" class="text-align-center">Initializing Item Viewer...  Please wait.</div>
+
+                <iframe #irisframe [src]="safeIrisUrl" width="1000" height="500" frameborder="0"></iframe>
               </div>
             </tab>
             <tab heading="Rubric and Exemplar">
