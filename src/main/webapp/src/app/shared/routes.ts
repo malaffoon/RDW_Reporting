@@ -8,7 +8,6 @@ import {GroupExamItemComponent} from "../group-exam-item/group-exam-item.compone
 import {StudentExamReportComponent} from "../student-exam-report/student-exam-report.component";
 import {AdminSearchComponent} from "../admin-search/admin-search.component";
 import {Routes} from "@angular/router";
-// import {GroupStudentsResolve} from "../group-students/group-students.resolve";
 
 export const routes: Routes = [
   {
