@@ -7,8 +7,9 @@ import {StudentExamItemsComponent} from "../student-exam-items/student-exam-item
 import {GroupExamItemComponent} from "../group-exam-item/group-exam-item.component";
 import {StudentExamReportComponent} from "../student-exam-report/student-exam-report.component";
 import {AdminSearchComponent} from "../admin-search/admin-search.component";
+import {Routes} from "@angular/router";
 
-export const routes = [
+export const routes: Routes = [
   {
     path: '',
     component: HomeComponent
@@ -22,31 +23,31 @@ export const routes = [
     component: GroupsComponent
   },
   {
-    path: 'groups/:groupId/students',
-    component: GroupStudentsComponent
-  },
-  {
-    path: 'groups/:groupId/exams',
-    component: GroupExamsComponent
-  },
-  {
-    path: 'groups/:groupId/exams/:examId/items/:itemId',
-    component: GroupExamItemComponent
-  },
-  {
-    path: 'groups/:groupId/exams/:examId/items/:itemId/score/:score',
-    component: GroupExamItemComponent
-  },
-  {
-    path: 'groups/:groupId/students/:studentId/exams',
-    component: StudentExamsComponent
-  },
-  {
-    path: 'groups/:groupId/students/:studentId/exams/:examId/items',
-    component: StudentExamItemsComponent
-  },
-  {
-    path: 'groups/:groupId/students/:studentId/exams/:examId/report',
-    component: StudentExamReportComponent
+    path: 'groups/:groupId',
+    children: [
+      { path: '', redirectTo: '/students', pathMatch: 'full' },
+      { path: 'students', component: GroupStudentsComponent },
+      { path: 'students/:studentId',
+        children: [
+          { path: 'exams', component: StudentExamsComponent },
+          {
+            path: 'exams/:examId',
+            children: [
+              { path: '', redirectTo: 'items', pathMatch: 'full' },
+              { path: 'items', component: StudentExamItemsComponent },
+              { path: 'report', component: StudentExamReportComponent }
+            ]
+          }
+        ]
+      },
+      { path: 'exams', component: GroupExamsComponent },
+      {
+        path: 'exams/:examId',
+        children: [
+          { path: 'items/:itemId', component: GroupExamItemComponent },
+          { path: 'items/:itemId/score/:scoreId', component: GroupExamItemComponent }
+        ]
+      }
+    ]
   }
 ];
