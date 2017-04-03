@@ -1,6 +1,9 @@
 import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
-import {groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students} from "./data/data";
+import {
+  groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students,
+  mock_rubrics
+} from "./data/data";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
 
@@ -49,6 +52,11 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = {
         group: mock_group,
         assessment_results: exams_of_group
+      };
+    } else if (new RegExp('GET /api/items/\\d+/rubric', 'g').test(requestSignature)) {
+      var itemId = Number.parseInt(requestSignature.replace('GET /api/items/', '').replace('/rubrics', ''));
+      body = {
+        rubric: mock_rubrics.find(x => x.itemId == itemId),
       };
     }
     else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
