@@ -65,7 +65,22 @@
               </div>
             </tab>
             <tab heading="Rubric and Exemplar">
-
+              <div *ngIf="model.rubric">
+                <div *ngFor="let rubric of model.rubric.list">
+                  <h3>{{rubric.name}}</h3>
+                  <div [innerHTML]="rubric.val"></div>
+                  <div class="panel panel-default" *ngFor="let sample of rubric.samplelist">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">{{sample.name}}</h3>
+                    </div>
+                    <div class="panel-body">
+                      <div>Min score: {{sample.minval}} |  Max score: {{sample.maxval}}</div>
+                      <br/>
+                      <div [innerHTML]="sample.content"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </tab>
             <tab heading="Item Information">
 

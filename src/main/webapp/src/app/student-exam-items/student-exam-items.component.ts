@@ -51,6 +51,8 @@ export class StudentExamItemsComponent implements OnInit {
           }
 
           this.breadcrumbs = this.getBreadCrumbs(currentTitle, this.model)
+
+
         })
       })
     });
@@ -80,6 +82,10 @@ export class StudentExamItemsComponent implements OnInit {
     }
 
     IRiS.loadToken(item.irisInfo.vendorId, item.irisInfo.token);
+
+    this.service.getRubric(item.number).subscribe((data: any) => {
+      this.model.rubric = data.rubric;
+    });
   }
 
   private toggleWindowSize() {
