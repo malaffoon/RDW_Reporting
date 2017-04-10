@@ -9,6 +9,7 @@ buildscript {
         classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE')
         classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
         classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RC2")
+
     }
 }
 
@@ -54,7 +55,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.10.77'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
     }
 }
 dependencies {
@@ -75,12 +76,14 @@ dependencies {
     compile 'mysql:mysql-connector-java'
 
     compile 'org.opentestsystem.rdw.common:rdw-common-utils:0.0.1-SNAPSHOT'
-    compile 'com.amazonaws:aws-java-sdk-s3'
 
     // fixes java 8 time marshaling
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.7'
 
     runtime 'org.springframework.boot:spring-boot-devtools'
+
+    // aws
+    compile 'org.springframework.cloud:spring-cloud-starter-aws'
 
     testCompile 'junit:junit'
     testCompile 'org.assertj:assertj-core:3.6+'
