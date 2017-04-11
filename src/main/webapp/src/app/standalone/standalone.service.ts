@@ -20,7 +20,7 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = {
         //report
       };
-    } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+`, 'g').test(requestSignature)) {
+    } else if (new RegExp(`GET /api/examitems\\?examId=\\d+&studentId=\\d+`, 'g').test(requestSignature)) {
       body = {
         group: mock_group,
         student: mock_student,
@@ -53,11 +53,10 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
         group: mock_group,
         assessment_results: exams_of_group
       };
-    } else if (new RegExp('GET /api/items/\\d+/rubric', 'g').test(requestSignature)) {
-      var itemId = Number.parseInt(requestSignature.replace('GET /api/items/', '').replace('/rubrics', ''));
-      body = {
-        rubric: mock_rubrics.find(x => x.itemId == itemId),
-      };
+    } else if (new RegExp('GET /api/examitems/\\d+/rubrics', 'g').test(requestSignature)) {
+      var itemId = Number.parseInt(requestSignature.replace('GET /api/examitems/', '').replace('/rubrics', ''));
+      let result :any = mock_rubrics.find(x => x.itemId == itemId);
+      body = result.rubrics;
     }
     else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();

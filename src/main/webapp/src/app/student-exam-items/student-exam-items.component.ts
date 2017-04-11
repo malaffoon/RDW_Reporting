@@ -59,6 +59,9 @@ export class StudentExamItemsComponent implements OnInit {
   }
 
   getBreadCrumbs(currentTitle, model) {
+    if(!model.student || !model.group)
+      return [];
+
     return [
       {name: model.group.name, path: `/groups/${model.group.id}/students`},
       {
@@ -83,9 +86,18 @@ export class StudentExamItemsComponent implements OnInit {
 
     IRiS.loadToken(item.irisInfo.vendorId, item.irisInfo.token);
 
-    this.service.getRubric(item.number).subscribe((data: any) => {
-      this.model.rubric = data.rubric;
-    });
+    this.service
+      .getRubric(item.number)
+      .subscribe(
+        (data: any) => {
+          this.model.rubrics = data;
+          this.model.rubricError = false;
+        },
+        (error: any) => {
+          this.model.rubrics = null;
+          this.model.rubricError = true;
+          // TODO: log this error.
+        });
   }
 
   private toggleWindowSize() {

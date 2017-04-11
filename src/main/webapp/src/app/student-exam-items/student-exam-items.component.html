@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col-md-12">
 
-        <div class="page-heading">
+        <div *ngIf="model.student && model.exam" class="page-heading">
 
           <h2>{{'labels.assessment.grade' | translate}} {{model.exam.assessment.grade}} {{model.exam.assessment.name}}</h2>
 
@@ -65,11 +65,14 @@
               </div>
             </tab>
             <tab heading="Rubric and Exemplar">
-              <div *ngIf="model.rubric">
-                <div *ngFor="let rubric of model.rubric.list">
+              <div *ngIf="model.rubricError || (model.rubrics && model.rubrics.length== 0)" class="text-align-center">
+                No rubric is available for this item.
+              </div>
+              <div *ngIf="model.rubrics">
+                <div *ngFor="let rubric of model.rubrics">
                   <h3>{{rubric.name}}</h3>
-                  <div [innerHTML]="rubric.val"></div>
-                  <div class="panel panel-default" *ngFor="let sample of rubric.samplelist">
+                  <div [innerHTML]="rubric.template"></div>
+                  <div class="panel panel-default" *ngFor="let sample of model.samples">
                     <div class="panel-heading">
                       <h3 class="panel-title">{{sample.name}}</h3>
                     </div>

@@ -30,8 +30,7 @@ export const routes: Routes = [
       { path: 'students/:studentId',
         children: [
           { path: 'exams', component: StudentExamsComponent },
-          {
-            path: 'exams/:examId',
+          { path: 'exams/:examId',
             children: [
               { path: '', redirectTo: 'items', pathMatch: 'full' },
               { path: 'items', component: StudentExamItemsComponent },
@@ -41,8 +40,7 @@ export const routes: Routes = [
         ]
       },
       { path: 'exams', component: GroupExamsComponent },
-      {
-        path: 'exams/:examId',
+      { path: 'exams/:examId',
         children: [
           { path: 'items/:itemId', component: GroupExamItemComponent },
           { path: 'items/:itemId/score/:scoreId', component: GroupExamItemComponent }
