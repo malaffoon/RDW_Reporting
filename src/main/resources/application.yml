@@ -12,3 +12,18 @@ spring:
     default-property-inclusion: non_null
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+
+cloud:
+  aws:
+    credentials:
+      accessKey:
+      secretKey:
+    region:
+      auto: false
+      static: us-west-2
+
+artifacts:
+  root: file:./
+  exam-item:
+    directory: src/test/data/irp/Item-{0}/
+    file-name: item-{0}.xml
