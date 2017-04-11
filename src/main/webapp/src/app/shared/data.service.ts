@@ -36,15 +36,20 @@ export class DataService {
   }
 
   getRubric(itemId : number) {
-    return this.get('/items/' + itemId + '/rubrics');
+    return this.get('/examitems/' + itemId + '/rubrics');
   }
 
   getStudentExams(groupId: number, studentId: number): Observable<any> {
+    console.log('test');
     return this.get(`/groups/${groupId}/students/${studentId}/exams`);
   }
 
   getStudentExam(groupId: number, studentId: number, examId: number): Observable<any> {
-    return this.get(`/groups/${groupId}/students/${studentId}/exams/${examId}`);
+    var params = new URLSearchParams();
+    params.set('examId', examId.toString());
+    params.set('studentId', studentId.toString());
+
+    return this.get('/examitems', { search: params });
   }
 
   getStudentExamReport(groupId: number, studentId: number, examId: number): Observable<any> {
@@ -52,7 +57,7 @@ export class DataService {
   }
 
   getStudents(searchFilter: any) {
-    var params = new URLSearchParams(); // <--------
+    var params = new URLSearchParams();
     params.set('ssid', searchFilter.ssid );
 
     return this.get('/students/search', { search: params });

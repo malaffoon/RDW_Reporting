@@ -22,7 +22,9 @@ export class GroupStudentsComponent implements OnInit {
         let group = data.group;
         let students = data.students;
 
-        this.breadcrumbs = [{name: group.name}];
+        if(group)
+          this.breadcrumbs = [{name: group.name}];
+
         this.group = group;
         this.students = students;
       })
