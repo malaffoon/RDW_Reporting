@@ -56,7 +56,7 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
     } else if (new RegExp('GET /api/examitems/\\d+/rubrics', 'g').test(requestSignature)) {
       var itemId = Number.parseInt(requestSignature.replace('GET /api/examitems/', '').replace('/rubrics', ''));
       let result :any = mock_rubrics.find(x => x.itemId == itemId);
-      body = result.rubrics;
+      body = result.examItemSolution;
     }
     else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();

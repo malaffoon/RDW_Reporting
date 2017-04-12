@@ -78,6 +78,7 @@ export class StudentExamItemsComponent implements OnInit {
 
     IRiS.loadToken(item.irisInfo.vendorId, item.irisInfo.token);
 
+    this.model.answerKey = null;
     this.model.rubrics = null;
     this.model.exemplars = null;
 
@@ -85,6 +86,9 @@ export class StudentExamItemsComponent implements OnInit {
       .getRubric(item.number)
       .subscribe(
         (data: any) => {
+          if(data.answerKey)
+            this.model.answerKey = Object.assign({}, data.answerKey);
+
           this.model.rubrics = this.copyArray(data.rubrics);
           this.model.rubrics.forEach(rubric => rubric.template = this.sanitizer.bypassSecurityTrustHtml(rubric.template))
 

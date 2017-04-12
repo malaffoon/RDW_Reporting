@@ -65,8 +65,11 @@
               </div>
             </tab>
             <tab heading="Rubric">
+              <div *ngIf="model.answerKey" class="pad-bottom-10">
+                <b>Answer: </b> {{model.answerKey.value}}
+              </div>
 
-              <div *ngIf="model.errorLoadingScoringCriteria || (model.rubrics && model.rubrics.length== 0)" class="text-align-center">
+              <div *ngIf="model.errorLoadingScoringCriteria || (model.rubrics && model.rubrics.length== 0 && model.answerKey == null)" class="text-align-center">
                 No rubric is available for this item.
               </div>
               <div *ngIf="model.rubrics && model.rubrics.length > 0">
