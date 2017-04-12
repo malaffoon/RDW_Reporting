@@ -85,10 +85,10 @@ export class StudentExamItemsComponent implements OnInit {
       .getRubric(item.number)
       .subscribe(
         (data: any) => {
-          this.model.rubrics = this.copyArray(data.filter(x => x.type == "Rubric"));
+          this.model.rubrics = this.copyArray(data.rubrics);
           this.model.rubrics.forEach(rubric => rubric.template = this.sanitizer.bypassSecurityTrustHtml(rubric.template))
 
-          this.model.exemplars = this.copyArray(data.filter(x => x.type == "Exemplar"));
+          this.model.exemplars = this.copyArray(data.exemplars);
           this.model.exemplars.forEach(exemplar => exemplar.template = this.sanitizer.bypassSecurityTrustHtml(exemplar.template))
 
           this.model.errorLoadingScoringCriteria = false;
