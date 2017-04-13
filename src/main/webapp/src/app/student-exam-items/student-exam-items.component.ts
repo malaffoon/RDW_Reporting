@@ -14,6 +14,7 @@ export class StudentExamItemsComponent implements OnInit {
 
   private breadcrumbs = [];
   private model : any;
+  private selectedRow: any;
   private size = 1;
   private _irisFrame;
   private irisIsLoading = true;
@@ -44,15 +45,8 @@ export class StudentExamItemsComponent implements OnInit {
 
           this.model = Object.assign({}, data); // This only does a shallow copy.
 
-          // Until a deep copy is available, iterate and copy each item in children arrays.
-          this.model.items = [];
-          for(var i in data.items){
-            this.model.items.push(Object.assign({}, data.items[i]));
-          }
-
+          this.model.items = this.copyArray(data.items);
           this.breadcrumbs = this.getBreadCrumbs(currentTitle, this.model)
-
-
         })
       })
     });
@@ -80,24 +74,40 @@ export class StudentExamItemsComponent implements OnInit {
   }
 
   selectRow(item){
-    for(var i in this.model.items){
-      this.model.items[i].selected = this.model.items[i] === item;
-    }
+    this.selectedRow = item;
 
     IRiS.loadToken(item.irisInfo.vendorId, item.irisInfo.token);
+
+    this.model.answerKey = null;
+    this.model.rubrics = null;
+    this.model.exemplars = null;
 
     this.service
       .getRubric(item.number)
       .subscribe(
         (data: any) => {
-          this.model.rubrics = data;
-          this.model.rubricError = false;
+          if(data.answerKey)
+            this.model.answerKey = Object.assign({}, data.answerKey);
+
+          this.model.rubrics = this.copyArray(data.rubrics);
+          this.model.rubrics.forEach(rubric => rubric.template = this.sanitizer.bypassSecurityTrustHtml(rubric.template))
+
+          this.model.exemplars = this.copyArray(data.exemplars);
+          this.model.exemplars.forEach(exemplar => exemplar.template = this.sanitizer.bypassSecurityTrustHtml(exemplar.template))
+
+          this.model.errorLoadingScoringCriteria = false;
         },
         (error: any) => {
-          this.model.rubrics = null;
-          this.model.rubricError = true;
           // TODO: log this error.
+          this.model.errorLoadingScoringCriteria = true;
         });
+  }
+
+  private copyArray(source :any[]){
+    let result = [];
+
+    source.forEach(x=> result.push(Object.assign({}, x)))
+    return result;
   }
 
   private toggleWindowSize() {
