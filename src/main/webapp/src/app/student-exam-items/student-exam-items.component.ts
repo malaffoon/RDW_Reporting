@@ -83,7 +83,7 @@ export class StudentExamItemsComponent implements OnInit {
     this.model.exemplars = null;
 
     this.service
-      .getRubric(item.number)
+      .getItemScoring(item.number)
       .subscribe(
         (data: any) => {
           if(data.answerKey)

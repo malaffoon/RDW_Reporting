@@ -53,8 +53,8 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
         group: mock_group,
         assessment_results: exams_of_group
       };
-    } else if (new RegExp('GET /api/examitems/\\d+/rubrics', 'g').test(requestSignature)) {
-      var itemId = Number.parseInt(requestSignature.replace('GET /api/examitems/', '').replace('/rubrics', ''));
+    } else if (new RegExp('GET /api/examitems/\\d+/scoring', 'g').test(requestSignature)) {
+      var itemId = Number.parseInt(requestSignature.replace('GET /api/examitems/', '').replace('/scoring', ''));
       let result :any = mock_rubrics.find(x => x.itemId == itemId);
       body = result.examItemSolution;
     }

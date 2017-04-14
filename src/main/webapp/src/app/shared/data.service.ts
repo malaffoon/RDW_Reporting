@@ -35,8 +35,8 @@ export class DataService {
     return this.get(`/groups/${groupId}/exams/${examId}/items/${itemId}/score/${score}`);
   }
 
-  getRubric(itemId : number) {
-    return this.get('/examitems/' + itemId + '/rubrics');
+  getItemScoring(itemId : number) {
+    return this.get('/examitems/' + itemId + '/scoring');
   }
 
   getStudentExams(groupId: number, studentId: number): Observable<any> {
