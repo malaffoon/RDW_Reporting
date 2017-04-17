@@ -5,3 +5,23 @@ management:
   health:
     rabbit:
       enabled: false
+---
+# Remote development profile
+spring:
+  profiles: remote-development
+
+logstash-destination: logstash.sbtds.org:4560
+
+---
+# QA profile
+spring:
+  profiles: qa
+
+logstash-destination: logstash.sbtds.org:4560
+
+---
+# AWS development kubernetes profile
+spring:
+  profiles: awsdev
+
+logstash-destination: logstash.sbtds.org:4560
