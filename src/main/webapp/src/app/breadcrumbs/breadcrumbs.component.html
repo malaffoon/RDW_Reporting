@@ -14,7 +14,7 @@
                 </span>
             </span>
             <span *ngFor="let crumb of breadcrumbs; let last = last;" class="breadcrumb-link-container" >
-              <a class="breadcrumb-link" [ngClass]="{'active': last }" [routerLink]="crumb.url">
+              <a class="breadcrumb-link" [ngClass]="{'active': last }" [routerLink]="[crumb.url, crumb.params]">
                 {{ crumb.label | translate }}
               </a>
               <span *ngIf="!last" class="breadcrumb-link-separator">

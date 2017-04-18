@@ -20,8 +20,16 @@ export const routes: Routes = [
   },
   {
     path: 'search',
-    component: AdminSearchComponent,
-    data: { breadcrumb: 'labels.search.title'}
+    data: { breadcrumb: 'labels.search.title' },
+    children: [
+      { path: '', pathMatch: 'full', component: AdminSearchComponent },
+      {
+        path: 'students/:studentId/exams',
+        data: { breadcrumb: '[resolve]=studentData.student.fullName' },
+        resolve: { studentData: StudentExamsResolve },
+        component: StudentExamsComponent
+      }
+    ]
   },
   {
     path: 'groups',

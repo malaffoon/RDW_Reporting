@@ -20,7 +20,7 @@ export class AdminSearchComponent implements OnInit {
     this.translate.get('labels.search').subscribe( (searchContent) => {
       this.content = searchContent;
       this.route.queryParams.subscribe( res => {
-        this.searchTerm = res['q'];
+        this.searchTerm = this.route.snapshot.params['q'];
         if(this.searchTerm) {
           this.search(this.searchTerm);
         }
@@ -32,7 +32,8 @@ export class AdminSearchComponent implements OnInit {
   }
 
   goToSearchPage(searchTerm : string) {
-      this.router.navigate(['/search'], { queryParams: { q: searchTerm } });
+      this.router.navigate(['/search', { q: searchTerm }]);
+      this.search(searchTerm);
   }
 
   search(searchTerm : string){

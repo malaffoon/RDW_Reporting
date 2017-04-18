@@ -49,7 +49,7 @@ export class BreadcrumbsComponent implements OnInit{
 
       let breadcrumb: any  = {
         label: crumbLabel,
-        params: child.snapshot.params, // not being used at this time.
+        params: child.snapshot.params,
         url: url.replace(/\/$/, "")
       };
 

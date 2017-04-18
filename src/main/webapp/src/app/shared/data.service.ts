@@ -40,8 +40,12 @@ export class DataService {
   }
 
   getStudentExams(groupId: number, studentId: number): Observable<any> {
-    console.log('test');
-    return this.get(`/groups/${groupId}/students/${studentId}/exams`);
+    // todo: we will have to figure out these api routes because I would think
+    // we should be hitting the same controller and passing optional params.
+    if(groupId)
+      return this.get(`/groups/${groupId}/students/${studentId}/exams`);
+    else
+      return this.get(`/students/${studentId}/exams`);
   }
 
   getStudentExam(groupId: number, studentId: number, examId: number): Observable<any> {

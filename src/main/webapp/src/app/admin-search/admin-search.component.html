@@ -36,7 +36,7 @@
             <tr *ngFor="let student of students">
               <td>{{student.ssid}}</td>
               <td>
-                <a routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">
+                <a routerLink="students/{{student.id}}/exams">
                   {{student.lastName}}, {{student.firstName}}
                 </a>
               </td>
