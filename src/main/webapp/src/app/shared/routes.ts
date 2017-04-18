@@ -8,6 +8,10 @@ import {GroupExamItemComponent} from "../group-exam-item/group-exam-item.compone
 import {StudentExamReportComponent} from "../student-exam-report/student-exam-report.component";
 import {AdminSearchComponent} from "../admin-search/admin-search.component";
 import {Routes} from "@angular/router";
+import {GroupResolve} from "../groups/group.resolve";
+import {StudentExamsResolve} from "../student-exams/student-exam.resolve";
+import {StudentExamItemsResolve} from "../student-exam-items/student-exam-items.resolve";
+import {GroupExamItemResolve} from "../group-exam-item/group-exam-item.resolve";
 
 export const routes: Routes = [
   {
@@ -16,34 +20,59 @@ export const routes: Routes = [
   },
   {
     path: 'search',
-    component: AdminSearchComponent
+    component: AdminSearchComponent,
+    data: { breadcrumb: 'labels.search.title'}
   },
   {
     path: 'groups',
-    component: GroupsComponent
-  },
-  {
-    path: 'groups/:groupId',
+    data: { breadcrumb: 'labels.groups' },
     children: [
-      { path: '', redirectTo: '/students', pathMatch: 'full' },
-      { path: 'students', component: GroupStudentsComponent },
-      { path: 'students/:studentId',
+      { path: '', pathMatch: 'full', component: GroupsComponent },
+      {
+        path: ':groupId/students',
+        data: { breadcrumb: '[resolve]=groupData.group.name' },
+        resolve: { groupData: GroupResolve },
         children: [
-          { path: 'exams', component: StudentExamsComponent },
-          { path: 'exams/:examId',
+          { path: '', pathMatch: 'full', component: GroupStudentsComponent },
+          {
+            path: ':studentId/exams',
+            data: { breadcrumb: '[resolve]=studentData.student.fullName' },
+            resolve: { studentData: StudentExamsResolve },
             children: [
-              { path: '', redirectTo: 'items', pathMatch: 'full' },
-              { path: 'items', component: StudentExamItemsComponent },
-              { path: 'report', component: StudentExamReportComponent }
+              { path: '', pathMatch: 'full', component: StudentExamsComponent },
+              {
+                path: ':examId/items',
+                component: StudentExamItemsComponent,
+                data: { breadcrumb: '[resolve]=examData.exam.assessment.fullName' },
+                resolve: { examData: StudentExamItemsResolve }
+              },
+              { path: ':examId/report', component: StudentExamReportComponent, data: { breadcrumb: 'Report' } }
             ]
           }
         ]
       },
-      { path: 'exams', component: GroupExamsComponent },
-      { path: 'exams/:examId',
+      {
+        path: ':groupId/exams',
+        data: { breadcrumb: '[resolve]=groupData.group.name' },
+        resolve: { groupData: GroupResolve },
         children: [
-          { path: 'items/:itemId', component: GroupExamItemComponent },
-          { path: 'items/:itemId/score/:scoreId', component: GroupExamItemComponent }
+          {
+            path: '',
+            pathMatch: 'full',
+            component: GroupExamsComponent
+          },
+          {
+            path: ':examId/items/:itemId',
+            component: GroupExamItemComponent,
+            data: { breadcrumb: '[resolve]=examData.item.title' },
+            resolve: { examData: GroupExamItemResolve }
+          },
+          {
+            path: ':examId/items/:itemId/score/:scoreId',
+            component: GroupExamItemComponent,
+            data: { breadcrumb: '[resolve]=examData.item.title' },
+            resolve: { examData: GroupExamItemResolve }
+          }
         ]
       }
     ]

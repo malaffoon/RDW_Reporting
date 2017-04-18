@@ -1,9 +1,28 @@
-<div class="breadcrumbs">
+<div [hidden]="breadcrumbs.length == 0" class="breadcrumbs">
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
         <div class="breadcrumb-links">
-          <breadcrumb *ngFor="let crumb of crumbs; let first = first; let last = last" [crumb]="crumb" [first]="first" [active]="last"></breadcrumb>
+          <div>
+
+            <span class="breadcrumb-link-container" >
+              <a class="breadcrumb-link" routerLink="/">
+                <i class="glyphicon glyphicon-home"></i>{{ 'labels.home' | translate }}
+              </a>
+                <span class="breadcrumb-link-separator">
+                  <i class="glyphicon glyphicon-menu-right"></i>
+                </span>
+            </span>
+            <span *ngFor="let crumb of breadcrumbs; let last = last;" class="breadcrumb-link-container" >
+              <a class="breadcrumb-link" [ngClass]="{'active': last }" [routerLink]="crumb.url">
+                {{ crumb.label | translate }}
+              </a>
+              <span *ngIf="!last" class="breadcrumb-link-separator">
+                <i class="glyphicon glyphicon-menu-right"></i>
+              </span>
+            </span>
+
+          </div>
         </div>
       </div>
     </div>

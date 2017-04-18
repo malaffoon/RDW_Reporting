@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from "ng2-translate";
-import { DataService } from "../shared/data.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import {Component, OnInit} from "@angular/core";
+import {TranslateService} from "ng2-translate";
+import {DataService} from "../shared/data.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'admin-search',
@@ -13,8 +13,6 @@ export class AdminSearchComponent implements OnInit {
   private students;
   private group;
   private searchTerm : string;
-  private breadcrumbs = [];
-
   constructor(private translate: TranslateService, private service : DataService, private route : ActivatedRoute, private router : Router) { }
 
   ngOnInit() {
@@ -25,10 +23,8 @@ export class AdminSearchComponent implements OnInit {
         this.searchTerm = res['q'];
         if(this.searchTerm) {
           this.search(this.searchTerm);
-          this.breadcrumbs = [{name: this.content.results }];
         }
         else{
-          this.breadcrumbs = [];
           this.students = undefined;
         }
       });

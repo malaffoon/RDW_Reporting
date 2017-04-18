@@ -1,7 +1,5 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {DataService} from "../shared/data.service";
-import {TranslateService} from "ng2-translate";
 import {mock_item} from "../standalone/data/data";
 
 @Component({
@@ -10,48 +8,31 @@ import {mock_item} from "../standalone/data/data";
 })
 export class GroupExamItemComponent implements OnInit {
 
-  private breadcrumbs = [];
   private group = null;
   private exam = null;
   private item = null;
 
-  constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService) {
+  constructor(private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
 
-      let groupId = params['groupId'];
-      let examId = params['examId'];
+      let data = this.route.snapshot.data['examData'];
 
-      (params['score'] == null
-          ? this.service.getGroupExamItem(groupId, examId, params['itemId'])
-          : this.service.getGroupExamItemWithScore(groupId, examId, params['itemId'], params['score'])
-      ).subscribe(data => {
-        this.translate.get('labels.assessment.grade').subscribe(breadcrumbName => {
+      let group = data.group;
+      let exam = data.item.exam;
+      let item = Object.assign({}, data.item);
 
-          let group = data.group;
-          let exam = data.item.exam;
-          let item = Object.assign({}, data.item);
+      // only necessary in mock so move to standalone service
+      if (params['score'] != null) {
+        item.results = mock_item.results.filter(item => item.score == parseInt(params['score']));
+      }
 
-          // only necessary in mock so move to standalone service
-          if (params['score'] != null) {
-            item.results = mock_item.results.filter(item => item.score == parseInt(params['score']));
-          }
+      this.group = group;
+      this.item = item;
+      this.exam = exam;
 
-          this.breadcrumbs = [
-            {name: group.name, path: `/groups/${groupId}/students`},
-            {name: 'Aggregate', path: `/groups/${groupId}/exams`},
-            {name: `${breadcrumbName} ${exam.assessment.grade} ${exam.assessment.name} #${item.number}`}
-          ];
-
-          this.group = group;
-          this.item = item;
-          this.exam = exam;
-
-        });
-      })
     });
   }
-
 }

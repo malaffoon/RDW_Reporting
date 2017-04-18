@@ -1,8 +1,7 @@
-import {Component, OnInit, ElementRef, ViewChild, AfterViewInit} from "@angular/core";
-import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
+import {Component, OnInit, ElementRef, ViewChild} from "@angular/core";
+import {SafeResourceUrl, DomSanitizer} from "@angular/platform-browser";
 import {ActivatedRoute} from "@angular/router";
 import {DataService} from "../shared/data.service";
-import {TranslateService} from "ng2-translate";
 
 declare var IRiS : any;
 
@@ -12,7 +11,6 @@ declare var IRiS : any;
 })
 export class StudentExamItemsComponent implements OnInit {
 
-  private breadcrumbs = [];
   private model : any;
   private selectedRow: any;
   private size = 1;
@@ -33,37 +31,15 @@ export class StudentExamItemsComponent implements OnInit {
       }
   }
 
-  constructor(private service: DataService, private route: ActivatedRoute, private translate: TranslateService, private sanitizer : DomSanitizer) {
+  constructor(private service: DataService, private route: ActivatedRoute, private sanitizer : DomSanitizer) {
   }
 
   ngOnInit() {
     this.safeIrisUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.irisUrl);
 
-    this.route.params.subscribe(params => {
-      this.service.getStudentExam(params['groupId'], params['studentId'], params['examId']).subscribe((data:any) => {
-        this.translate.get('labels.assessment.grade').subscribe(currentTitle => {
+    this.model = Object.assign({}, this.route.snapshot.data["examData"]);
+    this.model.items = this.copyArray(this.model.items);
 
-          this.model = Object.assign({}, data); // This only does a shallow copy.
-
-          this.model.items = this.copyArray(data.items);
-          this.breadcrumbs = this.getBreadCrumbs(currentTitle, this.model)
-        })
-      })
-    });
-  }
-
-  getBreadCrumbs(currentTitle, model) {
-    if(!model.student || !model.group)
-      return [];
-
-    return [
-      {name: model.group.name, path: `/groups/${model.group.id}/students`},
-      {
-        name: `${model.student.lastName}, ${model.student.firstName}`,
-        path: `/groups/${model.group.id}/students/${model.student.id}/exams`
-      },
-      {name: `${currentTitle} ${model.exam.assessment.grade} ${model.exam.assessment.name}`}
-    ];
   }
 
   irisframeOnLoad(){
