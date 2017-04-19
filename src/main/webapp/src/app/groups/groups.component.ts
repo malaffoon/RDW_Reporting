@@ -7,7 +7,6 @@ import {DataService} from "../shared/data.service";
 })
 export class GroupsComponent implements OnInit {
 
-  private breadcrumbs = [];
   private groups = [];
 
   constructor(private service: DataService) {}

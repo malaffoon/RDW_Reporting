@@ -133,7 +133,10 @@ export const assessments = [
     academicYear: 2016,
     subject: AssessmentSubjectType.MATH
   }
-];
+].map((assessment : any) => {
+  assessment.fullName = `Grade ${assessment.grade} ${assessment.name}`
+  return assessment;
+});
 
 export const exams_of_student = [
   {
@@ -211,6 +214,7 @@ export const students = [
   student.id = index;
   student.ssid = randomSsid();
   student.exams = exams_of_student;
+  student.fullName = `${student.lastName}, ${student.firstName}`;
   return student;
 });
 
@@ -311,7 +315,8 @@ export const mock_item:any = {
   name: 'Concepts and Procedures',
   target: 'Target F',
   maximumScore: 1,
-  exam: exams_of_group[0]
+  exam: exams_of_group[0],
+  title: exams_of_group[0].assessment.fullName + ' # 1'
 };
 
 export const mock_item_results = [

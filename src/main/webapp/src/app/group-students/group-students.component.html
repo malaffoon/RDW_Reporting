@@ -1,60 +1,66 @@
-<breadcrumbs [values]="breadcrumbs"></breadcrumbs>
+<div>
+  <div [hidden]="!group" class="students-view">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
 
-<div *ngIf="group" class="students-view">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
+          <div class="page-heading">
+            <div class="row">
+              <div class="col-md-8">
 
-        <div class="page-heading">
-          <div class="row">
-            <div class="col-md-8">
+                <h2>{{group.name}}</h2>
 
-              <h2>{{group.name}}</h2>
+                <a class="controls btn btn-primary" routerLink="/groups/{{group.id}}/exams">
+                  <i class="glyphicon glyphicon-stats"></i> {{'labels.aggregate.link' | translate}}
+                </a>
 
-              <a class="controls btn btn-primary" routerLink="/groups/{{group.id}}/exams">
-                <i class="glyphicon glyphicon-stats"></i> {{'labels.aggregate.link' | translate}}
-              </a>
-
-            </div>
-            <div class="col-md-4">
-
-              <div class="controls">
-
-                <div *ngIf="students.length > 2" class="inner-addon left-addon search-box">
-                  <label class="sr-only" for="search">{{'prompt.search' | translate}}</label>
-                  <i class="glyphicon glyphicon-search"></i>
-                  <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'prompt.search' | translate}}" autocomplete="off">
-                </div>
               </div>
+              <div class="col-md-4">
 
+                <div class="controls">
+
+                  <div *ngIf="students.length > 2" class="inner-addon left-addon search-box">
+                    <label class="sr-only" for="search">{{'prompt.search' | translate}}</label>
+                    <i class="glyphicon glyphicon-search"></i>
+                    <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'prompt.search' | translate}}" autocomplete="off">
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="card students-card">
-          <table class="table table-striped">
-            <thead>
+          <div class="card students-card">
+            <table class="table table-striped">
+              <thead>
               <tr>
                 <th>{{'labels.student.name' | translate}}</th>
                 <th class="text-center">{{'labels.student.ssid' | translate}}</th>
                 <th style="width:66%"></th>
               </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
               <tr *ngFor="let student of students | search:searchTerm:['lastName', 'firstName', 'ssid']">
                 <td><a routerLink="/groups/{{group.id}}/students/{{student.id}}/exams">{{student.lastName}},
                   {{student.firstName}}</a></td>
                 <td class="text-center">{{student.ssid}}</td>
                 <td></td>
               </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+
+  <div *ngIf="!group">
+    Skip to... <a routerLink="/groups/1/students/1/exams/2/items">Items</a>
+  </div>
 </div>
 
-<div *ngIf="!group">
-  Skip to... <a routerLink="/groups/1/students/1/exams/2/items">Items</a>
-</div>
+
+
+
+

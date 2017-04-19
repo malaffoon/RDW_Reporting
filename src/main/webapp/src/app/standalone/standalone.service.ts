@@ -33,6 +33,12 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
         student: mock_student,
         exams: exams_of_student
       };
+    } else if (new RegExp(`GET /api/students/\\d+/exams`, 'g').test(requestSignature)) {
+      body = {
+        group: mock_group,
+        student: mock_student,
+        exams: exams_of_student
+      };
     } else if (new RegExp(`GET /api/groups/\\d+/students`, 'g').test(requestSignature)) {
       body = {
         students: students,

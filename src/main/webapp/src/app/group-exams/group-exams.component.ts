@@ -36,32 +36,23 @@ export class GroupExamsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.service.getGroupExams(params['groupId']).subscribe((data: any) => {
-        this.translate.get('labels.aggregate.link').subscribe(breadcrumbName => {
+        let group = data.group;
+        let assessment_results = data.assessment_results;
 
-          let group = data.group;
-          let assessment_results = data.assessment_results;
+        this.group = group;
 
-          this.breadcrumbs = [
-            {name: group.name, path: `/groups/${group.id}/students`},
-            {name: breadcrumbName}
-          ];
+        this.academicYearFilterOptions = Array.from(assessment_results.reduce(
+          (values, exam) => values.add(exam.assessment.academicYear), new Set())).sort();
 
-          this.group = group;
+        this.assessmentTypeFilterOptions = Array.from(assessment_results.reduce(
+          (values, exam) => values.add(exam.assessment.type), new Set())).sort();
 
-          this.academicYearFilterOptions = Array.from(assessment_results.reduce(
-            (values, exam) => values.add(exam.assessment.academicYear), new Set())).sort();
+        // data prep
+        this.group.exams = exams_of_group;
+        this.itemsByPointsEarned = items_by_points_earned;
+        this.selectedRecords = exams_of_sessions;
 
-          this.assessmentTypeFilterOptions = Array.from(assessment_results.reduce(
-            (values, exam) => values.add(exam.assessment.type), new Set())).sort();
-
-          // data prep
-          this.group.exams = exams_of_group;
-          this.itemsByPointsEarned = items_by_points_earned;
-          this.selectedRecords = exams_of_sessions;
-
-          this.filter();
-        });
-
+        this.filter();
       });
     });
   }

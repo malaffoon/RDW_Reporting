@@ -17,14 +17,17 @@ import {routes} from "./shared/routes";
 import {GroupsComponent} from "./groups/groups.component";
 import {HomeComponent} from "./home/home.component";
 import {StudentExamItemsComponent} from "./student-exam-items/student-exam-items.component";
-import {BreadcrumbsComponent} from "./breadcrumbs/breadcrumbs.component";
 import {SearchPipe} from "./search.pipe";
-import {BreadcrumbComponent} from "./breadcrumbs/breadcrumb.component";
 import {StudentExamsCategorizedComponent} from "./student-exams/student-exams-categorized.component";
 import {GroupExamItemComponent} from "./group-exam-item/group-exam-item.component";
 import {StudentExamReportComponent} from "./student-exam-report/student-exam-report.component";
 import {IabReportComponent} from "./student-exam-report/iab-report.component";
-import { AdminSearchComponent } from './admin-search/admin-search.component';
+import {AdminSearchComponent} from './admin-search/admin-search.component';
+import {GroupResolve} from "./groups/group.resolve";
+import {StudentExamsResolve} from "./student-exams/student-exam.resolve";
+import {StudentExamItemsResolve} from "./student-exam-items/student-exam-items.resolve";
+import {GroupExamItemResolve} from "./group-exam-item/group-exam-item.resolve";
+import {BreadcrumbsComponent} from "./breadcrumbs/breadcrumbs.component";
 
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, '/api/translations', '');
@@ -43,7 +46,6 @@ export function createTranslateLoader(http: Http) {
     StudentExamItemsComponent,
     GroupExamItemComponent,
     BreadcrumbsComponent,
-    BreadcrumbComponent,
     HomeComponent,
     StudentExamReportComponent,
     IabReportComponent,
@@ -57,15 +59,15 @@ export function createTranslateLoader(http: Http) {
     TranslateModule.forRoot({
       provide: TranslateLoader,
       useFactory: (createTranslateLoader),
-      deps: [Http]
+      deps: [ Http ]
     }),
     TabsModule.forRoot()
   ],
   providers: [
-    DataService,
+    DataService, GroupResolve, StudentExamsResolve, StudentExamItemsResolve, GroupExamItemResolve,
     ...(environment.standalone ? standaloneProviders : [])
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ]
 })
 export class AppModule {
 }
