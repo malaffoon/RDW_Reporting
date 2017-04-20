@@ -20,12 +20,12 @@ export const routes: Routes = [
   },
   {
     path: 'search',
-    data: { breadcrumb: 'labels.search.title' },
+    data: { breadcrumb: { translate: 'labels.search.title' } },
     children: [
       { path: '', pathMatch: 'full', component: AdminSearchComponent },
       {
         path: 'students/:studentId/exams',
-        data: { breadcrumb: '[resolve]=studentData.student.fullName' },
+        data: { breadcrumb: { resolve: (x) => x.studentData.student.fullName } },
         resolve: { studentData: StudentExamsResolve },
         component: StudentExamsComponent
       }
@@ -33,35 +33,35 @@ export const routes: Routes = [
   },
   {
     path: 'groups',
-    data: { breadcrumb: 'labels.groups' },
+    data: { breadcrumb: { translate: 'labels.groups' } },
     children: [
       { path: '', pathMatch: 'full', component: GroupsComponent },
       {
         path: ':groupId/students',
-        data: { breadcrumb: '[resolve]=groupData.group.name' },
+        data: { breadcrumb: { resolve: (x) => x.groupData.group.name } },
         resolve: { groupData: GroupResolve },
         children: [
           { path: '', pathMatch: 'full', component: GroupStudentsComponent },
           {
             path: ':studentId/exams',
-            data: { breadcrumb: '[resolve]=studentData.student.fullName' },
+            data: { breadcrumb: { resolve: (x) => x.studentData.student.fullName } },
             resolve: { studentData: StudentExamsResolve },
             children: [
               { path: '', pathMatch: 'full', component: StudentExamsComponent },
               {
                 path: ':examId/items',
                 component: StudentExamItemsComponent,
-                data: { breadcrumb: '[resolve]=examData.exam.assessment.fullName' },
+                data: { breadcrumb: { resolve: (x) => x.examData.exam.assessment.fullName } },
                 resolve: { examData: StudentExamItemsResolve }
               },
-              { path: ':examId/report', component: StudentExamReportComponent, data: { breadcrumb: 'Report' } }
+              { path: ':examId/report', component: StudentExamReportComponent, data: { breadcrumb: { translate: 'Report' } } }
             ]
           }
         ]
       },
       {
         path: ':groupId/exams',
-        data: { breadcrumb: '[resolve]=groupData.group.name' },
+        data: { breadcrumb:  { resolve: (x) => x.groupData.group.name } },
         resolve: { groupData: GroupResolve },
         children: [
           {
@@ -72,13 +72,13 @@ export const routes: Routes = [
           {
             path: ':examId/items/:itemId',
             component: GroupExamItemComponent,
-            data: { breadcrumb: '[resolve]=examData.item.title' },
+            data: { breadcrumb: { resolve: (x) => x.examData.item.title } },
             resolve: { examData: GroupExamItemResolve }
           },
           {
             path: ':examId/items/:itemId/score/:scoreId',
             component: GroupExamItemComponent,
-            data: { breadcrumb: '[resolve]=examData.item.title' },
+            data: { breadcrumb: { resolve: (x) => x.examData.item.title } },
             resolve: { examData: GroupExamItemResolve }
           }
         ]
