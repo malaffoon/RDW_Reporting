@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.4.2.RELEASE</version>
+    <version>1.5.2.RELEASE</version>
   </parent>
 
   <properties>
@@ -20,6 +20,8 @@
     <unit-tests.skip>false</unit-tests.skip>
     <integration-tests.skip>true</integration-tests.skip>
     <docker.image.prefix>fwsbac</docker.image.prefix>
+    <janino.version>3.0.7</janino.version>
+    <logstash-appender.version>4.8</logstash-appender.version>
 
     <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
     <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
@@ -31,7 +33,7 @@
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
-        <version>Camden.SR6</version>
+        <version>Dalston.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -50,6 +52,20 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>janino</artifactId>
+      <version>${janino.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <version>${logstash-appender.version}</version>
     </dependency>
   </dependencies>
 
