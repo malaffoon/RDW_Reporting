@@ -1,5 +1,6 @@
 spring:
   profiles: local-development
+  cloud.bus.enabled: false
 
 management:
   health:
