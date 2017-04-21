@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Router, ActivatedRoute, NavigationEnd, PRIMARY_OUTLET} from "@angular/router";
 import "rxjs/add/operator/filter";
+import {Utils} from "../shared/Utils";
 
 @Component({
   selector: 'breadcrumbs',
@@ -44,7 +45,7 @@ export class BreadcrumbsComponent implements OnInit{
       let label = crumbData.translate;
 
       if(crumbData.resolve){
-        label = crumbData.resolve(child.snapshot.data);
+        label = Utils.getPropertyValue(crumbData.resolve, child.snapshot.data);
         requiresTranslate = false;
       }
 
