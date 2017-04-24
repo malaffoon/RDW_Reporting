@@ -31,3 +31,6 @@ artifacts:
   exam-item:
     directory: data/irp/Item-{0}/
     file-name: item-{0}.xml
+
+permissionservice:
+  component: Reporting
