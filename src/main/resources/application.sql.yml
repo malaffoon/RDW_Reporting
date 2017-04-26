@@ -14,6 +14,13 @@ sql:
               join student s on sgm.student_id = s.id
               where student_group_id=:student_group_id
 
+    membership:
+      findAllForUsername: >-
+        select sg.id, sg.subject_id, sg.school_id
+          from user_student_group usg
+            join student_group sg on sg.id = usg.student_group_id
+            where user_login=:user_login
+
   district:
     findAllIds: >-
       select natural_id, id
