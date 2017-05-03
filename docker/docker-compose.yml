@@ -29,19 +29,47 @@ services:
       - GIT_USER
       - GIT_PASSWORD
 
-  reporting-service:
-    image: fwsbac/rdw-reporting-service
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  webapp:
+    image: fwsbac/rdw-reporting-webapp
     ports:
       - 8080:8080
     volumes:
       - /opt/rdw-reporting/config:/opt/rdw-reporting/config
     depends_on:
       - config-server
+      - rabbitmq
     links:
       - config-server
+      - rabbitmq
     environment:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
     extra_hosts:
       - "dwhost:$DATAWAREHOUSE_HOST"
+
+  pdf-report-processor:
+      image: fwsbac/rdw-reporting-pdf-report-processor
+      ports:
+        - 8081:8080
+      volumes:
+        - /tmp:/tmp
+      depends_on:
+        - config-server
+        - rabbitmq
+      links:
+        - config-server
+        - rabbitmq
+      environment:
+        - spring.profiles.active=local-docker
+        - CONFIG_SERVICE_ENABLED=true
+        - CONFIG_SERVICE_URL=http://config-server:8888
+      extra_hosts:
+        - "dwhost:$DATAWAREHOUSE_HOST"

@@ -1,0 +1,39 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+plugins {
+    id "net.ltgt.apt" version "0.9"
+}
+
+apply plugin: 'idea'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'jacoco'
+apply plugin: 'net.ltgt.apt'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+dependencies {
+    testCompile 'junit:junit'
+    testCompile 'org.assertj:assertj-core:3.6+'
+}
+
+// generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
+test.finalizedBy(jacocoTestReport)
+
+// trigger creation of build-info.properties
+classes.dependsOn(createBuildInfoFile)
+
+// task to build the docker image
+task buildImage(type:DockerBuildImage, dependsOn:[build, createDockerfile]) {
+    dockerFile = createDockerfile.destFile
+    inputDir = project.file('build/docker/')
+    tag = "fwsbac/${project.name}"
+    doFirst {
+        copy {
+            from jar
+            into inputDir
+        }
+    }
+}
