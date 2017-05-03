@@ -8,6 +8,9 @@ Spring boot default log levels are used.
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
+    <springProperty name="appName" source="spring.application.name"/>
+    <property scope="context" name="app.context.name" value="${appName}" />
+
     <springProperty name="LOGSTASH_DESTINATION" source="logstash-destination"/>
 
     <if condition='isDefined("LOGSTASH_DESTINATION")'>
