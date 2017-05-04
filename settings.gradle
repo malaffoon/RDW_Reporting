@@ -1,1 +1,9 @@
-rootProject.name = 'rdw-reporting-service'
+include ':common'
+include ':webapp'
+include ':pdf-report-processor'
+
+rootProject.name = "rdw-reporting"
+
+rootProject.children.each {
+    it.name = rootProject.name + "-" + it.name
+}
