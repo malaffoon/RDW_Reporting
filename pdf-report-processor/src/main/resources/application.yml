@@ -1,0 +1,11 @@
+management:
+  security:
+    enabled: false
+
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: EXAM_REPORT_PDF
+          group: default

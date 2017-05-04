@@ -3,13 +3,13 @@
 # (https://github.com/spring-cloud/spring-cloud-commons/blob/master/docs/src/main/asciidoc/spring-cloud-commons.adoc#the-bootstrap-application-context)
 spring:
   application:
-    name: rdw-reporting-webapp
+    name: rdw-reporting-pdf-report-processor
 
   cloud:
     config:
       enabled: ${CONFIG_SERVICE_ENABLED:false}
       fail-fast: ${CONFIG_SERVICE_ENABLED:false}
-      label: ${CONFIG_SERVICE_LABEL:rdw,develop,master}
+      label: ${CONFIG_SERVICE_LABEL:develop,master}
       uri: ${CONFIG_SERVICE_URL:http://localhost:8888}
       # defaults of 1000/2000 are a bit too needy
       retry:

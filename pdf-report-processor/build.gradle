@@ -1,6 +1,6 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
-
+apply plugin: 'com.bmuschko.docker-remote-api'
 apply plugin: 'org.springframework.boot'
 
 dependencies {
