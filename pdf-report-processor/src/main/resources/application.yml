@@ -9,3 +9,18 @@ spring:
         input:
           destination: EXAM_REPORT_PDF
           group: default
+
+  rabbitmq:
+    host: rabbitmq
+
+
+cloud:
+  aws:
+    region:
+      auto: false
+      static: us-west-2
+    # disable CloudFormation stuff
+    stack:
+      auto: false
+    credentials:
+      instance-profile: false
