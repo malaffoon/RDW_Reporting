@@ -20,9 +20,9 @@ spring:
   cloud:
     stream:
       bindings:
-        EXAM_REPORT_PDF:
-          producer:
-            requiredGroups: default
+        output:
+          destination: exam_report_pdf
+          group: default
 
 cloud:
   aws:

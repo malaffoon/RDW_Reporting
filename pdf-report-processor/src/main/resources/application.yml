@@ -7,12 +7,8 @@ spring:
     stream:
       bindings:
         input:
-          destination: EXAM_REPORT_PDF
+          destination: exam_report_pdf
           group: default
-
-  rabbitmq:
-    host: rabbitmq
-
 
 cloud:
   aws:
