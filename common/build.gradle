@@ -9,6 +9,7 @@ dependencies {
     compile 'org.thymeleaf:thymeleaf:2.1.5.RELEASE'
 
     testCompile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'org.slf4j:slf4j-simple:1.7.12'
 
 }
 
