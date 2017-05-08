@@ -1,6 +1,9 @@
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
+    ext {
+        springBootVersion = '1.5.2.RELEASE'
+    }
     repositories {
         mavenLocal()
         jcenter()
@@ -9,10 +12,15 @@ buildscript {
     dependencies {
         classpath("com.bmuschko:gradle-docker-plugin:3.0.5")
         classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE")
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
     }
 }
+
+// fixes spring boot 1.5 auto configuration from thymeleaf 2 to 3
+ext['thymeleaf.version'] = '3.0.6.RELEASE'
+ext['thymeleaf-layout-dialect.version'] = '2.0.0'
+
 
 apply plugin: 'io.spring.dependency-management'
 
@@ -24,6 +32,10 @@ allprojects {
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-maven'
     apply plugin: 'propdeps-idea'
+
+    if (project.hasProperty("buildNumber")) {
+        project.setVersion(project.version.split("-")[0] + "." + buildNumber)
+    }
 }
 
 subprojects {
@@ -41,6 +53,7 @@ subprojects {
     }
 
     dependencyManagement {
+
         dependencies {
             dependency 'org.opentestsystem.rdw.common:rdw-common-messaging:0.0.1-SNAPSHOT'
             dependency 'org.opentestsystem.rdw.common:rdw-common-model:0.0.1-SNAPSHOT'
@@ -49,6 +62,14 @@ subprojects {
             dependency 'org.opentestsystem.rdw.common:rdw-common-archive:0.0.1-SNAPSHOT'
 
             dependency 'com.google.guava:guava:21.0'
+            dependency 'org.apache.commons:commons-io:1.3.2'
+
+            dependency 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
+            dependency 'com.fasterxml.jackson.core:jackson-databind:2.8.7'
+            dependency 'org.springframework:spring-context:4.3.7.RELEASE'
+            dependency 'org.thymeleaf:thymeleaf:3.0.6.RELEASE'
+
+            dependency 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE'
         }
         imports {
             // spring cloud Camden.SR5 includes spring cloud stream Brooklyn.SR2
@@ -59,8 +80,9 @@ subprojects {
     dependencies {
         compile "org.slf4j:slf4j-api:1.7+"
 
-        testCompile 'org.assertj:assertj-core:3.6+'
         testCompile 'junit:junit:4+'
+        testCompile 'org.assertj:assertj-core:3.6+'
+        testCompile 'org.mockito:mockito-all:1.10.19'
     }
 
     // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
@@ -89,4 +111,41 @@ subprojects {
         exposePort(8080)
         entryPoint("java", "-jar", "${jar.archivePath.name}")
     }
+
+    test.exclude '**/*IT.*'
+
+    //This task for for manually running the integration tests against schemas being developed simultaneously with this
+    // project, versus the schemas that are "fixed" under the RDW_Schema submodule in this project
+    task manualIT(type: Test) {
+        include '**/*IT.*'
+        outputs.upToDateWhen { false }
+        doLast {
+            println "Running Manual Integration Tests..."
+        }
+    }
+
+    //The omission of the ':' in manualIT is on purpose - we need the relative path to manualIT
+    task IT(type: Test, dependsOn:[":cleanReportingTest", ":migrateReportingTest", "manualIT"]) {
+        doLast {
+            println "Running Integration Tests..."
+        }
+    }
+
+    tasks.withType(Test) {
+        reports.html.destination = file("${reporting.baseDir}/${name}")
+    }
+}
+
+task migrateReportingTest(type: GradleBuild) {
+    group = "Schema"
+    description = "Cleans the schemas that integration tests depend on"
+    dir = "RDW_Schema"
+    tasks = ["migrateReporting-test"]
+}
+
+task cleanReportingTest(type: GradleBuild) {
+    group = "Schema"
+    description = "Migrates the schemas that integration tests depend on"
+    dir = "RDW_Schema"
+    tasks = ["cleanReporting-test"]
 }

@@ -1,0 +1,22 @@
+management:
+  security:
+    enabled: false
+
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: exam_report_pdf
+          group: default
+
+cloud:
+  aws:
+    region:
+      auto: false
+      static: us-west-2
+    # disable CloudFormation stuff
+    stack:
+      auto: false
+    credentials:
+      instance-profile: false

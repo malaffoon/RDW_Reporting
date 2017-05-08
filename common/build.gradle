@@ -1,8 +1,12 @@
 //Any subproject specific plugins go here
 
 dependencies {
-    testCompile 'junit:junit'
-    testCompile 'org.assertj:assertj-core:3.6+'
+    compile 'org.apache.commons:commons-io'
+    compile 'com.google.guava:guava'
+    compile 'com.fasterxml.jackson.core:jackson-annotations'
+    compile 'com.fasterxml.jackson.core:jackson-databind'
+    compile 'org.springframework:spring-context'
+    compile 'org.thymeleaf:thymeleaf'
 }
 
 // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
