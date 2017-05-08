@@ -6,7 +6,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.7'
     compile 'org.springframework:spring-context:4.3.7.RELEASE'
-    compile 'org.thymeleaf:thymeleaf:2.1.5.RELEASE'
+    compile 'org.thymeleaf:thymeleaf:3.0.6.RELEASE'
 
     testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'org.slf4j:slf4j-simple:1.7.12'
