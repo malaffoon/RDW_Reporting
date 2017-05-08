@@ -7,6 +7,19 @@ sql:
             join school s on s.id = sg.school_id
             where user_login=:user_login
 
+    findAllForUsername: >-
+      select
+      	  sg.id,
+          sg.name,
+          sg.school_year,
+          school.name as school_name,
+          subject.name as subject_name
+        from user_student_group usg
+      	join student_group sg on sg.id = usg.student_group_id
+      	join school on school.id = sg.school_id
+      	join subject on subject.id = sg.subject_id
+      	where user_login=:user_login
+
     membership:
       findAllForUsername: >-
         select sg.id, sg.subject_id, sg.school_id
