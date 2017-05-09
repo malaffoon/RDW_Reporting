@@ -80,10 +80,12 @@ h2 {
   }
 }
 
+.table-striped > table > tbody > tr:nth-of-type(odd),
 .table-striped > tbody > tr:nth-of-type(odd) {
   background-color: @gray7;
 }
 
+.table-striped > table > tbody > tr:nth-of-type(even),
 .table-striped > tbody > tr:nth-of-type(even) {
   background-color: @gray8;
 }
@@ -530,6 +532,7 @@ iframe.lg {height: 600px;}
 .margin-right-20 { margin-right: 20px; }
 
 .color-checkmark {color: @green; }
+.color-green { color: @green; }
 .color-light-green {color: @light-green }
 .overflow-hidden { overflow:hidden !important; }
 .text-align-center { text-align: center; }
@@ -559,4 +562,11 @@ a.active {
   cursor: default;
   color: gray;
   text-decoration: none;
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
 }
