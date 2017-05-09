@@ -71,6 +71,7 @@ h2 {
   margin: 4px 0 20px 0;
 }
 
+.ui-datatable,
 .table {
   border: 1px solid @gray5;
   color: #000;
@@ -79,6 +80,24 @@ h2 {
     vertical-align: top;
   }
 }
+
+/* Prime-NG table overrides */
+.ui-datatable table { table-layout: auto !important; }
+
+.ui-datatable .ui-datatable-thead>tr>th {
+  color: #000 !important;
+  background-color: @gray6 !important;
+  vertical-align: top !important;
+  border: none !important;
+  font-weight: bold !important;
+  text-align: left !important;
+}
+
+.ui-datatable .ui-datatable-tfoot>tr>td, .ui-datatable .ui-datatable-data>tr>td{
+  border:none !important;
+}
+/*End Prime-NG table overrides*/
+
 
 .table-striped > table > tbody > tr:nth-of-type(odd),
 .table-striped > tbody > tr:nth-of-type(odd) {

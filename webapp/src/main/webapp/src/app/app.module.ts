@@ -29,8 +29,7 @@ import { StudentExamsResolve } from "./student-exams/student-exam.resolve";
 import { StudentExamItemsResolve } from "./student-exam-items/student-exam-items.resolve";
 import { GroupExamItemResolve } from "./group-exam-item/group-exam-item.resolve";
 import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
-// import { Ng2TableModule } from "ng2-table/ng2-table";
-// import {DataTableModule,SharedModule} from 'primeng/primeng';
+import { DataTableModule, SharedModule } from 'primeng/primeng';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -58,16 +57,15 @@ export function createTranslateLoader(http: Http) {
     BrowserModule,
     FormsModule,
     HttpModule,
-    // Ng2TableModule,
-    // DataTableModule,
-    // SharedModule,
+    DataTableModule,
+    SharedModule,
     RouterModule.forRoot(routes),
     TranslateModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [Http]
+        deps: [ Http ]
       }
     }),
     TabsModule.forRoot()

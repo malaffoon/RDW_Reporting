@@ -21,32 +21,17 @@
         </div>
 
         <div>
-          <!--<p-dataTable [value]="cars1">-->
-            <!--<p-column field="name" header="Name" [sortable]="true"></p-column>-->
-            <!--<p-column field="school" header="School" [sortable]="true"></p-column>-->
-            <!--<p-column field="subject" header="Subject" [sortable]="true"></p-column>-->
-          <!--</p-dataTable>-->
-          <!---->
-          <!--<ng-table class="table-striped" [rows]="groups" [columns]="columns">-->
-          <!--</ng-table>-->
-
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>{{'labels.group.name' | translate}}</th>
-                <th>{{'labels.school.name' | translate}}</th>
-                <th>{{'labels.assessment.subject' | translate}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let group of groups | search:searchTerm:['name']">
-                <td><a routerLink="/groups/{{group.id}}/students">{{group.name}}</a></td>
-                <td>{{group.school}}</td>
-                <td>{{group.subject}}</td>
-              </tr>
-            </tbody>
-          </table>
+          <p-dataTable [value]="groups">
+            <p-column field="name" header="{{'labels.group.name' | translate}}" [sortable]="true">
+              <ng-template let-group="rowData" pTemplate type="body">
+                <a routerLink="/groups/{{group.id}}/students">{{group.name}}</a>
+              </ng-template>
+            </p-column>
+            <p-column field="school" header="{{'labels.school.name' | translate}}" [sortable]="true"></p-column>
+            <p-column field="subject" header="{{'labels.assessment.subject' | translate}}" [sortable]="true"></p-column>
+          </p-dataTable>
         </div>
+
       </div>
     </div>
 </div>
