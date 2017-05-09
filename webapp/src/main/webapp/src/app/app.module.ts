@@ -3,11 +3,12 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Http, HttpModule } from "@angular/http";
 import { RouterModule } from "@angular/router";
-import { TabsModule } from "ng2-bootstrap/tabs";
+import { TabsModule } from "ngx-bootstrap/tabs";
 import { PadStartPipe } from "./shared/pad-start.pipe";
 import { AppComponent } from "./app.component";
 import { DataService } from "./shared/data.service";
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from "ng2-translate";
+import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader"
 import { environment } from "../environments/environment";
 import { standaloneProviders } from "./standalone/standalone.service";
 import { GroupStudentsComponent } from "./group-students/group-students.component";
@@ -32,7 +33,7 @@ import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
 // import {DataTableModule,SharedModule} from 'primeng/primeng';
 
 export function createTranslateLoader(http: Http) {
-  return new TranslateStaticLoader(http, '/api/translations', '');
+  return new TranslateHttpLoader(http, '/api/translations/', '');
 }
 
 @NgModule({
@@ -61,10 +62,13 @@ export function createTranslateLoader(http: Http) {
     // DataTableModule,
     // SharedModule,
     RouterModule.forRoot(routes),
+    TranslateModule.forRoot(),
     TranslateModule.forRoot({
-      provide: TranslateLoader,
-      useFactory: (createTranslateLoader),
-      deps: [ Http ]
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [Http]
+      }
     }),
     TabsModule.forRoot()
   ],

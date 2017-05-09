@@ -60,7 +60,7 @@ task buildFe(type: NpmTask) {
     inputs.files(fileTree('src/main/webapp/e2e'))
     inputs.file('src/main/webapp/package.json')
     inputs.file('src/main/webapp/karma.conf.js')
-    inputs.file('src/main/webapp/angular-cli.json')
+    inputs.file('src/main/webapp/.angular-cli.json')
     inputs.file('src/main/webapp/tslint.json')
     inputs.file('src/main/webapp/protractor.conf.js')
 

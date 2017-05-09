@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {DataService} from "../shared/data.service";
-import { Ng2TableModule } from "ng2-table/ng2-table";
+// import { Ng2TableModule } from "ng2-table/ng2-table";
 
 @Component({
   selector: 'groups',
