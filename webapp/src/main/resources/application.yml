@@ -17,6 +17,13 @@ spring:
     type: SIMPLE
     cache-names: permissionsByRole
 
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: exam_report_pdf
+          group: default
+
 cloud:
   aws:
     region:
