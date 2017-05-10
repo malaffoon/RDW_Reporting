@@ -30,6 +30,7 @@ import { StudentExamItemsResolve } from "./student-exam-items/student-exam-items
 import { GroupExamItemResolve } from "./group-exam-item/group-exam-item.resolve";
 import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
 import { DataTableModule, SharedModule } from 'primeng/primeng';
+import { SubjectPipe } from "./shared/subject.pipe";
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -38,6 +39,7 @@ export function createTranslateLoader(http: Http) {
 @NgModule({
   declarations: [
     PadStartPipe,
+    SubjectPipe,
     SearchPipe,
     AppComponent,
     GroupsComponent,
