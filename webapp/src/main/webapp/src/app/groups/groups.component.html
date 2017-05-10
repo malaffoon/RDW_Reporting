@@ -11,10 +11,9 @@
           <div class="col-md-4">
             <div class="controls">
               <div *ngIf="groups.length > 2" class="inner-addon left-addon search-box">
-                <label class="sr-only" for="search">{{'prompt.search' | translate}}</label>
                 <i class="glyphicon glyphicon-search"></i>
                 <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text"
-                       placeholder="{{'labels.groups.filter' | translate}}" autocomplete="off">
+                       placeholder="{{'labels.groups.filter' | translate}}" autocomplete="off" (ngModelChange)="onSearchChange($event)">
               </div>
             </div>
           </div>
@@ -22,7 +21,7 @@
       </div>
 
       <div>
-        <p-dataTable [value]="groups">
+        <p-dataTable [value]="filteredGroups" [scrollable]="true" scrollHeight="250px">
           <p-column field="name" header="{{'labels.group.name' | translate}}" [sortable]="true">
             <ng-template let-group="rowData" pTemplate type="body">
               <a routerLink="/groups/{{group.id}}/students">{{group.name}}</a>
