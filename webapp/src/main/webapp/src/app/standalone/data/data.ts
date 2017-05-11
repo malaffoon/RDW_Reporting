@@ -223,15 +223,17 @@ sortAscOn(students, student => student.lastName, student => student.firstName);
 export const mock_student = students[0];
 
 export const groups = [
-  {name: 'Anderson, Mary Grade 4 Math Noon', size: 27},
-  {name: 'Anderson, Mary Grade 4 Math Morning', size: 13},
-  {name: 'Vista Advanced Math', size: 30}
+  {name: 'Anderson, Mary Grade 4 Math Noon', schoolName: 'Vista Elementary', subjectId: 1,  size: 27},
+  {name: 'Anderson, Mary Grade 4 Math Morning', schoolName: 'Hodges Elementary', subjectId: 2, size: 13},
+  {name: 'Vista Advanced Math', schoolName: 'Coral Park Elementary', subjectId: 0, size: 30},
+  {name: 'Griffin\'s first grade Reading', schoolName: 'Hamilton Elementary', subjectId: 2, size: 30},
+  {name: 'Basic Math', schoolName: 'Coral Park Elementary', subjectId: 1, size: 30},
+  {name: 'Intermediary Math', schoolName: 'Lincoln Elementary', subjectId: 1, size: 30},
+  {name: 'Intermediary English', schoolName: 'Washington Elementary', subjectId: 0, size: 30}
 ].map((group: any, index: number) => {
   return Object.assign(group, {
     id: index + 1,
     district: 'Vista Unified',
-    school: 'Vista Elementary',
-    subject: 'Mathematics',
     students: students
   })
 });

@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {DataService} from "../shared/data.service";
 import {ActivatedRoute} from "@angular/router";
-import {TranslateService} from "ng2-translate";
+import {TranslateService} from "@ngx-translate/core";
 import {items_by_points_earned, exams_of_sessions, exams_of_group} from "../standalone/data/data";
 import {sortDescOn} from "../shared/comparators";
 import {DatePipe} from "@angular/common";

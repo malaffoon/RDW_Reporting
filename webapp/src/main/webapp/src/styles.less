@@ -71,6 +71,7 @@ h2 {
   margin: 4px 0 20px 0;
 }
 
+.ui-datatable,
 .table {
   border: 1px solid @gray5;
   color: #000;
@@ -80,10 +81,30 @@ h2 {
   }
 }
 
+/* Prime-NG table overrides */
+.ui-datatable table { table-layout: auto !important; }
+
+.ui-datatable .ui-datatable-thead>tr>th {
+  color: #000 !important;
+  background-color: @gray6 !important;
+  vertical-align: top !important;
+  border: none !important;
+  font-weight: bold !important;
+  text-align: left !important;
+}
+
+.ui-datatable .ui-datatable-tfoot>tr>td, .ui-datatable .ui-datatable-data>tr>td{
+  border:none !important;
+}
+/*End Prime-NG table overrides*/
+
+
+.table-striped > table > tbody > tr:nth-of-type(odd),
 .table-striped > tbody > tr:nth-of-type(odd) {
   background-color: @gray7;
 }
 
+.table-striped > table > tbody > tr:nth-of-type(even),
 .table-striped > tbody > tr:nth-of-type(even) {
   background-color: @gray8;
 }
@@ -530,6 +551,7 @@ iframe.lg {height: 600px;}
 .margin-right-20 { margin-right: 20px; }
 
 .color-checkmark {color: @green; }
+.color-green { color: @green; }
 .color-light-green {color: @light-green }
 .overflow-hidden { overflow:hidden !important; }
 .text-align-center { text-align: center; }
@@ -559,4 +581,11 @@ a.active {
   cursor: default;
   color: gray;
   text-decoration: none;
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
 }

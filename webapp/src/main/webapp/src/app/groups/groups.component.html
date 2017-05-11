@@ -1,55 +1,41 @@
 <div *ngIf="groups" class="home-view">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
 
-        <div class="page-heading">
-          <div class="row">
-            <div class="col-md-8">
-              <h2>{{'labels.groups' | translate}}</h2>
-            </div>
-            <div class="col-md-4">
-              <div class="controls">
-                <div *ngIf="groups.length > 2" class="inner-addon left-addon search-box">
-                  <label class="sr-only" for="search">{{'prompt.search' | translate}}</label>
-                  <i class="glyphicon glyphicon-search"></i>
-                  <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'prompt.search' | translate}}" autocomplete="off">
-                </div>
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="page-heading">
+        <div class="row">
+          <div class="col-md-8">
+            <h2><i class="fa fa-group color-green"></i> {{'labels.groups.name' | translate}}</h2>
+          </div>
+          <div class="col-md-4">
+            <div class="controls">
+              <div *ngIf="groups.length > 2" class="inner-addon left-addon search-box">
+                <i class="glyphicon glyphicon-search"></i>
+                <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text"
+                       placeholder="{{'labels.groups.filter' | translate}}" autocomplete="off" (ngModelChange)="onSearchChange($event)">
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="card groups-card">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>{{'labels.group.name' | translate}}</th>
-                <th>{{'labels.district.name' | translate}}</th>
-                <th>{{'labels.school.name' | translate}}</th>
-                <th>{{'labels.assessment.subject' | translate}}</th>
-                <th class="text-center">{{'labels.group.size' | translate}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let group of groups | search:searchTerm:['name']">
-                <td><a routerLink="/groups/{{group.id}}/students">{{group.name}}</a></td>
-                <td>{{group.district}}</td>
-                <td>{{group.school}}</td>
-                <td>{{group.subject}}</td>
-                <td class="text-center">{{group.size}}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!--<div *ngFor="let item of items">-->
-            <!--<br>-->
-            <!--<stacked-horizontal-bar-chart [items]="item" *ngIf="item"></stacked-horizontal-bar-chart>-->
-            <!--<br>-->
-          <!--</div>-->
-
-        </div>
+      <div>
+        <p-dataTable [value]="filteredGroups" [scrollable]="true" scrollHeight="250px">
+          <p-column field="name" header="{{'labels.group.name' | translate}}" [sortable]="true">
+            <ng-template let-group="rowData" pTemplate type="body">
+              <a routerLink="/groups/{{group.id}}/students">{{group.name}}</a>
+            </ng-template>
+          </p-column>
+          <p-column field="schoolName" header="{{'labels.school.name' | translate}}" [sortable]="true"></p-column>
+          <p-column field="subjectId" header="{{'labels.assessment.subject' | translate}}" [sortable]="true">
+            <ng-template let-group="rowData" pTemplate type="body">
+              {{ group.subjectId | subject }}
+            </ng-template>
+          </p-column>
+        </p-dataTable>
       </div>
     </div>
+
   </div>
 </div>

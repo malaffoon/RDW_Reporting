@@ -104,8 +104,15 @@
       ],
       "pointFormat": "of students"
     },
-    "groups": "My Groups",
-    "home" : "Home",
+    "groups": {
+      "name": "My Groups",
+      "filter": "Search Groups"
+    },
+    "home" : {
+      "name": "Home",
+      "welcome": "Welcome to interim reporting.  Get the most out of the portal: ",
+      "tutorial-link-text": "Getting Started"
+    },
     "group": {
       "name": "Group",
       "size": "Students"

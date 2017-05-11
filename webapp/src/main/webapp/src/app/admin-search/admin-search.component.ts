@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {TranslateService} from "ng2-translate";
+import {TranslateService} from "@ngx-translate/core";
 import {DataService} from "../shared/data.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
