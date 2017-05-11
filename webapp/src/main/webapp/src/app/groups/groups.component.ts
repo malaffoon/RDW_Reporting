@@ -8,8 +8,9 @@ import {DataService} from "../shared/data.service";
 export class GroupsComponent implements OnInit {
 
   private groups = [];
-  private filteredGroups = [];
-  private searchTerm : string;
+
+  filteredGroups = [];
+  searchTerm : string;
 
   constructor(private service: DataService) {}
 

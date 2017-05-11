@@ -62,7 +62,6 @@ export function createTranslateLoader(http: Http) {
     DataTableModule,
     SharedModule,
     RouterModule.forRoot(routes),
-    TranslateModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
