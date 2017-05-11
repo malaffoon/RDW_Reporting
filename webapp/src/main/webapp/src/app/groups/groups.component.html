@@ -21,15 +21,15 @@
       </div>
 
       <div>
-        <p-dataTable [value]="filteredGroups" [scrollable]="true" scrollHeight="250px">
+        <p-dataTable [value]="filteredGroups">
           <p-column field="name" header="{{'labels.group.name' | translate}}" [sortable]="true">
-            <ng-template let-group="rowData" pTemplate type="body">
+            <ng-template let-group="rowData" pTemplate="body">
               <a routerLink="/groups/{{group.id}}/students">{{group.name}}</a>
             </ng-template>
           </p-column>
           <p-column field="schoolName" header="{{'labels.school.name' | translate}}" [sortable]="true"></p-column>
           <p-column field="subjectId" header="{{'labels.assessment.subject' | translate}}" [sortable]="true">
-            <ng-template let-group="rowData" pTemplate type="body">
+            <ng-template let-group="rowData" pTemplate="body">
               {{ group.subjectId | subject }}
             </ng-template>
           </p-column>
