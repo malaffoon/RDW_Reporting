@@ -90,6 +90,6 @@ export class DataService {
   }
 
   private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
-    return this.get(`/groups/${groupId}/schoolYear/${schoolYear}/assessments)`);
+    return this.get(`/groups/${groupId}/schoolYear/${schoolYear}/assessments`);
   }
 }
