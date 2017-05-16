@@ -5,23 +5,18 @@
       <div class="col-md-4">
         <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
 
-        <!--type ahead? -->
-        <select id="select-group" class="dropdown form-control">
-          <option *ngFor="let group of groups">{{group.name}}</option>
+        <!--TODO: type ahead? -->
+        <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute($event)" class="dropdown form-control">
+          <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
         </select>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
-
-        <!-- static or data driven? -->
-        <select id="school-year" class="dropdown form-control">
-          <option>2017-2018</option>
-          <option>2016-2017</option>
-          <option>2015-2016</option>
-          <option>2014-2015</option>
+        <select id="school-year" [(ngModel)]="filterBy.schoolYear" (change)="updateRoute($event)" class="dropdown form-control">
+          <option *ngFor="let year of availableSchoolYears" [ngValue]="year">{{year | schoolYear}}</option>
         </select>
       </div>
-      <div class="col-md-5">
+      <div class="col-md-6">
         <div class="pull-right">
           <label for="advanced">{{'labels.groups.results.adv-filters-label' | translate}}</label>
           <button id="advanced" class="form-control">{{'labels.groups.results.adv-filters-button' | translate}} <i
@@ -49,17 +44,16 @@
           <small>{{'labels.groups.results.selected-assessments-instruct' | translate }}</small>
         </div>
 
-        <!-- data driven *ngFor -->
-        <button class="btn btn-default btn-xs padding-vertical-xxs spacer-h-sm">
-          <label class="label bg-color-dark-green">G4</label>
-          <span class="color-dark-green spacer-h-md"> Measurement & Data</span>
+        <button *ngFor="let assessment of selectedAssessments" class="btn btn-default btn-xs pad-v-xxs spacer-h-sm spacer-v-sm">
+          <span class="label bg-color-grade-{{assessment.gradeId}}">G{{assessment.gradeId}}</span>
+          <span class="color-grade-{{assessment.gradeId}} spacer-h-md"> {{assessment.name}}</span>
           <i class="fa fa-minus-square color-gray icon-size-md"></i>
         </button>
-        <button class="btn btn-default btn-xs btn-round">
+        <button class="btn btn-default btn-xs btn-round spacer-v-sm">
           <i class="fa fa-plus color-gray"></i>
         </button>
-      </div>
 
+      </div>
     </div>
   </div>
 </div>

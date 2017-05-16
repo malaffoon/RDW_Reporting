@@ -3,6 +3,8 @@ import {DataService} from "../shared/data.service";
 import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
 import {Observable} from "rxjs";
 
+//TODO: This might be dead code now.
+
 @Injectable()
 export class GroupResolve implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>|Promise<any>|any {

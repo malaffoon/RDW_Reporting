@@ -97,7 +97,7 @@ export const assessments = [
     id: 1,
     type: AssessmentType.IAB,
     name: 'Number and Operations - Fractions',
-    grade: 4,
+    gradeId: 3,
     academicYear: 2016,
     subject: AssessmentSubjectType.MATH
   },
@@ -105,32 +105,32 @@ export const assessments = [
     id: 2,
     type: AssessmentType.IAB,
     name: 'Measurement and Data',
-    grade: 4,
-    academicYear: 2016,
+    gradeId: 4,
+    academicYear: 2013,
     subject: AssessmentSubjectType.MATH
   },
   {
     id: 3,
     type: AssessmentType.IAB,
     name: 'Geometry',
-    grade: 4,
-    academicYear: 2016,
+    gradeId: 7,
+    academicYear: 2017,
     subject: AssessmentSubjectType.MATH
   },
   {
     id: 4,
     type: AssessmentType.IAB,
     name: 'Mathematics Performance Task',
-    grade: 4,
-    academicYear: 2016,
+    gradeId: 5,
+    academicYear: 2015,
     subject: AssessmentSubjectType.MATH
   },
   {
     id: 5,
     type: AssessmentType.IAB,
     name: 'Operations and Algebraic Thinking',
-    grade: 4,
-    academicYear: 2016,
+    gradeId: 8,
+    academicYear: 2014,
     subject: AssessmentSubjectType.MATH
   }
 ].map((assessment : any) => {
@@ -359,3 +359,6 @@ export const mock_rubrics = [ {
     itemId: 7,
     examItemSolution: { rubrics: [], exemplars: [] }
   }];
+
+
+export const mock_schoolyears = [ 2017, 2016, 2015, 2014, 2013 ];

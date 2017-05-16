@@ -2,7 +2,7 @@ import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRB
 import {MockBackend} from "@angular/http/testing";
 import {
   groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students,
-  mock_rubrics
+  mock_rubrics, mock_schoolyears, assessments
 } from "./data/data";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
@@ -63,8 +63,16 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       var itemId = Number.parseInt(requestSignature.replace('GET /api/examitems/', '').replace('/scoring', ''));
       let result :any = mock_rubrics.find(x => x.itemId == itemId);
       body = result.examItemSolution;
-    }
-    else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
+
+    } else if(new RegExp(`GET /api/schoolyears`, 'g').test(requestSignature)) {
+      body = mock_schoolyears;
+
+    } else if(new RegExp(`GET /api/groups/\\d+/schoolYear/\\d+/assessments`, 'g').test(requestSignature)) {
+      let startIndex = requestSignature.indexOf("schoolYear");
+      let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYear/", "").replace("/assessments", ""));
+      body = [ assessments.find(x=> x.academicYear == schoolYear) ];
+
+    } else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
       let studentsResult = students.filter(x =>
           x.ssid.toString().startsWith(query)

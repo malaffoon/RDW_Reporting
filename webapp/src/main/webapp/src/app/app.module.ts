@@ -33,6 +33,10 @@ import { DataTableModule, SharedModule } from 'primeng/primeng';
 import { SubjectPipe } from "./shared/subject.pipe";
 import { GroupResultsComponent } from './groups/results/group-results.component';
 import { BsDropdownModule } from "ngx-bootstrap";
+import { GroupsResolve } from "./groups/groups.resolve";
+import { CachingDataService } from "./shared/cachingData.service";
+import { AssessmentsResolve } from "./groups/results/assessments.resolve";
+import { SchoolYearPipe } from "./shared/schoolYear.pipe";
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -42,6 +46,7 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     PadStartPipe,
     SubjectPipe,
+    SchoolYearPipe,
     SearchPipe,
     AppComponent,
     GroupsComponent,
@@ -76,7 +81,7 @@ export function createTranslateLoader(http: Http) {
     TabsModule.forRoot()
   ],
   providers: [
-    DataService, GroupResolve, StudentExamsResolve, StudentExamItemsResolve, GroupExamItemResolve,
+    DataService, CachingDataService, GroupResolve, GroupsResolve, AssessmentsResolve, StudentExamsResolve, StudentExamItemsResolve, GroupExamItemResolve,
     ...(environment.standalone ? standaloneProviders : [])
   ],
   bootstrap: [ AppComponent ]
