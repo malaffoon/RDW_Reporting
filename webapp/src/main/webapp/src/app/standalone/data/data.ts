@@ -361,21 +361,4 @@ export const mock_rubrics = [ {
   }];
 
 
-export const mock_schoolyears = [
-  {
-    id: 2017,
-    isCurrent: true
-  }, {
-    id: 2016,
-    isCurrent: false
-  }, {
-    id: 2015,
-    isCurrent: false
-  }, {
-    id: 2014,
-    isCurrent: false
-  }, {
-    id: 2013,
-    isCurrent: false
-  }
-];
+export const mock_schoolyears = [ 2017, 2016, 2015, 2014, 2013 ];

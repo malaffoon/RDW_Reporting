@@ -13,7 +13,7 @@
       <div class="col-md-2">
         <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
         <select id="school-year" [(ngModel)]="filterBy.schoolYear" (change)="updateRoute($event)" class="dropdown form-control">
-          <option *ngFor="let year of availableSchoolYears" [ngValue]="year.id">{{year.id | schoolYear}}</option>
+          <option *ngFor="let year of availableSchoolYears" [ngValue]="year">{{year | schoolYear}}</option>
         </select>
       </div>
       <div class="col-md-6">

@@ -3,14 +3,14 @@ import { Http, RequestOptionsArgs, URLSearchParams } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
-import { StaticDataService } from "./staticData.service";
+import { CachingDataService } from "./cachingData.service";
 
 //TODO: Break out methods from DataService so only a public generic Get.
 //TODO: Other methods such as getGroups belong in their own service such as GroupService
 @Injectable()
 export class DataService {
 
-  constructor(private http: Http, private staticDataService: StaticDataService) {
+  constructor(private http: Http, private staticDataService: CachingDataService) {
   }
 
   private get(url, options?: RequestOptionsArgs): Observable<any> {
@@ -76,7 +76,7 @@ export class DataService {
       let observable = {};
 
       this.staticDataService.getSchoolYears().subscribe(x => {
-        schoolYear = x.find(x => x.isCurrent).id;
+        schoolYear = x[0];
       }, () => {
       }, () => {
         observable = this.getRecentAssessmentBySchoolYear(groupId, schoolYear);

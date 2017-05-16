@@ -34,7 +34,7 @@ import { SubjectPipe } from "./shared/subject.pipe";
 import { GroupResultsComponent } from './groups/results/group-results.component';
 import { BsDropdownModule } from "ngx-bootstrap";
 import { GroupsResolve } from "./groups/groups.resolve";
-import { StaticDataService } from "./shared/staticData.service";
+import { CachingDataService } from "./shared/cachingData.service";
 import { AssessmentsResolve } from "./groups/results/assessments.resolve";
 import { SchoolYearPipe } from "./shared/schoolYear.pipe";
 
@@ -81,7 +81,7 @@ export function createTranslateLoader(http: Http) {
     TabsModule.forRoot()
   ],
   providers: [
-    DataService, StaticDataService, GroupResolve, GroupsResolve, AssessmentsResolve, StudentExamsResolve, StudentExamItemsResolve, GroupExamItemResolve,
+    DataService, CachingDataService, GroupResolve, GroupsResolve, AssessmentsResolve, StudentExamsResolve, StudentExamItemsResolve, GroupExamItemResolve,
     ...(environment.standalone ? standaloneProviders : [])
   ],
   bootstrap: [ AppComponent ]

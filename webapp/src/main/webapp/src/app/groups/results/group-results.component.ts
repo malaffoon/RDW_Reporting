@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { StaticDataService } from "../../shared/staticData.service";
+import { CachingDataService } from "../../shared/cachingData.service";
 
 @Component({
   selector: 'app-group-results',
@@ -12,9 +12,9 @@ export class GroupResultsComponent implements OnInit {
   private currentGroup;
   private filterBy;
 
-  private selectedAssessments = [];
+  selectedAssessments = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, private staticDataService: StaticDataService) {
+  constructor(private route: ActivatedRoute, private router: Router, private staticDataService: CachingDataService) {
   }
 
   ngOnInit() {
@@ -34,9 +34,9 @@ export class GroupResultsComponent implements OnInit {
     });
   }
 
-  private mapParamsToFilterBy(params) {
+  mapParamsToFilterBy(params) {
     return {
-      schoolYear: Number.parseInt(params[ "schoolYear" ]) || this.availableSchoolYears.find(x => x.isCurrent).id
+      schoolYear: Number.parseInt(params[ "schoolYear" ]) || this.availableSchoolYears[0]
     }
   }
 }
