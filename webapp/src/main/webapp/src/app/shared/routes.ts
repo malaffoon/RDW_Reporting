@@ -12,11 +12,23 @@ import { StudentExamsResolve } from "../student-exams/student-exam.resolve";
 import { StudentExamItemsResolve } from "../student-exam-items/student-exam-items.resolve";
 import { GroupExamItemResolve } from "../group-exam-item/group-exam-item.resolve";
 import { GroupResultsComponent } from "../groups/results/group-results.component";
+import { GroupsResolve } from "../groups/groups.resolve";
+import { AssessmentsResolve } from "../groups/results/assessments.resolve";
 
 export const routes: Routes = [
   {
     path: '',
-    component: HomeComponent
+    resolve: { groups: GroupsResolve },
+    children: [
+      { path: '', pathMatch: 'full', component: HomeComponent },
+      {
+        path: 'groups/:groupId',
+        pathMatch: 'full',
+        resolve: { assessments: AssessmentsResolve },
+        data: { breadcrumb: { translate: 'labels.groups.name'} },
+        component: GroupResultsComponent
+      }
+    ]
   },
   {
     path: 'search',
@@ -30,10 +42,6 @@ export const routes: Routes = [
         component: StudentExamsComponent
       }
     ]
-  }, {
-    path: 'groups/:groupId',
-    data: { breadcrumb: { translate: 'labels.groups.name'} },
-    component: GroupResultsComponent
   }, {
     path: 'groups/:groupId/students',
     data: { breadcrumb: { resolve: 'groupData.group.name' } },

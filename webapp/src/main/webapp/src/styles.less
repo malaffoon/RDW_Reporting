@@ -11,11 +11,32 @@
 @gray8: #f3f3f3;
 @gray9: #a9a9a9;
 @blue1: #008AB1;
-@light-green: #43B02A;
+
 @green: #1f6735;
-@dark-green: #7dab42;
+@green1: #7dab42;
+@green2: #43B02A;
+@green3: #3f6633;
+
+@orange1: #d0621d;
+
+@blue1: #2487a6;
+@blue2: #335f9c;
+@blue3: #113d59;
+
+@red1: #51182b;
+
 @color-selected: #d3eacc;
 @color-hovered: #ededed;
+
+@color-grade-3: @orange1;
+@color-grade-4: @green1;
+@color-grade-5: @blue1;
+@color-grade-6: @blue2;
+@color-grade-7: @red1;
+@color-grade-8: @green3;
+@color-grade-9: @blue3;
+//TODO: How does "High School" fit in here?
+
 
 .font-sm {
   font-size: @font-sm;
@@ -559,9 +580,24 @@ iframe.lg {height: 600px;}
 
 .color-checkmark {color: @green; }
 .color-green { color: @green; }
-.color-light-green { color: @light-green }
-.color-dark-green { color: @dark-green }
-.bg-color-dark-green { background-color: @dark-green }
+.color-light-green { color: @green2
+}
+.bg-color-grade-3 { background-color: @color-grade-3 }
+.bg-color-grade-4 { background-color: @color-grade-4 }
+.bg-color-grade-5 { background-color: @color-grade-5 }
+.bg-color-grade-6 { background-color: @color-grade-6 }
+.bg-color-grade-7 { background-color: @color-grade-7 }
+.bg-color-grade-8 { background-color: @color-grade-8 }
+.bg-color-grade-9 { background-color: @color-grade-9 }
+
+.color-grade-3 { color: @color-grade-3 }
+.color-grade-4 { color: @color-grade-4 }
+.color-grade-5 { color: @color-grade-5 }
+.color-grade-6 { color: @color-grade-6 }
+.color-grade-7 { color: @color-grade-7 }
+.color-grade-8 { color: @color-grade-8 }
+.color-grade-9 { color: @color-grade-9 }
+
 .color-gray { color: @gray9 }
 
 .overflow-hidden { overflow:hidden !important; }
@@ -594,7 +630,7 @@ iframe.lg {height: 600px;}
 
 .pad-bottom-md { padding-bottom: 2rem; }
 
-.padding-vertical-xxs { padding-left: 1px; padding-right: 1px; }
+.pad-v-xxs { padding-left: 1px; padding-right: 1px; }
 .icon-size-md { vertical-align: bottom; font-size: 1.75rem !important; }
 
 .btn-round { border-radius: 1rem; }

@@ -1,6 +1,6 @@
 import { async, TestBed } from "@angular/core/testing";
 import { GroupsComponent } from "./groups.component";
-import { RouterModule } from "@angular/router";
+import { RouterModule, ActivatedRoute } from "@angular/router";
 import { DataService } from "../shared/data.service";
 import { Observable } from "rxjs/Rx";
 import { FormsModule } from "@angular/forms";
@@ -10,20 +10,15 @@ import { SubjectPipe } from "../shared/subject.pipe";
 import { HttpModule } from "@angular/http";
 import { APP_BASE_HREF } from "@angular/common";
 import { By } from "@angular/platform-browser";
+import { AppModule } from "../app.module";
 
-class MockDataService extends DataService {
-  public getGroups() {
-    let result = [
-      { name: "advanced mathematics" },
-      { name: "advanced english" },
-      { name: "intermediate math" },
-      { name: "geometry group" },
-      { name: "basic MATH" }
-    ];
-
-    return Observable.of(result);
-  }
-}
+let groups = [
+  { name: "advanced mathematics" },
+  { name: "advanced english" },
+  { name: "intermediate math" },
+  { name: "geometry group" },
+  { name: "basic MATH" }
+];
 
 describe('GroupComponents', () => {
   var fixture;
@@ -32,8 +27,10 @@ describe('GroupComponents', () => {
     TestBed.configureTestingModule({
       imports: [ FormsModule, TranslateModule.forRoot(), DataTableModule, SharedModule, RouterModule.forRoot([]), HttpModule ],
       declarations: [ GroupsComponent, SubjectPipe ],
-      providers: [ { provide: DataService, useClass: MockDataService }, { provide: APP_BASE_HREF, useValue: '/' } ]
+      providers: [ { provide: ActivatedRoute, useValue: { snapshot: { data : { groups: groups } } } }, { provide: APP_BASE_HREF, useValue: '/' } ]
     });
+
+
 
     fixture = TestBed.createComponent(GroupsComponent);
     fixture.detectChanges();

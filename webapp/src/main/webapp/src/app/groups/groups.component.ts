@@ -1,5 +1,5 @@
-import {Component, OnInit} from "@angular/core";
-import {DataService} from "../shared/data.service";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'groups',
@@ -12,13 +12,11 @@ export class GroupsComponent implements OnInit {
   filteredGroups = [];
   searchTerm : string;
 
-  constructor(private service: DataService) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.service.getGroups().subscribe(groups => {
-      this.groups = groups;
-      this.filteredGroups = groups;
-    })
+    this.groups = this.route.snapshot.data["groups"];
+    this.filteredGroups = this.groups;
   }
 
   onSearchChange(event) {

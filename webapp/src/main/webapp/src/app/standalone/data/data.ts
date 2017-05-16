@@ -359,3 +359,26 @@ export const mock_rubrics = [ {
     itemId: 7,
     examItemSolution: { rubrics: [], exemplars: [] }
   }];
+
+
+export const mock_schoolyears = [
+  {
+    id: 2018,
+    isCurrent: false
+  }, {
+    id: 2017,
+    isCurrent: true
+  }, {
+    id: 2016,
+    isCurrent: false
+  }, {
+    id: 2015,
+    isCurrent: false
+  }, {
+    id: 2014,
+    isCurrent: false
+  }, {
+    id: 2013,
+    isCurrent: false
+  }
+];

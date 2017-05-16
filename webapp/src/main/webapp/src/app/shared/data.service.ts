@@ -1,13 +1,17 @@
-import {Injectable} from "@angular/core";
-import {Http, RequestOptionsArgs, URLSearchParams} from "@angular/http";
-import {Observable} from "rxjs/Rx";
+import { Injectable } from "@angular/core";
+import { Http, RequestOptionsArgs, URLSearchParams } from "@angular/http";
+import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
+import { StaticDataService } from "./staticData.service";
 
+//TODO: Break out methods from DataService so only a public generic Get.
+//TODO: Other methods such as getGroups belong in their own service such as GroupService
 @Injectable()
 export class DataService {
 
-  constructor(private http: Http) {}
+  constructor(private http: Http, private staticDataService: StaticDataService) {
+  }
 
   private get(url, options?: RequestOptionsArgs): Observable<any> {
     return this.http
@@ -35,14 +39,14 @@ export class DataService {
     return this.get(`/groups/${groupId}/exams/${examId}/items/${itemId}/score/${score}`);
   }
 
-  getItemScoring(itemId : number) {
+  getItemScoring(itemId: number) {
     return this.get('/examitems/' + itemId + '/scoring');
   }
 
   getStudentExams(groupId: number, studentId: number): Observable<any> {
     // todo: we will have to figure out these api routes because I would think
     // we should be hitting the same controller and passing optional params.
-    if(groupId)
+    if (groupId)
       return this.get(`/groups/${groupId}/students/${studentId}/exams`);
     else
       return this.get(`/students/${studentId}/exams`);
@@ -62,9 +66,30 @@ export class DataService {
 
   getStudents(searchFilter: any) {
     var params = new URLSearchParams();
-    params.set('ssid', searchFilter.ssid );
+    params.set('ssid', searchFilter.ssid);
 
     return this.get('/students/search', { search: params });
   }
 
+  getMostRecentAssessment(groupId: number, schoolYear?: number) {
+    if (schoolYear == undefined) {
+      let observable = {};
+
+      this.staticDataService.getSchoolYears().subscribe(x => {
+        schoolYear = x.find(x => x.isCurrent).id;
+      }, () => {
+      }, () => {
+        observable = this.getRecentAssessmentBySchoolYear(groupId, schoolYear);
+      });
+
+      return observable;
+    }
+    else {
+      return this.getRecentAssessmentBySchoolYear(groupId, schoolYear);
+    }
+  }
+
+  private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
+    return this.get(`/groups/${groupId}/schoolYear/${schoolYear}/assessments)`);
+  }
 }
