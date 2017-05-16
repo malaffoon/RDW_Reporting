@@ -113,7 +113,7 @@ export const assessments = [
     id: 3,
     type: AssessmentType.IAB,
     name: 'Geometry',
-    gradeId: 4,
+    gradeId: 7,
     academicYear: 2017,
     subject: AssessmentSubjectType.MATH
   },
@@ -129,7 +129,7 @@ export const assessments = [
     id: 5,
     type: AssessmentType.IAB,
     name: 'Operations and Algebraic Thinking',
-    gradeId: 4,
+    gradeId: 8,
     academicYear: 2014,
     subject: AssessmentSubjectType.MATH
   }
