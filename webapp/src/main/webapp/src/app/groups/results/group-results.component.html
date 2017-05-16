@@ -6,14 +6,14 @@
         <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
 
         <!--TODO: type ahead? -->
-        <select id="select-group" [(ngModel)]="currentGroup" (change)="onCurrentGroupChange($event)" class="dropdown form-control">
+        <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute($event)" class="dropdown form-control">
           <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
         </select>
       </div>
       <div class="col-md-2">
         <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
-        <select id="school-year" class="dropdown form-control">
-          <option *ngFor="let year of availableSchoolYears">{{year | schoolYear}}</option>
+        <select id="school-year" [(ngModel)]="filterBy.schoolYear" (change)="updateRoute($event)" class="dropdown form-control">
+          <option *ngFor="let year of availableSchoolYears" [ngValue]="year.id">{{year.id | schoolYear}}</option>
         </select>
       </div>
       <div class="col-md-6">
@@ -45,8 +45,8 @@
         </div>
 
         <button *ngFor="let assessment of selectedAssessments" class="btn btn-default btn-xs pad-v-xxs spacer-h-sm spacer-v-sm">
-          <span class="label bg-color-grade-{{assessment.grade}}">G{{assessment.grade}}</span>
-          <span class="color-grade-{{assessment.grade}} spacer-h-md"> {{assessment.name}}</span>
+          <span class="label bg-color-grade-{{assessment.gradeId}}">G{{assessment.gradeId}}</span>
+          <span class="color-grade-{{assessment.gradeId}} spacer-h-md"> {{assessment.name}}</span>
           <i class="fa fa-minus-square color-gray icon-size-md"></i>
         </button>
         <button class="btn btn-default btn-xs btn-round spacer-v-sm">

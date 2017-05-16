@@ -35,7 +35,7 @@ class MockStaticDataService extends StaticDataService {
       { id: 2006 },
       { id: 2007 },
       { id: 2008 },
-      { id: 2009 }
+      { id: 2009, isCurrent: true }
     ];
 
     return Observable.of(result);

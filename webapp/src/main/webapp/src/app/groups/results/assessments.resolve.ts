@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
 export class AssessmentsResolve implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>|Promise<any>|any {
     // TODO: Check params to return most recent or custom.
-    return this.service.getMostRecentAssessment(route.params["groupId"]);
+    return this.service.getMostRecentAssessment(route.params["groupId"], route.params["schoolYear"]);
   }
 
   constructor(private service: DataService) {

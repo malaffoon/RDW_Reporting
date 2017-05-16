@@ -68,7 +68,9 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = mock_schoolyears;
 
     } else if(new RegExp(`GET /api/groups/\\d+/schoolYear/\\d+/assessments`, 'g').test(requestSignature)) {
-      body = [ assessments[0] ];
+      let startIndex = requestSignature.indexOf("schoolYear");
+      let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYear/", "").replace("/assessments", ""));
+      body = [ assessments.find(x=> x.academicYear == schoolYear) ];
 
     } else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
