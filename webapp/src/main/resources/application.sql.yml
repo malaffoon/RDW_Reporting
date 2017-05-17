@@ -14,6 +14,46 @@ sql:
             join student_group sg on sg.id = usg.student_group_id
           where user_login=:user_login
 
+    exam:
+      findLatest: >-
+        select
+            e.completed_at,
+            a.id as assessment_id,
+            a.name as assessment_name,
+            a.grade_id as assessment_grade_id,
+            a.type_id as assessment_type_id,
+            a.subject_id as assessment_subject_id
+          from exam e
+            join student_group_membership sgm on e.student_id=sgm.student_id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+          order by e.completed_at desc
+          limit 1
+
+      iab:
+        findLatest: >-
+          select
+              e.completed_at,
+          	  a.id as assessment_id,
+              a.name as assessment_name,
+              a.grade_id as assessment_grade_id,
+              a.type_id as assessment_type_id,
+              a.subject_id as assessment_subject_id
+            from iab_exam e
+              join student_group_membership sgm on e.student_id=sgm.student_id
+              join asmt a on e.asmt_id=a.id
+              join school s on e.school_id=s.id
+            where e.school_year=:school_year
+            and sgm.student_group_id=:group_id
+            and (0=:group_subject_id or a.subject_id=:group_subject_id)
+            and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+            order by e.completed_at desc
+            limit 1
+
   district:
     findAllIds: >-
       select natural_id, id
