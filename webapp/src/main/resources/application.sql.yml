@@ -14,7 +14,7 @@ sql:
             join student_group sg on sg.id = usg.student_group_id
           where user_login=:user_login
 
-    assessment:
+    exam:
       findLatest: >-
         select
             e.completed_at,
@@ -27,7 +27,7 @@ sql:
             join student_group_membership sgm on e.student_id=sgm.student_id
             join asmt a on e.asmt_id=a.id
             join school s on e.school_id=s.id
-          where year(cast(e.completed_at as date))=:year
+          where e.school_year=:school_year
           and sgm.student_group_id=:group_id
           and (0=:group_subject_id or a.subject_id=:group_subject_id)
           and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
@@ -47,7 +47,7 @@ sql:
               join student_group_membership sgm on e.student_id=sgm.student_id
               join asmt a on e.asmt_id=a.id
               join school s on e.school_id=s.id
-            where year(cast(e.completed_at as date))=:year
+            where e.school_year=:school_year
             and sgm.student_group_id=:group_id
             and (0=:group_subject_id or a.subject_id=:group_subject_id)
             and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
