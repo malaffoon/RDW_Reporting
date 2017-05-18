@@ -10,7 +10,7 @@ export class GroupResultsComponent implements OnInit {
   private groups;
   private availableSchoolYears;
   private currentGroup;
-  private filterBy;
+  private filterBy = { schoolYear: 0 };
 
   selectedAssessments = [];
 

@@ -73,16 +73,9 @@ export class DataService {
 
   getMostRecentAssessment(groupId: number, schoolYear?: number) {
     if (schoolYear == undefined) {
-      let observable = {};
-
-      this.staticDataService.getSchoolYears().subscribe(x => {
-        schoolYear = x[0];
-      }, () => {
-      }, () => {
-        observable = this.getRecentAssessmentBySchoolYear(groupId, schoolYear);
+      return this.staticDataService.getSchoolYears().mergeMap(years => {
+        return this.getRecentAssessmentBySchoolYear(groupId, years[0]);
       });
-
-      return observable;
     }
     else {
       return this.getRecentAssessmentBySchoolYear(groupId, schoolYear);
@@ -90,6 +83,6 @@ export class DataService {
   }
 
   private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
-    return this.get(`/groups/${groupId}/schoolYear/${schoolYear}/assessments`);
+    return this.get(`/groups/${groupId}/schoolYears/${schoolYear}/assessments`);
   }
 }
