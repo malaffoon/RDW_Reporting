@@ -37,6 +37,7 @@ import { GroupsResolve } from "./groups/groups.resolve";
 import { CachingDataService } from "./shared/cachingData.service";
 import { AssessmentsResolve } from "./groups/results/assessments.resolve";
 import { SchoolYearPipe } from "./shared/schoolYear.pipe";
+import { AssessmentResultsComponent } from './groups/results/assessment/assessment-results.component';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -61,7 +62,8 @@ export function createTranslateLoader(http: Http) {
     StudentExamReportComponent,
     IabReportComponent,
     AdminSearchComponent,
-    GroupResultsComponent
+    GroupResultsComponent,
+    AssessmentResultsComponent
   ],
   imports: [
     BrowserModule,

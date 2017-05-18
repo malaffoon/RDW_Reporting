@@ -44,7 +44,7 @@
           <small>{{'labels.groups.results.selected-assessments-instruct' | translate }}</small>
         </div>
 
-        <button *ngFor="let assessment of selectedAssessments" class="btn btn-default btn-xs pad-v-xxs spacer-h-sm spacer-v-sm">
+        <button *ngFor="let assessment of selectedAssessments" class="btn btn-default btn-xs pad-h-xxs spacer-h-sm spacer-v-sm">
           <span class="label bg-color-grade-{{assessment.gradeId}}">G{{assessment.gradeId}}</span>
           <span class="color-grade-{{assessment.gradeId}} spacer-h-md"> {{assessment.name}}</span>
           <i class="fa fa-minus-square color-gray icon-size-md"></i>
@@ -56,6 +56,19 @@
       </div>
     </div>
   </div>
+
+  <div>
+    <h2>{{'labels.groups.results.title' | translate}}</h2>
+    <div class="pull-right">
+      <label for="value-format">Show Value As </label>
+      <div id="value-format" class="btn-group" role="group">
+        <button type="radio" class="btn btn-default btn-sm active">{{'labels.groups.results.value-as-percent' | translate}}</button>
+        <button type="radio" class="btn btn-default btn-sm">{{'labels.groups.results.value-as-number' | translate}}</button>
+      </div>
+    </div>
+  </div>
+  <div *ngFor="let assessment of selectedAssessments">
+    <assessment-results [assessment]="assessment"></assessment-results>
+  </div>
+
 </div>
-
-

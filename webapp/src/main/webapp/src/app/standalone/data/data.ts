@@ -99,7 +99,8 @@ export const assessments = [
     name: 'Number and Operations - Fractions',
     gradeId: 3,
     academicYear: 2016,
-    subject: AssessmentSubjectType.MATH
+    subject: AssessmentSubjectType.MATH,
+    sessions: [{id:"nof-01", dateTime:"2017-05-12T21:47:45Z"}]
   },
   {
     id: 2,
@@ -107,7 +108,8 @@ export const assessments = [
     name: 'Measurement and Data',
     gradeId: 4,
     academicYear: 2013,
-    subject: AssessmentSubjectType.MATH
+    subject: AssessmentSubjectType.MATH,
+    sessions: [{id:"md-01", dateTime:"2017-05-12T21:47:45Z"},{id:"md-02",dateTime:"2017-05-11T21:47:45Z"},{id:"md-03",dateTime:"2017-05-10T21:47:45Z"}]
   },
   {
     id: 3,
@@ -115,7 +117,8 @@ export const assessments = [
     name: 'Geometry',
     gradeId: 7,
     academicYear: 2017,
-    subject: AssessmentSubjectType.MATH
+    subject: AssessmentSubjectType.MATH,
+    sessions: [{id:"g-01", dateTime:"2017-06-12T21:47:45Z"},{id:"g-02",dateTime:"2017-06-11T21:47:45Z"}]
   },
   {
     id: 4,
@@ -123,7 +126,8 @@ export const assessments = [
     name: 'Mathematics Performance Task',
     gradeId: 5,
     academicYear: 2015,
-    subject: AssessmentSubjectType.MATH
+    subject: AssessmentSubjectType.MATH,
+    sessions: [{id:"mpt-01", dateTime:"2017-05-12T21:47:45Z"}]
   },
   {
     id: 5,
@@ -131,10 +135,11 @@ export const assessments = [
     name: 'Operations and Algebraic Thinking',
     gradeId: 8,
     academicYear: 2014,
-    subject: AssessmentSubjectType.MATH
+    subject: AssessmentSubjectType.MATH,
+    sessions: [{id:"oat-01", dateTime:"2017-05-12T21:47:45Z"}]
   }
 ].map((assessment : any) => {
-  assessment.fullName = `Grade ${assessment.grade} ${assessment.name}`
+  assessment.fullName = `Grade ${assessment.grade} ${assessment.name}`;
   return assessment;
 });
 

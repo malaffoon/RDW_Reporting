@@ -64,12 +64,12 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       let result :any = mock_rubrics.find(x => x.itemId == itemId);
       body = result.examItemSolution;
 
-    } else if(new RegExp(`GET /api/schoolyears`, 'g').test(requestSignature)) {
+    } else if(new RegExp(`GET /api/schoolYears`, 'g').test(requestSignature)) {
       body = mock_schoolyears;
 
-    } else if(new RegExp(`GET /api/groups/\\d+/schoolYear/\\d+/assessments`, 'g').test(requestSignature)) {
+    } else if(new RegExp(`GET /api/groups/\\d+/schoolYears/\\d+/assessments`, 'g').test(requestSignature)) {
       let startIndex = requestSignature.indexOf("schoolYear");
-      let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYear/", "").replace("/assessments", ""));
+      let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYears/", "").replace("/assessments", ""));
       body = [ assessments.find(x=> x.academicYear == schoolYear) ];
 
     } else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {

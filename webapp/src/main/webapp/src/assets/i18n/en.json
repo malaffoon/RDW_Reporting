@@ -108,6 +108,7 @@
       "name": "My Groups",
       "filter": "Search Groups",
       "results" : {
+        "title": "Results",
         "select-group": "Group",
         "select-year": "School Year",
         "adv-filters-label": "Advanced Filters",
@@ -115,8 +116,16 @@
         "selected-assessments-title": "Selected Assessments",
         "selected-assessments-instruct": "Click an item to remove it from the list",
         "filter-type-recent": "Most Recent",
-        "filter-type-custom": "Custom"
+        "filter-type-custom": "Custom",
+        "value-as-percent": "Percent",
+        "value-as-number": "Number"
       }
+    },
+    "assessment": {
+      "sessions-title": "Sessions",
+      "sessions-instruct": "Click a session to include it in the combined results.",
+      "exam-results": "Student Results",
+      "button-item-points": "Item by Points"
     },
     "home" : {
       "name": "Home",

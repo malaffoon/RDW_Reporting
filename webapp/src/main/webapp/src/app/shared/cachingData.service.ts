@@ -26,6 +26,6 @@ export class CachingDataService {
   }
 
   public getSchoolYears() {
-    return this.get("/schoolyears");
+    return this.get("/schoolYears");
   }
 }
