@@ -18,20 +18,30 @@
       <div class="spacer-v-lg">
         <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
         <div class="spacer-v-sm">{{'labels.assessment.sessions-instruct' | translate}}</div>
-        <button *ngFor="let session of assessment.sessions" class="btn btn-gray spacer-h-sm" (click)="session.filter = !session.filter;" [ngClass]="{'active':session.filter}">
+        <button *ngFor="let session of assessment.sessions" class="btn btn-gray spacer-h-sm" (click)="toggleSession(session)" [ngClass]="{'active':session.filter}">
           <strong class="spacer-h-sm">{{session.dateTime | date }}</strong>
           <i class="fa fa-minus-square" [ngClass]="{'fa-minus-square':session.filter, 'fa-plus-square':!session.filter }"></i>
           <div>{{session.id}}</div>
         </button>
       </div>
-      <div>
+      <div class="spacer-v-md">
         <div class="pull-right"><button class="btn btn-default btn-sm">
           {{'labels.assessment.button-item-points' | translate}}
           <i class="fa fa-angle-right"></i></button></div>
         <h4>{{'labels.assessment.exam-results' | translate}}</h4>
       </div>
+      <p-dataTable [value]="examSessions">
+        <p-column field="exam.name" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
+        <p-column field="exam.date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
+          <ng-template let-examSession="rowData" pTemplate="body">
+            {{ examSession.exam.date | date }}
+          </ng-template>
+        </p-column>
+        <p-column field="session.id" header="{{'labels.groups.results.exam-cols.session' | translate}}" [sortable]="true"></p-column>
+        <p-column field="exam.grade" header="{{'labels.groups.results.exam-cols.grade' | translate}}" [sortable]="true" ></p-column>
+        <p-column field="exam.score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true"></p-column>
+      </p-dataTable>
     </div>
-    <!--TODO: Implement Student Results table-->
 
   </div>
 </div>

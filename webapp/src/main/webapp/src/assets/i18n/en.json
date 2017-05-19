@@ -107,6 +107,7 @@
     "groups": {
       "name": "My Groups",
       "filter": "Search Groups",
+      "subject": "Subjects",
       "results" : {
         "title": "Results",
         "select-group": "Group",
@@ -118,7 +119,14 @@
         "filter-type-recent": "Most Recent",
         "filter-type-custom": "Custom",
         "value-as-percent": "Percent",
-        "value-as-number": "Number"
+        "value-as-number": "Number",
+        "exam-cols": {
+          "name": "Name",
+          "date": "Date",
+          "session": "Session",
+          "grade": "Enrolled Grade",
+          "score": "Scale Score"
+        }
       }
     },
     "assessment": {
