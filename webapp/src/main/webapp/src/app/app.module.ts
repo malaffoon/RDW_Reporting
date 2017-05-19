@@ -38,6 +38,7 @@ import { CachingDataService } from "./shared/cachingData.service";
 import { AssessmentsResolve } from "./groups/results/assessments.resolve";
 import { SchoolYearPipe } from "./shared/schoolYear.pipe";
 import { AssessmentResultsComponent } from './groups/results/assessment/assessment-results.component';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -67,6 +68,7 @@ export function createTranslateLoader(http: Http) {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpModule,
     DataTableModule,

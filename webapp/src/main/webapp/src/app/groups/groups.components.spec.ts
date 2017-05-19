@@ -1,8 +1,6 @@
 import { async, TestBed } from "@angular/core/testing";
 import { GroupsComponent } from "./groups.component";
 import { RouterModule, ActivatedRoute } from "@angular/router";
-import { DataService } from "../shared/data.service";
-import { Observable } from "rxjs/Rx";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { DataTableModule, SharedModule } from "primeng/primeng";
@@ -10,7 +8,6 @@ import { SubjectPipe } from "../shared/subject.pipe";
 import { HttpModule } from "@angular/http";
 import { APP_BASE_HREF } from "@angular/common";
 import { By } from "@angular/platform-browser";
-import { AppModule } from "../app.module";
 
 let groups = [
   { name: "advanced mathematics" },

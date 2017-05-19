@@ -92,6 +92,70 @@ export const iab_items = [
   return item;
 });
 
+export const exams_of_student = [
+  {
+    date: new Date(2017, 1, 2),
+    performance: 0,
+    score: 2321,
+    grade: 4,
+    studentName: { first: "David", last: "Hayden" }
+  },
+  {
+    date: new Date(2017, 1, 4),
+    performance: 0,
+    score: 2339,
+    grade: 4,
+    studentName: { first: "Clementine", last: "Roach" }
+  },
+  {
+    date: new Date(2017, 1, 7),
+    performance: 0,
+    score: 2344,
+    grade: 4,
+    studentName: { first: "Hasad", last: "Valenzuela" }
+  },
+  {
+    date: new Date(2017, 1, 15),
+    performance: 0,
+    score: 2378,
+    grade: 4,
+    studentName: { first: "Joe", last: "Smith" }
+  },
+  {
+    date: new Date(2017, 1, 15),
+    performance: 1,
+    score: 2447,
+    grade: 4,
+    studentName: { first: "Joseph", last: "Cleveland" }
+  },
+  {
+    date: new Date(2017, 1, 15),
+    performance: 2,
+    score: 2595,
+    grade: 4,
+    studentName: { first: "Sara", last: "Blankenship" }
+  },
+  {
+    date: new Date(2017, 1, 20),
+    performance: 2,
+    score: 2520,
+    grade: 4,
+    studentName: { first: "Linus", last: "Todd" }
+  },
+  {
+    date: new Date(2017, 1, 20),
+    performance: 2,
+    score: 2520,
+    grade: 4,
+    studentName: { first: "Hope", last: "Cardinas" }
+  }
+].map((exam: any, index: number) => {
+  exam.id = randomId();
+  exam.items = iab_items;
+  exam.name = exam.studentName.last + ", " + exam.studentName.first;
+  return exam;
+});
+
 export const assessments = [
   {
     id: 1,
@@ -100,7 +164,15 @@ export const assessments = [
     gradeId: 3,
     academicYear: 2016,
     subject: AssessmentSubjectType.MATH,
-    sessions: [{id:"nof-01", dateTime:"2017-05-12T21:47:45Z"}]
+    sessions: [ {
+      id: "nof-01",
+      dateTime: "2017-05-12T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 2 == 0)
+    }, {
+      id: "nof-02",
+      dateTime: "2017-05-13T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 2 == 1)
+    } ]
   },
   {
     id: 2,
@@ -109,7 +181,19 @@ export const assessments = [
     gradeId: 4,
     academicYear: 2013,
     subject: AssessmentSubjectType.MATH,
-    sessions: [{id:"md-01", dateTime:"2017-05-12T21:47:45Z"},{id:"md-02",dateTime:"2017-05-11T21:47:45Z"},{id:"md-03",dateTime:"2017-05-10T21:47:45Z"}]
+    sessions: [{
+      id:"md-01",
+      dateTime:"2017-05-12T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 3 == 0)
+    },{
+      id:"md-02",
+      dateTime:"2017-05-11T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 3 == 1)
+    },{
+      id:"md-03",
+      dateTime:"2017-05-10T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 3 == 3)
+    }]
   },
   {
     id: 3,
@@ -118,7 +202,15 @@ export const assessments = [
     gradeId: 7,
     academicYear: 2017,
     subject: AssessmentSubjectType.MATH,
-    sessions: [{id:"g-01", dateTime:"2017-06-12T21:47:45Z"},{id:"g-02",dateTime:"2017-06-11T21:47:45Z"}]
+    sessions: [{
+      id:"g-01",
+      dateTime:"2017-06-12T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 2 == 0)
+    },{
+      id:"g-02",
+      dateTime:"2017-06-11T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 2 == 1)
+    }]
   },
   {
     id: 4,
@@ -127,7 +219,11 @@ export const assessments = [
     gradeId: 5,
     academicYear: 2015,
     subject: AssessmentSubjectType.MATH,
-    sessions: [{id:"mpt-01", dateTime:"2017-05-12T21:47:45Z"}]
+    sessions: [{
+      id:"mpt-01",
+      dateTime:"2017-05-12T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 2 == 1)
+    }]
   },
   {
     id: 5,
@@ -136,75 +232,90 @@ export const assessments = [
     gradeId: 8,
     academicYear: 2014,
     subject: AssessmentSubjectType.MATH,
-    sessions: [{id:"oat-01", dateTime:"2017-05-12T21:47:45Z"}]
+    sessions: [{
+      id:"oat-01",
+      dateTime:"2017-05-12T21:47:45Z",
+      exams: exams_of_student.filter(x => x.id % 2 == 0)
+    }]
   }
 ].map((assessment : any) => {
   assessment.fullName = `Grade ${assessment.grade} ${assessment.name}`;
   return assessment;
 });
 
-export const exams_of_student = [
+// Just to keep the old UI working for now...
+export const DEPRECATED_exams_of_student = [
   {
     date: new Date(2017, 1, 2),
     performance: 0,
     score: 2321,
     grade: 4,
-    assessment: assessments[0]
+    assessment: assessments[0],
+    studentName: { first: "David", last: "Hayden" }
   },
   {
     date: new Date(2017, 1, 4),
     performance: 0,
     score: 2339,
     grade: 4,
-    assessment: assessments[1]
+    assessment: assessments[1],
+    studentName: { first: "Clementine", last: "Roach" }
   },
   {
     date: new Date(2017, 1, 7),
     performance: 0,
     score: 2344,
     grade: 4,
-    assessment: assessments[0]
+    assessment: assessments[2],
+    studentName: { first: "Hasad", last: "Valenzuela" }
   },
   {
     date: new Date(2017, 1, 15),
     performance: 0,
     score: 2378,
     grade: 4,
-    assessment: assessments[2]
+    assessment: assessments[3],
+    studentName: { first: "Joe", last: "Smith" }
   },
   {
     date: new Date(2017, 1, 15),
     performance: 1,
     score: 2447,
     grade: 4,
-    assessment: assessments[1]
+    assessment: assessments[0],
+    studentName: { first: "Joseph", last: "Cleveland" }
   },
   {
     date: new Date(2017, 1, 15),
     performance: 2,
     score: 2595,
     grade: 4,
-    assessment: assessments[3]
+    assessment: assessments[0],
+    studentName: { first: "Sara", last: "Blankenship" }
   },
   {
     date: new Date(2017, 1, 20),
     performance: 2,
     score: 2520,
     grade: 4,
-    assessment: assessments[4]
+    assessment: assessments[0],
+    studentName: { first: "Linus", last: "Todd" }
   },
   {
     date: new Date(2017, 1, 20),
     performance: 2,
     score: 2520,
     grade: 4,
-    assessment: assessments[4]
+    assessment: assessments[0],
+    studentName: { first: "Hope", last: "Cardinas" }
   }
 ].map((exam: any, index: number) => {
   exam.id = randomId();
   exam.items = iab_items;
+  exam.name = exam.studentName.last + ", " + exam.studentName.first;
   return exam;
 });
+
 
 export const students = [
   {firstName: "David", lastName: "Hayden"},

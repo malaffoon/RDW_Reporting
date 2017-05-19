@@ -107,6 +107,7 @@
     "groups": {
       "name": "My Groups",
       "filter": "Search Groups",
+      "subject": "Subjects",
       "results" : {
         "title": "Results",
         "select-group": "Group",
@@ -117,11 +118,20 @@
         "selected-assessments-instruct": "Click an item to remove it from the list",
         "filter-type-recent": "Most Recent",
         "filter-type-custom": "Custom",
+        "value-as": "Show value as",
         "value-as-percent": "Percent",
-        "value-as-number": "Number"
+        "value-as-number": "Number",
+        "exam-cols": {
+          "name": "Name",
+          "date": "Date",
+          "session": "Session",
+          "grade": "Enrolled Grade",
+          "score": "Scale Score"
+        }
       }
     },
     "assessment": {
+      "instruct": "Instructions",
       "sessions-title": "Sessions",
       "sessions-instruct": "Click a session to include it in the combined results.",
       "exam-results": "Student Results",
