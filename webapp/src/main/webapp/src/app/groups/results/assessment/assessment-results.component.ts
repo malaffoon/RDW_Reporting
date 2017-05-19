@@ -1,8 +1,28 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { trigger, transition, style, animate } from "@angular/animations";
 
 @Component({
   selector: 'assessment-results',
-  templateUrl: './assessment-results.component.html'
+  templateUrl: './assessment-results.component.html',
+  animations: [
+    trigger(
+      'fadeAnimation',
+      [
+        transition(
+          ':enter', [
+            style({ opacity: 0 }),
+            animate('500ms ease-in', style({ opacity: 1 }))
+          ]
+        ),
+        transition(
+          ':leave', [
+            style({ opacity: 1 }),
+            animate('500ms ease-out', style({ opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ],
 })
 
 export class AssessmentResultsComponent implements OnInit {

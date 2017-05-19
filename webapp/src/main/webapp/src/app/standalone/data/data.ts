@@ -243,6 +243,80 @@ export const assessments = [
   return assessment;
 });
 
+// Just to keep the old UI working for now...
+export const DEPRECATED_exams_of_student = [
+  {
+    date: new Date(2017, 1, 2),
+    performance: 0,
+    score: 2321,
+    grade: 4,
+    assessment: assessments[0],
+    studentName: { first: "David", last: "Hayden" }
+  },
+  {
+    date: new Date(2017, 1, 4),
+    performance: 0,
+    score: 2339,
+    grade: 4,
+    assessment: assessments[1],
+    studentName: { first: "Clementine", last: "Roach" }
+  },
+  {
+    date: new Date(2017, 1, 7),
+    performance: 0,
+    score: 2344,
+    grade: 4,
+    assessment: assessments[2],
+    studentName: { first: "Hasad", last: "Valenzuela" }
+  },
+  {
+    date: new Date(2017, 1, 15),
+    performance: 0,
+    score: 2378,
+    grade: 4,
+    assessment: assessments[3],
+    studentName: { first: "Joe", last: "Smith" }
+  },
+  {
+    date: new Date(2017, 1, 15),
+    performance: 1,
+    score: 2447,
+    grade: 4,
+    assessment: assessments[0],
+    studentName: { first: "Joseph", last: "Cleveland" }
+  },
+  {
+    date: new Date(2017, 1, 15),
+    performance: 2,
+    score: 2595,
+    grade: 4,
+    assessment: assessments[0],
+    studentName: { first: "Sara", last: "Blankenship" }
+  },
+  {
+    date: new Date(2017, 1, 20),
+    performance: 2,
+    score: 2520,
+    grade: 4,
+    assessment: assessments[0],
+    studentName: { first: "Linus", last: "Todd" }
+  },
+  {
+    date: new Date(2017, 1, 20),
+    performance: 2,
+    score: 2520,
+    grade: 4,
+    assessment: assessments[0],
+    studentName: { first: "Hope", last: "Cardinas" }
+  }
+].map((exam: any, index: number) => {
+  exam.id = randomId();
+  exam.items = iab_items;
+  exam.name = exam.studentName.last + ", " + exam.studentName.first;
+  return exam;
+});
+
+
 export const students = [
   {firstName: "David", lastName: "Hayden"},
   {firstName: "Clementine", lastName: "Roach"},

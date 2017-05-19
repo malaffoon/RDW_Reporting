@@ -7,6 +7,7 @@ import { HttpModule } from "@angular/http";
 import { Component } from "@angular/core";
 import { SharedModule } from "primeng/components/common/shared";
 import { DataTableModule } from "primeng/components/datatable/datatable";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -14,7 +15,7 @@ describe('AssessmentResultsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ TranslateModule.forRoot(), HttpModule, FormsModule, DataTableModule, SharedModule ],
+      imports: [ TranslateModule.forRoot(), HttpModule, FormsModule, DataTableModule, SharedModule, BrowserAnimationsModule ],
       declarations: [ TestComponentWrapper, AssessmentResultsComponent ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' } ]
     }).compileComponents();
