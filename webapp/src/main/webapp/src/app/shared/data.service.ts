@@ -13,7 +13,7 @@ export class DataService {
   constructor(private http: Http, private staticDataService: CachingDataService) {
   }
 
-  private get(url, options?: RequestOptionsArgs): Observable<any> {
+  get(url, options?: RequestOptionsArgs): Observable<any> {
     return this.http
       .get(`/api${url}`, options)
       .map(response => response.json());
@@ -69,27 +69,5 @@ export class DataService {
     params.set('ssid', searchFilter.ssid);
 
     return this.get('/students/search', { search: params });
-  }
-
-  getMostRecentAssessment(groupId: number, schoolYear?: number) {
-    if (schoolYear == undefined) {
-      return this.staticDataService.getSchoolYears().mergeMap(years => {
-        return this.getRecentAssessmentBySchoolYear(groupId, years[ 0 ]);
-      });
-    }
-    else {
-      return this.getRecentAssessmentBySchoolYear(groupId, schoolYear);
-    }
-  }
-
-  private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set('schoolYear', schoolYear.toString());
-
-    return this.get(`/groups/${groupId}/latestassessment`, { search: params })
-      .catch(response => {
-        console.warn(response);
-        return Observable.empty();
-      });
   }
 }

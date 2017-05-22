@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CachingDataService } from "../../shared/cachingData.service";
+import { AssessmentExam } from "./assessment/model/assessment-exam.model";
 
 @Component({
   selector: 'app-group-results',
@@ -12,7 +13,7 @@ export class GroupResultsComponent implements OnInit {
   private currentGroup;
   private filterBy = { schoolYear: 0 };
 
-  selectedAssessments = [];
+  selectedAssessments : AssessmentExam[] = [];
 
   constructor(private route: ActivatedRoute, private router: Router, private staticDataService: CachingDataService) {
   }
