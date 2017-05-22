@@ -74,7 +74,7 @@ export class DataService {
   getMostRecentAssessment(groupId: number, schoolYear?: number) {
     if (schoolYear == undefined) {
       return this.staticDataService.getSchoolYears().mergeMap(years => {
-        return this.getRecentAssessmentBySchoolYear(groupId, years[0]);
+        return this.getRecentAssessmentBySchoolYear(groupId, years[ 0 ]);
       });
     }
     else {
@@ -83,6 +83,13 @@ export class DataService {
   }
 
   private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
-    return this.get(`/groups/${groupId}/schoolYears/${schoolYear}/assessments`);
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('schoolYear', schoolYear.toString());
+
+    return this.get(`/groups/${groupId}/latestassessment`, { search: params })
+      .catch(response => {
+        console.warn(response);
+        return Observable.empty();
+      });
   }
 }

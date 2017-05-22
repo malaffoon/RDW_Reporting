@@ -20,7 +20,8 @@ export class GroupResultsComponent implements OnInit {
   ngOnInit() {
     this.groups = this.route.snapshot.data[ "groups" ];
     this.currentGroup = this.groups.find(x => x.id == this.route.snapshot.params[ "groupId" ]);
-    this.selectedAssessments = this.route.snapshot.data[ "assessments" ];
+
+    this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
 
     this.staticDataService.getSchoolYears().subscribe(years => {
       this.availableSchoolYears = years;
@@ -28,15 +29,22 @@ export class GroupResultsComponent implements OnInit {
     });
   }
 
+  updateAssessment(latestAssessment) {
+    this.selectedAssessments = [];
+
+    if (latestAssessment)
+      this.selectedAssessments.push(latestAssessment);
+  }
+
   updateRoute(event) {
     this.router.navigate([ 'groups', this.currentGroup.id, { schoolYear: this.filterBy.schoolYear } ]).then(() => {
-      this.selectedAssessments = this.route.snapshot.data[ "assessments" ];
+      this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     });
   }
 
   mapParamsToFilterBy(params) {
     return {
-      schoolYear: Number.parseInt(params[ "schoolYear" ]) || this.availableSchoolYears[0]
+      schoolYear: Number.parseInt(params[ "schoolYear" ]) || this.availableSchoolYears[ 0 ]
     }
   }
 }

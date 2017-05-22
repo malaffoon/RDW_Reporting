@@ -70,5 +70,11 @@
   <div *ngFor="let assessment of selectedAssessments">
     <assessment-results [assessment]="assessment"></assessment-results>
   </div>
+  <div *ngIf="selectedAssessments.length == 0">
+    <p>
+      <!--TODO: What should be here instead?-->
+      No results found.
+    </p>
+  </div>
 
 </div>
