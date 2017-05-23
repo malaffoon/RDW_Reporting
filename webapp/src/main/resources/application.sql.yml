@@ -15,44 +15,66 @@ sql:
           where user_login=:user_login
 
     assessment:
-      findAll: >-
-        select
-            distinct a.id,
+      icaSummative:
+        findAll: >-
+          select a.id,
             a.name,
             a.grade_id,
             a.type_id,
             a.subject_id,
-            a.school_year
-          from exam e
-            join student_group_membership sgm on e.student_id=sgm.student_id
-            join asmt a on e.asmt_id=a.id
-            join school s on e.school_id=s.id
-          where e.school_year=:school_year
-          and sgm.student_group_id=:group_id
-          and (0=:group_subject_id or a.subject_id=:group_subject_id)
-          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+            a.school_year,
+            aa.min_score,
+            aa.max_score,
+            aa.cut_point_1,
+            aa.cut_point_2,
+            aa.cut_point_3
+          from asmt a
+            left join asmt_score aa on a.id=aa.asmt_id
+          where exists (
+              select e.asmt_id
+              from exam e
+                join student_group_membership sgm on e.student_id=sgm.student_id
+                join school s on e.school_id=s.id
+              where
+                e.school_year=:school_year
+                and sgm.student_group_id=:group_id
+                and (0=:group_subject_id or a.subject_id=:group_subject_id)
+                and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+                and a.id = e.asmt_id
+          )
 
       iab:
         findAll: >-
-          select
-              distinct a.id,
-              a.name,
-              a.grade_id,
-              a.type_id,
-              a.subject_id,
-              a.school_year
-            from iab_exam e
-              join student_group_membership sgm on e.student_id=sgm.student_id
-              join asmt a on e.asmt_id=a.id
-              join school s on e.school_id=s.id
-            where e.school_year=:school_year
-            and sgm.student_group_id=:group_id
-            and (0=:group_subject_id or a.subject_id=:group_subject_id)
-            and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+           select a.id,
+             a.name,
+             a.grade_id,
+             a.type_id,
+             a.subject_id,
+             a.school_year,
+             aa.min_score,
+             aa.max_score,
+             aa.cut_point_1,
+             aa.cut_point_2,
+             aa.cut_point_3
+           from asmt a
+             left join asmt_score aa on a.id=aa.asmt_id
+           where exists (
+               select e.asmt_id
+               from iab_exam e
+                 join student_group_membership sgm on e.student_id=sgm.student_id
+                 join school s on e.school_id=s.id
+               where
+                 e.school_year=:school_year
+                 and sgm.student_group_id=:group_id
+                 and (0=:group_subject_id or a.subject_id=:group_subject_id)
+                 and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+                 and a.id = e.asmt_id
+           )
 
     exam:
-      findLatest: >-
-        select
+      icaSummative:
+        findLatest: >-
+          select
             e.completed_at,
             a.id as assessment_id,
             a.name as assessment_name,
@@ -73,22 +95,22 @@ sql:
       iab:
         findLatest: >-
           select
-              e.completed_at,
-          	  a.id as assessment_id,
-              a.name as assessment_name,
-              a.grade_id as assessment_grade_id,
-              a.type_id as assessment_type_id,
-              a.subject_id as assessment_subject_id
-            from iab_exam e
-              join student_group_membership sgm on e.student_id=sgm.student_id
-              join asmt a on e.asmt_id=a.id
-              join school s on e.school_id=s.id
-            where e.school_year=:school_year
-            and sgm.student_group_id=:group_id
-            and (0=:group_subject_id or a.subject_id=:group_subject_id)
-            and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
-            order by e.completed_at desc
-            limit 1
+            e.completed_at,
+            a.id as assessment_id,
+            a.name as assessment_name,
+            a.grade_id as assessment_grade_id,
+            a.type_id as assessment_type_id,
+            a.subject_id as assessment_subject_id
+          from iab_exam e
+            join student_group_membership sgm on e.student_id=sgm.student_id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+          order by e.completed_at desc
+          limit 1
 
   district:
     findAllIds: >-
