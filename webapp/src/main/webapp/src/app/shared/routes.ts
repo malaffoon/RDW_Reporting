@@ -24,7 +24,7 @@ export const routes: Routes = [
       {
         path: 'groups/:groupId',
         pathMatch: 'full',
-        resolve: { assessments: AssessmentsResolve },
+        resolve: { assessment: AssessmentsResolve },
         data: { breadcrumb: { translate: 'labels.groups.name'} },
         component: GroupResultsComponent
       }

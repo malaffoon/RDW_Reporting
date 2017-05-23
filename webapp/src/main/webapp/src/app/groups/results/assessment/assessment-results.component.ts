@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
+import { AssessmentExam } from "./model/assessment-exam.model";
+import { Exam } from "./model/exam.model";
 
 @Component({
   selector: 'assessment-results',
@@ -26,26 +28,30 @@ import { trigger, transition, style, animate } from "@angular/animations";
 })
 
 export class AssessmentResultsComponent implements OnInit {
-  private _assessment;
-  private _examSessions = [];
+
+  private _assessmentExam : AssessmentExam;
+  private _exams = [];
+  private _sessions = [];
 
   @Input()
-  set assessment(assessment) {
-    this._assessment = assessment;
+  set assessmentExam(assessment) {
+    this._assessmentExam = assessment;
+    this._sessions = this.getDistinctExamSessions(assessment.exams);
 
-    if (this._assessment.sessions && this._assessment.sessions.length > 0) {
-      // Select the first session by default.
-      this._assessment.sessions[ 0 ].filter = true;
-      this.updateExamSessions(this._assessment.sessions[ 0 ]);
-    }
+    if(this._sessions.length > 0)
+      this.toggleSession(this._sessions[0]);
   }
 
-  get assessment() {
-    return this._assessment;
+  get assessmentExam() {
+    return this._assessmentExam;
   }
 
-  get examSessions() {
-    return this._examSessions;
+  get exams() {
+    return this._exams;
+  }
+
+  get sessions() {
+    return this._sessions;
   }
 
   ngOnInit() {
@@ -53,18 +59,22 @@ export class AssessmentResultsComponent implements OnInit {
 
   toggleSession(session) {
     session.filter = !session.filter;
-    this.updateExamSessions(session);
+    this.updateExamSessions();
   }
 
-  private updateExamSessions(session) {
-    // create copy
-    let examSessions = this._examSessions.filter(x => true);
+  private getDistinctExamSessions(exams : Exam[]) {
+    let sessions = [];
 
-    if (session.filter)
-      session.exams.forEach(x => examSessions.push({ session: session, exam: x }));
-    else
-      session.exams.forEach(x => examSessions.splice(examSessions.findIndex(y => y.exam == x), 1))
+    exams.forEach(exam => {
+      if(!sessions.some(x => x.id == exam.session)){
+        sessions.push({ id: exam.session, date: exam.date, filter: false });
+      }
+    });
 
-    this._examSessions = examSessions;
+    return sessions;
+  }
+
+  private updateExamSessions() {
+    this._exams = this._assessmentExam.exams.filter(x => this.sessions.some(y => y.filter && y.id == x.session));
   }
 }

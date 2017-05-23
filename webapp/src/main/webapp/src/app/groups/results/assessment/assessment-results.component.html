@@ -7,8 +7,10 @@
       </button>
     </div>
     <h4 class="spacer-v-md">
-      <span class="label bg-color-grade-{{assessment.gradeId}} pad-v-lg">G{{assessment.gradeId}}</span>
-      <span class="color-grade-{{assessment.gradeId}} spacer-h-md"> {{assessment.name}}</span>
+      <span class="label bg-color-grade-{{assessmentExam.assessment.grade}} pad-v-lg spacer-h-sm">
+        {{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}
+      </span>
+      <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
     </h4>
 
       <div class="pull-right">
@@ -18,10 +20,10 @@
       <div class="spacer-v-lg">
         <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
         <div class="spacer-v-sm">{{'labels.assessment.sessions-instruct' | translate}}</div>
-        <button *ngFor="let session of assessment.sessions" class="btn btn-gray spacer-h-sm" (click)="toggleSession(session)" [ngClass]="{'active':session.filter}">
-          <strong class="spacer-h-sm">{{session.dateTime | date }}</strong>
+        <button *ngFor="let session of sessions" class="btn btn-gray spacer-h-sm" (click)="toggleSession(session)" [ngClass]="{'active':session.filter}">
+          <strong class="spacer-h-sm">{{session.date | date }}</strong>
           <i class="fa fa-minus-square" [ngClass]="{'fa-minus-square':session.filter, 'fa-plus-square':!session.filter }"></i>
-          <div>{{session.id}}</div>
+          <div> {{session.id || '[Unknown]'}}</div>
         </button>
       </div>
     <div *ngIf="!collapsed" @fadeAnimation>
@@ -32,16 +34,16 @@
         <h4>{{'labels.assessment.exam-results' | translate}}</h4>
       </div>
 
-      <p-dataTable [value]="examSessions">
-        <p-column field="exam.name" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
-        <p-column field="exam.date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
+      <p-dataTable [value]="exams">
+        <p-column field="studentName" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
+        <p-column field="date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
           <ng-template let-examSession="rowData" pTemplate="body">
-            {{ examSession.exam.date | date }}
+            {{ examSession.date | date }}
           </ng-template>
         </p-column>
-        <p-column field="session.id" header="{{'labels.groups.results.exam-cols.session' | translate}}" [sortable]="true"></p-column>
-        <p-column field="exam.grade" header="{{'labels.groups.results.exam-cols.grade' | translate}}" [sortable]="true" ></p-column>
-        <p-column field="exam.score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true"></p-column>
+        <p-column field="session" header="{{'labels.groups.results.exam-cols.session' | translate}}" [sortable]="true"></p-column>
+        <p-column field="enrolledGrade" header="{{'labels.groups.results.exam-cols.grade' | translate}}" [sortable]="true" ></p-column>
+        <p-column field="score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true"></p-column>
       </p-dataTable>
     </div>
 
