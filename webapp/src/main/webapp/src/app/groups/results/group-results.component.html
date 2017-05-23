@@ -45,7 +45,7 @@
         </div>
 
         <button *ngFor="let assessmentExam of selectedAssessments" class="btn btn-default btn-xs pad-h-xxs spacer-h-sm spacer-v-sm">
-          <span class="label bg-color-grade-{{assessmentExam.assessment.grade}}">G{{assessmentExam.assessment.grade}}</span>
+          <span class="label bg-color-grade-{{assessmentExam.assessment.grade}}">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
           <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
           <i class="fa fa-minus-square color-gray icon-size-md"></i>
         </button>
@@ -72,8 +72,7 @@
   </div>
   <div *ngIf="selectedAssessments.length == 0">
     <p>
-      <!--TODO: What should be here instead?-->
-      No results found.
+      {{'messages.no-results-found' | translate}}
     </p>
   </div>
 

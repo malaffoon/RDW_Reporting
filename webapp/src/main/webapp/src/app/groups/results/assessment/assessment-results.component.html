@@ -7,7 +7,9 @@
       </button>
     </div>
     <h4 class="spacer-v-md">
-      <span class="label bg-color-grade-{{assessmentExam.assessment.grade}} pad-v-lg">G{{assessmentExam.assessment.grade}}</span>
+      <span class="label bg-color-grade-{{assessmentExam.assessment.grade}} pad-v-lg spacer-h-sm">
+        {{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}
+      </span>
       <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
     </h4>
 
