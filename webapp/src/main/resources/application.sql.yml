@@ -15,7 +15,7 @@ sql:
           where user_login=:user_login
 
     assessment:
-      icasummative:
+      icaSummative:
         findAll: >-
           select a.id,
             a.name,
@@ -72,7 +72,7 @@ sql:
            )
 
     exam:
-      icasummative:
+      icaSummative:
         findLatest: >-
           select
             e.completed_at,
