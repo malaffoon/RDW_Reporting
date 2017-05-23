@@ -62,13 +62,13 @@
     <div class="pull-right">
       <label for="value-format">{{'labels.groups.results.value-as' | translate }} </label>
       <div id="value-format" class="btn-group" role="group">
-        <button type="radio" class="btn btn-default btn-sm active">{{'labels.groups.results.value-as-percent' | translate}}</button>
-        <button type="radio" class="btn btn-default btn-sm">{{'labels.groups.results.value-as-number' | translate}}</button>
+        <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}" class="btn btn-default btn-sm"  >{{'labels.groups.results.value-as-percent' | translate}}</button>
+        <button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}" class="btn btn-default btn-sm">{{'labels.groups.results.value-as-number' | translate}}</button>
       </div>
     </div>
   </div>
   <div *ngFor="let assessment of selectedAssessments">
-    <assessment-results [assessmentExam]="assessment"></assessment-results>
+    <assessment-results [assessmentExam]="assessment" [showValuesAsPercent]="showValuesAsPercent"></assessment-results>
   </div>
   <div *ngIf="selectedAssessments.length == 0">
     <p>
