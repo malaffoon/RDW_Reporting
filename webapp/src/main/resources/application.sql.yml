@@ -50,14 +50,8 @@ sql:
              a.grade_id,
              a.type_id,
              a.subject_id,
-             a.school_year,
-             aa.min_score,
-             aa.max_score,
-             aa.cut_point_1,
-             aa.cut_point_2,
-             aa.cut_point_3
+             a.school_year
            from asmt a
-             left join asmt_score aa on a.id=aa.asmt_id
            where exists (
                select e.asmt_id
                from iab_exam e
@@ -123,17 +117,11 @@ sql:
             a.grade_id,
             a.type_id,
             a.subject_id,
-            a.school_year,
-            aa.min_score,
-            aa.max_score,
-            aa.cut_point_1,
-            aa.cut_point_2,
-            aa.cut_point_3
+            a.school_year
           from iab_exam e
             join student_group_membership sgm on e.student_id=sgm.student_id
             join asmt a on e.asmt_id=a.id
             join school s on e.school_id=s.id
-            left join asmt_score aa on e.asmt_id=aa.asmt_id
           where e.school_year=:school_year
           and sgm.student_group_id=:group_id
           and (0=:group_subject_id or a.subject_id=:group_subject_id)
