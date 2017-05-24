@@ -117,6 +117,7 @@
         "adv-filters-button": "Show",
         "selected-assessments-title": "Selected Assessments",
         "selected-assessments-instruct": "Click an item to remove it from the list",
+        "session-unknown": "[Unknown]",
         "filter-type-recent": "Most Recent",
         "filter-type-custom": "Custom",
         "value-as": "Show value as",
