@@ -16,8 +16,8 @@ import {AssessmentSubjectType} from "../../shared/assessment-subject-type.enum";
 let commonVendorId = '2B3C34BF-064C-462A-93EA-41E9E3EB8333';
 
 export const user = {
-  firstName: "DW",
-  lastName: "Test",
+  firstName: "Terry",
+  lastName: "McManus",
   permissions: [ "INDIVIDUAL_PII_READ", "GROUP_READ" ]
 };
 
