@@ -4,6 +4,7 @@ export class Exam {
   private _session : string;
   private _enrolledGrade: number;
   private _score : number;
+  private _level : number;
 
   get studentName(): string {
     return this._studentName;
@@ -43,5 +44,13 @@ export class Exam {
 
   set score(value: number) {
     this._score = value;
+  }
+
+  get level(): number {
+    return this._level;
+  }
+
+  set level(value: number) {
+    this._level = value;
   }
 }

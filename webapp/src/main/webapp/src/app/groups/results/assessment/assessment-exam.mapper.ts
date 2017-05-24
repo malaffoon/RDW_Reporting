@@ -36,6 +36,7 @@ export class AssessmentExamMapper {
     uiModel.enrolledGrade = apiModel.grade;
     uiModel.studentName = `${apiModel.studentName.last}, ${apiModel.studentName.first}`;
     uiModel.score = apiModel.score;
+    uiModel.level = apiModel.performance;
 
     return uiModel;
   }

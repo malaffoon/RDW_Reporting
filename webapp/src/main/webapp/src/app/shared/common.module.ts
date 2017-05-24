@@ -10,6 +10,7 @@ import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { routes } from "./routes";
 import { RouterModule } from "@angular/router";
+import { RemoveCommaPipe } from "./remove-comma.pipe";
 
 export function createTranslateLoader(http: Http) {
   // return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -22,7 +23,8 @@ export function createTranslateLoader(http: Http) {
     PadStartPipe,
     SubjectPipe,
     SchoolYearPipe,
-    SearchPipe
+    SearchPipe,
+    RemoveCommaPipe
   ],
   imports: [
     HttpModule,
@@ -37,6 +39,7 @@ export function createTranslateLoader(http: Http) {
   ],
   exports: [
     PadStartPipe,
+    RemoveCommaPipe,
     SubjectPipe,
     SchoolYearPipe,
     SearchPipe,
