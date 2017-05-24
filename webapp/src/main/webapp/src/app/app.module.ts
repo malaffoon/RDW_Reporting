@@ -22,6 +22,7 @@ import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
 import { BsDropdownModule, TabsModule } from "ngx-bootstrap";
 import { CommonModule } from "./shared/common.module";
 import { GroupsModule } from "./groups/groups.module";
+import { UserModule } from "./user/user.module";
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { GroupsModule } from "./groups/groups.module";
     BrowserModule,
     CommonModule,
     GroupsModule,
+    UserModule,
     FormsModule,
     HttpModule,
     BsDropdownModule,
