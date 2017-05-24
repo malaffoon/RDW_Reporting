@@ -23,6 +23,8 @@ import { BsDropdownModule, TabsModule } from "ngx-bootstrap";
 import { CommonModule } from "./shared/common.module";
 import { GroupsModule } from "./groups/groups.module";
 import { UserModule } from "./user/user.module";
+import { routes } from "./app.routes";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -43,6 +45,7 @@ import { UserModule } from "./user/user.module";
     BrowserModule,
     CommonModule,
     GroupsModule,
+    RouterModule.forRoot(routes),
     UserModule,
     FormsModule,
     HttpModule,

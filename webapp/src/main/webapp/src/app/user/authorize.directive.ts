@@ -23,9 +23,7 @@ export class AuthorizeDirective {
     if(!permissions || !permissions.length || permissions.length == 0 )
       throw new Error("Specify at least one permission to authorize against.")
 
-    this._userService.getCurrentUser().subscribe(user => {
-      let hasPermission = this.doesAtLeastOnePermissionExist(permissions, user.permissions);
-
+    this._userService.doesCurrentUserHaveAtLeastOnePermission(permissions).subscribe(hasPermission => {
       if(hasPermission && !this._hasView){
         this._viewContainer.createEmbeddedView(this._templateRef);
         this._hasView = true;
@@ -35,14 +33,5 @@ export class AuthorizeDirective {
         this._hasView = false;
       }
     });
-  }
-
-  private doesAtLeastOnePermissionExist(permissionsToCheck, userPermissions) : boolean {
-    for(let permission of permissionsToCheck) {
-      if(userPermissions.some(p => p.toUpperCase().trim() == permission.toUpperCase().trim()))
-        return true;
-    }
-
-    return false;
   }
 }

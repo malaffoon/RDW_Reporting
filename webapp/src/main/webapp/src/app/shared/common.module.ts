@@ -8,7 +8,6 @@ import { DataService } from "./data.service";
 import { CachingDataService } from "./cachingData.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { routes } from "./routes";
 import { RouterModule } from "@angular/router";
 import { RemoveCommaPipe } from "./remove-comma.pipe";
 
@@ -28,7 +27,6 @@ export function createTranslateLoader(http: Http) {
   ],
   imports: [
     HttpModule,
-    RouterModule.forRoot(routes),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

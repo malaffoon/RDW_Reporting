@@ -4,12 +4,13 @@ import { UserService } from "./user.service";
 import { AuthorizeDirective } from "./authorize.directive";
 import { UserMapper } from "./user.mapper";
 import { BrowserModule } from "@angular/platform-browser";
+import { AuthorizeCanActivate } from "./authorize.can-activate";
 
 @NgModule({
   declarations: [ AuthorizeDirective ],
   imports: [ CommonModule, BrowserModule ],
   exports: [ AuthorizeDirective ],
-  providers: [ UserMapper, UserService ]
+  providers: [ UserMapper, UserService, AuthorizeCanActivate ]
 })
 export class UserModule {
 }
