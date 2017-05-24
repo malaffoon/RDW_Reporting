@@ -284,7 +284,8 @@ sql:
 
   ethnicity:
     findAll: >-
-      select * from ethnicity
+      select id, name
+      from ethnicity
 
     findEthnicityIdsForStudentIds: >-
       select ethnicity_id, student_id
