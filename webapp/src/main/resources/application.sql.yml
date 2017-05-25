@@ -2,17 +2,17 @@ sql:
   group:
     findAllForUsername: >-
       select sg.id, sg.name, school.name as school_name, subject_id
-        from user_student_group usg
-          join student_group sg on sg.id = usg.student_group_id
-          join school on school.id = sg.school_id
-        where user_login=:user_login
+      from user_student_group usg
+        join student_group sg on sg.id = usg.student_group_id
+        join school on school.id = sg.school_id
+      where user_login=:user_login
 
     membership:
       findAllForUsername: >-
         select sg.id, sg.subject_id, sg.school_id
-          from user_student_group usg
-            join student_group sg on sg.id = usg.student_group_id
-          where user_login=:user_login
+        from user_student_group usg
+          join student_group sg on sg.id = usg.student_group_id
+        where user_login=:user_login
 
     assessment:
       icaSummative:
@@ -95,16 +95,11 @@ sql:
         findAllForAssessment: >-
           select e.id,
             e.grade_id,
-            e.school_id,
             e.iep,
             e.lep,
             e.section504,
             e.economic_disadvantage,
             e.migrant_status,
-            e.eng_prof_lvl,
-            e.t3_program_type,
-            e.language_code,
-            e.prim_disability_type,
             e.school_year,
             e.opportunity,
             e.completeness_id,
@@ -164,16 +159,11 @@ sql:
         findAllForAssessment: >-
           select e.id,
             e.grade_id,
-            e.school_id,
             e.iep,
             e.lep,
             e.section504,
             e.economic_disadvantage,
             e.migrant_status,
-            e.eng_prof_lvl,
-            e.t3_program_type,
-            e.language_code,
-            e.prim_disability_type,
             e.school_year,
             e.opportunity,
             e.completeness_id,
@@ -198,17 +188,23 @@ sql:
           and (0=:group_subject_id or a.subject_id=:group_subject_id)
           and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
 
+  assessment:
+    findTypeIdForId: >-
+      select type_id
+      from asmt a
+      where a.id=:id
+
   district:
     findAllIds: >-
       select natural_id, id
-        from district
-        where natural_id in (:naturalIds)
+      from district
+      where natural_id in (:naturalIds)
 
   school:
     findAllIds: >-
       select natural_id, id
-        from school
-        where natural_id in (:naturalIds)
+      from school
+      where natural_id in (:naturalIds)
 
   ethnicity:
     findAll: >-
