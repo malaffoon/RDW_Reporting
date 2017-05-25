@@ -124,11 +124,13 @@
         "value-as-percent": "Percent",
         "value-as-number": "Number",
         "grade-prefix" : "G",
+        "empty-message" : "Please select at least one session to display results.",
         "exam-cols": {
           "name": "Name",
           "date": "Date",
           "session": "Session",
           "grade": "Enrolled Grade",
+          "status": "Status",
           "score": "Scale Score"
         }
       }
@@ -165,6 +167,18 @@
       "name": "Student",
       "ssid": "SSID",
       "details": "Student Details"
+    }
+  },
+  "enum" : {
+    "administrative-condition" : {
+      "1" : "Valid",
+      "2" : "Standard",
+      "3" : "Non-Standard",
+      "4" : "Invalid"
+    },
+    "completeness" : {
+      "1" : "Partial",
+      "2" : "Complete"
     }
   },
   "assessment_report": {

@@ -37,6 +37,8 @@ export class AssessmentExamMapper {
     uiModel.studentName = `${apiModel.student.lastName}, ${apiModel.student.firstName}`;
     uiModel.score = apiModel.scaleScore.value;
     uiModel.level = apiModel.scaleScore.level;
+    uiModel.administrativeCondition = apiModel.administrativeConditionId;
+    uiModel.completeness = apiModel.completenessId;
 
     return uiModel;
   }

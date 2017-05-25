@@ -5,6 +5,8 @@ export class Exam {
   private _enrolledGrade: number;
   private _score : number;
   private _level : number;
+  private _administrativeCondition: number;
+  private _completeness : number;
 
   get studentName(): string {
     return this._studentName;
@@ -52,5 +54,21 @@ export class Exam {
 
   set level(value: number) {
     this._level = value;
+  }
+
+  get administrativeCondition(): number {
+    return this._administrativeCondition;
+  }
+
+  set administrativeCondition(value: number) {
+    this._administrativeCondition = value;
+  }
+
+  get completeness(): number {
+    return this._completeness;
+  }
+
+  set completeness(value: number) {
+    this._completeness = value;
   }
 }

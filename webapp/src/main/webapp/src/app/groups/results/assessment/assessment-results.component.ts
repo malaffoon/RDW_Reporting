@@ -30,23 +30,23 @@ import { ExamResultLevel } from "../../../shared/exam-result-level.enum";
 
 export class AssessmentResultsComponent implements OnInit {
 
-  private _assessmentExam : AssessmentExam;
+  private _assessmentExam: AssessmentExam;
   private _exams = [];
   private _sessions = [];
-  private _statistics :any= { percents: {} };
-  private _showValuesAsPercent : boolean;
+  private _statistics: any = { percents: {} };
+  private _showValuesAsPercent: boolean;
 
   @Input()
-  set assessmentExam(assessment : AssessmentExam) {
+  set assessmentExam(assessment: AssessmentExam) {
     this._assessmentExam = assessment;
     this._sessions = this.getDistinctExamSessions(assessment.exams);
 
-    if(this._sessions.length > 0)
-      this.toggleSession(this._sessions[0]);
+    if (this._sessions.length > 0)
+      this.toggleSession(this._sessions[ 0 ]);
   }
 
   @Input()
-  set showValuesAsPercent(value : boolean){
+  set showValuesAsPercent(value: boolean) {
     this._showValuesAsPercent = value;
   }
 
@@ -67,7 +67,7 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get performance() {
-    if(this._showValuesAsPercent)
+    if (this._showValuesAsPercent)
       return this._statistics.percents;
     else
       return this._statistics;
@@ -81,11 +81,11 @@ export class AssessmentResultsComponent implements OnInit {
     this.updateExamSessions();
   }
 
-  private getDistinctExamSessions(exams : Exam[]) {
+  private getDistinctExamSessions(exams: Exam[]) {
     let sessions = [];
 
     exams.forEach(exam => {
-      if(!sessions.some(x => x.id == exam.session)){
+      if (!sessions.some(x => x.id == exam.session)) {
         sessions.push({ id: exam.session, date: exam.date, filter: false });
       }
     });
@@ -99,7 +99,7 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   private calculateStats() {
-    let stats : any = {
+    let stats: any = {
       total: this._exams.length,
       average: this._exams.reduce((x, y) => x + y.score, 0) / this._exams.length,
       belowStandard: this._exams.filter(x => x.level == ExamResultLevel.BelowStandard).length,
