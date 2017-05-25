@@ -12,6 +12,7 @@ import { DataTableModule, SharedModule } from "primeng/primeng";
 import { GroupResultsComponent } from "./results/group-results.component";
 import { AssessmentResultsComponent } from "./results/assessment/assessment-results.component";
 import { AssessmentExamMapper } from "./results/assessment/assessment-exam.mapper";
+import { ExamCalculator } from "./results/assessment/exam-calculator";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AssessmentExamMapper } from "./results/assessment/assessment-exam.mappe
     GroupsResolve,
     AssessmentsResolve,
     AssessmentService,
-    AssessmentExamMapper
+    AssessmentExamMapper,
+    ExamCalculator
   ]
 })
 export class GroupsModule {

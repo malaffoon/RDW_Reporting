@@ -2,7 +2,9 @@ import { Component, OnInit, Input } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { Exam } from "./model/exam.model";
-import { ExamResultLevel } from "../../../shared/exam-result-level.enum";
+import { ExamResultLevel } from "../../../shared/enum/exam-result-level.enum";
+import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
+import { ExamCalculator } from "./exam-calculator";
 
 @Component({
   selector: 'assessment-results',
@@ -27,14 +29,17 @@ import { ExamResultLevel } from "../../../shared/exam-result-level.enum";
     )
   ],
 })
-
-export class AssessmentResultsComponent implements OnInit {
+export class AssessmentResultsComponent {
 
   private _assessmentExam: AssessmentExam;
   private _exams = [];
   private _sessions = [];
   private _statistics: any = { percents: {} };
   private _showValuesAsPercent: boolean;
+
+  constructor(private _calculator : ExamCalculator){
+
+  }
 
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
@@ -73,7 +78,14 @@ export class AssessmentResultsComponent implements OnInit {
       return this._statistics;
   }
 
-  ngOnInit() {
+  get isIab() : boolean {
+    return this._assessmentExam.assessment.type == AssessmentType.IAB;
+  }
+
+  get examLevelEnum() {
+    return this.isIab
+      ? "enum.iab-level."
+      : "enum.exam-level.";
   }
 
   toggleSession(session) {
@@ -101,18 +113,19 @@ export class AssessmentResultsComponent implements OnInit {
   private calculateStats() {
     let stats: any = {
       total: this._exams.length,
-      average: this._exams.reduce((x, y) => x + y.score, 0) / this._exams.length,
-      belowStandard: this._exams.filter(x => x.level == ExamResultLevel.BelowStandard).length,
-      nearStandard: this._exams.filter(x => x.level == ExamResultLevel.NearStandard).length,
-      aboveStandard: this._exams.filter(x => x.level == ExamResultLevel.AboveStandard).length,
+      average: this._calculator.calculateAverage(this._exams),
+      levels: this._calculator.groupLevels(this._exams, this.isIab ? 3 : 4)
     };
 
     stats.percents = {
-      belowStandard: stats.belowStandard / stats.total * 100,
-      nearStandard: stats.nearStandard / stats.total * 100,
-      aboveStandard: stats.aboveStandard / stats.total * 100
+      levels: stats.levels.map(x => {
+        return {
+          id: x.id,
+          value: x.value / stats.total * 100,
+          suffix: '%'
+        }
+      })
     };
-
     return stats;
   }
 }

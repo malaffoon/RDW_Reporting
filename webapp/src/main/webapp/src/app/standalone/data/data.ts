@@ -1,7 +1,7 @@
 import {sortAscOn} from "../../shared/comparators";
 import {randomId, randomSsid} from "./support/generator";
-import {AssessmentType} from "../../shared/assessment-type.enum";
-import {AssessmentSubjectType} from "../../shared/assessment-subject-type.enum";
+import {AssessmentType} from "../../shared/enum/assessment-type.enum";
+import {AssessmentSubjectType} from "../../shared/enum/assessment-subject-type.enum";
 
 /*
   item_result
@@ -119,7 +119,7 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 7),
     sessionId: "ma-01",
-    scaleScore: { value: 2321, level: 0 },
+    scaleScore: { value: 2321, level: 1 },
     completenessId: 2,
     administrativeConditionId: 2,
     grade: 4,
@@ -128,7 +128,7 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 7),
     sessionId: "ma-01",
-    scaleScore: { value: 2339, level: 0 },
+    scaleScore: { value: 2339, level: 1 },
     completenessId: 2,
     administrativeConditionId: 2,
     grade: 4,
@@ -137,34 +137,34 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 7),
     sessionId: "ma-02",
-    scaleScore: { value: 2344, level: 0 },
+    scaleScore: { value: 2344, level: 1 },
     completenessId: 2,
-    administrativeConditionId: 2,
+    administrativeConditionId: 3,
     grade: 4,
     student: students[2]
   },
   {
     dateTime: new Date(2017, 1, 15),
     sessionId: "ma-02",
-    scaleScore: { value: 2378, level: 0 },
+    scaleScore: { value: 2378, level: 2 },
     completenessId: 2,
-    administrativeConditionId: 2,
+    administrativeConditionId: 3,
     grade: 4,
     student: students[3]
   },
   {
     dateTime: new Date(2017, 1, 15),
     sessionId: "ma-02",
-    scaleScore: { value: 2447, level: 1 },
+    scaleScore: { value: 2447, level: 3 },
     completenessId: 2,
-    administrativeConditionId: 2,
+    administrativeConditionId: 3,
     grade: 4,
     student: students[4]
   },
   {
     dateTime: new Date(2017, 1, 15),
     sessionId: null,
-    scaleScore: { value: 2595, level: 2 },
+    scaleScore: { value: 2595, level: 3 },
     completenessId: 1,
     administrativeConditionId: 2,
     grade: 4,
@@ -173,7 +173,7 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 20),
     sessionId: null,
-    scaleScore: { value: 2520, level: 2 },
+    scaleScore: { value: 2520, level: 3 },
     completenessId: 2,
     administrativeConditionId: 2,
     grade: 4,
@@ -182,12 +182,60 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 20),
     sessionId: "ma-01",
-    scaleScore: { value: 2520, level: 2 },
+    scaleScore: { value: 2520, level: 3 },
     completenessId: 2,
-    administrativeConditionId: 4,
+    administrativeConditionId: 2,
     grade: 4,
     student: students[7]
   }
+].map((exam: any, index: number) => {
+  exam.id = randomId();
+  exam.items = iab_items;
+  return exam;
+});
+
+export const exams_sum_of_students = [
+  {
+    dateTime: new Date(2017, 1, 7),
+    sessionId: "ma-01",
+    scaleScore: { value: 2321, level: 1 },
+    completenessId: 1,
+    administrativeConditionId: 1,
+    grade: 4,
+    student: students[0]
+  }, {
+    dateTime: new Date(2017, 1, 7),
+    sessionId: "ma-01",
+    scaleScore: { value: 2339, level: 2 },
+    completenessId: 2,
+    administrativeConditionId: 1,
+    grade: 4,
+    student: students[1]
+  }, {
+    dateTime: new Date(2017, 1, 7),
+    sessionId: "ma-01",
+    scaleScore: { value: 2344, level: 4 },
+    completenessId: 2,
+    administrativeConditionId: 1,
+    grade: 4,
+    student: students[2]
+  }, {
+    dateTime: new Date(2017, 1, 15),
+    sessionId: "ma-01",
+    scaleScore: { value: 2378, level: 4 },
+    completenessId: 2,
+    administrativeConditionId: 4,
+    grade: 4,
+    student: students[3]
+  }, {
+    dateTime: new Date(2017, 1, 15),
+    sessionId: "ma-02",
+    scaleScore: { value: 2378, level: 4 },
+    completenessId: 2,
+    administrativeConditionId: 4,
+    grade: 4,
+    student: students[4]
+  },
 ].map((exam: any, index: number) => {
   exam.id = randomId();
   exam.items = iab_items;
@@ -205,7 +253,7 @@ export const assessments = [
   },
   {
     id: 2,
-    typeId: AssessmentType.IAB,
+    typeId: AssessmentType.SUMMATIVE,
     name: 'Measurement and Data',
     gradeId: 4,
     academicYear: 2013,
@@ -229,7 +277,7 @@ export const assessments = [
   },
   {
     id: 5,
-    typeId: AssessmentType.IAB,
+    typeId: AssessmentType.SUMMATIVE,
     name: 'Operations and Algebraic Thinking',
     gradeId: 8,
     academicYear: 2014,
@@ -242,10 +290,10 @@ export const assessments = [
 
 export const groupAssessments= [
   { assessment: assessments[0], exams: exams_of_student.filter(x => x.id % 2 == 0) },
-  { assessment: assessments[1], exams: exams_of_student.filter(x => x.id % 3 == 0) },
+  { assessment: assessments[1], exams: exams_sum_of_students.filter(x => x.id % 2 == 0) },
   { assessment: assessments[2], exams: exams_of_student },
   { assessment: assessments[3], exams: exams_of_student.filter(x => x.id % 3 == 2) },
-  { assessment: assessments[4], exams: exams_of_student.filter(x => x.id % 2 == 1) },
+  { assessment: assessments[4], exams: exams_sum_of_students },
 ];
 
 // Just to keep the old UI working for now...

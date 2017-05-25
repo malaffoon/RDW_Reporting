@@ -26,12 +26,13 @@ export class AssessmentService {
     params.set('schoolYear', schoolYear.toString());
 
     return this.dataService.get(`/groups/${groupId}/latestassessment`, { search: params })
-      .map(x => {
-        return this.mapper.mapFromApi(x);
-      })
       .catch(response => {
         console.warn(response);
         return Observable.empty();
-      });
+      })
+      .map(x => {
+        return this.mapper.mapFromApi(x);
+      })
+
   }
 }

@@ -24,6 +24,7 @@ export class AssessmentExamMapper {
     uiModel.id = apiModel.id;
     uiModel.name = apiModel.name;
     uiModel.grade = apiModel.gradeId;
+    uiModel.type = apiModel.typeId;
 
     return uiModel;
   }

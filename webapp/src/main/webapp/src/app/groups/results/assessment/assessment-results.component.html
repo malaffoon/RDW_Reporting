@@ -16,9 +16,10 @@
       <div *ngIf="exams.length > 0" class="pull-right" style="width:250px;">
         <!--TODO: Implement visualization-->
         <div title="{{statistics.average}}">Average: {{ statistics.average | number:'1.0-0' | removeComma }}</div>
-        <div title="{{performance.belowStandard}}">Below Standard: {{ performance.belowStandard | number:'1.0-0' }} </div>
-        <div title="{{performance.nearStandard}}">Near Standard: {{ performance.nearStandard | number:'1.0-0' }}</div>
-        <div title="{{performance.aboveStandard}}">Above Standard: {{ performance.aboveStandard  | number:'1.0-0' }} </div>
+        <div *ngFor="let level of performance.levels">
+          {{ examLevelEnum + level.id.toString() | translate }}:
+          <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
+        </div>
       </div>
       <div class="spacer-v-lg">
         <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
@@ -48,7 +49,7 @@
         <p-column field="enrolledGrade" header="{{'labels.groups.results.exam-cols.grade' | translate}}" [sortable]="true" ></p-column>
         <p-column field="administrativeCondition" header="{{'labels.groups.results.exam-cols.status' | translate}}" [sortable]="true" >
           <ng-template let-exam="rowData" pTemplate="body">
-            <span class="label bg-color-gray">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
+            <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label bg-color-gray">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
             <span *ngIf="exam.completeness != 2" class="label bg-color-grade-3">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
           </ng-template>
         </p-column>

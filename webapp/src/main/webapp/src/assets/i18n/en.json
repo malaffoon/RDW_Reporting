@@ -172,13 +172,24 @@
   "enum" : {
     "administrative-condition" : {
       "1" : "Valid",
-      "2" : "Standard",
-      "3" : "Non-Standard",
+      "2" : "Standardized",
+      "3" : "Non-Standardized",
       "4" : "Invalid"
     },
     "completeness" : {
       "1" : "Partial",
       "2" : "Complete"
+    },
+    "iab-level" : {
+      "1" : "Below Standard",
+      "2" : "Near Standard",
+      "3" : "Above Standard"
+    },
+    "exam-level" : {
+      "1" : "Level 1",
+      "2" : "Level 2",
+      "3" : "Level 3",
+      "4" : "Level 4"
     }
   },
   "assessment_report": {
