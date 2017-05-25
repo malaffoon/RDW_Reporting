@@ -182,6 +182,7 @@ sql:
           from exam e
             join student st on e.student_id=st.id
           where e.asmt_id=:assessment_id
+          and e.school_year=:school_year
 
       iab:
         findLatest: >-
@@ -269,6 +270,7 @@ sql:
           from iab_exam e
             join student st on e.student_id=st.id
           where e.asmt_id=:assessment_id
+          and e.school_year=:school_year
 
   district:
     findAllIds: >-
