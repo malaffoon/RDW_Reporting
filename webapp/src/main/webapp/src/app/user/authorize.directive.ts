@@ -20,7 +20,7 @@ export class AuthorizeDirective {
 
   @Input()
   set sbAuthorize(permissions: string[]) {
-    if(!permissions || !permissions.length || permissions.length == 0 )
+    if(!permissions || permissions.length == 0 )
       throw new Error("Specify at least one permission to authorize against.")
 
     this._userService.doesCurrentUserHaveAtLeastOnePermission(permissions).subscribe(hasPermission => {

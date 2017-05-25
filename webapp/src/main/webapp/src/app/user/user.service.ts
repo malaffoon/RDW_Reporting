@@ -24,12 +24,10 @@ export class UserService {
   }
 
   private doesAtLeastOneExist(permissions: string[], userPermissions) {
-    for (let permission of permissions) {
-      if (userPermissions.some(p => p.toUpperCase().trim() == permission.toUpperCase().trim())) {
-        return true;
-      }
-    }
-
-    return false;
+    return userPermissions.some(x =>
+      permissions.some(y =>
+        x.toUpperCase() == y.toUpperCase()
+      )
+    );
   }
 }
