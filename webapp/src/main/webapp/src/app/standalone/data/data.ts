@@ -191,6 +191,7 @@ export const exams_of_student = [
 ].map((exam: any, index: number) => {
   exam.id = randomId();
   exam.items = iab_items;
+  exam.studentContext = { gradeId: exam.grade };
   return exam;
 });
 
@@ -239,6 +240,7 @@ export const exams_sum_of_students = [
 ].map((exam: any, index: number) => {
   exam.id = randomId();
   exam.items = iab_items;
+  exam.studentContext = { gradeId: exam.grade };
   return exam;
 });
 

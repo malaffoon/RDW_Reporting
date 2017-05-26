@@ -180,12 +180,12 @@
       "1" : "Partial",
       "2" : "Complete"
     },
-    "iab-level" : {
+    "iab-category" : {
       "1" : "Below Standard",
       "2" : "Near Standard",
       "3" : "Above Standard"
     },
-    "exam-level" : {
+    "achievement-level" : {
       "1" : "Level 1",
       "2" : "Level 2",
       "3" : "Level 3",

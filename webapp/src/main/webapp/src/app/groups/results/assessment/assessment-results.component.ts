@@ -4,7 +4,7 @@ import { AssessmentExam } from "./model/assessment-exam.model";
 import { Exam } from "./model/exam.model";
 import { ExamResultLevel } from "../../../shared/enum/exam-result-level.enum";
 import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
-import { ExamCalculator } from "./exam-calculator";
+import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 
 @Component({
   selector: 'assessment-results',
@@ -37,7 +37,7 @@ export class AssessmentResultsComponent {
   private _statistics: any = { percents: {} };
   private _showValuesAsPercent: boolean;
 
-  constructor(private _calculator : ExamCalculator){
+  constructor(private _calculator : ExamStatisticsCalculator){
 
   }
 
@@ -84,8 +84,8 @@ export class AssessmentResultsComponent {
 
   get examLevelEnum() {
     return this.isIab
-      ? "enum.iab-level."
-      : "enum.exam-level.";
+      ? "enum.iab-category."
+      : "enum.achievement-level.";
   }
 
   toggleSession(session) {
@@ -117,15 +117,7 @@ export class AssessmentResultsComponent {
       levels: this._calculator.groupLevels(this._exams, this.isIab ? 3 : 4)
     };
 
-    stats.percents = {
-      levels: stats.levels.map(x => {
-        return {
-          id: x.id,
-          value: x.value / stats.total * 100,
-          suffix: '%'
-        }
-      })
-    };
+    stats.percents = { levels: this._calculator.calculateLevelPercents(stats.levels, stats.total) };
     return stats;
   }
 }
