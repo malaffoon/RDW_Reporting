@@ -2,7 +2,9 @@ import { Component, OnInit, Input } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { Exam } from "./model/exam.model";
-import { ExamResultLevel } from "../../../shared/exam-result-level.enum";
+import { ExamResultLevel } from "../../../shared/enum/exam-result-level.enum";
+import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
+import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 
 @Component({
   selector: 'assessment-results',
@@ -27,26 +29,29 @@ import { ExamResultLevel } from "../../../shared/exam-result-level.enum";
     )
   ],
 })
+export class AssessmentResultsComponent {
 
-export class AssessmentResultsComponent implements OnInit {
-
-  private _assessmentExam : AssessmentExam;
+  private _assessmentExam: AssessmentExam;
   private _exams = [];
   private _sessions = [];
-  private _statistics :any= { percents: {} };
-  private _showValuesAsPercent : boolean;
+  private _statistics: any = { percents: {} };
+  private _showValuesAsPercent: boolean;
 
-  @Input()
-  set assessmentExam(assessment : AssessmentExam) {
-    this._assessmentExam = assessment;
-    this._sessions = this.getDistinctExamSessions(assessment.exams);
+  constructor(private _calculator : ExamStatisticsCalculator){
 
-    if(this._sessions.length > 0)
-      this.toggleSession(this._sessions[0]);
   }
 
   @Input()
-  set showValuesAsPercent(value : boolean){
+  set assessmentExam(assessment: AssessmentExam) {
+    this._assessmentExam = assessment;
+    this._sessions = this.getDistinctExamSessions(assessment.exams);
+
+    if (this._sessions.length > 0)
+      this.toggleSession(this._sessions[ 0 ]);
+  }
+
+  @Input()
+  set showValuesAsPercent(value: boolean) {
     this._showValuesAsPercent = value;
   }
 
@@ -67,13 +72,20 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get performance() {
-    if(this._showValuesAsPercent)
+    if (this._showValuesAsPercent)
       return this._statistics.percents;
     else
       return this._statistics;
   }
 
-  ngOnInit() {
+  get isIab() : boolean {
+    return this._assessmentExam.assessment.type == AssessmentType.IAB;
+  }
+
+  get examLevelEnum() {
+    return this.isIab
+      ? "enum.iab-category."
+      : "enum.achievement-level.";
   }
 
   toggleSession(session) {
@@ -81,11 +93,11 @@ export class AssessmentResultsComponent implements OnInit {
     this.updateExamSessions();
   }
 
-  private getDistinctExamSessions(exams : Exam[]) {
+  private getDistinctExamSessions(exams: Exam[]) {
     let sessions = [];
 
     exams.forEach(exam => {
-      if(!sessions.some(x => x.id == exam.session)){
+      if (!sessions.some(x => x.id == exam.session)) {
         sessions.push({ id: exam.session, date: exam.date, filter: false });
       }
     });
@@ -99,20 +111,13 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   private calculateStats() {
-    let stats : any = {
+    let stats: any = {
       total: this._exams.length,
-      average: this._exams.reduce((x, y) => x + y.score, 0) / this._exams.length,
-      belowStandard: this._exams.filter(x => x.level == ExamResultLevel.BelowStandard).length,
-      nearStandard: this._exams.filter(x => x.level == ExamResultLevel.NearStandard).length,
-      aboveStandard: this._exams.filter(x => x.level == ExamResultLevel.AboveStandard).length,
+      average: this._calculator.calculateAverage(this._exams),
+      levels: this._calculator.groupLevels(this._exams, this.isIab ? 3 : 4)
     };
 
-    stats.percents = {
-      belowStandard: stats.belowStandard / stats.total * 100,
-      nearStandard: stats.nearStandard / stats.total * 100,
-      aboveStandard: stats.aboveStandard / stats.total * 100
-    };
-
+    stats.percents = { levels: this._calculator.calculateLevelPercents(stats.levels, stats.total) };
     return stats;
   }
 }

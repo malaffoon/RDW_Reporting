@@ -8,7 +8,7 @@ export class AssessmentExamMapper {
   mapFromApi(apiModel): AssessmentExam {
     let uiModel = new AssessmentExam();
 
-    uiModel.assessment = this.mapAssessmentFromApi(apiModel);
+    uiModel.assessment = this.mapAssessmentFromApi(apiModel.assessment);
     uiModel.exams = [];
 
     apiModel.exams.forEach(x =>
@@ -24,6 +24,7 @@ export class AssessmentExamMapper {
     uiModel.id = apiModel.id;
     uiModel.name = apiModel.name;
     uiModel.grade = apiModel.gradeId;
+    uiModel.type = apiModel.typeId;
 
     return uiModel;
   }
@@ -33,10 +34,12 @@ export class AssessmentExamMapper {
 
     uiModel.date = apiModel.dateTime;
     uiModel.session = apiModel.sessionId;
-    uiModel.enrolledGrade = apiModel.grade;
-    uiModel.studentName = `${apiModel.studentName.last}, ${apiModel.studentName.first}`;
-    uiModel.score = apiModel.score;
-    uiModel.level = apiModel.performance;
+    uiModel.enrolledGrade = apiModel.studentContext.gradeId;
+    uiModel.studentName = `${apiModel.student.lastName}, ${apiModel.student.firstName}`;
+    uiModel.score = apiModel.scaleScore.value;
+    uiModel.level = apiModel.scaleScore.level;
+    uiModel.administrativeCondition = apiModel.administrativeConditionId;
+    uiModel.completeness = apiModel.completenessId;
 
     return uiModel;
   }

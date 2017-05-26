@@ -124,11 +124,13 @@
         "value-as-percent": "Percent",
         "value-as-number": "Number",
         "grade-prefix" : "G",
+        "empty-message" : "Please select at least one session to display results.",
         "exam-cols": {
           "name": "Name",
           "date": "Date",
           "session": "Session",
           "grade": "Enrolled Grade",
+          "status": "Status",
           "score": "Scale Score"
         }
       }
@@ -165,6 +167,29 @@
       "name": "Student",
       "ssid": "SSID",
       "details": "Student Details"
+    }
+  },
+  "enum" : {
+    "administrative-condition" : {
+      "1" : "Valid",
+      "2" : "Standardized",
+      "3" : "Non-Standardized",
+      "4" : "Invalid"
+    },
+    "completeness" : {
+      "1" : "Partial",
+      "2" : "Complete"
+    },
+    "iab-category" : {
+      "1" : "Below Standard",
+      "2" : "Near Standard",
+      "3" : "Above Standard"
+    },
+    "achievement-level" : {
+      "1" : "Level 1",
+      "2" : "Level 2",
+      "3" : "Level 3",
+      "4" : "Level 4"
     }
   },
   "assessment_report": {

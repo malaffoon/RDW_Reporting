@@ -2,7 +2,7 @@ import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRB
 import {MockBackend} from "@angular/http/testing";
 import {
   groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students,
-  mock_rubrics, mock_schoolyears, assessments, DEPRECATED_exams_of_student, user
+  mock_rubrics, mock_schoolyears, assessments, DEPRECATED_exams_of_student, user, groupAssessments
 } from "./data/data";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
@@ -73,7 +73,7 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
 
       let startIndex = requestSignature.indexOf("schoolYear=");
       let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYear=", ""));
-      body = assessments.find(x=> x.academicYear == schoolYear);
+      body = groupAssessments.find(x=> x.assessment.academicYear == schoolYear);
 
     } else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
