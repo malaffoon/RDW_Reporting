@@ -173,7 +173,7 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 20),
     sessionId: null,
-    scaleScore: { value: 2520, level: 3, standardError: 20  },
+    scaleScore: { value: 2520, level: 3 },
     completenessId: 2,
     administrativeConditionId: 2,
     grade: 4,
@@ -182,7 +182,7 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 20),
     sessionId: "ma-01",
-    scaleScore: { value: 2520, level: 3, standardError: 20  },
+    scaleScore: { value: 2520, level: 3 },
     completenessId: 2,
     administrativeConditionId: 2,
     grade: 4,
@@ -192,7 +192,7 @@ export const exams_of_student = [
   exam.id = randomId();
   exam.items = iab_items;
   exam.studentContext = { gradeId: exam.grade };
-  exam.scaleScore.standardError = intBetween(10,50);
+  exam.scaleScore.standardError = intBetween(10,100);
   return exam;
 });
 
@@ -242,7 +242,7 @@ export const exams_sum_of_students = [
   exam.id = randomId();
   exam.items = iab_items;
   exam.studentContext = { gradeId: exam.grade };
-  exam.scaleScore.standardError = intBetween(10,50);
+  exam.scaleScore.standardError = intBetween(10,100);
   return exam;
 });
 
