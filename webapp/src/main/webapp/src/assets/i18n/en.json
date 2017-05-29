@@ -1,7 +1,7 @@
 {
   "welcome": "Welcome {{firstName}} {{lastName}}",
   "application": {
-    "title": "Interim Item Reporting"
+    "title": "Reporting System"
   },
   "assessment": {
     "types": [
@@ -107,8 +107,13 @@
     },
     "groups": {
       "name": "My Groups",
-      "filter": "Search Groups",
-      "subject": "Subjects",
+      "filter": "Search by Group Name",
+      "empty-message": "Contact your building administrator for access to group-level test results",
+      "cols": {
+        "group" : "Group Name",
+        "school" : "School",
+        "subject" : "Subjects"
+      },
       "results" : {
         "title": "Results",
         "select-group": "Group",
@@ -131,12 +136,18 @@
           "session": "Session",
           "grade": "Enrolled Grade",
           "status": "Status",
-          "score": "Scale Score"
+          "score": "Scale Score",
+          "iab" : {
+            "performance" : "Reporting Category"
+          },
+          "ica" : {
+            "performance" : "Achievement Level"
+          }
         }
       }
     },
     "assessment": {
-      "instruct": "Instructions",
+      "instruct": "Instructional Resources",
       "sessions-title": "Sessions",
       "sessions-instruct": "Click a session to include it in the combined results.",
       "exam-results": "Student Results",

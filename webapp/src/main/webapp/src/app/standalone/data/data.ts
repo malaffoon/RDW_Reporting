@@ -1,5 +1,5 @@
 import {sortAscOn} from "../../shared/comparators";
-import {randomId, randomSsid} from "./support/generator";
+import { randomId, randomSsid, randomIntegerOfLength, intBetween } from "./support/generator";
 import {AssessmentType} from "../../shared/enum/assessment-type.enum";
 import {AssessmentSubjectType} from "../../shared/enum/assessment-subject-type.enum";
 
@@ -173,7 +173,7 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 20),
     sessionId: null,
-    scaleScore: { value: 2520, level: 3 },
+    scaleScore: { value: 2520, level: 3, standardError: 20  },
     completenessId: 2,
     administrativeConditionId: 2,
     grade: 4,
@@ -182,7 +182,7 @@ export const exams_of_student = [
   {
     dateTime: new Date(2017, 1, 20),
     sessionId: "ma-01",
-    scaleScore: { value: 2520, level: 3 },
+    scaleScore: { value: 2520, level: 3, standardError: 20  },
     completenessId: 2,
     administrativeConditionId: 2,
     grade: 4,
@@ -192,6 +192,7 @@ export const exams_of_student = [
   exam.id = randomId();
   exam.items = iab_items;
   exam.studentContext = { gradeId: exam.grade };
+  exam.scaleScore.standardError = intBetween(10,50);
   return exam;
 });
 
@@ -241,6 +242,7 @@ export const exams_sum_of_students = [
   exam.id = randomId();
   exam.items = iab_items;
   exam.studentContext = { gradeId: exam.grade };
+  exam.scaleScore.standardError = intBetween(10,50);
   return exam;
 });
 

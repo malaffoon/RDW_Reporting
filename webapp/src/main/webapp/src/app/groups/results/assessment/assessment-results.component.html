@@ -15,6 +15,7 @@
 
       <div *ngIf="exams.length > 0" class="pull-right" style="width:250px;">
         <!--TODO: Implement visualization-->
+        <div>Total: {{statistics.total}}</div>
         <div title="{{statistics.average}}">Average: {{ statistics.average | number:'1.0-0' | removeComma }}</div>
         <div *ngFor="let level of performance.levels">
           {{ examLevelEnum + level.id.toString() | translate }}:
@@ -38,7 +39,7 @@
         <h4>{{'labels.assessment.exam-results' | translate}}</h4>
       </div>
 
-      <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}">
+      <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}" sortField="studentName">
         <p-column field="studentName" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
         <p-column field="date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
           <ng-template let-exam="rowData" pTemplate="body">
@@ -53,7 +54,16 @@
             <span *ngIf="exam.completeness != 2" class="label bg-color-grade-3">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
           </ng-template>
         </p-column>
-        <p-column field="score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true"></p-column>
+        <p-column field="level" header="{{ performanceLevelHeader | translate }}" [sortable]="true">
+          <ng-template let-exam="rowData" pTemplate="body">
+            {{ examLevelEnum + exam.level | translate }}
+          </ng-template>
+        </p-column>
+        <p-column field="score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true">
+          <ng-template let-exam="rowData" pTemplate="body">
+            {{ exam.score }} ± {{ exam.standardError }}
+          </ng-template>
+        </p-column>
       </p-dataTable>
     </div>
 

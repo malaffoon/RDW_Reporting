@@ -36,8 +36,11 @@ export class AssessmentExamMapper {
     uiModel.session = apiModel.sessionId;
     uiModel.enrolledGrade = apiModel.studentContext.gradeId;
     uiModel.studentName = `${apiModel.student.lastName}, ${apiModel.student.firstName}`;
+
     uiModel.score = apiModel.scaleScore.value;
     uiModel.level = apiModel.scaleScore.level;
+    uiModel.standardError = apiModel.scaleScore.standardError;
+
     uiModel.administrativeCondition = apiModel.administrativeConditionId;
     uiModel.completeness = apiModel.completenessId;
 
