@@ -7,6 +7,7 @@ export class Exam {
   private _level : number;
   private _administrativeCondition: number;
   private _completeness : number;
+  private _standardError : number;
 
   get studentName(): string {
     return this._studentName;
@@ -70,5 +71,13 @@ export class Exam {
 
   set completeness(value: number) {
     this._completeness = value;
+  }
+
+  get standardError(): number {
+    return this._standardError;
+  }
+
+  set standardError(value: number) {
+    this._standardError = value;
   }
 }

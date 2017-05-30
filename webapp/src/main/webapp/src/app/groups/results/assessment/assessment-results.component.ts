@@ -88,6 +88,11 @@ export class AssessmentResultsComponent {
       : "enum.achievement-level.";
   }
 
+  get performanceLevelHeader() {
+    return "labels.groups.results.exam-cols." +
+      (this.isIab ? "iab" : "ica") + ".performance";
+  }
+
   toggleSession(session) {
     session.filter = !session.filter;
     this.updateExamSessions();
