@@ -51,10 +51,10 @@
     "karma-teamcity-reporter": "^1.0.0",
     "phantomjs-prebuilt": "^2.1.14",
     "protractor": "4.0.9",
+    "sbac-ui-kit": "git+https://github.com/SmarterApp/SBAC-Global-UI-Kit.git#feature/npm-standards",
     "ts-node": "1.2.1",
     "tslint": "^4.0.0",
     "typescript": "^2.2.1",
     "webdriver-manager": "10.2.5"
   }
 }
-

@@ -1,12 +1,11 @@
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="well">
     <div class="pull-right">
       <a href="" class="spacer-h-sm"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
       <button class="btn btn-default btn-sm" (click)="collapsed = !collapsed">
           <i class="fa font-bold" [ngClass]="{'fa-angle-down':collapsed, 'fa-angle-up':!collapsed}"></i>
       </button>
     </div>
-    <h4 class="spacer-v-md">
+    <h4 class="spacer-v-md color-grade-{{assessmentExam.assessment.grade}}">
       <span class="label bg-color-grade-{{assessmentExam.assessment.grade}} pad-v-lg spacer-h-sm">
         {{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}
       </span>
@@ -22,14 +21,22 @@
           <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
         </div>
       </div>
-      <div class="spacer-v-lg">
+      <div class="spacer-v-md">
         <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
         <div class="spacer-v-sm">{{'labels.assessment.sessions-instruct' | translate}}</div>
-        <button *ngFor="let session of sessions" class="btn btn-gray spacer-h-sm" (click)="toggleSession(session)" [ngClass]="{'active':session.filter}">
-          <strong class="spacer-h-sm">{{session.date | date }}</strong>
-          <i class="fa fa-minus-square" [ngClass]="{'fa-minus-square':session.filter, 'fa-plus-square':!session.filter }"></i>
-          <div> {{session.id || 'labels.groups.results.session-unknown' | translate }}</div>
-        </button>
+        <div class="spacer-h-sm">
+          <a *ngFor="let session of sessions" class="btn btn-primary flex-children text-left" [ngClass]="{'deselected':!session.filter}" (click)="toggleSession(session)">
+          <span class="text block-children">
+            <strong>{{session.date | date }}</strong>
+            <small>{{session.id || 'labels.groups.results.session-unknown' | translate }}</small>
+          </span>
+            <span class="label-col ml-sm">
+            <span class="label label-primary">
+              <i class="fa fa-minus"></i>
+            </span>
+          </span>
+          </a>
+        </div>
       </div>
     <div *ngIf="!collapsed" @fadeAnimation>
       <div class="spacer-v-md">
@@ -39,7 +46,7 @@
         <h4>{{'labels.assessment.exam-results' | translate}}</h4>
       </div>
 
-      <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}" sortField="studentName">
+      <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped">
         <p-column field="studentName" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
         <p-column field="date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
           <ng-template let-exam="rowData" pTemplate="body">
@@ -67,5 +74,4 @@
       </p-dataTable>
     </div>
 
-  </div>
 </div>
