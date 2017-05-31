@@ -208,7 +208,7 @@ sql:
 
   ethnicity:
     findAll: >-
-      select id, name
+      select id, code
       from ethnicity
 
     findEthnicityIdsForStudentIds: >-
