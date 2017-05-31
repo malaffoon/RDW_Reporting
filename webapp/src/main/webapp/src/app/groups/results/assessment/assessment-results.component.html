@@ -11,33 +11,56 @@
       </span>
       <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
     </h4>
-
-      <div *ngIf="exams.length > 0" class="pull-right" style="width:250px;">
-        <!--TODO: Implement visualization-->
-        <div>Total: {{statistics.total}}</div>
-        <div title="{{statistics.average}}">Average: {{ statistics.average | number:'1.0-0' | removeComma }}</div>
-        <div *ngFor="let level of performance.levels">
-          {{ examLevelEnum + level.id.toString() | translate }}:
-          <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="spacer-v-lg">
+          <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
+          <div class="spacer-v-sm">{{'labels.assessment.sessions-instruct' | translate}}</div>
+          <div class="spacer-h-sm">
+            <a *ngFor="let session of sessions" class="btn btn-primary flex-children text-left" [ngClass]="{'deselected':!session.filter}" (click)="toggleSession(session)">
+              <span class="text block-children">
+                <strong>{{session.date | date }}</strong>
+                <small>{{session.id || 'labels.groups.results.session-unknown' | translate }}</small>
+              </span>
+              <span class="label-col ml-sm">
+                <span class="label label-primary">
+                  <i class="fa" [ngClass]="{'fa-minus':session.filter, 'fa-plus': !session.filter }"></i>
+                </span>
+              </span>
+            </a>
+          </div>
         </div>
       </div>
-      <div class="spacer-v-md">
-        <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
-        <div class="spacer-v-sm">{{'labels.assessment.sessions-instruct' | translate}}</div>
-        <div class="spacer-h-sm">
-          <a *ngFor="let session of sessions" class="btn btn-primary flex-children text-left" [ngClass]="{'deselected':!session.filter}" (click)="toggleSession(session)">
-          <span class="text block-children">
-            <strong>{{session.date | date }}</strong>
-            <small>{{session.id || 'labels.groups.results.session-unknown' | translate }}</small>
-          </span>
-            <span class="label-col ml-sm">
-            <span class="label label-primary">
-              <i class="fa fa-minus"></i>
+      <div class="col-md-6">
+        <div *ngIf="exams.length > 0" class="spacer-v-md" style="width:450px;">
+          <div class="bar-scale rounded blend-middle">
+            <p class="scale-title">Average Scale Score</p>
+            <p class="scale-description">{{statistics.total}} Students</p>
+            <div class="bar-container">
+          <span class="score" data-left="10"
+                data-width="15">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+              <span class="error-band-mask">
+            <span class="error-band" data-left="10" data-width="15">
+              <span class="error-band-block"></span>
             </span>
           </span>
-          </a>
+              <div class="bar green left-side" data-width="28">
+              </div>
+              <div class="bar middle green blue-dark" data-width="55">
+              </div>
+              <div class="bar blue-dark right-side" data-width="17">
+              </div>
+            </div>
+          </div>
+
+          <!--&lt;!&ndash;TODO: bind up visualization&ndash;&gt;-->
+          <div *ngFor="let level of performance.levels">
+            {{ examLevelEnum + level.id.toString() | translate }}:
+            <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
+          </div>
         </div>
       </div>
+    </div>
     <div *ngIf="!collapsed" @fadeAnimation>
       <div class="spacer-v-md">
         <div class="pull-right"><button class="btn btn-default btn-sm">
