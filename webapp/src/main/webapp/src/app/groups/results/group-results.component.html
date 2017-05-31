@@ -1,7 +1,7 @@
 <div class="pad-top-20 container">
   <h3><i class="fa fa-group color-green"></i> {{'labels.groups.name' | translate}}</h3>
   <div class="well-group">
-    <div class="well">
+    <div id="group-results-basic-filters" class="well">
       <div class="well-body row">
         <div class="col-md-4">
           <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
@@ -19,16 +19,21 @@
         </div>
         <div class="col-md-6">
           <div class="pull-right">
-            <label for="advanced">{{'labels.groups.results.adv-filters-label' | translate}}</label>
-            <button id="advanced" class="form-control">{{'labels.groups.results.adv-filters-button' | translate}} <i
-              class="fa fa-chevron-down" aria-hidden="true"></i></button>
+            <label for="advanced">{{'labels.groups.results.adv-filters.label'  | translate}}</label>
+            <button id="advanced" class="form-control" (click)="showAdvancedFilters = !showAdvancedFilters">
+              {{'labels.groups.results.adv-filters.button-' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
+              <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}" aria-hidden="true"></i>
+            </button>
           </div>
-
         </div>
       </div>
 
     </div>
-    <div class="well gray-lightest">
+    <div id="group-results-adv-filters" *ngIf="showAdvancedFilters" class="well gray-lighter">
+      <adv-filters></adv-filters>
+
+    </div>
+    <div id="group-results-selected-assessments" class="well gray-lightest">
 
       <div class="well-body">
         <h4 class="margin-bottom-0">

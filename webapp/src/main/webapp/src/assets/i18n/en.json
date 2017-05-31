@@ -118,8 +118,12 @@
         "title": "Results",
         "select-group": "Group",
         "select-year": "School Year",
-        "adv-filters-label": "Advanced Filters",
-        "adv-filters-button": "Show",
+        "adv-filters" : {
+          "label": "Advanced Filters",
+          "button-show": "Show",
+          "button-hide": "Hide",
+          "instruct": "Click an item to add or remove it from the list above."
+        },
         "selected-assessments-title": "Selected Assessments",
         "selected-assessments-instruct": "Click an item to remove it from the list",
         "session-unknown": "[Unknown]",

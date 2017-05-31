@@ -13,12 +13,14 @@ import { GroupResultsComponent } from "./results/group-results.component";
 import { AssessmentResultsComponent } from "./results/assessment/assessment-results.component";
 import { AssessmentExamMapper } from "./results/assessment/assessment-exam.mapper";
 import { ExamStatisticsCalculator } from "./results/assessment/exam-statistics-calculator";
+import { AdvFiltersComponent } from './results/adv-filters/adv-filters.component';
 
 @NgModule({
   declarations: [
     GroupsComponent,
     GroupResultsComponent,
-    AssessmentResultsComponent
+    AssessmentResultsComponent,
+    AdvFiltersComponent
   ],
   imports: [
     CommonModule,
