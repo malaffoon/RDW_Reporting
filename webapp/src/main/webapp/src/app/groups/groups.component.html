@@ -21,7 +21,7 @@
       </div>
 
       <div>
-        <p-dataTable [value]="filteredGroups" emptyMessage="{{'labels.groups.empty-message' | translate}}">
+        <p-dataTable [value]="filteredGroups" emptyMessage="{{'labels.groups.empty-message' | translate}}" tableStyleClass="table table-striped">
           <p-column field="name" header="{{'labels.groups.cols.group' | translate}}" [sortable]="true">
             <ng-template let-group="rowData" pTemplate="body">
               <a routerLink="/groups/{{group.id}}">{{group.name}}</a>
