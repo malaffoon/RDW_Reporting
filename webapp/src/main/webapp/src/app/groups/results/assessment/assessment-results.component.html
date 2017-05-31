@@ -31,8 +31,9 @@
           </div>
         </div>
       </div>
+      <!-- TODO: Add labels to translations -->
       <div class="col-md-6">
-        <div *ngIf="exams.length > 0" class="spacer-v-md" style="width:450px;">
+        <div *ngIf="exams.length > 0">
           <div class="bar-scale rounded blend-middle">
             <p class="scale-title">Average Scale Score</p>
             <p class="scale-description">{{statistics.total}} Students</p>
@@ -53,7 +54,7 @@
             </div>
           </div>
 
-          <!--&lt;!&ndash;TODO: bind up visualization&ndash;&gt;-->
+          <!-- TODO: bind levels to visualization -->
           <div *ngFor="let level of performance.levels">
             {{ examLevelEnum + level.id.toString() | translate }}:
             <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
