@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
-import { AssessmentExam } from "./model/assessment-exam.model";
-import { Exam } from "./model/exam.model";
+import { AssessmentExam } from "../model/assessment-exam.model";
+import { Exam } from "../model/exam.model";
 import { ExamResultLevel } from "../../../shared/enum/exam-result-level.enum";
 import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";

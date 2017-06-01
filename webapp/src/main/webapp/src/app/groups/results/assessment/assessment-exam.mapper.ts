@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { AssessmentExam } from "./model/assessment-exam.model";
-import { Assessment } from "./model/assessment.model";
-import { Exam } from "./model/exam.model";
+import { AssessmentExam } from "../model/assessment-exam.model";
+import { Assessment } from "../model/assessment.model";
+import { Exam } from "../model/exam.model";
 
 @Injectable()
 export class AssessmentExamMapper {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CachingDataService } from "../../shared/cachingData.service";
-import { AssessmentExam } from "./assessment/model/assessment-exam.model";
+import { AssessmentExam } from "./model/assessment-exam.model";
 
 @Component({
   selector: 'app-group-results',
@@ -12,6 +12,8 @@ export class GroupResultsComponent implements OnInit {
   private _availableSchoolYears;
   private _currentGroup;
   private _showValuesAsPercent : boolean = true;
+  private _showAdvancedFilters : boolean = true; // TODO: Set back to false
+  private _expandFilterOptions : boolean = true; // TODO: Set back to false
 
   get showValuesAsPercent(): boolean {
     return this._showValuesAsPercent;
@@ -22,7 +24,6 @@ export class GroupResultsComponent implements OnInit {
   }
 
   private _filterBy = { schoolYear: 0 };
-
 
   get groups() {
     return this._groups;
@@ -50,6 +51,23 @@ export class GroupResultsComponent implements OnInit {
 
   get selectedAssessments(): AssessmentExam[] {
     return this._selectedAssessments;
+  }
+
+  get showAdvancedFilters(): boolean {
+    return this._showAdvancedFilters;
+  }
+
+  set showAdvancedFilters(value: boolean) {
+    this._showAdvancedFilters = value;
+    this._expandFilterOptions = value; // Automatically expand / collapse filter options.
+  }
+
+  get expandFilterOptions(): boolean {
+    return this._expandFilterOptions;
+  }
+
+  set expandFilterOptions(value: boolean) {
+    this._expandFilterOptions = value;
   }
 
   private _selectedAssessments : AssessmentExam[] = [];

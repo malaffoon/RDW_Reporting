@@ -1,5 +1,5 @@
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
-import { Exam } from "./model/exam.model";
+import { Exam } from "../model/exam.model";
 
 describe('Exam Calculator', () => {
 

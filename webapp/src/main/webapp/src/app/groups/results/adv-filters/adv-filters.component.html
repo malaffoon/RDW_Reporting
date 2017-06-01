@@ -1,8 +1,61 @@
-<div>
-  <p>
+<div class="welld">
+  <p class="spacer-v-md">
     {{ translateRoot + 'instruct' | translate}}
   </p>
-
-
+  <div class="row">
+    <div id="filter-by-test" class="col-sm-2">
+      <div>
+        {{ translateRoot + 'test.label' | translate }}
+        <hr class="margin-top-0">
+      </div>
+      <div>
+        <label for="btn-group-off-grade-assessment">
+          <strong>{{ translateRoot + 'test.off-grade-assessment' | translate }}</strong>
+        </label>
+        <div id="btn-group-off-grade-assessment" class="btn-group toggle-group" data-toggle="buttons">
+          <label class="btn btn-primary" [ngClass]="{'active': !filterBy.offGradeAssessment}">
+            <input [value]="false" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle">{{ 'buttons.visibility.show' | translate }}
+          </label>
+          <label class="btn btn-primary" [ngClass]="{'active': filterBy.offGradeAssessment}">
+            <input [value]="true" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle">{{ 'buttons.visibility.hide' | translate }}
+          </label>
+        </div>
+      </div>
+    </div>
+    <div id="filter-by-status" class="col-md-4">
+      <div>
+        {{ translateRoot + 'status.label' | translate }}
+        <hr class="margin-top-0">
+      </div>
+      <div class="spacer-v-md">
+        <label>
+          <strong>{{ translateRoot + 'status.administration.label' | translate }}</strong>
+        </label>
+        <sb-radio-button-list [model]="filterBy" [values]="[2,3]" property="administration" enum="enum.administrative-condition" ></sb-radio-button-list>
+      </div>
+      <div class="spacer-v-md">
+        <div>
+          <label>
+            <strong>{{ translateRoot + 'status.summative.label' | translate }}</strong>
+          </label>
+        </div>
+        <sb-radio-button-list [model]="filterBy" [values]="[1,4]" property="summativeStatus" enum="enum.administrative-condition"></sb-radio-button-list>
+      </div>
+      <div>
+        <div>
+          <label>
+            <strong>{{ translateRoot + 'status.completion.label' | translate }}</strong>
+          </label>
+        </div>
+        <sb-radio-button-list [model]="filterBy" [values]="[2,1]" property="completion" enum="enum.completeness"></sb-radio-button-list>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div>
+        {{ translateRoot + 'student.label' | translate }}
+        <hr class="margin-top-0">
+      </div>
+    </div>
+  </div>
 </div>
 

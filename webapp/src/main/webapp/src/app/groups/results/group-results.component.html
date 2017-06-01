@@ -1,11 +1,10 @@
-<div class="pad-top-20 container">
+<div class="pad-top-20">
   <h3><i class="fa fa-group color-green"></i> {{'labels.groups.name' | translate}}</h3>
   <div class="well-group">
     <div id="group-results-basic-filters" class="well">
       <div class="well-body row">
         <div class="col-md-4">
           <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
-
           <!--TODO: type ahead? -->
           <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute($event)" class="dropdown form-control">
             <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
@@ -21,20 +20,30 @@
           <div class="pull-right">
             <label for="advanced">{{'labels.groups.results.adv-filters.label'  | translate}}</label>
             <button id="advanced" class="form-control" (click)="showAdvancedFilters = !showAdvancedFilters">
-              {{'labels.groups.results.adv-filters.button-' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
+              {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
               <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}" aria-hidden="true"></i>
             </button>
           </div>
         </div>
       </div>
+    </div>
+    <div id="group-results-adv-filters" *ngIf="showAdvancedFilters" class="well gray-lightest">
+      <h4>
+        <i class="fa fa-check-square"></i> {{'labels.groups.results.adv-filters.label' | translate }}
+        <div class="pull-right">
+          <button class="form-control btn btn-sm" (click)="expandFilterOptions = !expandFilterOptions">
+            {{'buttons.collapsible.' + (expandFilterOptions ? 'collapse' : 'expand') | translate }}
+            <i class="fa" [ngClass]="{'fa-chevron-up': expandFilterOptions, 'fa-chevron-down': !expandFilterOptions}" aria-hidden="true"></i>
+          </button>
+        </div>
+
+      </h4>
 
     </div>
-    <div id="group-results-adv-filters" *ngIf="showAdvancedFilters" class="well gray-lighter">
+    <div id="group-results-adv-filter-options" *ngIf="showAdvancedFilters && expandFilterOptions" class="well gray-lighter">
       <adv-filters></adv-filters>
-
     </div>
     <div id="group-results-selected-assessments" class="well gray-lightest">
-
       <div class="well-body">
         <h4 class="margin-bottom-0">
           <i class="fa fa-list-alt"></i> {{'labels.groups.results.selected-assessments-title' | translate}}
@@ -51,7 +60,6 @@
         <div class="spacer-v-sm">
           <small>{{'labels.groups.results.selected-assessments-instruct' | translate }}</small>
         </div>
-
         <a *ngFor="let assessmentExam of selectedAssessments" class="btn btn-default btn-xs pad-h-xxs spacer-h-sm spacer-v-sm">
           <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
           <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
@@ -60,7 +68,6 @@
         <a class="btn btn-default btn-xs btn-round spacer-v-sm">
           <i class="fa fa-plus color-gray"></i>
         </a>
-
       </div>
     </div>
   </div>
@@ -83,5 +90,4 @@
       {{'messages.no-results-found' | translate}}
     </p>
   </div>
-
 </div>

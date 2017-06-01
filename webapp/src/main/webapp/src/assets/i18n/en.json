@@ -120,9 +120,32 @@
         "select-year": "School Year",
         "adv-filters" : {
           "label": "Advanced Filters",
-          "button-show": "Show",
-          "button-hide": "Hide",
-          "instruct": "Click an item to add or remove it from the list above."
+          "instruct": "Click an item to add or remove it from the list above.",
+          "test": {
+            "label": "Test",
+            "off-grade-assessment": "Off-Grade"
+          },
+          "status": {
+            "label": "Status",
+            "administration": {
+              "label" : "Manner of Administration (Interim)",
+              "standardized": "Standardized",
+              "non-standardized": "Non Standardized"
+            },
+            "summative": {
+              "label": "Summative Status",
+              "valid": "Valid",
+              "invalid": "Invalid"
+            },
+            "completion": {
+              "label": "Completion",
+              "complete": "Complete",
+              "partial": "Partial"
+            }
+          },
+          "student": {
+            "label": "Student"
+          }
         },
         "selected-assessments-title": "Selected Assessments",
         "selected-assessments-instruct": "Click an item to remove it from the list",
@@ -182,6 +205,17 @@
       "name": "Student",
       "ssid": "SSID",
       "details": "Student Details"
+    }
+  },
+  "buttons": {
+    "all": "All",
+    "visibility": {
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "collapsible": {
+      "expand": "Expand",
+      "collapse": "Collapse"
     }
   },
   "enum" : {
