@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { Assessment } from "./model/assessment.model";
 import { Exam } from "./model/exam.model";
+import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -24,7 +25,7 @@ export class AssessmentExamMapper {
     uiModel.id = apiModel.id;
     uiModel.name = apiModel.name;
     uiModel.grade = apiModel.gradeId;
-    uiModel.type = apiModel.typeId;
+    uiModel.type = AssessmentType[apiModel.type as string];
 
     return uiModel;
   }

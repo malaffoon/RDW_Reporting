@@ -113,12 +113,6 @@ sql:
           and (0=:group_subject_id or a.subject_id=:group_subject_id)
           and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
 
-  assessment:
-    findTypeIdForId: >-
-      select type_id
-      from asmt a
-      where a.id=:id
-
   district:
     findAllIds: >-
       select natural_id, id
