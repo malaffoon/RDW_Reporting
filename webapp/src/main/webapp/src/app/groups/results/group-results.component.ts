@@ -26,6 +26,7 @@ export class GroupResultsComponent implements OnInit {
     iep : { label: 'labels.groups.results.adv-filters.student.iep', val: 'enum.polar' },
     economicDisadvantage : { label: 'labels.groups.results.adv-filters.student.economic-disadvantage', val: 'enum.polar' },
     limitedEnglishProficiency : { label: 'labels.groups.results.adv-filters.student.limited-english-proficiency', val: 'enum.polar' },
+    filteredEthnicities : { label: 'labels.groups.results.adv-filters.student.ethnicity', val: 'enum.ethnicity' },
   };
 
   get showValuesAsPercent(): boolean {
@@ -112,6 +113,22 @@ export class GroupResultsComponent implements OnInit {
       this._availableSchoolYears = years;
       this._filterBy = this.mapParamsToFilterBy(this.route.snapshot.params);
     });
+  }
+
+  removeEthnicity(ethnicity) {
+    this.clientFilterBy.ethnicities[ethnicity] = false;
+    if(this.clientFilterBy.filteredEthnicities.length == 0){
+      this.clientFilterBy.ethnicities[0] = true; // None are selected, set all to true.
+    }
+  }
+
+  removeFilter(filter) {
+    if(filter == 'offGradeAssessment')
+      this.clientFilterBy[filter] = false;
+    else if(filter == 'ethnicities')
+      this.clientFilterBy[filter] = [ -1 ];
+    else
+      this.clientFilterBy[filter] = -1;
   }
 
   updateAssessment(latestAssessment) {

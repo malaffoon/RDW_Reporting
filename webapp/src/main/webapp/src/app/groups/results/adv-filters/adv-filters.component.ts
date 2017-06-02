@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FilterBy } from "../model/filter-by.model";
 
+/*
+  This component contains all of the selectable advanced filters
+  for a group.
+ */
 @Component({
   selector: 'adv-filters',
   templateUrl: './adv-filters.component.html'

@@ -13,6 +13,7 @@ import { RemoveCommaPipe } from "./remove-comma.pipe";
 import { SBRadioButtonComponent } from "./sb-radio-button-list.component";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
+import { SBCheckboxList } from "./sb-checkbox-list.component";
 
 export function createTranslateLoader(http: Http) {
   // return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -27,7 +28,8 @@ export function createTranslateLoader(http: Http) {
     SchoolYearPipe,
     SearchPipe,
     RemoveCommaPipe,
-    SBRadioButtonComponent
+    SBRadioButtonComponent,
+    SBCheckboxList
   ],
   imports: [
     HttpModule,
@@ -49,7 +51,8 @@ export function createTranslateLoader(http: Http) {
     SearchPipe,
     TranslateModule,
     RouterModule,
-    SBRadioButtonComponent
+    SBRadioButtonComponent,
+    SBCheckboxList
   ],
   providers: [
     DataService,

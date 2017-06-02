@@ -1,4 +1,11 @@
 import { Component, Input } from "@angular/core";
+import { Utils } from "./Utils";
+
+/*
+  A generic component which builds and binds a radio button list.
+  It is most typically used as:
+  (All) [ (Option 1) (Option 2) ]
+ */
 
 @Component({
   selector: 'sb-radio-button-list',
@@ -15,15 +22,19 @@ import { Component, Input } from "@angular/core";
     </div>`
 })
 export class SBRadioButtonComponent {
+  // An array of values which must map to the given enum.
   @Input()
   public values: number[];
 
+  // An enum defined in the translations which has a value.
   @Input()
   public enum: string;
 
+  // The property to update and show.
   @Input()
   public property: string;
 
+  // The model to bind to which contains the property.  (Allows us to pass by reference)
   @Input()
   public model: any;
 
@@ -34,15 +45,7 @@ export class SBRadioButtonComponent {
   }
 
   constructor() {
-    this._name = Guid.newGuid();
+    this._name = Utils.newGuid();
   }
 }
 
-class Guid {
-  static newGuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-}

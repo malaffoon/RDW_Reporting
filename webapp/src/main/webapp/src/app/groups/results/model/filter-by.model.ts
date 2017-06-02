@@ -14,6 +14,14 @@ export class FilterBy {
   public iep : number = -1;
   public economicDisadvantage : number = -1;
   public limitedEnglishProficiency : number = -1;
+  private _ethnicities : boolean[] = [ true, false, false, false, false, false, false, false, false ];
+
+  get filteredEthnicities() {
+    return this._ethnicities
+      .map((val, index) => { return { val, index} })
+      .filter(x => x.val && x.index > 0)
+      .map(x => x.index);
+  }
 
   get all() {
     let all = [];
@@ -22,6 +30,10 @@ export class FilterBy {
         if(i == "offGradeAssessment" && this[i] === false)
           continue;
 
+        if(i == "_ethnicities" && this.filteredEthnicities.length > 0){
+          all.push("filteredEthnicities");
+        }
+
         if(this[i] >= 0){
           all.push(i);
         }
@@ -29,5 +41,15 @@ export class FilterBy {
     }
 
     return all;
+  }
+
+
+  get ethnicities(): boolean[] {
+    return this._ethnicities;
+  }
+
+  set ethnicities(value: boolean[]) {
+    console.log(value);
+    this._ethnicities = value;
   }
 }

@@ -30,19 +30,38 @@
     <div id="group-results-adv-filters" *ngIf="showAdvancedFilters" class="well gray-lightest">
       <h4>
         <i class="fa fa-check-square"></i> {{'labels.groups.results.adv-filters.label' | translate }}
-        <div class="pull-right">
+        <div id="adv-filters-epxand-collapse" class="pull-right">
           <button class="form-control btn btn-sm" (click)="expandFilterOptions = !expandFilterOptions">
             {{'buttons.collapsible.' + (expandFilterOptions ? 'collapse' : 'expand') | translate }}
             <i class="fa" [ngClass]="{'fa-chevron-up': expandFilterOptions, 'fa-chevron-down': !expandFilterOptions}" aria-hidden="true"></i>
           </button>
         </div>
-        <div>
-          <a *ngFor="let filter of clientFilterBy.all" class="tag aqua">
-            <span><strong>{{ translateFilters[filter].val + '.' + clientFilterBy[filter] | translate}}</strong> {{ translateFilters[filter].label | translate }}</span>
-            <span class="icon"><i class="fa fa-close"></i></span>
-          </a>
-        </div>
+
       </h4>
+      <div id="adv-filters-selected">
+          <span *ngFor="let filter of clientFilterBy.all">
+            <span *ngIf="filter == 'filteredEthnicities'">
+              <a *ngFor="let ethnicity of clientFilterBy[filter]" class="tag aqua" (click)="removeEthnicity(ethnicity)">
+                <span>
+                  <strong>{{ translateFilters[filter].val + '.' + ethnicity | translate}}</strong>
+                  {{ translateFilters[filter].label | translate }}
+                </span>
+                <span class="icon">
+                  <i class="fa fa-close"></i>
+                </span>
+              </a>
+            </span>
+            <a *ngIf="filter != 'filteredEthnicities'" class="tag aqua" (click)="removeFilter(filter)">
+              <span>
+                <strong>{{ translateFilters[filter].val + '.' + clientFilterBy[filter] | translate}}</strong>
+                {{ translateFilters[filter].label | translate }}
+              </span>
+              <span class="icon">
+                <i class="fa fa-close"></i>
+              </span>
+            </a>
+          </span>
+      </div>
     </div>
     <div id="group-results-adv-filter-options" *ngIf="showAdvancedFilters && expandFilterOptions" class="well gray-lighter">
       <adv-filters [filterBy]="clientFilterBy"></adv-filters>

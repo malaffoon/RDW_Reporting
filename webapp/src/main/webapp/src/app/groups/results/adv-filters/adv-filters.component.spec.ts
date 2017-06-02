@@ -1,14 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AdvFiltersComponent } from './adv-filters.component';
-import { ActivatedRoute } from "@angular/router";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { AdvFiltersComponent } from "./adv-filters.component";
 import { APP_BASE_HREF } from "@angular/common";
-import { AppModule } from "../../../app.module";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
-import { AssessmentExam } from "../model/assessment-exam.model";
 import { Component } from "@angular/core";
 import { FilterBy } from "../model/filter-by.model";
+import { CommonModule } from "../../../shared/common.module";
 
 describe('AdvFiltersComponent', () => {
   let component: AdvFiltersComponent;
@@ -16,8 +13,8 @@ describe('AdvFiltersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TestComponentWrapper ],
-      imports: [ HttpModule, FormsModule, AppModule ],
+      declarations: [ TestComponentWrapper, AdvFiltersComponent ],
+      imports: [ HttpModule, FormsModule, CommonModule ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' } ]
     })
       .compileComponents();
@@ -40,6 +37,6 @@ describe('AdvFiltersComponent', () => {
   template: '<adv-filters [filterBy]="filterBy"></adv-filters>'
 })
 class TestComponentWrapper {
-  filterBy : FilterBy = new FilterBy();
+  filterBy: FilterBy = new FilterBy();
 }
 
