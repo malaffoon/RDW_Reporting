@@ -457,8 +457,10 @@ iframe.md {height: 320px;}
 iframe.lg {height: 600px;}
 
 .margin-right-20 { margin-right: 20px; }
-.margin-top-0 { margin-top: 0px; }
-.margin-bottom-0 { margin-bottom: 0px; }
+.margin-top-0 { margin-top: 0; }
+.margin-bottom-0 { margin-bottom: 0; }
+
+.pad-left-0 { padding-left: 0 }
 
 .color-checkmark {color: @green; }
 .color-green { color: @green; }
@@ -562,4 +564,60 @@ a.active {
 
 .ui-datatable .ui-sortable-column {
   cursor: pointer;
+}
+
+
+// todo remove
+.nested-btn-group-sm {
+  transform: scale(0.8);
+}
+
+.btn-group {
+  transform-origin: top left;
+}
+
+.tag.reverse {
+  border-color: transparent;
+}
+
+a.tag {
+  display: inline-flex;
+  justify-content: space-around;
+  margin: inherit;
+}
+
+div.aqua, .label.aqua, .panel.aqua .panel-header, .panel.aqua .panel-footer, *.aqua .label, .reverse.aqua {
+  color: #ffffff !important;
+  background-color: #3696E6;
+}
+
+.tag {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6.72px 13.44px;
+  font-size: 16px;
+  line-height: 1.25;
+  border-radius: 5px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  line-height: 1.65;
+  font-family: "PT Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-color: transparent;
+  color: inherit;
+  background-color: #FFFFFF;
+  border-color: #D5D5D5;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -0.5%;
+  padding: 0.1em 0.28em;
 }

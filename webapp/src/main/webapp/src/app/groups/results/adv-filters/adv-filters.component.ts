@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FilterBy } from "../model/filter-by.model";
 
 @Component({
@@ -12,12 +12,12 @@ export class AdvFiltersComponent implements OnInit {
     return this._filterBy;
   }
 
+  @Input()
   set filterBy(value: FilterBy) {
     this._filterBy = value;
   }
 
   constructor() {
-    this._filterBy = new FilterBy();
   }
 
   ngOnInit() {

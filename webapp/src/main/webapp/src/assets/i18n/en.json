@@ -127,24 +127,19 @@
           },
           "status": {
             "label": "Status",
-            "administration": {
-              "label" : "Manner of Administration (Interim)",
-              "standardized": "Standardized",
-              "non-standardized": "Non Standardized"
-            },
-            "summative": {
-              "label": "Summative Status",
-              "valid": "Valid",
-              "invalid": "Invalid"
-            },
-            "completion": {
-              "label": "Completion",
-              "complete": "Complete",
-              "partial": "Partial"
-            }
+            "administration": "Manner of Administration (Interim)",
+            "summative": "Summative Status",
+            "completion": "Completion"
           },
           "student": {
-            "label": "Student"
+            "label": "Student",
+            "gender": "Gender",
+            "migrant-status" : "Migrant Status",
+            "504-plan": "504 Plan",
+            "iep": "IEP",
+            "economic-disadvantage":"Economic Disadvantage",
+            "limited-english-proficiency": "Limited English Proficiency",
+            "ethnicity": "Race / Ethnicity"
           }
         },
         "selected-assessments-title": "Selected Assessments",
@@ -239,6 +234,18 @@
       "2" : "Level 2",
       "3" : "Level 3",
       "4" : "Level 4"
+    },
+    "gender" : {
+      "1" : "Male",
+      "2" : "Female"
+    },
+    "polar" : {
+      "1" : "Yes",
+      "2" : "No"
+    },
+    "off-grade" : {
+      "true" : "Hide",
+      "false" : "Show"
     }
   },
   "assessment_report": {

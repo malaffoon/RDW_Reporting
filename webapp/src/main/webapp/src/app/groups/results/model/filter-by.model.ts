@@ -1,42 +1,33 @@
-import { CompletenessType } from "../../../shared/enum/completeness-type.enum";
-import { AdministrativeConditionType } from "../../../shared/enum/administrative-condition-type.enum";
-
 export class FilterBy {
-  private _offGradeAssessment: boolean;
+  // Test
+  public offGradeAssessment: boolean;
 
-  private _administration: number = -1;
-  private _summativeStatus: number = -1;
-  private _completion: number = -1;
+  // Status
+  public administration: number = -1;
+  public summativeStatus: number = -1;
+  public completion: number = -1;
 
-  get offGradeAssessment(): boolean {
-    return this._offGradeAssessment;
-  }
+  //Student
+  public gender : number = -1;
+  public migrantStatus : number = -1;
+  public plan504 : number = -1;
+  public iep : number = -1;
+  public economicDisadvantage : number = -1;
+  public limitedEnglishProficiency : number = -1;
 
-  set offGradeAssessment(value: boolean) {
-    this._offGradeAssessment = value;
-  }
+  get all() {
+    let all = [];
+    for (var i in this) {
+      if (this.hasOwnProperty(i)) {
+        if(i == "offGradeAssessment" && this[i] === false)
+          continue;
 
-  get administration(): number {
-    return this._administration;
-  }
+        if(this[i] >= 0){
+          all.push(i);
+        }
+      }
+    }
 
-  set administration(value: number) {
-    this._administration = value;
-  }
-
-  get summativeStatus(): number {
-    return this._summativeStatus;
-  }
-
-  set summativeStatus(value: number) {
-    this._summativeStatus = value;
-  }
-
-  get completion(): number {
-    return this._completion;
-  }
-
-  set completion(value: number) {
-    this._completion = value;
+    return all;
   }
 }
