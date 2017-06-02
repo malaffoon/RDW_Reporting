@@ -13,8 +13,8 @@ export class GroupResultsComponent implements OnInit {
   private _availableSchoolYears;
   private _currentGroup;
   private _showValuesAsPercent : boolean = true;
-  private _showAdvancedFilters : boolean = true; // TODO: Set back to false
-  private _expandFilterOptions : boolean = true; // TODO: Set back to false
+  private _showAdvancedFilters : boolean = false;
+  private _expandFilterOptions : boolean = false;
   private _translateFilters = {
     offGradeAssessment : { label: 'labels.groups.results.adv-filters.test.off-grade-assessment', val: 'enum.off-grade' },
     administration : { label: 'labels.groups.results.adv-filters.status.administration', val: 'enum.administrative-condition' },

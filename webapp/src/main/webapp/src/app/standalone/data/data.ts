@@ -249,7 +249,7 @@ export const exams_sum_of_students = [
 export const assessments = [
   {
     id: 1,
-    typeId: AssessmentType.IAB,
+    type: 'IAB',
     name: 'Number and Operations - Fractions',
     gradeId: 3,
     academicYear: 2016,
@@ -257,7 +257,7 @@ export const assessments = [
   },
   {
     id: 2,
-    typeId: AssessmentType.SUMMATIVE,
+    type: 'SUMMATIVE',
     name: 'Measurement and Data',
     gradeId: 4,
     academicYear: 2013,
@@ -265,7 +265,7 @@ export const assessments = [
   },
   {
     id: 3,
-    typeId: AssessmentType.IAB,
+    type: 'IAB',
     name: 'Geometry',
     gradeId: 7,
     academicYear: 2017,
@@ -273,7 +273,7 @@ export const assessments = [
   },
   {
     id: 4,
-    typeId: AssessmentType.IAB,
+    type: 'IAB',
     name: 'Mathematics Performance Task',
     gradeId: 5,
     academicYear: 2015,
@@ -281,7 +281,7 @@ export const assessments = [
   },
   {
     id: 5,
-    typeId: AssessmentType.SUMMATIVE,
+    type: 'SUMMATIVE',
     name: 'Operations and Algebraic Thinking',
     gradeId: 8,
     academicYear: 2014,
