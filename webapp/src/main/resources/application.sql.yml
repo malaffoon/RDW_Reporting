@@ -121,18 +121,15 @@ sql:
             ei.score,
             ei.position
           from exam_item ei
-          where ei.exam_id in (
-            select e.id
-            from exam e
-              join student_group_membership sgm on e.student_id=sgm.student_id
-              join asmt a on e.asmt_id=a.id
-              join school s on e.school_id=s.id
-            where e.asmt_id=:assessment_id
-            and e.school_year=:school_year
-            and sgm.student_group_id=:group_id
-            and (0=:group_subject_id or a.subject_id=:group_subject_id)
-            and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
-          );
+            join exam e on ei.exam_id=e.id
+            join student_group_membership sgm on e.student_id=sgm.student_id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.asmt_id=:assessment_id
+          and e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
 
   assessment:
     item:
