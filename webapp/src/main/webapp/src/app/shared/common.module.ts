@@ -10,6 +10,10 @@ import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { RouterModule } from "@angular/router";
 import { RemoveCommaPipe } from "./remove-comma.pipe";
+import { SBRadioButtonComponent } from "./sb-radio-button-list.component";
+import { FormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { SBCheckboxList } from "./sb-checkbox-list.component";
 
 export function createTranslateLoader(http: Http) {
   // return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -23,10 +27,14 @@ export function createTranslateLoader(http: Http) {
     SubjectPipe,
     SchoolYearPipe,
     SearchPipe,
-    RemoveCommaPipe
+    RemoveCommaPipe,
+    SBRadioButtonComponent,
+    SBCheckboxList
   ],
   imports: [
     HttpModule,
+    FormsModule,
+    BrowserModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -42,7 +50,9 @@ export function createTranslateLoader(http: Http) {
     SchoolYearPipe,
     SearchPipe,
     TranslateModule,
-    RouterModule
+    RouterModule,
+    SBRadioButtonComponent,
+    SBCheckboxList
   ],
   providers: [
     DataService,

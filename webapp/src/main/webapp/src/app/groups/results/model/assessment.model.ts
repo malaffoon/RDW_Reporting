@@ -1,9 +1,10 @@
-import { AssessmentType } from "../../../../shared/enum/assessment-type.enum";
+import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
+
 export class Assessment {
-  private _id : number;
-  private _name : string;
-  private _grade : number;
-  private _type : AssessmentType;
+  private _id: number;
+  private _name: string;
+  private _grade: number;
+  private _type: AssessmentType;
 
   get id(): number {
     return this._id;

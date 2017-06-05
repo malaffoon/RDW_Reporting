@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { GroupResultsComponent } from "./group-results.component";
-import { TranslateModule } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 import { HttpModule } from "@angular/http";
 import { FormsModule } from "@angular/forms";
@@ -8,8 +7,6 @@ import { AppModule } from "../../app.module";
 import { ActivatedRoute } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { CachingDataService } from "../../shared/cachingData.service";
-import { GroupsModule } from "../groups.module";
-import { CommonModule } from "../../shared/common.module";
 
 describe('GroupResultsComponent', () => {
   let component: GroupResultsComponent;
