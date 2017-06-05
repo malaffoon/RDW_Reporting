@@ -113,6 +113,46 @@ sql:
           and (0=:group_subject_id or a.subject_id=:group_subject_id)
           and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
 
+      item:
+        findAllExamItemScoresForAssessment:
+          select ei.id,
+            ei.exam_id,
+            ei.item_id,
+            ei.score,
+            ei.position
+          from exam_item ei
+            join exam e on ei.exam_id=e.id
+            join student_group_membership sgm on e.student_id=sgm.student_id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.asmt_id=:assessment_id
+          and e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
+  assessment:
+    item:
+      findDifficultyCutsForId: >-
+          select idc.moderate_low_end, idc.difficult_low_end
+          from asmt a
+            join item_difficulty_cuts idc
+              on a.type_id=idc.asmt_type_id
+              and a.subject_id=idc.subject_id
+              and a.grade_id=idc.grade_id
+          where a.id=:assessment_id
+
+      findAllForAssessment: >-
+        select i.id,
+          i.difficulty,
+          i.max_points,
+          c.code as claim,
+          t.code as target
+        from item i
+          left join claim c on i.claim_id=c.id
+          left join target t on i.target_id=t.id
+        where i.asmt_id=:assessment_id
+
   district:
     findAllIds: >-
       select natural_id, id
