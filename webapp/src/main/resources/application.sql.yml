@@ -170,7 +170,12 @@ sql:
       select id, code
       from ethnicity
 
+    findAllCodes: >-
+      select code
+      from ethnicity
+
     findEthnicityIdsForStudentIds: >-
       select ethnicity_id, student_id
       from student_ethnicity
       where student_id in (:student_ids)
+
