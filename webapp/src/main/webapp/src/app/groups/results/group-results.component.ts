@@ -4,7 +4,6 @@ import { CachingDataService } from "../../shared/cachingData.service";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { FilterBy } from "./model/filter-by.model";
 import { ExamFilterService } from "./exam-filter.service";
-import { ExamFilter } from "./model/exam-filter.model";
 
 @Component({
   selector: 'app-group-results',

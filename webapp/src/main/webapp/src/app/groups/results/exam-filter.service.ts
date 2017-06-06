@@ -52,19 +52,19 @@ export class ExamFilterService {
     return exams;
   }
 
-  notImplemented(exam: Exam, filterValue: any) : boolean {
+  private  notImplemented(exam: Exam, filterValue: any) : boolean {
     return true;
   }
 
-  filterByAdministrativeCondition(exam: Exam, filterValue: any) {
+  private filterByAdministrativeCondition(exam: Exam, filterValue: any) {
     return exam.administrativeCondition == filterValue;
   }
 
-  filterByCompleteness(exam: Exam, filterValue: any) {
+  private filterByCompleteness(exam: Exam, filterValue: any) {
     return exam.completeness == filterValue;
   }
 
-  filterByEnrolledGradeOff(exam: Exam, filterValue: any) {
+  private filterByEnrolledGradeOff(exam: Exam, filterValue: any) {
     return exam.enrolledGrade == filterValue;
   }
 }
