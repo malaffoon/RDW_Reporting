@@ -9,10 +9,10 @@ export class ExamFilterService {
   private root = 'labels.groups.results.adv-filters.';
 
   private filterDefinitions = [
-    new ExamFilter('offGradeAssessment', this.root + 'test.off-grade-assessment', 'enum.off-grade', this.notImplemented),
+    new ExamFilter('offGradeAssessment', this.root + 'test.off-grade-assessment', 'enum.off-grade', this.filterByEnrolledGradeOff),
     new ExamFilter('administration', this.root + 'status.administration','enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isIab),
-    new ExamFilter('summativeStatus', this.root + 'status.summative', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => !x.isIab),
-    new ExamFilter('completion', this.root + 'status.completion', 'enum.completeness', this.notImplemented),
+    new ExamFilter('summativeStatus', this.root + 'status.summative', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isSummative),
+    new ExamFilter('completion', this.root + 'status.completion', 'enum.completeness', this.filterByCompleteness),
     new ExamFilter('gender', this.root + 'student.gender', 'enum.gender', this.notImplemented),
     new ExamFilter('migrantStatus', this.root + 'student.migrant-status', 'enum.polar', this.notImplemented),
     new ExamFilter('plan504', this.root + 'student.504-plan', 'enum.polar', this.notImplemented),
@@ -43,8 +43,10 @@ export class ExamFilterService {
     for(let filter of filterBy.all){
       let filterDefinition = this.getFilterDefinitionFor(filter);
 
-      if(filterDefinition.precondition(assessmentExam.assessment))
-        exams = assessmentExam.exams.filter(exam => filterDefinition.apply(exam, filterBy[filter]));
+      if(filterDefinition.precondition(assessmentExam.assessment)) {
+        let filterValue = filter == 'offGradeAssessment' ? assessmentExam.assessment.grade : filterBy[filter];
+        exams = assessmentExam.exams.filter(exam => filterDefinition.apply(exam, filterValue));
+      }
     }
 
     return exams;
@@ -56,5 +58,13 @@ export class ExamFilterService {
 
   filterByAdministrativeCondition(exam: Exam, filterValue: any) {
     return exam.administrativeCondition == filterValue;
+  }
+
+  filterByCompleteness(exam: Exam, filterValue: any) {
+    return exam.completeness == filterValue;
+  }
+
+  filterByEnrolledGradeOff(exam: Exam, filterValue: any) {
+    return exam.enrolledGrade == filterValue;
   }
 }

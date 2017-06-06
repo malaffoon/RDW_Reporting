@@ -9,4 +9,12 @@ export class Assessment {
   get isIab() {
     return this.type == AssessmentType.IAB;
   }
+
+  get isIca() {
+    return this.type == AssessmentType.ICA;
+  }
+
+  get isSummative() {
+    return this.type == AssessmentType.SUMMATIVE;
+  }
 }
