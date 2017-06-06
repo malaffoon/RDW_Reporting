@@ -159,11 +159,38 @@ sql:
       from district
       where natural_id in (:naturalIds)
 
+    findAll: >-
+      select id, name
+      from district
+      where 1=:statewide
+      or id in (:district_ids)
+      or id=(
+        select district_id
+        from school s
+        where s.id in (:school_ids)
+      );
+
   school:
     findAllIds: >-
       select natural_id, id
       from school
       where natural_id in (:naturalIds)
+
+    findAllForDistrict: >-
+      select id, name
+      from school
+      where district_id=:district_id
+      and (
+        1=:statewide
+        or district_id in (:district_ids)
+        or id in (:school_ids)
+      );
+
+  grade:
+    # TODO: make this return only grades for which there are exam results for a given school_id
+    findAllForSchool: >-
+      select id, code
+      from grade
 
   ethnicity:
     findAll: >-
