@@ -1,10 +1,13 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
 import { ExamResultLevel } from "../../../shared/enum/exam-result-level.enum";
 import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
+import { FilterBy } from "../model/filter-by.model";
+import { Subscription } from "rxjs";
+import { ExamFilterService } from "../exam-filter.service";
 
 @Component({
   selector: 'assessment-results',
@@ -30,24 +33,21 @@ import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
   ],
 })
 export class AssessmentResultsComponent {
-
-  private _assessmentExam: AssessmentExam;
-  private _exams = [];
-  private _sessions = [];
-  private _statistics: any = { percents: {} };
-  private _showValuesAsPercent: boolean;
-
-  constructor(private _calculator : ExamStatisticsCalculator){
-
-  }
+  exams = [];
+  sessions = [];
+  statistics: any = { percents: {} };
 
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
     this._assessmentExam = assessment;
-    this._sessions = this.getDistinctExamSessions(assessment.exams);
+    this.sessions = this.getDistinctExamSessions(assessment.exams);
 
-    if (this._sessions.length > 0)
-      this.toggleSession(this._sessions[ 0 ]);
+    if (this.sessions.length > 0)
+      this.toggleSession(this.sessions[ 0 ]);
+  }
+
+  get assessmentExam() {
+    return this._assessmentExam;
   }
 
   @Input()
@@ -55,31 +55,40 @@ export class AssessmentResultsComponent {
     this._showValuesAsPercent = value;
   }
 
-  get assessmentExam() {
-    return this._assessmentExam;
+  @Input()
+  set filterBy(value: FilterBy) {
+    this._filterBy = value;
+
+    if (this._filterBySubscription)
+      this._filterBySubscription.unsubscribe();
+
+    if (this._filterBy) {
+      this.updateExamSessions();
+
+      this._filterBySubscription = this._filterBy.onChanges.subscribe(x => {
+        this.updateExamSessions();
+      });
+    }
   }
 
-  get exams() {
-    return this._exams;
-  }
+  private _filterBy: FilterBy;
+  private _assessmentExam: AssessmentExam;
+  private _showValuesAsPercent: boolean;
+  private _filterBySubscription: Subscription;
 
-  get sessions() {
-    return this._sessions;
-  }
-
-  get statistics() {
-    return this._statistics;
+  constructor(private examCalculator: ExamStatisticsCalculator,
+              private examFilterService: ExamFilterService) {
   }
 
   get performance() {
     if (this._showValuesAsPercent)
-      return this._statistics.percents;
+      return this.statistics.percents;
     else
-      return this._statistics;
+      return this.statistics;
   }
 
-  get isIab() : boolean {
-    return this._assessmentExam.assessment.type == AssessmentType.IAB;
+  get isIab(): boolean {
+    return this._assessmentExam.assessment.isIab;
   }
 
   get examLevelEnum() {
@@ -111,18 +120,24 @@ export class AssessmentResultsComponent {
   }
 
   private updateExamSessions() {
-    this._exams = this._assessmentExam.exams.filter(x => this.sessions.some(y => y.filter && y.id == x.session));
-    this._statistics = this.calculateStats();
+    this.exams = this.filterExams();
+    this.statistics = this.calculateStats();
+  }
+
+  private filterExams() {
+    return this.examFilterService
+      .filterExams(this._assessmentExam, this._filterBy)
+      .filter(x => this.sessions.some(y => y.filter && y.id == x.session));
   }
 
   private calculateStats() {
     let stats: any = {
-      total: this._exams.length,
-      average: this._calculator.calculateAverage(this._exams),
-      levels: this._calculator.groupLevels(this._exams, this.isIab ? 3 : 4)
+      total: this.exams.length,
+      average: this.examCalculator.calculateAverage(this.exams),
+      levels: this.examCalculator.groupLevels(this.exams, this.isIab ? 3 : 4)
     };
 
-    stats.percents = { levels: this._calculator.calculateLevelPercents(stats.levels, stats.total) };
+    stats.percents = { levels: this.examCalculator.calculateLevelPercents(stats.levels, stats.total) };
     return stats;
   }
 }

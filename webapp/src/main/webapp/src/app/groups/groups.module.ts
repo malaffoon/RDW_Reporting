@@ -14,6 +14,7 @@ import { AssessmentResultsComponent } from "./results/assessment/assessment-resu
 import { AssessmentExamMapper } from "./results/assessment/assessment-exam.mapper";
 import { ExamStatisticsCalculator } from "./results/assessment/exam-statistics-calculator";
 import { AdvFiltersComponent } from './results/adv-filters/adv-filters.component';
+import { ExamFilterService } from "./results/exam-filter.service";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { AdvFiltersComponent } from './results/adv-filters/adv-filters.component
     AssessmentsResolve,
     AssessmentService,
     AssessmentExamMapper,
-    ExamStatisticsCalculator
+    ExamStatisticsCalculator,
+    ExamFilterService
   ]
 })
 export class GroupsModule {

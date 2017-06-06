@@ -13,6 +13,7 @@ import { Exam } from "../model/exam.model";
 import { CommonModule } from "../../../shared/common.module";
 import { RemoveCommaPipe } from "../../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
+import { ExamFilterService } from "../exam-filter.service";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -22,7 +23,7 @@ describe('AssessmentResultsComponent', () => {
     TestBed.configureTestingModule({
       imports: [ TranslateModule.forRoot(), HttpModule, FormsModule, DataTableModule, SharedModule, BrowserAnimationsModule ],
       declarations: [ TestComponentWrapper, AssessmentResultsComponent, RemoveCommaPipe ],
-      providers: [ { provide: APP_BASE_HREF, useValue: '/' } , ExamStatisticsCalculator ]
+      providers: [ { provide: APP_BASE_HREF, useValue: '/' } , ExamStatisticsCalculator, ExamFilterService ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponentWrapper);
