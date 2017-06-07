@@ -16,17 +16,14 @@
         <div class="spacer-v-lg">
           <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
           <div class="spacer-v-sm">{{'labels.assessment.sessions-instruct' | translate}}</div>
-          <div class="spacer-h-sm">
-            <a *ngFor="let session of sessions" class="btn btn-primary flex-children text-left" [ngClass]="{'deselected':!session.filter}" (click)="toggleSession(session)">
-              <span class="text block-children">
-                <strong>{{session.date | date }}</strong>
-                <small>{{session.id || 'labels.groups.results.session-unknown' | translate }}</small>
-              </span>
-              <span class="label-col ml-sm">
-                <span class="label label-primary">
-                  <i class="fa" [ngClass]="{'fa-minus':session.filter, 'fa-plus': !session.filter }"></i>
-                </span>
-              </span>
+
+          <div class="flex-children">
+            <a *ngFor="let session of sessions" class="tag aqua reverse multi-line" [ngClass]="{'gray-dark':!session.filter}" (click)="toggleSession(session)">
+                  <span class="block-children text-left">
+                    <strong>{{session.date | date }}</strong>
+                    <small>{{session.id || 'labels.groups.results.session-unknown' | translate }}</small>
+                  </span>
+              <span class="icon"><i class="fa" [ngClass]="{'fa-minus':session.filter, 'fa-plus': !session.filter }"></i></span>
             </a>
           </div>
         </div>

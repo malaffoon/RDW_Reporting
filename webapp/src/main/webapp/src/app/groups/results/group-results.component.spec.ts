@@ -40,16 +40,16 @@ describe('GroupResultsComponent', () => {
 
   it('should default to current year if no school year is set', () => {
     let params = {};
-    let actual = component.mapParamsToFilterBy(params);
+    let actual = component.mapParamsToSchoolYear(params);
 
-    expect(actual.schoolYear).toBe(2009);
+    expect(actual).toBe(2009);
   });
 
   it('should map schoolyear to filterBy object', () => {
     let params = { schoolYear: 2005 };
-    let actual = component.mapParamsToFilterBy(params);
+    let actual = component.mapParamsToSchoolYear(params);
 
-    expect(actual.schoolYear).toBe(2005);
+    expect(actual).toBe(2005);
   });
 });
 
