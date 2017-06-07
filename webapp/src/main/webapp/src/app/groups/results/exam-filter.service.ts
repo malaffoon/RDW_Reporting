@@ -37,7 +37,7 @@ export class ExamFilterService {
   filterExams(assessmentExam : AssessmentExam, filterBy : FilterBy) {
     let exams = assessmentExam.exams;
 
-    if(!filterBy)
+    if(filterBy == null)
       return exams;
 
     for(let filter of filterBy.all){
@@ -45,7 +45,7 @@ export class ExamFilterService {
 
       if(filterDefinition.precondition(assessmentExam.assessment)) {
         let filterValue = filter == 'offGradeAssessment' ? assessmentExam.assessment.grade : filterBy[filter];
-        exams = assessmentExam.exams.filter(exam => filterDefinition.apply(exam, filterValue));
+        exams = exams.filter(exam => filterDefinition.apply(exam, filterValue));
       }
     }
 

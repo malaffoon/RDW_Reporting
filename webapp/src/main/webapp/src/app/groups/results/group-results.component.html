@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <div id="group-results-adv-filters" *ngIf="showAdvancedFilters" class="well gray-lightest">
+    <div id="group-results-adv-filters" [hidden]="!showAdvancedFilters" class="well gray-lightest">
       <h4>
         <i class="fa fa-check-square"></i> {{'labels.groups.results.adv-filters.label' | translate }}
         <div id="adv-filters-expand-collapse" class="pull-right">
@@ -53,7 +53,7 @@
           </div>
       </div>
     </div>
-    <div id="group-results-adv-filter-options" *ngIf="showAdvancedFilters && expandFilterOptions" class="well gray-lighter">
+    <div id="group-results-adv-filter-options" [hidden]="!expandFilterOptions" class="well gray-lighter">
       <adv-filters [filterBy]="clientFilterBy"></adv-filters>
     </div>
     <div id="group-results-selected-assessments" class="well gray-lightest">

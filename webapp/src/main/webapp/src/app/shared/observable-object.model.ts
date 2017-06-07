@@ -15,6 +15,11 @@ export class ObservableObject {
   }
 
   protected notifyChange(property){
+    // If a tree falls in a forest with no one around,
+    // does it make a sound?  In this case, we won't.
+    if(!this.onChangesObserver)
+      return;
+
     if(this[property] !== this.oldObject[property]){
       this.onChangesObserver.next(property);
       this.oldObject[property] = this[property];
