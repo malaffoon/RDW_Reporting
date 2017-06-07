@@ -45,7 +45,7 @@ export class AssessmentExamMapper {
     uiModel.administrativeCondition = apiModel.administrativeConditionId;
     uiModel.completeness = apiModel.completenessId;
 
-    uiModel.gender = apiModel.studentContext.gender;
+    uiModel.gender = apiModel.student.genderId;
     uiModel.migrantStatus = apiModel.studentContext.migrantStatus;
     uiModel.plan504 = apiModel.studentContext.section504;
     uiModel.iep = apiModel.studentContext.iep;

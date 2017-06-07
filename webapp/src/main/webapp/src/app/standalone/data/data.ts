@@ -98,16 +98,74 @@ export const iab_items = [
   return item;
 });
 
-export const students = [
-  { firstName: "David", lastName: "Hayden" },
-  { firstName: "Clementine", lastName: "Roach" },
-  { firstName: "Hasad", lastName: "Valenzuela" },
-  { firstName: "Joe", lastName: "Smith" },
-  { firstName: "Joseph", lastName: "Cleveland" },
-  { firstName: "Sara", lastName: "Blankenship" },
-  { firstName: "Linus", lastName: "Todd" },
-  { firstName: "Hope", lastName: "Cardinas" }
-].map((student: any, index: number) => {
+export const students = [ {
+  firstName: "David",
+  lastName: "Hayden",
+  genderId: 1,
+  section504: true,
+  iep: true,
+  economicDisadvantage: true,
+  lep: true
+}, {
+  firstName: "Clementine",
+  lastName: "Roach",
+  genderId: 2,
+  section504: true,
+  iep: false,
+  economicDisadvantage: true,
+  lep: false
+}, {
+  firstName: "Hasad",
+  lastName: "Valenzuela",
+  genderId: 1,
+  migrantStatus: true,
+  section504: false,
+  iep: false,
+  economicDisadvantage: false,
+  lep: false
+}, {
+  firstName: "Joe",
+  lastName: "Smith",
+  genderId: 1,
+  section504: true,
+  iep: true,
+  economicDisadvantage: true,
+  lep: true
+}, {
+  firstName: "Joseph",
+  lastName: "Cleveland",
+  genderId: 1,
+  migrantStatus: false,
+  section504: false,
+  iep: false,
+  economicDisadvantage: false,
+  lep: true
+}, {
+  firstName: "Sara",
+  lastName: "Blankenship",
+  genderId: 2,
+  section504: true,
+  iep: true,
+  economicDisadvantage: false,
+  lep: false
+}, {
+  firstName: "Linus",
+  lastName: "Todd",
+  genderId: 1,
+  section504: true,
+  iep: true,
+  economicDisadvantage: false,
+  lep: false
+}, {
+  firstName: "Hope",
+  lastName: "Cardinas",
+  genderId: 2,
+  migrantStatus: true,
+  section504: false,
+  iep: true,
+  economicDisadvantage: true,
+  lep: false
+}].map((student: any, index: number) => {
   student.id = index;
   student.ssid = randomSsid();
   student.exams = exams_of_student;
@@ -191,8 +249,15 @@ export const exams_of_student = [
 ].map((exam: any, index: number) => {
   exam.id = randomId();
   exam.items = iab_items;
-  exam.studentContext = { gradeId: exam.grade };
-  exam.scaleScore.standardError = intBetween(10,100);
+  exam.studentContext = {
+    gradeId: exam.grade,
+    migrantStatus: exam.student.migrantStatus,
+    section504: exam.student.section504,
+    iep: exam.student.iep,
+    economicDisadvantage: exam.student.economicDisadvantage,
+    lep: exam.student.lep,
+  };
+  exam.scaleScore.standardError = intBetween(10, 100);
   return exam;
 });
 
