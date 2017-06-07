@@ -59,9 +59,29 @@
 @color-grade-8:    @green-dark;
 @color-grade-hs:   @blue-dark;
 
+// ------------------------------
+// Element Styles
+// ------------------------------
+
 // Sortable Tables
-.ui-sortable-column-icon:hover {
-  cursor: pointer;
+// NOTE: These styles need to be extended from the kit once it has been integrated
+.ui-sortable-column {
+  &:hover {
+    background-color: lighten(@gray-lighter, 5%);
+    cursor: pointer;
+  }
+  .ui-sortable-column-icon {
+    margin-left: 8px;
+    color: @gray-darker;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  &.ui-state-active {
+    .ui-sortable-column-icon {
+      color: @gray;
+    }
+  }
 }
 
 // Flex Aligned Forms
@@ -73,4 +93,15 @@ form .flex-children {
       flex-grow: 1;
     }
   }
+}
+
+// ------------------------------
+// RDW Custom Styles to Match Comps
+// ------------------------------
+.my-groups-search-form-container {
+  border: 1px solid @gray-lighter;
+}
+.home-view .my-groups-list-container .table > thead > tr > th {
+  &:first-child { border-top-left-radius: 0px; }
+  &:last-child { border-top-right-radius: 0px; }
 }

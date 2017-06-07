@@ -1,7 +1,7 @@
 <div *ngIf="groups" class="home-view">
 
   <!-- My Groups Search Input -->
-  <div *ngIf="groups.length > 2" class="gray-light pt-sm pr-sm pb-sm pl-sm">
+  <div *ngIf="groups.length > 2" class="gray-lightest pt-sm pr-sm pb-sm pl-sm my-groups-search-form-container">
     <label for="search" class="sr-only">Search My Groups</label>
     <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'labels.groups.filter' | translate}}" autocomplete="off" (ngModelChange)="onSearchChange($event)">
   </div>
