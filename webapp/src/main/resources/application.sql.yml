@@ -43,7 +43,7 @@ sql:
 
     exam:
       findLatest: >-
-          select e.completed_at,
+          select
             a.id,
             a.label,
             a.grade_id,
@@ -159,7 +159,7 @@ sql:
 
     exam:
       findLatest: >-
-        select e.completed_at,
+        select
           a.id,
           a.label,
           a.grade_id,
