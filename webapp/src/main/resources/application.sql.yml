@@ -260,7 +260,7 @@ sql:
       from district
       where 1=:statewide
       or id in (:district_ids)
-      or id=(
+      or id in (
         select district_id
         from school s
         where s.id in (:school_ids)
@@ -283,10 +283,16 @@ sql:
       );
 
   grade:
-    # TODO: make this return only grades for which there are exam results for a given school_id
     findAllForSchool: >-
       select id, code
-      from grade
+      from grade g where exists (
+          select grade_id
+          from exam e
+            join school s on e.school_id=s.id
+          where e.school_id=:school_id
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+          and g.id=e.grade_id
+      )
 
   ethnicity:
     findAll: >-
