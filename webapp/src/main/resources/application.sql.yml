@@ -172,7 +172,6 @@ sql:
           aa.cut_point_2,
           aa.cut_point_3
         from exam e
-          join student_group_membership sgm on e.student_id=sgm.student_id
           join asmt a on e.asmt_id=a.id
           join school s on e.school_id=s.id
           left join asmt_score aa on e.asmt_id=aa.asmt_id
