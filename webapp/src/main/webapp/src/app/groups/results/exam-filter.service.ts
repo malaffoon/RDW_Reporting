@@ -11,7 +11,7 @@ export class ExamFilterService {
 
   private filterDefinitions = [
     new ExamFilter('offGradeAssessment', this.root + 'test.off-grade-assessment', 'enum.off-grade', this.filterByEnrolledGradeOff),
-    new ExamFilter('administration', this.root + 'status.administration', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isIab),
+    new ExamFilter('administration', this.root + 'status.administration', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => !x.isSummative),
     new ExamFilter('summativeStatus', this.root + 'status.summative', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isSummative),
     new ExamFilter('completion', this.root + 'status.completion', 'enum.completeness', this.filterByCompleteness),
     new ExamFilter('gender', this.root + 'student.gender', 'enum.gender', this.filterByGender),
