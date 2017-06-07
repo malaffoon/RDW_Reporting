@@ -1,29 +1,36 @@
-<nav class="navigation navbar navbar-default navbar-fixed-top">
+<!-- Header -->
+<header>
   <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" routerLink="/">
-        <img class="logo" src="/assets/image/logo-1364x433.png" alt="Smarter Balanced"/>
-      </a>
-      <h1 class="title">{{'application.title' | translate}}</h1>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <div class="navbar-right">
-        <span class="welcome-message">
-          <i class="glyphicon glyphicon-user"></i><span *ngIf="user">{{'welcome' | translate:user }}</span>
-        </span>
-        <span class="link-divider">|</span>
-        <a href="javascript:void(0)" onclick="window.document.logoutForm.submit()">Logout</a>
-        <form name="logoutForm" method="post" action="/saml/logout"></form>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+        <a class="navbar-brand hidden-xs" href="/" title="Reporting System Dashboard"><img src="dist/images/SmarterBalanced-Logo.png" alt="Smarter Balanced Assessment Consortium"></a>
+        <span class="application-title">{{'application.title' | translate}}</span>
       </div>
-    </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle btn-sm" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle"></i> <span *ngIf="user">{{'welcome' | translate:user }}</span> <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <a href="javascript:void(0)" onclick="window.document.logoutForm.submit()">Logout</a>
+              <form name="logoutForm" method="post" action="/saml/logout" class="hidden"></form>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
   </div>
-</nav>
+</header>
 
 <div class="hidden">
   <h1>{{ 'HELLO' | translate }}</h1>
@@ -36,14 +43,28 @@
 </div>
 
 <div class="page-view">
+  <!-- @bsavage: what is this element? -->
   <breadcrumbs></breadcrumbs>
+
+  <!-- Breadcrumb style example -AS -->
+  <div class="breadcrumb-container">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Library</a></li>
+        <li class="active">Data</li>
+      </ul>
+    </div>
+  </div>
+  
   <div class="container">
     <router-outlet></router-outlet>
   </div>
 </div>
-<footer class="footer">
+
+<!-- Footer -->
+<footer>
   <div class="container">
-    <p class="text-right">© The Regents of the University of California – Smarter Balanced Assessment Consortium</p>
+    <p class="text-right gray-darker">&copy; The Regents of the University of California &ndash; Smarter Balanced Assessment Consortium</p>
   </div>
 </footer>
-
