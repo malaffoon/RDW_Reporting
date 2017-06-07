@@ -11,13 +11,13 @@
       <div class="student-id-search-container well">
         <form>
           <div class="form-group">
-            <div class="row">
-              <div class="col-xs-10">
+            <div class="flex-children">
+              <div class="flex-child grow">
                 <label for="student-id-input">Statewide Student Identifier (SSID)</label>
                 <input type="text" class="form-control" id="student-id-input" placeholder="Enter the Statewide Student Identifier (SSID)">
               </div>
-              <div class="col-xs-2">
-                <button type="submit" class="btn btn-primary">Search</button>
+              <div class="flex-child">
+                <button type="submit" class="btn btn-sm btn-primary">Search</button>
               </div>
             </div>
           </div>
@@ -29,25 +29,25 @@
       <div class="school-and-grade-search-container well">
         <form>
           <div class="form-group">
-            <div class="row">
-              <div class="col-xs-8">
+            <div class="flex-children">
+              <div class="flex-child grow">
                 <label for="school-name-input">Search by School Name</label>
                 <input type="text" class="form-control" id="school-name-input" placeholder="Start typing the school name">
               </div>
-                <div class="col-xs-2">
-                  <label for="grade-select">Grade</label>
-                  <select name="grade-select" id="grade-select">
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="High School">High School</option>
-                  </select>
-                </div>
-              <div class="col-xs-2">
-                <button type="submit" class="btn btn-primary">Search</button>
+              <div class="flex-child">
+                <label for="grade-select">Grade</label>
+                <select name="grade-select" id="grade-select" class="form-control">
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="High School">High School</option>
+                </select>
+              </div>
+              <div class="flex-child">
+                <button type="submit" class="btn btn-sm btn-primary mt-md">Search</button>
               </div>
             </div>
           </div>

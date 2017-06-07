@@ -58,3 +58,19 @@
 @color-grade-7:    @maroon;
 @color-grade-8:    @green-dark;
 @color-grade-hs:   @blue-dark;
+
+// Sortable Tables
+.ui-sortable-column-icon:hover {
+  cursor: pointer;
+}
+
+// Flex Aligned Forms
+form .flex-children {
+  align-items: stretch;
+  .flex-child {
+    align-self: flex-end;
+    &.grow {
+      flex-grow: 1;
+    }
+  }
+}
