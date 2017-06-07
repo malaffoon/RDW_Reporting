@@ -162,4 +162,109 @@ describe('ExamFilterService', () => {
     expect(actual.some(x => x.completeness == 2)).toBeFalsy();
   });
 
+  it('should filter exams by gender', () => {
+    filterBy.gender = 1;
+
+    assessmentExam.exams[ 0 ].gender = 2;
+    assessmentExam.exams[ 1 ].gender = 1;
+    assessmentExam.exams[ 2 ].gender = 2;
+    assessmentExam.exams[ 3 ].gender = 1;
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(2);
+    expect(actual.some(x => x.gender == 2)).toBeFalsy();
+  });
+
+  it('should filter exams by migrant status as Yes', () => {
+    filterBy.migrantStatus = 1;
+
+    assessmentExam.exams[ 0 ].migrantStatus = true;
+    assessmentExam.exams[ 1 ].migrantStatus = false;
+    assessmentExam.exams[ 2 ].migrantStatus = undefined;
+    assessmentExam.exams[ 3 ].migrantStatus = undefined;
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(1);
+    expect(actual.some(x => x.migrantStatus === true)).toBeTruthy();
+    expect(actual.some(x => x.migrantStatus === false)).toBeFalsy();
+    expect(actual.some(x => x.migrantStatus == null)).toBeFalsy();
+  });
+
+  it('should filter exams by migrant status as No', () => {
+    filterBy.migrantStatus = 2;
+
+    assessmentExam.exams[ 0 ].migrantStatus = true;
+    assessmentExam.exams[ 1 ].migrantStatus = false;
+    assessmentExam.exams[ 2 ].migrantStatus = undefined;
+    assessmentExam.exams[ 3 ].migrantStatus = undefined;
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(1);
+    expect(actual.some(x => x.migrantStatus === false)).toBeTruthy();
+    expect(actual.some(x => x.migrantStatus === true)).toBeFalsy();
+    expect(actual.some(x => x.migrantStatus == null)).toBeFalsy();
+  });
+
+  it('should filter exams by 504 plan', () => {
+    filterBy.plan504 = 2;
+
+    assessmentExam.exams[ 0 ].plan504 = true;
+    assessmentExam.exams[ 1 ].plan504 = false;
+    assessmentExam.exams[ 2 ].plan504 = false;
+    assessmentExam.exams[ 3 ].plan504 = false;
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(3);
+    expect(actual.some(x => x.plan504 === false)).toBeTruthy();
+    expect(actual.some(x => x.plan504 === true)).toBeFalsy();
+  });
+
+  it('should filter exams by IEP', () => {
+    filterBy.iep = 1;
+
+    assessmentExam.exams[ 0 ].iep = true;
+    assessmentExam.exams[ 1 ].iep = false;
+    assessmentExam.exams[ 2 ].iep = false;
+    assessmentExam.exams[ 3 ].iep = false;
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(1);
+    expect(actual.some(x => x.iep === true)).toBeTruthy();
+    expect(actual.some(x => x.iep === false)).toBeFalsy();
+  });
+
+  it('should filter exams by Economic Disadvantage', () => {
+    filterBy.economicDisadvantage = 1;
+
+    assessmentExam.exams[ 0 ].economicDisadvantage = true;
+    assessmentExam.exams[ 1 ].economicDisadvantage = false;
+    assessmentExam.exams[ 2 ].economicDisadvantage = false;
+    assessmentExam.exams[ 3 ].economicDisadvantage = false;
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(1);
+    expect(actual.some(x => x.economicDisadvantage === true)).toBeTruthy();
+    expect(actual.some(x => x.economicDisadvantage === false)).toBeFalsy();
+  });
+
+  it('should filter exams by Limited English Proficiency', () => {
+    filterBy.limitedEnglishProficiency = 2;
+
+    assessmentExam.exams[ 0 ].limitedEnglishProficiency = true;
+    assessmentExam.exams[ 1 ].limitedEnglishProficiency = false;
+    assessmentExam.exams[ 2 ].limitedEnglishProficiency = false;
+    assessmentExam.exams[ 3 ].limitedEnglishProficiency = false;
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(3);
+    expect(actual.some(x => x.limitedEnglishProficiency === false)).toBeTruthy();
+    expect(actual.some(x => x.limitedEnglishProficiency === true)).toBeFalsy();
+  });
 });
