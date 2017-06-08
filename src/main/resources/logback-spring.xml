@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Root logger is set to INFO and logs are sent to CONSOLE and logstash via tcp.
+
+Spring boot default log levels are used.
+-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProperty name="appName" source="spring.application.name"/>
+    <property scope="context" name="app.context.name" value="${appName}" />
+
+    <springProperty name="LOGSTASH_DESTINATION" source="logstash-destination"/>
+
+    <if condition='isDefined("LOGSTASH_DESTINATION")'>
+        <then>
+            <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${LOGSTASH_DESTINATION}</destination>
+                <!-- encoder is required -->
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            </appender>
+        </then>
+    </if>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+
+        <if condition='isDefined("LOGSTASH_DESTINATION")'>
+            <then>
+                <appender-ref ref="LOGSTASH"/>
+            </then>
+        </if>
+    </root>
+</configuration>

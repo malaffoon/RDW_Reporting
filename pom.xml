@@ -3,7 +3,7 @@
 
   <groupId>org.opentestsystem</groupId>
   <artifactId>configuration-service</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>3.1.0.RELEASE</version>
   <packaging>jar</packaging>
 
   <name>Configuration Service</name>
@@ -11,8 +11,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.4.0.RELEASE</version>
-    <relativePath /> <!-- lookup parent from repository -->
+    <version>1.5.2.RELEASE</version>
   </parent>
 
   <properties>
@@ -21,7 +20,8 @@
     <unit-tests.skip>false</unit-tests.skip>
     <integration-tests.skip>true</integration-tests.skip>
     <docker.image.prefix>fwsbac</docker.image.prefix>
-    <spring.cloud.config.version>1.2.2.RELEASE</spring.cloud.config.version>
+    <janino.version>3.0.7</janino.version>
+    <logstash-appender.version>4.8</logstash-appender.version>
 
     <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
     <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
@@ -32,8 +32,8 @@
     <dependencies>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-config-server</artifactId>
-        <version>${spring.cloud.config.version}</version>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>Dalston.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -44,6 +44,28 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-config-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-config-monitor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>janino</artifactId>
+      <version>${janino.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <version>${logstash-appender.version}</version>
     </dependency>
   </dependencies>
 
@@ -154,7 +176,7 @@
     <connection>scm:git:https://github.com/SmarterApp/SS_ConfigurationService.git</connection>
     <developerConnection>scm:git:git://github.com/SmarterApp/SS_ConfigurationService.git</developerConnection>
     <url>https://github.com/SmarterApp/SS_ConfigurationService</url>
-    <tag>HEAD</tag>
+    <tag>3.1.0.RELEASE</tag>
   </scm>
 
   <distributionManagement>
