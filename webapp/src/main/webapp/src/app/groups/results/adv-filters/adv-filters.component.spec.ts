@@ -6,6 +6,7 @@ import { HttpModule } from "@angular/http";
 import { Component } from "@angular/core";
 import { FilterBy } from "../model/filter-by.model";
 import { CommonModule } from "../../../shared/common.module";
+import { ExamFilterOptions } from "../model/exam-filter-options.model";
 
 describe('AdvFiltersComponent', () => {
   let component: AdvFiltersComponent;
@@ -34,9 +35,10 @@ describe('AdvFiltersComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: '<adv-filters [filterBy]="filterBy"></adv-filters>'
+  template: '<adv-filters [filterBy]="filterBy" [filterOptions]="filterOptions"></adv-filters>'
 })
 class TestComponentWrapper {
   filterBy: FilterBy = new FilterBy();
+  filterOptions: ExamFilterOptions = new ExamFilterOptions();
 }
 

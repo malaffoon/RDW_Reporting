@@ -21,6 +21,11 @@ export const user = {
   permissions: [ "INDIVIDUAL_PII_READ", "GROUP_READ" ]
 };
 
+export const exam_filter_options = {
+  "schoolYears": [ 2017, 2016, 2015, 2014, 2013 ],
+  "ethnicities": [ "AmericanIndianOrAlaskaNative", "Asian", "BlackOrAfricanAmerican", "DemographicRaceTwoOrMoreRaces", "Filipino", "HispanicOrLatinoEthnicity", "NativeHawaiianOrOtherPacificIslander", "White" ]
+};
+
 export const iab_items = [
   {
     claim: 'Concepts and Procedures',

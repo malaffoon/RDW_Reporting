@@ -1,9 +1,9 @@
 import { ExamFilterService } from "./exam-filter.service";
-import { FilterBy } from "./model/filter-by.model";
-import { AssessmentExam } from "./model/assessment-exam.model";
-import { Assessment } from "./model/assessment.model";
-import { Exam } from "./model/exam.model";
-import { AssessmentType } from "../../shared/enum/assessment-type.enum";
+import { FilterBy } from "../model/filter-by.model";
+import { AssessmentExam } from "../model/assessment-exam.model";
+import { Assessment } from "../model/assessment.model";
+import { Exam } from "../model/exam.model";
+import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 
 describe('ExamFilterService', () => {
   let assessmentExam: AssessmentExam;

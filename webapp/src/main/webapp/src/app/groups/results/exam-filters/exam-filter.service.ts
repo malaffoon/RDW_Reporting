@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { ExamFilter } from "./model/exam-filter.model";
-import { Exam } from "./model/exam.model";
-import { FilterBy } from "./model/filter-by.model";
-import { AssessmentExam } from "./model/assessment-exam.model";
-import { Utils } from "../../shared/Utils";
+import { ExamFilter } from "../model/exam-filter.model";
+import { Exam } from "../model/exam.model";
+import { FilterBy } from "../model/filter-by.model";
+import { AssessmentExam } from "../model/assessment-exam.model";
+import { Utils } from "../../../shared/Utils";
 
 @Injectable()
 export class ExamFilterService {
@@ -20,7 +20,7 @@ export class ExamFilterService {
     new ExamFilter('iep', this.root + 'student.iep', 'enum.polar', this.filterByIep),
     new ExamFilter('economicDisadvantage', this.root + 'student.economic-disadvantage', 'enum.polar', this.filterByEconomicDisadvantage),
     new ExamFilter('limitedEnglishProficiency', this.root + 'student.limited-english-proficiency', 'enum.polar', this.filterByLimitedEnglishProficiency),
-    new ExamFilter('filteredEthnicities', this.root + 'student.ethnicity', 'enum.ethnicity', this.notImplemented)
+    new ExamFilter('ethnicities', this.root + 'student.ethnicity', 'enum.ethnicity', this.notImplemented)
   ];
 
   getFilterDefinitions() {
@@ -31,7 +31,7 @@ export class ExamFilterService {
     return this.filterDefinitions.find(x => x.name == filterName);
   }
 
-  applyFilterFor(filterName, exam: Exam, filterBy: FilterBy): boolean {
+  private applyFilterFor(filterName, exam: Exam, filterBy: FilterBy): boolean {
     return this.getFilterDefinitionFor(this.getFilterDefinitionFor(filterName)).apply(exam, filterBy);
   }
 
@@ -42,10 +42,11 @@ export class ExamFilterService {
       return exams;
 
     for (let filter of filterBy.all) {
-      let filterDefinition = this.getFilterDefinitionFor(filter);
+      let name = filter.indexOf('ethnicities') > -1 ? 'ethnicities' : filter;
+      let filterDefinition = this.getFilterDefinitionFor(name);
 
       if (filterDefinition.precondition(assessmentExam.assessment)) {
-        let filterValue = filter == 'offGradeAssessment' ? assessmentExam.assessment.grade : filterBy[ filter ];
+        let filterValue = filter == 'offGradeAssessment' ? assessmentExam.assessment.grade : filterBy[name];
         exams = exams.filter(exam => filterDefinition.apply(exam, filterValue));
       }
     }

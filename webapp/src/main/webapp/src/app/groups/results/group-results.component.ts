@@ -1,9 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, KeyValueDiffers, DoCheck } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CachingDataService } from "../../shared/cachingData.service";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { FilterBy } from "./model/filter-by.model";
-import { ExamFilterService } from "./exam-filter.service";
+import { ExamFilterService } from "./exam-filters/exam-filter.service";
+import { ExamFilterOptionsService } from "./exam-filters/exam-filter-options.service";
+import { ExamFilterOptions } from "./model/exam-filter-options.model";
 
 @Component({
   selector: 'app-group-results',
@@ -11,7 +13,6 @@ import { ExamFilterService } from "./exam-filter.service";
 })
 export class GroupResultsComponent implements OnInit {
   groups;
-  availableSchoolYears;
   currentGroup;
   currentSchoolYear;
   showValuesAsPercent : boolean = true;
@@ -19,6 +20,9 @@ export class GroupResultsComponent implements OnInit {
   clientFilterBy : FilterBy;
   selectedAssessments : AssessmentExam[] = [];
   filters : any[] = [];
+  filterOptions: ExamFilterOptions = new ExamFilterOptions();
+  currentFilters = [];
+  currentFilterDiffers;
 
   get showAdvancedFilters(): boolean {
     return this._showAdvancedFilters;
@@ -33,7 +37,7 @@ export class GroupResultsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private staticDataService: CachingDataService,
+              private filterOptionService: ExamFilterOptionsService,
               private examFilterService : ExamFilterService) {
     this.clientFilterBy = new FilterBy()
   }
@@ -47,8 +51,8 @@ export class GroupResultsComponent implements OnInit {
 
     this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
 
-    this.staticDataService.getSchoolYears().subscribe(years => {
-      this.availableSchoolYears = years;
+    this.filterOptionService.getExamFilterOptions().subscribe(filterOptions => {
+      this.filterOptions = filterOptions;
       this.currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
     });
   }
@@ -60,13 +64,16 @@ export class GroupResultsComponent implements OnInit {
     }
   }
 
-  removeFilter(filter) {
-    if(filter == 'offGradeAssessment')
-      this.clientFilterBy[filter] = false;
-    else if(filter == 'ethnicities')
-      this.clientFilterBy[filter] = [ -1 ];
-    else
-      this.clientFilterBy[filter] = -1;
+  removeFilter(property) {
+    if(property == 'offGradeAssessment'){
+      this.clientFilterBy[property] = false;
+    }
+    else if(property.indexOf('ethnicities') > -1) {
+      this.removeEthnicity(property.substring(property.indexOf('.') + 1));
+    }
+    else{
+      this.clientFilterBy[property] = -1;
+    }
   }
 
   updateAssessment(latestAssessment) {
@@ -83,6 +90,10 @@ export class GroupResultsComponent implements OnInit {
   }
 
   mapParamsToSchoolYear(params) {
-    return Number.parseInt(params[ "schoolYear" ]) || this.availableSchoolYears[ 0 ];
+    return Number.parseInt(params[ "schoolYear" ]) || this.filterOptions.schoolYears[ 0 ];
+  }
+
+  log(val){
+    console.log(val);
   }
 }

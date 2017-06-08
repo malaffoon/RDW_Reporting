@@ -2,7 +2,7 @@ import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRB
 import {MockBackend} from "@angular/http/testing";
 import {
   groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students,
-  mock_rubrics, mock_schoolyears, assessments, DEPRECATED_exams_of_student, user, groupAssessments
+  mock_rubrics, mock_schoolyears, assessments, DEPRECATED_exams_of_student, user, groupAssessments, exam_filter_options
 } from "./data/data";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
@@ -18,6 +18,8 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = groups;
     } else if (requestSignature == `GET /api/user`) {
       body = user;
+    } else if (requestSignature == `GET /api/examFilterOptions`) {
+      body = exam_filter_options;
     } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/report`, 'g').test(requestSignature)) {
       body = {
         //report

@@ -13,7 +13,7 @@ import { Exam } from "../model/exam.model";
 import { CommonModule } from "../../../shared/common.module";
 import { RemoveCommaPipe } from "../../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
-import { ExamFilterService } from "../exam-filter.service";
+import { ExamFilterService } from "../exam-filters/exam-filter.service";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;

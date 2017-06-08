@@ -16,30 +16,39 @@ export class FilterBy extends ObservableObject {
   private _iep: number = -1;
   private _economicDisadvantage: number = -1;
   private _limitedEnglishProficiency: number = -1;
-  private _ethnicities: boolean[] = [ true, false, false, false, false, false, false, false, false ];
+  private _ethnicities: boolean[] = [ true ];
 
   get filteredEthnicities() {
-    return this._ethnicities
-      .map((val, index) => {
-        return { val, index }
-      })
-      .filter(x => x.val && x.index > 0)
-      .map(x => x.index);
+    let ethnicities = [];
+
+    for(let i in this._ethnicities) {
+      if(this._ethnicities.hasOwnProperty(i) && i != "0" && this._ethnicities[i]) {
+        ethnicities.push(i);
+      }
+    }
+
+    return ethnicities;
   }
 
   get all() {
     let all = [];
 
     for (let i in this) {
-      let property = i.substring(1);
+      if (this.hasOwnProperty(i)) {
+        let property = i.substring(1);
 
-      if(this.hasOwnProperty(i)) {
-        if (property == "offGradeAssessment" && this[ i ] === false)
+        if (property == "offGradeAssessment" && this[ i ] === false) {
           continue;
-        else if (property == "ethnicities" && this.filteredEthnicities.length > 0)
-          all.push("filteredEthnicities");
-        else if (this[ i ] >= 0)
+        }
+        else if (property == "ethnicities") {
+          let filteredEthnicities = this.filteredEthnicities;
+          for (let i of filteredEthnicities) {
+            all.push(property + "." + i );
+          }
+        }
+        else if (this[ i ] >= 0) {
           all.push(property);
+        }
       }
     }
 
