@@ -71,11 +71,13 @@ export class SBCheckboxList implements OnInit {
       // Don't allow All to be to set to false by clicking.
       this.modelValue[0] = true;
     }
+    this.modelValue = Object.assign({}, this.modelValue);
   }
 
   valueChange(value) {
     // Set all to true if all options are false.
     this.modelValue[0] = this.setAllValuesAreFalse();
+    this.modelValue = Object.assign({}, this.modelValue);
   }
 
   private setAllValuesAreFalse() : boolean {

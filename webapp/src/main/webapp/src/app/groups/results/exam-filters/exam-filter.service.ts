@@ -11,7 +11,7 @@ export class ExamFilterService {
 
   private filterDefinitions = [
     new ExamFilter('offGradeAssessment', this.root + 'test.off-grade-assessment', 'enum.off-grade', this.filterByEnrolledGradeOff),
-    new ExamFilter('administration', this.root + 'status.administration', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => !x.isSummative),
+    new ExamFilter('administration', this.root + 'status.administration', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isInterim),
     new ExamFilter('summativeStatus', this.root + 'status.summative', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isSummative),
     new ExamFilter('completion', this.root + 'status.completion', 'enum.completeness', this.filterByCompleteness),
     new ExamFilter('gender', this.root + 'student.gender', 'enum.gender', this.filterByGender),
@@ -20,7 +20,7 @@ export class ExamFilterService {
     new ExamFilter('iep', this.root + 'student.iep', 'enum.polar', this.filterByIep),
     new ExamFilter('economicDisadvantage', this.root + 'student.economic-disadvantage', 'enum.polar', this.filterByEconomicDisadvantage),
     new ExamFilter('limitedEnglishProficiency', this.root + 'student.limited-english-proficiency', 'enum.polar', this.filterByLimitedEnglishProficiency),
-    new ExamFilter('ethnicities', this.root + 'student.ethnicity', 'enum.ethnicity', this.notImplemented)
+    new ExamFilter('ethnicities', this.root + 'student.ethnicity', 'enum.ethnicity', this.filterByEthnicity)
   ];
 
   getFilterDefinitions() {
@@ -31,22 +31,24 @@ export class ExamFilterService {
     return this.filterDefinitions.find(x => x.name == filterName);
   }
 
-  private applyFilterFor(filterName, exam: Exam, filterBy: FilterBy): boolean {
-    return this.getFilterDefinitionFor(this.getFilterDefinitionFor(filterName)).apply(exam, filterBy);
-  }
-
   filterExams(assessmentExam: AssessmentExam, filterBy: FilterBy) {
     let exams = assessmentExam.exams;
 
     if (filterBy == null)
       return exams;
 
-    for (let filter of filterBy.all) {
-      let name = filter.indexOf('ethnicities') > -1 ? 'ethnicities' : filter;
-      let filterDefinition = this.getFilterDefinitionFor(name);
+    let filters = this.getFilters(filterBy);
+    for (let filter of filters) {
+      let filterDefinition = this.getFilterDefinitionFor(filter);
 
       if (filterDefinition.precondition(assessmentExam.assessment)) {
-        let filterValue = filter == 'offGradeAssessment' ? assessmentExam.assessment.grade : filterBy[name];
+        let filterValue = filterBy[filter];
+
+        if(filter == 'offGradeAssessment')
+          filterValue = assessmentExam.assessment.grade;
+        else if(filter == 'ethnicities')
+          filterValue = filterBy.filteredEthnicities;
+
         exams = exams.filter(exam => filterDefinition.apply(exam, filterValue));
       }
     }
@@ -54,8 +56,16 @@ export class ExamFilterService {
     return exams;
   }
 
-  private notImplemented(exam, filterValue: any): boolean {
-    return true;
+  private getFilters(filterBy : FilterBy) {
+    let filters = filterBy.all;
+    if(filters.some(x => x.indexOf('ethnicities') > -1)){
+      // remove individual 'ethnicities.code' and add just one ethnicities
+      // as ethnicities need to be evaluated all at once.
+      filters = filters.filter(x => x.indexOf('ethnicities') == -1);
+      filters.push('ethnicities');
+    }
+
+    return filters;
   }
 
   private filterByAdministrativeCondition(exam: Exam, filterValue: any) {
@@ -92,5 +102,9 @@ export class ExamFilterService {
 
   private filterByLimitedEnglishProficiency(exam: Exam, filterValue: any) {
     return exam.limitedEnglishProficiency === Utils.polarEnumToBoolean(filterValue);
+  }
+
+  private filterByEthnicity(exam: Exam, filterValue: any) {
+    return exam.ethnicities.some(ethnicity => filterValue.some(code => code == ethnicity));
   }
 }

@@ -35,18 +35,15 @@ export class FilterBy extends ObservableObject {
 
     for (let i in this) {
       if (this.hasOwnProperty(i)) {
-        let property = i.substring(1);
+        let property = i.substring(1); // trim leading underscore
 
-        if (property == "offGradeAssessment" && this[ i ] === false) {
-          continue;
-        }
-        else if (property == "ethnicities") {
+        if (property == "ethnicities") {
           let filteredEthnicities = this.filteredEthnicities;
           for (let i of filteredEthnicities) {
             all.push(property + "." + i );
           }
         }
-        else if (this[ i ] >= 0) {
+        else if (this.isFilterEnabled(property)) {
           all.push(property);
         }
       }
@@ -152,5 +149,12 @@ export class FilterBy extends ObservableObject {
   set limitedEnglishProficiency(value: number) {
     this._limitedEnglishProficiency = value;
     this.notifyChange('limitedEnglishProficiency');
+  }
+
+  private isFilterEnabled(property) {
+    if(property == "offGradeAssessment" && this[ property ] === false)
+      return false;
+    else
+      return this[property] > -1;
   }
 }

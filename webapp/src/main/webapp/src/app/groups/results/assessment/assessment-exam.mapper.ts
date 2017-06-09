@@ -51,7 +51,11 @@ export class AssessmentExamMapper {
     uiModel.iep = apiModel.studentContext.iep;
     uiModel.economicDisadvantage = apiModel.studentContext.economicDisadvantage;
     uiModel.limitedEnglishProficiency = apiModel.studentContext.lep;
-    uiModel.ethnicities = apiModel.student.ethnicityCodes;
+
+    uiModel.ethnicities = [];
+
+    if(apiModel.student.ethnicityCodes)
+      apiModel.student.ethnicityCodes.forEach(code => uiModel.ethnicities.push(code));
 
     return uiModel;
   }

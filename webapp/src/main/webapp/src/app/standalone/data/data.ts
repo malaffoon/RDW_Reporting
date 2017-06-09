@@ -110,7 +110,8 @@ export const students = [ {
   section504: true,
   iep: true,
   economicDisadvantage: true,
-  lep: true
+  lep: true,
+  ethnicityCodes: [ exam_filter_options.ethnicities[0] ]
 }, {
   firstName: "Clementine",
   lastName: "Roach",
@@ -118,7 +119,8 @@ export const students = [ {
   section504: true,
   iep: false,
   economicDisadvantage: true,
-  lep: false
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[1], exam_filter_options.ethnicities[0] ]
 }, {
   firstName: "Hasad",
   lastName: "Valenzuela",
@@ -127,7 +129,8 @@ export const students = [ {
   section504: false,
   iep: false,
   economicDisadvantage: false,
-  lep: false
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[2] ]
 }, {
   firstName: "Joe",
   lastName: "Smith",
@@ -135,7 +138,8 @@ export const students = [ {
   section504: true,
   iep: true,
   economicDisadvantage: true,
-  lep: true
+  lep: true,
+  ethnicityCodes: [ exam_filter_options.ethnicities[3] ]
 }, {
   firstName: "Joseph",
   lastName: "Cleveland",
@@ -144,7 +148,8 @@ export const students = [ {
   section504: false,
   iep: false,
   economicDisadvantage: false,
-  lep: true
+  lep: true,
+  ethnicityCodes: [ exam_filter_options.ethnicities[4], exam_filter_options.ethnicities[3] ]
 }, {
   firstName: "Sara",
   lastName: "Blankenship",
@@ -152,7 +157,8 @@ export const students = [ {
   section504: true,
   iep: true,
   economicDisadvantage: false,
-  lep: false
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[3] ]
 }, {
   firstName: "Linus",
   lastName: "Todd",
@@ -160,7 +166,8 @@ export const students = [ {
   section504: true,
   iep: true,
   economicDisadvantage: false,
-  lep: false
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[2] ]
 }, {
   firstName: "Hope",
   lastName: "Cardinas",
@@ -169,7 +176,8 @@ export const students = [ {
   section504: false,
   iep: true,
   economicDisadvantage: true,
-  lep: false
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[1], exam_filter_options.ethnicities[5] ]
 }].map((student: any, index: number) => {
   student.id = index;
   student.ssid = randomSsid();
@@ -261,6 +269,7 @@ export const exams_of_student = [
     iep: exam.student.iep,
     economicDisadvantage: exam.student.economicDisadvantage,
     lep: exam.student.lep,
+    ethnicityCodes: exam.student.ethnicityCodes
   };
   exam.scaleScore.standardError = intBetween(10, 100);
   return exam;

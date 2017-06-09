@@ -151,7 +151,7 @@
         "value-as-percent": "Percent",
         "value-as-number": "Number",
         "grade-prefix" : "G",
-        "empty-message" : "Please select at least one session to display results.",
+        "empty-message" : "No results found by selected sessions and advanced filters.",
         "exam-cols": {
           "name": "Name",
           "date": "Date",

@@ -1,6 +1,5 @@
-import { Component, OnInit, KeyValueDiffers, DoCheck } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { CachingDataService } from "../../shared/cachingData.service";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { FilterBy } from "./model/filter-by.model";
 import { ExamFilterService } from "./exam-filters/exam-filter.service";
@@ -22,7 +21,6 @@ export class GroupResultsComponent implements OnInit {
   filters : any[] = [];
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   currentFilters = [];
-  currentFilterDiffers;
 
   get showAdvancedFilters(): boolean {
     return this._showAdvancedFilters;
@@ -62,6 +60,8 @@ export class GroupResultsComponent implements OnInit {
     if(this.clientFilterBy.filteredEthnicities.length == 0){
       this.clientFilterBy.ethnicities[0] = true; // None are selected, set all to true.
     }
+
+    this.clientFilterBy.ethnicities = Object.assign({}, this.clientFilterBy.ethnicities);
   }
 
   removeFilter(property) {
