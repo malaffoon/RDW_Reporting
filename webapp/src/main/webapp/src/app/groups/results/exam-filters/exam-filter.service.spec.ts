@@ -267,4 +267,27 @@ describe('ExamFilterService', () => {
     expect(actual.some(x => x.limitedEnglishProficiency === false)).toBeTruthy();
     expect(actual.some(x => x.limitedEnglishProficiency === true)).toBeFalsy();
   });
+
+  it('should filter exams by ethnicities', () => {
+    filterBy.ethnicities["Filipino"] = true;
+    filterBy.ethnicities["Asian"] = true;
+    filterBy.ethnicities["BlackOrAfricanAmerican"] = true;
+
+    assessmentExam.exams[ 0 ].ethnicities = [ "Filipino", "White"];
+    assessmentExam.exams[ 1 ].ethnicities = [ "White"] ;
+    assessmentExam.exams[ 2 ].ethnicities = [ "Asian" ];
+    assessmentExam.exams[ 3 ].ethnicities = [ "DemographicRaceTwoOrMoreRaces", "NativeHawaiianOrOtherPacificIslander" ];
+
+    assessmentExam.exams = assessmentExam.exams.map((value, index) => {
+      let exam = value;
+      exam.session = index.toString();
+      return exam;
+    });
+
+    let actual = fixture.filterExams(assessmentExam, filterBy);
+
+    expect(actual.length).toBe(2);
+    expect(actual[0].session).toBe("0");
+    expect(actual[1].session).toBe("2");
+  });
 });
