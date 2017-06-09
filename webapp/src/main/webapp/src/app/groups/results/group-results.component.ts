@@ -5,6 +5,8 @@ import { FilterBy } from "./model/filter-by.model";
 import { ExamFilterService } from "./exam-filters/exam-filter.service";
 import { ExamFilterOptionsService } from "./exam-filters/exam-filter-options.service";
 import { ExamFilterOptions } from "./model/exam-filter-options.model";
+import { Assessment } from "./model/assessment.model";
+import { AssessmentService } from "./assessment/assessment.service";
 
 @Component({
   selector: 'app-group-results',
@@ -14,13 +16,14 @@ export class GroupResultsComponent implements OnInit {
   groups;
   currentGroup;
   currentSchoolYear;
-  showValuesAsPercent : boolean = true;
-  expandFilterOptions : boolean = false;
-  clientFilterBy : FilterBy;
-  selectedAssessments : AssessmentExam[] = [];
-  filters : any[] = [];
+  showValuesAsPercent: boolean = true;
+  expandFilterOptions: boolean = false;
+  clientFilterBy: FilterBy;
+  selectedAssessments: AssessmentExam[] = [];
+  filters: any[] = [];
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   currentFilters = [];
+  availableAssessments: Assessment[] = [];
 
   get showAdvancedFilters(): boolean {
     return this._showAdvancedFilters;
@@ -31,12 +34,27 @@ export class GroupResultsComponent implements OnInit {
     this.expandFilterOptions = value; // Automatically expand / collapse filter options.
   }
 
+  get expandAssessments(): boolean {
+    return this._expandAssessments;
+  }
+
+  set expandAssessments(value: boolean) {
+    this._expandAssessments = value;
+    if(value && this.availableAssessments.length == 0) {
+      this.assessmentService.getAvailableAssessments(this.currentGroup.id, this.currentSchoolYear).subscribe(result =>{
+        this.availableAssessments = result;
+      })
+    }
+  }
+
   private _showAdvancedFilters : boolean = false;
+  private _expandAssessments: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private filterOptionService: ExamFilterOptionsService,
-              private examFilterService : ExamFilterService) {
+              private examFilterService: ExamFilterService,
+              private assessmentService: AssessmentService) {
     this.clientFilterBy = new FilterBy()
   }
 

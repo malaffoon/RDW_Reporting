@@ -21,18 +21,31 @@ export class AssessmentService {
     }
   }
 
-  private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set('schoolYear', schoolYear.toString());
+  getAvailableAssessments(groupId: number, schoolYear: number) {
+    return this.dataService.get(`/groups/${groupId}/assessments`, { search: this.getSchoolYearParams(schoolYear) })
+      .catch(response => {
+        console.warn(response);
+        return Observable.empty();
+      })
+      .map(x => {
+        return this.mapper.mapAssessmentsFromApi(x);
+      });
+  }
 
-    return this.dataService.get(`/groups/${groupId}/latestassessment`, { search: params })
+  private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
+    return this.dataService.get(`/groups/${groupId}/latestassessment`, { search: this.getSchoolYearParams(schoolYear) })
       .catch(response => {
         console.warn(response);
         return Observable.empty();
       })
       .map(x => {
         return this.mapper.mapFromApi(x);
-      })
+      });
+  }
 
+  private getSchoolYearParams(schoolYear): URLSearchParams {
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('schoolYear', schoolYear.toString());
+    return params;
   }
 }

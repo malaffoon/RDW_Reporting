@@ -77,6 +77,8 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYear=", ""));
       body = groupAssessments.find(x=> x.assessment.academicYear == schoolYear);
 
+    } else if(new RegExp(`GET /api/groups/\\d+/assessments`, 'g').test(requestSignature)) {
+      body = assessments;
     } else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
       let studentsResult = students.filter(x =>

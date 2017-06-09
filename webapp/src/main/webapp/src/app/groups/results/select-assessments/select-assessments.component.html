@@ -1,0 +1,18 @@
+<div style="">
+  <p class="spacer-v-lg">
+    {{ 'labels.groups.results.select-assessments.instruct' | translate }}
+  </p>
+
+  <div *ngFor="let byGrade of assessmentsByGrade" class="col-md-3">
+    <div class="panel panel-primary">
+      <div class="panel-heading blue">
+        <p><strong>Grade {{byGrade.grade}}</strong></p>
+      </div>
+      <div class="panel-body">
+        <div *ngFor="let assessment of byGrade.assessments">{{assessment.name}}</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

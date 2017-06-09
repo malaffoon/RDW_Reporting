@@ -77,10 +77,21 @@
           <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
           <i class="fa fa-minus-square color-gray icon-size-md"></i>
         </a>
-        <a class="btn btn-default btn-xs btn-round spacer-v-sm">
+        <a class="btn btn-default btn-xs btn-round spacer-v-sm" (click)="expandAssessments=true">
           <i class="fa fa-plus color-gray"></i>
         </a>
       </div>
+    </div>
+    <div id="group-results-edit-assessments" [hidden]="!expandAssessments" class="well gray-lighter">
+      <div id="adv-filters-edit-assessments-collapse" class="pull-right">
+        <button class="form-control btn btn-sm" (click)="expandAssessments = false">
+          {{'buttons.collapsible.collapse' | translate }}
+          <i class="fa fa-chevron-up" aria-hidden="true"></i>
+        </button>
+
+      </div>
+      <select-assessments [assessments]="availableAssessments"></select-assessments>
+
     </div>
   </div>
 
