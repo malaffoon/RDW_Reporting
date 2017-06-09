@@ -13,8 +13,10 @@ import { GroupResultsComponent } from "./results/group-results.component";
 import { AssessmentResultsComponent } from "./results/assessment/assessment-results.component";
 import { AssessmentExamMapper } from "./results/assessment/assessment-exam.mapper";
 import { ExamStatisticsCalculator } from "./results/assessment/exam-statistics-calculator";
-import { AdvFiltersComponent } from './results/adv-filters/adv-filters.component';
-import { ExamFilterService } from "./results/exam-filter.service";
+import { AdvFiltersComponent } from "./results/adv-filters/adv-filters.component";
+import { ExamFilterService } from "./results/exam-filters/exam-filter.service";
+import { ExamFilterOptionsService } from "./results/exam-filters/exam-filter-options.service";
+import { ExamFilterOptionsMapper } from "./results/exam-filters/exam-filter-options.mapper";
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import { ExamFilterService } from "./results/exam-filter.service";
     AssessmentService,
     AssessmentExamMapper,
     ExamStatisticsCalculator,
-    ExamFilterService
+    ExamFilterService,
+    ExamFilterOptionsService,
+    ExamFilterOptionsMapper
   ]
 })
 export class GroupsModule {

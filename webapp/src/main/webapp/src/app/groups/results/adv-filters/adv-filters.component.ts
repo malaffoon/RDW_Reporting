@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FilterBy } from "../model/filter-by.model";
+import { ExamFilterOptions } from "../model/exam-filter-options.model";
 
 /*
   This component contains all of the selectable advanced filters
@@ -20,6 +21,9 @@ export class AdvFiltersComponent implements OnInit {
   set filterBy(value: FilterBy) {
     this._filterBy = value;
   }
+
+  @Input()
+  filterOptions: ExamFilterOptions;
 
   constructor() {
   }

@@ -151,7 +151,7 @@
         "value-as-percent": "Percent",
         "value-as-number": "Number",
         "grade-prefix" : "G",
-        "empty-message" : "Please select at least one session to display results.",
+        "empty-message" : "No results found by selected sessions and advanced filters.",
         "exam-cols": {
           "name": "Name",
           "date": "Date",
@@ -248,14 +248,14 @@
       "false" : "Show"
     },
     "ethnicity" : {
-      "1": "Hispanic / Latino",
-      "2": "American Indian or Alaska Native",
-      "3": "Asian",
-      "4": "Black or African American",
-      "5": "White",
-      "6": "Native Hawaiian or Pacific Islander",
-      "7": "Demographic Race of Two or More",
-      "8": "Filipino"
+      "HispanicOrLatinoEthnicity": "Hispanic / Latino",
+      "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
+      "Asian": "Asian",
+      "BlackOrAfricanAmerican": "Black or African American",
+      "White": "White",
+      "NativeHawaiianOrOtherPacificIslander": "Native Hawaiian or Pacific Islander",
+      "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
+      "Filipino": "Filipino"
     }
   },
   "assessment_report": {

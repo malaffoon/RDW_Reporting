@@ -7,6 +7,8 @@ import { AppModule } from "../../app.module";
 import { ActivatedRoute } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { CachingDataService } from "../../shared/cachingData.service";
+import { ExamFilterOptionsService } from "./exam-filters/exam-filter-options.service";
+import { ExamFilterOptions } from "./model/exam-filter-options.model";
 
 describe('GroupResultsComponent', () => {
   let component: GroupResultsComponent;
@@ -21,8 +23,8 @@ describe('GroupResultsComponent', () => {
         provide: ActivatedRoute,
         useValue: { snapshot: mockRouteSnapshot }
       }, {
-        provide: CachingDataService,
-        useClass: MockStaticDataService
+        provide: ExamFilterOptionsService,
+        useClass: MockExamFilterOptionsService
       } ]
     }).compileComponents();
 
@@ -47,6 +49,7 @@ describe('GroupResultsComponent', () => {
 
   it('should map schoolyear to filterBy object', () => {
     let params = { schoolYear: 2005 };
+
     let actual = component.mapParamsToSchoolYear(params);
 
     expect(actual).toBe(2005);
@@ -73,9 +76,12 @@ function getRouteSnapshot() {
   };
 }
 
-class MockStaticDataService extends CachingDataService {
-  public getSchoolYears() {
-    let result = [ 2009, 2008, 2007, 2006, 2005 ];
+class MockExamFilterOptionsService {
+  public getExamFilterOptions() {
+
+    let result = new ExamFilterOptions();
+    result.schoolYears = [ 2009, 2008, 2007, 2006, 2005 ];
+    result.ethnicities = [ "AmericanIndianOrAlaskaNative", "Asian", "BlackOrAfricanAmerican" ];
 
     return Observable.of(result);
   }

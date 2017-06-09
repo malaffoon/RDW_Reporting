@@ -2,18 +2,18 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { URLSearchParams } from "@angular/http";
 import { DataService } from "../../../shared/data.service";
-import { CachingDataService } from "../../../shared/cachingData.service";
 import { AssessmentExamMapper } from "./assessment-exam.mapper";
+import { ExamFilterOptionsService } from "../exam-filters/exam-filter-options.service";
 
 @Injectable()
 export class AssessmentService {
-  constructor(private dataService: DataService, private cachingService: CachingDataService, private mapper: AssessmentExamMapper) {
+  constructor(private dataService: DataService, private filterOptionService: ExamFilterOptionsService, private mapper: AssessmentExamMapper) {
   }
 
   getMostRecentAssessment(groupId: number, schoolYear?: number) {
     if (schoolYear == undefined) {
-      return this.cachingService.getSchoolYears().mergeMap(years => {
-        return this.getRecentAssessmentBySchoolYear(groupId, years[ 0 ]);
+      return this.filterOptionService.getExamFilterOptions().mergeMap(options => {
+        return this.getRecentAssessmentBySchoolYear(groupId, options.schoolYears[ 0 ]);
       });
     }
     else {

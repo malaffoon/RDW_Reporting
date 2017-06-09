@@ -159,18 +159,18 @@ describe('FilterBy model', () =>{
     expect(fixture.all).toContain('iep');
     expect(fixture.all).toContain('economicDisadvantage');
     expect(fixture.all).toContain('limitedEnglishProficiency');
-    expect(fixture.all).toContain('filteredEthnicities');
+    expect(fixture.all).toContain('ethnicities.3');
   });
 
   it('should return only selected ethnicities', () =>{
     let fixture = new FilterBy();
-    fixture.ethnicities[2] = true;
-    fixture.ethnicities[3] = true;
-    fixture.ethnicities[1] = true;
+    fixture.ethnicities['Asian'] = true;
+    fixture.ethnicities['White'] = true;
+    fixture.ethnicities['Filipino'] = true;
 
     expect(fixture.filteredEthnicities.length).toBe(3);
-    expect(fixture.filteredEthnicities).toContain(1);
-    expect(fixture.filteredEthnicities).toContain(2);
-    expect(fixture.filteredEthnicities).toContain(3);
+    expect(fixture.filteredEthnicities).toContain('Asian');
+    expect(fixture.filteredEthnicities).toContain('White');
+    expect(fixture.filteredEthnicities).toContain('Filipino');
   })
 });

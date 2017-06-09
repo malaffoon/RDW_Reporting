@@ -21,6 +21,11 @@ export const user = {
   permissions: [ "INDIVIDUAL_PII_READ", "GROUP_READ" ]
 };
 
+export const exam_filter_options = {
+  "schoolYears": [ 2017, 2016, 2015, 2014, 2013 ],
+  "ethnicities": [ "AmericanIndianOrAlaskaNative", "Asian", "BlackOrAfricanAmerican", "DemographicRaceTwoOrMoreRaces", "Filipino", "HispanicOrLatinoEthnicity", "NativeHawaiianOrOtherPacificIslander", "White" ]
+};
+
 export const iab_items = [
   {
     claim: 'Concepts and Procedures',
@@ -98,16 +103,82 @@ export const iab_items = [
   return item;
 });
 
-export const students = [
-  { firstName: "David", lastName: "Hayden" },
-  { firstName: "Clementine", lastName: "Roach" },
-  { firstName: "Hasad", lastName: "Valenzuela" },
-  { firstName: "Joe", lastName: "Smith" },
-  { firstName: "Joseph", lastName: "Cleveland" },
-  { firstName: "Sara", lastName: "Blankenship" },
-  { firstName: "Linus", lastName: "Todd" },
-  { firstName: "Hope", lastName: "Cardinas" }
-].map((student: any, index: number) => {
+export const students = [ {
+  firstName: "David",
+  lastName: "Hayden",
+  genderId: 1,
+  section504: true,
+  iep: true,
+  economicDisadvantage: true,
+  lep: true,
+  ethnicityCodes: [ exam_filter_options.ethnicities[0] ]
+}, {
+  firstName: "Clementine",
+  lastName: "Roach",
+  genderId: 2,
+  section504: true,
+  iep: false,
+  economicDisadvantage: true,
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[1], exam_filter_options.ethnicities[0] ]
+}, {
+  firstName: "Hasad",
+  lastName: "Valenzuela",
+  genderId: 1,
+  migrantStatus: true,
+  section504: false,
+  iep: false,
+  economicDisadvantage: false,
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[2] ]
+}, {
+  firstName: "Joe",
+  lastName: "Smith",
+  genderId: 1,
+  section504: true,
+  iep: true,
+  economicDisadvantage: true,
+  lep: true,
+  ethnicityCodes: [ exam_filter_options.ethnicities[3] ]
+}, {
+  firstName: "Joseph",
+  lastName: "Cleveland",
+  genderId: 1,
+  migrantStatus: false,
+  section504: false,
+  iep: false,
+  economicDisadvantage: false,
+  lep: true,
+  ethnicityCodes: [ exam_filter_options.ethnicities[4], exam_filter_options.ethnicities[3] ]
+}, {
+  firstName: "Sara",
+  lastName: "Blankenship",
+  genderId: 2,
+  section504: true,
+  iep: true,
+  economicDisadvantage: false,
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[3] ]
+}, {
+  firstName: "Linus",
+  lastName: "Todd",
+  genderId: 1,
+  section504: true,
+  iep: true,
+  economicDisadvantage: false,
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[2] ]
+}, {
+  firstName: "Hope",
+  lastName: "Cardinas",
+  genderId: 2,
+  migrantStatus: true,
+  section504: false,
+  iep: true,
+  economicDisadvantage: true,
+  lep: false,
+  ethnicityCodes: [ exam_filter_options.ethnicities[1], exam_filter_options.ethnicities[5] ]
+}].map((student: any, index: number) => {
   student.id = index;
   student.ssid = randomSsid();
   student.exams = exams_of_student;
@@ -191,8 +262,16 @@ export const exams_of_student = [
 ].map((exam: any, index: number) => {
   exam.id = randomId();
   exam.items = iab_items;
-  exam.studentContext = { gradeId: exam.grade };
-  exam.scaleScore.standardError = intBetween(10,100);
+  exam.studentContext = {
+    gradeId: exam.grade,
+    migrantStatus: exam.student.migrantStatus,
+    section504: exam.student.section504,
+    iep: exam.student.iep,
+    economicDisadvantage: exam.student.economicDisadvantage,
+    lep: exam.student.lep,
+    ethnicityCodes: exam.student.ethnicityCodes
+  };
+  exam.scaleScore.standardError = intBetween(10, 100);
   return exam;
 });
 

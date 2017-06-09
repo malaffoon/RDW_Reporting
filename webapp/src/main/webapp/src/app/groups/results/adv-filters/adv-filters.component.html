@@ -2,8 +2,7 @@
   <p class="spacer-v-md">
     {{ translateRoot + 'instruct' | translate}}
   </p>
-  <div class="row">
-
+   <div class="row">
     <div id="filter-by-status" class="col-md-4">
       <div>
         {{ translateRoot + 'status.label' | translate }}
@@ -95,7 +94,7 @@
             <strong>{{ translateRoot + 'student.ethnicity' | translate }}</strong>
           </label>
         </div>
-        <sb-checkbox-list [model]="filterBy" [values]="[1,2,3,4,5,6,8]" property="ethnicities" enum="enum.ethnicity"></sb-checkbox-list>
+        <sb-checkbox-list [model]="filterBy" [values]="filterOptions.ethnicities" property="ethnicities" enum="enum.ethnicity"></sb-checkbox-list>
       </div>
     </div>
   </div>
