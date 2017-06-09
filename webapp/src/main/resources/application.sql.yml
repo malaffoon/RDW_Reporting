@@ -227,6 +227,18 @@ sql:
         and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
 
   assessment:
+    grade:
+      findAllForSchool: >-
+        select id, code
+        from grade g where exists (
+            select grade_id
+            from exam e
+              join school s on e.school_id=s.id
+            where e.school_id=:school_id
+            and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+            and g.id=e.grade_id
+        )
+
     item:
       findDifficultyCutsForId: >-
           select idc.moderate_low_end, idc.difficult_low_end
@@ -280,18 +292,6 @@ sql:
         or district_id in (:district_ids)
         or id in (:school_ids)
       );
-
-  grade:
-    findAllForSchool: >-
-      select id, code
-      from grade g where exists (
-          select grade_id
-          from exam e
-            join school s on e.school_id=s.id
-          where e.school_id=:school_id
-          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
-          and g.id=e.grade_id
-      )
 
   ethnicity:
     findAll: >-
