@@ -240,18 +240,9 @@ sql:
         )
 
     item:
-      findDifficultyCutsForId: >-
-          select idc.moderate_low_end, idc.difficult_low_end
-          from asmt a
-            join item_difficulty_cuts idc
-              on a.type_id=idc.asmt_type_id
-              and a.subject_id=idc.subject_id
-              and a.grade_id=idc.grade_id
-          where a.id=:assessment_id
-
       findAllForAssessment: >-
         select i.id,
-          i.difficulty,
+          i.difficulty_code,
           i.max_points,
           c.code as claim,
           t.code as target
