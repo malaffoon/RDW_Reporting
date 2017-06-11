@@ -1,126 +1,82 @@
-<div>
-  <p class="spacer-v-md">
-    {{ translateRoot + 'instruct' | translate}}
-  </p>
-  <div class="row">
+<p>{{ translateRoot + 'instruct' | translate}}</p>
 
-    <div id="filter-by-status" class="col-md-4">
-      <div>
-        {{ translateRoot + 'status.label' | translate }}
-        <hr class="margin-top-0">
-      </div>
-      <div class="spacer-v-md">
-        <label>
-          <strong>{{ translateRoot + 'status.administration' | translate }}</strong>
-        </label>
+<div class="flex-children">
+  <div id="filter-by-test" class="block-children">
+    <p class="gray-darker border-bottom">{{ translateRoot + 'test.label' | translate }}</p>
+
+    <label for="btn-group-off-grade-assessment">{{ translateRoot + 'test.off-grade-assessment' | translate }}</label>
+
+    <div id="btn-group-off-grade-assessment" class="btn-group nested-btn-group-sm toggle-group" data-toggle="buttons">
+      <label class="btn btn-primary" [ngClass]="{'active': !filterBy.offGradeAssessment}">
+        <input [value]="false" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle">{{ 'buttons.visibility.show' | translate }}
+      </label>
+      <label class="btn btn-primary" [ngClass]="{'active': filterBy.offGradeAssessment}">
+        <input [value]="true" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle">{{ 'buttons.visibility.hide' | translate }}
+      </label>
+    </div>
+  </div>
+
+  <div id="filter-by-status" class="block-children">
+    <p class="gray-darker border-bottom">{{ translateRoot + 'status.label' | translate }}</p>
+    <div class="flex-children">
+      <div class="block-children">
+        <label>{{ translateRoot + 'status.administration' | translate }}</label>
         <sb-radio-button-list [model]="filterBy" [values]="[2,3]" property="administration" enum="enum.administrative-condition" ></sb-radio-button-list>
       </div>
-      <div class="spacer-v-md">
-        <div>
-          <label>
-            <strong>{{ translateRoot + 'status.summative' | translate }}</strong>
-          </label>
-        </div>
+      <div class="block-children">
+        <label>{{ translateRoot + 'status.summative' | translate }}</label>
         <sb-radio-button-list [model]="filterBy" [values]="[1,4]" property="summativeStatus" enum="enum.administrative-condition"></sb-radio-button-list>
       </div>
-      <div>
-        <div>
-          <label>
-            <strong>{{ translateRoot + 'status.completion' | translate }}</strong>
-          </label>
-        </div>
+      <div class="block-children">
+        <label>{{ translateRoot + 'status.completion' | translate }}</label>
+      </div>
+      <div class="block-children">
         <sb-radio-button-list [model]="filterBy" [values]="[2,1]" property="completion" enum="enum.completeness"></sb-radio-button-list>
       </div>
     </div>
-    <div id="filter-by-student" class="col-md-8">
-      <div>
-        {{ translateRoot + 'student.label' | translate }}
-        <hr class="margin-top-0">
-      </div>
-      <div class="col-md-4 pad-left-0">
-        <div class="spacer-v-md">
-          <div>
-            <label>
-              <strong>{{ translateRoot + 'student.gender' | translate }}</strong>
-            </label>
-          </div>
+  </div>
+
+  <div id="filter-by-student" class="block-children">
+    <p class="gray-darker border-bottom">{{ translateRoot + 'student.label' | translate }}</p>
+    <div class="flex-children">
+      <div class="block-children">
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.gender' | translate }}</label>
           <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="gender" enum="enum.gender"></sb-radio-button-list>
         </div>
-        <div class="spacer-v-md">
-          <div>
-            <label>
-              <strong>{{ translateRoot + 'student.migrant-status' | translate }}</strong>
-            </label>
-          </div>
+
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.migrant-status' | translate }}</label>
           <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="migrantStatus" enum="enum.polar"></sb-radio-button-list>
         </div>
-        <div class="spacer-v-md">
-          <div>
-            <label>
-              <strong>{{ translateRoot + 'student.504-plan' | translate }}</strong>
-            </label>
-          </div>
+
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.504-plan' | translate }}</label>
           <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="plan504" enum="enum.polar"></sb-radio-button-list>
         </div>
       </div>
-      <div class="col-md-3 pad-left-0">
-        <div class="spacer-v-md">
-          <div>
-            <label>
-              <strong>{{ translateRoot + 'student.iep' | translate }}</strong>
-            </label>
-          </div>
+      <div class="block-children">
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.iep' | translate }}</label>
           <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="iep" enum="enum.polar"></sb-radio-button-list>
         </div>
-        <div class="spacer-v-md">
-          <div>
-            <label>
-              <strong>{{ translateRoot + 'student.economic-disadvantage' | translate }}</strong>
-            </label>
-          </div>
+
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.economic-disadvantage' | translate }}</label>
           <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="economicDisadvantage" enum="enum.polar"></sb-radio-button-list>
         </div>
-        <div class="spacer-v-md">
-          <div>
-            <label>
-              <strong>{{ translateRoot + 'student.limited-english-proficiency' | translate }}</strong>
-            </label>
-          </div>
+
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.limited-english-proficiency' | translate }}</label>
           <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="limitedEnglishProficiency" enum="enum.polar"></sb-radio-button-list>
         </div>
       </div>
-      <div class="col-md-5 pad-left-0">
-        <div>
-          <label>
-            <strong>{{ translateRoot + 'student.ethnicity' | translate }}</strong>
-          </label>
-        </div>
-        <sb-checkbox-list [model]="filterBy" [values]="[1,2,3,4,5,6,8]" property="ethnicities" enum="enum.ethnicity"></sb-checkbox-list>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div id="filter-by-test" class="col-md-2">
-      <div>
-        {{ translateRoot + 'test.label' | translate }}
-        <hr class="margin-top-0">
-      </div>
-      <div>
-        <div>
-          <label for="btn-group-off-grade-assessment">
-            <strong>{{ translateRoot + 'test.off-grade-assessment' | translate }}</strong>
-          </label>
-        </div>
-        <div id="btn-group-off-grade-assessment" class="btn-group nested-btn-group-sm toggle-group" data-toggle="buttons">
-          <label class="btn btn-primary" [ngClass]="{'active': !filterBy.offGradeAssessment}">
-            <input [value]="false" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle">{{ 'buttons.visibility.show' | translate }}
-          </label>
-          <label class="btn btn-primary" [ngClass]="{'active': filterBy.offGradeAssessment}">
-            <input [value]="true" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle">{{ 'buttons.visibility.hide' | translate }}
-          </label>
+      <div class="block-children">
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.ethnicity' | translate }}</label>
+          <sb-checkbox-list [model]="filterBy" [values]="[1,2,3,4,5,6,8]" property="ethnicities" enum="enum.ethnicity"></sb-checkbox-list>
         </div>
       </div>
     </div>
   </div>
 </div>
-

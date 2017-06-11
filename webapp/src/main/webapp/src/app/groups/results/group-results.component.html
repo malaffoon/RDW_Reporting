@@ -1,106 +1,122 @@
-<div class="pad-top-20">
-  <h3><i class="fa fa-group color-green"></i> {{'labels.groups.name' | translate}}</h3>
-  <div class="well-group">
-    <div id="group-results-basic-filters" class="well">
-      <div class="well-body row">
-        <div class="col-md-4">
+<!-- My Groups -->
+<h2 class="blue-dark h3 mb-md">
+  {{'labels.groups.name' | translate}}
+  <a href="#" class="btn btn-info btn-xs pull-right">
+    <i class="fa fa-compass"></i> Legend
+  </a>
+</h2>
+<div class="well-group">
+
+<!-- My Groups Filter Options -->
+<div id="group-results-basic-filters" class="well">
+  <div class="well-body">
+    <div class="form-group">
+      <div class="flex-children">
+        <!-- Group Select -->
+        <div class="flex-child">
           <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
           <!--TODO: type ahead? -->
-          <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute($event)" class="dropdown form-control">
+          <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute($event)" class="form-control">
             <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
           </select>
         </div>
-        <div class="col-md-2">
+        <!-- School Year -->
+        <div class="flex-child">
           <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
-          <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute($event)" class="dropdown form-control">
+          <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute($event)" class="form-control">
             <option *ngFor="let year of availableSchoolYears" [ngValue]="year">{{year | schoolYear}}</option>
           </select>
         </div>
-        <div class="col-md-6">
-          <div class="pull-right">
-            <label for="advanced">{{'labels.groups.results.adv-filters.label'  | translate}}</label>
-            <button id="advanced" class="form-control" (click)="showAdvancedFilters = !showAdvancedFilters">
-              {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
-              <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}" aria-hidden="true"></i>
+        <!-- Advanced Filters Toggle -->
+        <div class="flex-child">
+          <label for="advanced">{{'labels.groups.results.adv-filters.label'  | translate}}</label>
+          <button id="advanced" class="form-control btn btn-default" (click)="showAdvancedFilters = !showAdvancedFilters">
+            {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
+            <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- My Groups Advanced Filters -->
+<div id="group-results-adv-filters" [hidden]="!showAdvancedFilters" class="well gray-lightest">
+  <div>
+    <h2 class="h3 gray-darkest">
+      <i class="fa fa-check-square"></i> {{'labels.groups.results.adv-filters.label' | translate }}
+      <button id="adv-filters-expand-collapse" class="btn btn-default btn-sm pull-right" (click)="expandFilterOptions = !expandFilterOptions">
+        {{'buttons.collapsible.' + (expandFilterOptions ? 'collapse' : 'expand') | translate }}
+        <i class="fa" [ngClass]="{'fa-chevron-up': expandFilterOptions, 'fa-chevron-down': !expandFilterOptions}" aria-hidden="true"></i>
+      </button>
+    </h2>
+    <p class="gray-darker">{{'labels.groups.results.adv-filters.subhead' | translate }}</p>
+  </div>
+  <!-- Selected Filters -->
+  <div id="adv-filters-selected" class="flex-children">
+    <div *ngFor="let filter of clientFilterBy.all">
+      <span *ngIf="filter == 'filteredEthnicities'">
+        <a *ngFor="let ethnicity of clientFilterBy[filter]" class="tag aqua reverse slim" (click)="removeEthnicity(ethnicity)">
+          <span><strong>{{ filters[filter].enumValue + '.' + ethnicity | translate}}</strong> {{ filters[filter].label | translate }}</span>
+          <span class="icon"><i class="fa fa-close"></i></span>
+        </a>
+      </span>
+      <a *ngIf="filter != 'filteredEthnicities'" class="tag aqua reverse slim" (click)="removeFilter(filter)">
+        <span><strong>{{ filters[filter].enumValue + '.' + clientFilterBy[filter] | translate}}</strong> {{ filters[filter].label | translate }}</span>
+        <span class="icon"><i class="fa fa-close"></i></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="group-results-adv-filter-options" [hidden]="!expandFilterOptions" class="well gray-lighter">
+  <adv-filters [filterBy]="clientFilterBy"></adv-filters>
+</div>
+
+  <div id="group-results-selected-assessments" class="well gray-lightest">
+    <div class="well-body">
+      <h4 class="margin-bottom-0">
+        <i class="fa fa-list-alt"></i> {{'labels.groups.results.selected-assessments-title' | translate}}
+        <div class="pull-right">
+          <div class="btn-group" role="group">
+            <button type="radio" class="btn btn-default active">{{'labels.groups.results.filter-type-recent' |
+              translate}}
+            </button>
+            <button type="radio" class="btn btn-default">{{'labels.groups.results.filter-type-custom' | translate}}
             </button>
           </div>
         </div>
-      </div>
-    </div>
-    <div id="group-results-adv-filters" [hidden]="!showAdvancedFilters" class="well gray-lightest">
-      <h4>
-        <i class="fa fa-check-square"></i> {{'labels.groups.results.adv-filters.label' | translate }}
-        <div id="adv-filters-expand-collapse" class="pull-right">
-          <button class="form-control btn btn-sm" (click)="expandFilterOptions = !expandFilterOptions">
-            {{'buttons.collapsible.' + (expandFilterOptions ? 'collapse' : 'expand') | translate }}
-            <i class="fa" [ngClass]="{'fa-chevron-up': expandFilterOptions, 'fa-chevron-down': !expandFilterOptions}" aria-hidden="true"></i>
-          </button>
-        </div>
-
       </h4>
-      <div id="adv-filters-selected" class="flex-children">
-          <div *ngFor="let filter of clientFilterBy.all">
-            <span *ngIf="filter == 'filteredEthnicities'">
-              <a *ngFor="let ethnicity of clientFilterBy[filter]" class="tag aqua reverse slim" (click)="removeEthnicity(ethnicity)">
-                <span><strong>{{ filters[filter].enumValue + '.' + ethnicity | translate}}</strong> {{ filters[filter].label | translate }}</span>
-                <span class="icon"><i class="fa fa-close"></i></span>
-              </a>
-            </span>
-            <a *ngIf="filter != 'filteredEthnicities'" class="tag aqua reverse slim" (click)="removeFilter(filter)">
-              <span><strong>{{ filters[filter].enumValue + '.' + clientFilterBy[filter] | translate}}</strong> {{ filters[filter].label | translate }}</span>
-              <span class="icon"><i class="fa fa-close"></i></span>
-            </a>
-          </div>
+      <div class="spacer-v-sm">
+        <small>{{'labels.groups.results.selected-assessments-instruct' | translate }}</small>
       </div>
-    </div>
-    <div id="group-results-adv-filter-options" [hidden]="!expandFilterOptions" class="well gray-lighter">
-      <adv-filters [filterBy]="clientFilterBy"></adv-filters>
-    </div>
-    <div id="group-results-selected-assessments" class="well gray-lightest">
-      <div class="well-body">
-        <h4 class="margin-bottom-0">
-          <i class="fa fa-list-alt"></i> {{'labels.groups.results.selected-assessments-title' | translate}}
-          <div class="pull-right">
-            <div class="btn-group" role="group">
-              <button type="radio" class="btn btn-default active">{{'labels.groups.results.filter-type-recent' |
-                translate}}
-              </button>
-              <button type="radio" class="btn btn-default">{{'labels.groups.results.filter-type-custom' | translate}}
-              </button>
-            </div>
-          </div>
-        </h4>
-        <div class="spacer-v-sm">
-          <small>{{'labels.groups.results.selected-assessments-instruct' | translate }}</small>
-        </div>
-        <a *ngFor="let assessmentExam of selectedAssessments" class="btn btn-default btn-xs pad-h-xxs spacer-h-sm spacer-v-sm">
-          <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
-          <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
-          <i class="fa fa-minus-square color-gray icon-size-md"></i>
-        </a>
-        <a class="btn btn-default btn-xs btn-round spacer-v-sm">
-          <i class="fa fa-plus color-gray"></i>
-        </a>
-      </div>
+      <a *ngFor="let assessmentExam of selectedAssessments" class="btn btn-default btn-xs pad-h-xxs spacer-h-sm spacer-v-sm">
+        <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
+        <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
+        <i class="fa fa-minus-square color-gray icon-size-md"></i>
+      </a>
+      <a class="btn btn-default btn-xs btn-round spacer-v-sm">
+        <i class="fa fa-plus color-gray"></i>
+      </a>
     </div>
   </div>
+</div>
 
-  <div>
-    <h2>{{'labels.groups.results.title' | translate}}</h2>
-    <div class="pull-right">
-      <label for="value-format">{{'labels.groups.results.value-as' | translate }} </label>
-      <div id="value-format" class="btn-group" role="group">
-        <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}" class="btn btn-default btn-sm"  >{{'labels.groups.results.value-as-percent' | translate}}</button>
-        <button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}" class="btn btn-default btn-sm">{{'labels.groups.results.value-as-number' | translate}}</button>
-      </div>
+<div>
+  <h2>{{'labels.groups.results.title' | translate}}</h2>
+  <div class="pull-right">
+    <label for="value-format">{{'labels.groups.results.value-as' | translate }} </label>
+    <div id="value-format" class="btn-group" role="group">
+      <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}" class="btn btn-default btn-sm"  >{{'labels.groups.results.value-as-percent' | translate}}</button>
+      <button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}" class="btn btn-default btn-sm">{{'labels.groups.results.value-as-number' | translate}}</button>
     </div>
   </div>
-  <div *ngFor="let assessment of selectedAssessments">
-    <assessment-results [assessmentExam]="assessment" [showValuesAsPercent]="showValuesAsPercent" [filterBy]="clientFilterBy"></assessment-results>
-  </div>
-  <div *ngIf="selectedAssessments.length == 0">
-    <p>
-      {{'messages.no-results-found' | translate}}
-    </p>
-  </div>
+</div>
+<div *ngFor="let assessment of selectedAssessments">
+  <assessment-results [assessmentExam]="assessment" [showValuesAsPercent]="showValuesAsPercent" [filterBy]="clientFilterBy"></assessment-results>
+</div>
+<div *ngIf="selectedAssessments.length == 0">
+  <p>
+    {{'messages.no-results-found' | translate}}
+  </p>
 </div>

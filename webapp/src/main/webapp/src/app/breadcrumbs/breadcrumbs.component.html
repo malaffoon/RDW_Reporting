@@ -8,10 +8,13 @@
           <span class="sr-only">{{ 'labels.home.name' | translate }}</span>
         </a>
       </li>
-      <li *ngFor="let crumb of breadcrumbs; let last = last;">
-        <a [ngClass]="{'active': last }" [routerLink]="[crumb.url, crumb.params]">
+      <li *ngFor="let crumb of breadcrumbs; let last = last;" [ngClass]="{'active': last }">
+        <a *ngIf="!last" [routerLink]="[crumb.url, crumb.params]">
           {{ crumb.requiresTranslate? (crumb.label | translate) : crumb.label }}
         </a>
+        <span *ngIf="last" [routerLink]="[crumb.url, crumb.params]">
+          {{ crumb.requiresTranslate? (crumb.label | translate) : crumb.label }}
+        </span>
       </li>
     </ul>
   </div>
