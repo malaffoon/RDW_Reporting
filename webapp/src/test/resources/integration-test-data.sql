@@ -34,3 +34,36 @@ insert into exam (id, type_id, grade_id, student_id, school_id, iep, lep, sectio
   (-4, 3, -1, -1, -30, 0, 0, 0, 0, 2017, -3, 'v1', 2, 1, 'session1', 2000, 20, 1, '2017-01-02 00:00:00.000000', -1),
   (-5, 3, -1, -1, -30, 0, 0, 0, 0, 2017, -3, 'v1', 2, 1, 'session1', 2000, 20, 1, '2017-01-05 00:00:00.000000', -1),
   (-6, 3, -1, -1, -30, 0, 0, 0, 0, 2017, -3, 'v1', 2, 1, 'session1', 2000, 20, 1, '2017-01-03 00:00:00.000000', -1);
+
+-- items
+
+insert into claim (id, subject_id, code, name, description) values
+  (-1, 1, 'c1', 'c1', 'c1');
+
+insert into target (id, claim_id, code, description) values
+  (-1, -1, 't1', 't1'),
+  (-2, -1, 't2', 't2'),
+  (-3, -1, 't3', 't3');
+
+insert into math_practice (practice, description) values
+  (-1, 'mp1');
+
+insert into depth_of_knowledge (id, level, subject_id, description, reference) values
+  (-1, 1, 1, 'dok1', 'dok1');
+
+insert into item (id, claim_id, target_id, natural_id, asmt_id, math_practice, dok_id, difficulty, max_points) values
+  (-1, -1, -1, 'i1', -1, -1, -1, 0.25, 3),
+  (-2, -1, -2, 'i2', -1, -1, -1, 0.3, 4),
+  (-3, -1, -3, 'i3', -1, -1, -1, 0.1, 5);
+
+insert into exam_item (id, exam_id, item_id, score, position) values
+  (-1, -1, -1, 0, 1),
+  (-2, -1, -2, 1, 2);
+
+-- groups
+
+insert into student_group (id, name, school_id, school_year, subject_id, import_id) values
+  (-1, 'group1', -10, 2017, 1, -1);
+
+insert into student_group_membership (student_group_id, student_id) values
+  (-1, -1);
