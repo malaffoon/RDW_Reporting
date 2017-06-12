@@ -124,7 +124,7 @@
           "instruct": "Click an item to add or remove it from your list of selections above.",
           "test": {
             "label": "Test",
-            "off-grade-assessment": "Off-Grade"
+            "off-grade-assessment": "Off-Grade Assessments"
           },
           "status": {
             "label": "Status",
