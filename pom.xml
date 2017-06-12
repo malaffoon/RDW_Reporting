@@ -19,7 +19,7 @@
     <java.version>1.8</java.version>
     <unit-tests.skip>false</unit-tests.skip>
     <integration-tests.skip>true</integration-tests.skip>
-    <docker.image.prefix>fwsbac</docker.image.prefix>
+    <docker.image.prefix>smarterbalanced</docker.image.prefix>
     <janino.version>3.0.7</janino.version>
     <logstash-appender.version>4.8</logstash-appender.version>
 
