@@ -7,7 +7,7 @@ import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { FilterBy } from "../model/filter-by.model";
 import { Subscription } from "rxjs";
-import { ExamFilterService } from "../exam-filter.service";
+import { ExamFilterService } from "../exam-filters/exam-filter.service";
 
 @Component({
   selector: 'assessment-results',

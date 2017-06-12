@@ -2,12 +2,13 @@
 <!-- Instructions -->
 <p>{{ translateRoot + 'instruct' | translate}}</p>
 
-<!-- Inner Filters Container -->
+
 <div class="flex-children">
 
   <!-- Test Filters -->
   <div id="filter-by-test" class="flex-child">
     <p class="gray-darker border-bottom">{{ translateRoot + 'test.label' | translate }}</p>
+        <sb-checkbox-list [model]="filterBy" [values]="[1,2,3,4,5,6,8]" property="ethnicities" enum="enum.ethnicity"></sb-checkbox-list>
     <div class="block-children">
       <label for="btn-group-off-grade-assessment">{{ translateRoot + 'test.off-grade-assessment' | translate }}</label>
       <div id="btn-group-off-grade-assessment" class="btn-group nested-btn-group-sm toggle-group" data-toggle="buttons">

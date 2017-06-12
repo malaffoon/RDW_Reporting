@@ -18,4 +18,8 @@ export class Utils {
       return v.toString(16);
     });
   }
+
+  static polarEnumToBoolean(value): boolean {
+    return value === 1;
+  }
 }

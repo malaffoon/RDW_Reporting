@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Utils } from "./Utils";
 
 /*
@@ -23,10 +23,10 @@ import { Utils } from "./Utils";
     </div>
 `
 })
-export class SBCheckboxList {
+export class SBCheckboxList implements OnInit {
   // An array of values which must map to the given enum.
   @Input()
-  public values: number[];
+  public values: any[]
 
   // An enum defined in the translations which has a value.
   @Input()
@@ -59,31 +59,39 @@ export class SBCheckboxList {
     this._name = Utils.newGuid();
   }
 
+  ngOnInit(): void {
+    this.setValuesToFalse();
+  }
+
   allChange(newValue) {
-    console.log(newValue);
     if(newValue) {
-      // Clear other options.
-      for (let i = 0; i < this.values.length; i++) {
-        this.modelValue[ this.values[ i ] ] = false
-      }
+      this.setValuesToFalse();
     }
     else {
       // Don't allow All to be to set to false by clicking.
       this.modelValue[0] = true;
     }
+    this.modelValue = Object.assign({}, this.modelValue);
   }
 
   valueChange(value) {
     // Set all to true if all options are false.
-    this.modelValue[0] = this.allValuesAreFalse();
+    this.modelValue[0] = this.areAllValuesFalse();
+    this.modelValue = Object.assign({}, this.modelValue);
   }
 
-  private allValuesAreFalse() : boolean {
+  private areAllValuesFalse() : boolean {
     for (let i = 0; i < this.values.length; i++) {
       if(this.modelValue[ this.values[ i ] ])
         return false;
     }
 
     return true;
+  }
+
+  private setValuesToFalse() {
+    for (let i = 0; i < this.values.length; i++) {
+      this.modelValue[ this.values[ i ] ] = false
+    }
   }
 }

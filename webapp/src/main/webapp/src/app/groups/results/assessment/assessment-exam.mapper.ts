@@ -31,7 +31,7 @@ export class AssessmentExamMapper {
   }
 
   private mapExamFromApi(apiModel): Exam {
-    let uiModel = new Exam();
+    let uiModel : Exam = new Exam();
 
     uiModel.date = apiModel.dateTime;
     uiModel.session = apiModel.sessionId;
@@ -44,6 +44,18 @@ export class AssessmentExamMapper {
 
     uiModel.administrativeCondition = apiModel.administrativeConditionId;
     uiModel.completeness = apiModel.completenessId;
+
+    uiModel.gender = apiModel.student.genderId;
+    uiModel.migrantStatus = apiModel.studentContext.migrantStatus;
+    uiModel.plan504 = apiModel.studentContext.section504;
+    uiModel.iep = apiModel.studentContext.iep;
+    uiModel.economicDisadvantage = apiModel.studentContext.economicDisadvantage;
+    uiModel.limitedEnglishProficiency = apiModel.studentContext.lep;
+
+    uiModel.ethnicities = [];
+
+    if(apiModel.student.ethnicityCodes)
+      apiModel.student.ethnicityCodes.forEach(code => uiModel.ethnicities.push(code));
 
     return uiModel;
   }

@@ -29,8 +29,4 @@ export class CachingDataService {
 
     return observable;
   }
-
-  public getSchoolYears() {
-    return this.get("/schoolYears");
-  }
 }
