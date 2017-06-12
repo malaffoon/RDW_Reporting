@@ -10,7 +10,7 @@ import { Utils } from "./Utils";
 @Component({
   selector: 'sb-radio-button-list',
   template: `
-    <div class="btn-group nested-btn-group-sm toggle-group" data-toggle="buttons">
+    <div class="nested-btn-group btn-group-sm toggle-group" data-toggle="buttons">
       <label class="btn btn-primary" [ngClass]="{'active': model[property] == -1 }">
         <input [value]="-1" [(ngModel)]="model[property]" type="radio" [name]="name" >{{ 'buttons.all' | translate }}
       </label>
@@ -48,4 +48,3 @@ export class SBRadioButtonComponent {
     this._name = Utils.newGuid();
   }
 }
-

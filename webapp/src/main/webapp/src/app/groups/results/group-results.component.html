@@ -56,12 +56,12 @@
   <div id="adv-filters-selected" class="flex-children">
     <div *ngFor="let filter of clientFilterBy.all">
       <span *ngIf="filter == 'filteredEthnicities'">
-        <a *ngFor="let ethnicity of clientFilterBy[filter]" class="tag aqua reverse slim" (click)="removeEthnicity(ethnicity)">
+        <a *ngFor="let ethnicity of clientFilterBy[filter]" class="tag tag-xs aqua reverse slim" (click)="removeEthnicity(ethnicity)">
           <span><strong>{{ filters[filter].enumValue + '.' + ethnicity | translate}}</strong> {{ filters[filter].label | translate }}</span>
           <span class="icon"><i class="fa fa-close"></i></span>
         </a>
       </span>
-      <a *ngIf="filter != 'filteredEthnicities'" class="tag aqua reverse slim" (click)="removeFilter(filter)">
+      <a *ngIf="filter != 'filteredEthnicities'" class="tag tag-xs aqua reverse slim" (click)="removeFilter(filter)">
         <span><strong>{{ filters[filter].enumValue + '.' + clientFilterBy[filter] | translate}}</strong> {{ filters[filter].label | translate }}</span>
         <span class="icon"><i class="fa fa-close"></i></span>
       </a>
