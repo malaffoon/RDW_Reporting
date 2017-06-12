@@ -51,10 +51,10 @@ insert into math_practice (practice, description) values
 insert into depth_of_knowledge (id, level, subject_id, description, reference) values
   (-1, 1, 1, 'dok1', 'dok1');
 
-insert into item (id, claim_id, target_id, natural_id, asmt_id, math_practice, dok_id, difficulty, max_points) values
-  (-1, -1, -1, 'i1', -1, -1, -1, 0.25, 3),
-  (-2, -1, -2, 'i2', -1, -1, -1, 0.3, 4),
-  (-3, -1, -3, 'i3', -1, -1, -1, 0.1, 5);
+insert into item (id, claim_id, claim_code, target_id, target_code, natural_id, asmt_id, math_practice, dok_id, difficulty_code, max_points) values
+  (-1, -1, 'c1', -1, 't1', 'i1', -1, -1, -1, 'E', 3),
+  (-2, -1, 'c1', -2, 't2', 'i2', -1, -1, -1, 'D', 4),
+  (-3, -1, 'c1', -3, 't3', 'i3', -1, -1, -1, 'M', 5);
 
 insert into exam_item (id, exam_id, item_id, score, position) values
   (-1, -1, -1, 0, 1),
