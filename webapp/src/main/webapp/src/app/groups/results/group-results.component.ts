@@ -18,9 +18,8 @@ export class GroupResultsComponent implements OnInit {
 
   showValuesAsPercent: boolean = true;
   expandFilterOptions: boolean = false;
-  showOnlyMostRecent: boolean = true;
   clientFilterBy: FilterBy;
-  selectedAssessments: AssessmentExam[] = [];
+  assessmentExams: AssessmentExam[] = [];
   filters: any[] = [];
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   currentFilters = [];
@@ -60,12 +59,39 @@ export class GroupResultsComponent implements OnInit {
   set expandAssessments(value: boolean) {
     this._expandAssessments = value;
     this.getAvailableAssessments();
+
+    if(value)
+      this._showOnlyMostRecent = false;
+  }
+
+  get showOnlyMostRecent(): boolean {
+    return this._showOnlyMostRecent;
+  }
+
+  set showOnlyMostRecent(value: boolean) {
+    this.expandAssessments = this.showOnlyMostRecent;
+    if(value) {
+      this.availableAssessments = [];
+    }
+
+    this._showOnlyMostRecent = value;
+  }
+
+  get selectedAssessments() {
+    if(this.showOnlyMostRecent && this.assessmentExams)
+      return this.assessmentExams.map(x => x.assessment);
+    else if(this.availableAssessments)
+      return this.availableAssessments.filter(x => x.selected);
+
+    return [];
   }
 
   private _showAdvancedFilters: boolean = false;
   private _expandAssessments: boolean = false;
+  private _showOnlyMostRecent: boolean = true;
   private _currentGroup;
   private _currentSchoolYear;
+
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -113,10 +139,9 @@ export class GroupResultsComponent implements OnInit {
   }
 
   updateAssessment(latestAssessment) {
-    this.selectedAssessments = [];
-
+    this.assessmentExams = [];
     if (latestAssessment)
-      this.selectedAssessments.push(latestAssessment);
+      this.assessmentExams.push(latestAssessment);
   }
 
   updateRoute(event) {
@@ -139,7 +164,7 @@ export class GroupResultsComponent implements OnInit {
     if (this._expandAssessments) {
       this.assessmentService.getAvailableAssessments(this._currentGroup.id, this._currentSchoolYear).subscribe(result => {
         this.availableAssessments = result.map(available => {
-          available.selected = this.selectedAssessments.some(selected => selected.assessment.id == available.id);
+          available.selected = this.assessmentExams.some(assessmentExam => assessmentExam.assessment.id == available.id);
           return available;
         });
       })
