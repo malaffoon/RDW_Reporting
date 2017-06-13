@@ -1,5 +1,5 @@
 <div class="pad-top-20">
-  <h3><i class="fa fa-group color-green"></i> {{'labels.groups.name' | translate}}</h3>
+  <h3>{{'labels.groups.name' | translate}}</h3>
   <div class="well-group">
     <div id="group-results-basic-filters" class="well">
       <div class="well-body row">
@@ -61,10 +61,10 @@
           <i class="fa fa-list-alt"></i> {{'labels.groups.results.selected-assessments-title' | translate}}
           <div class="pull-right">
             <div class="btn-group" role="group">
-              <button type="radio" class="btn btn-default active">{{'labels.groups.results.filter-type-recent' |
+              <button type="radio" (click)="showOnlyMostRecent = true" class="btn btn-default" [ngClass]="{'active': showOnlyMostRecent}">{{'labels.groups.results.filter-type-recent' |
                 translate}}
               </button>
-              <button type="radio" class="btn btn-default">{{'labels.groups.results.filter-type-custom' | translate}}
+              <button type="radio" (click)="showOnlyMostRecent = false" class="btn btn-default" [ngClass]="{'active': !showOnlyMostRecent}">{{'labels.groups.results.filter-type-custom' | translate}}
               </button>
             </div>
           </div>

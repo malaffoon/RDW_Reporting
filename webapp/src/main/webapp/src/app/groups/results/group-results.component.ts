@@ -18,6 +18,7 @@ export class GroupResultsComponent implements OnInit {
 
   showValuesAsPercent: boolean = true;
   expandFilterOptions: boolean = false;
+  showOnlyMostRecent: boolean = true;
   clientFilterBy: FilterBy;
   selectedAssessments: AssessmentExam[] = [];
   filters: any[] = [];
