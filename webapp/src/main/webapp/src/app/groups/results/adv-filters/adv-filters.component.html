@@ -46,50 +46,50 @@
   <div id="filter-by-student" class="flex-child grow">
     <p class="gray-darker border-bottom">{{ translateRoot + 'student.label' | translate }}</p>
     <div class="flex-children">
-        <!-- Column 1 -->
-        <div class="flex-child col1">
-          <!-- Gender -->
-          <div class="block-children">
-            <label>{{ translateRoot + 'student.gender' | translate }}</label>
-            <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="gender" enum="enum.gender"></sb-radio-button-list>
-          </div>
-          <!-- Migrant Status -->
-          <div class="block-children">
-            <label>{{ translateRoot + 'student.migrant-status' | translate }}</label>
-            <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="migrantStatus" enum="enum.polar"></sb-radio-button-list>
-          </div>
-          <!-- 504 Plan -->
-          <div class="block-children">
-            <label>{{ translateRoot + 'student.504-plan' | translate }}</label>
-            <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="plan504" enum="enum.polar"></sb-radio-button-list>
-          </div>
+      <!-- Column 1 -->
+      <div class="flex-child col1">
+        <!-- Gender -->
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.gender' | translate }}</label>
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="gender" enum="enum.gender"></sb-radio-button-list>
         </div>
-        <!-- Column 2 -->
-        <div class="flex-child col2">
-          <!-- IEP -->
-          <div class="block-children">
-            <label>{{ translateRoot + 'student.iep' | translate }}</label>
-            <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="iep" enum="enum.polar"></sb-radio-button-list>
-          </div>
-          <!-- Economic Disadvantage -->
-          <div class="block-children">
-            <label>{{ translateRoot + 'student.economic-disadvantage' | translate }}</label>
-            <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="economicDisadvantage" enum="enum.polar"></sb-radio-button-list>
-          </div>
-          <!-- Limited English Proficiency -->
-          <div class="block-children">
-            <label>{{ translateRoot + 'student.limited-english-proficiency' | translate }}</label>
-            <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="limitedEnglishProficiency" enum="enum.polar"></sb-radio-button-list>
-          </div>
+        <!-- Migrant Status -->
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.migrant-status' | translate }}</label>
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="migrantStatus" enum="enum.polar"></sb-radio-button-list>
         </div>
-        <!-- Column 3 -->
-        <div class="flex-child col3">
-          <!-- Race / Ethnicity -->
-          <div class="block-children">
-            <label>{{ translateRoot + 'student.ethnicity' | translate }}</label>
-            <sb-checkbox-list [model]="filterBy" [values]="[1,2,3,4,5,6,8]" property="ethnicities" enum="enum.ethnicity"></sb-checkbox-list>
-          </div>
+        <!-- 504 Plan -->
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.504-plan' | translate }}</label>
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="plan504" enum="enum.polar"></sb-radio-button-list>
         </div>
+      </div>
+      <!-- Column 2 -->
+      <div class="flex-child col2">
+        <!-- IEP -->
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.iep' | translate }}</label>
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="iep" enum="enum.polar"></sb-radio-button-list>
+        </div>
+        <!-- Economic Disadvantage -->
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.economic-disadvantage' | translate }}</label>
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="economicDisadvantage" enum="enum.polar"></sb-radio-button-list>
+        </div>
+        <!-- Limited English Proficiency -->
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.limited-english-proficiency' | translate }}</label>
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="limitedEnglishProficiency" enum="enum.polar"></sb-radio-button-list>
+        </div>
+      </div>
+      <!-- Column 3 -->
+      <div class="flex-child col3">
+        <!-- Race / Ethnicity -->
+        <div class="block-children">
+          <label>{{ translateRoot + 'student.ethnicity' | translate }}</label>
+          <sb-checkbox-list [model]="filterBy" [values]="filterOptions.ethnicities" property="ethnicities" enum="enum.ethnicity"></sb-checkbox-list>
+        </div>
+      </div>
     </div>
   </div>
 </div>

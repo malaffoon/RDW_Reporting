@@ -1,98 +1,113 @@
-<div class="well">
-    <div class="pull-right">
-      <a href="" class="spacer-h-sm"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
-      <button class="btn btn-default btn-sm" (click)="collapsed = !collapsed">
-          <i class="fa font-bold" [ngClass]="{'fa-angle-down':collapsed, 'fa-angle-up':!collapsed}"></i>
-      </button>
-    </div>
-    <h4 class="spacer-v-md color-grade-{{assessmentExam.assessment.grade}}">
-      <span class="label bg-color-grade-{{assessmentExam.assessment.grade}} pad-v-lg spacer-h-sm">
-        {{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}
-      </span>
-      <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
-    </h4>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="spacer-v-lg">
-          <strong>{{'labels.assessment.sessions-title' | translate}}</strong>
-          <div class="spacer-v-sm">{{'labels.assessment.sessions-instruct' | translate}}</div>
-
-          <div class="flex-children">
-            <a *ngFor="let session of sessions" class="tag aqua reverse multi-line" [ngClass]="{'gray-dark':!session.filter}" (click)="toggleSession(session)">
-                  <span class="block-children text-left">
-                    <strong>{{session.date | date }}</strong>
-                    <small>{{session.id || 'labels.groups.results.session-unknown' | translate }}</small>
-                  </span>
-              <span class="icon"><i class="fa" [ngClass]="{'fa-minus':session.filter, 'fa-plus': !session.filter }"></i></span>
-            </a>
-          </div>
+<!-- Individual Assessment Result Container -->
+<div class="assessment-result well">
+    <div class="mb-lg">
+        <!-- Top Right Buttons -->
+        <div class="pull-right text-right">
+            <a href="#" class="btn btn-default btn-xs"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
+            <button class="btn btn-default btn-sm icon-only" (click)="collapsed = !collapsed">
+                <i class="fa font-bold" [ngClass]="{'fa-angle-down':collapsed, 'fa-angle-up':!collapsed}"></i> <span class="sr-only">Collapse</span>
+            </button>
         </div>
-      </div>
-      <!-- TODO: Add labels to translations -->
-      <div class="col-md-6">
-        <div *ngIf="exams.length > 0">
-          <div class="bar-scale rounded blend-middle">
-            <p class="scale-title">Average Scale Score</p>
-            <p class="scale-description">{{statistics.total}} Students</p>
-            <div class="bar-container">
-          <span class="score" data-left="10"
-                data-width="15">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
-              <span class="error-band-mask">
-            <span class="error-band" data-left="10" data-width="15">
-              <span class="error-band-block"></span>
-            </span>
-          </span>
-              <div class="bar green left-side" data-width="28">
-              </div>
-              <div class="bar middle green blue-dark" data-width="55">
-              </div>
-              <div class="bar blue-dark right-side" data-width="17">
-              </div>
-            </div>
-          </div>
+        <!-- Assessment Title -->
+        <span href="#" class="tag tag-lg color-grade-{{assessmentExam.assessment.grade}}">
+            <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
+            {{assessmentExam.assessment.name}}
+        </span>
+    </div>
 
-          <!-- TODO: bind levels to visualization -->
-          <div *ngFor="let level of performance.levels">
+    <div class="row">
+        <!-- Sessions -->
+        <div class="col-md-7">
+            <p><strong>{{'labels.assessment.sessions-title' | translate}}</strong><br />
+            {{'labels.assessment.sessions-instruct' | translate}}</p>
+            <div class="flex-children">
+                <a *ngFor="let session of sessions" class="tag aqua reverse multi-line" [ngClass]="{'gray-dark':!session.filter}" (click)="toggleSession(session)">
+                    <span class="block-children text-left">
+                        <strong>{{session.date | date }}</strong>
+                        <small>{{session.id || 'labels.groups.results.session-unknown' | translate }}</small>
+                    </span>
+                    <span class="icon"><i class="fa" [ngClass]="{'fa-minus':session.filter, 'fa-plus': !session.filter }"></i></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- TODO: Add labels to translations -->
+        <!-- Aggregate Scale Score -->
+        <div class="col-md-5">
+            <div *ngIf="exams.length > 0" class="bar-scale rounded blend-middle">
+                <p class="scale-title">Average Scale Score</p>
+                <p class="scale-description">{{statistics.total}} Students</p>
+                <div class="bar-container">
+                    <span class="score" data-left="10" data-width="15">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+                    <span class="error-band-mask">
+                        <span class="error-band" data-left="10" data-width="15">
+                            <span class="error-band-block"></span>
+                        </span>
+                    </span>
+                    <div class="bar green left-side" data-width="28">
+                      <span class="bar-data">28%</span>
+                      <span class="bar-label">Below Standard</span>
+                    </div>
+                    <div class="bar middle green blue-dark" data-width="55">
+                      <span class="bar-data">55%</span>
+                      <span class="bar-label">Near Standard</span>
+                    </div>
+                    <div class="bar blue-dark right-side" data-width="17">
+                      <span class="bar-data">17%</span>
+                      <span class="bar-label">Above Standard</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TODO: bind levels to visualization -->
+        <div *ngFor="let level of performance.levels">
             {{ examLevelEnum + level.id.toString() | translate }}:
             <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
-          </div>
         </div>
-      </div>
     </div>
+
+    <!-- Student Results -->
     <div *ngIf="!collapsed" @fadeAnimation>
-      <div class="spacer-v-md">
-        <div class="pull-right"><button class="btn btn-default btn-sm">
-          {{'labels.assessment.button-item-points' | translate}}
-          <i class="fa fa-angle-right"></i></button></div>
-        <h4>{{'labels.assessment.exam-results' | translate}}</h4>
-      </div>
+        <h3 class="gray-darkest mb-md">
+            {{'labels.assessment.exam-results' | translate}}
+            <a href="#" class="btn btn-info btn-xs pull-right">
+                {{'labels.assessment.button-item-points' | translate}} <i class="fa fa-chevron-right"></i>
+            </a>
+        </h3>
 
-      <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped">
-        <p-column field="studentName" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
-        <p-column field="date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
-          <ng-template let-exam="rowData" pTemplate="body">
-            {{ exam.date | date }}
-          </ng-template>
-        </p-column>
-        <p-column field="session" header="{{'labels.groups.results.exam-cols.session' | translate}}" [sortable]="true"></p-column>
-        <p-column field="enrolledGrade" header="{{'labels.groups.results.exam-cols.grade' | translate}}" [sortable]="true" ></p-column>
-        <p-column field="administrativeCondition" header="{{'labels.groups.results.exam-cols.status' | translate}}" [sortable]="true" >
-          <ng-template let-exam="rowData" pTemplate="body">
-            <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label bg-color-gray">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
-            <span *ngIf="exam.completeness != 2" class="label bg-color-grade-3">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
-          </ng-template>
-        </p-column>
-        <p-column field="level" header="{{ performanceLevelHeader | translate }}" [sortable]="true">
-          <ng-template let-exam="rowData" pTemplate="body">
-            {{ examLevelEnum + exam.level | translate }}
-          </ng-template>
-        </p-column>
-        <p-column field="score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true">
-          <ng-template let-exam="rowData" pTemplate="body">
-            {{ exam.score }} ± {{ exam.standardError }}
-          </ng-template>
-        </p-column>
-      </p-dataTable>
+        <!-- TODO: Make 'emptyMessage' content instead of attribute value so it can be wrapped like the below example -->
+        <div class="alert alert-danger">
+            <p>TODO: Make 'emptyMessage' content instead of attribute value so it can be wrapped like this example</p>
+            {{'labels.groups.results.empty-message' | translate}}
+        </div>
+
+        <!-- Student Results Table -->
+        <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped table-hover">
+            <p-column field="studentName" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
+            <p-column field="date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
+                <ng-template let-exam="rowData" pTemplate="body">
+                    {{ exam.date | date }}
+                </ng-template>
+            </p-column>
+            <p-column field="session" header="{{'labels.groups.results.exam-cols.session' | translate}}" [sortable]="true"></p-column>
+            <p-column field="enrolledGrade" header="{{'labels.groups.results.exam-cols.grade' | translate}}" [sortable]="true" ></p-column>
+            <p-column field="administrativeCondition" header="{{'labels.groups.results.exam-cols.status' | translate}}" [sortable]="true" >
+                <ng-template let-exam="rowData" pTemplate="body">
+                    <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
+                    <span *ngIf="exam.completeness != 2" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
+                </ng-template>
+            </p-column>
+            <p-column field="level" header="{{ performanceLevelHeader | translate }}" [sortable]="true">
+                <ng-template let-exam="rowData" pTemplate="body">
+                    {{ examLevelEnum + exam.level | translate }}
+                </ng-template>
+            </p-column>
+            <p-column field="score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true">
+                <ng-template let-exam="rowData" pTemplate="body">
+                    {{ exam.score }} ± {{ exam.standardError }}
+                </ng-template>
+            </p-column>
+        </p-dataTable>
     </div>
-
 </div>
