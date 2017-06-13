@@ -69,15 +69,18 @@
             </div>
           </div>
         </h4>
-        <div class="spacer-v-sm">
+        <!-- TODO: Remove custom styles -->
+        <div style="margin-bottom:20px !important;">
           <small>{{'labels.groups.results.selected-assessments-instruct' | translate }}</small>
         </div>
-        <a *ngFor="let assessment of selectedAssessments" (click)="assessment.selected = false" class="tag {{getGradeColor(assessment.grade)}} slim">
+        <!-- TODO: Remove custom styles -->
+        <a *ngFor="let assessment of selectedAssessments" (click)="assessment.selected = false" class="tag {{getGradeColor(assessment.grade)}} slim" style="margin-right: 10px; margin-bottom:10px;">
           <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessment.grade}}</span>
           {{assessment.name}}
           <span class="icon"><i class="fa fa-close"></i></span>
         </a>
-        <a class="btn btn-default icon-only" (click)="expandAssessments=true">
+        <!-- TODO: Remove custom styles -->
+        <a class="btn btn-default icon-only" (click)="expandAssessments=true" style="margin-bottom:17px;">
           <i class="fa fa-plus color-gray"></i>
         </a>
       </div>
