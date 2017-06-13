@@ -20,10 +20,15 @@ insert into gender (id, code) values
 insert into student (id, ssid, last_or_surname, first_name, gender_id, birthday, import_id) values
   (-1, '-1', 'student1', 'student1', -1, '2017-01-01 00:00:00.000000', -1);
 
-insert into asmt (id, type_id, natural_id, grade_id, subject_id, school_year, name, label, version, import_id) values
-  (-1, 1, 'ica1', -1, 1, 2017, 'ica1', 'ica1', 'ica1', -1),
-  (-2, 2, 'iab1', -1, 1, 2017, 'iab1', 'iab1', 'iab1', -1),
-  (-3, 3, 'sum1', -1, 1, 2017, 'sum1', 'sum1', 'sum1', -1);
+insert into asmt (id, type_id, natural_id, grade_id, subject_id, school_year, name, label, version, claim_1_score_code, claim_2_score_code, claim_3_score_code, claim_4_score_code, import_id) values
+  (-1, 1, 'ica1', -1, 1, 2017, 'ica1', 'ica1', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', -1),
+  (-2, 2, 'iab1', -1, 1, 2017, 'iab1', 'iab1', 'v1', null, null, null, null, -1),
+  (-3, 3, 'sum1', -1, 1, 2017, 'sum1', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, -1);
+
+insert into asmt_score (asmt_id, min_score, cut_point_1, cut_point_2, cut_point_3, max_score) VALUES
+  (-1, 10, 11, 12, 13, 14),
+  (-2, 20, 21, 22, 23, 24),
+  (-3, 30, 31, 32, 33, 34);
 
 insert into exam (id, type_id, grade_id, student_id, school_id, iep, lep, section504, economic_disadvantage,
   school_year, asmt_id, asmt_version, completeness_id, administration_condition_id, session_id,
