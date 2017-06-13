@@ -1,7 +1,7 @@
 <!-- My Groups -->
 <h2 class="blue-dark h3 mb-md">
   {{'labels.groups.name' | translate}}
-  <a href="#" class="btn btn-info btn-xs pull-right">
+  <a href="" class="btn btn-info btn-xs pull-right">
     <i class="fa fa-compass"></i> Legend
   </a>
 </h2>
@@ -25,7 +25,7 @@
           <div class="flex-child">
             <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
             <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute($event)" class="form-control">
-              <option *ngFor="let year of availableSchoolYears" [ngValue]="year">{{year | schoolYear}}</option>
+              <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
             </select>
           </div>
           <!-- Advanced Filters Toggle -->
@@ -54,8 +54,8 @@
     <!-- Selected Filters -->
     <div id="adv-filters-selected" class="flex-children">
         <div *ngFor="let property of clientFilterBy.all">
-          <a class="tag tag-xs aqua reverse multi-line" (click)="removeFilter(property)">
-            <span *ngIf="property.indexOf('ethnicities') == -1" class="block-children text-left">
+          <a class="tag tag-xs aqua reverse" (click)="removeFilter(property)">
+            <span *ngIf="property.indexOf('ethnicities') == -1">
               <strong>{{ filters[property].enumValue + '.' + clientFilterBy[property] | translate}}</strong> {{ filters[property].label | translate }}
             </span>
             <span *ngIf="property.indexOf('ethnicities') != -1">
@@ -85,7 +85,7 @@
       </div>
     </h2>
     <p class="gray-darker">{{'labels.groups.results.selected-assessments-instruct' | translate }}</p>
-    <a *ngFor="let assessmentExam of selectedAssessments" class="tag tag-xs color-grade-{{assessmentExam.assessment.grade}}">
+    <a *ngFor="let assessmentExam of selectedAssessments" class="tag tag-xs maroon color-grade-{{assessmentExam.assessment.grade}}">
       <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
       {{assessmentExam.assessment.name}}
       <span class="icon"><i class="fa fa-close"></i></span>
@@ -105,7 +105,7 @@
       <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}" class="btn btn-default"  >{{'labels.groups.results.value-as-percent' | translate}}</button>
       <button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}" class="btn btn-default">{{'labels.groups.results.value-as-number' | translate}}</button>
     </div>
-    <a href="#" class="btn btn-default btn-xs pull-right">
+    <a href="" class="btn btn-default btn-xs pull-right">
       Collapse Results <i class="fa fa-chevron-up"></i>
     </a>
   </div>

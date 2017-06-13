@@ -3,13 +3,13 @@
     <div class="mb-lg">
         <!-- Top Right Buttons -->
         <div class="pull-right text-right">
-            <a href="#" class="btn btn-default btn-xs"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
+            <a href="" class="btn btn-default btn-xs"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
             <button class="btn btn-default btn-sm icon-only" (click)="collapsed = !collapsed">
                 <i class="fa font-bold" [ngClass]="{'fa-angle-down':collapsed, 'fa-angle-up':!collapsed}"></i> <span class="sr-only">Collapse</span>
             </button>
         </div>
         <!-- Assessment Title -->
-        <span href="#" class="tag tag-lg color-grade-{{assessmentExam.assessment.grade}}">
+        <span href="" class="tag tag-lg maroon color-grade-{{assessmentExam.assessment.grade}}">
             <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
             {{assessmentExam.assessment.name}}
         </span>
@@ -71,16 +71,15 @@
     <div *ngIf="!collapsed" @fadeAnimation>
         <h3 class="gray-darkest mb-md">
             {{'labels.assessment.exam-results' | translate}}
-            <a href="#" class="btn btn-info btn-xs pull-right">
+            <a href="" class="btn btn-info btn-xs pull-right">
                 {{'labels.assessment.button-item-points' | translate}} <i class="fa fa-chevron-right"></i>
             </a>
         </h3>
 
-        <!-- TODO: Make 'emptyMessage' content instead of attribute value so it can be wrapped like the below example -->
+        <!-- TODO: Make 'emptyMessage' content instead of attribute value so it can be wrapped like the below example
         <div class="alert alert-danger">
-            <p>TODO: Make 'emptyMessage' content instead of attribute value so it can be wrapped like this example</p>
             {{'labels.groups.results.empty-message' | translate}}
-        </div>
+        </div>-->
 
         <!-- Student Results Table -->
         <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped table-hover">
