@@ -72,12 +72,12 @@
         <div class="spacer-v-sm">
           <small>{{'labels.groups.results.selected-assessments-instruct' | translate }}</small>
         </div>
-        <a *ngFor="let assessmentExam of selectedAssessments" class="btn btn-default btn-xs pad-h-xxs spacer-h-sm spacer-v-sm">
+        <a *ngFor="let assessmentExam of selectedAssessments" class="tag {{getGradeColor(assessmentExam.assessment.grade)}} slim">
           <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
-          <span class="color-grade-{{assessmentExam.assessment.grade}} spacer-h-md"> {{assessmentExam.assessment.name}}</span>
-          <i class="fa fa-minus-square color-gray icon-size-md"></i>
+          {{assessmentExam.assessment.name}}
+          <span class="icon"><i class="fa fa-close"></i></span>
         </a>
-        <a class="btn btn-default btn-xs btn-round spacer-v-sm" (click)="expandAssessments=true">
+        <a class="btn btn-default icon-only" (click)="expandAssessments=true">
           <i class="fa fa-plus color-gray"></i>
         </a>
       </div>

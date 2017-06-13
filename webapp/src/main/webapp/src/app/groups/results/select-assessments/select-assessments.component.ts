@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Assessment } from "../model/assessment.model";
+import { GradeService } from "../../../shared/grade.service";
+import { Grade } from "../../../shared/model/grade.model";
 
 @Component({
   selector: 'select-assessments',
@@ -7,7 +9,7 @@ import { Assessment } from "../model/assessment.model";
 })
 export class SelectAssessmentsComponent implements OnInit {
 
-  grades : number[] = [ 3, 4, 5, 6, 7, 8, 9, 10 ]; // TODO: Data driven?
+  grades : Grade[] = [];
   assessmentsByGrade : any[] = [];
 
   @Input()
@@ -22,22 +24,31 @@ export class SelectAssessmentsComponent implements OnInit {
 
   private _assessments: Assessment[];
 
-  constructor() {
+  constructor(private gradeService : GradeService) {
   }
 
   ngOnInit() {
+    this.grades = this.gradeService.getGrades();
   }
 
   private groupAssessmentsByGrade() {
-    let assessments = [];
+    let assessmentsByGrade = [];
 
     for(let grade of this.grades){
-      let byGrade = this._assessments.filter(x => x.grade == grade);
-      if(byGrade.length > 0){
-        assessments.push({ grade: grade, assessments: byGrade });
+      let assessments = this._assessments.filter(x => x.grade == grade.id);
+      if(assessments.length > 0){
+        assessmentsByGrade.push({ grade: grade, assessments: assessments });
       }
     }
 
-    return assessments;
+    return assessmentsByGrade;
+  }
+
+  selectedAssessmentChanged(event){
+    console.log(event);
+
+    let selectedAssessments = this._assessments.filter(x => x.selected);
+    console.log(selectedAssessments);
+
   }
 }

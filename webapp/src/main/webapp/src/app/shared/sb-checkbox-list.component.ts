@@ -20,6 +20,7 @@ import { Utils } from "./Utils";
         <label *ngFor="let value of values;" class="btn btn-primary" [ngClass]="{'active': modelValue[value] }">
           <input type="checkbox" [(ngModel)]="modelValue[value]" (ngModelChange)="valueChange($event)"  autocomplete="off"> {{ enum + '.' + value | translate }}
         </label>
+      </div>
     </div>
 `
 })

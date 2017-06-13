@@ -7,6 +7,7 @@ import { ExamFilterOptionsService } from "./exam-filters/exam-filter-options.ser
 import { ExamFilterOptions } from "./model/exam-filter-options.model";
 import { Assessment } from "./model/assessment.model";
 import { AssessmentService } from "./assessment/assessment.service";
+import { GradeService } from "../../shared/grade.service";
 
 @Component({
   selector: 'app-group-results',
@@ -14,8 +15,7 @@ import { AssessmentService } from "./assessment/assessment.service";
 })
 export class GroupResultsComponent implements OnInit {
   groups;
-  currentGroup;
-  currentSchoolYear;
+
   showValuesAsPercent: boolean = true;
   expandFilterOptions: boolean = false;
   clientFilterBy: FilterBy;
@@ -24,6 +24,24 @@ export class GroupResultsComponent implements OnInit {
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   currentFilters = [];
   availableAssessments: Assessment[] = [];
+
+  get currentGroup() {
+    return this._currentGroup;
+  }
+
+  set currentGroup(value) {
+    this._currentGroup = value;
+    this.getAvailableAssessments();
+  }
+
+  get currentSchoolYear() {
+    return this._currentSchoolYear;
+  }
+
+  set currentSchoolYear(value) {
+    this._currentSchoolYear = value;
+    this.getAvailableAssessments();
+  }
 
   get showAdvancedFilters(): boolean {
     return this._showAdvancedFilters;
@@ -40,57 +58,56 @@ export class GroupResultsComponent implements OnInit {
 
   set expandAssessments(value: boolean) {
     this._expandAssessments = value;
-    if(value && this.availableAssessments.length == 0) {
-      this.assessmentService.getAvailableAssessments(this.currentGroup.id, this.currentSchoolYear).subscribe(result =>{
-        this.availableAssessments = result;
-      })
-    }
+    this.getAvailableAssessments();
   }
 
-  private _showAdvancedFilters : boolean = false;
+  private _showAdvancedFilters: boolean = false;
   private _expandAssessments: boolean = false;
+  private _currentGroup;
+  private _currentSchoolYear;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private filterOptionService: ExamFilterOptionsService,
               private examFilterService: ExamFilterService,
-              private assessmentService: AssessmentService) {
+              private assessmentService: AssessmentService,
+              private gradeService: GradeService) {
     this.clientFilterBy = new FilterBy()
   }
 
   ngOnInit() {
     this.groups = this.route.snapshot.data[ "groups" ];
-    this.currentGroup = this.groups.find(x => x.id == this.route.snapshot.params[ "groupId" ]);
+    this._currentGroup = this.groups.find(x => x.id == this.route.snapshot.params[ "groupId" ]);
     this.examFilterService.getFilterDefinitions().forEach(filter => {
-      this.filters[filter.name] = filter;
+      this.filters[ filter.name ] = filter;
     });
 
     this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
 
     this.filterOptionService.getExamFilterOptions().subscribe(filterOptions => {
       this.filterOptions = filterOptions;
-      this.currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
+      this._currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
     });
   }
 
   removeEthnicity(ethnicity) {
-    this.clientFilterBy.ethnicities[ethnicity] = false;
-    if(this.clientFilterBy.filteredEthnicities.length == 0){
-      this.clientFilterBy.ethnicities[0] = true; // None are selected, set all to true.
+    this.clientFilterBy.ethnicities[ ethnicity ] = false;
+    if (this.clientFilterBy.filteredEthnicities.length == 0) {
+      this.clientFilterBy.ethnicities[ 0 ] = true; // None are selected, set all to true.
     }
 
     this.clientFilterBy.ethnicities = Object.assign({}, this.clientFilterBy.ethnicities);
   }
 
   removeFilter(property) {
-    if(property == 'offGradeAssessment'){
-      this.clientFilterBy[property] = false;
+    if (property == 'offGradeAssessment') {
+      this.clientFilterBy[ property ] = false;
     }
-    else if(property.indexOf('ethnicities') > -1) {
+    else if (property.indexOf('ethnicities') > -1) {
       this.removeEthnicity(property.substring(property.indexOf('.') + 1));
     }
-    else{
-      this.clientFilterBy[property] = -1;
+    else {
+      this.clientFilterBy[ property ] = -1;
     }
   }
 
@@ -102,7 +119,7 @@ export class GroupResultsComponent implements OnInit {
   }
 
   updateRoute(event) {
-    this.router.navigate([ 'groups', this.currentGroup.id, { schoolYear: this.currentSchoolYear } ]).then(() => {
+    this.router.navigate([ 'groups', this._currentGroup.id, { schoolYear: this._currentSchoolYear } ]).then(() => {
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     });
   }
@@ -111,7 +128,20 @@ export class GroupResultsComponent implements OnInit {
     return Number.parseInt(params[ "schoolYear" ]) || this.filterOptions.schoolYears[ 0 ];
   }
 
-  log(val){
-    console.log(val);
+  getGradeColor(id) {
+    return id
+      ? this.gradeService.getGrades().find(x => x.id == id).color
+      : "";
+  }
+
+  private getAvailableAssessments() {
+    if (this._expandAssessments) {
+      this.assessmentService.getAvailableAssessments(this._currentGroup.id, this._currentSchoolYear).subscribe(result => {
+        this.availableAssessments = result.map(available => {
+          available.selected = this.selectedAssessments.some(selected => selected.assessment.id == available.id);
+          return available;
+        });
+      })
+    }
   }
 }

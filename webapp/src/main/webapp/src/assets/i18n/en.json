@@ -149,7 +149,7 @@
         },
         "session-unknown": "[Unknown]",
         "filter-type-recent": "Most Recent",
-        "filter-type-custom": "Edit Assessments",
+        "filter-type-custom": "Select Assessments",
         "value-as": "Show value as",
         "value-as-percent": "Percent",
         "value-as-number": "Number",
