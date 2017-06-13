@@ -261,11 +261,9 @@ sql:
         select i.id,
           i.difficulty_code,
           i.max_points,
-          c.code as claim,
-          t.code as target
+          i.claim_code,
+          i.target_code
         from item i
-          left join claim c on i.claim_id=c.id
-          left join target t on i.target_id=t.id
         where i.asmt_id=:assessment_id
 
   district:
