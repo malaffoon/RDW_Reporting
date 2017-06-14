@@ -13,7 +13,7 @@
           <!-- TODO: @asleeper, remove custom styles which are removing borders -->
           <div class="btn-group" style="border-left:none;">
             <label *ngFor="let assessment of byGrade.assessments" class="btn btn-primary" [ngClass]="{'active': assessment.selected }" style="border:none;">
-              <input type="checkbox" [(ngModel)]="assessment.selected" (ngModelChange)="selectedAssessmentChanged($event)" autocomplete="off"> {{assessment.name}}
+              <input type="checkbox" [(ngModel)]="assessment.selected" (ngModelChange)="selectedAssessmentChanged(assessment)" autocomplete="off"> {{assessment.name}}
             </label>
           </div>
         </div>

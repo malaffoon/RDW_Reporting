@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { Assessment } from "../model/assessment.model";
 import { GradeService } from "../../../shared/grade.service";
 import { Grade } from "../../../shared/model/grade.model";
@@ -9,8 +9,8 @@ import { Grade } from "../../../shared/model/grade.model";
 })
 export class SelectAssessmentsComponent implements OnInit {
 
-  grades : Grade[] = [];
-  assessmentsByGrade : any[] = [];
+  grades: Grade[] = [];
+  assessmentsByGrade: any[] = [];
 
   @Input()
   set assessments(value: Assessment[]) {
@@ -22,9 +22,12 @@ export class SelectAssessmentsComponent implements OnInit {
     return this._assessments;
   }
 
+  @Output()
+  selectedAssessmentsChanged: EventEmitter<Assessment> = new EventEmitter()
+
   private _assessments: Assessment[];
 
-  constructor(private gradeService : GradeService) {
+  constructor(private gradeService: GradeService) {
   }
 
   ngOnInit() {
@@ -34,9 +37,9 @@ export class SelectAssessmentsComponent implements OnInit {
   private groupAssessmentsByGrade() {
     let assessmentsByGrade = [];
 
-    for(let grade of this.grades){
+    for (let grade of this.grades) {
       let assessments = this._assessments.filter(x => x.grade == grade.id);
-      if(assessments.length > 0){
+      if (assessments.length > 0) {
         assessmentsByGrade.push({ grade: grade, assessments: assessments });
       }
     }
@@ -44,11 +47,7 @@ export class SelectAssessmentsComponent implements OnInit {
     return assessmentsByGrade;
   }
 
-  selectedAssessmentChanged(event){
-    console.log(event);
-
-    let selectedAssessments = this._assessments.filter(x => x.selected);
-    console.log(selectedAssessments);
-
+  selectedAssessmentChanged(event) {
+    this.selectedAssessmentsChanged.emit(event);
   }
 }

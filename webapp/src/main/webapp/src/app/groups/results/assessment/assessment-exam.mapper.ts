@@ -23,6 +23,10 @@ export class AssessmentExamMapper {
     return apiModels.map(x => this.mapAssessmentFromApi(x));
   }
 
+  mapExamsFromApi(apiModels): Exam[] {
+    return apiModels.map(x => this.mapExamFromApi(x));
+  }
+
   private mapAssessmentFromApi(apiModel): Assessment {
     let uiModel = new Assessment();
 

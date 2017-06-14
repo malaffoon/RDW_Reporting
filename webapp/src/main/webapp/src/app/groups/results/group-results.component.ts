@@ -24,6 +24,7 @@ export class GroupResultsComponent implements OnInit {
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   currentFilters = [];
   availableAssessments: Assessment[] = [];
+  assessmentsLoading : any[] = [];
 
   get currentGroup() {
     return this._currentGroup;
@@ -72,6 +73,7 @@ export class GroupResultsComponent implements OnInit {
     this.expandAssessments = this.showOnlyMostRecent;
     if(value) {
       this.availableAssessments = [];
+      this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     }
 
     this._showOnlyMostRecent = value;
@@ -91,7 +93,6 @@ export class GroupResultsComponent implements OnInit {
   private _showOnlyMostRecent: boolean = true;
   private _currentGroup;
   private _currentSchoolYear;
-
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -158,6 +159,49 @@ export class GroupResultsComponent implements OnInit {
     return id
       ? this.gradeService.getGrades().find(x => x.id == id).color
       : "";
+  }
+
+  removeAssessment(assessment: Assessment){
+    assessment.selected = false;
+    this.selectedAssessmentsChanged(assessment);
+  }
+
+  selectedAssessmentsChanged(assessment: Assessment) {
+    if(assessment.selected){
+      this.loadAssessmentExam(assessment);
+    }
+    else {
+      this.removeUnselectedAssessmentExams();
+    }
+  }
+
+  private loadAssessmentExam(assessment: Assessment){
+    let subscription = this.assessmentService.getExams(this._currentGroup.id, this._currentSchoolYear, assessment.id)
+      .subscribe(exams => {
+        let assessmentLoaded = this.assessmentsLoading.splice(this.assessmentsLoading.findIndex(al => al.assessment.id == assessment.id), 1);
+        let assessmentExam = new AssessmentExam();
+        assessmentExam.assessment = assessmentLoaded[0].assessment;
+        assessmentExam.exams = exams;
+
+        this.assessmentExams.push(assessmentExam);
+      });
+
+    // Keeping track of this array allows us to unsubscribe from api calls in flight
+    // should the user decide to remove an assessment before it's finished loading.
+    this.assessmentsLoading.push({ assessment: assessment, subscription: subscription });
+  }
+
+  private removeUnselectedAssessmentExams() {
+    this.assessmentExams = this.assessmentExams.filter(loaded => this.selectedAssessments.some(selected => loaded.assessment.id == selected.id));
+
+    let assessmentsLoading = this.assessmentsLoading.filter(loading => !this.selectedAssessments.some(selected => loading.assessment.id == selected.id ));
+
+    // cancel api calls in flight.
+    for(let loading of assessmentsLoading){
+      loading.subscription.unsubscribe();
+    }
+
+    this.assessmentsLoading = assessmentsLoading;
   }
 
   private getAvailableAssessments() {

@@ -4,6 +4,8 @@ import { URLSearchParams } from "@angular/http";
 import { DataService } from "../../../shared/data.service";
 import { AssessmentExamMapper } from "./assessment-exam.mapper";
 import { ExamFilterOptionsService } from "../exam-filters/exam-filter-options.service";
+import { Assessment } from "../model/assessment.model";
+import { AssessmentExam } from "../model/assessment-exam.model";
 
 @Injectable()
 export class AssessmentService {
@@ -29,6 +31,17 @@ export class AssessmentService {
       })
       .map(x => {
         return this.mapper.mapAssessmentsFromApi(x);
+      });
+  }
+
+  getExams(groupId: number, schoolYear: number, assessmentId: number) {
+    return this.dataService.get(`/groups/${groupId}/assessments/${assessmentId}/exams`, { search: this.getSchoolYearParams(schoolYear) })
+      .catch(response => {
+        console.warn(response);
+        return Observable.empty();
+      })
+      .map(x => {
+        return this.mapper.mapExamsFromApi(x);
       });
   }
 
