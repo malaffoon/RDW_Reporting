@@ -1,22 +1,105 @@
-<div class="home-view">
-  <div class="row col-md-12">
-    <div class="page-heading">
-      <p>{{ 'labels.home.welcome' | translate }} <a href="">{{ 'labels.home.tutorial-link-text' | translate }}</a></p>
-    </div>
-    <div class="row row-eq-height">
-      <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']" class="col-md-8 well overflow-hidden margin-right-20">
-        <!--TODO:  Implement authorize of PII or PII Group role. -->
-        <groups></groups>
+<!-- Home Page Content Area -->
+<div class="home-view pt-md">
+  <div class="row">
+
+    <!-- Left Column Content Area -->
+    <div class="col-md-9">
+      <h1 class="sr-only">Reporting System Dashboard</h1>
+
+      <!-- Student ID Search -->
+      <h2 class="blue-dark h3 mb-md">Search by Student ID</h2>
+      <div class="student-id-search-container well">
+        <form>
+          <div class="form-group">
+            <div class="flex-children">
+              <div class="flex-child grow">
+                <label for="student-id-input">Statewide Student Identifier (SSID)</label>
+                <input type="text" class="form-control" id="student-id-input" placeholder="Enter the Statewide Student Identifier (SSID)">
+              </div>
+              <div class="flex-child">
+                <button type="submit" class="btn btn-primary">Search</button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="well">
-        <h3>Search</h3>
-        <hr>
-        <div>
-          Go to <a routerLink="/search">Student Search</a>
+
+      <!-- School & Grade Search -->
+      <h2 class="blue-dark h3 mb-md">Search by School &amp; Grade</h2>
+      <div class="school-and-grade-search-container well">
+        <form>
+          <div class="form-group">
+            <div class="flex-children">
+              <div class="flex-child grow">
+                <label for="school-name-input">Search by School Name</label>
+                <input type="text" class="form-control" id="school-name-input" placeholder="Start typing the school name">
+              </div>
+              <div class="flex-child">
+                <label for="grade-select">Grade</label>
+                <select name="grade-select" id="grade-select" class="form-control">
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="High School">High School</option>
+                </select>
+              </div>
+              <div class="flex-child">
+                <button type="submit" class="btn btn-primary mt-md">Search</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- My Groups Search -->
+      <h2 class="blue-dark h3 mb-md">My Groups</h2>
+      <div class="my-groups-search-container well">
+        <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
+          <!--TODO:  Implement authorize of PII or PII Group role. -->
+          <groups></groups>
         </div>
-        <br/>
       </div>
     </div>
 
+    <!-- Right Column Content Area -->
+    <div class="col-md-3 pt-md">
+      <!-- Student Groups Admin Link -->
+      <p class="text-right">
+        <a href="#" class="btn btn-xs btn-info"><i class="fa fa-gear"></i> Student Groups Admin</a>
+      </p>
+
+      <!-- Welcome Content -->
+      <div class="welcome-container well">
+        <p class="lead">Welcome! Get the most from the Reporting System:</p>
+        <p><a href="#" class="btn btn-primary">User Guide</a></p>
+        <p><a href="#" class="btn btn-success">Interpretive Guide</a></p>
+      </div>
+
+      <!-- Summary Reports Content -->
+      <h2 class="blue-dark h3 mb-md">Summary Reports</h2>
+      <div class="summary-reports-container mb-md">
+        <p><a href="#" class="h5 blue">Achievement Level Report</a><br />
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque et delectus cumque at illo minima accusamus.</p>
+        <p><a href="#" class="h5 blue">Achievement Standard Report</a><br />
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque et delectus cumque at illo minima accusamus.</p>
+        <p><a href="#" class="h5 blue">Longitudinal Data Report</a><br />
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque et delectus cumque at illo minima accusamus.</p>
+      </div>
+
+      <!-- Member Reporting Resources -->
+      <h2 class="blue-dark h3 mb-md">Member Reporting Resources</h2>
+      <div class="member-reporting-resources-container">
+        <p><a href="#" class="h5 blue">Member-provided Resources</a><br />
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+        <p><a href="#" class="h5 blue">How to Establish PII Permissions</a><br />
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+        <p><a href="#" class="h5 blue">How to Create Student Groups</a><br />
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+      </div>
+
+    </div>
   </div>
 </div>
