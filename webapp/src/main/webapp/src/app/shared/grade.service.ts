@@ -17,4 +17,9 @@ export class GradeService {
     return this.grades;
   }
 
+  getColor(id) {
+    return id
+      ? this.getGrades().find(x => x.id == id).color
+      : "";
+  }
 }

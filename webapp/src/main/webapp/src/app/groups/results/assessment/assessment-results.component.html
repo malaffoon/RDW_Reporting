@@ -3,13 +3,13 @@
     <div class="mb-lg">
         <!-- Top Right Buttons -->
         <div class="pull-right text-right">
-            <a href="" class="btn btn-default btn-xs"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
+            <a class="btn btn-default btn-xs"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
             <button class="btn btn-default btn-sm icon-only" (click)="collapsed = !collapsed">
                 <i class="fa font-bold" [ngClass]="{'fa-angle-down':collapsed, 'fa-angle-up':!collapsed}"></i> <span class="sr-only">Collapse</span>
             </button>
         </div>
         <!-- Assessment Title -->
-        <span href="" class="tag tag-lg maroon color-grade-{{assessmentExam.assessment.grade}}">
+        <span class="tag tag-lg {{gradeService.getColor(assessmentExam.assessment.grade)}}">
             <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessmentExam.assessment.grade}}</span>
             {{assessmentExam.assessment.name}}
         </span>
@@ -45,33 +45,28 @@
                         </span>
                     </span>
                     <div class="bar green left-side" data-width="28">
-                      <span class="bar-data">28%</span>
-                      <span class="bar-label">Below Standard</span>
                     </div>
                     <div class="bar middle green blue-dark" data-width="55">
-                      <span class="bar-data">55%</span>
-                      <span class="bar-label">Near Standard</span>
                     </div>
                     <div class="bar blue-dark right-side" data-width="17">
-                      <span class="bar-data">17%</span>
-                      <span class="bar-label">Above Standard</span>
                     </div>
                 </div>
             </div>
         </div>
-
+      <div class="pull-right">
         <!-- TODO: bind levels to visualization -->
         <div *ngFor="let level of performance.levels">
-            {{ examLevelEnum + level.id.toString() | translate }}:
-            <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
+          {{ examLevelEnum + level.id.toString() | translate }}:
+          <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
         </div>
+      </div>
     </div>
 
     <!-- Student Results -->
     <div *ngIf="!collapsed" @fadeAnimation>
         <h3 class="gray-darkest mb-md">
             {{'labels.assessment.exam-results' | translate}}
-            <a href="" class="btn btn-info btn-xs pull-right">
+            <a class="btn btn-info btn-xs pull-right">
                 {{'labels.assessment.button-item-points' | translate}} <i class="fa fa-chevron-right"></i>
             </a>
         </h3>

@@ -8,6 +8,7 @@ import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { FilterBy } from "../model/filter-by.model";
 import { Subscription } from "rxjs";
 import { ExamFilterService } from "../exam-filters/exam-filter.service";
+import { GradeService } from "../../../shared/grade.service";
 
 @Component({
   selector: 'assessment-results',
@@ -76,7 +77,8 @@ export class AssessmentResultsComponent {
   private _showValuesAsPercent: boolean;
   private _filterBySubscription: Subscription;
 
-  constructor(private examCalculator: ExamStatisticsCalculator,
+  constructor(public gradeService : GradeService,
+              private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService) {
   }
 

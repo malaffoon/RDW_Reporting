@@ -24,16 +24,19 @@
           <!-- School Year -->
           <div class="flex-child">
             <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
-            <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute($event)" class="form-control">
+            <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute($event)"
+                    class="form-control">
               <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
             </select>
           </div>
           <!-- Advanced Filters Toggle -->
           <div class="flex-child">
-            <label for="advanced">{{'labels.groups.results.adv-filters.label'  | translate}}</label>
-            <button id="advanced" class="form-control btn btn-default" (click)="showAdvancedFilters = !showAdvancedFilters">
+            <label for="advanced">{{'labels.groups.results.adv-filters.label' | translate}}</label>
+            <button id="advanced" class="form-control btn btn-default"
+                    (click)="showAdvancedFilters = !showAdvancedFilters">
               {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
-              <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}" aria-hidden="true"></i>
+              <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}"
+                 aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -45,25 +48,27 @@
   <div id="group-results-adv-filters" [hidden]="!showAdvancedFilters" class="well gray-lightest">
     <h2 class="h3 gray-darkest">
       <i class="fa fa-check-square"></i> {{'labels.groups.results.adv-filters.label' | translate }}
-      <button id="adv-filters-expand-collapse" class="btn btn-default btn-sm pull-right" (click)="expandFilterOptions = !expandFilterOptions">
+      <button id="adv-filters-expand-collapse" class="btn btn-default btn-sm pull-right"
+              (click)="expandFilterOptions = !expandFilterOptions">
         {{'buttons.collapsible.' + (expandFilterOptions ? 'collapse' : 'expand') | translate }}
-        <i class="fa" [ngClass]="{'fa-chevron-up': expandFilterOptions, 'fa-chevron-down': !expandFilterOptions}" aria-hidden="true"></i>
+        <i class="fa" [ngClass]="{'fa-chevron-up': expandFilterOptions, 'fa-chevron-down': !expandFilterOptions}"
+           aria-hidden="true"></i>
       </button>
     </h2>
     <p class="gray-darker">{{'labels.groups.results.adv-filters.subhead' | translate }}</p>
     <!-- Selected Filters -->
     <div id="adv-filters-selected" class="flex-children">
-        <div *ngFor="let property of clientFilterBy.all">
-          <a class="tag tag-xs aqua reverse" (click)="removeFilter(property)">
+      <div *ngFor="let property of clientFilterBy.all">
+        <a class="tag tag-xs aqua reverse" (click)="removeFilter(property)">
             <span *ngIf="property.indexOf('ethnicities') == -1">
               <strong>{{ filters[property].enumValue + '.' + clientFilterBy[property] | translate}}</strong> {{ filters[property].label | translate }}
             </span>
-            <span *ngIf="property.indexOf('ethnicities') != -1">
+          <span *ngIf="property.indexOf('ethnicities') != -1">
               <strong>{{ filters['ethnicities'].enumValue + property.substring(property.indexOf('.')) | translate}}</strong> {{ filters['ethnicities'].label | translate }}
             </span>
-            <span class="icon"><i class="fa fa-close"></i></span>
-          </a>
-        </div>
+          <span class="icon"><i class="fa fa-close"></i></span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -77,57 +82,72 @@
     <h2 class="h3 gray-darkest">
       <i class="fa fa-list-alt"></i> {{'labels.groups.results.selected-assessments-title' | translate}}
       <div class="btn-group btn-group-xs pull-right" role="group">
-              <button type="radio" (click)="showOnlyMostRecent = true" class="btn btn-default" [ngClass]="{'active': showOnlyMostRecent}">{{'labels.groups.results.filter-type-recent' |
+        <button type="radio" (click)="showOnlyMostRecent = true" class="btn btn-default"
+                [ngClass]="{'active': showOnlyMostRecent}">{{'labels.groups.results.filter-type-recent' |
           translate}}
         </button>
-              <button type="radio" (click)="showOnlyMostRecent = false" class="btn btn-default" [ngClass]="{'active': !showOnlyMostRecent}">{{'labels.groups.results.filter-type-custom' | translate}}
+        <button type="radio" (click)="showOnlyMostRecent = false" class="btn btn-default"
+                [ngClass]="{'active': !showOnlyMostRecent}">{{'labels.groups.results.filter-type-custom' | translate}}
         </button>
       </div>
     </h2>
     <p class="gray-darker">{{'labels.groups.results.selected-assessments-instruct' | translate }}</p>
-        <!-- TODO: Remove custom styles -->
-        <div style="margin-bottom:20px !important;">
-        <!-- TODO: Remove custom styles -->
-        <a *ngFor="let assessment of selectedAssessments" (click)="removeAssessment(assessment)" class="tag {{getGradeColor(assessment.grade)}} slim" style="margin-right: 10px; margin-bottom:10px;">
-          <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessment.grade}}</span>
-          {{assessment.name}}
-          <span class="icon"><i class="fa fa-close"></i></span>
-    </a>
-        <!-- TODO: Remove custom styles -->
-        <a class="btn btn-default icon-only" (click)="expandAssessments=true" style="margin-bottom:17px;">
-    </a>
-  </div>
-</div>
-    <div id="group-results-edit-assessments" [hidden]="!expandAssessments" class="well gray-lighter">
-      <div id="adv-filters-edit-assessments-collapse" class="pull-right">
-        <button class="form-control btn btn-sm" (click)="expandAssessments = false">
-          {{'buttons.collapsible.collapse' | translate }}
-          <i class="fa fa-chevron-up" aria-hidden="true"></i>
-        </button>
-      </div>
-      <select-assessments [assessments]="availableAssessments" (selectedAssessmentsChanged)="selectedAssessmentsChanged($event)"></select-assessments>
+    <!-- TODO: Remove custom styles -->
+    <div>
+      <!-- TODO: Remove custom styles -->
+      <a *ngFor="let assessment of selectedAssessments" (click)="removeAssessment(assessment)"
+         class="tag tag-xs {{ gradeService.getColor(assessment.grade)}}" style="margin-right:10px !important; margin-bottom: 10px; ">
+        <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessment.grade}}</span>
+        {{assessment.name}}
+        <span class="icon"><i class="fa fa-close"></i></span>
+      </a>
+      <!-- TODO: Remove custom styles -->
+      <a *ngIf ="!expandAssessments" class="btn btn-default btn-xs img-circle icon-only" (click)="expandAssessments=true" style="margin-bottom: 14px; ">
+        <i class="fa fa-plus"></i>
+      </a>
     </div>
+  </div>
+  <div id="group-results-edit-assessments" [hidden]="!expandAssessments" class="well gray-lighter">
+    <div id="adv-filters-edit-assessments-collapse" class="pull-right">
+      <button class="form-control btn btn-sm" (click)="expandAssessments = false">
+        {{'buttons.collapsible.collapse' | translate }}
+        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+      </button>
+    </div>
+    <select-assessments [assessments]="availableAssessments"
+                        (selectedAssessmentsChanged)="selectedAssessmentsChanged($event)"></select-assessments>
+  </div>
 
+</div>
 <!-- Results -->
 <h2 class="blue-dark h3 mt-lg mb-md">
   {{'labels.groups.results.title' | translate}}
-  <div class="pull-right">
+  <div class="pull-right" style="margin-bottom:20px;">
     <label for="value-format">{{'labels.groups.results.value-as' | translate }} </label>
     <div id="value-format" class="btn-group btn-group-primary btn-group-xs mr-md" role="group">
-      <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}" class="btn btn-default"  >{{'labels.groups.results.value-as-percent' | translate}}</button>
-      <button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}" class="btn btn-default">{{'labels.groups.results.value-as-number' | translate}}</button>
+      <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}"
+              class="btn btn-default">{{'labels.groups.results.value-as-percent' | translate}}
+      </button>
+      <button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}"
+              class="btn btn-default">{{'labels.groups.results.value-as-number' | translate}}
+      </button>
     </div>
-    <a href="" class="btn btn-default btn-xs pull-right">
+    <a class="btn btn-default btn-xs pull-right">
       Collapse Results <i class="fa fa-chevron-up"></i>
     </a>
   </div>
-  <div *ngFor="let assessment of assessmentExams">
+</h2>
 
-<!-- Results Container -->
-<div *ngFor="let assessment of selectedAssessments" class="groups-results-wrapper">
-  <assessment-results [assessmentExam]="assessment" [showValuesAsPercent]="showValuesAsPercent" [filterBy]="clientFilterBy"></assessment-results>
+<div *ngFor="let assessment of assessmentExams">
+
+  <!-- Results Container -->
+  <div *ngFor="let assessment of assessmentExams" class="groups-results-wrapper">
+    <assessment-results [assessmentExam]="assessment" [showValuesAsPercent]="showValuesAsPercent"
+                        [filterBy]="clientFilterBy"></assessment-results>
+  </div>
 </div>
 <!-- No Results Error -->
-<div class="alert alert-danger" *ngIf="selectedAssessments.length == 0">
+<div class="alert alert-danger" *ngIf="assessmentExams.length == 0">
   {{'messages.no-results-found' | translate}}
 </div>
+

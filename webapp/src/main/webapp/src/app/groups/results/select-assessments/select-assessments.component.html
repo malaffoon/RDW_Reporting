@@ -9,7 +9,7 @@
         <p><strong>Grade {{byGrade.grade.id}}</strong></p>
       </div>
       <div class="panel-body">
-        <div class="btn-group toggle-group vertical" data-toggle="buttons">
+        <div class="nested-btn-group btn-group-sm toggle-group vertical" data-toggle="buttons">
           <!-- TODO: @asleeper, remove custom styles which are removing borders -->
           <div class="btn-group" style="border-left:none;">
             <label *ngFor="let assessment of byGrade.assessments" class="btn btn-primary" [ngClass]="{'active': assessment.selected }" style="border:none;">
