@@ -12,7 +12,7 @@ import { Utils } from "./Utils";
 @Component({
   selector: 'sb-checkbox-list',
   template: `
-    <div class="btn-group nested-btn-group-sm toggle-group vertical" data-toggle="buttons">
+    <div class="nested-btn-group btn-group-sm toggle-group vertical" data-toggle="buttons">
       <label class="btn btn-primary" [ngClass]="{'active': modelValue[0] }">
         <input type="checkbox" [(ngModel)]="modelValue[0]" (ngModelChange)="allChange($event)" autocomplete="off" checked=""> {{ 'buttons.all' | translate }}
       </label>

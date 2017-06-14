@@ -1,568 +1,111 @@
-/* You can add global styles to this file, and also import other style files */
-@font-xs: 75%;
-@font-sm: 86%;
-@gray1: #f3f3f3;
-@gray2: #eee;
-@gray3: #686868;
-@gray4: #7a7a7a;
-@gray5: #d4d4d4;
-@gray6: #e6e6e6;
-@gray7: #f8f8f8;
-@gray8: #f3f3f3;
-@gray9: #a9a9a9;
-@gray10: #a7a7a7;
-@blue1: #008AB1;
+//
+// RDW Style Overrides
+// Extending SBAC UI Kit
+// ----------------------------------------
 
-@green: #1f6735;
-@green1: #7dab42;
-@green2: #43B02A;
-@green3: #3f6633;
+// IMPORTANT NOTE
+// The below color references are being hard-coded so I can continue working for now
+// This app needs to pull the UI Kit's LESS so it can be extended rather than the CSS
+// -AS
 
-@orange1: #d0621d;
+// START Hardcoded Styles
 
-@blue1: #2487a6;
-@blue2: #335f9c;
-@blue3: #113d59;
-@blue4: #3696e6;
+// ------------------------------
+// Colors
+// ------------------------------
 
-@red1: #51182b;
+// Blues
+@blue:                  #014F9A;
+@blue-dark:             #104564;
+@teal:                  #0090B7;
+@aqua:                  #3696E6;
 
-@color-selected: #d3eacc;
-@color-hovered: #ededed;
+// Greens
+@green:                 #6FAE29;
+@green-dark:            #406934;
 
-@color-grade-3: @orange1;
-@color-grade-4: @green1;
-@color-grade-5: @blue1;
-@color-grade-6: @blue2;
-@color-grade-7: @red1;
-@color-grade-8: @green3;
-@color-grade-9: @blue3;
-//TODO: How does "High School" fit in here?
+// Hot Colors
+@orange:                #D66E1E;
+@red:                   #D5124A;
+@red-dark:              #931432;
+@maroon:                #5B1931;
 
+// Neutrals
+@black:                 #000000;
+@gray-darkest:          #2a2b2d;
+@gray-darker:           #64666A;
+@gray-dark:             #A7A7A7;
+@gray:                  #B8B8B8;
+@gray-light:            #D5D5D5;
+@gray-lighter:          #E6E6E6;
+@gray-lightest:         #F8F8F8;
+@white:                 #FFFFFF;
 
-.font-sm {
-  font-size: @font-sm;
-}
+// Bootstrap Color Vars
+@brand-primary:         @aqua;
+@brand-success:         @green;
+@brand-info:            @blue-dark;
+@brand-warning:         @orange;
+@brand-danger:          @red;
 
-.font-xs {
-  font-size: @font-xs;
-}
+// END Hardcoded Styles
 
-.pop-out {
-  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
-}
+// Grade Level Color Variable Reference
+@color-grade-3:    @orange;
+@color-grade-4:    @green;
+@color-grade-5:    @teal;
+@color-grade-6:    @blue-dark;
+@color-grade-7:    @maroon;
+@color-grade-8:    @green-dark;
+@color-grade-hs:   @blue-dark;
 
-/* styles to allow icons in inputs */
-.inner-addon {
-  position: relative;
-  .glyphicon {
-    position: absolute;
-    padding: 10px;
-    pointer-events: none;
-  }
-}
+// ------------------------------
+// Element Styles
+// ------------------------------
 
-.left-addon {
-  .glyphicon {
-    left: 0;
-  }
-  input {
-    padding-left: 30px;
-  }
-}
-
-.right-addon {
-  .glyphicon {
-    right: 0;
-  }
-  input {
-    padding-right: 30px;
-  }
-}
-
-/* custom styles */
-body {
-  padding-top: 108px;
-}
-
-
-h2 {
-  color: @blue1;
-  font-size: 175%;
-  display: inline-block;
-  margin: 4px 0 20px 0;
-}
-
-
-.navigation {
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  box-shadow: 0 0.15em 0.35em 0 rgba(0, 0, 0, 0.135);
-  margin-bottom: 0;
-  padding: 16px 0 20px 0;
-  .logo {
-    width: 170px;
-  }
-  .title {
-    display: inline-block;
-    color: #43B02A;
-    font-weight: normal;
-    font-size: 150%;
-    margin: 10px 0 10px 32px;
-  }
-  .welcome-message {
-    .font-sm;
-    text-align: right;
-    i {
-      margin-right: 6px;
-    }
-  }
-  .search-box {
-    .font-sm;
-    .search {
-      font-size: 100%;
-      width: 360px;
-    }
-  }
-  .navbar-brand,
-  .navbar-form {
-    padding: 0;
-  }
-  .link-divider {
-    margin: 0 6px;
-  }
-}
-
-.breadcrumbs {
-  .font-xs;
-  background: @gray2;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.715);
-  color: @gray4;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-  padding: 12px 0;
-  .breadcrumb-link > i {
-    margin-right: 6px;
-  }
-  .breadcrumb-link-separator > i {
-    margin: 0 4px;
-  }
-}
-
-/* "sticky" footer */
-@footer-height: 45px;
-html, body {
-  height: 100%;
-}
-
-.page-view {
-  min-height: 100%;
-  margin-bottom: -@footer-height;
-}
-
-.page-view:after {
-  content: "";
-  display: block;
-}
-
-.page-heading {
-  .btn {
-    margin: -6px 0 0 20px;
-  }
-  .controls {
-
-  }
-}
-
-.card {
-  .pop-out;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  border-radius: 5px;
-  padding: 32px;
-  margin-bottom: 20px;
-  h2 {
-    margin: 0 0 24px 0;
-  }
-  .table {
-    margin-bottom: 0;
-  }
-  .list-group-item {
-    color: @gray3;
-  }
-  .search-box {
-    margin-bottom: 20px;
-  }
-}
-
-.dark-bg {
-  background-color: @gray7;
-}
-
-.home-view,
-.pad-top-20,
-.students-view,
-.student-exams-view,
-.student-exam-items-view,
-.group-exams-view {
-  padding-top: 20px;
-}
-
-.student-exams-view,
-.group-exams-view {
-  .page-heading {
-    .form-inline {
-      float: right;
-    }
-  }
-}
-
-.student-exams-view {
-  .tab-content {
-    .form-inline {
-      float: right;
-    }
-  }
-}
-
-.group-exams-view {
-  .table-wrapper {
-    max-height: 312px;
-    overflow: auto;
-  }
-  .select-exam-promt {
-    font-size: 150%;
-    margin-top: 80px;
-    opacity: 0.5;
-  }
-  .combined-selected-assessments {
-    .table {
-      border: none;
-      > thead > tr > th {
-        background-color: transparent;
-      }
-    }
-  }
-}
-
-.group-exams-card {
-  .table > tbody > tr {
-    cursor: default
-  }
-  .table > tbody > tr.disabled {
-    cursor: not-allowed
-  }
-  tr.disabled {
-    color: @gray5;
-    .badge {
-      opacity: 0.25;
-    }
-  }
-}
-
-.attributes {
-  float: right;
-  margin-top: 8px;
-  .attribute {
-    margin-left: 20px;
-    .attribute-value {
-      font-weight: bold;
-    }
-  }
-}
-
-
-.expandable {
-  position: relative;
-  .expand-control {
-    position: absolute;
-    top: 52px;
-    right: 12px;
+// Sortable Tables
+// NOTE: These styles need to be extended from the kit once it has been integrated
+.ui-sortable-column {
+  &:hover {
+    background-color: lighten(@gray-lighter, 5%);
     cursor: pointer;
   }
-}
-
-.tab-container {
-  .nav-tabs {
-    padding-left: 32px;
-  }
-  .tab-content {
-    .pop-out;
-    background-color: #fff;
-    padding: 32px;
-    min-height: 256px;
-    h2 {
-      display: inline-block;
-      margin: 0 0 20px 0;
+  .ui-sortable-column-icon {
+    margin-left: 8px;
+    color: @gray-darker;
+    &:hover {
+      cursor: pointer;
     }
-    table, p {
-      margin-bottom: 0;
+  }
+  &.ui-state-active {
+    .ui-sortable-column-icon {
+      color: @gray;
     }
   }
 }
 
-.tab-header {
-  margin: 0 0 24px 0;
-}
-
-
-@color-danger: #a20137;
-@color-below: #63666b;
-@color-near: #00639a;
-@color-above: #006d33;
-
-
-
-/*
-  color rules need to account for 1,2,3[4?] segment cases
- */
-.horizontal-bar-chart {
-   table {
-     width: 100%;
-     border-collapse: separate;
-     border-spacing: 6px 0;
-   }
-   margin-top: 18px;
-   .segment,
-   .segment-label {
-     margin: 0 3px;
-     float: left;
-   }
-   .segment {
-     color: #fff;
-     height: 60px;
-     .segment-text {
-       margin-top: 12px;
-       font-size: 125%;
-       text-shadow: 1px 1px 3px #000;
-     }
-   }
-   .segment-labels {
-     margin-top: 12px;
-   }
-   .segment-label {
-     font-size: 125%;
-   }
-   .segment.segment-0 {
-     background-color: @color-below;
-     :after {
-       margin-top: -12px;
-       content: "";
-       display: block;
-       float: left;
-       border-top: 30px solid #fff;
-       border-bottom: 30px solid #fff;
-       border-right: 20px solid @color-below;
-     }
-   }
-   .segment.segment-1 {
-     background-color: @color-near;
-   }
-   .segment.segment-2 {
-     background-color: @color-above;
-     :after {
-       margin-top: -12px;
-       content: "";
-       display: block;
-       float: right;
-       border-top: 30px solid #fff;
-       border-bottom: 30px solid #fff;
-       border-left: 20px solid @color-above;
-     }
-   }
- }
-
-
-.stacked-horizontal-bar-chart {
-  margin-top: 18px;
-  /*.bars {
-    clip-path: url("#stacked-horizontal-bar-chart-clip-path")
-  }*/
-  .bars>.mask {
-    /*:after {
-      margin-top: -12px;
-      content: " ";
-      display: block;
-      float: left;
-      border-top: 30px solid #fff;
-      border-bottom: 30px solid #fff;
-      border-right: 20px solid transparent;
-    }
-    :after {
-      margin-top: -12px;
-      content: "";
-      display: block;
-      float: right;
-      border-top: 30px solid #fff;
-      border-bottom: 30px solid #fff;
-      border-left: 20px solid transparent;
-    }
-  */
-
-  }
-  .bar,
-  .bar-label {
-    float: left;
-  }
-  .bar {
-    color: #fff;
-    height: 60px;
-    .bar-text {
-      margin-top: 12px;
-      font-size: 125%;
-      text-shadow: 1px 1px 2px #000;
+// Flex Aligned Forms
+.form-group .flex-children {
+  align-items: stretch;
+  .flex-child {
+    align-self: flex-end;
+    &.grow {
+      flex-grow: 1;
     }
   }
-  .bar-labels {
-    margin-top: 12px;
-  }
-  .bar-label {
-    font-size: 125%;
-  }
-  .bar-text,
-  .bar-label {
-    text-align: center;
-  }
-  .bar.bar-0 {
-    background-color: @color-danger;
-  }
-  .bar.bar-1 {
-    background-color: @color-below;
-  }
-  .bar.bar-2 {
-    background-color: @color-near;
-  }
-  .bar.bar-3 {
-    background-color: @color-above;
-  }
 }
-/* window resizing */
-.window-controls {
-  position: absolute;
-  top: 6px;
-  right: 12px;
-}
-.window-control:hover {
-  text-decoration: none;
-}
-.window-control.disabled {
-  color: #ccc;
-}
-.card{position: relative}
-.card{transition: height .25s}
-.card.sm {height: 32px; overflow: hidden; table{display:none}; padding: 0}
-.card.md {height: 320px; overflow: auto}
-.card.lg {height: 600px; overflow: auto}
-iframe.md {height: 320px;}
-iframe.lg {height: 600px;}
-
-.margin-right-20 { margin-right: 20px; }
-.margin-top-0 { margin-top: 0; }
-.margin-bottom-0 { margin-bottom: 0; }
-
-.pad-left-0 { padding-left: 0 }
-
-.color-checkmark {color: @green; }
-.color-green { color: @green; }
-
-.bg-color-grade-3 { background-color: @color-grade-3 !important; }
-.bg-color-grade-4 { background-color: @color-grade-4 !important; }
-.bg-color-grade-5 { background-color: @color-grade-5 !important; }
-.bg-color-grade-6 { background-color: @color-grade-6 !important; }
-.bg-color-grade-7 { background-color: @color-grade-7 !important; }
-.bg-color-grade-8 { background-color: @color-grade-8 !important; }
-.bg-color-grade-9 { background-color: @color-grade-9 !important; }
-
-.color-grade-3 { color: @color-grade-3 !important; }
-.color-grade-4 { color: @color-grade-4 !important; }
-.color-grade-5 { color: @color-grade-5 !important; }
-.color-grade-6 { color: @color-grade-6 !important; }
-.color-grade-7 { color: @color-grade-7 !important; }
-.color-grade-8 { color: @color-grade-8 !important; }
-.color-grade-9 { color: @color-grade-9 !important; }
-
-.color-gray { color: @gray9 }
-.bg-color-gray { background-color: @gray9 }
-
-.btn.btn-gray{
-  color: #ffffff;
-  background-color: @gray10;
+.form-control.btn {
+  display: block;
+  width: auto;
 }
 
-.btn.active,
-.btn.active:focus,
-.btn.active:hover
-{
-  background-color: @blue4;
-  border-color: @blue4;
-  color: #ffffff;
+// ------------------------------
+// RDW Custom Styles to Match Comps
+// ------------------------------
+.my-groups-search-form-container {
+  border: 1px solid @gray-lighter;
 }
-
-.overflow-hidden { overflow:hidden !important; }
-.text-align-center { text-align: center; }
-.card-watermark {
-  font-size: 216px;
-  color: @gray1;
+.home-view .my-groups-list-container .table > thead > tr > th {
+  &:first-child { border-top-left-radius: 0px; }
+  &:last-child { border-top-right-radius: 0px; }
 }
-
-.selectable-row:hover {
-  background-color: @color-hovered !important;
-}
-
-.selected-row {
-  background-color: @color-selected !important;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.width-sm {  width:20px; }
-.width-md {  width:75px; }
-
-.pad-bottom-10 { padding-bottom: 10px }
-
-.spacer-h-sm { margin-right: 1rem; }
-.spacer-h-md { margin-right: 2rem; }
-
-.spacer-v-sm { margin-bottom: 1rem !important; }
-.spacer-v-md { margin-bottom: 2rem; }
-.spacer-v-lg { margin-bottom: 3rem; }
-
-.pad-bottom-md { padding-bottom: 2rem; }
-
-.pad-h-xxs { padding-left: 1px; padding-right: 1px; }
-.pad-v-lg { padding-top: 10px; padding-bottom: 10px; }
-
-.font-bold { font-weight: 800 !important; }
-
-.icon-size-md { vertical-align: bottom; font-size: 1.75rem !important; }
-
-.btn-round { border-radius: 1rem; }
-
-a.active {
-  cursor: default;
-  color: gray;
-  text-decoration: none;
-}
-
-.row-eq-height {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;
-}
-
-
-.ui-unselectable-text {
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-}
-
-.ui-datatable .ui-sortable-column {
-  cursor: pointer;
-}
-
