@@ -145,20 +145,16 @@ export class GroupResultsComponent implements OnInit {
       this.assessmentExams.push(latestAssessment);
   }
 
-  updateRoute(event) {
-    this.router.navigate([ 'groups', this._currentGroup.id, { schoolYear: this._currentSchoolYear } ]).then(() => {
+  updateRoute() {
+    this.router.navigate(
+      [ 'groups', this._currentGroup.id,
+        { schoolYear: this._currentSchoolYear, } ]).then(() => {
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     });
   }
 
   mapParamsToSchoolYear(params) {
     return Number.parseInt(params[ "schoolYear" ]) || this.filterOptions.schoolYears[ 0 ];
-  }
-
-  getGradeColor(id) {
-    return id
-      ? this.gradeService.getGrades().find(x => x.id == id).color
-      : "";
   }
 
   removeAssessment(assessment: Assessment){
@@ -184,6 +180,12 @@ export class GroupResultsComponent implements OnInit {
         assessmentExam.exams = exams;
 
         this.assessmentExams.push(assessmentExam);
+        this.assessmentExams.sort((x, y) => {
+          if(x.assessment.grade == y.assessment.grade){
+            return x.assessment.name > y.assessment.name ? 1: -1;
+          }
+          return x.assessment.grade > y.assessment.grade ? 1: -1;
+        });
       });
 
     // Keeping track of this array allows us to unsubscribe from api calls in flight
@@ -206,12 +208,16 @@ export class GroupResultsComponent implements OnInit {
 
   private getAvailableAssessments() {
     if (this._expandAssessments) {
-      this.assessmentService.getAvailableAssessments(this._currentGroup.id, this._currentSchoolYear).subscribe(result => {
+      let observable = this.assessmentService.getAvailableAssessments(this._currentGroup.id, this._currentSchoolYear).share();
+
+      observable.subscribe(result => {
         this.availableAssessments = result.map(available => {
           available.selected = this.assessmentExams.some(assessmentExam => assessmentExam.assessment.id == available.id);
           return available;
         });
-      })
+      });
+
+      return observable;
     }
   }
 }

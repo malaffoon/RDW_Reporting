@@ -2,24 +2,19 @@
   <p class="spacer-v-lg">
     {{ 'labels.groups.results.select-assessments.instruct' | translate }}
   </p>
-
-  <div *ngFor="let byGrade of assessmentsByGrade" class="col-md-3">
-    <div class="panel">
-      <div class="panel-heading {{byGrade.grade.color}}">
-        <p><strong>Grade {{byGrade.grade.id}}</strong></p>
-      </div>
+  <div class="panel-grid">
+    <div *ngFor="let byGrade of assessmentsByGrade" class="panel {{byGrade.grade.color}}">
+      <div class="panel-heading"><span class="panel-title">{{'labels.groups.results.grade' | translate}} {{byGrade.grade.id}}</span></div>
       <div class="panel-body">
-        <div class="nested-btn-group btn-group-sm toggle-group vertical" data-toggle="buttons">
-          <!-- TODO: @asleeper, remove custom styles which are removing borders -->
-          <div class="btn-group" style="border-left:none;">
-            <label *ngFor="let assessment of byGrade.assessments" class="btn btn-primary" [ngClass]="{'active': assessment.selected }" style="border:none;">
-              <input type="checkbox" [(ngModel)]="assessment.selected" (ngModelChange)="selectedAssessmentChanged(assessment)" autocomplete="off"> {{assessment.name}}
-            </label>
-          </div>
+        <div class="tag-menu">
+          <a *ngFor="let assessment of byGrade.assessments"
+             (click)="toggleSelectedAssessment(assessment)"
+             class="tag tag-xs {{byGrade.grade.color}}"
+             [ngClass]="{'active': assessment.selected }">{{assessment.name}}</a>
         </div>
       </div>
+      <div class="panel-footer"></div>
     </div>
   </div>
-
 </div>
 

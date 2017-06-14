@@ -155,6 +155,7 @@
         "value-as-percent": "Percent",
         "value-as-number": "Number",
         "grade-prefix" : "G",
+        "grade": "Grade",
         "empty-message" : "No results found by selected sessions and advanced filters.",
         "exam-cols": {
           "name": "Name",

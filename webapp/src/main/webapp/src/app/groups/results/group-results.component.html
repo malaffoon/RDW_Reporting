@@ -17,14 +17,14 @@
           <div class="flex-child">
             <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
             <!--TODO: type ahead? -->
-            <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute($event)" class="form-control">
+            <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute()" class="form-control">
               <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
             </select>
           </div>
           <!-- School Year -->
           <div class="flex-child">
             <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
-            <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute($event)"
+            <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute()"
                     class="form-control">
               <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
             </select>
@@ -92,20 +92,20 @@
       </div>
     </h2>
     <p class="gray-darker">{{'labels.groups.results.selected-assessments-instruct' | translate }}</p>
-    <!-- TODO: Remove custom styles -->
-    <div>
-      <!-- TODO: Remove custom styles -->
+    <div class="flex-children">
       <a *ngFor="let assessment of selectedAssessments" (click)="removeAssessment(assessment)"
-         class="tag tag-xs {{ gradeService.getColor(assessment.grade)}}" style="margin-right:10px !important; margin-bottom: 10px; ">
+         class="tag tag-xs {{ gradeService.getColor(assessment.grade)}}">
         <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessment.grade}}</span>
         {{assessment.name}}
         <span class="icon"><i class="fa fa-close"></i></span>
       </a>
-      <!-- TODO: Remove custom styles -->
-      <a *ngIf ="!expandAssessments" class="btn btn-default btn-xs img-circle icon-only" (click)="expandAssessments=true" style="margin-bottom: 14px; ">
-        <i class="fa fa-plus"></i>
-      </a>
+      <div>
+        <a *ngIf ="!expandAssessments" class="btn btn-default btn-sm img-circle icon-only" (click)="expandAssessments=true">
+          <i class="fa fa-plus"></i>
+        </a>
+      </div>
     </div>
+
   </div>
   <div id="group-results-edit-assessments" [hidden]="!expandAssessments" class="well gray-lighter">
     <div id="adv-filters-edit-assessments-collapse" class="pull-right">
@@ -122,7 +122,7 @@
 <!-- Results -->
 <h2 class="blue-dark h3 mt-lg mb-md">
   {{'labels.groups.results.title' | translate}}
-  <div class="pull-right" style="margin-bottom:20px;">
+  <div class="pull-right">
     <label for="value-format">{{'labels.groups.results.value-as' | translate }} </label>
     <div id="value-format" class="btn-group btn-group-primary btn-group-xs mr-md" role="group">
       <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}"
@@ -137,14 +137,10 @@
     </a>
   </div>
 </h2>
-
-<div *ngFor="let assessment of assessmentExams">
-
-  <!-- Results Container -->
-  <div *ngFor="let assessment of assessmentExams" class="groups-results-wrapper">
-    <assessment-results [assessmentExam]="assessment" [showValuesAsPercent]="showValuesAsPercent"
-                        [filterBy]="clientFilterBy"></assessment-results>
-  </div>
+<!-- Results Container -->
+<div *ngFor="let assessment of assessmentExams" class="groups-results-wrapper">
+  <assessment-results [assessmentExam]="assessment" [showValuesAsPercent]="showValuesAsPercent"
+                      [filterBy]="clientFilterBy"></assessment-results>
 </div>
 <!-- No Results Error -->
 <div class="alert alert-danger" *ngIf="assessmentExams.length == 0">

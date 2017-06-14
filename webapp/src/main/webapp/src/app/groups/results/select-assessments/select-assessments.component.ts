@@ -34,6 +34,11 @@ export class SelectAssessmentsComponent implements OnInit {
     this.grades = this.gradeService.getGrades();
   }
 
+  toggleSelectedAssessment(assessment: Assessment){
+    assessment.selected = !assessment.selected;
+    this.selectedAssessmentsChanged.emit(assessment);
+  }
+
   private groupAssessmentsByGrade() {
     let assessmentsByGrade = [];
 
@@ -45,9 +50,5 @@ export class SelectAssessmentsComponent implements OnInit {
     }
 
     return assessmentsByGrade;
-  }
-
-  selectedAssessmentChanged(event) {
-    this.selectedAssessmentsChanged.emit(event);
   }
 }
