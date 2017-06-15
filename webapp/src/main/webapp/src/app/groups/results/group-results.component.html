@@ -110,8 +110,7 @@
   <div id="group-results-edit-assessments" [hidden]="!expandAssessments" class="well gray-lighter">
     <div id="adv-filters-edit-assessments-collapse" class="pull-right">
       <button class="form-control btn btn-sm" (click)="expandAssessments = false">
-        {{'buttons.collapsible.collapse' | translate }}
-        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+        <i class="fa fa-close" aria-hidden="true"></i>
       </button>
     </div>
     <select-assessments [assessments]="availableAssessments"

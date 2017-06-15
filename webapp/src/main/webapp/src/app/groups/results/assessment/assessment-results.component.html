@@ -51,15 +51,16 @@
                     <div class="bar blue-dark right-side" data-width="17">
                     </div>
                 </div>
+              <div class="pull-right">
+                <!-- TODO: bind levels to visualization -->
+                <div *ngFor="let level of performance.levels">
+                  {{ examLevelEnum + level.id.toString() | translate }}:
+                  <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
+                </div>
+              </div>
             </div>
         </div>
-      <div class="pull-right">
-        <!-- TODO: bind levels to visualization -->
-        <div *ngFor="let level of performance.levels">
-          {{ examLevelEnum + level.id.toString() | translate }}:
-          <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
-        </div>
-      </div>
+
     </div>
 
     <!-- Student Results -->

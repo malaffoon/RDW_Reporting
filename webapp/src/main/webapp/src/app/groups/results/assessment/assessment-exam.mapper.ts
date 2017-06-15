@@ -20,7 +20,15 @@ export class AssessmentExamMapper {
   }
 
   mapAssessmentsFromApi(apiModels): Assessment[] {
-    return apiModels.map(x => this.mapAssessmentFromApi(x));
+    let result = apiModels.map(x => this.mapAssessmentFromApi(x));
+    result.sort((x, y) => {
+      if(x.grade == y.grade){
+        return x.name > y.name ? 1: -1;
+      }
+      return x.grade > y.grade ? 1: -1;
+    });
+
+    return result;
   }
 
   mapExamsFromApi(apiModels): Exam[] {
