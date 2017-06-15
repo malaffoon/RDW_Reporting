@@ -18,8 +18,14 @@ export class GradeService {
   }
 
   getColor(id) {
-    return id
-      ? this.getGrades().find(x => x.id == id).color
-      : "";
+    if(!id)
+      return "";
+
+    let gradeId = this.ensureRange(3, 9, id);
+    return this.getGrades().find(x => x.id == gradeId).color;
+  }
+
+  private ensureRange(min, max, value){
+    return Math.max(min, Math.min(max, value));
   }
 }
