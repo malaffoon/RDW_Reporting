@@ -5,7 +5,7 @@
   <div class="panel-grid">
     <div *ngFor="let byGrade of assessmentsByGrade" class="panel {{byGrade.grade.color}}">
       <div class="panel-heading">
-        <span *ngIf="byGrade.grade.id != 9" class="panel-title">{{'labels.groups.results.grade' | translate}} {{byGrade.grade.id}}</span>
+        <span *ngIf="byGrade.grade.id != 9" class="panel-title">{{'labels.groups.results.grade' | translate:byGrade.grade}}</span>
         <span *ngIf="byGrade.grade.id == 9" class="panel-title">{{'labels.groups.results.high-school' | translate}}</span>
       </div>
       <div class="panel-body">
