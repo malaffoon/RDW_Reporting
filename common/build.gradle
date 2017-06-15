@@ -6,7 +6,14 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations'
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile 'org.springframework:spring-context'
+    compile 'org.springframework:spring-context-support'
+    compile 'org.springframework:spring-jdbc'
     compile 'org.thymeleaf:thymeleaf'
+
+    compile 'org.opentestsystem.rdw.common:rdw-common-utils'
+    
+    compile 'org.springframework.boot:spring-boot'
+    compile 'org.springframework.boot:spring-boot-autoconfigure'
 }
 
 // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
