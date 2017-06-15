@@ -70,7 +70,7 @@ export class GroupResultsComponent implements OnInit {
   }
 
   set showOnlyMostRecent(value: boolean) {
-    this.expandAssessments = this.showOnlyMostRecent;
+    this.expandAssessments = !value;
     if(value) {
       this.availableAssessments = [];
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
@@ -149,7 +149,7 @@ export class GroupResultsComponent implements OnInit {
     this.router.navigate(
       [ 'groups', this._currentGroup.id,
         { schoolYear: this._currentSchoolYear, } ]).then(() => {
-      this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
+      this.showOnlyMostRecent = true;
     });
   }
 

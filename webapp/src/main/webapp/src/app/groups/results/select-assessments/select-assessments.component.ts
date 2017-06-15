@@ -43,7 +43,10 @@ export class SelectAssessmentsComponent implements OnInit {
     let assessmentsByGrade = [];
 
     for (let grade of this.grades) {
-      let assessments = this._assessments.filter(x => x.grade == grade.id);
+      let assessments = grade.id == 9
+        ? this._assessments.filter(x => x.grade >= grade.id)
+        : this._assessments.filter(x => x.grade == grade.id);
+
       if (assessments.length > 0) {
         assessmentsByGrade.push({ grade: grade, assessments: assessments });
       }

@@ -155,7 +155,8 @@
         "value-as-percent": "Percent",
         "value-as-number": "Number",
         "grade-prefix" : "G",
-        "grade": "Grade",
+        "grade": "Grade {{id}}",
+        "high-school": "High School",
         "empty-message" : "No results found by selected sessions and advanced filters.",
         "exam-cols": {
           "name": "Name",
