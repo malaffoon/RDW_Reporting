@@ -203,7 +203,7 @@ export class GroupResultsComponent implements OnInit {
       loading.subscription.unsubscribe();
     }
 
-    this.assessmentsLoading = assessmentsLoading;
+    this.assessmentsLoading = this.assessmentsLoading.filter(loading => this.selectedAssessments.some(selected => loading.assessment.id == selected.id ));;
   }
 
   private getAvailableAssessments() {
