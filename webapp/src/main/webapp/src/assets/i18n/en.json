@@ -128,9 +128,9 @@
           },
           "status": {
             "label": "Status",
-            "administration": "Manner of Administration (Interim)",
-            "summative": "Summative Status",
-            "completion": "Completion"
+            "administration": "Manner of Administration (Interim Only)",
+            "summative": "Valid/Invalid (Summative)",
+            "completion": "Complete/Partial"
           },
           "student": {
             "label": "Student",
@@ -140,18 +140,22 @@
             "iep": "IEP",
             "economic-disadvantage":"Economic Disadvantage",
             "limited-english-proficiency": "Limited English Proficiency",
-            "ethnicity": "Race / Ethnicity"
+            "ethnicity": "Race/Ethnicity"
           }
         },
         "selected-assessments-title": "Selected Assessments",
         "selected-assessments-instruct": "Click an item to remove it from the list",
+        "select-assessments": {
+          "instruct": "Click an item to add or remove it from your list of selections above."
+        },
         "session-unknown": "[Unknown]",
         "filter-type-recent": "Most Recent",
-        "filter-type-custom": "Custom",
+        "filter-type-custom": "Select Assessments",
         "value-as": "Show value as",
         "value-as-percent": "Percent",
         "value-as-number": "Number",
         "grade-prefix" : "G",
+        "grade": "Grade",
         "empty-message" : "No results found by selected sessions and advanced filters.",
         "exam-cols": {
           "name": "Name",
@@ -249,7 +253,7 @@
       "false" : "Show"
     },
     "ethnicity" : {
-      "HispanicOrLatinoEthnicity": "Hispanic / Latino",
+      "HispanicOrLatinoEthnicity": "Hispanic/Latino",
       "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
       "Asian": "Asian",
       "BlackOrAfricanAmerican": "Black or African American",

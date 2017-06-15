@@ -17,13 +17,15 @@ import { AdvFiltersComponent } from "./results/adv-filters/adv-filters.component
 import { ExamFilterService } from "./results/exam-filters/exam-filter.service";
 import { ExamFilterOptionsService } from "./results/exam-filters/exam-filter-options.service";
 import { ExamFilterOptionsMapper } from "./results/exam-filters/exam-filter-options.mapper";
+import { SelectAssessmentsComponent } from './results/select-assessments/select-assessments.component';
 
 @NgModule({
   declarations: [
     GroupsComponent,
     GroupResultsComponent,
     AssessmentResultsComponent,
-    AdvFiltersComponent
+    AdvFiltersComponent,
+    SelectAssessmentsComponent
   ],
   imports: [
     CommonModule,

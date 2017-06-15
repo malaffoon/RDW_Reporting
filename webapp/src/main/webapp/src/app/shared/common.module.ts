@@ -14,6 +14,7 @@ import { SBRadioButtonComponent } from "./sb-radio-button-list.component";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
+import { GradeService } from "./grade.service";
 
 export function createTranslateLoader(http: Http) {
   // return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -56,7 +57,8 @@ export function createTranslateLoader(http: Http) {
   ],
   providers: [
     DataService,
-    CachingDataService
+    CachingDataService,
+    GradeService
   ]
 })
 export class CommonModule {

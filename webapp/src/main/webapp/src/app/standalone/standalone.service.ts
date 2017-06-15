@@ -4,10 +4,14 @@ import {
   groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students,
   mock_rubrics, mock_schoolyears, assessments, DEPRECATED_exams_of_student, user, groupAssessments, exam_filter_options
 } from "./data/data";
+import { tick, fakeAsync } from "@angular/core/testing";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
 
-  mockBackend.connections.subscribe(connection => {
+
+  mockBackend.connections
+    .delay(100)
+    .map(connection => {
 
     let body: any = null;
     let requestSignature: string = `${RequestMethod[connection.request.method].toUpperCase()} ${connection.request.url}`;
@@ -77,6 +81,16 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYear=", ""));
       body = groupAssessments.find(x=> x.assessment.academicYear == schoolYear);
 
+    } else if(new RegExp(`GET /api/groups/\\d+/assessments/\\d+/exams`, 'g').test(requestSignature)) {
+      let startIndex = requestSignature.indexOf("assessments/");
+      let endIndex = requestSignature.indexOf("/exams");
+      let assessmentId = requestSignature.substring(startIndex + 12, endIndex);
+
+      console.log(assessmentId);
+      body = groupAssessments.find(x=> x.assessment.id == assessmentId).exams;
+
+    } else if(new RegExp(`GET /api/groups/\\d+/assessments`, 'g').test(requestSignature)) {
+      body = assessments.map(x => { x.selected = false; return x;});
     } else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
       let studentsResult = students.filter(x =>
@@ -100,7 +114,7 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       realHttp.request(connection.request).subscribe(response => connection.mockRespond(response));
     }
 
-  });
+  }).subscribe();
 
   return new Http(mockBackend, options);
 }

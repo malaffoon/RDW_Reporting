@@ -19,6 +19,22 @@ export class AssessmentExamMapper {
     return uiModel;
   }
 
+  mapAssessmentsFromApi(apiModels): Assessment[] {
+    let result = apiModels.map(x => this.mapAssessmentFromApi(x));
+    result.sort((x, y) => {
+      if(x.grade == y.grade){
+        return x.name > y.name ? 1: -1;
+      }
+      return x.grade > y.grade ? 1: -1;
+    });
+
+    return result;
+  }
+
+  mapExamsFromApi(apiModels): Exam[] {
+    return apiModels.map(x => this.mapExamFromApi(x));
+  }
+
   private mapAssessmentFromApi(apiModel): Assessment {
     let uiModel = new Assessment();
 
