@@ -128,9 +128,9 @@
           },
           "status": {
             "label": "Status",
-            "administration": "Manner of Administration (Interim)",
-            "summative": "Summative Status",
-            "completion": "Completion"
+            "administration": "Manner of Administration (Interim Only)",
+            "summative": "Valid/Invalid (Summative)",
+            "completion": "Complete/Partial"
           },
           "student": {
             "label": "Student",
@@ -140,7 +140,7 @@
             "iep": "IEP",
             "economic-disadvantage":"Economic Disadvantage",
             "limited-english-proficiency": "Limited English Proficiency",
-            "ethnicity": "Race / Ethnicity"
+            "ethnicity": "Race/Ethnicity"
           }
         },
         "selected-assessments-title": "Selected Assessments",
@@ -253,7 +253,7 @@
       "false" : "Show"
     },
     "ethnicity" : {
-      "HispanicOrLatinoEthnicity": "Hispanic / Latino",
+      "HispanicOrLatinoEthnicity": "Hispanic/Latino",
       "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
       "Asian": "Asian",
       "BlackOrAfricanAmerican": "Black or African American",
