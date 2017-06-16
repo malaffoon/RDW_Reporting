@@ -9,6 +9,7 @@ dependencies {
     runtime 'org.springframework.boot:spring-boot-devtools'
     compile 'org.springframework.boot:spring-boot-starter-cache'
     compile 'org.springframework.boot:spring-boot-starter-aop'
+    compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.cloud:spring-cloud-stream'
@@ -19,6 +20,7 @@ dependencies {
     compile 'org.apache.commons:commons-io'
     compile 'com.google.guava:guava'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    compile 'mysql:mysql-connector-java'
 
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')

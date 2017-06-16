@@ -7,12 +7,14 @@ server:
   port: 8008
 
 spring:
-  cloud:
-    stream:
-      bindings:
-        input:
-          destination: exam_report_pdf
-          group: default
+  datasource:
+    url: jdbc:mysql://localhost:3306/reporting?useSSL=false
+    username: root
+    password:
+    driverClassName: com.mysql.jdbc.Driver
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    initialize: false
 
   jackson:
     default-property-inclusion: non_null
@@ -22,6 +24,13 @@ spring:
   cache:
     type: SIMPLE
     cache-names: internalTranslationsByCode
+
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: exam_report_pdf
+          group: default
 
 cloud:
   aws:
