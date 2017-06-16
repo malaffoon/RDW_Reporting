@@ -1,14 +1,13 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
-import { ExamResultLevel } from "../../../shared/enum/exam-result-level.enum";
-import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { FilterBy } from "../model/filter-by.model";
-import { Subscription } from "rxjs";
+import { Subscription, Observable } from "rxjs";
 import { ExamFilterService } from "../exam-filters/exam-filter.service";
 import { GradeService } from "../../../shared/grade.service";
+import { AssessmentItem } from "../model/assessment-item.model";
 
 @Component({
   selector: 'assessment-results',
@@ -37,6 +36,7 @@ export class AssessmentResultsComponent {
   exams = [];
   sessions = [];
   statistics: any = { percents: {} };
+  assessmentItems: AssessmentItem[];
 
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
@@ -72,12 +72,19 @@ export class AssessmentResultsComponent {
     }
   }
 
+  /**
+   * Provider function which loads the assessment items when viewing
+   * items by points earned.
+   */
+  @Input()
+  loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
+
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
   private _showValuesAsPercent: boolean;
   private _filterBySubscription: Subscription;
 
-  constructor(public gradeService : GradeService,
+  constructor(public gradeService: GradeService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService) {
   }
@@ -107,6 +114,15 @@ export class AssessmentResultsComponent {
   toggleSession(session) {
     session.filter = !session.filter;
     this.updateExamSessions();
+  }
+
+  viewItemsByPoints() {
+    if(this.loadAssessmentItems) {
+      this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(x => {
+        this.assessmentItems = x;
+        console.log(this.assessmentItems);
+      });
+    }
   }
 
   private getDistinctExamSessions(exams: Exam[]) {

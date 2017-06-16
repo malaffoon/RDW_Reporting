@@ -43,6 +43,17 @@ export class AssessmentService {
       });
   }
 
+  getExamItems(groupId: number, schoolYear: number, assessmentId: number) {
+    return this.dataService.get(`/groups/${groupId}/assessments/${assessmentId}/examitems`, { search: this.getSchoolYearParams(schoolYear) })
+      .catch(response => {
+        console.warn(response);
+        return Observable.empty();
+      })
+      .map(x => {
+        return this.mapper.mapAssessmentItemsFromApi(x);
+      });
+  }
+
   private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
     return this.dataService.get(`/groups/${groupId}/latestassessment`, { search: this.getSchoolYearParams(schoolYear) })
       .catch(response => {

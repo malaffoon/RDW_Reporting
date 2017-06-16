@@ -8,6 +8,8 @@ import { ExamFilterOptions } from "./model/exam-filter-options.model";
 import { Assessment } from "./model/assessment.model";
 import { AssessmentService } from "./assessment/assessment.service";
 import { GradeService } from "../../shared/grade.service";
+import { AssessmentItem } from "./model/assessment-item.model";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'app-group-results',
@@ -25,6 +27,7 @@ export class GroupResultsComponent implements OnInit {
   currentFilters = [];
   availableAssessments: Assessment[] = [];
   assessmentsLoading : any[] = [];
+  boundLoadAssessmentItems : Function;
 
   get currentGroup() {
     return this._currentGroup;
@@ -116,6 +119,8 @@ export class GroupResultsComponent implements OnInit {
       this.filterOptions = filterOptions;
       this._currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
     });
+
+    this.boundLoadAssessmentItems = this.loadAssessmentItems.bind(this);
   }
 
   removeEthnicity(ethnicity) {
@@ -169,6 +174,10 @@ export class GroupResultsComponent implements OnInit {
     else {
       this.removeUnselectedAssessmentExams();
     }
+  }
+
+  private loadAssessmentItems(assessmentId: number): Observable<AssessmentItem[]>{
+    return this.assessmentService.getExamItems(this.currentGroup.id, this.currentSchoolYear, assessmentId);
   }
 
   private loadAssessmentExam(assessment: Assessment){
