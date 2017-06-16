@@ -1,5 +1,10 @@
 //Any subproject specific plugins go here
 
+apply plugin: 'org.springframework.boot'
+
+bootRepackage.enabled = false
+bootRun.enabled = false
+
 dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
     compile 'javax.validation:validation-api'
@@ -10,6 +15,15 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
     optional 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
+        exclude(module: 'commons-logging')
+    }
+    testCompile 'org.springframework.security:spring-security-test'
+
+    // IT test complained about not having this
+    testCompile 'org.hibernate:hibernate-validator:5.4.1.Final'
+    testCompile 'mysql:mysql-connector-java'
 }
 
 // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
