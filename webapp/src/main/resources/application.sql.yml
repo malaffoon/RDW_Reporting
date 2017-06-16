@@ -16,7 +16,8 @@ sql:
 
     assessment:
       findAll: >-
-          select a.id,
+          select distinct
+            a.id,
             a.label,
             a.grade_id,
             a.type_id,
@@ -32,18 +33,16 @@ sql:
             aa.cut_point_2,
             aa.cut_point_3
           from asmt a
-            left join asmt_score aa on a.id=aa.asmt_id
-          where exists (
-              select e.asmt_id
-              from exam e
-                join student_group_membership sgm on e.student_id=sgm.student_id
-                join school s on e.school_id=s.id
-              where e.school_year=:school_year
+          left join asmt_score aa on a.id=aa.asmt_id
+          join exam e on e.asmt_id = a.id
+          join student_group_membership sgm on e.student_id=sgm.student_id
+          join school s on e.school_id=s.id
+          where
+              e.school_year=:school_year
               and sgm.student_group_id=:group_id
               and (0=:group_subject_id or a.subject_id=:group_subject_id)
               and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
               and a.id = e.asmt_id
-          )
 
     exam:
       findLatest: >-
