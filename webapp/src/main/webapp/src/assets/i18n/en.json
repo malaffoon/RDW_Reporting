@@ -55,7 +55,8 @@
   },
   "prompt": {
     "search": "Search",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "select": "Select"
   },
   "labels": {
     "aggregate": {
@@ -105,6 +106,89 @@
         "Percent"
       ],
       "pointFormat": "of students"
+    },
+    "grade": "Grade",
+    "grades": {
+      "0": {
+        "code": "KG",
+        "name": "Kindergarten"
+      },
+      "1": {
+        "code": "01",
+        "name": "First grade"
+      },
+      "2": {
+        "code": "02",
+        "name": "Second grade"
+      },
+      "3": {
+        "code": "03",
+        "name": "Third grade"
+      },
+      "4": {
+        "code": "04",
+        "name": "Fourth grade"
+      },
+      "5": {
+        "code": "05",
+        "name": "Fifth grade"
+      },
+      "6": {
+        "code": "06",
+        "name": "Sixth grade"
+      },
+      "7": {
+        "code": "07",
+        "name": "Seventh grade"
+      },
+      "8": {
+        "code": "08",
+        "name": "Eigth grade"
+      },
+      "9": {
+        "code": "09",
+        "name": "Ninth grade"
+      },
+      "10": {
+        "code": "10",
+        "name": "Tenth grade"
+      },
+      "11": {
+        "code": "11",
+        "name": "Eleventh grade"
+      },
+      "12": {
+        "code": "12",
+        "name": "Twelfth grade"
+      },
+      "13": {
+        "code": "13",
+        "name": "Grade 13"
+      },
+      "14": {
+        "code": "PS",
+        "name": "Postsecondary"
+      },
+      "15": {
+        "code": "UG",
+        "name": "Ungraded"
+      },
+      "16": {
+        "code": "IT",
+        "name": "Infant/toddler"
+      },
+      "17": {
+        "code": "PR",
+        "name": "Preschool"
+      },
+      "18": {
+        "code": "PK",
+        "name": "Prekindergarten"
+      },
+      "19": {
+        "code": "TK",
+        "name": "Transitional Kindergarten"
+      }
     },
     "groups": {
       "name": "My Groups",
@@ -175,6 +259,19 @@
             "performance" : "Achievement Level"
           }
         }
+      }
+    },
+    "school-grade": {
+      "title": "Search by School & Grade",
+      "school-name": {
+        "label": "Search by School Name",
+        "prompt": "Start typing the school name"
+      },
+      "messages": {
+        "no-grades-available": "No assessments are available for the selected school."
+      },
+      "prompt": {
+        "school-name": "Start typeing the school name"
       }
     },
     "assessment": {

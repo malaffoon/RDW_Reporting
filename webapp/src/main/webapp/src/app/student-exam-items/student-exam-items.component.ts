@@ -1,7 +1,7 @@
 import {Component, OnInit, ElementRef, ViewChild} from "@angular/core";
 import {SafeResourceUrl, DomSanitizer} from "@angular/platform-browser";
 import {ActivatedRoute} from "@angular/router";
-import {DataService} from "../shared/data.service";
+import {DataService} from "../shared/data/data.service";
 
 declare var IRiS : any;
 

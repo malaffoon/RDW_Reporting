@@ -19,12 +19,13 @@ import { StudentExamsResolve } from "./student-exams/student-exam.resolve";
 import { StudentExamItemsResolve } from "./student-exam-items/student-exam-items.resolve";
 import { GroupExamItemResolve } from "./group-exam-item/group-exam-item.resolve";
 import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
-import { BsDropdownModule, TabsModule } from "ngx-bootstrap";
+import { BsDropdownModule, TabsModule, ModalModule } from "ngx-bootstrap";
 import { CommonModule } from "./shared/common.module";
 import { GroupsModule } from "./groups/groups.module";
 import { UserModule } from "./user/user.module";
 import { routes } from "./app.routes";
 import { RouterModule } from "@angular/router";
+import { SchoolGradeModule } from "./school-grade/school-grade.module";
 
 @NgModule({
   declarations: [
@@ -45,12 +46,14 @@ import { RouterModule } from "@angular/router";
     BrowserModule,
     CommonModule,
     GroupsModule,
+    SchoolGradeModule,
     RouterModule.forRoot(routes),
     UserModule,
     FormsModule,
     HttpModule,
     BsDropdownModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [
      StudentExamsResolve, StudentExamItemsResolve, GroupExamItemResolve,

@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {DataService} from "../shared/data.service";
+import {DataService} from "../shared/data/data.service";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {items_by_points_earned, exams_of_sessions, exams_of_group} from "../standalone/data/data";

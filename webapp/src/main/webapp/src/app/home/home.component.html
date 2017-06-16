@@ -27,31 +27,10 @@
       <!-- School & Grade Search -->
       <h2 class="blue-dark h3 mb-md">Search by School &amp; Grade</h2>
       <div class="school-and-grade-search-container well">
-        <form>
-          <div class="form-group">
-            <div class="flex-children">
-              <div class="flex-child grow">
-                <label for="school-name-input">Search by School Name</label>
-                <input type="text" class="form-control" id="school-name-input" placeholder="Start typing the school name">
-              </div>
-              <div class="flex-child">
-                <label for="grade-select">Grade</label>
-                <select name="grade-select" id="grade-select" class="form-control">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="High School">High School</option>
-                </select>
-              </div>
-              <div class="flex-child">
-                <button type="submit" class="btn btn-primary mt-md">Search</button>
-              </div>
-            </div>
-          </div>
-        </form>
+        <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
+          <!--TODO:  Implement authorize of PII or PII Group role. -->
+          <school-grade></school-grade>
+        </div>
       </div>
 
       <!-- My Groups Search -->

@@ -1,0 +1,26 @@
+import { Pipe, PipeTransform } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { isNullOrUndefined } from "util";
+import { Observable } from "rxjs";
+
+/**
+ * This pipe is responsible for transforming a grade id number into a
+ * translated display value.
+ */
+@Pipe({
+  name: 'gradeDisplay',
+  //impure because we want to re-translate on language selection
+  pure: false
+})
+export class GradeDisplayPipe implements PipeTransform {
+
+  constructor(private translate: TranslateService) {}
+
+  transform(gradeId: number, format: string): Observable<string> {
+    if (isNullOrUndefined(format)) {
+      format = "name";
+    }
+
+    return this.translate.instant(`labels.grades.${gradeId}.${format}`);
+  }
+}
