@@ -21,7 +21,7 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: permissionsByRole,internalTranslationsByCode
+    cache-names: permissionsByRole, internalTranslationsByCode
 
   cloud:
     stream:

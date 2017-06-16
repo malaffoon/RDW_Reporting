@@ -1,19 +1,15 @@
 //Any subproject specific plugins go here
 
 dependencies {
+    compile 'org.opentestsystem.rdw.common:rdw-common-utils'
+    compile 'javax.validation:validation-api'
     compile 'org.apache.commons:commons-io'
+    compile 'org.thymeleaf:thymeleaf'
     compile 'com.google.guava:guava'
     compile 'com.fasterxml.jackson.core:jackson-annotations'
     compile 'com.fasterxml.jackson.core:jackson-databind'
-    compile 'org.springframework:spring-context'
-    compile 'org.springframework:spring-context-support'
-    compile 'org.springframework:spring-jdbc'
-    compile 'org.thymeleaf:thymeleaf'
-
-    compile 'org.opentestsystem.rdw.common:rdw-common-utils'
-    
-    compile 'org.springframework.boot:spring-boot'
-    compile 'org.springframework.boot:spring-boot-autoconfigure'
+    compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    optional 'org.springframework.boot:spring-boot-configuration-processor'
 }
 
 // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
