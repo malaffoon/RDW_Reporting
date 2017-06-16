@@ -43,12 +43,9 @@ export class AssessmentResultsComponent {
     this._assessmentExam = assessment;
     this.sessions = this.getDistinctExamSessions(assessment.exams);
 
-    if (this.sessions.length > 0)
+    if (this.sessions.length > 0) {
       this.toggleSession(this.sessions[ 0 ]);
-  }
-
-  get assessmentExam() {
-    return this._assessmentExam;
+    }
   }
 
   @Input()
@@ -60,16 +57,21 @@ export class AssessmentResultsComponent {
   set filterBy(value: FilterBy) {
     this._filterBy = value;
 
-    if (this._filterBySubscription)
+    if (this._filterBySubscription) {
       this._filterBySubscription.unsubscribe();
+    }
 
     if (this._filterBy) {
       this.updateExamSessions();
 
-      this._filterBySubscription = this._filterBy.onChanges.subscribe(x => {
+      this._filterBySubscription = this._filterBy.onChanges.subscribe(() => {
         this.updateExamSessions();
       });
     }
+  }
+
+  get assessmentExam() {
+    return this._assessmentExam;
   }
 
   /**
@@ -79,14 +81,13 @@ export class AssessmentResultsComponent {
   @Input()
   loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
 
-  private _filterBy: FilterBy;
-  private _assessmentExam: AssessmentExam;
-  private _showValuesAsPercent: boolean;
-  private _filterBySubscription: Subscription;
 
-  constructor(public gradeService: GradeService,
-              private examCalculator: ExamStatisticsCalculator,
-              private examFilterService: ExamFilterService) {
+  set collapsed(collapsed: boolean) {
+    this.assessmentExam.collapsed = collapsed;
+  }
+
+  get collapsed() {
+    return this.assessmentExam.collapsed;
   }
 
   get performance() {
@@ -109,6 +110,16 @@ export class AssessmentResultsComponent {
   get performanceLevelHeader() {
     return "labels.groups.results.exam-cols." +
       (this.isIab ? "iab" : "ica") + ".performance";
+  }
+
+  private _filterBy: FilterBy;
+  private _assessmentExam: AssessmentExam;
+  private _showValuesAsPercent: boolean;
+  private _filterBySubscription: Subscription;
+
+  constructor(public gradeService : GradeService,
+              private examCalculator: ExamStatisticsCalculator,
+              private examFilterService: ExamFilterService) {
   }
 
   toggleSession(session) {

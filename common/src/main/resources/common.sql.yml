@@ -1,0 +1,7 @@
+sql:
+  translation:
+    findAllForLocaleAndNamespace:
+      select code, value
+      from translation
+      where namespace=:namespace
+      and locale=:locale
