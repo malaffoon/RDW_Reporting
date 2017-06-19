@@ -251,7 +251,7 @@ sql:
 
       item:
         findAllExamItemScoresForAssessment:
-          select ei.id,
+          select
             ei.exam_id,
             ei.item_id,
             ei.score,
