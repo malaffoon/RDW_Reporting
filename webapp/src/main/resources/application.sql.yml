@@ -295,32 +295,18 @@ sql:
       from district
       where natural_id in (:naturalIds)
 
-    findAll: >-
-      select id, name
-      from district
-      where 1=:statewide
-      or id in (:district_ids)
-      or id in (
-        select district_id
-        from school s
-        where s.id in (:school_ids)
-      );
-
   school:
     findAllIds: >-
       select natural_id, id
       from school
       where natural_id in (:naturalIds)
 
-    findAllForDistrict: >-
-      select id, name
+    findAllForNameContainingText: >-
+      select name, id
       from school
-      where district_id=:district_id
-      and (
-        1=:statewide
-        or district_id in (:district_ids)
-        or id in (:school_ids)
-      );
+      where (1=:statewide or district_id in (:district_ids) or id in (:school_ids))
+      and name like :text
+      limit :limit
 
   ethnicity:
     findAll: >-

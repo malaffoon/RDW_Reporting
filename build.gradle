@@ -33,7 +33,7 @@ apply plugin: 'io.spring.dependency-management'
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=0.0.1-SNAPSHOT`
 
 String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "0.0.1-21"
-String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "0.0.1-74"
+String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "0.0.1-81"
 
 allprojects {
     group = 'org.opentestsystem.rdw.reporting'
@@ -92,6 +92,9 @@ subprojects {
             dependency 'javax.validation:validation-api:1.1.0.Final'
             dependency 'org.springframework.boot:spring-boot-starter-jdbc:1.5.2.RELEASE'
             dependency 'org.springframework.boot:spring-boot-configuration-processor:1.5.2.RELEASE'
+
+            dependency 'org.springframework.boot:spring-boot-starter-test:1.5.2.RELEASE'
+            dependency 'org.springframework.security:spring-security-test:4.0.0.RELEASE'
         }
         imports {
             // spring cloud Camden.SR5 includes spring cloud stream Brooklyn.SR2
