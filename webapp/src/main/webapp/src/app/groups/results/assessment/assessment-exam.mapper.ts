@@ -47,6 +47,8 @@ export class AssessmentExamMapper {
         assessmentItem.scores.push(this.mapExamItemFromApi(apiExamItem));
       }
 
+      assessmentItem.calculateBuckets();
+
       uiModels.push(assessmentItem);
     }
 
@@ -69,7 +71,7 @@ export class AssessmentExamMapper {
     uiModel.id = apiModel.id;
     uiModel.claim = apiModel.claim;
     uiModel.target = apiModel.target;
-    uiModel.difficultyCode = apiModel.difficultyCode;
+    uiModel.difficulty = apiModel.difficultyCode;
     uiModel.maxPoints = apiModel.maximumPoints;
 
     return uiModel;

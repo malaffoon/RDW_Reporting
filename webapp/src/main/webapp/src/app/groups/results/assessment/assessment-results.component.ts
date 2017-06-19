@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
@@ -37,6 +37,8 @@ export class AssessmentResultsComponent {
   sessions = [];
   statistics: any = { percents: {} };
   assessmentItems: AssessmentItem[];
+  pointColumns: number[];
+  showItemsByPoints: boolean = false;
 
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
@@ -129,9 +131,12 @@ export class AssessmentResultsComponent {
 
   viewItemsByPoints() {
     if(this.loadAssessmentItems) {
-      this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(x => {
-        this.assessmentItems = x;
-        console.log(this.assessmentItems);
+      this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
+
+        this.pointColumns = this.getPointColumns(assessmentItems);
+        this.assessmentItems = assessmentItems;
+        this.showItemsByPoints = true;
+
       });
     }
   }
@@ -146,6 +151,20 @@ export class AssessmentResultsComponent {
     });
 
     return sessions;
+  }
+
+  private getPointColumns(assessmentItems: AssessmentItem[]) {
+    let max = assessmentItems.reduce( (x, y) => x.maxPoints > y.maxPoints ? x : y).maxPoints;
+    console.log(max);
+    let columns = [];
+
+    for(let i=0; i<=max; i++) {
+      columns[i] = i
+    }
+
+    // TODO: add and call aggregator here.
+
+    return columns;
   }
 
   private updateExamSessions() {

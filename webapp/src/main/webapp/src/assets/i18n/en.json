@@ -174,6 +174,17 @@
           "ica" : {
             "performance" : "Achievement Level"
           }
+        },
+        "items": {
+          "cols": {
+            "number": "Item #",
+            "claim": "Claim/Target",
+            "difficulty": "Item Difficulty",
+            "standard": "Standard",
+            "full-credit": "Full Credit",
+            "x-points": "{{id}} Points"
+          },
+          "target": "Target {{target}}"
         }
       }
     },
@@ -265,6 +276,24 @@
       "NativeHawaiianOrOtherPacificIslander": "Native Hawaiian or Pacific Islander",
       "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
       "Filipino": "Filipino"
+    },
+    "claim" : {
+      "1-IT":"Read Analytically: Informational Text",
+      "1-LT": "Read Analytically: Literary Text",
+      "2-W": "Write Effectively",
+      "3-L": "Listen Purposefully",
+      "3-S": "Speak Purposefully",
+      "4-CR": "Conduct Research",
+      "NA": "NA",
+      "1": "Concepts and Procedures",
+      "2": "Problem Solving",
+      "3": "Communicating Reasoning",
+      "4": "Modeling and Data Analysis"
+    },
+    "difficulty": {
+      "E": "Easy",
+      "M": "Moderate",
+      "D": "Difficult"
     }
   },
   "assessment_report": {
