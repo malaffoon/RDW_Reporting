@@ -46,6 +46,10 @@ export class AssessmentResultsComponent {
     this.sessions = this.getDistinctExamSessions(assessment.exams);
 
     if (this.sessions.length > 0) {
+      // this.sessions.forEach(x => {
+      //   this.toggleSession(x);
+      // })
+
       this.toggleSession(this.sessions[ 0 ]);
     }
   }

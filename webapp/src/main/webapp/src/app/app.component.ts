@@ -14,7 +14,7 @@ export class AppComponent {
     return this._user;
   }
 
-  constructor(private translate: TranslateService, private _userService : UserService) {
+  constructor(public translate: TranslateService, private _userService : UserService) {
 
     let languages = ['en', 'ja'];
     let defaultLanguage = languages[0];
