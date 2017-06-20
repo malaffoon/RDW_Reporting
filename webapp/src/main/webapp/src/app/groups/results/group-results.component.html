@@ -141,7 +141,8 @@
 <div *ngFor="let assessment of assessmentExams; let i = index" class="groups-results-wrapper">
   <assessment-results [assessmentExam]="assessment"
                       [showValuesAsPercent]="showValuesAsPercent"
-                      [filterBy]="clientFilterBy"></assessment-results>
+                      [filterBy]="clientFilterBy"
+                      [loadAssessmentItems]="boundLoadAssessmentItems"></assessment-results>
 </div>
 <!-- No Results Error -->
 <div class="alert alert-danger" *ngIf="assessmentExams.length == 0">

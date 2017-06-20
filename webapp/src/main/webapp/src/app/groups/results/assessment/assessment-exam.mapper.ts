@@ -3,6 +3,8 @@ import { AssessmentExam } from "../model/assessment-exam.model";
 import { Assessment } from "../model/assessment.model";
 import { Exam } from "../model/exam.model";
 import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
+import { AssessmentItem } from "../model/assessment-item.model";
+import { ExamItemScore } from "../model/exam-item-score.model";
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -20,19 +22,59 @@ export class AssessmentExamMapper {
   }
 
   mapAssessmentsFromApi(apiModels): Assessment[] {
-    let result = apiModels.map(x => this.mapAssessmentFromApi(x));
-    result.sort((x, y) => {
+    let uiModels = apiModels.map(x => this.mapAssessmentFromApi(x));
+    uiModels.sort((x, y) => {
       if(x.grade == y.grade){
         return x.name > y.name ? 1: -1;
       }
       return x.grade > y.grade ? 1: -1;
     });
 
-    return result;
+    return uiModels;
   }
 
   mapExamsFromApi(apiModels): Exam[] {
     return apiModels.map(x => this.mapExamFromApi(x));
+  }
+
+  mapAssessmentItemsFromApi(apiModel) {
+    let uiModels: AssessmentItem[] = [];
+
+    for(let apiAssessment of apiModel.assessmentItems){
+      let assessmentItem = this.mapAssessmentItemFromApi(apiAssessment);
+
+      for(let apiExamItem of apiModel.examItems.filter(x => x.itemId == assessmentItem.id)){
+        assessmentItem.scores.push(this.mapExamItemFromApi(apiExamItem));
+      }
+
+      assessmentItem.calculateBuckets();
+
+      uiModels.push(assessmentItem);
+    }
+
+    return uiModels;
+  }
+
+  private mapExamItemFromApi(apiModel) {
+    let uiModel: ExamItemScore = new ExamItemScore();
+
+    uiModel.examId = apiModel.examId;
+    uiModel.points = apiModel.points;
+    uiModel.position = apiModel.position;
+
+    return uiModel;
+  }
+
+  private mapAssessmentItemFromApi(apiModel) {
+    let uiModel: AssessmentItem = new AssessmentItem();
+
+    uiModel.id = apiModel.id;
+    uiModel.claim = apiModel.claim;
+    uiModel.target = apiModel.target;
+    uiModel.difficulty = apiModel.difficultyCode;
+    uiModel.maxPoints = apiModel.maximumPoints;
+
+    return uiModel;
   }
 
   private mapAssessmentFromApi(apiModel): Assessment {

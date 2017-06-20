@@ -1,12 +1,13 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { FilterBy } from "../model/filter-by.model";
-import { Subscription } from "rxjs";
+import { Subscription, Observable } from "rxjs";
 import { ExamFilterService } from "../exam-filters/exam-filter.service";
 import { GradeService } from "../../../shared/grade.service";
+import { AssessmentItem } from "../model/assessment-item.model";
 
 @Component({
   selector: 'assessment-results',
@@ -35,6 +36,9 @@ export class AssessmentResultsComponent {
   exams = [];
   sessions = [];
   statistics: any = { percents: {} };
+  assessmentItems: AssessmentItem[];
+  pointColumns: number[];
+  showItemsByPoints: boolean = false;
 
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
@@ -42,6 +46,10 @@ export class AssessmentResultsComponent {
     this.sessions = this.getDistinctExamSessions(assessment.exams);
 
     if (this.sessions.length > 0) {
+      // this.sessions.forEach(x => {
+      //   this.toggleSession(x);
+      // })
+
       this.toggleSession(this.sessions[ 0 ]);
     }
   }
@@ -71,6 +79,14 @@ export class AssessmentResultsComponent {
   get assessmentExam() {
     return this._assessmentExam;
   }
+
+  /**
+   * Provider function which loads the assessment items when viewing
+   * items by points earned.
+   */
+  @Input()
+  loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
+
 
   set collapsed(collapsed: boolean) {
     this.assessmentExam.collapsed = collapsed;
@@ -117,6 +133,18 @@ export class AssessmentResultsComponent {
     this.updateExamSessions();
   }
 
+  viewItemsByPoints() {
+    if(this.loadAssessmentItems) {
+      this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
+
+        this.pointColumns = this.getPointColumns(assessmentItems);
+        this.assessmentItems = assessmentItems;
+        this.showItemsByPoints = true;
+
+      });
+    }
+  }
+
   private getDistinctExamSessions(exams: Exam[]) {
     let sessions = [];
 
@@ -127,6 +155,20 @@ export class AssessmentResultsComponent {
     });
 
     return sessions;
+  }
+
+  private getPointColumns(assessmentItems: AssessmentItem[]) {
+    let max = assessmentItems.reduce( (x, y) => x.maxPoints > y.maxPoints ? x : y).maxPoints;
+    console.log(max);
+    let columns = [];
+
+    for(let i=0; i<=max; i++) {
+      columns[i] = i
+    }
+
+    // TODO: add and call aggregator here.
+
+    return columns;
   }
 
   private updateExamSessions() {

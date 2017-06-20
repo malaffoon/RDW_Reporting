@@ -7,7 +7,7 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class GroupsComponent implements OnInit {
 
-  private groups = [];
+  groups = [];
 
   filteredGroups = [];
   searchTerm : string;
