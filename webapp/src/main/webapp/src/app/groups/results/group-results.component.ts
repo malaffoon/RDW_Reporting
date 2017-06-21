@@ -227,7 +227,6 @@ export class GroupResultsComponent implements OnInit {
     }
 
     this.assessmentsLoading = this.assessmentsLoading.filter(loading => this.selectedAssessments.some(selected => loading.assessment.id == selected.id));
-    ;
   }
 
   private getAvailableAssessments() {
