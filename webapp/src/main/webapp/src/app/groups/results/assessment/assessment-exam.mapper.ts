@@ -5,9 +5,11 @@ import { Exam } from "../model/exam.model";
 import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ExamItemScore } from "../model/exam-item-score.model";
+import { AssessmentComparator } from "../assessment.comparator";
 
 @Injectable()
 export class AssessmentExamMapper {
+
   mapFromApi(apiModel): AssessmentExam {
     let uiModel = new AssessmentExam();
 
@@ -23,13 +25,7 @@ export class AssessmentExamMapper {
 
   mapAssessmentsFromApi(apiModels): Assessment[] {
     let uiModels = apiModels.map(x => this.mapAssessmentFromApi(x));
-    uiModels.sort((x, y) => {
-      if(x.grade == y.grade){
-        return x.name > y.name ? 1: -1;
-      }
-      return x.grade > y.grade ? 1: -1;
-    });
-
+    uiModels.sort(AssessmentComparator.byGradeThenByName);
     return uiModels;
   }
 
@@ -40,10 +36,10 @@ export class AssessmentExamMapper {
   mapAssessmentItemsFromApi(apiModel) {
     let uiModels: AssessmentItem[] = [];
 
-    for(let apiAssessment of apiModel.assessmentItems){
+    for (let apiAssessment of apiModel.assessmentItems) {
       let assessmentItem = this.mapAssessmentItemFromApi(apiAssessment);
 
-      for(let apiExamItem of apiModel.examItems.filter(x => x.itemId == assessmentItem.id)){
+      for (let apiExamItem of apiModel.examItems.filter(x => x.itemId == assessmentItem.id)) {
         assessmentItem.scores.push(this.mapExamItemFromApi(apiExamItem));
       }
 
@@ -83,13 +79,13 @@ export class AssessmentExamMapper {
     uiModel.id = apiModel.id;
     uiModel.name = apiModel.name;
     uiModel.grade = apiModel.gradeId;
-    uiModel.type = AssessmentType[apiModel.type as string];
+    uiModel.type = AssessmentType[ apiModel.type as string ];
 
     return uiModel;
   }
 
   private mapExamFromApi(apiModel): Exam {
-    let uiModel : Exam = new Exam();
+    let uiModel: Exam = new Exam();
 
     uiModel.date = apiModel.dateTime;
     uiModel.session = apiModel.sessionId;
@@ -112,7 +108,7 @@ export class AssessmentExamMapper {
 
     uiModel.ethnicities = [];
 
-    if(apiModel.student.ethnicityCodes)
+    if (apiModel.student.ethnicityCodes)
       apiModel.student.ethnicityCodes.forEach(code => uiModel.ethnicities.push(code));
 
     return uiModel;

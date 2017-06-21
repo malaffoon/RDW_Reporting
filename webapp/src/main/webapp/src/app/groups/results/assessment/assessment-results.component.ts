@@ -46,10 +46,6 @@ export class AssessmentResultsComponent {
     this.sessions = this.getDistinctExamSessions(assessment.exams);
 
     if (this.sessions.length > 0) {
-      // this.sessions.forEach(x => {
-      //   this.toggleSession(x);
-      // })
-
       this.toggleSession(this.sessions[ 0 ]);
     }
   }
@@ -123,7 +119,7 @@ export class AssessmentResultsComponent {
   private _showValuesAsPercent: boolean;
   private _filterBySubscription: Subscription;
 
-  constructor(public gradeService : GradeService,
+  constructor(public gradeService: GradeService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService) {
   }
@@ -134,7 +130,7 @@ export class AssessmentResultsComponent {
   }
 
   viewItemsByPoints() {
-    if(this.loadAssessmentItems) {
+    if (this.loadAssessmentItems) {
       this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
 
         this.pointColumns = this.getPointColumns(assessmentItems);
@@ -158,12 +154,12 @@ export class AssessmentResultsComponent {
   }
 
   private getPointColumns(assessmentItems: AssessmentItem[]) {
-    let max = assessmentItems.reduce( (x, y) => x.maxPoints > y.maxPoints ? x : y).maxPoints;
+    let max = assessmentItems.reduce((x, y) => x.maxPoints > y.maxPoints ? x : y).maxPoints;
     console.log(max);
     let columns = [];
 
-    for(let i=0; i<=max; i++) {
-      columns[i] = i
+    for (let i = 0; i <= max; i++) {
+      columns[ i ] = i
     }
 
     // TODO: add and call aggregator here.
