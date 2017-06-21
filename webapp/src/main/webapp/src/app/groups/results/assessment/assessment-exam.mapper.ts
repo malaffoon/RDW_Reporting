@@ -5,7 +5,7 @@ import { Exam } from "../model/exam.model";
 import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ExamItemScore } from "../model/exam-item-score.model";
-import { AssessmentComparator } from "../assessment.comparator";
+import { byGradeThenByName } from "../assessment.comparator";
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -25,7 +25,7 @@ export class AssessmentExamMapper {
 
   mapAssessmentsFromApi(apiModels): Assessment[] {
     let uiModels = apiModels.map(x => this.mapAssessmentFromApi(x));
-    uiModels.sort(AssessmentComparator.byGradeThenByName);
+    uiModels.sort(byGradeThenByName);
     return uiModels;
   }
 
@@ -42,8 +42,6 @@ export class AssessmentExamMapper {
       for (let apiExamItem of apiModel.examItems.filter(x => x.itemId == assessmentItem.id)) {
         assessmentItem.scores.push(this.mapExamItemFromApi(apiExamItem));
       }
-
-      assessmentItem.calculateBuckets();
 
       uiModels.push(assessmentItem);
     }

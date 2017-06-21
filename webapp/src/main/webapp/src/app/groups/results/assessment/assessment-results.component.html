@@ -124,13 +124,8 @@
           </p-column>
           <p-column field="fullCredit" header="{{'labels.groups.results.items.cols.full-credit' | translate}}" [sortable]="true"></p-column>
 
-          <p-column *ngFor="let column of pointColumns" field="buckets[{{column}}]" header="{{'labels.groups.results.items.cols.x-points' | translate:{id: column} }}" [sortable]="true">
-            <ng-template let-item="rowData" pTemplate="body">
-              {{ item.buckets[column] }}
-            </ng-template>
+          <p-column *ngFor="let column of pointColumns" [field]="column.field" header="{{'labels.groups.results.items.cols.x-points' | translate:{id: column.points} }}" [sortable]="true">
           </p-column>
-
-
         </p-dataTable>
       </div>
     </div>

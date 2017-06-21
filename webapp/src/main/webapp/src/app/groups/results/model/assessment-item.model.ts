@@ -12,17 +12,4 @@ export class AssessmentItem {
   get fullCredit() {
     return this.scores.filter(x => x.points == this.maxPoints).length;
   }
-
-  calculateBuckets() {
-    this.buckets = this.getBuckets();
-  }
-
-  getBuckets() {
-    let result = [];
-    for(let i=0; i <= this.maxPoints; i++){
-      result[i] = this.scores.filter(x => x.points == i).length;
-    }
-
-    return result;
-  }
 }

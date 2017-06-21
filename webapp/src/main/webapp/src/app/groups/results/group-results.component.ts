@@ -10,7 +10,8 @@ import { AssessmentService } from "./assessment/assessment.service";
 import { GradeService } from "../../shared/grade.service";
 import { AssessmentItem } from "./model/assessment-item.model";
 import { Observable } from "rxjs";
-import { AssessmentComparator } from "./assessment.comparator";
+import { byGradeThenByName } from "./assessment.comparator";
+import { ordering } from "@kourge/ordering";
 
 @Component({
   selector: 'app-group-results',
@@ -208,7 +209,7 @@ export class GroupResultsComponent implements OnInit {
         assessmentExam.exams = exams;
 
         this.assessmentExams.push(assessmentExam);
-        this.assessmentExams.sort((assessmentExam1, assessmentExam2) => AssessmentComparator.byGradeThenByName(assessmentExam1.assessment, assessmentExam2.assessment));
+        this.assessmentExams.sort(ordering(byGradeThenByName).on<AssessmentExam>(assessmentExam => assessmentExam.assessment).compare);
       });
 
     // Keeping track of this array allows us to unsubscribe from api calls in flight

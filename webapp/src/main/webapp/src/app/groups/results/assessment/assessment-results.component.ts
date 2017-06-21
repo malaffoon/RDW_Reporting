@@ -83,7 +83,6 @@ export class AssessmentResultsComponent {
   @Input()
   loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
 
-
   set collapsed(collapsed: boolean) {
     this.assessmentExam.collapsed = collapsed;
   }
@@ -132,11 +131,11 @@ export class AssessmentResultsComponent {
   viewItemsByPoints() {
     if (this.loadAssessmentItems) {
       this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
+        this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
+        this.examCalculator.aggregateItemsByPoints(assessmentItems);
 
-        this.pointColumns = this.getPointColumns(assessmentItems);
         this.assessmentItems = assessmentItems;
         this.showItemsByPoints = true;
-
       });
     }
   }
@@ -151,20 +150,6 @@ export class AssessmentResultsComponent {
     });
 
     return sessions;
-  }
-
-  private getPointColumns(assessmentItems: AssessmentItem[]) {
-    let max = assessmentItems.reduce((x, y) => x.maxPoints > y.maxPoints ? x : y).maxPoints;
-    console.log(max);
-    let columns = [];
-
-    for (let i = 0; i <= max; i++) {
-      columns[ i ] = i
-    }
-
-    // TODO: add and call aggregator here.
-
-    return columns;
   }
 
   private updateExamSessions() {
