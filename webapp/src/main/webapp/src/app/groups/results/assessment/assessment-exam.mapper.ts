@@ -6,6 +6,8 @@ import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ExamItemScore } from "../model/exam-item-score.model";
 import { byGradeThenByName } from "../assessment.comparator";
+import { ordering } from "@kourge/ordering";
+import { byNumber } from "@kourge/ordering/comparator";
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -46,6 +48,7 @@ export class AssessmentExamMapper {
       uiModels.push(assessmentItem);
     }
 
+    uiModels.sort(ordering(byNumber).on<AssessmentItem>(ai => ai.position).compare);
     return uiModels;
   }
 
@@ -63,6 +66,7 @@ export class AssessmentExamMapper {
     let uiModel: AssessmentItem = new AssessmentItem();
 
     uiModel.id = apiModel.id;
+    uiModel.position = apiModel.id; // TODO: Update item position from API
     uiModel.claim = apiModel.claim;
     uiModel.target = apiModel.target;
     uiModel.difficulty = apiModel.difficultyCode;
@@ -85,6 +89,7 @@ export class AssessmentExamMapper {
   private mapExamFromApi(apiModel): Exam {
     let uiModel: Exam = new Exam();
 
+    uiModel.id = apiModel.id;
     uiModel.date = apiModel.dateTime;
     uiModel.session = apiModel.sessionId;
     uiModel.enrolledGrade = apiModel.studentContext.gradeId;

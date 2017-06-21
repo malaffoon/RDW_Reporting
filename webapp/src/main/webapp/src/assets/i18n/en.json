@@ -65,41 +65,47 @@
         "grade-prefix" : "G",
         "grade": "Grade {{id}}",
         "high-school": "High School",
-        "empty-message" : "No results found by selected sessions and advanced filters.",
-        "exam-cols": {
-          "name": "Name",
-          "date": "Date",
-          "session": "Session",
-          "grade": "Enrolled Grade",
-          "status": "Status",
-          "score": "Scale Score",
-          "iab" : {
-            "performance" : "Reporting Category"
+        "assessment": {
+          "instruct": "Instructional Resources",
+          "sessions-title": "Sessions",
+          "sessions-instruct": "Click a session to include it in the combined results.",
+          "exam-results": "Student Results",
+          "button-items": "Item by Points Earned",
+          "button-exams": "Student Results",
+          "exams": {
+            "title": "Student Results",
+            "empty-message" : "No results found by selected sessions and advanced filters.",
+            "cols": {
+              "name": "Name",
+              "date": "Date",
+              "session": "Session",
+              "grade": "Enrolled Grade",
+              "status": "Status",
+              "score": "Scale Score",
+              "iab": {
+                "performance": "Reporting Category"
+              },
+              "ica": {
+                "performance": "Achievement Level"
+              }
+            }
           },
-          "ica" : {
-            "performance" : "Achievement Level"
+          "items": {
+            "title":"Items By Points Earned",
+            "cols": {
+              "number": "Item #",
+              "claim": "Claim/Target",
+              "difficulty": "Item Difficulty",
+              "standard": "Standard",
+              "full-credit": "Full Credit",
+              "x-points": "{{id}} Points"
+            },
+            "target": "Target {{target}}"
           }
-        },
-        "items": {
-          "cols": {
-            "number": "Item #",
-            "claim": "Claim/Target",
-            "difficulty": "Item Difficulty",
-            "standard": "Standard",
-            "full-credit": "Full Credit",
-            "x-points": "{{id}} Points"
-          },
-          "target": "Target {{target}}"
         }
       }
-    },
-    "assessment": {
-      "instruct": "Instructional Resources",
-      "sessions-title": "Sessions",
-      "sessions-instruct": "Click a session to include it in the combined results.",
-      "exam-results": "Student Results",
-      "button-item-points": "Item by Points Earned"
     }
+
   },
   "buttons": {
     "all": "All",

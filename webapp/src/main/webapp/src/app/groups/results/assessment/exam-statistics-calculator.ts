@@ -32,7 +32,15 @@ export class ExamStatisticsCalculator {
   aggregateItemsByPoints(assessmentItems: AssessmentItem[]) {
     for(let item of assessmentItems){
       for(let i=0; i <= item.maxPoints; i++){
-        item["point_" + i] = item.scores.filter(x => x.points == i).length;
+        if(item.scores.length > 0 ){
+          let count = item.scores.filter(x => x.points == i).length;
+          item["number-point_" + i] = count;
+          item["percent-point_" + i] = count / item.scores.length * 100;
+        }
+        else {
+          item["number-point_" + i] = 0;
+          item["percent-point_" + i] = 0;
+        }
       }
     }
   }
@@ -42,7 +50,11 @@ export class ExamStatisticsCalculator {
     let pointFields = [];
 
     for (let i = 0; i <= max; i++) {
-      pointFields[ i ] = { field: "point_" + i, points: i };
+      pointFields[ i ] = {
+        numberField: "number-point_" + i,
+        percentField: "percent-point_" + i,
+        points: i
+      };
     }
 
     return pointFields;
