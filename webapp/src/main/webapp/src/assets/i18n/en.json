@@ -3,49 +3,6 @@
   "application": {
     "title": "Reporting System"
   },
-  "assessment": {
-    "types": [
-      {
-        "shortName": "SUMMATIVE",
-        "name": "Summative",
-        "performanceLevels": [
-          "Level 1",
-          "Level 2",
-          "Level 3",
-          "Level 4"
-        ]
-      },
-      {
-        "shortName": "ICA",
-        "name": "Interim Comprehensive Assessment",
-        "performanceLevels": [
-          "Level 1",
-          "Level 2",
-          "Level 3",
-          "Level 4"
-        ]
-      },
-      {
-        "shortName": "IAB",
-        "name": "Interim Assessment Block",
-        "performanceLevels": [
-          "Below Standard",
-          "Near Standard",
-          "Above Standard"
-        ]
-      }
-    ],
-    "subjects": [
-      {
-        "shortName": "MATH",
-        "name": "Mathematics"
-      },
-      {
-        "shortName": "ELA",
-        "name": "ELA/Literacy"
-      }
-    ]
-  },
   "messages": {
     "noExams": "There are no exams associated with your account.",
     "noExamsMatchingCriteria": "There are no exams matching this criteria.",
@@ -53,59 +10,7 @@
     "noExamsSelected": "Please select from the assessments above",
     "notApplicable": "-"
   },
-  "prompt": {
-    "search": "Search",
-    "collapse": "Collapse"
-  },
   "labels": {
-    "aggregate": {
-      "link": "Aggregate",
-      "selectedAssessments": "Combined Selected Assessments",
-      "itemsByPointsEarned": "Items By Points Earned",
-      "selectedRecords": "Records Selected",
-      "totalStudents": "Total # of Students",
-      "averageScaleScore": "Average Scale Score",
-      "performanceCategories": "Performance Categories",
-      "selectionSummary": "Selected: {{total}} assessment taken on {{start}} Grade {{assessmentGrade}} {{assessmentName}} {{assessmentAcademicYear}} {{assessmentSubject}}",
-      "selectionSummaryWithDateRange": "Selected: {{total}} assessments taken from {{start}}, {{end}} Grade {{assessmentGrade}} {{assessmentName}} {{assessmentAcademicYear}} {{assessmentSubject}}"
-    },
-    "assessment": {
-      "name": "Assessment",
-      "academicYear": "School Year",
-      "subject": "Subject",
-      "grade": "Grade",
-      "type": "Assessment Type"
-    },
-    "exam": {
-      "date": "Date",
-      "grade": "Enrolled Grade",
-      "performance": "Performance",
-      "score": "Scale Score",
-      "session": "Session",
-      "attempt": "Attempt #",
-      "category": {
-        "all": "Student Test History",
-        "iab": "IAB",
-        "ica": "ICA",
-        "summative": "Summative"
-      },
-      "performanceCategory": {
-        "below": "% Below",
-        "near": "% Near",
-        "above": "% Above"
-      }
-    },
-    "item": {
-      "number": "Item #",
-      "claim": "Claim",
-      "target": "Target",
-      "points": "Points",
-      "pointFormats": [
-        "Number",
-        "Percent"
-      ],
-      "pointFormat": "of students"
-    },
     "groups": {
       "name": "My Groups",
       "filter": "Search by Group Name",
@@ -194,32 +99,6 @@
       "sessions-instruct": "Click a session to include it in the combined results.",
       "exam-results": "Student Results",
       "button-item-points": "Item by Points Earned"
-    },
-    "home" : {
-      "name": "Home",
-      "welcome": "Welcome to interim reporting.  Get the most out of the portal: ",
-      "tutorial-link-text": "Getting Started"
-    },
-    "group": {
-      "name": "Group",
-      "size": "Students"
-    },
-    "district": {
-      "name": "District"
-    },
-    "search" : {
-      "title":"Student Search",
-      "results": "Results",
-      "placeholder": "Search by student ssid or name",
-      "search_button": "Go"
-    },
-    "school": {
-      "name": "School"
-    },
-    "student": {
-      "name": "Student",
-      "ssid": "SSID",
-      "details": "Student Details"
     }
   },
   "buttons": {
@@ -294,110 +173,6 @@
       "E": "Easy",
       "M": "Moderate",
       "D": "Difficult"
-    }
-  },
-  "assessment_report": {
-    "logo": {
-      "text": "",
-      "imageURL": "/assets/images/smarter_printlogo.png"
-    },
-    "assessment": {
-      "subjects": {
-        "ELA": "ELA/Literacy"
-      },
-      "types": {
-        "ICA": "Interim Comprehensive"
-      },
-      "performance_levels": [
-        {
-          "name": "Level 1",
-          "description": ""
-        },
-        {
-          "name": "Level 2",
-          "description": ""
-        },
-        {
-          "name": "Level 3",
-          "description": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
-        },
-        {
-          "name": "Level 4",
-          "description": ""
-        }
-      ],
-      "accommodations": [
-        "Alternative Response",
-        "American Sign Language",
-        "Braille",
-        "Noise Buffers",
-        "Printed items",
-        "Read aloud",
-        "Speech-to-text",
-        "Streamline Mode",
-        "Text-to-speech"
-      ]
-    },
-    "claim": {
-      "types": [
-        {
-          "name": "Concepts & Procedures",
-          "description": "Students can explain and apply mathematical concepts and carry out mathematical procedures with precision and fluency."
-        },
-        {
-          "name": "Problem Solving and Modeling & Data Analysis",
-          "description": "Students can solve a range of complex, well-posed problems in pure and applied mathematics, making productive use of knowledge and problem-solving strategies. Students can analyze complex, real-world scenarios and can construct and use mathematical models to interpret and solve problems."
-        },
-        {
-          "name": "Communicating Reasoning",
-          "description": "Students can clearly and precisely construct viable arguments to support their own reasoning and to critique the reasoning of others."
-        },
-        {
-          "name": "Reading",
-          "description": "Students can read closely and analytically to comprehend a range of increasingly complex literary and informational texts."
-        },
-        {
-          "name": "Writing",
-          "description": "Students can produce effective and well-grounded writing for a range of purposes and audiences."
-        },
-        {
-          "name": "Listening",
-          "description": "Students can employ effective speaking and listening skills for a range of purposes and audiences."
-        },
-        {
-          "name": "Research & Inquiry",
-          "description": "Students can engage in research and inquiry to investigate topics and to analyze, integrate, and present information."
-        }
-      ],
-      "performance_levels": [
-        "Below Standard",
-        "Near Standard",
-        "Above Standard"
-      ]
-    },
-    "labels": {
-      "date": "Date Taken",
-      "state": "State",
-      "district": "District",
-      "institution": "School",
-      "grade": "Grade",
-      "psychometric_implications": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement.",
-      "policy_content": "",
-      "overall_score": "Overall Score",
-      "accommodations": {
-        "heading": "Accommodations",
-        "section": "The following accommodations were made available:"
-      },
-      "report_info": "Report Info",
-      "error_band": "Error Band",
-      "college_content_readiness": "College Content-Readiness",
-      "note": "Note",
-      "invalid_test_label": "Invalid Test",
-      "invalid_test_text": "The scores in this assessment should be used with caution as the tests were administered under conditions that resulted in a score that may not be an accurate representation of the student's achievement.",
-      "partial_test_label": "Partial Test",
-      "partial_test_text": "The student did not answer all of the questions on this test and all unanswered questions have been reported as incorrect.",
-      "standard_test_label": "Standard Test",
-      "standard_test_text": "This score was derived from an assessment that was administered in a standardized manner. It is appropriate to compare this score with other scores administered in the same standardized manner."
     }
   }
 }
