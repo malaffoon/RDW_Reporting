@@ -1,4 +1,46 @@
 sql:
+  exam:
+    findAllByStudentId: >-
+      select e.id,
+        e.type_id,
+        e.grade_id,
+        e.iep,
+        e.lep,
+        e.section504,
+        e.economic_disadvantage,
+        e.migrant_status,
+        e.school_year,
+        e.opportunity,
+        e.completeness_id,
+        e.administration_condition_id,
+        e.session_id,
+        e.completed_at,
+        e.scale_score,
+        e.scale_score_std_err,
+        e.performance_level,
+        a.claim1_score_code,
+        e.claim1_category,
+        e.claim1_scale_score,
+        e.claim1_scale_score_std_err,
+        a.claim2_score_code,
+        e.claim2_category,
+        e.claim2_scale_score,
+        e.claim2_scale_score_std_err,
+        a.claim3_score_code,
+        e.claim3_category,
+        e.claim3_scale_score,
+        e.claim3_scale_score_std_err,
+        a.claim4_score_code,
+        e.claim4_category,
+        e.claim4_scale_score,
+        e.claim4_scale_score_std_err,
+        e.asmt_id
+      from exam e
+        join asmt a on e.asmt_id=a.id
+        join school s on e.school_id=s.id
+      where e.student_id=:student_id
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
   group:
     findAllForUsername: >-
       select sg.id, sg.name, school.name as school_name, subject_id
@@ -267,6 +309,26 @@ sql:
           and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
 
   assessment:
+    findAllByIds: >-
+      select a.id,
+        a.label,
+        a.grade_id,
+        a.type_id,
+        a.subject_id,
+        a.school_year,
+        a.claim1_score_code,
+        a.claim2_score_code,
+        a.claim3_score_code,
+        a.claim4_score_code,
+        aa.min_score,
+        aa.max_score,
+        aa.cut_point_1,
+        aa.cut_point_2,
+        aa.cut_point_3
+      from asmt a
+        left join asmt_score aa on a.id=aa.asmt_id
+      where a.id in (:assessment_ids)
+
     grade:
       findAllForSchool: >-
         select id, code
@@ -288,6 +350,16 @@ sql:
           i.target_code
         from item i
         where i.asmt_id=:assessment_id
+
+  student:
+    findOneBySsid: >-
+      select id,
+        ssid,
+        first_name,
+        last_or_surname,
+        gender_id
+      from student
+      where ssid=:ssid
 
   district:
     findAllIds: >-
@@ -317,10 +389,17 @@ sql:
       select code
       from ethnicity
 
-    findEthnicityIdsForStudentIds: >-
-      select ethnicity_id, student_id
-      from student_ethnicity
-      where student_id in (:student_ids)
+    findEthnicityCodesByStudentIds: >-
+      select se.student_id, e.code
+      from student_ethnicity se
+        join ethnicity e on se.ethnicity_id=e.id
+      where se.student_id in (:student_ids)
+
+    findEthnicityCodesByStudentId: >-
+      select e.code
+      from student_ethnicity se
+        join ethnicity e on se.ethnicity_id=e.id
+      where se.student_id=:student_id
 
   status:
     readTest: >-
