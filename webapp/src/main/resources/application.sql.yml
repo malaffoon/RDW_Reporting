@@ -64,13 +64,12 @@ sql:
             a.claim2_score_code,
             a.claim3_score_code,
             a.claim4_score_code,
-            aa.min_score,
-            aa.max_score,
-            aa.cut_point_1,
-            aa.cut_point_2,
-            aa.cut_point_3
+            a.min_score,
+            a.max_score,
+            a.cut_point_1,
+            a.cut_point_2,
+            a.cut_point_3
           from asmt a
-          left join asmt_score aa on a.id=aa.asmt_id
           join exam e on e.asmt_id = a.id
           join student_group_membership sgm on e.student_id=sgm.student_id
           join school s on e.school_id=s.id
@@ -94,16 +93,15 @@ sql:
             a.claim2_score_code,
             a.claim3_score_code,
             a.claim4_score_code,
-            aa.min_score,
-            aa.max_score,
-            aa.cut_point_1,
-            aa.cut_point_2,
-            aa.cut_point_3
+            a.min_score,
+            a.max_score,
+            a.cut_point_1,
+            a.cut_point_2,
+            a.cut_point_3
           from exam e
             join student_group_membership sgm on e.student_id=sgm.student_id
             join asmt a on e.asmt_id=a.id
             join school s on e.school_id=s.id
-            left join asmt_score aa on e.asmt_id=aa.asmt_id
           where e.school_year=:school_year
           and sgm.student_group_id=:group_id
           and (0=:group_subject_id or a.subject_id=:group_subject_id)
@@ -191,13 +189,12 @@ sql:
           a.claim2_score_code,
           a.claim3_score_code,
           a.claim4_score_code,
-          aa.min_score,
-          aa.max_score,
-          aa.cut_point_1,
-          aa.cut_point_2,
-          aa.cut_point_3
+          a.min_score,
+          a.max_score,
+          a.cut_point_1,
+          a.cut_point_2,
+          a.cut_point_3
         from asmt a
-          left join asmt_score aa on a.id=aa.asmt_id
         where exists (
             select e.asmt_id
             from exam e
@@ -222,15 +219,14 @@ sql:
           a.claim2_score_code,
           a.claim3_score_code,
           a.claim4_score_code,
-          aa.min_score,
-          aa.max_score,
-          aa.cut_point_1,
-          aa.cut_point_2,
-          aa.cut_point_3
+          a.min_score,
+          a.max_score,
+          a.cut_point_1,
+          a.cut_point_2,
+          a.cut_point_3
         from exam e
           join asmt a on e.asmt_id=a.id
           join school s on e.school_id=s.id
-          left join asmt_score aa on e.asmt_id=aa.asmt_id
         where e.school_year=:school_year
         and e.school_id=:school_id
         and a.grade_id=:grade_id
@@ -315,13 +311,12 @@ sql:
         a.claim2_score_code,
         a.claim3_score_code,
         a.claim4_score_code,
-        aa.min_score,
-        aa.max_score,
-        aa.cut_point_1,
-        aa.cut_point_2,
-        aa.cut_point_3
+        a.min_score,
+        a.max_score,
+        a.cut_point_1,
+        a.cut_point_2,
+        a.cut_point_3
       from asmt a
-        left join asmt_score aa on a.id=aa.asmt_id
       where a.id in (:assessment_ids)
 
     grade:
@@ -384,10 +379,9 @@ sql:
       from ethnicity
 
     findEthnicityCodesByStudentIds: >-
-      select se.student_id, e.code
-      from student_ethnicity se
-        join ethnicity e on se.ethnicity_id=e.id
-      where se.student_id in (:student_ids)
+      select student_id, ethnicity_code
+      from student_ethnicity
+      where student_id in (:student_ids)
 
     findEthnicityCodesByStudentId: >-
       select e.code
