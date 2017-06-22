@@ -4,11 +4,6 @@ sql:
       select e.id,
         e.type_id,
         e.grade_id,
-        e.iep,
-        e.lep,
-        e.section504,
-        e.economic_disadvantage,
-        e.migrant_status,
         e.school_year,
         e.opportunity,
         e.completeness_id,
@@ -356,8 +351,7 @@ sql:
       select id,
         ssid,
         first_name,
-        last_or_surname,
-        gender_id
+        last_or_surname
       from student
       where ssid=:ssid
 
