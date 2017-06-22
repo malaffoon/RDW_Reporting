@@ -3,7 +3,7 @@
 
   <groupId>org.opentestsystem</groupId>
   <artifactId>configuration-service</artifactId>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.1.1.RELEASE</version>
   <packaging>jar</packaging>
 
   <name>Configuration Service</name>
@@ -176,7 +176,7 @@
     <connection>scm:git:https://github.com/SmarterApp/SS_ConfigurationService.git</connection>
     <developerConnection>scm:git:git://github.com/SmarterApp/SS_ConfigurationService.git</developerConnection>
     <url>https://github.com/SmarterApp/SS_ConfigurationService</url>
-    <tag>HEAD</tag>
+    <tag>3.1.1.RELEASE</tag>
   </scm>
 
   <distributionManagement>
