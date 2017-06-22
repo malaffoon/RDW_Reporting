@@ -8,7 +8,7 @@ import {Utils} from "../shared/Utils";
   templateUrl: './breadcrumbs.component.html'
 })
 export class BreadcrumbsComponent implements OnInit{
-  private breadcrumbs : Array<any> = [];
+  breadcrumbs : Array<any> = [];
 
   constructor(private router: Router, private activatedRoute : ActivatedRoute ) {
   }

@@ -1,4 +1,5 @@
 export class Exam {
+  id: number;
   studentName: string;
   date: Date;
   session: string;

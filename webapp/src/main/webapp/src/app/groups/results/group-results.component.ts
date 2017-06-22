@@ -8,6 +8,10 @@ import { ExamFilterOptions } from "./model/exam-filter-options.model";
 import { Assessment } from "./model/assessment.model";
 import { AssessmentService } from "./assessment/assessment.service";
 import { GradeService } from "../../shared/grade.service";
+import { AssessmentItem } from "./model/assessment-item.model";
+import { Observable } from "rxjs";
+import { byGradeThenByName } from "./assessment.comparator";
+import { ordering } from "@kourge/ordering";
 
 @Component({
   selector: 'app-group-results',
@@ -23,7 +27,8 @@ export class GroupResultsComponent implements OnInit {
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   currentFilters = [];
   availableAssessments: Assessment[] = [];
-  assessmentsLoading : any[] = [];
+  assessmentsLoading: any[] = [];
+  boundLoadAssessmentItems: Function;
 
   get currentGroup() {
     return this._currentGroup;
@@ -60,7 +65,7 @@ export class GroupResultsComponent implements OnInit {
     this._expandAssessments = value;
     this.getAvailableAssessments();
 
-    if(value)
+    if (value)
       this._showOnlyMostRecent = false;
   }
 
@@ -70,7 +75,7 @@ export class GroupResultsComponent implements OnInit {
 
   set showOnlyMostRecent(value: boolean) {
     this.expandAssessments = !value;
-    if(value) {
+    if (value) {
       this.availableAssessments = [];
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     }
@@ -79,9 +84,9 @@ export class GroupResultsComponent implements OnInit {
   }
 
   get selectedAssessments() {
-    if(this.showOnlyMostRecent && this.assessmentExams)
+    if (this.showOnlyMostRecent && this.assessmentExams)
       return this.assessmentExams.map(x => x.assessment);
-    else if(this.availableAssessments)
+    else if (this.availableAssessments)
       return this.availableAssessments.filter(x => x.selected);
 
     return [];
@@ -133,6 +138,8 @@ export class GroupResultsComponent implements OnInit {
       this.filterOptions = filterOptions;
       this._currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
     });
+
+    this.boundLoadAssessmentItems = this.loadAssessmentItems.bind(this);
   }
 
   removeEthnicity(ethnicity) {
@@ -175,13 +182,13 @@ export class GroupResultsComponent implements OnInit {
     return Number.parseInt(params[ "schoolYear" ]) || this.filterOptions.schoolYears[ 0 ];
   }
 
-  removeAssessment(assessment: Assessment){
+  removeAssessment(assessment: Assessment) {
     assessment.selected = false;
     this.selectedAssessmentsChanged(assessment);
   }
 
   selectedAssessmentsChanged(assessment: Assessment) {
-    if(assessment.selected){
+    if (assessment.selected) {
       this.loadAssessmentExam(assessment);
     }
     else {
@@ -189,21 +196,20 @@ export class GroupResultsComponent implements OnInit {
     }
   }
 
-  private loadAssessmentExam(assessment: Assessment){
+  private loadAssessmentItems(assessmentId: number): Observable<AssessmentItem[]> {
+    return this.assessmentService.getExamItems(this.currentGroup.id, this.currentSchoolYear, assessmentId);
+  }
+
+  private loadAssessmentExam(assessment: Assessment) {
     let subscription = this.assessmentService.getExams(this._currentGroup.id, this._currentSchoolYear, assessment.id)
       .subscribe(exams => {
         let assessmentLoaded = this.assessmentsLoading.splice(this.assessmentsLoading.findIndex(al => al.assessment.id == assessment.id), 1);
         let assessmentExam = new AssessmentExam();
-        assessmentExam.assessment = assessmentLoaded[0].assessment;
+        assessmentExam.assessment = assessmentLoaded[ 0 ].assessment;
         assessmentExam.exams = exams;
 
         this.assessmentExams.push(assessmentExam);
-        this.assessmentExams.sort((x, y) => {
-          if(x.assessment.grade == y.assessment.grade){
-            return x.assessment.name > y.assessment.name ? 1: -1;
-          }
-          return x.assessment.grade > y.assessment.grade ? 1: -1;
-        });
+        this.assessmentExams.sort(ordering(byGradeThenByName).on<AssessmentExam>(assessmentExam => assessmentExam.assessment).compare);
       });
 
     // Keeping track of this array allows us to unsubscribe from api calls in flight
@@ -214,14 +220,14 @@ export class GroupResultsComponent implements OnInit {
   private removeUnselectedAssessmentExams() {
     this.assessmentExams = this.assessmentExams.filter(loaded => this.selectedAssessments.some(selected => loaded.assessment.id == selected.id));
 
-    let assessmentsLoading = this.assessmentsLoading.filter(loading => !this.selectedAssessments.some(selected => loading.assessment.id == selected.id ));
+    let assessmentsLoading = this.assessmentsLoading.filter(loading => !this.selectedAssessments.some(selected => loading.assessment.id == selected.id));
 
     // cancel api calls in flight.
-    for(let loading of assessmentsLoading){
+    for (let loading of assessmentsLoading) {
       loading.subscription.unsubscribe();
     }
 
-    this.assessmentsLoading = this.assessmentsLoading.filter(loading => this.selectedAssessments.some(selected => loading.assessment.id == selected.id ));;
+    this.assessmentsLoading = this.assessmentsLoading.filter(loading => this.selectedAssessments.some(selected => loading.assessment.id == selected.id));
   }
 
   private getAvailableAssessments() {

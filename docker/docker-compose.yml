@@ -58,18 +58,18 @@ services:
     extra_hosts:
       - "dwhost:$DATAWAREHOUSE_HOST"
 
-  pdf-report-processor:
-    image: fwsbac/rdw-reporting-pdf-report-processor
-    ports:
-      - 8082:8008
-    volumes:
-      - /tmp:/tmp
-    links:
-      - config-server
-      - rabbitmq
-    environment:
-      - spring.profiles.active=local-docker
-      - CONFIG_SERVICE_ENABLED=true
-      - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
+#  pdf-report-processor:
+#    image: fwsbac/rdw-reporting-pdf-report-processor
+#    ports:
+#      - 8082:8008
+#    volumes:
+#      - /tmp:/tmp
+#    links:
+#      - config-server
+#      - rabbitmq
+#    environment:
+#      - spring.profiles.active=local-docker
+#      - CONFIG_SERVICE_ENABLED=true
+#      - CONFIG_SERVICE_URL=http://config-server:8888
+#    extra_hosts:
+#      - "dwhost:$DATAWAREHOUSE_HOST"

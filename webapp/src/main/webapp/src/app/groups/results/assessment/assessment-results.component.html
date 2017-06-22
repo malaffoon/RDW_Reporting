@@ -3,7 +3,7 @@
     <div class="mb-lg">
         <!-- Top Right Buttons -->
         <div class="pull-right text-right">
-            <a class="btn btn-default btn-xs"><i class="fa fa-list-alt"></i> {{'labels.assessment.instruct' | translate }}</a>
+            <a class="btn btn-default btn-xs"><i class="fa fa-list-alt"></i> {{'labels.groups.results.assessment.instruct' | translate }}</a>
             <button class="btn btn-default btn-sm icon-only" (click)="collapsed = !collapsed">
                 <i class="fa font-bold" [ngClass]="{'fa-angle-down':collapsed, 'fa-angle-up':!collapsed}"></i> <span class="sr-only">{{'prompt.collapse' | translate}}</span>
             </button>
@@ -18,8 +18,8 @@
     <div class="row">
         <!-- Sessions -->
         <div class="col-md-7">
-            <p><strong>{{'labels.assessment.sessions-title' | translate}}</strong><br />
-            {{'labels.assessment.sessions-instruct' | translate}}</p>
+            <p><strong>{{'labels.groups.results.assessment.sessions-title' | translate}}</strong><br />
+            {{'labels.groups.results.assessment.sessions-instruct' | translate}}</p>
             <div class="flex-children">
                 <a *ngFor="let session of sessions" class="tag aqua reverse multi-line" [ngClass]="{'gray-dark':!session.filter}" (click)="toggleSession(session)">
                     <span class="block-children text-left">
@@ -65,44 +65,80 @@
 
     <!-- Student Results -->
     <div *ngIf="!collapsed" @fadeAnimation>
-        <h3 class="gray-darkest mb-md">
-            {{'labels.assessment.exam-results' | translate}}
-            <a class="btn btn-info btn-xs pull-right">
-                {{'labels.assessment.button-item-points' | translate}} <i class="fa fa-chevron-right"></i>
-            </a>
-        </h3>
-
         <!-- TODO: Make 'emptyMessage' content instead of attribute value so it can be wrapped like the below example
         <div class="alert alert-danger">
             {{'labels.groups.results.empty-message' | translate}}
         </div>-->
 
         <!-- Student Results Table -->
-        <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped table-hover">
-            <p-column field="studentName" header="{{'labels.groups.results.exam-cols.name' | translate}}" [sortable]="true"></p-column>
-            <p-column field="date" header="{{'labels.groups.results.exam-cols.date' | translate}}" [sortable]="true">
-                <ng-template let-exam="rowData" pTemplate="body">
-                    {{ exam.date | date }}
-                </ng-template>
-            </p-column>
-            <p-column field="session" header="{{'labels.groups.results.exam-cols.session' | translate}}" [sortable]="true"></p-column>
-            <p-column field="enrolledGrade" header="{{'labels.groups.results.exam-cols.grade' | translate}}" [sortable]="true" ></p-column>
-            <p-column field="administrativeCondition" header="{{'labels.groups.results.exam-cols.status' | translate}}" [sortable]="true" >
-                <ng-template let-exam="rowData" pTemplate="body">
-                    <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
-                    <span *ngIf="exam.completeness != 2" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
-                </ng-template>
-            </p-column>
-            <p-column field="level" header="{{ performanceLevelHeader | translate }}" [sortable]="true">
-                <ng-template let-exam="rowData" pTemplate="body">
-                    {{ examLevelEnum + exam.level | translate }}
-                </ng-template>
-            </p-column>
-            <p-column field="score" header="{{'labels.groups.results.exam-cols.score' | translate}}" [sortable]="true">
-                <ng-template let-exam="rowData" pTemplate="body">
-                    {{ exam.score }} ± {{ exam.standardError }}
-                </ng-template>
-            </p-column>
+      <div *ngIf="!showItemsByPoints">
+        <h3 class="gray-darkest mb-md">
+          {{'labels.groups.results.assessment.exams.title' | translate}}
+          <a *ngIf="assessmentExam.assessment.isInterim" class="btn btn-info btn-xs pull-right" (click)="viewItemsByPoints(true)">
+            {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
+          </a>
+        </h3>
+
+        <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.assessment.exams.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped table-hover">
+          <p-column field="studentName" header="{{'labels.groups.results.assessment.exams.cols.name' | translate}}" [sortable]="true"></p-column>
+          <p-column field="date" header="{{'labels.groups.results.assessment.exams.cols.date' | translate}}" [sortable]="true">
+            <ng-template let-exam="rowData" pTemplate="body">
+              {{ exam.date | date }}
+            </ng-template>
+          </p-column>
+          <p-column field="session" header="{{'labels.groups.results.assessment.exams.cols.session' | translate}}" [sortable]="true"></p-column>
+          <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true" ></p-column>
+          <p-column field="administrativeCondition" header="{{'labels.groups.results.assessment.exams.cols.status' | translate}}" [sortable]="true" >
+            <ng-template let-exam="rowData" pTemplate="body">
+              <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
+              <span *ngIf="exam.completeness != 2" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
+            </ng-template>
+          </p-column>
+          <p-column field="level" header="{{ performanceLevelHeader | translate }}" [sortable]="true">
+            <ng-template let-exam="rowData" pTemplate="body">
+              {{ examLevelEnum + exam.level | translate }}
+            </ng-template>
+          </p-column>
+          <p-column field="score" header="{{'labels.groups.results.assessment.exams.cols.score' | translate}}" [sortable]="true">
+            <ng-template let-exam="rowData" pTemplate="body">
+              {{ exam.score }} ± {{ exam.standardError }}
+            </ng-template>
+          </p-column>
         </p-dataTable>
+      </div>
+      <!-- Items By Points Earned -->
+      <div *ngIf="showItemsByPoints">
+        <h3 class="gray-darkest mb-md">
+          {{'labels.groups.results.assessment.items.title' | translate}}
+          <a class="btn btn-info btn-xs pull-right" (click)="viewItemsByPoints(false)">
+            <i class="fa fa-chevron-left"></i> {{'labels.groups.results.assessment.button-exams' | translate}}
+          </a>
+        </h3>
+        <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover">
+          <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" [sortable]="true"></p-column>
+          <p-column field="claim" header="{{'labels.groups.results.assessment.items.cols.claim' | translate}}" [sortable]="true">
+            <ng-template let-item="rowData" pTemplate="body">
+              {{ 'enum.claim.' + item.claim | translate }} / {{ 'labels.groups.results.assessment.items.target' | translate:item }}
+            </ng-template>
+          </p-column>
+          <p-column field="difficulty" header="{{'labels.groups.results.assessment.items.cols.difficulty' | translate}}" [sortable]="true">
+            <ng-template let-item="rowData" pTemplate="body">
+              {{ 'enum.difficulty.' + item.difficulty | translate }}
+            </ng-template>
+          </p-column>
+          <p-column field="fullCredit" header="{{'labels.groups.results.assessment.items.cols.full-credit' | translate}}" [sortable]="true">
+            <ng-template let-item="rowData" pTemplate="body">
+                <span [hidden]="showValuesAsPercent">{{ item.fullCredit }}</span>
+                <span [hidden]="!showValuesAsPercent">{{ item.fullCreditAsPercent | number:'1.0-0' }}%</span>
+            </ng-template>
+          </p-column>
+          <p-column *ngFor="let column of pointColumns" [field]="column.numberField" header="{{'labels.groups.results.assessment.items.cols.x-points' | translate:{id: column.points} }}" [sortable]="true">
+            <ng-template let-item="rowData" pTemplate="body">
+                <span [hidden]="showValuesAsPercent">{{ item[column.numberField] }}</span>
+                <span [hidden]="!showValuesAsPercent || item[column.percentField] == null">{{ item[column.percentField] | number:'1.0-0' }}%</span>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
     </div>
 </div>
