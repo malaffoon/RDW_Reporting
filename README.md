@@ -38,13 +38,14 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
 mysql> exit
 ```
 
-The service depends on the database being configured properly. This is done using RDW_Schema.
+The service depends on the database being configured properly. This is done using RDW_Schema which is a dependency in this project and has gradle tasks. 
 ```bash
-git clone https://github.com/SmarterApp/RDW_Schema
-cd RDW_Schema
-git checkout develop
-cd reporting
-../scripts/migrate
+./gradlew migrateReportingProd
+```
+
+Usually a migrate is all that is needed but you may also clean to wipe all data:
+```bash
+./gradlew cleanReportingProd migrateReportingProd
 ```
 
 ### Building
