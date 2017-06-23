@@ -43,8 +43,7 @@ The service depends on the database being configured properly. This is done usin
 git clone https://github.com/SmarterApp/RDW_Schema
 cd RDW_Schema
 git checkout develop
-cd reporting
-../scripts/migrate
+./gradlew install
 ```
 
 ### Building
