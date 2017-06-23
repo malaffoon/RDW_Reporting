@@ -7,7 +7,9 @@ sql:
         e.school_year,
         e.opportunity,
         e.completeness_id,
+        e.completeness_code,
         e.administration_condition_id,
+        e.administration_condition_code,
         e.session_id,
         e.completed_at,
         e.scale_score,
@@ -121,7 +123,9 @@ sql:
             e.school_year,
             e.opportunity,
             e.completeness_id,
+            e.completeness_code,
             e.administration_condition_id,
+            e.administration_condition_code,
             e.session_id,
             e.completed_at,
             e.scale_score,
@@ -146,7 +150,8 @@ sql:
             st.id as student_id,
             st.last_or_surname as student_last_name,
             st.first_name as student_first_name,
-            st.gender_id as student_gender_id
+            st.gender_id as student_gender_id,
+            st.gender_code as student_gender_code
           from exam e
             join student_group_membership sgm on e.student_id=sgm.student_id
             join student st on e.student_id=st.id
@@ -246,7 +251,9 @@ sql:
           e.school_year,
           e.opportunity,
           e.completeness_id,
+          e.completeness_code,
           e.administration_condition_id,
+          e.administration_condition_code,
           e.session_id,
           e.completed_at,
           e.scale_score,
@@ -271,7 +278,8 @@ sql:
           st.id as student_id,
           st.last_or_surname as student_last_name,
           st.first_name as student_first_name,
-          st.gender_id as student_gender_id
+          st.gender_id as student_gender_id,
+          st.gender_code as student_gender_code
         from exam e
           join student st on e.student_id=st.id
           join asmt a on e.asmt_id=a.id
