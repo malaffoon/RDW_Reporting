@@ -10,89 +10,69 @@
     "noExamsSelected": "Please select from the assessments above",
     "notApplicable": "-"
   },
-    "collapse": "Collapse"
-    "select": "Select"
+  "collapse": "Collapse",
+  "select": "Select",
   "labels": {
     "grade": "Grade",
     "grades": {
-      "0": {
-        "code": "KG",
+      "KG": {
         "name": "Kindergarten"
       },
-      "1": {
-        "code": "01",
+      "01": {
         "name": "First grade"
       },
-      "2": {
-        "code": "02",
+      "02": {
         "name": "Second grade"
       },
-      "3": {
-        "code": "03",
+      "03": {
         "name": "Third grade"
       },
-      "4": {
-        "code": "04",
+      "04": {
         "name": "Fourth grade"
       },
-      "5": {
-        "code": "05",
+      "05": {
         "name": "Fifth grade"
       },
-      "6": {
-        "code": "06",
+      "06": {
         "name": "Sixth grade"
       },
-      "7": {
-        "code": "07",
+      "07": {
         "name": "Seventh grade"
       },
-      "8": {
-        "code": "08",
+      "08": {
         "name": "Eigth grade"
       },
-      "9": {
-        "code": "09",
+      "09": {
         "name": "Ninth grade"
       },
       "10": {
-        "code": "10",
         "name": "Tenth grade"
       },
       "11": {
-        "code": "11",
         "name": "Eleventh grade"
       },
       "12": {
-        "code": "12",
         "name": "Twelfth grade"
       },
       "13": {
-        "code": "13",
         "name": "Grade 13"
       },
-      "14": {
-        "code": "PS",
+      "PS": {
         "name": "Postsecondary"
       },
-      "15": {
-        "code": "UG",
+      "UG": {
         "name": "Ungraded"
       },
-      "16": {
-        "code": "IT",
+      "IT": {
         "name": "Infant/toddler"
       },
-      "17": {
-        "code": "PR",
+      "PR": {
         "name": "Preschool"
       },
-      "18": {
-        "code": "PK",
+      "PK": {
         "name": "Prekindergarten"
       },
-      "19": {
-        "code": "TK",
+      "TK": {
         "name": "Transitional Kindergarten"
       }
     },
@@ -101,9 +81,9 @@
       "filter": "Search by Group Name",
       "empty-message": "Contact your building administrator for access to group-level test results",
       "cols": {
-        "group" : "Group Name",
-        "school" : "School",
-        "subject" : "Subjects"
+        "group": "Group Name",
+        "school": "School",
+        "subject": "Subjects"
       },
       "results": {
         "title": "Results",
@@ -111,9 +91,9 @@
         "select-year": "School Year",
         "collapse-all": "Collapse Results",
         "expand-all": "Expand Results",
-        "adv-filters" : {
+        "adv-filters": {
           "label": "Advanced Filters",
-          "subhead": "Click an items to remove it from the list",
+          "subhead": "Click an item to remove it from the list",
           "instruct": "Click an item to add or remove it from your list of selections above.",
           "test": {
             "label": "Test",
@@ -128,10 +108,10 @@
           "student": {
             "label": "Student",
             "gender": "Gender",
-            "migrant-status" : "Migrant Status",
+            "migrant-status": "Migrant Status",
             "504-plan": "504 Plan",
             "iep": "IEP",
-            "economic-disadvantage":"Economic Disadvantage",
+            "economic-disadvantage": "Economic Disadvantage",
             "limited-english-proficiency": "Limited English Proficiency",
             "ethnicity": "Race/Ethnicity"
           }
@@ -147,7 +127,7 @@
         "value-as": "Show value as",
         "value-as-percent": "Percent",
         "value-as-number": "Number",
-        "grade-prefix" : "G",
+        "grade-prefix": "G",
         "grade": "Grade {{id}}",
         "high-school": "High School",
         "assessment": {
@@ -159,7 +139,7 @@
           "button-exams": "Student Results",
           "exams": {
             "title": "Student Results",
-            "empty-message" : "No results found by selected sessions and advanced filters.",
+            "empty-message": "No results found by selected sessions and advanced filters.",
             "cols": {
               "name": "Name",
               "date": "Date",
@@ -174,6 +154,8 @@
                 "performance": "Achievement Level"
               }
             }
+          }
+        }
       }
     },
     "school-grade": {
@@ -187,23 +169,24 @@
       },
       "prompt": {
         "school-name": "Start typeing the school name"
-          },
-          "items": {
-            "title":"Items By Points Earned",
-            "cols": {
-              "number": "Item #",
-              "claim": "Claim/Target",
-              "difficulty": "Item Difficulty",
-              "standard": "Standard",
-              "full-credit": "Full Credit",
-              "x-points": "{{id}} Points"
-            },
-            "target": "Target {{target}}"
-          }
-        }
+      },
+      "items": {
+        "title": "Items By Points Earned",
+        "cols": {
+          "number": "Item #",
+          "claim": "Claim/Target",
+          "difficulty": "Item Difficulty",
+          "standard": "Standard",
+          "full-credit": "Full Credit",
+          "x-points": "{{id}} Points"
+        },
+        "target": "Target {{target}}"
       }
     }
-
+  },
+  "prompt": {
+    "search": "Search",
+    "select": "Select"
   },
   "buttons": {
     "all": "All",
@@ -216,41 +199,41 @@
       "collapse": "Collapse"
     }
   },
-  "enum" : {
-    "administrative-condition" : {
-      "1" : "Valid",
-      "2" : "Standardized",
-      "3" : "Non-Standardized",
-      "4" : "Invalid"
+  "enum": {
+    "administrative-condition": {
+      "1": "Valid",
+      "2": "Standardized",
+      "3": "Non-Standardized",
+      "4": "Invalid"
     },
-    "completeness" : {
-      "1" : "Partial",
-      "2" : "Complete"
+    "completeness": {
+      "1": "Partial",
+      "2": "Complete"
     },
-    "iab-category" : {
-      "1" : "Below Standard",
-      "2" : "Near Standard",
-      "3" : "Above Standard"
+    "iab-category": {
+      "1": "Below Standard",
+      "2": "Near Standard",
+      "3": "Above Standard"
     },
-    "achievement-level" : {
-      "1" : "Level 1",
-      "2" : "Level 2",
-      "3" : "Level 3",
-      "4" : "Level 4"
+    "achievement-level": {
+      "1": "Level 1",
+      "2": "Level 2",
+      "3": "Level 3",
+      "4": "Level 4"
     },
-    "gender" : {
-      "1" : "Male",
-      "2" : "Female"
+    "gender": {
+      "1": "Male",
+      "2": "Female"
     },
-    "polar" : {
-      "1" : "Yes",
-      "2" : "No"
+    "polar": {
+      "1": "Yes",
+      "2": "No"
     },
-    "off-grade" : {
-      "true" : "Hide",
-      "false" : "Show"
+    "off-grade": {
+      "true": "Hide",
+      "false": "Show"
     },
-    "ethnicity" : {
+    "ethnicity": {
       "HispanicOrLatinoEthnicity": "Hispanic/Latino",
       "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
       "Asian": "Asian",
@@ -260,8 +243,8 @@
       "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
       "Filipino": "Filipino"
     },
-    "claim" : {
-      "1-IT":"Read Analytically: Informational Text",
+    "claim": {
+      "1-IT": "Read Analytically: Informational Text",
       "1-LT": "Read Analytically: Literary Text",
       "2-W": "Write Effectively",
       "3-L": "Listen Purposefully",

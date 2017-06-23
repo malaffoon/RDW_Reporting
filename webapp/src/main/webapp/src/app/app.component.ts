@@ -1,5 +1,5 @@
-import {Component} from "@angular/core";
-import {TranslateService} from '@ngx-translate/core';
+import { Component } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "./user/user.service";
 
 @Component({
@@ -14,10 +14,10 @@ export class AppComponent {
     return this._user;
   }
 
-  constructor(public translate: TranslateService, private _userService : UserService) {
+  constructor(public translate: TranslateService, private _userService: UserService) {
 
-    let languages = ['en', 'ja'];
-    let defaultLanguage = languages[0];
+    let languages = [ 'en', 'ja' ];
+    let defaultLanguage = languages[ 0 ];
     translate.addLangs(languages);
     translate.setDefaultLang(defaultLanguage);
     translate.use(languages.indexOf(translate.getBrowserLang()) != -1 ? translate.getBrowserLang() : defaultLanguage);

@@ -25,19 +25,19 @@
       </div>
 
       <!-- School & Grade Search -->
-      <h2 class="blue-dark h3 mb-md">Search by School &amp; Grade</h2>
-      <div class="school-and-grade-search-container well">
-        <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
-          <!--TODO:  Implement authorize of PII or PII Group role. -->
-          <school-grade></school-grade>
+      <div *sbAuthorize="['INDIVIDUAL_PII_READ']">
+        <h2 class="blue-dark h3 mb-md">Search by School &amp; Grade</h2>
+        <div class="school-and-grade-search-container well">
+          <div >
+            <school-grade></school-grade>
+          </div>
         </div>
       </div>
 
       <!-- My Groups Search -->
-      <h2 class="blue-dark h3 mb-md">My Groups</h2>
-      <div class="my-groups-search-container well">
-        <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
-          <!--TODO:  Implement authorize of PII or PII Group role. -->
+      <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
+        <h2 class="blue-dark h3 mb-md">My Groups</h2>
+        <div class="my-groups-search-container well">
           <groups></groups>
         </div>
       </div>

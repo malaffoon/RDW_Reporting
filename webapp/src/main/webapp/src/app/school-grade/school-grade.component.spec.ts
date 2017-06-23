@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { ModalModule, TypeaheadModule } from "ngx-bootstrap";
 import { CommonModule } from "../shared/common.module";
+import { SchoolService } from "./school.service";
 
 describe('SchoolGradeComponent', () => {
   let component: SchoolGradeComponent;
@@ -18,7 +19,8 @@ describe('SchoolGradeComponent', () => {
         ModalModule.forRoot(),
         TypeaheadModule
       ],
-      declarations: [ SchoolGradeComponent ]
+      declarations: [ SchoolGradeComponent ],
+      providers: [ SchoolService ]
     })
     .compileComponents();
   }));

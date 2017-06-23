@@ -1,9 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
-import { School } from "../shared/model/school.model";
-import { SchoolService } from "../shared/data/school.service";
+import { School } from "./school.model";
+import { SchoolService } from "./school.service";
 import { TypeaheadMatch } from "ngx-bootstrap";
 import { isNullOrUndefined } from "util";
+import { Grade } from "./grade.model";
 
 /**
  * This component is responsible for displaying a search widget allowing
@@ -13,19 +14,25 @@ import { isNullOrUndefined } from "util";
   selector: 'school-grade',
   templateUrl: './school-grade.component.html'
 })
-export class SchoolGradeComponent {
+export class SchoolGradeComponent implements OnInit {
 
   asyncSelected: string;
   typeaheadLoading: boolean;
   typeaheadNoResults: boolean;
-  selectedSchool: School;
-  availableGrades: number[];
+
+  availableGrades: Grade[];
   findSchools: Observable<School[]>;
   noGradesAvailable: boolean;
+  selectUndefinedOptionValue:any;
+
+  selectedSchool: School;
+  selectedGrade: Grade;
 
   constructor(private schoolService: SchoolService) {
     this.availableGrades = [];
+  }
 
+  ngOnInit() {
     // Declare a data-providing Observable used by the typeahead widget
     // to search for schools.
     this.findSchools = Observable
@@ -33,10 +40,11 @@ export class SchoolGradeComponent {
         observer.next(this.asyncSelected)
       })
       .debounceTime(300)
-      .mergeMap((token: string) => {
-        console.log("Looking up: " + token);
-        return token.length < 2 ? []
-          : this.schoolService.findByName(token)
+      .mergeMap((input: string) => {
+        console.log("Looking up: " + input);
+        return input.length < 3
+          ? []
+          : this.schoolService.findByName(input)
       });
   }
 
@@ -67,10 +75,13 @@ export class SchoolGradeComponent {
 
     // On school selection, find the grades with available assessments
     this.schoolService.findGradesWithAssessmentsForSchool(this.selectedSchool)
-      .subscribe((grades) => {
+      .subscribe(grades => {
         this.availableGrades = grades;
         this.noGradesAvailable = this.availableGrades.length == 0;
       });
   }
 
+  performSearch(){
+    console.log(`Navigate to some deterimined route such as: search?schoolId=${this.selectedSchool.id}&grade=${this.selectedGrade.id}`);
+  }
 }

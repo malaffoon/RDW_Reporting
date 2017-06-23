@@ -6,6 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { DataTableModule, SharedModule } from "primeng/primeng";
 import { SchoolGradeComponent } from "./school-grade.component";
 import { TypeaheadModule } from "ngx-bootstrap";
+import { SchoolService } from "./school.service";
 
 /**
  * This module contains a search component for finding assessments
@@ -25,7 +26,7 @@ import { TypeaheadModule } from "ngx-bootstrap";
     TypeaheadModule
   ],
   exports: [ SchoolGradeComponent ],
-  providers: []
+  providers: [ SchoolService ]
 })
 export class SchoolGradeModule {
 }

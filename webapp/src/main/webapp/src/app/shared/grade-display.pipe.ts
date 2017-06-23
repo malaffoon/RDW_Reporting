@@ -16,11 +16,17 @@ export class GradeDisplayPipe implements PipeTransform {
 
   constructor(private translate: TranslateService) {}
 
-  transform(gradeId: number, format: string): Observable<string> {
+  /**
+   * Method to transform a grade code to a desired display value.
+   * @param gradeCode
+   * @param format
+   * @returns transformed grade
+   */
+  transform(gradeCode: number, format: string): Observable<string> {
     if (isNullOrUndefined(format)) {
       format = "name";
     }
 
-    return this.translate.instant(`labels.grades.${gradeId}.${format}`);
+    return this.translate.instant(`labels.grades.${gradeCode}.${format}`);
   }
 }

@@ -15,7 +15,6 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
 import { GradeService } from "./grade.service";
-import { SchoolService } from "./data/school.service";
 import { GradeDisplayPipe } from "./grade-display.pipe";
 
 export function createTranslateLoader(http: Http) {
@@ -62,8 +61,7 @@ export function createTranslateLoader(http: Http) {
   providers: [
     DataService,
     CachingDataService,
-    GradeService,
-    SchoolService
+    GradeService
   ]
 })
 export class CommonModule {
