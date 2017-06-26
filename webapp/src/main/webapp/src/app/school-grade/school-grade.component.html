@@ -3,9 +3,6 @@
     <div class="flex-child grow">
       <label>
         {{'labels.school-grade.school-name.label' | translate}}
-        <span *ngIf="typeaheadLoading===true">
-          <i class="glyphicon glyphicon-refresh ng-hide" style=""></i>
-        </span>
       </label>
       <div>
         <p-dropdown [options]="availableSchools"
