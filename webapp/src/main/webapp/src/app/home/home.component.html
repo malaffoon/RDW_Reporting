@@ -4,20 +4,20 @@
 
     <!-- Left Column Content Area -->
     <div class="col-md-9">
-      <h1 class="sr-only">Reporting System Dashboard</h1>
+      <h1 class="sr-only">{{'labels.homepage.title' | translate}}</h1>
 
       <!-- Student ID Search -->
-      <h2 class="blue-dark h3 mb-md">Search by Student ID</h2>
+      <h1 class="blue-dark h3 mb-md">{{'labels.homepage.title' | translate}}</h1>
       <div class="student-id-search-container well">
         <form>
           <div class="form-group">
             <div class="flex-children">
               <div class="flex-child grow">
-                <label for="student-id-input">Statewide Student Identifier (SSID)</label>
-                <input type="text" class="form-control" id="student-id-input" placeholder="Enter the Statewide Student Identifier (SSID)">
+                <label for="student-id-input">{{'labels.homepage.search-student-id.label' | translate}}</label>
+                <input type="text" class="form-control" id="student-id-input" placeholder="{{'labels.homepage.search-student-id.placeholder' | translate}}">
               </div>
               <div class="flex-child">
-                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="submit" class="btn btn-primary">{{'buttons.search' | translate}}</button>
               </div>
             </div>
           </div>
@@ -25,17 +25,16 @@
       </div>
 
       <!-- School & Grade Search -->
-      <h2 class="blue-dark h3 mb-md">Search by School &amp; Grade</h2>
       <div class="school-and-grade-search-container well">
         <form>
           <div class="form-group">
             <div class="flex-children">
               <div class="flex-child grow">
-                <label for="school-name-input">Search by School Name</label>
-                <input type="text" class="form-control" id="school-name-input" placeholder="Start typing the school name">
+                <label for="school-name-input">{{'labels.homepage.search-school-grade.school-label' | translate}}</label>
+                <input type="text" class="form-control" id="school-name-input" placeholder="{{'labels.homepage.search-school-grade.school-placeholder' | translate }}">
               </div>
               <div class="flex-child">
-                <label for="grade-select">Grade</label>
+                <label for="grade-select">{{'labels.homepage.search-school-grade.grade-label' | translate}}</label>
                 <select name="grade-select" id="grade-select" class="form-control">
                   <option value="3">3</option>
                   <option value="4">4</option>
@@ -47,7 +46,7 @@
                 </select>
               </div>
               <div class="flex-child">
-                <button type="submit" class="btn btn-primary mt-md">Search</button>
+                <button type="submit" class="btn btn-primary mt-md">{{'buttons.search' | translate}}</button>
               </div>
             </div>
           </div>
@@ -55,7 +54,6 @@
       </div>
 
       <!-- My Groups Search -->
-      <h2 class="blue-dark h3 mb-md">My Groups</h2>
       <div class="my-groups-search-container well">
         <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
           <!--TODO:  Implement authorize of PII or PII Group role. -->
@@ -68,14 +66,16 @@
     <div class="col-md-3 pt-md">
       <!-- Student Groups Admin Link -->
       <p class="text-right">
-        <a href="#" class="btn btn-xs btn-info"><i class="fa fa-gear"></i> Student Groups Admin</a>
+        <a href="#" class="btn btn-xs btn-info"><i class="fa fa-gear"></i> {{'labels.groups.manage-group' | translate}}</a>
       </p>
 
       <!-- Welcome Content -->
       <div class="welcome-container well">
-        <p class="lead">Welcome! Get the most from the Reporting System:</p>
-        <p><a href="#" class="btn btn-primary">User Guide</a></p>
-        <p><a href="#" class="btn btn-success">Interpretive Guide</a></p>
+        <p class="lead">{{'labels.homepage.welcome.title' | translate}}</p>
+        <p>{{'labels.homepage.welcome.sub-title' | translate}}</p>
+        <p><a href="#" class="btn btn-primary">{{'labels.user-guide' | translate}}</a></p>
+        <p>{{'labels.homepage.welcome.interpret-instructions' | translate}}</p>
+        <p><a href="#" class="btn btn-success">{{'labels.interpretive-guide' | translate}}</a></p>
       </div>
 
       <!-- Summary Reports Content -->
