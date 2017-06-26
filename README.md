@@ -38,7 +38,13 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
 mysql> exit
 ```
 
-Additionally, you need to configure MySQL settings in `my.cnf` file. Locate the file (for a brew install it will be
+You should load your timezone info, because we'll be forcing the timezone to 'UTC' in the next step. You may see 
+some warnings of skipped files but no errors when you do this:
+```bash
+mysql_tzinfo_to_sql /usr/share/zoneinfo | sed -e "s/Local time zone must be set--see zic manual page/local/" | mysql -u root mysql
+```
+
+Finally, you need to configure MySQL settings in `my.cnf` file. Locate the file (for a brew install it will be
 `/usr/local/Cellar/mysql@5.6/5.6.34/my.cnf` but if you can't find it try `sudo find -name my.cnf -print`) 
 and add the following lines:
 ```
