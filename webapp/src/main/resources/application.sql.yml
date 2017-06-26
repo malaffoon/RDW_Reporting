@@ -355,8 +355,9 @@ sql:
         ssid,
         first_name,
         last_or_surname
-      from student
-      where ssid=:ssid
+      from student s
+      where s.ssid=:ssid
+       and exists (select 1 from exam e where e.student_id = s.id)
 
   district:
     findAllIds: >-
