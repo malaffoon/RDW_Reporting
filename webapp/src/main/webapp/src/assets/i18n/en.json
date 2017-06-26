@@ -95,7 +95,7 @@
             "title": "Student Results",
             "empty-message" : "No results found by selected sessions and advanced filters.",
             "cols": {
-              "name": "Name",
+              "name": "Student",
               "date": "Date",
               "session": "Session",
               "grade": "Enrolled Grade",
