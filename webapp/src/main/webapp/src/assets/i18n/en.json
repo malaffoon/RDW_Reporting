@@ -71,7 +71,7 @@
           }
         },
         "selected-assessments-title": "Selected Assessments",
-        "selected-assessments-instruct": "Click an item to remove it from the list",
+        "selected-assessments-instruct": "Click an assessment to remove it from the list",
         "select-assessments": {
           "instruct": "Click an assessment to add or remove it from your list of selections above."
         },
