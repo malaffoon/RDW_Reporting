@@ -1,42 +1,33 @@
-<form>
-  <div class="form-group">
-    <div class="flex-children">
-      <div class="flex-child grow">
-        <label for="school-name-input">
-          {{'labels.school-grade.school-name.label' | translate}}
-          <span *ngIf="typeaheadLoading===true">
-            <i class="glyphicon glyphicon-refresh ng-hide" style=""></i>
-          </span>
-        </label>
-        <input type="text"
-               class="form-control"
-               id="school-name-input"
-               placeholder="Start typing the school name"
-               name="school-name-input"
-               autocomplete="off"
-               [(ngModel)]="asyncSelected"
-               [typeahead]="findSchools"
-               (typeaheadLoading)="changeTypeaheadLoading($event)"
-               (typeaheadNoResults)="changeTypeaheadNoResults($event)"
-               (typeaheadOnSelect)="typeaheadOnSelect($event)"
-               [typeaheadOptionField]="'name'">
-      </div>
-      <div class="flex-child">
-        <label for="grade-select">{{'labels.grade' | translate}}</label>
-        <select name="grade-select" [(ngModel)]="selectedGrade" id="grade-select" class="form-control" [disabled]="availableGrades.length == 0">
-          <option disabled [ngValue]="selectUndefinedOptionValue">{{'prompt.select' | translate}}</option>
-          <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay}}</option>
-        </select>
-      </div>
-      <div class="flex-child">
-        <button type="submit" class="btn btn-primary mt-md" (click)="performSearch()">{{'prompt.search' | translate}}</button>
+<form [formGroup]="searchForm" (ngSubmit)="performSearch()" class="form-group">
+  <div class="flex-children">
+    <div class="flex-child grow">
+      <label>
+        {{'labels.school-grade.school-name.label' | translate}}
+        <span *ngIf="typeaheadLoading===true">
+          <i class="glyphicon glyphicon-refresh ng-hide" style=""></i>
+        </span>
+      </label>
+      <div>
+        <p-dropdown [options]="availableSchools"
+                    formControlName="school"
+                    [filter]="true"
+                    filterBy="label"
+                    placeholder="{{'prompt.select' | translate}}">
+        </p-dropdown>
       </div>
     </div>
-    <div *ngIf="typeaheadNoResults===true" class="" style="">
-      <i class="glyphicon glyphicon-remove"></i> {{'messages.no-results-found' | translate}}
+    <div class="flex-child">
+      <label for="grade-select">{{'labels.grade' | translate}}</label>
+      <select name="grade" formControlName="grade" id="grade-select" class="form-control" placeholder="Select">
+        <option disabled [ngValue]="selectNullOptionValue">{{'prompt.select' | translate}}</option>
+        <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay:'short'}}</option>
+      </select>
     </div>
-    <div *ngIf="noGradesAvailable===true" class="" style="">
-      <i class="glyphicon glyphicon-remove"></i> {{'labels.school-grade.messages.no-grades-available' | translate}}
+    <div class="flex-child">
+      <button type="submit" [disabled]="searchForm.invalid || gradesAreUnavailable" class="btn btn-primary mt-md">{{'prompt.search' | translate}}</button>
     </div>
+  </div>
+  <div *ngIf="gradesAreUnavailable">
+    <i class="glyphicon glyphicon-remove"></i> {{'labels.school-grade.messages.no-grades-available' | translate}}
   </div>
 </form>

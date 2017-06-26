@@ -1,11 +1,9 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "../shared/common.module";
 import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule } from "@angular/forms";
-import { DataTableModule, SharedModule } from "primeng/primeng";
+import { ReactiveFormsModule } from "@angular/forms";
+import { SharedModule, DropdownModule } from "primeng/primeng";
 import { SchoolGradeComponent } from "./school-grade.component";
-import { TypeaheadModule } from "ngx-bootstrap";
 import { SchoolService } from "./school.service";
 
 /**
@@ -19,11 +17,9 @@ import { SchoolService } from "./school.service";
   imports: [
     CommonModule,
     BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    DataTableModule,
-    SharedModule,
-    TypeaheadModule
+    ReactiveFormsModule,
+    DropdownModule,
+    SharedModule
   ],
   exports: [ SchoolGradeComponent ],
   providers: [ SchoolService ]

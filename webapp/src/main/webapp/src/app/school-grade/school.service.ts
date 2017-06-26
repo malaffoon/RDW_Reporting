@@ -22,9 +22,11 @@ export class SchoolService {
    * @param nameQuery                 The school name query
    * @returns {Observable<School[]>}  Observable of the matching schools
    */
-  findByName(nameQuery: string): Observable<School[]> {
+  getAvailableSchools(): Observable<School[]> {
+    // TODO: This should be coming from the user context.
+    // TODO: This is just a HACK until api portion is complete.
     let params = new URLSearchParams();
-    params.set('name', nameQuery);
+    params.set('name', '%');
 
     return this.dataService
       .get('/schools', { search: params })

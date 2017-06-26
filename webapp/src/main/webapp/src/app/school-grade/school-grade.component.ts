@@ -1,10 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
 import { School } from "./school.model";
 import { SchoolService } from "./school.service";
-import { TypeaheadMatch } from "ngx-bootstrap";
 import { isNullOrUndefined } from "util";
 import { Grade } from "./grade.model";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 /**
  * This component is responsible for displaying a search widget allowing
@@ -15,73 +14,85 @@ import { Grade } from "./grade.model";
   templateUrl: './school-grade.component.html'
 })
 export class SchoolGradeComponent implements OnInit {
+  searchForm: FormGroup;
+  selectNullOptionValue: any = null;
 
-  asyncSelected: string;
-  typeaheadLoading: boolean;
-  typeaheadNoResults: boolean;
+  availableGrades: Grade[] = [];
+  availableSchools: any[] = [];
 
-  availableGrades: Grade[];
-  findSchools: Observable<School[]>;
-  noGradesAvailable: boolean;
-  selectUndefinedOptionValue:any;
-
-  selectedSchool: School;
-  selectedGrade: Grade;
+  gradesAreUnavailable: boolean = false;
 
   constructor(private schoolService: SchoolService) {
     this.availableGrades = [];
   }
 
   ngOnInit() {
-    // Declare a data-providing Observable used by the typeahead widget
-    // to search for schools.
-    this.findSchools = Observable
-      .create((observer: any) => {
-        observer.next(this.asyncSelected)
-      })
-      .debounceTime(300)
-      .mergeMap((input: string) => {
-        console.log("Looking up: " + input);
-        return input.length < 3
-          ? []
-          : this.schoolService.findByName(input)
-      });
+    this.searchForm = new FormGroup({
+      school: new FormControl(null, Validators.required),
+      grade: new FormControl({ value: this.selectNullOptionValue, disabled: true }, Validators.required)
+    });
+
+    this.searchForm.controls[ "school" ].valueChanges.subscribe(school => this.schoolChanged(school));
+    this.loadAvailableSchools();
   }
 
-  /**
-   * @param loading True if the typeahead widget is currently loading results
-   */
-  changeTypeaheadLoading(loading: boolean): void {
-    this.typeaheadLoading = loading;
-  }
-
-  /**
-   * @param noResults True if the typeahead widget has found no results
-   */
-  changeTypeaheadNoResults(noResults: boolean): void {
-    this.typeaheadNoResults = noResults;
-  }
-
-  /**
-   * @param match The user-selected matching school
-   */
-  typeaheadOnSelect(match: TypeaheadMatch): void {
-    this.selectedSchool = match.item;
-    this.noGradesAvailable = false;
-    if (isNullOrUndefined(this.selectedSchool)) {
-      this.availableGrades = [];
-      return;
+  performSearch() {
+    if(this.searchForm.valid) {
+      console.log(`Navigate to some determined route such as: results?schoolId=${this.schoolControl.value.id}&grade=${this.gradeControl.value.id}`);
     }
+  }
 
-    // On school selection, find the grades with available assessments
-    this.schoolService.findGradesWithAssessmentsForSchool(this.selectedSchool)
+  private get gradeControl() {
+    return this.searchForm.controls[ "grade" ];
+  }
+
+  private get schoolControl() {
+    return this.searchForm.controls[ "school" ];
+  }
+
+  private schoolChanged(school: School) {
+    this.availableGrades = [];
+    this.gradesAreUnavailable = false;
+
+    this.gradeControl.disable();
+
+    if (!isNullOrUndefined(school)) {
+      this.loadAvailableGrades(school);
+    }
+  }
+
+  private loadAvailableSchools() {
+    // TODO: This should come from the user context.
+    this.schoolService.getAvailableSchools().subscribe((schools) => {
+      this.availableSchools = schools.map(school => {
+        return {
+          label: school.name,
+          value: school
+        };
+      });
+
+      if(this.availableSchools.length == 1){
+        this.schoolControl.setValue(this.availableSchools[0]);
+      }
+    });
+  }
+
+  private loadAvailableGrades(school: School) {
+    this.schoolService
+      .findGradesWithAssessmentsForSchool(school)
       .subscribe(grades => {
         this.availableGrades = grades;
-        this.noGradesAvailable = this.availableGrades.length == 0;
-      });
-  }
+        this.gradesAreUnavailable = grades.length == 0;
 
-  performSearch(){
-    console.log(`Navigate to some deterimined route such as: search?schoolId=${this.selectedSchool.id}&grade=${this.selectedGrade.id}`);
+        if (!this.gradesAreUnavailable)
+          this.gradeControl.enable();
+
+        if (grades.length == 1) {
+          this.gradeControl.setValue(grades[ 0 ]);
+        }
+        else {
+          this.gradeControl.setValue(this.selectNullOptionValue);
+        }
+      });
   }
 }

@@ -16,64 +16,84 @@
     "grade": "Grade",
     "grades": {
       "KG": {
-        "name": "Kindergarten"
+        "name": "Kindergarten",
+        "short": "KG"
       },
       "01": {
-        "name": "First grade"
+        "name": "First grade",
+        "short": "1"
       },
       "02": {
-        "name": "Second grade"
+        "name": "Second grade",
+        "short": "2"
       },
       "03": {
-        "name": "Third grade"
+        "name": "Third grade",
+        "short": "3"
       },
       "04": {
-        "name": "Fourth grade"
+        "name": "Fourth grade",
+        "short": "4"
       },
       "05": {
-        "name": "Fifth grade"
+        "name": "Fifth grade",
+        "short": "5"
       },
       "06": {
-        "name": "Sixth grade"
+        "name": "Sixth grade",
+        "short": "6"
       },
       "07": {
-        "name": "Seventh grade"
+        "name": "Seventh grade",
+        "short": "7"
       },
       "08": {
-        "name": "Eigth grade"
+        "name": "Eigth grade",
+        "short": "8"
       },
       "09": {
-        "name": "Ninth grade"
+        "name": "Ninth grade",
+        "short": "9"
       },
       "10": {
-        "name": "Tenth grade"
+        "name": "Tenth grade",
+        "short": "10"
       },
       "11": {
-        "name": "Eleventh grade"
+        "name": "Eleventh grade",
+        "short": "11"
       },
       "12": {
-        "name": "Twelfth grade"
+        "name": "Twelfth grade",
+        "short": "12"
       },
       "13": {
-        "name": "Grade 13"
+        "name": "Grade 13",
+        "short": "13"
       },
       "PS": {
-        "name": "Postsecondary"
+        "name": "Postsecondary",
+        "short": "PS"
       },
       "UG": {
-        "name": "Ungraded"
+        "name": "Ungraded",
+        "short": "UG"
       },
       "IT": {
-        "name": "Infant/toddler"
+        "name": "Infant/toddler",
+        "short": "IT"
       },
       "PR": {
-        "name": "Preschool"
+        "name": "Preschool",
+        "short": "PR"
       },
       "PK": {
-        "name": "Prekindergarten"
+        "name": "Prekindergarten",
+        "short": "PK"
       },
       "TK": {
-        "name": "Transitional Kindergarten"
+        "name": "Transitional Kindergarten",
+        "short": "TK"
       }
     },
     "groups": {
@@ -154,6 +174,18 @@
                 "performance": "Achievement Level"
               }
             }
+          },
+          "items": {
+            "title":"Items By Points Earned",
+            "cols": {
+              "number": "Item #",
+              "claim": "Claim/Target",
+              "difficulty": "Item Difficulty",
+              "standard": "Standard",
+              "full-credit": "Full Credit",
+              "x-points": "{{id}} Points"
+            },
+            "target": "Target {{target}}"
           }
         }
       }
