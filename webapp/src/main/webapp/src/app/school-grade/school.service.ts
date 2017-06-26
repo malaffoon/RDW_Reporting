@@ -19,7 +19,6 @@ export class SchoolService {
    * Find a collection of schools by name.
    * NOTE: Result set size is limited by the server.
    *
-   * @param nameQuery                 The school name query
    * @returns {Observable<School[]>}  Observable of the matching schools
    */
   getAvailableSchools(): Observable<School[]> {
