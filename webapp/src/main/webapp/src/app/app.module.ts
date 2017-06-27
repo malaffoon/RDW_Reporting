@@ -7,7 +7,7 @@ import { environment } from "../environments/environment";
 import { standaloneProviders } from "./standalone/standalone.service";
 import { HomeComponent } from "./home/home.component";
 import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
-import { BsDropdownModule, TabsModule, ModalModule } from "ngx-bootstrap";
+import { BsDropdownModule } from "ngx-bootstrap";
 import { CommonModule } from "./shared/common.module";
 import { GroupsModule } from "./groups/groups.module";
 import { UserModule } from "./user/user.module";
@@ -30,9 +30,7 @@ import { SchoolGradeModule } from "./school-grade/school-grade.module";
     UserModule,
     FormsModule,
     HttpModule,
-    BsDropdownModule.forRoot(),
-    TabsModule.forRoot(),
-    ModalModule.forRoot()
+    BsDropdownModule.forRoot()
   ],
   providers: [
     ...(environment.standalone ? standaloneProviders : [])
