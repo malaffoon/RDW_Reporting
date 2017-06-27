@@ -109,3 +109,93 @@
   &:first-child { border-top-left-radius: 0px; }
   &:last-child { border-top-right-radius: 0px; }
 }
+
+.ui-dropdown{
+  width: 100% !important;
+}
+
+.ui-dropdown-filter-container {
+  width: 100% !important;
+}
+
+// ------------------------------
+// Primeng Data Table Overrides
+// ------------------------------
+// TODO: Bring this back into the sbac-ui-kit.
+@border-radius-base:        5px;
+@border-radius-large:       9px;
+@border-radius-small:       3px;
+
+//** Border color for table and cell borders.
+@table-border-color:            @gray-light;
+
+// These have been brought as is from sbac-ui-kit,
+// but including parent of .ui-datatable-tablewrapper
+.ui-datatable-tablewrapper > .table {
+  border-collapse: separate;
+  border-radius: @border-radius-base;
+  > thead,
+  > tfoot {
+    > tr {
+      > th {
+        background-color: @gray-lighter;
+        border-left-style:none;
+        border-right-style:none;
+      }
+    }
+  }
+  > thead > tr > th {
+    &:first-child {
+      border-top-left-radius: @border-radius-base;
+    }
+    &:last-child {
+      border-top-right-radius: @border-radius-base;
+    }
+  }
+  > tbody > tr {
+    background-color: darken(@gray-lightest, 2%);
+    border-style: none;
+  }
+  // Normally this would be the TFOOT rounding class
+  // See note above
+  tr:last-child > td {
+    &:first-child {
+      border-bottom-left-radius: @border-radius-base;
+    }
+    &:last-child {
+      border-bottom-right-radius: @border-radius-base;
+    }
+  }
+}
+// adding an outside border to .table
+.ui-datatable-tablewrapper > tr {
+  th {
+    border-top: 1px solid @table-border-color !important;
+  }
+  th,
+  td {
+    &:first-child { border-left: 1px solid @table-border-color; }
+    &:last-child { border-right: 1px solid @table-border-color; }
+  }
+  // Normally this would be the TFOOT rounding class
+  // See note above
+  &:last-child td {
+    border-bottom: 1px solid @table-border-color;
+  }
+}
+
+// Remove left and right borders.
+.ui-datatable .ui-datatable-thead>tr>th, .ui-datatable .ui-datatable-tfoot>tr>td, .ui-datatable .ui-datatable-data>tr>td {
+  border-left-style: none;
+  border-right-style: none;
+
+  border-top: 1px solid @table-border-color;
+  border-bottom: none;
+}
+
+// Remove coloring from a selected column.
+body .ui-datatable thead th.ui-state-active {
+  background-color: @gray-lighter;
+  border: @table-border-color;
+  color: #373a3c;
+}

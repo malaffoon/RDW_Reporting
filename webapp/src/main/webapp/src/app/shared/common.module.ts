@@ -4,7 +4,7 @@ import { SubjectPipe } from "./subject.pipe";
 import { SchoolYearPipe } from "./schoolYear.pipe";
 import { SearchPipe } from "../search.pipe";
 import { HttpModule, Http } from "@angular/http";
-import { DataService } from "./data.service";
+import { DataService } from "./data/data.service";
 import { CachingDataService } from "./cachingData.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -15,6 +15,7 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
 import { GradeService } from "./grade.service";
+import { GradeDisplayPipe } from "./grade-display.pipe";
 
 export function createTranslateLoader(http: Http) {
   // return new TranslateHttpLoader(http, '/api/translations/', '');
@@ -25,6 +26,7 @@ export function createTranslateLoader(http: Http) {
 @NgModule({
   declarations: [
     PadStartPipe,
+    GradeDisplayPipe,
     SubjectPipe,
     SchoolYearPipe,
     SearchPipe,
@@ -46,6 +48,7 @@ export function createTranslateLoader(http: Http) {
   ],
   exports: [
     PadStartPipe,
+    GradeDisplayPipe,
     RemoveCommaPipe,
     SubjectPipe,
     SchoolYearPipe,

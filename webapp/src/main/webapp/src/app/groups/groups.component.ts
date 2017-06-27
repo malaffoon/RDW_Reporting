@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
@@ -6,16 +6,18 @@ import { ActivatedRoute } from "@angular/router";
   templateUrl: 'groups.component.html'
 })
 export class GroupsComponent implements OnInit {
-
+  /**
+   * The array of groups that a user has access to.
+   */
+  @Input()
   groups = [];
 
   filteredGroups = [];
   searchTerm : string;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor() {}
 
   ngOnInit() {
-    this.groups = this.route.snapshot.data["groups"];
     this.filteredGroups = this.groups;
   }
 

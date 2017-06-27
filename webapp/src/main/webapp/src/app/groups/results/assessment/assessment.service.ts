@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { URLSearchParams } from "@angular/http";
-import { DataService } from "../../../shared/data.service";
+import { DataService } from "../../../shared/data/data.service";
 import { AssessmentExamMapper } from "./assessment-exam.mapper";
 import { ExamFilterOptionsService } from "../exam-filters/exam-filter-options.service";
 

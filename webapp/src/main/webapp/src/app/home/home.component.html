@@ -25,39 +25,18 @@
       </div>
 
       <!-- School & Grade Search -->
-      <div class="school-and-grade-search-container well">
-        <form>
-          <div class="form-group">
-            <div class="flex-children">
-              <div class="flex-child grow">
-                <label for="school-name-input">{{'labels.homepage.search-school-grade.school-label' | translate}}</label>
-                <input type="text" class="form-control" id="school-name-input" placeholder="{{'labels.homepage.search-school-grade.school-placeholder' | translate }}">
-              </div>
-              <div class="flex-child">
-                <label for="grade-select">{{'labels.homepage.search-school-grade.grade-label' | translate}}</label>
-                <select name="grade-select" id="grade-select" class="form-control">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="High School">High School</option>
-                </select>
-              </div>
-              <div class="flex-child">
-                <button type="submit" class="btn btn-primary mt-md">{{'buttons.search' | translate}}</button>
-              </div>
-            </div>
+      <div *sbAuthorize="['INDIVIDUAL_PII_READ']">
+        <div class="school-and-grade-search-container well">
+          <div >
+            <school-grade [availableSchools]="user.schools"></school-grade>
           </div>
-        </form>
+        </div>
       </div>
 
       <!-- My Groups Search -->
-      <div class="my-groups-search-container well">
-        <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
-          <!--TODO:  Implement authorize of PII or PII Group role. -->
-          <groups></groups>
+      <div *sbAuthorize="['GROUP_PII_READ']">
+        <div class="my-groups-search-container well">
+          <groups [groups]="user.groups"></groups>
         </div>
       </div>
     </div>

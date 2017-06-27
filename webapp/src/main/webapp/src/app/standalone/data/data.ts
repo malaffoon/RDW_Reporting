@@ -15,11 +15,7 @@ import {AssessmentSubjectType} from "../../shared/enum/assessment-subject-type.e
 
 let commonVendorId = '2B3C34BF-064C-462A-93EA-41E9E3EB8333';
 
-export const user = {
-  firstName: "Terry",
-  lastName: "McManus",
-  permissions: [ "INDIVIDUAL_PII_READ", "GROUP_READ" ]
-};
+
 
 export const exam_filter_options = {
   "schoolYears": [ 2017, 2016, 2015, 2014, 2013 ],
@@ -474,6 +470,27 @@ export const groups = [
     students: students
   })
 });
+
+export const schools = [
+  { id: 1, name: 'Vista Elementary' },
+  { id: 2, name: 'Coral Park Elementary' },
+  { id: 3, name: 'Washington Elementary' },
+  { id: 4, name: 'Lincoln Elementary' },
+];
+
+export const user = {
+  firstName: "Terry",
+  lastName: "McManus",
+  permissions: [ "INDIVIDUAL_PII_READ", "GROUP_PII_READ" ],
+  groups: groups,
+  schools: schools
+};
+
+export const grades = [
+  { id: 3, code: '03'},
+  { id: 4, code: '04'},
+  { id: 5, code: '05'}
+];
 
 sortAscOn(groups, group => group.name);
 

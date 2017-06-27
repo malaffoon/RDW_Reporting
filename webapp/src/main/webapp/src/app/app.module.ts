@@ -13,6 +13,7 @@ import { GroupsModule } from "./groups/groups.module";
 import { UserModule } from "./user/user.module";
 import { routes } from "./app.routes";
 import { RouterModule } from "@angular/router";
+import { SchoolGradeModule } from "./school-grade/school-grade.module";
 import { PopoverModule } from "ngx-bootstrap/popover";
 
 @NgModule({
@@ -25,6 +26,7 @@ import { PopoverModule } from "ngx-bootstrap/popover";
     BrowserModule,
     CommonModule,
     GroupsModule,
+    SchoolGradeModule,
     RouterModule.forRoot(routes),
     UserModule,
     FormsModule,

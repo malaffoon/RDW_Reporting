@@ -1,5 +1,10 @@
 import { Injectable } from "@angular/core";
-import { User } from "./user.model";
+import { User } from "./model/user.model";
+import { School } from "./model/school.model";
+import { Group } from "./model/group.model";
+import { ordering } from "@kourge/ordering";
+import { byString } from "@kourge/ordering/comparator";
+import { isNullOrUndefined } from "util";
 
 @Injectable()
 export class UserMapper {
@@ -13,6 +18,59 @@ export class UserMapper {
     apiModel.permissions.forEach(permission => {
       uiModel.permissions.push(permission);
     });
+
+    uiModel.schools = this.mapSchoolsFromApi(apiModel.schools);
+    uiModel.groups = this.mapGroupsFromApi(apiModel.groups);
+
+    return uiModel;
+  }
+
+  private mapSchoolsFromApi(schools: any[]): School[] {
+    return isNullOrUndefined(schools)
+      ? []
+      : schools
+        .filter(school => this.isSchoolValid(school))
+        .map(school => this.mapSchoolFromApi(school))
+        .sort(ordering(byString).on<School>(school => school.name).compare);
+  }
+
+  private isSchoolValid(school: any) {
+    return !isNullOrUndefined(school)
+      && !isNullOrUndefined(school.id)
+      && !isNullOrUndefined(school.name);
+  }
+
+  private mapSchoolFromApi(apiModel: any): School {
+    let uiModel = new School();
+
+    uiModel.id = apiModel.id;
+    uiModel.name = apiModel.name;
+
+    return uiModel;
+  }
+
+  private mapGroupsFromApi(groups: any[]): Group[] {
+    return isNullOrUndefined(groups)
+      ? []
+      : groups
+        .filter(group => this.isGroupValid(group))
+        .map(group => this.mapGroupFromApi(group))
+        .sort(ordering(byString).on<Group>(group => group.name).compare);
+  }
+
+  private isGroupValid(group: any) {
+    return !isNullOrUndefined(group)
+      && !isNullOrUndefined(group.id)
+      && !isNullOrUndefined(group.name);
+  }
+
+  private mapGroupFromApi(apiModel: any): Group {
+    let uiModel = new Group();
+
+    uiModel.id = apiModel.id;
+    uiModel.name = apiModel.name;
+    uiModel.schoolName = apiModel.schoolName;
+    uiModel.subjectId = apiModel.subjectId;
 
     return uiModel;
   }

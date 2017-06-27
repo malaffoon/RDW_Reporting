@@ -1,14 +1,14 @@
 import { HomeComponent } from "./home/home.component";
 import { Routes } from "@angular/router";
 import { GroupResultsComponent } from "./groups/results/group-results.component";
-import { GroupsResolve } from "./groups/groups.resolve";
 import { AssessmentsResolve } from "./groups/results/assessments.resolve";
 import { AuthorizeCanActivate } from "./user/authorize.can-activate";
+import { UserResolve } from "./user/user.resolve";
 
 export const routes: Routes = [
   {
     path: '',
-    resolve: { groups: GroupsResolve },
+    resolve: { user: UserResolve },
     children: [
       { path: '', pathMatch: 'full', component: HomeComponent },
       {
