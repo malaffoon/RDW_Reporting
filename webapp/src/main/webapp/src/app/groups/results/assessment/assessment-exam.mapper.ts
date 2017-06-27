@@ -99,10 +99,10 @@ export class AssessmentExamMapper {
     uiModel.level = apiModel.scaleScore.level;
     uiModel.standardError = apiModel.scaleScore.standardError;
 
-    uiModel.administrativeCondition = apiModel.administrativeConditionId;
-    uiModel.completeness = apiModel.completenessId;
+    uiModel.administrativeCondition = apiModel.administrativeConditionCode;
+    uiModel.completeness = apiModel.completenessCode;
 
-    uiModel.gender = apiModel.student.genderId;
+    uiModel.gender = apiModel.student.genderCode;
     uiModel.migrantStatus = apiModel.studentContext.migrantStatus;
     uiModel.plan504 = apiModel.studentContext.section504;
     uiModel.iep = apiModel.studentContext.iep;
