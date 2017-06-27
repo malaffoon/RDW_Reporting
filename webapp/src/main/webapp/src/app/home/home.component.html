@@ -34,7 +34,7 @@
       </div>
 
       <!-- My Groups Search -->
-      <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
+      <div *sbAuthorize="['GROUP_PII_READ']">
         <div class="my-groups-search-container well">
           <groups [groups]="user.groups"></groups>
         </div>

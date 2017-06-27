@@ -1,10 +1,21 @@
-import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend} from "@angular/http";
-import {MockBackend} from "@angular/http/testing";
+import { Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod, XHRBackend } from "@angular/http";
+import { MockBackend } from "@angular/http/testing";
 import {
-  groups, mock_group, mock_item, exams_of_group, mock_student, exams_of_student, iab_items, students,
-  mock_rubrics, mock_schoolyears, assessments, DEPRECATED_exams_of_student, user, groupAssessments, exam_filter_options
+  groups,
+  mock_group,
+  mock_item,
+  exams_of_group,
+  mock_student,
+  iab_items,
+  students,
+  mock_rubrics,
+  mock_schoolyears,
+  assessments,
+  DEPRECATED_exams_of_student,
+  user,
+  groupAssessments,
+  exam_filter_options, grades
 } from "./data/data";
-import { tick, fakeAsync } from "@angular/core/testing";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
 
@@ -24,6 +35,8 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = user;
     } else if (requestSignature == `GET /api/examFilterOptions`) {
       body = exam_filter_options;
+    } else if (new RegExp(`GET /api/schools/\\d+/assessmentGrades`, 'g').test(requestSignature)) {
+      body = grades;
     } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/report`, 'g').test(requestSignature)) {
       body = {
         //report
