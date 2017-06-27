@@ -2,21 +2,24 @@ import { ObservableObject } from "../../../shared/observable-object.model";
 
 export class FilterBy extends ObservableObject {
   // Test
-  private _offGradeAssessment: boolean;
+  private _offGradeAssessment: boolean = false;
 
   // Status
-  private _administration: number = -1;
-  private _summativeStatus: number = -1;
-  private _completion: number = -1;
+  private _administration: any = -1;
+  private _summativeStatus: any = -1;
+  private _completion: any = -1;
 
   //Student
-  private _gender: number = -1;
+  private _gender: any = -1;
   private _migrantStatus: number = -1;
   private _plan504: number = -1;
   private _iep: number = -1;
   private _economicDisadvantage: number = -1;
   private _limitedEnglishProficiency: number = -1;
   private _ethnicities: boolean[] = [ true ];
+
+  private _filters = ['offGradeAssessment', 'administration', 'summativeStatus', 'completion', 'gender', 'migrantStatus',
+                      'plan504', 'iep', 'economicDisadvantage', 'limitedEnglishProficiency', 'ethnicities'];
 
   get filteredEthnicities() {
     let ethnicities = [];
@@ -33,10 +36,7 @@ export class FilterBy extends ObservableObject {
   get all() {
     let all = [];
 
-    for (let i in this) {
-      if (this.hasOwnProperty(i)) {
-        let property = i.substring(1); // trim leading underscore
-
+    for (let property of this._filters) {
         if (property == "ethnicities") {
           let filteredEthnicities = this.filteredEthnicities;
           for (let i of filteredEthnicities) {
@@ -46,7 +46,6 @@ export class FilterBy extends ObservableObject {
         else if (this.isFilterEnabled(property)) {
           all.push(property);
         }
-      }
     }
 
     return all;
@@ -70,38 +69,38 @@ export class FilterBy extends ObservableObject {
     this.notifyChange('offGradeAssessment');
   }
 
-  get administration(): number {
+  get administration(): any {
     return this._administration;
   }
 
-  set administration(value: number) {
+  set administration(value: any) {
     this._administration = value;
     this.notifyChange('administration');
   }
 
-  get summativeStatus(): number {
+  get summativeStatus(): any {
     return this._summativeStatus;
   }
 
-  set summativeStatus(value: number) {
+  set summativeStatus(value: any) {
     this._summativeStatus = value;
     this.notifyChange('summativeStatus');
   }
 
-  get completion(): number {
+  get completion(): any {
     return this._completion;
   }
 
-  set completion(value: number) {
+  set completion(value: any) {
     this._completion = value;
     this.notifyChange('completion');
   }
 
-  get gender(): number {
+  get gender(): any {
     return this._gender;
   }
 
-  set gender(value: number) {
+  set gender(value: any) {
     this._gender = value;
     this.notifyChange('gender');
   }
@@ -155,6 +154,6 @@ export class FilterBy extends ObservableObject {
     if(property == "offGradeAssessment" && this[ property ] === false)
       return false;
     else
-      return this[property] > -1;
+      return this[property] != -1;
   }
 }
