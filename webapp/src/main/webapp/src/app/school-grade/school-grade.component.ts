@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { School } from "./school.model";
+import { Component, OnInit, Input } from "@angular/core";
+import { School } from "../user/model/school.model";
 import { SchoolService } from "./school.service";
 import { isNullOrUndefined } from "util";
 import { Grade } from "./grade.model";
@@ -14,13 +14,36 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
   templateUrl: './school-grade.component.html'
 })
 export class SchoolGradeComponent implements OnInit {
+  /**
+   * The array of available schools a user has
+   * access to.
+   * @type {Array}
+   */
+  @Input()
+  set availableSchools(schools: School[]) {
+    this._availableSchools = schools.map(school => {
+      return {
+        label: school.name,
+        value: school
+      };
+    });
+
+    if(this._availableSchools.length == 1){
+      this.schoolControl.setValue(this._availableSchools[0]);
+    }
+  }
+
+  get availableSchools() {
+    return this._availableSchools;
+  }
+
   searchForm: FormGroup;
   selectNullOptionValue: any = null;
 
   availableGrades: Grade[] = [];
-  availableSchools: any[] = [];
-
   gradesAreUnavailable: boolean = false;
+
+  private _availableSchools: any[] = [];
 
   constructor(private schoolService: SchoolService) {
     this.availableGrades = [];
@@ -33,7 +56,6 @@ export class SchoolGradeComponent implements OnInit {
     });
 
     this.searchForm.controls[ "school" ].valueChanges.subscribe(school => this.schoolChanged(school));
-    this.loadAvailableSchools();
   }
 
   performSearch() {
@@ -59,22 +81,6 @@ export class SchoolGradeComponent implements OnInit {
     if (!isNullOrUndefined(school)) {
       this.loadAvailableGrades(school);
     }
-  }
-
-  private loadAvailableSchools() {
-    // TODO: This should come from the user context.
-    this.schoolService.getAvailableSchools().subscribe((schools) => {
-      this.availableSchools = schools.map(school => {
-        return {
-          label: school.name,
-          value: school
-        };
-      });
-
-      if(this.availableSchools.length == 1){
-        this.schoolControl.setValue(this.availableSchools[0]);
-      }
-    });
   }
 
   private loadAvailableGrades(school: School) {

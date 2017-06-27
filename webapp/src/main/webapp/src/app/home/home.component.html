@@ -28,7 +28,7 @@
       <div *sbAuthorize="['INDIVIDUAL_PII_READ']">
         <div class="school-and-grade-search-container well">
           <div >
-            <school-grade></school-grade>
+            <school-grade [availableSchools]="user.schools"></school-grade>
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@
       <!-- My Groups Search -->
       <div *sbAuthorize="['GROUP_PII_READ','INDIVIDUAL_PII_READ']">
         <div class="my-groups-search-container well">
-          <groups></groups>
+          <groups [groups]="user.groups"></groups>
         </div>
       </div>
     </div>

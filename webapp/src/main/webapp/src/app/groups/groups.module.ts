@@ -3,7 +3,6 @@ import { CommonModule } from "../shared/common.module";
 import { GroupsComponent } from "./groups.component";
 import { AssessmentService } from "./results/assessment/assessment.service";
 import { AssessmentsResolve } from "./results/assessments.resolve";
-import { GroupsResolve } from "./groups.resolve";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
@@ -36,7 +35,6 @@ import { SelectAssessmentsComponent } from "./results/select-assessments/select-
   ],
   exports: [ GroupsComponent ],
   providers: [
-    GroupsResolve,
     AssessmentsResolve,
     AssessmentService,
     AssessmentExamMapper,

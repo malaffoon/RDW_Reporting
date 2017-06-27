@@ -126,7 +126,7 @@ export class GroupResultsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groups = this.route.snapshot.data[ "groups" ];
+    this.groups = this.route.snapshot.data[ "user" ].groups;
     this._currentGroup = this.groups.find(x => x.id == this.route.snapshot.params[ "groupId" ]);
     this.examFilterService.getFilterDefinitions().forEach(filter => {
       this.filters[ filter.name ] = filter;

@@ -149,15 +149,17 @@ describe('GroupResultsComponent', () => {
 function getRouteSnapshot() {
   return {
     data: {
-      groups: [
-        {
-          id: 2,
-          name: "Anderson's 4th grade."
-        }
-      ],
-      assessments: [ {
-        name: "Measurements & Data"
-      } ]
+      user: {
+        groups: [
+          {
+            id: 2,
+            name: "Anderson's 4th grade."
+          }
+        ],
+        assessments: [ {
+          name: "Measurements & Data"
+        } ]
+      }
     },
     params: {
       groupId: 2

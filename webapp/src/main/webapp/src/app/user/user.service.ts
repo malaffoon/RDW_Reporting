@@ -2,16 +2,31 @@ import { Injectable } from "@angular/core";
 import { UserMapper } from "./user.mapper";
 import { CachingDataService } from "../shared/cachingData.service";
 import { Observable } from "rxjs";
+import { User } from "./model/user.model";
+import { isNullOrUndefined } from "util";
 
 @Injectable()
 export class UserService {
   constructor(private _mapper: UserMapper, private _dataService: CachingDataService) {
   }
 
+  private currentUser: User;
+  private currentUserObservable: Observable<User>;
+
   getCurrentUser() {
-    return this._dataService
-      .get("/user")
-      .map(x => this._mapper.mapFromApi(x));
+    if(!isNullOrUndefined(this.currentUser))
+      return Observable.of(this.currentUser);
+
+    if(isNullOrUndefined(this.currentUserObservable)) {
+      this.currentUserObservable = this._dataService
+        .get("/user")
+        .share()
+        .map(x => this._mapper.mapFromApi(x));
+
+      this.currentUserObservable.subscribe(user => this.currentUser = user);
+    }
+
+    return this.currentUserObservable;
   }
 
   doesCurrentUserHaveAtLeastOnePermission(permissions: string[]): Observable<boolean> {
