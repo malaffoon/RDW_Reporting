@@ -2,10 +2,11 @@ import { Injectable } from "@angular/core";
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { Observable } from "rxjs";
 import { UserService } from "./user.service";
+import { User } from "./model/user.model";
 
 @Injectable()
-export class UserResolve implements Resolve<any> {
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>|Promise<any>|any {
+export class UserResolve implements Resolve<User> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User>|Promise<User>|User {
     return this.service.getCurrentUser();
   }
 

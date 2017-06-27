@@ -4,7 +4,7 @@ import { isNullOrUndefined } from "util";
 import { Observable } from "rxjs";
 
 /**
- * This pipe is responsible for transforming a grade id number into a
+ * This pipe is responsible for transforming a grade codes into a
  * translated display value.
  */
 @Pipe({
@@ -24,7 +24,7 @@ export class GradeDisplayPipe implements PipeTransform {
    */
   transform(gradeCode: number, format: string): Observable<string> {
     if (isNullOrUndefined(format)) {
-      format = "name";
+      format = "short-name";
     }
 
     return this.translate.instant(`labels.grades.${gradeCode}.${format}`);

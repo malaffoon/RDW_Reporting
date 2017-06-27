@@ -15,9 +15,9 @@
     </div>
     <div class="flex-child">
       <label for="grade-select">{{'labels.grade' | translate}}</label>
-      <select name="grade" formControlName="grade" id="grade-select" class="form-control" placeholder="Select">
+      <select name="grade" formControlName="grade" id="grade-select" class="form-control">
         <option disabled [ngValue]="selectNullOptionValue">{{'prompt.select' | translate}}</option>
-        <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay:'short'}}</option>
+        <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay}}</option>
       </select>
     </div>
     <div class="flex-child">

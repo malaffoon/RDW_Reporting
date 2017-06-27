@@ -13,7 +13,7 @@ export class UserService {
   private currentUser: User;
   private currentUserObservable: Observable<User>;
 
-  getCurrentUser() {
+  getCurrentUser(): Observable<User> {
     if(!isNullOrUndefined(this.currentUser))
       return Observable.of(this.currentUser);
 

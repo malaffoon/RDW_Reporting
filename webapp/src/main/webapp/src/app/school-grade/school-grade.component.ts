@@ -55,7 +55,7 @@ export class SchoolGradeComponent implements OnInit {
       grade: new FormControl({ value: this.selectNullOptionValue, disabled: true }, Validators.required)
     });
 
-    this.searchForm.controls[ "school" ].valueChanges.subscribe(school => this.schoolChanged(school));
+    this.schoolControl.valueChanges.subscribe(school => this.schoolChanged(school));
   }
 
   performSearch() {

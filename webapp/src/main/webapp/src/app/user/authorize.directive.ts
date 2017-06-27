@@ -7,7 +7,7 @@ import { UserService } from "./user.service";
 
   @Input: an array of permissions in which a user must have at least one of to view the content.
 
-  Example usage: <div *sbAuthorize="['GROUP_READ', 'GROUP_UPDATE']"></div>
+  Example usage: <div *sbAuthorize="['GROUP_READ', 'GROUP_WRITE']"></div>
  */
 @Directive({ selector: '[sbAuthorize]' })
 export class AuthorizeDirective {

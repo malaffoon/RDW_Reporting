@@ -14,7 +14,7 @@
   "collapse": "Collapse",
   "select": "Select",
   "labels": {
-      "homepage": {
+    "homepage": {
       "title": "Access Assessment Results",
       "search-student-id": {
         "label": "Search by Student",
@@ -34,84 +34,84 @@
     "grade": "Grade",
     "grades": {
       "KG": {
-        "name": "Kindergarten",
-        "short": "KG"
+        "long-name": "Kindergarten",
+        "short-name": "KG"
       },
       "01": {
-        "name": "First grade",
-        "short": "1"
+        "long-name": "First grade",
+        "short-name": "1"
       },
       "02": {
-        "name": "Second grade",
-        "short": "2"
+        "long-name": "Second grade",
+        "short-name": "2"
       },
       "03": {
-        "name": "Third grade",
-        "short": "3"
+        "long-name": "Third grade",
+        "short-name": "3"
       },
       "04": {
-        "name": "Fourth grade",
-        "short": "4"
+        "long-name": "Fourth grade",
+        "short-name": "4"
       },
       "05": {
-        "name": "Fifth grade",
-        "short": "5"
+        "long-name": "Fifth grade",
+        "short-name": "5"
       },
       "06": {
-        "name": "Sixth grade",
-        "short": "6"
+        "long-name": "Sixth grade",
+        "short-name": "6"
       },
       "07": {
-        "name": "Seventh grade",
-        "short": "7"
+        "long-name": "Seventh grade",
+        "short-name": "7"
       },
       "08": {
-        "name": "Eigth grade",
-        "short": "8"
+        "long-name": "Eigth grade",
+        "short-name": "8"
       },
       "09": {
-        "name": "Ninth grade",
-        "short": "9"
+        "long-name": "Ninth grade",
+        "short-name": "9"
       },
       "10": {
-        "name": "Tenth grade",
-        "short": "10"
+        "long-name": "Tenth grade",
+        "short-name": "10"
       },
       "11": {
-        "name": "Eleventh grade",
-        "short": "11"
+        "long-name": "Eleventh grade",
+        "short-name": "11"
       },
       "12": {
-        "name": "Twelfth grade",
-        "short": "12"
+        "long-name": "Twelfth grade",
+        "short-name": "12"
       },
       "13": {
-        "name": "Grade 13",
-        "short": "13"
+        "long-name": "Grade 13",
+        "short-name": "13"
       },
       "PS": {
-        "name": "Postsecondary",
-        "short": "PS"
+        "long-name": "Postsecondary",
+        "short-name": "PS"
       },
       "UG": {
-        "name": "Ungraded",
-        "short": "UG"
+        "long-name": "Ungraded",
+        "short-name": "UG"
       },
       "IT": {
-        "name": "Infant/toddler",
-        "short": "IT"
+        "long-name": "Infant/toddler",
+        "short-name": "IT"
       },
       "PR": {
-        "name": "Preschool",
-        "short": "PR"
+        "long-name": "Preschool",
+        "short-name": "PR"
       },
       "PK": {
-        "name": "Prekindergarten",
-        "short": "PK"
+        "long-name": "Prekindergarten",
+        "short-name": "PK"
       },
       "TK": {
-        "name": "Transitional Kindergarten",
-        "short": "TK"
+        "long-name": "Transitional Kindergarten",
+        "short-name": "TK"
       }
     },
     "groups": {
@@ -256,14 +256,14 @@
   },
   "enum": {
     "administrative-condition": {
-      "Valid" : "Valid",
-      "SD" : "Standardized",
-      "NS" : "Non-Standardized",
-      "IN" : "Invalid"
+      "Valid": "Valid",
+      "SD": "Standardized",
+      "NS": "Non-Standardized",
+      "IN": "Invalid"
     },
     "completeness": {
-      "Partial" : "Partial",
-      "Complete" : "Complete"
+      "Partial": "Partial",
+      "Complete": "Complete"
     },
     "iab-category": {
       "1": "Below Standard",
@@ -277,8 +277,8 @@
       "4": "Level 4"
     },
     "gender": {
-      "Male" : "Male",
-      "Female" : "Female"
+      "Male": "Male",
+      "Female": "Female"
     },
     "polar": {
       "1": "Yes",
