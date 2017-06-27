@@ -91,7 +91,11 @@
           <p-column field="administrativeCondition" [sortable]="true" >
             <ng-template pTemplate="header">
               {{'labels.groups.results.assessment.exams.cols.status' | translate}}
-              <span class="icon"><i class="fa fa-info-circle"></i></span>
+              <span class="icon"
+                    popover="{{'labels.groups.results.assessment.exams.cols.status-info' | translate}}"
+                    popoverTitle="{{'labels.groups.results.assessment.exams.cols.status' | translate}}"
+                    triggers="click:mouseleave"
+              ><i class="fa fa-info-circle"></i></span>
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
               <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
@@ -102,7 +106,11 @@
             <ng-template pTemplate="header">
               {{performanceLevelHeader | translate}}
               <!-- Needed but doesn't fit right now.  TODO: Need UI review -->
-              <!--<span class="icon"><i class="fa fa-info-circle"></i></span>-->
+              <!--<span class="icon"-->
+                    <!--popover="{{performanceLevelHeaderInfo | translate}}"-->
+                    <!--popoverTitle="{{performanceLevelHeader | translate}}"-->
+                    <!--triggers="click:mouseleave"-->
+              <!--&gt;<i class="fa fa-info-circle"></i></span>-->
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
               {{ examLevelEnum + exam.level | translate }}
@@ -111,7 +119,11 @@
           <p-column field="score" [sortable]="true">
             <ng-template pTemplate="header">
               {{'labels.groups.results.assessment.exams.cols.score' | translate}}
-              <span class="icon"><i class="fa fa-info-circle"></i></span>
+              <span class="icon"
+                    popover="{{'labels.groups.results.assessment.exams.cols.score-info' | translate}}"
+                    popoverTitle="{{'labels.groups.results.assessment.exams.cols.score' | translate}}"
+                    triggers="click:mouseleave"
+              ><i class="fa fa-info-circle"></i></span>
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
               {{ exam.score }} ± {{ exam.standardError }}

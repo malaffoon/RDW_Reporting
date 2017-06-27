@@ -101,12 +101,16 @@
               "session": "Session",
               "grade": "Enrolled Grade",
               "status": "Status",
+              "status-info": "The status column is a combination of ... actual content needed",
               "score": "Scale Score",
+              "score-info": "The scale score represents ... actual content needed",
               "iab": {
-                "performance": "Reporting Category"
+                "performance": "Reporting Category",
+                "performance-info": "The reporting category info content is needed"
               },
               "ica": {
-                "performance": "Achievement Level"
+                "performance": "Achievement Level",
+                "performance-info": "The achievement level info content is needed"
               }
             }
           },
