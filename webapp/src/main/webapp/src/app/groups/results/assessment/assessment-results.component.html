@@ -87,7 +87,11 @@
             </ng-template>
           </p-column>
           <p-column field="session" header="{{'labels.groups.results.assessment.exams.cols.session' | translate}}" [sortable]="true"></p-column>
-          <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true" [style]="{'text-align':'center'}" ></p-column>
+          <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true">
+            <ng-template let-exam="rowData" pTemplate="body">
+              <div class="text-center">{{ exam.enrolledGrade }}</div>
+            </ng-template>
+          </p-column>
           <p-column field="administrativeCondition" [sortable]="true" >
             <ng-template pTemplate="header">
               {{'labels.groups.results.assessment.exams.cols.status' | translate}}
