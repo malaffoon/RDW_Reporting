@@ -16,6 +16,7 @@ import { ExamFilterService } from "./results/exam-filters/exam-filter.service";
 import { ExamFilterOptionsService } from "./results/exam-filters/exam-filter-options.service";
 import { ExamFilterOptionsMapper } from "./results/exam-filters/exam-filter-options.mapper";
 import { SelectAssessmentsComponent } from "./results/select-assessments/select-assessments.component";
+import { PopoverModule } from "ngx-bootstrap/popover";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { SelectAssessmentsComponent } from "./results/select-assessments/select-
     BrowserAnimationsModule,
     FormsModule,
     DataTableModule,
-    SharedModule
+    SharedModule,
+    PopoverModule
   ],
   exports: [ GroupsComponent ],
   providers: [

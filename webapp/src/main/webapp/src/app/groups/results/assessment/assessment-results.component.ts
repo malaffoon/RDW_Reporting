@@ -121,6 +121,10 @@ export class AssessmentResultsComponent {
       (this.isIab ? "iab" : "ica") + ".performance";
   }
 
+  get performanceLevelHeaderInfo() {
+    return this.performanceLevelHeader + "-info";
+  }
+
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
   private _assessmentItems: AssessmentItem[];

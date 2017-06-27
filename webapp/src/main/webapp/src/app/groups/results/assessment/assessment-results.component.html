@@ -87,19 +87,48 @@
             </ng-template>
           </p-column>
           <p-column field="session" header="{{'labels.groups.results.assessment.exams.cols.session' | translate}}" [sortable]="true"></p-column>
-          <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true" ></p-column>
-          <p-column field="administrativeCondition" header="{{'labels.groups.results.assessment.exams.cols.status' | translate}}" [sortable]="true" >
+          <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true">
+            <ng-template let-exam="rowData" pTemplate="body">
+              <div class="text-center">{{ exam.enrolledGrade }}</div>
+            </ng-template>
+          </p-column>
+          <p-column field="administrativeCondition" [sortable]="true" >
+            <ng-template pTemplate="header">
+              {{'labels.groups.results.assessment.exams.cols.status' | translate}}
+              <span class="icon"
+                    popover="{{'labels.groups.results.assessment.exams.cols.status-info' | translate}}"
+                    popoverTitle="{{'labels.groups.results.assessment.exams.cols.status' | translate}}"
+                    triggers="click:mouseleave"
+              ><i class="fa fa-info-circle"></i></span>
+            </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
               <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
               <span *ngIf="exam.completeness != 2" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
             </ng-template>
           </p-column>
-          <p-column field="level" header="{{ performanceLevelHeader | translate }}" [sortable]="true">
+          <p-column field="level" [sortable]="true">
+            <ng-template pTemplate="header">
+              {{performanceLevelHeader | translate}}
+              <!-- Needed but doesn't fit right now.  TODO: Need UI review -->
+              <!--<span class="icon"-->
+                    <!--popover="{{performanceLevelHeaderInfo | translate}}"-->
+                    <!--popoverTitle="{{performanceLevelHeader | translate}}"-->
+                    <!--triggers="click:mouseleave"-->
+              <!--&gt;<i class="fa fa-info-circle"></i></span>-->
+            </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
-              {{ examLevelEnum + exam.level | translate }}
+              <div class="text-center">{{ examLevelEnum + exam.level | translate }}</div>
             </ng-template>
           </p-column>
-          <p-column field="score" header="{{'labels.groups.results.assessment.exams.cols.score' | translate}}" [sortable]="true">
+          <p-column field="score" [sortable]="true">
+            <ng-template pTemplate="header">
+              {{'labels.groups.results.assessment.exams.cols.score' | translate}}
+              <span class="icon"
+                    popover="{{'labels.groups.results.assessment.exams.cols.score-info' | translate}}"
+                    popoverTitle="{{'labels.groups.results.assessment.exams.cols.score' | translate}}"
+                    triggers="click:mouseleave"
+              ><i class="fa fa-info-circle"></i></span>
+            </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
               {{ exam.score }} ± {{ exam.standardError }}
             </ng-template>
@@ -121,12 +150,20 @@
               {{ 'enum.claim.' + item.claim | translate }} / {{ 'labels.groups.results.assessment.items.target' | translate:item }}
             </ng-template>
           </p-column>
-          <p-column field="difficulty" header="{{'labels.groups.results.assessment.items.cols.difficulty' | translate}}" [sortable]="true">
+          <p-column field="difficulty" [sortable]="true">
+            <ng-template pTemplate="header">
+              {{'labels.groups.results.assessment.items.cols.difficulty' | translate}}
+              <span class="icon"><i class="fa fa-info-circle"></i></span>
+            </ng-template>
             <ng-template let-item="rowData" pTemplate="body">
               {{ 'enum.difficulty.' + item.difficulty | translate }}
             </ng-template>
           </p-column>
-          <p-column field="fullCredit" header="{{'labels.groups.results.assessment.items.cols.full-credit' | translate}}" [sortable]="true">
+          <p-column field="fullCredit" [sortable]="true">
+            <ng-template pTemplate="header">
+              {{'labels.groups.results.assessment.items.cols.full-credit' | translate}}
+              <span class="icon"><i class="fa fa-info-circle"></i></span>
+            </ng-template>
             <ng-template let-item="rowData" pTemplate="body">
                 <span [hidden]="showValuesAsPercent">{{ item.fullCredit }}</span>
                 <span [hidden]="!showValuesAsPercent">{{ item.fullCreditAsPercent | number:'1.0-0' }}%</span>

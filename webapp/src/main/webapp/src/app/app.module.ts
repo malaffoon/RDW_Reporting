@@ -7,13 +7,14 @@ import { environment } from "../environments/environment";
 import { standaloneProviders } from "./standalone/standalone.service";
 import { HomeComponent } from "./home/home.component";
 import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
-import { BsDropdownModule } from "ngx-bootstrap";
+import { BsDropdownModule, TabsModule } from "ngx-bootstrap";
 import { CommonModule } from "./shared/common.module";
 import { GroupsModule } from "./groups/groups.module";
 import { UserModule } from "./user/user.module";
 import { routes } from "./app.routes";
 import { RouterModule } from "@angular/router";
 import { SchoolGradeModule } from "./school-grade/school-grade.module";
+import { PopoverModule } from "ngx-bootstrap/popover";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,9 @@ import { SchoolGradeModule } from "./school-grade/school-grade.module";
     UserModule,
     FormsModule,
     HttpModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    TabsModule.forRoot(),
+    PopoverModule.forRoot()
   ],
   providers: [
     ...(environment.standalone ? standaloneProviders : [])
