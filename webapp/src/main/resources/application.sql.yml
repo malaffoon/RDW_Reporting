@@ -5,10 +5,7 @@ sql:
         e.type_id,
         e.grade_id,
         e.school_year,
-        e.opportunity,
-        e.completeness_id,
         e.completeness_code,
-        e.administration_condition_id,
         e.administration_condition_code,
         e.session_id,
         e.completed_at,
@@ -75,12 +72,11 @@ sql:
           join exam e on e.asmt_id = a.id
           join student_group_membership sgm on e.student_id=sgm.student_id
           join school s on e.school_id=s.id
-          where
-              e.school_year=:school_year
-              and sgm.student_group_id=:group_id
-              and (0=:group_subject_id or a.subject_id=:group_subject_id)
-              and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
-              and a.id = e.asmt_id
+          where e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+          and a.id = e.asmt_id
 
     exam:
       findLatest: >-
@@ -120,11 +116,7 @@ sql:
             e.section504,
             e.economic_disadvantage,
             e.migrant_status,
-            e.school_year,
-            e.opportunity,
-            e.completeness_id,
             e.completeness_code,
-            e.administration_condition_id,
             e.administration_condition_code,
             e.session_id,
             e.completed_at,
@@ -150,7 +142,6 @@ sql:
             st.id as student_id,
             st.last_or_surname as student_last_name,
             st.first_name as student_first_name,
-            st.gender_id as student_gender_id,
             st.gender_code as student_gender_code
           from exam e
             join student_group_membership sgm on e.student_id=sgm.student_id
@@ -248,11 +239,7 @@ sql:
           e.section504,
           e.economic_disadvantage,
           e.migrant_status,
-          e.school_year,
-          e.opportunity,
-          e.completeness_id,
           e.completeness_code,
-          e.administration_condition_id,
           e.administration_condition_code,
           e.session_id,
           e.completed_at,
@@ -278,7 +265,6 @@ sql:
           st.id as student_id,
           st.last_or_surname as student_last_name,
           st.first_name as student_first_name,
-          st.gender_id as student_gender_id,
           st.gender_code as student_gender_code
         from exam e
           join student st on e.student_id=st.id
@@ -309,23 +295,18 @@ sql:
 
   assessment:
     findAllByIds: >-
-      select a.id,
-        a.label,
-        a.grade_id,
-        a.type_id,
-        a.subject_id,
-        a.school_year,
-        a.claim1_score_code,
-        a.claim2_score_code,
-        a.claim3_score_code,
-        a.claim4_score_code,
-        a.min_score,
-        a.max_score,
-        a.cut_point_1,
-        a.cut_point_2,
-        a.cut_point_3
-      from asmt a
-      where a.id in (:assessment_ids)
+      select id,
+        label,
+        grade_id,
+        type_id,
+        subject_id,
+        school_year,
+        claim1_score_code,
+        claim2_score_code,
+        claim3_score_code,
+        claim4_score_code
+      from asmt
+      where id in (:assessment_ids)
 
     grade:
       findAllForSchool: >-
