@@ -14,6 +14,7 @@ import { RemoveCommaPipe } from "../../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../exam-filters/exam-filter.service";
 import { GradeService } from "../../../shared/grade.service";
+import { PopoverModule } from "ngx-bootstrap/popover";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -21,7 +22,7 @@ describe('AssessmentResultsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ TranslateModule.forRoot(), HttpModule, FormsModule, DataTableModule, SharedModule, BrowserAnimationsModule ],
+      imports: [ TranslateModule.forRoot(), HttpModule, FormsModule, DataTableModule, SharedModule, BrowserAnimationsModule, PopoverModule.forRoot() ],
       declarations: [ TestComponentWrapper, AssessmentResultsComponent, RemoveCommaPipe ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' } , ExamStatisticsCalculator, ExamFilterService, GradeService ]
     }).compileComponents();
