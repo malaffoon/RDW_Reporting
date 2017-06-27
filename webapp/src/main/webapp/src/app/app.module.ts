@@ -13,6 +13,7 @@ import { GroupsModule } from "./groups/groups.module";
 import { UserModule } from "./user/user.module";
 import { routes } from "./app.routes";
 import { RouterModule } from "@angular/router";
+import { PopoverModule } from "ngx-bootstrap/popover";
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { RouterModule } from "@angular/router";
     FormsModule,
     HttpModule,
     BsDropdownModule.forRoot(),
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    PopoverModule.forRoot()
   ],
   providers: [
     ...(environment.standalone ? standaloneProviders : [])
