@@ -256,14 +256,14 @@
   },
   "enum": {
     "administrative-condition": {
-      "1": "Valid",
-      "2": "Standardized",
-      "3": "Non-Standardized",
-      "4": "Invalid"
+      "Valid" : "Valid",
+      "SD" : "Standardized",
+      "NS" : "Non-Standardized",
+      "IN" : "Invalid"
     },
     "completeness": {
-      "1": "Partial",
-      "2": "Complete"
+      "Partial" : "Partial",
+      "Complete" : "Complete"
     },
     "iab-category": {
       "1": "Below Standard",
@@ -277,8 +277,8 @@
       "4": "Level 4"
     },
     "gender": {
-      "1": "Male",
-      "2": "Female"
+      "Male" : "Male",
+      "Female" : "Female"
     },
     "polar": {
       "1": "Yes",

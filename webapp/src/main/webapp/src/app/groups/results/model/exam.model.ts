@@ -6,10 +6,10 @@ export class Exam {
   enrolledGrade: number;
   score: number;
   level: number;
-  administrativeCondition: number;
-  completeness: number;
+  administrativeCondition: string;
+  completeness: string;
   standardError: number;
-  gender: number;
+  gender: string;
   migrantStatus: boolean;
   plan504: boolean;
   iep: boolean;

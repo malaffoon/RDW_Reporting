@@ -27,17 +27,17 @@
       <!-- Manner of Administration -->
       <div class="block-children">
         <label>{{ translateRoot + 'status.administration' | translate }}</label>
-        <sb-radio-button-list [model]="filterBy" [values]="[2,3]" property="administration" enum="enum.administrative-condition" ></sb-radio-button-list>
+        <sb-radio-button-list [model]="filterBy" [values]="['SD','NS']" property="administration" enum="enum.administrative-condition" ></sb-radio-button-list>
       </div>
       <!-- Summative Status -->
       <div class="block-children">
         <label>{{ translateRoot + 'status.summative' | translate }}</label>
-        <sb-radio-button-list [model]="filterBy" [values]="[1,4]" property="summativeStatus" enum="enum.administrative-condition"></sb-radio-button-list>
+        <sb-radio-button-list [model]="filterBy" [values]="['Valid','IN']" property="summativeStatus" enum="enum.administrative-condition"></sb-radio-button-list>
       </div>
       <!-- Completion -->
       <div class="block-children">
         <label>{{ translateRoot + 'status.completion' | translate }}</label>
-        <sb-radio-button-list [model]="filterBy" [values]="[2,1]" property="completion" enum="enum.completeness"></sb-radio-button-list>
+        <sb-radio-button-list [model]="filterBy" [values]="['Complete','Partial']" property="completion" enum="enum.completeness"></sb-radio-button-list>
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@
         <!-- Gender -->
         <div class="block-children">
           <label>{{ translateRoot + 'student.gender' | translate }}</label>
-          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="gender" enum="enum.gender"></sb-radio-button-list>
+          <sb-radio-button-list [model]="filterBy" [values]="['Male','Female']" property="gender" enum="enum.gender"></sb-radio-button-list>
         </div>
         <!-- Migrant Status -->
         <div class="block-children">
