@@ -72,7 +72,7 @@
           }
         },
         "selected-assessments-title": "Selected Assessments",
-        "selected-assessments-instruct": "Click an item to remove it from the list",
+        "selected-assessments-instruct": "Click an assessment to remove it from the list",
         "select-assessments": {
           "instruct": "Click an assessment to add or remove it from your list of selections above."
         },
@@ -96,17 +96,21 @@
             "title": "Student Results",
             "empty-message" : "No results found by selected sessions and advanced filters.",
             "cols": {
-              "name": "Name",
+              "name": "Student",
               "date": "Date",
               "session": "Session",
               "grade": "Enrolled Grade",
               "status": "Status",
+              "status-info": "The status column is a combination of ... actual content needed",
               "score": "Scale Score",
+              "score-info": "The scale score represents ... actual content needed",
               "iab": {
-                "performance": "Reporting Category"
+                "performance": "Reporting Category",
+                "performance-info": "The reporting category info content is needed"
               },
               "ica": {
-                "performance": "Achievement Level"
+                "performance": "Achievement Level",
+                "performance-info": "The achievement level info content is needed"
               }
             }
           },
