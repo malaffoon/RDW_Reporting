@@ -8,11 +8,29 @@
     "noExamsMatchingCriteria": "There are no exams matching this criteria.",
     "no-results-found": "No results found.",
     "noExamsSelected": "Please select from the assessments above",
-    "notApplicable": "-"
+    "notApplicable": "-",
+    "logout": "Logout"
   },
   "collapse": "Collapse",
   "select": "Select",
   "labels": {
+      "homepage": {
+      "title": "Access Assessment Results",
+      "search-student-id": {
+        "label": "Search by Student",
+        "placeholder": "Enter the Statewide Student Identifier (SSID)"
+      },
+      "search-school-grade": {
+        "school-label": "Search by School Name",
+        "school-placeholder": "Start typing the school name",
+        "grade-label": "Grade"
+      },
+      "welcome": {
+        "title": "Welcome!",
+        "sub-title": "Get the most from the Reporting System:",
+        "interpret-instructions": "Learn how to interpret the scores in this reporting tool:"
+      }
+    },
     "grade": "Grade",
     "grades": {
       "KG": {
@@ -100,6 +118,8 @@
       "name": "My Groups",
       "filter": "Search by Group Name",
       "empty-message": "Contact your building administrator for access to group-level test results",
+      "manage-group": "Manage Student Groups",
+      "search-label": "Search by My Groups",
       "cols": {
         "group": "Group Name",
         "school": "School",
@@ -176,7 +196,7 @@
             }
           },
           "items": {
-            "title":"Items By Points Earned",
+            "title": "Items By Points Earned",
             "cols": {
               "number": "Item #",
               "claim": "Claim/Target",
@@ -190,6 +210,8 @@
         }
       }
     },
+    "user-guide": "User Guide",
+    "interpretive-guide": "Interpretive Guide",
     "school-grade": {
       "title": "Search by School & Grade",
       "school-name": {
@@ -229,7 +251,8 @@
     "collapsible": {
       "expand": "Expand",
       "collapse": "Collapse"
-    }
+    },
+    "search": "Search"
   },
   "enum": {
     "administrative-condition": {

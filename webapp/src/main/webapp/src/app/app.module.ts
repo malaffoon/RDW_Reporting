@@ -30,7 +30,7 @@ import { SchoolGradeModule } from "./school-grade/school-grade.module";
     UserModule,
     FormsModule,
     HttpModule,
-    BsDropdownModule,
+    BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     ModalModule.forRoot()
   ],

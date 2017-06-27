@@ -1,5 +1,9 @@
 <div *ngIf="groups" class="home-view">
 
+  <div class="flex-child grow">
+    <label>{{'labels.groups.search-label' | translate }}</label>
+  </div>
+
   <!-- My Groups Search Input -->
   <div *ngIf="groups.length > 2" class="gray-lightest pt-sm pr-sm pb-sm pl-sm my-groups-search-form-container">
     <label for="search" class="sr-only">Search My Groups</label>
