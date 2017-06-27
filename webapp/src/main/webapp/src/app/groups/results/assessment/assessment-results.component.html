@@ -106,7 +106,7 @@
               <span *ngIf="exam.completeness != 2" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
             </ng-template>
           </p-column>
-          <p-column field="level" [sortable]="true" [style]="{'text-align':'center'}">
+          <p-column field="level" [sortable]="true">
             <ng-template pTemplate="header">
               {{performanceLevelHeader | translate}}
               <!-- Needed but doesn't fit right now.  TODO: Need UI review -->
@@ -117,7 +117,7 @@
               <!--&gt;<i class="fa fa-info-circle"></i></span>-->
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
-              {{ examLevelEnum + exam.level | translate }}
+              <div class="text-center">{{ examLevelEnum + exam.level | translate }}</div>
             </ng-template>
           </p-column>
           <p-column field="score" [sortable]="true">
