@@ -88,20 +88,33 @@
           </p-column>
           <p-column field="session" header="{{'labels.groups.results.assessment.exams.cols.session' | translate}}" [sortable]="true"></p-column>
           <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true" [style]="{'text-align':'center'}" ></p-column>
-          <p-column field="administrativeCondition" header="{{'labels.groups.results.assessment.exams.cols.status' | translate}}" [sortable]="true" >
+          <p-column field="administrativeCondition" [sortable]="true" >
             <ng-template let-exam="rowData" pTemplate="body">
               <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
               <span *ngIf="exam.completeness != 2" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
             </ng-template>
+            <ng-template pTemplate="header">
+              {{'labels.groups.results.assessment.exams.cols.status' | translate}}
+              <span class="icon"><i class="fa fa-info-circle"></i></span>
+            </ng-template>
           </p-column>
-          <p-column field="level" header="{{ performanceLevelHeader | translate }}" [sortable]="true" [style]="{'text-align':'center'}">
+          <p-column field="level" [sortable]="true" [style]="{'text-align':'center'}">
             <ng-template let-exam="rowData" pTemplate="body">
               {{ examLevelEnum + exam.level | translate }}
             </ng-template>
+            <ng-template pTemplate="header">
+              {{performanceLevelHeader | translate}}
+              <!-- Needs to be added but doesn't currently fit -->
+              <!--<span class="icon"><i class="fa fa-info-circle"></i></span>-->
+            </ng-template>
           </p-column>
-          <p-column field="score" header="{{'labels.groups.results.assessment.exams.cols.score' | translate}}" [sortable]="true">
+          <p-column field="score" [sortable]="true">
             <ng-template let-exam="rowData" pTemplate="body">
               {{ exam.score }} ± {{ exam.standardError }}
+            </ng-template>
+            <ng-template pTemplate="header">
+              {{'labels.groups.results.assessment.exams.cols.score' | translate}}
+              <span class="icon"><i class="fa fa-info-circle"></i></span>
             </ng-template>
           </p-column>
         </p-dataTable>
