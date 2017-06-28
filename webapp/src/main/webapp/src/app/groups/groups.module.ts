@@ -8,8 +8,8 @@ import { DataTableModule, SharedModule } from "primeng/primeng";
 import { GroupResultsComponent } from "./results/group-results.component";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { AssessmentsModule } from "../assessments/assessments.module";
-import { AssessmentsResolve } from "./results/assessments.resolve";
-import { AssessmentService } from "./results/assessment/assessment.service";
+import { GroupAssessmentService } from "./results/group-assessment.service";
+import { GroupAssessmentsResolve } from "./results/group-assessments.resolve";
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import { AssessmentService } from "./results/assessment/assessment.service";
     PopoverModule
   ],
   exports: [ GroupsComponent ],
-  providers: [ AssessmentsResolve, AssessmentService ]
+  providers: [ GroupAssessmentsResolve, GroupAssessmentService ]
 })
 export class GroupsModule {
 }

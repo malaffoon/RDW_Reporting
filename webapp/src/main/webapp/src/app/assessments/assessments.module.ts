@@ -13,12 +13,14 @@ import { ExamFilterOptionsService } from "./filters/exam-filters/exam-filter-opt
 import { ExamFilterOptionsMapper } from "./filters/exam-filters/exam-filter-options.mapper";
 import { SelectAssessmentsComponent } from "./filters/select-assessments/select-assessments.component";
 import { PopoverModule } from "ngx-bootstrap/popover";
+import { AssessmentsComponent } from "./assessments.component";
 
 @NgModule({
   declarations: [
     AssessmentResultsComponent,
     AdvFiltersComponent,
-    SelectAssessmentsComponent
+    SelectAssessmentsComponent,
+    AssessmentsComponent
   ],
   imports: [
     CommonModule,
@@ -30,9 +32,7 @@ import { PopoverModule } from "ngx-bootstrap/popover";
     PopoverModule
   ],
   exports: [
-    AdvFiltersComponent,
-    AssessmentResultsComponent,
-    SelectAssessmentsComponent
+    AssessmentsComponent
   ],
   providers: [
     AssessmentExamMapper,
