@@ -3,146 +3,21 @@
   {{'labels.groups.name' | translate}}
 </h2>
 
-<div class="well-group">
-
-  <!-- My Groups Filter Options -->
-  <div id="group-results-basic-filters" class="well">
-    <div class="well-body">
-      <div class="form-group">
-        <div class="flex-children">
-          <!-- Group Select -->
-          <div class="flex-child">
-            <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
-            <!--TODO: type ahead? -->
-            <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute()" class="form-control">
-              <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
-            </select>
-          </div>
-          <!-- School Year -->
-          <div class="flex-child">
-            <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
-            <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute()"
-                    class="form-control">
-              <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
-            </select>
-          </div>
-          <!-- Advanced Filters Toggle -->
-          <div class="flex-child">
-            <label for="advanced">{{'labels.groups.results.adv-filters.label' | translate}}</label>
-            <button id="advanced" class="form-control btn btn-default"
-                    (click)="showAdvancedFilters = !showAdvancedFilters">
-              {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
-              <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}"
-                 aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+<assessments [assessmentExams]="assessmentExams" [assessmentProvider]="assessmentProvider">
+  <!-- Group Select -->
+  <div class="col-md-3">
+    <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
+    <!--TODO: type ahead? -->
+    <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute()" class="form-control">
+      <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
+    </select>
   </div>
-
-  <!-- Selected Filters -->
-  <div id="group-results-adv-filters" [hidden]="!showAdvancedFilters" class="well gray-lightest">
-    <h2 class="h3 gray-darkest">
-      <i class="fa fa-check-square"></i> {{'labels.groups.results.adv-filters.label' | translate }}
-      <button id="adv-filters-expand-collapse" class="btn btn-default btn-sm pull-right"
-              (click)="expandFilterOptions = !expandFilterOptions">
-        {{'buttons.collapsible.' + (expandFilterOptions ? 'collapse' : 'expand') | translate }}
-        <i class="fa" [ngClass]="{'fa-chevron-up': expandFilterOptions, 'fa-chevron-down': !expandFilterOptions}"
-           aria-hidden="true"></i>
-      </button>
-    </h2>
-    <p class="gray-darker">{{'labels.groups.results.adv-filters.subhead' | translate }}</p>
-    <!-- Selected Filters -->
-    <div id="adv-filters-selected" class="flex-children">
-      <div *ngFor="let property of clientFilterBy.all">
-        <a class="tag tag-xs aqua reverse" (click)="removeFilter(property)">
-            <span *ngIf="property.indexOf('ethnicities') == -1">
-              <strong>{{ filters[property].enumValue + '.' + clientFilterBy[property] | translate}}</strong> {{ filters[property].label | translate }}
-            </span>
-          <span *ngIf="property.indexOf('ethnicities') != -1">
-              <strong>{{ filters['ethnicities'].enumValue + property.substring(property.indexOf('.')) | translate}}</strong> {{ filters['ethnicities'].label | translate }}
-            </span>
-          <span class="icon"><i class="fa fa-close"></i></span>
-        </a>
-      </div>
-    </div>
+  <!-- School Year -->
+  <div class="col-md-3">
+    <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
+    <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute()"
+            class="form-control">
+      <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
+    </select>
   </div>
-
-  <!-- Advanced Filters -->
-  <div id="group-results-adv-filter-options" [hidden]="!expandFilterOptions" class="well gray-lighter">
-    <adv-filters [filterBy]="clientFilterBy" [filterOptions]="filterOptions"></adv-filters>
-  </div>
-
-  <!-- Selected Assessments -->
-  <div id="group-results-selected-assessments" class="well gray-lightest">
-    <h2 class="h3 gray-darkest">
-      <i class="fa fa-list-alt"></i> {{'labels.groups.results.selected-assessments-title' | translate}}
-      <div class="btn-group btn-group-xs pull-right" role="group">
-        <button type="radio" (click)="showOnlyMostRecent = true" class="btn btn-default"
-                [ngClass]="{'active': showOnlyMostRecent}">{{'labels.groups.results.filter-type-recent' |
-          translate}}
-        </button>
-        <button type="radio" (click)="showOnlyMostRecent = false" class="btn btn-default"
-                [ngClass]="{'active': !showOnlyMostRecent}">{{'labels.groups.results.filter-type-custom' | translate}}
-        </button>
-      </div>
-    </h2>
-    <p class="gray-darker" [hidden]="showOnlyMostRecent">{{'labels.groups.results.selected-assessments-instruct' | translate }}</p>
-    <div class="flex-children">
-      <a *ngFor="let assessment of selectedAssessments" (click)="removeAssessment(assessment)"
-         class="tag tag-xs {{ gradeService.getColor(assessment.grade)}}">
-        <span class="label">{{'labels.groups.results.grade-prefix' | translate}}{{assessment.grade}}</span>
-        {{assessment.name}}
-        <span class="icon" [hidden]="showOnlyMostRecent"><i class="fa fa-close"></i></span>
-      </a>
-      <div>
-        <a *ngIf ="!expandAssessments" class="btn btn-default btn-sm img-circle icon-only" (click)="expandAssessments=true">
-          <i class="fa fa-plus"></i>
-        </a>
-      </div>
-    </div>
-
-  </div>
-  <div id="group-results-edit-assessments" [hidden]="!expandAssessments" class="well gray-lighter">
-    <div id="adv-filters-edit-assessments-collapse" class="pull-right">
-      <button class="form-control btn btn-sm" (click)="expandAssessments = false">
-        <i class="fa fa-close" aria-hidden="true"></i>
-      </button>
-    </div>
-    <select-assessments [assessments]="availableAssessments"
-                        (selectedAssessmentsChanged)="selectedAssessmentsChanged($event)"></select-assessments>
-  </div>
-
-</div>
-<!-- Results -->
-<h2 class="blue-dark h3 mt-lg mb-md">
-  {{'labels.groups.results.title' | translate}}
-  <div class="pull-right">
-    <label for="value-format">{{'labels.groups.results.value-as' | translate }} </label>
-    <div id="value-format" class="btn-group btn-group-primary btn-group-xs mr-md" role="group">
-      <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}"
-              class="btn btn-default">{{'labels.groups.results.value-as-percent' | translate}}
-      </button>
-      <button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}"
-              class="btn btn-default">{{'labels.groups.results.value-as-number' | translate}}
-      </button>
-    </div>
-    <button class="btn btn-default btn-xs pull-right" (click)="allCollapsed = !allCollapsed">
-      <span *ngIf="!allCollapsed">{{'labels.groups.results.collapse-all' | translate}} <i class="fa fa-angle-up"></i></span>
-      <span *ngIf="allCollapsed">{{'labels.groups.results.expand-all' | translate}} <i class="fa fa-angle-down"></i></span>
-    </button>
-  </div>
-</h2>
-<!-- Results Container -->
-<div *ngFor="let assessment of assessmentExams; let i = index" class="groups-results-wrapper">
-  <assessment-results [assessmentExam]="assessment"
-                      [showValuesAsPercent]="showValuesAsPercent"
-                      [filterBy]="clientFilterBy"
-                      [loadAssessmentItems]="boundLoadAssessmentItems"></assessment-results>
-</div>
-<!-- No Results Error -->
-<div class="alert alert-danger" *ngIf="assessmentExams.length == 0">
-  {{'messages.no-results-found' | translate}}
-</div>
-
+</assessments>
