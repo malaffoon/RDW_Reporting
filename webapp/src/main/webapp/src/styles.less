@@ -71,7 +71,7 @@
     cursor: pointer;
   }
   .ui-sortable-column-icon {
-    margin-left: 8px;
+    margin-left: -2px;
     color: @gray-darker;
     &:hover {
       cursor: pointer;
@@ -104,6 +104,7 @@
 // ------------------------------
 .my-groups-search-form-container {
   border: 1px solid @gray-lighter;
+  border-radius: 5px 5px 0 0;
 }
 .home-view .my-groups-list-container .table > thead > tr > th {
   &:first-child { border-top-left-radius: 0px; }
@@ -131,9 +132,16 @@
 
 // These have been brought as is from sbac-ui-kit,
 // but including parent of .ui-datatable-tablewrapper
-.ui-datatable-tablewrapper > .table {
+
+.ui-datatable-tablewrapper {
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-radius: 0 0 5px 5px;
+  > .table {
   border-collapse: separate;
   border-radius: @border-radius-base;
+  margin-bottom: 0;
   > thead,
   > tfoot {
     > tr {
@@ -171,11 +179,13 @@
 .ui-datatable-tablewrapper > tr {
   th {
     border-top: 1px solid @table-border-color !important;
+    text-align: left;
   }
   th,
   td {
     &:first-child { border-left: 1px solid @table-border-color; }
     &:last-child { border-right: 1px solid @table-border-color; }
+    text-align: left;
   }
   // Normally this would be the TFOOT rounding class
   // See note above
@@ -183,12 +193,12 @@
     border-bottom: 1px solid @table-border-color;
   }
 }
+}
 
 // Remove left and right borders.
 .ui-datatable .ui-datatable-thead>tr>th, .ui-datatable .ui-datatable-tfoot>tr>td, .ui-datatable .ui-datatable-data>tr>td {
   border-left-style: none;
   border-right-style: none;
-
   border-top: 1px solid @table-border-color;
   border-bottom: none;
 }
@@ -198,4 +208,19 @@ body .ui-datatable thead th.ui-state-active {
   background-color: @gray-lighter;
   border: @table-border-color;
   color: #373a3c;
+  padding: .25em .5em;
+}
+
+.ui-datatable thead th, .ui-datatable tfoot td {
+    text-align: left;
+}
+body .ui-datatable .ui-datatable-thead > tr > th, body .ui-datatable .ui-datatable-tfoot > tr > td {
+    padding: .5em 0 .5em .75em;
+    white-space: nowrap;
+    font-size: 14px;
+}
+body .ui-datatable .ui-datatable-data > tr > td {
+  padding: .5em 0 .5em .75em;
+  white-space: nowrap;
+  font-size: 14px;
 }
