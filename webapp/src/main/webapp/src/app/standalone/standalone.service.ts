@@ -14,7 +14,7 @@ import {
   DEPRECATED_exams_of_student,
   user,
   groupAssessments,
-  exam_filter_options, grades
+  exam_filter_options, grades, exam_items
 } from "./data/data";
 
 export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequestOptions, realBackend: XHRBackend) {
@@ -35,6 +35,8 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = user;
     } else if (requestSignature == `GET /api/examFilterOptions`) {
       body = exam_filter_options;
+    } else if (new RegExp(`GET /api/groups/\\d+/assessments/\\d+/examitems`, 'g').test(requestSignature)) {
+      body = exam_items;
     } else if (new RegExp(`GET /api/schools/\\d+/assessmentGrades`, 'g').test(requestSignature)) {
       body = grades;
     } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/report`, 'g').test(requestSignature)) {

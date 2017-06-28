@@ -1,31 +1,32 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { GroupResultsComponent } from "./group-results.component";
+import { async, TestBed } from "@angular/core/testing";
 import { Observable, Observer } from "rxjs";
 import { HttpModule } from "@angular/http";
 import { FormsModule } from "@angular/forms";
-import { AppModule } from "../../app.module";
 import { ActivatedRoute } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
-import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
-import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
-import { Exam } from "../../assessments/model/exam.model";
-import { AssessmentService } from "./assessment/assessment.service";
-import { Assessment } from "../../assessments/model/assessment.model";
-import { AssessmentExam } from "../../assessments/model/assessment-exam.model";
-import { exam } from "../../standalone/data/exam";
+import { AssessmentsComponent } from "./assessments.component";
+import { Exam } from "./model/exam.model";
+import { ExamFilterOptionsService } from "./filters/exam-filters/exam-filter-options.service";
+import { GroupAssessmentService } from "../groups/results/group-assessment.service";
+import { Assessment } from "./model/assessment.model";
+import { AssessmentExam } from "./model/assessment-exam.model";
+import { ExamFilterOptions } from "./model/exam-filter-options.model";
+import { Component } from "@angular/core";
+import { CommonModule } from "../shared/common.module";
+import { AssessmentsModule } from "./assessments.module";
 
 let examObserver: Observer<Exam[]>;
-describe('GroupResultsComponent', () => {
-  let component: GroupResultsComponent;
-  let fixture: ComponentFixture<GroupResultsComponent>;
+describe('AssessmentsComponent', () => {
+  let component: AssessmentsComponent;
+  let fixture;
   let mockRouteSnapshot;
-
 
   beforeEach(async(() => {
 
     mockRouteSnapshot = getRouteSnapshot();
     TestBed.configureTestingModule({
-      imports: [ HttpModule, FormsModule, AppModule ],
+      imports: [ HttpModule, FormsModule, CommonModule, AssessmentsModule ],
+      declarations: [TestComponentWrapper],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' }, {
         provide: ActivatedRoute,
         useValue: { snapshot: mockRouteSnapshot }
@@ -33,7 +34,7 @@ describe('GroupResultsComponent', () => {
         provide: ExamFilterOptionsService,
         useClass: MockExamFilterOptionsService
       }, {
-        provide: AssessmentService,
+        provide: GroupAssessmentService,
         useClass: MockAssessmentService
       } ]
     }).compileComponents();
@@ -41,28 +42,13 @@ describe('GroupResultsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GroupResultsComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(TestComponentWrapper);
+    component = fixture.debugElement.children[ 0 ].componentInstance;
     fixture.detectChanges();
   });
 
   it('should create component', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should default to current year if no school year is set', () => {
-    let params = {};
-    let actual = component.mapParamsToSchoolYear(params);
-
-    expect(actual).toBe(2009);
-  });
-
-  it('should map schoolyear to filterBy object', () => {
-    let params = { schoolYear: 2005 };
-
-    let actual = component.mapParamsToSchoolYear(params);
-
-    expect(actual).toBe(2005);
   });
 
   it('should load assessment exams when selected assessments changed', () => {
@@ -130,19 +116,6 @@ describe('GroupResultsComponent', () => {
     expect(actual.length).toBe(0);
     expect(component.assessmentExams.length).toBe(0);
   });
-
-  it("should detect if all results are collapsed", () => {
-    let assessmentExamA = new AssessmentExam();
-    let assessmentExamB = new AssessmentExam();
-    component.assessmentExams = [ assessmentExamA, assessmentExamB ];
-    expect(component.allCollapsed).toBe(false);
-
-    assessmentExamA.collapsed = true;
-    expect(component.allCollapsed).toBe(false);
-
-    assessmentExamB.collapsed = true;
-    expect(component.allCollapsed).toBe(true);
-  });
 });
 
 
@@ -178,8 +151,6 @@ class MockExamFilterOptionsService {
   }
 }
 
-
-
 class MockAssessmentService {
   public getAvailableAssessments() {
     return Observable.of([])
@@ -191,5 +162,13 @@ class MockAssessmentService {
   }
 }
 
+@Component({
+  selector: 'test-component-wrapper',
+  template: '<assessments [assessmentExams]="assessments" [assessmentProvider]="assessmentProvider"></assessments>'
+})
+class TestComponentWrapper {
+  assessments = [ new AssessmentExam(), new AssessmentExam() ];
+  assessmentProvider = new MockAssessmentService();
+}
 
 
