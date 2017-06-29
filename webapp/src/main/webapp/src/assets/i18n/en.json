@@ -224,7 +224,12 @@
         "no-grades-available": "No assessments are available for the selected school."
       },
       "results": {
-        "select-school": "School"
+        "basic-filters": {
+          "school": "School",
+          "current-grade": "Assessment Grade",
+          "school-year": "School Year"
+        }
+
       }
     },
     "student": {

@@ -1,3 +1,4 @@
+<!-- TODO: Move groups labels to an assessment label -->
 <!-- Individual Assessment Result Container -->
 <div class="assessment-result well">
     <div class="mb-lg">
@@ -102,8 +103,8 @@
               ><i class="fa fa-info-circle"></i></span>
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
-              <span *ngIf="exam.administrativeCondition == 2 || exam.administrativeCondition == 4" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
-              <span *ngIf="exam.completeness != 2" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
+              <span *ngIf="exam.administrativeCondition == 'IN' || exam.administrativeCondition == 'SD'" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
+              <span *ngIf="exam.completeness == 'Partial'" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
             </ng-template>
           </p-column>
           <p-column field="level" [sortable]="true">
@@ -145,7 +146,7 @@
         </h3>
         <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}">
           <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" [sortable]="true"></p-column>
-          <p-column field="claim" header="{{'labels.groups.results.assessment.items.cols.claim' | translate}}" [sortable]="true">
+          <p-column field="claimTarget" header="{{'labels.groups.results.assessment.items.cols.claim' | translate}}" [sortable]="true">
             <ng-template let-item="rowData" pTemplate="body">
               {{ 'enum.claim.' + item.claim | translate }} / {{ 'labels.groups.results.assessment.items.target' | translate:item }}
             </ng-template>

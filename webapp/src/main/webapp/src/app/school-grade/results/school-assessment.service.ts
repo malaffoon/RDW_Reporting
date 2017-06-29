@@ -5,6 +5,7 @@ import { DataService } from "../../shared/data/data.service";
 import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { AssessmentProvider } from "../../assessments/assessment-provider.interface";
+import { isNullOrUndefined } from "util";
 
 @Injectable()
 export class SchoolAssessmentService implements AssessmentProvider {
@@ -16,7 +17,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getMostRecentAssessment(schoolId: number, gradeId :number, schoolYear?: number) {
-    if (schoolYear == undefined) {
+    if (isNullOrUndefined(schoolYear)) {
       return this.filterOptionService.getExamFilterOptions().mergeMap(options => {
         return this.getRecentAssessmentBySchoolYear(schoolId, gradeId, options.schoolYears[ 0 ]);
       });
@@ -38,7 +39,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getExams(assessmentId: number) {
-    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/exams`, { search: this.getSchoolYearParams(this.schoolYear) })
+    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments/${assessmentId}/exams`, { search: this.getSchoolYearParams(this.schoolYear) })
       .catch(response => {
         console.warn(response);
         return Observable.empty();
