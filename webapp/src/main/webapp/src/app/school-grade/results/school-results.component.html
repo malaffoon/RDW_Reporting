@@ -10,7 +10,7 @@
   <div class="col-md-3">
     <label for="select-school">{{'labels.school-grade.results.basic-filters.school' | translate}}</label>
     <!--TODO: type ahead? -->
-    <select id="select-school" [(ngModel)]="currentSchool" (change)="schoolSelectChanged($event)" class="form-control">
+    <select id="select-school" [(ngModel)]="currentSchool" (change)="schoolSelectChanged()" class="form-control">
       <option *ngFor="let school of schools" [ngValue]="school">{{school.name}}</option>
     </select>
   </div>

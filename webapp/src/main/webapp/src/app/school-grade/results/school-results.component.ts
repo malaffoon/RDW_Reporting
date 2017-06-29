@@ -70,7 +70,6 @@ export class SchoolResultsComponent implements OnInit {
     let schoolId = this.route.snapshot.params[ "schoolId" ];
 
     this.currentSchool = this.schools.find(x => x.id == schoolId);
-    // this.assessmentProvider.schoolId = schoolId;
 
     this.filterOptionService
       .getExamFilterOptions()
