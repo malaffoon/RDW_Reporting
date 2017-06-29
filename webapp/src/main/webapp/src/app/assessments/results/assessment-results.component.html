@@ -89,7 +89,7 @@
           <p-column field="session" header="{{'labels.groups.results.assessment.exams.cols.session' | translate}}" [sortable]="true"></p-column>
           <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true">
             <ng-template let-exam="rowData" pTemplate="body">
-              <div class="text-center">{{ exam.enrolledGrade }}</div>
+              {{ exam.enrolledGrade }}
             </ng-template>
           </p-column>
           <p-column field="administrativeCondition" [sortable]="true" >
@@ -116,7 +116,7 @@
               ><i class="fa fa-info-circle"></i></span>
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
-              <div class="text-center">{{ examLevelEnum + exam.level | translate }}</div>
+              {{ examLevelEnum + exam.level | translate }}
             </ng-template>
           </p-column>
           <p-column field="score" [sortable]="true">
@@ -159,7 +159,7 @@
               ><i class="fa fa-info-circle"></i></span>
             </ng-template>
             <ng-template let-item="rowData" pTemplate="body">
-              <div class="text-center">{{ 'enum.difficulty.' + item.difficulty | translate }}</div>
+              {{ 'enum.difficulty.' + item.difficulty | translate }}
             </ng-template>
           </p-column>
           <p-column field="fullCredit" [sortable]="true">
