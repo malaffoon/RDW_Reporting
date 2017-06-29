@@ -1,0 +1,23 @@
+<!-- My Groups -->
+<h2 class="blue-dark h3 mb-md">
+   {{currentSchool.name}}
+</h2>
+
+<assessments [assessmentExams]="assessmentExams" [assessmentProvider]="assessmentProvider">
+  <!-- Group Select -->
+  <div class="col-md-3">
+    <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
+    <!--TODO: type ahead? -->
+    <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute()" class="form-control">
+      <option *ngFor="let school of schools" [ngValue]="group">{{school.name}}</option>
+    </select>
+  </div>
+  <!-- School Year -->
+  <div class="col-md-3">
+    <label for="school-year">{{'labels.groups.results.select-year' | translate}}</label>
+    <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute()"
+            class="form-control">
+      <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
+    </select>
+  </div>
+</assessments>
