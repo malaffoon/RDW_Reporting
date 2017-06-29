@@ -9,6 +9,10 @@ export class AssessmentItem {
   maxPoints: number;
   scores: ExamItemScore[] = [];
 
+  get claimTarget() {
+    return this.claim + ' / ' + this.target;
+  }
+
   get fullCredit() {
     return this.scores.filter(x => x.points == this.maxPoints).length;
   }

@@ -1,10 +1,15 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "../shared/common.module";
 import { BrowserModule } from "@angular/platform-browser";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { SharedModule, DropdownModule } from "primeng/primeng";
 import { SchoolGradeComponent } from "./school-grade.component";
 import { SchoolService } from "./school.service";
+import { SchoolResultsComponent } from "./results/school-results.component";
+import { SchoolAssessmentResolve } from "./results/school-assessments.resolve";
+import { AssessmentsModule } from "../assessments/assessments.module";
+import { SchoolAssessmentService } from "./results/school-assessment.service";
+import { CurrentSchoolResolve } from "./results/current-school.resolve";
 
 /**
  * This module contains a search component for finding assessments
@@ -12,17 +17,25 @@ import { SchoolService } from "./school.service";
  */
 @NgModule({
   declarations: [
-    SchoolGradeComponent
+    SchoolGradeComponent,
+    SchoolResultsComponent
   ],
   imports: [
     CommonModule,
     BrowserModule,
+    FormsModule,
     ReactiveFormsModule,
+    AssessmentsModule,
     DropdownModule,
     SharedModule
   ],
-  exports: [ SchoolGradeComponent ],
-  providers: [ SchoolService ]
+  exports: [ SchoolGradeComponent, SchoolResultsComponent ],
+  providers: [
+    SchoolAssessmentResolve,
+    CurrentSchoolResolve,
+    SchoolService,
+    SchoolAssessmentService
+  ]
 })
 export class SchoolGradeModule {
 }

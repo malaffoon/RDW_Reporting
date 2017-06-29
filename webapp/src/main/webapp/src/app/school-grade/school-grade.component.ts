@@ -4,6 +4,7 @@ import { SchoolService } from "./school.service";
 import { isNullOrUndefined } from "util";
 import { Grade } from "./grade.model";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 
 /**
  * This component is responsible for displaying a search widget allowing
@@ -45,7 +46,7 @@ export class SchoolGradeComponent implements OnInit {
 
   private _availableSchools: any[] = [];
 
-  constructor(private schoolService: SchoolService) {
+  constructor(private schoolService: SchoolService, private router: Router) {
     this.availableGrades = [];
   }
 
@@ -60,7 +61,7 @@ export class SchoolGradeComponent implements OnInit {
 
   performSearch() {
     if(this.searchForm.valid) {
-      console.log(`Navigate to some determined route such as: results?schoolId=${this.schoolControl.value.id}&grade=${this.gradeControl.value.id}`);
+      this.router.navigate([ 'schools', this.schoolControl.value.id, { gradeId: this.gradeControl.value.id } ]);
     }
   }
 
