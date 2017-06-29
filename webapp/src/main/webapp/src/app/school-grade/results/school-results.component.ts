@@ -35,6 +35,7 @@ export class SchoolResultsComponent implements OnInit {
 
   set currentGradeId(value) {
     this._currentGradeId = value;
+    this.assessmentProvider.gradeId = value;
   }
 
   get currentSchoolYear() {

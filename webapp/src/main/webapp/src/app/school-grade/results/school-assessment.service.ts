@@ -49,7 +49,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getAssessmentItems(assessmentId: number) {
-    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/examitems`, { search: this.getSchoolYearParams(this.schoolYear) })
+    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments/${assessmentId}/examitems`, { search: this.getSchoolYearParams(this.schoolYear) })
       .catch(response => {
         console.warn(response);
         return Observable.empty();
