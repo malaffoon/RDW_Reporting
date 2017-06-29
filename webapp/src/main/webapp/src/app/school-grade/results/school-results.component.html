@@ -6,7 +6,7 @@
 <assessments [assessmentExams]="assessmentExams" [assessmentProvider]="assessmentProvider">
   <!-- Group Select -->
   <div class="col-md-3">
-    <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
+    <label for="select-group">{{'labels.school-grade.results.select-school' | translate}}</label>
     <!--TODO: type ahead? -->
     <select id="select-group" [(ngModel)]="currentGroup" (change)="updateRoute()" class="form-control">
       <option *ngFor="let school of schools" [ngValue]="group">{{school.name}}</option>

@@ -9,6 +9,7 @@ import { SchoolResultsComponent } from "./results/school-results.component";
 import { SchoolAssessmentResolve } from "./results/school-assessments.resolve";
 import { AssessmentsModule } from "../assessments/assessments.module";
 import { SchoolAssessmentService } from "./results/school-assessment.service";
+import { CurrentSchoolResolve } from "./results/current-school.resolve";
 
 /**
  * This module contains a search component for finding assessments
@@ -29,7 +30,12 @@ import { SchoolAssessmentService } from "./results/school-assessment.service";
     SharedModule
   ],
   exports: [ SchoolGradeComponent, SchoolResultsComponent ],
-  providers: [ SchoolAssessmentResolve, SchoolService, SchoolAssessmentService ]
+  providers: [
+    SchoolAssessmentResolve,
+    CurrentSchoolResolve,
+    SchoolService,
+    SchoolAssessmentService
+  ]
 })
 export class SchoolGradeModule {
 }

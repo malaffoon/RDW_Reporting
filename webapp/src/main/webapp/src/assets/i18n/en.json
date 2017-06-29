@@ -223,20 +223,8 @@
       "messages": {
         "no-grades-available": "No assessments are available for the selected school."
       },
-      "prompt": {
-        "school-name": "Start typeing the school name"
-      },
-      "items": {
-        "title": "Items By Points Earned",
-        "cols": {
-          "number": "Item #",
-          "claim": "Claim/Target",
-          "difficulty": "Item Difficulty",
-          "standard": "Standard",
-          "full-credit": "Full Credit",
-          "x-points": "{{id}} Points"
-        },
-        "target": "Target {{target}}"
+      "results": {
+        "select-school": "School"
       }
     },
     "student": {

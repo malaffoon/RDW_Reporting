@@ -6,6 +6,7 @@ import { AuthorizeCanActivate } from "./user/authorize.can-activate";
 import { UserResolve } from "./user/user.resolve";
 import { SchoolAssessmentResolve } from "./school-grade/results/school-assessments.resolve";
 import { SchoolResultsComponent } from "./school-grade/results/school-results.component";
+import { CurrentSchoolResolve } from "./school-grade/results/current-school.resolve";
 
 export const routes: Routes = [
   {
@@ -24,8 +25,8 @@ export const routes: Routes = [
       {
         path: 'schools/:schoolId',
         pathMatch: 'full',
-        resolve: { assessment: SchoolAssessmentResolve },
-        data: { breadcrumb: { translate: 'labels.schools.name'}, permissions: ['INDIVIDUAL_PII_READ'] },
+        resolve: { assessment: SchoolAssessmentResolve, school: CurrentSchoolResolve },
+        data: { breadcrumb: { resolve: 'school.name'}, permissions: ['INDIVIDUAL_PII_READ'] },
         component: SchoolResultsComponent,
         canActivate: [ AuthorizeCanActivate ]
       }

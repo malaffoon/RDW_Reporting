@@ -20,7 +20,7 @@ export class SchoolResultsComponent implements OnInit {
   private _currentSchool: School;
   private _currentGradeId: number;
 
-  get currentSchool(){
+  get currentSchool() {
     return this._currentSchool;
   }
 
@@ -29,7 +29,7 @@ export class SchoolResultsComponent implements OnInit {
     this.assessmentProvider.schoolId = value.id;
   }
 
-  get currentGradeId(){
+  get currentGradeId() {
     return this._currentGradeId;
   }
 
@@ -51,7 +51,6 @@ export class SchoolResultsComponent implements OnInit {
     return this.availableAssessments.filter(x => x.selected);
   }
 
-  private _currentGroup;
   private _currentSchoolYear;
 
   constructor(private route: ActivatedRoute,
@@ -82,8 +81,13 @@ export class SchoolResultsComponent implements OnInit {
   }
 
   updateRoute() {
-    this.router.navigate([ 'groups', this._currentGroup.id, { schoolYear: this._currentSchoolYear, } ]).then(() => {
-      this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
+    this.router.navigate([
+      'schools',
+      this.currentSchool.id, {
+        gradeId: this.currentGradeId,
+        schoolYear: this.currentSchoolYear,
+      } ]).then(() => {
+        this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     });
   }
 
