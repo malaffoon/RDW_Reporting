@@ -273,10 +273,10 @@
       "3": "Above Standard"
     },
     "achievement-level": {
-      "1": "Level 1",
-      "2": "Level 2",
-      "3": "Level 3",
-      "4": "Level 4"
+      "1": "Did Not Meet Standards",
+      "2": "Nearly Met Standards",
+      "3": "Met Standards",
+      "4": "Exceeded Standards"
     },
     "gender": {
       "Male": "Male",
