@@ -118,7 +118,9 @@ export class AssessmentExamMapper {
     }
 
     uiModel.claimLevels = [];
-    apiModel.claimScaleScores.forEach(score => uiModel.claimLevels.push(score.level));
+    if (apiModel.claimScaleScores) {
+      apiModel.claimScaleScores.forEach(score => uiModel.claimLevels.push(score.level));
+    }
 
     return uiModel;
   }
