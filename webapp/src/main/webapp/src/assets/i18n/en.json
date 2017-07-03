@@ -278,6 +278,15 @@
       "3": "Met Standards",
       "4": "Exceeded Standards"
     },
+    "claim-code": {
+      "1": "Concepts & Procedures",
+      "2-W": "Writing",
+      "3": "Communicating Reasoning",
+      "4-CR": "Research & Inquiry",
+      "SOCK_2": "Problem Solving and Modeling & Data Analysis",
+      "SOCK_LS": "Listening",
+      "SOCK_R": "Reading"
+    },
     "gender": {
       "Male": "Male",
       "Female": "Female"
@@ -311,20 +320,7 @@
       "1": "Concepts and Procedures",
       "2": "Problem Solving",
       "3": "Communicating Reasoning",
-      "4": "Modeling and Data Analysis",
-      "subject": {
-        "Math": {
-          "1": "Math Claim 1",
-          "2": "Math Claim 2",
-          "3": "Math Claim 3"
-        },
-        "ELA": {
-          "1": "ELA Claim 1",
-          "2": "ELA Claim 2",
-          "3": "ELA Claim 3",
-          "4": "ELA Claim 4"
-        }
-      }
+      "4": "Modeling and Data Analysis"
     },
     "difficulty": {
       "E": "Easy",
