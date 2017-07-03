@@ -14,6 +14,10 @@ import { isNullOrUndefined } from "util";
   selector: 'app-group-results',
   templateUrl: './school-results.component.html',
 })
+/**
+ * The component which displays the assessment results when
+ * searching by school and grade.
+ */
 export class SchoolResultsComponent implements OnInit {
   schools: School[];
   assessmentExams: AssessmentExam[] = [];
