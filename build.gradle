@@ -4,7 +4,7 @@ import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
     ext {
-        springBootVersion = '1.5.2.RELEASE'
+        springBootVersion = '1.5.4.RELEASE'
     }
     repositories {
         mavenLocal()
@@ -25,7 +25,7 @@ plugins {
 
 // fixes spring boot 1.5 auto configuration from thymeleaf 2 to 3
 ext['thymeleaf.version'] = '3.0.6.RELEASE'
-ext['thymeleaf-layout-dialect.version'] = '2.0.0'
+ext['thymeleaf-layout-dialect.version'] = '2.1.1'
 
 
 apply plugin: 'io.spring.dependency-management'

@@ -9,11 +9,11 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
     compile 'javax.validation:validation-api'
     compile 'org.apache.commons:commons-io'
-    compile 'org.thymeleaf:thymeleaf'
     compile 'com.google.guava:guava'
     compile 'com.fasterxml.jackson.core:jackson-annotations'
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     optional 'org.springframework.boot:spring-boot-configuration-processor'
 
     testCompile('org.springframework.boot:spring-boot-starter-test') {
