@@ -92,7 +92,8 @@ export class AssessmentExamMapper {
     uiModel.id = apiModel.id;
     uiModel.date = apiModel.dateTime;
     uiModel.session = apiModel.sessionId;
-    uiModel.enrolledGrade = apiModel.studentContext.gradeId;
+
+    uiModel.enrolledGrade = apiModel.gradeId;
     uiModel.studentName = `${apiModel.student.lastName}, ${apiModel.student.firstName}`;
 
     uiModel.score = apiModel.scaleScore.value;
