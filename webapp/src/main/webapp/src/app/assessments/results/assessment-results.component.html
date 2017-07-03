@@ -80,12 +80,12 @@
             {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
           </a>
 
-          <div class="btn-group btn-group-xs toggle-group pull-right" data-toggle="buttons">
-            <label class="btn btn-primary active">
-              <input type="radio" name="boolean-toggle" id="overallScoresButton" autocomplete="off" (click)="viewOverallScores()" (checked)="!showClaimScores"> Overall Scores
+          <div class="btn-group btn-group-xs toggle-group pull-right mr-md" data-toggle="buttons">
+            <label class="btn btn-primary" [ngClass]="{'active': !showClaimScores }">
+              <input type="radio" name="boolean-toggle" autocomplete="off" (click)="viewOverallScores()"> Overall Scores
             </label>
-            <label class="btn btn-primary">
-              <input type="radio" name="boolean-toggle" id="claimScoresButton" autocomplete="off" (click)="viewClaimScores()" (checked)="showClaimScores"> Claim Scores
+            <label class="btn btn-primary" [ngClass]="{'active': showClaimScores }">
+              <input type="radio" name="boolean-toggle" autocomplete="off" (click)="viewClaimScores()"> Claim Scores
             </label>
           </div>
         </h3>
