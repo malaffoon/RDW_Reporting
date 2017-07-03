@@ -4,6 +4,6 @@
         <title></title>
     </head>
     <body>
-        <h1 th:text="#{examreport.title}"></h1>
+        <h1 th:text="#{report.student.name(${model.student.firstName}, ${model.student.lastName})}"></h1>
     </body>
 </html>
