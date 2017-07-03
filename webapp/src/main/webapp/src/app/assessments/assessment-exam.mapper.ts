@@ -82,6 +82,8 @@ export class AssessmentExamMapper {
     uiModel.name = apiModel.name;
     uiModel.grade = apiModel.gradeId;
     uiModel.type = AssessmentType[ apiModel.type as string ];
+    uiModel.subject = apiModel.subject;
+    uiModel.claimCodes = apiModel.claimCodes || [];
 
     return uiModel;
   }

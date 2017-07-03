@@ -7,9 +7,14 @@ export class Assessment {
   type: AssessmentType;
   subject: string;
   selected: boolean;
+  claimCodes: string[];
 
   get isIab() {
     return this.type == AssessmentType.IAB;
+  }
+
+  get isIca() {
+    return this.type == AssessmentType.ICA;
   }
 
   get isInterim() {
@@ -18,14 +23,5 @@ export class Assessment {
 
   get isSummative() {
     return this.type == AssessmentType.SUMMATIVE;
-  }
-
-  // TODO: change to use enum and have ID returned instead of string
-  get isMath() {
-    return this.subject == 'MATH';
-  }
-
-  get isEla() {
-    return this.subject == 'ELA';
   }
 }

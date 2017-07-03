@@ -39,7 +39,6 @@ export class AssessmentResultsComponent {
   filteredAssessmentItems: AssessmentItem[];
   pointColumns: number[];
   showItemsByPoints: boolean = false;
-  showClaimScores: boolean = false;
 
   /**
    * The assessment exam in which to display results for.
@@ -60,6 +59,11 @@ export class AssessmentResultsComponent {
    */
   @Input()
   showValuesAsPercent: boolean;
+
+  @Input()
+  displayState: any = {
+    table: 'overall' // ['overall' | 'claim']
+  };
 
   /**
    * Exam filters applied, if any.
@@ -111,16 +115,12 @@ export class AssessmentResultsComponent {
     return this._assessmentExam.assessment.isIab;
   }
 
-  get isMath(): boolean {
-    return this._assessmentExam.assessment.isMath;
+  get isIca(): boolean {
+    return this._assessmentExam.assessment.isIca
   }
 
-  get isEla(): boolean {
-    return this._assessmentExam.assessment.isEla;
-  }
-
-  getClaimScoreTranslateCode(claimNumber: number) {
-    return 'enum.claim.subject.' + (this.isMath ? 'Math' : 'ELA') + '.' + claimNumber;
+  public getClaims(): string[] {
+    return this._assessmentExam.assessment.claimCodes;
   }
 
   get examLevelEnum() {
@@ -170,18 +170,6 @@ export class AssessmentResultsComponent {
       this.filteredAssessmentItems = undefined;
       this.showItemsByPoints = false;
     }
-  }
-
-  viewClaimScores() {
-    this.showClaimScores = true;
-  }
-
-  viewOverallScores() {
-    this.showClaimScores = false;
-  }
-
-  get showClaim4ScoreColumn() {
-    return this.showClaimScores && this.isEla;
   }
 
   private getDistinctExamSessions(exams: Exam[]) {
