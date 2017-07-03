@@ -311,7 +311,20 @@
       "1": "Concepts and Procedures",
       "2": "Problem Solving",
       "3": "Communicating Reasoning",
-      "4": "Modeling and Data Analysis"
+      "4": "Modeling and Data Analysis",
+      "subject": {
+        "Math": {
+          "1": "Math Claim 1",
+          "2": "Math Claim 2",
+          "3": "Math Claim 3"
+        },
+        "ELA": {
+          "1": "ELA Claim 1",
+          "2": "ELA Claim 2",
+          "3": "ELA Claim 3",
+          "4": "ELA Claim 4"
+        }
+      }
     },
     "difficulty": {
       "E": "Easy",

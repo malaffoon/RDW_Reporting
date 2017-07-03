@@ -5,6 +5,7 @@ export class Assessment {
   name: string;
   grade: number;
   type: AssessmentType;
+  subject: string;
   selected: boolean;
 
   get isIab() {
@@ -17,5 +18,14 @@ export class Assessment {
 
   get isSummative() {
     return this.type == AssessmentType.SUMMATIVE;
+  }
+
+  // TODO: change to use enum and have ID returned instead of string
+  get isMath() {
+    return this.subject == 'MATH';
+  }
+
+  get isEla() {
+    return this.subject == 'ELA';
   }
 }

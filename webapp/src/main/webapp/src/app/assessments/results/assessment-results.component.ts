@@ -39,6 +39,7 @@ export class AssessmentResultsComponent {
   filteredAssessmentItems: AssessmentItem[];
   pointColumns: number[];
   showItemsByPoints: boolean = false;
+  showClaimScores: boolean = false;
 
   /**
    * The assessment exam in which to display results for.
@@ -110,6 +111,18 @@ export class AssessmentResultsComponent {
     return this._assessmentExam.assessment.isIab;
   }
 
+  get isMath(): boolean {
+    return this._assessmentExam.assessment.isMath;
+  }
+
+  get isEla(): boolean {
+    return this._assessmentExam.assessment.isEla;
+  }
+
+  getClaimScoreTranslateCode(claimNumber: number) {
+    return 'enum.claim.subject.' + (this.isMath ? 'Math' : 'ELA') + '.' + claimNumber;
+  }
+
   get examLevelEnum() {
     return this.isIab
       ? "enum.iab-category."
@@ -157,6 +170,18 @@ export class AssessmentResultsComponent {
       this.filteredAssessmentItems = undefined;
       this.showItemsByPoints = false;
     }
+  }
+
+  viewClaimScores() {
+    this.showClaimScores = true;
+  }
+
+  viewOverallScores() {
+    this.showClaimScores = false;
+  }
+
+  get showClaim4ScoreColumn() {
+    return this.showClaimScores && this.isEla;
   }
 
   private getDistinctExamSessions(exams: Exam[]) {

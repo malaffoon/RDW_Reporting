@@ -111,8 +111,12 @@ export class AssessmentExamMapper {
 
     uiModel.ethnicities = [];
 
-    if (apiModel.student.ethnicityCodes)
+    if (apiModel.student.ethnicityCodes) {
       apiModel.student.ethnicityCodes.forEach(code => uiModel.ethnicities.push(code));
+    }
+
+    uiModel.claimLevels = [];
+    apiModel.claimScaleScores.forEach(score => uiModel.claimLevels.push(score.level));
 
     return uiModel;
   }

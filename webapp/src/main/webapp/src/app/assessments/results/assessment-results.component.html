@@ -75,9 +75,19 @@
       <div *ngIf="!showItemsByPoints">
         <h3 class="gray-darkest mb-md">
           {{'labels.groups.results.assessment.exams.title' | translate}}
-          <a *ngIf="assessmentExam.assessment.isInterim" class="btn btn-info btn-xs pull-right" (click)="viewItemsByPoints(true)">
+
+          <a *ngIf="assessmentExam.assessment.isInterim" class="btn btn-default btn-xs pull-right" (click)="viewItemsByPoints(true)">
             {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
           </a>
+
+          <div class="btn-group btn-group-xs toggle-group pull-right" data-toggle="buttons">
+            <label class="btn btn-primary active">
+              <input type="radio" name="boolean-toggle" id="overallScoresButton" autocomplete="off" (click)="viewOverallScores()" (checked)="!showClaimScores"> Overall Scores
+            </label>
+            <label class="btn btn-primary">
+              <input type="radio" name="boolean-toggle" id="claimScoresButton" autocomplete="off" (click)="viewClaimScores()" (checked)="showClaimScores"> Claim Scores
+            </label>
+          </div>
         </h3>
 
         <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.assessment.exams.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped table-hover">
@@ -88,12 +98,12 @@
             </ng-template>
           </p-column>
           <p-column field="session" header="{{'labels.groups.results.assessment.exams.cols.session' | translate}}" [sortable]="true"></p-column>
-          <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true">
+          <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true" [hidden]="showClaimScores">
             <ng-template let-exam="rowData" pTemplate="body">
               {{ exam.enrolledGrade }}
             </ng-template>
           </p-column>
-          <p-column field="administrativeCondition" [sortable]="true" >
+          <p-column field="administrativeCondition" [sortable]="true" [hidden]="showClaimScores">
             <ng-template pTemplate="header">
               {{'labels.groups.results.assessment.exams.cols.status' | translate}}
               <span class="icon"
@@ -107,7 +117,7 @@
               <span *ngIf="exam.completeness == 'Partial'" class="label border-only maroon">{{ 'enum.completeness.' + exam.completeness | translate }}</span>
             </ng-template>
           </p-column>
-          <p-column field="level" [sortable]="true">
+          <p-column field="level" [sortable]="true" [hidden]="showClaimScores">
             <ng-template pTemplate="header">
               {{performanceLevelHeader | translate}}
               <span class="icon"
@@ -120,7 +130,7 @@
               {{ examLevelEnum + exam.level | translate }}
             </ng-template>
           </p-column>
-          <p-column field="score" [sortable]="true">
+          <p-column field="score" [sortable]="true" [hidden]="showClaimScores">
             <ng-template pTemplate="header">
               {{'labels.groups.results.assessment.exams.cols.score' | translate}}
               <span class="icon"
@@ -131,6 +141,38 @@
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
               {{ exam.score }} ± {{ exam.standardError }}
+            </ng-template>
+          </p-column>
+          <p-column field="level" [sortable]="true" [hidden]="!showClaimScores">
+            <ng-template pTemplate="header">
+              {{ getClaimScoreTranslateCode(1) | translate}}
+            </ng-template>
+            <ng-template let-exam="rowData" pTemplate="body">
+              {{ 'enum.iab-category.' + exam.claimLevels[0] | translate }}
+            </ng-template>
+          </p-column>
+          <p-column field="level" [sortable]="true" [hidden]="!showClaimScores">
+            <ng-template pTemplate="header">
+              {{ getClaimScoreTranslateCode(2) | translate}}
+            </ng-template>
+            <ng-template let-exam="rowData" pTemplate="body">
+              {{ 'enum.iab-category.' + exam.claimLevels[1] | translate }}
+            </ng-template>
+          </p-column>
+          <p-column field="level" [sortable]="true" [hidden]="!showClaimScores">
+            <ng-template pTemplate="header">
+              {{ getClaimScoreTranslateCode(3) | translate}}
+            </ng-template>
+            <ng-template let-exam="rowData" pTemplate="body">
+              {{ 'enum.iab-category.' + exam.claimLevels[2] | translate }}
+            </ng-template>
+          </p-column>
+          <p-column field="level" [sortable]="true" [hidden]="!showClaim4ScoreColumn">
+            <ng-template pTemplate="header">
+              {{ getClaimScoreTranslateCode(4) | translate}}
+            </ng-template>
+            <ng-template let-exam="rowData" pTemplate="body">
+              {{ 'enum.iab-category.' + exam.claimLevels[3] | translate }}
             </ng-template>
           </p-column>
         </p-dataTable>
