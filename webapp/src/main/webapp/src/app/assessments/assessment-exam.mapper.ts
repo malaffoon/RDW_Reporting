@@ -82,6 +82,8 @@ export class AssessmentExamMapper {
     uiModel.name = apiModel.name;
     uiModel.grade = apiModel.gradeId;
     uiModel.type = AssessmentType[ apiModel.type as string ];
+    uiModel.subject = apiModel.subject;
+    uiModel.claimCodes = apiModel.claimCodes || [];
 
     return uiModel;
   }
@@ -111,8 +113,14 @@ export class AssessmentExamMapper {
 
     uiModel.ethnicities = [];
 
-    if (apiModel.student.ethnicityCodes)
+    if (apiModel.student.ethnicityCodes) {
       apiModel.student.ethnicityCodes.forEach(code => uiModel.ethnicities.push(code));
+    }
+
+    uiModel.claimLevels = [];
+    if (apiModel.claimScaleScores) {
+      apiModel.claimScaleScores.forEach(score => uiModel.claimLevels.push(score.level));
+    }
 
     return uiModel;
   }

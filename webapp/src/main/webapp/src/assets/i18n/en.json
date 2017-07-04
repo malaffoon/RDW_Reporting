@@ -254,7 +254,9 @@
       "expand": "Expand",
       "collapse": "Collapse"
     },
-    "search": "Search"
+    "search": "Search",
+    "display-overall": "Overall Scores",
+    "display-claim": "Claim Scores"
   },
   "enum": {
     "administrative-condition": {
@@ -277,6 +279,15 @@
       "2": "Nearly Met Standards",
       "3": "Met Standards",
       "4": "Exceeded Standards"
+    },
+    "claim-code": {
+      "1": "Concepts & Procedures",
+      "2-W": "Writing",
+      "3": "Communicating Reasoning",
+      "4-CR": "Research & Inquiry",
+      "SOCK_2": "Problem Solving and Modeling & Data Analysis",
+      "SOCK_LS": "Listening",
+      "SOCK_R": "Reading"
     },
     "gender": {
       "Male": "Male",

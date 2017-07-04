@@ -5,10 +5,16 @@ export class Assessment {
   name: string;
   grade: number;
   type: AssessmentType;
+  subject: string;
   selected: boolean;
+  claimCodes: string[];
 
   get isIab() {
     return this.type == AssessmentType.IAB;
+  }
+
+  get isIca() {
+    return this.type == AssessmentType.ICA;
   }
 
   get isInterim() {

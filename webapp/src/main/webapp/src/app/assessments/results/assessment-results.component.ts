@@ -9,6 +9,11 @@ import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { GradeService } from "../../shared/grade.service";
 import { AssessmentItem } from "../model/assessment-item.model";
 
+enum ScoreViewState {
+  OVERALL = 1,
+  CLAIM = 2
+}
+
 @Component({
   selector: 'assessment-results',
   templateUrl: './assessment-results.component.html',
@@ -60,6 +65,11 @@ export class AssessmentResultsComponent {
   @Input()
   showValuesAsPercent: boolean;
 
+  @Input()
+  displayState: any = {
+    showClaim: ScoreViewState.OVERALL
+  };
+
   /**
    * Exam filters applied, if any.
    */
@@ -108,6 +118,26 @@ export class AssessmentResultsComponent {
 
   get isIab(): boolean {
     return this._assessmentExam.assessment.isIab;
+  }
+
+  get isIca(): boolean {
+    return this._assessmentExam.assessment.isIca
+  }
+
+  get claimCodes(): string[] {
+    return this._assessmentExam.assessment.claimCodes;
+  }
+
+  get isClaimScoreSelected() {
+    return this.displayState.table == ScoreViewState.CLAIM;
+  }
+
+  public setClaimScoreSelected() {
+    this.displayState.table = ScoreViewState.CLAIM;
+  }
+
+  public setOverallScoreSelected() {
+    this.displayState.table = ScoreViewState.OVERALL;
   }
 
   get examLevelEnum() {
