@@ -119,7 +119,7 @@ export class AssessmentResultsComponent {
     return this._assessmentExam.assessment.isIca
   }
 
-  public getClaims(): string[] {
+  get claimCodes(): string[] {
     return this._assessmentExam.assessment.claimCodes;
   }
 

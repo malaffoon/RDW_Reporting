@@ -82,10 +82,10 @@
 
           <div *ngIf="isIca" class="btn-group btn-group-xs toggle-group pull-right mr-md" data-toggle="buttons">
             <label class="btn btn-primary" [ngClass]="{'active': displayState.table === 'overall'}">
-              <input type="radio" name="boolean-toggle" autocomplete="off" (click)="displayState.table = 'overall'"> Overall Scores
+              <input type="radio" name="scores-display-toggle" autocomplete="off" (click)="displayState.table = 'overall'"> {{'buttons.display-overall' | translate}}
             </label>
             <label class="btn btn-primary" [ngClass]="{'active': displayState.table === 'claim'}">
-              <input type="radio" name="boolean-toggle" autocomplete="off" (click)="displayState.table = 'claim'"> Claim Scores
+              <input type="radio" name="scores-display-toggle" autocomplete="off" (click)="displayState.table = 'claim'"> {{'buttons.display-claim' | translate}}
             </label>
           </div>
         </h3>
@@ -145,7 +145,7 @@
           </p-column>
 
           <!-- Claim Score columns -->
-          <p-column *ngFor="let claim of getClaims(); let idx = index"
+          <p-column *ngFor="let claim of claimCodes; let idx = index"
                     header="{{'enum.claim-code.' + claim | translate}}"
                     field="{{'exam.claimLevels[' + idx + ']'}}"
                     sortable="true"

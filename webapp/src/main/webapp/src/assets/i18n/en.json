@@ -254,7 +254,9 @@
       "expand": "Expand",
       "collapse": "Collapse"
     },
-    "search": "Search"
+    "search": "Search",
+    "display-overall": "Overall Scores",
+    "display-claim": "Claim Scores"
   },
   "enum": {
     "administrative-condition": {
