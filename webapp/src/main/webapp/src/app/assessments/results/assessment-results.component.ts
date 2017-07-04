@@ -9,6 +9,11 @@ import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { GradeService } from "../../shared/grade.service";
 import { AssessmentItem } from "../model/assessment-item.model";
 
+enum ScoreViewState {
+  OVERALL = 1,
+  CLAIM = 2
+}
+
 @Component({
   selector: 'assessment-results',
   templateUrl: './assessment-results.component.html',
@@ -62,7 +67,7 @@ export class AssessmentResultsComponent {
 
   @Input()
   displayState: any = {
-    table: 'overall' // ['overall' | 'claim']
+    showClaim: ScoreViewState.OVERALL
   };
 
   /**
@@ -121,6 +126,18 @@ export class AssessmentResultsComponent {
 
   get claimCodes(): string[] {
     return this._assessmentExam.assessment.claimCodes;
+  }
+
+  get isClaimScoreSelected() {
+    return this.displayState.table == ScoreViewState.CLAIM;
+  }
+
+  public setClaimScoreSelected() {
+    this.displayState.table = ScoreViewState.CLAIM;
+  }
+
+  public setOverallScoreSelected() {
+    this.displayState.table = ScoreViewState.OVERALL;
   }
 
   get examLevelEnum() {
