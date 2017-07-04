@@ -37,9 +37,7 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       body = exam_filter_options;
     } else if (new RegExp(`GET /api/groups/\\d+/assessments/\\d+/examitems`, 'g').test(requestSignature)) {
       body = exam_items;
-    } else if (new RegExp(`GET /api/schools/\\d+/assessmentGrades`, 'g').test(requestSignature)) {
-      body = grades;
-    } else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/report`, 'g').test(requestSignature)) {
+    }  else if (new RegExp(`GET /api/groups/\\d+/students/\\d+/exams/\\d+/report`, 'g').test(requestSignature)) {
       body = {
         //report
       };
@@ -90,13 +88,15 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
     } else if(new RegExp(`GET /api/schoolYears`, 'g').test(requestSignature)) {
       body = mock_schoolyears;
 
-    } else if(new RegExp(`GET /api/groups/\\d+/latestassessment`, 'g').test(requestSignature)) {
+    } else if(new RegExp(`GET /api/groups/\\d+/latestassessment`, 'g').test(requestSignature)
+      || new RegExp(`GET /api/schools/\\d+/assessmentGrades/\\d+/latestassessment`, 'g').test(requestSignature)) {
 
       let startIndex = requestSignature.indexOf("schoolYear=");
       let schoolYear = Number.parseInt(requestSignature.substring(startIndex).replace("schoolYear=", ""));
       body = groupAssessments.find(x=> x.assessment.academicYear == schoolYear);
 
-    } else if(new RegExp(`GET /api/groups/\\d+/assessments/\\d+/exams`, 'g').test(requestSignature)) {
+    } else if(new RegExp(`GET /api/groups/\\d+/assessments/\\d+/exams`, 'g').test(requestSignature)
+      || new RegExp(`GET /api/schools/\\d+/assessmentGrades/\\d+/assessments/\\d+/exams`, 'g').test(requestSignature)) {
       let startIndex = requestSignature.indexOf("assessments/");
       let endIndex = requestSignature.indexOf("/exams");
       let assessmentId = requestSignature.substring(startIndex + 12, endIndex);
@@ -104,8 +104,11 @@ export function createStandaloneHttp(mockBackend: MockBackend, options: BaseRequ
       console.log(assessmentId);
       body = groupAssessments.find(x=> x.assessment.id == assessmentId).exams;
 
-    } else if(new RegExp(`GET /api/groups/\\d+/assessments`, 'g').test(requestSignature)) {
+    } else if(new RegExp(`GET /api/groups/\\d+/assessments`, 'g').test(requestSignature)
+      || new RegExp(`GET /api/schools/\\d+/assessmentGrades/\\d+/assessments`, 'g').test(requestSignature)) {
       body = assessments.map(x => { x.selected = false; return x;});
+    } else if (new RegExp(`GET /api/schools/\\d+/assessmentGrades`, 'g').test(requestSignature)) {
+      body = grades;
     } else if (requestSignature.startsWith(`GET /api/students/search?ssid=`)) {
       let query  = requestSignature.replace(`GET /api/students/search?ssid=`, '').toLowerCase();
       let studentsResult = students.filter(x =>

@@ -29,9 +29,7 @@ export class SchoolGradeComponent implements OnInit {
       };
     });
 
-    if(this._availableSchools.length == 1){
-      this.schoolControl.setValue(this._availableSchools[0]);
-    }
+
   }
 
   get availableSchools() {
@@ -55,6 +53,13 @@ export class SchoolGradeComponent implements OnInit {
       school: new FormControl(null, Validators.required),
       grade: new FormControl({ value: this.selectNullOptionValue, disabled: true }, Validators.required)
     });
+
+    if(this._availableSchools.length == 1){
+      let school = this._availableSchools[0].value;
+
+      this.schoolControl.setValue(school);
+      this.schoolChanged(school);
+    }
 
     this.schoolControl.valueChanges.subscribe(school => this.schoolChanged(school));
   }
