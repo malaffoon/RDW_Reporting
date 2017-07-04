@@ -16,4 +16,5 @@ export class Exam {
   economicDisadvantage: boolean;
   limitedEnglishProficiency: boolean;
   ethnicities: string[];
+  claimLevels: number[];
 }
