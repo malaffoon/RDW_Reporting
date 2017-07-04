@@ -1,0 +1,34 @@
+<div class="mb-md">
+  <div class="tag tag-lg blue ">
+    <span class="label">{{'labels.student.name' | translate:examHistory.student}}</span>
+    <span>{{examHistory.student.ssid}}</span>
+  </div>
+</div>
+
+<!-- Results Filter -->
+<student-results-filter [filterState]="filterState"
+                        (filterChange)="onFilterChange()"></student-results-filter>
+
+<h3 class="blue mb-md">{{'labels.student.results.title' | translate}}</h3>
+
+<!-- Assessments Grouped by Type and Subject -->
+<div *ngFor="let assessmentType of assessmentTypes">
+  <div *ngFor="let subject of getSubjectsForType(assessmentType)" class="well">
+    <span class="tag tag-md {{ assessmentType | assessmentType:'color' }}">
+      <span class="label">{{assessmentType | assessmentType}}</span>
+      <span>{{subject}}</span>
+    </span>
+    <button class="btn btn-default btn-sm icon-only pull-right"
+            (click)="toggleCollapsed(assessmentType, subject)">
+      <span class="sr-only">{{ 'buttons.collapsible.collapse' | translate }}</span>
+      <i class="fa fa-bold {{ isCollapsed(assessmentType, subject) ? 'fa-angle-down' : 'fa-angle-up' }}"></i>
+    </button>
+
+    <div class="mt-md" [hidden]="isCollapsed(assessmentType, subject)">
+      <student-history-iab-table *ngIf="(assessmentType | assessmentType) === 'IAB'"
+                                 [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-iab-table>
+      <student-history-ica-summitive-table *ngIf="(assessmentType | assessmentType) !== 'IAB'"
+                                           [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-ica-summitive-table>
+    </div>
+  </div>
+</div>
