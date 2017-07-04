@@ -17,4 +17,20 @@ export class Exam {
   limitedEnglishProficiency: boolean;
   ethnicities: string[];
   claimLevels: number[];
+
+  get claimLevel0() {
+    return this.claimLevels[0];
+  }
+
+  get claimLevel1() {
+    return this.claimLevels[1];
+  }
+
+  get claimLevel2() {
+    return this.claimLevels[2];
+  }
+
+  get claimLevel3() {
+    return this.claimLevels[3];
+  }
 }
