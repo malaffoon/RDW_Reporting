@@ -8,6 +8,8 @@ import { Subscription, Observable } from "rxjs";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { GradeService } from "../../shared/grade.service";
 import { AssessmentItem } from "../model/assessment-item.model";
+import { ordering } from "@kourge/ordering";
+import { byString } from "@kourge/ordering/comparator";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -192,13 +194,17 @@ export class AssessmentResultsComponent {
   private getDistinctExamSessions(exams: Exam[]) {
     let sessions = [];
 
-    exams.forEach(exam => {
+    for(let exam of exams){
       if (!sessions.some(x => x.id == exam.session)) {
         sessions.push({ id: exam.session, date: exam.date, filter: false });
       }
-    });
+    }
 
-    return sessions;
+    return sessions
+      .sort(ordering(byString)
+        .on<any>(session => session.date)
+        .reverse()
+        .compare);
   }
 
   private updateExamSessions() {
