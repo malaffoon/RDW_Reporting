@@ -14,6 +14,10 @@
   "collapse": "Collapse",
   "select": "Select",
   "labels": {
+    "navigation": {
+      "user-guide": "User Guide",
+      "interpretive-guide": "Interpretive Guide"
+    },
     "homepage": {
       "title": "Access Assessment Results",
       "search-school-grade": {
