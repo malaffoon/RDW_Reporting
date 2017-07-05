@@ -235,10 +235,30 @@
     "student": {
       "title": "Search by Student",
       "prompt": "Enter the Statewide Student Identifier (SSID)",
+      "name": "{{lastName}}, {{firstName}}",
       "messages": {
         "no-results": "Student does not exist or has no available exam results."
+      },
+      "results": {
+        "title": "Student Test History Report",
+        "crumb": "Student Id: {{ssid}}",
+        "labels": {
+          "select-subject": "Subject"
+        },
+        "cols": {
+          "school-year": "School Year",
+          "school": "School",
+          "assessment": "Assessment",
+          "date": "Date",
+          "enrolled-grade": "Enrolled Grade",
+          "status": "Status",
+          "reporting-category": "Reporting Category",
+          "scale-score": "Scale Score",
+          "achievement-level": "Achievement Level"
+        }
       }
-    }
+    },
+    "select-year": "School Year"
   },
   "prompt": {
     "search": "Search",

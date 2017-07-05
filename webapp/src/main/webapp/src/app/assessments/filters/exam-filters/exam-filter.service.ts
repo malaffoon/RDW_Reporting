@@ -4,6 +4,7 @@ import { ExamFilter } from "../../model/exam-filter.model";
 import { AssessmentExam } from "../../model/assessment-exam.model";
 import { FilterBy } from "../../model/filter-by.model";
 import { Exam } from "../../model/exam.model";
+import { Assessment } from "../../model/assessment.model";
 
 @Injectable()
 export class ExamFilterService {
@@ -31,7 +32,14 @@ export class ExamFilterService {
     return this.filterDefinitions.find(x => x.name == filterName);
   }
 
-  filterExams(assessmentExam: AssessmentExam, filterBy: FilterBy) {
+  /**
+   * Filter exams within an AssessmentExam.
+   *
+   * @param assessmentExam  An assessment exam
+   * @param filterBy        The currently-applied filters
+   * @returns {Exam[]} The filtered exams
+   */
+  filterExams(assessmentExam: AssessmentExam, filterBy: FilterBy): Exam[] {
     let exams = assessmentExam.exams;
 
     if (filterBy == null)
@@ -54,6 +62,52 @@ export class ExamFilterService {
     }
 
     return exams;
+  }
+
+  /**
+   * Filter a collection of items that can be resolved to both an Assessment and Exam.
+   *
+   * @param assessmentProvider  Function to provide the Assessment for the given item
+   * @param examProvider        Function to provide the Exam for the given item.
+   * @param items               The source items
+   * @param filterBy            The currently-applied filters
+   * @returns {any[]} The filtered items
+   */
+  filterItems(
+    assessmentProvider: (item: any) => Assessment,
+    examProvider: (item: any) => Exam,
+    items: any[],
+    filterBy: FilterBy): any[] {
+
+    if (filterBy == null) {
+      return items;
+    }
+
+    let results: any[] = items;
+    let filters = this.getFilters(filterBy);
+    for (let filter of filters) {
+      let filterDefinition = this.getFilterDefinitionFor(filter);
+
+      results = results
+        .filter((item) => {
+          let assessment: Assessment = assessmentProvider(item);
+          if (!filterDefinition.precondition(assessment)) return true;
+
+          let exam: Exam = examProvider(item);
+          let filterValue = filterBy[filter];
+
+          if(filter == 'offGradeAssessment') {
+            filterValue = assessment.grade;
+          }
+          else if(filter == 'ethnicities') {
+            filterValue = filterBy.filteredEthnicities;
+          }
+
+          return filterDefinition.apply(exam, filterValue);
+      });
+    }
+
+    return results;
   }
 
   private getFilters(filterBy : FilterBy) {

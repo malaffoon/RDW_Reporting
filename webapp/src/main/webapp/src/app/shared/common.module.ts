@@ -16,6 +16,8 @@ import { SBCheckboxList } from "./sb-checkbox-list.component";
 import { GradeService } from "./grade.service";
 import { GradeDisplayPipe } from "./grade-display.pipe";
 import { RdwTranslateLoader } from "./rdw-translate-loader";
+import { ScaleScorePipe } from "./scale-score.pipe";
+import { AssessmentTypePipe } from "./assessment-type.pipe";
 
 export function createTranslateLoader(http: Http) {
   return new RdwTranslateLoader(http);
@@ -23,14 +25,16 @@ export function createTranslateLoader(http: Http) {
 
 @NgModule({
   declarations: [
-    PadStartPipe,
+    AssessmentTypePipe,
     GradeDisplayPipe,
-    SubjectPipe,
+    PadStartPipe,
+    SBRadioButtonComponent,
+    SBCheckboxList,
+    ScaleScorePipe,
     SchoolYearPipe,
     SearchPipe,
-    RemoveCommaPipe,
-    SBRadioButtonComponent,
-    SBCheckboxList
+    SubjectPipe,
+    RemoveCommaPipe
   ],
   imports: [
     HttpModule,
@@ -45,16 +49,18 @@ export function createTranslateLoader(http: Http) {
     })
   ],
   exports: [
-    PadStartPipe,
+    AssessmentTypePipe,
     GradeDisplayPipe,
+    PadStartPipe,
     RemoveCommaPipe,
-    SubjectPipe,
+    RouterModule,
+    SBCheckboxList,
+    SBRadioButtonComponent,
+    ScaleScorePipe,
     SchoolYearPipe,
     SearchPipe,
-    TranslateModule,
-    RouterModule,
-    SBRadioButtonComponent,
-    SBCheckboxList
+    SubjectPipe,
+    TranslateModule
   ],
   providers: [
     DataService,

@@ -184,7 +184,7 @@ export const students = [ {
 
 export const exams_of_student = [
   {
-    dateTime: new Date(2017, 1, 7),
+    dateTime: '2016-01-07T16:02:21Z',
     sessionId: "ma-01",
     scaleScore: { value: 2321, level: 1 },
     completenessId: 2,
@@ -193,7 +193,7 @@ export const exams_of_student = [
     student: students[0]
   },
   {
-    dateTime: new Date(2017, 1, 7),
+    dateTime: '2017-01-07T16:02:21Z',
     sessionId: "ma-01",
     scaleScore: { value: 2339, level: 1 },
     completenessId: 2,
@@ -202,7 +202,7 @@ export const exams_of_student = [
     student: students[1]
   },
   {
-    dateTime: new Date(2017, 1, 7),
+    dateTime: '2016-01-07T16:02:21Z',
     sessionId: "ma-02",
     scaleScore: { value: 2344, level: 1 },
     completenessId: 2,
@@ -211,7 +211,7 @@ export const exams_of_student = [
     student: students[2]
   },
   {
-    dateTime: new Date(2017, 1, 15),
+    dateTime: '2016-01-15T16:02:21Z',
     sessionId: "ma-02",
     scaleScore: { value: 2378, level: 2 },
     completenessId: 2,
@@ -220,7 +220,7 @@ export const exams_of_student = [
     student: students[3]
   },
   {
-    dateTime: new Date(2017, 1, 15),
+    dateTime: '2016-01-07T16:02:21Z',
     sessionId: "ma-02",
     scaleScore: { value: 2447, level: 3 },
     completenessId: 2,
@@ -229,7 +229,7 @@ export const exams_of_student = [
     student: students[4]
   },
   {
-    dateTime: new Date(2017, 1, 15),
+    dateTime: '2016-01-07T16:02:21Z',
     sessionId: null,
     scaleScore: { value: 2595, level: 3 },
     completenessId: 1,
@@ -238,7 +238,7 @@ export const exams_of_student = [
     student: students[5]
   },
   {
-    dateTime: new Date(2017, 1, 20),
+    dateTime: '2016-01-07T16:02:21Z',
     sessionId: null,
     scaleScore: { value: 2520, level: 3 },
     completenessId: 2,
@@ -247,7 +247,7 @@ export const exams_of_student = [
     student: students[6]
   },
   {
-    dateTime: new Date(2017, 1, 20),
+    dateTime: '2016-01-07T16:02:21Z',
     sessionId: "ma-01",
     scaleScore: { value: 2520, level: 3 },
     completenessId: 2,
@@ -274,7 +274,7 @@ export const exams_of_student = [
 
 export const exams_sum_of_students = [
   {
-    dateTime: new Date(2017, 1, 7),
+    dateTime: '2017-01-07T16:02:21Z',
     sessionId: "ma-01",
     scaleScore: { value: 2321, level: 1 },
     completenessId: 1,
@@ -282,7 +282,7 @@ export const exams_sum_of_students = [
     grade: 4,
     student: students[0]
   }, {
-    dateTime: new Date(2017, 1, 7),
+    dateTime: '2016-01-07T16:02:21Z',
     sessionId: "ma-01",
     scaleScore: { value: 2339, level: 2 },
     completenessId: 2,
@@ -290,7 +290,7 @@ export const exams_sum_of_students = [
     grade: 4,
     student: students[1]
   }, {
-    dateTime: new Date(2017, 1, 7),
+    dateTime: '2017-01-15T16:02:21Z',
     sessionId: "ma-01",
     scaleScore: { value: 2344, level: 4 },
     completenessId: 2,
@@ -298,7 +298,7 @@ export const exams_sum_of_students = [
     grade: 4,
     student: students[2]
   }, {
-    dateTime: new Date(2017, 1, 15),
+    dateTime: '2017-01-07T16:02:21Z',
     sessionId: "ma-01",
     scaleScore: { value: 2378, level: 4 },
     completenessId: 2,
@@ -306,7 +306,7 @@ export const exams_sum_of_students = [
     grade: 4,
     student: students[3]
   }, {
-    dateTime: new Date(2017, 1, 15),
+    dateTime: '2017-01-07T16:02:21Z',
     sessionId: "ma-02",
     scaleScore: { value: 2378, level: 4 },
     completenessId: 2,
@@ -379,7 +379,7 @@ export const groupAssessments= [
 // Just to keep the old UI working for now...
 export const DEPRECATED_exams_of_student = [
   {
-    date: new Date(2017, 1, 2),
+    date: '2016-01-02T16:02:21Z',
     performance: 0,
     score: 2321,
     grade: 4,
@@ -387,7 +387,7 @@ export const DEPRECATED_exams_of_student = [
     studentName: { first: "David", last: "Hayden" }
   },
   {
-    date: new Date(2017, 1, 4),
+    date: '2017-01-04T16:02:21Z',
     performance: 0,
     score: 2339,
     grade: 4,
@@ -395,7 +395,7 @@ export const DEPRECATED_exams_of_student = [
     studentName: { first: "Clementine", last: "Roach" }
   },
   {
-    date: new Date(2017, 1, 7),
+    date: '2016-01-07T16:02:21Z',
     performance: 0,
     score: 2344,
     grade: 4,
@@ -403,7 +403,7 @@ export const DEPRECATED_exams_of_student = [
     studentName: { first: "Hasad", last: "Valenzuela" }
   },
   {
-    date: new Date(2017, 1, 15),
+    date: '2017-01-15T16:02:21Z',
     performance: 0,
     score: 2378,
     grade: 4,
@@ -411,7 +411,7 @@ export const DEPRECATED_exams_of_student = [
     studentName: { first: "Joe", last: "Smith" }
   },
   {
-    date: new Date(2017, 1, 15),
+    date: '2017-01-15T16:02:21Z',
     performance: 1,
     score: 2447,
     grade: 4,
@@ -419,7 +419,7 @@ export const DEPRECATED_exams_of_student = [
     studentName: { first: "Joseph", last: "Cleveland" }
   },
   {
-    date: new Date(2017, 1, 15),
+    date: '2017-01-15T16:02:21Z',
     performance: 2,
     score: 2595,
     grade: 4,
@@ -427,7 +427,7 @@ export const DEPRECATED_exams_of_student = [
     studentName: { first: "Sara", last: "Blankenship" }
   },
   {
-    date: new Date(2017, 1, 20),
+    date: '2017-01-15T16:02:21Z',
     performance: 2,
     score: 2520,
     grade: 4,
@@ -435,7 +435,7 @@ export const DEPRECATED_exams_of_student = [
     studentName: { first: "Linus", last: "Todd" }
   },
   {
-    date: new Date(2017, 1, 20),
+    date: '2017-01-15T16:02:21Z',
     performance: 2,
     score: 2520,
     grade: 4,
@@ -498,14 +498,14 @@ sortAscOn(groups, group => group.name);
 export const mock_group = groups[0];
 
 export const exams_of_group = [
-  {date: new Date(2017, 1, 15), assessment: assessments[0], students: {total: 6, below: .33, near: .33, above: .33, averagePerformance: 1, averageScore: 2350}},
-  {date: new Date(2017, 1, 14), assessment: assessments[0], students: {total: 2, below: 0, near: .5, above: .5, averagePerformance: 2, averageScore: 2400}},
-  {date: new Date(2016, 8, 12), assessment: assessments[1], students: {total: 2, below: .5, near: .5, above: 0, averagePerformance: 1, averageScore: 2344}},
-  {date: new Date(2016, 7, 8), assessment: assessments[1], students: {total: 20, below: .5, near: 0, above: .5, averagePerformance: 1, averageScore: 2378}},
-  {date: new Date(2016, 5, 10), assessment: assessments[2], students: {total: 20, below: .2, near: .2, above: .6, averagePerformance: 1, averageScore: 2595}},
-  {date: new Date(2016, 3, 20), assessment: assessments[3], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}},
-  {date: new Date(2016, 2, 2), assessment: assessments[2], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}},
-  {date: new Date(2016, 1, 12), assessment: assessments[4], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}}
+  {date: '2017-01-15T16:02:21Z', assessment: assessments[0], students: {total: 6, below: .33, near: .33, above: .33, averagePerformance: 1, averageScore: 2350}},
+  {date:'2017-01-14T16:02:21Z', assessment: assessments[0], students: {total: 2, below: 0, near: .5, above: .5, averagePerformance: 2, averageScore: 2400}},
+  {date: '2017-08-12T16:02:21Z', assessment: assessments[1], students: {total: 2, below: .5, near: .5, above: 0, averagePerformance: 1, averageScore: 2344}},
+  {date:'2016-07-08T16:02:21Z', assessment: assessments[1], students: {total: 20, below: .5, near: 0, above: .5, averagePerformance: 1, averageScore: 2378}},
+  {date: '2017-05-10T16:02:21Z', assessment: assessments[2], students: {total: 20, below: .2, near: .2, above: .6, averagePerformance: 1, averageScore: 2595}},
+  {date: '2017-03-20T16:02:21Z', assessment: assessments[3], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}},
+  {date: '2016-02-02T16:02:21Z', assessment: assessments[2], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}},
+  {date: '2016-01-12T16:02:21Z', assessment: assessments[4], students: {total: 20, below: .1, near: .4, above: .5, averagePerformance: 1, averageScore: 2520}}
 ].map((exam:any, index: number, exams:Array<any>) => {
   exam.id = randomId();
   exam.session = 'ma-0' + (exams.length - index);

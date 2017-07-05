@@ -5,8 +5,8 @@ export class Assessment {
   name: string;
   grade: number;
   type: AssessmentType;
-  subject: string;
   selected: boolean;
+  subject: string;
   claimCodes: string[];
 
   get isIab() {
