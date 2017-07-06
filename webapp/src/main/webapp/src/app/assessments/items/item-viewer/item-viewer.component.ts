@@ -28,6 +28,7 @@ export class ItemViewerComponent implements OnInit {
 
   // TODO:  How is this configured?
   private irisUrl = "https://tds-stage.smarterbalanced.org/iris/";
+  // private irisUrl = "http://iris-dev.sbacdw.org:8080/iris/";
 
   // TODO: This data should come from API.
   private vendorId = "2B3C34BF-064C-462A-93EA-41E9E3EB8333";
@@ -58,5 +59,6 @@ export class ItemViewerComponent implements OnInit {
 
   getToken(bankItemKey){
     return `{"passage":{"autoLoad":"false"},"items":[{"id":"I-${bankItemKey}"}],"layout":"WAI"}`;
+    // return `{"items":[{"id":"I-${bankItemKey}"}], "accommodations": []}`;
   }
 }

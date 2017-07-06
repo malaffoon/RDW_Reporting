@@ -20,11 +20,6 @@
     },
     "homepage": {
       "title": "Access Assessment Results",
-      "search-school-grade": {
-        "school-label": "Search by School Name",
-        "school-placeholder": "Start typing the school name",
-        "grade-label": "Grade"
-      },
       "welcome": {
         "title": "Welcome!",
         "sub-title": "Get the most from the Reporting System:",
@@ -213,6 +208,16 @@
             },
             "target": "Target {{target}}"
           }
+        }
+      }
+    },
+    "assessments": {
+      "items": {
+        "tabs": {
+          "student-scores": "Student Scores",
+          "item-viewer": "Item Viewer",
+          "exemplar": "Exemplar",
+          "item-info": "Item Information"
         }
       }
     },
