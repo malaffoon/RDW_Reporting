@@ -6,6 +6,7 @@ bootRepackage.enabled = false
 bootRun.enabled = false
 
 dependencies {
+    compile 'org.opentestsystem.rdw.common:rdw-common-model'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
     compile 'javax.validation:validation-api'
     compile 'org.apache.commons:commons-io'
