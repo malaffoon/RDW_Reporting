@@ -187,8 +187,8 @@
               <span [hidden]="!showValuesAsPercent || item[column.percentField] == null">{{ item[column.percentField] | number:'1.0-0' }}%</span>
             </ng-template>
           </p-column>
-          <ng-template let-car pTemplate="rowexpansion">
-            <item-viewer></item-viewer>
+          <ng-template let-item pTemplate="rowexpansion">
+            <item-viewer [bankItemKey]="item.bankItemKey"></item-viewer>
           </ng-template>
         </p-dataTable>
       </div>

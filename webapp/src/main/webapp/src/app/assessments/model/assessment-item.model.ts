@@ -2,6 +2,7 @@ import { ExamItemScore } from "./exam-item-score.model";
 
 export class AssessmentItem {
   id: number;
+  bankItemKey: string;
   position: number;
   claim: string;
   target: string;

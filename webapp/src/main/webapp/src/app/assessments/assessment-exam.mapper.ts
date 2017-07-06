@@ -120,6 +120,7 @@ export class AssessmentExamMapper {
     let uiModel: AssessmentItem = new AssessmentItem();
 
     uiModel.id = apiModel.id;
+    uiModel.bankItemKey = apiModel.bankItemKey;
     uiModel.position = apiModel.id; // TODO: Update item position from API
     uiModel.claim = apiModel.claim;
     uiModel.target = apiModel.target;

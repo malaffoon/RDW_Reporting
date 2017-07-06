@@ -338,6 +338,7 @@ sql:
     item:
       findAllForAssessment: >-
         select i.id,
+          i.natural_id,
           i.difficulty_code,
           i.max_points,
           i.claim_code,

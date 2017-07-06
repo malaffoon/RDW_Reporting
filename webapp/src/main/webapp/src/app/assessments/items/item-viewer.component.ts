@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 /**
@@ -17,17 +17,21 @@ declare var IRiS: any;
   templateUrl: './item-viewer.component.html'
 })
 export class ItemViewerComponent implements OnInit {
-  private _irisFrame;
-  private irisIsLoading: boolean = true;
+  /**
+   * The bank item key resolvable in Iris.
+   */
+  @Input()
+  public bankItemKey: string;
+
+  public irisIsLoading: boolean = true;
+  public safeIrisUrl: SafeResourceUrl;
 
   // TODO:  How is this configured?
   private irisUrl = "https://tds-stage.smarterbalanced.org/iris/";
 
   // TODO: This data should come from API.
   private vendorId = "2B3C34BF-064C-462A-93EA-41E9E3EB8333";
-  private token = '{"passage":{"autoLoad":"false"},"items":[{"response":"<p>test</p>","id":"I-187-2703"}],"layout":"WAI"}';
-
-  private safeIrisUrl: SafeResourceUrl;
+  private _irisFrame;
 
   @ViewChild('irisframe')
   set irisFrame(value: ElementRef) {
@@ -46,7 +50,13 @@ export class ItemViewerComponent implements OnInit {
 
   irisframeOnLoad() {
     IRiS.setFrame(this._irisFrame);
-    IRiS.loadToken(this.vendorId, this.token);
+
+    let token = this.getToken(this.bankItemKey);
+    IRiS.loadToken(this.vendorId, token);
     this.irisIsLoading = false;
+  }
+
+  getToken(bankItemKey){
+    return `{"passage":{"autoLoad":"false"},"items":[{"id":"I-${bankItemKey}"}],"layout":"WAI"}`;
   }
 }
