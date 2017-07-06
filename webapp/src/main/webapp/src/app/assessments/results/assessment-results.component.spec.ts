@@ -17,6 +17,7 @@ import { GradeService } from "../../shared/grade.service";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { ScaleScoreComponent } from "./scale-score.component";
 import { InformationLabelComponent } from "./information-label.component";
+import { ItemViewerComponent } from "../items/item-viewer.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -25,7 +26,7 @@ describe('AssessmentResultsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ TranslateModule.forRoot(), HttpModule, FormsModule, DataTableModule, SharedModule, BrowserAnimationsModule, PopoverModule.forRoot()],
-      declarations: [ TestComponentWrapper, AssessmentResultsComponent, InformationLabelComponent, RemoveCommaPipe, ScaleScoreComponent ],
+      declarations: [ TestComponentWrapper, AssessmentResultsComponent, InformationLabelComponent, RemoveCommaPipe, ScaleScoreComponent, ItemViewerComponent ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' } , ExamStatisticsCalculator, ExamFilterService, GradeService ]
     }).compileComponents();
 
@@ -33,7 +34,6 @@ describe('AssessmentResultsComponent', () => {
     component = fixture.debugElement.children[ 0 ].componentInstance;
 
     fixture.detectChanges();
-
   }));
 
   it('should create', () => {

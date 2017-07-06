@@ -17,6 +17,7 @@ import { AssessmentsComponent } from "./assessments.component";
 import { AdvFiltersToggleComponent } from "./filters/adv-filters/adv-filters-toggle.component";
 import { ScaleScoreComponent } from "./results/scale-score.component";
 import { InformationLabelComponent } from "./results/information-label.component";
+import { ItemViewerComponent } from './items/item-viewer.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { InformationLabelComponent } from "./results/information-label.component
     AssessmentResultsComponent,
     InformationLabelComponent,
     ScaleScoreComponent,
-    SelectAssessmentsComponent
+    SelectAssessmentsComponent,
+    ItemViewerComponent
   ],
   imports: [
     CommonModule,

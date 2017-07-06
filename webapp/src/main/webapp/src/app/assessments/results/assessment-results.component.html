@@ -90,7 +90,8 @@
           </div>
         </h3>
 
-        <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.assessment.exams.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped table-hover">
+        <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.assessment.exams.empty-message' | translate}}" sortField="studentName" tableStyleClass="table table-striped table-hover" expandableRows="true">
+
           <p-column field="studentName" header="{{'labels.groups.results.assessment.exams.cols.name' | translate}}" [sortable]="true"></p-column>
           <p-column field="date" header="{{'labels.groups.results.assessment.exams.cols.date' | translate}}" [sortable]="true">
             <ng-template let-exam="rowData" pTemplate="body">
@@ -153,7 +154,8 @@
             <i class="fa fa-chevron-left"></i> {{'labels.groups.results.assessment.button-exams' | translate}}
           </a>
         </h3>
-        <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}">
+        <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true">
+          <p-column expander="true" styleClass="col-icon"></p-column>
           <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" [sortable]="true"></p-column>
           <p-column field="claimTarget" header="{{'labels.groups.results.assessment.items.cols.claim' | translate}}" [sortable]="true">
             <ng-template let-item="rowData" pTemplate="body">
@@ -185,6 +187,9 @@
               <span [hidden]="!showValuesAsPercent || item[column.percentField] == null">{{ item[column.percentField] | number:'1.0-0' }}%</span>
             </ng-template>
           </p-column>
+          <ng-template let-car pTemplate="rowexpansion">
+            <item-viewer></item-viewer>
+          </ng-template>
         </p-dataTable>
       </div>
     </div>
