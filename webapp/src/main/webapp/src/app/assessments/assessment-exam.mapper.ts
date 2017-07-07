@@ -80,7 +80,6 @@ export class AssessmentExamMapper {
     uiModel.claimScores = this.mapClaimScaleScoresFromApi(apiModel.claimScaleScores);
 
     if (apiModel.studentContext) {
-      uiModel.enrolledGrade = apiModel.studentContext.gradeId;
       uiModel.migrantStatus = apiModel.studentContext.migrantStatus;
       uiModel.plan504 = apiModel.studentContext.section504;
       uiModel.iep = apiModel.studentContext.iep;
