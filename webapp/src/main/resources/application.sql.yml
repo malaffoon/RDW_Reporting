@@ -1,67 +1,69 @@
 sql:
   exam:
     findAllByStudentId: >-
-      select exam.id,
-        exam.type_id,
-        exam.grade_id,
-        exam.school_year,
-        exam.completeness_code,
-        exam.administration_condition_code,
-        exam.session_id,
-        exam.completed_at,
-        exam.scale_score,
-        exam.scale_score_std_err,
-        exam.performance_level,
-        exam.claim1_category,
-        exam.claim1_scale_score,
-        exam.claim1_scale_score_std_err,
-        exam.claim2_category,
-        exam.claim2_scale_score,
-        exam.claim2_scale_score_std_err,
-        exam.claim3_category,
-        exam.claim3_scale_score,
-        exam.claim3_scale_score_std_err,
-        exam.claim4_category,
-        exam.claim4_scale_score,
-        exam.claim4_scale_score_std_err,
-        exam.asmt_id,
-        asmt.claim1_score_code,
-        asmt.claim2_score_code,
-        asmt.claim3_score_code,
-        asmt.claim4_score_code,
-        asmt.id as asmt_id,
-        asmt.label as asmt_label,
-        asmt.grade_id as asmt_grade_id,
-        asmt.type_id as asmt_type_id,
-        asmt.subject_id as asmt_subject_id,
-        asmt.school_year as asmt_school_year,
-        asmt.claim1_score_code as asmt_claim1_score_code,
-        asmt.claim2_score_code as asmt_claim2_score_code,
-        asmt.claim3_score_code as asmt_claim3_score_code,
-        asmt.claim4_score_code as asmt_claim4_score_code,
-        asmt.min_score as asmt_min_score,
-        asmt.max_score as asmt_max_score,
-        asmt.cut_point_1 as asmt_cut_point_1,
-        asmt.cut_point_2 as asmt_cut_point_2,
-        asmt.cut_point_3 as asmt_cut_point_3,
-        school.id as school_id,
-        school.name as school_name
-      from exam
-        join asmt on exam.asmt_id=asmt.id
-        join school on exam.school_id=school.id
-      where exam.student_id=:student_id
-        and (1=:statewide or school.district_id in (:district_ids) or exam.school_id in (:school_ids))
+      select e.id,
+        e.type_id,
+        e.grade_id,
+        e.grade_code,
+        e.school_year,
+        e.completeness_code,
+        e.administration_condition_code,
+        e.session_id,
+        e.completed_at,
+        e.scale_score,
+        e.scale_score_std_err,
+        e.performance_level,
+        e.claim1_category,
+        e.claim1_scale_score,
+        e.claim1_scale_score_std_err,
+        e.claim2_category,
+        e.claim2_scale_score,
+        e.claim2_scale_score_std_err,
+        e.claim3_category,
+        e.claim3_scale_score,
+        e.claim3_scale_score_std_err,
+        e.claim4_category,
+        e.claim4_scale_score,
+        e.claim4_scale_score_std_err,
+        e.asmt_id,
+        a.claim1_score_code,
+        a.claim2_score_code,
+        a.claim3_score_code,
+        a.claim4_score_code,
+        a.id as asmt_id,
+        a.label as asmt_label,
+        a.grade_id as asmt_grade_id,
+        a.grade_code as asmt_grade_code,
+        a.type_id as asmt_type_id,
+        a.subject_id as asmt_subject_id,
+        a.school_year as asmt_school_year,
+        a.claim1_score_code as asmt_claim1_score_code,
+        a.claim2_score_code as asmt_claim2_score_code,
+        a.claim3_score_code as asmt_claim3_score_code,
+        a.claim4_score_code as asmt_claim4_score_code,
+        a.min_score as asmt_min_score,
+        a.max_score as asmt_max_score,
+        a.cut_point_1 as asmt_cut_point_1,
+        a.cut_point_2 as asmt_cut_point_2,
+        a.cut_point_3 as asmt_cut_point_3,
+        s.id as school_id,
+        s.name as school_name
+      from exam e
+        join asmt a on e.asmt_id=a.id
+        join school s on e.school_id=s.id
+      where e.student_id=:student_id
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
 
     existsForStudentId: >-
-      select stu.id,
-        stu.ssid,
-        stu.first_name,
-        stu.last_or_surname
-      from student stu
-        join exam e on e.student_id = stu.id
-        join school sch on e.school_id = sch.id
-      where stu.ssid=:student_ssid
-        and (1=:statewide or sch.district_id in (:district_ids) or e.school_id in (:school_ids))
+      select st.id,
+        st.ssid,
+        st.first_name,
+        st.last_or_surname
+      from student st
+        join exam e on e.student_id = st.id
+        join school s on e.school_id = s.id
+      where st.ssid=:student_ssid
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
       limit 1
 
   group:
@@ -85,6 +87,7 @@ sql:
             a.id,
             a.label,
             a.grade_id,
+            a.grade_code,
             a.type_id,
             a.subject_id,
             a.school_year,
@@ -113,6 +116,7 @@ sql:
             a.id,
             a.label,
             a.grade_id,
+            a.grade_code,
             a.type_id,
             a.subject_id,
             a.school_year,
@@ -140,6 +144,7 @@ sql:
           select e.id,
             e.type_id,
             e.grade_id,
+            e.grade_code,
             e.iep,
             e.lep,
             e.section504,
@@ -207,6 +212,7 @@ sql:
         select a.id,
           a.label,
           a.grade_id,
+          a.grade_code,
           a.type_id,
           a.subject_id,
           a.school_year,
@@ -237,6 +243,7 @@ sql:
           a.id,
           a.label,
           a.grade_id,
+          a.grade_code,
           a.type_id,
           a.subject_id,
           a.school_year,
@@ -263,6 +270,7 @@ sql:
         select e.id,
           e.type_id,
           e.grade_id,
+          e.grade_code,
           e.iep,
           e.lep,
           e.section504,
