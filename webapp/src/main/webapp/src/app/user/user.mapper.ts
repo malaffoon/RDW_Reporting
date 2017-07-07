@@ -5,6 +5,7 @@ import { Group } from "./model/group.model";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
 import { isNullOrUndefined } from "util";
+import { Configuration } from "./model/configuration.model";
 
 @Injectable()
 export class UserMapper {
@@ -21,6 +22,7 @@ export class UserMapper {
 
     uiModel.schools = this.mapSchoolsFromApi(apiModel.schools);
     uiModel.groups = this.mapGroupsFromApi(apiModel.groups);
+    uiModel.configuration = this.mapConfigurationFromApi(apiModel.configuration);
 
     return uiModel;
   }
@@ -71,6 +73,18 @@ export class UserMapper {
     uiModel.name = apiModel.name;
     uiModel.schoolName = apiModel.schoolName;
     uiModel.subjectId = apiModel.subjectId;
+
+    return uiModel;
+  }
+
+  private mapConfigurationFromApi(apiModel: any): Configuration {
+    let uiModel = new Configuration();
+
+    if(isNullOrUndefined(apiModel))
+      return uiModel;
+
+    uiModel.irisUrl = apiModel.irisUrl;
+    uiModel.irisVendorId = apiModel.irisVendorId;
 
     return uiModel;
   }

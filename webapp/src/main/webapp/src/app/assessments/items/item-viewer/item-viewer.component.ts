@@ -1,5 +1,9 @@
-import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { UserService } from "../../../user/user.service";
+import { Configuration } from "../../../user/model/configuration.model";
+import { isNull } from "util";
+import { isNullOrUndefined } from "util";
 
 /**
  * IRiS is the vendor client which allows us to integrate with the
@@ -25,13 +29,8 @@ export class ItemViewerComponent implements OnInit {
 
   public irisIsLoading: boolean = true;
   public safeIrisUrl: SafeResourceUrl;
+  private vendorId;
 
-  // TODO:  How is this configured?
-  private irisUrl = "https://tds-stage.smarterbalanced.org/iris/";
-  // private irisUrl = "http://iris-dev.sbacdw.org:8080/iris/";
-
-  // TODO: This data should come from API.
-  private vendorId = "2B3C34BF-064C-462A-93EA-41E9E3EB8333";
   private _irisFrame;
 
   @ViewChild('irisframe')
@@ -41,12 +40,15 @@ export class ItemViewerComponent implements OnInit {
     }
   }
 
-  constructor(private sanitizer: DomSanitizer) {
+  constructor(private sanitizer: DomSanitizer, private userService: UserService) {
   }
 
   ngOnInit() {
-    this.safeIrisUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.irisUrl);
-    this._irisFrame.addEventListener('load', this.irisframeOnLoad.bind(this));
+    this.userService.getCurrentUser().subscribe(user => {
+      this.safeIrisUrl = this.sanitizer.bypassSecurityTrustResourceUrl(user.configuration.irisUrl);
+      this.vendorId = user.configuration.irisVendorId;
+      this._irisFrame.addEventListener('load', this.irisframeOnLoad.bind(this));
+    })
   }
 
   irisframeOnLoad() {
@@ -57,7 +59,7 @@ export class ItemViewerComponent implements OnInit {
     this.irisIsLoading = false;
   }
 
-  getToken(bankItemKey){
+  private getToken(bankItemKey){
     return `{"passage":{"autoLoad":"false"},"items":[{"id":"I-${bankItemKey}"}],"layout":"WAI"}`;
     // return `{"items":[{"id":"I-${bankItemKey}"}], "accommodations": []}`;
   }
