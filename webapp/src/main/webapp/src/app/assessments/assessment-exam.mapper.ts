@@ -80,7 +80,6 @@ export class AssessmentExamMapper {
     uiModel.claimScores = this.mapClaimScaleScoresFromApi(apiModel.claimScaleScores);
 
     if (apiModel.studentContext) {
-      uiModel.enrolledGrade = apiModel.studentContext.gradeId;
       uiModel.migrantStatus = apiModel.studentContext.migrantStatus;
       uiModel.plan504 = apiModel.studentContext.section504;
       uiModel.iep = apiModel.studentContext.iep;
@@ -120,6 +119,7 @@ export class AssessmentExamMapper {
     let uiModel: AssessmentItem = new AssessmentItem();
 
     uiModel.id = apiModel.id;
+    uiModel.bankItemKey = apiModel.bankItemKey;
     uiModel.position = apiModel.id; // TODO: Update item position from API
     uiModel.claim = apiModel.claim;
     uiModel.target = apiModel.target;

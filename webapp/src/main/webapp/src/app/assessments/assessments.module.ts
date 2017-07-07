@@ -17,6 +17,9 @@ import { AssessmentsComponent } from "./assessments.component";
 import { AdvFiltersToggleComponent } from "./filters/adv-filters/adv-filters-toggle.component";
 import { ScaleScoreComponent } from "./results/scale-score.component";
 import { InformationLabelComponent } from "./results/information-label.component";
+import { ItemViewerComponent } from './items/item-viewer/item-viewer.component';
+import { ItemTabComponent } from './items/item-tab.component';
+import { TabsModule } from "ngx-bootstrap/tabs";
 
 @NgModule({
   declarations: [
@@ -26,10 +29,13 @@ import { InformationLabelComponent } from "./results/information-label.component
     AssessmentResultsComponent,
     InformationLabelComponent,
     ScaleScoreComponent,
-    SelectAssessmentsComponent
+    SelectAssessmentsComponent,
+    ItemViewerComponent,
+    ItemTabComponent
   ],
   imports: [
     CommonModule,
+    TabsModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
