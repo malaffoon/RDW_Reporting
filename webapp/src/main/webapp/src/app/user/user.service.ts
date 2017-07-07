@@ -14,9 +14,11 @@ export class UserService {
   private currentUserObservable: Observable<User>;
 
   getCurrentUser(): Observable<User> {
+    // currentUser has already been populated, return that.
     if(!isNullOrUndefined(this.currentUser))
       return Observable.of(this.currentUser);
 
+    // currentUser is not populated and a request is not in progress.
     if(isNullOrUndefined(this.currentUserObservable)) {
       this.currentUserObservable = this._dataService
         .get("/user")
@@ -26,6 +28,7 @@ export class UserService {
       this.currentUserObservable.subscribe(user => this.currentUser = user);
     }
 
+    // request for currentUser is already in progress, return that observable.
     return this.currentUserObservable;
   }
 

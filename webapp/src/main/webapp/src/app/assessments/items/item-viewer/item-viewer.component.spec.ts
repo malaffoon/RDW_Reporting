@@ -1,6 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ItemViewerComponent } from './item-viewer.component';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ItemViewerComponent } from "./item-viewer.component";
+import { UserService } from "../../../user/user.service";
+import { User } from "../../../user/model/user.model";
+import { Observable } from "rxjs";
 
 describe('ItemViewerComponent', () => {
   let component: ItemViewerComponent;
@@ -8,9 +10,10 @@ describe('ItemViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemViewerComponent ]
+      declarations: [ ItemViewerComponent ],
+      providers: [ { provide: UserService, useClass: MockUserService } ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -23,3 +26,9 @@ describe('ItemViewerComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+class MockUserService {
+  getCurrentUser() {
+    return Observable.of(new User());
+  }
+}

@@ -49,3 +49,8 @@ artifacts:
 
 permissionservice:
   component: Reporting
+
+app:
+  iris:
+    vendorId: 2B3C34BF-064C-462A-93EA-41E9E3EB8333
+    url: https://tds-stage.smarterbalanced.org/iris/
