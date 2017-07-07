@@ -49,8 +49,3 @@ artifacts:
 
 permissionservice:
   component: Reporting
-
-app:
-  search:
-    schoolsByName:
-      limit: 10
