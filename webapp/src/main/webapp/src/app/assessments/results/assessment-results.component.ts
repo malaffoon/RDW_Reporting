@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
@@ -10,6 +10,8 @@ import { GradeService } from "../../shared/grade.service";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
+import { PopupMenuAction } from "../menu/popup-menu-action.model";
+import { TranslateService } from "@ngx-translate/core";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -39,7 +41,7 @@ enum ScoreViewState {
     )
   ],
 })
-export class AssessmentResultsComponent {
+export class AssessmentResultsComponent implements OnInit {
   exams = [];
   sessions = [];
   statistics: any = { percents: {} };
@@ -103,6 +105,8 @@ export class AssessmentResultsComponent {
   @Input()
   loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
 
+  actions: PopupMenuAction[];
+
   set collapsed(collapsed: boolean) {
     this.assessmentExam.collapsed = collapsed;
   }
@@ -164,7 +168,12 @@ export class AssessmentResultsComponent {
 
   constructor(public gradeService: GradeService,
               private examCalculator: ExamStatisticsCalculator,
-              private examFilterService: ExamFilterService) {
+              private examFilterService: ExamFilterService,
+              private translateService: TranslateService) {
+  }
+
+  ngOnInit(): void {
+    this.actions = this.createActions();
   }
 
   toggleSession(session) {
@@ -244,5 +253,38 @@ export class AssessmentResultsComponent {
 
     stats.percents = { levels: this.examCalculator.calculateLevelPercents(stats.levels, stats.total) };
     return stats;
+  }
+
+  private createActions(): PopupMenuAction[] {
+    let actions: PopupMenuAction[] = [];
+
+    if (!this._assessmentExam.assessment.isSummative) {
+      let responsesAction: PopupMenuAction = new PopupMenuAction();
+      responsesAction.displayName = ((exam) => {
+        return this.translateService.instant('labels.menus.responses', exam.student);
+      }).bind(this);
+      responsesAction.perform = ((exam: Exam) => {
+        console.log(`Show Responses: ${exam.student.lastName}`);
+      }).bind(this);
+      actions.push(responsesAction);
+    }
+
+    let resourcesLabel: string = this.translateService.instant('labels.menus.resources');
+    let resourcesAction: PopupMenuAction = new PopupMenuAction();
+    resourcesAction.displayName = (() => resourcesLabel);
+    resourcesAction.perform = ((exam: Exam) => {
+      console.log(`Show Resources: ${exam.student.lastName}`)
+    }).bind(this);
+    actions.push(resourcesAction);
+
+    let reportLabel: string = this.translateService.instant('labels.menus.print-report');
+    let reportAction: PopupMenuAction = new PopupMenuAction();
+    reportAction.displayName = (() => reportLabel);
+    reportAction.perform = ((exam: Exam) => {
+      console.log(`Print Report: ${exam.student.lastName}`)
+    }).bind(this);
+    actions.push(reportAction);
+
+    return actions;
   }
 }
