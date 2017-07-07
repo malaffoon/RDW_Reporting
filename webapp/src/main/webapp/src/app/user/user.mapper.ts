@@ -22,7 +22,7 @@ export class UserMapper {
 
     uiModel.schools = this.mapSchoolsFromApi(apiModel.schools);
     uiModel.groups = this.mapGroupsFromApi(apiModel.groups);
-    uiModel.configuration = this.mapConfigurationFromApi(apiModel.configuration);
+    uiModel.configuration = this.mapConfigurationFromApi(apiModel.settings);
 
     return uiModel;
   }
