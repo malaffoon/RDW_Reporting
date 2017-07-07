@@ -3,14 +3,14 @@
   <tab heading="{{translateRoot + 'student-scores' | translate }}">
 
   </tab>
-  <tab heading="{{translateRoot + 'item-viewer' | translate }}">
+  <tab *ngIf="showItemDetails" heading="{{translateRoot + 'item-viewer' | translate }}">
     <item-viewer [bankItemKey]="item.bankItemKey"></item-viewer>
   </tab>
-  <tab heading="{{translateRoot + 'exemplar' | translate }}">
+  <tab *ngIf="showItemDetails" heading="{{translateRoot + 'exemplar' | translate }}">
 
 
   </tab>
-  <tab heading="{{translateRoot + 'item-info' | translate }}">
+  <tab *ngIf="showItemDetails" heading="{{translateRoot + 'item-info' | translate }}">
 
   </tab>
 </tabset>

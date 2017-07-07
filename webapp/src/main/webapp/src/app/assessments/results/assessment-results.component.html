@@ -188,7 +188,7 @@
             </ng-template>
           </p-column>
           <ng-template let-item pTemplate="rowexpansion">
-            <item-tab [item]="item"></item-tab>
+            <item-tab [item]="item" [showItemDetails]="assessmentExam.assessment.isInterim"></item-tab>
           </ng-template>
         </p-dataTable>
       </div>
