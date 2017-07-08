@@ -43,3 +43,5 @@ cloud:
     credentials:
       instance-profile: false
 
+application:
+  state: CA
