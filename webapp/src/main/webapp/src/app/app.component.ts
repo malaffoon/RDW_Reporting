@@ -33,7 +33,7 @@ export class AppComponent {
         lastName: user.lastName
       };
 
-      if (window['ga']) {
+      if (window['ga'] && user.configuration && user.configuration.analyticsTrackingId) {
         window['ga']('create', user.configuration.analyticsTrackingId, 'auto');
       }
     });
