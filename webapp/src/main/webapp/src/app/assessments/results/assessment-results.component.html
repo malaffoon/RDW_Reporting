@@ -76,17 +76,24 @@
         <h3 class="gray-darkest mb-md">
           {{'labels.groups.results.assessment.exams.title' | translate}}
 
-          <a *ngIf="assessmentExam.assessment.isInterim" class="btn btn-default btn-xs pull-right" (click)="viewItemsByPoints(true)">
+          <a *ngIf="assessmentExam.assessment.isInterim" class="btn btn-default btn-xs pull-right" (click)="viewItemsByPoints(true)"
+             angulartics2On="click" angularticsEvent="ViewItemsByPointsEarned" angularticsCategory="AssessmentResults">
             {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
           </a>
 
-          <div *ngIf="isIca" class="btn-group btn-group-xs toggle-group pull-right mr-md" data-toggle="buttons">
-            <label class="btn btn-primary" [ngClass]="{'active': !isClaimScoreSelected}">
-              <input type="radio" name="scores-display-toggle" autocomplete="off" (click)="setOverallScoreSelected()"> {{'buttons.display-overall' | translate}}
-            </label>
-            <label class="btn btn-primary" [ngClass]="{'active': isClaimScoreSelected}">
-              <input type="radio" name="scores-display-toggle" autocomplete="off" (click)="setClaimScoreSelected()"> {{'buttons.display-claim' | translate}}
-            </label>
+          <div *ngIf="showClaimToggle" class="btn-group btn-group-xs pull-right" role="group">
+            <button (click)="setOverallScoreSelected()"
+                    class="btn btn-default"
+                    angulartics2On="click" angularticsEvent="ViewOverallScores" angularticsCategory="AssessmentResults"
+                    [ngClass]="{'active': !isClaimScoreSelected}">
+              {{'buttons.display-overall' | translate}}
+            </button>
+            <button (click)="setClaimScoreSelected()"
+                    class="btn btn-default"
+                    angulartics2On="click" angularticsEvent="ViewClaimScores" angularticsCategory="AssessmentResults"
+                    [ngClass]="{'active': isClaimScoreSelected}">
+              {{'buttons.display-claim' | translate}}
+            </button>
           </div>
         </h3>
 

@@ -21,6 +21,7 @@ import { ItemViewerComponent } from './items/item-viewer/item-viewer.component';
 import { ItemTabComponent } from './items/item-tab.component';
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { PopupMenuComponent } from "./menu/popup-menu.component";
+import { Angulartics2Module } from 'angulartics2';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { PopupMenuComponent } from "./menu/popup-menu.component";
     FormsModule,
     PopoverModule,
     SharedModule,
-    TabsModule
+    TabsModule,
+    Angulartics2Module.forChild()
   ],
   exports: [
     AdvFiltersComponent,
