@@ -26,11 +26,16 @@ export class AppComponent {
   }
 
   ngOnInit() {
+
     this._userService.getCurrentUser().subscribe(user => {
       this._user = {
         firstName: user.firstName,
         lastName: user.lastName
       };
+
+      if (window['ga']) {
+        window['ga']('create', user.configuration.analyticsTrackingId, 'auto');
+      }
     });
   }
 }
