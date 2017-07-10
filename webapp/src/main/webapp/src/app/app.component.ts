@@ -1,3 +1,4 @@
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "./user/user.service";
@@ -14,7 +15,7 @@ export class AppComponent {
     return this._user;
   }
 
-  constructor(public translate: TranslateService, private _userService: UserService) {
+  constructor(public translate: TranslateService, private _userService: UserService, angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
 
     let languages = [ 'en', 'ja' ];
     let defaultLanguage = languages[ 0 ];
