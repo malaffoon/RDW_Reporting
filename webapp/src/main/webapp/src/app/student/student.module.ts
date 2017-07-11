@@ -14,6 +14,7 @@ import { DataTableModule } from "primeng/components/datatable/datatable";
 import { StudentHistoryIABTableComponent } from "./results/tables/student-history-iab-table.component";
 import { StudentHistoryICASummitiveTableComponent } from "./results/tables/student-history-ica-summitive-table.component";
 import { PopoverModule } from "ngx-bootstrap";
+import { Angulartics2Module } from 'angulartics2';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { PopoverModule } from "ngx-bootstrap";
     FormsModule,
     PopoverModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    Angulartics2Module.forChild()
   ],
   exports: [ StudentComponent ],
   providers: [
