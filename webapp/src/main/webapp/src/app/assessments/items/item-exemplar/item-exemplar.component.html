@@ -1,13 +1,13 @@
 <div *ngIf="loading" class="loader">
   <div class="inner">
-    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="text">Loading</span>
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="text">{{ 'messages.loading' | translate }}</span>
   </div>
 </div>
 <!-- TODO: Remove custom style of white-space: normal once @asleeper's latest update
      TODO: updates the white-space:nowrap style implementation-->
 <div *ngIf="model" style="white-space: normal">
   <div *ngIf="model.answerKeyValue" class="pad-bottom-10">
-    <b>Answer: </b> {{model.answerKeyValue}}
+    <b>{{ translateRoot + 'answer-key' | translate }}</b> {{model.answerKeyValue}}
   </div>
 
   <div *ngIf="model.rubrics.length > 0">
@@ -18,8 +18,8 @@
       <table class="table table-striped">
         <thead>
         <tr>
-          <th>Points</th>
-          <th>Description</th>
+          <th>{{ translateRoot + 'criterion.points' | translate }}</th>
+          <th>{{ translateRoot + 'criterion.description' | translate }}</th>
         </tr>
         </thead>
         <tbody>
@@ -41,8 +41,8 @@
       <table class="table table-striped">
         <thead>
         <tr>
-          <th>Points</th>
-          <th>Description</th>
+          <th>{{ translateRoot + 'criterion.points' | translate }}</th>
+          <th>{{ translateRoot + 'criterion.description' | translate }}</th>
         </tr>
         </thead>
         <tbody>
