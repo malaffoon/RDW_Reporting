@@ -15,7 +15,11 @@ export class AppComponent {
     return this._user;
   }
 
-  constructor(public translate: TranslateService, private _userService: UserService, angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
+  /*
+  Even though the angulartics2GoogleAnalytics variable is not explicitly used, without it analytics data is not sent to the service
+   */
+  constructor(public translate: TranslateService, private _userService: UserService,
+              private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
 
     let languages = [ 'en', 'ja' ];
     let defaultLanguage = languages[ 0 ];
