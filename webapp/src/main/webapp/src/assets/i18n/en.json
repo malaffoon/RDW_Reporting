@@ -216,7 +216,13 @@
         "tabs": {
           "student-scores": "Student Scores",
           "item-viewer": "Item Viewer",
-          "exemplar": "Exemplar",
+          "exemplar": {
+            "title": "Exemplar",
+            "errors": {
+              "not-found": "Rubric and exemplar is not available.",
+              "unknown": "Error trying to load rubrics and exemplars"
+            }
+          },
           "item-info": "Item Information"
         }
       }

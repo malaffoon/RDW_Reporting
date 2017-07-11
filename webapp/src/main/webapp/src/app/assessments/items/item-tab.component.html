@@ -1,13 +1,13 @@
-<tabset #staticTabs>
+<tabset>
   <!-- TODO: This tab should be toggleable depending on the context -->
   <tab heading="{{translateRoot + 'student-scores' | translate }}">
 
   </tab>
-  <tab *ngIf="showItemDetails" heading="{{translateRoot + 'item-viewer' | translate }}">
-    <item-viewer [bankItemKey]="item.bankItemKey"></item-viewer>
+  <tab *ngIf="showItemDetails" (select)="loadItemViewer=true" heading="{{translateRoot + 'item-viewer' | translate }}">
+    <item-viewer *ngIf="loadItemViewer" [bankItemKey]="item.bankItemKey"></item-viewer>
   </tab>
-  <tab *ngIf="showItemDetails" heading="{{translateRoot + 'exemplar' | translate }}">
-
+  <tab *ngIf="showItemDetails" (select)="loadExemplar=true" heading="{{translateRoot + 'exemplar.title' | translate }}">
+    <item-exemplar *ngIf="loadExemplar" [bankItemKey]="item.bankItemKey"></item-exemplar>
   </tab>
   <tab *ngIf="showItemDetails" heading="{{translateRoot + 'item-info' | translate }}">
 
