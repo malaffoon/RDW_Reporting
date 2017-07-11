@@ -7,6 +7,11 @@ import { Utils } from "./Utils";
   (All) [ (Option 1) (Option 2) ]
  */
 
+/*
+  TODO: Fix error and get angulartics working in this component
+  angulartics2On="click" [angularticsEvent]="analyticsEvent" [angularticsCategory]="analyticsCategory"
+ */
+
 @Component({
   selector: 'sb-radio-button-list',
   template: `
@@ -20,6 +25,7 @@ import { Utils } from "./Utils";
         </label>
       </div>
     </div>`
+
 })
 export class SBRadioButtonComponent {
   // An array of values which must map to the given enum.
@@ -37,6 +43,12 @@ export class SBRadioButtonComponent {
   // The model to bind to which contains the property.  (Allows us to pass by reference)
   @Input()
   public model: any;
+
+  @Input()
+  public analyticsEvent: string;
+
+  @Input()
+  public analyticsCategory: string;
 
   private _name: string;
 

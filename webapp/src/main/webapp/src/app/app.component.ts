@@ -34,6 +34,7 @@ export class AppComponent {
       };
 
       if (window['ga'] && user.configuration && user.configuration.analyticsTrackingId) {
+        console.log('Initialize analytics tracking with ID: ' + user.configuration.analyticsTrackingId);
         window['ga']('create', user.configuration.analyticsTrackingId, 'auto');
       }
     });
