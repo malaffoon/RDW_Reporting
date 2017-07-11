@@ -217,7 +217,9 @@
           "student-scores": "Student Scores",
           "item-viewer": "Item Viewer",
           "exemplar": {
-            "title": "Exemplar",
+            "title": "Rubric and Exemplar",
+            "rubric": "Rubric",
+            "exemplar": "Exemplar",
             "errors": {
               "not-found": "Rubric and exemplar is not available.",
               "unknown": "Error trying to load rubrics and exemplars"

@@ -13,10 +13,10 @@ export class ItemScoringGuideMapper {
       uiModel.answerKeyValue = apiModel.answerKey.value;
 
     if(!isNullOrUndefined(apiModel.exemplars))
-      uiModel.exemplars = apiModel.exemplars.map(exemplar => this.mapScoringCriterionFomApi(exemplar))
+      uiModel.exemplars = apiModel.exemplars.map(exemplar => this.mapScoringCriterionFomApi(exemplar));
 
     if(!isNullOrUndefined(apiModel.rubrics))
-      uiModel.rubrics = apiModel.exemplars.map(rubric => this.mapScoringCriterionFomApi(rubric))
+      uiModel.rubrics = apiModel.rubrics.map(rubric => this.mapScoringCriterionFomApi(rubric));
 
     return uiModel;
   }

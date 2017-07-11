@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ItemScoringService } from "./item-scoring.service";
 import { ItemScoringGuide } from "./model/item-scoring-guide.model";
+import { isNullOrUndefined } from "util";
 
 @Component({
   selector: 'item-exemplar',
@@ -16,6 +17,11 @@ export class ItemExemplarComponent implements OnInit {
 
   public notFound: boolean = false;
   public errorLoading: boolean = false;
+  public loading: boolean = true;
+
+  public get translateRoot() {
+    return 'labels.assessments.items.tabs.exemplar.';
+  }
 
   constructor(private service: ItemScoringService) { }
 
@@ -24,6 +30,9 @@ export class ItemExemplarComponent implements OnInit {
       .getGuide(this.bankItemKey)
       .subscribe(guide => {
         this.model = guide;
+        this.loading = false;
+
+        this.notFound = guide.rubrics.length === 0 && guide.exemplars.length === 0 && isNullOrUndefined(guide.answerKeyValue);
       }, (response) => {
         console.warn(response);
 
@@ -32,6 +41,7 @@ export class ItemExemplarComponent implements OnInit {
         else
           this.errorLoading = true;
 
+        this.loading = false;
       });
   }
 }
