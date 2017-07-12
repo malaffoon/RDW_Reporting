@@ -16,6 +16,7 @@ import { routes } from "./app.routes";
 import { RouterModule } from "@angular/router";
 import { SchoolGradeModule } from "./school-grade/school-grade.module";
 import { PopoverModule } from "ngx-bootstrap/popover";
+import { TranslateResolve } from "./home/translate.resolve";
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { PopoverModule } from "ngx-bootstrap/popover";
     PopoverModule.forRoot()
   ],
   providers: [
+    TranslateResolve,
     ...(environment.standalone ? standaloneProviders : [])
   ],
   bootstrap: [ AppComponent ]

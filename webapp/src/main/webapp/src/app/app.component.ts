@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "./user/user.service";
+import { RdwTranslateLoader } from "./shared/rdw-translate-loader";
 
 @Component({
   selector: 'app-component',
@@ -9,12 +10,13 @@ import { UserService } from "./user/user.service";
 export class AppComponent {
 
   private _user;
+  public loadingTranslations: boolean = true;
 
   get user() {
     return this._user;
   }
 
-  constructor(public translate: TranslateService, private _userService: UserService) {
+  constructor(public translate: TranslateService, private _userService: UserService, private translateLoader: RdwTranslateLoader) {
 
     let languages = [ 'en', 'ja' ];
     let defaultLanguage = languages[ 0 ];

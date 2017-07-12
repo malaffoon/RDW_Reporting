@@ -18,10 +18,6 @@ import { GradeDisplayPipe } from "./grade-display.pipe";
 import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
 
-export function createTranslateLoader(http: Http) {
-  return new RdwTranslateLoader(http);
-}
-
 @NgModule({
   declarations: [
     AssessmentTypePipe,
@@ -41,8 +37,7 @@ export function createTranslateLoader(http: Http) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [ Http ]
+        useClass: RdwTranslateLoader
       }
     })
   ],
@@ -62,7 +57,8 @@ export function createTranslateLoader(http: Http) {
   providers: [
     DataService,
     CachingDataService,
-    GradeService
+    GradeService,
+    RdwTranslateLoader
   ]
 })
 export class CommonModule {
