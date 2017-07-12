@@ -15,10 +15,14 @@ import { StudentHistoryIABTableComponent } from "./results/tables/student-histor
 import { StudentHistoryICASummitiveTableComponent } from "./results/tables/student-history-ica-summitive-table.component";
 import { PopoverModule } from "ngx-bootstrap";
 import { Angulartics2Module } from 'angulartics2';
+import { StudentResponsesComponent } from "./responses/student-responses.component";
+import { StudentResponsesService } from "./responses/student-responses.service";
+import { StudentResponsesResolve } from "./responses/student-responses.resolve";
 
 @NgModule({
   declarations: [
     StudentComponent,
+    StudentResponsesComponent,
     StudentResultsComponent,
     StudentResultsFilterComponent,
     StudentHistoryIABTableComponent,
@@ -36,10 +40,15 @@ import { Angulartics2Module } from 'angulartics2';
     SharedModule,
     Angulartics2Module.forChild()
   ],
-  exports: [ StudentComponent ],
+  exports: [
+    StudentComponent,
+    StudentResponsesComponent
+  ],
   providers: [
     StudentExamHistoryResolve,
-    StudentExamHistoryService
+    StudentExamHistoryService,
+    StudentResponsesResolve,
+    StudentResponsesService
   ]
 })
 export class StudentModule {

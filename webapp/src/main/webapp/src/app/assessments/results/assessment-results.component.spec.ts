@@ -23,6 +23,7 @@ import { TabsModule } from "ngx-bootstrap";
 import { Student } from "../../student/model/student.model";
 import { PopupMenuComponent } from "../menu/popup-menu.component";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
+import { ItemExemplarComponent } from "../items/item-exemplar/item-exemplar.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -49,6 +50,7 @@ describe('AssessmentResultsComponent', () => {
         InformationLabelComponent,
         ItemTabComponent,
         ItemViewerComponent,
+        ItemExemplarComponent,
         PopupMenuComponent,
         RemoveCommaPipe,
         ScaleScoreComponent,

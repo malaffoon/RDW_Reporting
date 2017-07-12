@@ -22,6 +22,9 @@ import { ItemTabComponent } from './items/item-tab.component';
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { PopupMenuComponent } from "./menu/popup-menu.component";
 import { Angulartics2Module } from 'angulartics2';
+import { ItemExemplarComponent } from './items/item-exemplar/item-exemplar.component';
+import { ItemScoringService } from "./items/item-exemplar/item-scoring.service";
+import { ItemScoringGuideMapper } from "./items/item-exemplar/item-scoring-guide.mapper";
 
 @NgModule({
   declarations: [
@@ -34,7 +37,8 @@ import { Angulartics2Module } from 'angulartics2';
     ItemViewerComponent,
     PopupMenuComponent,
     ScaleScoreComponent,
-    SelectAssessmentsComponent
+    SelectAssessmentsComponent,
+    ItemExemplarComponent
   ],
   imports: [
     BrowserModule,
@@ -60,7 +64,9 @@ import { Angulartics2Module } from 'angulartics2';
     ExamStatisticsCalculator,
     ExamFilterService,
     ExamFilterOptionsService,
-    ExamFilterOptionsMapper
+    ExamFilterOptionsMapper,
+    ItemScoringService,
+    ItemScoringGuideMapper
   ]
 })
 export class AssessmentsModule {
