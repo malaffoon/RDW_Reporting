@@ -18,7 +18,6 @@ import { School } from "../../user/model/school.model";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
-import { MockAngulartics2 } from "../../../test/mock.angulartics2";
 
 let availableGrades = [];
 
