@@ -71,3 +71,16 @@ app:
   iris:
     vendorId: ${rdw.reporting.iris.vendorId}
     url: ${rdw.reporting.iris.url}
+
+zuul:
+  forceOriginalQueryStringEncoding: true
+  addProxyHeaders: true
+  addHostHeader: true
+  set-content-length: true
+  host:
+    socket-timeout-millis: 100000
+  routes:
+    iris:
+      path: /iris/**
+      url: http://iris-dev.sbacdw.org:8080
+      stripPrefix: false

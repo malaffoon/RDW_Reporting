@@ -3,6 +3,7 @@ var IRiS = (function (XDM) {
   XDM.init(window);
 
   XDM.addListener('IRiS:ready', function () {
+    console.log('ready event fired.');
     if (typeof api.onready === 'function') {
       api.onready();
     }
