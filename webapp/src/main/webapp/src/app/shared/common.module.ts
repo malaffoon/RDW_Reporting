@@ -17,6 +17,7 @@ import { GradeService } from "./grade.service";
 import { GradeDisplayPipe } from "./grade-display.pipe";
 import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
+import { Angulartics2Module } from 'angulartics2';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AssessmentTypePipe } from "./assessment-type.pipe";
         provide: TranslateLoader,
         useClass: RdwTranslateLoader
       }
-    })
+    }),
+    Angulartics2Module.forChild()
   ],
   exports: [
     AssessmentTypePipe,
