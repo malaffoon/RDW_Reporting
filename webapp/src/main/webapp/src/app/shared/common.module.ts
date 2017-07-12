@@ -13,10 +13,10 @@ import { SBRadioButtonComponent } from "./sb-radio-button-list.component";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
-import { GradeService } from "./grade.service";
 import { GradeDisplayPipe } from "./grade-display.pipe";
 import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
+import { ColorService } from "./color.service";
 import { Angulartics2Module } from 'angulartics2';
 
 @NgModule({
@@ -59,7 +59,7 @@ import { Angulartics2Module } from 'angulartics2';
   providers: [
     DataService,
     CachingDataService,
-    GradeService,
+    ColorService,
     RdwTranslateLoader
   ]
 })

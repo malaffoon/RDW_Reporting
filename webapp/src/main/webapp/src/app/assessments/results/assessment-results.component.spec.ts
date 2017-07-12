@@ -13,7 +13,6 @@ import { Exam } from "../model/exam.model";
 import { RemoveCommaPipe } from "../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
-import { GradeService } from "../../shared/grade.service";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { ScaleScoreComponent } from "./scale-score.component";
 import { InformationLabelComponent } from "./information-label.component";
@@ -22,6 +21,8 @@ import { ItemTabComponent } from "../items/item-tab.component";
 import { TabsModule } from "ngx-bootstrap";
 import { Student } from "../../student/model/student.model";
 import { PopupMenuComponent } from "../menu/popup-menu.component";
+import { GradeDisplayPipe } from "../../shared/grade-display.pipe";
+import { ColorService } from "../../shared/color.service";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
 import { ItemExemplarComponent } from "../items/item-exemplar/item-exemplar.component";
 
@@ -47,6 +48,7 @@ describe('AssessmentResultsComponent', () => {
       ],
       declarations: [
         AssessmentResultsComponent,
+        GradeDisplayPipe,
         InformationLabelComponent,
         ItemTabComponent,
         ItemViewerComponent,
@@ -56,12 +58,11 @@ describe('AssessmentResultsComponent', () => {
         ScaleScoreComponent,
         TestComponentWrapper
       ],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
+      providers: [ { provide: APP_BASE_HREF, useValue: '/' } ,
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
-        GradeService
+        ColorService
       ]
     }).compileComponents();
 
