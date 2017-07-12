@@ -16,6 +16,7 @@ import { routes } from "./app.routes";
 import { RouterModule } from "@angular/router";
 import { SchoolGradeModule } from "./school-grade/school-grade.module";
 import { PopoverModule } from "ngx-bootstrap/popover";
+import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { PopoverModule } from "ngx-bootstrap/popover";
     HttpModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
-    PopoverModule.forRoot()
+    PopoverModule.forRoot(),
+    Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ])
   ],
   providers: [
     ...(environment.standalone ? standaloneProviders : [])

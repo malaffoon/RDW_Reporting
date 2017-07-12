@@ -17,6 +17,7 @@ import { GradeService } from "./grade.service";
 import { GradeDisplayPipe } from "./grade-display.pipe";
 import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
+import { Angulartics2Module } from 'angulartics2';
 
 export function createTranslateLoader(http: Http) {
   return new RdwTranslateLoader(http);
@@ -44,7 +45,8 @@ export function createTranslateLoader(http: Http) {
         useFactory: createTranslateLoader,
         deps: [ Http ]
       }
-    })
+    }),
+    Angulartics2Module.forChild()
   ],
   exports: [
     AssessmentTypePipe,
