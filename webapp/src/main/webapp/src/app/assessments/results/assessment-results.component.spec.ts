@@ -22,10 +22,14 @@ import { ItemTabComponent } from "../items/item-tab.component";
 import { TabsModule } from "ngx-bootstrap";
 import { Student } from "../../student/model/student.model";
 import { PopupMenuComponent } from "../menu/popup-menu.component";
+import { Angulartics2Module, Angulartics2 } from 'angulartics2';
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
+
+  let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
+  mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -37,7 +41,8 @@ describe('AssessmentResultsComponent', () => {
         PopoverModule.forRoot(),
         SharedModule,
         TabsModule,
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        Angulartics2Module
       ],
       declarations: [
         AssessmentResultsComponent,
@@ -49,7 +54,13 @@ describe('AssessmentResultsComponent', () => {
         ScaleScoreComponent,
         TestComponentWrapper
       ],
-      providers: [ { provide: APP_BASE_HREF, useValue: '/' } , ExamStatisticsCalculator, ExamFilterService, GradeService ]
+      providers: [
+        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: Angulartics2, useValue: mockAngulartics2 },
+        ExamStatisticsCalculator,
+        ExamFilterService,
+        GradeService
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponentWrapper);
