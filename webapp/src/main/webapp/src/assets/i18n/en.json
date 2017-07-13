@@ -262,7 +262,7 @@
       }
     },
     "student": {
-      "title": "Search by Student",
+      "title": "Search by Student ID",
       "prompt": "Enter the Statewide Student Identifier (SSID)",
       "name": "{{lastName}}, {{firstName}}",
       "messages": {
