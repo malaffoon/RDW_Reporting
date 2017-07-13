@@ -215,6 +215,11 @@
     "assessments": {
       "items": {
         "tabs": {
+          "scores":{
+            "score": "Student Score",
+            "max": "Max Score",
+            "correctness": "Correctness"
+          },
           "student-scores": "Student Scores",
           "item-viewer": "Item Viewer",
           "exemplar": {

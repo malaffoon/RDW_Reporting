@@ -8,22 +8,27 @@ import { DataService } from "../../shared/data/data.service";
 import { MockDataService } from "../../../test/mock.data.service";
 import { CachingDataService } from "../../shared/cachingData.service";
 import { ItemExemplarComponent } from "./item-exemplar/item-exemplar.component";
+import { ItemScoresComponent } from "./item-scores/item-scores.component";
+import { DataTableModule } from "primeng/components/datatable/datatable";
+import { StudentScoreService } from "./item-scores/student-score.service";
+import { Component } from "@angular/core";
+import { AssessmentItem } from "../model/assessment-item.model";
 
 describe('ItemTabComponent', () => {
   let component: ItemTabComponent;
-  let fixture: ComponentFixture<ItemTabComponent>;
+  let fixture: ComponentFixture<TestComponentWrapper>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ TabsModule, CommonModule ],
-      declarations: [ ItemTabComponent, ItemViewerComponent, ItemExemplarComponent ],
-      providers: [TabsetConfig, { provide: CachingDataService, useClass: MockDataService }]
+      imports: [ TabsModule, CommonModule, DataTableModule ],
+      declarations: [ TestComponentWrapper, ItemTabComponent, ItemViewerComponent, ItemExemplarComponent, ItemScoresComponent ],
+      providers: [TabsetConfig, { provide: CachingDataService, useClass: MockDataService }, StudentScoreService]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ItemTabComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(TestComponentWrapper);
+    component = fixture.debugElement.children[ 0 ].componentInstance;
     fixture.detectChanges();
   });
 
@@ -31,3 +36,12 @@ describe('ItemTabComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+@Component({
+  selector: 'test-component-wrapper',
+  template: '<item-tab [item]="item" [exams]="exams"></item-tab>'
+})
+class TestComponentWrapper {
+  item = new AssessmentItem();
+  exams = [];
+}

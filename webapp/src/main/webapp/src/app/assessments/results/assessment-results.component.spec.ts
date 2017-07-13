@@ -25,6 +25,7 @@ import { GradeDisplayPipe } from "../../shared/grade-display.pipe";
 import { ColorService } from "../../shared/color.service";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
 import { ItemExemplarComponent } from "../items/item-exemplar/item-exemplar.component";
+import { ItemScoresComponent } from "../items/item-scores/item-scores.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -53,6 +54,7 @@ describe('AssessmentResultsComponent', () => {
         ItemTabComponent,
         ItemViewerComponent,
         ItemExemplarComponent,
+        ItemScoresComponent,
         PopupMenuComponent,
         RemoveCommaPipe,
         ScaleScoreComponent,
