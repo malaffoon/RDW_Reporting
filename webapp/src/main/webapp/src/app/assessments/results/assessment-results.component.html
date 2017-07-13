@@ -174,7 +174,7 @@
             <i class="fa fa-chevron-left"></i> {{'labels.groups.results.assessment.button-exams' | translate}}
           </a>
         </h3>
-        <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true">
+        <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true" rowExpandMode="single">
           <p-column expander="true" styleClass="col-icon"></p-column>
           <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" [sortable]="true"></p-column>
           <p-column field="claimTarget" header="{{'labels.groups.results.assessment.items.cols.claim' | translate}}" [sortable]="true">

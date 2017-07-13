@@ -29,7 +29,7 @@ export class ItemViewerComponent implements OnInit {
   private vendorId;
 
   private _irisFrame;
-  private _currentAttempt = 5;
+  private _currentAttempt = 3;
 
   @ViewChild('irisframe')
   set irisFrame(value: ElementRef) {
@@ -55,13 +55,10 @@ export class ItemViewerComponent implements OnInit {
   }
 
   irisframeOnLoad() {
-    let thisWindow: any = window;
     IRiS.setFrame(this._irisFrame);
     this.irisIsLoading = false;
 
-    // TODO Enable once the application fires a ready event
-    // thisWindow.Util.XDM.addListener('IRiS:ready', this.loadToken.bind(this));
-
+    // This will fire after iris finishes running it's setup js.
     setTimeout(this.loadToken.bind(this), 0);
   }
 
@@ -79,9 +76,6 @@ export class ItemViewerComponent implements OnInit {
   }
 
   private getToken(bankItemKey){
-    // return `{"passage":{"autoLoad":"false"},"items":[{"id":"I-${bankItemKey}"}],"layout":"WAI"}`;
-
     return `{"items":[{"response":"","id":"I-${bankItemKey}"}], "accommodations": []}`;
-    // return `{"items":[{"response":"","id":"I-187-1437"}],"accommodations":[]}`
   }
 }
