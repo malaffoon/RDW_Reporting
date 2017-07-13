@@ -19,7 +19,7 @@ insert into asmt (id, type_id, natural_id, grade_id, grade_code, subject_id, sch
   min_score, cut_point_1, cut_point_2, cut_point_3, max_score, import_id) values
   (-1, 1, 'ica1', -1, 'g1', 1, 2017, 'ica1', 'ica1', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1),
   (-2, 2, 'iab1', -2, 'g2', 1, 2017, 'iab1', 'iab1', 'v1', null, null, null, null, 1, null, 2, null, 3, -1),
-  (-3, 2, 'iab2', -1, 'g1', 2, 2016, 'iab2', 'iab2', 'v1', null, null, null, null, 1, null, 2, null, 3, -1),
+  (-3, 2, 'iab2', -1, 'g1', 1, 2016, 'iab2', 'iab2', 'v1', null, null, null, null, 1, null, 2, null, 3, -1),
   (-4, 2, 'iab3', -1, 'g1', 1, 2015, 'iab3', 'iab3', 'v1', null, null, null, null, 1, null, 2, null, 3, -1);
 
 insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, opportunity, iep, lep, section504, economic_disadvantage,
