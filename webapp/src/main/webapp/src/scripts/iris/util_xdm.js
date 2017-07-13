@@ -111,12 +111,13 @@ Util.XDM = (function ($) {
   // recieve a request/response
   function messageHandler(evt) {
 
-    // console.log('MESSAGE RECIEVED', evt);
+    if (!evt.data
+      || typeof evt.data != 'string'
+      || evt.data.toUpperCase().indexOf("IRIS") < 0) {
+      return;
+    }
 
     try {
-      if(!evt.data.data)
-        return;
-
       var data = XDM.deserialize(evt.data);
     } catch (ex) {
 
