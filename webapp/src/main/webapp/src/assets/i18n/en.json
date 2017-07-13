@@ -330,10 +330,10 @@
       "3": "Above Standard"
     },
     "achievement-level": {
-      "1": "Did Not Meet Standards",
-      "2": "Nearly Met Standards",
-      "3": "Met Standards",
-      "4": "Exceeded Standards"
+      "1": "Did Not Meet Standard",
+      "2": "Nearly Met Standard",
+      "3": "Met Standard",
+      "4": "Exceeded Standard"
     },
     "claim-code": {
       "1": "Concepts & Procedures",
