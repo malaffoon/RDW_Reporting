@@ -14,12 +14,13 @@
 <!-- Assessments Grouped by Type and Subject -->
 <div *ngFor="let assessmentType of assessmentTypes">
   <div *ngFor="let subject of getSubjectsForType(assessmentType)" class="well">
-    <span class="tag tag-md {{ assessmentType | assessmentType:'color' }}">
+    <span class="tag tag-md {{ colorService.getColor(assessmentType) }}">
       <span class="label">{{assessmentType | assessmentType}}</span>
       <span>{{subject}}</span>
     </span>
     <button class="btn btn-default btn-sm icon-only pull-right"
-            (click)="toggleCollapsed(assessmentType, subject)">
+            (click)="toggleCollapsed(assessmentType, subject)"
+            angulartics2On="click" angularticsEvent="ToggleCollapseResults" angularticsCategory="StudentHistory">
       <span class="sr-only">{{ 'buttons.collapsible.collapse' | translate }}</span>
       <i class="fa fa-bold {{ isCollapsed(assessmentType, subject) ? 'fa-angle-down' : 'fa-angle-up' }}"></i>
     </button>

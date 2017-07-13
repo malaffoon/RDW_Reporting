@@ -13,14 +13,11 @@ import { SBRadioButtonComponent } from "./sb-radio-button-list.component";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
-import { GradeService } from "./grade.service";
 import { GradeDisplayPipe } from "./grade-display.pipe";
 import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
-
-export function createTranslateLoader(http: Http) {
-  return new RdwTranslateLoader(http);
-}
+import { ColorService } from "./color.service";
+import { Angulartics2Module } from 'angulartics2';
 
 @NgModule({
   declarations: [
@@ -41,10 +38,10 @@ export function createTranslateLoader(http: Http) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [ Http ]
+        useClass: RdwTranslateLoader
       }
-    })
+    }),
+    Angulartics2Module.forChild()
   ],
   exports: [
     AssessmentTypePipe,
@@ -62,7 +59,8 @@ export function createTranslateLoader(http: Http) {
   providers: [
     DataService,
     CachingDataService,
-    GradeService
+    ColorService,
+    RdwTranslateLoader
   ]
 })
 export class CommonModule {

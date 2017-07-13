@@ -5,7 +5,7 @@ import { SharedModule } from "primeng/components/common/shared";
 import { BrowserModule } from "@angular/platform-browser";
 import { Observable } from "rxjs";
 import { RequestOptionsArgs } from "@angular/http";
-import { RouterModule, ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { SchoolResultsComponent } from "./school-results.component";
 import { AssessmentsModule } from "../../assessments/assessments.module";
@@ -17,6 +17,7 @@ import { User } from "../../user/model/user.model";
 import { School } from "../../user/model/school.model";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
+import { Angulartics2Module, Angulartics2 } from "angulartics2";
 
 let availableGrades = [];
 
@@ -33,6 +34,9 @@ describe('SchoolResultsComponent', () => {
     let mockRouteParams = {};
     mockRouteParams["schoolId"] = 2;
 
+    let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
+    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
+
     availableGrades = [];
 
     TestBed.configureTestingModule({
@@ -43,7 +47,8 @@ describe('SchoolResultsComponent', () => {
         ReactiveFormsModule,
         AssessmentsModule,
         DropdownModule,
-        SharedModule
+        SharedModule,
+        Angulartics2Module
       ],
       declarations: [ SchoolResultsComponent ],
       providers: [
@@ -55,7 +60,8 @@ describe('SchoolResultsComponent', () => {
         { provide: SchoolService, useClass: MockSchoolService },
         { provide: ActivatedRoute, useValue: {
           snapshot: { data: mockRouteData, params: mockRouteParams }
-        }}
+        }},
+        { provide: Angulartics2, useValue: mockAngulartics2 }
       ]
     })
       .compileComponents();

@@ -6,12 +6,13 @@ import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { FilterBy } from "../model/filter-by.model";
 import { Subscription, Observable } from "rxjs";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
-import { GradeService } from "../../shared/grade.service";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
 import { PopupMenuAction } from "../menu/popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
+import { GradeCode } from "../../shared/enum/grade-code.enum";
+import { ColorService } from "../../shared/color.service";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -127,7 +128,11 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get isIca(): boolean {
-    return this._assessmentExam.assessment.isIca
+    return this._assessmentExam.assessment.isIca;
+  }
+
+  get showClaimToggle(): boolean {
+    return this._assessmentExam.assessment.isIca || this._assessmentExam.assessment.isSummative;
   }
 
   get claimCodes(): string[] {
@@ -166,7 +171,7 @@ export class AssessmentResultsComponent implements OnInit {
   private _assessmentItems: AssessmentItem[];
   private _filterBySubscription: Subscription;
 
-  constructor(public gradeService: GradeService,
+  constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
               private translateService: TranslateService) {
@@ -174,6 +179,10 @@ export class AssessmentResultsComponent implements OnInit {
 
   ngOnInit(): void {
     this.actions = this.createActions();
+  }
+
+  getGradeIdx(gradeCode: string): number {
+    return GradeCode.getIndex(gradeCode);
   }
 
   toggleSession(session) {
@@ -191,6 +200,8 @@ export class AssessmentResultsComponent implements OnInit {
 
         this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
         this.showItemsByPoints = true;
+
+
       });
     }
     else{
