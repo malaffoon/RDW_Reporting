@@ -74,13 +74,3 @@ app:
   # google analytics configuration
   analytics:
     trackingId: ${rdw.reporting.analytics.trackingId:}
-  addProxyHeaders: true
-  addHostHeader: true
-  set-content-length: true
-  host:
-    socket-timeout-millis: 100000
-  routes:
-    iris:
-      path: /iris/**
-      url: http://iris-dev.sbacdw.org:8080
-      stripPrefix: false

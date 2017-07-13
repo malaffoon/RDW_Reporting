@@ -43,9 +43,7 @@ export class ItemViewerComponent implements OnInit {
 
   ngOnInit() {
     this.userService.getCurrentUser().subscribe(user => {
-      // let irisUrl = user.configuration.irisUrl;
-      let irisUrl = "http://iris-dev.sbacdw.org:8080/iris";
-      // let irisUrl = "/iris";
+      let irisUrl = user.configuration.irisUrl;
 
       this.safeIrisUrl = this.sanitizer.bypassSecurityTrustResourceUrl(irisUrl);
       this.vendorId = user.configuration.irisVendorId;
