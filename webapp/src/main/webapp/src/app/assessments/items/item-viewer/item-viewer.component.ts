@@ -29,6 +29,7 @@ export class ItemViewerComponent implements OnInit {
   private vendorId;
 
   private _irisFrame;
+  private _currentAttempt = 3;
 
   @ViewChild('irisframe')
   set irisFrame(value: ElementRef) {
@@ -43,26 +44,36 @@ export class ItemViewerComponent implements OnInit {
   ngOnInit() {
     this.userService.getCurrentUser().subscribe(user => {
       let irisUrl = user.configuration.irisUrl;
-      // let irisUrl = "http://ec2-52-33-16-206.us-west-2.compute.amazonaws.com/";
 
       this.safeIrisUrl = this.sanitizer.bypassSecurityTrustResourceUrl(irisUrl);
       this.vendorId = user.configuration.irisVendorId;
+
       this._irisFrame.addEventListener('load', this.irisframeOnLoad.bind(this));
-    })
+    });
   }
 
   irisframeOnLoad() {
     IRiS.setFrame(this._irisFrame);
-
-    let token = this.getToken(this.bankItemKey);
-    IRiS.loadToken(this.vendorId, token);
     this.irisIsLoading = false;
+
+    // This will fire after iris finishes running it's setup js.
+    setTimeout(this.loadToken.bind(this), 0);
+  }
+
+  loadToken() {
+    let token = this.getToken(this.bankItemKey);
+    IRiS.loadToken(this.vendorId, token)
+      .fail((function(err) {
+        if (this._currentAttempt-- > 0) {
+          console.log("Failed to load token, attempting again", err);
+          setTimeout(this.loadToken.bind(this), 2000);
+        } else {
+          console.log("Max failures attempted, aborting.");
+        }
+      }).bind(this));
   }
 
   private getToken(bankItemKey){
-    return `{"passage":{"autoLoad":"false"},"items":[{"id":"I-${bankItemKey}"}],"layout":"WAI"}`;
-
-    // return `{"items":[{"id":"I-${bankItemKey}"}], "accommodations": []}`;
-    // return `{"items":[{"response":"","id":"I-187-1437"}],"accommodations":[]}`
+    return `{"items":[{"response":"","id":"I-${bankItemKey}"}], "accommodations": []}`;
   }
 }
