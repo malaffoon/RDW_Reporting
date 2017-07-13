@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+    </head>
+    <body>
+
+        <div th:fragment="styles">
+            <link rel="stylesheet" href="sbac-ui-kit/dist/css/sbac-ui-kit.min.css">
+        </div>
+
+        <div th:fragment="header">
+            <h1 th:text="#{${prefix} + '.title'}"></h1>
+        </div>
+
+        <div th:fragment="student-header">
+            <h2 th:text="#{report.student.name(${report.student.firstName}, ${report.student.lastName})}"></h2>
+            <span th:inline="text"><label th:text="#{report.student.grade.label}"></label> [[#{'report.grade.' + ${report.studentEnrollment.gradeCode}}]]</span>
+            <span th:inline="text"><label th:text="#{report.student.school.label}"></label> [[${report.studentEnrollment.schoolName}]]</span>
+            <span th:inline="text"><label th:text="#{report.student.district.label}"></label> [[${report.studentEnrollment.districtName}]]</span>
+            <span th:inline="text"><label th:text="#{report.student.state.label}"></label> [[${report.studentEnrollment.stateCode}]]</span>
+        </div>
+
+        <div th:fragment="title">
+            <div>
+                <span th:text="#{${prefix} + '.short-name'}"></span><span th:text="#{'report.subject.' + ${request.subject} + '.name'}"></span>
+            </div>
+            <div th:with="schoolYear=${#strings.toString(request.schoolYear)},nextSchoolYear=${#strings.toString(request.schoolYear + 1)},nextSchoolYearLength=${#strings.length(schoolYear)}">
+                <span th:text="#{(${prefix} + '.title.grade.' + ${report.studentEnrollment.gradeCode})(${schoolYear}, ${#strings.substring(nextSchoolYear, nextSchoolYearLength - 2, nextSchoolYearLength)})}"></span>
+            </div>
+        </div>
+
+
+        <div th:fragment="error-band-label">
+            <div th:text="#{report.scale-score.error-band}"></div>
+            <p th:text="#{report.scale-score.description}"></p>
+        </div>
+
+        <div th:fragment="bottom">
+            <h3 th:text="#{report.faq.header}"></h3>
+            <p th:utext="#{report.faq.p1.html}"></p>
+            <div th:text="#{report.faq.p2.header}"></div>
+            <p th:utext="#{report.faq.p2.html}"></p>
+            <p th:utext="#{report.faq.p3.html}"></p>
+            <h4 th:text="#{report.important-information.header}"></h4>
+            <ul>
+                <li th:text="#{report.important-information.item1}"></li>
+                <li th:text="#{report.important-information.item2}"></li>
+            </ul>
+        </div>
+
+        <div th:fragment="footer">
+            <footer>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="copyright text-right" th:utext="#{report.copyright}"></div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+    </body>
+</html>

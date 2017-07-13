@@ -48,6 +48,7 @@ sql:
       where e.student_id=:student_id
       and e.school_year=:school_year
       and a.type_id=2
+      and a.subject_id=:subject_id
       and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
       order by e.completed_at desc
 
@@ -112,6 +113,7 @@ sql:
       where e.student_id=:student_id
       and e.school_year=:school_year
       and a.type_id=1
+      and a.subject_id=:subject_id
       and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
       order by e.completed_at desc
       limit 1
