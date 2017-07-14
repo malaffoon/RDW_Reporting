@@ -13,7 +13,7 @@ import { PopupMenuAction } from "../menu/popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
 import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -176,7 +176,8 @@ export class AssessmentResultsComponent implements OnInit {
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
               private translateService: TranslateService,
-              private router: Router) {
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -287,7 +288,7 @@ export class AssessmentResultsComponent implements OnInit {
       return this.translateService.instant('labels.menus.test-history', exam.student);
     }).bind(this);
     responsesAction.perform = ((exam: Exam) => {
-      this.router.navigateByUrl(`/students/${exam.student.id}`);
+      this.router.navigate(['students', exam.student.id], { relativeTo: this.route });
     }).bind(this);
     actions.push(responsesAction);
 
