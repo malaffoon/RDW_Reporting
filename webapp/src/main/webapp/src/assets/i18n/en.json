@@ -182,16 +182,16 @@
               "session": "Session",
               "grade": "Enrolled Grade",
               "status": "Status",
-              "status-info": "The status column is a combination of ... actual content needed",
+              "status-info": "Refers to whether an assessment has been flagged as standardized/non-standardized, complete/partial, and valid/invalid.",
               "score": "Scale Score",
-              "score-info": "The scale score represents ... actual content needed",
+              "score-info": "A student's test score and an error band based on the Standard Error of Measurement (SEM) associated with that score.  Smarter Balanced test scores are on a vertical scale, meaning that scores for all grades are reported on a single continuous scale to reflect the increased expectations as students advance through the grades.  The error band is included because test scores are estimates of student achievement and come with a certain amount of measurement error. See the Interpretive Guide for additional information about scale scores and measurement error.",
               "iab": {
                 "performance": "Reporting Category",
-                "performance-info": "The reporting category info content is needed"
+                "performance-info": "Student scores on each Interim Assessment Block are assigned to one of three reporting categories (Below Standard, Near Standard, Above Standard).  The standard is based on the minimum scale score for the 'Met Standard' achievement level on the Interim Comprehensive and summative assessments (the score that separates Levels 2 and 3).  See the Interpretive Guide for more information on how placement into the reporting categories is determined."
               },
               "ica": {
                 "performance": "Achievement Level",
-                "performance-info": "The achievement level info content is needed"
+                "performance-info": "Student scores on the Summative and Interim Comprehensive assessments are assigned to one of four achievement levels (Standard Not Met, Standard Nearly Met, Standard Met, and Standard Exceeded) based on the scale score."
               }
             }
           },
@@ -201,10 +201,10 @@
               "number": "Item #",
               "claim": "Claim/Target",
               "difficulty": "Item Difficulty",
-              "difficulty-info": "The item difficulty is defined as ... need real content here",
+              "difficulty-info": "Item difficulty (easy, moderate, difficult) is based on the difficulty of the item for students in a reference population.  See the Interpretive Guide for a description of the reference population and how the difficulty categories are derived.",
               "standard": "Standard",
               "full-credit": "Full Credit",
-              "full-credit-info": "The full credit column represents ... need real data here",
+              "full-credit-info": "Percentage of students in the group who earned the maximum number of points available for a particular test item.",
               "x-points": "{{id}}"
             },
             "target": "Target {{target}}"
@@ -238,6 +238,7 @@
     "menu": "Menu",
     "menus": {
       "responses": "{{firstName}}'s Responses",
+      "test-history": "{{firstName}}'s Test History",
       "resources": "Instructional Resources",
       "print-report": "Print Report"
     },
@@ -250,7 +251,7 @@
         "prompt": "Start typing the school name"
       },
       "messages": {
-        "no-grades-available": "No assessments are available for the selected school."
+        "no-grades-available": "No test results are available for the selected school."
       },
       "results": {
         "basic-filters": {
@@ -266,7 +267,7 @@
       "prompt": "Enter the Statewide Student Identifier (SSID)",
       "name": "{{lastName}}, {{firstName}}",
       "messages": {
-        "no-results": "Student does not exist or has no available exam results."
+        "no-results": "Student does not exist or has no available test results."
       },
       "responses": {
         "title": "Student Test History Report",
@@ -280,7 +281,7 @@
       },
       "results": {
         "title": "Student Test History Report",
-        "crumb": "Student Id: {{ssid}}",
+        "crumb": "Student: {{lastName}}, {{firstName}}",
         "labels": {
           "select-subject": "Subject"
         },

@@ -22,6 +22,7 @@
     <div class="row">
         <!-- Sessions -->
         <div class="col-md-7">
+          <div *ngIf="useSessions">
             <p><strong>{{'labels.groups.results.assessment.sessions-title' | translate}}</strong><br />
             {{'labels.groups.results.assessment.sessions-instruct' | translate}}</p>
             <div class="flex-children">
@@ -34,6 +35,7 @@
                     <span class="icon"><i class="fa" [ngClass]="{'fa-minus':session.filter, 'fa-plus': !session.filter }"></i></span>
                 </a>
             </div>
+          </div>
         </div>
 
         <!-- TODO: Add labels to translations -->
@@ -102,6 +104,13 @@
         </h3>
 
         <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.assessment.exams.empty-message' | translate}}" sortField="student.lastName" tableStyleClass="table table-striped table-hover" expandableRows="true">
+          <!-- Row Menu -->
+          <p-column styleClass="cell-dropdown">
+            <ng-template let-data="rowData" pTemplate="body">
+              <popup-menu [item]="data" [actions]="actions"></popup-menu>
+            </ng-template>
+          </p-column>
+
           <p-column sortField="student.lastName" header="{{'labels.groups.results.assessment.exams.cols.name' | translate}}" [sortable]="true">
             <ng-template let-exam="rowData" pTemplate="body">
               {{ 'labels.personName' | translate:exam.student }}
@@ -155,13 +164,6 @@
                     [hidden]="!isClaimScoreSelected">
             <ng-template let-exam="rowData" pTemplate="body">
               {{ 'enum.iab-category.' + exam.claimScores[idx].level.toString() | translate }}
-            </ng-template>
-          </p-column>
-
-          <!-- Row Menu -->
-          <p-column styleClass="cell-dropdown">
-            <ng-template let-data="rowData" pTemplate="body">
-              <popup-menu [item]="data" [actions]="actions"></popup-menu>
             </ng-template>
           </p-column>
         </p-dataTable>

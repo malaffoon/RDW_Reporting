@@ -42,6 +42,13 @@ export class AssessmentsComponent implements OnInit {
   @Input()
   assessmentProvider: AssessmentProvider;
 
+  /**
+   * If true, the session toggles will be display with the most recent selected
+   * by default.  Otherwise, they won't be displayed and all results will be shown.
+   */
+  @Input()
+  useSessions: boolean = true;
+
   showValuesAsPercent: boolean = true;
   filterDisplayOptions: any = {
     expanded: true
@@ -138,6 +145,8 @@ export class AssessmentsComponent implements OnInit {
   ngOnInit() {
     this.filterOptionService.getExamFilterOptions().subscribe(filterOptions => {
       this.filterOptions = filterOptions;
+
+      this.updateFilterOptions();
     });
 
     this.boundLoadAssessmentItems = this.loadAssessmentItems.bind(this);
@@ -173,6 +182,8 @@ export class AssessmentsComponent implements OnInit {
     if (latestAssessment) {
       this._assessmentExams.push(latestAssessment);
     }
+
+    this.updateFilterOptions();
   }
 
   removeAssessment(assessment: Assessment) {
@@ -187,6 +198,13 @@ export class AssessmentsComponent implements OnInit {
     else {
       this.removeUnselectedAssessmentExams();
     }
+
+    this.updateFilterOptions();
+  }
+
+  private updateFilterOptions() {
+    this.filterOptions.hasInterim = this.selectedAssessments.some(a => a.isInterim);
+    this.filterOptions.hasSummative = this.selectedAssessments.some(a => a.isSummative);
   }
 
   private loadAssessmentItems(assessmentId: number): Observable<AssessmentItem[]> {
