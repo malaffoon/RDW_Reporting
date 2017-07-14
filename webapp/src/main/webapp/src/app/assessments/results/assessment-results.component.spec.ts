@@ -59,7 +59,7 @@ describe('AssessmentResultsComponent', () => {
         SharedModule,
         TabsModule,
         TranslateModule.forRoot(),
-        Angulartics2Module,
+        Angulartics2Module
       ],
       declarations: [
         AssessmentResultsComponent,
