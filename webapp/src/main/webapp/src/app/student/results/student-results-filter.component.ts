@@ -38,8 +38,6 @@ export class StudentResultsFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.filterState.filterBy.onChanges.subscribe(() => this.onFilterChange(''));
-
-    this.filterOptions.hasSummative = false;
   }
 
   /**
