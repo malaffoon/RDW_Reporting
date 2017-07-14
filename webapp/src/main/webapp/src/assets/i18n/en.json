@@ -175,7 +175,7 @@
           "button-exams": "Student Results",
           "exams": {
             "title": "Student Results",
-            "empty-message": "No results found by selected sessions and advanced filters.",
+            "empty-message": "No test results are available for the sessions and advanced filters selected.",
             "cols": {
               "name": "Student",
               "date": "Date",
