@@ -15,7 +15,8 @@ import { TranslateResolve } from "./home/translate.resolve";
 import { StudentHistoryResponsesExamResolve } from "./student/responses/student-history-responses-exam.resolve";
 import { StudentHistoryResponsesAssessmentResolve } from "./student/responses/student-history-responses-assessment.resolve";
 
-const studentTestHistoryRoute = {
+
+const studentTestHistoryChildRoute = {
   path: 'students/:studentId',
   resolve: { examHistory: StudentExamHistoryResolve },
   data: {
@@ -23,7 +24,6 @@ const studentTestHistoryRoute = {
       translate: 'labels.student.results.crumb',
       translateResolve: 'examHistory.student'
     },
-    permissions: ['INDIVIDUAL_PII_READ']
   },
   canActivate: [ AuthorizeCanActivate ],
   children: [ {
@@ -41,8 +41,7 @@ const studentTestHistoryRoute = {
     data: {
       breadcrumb: {
         translate: 'labels.student.responses.crumb'
-      },
-      permissions: ['INDIVIDUAL_PII_READ']
+      }
     },
     component: StudentResponsesComponent
   } ]
@@ -64,7 +63,7 @@ export const routes: Routes = [
           resolve: { assessment: GroupAssessmentsResolve },
           component: GroupResultsComponent
         },
-        studentTestHistoryRoute
+        studentTestHistoryChildRoute
         ]
       },
       {
@@ -78,10 +77,40 @@ export const routes: Routes = [
           resolve: { assessment: SchoolAssessmentResolve, school: CurrentSchoolResolve },
           component: SchoolResultsComponent
         },
-        studentTestHistoryRoute
+        studentTestHistoryChildRoute
         ]
       },
-      studentTestHistoryRoute
+      {
+        path: 'students/:studentId',
+        resolve: { examHistory: StudentExamHistoryResolve },
+        data: {
+          breadcrumb: {
+            translate: 'labels.student.results.crumb',
+            translateResolve: 'examHistory.student'
+          },
+          permissions: ['INDIVIDUAL_PII_READ']
+        },
+        canActivate: [ AuthorizeCanActivate ],
+        children: [ {
+          path: '',
+          pathMatch: 'full',
+          component: StudentResultsComponent
+        }, {
+          path: 'exams/:examId',
+          pathMatch: 'full',
+          resolve: {
+            assessment: StudentHistoryResponsesAssessmentResolve,
+            assessmentItems: StudentResponsesResolve,
+            exam: StudentHistoryResponsesExamResolve
+          },
+          data: {
+            breadcrumb: {
+              translate: 'labels.student.responses.crumb'
+            }
+          },
+          component: StudentResponsesComponent
+        } ]
+      }
     ]
   }
 ];
