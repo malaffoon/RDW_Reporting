@@ -70,6 +70,13 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   showValuesAsPercent: boolean;
 
+  /**
+   * If true, the session toggles will be display with the most recent selected
+   * by default.  Otherwise, they won't be displayed and all results will be shown.
+   */
+  @Input()
+  useSessions: boolean = true;
+
   @Input()
   displayState: any = {
     showClaim: ScoreViewState.OVERALL
@@ -238,9 +245,15 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   private filterExams() {
-    return this.examFilterService
-      .filterExams(this._assessmentExam, this._filterBy)
-      .filter(x => this.sessions.some(y => y.filter && y.id == x.session));
+    let exams: Exam[] = this.examFilterService
+      .filterExams(this._assessmentExam, this._filterBy);
+
+    // only filter by sessions if this is my groups, otherwise return all regardless of session
+    if (this.useSessions) {
+      return exams.filter(x => this.sessions.some(y => y.filter && y.id == x.session));
+    }
+
+    return exams;
   }
 
   private filterAssessmentItems(assessmentItems: AssessmentItem[]) {
