@@ -250,7 +250,7 @@
         "prompt": "Start typing the school name"
       },
       "messages": {
-        "no-grades-available": "No assessments are available for the selected school."
+        "no-grades-available": "No test results are available for the selected school."
       },
       "results": {
         "basic-filters": {
@@ -266,7 +266,7 @@
       "prompt": "Enter the Statewide Student Identifier (SSID)",
       "name": "{{lastName}}, {{firstName}}",
       "messages": {
-        "no-results": "Student does not exist or has no available exam results."
+        "no-results": "Student does not exist or has no available test results."
       },
       "responses": {
         "title": "Student Test History Report",
