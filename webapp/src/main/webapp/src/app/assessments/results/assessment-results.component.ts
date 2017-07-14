@@ -56,10 +56,14 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
     this._assessmentExam = assessment;
-    this.sessions = this.getDistinctExamSessions(assessment.exams);
 
-    if (this.sessions.length > 0) {
-      this.toggleSession(this.sessions[ 0 ]);
+    // if we aren't going to display the sessions, don't waste resources computing them
+    if (this.useSessions) {
+      this.sessions = this.getDistinctExamSessions(assessment.exams);
+
+      if (this.sessions.length > 0) {
+        this.toggleSession(this.sessions[0]);
+      }
     }
   }
 
