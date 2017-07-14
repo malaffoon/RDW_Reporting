@@ -33,7 +33,7 @@
   </div>
 
   <!-- Selected Assessments -->
-  <div id="group-results-selected-assessments" class="well gray-lightest">
+  <div *ngIf="hasInitialAssessment" id="group-results-selected-assessments" class="well gray-lightest">
     <h2 class="h3 gray-darkest">
       <i class="fa fa-list-alt"></i> {{'labels.groups.results.selected-assessments-title' | translate}}
       <div class="btn-group btn-group-xs pull-right" role="group">

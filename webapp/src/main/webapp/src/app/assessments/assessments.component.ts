@@ -32,6 +32,7 @@ export class AssessmentsComponent implements OnInit {
   set assessmentExams(value: AssessmentExam[]) {
     this._assessmentExams = value;
     this.showOnlyMostRecent = true;
+    this._hasInitialAssessment = (value != null && value.length != 0);
   }
 
   /**
@@ -63,6 +64,10 @@ export class AssessmentsComponent implements OnInit {
   set showAdvancedFilters(value: boolean) {
     this._showAdvancedFilters = value;
     this.filterDisplayOptions.expanded = value; // Automatically expand / collapse filter options.
+  }
+
+  get hasInitialAssessment(): boolean {
+    return this._hasInitialAssessment;
   }
 
   get expandAssessments(): boolean {
@@ -120,6 +125,7 @@ export class AssessmentsComponent implements OnInit {
 
   private _showAdvancedFilters: boolean = false;
   private _expandAssessments: boolean = false;
+  private _hasInitialAssessment: boolean = false;
   private _showOnlyMostRecent: boolean = true;
   private _assessmentExams: AssessmentExam[];
 
