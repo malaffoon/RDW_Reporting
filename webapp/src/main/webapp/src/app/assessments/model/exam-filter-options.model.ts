@@ -1,6 +1,6 @@
 export class ExamFilterOptions {
   schoolYears: number[] = [];
   ethnicities: string[] = [];
-  hasSummative: boolean = true;
-  hasInterim: boolean = true;
+  hasSummative: boolean = false;
+  hasInterim: boolean = false;
 }
