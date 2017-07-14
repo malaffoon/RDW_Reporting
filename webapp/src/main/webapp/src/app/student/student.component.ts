@@ -26,8 +26,12 @@ export class StudentComponent implements OnInit {
     return this.searchForm.controls["ssid"];
   }
 
+  onSsidChange(ssidValue: string): void {
+    this.studentNotFound = false;
+  }
+
   /**
-   * Search for the entered sudent SSID.  If a student exists with exams,
+   * Search for the entered student SSID.  If a student exists with exams,
    * navigate to the results page.  Otherwise, display a not found message.
    */
   performSearch(): void {

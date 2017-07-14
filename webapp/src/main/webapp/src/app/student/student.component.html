@@ -3,12 +3,13 @@
     <div class="flex-children">
       <div class="flex-child grow">
         <label for="student-id-input">{{'labels.student.title' | translate}}</label>
-        <input formControlName="ssid"
+        <input #ssid formControlName="ssid"
                type="text"
                class="form-control"
                id="student-id-input"
                required
-               placeholder="{{'labels.student.prompt' | translate}}">
+               placeholder="{{'labels.student.prompt' | translate}}"
+               (keyup)="onSsidChange(ssid.value)">
       </div>
       <div class="flex-child">
         <button type="submit" class="btn btn-primary" [disabled]="searchForm.invalid">{{'buttons.search' | translate}}</button>
