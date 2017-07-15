@@ -26,7 +26,10 @@ export class StudentComponent implements OnInit {
     return this.searchForm.controls["ssid"];
   }
 
-  onSsidChange(ssidValue: string): void {
+  /**
+   * Handles when the SSID changes values by removing the error message if it is displayed.
+   */
+  onSsidChange(): void {
     this.studentNotFound = false;
   }
 
