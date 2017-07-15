@@ -211,6 +211,7 @@
             "cols": {
               "number": "Item #",
               "claim": "Claim/Target",
+              "claim-info": "Claims and targets are a way of classifying test content.  The claim is the major topic area.  For example, in English language arts, reading is a claim.  Within each claim, there are targets that describe the particular knowledge and skills that the test measures.  Each target may encompass one or more standards from the Common Core State Standards.  Within the Reading claim, for example, one of the targets is concerned with finding the central idea in a text.  For more information, see the Smarter Balanced Content Specifications (link to http://www.smarterbalanced.org/assessments/development/).",
               "difficulty": "Item Difficulty",
               "difficulty-info": "Item difficulty (easy, moderate, difficult) is based on the difficulty of the item for students in a reference population.  See the Interpretive Guide for a description of the reference population and how the difficulty categories are derived.",
               "standard": "Standard",
@@ -244,7 +245,9 @@
           },
           "item-info": "Item Information"
         }
-      }
+      },
+      "average-scale-score": "Average Scale Score",
+      "average-scale-score-info": "Average scale score for the selected group of students and an error band based on the Standard Error of Measurement (SEM) associated with that score. Test scores are estimates of student achievement and come with a certain amount of measurement error. See the Interpretive Guide for additional information about scale scores and measurement error."
     },
     "menu": "Menu",
     "menus": {
@@ -287,7 +290,8 @@
           "standard": "Standard",
           "student-score": "Student Score",
           "max-score": "Max Score",
-          "correctness": "Correctness"
+          "correctness": "Correctness",
+          "correctness-info": "A value for the degree of correctness in a student's response to a test question. The correctness value is calculated by dividing the student's score on a particular question by the maximum score for that question."
         }
       },
       "results": {
