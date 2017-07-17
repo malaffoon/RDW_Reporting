@@ -26,15 +26,30 @@ import { ColorService } from "../../shared/color.service";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
 import { ItemExemplarComponent } from "../items/item-exemplar/item-exemplar.component";
 import { ItemScoresComponent } from "../items/item-scores/item-scores.component";
+import { Router, ActivatedRoute } from "@angular/router";
+import { MockRouter } from "../../../test/mock.router";
+import Spy = jasmine.Spy;
+import createSpy = jasmine.createSpy;
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
+  let route: MockActivatedRoute;
+  let router: MockRouter;
 
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
 
   beforeEach(async(() => {
+    route = new MockActivatedRoute();
+
+    let mockRouteSnapshot: any = {};
+    mockRouteSnapshot.data = {};
+    mockRouteSnapshot.params = {};
+    route.snapshotResult.and.returnValue(mockRouteSnapshot);
+
+    router = new MockRouter();
+
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -64,7 +79,14 @@ describe('AssessmentResultsComponent', () => {
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
-        ColorService
+        ColorService,
+        {
+          provide: ActivatedRoute,
+          useValue: route
+        }, {
+          provide: Router,
+          useValue: router
+        }
       ]
     }).compileComponents();
 
@@ -141,4 +163,12 @@ describe('AssessmentResultsComponent', () => {
 })
 class TestComponentWrapper {
   assessment = new AssessmentExam();
+}
+
+class MockActivatedRoute {
+  snapshotResult: Spy = createSpy("snapshot");
+
+  get snapshot(): any {
+    return this.snapshotResult();
+  }
 }

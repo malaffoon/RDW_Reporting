@@ -13,6 +13,7 @@ import { PopupMenuAction } from "../menu/popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
 import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
+import { Router, ActivatedRoute } from "@angular/router";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -56,10 +57,14 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
     this._assessmentExam = assessment;
-    this.sessions = this.getDistinctExamSessions(assessment.exams);
 
-    if (this.sessions.length > 0) {
-      this.toggleSession(this.sessions[ 0 ]);
+    // if we aren't going to display the sessions, don't waste resources computing them
+    if (this.useSessions) {
+      this.sessions = this.getDistinctExamSessions(assessment.exams);
+
+      if (this.sessions.length > 0) {
+        this.toggleSession(this.sessions[0]);
+      }
     }
   }
 
@@ -69,6 +74,13 @@ export class AssessmentResultsComponent implements OnInit {
    */
   @Input()
   showValuesAsPercent: boolean;
+
+  /**
+   * If true, the session toggles will be display with the most recent selected
+   * by default.  Otherwise, they won't be displayed and all results will be shown.
+   */
+  @Input()
+  useSessions: boolean = true;
 
   @Input()
   displayState: any = {
@@ -174,7 +186,9 @@ export class AssessmentResultsComponent implements OnInit {
   constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
-              private translateService: TranslateService) {
+              private translateService: TranslateService,
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -238,9 +252,15 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   private filterExams() {
-    return this.examFilterService
-      .filterExams(this._assessmentExam, this._filterBy)
-      .filter(x => this.sessions.some(y => y.filter && y.id == x.session));
+    let exams: Exam[] = this.examFilterService
+      .filterExams(this._assessmentExam, this._filterBy);
+
+    // only filter by sessions if this is my groups, otherwise return all regardless of session
+    if (this.useSessions) {
+      return exams.filter(x => this.sessions.some(y => y.filter && y.id == x.session));
+    }
+
+    return exams;
   }
 
   private filterAssessmentItems(assessmentItems: AssessmentItem[]) {
@@ -280,21 +300,15 @@ export class AssessmentResultsComponent implements OnInit {
       actions.push(responsesAction);
     }
 
-    let resourcesLabel: string = this.translateService.instant('labels.menus.resources');
-    let resourcesAction: PopupMenuAction = new PopupMenuAction();
-    resourcesAction.displayName = (() => resourcesLabel);
-    resourcesAction.perform = ((exam: Exam) => {
-      console.log(`Show Resources: ${exam.student.lastName}`)
+    let responsesAction: PopupMenuAction = new PopupMenuAction();
+    responsesAction.displayName = ((exam) => {
+      return this.translateService.instant('labels.menus.test-history', exam.student);
     }).bind(this);
-    actions.push(resourcesAction);
+    responsesAction.perform = ((exam: Exam) => {
+      this.router.navigate(['students', exam.student.id], { relativeTo: this.route });
+    }).bind(this);
+    actions.push(responsesAction);
 
-    let reportLabel: string = this.translateService.instant('labels.menus.print-report');
-    let reportAction: PopupMenuAction = new PopupMenuAction();
-    reportAction.displayName = (() => reportLabel);
-    reportAction.perform = ((exam: Exam) => {
-      console.log(`Print Report: ${exam.student.lastName}`)
-    }).bind(this);
-    actions.push(reportAction);
 
     return actions;
   }

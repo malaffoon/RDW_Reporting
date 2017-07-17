@@ -59,6 +59,7 @@ import { StudentScoreService } from "./items/item-scores/student-score.service";
     AdvFiltersToggleComponent,
     AssessmentsComponent,
     InformationLabelComponent,
+    ItemTabComponent,
     PopupMenuComponent,
     ScaleScoreComponent
   ],

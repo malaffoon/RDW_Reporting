@@ -24,11 +24,18 @@ export class ItemViewerComponent implements OnInit {
   @Input()
   public bankItemKey: string;
 
+  @Input()
+  public response: string;
+
+  @Input()
+  public position: number;
+
   public irisIsLoading: boolean = true;
   public safeIrisUrl: SafeResourceUrl;
   private vendorId;
 
   private _irisFrame;
+  private _currentAttempt = 3;
 
   @ViewChild('irisframe')
   set irisFrame(value: ElementRef) {
@@ -43,26 +50,70 @@ export class ItemViewerComponent implements OnInit {
   ngOnInit() {
     this.userService.getCurrentUser().subscribe(user => {
       let irisUrl = user.configuration.irisUrl;
-      // let irisUrl = "http://ec2-52-33-16-206.us-west-2.compute.amazonaws.com/";
 
       this.safeIrisUrl = this.sanitizer.bypassSecurityTrustResourceUrl(irisUrl);
       this.vendorId = user.configuration.irisVendorId;
+
       this._irisFrame.addEventListener('load', this.irisframeOnLoad.bind(this));
-    })
+    });
   }
 
   irisframeOnLoad() {
     IRiS.setFrame(this._irisFrame);
-
-    let token = this.getToken(this.bankItemKey);
-    IRiS.loadToken(this.vendorId, token);
     this.irisIsLoading = false;
+
+    // This will fire after iris finishes running it's setup js.
+    setTimeout(this.loadToken.bind(this), 0);
   }
 
-  private getToken(bankItemKey){
-    return `{"passage":{"autoLoad":"false"},"items":[{"id":"I-${bankItemKey}"}],"layout":"WAI"}`;
+  /**
+   * Send a request to load the specified assessment item.
+   */
+  loadToken() {
+    let token = this.getToken(this.bankItemKey);
+    IRiS.loadToken(this.vendorId, token)
+      .done((function() {
+        this.loadResponse();
+      }).bind(this))
+      .fail((function(err) {
+        if (this._currentAttempt-- > 0) {
+          console.log("Failed to load token, attempting again", err);
+          setTimeout(this.loadToken.bind(this), 2000);
+        } else {
+          console.log("Max failures attempted, aborting.");
+        }
+      }).bind(this));
+  }
 
-    // return `{"items":[{"id":"I-${bankItemKey}"}], "accommodations": []}`;
-    // return `{"items":[{"response":"","id":"I-187-1437"}],"accommodations":[]}`
+  /**
+   * Send a request to populate the student's response.
+   */
+  loadResponse() {
+    let response = this.getResponsePayload(this.response, this.position);
+    IRiS.setResponses(response);
+  }
+
+  private getToken(bankItemKey: string): string {
+    return JSON.stringify({
+      items: [{
+        id: `I-${bankItemKey}`
+      }]
+    });
+  }
+
+  private getResponsePayload(response: string, position: number): any {
+    let payload: any = {
+      position: 1
+    };
+
+    if (response && response.length > 0) {
+      payload.response = response;
+    }
+
+    if (position && position > 0) {
+      payload.label = position.toString();
+    }
+
+    return [payload];
   }
 }
