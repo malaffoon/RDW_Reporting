@@ -27,6 +27,7 @@ import { ItemScoringService } from "./items/item-exemplar/item-scoring.service";
 import { ItemScoringGuideMapper } from "./items/item-exemplar/item-scoring-guide.mapper";
 import { ItemScoresComponent } from './items/item-scores/item-scores.component';
 import { StudentScoreService } from "./items/item-scores/student-score.service";
+import { MenuActionBuilder } from "./menu/menu-action.builder";
 
 @NgModule({
   declarations: [

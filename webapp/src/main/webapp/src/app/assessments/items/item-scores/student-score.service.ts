@@ -23,7 +23,10 @@ export class StudentScoreService {
     score.enrolledGrade = exam.enrolledGrade;
     score.score = itemScore.points;
     score.maxScore = maxPoints;
-    score.correctness = score.score / score.maxScore;
+
+    if(score.maxScore) {
+      score.correctness = score.score / score.maxScore;
+    }
 
     return score;
   }
