@@ -113,7 +113,8 @@
     "groups": {
       "name": "My Groups",
       "filter": "Search by Group Name",
-      "empty-message": "Contact your building administrator for access to group-level test results",
+      "no-groups-message": "Contact your building administrator for access to group-level test results.",
+      "empty-message": "There are no groups that match your search.  Please try again.",
       "manage-group": "Manage Student Groups",
       "search-label": "Search by My Groups",
       "cols": {
