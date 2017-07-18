@@ -4,6 +4,14 @@ import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
 
+/**
+ * This builder will create the menu actions used by the PopupMenuComponent.
+ *
+ * Methods are chained and must begin with .newActions() and end with .build()
+ *
+ * This class must be added as a provider to the Component in order for the relativeTo: this.route
+ * to be relative to that component's route.
+ */
 @Injectable()
 export class MenuActionBuilder {
   private actions: PopupMenuAction[];
