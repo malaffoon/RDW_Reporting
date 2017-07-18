@@ -4,7 +4,6 @@ import { StudentScoreService } from "./student-score.service";
 import { StudentScore } from "./student-score.model";
 import { AssessmentItem } from "../../model/assessment-item.model";
 import { PopupMenuAction } from "../../menu/popup-menu-action.model";
-import { ActivatedRoute } from "@angular/router";
 import { MenuActionBuilder } from "../../menu/menu-action.builder";
 
 @Component({
@@ -27,7 +26,7 @@ export class ItemScoresComponent implements OnInit {
   scores: StudentScore[];
   actions: PopupMenuAction[];
 
-  constructor(private service: StudentScoreService, private actionBuilder: MenuActionBuilder, private route: ActivatedRoute) { }
+  constructor(private service: StudentScoreService, private actionBuilder: MenuActionBuilder) { }
 
   ngOnInit() {
     this.scores = this.service.getScores(this.item, this.exams);

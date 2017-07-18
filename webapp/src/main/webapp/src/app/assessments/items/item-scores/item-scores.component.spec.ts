@@ -5,16 +5,22 @@ import { StudentScoreService } from "./student-score.service";
 import { Component } from "@angular/core";
 import { AssessmentItem } from "../../model/assessment-item.model";
 import { CommonModule } from "../../../shared/common.module";
+import { PopupMenuComponent } from "../../menu/popup-menu.component";
+import { MockActivatedRoute } from "../../../../test/mock.activated-route";
+import { TestModule } from "../../../../test/test.module";
 
 describe('ItemScoresComponent', () => {
   let component: ItemScoresComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
 
   beforeEach(async(() => {
+
     TestBed.configureTestingModule({
-      imports: [ DataTableModule, CommonModule ],
-      declarations: [ TestComponentWrapper, ItemScoresComponent ],
-      providers: [ StudentScoreService ]
+      imports: [ DataTableModule, CommonModule, TestModule ],
+      declarations: [ TestComponentWrapper, ItemScoresComponent, PopupMenuComponent ],
+      providers: [
+        StudentScoreService
+      ]
     })
       .compileComponents();
   }));

@@ -12,6 +12,8 @@ import { DataTableModule } from "primeng/components/datatable/datatable";
 import { StudentScoreService } from "./item-scores/student-score.service";
 import { Component } from "@angular/core";
 import { AssessmentItem } from "../model/assessment-item.model";
+import { PopupMenuComponent } from "../menu/popup-menu.component";
+import { TestModule } from "../../../test/test.module";
 
 describe('ItemTabComponent', () => {
   let component: ItemTabComponent;
@@ -19,8 +21,8 @@ describe('ItemTabComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ TabsModule, CommonModule, DataTableModule ],
-      declarations: [ TestComponentWrapper, ItemTabComponent, ItemViewerComponent, ItemExemplarComponent, ItemScoresComponent ],
+      imports: [ TabsModule, CommonModule, DataTableModule, TestModule ],
+      declarations: [ TestComponentWrapper, ItemTabComponent, ItemViewerComponent, ItemExemplarComponent, ItemScoresComponent, PopupMenuComponent ],
       providers: [TabsetConfig, { provide: CachingDataService, useClass: MockDataService }, StudentScoreService]
     }).compileComponents();
   }));
