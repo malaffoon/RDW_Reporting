@@ -168,7 +168,8 @@
                     sortable="true"
                     [hidden]="!isClaimScoreSelected">
             <ng-template let-exam="rowData" pTemplate="body">
-              {{ 'enum.iab-category.' + exam.claimScores[idx].level.toString() | translate }}
+              <span *ngIf="exam.claimScores[idx].level">{{ 'enum.iab-category.' + exam.claimScores[idx].level.toString() | translate }}</span>
+              <span *ngIf="!exam.claimScores[idx].level">-</span>
             </ng-template>
           </p-column>
         </p-dataTable>
