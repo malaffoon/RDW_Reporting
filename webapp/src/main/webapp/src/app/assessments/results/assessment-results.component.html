@@ -202,6 +202,11 @@
               {{ 'enum.difficulty.' + item.difficulty | translate }}
             </ng-template>
           </p-column>
+          <p-column field="commonCoreStandardIds" header="{{'labels.groups.results.assessment.items.cols.standard' | translate}}" sortable="true">
+            <ng-template let-standards="rowData.commonCoreStandardIds" pTemplate="body">
+              <span *ngFor="let standard of standards" class="label border-only blue">{{standard}}</span>
+            </ng-template>
+          </p-column>
           <p-column field="fullCredit" [sortable]="true">
             <ng-template pTemplate="header">
               <span info-label title="{{'labels.groups.results.assessment.items.cols.full-credit' | translate}}"
