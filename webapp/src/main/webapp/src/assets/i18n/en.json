@@ -139,7 +139,7 @@
           },
           "status": {
             "label": "Status",
-            "administration": "Manner of Administration (Interim Only)",
+            "administration": "Manner of Administration (Interim)",
             "administration-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
             "summative": "Valid/Invalid (Summative)",
             "summative-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.  ",
