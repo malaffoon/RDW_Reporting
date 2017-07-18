@@ -201,6 +201,10 @@ export class AssessmentResultsComponent implements OnInit {
     return GradeCode.getIndex(gradeCode);
   }
 
+  getPointRowStyleClass(index: number){
+    return index == 0 ? 'level-down' : '';
+  }
+
   toggleSession(session) {
     session.filter = !session.filter;
     this.updateExamSessions();
