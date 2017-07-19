@@ -3,7 +3,6 @@ import { ReportDownloadService } from "./report-download.service";
 import { saveAs } from "file-saver";
 import { Subscription } from "rxjs";
 import { ReportDownloadComponent } from "./report-download.component";
-import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
 import { Download } from "../shared/data/download.model";
 
 /**
@@ -21,8 +20,8 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
   private subscription: Subscription;
   private errorMessage: string;
 
-  constructor(examFilterOptionsService: ExamFilterOptionsService, private service: ReportDownloadService) {
-    super(examFilterOptionsService);
+  constructor(private service: ReportDownloadService) {
+    super();
   }
 
   public submit(): void {
