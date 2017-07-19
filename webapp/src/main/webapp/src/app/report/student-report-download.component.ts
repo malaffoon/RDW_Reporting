@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import { Subscription } from "rxjs";
 import { ReportDownloadComponent } from "./report-download.component";
 import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
-import { ReportDownload } from "./report-download.model";
+import { Download } from "../shared/data/download.model";
 
 /**
  * Component used for single-student exam report download
@@ -38,8 +38,8 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
     // Keep handle on subscription for disabling submit button
     this.subscription = this.service.getStudentExamReport(this.studentId, this.options)
       .subscribe(
-        (download: ReportDownload) => {
-          saveAs(download.blob, download.filename);
+        (download: Download) => {
+          saveAs(download.content, download.name);
         },
         (error: any) => {
           // TODO: add handler for 404/500 errors

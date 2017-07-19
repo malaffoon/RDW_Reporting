@@ -1,16 +1,17 @@
 import { Injectable } from "@angular/core";
-import { Http, ResponseContentType, Response, Headers } from "@angular/http";
+import { ResponseContentType, Headers } from "@angular/http";
 import { ReportOptions } from "./report-options.model";
 import { ReportDownloadToken } from "./report-download-token.model";
 import { Observable } from "rxjs";
-import { ReportDownload } from "./report-download.model";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
+import { DataService } from "../shared/data/data.service";
+import { Download } from "../shared/data/download.model";
 
 @Injectable()
 export class ReportDownloadService {
 
-  constructor(private http: Http) {
+  constructor(private dataService: DataService) {
   }
 
   /**
@@ -20,8 +21,8 @@ export class ReportDownloadService {
    * @param options settings which to shape the report content
    * @returns {Observable<ReportDownload>}
    */
-  public getStudentExamReport(studentId: number, options: ReportOptions): Observable<ReportDownload> {
-    return this.getExamReport(`/api/students/${studentId}/examReport`, options);
+  public getStudentExamReport(studentId: number, options: ReportOptions): Observable<Download> {
+    return this.getExamReport(`/students/${studentId}/examReport`, options);
   }
 
   /**
@@ -32,7 +33,7 @@ export class ReportDownloadService {
    * @returns {Observable<ReportDownloadToken>} the token used the get status on the download
    */
   public createGroupExamReport(groupId: number, options: ReportOptions): Observable<ReportDownloadToken> {
-    return this.createBatchExamReport(`/api/groups/${groupId}/examReports`, options);
+    return this.createBatchExamReport(`/groups/${groupId}/examReports`, options);
   }
 
   /**
@@ -44,7 +45,7 @@ export class ReportDownloadService {
    * @returns {Observable<ReportDownloadToken>} the token used the get status on the download
    */
   public createSchoolGradeExamReport(schoolId: number, gradeId: number, options: ReportOptions): Observable<ReportDownloadToken> {
-    return this.createBatchExamReport(`/api/schools/${schoolId}/assessmentGrades/${gradeId}/examReports`, options);
+    return this.createBatchExamReport(`/schools/${schoolId}/assessmentGrades/${gradeId}/examReports`, options);
   }
 
   /**
@@ -53,8 +54,8 @@ export class ReportDownloadService {
    * @param token the token used to lookup the download
    * @returns {Observable<ReportDownload>}
    */
-  public getBatchExamReport(token: ReportDownloadToken): Observable<ReportDownload> {
-    return this.getExamReport(`/api/examReports/${token.id}`);
+  public getBatchExamReport(token: ReportDownloadToken): Observable<Download> {
+    return this.getExamReport(`/examReports/${token.id}`);
   }
 
   /**
@@ -65,8 +66,7 @@ export class ReportDownloadService {
    * @returns {Observable<ReportDownloadToken>}
    */
   private createBatchExamReport(url: string, options: ReportOptions): Observable<ReportDownloadToken> {
-    return this.http.post(url, { params: this.toParameters(options) })
-      .map((response: Response) => response.json())
+    return this.dataService.post(url, { params: this.toParameters(options) })
       .map((token: any) => new ReportDownloadToken(token.id));
   }
 
@@ -77,18 +77,14 @@ export class ReportDownloadService {
    * @param options settings which to shape the report content
    * @returns {Observable<ReportDownload>}
    */
-  private getExamReport(url: string, options?: ReportOptions): Observable<ReportDownload> {
-    return this.http.get(url, {
+  private getExamReport(url: string, options?: ReportOptions): Observable<Download> {
+    return this.dataService.get(url, {
       params: options != null ? this.toParameters(options) : null,
       headers: new Headers({
         Accept: 'application/pdf'
       }),
       responseType: ResponseContentType.Blob
-    }).map((response: Response) => new ReportDownload(
-        this.getFileNameFromResponse(response),
-        new Blob([ response.blob() ], { type: 'application/pdf' })
-      )
-    );
+    });
   }
 
   /**
@@ -99,22 +95,12 @@ export class ReportDownloadService {
    */
   private toParameters(options: ReportOptions): Object {
     return {
-      assessmentType: AssessmentType[options.assessmentType],
-      subject: AssessmentSubjectType[options.subject],
+      assessmentType: AssessmentType[ options.assessmentType ],
+      subject: AssessmentSubjectType[ options.subject ],
       schoolYear: options.schoolYear,
       language: options.language,
       grayscale: options.grayscale
     };
-  }
-
-  /**
-   * Gets the file name specified in the Content-Disposition HTTP response header
-   *
-   * @param response the HTTP response
-   * @returns {string} the file name
-   */
-  private getFileNameFromResponse(response: Response): string {
-    return response.headers.get('Content-Disposition').split(';')[ 1 ].trim().split('=')[ 1 ].replace(/"/g, '');
   }
 
 }
