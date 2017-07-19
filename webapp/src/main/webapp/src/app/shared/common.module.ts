@@ -3,7 +3,7 @@ import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
 import { SchoolYearPipe } from "./schoolYear.pipe";
 import { SearchPipe } from "../search.pipe";
-import { HttpModule, Http } from "@angular/http";
+import { HttpModule } from "@angular/http";
 import { DataService } from "./data/data.service";
 import { CachingDataService } from "./cachingData.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -17,31 +17,37 @@ import { GradeDisplayPipe } from "./grade-display.pipe";
 import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
 import { ColorService } from "./color.service";
-import { Angulartics2Module } from 'angulartics2';
+import { Angulartics2Module } from "angulartics2";
+import { AuthenticationService } from "./authentication/authentication.service";
+import { AlertModule } from "ngx-bootstrap";
+import { SessionExpiredComponent } from "./authentication/session-expired.component";
+import { StorageService } from "./storage.service";
 
 @NgModule({
   declarations: [
     AssessmentTypePipe,
     GradeDisplayPipe,
     PadStartPipe,
+    RemoveCommaPipe,
     SBRadioButtonComponent,
     SBCheckboxList,
     SchoolYearPipe,
     SearchPipe,
-    SubjectPipe,
-    RemoveCommaPipe
+    SessionExpiredComponent,
+    SubjectPipe
   ],
   imports: [
-    HttpModule,
-    FormsModule,
+    AlertModule,
+    Angulartics2Module.forChild(),
     BrowserModule,
+    FormsModule,
+    HttpModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useClass: RdwTranslateLoader
       }
-    }),
-    Angulartics2Module.forChild()
+    })
   ],
   exports: [
     AssessmentTypePipe,
@@ -53,14 +59,17 @@ import { Angulartics2Module } from 'angulartics2';
     SBRadioButtonComponent,
     SchoolYearPipe,
     SearchPipe,
+    SessionExpiredComponent,
     SubjectPipe,
     TranslateModule
   ],
   providers: [
+    AuthenticationService,
     DataService,
     CachingDataService,
     ColorService,
-    RdwTranslateLoader
+    RdwTranslateLoader,
+    StorageService
   ]
 })
 export class CommonModule {
