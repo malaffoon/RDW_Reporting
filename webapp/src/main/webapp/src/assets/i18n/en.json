@@ -519,6 +519,16 @@
         "description": "Extended Thinking",
         "reference": "https://portal.smarterbalanced.org/library/en/english-language-artsliteracy-content-specifications.pdf#page=54"
       }
+    },
+    "math-practice": {
+      "1": { "description": "Make sense of problems and persevere in solving them" },
+      "2": { "description": "Reason abstractly and quantitatively" },
+      "3": { "description": "Construct viable arguments and critique the reasoning of others" },
+      "4": { "description": "Model with mathematics" },
+      "5": { "description": "Use appropriate tools strategically" },
+      "6": { "description": "Attend to precision" },
+      "7": { "description": "Look for and make use of structure" },
+      "8": { "description": "Look for and express regularity in repeated reasoning" }
     }
   },
   "html": {

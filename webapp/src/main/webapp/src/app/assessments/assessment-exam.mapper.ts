@@ -139,6 +139,7 @@ export class AssessmentExamMapper {
     uiModel.claim = apiModel.claim;
     uiModel.target = apiModel.target;
     uiModel.depthOfKnowledge = apiModel.depthOfKnowledge;
+    uiModel.mathPractice = apiModel.mathPractice;
     uiModel.difficulty = apiModel.difficultyCode;
     uiModel.maxPoints = apiModel.maximumPoints;
     uiModel.commonCoreStandardIds = apiModel.commonCoreStandardIds || [];
