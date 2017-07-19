@@ -32,6 +32,35 @@
         "interpret-instructions": "Learn how to interpret the scores in this reporting tool:"
       }
     },
+    "languages": {
+      "eng": "English",
+      "spa": "Español",
+      "vie": "Tiếng Việt"
+    },
+    "assessmentTypes": {
+      "1": {
+        "name": "Interim Comprehensive Assessment",
+        "short-name": "ICA"
+      },
+      "2": {
+        "name": "Interim Assessment Blocks",
+        "short-name": "IAB"
+      },
+      "3": {
+        "name": "Summative",
+        "short-name": "SUMMATIVE"
+      }
+    },
+    "subjects": {
+      "1": {
+        "name": "Mathematics",
+        "short-name": "MATH"
+      },
+      "2": {
+        "name": "ELA/Literacy",
+        "short-name": "ELA"
+      }
+    },
     "grade": "Grade",
     "grades": {
       "KG": {
