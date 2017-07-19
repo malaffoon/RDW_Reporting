@@ -6,6 +6,9 @@ import { ReportDownloadComponent } from "./report-download.component";
 import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
 import { ReportDownload } from "./report-download.model";
 
+/**
+ * Component used for single-student exam report download
+ */
 @Component({
   selector: 'student-report-download',
   templateUrl: './report-download.component.html'
