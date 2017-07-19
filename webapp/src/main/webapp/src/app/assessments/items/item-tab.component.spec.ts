@@ -14,6 +14,7 @@ import { Component } from "@angular/core";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { PopupMenuComponent } from "../menu/popup-menu.component";
 import { TestModule } from "../../../test/test.module";
+import { ItemInfoComponent } from "./item-info/item-info.component";
 
 describe('ItemTabComponent', () => {
   let component: ItemTabComponent;
@@ -22,7 +23,7 @@ describe('ItemTabComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ TabsModule, CommonModule, DataTableModule, TestModule ],
-      declarations: [ TestComponentWrapper, ItemTabComponent, ItemViewerComponent, ItemExemplarComponent, ItemScoresComponent, PopupMenuComponent ],
+      declarations: [ TestComponentWrapper, ItemTabComponent, ItemViewerComponent, ItemInfoComponent, ItemExemplarComponent, ItemScoresComponent, PopupMenuComponent ],
       providers: [TabsetConfig, { provide: CachingDataService, useClass: MockDataService }, StudentScoreService]
     }).compileComponents();
   }));

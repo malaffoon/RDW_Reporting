@@ -18,9 +18,9 @@
       <item-exemplar *ngIf="loadExemplar" [bankItemKey]="item.bankItemKey"></item-exemplar>
     </div>
   </tab>
-  <tab *ngIf="showItemDetails" heading="{{translateRoot + 'item-info' | translate }}">
+  <tab *ngIf="showItemDetails" heading="{{translateRoot + 'item-info.title' | translate }}">
     <div class="tab-content well">
-    <!--TODO -->
+    <item-info [item]="item"></item-info>
     </div>
   </tab>
 </tabset>
