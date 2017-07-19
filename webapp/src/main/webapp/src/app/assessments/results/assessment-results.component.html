@@ -163,7 +163,7 @@
 
           <!-- Claim Score columns -->
           <p-column *ngFor="let claim of claimCodes; let idx = index"
-                    header="{{'enum.claim-code.' + claim | translate}}"
+                    header="{{'enum.subject-claim-code.' + claim | translate}}"
                     field="{{'claimScores.' + idx + '.level'}}"
                     sortable="true"
                     [hidden]="!isClaimScoreSelected">
@@ -191,7 +191,7 @@
                     content="{{'labels.groups.results.assessment.items.cols.claim-info' | translate}}"></span>
             </ng-template>
             <ng-template let-item="rowData" pTemplate="body">
-              {{ 'enum.claim.' + item.claim | translate }} / {{ 'labels.groups.results.assessment.items.target' | translate:item }}
+              {{ 'definition.claim.' + item.claim + '.name' | translate }} / {{ 'labels.groups.results.assessment.items.target' | translate:item }}
             </ng-template>
           </p-column>
           <p-column field="difficulty" [sortable]="true">
