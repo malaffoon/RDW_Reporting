@@ -6,6 +6,7 @@ export class AssessmentItem {
   position: number;
   claim: string;
   target: string;
+  depthOfKnowledge: string;
   difficulty: string;
   commonCoreStandardIds: string[];
   maxPoints: number;
