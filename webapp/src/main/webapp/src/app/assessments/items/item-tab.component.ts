@@ -75,14 +75,7 @@ export class ItemTabComponent implements OnInit {
       let tab: TabDirective = this.itemTabs.tabs[0];
       tab.select.emit(tab);
 
-      this.angulartics2.eventTrack.next({
-        action: 'ExpandItem',
-        properties: {
-          category: 'AssessmentResults',
-          label: tab.heading + ' for ' + this.item.bankItemKey
-        }
-      });
-
+      this.trackAnalyticsEvent('ExpandItem', tab.heading + ' for ' + this.item.bankItemKey);
     }).bind(this), 0);
   }
 
