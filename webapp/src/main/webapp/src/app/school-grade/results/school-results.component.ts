@@ -9,6 +9,7 @@ import { School } from "../../user/model/school.model";
 import { SchoolService } from "../school.service";
 import { Grade } from "../grade.model";
 import { isNullOrUndefined } from "util";
+import { Angulartics2 } from 'angulartics2';
 
 @Component({
   selector: 'app-group-results',
@@ -78,7 +79,8 @@ export class SchoolResultsComponent implements OnInit {
               private router: Router,
               private filterOptionService: ExamFilterOptionsService,
               private schoolService: SchoolService,
-              public assessmentProvider: SchoolAssessmentService) {
+              public assessmentProvider: SchoolAssessmentService,
+              private angulartics2: Angulartics2) {
   }
 
   ngOnInit() {
@@ -143,6 +145,39 @@ export class SchoolResultsComponent implements OnInit {
 
         this.updateRoute();
       });
+
+    // track change event since wiring select boxes on change as HTML attribute is not possible
+    this.angulartics2.eventTrack.next({
+      action: 'ChangeSchool',
+      properties: {
+        category: 'AssessmentResults',
+        label: this.currentSchool.name
+      }
+    });
+  }
+
+  updateGrade() {
+    this.angulartics2.eventTrack.next({
+      action: 'ChangeGrade',
+      properties: {
+        category: 'AssessmentResults',
+        label: this.currentGrade.code
+      }
+    });
+
+    this.updateRoute();
+  }
+
+  updateYear() {
+    this.angulartics2.eventTrack.next({
+      action: 'ChangeYear',
+      properties: {
+        category: 'AssessmentResults',
+        label: this.currentSchoolYear
+      }
+    });
+
+    this.updateRoute();
   }
 
   updateRoute() {

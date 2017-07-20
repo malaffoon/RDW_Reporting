@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild } from "@angular/core";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { TabsetComponent, TabDirective } from "ngx-bootstrap";
 import { Exam } from "../model/exam.model";
+import { Angulartics2 } from 'angulartics2';
 
 @Component({
   selector: 'item-tab',
@@ -63,7 +64,7 @@ export class ItemTabComponent implements OnInit {
 
   private _position: number = -1;
 
-  constructor() { }
+  constructor(private angulartics2: Angulartics2) { }
 
   ngOnInit(): void {
 
@@ -73,7 +74,43 @@ export class ItemTabComponent implements OnInit {
     setTimeout((function() {
       let tab: TabDirective = this.itemTabs.tabs[0];
       tab.select.emit(tab);
+
+      this.angulartics2.eventTrack.next({
+        action: 'ExpandItem',
+        properties: {
+          category: 'AssessmentResults',
+          label: tab.heading + ' for ' + this.item.bankItemKey
+        }
+      });
+
     }).bind(this), 0);
   }
 
+  selectStudentScoreTab() {
+    this.trackAnalyticsEvent('ItemTabSelection', 'Student Scores');
+  }
+
+  selectItemViewerTab() {
+    this.loadItemViewer = true;
+    this.trackAnalyticsEvent('ItemTabSelection', 'Item Viewer');
+  }
+
+  selectExemplarTab() {
+    this.loadExemplar = true;
+    this.trackAnalyticsEvent('ItemTabSelection', 'Rubric Exemplar');
+  }
+
+  selectItemInformationTab() {
+    this.trackAnalyticsEvent('ItemTabSelection', 'Item Information');
+  }
+
+  private trackAnalyticsEvent(action: string, details: string) {
+    this.angulartics2.eventTrack.next({
+      action: action,
+      properties: {
+        category: 'AssessmentResults',
+        label: details
+      }
+    });
+  }
 }
