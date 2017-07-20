@@ -22,10 +22,9 @@
     <b>{{ 'labels.assessments.items.tabs.item-info.ccs' | translate}}</b>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse nec placerat velit.
   </p>
-  <p class="green">
-    // TODO:
+  <p *ngIf="item.mathPractice">
     <b>{{ 'labels.assessments.items.tabs.item-info.math' | translate}}</b>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse nec placerat velit.
+    {{ 'definition.math-practice.' + item.mathPractice + '.description' | translate }}
   </p>
   <p class="green">
     // TODO:
