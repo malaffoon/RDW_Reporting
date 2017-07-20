@@ -1,0 +1,59 @@
+{
+  "welcome": "Welcome {{firstName}} {{lastName}}",
+  "application": {
+    "title": "Reporting Admin"
+  },
+  "messages": {
+    "no-results-found": "No results found.",
+    "noExamsSelected": "Please select from the assessments above",
+    "notApplicable": "-",
+    "logout": "Logout",
+    "loading": "Loading"
+  },
+  "collapse": "Collapse",
+  "select": "Select",
+  "labels": {
+    "navigation": {
+      "user-guide": "User Guide"
+    },
+    "homepage": {
+      "title": "Reporting Admin",
+      "welcome": {
+        "title": "Welcome!"
+      }
+    },
+    "admin": {
+      "title": "Reporting Admin",
+      "batch-list": "Import Batch List",
+      "welcome": {
+        "title": "Welcome!"
+      }
+    },
+    "menu": "Menu",
+    "more-info": "More Information",
+    "personName": "{{lastName}}, {{firstName}}",
+    "select-year": "School Year"
+  },
+  "prompt": {
+    "search": "Search",
+    "select": "Select"
+  },
+  "buttons": {
+    "all": "All",
+    "visibility": {
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "collapsible": {
+      "expand": "Expand",
+      "collapse": "Collapse"
+    },
+    "search": "Search"
+  },
+  "enum": {
+    "polar": {
+      "1": "Yes",
+      "2": "No"
+    }
+  }
+}

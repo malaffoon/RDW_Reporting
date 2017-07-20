@@ -1,0 +1,440 @@
+sql:
+  groupAdmin:
+    batchLoadImport: >-
+      select distinct sgli.batch_id from warehouse.student_group_load_import sgli
+    batchLoad: >-
+      select distinct sgl.batch_id from warehouse.student_group_load sgl
+  admin:
+    findWarehouseImports: >-
+      SELECT i.id, i.digest FROM warehouse.import i limit 10;
+  exam:
+    findAllByStudentId: >-
+      select e.id,
+        e.type_id,
+        e.grade_code,
+        e.school_year,
+        e.completeness_code,
+        e.administration_condition_code,
+        e.session_id,
+        e.completed_at,
+        e.scale_score,
+        e.scale_score_std_err,
+        e.performance_level,
+        e.claim1_category,
+        e.claim1_scale_score,
+        e.claim1_scale_score_std_err,
+        e.claim2_category,
+        e.claim2_scale_score,
+        e.claim2_scale_score_std_err,
+        e.claim3_category,
+        e.claim3_scale_score,
+        e.claim3_scale_score_std_err,
+        e.claim4_category,
+        e.claim4_scale_score,
+        e.claim4_scale_score_std_err,
+        e.asmt_id,
+        a.claim1_score_code,
+        a.claim2_score_code,
+        a.claim3_score_code,
+        a.claim4_score_code,
+        a.id as asmt_id,
+        a.label as asmt_label,
+        a.grade_code as asmt_grade_code,
+        a.type_id as asmt_type_id,
+        a.subject_id as asmt_subject_id,
+        a.school_year as asmt_school_year,
+        a.claim1_score_code as asmt_claim1_score_code,
+        a.claim2_score_code as asmt_claim2_score_code,
+        a.claim3_score_code as asmt_claim3_score_code,
+        a.claim4_score_code as asmt_claim4_score_code,
+        a.min_score as asmt_min_score,
+        a.max_score as asmt_max_score,
+        a.cut_point_1 as asmt_cut_point_1,
+        a.cut_point_2 as asmt_cut_point_2,
+        a.cut_point_3 as asmt_cut_point_3,
+        s.id as school_id,
+        s.name as school_name
+      from exam e
+        join asmt a on e.asmt_id=a.id
+        join school s on e.school_id=s.id
+      where e.student_id=:student_id
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
+    existsForStudentId: >-
+      select st.id,
+        st.ssid,
+        st.first_name,
+        st.last_or_surname
+      from student st
+        join exam e on e.student_id = st.id
+        join school s on e.school_id = s.id
+      where st.ssid=:student_ssid
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+      limit 1
+
+    item:
+      findAllForExam: >-
+        select
+          ei.exam_id,
+          ei.item_id,
+          ei.score,
+          ei.position
+        from exam_item ei
+          join exam e on ei.exam_id=e.id
+          join school s on e.school_id=s.id
+        where e.id=:exam_id
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
+  group:
+    findAllForUsername: >-
+      select sg.id, sg.name, school.name as school_name, subject_id
+      from user_student_group usg
+        join student_group sg on sg.id = usg.student_group_id
+        join school on school.id = sg.school_id
+      where user_login=:user_login
+
+    membership:
+      findAllForUsername: >-
+        select sg.id, sg.subject_id, sg.school_id
+        from user_student_group usg
+          join student_group sg on sg.id = usg.student_group_id
+        where user_login=:user_login
+
+    assessment:
+      findAll: >-
+          select distinct
+            a.id,
+            a.label,
+            a.grade_code,
+            a.type_id,
+            a.subject_id,
+            a.school_year,
+            a.claim1_score_code,
+            a.claim2_score_code,
+            a.claim3_score_code,
+            a.claim4_score_code,
+            a.min_score,
+            a.max_score,
+            a.cut_point_1,
+            a.cut_point_2,
+            a.cut_point_3
+          from asmt a
+          join exam e on e.asmt_id = a.id
+          join student_group_membership sgm on e.student_id=sgm.student_id
+          join school s on e.school_id=s.id
+          where e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+          and a.id = e.asmt_id
+
+    exam:
+      findLatest: >-
+          select
+            a.id,
+            a.label,
+            a.grade_code,
+            a.type_id,
+            a.subject_id,
+            a.school_year,
+            a.claim1_score_code,
+            a.claim2_score_code,
+            a.claim3_score_code,
+            a.claim4_score_code,
+            a.min_score,
+            a.max_score,
+            a.cut_point_1,
+            a.cut_point_2,
+            a.cut_point_3
+          from exam e
+            join student_group_membership sgm on e.student_id=sgm.student_id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+          order by e.completed_at desc
+          limit 1
+
+      findAllForAssessment: >-
+          select e.id,
+            e.type_id,
+            e.grade_code,
+            e.iep,
+            e.lep,
+            e.section504,
+            e.economic_disadvantage,
+            e.migrant_status,
+            e.completeness_code,
+            e.administration_condition_code,
+            e.session_id,
+            e.completed_at,
+            e.scale_score,
+            e.scale_score_std_err,
+            e.performance_level,
+            a.claim1_score_code,
+            e.claim1_category,
+            e.claim1_scale_score,
+            e.claim1_scale_score_std_err,
+            a.claim2_score_code,
+            e.claim2_category,
+            e.claim2_scale_score,
+            e.claim2_scale_score_std_err,
+            a.claim3_score_code,
+            e.claim3_category,
+            e.claim3_scale_score,
+            e.claim3_scale_score_std_err,
+            a.claim4_score_code,
+            e.claim4_category,
+            e.claim4_scale_score,
+            e.claim4_scale_score_std_err,
+            st.id as student_id,
+            st.last_or_surname as student_last_name,
+            st.first_name as student_first_name,
+            st.gender_code as student_gender_code
+          from exam e
+            join student_group_membership sgm on e.student_id=sgm.student_id
+            join student st on e.student_id=st.id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.asmt_id=:assessment_id
+          and e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
+      item:
+        findAllExamItemScoresForAssessment:
+          select ei.id,
+            ei.exam_id,
+            ei.item_id,
+            ei.score,
+            ei.position
+          from exam_item ei
+            join exam e on ei.exam_id=e.id
+            join student_group_membership sgm on e.student_id=sgm.student_id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.asmt_id=:assessment_id
+          and e.school_year=:school_year
+          and sgm.student_group_id=:group_id
+          and (0=:group_subject_id or a.subject_id=:group_subject_id)
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
+  schoolgrade:
+    assessment:
+      findAll: >-
+        select a.id,
+          a.label,
+          a.grade_code,
+          a.type_id,
+          a.subject_id,
+          a.school_year,
+          a.claim1_score_code,
+          a.claim2_score_code,
+          a.claim3_score_code,
+          a.claim4_score_code,
+          a.min_score,
+          a.max_score,
+          a.cut_point_1,
+          a.cut_point_2,
+          a.cut_point_3
+        from asmt a
+        where exists (
+            select e.asmt_id
+            from exam e
+              join school s on e.school_id=s.id
+            where e.school_year=:school_year
+            and e.school_id=:school_id
+            and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+            and a.id = e.asmt_id
+        )
+        and a.grade_id=:grade_id
+
+    exam:
+      findLatest: >-
+        select
+          a.id,
+          a.label,
+          a.grade_code,
+          a.type_id,
+          a.subject_id,
+          a.school_year,
+          a.claim1_score_code,
+          a.claim2_score_code,
+          a.claim3_score_code,
+          a.claim4_score_code,
+          a.min_score,
+          a.max_score,
+          a.cut_point_1,
+          a.cut_point_2,
+          a.cut_point_3
+        from exam e
+          join asmt a on e.asmt_id=a.id
+          join school s on e.school_id=s.id
+        where e.school_year=:school_year
+        and e.school_id=:school_id
+        and a.grade_id=:grade_id
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+        order by e.completed_at desc
+        limit 1
+
+      findAllForAssessment: >-
+        select e.id,
+          e.type_id,
+          e.grade_code,
+          e.iep,
+          e.lep,
+          e.section504,
+          e.economic_disadvantage,
+          e.migrant_status,
+          e.completeness_code,
+          e.administration_condition_code,
+          e.session_id,
+          e.completed_at,
+          e.scale_score,
+          e.scale_score_std_err,
+          e.performance_level,
+          a.claim1_score_code,
+          e.claim1_category,
+          e.claim1_scale_score,
+          e.claim1_scale_score_std_err,
+          a.claim2_score_code,
+          e.claim2_category,
+          e.claim2_scale_score,
+          e.claim2_scale_score_std_err,
+          a.claim3_score_code,
+          e.claim3_category,
+          e.claim3_scale_score,
+          e.claim3_scale_score_std_err,
+          a.claim4_score_code,
+          e.claim4_category,
+          e.claim4_scale_score,
+          e.claim4_scale_score_std_err,
+          st.id as student_id,
+          st.last_or_surname as student_last_name,
+          st.first_name as student_first_name,
+          st.gender_code as student_gender_code
+        from exam e
+          join student st on e.student_id=st.id
+          join asmt a on e.asmt_id=a.id
+          join school s on e.school_id=s.id
+        where e.asmt_id=:assessment_id
+        and e.school_id=:school_id
+        and a.grade_id=:grade_id
+        and e.school_year=:school_year
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
+      item:
+        findAllExamItemScoresForAssessment:
+          select
+            ei.exam_id,
+            ei.item_id,
+            ei.score,
+            ei.position
+          from exam_item ei
+            join exam e on ei.exam_id=e.id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id=s.id
+          where e.asmt_id=:assessment_id
+          and e.school_year=:school_year
+          and e.school_id=:school_id
+          and a.grade_id=:grade_id
+          and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+
+  assessment:
+    grade:
+      findAllForSchool: >-
+        select id, code
+        from grade g where exists (
+            select grade_id
+            from exam e
+              join school s on e.school_id=s.id
+            where e.school_id=:school_id
+            and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+            and g.id=e.grade_id
+        )
+
+    item:
+      findAllForAssessment: >-
+        select i.id,
+          i.natural_id,
+          i.difficulty_code,
+          i.max_points,
+          i.claim_code,
+          i.target_code,
+          i.common_core_standard_ids
+        from item i
+        where i.asmt_id=:assessment_id
+
+      findAllForExam: >-
+        select i.id,
+          i.natural_id,
+          i.difficulty_code,
+          i.max_points,
+          i.claim_code,
+          i.target_code,
+          i.common_core_standard_ids
+        from item i
+          join exam e on e.asmt_id = i.asmt_id
+        where e.id=:exam_id
+
+  student:
+    findOneById: >-
+      select id,
+        ssid,
+        first_name,
+        last_or_surname
+      from student s
+      where s.id=:studentId
+       and exists (select 1 from exam e where e.student_id = s.id)
+
+  district:
+    findAllIds: >-
+      select natural_id, id
+      from district
+      where natural_id in (:naturalIds)
+
+  school:
+    findAllIds: >-
+      select natural_id, id
+      from school
+      where natural_id in (:naturalIds)
+
+    findAll: >-
+      select name, id
+      from school
+      where (1=:statewide or district_id in (:district_ids) or id in (:school_ids))
+
+    findAllForNameContainingText: >-
+      select name, id
+      from school
+      where (1=:statewide or district_id in (:district_ids) or id in (:school_ids))
+      and name like :text
+      limit :limit
+
+  ethnicity:
+    findAll: >-
+      select id, code
+      from ethnicity
+
+    findAllCodes: >-
+      select code
+      from ethnicity
+
+    findEthnicityCodesByStudentIds: >-
+      select student_id, ethnicity_code
+      from student_ethnicity
+      where student_id in (:student_ids)
+
+    findEthnicityCodesByStudentId: >-
+      select e.code
+      from student_ethnicity se
+        join ethnicity e on se.ethnicity_id=e.id
+      where se.student_id=:student_id
+
+  status:
+    readTest: >-
+      SELECT code FROM asmt_type
+

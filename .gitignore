@@ -1,0 +1,30 @@
+target/
+build/
+!.mvn/wrapper/maven-wrapper.jar
+src/main/resources/static/*.bundle.*
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+.gradle/
+classes/
+
+# Generated assets
+/webapp/src/main/resources/static/
