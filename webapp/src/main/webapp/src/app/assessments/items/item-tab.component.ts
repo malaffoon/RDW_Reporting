@@ -74,8 +74,6 @@ export class ItemTabComponent implements OnInit {
     setTimeout((function() {
       let tab: TabDirective = this.itemTabs.tabs[0];
       tab.select.emit(tab);
-
-      //this.trackAnalyticsEvent('ExpandItem', tab.heading + ' for ' + this.item.bankItemKey);
     }).bind(this), 0);
   }
 
