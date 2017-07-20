@@ -75,26 +75,19 @@ export class ItemTabComponent implements OnInit {
       let tab: TabDirective = this.itemTabs.tabs[0];
       tab.select.emit(tab);
 
-      this.trackAnalyticsEvent('ExpandItem', tab.heading + ' for ' + this.item.bankItemKey);
+      //this.trackAnalyticsEvent('ExpandItem', tab.heading + ' for ' + this.item.bankItemKey);
     }).bind(this), 0);
   }
 
-  selectStudentScoreTab() {
-    this.trackAnalyticsEvent('ItemTabSelection', 'Student Scores');
-  }
+  selectTab(tabName: string) {
+    if (tabName == 'Rubric Exemplar') {
+      this.loadExemplar = true;
+    }
+    else if (tabName == 'Item Viewer') {
+      this.loadItemViewer = true;
+    }
 
-  selectItemViewerTab() {
-    this.loadItemViewer = true;
-    this.trackAnalyticsEvent('ItemTabSelection', 'Item Viewer');
-  }
-
-  selectExemplarTab() {
-    this.loadExemplar = true;
-    this.trackAnalyticsEvent('ItemTabSelection', 'Rubric Exemplar');
-  }
-
-  selectItemInformationTab() {
-    this.trackAnalyticsEvent('ItemTabSelection', 'Item Information');
+    this.trackAnalyticsEvent('ItemTabSelection', tabName);
   }
 
   private trackAnalyticsEvent(action: string, details: string) {
