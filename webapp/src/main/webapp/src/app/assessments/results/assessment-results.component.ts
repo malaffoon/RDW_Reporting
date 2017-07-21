@@ -13,7 +13,7 @@ import { PopupMenuAction } from "../menu/popup-menu-action.model";
 import { Angulartics2 } from 'angulartics2';
 import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
-import { Router, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
 
@@ -131,12 +131,11 @@ export class AssessmentResultsComponent implements OnInit {
     return this.assessmentExam.collapsed;
   }
 
-  // get performance() {
-  //   if (this.showValuesAsPercent)
-  //     return this.statistics.percents;
-  //   else
-  //     return this.statistics;
-  // }
+  get examLevelEnum() {
+    return this.assessmentExam.assessment.isIab
+      ? "enum.iab-category."
+      : "enum.achievement-level.";
+  }
 
   get isIab(): boolean {
     return this._assessmentExam.assessment.isIab;

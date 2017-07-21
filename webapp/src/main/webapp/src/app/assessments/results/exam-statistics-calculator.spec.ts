@@ -2,7 +2,6 @@ import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { Exam } from "../model/exam.model";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ExamItemScore } from "../model/exam-item-score.model";
-import {ExamStatistics, ExamStatisticsLevel} from "../model/exam-statistics.model";
 
 describe('Exam Calculator', () => {
 
@@ -101,38 +100,6 @@ describe('Exam Calculator', () => {
     expect(actual[ 0 ].value).toBe(4);
     expect(actual[ 1 ].value).toBe(0);
     expect(actual[ 2 ].value).toBe(4);
-  });
-
-  it('should calculate level percents', () => {
-    let stats = new ExamStatistics();
-    stats.total = 10;
-    stats.levels = [5, 2, 3].map(x => {
-      let level = new ExamStatisticsLevel();
-      level.value = x;
-      return level;
-    });
-
-    let actual = stats.percents;
-
-    expect(actual[ 0 ].value).toBe(50.0);
-    expect(actual[ 1 ].value).toBe(20.0);
-    expect(actual[ 2 ].value).toBe(30.0);
-  });
-
-  it('should calculate level percents when a level does not exist', () => {
-    let stats = new ExamStatistics();
-    stats.total = 10;
-    stats.levels = [6, 0, 4].map(x => {
-      let level = new ExamStatisticsLevel();
-      level.value = x;
-      return level;
-    });
-
-    let actual = stats.percents;
-
-    expect(actual[ 0 ].value).toBe(60.0);
-    expect(actual[ 1 ].value).toBe(0.0);
-    expect(actual[ 2 ].value).toBe(40.0);
   });
 
   it('should aggregate items by points', () =>{

@@ -10,7 +10,6 @@ import { ordering } from "@kourge/ordering";
 import { byNumber } from "@kourge/ordering/comparator";
 import { ClaimScore } from "./model/claim-score.model";
 import { Student } from "../student/model/student.model";
-import { isNullOrUndefined } from "util";
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -64,6 +63,7 @@ export class AssessmentExamMapper {
     uiModel.type = AssessmentType[ apiModel.type as string ];
     uiModel.subject = apiModel.subject;
     uiModel.claimCodes = apiModel.claimCodes || [];
+    uiModel.cutPoints = apiModel.cutPoints || [];
 
     return uiModel;
   }
