@@ -20,11 +20,10 @@ body {
 body .ui-widget.ui-datatable {
   font-family: @font-family-serif;
   font-size: @font-size-small;
-  table,
-  .table {
-    width: 100%;
+  table {
     border-collapse: separate;
-    max-width: 100%;
+    width: auto;
+    max-width: none;
     min-width: 100%;
     // head, foot, and data
     .ui-datatable-thead,
@@ -70,7 +69,6 @@ body .ui-widget.ui-datatable {
             color: @black;
             border: 1px solid @gray-light;
             background-color: lighten(@gray-light, 10%);
-            //.box-shadow(0px 0px 3px 0px rgba(0,0,0,0.16) inset);
           }
         }
       }
@@ -150,16 +148,14 @@ body .ui-widget.ui-datatable {
       }
     }
   }
-}
-
-// Overwidth Tables
-.table.overflow {
-  .well;
-  padding-top: (@line-height-computed / 2);
-  padding-right: (@grid-gutter-width / 2);
-  padding-bottom: (@line-height-computed / 2);
-  padding-left: (@grid-gutter-width / 2);
-  table-layout: auto;
+  table.overflow {
+    .well;
+    padding-top: (@line-height-computed / 2);
+    padding-right: (@grid-gutter-width / 2);
+    padding-bottom: (@line-height-computed / 2);
+    padding-left: (@grid-gutter-width / 2);
+    table-layout: auto;
+  }
 }
 
 // Dropdowns

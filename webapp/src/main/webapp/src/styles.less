@@ -43,3 +43,38 @@
 .ui-dropdown-filter-container {
   width: 100% !important;
 }
+
+// containing the header and footer
+// may pull this back to UI Kit if approved
+// -AS
+header {
+  background-color: transparent;
+  .box-shadow(none);
+  .well {
+    .border-top-radius(0px);
+  }
+}
+.breadcrumb {
+  border-width: 1px 0px;
+  border-style: solid;
+  border-color: @gray-light;
+  padding-right: 0px;
+  padding-left: @grid-gutter-width / 2;
+  margin-bottom: 0px;
+  background-color: @gray-lighter;
+  border-radius: @border-radius-base;
+  .box-shadow(0 6px 6px -6px rgba(0,0,0,.16) inset, 0 1px 1px 1px rgba(255,255,255,.95););
+  > .active {
+    color: @gray-darker;
+  }
+}
+footer {
+  background-color: transparent;
+  padding: 0px;
+  border-top: none;
+  .box-shadow(none);
+  .well {
+    .border-bottom-radius(0px);
+    margin-bottom: 0px;
+  }
+}
