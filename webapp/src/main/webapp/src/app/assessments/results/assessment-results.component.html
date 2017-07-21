@@ -38,39 +38,9 @@
           </div>
         </div>
 
-        <!-- TODO: Add labels to translations -->
         <!-- Aggregate Scale Score -->
         <div class="col-md-5">
-            <div *ngIf="exams.length > 0" class="bar-scale rounded blend-middle">
-                <p class="scale-title">
-
-                  <span info-label
-                        title="{{ 'labels.assessments.average-scale-score' | translate }}"
-                        content="{{ 'labels.assessments.average-scale-score-info' | translate }}"></span>
-                </p>
-                <p class="scale-description">{{statistics.total}} Students</p>
-                <div class="bar-container">
-                    <span class="score" data-left="10" data-width="15">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
-                    <span class="error-band-mask">
-                        <span class="error-band" data-left="10" data-width="15">
-                            <span class="error-band-block"></span>
-                        </span>
-                    </span>
-                    <div class="bar green left-side" data-width="28">
-                    </div>
-                    <div class="bar middle green blue-dark" data-width="55">
-                    </div>
-                    <div class="bar blue-dark right-side" data-width="17">
-                    </div>
-                </div>
-              <div class="pull-right">
-                <!-- TODO: bind levels to visualization -->
-                <div *ngFor="let level of performance.levels">
-                  {{ examLevelEnum + level.id.toString() | translate }}:
-                  <span title="{{level.value}}">{{ level.value | number:'1.0-0' }}</span>{{ level.suffix }}
-                </div>
-              </div>
-            </div>
+          <average-scale-score [assessmentExam]="_assessmentExam" [statistics]="statistics"></average-scale-score>
         </div>
 
     </div>

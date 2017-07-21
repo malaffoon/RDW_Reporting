@@ -74,39 +74,39 @@ describe('Exam Calculator', () => {
     expect(actual[ 2 ].value).toBe(4);
   });
 
-  it('should calculate level percents', () => {
-    let exams = [ 3, 3, 2, 3, 2, 1, 1, 3, 3, 1 ].map(x => {
-      let exam = new Exam();
-      exam.level = x;
-      return exam;
-    });
-
-    let fixture = new ExamStatisticsCalculator();
-    let levels = fixture.groupLevels(exams, 3);
-
-    let actual = fixture.calculateLevelPercents(levels, exams.length);
-
-    expect(actual[ 0 ].value).toBe(30);
-    expect(actual[ 1 ].value).toBe(20);
-    expect(actual[ 2 ].value).toBe(50);
-  });
-
-  it('should calculate level percents when a level does not exist', () => {
-    let exams = [ 3, 3, 1, 3, 1, 1, 1, 3 ].map(x => {
-      let exam = new Exam();
-      exam.level = x;
-      return exam;
-    });
-
-    let fixture = new ExamStatisticsCalculator();
-    let levels = fixture.groupLevels(exams, 3);
-
-    let actual = fixture.calculateLevelPercents(levels, exams.length);
-
-    expect(actual[ 0 ].value).toBe(50);
-    expect(actual[ 1 ].value).toBe(0);
-    expect(actual[ 2 ].value).toBe(50);
-  });
+  // it('should calculate level percents', () => {
+  //   let exams = [ 3, 3, 2, 3, 2, 1, 1, 3, 3, 1 ].map(x => {
+  //     let exam = new Exam();
+  //     exam.level = x;
+  //     return exam;
+  //   });
+  //
+  //   let fixture = new ExamStatisticsCalculator();
+  //   let levels = fixture.groupLevels(exams, 3);
+  //
+  //   let actual = fixture.calculateLevelPercents(levels, exams.length);
+  //
+  //   expect(actual[ 0 ].value).toBe(30);
+  //   expect(actual[ 1 ].value).toBe(20);
+  //   expect(actual[ 2 ].value).toBe(50);
+  // });
+  //
+  // it('should calculate level percents when a level does not exist', () => {
+  //   let exams = [ 3, 3, 1, 3, 1, 1, 1, 3 ].map(x => {
+  //     let exam = new Exam();
+  //     exam.level = x;
+  //     return exam;
+  //   });
+  //
+  //   let fixture = new ExamStatisticsCalculator();
+  //   let levels = fixture.groupLevels(exams, 3);
+  //
+  //   let actual = fixture.calculateLevelPercents(levels, exams.length);
+  //
+  //   expect(actual[ 0 ].value).toBe(50);
+  //   expect(actual[ 1 ].value).toBe(0);
+  //   expect(actual[ 2 ].value).toBe(50);
+  // });
 
   it('should aggregate items by points', () =>{
     let assessmentItems = [{
