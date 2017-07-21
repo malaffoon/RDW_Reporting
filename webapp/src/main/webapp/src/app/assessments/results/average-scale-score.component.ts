@@ -58,7 +58,7 @@ export class AverageScaleScoreComponent {
   }
 
   getLevelPercent(num: number): number {
-    return this.statistics.levels[num].value;
+    return this.statistics.percents[num].value;
   }
 
   get scaleScoreColor(): string {
