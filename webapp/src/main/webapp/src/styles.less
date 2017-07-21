@@ -23,6 +23,11 @@
 @import "@{library-path}/sbac-ui-kit/src/less/sbac-ui-kit.less";
 @import "primeng-overrides.less";
 
+@media (max-width: @screen-md-max) {
+  .container {
+    width: 100%;
+  }
+}
 
 // ------------------------------
 // RDW Custom Styles to Match Comps
@@ -55,6 +60,7 @@ header {
   }
 }
 .breadcrumb {
+  .small;
   border-width: 1px 0px;
   border-style: solid;
   border-color: @gray-light;
@@ -72,9 +78,6 @@ footer {
   background-color: transparent;
   padding: 0px;
   border-top: none;
+  color: @gray-dark;
   .box-shadow(none);
-  .well {
-    .border-bottom-radius(0px);
-    margin-bottom: 0px;
-  }
 }
