@@ -79,6 +79,7 @@ body .ui-widget.ui-datatable {
         > th {
           &.ui-sortable-column {
             position: relative;
+            padding-right: 22px; // make sure we have room for the sort icon
             .ui-column-title {
               display: inline-block;
               padding-right: 0px;
@@ -135,8 +136,8 @@ body .ui-widget.ui-datatable {
       cursor: pointer;
     }
     .ui-sortable-column-icon {
-      margin-left: -2px;
-      margin-top: 2px;
+      top: @table-cell-padding;
+      right: 0px;
       color: @gray-darker;
       &:hover {
         cursor: pointer;
@@ -155,6 +156,11 @@ body .ui-widget.ui-datatable {
     padding-bottom: (@line-height-computed / 2);
     padding-left: (@grid-gutter-width / 2);
     table-layout: auto;
+    @media (max-width: @screen-xs-max) {
+      padding: 0px 0px 0px 0px;
+      border: none;
+      .box-shadow(none);
+    }
   }
 }
 
