@@ -9,8 +9,9 @@ export class ExamStatisticsCalculator {
   private readonly PercentFieldPrefix = "percent-point_";
 
   calculateAverage(exams: Exam[]) {
-    return this.getOnlyScoredExams(exams).reduce((x, y) => x + y.score, 0)
-      / exams.length;
+    let scoredExams = this.getOnlyScoredExams(exams);
+    return scoredExams.reduce((x, y) => x + y.score, 0)
+      / scoredExams.length;
   }
 
   calculateAverageStandardError(exams: Exam[]) {
@@ -22,17 +23,16 @@ export class ExamStatisticsCalculator {
     );
   }
 
-  private getOnlyScoredExams(exams: Exam[]): Exam[] {
-    return exams.filter(x => x.score != null);
+  getOnlyScoredExams(exams: Exam[]): Exam[] {
+    return exams.filter(x => x && x.score);
   }
 
   groupLevels(exams, numberOfLevels): ExamStatisticsLevel[] {
     let levels = [];
-    let scoredExams = this.getOnlyScoredExams(exams);
 
     for (let i = 0; i < numberOfLevels; i++) {
       let level = i + 1;
-      levels[ i ] = { id: level, value: scoredExams.filter(x => x.level == level).length };
+      levels[ i ] = { id: level, value: exams.filter(x => x.level == level).length };
     }
 
     return levels;

@@ -20,11 +20,11 @@ export class AverageScaleScoreComponent {
   public statistics: ExamStatistics;
 
   get showIab(): boolean {
-    return this.assessmentExam.assessment.isIab && this.statistics.total > 0;
+    return this.assessmentExam.assessment.isIab && this.statistics && this.statistics.total > 0;
   }
 
   get showIcaSummative(): boolean {
-    return !this.assessmentExam.assessment.isIab && this.statistics.total > 0;
+    return !this.assessmentExam.assessment.isIab && this.statistics && this.statistics.total > 0;
   }
 
   get examLevelEnum() {

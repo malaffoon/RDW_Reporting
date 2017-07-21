@@ -2,8 +2,21 @@ import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { Exam } from "../model/exam.model";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ExamItemScore } from "../model/exam-item-score.model";
+import {ExamStatistics, ExamStatisticsLevel} from "../model/exam-statistics.model";
 
 describe('Exam Calculator', () => {
+
+  it('should return only scored exams', () => {
+    let exams = [ 1, null, 2, undefined, 0 ].map(x => {
+      let exam = new Exam();
+      exam.score = x;
+      return exam;
+    });
+
+    let fixture = new ExamStatisticsCalculator();
+    let actual = fixture.getOnlyScoredExams(exams);
+    expect(actual.length).toBe(2);
+  });
 
   it('should calculate the average', () => {
     let exams = [ 2580, 2551, 2850, 2985, 2650, 2651 ].map(x => {
@@ -27,6 +40,22 @@ describe('Exam Calculator', () => {
     let fixture = new ExamStatisticsCalculator();
     let actual = fixture.calculateAverage(exams);
     expect(actual).toBe(2393);
+  });
+
+  it('should calculate the average when there are unscored exams.', () => {
+    let exams = [ 2580, 2551, 2850, 2985, 2650, 2651 ].map(x => {
+      let exam = new Exam();
+      exam.score = x;
+      return exam;
+    });
+
+
+    let fixture = new ExamStatisticsCalculator();
+    let expected = fixture.calculateAverage(exams);
+
+    exams.push(null);
+    let actual = fixture.calculateAverage(exams);
+    expect(actual).toBe(expected);
   });
 
   it('should add one level for the number of specified levels', () => {
@@ -74,39 +103,37 @@ describe('Exam Calculator', () => {
     expect(actual[ 2 ].value).toBe(4);
   });
 
-  // it('should calculate level percents', () => {
-  //   let exams = [ 3, 3, 2, 3, 2, 1, 1, 3, 3, 1 ].map(x => {
-  //     let exam = new Exam();
-  //     exam.level = x;
-  //     return exam;
-  //   });
-  //
-  //   let fixture = new ExamStatisticsCalculator();
-  //   let levels = fixture.groupLevels(exams, 3);
-  //
-  //   let actual = fixture.calculateLevelPercents(levels, exams.length);
-  //
-  //   expect(actual[ 0 ].value).toBe(30);
-  //   expect(actual[ 1 ].value).toBe(20);
-  //   expect(actual[ 2 ].value).toBe(50);
-  // });
-  //
-  // it('should calculate level percents when a level does not exist', () => {
-  //   let exams = [ 3, 3, 1, 3, 1, 1, 1, 3 ].map(x => {
-  //     let exam = new Exam();
-  //     exam.level = x;
-  //     return exam;
-  //   });
-  //
-  //   let fixture = new ExamStatisticsCalculator();
-  //   let levels = fixture.groupLevels(exams, 3);
-  //
-  //   let actual = fixture.calculateLevelPercents(levels, exams.length);
-  //
-  //   expect(actual[ 0 ].value).toBe(50);
-  //   expect(actual[ 1 ].value).toBe(0);
-  //   expect(actual[ 2 ].value).toBe(50);
-  // });
+  it('should calculate level percents', () => {
+    let stats = new ExamStatistics();
+    stats.total = 10;
+    stats.levels = [5, 2, 3].map(x => {
+      let level = new ExamStatisticsLevel();
+      level.value = x;
+      return level;
+    });
+
+    let actual = stats.percents;
+
+    expect(actual[ 0 ].value).toBe(50.0);
+    expect(actual[ 1 ].value).toBe(20.0);
+    expect(actual[ 2 ].value).toBe(30.0);
+  });
+
+  it('should calculate level percents when a level does not exist', () => {
+    let stats = new ExamStatistics();
+    stats.total = 10;
+    stats.levels = [6, 0, 4].map(x => {
+      let level = new ExamStatisticsLevel();
+      level.value = x;
+      return level;
+    });
+
+    let actual = stats.percents;
+
+    expect(actual[ 0 ].value).toBe(60.0);
+    expect(actual[ 1 ].value).toBe(0.0);
+    expect(actual[ 2 ].value).toBe(40.0);
+  });
 
   it('should aggregate items by points', () =>{
     let assessmentItems = [{

@@ -15,6 +15,7 @@ import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { ScaleScoreComponent } from "./scale-score.component";
+import { AverageScaleScoreComponent } from "./average-scale-score.component";
 import { InformationLabelComponent } from "./information-label.component";
 import { ItemViewerComponent } from "../items/item-viewer/item-viewer.component";
 import { ItemTabComponent } from "../items/item-tab.component";
@@ -64,6 +65,7 @@ describe('AssessmentResultsComponent', () => {
         PopupMenuComponent,
         RemoveCommaPipe,
         ScaleScoreComponent,
+        AverageScaleScoreComponent,
         TestComponentWrapper
       ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' } ,
