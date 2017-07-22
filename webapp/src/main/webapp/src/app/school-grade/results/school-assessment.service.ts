@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
 import { URLSearchParams } from "@angular/http";
 import { DataService } from "../../shared/data/data.service";
 import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { AssessmentProvider } from "../../assessments/assessment-provider.interface";
 import { isNullOrUndefined } from "util";
+import { ResponseUtils } from "../../shared/response-utils";
 
 @Injectable()
 export class SchoolAssessmentService implements AssessmentProvider {
@@ -29,10 +29,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
 
   getAvailableAssessments() {
     return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments`, { search: this.getSchoolYearParams(this.schoolYear) })
-      .catch(response => {
-        console.warn(response);
-        return Observable.empty();
-      })
+      .catch(ResponseUtils.notFoundToEmptyArray)
       .map(x => {
         return this.mapper.mapAssessmentsFromApi(x);
       });
@@ -40,10 +37,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
 
   getExams(assessmentId: number) {
     return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments/${assessmentId}/exams`, { search: this.getSchoolYearParams(this.schoolYear) })
-      .catch(response => {
-        console.warn(response);
-        return Observable.empty();
-      })
+      .catch(ResponseUtils.notFoundToEmptyArray)
       .map(x => {
         return this.mapper.mapExamsFromApi(x);
       });
@@ -51,10 +45,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
 
   getAssessmentItems(assessmentId: number) {
     return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments/${assessmentId}/examitems`, { search: this.getSchoolYearParams(this.schoolYear) })
-      .catch(response => {
-        console.warn(response);
-        return Observable.empty();
-      })
+      .catch(ResponseUtils.notFoundToEmptyArray)
       .map(x => {
         return this.mapper.mapAssessmentItemsFromApi(x);
       });
@@ -62,11 +53,10 @@ export class SchoolAssessmentService implements AssessmentProvider {
 
   private getRecentAssessmentBySchoolYear(schoolId: number, gradeId: number, schoolYear: number) {
     return this.dataService.get(`/schools/${schoolId}/assessmentGrades/${gradeId}/latestassessment`, { search: this.getSchoolYearParams(schoolYear) })
-      .catch(response => {
-        console.warn(response);
-        return Observable.empty();
-      })
+      .catch(ResponseUtils.notFoundToNull)
       .map(x => {
+        if (x == null) return x;
+
         return this.mapper.mapFromApi(x);
       });
   }
