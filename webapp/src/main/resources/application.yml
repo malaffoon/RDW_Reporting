@@ -79,3 +79,6 @@ app:
   # google analytics configuration
   analytics:
     trackingId: ${rdw.reporting.analytics.trackingId:}
+
+  wkhtmltopdf:
+    url: http://wkhtmltopdf/
