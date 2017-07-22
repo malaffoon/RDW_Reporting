@@ -29,6 +29,7 @@ import { ItemExemplarComponent } from "../items/item-exemplar/item-exemplar.comp
 import { ItemScoresComponent } from "../items/item-scores/item-scores.component";
 import { TestModule } from "../../../test/test.module";
 import { ItemInfoComponent } from "../items/item-info/item-info.component";
+import { ScaleScoreService } from "../../shared/scale-score.service";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 
@@ -72,7 +73,8 @@ describe('AssessmentResultsComponent', () => {
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
-        ColorService
+        ColorService,
+        ScaleScoreService
       ]
     }).compileComponents();
 

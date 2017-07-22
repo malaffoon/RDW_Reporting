@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { ExamStatistics, ExamStatisticsLevel } from "../model/exam-statistics.model";
+import { ScaleScoreService } from "../../shared/scale-score.service";
 
 /**
  * This component is responsible for displaying the average scale score visualization
@@ -23,6 +24,8 @@ export class AverageScaleScoreComponent {
     'blue-dark'
   ];
 
+  levelPercents: any[];
+
   @Input()
   showValuesAsPercent: boolean = true;
 
@@ -32,8 +35,12 @@ export class AverageScaleScoreComponent {
   @Input()
   public statistics: ExamStatistics;
 
+  constructor(private scaleScoreService: ScaleScoreService) {
+
+  }
+
   ngOnInit(): void {
-    console.log(this.assessmentExam);
+    this.levelPercents = this.scaleScoreService.calculateScoreDistribution(this.statistics.percents);
   }
 
   get showIab(): boolean {
@@ -58,11 +65,11 @@ export class AverageScaleScoreComponent {
   }
 
   getLevelPercent(num: number): number {
-    return this.statistics.percents[num].value;
+    return this.levelPercents[num];
   }
 
   get scaleScoreColor(): string {
-    let level = this.assessmentExam.assessment.calculateLevelNumber(this.statistics.average, this.statistics.standardError);
+    let level = this.scaleScoreService.calculateLevelNumber(this.assessmentExam.assessment, this.statistics.average, this.statistics.standardError);
 
     return this.assessmentExam.assessment.isIab
       ? this.iabColors[ level-1 ]

@@ -3,16 +3,7 @@ export class ExamStatistics {
   average: number;
   standardError: number;
   levels: ExamStatisticsLevel[];
-
-  get percents(): ExamStatisticsLevel[] {
-    return this.levels.map(x => {
-      return {
-        id: x.id,
-        value: x.value / this.total * 100,
-        suffix: '%'
-      }
-    })
-  };
+  percents: ExamStatisticsLevel[];
 }
 
 export class ExamStatisticsLevel {
