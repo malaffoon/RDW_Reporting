@@ -40,7 +40,9 @@ export class AverageScaleScoreComponent {
   }
 
   ngOnInit(): void {
-    this.levelPercents = this.scaleScoreService.calculateDisplayScoreDistribution(this.statistics.percents);
+    if (this.statistics) {
+      this.levelPercents = this.scaleScoreService.calculateDisplayScoreDistribution(this.statistics.percents);
+    }
   }
 
   get showIab(): boolean {
