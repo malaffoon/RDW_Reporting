@@ -85,3 +85,6 @@ app:
     options:
       dpi: 276
       page-size: Letter
+
+  external-links:
+    interpretive-guide: http://www.smarterbalanced.org/educators/

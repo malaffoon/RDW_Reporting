@@ -362,6 +362,7 @@ sql:
           i.target_code,
           i.dok_id,
           i.math_practice,
+          i.allow_calc,
           i.common_core_standard_ids
         from item i
         where i.asmt_id=:assessment_id
@@ -376,6 +377,7 @@ sql:
           i.target_code,
           i.dok_id,
           i.math_practice,
+          i.allow_calc,
           i.common_core_standard_ids
         from item i
           join exam e on e.asmt_id = i.asmt_id
