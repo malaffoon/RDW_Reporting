@@ -22,4 +22,4 @@ sql:
 
   status:
     readTest: >-
-      SELECT code FROM asmt_type
+      SELECT ist.name FROM import_status ist
