@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AssessmentExam } from "../../assessments/model/assessment-exam.model";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
@@ -10,6 +10,9 @@ import { SchoolService } from "../school.service";
 import { Grade } from "../grade.model";
 import { isNullOrUndefined } from "util";
 import { Angulartics2 } from "angulartics2";
+import { AssessmentsComponent } from "../../assessments/assessments.component";
+import { TranslateService } from "@ngx-translate/core";
+import { CsvExportService } from "../../csv-export/csv-export.service";
 
 @Component({
   selector: 'app-group-results',
@@ -20,6 +23,10 @@ import { Angulartics2 } from "angulartics2";
  * searching by school and grade.
  */
 export class SchoolResultsComponent implements OnInit {
+
+  @ViewChild(AssessmentsComponent)
+  assessmentsComponent: AssessmentsComponent;
+
   schools: School[];
   assessmentExams: AssessmentExam[] = [];
   availableAssessments: Assessment[] = [];
@@ -79,8 +86,10 @@ export class SchoolResultsComponent implements OnInit {
               private router: Router,
               private filterOptionService: ExamFilterOptionsService,
               private schoolService: SchoolService,
-              public assessmentProvider: SchoolAssessmentService,
-              private angulartics2: Angulartics2) {
+              private angulartics2: Angulartics2,
+              private csvExportService: CsvExportService,
+              private translateService: TranslateService,
+              public assessmentProvider: SchoolAssessmentService) {
   }
 
   ngOnInit() {
@@ -163,6 +172,14 @@ export class SchoolResultsComponent implements OnInit {
 
   mapParamsToSchoolYear(params) {
     return Number.parseInt(params[ "schoolYear" ]) || this.filterOptions.schoolYears[ 0 ];
+  }
+
+  exportCsv(): void {
+    let filename: string = this._currentSchool.name +
+      "-" + this.translateService.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
+      "-" + new Date().toDateString();
+
+    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, filename);
   }
 
   private trackAnalyticsEvent(changedFilter: string) {
