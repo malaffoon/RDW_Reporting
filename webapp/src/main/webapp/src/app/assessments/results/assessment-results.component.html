@@ -19,7 +19,7 @@
         </span>
     </div>
 
-    <div class="row">
+    <div class="row mb-lg">
         <!-- Sessions -->
         <div class="col-md-7">
           <div *ngIf="allowFilterBySessions">
@@ -135,7 +135,7 @@
                     sortable="true"
                     [hidden]="!isClaimScoreSelected">
             <ng-template let-exam="rowData" pTemplate="body">
-              <span *ngIf="exam.claimScores[idx].level">{{ 'enum.iab-category.' + exam.claimScores[idx].level.toString() | translate }}</span>
+              <span *ngIf="exam.claimScores[idx].level">{{ 'enum.iab-category.full.' + exam.claimScores[idx].level.toString() | translate }}</span>
               <span *ngIf="!exam.claimScores[idx].level">-</span>
             </ng-template>
           </p-column>

@@ -405,15 +405,30 @@
       "Complete": "Complete"
     },
     "iab-category": {
-      "1": "Below Standard",
-      "2": "Near Standard",
-      "3": "Above Standard"
+      "short": {
+        "1": "Below",
+        "2": "Near",
+        "3": "Above"
+      },
+      "full": {
+        "1": "Below Standard",
+        "2": "Near Standard",
+        "3": "Above Standard"
+      }
     },
     "achievement-level": {
-      "1": "Did Not Meet Standard",
-      "2": "Nearly Met Standard",
-      "3": "Met Standard",
-      "4": "Exceeded Standard"
+      "short": {
+        "1": "Did Not Meet",
+        "2": "Nearly Met",
+        "3": "Met",
+        "4": "Exceeded"
+      },
+      "full": {
+        "1": "Did Not Meet Standard",
+        "2": "Nearly Met Standard",
+        "3": "Met Standard",
+        "4": "Exceeded Standard"
+      }
     },
     "subject-claim-code": {
       "1": "Concepts & Procedures",

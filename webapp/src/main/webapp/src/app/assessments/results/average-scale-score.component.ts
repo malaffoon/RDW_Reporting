@@ -55,8 +55,8 @@ export class AverageScaleScoreComponent {
 
   get examLevelEnum() {
     return this.assessmentExam.assessment.isIab
-      ? "enum.iab-category."
-      : "enum.achievement-level.";
+      ? "enum.iab-category.short."
+      : "enum.achievement-level.short.";
   }
 
   get performanceLevels(): ExamStatisticsLevel[] {

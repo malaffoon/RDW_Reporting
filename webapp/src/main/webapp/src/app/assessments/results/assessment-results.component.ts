@@ -133,8 +133,8 @@ export class AssessmentResultsComponent implements OnInit {
 
   get examLevelEnum() {
     return this.assessmentExam.assessment.isIab
-      ? "enum.iab-category."
-      : "enum.achievement-level.";
+      ? "enum.iab-category.full."
+      : "enum.achievement-level.full.";
   }
 
   get isIab(): boolean {
