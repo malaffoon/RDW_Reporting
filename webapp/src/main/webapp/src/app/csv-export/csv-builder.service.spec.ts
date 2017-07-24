@@ -5,7 +5,7 @@ import { DatePipe } from "@angular/common";
 import { Angular2CsvProvider } from "./angular-csv.provider";
 import Spy = jasmine.Spy;
 
-fdescribe('CsvBuilder', () => {
+describe('CsvBuilder', () => {
   let datePipe: MockDatePipe;
   let angular2Csv: any;
 
