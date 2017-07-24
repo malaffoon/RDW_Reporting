@@ -82,3 +82,6 @@ app:
 
   wkhtmltopdf:
     url: http://wkhtmltopdf/
+    options:
+      dpi: 276
+      page-size: Letter
