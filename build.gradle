@@ -118,11 +118,11 @@ subprojects {
     }
 
     /***************************************************************
-     * Docker setup for all subprojects except rdw-reporting-common,
+     * Docker setup for all subprojects except rdw-admin-common,
      *  which doesn't have a docker image
      ***************************************************************/
 
-    if (it.name != "rdw-reporting-common") {
+    if (it.name != "rdw-admin-common") {
         apply plugin: 'com.bmuschko.docker-remote-api'
 
         // trigger creation of build-info.properties
