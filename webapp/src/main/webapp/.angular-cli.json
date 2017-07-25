@@ -14,6 +14,11 @@
           "glob": "**/*",
           "input": "../node_modules/sbac-ui-kit/dist/images",
           "output": "assets/image"
+        },
+        {
+          "glob": "sbac-ui-kit-wkhtmltopdf.min.css",
+          "input": "../node_modules/sbac-ui-kit/dist/css",
+          "output": "assets/css"
         }
       ],
       "index": "index.html",

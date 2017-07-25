@@ -67,3 +67,4 @@ app:
     options:
       dpi: 276
       page-size: Letter
+      user-style-sheet: http://localhost:8080/assets/css/sbac-ui-kit-wkhtmltopdf.min.css
