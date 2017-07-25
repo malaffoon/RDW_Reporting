@@ -58,6 +58,11 @@ export class ItemTabComponent implements OnInit {
    */
   loadExemplar: boolean = false;
 
+  /**
+   * If set to true, item-info will be loaded and added to the dom.
+   */
+  loadInfo: boolean = false;
+
   get translateRoot(){
     return 'labels.assessments.items.tabs.';
   }
@@ -83,6 +88,9 @@ export class ItemTabComponent implements OnInit {
     }
     else if (tabName == 'Item Viewer') {
       this.loadItemViewer = true;
+    }
+    else if (tabName == 'Item Information') {
+      this.loadInfo = true;
     }
 
     this.trackAnalyticsEvent('ItemTabSelection', tabName);

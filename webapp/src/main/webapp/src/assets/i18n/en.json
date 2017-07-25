@@ -290,7 +290,6 @@
           "item-info": {
             "title": "Item Information",
             "claim": "Claim: ",
-            "target": "Target: ",
             "dok": "Depth of Knowledge: ",
             "view-ref": "View reference",
             "difficulty": "Item Difficulty: ",

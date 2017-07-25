@@ -1,12 +1,11 @@
-<div>
+<div class="white-space-normal">
   <p>
     <b>{{ 'labels.assessments.items.tabs.item-info.claim' | translate}}</b>
     {{ 'definition.claim.' + item.claim + '.description' | translate }}
   </p>
-  <p class="green">
-    // TODO:
-    <b>{{ 'labels.assessments.items.tabs.item-info.target' | translate}}</b>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse nec placerat velit.
+  <p>
+    <b>{{ 'labels.groups.results.assessment.items.target' | translate:item}}: </b>
+    {{ targetDescription }}
   </p>
   <p>
     <b>{{ 'labels.assessments.items.tabs.item-info.dok' | translate}}</b>

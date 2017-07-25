@@ -360,6 +360,7 @@ sql:
           i.max_points,
           i.claim_code,
           i.target_code,
+          i.target_id,
           i.dok_level_subject_id,
           i.math_practice_code,
           i.allow_calc,
@@ -375,6 +376,7 @@ sql:
           i.max_points,
           i.claim_code,
           i.target_code,
+          i.target_id,
           i.dok_level_subject_id,
           i.math_practice_code,
           i.allow_calc,
@@ -440,4 +442,8 @@ sql:
   status:
     readTest: >-
       SELECT code FROM asmt_type
+
+  target:
+    findOneById: >-
+      SELECT id, description FROM target where id=:target_id
 

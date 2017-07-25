@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title th:text="#{report.ica.title}"></title>
+        <div th:replace="fragments::styles"></div>
     </head>
     <body>
         <div th:replace="fragments::header(prefix='report.ica')"></div>
@@ -35,6 +36,7 @@
             <div class="well">
                 <div class="well-body">
                     <div th:text="#{report.accommodations.label}"></div>
+                    <!-- <li th:each="accommodation : ${report.exam.accommodationCodes}>" -->
                 </div>
             </div>
 
