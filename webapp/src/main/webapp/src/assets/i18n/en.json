@@ -1,7 +1,9 @@
 {
   "welcome": "Welcome {{firstName}} {{lastName}}",
   "application": {
-    "title": "Reporting System"
+    "title": "Reporting System",
+    "home": "Reporting System Dashboard",
+    "footer": "\u00A9 The Regents of the University of California &ndash; Smarter Balanced Assessment Consortium"
   },
   "messages": {
     "noExams": "There are no exams associated with your account.",
@@ -10,12 +12,14 @@
     "noExamsSelected": "Please select from the assessments above",
     "notApplicable": "-",
     "ok": "Ok",
+    "organization": "Smarter Balanced Assessment Consortium",
     "logout": "Logout",
     "loading": "Loading",
     "session-expired": {
       "title": "Authentication Expired",
       "message": "Click Ok to re-authenticate."
-    }
+    },
+    "toggle-navigation": "Toggle navigation"
   },
   "collapse": "Collapse",
   "select": "Select",
@@ -362,9 +366,17 @@
         }
       }
     },
+    "reports": {
+      "download-report": "Download Report",
+      "download": "Download",
+      "assessment-type": "Assessment Type",
+      "subject": "Subject",
+      "school-year": "School Year"
+    },
     "select-year": "School Year",
     "export": {
       "csv": "Export CSV",
+      "items-by-points-earned": "Export Items by Points Earned",
       "cols": {
         "student-id": "Student ID",
         "student-name": "Student Name",
@@ -378,7 +390,9 @@
         "iep": "IEP",
         "economic-disadvantage": "Economic Disadvantage",
         "limited-english": "Limited English Proficiency",
-        "ethnicity": "Race/Ethnicity"
+        "ethnicity": "Race/Ethnicity",
+        "claim": "Claim",
+        "target": "Target"
       }
     }
   },
