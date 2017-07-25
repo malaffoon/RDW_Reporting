@@ -139,6 +139,7 @@ export class AssessmentExamMapper {
     uiModel.position = apiModel.position;
     uiModel.claim = apiModel.claimCode
     uiModel.target = apiModel.targetCode;
+    uiModel.targetId = apiModel.targetId;
     uiModel.depthOfKnowledge = apiModel.depthOfKnowledgeCode;
     uiModel.mathPractice = apiModel.mathPracticeCode;
     uiModel.allowCalculator = Utils.booleanToPolarEnum(apiModel.allowCalculator);

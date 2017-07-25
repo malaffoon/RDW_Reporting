@@ -6,6 +6,7 @@ export class AssessmentItem {
   position: number;
   claim: string;
   target: string;
+  targetId: number;
   depthOfKnowledge: string;
   mathPractice: string;
   allowCalculator: string;

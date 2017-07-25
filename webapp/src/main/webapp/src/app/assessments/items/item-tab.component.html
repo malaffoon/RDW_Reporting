@@ -19,7 +19,7 @@
   </tab>
   <tab *ngIf="showItemDetails" (select)="selectTab('Item Information')" heading="{{translateRoot + 'item-info.title' | translate }}">
     <div class="tab-content well">
-    <item-info [item]="item"></item-info>
+    <item-info *ngIf="loadInfo" [item]="item"></item-info>
     </div>
   </tab>
 </tabset>
