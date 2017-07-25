@@ -9,20 +9,14 @@
 
 <div class="well">
   <div class="mb-md">
-    <div class="flex-children">
-      <div class="flex-child">
-        <span class="tag tag-md {{colorService.getColor(getGradeIndex(assessment.grade))}}">
-          <span class="label">{{assessment.grade | gradeDisplay}}</span>
+    <span class="tag tag-md {{colorService.getColor(getGradeIndex(assessment.grade))}}">
+      <span class="label">{{assessment.grade | gradeDisplay}}</span>
           <span>{{assessment.name}}</span>
-        </span>
-      </div>
-      <div class="flex-child ml-auto">
-        <span class="gray-darker">
-          <i class="fa fa-calendar"></i>
-          {{exam.date | date}}
-        </span>
-      </div>
-    </div>
+    </span>
+    <span class="gray-darker pull-right pt-sm">
+      <i class="fa fa-calendar"></i>
+      {{exam.date | date}}
+    </span>
   </div>
 
   <p-dataTable [value]="assessmentItems"
