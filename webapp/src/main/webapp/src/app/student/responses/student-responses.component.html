@@ -9,15 +9,15 @@
 
 <div class="well">
   <div class="mb-md">
-    <div class="row">
-      <div class="col-md-9">
+    <div class="flex-children">
+      <div class="flex-child">
         <span class="tag tag-md {{colorService.getColor(getGradeIndex(assessment.grade))}}">
           <span class="label">{{assessment.grade | gradeDisplay}}</span>
           <span>{{assessment.name}}</span>
         </span>
       </div>
-      <div class="col-md-3">
-        <span class="gray-darker pull-right pt-sm">
+      <div class="flex-child ml-auto">
+        <span class="gray-darker">
           <i class="fa fa-calendar"></i>
           {{exam.date | date}}
         </span>
