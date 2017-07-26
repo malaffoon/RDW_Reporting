@@ -447,3 +447,10 @@ sql:
     findOneById: >-
       SELECT id, description FROM target where id=:target_id
 
+  commonCoreStandard:
+    findAllByItemId: >-
+      select ccs.id, ccs.natural_id, ccs.description
+      from common_core_standard ccs
+        join item_common_core_standard iccs on iccs.common_core_standard_id = ccs.id
+      where iccs.item_id = :item_id
+

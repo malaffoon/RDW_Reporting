@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { AssessmentItem } from "../../model/assessment-item.model";
-import { UserService } from "../../../user/user.service";
-import { CachingDataService } from "../../../shared/cachingData.service";
+import { ItemInfoService } from "./item-info.service";
 
 @Component({
   selector: 'item-info',
@@ -13,17 +12,23 @@ export class ItemInfoComponent implements OnInit {
 
   interpretiveGuide: string;
   targetDescription: string;
+  commonCoreStandards: any[];
 
-  constructor(private userService: UserService, private cachingDataService: CachingDataService) { }
+  constructor(private service: ItemInfoService) { }
 
   ngOnInit() {
-    this.userService.getCurrentUser().subscribe(user => {
-      this.interpretiveGuide = user.configuration.interpretiveGuide
-    });
+    this.service
+      .getInterpretiveGuide()
+      .subscribe(guide => this.interpretiveGuide = guide);
 
-    this.cachingDataService.get(`/targets/${this.item.targetId}`).subscribe(target => {
-      this.targetDescription = target.description;
-    })
+    this.service
+      .getTargetDescription(this.item.targetId)
+      .subscribe(description => this.targetDescription = description);
+
+    if(this.item.hasCommonCoreStandards) {
+      this.service
+        .getCommonCoreStandards(this.item.id)
+        .subscribe(standards => this.commonCoreStandards = standards);
+    }
   }
-
 }

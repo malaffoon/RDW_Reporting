@@ -48,7 +48,7 @@
     </p-column>
     <p-column field="assessmentItem.commonCoreStandardIds" header="{{'labels.student.responses.cols.standard' | translate}}" sortable="true">
       <ng-template let-standards="rowData.assessmentItem.commonCoreStandardIds" pTemplate="body">
-        <span *ngFor="let standard of standards" class="label border-only blue">{{standard}}</span>
+        <span *ngFor="let standard of standards" class="label border-only blue mr-xs">{{standard}}</span>
       </ng-template>
     </p-column>
     <p-column field="assessmentItem.scores.0.points" header="{{'labels.student.responses.cols.student-score' | translate}}" sortable="true"></p-column>

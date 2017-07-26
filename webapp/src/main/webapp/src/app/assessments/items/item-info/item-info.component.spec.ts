@@ -5,6 +5,7 @@ import { AssessmentItem } from "../../model/assessment-item.model";
 import { Component } from "@angular/core";
 import { MockUserService } from "../../../../test/mock.user.service";
 import { UserService } from "../../../user/user.service";
+import { ItemInfoService } from "./item-info.service";
 
 describe('ItemInfoComponent', () => {
   let component: ItemInfoComponent;
@@ -14,7 +15,7 @@ describe('ItemInfoComponent', () => {
     TestBed.configureTestingModule({
       imports: [ CommonModule ],
       declarations: [ ItemInfoComponent, TestComponentWrapper ],
-      providers: [ { provide: UserService, useClass: MockUserService } ]
+      providers: [ { provide: UserService, useClass: MockUserService }, ItemInfoService ]
     })
     .compileComponents();
   }));

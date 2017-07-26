@@ -179,7 +179,7 @@
           </p-column>
           <p-column field="commonCoreStandardIds" header="{{'labels.groups.results.assessment.items.cols.standard' | translate}}" sortable="true">
             <ng-template let-standards="rowData.commonCoreStandardIds" pTemplate="body">
-              <span *ngFor="let standard of standards" class="label border-only blue">{{standard}}</span>
+              <span *ngFor="let standard of standards" class="label border-only blue mr-xs">{{standard}}</span>
             </ng-template>
           </p-column>
           <p-column field="fullCredit" [sortable]="true" styleClass="level-up">
