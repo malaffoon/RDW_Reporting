@@ -79,6 +79,7 @@ sql:
         e.claim4_category,
         e.claim4_scale_score,
         e.claim4_scale_score_std_err,
+        e.available_accommodation_codes,
         a.id as asmt_id,
         a.type_id as asmt_type_id,
         a.label as asmt_label,

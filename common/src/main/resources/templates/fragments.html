@@ -7,6 +7,7 @@
 <div th:fragment="styles">
     <link rel="stylesheet"
           href="https://raw.githack.com/SmarterApp/SBAC-Global-UI-Kit/develop/dist/css/sbac-ui-kit-wkhtmltopdf.min.css">
+
 </div>
 
 <div th:fragment="header">
@@ -43,22 +44,6 @@
     </div>
 
     <hr class="mt-sm mb-sm"/>
-</div>
-
-<div th:fragment="title">
-    <div>
-        <span th:text="#{${prefix} + '.short-name'}"></span><span
-            th:text="#{'report.subject.' + ${request.subject} + '.name'}"></span>
-    </div>
-    <div th:with="schoolYear=${#strings.toString(request.schoolYear)},nextSchoolYear=${#strings.toString(request.schoolYear + 1)},nextSchoolYearLength=${#strings.length(schoolYear)}">
-        <span th:text="#{(${prefix} + '.title.grade.' + ${report.studentEnrollment.gradeCode})(${schoolYear}, ${#strings.substring(nextSchoolYear, nextSchoolYearLength - 2, nextSchoolYearLength)})}"></span>
-    </div>
-</div>
-
-
-<div th:fragment="error-band-label">
-    <div th:text="#{report.scale-score.error-band}"></div>
-    <p th:text="#{report.scale-score.description}"></p>
 </div>
 
 <div th:fragment="bottom">
