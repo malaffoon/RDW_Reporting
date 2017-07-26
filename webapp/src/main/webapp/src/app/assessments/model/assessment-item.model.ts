@@ -15,6 +15,10 @@ export class AssessmentItem {
   maxPoints: number;
   scores: ExamItemScore[] = [];
 
+  get hasCommonCoreStandards(): boolean {
+    return this.commonCoreStandardIds && this.commonCoreStandardIds.length > 0
+  }
+
   get claimTarget() {
     return this.claim + ' / ' + this.target;
   }

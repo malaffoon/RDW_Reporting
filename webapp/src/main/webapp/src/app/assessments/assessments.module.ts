@@ -29,6 +29,7 @@ import { ItemScoringGuideMapper } from "./items/item-exemplar/item-scoring-guide
 import { ItemScoresComponent } from "./items/item-scores/item-scores.component";
 import { StudentScoreService } from "./items/item-scores/student-score.service";
 import { ItemInfoComponent } from "./items/item-info/item-info.component";
+import { ItemInfoService } from "./items/item-info/item-info.service";
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { ItemInfoComponent } from "./items/item-info/item-info.component";
     ExamFilterOptionsMapper,
     ItemScoringService,
     ItemScoringGuideMapper,
+    ItemInfoService,
     StudentScoreService
   ]
 })
