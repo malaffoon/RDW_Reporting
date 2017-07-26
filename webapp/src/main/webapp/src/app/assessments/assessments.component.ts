@@ -108,13 +108,11 @@ export class AssessmentsComponent implements OnInit {
   }
 
   get selectedAssessments() {
-    this._isAllSelected = false;
-    if (this.showOnlyMostRecent && this._assessmentExams)
+    if (this.showOnlyMostRecent && this._assessmentExams) {
       return this._assessmentExams.map(x => x.assessment);
+    }
     else if (this.availableAssessments) {
-      let assessments = this.availableAssessments.filter(x => x.selected);
-      this._isAllSelected = (assessments.length == this.availableAssessments.length);
-      return assessments;
+      return this.availableAssessments.filter(x => x.selected);
     }
 
     return [];
@@ -213,6 +211,9 @@ export class AssessmentsComponent implements OnInit {
     }
 
     this.updateFilterOptions();
+
+    // have all the assessments been selected
+    this._isAllSelected = (this.selectedAssessments.length == this.availableAssessments.length);
   }
 
   exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
