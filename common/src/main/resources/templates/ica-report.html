@@ -1,47 +1,106 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title th:text="#{report.ica.title}"></title>
-        <div th:replace="fragments::styles"></div>
-    </head>
-    <body>
-        <div th:replace="fragments::header(prefix='report.ica')"></div>
-        <div class="container">
-            <div th:replace="fragments::student-header"></div>
+<head>
+    <title th:text="#{report.ica.title}"></title>
+    <div th:replace="fragments::styles"></div>
+</head>
+<body>
+<div th:replace="fragments::header(prefix='report.ica')"></div>
+<section class="mt-lg mb-lg">
+    <div class="container">
+        <div th:replace="fragments::student-header"></div>
 
-            <div th:replace="fragments::title(prefix='report.ica')"></div>
-            <div th:inline="text"><label th:text="#{report.ica.date.label}"></label> [[${#dates.format(report.exam.dateTime, 'MM/dd/yyyy')}]]</div>
-
-            <div class="well">
-                <div class="well-body">
-                    <p th:text="#{('report.overall-achievement.grade.' + ${report.assessment.gradeCode} + '.subject.' + ${report.assessment.subject} + '.level.' + ${report.exam.scaleScore.level})(${report.student.firstName})}"></p>
+        <div class="row">
+            <div class="col-xs-7" th:with="schoolYear=${#strings.toString(request.schoolYear)},nextSchoolYear=${#strings.toString(request.schoolYear + 1)},nextSchoolYearLength=${#strings.length(schoolYear)}">
+                <div>
+                    <span class="h3 label-group red">
+                        <span class="label" th:text="#{report.ica.short-name}"></span><span class="label" th:text="#{'report.subject.' + ${request.subject} + '.name'}"></span>
+                    </span>
+                </div>
+                <div class="h4" th:text="#{('report.iab.title.grade.' + ${report.studentEnrollment.gradeCode})(${schoolYear}, ${#strings.substring(nextSchoolYear, nextSchoolYearLength - 2, nextSchoolYearLength)})}"><br/>
+                    <small><strong th:text="#{report.ica.date.label}"></strong> <span th:text="${#dates.format(report.exam.dateTime, 'MM/dd/yyyy')}" th:remove="tag"></span></small>
                 </div>
             </div>
+            <div class="col-xs-5">
+                <div class="well">
+                    <div class="well-body">
+                        <p th:text="#{('report.overall-achievement.grade.' + ${report.assessment.gradeCode} + '.subject.' + ${report.assessment.subject} + '.level.' + ${report.exam.scaleScore.level})(${report.student.firstName})}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <h3 th:text="#{report.ica.section.scale-score.header}"></h3>
-            <span th:text="${report.exam.scaleScore.value}"></span>
-            <span th:text="#{('report.ica.level.' + ${report.exam.scaleScore.level} + '.name')(${#numbers.formatDecimal(report.exam.scaleScore.value - report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')}, ${#numbers.formatDecimal(report.exam.scaleScore.value + report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')})}"></span>
-            <!-- ICA scale score visual -->
-            <span th:text="#{report.scale-score.performance-standard}"></span>
-            <div th:replace="fragments::error-band-label"></div>
-            <h3 th:text="#{report.ica.section.claim.header}"></h3>
-            <p th:text="#{('report.student-achievement-by-claim.grade.' + ${report.assessment.gradeCode} + '.subject.' + ${report.assessment.subject})(${report.student.firstName})}"></p>
+        <hr class="mt-sm mb-sm"/>
 
-            <div th:each="claimCode : ${report.assessment.claimCodes}">
-                <h4 th:text="#{'report.claim.' + ${claimCode} + '.name'}"></h4>
-                <span th:text="#{'report.claim.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level} + '.label'}"></span>
+        <h2 class="gray-darker" th:text="#{report.ica.section.scale-score.header}"></h2>
+        <span class="tag h2" th:classappend="#{'report.ica.level.' + ${report.exam.scaleScore.level} + '.color'}"><span class="label" th:text="${report.exam.scaleScore.value}"></span> <span th:text="#{('report.ica.level.' + ${report.exam.scaleScore.level} + '.name')(${#numbers.formatDecimal(report.exam.scaleScore.value - report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')}, ${#numbers.formatDecimal(report.exam.scaleScore.value + report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')})}" th:remove="tag"></span></span>
+
+        <div class="row">
+            <div class="col-xs-9">
+                <div class="scale-score-graph individual has-cut-points">
+                    <div class="bar-container">
+                        <span class="scale-score" data-left="42"><span class="score label"
+                                                                       th:classappend="#{'report.ica.level.' + ${report.exam.scaleScore.level} + '.color'}"
+                                                                       th:text="${report.exam.scaleScore.value}"></span> <span class="error-band">&plusmn; <span th:text="${#numbers.formatDecimal(report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')}" th:remove="tag"></span></span></span>
+                        <div class="bar maroon" data-width="25">
+                            <span class="bar-label" th:text="#{'report.ica.level.1.description'}"></span>
+                        </div>
+                        <div class="bar gray-darkest" data-width="25">
+                            <span class="bar-label" th:text="#{'report.ica.level.2.description'}"></span>
+                        </div>
+                        <div class="bar green-dark" data-width="25">
+                            <span class="bar-label" th:text="#{'report.ica.level.3.description'}"></span>
+                        </div>
+                        <div class="bar blue-dark" data-width="25">
+                            <span class="bar-label" th:text="#{'report.ica.level.4.description'}"></span>
+                        </div>
+                        <div class="cut-points">
+                            <span class="label label-xs gray-darker" data-left="0" th:text="${report.assessment.cutPoints[0]}"></span>
+                            <span class="label label-xs gray-darker" data-left="25" th:text="${report.assessment.cutPoints[1]}"></span>
+                            <span class="label label-xs gray-darker" data-left="50" th:text="${report.assessment.cutPoints[2]}"></span>
+                            <span class="label label-xs gray-darker" data-left="75" th:text="${report.assessment.cutPoints[3]}"></span>
+                            <span class="label label-xs gray-darker" data-left="100" th:text="${report.assessment.cutPoints[4]}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3 text-left">
+                <p><strong th:text="#{report.scale-score.error-band}"></strong><br />
+                    <span th:text="#{report.scale-score.description}" th:remove="tag"></span></p>
+            </div>
+        </div>
+
+        <hr class="mt-sm mb-sm"/>
+
+        <h2 th:text="#{report.ica.section.claim.header}"></h2>
+        <p th:text="#{('report.student-achievement-by-claim.grade.' + ${report.assessment.gradeCode} + '.subject.' + ${report.assessment.subject})(${report.student.firstName})}"></p>
+
+        <div class="row" th:with="columnClass=${report.assessment.claimCodes.size() == 4} ? 'col-xs-3' : 'col-xs-4'">
+            <div th:class="${columnClass}" th:each="claimCode : ${report.assessment.claimCodes}">
+                <h3 class="text-center" th:text="#{'report.claim.' + ${claimCode} + '.name'}"></h3>
+                <!-- TODO enable when fonts
+                <!--<span class="h4 gray-dark"><i class="fa fa-5x text-center" th:classappend="#{'report.claim.' + ${claimCode} + '.icon'}"></i></span><br />-->
+                <div class="text-center gray-lightest pt-sm pb-sm mb-sm"><strong th:text="#{'report.claim.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level} + '.label'}">Above Standard</strong></div>
                 <p th:text="#{('report.claim.' + ${claimCode} + '.grade.' + ${report.assessment.gradeCode} + '.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level})(${report.student.firstName})}"></p>
             </div>
+        </div>
 
-            <div class="well">
-                <div class="well-body">
-                    <div th:text="#{report.accommodations.label}"></div>
-                    <!-- <li th:each="accommodation : ${report.exam.accommodationCodes}>" -->
+        <div class="row" th:if="${!report.exam.accommodationCodes.isEmpty()}">
+            <div class="col-xs-12">
+                <div class="well">
+                    <div class="well-body">
+                        <p class="gray-darker" th:text="#{report.accommodations.label}"></p>
+                        <!-- TODO: print over accommodation codes when markup is clear -->
+                        <!--<p><strong>Alternative Response<br />
+                            Printed passages/stimuli</strong></p>-->
+                    </div>
                 </div>
             </div>
-
-            <div th:replace="fragments::bottom"></div>
         </div>
-        <div th:replace="fragments::footer"></div>
-    </body>
+
+        <div th:replace="fragments::bottom"></div>
+    </div>
+</section>
+<div th:replace="fragments::footer"></div>
+</body>
 </html>

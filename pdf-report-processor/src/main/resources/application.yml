@@ -67,3 +67,4 @@ app:
     options:
       dpi: 276
       page-size: Letter
+      zoom: 0.7
