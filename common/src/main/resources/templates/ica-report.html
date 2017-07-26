@@ -33,7 +33,7 @@
         <hr class="mt-sm mb-sm"/>
 
         <h2 class="gray-darker" th:text="#{report.ica.section.scale-score.header}"></h2>
-        <span class="tag h2" th:classappend="#{'report.ica.level.' + ${report.exam.scaleScore.level} + '.color'}"><span class="label" th:text="${report.exam.scaleScore.value}"></span> <span th:text="#{('report.ica.level.' + ${report.exam.scaleScore.level} + '.name')(${#numbers.formatDecimal(report.exam.scaleScore.value - report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')}, ${#numbers.formatDecimal(report.exam.scaleScore.value + report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')})}" th:remove="tag"></span></span>
+        <span class="tag h2" th:classappend="#{'report.ica.level.' + ${report.exam.scaleScore.level} + '.color'}"><span class="label" th:text="${report.exam.scaleScore.value}"></span> <span th:text="#{('report.ica.level.' + ${report.exam.scaleScore.level} + '.name')(${#numbers.formatInteger(report.exam.scaleScore.value - report.exam.scaleScore.standardError, 0, 'NONE')}, ${#numbers.formatInteger(report.exam.scaleScore.value + report.exam.scaleScore.standardError, 0, 'NONE')})}" th:remove="tag"></span></span>
 
         <div class="row">
             <div class="col-xs-9">
@@ -41,7 +41,7 @@
                     <div class="bar-container">
                         <span class="scale-score" data-left="42"><span class="score label"
                                                                        th:classappend="#{'report.ica.level.' + ${report.exam.scaleScore.level} + '.color'}"
-                                                                       th:text="${report.exam.scaleScore.value}"></span> <span class="error-band">&plusmn; <span th:text="${#numbers.formatDecimal(report.exam.scaleScore.standardError, 0, 'NONE', 0, 'NONE')}" th:remove="tag"></span></span></span>
+                                                                       th:text="${report.exam.scaleScore.value}"></span> <span class="error-band">&plusmn; <span th:text="${#numbers.formatInteger(report.exam.scaleScore.standardError, 0, 'NONE')}" th:remove="tag"></span></span></span>
                         <div class="bar maroon" data-width="25">
                             <span class="bar-label" th:text="#{'report.ica.level.1.description'}"></span>
                         </div>
@@ -78,9 +78,8 @@
         <div class="row" th:with="columnClass=${report.assessment.claimCodes.size() == 4} ? 'col-xs-3' : 'col-xs-4'">
             <div th:class="${columnClass}" th:each="claimCode : ${report.assessment.claimCodes}">
                 <h3 class="text-center" th:text="#{'report.claim.' + ${claimCode} + '.name'}"></h3>
-                <!-- TODO enable when fonts are embedded -->
-                <!--<span class="h4 gray-dark"><i class="fa fa-5x text-center" th:classappend="#{'report.claim.' + ${claimCode} + '.icon'}"></i></span><br />-->
-                <div class="text-center gray-lightest pt-sm pb-sm mb-sm"><strong th:text="#{'report.claim.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level} + '.label'}">Above Standard</strong></div>
+                <span class="h4 gray-dark"><i class="fa fa-5x text-center" th:classappend="#{'report.claim.' + ${claimCode} + '.icon'}"></i></span><br />
+                <div class="text-center gray-lightest pt-sm pb-sm mb-sm"><strong th:text="#{'report.claim.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level} + '.label'}"></strong></div>
                 <p th:text="#{('report.claim.' + ${claimCode} + '.grade.' + ${report.assessment.gradeCode} + '.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level})(${report.student.firstName})}"></p>
             </div>
         </div>
@@ -90,9 +89,9 @@
                 <div class="well">
                     <div class="well-body">
                         <p class="gray-darker" th:text="#{report.accommodations.label}"></p>
-                        <!-- TODO: print over accommodation codes when markup is clear -->
-                        <!--<p><strong>Alternative Response<br />
-                            Printed passages/stimuli</strong></p>-->
+                        <p th:each="accommodation : ${accommodations}">
+                            <strong th:text="${accommodation}"></strong>
+                        </p>
                     </div>
                 </div>
             </div>
