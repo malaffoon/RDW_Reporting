@@ -123,7 +123,7 @@ describe('Assessment Model', () => {
       expect(actual[3]).toBe(52);
     }));
 
-  it('should calculate proper distribution numbers when the originals sum to move than 100',
+  it('should calculate proper distribution numbers when the originals sum to more than 100',
     inject([ScaleScoreService], (service: ScaleScoreService) => {
 
       let level1 = new ExamStatisticsLevel();
@@ -138,10 +138,32 @@ describe('Assessment Model', () => {
       let original = [level1, level2,  level3, level4];
 
       let actual = service.calculateDisplayScoreDistribution(original);
-      console.log(actual);
+
       expect(actual[0]).toBe(20);
       expect(actual[1]).toBe(30);
       expect(actual[2]).toBe(39);
       expect(actual[3]).toBe(11);
+    }));
+
+  it('should calculate proper distribution numbers when the originals sum to zero',
+    inject([ScaleScoreService], (service: ScaleScoreService) => {
+
+      let level1 = new ExamStatisticsLevel();
+      level1.value = 0;
+      let level2 = new ExamStatisticsLevel();
+      level2.value = 0;
+      let level3 = new ExamStatisticsLevel();
+      level3.value = 0;
+      let level4 = new ExamStatisticsLevel();
+      level4.value = 0;
+
+      let original = [level1, level2,  level3, level4];
+
+      let actual = service.calculateDisplayScoreDistribution(original);
+
+      expect(actual[0]).toBe(0);
+      expect(actual[1]).toBe(0);
+      expect(actual[2]).toBe(0);
+      expect(actual[3]).toBe(0);
     }));
 });

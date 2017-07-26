@@ -57,6 +57,22 @@ describe('Exam Calculator', () => {
     expect(actual).toBe(expected);
   });
 
+  it('should calculate the average when there no scored exams.', () => {
+    let exams: Exam[] = [];
+
+    let fixture = new ExamStatisticsCalculator();
+    let actual = fixture.calculateAverage(exams);
+    expect(actual).toBeNaN();
+  });
+
+  it('should calculate the average standard error when there no scored exams.', () => {
+    let exams: Exam[] = [];
+
+    let fixture = new ExamStatisticsCalculator();
+    let actual = fixture.calculateAverageStandardError(exams);
+    expect(actual).toBeNaN();
+  });
+
   it('should add one level for the number of specified levels', () => {
     let fixture = new ExamStatisticsCalculator();
     let actual = fixture.groupLevels([], 3);
@@ -100,6 +116,45 @@ describe('Exam Calculator', () => {
     expect(actual[ 0 ].value).toBe(4);
     expect(actual[ 1 ].value).toBe(0);
     expect(actual[ 2 ].value).toBe(4);
+  });
+
+  it('should include levels when there are no scored exams', () => {
+    let exams: Exam[] = [];
+
+    let fixture = new ExamStatisticsCalculator();
+    let actual = fixture.groupLevels(exams, 3);
+
+    expect(actual[ 0 ].value).toBe(0);
+    expect(actual[ 1 ].value).toBe(0);
+    expect(actual[ 2 ].value).toBe(0);
+  });
+
+  it('should include percent levels not present in the exams', () => {
+    let exams = [ 3, 3, 1, 3, 1, 1, 1, 3 ].map(x => {
+      let exam = new Exam();
+      exam.level = x;
+      return exam;
+    });
+
+    let fixture = new ExamStatisticsCalculator();
+    let levels = fixture.groupLevels(exams, 3);
+    let actual = fixture.mapGroupLevelsToPercents(levels);
+
+    expect(actual[ 0 ].value).toBe(50.0);
+    expect(actual[ 1 ].value).toBe(0);
+    expect(actual[ 2 ].value).toBe(50.0);
+  });
+
+  it('should include percent levels when there are no scored exams', () => {
+    let exams: Exam[] = [];
+
+    let fixture = new ExamStatisticsCalculator();
+    let levels = fixture.groupLevels(exams, 3);
+    let actual = fixture.mapGroupLevelsToPercents(levels);
+
+    expect(actual[ 0 ].value).toBe(0);
+    expect(actual[ 1 ].value).toBe(0);
+    expect(actual[ 2 ].value).toBe(0);
   });
 
   it('should aggregate items by points', () =>{

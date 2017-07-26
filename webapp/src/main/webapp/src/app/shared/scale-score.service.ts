@@ -42,7 +42,7 @@ export class ScaleScoreService {
     // the total needs to be 100 exactly for the visualization to work, see how far above or below we are
     let deltaToWhole = 100 - adjustedPercents.reduce((x, y) => x + y.rounded, 0);
 
-    // order by the remainder so that we can adjust htem in order
+    // order by the remainder so that we can adjust them in order
     adjustedPercents.sort((a, b) => a.remainder < b.remainder ? 1 : -1);
 
     // are we adding or subtracting to get to a total of 100
@@ -50,7 +50,7 @@ export class ScaleScoreService {
 
     // adjust one at a time either adding or subtracting to get to 100
     for (let i = 0; i < deltaToWhole * increment; i++) {
-      adjustedPercents[i].rounded += increment;
+      adjustedPercents[i % adjustedPercents.length].rounded += increment;
     }
 
     // resort them based on the index so they are in the proper order for display
