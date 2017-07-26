@@ -67,7 +67,8 @@
             <span class="icon" [hidden]="showOnlyMostRecent"><i class="fa fa-close"></i></span>
           </a>
           <div>
-            <a *ngIf ="!expandAssessments" class="btn btn-default btn-sm img-circle icon-only" (click)="expandAssessments=true"
+            <a *ngIf ="!expandAssessments" class="btn btn-default btn-sm img-circle icon-only"
+               (click)="expandAssessments=!allSelected" [attr.disabled]="allSelected?'disabled':null"
                angulartics2On="click" angularticsEvent="ClickAssessmentPlus" angularticsCategory="AssessmentResults">
               <i class="fa fa-plus"></i>
             </a>

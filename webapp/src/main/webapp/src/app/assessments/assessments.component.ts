@@ -108,10 +108,14 @@ export class AssessmentsComponent implements OnInit {
   }
 
   get selectedAssessments() {
+    this._isAllSelected = false;
     if (this.showOnlyMostRecent && this._assessmentExams)
       return this._assessmentExams.map(x => x.assessment);
-    else if (this.availableAssessments)
-      return this.availableAssessments.filter(x => x.selected);
+    else if (this.availableAssessments) {
+      let assessments = this.availableAssessments.filter(x => x.selected);
+      this._isAllSelected = (assessments.length == this.availableAssessments.length);
+      return assessments;
+    }
 
     return [];
   }
@@ -134,11 +138,16 @@ export class AssessmentsComponent implements OnInit {
     return this._assessmentExams.every((assessmentExam) => assessmentExam.collapsed);
   }
 
+  get allSelected(): boolean {
+    return this._isAllSelected;
+  }
+
   private _showAdvancedFilters: boolean = false;
   private _expandAssessments: boolean = false;
   private _hasInitialAssessment: boolean = false;
   private _showOnlyMostRecent: boolean = true;
   private _assessmentExams: AssessmentExam[];
+  private _isAllSelected: boolean = false;
 
   constructor(public colorService: ColorService,
               private route: ActivatedRoute,
