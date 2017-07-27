@@ -6,8 +6,12 @@
 
 <div th:fragment="styles">
     <link rel="stylesheet"
-          href="https://raw.githack.com/SmarterApp/SBAC-Global-UI-Kit/develop/dist/css/sbac-ui-kit-wkhtmltopdf.min.css">
-
+          href="https://cdn.rawgit.com/SmarterApp/SBAC-Global-UI-Kit/3f548f92980dbfcc7fe08d78944ea610eaca27d6/dist/css/sbac-ui-kit-wkhtmltopdf.min.css">
+    <style>
+        @media print {
+            .accommodations {page-break-inside: avoid;}
+        }
+    </style>
 </div>
 
 <div th:fragment="header">
