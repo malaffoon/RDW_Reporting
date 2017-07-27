@@ -3,7 +3,7 @@
   "application": {
     "title": "Reporting System",
     "home": "Reporting System Dashboard",
-    "footer": "\u00A9 The Regents of the University of California &ndash; Smarter Balanced Assessment Consortium"
+    "footer": "\u00A9 The Regents of the University of California - Smarter Balanced Assessment Consortium"
   },
   "messages": {
     "noExams": "There are no exams associated with your account.",
@@ -19,7 +19,8 @@
       "title": "Authentication Expired",
       "message": "Click Ok to re-authenticate."
     },
-    "toggle-navigation": "Toggle navigation"
+    "toggle-navigation": "Toggle navigation",
+    "no-item-level-data": "Item level data is not available for tests administered prior to 2017-18 school year."
   },
   "collapse": "Collapse",
   "select": "Select",

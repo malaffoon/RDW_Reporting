@@ -55,7 +55,7 @@
         <h3 class="gray-darkest mb-sm">
           {{'labels.groups.results.assessment.exams.title' | translate}}
 
-          <a *ngIf="assessmentExam.assessment.isInterim" class="btn btn-default btn-xs pull-right" (click)="viewItemsByPoints(true)">
+          <a *ngIf="assessmentExam.assessment.isInterim && hasItemLevelData" class="btn btn-default btn-xs pull-right" (click)="viewItemsByPoints(true)">
             {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
           </a>
 
@@ -74,6 +74,9 @@
             </button>
           </div>
         </h3>
+        <p *ngIf="!hasItemLevelData">
+          {{ 'messages.no-item-level-data' | translate }}
+        </p>
 
         <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.assessment.exams.empty-message' | translate}}" sortField="student.lastName" tableStyleClass="table table-striped table-hover overflow" expandableRows="true">
           <!-- Row Menu -->
@@ -156,7 +159,7 @@
             <span>{{'labels.export.items-by-points-earned' | translate}}</span>
           </button>
         </h3>
-        <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true" rowExpandMode="single">
+        <p-dataTable *ngIf="hasItemLevelData" [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true" rowExpandMode="single">
           <p-column expander="true" styleClass="col-icon"></p-column>
           <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" [sortable]="true"></p-column>
           <p-column field="claimTarget" [sortable]="true">

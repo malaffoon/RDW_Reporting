@@ -3,4 +3,5 @@ export class Configuration {
   irisUrl: string;
   analyticsTrackingId: string;
   interpretiveGuide: string;
+  minItemDataYear: number;
 }

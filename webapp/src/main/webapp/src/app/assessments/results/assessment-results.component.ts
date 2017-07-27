@@ -54,6 +54,7 @@ export class AssessmentResultsComponent implements OnInit {
   filteredAssessmentItems: AssessmentItem[];
   pointColumns: ItemPointField[];
   showItemsByPoints: boolean = false;
+  hasItemLevelData: boolean = true;
 
   /**
    * The assessment exam in which to display results for.
@@ -61,6 +62,8 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
     this._assessmentExam = assessment;
+
+    this.hasItemLevelData = this._assessmentExam.exams.some(x => x.schoolYear > 2016);
 
     // if we aren't going to display the sessions, don't waste resources computing them
     if (this.allowFilterBySessions) {
@@ -211,15 +214,22 @@ export class AssessmentResultsComponent implements OnInit {
   viewItemsByPoints(viewItemsByPoints: boolean) {
     if (viewItemsByPoints && this.loadAssessmentItems) {
       this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
-        this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
 
-        this._assessmentItems = assessmentItems;
-        this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
+        let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
 
-        this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
+        if (numOfScores != 0) {
+          this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
+
+          this._assessmentItems = assessmentItems;
+          this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
+
+          this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
+          this.hasItemLevelData = true;
+        }
+        else {
+          this.hasItemLevelData = false;
+        }
         this.showItemsByPoints = true;
-
-
       });
     }
     else{
