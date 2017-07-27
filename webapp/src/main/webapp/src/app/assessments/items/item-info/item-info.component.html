@@ -15,6 +15,8 @@
   <p>
     <b>{{ 'labels.assessments.items.tabs.item-info.difficulty' | translate}}</b>
     {{ 'enum.difficulty.' + item.difficulty | translate }}
+    <!-- TODO: Link to Interpretive Guide when available -->
+    <span class="gray-dark"><i>(Link to Interpretive Guide coming soon...)</i></span>
   </p>
   <span *ngIf="commonCoreStandards">
     <p><b>{{ 'labels.assessments.items.tabs.item-info.ccs' | translate}}</b></p>
@@ -32,6 +34,8 @@
   </p>
   <p>
     <b>{{ 'labels.assessments.items.tabs.item-info.docs' | translate}}</b>
-    <a href="{{interpretiveGuide}}" target="_blank">{{ 'labels.assessments.items.tabs.item-info.guide' | translate}}</a>
+    <!-- TODO: Link to Interpretive Guide when available -->
+    <!--<a href="{{interpretiveGuide}}" target="_blank">{{ 'labels.assessments.items.tabs.item-info.guide' | translate}}</a>-->
+    <span class="gray-dark"><i>(Link to Interpretive Guide coming soon...)</i></span>
   </p>
 </div>
