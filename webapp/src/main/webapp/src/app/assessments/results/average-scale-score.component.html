@@ -1,11 +1,14 @@
 <!-- IAB display -->
-<div *ngIf="showIab" class="row">
+<div *ngIf="showIab && hasAverageScore" class="row">
   <div class="col-md-6">
     <div class="average-scale-score-display">
       <span info-label class="scale-title"
             title="{{ 'labels.assessments.average-scale-score' | translate }}"
             content="{{ 'labels.assessments.average-scale-score-info' | translate }}"></span>
-      <span class="scale-score"><span class="score label {{ scaleScoreColor }}">{{ statistics.average | number:'1.0-0' | removeComma }}</span> <span class="error-band">± {{ statistics.standardError | number:'1.0-0' }}</span></span>
+      <span class="scale-score">
+        <span class="score label {{ scaleScoreColor }}">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+        <span class="error-band">± {{ statistics.standardError | number:'1.0-0' }}</span>
+      </span>
       <span class="label-group gray-light">
         <span class="label">{{ statistics.total }}</span><span class="label">{{ 'labels.assessments.students' | translate }}</span>
       </span>
@@ -33,13 +36,16 @@
 </div>
 
 <!-- ICA display -->
-<div *ngIf="showIcaSummative" class="row">
+<div *ngIf="showIcaSummative && hasAverageScore" class="row">
   <div class="col-md-6">
     <div class="average-scale-score-display">
       <span info-label class="scale-title"
             title="{{ 'labels.assessments.average-scale-score' | translate }}"
             content="{{ 'labels.assessments.average-scale-score-info' | translate }}"></span>
-      <span class="scale-score"><span class="score label {{ scaleScoreColor }}">{{ statistics.average | number:'1.0-0' | removeComma }}</span> <span class="error-band">± {{ statistics.standardError | number:'1.0-0' }}</span></span>
+      <span class="scale-score">
+        <span class="score label {{ scaleScoreColor }}">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+        <span class="error-band">± {{ statistics.standardError | number:'1.0-0' }}</span>
+      </span>
       <span class="label-group gray-light">
         <span class="label">{{ statistics.total }}</span><span class="label">{{ 'labels.assessments.students' | translate }}</span>
       </span>

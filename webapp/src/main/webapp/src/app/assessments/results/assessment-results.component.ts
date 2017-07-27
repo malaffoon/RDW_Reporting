@@ -273,7 +273,7 @@ export class AssessmentResultsComponent implements OnInit {
     this.exams = this.filterExams();
     this.statistics = this.calculateStats();
 
-    if(this._assessmentItems) {
+    if (this._assessmentItems) {
       this.filteredAssessmentItems = this.filterAssessmentItems(this._assessmentItems);
       this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
     }
