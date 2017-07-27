@@ -39,6 +39,17 @@ export class ExamStatisticsCalculator {
     return levels;
   }
 
+  mapGroupLevelsToPercents(levels: ExamStatisticsLevel[]) {
+    let total = levels.reduce((x, y) => x + y.value, 0);
+    return levels.map(x => {
+      return {
+        id: x.id,
+        value: total == 0 ? 0 : x.value / total * 100,
+        suffix: '%'
+      }
+    });
+  }
+
   aggregateItemsByPoints(assessmentItems: AssessmentItem[]) {
     for(let item of assessmentItems){
       for(let i=0; i <= item.maxPoints; i++){
