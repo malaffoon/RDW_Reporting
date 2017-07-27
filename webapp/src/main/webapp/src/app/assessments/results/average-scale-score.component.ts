@@ -45,6 +45,10 @@ export class AverageScaleScoreComponent {
     }
   }
 
+  get hasAverageScore(): boolean {
+    return !isNaN(this.statistics.average);
+  }
+
   get showIab(): boolean {
     return this.assessmentExam.assessment.isIab && this.statistics && this.statistics.total > 0;
   }
