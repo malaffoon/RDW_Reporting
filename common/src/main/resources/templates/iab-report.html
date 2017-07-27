@@ -11,13 +11,13 @@
                 <div th:replace="fragments::student-header"></div>
 
                 <div class="row">
-                    <div class="col-xs-6" th:with="schoolYear=${#strings.toString(request.schoolYear)},nextSchoolYear=${#strings.toString(request.schoolYear + 1)},nextSchoolYearLength=${#strings.length(schoolYear)}">
+                    <div class="col-xs-6">
                         <div>
                         <span class="h3 label-group green">
                             <span class="label" th:text="#{report.iab.short-name}"></span><span class="label" th:text="#{'report.subject.' + ${request.subject} + '.name'}"></span>
                         </span>
                         </div>
-                        <div class="h4" th:text="#{('report.iab.title.grade.' + ${report.studentEnrollment.gradeCode})(${schoolYear}, ${#strings.substring(nextSchoolYear, nextSchoolYearLength - 2, nextSchoolYearLength)})}"></div>
+                        <div class="h4" th:text="#{('report.iab.title.grade.' + ${report.studentEnrollment.gradeCode})(${#strings.toString(request.schoolYear)}, ${support.getLastTwoDigits(request.schoolYear + 1)})}"></div>
                     </div>
                     <div class="col-xs-3 pr-0 text-right">
                         <div class="scale-score-legend"></div>
@@ -42,16 +42,18 @@
                             <div class="row">
                                 <div class="col-xs-9">
                                     <span class="tag h3" th:classappend="#{'report.grade.' + ${assessment.gradeCode} + '.color'}"><span class="label" th:text="#{'report.grade.' + ${assessment.gradeCode} + '.label'}"></span> <span th:text="${assessment.name}" th:remove="tag"></span></span>
-                                    <div class="scale-score-graph individual">
+                                    <div class="scale-score-graph individual" th:with="scaleScoreView=${support.getScaleScoreView(exam, assessment)}">
                                         <div class="bar-container">
-                                            <span class="scale-score" data-left="42"><span class="score label" th:classappend="#{'report.iab.level.' + ${exam.scaleScore.level} + '.color'}" th:text="${exam.scaleScore.value}"></span> <span class="error-band">&plusmn; <span th:text="${#numbers.formatInteger(exam.scaleScore.standardError, 0, 'NONE')}" th:remove="tag"></span></span></span>
-                                            <div class="bar blue-dark" data-width="30">
+                                            <span class="scale-score" th:attr="data-left=${scaleScoreView.position}"><span class="score label"
+                                                   th:classappend="#{'report.iab.level.' + ${exam.scaleScore.level} + '.color'}"
+                                                   th:text="${exam.scaleScore.value}"></span> <span class="error-band">&plusmn; <span th:text="${support.round(exam.scaleScore.standardError)}" th:remove="tag"></span></span></span>
+                                            <div class="bar blue-dark" th:attr="data-width=${scaleScoreView.levels[0].width}">
                                                 <span class="bar-label" th:text="#{'report.iab.level.1.label'}"></span>
                                             </div>
-                                            <div class="bar blue" data-width="50">
+                                            <div class="bar blue" th:attr="data-width=${scaleScoreView.levels[1].width}">
                                                 <span class="bar-label" th:text="#{'report.iab.level.2.label'}"></span>
                                             </div>
-                                            <div class="bar aqua" data-width="20">
+                                            <div class="bar aqua" th:attr="data-width=${scaleScoreView.levels[2].width}">
                                                 <span class="bar-label" th:text="#{'report.iab.level.3.label'}"></span>
                                             </div>
                                         </div>
@@ -67,8 +69,8 @@
                     <div class="well gray-lightest assessment-instances" data-width="40">
                         <div class="well-body">
                             <ul class="previous-results">
-                                <li th:with="assessment=${entry.key}" th:each="exam : ${entry.value}"><span  th:if="${examStat.index} > 0"><span class="previous-result"><span class="date" th:text="${#dates.format(exam.dateTime, 'MM-dd-yyyy')}"></span> <span
-                                        class="scale-score"><span th:text="${exam.scaleScore.value}" th:remove="tag"></span> <span class="error-band">&plusmn; <span th:text="${#numbers.formatInteger(exam.scaleScore.standardError, 0, 'NONE')}" th:remove="tag"></span></span></span> <span
+                                <li th:with="assessment=${entry.key}" th:each="exam : ${entry.value}"><span th:if="${examStat.index} > 0"><span class="previous-result"><span class="date" th:text="${#dates.format(exam.dateTime, 'MM-dd-yyyy')}"></span> <span
+                                        class="scale-score"><span th:text="${exam.scaleScore.value}" th:remove="tag"></span> <span class="error-band">&plusmn; <span th:text="${support.round(exam.scaleScore.standardError)}" th:remove="tag"></span></span></span> <span
                                         class="performance-level" th:text="#{'report.iab.level.' + ${exam.scaleScore.level} + '.label'}"></span></span></span></li>
                             </ul>
                         </div>
