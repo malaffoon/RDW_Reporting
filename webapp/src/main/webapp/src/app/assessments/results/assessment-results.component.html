@@ -168,7 +168,7 @@
             <span>{{'labels.export.items-by-points-earned' | translate}}</span>
           </button>
         </h3>
-        <p-dataTable *ngIf="hasItemLevelData" [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true" rowExpandMode="single">
+        <p-dataTable [value]="filteredAssessmentItems" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true" rowExpandMode="single">
           <p-column expander="true" styleClass="col-icon"></p-column>
           <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" [sortable]="true"></p-column>
           <p-column field="claimTarget" [sortable]="true">

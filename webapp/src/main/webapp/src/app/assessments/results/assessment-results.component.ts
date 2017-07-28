@@ -336,7 +336,6 @@ export class AssessmentResultsComponent implements OnInit {
     let builder = this.actionBuilder.newActions();
 
     if (!this._assessmentExam.assessment.isSummative) {
-      console.log(this.minimumItemDataYear);
       builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
     }
 
