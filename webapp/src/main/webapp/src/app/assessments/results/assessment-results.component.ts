@@ -54,7 +54,10 @@ export class AssessmentResultsComponent implements OnInit {
   filteredAssessmentItems: AssessmentItem[];
   pointColumns: ItemPointField[];
   showItemsByPoints: boolean = false;
-  hasItemLevelData: boolean = true;
+
+  get hasItemLevelData(): boolean {
+    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
+  }
 
   /**
    * The assessment exam in which to display results for.
@@ -62,8 +65,6 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   set assessmentExam(assessment: AssessmentExam) {
     this._assessmentExam = assessment;
-
-    this.hasItemLevelData = this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
 
     // if we aren't going to display the sessions, don't waste resources computing them
     if (this.allowFilterBySessions) {
@@ -235,10 +236,6 @@ export class AssessmentResultsComponent implements OnInit {
           this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
 
           this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
-          this.hasItemLevelData = true;
-        }
-        else {
-          this.hasItemLevelData = false;
         }
         this.showItemsByPoints = true;
       });
@@ -339,6 +336,7 @@ export class AssessmentResultsComponent implements OnInit {
     let builder = this.actionBuilder.newActions();
 
     if (!this._assessmentExam.assessment.isSummative) {
+      console.log(this.minimumItemDataYear);
       builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
     }
 
