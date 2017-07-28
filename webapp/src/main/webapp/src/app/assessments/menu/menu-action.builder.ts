@@ -73,15 +73,15 @@ export class MenuActionBuilder {
       this.router.navigate(commands, { relativeTo: this.route });
     }).bind(this);
 
-    // responsesAction.isDisabled = ((actionable) => {
-    //   return !hasItemLevelData(actionable);
-    // }).bind(this);
-    //
-    // responsesAction.tooltip = ((actionable) => {
-    //   return responsesAction.isDisabled(actionable)
-    //     ? this.translateService.instant('messages.no-item-level-data')
-    //     : '';
-    // });
+    responsesAction.isDisabled = ((actionable) => {
+      return !hasItemLevelData(actionable);
+    }).bind(this);
+
+    responsesAction.tooltip = ((actionable) => {
+      return responsesAction.isDisabled(actionable)
+        ? this.translateService.instant('messages.no-item-level-data')
+        : '';
+    });
 
     this.actions.push(responsesAction);
     return this;
