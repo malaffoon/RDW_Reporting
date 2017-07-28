@@ -1,58 +1,45 @@
 <div *ngIf="options" class="report-download-container">
-  <button class="btn btn-sm btn-info" (click)="modal.show()"><i class="fa fa-download"></i> {{'labels.reports.download-report' | translate}}</button>
-  <div class="modal fade" bsModal #modal="bs-modal" tabindex="-1" role="dialog"
-       aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title pull-left">{{'labels.reports.download-report' | translate}}</h4>
-          <button type="button" class="close pull-right" aria-label="Close" (click)="modal.hide()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form #form="ngForm" (ngSubmit)="submit()">
-            <div class="form-group">
-              <div class="flex-children">
 
-                <div class="flex-child">
-                  <label>{{'labels.reports.assessment-type' | translate}}
-                    <select class="form-control" name="assessment-type" [(ngModel)]="options.assessmentType">
-                      <option *ngFor="let type of assessmentTypes" [ngValue]="type">{{'labels.assessmentTypes.' + type + '.short-name' | translate}}
-                      </option>
-                    </select>
-                  </label>
-                </div>
+  <button class="btn btn-sm btn-default"
+          [containerClass]="'report-download-popover'"
+          [popover]="popoverTemplate"><i class="fa fa-cloud-download" aria-hidden="true"></i>
+    {{'labels.reports.download-report' | translate}}
+  </button>
 
-                <div class="flex-child">
-                  <label>{{'labels.reports.subject' | translate}}
-                    <select class="form-control" name="subject" [(ngModel)]="options.subject">
-                      <option *ngFor="let subject of subjectTypes" [ngValue]="subject">{{'labels.subjects.' + subject + '.short-name' | translate}}
-                      </option>
-                    </select>
-                  </label>
-                </div>
+  <template #popoverTemplate>
+    <form #form="ngForm" (ngSubmit)="submit()">
+      <div class="form-group">
 
-                <div class="flex-child">
-                  <label>{{'labels.reports.school-year' | translate}}
-                    <select class="form-control" name="school-year" [(ngModel)]="options.schoolYear">
-                      <option *ngFor="let year of schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
-                    </select>
-                  </label>
-                </div>
+        <label>{{'labels.reports.assessment-type' | translate}}
+          <select class="form-control" name="assessment-type" [(ngModel)]="options.assessmentType">
+            <option *ngFor="let type of assessmentTypes" [ngValue]="type">{{'labels.assessmentTypes.' + type + '.short-name' | translate}}
+            </option>
+          </select>
+        </label>
 
-              </div>
-            </div>
-          </form>
-          <div class="alert alert-danger" *ngIf="errorMessage">
-            <p>{{errorMessage}}</p>
-          </div>
+        <label class="ml-xs">{{'labels.reports.subject' | translate}}
+          <select class="form-control" name="subject" [(ngModel)]="options.subject">
+            <option *ngFor="let subject of subjectTypes" [ngValue]="subject">{{'labels.subjects.' + subject + '.short-name' | translate}}
+            </option>
+          </select>
+        </label>
 
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" (click)="form.ngSubmit.emit()"><i class="fa fa-download"></i> {{'labels.reports.download' | translate}}</button>
-        </div>
+        <label class="ml-xs">{{'labels.reports.school-year' | translate}}
+          <select class="form-control" name="school-year" [(ngModel)]="options.schoolYear">
+            <option *ngFor="let year of schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
+          </select>
+        </label>
+
+        <label class="ml-xs">
+          <button class="btn btn-info" (click)="form.ngSubmit.emit()">{{'labels.reports.download' | translate}}</button>
+        </label>
+
       </div>
+    </form>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      <p>{{errorMessage}}</p>
     </div>
-  </div>
+
+  </template>
 </div>
