@@ -25,11 +25,6 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
 
   public submit(): void {
 
-    // Prevent parallel requests by cancelling current request if active
-    if (this.subscription != null) {
-      this.subscription.unsubscribe();
-    }
-
     // Keep handle on subscription for disabling submit button
     this.subscription = this.service.getStudentExamReport(this.studentId, this.options)
       .subscribe(
@@ -37,7 +32,7 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
           saveAs(download.content, download.name);
         },
         (error: any) => {
-          // TODO: add handler for 404/500 errors - consider publishing to global notification "snack drawer"
+          // TODO: add handler for 404/500 errors - consider publishing to global notification component
           console.error(error);
         },
         () => {

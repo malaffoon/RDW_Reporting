@@ -28,7 +28,7 @@
         </select>
       </div>
       <div class="form-group mt-sm">
-          <button class="btn btn-info btn-sm" (click)="form.ngSubmit.emit()">{{'labels.reports.download' | translate}}</button>
+          <button class="btn btn-info btn-sm" [disabled]="subscription != null" (click)="form.ngSubmit.emit()">{{'labels.reports.download' | translate}}</button>
       </div>
     </form>
   </template>
