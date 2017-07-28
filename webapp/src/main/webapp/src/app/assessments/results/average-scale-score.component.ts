@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { ExamStatistics, ExamStatisticsLevel } from "../model/exam-statistics.model";
 import { ScaleScoreService } from "../../shared/scale-score.service";
@@ -25,6 +25,7 @@ export class AverageScaleScoreComponent {
   ];
 
   levelPercents: any[];
+  private _statistics: ExamStatistics;
 
   @Input()
   showValuesAsPercent: boolean = true;
@@ -33,16 +34,20 @@ export class AverageScaleScoreComponent {
   public assessmentExam: AssessmentExam;
 
   @Input()
-  public statistics: ExamStatistics;
+  set statistics(value: ExamStatistics) {
+    this._statistics = value;
+
+    if (this._statistics) {
+      this.levelPercents = this.scaleScoreService.calculateDisplayScoreDistribution(this._statistics.percents);
+    }
+  }
+
+  get statistics(): ExamStatistics {
+    return this._statistics;
+  }
 
   constructor(private scaleScoreService: ScaleScoreService) {
 
-  }
-
-  ngOnInit(): void {
-    if (this.statistics) {
-      this.levelPercents = this.scaleScoreService.calculateDisplayScoreDistribution(this.statistics.percents);
-    }
   }
 
   get hasAverageScore(): boolean {

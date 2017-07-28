@@ -77,6 +77,13 @@ mysql> SELECT @@system_time_zone, @@global.time_zone, @@session.time_zone;
 
 The service depends on the database being configured properly. See instructions below under [Running](#running) 
 
+#### wkhtmltopdf
+wkhtmltopdf is required for building (integration tests) the applications. To install:
+```bash
+brew install Caskroom/cask/wkhtmltopdf
+```
+For running the application, wkhtmltopdf is bundled as a service and is run in a docker container.
+
 ### Building
 RDW_Reporting makes use of RDW_Common modules. If you are developing RDW_Common and would like to test changes in this 
 project, you can build RDW_Common locally and install your changes to the local repository:
