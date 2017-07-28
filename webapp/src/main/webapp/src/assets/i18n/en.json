@@ -3,7 +3,7 @@
   "application": {
     "title": "Reporting System",
     "home": "Reporting System Dashboard",
-    "footer": "\u00A9 The Regents of the University of California &ndash; Smarter Balanced Assessment Consortium"
+    "footer": "\u00A9 The Regents of the University of California \u2013 Smarter Balanced Assessment Consortium"
   },
   "messages": {
     "noExams": "There are no exams associated with your account.",
