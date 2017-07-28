@@ -20,6 +20,8 @@ import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters
 import { Angulartics2Module, Angulartics2 } from "angulartics2";
 import { PopoverModule } from "ngx-bootstrap";
 import { CsvExportService } from "../../csv-export/csv-export.service";
+import { UserService } from "../../user/user.service";
+import { MockUserService } from "../../../test/mock.user.service";
 
 let availableGrades = [];
 
@@ -68,7 +70,8 @@ describe('SchoolResultsComponent', () => {
           snapshot: { data: mockRouteData, params: mockRouteParams }
         }},
         { provide: Angulartics2, useValue: mockAngulartics2 },
-        { provide: CsvExportService, useValue: exportService }
+        { provide: CsvExportService, useValue: exportService },
+        { provide: UserService, useClass: MockUserService }
       ]
     })
       .compileComponents();

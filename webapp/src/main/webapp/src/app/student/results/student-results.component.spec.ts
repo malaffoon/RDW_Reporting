@@ -23,6 +23,8 @@ import { Angulartics2 } from "angulartics2";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
+import { UserService } from "../../user/user.service";
+import { MockUserService } from "../../../test/mock.user.service";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -72,6 +74,9 @@ describe('StudentResultsComponent', () => {
       }, {
         provide: Angulartics2,
         useValue: mockAngulartics2
+      }, {
+        provide: UserService,
+        useClass: MockUserService
       }],
       schemas: [NO_ERRORS_SCHEMA]
     })
