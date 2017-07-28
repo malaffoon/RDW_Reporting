@@ -18,16 +18,12 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
   public studentId: number;
 
   private subscription: Subscription;
-  private errorMessage: string;
 
   constructor(private service: ReportDownloadService) {
     super();
   }
 
   public submit(): void {
-
-    // Dismiss error state
-    this.errorMessage = null;
 
     // Prevent parallel requests by cancelling current request if active
     if (this.subscription != null) {
@@ -41,8 +37,8 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
           saveAs(download.content, download.name);
         },
         (error: any) => {
-          // TODO: add handler for 404/500 errors
-          this.errorMessage = `${error.status}: ${error.statusText}`;
+          // TODO: add handler for 404/500 errors - consider publishing to global notification "snack drawer"
+          console.error(error);
         },
         () => {
           this.subscription = null;

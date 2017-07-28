@@ -11,18 +11,6 @@ import { ScaleScoreService } from "../../shared/scale-score.service";
   templateUrl: './average-scale-score.component.html',
 })
 export class AverageScaleScoreComponent {
-  iabColors: string[] = [
-    'blue-dark',
-    'blue-dark aqua',
-    'aqua'
-  ];
-
-  icaSummativeColors: string[] = [
-    'maroon',
-    'gray-darkest',
-    'green-dark',
-    'blue-dark'
-  ];
 
   levelPercents: any[];
   private _statistics: ExamStatistics;
@@ -77,13 +65,5 @@ export class AverageScaleScoreComponent {
 
   getLevelPercent(num: number): number {
     return this.levelPercents[num];
-  }
-
-  get scaleScoreColor(): string {
-    let level = this.scaleScoreService.calculateLevelNumber(this.assessmentExam.assessment, this.statistics.average, this.statistics.standardError);
-
-    return this.assessmentExam.assessment.isIab
-      ? this.iabColors[ level-1 ]
-      : this.icaSummativeColors[ level-1 ];
   }
 }

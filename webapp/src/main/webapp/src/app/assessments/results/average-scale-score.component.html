@@ -6,7 +6,7 @@
             title="{{ 'labels.assessments.average-scale-score' | translate }}"
             content="{{ 'labels.assessments.average-scale-score-info' | translate }}"></span>
       <span class="scale-score">
-        <span class="score label {{ scaleScoreColor }}">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+        <span class="score label gray-darker">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
         <span class="error-band">± {{ statistics.standardError | number:'1.0-0' }}</span>
       </span>
       <span class="label-group gray-light">
@@ -43,7 +43,7 @@
             title="{{ 'labels.assessments.average-scale-score' | translate }}"
             content="{{ 'labels.assessments.average-scale-score-info' | translate }}"></span>
       <span class="scale-score">
-        <span class="score label {{ scaleScoreColor }}">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+        <span class="score label gray-darker">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
         <span class="error-band">± {{ statistics.standardError | number:'1.0-0' }}</span>
       </span>
       <span class="label-group gray-light">

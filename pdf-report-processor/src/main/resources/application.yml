@@ -65,6 +65,5 @@ app:
   wkhtmltopdf:
     url: http://localhost:8082
     options:
-      dpi: 276
       page-size: Letter
-      zoom: 0.7
+      zoom: 0.75
