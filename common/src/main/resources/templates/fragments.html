@@ -5,11 +5,17 @@
 <body>
 
 <div th:fragment="styles">
-    <link rel="stylesheet"
-          href="https://cdn.rawgit.com/SmarterApp/SBAC-Global-UI-Kit/3f548f92980dbfcc7fe08d78944ea610eaca27d6/dist/css/sbac-ui-kit-wkhtmltopdf.min.css">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/SmarterApp/SBAC-Global-UI-Kit/3f548f92980dbfcc7fe08d78944ea610eaca27d6/dist/css/sbac-ui-kit-wkhtmltopdf.min.css">
     <style>
-        @media print {
-            .accommodations {page-break-inside: avoid;}
+        /* TODO: move to styelsheet */
+        header nav.navbar .navbar-header {
+            display: block;
+        }
+        header .application-title {
+            margin: 12px 0 0 0;
+        }
+        .assessment-latest-result .performance-level{
+            display:inline-block;
         }
     </style>
 </div>
@@ -20,7 +26,7 @@
             <nav class="navbar navbar-default">
                 <div class="navbar-header">
                     <div class="navbar-brand"></div>
-                    <span class="application-title ml-auto" th:text="#{${prefix} + '.title'}"></span>
+                    <span class="application-title text-right pull-right mt-sm" th:text="#{${prefix} + '.title'}"></span>
                 </div>
             </nav>
         </div>
