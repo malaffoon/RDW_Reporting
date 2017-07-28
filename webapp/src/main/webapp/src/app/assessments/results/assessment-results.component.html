@@ -4,9 +4,18 @@
     <div class="mb-md">
         <!-- Top Right Buttons -->
         <div class="pull-right text-right">
-            <a class="btn btn-default btn-xs"
-               angulartics2On="click" angularticsEvent="InstructionalResource" angularticsCategory="AssessmentResults" [angularticsProperties]="{label: assessmentExam.assessment.name}">
-              <i class="fa fa-list-alt"></i> {{'labels.groups.results.assessment.instruct' | translate }}</a>
+            <button
+              class="btn btn-default btn-xs"
+              angulartics2On="click"
+              angularticsEvent="InstructionalResource"
+              angularticsCategory="AssessmentResults"
+              [angularticsProperties]="{label: assessmentExam.assessment.name}"
+              [disabled]="!assessmentExam.assessment.hasResourceUrl"
+              (click)="openInstructionalResource()"
+              title="{{ assessmentExam.assessment.hasResourceUrl ? '' : 'labels.menus.resources-disabled-message' | translate }}"
+            >
+              <i class="fa fa-list-alt"></i> {{'labels.groups.results.assessment.instruct' | translate }}
+            </button>
             <button class="btn btn-default btn-sm icon-only" (click)="collapsed = !collapsed"
                     angulartics2On="click" angularticsEvent="ToggleCollapseResults" angularticsCategory="AssessmentResults">
                 <i class="fa font-bold" [ngClass]="{'fa-angle-down':collapsed, 'fa-angle-up':!collapsed}"></i> <span class="sr-only">{{'prompt.collapse' | translate}}</span>
@@ -132,7 +141,7 @@
           <p-column *ngFor="let claim of claimCodes; let idx = index"
                     header="{{'enum.subject-claim-code.' + claim | translate}}"
                     field="{{'claimScores.' + idx + '.level'}}"
-                    sortable="true"
+                    sortable="true"pop
                     [hidden]="!isClaimScoreSelected">
             <ng-template let-exam="rowData" pTemplate="body">
               <span *ngIf="exam.claimScores[idx].level">{{ 'enum.iab-category.full.' + exam.claimScores[idx].level.toString() | translate }}</span>
