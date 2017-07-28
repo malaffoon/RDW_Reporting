@@ -56,6 +56,7 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
+      - app.wkhtmltopdf.options.zoom=0.75
     extra_hosts:
       - "dwhost:$DATAWAREHOUSE_HOST"
 
@@ -76,6 +77,6 @@ services:
 #      - "dwhost:$DATAWAREHOUSE_HOST"
 
   wkhtmltopdf:
-    image: openlabs/docker-wkhtmltopdf-aas
+    image: fwsbac/wkhtmltopdf-image:latest
     ports:
       - 8082:80
