@@ -141,7 +141,7 @@
           <p-column *ngFor="let claim of claimCodes; let idx = index"
                     header="{{'enum.subject-claim-code.' + claim | translate}}"
                     field="{{'claimScores.' + idx + '.level'}}"
-                    sortable="true"pop
+                    sortable="true"
                     [hidden]="!isClaimScoreSelected">
             <ng-template let-exam="rowData" pTemplate="body">
               <span *ngIf="exam.claimScores[idx].level">{{ 'enum.iab-category.full.' + exam.claimScores[idx].level.toString() | translate }}</span>

@@ -192,13 +192,11 @@ sql:
             st.ssid as student_ssid,
             st.last_or_surname as student_last_name,
             st.first_name as student_first_name,
-            st.gender_code as student_gender_code,
-            ir.resource
+            st.gender_code as student_gender_code
           from exam e
             join student_group_membership sgm on e.student_id=sgm.student_id
             join student st on e.student_id=st.id
             join asmt a on e.asmt_id=a.id
-            left join instructional_resource ir on ir.name = a.name
             join school s on e.school_id=s.id
           where e.asmt_id=:assessment_id
           and e.school_year=:school_year
