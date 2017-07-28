@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { ExamStatistics, ExamStatisticsLevel } from "../model/exam-statistics.model";
 import { ScaleScoreService } from "../../shared/scale-score.service";
@@ -11,20 +11,9 @@ import { ScaleScoreService } from "../../shared/scale-score.service";
   templateUrl: './average-scale-score.component.html',
 })
 export class AverageScaleScoreComponent {
-  iabColors: string[] = [
-    'blue-dark',
-    'blue-dark aqua',
-    'aqua'
-  ];
-
-  icaSummativeColors: string[] = [
-    'maroon',
-    'gray-darkest',
-    'green-dark',
-    'blue-dark'
-  ];
 
   levelPercents: any[];
+  private _statistics: ExamStatistics;
 
   @Input()
   showValuesAsPercent: boolean = true;
@@ -33,16 +22,20 @@ export class AverageScaleScoreComponent {
   public assessmentExam: AssessmentExam;
 
   @Input()
-  public statistics: ExamStatistics;
+  set statistics(value: ExamStatistics) {
+    this._statistics = value;
+
+    if (this._statistics) {
+      this.levelPercents = this.scaleScoreService.calculateDisplayScoreDistribution(this._statistics.percents);
+    }
+  }
+
+  get statistics(): ExamStatistics {
+    return this._statistics;
+  }
 
   constructor(private scaleScoreService: ScaleScoreService) {
 
-  }
-
-  ngOnInit(): void {
-    if (this.statistics) {
-      this.levelPercents = this.scaleScoreService.calculateDisplayScoreDistribution(this.statistics.percents);
-    }
   }
 
   get hasAverageScore(): boolean {
@@ -72,13 +65,5 @@ export class AverageScaleScoreComponent {
 
   getLevelPercent(num: number): number {
     return this.levelPercents[num];
-  }
-
-  get scaleScoreColor(): string {
-    let level = this.scaleScoreService.calculateLevelNumber(this.assessmentExam.assessment, this.statistics.average, this.statistics.standardError);
-
-    return this.assessmentExam.assessment.isIab
-      ? this.iabColors[ level-1 ]
-      : this.icaSummativeColors[ level-1 ];
   }
 }
