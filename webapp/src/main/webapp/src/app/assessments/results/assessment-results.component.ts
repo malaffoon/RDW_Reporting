@@ -218,6 +218,10 @@ export class AssessmentResultsComponent implements OnInit {
     this.updateExamSessions();
   }
 
+  openInstructionalResource() {
+    window.open(this.assessmentExam.assessment.resourceUrl);
+  }
+
   viewItemsByPoints(viewItemsByPoints: boolean) {
     if (viewItemsByPoints && this.loadAssessmentItems) {
       this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {

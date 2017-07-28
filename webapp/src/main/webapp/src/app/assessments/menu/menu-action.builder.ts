@@ -3,6 +3,8 @@ import { PopupMenuAction } from "./popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
+import { isNull } from "util";
+import { isNullOrUndefined } from "util";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.
@@ -18,7 +20,7 @@ export class MenuActionBuilder {
 
   constructor(private translateService: TranslateService,
               private route: ActivatedRoute,
-              private router: Router){
+              private router: Router) {
     this.actions = [];
   }
 
@@ -32,14 +34,14 @@ export class MenuActionBuilder {
    * @param getStudent lambda which accesses the student from the actionable object.
    * @returns {MenuActionBuilder}
    */
-  withStudentHistory(getStudent: (s:any) => Student): MenuActionBuilder {
+  withStudentHistory(getStudent: (s: any) => Student): MenuActionBuilder {
     let action: PopupMenuAction = new PopupMenuAction();
 
     action.displayName = ((actionable: any) => {
       return this.translateService.instant('labels.menus.test-history', getStudent(actionable));
     }).bind(this);
     action.perform = ((actionable: any) => {
-      this.router.navigate(['students', getStudent(actionable).id], { relativeTo: this.route });
+      this.router.navigate([ 'students', getStudent(actionable).id ], { relativeTo: this.route });
     }).bind(this);
 
     this.actions.push(action);
@@ -63,8 +65,8 @@ export class MenuActionBuilder {
     responsesAction.perform = ((actionable: any) => {
       let commands = [];
 
-      if(this.router.url.indexOf("/students/") === -1){
-        commands = ['students', getStudent(actionable).id];
+      if (this.router.url.indexOf("/students/") === -1) {
+        commands = [ 'students', getStudent(actionable).id ];
       }
 
       commands.push('exams');
@@ -88,18 +90,30 @@ export class MenuActionBuilder {
   }
 
   /**
-   * Adds an action item which shows resources
+   * Adds an action item which shows resources.  If the resource url is null
+   * or undefined then the action item will be disabled with a tooltip.
    *
-   * @param getAssessmentName lambda which accesses the assessment name.
+   * @param getResourceUrl lambda which accesses the assessment resource url.
    * @returns {MenuActionBuilder}
    */
-  withShowResources(getAssessmentName: (name: any) => string){
+  withShowResources(getResourceUrl: (actionable: any) => string) {
     let resourcesLabel: string = this.translateService.instant('labels.menus.resources');
     let resourcesAction: PopupMenuAction = new PopupMenuAction();
 
+    resourcesAction.isDisabled = ((actionable) => {
+      return isNullOrUndefined(getResourceUrl(actionable));
+    });
+
+    resourcesAction.tooltip = ((actionable) => {
+      return resourcesAction.isDisabled(actionable)
+        ? this.translateService.instant('labels.menus.resources-disabled-message')
+        : '';
+    });
+
     resourcesAction.displayName = (() => resourcesLabel);
     resourcesAction.perform = ((actionable) => {
-      console.log(`Show Resources: ${getAssessmentName(actionable)}`)
+      window.open(getResourceUrl(actionable));
+      console.log(`Show Resources: ${getResourceUrl(actionable)}`)
     }).bind(this);
 
     this.actions.push(resourcesAction);

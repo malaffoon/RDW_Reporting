@@ -60,7 +60,7 @@ export class StudentHistoryICASummitiveTableComponent {
     return this.actionBuilder
       .newActions()
       .withResponses(x => x.exam.id, ()=> this.student, x => x.exam.schoolYear > this.minimumItemDataYear)
-      .withShowResources(x => x.assessment.name)
+      .withShowResources(x => x.assessment.resourceUrl)
       .build();
   }
 }
