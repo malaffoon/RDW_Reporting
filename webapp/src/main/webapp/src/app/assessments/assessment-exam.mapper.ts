@@ -138,8 +138,8 @@ export class AssessmentExamMapper {
     uiModel.id = apiModel.id;
     uiModel.bankItemKey = apiModel.bankItemKey;
     uiModel.position = apiModel.position;
-    uiModel.claim = apiModel.claimCode
-    uiModel.target = apiModel.targetCode;
+    uiModel.claim = apiModel.claimCode;
+    uiModel.target = this.formatTarget(apiModel.targetCode);
     uiModel.targetId = apiModel.targetId;
     uiModel.depthOfKnowledge = apiModel.depthOfKnowledgeCode;
     uiModel.mathPractice = apiModel.mathPracticeCode;
@@ -149,6 +149,14 @@ export class AssessmentExamMapper {
     uiModel.commonCoreStandardIds = apiModel.commonCoreStandardIds || [];
 
     return uiModel;
+  }
+
+  formatTarget(target) {
+    let dashIndex = target.indexOf("-");
+
+    return dashIndex === -1
+      ? target
+      : target.substring(0, dashIndex);
   }
 
   private mapClaimScaleScoresFromApi(apiScaleScores: any[]): ClaimScore[] {
