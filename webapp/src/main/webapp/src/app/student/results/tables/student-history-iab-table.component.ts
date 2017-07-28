@@ -35,7 +35,7 @@ export class StudentHistoryIABTableComponent implements OnInit {
     return this.actionBuilder
       .newActions()
       .withResponses(x => x.exam.id, ()=> this.student)
-      .withShowResources(x => x.assessment.name)
+      .withShowResources(x => x.assessment.resourceUrl)
       .build();
   }
 }

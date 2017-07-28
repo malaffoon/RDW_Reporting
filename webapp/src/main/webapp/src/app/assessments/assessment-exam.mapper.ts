@@ -65,6 +65,7 @@ export class AssessmentExamMapper {
     uiModel.subject = apiModel.subject;
     uiModel.claimCodes = apiModel.claimCodes || [];
     uiModel.cutPoints = apiModel.cutPoints || [];
+    uiModel.resourceUrl = apiModel.resourceUrl;
 
     return uiModel;
   }

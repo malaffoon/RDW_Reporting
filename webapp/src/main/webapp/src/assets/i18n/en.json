@@ -311,6 +311,7 @@
       "responses": "{{firstName}}'s Responses",
       "test-history": "{{firstName}}'s Test History",
       "resources": "Instructional Resources",
+      "resources-disabled-message": "No Instructional Resources are available for this assessment.",
       "print-report": "Print Report"
     },
     "more-info": "More Information",

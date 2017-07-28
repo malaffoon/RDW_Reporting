@@ -44,10 +44,12 @@ sql:
         a.cut_point_1 as asmt_cut_point_1,
         a.cut_point_2 as asmt_cut_point_2,
         a.cut_point_3 as asmt_cut_point_3,
+        ir.resource as asmt_resource,
         s.id as school_id,
         s.name as school_name
       from exam e
         join asmt a on e.asmt_id=a.id
+        left join instructional_resource ir on ir.name = a.name
         join school s on e.school_id=s.id
       where e.student_id=:student_id
         and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
@@ -110,8 +112,10 @@ sql:
             a.max_score,
             a.cut_point_1,
             a.cut_point_2,
-            a.cut_point_3
+            a.cut_point_3,
+            ir.resource
           from asmt a
+          left join instructional_resource ir on ir.name = a.name
           join exam e on e.asmt_id = a.id
           join student_group_membership sgm on e.student_id=sgm.student_id
           join school s on e.school_id=s.id
@@ -138,10 +142,12 @@ sql:
             a.max_score,
             a.cut_point_1,
             a.cut_point_2,
-            a.cut_point_3
+            a.cut_point_3,
+            ir.resource
           from exam e
             join student_group_membership sgm on e.student_id=sgm.student_id
             join asmt a on e.asmt_id=a.id
+            left join instructional_resource ir on ir.name = a.name
             join school s on e.school_id=s.id
           where e.school_year=:school_year
           and sgm.student_group_id=:group_id
@@ -233,8 +239,10 @@ sql:
           a.max_score,
           a.cut_point_1,
           a.cut_point_2,
-          a.cut_point_3
+          a.cut_point_3,
+          ir.resource
         from asmt a
+        left join instructional_resource ir on ir.name = a.name
         where exists (
             select e.asmt_id
             from exam e
@@ -263,9 +271,11 @@ sql:
           a.max_score,
           a.cut_point_1,
           a.cut_point_2,
-          a.cut_point_3
+          a.cut_point_3,
+          ir.resource
         from exam e
           join asmt a on e.asmt_id=a.id
+          left join instructional_resource ir on ir.name = a.name
           join school s on e.school_id=s.id
         where e.school_year=:school_year
         and e.school_id=:school_id
