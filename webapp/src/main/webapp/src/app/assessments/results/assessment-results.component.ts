@@ -94,7 +94,7 @@ export class AssessmentResultsComponent implements OnInit {
    * If there are no exams that are after this school year, then disable the ability to go there and show proper message
    */
   @Input()
-  minimumItemDataYear; number;
+  minimumItemDataYear: number;
 
   @Input()
   displayState: any = {
@@ -335,7 +335,7 @@ export class AssessmentResultsComponent implements OnInit {
     let builder = this.actionBuilder.newActions();
 
     if (!this._assessmentExam.assessment.isSummative) {
-      builder.withResponses(exam => exam.id, exam => exam.student);
+      builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
     }
 
     return builder.withStudentHistory(exam => exam.student).build();

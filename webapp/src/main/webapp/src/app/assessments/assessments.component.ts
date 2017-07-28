@@ -66,7 +66,6 @@ export class AssessmentsComponent implements OnInit {
   boundLoadAssessmentItems: Function;
   minimumItemDataYear: number;
 
-
   get assessmentExams(): AssessmentExam[] {
     return this._assessmentExams;
   }
