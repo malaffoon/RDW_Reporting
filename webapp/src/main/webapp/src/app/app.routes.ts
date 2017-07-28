@@ -90,7 +90,7 @@ export const routes: Routes = [
             translate: 'labels.student.results.crumb',
             translateResolve: 'examHistory.student'
           },
-          permissions: ['INDIVIDUAL_PII_READ']
+          permissions: ['GROUP_PII_READ']
         },
         canActivate: [ AuthorizeCanActivate ],
         children: [ {
