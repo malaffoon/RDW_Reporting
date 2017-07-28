@@ -3,7 +3,7 @@
     <span class="label">{{'labels.student.name' | translate:examHistory.student}}</span>
     <span>{{examHistory.student.ssid}}</span>
   </span>
-  <div class="pull-right clearfix">
+  <div class="pull-right">
     <student-report-download [studentId]="examHistory.student.id" [schoolYears]="filterState.years"></student-report-download>
     <button class="btn btn-default btn-sm ml-xs" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
   </div>
