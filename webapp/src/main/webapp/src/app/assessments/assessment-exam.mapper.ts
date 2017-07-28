@@ -65,7 +65,7 @@ export class AssessmentExamMapper {
     uiModel.subject = apiModel.subject;
     uiModel.claimCodes = apiModel.claimCodes || [];
     uiModel.cutPoints = apiModel.cutPoints || [];
-    uiModel.resourceUrl = "https://portal.smarterbalanced.org/library/en/v1.0/digital-library-connections-grade-3-number-and-operations-in-base-ten.docx";
+    uiModel.resourceUrl = apiModel.resourceUrl;
 
     return uiModel;
   }
