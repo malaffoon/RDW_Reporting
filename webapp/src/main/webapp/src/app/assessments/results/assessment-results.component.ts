@@ -63,7 +63,7 @@ export class AssessmentResultsComponent implements OnInit {
   set assessmentExam(assessment: AssessmentExam) {
     this._assessmentExam = assessment;
 
-    this.hasItemLevelData = this._assessmentExam.exams.some(x => x.schoolYear > 2016);
+    this.hasItemLevelData = this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
 
     // if we aren't going to display the sessions, don't waste resources computing them
     if (this.allowFilterBySessions) {
@@ -88,6 +88,13 @@ export class AssessmentResultsComponent implements OnInit {
    */
   @Input()
   allowFilterBySessions: boolean = true;
+
+  /**
+   * Represents the cutoff year for when there is no item level response data available.
+   * If there are no exams that are after this school year, then disable the ability to go there and show proper message
+   */
+  @Input()
+  minimumItemDataYear; number;
 
   @Input()
   displayState: any = {

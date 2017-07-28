@@ -13,6 +13,7 @@ import { AssessmentProvider } from "./assessment-provider.interface";
 import { GradeCode } from "../shared/enum/grade-code.enum";
 import { ColorService } from "../shared/color.service";
 import { ItemByPointsEarnedExportRequest } from "./model/item-by-points-earned-export-request.model";
+import { UserService } from "../user/user.service";
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -63,6 +64,8 @@ export class AssessmentsComponent implements OnInit {
   availableAssessments: Assessment[] = [];
   assessmentsLoading: any[] = [];
   boundLoadAssessmentItems: Function;
+  minimumItemDataYear: number;
+
 
   get assessmentExams(): AssessmentExam[] {
     return this._assessmentExams;
@@ -149,7 +152,8 @@ export class AssessmentsComponent implements OnInit {
 
   constructor(public colorService: ColorService,
               private route: ActivatedRoute,
-              private filterOptionService: ExamFilterOptionsService) {
+              private filterOptionService: ExamFilterOptionsService,
+              private userService: UserService) {
     this.clientFilterBy = new FilterBy()
   }
 
@@ -158,6 +162,10 @@ export class AssessmentsComponent implements OnInit {
       this.filterOptions = filterOptions;
 
       this.updateFilterOptions();
+    });
+
+    this.userService.getCurrentUser().subscribe(user => {
+      this.minimumItemDataYear = user.configuration.minItemDataYear;
     });
 
     this.boundLoadAssessmentItems = this.loadAssessmentItems.bind(this);
