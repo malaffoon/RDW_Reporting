@@ -1,6 +1,6 @@
 <!-- IAB display -->
 <div *ngIf="showIab && hasAverageScore" class="row">
-  <div class="col-md-6">
+  <div class="col-md-5">
     <div class="average-scale-score-display">
       <span info-label class="scale-title"
             title="{{ 'labels.assessments.average-scale-score' | translate }}"
@@ -14,7 +14,7 @@
       </span>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-7">
     <div class="scale-score-graph rounded blend-middle">
       <span class="scale-title">{{ 'labels.assessments.student-score-distribution' | translate }}</span>
       <div class="bar-container">
@@ -37,7 +37,7 @@
 
 <!-- ICA display -->
 <div *ngIf="showIcaSummative && hasAverageScore" class="row">
-  <div class="col-md-6">
+  <div class="col-md-5">
     <div class="average-scale-score-display">
       <span info-label class="scale-title"
             title="{{ 'labels.assessments.average-scale-score' | translate }}"
@@ -51,7 +51,7 @@
       </span>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-7">
     <div class="scale-score-graph">
       <span class="scale-title">{{ 'labels.assessments.student-score-distribution' | translate }}</span>
       <div class="bar-container">
