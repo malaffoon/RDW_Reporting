@@ -3,14 +3,11 @@
     <span class="label">{{'labels.student.name' | translate:examHistory.student}}</span>
     <span>{{examHistory.student.ssid}}</span>
   </span>
-  <div class="pull-right ml-xs">
-    <student-report-download [studentId]="examHistory.student.id" [schoolYears]="filterState.years"></student-report-download>
+  <div class="pull-right">
+    <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
+    <student-report-download class="ml-xs" [studentId]="examHistory.student.id" [schoolYears]="filterState.years"></student-report-download>
+
   </div>
-  <button class="btn btn-default btn-sm pull-right"
-          (click)="exportCsv()">
-    <i class="fa fa-bold fa-table"></i>
-    <span>{{'labels.export.csv' | translate}}</span>
-  </button>
 </div>
 
 <!-- Results Filter -->
@@ -23,24 +20,27 @@
 <!-- Assessments Grouped by Type and Subject -->
 <div *ngFor="let assessmentType of assessmentTypes">
   <div *ngFor="let subject of getSubjectsForType(assessmentType)" class="well">
-    <span class="tag tag-md {{ colorService.getColor(assessmentType) }}">
-      <span class="label">{{assessmentType | assessmentType}}</span>
-      <span>{{subject}}</span>
+    <span class="h3 label-group {{ colorService.getColor(assessmentType) }}">
+      <span class="label">{{assessmentType | assessmentType}}</span><span class="label">{{subject}}</span>
     </span>
     <button class="btn btn-default btn-sm icon-only pull-right"
             (click)="toggleCollapsed(assessmentType, subject)"
-            angulartics2On="click" angularticsEvent="ToggleCollapseResults" angularticsCategory="StudentHistory">
+            angulartics2On="click"
+            angularticsEvent="ToggleCollapseResults"
+            angularticsCategory="StudentHistory">
       <span class="sr-only">{{ 'buttons.collapsible.collapse' | translate }}</span>
       <i class="fa fa-bold {{ isCollapsed(assessmentType, subject) ? 'fa-angle-down' : 'fa-angle-up' }}"></i>
     </button>
 
     <div class="mt-md" [hidden]="isCollapsed(assessmentType, subject)">
-      <student-history-iab-table *ngIf="(assessmentType | assessmentType) === 'IAB'"
-                                 [student]="examHistory.student"
-                                 [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-iab-table>
-      <student-history-ica-summitive-table *ngIf="(assessmentType | assessmentType) !== 'IAB'"
-                                           [student]="examHistory.student"
-                                           [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-ica-summitive-table>
+      <student-history-iab-table
+        *ngIf="(assessmentType | assessmentType) === 'IAB'"
+        [student]="examHistory.student"
+        [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-iab-table>
+      <student-history-ica-summitive-table
+        *ngIf="(assessmentType | assessmentType) !== 'IAB'"
+        [student]="examHistory.student"
+        [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-ica-summitive-table>
     </div>
   </div>
 </div>

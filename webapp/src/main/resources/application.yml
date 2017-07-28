@@ -83,11 +83,8 @@ app:
   wkhtmltopdf:
     url: http://localhost:8082
     options:
-      dpi: 276
       page-size: Letter
-      # Hotfix for issue with wkhtmltopdf 0.12.2.1 ~ 0.12.3 (pdf markup/styles were tested against 0.12.4)
-      # See https://github.com/wkhtmltopdf/wkhtmltopdf/issues/3241
-      zoom: 0.7
+      zoom: 0.75
 
   external-links:
     interpretive-guide: http://www.smarterbalanced.org/educators/
