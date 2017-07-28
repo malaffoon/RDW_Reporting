@@ -42,7 +42,7 @@ export class StudentResultsComponent implements OnInit {
               private router: Router,
               private angulartics2: Angulartics2,
               private userService: UserService,
-              private examFilterService: ExamFilterService,) {
+              private examFilterService: ExamFilterService) {
   }
 
   ngOnInit(): void {
