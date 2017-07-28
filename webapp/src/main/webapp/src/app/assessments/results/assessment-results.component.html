@@ -30,7 +30,7 @@
 
     <div class="row mb-lg">
         <!-- Sessions -->
-        <div class="col-md-6">
+        <div class="col-md-5">
           <div *ngIf="allowFilterBySessions">
             <p><strong>{{'labels.groups.results.assessment.sessions-title' | translate}}</strong><br />
             {{'labels.groups.results.assessment.sessions-instruct' | translate}}</p>
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Aggregate Scale Score -->
-        <div class="col-md-6">
+        <div class="col-md-7">
           <average-scale-score [assessmentExam]="assessmentExam"
                                [statistics]="statistics"
                                [showValuesAsPercent]="showValuesAsPercent"></average-scale-score>
