@@ -164,10 +164,7 @@ export class AssessmentsComponent implements OnInit {
     });
 
     this.userService.getCurrentUser().subscribe(user => {
-      console.log(user);
-
       this.minimumItemDataYear = user.configuration.minItemDataYear;
-      console.log(this.minimumItemDataYear);
     });
 
     this.boundLoadAssessmentItems = this.loadAssessmentItems.bind(this);
