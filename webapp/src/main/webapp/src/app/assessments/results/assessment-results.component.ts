@@ -55,6 +55,10 @@ export class AssessmentResultsComponent implements OnInit {
   pointColumns: ItemPointField[];
   showItemsByPoints: boolean = false;
 
+  get hasItemLevelData(): boolean {
+    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
+  }
+
   /**
    * The assessment exam in which to display results for.
    */
@@ -85,6 +89,13 @@ export class AssessmentResultsComponent implements OnInit {
    */
   @Input()
   allowFilterBySessions: boolean = true;
+
+  /**
+   * Represents the cutoff year for when there is no item level response data available.
+   * If there are no exams that are after this school year, then disable the ability to go there and show proper message
+   */
+  @Input()
+  minimumItemDataYear: number;
 
   @Input()
   displayState: any = {
@@ -215,15 +226,18 @@ export class AssessmentResultsComponent implements OnInit {
   viewItemsByPoints(viewItemsByPoints: boolean) {
     if (viewItemsByPoints && this.loadAssessmentItems) {
       this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
-        this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
 
-        this._assessmentItems = assessmentItems;
-        this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
+        let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
 
-        this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
+        if (numOfScores != 0) {
+          this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
+
+          this._assessmentItems = assessmentItems;
+          this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
+
+          this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
+        }
         this.showItemsByPoints = true;
-
-
       });
     }
     else{
@@ -322,7 +336,7 @@ export class AssessmentResultsComponent implements OnInit {
     let builder = this.actionBuilder.newActions();
 
     if (!this._assessmentExam.assessment.isSummative) {
-      builder.withResponses(exam => exam.id, exam => exam.student);
+      builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
     }
 
     return builder.withStudentHistory(exam => exam.student).build();

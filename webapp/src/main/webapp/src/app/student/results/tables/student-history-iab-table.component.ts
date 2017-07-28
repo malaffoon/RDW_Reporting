@@ -17,6 +17,14 @@ export class StudentHistoryIABTableComponent implements OnInit {
   @Input()
   student: Student;
 
+  /**
+   * Represents the cutoff year for when there is no item level response data available.
+   * If there are no exams that are after this school year, then disable the ability to go there and show proper message
+   */
+  @Input()
+  minimumItemDataYear: number;
+
+
   actions: PopupMenuAction[];
 
   constructor(private actionBuilder: MenuActionBuilder) {
@@ -34,7 +42,7 @@ export class StudentHistoryIABTableComponent implements OnInit {
   private createActions(): PopupMenuAction[] {
     return this.actionBuilder
       .newActions()
-      .withResponses(x => x.exam.id, ()=> this.student)
+      .withResponses(x => x.exam.id, ()=> this.student, x => x.exam.schoolYear > this.minimumItemDataYear)
       .withShowResources(x => x.assessment.resourceUrl)
       .build();
   }

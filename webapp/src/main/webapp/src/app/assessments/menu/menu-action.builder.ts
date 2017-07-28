@@ -55,12 +55,13 @@ export class MenuActionBuilder {
    * @param getExamId lambda which accesses the examId from the actionable object.
    * @returns the builder
    */
-  withResponses(getExamId: (x: any) => number, getStudent: (x: any) => Student): MenuActionBuilder {
+  withResponses(getExamId: (x:any) => number, getStudent: (x:any) => Student, hasItemLevelData: (x:any) => boolean): MenuActionBuilder {
     let responsesAction: PopupMenuAction = new PopupMenuAction();
 
     responsesAction.displayName = ((actionable: any) => {
       return this.translateService.instant('labels.menus.responses', getStudent(actionable));
     }).bind(this);
+
     responsesAction.perform = ((actionable: any) => {
       let commands = [];
 
@@ -73,6 +74,16 @@ export class MenuActionBuilder {
 
       this.router.navigate(commands, { relativeTo: this.route });
     }).bind(this);
+
+    responsesAction.isDisabled = ((actionable) => {
+      return !hasItemLevelData(actionable);
+    }).bind(this);
+
+    responsesAction.tooltip = ((actionable) => {
+      return responsesAction.isDisabled(actionable)
+        ? this.translateService.instant('messages.no-item-level-data')
+        : '';
+    });
 
     this.actions.push(responsesAction);
     return this;

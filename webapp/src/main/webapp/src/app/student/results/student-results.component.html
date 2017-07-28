@@ -36,10 +36,12 @@
       <student-history-iab-table
         *ngIf="(assessmentType | assessmentType) === 'IAB'"
         [student]="examHistory.student"
+        [minimumItemDataYear]="minimumItemDataYear"
         [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-iab-table>
       <student-history-ica-summitive-table
         *ngIf="(assessmentType | assessmentType) !== 'IAB'"
         [student]="examHistory.student"
+        [minimumItemDataYear]="minimumItemDataYear"
         [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-ica-summitive-table>
     </div>
   </div>

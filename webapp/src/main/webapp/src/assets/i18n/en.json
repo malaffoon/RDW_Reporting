@@ -19,7 +19,8 @@
       "title": "Authentication Expired",
       "message": "Click Ok to re-authenticate."
     },
-    "toggle-navigation": "Toggle navigation"
+    "toggle-navigation": "Toggle navigation",
+    "no-item-level-data": "Item level data is not available for tests administered prior to 2016-17 school year."
   },
   "collapse": "Collapse",
   "select": "Select",

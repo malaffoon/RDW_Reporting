@@ -16,6 +16,8 @@ import { CommonModule } from "../shared/common.module";
 import { AssessmentsModule } from "./assessments.module";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
 import { PopoverModule } from "ngx-bootstrap";
+import { UserService } from "../user/user.service";
+import { MockUserService } from "../../test/mock.user.service";
 
 let examObserver: Observer<Exam[]>;
 describe('AssessmentsComponent', () => {
@@ -51,6 +53,9 @@ describe('AssessmentsComponent', () => {
       }, {
         provide: Angulartics2,
         useValue: mockAngulartics2
+      }, {
+        provide: UserService,
+        useClass: MockUserService
       }]
     }).compileComponents();
 

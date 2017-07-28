@@ -17,6 +17,13 @@ export class StudentHistoryICASummitiveTableComponent {
   @Input()
   student: Student;
 
+  /**
+   * Represents the cutoff year for when there is no item level response data available.
+   * If there are no exams that are after this school year, then disable the ability to go there and show proper message
+   */
+  @Input()
+  minimumItemDataYear: number;
+
   @Input()
   displayState: any = {
     table: 'overall' // ['overall' | 'claim']
@@ -52,7 +59,7 @@ export class StudentHistoryICASummitiveTableComponent {
   private createActions(): PopupMenuAction[] {
     return this.actionBuilder
       .newActions()
-      .withResponses(x => x.exam.id, ()=> this.student)
+      .withResponses(x => x.exam.id, ()=> this.student, x => x.exam.schoolYear > this.minimumItemDataYear)
       .withShowResources(x => x.assessment.resourceUrl)
       .build();
   }

@@ -10,6 +10,7 @@ import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.m
 import { Student } from "../model/student.model";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { Angulartics2 } from "angulartics2";
+import { UserService } from "../../user/user.service";
 
 @Component({
   selector: 'student-results',
@@ -22,6 +23,7 @@ export class StudentResultsComponent implements OnInit {
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   examsByTypeAndSubject: Map<AssessmentType, Map<string, StudentHistoryExamWrapper[]>> = new Map();
   displayState: any = {};
+  minimumItemDataYear: number;
 
   private typeDisplayOrder: AssessmentType[] = [AssessmentType.IAB, AssessmentType.ICA, AssessmentType.SUMMATIVE];
 
@@ -39,6 +41,7 @@ export class StudentResultsComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private angulartics2: Angulartics2,
+              private userService: UserService,
               private examFilterService: ExamFilterService) {
   }
 
@@ -48,6 +51,10 @@ export class StudentResultsComponent implements OnInit {
       this.examHistory.exams,
       this.route.snapshot.params);
     this.applyFilter();
+
+    this.userService.getCurrentUser().subscribe(user => {
+      this.minimumItemDataYear = user.configuration.minItemDataYear;
+    });
   }
 
   /**
