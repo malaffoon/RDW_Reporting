@@ -4,6 +4,8 @@ import { saveAs } from "file-saver";
 import { Subscription } from "rxjs";
 import { ReportDownloadComponent } from "./report-download.component";
 import { Download } from "../shared/data/download.model";
+import {NotificationService} from "../shared/notification/notification.service";
+import {Notification} from "../shared/notification/notification.model";
 
 /**
  * Component used for single-student exam report download
@@ -19,7 +21,7 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
 
   private subscription: Subscription;
 
-  constructor(private service: ReportDownloadService) {
+  constructor(private service: ReportDownloadService, private notificationService: NotificationService) {
     super();
   }
 
@@ -32,8 +34,14 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
           saveAs(download.content, download.name);
         },
         (error: any) => {
-          // TODO: add handler for 404/500 errors - consider publishing to global notification component
-          console.error(error);
+          let messageKey = "labels.reports.messages.500";
+
+          if (error.status == 404) {
+            messageKey = "labels.reports.messages.404";
+          }
+
+          this.notificationService.showNotification(new Notification(messageKey, { type: "danger" }));
+
           this.subscription = null;
         },
         () => {
