@@ -34,6 +34,7 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
         (error: any) => {
           // TODO: add handler for 404/500 errors - consider publishing to global notification component
           console.error(error);
+          this.subscription = null;
         },
         () => {
           this.subscription = null;
