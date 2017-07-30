@@ -56,7 +56,7 @@ export class ScaleScoreService {
     // resort them based on the index so they are in the proper order for display
     adjustedPercents.sort((a, b) => a.index < b.index ? -1 : 1);
 
-    return adjustedPercents.map(x => x.original < this.minBarSize ? x.original : x.rounded);
+    return adjustedPercents.map(x => x.original < this.minBarSize ? Math.floor(x.original) : x.rounded);
   }
 
 

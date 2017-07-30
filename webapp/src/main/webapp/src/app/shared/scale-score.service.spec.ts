@@ -80,6 +80,27 @@ describe('Assessment Model', () => {
     expect(actual).toBe(2);
   }));
 
+  it('should calculate proper distribution numbers when decimals below min',
+      inject([ScaleScoreService], (service: ScaleScoreService) => {
+
+        let level1 = new ExamStatisticsLevel();
+        level1.value = 68.75;
+        let level2 = new ExamStatisticsLevel();
+        level2.value = 14.5833;
+        let level3 = new ExamStatisticsLevel();
+        level3.value = 6.25;
+        let level4 = new ExamStatisticsLevel();
+        level4.value = 10.416;
+
+        let original = [level1, level2,  level3, level4];
+
+        let actual = service.calculateDisplayScoreDistribution(original);
+        expect(actual[0]).toBe(66);
+        expect(actual[1]).toBe(14);
+        expect(actual[2]).toBe(6);
+        expect(actual[3]).toBe(10);
+      }));
+
   it('should calculate proper distribution numbers all above min',
     inject([ScaleScoreService], (service: ScaleScoreService) => {
 
