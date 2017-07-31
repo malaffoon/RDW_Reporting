@@ -5,7 +5,7 @@
     <title th:text="#{report.ica.title}"></title>
     <div th:replace="fragments::styles"></div>
 </head>
-<body>
+<body class="pdf">
 <div th:replace="fragments::header(prefix='report.ica')"></div>
 <section class="mt-lg mb-lg" th:with="scored=${report.exam.scaleScore != null}">
     <div class="container">
