@@ -18,10 +18,10 @@ export class ScaleScoreService {
     let percents = originalPercents.map(x => x.value);
 
     // determine how much over we are based on having a minimum bar size
-    let minAdjustment = percents.filter(x => x < this.minBarSize).reduce((x, y) => x + this.minBarSize - y, 0);
+    let minAdjustment = percents.filter(x => x <= this.minBarSize).reduce((x, y) => x + this.minBarSize - y, 0);
 
     // what is the total for the levels that are above the min, used to calc new breakdown in proper proportion
-    let totalAboveMin = percents.filter(x => x >= this.minBarSize).reduce((x, y) => x + y, 0);
+    let totalAboveMin = percents.filter(x => x > this.minBarSize).reduce((x, y) => x + y, 0);
 
     // calculate the new breakdown
     //  if the real percent is less than the min then use the min
@@ -30,7 +30,7 @@ export class ScaleScoreService {
       let a: any = {
         index: i,
         original: x,
-        updated: x >= this.minBarSize ? x * (totalAboveMin - minAdjustment) / totalAboveMin : this.minBarSize
+        updated: x > this.minBarSize ? x * (totalAboveMin - minAdjustment) / totalAboveMin : this.minBarSize
       };
 
       // instead of rounding, take the whole number and use the decimal part to determine how to distribute the amount over or under
@@ -56,7 +56,7 @@ export class ScaleScoreService {
     // resort them based on the index so they are in the proper order for display
     adjustedPercents.sort((a, b) => a.index < b.index ? -1 : 1);
 
-    return adjustedPercents.map(x => x.original < this.minBarSize ? x.original : x.rounded);
+    return adjustedPercents.map(x => x.original < this.minBarSize ? Math.round(x.original) : x.rounded);
   }
 
 

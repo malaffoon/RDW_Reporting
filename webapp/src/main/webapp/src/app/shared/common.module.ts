@@ -19,6 +19,8 @@ import { AssessmentTypePipe } from "./assessment-type.pipe";
 import { ColorService } from "./color.service";
 import { Angulartics2Module } from "angulartics2";
 import { AuthenticationService } from "./authentication/authentication.service";
+import { NotificationComponent } from "./notification/notification.component";
+import { NotificationService } from "./notification/notification.service";
 import { AlertModule } from "ngx-bootstrap";
 import { SessionExpiredComponent } from "./authentication/session-expired.component";
 import { StorageService } from "./storage.service";
@@ -30,6 +32,7 @@ import { ScaleScoreService } from "./scale-score.service";
   declarations: [
     AssessmentTypePipe,
     GradeDisplayPipe,
+    NotificationComponent,
     PadStartPipe,
     RemoveCommaPipe,
     SBRadioButtonComponent,
@@ -55,6 +58,7 @@ import { ScaleScoreService } from "./scale-score.service";
   exports: [
     AssessmentTypePipe,
     GradeDisplayPipe,
+    NotificationComponent,
     PadStartPipe,
     RemoveCommaPipe,
     RouterModule,
@@ -74,6 +78,7 @@ import { ScaleScoreService } from "./scale-score.service";
     ColorService,
     DecimalPipe,
     ScaleScoreService,
+    NotificationService,
     RdwTranslateLoader,
     StorageService, {
       provide: ErrorHandler,

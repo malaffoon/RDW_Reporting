@@ -373,7 +373,11 @@
       "download": "Download",
       "assessment-type": "Assessment Type",
       "subject": "Subject",
-      "school-year": "School Year"
+      "school-year": "School Year",
+      "messages" : {
+        "404": "This student does not have any test results for your selection. Please update your selection and try again.",
+        "500": "There was an unexpected error while generating this report.  Please try again."
+      }
     },
     "select-year": "School Year",
     "export": {

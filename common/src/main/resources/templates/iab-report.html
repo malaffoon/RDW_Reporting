@@ -41,19 +41,14 @@
             <div class="well assessment-latest-result" data-width="60"
                  th:with="assessment=${entry.key},exam=${entry.value[0]}">
                 <div class="well-body">
-
                     <div class="row">
                         <div class="col-xs-12">
-                            <span class="tag h3"
-                                th:classappend="#{'report.grade.' + ${assessment.gradeCode} + '.color'}"><span
-                                    class="label"
-                                    th:text="#{'report.grade.' + ${assessment.gradeCode} + '.label'}"></span> <span
+                            <div class="assessment-label pb-sm">
+                                <span class="tag h3"
+                                      th:classappend="#{'report.grade.' + ${assessment.gradeCode} + '.color'}"><span
+                                        class="label"
+                                        th:text="#{'report.grade.' + ${assessment.gradeCode} + '.label'}"></span> <span
                                         th:text="${assessment.name}" th:remove="tag"></span></span>
-                            <div class="text-right pull-right">
-                                <span class="performance-level mr-xs"
-                                      th:if="${exam.scaleScore != null}"
-                                      th:text="#{'report.iab.level.' + ${exam.scaleScore.level} + '.label'}"></span>
-                                <span class="date" th:text="${#dates.format(exam.dateTime, 'MM-dd-yyyy')}"></span>
                             </div>
                         </div>
                     </div>
@@ -84,6 +79,12 @@
                                 <span class="gray-darker h2" th:text="#{report.not-scored}"></span>
                             </div>
                         </div>
+                    </div>
+                    <div class="details">
+                        <div class="date text-right" th:text="${#dates.format(exam.dateTime, 'MM-dd-yyyy')}"></div>
+                        <div class="performance-level text-right"
+                             th:if="${exam.scaleScore != null}"
+                             th:text="#{'report.iab.level.' + ${exam.scaleScore.level} + '.label'}"></div>
                     </div>
                 </div>
             </div>
