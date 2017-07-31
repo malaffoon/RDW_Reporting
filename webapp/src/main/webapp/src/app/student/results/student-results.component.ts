@@ -72,8 +72,18 @@ export class StudentResultsComponent implements OnInit {
    * Handle a filter state change.
    */
   onFilterChange(): void {
-    this.updateRoute();
+    if(this.hasBasicFilterChanged()) {
+      this.updateRoute();
+    }
+
     this.applyFilter();
+  }
+
+  hasBasicFilterChanged(): boolean {
+    let params:any = this.route.snapshot.params;
+
+    return this.filterState.schoolYear != params.schoolYear
+      || this.filterState.subject != params.subject;
   }
 
   isCollapsed(assessmentType: AssessmentType, subject: string): boolean {
@@ -186,8 +196,11 @@ export class StudentResultsComponent implements OnInit {
       params.subject = this.filterState.subject;
     }
 
-    //Update the current route
-    this.router.navigate(['students', this.examHistory.student.id, params]);
+    let navigationExtras = this.route.parent.parent.snapshot.url.length > 0
+      ? { relativeTo: this.route.parent.parent }
+      : undefined;
+
+    this.router.navigate(['students', this.examHistory.student.id, params], navigationExtras);
   }
 
   /**
