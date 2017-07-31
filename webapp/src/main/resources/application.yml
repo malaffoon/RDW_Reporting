@@ -22,6 +22,10 @@ spring:
     testWhileIdle: true
     validationQuery: SELECT 1
     initialize: false
+  http:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
 
   jackson:
     default-property-inclusion: non_null
