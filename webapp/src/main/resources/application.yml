@@ -57,13 +57,6 @@ cloud:
     stack:
       auto: false
 
-artifacts:
-  #Root location of assessment files [s3://some-bucket/ | classpath: | etc]
-  root: ${rdw.resource.root:"classpath:"}
-  exam-item:
-    directory: ${rdw.reporting.artifacts.exam.item.directory:local/items/Item-{0}/}
-    file-name: item-{0}.xml
-
 application:
   state: CA
 
@@ -72,9 +65,6 @@ permissionservice:
   endpoint: ${rdw.permission.service}
 
 app:
-  iris:
-    vendorId: ${rdw.reporting.iris.vendorId}
-    url: ${rdw.reporting.iris.url}
   # google analytics configuration
   analytics:
     trackingId: ${rdw.reporting.analytics.trackingId:}
