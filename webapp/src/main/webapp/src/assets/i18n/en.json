@@ -436,12 +436,14 @@
       "short": {
         "1": "Below",
         "2": "Near",
-        "3": "Above"
+        "3": "Above",
+        "missing": "-"
       },
       "full": {
         "1": "Below Standard",
         "2": "Near Standard",
-        "3": "Above Standard"
+        "3": "Above Standard",
+        "missing": "-"
       }
     },
     "achievement-level": {
@@ -449,13 +451,15 @@
         "1": "Did Not Meet",
         "2": "Nearly Met",
         "3": "Met",
-        "4": "Exceeded"
+        "4": "Exceeded",
+        "missing": "-"
       },
       "full": {
         "1": "Did Not Meet Standard",
         "2": "Nearly Met Standard",
         "3": "Met Standard",
-        "4": "Exceeded Standard"
+        "4": "Exceeded Standard",
+        "missing": "-"
       }
     },
     "subject-claim-code": {
