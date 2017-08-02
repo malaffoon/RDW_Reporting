@@ -6,12 +6,12 @@ management:
 
 saml:
   # SAML keystore path: file:/some/path/saml.jks
-  key-store-file: ${rdw.reporting.keystore.path}
-  key-store-password: ${rdw.reporting.keystore.password}
-  private-key-entry-alias: ${rdw.reporting.keystore.alias}
-  private-key-entry-password: ${rdw.reporting.keystore.entry.password}
-  idp-metadata-url: ${rdw.reporting.idp}
-  sp-entity-id: ${rdw.reporting.entityId}
+  key-store-file: ${rdw.admin.keystore.path}
+  key-store-password: ${rdw.admin.keystore.password}
+  private-key-entry-alias: ${rdw.admin.keystore.alias}
+  private-key-entry-password: ${rdw.admin.keystore.entry.password}
+  idp-metadata-url: ${rdw.admin.idp}
+  sp-entity-id: ${rdw.admin.entityId}
 
 spring:
   datasource:
@@ -47,8 +47,8 @@ cloud:
   aws:
     credentials:
       #AWS credentials are necessary if reading assessment files from S3
-      accessKey: ${rdw.aws.access.key:}
-      secretKey: ${rdw.aws.secret.key:}
+      accessKey: ${rdw.admin.aws.access.key:}
+      secretKey: ${rdw.admin.aws.secret.key:}
       instance-profile: false
     region:
       auto: false
@@ -67,4 +67,4 @@ permissionservice:
 app:
   # google analytics configuration
   analytics:
-    trackingId: ${rdw.reporting.analytics.trackingId:}
+    trackingId: ${rdw.admin.analytics.trackingId:}
