@@ -381,13 +381,13 @@
         },
         "status": {
           "header": "Status",
-          "title": "A status indicator will be displayed if the report generation was not successful or the report has expired."
+          "title": "TODO add status information"
         }
       },
       "button-label": {
         "student": "Student Report",
-        "group": "Student Reports",
-        "school-grade": "Student Reports"
+        "group": "Group Report",
+        "school-grade": "School Grade Report"
       },
       "download": "Download",
       "assessment-type": "Assessment Type",
