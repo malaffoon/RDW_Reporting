@@ -34,15 +34,9 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: permissionsByRole, internalTranslationsByCode
+    cache-names: permissionsByRole
 
-  cloud:
-    stream:
-      bindings:
-        output:
-          destination: exam_report_pdf
-          group: default
-
+# Needed for access to S3
 cloud:
   aws:
     credentials:
@@ -56,6 +50,12 @@ cloud:
     # disable CloudFormation stuff
     stack:
       auto: false
+
+# Location of import archive.  Can omit for local file system as config will default to tmp folder.
+# root: s3://rdw-dev-archive
+# root: file:///tmp/
+archive:
+  root: file:///tmp/
 
 application:
   state: CA
