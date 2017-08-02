@@ -20,8 +20,8 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
 
   private subscription: Subscription;
 
-  constructor(private service: ReportService, private notificationService: NotificationService) {
-    super('labels.reports.button-label.student');
+  constructor(private service: ReportService, notificationService: NotificationService) {
+    super('labels.reports.button-label.student', notificationService);
   }
 
   public submit(): void {

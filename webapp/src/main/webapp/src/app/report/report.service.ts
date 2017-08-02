@@ -30,12 +30,18 @@ export class ReportService {
     report1.status = 'COMPLETED';
 
     let report2 = new Report();
-    report2.id = 1;
+    report2.id = 2;
     report2.label = 'Report 2';
     report2.created = new Date(2017, 1, 2);
     report2.status = 'FAILED';
 
-    return Observable.of([report1, report2]);
+    let report3 = new Report();
+    report3.id = 3;
+    report3.label = 'Report 3';
+    report3.created = new Date(2017, 1, 3);
+    report3.status = 'EXPIRED';
+
+    return Observable.of([report1, report2, report3]);
   }
 
   /**

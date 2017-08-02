@@ -23,18 +23,19 @@ export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
 
   private subscription: Subscription;
 
-  constructor(private service: ReportService, private notificationService: NotificationService) {
-    super('labels.reports.button-label.school-grade');
+  constructor(private service: ReportService, notificationService: NotificationService) {
+    super('labels.reports.button-label.school-grade', notificationService);
+    this.batch = true;
   }
 
   public submit(): void {
     this.service.createSchoolGradeExamReport(this.schoolId, this.gradeId, this.options)
       .subscribe(
         (report: Report) => {
-          this.notificationService.info({ id: 'labels.reports.messages.submitted', html: true });
+          this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
         },
         (error: any) => {
-          this.notificationService.info({ id: 'labels.reports.messages.submission-failed', html: true });
+          this.notificationService.info({ id: 'labels.reports.messages.submission-failed.html', html: true });
         }
       );
   }

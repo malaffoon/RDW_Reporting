@@ -20,18 +20,19 @@ export class GroupReportDownloadComponent extends ReportDownloadComponent {
 
   private subscription: Subscription;
 
-  constructor(private service: ReportService, private notificationService: NotificationService) {
-    super('labels.reports.button-label.group');
+  constructor(private service: ReportService, notificationService: NotificationService) {
+    super('labels.reports.button-label.group', notificationService);
+    this.batch = true;
   }
 
   public submit(): void {
     this.service.createGroupExamReport(this.groupId, this.options)
       .subscribe(
         (report: Report) => {
-          this.notificationService.info({ id: 'labels.reports.messages.submitted', html: true });
+          this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
         },
         (error: any) => {
-          this.notificationService.error({ id: 'labels.reports.messages.submission-failed', html: true });
+          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
         }
       );
   }
