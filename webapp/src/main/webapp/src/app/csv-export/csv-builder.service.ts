@@ -191,7 +191,10 @@ export class CsvBuilder {
   withScaleScore(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('labels.groups.results.assessment.exams.cols.score'),
-      (item) => getExam(item).score
+      (item) => {
+        let score = getExam(item).score;
+        return !score ? '' : score;
+      }
     )
   }
 
@@ -200,7 +203,7 @@ export class CsvBuilder {
       this.translateService.instant('labels.export.cols.error-band-min'),
       (item) => {
         let exam: Exam = getExam(item);
-        return exam.score - exam.standardError;
+        return !exam.score ? '' : exam.score - exam.standardError;
       }
     )
   }
@@ -210,7 +213,7 @@ export class CsvBuilder {
       this.translateService.instant('labels.export.cols.error-band-max'),
       (item) => {
         let exam: Exam = getExam(item);
-        return exam.score + exam.standardError;
+        return !exam.score ? '' : exam.score + exam.standardError;
       }
     )
   }
@@ -231,7 +234,9 @@ export class CsvBuilder {
           let exam: Exam = getExam(item);
           if (!exam) return "";
 
-          return this.translateService.instant(`enum.iab-category.full.${exam.claimScores[idx].level}`);
+          let level = !exam.claimScores[idx].level ? 'missing' : exam.claimScores[idx].level;
+
+          return this.translateService.instant(`enum.iab-category.full.${level}`);
         }
       )
     });
