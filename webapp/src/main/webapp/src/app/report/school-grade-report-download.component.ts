@@ -3,16 +3,14 @@ import { ReportService } from "./report.service";
 import { saveAs } from "file-saver";
 import { Subscription } from "rxjs";
 import { ReportDownloadComponent } from "./report-download.component";
-import { Download } from "../shared/data/download.model";
-import {NotificationService} from "../shared/notification/notification.service";
-import {Notification} from "../shared/notification/notification.model";
+import { NotificationService } from "../shared/notification/notification.service";
 import { Report } from "./report.model";
 
 /**
  * Component used for single-student exam report download
  */
 @Component({
-  selector: 'school-grade-report-download',
+  selector: '[school-grade-report-download]',
   templateUrl: './report-download.component.html'
 })
 export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
@@ -30,22 +28,15 @@ export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
   }
 
   public submit(): void {
-
-    // Keep handle on subscription for disabling submit button
-    this.subscription = this.service.createSchoolGradeExamReport(this.schoolId, this.gradeId, this.options)
+    this.service.createSchoolGradeExamReport(this.schoolId, this.gradeId, this.options)
       .subscribe(
         (report: Report) => {
-          this.notificationService.showNotification(new Notification('labels.reports.messages.submitted', { type: 'info' }));
+          this.notificationService.info({ id: 'labels.reports.messages.submitted', html: true });
         },
         (error: any) => {
-          this.notificationService.showNotification(new Notification('labels.reports.messages.submission-failed', { type: 'danger' }));
-          this.subscription = null;
-        },
-        () => {
-          this.subscription = null;
+          this.notificationService.info({ id: 'labels.reports.messages.submission-failed', html: true });
         }
-      )
-    ;
+      );
   }
 
 }

@@ -13,6 +13,7 @@ import { ReportsComponent } from "./reports.component";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { GroupReportDownloadComponent } from "./group-report-download.component";
 import { SchoolGradeDownloadComponent } from "./school-grade-report-download.component";
+import { AssessmentsModule } from "../assessments/assessments.module";
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { SchoolGradeDownloadComponent } from "./school-grade-report-download.com
     CommonModule,
     SharedModule,
     DataTableModule,
+    AssessmentsModule, // for info-label (should probably move to shared/common)
     Angulartics2Module.forChild()
   ],
   exports: [

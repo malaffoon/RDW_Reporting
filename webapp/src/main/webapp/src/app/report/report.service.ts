@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ResponseContentType, Headers } from "@angular/http";
 import { ReportOptions } from "./report-options.model";
-import { ReportDownloadToken } from "./report-download-token.model";
 import { Observable } from "rxjs";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
@@ -55,7 +54,7 @@ export class ReportService {
    *
    * @param groupId the group ID
    * @param options settings which to shape the report content
-   * @returns {Observable<Report>} the token used the get status on the download
+   * @returns {Observable<Report>} the handle used the get status on the download
    */
   public createGroupExamReport(groupId: number, options: ReportOptions): Observable<Report> {
     return this.createBatchExamReport(`/groups/${groupId}/examReports`, options);
@@ -67,7 +66,7 @@ export class ReportService {
    * @param schoolId the school ID
    * @param gradeId the assessment grade ID
    * @param options settings which to shape the report content
-   * @returns {Observable<Report>} the token used the get status on the download
+   * @returns {Observable<Report>} the handle used the get status on the download
    */
   public createSchoolGradeExamReport(schoolId: number, gradeId: number, options: ReportOptions): Observable<Report> {
     return this.createBatchExamReport(`/schools/${schoolId}/assessmentGrades/${gradeId}/examReports`, options);
@@ -76,11 +75,11 @@ export class ReportService {
   /**
    * Gets an exam report download if ready, otherwise throws an exception
    *
-   * @param token the token used to lookup the download
+   * @param reportId the handle used to lookup the download
    * @returns {Observable<Download>}
    */
-  public getBatchExamReport(token: ReportDownloadToken): Observable<Download> {
-    return this.getExamReport(`/examReports/${token.id}`);
+  public getBatchExamReport(reportId: number): Observable<Download> {
+    return this.getExamReport(`/examReports/${reportId}`);
   }
 
   /**

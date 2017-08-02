@@ -1,4 +1,4 @@
-<div *ngIf="options" class="report-download-container">
+<span *ngIf="options" class="report-download-container">
 
   <button class="btn btn-sm btn-default"
           [containerClass]="'report-download-popover'"
@@ -9,13 +9,13 @@
 
   <template #popoverTemplate>
     <form #form="ngForm" (ngSubmit)="submit()">
-      <div class="form-group" [hidden]="schoolYearsOnly">
+      <div class="form-group" *ngIf="!schoolYearsOnly">
         <label for="assessment-type-select">{{'labels.reports.assessment-type' | translate}}</label>
         <select id="assessment-type-select" class="form-control input-sm" name="assessment-type" [(ngModel)]="options.assessmentType">
           <option *ngFor="let type of assessmentTypes" [ngValue]="type">{{'labels.assessmentTypes.' + type + '.short-name' | translate}}</option>
         </select>
       </div>
-      <div class="form-group mt-sm" [hidden]="schoolYearsOnly">
+      <div class="form-group mt-sm" *ngIf="!schoolYearsOnly">
         <label for="subject-select">{{'labels.reports.subject' | translate}}</label>
         <select id="subject-select" class="form-control input-sm" name="subject" [(ngModel)]="options.subject">
           <option *ngFor="let subject of subjectTypes" [ngValue]="subject">{{'labels.subjects.' + subject + '.short-name' | translate}}</option>
@@ -32,4 +32,4 @@
       </div>
     </form>
   </template>
-</div>
+</span>

@@ -4,14 +4,13 @@ import { saveAs } from "file-saver";
 import { Subscription } from "rxjs";
 import { ReportDownloadComponent } from "./report-download.component";
 import { Download } from "../shared/data/download.model";
-import {NotificationService} from "../shared/notification/notification.service";
-import {Notification} from "../shared/notification/notification.model";
+import { NotificationService } from "../shared/notification/notification.service";
 
 /**
  * Component used for single-student exam report download
  */
 @Component({
-  selector: 'student-report-download',
+  selector: '[student-report-download]',
   templateUrl: './report-download.component.html'
 })
 export class StudentReportDownloadComponent extends ReportDownloadComponent {
@@ -40,7 +39,7 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
             messageKey = "labels.reports.messages.404";
           }
 
-          this.notificationService.showNotification(new Notification(messageKey, { type: "danger" }));
+          this.notificationService.error({ id: messageKey });
 
           this.subscription = null;
         },

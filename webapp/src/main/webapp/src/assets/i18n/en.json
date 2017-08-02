@@ -372,10 +372,17 @@
     "reports": {
       "heading": "Reports",
       "no-reports": "Click the create report button to create a report.",
-      "table-column-header": {
-        "created": "Created On",
-        "label": "Name",
-        "status": "Status"
+      "column": {
+        "created": {
+          "header": "Date"
+        },
+        "label": {
+          "header": "Name"
+        },
+        "status": {
+          "header": "Status",
+          "title": "TODO add status information"
+        }
       },
       "button-label": {
         "student": "Student Report",
@@ -390,7 +397,16 @@
         "404": "This student does not have any test results for your selection. Please update your selection and try again.",
         "500": "There was an unexpected error while generating this report.  Please try again.",
         "submitted": "Creating report. See <a href=\"/reports\">status</a>.",
-        "submission-failed": "Error creating report. See <a href=\"/reports\">status</a>."
+        "submission-failed": "Error creating report. See <a href=\"/reports\">status</a>.",
+        "download-failed": "There was an unexpected error while getting this report. Please try again."
+      },
+      "status": {
+        "PENDING": "Pending",
+        "RUNNING": "Running",
+        "COMPLETED": "Completed",
+        "FAILED": "Failed",
+        "EXPIRED": "Expired",
+        "NO_RESULTS": "No Results"
       }
     },
     "select-year": "School Year",

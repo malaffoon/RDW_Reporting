@@ -3,7 +3,6 @@
 // Extending SBAC UI Kit
 // ----------------------------------------
 
-
 //
 // Libraries
 // ----------------------------------------
@@ -36,12 +35,17 @@
   border: 1px solid @gray-lighter;
   border-radius: 5px 5px 0 0;
 }
+
 .home-view .my-groups-list-container .table > thead > tr > th {
-  &:first-child { border-top-left-radius: 0; }
-  &:last-child { border-top-right-radius: 0; }
+  &:first-child {
+    border-top-left-radius: 0;
+  }
+  &:last-child {
+    border-top-right-radius: 0;
+  }
 }
 
-.ui-dropdown{
+.ui-dropdown {
   width: 100% !important;
 }
 
@@ -59,6 +63,7 @@ header {
     .border-top-radius(0px);
   }
 }
+
 .breadcrumb {
   .small;
   border-width: 1px 0px;
@@ -69,11 +74,12 @@ header {
   margin-bottom: 0px;
   background-color: @gray-lighter;
   border-radius: @border-radius-base;
-  .box-shadow(0 6px 6px -6px rgba(0,0,0,.16) inset, 0 1px 1px 1px rgba(255,255,255,.95););
+  .box-shadow(0 6px 6px -6px rgba(0, 0, 0, .16) inset, 0 1px 1px 1px rgba(255, 255, 255, .95););
   > .active {
     color: @gray-darker;
   }
 }
+
 footer {
   background-color: transparent;
   padding: 0px;
@@ -82,20 +88,22 @@ footer {
   .box-shadow(none);
 }
 
-
 .white-space-normal {
   white-space: normal;
 }
-student-report-download,
-group-report-download,
-school-grade-report-download {
-  display: inline-block;
-}
+
 .report-download-popover {
   display: block;
   max-width: 440px;
-  width:auto;
+  width: auto;
   select {
     font-weight: normal;
   }
+}
+
+.notifications {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1030;
 }
