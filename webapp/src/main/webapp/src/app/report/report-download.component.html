@@ -1,9 +1,9 @@
 <span *ngIf="options" class="report-download-container">
 
-  <button *ngIf="batch" class="btn btn-sm btn-default"
+  <button *ngIf="production" class="btn btn-sm btn-default"
           (click)="showComingSoon()"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{buttonLabel | translate}}</button>
 
-  <button *ngIf="!batch" class="btn btn-sm btn-default"
+  <button *ngIf="!production" class="btn btn-sm btn-default"
           [containerClass]="'report-download-popover'"
           [placement]="'bottom'"
           [popover]="popoverTemplate"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{buttonLabel | translate}}</button>

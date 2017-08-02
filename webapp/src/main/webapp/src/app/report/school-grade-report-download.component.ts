@@ -35,7 +35,7 @@ export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
           this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
         },
         (error: any) => {
-          this.notificationService.info({ id: 'labels.reports.messages.submission-failed.html', html: true });
+          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
         }
       );
   }

@@ -4,11 +4,17 @@ import { saveAs } from "file-saver";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
+import { environment } from "../../environments/environment";
 
 /**
  * Abstract class used to carry the common logic between all exam report download components
  */
 export abstract class ReportDownloadComponent implements OnInit {
+
+  /**
+   * TODO: remove when feature is ready
+   */
+  public production: boolean = environment.production;
 
   @Input()
   public schoolYears: Array<number>;
