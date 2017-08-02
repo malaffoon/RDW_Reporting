@@ -45,4 +45,9 @@
       <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
     </select>
   </div>
+
+  <!-- spacer for pushing Advanced Filters to the right -->
+  <div class="col-md-2">
+    <!-- can't do it in the assessments.component because it depends on how many dropdowns there are here -->
+  </div>
 </assessments>
