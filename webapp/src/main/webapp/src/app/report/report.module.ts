@@ -11,11 +11,15 @@ import { StudentReportDownloadComponent } from "./student-report-download.compon
 import { ReportsResolve } from "./reports.resolve";
 import { ReportsComponent } from "./reports.component";
 import { DataTableModule } from "primeng/components/datatable/datatable";
+import { GroupReportDownloadComponent } from "./group-report-download.component";
+import { SchoolGradeDownloadComponent } from "./school-grade-report-download.component";
 
 @NgModule({
   declarations: [
+    ReportsComponent,
     StudentReportDownloadComponent,
-    ReportsComponent
+    GroupReportDownloadComponent,
+    SchoolGradeDownloadComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -29,8 +33,10 @@ import { DataTableModule } from "primeng/components/datatable/datatable";
     Angulartics2Module.forChild()
   ],
   exports: [
+    ReportsComponent,
     StudentReportDownloadComponent,
-    ReportsComponent
+    GroupReportDownloadComponent,
+    SchoolGradeDownloadComponent
   ],
   providers: [
     ReportService,

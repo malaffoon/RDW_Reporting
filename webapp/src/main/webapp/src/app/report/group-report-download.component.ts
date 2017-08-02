@@ -6,42 +6,36 @@ import { ReportDownloadComponent } from "./report-download.component";
 import { Download } from "../shared/data/download.model";
 import {NotificationService} from "../shared/notification/notification.service";
 import {Notification} from "../shared/notification/notification.model";
+import { Report } from "./report.model";
 
 /**
  * Component used for single-student exam report download
  */
 @Component({
-  selector: 'student-report-download',
+  selector: 'group-report-download',
   templateUrl: './report-download.component.html'
 })
-export class StudentReportDownloadComponent extends ReportDownloadComponent {
+export class GroupReportDownloadComponent extends ReportDownloadComponent {
 
   @Input()
-  public studentId: number;
+  public groupId: number;
 
   private subscription: Subscription;
 
   constructor(private service: ReportService, private notificationService: NotificationService) {
-    super('labels.reports.button-label.student');
+    super('labels.reports.button-label.group');
   }
 
   public submit(): void {
 
     // Keep handle on subscription for disabling submit button
-    this.subscription = this.service.getStudentExamReport(this.studentId, this.options)
+    this.subscription = this.service.createGroupExamReport(this.groupId, this.options)
       .subscribe(
-        (download: Download) => {
-          saveAs(download.content, download.name);
+        (report: Report) => {
+          this.notificationService.showNotification(new Notification('labels.reports.messages.submitted', { type: 'info' }));
         },
         (error: any) => {
-          let messageKey = "labels.reports.messages.500";
-
-          if (error.status == 404) {
-            messageKey = "labels.reports.messages.404";
-          }
-
-          this.notificationService.showNotification(new Notification(messageKey, { type: "danger" }));
-
+          this.notificationService.showNotification(new Notification('labels.reports.messages.submission-failed', { type: 'danger' }));
           this.subscription = null;
         },
         () => {

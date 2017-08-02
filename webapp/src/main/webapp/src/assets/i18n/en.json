@@ -377,14 +377,20 @@
         "label": "Name",
         "status": "Status"
       },
-      "download-report": "Student Report",
+      "button-label": {
+        "student": "Student Report",
+        "group": "Group Report",
+        "school-grade": "School Grade Report"
+      },
       "download": "Download",
       "assessment-type": "Assessment Type",
       "subject": "Subject",
       "school-year": "School Year",
       "messages" : {
         "404": "This student does not have any test results for your selection. Please update your selection and try again.",
-        "500": "There was an unexpected error while generating this report.  Please try again."
+        "500": "There was an unexpected error while generating this report.  Please try again.",
+        "submitted": "Creating report. See <a href=\"/reports\">status</a>.",
+        "submission-failed": "Error creating report. See <a href=\"/reports\">status</a>."
       }
     },
     "select-year": "School Year",

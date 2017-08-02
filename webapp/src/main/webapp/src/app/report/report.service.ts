@@ -44,7 +44,7 @@ export class ReportService {
    *
    * @param studentId the student ID
    * @param options settings which to shape the report content
-   * @returns {Observable<ReportDownload>}
+   * @returns {Observable<Download>}
    */
   public getStudentExamReport(studentId: number, options: ReportOptions): Observable<Download> {
     return this.getExamReport(`/students/${studentId}/examReport`, options);
@@ -55,9 +55,9 @@ export class ReportService {
    *
    * @param groupId the group ID
    * @param options settings which to shape the report content
-   * @returns {Observable<ReportDownloadToken>} the token used the get status on the download
+   * @returns {Observable<Report>} the token used the get status on the download
    */
-  public createGroupExamReport(groupId: number, options: ReportOptions): Observable<ReportDownloadToken> {
+  public createGroupExamReport(groupId: number, options: ReportOptions): Observable<Report> {
     return this.createBatchExamReport(`/groups/${groupId}/examReports`, options);
   }
 
@@ -67,9 +67,9 @@ export class ReportService {
    * @param schoolId the school ID
    * @param gradeId the assessment grade ID
    * @param options settings which to shape the report content
-   * @returns {Observable<ReportDownloadToken>} the token used the get status on the download
+   * @returns {Observable<Report>} the token used the get status on the download
    */
-  public createSchoolGradeExamReport(schoolId: number, gradeId: number, options: ReportOptions): Observable<ReportDownloadToken> {
+  public createSchoolGradeExamReport(schoolId: number, gradeId: number, options: ReportOptions): Observable<Report> {
     return this.createBatchExamReport(`/schools/${schoolId}/assessmentGrades/${gradeId}/examReports`, options);
   }
 
@@ -77,7 +77,7 @@ export class ReportService {
    * Gets an exam report download if ready, otherwise throws an exception
    *
    * @param token the token used to lookup the download
-   * @returns {Observable<ReportDownload>}
+   * @returns {Observable<Download>}
    */
   public getBatchExamReport(token: ReportDownloadToken): Observable<Download> {
     return this.getExamReport(`/examReports/${token.id}`);
@@ -88,11 +88,11 @@ export class ReportService {
    *
    * @param url the endpoint to use to create the report
    * @param options settings which to shape the report content
-   * @returns {Observable<ReportDownloadToken>}
+   * @returns {Observable<Report>}
    */
-  private createBatchExamReport(url: string, options: ReportOptions): Observable<ReportDownloadToken> {
+  private createBatchExamReport(url: string, options: ReportOptions): Observable<Report> {
     return this.dataService.post(url, { params: this.toParameters(options) })
-      .map((token: any) => new ReportDownloadToken(token.id));
+      .map(this.toReport);
   }
 
   /**
@@ -100,7 +100,7 @@ export class ReportService {
    *
    * @param url the location of the exam report PDF download
    * @param options settings which to shape the report content
-   * @returns {Observable<ReportDownload>}
+   * @returns {Observable<Download>}
    */
   private getExamReport(url: string, options?: ReportOptions): Observable<Download> {
     return this.dataService.get(url, {
@@ -126,6 +126,21 @@ export class ReportService {
       language: options.language,
       grayscale: options.grayscale
     };
+  }
+
+  /**
+   * Maps a API report model to a local report model
+   *
+   * @param remote the API model
+   * @returns {Report} the local model
+   */
+  private toReport(remote: any): Report {
+    let local: Report = new Report();
+    local.id = remote.id;
+    local.label = remote.label;
+    local.status = remote.status;
+    local.created = remote.created;
+    return local;
   }
 
 }

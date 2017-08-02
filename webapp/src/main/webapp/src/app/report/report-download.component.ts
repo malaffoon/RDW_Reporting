@@ -12,15 +12,20 @@ export abstract class ReportDownloadComponent implements OnInit {
   @Input()
   public schoolYears: Array<number>;
 
+  @Input()
+  public schoolYearsOnly: boolean = false;
+
   public assessmentTypes: Array<AssessmentType> = [ AssessmentType.IAB, AssessmentType.ICA ];
   public subjectTypes: Array<AssessmentSubjectType> = [ AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
   public languages: Array<string> = [ 'eng', 'spa', 'vie' ];
   public options: ReportOptions;
 
+  constructor(private buttonLabel: string){}
+
   ngOnInit(): void {
     let defaultOptions: ReportOptions = new ReportOptions();
-    defaultOptions.assessmentType = this.assessmentTypes[ 0 ];
-    defaultOptions.subject = this.subjectTypes[ 0 ];
+    defaultOptions.assessmentType = this.schoolYearsOnly ? null : this.assessmentTypes[ 0 ];
+    defaultOptions.subject = this.schoolYearsOnly ? null : this.subjectTypes[ 0 ];
     defaultOptions.schoolYear = this.schoolYears[ 0 ];
     defaultOptions.language = this.languages[ 0 ];
     defaultOptions.grayscale = false;
