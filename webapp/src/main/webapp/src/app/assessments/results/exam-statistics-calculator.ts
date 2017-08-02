@@ -23,12 +23,12 @@ export class ExamStatisticsCalculator {
    * @param exams
    * @returns {number}
    */
-  calculateAverageStandardErrorOfTheMean(exams: Exam[]) {
+  calculateStandardErrorOfTheMean(exams: Exam[]) {
     let scoredExams = this.getOnlyScoredExams(exams);
     let scores = scoredExams.map(x => x.score);
 
     if (scores.length == 0) {
-      return NaN;
+      return 0;
     }
 
     return math.std(scores) / math.sqrt(scores.length);
