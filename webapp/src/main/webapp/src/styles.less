@@ -107,3 +107,12 @@ footer {
   right: 0;
   z-index: 1030;
 }
+
+@media (max-width: @screen-xs-max) {
+  // undoing the .pull-right classes
+  .float-none-xs { float: none !important; }
+  #group-results-basic-filters .form-group .col-md-2.pull-right,
+  #group-results-selected-assessments .col-md-6 .pull-right {
+    .float-none-xs;
+  }
+}
