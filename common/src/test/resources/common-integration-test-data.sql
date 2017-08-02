@@ -43,9 +43,9 @@ insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, oppo
   (-10, 2, -2, 'g2', -2, -10, 1, 0, 0, 0, 0, 2017, -2, 'v1', 2, 'Complete', 1, 'Valid', 'session3', 2100, 21, 2, '2017-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000');
 
 -- groups
-insert into student_group (id, name, school_id, school_year, subject_id, import_id) values
-  (-1, 'group1', -10, 2017, 1, -1),
-  (-2, 'group2', -10, 2017, null, -1);
+insert into student_group (id, name, school_id, school_year, subject_id, import_id, updated) values
+  (-1, 'group1', -10, 2017, 1, -1, '2017-07-18 20:14:34.000000'),
+  (-2, 'group2', -10, 2017, null, -1, '2017-07-18 20:14:34.000000');
 
 insert into student_group_membership (student_group_id, student_id) values
   (-1, -1),
