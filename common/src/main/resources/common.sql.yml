@@ -50,7 +50,26 @@ sql:
       and e.school_year=:school_year
       and a.type_id=2
       and a.subject_id=:subject_id
-      and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+      and
+      (
+        (1=:ipr_statewide or s.district_id in (:ipr_district_ids) or e.school_id in (:ipr_school_ids))
+        or
+        (
+          (
+            case when exists(
+              select sg.subject_id
+              from student_group_membership sgm
+                join student_group sg ON sgm.student_group_id = sg.id
+              where sgm.student_group_id IN (:group_ids)
+              and sgm.student_id = :student_id
+              and (sg.subject_id is NULL OR sg.subject_id = a.subject_id))
+            then 1
+            else 0
+            end
+          )=1
+          and (1=:gpr_statewide or s.district_id in (:gpr_district_ids) or e.school_id in (:gpr_school_ids))
+        )
+      )
       order by e.completed_at desc
 
     findLatestIcaByStudentIdAndSchoolYear: >-
@@ -117,6 +136,25 @@ sql:
       and e.school_year=:school_year
       and a.type_id=1
       and a.subject_id=:subject_id
-      and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+      and
+      (
+        (1=:ipr_statewide or s.district_id in (:ipr_district_ids) or e.school_id in (:ipr_school_ids))
+        or
+        (
+          (
+            case when exists(
+              select sg.subject_id
+              from student_group_membership sgm
+                join student_group sg ON sgm.student_group_id = sg.id
+              where sgm.student_group_id IN (:group_ids)
+              and sgm.student_id = :student_id
+              and (sg.subject_id is NULL OR sg.subject_id = a.subject_id))
+            then 1
+            else 0
+            end
+          )=1
+          and (1=:gpr_statewide or s.district_id in (:gpr_district_ids) or e.school_id in (:gpr_school_ids))
+        )
+      )
       order by e.completed_at desc
       limit 1
