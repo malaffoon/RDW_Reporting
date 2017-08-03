@@ -25,6 +25,7 @@ import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
 import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
+import { ReportModule } from "../../report/report.module";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -57,7 +58,8 @@ describe('StudentResultsComponent', () => {
         ReactiveFormsModule,
         SharedModule,
         TranslateModule.forRoot(),
-        PopoverModule.forRoot()
+        PopoverModule.forRoot(),
+        ReportModule
       ],
       declarations: [
         StudentResultsComponent

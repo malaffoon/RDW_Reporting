@@ -22,6 +22,7 @@ import { PopoverModule } from "ngx-bootstrap";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
+import { ReportModule } from "../../report/report.module";
 
 let availableGrades = [];
 
@@ -33,14 +34,14 @@ describe('SchoolResultsComponent', () => {
   beforeEach(async(() => {
     let mockRouteData = {};
     let user = new User();
-    user.schools = [ { name: "Ogden", id: 2 }];
-    mockRouteData["user"] = user;
+    user.schools = [ { name: "Ogden", id: 2 } ];
+    mockRouteData[ "user" ] = user;
 
     let mockRouteParams = {};
-    mockRouteParams["schoolId"] = 2;
+    mockRouteParams[ "schoolId" ] = 2;
 
-    let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
-    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
+    let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
+    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
     availableGrades = [];
 
@@ -56,7 +57,8 @@ describe('SchoolResultsComponent', () => {
         DropdownModule,
         SharedModule,
         Angulartics2Module,
-        PopoverModule.forRoot()
+        PopoverModule.forRoot(),
+        ReportModule
       ],
       declarations: [ SchoolResultsComponent ],
       providers: [
@@ -66,9 +68,11 @@ describe('SchoolResultsComponent', () => {
         { provide: DataService, useClass: MockDataService },
         { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionService },
         { provide: SchoolService, useClass: MockSchoolService },
-        { provide: ActivatedRoute, useValue: {
+        {
+          provide: ActivatedRoute, useValue: {
           snapshot: { data: mockRouteData, params: mockRouteParams }
-        }},
+        }
+        },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         { provide: CsvExportService, useValue: exportService },
         { provide: UserService, useClass: MockUserService }
@@ -88,7 +92,7 @@ describe('SchoolResultsComponent', () => {
   });
 
   it('should try to keep grade if it is available on school change', () => {
-    availableGrades = [ { code: "03", id: 3}, { code: "04", id: 4 }, { code: "05", id: 5 }];
+    availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
 
     component.currentGrade = { code: "04", id: 4 };
     component.schoolSelectChanged();
@@ -97,7 +101,7 @@ describe('SchoolResultsComponent', () => {
   });
 
   it('should default to the first available grade if it is not available on school change', () => {
-    availableGrades = [ { code: "03", id: 3}, { code: "04", id: 4 }, { code: "05", id: 5 }];
+    availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
 
     component.currentGrade = { code: "11", id: 11 };
     component.schoolSelectChanged();
