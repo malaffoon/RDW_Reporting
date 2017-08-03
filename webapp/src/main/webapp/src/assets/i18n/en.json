@@ -395,7 +395,7 @@
         "assessment-type": "Assessment Type",
         "subject": "Subject",
         "school-year": "School Year",
-        "order": "Order"
+        "order": "Sort Order"
       },
       "orders": {
         "0": "Student Name",
