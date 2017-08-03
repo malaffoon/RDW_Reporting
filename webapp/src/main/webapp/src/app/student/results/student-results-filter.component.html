@@ -1,47 +1,44 @@
 <div class="well-group">
   <div class="well">
-    <div class="form-group">
-      <div class="flex-children">
+    <div class="form-group row">
+      <!-- School Grade -->
+      <div class="col-md-2">
+        <label for="select-year">{{'labels.select-year' | translate}}</label>
+        <select id="select-year"
+                name="select-year"
+                [(ngModel)]="filterState.schoolYear"
+                (change)="onFilterChange('Year')"
+                class="form-control">
+          <option selected value="0">{{ 'buttons.all' | translate }}</option>
+          <option *ngFor="let year of filterState.years" [ngValue]="year">{{year | schoolYear}}</option>
+        </select>
+      </div>
 
-        <!-- School Grade -->
-        <div class="flex-child">
-          <label for="select-year">{{'labels.select-year' | translate}}</label>
-          <select id="select-year"
-                  name="select-year"
-                  [(ngModel)]="filterState.schoolYear"
-                  (change)="onFilterChange('Year')"
-                  class="form-control">
-            <option selected value="0">{{ 'buttons.all' | translate }}</option>
-            <option *ngFor="let year of filterState.years" [ngValue]="year">{{year | schoolYear}}</option>
-          </select>
-        </div>
+      <!-- Subject -->
+      <div class="col-md-2">
+        <label for="select-subject">{{'labels.student.results.labels.select-subject' | translate}}</label>
+        <select id="select-subject"
+                name="select-subject"
+                [(ngModel)]="filterState.subject"
+                (change)="onFilterChange('Subject')"
+                class="form-control">
+          <option selected value="">{{ 'buttons.all' | translate }}</option>
+          <option *ngFor="let subject of filterState.subjects" [ngValue]="subject">{{subject}}</option>
+        </select>
+      </div>
 
-        <!-- Subject -->
-        <div class="flex-child">
-          <label for="select-subject">{{'labels.student.results.labels.select-subject' | translate}}</label>
-          <select id="select-subject"
-                  name="select-subject"
-                  [(ngModel)]="filterState.subject"
-                  (change)="onFilterChange('Subject')"
-                  class="form-control">
-            <option selected value="">{{ 'buttons.all' | translate }}</option>
-            <option *ngFor="let subject of filterState.subjects" [ngValue]="subject">{{subject}}</option>
-          </select>
-        </div>
-
-        <!-- Advanced Filters -->
-        <div class="flex-child ml-auto">
-          <label for="show-advanced-filters">{{'labels.groups.results.adv-filters.label' | translate}}</label>
-          <button id="show-advanced-filters"
-                  class="form-control btn btn-default ml-auto"
-                  (click)="showAdvancedFilters = !showAdvancedFilters"
-                  angulartics2On="click" angularticsEvent="ToggleAdvancedFilters" angularticsCategory="StudentHistoryAdvancedFilters">
-            {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
-            <i class="fa"
-               [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}"
-               aria-hidden="true"></i>
-          </button>
-        </div>
+      <!-- Advanced Filters -->
+      <div class="col-md-2 col-md-offset-6">
+        <label for="show-advanced-filters">{{'labels.groups.results.adv-filters.label' | translate}}</label>
+        <button id="show-advanced-filters"
+                class="form-control btn btn-default"
+                (click)="showAdvancedFilters = !showAdvancedFilters"
+                angulartics2On="click" angularticsEvent="ToggleAdvancedFilters" angularticsCategory="StudentHistoryAdvancedFilters">
+          {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
+          <i class="fa"
+             [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}"
+             aria-hidden="true"></i>
+        </button>
       </div>
     </div>
   </div>
