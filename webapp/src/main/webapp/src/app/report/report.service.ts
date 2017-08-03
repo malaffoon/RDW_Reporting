@@ -7,6 +7,7 @@ import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.en
 import { DataService } from "../shared/data/data.service";
 import { Download } from "../shared/data/download.model";
 import { Report } from "./report.model";
+import { ReportOrder } from "./report-order.enum";
 
 @Injectable()
 export class ReportService {
@@ -96,7 +97,7 @@ export class ReportService {
    * @returns {Observable<Report>}
    */
   private createBatchExamReport(url: string, options: ReportOptions): Observable<Report> {
-    return this.dataService.post(url, { params: this.toParameters(options) })
+    return this.dataService.post(url, { params: this.toBatchReportRequestParameters(options) })
       .map(this.toReport);
   }
 
@@ -109,7 +110,7 @@ export class ReportService {
    */
   private getExamReport(url: string, options?: ReportOptions): Observable<Download> {
     return this.dataService.get(url, {
-      params: options != null ? this.toParameters(options) : null,
+      params: options != null ? this.toSingleReportRequestParameters(options) : null,
       headers: new Headers({
         Accept: 'application/pdf'
       }),
@@ -123,13 +124,28 @@ export class ReportService {
    * @param options the options to convert to url parameters
    * @returns {{assessmentType: any, subject: any, schoolYear: number, language: string, grayscale: boolean}}
    */
-  private toParameters(options: ReportOptions): Object {
+  private toSingleReportRequestParameters(options: ReportOptions): Object {
     return {
       assessmentType: AssessmentType[ options.assessmentType ],
       subject: AssessmentSubjectType[ options.subject ],
       schoolYear: options.schoolYear,
       language: options.language,
       grayscale: options.grayscale
+    };
+  }
+
+  /**
+   * Gets the URL parameters for the given report options
+   *
+   * @param options the options to convert to url parameters
+   * @returns {{schoolYear: number, language: string, grayscale: boolean, order: any}}
+   */
+  private toBatchReportRequestParameters(options: ReportOptions): Object {
+    return {
+      schoolYear: options.schoolYear,
+      language: options.language,
+      grayscale: options.grayscale,
+      order: ReportOrder[ options.order ]
     };
   }
 

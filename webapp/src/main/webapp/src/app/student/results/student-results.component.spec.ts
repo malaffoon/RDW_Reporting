@@ -20,11 +20,12 @@ import { School } from "../../user/model/school.model";
 import { MockRouter } from "../../../test/mock.router";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { Angulartics2 } from "angulartics2";
+import { UserService } from "../../user/user.service";
+import { MockUserService } from "../../../test/mock.user.service";
+import { ReportModule } from "../../report/report.module";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
-import { UserService } from "../../user/user.service";
-import { MockUserService } from "../../../test/mock.user.service";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -43,8 +44,8 @@ describe('StudentResultsComponent', () => {
     mockRouteSnapshot.params = {};
     route.snapshotResult.and.returnValue(mockRouteSnapshot);
 
-    let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
-    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
+    let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
+    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
     router = new MockRouter();
 
@@ -56,13 +57,14 @@ describe('StudentResultsComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         SharedModule,
+        ReportModule,
         TranslateModule.forRoot(),
         PopoverModule.forRoot()
       ],
       declarations: [
         StudentResultsComponent
       ],
-      providers: [{
+      providers: [ {
         provide: ActivatedRoute,
         useValue: route
       }, {
@@ -77,8 +79,8 @@ describe('StudentResultsComponent', () => {
       }, {
         provide: UserService,
         useClass: MockUserService
-      }],
-      schemas: [NO_ERRORS_SCHEMA]
+      } ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     })
       .compileComponents();
 
@@ -93,42 +95,42 @@ describe('StudentResultsComponent', () => {
 
   it('should retrieve sorted assessment types', () => {
     expect(component.assessmentTypes)
-      .toEqual([AssessmentType.IAB, AssessmentType.ICA, AssessmentType.SUMMATIVE]);
+      .toEqual([ AssessmentType.IAB, AssessmentType.ICA, AssessmentType.SUMMATIVE ]);
   });
 
   it('should retrieve subjects by assessment type', () => {
     expect(component.getSubjectsForType(AssessmentType.ICA))
-      .toEqual(["ELA", "MATH"]);
+      .toEqual([ "ELA", "MATH" ]);
     expect(component.getSubjectsForType(AssessmentType.IAB))
-      .toEqual(["MATH"]);
+      .toEqual([ "MATH" ]);
     expect(component.getSubjectsForType(AssessmentType.SUMMATIVE))
-      .toEqual(["ELA"]);
+      .toEqual([ "ELA" ]);
   });
 
-  it('should filter by year on initialization', inject([ActivatedRoute], (route: MockActivatedRoute) => {
+  it('should filter by year on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
     // Filter to the single 2017 exam
     let snapshot = route.snapshot;
-    snapshot.params['schoolYear'] = '2017';
+    snapshot.params[ 'schoolYear' ] = '2017';
 
     component.ngOnInit();
 
     let assessmentTypes = component.assessmentTypes;
     expect(assessmentTypes.length).toBe(1);
-    let subjects = component.getSubjectsForType(assessmentTypes[0]);
+    let subjects = component.getSubjectsForType(assessmentTypes[ 0 ]);
     expect(subjects.length).toBe(1);
-    expect(component.examsByTypeAndSubject.get(assessmentTypes[0]).get(subjects[0]).length).toBe(1);
+    expect(component.examsByTypeAndSubject.get(assessmentTypes[ 0 ]).get(subjects[ 0 ]).length).toBe(1);
   }));
 
-  it('should filter by subject on initialization', inject([ActivatedRoute], (route: MockActivatedRoute) => {
+  it('should filter by subject on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
     let snapshot = route.snapshot;
-    snapshot.params['subject'] = 'MATH';
+    snapshot.params[ 'subject' ] = 'MATH';
 
     component.ngOnInit();
 
     let assessmentTypes = component.assessmentTypes;
     expect(assessmentTypes.length).toBe(2);
-    expect(component.getSubjectsForType(assessmentTypes[0])).toEqual(['MATH']);
-    expect(component.getSubjectsForType(assessmentTypes[1])).toEqual(['MATH']);
+    expect(component.getSubjectsForType(assessmentTypes[ 0 ])).toEqual([ 'MATH' ]);
+    expect(component.getSubjectsForType(assessmentTypes[ 1 ])).toEqual([ 'MATH' ]);
   }));
 
 });

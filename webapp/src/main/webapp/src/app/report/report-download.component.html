@@ -11,25 +11,31 @@
   <template #popoverTemplate>
     <form #form="ngForm" (ngSubmit)="submit()">
       <div class="form-group" *ngIf="!batch">
-        <label for="assessment-type-select">{{'labels.reports.assessment-type' | translate}}</label>
+        <label for="assessment-type-select">{{'labels.reports.form.assessment-type' | translate}}</label>
         <select id="assessment-type-select" class="form-control input-sm" name="assessment-type" [(ngModel)]="options.assessmentType">
           <option *ngFor="let type of assessmentTypes" [ngValue]="type">{{'labels.assessmentTypes.' + type + '.short-name' | translate}}</option>
         </select>
       </div>
       <div class="form-group mt-sm" *ngIf="!batch">
-        <label for="subject-select">{{'labels.reports.subject' | translate}}</label>
+        <label for="subject-select">{{'labels.reports.form.subject' | translate}}</label>
         <select id="subject-select" class="form-control input-sm" name="subject" [(ngModel)]="options.subject">
           <option *ngFor="let subject of subjectTypes" [ngValue]="subject">{{'labels.subjects.' + subject + '.short-name' | translate}}</option>
         </select>
       </div>
       <div class="form-group mt-sm">
-        <label for="school-year-select">{{'labels.reports.school-year' | translate}}</label>
+        <label for="school-year-select">{{'labels.reports.form.school-year' | translate}}</label>
         <select id="school-year-select" class="form-control input-sm" name="school-year" [(ngModel)]="options.schoolYear">
           <option *ngFor="let year of schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
         </select>
       </div>
+      <div class="form-group mt-sm" *ngIf="batch">
+        <label for="order-select">{{'labels.reports.form.order' | translate}}</label>
+        <select id="order-select" class="form-control input-sm" name="order" [(ngModel)]="options.order">
+          <option *ngFor="let order of orders" [ngValue]="order">{{'labels.reports.orders.' + order | translate}}</option>
+        </select>
+      </div>
       <div class="form-group mt-sm">
-          <button class="btn btn-info btn-sm btn-block" [disabled]="subscription != null" (click)="form.ngSubmit.emit()">{{'labels.reports.download' | translate}}</button>
+          <button class="btn btn-info btn-sm btn-block" [disabled]="subscription != null" (click)="form.ngSubmit.emit()">{{'labels.reports.form.submit' | translate}}</button>
       </div>
     </form>
   </template>

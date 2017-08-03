@@ -390,10 +390,17 @@
         "group": "Student Reports",
         "school-grade": "Student Reports"
       },
-      "download": "Download",
-      "assessment-type": "Assessment Type",
-      "subject": "Subject",
-      "school-year": "School Year",
+      "form": {
+        "submit": "Download",
+        "assessment-type": "Assessment Type",
+        "subject": "Subject",
+        "school-year": "School Year",
+        "order": "Order"
+      },
+      "orders": {
+        "0": "Student Name",
+        "1": "Student SSID"
+      },
       "messages" : {
         "404": "This student does not have any test results for your selection. Please update your selection and try again.",
         "500": "There was an unexpected error while generating this report.  Please try again.",
