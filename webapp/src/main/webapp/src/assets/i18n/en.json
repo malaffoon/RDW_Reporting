@@ -370,49 +370,21 @@
       }
     },
     "reports": {
-      "link": "My Reports",
-      "heading": "My Reports",
-      "no-reports": "To create a report, navigate to the school or group you want to create the report for and click the report button near the top right of the page.",
-      "column": {
-        "created": {
-          "header": "Date"
-        },
-        "label": {
-          "header": "Name"
-        },
-        "status": {
-          "header": "Status",
-          "title": "A status indicator will be displayed if the report generation was not successful or the report has expired."
-        }
+      "heading": "Reports",
+      "no-reports": "Click the create report button to create a report.",
+      "table-column-header": {
+        "created": "Created On",
+        "label": "Name",
+        "status": "Status"
       },
-      "button-label": {
-        "student": "Student Report",
-        "group": "Student Reports",
-        "school-grade": "Student Reports"
-      },
+      "download-report": "Student Report",
       "download": "Download",
       "assessment-type": "Assessment Type",
       "subject": "Subject",
       "school-year": "School Year",
       "messages" : {
         "404": "This student does not have any test results for your selection. Please update your selection and try again.",
-        "500": "There was an unexpected error while generating this report.  Please try again.",
-        "submitted": {
-          "html": "Creating report. See <a href=\"/reports\">status</a>."
-        },
-        "submission-failed": {
-          "html": "Error creating report. See <a href=\"/reports\">status</a>."
-        },
-        "download-failed": "There was an unexpected error while getting this report. Please try again.",
-        "coming-soon": "Available in week 2 of UAT"
-      },
-      "status": {
-        "PENDING": "Pending",
-        "RUNNING": "Running",
-        "COMPLETED": "Completed",
-        "FAILED": "Failed",
-        "EXPIRED": "Expired",
-        "NO_RESULTS": "No Results"
+        "500": "There was an unexpected error while generating this report.  Please try again."
       }
     },
     "select-year": "School Year",

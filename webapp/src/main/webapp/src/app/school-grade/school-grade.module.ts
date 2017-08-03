@@ -11,7 +11,6 @@ import { AssessmentsModule } from "../assessments/assessments.module";
 import { SchoolAssessmentService } from "./results/school-assessment.service";
 import { CurrentSchoolResolve } from "./results/current-school.resolve";
 import { Angulartics2Module } from 'angulartics2';
-import { ReportModule } from "../report/report.module";
 
 /**
  * This module contains a search component for finding assessments
@@ -30,7 +29,6 @@ import { ReportModule } from "../report/report.module";
     AssessmentsModule,
     DropdownModule,
     SharedModule,
-    ReportModule,
     Angulartics2Module.forChild()
   ],
   exports: [ SchoolGradeComponent, SchoolResultsComponent ],

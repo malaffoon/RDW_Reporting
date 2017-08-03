@@ -1,21 +1,20 @@
-<div class="mb-md">
-  <span class="h3 blue-dark">{{currentSchool.name}}<span *ngIf="currentGrade"> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></span>
-  <span class="pull-right text-right">
-    <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-    <span school-grade-report-download class="ml-xs"
-        *ngIf="currentGrade"
-        [schoolId]="currentSchool.id"
-        [gradeId]="currentGrade.id"
-        [schoolYears]="filterOptions.schoolYears">
-    </span>
+<h2 class="blue-dark h3 mb-md">
+   {{currentSchool.name}}
+  <span *ngIf="currentGrade">
+    - {{currentGrade.code | gradeDisplay:'long-name'}}
   </span>
-</div>
+
+  <button class="btn btn-default btn-sm pull-right"
+          (click)="exportCsv()">
+    <i class="fa fa-bold fa-table"></i>
+    <span>{{'labels.export.csv' | translate}}</span>
+  </button>
+</h2>
 
 <assessments [assessmentExams]="assessmentExams"
              [assessmentProvider]="assessmentProvider"
              [allowFilterBySessions]="false"
              (onExportItemsByPointsEarned)="exportItemsByPointsEarned($event)">
-
   <!-- School Select -->
   <div class="col-md-4">
     <label>{{'labels.school-grade.results.basic-filters.school' | translate}}</label>
@@ -29,17 +28,16 @@
                 filterPlaceholder="{{'labels.school-grade.school-name.prompt' | translate}}">
     </p-dropdown>
   </div>
-
   <!-- Current Grade -->
   <div class="col-md-2">
     <label for="current-grade">{{'labels.school-grade.results.basic-filters.current-grade' | translate}}</label>
-    <select id="current-grade" class="form-control"
+    <select
       title="{{ (gradesAreUnavailable ? 'labels.school-grade.messages.no-grades-available': '') | translate}}"
-      [disabled]="!availableGrades || availableGrades.length == 0" [(ngModel)]="currentGrade" (change)="updateRoute('Grade')">
+      [disabled]="!availableGrades || availableGrades.length == 0" id="current-grade" [(ngModel)]="currentGrade" (change)="updateRoute('Grade')"
+            class="form-control">
       <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay:'long-name' }}</option>
     </select>
   </div>
-
   <!-- School Year -->
   <div class="col-md-2">
     <label for="school-year">{{'labels.school-grade.results.basic-filters.school-year' | translate}}</label>
@@ -52,5 +50,4 @@
   <div class="col-md-2">
     <!-- can't do it in the assessments.component because it depends on how many dropdowns there are here -->
   </div>
-
 </assessments>

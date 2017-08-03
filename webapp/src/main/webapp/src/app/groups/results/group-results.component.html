@@ -1,16 +1,19 @@
-<div class="mb-md">
-  <span class="h3 blue-dark">{{'labels.groups.name' | translate}}</span>
-  <span class="pull-right text-right">
-    <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-    <span group-report-download class="ml-xs" [groupId]="currentGroup.id" [schoolYears]="filterOptions.schoolYears"></span>
-  </span>
-</div>
+<!-- My Groups -->
+<h3 class="blue-dark h3 mb-md">
+  <span>{{'labels.groups.name' | translate}}</span>
+
+  <button class="btn btn-default btn-sm pull-right"
+          (click)="exportCsv()">
+    <i class="fa fa-bold fa-table"></i>
+    <span>{{'labels.export.csv' | translate}}</span>
+  </button>
+</h3>
+
 
 <assessments [assessmentExams]="assessmentExams"
              [assessmentProvider]="assessmentProvider"
              [allowFilterBySessions]="true"
              (onExportItemsByPointsEarned)="exportItemsByPointsEarned($event)">
-
   <!-- Group Select -->
   <div class="col-md-3">
     <label for="select-group">{{'labels.groups.results.select-group' | translate}}</label>
@@ -19,7 +22,6 @@
       <option *ngFor="let group of groups" [ngValue]="group">{{group.name}}</option>
     </select>
   </div>
-
   <!-- School Year -->
   <div class="col-md-3">
     <label for="school-year">{{'labels.select-year' | translate}}</label>
@@ -33,5 +35,4 @@
   <div class="col-md-4">
     <!-- can't do it in the assessments.component because it depends on how many dropdowns there are here -->
   </div>
-
 </assessments>

@@ -1,40 +1,31 @@
+import { isNullOrUndefined } from "util";
+import * as _ from "lodash";
+
 /**
  * This model represents a notification message.
  */
 export class Notification {
 
-  /**
-   * The type of the notification (success, info, warning, danger)
-   */
-  public type: string = 'info';
+  // Default configuration
+  public configuration: any = {
+    type: "info",               //['success'|'info'|'warning'|'danger']
+    dismissOnTimeout: 10000,
+    dismissible: true
+  };
 
-  /**
-   * Key for the translated message to display
-   */
-  public id: string;
+  // Notification title translation key
+  public titleKey: string;
 
-  /**
-   * Arguments used to format the message
-   */
-  public args: any = {};
+  // Notification message translation key
+  public messageKey: string;
 
-  /**
-   * Set this flag when the message contains HTML to render
-   */
-  public html: boolean = false;
+  public messageObject: any = {};
 
-  /**
-   * Duration the notification will display before automatically dismissing itself
-   */
-  public dismissOnTimeout: number = 10000;
-
-  /**
-   * Set this flag if the notification can be dismissed
-   */
-  public dismissible: boolean = true;
-
-  constructor(options: any) {
-    Object.assign(this, options || {});
+  constructor(private _translationKey: string,
+              private _configuration?: any) {
+    this.messageKey = _translationKey;
+    if (!isNullOrUndefined(_configuration)) {
+      this.configuration = _.merge(this.configuration, _configuration);
+    }
   }
-
 }
