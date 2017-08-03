@@ -1,7 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ReportService } from "./report.service";
 import { saveAs } from "file-saver";
-import { Subscription } from "rxjs";
 import { ReportDownloadComponent } from "./report-download.component";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Report } from "./report.model";
@@ -10,15 +9,13 @@ import { Report } from "./report.model";
  * Component used for single-student exam report download
  */
 @Component({
-  selector: '[group-report-download]',
+  selector: 'group-report-download,[group-report-download]',
   templateUrl: './report-download.component.html'
 })
 export class GroupReportDownloadComponent extends ReportDownloadComponent {
 
   @Input()
   public groupId: number;
-
-  private subscription: Subscription;
 
   constructor(private service: ReportService, notificationService: NotificationService) {
     super('labels.reports.button-label.group', notificationService);

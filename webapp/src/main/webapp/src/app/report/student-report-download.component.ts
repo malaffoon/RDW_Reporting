@@ -10,7 +10,7 @@ import { NotificationService } from "../shared/notification/notification.service
  * Component used for single-student exam report download
  */
 @Component({
-  selector: '[student-report-download]',
+  selector: 'student-report-download,[student-report-download]',
   templateUrl: './report-download.component.html'
 })
 export class StudentReportDownloadComponent extends ReportDownloadComponent {
