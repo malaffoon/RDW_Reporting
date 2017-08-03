@@ -11,6 +11,7 @@ import { AssessmentsModule } from "../assessments/assessments.module";
 import { GroupAssessmentService } from "./results/group-assessment.service";
 import { GroupAssessmentsResolve } from "./results/group-assessments.resolve";
 import { Angulartics2Module } from 'angulartics2';
+import { ReportModule } from "../report/report.module";
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { Angulartics2Module } from 'angulartics2';
     DataTableModule,
     SharedModule,
     PopoverModule,
+    ReportModule,
     Angulartics2Module.forChild()
   ],
   exports: [ GroupsComponent ],
