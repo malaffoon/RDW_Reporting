@@ -23,9 +23,6 @@ export class HomeComponent implements OnInit {
   }
 
   showComingSoon(featureName: string) {
-    let notif = new Notification('messages.coming-soon',  {dismissOnTimeout: 5000 });
-    notif.messageObject = { featureName: featureName };
-
-    this.notifService.showNotification(notif);
+    this.notifService.info({id: 'messages.coming-soon', args: { featureName: featureName }, dismissOnTimeout: 5000000 });
   }
 }
