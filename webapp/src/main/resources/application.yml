@@ -95,6 +95,9 @@ app:
       page-size: Letter
       zoom: 0.75
 
+  reportservice:
+    url: http://localhost:8083
+
   external-links:
     interpretive-guide: http://www.smarterbalanced.org/educators/
 
