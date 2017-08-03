@@ -6,24 +6,11 @@
                sortOrder="-1"
                tableStyleClass="table table-striped table-hover">
 
-    <p-column field="created" header="{{'labels.reports.column.created.header' | translate}}" sortable="true">
+    <p-column field="created" header="{{'labels.reports.table-column-header.created' | translate}}" sortable="true">
       <ng-template let-report="rowData" pTemplate="body">{{ report.created | date }}</ng-template>
     </p-column>
-    <p-column field="label" header="{{'labels.reports.column.label.header' | translate}}" sortable="true">
-      <ng-template let-report="rowData" pTemplate="body">
-        <a *ngIf="report.status === 'COMPLETED'" href="javascript:void(0)" (click)="getReport(report)">{{report.label}}</a>
-        <span *ngIf="report.status !== 'COMPLETED'">{{report.label}}</span>
-      </ng-template>
-    </p-column>
-    <p-column field="status" sortable="true">
-      <ng-template pTemplate="header">
-      <span info-label title="{{'labels.reports.column.status.header' | translate}}"
-            content="{{'labels.reports.column.status.title' | translate}}"></span>
-      </ng-template>
-      <ng-template let-report="rowData" pTemplate="body">
-        <span *ngIf="report.status !== 'COMPLETED'" class="label border-only maroon">{{ 'labels.reports.status.' + report.status | translate }}</span>
-      </ng-template>
-    </p-column>
+    <p-column field="label" header="{{'labels.reports.table-column-header.label' | translate}}" sortable="true"></p-column>
+    <p-column field="status" header="{{'labels.reports.table-column-header.status' | translate}}" sortable="true"></p-column>
   </p-dataTable>
 
 </div>
