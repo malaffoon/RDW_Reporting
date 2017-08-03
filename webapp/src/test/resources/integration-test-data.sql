@@ -19,14 +19,16 @@ insert into gender (id, code) values
 
 insert into student (id, ssid, last_or_surname, first_name, gender_id, gender_code, birthday, import_id, updated) values
   (-1, 'student1_ssid', 'student1_lastName', 'student1_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000'),
-  (-2, 'student2_ssid', 'student2_lastName', 'student2_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000');
+  (-2, 'student2_ssid', 'student2_lastName', 'student2_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000'),
+  (-3, 'student3_ssid', 'student3_lastName', 'student3_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000');
 
 insert into asmt (id, type_id, natural_id, grade_id, grade_code, subject_id, school_year, name, label, version,
   claim1_score_code, claim2_score_code, claim3_score_code, claim4_score_code,
   min_score, cut_point_1, cut_point_2, cut_point_3, max_score, import_id, updated) values
   (-1, 1, 'ica1', -1, 'g1', 1, 2017, 'ica1', 'ica1', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1, '2017-07-18 20:14:34.000000'),
   (-2, 2, 'iab1', -1, 'g1', 1, 2017, 'iab1', 'iab1', 'v1', null, null, null, null, 1, null, 2, null, 3, -1, '2017-07-18 20:14:34.000000'),
-  (-3, 3, 'sum1', -1, 'g1', 1, 2017, 'sum1', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '2017-07-18 20:14:34.000000');
+  (-3, 3, 'sum1', -1, 'g1', 1, 2017, 'sum1', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '2017-07-18 20:14:34.000000'),
+  (-4, 3, 'sum2', -1, 'g1', 2, 2017, 'sum1', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '2017-07-18 20:14:34.000000');
 
 insert into instructional_resource(name, resource) values
   ('iab1', 'http://www.google.com');
@@ -44,7 +46,8 @@ insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, oppo
   (-3, 3, -3, 'g3', -1, -20, 2, 0, 0, 0, 0, 2017, -3, 'v1', 2, 'Complete', 1, 'Valid', 'session3', 2200, 22, 3, '2017-01-01 00:00:00.000000', 1, 1000, 100, 2, 2000, 200, 3, 3000, 300, null, null, null, -1, '2017-07-18 20:14:34.000000'),
   (-4, 3, -1, 'g1', -1, -30, 3, 0, 0, 0, 0, 2017, -3, 'v1', 2, 'Complete', 1, 'Valid', 'session4', 2300, 23, 1, '2017-01-02 00:00:00.000000', 1, 1100, 110, 2, 2100, 210, 3, 3100, 310, null, null, null, -1, '2017-07-18 20:14:34.000000'),
   (-5, 3, -1, 'g1', -1, -30, 4, 0, 0, 0, 0, 2017, -3, 'v1', 2, 'Complete', 1, 'Valid', 'session5', 2400, 24, 2, '2017-01-05 00:00:00.000000', 1, 1200, 120, 2, 2200, 220, 3, 3200, 320, null, null, null, -1, '2017-07-18 20:14:34.000000'),
-  (-6, 3, -1, 'g1', -1, -30, null, 1, 1, 1, 1, 2017, -3, 'v1', 1, 'Partial', 2, 'Standardized', 'session6', null, null, null, '2017-01-03 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000');
+  (-6, 3, -1, 'g1', -1, -30, null, 1, 1, 1, 1, 2017, -3, 'v1', 1, 'Partial', 2, 'Standardized', 'session6', null, null, null, '2017-01-03 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000'),
+  (-7, 3, -1, 'g1', -2, -30, null, 1, 1, 1, 1, 2017, -4, 'v1', 1, 'Partial', 2, 'Standardized', 'session6', null, null, null, '2017-01-03 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000');
 
 -- items
 
@@ -84,11 +87,12 @@ insert into item_common_core_standard (item_id, common_core_standard_id) values
   (-2, -1),
   (-3, -4);
 
-
 -- groups
-
 insert into student_group (id, name, school_id, school_year, subject_id, import_id, updated) values
-  (-10, 'group1', -10, 2017, 1, -1, '2017-07-18 20:14:34.000000');
+  (-10, 'group1', -10, 2017, 1, -1, '2017-07-18 20:14:34.000000'),
+  (-20, 'group_ela', -10, 2017, 2, -1, '2017-07-18 20:14:34.000000');
 
 insert into student_group_membership (student_group_id, student_id) values
-  (-10, -1);
+  (-10, -1),
+  (-20, -1),
+  (-20, -2);
