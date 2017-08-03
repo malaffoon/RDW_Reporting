@@ -57,8 +57,8 @@ describe('SchoolResultsComponent', () => {
         DropdownModule,
         SharedModule,
         Angulartics2Module,
-        ReportModule,
-        PopoverModule.forRoot()
+        PopoverModule.forRoot(),
+        ReportModule
       ],
       declarations: [ SchoolResultsComponent ],
       providers: [
