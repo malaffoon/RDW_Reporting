@@ -8,3 +8,4 @@ export class MockActivatedRoute {
     return this.snapshotResult();
   }
 }
+

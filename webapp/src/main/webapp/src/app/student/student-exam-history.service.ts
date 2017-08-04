@@ -24,7 +24,7 @@ export class StudentExamHistoryService {
    */
   findOneById(id: number): Observable<StudentExamHistory> {
     return this.dataService.get(`/students/${id}/exams`)
-      .catch(ResponseUtils.notFoundToNull)
+      .catch(ResponseUtils.badResponseToNull)
       .map((apiExamHistory) => {
         if (apiExamHistory == null) return null;
 
@@ -47,7 +47,7 @@ export class StudentExamHistoryService {
     params.set('hasExams', 'true');
 
     return this.dataService.get(`/students/${ssid}`, {params: params})
-      .catch(ResponseUtils.notFoundToNull)
+      .catch(ResponseUtils.badResponseToNull)
       .map((apiStudent) => {
         if (apiStudent == null) return null;
 

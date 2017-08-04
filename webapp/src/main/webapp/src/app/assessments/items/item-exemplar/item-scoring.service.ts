@@ -13,7 +13,7 @@ export class ItemScoringService {
   getGuide(bankItemKey: string): Observable<ItemScoringGuide>{
     return this.dataService
       .get(`/examitems/${bankItemKey}/scoring`)
-      .catch(ResponseUtils.notFoundToNull)
+      .catch(ResponseUtils.badResponseToNull)
       .map((guide) => {
         if (guide == null) return null;
 

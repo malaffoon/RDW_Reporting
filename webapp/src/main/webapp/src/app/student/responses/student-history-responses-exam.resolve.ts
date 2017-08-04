@@ -14,13 +14,13 @@ export class StudentHistoryResponsesExamResolve implements Resolve<Exam> {
     let examId: number = route.params[ "examId" ];
     let history: StudentExamHistory = route.parent.data[ "examHistory" ];
     if (!history) {
-      throw("Cannot resolve parent's StudentExamHistory");
+      return null;
     }
 
     let wrappers: StudentHistoryExamWrapper[] = history.exams;
     let wrapper: StudentHistoryExamWrapper = wrappers.find( (wrapper) => wrapper.exam.id == examId );
     if (!wrapper) {
-      throw("Exam not found")
+      return null;
     }
 
     return wrapper.exam;

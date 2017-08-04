@@ -16,7 +16,7 @@ export class StudentHistoryResponsesStudentResolve implements Resolve<Student> {
     let examId: number = route.params[ "examId" ];
     let history: StudentExamHistory = route.parent.data[ "examHistory" ];
     if (!history) {
-      throw("Cannot resolve parent's StudentExamHistory");
+      return null;
     }
 
     return history.student;

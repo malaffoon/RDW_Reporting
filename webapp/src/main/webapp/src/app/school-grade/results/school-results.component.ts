@@ -113,14 +113,16 @@ export class SchoolResultsComponent implements OnInit {
         this.currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
       });
 
-    this.schoolService
-      .findGradesWithAssessmentsForSchool(this.currentSchool)
-      .subscribe(grades => {
-        this.availableGrades = grades;
-        this.gradesAreUnavailable = this.availableGrades.length == 0;
+    if(this.currentSchool) {
+      this.schoolService
+        .findGradesWithAssessmentsForSchool(this.currentSchool)
+        .subscribe(grades => {
+          this.availableGrades = grades;
+          this.gradesAreUnavailable = this.availableGrades.length == 0;
 
-        this.currentGrade = this.availableGrades.find(grade => grade.id == this.route.snapshot.params[ "gradeId" ]);
-      });
+          this.currentGrade = this.availableGrades.find(grade => grade.id == this.route.snapshot.params[ "gradeId" ]);
+        });
+    }
 
     this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
   }

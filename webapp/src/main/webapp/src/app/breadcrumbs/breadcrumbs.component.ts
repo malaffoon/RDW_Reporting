@@ -53,12 +53,24 @@ export class BreadcrumbsComponent implements OnInit{
       let translateParams = {};
 
       if(crumbData.resolve){
-        label = Utils.getPropertyValue(crumbData.resolve, child.snapshot.data);
+        try{
+          label = Utils.getPropertyValue(crumbData.resolve, child.snapshot.data);
+        }
+        catch(ex) {
+          console.error("Unable to get property value for breadcrumb.", ex);
+          label = this.getDefaultLabel(commands);
+        }
+
         requiresTranslate = false;
       }
-
       if(crumbData.translateResolve){
-        translateParams = Utils.getPropertyValue(crumbData.translateResolve, child.snapshot.data);
+        try {
+          translateParams = Utils.getPropertyValue(crumbData.translateResolve, child.snapshot.data);
+        }
+        catch(ex) {
+          console.error("Unable to get property value for breadcrumb.", ex);
+          label = this.getDefaultLabel(commands);
+        }
       }
 
       let breadcrumb: any = {
@@ -81,5 +93,9 @@ export class BreadcrumbsComponent implements OnInit{
       //recursive
       return this.getBreadcrumbs(child, commands, breadcrumbs);
     }
+  }
+
+  getDefaultLabel(commands) {
+    return _.findLast(commands, x => typeof(x) == 'string' );
   }
 }

@@ -5,7 +5,8 @@
         {{'labels.school-grade.school-name.label' | translate}}
       </label>
       <div>
-        <p-dropdown [options]="availableSchools"
+        <p-dropdown id="rdw-school-grade-select-school"
+                    [options]="availableSchools"
                     formControlName="school"
                     [filter]="true"
                     filterBy="label"
@@ -16,13 +17,17 @@
     </div>
     <div class="flex-child">
       <label for="grade-select">{{'labels.grade' | translate}}</label>
-      <select name="grade" formControlName="grade" id="grade-select" class="form-control">
+      <select id="rdw-school-grade-select-grade" name="grade" formControlName="grade" id="grade-select" class="form-control">
         <option disabled [ngValue]="selectNullOptionValue">{{'prompt.select' | translate}}</option>
         <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay:'long-name'}}</option>
       </select>
     </div>
     <div class="flex-child">
-      <button type="submit" [disabled]="searchForm.invalid || gradesAreUnavailable" class="btn btn-primary mt-md">{{'prompt.search' | translate}}</button>
+      <button
+        id="rdw-school-grade-submit"
+        type="submit"
+        [disabled]="searchForm.invalid || gradesAreUnavailable"
+        class="btn btn-primary mt-md">{{'prompt.search' | translate}}</button>
     </div>
   </div>
 </form>
