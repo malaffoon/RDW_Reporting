@@ -26,6 +26,9 @@ import { ReportModule } from "../../report/report.module";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
+import { UserService } from "../../user/user.service";
+import { MockUserService } from "../../../test/mock.user.service";
+import { ReportModule } from "../../report/report.module";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
