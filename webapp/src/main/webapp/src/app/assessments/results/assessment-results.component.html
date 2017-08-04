@@ -14,9 +14,13 @@
               </span>
             </div>
             <div class="col-md-4">
-              <span popover="{{ 'labels.menus.resources-disabled-message' | translate }}" triggers="{{assessmentExam.assessment.hasResourceUrl ? '': 'mouseenter:mouseleave'}}">
+              <span class="pull-right"
+                    popover="{{ 'labels.menus.resources-disabled-message' | translate }}"
+                    triggers="{{assessmentExam.assessment.hasResourceUrl ? '': 'mouseenter:mouseleave'}}"
+                    container="body"
+              >
                 <button
-                  class="btn btn-default btn-sm pull-right float-none-xs"
+                  class="btn btn-default btn-sm float-none-xs"
                   angulartics2On="click"
                   angularticsEvent="InstructionalResource"
                   angularticsCategory="AssessmentResults"
@@ -139,7 +143,7 @@
                           content="{{performanceLevelHeaderInfo | translate}}"></span>
             </ng-template>
             <ng-template let-exam="rowData" pTemplate="body">
-              {{ examLevelEnum + exam.level | translate }}
+              {{ examLevelEnum + (exam.level ? exam.level : 'missing') | translate }}
             </ng-template>
           </p-column>
           <p-column field="score" [sortable]="true" [hidden]="isClaimScoreSelected">

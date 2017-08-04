@@ -4,6 +4,7 @@ import { inject, TestBed } from "@angular/core/testing";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { Angular2CsvProvider } from "./angular-csv.provider";
 import Spy = jasmine.Spy;
+import {Exam} from "../assessments/model/exam.model";
 
 describe('CsvBuilder', () => {
   let datePipe: MockDatePipe;
@@ -64,6 +65,32 @@ describe('CsvBuilder', () => {
       expect(tabularData[1]).toEqual(["value A1", "value B1"]);
       expect(tabularData[2]).toEqual(["value A2", "value B2"]);
     }));
+
+  it('should create tabular data from source data handling empty scale scores',
+    inject([ CsvBuilder ], (builder: CsvBuilder) => {
+      let exams = [ {score: 2580, level: 1 }, {score: null, level: null}].map(x => {
+        let exam = new Exam();
+        exam.score = x.score;
+        exam.level = x.level;
+
+        return exam;
+      });
+
+      builder
+        .newBuilder()
+        .withScaleScore((exam) => exam)
+        .withAchievementLevel((exam) => exam)
+        .withReportingCategory((exam) => exam)
+        .build(exams);
+
+      let tabularData: string[][] = angular2Csv.export.calls.mostRecent().args[0];
+
+      expect(tabularData.length).toBe(3);
+      expect(tabularData[0]).toEqual(["labels.groups.results.assessment.exams.cols.score", "labels.groups.results.assessment.exams.cols.ica.performance", "labels.groups.results.assessment.exams.cols.iab.performance"]);
+      expect(tabularData[1]).toEqual([2580, "enum.achievement-level.full.1", "enum.iab-category.full.1"]);
+      expect(tabularData[2]).toEqual(["", "", ""]);
+    }));
+
 });
 
 export class MockDatePipe {
@@ -72,4 +99,8 @@ export class MockDatePipe {
 
 export class MockDecimalPipe {
   transform: Spy = jasmine.createSpy("transform");
+}
+
+export class MockTranslateService {
+  instant: Spy = jasmine.createSpy("instant");
 }
