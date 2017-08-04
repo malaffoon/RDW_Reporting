@@ -4,30 +4,16 @@ import { Observable } from "rxjs";
  * This class holds common response handling utility methods.
  */
 export class ResponseUtils {
-
+  // TODO: Investigate api inconsistencies in returning 404 vs. 403.
   /**
-   * Handle a 404 Response code as a null response.
+   * Handle a Bad Response codes as a null response.
    * Any other response code is re-thrown.
    *
    * @param response  The response
    * @returns {Observable} A null response for 404, otherwise an error
    */
-  static notFoundToNull(response: Response): Observable<Response> {
-    if (response.status === 404) {
-      return Observable.of(null);
-    }
-    return Observable.throw(response);
-  }
-
-  /**
-   * Handle a 404 Response code as an empty array response.
-   * Any other response code is re-thrown.
-   *
-   * @param response  The response
-   * @returns {Observable} An empty array response for 404, otherwise an error
-   */
-  static notFoundToEmptyArray(response: Response): Observable<Response> {
-    if (response.status === 404) {
+  static badResponseToNull(response: Response): Observable<Response> {
+    if ([ 400, 403, 404 ].indexOf(response.status) !== -1) {
       return Observable.of(null);
     }
     return Observable.throw(response);

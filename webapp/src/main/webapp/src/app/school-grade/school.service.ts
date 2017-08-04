@@ -24,7 +24,7 @@ export class SchoolService {
   findGradesWithAssessmentsForSchool(school: School): Observable<Grade[]> {
     return this.dataService
       .get(`/schools/${school.id}/assessmentGrades`)
-      .catch(ResponseUtils.notFoundToEmptyArray)
+      .catch(ResponseUtils.badResponseToNull)
       .map((apiGrades) => this.mapGradesFromApi(apiGrades));
   }
   private mapGradesFromApi(apiGrades: any[]): Grade[] {

@@ -1,14 +1,17 @@
-<div class="mb-md">
+<div *ngIf="student" class="mb-md">
   <div class="tag tag-lg blue ">
     <span class="label">{{'labels.student.name' | translate:student}}</span>
     <span>{{student.ssid}}</span>
   </div>
 </div>
+<div *ngIf="!student" class="alert alert-danger">
+  {{ 'labels.student.messages.null-student' | translate }}
+</div>
 
 <h3 class="blue mb-md">{{'labels.student.responses.title' | translate}}</h3>
 
-<div class="well">
-  <div class="mb-md">
+<div *ngIf="student" class="well">
+  <div *ngIf="assessment" class="mb-md">
     <span class="tag tag-md {{colorService.getColor(getGradeIndex(assessment.grade))}}">
       <span class="label">{{assessment.grade | gradeDisplay}}</span>
           <span>{{assessment.name}}</span>
@@ -19,7 +22,7 @@
     </span>
   </div>
 
-  <p-dataTable [value]="assessmentItems"
+  <p-dataTable *ngIf="assessmentItems" [value]="assessmentItems"
                emptyMessage="{{'messages.noExamsMatchingCriteria' | translate}}"
                sortField="assessmentItem.position"
                tableStyleClass="table table-striped table-hover"

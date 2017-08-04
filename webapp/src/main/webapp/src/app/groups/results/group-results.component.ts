@@ -31,7 +31,9 @@ export class GroupResultsComponent implements OnInit {
 
   set currentGroup(value) {
     this._currentGroup = value;
-    this.assessmentProvider.groupId = this._currentGroup.id;
+    if(this._currentGroup) {
+      this.assessmentProvider.groupId = this._currentGroup.id;
+    }
   }
 
   get currentSchoolYear() {

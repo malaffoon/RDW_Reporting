@@ -6,12 +6,7 @@ import { GroupAssessmentService } from "./group-assessment.service";
 @Injectable()
 export class GroupAssessmentsResolve implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>|Promise<any>|any {
-    // TODO: Check params to return most recent or custom.
-    return this.service.getMostRecentAssessment(route.params[ "groupId" ], route.params[ "schoolYear" ])
-      .toPromise()
-      .then(value => {
-        return value;
-      })
+    return this.service.getMostRecentAssessment(route.params[ "groupId" ], route.params[ "schoolYear" ]);
   }
 
   constructor(private service: GroupAssessmentService) {
