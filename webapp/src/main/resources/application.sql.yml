@@ -23,3 +23,17 @@ sql:
   status:
     readTest: >-
       SELECT ist.name FROM import_status ist
+
+  student_group_batch:
+    create: >-
+      INSERT INTO upload_student_group_batch (status, digest, creator, message)
+        VALUES (:status, :digest, :creator, :message)
+
+    findOne: >-
+      SELECT * FROM upload_student_group_batch WHERE id=:id
+
+    findOneByDigest: >-
+      SELECT * FROM upload_student_group_batch WHERE digest=:digest LIMIT 1
+
+    sqlFindByCreator: >-
+      SELECT * FROM upload_student_group_batch WHERE creator=:creator
