@@ -7,14 +7,10 @@ import { Observable } from "rxjs";
 import { RequestOptionsArgs } from "@angular/http";
 import { ActivatedRoute, Router } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
-import { SchoolResultsComponent } from "./school-results.component";
 import { AssessmentsModule } from "../../assessments/assessments.module";
 import { CommonModule } from "../../shared/common.module";
-import { SchoolService } from "../school.service";
 import { DataService } from "../../shared/data/data.service";
-import { SchoolAssessmentService } from "./school-assessment.service";
 import { User } from "../../user/model/user.model";
-import { School } from "../../user/model/school.model";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { Angulartics2Module, Angulartics2 } from "angulartics2";
@@ -24,22 +20,24 @@ import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
+import { GroupResultsComponent } from "./group-results.component";
+import { GroupAssessmentService } from "./group-assessment.service";
 
 let availableGrades = [];
 
-describe('SchoolResultsComponent', () => {
-  let component: SchoolResultsComponent;
-  let fixture: ComponentFixture<SchoolResultsComponent>;
+describe('GroupResultsComponent', () => {
+  let component: GroupResultsComponent;
+  let fixture: ComponentFixture<GroupResultsComponent>;
   let exportService: any;
   let route: MockActivatedRoute;
 
   beforeEach(async(() => {
     let user = new User();
-    user.schools = [ { name: "Ogden", id: 2 } ];
+    user.groups = [ { name: "Group 1", id: 2, schoolName: '', subjectId: [ 'ELA' ] } ];
 
     let mockRouteSnapshot: any = {};
     mockRouteSnapshot.data = { user: user };
-    mockRouteSnapshot.params = { schoolId: 2 };
+    mockRouteSnapshot.params = { groupId: 2 };
 
     route = new MockActivatedRoute();
     route.snapshotResult.and.returnValue(mockRouteSnapshot);
@@ -63,14 +61,13 @@ describe('SchoolResultsComponent', () => {
         PopoverModule.forRoot(),
         ReportModule
       ],
-      declarations: [ SchoolResultsComponent ],
+      declarations: [ GroupResultsComponent ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Router, useClass: MockRouter },
-        SchoolAssessmentService,
+        GroupAssessmentService,
         { provide: DataService, useClass: MockDataService },
         { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionService },
-        { provide: SchoolService, useClass: MockSchoolService },
         {
           provide: ActivatedRoute,
           useValue: route
@@ -84,7 +81,7 @@ describe('SchoolResultsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchoolResultsComponent);
+    fixture = TestBed.createComponent(GroupResultsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -93,9 +90,8 @@ describe('SchoolResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
-  it('should init if school is null', () => {
-    route.snapshot.params[ "schoolId" ] = 212122;
+  it('should init if current group is null', () => {
+    route.snapshot.params[ "groupId" ] = 2342;
 
     component.ngOnInit();
     fixture.detectChanges();
@@ -103,44 +99,11 @@ describe('SchoolResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should try to keep grade if it is available on school change', () => {
-    availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
-
-    component.currentGrade = { code: "04", id: 4 };
-    component.schoolSelectChanged();
-
-    expect(component.currentGrade.id).toBe(4);
-  });
-
-  it('should default to the first available grade if it is not available on school change', () => {
-    availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
-
-    component.currentGrade = { code: "11", id: 11 };
-    component.schoolSelectChanged();
-
-    expect(component.currentGrade.id).toBe(3);
-  });
-
-  it('should unselect a grade when no grades are available.', () => {
-    availableGrades = [];
-
-    component.currentGrade = { code: "11", id: 11 };
-    component.schoolSelectChanged();
-
-    expect(component.currentGrade).toBeUndefined();
-  });
 });
-
 
 class MockDataService {
   get(url, options?: RequestOptionsArgs): Observable<any> {
     return Observable.of({});
-  }
-}
-
-class MockSchoolService {
-  findGradesWithAssessmentsForSchool(school: School) {
-    return Observable.of(availableGrades);
   }
 }
 
