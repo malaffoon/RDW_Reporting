@@ -16,33 +16,13 @@ export class ReportService {
   }
 
   /**
-   * TODO: hook up to API
-   *
    * Gets a list of all reports for the logged in user
    *
    * @returns {Observable<Report[]>}
    */
   public getReports(): Observable<Report[]> {
-
-    let report1 = new Report();
-    report1.id = 1;
-    report1.label = 'Report 1';
-    report1.created = new Date(2017, 1, 1);
-    report1.status = 'EXPIRED';
-
-    let report2 = new Report();
-    report2.id = 2;
-    report2.label = 'Report 2';
-    report2.created = new Date(2017, 1, 2);
-    report2.status = 'FAILED';
-
-    let report3 = new Report();
-    report3.id = 3;
-    report3.label = 'Report 3';
-    report3.created = new Date(2017, 1, 3);
-    report3.status = 'COMPLETED';
-
-    return Observable.of([report1, report2, report3]);
+    return this.dataService.get('/reports')
+      .map(reports => (reports || []).map(this.toReport));
   }
 
   /**
@@ -53,7 +33,7 @@ export class ReportService {
    * @returns {Observable<Download>}
    */
   public getStudentExamReport(studentId: number, options: ReportOptions): Observable<Download> {
-    return this.getExamReport(`/students/${studentId}/examReport`, options);
+    return this.getExamReport(`/students/${studentId}/report`, options);
   }
 
   /**
@@ -64,7 +44,7 @@ export class ReportService {
    * @returns {Observable<Report>} the handle used the get status on the download
    */
   public createGroupExamReport(groupId: number, options: ReportOptions): Observable<Report> {
-    return this.createBatchExamReport(`/groups/${groupId}/examReports`, options);
+    return this.createBatchExamReport(`/groups/${groupId}/reports`, options);
   }
 
   /**
@@ -76,7 +56,7 @@ export class ReportService {
    * @returns {Observable<Report>} the handle used the get status on the download
    */
   public createSchoolGradeExamReport(schoolId: number, gradeId: number, options: ReportOptions): Observable<Report> {
-    return this.createBatchExamReport(`/schools/${schoolId}/assessmentGrades/${gradeId}/examReports`, options);
+    return this.createBatchExamReport(`/schools/${schoolId}/assessmentGrades/${gradeId}/reports`, options);
   }
 
   /**
@@ -86,7 +66,7 @@ export class ReportService {
    * @returns {Observable<Download>}
    */
   public getBatchExamReport(reportId: number): Observable<Download> {
-    return this.getExamReport(`/examReports/${reportId}`);
+    return this.getExamReport(`/reports/${reportId}`);
   }
 
   /**
