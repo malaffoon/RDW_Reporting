@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ResponseContentType, Headers } from "@angular/http";
+import { ResponseContentType, Headers, RequestOptions } from "@angular/http";
 import { ReportOptions } from "./report-options.model";
 import { Observable } from "rxjs";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
@@ -77,8 +77,9 @@ export class ReportService {
    * @returns {Observable<Report>}
    */
   private createBatchExamReport(url: string, options: ReportOptions): Observable<Report> {
-    return this.dataService.post(url, { params: this.toBatchReportRequestParameters(options) })
-      .map(this.toReport);
+    return this.dataService.post(url, this.toBatchReportRequestParameters(options), {
+      headers: new Headers({ 'Content-Type': 'application/json' })
+    }).map(this.toReport);
   }
 
   /**
@@ -109,8 +110,7 @@ export class ReportService {
       assessmentType: AssessmentType[ options.assessmentType ],
       subject: AssessmentSubjectType[ options.subject ],
       schoolYear: options.schoolYear,
-      language: options.language,
-      grayscale: options.grayscale
+      language: options.language
     };
   }
 
@@ -124,7 +124,6 @@ export class ReportService {
     return {
       schoolYear: options.schoolYear,
       language: options.language,
-      grayscale: options.grayscale,
       order: ReportOrder[ options.order ]
     };
   }
