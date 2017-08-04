@@ -4,8 +4,8 @@
           (click)="showComingSoon()"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{buttonLabel | translate}}</button>
 
   <button *ngIf="!production" class="btn btn-sm btn-default"
-          [containerClass]="'report-download-popover'"
-          [placement]="'bottom'"
+          containerClass="report-download-popover"
+          placement="bottom"
           [popover]="popoverTemplate"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{buttonLabel | translate}}</button>
 
   <template #popoverTemplate>
