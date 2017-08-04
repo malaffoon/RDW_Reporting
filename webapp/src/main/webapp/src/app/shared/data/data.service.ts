@@ -65,7 +65,8 @@ export class DataService {
    * @returns {string} the file name
    */
   private getFileNameFromResponse(response: Response): string {
-    return response.headers.get('Content-Disposition').split(';')[ 1 ].trim().split('=')[ 1 ].replace(/"/g, '');
+    let header: string = response.headers.get('Content-Disposition');
+    return header == null ? null : header.split(';')[ 1 ].trim().split('=')[ 1 ].replace(/"/g, '');
   }
 
   /**
@@ -75,7 +76,8 @@ export class DataService {
    * @returns {string} the content type
    */
   private getContentType(response: Response): string {
-    return response.headers.get('Content-Type').trim();
+    let header: string = response.headers.get('Content-Type');
+    return header == null ? null : header.trim();
   }
 
 }
