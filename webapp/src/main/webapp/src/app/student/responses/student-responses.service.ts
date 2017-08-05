@@ -24,7 +24,7 @@ export class StudentResponsesService {
    */
   findItemsByStudentAndExam(studentId: number, examId: number): Observable<AssessmentItem[]> {
     return this.dataService.get(`/students/${studentId}/exams/${examId}/examitems`)
-      .catch(ResponseUtils.notFoundToEmptyArray)
+      .catch(ResponseUtils.badResponseToNull)
       .map((apiExamItems) => {
         if (!apiExamItems) return null;
 

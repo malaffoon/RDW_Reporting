@@ -1,4 +1,4 @@
-<div class="mb-md">
+<div *ngIf="currentSchool" class="mb-md">
   <span class="h3 blue-dark">{{currentSchool.name}}<span *ngIf="currentGrade"> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></span>
   <span class="pull-right text-right">
     <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
@@ -9,6 +9,10 @@
         [schoolYears]="filterOptions.schoolYears">
     </span>
   </span>
+</div>
+
+<div *ngIf="!currentSchool" class="alert alert-danger">
+  {{'labels.school-grade.messages.null-school' | translate }}
 </div>
 
 <assessments [assessmentExams]="assessmentExams"

@@ -47,10 +47,11 @@ export class StudentResultsComponent implements OnInit {
 
   ngOnInit(): void {
     this.examHistory = this.route.snapshot.data[ "examHistory" ];
-    this.initializeFilter(
-      this.examHistory.exams,
-      this.route.snapshot.params);
-    this.applyFilter();
+
+    if(this.examHistory) {
+      this.initializeFilter(this.examHistory.exams,this.route.snapshot.params);
+      this.applyFilter();
+    }
 
     this.userService.getCurrentUser().subscribe(user => {
       this.minimumItemDataYear = user.configuration.minItemDataYear;

@@ -26,6 +26,7 @@ import { ReportModule } from "../../report/report.module";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
+import { MockActivatedRoute } from "../../../test/mock.activated-route";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -91,6 +92,17 @@ describe('StudentResultsComponent', () => {
   });
 
   it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should create without error when history is null', () => {
+    let snapshot = route.snapshot;
+    snapshot.params[ 'schoolYear' ] = '2017';
+    snapshot.data['examHistory'] = null;
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 
@@ -240,10 +252,3 @@ class MockBuilder {
   }
 }
 
-class MockActivatedRoute {
-  snapshotResult: Spy = createSpy("snapshot");
-
-  get snapshot(): any {
-    return this.snapshotResult();
-  }
-}

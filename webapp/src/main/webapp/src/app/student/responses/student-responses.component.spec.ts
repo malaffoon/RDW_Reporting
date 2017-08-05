@@ -60,6 +60,24 @@ describe('StudentResponsesComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should init when student is null', () => {
+    route.snapshot.data["student"] = null;
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+  });
+
+  it('should init when assessment is null', () => {
+    route.snapshot.data["assessment"] = null;
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+  });
+
   it('should calculate correctness property', () => {
     let fullCredit = new AssessmentItem();
     fullCredit.maxPoints = 2;
