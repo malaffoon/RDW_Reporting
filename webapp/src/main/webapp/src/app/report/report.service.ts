@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ResponseContentType, Headers, RequestOptions } from "@angular/http";
+import { ResponseContentType, Headers } from "@angular/http";
 import { ReportOptions } from "./report-options.model";
 import { Observable } from "rxjs";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
@@ -8,6 +8,7 @@ import { DataService } from "../shared/data/data.service";
 import { Download } from "../shared/data/download.model";
 import { Report } from "./report.model";
 import { ReportOrder } from "./report-order.enum";
+import { ResponseUtils } from "../shared/response-utils";
 
 @Injectable()
 export class ReportService {
@@ -22,6 +23,7 @@ export class ReportService {
    */
   public getReports(): Observable<Report[]> {
     return this.dataService.get('/reports')
+      .catch(ResponseUtils.badResponseToNull)
       .map(reports => (reports || []).map(this.toReport));
   }
 
@@ -77,9 +79,17 @@ export class ReportService {
    * @returns {Observable<Report>}
    */
   private createBatchExamReport(url: string, options: ReportOptions): Observable<Report> {
-    return this.dataService.post(url, this.toBatchReportRequestParameters(options), {
-      headers: new Headers({ 'Content-Type': 'application/json' })
-    }).map(this.toReport);
+    return this.dataService
+      .post(url, this.toBatchReportRequestParameters(options), {
+        headers: new Headers({ 'Content-Type': 'application/json' })
+      })
+      .catch(ResponseUtils.badResponseToNull)
+      .map(report => {
+        if (report == null) {
+          throw new Error('Error creating report');
+        }
+        return this.toReport(report);
+      });
   }
 
   /**
@@ -93,10 +103,10 @@ export class ReportService {
     return this.dataService.get(url, {
       params: options != null ? this.toSingleReportRequestParameters(options) : null,
       headers: new Headers({
-        Accept: 'application/pdf'
+        'Accept': 'application/pdf',
       }),
       responseType: ResponseContentType.Blob
-    });
+    }).catch(ResponseUtils.badResponseToNull);
   }
 
   /**
@@ -110,7 +120,8 @@ export class ReportService {
       assessmentType: AssessmentType[ options.assessmentType ],
       subject: AssessmentSubjectType[ options.subject ],
       schoolYear: options.schoolYear,
-      language: options.language
+      language: options.language,
+      grayscale: options.grayscale
     };
   }
 

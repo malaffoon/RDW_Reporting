@@ -375,7 +375,7 @@
     "reports": {
       "link": "My Reports",
       "heading": "My Reports",
-      "no-reports": "To create a report, navigate to the school or group you want to create the report for and click the report button near the top right of the page.",
+      "no-reports-html": "<p>To create a report, select a group or school from the <a href=\"/\">Home page</a> then click the \"Student Reports\" button to get started.",
       "column": {
         "created": {
           "header": "Date"

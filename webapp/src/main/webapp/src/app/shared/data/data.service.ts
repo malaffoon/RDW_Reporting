@@ -31,6 +31,7 @@ export class DataService {
    * Posts data to the API server
    *
    * @param url the API endpoint
+   * @param body the request body
    * @param options parameters to communicate to the API
    * @returns {Observable<R>}
    */
