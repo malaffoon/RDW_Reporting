@@ -28,8 +28,8 @@
                     <i class="fa fa-user-circle"></i> <span *ngIf="user">{{'welcome' | translate:user }}</span> <span class="caret"></span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li *ngIf="!production">
-                      <a class="dropdown-item" href="/reports">{{'labels.reports.link' | translate}}</a>
+                    <li role="menuitem" *sbAuthorize="['GROUP_PII_READ']">
+                      <a class="dropdown-item" routerLink="/reports">{{'labels.reports.link' | translate}}</a>
                     </li>
                     <li role="menuitem">
                       <a class="dropdown-item" href="javascript:void(0)" onclick="window.document.logoutForm.submit()">{{'messages.logout' | translate}}</a>

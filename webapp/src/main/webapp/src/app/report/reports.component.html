@@ -1,19 +1,19 @@
 <h3 class="blue mb-md">{{'labels.reports.heading' | translate}}</h3>
 <div class="well">
-  <p-dataTable [value]="reports"
-               emptyMessage="{{'labels.reports.no-reports' | translate}}"
-               sortField="created"
-               sortOrder="-1"
-               tableStyleClass="table table-striped table-hover">
+
+  <p *ngIf="!reports.length" [innerHtml]="'labels.reports.no-reports-html' | translate"></p>
+
+  <p-dataTable *ngIf="reports.length"
+      [value]="reports"
+      sortField="created"
+      sortOrder="-1"
+      tableStyleClass="table table-striped table-hover">
 
     <p-column field="created" header="{{'labels.reports.column.created.header' | translate}}" sortable="true">
       <ng-template let-report="rowData" pTemplate="body">{{ report.created | date }}</ng-template>
     </p-column>
     <p-column field="label" header="{{'labels.reports.column.label.header' | translate}}" sortable="true">
-      <ng-template let-report="rowData" pTemplate="body">
-        <a *ngIf="report.status === 'COMPLETED'" href="javascript:void(0)" (click)="getReport(report)">{{report.label}}</a>
-        <span *ngIf="report.status !== 'COMPLETED'">{{report.label}}</span>
-      </ng-template>
+      <ng-template let-report="rowData" pTemplate="body">{{report.label}}</ng-template>
     </p-column>
     <p-column field="status" sortable="true">
       <ng-template pTemplate="header">
@@ -21,7 +21,12 @@
             content="{{'labels.reports.column.status.title' | translate}}"></span>
       </ng-template>
       <ng-template let-report="rowData" pTemplate="body">
-        <span *ngIf="report.status !== 'COMPLETED'" class="label border-only maroon">{{ 'labels.reports.status.' + report.status | translate }}</span>
+        <span class="label border-only {{report.getStatusColor()}}">{{ 'labels.reports.status.' + report.status | translate }}</span>
+      </ng-template>
+    </p-column>
+    <p-column>
+      <ng-template let-report="rowData" pTemplate="body">
+        <button *ngIf="report.isCompleted()" class="btn btn-info btn-xs pull-right" (click)="getReport(report)"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.form.submit' | translate}}</button>
       </ng-template>
     </p-column>
   </p-dataTable>

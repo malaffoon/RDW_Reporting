@@ -23,6 +23,9 @@ export class GroupReportDownloadComponent extends ReportDownloadComponent {
   }
 
   public submit(): void {
+
+    this.popover.hide();
+
     this.service.createGroupExamReport(this.groupId, this.options)
       .subscribe(
         (report: Report) => {

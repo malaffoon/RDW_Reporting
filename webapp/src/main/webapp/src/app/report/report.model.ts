@@ -10,4 +10,22 @@ export class Report {
   public status: string;
   public created: Date;
 
+  public isCompleted(): boolean {
+    return this.status === 'COMPLETED';
+  }
+
+  public isProcessing(): boolean {
+    return this.status === 'PENDING' || this.status === 'RUNNING';
+  }
+
+  public getStatusColor(): string {
+    if (this.isCompleted()) {
+      return 'blue-dark';
+    }
+    if (this.isProcessing()) {
+      return 'aqua';
+    }
+    return 'maroon';
+  }
+
 }

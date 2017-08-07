@@ -14,11 +14,6 @@ import { isNullOrUndefined } from "util";
 })
 export class AppComponent {
 
-  /**
-   * TODO: remove when reports link is ready
-   */
-  public production: boolean = environment.production;
-
   interpretiveGuide: string;
 
   private _lastPoppedUrl: string;
