@@ -31,12 +31,13 @@ export class DataService {
    * Posts data to the API server
    *
    * @param url the API endpoint
+   * @param body the request body
    * @param options parameters to communicate to the API
    * @returns {Observable<R>}
    */
-  public post(url: string, options?: RequestOptionsArgs): Observable<any> {
+  public post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
     return this.http
-      .post(`/api${url}`, options)
+      .post(`/api${url}`, body, options)
       .map(this.getMapper(options));
   }
 

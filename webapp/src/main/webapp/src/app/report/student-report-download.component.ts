@@ -18,16 +18,17 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
   @Input()
   public studentId: number;
 
-  private subscription: Subscription;
-
   constructor(private service: ReportService, notificationService: NotificationService) {
     super('labels.reports.button-label.student', notificationService);
   }
 
   public submit(): void {
 
-    // Keep handle on subscription for disabling submit button
-    this.subscription = this.service.getStudentExamReport(this.studentId, this.options)
+    this.popover.hide();
+
+    this.notificationService.info({ id: 'labels.reports.messages.submitted-single' });
+
+    this.service.getStudentExamReport(this.studentId, this.options)
       .subscribe(
         (download: Download) => {
           saveAs(download.content, download.name);
@@ -40,11 +41,6 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
           }
 
           this.notificationService.error({ id: messageKey });
-
-          this.subscription = null;
-        },
-        () => {
-          this.subscription = null;
         }
       )
     ;

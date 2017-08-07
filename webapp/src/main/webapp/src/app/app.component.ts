@@ -13,11 +13,6 @@ import { environment } from "../environments/environment";
 })
 export class AppComponent {
 
-  /**
-   * TODO: remove when reports link is ready
-   */
-  public production: boolean = environment.production;
-
   interpretiveGuide: string;
 
   private _lastPoppedUrl: string;
