@@ -21,7 +21,7 @@
             content="{{'labels.reports.column.status.title' | translate}}"></span>
       </ng-template>
       <ng-template let-report="rowData" pTemplate="body">
-        <span class="label border-only {{report.getColor()}}">{{ 'labels.reports.status.' + report.status | translate }}</span>
+        <span class="label border-only {{report.getStatusColor()}}">{{ 'labels.reports.status.' + report.status | translate }}</span>
       </ng-template>
     </p-column>
     <p-column>
