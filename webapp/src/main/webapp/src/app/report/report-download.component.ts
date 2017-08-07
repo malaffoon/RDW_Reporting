@@ -1,15 +1,19 @@
-import { OnInit, Input } from "@angular/core";
+import { OnInit, Input, ViewChild } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
 import { saveAs } from "file-saver";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { ReportOrder } from "./report-order.enum";
+import { PopoverDirective } from "ngx-bootstrap";
 
 /**
  * Abstract class used to carry the common logic between all exam report download components
  */
 export abstract class ReportDownloadComponent implements OnInit {
+
+  @ViewChild('downloadPopover')
+  protected popover: PopoverDirective;
 
   @Input()
   public schoolYears: number[];
@@ -36,6 +40,7 @@ export abstract class ReportDownloadComponent implements OnInit {
     defaultOptions.grayscale = false;
     this.options = defaultOptions;
   }
+
 
   /**
    * Implement this to give behavior to the exam report download form when it is submitted

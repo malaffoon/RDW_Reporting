@@ -26,6 +26,9 @@ export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
   }
 
   public submit(): void {
+
+    this.popover.hide();
+
     this.service.createSchoolGradeExamReport(this.schoolId, this.gradeId, this.options)
       .subscribe(
         (report: Report) => {
