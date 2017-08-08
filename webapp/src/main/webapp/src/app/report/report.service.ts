@@ -24,7 +24,28 @@ export class ReportService {
   public getReports(): Observable<Report[]> {
     return this.dataService.get('/reports')
       .catch(ResponseUtils.badResponseToNull)
-      .map(reports => (reports || []).map(this.toReport));
+      .map(reports => {
+        if (reports == null) {
+          throw new Error('Error getting reports');
+        }
+        return reports.map(this.toReport)
+      });
+  }
+
+  /**
+   * Gets a list of all reports for the logged in user
+   *
+   * @returns {Observable<Report[]>}
+   */
+  public getReportsById(ids: number[]): Observable<Report[]> {
+    return this.dataService.get('/reports')
+      .catch(ResponseUtils.badResponseToNull)
+      .map(reports => {
+        if (reports == null) {
+          throw new Error('Error getting reports');
+        }
+        return reports.map(this.toReport)
+      });
   }
 
   /**

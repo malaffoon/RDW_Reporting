@@ -22,6 +22,55 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.reports = this.route.snapshot.data[ 'reports' ];
+
+    /*
+     Start report status polling
+     Since reports currently cannot be generated on this page we do not have to dynamically update the IDs to pull
+     */
+
+    let pollingInterval: number = 5000;
+
+    setInterval(() => {
+
+      // get all report IDs for reports that are in progress
+      let ids: number[] = this.reports
+        .filter(report => report.isProcessing())
+        .map(report => report.id);
+
+      // optimally only call API if there are reports that are in progress
+      if (ids.length) {
+
+        // optimally only send IDs of reports that are in progress
+        this.service.getReportsById(ids).subscribe(
+          remoteReports => {
+
+            // flag set when one or more reports are found to have a new status
+            let updated: boolean = false;
+
+            // creates a copy of the existing report collection and updates it with reports that have changed
+            let updatedReports: Report[] = this.reports.map(local => {
+              let remote: Report = remoteReports.find(remote => remote.id === local.id);
+              if (remote !== undefined && remote.status !== local.status) {
+                updated = true;
+                return remote;
+              }
+              return local;
+            });
+
+            // optimally updates the local report collection only when a change is detected
+            if (updated) {
+              this.reports = updatedReports;
+            }
+
+          },
+          error => {
+            console.error('Error pulling report status');
+          }
+        );
+      }
+
+    }, pollingInterval);
+
   }
 
   public getReport(report: Report) {
@@ -32,7 +81,7 @@ export class ReportsComponent implements OnInit {
           saveAs(download.content, download.name);
         },
         (error: any) => {
-          this.notificationService.error({id: 'labels.reports.messages.download-failed'});
+          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
         }
       );
   }
