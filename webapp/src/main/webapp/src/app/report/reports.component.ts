@@ -5,6 +5,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ReportService } from "./report.service";
 import { Download } from "../shared/data/download.model";
 import { NotificationService } from "../shared/notification/notification.service";
+import Timer = NodeJS.Timer;
 
 /**
  * Responsible for controlling the behavior of the reports page
@@ -16,6 +17,8 @@ import { NotificationService } from "../shared/notification/notification.service
 export class ReportsComponent implements OnInit {
 
   public reports: Report[];
+  private statusPollingInterval: number = 3000;
+  private statusPollingTimer: Timer;
 
   constructor(private route: ActivatedRoute, private service: ReportService, private notificationService: NotificationService) {
   }
@@ -27,10 +30,13 @@ export class ReportsComponent implements OnInit {
      Start report status polling
      Since reports currently cannot be generated on this page we do not have to dynamically update the IDs to pull
      */
+    if (this.reports != null) {
+      this.startPollingStatus();
+    }
+  }
 
-    let pollingInterval: number = 5000;
-
-    setInterval(() => {
+  private startPollingStatus() {
+    this.statusPollingTimer = setInterval(() => {
 
       // get all report IDs for reports that are in progress
       let ids: number[] = this.reports
@@ -38,7 +44,7 @@ export class ReportsComponent implements OnInit {
         .map(report => report.id);
 
       // optimally only call API if there are reports that are in progress
-      if (ids.length) {
+      if (ids.length > 0) {
 
         // optimally only send IDs of reports that are in progress
         this.service.getReportsById(ids).subscribe(
@@ -64,13 +70,22 @@ export class ReportsComponent implements OnInit {
 
           },
           error => {
-            console.error('Error pulling report status');
+            console.error('Error polling report status');
           }
         );
+      } else {
+        this.stopPollingStatus();
       }
 
-    }, pollingInterval);
+    }, this.statusPollingInterval);
+  }
 
+  private stopPollingStatus() {
+    clearInterval(this.statusPollingTimer);
+  }
+
+  public reload() {
+    window.location.reload();
   }
 
   public getReport(report: Report) {

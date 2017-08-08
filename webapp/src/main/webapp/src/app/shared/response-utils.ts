@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
  * This class holds common response handling utility methods.
  */
 export class ResponseUtils {
-  // TODO: Investigate api inconsistencies in returning 404 vs. 403.
+
   /**
    * Handle a Bad Response codes as a null response.
    * Any other response code is re-thrown.
@@ -18,5 +18,7 @@ export class ResponseUtils {
     }
     return Observable.throw(response);
   }
+
+  static toNull = (): Observable<any> => Observable.of(null);
 
 }
