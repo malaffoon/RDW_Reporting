@@ -39,9 +39,18 @@
       }
     },
     "languages": {
-      "eng": "English",
-      "spa": "Español",
-      "vie": "Tiếng Việt"
+      "eng": {
+        "native": "English",
+        "default" : "English"
+      },
+      "spa": {
+        "native": "Español",
+        "default": "Spanish"
+      },
+      "vie": {
+        "native": "Tiếng Việt",
+        "default": "Vietnamese"
+      }
     },
     "assessmentTypes": {
       "1": {
