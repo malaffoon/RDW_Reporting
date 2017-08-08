@@ -19,12 +19,14 @@ import { PopoverModule } from "ngx-bootstrap/popover";
 import { TranslateResolve } from "./home/translate.resolve";
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from "angulartics2";
 import { RdwRouteReuseStrategy } from "./shared/rdw-route-reuse.strategy";
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BreadcrumbsComponent,
-    HomeComponent
+    HomeComponent,
+    ErrorComponent
   ],
   imports: [
     AlertModule.forRoot(),

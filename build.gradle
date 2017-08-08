@@ -32,7 +32,7 @@ apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=0.0.1-SNAPSHOT`
 
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "0.0.1-27"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "0.0.1-29"
 String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "0.0.1-128"
 
 allprojects {
@@ -148,7 +148,14 @@ subprojects {
             label([maintainer: 'Fairway Technologies'])
             copyFile("${jar.archivePath.name}", "${jar.archivePath.name}")
             exposePort(8008, 8080)
-            entryPoint("java", "-jar", "${jar.archivePath.name}")
+            ext.java_opts = []
+            entryPoint {
+                List<String> entryPointArgs = ["java"]
+                entryPointArgs.addAll(ext.java_opts)
+                entryPointArgs.add("-jar")
+                entryPointArgs.add("${jar.archivePath.name}")
+                entryPointArgs.toArray()
+            }
         }
 
         // task to build the docker image
