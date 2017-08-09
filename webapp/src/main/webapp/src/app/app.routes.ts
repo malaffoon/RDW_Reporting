@@ -33,6 +33,7 @@ const studentTestHistoryChildRoute = {
   children: [
     {
       path: '',
+      data: { canReuse: true },
       pathMatch: 'full',
       component: StudentResultsComponent
     },
@@ -69,6 +70,7 @@ export const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
+            data: { canReuse: true },
             resolve: { assessment: GroupAssessmentsResolve },
             component: GroupResultsComponent
           },
@@ -84,6 +86,7 @@ export const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
+            data: { canReuse: true },
             resolve: { assessment: SchoolAssessmentResolve, school: CurrentSchoolResolve },
             component: SchoolResultsComponent
           },
@@ -104,6 +107,7 @@ export const routes: Routes = [
         children: [
           {
             path: '',
+            data: { canReuse: true },
             pathMatch: 'full',
             component: StudentResultsComponent
           },

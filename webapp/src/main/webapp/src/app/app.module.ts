@@ -13,11 +13,12 @@ import { GroupsModule } from "./groups/groups.module";
 import { StudentModule } from "./student/student.module";
 import { UserModule } from "./user/user.module";
 import { routes } from "./app.routes";
-import { RouterModule } from "@angular/router";
+import { RouterModule, RouteReuseStrategy } from "@angular/router";
 import { SchoolGradeModule } from "./school-grade/school-grade.module";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { TranslateResolve } from "./home/translate.resolve";
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from "angulartics2";
+import { RdwRouteReuseStrategy } from "./shared/rdw-route-reuse.strategy";
 import { ErrorComponent } from './error/error.component';
 
 @NgModule({
@@ -45,7 +46,9 @@ import { ErrorComponent } from './error/error.component';
   ],
   providers: [
     TranslateResolve,
+    { provide: RouteReuseStrategy, useClass: RdwRouteReuseStrategy },
     ...(environment.standalone ? standaloneProviders : [])
+
   ],
   bootstrap: [ AppComponent ]
 })
