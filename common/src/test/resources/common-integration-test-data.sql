@@ -15,15 +15,6 @@ insert into student (id, ssid, last_or_surname, first_name, gender_id, gender_co
   (-1, 'student1_ssid', 'student1_lastName', 'student1_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000', -1),
   (-2, 'student2_ssid', 'student2_lastName', 'student2_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000', -1);
 
-insert into student_group (id, `name`, school_id, school_year, subject_id, creator, created, import_id, updated, migrate_id) values
-  (-1, 'group1', -10, 2017, null, null, '2017-07-18 20:14:34.000000', -1, '2017-07-18 20:14:34.000000', -1),
-  (-2, 'group2', -10, 2017, null, null, '2017-07-18 20:14:34.000000', -1, '2017-07-18 20:14:34.000000', -1);
-
-insert into student_group_membership (student_group_id, student_id) values
-  (-1, -1),
-  (-1, -2),
-  (-2, -1);
-
 insert into asmt (id, type_id, natural_id, grade_id, grade_code, subject_id, school_year, name, label, version,
   claim1_score_code, claim2_score_code, claim3_score_code, claim4_score_code,
   min_score, cut_point_1, cut_point_2, cut_point_3, max_score, import_id, updated, migrate_id) values
@@ -56,4 +47,15 @@ insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, oppo
   (-11, 2, -1, 'g1', -1, -10, 1, 0, 0, 0, 0, 2017, -7, 'v1', 2, 'Complete', 1, 'Valid', 'session11', 2100, 21, 2, '2017-01-06 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000', -1),
   (-12, 1, -2, 'g2', -2, -10, 0, 0, 0, 0, 0, 2017, -5, 'v1', 2, 'Complete', 1, 'Valid', 'session9', 2000, 20, 1, '2017-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, -1, '2017-07-18 20:14:34.000000', -1),
   (-13, 2, -1, 'g1', -2, -10, 1, 0, 0, 0, 0, 2017, -6, 'v1', 2, 'Complete', 1, 'Valid', 'session10', 2100, 21, 2, '2017-01-05 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000', -1),
-  (-14, 2, -1, 'g1', -2, -10, 1, 0, 0, 0, 0, 2017, -7, 'v1', 2, 'Complete', 1, 'Valid', 'session11', 2100, 21, 2, '2017-01-06 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000', -1);
+  (-14, 2, -1, 'g1', -2, -10, 1, 0, 0, 0, 0, 2017, -7, 'v1', 2, 'Complete', 1, 'Valid', 'session11', 2100, 21, 2, '2017-01-06 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000', -1),
+  (-15, 1, -1, 'g1', -2, -10, 0, 0, 0, 0, 0, 2017, -1, 'v1', 2, 'Complete', 1, 'Valid', 'session2', 2000, 20, 1, '2016-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, -1, '2017-07-18 20:14:34.000000', -1),
+  (-16, 2, -2, 'g2', -2, -10, 1, 0, 0, 0, 0, 2017, -2, 'v1', 2, 'Complete', 1, 'Valid', 'session3', 2100, 21, 2, '2017-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '2017-07-18 20:14:34.000000', -1);
+
+-- groups
+insert into student_group (id, name, school_id, school_year, subject_id, import_id, updated, migrate_id) values
+  (-10, 'group1', -10, 2017, 1, -1, '2017-07-18 20:14:34.000000', -1),
+  (-20, 'group2', -10, 2017, null, -1, '2017-07-18 20:14:34.000000', -1);
+
+insert into student_group_membership (student_group_id, student_id) values
+  (-10, -1),
+  (-20, -1);
