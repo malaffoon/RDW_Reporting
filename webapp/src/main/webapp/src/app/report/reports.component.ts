@@ -17,7 +17,7 @@ import Timer = NodeJS.Timer;
 export class ReportsComponent implements OnInit {
 
   public reports: Report[];
-  private statusPollingInterval: number = 3000;
+  private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
 
   constructor(private route: ActivatedRoute, private service: ReportService, private notificationService: NotificationService) {
@@ -66,6 +66,7 @@ export class ReportsComponent implements OnInit {
             // optimally updates the local report collection only when a change is detected
             if (updated) {
               this.reports = updatedReports;
+            } else {
             }
 
           },
