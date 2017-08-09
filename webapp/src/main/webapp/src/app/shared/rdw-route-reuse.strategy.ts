@@ -40,7 +40,6 @@ export class RdwRouteReuseStrategy implements RouteReuseStrategy {
    * @returns true if the route's data.canReuse evaluates as truthy and a handler exists.
    */
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    console.debug("Route Reuse handlers: ", this.handlers);
     if (route.component == HomeComponent) {
       this.handlers = {};
       return false;
