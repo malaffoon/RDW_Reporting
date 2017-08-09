@@ -78,7 +78,7 @@
         <h3 class="gray-darkest mb-sm">
           {{'labels.groups.results.assessment.exams.title' | translate}}
 
-          <span class="pull-right" popover="{{ 'messages.no-item-level-data' | translate }}" triggers="{{ hasItemLevelData ? '': 'mouseenter:mouseleave'}}">
+          <span class="pull-right">
             <div *ngIf="showClaimToggle" class="btn-group btn-group-xs" role="group">
               <button (click)="setOverallScoreSelected()"
                       class="btn btn-default"
@@ -93,11 +93,13 @@
                 {{'buttons.display-claim' | translate}}
               </button>
             </div>
-            <button *ngIf="assessmentExam.assessment.isInterim"
-                                [disabled]="!hasItemLevelData"
-                                class="btn btn-default btn-xs " (click)="viewItemsByPoints(true)">
-              {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
-            </button>
+            <span popover="{{ 'messages.no-item-level-data' | translate }}" triggers="{{ hasItemLevelData ? '': 'mouseenter:mouseleave'}}">
+              <button *ngIf="assessmentExam.assessment.isInterim"
+                                  [disabled]="!hasItemLevelData"
+                                  class="btn btn-default btn-xs " (click)="viewItemsByPoints(true)">
+                {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
+              </button>
+            </span>
           </span>
         </h3>
 
