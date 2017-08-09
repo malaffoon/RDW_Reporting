@@ -34,13 +34,7 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
           saveAs(download.content, download.name);
         },
         (error: any) => {
-          let messageKey = "labels.reports.messages.500";
-
-          if (error.status == 404) {
-            messageKey = "labels.reports.messages.404";
-          }
-
-          this.notificationService.error({ id: messageKey });
+          this.notificationService.error({ id: 'labels.reports.messages.500' });
         }
       )
     ;
