@@ -79,27 +79,26 @@
           {{'labels.groups.results.assessment.exams.title' | translate}}
 
           <span class="pull-right" popover="{{ 'messages.no-item-level-data' | translate }}" triggers="{{ hasItemLevelData ? '': 'mouseenter:mouseleave'}}">
+            <div *ngIf="showClaimToggle" class="btn-group btn-group-xs" role="group">
+              <button (click)="setOverallScoreSelected()"
+                      class="btn btn-default"
+                      angulartics2On="click" angularticsEvent="ViewOverallScores" angularticsCategory="AssessmentResults"
+                      [ngClass]="{'active': !isClaimScoreSelected}">
+                {{'buttons.display-overall' | translate}}
+              </button>
+              <button (click)="setClaimScoreSelected()"
+                      class="btn btn-default"
+                      angulartics2On="click" angularticsEvent="ViewClaimScores" angularticsCategory="AssessmentResults"
+                      [ngClass]="{'active': isClaimScoreSelected}">
+                {{'buttons.display-claim' | translate}}
+              </button>
+            </div>
             <button *ngIf="assessmentExam.assessment.isInterim"
                                 [disabled]="!hasItemLevelData"
                                 class="btn btn-default btn-xs " (click)="viewItemsByPoints(true)">
               {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
             </button>
           </span>
-
-          <div *ngIf="showClaimToggle" class="btn-group btn-group-xs pull-right mr-md" role="group">
-            <button (click)="setOverallScoreSelected()"
-                    class="btn btn-default"
-                    angulartics2On="click" angularticsEvent="ViewOverallScores" angularticsCategory="AssessmentResults"
-                    [ngClass]="{'active': !isClaimScoreSelected}">
-              {{'buttons.display-overall' | translate}}
-            </button>
-            <button (click)="setClaimScoreSelected()"
-                    class="btn btn-default"
-                    angulartics2On="click" angularticsEvent="ViewClaimScores" angularticsCategory="AssessmentResults"
-                    [ngClass]="{'active': isClaimScoreSelected}">
-              {{'buttons.display-claim' | translate}}
-            </button>
-          </div>
         </h3>
 
         <!-- Student Results Table -->
