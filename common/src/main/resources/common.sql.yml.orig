@@ -47,24 +47,11 @@ sql:
         join school s on e.school_id=s.id
         join district d on s.district_id=d.id
       where e.student_id=:student_id
+<<<<<<< HEAD
         and e.school_year=:school_year
         and a.type_id=2
         and a.subject_id=:subject_id
-      and
-      (
-        (1 = :individual_statewide or s.district_id in (:individual_district_ids) or e.school_id in (:individual_school_ids))
-        or (
-          exists(
-              select 1
-              from student_group_membership sgm
-                join student_group sg on sgm.student_group_id = sg.id
-              where sgm.student_group_id in (:group_ids)
-                    and sgm.student_id = :student_id
-                    and (sg.subject_id is null or sg.subject_id = :subject_id)
-          )
-          and (1 = :group_statewide or s.district_id in (:group_district_ids) or e.school_id in (:group_school_ids))
-        )
-      )
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
       order by e.completed_at desc
 
     findAllIabsByStudentIdsAndQueryParams: >-
@@ -165,6 +152,26 @@ sql:
         and (:grade_id is null or e.grade_id=:grade_id)
         and a.type_id=2
         and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+=======
+      and e.school_year=:school_year
+      and a.type_id=2
+      and a.subject_id=:subject_id
+      and
+      (
+        (1 = :individual_statewide or s.district_id in (:individual_district_ids) or e.school_id in (:individual_school_ids))
+        or (
+          exists(
+              select 1
+              from student_group_membership sgm
+                join student_group sg on sgm.student_group_id = sg.id
+              where sgm.student_group_id in (:group_ids)
+                    and sgm.student_id = :student_id
+                    and (sg.subject_id is null or sg.subject_id = :subject_id)
+          )
+          and (1 = :group_statewide or s.district_id in (:group_district_ids) or e.school_id in (:group_school_ids))
+        )
+      )
+>>>>>>> parent of b4822ab... Revert "Feature/student group permissions"
       order by e.completed_at desc
 
     findLatestIcaByStudentIdAndSchoolYear: >-
@@ -228,9 +235,15 @@ sql:
         join school s on e.school_id=s.id
         join district d on s.district_id=d.id
       where e.student_id=:student_id
+<<<<<<< HEAD
         and e.school_year=:school_year
         and a.type_id=1
         and a.subject_id=:subject_id
+        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+=======
+      and e.school_year=:school_year
+      and a.type_id=1
+      and a.subject_id=:subject_id
       and
       (
         (1 = :individual_statewide OR s.district_id IN (:individual_district_ids) OR e.school_id IN (:individual_school_ids))
@@ -246,6 +259,7 @@ sql:
           and (1 = :group_statewide or s.district_id in (:group_district_ids) or e.school_id in (:group_school_ids))
         )
       )
+>>>>>>> parent of b4822ab... Revert "Feature/student group permissions"
       order by e.completed_at desc
       limit 1
 
