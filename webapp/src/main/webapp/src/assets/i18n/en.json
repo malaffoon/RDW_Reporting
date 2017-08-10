@@ -232,7 +232,7 @@
         "assessment": {
           "instruct": "Instructional Resources",
           "sessions-title": "Sessions",
-          "sessions-instruct": "Click a session to include it in the combined results.",
+          "sessions-instruct": "Toggle a session to include or exclude it from the results.",
           "exam-results": "Student Results",
           "button-items": "Item by Points Earned",
           "button-exams": "Student Results",
