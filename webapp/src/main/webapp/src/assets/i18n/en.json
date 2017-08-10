@@ -429,7 +429,7 @@
         },
         "download-failed": "There was an unexpected error while getting this report. Please try again.",
         "coming-soon": {
-          "report-regeneration": "Report regeneration coming soon."
+          "report-regeneration": "Report regeneration is coming soon."
         }
       },
       "status": {
