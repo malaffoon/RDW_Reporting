@@ -42,14 +42,14 @@
                               analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
       </div>
       <!-- Summative Status -->
-      <div class="block-children">
+      <div class="block-children" *ngIf="filterOptions.hasSummative">
         <label>
           <span info-label
                 title="{{ translateRoot + 'status.summative' | translate }}"
                 content="{{ translateRoot + 'status.summative-info' | translate }}"></span>
         </label>
         <sb-radio-button-list [model]="filterBy" [values]="['Valid','IN']" property="summativeStatus" enum="enum.administrative-condition"
-                              label="{{ translateRoot + 'status.summative' | translate }}"  [disabled]="!filterOptions.hasSummative"
+                              label="{{ translateRoot + 'status.summative' | translate }}"
                               analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
       </div>
       <!-- Completion -->
