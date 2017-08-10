@@ -15,7 +15,7 @@ import { UserModule } from "./user/user.module";
 import { routes } from "./app.routes";
 import { RouterModule, RouteReuseStrategy } from "@angular/router";
 import { SchoolGradeModule } from "./school-grade/school-grade.module";
-import { PopoverModule } from "ngx-bootstrap/popover";
+import { PopoverModule } from "ngx-popover";
 import { TranslateResolve } from "./home/translate.resolve";
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from "angulartics2";
 import { RdwRouteReuseStrategy } from "./shared/rdw-route-reuse.strategy";
@@ -41,7 +41,7 @@ import { ErrorComponent } from './error/error.component';
     HttpModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
-    PopoverModule.forRoot(),
+    PopoverModule,
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ])
   ],
   providers: [

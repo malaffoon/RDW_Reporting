@@ -5,7 +5,7 @@ import { SharedModule } from "primeng/components/common/shared";
 import { SchoolYearPipe } from "../../../shared/schoolYear.pipe";
 import { TranslateModule } from "@ngx-translate/core";
 import { DataTableModule } from "primeng/components/datatable/datatable";
-import { PopoverModule } from "ngx-bootstrap";
+import { PopoverModule } from "ngx-popover";
 import { ScaleScoreComponent } from "../../../assessments/results/scale-score.component";
 import { InformationLabelComponent } from "../../../assessments/results/information-label.component";
 import { PopupMenuComponent } from "../../../assessments/menu/popup-menu.component";
@@ -27,7 +27,7 @@ describe('StudentHistoryIABTableComponent', () => {
       imports: [
         BrowserModule,
         DataTableModule,
-        PopoverModule.forRoot(),
+        PopoverModule,
         SharedModule,
         TranslateModule.forRoot()
       ],
