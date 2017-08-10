@@ -1,7 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ReportService } from "./report.service";
 import { saveAs } from "file-saver";
-import { Subscription } from "rxjs";
 import { ReportDownloadComponent } from "./report-download.component";
 import { Download } from "../shared/data/download.model";
 import { NotificationService } from "../shared/notification/notification.service";
