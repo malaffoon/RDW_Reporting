@@ -35,7 +35,7 @@ export class ResponseUtils {
     let error:Error = response.status == 404
       ? new NotFoundError(message)
       : new Error(message);
-    throw Observable.throw(error);
+    throw error;
   }
 
 }
