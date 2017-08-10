@@ -179,7 +179,7 @@ subprojects {
     }
 
     //The omission of the ':' in manualIT is on purpose - we need the relative path to manualIT
-    task IT(type: Test, dependsOn:[":cleanReportingTest", ":migrateReportingTest"]) {
+    task IT(type: Test, dependsOn:[":cleanWarehouseTest", ":migrateWarehouseTest"]) {
         outputs.upToDateWhen { false }
         doLast {
             println "Running Integration Tests..."
