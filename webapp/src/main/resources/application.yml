@@ -36,24 +36,22 @@ spring:
     type: SIMPLE
     cache-names: permissionsByRole
 
-# Needed for access to S3
+# spring auto-configured aws defense
 cloud:
   aws:
-    credentials:
-      #AWS credentials are necessary if reading assessment files from S3
-      accessKey: ${rdw.admin.aws.access.key:}
-      secretKey: ${rdw.admin.aws.secret.key:}
-      instance-profile: false
+    # there must be a default region when running locally
     region:
       auto: false
       static: us-west-2
     # disable CloudFormation stuff
     stack:
       auto: false
+    credentials:
+      instance-profile: false
 
-# Location of import archive.  Can omit for local file system as config will default to tmp folder.
-# root: s3://rdw-dev-archive
-# root: file:///tmp/
+# Needed for access to S3
+
+# Location of import archive.
 archive:
   root: file:///tmp/
 
