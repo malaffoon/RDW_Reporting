@@ -1,4 +1,3 @@
-<!-- TODO: Move groups labels to an assessment label -->
 <!-- Individual Assessment Result Container -->
 <div class="assessment-result well">
     <div class="mb-md">
@@ -16,7 +15,9 @@
             <div class="col-md-4">
               <span class="pull-right"
                     popover="{{ 'labels.menus.resources-disabled-message' | translate }}"
-                    triggers="{{assessmentExam.assessment.hasResourceUrl ? '': 'mouseenter:mouseleave'}}"
+                    [popoverOnHover]="true"
+                    [popoverDisabled]="assessmentExam.assessment.hasResourceUrl"
+                    popoverPlacement="top"
                     container="body"
               >
                 <button
@@ -93,7 +94,11 @@
                 {{'buttons.display-claim' | translate}}
               </button>
             </div>
-            <span popover="{{ 'messages.no-item-level-data' | translate }}" triggers="{{ hasItemLevelData ? '': 'mouseenter:mouseleave'}}">
+            <span popover="{{ 'messages.no-item-level-data' | translate }}"
+                  [popoverDisabled]="hasItemLevelData"
+                  [popoverOnHover]="true"
+                  popoverPlacement="top"
+            >
               <button *ngIf="assessmentExam.assessment.isInterim"
                                   [disabled]="!hasItemLevelData"
                                   class="btn btn-default btn-xs " (click)="viewItemsByPoints(true)">
