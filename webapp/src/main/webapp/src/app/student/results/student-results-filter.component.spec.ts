@@ -7,7 +7,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { AssessmentsModule } from "../../assessments/assessments.module";
 import { CommonModule } from "../../shared/common.module";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
-import { PopoverModule } from "ngx-bootstrap";
+import { PopoverModule } from "ngx-popover";
 
 describe('StudentResultsFilterComponent', () => {
   let component: StudentResultsFilterComponent;
@@ -27,7 +27,7 @@ describe('StudentResultsFilterComponent', () => {
         SharedModule,
         TranslateModule.forRoot(),
         Angulartics2Module,
-        PopoverModule.forRoot(),
+        PopoverModule
       ],
       declarations: [
         StudentResultsFilterComponent

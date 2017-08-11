@@ -13,7 +13,7 @@ import { Exam } from "../model/exam.model";
 import { RemoveCommaPipe } from "../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
-import { PopoverModule } from "ngx-bootstrap/popover";
+import { PopoverModule } from "ngx-popover";
 import { ScaleScoreComponent } from "./scale-score.component";
 import { AverageScaleScoreComponent } from "./average-scale-score.component";
 import { InformationLabelComponent } from "./information-label.component";
@@ -30,8 +30,6 @@ import { ItemScoresComponent } from "../items/item-scores/item-scores.component"
 import { TestModule } from "../../../test/test.module";
 import { ItemInfoComponent } from "../items/item-info/item-info.component";
 import { ScaleScoreService } from "../../shared/scale-score.service";
-import Spy = jasmine.Spy;
-import createSpy = jasmine.createSpy;
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -47,7 +45,7 @@ describe('AssessmentResultsComponent', () => {
         DataTableModule,
         FormsModule,
         HttpModule,
-        PopoverModule.forRoot(),
+        PopoverModule,
         SharedModule,
         TabsModule,
         TranslateModule.forRoot(),

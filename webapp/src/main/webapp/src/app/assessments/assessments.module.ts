@@ -12,7 +12,7 @@ import { ExamFilterService } from "./filters/exam-filters/exam-filter.service";
 import { ExamFilterOptionsService } from "./filters/exam-filters/exam-filter-options.service";
 import { ExamFilterOptionsMapper } from "./filters/exam-filters/exam-filter-options.mapper";
 import { SelectAssessmentsComponent } from "./filters/select-assessments/select-assessments.component";
-import { PopoverModule } from "ngx-bootstrap/popover";
+import { PopoverModule } from "ngx-popover";
 import { AssessmentsComponent } from "./assessments.component";
 import { AdvFiltersToggleComponent } from "./filters/adv-filters/adv-filters-toggle.component";
 import { ScaleScoreComponent } from "./results/scale-score.component";
