@@ -28,7 +28,9 @@ insert into student (id, ssid, last_or_surname, first_name, gender_id, birthday,
 
 insert into student_group (id, name, school_id, school_year, subject_id, import_id, update_import_id, active) values
   (-10, 'group1', -10, 2017, 1, -1, -1, 1),
-  (-20, 'group2', -10, 2017, null, -1, -1, 1);
+  (-20, 'group2', -10, 2017, null, -1, -1, 1),
+  (-30, 'group2', -20, 2016, null, -1, -1, 1);
+
 
 insert into student_group_membership (student_group_id, student_id) values
   (-10, -1);
