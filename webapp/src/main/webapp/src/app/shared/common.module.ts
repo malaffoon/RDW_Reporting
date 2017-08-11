@@ -14,7 +14,6 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
 import { GradeDisplayPipe } from "./grade-display.pipe";
-import { AssessmentTypePipe } from "./assessment-type.pipe";
 import { ColorService } from "./color.service";
 import { Angulartics2Module } from 'angulartics2';
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -26,7 +25,6 @@ export function HttpLoaderFactory(http: Http) {
 
 @NgModule({
   declarations: [
-    AssessmentTypePipe,
     GradeDisplayPipe,
     PadStartPipe,
     SBRadioButtonComponent,
@@ -50,7 +48,6 @@ export function HttpLoaderFactory(http: Http) {
     Angulartics2Module.forChild()
   ],
   exports: [
-    AssessmentTypePipe,
     GradeDisplayPipe,
     PadStartPipe,
     RemoveCommaPipe,

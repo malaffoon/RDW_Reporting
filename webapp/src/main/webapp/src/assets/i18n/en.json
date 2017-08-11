@@ -29,6 +29,19 @@
         "title": "Welcome!"
       }
     },
+    "groups": {
+      "title": "Groups",
+      "select-school": "School",
+      "select-school-year": "School Year",
+      "select-subject": "Subject",
+      "no-results": "No groups found",
+      "cols": {
+        "name": "Name",
+        "school": "School",
+        "school-year": "School Year",
+        "subjects": "Subjects"
+      }
+    },
     "menu": "Menu",
     "more-info": "More Information",
     "personName": "{{lastName}}, {{firstName}}",
@@ -54,6 +67,11 @@
     "polar": {
       "1": "Yes",
       "2": "No"
+    },
+    "subject": {
+      "MATH": "Math",
+      "ELA": "ELA",
+      "ALL": "All"
     }
   }
 }

@@ -13,6 +13,7 @@ import { RouterModule } from "@angular/router";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { Angulartics2GoogleAnalytics, Angulartics2Module } from "angulartics2";
 import { AdminModule } from "./admin/admin.module";
+import { GroupsModule } from "./groups/groups.module";
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { AdminModule } from "./admin/admin.module";
     BrowserModule,
     CommonModule,
     AdminModule,
+    GroupsModule,
     RouterModule.forRoot(routes),
     UserModule,
     FormsModule,
