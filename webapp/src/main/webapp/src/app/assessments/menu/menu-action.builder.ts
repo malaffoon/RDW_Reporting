@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
 import { isNull } from "util";
 import { isNullOrUndefined } from "util";
+import {Exam} from "../model/exam.model";
+import {AssessmentExam} from "../model/assessment-exam.model";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.
@@ -117,6 +119,22 @@ export class MenuActionBuilder {
     }).bind(this);
 
     this.actions.push(resourcesAction);
+    return this;
+  }
+
+  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student): MenuActionBuilder {
+    let action: PopupMenuAction = new PopupMenuAction();
+
+    action.displayName = ((actionable: any) => {
+      let assessmentExam = getAssessmentExam(actionable);
+
+      return this.translateService.instant('labels.menus.test-history', getStudent(actionable));
+    }).bind(this);
+    action.perform = ((actionable: any) => {
+      this.router.navigate([ 'students', getStudent(actionable).id ], { relativeTo: this.route });
+    }).bind(this);
+
+    this.actions.push(action);
     return this;
   }
 
