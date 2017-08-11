@@ -34,7 +34,7 @@
     <p-column field="assessmentItem.claimTarget" [sortable]="true">
       <ng-template pTemplate="header">
               <span info-label title="{{'labels.groups.results.assessment.items.cols.claim' | translate}}"
-                    content="{{'labels.groups.results.assessment.items.cols.claim-info' | translate}}"></span>
+                    content="{{'labels.groups.results.assessment.items.cols.claim-info-html' | translate}}"></span>
       </ng-template>
       <ng-template let-item="rowData.assessmentItem" pTemplate="body">
         {{ 'definition.claim.' + item.claim + '.name' | translate }} / {{ 'labels.groups.results.assessment.items.target' | translate:item }}

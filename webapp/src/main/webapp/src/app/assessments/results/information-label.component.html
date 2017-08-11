@@ -1,6 +1,5 @@
 {{title}}
-<button class="btn btn-borderless btn-xs icon-only"
-      [popover]="infoPopover">
+<button class="btn btn-borderless btn-xs icon-only" [popover]="infoPopover">
   <span class="sr-only">{{'labels.more-info' | translate}}</span>
   <i class="fa fa-info-circle"></i>
 </button>
@@ -8,7 +7,6 @@
 <popover-content #infoPopover
                  title="{{ title }}"
                  placement="top"
-                 [animation]="true"
                  [closeOnClickOutside]="true" >
   <span [innerHtml]="content"></span>
 </popover-content>
