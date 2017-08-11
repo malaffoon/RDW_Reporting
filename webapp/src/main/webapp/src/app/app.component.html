@@ -10,7 +10,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-        <a class="navbar-brand hidden-xs" href="/" title="Reporting System Dashboard"><img src="assets/image/SmarterBalanced-Logo.png" alt="Smarter Balanced Assessment Consortium"></a>
+        <a class="navbar-brand hidden-xs" routerLink="/" title="Reporting System Dashboard"><img src="assets/image/SmarterBalanced-Logo.png" alt="Smarter Balanced Assessment Consortium"></a>
         <span class="application-title">{{'application.title' | translate}}</span>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -22,9 +22,7 @@
                 <i class="fa fa-user-circle"></i> <span *ngIf="user">{{'welcome' | translate:user }}</span> <span class="caret"></span>
               </button>
               <ul *dropdownMenu class="dropdown-menu" role="menu">
-                <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
-                <li role="menuitem"><a class="dropdown-item" href="#">Another action</a></li>
-                <li role="menuitem"><a class="dropdown-item" href="#">Something else here</a></li>
+                <li role="menuitem"><a class="dropdown-item" routerLink="groups">{{ 'labels.groups.title' | translate }}</a></li>
                 <li role="separator" class="divider dropdown-divider"></li>
                 <li role="menuitem">
                   <a class="dropdown-item" href="javascript:void(0)" onclick="window.document.logoutForm.submit()">{{'messages.logout' | translate}}</a>
