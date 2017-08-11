@@ -6,6 +6,7 @@ import { ReportService } from "./report.service";
 import { Download } from "../shared/data/download.model";
 import { NotificationService } from "../shared/notification/notification.service";
 import Timer = NodeJS.Timer;
+import { Resolution } from "../shared/resolution.model";
 
 /**
  * Responsible for controlling the behavior of the reports page
@@ -16,21 +17,25 @@ import Timer = NodeJS.Timer;
 })
 export class ReportsComponent implements OnInit {
 
+  public resolution: Resolution<Report[]>;
   public reports: Report[];
+
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
 
-  constructor(private route: ActivatedRoute, private service: ReportService, private notificationService: NotificationService) {
+  constructor(private route: ActivatedRoute,
+              private service: ReportService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
-    this.reports = this.route.snapshot.data[ 'reports' ];
+    this.reports = (this.resolution = this.route.snapshot.data[ 'reports' ]).data;
 
     /*
      Start report status polling
      Since reports currently cannot be generated on this page we do not have to dynamically update the IDs to pull
      */
-    if (this.reports != null) {
+    if (this.resolution.isOk()) {
       this.startPollingStatus();
     }
   }
@@ -66,7 +71,6 @@ export class ReportsComponent implements OnInit {
             // optimally updates the local report collection only when a change is detected
             if (updated) {
               this.reports = updatedReports;
-            } else {
             }
 
           },
@@ -90,7 +94,6 @@ export class ReportsComponent implements OnInit {
   }
 
   public getReport(report: Report) {
-
     this.service.getBatchExamReport(report.id)
       .subscribe(
         (download: Download) => {
@@ -100,6 +103,10 @@ export class ReportsComponent implements OnInit {
           this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
         }
       );
+  }
+
+  public regenerateReport(report: Report) {
+    this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
   }
 
 }

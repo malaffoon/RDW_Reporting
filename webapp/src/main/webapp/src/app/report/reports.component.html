@@ -1,6 +1,6 @@
 <h3 class="blue mb-md">{{'labels.reports.heading' | translate}}</h3>
 
-<div class="well" *ngIf="reports != null">
+<div class="well" *ngIf="resolution.isOk()">
 
   <p *ngIf="!reports.length" [innerHtml]="'labels.reports.no-reports-html' | translate"></p>
 
@@ -10,36 +10,39 @@
       sortOrder="-1"
       tableStyleClass="table table-striped table-hover">
 
-    <p-column field="created" header="{{'labels.reports.column.created.header' | translate}}" sortable="true">
-      <ng-template let-report="rowData" pTemplate="body">{{ report.created | date }}</ng-template>
-    </p-column>
     <p-column field="label" header="{{'labels.reports.column.label.header' | translate}}" sortable="true">
-      <ng-template let-report="rowData" pTemplate="body">{{report.label}}</ng-template>
-    </p-column>
-    <p-column field="status" sortable="true">
-      <ng-template pTemplate="header">
-      <span info-label title="{{'labels.reports.column.status.header' | translate}}"
-            content="{{'labels.reports.column.status.title' | translate}}"></span>
+      <ng-template let-report="rowData" pTemplate="body">
+        <span *ngIf="report.isProcessing()">{{report.label}}</span>
+        <button *ngIf="report.isCompleted()" class="btn btn-info btn-xs" (click)="getReport(report)"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.form.submit' | translate}} {{report.label}}</button>
+        <button *ngIf="report.canRegenerate()" class="btn btn-default btn-xs" (click)="regenerateReport(report)"><i class="fa fa-refresh" aria-hidden="true"></i> {{'labels.reports.form.regenerate' | translate}} {{report.label}}</button>
       </ng-template>
+    </p-column>
+    <p-column field="status" sortable="true" header="{{'labels.reports.column.status.header' | translate}}">
       <ng-template let-report="rowData" pTemplate="body">
         <span class="label border-only {{report.getStatusColor()}}">{{ 'labels.reports.status.' + report.status | translate }}</span>
       </ng-template>
     </p-column>
-    <p-column>
-      <ng-template let-report="rowData" pTemplate="body">
-        <button *ngIf="report.isCompleted()" class="btn btn-info btn-xs pull-right" (click)="getReport(report)"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.form.submit' | translate}}</button>
-      </ng-template>
+    <p-column field="created" header="{{'labels.reports.column.created.header' | translate}}" sortable="true">
+      <ng-template let-report="rowData" pTemplate="body">{{ report.created | date:'medium' }}</ng-template>
     </p-column>
   </p-dataTable>
 
 </div>
 
-<div class="error-message" *ngIf="reports == null">
-  <div class="alert alert-danger">
-    <p>{{'labels.reports.messages.get-reports-error' | translate}}</p>
+<div class="error-block" *ngIf="resolution.isError()">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="alert alert-danger">
+        <p>{{'labels.reports.messages.get-reports-error' | translate}}</p>
+      </div>
+    </div>
   </div>
-  <div class="text-center">
-    <button class="btn btn-primary" (click)="reload()"><i class="fa fa-refresh"></i> Reload</button>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="text-center">
+        <button class="btn btn-primary" (click)="reload()"><i class="fa fa-refresh"></i> {{'labels.reports.reload' | translate}}</button>
+      </div>
+    </div>
   </div>
 </div>
 

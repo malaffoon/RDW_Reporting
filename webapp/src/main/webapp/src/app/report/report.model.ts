@@ -18,6 +18,10 @@ export class Report {
     return this.status === 'PENDING' || this.status === 'RUNNING';
   }
 
+  public canRegenerate(): boolean {
+    return !(this.isCompleted() || this.isProcessing());
+  }
+
   public getStatusColor(): string {
     if (this.isCompleted()) {
       return 'blue-dark';

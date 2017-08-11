@@ -3,17 +3,18 @@ import { RouterStateSnapshot, ActivatedRouteSnapshot, Resolve } from "@angular/r
 import { Injectable } from "@angular/core";
 import { ReportService } from "./report.service";
 import { Report } from "./report.model";
-import { ResponseUtils } from "../shared/response-utils";
+import { Resolution } from "../shared/resolution.model";
 
 /**
  * This resolver is responsible for fetching assessment items for a student and exam.
  */
 @Injectable()
-export class ReportsResolve implements Resolve<Report[]> {
+export class ReportsResolve implements Resolve<Resolution<Report[]>> {
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Report[]> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Resolution<Report[]>> {
     return this.service.getReports()
-      .catch(ResponseUtils.toNull);
+      .map(Resolution.ok)
+      .catch(Resolution.errorObservable);
   }
 
   constructor(private service: ReportService) {

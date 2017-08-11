@@ -385,7 +385,8 @@
     "reports": {
       "link": "My Reports",
       "heading": "My Reports",
-      "no-reports-html": "<p>To create a report, select a group or school from the <a href=\"/\">Home page</a> then click the \"Student Reports\" button to get started.",
+      "no-reports-html": "<p>To create a report, first select a group or school from the <a href=\"/\">Home page</a>. Next click the \"Student Reports\" button to get started.",
+      "reload": "Reload",
       "column": {
         "created": {
           "header": "Date"
@@ -404,6 +405,7 @@
         "school-grade": "Student Reports"
       },
       "form": {
+        "regenerate": "Regenerate",
         "submit": "Download",
         "assessment-type": "Assessment Type",
         "subject": "Subject",
@@ -426,7 +428,9 @@
           "html": "Error creating report. See <a href=\"/reports\">status</a>."
         },
         "download-failed": "There was an unexpected error while getting this report. Please try again.",
-        "coming-soon": "Available in week 2 of UAT"
+        "coming-soon": {
+          "report-regeneration": "Report regeneration is coming soon."
+        }
       },
       "status": {
         "PENDING": "Pending",

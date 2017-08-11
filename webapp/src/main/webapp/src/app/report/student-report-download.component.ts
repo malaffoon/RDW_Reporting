@@ -34,7 +34,11 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
           saveAs(download.content, download.name);
         },
         (error: any) => {
-          this.notificationService.error({ id: 'labels.reports.messages.500' });
+          this.notificationService.error({
+            id: error.name === 'NotFoundError'
+              ? 'labels.reports.messages.404'
+              : 'labels.reports.messages.500'
+          });
         }
       )
     ;

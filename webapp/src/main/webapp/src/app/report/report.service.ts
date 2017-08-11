@@ -8,6 +8,7 @@ import { DataService } from "../shared/data/data.service";
 import { Download } from "../shared/data/download.model";
 import { Report } from "./report.model";
 import { ReportOrder } from "./report-order.enum";
+import { ResponseUtils } from "../shared/response-utils";
 
 @Injectable()
 export class ReportService {
@@ -22,7 +23,8 @@ export class ReportService {
    */
   public getReports(): Observable<Report[]> {
     return this.dataService.get('/reports')
-      .map(reports => reports.map(this.toReport));
+      .map(reports => reports.map(this.toReport))
+      .catch(ResponseUtils.throwError);
   }
 
   /**
@@ -32,7 +34,8 @@ export class ReportService {
    */
   public getReportsById(ids: number[]): Observable<Report[]> {
     return this.dataService.get(`/reports`, {params: {id: ids}})
-      .map(reports => reports.map(this.toReport));
+      .map(reports => reports.map(this.toReport))
+      .catch(ResponseUtils.throwError);
   }
 
   /**
@@ -91,9 +94,8 @@ export class ReportService {
       .post(url, this.toBatchReportRequestParameters(options), {
         headers: new Headers({ 'Content-Type': 'application/json' })
       })
-      .map(report => {
-        return this.toReport(report);
-      });
+      .map(this.toReport)
+      .catch(ResponseUtils.throwError);
   }
 
   /**
@@ -110,7 +112,7 @@ export class ReportService {
         'Accept': 'application/pdf',
       }),
       responseType: ResponseContentType.Blob
-    });
+    }).catch(ResponseUtils.throwError);
   }
 
   /**
