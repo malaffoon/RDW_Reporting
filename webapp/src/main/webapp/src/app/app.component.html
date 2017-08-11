@@ -22,7 +22,7 @@
                 <i class="fa fa-user-circle"></i> <span *ngIf="user">{{'welcome' | translate:user }}</span> <span class="caret"></span>
               </button>
               <ul *dropdownMenu class="dropdown-menu" role="menu">
-                <li role="menuitem"><a class="dropdown-item" routerLink="groups">{{ 'labels.groups.title' | translate }}</a></li>
+                <li role="menuitem"><a class="dropdown-item" routerLink="groups/filterBy">{{ 'labels.groups.title' | translate }}</a></li>
                 <li role="separator" class="divider dropdown-divider"></li>
                 <li role="menuitem">
                   <a class="dropdown-item" href="javascript:void(0)" onclick="window.document.logoutForm.submit()">{{'messages.logout' | translate}}</a>

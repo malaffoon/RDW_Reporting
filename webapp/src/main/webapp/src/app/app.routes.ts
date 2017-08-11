@@ -13,13 +13,15 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: HomeComponent
-      },
-      {
+      }, {
         path: 'groups',
-        pathMatch: 'full',
         resolve: { filterOptions: GroupFilterOptionsResolve },
-        data: { breadcrumb: { translate: 'labels.groups.title' } },
-        component: GroupsComponent
+        children: [ {
+          path: 'filterBy',
+          pathMatch: 'full',
+          data: { breadcrumb: { translate: 'labels.groups.title' } },
+          component: GroupsComponent
+        } ]
       }
     ]
   }

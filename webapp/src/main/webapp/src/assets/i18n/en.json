@@ -34,7 +34,7 @@
       "select-school": "School",
       "select-school-year": "School Year",
       "select-subject": "Subject",
-      "no-results": "No groups found",
+      "no-results": "No groups found matching the given filter criteria.",
       "cols": {
         "name": "Name",
         "school": "School",

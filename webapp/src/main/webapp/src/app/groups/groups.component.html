@@ -2,23 +2,23 @@
   <div class="well">
     <div class="row">
       <!-- School Select -->
-      <div class="col-md-3">
+      <div class="col-md-4">
         <label for="select-school">{{'labels.groups.select-school' | translate}}</label>
-        <select id="select-school" [(ngModel)]="query.school" class="form-control" (change)="updateResults()">
+        <select id="select-school" [(ngModel)]="query.school" class="form-control" (change)="updateRoute()">
           <option *ngFor="let school of filterOptions.schools" [ngValue]="school">{{school.name}}</option>
         </select>
       </div>
       <!-- School Year Select -->
-      <div class="col-md-3">
+      <div class="col-md-2">
         <label for="select-schoolyear">{{'labels.groups.select-school-year' | translate}}</label>
-        <select id="select-schoolyear" [(ngModel)]="query.schoolYear" class="form-control" (change)="updateResults()">
+        <select id="select-schoolyear" [(ngModel)]="query.schoolYear" class="form-control" (change)="updateRoute()">
           <option *ngFor="let schoolYear of filterOptions.schoolYears" [ngValue]="schoolYear">{{schoolYear | schoolYear }}</option>
         </select>
       </div>
       <!-- Subject Select -->
-      <div class="col-md-3">
+      <div class="col-md-2">
         <label for="select-subject">{{'labels.groups.select-subject' | translate}}</label>
-        <select id="select-subject" [(ngModel)]="query.subject" class="form-control" (change)="updateResults()">
+        <select id="select-subject" [(ngModel)]="query.subject" class="form-control" (change)="updateRoute()">
           <option *ngFor="let subject of filterOptions.subjects" [ngValue]="subject">{{'enum.subject.' + subject | translate }}</option>
         </select>
       </div>
