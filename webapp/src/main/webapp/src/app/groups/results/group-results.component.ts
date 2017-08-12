@@ -9,6 +9,7 @@ import { Angulartics2 } from "angulartics2";
 import { AssessmentsComponent } from "../../assessments/assessments.component";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
+import { GroupReportDownloadComponent } from "../../report/group-report-download.component";
 
 @Component({
   selector: 'app-group-results',
@@ -122,4 +123,14 @@ export class GroupResultsComponent implements OnInit {
 
     this.csvExportService.exportItemsByPointsEarned(exportRequest, filename);
   }
+
+  /**
+   * Initializes GroupReportDownloadComponent options with the currently selected filters
+   *
+   * @param downloader
+   */
+  private initializeDownloader(downloader: GroupReportDownloadComponent): void {
+    downloader.options.schoolYear = this.currentSchoolYear;
+  }
+
 }
