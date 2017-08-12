@@ -12,7 +12,9 @@ import { Group } from "./model/group.model";
 export class GroupsComponent implements OnInit {
   filterOptions: GroupFilterOptions;
   groups: Group[];
+  filteredGroups: Group[];
   query: GroupQuery;
+  searchTerm: string = '';
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -52,6 +54,11 @@ export class GroupsComponent implements OnInit {
       .getGroups(this.query)
       .subscribe(groups => {
         this.groups = groups;
+        this.filterGroups();
       })
+  }
+
+  filterGroups() {
+    this.filteredGroups = this.groups.filter( x => x.name.toUpperCase().indexOf(this.searchTerm.toUpperCase()) >= 0)
   }
 }

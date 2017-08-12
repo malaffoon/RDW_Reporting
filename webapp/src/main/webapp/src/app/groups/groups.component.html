@@ -27,18 +27,24 @@
 </div>
 
 <div class="well">
-  <p-dataTable [value]="groups" emptyMessage="{{'labels.groups.no-results' | translate}}" sortField="name" tableStyleClass="table table-striped table-hover overflow">
-    <p-column field="name" header="{{'labels.groups.cols.name' | translate}}" [sortable]="true"></p-column>
-    <p-column field="schoolName" header="{{'labels.groups.cols.school' | translate}}" [sortable]="true"></p-column>
-    <p-column field="schoolYear" header="{{'labels.groups.cols.school-year' | translate}}" [sortable]="true">
-      <ng-template let-group="rowData" pTemplate="body">
-        {{ group.schoolYear | schoolYear }}
-      </ng-template>
-    </p-column>
-    <p-column field="subject" header="{{'labels.groups.cols.subjects' | translate}}" [sortable]="true">
-      <ng-template let-group="rowData" pTemplate="body">
-        {{ group.subject | subject }}
-      </ng-template>
-    </p-column>
-  </p-dataTable>
+  <div class="gray-lightest pt-sm pr-sm pb-sm pl-sm my-groups-search-form-container">
+    <label for="search" class="sr-only">{{'labels.groups.filter' | translate}}</label>
+    <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'labels.groups.filter' | translate}}" autocomplete="off" (ngModelChange)="filterGroups()">
+  </div>
+  <div class="my-groups-list-container">
+    <p-dataTable [value]="filteredGroups" emptyMessage="{{'labels.groups.no-results' | translate}}" sortField="name" tableStyleClass="table table-striped table-hover overflow">
+      <p-column field="name" header="{{'labels.groups.cols.name' | translate}}" [sortable]="true"></p-column>
+      <p-column field="schoolName" header="{{'labels.groups.cols.school' | translate}}" [sortable]="true"></p-column>
+      <p-column field="schoolYear" header="{{'labels.groups.cols.school-year' | translate}}" [sortable]="true">
+        <ng-template let-group="rowData" pTemplate="body">
+          {{ group.schoolYear | schoolYear }}
+        </ng-template>
+      </p-column>
+      <p-column field="subject" header="{{'labels.groups.cols.subjects' | translate}}" [sortable]="true">
+        <ng-template let-group="rowData" pTemplate="body">
+          {{ group.subject | subject }}
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
 </div>

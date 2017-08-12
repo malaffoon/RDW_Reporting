@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { GroupsComponent } from "./groups.component";
 import { CommonModule } from "../shared/common.module";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { GroupFilterOptions } from "./model/group-filter-options.model";
 import { GroupsModule } from "./groups.module";
 import { School } from "./model/school.model";
 import { GroupService } from "./groups.service";
 import { Observable } from "rxjs";
+import { MockRouter } from "../../test/mock.router";
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
@@ -23,6 +24,7 @@ describe('GroupsComponent', () => {
   filterOptions.subjects = [ "ALL" ];
 
   let mockRouteSnapshot = {
+    params: {},
     data: { filterOptions: filterOptions }
   };
 
@@ -36,6 +38,9 @@ describe('GroupsComponent', () => {
         }, {
           provide: GroupService,
           useValue: mockGroupService
+        }, {
+          provide: Router,
+          userValue: MockRouter
         }
       ]
     })
