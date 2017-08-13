@@ -122,16 +122,23 @@ export class MenuActionBuilder {
     return this;
   }
 
-  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student): MenuActionBuilder {
+  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student, submitReport: (x:any) => boolean): MenuActionBuilder {
     let action: PopupMenuAction = new PopupMenuAction();
 
     action.displayName = ((actionable: any) => {
       let assessmentExam = getAssessmentExam(actionable);
+      let assessmentType = 'iab';
 
-      return this.translateService.instant('labels.menus.test-history', getStudent(actionable));
+      if (assessmentExam.assessment.isIca) {
+        assessmentType = 'ica';
+      } else if (assessmentExam.assessment.isSummative) {
+        assessmentType = 'summative';
+      }
+
+      return this.translateService.instant('labels.menus.student-report.' + assessmentType, getStudent(actionable));
     }).bind(this);
     action.perform = ((actionable: any) => {
-      this.router.navigate([ 'students', getStudent(actionable).id ], { relativeTo: this.route });
+      submitReport(actionable);
     }).bind(this);
 
     this.actions.push(action);

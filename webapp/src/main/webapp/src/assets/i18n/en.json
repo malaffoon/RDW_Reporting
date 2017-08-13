@@ -323,6 +323,11 @@
     "menus": {
       "responses": "{{firstName}}'s Responses",
       "test-history": "{{firstName}}'s Test History",
+      "student-report": {
+        "iab": "Print {{firstName}}'s Full IAB Report",
+        "ica": "Print {{firstName}}'s ICA Report",
+        "summative": "Print {{firstName}}'s Summative Report"
+      },
       "resources": "Instructional Resources",
       "resources-disabled-message": "No Instructional Resources are available for this assessment.",
       "print-report": "Print Report"
