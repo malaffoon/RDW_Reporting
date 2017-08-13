@@ -285,6 +285,7 @@
             "correctness": "Correctness"
           },
           "student-scores": "Student Scores",
+          "student-scores-intro-text": "Expand each student row to view their response to this item.",
           "item-viewer": "Item Viewer",
           "exemplar": {
             "title": "Rubric and Exemplar",

@@ -28,6 +28,8 @@ export class StudentScoreService {
       score.correctness = score.score / score.maxScore;
     }
 
+    score.response = itemScore.response;
+
     return score;
   }
 }
