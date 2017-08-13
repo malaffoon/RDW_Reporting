@@ -125,12 +125,19 @@ export class MenuActionBuilder {
 
     action.displayName = ((actionable: any) => {
       let assessmentExam = getAssessmentExam(actionable);
-      let assessmentType = 'iab';
+      let assessmentType: string = '';
 
-      if (assessmentExam.assessment.isIca) {
+      if (assessmentExam.assessment.isIab) {
+        assessmentType = 'iab';
+      }
+      else if (assessmentExam.assessment.isIca) {
         assessmentType = 'ica';
-      } else if (assessmentExam.assessment.isSummative) {
+      }
+      else if (assessmentExam.assessment.isSummative) {
         assessmentType = 'summative';
+      }
+      else {
+        return '';
       }
 
       return this.translateService.instant('labels.menus.student-report.' + assessmentType, getStudent(actionable));
