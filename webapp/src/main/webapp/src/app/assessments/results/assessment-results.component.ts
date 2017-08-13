@@ -352,7 +352,6 @@ export class AssessmentResultsComponent implements OnInit {
         () => this._assessmentExam,
         exam => exam.student,
         exam => {
-
           let reportOptions: ReportOptions = new ReportOptions();
           reportOptions.assessmentType = this._assessmentExam.assessment.type;
           reportOptions.subject = this._assessmentExam.assessment.assessmentSubjectType;
@@ -377,8 +376,6 @@ export class AssessmentResultsComponent implements OnInit {
               }
             )
           ;
-
-          return true;
         }
       )
       .build();

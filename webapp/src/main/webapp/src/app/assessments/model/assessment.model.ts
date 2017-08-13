@@ -1,6 +1,6 @@
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { isNullOrUndefined } from "util";
-import {AssessmentSubjectType} from "../../shared/enum/assessment-subject-type.enum";
+import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
 
 export class Assessment {
   id: number;

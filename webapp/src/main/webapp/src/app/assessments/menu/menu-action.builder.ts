@@ -120,7 +120,7 @@ export class MenuActionBuilder {
     return this;
   }
 
-  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student, submitReport: (x:any) => boolean): MenuActionBuilder {
+  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student, submitReport: (x:any) => void): MenuActionBuilder {
     let action: PopupMenuAction = new PopupMenuAction();
 
     action.displayName = ((actionable: any) => {
