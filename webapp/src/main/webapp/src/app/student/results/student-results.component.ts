@@ -11,6 +11,8 @@ import { Student } from "../model/student.model";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { Angulartics2 } from "angulartics2";
 import { UserService } from "../../user/user.service";
+import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
+import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
 
 @Component({
   selector: 'student-results',
@@ -240,4 +242,19 @@ export class StudentResultsComponent implements OnInit {
       this.filterState.subject = params[ 'subject' ];
     }
   }
+
+  /**
+   * Initializes StudentReportDownloadComponent options with the currently selected filters
+   *
+   * @param downloader
+   */
+  private initializeDownloader(downloader: StudentReportDownloadComponent): void {
+    if (this.filterState.schoolYear != 0) {
+      downloader.options.schoolYear = this.filterState.schoolYear;
+    }
+    if (this.filterState.subject !== '') {
+      downloader.options.subject = AssessmentSubjectType[this.filterState.subject];
+    }
+  }
+
 }

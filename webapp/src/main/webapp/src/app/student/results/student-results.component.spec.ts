@@ -5,7 +5,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { CommonModule } from "../../shared/common.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/components/common/shared";
-import { PopoverModule } from "ngx-bootstrap/popover";
+import { PopoverModule } from "ngx-popover";
 import { TranslateModule } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { StudentExamHistory } from "../model/student-exam-history.model";
@@ -23,9 +23,6 @@ import { Angulartics2 } from "angulartics2";
 import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
-import Spy = jasmine.Spy;
-import createSpy = jasmine.createSpy;
-import createSpyObj = jasmine.createSpyObj;
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
 
 describe('StudentResultsComponent', () => {
@@ -60,7 +57,7 @@ describe('StudentResultsComponent', () => {
         SharedModule,
         ReportModule,
         TranslateModule.forRoot(),
-        PopoverModule.forRoot(),
+        PopoverModule,
         ReportModule
       ],
       declarations: [

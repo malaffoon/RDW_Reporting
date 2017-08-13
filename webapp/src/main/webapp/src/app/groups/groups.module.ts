@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 import { DataTableModule, SharedModule } from "primeng/primeng";
 import { GroupResultsComponent } from "./results/group-results.component";
-import { PopoverModule } from "ngx-bootstrap/popover";
+import { PopoverModule } from "ngx-popover";
 import { AssessmentsModule } from "../assessments/assessments.module";
 import { GroupAssessmentService } from "./results/group-assessment.service";
 import { GroupAssessmentsResolve } from "./results/group-assessments.resolve";

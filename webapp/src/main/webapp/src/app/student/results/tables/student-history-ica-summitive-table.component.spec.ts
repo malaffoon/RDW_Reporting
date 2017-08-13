@@ -9,7 +9,7 @@ import { StudentHistoryExamWrapper } from "../../model/student-history-exam-wrap
 import { Exam } from "../../../assessments/model/exam.model";
 import { Assessment } from "../../../assessments/model/assessment.model";
 import { School } from "../../../user/model/school.model";
-import { PopoverModule } from "ngx-bootstrap";
+import { PopoverModule } from "ngx-popover";
 import { ScaleScoreComponent } from "../../../assessments/results/scale-score.component";
 import { InformationLabelComponent } from "../../../assessments/results/information-label.component";
 import { PopupMenuComponent } from "../../../assessments/menu/popup-menu.component";
@@ -28,7 +28,7 @@ describe('StudentHistoryICASummitiveTableComponent', () => {
       imports: [
         BrowserModule,
         DataTableModule,
-        PopoverModule.forRoot(),
+        PopoverModule,
         SharedModule,
         TranslateModule.forRoot()
       ],

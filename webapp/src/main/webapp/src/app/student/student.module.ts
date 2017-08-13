@@ -13,7 +13,7 @@ import { StudentResultsFilterComponent } from "./results/student-results-filter.
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { StudentHistoryIABTableComponent } from "./results/tables/student-history-iab-table.component";
 import { StudentHistoryICASummitiveTableComponent } from "./results/tables/student-history-ica-summitive-table.component";
-import { PopoverModule } from "ngx-bootstrap";
+import { PopoverModule } from "ngx-popover";
 import { Angulartics2Module } from "angulartics2";
 import { StudentResponsesComponent } from "./responses/student-responses.component";
 import { StudentResponsesService } from "./responses/student-responses.service";

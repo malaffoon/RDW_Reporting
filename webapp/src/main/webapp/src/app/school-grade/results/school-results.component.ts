@@ -14,6 +14,7 @@ import { AssessmentsComponent } from "../../assessments/assessments.component";
 import { TranslateService } from "@ngx-translate/core";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
+import { SchoolGradeDownloadComponent } from "../../report/school-grade-report-download.component";
 
 @Component({
   selector: 'app-group-results',
@@ -226,4 +227,14 @@ export class SchoolResultsComponent implements OnInit {
       }
     });
   }
+
+  /**
+   * Initializes SchoolGradeDownloadComponent options with the currently selected filters
+   *
+   * @param downloader
+   */
+  private initializeDownloader(downloader: SchoolGradeDownloadComponent): void {
+    downloader.options.schoolYear = this.currentSchoolYear;
+  }
+
 }

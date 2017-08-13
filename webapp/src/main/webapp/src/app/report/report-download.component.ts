@@ -1,4 +1,4 @@
-import { OnInit, Input, ViewChild } from "@angular/core";
+import { OnInit, Input, ViewChild, Output, EventEmitter } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
@@ -20,6 +20,13 @@ export abstract class ReportDownloadComponent implements OnInit {
   @Input()
   public batch: boolean = false;
 
+  @Output()
+  public onShown: EventEmitter<any> = new EventEmitter<any>();
+
+  public onShownInternal(event: any) {
+    this.onShown.emit(event);
+  }
+
   public assessmentTypes: AssessmentType[] = [ AssessmentType.IAB, AssessmentType.ICA ];
   public subjectTypes: AssessmentSubjectType[] = [ AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
   public languages: string[] = [ 'eng', 'spa', 'vie' ];
@@ -39,8 +46,7 @@ export abstract class ReportDownloadComponent implements OnInit {
     defaultOptions.grayscale = false;
     this.options = defaultOptions;
   }
-
-
+  
   /**
    * Implement this to give behavior to the exam report download form when it is submitted
    */

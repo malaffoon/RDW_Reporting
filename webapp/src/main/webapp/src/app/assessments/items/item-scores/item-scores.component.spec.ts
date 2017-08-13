@@ -7,7 +7,7 @@ import { AssessmentItem } from "../../model/assessment-item.model";
 import { CommonModule } from "../../../shared/common.module";
 import { PopupMenuComponent } from "../../menu/popup-menu.component";
 import { TestModule } from "../../../../test/test.module";
-import { PopoverModule } from "ngx-bootstrap";
+import { PopoverModule } from "ngx-popover";
 
 describe('ItemScoresComponent', () => {
   let component: ItemScoresComponent;

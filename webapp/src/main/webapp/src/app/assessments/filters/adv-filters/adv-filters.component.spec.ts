@@ -8,7 +8,7 @@ import { FilterBy } from "../../model/filter-by.model";
 import { CommonModule } from "../../../shared/common.module";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
 import { Angulartics2Module, Angulartics2 } from 'angulartics2';
-import { PopoverModule } from "ngx-bootstrap";
+import { PopoverModule } from "ngx-popover";
 import {InformationLabelComponent} from "../../results/information-label.component";
 
 describe('AdvFiltersComponent', () => {
@@ -30,7 +30,7 @@ describe('AdvFiltersComponent', () => {
         FormsModule,
         CommonModule,
         Angulartics2Module,
-        PopoverModule.forRoot()
+        PopoverModule
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
