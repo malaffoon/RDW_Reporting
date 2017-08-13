@@ -3,10 +3,8 @@ import { PopupMenuAction } from "./popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
-import { isNull } from "util";
 import { isNullOrUndefined } from "util";
-import {Exam} from "../model/exam.model";
-import {AssessmentExam} from "../model/assessment-exam.model";
+import { AssessmentExam } from "../model/assessment-exam.model";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.
