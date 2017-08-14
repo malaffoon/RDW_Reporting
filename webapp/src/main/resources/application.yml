@@ -23,6 +23,9 @@ saml:
 
 
 spring:
+  session:
+    store-type: none
+
   jackson:
     default-property-inclusion: non_null
     serialization:

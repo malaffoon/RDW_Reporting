@@ -51,6 +51,7 @@ services:
     links:
       - config-server
       - rabbitmq
+      - redis
       - wkhtmltopdf
     environment:
       - spring.profiles.active=local-docker
@@ -80,3 +81,6 @@ services:
     image: fwsbac/wkhtmltopdf-image:latest
     ports:
       - 8082:80
+
+  redis:
+    image: redis:4
