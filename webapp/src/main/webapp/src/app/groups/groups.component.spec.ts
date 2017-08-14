@@ -20,8 +20,8 @@ describe('GroupsComponent', () => {
   };
   let filterOptions: GroupFilterOptions;
   let mockRouteSnapshot;
-  let paramsObserver: Observer<{}>;
-  let mockParams = new Observable<{}>(observer => paramsObserver = observer);
+  let paramsObserver: Observer<any>;
+  let mockParams = new Observable<any>(observer => paramsObserver = observer);
 
   beforeEach(async(() => {
     mockParams = new Observable<{}>(observer => paramsObserver = observer);
