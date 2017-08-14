@@ -94,7 +94,7 @@ describe("Groups Service", () => {
     expect(actualParams.get("subject")).toContain("MATH");
     expect(actualParams.get("subject")).toContain("ELA");
     expect(actualParams.get("schoolYear")).toContain("2017");
-  })
+  });
 
   it('should handle no results found', () => {
     let school = new School();
