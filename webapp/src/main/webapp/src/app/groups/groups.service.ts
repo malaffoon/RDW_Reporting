@@ -55,6 +55,7 @@ export class GroupService {
     uiModel.name = apiModel.name;
     uiModel.schoolName = apiModel.schoolName;
     uiModel.subject = apiModel.subject;
+    uiModel.studentCount = apiModel.studentCount;
 
     return uiModel;
   }

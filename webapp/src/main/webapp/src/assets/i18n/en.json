@@ -41,7 +41,8 @@
         "name": "Name",
         "school": "School",
         "school-year": "School Year",
-        "subjects": "Subjects"
+        "subjects": "Subjects",
+        "student-count": "Num. of Students"
       }
     },
     "menu": "Menu",
