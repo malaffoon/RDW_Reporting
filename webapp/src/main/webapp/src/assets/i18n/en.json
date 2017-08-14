@@ -30,16 +30,19 @@
       }
     },
     "groups": {
-      "title": "Groups",
+      "title": "Student Group Administration",
       "select-school": "School",
       "select-school-year": "School Year",
       "select-subject": "Subject",
-      "no-results": "No groups found",
+      "no-results": "No groups found matching the given filter criteria.",
+      "no-schools": "Your user account does not have access to view the groups of any schools.",
+      "filter": "Search groups by name",
       "cols": {
         "name": "Name",
         "school": "School",
         "school-year": "School Year",
-        "subjects": "Subjects"
+        "subjects": "Subjects",
+        "student-count": "Num. of Students"
       }
     },
     "menu": "Menu",

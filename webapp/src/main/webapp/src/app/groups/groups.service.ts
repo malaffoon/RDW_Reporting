@@ -14,7 +14,6 @@ const ALL = "ALL";
 @Injectable()
 export class GroupService {
 
-
   constructor(private dataService: DataService) {
   }
 
@@ -56,6 +55,7 @@ export class GroupService {
     uiModel.name = apiModel.name;
     uiModel.schoolName = apiModel.schoolName;
     uiModel.subject = apiModel.subject;
+    uiModel.studentCount = apiModel.studentCount;
 
     return uiModel;
   }
@@ -63,14 +63,14 @@ export class GroupService {
   private mapFilterOptionsFromApi(apiModel): GroupFilterOptions {
     let uiModel = new GroupFilterOptions();
 
-    uiModel.schools = apiModel.schools.map(apiSchool => {
+    uiModel.schools = (apiModel.schools && apiModel.schools.map(apiSchool => {
       let uiSchool = new School();
 
       uiSchool.id = apiSchool.id;
       uiSchool.name = apiSchool.name;
 
       return uiSchool;
-    });
+    })) || [];
 
     uiModel.schoolYears = apiModel.schoolYears || [];
     uiModel.subjects = (apiModel.subjects && apiModel.subjects.map(subject => subject.toUpperCase())) || [];

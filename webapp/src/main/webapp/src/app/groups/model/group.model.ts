@@ -4,4 +4,5 @@ export class Group {
   schoolName: string;
   subject: string;
   schoolYear: number;
+  studentCount: number;
 }

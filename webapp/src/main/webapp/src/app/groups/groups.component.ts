@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { GroupFilterOptions } from "./model/group-filter-options.model";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { GroupService } from "./groups.service";
 import { GroupQuery } from "./model/group-query.model";
 import { Group } from "./model/group.model";
@@ -12,21 +12,42 @@ import { Group } from "./model/group.model";
 export class GroupsComponent implements OnInit {
   filterOptions: GroupFilterOptions;
   groups: Group[];
+  filteredGroups: Group[];
   query: GroupQuery;
+  searchTerm: string = '';
 
-  constructor(private route: ActivatedRoute, private service: GroupService) {
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private service: GroupService) {
   }
 
   ngOnInit() {
     this.filterOptions = this.route.snapshot.data[ "filterOptions" ];
-
     this.query = new GroupQuery(this.filterOptions.subjects);
 
-    this.query.school = this.filterOptions.schools[ 0 ];
-    this.query.schoolYear = this.filterOptions.schoolYears[ 0 ];
-    this.query.subject = this.filterOptions.subjects[ 0 ];
+    if(this.filterOptions.schools.length == 0)
+      return;
 
-    this.updateResults();
+    this.route.params.subscribe(p => {
+      let params:any = p;
+
+      this.query.school = this.filterOptions.schools.find(school => school.id == params.schoolId) || this.filterOptions.schools[ 0 ];
+
+      this.query.schoolYear = +params.schoolYear || this.filterOptions.schoolYears[ 0 ];
+      this.query.subject =  params.subject || this.filterOptions.subjects[ 0 ];
+
+      this.updateResults();
+    });
+  }
+
+  updateRoute() {
+    let params = {
+      schoolId: this.query.school.id,
+      schoolYear: this.query.schoolYear,
+      subject: this.query.subject
+    };
+
+    this.router.navigate([ params ], { relativeTo: this.route });
   }
 
   updateResults() {
@@ -34,6 +55,11 @@ export class GroupsComponent implements OnInit {
       .getGroups(this.query)
       .subscribe(groups => {
         this.groups = groups;
+        this.filterGroups();
       })
+  }
+
+  filterGroups() {
+    this.filteredGroups = this.groups.filter( x => x.name.toUpperCase().indexOf(this.searchTerm.toUpperCase()) >= 0)
   }
 }
