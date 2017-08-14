@@ -8,4 +8,5 @@ export class StudentScore {
   score: number;
   maxScore: number;
   correctness: number;
+  response: string;
 }
