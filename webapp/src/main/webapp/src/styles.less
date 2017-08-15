@@ -107,6 +107,13 @@ footer {
   z-index: 1030;
 }
 
+.tag {
+  // including fixes to handle really long tags within lists
+  max-width: 100%;
+  margin-right: @grid-gutter-width / 2;
+  margin-bottom: @line-height-computed / 2;
+}
+
 @media (max-width: @screen-xs-max) {
   // undoing the .pull-right classes
   .float-none-xs { float: none !important; }
