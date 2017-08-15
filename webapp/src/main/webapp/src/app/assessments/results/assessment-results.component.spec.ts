@@ -4,7 +4,7 @@ import { APP_BASE_HREF } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
-import { Component } from "@angular/core";
+import {Component, EventEmitter} from "@angular/core";
 import { SharedModule } from "primeng/components/common/shared";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -30,15 +30,23 @@ import { ItemScoresComponent } from "../items/item-scores/item-scores.component"
 import { TestModule } from "../../../test/test.module";
 import { ItemInfoComponent } from "../items/item-info/item-info.component";
 import { ScaleScoreService } from "../../shared/scale-score.service";
+import { ReportService } from "../../report/report.service";
+import { MockDataService } from "../../../test/mock.data.service";
+import { DataService } from "../../shared/data/data.service";
+import { NotificationService } from "../../shared/notification/notification.service";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
+  let dataService: MockDataService;
+  let service: MockNotificationService;
 
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
 
   beforeEach(async(() => {
+    dataService = new MockDataService();
+
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -72,7 +80,10 @@ describe('AssessmentResultsComponent', () => {
         ExamStatisticsCalculator,
         ExamFilterService,
         ColorService,
-        ScaleScoreService
+        ScaleScoreService,
+        ReportService,
+        { provide: DataService, useValue: dataService },
+        { provide: NotificationService, useValue: service }
       ]
     }).compileComponents();
 
@@ -149,4 +160,8 @@ describe('AssessmentResultsComponent', () => {
 })
 class TestComponentWrapper {
   assessment = new AssessmentExam();
+}
+
+class MockNotificationService {
+  onNotification: EventEmitter<Notification> = new EventEmitter();
 }
