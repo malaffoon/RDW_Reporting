@@ -3,8 +3,8 @@ import { PopupMenuAction } from "./popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
-import { isNull } from "util";
 import { isNullOrUndefined } from "util";
+import { AssessmentExam } from "../model/assessment-exam.model";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.
@@ -117,6 +117,36 @@ export class MenuActionBuilder {
     }).bind(this);
 
     this.actions.push(resourcesAction);
+    return this;
+  }
+
+  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student, submitReport: (x:any) => void): MenuActionBuilder {
+    let action: PopupMenuAction = new PopupMenuAction();
+
+    action.displayName = ((actionable: any) => {
+      let assessmentExam = getAssessmentExam(actionable);
+      let assessmentType: string = '';
+
+      if (assessmentExam.assessment.isIab) {
+        assessmentType = 'iab';
+      }
+      else if (assessmentExam.assessment.isIca) {
+        assessmentType = 'ica';
+      }
+      else if (assessmentExam.assessment.isSummative) {
+        assessmentType = 'summative';
+      }
+      else {
+        return '';
+      }
+
+      return this.translateService.instant('labels.menus.student-report.' + assessmentType, getStudent(actionable));
+    }).bind(this);
+    action.perform = ((actionable: any) => {
+      submitReport(actionable);
+    }).bind(this);
+
+    this.actions.push(action);
     return this;
   }
 

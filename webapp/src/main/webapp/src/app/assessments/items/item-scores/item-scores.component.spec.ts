@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ItemScoresComponent } from "./item-scores.component";
+import { ItemViewerComponent } from "../item-viewer/item-viewer.component";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { StudentScoreService } from "./student-score.service";
 import { Component } from "@angular/core";
@@ -17,7 +18,7 @@ describe('ItemScoresComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [ DataTableModule, CommonModule, TestModule, PopoverModule ],
-      declarations: [ TestComponentWrapper, ItemScoresComponent, PopupMenuComponent ],
+      declarations: [ TestComponentWrapper, ItemScoresComponent, PopupMenuComponent, ItemViewerComponent ],
       providers: [
         StudentScoreService
       ]

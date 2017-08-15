@@ -258,7 +258,8 @@ sql:
             ei.exam_id,
             ei.item_id,
             ei.score,
-            ei.position
+            ei.position,
+            ei.response
           from exam_item ei
             join exam e on ei.exam_id=e.id
             join student_group_membership sgm on e.student_id=sgm.student_id
@@ -386,7 +387,8 @@ sql:
             ei.exam_id,
             ei.item_id,
             ei.score,
-            ei.position
+            ei.position,
+            ei.response
           from exam_item ei
             join exam e on ei.exam_id=e.id
             join asmt a on e.asmt_id=a.id

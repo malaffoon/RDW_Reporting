@@ -1,6 +1,5 @@
 import { OnInit, Input, ViewChild, Output, EventEmitter } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
-import { saveAs } from "file-saver";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
