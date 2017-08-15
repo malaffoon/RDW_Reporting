@@ -1,5 +1,6 @@
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { isNullOrUndefined } from "util";
+import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
 
 export class Assessment {
   id: number;
@@ -11,6 +12,10 @@ export class Assessment {
   subject: string;
   claimCodes: string[];
   cutPoints: number[];
+
+  get assessmentSubjectType(): AssessmentSubjectType {
+    return AssessmentSubjectType[this.subject];
+  }
 
   get hasResourceUrl(): boolean {
     return !isNullOrUndefined(this.resourceUrl);

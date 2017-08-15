@@ -17,6 +17,11 @@ import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
 import { ItemByPointsEarnedExportRequest } from "../model/item-by-points-earned-export-request.model";
 import { ItemPointField } from "../model/item-point-field.model";
+import { ReportService } from "../../report/report.service";
+import { NotificationService } from "../../shared/notification/notification.service";
+import { Download } from "../../shared/data/download.model";
+import { ReportOptions } from "../../report/report-options.model";
+import { ReportOrder } from "../../report/report-order.enum";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -197,6 +202,8 @@ export class AssessmentResultsComponent implements OnInit {
   constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
+              private reportService: ReportService,
+              private notificationService: NotificationService,
               private actionBuilder: MenuActionBuilder,
               private angulartics2: Angulartics2) {
 
@@ -339,6 +346,39 @@ export class AssessmentResultsComponent implements OnInit {
       builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
     }
 
-    return builder.withStudentHistory(exam => exam.student).build();
+    return builder
+      .withStudentHistory(exam => exam.student)
+      .withStudentReport(
+        () => this._assessmentExam,
+        exam => exam.student,
+        exam => {
+          let reportOptions: ReportOptions = new ReportOptions();
+          reportOptions.assessmentType = this._assessmentExam.assessment.type;
+          reportOptions.subject = this._assessmentExam.assessment.assessmentSubjectType;
+          reportOptions.schoolYear = exam.schoolYear;
+          reportOptions.language = 'eng';
+          reportOptions.order = ReportOrder.STUDENT_NAME;
+          reportOptions.grayscale = false;
+
+          this.notificationService.info({ id: 'labels.reports.messages.submitted-single' });
+
+          this.reportService.getStudentExamReport(exam.student.id, reportOptions)
+            .subscribe(
+              (download: Download) => {
+                saveAs(download.content, download.name);
+              },
+              (error: any) => {
+                this.notificationService.error({
+                  id: error.name === 'NotFoundError'
+                    ? 'labels.reports.messages.404'
+                    : 'labels.reports.messages.500'
+                });
+              }
+            )
+          ;
+        }
+      )
+      .build();
+
   }
 }
