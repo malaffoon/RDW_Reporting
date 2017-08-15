@@ -47,6 +47,7 @@
       },
       "delete": {
         "title": "Delete {{name}}?",
+        "error": "Unable to delete this group.",
         "content-html": "<p>When a group is deleted, it is no longer available to any users.  This action cannot be undone.</p><p>Are you sure you would like to continue?</p>",
         "button-cancel": "No, keep this group.",
         "button-save": "Yes, delete this group"
@@ -59,7 +60,8 @@
   },
   "prompt": {
     "search": "Search",
-    "select": "Select"
+    "select": "Select",
+    "close": "Close"
   },
   "buttons": {
     "all": "All",

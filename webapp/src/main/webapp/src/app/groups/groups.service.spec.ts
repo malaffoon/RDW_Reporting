@@ -12,7 +12,7 @@ describe("Groups Service", () => {
   let service;
 
   beforeEach(() => {
-    service = new GroupService(new MockDataService(null, null));
+    service = new GroupService(new MockDataService(null));
   });
 
   it('should map filter data and sort', () => {

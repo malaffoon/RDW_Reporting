@@ -51,7 +51,7 @@ describe('GroupsComponent', () => {
           useValue: MockRouter
         }, {
           provide: UserService,
-          useValue: MockUserService
+          useClass: MockUserService
         }
       ]
     })

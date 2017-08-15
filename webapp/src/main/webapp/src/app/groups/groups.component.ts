@@ -30,12 +30,9 @@ export class GroupsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isAuthorizedToWrite = true;
-
-    // Uncomment once dwtest has this permission.
-    // this.userService
-    //   .doesCurrentUserHaveAtLeastOnePermission(["GROUP_WRITE"])
-      // .subscribe(result => this.isAuthorizedToWrite = result);
+    this.userService
+      .doesCurrentUserHaveAtLeastOnePermission(["GROUP_WRITE"])
+      .subscribe(result => this.isAuthorizedToWrite = result);
 
     this.filterOptions = this.route.snapshot.data[ "filterOptions" ];
     this.query = new GroupQuery(this.filterOptions.subjects);
@@ -81,6 +78,8 @@ export class GroupsComponent implements OnInit {
   openSetActiveModal(group: Group) {
     this.bsModalRef = this.modalService.show(DeleteGroupModalComponent);
     this.bsModalRef.content.group = group;
-
+    this.modalService.onHide.subscribe(x => {
+      this.updateResults();
+    });
   }
 }

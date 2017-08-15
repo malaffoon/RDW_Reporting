@@ -5,5 +5,5 @@ export class Group {
   subject: string;
   schoolYear: number;
   studentCount: number;
-  isActive: boolean;
+  isDeleted: boolean;
 }
