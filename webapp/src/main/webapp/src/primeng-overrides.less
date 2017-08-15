@@ -77,6 +77,7 @@ body .ui-widget.ui-datatable {
     .ui-datatable-thead {
       > tr {
         > th {
+          border-right: 1px solid rgba(100, 102, 106, 0.17);
           &.ui-sortable-column {
             position: relative;
             padding-right: 22px; // make sure we have room for the sort icon
@@ -96,6 +97,7 @@ body .ui-widget.ui-datatable {
     .ui-datatable-data {
       > tr {
         > td {
+          border-right: 1px solid rgba(213, 213, 213, 0.26);
           border-bottom: 1px solid @table-border-color;
         }
         &.ui-datatable-even:hover {
@@ -162,6 +164,18 @@ body .ui-widget.ui-datatable {
       padding: 0px 0px 0px 0px;
       border: none;
       .box-shadow(none);
+    }
+  }
+  // hacking to override primeng's forced inline styles...
+  .table tr th {
+    &.level-up {
+      border-right: 1px solid @white;
+    }
+    &.level-down {
+      display: flex !important;
+      border-bottom: 1px solid @table-border-color;
+      border-left: none;
+      overflow: hidden;
     }
   }
 }
