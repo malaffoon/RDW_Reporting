@@ -4,6 +4,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { GroupService } from "./groups.service";
 import { GroupQuery } from "./model/group-query.model";
 import { Group } from "./model/group.model";
+import { UserService } from "../user/user.service";
+import { DeleteGroupModalComponent } from "./delete-group.modal";
+import { BsModalService, BsModalRef } from "ngx-bootstrap";
 
 @Component({
   selector: 'groups',
@@ -15,13 +18,25 @@ export class GroupsComponent implements OnInit {
   filteredGroups: Group[];
   query: GroupQuery;
   searchTerm: string = '';
+  isAuthorizedToWrite: boolean = false;
+
+  bsModalRef: BsModalRef;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private service: GroupService) {
+              private service: GroupService,
+              private modalService: BsModalService,
+              private userService: UserService ) {
   }
 
   ngOnInit() {
+    this.isAuthorizedToWrite = true;
+
+    // Uncomment once dwtest has this permission.
+    // this.userService
+    //   .doesCurrentUserHaveAtLeastOnePermission(["GROUP_WRITE"])
+      // .subscribe(result => this.isAuthorizedToWrite = result);
+
     this.filterOptions = this.route.snapshot.data[ "filterOptions" ];
     this.query = new GroupQuery(this.filterOptions.subjects);
 
@@ -61,5 +76,11 @@ export class GroupsComponent implements OnInit {
 
   filterGroups() {
     this.filteredGroups = this.groups.filter( x => x.name.toUpperCase().indexOf(this.searchTerm.toUpperCase()) >= 0)
+  }
+
+  openSetActiveModal(group: Group) {
+    this.bsModalRef = this.modalService.show(DeleteGroupModalComponent);
+    this.bsModalRef.content.group = group;
+
   }
 }

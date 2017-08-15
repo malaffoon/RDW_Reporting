@@ -1,0 +1,14 @@
+<div *ngIf="group">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ 'labels.groups.delete.title' | translate:group }}</h4>
+    <button type="button" class="close pull-right" (click)="cancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" [innerHtml]="'labels.groups.delete.content-html' | translate">
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="cancel()">{{ 'labels.groups.delete.button-cancel' | translate }}</button>
+    <button type="button" class="btn btn-primary" (click)="save()">{{ 'labels.groups.delete.button-save' | translate }}</button>
+  </div>
+</div>
