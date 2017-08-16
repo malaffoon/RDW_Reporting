@@ -24,7 +24,7 @@
                     <i class="fa fa-user-circle"></i> <span *ngIf="user">{{'welcome' | translate:user }}</span> <span class="caret"></span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li *sbAuthorize="['GROUP_READ']" role="menuitem"><a class="dropdown-item" routerLink="groups/filterBy">{{ 'labels.groups.title' | translate }}</a></li>
+                    <li *ngIf="userHasAccess" role="menuitem"><a class="dropdown-item" routerLink="groups/filterBy">{{ 'labels.groups.title' | translate }}</a></li>
                     <li role="menuitem">
                       <a class="dropdown-item" href="javascript:void(0)" onclick="window.document.logoutForm.submit()">{{'messages.logout' | translate}}</a>
                       <form name="logoutForm" method="post" action="/saml/logout" class="hidden"></form>
@@ -57,6 +57,12 @@
 <div class="page-view pt-md">
   <div class="container">
     <router-outlet></router-outlet>
+
+    <div *ngIf="userHasAccess === false">
+      <div class="alert alert-danger">
+        {{ 'messages.no-access' | translate }}
+      </div>
+    </div>
   </div>
 </div>
 

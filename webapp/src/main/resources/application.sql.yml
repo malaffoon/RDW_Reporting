@@ -14,20 +14,31 @@ sql:
       select distinct sg.school_year
       from student_group sg
         join school sc on sc.id = sg.school_id
-      where 1=:statewide or sc.district_id in (:district_ids) or sg.school_id in (:school_ids)
+      where sg.deleted = 0
+        and 1=:statewide or sc.district_id in (:district_ids) or sg.school_id in (:school_ids)
 
     findAllByQuery: >-
-      select sg.name as group_name,
+      select sg.id,
+        sg.name as group_name,
         sc.name as school_name,
         sg.subject_id,
         sg.school_year,
+        sg.deleted,
         (select count(*) from student_group_membership sgm where sgm.student_group_id = sg.id) as student_count
       from student_group sg
         join school sc on sc.id = sg.school_id
       where sg.school_id = :school_id
+        and sg.deleted = 0
         and (sg.subject_id is null or sg.subject_id in (:subject_ids))
         and sg.school_year = :school_year
         and (1=:statewide or sc.district_id in (:district_ids) or sg.school_id in (:school_ids))
+
+    update: >-
+      update student_group sg
+        join school s on sg.school_id = s.id
+      set sg.deleted = :deleted
+      where sg.id = :id
+        and (1=:statewide or s.district_id in (:district_ids) or sg.school_id in (:school_ids))
 
   school:
     findAllIds: >-

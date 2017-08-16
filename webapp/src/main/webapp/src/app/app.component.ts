@@ -9,6 +9,8 @@ import { UserService } from "./user/user.service";
 })
 export class AppComponent {
 
+  public userHasAccess:boolean = undefined;
+
   private _user;
 
   get user() {
@@ -36,6 +38,8 @@ export class AppComponent {
         firstName: user.firstName,
         lastName: user.lastName
       };
+
+      this.userHasAccess = user.permissions.some(permission => permission == "GROUP_WRITE");
 
       if (window['ga'] && user.configuration && user.configuration.analyticsTrackingId) {
         window['ga']('create', user.configuration.analyticsTrackingId, 'auto');

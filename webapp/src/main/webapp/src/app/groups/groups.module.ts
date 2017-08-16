@@ -6,14 +6,22 @@ import { GroupService } from "./groups.service";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
 import { DataTableModule } from "primeng/components/datatable/datatable";
+import { ModalModule } from "ngx-bootstrap";
+import { DeleteGroupModalComponent } from "./delete-group.modal";
+
 @NgModule({
   declarations: [
-    GroupsComponent
+    GroupsComponent,
+    DeleteGroupModalComponent
+  ],
+  entryComponents: [
+    DeleteGroupModalComponent
   ],
   imports: [
     BrowserModule,
     CommonModule,
     DataTableModule,
+    ModalModule.forRoot(),
     FormsModule
   ],
   providers: [

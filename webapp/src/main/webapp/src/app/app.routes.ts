@@ -9,6 +9,8 @@ export const routes: Routes = [
   {
     path: '',
     resolve: { user: UserResolve },
+    data: { permissions: [ 'GROUP_WRITE' ]},
+    canActivate: [ AuthorizeCanActivate ],
     children: [
       {
         path: '',
@@ -17,8 +19,6 @@ export const routes: Routes = [
       }, {
         path: 'groups',
         resolve: { filterOptions: GroupFilterOptionsResolve },
-        data: { permissions: [ 'GROUP_READ' ]},
-        canActivate: [ AuthorizeCanActivate ],
         children: [ {
           path: 'filterBy',
           pathMatch: 'full',

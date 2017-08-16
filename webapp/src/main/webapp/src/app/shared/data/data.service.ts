@@ -1,16 +1,13 @@
 import { Injectable } from "@angular/core";
-import { Http, RequestOptionsArgs, URLSearchParams } from "@angular/http";
+import { Http, RequestOptionsArgs } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
-import { CachingDataService } from "../cachingData.service";
 
-// TODO: Break out methods from DataService so only a public generic Get.
-// TODO: Other methods such as getGroups belong in their own service such as GroupService
 @Injectable()
 export class DataService {
 
-  constructor(private http: Http, private staticDataService: CachingDataService) {
+  constructor(private http: Http) {
   }
 
   get(url, options?: RequestOptionsArgs): Observable<any> {
@@ -19,7 +16,9 @@ export class DataService {
       .map(response => response.json());
   }
 
-  getGroups(): Observable<Array<any>> {
-    return this.get(`/groups`);
+  put(url, body, options?: RequestOptionsArgs): Observable<any> {
+    return this.http
+      .put(`/api${url}`, body, options)
+      .map(response => response.json());
   }
 }
