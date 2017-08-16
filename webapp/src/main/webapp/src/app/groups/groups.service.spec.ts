@@ -70,29 +70,24 @@ describe("Groups Service", () => {
     query.school = school;
     query.schoolYear = 2017;
 
-    let mockApiResult = {
-      writeable: true,
-      groups: [ {
+    let mockApiResult = [ {
         id: 122,
         name: "Group1",
         schoolName: "Springfield",
         schoolYear: "2017",
         subject: null,
         deleted: 0
-      } ]
-    };
+      } ];
 
     service.getGroups(query).subscribe(actual => {
-      expect(actual.isWriteable).toBeTruthy();
+      expect(actual.length).toBe(1);
 
-      expect(actual.groups.length).toBe(1);
-
-      expect(actual.groups[ 0 ].id).toBe(mockApiResult.groups[ 0 ].id);
-      expect(actual.groups[ 0 ].name).toBe(mockApiResult.groups[ 0 ].name);
-      expect(actual.groups[ 0 ].schoolName).toBe(mockApiResult.groups[ 0 ].schoolName);
-      expect(actual.groups[ 0 ].schoolYear).toBe(mockApiResult.groups[ 0 ].schoolYear);
-      expect(actual.groups[ 0 ].subject).toBe(mockApiResult.groups[ 0 ].subject);
-      expect(actual.groups[ 0 ].isDeleted).toBe(mockApiResult.groups[ 0 ].deleted);
+      expect(actual[ 0 ].id).toBe(mockApiResult[ 0 ].id);
+      expect(actual[ 0 ].name).toBe(mockApiResult[ 0 ].name);
+      expect(actual[ 0 ].schoolName).toBe(mockApiResult[ 0 ].schoolName);
+      expect(actual[ 0 ].schoolYear).toBe(mockApiResult[ 0 ].schoolYear);
+      expect(actual[ 0 ].subject).toBe(mockApiResult[ 0 ].subject);
+      expect(actual[ 0 ].isDeleted).toBe(mockApiResult[ 0 ].deleted);
     });
 
     groupObserver.next(mockApiResult);
@@ -114,10 +109,10 @@ describe("Groups Service", () => {
     query.school = school;
     query.schoolYear = 2017;
 
-    let mockApiResult = { groups: [] };
+    let mockApiResult = [];
 
     service.getGroups(query).subscribe(actual => {
-      expect(actual.groups.length).toBe(0);
+      expect(actual.length).toBe(0);
     });
 
     groupObserver.next(mockApiResult);

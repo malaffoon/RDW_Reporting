@@ -23,17 +23,12 @@ export class GroupService {
       .map(this.mapFilterOptionsFromApi.bind(this))
   }
 
-  getGroups(query: GroupQuery): Observable<any> {
+  getGroups(query: GroupQuery): Observable<Group[]> {
     let params: URLSearchParams = this.mapQueryToParams(query);
 
     return this.dataService
       .get("/groups", { search: params })
-      .map(result => {
-        return {
-          isWriteable: result.writeable,
-          groups: result.groups.map(this.mapGroupFromApi)
-        }
-      });
+      .map(groups => groups.map(this.mapGroupFromApi));
   }
 
   update(group: Group): Observable<any> {

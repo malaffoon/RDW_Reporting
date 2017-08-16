@@ -18,8 +18,6 @@ export class GroupsComponent implements OnInit {
   filteredGroups: Group[];
   query: GroupQuery;
   searchTerm: string = '';
-  isAuthorizedToWrite: boolean = false;
-
   bsModalRef: BsModalRef;
 
   constructor(private route: ActivatedRoute,
@@ -30,10 +28,6 @@ export class GroupsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService
-      .doesCurrentUserHaveAtLeastOnePermission(["GROUP_WRITE"])
-      .subscribe(result => this.isAuthorizedToWrite = result);
-
     this.filterOptions = this.route.snapshot.data[ "filterOptions" ];
     this.query = new GroupQuery(this.filterOptions.subjects);
 
@@ -65,10 +59,8 @@ export class GroupsComponent implements OnInit {
   updateResults() {
     this.service
       .getGroups(this.query)
-      .subscribe(result => {
-        this.isAuthorizedToWrite = result.isWriteable;
-        this.groups = result.groups;
-
+      .subscribe(groups => {
+        this.groups = groups;
         this.filterGroups();
       })
   }
