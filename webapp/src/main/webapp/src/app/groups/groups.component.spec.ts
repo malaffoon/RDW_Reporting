@@ -16,7 +16,7 @@ describe('GroupsComponent', () => {
   let fixture: ComponentFixture<GroupsComponent>;
   let mockGroupService = {
     getGroups: function () {
-      return Observable.of([])
+      return Observable.of({ groups: []})
     }
   };
   let filterOptions: GroupFilterOptions;

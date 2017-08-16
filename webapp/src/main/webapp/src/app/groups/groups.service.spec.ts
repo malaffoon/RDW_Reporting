@@ -29,16 +29,16 @@ describe("Groups Service", () => {
 
     service.getFilterOptions().subscribe(actual => {
       expect(actual.schools.length).toBe(2);
-      expect(actual.schools[0].name).toBe("Coral Park");
-      expect(actual.schools[1].name).toBe("Everglenn");
+      expect(actual.schools[ 0 ].name).toBe("Coral Park");
+      expect(actual.schools[ 1 ].name).toBe("Everglenn");
 
       expect(actual.schoolYears.length).toBe(2);
-      expect(actual.schoolYears[0]).toBe(2018);
-      expect(actual.schoolYears[1]).toBe(2017);
+      expect(actual.schoolYears[ 0 ]).toBe(2018);
+      expect(actual.schoolYears[ 1 ]).toBe(2017);
 
       expect(actual.subjects.length).toBe(2);
-      expect(actual.subjects[0]).toBe("ALL");
-      expect(actual.subjects[1]).toBe("MATH");
+      expect(actual.subjects[ 0 ]).toBe("ALL");
+      expect(actual.subjects[ 1 ]).toBe("MATH");
 
     });
 
@@ -52,10 +52,10 @@ describe("Groups Service", () => {
       expect(actual.schools.length).toBe(0);
 
       expect(actual.schoolYears.length).toBe(1);
-      expect(actual.schoolYears[0]).toBe(new Date().getFullYear());
+      expect(actual.schoolYears[ 0 ]).toBe(new Date().getFullYear());
 
       expect(actual.subjects.length).toBe(1);
-      expect(actual.subjects[0]).toBe("ALL");
+      expect(actual.subjects[ 0 ]).toBe("ALL");
     });
 
     filterObserver.next(mockApiResult);
@@ -65,25 +65,30 @@ describe("Groups Service", () => {
     let school = new School();
     school.id = 1;
 
-    let query = new GroupQuery(["MATH", "ELA"]);
+    let query = new GroupQuery([ "MATH", "ELA" ]);
     query.subject = "ALL";
     query.school = school;
     query.schoolYear = 2017;
 
-    let mockApiResult  = [{
-      name: "Group1",
-      schoolName: "Springfield",
-      schoolYear: "2017",
-      subject: null
-    }];
+    let mockApiResult = {
+      writeable: true,
+      groups: [ {
+        name: "Group1",
+        schoolName: "Springfield",
+        schoolYear: "2017",
+        subject: null
+      } ]
+    };
 
     service.getGroups(query).subscribe(actual => {
-      expect(actual.length).toBe(1);
+      expect(actual.isWriteable).toBeTruthy();
 
-      expect(actual[0].name).toBe(mockApiResult[0].name);
-      expect(actual[0].schoolName).toBe(mockApiResult[0].schoolName);
-      expect(actual[0].schoolYear).toBe(mockApiResult[0].schoolYear);
-      expect(actual[0].subject).toBe(mockApiResult[0].subject);
+      expect(actual.groups.length).toBe(1);
+
+      expect(actual.groups[ 0 ].name).toBe(mockApiResult.groups[ 0 ].name);
+      expect(actual.groups[ 0 ].schoolName).toBe(mockApiResult.groups[ 0 ].schoolName);
+      expect(actual.groups[ 0 ].schoolYear).toBe(mockApiResult.groups[ 0 ].schoolYear);
+      expect(actual.groups[ 0 ].subject).toBe(mockApiResult.groups[ 0 ].subject);
     });
 
     groupObserver.next(mockApiResult);
@@ -100,15 +105,15 @@ describe("Groups Service", () => {
     let school = new School();
     school.id = 1;
 
-    let query = new GroupQuery(["MATH", "ELA"]);
+    let query = new GroupQuery([ "MATH", "ELA" ]);
     query.subject = "ALL";
     query.school = school;
     query.schoolYear = 2017;
 
-    let mockApiResult  = [];
+    let mockApiResult = { groups: [] };
 
     service.getGroups(query).subscribe(actual => {
-      expect(actual.length).toBe(0);
+      expect(actual.groups.length).toBe(0);
     });
 
     groupObserver.next(mockApiResult);
@@ -116,14 +121,14 @@ describe("Groups Service", () => {
 });
 
 class MockDataService extends DataService {
-  get(route, options):Observable<any> {
+  get(route, options): Observable<any> {
     optionsSpy = options;
 
-    if(route === "/groups/filters")
+    if (route === "/groups/filters")
       return new Observable(o => filterObserver = o);
 
 
-    if(route ==="/groups")
+    if (route === "/groups")
       return new Observable(o => groupObserver = o);
 
     throw Error("Unexpected route called");
