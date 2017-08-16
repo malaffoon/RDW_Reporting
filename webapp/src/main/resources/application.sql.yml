@@ -46,8 +46,8 @@ sql:
 
   student_group_batch:
     create: >-
-      INSERT INTO upload_student_group_batch (status, digest, creator, message)
-        VALUES (:status, :digest, :creator, :message)
+      INSERT INTO upload_student_group_batch (status, digest, creator, message, upload_id)
+        VALUES (:status, :digest, :creator, :message, :upload_id)
 
     findOne: >-
       SELECT * FROM upload_student_group_batch WHERE id=:id
@@ -57,3 +57,17 @@ sql:
 
     sqlFindByCreator: >-
       SELECT * FROM upload_student_group_batch WHERE creator=:creator
+
+  student_group_upload:
+    create: >-
+      INSERT INTO upload_student_group_upload (status, digest, creator, message)
+        VALUES (:status, :digest, :creator, :message)
+
+    findOne: >-
+      SELECT * FROM upload_student_group_upload WHERE id=:id
+
+    findOneByDigest: >-
+      SELECT * FROM upload_student_group_upload WHERE digest=:digest LIMIT 1
+
+    sqlFindByCreator: >-
+      SELECT * FROM upload_student_group_upload WHERE creator=:creator
