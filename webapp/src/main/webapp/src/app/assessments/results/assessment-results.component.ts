@@ -22,6 +22,7 @@ import { NotificationService } from "../../shared/notification/notification.serv
 import { Download } from "../../shared/data/download.model";
 import { ReportOptions } from "../../report/report-options.model";
 import { ReportOrder } from "../../report/report-order.enum";
+import { saveAs } from "file-saver";
 
 enum ScoreViewState {
   OVERALL = 1,
