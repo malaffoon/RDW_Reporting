@@ -67,7 +67,7 @@ export class GroupService {
     uiModel.schoolName = apiModel.schoolName;
     uiModel.subject = apiModel.subject;
     uiModel.studentCount = apiModel.studentCount;
-    uiModel.isDeleted = apiModel.isDeleted;
+    uiModel.isDeleted = apiModel.deleted;
 
     return uiModel;
   }
@@ -81,7 +81,7 @@ export class GroupService {
     apiModel.schoolName = uiModel.schoolName;
     apiModel.subject = uiModel.subject;
     apiModel.studentCount = uiModel.studentCount;
-    apiModel.isDeleted = uiModel.isDeleted;
+    apiModel.deleted = uiModel.isDeleted;
 
     return apiModel;
   }

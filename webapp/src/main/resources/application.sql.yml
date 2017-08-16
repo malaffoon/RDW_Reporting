@@ -23,7 +23,6 @@ sql:
         sc.name as school_name,
         sg.subject_id,
         sg.school_year,
-        sg.active,
         sg.deleted,
         (select count(*) from student_group_membership sgm where sgm.student_group_id = sg.id) as student_count
       from student_group sg
