@@ -52,6 +52,14 @@ sql:
       from school
       where (1=:statewide or district_id in (:district_ids) or id in (:school_ids))
 
+    exists: >-
+      select exists(
+        select 1
+        from school
+        where id = :id
+          and (1=:statewide or district_id in (:district_ids) or id in (:school_ids))
+      )
+
   status:
     readTest: >-
       SELECT ist.name FROM import_status ist

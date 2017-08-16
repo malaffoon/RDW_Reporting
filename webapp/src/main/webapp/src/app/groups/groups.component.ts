@@ -65,8 +65,10 @@ export class GroupsComponent implements OnInit {
   updateResults() {
     this.service
       .getGroups(this.query)
-      .subscribe(groups => {
-        this.groups = groups;
+      .subscribe(result => {
+        this.isAuthorizedToWrite = result.isWriteable;
+        this.groups = result.groups;
+
         this.filterGroups();
       })
   }
