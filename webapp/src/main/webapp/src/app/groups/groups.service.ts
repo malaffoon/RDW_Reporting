@@ -31,6 +31,11 @@ export class GroupService {
       .map(groups => groups.map(this.mapGroupFromApi));
   }
 
+  update(group: Group): Observable<any> {
+    let apiGroup = this.mapGroupToApi(group);
+    return this.dataService.put("/groups", apiGroup);
+  }
+
   private mapQueryToParams(query: GroupQuery) {
     let params = new URLSearchParams();
 
@@ -51,13 +56,29 @@ export class GroupService {
   private mapGroupFromApi(apiModel): Group {
     let uiModel = new Group();
 
+    uiModel.id = apiModel.id;
     uiModel.schoolYear = apiModel.schoolYear;
     uiModel.name = apiModel.name;
     uiModel.schoolName = apiModel.schoolName;
     uiModel.subject = apiModel.subject;
     uiModel.studentCount = apiModel.studentCount;
+    uiModel.isDeleted = apiModel.deleted;
 
     return uiModel;
+  }
+
+  private mapGroupToApi(uiModel: Group): any {
+    let apiModel: any = {};
+
+    apiModel.id = uiModel.id;
+    apiModel.schoolYear = uiModel.schoolYear;
+    apiModel.name = uiModel.name;
+    apiModel.schoolName = uiModel.schoolName;
+    apiModel.subject = uiModel.subject;
+    apiModel.studentCount = uiModel.studentCount;
+    apiModel.deleted = uiModel.isDeleted;
+
+    return apiModel;
   }
 
   private mapFilterOptionsFromApi(apiModel): GroupFilterOptions {

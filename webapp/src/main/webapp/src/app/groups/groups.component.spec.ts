@@ -9,6 +9,7 @@ import { GroupService } from "./groups.service";
 import { Observable, Observer } from "rxjs";
 import { MockRouter } from "../../test/mock.router";
 import { Group } from "./model/group.model";
+import { UserService } from "../user/user.service";
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
@@ -41,14 +42,16 @@ describe('GroupsComponent', () => {
       imports: [ CommonModule, GroupsModule ],
       providers: [ {
           provide: ActivatedRoute,
-          // useFactory: getRoute
           useValue: { snapshot: mockRouteSnapshot, params: mockParams }
         }, {
           provide: GroupService,
           useValue: mockGroupService
         }, {
           provide: Router,
-          userValue: MockRouter
+          useValue: MockRouter
+        }, {
+          provide: UserService,
+          useClass: MockUserService
         }
       ]
     })
@@ -105,3 +108,10 @@ describe('GroupsComponent', () => {
     expect(component.filteredGroups.length).toBe(3);
   });
 });
+
+
+class MockUserService {
+  doesCurrentUserHaveAtLeastOnePermission(permissions: string[]): Observable<boolean> {
+    return Observable.of(true);
+  }
+}
