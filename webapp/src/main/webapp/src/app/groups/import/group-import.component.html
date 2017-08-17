@@ -32,34 +32,6 @@
     </div>
   </div>
   <div class="well">
-    <div class="flex-child grow">
-      <label>{{'labels.groups.import.results' | translate }}</label>
-    </div>
-    <div>
-      <p-dataTable #dt expandableRows="true" [value]="importResults" emptyMessage="{{'labels.groups.import.empty' | translate }}" sortField="id" sortOrder="-1" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" >
-        <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
-          <ng-template let-import="rowData" pTemplate="body">
-            <span *ngIf="import.isOk" class="label border-only green">
-              <i class="fa fa-check-circle"></i> {{ import.status }}
-            </span>
-            <a href="javascript:void(0)" *ngIf="!import.isOk" class="label border-only red pointer" (click)="dt.toggleRow(import)">
-              <i class="fa fa-exclamation-circle"></i> {{ import.status }}
-            </a>
-          </ng-template>
-        </p-column>
-        <p-column field="id" header="{{'labels.groups.import.cols.id' | translate }}" [sortable]="true"></p-column>
-        <p-column field="fileName" header="{{'labels.groups.import.cols.file-name' | translate }}" [sortable]="true"></p-column>
-        <p-column field="created" header="{{'labels.groups.import.cols.created' | translate }}" [sortable]="true">
-          <ng-template let-import="rowData" pTemplate="body">
-            {{ import.created | date:'medium' }}
-          </ng-template>
-        </p-column>
-        <ng-template let-import pTemplate="rowexpansion" class="white-space-normal">
-          <div class="white-space-normal">
-            {{ 'labels.groups.import.message' | translate }} {{ import.message }}
-          </div>
-        </ng-template>
-      </p-dataTable>
-    </div>
+    <import-table [imports]="importResults"></import-table>
   </div>
 </div>

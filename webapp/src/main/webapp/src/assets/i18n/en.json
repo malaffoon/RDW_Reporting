@@ -60,6 +60,7 @@
         "drag-instruct": "Drag and drop to upload or ",
         "browse-instruct": "browse for files",
         "sending": "Sending...",
+        "view-errors": "View Errors",
         "message": "Message: ",
         "cols": {
           "status": "Status",
@@ -67,6 +68,9 @@
           "file-name": "File Name",
           "created": "Created"
         }
+      },
+      "history": {
+        "title": "Import History"
       }
     },
     "menu": "Menu",

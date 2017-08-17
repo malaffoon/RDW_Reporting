@@ -9,10 +9,15 @@ import { GroupImportComponent } from "./group-import.component";
 import { GroupImportService } from "./group-import.service";
 import { FileUploadModule } from "ng2-file-upload";
 import { CommonModule } from "../../shared/common.module";
+import { ImportHistoryComponent } from "./history/import-history.component";
+import { ImportHistoryResolve } from "./history/import-history.resolve";
+import { ImportTableComponent } from './import-table/import-table.component';
 
 @NgModule({
   declarations: [
-    GroupImportComponent
+    GroupImportComponent,
+    ImportHistoryComponent,
+    ImportTableComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +31,7 @@ import { CommonModule } from "../../shared/common.module";
     Angulartics2Module.forChild()
   ],
   exports: [ GroupImportComponent ],
-  providers: [ GroupImportService ]
+  providers: [ GroupImportService, ImportHistoryResolve ]
 })
 
 export class GroupImportModule {
