@@ -85,15 +85,15 @@ export class DataService {
     if (value == null) {
       return null;
     }
-    let utf8Indicator: string = "UTF-8''";
-    if (value.startsWith(utf8Indicator)) {
+    let utf8Prefix: string = "UTF-8''";
+    if (value.toUpperCase().startsWith(utf8Prefix)) {
       // It is UTF-8 encoded
-      return decodeURIComponent(value.substring(utf8Indicator.length));
+      return decodeURIComponent(value.substring(utf8Prefix.length));
     }
-    let iso88591Indicator: string = "ISO-8859-1''";
-    if (value.startsWith(iso88591Indicator)) {
+    let iso88591Prefix: string = "ISO-8859-1''";
+    if (value.toUpperCase().startsWith(iso88591Prefix)) {
       // It is ISO-8859-1 encoded
-      return decodeURIComponent(value.substring(iso88591Indicator.length));
+      return decodeURIComponent(value.substring(iso88591Prefix.length));
     }
     // It is ASCII encoded
     return value;
