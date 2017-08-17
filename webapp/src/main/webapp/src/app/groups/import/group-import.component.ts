@@ -15,7 +15,7 @@ export class GroupImportComponent implements OnInit {
   @ViewChild("fileDialog")
   fileDialog: ElementRef;
 
-  studentGroupBatches: ImportResult[] = [];
+  importResults: ImportResult[] = [];
   public uploader: FileUploader;
   public hasDropZoneOver: boolean;
 
@@ -27,14 +27,13 @@ export class GroupImportComponent implements OnInit {
     this.uploader.setOptions({ autoUpload: true});
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      console.log(item);
       if (!isNullOrUndefined(response)) {
 
-        let importResult = this.studentGroupService.mapStudentGroupBatchFromApi(JSON.parse(response));
+        let importResult = this.studentGroupService.mapImportResultFromApi(JSON.parse(response));
         importResult.fileName = item.file.name;
 
-        this.studentGroupBatches.push(importResult);
-        this.studentGroupBatches = this.studentGroupBatches.slice();
+        this.importResults.push(importResult);
+        this.importResults = this.importResults.slice();
       }
     };
 

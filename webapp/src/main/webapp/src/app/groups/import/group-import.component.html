@@ -36,7 +36,7 @@
       <label>{{'labels.groups.import.results' | translate }}</label>
     </div>
     <div>
-      <p-dataTable #dt expandableRows="true" [value]="studentGroupBatches" emptyMessage="{{'labels.groups.import.empty' | translate }}" sortField="id" sortOrder="-1" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" >
+      <p-dataTable #dt expandableRows="true" [value]="importResults" emptyMessage="{{'labels.groups.import.empty' | translate }}" sortField="id" sortOrder="-1" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" >
         <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
           <ng-template let-import="rowData" pTemplate="body">
             <span *ngIf="import.isOk" class="label border-only green">

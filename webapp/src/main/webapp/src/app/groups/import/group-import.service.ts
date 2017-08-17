@@ -19,7 +19,7 @@ export class GroupImportService {
       .map((apiStudentGroupBatch) => this.mapWarehouseImportsFromApi(apiStudentGroupBatch));
   }
 
-  mapStudentGroupBatchFromApi(apiModel: any): ImportResult {
+  mapImportResultFromApi(apiModel: any): ImportResult {
     let uiModel = new ImportResult();
     uiModel.id = apiModel.id;
     uiModel.digest = apiModel.digest;
@@ -34,6 +34,6 @@ export class GroupImportService {
     if (isNullOrUndefined(apiStudentGroupBatch)) return [];
     return apiStudentGroupBatch
       .filter(apiStudentGroupBatch => !isNullOrUndefined(apiStudentGroupBatch))
-      .map(apiStudentGroupBatch => this.mapStudentGroupBatchFromApi(apiStudentGroupBatch));
+      .map(apiStudentGroupBatch => this.mapImportResultFromApi(apiStudentGroupBatch));
   }
 }
