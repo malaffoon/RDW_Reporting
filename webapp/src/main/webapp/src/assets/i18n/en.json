@@ -38,6 +38,9 @@
       "no-results": "No groups found matching the given filter criteria.",
       "no-schools": "Your user account does not have access to view the groups of any schools.",
       "filter": "Search groups by name",
+      "buttons": {
+        "import": "Import Groups"
+      },
       "cols": {
         "name": "Name",
         "school": "School",
@@ -53,6 +56,9 @@
         "button-cancel": "No, keep this group.",
         "button-save": "Yes, delete this group"
       }
+    },
+    "import": {
+      "title": "Import Groups"
     },
     "menu": "Menu",
     "more-info": "More Information",

@@ -8,7 +8,7 @@ import { StudentGroupBatch } from "./student-group-batch.model";
  * This service is responsible for retrieving student group batches
  */
 @Injectable()
-export class StudentGroupService {
+export class GroupImportService {
 
   constructor(private dataService: DataService) {
   }

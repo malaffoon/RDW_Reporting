@@ -1,6 +1,6 @@
-<div class="home-view">
+<div class="">
 
-  <div class="container">
+  <div class="well">
     <div class="row">
       <div class="col-md-3">
         <h3>Select files</h3>
@@ -81,21 +81,20 @@
     </div>
   </div>
 
-
-  <div class="flex-child grow">
-    <label>{{'labels.admin.batch-list' | translate }}</label>
-  </div>
-
-  <div class="my-groups-list-container">
-    <p-dataTable [value]="studentGroupBatches" emptyMessage="empty" sortField="id"
-                 tableStyleClass="table table-striped table-hover">
-      <p-column field="id" header="id" [sortable]="true"></p-column>
-      <p-column field="digest" header="digest" [sortable]="true"></p-column>
-      <p-column field="status" header="status" [sortable]="true"></p-column>
-      <p-column field="created" header="created" [sortable]="true"></p-column>
-      <p-column field="updated" header="updated" [sortable]="true"></p-column>
-      <p-column field="message" header="message" [sortable]="true"></p-column>
-    </p-dataTable>
+  <div class="well">
+    <div class="flex-child grow">
+      <label>{{'labels.admin.batch-list' | translate }}</label>
+    </div>
+    <div class="my-groups-list-container">
+      <p-dataTable [value]="studentGroupBatches" emptyMessage="empty" sortField="id" tableStyleClass="table table-striped table-hover">
+        <p-column field="id" header="id" [sortable]="true"></p-column>
+        <p-column field="digest" header="digest" [sortable]="true"></p-column>
+        <p-column field="status" header="status" [sortable]="true"></p-column>
+        <p-column field="created" header="created" [sortable]="true"></p-column>
+        <p-column field="updated" header="updated" [sortable]="true"></p-column>
+        <p-column field="message" header="message" [sortable]="true"></p-column>
+      </p-dataTable>
+    </div>
   </div>
 
 </div>

@@ -53,7 +53,7 @@ export class GroupsComponent implements OnInit {
       subject: this.query.subject
     };
 
-    this.router.navigate([ params ], { relativeTo: this.route });
+    this.router.navigate([ 'groups', params ]);
   }
 
   updateResults() {

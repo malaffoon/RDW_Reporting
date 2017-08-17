@@ -6,13 +6,13 @@ import { FormsModule } from "@angular/forms";
 import { DataTableModule, SharedModule } from "primeng/primeng";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { Angulartics2Module } from "angulartics2";
-import { AdminComponent } from "./admin.component";
-import { StudentGroupService } from "./student-group.service";
+import { GroupImportComponent } from "./group-import.component";
+import { GroupImportService } from "./group-import.service";
 import { FileUploadModule } from "ng2-file-upload";
 
 @NgModule({
   declarations: [
-    AdminComponent
+    GroupImportComponent
   ],
   imports: [
     CommonModule,
@@ -25,9 +25,9 @@ import { FileUploadModule } from "ng2-file-upload";
     FileUploadModule,
     Angulartics2Module.forChild()
   ],
-  exports: [ AdminComponent ],
-  providers: [ StudentGroupService ]
+  exports: [ GroupImportComponent ],
+  providers: [ GroupImportService ]
 })
 
-export class AdminModule {
+export class GroupImportModule {
 }

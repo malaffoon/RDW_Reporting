@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { StudentGroupService } from "./student-group.service";
+import { GroupImportService } from "./group-import.service";
 import { StudentGroupBatch } from "./student-group-batch.model";
 import { FileUploader } from "ng2-file-upload";
 import { isNullOrUndefined } from "util";
@@ -8,14 +8,14 @@ const URL = '/api/studentGroups/';
 
 @Component({
   selector: 'admin',
-  templateUrl: 'admin.component.html'
+  templateUrl: 'group-import.component.html'
 })
-export class AdminComponent implements OnInit {
+export class GroupImportComponent implements OnInit {
 
   studentGroupBatches: StudentGroupBatch[] = [];
   public uploader: FileUploader = new FileUploader({ url: URL });
 
-  constructor(private studentGroupService: StudentGroupService) {
+  constructor(private studentGroupService: GroupImportService) {
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
       if (!isNullOrUndefined(response)) {
         this.studentGroupBatches.push(this.studentGroupService.mapStudentGroupBatchFromApi(JSON.parse(response)));
