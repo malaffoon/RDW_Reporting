@@ -78,7 +78,25 @@ export class DataService {
    */
   private getFileNameFromResponse(response: Response): string {
     let header: string = response.headers.get('Content-Disposition');
-    return header == null ? null : header.split(';')[ 1 ].trim().split('=')[ 1 ].replace(/"/g, '');
+    return header == null ? null : this.decodeHeaderFieldValue(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g.exec(header)[1]);
+  }
+
+  private decodeHeaderFieldValue(value: string): string {
+    if (value == null) {
+      return null;
+    }
+    let utf8Indicator: string = "UTF-8''";
+    if (value.startsWith(utf8Indicator)) {
+      // It is UTF-8 encoded
+      return decodeURIComponent(value.substring(utf8Indicator.length));
+    }
+    let iso88591Indicator: string = "ISO-8859-1''";
+    if (value.startsWith(iso88591Indicator)) {
+      // It is ISO-8859-1 encoded
+      return decodeURIComponent(value.substring(iso88591Indicator.length));
+    }
+    // It is ASCII encoded
+    return value;
   }
 
   /**
