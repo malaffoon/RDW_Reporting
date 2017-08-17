@@ -5,7 +5,6 @@ import { ReportDownloadComponent } from "./report-download.component";
 import { Download } from "../shared/data/download.model";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Student } from "../student/model/student.model";
-import { TranslateService } from "@ngx-translate/core";
 
 /**
  * Component used for single-student exam report download
@@ -19,7 +18,7 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
   @Input()
   public student: Student;
 
-  constructor(private service: ReportService, notificationService: NotificationService, private translate: TranslateService) {
+  constructor(private service: ReportService, notificationService: NotificationService) {
     super('labels.reports.button-label.student', notificationService);
   }
 
