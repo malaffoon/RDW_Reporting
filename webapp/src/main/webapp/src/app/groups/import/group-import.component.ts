@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { GroupImportService } from "./group-import.service";
 import { StudentGroupBatch } from "./student-group-batch.model";
 import { FileUploader } from "ng2-file-upload";
@@ -12,24 +12,29 @@ const URL = '/api/studentGroups/';
 })
 export class GroupImportComponent implements OnInit {
 
+  @ViewChild("fileDialog")
+  fileDialog: ElementRef;
+
   studentGroupBatches: StudentGroupBatch[] = [];
-  public uploader: FileUploader = new FileUploader({ url: URL });
+  public uploader: FileUploader;
+  public hasDropZoneOver: boolean;
 
   constructor(private studentGroupService: GroupImportService) {
+  }
+
+  ngOnInit() {
+    this.uploader = new FileUploader({ url: URL });
+    this.uploader.setOptions({ autoUpload: true});
+
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
       if (!isNullOrUndefined(response)) {
         this.studentGroupBatches.push(this.studentGroupService.mapStudentGroupBatchFromApi(JSON.parse(response)));
-        // https://github.com/mariuszfoltak/angular2-datatable/issues/10
-        // Landon said to try passing observable
         this.studentGroupBatches = this.studentGroupBatches.slice();
       }
     };
   }
 
-  ngOnInit() {
-    this.studentGroupService.findStudentGroupBatches().subscribe(
-      x => this.studentGroupBatches = x,
-      msg => console.error(`Error: ${msg.status} ${msg.statusText}`)
-    );
+  openFileDialog() {
+    this.fileDialog.nativeElement.click();
   }
 }
