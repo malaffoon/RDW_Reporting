@@ -12,7 +12,7 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath("com.bmuschko:gradle-docker-plugin:3.0.7")
+        classpath("com.bmuschko:gradle-docker-plugin:3.0.11")
         classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
@@ -145,7 +145,14 @@ subprojects {
             label([maintainer: 'Fairway Technologies'])
             copyFile("${jar.archivePath.name}", "${jar.archivePath.name}")
             exposePort(8008, 8080)
-            entryPoint("java", "-jar", "${jar.archivePath.name}")
+            ext.java_opts = []
+            entryPoint {
+                List<String> entryPointArgs = ["java"]
+                entryPointArgs.addAll(ext.java_opts)
+                entryPointArgs.add("-jar")
+                entryPointArgs.add("${jar.archivePath.name}")
+                entryPointArgs.toArray()
+            }
         }
 
         // task to build the docker image
