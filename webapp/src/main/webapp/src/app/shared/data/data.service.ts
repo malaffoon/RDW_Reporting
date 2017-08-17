@@ -78,24 +78,23 @@ export class DataService {
    */
   private getFileNameFromResponse(response: Response): string {
     let header: string = response.headers.get('Content-Disposition');
-    return header == null ? null : this.decodeHeaderFieldValue(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g.exec(header)[1]);
+    return header == null ? null : this.decodeHeaderFieldValue(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g.exec(header)[ 1 ]);
   }
 
+  /**
+   * Decodes a possibly encoded header field value such as the Content-Disposition filename
+   *
+   * @param value the header value
+   * @returns {any} the decoded header value
+   */
   private decodeHeaderFieldValue(value: string): string {
     if (value == null) {
       return null;
     }
     let utf8Prefix: string = "UTF-8''";
     if (value.toUpperCase().startsWith(utf8Prefix)) {
-      // It is UTF-8 encoded
       return decodeURIComponent(value.substring(utf8Prefix.length));
     }
-    let iso88591Prefix: string = "ISO-8859-1''";
-    if (value.toUpperCase().startsWith(iso88591Prefix)) {
-      // It is ISO-8859-1 encoded
-      return decodeURIComponent(value.substring(iso88591Prefix.length));
-    }
-    // It is ASCII encoded
     return value;
   }
 
