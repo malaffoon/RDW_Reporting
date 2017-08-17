@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "../shared/common.module";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
@@ -9,6 +8,7 @@ import { Angulartics2Module } from "angulartics2";
 import { GroupImportComponent } from "./group-import.component";
 import { GroupImportService } from "./group-import.service";
 import { FileUploadModule } from "ng2-file-upload";
+import { CommonModule } from "../../shared/common.module";
 
 @NgModule({
   declarations: [

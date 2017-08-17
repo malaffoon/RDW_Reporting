@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { DataService } from "../shared/data/data.service";
 import { Observable } from "rxjs";
 import { isNullOrUndefined } from "util";
 import { StudentGroupBatch } from "./student-group-batch.model";
+import { DataService } from "../../shared/data/data.service";
 
 /**
  * This service is responsible for retrieving student group batches

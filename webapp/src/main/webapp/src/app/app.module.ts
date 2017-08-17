@@ -11,7 +11,7 @@ import { routes } from "./app.routes";
 import { RouterModule } from "@angular/router";
 import { PopoverModule } from "ngx-bootstrap/popover";
 import { Angulartics2GoogleAnalytics, Angulartics2Module } from "angulartics2";
-import { GroupImportModule } from "./group-import/group-import.module";
+import { GroupImportModule } from "./groups/import/group-import.module";
 import { GroupsModule } from "./groups/groups.module";
 
 @NgModule({

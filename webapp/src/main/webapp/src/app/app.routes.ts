@@ -3,7 +3,7 @@ import { UserResolve } from "./user/user.resolve";
 import { GroupsComponent } from "./groups/groups.component";
 import { GroupFilterOptionsResolve } from "./groups/group-filter-options.resolve";
 import { AuthorizeCanActivate } from "./user/authorize.can-activate";
-import { GroupImportComponent } from "./group-import/group-import.component";
+import { GroupImportComponent } from "./groups/import/group-import.component";
 
 export const routes: Routes = [
   {
