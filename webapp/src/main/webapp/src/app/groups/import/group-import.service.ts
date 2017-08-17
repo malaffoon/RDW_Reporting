@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { isNullOrUndefined } from "util";
-import { StudentGroupBatch } from "./student-group-batch.model";
+import { ImportResult } from "./import-result.model";
 import { DataService } from "../../shared/data/data.service";
 
 /**
@@ -13,14 +13,14 @@ export class GroupImportService {
   constructor(private dataService: DataService) {
   }
 
-  findStudentGroupBatches(): Observable<StudentGroupBatch[]> {
+  findStudentGroupBatches(): Observable<ImportResult[]> {
     return this.dataService
       .get(`/studentGroupBatches`)
       .map((apiStudentGroupBatch) => this.mapWarehouseImportsFromApi(apiStudentGroupBatch));
   }
 
-  mapStudentGroupBatchFromApi(apiModel: any): StudentGroupBatch {
-    let uiModel = new StudentGroupBatch();
+  mapStudentGroupBatchFromApi(apiModel: any): ImportResult {
+    let uiModel = new ImportResult();
     uiModel.id = apiModel.id;
     uiModel.digest = apiModel.digest;
     uiModel.message = apiModel.message;
@@ -30,7 +30,7 @@ export class GroupImportService {
     return uiModel;
   }
 
-  private mapWarehouseImportsFromApi(apiStudentGroupBatch: any[]): StudentGroupBatch[] {
+  private mapWarehouseImportsFromApi(apiStudentGroupBatch: any[]): ImportResult[] {
     if (isNullOrUndefined(apiStudentGroupBatch)) return [];
     return apiStudentGroupBatch
       .filter(apiStudentGroupBatch => !isNullOrUndefined(apiStudentGroupBatch))

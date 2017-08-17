@@ -31,7 +31,7 @@ export const routes: Routes = [
             path: '',
             pathMatch: 'prefix',
             component: GroupImportComponent,
-            data: { breadcrumb: { translate: 'labels.import.title' } },
+            data: { breadcrumb: { translate: 'labels.groups.import.title' } },
           } ]
         } ]
       }

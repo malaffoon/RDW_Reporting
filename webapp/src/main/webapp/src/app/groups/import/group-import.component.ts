@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { GroupImportService } from "./group-import.service";
-import { StudentGroupBatch } from "./student-group-batch.model";
+import { ImportResult } from "./import-result.model";
 import { FileUploader } from "ng2-file-upload";
 import { isNullOrUndefined } from "util";
 
@@ -15,7 +15,7 @@ export class GroupImportComponent implements OnInit {
   @ViewChild("fileDialog")
   fileDialog: ElementRef;
 
-  studentGroupBatches: StudentGroupBatch[] = [];
+  studentGroupBatches: ImportResult[] = [];
   public uploader: FileUploader;
   public hasDropZoneOver: boolean;
 
@@ -27,11 +27,20 @@ export class GroupImportComponent implements OnInit {
     this.uploader.setOptions({ autoUpload: true});
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      console.log(item);
       if (!isNullOrUndefined(response)) {
-        this.studentGroupBatches.push(this.studentGroupService.mapStudentGroupBatchFromApi(JSON.parse(response)));
+
+        let importResult = this.studentGroupService.mapStudentGroupBatchFromApi(JSON.parse(response));
+        importResult.fileName = item.file.name;
+
+        this.studentGroupBatches.push(importResult);
         this.studentGroupBatches = this.studentGroupBatches.slice();
       }
     };
+
+    this.uploader.onCompleteAll = () => {
+      this.uploader.clearQueue();
+    }
   }
 
   openFileDialog() {

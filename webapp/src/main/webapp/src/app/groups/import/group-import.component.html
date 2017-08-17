@@ -1,4 +1,7 @@
 <div>
+  <div class="mb-md">
+    <span class="h3 blue-dark">{{'labels.groups.import.title' | translate}}</span>
+  </div>
   <div class="well">
     <div ng2FileDrop
          *ngIf="!uploader.isUploading"
@@ -10,15 +13,17 @@
       <div class="text-center pt-lg pb-lg">
         <span class="gray-dark">
           <i class="fa fa-cloud-upload"></i>
-          Drag and drop to upload or <a href="javascript:void(0)" (click)="openFileDialog()">browse for files</a>
+          {{ 'labels.groups.import.drag-instruct' | translate }} <a href="javascript:void(0)" (click)="openFileDialog()">{{'labels.groups.import.browse-instruct' | translate }}</a>
         </span>
-
       </div>
     </div>
     <div *ngIf="uploader.isUploading">
       <div class="loader">
         <div class="text-center pt-lg pb-lg inner">
-          <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="text">Sending...</span>
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+          <span class="text">
+            {{ 'labels.groups.import.sending' | translate }} {{ uploader.queue.length - uploader.getNotUploadedItems().length }} / {{ uploader.queue.length }}
+          </span>
         </div>
       </div>
     </div>
@@ -26,24 +31,35 @@
       <input #fileDialog type="file" ng2FileSelect [uploader]="uploader" multiple />
     </div>
   </div>
-
   <div class="well">
     <div class="flex-child grow">
-      <label>{{'labels.admin.batch-list' | translate }}</label>
+      <label>{{'labels.groups.import.results' | translate }}</label>
     </div>
-    <div class="my-groups-list-container">
-      <p-dataTable [value]="studentGroupBatches" emptyMessage="empty" sortField="id" sortOrder="-1" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" >
-        <p-column field="id" header="Id" [sortable]="true"></p-column>
-        <p-column field="digest" header="Digest" [sortable]="true"></p-column>
-        <p-column field="status" header="Status" [sortable]="true"></p-column>
-        <p-column field="created" header="Created" [sortable]="true">
+    <div>
+      <p-dataTable #dt expandableRows="true" [value]="studentGroupBatches" emptyMessage="{{'labels.groups.import.empty' | translate }}" sortField="id" sortOrder="-1" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" >
+        <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
           <ng-template let-import="rowData" pTemplate="body">
-            {{ import.created | date }}
+            <span *ngIf="import.isOk" class="label border-only green">
+              <i class="fa fa-check-circle"></i> {{ import.status }}
+            </span>
+            <a href="javascript:void(0)" *ngIf="!import.isOk" class="label border-only red pointer" (click)="dt.toggleRow(import)">
+              <i class="fa fa-exclamation-circle"></i> {{ import.status }}
+            </a>
           </ng-template>
         </p-column>
-        <p-column field="message" header="Message" [sortable]="true"></p-column>
+        <p-column field="id" header="{{'labels.groups.import.cols.id' | translate }}" [sortable]="true"></p-column>
+        <p-column field="fileName" header="{{'labels.groups.import.cols.file-name' | translate }}" [sortable]="true"></p-column>
+        <p-column field="created" header="{{'labels.groups.import.cols.created' | translate }}" [sortable]="true">
+          <ng-template let-import="rowData" pTemplate="body">
+            {{ import.created | date:'medium' }}
+          </ng-template>
+        </p-column>
+        <ng-template let-import pTemplate="rowexpansion" class="white-space-normal">
+          <div class="white-space-normal">
+            {{ 'labels.groups.import.message' | translate }} {{ import.message }}
+          </div>
+        </ng-template>
       </p-dataTable>
     </div>
   </div>
-
 </div>
