@@ -17,17 +17,28 @@
 
 version: '2'
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
 
   config-server:
     image: fwsbac/configuration-service:latest
     container_name: config-server
     ports:
       - 8888:8888
+    links:
+      - rabbitmq
     environment:
       - CONFIG_SERVICE_REPO
       - ENCRYPT_KEY
       - GIT_USER
       - GIT_PASSWORD
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
 
   webapp:
     image: fwsbac/rdw-admin-webapp
@@ -36,6 +47,21 @@ services:
       - 8081:8008
     links:
       - config-server
+      - rabbitmq
+    environment:
+      - spring.profiles.active=local-docker
+      - CONFIG_SERVICE_ENABLED=true
+      - CONFIG_SERVICE_URL=http://config-server:8888
+    extra_hosts:
+      - "dwhost:$DATAWAREHOUSE_HOST"
+
+  group-processor:
+    image: fwsbac/rdw-ingest-group-processor
+    ports:
+      - 8086:8008
+    links:
+      - config-server
+      - rabbitmq
     environment:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
