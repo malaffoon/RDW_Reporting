@@ -11,7 +11,7 @@ export class ImportTableComponent implements OnInit {
    * The imports array to display in the table
    */
   @Input()
-  public imports: ImportResult[];
+  public imports: ImportResult[] = [];
 
   constructor() { }
 

@@ -23,8 +23,7 @@ export class GroupsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private service: GroupService,
-              private modalService: BsModalService,
-              private userService: UserService ) {
+              private modalService: BsModalService) {
   }
 
   ngOnInit() {
