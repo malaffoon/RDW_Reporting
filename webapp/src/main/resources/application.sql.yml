@@ -47,7 +47,7 @@ sql:
       where natural_id in (:naturalIds)
 
     findAll: >-
-      select name, id
+      select name, id, natural_id
       from school
       where (1=:statewide or district_id in (:district_ids) or id in (:school_ids))
 
@@ -57,8 +57,8 @@ sql:
 
   student_group_batch:
     create: >-
-      INSERT INTO upload_student_group_batch (status, digest, creator, message)
-        VALUES (:status, :digest, :creator, :message)
+      INSERT INTO upload_student_group_batch (status, digest, creator, message, filename)
+        VALUES (:status, :digest, :creator, :message, :filename)
 
     findOne: >-
       SELECT * FROM upload_student_group_batch WHERE id=:id
