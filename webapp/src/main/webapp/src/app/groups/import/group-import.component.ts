@@ -28,11 +28,7 @@ export class GroupImportComponent implements OnInit {
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
       if (!isNullOrUndefined(response)) {
-
-        let importResult = this.studentGroupService.mapImportResultFromApi(JSON.parse(response));
-        importResult.fileName = item.file.name;
-
-        this.importResults.push(importResult);
+        this.importResults.push(this.studentGroupService.mapImportResultFromApi(JSON.parse(response)));
         this.importResults = this.importResults.slice();
       }
     };

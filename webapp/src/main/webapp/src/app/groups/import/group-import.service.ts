@@ -24,6 +24,7 @@ export class GroupImportService {
     uiModel.id = apiModel.id;
     uiModel.digest = apiModel.digest;
     uiModel.message = apiModel.message;
+    uiModel.fileName = apiModel.filename;
     uiModel.created = apiModel.created;
     uiModel.updated = apiModel.updated;
     uiModel.status = apiModel.status;
