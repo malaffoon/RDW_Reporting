@@ -9,7 +9,8 @@
     "noExamsSelected": "Please select from the assessments above",
     "notApplicable": "-",
     "logout": "Logout",
-    "loading": "Loading"
+    "loading": "Loading",
+    "upload-in-progress": "Files are still uploading, are you sure you want to leave?"
   },
   "collapse": "Collapse",
   "select": "Select",
@@ -35,6 +36,7 @@
       "select-school": "School",
       "select-school-year": "School Year",
       "select-subject": "Subject",
+      "search-school": "Start typing a school name...",
       "no-results": "No groups found matching the given filter criteria.",
       "no-schools": "Your user account does not have access to view the groups of any schools.",
       "filter": "Search groups by name",
@@ -105,6 +107,16 @@
       "MATH": "Math",
       "ELA": "ELA",
       "ALL": "All"
+    },
+    "status": {
+      "UNKNOWN_SCHOOL": "Unknown School",
+      "UNKNOWN_ASMT": "Unknown Assessment",
+      "UNAUTHORIZED": "Unauthorized",
+      "BAD_DATA": "Bad Data",
+      "BAD_FORMAT": "Bad Format",
+      "INVALID": "Invalid",
+      "ACCEPTED": "Accepted",
+      "PROCESSED": "Processed"
     }
   }
 }

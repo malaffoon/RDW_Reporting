@@ -3,6 +3,7 @@ import { GroupImportService } from "./group-import.service";
 import { ImportResult } from "./import-result.model";
 import { FileUploader } from "ng2-file-upload";
 import { isNullOrUndefined } from "util";
+import { TranslateService } from "@ngx-translate/core";
 
 const URL = '/api/studentGroups/';
 
@@ -19,7 +20,7 @@ export class GroupImportComponent implements OnInit {
   public uploader: FileUploader;
   public hasDropZoneOver: boolean;
 
-  constructor(private studentGroupService: GroupImportService) {
+  constructor(private studentGroupService: GroupImportService, private translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -35,6 +36,16 @@ export class GroupImportComponent implements OnInit {
 
     this.uploader.onCompleteAll = () => {
       this.uploader.clearQueue();
+    };
+
+    window.onbeforeunload = this.confirmNavigation.bind(this);
+  }
+
+  confirmNavigation(e) {
+    if(this.uploader.isUploading) {
+      let dialogText = this.translate.instant('messages.upload-in-progress');
+      e.returnValue = dialogText;
+      return dialogText;
     }
   }
 

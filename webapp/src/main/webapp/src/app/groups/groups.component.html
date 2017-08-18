@@ -14,10 +14,16 @@
     <div class="row">
       <!-- School Select -->
       <div class="col-md-4">
-        <label for="select-school">{{'labels.groups.select-school' | translate}}</label>
-        <select id="select-school" [(ngModel)]="query.school" class="form-control" (change)="updateRoute()">
-          <option *ngFor="let school of filterOptions.schools" [ngValue]="school">{{school.name}}</option>
-        </select>
+        <label>{{'labels.groups.select-school' | translate}}</label>
+        <p-dropdown id="select-school"
+                    [options]="schoolDropdownOptions"
+                    [(ngModel)]="query.school"
+                    (onChange)="updateRoute()"
+                    [filter]="true"
+                    filterBy="label"
+                    placeholder="{{'prompt.select' | translate}}"
+                    filterPlaceholder="{{'labels.groups.search-school' | translate}}">
+        </p-dropdown>
       </div>
       <!-- School Year Select -->
       <div class="col-md-2">

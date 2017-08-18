@@ -6,6 +6,7 @@ import { AuthorizeCanActivate } from "./user/authorize.can-activate";
 import { GroupImportComponent } from "./groups/import/group-import.component";
 import { ImportHistoryComponent } from "./groups/import/history/import-history.component";
 import { ImportHistoryResolve } from "./groups/import/history/import-history.resolve";
+import { GroupImportDeactivateGuard } from "./groups/import/group-import.deactivate";
 
 export const routes: Routes = [
   {
@@ -33,6 +34,7 @@ export const routes: Routes = [
             path: '',
             pathMatch: 'prefix',
             component: GroupImportComponent,
+            canDeactivate: [ GroupImportDeactivateGuard ],
             data: { breadcrumb: { translate: 'labels.groups.import.title' } },
           } ]
         }, {
