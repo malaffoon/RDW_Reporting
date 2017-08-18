@@ -9,7 +9,8 @@
     "noExamsSelected": "Please select from the assessments above",
     "notApplicable": "-",
     "logout": "Logout",
-    "loading": "Loading"
+    "loading": "Loading",
+    "upload-in-progress": "Files are still uploading, are sure you want to leave?"
   },
   "collapse": "Collapse",
   "select": "Select",

@@ -12,6 +12,7 @@ import { CommonModule } from "../../shared/common.module";
 import { ImportHistoryComponent } from "./history/import-history.component";
 import { ImportHistoryResolve } from "./history/import-history.resolve";
 import { ImportTableComponent } from './import-table/import-table.component';
+import { GroupImportDeactivateGuard } from "./group-import.deactivate";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { ImportTableComponent } from './import-table/import-table.component';
     Angulartics2Module.forChild()
   ],
   exports: [ GroupImportComponent ],
-  providers: [ GroupImportService, ImportHistoryResolve ]
+  providers: [ GroupImportService, ImportHistoryResolve, GroupImportDeactivateGuard ]
 })
 
 export class GroupImportModule {
