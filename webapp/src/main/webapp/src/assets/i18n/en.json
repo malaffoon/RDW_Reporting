@@ -453,7 +453,8 @@
       "items-by-points-earned": "Export Items by Points Earned",
       "cols": {
         "student-id": "Student ID",
-        "student-name": "Student Name",
+        "student-first-name": "Student First Name",
+        "student-last-name": "Student Last Name",
         "assessment-type": "Assessment Type",
         "subject": "Subject",
         "error-band-min": "Error Band Min",
