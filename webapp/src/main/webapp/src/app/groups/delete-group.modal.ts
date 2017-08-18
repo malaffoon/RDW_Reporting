@@ -19,8 +19,7 @@ export class DeleteGroupModalComponent {
   }
 
   save() {
-    this.group.isDeleted = true;
-    this.service.update(this.group).subscribe(res => {
+    this.service.delete(this.group).subscribe(res => {
       this.bsModalRef.hide();
     }, (error) => {
       this.unableToDelete = true;

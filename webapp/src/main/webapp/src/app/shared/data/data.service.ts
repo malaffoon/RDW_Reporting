@@ -16,9 +16,9 @@ export class DataService {
       .map(response => response.json());
   }
 
-  put(url, body, options?: RequestOptionsArgs): Observable<any> {
+  delete(url, options?: RequestOptionsArgs): Observable<any> {
     return this.http
-      .put(`/api${url}`, body, options)
+      .delete(`/api${url}`, options)
       .map(response => response.json());
   }
 }
