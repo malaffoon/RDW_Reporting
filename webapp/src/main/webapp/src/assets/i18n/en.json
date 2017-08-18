@@ -61,6 +61,7 @@
         "browse-instruct": "browse for files",
         "sending": "Sending...",
         "view-errors": "View Errors",
+        "hide-errors": "Hide Errors",
         "message": "Message: ",
         "cols": {
           "status": "Status",

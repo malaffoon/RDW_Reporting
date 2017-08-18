@@ -37,9 +37,8 @@ export class GroupsComponent implements OnInit {
       let params:any = p;
 
       this.query.school = this.filterOptions.schools.find(school => school.id == params.schoolId) || this.filterOptions.schools[ 0 ];
-
-      this.query.schoolYear = +params.schoolYear || this.filterOptions.schoolYears[ 0 ];
-      this.query.subject =  params.subject || this.filterOptions.subjects[ 0 ];
+      this.query.schoolYear = this.filterOptions.schoolYears.find(year => year === +params.schoolYear) || this.filterOptions.schoolYears[ 0 ];
+      this.query.subject =  this.filterOptions.subjects.find(subject => subject === params.subject) || this.filterOptions.subjects[ 0 ];
 
       this.updateResults();
     });
