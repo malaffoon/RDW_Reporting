@@ -105,6 +105,18 @@
       "MATH": "Math",
       "ELA": "ELA",
       "ALL": "All"
+    },
+    "status": {
+      "UNKNOWN_SCHOOL": "Unknown School",
+      "UNKNOWN_ASMT": "Unknown Assessment",
+      "UNAUTHORIZED": "Unauthorized",
+      "BAD_DATA": "Bad Data",
+      "BAD_FORMAT": "Bad Format",
+      "INVALID": "Invalid",
+      "ACCEPTED": "Accepted",
+      "PROCESSED": "Processed"
     }
   }
 }
+
+

@@ -12,11 +12,11 @@
   <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
     <ng-template let-import="rowData" pTemplate="body">
       <span *ngIf="import.isOk" class="label border-only green">
-        <i class="fa fa-check-circle"></i> {{ import.status }}
+        <i class="fa fa-check-circle"></i> {{ 'enum.status.' + import.status | translate }}
       </span>
       <span *ngIf="!import.isOk">
         <span href="javascript:void(0)" class="label border-only red pointer">
-          <i class="fa fa-exclamation-circle"></i> {{ import.status }}
+          <i class="fa fa-exclamation-circle"></i> {{ 'enum.status.' + import.status | translate }}
         </span>
         <span class="btn btn-default label ml-sm" (click)="dt.toggleRow(import)" style="color: #64666A">
           <span *ngIf="!dt.expandedRows || dt.expandedRows.indexOf(import) === -1">
