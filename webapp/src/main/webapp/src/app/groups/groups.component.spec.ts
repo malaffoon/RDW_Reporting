@@ -31,7 +31,7 @@ describe('GroupsComponent', () => {
 
     filterOptions.schoolYears = [ 2017 ];
     filterOptions.schools = [ new School() ];
-    filterOptions.subjects = [ "ALL" ];
+    filterOptions.subjects = [ "ALL" , "MATH"];
 
     mockRouteSnapshot = {
       params: {},
@@ -96,6 +96,19 @@ describe('GroupsComponent', () => {
     expect(component.query.schoolYear).toBe(filterOptions.schoolYears[0]);
   });
 
+  it('should default to first when params are not found', () => {
+    paramsObserver.next({
+      schoolId: -1,
+      subject: "INVALID_SUBJECT",
+      schoolYear: 2099
+    });
+
+    fixture.detectChanges();
+    expect(component.query.school).toBe(filterOptions.schools[0]);
+    expect(component.query.subject).toBe(filterOptions.subjects[0]);
+    expect(component.query.schoolYear).toBe(filterOptions.schoolYears[0]);
+  });
+
   it('should filter groups on name', () => {
     component.groups = ["Test2", "test3", "TEST1", "NotInResult1", "NotInResult2"].map( x=> {
       let group = new Group();
@@ -108,7 +121,6 @@ describe('GroupsComponent', () => {
     expect(component.filteredGroups.length).toBe(3);
   });
 });
-
 
 class MockUserService {
   doesCurrentUserHaveAtLeastOnePermission(permissions: string[]): Observable<boolean> {
