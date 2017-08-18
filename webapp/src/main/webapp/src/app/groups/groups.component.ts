@@ -19,6 +19,7 @@ export class GroupsComponent implements OnInit {
   query: GroupQuery;
   searchTerm: string = '';
   bsModalRef: BsModalRef;
+  schoolDropdownOptions: any[];
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -32,6 +33,13 @@ export class GroupsComponent implements OnInit {
 
     if(this.filterOptions.schools.length == 0)
       return;
+
+    this.schoolDropdownOptions = this.filterOptions.schools.map(school => {
+      return {
+        label: school.name,
+        value: school
+      };
+    });
 
     this.route.params.subscribe(p => {
       let params:any = p;

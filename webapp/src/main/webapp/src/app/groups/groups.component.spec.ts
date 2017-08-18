@@ -10,6 +10,8 @@ import { Observable, Observer } from "rxjs";
 import { MockRouter } from "../../test/mock.router";
 import { Group } from "./model/group.model";
 import { UserService } from "../user/user.service";
+import { DropdownModule } from "primeng/components/dropdown/dropdown";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
@@ -39,7 +41,7 @@ describe('GroupsComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [ CommonModule, GroupsModule ],
+      imports: [ CommonModule, GroupsModule, DropdownModule, BrowserAnimationsModule ],
       providers: [ {
           provide: ActivatedRoute,
           useValue: { snapshot: mockRouteSnapshot, params: mockParams }

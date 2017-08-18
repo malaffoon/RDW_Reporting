@@ -8,6 +8,7 @@ import { FormsModule } from "@angular/forms";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { ModalModule } from "ngx-bootstrap";
 import { DeleteGroupModalComponent } from "./delete-group.modal";
+import { DropdownModule } from 'primeng/primeng';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { DeleteGroupModalComponent } from "./delete-group.modal";
     BrowserModule,
     CommonModule,
     DataTableModule,
+    DropdownModule,
     ModalModule.forRoot(),
     FormsModule
   ],

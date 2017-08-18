@@ -35,6 +35,7 @@
       "select-school": "School",
       "select-school-year": "School Year",
       "select-subject": "Subject",
+      "search-school": "Start typing a school name...",
       "no-results": "No groups found matching the given filter criteria.",
       "no-schools": "Your user account does not have access to view the groups of any schools.",
       "filter": "Search groups by name",
