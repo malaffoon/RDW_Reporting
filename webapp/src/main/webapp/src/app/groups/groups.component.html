@@ -1,5 +1,9 @@
 <div class="mb-md">
   <span class="h3 blue-dark">{{'labels.groups.title' | translate}}</span>
+  <div class="pull-right">
+    <span class="btn btn-primary" [routerLink]="['import']"><i class="fa fa-cloud-upload"></i> Upload Groups</span>
+    <span class="btn btn-default" [routerLink]="['history']"><i class="fa fa-history"></i> View Upload History</span>
+  </div>
 </div>
 <div *ngIf="filterOptions.schools.length == 0" class="alert alert-danger">
   {{ 'labels.groups.no-schools' | translate }}
@@ -29,10 +33,6 @@
           <option *ngFor="let subject of filterOptions.subjects" [ngValue]="subject">{{'enum.subject.' + subject | translate }}</option>
         </select>
       </div>
-      <div class="col-md-2 pull-right">
-        <button class="btn btn-default" [routerLink]="['import']">{{ 'labels.groups.import.title' | translate }}</button>
-      </div>
-
     </div>
   </div>
 

@@ -54,12 +54,13 @@
         "button-save": "Yes, delete this group"
       },
       "import": {
-        "title": "Import Groups",
+        "title": "Upload Groups",
         "results": "Upload Results",
         "empty": "Upload results will be shown here.",
         "drag-instruct": "Drag and drop to upload or ",
         "browse-instruct": "browse for files",
         "sending": "Sending...",
+        "view-errors": "View Errors",
         "message": "Message: ",
         "cols": {
           "status": "Status",
@@ -67,6 +68,9 @@
           "file-name": "File Name",
           "created": "Created"
         }
+      },
+      "history": {
+        "title": "Upload History"
       }
     },
     "menu": "Menu",

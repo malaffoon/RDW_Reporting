@@ -1,0 +1,39 @@
+<p-dataTable
+  #dt
+  [rows]="200"
+  [paginator]="imports.length > 200"
+  expandableRows="true"
+  [value]="imports"
+  emptyMessage="{{'labels.groups.import.empty' | translate }}"
+  sortField="id"
+  sortOrder="-1"
+  tableStyleClass="table table-striped table-hover"
+  [tableStyle]="{'table-layout':'auto'}" >
+  <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
+    <ng-template let-import="rowData" pTemplate="body">
+      <span *ngIf="import.isOk" class="label border-only green">
+        <i class="fa fa-check-circle"></i> {{ import.status }}
+      </span>
+      <span *ngIf="!import.isOk">
+        <span href="javascript:void(0)" class="label border-only red pointer">
+          <i class="fa fa-exclamation-circle"></i> {{ import.status }}
+        </span>
+        <span class="btn btn-default label ml-sm" (click)="dt.toggleRow(import)" style="color: #64666A">
+          <i class="fa fa-eye"></i> {{ 'labels.groups.import.view-errors' | translate }}
+        </span>
+      </span>
+    </ng-template>
+  </p-column>
+  <p-column field="id" header="{{'labels.groups.import.cols.id' | translate }}" [sortable]="true"></p-column>
+  <p-column field="fileName" header="{{'labels.groups.import.cols.file-name' | translate }}" [sortable]="true"></p-column>
+  <p-column field="created" header="{{'labels.groups.import.cols.created' | translate }}" [sortable]="true">
+    <ng-template let-import="rowData" pTemplate="body">
+      {{ import.created | date:'medium' }}
+    </ng-template>
+  </p-column>
+  <ng-template let-import pTemplate="rowexpansion" class="white-space-normal">
+    <div class="white-space-normal">
+      {{ 'labels.groups.import.message' | translate }} {{ import.message }}
+    </div>
+  </ng-template>
+</p-dataTable>

@@ -4,6 +4,8 @@ import { GroupsComponent } from "./groups/groups.component";
 import { GroupFilterOptionsResolve } from "./groups/group-filter-options.resolve";
 import { AuthorizeCanActivate } from "./user/authorize.can-activate";
 import { GroupImportComponent } from "./groups/import/group-import.component";
+import { ImportHistoryComponent } from "./groups/import/history/import-history.component";
+import { ImportHistoryResolve } from "./groups/import/history/import-history.resolve";
 
 export const routes: Routes = [
   {
@@ -32,6 +34,16 @@ export const routes: Routes = [
             pathMatch: 'prefix',
             component: GroupImportComponent,
             data: { breadcrumb: { translate: 'labels.groups.import.title' } },
+          } ]
+        }, {
+          path: 'history',
+          pathMatch: 'prefix',
+          children: [ {
+            path: '',
+            pathMatch: 'prefix',
+            component: ImportHistoryComponent,
+            resolve: { imports: ImportHistoryResolve },
+            data: { breadcrumb: { translate: 'labels.groups.history.title' } },
           } ]
         } ]
       }
