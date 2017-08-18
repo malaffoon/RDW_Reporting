@@ -31,9 +31,8 @@ export class GroupService {
       .map(groups => groups.map(this.mapGroupFromApi));
   }
 
-  update(group: Group): Observable<any> {
-    let apiGroup = this.mapGroupToApi(group);
-    return this.dataService.put("/groups", apiGroup);
+  delete(group: Group): Observable<any> {
+    return this.dataService.delete(`/groups/${group.id}`);
   }
 
   private mapQueryToParams(query: GroupQuery) {
@@ -65,20 +64,6 @@ export class GroupService {
     uiModel.isDeleted = apiModel.deleted;
 
     return uiModel;
-  }
-
-  private mapGroupToApi(uiModel: Group): any {
-    let apiModel: any = {};
-
-    apiModel.id = uiModel.id;
-    apiModel.schoolYear = uiModel.schoolYear;
-    apiModel.name = uiModel.name;
-    apiModel.schoolName = uiModel.schoolName;
-    apiModel.subject = uiModel.subject;
-    apiModel.studentCount = uiModel.studentCount;
-    apiModel.deleted = uiModel.isDeleted;
-
-    return apiModel;
   }
 
   private mapFilterOptionsFromApi(apiModel): GroupFilterOptions {
