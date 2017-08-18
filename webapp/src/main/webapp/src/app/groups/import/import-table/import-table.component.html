@@ -19,7 +19,12 @@
           <i class="fa fa-exclamation-circle"></i> {{ import.status }}
         </span>
         <span class="btn btn-default label ml-sm" (click)="dt.toggleRow(import)" style="color: #64666A">
-          <i class="fa fa-eye"></i> {{ 'labels.groups.import.view-errors' | translate }}
+          <span *ngIf="!dt.expandedRows || dt.expandedRows.indexOf(import) === -1">
+            <i class="fa fa-chevron-right"></i> {{ 'labels.groups.import.view-errors' | translate }}
+          </span>
+          <span *ngIf="dt.expandedRows && dt.expandedRows.indexOf(import) !== -1">
+            <i class="fa fa-chevron-down"></i> {{ 'labels.groups.import.hide-errors' | translate }}
+          </span>
         </span>
       </span>
     </ng-template>
