@@ -8,7 +8,7 @@
   "messages": {
     "noExams": "There are no exams associated with your account.",
     "noExamsMatchingCriteria": "There are no exams matching this criteria.",
-    "no-results-found": "No test results are available for the current selection.",
+    "no-results-found": "No test results are available for the current selection.  If a new school year has begun recently, please check the year selected above.",
     "noExamsSelected": "Please select from the assessments above",
     "notApplicable": "-",
     "ok": "Ok",
