@@ -233,11 +233,11 @@
           "instruct": "Instructional Resources",
           "sessions-title": "Sessions",
           "sessions-instruct": "Toggle a session to include or exclude it from the results.",
-          "exam-results": "Student Results",
-          "button-items": "Item by Points Earned",
-          "button-exams": "Student Results",
+          "exam-results": "Results By Student",
+          "button-items": "Results By Item",
+          "button-exams": "Results By Student",
           "exams": {
-            "title": "Student Results",
+            "title": "Results By Student",
             "empty-message": "No test results are available for the sessions and advanced filters selected.",
             "cols": {
               "name": "Student",
@@ -259,7 +259,7 @@
             }
           },
           "items": {
-            "title": "Items By Points Earned",
+            "title": "Results By Item",
             "cols": {
               "number": "Item #",
               "claim": "Claim/Target",
@@ -450,7 +450,7 @@
     "select-year": "School Year",
     "export": {
       "csv": "Export CSV",
-      "items-by-points-earned": "Export Items by Points Earned",
+      "items-by-points-earned": "Export Results By Item",
       "cols": {
         "student-id": "Student ID",
         "student-first-name": "Student First Name",
