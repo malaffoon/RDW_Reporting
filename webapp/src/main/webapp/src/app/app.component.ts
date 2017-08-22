@@ -2,6 +2,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "./user/user.service";
+import { User } from "./user/model/user.model";
 
 @Component({
   selector: 'app-component',
@@ -11,9 +12,9 @@ export class AppComponent {
 
   public userHasAccess:boolean = undefined;
 
-  private _user;
+  private _user: User;
 
-  get user() {
+  get user(): User {
     return this._user;
   }
 
@@ -33,11 +34,8 @@ export class AppComponent {
 
   ngOnInit() {
     this._userService.getCurrentUser().subscribe(user => {
-      console.log(user);
-      this._user = {
-        firstName: user.firstName,
-        lastName: user.lastName
-      };
+
+      this._user = user;
 
       this.userHasAccess = user.permissions.some(permission => permission == "GROUP_WRITE");
 
