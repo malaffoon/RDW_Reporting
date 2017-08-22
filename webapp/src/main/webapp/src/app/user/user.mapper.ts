@@ -79,7 +79,7 @@ export class UserMapper {
     uiModel.analyticsTrackingId = apiModel.analyticsTrackingId;
     uiModel.interpretiveGuide = apiModel.interpretiveGuideUrl;
     uiModel.minItemDataYear = apiModel.minItemDataYear;
-    uiModel.adminWebappURL = apiModel.adminWebappURL;
+    uiModel.adminWebappUrl = apiModel.adminWebappUrl;
     return uiModel;
   }
 
