@@ -89,6 +89,8 @@ permissionservice:
   endpoint: ${rdw.permission.service}
 
 app:
+  home-url: /
+
   # google analytics configuration
   analytics:
     trackingId: ${rdw.admin.analytics.trackingId:}

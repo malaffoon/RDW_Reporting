@@ -12,7 +12,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand hidden-xs" href="/" title="{{'application.home' | translate}}"><img src="assets/image/SmarterBalanced-Logo.png" alt="{{'messages.organization' | translate}}"></a>
+            <a class="navbar-brand hidden-xs" href="{{user ? user.configuration.homeUrl : '/'}}" title="{{'application.home' | translate}}"><img src="assets/image/SmarterBalanced-Logo.png" alt="{{'messages.organization' | translate}}"></a>
             <span class="application-title">{{'application.title' | translate}}</span>
           </div>
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
