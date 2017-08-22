@@ -89,9 +89,7 @@ permissionservice:
   endpoint: ${rdw.permission.service}
 
 app:
-  reporting:
-    webapp:
-      url: /
+  home-url: /
 
   # google analytics configuration
   analytics:

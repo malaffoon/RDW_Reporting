@@ -1,4 +1,4 @@
 export class Configuration {
   analyticsTrackingId: string;
-  reportingWebappURL: string;
+  homeUrl: string;
 }

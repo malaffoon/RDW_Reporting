@@ -23,7 +23,7 @@ export class UserMapper {
       return local;
 
     local.analyticsTrackingId = remote.analyticsTrackingId;
-    local.reportingWebappURL = remote.reportingWebappURL;
+    local.homeUrl = remote.homeUrl;
     return local;
   }
 
