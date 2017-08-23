@@ -1,15 +1,16 @@
 <div>
   <div class="mb-md">
     <span class="h3 blue-dark">{{'labels.groups.import.title' | translate}}</span>
+    <button routerLink="/groups/import/fileformat" class="btn btn-default pull-right"><i class="fa fa-file-text mr-xs"></i> {{'labels.groups.import.file-format.header' | translate}}</button>
   </div>
   <div class="well">
+    <div class="alert alert-warning" [innerHTML]="'labels.groups.import.warning-html' | translate"></div>
     <div ng2FileDrop
          *ngIf="!uploader.isUploading"
          class="my-drop-zone point"
          [class.nv-file-over]="hasDropZoneOver"
          [uploader]="uploader"
-         (fileOver)="hasDropZoneOver = $event"
-    >
+         (fileOver)="hasDropZoneOver = $event">
       <div class="text-center pt-lg pb-lg">
         <span class="gray-dark">
           <i class="fa fa-cloud-upload"></i>

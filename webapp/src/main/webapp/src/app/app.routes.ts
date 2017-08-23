@@ -7,6 +7,7 @@ import { GroupImportComponent } from "./groups/import/group-import.component";
 import { ImportHistoryComponent } from "./groups/import/history/import-history.component";
 import { ImportHistoryResolve } from "./groups/import/history/import-history.resolve";
 import { GroupImportDeactivateGuard } from "./groups/import/group-import.deactivate";
+import { FileFormatComponent } from "./groups/import/fileformat/file-format.component";
 
 export const routes: Routes = [
   {
@@ -19,35 +20,56 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'prefix',
         redirectTo: 'groups'
-      }, {
+      },
+      {
         path: 'groups',
         pathMatch: 'prefix',
         data: { breadcrumb: { translate: 'labels.groups.title' } },
-        children: [ {
-          path: '',
-          pathMatch: 'prefix',
-          component: GroupsComponent,
-        }, {
-          path: 'import',
-          pathMatch: 'prefix',
-          children: [ {
+        children: [
+          {
             path: '',
             pathMatch: 'prefix',
-            component: GroupImportComponent,
-            canDeactivate: [ GroupImportDeactivateGuard ],
+            component: GroupsComponent
+          },
+          {
+            path: 'import',
+            pathMatch: 'prefix',
             data: { breadcrumb: { translate: 'labels.groups.import.title' } },
-          } ]
-        }, {
-          path: 'history',
-          pathMatch: 'prefix',
-          children: [ {
-            path: '',
+            children: [
+              {
+                path: '',
+                pathMatch: 'prefix',
+                component: GroupImportComponent,
+                canDeactivate: [ GroupImportDeactivateGuard ]
+              },
+              {
+                path: 'fileformat',
+                pathMatch: 'prefix',
+                data: { breadcrumb: { translate: 'labels.groups.import.file-format.header' } },
+                children: [
+                  {
+                    path: '',
+                    pathMatch: 'prefix',
+                    component: FileFormatComponent
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            path: 'history',
             pathMatch: 'prefix',
-            component: ImportHistoryComponent,
-            resolve: { imports: ImportHistoryResolve },
-            data: { breadcrumb: { translate: 'labels.groups.history.title' } },
-          } ]
-        } ]
+            children: [
+              {
+                path: '',
+                pathMatch: 'prefix',
+                component: ImportHistoryComponent,
+                resolve: { imports: ImportHistoryResolve },
+                data: { breadcrumb: { translate: 'labels.groups.history.title' } }
+              }
+            ]
+          }
+        ]
       }
     ]
   }

@@ -13,6 +13,7 @@ import { PopoverModule } from "ngx-bootstrap/popover";
 import { Angulartics2GoogleAnalytics, Angulartics2Module } from "angulartics2";
 import { GroupImportModule } from "./groups/import/group-import.module";
 import { GroupsModule } from "./groups/groups.module";
+import { FileFormatModule } from "./groups/import/fileformat/file-format.module";
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { GroupsModule } from "./groups/groups.module";
     CommonModule,
     GroupImportModule,
     GroupsModule,
+    FileFormatModule,
     RouterModule.forRoot(routes),
     UserModule,
     FormsModule,
