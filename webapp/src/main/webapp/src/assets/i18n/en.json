@@ -1,7 +1,7 @@
 {
   "welcome": "Welcome {{firstName}} {{lastName}}",
   "application": {
-    "title": "Reporting Admin"
+    "title": "Student Group Administration"
   },
   "messages": {
     "no-access": "Your user account does not have access to use this application.",
@@ -19,13 +19,13 @@
       "user-guide": "User Guide"
     },
     "homepage": {
-      "title": "Reporting Admin",
+      "title": "Student Group Administration",
       "welcome": {
         "title": "Welcome!"
       }
     },
     "admin": {
-      "title": "Reporting Admin",
+      "title": "Student Group Administration",
       "batch-list": "Import Batch List",
       "welcome": {
         "title": "Welcome!"
@@ -56,12 +56,12 @@
         "button-save": "Yes, delete this group"
       },
       "import": {
-        "title": "Upload Groups",
+        "title": "Upload New or Revised Groups",
         "results": "Upload Results",
         "empty": "Upload results will be shown here.",
         "drag-instruct": "Drag and drop to upload or ",
         "browse-instruct": "browse for files",
-        "sending": "Sending...",
+        "sending": "Uploading...",
         "view-errors": "View Errors",
         "hide-errors": "Hide Errors",
         "message": "Message: ",
