@@ -25,7 +25,7 @@ export class GroupImportComponent implements OnInit {
 
   ngOnInit() {
     this.uploader = new FileUploader({ url: URL });
-    this.uploader.setOptions({ autoUpload: true});
+    this.uploader.setOptions({ autoUpload: true });
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
       if (!isNullOrUndefined(response)) {
@@ -41,10 +41,10 @@ export class GroupImportComponent implements OnInit {
     window.onbeforeunload = this.confirmNavigation.bind(this);
   }
 
-  confirmNavigation(e) {
-    if(this.uploader.isUploading) {
+  confirmNavigation(event) {
+    if (this.uploader.isUploading) {
       let dialogText = this.translate.instant('messages.upload-in-progress');
-      e.returnValue = dialogText;
+      event.returnValue = dialogText;
       return dialogText;
     }
   }
@@ -52,4 +52,5 @@ export class GroupImportComponent implements OnInit {
   openFileDialog() {
     this.fileDialog.nativeElement.click();
   }
+
 }
