@@ -56,6 +56,7 @@
         "button-save": "Yes, delete this group"
       },
       "import": {
+        "link": "Upload Groups",
         "title": "Upload New or Revised Groups",
         "results": "Upload Results",
         "empty": "Upload results will be shown here.",

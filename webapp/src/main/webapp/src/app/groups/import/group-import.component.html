@@ -1,7 +1,7 @@
 <div>
   <div class="mb-md">
     <span class="h3 blue-dark">{{'labels.groups.import.title' | translate}}</span>
-    <button routerLink="/groups/import/fileformat" class="btn btn-default pull-right"><i class="fa fa-file-text mr-xs"></i> {{'labels.groups.import.file-format.header' | translate}}</button>
+    <button [routerLink]="['fileformat']" class="btn btn-default pull-right"><i class="fa fa-file-text mr-xs"></i> {{'labels.groups.import.file-format.header' | translate}}</button>
   </div>
   <div class="well">
     <div class="alert alert-warning" [innerHTML]="'labels.groups.import.warning-html' | translate"></div>
