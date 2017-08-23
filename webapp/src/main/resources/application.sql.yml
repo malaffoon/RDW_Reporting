@@ -35,7 +35,8 @@ sql:
     delete: >-
       update student_group sg
         join school s on sg.school_id = s.id
-      set sg.deleted = 1
+      set sg.deleted = 1,
+        sg.update_import_id = :import_id
       where sg.id = :id
         and (1=:statewide or s.district_id in (:district_ids) or sg.school_id in (:school_ids))
 
@@ -67,3 +68,13 @@ sql:
 
     sqlFindByCreator: >-
       SELECT * FROM upload_student_group_batch WHERE creator=:creator
+
+  import:
+    createQuery: >-
+      INSERT INTO import (status, content, contentType, digest, batch) VALUES
+        (0, 5, 'admin group modification', :digest, :batch)
+
+    triggerQuery: >-
+      UPDATE import
+      SET status = 1
+      WHERE id = :import_id
