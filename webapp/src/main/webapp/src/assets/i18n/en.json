@@ -60,7 +60,7 @@
         "title": "Upload New or Revised Groups",
         "results": "Upload Results",
         "empty": "Upload results will be shown here.",
-        "replacement-instruct": "To make changes to an existing, please up[load a replacement file.",
+        "replacement-instruct": "To make changes to an existing, please upload a replacement file.",
         "drag-instruct": "Drag and drop to upload or ",
         "browse-instruct": "browse for files",
         "sending": "Uploading...",
