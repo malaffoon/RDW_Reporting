@@ -86,7 +86,7 @@ application:
 
 permissionservice:
   component: Reporting
-  endpoint: http://perm-web-deployment.sbtds.org:8080/rest
+  endpoint: ${rdw.permission.service}
 
 app:
   home-url: /
