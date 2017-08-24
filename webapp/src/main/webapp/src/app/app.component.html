@@ -39,16 +39,6 @@
   </div>
 </header>
 
-<div class="hidden">
-  <h1>{{ 'HELLO' | translate }}</h1>
-  <!-- todo: refactor to directive/component -->
-  <select #languageSelect (change)="translate.use(languageSelect.value)">
-    <option *ngFor="let language of translate.getLangs()" [value]="language" [selected]="language === translate.currentLang">
-      {{ language }}
-    </option>
-  </select>
-</div>
-
 <!-- Breadcrumbs -->
 <breadcrumbs></breadcrumbs>
 
