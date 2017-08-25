@@ -3,7 +3,7 @@ import { ItemTabComponent } from "./item-tab.component";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { ItemViewerComponent } from "./item-viewer/item-viewer.component";
 import { CommonModule } from "../../shared/common.module";
-import { TabsetConfig } from "ngx-bootstrap";
+import { TabsetConfig, PopoverModule } from "ngx-bootstrap";
 import { MockDataService } from "../../../test/mock.data.service";
 import { CachingDataService } from "../../shared/cachingData.service";
 import { ItemExemplarComponent } from "./item-exemplar/item-exemplar.component";
@@ -13,7 +13,6 @@ import { StudentScoreService } from "./item-scores/student-score.service";
 import { Component } from "@angular/core";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { PopupMenuComponent } from "../menu/popup-menu.component";
-import { PopoverModule } from "ngx-popover";
 import { TestModule } from "../../../test/test.module";
 import { ItemInfoComponent } from "./item-info/item-info.component";
 import { Angulartics2Module, Angulartics2 } from "angulartics2";
@@ -27,7 +26,7 @@ describe('ItemTabComponent', () => {
     mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
 
     TestBed.configureTestingModule({
-      imports: [ TabsModule, CommonModule, DataTableModule, TestModule, Angulartics2Module, PopoverModule ],
+      imports: [ TabsModule, CommonModule, DataTableModule, TestModule, Angulartics2Module, PopoverModule.forRoot() ],
       declarations: [ TestComponentWrapper, ItemTabComponent, ItemViewerComponent, ItemInfoComponent, ItemExemplarComponent, ItemScoresComponent, PopupMenuComponent ],
       providers: [
         TabsetConfig,

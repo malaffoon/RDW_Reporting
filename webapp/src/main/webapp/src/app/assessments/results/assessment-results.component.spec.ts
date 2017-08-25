@@ -4,7 +4,7 @@ import { APP_BASE_HREF } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
-import {Component, EventEmitter} from "@angular/core";
+import { Component, EventEmitter } from "@angular/core";
 import { SharedModule } from "primeng/components/common/shared";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -13,13 +13,12 @@ import { Exam } from "../model/exam.model";
 import { RemoveCommaPipe } from "../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
-import { PopoverModule } from "ngx-popover";
 import { ScaleScoreComponent } from "./scale-score.component";
 import { AverageScaleScoreComponent } from "./average-scale-score.component";
 import { InformationLabelComponent } from "./information-label.component";
 import { ItemViewerComponent } from "../items/item-viewer/item-viewer.component";
 import { ItemTabComponent } from "../items/item-tab.component";
-import { TabsModule } from "ngx-bootstrap";
+import { TabsModule, PopoverModule } from "ngx-bootstrap";
 import { Student } from "../../student/model/student.model";
 import { PopupMenuComponent } from "../menu/popup-menu.component";
 import { GradeDisplayPipe } from "../../shared/grade-display.pipe";
@@ -34,6 +33,11 @@ import { ReportService } from "../../report/report.service";
 import { MockDataService } from "../../../test/mock.data.service";
 import { DataService } from "../../shared/data/data.service";
 import { NotificationService } from "../../shared/notification/notification.service";
+import { Notification } from "../../shared/notification/notification.model";
+import { ItemInfoService } from "../items/item-info/item-info.service";
+import { UserService } from "../../user/user.service";
+import { UserMapper } from "../../user/user.mapper";
+import { CachingDataService } from "../../shared/cachingData.service";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -41,8 +45,8 @@ describe('AssessmentResultsComponent', () => {
   let dataService: MockDataService;
   let service: MockNotificationService;
 
-  let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
-  mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
+  let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
+  mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
   beforeEach(async(() => {
     dataService = new MockDataService();
@@ -53,7 +57,7 @@ describe('AssessmentResultsComponent', () => {
         DataTableModule,
         FormsModule,
         HttpModule,
-        PopoverModule,
+        PopoverModule.forRoot(),
         SharedModule,
         TabsModule,
         TranslateModule.forRoot(),
@@ -75,7 +79,7 @@ describe('AssessmentResultsComponent', () => {
         AverageScaleScoreComponent,
         TestComponentWrapper
       ],
-      providers: [ { provide: APP_BASE_HREF, useValue: '/' } ,
+      providers: [ { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
@@ -83,7 +87,11 @@ describe('AssessmentResultsComponent', () => {
         ScaleScoreService,
         ReportService,
         { provide: DataService, useValue: dataService },
-        { provide: NotificationService, useValue: service }
+        { provide: NotificationService, useValue: service },
+        ItemInfoService,
+        UserService,
+        UserMapper,
+        { provide: CachingDataService, useValue: dataService }
       ]
     }).compileComponents();
 
@@ -133,17 +141,17 @@ describe('AssessmentResultsComponent', () => {
     assessmentExam.exams.push(buildExam("Wood", "ma-01", "2017-03-01T17:05:26Z"));
 
     component.assessmentExam = assessmentExam;
-    component.toggleSession(component.sessions[1]);
+    component.toggleSession(component.sessions[ 1 ]);
     expect(component.exams.length).toBe(2);
 
-    component.toggleSession(component.sessions[1]);
+    component.toggleSession(component.sessions[ 1 ]);
     expect(component.exams.length).toBe(1);
 
-    component.toggleSession(component.sessions[0]);
+    component.toggleSession(component.sessions[ 0 ]);
     expect(component.exams.length).toBe(0);
   });
 
-  function buildExam(studentName:string, session:string, date:any) {
+  function buildExam(studentName: string, session: string, date: any) {
     let exam = new Exam();
     exam.student = new Student();
     exam.student.lastName = studentName;

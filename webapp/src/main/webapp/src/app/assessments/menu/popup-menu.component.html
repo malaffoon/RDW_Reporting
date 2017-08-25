@@ -12,9 +12,8 @@
     <li *ngFor="let action of actions; let idx = index" role="menuitem">
       <a class="dropdown-item"
          popover="{{action.tooltip(item)}}"
-         [popoverOnHover]="true"
-         popoverPlacement="right"
-         [popoverDisabled]="action.tooltip(item) == ''"
+         triggers="{{ action.tooltip(item) == '' ? '': 'mouseenter:mouseleave'}}"
+         placement="right"
          container="body">
         <button
           [disabled]="action.isDisabled(item)"
