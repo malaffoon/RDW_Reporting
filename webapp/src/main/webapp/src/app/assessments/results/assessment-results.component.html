@@ -15,11 +15,8 @@
             <div class="col-md-4">
               <span class="pull-right"
                     popover="{{ 'labels.menus.resources-disabled-message' | translate }}"
-                    [popoverOnHover]="true"
-                    [popoverDisabled]="assessmentExam.assessment.hasResourceUrl"
-                    popoverPlacement="top"
-                    container="body"
-              >
+                    triggers="{{assessmentExam.assessment.hasResourceUrl ? '': 'mouseenter:mouseleave'}}"
+                    container="body">
                 <button
                   class="btn btn-success btn-xs float-none-xs"
                   angulartics2On="click"
@@ -27,8 +24,7 @@
                   angularticsCategory="AssessmentResults"
                   [angularticsProperties]="{label: assessmentExam.assessment.name}"
                   [disabled]="!assessmentExam.assessment.hasResourceUrl"
-                  (click)="openInstructionalResource()"
-                >
+                  (click)="openInstructionalResource()">
                   <i class="fa fa-list-alt"></i> {{'labels.groups.results.assessment.instruct' | translate }}
                 </button>
               </span>
@@ -95,10 +91,7 @@
               </button>
             </div>
             <span popover="{{ 'messages.no-item-level-data' | translate }}"
-                  [popoverDisabled]="hasItemLevelData"
-                  [popoverOnHover]="true"
-                  popoverPlacement="top"
-            >
+                  triggers="{{ hasItemLevelData ? '': 'mouseenter:mouseleave'}}">
               <button *ngIf="assessmentExam.assessment.isInterim"
                                   [disabled]="!hasItemLevelData"
                                   class="btn btn-default btn-xs " (click)="viewItemsByPoints(true)">
@@ -199,7 +192,19 @@
                     content="{{'labels.groups.results.assessment.items.cols.claim-info-html' | translate}}"></span>
             </ng-template>
             <ng-template let-item="rowData" pTemplate="body">
-              {{ 'definition.claim.' + item.claim + '.name' | translate }} / {{ 'labels.groups.results.assessment.items.target' | translate:item }}
+              <a href="javascript:void(0)"
+                 [popover]="claimPopover"
+                 popoverTitle="{{'definition.claim.' + item.claim + '.name' | translate}}"
+                 outsideClick="true">{{'definition.claim.' + item.claim + '.name' | translate}}</a>
+              /
+              <a href="javascript:void(0)" #me
+                 (onShown)="loadTargetDescription(targetPopover)"
+                 [popover]="targetPopover"
+                 popoverTitle="{{'labels.groups.results.assessment.items.target' | translate:item}}"
+                 outsideClick="true">{{'labels.groups.results.assessment.items.target' | translate:item}}</a>
+
+              <ng-template #claimPopover>{{'definition.claim.' + item.claim + '.description' | translate}}</ng-template>
+              <ng-template #targetPopover>{{getTargetDescription(item.targetId) | async}}</ng-template>
             </ng-template>
           </p-column>
           <p-column field="difficulty" [sortable]="true" sortField="difficultySortOrder">

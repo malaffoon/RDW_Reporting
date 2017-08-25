@@ -5,13 +5,13 @@ import { SharedModule } from "primeng/components/common/shared";
 import { SchoolYearPipe } from "../../../shared/schoolYear.pipe";
 import { TranslateModule } from "@ngx-translate/core";
 import { DataTableModule } from "primeng/components/datatable/datatable";
-import { PopoverModule } from "ngx-popover";
 import { ScaleScoreComponent } from "../../../assessments/results/scale-score.component";
 import { InformationLabelComponent } from "../../../assessments/results/information-label.component";
 import { PopupMenuComponent } from "../../../assessments/menu/popup-menu.component";
 import { MockRouter } from "../../../../test/mock.router";
 import { Router, ActivatedRoute } from "@angular/router";
 import { GradeDisplayPipe } from "../../../shared/grade-display.pipe";
+import { PopoverModule } from "ngx-bootstrap";
 
 describe('StudentHistoryIABTableComponent', () => {
   let component: StudentHistoryIABTableComponent;
@@ -27,7 +27,7 @@ describe('StudentHistoryIABTableComponent', () => {
       imports: [
         BrowserModule,
         DataTableModule,
-        PopoverModule,
+        PopoverModule.forRoot(),
         SharedModule,
         TranslateModule.forRoot()
       ],

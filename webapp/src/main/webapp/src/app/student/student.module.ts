@@ -13,7 +13,6 @@ import { StudentResultsFilterComponent } from "./results/student-results-filter.
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { StudentHistoryIABTableComponent } from "./results/tables/student-history-iab-table.component";
 import { StudentHistoryICASummitiveTableComponent } from "./results/tables/student-history-ica-summitive-table.component";
-import { PopoverModule } from "ngx-popover";
 import { Angulartics2Module } from "angulartics2";
 import { StudentResponsesComponent } from "./responses/student-responses.component";
 import { StudentResponsesService } from "./responses/student-responses.service";
@@ -23,6 +22,7 @@ import { StudentHistoryResponsesAssessmentResolve } from "./responses/student-hi
 import { StudentHistoryResponsesStudentResolve } from "./responses/student-history-responses-student.resolve";
 import { CsvModule } from "../csv-export/csv-export.module";
 import { ReportModule } from "../report/report.module";
+import { PopoverModule } from "ngx-bootstrap";
 
 @NgModule({
   declarations: [
@@ -41,7 +41,7 @@ import { ReportModule } from "../report/report.module";
     BrowserModule,
     DataTableModule,
     FormsModule,
-    PopoverModule,
+    PopoverModule.forRoot(),
     ReactiveFormsModule,
     SharedModule,
     Angulartics2Module.forChild(),

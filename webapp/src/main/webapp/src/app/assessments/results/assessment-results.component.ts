@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, EventEmitter, Output } from "@angular/core";
+import { Component, Input, OnInit, EventEmitter, Output, TemplateRef, Renderer2 } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
@@ -23,6 +23,7 @@ import { Download } from "../../shared/data/download.model";
 import { ReportOptions } from "../../report/report-options.model";
 import { ReportOrder } from "../../report/report-order.enum";
 import { saveAs } from "file-saver";
+import { ItemInfoService } from "../items/item-info/item-info.service";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -206,8 +207,9 @@ export class AssessmentResultsComponent implements OnInit {
               private reportService: ReportService,
               private notificationService: NotificationService,
               private actionBuilder: MenuActionBuilder,
+              private itemInfoService: ItemInfoService,
+              private renderer: Renderer2,
               private angulartics2: Angulartics2) {
-
   }
 
   ngOnInit(): void {
@@ -382,4 +384,9 @@ export class AssessmentResultsComponent implements OnInit {
       .build();
 
   }
+
+  public getTargetDescription(targetId: number): Observable<string> {
+    return this.itemInfoService.getTargetDescription(targetId);
+  }
+
 }
