@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, EventEmitter, Output, TemplateRef, Renderer2 } from "@angular/core";
+import { Component, Input, OnInit, EventEmitter, Output } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
@@ -208,7 +208,6 @@ export class AssessmentResultsComponent implements OnInit {
               private notificationService: NotificationService,
               private actionBuilder: MenuActionBuilder,
               private itemInfoService: ItemInfoService,
-              private renderer: Renderer2,
               private angulartics2: Angulartics2) {
   }
 
@@ -382,7 +381,6 @@ export class AssessmentResultsComponent implements OnInit {
         }
       )
       .build();
-
   }
 
   public getTargetDescription(targetId: number): Observable<string> {

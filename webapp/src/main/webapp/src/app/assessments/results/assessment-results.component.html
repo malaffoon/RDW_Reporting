@@ -193,17 +193,15 @@
             </ng-template>
             <ng-template let-item="rowData" pTemplate="body">
               <a href="javascript:void(0)"
-                 [popover]="claimPopover"
+                 [popover]="'definition.claim.' + item.claim + '.description' | translate"
                  popoverTitle="{{'definition.claim.' + item.claim + '.name' | translate}}"
                  outsideClick="true">{{'definition.claim.' + item.claim + '.name' | translate}}</a>
               /
               <a href="javascript:void(0)" #me
-                 (onShown)="loadTargetDescription(targetPopover)"
                  [popover]="targetPopover"
                  popoverTitle="{{'labels.groups.results.assessment.items.target' | translate:item}}"
                  outsideClick="true">{{'labels.groups.results.assessment.items.target' | translate:item}}</a>
 
-              <ng-template #claimPopover>{{'definition.claim.' + item.claim + '.description' | translate}}</ng-template>
               <ng-template #targetPopover>{{getTargetDescription(item.targetId) | async}}</ng-template>
             </ng-template>
           </p-column>
