@@ -25,7 +25,7 @@ services:
       - 15672:15672
 
   config-server:
-    image: fwsbac/configuration-service:latest
+    image: smarterbalanced/configuration-service:3.1.0.RELEASE
     container_name: config-server
     ports:
       - 8888:8888
@@ -41,7 +41,7 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
 
   webapp:
-    image: fwsbac/rdw-admin-webapp
+    image: smarterbalanced/rdw-admin-webapp
     ports:
       - 8080:8080
       - 8081:8008
@@ -58,7 +58,7 @@ services:
       - "dwhost:$DATAWAREHOUSE_HOST"
 
   group-processor:
-    image: fwsbac/rdw-ingest-group-processor
+    image: smarterbalanced/rdw-ingest-group-processor
     ports:
       - 8086:8008
     volumes:
