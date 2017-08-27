@@ -14,7 +14,6 @@ import { User } from "../../user/model/user.model";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { Angulartics2Module, Angulartics2 } from "angulartics2";
-import { PopoverModule } from "ngx-popover";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
@@ -22,6 +21,7 @@ import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
 import { GroupResultsComponent } from "./group-results.component";
 import { GroupAssessmentService } from "./group-assessment.service";
+import { PopoverModule } from "ngx-bootstrap";
 
 let availableGrades = [];
 
@@ -58,7 +58,7 @@ describe('GroupResultsComponent', () => {
         DropdownModule,
         SharedModule,
         Angulartics2Module,
-        PopoverModule,
+        PopoverModule.forRoot(),
         ReportModule
       ],
       declarations: [ GroupResultsComponent ],

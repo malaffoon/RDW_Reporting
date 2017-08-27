@@ -125,8 +125,8 @@
         "short-name": "G10"
       },
       "11": {
-        "long-name": "Grade 11",
-        "short-name": "G11"
+        "long-name": "High School",
+        "short-name": "HS"
       },
       "12": {
         "long-name": "Grade 12",
@@ -293,6 +293,7 @@
           "student-scores-intro-text": "Expand each student row to view their response to this item.",
           "item-viewer": "Item Viewer",
           "item-viewer-intro-text": "This is the view of the item as seen while taking the assessment.  This does not include student responses.",
+          "item-viewer-see-rubric": "See the Rubric and Exemplar tab to get more information on correct responses.",
           "exemplar": {
             "title": "Rubric and Exemplar",
             "rubric": "Rubric",

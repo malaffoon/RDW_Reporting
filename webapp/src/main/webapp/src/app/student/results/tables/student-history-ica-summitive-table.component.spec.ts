@@ -9,13 +9,13 @@ import { StudentHistoryExamWrapper } from "../../model/student-history-exam-wrap
 import { Exam } from "../../../assessments/model/exam.model";
 import { Assessment } from "../../../assessments/model/assessment.model";
 import { School } from "../../../user/model/school.model";
-import { PopoverModule } from "ngx-popover";
 import { ScaleScoreComponent } from "../../../assessments/results/scale-score.component";
 import { InformationLabelComponent } from "../../../assessments/results/information-label.component";
 import { PopupMenuComponent } from "../../../assessments/menu/popup-menu.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MockRouter } from "../../../../test/mock.router";
 import { GradeDisplayPipe } from "../../../shared/grade-display.pipe";
+import { PopoverModule } from "ngx-bootstrap";
 
 describe('StudentHistoryICASummitiveTableComponent', () => {
   let component: StudentHistoryICASummitiveTableComponent;
@@ -28,7 +28,7 @@ describe('StudentHistoryICASummitiveTableComponent', () => {
       imports: [
         BrowserModule,
         DataTableModule,
-        PopoverModule,
+        PopoverModule.forRoot(),
         SharedModule,
         TranslateModule.forRoot()
       ],

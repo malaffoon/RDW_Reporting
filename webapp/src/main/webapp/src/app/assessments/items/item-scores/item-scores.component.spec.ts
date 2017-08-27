@@ -8,7 +8,7 @@ import { AssessmentItem } from "../../model/assessment-item.model";
 import { CommonModule } from "../../../shared/common.module";
 import { PopupMenuComponent } from "../../menu/popup-menu.component";
 import { TestModule } from "../../../../test/test.module";
-import { PopoverModule } from "ngx-popover";
+import { PopoverModule } from "ngx-bootstrap";
 
 describe('ItemScoresComponent', () => {
   let component: ItemScoresComponent;
@@ -17,7 +17,7 @@ describe('ItemScoresComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      imports: [ DataTableModule, CommonModule, TestModule, PopoverModule ],
+      imports: [ DataTableModule, CommonModule, TestModule, PopoverModule.forRoot() ],
       declarations: [ TestComponentWrapper, ItemScoresComponent, PopupMenuComponent, ItemViewerComponent ],
       providers: [
         StudentScoreService

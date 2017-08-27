@@ -12,7 +12,6 @@ import { ExamFilterService } from "./filters/exam-filters/exam-filter.service";
 import { ExamFilterOptionsService } from "./filters/exam-filters/exam-filter-options.service";
 import { ExamFilterOptionsMapper } from "./filters/exam-filters/exam-filter-options.mapper";
 import { SelectAssessmentsComponent } from "./filters/select-assessments/select-assessments.component";
-import { PopoverModule } from "ngx-popover";
 import { AssessmentsComponent } from "./assessments.component";
 import { AdvFiltersToggleComponent } from "./filters/adv-filters/adv-filters-toggle.component";
 import { ScaleScoreComponent } from "./results/scale-score.component";
@@ -30,6 +29,7 @@ import { ItemScoresComponent } from "./items/item-scores/item-scores.component";
 import { StudentScoreService } from "./items/item-scores/student-score.service";
 import { ItemInfoComponent } from "./items/item-info/item-info.component";
 import { ItemInfoService } from "./items/item-info/item-info.service";
+import { PopoverModule } from "ngx-bootstrap";
 
 @NgModule({
   declarations: [
@@ -54,7 +54,7 @@ import { ItemInfoService } from "./items/item-info/item-info.service";
     CommonModule,
     DataTableModule,
     FormsModule,
-    PopoverModule,
+    PopoverModule.forRoot(),
     SharedModule,
     TabsModule,
     Angulartics2Module.forChild()

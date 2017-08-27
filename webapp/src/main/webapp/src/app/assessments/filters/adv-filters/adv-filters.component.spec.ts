@@ -7,16 +7,16 @@ import { Component } from "@angular/core";
 import { FilterBy } from "../../model/filter-by.model";
 import { CommonModule } from "../../../shared/common.module";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
-import { Angulartics2Module, Angulartics2 } from 'angulartics2';
-import { PopoverModule } from "ngx-popover";
-import {InformationLabelComponent} from "../../results/information-label.component";
+import { Angulartics2Module, Angulartics2 } from "angulartics2";
+import { InformationLabelComponent } from "../../results/information-label.component";
+import { PopoverModule } from "ngx-bootstrap";
 
 describe('AdvFiltersComponent', () => {
   let component: AdvFiltersComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
 
-  let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
-  mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
+  let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
+  mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('AdvFiltersComponent', () => {
         FormsModule,
         CommonModule,
         Angulartics2Module,
-        PopoverModule
+        PopoverModule.forRoot()
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

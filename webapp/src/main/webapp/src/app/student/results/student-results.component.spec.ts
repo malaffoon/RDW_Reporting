@@ -5,7 +5,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { CommonModule } from "../../shared/common.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/components/common/shared";
-import { PopoverModule } from "ngx-popover";
 import { TranslateModule } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { StudentExamHistory } from "../model/student-exam-history.model";
@@ -24,6 +23,7 @@ import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
+import { PopoverModule } from "ngx-bootstrap";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -57,7 +57,7 @@ describe('StudentResultsComponent', () => {
         SharedModule,
         ReportModule,
         TranslateModule.forRoot(),
-        PopoverModule,
+        PopoverModule.forRoot(),
         ReportModule
       ],
       declarations: [
