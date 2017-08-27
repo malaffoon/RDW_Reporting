@@ -1,6 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { NotificationService } from "./notification.service";
 import { Notification } from "./notification.model";
+import * as _ from "lodash";
 
 /**
  * This component is responsible for displaying user notifications.
@@ -35,7 +36,9 @@ export class NotificationComponent {
    * @param notification A notification
    */
   private onNotification(notification) {
-    this.notifications.push(notification);
+    if (!this.notifications.some(x => _.isEqual(x, notification))) {
+      this.notifications.push(notification);
+    }
   }
 
 }
