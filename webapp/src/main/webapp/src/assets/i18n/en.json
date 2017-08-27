@@ -22,6 +22,7 @@
     "toggle-navigation": "Toggle navigation",
     "no-item-level-data": "Item level data is not available for tests administered prior to 2016-17 school year.",
     "coming-soon": "{{featureName}} is coming soon.",
+    "interpretive-guide-coming-soon": "The Interpretive Guide will be available on September 15th.",
     "unknown-error": "An unknown error has occurred. You can try the same action again or click the button below to go to the home page.  If this problem persists, please contact your building administrator."
   },
   "collapse": "Collapse",

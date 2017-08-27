@@ -26,4 +26,7 @@ export class HomeComponent implements OnInit {
     this.notificationService.info({id: 'messages.coming-soon', args: { featureName: featureName }, dismissOnTimeout: 5000 });
   }
 
+  showInterpretiveGuideComingSoon() {
+    this.notificationService.info({id: 'messages.interpretive-guide-coming-soon', args: { }, dismissOnTimeout: 5000 });
+  }
 }

@@ -83,4 +83,7 @@ export class AppComponent {
     this.notifService.info({ id: 'messages.coming-soon', args: { featureName: featureName }, dismissOnTimeout: 5000 });
   }
 
+  showInterpretiveGuideComingSoon() {
+    this.notifService.info({id: 'messages.interpretive-guide-coming-soon', args: { }, dismissOnTimeout: 5000 });
+  }
 }
