@@ -1,6 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { NotificationService } from "./notification.service";
 import { Notification } from "./notification.model";
+import * as _ from "lodash";
 
 /**
  * This component is responsible for displaying user notifications.
@@ -35,7 +36,11 @@ export class NotificationComponent {
    * @param notification A notification
    */
   private onNotification(notification) {
-    this.notifications.push(notification);
+    // if the same message is being generated again then remove it so a new one can be added
+    _.remove(this.notifications, x => _.isEqual(x, notification));
+
+    // add a brief pause to this so that Angular can remove it from display and a visual reference is made so the user knows the existing was replaced
+    setTimeout(() => this.notifications.push(notification), 50);
   }
 
 }
