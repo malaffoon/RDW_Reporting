@@ -36,11 +36,10 @@ export class NotificationComponent {
    * @param notification A notification
    */
   private onNotification(notification) {
-    // if the same message is being generated again then remove it so a new one can be added
+    // if the same message is being generated again then remove it so a new one can be added and the dismiss time extended
     _.remove(this.notifications, x => _.isEqual(x, notification));
 
-    // add a brief pause to this so that Angular can remove it from display and a visual reference is made so the user knows the existing was replaced
-    setTimeout(() => this.notifications.push(notification), 50);
+    this.notifications.push(notification);
   }
 
 }
