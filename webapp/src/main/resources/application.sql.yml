@@ -471,9 +471,10 @@ sql:
       where natural_id in (:naturalIds)
 
     findAll: >-
-      select name, id
-      from school
-      where (1=:statewide or district_id in (:district_ids) or id in (:school_ids))
+      select s.name, s.id, d.id as district_id, d.name as district_name
+      from school s
+        join district d on s.district_id = d.id
+      where (1=:statewide or s.district_id in (:district_ids) or s.id in (:school_ids))
 
     findAllForNameContainingText: >-
       select name, id

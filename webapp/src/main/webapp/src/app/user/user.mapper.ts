@@ -42,6 +42,12 @@ export class UserMapper {
     let uiModel: School = new School();
     uiModel.id = apiModel.id;
     uiModel.name = apiModel.name;
+
+    if(apiModel.district) {
+      uiModel.districtName = apiModel.district.name;
+      uiModel.districtId = apiModel.district.id;
+    }
+
     return uiModel;
   }
 

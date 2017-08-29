@@ -22,15 +22,10 @@ export class SchoolGradeComponent implements OnInit {
    */
   @Input()
   set availableSchools(schools: School[]) {
-    this._availableSchools = schools.map(school => {
-      return {
-        label: school.name,
-        value: school
-      };
-    });
-  }
+    this._availableSchools = schools;
+  };
 
-  get availableSchools() {
+  get availableSchools(): School[] {
     return this._availableSchools;
   }
 
@@ -40,7 +35,7 @@ export class SchoolGradeComponent implements OnInit {
   availableGrades: Grade[] = [];
   gradesAreUnavailable: boolean = false;
 
-  private _availableSchools: any[] = [];
+  private _availableSchools: School[];
 
   constructor(private schoolService: SchoolService, private router: Router) {
     this.availableGrades = [];
@@ -51,20 +46,23 @@ export class SchoolGradeComponent implements OnInit {
       school: new FormControl(null, Validators.required),
       grade: new FormControl({ value: this.selectNullOptionValue, disabled: true }, Validators.required)
     });
-
-    if(this._availableSchools.length == 1){
-      let school = this._availableSchools[0].value;
-
-      this.schoolControl.setValue(school);
-      this.schoolChanged(school);
-    }
-
-    this.schoolControl.valueChanges.subscribe(school => this.schoolChanged(school));
   }
 
   performSearch() {
     if(this.searchForm.valid) {
       this.router.navigate([ 'schools', this.schoolControl.value.id, { gradeId: this.gradeControl.value.id } ]);
+    }
+  }
+
+  schoolChanged(school: School) {
+    this.schoolControl.setValue(school);
+    this.availableGrades = [];
+    this.gradesAreUnavailable = false;
+
+    this.gradeControl.disable();
+
+    if (!isNullOrUndefined(school)) {
+      this.loadAvailableGrades(school);
     }
   }
 
@@ -74,17 +72,6 @@ export class SchoolGradeComponent implements OnInit {
 
   private get schoolControl() {
     return this.searchForm.controls[ "school" ];
-  }
-
-  private schoolChanged(school: School) {
-    this.availableGrades = [];
-    this.gradesAreUnavailable = false;
-
-    this.gradeControl.disable();
-
-    if (!isNullOrUndefined(school)) {
-      this.loadAvailableGrades(school);
-    }
   }
 
   private loadAvailableGrades(school: School) {

@@ -1,0 +1,23 @@
+<div>
+  <p-dropdown
+    *ngIf="showDropdown"
+    id="rdw-school-grade-select-school"
+    [options]="schoolDropdownOptions"
+    [(ngModel)]="selectedSchool"
+    (onChange)="schoolSelect($event.value)"
+    [filter]="true"
+    filterBy="label"
+    placeholder="{{'prompt.select' | translate}}"
+    filterPlaceholder="{{'labels.school-grade.school-name.prompt' | translate}}">
+  </p-dropdown>
+
+  <input *ngIf="!showDropdown"
+         [(ngModel)]="selectedSchoolName"
+         (ngModelChange)="schoolTextChanged($event)"
+         [typeahead]="availableSchools"
+         typeaheadOptionField="name"
+         typeaheadGroupField="districtName"
+         (typeaheadOnSelect) = "schoolSelect($event.item)"
+         placeholder="{{'labels.school-grade.school-name.prompt' | translate}}"
+         class="form-control">
+</div>

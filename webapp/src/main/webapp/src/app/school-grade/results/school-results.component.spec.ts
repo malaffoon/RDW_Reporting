@@ -18,12 +18,13 @@ import { School } from "../../user/model/school.model";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { Angulartics2Module, Angulartics2 } from "angulartics2";
-import { PopoverModule } from "ngx-bootstrap";
+import { PopoverModule, TypeaheadModule } from "ngx-bootstrap";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
+import { SchoolSelectComponent } from "../school-select/school-select.component";
 
 let availableGrades = [];
 
@@ -35,7 +36,7 @@ describe('SchoolResultsComponent', () => {
 
   beforeEach(async(() => {
     let user = new User();
-    user.schools = [ { name: "Ogden", id: 2 } ];
+    user.schools = [ { name: "Ogden", id: 2, districtId: 0, districtName: "Test District" } ];
 
     let mockRouteSnapshot: any = {};
     mockRouteSnapshot.data = { user: user };
@@ -57,13 +58,14 @@ describe('SchoolResultsComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         AssessmentsModule,
+        TypeaheadModule,
         DropdownModule,
         SharedModule,
         Angulartics2Module,
         PopoverModule.forRoot(),
         ReportModule
       ],
-      declarations: [ SchoolResultsComponent ],
+      declarations: [ SchoolResultsComponent, SchoolSelectComponent ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Router, useClass: MockRouter },
@@ -107,7 +109,7 @@ describe('SchoolResultsComponent', () => {
     availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
 
     component.currentGrade = { code: "04", id: 4 };
-    component.schoolSelectChanged();
+    component.schoolSelectChanged(new School());
 
     expect(component.currentGrade.id).toBe(4);
   });
@@ -116,7 +118,7 @@ describe('SchoolResultsComponent', () => {
     availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
 
     component.currentGrade = { code: "11", id: 11 };
-    component.schoolSelectChanged();
+    component.schoolSelectChanged(new School());
 
     expect(component.currentGrade.id).toBe(3);
   });
@@ -125,7 +127,7 @@ describe('SchoolResultsComponent', () => {
     availableGrades = [];
 
     component.currentGrade = { code: "11", id: 11 };
-    component.schoolSelectChanged();
+    component.schoolSelectChanged(new School());
 
     expect(component.currentGrade).toBeUndefined();
   });

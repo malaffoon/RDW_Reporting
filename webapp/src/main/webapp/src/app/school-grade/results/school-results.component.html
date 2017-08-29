@@ -23,15 +23,10 @@
   <!-- School Select -->
   <div class="col-md-4">
     <label>{{'labels.school-grade.results.basic-filters.school' | translate}}</label>
-    <!--TODO: type ahead? -->
-    <p-dropdown [options]="availableSchools"
-                [(ngModel)]="currentSchool"
-                (onChange)="schoolSelectChanged()"
-                [filter]="true"
-                filterBy="label"
-                placeholder="{{'prompt.select' | translate}}"
-                filterPlaceholder="{{'labels.school-grade.school-name.prompt' | translate}}">
-    </p-dropdown>
+    <school-select [availableSchools]="availableSchools"
+                   [selectedSchool] = "currentSchool"
+                   (schoolChanged)="schoolSelectChanged($event)">
+    </school-select>
   </div>
 
   <!-- Current Grade -->
