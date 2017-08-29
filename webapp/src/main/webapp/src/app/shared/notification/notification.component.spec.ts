@@ -3,8 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NotificationService } from "./notification.service";
 import { NO_ERRORS_SCHEMA, EventEmitter } from "@angular/core";
 import { Notification } from "./notification.model";
-import Spy = jasmine.Spy;
-import createSpy = jasmine.createSpy;
 import { TranslateModule } from "@ngx-translate/core";
 
 describe('NotificationComponent', () => {

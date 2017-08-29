@@ -134,6 +134,7 @@ sql:
         join student_group sg on sg.id = usg.student_group_id
         join school on school.id = sg.school_id
       where user_login=:user_login
+      and sg.id in (:group_ids)
 
     membership:
       findAllForUsername: >-
