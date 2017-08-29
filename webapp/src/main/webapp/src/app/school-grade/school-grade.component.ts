@@ -46,8 +46,6 @@ export class SchoolGradeComponent implements OnInit {
       school: new FormControl(null, Validators.required),
       grade: new FormControl({ value: this.selectNullOptionValue, disabled: true }, Validators.required)
     });
-
-
   }
 
   performSearch() {
@@ -66,7 +64,6 @@ export class SchoolGradeComponent implements OnInit {
 
   private schoolChanged(school: School) {
     this.schoolControl.setValue(school);
-    console.log(school);
     this.availableGrades = [];
     this.gradesAreUnavailable = false;
 

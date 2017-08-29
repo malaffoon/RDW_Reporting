@@ -3,6 +3,7 @@
     *ngIf="showDropdown"
     id="rdw-school-grade-select-school"
     [options]="schoolDropdownOptions"
+    [(ngModel)]="selectedSchool"
     (onChange)="schoolSelect($event.value)"
     [filter]="true"
     filterBy="label"

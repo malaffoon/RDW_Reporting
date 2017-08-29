@@ -13,8 +13,10 @@ export class SchoolSelectComponent implements OnInit {
   @Output()
   schoolChanged: EventEmitter<School> = new EventEmitter();
 
+  @Input()
   selectedSchool: School;
 
+  selectedSchoolName: string;
   schoolsMatchingSearch: School[] = [];
   schoolDropdownOptions: any[] = [];
   constructor() {
@@ -37,7 +39,12 @@ export class SchoolSelectComponent implements OnInit {
             value: school
           };
         });
+    } else {
+      if(this.selectedSchool) {
+        this.selectedSchoolName = this.selectedSchool.name;
+      }
     }
+
   }
 
   schoolTextChanged(event){
@@ -51,5 +58,4 @@ export class SchoolSelectComponent implements OnInit {
     this.selectedSchool = event;
     this.schoolChanged.emit(event);
   }
-
 }
