@@ -510,9 +510,9 @@
     },
     "iab-category": {
       "short": {
-        "1": "Below",
-        "2": "Near",
-        "3": "Above",
+        "1": "Below Standard",
+        "2": "Near Standard",
+        "3": "Above Standard",
         "missing": "-"
       },
       "full": {
