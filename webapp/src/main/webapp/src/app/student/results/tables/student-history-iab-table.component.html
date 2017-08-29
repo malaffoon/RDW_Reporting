@@ -24,7 +24,7 @@
   <p-column field="school.name" header="{{'labels.student.results.cols.school' | translate }}" sortable="true"></p-column>
   <p-column field="exam.enrolledGrade" header="{{'labels.student.results.cols.enrolled-grade' | translate}}" sortable="true">
     <ng-template let-exam="rowData.exam" pTemplate="body">
-      {{ exam.enrolledGrade | gradeDisplay }}
+      {{ exam.enrolledGrade | gradeDisplay:'enrolled-name' }}
     </ng-template>
   </p-column>
   <p-column field="exam.administrativeCondition" sortable="true">

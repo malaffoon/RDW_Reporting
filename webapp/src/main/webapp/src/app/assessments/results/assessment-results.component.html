@@ -123,7 +123,7 @@
           <p-column field="session" header="{{'labels.groups.results.assessment.exams.cols.session' | translate}}" [sortable]="true"></p-column>
           <p-column field="enrolledGrade" header="{{'labels.groups.results.assessment.exams.cols.grade' | translate}}" [sortable]="true" [hidden]="isClaimScoreSelected">
             <ng-template let-exam="rowData" pTemplate="body">
-              {{ exam.enrolledGrade | gradeDisplay }}
+              {{ exam.enrolledGrade | gradeDisplay:'enrolled-name' }}
             </ng-template>
           </p-column>
           <p-column field="administrativeCondition" [sortable]="true" [hidden]="isClaimScoreSelected">
