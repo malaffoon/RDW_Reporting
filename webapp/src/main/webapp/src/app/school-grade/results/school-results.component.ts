@@ -96,12 +96,7 @@ export class SchoolResultsComponent implements OnInit {
 
   ngOnInit() {
     this.schools = this.route.snapshot.data[ "user" ].schools;
-    this.availableSchools = this.schools.map(school => {
-      return {
-        label: school.name,
-        value: school
-      };
-    });
+    this.availableSchools = this.schools;
 
     let schoolId = this.route.snapshot.params[ "schoolId" ];
 
@@ -136,28 +131,32 @@ export class SchoolResultsComponent implements OnInit {
     }
   }
 
-  schoolSelectChanged(){
-    this.schoolService
-      .findGradesWithAssessmentsForSchool(this.currentSchool)
-      .subscribe(grades => {
-        this.availableGrades = grades;
-        this.gradesAreUnavailable = this.availableGrades.length == 0;
+  schoolSelectChanged(school){
+    if(school) {
+      this.currentSchool = school;
 
-        if(grades.length > 0){
-          let grade = isNullOrUndefined(this.currentGrade)
-            ? undefined
-            : this.availableGrades.find(grade => grade.id == this.currentGrade.id);
+      this.schoolService
+        .findGradesWithAssessmentsForSchool(this.currentSchool)
+        .subscribe(grades => {
+          this.availableGrades = grades;
+          this.gradesAreUnavailable = this.availableGrades.length == 0;
 
-          // Try and keep the same grade selected, if it's available.
-          this.currentGrade = isNullOrUndefined(grade)
-            ? grades[0]
-            : grade;
-        }
-        else
-          this.currentGrade = undefined;
+          if (grades.length > 0) {
+            let grade = isNullOrUndefined(this.currentGrade)
+              ? undefined
+              : this.availableGrades.find(grade => grade.id == this.currentGrade.id);
 
-        this.updateRoute('School');
-      });
+            // Try and keep the same grade selected, if it's available.
+            this.currentGrade = isNullOrUndefined(grade)
+              ? grades[ 0 ]
+              : grade;
+          }
+          else
+            this.currentGrade = undefined;
+
+          this.updateRoute('School');
+        });
+    }
   }
 
   updateRoute(changedFilter: string) {

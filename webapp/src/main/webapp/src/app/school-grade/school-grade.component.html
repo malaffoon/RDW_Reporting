@@ -4,16 +4,7 @@
       <label>
         {{'labels.school-grade.school-name.label' | translate}}
       </label>
-      <div>
-        <p-dropdown id="rdw-school-grade-select-school"
-                    [options]="availableSchools"
-                    formControlName="school"
-                    [filter]="true"
-                    filterBy="label"
-                    placeholder="{{'prompt.select' | translate}}"
-                    filterPlaceholder="{{'labels.school-grade.school-name.prompt' | translate}}">
-        </p-dropdown>
-      </div>
+      <school-select [availableSchools]="availableSchools" (schoolChanged)="schoolChanged($event)"></school-select>
     </div>
     <div class="flex-child">
       <label for="grade-select">{{'labels.grade' | translate}}</label>

@@ -12,6 +12,8 @@ import { RequestOptionsArgs } from "@angular/http";
 import { AssessmentsModule } from "../assessments/assessments.module";
 import { RouterModule } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
+import { SchoolSelectComponent } from "./school-select/school-select.component";
+import { TypeaheadModule } from "ngx-bootstrap";
 
 describe('SchoolGradeComponent', () => {
   let component: SchoolGradeComponent;
@@ -27,9 +29,10 @@ describe('SchoolGradeComponent', () => {
         AssessmentsModule,
         RouterModule.forRoot([]),
         DropdownModule,
+        TypeaheadModule,
         SharedModule
       ],
-      declarations: [ SchoolGradeComponent ],
+      declarations: [ SchoolGradeComponent, SchoolSelectComponent ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         SchoolService, {

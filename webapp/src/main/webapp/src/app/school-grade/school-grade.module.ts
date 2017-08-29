@@ -10,8 +10,10 @@ import { SchoolAssessmentResolve } from "./results/school-assessments.resolve";
 import { AssessmentsModule } from "../assessments/assessments.module";
 import { SchoolAssessmentService } from "./results/school-assessment.service";
 import { CurrentSchoolResolve } from "./results/current-school.resolve";
-import { Angulartics2Module } from 'angulartics2';
+import { Angulartics2Module } from "angulartics2";
 import { ReportModule } from "../report/report.module";
+import { SchoolSelectComponent } from "./school-select/school-select.component";
+import { TypeaheadModule } from "ngx-bootstrap";
 
 /**
  * This module contains a search component for finding assessments
@@ -20,7 +22,8 @@ import { ReportModule } from "../report/report.module";
 @NgModule({
   declarations: [
     SchoolGradeComponent,
-    SchoolResultsComponent
+    SchoolResultsComponent,
+    SchoolSelectComponent
   ],
   imports: [
     CommonModule,
@@ -31,6 +34,7 @@ import { ReportModule } from "../report/report.module";
     DropdownModule,
     SharedModule,
     ReportModule,
+    TypeaheadModule,
     Angulartics2Module.forChild()
   ],
   exports: [ SchoolGradeComponent, SchoolResultsComponent ],
