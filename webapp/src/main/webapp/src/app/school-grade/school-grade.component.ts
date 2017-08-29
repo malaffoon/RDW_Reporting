@@ -54,15 +54,7 @@ export class SchoolGradeComponent implements OnInit {
     }
   }
 
-  private get gradeControl() {
-    return this.searchForm.controls[ "grade" ];
-  }
-
-  private get schoolControl() {
-    return this.searchForm.controls[ "school" ];
-  }
-
-  private schoolChanged(school: School) {
+  schoolChanged(school: School) {
     this.schoolControl.setValue(school);
     this.availableGrades = [];
     this.gradesAreUnavailable = false;
@@ -72,6 +64,14 @@ export class SchoolGradeComponent implements OnInit {
     if (!isNullOrUndefined(school)) {
       this.loadAvailableGrades(school);
     }
+  }
+
+  private get gradeControl() {
+    return this.searchForm.controls[ "grade" ];
+  }
+
+  private get schoolControl() {
+    return this.searchForm.controls[ "school" ];
   }
 
   private loadAvailableGrades(school: School) {
