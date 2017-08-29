@@ -11,6 +11,11 @@ insert into grade (id, code, name) values
 insert into gender (id, code) values
   (-1, 'g1');
 
+insert into school_year (year) values
+  (2015),
+  (2016),
+  (2017);
+
 insert into student (id, ssid, last_or_surname, first_name, gender_id, gender_code, birthday, import_id, updated, migrate_id) values
   (-1, 'student1_ssid', 'student1_lastName', 'student1_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000', -1),
   (-2, 'student2_ssid', 'student2_lastName', 'student2_firstName', -1, 'g1', '2017-01-01 00:00:00.000000', -1, '2017-07-18 20:14:34.000000', -1);
