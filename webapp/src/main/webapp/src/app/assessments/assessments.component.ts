@@ -227,6 +227,13 @@ export class AssessmentsComponent implements OnInit {
     this.onExportItemsByPointsEarned.emit(exportRequest);
   }
 
+  openAndScrollToAdvancedFilters() {
+    this.showAdvancedFilters = true;
+    setTimeout(() => {
+      document.getElementById('results-adv-filters').scrollIntoView();
+    }, 0);
+  }
+
   private updateFilterOptions() {
     this.filterOptions.hasInterim = this.selectedAssessments.some(a => a.isInterim);
     this.filterOptions.hasSummative = this.selectedAssessments.some(a => a.isSummative);

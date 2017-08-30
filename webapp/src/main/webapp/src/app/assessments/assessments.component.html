@@ -114,6 +114,7 @@
     </button>
   </div>
 </h2>
+
 <!-- Results Container -->
 <div *ngFor="let assessment of assessmentExams; let i = index" class="groups-results-wrapper">
   <assessment-results [assessmentExam]="assessment"
@@ -124,7 +125,12 @@
                       [minimumItemDataYear]="minimumItemDataYear"
                       (onExportItemsByPointsEarned)="exportItemsByPointsEarned($event)"></assessment-results>
 </div>
+
 <!-- No Results Error -->
 <div class="alert alert-info" *ngIf="assessmentExams.length == 0">
   {{'messages.no-results-found' | translate}}
+</div>
+
+<div class="fab">
+  <button class="btn btn-primary btn-sm" (click)="openAndScrollToAdvancedFilters()"><i class="fa fa-filter"></i> {{'labels.groups.results.adv-filters.fab' | translate}}</button>
 </div>

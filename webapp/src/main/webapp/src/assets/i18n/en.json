@@ -234,7 +234,8 @@
             "limited-english-proficiency-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
             "ethnicity": "Race/Ethnicity",
             "ethnicity-info": "Student race and ethnicity"
-          }
+          },
+          "fab": "Filter Results"
         },
         "selected-assessments-title": "Selected Assessments",
         "selected-assessments-instruct": "Click an assessment to remove it from the list",
