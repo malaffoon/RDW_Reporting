@@ -58,6 +58,11 @@ const studentTestHistoryChildRoute = {
 
 export const routes: Routes = [
   {
+    path: 'home',
+    redirectTo: '',
+    pathMatch: 'full'
+  },
+  {
     path: '',
     resolve: { user: UserResolve, translateComplete: TranslateResolve },
     children: [
