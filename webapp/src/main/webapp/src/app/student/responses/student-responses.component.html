@@ -4,14 +4,12 @@
     <span>{{student.ssid}}</span>
   </div>
 </div>
-<div *ngIf="!student" class="alert alert-danger">
+<h3 class="blue mb-md">{{'labels.student.responses.title' | translate}}</h3>
+<div *ngIf="!student || !assessment" class="alert alert-danger">
   {{ 'labels.student.messages.null-student' | translate }}
 </div>
-
-<h3 class="blue mb-md">{{'labels.student.responses.title' | translate}}</h3>
-
-<div *ngIf="student" class="well">
-  <div *ngIf="assessment" class="mb-md">
+<div *ngIf="student && assessment" class="well">
+  <div class="mb-md">
     <span class="tag tag-md {{colorService.getColor(getGradeIndex(assessment.grade))}}">
       <span class="label">{{assessment.grade | gradeDisplay}}</span>
           <span>{{assessment.name}}</span>
