@@ -1,7 +1,7 @@
 sql:
   school_year:
     findAll: >-
-      select year from school_year order by year;
+      select year from school_year order by year desc;
 
   exam:
     findAllByStudentId: >-
