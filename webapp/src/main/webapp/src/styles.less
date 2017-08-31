@@ -22,6 +22,10 @@
 @import "@{library-path}/@sbac/sbac-ui-kit/src/less/sbac-ui-kit.less";
 @import "primeng-overrides.less";
 
+// Local varaibles
+@z-index-greater-than-tables: 2000;
+
+
 @media (max-width: @screen-md-max) {
   .container {
     width: 100%;
@@ -112,6 +116,13 @@ footer {
   max-width: 100%;
   margin-right: @grid-gutter-width / 2;
   margin-bottom: @line-height-computed / 2;
+}
+
+.fab {
+  position: fixed;
+  right: @grid-gutter-width / 2;
+  bottom: @line-height-computed / 2;
+  z-index: @z-index-greater-than-tables;
 }
 
 @media (max-width: @screen-xs-max) {
