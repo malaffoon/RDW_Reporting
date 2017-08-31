@@ -101,9 +101,8 @@ export class GroupsComponent implements OnInit, OnDestroy {
       this.groups = this.groups.filter(g => g.id != group.id);
     }));
     this._modalSubscriptions.push(this.modalService.onHidden.subscribe(() => {
-        this.unsubscribe();
-      }
-    ));
+      this.unsubscribe();
+    }));
   }
 
 }
