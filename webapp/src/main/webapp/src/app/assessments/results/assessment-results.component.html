@@ -192,17 +192,7 @@
                     content="{{'labels.groups.results.assessment.items.cols.claim-info-html' | translate}}"></span>
             </ng-template>
             <ng-template let-item="rowData" pTemplate="body">
-              <a href="javascript:void(0)"
-                 [popover]="'definition.claim.' + item.claim + '.description' | translate"
-                 popoverTitle="{{'definition.claim.' + item.claim + '.name' | translate}}"
-                 outsideClick="true">{{'definition.claim.' + item.claim + '.name' | translate}}</a>
-              /
-              <a href="javascript:void(0)" #me
-                 [popover]="targetPopover"
-                 popoverTitle="{{'labels.groups.results.assessment.items.target' | translate:item}}"
-                 outsideClick="true">{{'labels.groups.results.assessment.items.target' | translate:item}}</a>
-
-              <ng-template #targetPopover>{{getTargetDescription(item.targetId) | async}}</ng-template>
+              <claim-target [item]="item"></claim-target>
             </ng-template>
           </p-column>
           <p-column field="difficulty" [sortable]="true" sortField="difficultySortOrder">

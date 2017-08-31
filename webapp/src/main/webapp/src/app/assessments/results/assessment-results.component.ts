@@ -207,7 +207,6 @@ export class AssessmentResultsComponent implements OnInit {
               private reportService: ReportService,
               private notificationService: NotificationService,
               private actionBuilder: MenuActionBuilder,
-              private itemInfoService: ItemInfoService,
               private angulartics2: Angulartics2) {
   }
 
@@ -381,10 +380,6 @@ export class AssessmentResultsComponent implements OnInit {
         }
       )
       .build();
-  }
-
-  public getTargetDescription(targetId: number): Observable<string> {
-    return this.itemInfoService.getTargetDescription(targetId);
   }
 
 }

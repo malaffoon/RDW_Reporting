@@ -1,0 +1,11 @@
+<a href="javascript:void(0)"
+   [popover]="'definition.claim.' + item.claim + '.description' | translate"
+   popoverTitle="{{'definition.claim.' + item.claim + '.name' | translate}}"
+   outsideClick="true">{{'definition.claim.' + item.claim + '.name' | translate}}</a>
+/
+<a href="javascript:void(0)" #me
+   [popover]="targetPopover"
+   popoverTitle="{{'labels.groups.results.assessment.items.target' | translate:item}}"
+   outsideClick="true">{{'labels.groups.results.assessment.items.target' | translate:item}}</a>
+
+<ng-template #targetPopover>{{getTargetDescription() | async}}</ng-template>
