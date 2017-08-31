@@ -46,7 +46,7 @@
   <div class="well">
     <div class="gray-lightest pt-sm pr-sm pb-sm pl-sm my-groups-search-form-container">
       <label for="search" class="sr-only">{{'labels.groups.filter' | translate}}</label>
-      <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'labels.groups.filter' | translate}}" autocomplete="off" (ngModelChange)="filterGroups()">
+      <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text" placeholder="{{'labels.groups.filter' | translate}}" autocomplete="off" (ngModelChange)="onSearchChange()">
     </div>
     <div class="my-groups-list-container">
       <p-dataTable [value]="filteredGroups" emptyMessage="{{'labels.groups.no-results' | translate}}" sortField="name" tableStyleClass="table table-striped table-hover overflow">
@@ -65,7 +65,7 @@
         <p-column field="studentCount" header="{{'labels.groups.cols.student-count' | translate}}" [sortable]="true"></p-column>
         <p-column field="isDeleted">
           <ng-template let-group="rowData" pTemplate="body">
-            <a href="javascript:void(0)" (click)="openSetActiveModal(group)">
+            <a href="javascript:void(0)" (click)="openDeleteGroupModal(group)">
               <i class="fa fa-minus-square-o"></i> {{ 'labels.groups.cols.delete' | translate }}
             </a>
           </ng-template>
@@ -74,5 +74,3 @@
     </div>
   </div>
 </div>
-
-
