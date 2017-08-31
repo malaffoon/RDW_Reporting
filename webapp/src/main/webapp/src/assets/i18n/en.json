@@ -235,7 +235,7 @@
             "ethnicity": "Race/Ethnicity",
             "ethnicity-info": "Student race and ethnicity"
           },
-          "fab": "Filter Results"
+          "floating-action-button": "Filter Results"
         },
         "selected-assessments-title": "Selected Assessments",
         "selected-assessments-instruct": "Click an assessment to remove it from the list",
