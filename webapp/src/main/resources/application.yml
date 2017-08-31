@@ -80,7 +80,7 @@ app:
 
   datamart:
     datasource:
-      url: jdbc:mysql://localhost:3306/reporting?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
+      url: jdbc:mysql://localhost:3306/reporting?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&useCompression=true
       username: root
       password:
       testWhileIdle: true
