@@ -147,7 +147,7 @@ export class CsvBuilder {
       this.translateService.instant('labels.student.results.cols.enrolled-grade'),
       (item) => {
         let gradeCode: string = getExam(item).enrolledGrade;
-        return this.translateService.instant(`labels.grades.${gradeCode}.short-name`)
+        return this.translateService.instant(`labels.grades.${gradeCode}.enrolled-name`)
       }
     )
   }
