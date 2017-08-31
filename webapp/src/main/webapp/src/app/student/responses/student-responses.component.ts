@@ -30,7 +30,10 @@ export class StudentResponsesComponent implements OnInit {
 
   ngOnInit(): void {
     let routeItems: AssessmentItem[] = this.route.snapshot.data[ "assessmentItems" ];
-    this.assessmentItems = routeItems.map(item => this.mapAssessmentItem(item));
+    if(routeItems) {
+      this.assessmentItems = routeItems.map(item => this.mapAssessmentItem(item));
+    }
+
     this.exam = this.route.snapshot.data[ "exam" ];
     this.assessment = this.route.snapshot.data[ "assessment" ];
     this.student = this.route.snapshot.data[ "student" ];
