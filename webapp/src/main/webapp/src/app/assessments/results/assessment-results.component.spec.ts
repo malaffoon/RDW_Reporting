@@ -38,6 +38,7 @@ import { ItemInfoService } from "../items/item-info/item-info.service";
 import { UserService } from "../../user/user.service";
 import { UserMapper } from "../../user/user.mapper";
 import { CachingDataService } from "../../shared/cachingData.service";
+import { ClaimTargetComponent } from "./claim-target.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -77,7 +78,8 @@ describe('AssessmentResultsComponent', () => {
         RemoveCommaPipe,
         ScaleScoreComponent,
         AverageScaleScoreComponent,
-        TestComponentWrapper
+        TestComponentWrapper,
+        ClaimTargetComponent
       ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
