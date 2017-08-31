@@ -30,6 +30,7 @@ import { StudentScoreService } from "./items/item-scores/student-score.service";
 import { ItemInfoComponent } from "./items/item-info/item-info.component";
 import { ItemInfoService } from "./items/item-info/item-info.service";
 import { PopoverModule } from "ngx-bootstrap";
+import { ClaimTargetComponent } from "./results/claim-target.component";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { PopoverModule } from "ngx-bootstrap";
     SelectAssessmentsComponent,
     ItemExemplarComponent,
     ItemScoresComponent,
-    ItemInfoComponent
+    ItemInfoComponent,
+    ClaimTargetComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +68,8 @@ import { PopoverModule } from "ngx-bootstrap";
     InformationLabelComponent,
     ItemTabComponent,
     PopupMenuComponent,
-    ScaleScoreComponent
+    ScaleScoreComponent,
+    ClaimTargetComponent
   ],
   providers: [
     AssessmentExamMapper,
