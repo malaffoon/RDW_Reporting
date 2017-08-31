@@ -1,6 +1,6 @@
 import { OnInit, Component, Input, EventEmitter, Output } from "@angular/core";
 import { StudentResultsFilterState } from "./model/student-results-filter-state.model";
-import { Angulartics2 } from 'angulartics2';
+import { Angulartics2 } from "angulartics2";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
 
 @Component({
@@ -22,6 +22,11 @@ export class StudentResultsFilterComponent implements OnInit {
     expanded: true
   };
 
+  private _showAdvancedFilters: boolean;
+
+  constructor(private angulartics2: Angulartics2) {
+  }
+
   set showAdvancedFilters(value: boolean) {
     this._showAdvancedFilters = value;
     this.filterDisplayOptions.expanded = value;
@@ -29,11 +34,6 @@ export class StudentResultsFilterComponent implements OnInit {
 
   get showAdvancedFilters(): boolean {
     return this._showAdvancedFilters;
-  }
-
-  private _showAdvancedFilters: boolean;
-
-  constructor(private angulartics2: Angulartics2) {
   }
 
   ngOnInit(): void {
@@ -59,9 +59,16 @@ export class StudentResultsFilterComponent implements OnInit {
   public removeFilter(property: string) {
     if (property == 'offGradeAssessment') {
       this.filterState.filterBy[ property ] = false;
-    }
-    else {
+    } else {
       this.filterState.filterBy[ property ] = -1;
     }
   }
+
+  openAndScrollToAdvancedFilters() {
+    this.showAdvancedFilters = true;
+    setTimeout(() => {
+      document.getElementById('results-adv-filters').scrollIntoView();
+    }, 0);
+  }
+
 }

@@ -334,7 +334,7 @@ sql:
         where e.school_year=:school_year
         and e.school_id=:school_id
         and a.grade_id=:grade_id
-        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+        and (1=:statewide or s.district_id in (:district_ids) or s.id in (:school_ids))
         order by e.completed_at desc
         limit 1
 
