@@ -119,7 +119,7 @@ describe('GroupsComponent', () => {
     });
 
     component.searchTerm = "test";
-    component.filterGroups();
+    component.updateFilteredGroups();
     expect(component.filteredGroups.length).toBe(3);
   });
 });
