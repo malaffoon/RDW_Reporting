@@ -15,7 +15,7 @@
       <button type="button" class="btn btn-default" (click)="cancel()">
         {{ (unableToDelete? 'prompt.close' : 'labels.groups.delete.button-cancel') | translate }}
       </button>
-      <button type="button" *ngIf="!unableToDelete" class="btn btn-danger" (click)="save()">
+      <button type="button" *ngIf="!unableToDelete" class="btn btn-danger" (click)="delete()">
         {{ 'labels.groups.delete.button-save' | translate }}
       </button>
     </span>
