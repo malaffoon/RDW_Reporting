@@ -31,6 +31,11 @@ server:
     max-threads: 20
 
 spring:
+  resources:
+    chain:
+      enabled: true
+      gzipped: true
+
   session:
     store-type: none
 
