@@ -24,7 +24,6 @@
 
 // Local varaibles
 @zindex-fab: 1065;
-@zindex-loader: 2000;
 
 @media (max-width: @screen-md-max) {
   .container {
@@ -132,7 +131,7 @@ footer {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1050;
+  z-index: @zindex-modal;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   outline: 0;
@@ -146,12 +145,13 @@ footer {
 .delayed-fade {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.15s linear, visibility 0.15s linear;
+  transition: opacity 0s linear, visibility 0s linear;
 }
 
 .delayed-fade-in {
   opacity: 1;
   visibility: visible;
+  transition: opacity 0.15s linear, visibility 0.15s linear;
   transition-delay: 2s;
 }
 
