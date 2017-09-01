@@ -6,6 +6,7 @@ import { Router, NavigationEnd } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { NotificationService } from "./shared/notification/notification.service";
 import { isNullOrUndefined } from "util";
+import { User } from "./user/model/user.model";
 
 @Component({
   selector: 'app-component',
@@ -14,7 +15,7 @@ import { isNullOrUndefined } from "util";
 export class AppComponent {
 
   private _lastPoppedUrl: string;
-  private _user;
+  private _user: User;
 
   get user() {
     return this._user;
