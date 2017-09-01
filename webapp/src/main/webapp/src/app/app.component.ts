@@ -5,7 +5,6 @@ import { UserService } from "./user/user.service";
 import { Router, NavigationEnd } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { NotificationService } from "./shared/notification/notification.service";
-import { environment } from "../environments/environment";
 import { isNullOrUndefined } from "util";
 
 @Component({
@@ -19,6 +18,7 @@ export class AppComponent {
   private _lastPoppedUrl: string;
   private _user;
 
+
   get user() {
     return this._user;
   }
@@ -26,8 +26,10 @@ export class AppComponent {
   /*
    Even though the angulartics2GoogleAnalytics variable is not explicitly used, without it analytics data is not sent to the service
    */
-  constructor(public translate: TranslateService, private _userService: UserService,
-              private router: Router, private location: Location,
+  constructor(public translate: TranslateService,
+              private userService: UserService,
+              private router: Router,
+              private location: Location,
               private notifService: NotificationService,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
 
@@ -41,8 +43,8 @@ export class AppComponent {
 
   ngOnInit() {
 
-    this._userService.getCurrentUser().subscribe(user => {
-      if(!isNullOrUndefined(user)) {
+    this.userService.getCurrentUser().subscribe(user => {
+      if (!isNullOrUndefined(user)) {
         this._user = {
           firstName: user.firstName,
           lastName: user.lastName
@@ -54,7 +56,7 @@ export class AppComponent {
           window[ 'ga' ]('create', user.configuration.analyticsTrackingId, 'auto');
         }
       } else {
-        this.router.navigate(["error"]);
+        this.router.navigate([ "error" ]);
       }
     });
 
@@ -84,6 +86,6 @@ export class AppComponent {
   }
 
   showInterpretiveGuideComingSoon() {
-    this.notifService.info({id: 'messages.interpretive-guide-coming-soon', args: { }, dismissOnTimeout: 5000 });
+    this.notifService.info({ id: 'messages.interpretive-guide-coming-soon', args: {}, dismissOnTimeout: 5000 });
   }
 }

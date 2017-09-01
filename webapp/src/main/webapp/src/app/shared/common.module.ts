@@ -27,6 +27,7 @@ import { StorageService } from "./storage.service";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { SBErrorHandler } from "./sb-error-handler.service";
 import { ScaleScoreService } from "./scale-score.service";
+import { LoaderComponent } from "./loader/loader.component";
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ScaleScoreService } from "./scale-score.service";
     SchoolYearPipe,
     SearchPipe,
     SessionExpiredComponent,
-    SubjectPipe
+    SubjectPipe,
+    LoaderComponent
   ],
   imports: [
     AlertModule,
@@ -68,7 +70,8 @@ import { ScaleScoreService } from "./scale-score.service";
     SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
-    TranslateModule
+    TranslateModule,
+    LoaderComponent
   ],
   providers: [
     AuthenticationService,

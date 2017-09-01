@@ -23,8 +23,8 @@
 @import "primeng-overrides.less";
 
 // Local varaibles
-@z-index-greater-than-tables: 2000;
-
+@zindex-fab: 1065;
+@zindex-loader: 2000;
 
 @media (max-width: @screen-md-max) {
   .container {
@@ -122,14 +122,49 @@ footer {
   position: fixed;
   right: @grid-gutter-width / 2;
   bottom: @line-height-computed / 2;
-  z-index: @z-index-greater-than-tables;
+  z-index: @zindex-fab;
+}
+
+.loader-modal {
+  //.modal without display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  opacity: @modal-backdrop-opacity;
+  background-color: @modal-backdrop-bg;
+  > .loader {
+    color: #fff;
+  }
+}
+
+.delayed-fade {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s linear, visibility 0.15s linear;
+}
+
+.delayed-fade-in {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 2s;
 }
 
 @media (max-width: @screen-xs-max) {
   // undoing the .pull-right classes
-  .float-none-xs { float: none !important; }
+  .float-none-xs {
+    float: none !important;
+  }
+
   #group-results-basic-filters .form-group .col-md-2.pull-right,
   #group-results-selected-assessments .col-md-6 .pull-right {
     .float-none-xs;
   }
 }
+
+
