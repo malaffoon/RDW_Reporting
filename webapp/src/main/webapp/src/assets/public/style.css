@@ -606,7 +606,8 @@ body.login #content {
   background-image: url("/assets/public/homepage_bg.png");
   background-repeat: no-repeat;
   background-position: center;
-  border-top: solid 1px #d4d4d4
+  border-top: solid 1px #d4d4d4;
+  background-size: cover;
 }
 
 body.login #content .intro {
