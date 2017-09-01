@@ -358,7 +358,7 @@
         "summative": "Print {{firstName}}'s Summative Report"
       },
       "resources": "Instructional Resources",
-      "resources-disabled-message": "No Instructional Resources are available for this assessment.",
+      "resources-disabled-message": "Instructional resources are not yet available for this assessment.",
       "print-report": "Print Report"
     },
     "more-info": "More Information",
