@@ -78,9 +78,9 @@ task testFe(type: NpmTask) {
     args = ['run', 'test-ci']
 }
 
-task gzipAllJs(dependsOn: buildFe) {
+task gzipBundles(dependsOn: buildFe) {
     doLast {
-        FileTree tree = fileTree(dir: "${project.projectDir}/src/main/resources/static/", include: "**/*.bundle.js")
+        FileTree tree = fileTree(dir: "${project.projectDir}/src/main/resources/static/", includes: ["**/*.bundle.js", "**/*.bundle.css"])
         tree.each { File file ->
             String fileName = file.getName()
             println "$fileName => ${fileName}.gz"
@@ -92,4 +92,4 @@ task gzipAllJs(dependsOn: buildFe) {
 // The processResources task takes care of gathering all of the resources in the project to the target directory.
 // In order to get the front end resources in to the final jar, the front end needs to be built
 // before all of the other resources are processed in order to get the static resouces in the right place
-processResources.dependsOn gzipAllJs
+processResources.dependsOn gzipBundles
