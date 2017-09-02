@@ -1,7 +1,7 @@
 include ':common'
 include ':webapp'
 
-rootProject.name = "rdw-reporting"
+rootProject.name = "rdw-admin"
 
 rootProject.children.each {
     it.name = rootProject.name + "-" + it.name

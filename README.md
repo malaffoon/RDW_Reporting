@@ -1,4 +1,4 @@
-## RDW_Reporting
+## RDW_Admin
 
 ### Prerequisites
 ```bash
@@ -90,7 +90,7 @@ git checkout develop
 Then to use those new changes, you can specify the SNAPSHOT version of RDW_Common
 ```bash
 //In RDW_Reporting
-./gradlew build it -Pcommon=0.0.1-SNAPSHOT
+./gradlew build it -Pcommon=1.0.0-SNAPSHOT
 ```
 
 Now you should be able to build and test the reporting app from where you cloned this project:
@@ -108,8 +108,8 @@ You must explicitly build the docker images:
 $ gradle buildImage
 $ docker images
 REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
-fwsbac/rdw-reporting-service            latest              da5207b421c0        30 seconds ago      150 MB
-fwsbac/configuration-service            latest              1b41406534c7        2 weeks ago         221 MB
+smarterbalanced/rdw-reporting-service            latest              da5207b421c0        30 seconds ago      150 MB
+smarterbalanced/configuration-service            latest              1b41406534c7        2 weeks ago         221 MB
 java                                    8-jre-alpine        d85b17c6762e        6 weeks ago         108 MB
 ```
 
@@ -117,7 +117,7 @@ After cycling through some builds you will end up with a number of dangling imag
 ```bash
 $ docker images
 REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
-fwsbac/rdw-reporting-service        latest              da5207b421c0        30 seconds ago      150 MB
+smarterbalanced/rdw-reporting-service        latest              da5207b421c0        30 seconds ago      150 MB
 <none>                              <none>              13b96a973d59        About an hour ago   140 MB
 <none>                              <none>              cb5063cbcc56        2 hours ago         140 MB
 <none>                              <none>              2236259b73f0        3 hours ago         140 MB
@@ -127,7 +127,7 @@ These can be quickly cleaned up:
 $ docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 $ docker images
 REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
-fwsbac/rdw-reporting-service        latest              da5207b421c0        30 seconds ago      150 MB
+smarterbalanced/rdw-reporting-service        latest              da5207b421c0        30 seconds ago      150 MB
 ```
 
 ### Running
@@ -135,8 +135,8 @@ Running the application locally depends on the local database being configured p
 ```bash
 To completely clean out any existing data you might have and start fresh:
 ./gradlew cleanallprod migrateallprod
-or, if you want to use a different version of the schema, say version 0.0.1-68 of RDW_Schema
-./gradlew -Pschema=0.0.1-68 cleannallprod migrateallprod
+or, if you want to use a different version of the schema, say version 1.0.0-68 of RDW_Schema
+./gradlew -Pschema=1.0.0-68 cleannallprod migrateallprod
 or, SNAPSHOT version of RDW_Schema if you are doing simultaneous development with RDW_Schema
 ./gradlew -Pschema=SNAPSHOT cleanallprod migriateallprod
 ```

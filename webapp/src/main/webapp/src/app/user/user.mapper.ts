@@ -6,29 +6,25 @@ import { Configuration } from "./model/configuration.model";
 @Injectable()
 export class UserMapper {
 
-  mapFromApi(apiModel: any): User {
-    let uiModel = new User();
-
-    uiModel.firstName = apiModel.firstName;
-    uiModel.lastName = apiModel.lastName;
-
-    apiModel.permissions.forEach(permission => {
-      uiModel.permissions.push(permission);
+  mapFromApi(remote: any): User {
+    let local = new User();
+    local.firstName = remote.firstName;
+    local.lastName = remote.lastName;
+    remote.permissions.forEach(permission => {
+      local.permissions.push(permission);
     });
-
-    uiModel.configuration = this.mapConfigurationFromApi(apiModel.settings);
-
-    return uiModel;
+    local.configuration = this.mapConfigurationFromApi(remote.settings);
+    return local;
   }
 
-  private mapConfigurationFromApi(apiModel: any): Configuration {
-    let uiModel = new Configuration();
+  private mapConfigurationFromApi(remote: any): Configuration {
+    let local = new Configuration();
+    if (isNullOrUndefined(remote))
+      return local;
 
-    if(isNullOrUndefined(apiModel))
-      return uiModel;
-
-    uiModel.analyticsTrackingId = apiModel.analyticsTrackingId;
-
-    return uiModel;
+    local.analyticsTrackingId = remote.analyticsTrackingId;
+    local.homeUrl = remote.homeUrl;
+    return local;
   }
+
 }

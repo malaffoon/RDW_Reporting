@@ -1,15 +1,29 @@
-import {Pipe, PipeTransform} from "@angular/core";
+import { Pipe, PipeTransform } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
+const MATH = "MATH";
+const ELA = "ELA";
 
 @Pipe({name: 'subject'})
 export class SubjectPipe implements PipeTransform {
-  private subjects = ["MATH, ELA", "MATH", "ELA"];
+  private math: string;
+  private ela: string;
+  private all: string;
 
-  transform(value: number): string {
-    let result = "";
+  constructor(private translate: TranslateService){
+    this.math = translate.instant("enum.subject.MATH");
+    this.ela = translate.instant("enum.subject.ELA");
+    this.all = `${this.math}, ${this.ela}`
+  }
 
-    if(value >= 0 && value < this.subjects.length)
-      return this.subjects[value];
+  transform(value: string): string {
+    if(value == MATH) {
+      return this.math;
+    }
+    else if(value == ELA) {
+      return this.ela;
+    }
 
-    return result;
+    return this.all;
   }
 }

@@ -6,22 +6,40 @@ management:
 
 saml:
   # SAML keystore path: file:/some/path/saml.jks
-  key-store-file: ${rdw.reporting.keystore.path}
-  key-store-password: ${rdw.reporting.keystore.password}
-  private-key-entry-alias: ${rdw.reporting.keystore.alias}
-  private-key-entry-password: ${rdw.reporting.keystore.entry.password}
-  idp-metadata-url: ${rdw.reporting.idp}
-  sp-entity-id: ${rdw.reporting.entityId}
+  key-store-file: ${rdw.admin.keystore.path}
+  key-store-password: ${rdw.admin.keystore.password}
+  private-key-entry-alias: ${rdw.admin.keystore.alias}
+  private-key-entry-password: ${rdw.admin.keystore.entry.password}
+  idp-metadata-url: ${rdw.admin.idp}
+  sp-entity-id: ${rdw.admin.entityId}
+  # SAML settings when hosting behind a load balancer or reverse proxy
+  load-balance:
+    enabled: false
+    scheme: https
+    hostname:
+    context-path: /
+    port: 8080
+    include-server-port: false
+
+server:
+  # straw-man values for restricting resource utilization
+  tomcat:
+    max-connections: 100
+    max-threads: 20
 
 spring:
   datasource:
-    url: jdbc:mysql://rdw-aurora-dev.cugsexobhx8t.us-west-2.rds.amazonaws.com:3306/reporting?useSSL=false&useLegacyDatetimeCode=false
-    username: sbac
-    password: cabscabs
+    url: jdbc:mysql://localhost:3306/warehouse?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
+    username: root
+    password:
     driverClassName: com.mysql.jdbc.Driver
     testWhileIdle: true
     validationQuery: SELECT 1
     initialize: false
+  http:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
 
   jackson:
     default-property-inclusion: non_null
@@ -30,35 +48,38 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: permissionsByRole, internalTranslationsByCode
+    cache-names: permissionsByRole
 
+    # Force the (rabbit) queues to be created when posting messages so, even if
+    # there are no consumers running, the messages will not get lost. Routing is
+    # dynamic based on content but there is no way to do that here so we must
+    # explicitly declare all possible output channels here (EXAM, PACKAGE, etc.).
+    # The group names must be coordinated with the consumer application configs.
   cloud:
     stream:
       bindings:
         output:
-          destination: exam_report_pdf
+          destination: GROUPS
           group: default
 
+# spring auto-configured aws defense
 cloud:
   aws:
-    credentials:
-      #AWS credentials are necessary if reading assessment files from S3
-      accessKey: ${rdw.aws.access.key:}
-      secretKey: ${rdw.aws.secret.key:}
-      instance-profile: false
+    # there must be a default region when running locally
     region:
       auto: false
       static: us-west-2
     # disable CloudFormation stuff
     stack:
       auto: false
+    credentials:
+      instance-profile: false
 
-artifacts:
-  #Root location of assessment files [s3://some-bucket/ | classpath: | etc]
-  root: ${rdw.resource.root:"classpath:"}
-  exam-item:
-    directory: ${rdw.reporting.artifacts.exam.item.directory:local/items/Item-{0}/}
-    file-name: item-{0}.xml
+# Needed for access to S3
+
+# Location of import archive.
+archive:
+  root: file:///tmp/
 
 application:
   state: CA
@@ -68,9 +89,8 @@ permissionservice:
   endpoint: ${rdw.permission.service}
 
 app:
-  iris:
-    vendorId: ${rdw.reporting.iris.vendorId}
-    url: ${rdw.reporting.iris.url}
+  home-url: /
+
   # google analytics configuration
   analytics:
-    trackingId: ${rdw.reporting.analytics.trackingId:}
+    trackingId: ${rdw.admin.analytics.trackingId:}

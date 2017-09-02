@@ -3,6 +3,9 @@ build/
 !.mvn/wrapper/maven-wrapper.jar
 src/main/resources/static/*.bundle.*
 
+webapp/out
+common/out
+
 ### STS ###
 .apt_generated
 .classpath

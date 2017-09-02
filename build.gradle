@@ -12,7 +12,7 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath("com.bmuschko:gradle-docker-plugin:3.0.7")
+        classpath("com.bmuschko:gradle-docker-plugin:3.0.11")
         classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
@@ -32,12 +32,13 @@ apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=0.0.1-SNAPSHOT`
 
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "0.0.1-21"
-String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "0.0.1-95"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.0.0-41"
+String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.0.0-189"
+String dockerPrefix = "smarterbalanced"
 
 allprojects {
     group = 'org.opentestsystem.rdw.reporting'
-    version = '0.0.1-SNAPSHOT'
+    version = '1.0.0-SNAPSHOT'
 
     apply plugin: 'idea'
     apply plugin: 'propdeps'
@@ -118,11 +119,11 @@ subprojects {
     }
 
     /***************************************************************
-     * Docker setup for all subprojects except rdw-reporting-common,
+     * Docker setup for all subprojects except rdw-admin-common,
      *  which doesn't have a docker image
      ***************************************************************/
 
-    if (it.name != "rdw-reporting-common") {
+    if (it.name != "rdw-admin-common") {
         apply plugin: 'com.bmuschko.docker-remote-api'
 
         // trigger creation of build-info.properties
@@ -145,14 +146,21 @@ subprojects {
             label([maintainer: 'Fairway Technologies'])
             copyFile("${jar.archivePath.name}", "${jar.archivePath.name}")
             exposePort(8008, 8080)
-            entryPoint("java", "-jar", "${jar.archivePath.name}")
+            ext.java_opts = []
+            entryPoint {
+                List<String> entryPointArgs = ["java"]
+                entryPointArgs.addAll(ext.java_opts)
+                entryPointArgs.add("-jar")
+                entryPointArgs.add("${jar.archivePath.name}")
+                entryPointArgs.toArray()
+            }
         }
 
         // task to build the docker image
         task buildImage(type: DockerBuildImage, dependsOn: [build, createDockerfile]) {
             dockerFile = createDockerfile.destFile
             inputDir = project.file('build/docker/')
-            tag = "fwsbac/${project.name}"
+            tag = "${dockerPrefix}/${project.name}" + (project.hasProperty("release") ? ":${project.version}" : "")
             doFirst {
                 copy {
                     from jar
@@ -163,7 +171,7 @@ subprojects {
 
         // to use this, you must use valid docker credentials, which can be set in the gradle.properties file
         task dockerPushImage(type: DockerPushImage, dependsOn: buildImage) {
-            imageName = "fwsbac/${project.name}"
+            imageName = "${dockerPrefix}/${project.name}"
         }
     }
 
@@ -179,7 +187,7 @@ subprojects {
     }
 
     //The omission of the ':' in manualIT is on purpose - we need the relative path to manualIT
-    task IT(type: Test, dependsOn:[":cleanReportingTest", ":migrateReportingTest"]) {
+    task IT(type: Test, dependsOn:[":cleanWarehouseTest", ":migrateWarehouseTest"]) {
         outputs.upToDateWhen { false }
         doLast {
             println "Running Integration Tests..."
@@ -241,10 +249,10 @@ task extractSchema(type: Sync) {
  *********************************************************************/
 
 //These are the tasks available in the Schema dependency that we would want to use in this project
-def taskMap = ["migrateReporting": "Migrates the schemas that are required for running locally",
-               "cleanReporting": "Cleans the schemas that are required for running locally",
-               "migrateReporting_test": "Migrates the schemas that integration tests depend on",
-               "cleanReporting_test": "Cleans the schemas that integration tests depend on"]
+def taskMap = ["migrateWarehouse": "Migrates the schemas that are required for running locally",
+               "cleanWarehouse": "Cleans the schemas that are required for running locally",
+               "migrateWarehouse_test": "Migrates the schemas that integration tests depend on",
+               "cleanWarehouse_test": "Cleans the schemas that integration tests depend on"]
 
 taskMap.keySet().each { key ->
     task(key.contains("_test")?"${key.take(key.lastIndexOf('_test'))}Test":"${key}Prod", type: GradleBuild, dependsOn: extractSchema) {
