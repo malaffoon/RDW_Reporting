@@ -24,9 +24,9 @@ export class ClaimTargetComponent {
   loadTargetDescription(): void {
     if (isNullOrUndefined(this.target)) {
       this.service.getTargetDescription(this.item.targetId)
-        .subscribe((target) => {
+        .subscribe(target => {
           this.target = target;
-        }, console.error.bind(this));
+        });
     }
   }
 
