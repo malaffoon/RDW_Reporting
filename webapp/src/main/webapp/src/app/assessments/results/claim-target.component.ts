@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { Observable } from "rxjs";
 import { ItemInfoService } from "../items/item-info/item-info.service";
 import { AssessmentItem } from "../model/assessment-item.model";
+import { isNullOrUndefined } from "util";
 
 /**
  * This component is responsible for displaying a label with
@@ -14,13 +14,20 @@ import { AssessmentItem } from "../model/assessment-item.model";
 export class ClaimTargetComponent {
 
   @Input()
-  public item: AssessmentItem;
+  item: AssessmentItem;
+
+  target: string;
 
   constructor(private service: ItemInfoService) {
   }
 
-  public getTargetDescription(): Observable<string> {
-    return this.service.getTargetDescription(this.item.targetId);
+  loadTargetDescription(): void {
+    if (isNullOrUndefined(this.target)) {
+      this.service.getTargetDescription(this.item.targetId)
+        .subscribe((target) => {
+          this.target = target;
+        }, console.error.bind(this));
+    }
   }
 
 }

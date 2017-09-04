@@ -3,9 +3,12 @@
    popoverTitle="{{'definition.claim.' + item.claim + '.name' | translate}}"
    outsideClick="true">{{'definition.claim.' + item.claim + '.name' | translate}}</a>
 /
-<a href="javascript:void(0)" #me
+<a href="javascript:void(0)"
+   (click)="loadTargetDescription()"
    [popover]="targetPopover"
    popoverTitle="{{'labels.groups.results.assessment.items.target' | translate:item}}"
    outsideClick="true">{{'labels.groups.results.assessment.items.target' | translate:item}}</a>
 
-<ng-template #targetPopover>{{getTargetDescription() | async}}</ng-template>
+<ng-template #targetPopover>
+  <span *ngIf="target">{{target}}</span>
+</ng-template>
