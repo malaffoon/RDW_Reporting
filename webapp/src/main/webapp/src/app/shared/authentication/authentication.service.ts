@@ -18,8 +18,21 @@ export class AuthenticationService {
    * On authentication failure, navigate the user to the session-timeout route.
    */
   handleAuthenticationFailure(): void {
-    this.storageService.getStorage(StorageType.Session)
-      .setItem(this.locationKey,  window.location.href);
+    let urlToStore = window.location.href;
+
+    // If the url was the root, navigate to home instead so the user doesn't get the
+    // landing page.
+    if(window.location.pathname === "/") {
+      urlToStore += "home";
+    }
+
+    // Prevent looping of session-expired page.
+    if(urlToStore.indexOf("session-expired") === -1) {
+      this.storageService
+        .getStorage(StorageType.Session)
+        .setItem(this.locationKey, urlToStore);
+    }
+
     this.router.navigate(["session-expired"]);
   }
 
