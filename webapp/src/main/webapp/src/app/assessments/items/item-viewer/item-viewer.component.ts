@@ -32,6 +32,9 @@ export class ItemViewerComponent implements OnInit {
   @Input()
   public position: number;
 
+  @Input()
+  public showResponse: boolean = true;
+
   public irisIsLoading: boolean = true;
   public rubricModel: ItemScoringGuide;
 
@@ -120,7 +123,7 @@ export class ItemViewerComponent implements OnInit {
       position: 1
     };
 
-    if (response && response.length > 0) {
+    if (this.showResponse && response && response.length > 0) {
       payload.response = response;
     }
 

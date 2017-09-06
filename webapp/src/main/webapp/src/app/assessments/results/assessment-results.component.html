@@ -231,6 +231,7 @@
           </p-column>
           <ng-template let-item pTemplate="rowexpansion">
             <item-tab [item]="item"
+                      [showResponse]="false"
                       [exams]="assessmentExam.exams"
                       [showItemDetails]="assessmentExam.assessment.isInterim"
             ></item-tab>

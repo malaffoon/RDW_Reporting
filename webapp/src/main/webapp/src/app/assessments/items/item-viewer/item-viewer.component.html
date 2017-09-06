@@ -12,6 +12,11 @@
       {{ 'labels.assessments.items.tabs.item-viewer-see-rubric' | translate }}
     </div>
   </div>
-  <p>{{ 'labels.assessments.items.tabs.item-viewer-intro-text' | translate }}</p>
+  <p>
+    {{ 'labels.assessments.items.tabs.item-viewer-intro-text' | translate }}
+    <span *ngIf="!showResponse">
+      {{ 'labels.assessments.items.tabs.item-viewer-response-not-included' | translate }}
+    </span>
+  </p>
   <iframe class="center" #irisframe src="/iris" width="950" height="500" frameborder="0" ></iframe>
 </div>

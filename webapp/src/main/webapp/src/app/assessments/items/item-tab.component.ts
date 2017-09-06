@@ -23,6 +23,12 @@ export class ItemTabComponent implements OnInit {
   exams: Exam[];
 
   /**
+   * Shows the response if true in the item-viewer tab
+   */
+  @Input()
+  showResponse: boolean = true;
+
+  /**
    * Should show item details such as the Item Viewer, Exemplar, and Item Info.
    * Typically this should be false if the assessment type is Summative.
    */
