@@ -5,12 +5,22 @@ import { AuthenticationService } from "./authentication.service";
 import { StorageService, SBStorage, StorageType } from "../storage.service";
 import { TestModule } from "../../../test/test.module";
 import { Router } from "@angular/router";
+import { WindowRefService } from "../window-ref.service";
+
+let mockWindow = {
+  location: {
+    href: "https://awsqa/groups",
+    pathname: "/groups"
+  }
+};
 
 describe('AuthenticationService', () => {
   let storageService: MockStorageService;
 
+
   beforeEach(() => {
     storageService = new MockStorageService();
+
 
     TestBed.configureTestingModule({
       imports: [ TestModule ],
@@ -18,6 +28,9 @@ describe('AuthenticationService', () => {
         AuthenticationService, {
           provide: StorageService,
           useValue: storageService
+        } , {
+          provide: WindowRefService,
+          useClass: MockWindowsRefService
         }
       ]
     });
@@ -37,12 +50,42 @@ describe('AuthenticationService', () => {
     expect(storageService.getStorage).toHaveBeenCalledWith(StorageType.Session);
 
     let location = service.getReauthenticationLocation();
-    expect(location).not.toBeNull();
-    expect(location.length).toBeGreaterThan(0);
+    expect(location).toBe("https://awsqa/groups");
     expect(router.navigate).toHaveBeenCalledWith(["session-expired"]);
   }));
 
+  it('should never record the browser location of session-expired',
+    inject([ AuthenticationService, Router ], (service: AuthenticationService, router: Router) => {
+
+    mockWindow.location.pathname = "/session-expired";
+    mockWindow.location.href = "http://awsqa/session-expired";
+    service.handleAuthenticationFailure();
+
+    let location = service.getReauthenticationLocation();
+    expect(location).toBeUndefined();
+    expect(router.navigate).toHaveBeenCalledWith(["session-expired"]);
+  }));
+
+  it('should store / as /home to avoid hitting the landing page',
+    inject([ AuthenticationService, Router ], (service: AuthenticationService, router: Router) => {
+
+    mockWindow.location.pathname = "/";
+    mockWindow.location.href = "http://awsqa/";
+    service.handleAuthenticationFailure();
+
+    expect(storageService.getStorage).toHaveBeenCalledWith(StorageType.Session);
+
+    let location = service.getReauthenticationLocation();
+    expect(location).toBe("http://awsqa/home");
+    expect(router.navigate).toHaveBeenCalledWith(["session-expired"]);
+  }));
 });
+
+class MockWindowsRefService {
+  get nativeWindow() {
+    return mockWindow;
+  }
+}
 
 class MockStorageService {
   getStorage: Spy = createSpy("getStorage");
@@ -68,5 +111,4 @@ class InMemoryStorage implements SBStorage {
   setItem(key: string, data: string): void {
     this.repo[key] = data;
   }
-
 }
