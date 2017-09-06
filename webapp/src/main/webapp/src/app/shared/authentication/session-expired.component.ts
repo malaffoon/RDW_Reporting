@@ -18,8 +18,9 @@ export class SessionExpiredComponent {
   onOk(): void {
     let location = this.authenticationService.getReauthenticationLocation();
     if (!location) {
-      location = this.location.prepareExternalUrl("");
+      location = this.location.prepareExternalUrl("/home");
     }
+
     window.location.href = location;
   }
 }

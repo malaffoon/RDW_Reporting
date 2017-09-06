@@ -28,6 +28,7 @@ import { DatePipe, DecimalPipe } from "@angular/common";
 import { SBErrorHandler } from "./sb-error-handler.service";
 import { ScaleScoreService } from "./scale-score.service";
 import { LoaderComponent } from "./loader/loader.component";
+import { WindowRefService } from "./window-ref.service";
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { LoaderComponent } from "./loader/loader.component";
     ScaleScoreService,
     NotificationService,
     RdwTranslateLoader,
-    StorageService, {
+    StorageService,
+    WindowRefService, {
       provide: ErrorHandler,
       useClass: SBErrorHandler
     }
