@@ -18,7 +18,7 @@
             <a class="navbar-brand hidden-xs" href="/" title="{{'application.home' | translate}}"><img src="assets/image/SmarterBalanced-Logo.png" alt="{{'messages.organization' | translate}}"></a>
             <span class="application-title">{{'application.title' | translate}}</span>
           </div>
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <div *ngIf="user" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
               <li class="navbar-link"><a href="{{user.configuration.userGuideUrl}}" target="_blank">{{'labels.navigation.user-guide' | translate}}</a></li>
               <li class="navbar-link"><a href="javascript:void(0)" (click)="showInterpretiveGuideComingSoon()" target="_blank">{{'labels.navigation.interpretive-guide' | translate}}</a></li>
