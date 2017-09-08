@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Smarter Balanced Reporting</title>
+  <link rel="stylesheet" type="text/css" href="/assets/public/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/assets/public/ui.jqgrid.css">
+  <link rel="stylesheet" type="text/css" href="/assets/public/style.css">
+  <link rel="shortcut icon" href="favicon.ico">
+<body class="login">
+<div id="header" class="content" role="banner">
+  <div class="logo"></div>
+  <ul class="action" role="menubar">
+    <li>
+      <div class="divider">
+        <a href="javascript:void(0)" onclick="window.document.logoutForm.submit()" class="btn btn-primary btn-login edware-btn-primary" role="menuitem" type="submit">Log Out</a>
+        <form action="/saml/logout" class="hidden" method="post" name="logoutForm" novalidate=""></form>
+      </div>
+    </li>
+  </ul>
+  <div class="helpMenuContainer"></div>
+</div>
+<div role="main">
+  <div>
+    <div class="content">
+      <div class="intro">
+        <h2>Access Denied</h2>
+        <p>
+          Your user account is not permitted to access this reporting system. If you believe you have reached
+          this page in error, please contact your building administrator.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+  </div>
+</div>
+</body>
+</html>
