@@ -1,7 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { HttpModule } from "@angular/http";
+import { HttpModule, Http } from "@angular/http";
 import { AppComponent } from "./app.component";
 import { environment } from "../environments/environment";
 import { standaloneProviders } from "./standalone/standalone.service";
@@ -19,6 +19,7 @@ import { TranslateResolve } from "./home/translate.resolve";
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from "angulartics2";
 import { RdwRouteReuseStrategy } from "./shared/rdw-route-reuse.strategy";
 import { ErrorComponent } from './error/error.component';
+import { AuthenticatedHttpService } from "./shared/authentication/authenticated-http.service";
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { ErrorComponent } from './error/error.component';
   ],
   providers: [
     TranslateResolve,
+    { provide: Http, useClass: AuthenticatedHttpService },
     { provide: RouteReuseStrategy, useClass: RdwRouteReuseStrategy },
     ...(environment.standalone ? standaloneProviders : [])
 

@@ -31,6 +31,9 @@ export class ResponseUtils {
    * @param response the HTTP response
    */
   static throwError(response: Response): Observable<any> {
+    if (response.status === 401) {
+      return Observable.empty();
+    }
     let message: string = `${response.status} ${response.statusText}`;
     let error:Error = response.status == 404
       ? new NotFoundError(message)
