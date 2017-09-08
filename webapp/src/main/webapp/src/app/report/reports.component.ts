@@ -105,7 +105,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         (download: Download) => {
           saveAs(download.content, download.name);
         },
-        (error: any) => {
+        () => {
           this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
         }
       );

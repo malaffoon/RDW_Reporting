@@ -1,4 +1,4 @@
-import { NgModule, ErrorHandler } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
 import { SchoolYearPipe } from "./schoolYear.pipe";
@@ -29,6 +29,7 @@ import { SBErrorHandler } from "./sb-error-handler.service";
 import { ScaleScoreService } from "./scale-score.service";
 import { LoaderComponent } from "./loader/loader.component";
 import { WindowRefService } from "./window-ref.service";
+import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { WindowRefService } from "./window-ref.service";
     LoaderComponent
   ],
   providers: [
+    AuthenticatedHttpService,
     AuthenticationService,
     DataService,
     DatePipe,
@@ -85,10 +87,7 @@ import { WindowRefService } from "./window-ref.service";
     NotificationService,
     RdwTranslateLoader,
     StorageService,
-    WindowRefService, {
-      provide: ErrorHandler,
-      useClass: SBErrorHandler
-    }
+    WindowRefService
   ]
 })
 export class CommonModule {
