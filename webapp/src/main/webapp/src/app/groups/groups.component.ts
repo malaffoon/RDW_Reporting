@@ -46,7 +46,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     }
 
     this.schoolDropdownOptions = this.filterOptions.schools.map(school => <any>{
-      label: school.name,
+      label: `${school.name} (${school.naturalId})`,
       value: school
     });
 
