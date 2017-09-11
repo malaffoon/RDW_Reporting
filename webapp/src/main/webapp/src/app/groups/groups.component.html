@@ -23,6 +23,11 @@
                     filterBy="label"
                     placeholder="{{'prompt.select' | translate}}"
                     filterPlaceholder="{{'labels.groups.search-school' | translate}}">
+          <ng-template let-school pTemplate="item">
+            <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+              <div>{{school.name}} <span class="gray-dark font-weight-light">({{school.naturalId}})</span></div>
+            </div>
+          </ng-template>
         </p-dropdown>
       </div>
       <!-- School Year Select -->
