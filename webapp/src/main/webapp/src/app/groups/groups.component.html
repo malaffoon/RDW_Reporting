@@ -13,7 +13,7 @@
   <div class="well">
     <div class="row">
       <!-- School Select -->
-      <div class="col-md-4">
+      <div class="col-md-6">
         <label>{{'labels.groups.select-school' | translate}}</label>
         <p-dropdown id="select-school"
                     [options]="schoolDropdownOptions"
@@ -23,6 +23,11 @@
                     filterBy="label"
                     placeholder="{{'prompt.select' | translate}}"
                     filterPlaceholder="{{'labels.groups.search-school' | translate}}">
+          <ng-template let-school pTemplate="item">
+            <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+              <div>{{school.name}} <span class="gray-dark font-weight-light">({{school.naturalId}})</span></div>
+            </div>
+          </ng-template>
         </p-dropdown>
       </div>
       <!-- School Year Select -->

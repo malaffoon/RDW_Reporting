@@ -74,6 +74,7 @@ export class GroupService {
 
       uiSchool.id = apiSchool.id;
       uiSchool.name = apiSchool.name;
+      uiSchool.naturalId = apiSchool.naturalId;
 
       return uiSchool;
     })) || [];
