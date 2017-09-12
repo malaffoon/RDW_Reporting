@@ -3,29 +3,23 @@
   [rows]="200"
   [paginator]="imports.length > 200"
   expandableRows="true"
+  rowExpandMode="single"
   [value]="imports"
   emptyMessage="{{'labels.groups.import.empty' | translate }}"
   sortField="id"
   sortOrder="-1"
   tableStyleClass="table table-striped table-hover"
   [tableStyle]="{'table-layout':'auto'}" >
+  <p-column expander="true" styleClass="col-icon"></p-column>
   <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
     <ng-template let-import="rowData" pTemplate="body">
-      <span *ngIf="import.isOk" class="label border-only green">
+      <a href="javascript:void(0)" *ngIf="import.isOk" class="label border-only green" (click)="dt.toggleRow(import)" >
         <i class="fa fa-check-circle"></i> {{ 'enum.status.' + import.status | translate }}
-      </span>
+      </a>
       <span *ngIf="!import.isOk">
-        <span href="javascript:void(0)" class="label border-only red pointer">
+        <a href="javascript:void(0)" class="label border-only red pointer" (click)="dt.toggleRow(import)" >
           <i class="fa fa-exclamation-circle"></i> {{ 'enum.status.' + import.status | translate }}
-        </span>
-        <span class="btn btn-default label ml-sm" (click)="dt.toggleRow(import)" style="color: #64666A">
-          <span *ngIf="!dt.expandedRows || dt.expandedRows.indexOf(import) === -1">
-            <i class="fa fa-chevron-right"></i> {{ 'labels.groups.import.view-errors' | translate }}
-          </span>
-          <span *ngIf="dt.expandedRows && dt.expandedRows.indexOf(import) !== -1">
-            <i class="fa fa-chevron-down"></i> {{ 'labels.groups.import.hide-errors' | translate }}
-          </span>
-        </span>
+        </a>
       </span>
     </ng-template>
   </p-column>
@@ -37,8 +31,13 @@
     </ng-template>
   </p-column>
   <ng-template let-import pTemplate="rowexpansion" class="white-space-normal">
-    <div class="white-space-normal">
-      {{ 'labels.groups.import.message' | translate }} {{ import.message }}
+    <div class="panel" [ngClass]="{ 'panel-success':import.isOk, 'panel-danger':!import.isOk }">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa" [ngClass]="{ 'fa-check-circle':import.isOk, 'fa-exclamation-circle':!import.isOk }"></i> {{ 'enum.status.' + import.status | translate }}</h3>
+      </div>
+      <div class="panel-body">
+        <p class="white-space-preline">{{ import.message }}</p>
+      </div>
     </div>
   </ng-template>
 </p-dataTable>
