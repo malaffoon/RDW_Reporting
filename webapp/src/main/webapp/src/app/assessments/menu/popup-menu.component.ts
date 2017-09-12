@@ -17,6 +17,9 @@ import { PopupMenuAction } from "./popup-menu-action.model";
 export class PopupMenuComponent {
 
   @Input()
+  public text: string = '';
+
+  @Input()
   public item: any;
 
   @Input()

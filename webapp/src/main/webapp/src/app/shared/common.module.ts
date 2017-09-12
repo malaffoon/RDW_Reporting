@@ -29,6 +29,7 @@ import { ScaleScoreService } from "./scale-score.service";
 import { LoaderComponent } from "./loader/loader.component";
 import { WindowRefService } from "./window-ref.service";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
+import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { AuthenticatedHttpService } from "./authentication/authenticated-http.se
     SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
-    LoaderComponent
+    LoaderComponent,
+    DataTableRowExpanderComponent
   ],
   imports: [
     AlertModule,
@@ -72,7 +74,8 @@ import { AuthenticatedHttpService } from "./authentication/authenticated-http.se
     SessionExpiredComponent,
     SubjectPipe,
     TranslateModule,
-    LoaderComponent
+    LoaderComponent,
+    DataTableRowExpanderComponent
   ],
   providers: [
     AuthenticatedHttpService,

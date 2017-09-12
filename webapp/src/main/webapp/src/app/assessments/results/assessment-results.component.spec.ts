@@ -39,6 +39,7 @@ import { UserService } from "../../user/user.service";
 import { UserMapper } from "../../user/user.mapper";
 import { CachingDataService } from "../../shared/cachingData.service";
 import { ClaimTargetComponent } from "./claim-target.component";
+import { DataTableRowExpanderComponent } from "../../shared/datatable/datatable-row-expander.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -79,7 +80,8 @@ describe('AssessmentResultsComponent', () => {
         ScaleScoreComponent,
         AverageScaleScoreComponent,
         TestComponentWrapper,
-        ClaimTargetComponent
+        ClaimTargetComponent,
+        DataTableRowExpanderComponent
       ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },

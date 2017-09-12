@@ -104,15 +104,9 @@
         <!-- Student Results Table -->
         <p-dataTable [value]="exams" emptyMessage="{{'labels.groups.results.assessment.exams.empty-message' | translate}}" sortField="student.lastName" tableStyleClass="table table-striped table-hover overflow" expandableRows="true">
           <!-- Row Menu -->
-          <p-column styleClass="cell-dropdown">
-            <ng-template let-data="rowData" pTemplate="body">
-              <popup-menu [item]="data" [actions]="actions"></popup-menu>
-            </ng-template>
-          </p-column>
-
           <p-column sortField="student.lastName" header="{{'labels.groups.results.assessment.exams.cols.name' | translate}}" [sortable]="true">
-            <ng-template let-exam="rowData" pTemplate="body">
-              {{ 'labels.personName' | translate:exam.student }}
+            <ng-template let-data="rowData" let-exam="rowData" pTemplate="body">
+              <popup-menu [item]="data" [actions]="actions" [text]="'labels.personName' | translate:exam.student"></popup-menu>
             </ng-template>
           </p-column>
           <p-column field="date" header="{{'labels.groups.results.assessment.exams.cols.date' | translate}}" [sortable]="true">
@@ -183,9 +177,13 @@
             <span>{{'labels.export.items-by-points-earned' | translate}}</span>
           </button>
         </h3>
-        <p-dataTable [value]="filteredAssessmentItems" sortField="position" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true" rowExpandMode="single">
-          <p-column expander="true" styleClass="col-icon"></p-column>
-          <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" [sortable]="true"></p-column>
+        <p-dataTable #datatable [value]="filteredAssessmentItems" sortField="position" tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}" expandableRows="true" rowExpandMode="single">
+          <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}" sortable="true">
+            <ng-template let-row="rowData" let-item="rowData" pTemplate="body">
+              <datatable-row-expander [datatable]="datatable" [row]="row" [text]="item.position"></datatable-row-expander>
+            </ng-template>
+          </p-column>
+
           <p-column field="claimTarget" [sortable]="true">
             <ng-template pTemplate="header">
               <span info-label title="{{'labels.groups.results.assessment.items.cols.claim' | translate}}"
