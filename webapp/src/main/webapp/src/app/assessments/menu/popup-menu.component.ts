@@ -25,6 +25,14 @@ export class PopupMenuComponent {
   @Input()
   public actions: PopupMenuAction[];
 
+  private _open: boolean;
+
+  private removeListener: () => void;
+
+  constructor(private renderer: Renderer2,
+              private domElement: ElementRef) {
+  }
+
   public get open(): boolean {
     return this._open;
   }
@@ -36,21 +44,15 @@ export class PopupMenuComponent {
    * @param value True to open the menu, false to close
    */
   public set open(value: boolean) {
-    if (this._open === value) return;
-
+    if (this._open === value) {
+      return;
+    }
     this._open = value;
     if (value) {
       this.removeListener = this.renderer.listen(document, 'click', this.onClick.bind(this));
     } else if (!isNullOrUndefined(this.removeListener)) {
       this.removeListener();
     }
-  }
-
-  private _open: boolean;
-  private removeListener: () => void;
-
-  constructor(private renderer: Renderer2,
-              private domElement: ElementRef) {
   }
 
   /**
@@ -73,6 +75,10 @@ export class PopupMenuComponent {
     event.preventDefault();
 
     action.perform(this.item);
+  }
+
+  hasText(): boolean {
+    return this.text !== null && this.text.length !== 0;
   }
 
 }

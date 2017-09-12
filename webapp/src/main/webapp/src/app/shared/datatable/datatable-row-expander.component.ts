@@ -19,12 +19,16 @@ export class DataTableRowExpanderComponent {
   @Input()
   text: string = '';
 
-  toggle() {
+  toggle(): void {
     this.datatable.toggleRow(this.row);
   }
 
-  isExpanded() {
+  isExpanded(): boolean {
     return this.datatable.isRowExpanded(this.row);
+  }
+
+  hasText(): boolean {
+    return this.text !== null && this.text.length !== 0;
   }
 
 }
