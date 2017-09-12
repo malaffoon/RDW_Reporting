@@ -53,7 +53,7 @@
         "sending": "Uploading...",
         "view-errors": "View Errors",
         "hide-errors": "Hide Errors",
-        "message": "Message: ",
+        "message": "Message",
         "cols": {
           "status": "Upload Status",
           "id": "Upload ID",
