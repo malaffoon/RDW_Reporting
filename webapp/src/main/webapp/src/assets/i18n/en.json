@@ -36,8 +36,9 @@
       "title": "Access Assessment Results",
       "welcome": {
         "title": "Welcome!",
-        "sub-title": "Get the most from the Reporting System:",
-        "interpret-instructions": "Learn how to interpret the scores in this reporting tool:"
+        "user-guide-html": "<a href=\"{{userGuideUrl}}\" target=\"_blank\">The User Guide</a> describes features of the Smarter Balanced Reporting System and instructions for using each feature.",
+        "interpretive-guide-html": "<a target=\"_blank\" class=\"cursor-pointer\">The Interim Assessments Interpretive Guide</a> is designed to help educators, parents, and other stakeholders interpret interim assessments reports for the Smarter Balanced Reporting System.",
+        "interpretive-guide-subtitle": "Interim Assessments"
       }
     },
     "languages": {
