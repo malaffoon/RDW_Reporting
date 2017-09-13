@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { DataTable } from "primeng/components/datatable/datatable";
+import { Utils } from "../Utils";
 
 /**
  * This component is responsible for displaying user notifications.
@@ -23,12 +24,12 @@ export class DataTableRowExpanderComponent {
     this.datatable.toggleRow(this.row);
   }
 
-  isExpanded(): boolean {
+  get expanded(): boolean {
     return this.datatable.isRowExpanded(this.row);
   }
 
-  hasText(): boolean {
-    return this.text !== null && this.text.length !== 0;
+  get hasText(): boolean {
+    return !Utils.isNullOrEmpty(this.text);
   }
 
 }

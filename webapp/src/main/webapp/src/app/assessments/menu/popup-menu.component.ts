@@ -1,7 +1,7 @@
 import { Component, Input, ElementRef, Renderer2 } from "@angular/core";
 import { isNullOrUndefined } from "util";
 import { PopupMenuAction } from "./popup-menu-action.model";
-
+import { Utils } from "../../shared/Utils";
 /**
  * This component is responsible for displaying a table-row menu button
  * with configurable actions.
@@ -31,6 +31,10 @@ export class PopupMenuComponent {
 
   constructor(private renderer: Renderer2,
               private domElement: ElementRef) {
+  }
+
+  public get hasText(): boolean {
+    return !Utils.isNullOrEmpty(this.text);
   }
 
   public get open(): boolean {
@@ -75,10 +79,6 @@ export class PopupMenuComponent {
     event.preventDefault();
 
     action.perform(this.item);
-  }
-
-  hasText(): boolean {
-    return this.text !== null && this.text.length !== 0;
   }
 
 }
