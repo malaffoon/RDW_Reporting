@@ -3,6 +3,7 @@
 #### 1.x.y
 
 * NOTE: change datasource URL configuration
+* NOTE: change default tomcat settings
 
 #### 1.0.1 - 2017-09-06
 
