@@ -1,7 +1,7 @@
 import { Component, Input, ElementRef, Renderer2 } from "@angular/core";
 import { isNullOrUndefined } from "util";
 import { PopupMenuAction } from "./popup-menu-action.model";
-
+import { Utils } from "../../shared/Utils";
 /**
  * This component is responsible for displaying a table-row menu button
  * with configurable actions.
@@ -17,10 +17,25 @@ import { PopupMenuAction } from "./popup-menu-action.model";
 export class PopupMenuComponent {
 
   @Input()
+  public text: string = '';
+
+  @Input()
   public item: any;
 
   @Input()
   public actions: PopupMenuAction[];
+
+  private _open: boolean;
+
+  private removeListener: () => void;
+
+  constructor(private renderer: Renderer2,
+              private domElement: ElementRef) {
+  }
+
+  public get hasText(): boolean {
+    return !Utils.isNullOrEmpty(this.text);
+  }
 
   public get open(): boolean {
     return this._open;
@@ -33,21 +48,15 @@ export class PopupMenuComponent {
    * @param value True to open the menu, false to close
    */
   public set open(value: boolean) {
-    if (this._open === value) return;
-
+    if (this._open === value) {
+      return;
+    }
     this._open = value;
     if (value) {
       this.removeListener = this.renderer.listen(document, 'click', this.onClick.bind(this));
     } else if (!isNullOrUndefined(this.removeListener)) {
       this.removeListener();
     }
-  }
-
-  private _open: boolean;
-  private removeListener: () => void;
-
-  constructor(private renderer: Renderer2,
-              private domElement: ElementRef) {
   }
 
   /**
