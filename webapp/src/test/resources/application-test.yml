@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/warehouse_test?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
+    url-schema: warehouse_test
 
 artifacts:
   root: "classpath:"
@@ -8,7 +8,3 @@ artifacts:
 permissionservice:
   endpoint:
 
-application:
-  state: CA
-
-app:

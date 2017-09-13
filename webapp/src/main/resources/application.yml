@@ -30,13 +30,19 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/warehouse?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
+    url: "\
+      jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:warehouse}\
+      ?useSSL=${spring.datasource.use-ssl:false}\
+      &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
+      &characterEncoding=${spring.datasource.character-encoding:utf8}\
+      "
     username: root
     password:
     driverClassName: com.mysql.jdbc.Driver
     testWhileIdle: true
     validationQuery: SELECT 1
     initialize: false
+
   http:
     multipart:
       max-file-size: 500MB
