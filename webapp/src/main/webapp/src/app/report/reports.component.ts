@@ -17,8 +17,8 @@ import Timer = NodeJS.Timer;
 })
 export class ReportsComponent implements OnInit, OnDestroy {
 
-  public resolution: Resolution<Report[]>;
-  public reports: Report[];
+  resolution: Resolution<Report[]>;
+  reports: Report[];
 
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
@@ -42,6 +42,26 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopPollingStatus();
+  }
+
+  reload() {
+    window.location.reload();
+  }
+
+  getReport(report: Report) {
+    this.service.getExamReport(report.id)
+      .subscribe(
+        (download: Download) => {
+          saveAs(download.content, download.name);
+        },
+        () => {
+          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
+        }
+      );
+  }
+
+  regenerateReport(report: Report) {
+    this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
   }
 
   private startPollingStatus() {
@@ -93,26 +113,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.statusPollingTimer != null) {
       clearInterval(this.statusPollingTimer);
     }
-  }
-
-  public reload() {
-    window.location.reload();
-  }
-
-  public getReport(report: Report) {
-    this.service.getBatchExamReport(report.id)
-      .subscribe(
-        (download: Download) => {
-          saveAs(download.content, download.name);
-        },
-        () => {
-          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
-        }
-      );
-  }
-
-  public regenerateReport(report: Report) {
-    this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
   }
 
 }

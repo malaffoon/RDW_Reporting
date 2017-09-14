@@ -9,11 +9,17 @@ import { Download } from "../shared/data/download.model";
 import { Report } from "./report.model";
 import { ReportOrder } from "./report-order.enum";
 import { ResponseUtils } from "../shared/response-utils";
+import { Student } from "../student/model/student.model";
+import { Group } from "../user/model/group.model";
+import { School } from "../user/model/school.model";
+import { Grade } from "../school-grade/grade.model";
+import { ReportNamingService } from "./report-naming.service";
 
 @Injectable()
 export class ReportService {
 
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService,
+    private namingService: ReportNamingService) {
   }
 
   /**
@@ -39,37 +45,40 @@ export class ReportService {
   }
 
   /**
-   * Gets a student exam report PDF download
+   * Creates an individual student exam report PDF for download
    *
-   * @param studentId the student ID
+   * @param student the student
    * @param options settings which to shape the report content
-   * @returns {Observable<Download>}
+   * @returns {Observable<Report>} the handle used the get status on the download
    */
-  public getStudentExamReport(studentId: number, options: ReportOptions): Observable<Download> {
-    return this.getExamReport(`/students/${studentId}/report`, options);
+  public createStudentExamReport(student: Student, options: ReportOptions): Observable<Report> {
+    options.name = this.namingService.nameStudentExamReport(student, options);
+    return this.createExamReport(`/students/${student.id}/report`, options);
   }
 
   /**
    * Creates a group exam report PDF for download
    *
-   * @param groupId the group ID
+   * @param group the group
    * @param options settings which to shape the report content
    * @returns {Observable<Report>} the handle used the get status on the download
    */
-  public createGroupExamReport(groupId: number, options: ReportOptions): Observable<Report> {
-    return this.createBatchExamReport(`/groups/${groupId}/reports`, options);
+  public createGroupExamReport(group: Group, options: ReportOptions): Observable<Report> {
+    options.name = this.namingService.nameGroupExamReport(group, options);
+    return this.createExamReport(`/groups/${group.id}/reports`, options);
   }
 
   /**
    * Creates a school/grade exam report PDF for download
    *
-   * @param schoolId the school ID
-   * @param gradeId the assessment grade ID
+   * @param school the school
+   * @param grade the assessment grade
    * @param options settings which to shape the report content
    * @returns {Observable<Report>} the handle used the get status on the download
    */
-  public createSchoolGradeExamReport(schoolId: number, gradeId: number, options: ReportOptions): Observable<Report> {
-    return this.createBatchExamReport(`/schools/${schoolId}/assessmentGrades/${gradeId}/reports`, options);
+  public createSchoolGradeExamReport(school: School, grade: Grade, options: ReportOptions): Observable<Report> {
+    options.name = this.namingService.nameSchoolGradeExamReport(school, grade, options);
+    return this.createExamReport(`/schools/${school.id}/assessmentGrades/${grade.id}/reports`, options);
   }
 
   /**
@@ -78,8 +87,13 @@ export class ReportService {
    * @param reportId the handle used to lookup the download
    * @returns {Observable<Download>}
    */
-  public getBatchExamReport(reportId: number): Observable<Download> {
-    return this.getExamReport(`/reports/${reportId}`);
+  public getExamReport(reportId: number): Observable<Download> {
+    return this.dataService.get(`/reports/${reportId}`, {
+      headers: new Headers({
+        'Accept': 'application/pdf',
+      }),
+      responseType: ResponseContentType.Blob
+    }).catch(ResponseUtils.throwError);
   }
 
   /**
@@ -89,47 +103,13 @@ export class ReportService {
    * @param options settings which to shape the report content
    * @returns {Observable<Report>}
    */
-  private createBatchExamReport(url: string, options: ReportOptions): Observable<Report> {
+  private createExamReport(url: string, options: ReportOptions): Observable<Report> {
     return this.dataService
-      .post(url, this.toBatchReportRequestParameters(options), {
+      .post(url, this.toReportRequestParameters(options), {
         headers: new Headers({ 'Content-Type': 'application/json' })
       })
       .map(this.toReport)
       .catch(ResponseUtils.throwError);
-  }
-
-  /**
-   * Gets an exam report PDF and wraps it in a ReportDownload
-   *
-   * @param url the location of the exam report PDF download
-   * @param options settings which to shape the report content
-   * @returns {Observable<Download>}
-   */
-  private getExamReport(url: string, options?: ReportOptions): Observable<Download> {
-    return this.dataService.get(url, {
-      params: options != null ? this.toSingleReportRequestParameters(options) : null,
-      headers: new Headers({
-        'Accept': 'application/pdf',
-      }),
-      responseType: ResponseContentType.Blob
-    }).catch(ResponseUtils.throwError);
-  }
-
-  /**
-   * Gets the URL parameters for the given report options
-   *
-   * @param options the options to convert to url parameters
-   * @returns {{assessmentType: any, subject: any, schoolYear: number, language: string, grayscale: boolean}}
-   */
-  private toSingleReportRequestParameters(options: ReportOptions): Object {
-    return {
-      assessmentType: AssessmentType[ options.assessmentType ],
-      subject: AssessmentSubjectType[ options.subject ],
-      schoolYear: options.schoolYear,
-      language: options.language,
-      grayscale: options.grayscale,
-      name: options.name
-    };
   }
 
   /**
@@ -138,12 +118,15 @@ export class ReportService {
    * @param options the options to convert to url parameters
    * @returns {{schoolYear: number, language: string, grayscale: boolean, order: any}}
    */
-  private toBatchReportRequestParameters(options: ReportOptions): Object {
+  private toReportRequestParameters(options: ReportOptions): Object {
     return {
+      name: options.name,
+      assessmentType: AssessmentType[ options.assessmentType ],
+      subject: AssessmentSubjectType[ options.subject ],
       schoolYear: options.schoolYear,
       language: options.language,
-      order: ReportOrder[ options.order ],
-      name: options.name
+      grayscale: options.grayscale,
+      order: ReportOrder[ options.order ]
     };
   }
 

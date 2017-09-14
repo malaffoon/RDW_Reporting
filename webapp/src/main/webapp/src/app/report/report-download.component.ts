@@ -5,6 +5,8 @@ import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.en
 import { NotificationService } from "../shared/notification/notification.service";
 import { ReportOrder } from "./report-order.enum";
 import { PopoverDirective } from "ngx-bootstrap";
+import { Observable } from "rxjs";
+import { Report } from "./report.model";
 
 /**
  * Abstract class used to carry the common logic between all exam report download components
@@ -15,41 +17,67 @@ export abstract class ReportDownloadComponent implements OnInit {
   protected popover: PopoverDirective;
 
   @Input()
-  public schoolYears: number[];
+  schoolYear: number;
 
   @Input()
-  public batch: boolean = false;
+  displayOrder: boolean = true;
+
+  @Input()
+  subject: string;
 
   @Output()
-  public onShown: EventEmitter<any> = new EventEmitter<any>();
+  onShown: EventEmitter<any> = new EventEmitter<any>();
 
-  public onShownInternal(event: any) {
+  onShownInternal(event: any) {
     this.onShown.emit(event);
   }
 
-  public assessmentTypes: AssessmentType[] = [ AssessmentType.IAB, AssessmentType.ICA ];
-  public subjectTypes: AssessmentSubjectType[] = [ AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
-  public languages: string[] = [ 'eng', 'spa', 'vie' ];
-  public orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
-  public options: ReportOptions;
+  assessmentTypes: AssessmentType[] = [ null, AssessmentType.IAB, AssessmentType.ICA ];
+  subjectTypes: AssessmentSubjectType[] = [ null, AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
+  languages: string[] = [ 'eng', 'spa', 'vie' ];
+  orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
+  options: ReportOptions;
 
   constructor(private buttonLabel: string, protected notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
     let defaultOptions: ReportOptions = new ReportOptions();
-    defaultOptions.assessmentType = this.batch ? null : this.assessmentTypes[ 0 ];
-    defaultOptions.subject = this.batch ? null : this.subjectTypes[ 0 ];
-    defaultOptions.schoolYear = this.schoolYears[ 0 ];
+    defaultOptions.assessmentType = this.assessmentTypes[ 0 ];
+    defaultOptions.subject = this.subject != null ? this.getSubjectFromString(this.subject) : this.subjectTypes[ 0 ];
+    defaultOptions.schoolYear = this.schoolYear;
     defaultOptions.language = this.languages[ 0 ];
     defaultOptions.order = this.orders[ 0 ];
     defaultOptions.grayscale = false;
     this.options = defaultOptions;
   }
-  
+
+  submit(): void {
+    this.popover.hide();
+    this.createReport()
+      .subscribe(
+        () => {
+          this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
+        },
+        () => {
+          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
+        }
+      );
+  }
+
   /**
    * Implement this to give behavior to the exam report download form when it is submitted
    */
-  public abstract submit(): void;
+  abstract createReport(): Observable<Report>;
+
+  /**
+   * Converts the given string to an AssessmentSubjectType
+   *
+   * @param value the AssessmentSubjectType name
+   * @returns the AssessmentSubjectType for the given string assessment type name
+   */
+  private getSubjectFromString(value: string): AssessmentSubjectType {
+    return value === '' ? null : AssessmentSubjectType[value];
+  }
 
 }

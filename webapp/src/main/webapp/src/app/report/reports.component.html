@@ -13,8 +13,8 @@
     <p-column field="label" header="{{'labels.reports.column.label.header' | translate}}" sortable="true">
       <ng-template let-report="rowData" pTemplate="body">
         <span *ngIf="report.isProcessing()">{{report.label}}</span>
-        <button *ngIf="report.isCompleted()" class="btn btn-info btn-xs" (click)="getReport(report)"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.form.submit' | translate}} {{report.label}}</button>
-        <button *ngIf="report.canRegenerate()" class="btn btn-default btn-xs" (click)="regenerateReport(report)"><i class="fa fa-refresh" aria-hidden="true"></i> {{'labels.reports.form.regenerate' | translate}} {{report.label}}</button>
+        <button *ngIf="report.isCompleted()" class="btn btn-info btn-xs" (click)="getReport(report)"><i class="fa fa-cloud-download mr-xs" aria-hidden="true"></i> {{report.label}}</button>
+        <button *ngIf="report.canRegenerate()" class="btn btn-default btn-xs" (click)="regenerateReport(report)"><i class="fa fa-refresh mr-xs" aria-hidden="true"></i> {{report.label}}</button>
       </ng-template>
     </p-column>
     <p-column field="status" sortable="true" header="{{'labels.reports.column.status.header' | translate}}">

@@ -7,6 +7,7 @@ import { Report } from "./report.model";
 import { School } from "../user/model/school.model";
 import { Grade } from "../school-grade/grade.model";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 
 /**
  * Component used for single-student exam report download
@@ -18,41 +19,18 @@ import { TranslateService } from "@ngx-translate/core";
 export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
 
   @Input()
-  public school: School;
+  school: School;
 
   @Input()
-  public grade: Grade;
+  grade: Grade;
 
-  constructor(private service: ReportService, notificationService: NotificationService, private translate: TranslateService) {
+  constructor(notificationService: NotificationService,
+              private service: ReportService) {
     super('labels.reports.button-label.school-grade', notificationService);
-    this.batch = true;
   }
 
-  public submit(): void {
-
-    this.popover.hide();
-
-    this.options.name = this.getName();
-
-    this.service.createSchoolGradeExamReport(this.school.id, this.grade.id, this.options)
-      .subscribe(
-        (report: Report) => {
-          this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
-        },
-        (error: any) => {
-          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
-        }
-      );
-  }
-
-  private getName(): string {
-    return [
-      this.school.name,
-      this.translate.instant(`labels.grades.${this.grade.code}.short-name`),
-      this.options.schoolYear.toString(),
-      this.options.language === this.languages[ 0 ]
-        ? '' : this.translate.instant(`labels.languages.${this.options.language}.default`)
-    ].join(' ').trim();
+  createReport(): Observable<Report> {
+    return this.service.createSchoolGradeExamReport(this.school, this.grade, this.options);
   }
 
 }

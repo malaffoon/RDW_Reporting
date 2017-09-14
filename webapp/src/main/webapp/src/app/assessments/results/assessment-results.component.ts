@@ -19,11 +19,8 @@ import { ItemByPointsEarnedExportRequest } from "../model/item-by-points-earned-
 import { ItemPointField } from "../model/item-point-field.model";
 import { ReportService } from "../../report/report.service";
 import { NotificationService } from "../../shared/notification/notification.service";
-import { Download } from "../../shared/data/download.model";
 import { ReportOptions } from "../../report/report-options.model";
-import { ReportOrder } from "../../report/report-order.enum";
 import { saveAs } from "file-saver";
-import { ItemInfoService } from "../items/item-info/item-info.service";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -353,30 +350,22 @@ export class AssessmentResultsComponent implements OnInit {
         () => this._assessmentExam,
         exam => exam.student,
         exam => {
-          let reportOptions: ReportOptions = new ReportOptions();
-          reportOptions.assessmentType = this._assessmentExam.assessment.type;
-          reportOptions.subject = this._assessmentExam.assessment.assessmentSubjectType;
-          reportOptions.schoolYear = exam.schoolYear;
-          reportOptions.language = 'eng';
-          reportOptions.order = ReportOrder.STUDENT_NAME;
-          reportOptions.grayscale = false;
+          let options: ReportOptions = new ReportOptions();
+          options.assessmentType = this._assessmentExam.assessment.type;
+          options.subject = this._assessmentExam.assessment.assessmentSubjectType;
+          options.schoolYear = exam.schoolYear;
+          options.grayscale = false;
+          options.language = 'eng';
 
-          this.notificationService.info({ id: 'labels.reports.messages.submitted-single' });
-
-          this.reportService.getStudentExamReport(exam.student.id, reportOptions)
+          this.reportService.createStudentExamReport(exam.student, options)
             .subscribe(
-              (download: Download) => {
-                saveAs(download.content, download.name);
+              () => {
+                this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
               },
-              (error: any) => {
-                this.notificationService.error({
-                  id: error.name === 'NotFoundError'
-                    ? 'labels.reports.messages.404'
-                    : 'labels.reports.messages.500'
-                });
+              () => {
+                this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
               }
-            )
-          ;
+            );
         }
       )
       .build();

@@ -14,6 +14,7 @@ import { DataTableModule } from "primeng/components/datatable/datatable";
 import { GroupReportDownloadComponent } from "./group-report-download.component";
 import { SchoolGradeDownloadComponent } from "./school-grade-report-download.component";
 import { AssessmentsModule } from "../assessments/assessments.module";
+import { ReportNamingService } from "./report-naming.service";
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { AssessmentsModule } from "../assessments/assessments.module";
   ],
   providers: [
     ReportService,
+    ReportNamingService,
     ReportsResolve
   ]
 })
