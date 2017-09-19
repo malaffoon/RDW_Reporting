@@ -1,10 +1,10 @@
-import { OnInit, Input, ViewChild, Output, EventEmitter, ViewRef, ElementRef } from "@angular/core";
+import { OnInit, Input, ViewChild, Output, EventEmitter } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { ReportOrder } from "./report-order.enum";
-import { PopoverDirective, ModalDirective } from "ngx-bootstrap";
+import { ModalDirective } from "ngx-bootstrap";
 import { Observable } from "rxjs";
 import { Report } from "./report.model";
 
@@ -50,6 +50,7 @@ export abstract class ReportDownloadComponent implements OnInit {
     this.onShow.emit(event);
   }
 
+  AssessmentType: Object = AssessmentType;
   assessmentTypes: AssessmentType[] = [ null, AssessmentType.IAB, AssessmentType.ICA ];
   subjectTypes: AssessmentSubjectType[] = [ null, AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
   languages: string[] = [ 'eng', 'spa', 'vie' ];

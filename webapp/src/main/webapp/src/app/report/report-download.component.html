@@ -41,7 +41,8 @@
             <div class="form-group" *ngIf="displayOrder">
               <label for="order-select">{{'labels.reports.form.order' | translate}}</label>
               <select id="order-select" class="form-control input-sm" name="order" [(ngModel)]="options.order">
-                <option *ngFor="let order of orders" [ngValue]="order">{{'labels.reports.orders.' + order | translate}}</option>
+                <option *ngFor="let order of orders" [ngValue]="order">{{'labels.reports.orders.' + order | translate}}
+                </option>
               </select>
             </div>
 
@@ -53,7 +54,7 @@
               <div *ngIf="lockSchoolYear && options.schoolYear">
                 <span class="gray-darker">{{options.schoolYear | schoolYear}}</span>
               </div>
-              <select *ngIf="!lockSchoolYear" id="school-year-select" class="form-control input-sm"  name="school-year" [(ngModel)]="options.schoolYear">
+              <select *ngIf="!lockSchoolYear" id="school-year-select" class="form-control input-sm" name="school-year" [(ngModel)]="options.schoolYear">
                 <option *ngFor="let year of schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
               </select>
             </div>
@@ -64,7 +65,13 @@
                       title="{{'labels.reports.form.accommodations.title' | translate}}"
                       content="{{'labels.reports.form.accommodations.info' | translate}}"></span>
               </label>
-              <sb-toggle name="accommodations-toggle" [(ngModel)]="options.accommodationsVisible"></sb-toggle>
+              <sb-toggle name="accommodations-toggle"
+                         [(ngModel)]="options.accommodationsVisible"
+                         [disabled]="options.assessmentType === AssessmentType.IAB"
+                         [options]="[
+                           {value: true, text: 'buttons.visibility.show' | translate},
+                           {value: false, text: 'buttons.visibility.hide' | translate}
+                         ]"></sb-toggle>
             </div>
 
           </div>
