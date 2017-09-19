@@ -1,21 +1,21 @@
 sql:
   report:
 
-    insert: >-
+    create: >-
       insert into user_report
-        (user_login, job_execution_id, status, report_resource_uri, label, report_request, created)
+        (user_login, total_chunk_count, status, report_resource_uri, label, report_request, created)
         values
-        (:user_login, :job_execution_id, :status, :report_resource_uri, :label, :report_request, :created)
+        (:user_login, :total_chunk_count, :status, :report_resource_uri, :label, :report_request, :created)
 
     update: >-
       update user_report
       set
         user_login = :user_login,
-        job_execution_id = :job_execution_id,
         status = :status,
         report_resource_uri = :report_resource_uri,
         label = :label,
         report_request = :report_request,
+        total_chunk_count = :total_chunk_count,
         created = :created
       where
         id = :id
@@ -24,11 +24,12 @@ sql:
       select
         r.id,
         r.user_login,
-        r.job_execution_id,
         r.status,
         r.report_resource_uri,
         r.label,
         r.report_request,
+        r.total_chunk_count,
+        r.complete_chunk_count,
         r.created
       from user_report r
       where r.user_login = :user
@@ -38,11 +39,12 @@ sql:
       select
         r.id,
         r.user_login,
-        r.job_execution_id,
         r.status,
         r.report_resource_uri,
         r.label,
         r.report_request,
+        r.total_chunk_count,
+        r.complete_chunk_count,
         r.created
       from user_report r
       where r.user_login = :user
@@ -53,14 +55,21 @@ sql:
       select
         r.id,
         r.user_login,
-        r.job_execution_id,
         r.status,
         r.report_resource_uri,
         r.label,
         r.report_request,
+        r.total_chunk_count,
+        r.complete_chunk_count,
         r.created
       from user_report r
       where r.id = :report_id
+
+    completeChunk: >-
+      update user_report
+        set complete_chunk_count = LAST_INSERT_ID(complete_chunk_count + 1)
+      where
+        id = :report_id;
 
   student:
     findByExamQueryParams: >-
