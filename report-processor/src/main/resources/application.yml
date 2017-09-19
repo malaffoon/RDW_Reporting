@@ -18,6 +18,26 @@ spring:
     type: SIMPLE
     cache-names: internalTranslationsByCode
 
+  cloud:
+    stream:
+      bindings:
+        ReportFetchStudents:
+          group: default
+          producer:
+            requiredGroups: default
+
+        ReportGenerateForStudents:
+          group: default
+          consumer:
+            concurrency: 2
+          producer:
+            requiredGroups: default
+
+        ReportCollate:
+          group: default
+          producer:
+            requiredGroups: default
+
   jackson:
       default-property-inclusion: non_null
       serialization:
