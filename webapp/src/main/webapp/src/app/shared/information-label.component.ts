@@ -7,7 +7,7 @@ import { Component, Input } from "@angular/core";
  */
 @Component({
   selector: 'info-label,[info-label]',
-  templateUrl: './information-label.component.html'
+  templateUrl: 'information-label.component.html'
 })
 export class InformationLabelComponent {
 

@@ -21,7 +21,7 @@ import { Angulartics2Module } from "angulartics2";
 import { AuthenticationService } from "./authentication/authentication.service";
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationService } from "./notification/notification.service";
-import { AlertModule } from "ngx-bootstrap";
+import { AlertModule, PopoverModule } from "ngx-bootstrap";
 import { SessionExpiredComponent } from "./authentication/session-expired.component";
 import { StorageService } from "./storage.service";
 import { DatePipe, DecimalPipe } from "@angular/common";
@@ -30,6 +30,8 @@ import { LoaderComponent } from "./loader/loader.component";
 import { WindowRefService } from "./window-ref.service";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
+import { SBToggleComponent } from "./sb-toggle.component";
+import { InformationLabelComponent } from "./information-label.component";
 
 @NgModule({
   declarations: [
@@ -40,12 +42,14 @@ import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expande
     RemoveCommaPipe,
     SBRadioButtonComponent,
     SBCheckboxList,
+    SBToggleComponent,
     SchoolYearPipe,
     SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
     LoaderComponent,
-    DataTableRowExpanderComponent
+    DataTableRowExpanderComponent,
+    InformationLabelComponent
   ],
   imports: [
     AlertModule,
@@ -58,7 +62,8 @@ import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expande
         provide: TranslateLoader,
         useClass: RdwTranslateLoader
       }
-    })
+    }),
+    PopoverModule.forRoot()
   ],
   exports: [
     AssessmentTypePipe,
@@ -69,13 +74,15 @@ import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expande
     RouterModule,
     SBCheckboxList,
     SBRadioButtonComponent,
+    SBToggleComponent,
     SchoolYearPipe,
     SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
     TranslateModule,
     LoaderComponent,
-    DataTableRowExpanderComponent
+    DataTableRowExpanderComponent,
+    InformationLabelComponent
   ],
   providers: [
     AuthenticatedHttpService,

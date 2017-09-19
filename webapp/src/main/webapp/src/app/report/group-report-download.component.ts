@@ -22,7 +22,7 @@ export class GroupReportDownloadComponent extends ReportDownloadComponent {
 
   constructor(notificationService: NotificationService,
               private service: ReportService) {
-    super('labels.reports.button-label.group', notificationService);
+    super(notificationService);
   }
 
   createReport(): Observable<Report> {

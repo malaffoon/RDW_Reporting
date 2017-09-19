@@ -6,7 +6,7 @@ import { SchoolYearPipe } from "../../../shared/schoolYear.pipe";
 import { TranslateModule } from "@ngx-translate/core";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { ScaleScoreComponent } from "../../../assessments/results/scale-score.component";
-import { InformationLabelComponent } from "../../../assessments/results/information-label.component";
+import { InformationLabelComponent } from "../../../shared/information-label.component";
 import { PopupMenuComponent } from "../../../assessments/menu/popup-menu.component";
 import { MockRouter } from "../../../../test/mock.router";
 import { Router, ActivatedRoute } from "@angular/router";

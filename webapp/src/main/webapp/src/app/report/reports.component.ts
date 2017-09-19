@@ -44,11 +44,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.stopPollingStatus();
   }
 
-  reload() {
+  reload(): void {
     window.location.reload();
   }
 
-  getReport(report: Report) {
+  download(report: Report): void {
     this.service.getExamReport(report.id)
       .subscribe(
         (download: Download) => {
@@ -60,16 +60,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
       );
   }
 
-  regenerateReport(report: Report) {
+  regenerate(report: Report): void {
     this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
   }
 
-  private startPollingStatus() {
+  private startPollingStatus(): void {
     this.statusPollingTimer = setInterval(() => {
 
       // get all report IDs for reports that are in progress
       let ids: number[] = this.reports
-        .filter(report => report.isProcessing())
+        .filter(report => report.processing)
         .map(report => report.id);
 
       // optimally only call API if there are reports that are in progress
@@ -109,7 +109,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }, this.statusPollingInterval);
   }
 
-  private stopPollingStatus() {
+  private stopPollingStatus(): void {
     if (this.statusPollingTimer != null) {
       clearInterval(this.statusPollingTimer);
     }

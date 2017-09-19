@@ -10,7 +10,7 @@ import { Exam } from "../../../assessments/model/exam.model";
 import { Assessment } from "../../../assessments/model/assessment.model";
 import { School } from "../../../user/model/school.model";
 import { ScaleScoreComponent } from "../../../assessments/results/scale-score.component";
-import { InformationLabelComponent } from "../../../assessments/results/information-label.component";
+import { InformationLabelComponent } from "../../../shared/information-label.component";
 import { PopupMenuComponent } from "../../../assessments/menu/popup-menu.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MockRouter } from "../../../../test/mock.router";

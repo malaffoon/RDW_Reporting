@@ -15,7 +15,7 @@ import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { ScaleScoreComponent } from "./scale-score.component";
 import { AverageScaleScoreComponent } from "./average-scale-score.component";
-import { InformationLabelComponent } from "./information-label.component";
+import { InformationLabelComponent } from "../../shared/information-label.component";
 import { ItemViewerComponent } from "../items/item-viewer/item-viewer.component";
 import { ItemTabComponent } from "../items/item-tab.component";
 import { TabsModule, PopoverModule } from "ngx-bootstrap";
@@ -40,6 +40,8 @@ import { UserMapper } from "../../user/user.mapper";
 import { CachingDataService } from "../../shared/cachingData.service";
 import { ClaimTargetComponent } from "./claim-target.component";
 import { DataTableRowExpanderComponent } from "../../shared/datatable/datatable-row-expander.component";
+import { ReportModule } from "../../report/report.module";
+import { CommonModule } from "../../shared/common.module";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -61,6 +63,8 @@ describe('AssessmentResultsComponent', () => {
         HttpModule,
         PopoverModule.forRoot(),
         SharedModule,
+        CommonModule,
+        ReportModule,
         TabsModule,
         TranslateModule.forRoot(),
         Angulartics2Module,
@@ -68,20 +72,16 @@ describe('AssessmentResultsComponent', () => {
       ],
       declarations: [
         AssessmentResultsComponent,
-        GradeDisplayPipe,
-        InformationLabelComponent,
         ItemTabComponent,
         ItemViewerComponent,
         ItemInfoComponent,
         ItemExemplarComponent,
         ItemScoresComponent,
         PopupMenuComponent,
-        RemoveCommaPipe,
         ScaleScoreComponent,
         AverageScaleScoreComponent,
         TestComponentWrapper,
-        ClaimTargetComponent,
-        DataTableRowExpanderComponent
+        ClaimTargetComponent
       ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
@@ -89,7 +89,6 @@ describe('AssessmentResultsComponent', () => {
         ExamFilterService,
         ColorService,
         ScaleScoreService,
-        ReportService,
         { provide: DataService, useValue: dataService },
         { provide: NotificationService, useValue: service },
         ItemInfoService,

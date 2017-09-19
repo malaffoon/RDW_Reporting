@@ -126,6 +126,7 @@ export class ReportService {
       schoolYear: options.schoolYear,
       language: options.language,
       grayscale: options.grayscale,
+      accommodationsVisible: options.accommodationsVisible,
       order: ReportOrder[ options.order ]
     };
   }

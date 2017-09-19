@@ -1,10 +1,10 @@
-import { OnInit, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { OnInit, Input, ViewChild, Output, EventEmitter, ViewRef, ElementRef } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { ReportOrder } from "./report-order.enum";
-import { PopoverDirective } from "ngx-bootstrap";
+import { PopoverDirective, ModalDirective } from "ngx-bootstrap";
 import { Observable } from "rxjs";
 import { Report } from "./report.model";
 
@@ -13,23 +13,41 @@ import { Report } from "./report.model";
  */
 export abstract class ReportDownloadComponent implements OnInit {
 
-  @ViewChild('downloadPopover')
-  protected popover: PopoverDirective;
+  @Input()
+  title: string = '';
+
+  @Input()
+  schoolYears: number[] = [];
 
   @Input()
   schoolYear: number;
 
   @Input()
-  displayOrder: boolean = true;
+  lockSchoolYear: boolean = false;
+
+  @Input()
+  assessmentType: AssessmentType = null;
+
+  @Input()
+  lockAssessmentType: boolean = false;
 
   @Input()
   subject: string;
 
-  @Output()
-  onShown: EventEmitter<any> = new EventEmitter<any>();
+  @Input()
+  lockSubject: boolean = false;
 
-  onShownInternal(event: any) {
-    this.onShown.emit(event);
+  @Input()
+  displayOrder: boolean = true;
+
+  @ViewChild('modal')
+  modal: ModalDirective;
+
+  @Output()
+  onShow: EventEmitter<any> = new EventEmitter<any>();
+
+  onShowInternal(event: any) {
+    this.onShow.emit(event);
   }
 
   assessmentTypes: AssessmentType[] = [ null, AssessmentType.IAB, AssessmentType.ICA ];
@@ -38,22 +56,22 @@ export abstract class ReportDownloadComponent implements OnInit {
   orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
   options: ReportOptions;
 
-  constructor(private buttonLabel: string, protected notificationService: NotificationService) {
+  constructor(protected notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
     let defaultOptions: ReportOptions = new ReportOptions();
-    defaultOptions.assessmentType = this.assessmentTypes[ 0 ];
+    defaultOptions.assessmentType = this.assessmentType != null ? this.assessmentType : this.assessmentTypes[ 0 ];
     defaultOptions.subject = this.subject != null ? this.getSubjectFromString(this.subject) : this.subjectTypes[ 0 ];
-    defaultOptions.schoolYear = this.schoolYear;
+    defaultOptions.schoolYear = this.schoolYear != null ? this.schoolYear : this.schoolYears[ 0 ];
     defaultOptions.language = this.languages[ 0 ];
+    defaultOptions.accommodationsVisible = false;
     defaultOptions.order = this.orders[ 0 ];
     defaultOptions.grayscale = false;
     this.options = defaultOptions;
   }
 
   submit(): void {
-    this.popover.hide();
     this.createReport()
       .subscribe(
         () => {

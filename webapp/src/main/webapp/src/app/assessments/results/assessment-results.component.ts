@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, EventEmitter, Output } from "@angular/core";
+import { Component, Input, OnInit, EventEmitter, Output, ViewChild } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
@@ -17,10 +17,10 @@ import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
 import { ItemByPointsEarnedExportRequest } from "../model/item-by-points-earned-export-request.model";
 import { ItemPointField } from "../model/item-point-field.model";
-import { ReportService } from "../../report/report.service";
-import { NotificationService } from "../../shared/notification/notification.service";
 import { ReportOptions } from "../../report/report-options.model";
 import { saveAs } from "file-saver";
+import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
+import { TranslateService } from "@ngx-translate/core";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -52,6 +52,10 @@ enum ScoreViewState {
   ],
 })
 export class AssessmentResultsComponent implements OnInit {
+
+  @ViewChild('menuReportDownloader')
+  reportDownloader: StudentReportDownloadComponent;
+
   exams: Exam[] = [];
   sessions = [];
   statistics: ExamStatistics;
@@ -201,9 +205,8 @@ export class AssessmentResultsComponent implements OnInit {
   constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
-              private reportService: ReportService,
-              private notificationService: NotificationService,
               private actionBuilder: MenuActionBuilder,
+              private translate: TranslateService,
               private angulartics2: Angulartics2) {
   }
 
@@ -350,22 +353,18 @@ export class AssessmentResultsComponent implements OnInit {
         () => this._assessmentExam,
         exam => exam.student,
         exam => {
-          let options: ReportOptions = new ReportOptions();
+          let downloader: StudentReportDownloadComponent = this.reportDownloader;
+          let options: ReportOptions = downloader.options;
           options.assessmentType = this._assessmentExam.assessment.type;
           options.subject = this._assessmentExam.assessment.assessmentSubjectType;
           options.schoolYear = exam.schoolYear;
-          options.grayscale = false;
-          options.language = 'eng';
-
-          this.reportService.createStudentExamReport(exam.student, options)
-            .subscribe(
-              () => {
-                this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
-              },
-              () => {
-                this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
-              }
-            );
+          downloader.title = this.translate.instant('labels.reports.form.title.single-prepopulated', {
+            name: exam.student.firstName,
+            schoolYear: exam.schoolYear,
+            subject: this.translate.instant(`labels.subjects.${this._assessmentExam.assessment.assessmentSubjectType}.short-name`),
+            assessmentType: this.translate.instant(`labels.assessmentTypes.${this._assessmentExam.assessment.assessmentSubjectType}.short-name`)
+          });
+          downloader.modal.show();
         }
       )
       .build();

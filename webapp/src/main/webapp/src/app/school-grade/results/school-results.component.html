@@ -1,13 +1,14 @@
-<div *ngIf="currentSchool" class="mb-md">
-  <span class="h3 blue-dark">{{currentSchool.name}}<span *ngIf="currentGrade"> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></span>
+<div *ngIf="currentSchool && currentGrade" class="mb-md">
+  <span class="h3 blue-dark">{{currentSchool.name}}<span> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></span>
   <span class="pull-right text-right">
     <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-    <span school-grade-report-download #downloader class="ml-xs"
-        *ngIf="currentGrade"
+    <button class="btn btn-default btn-sm ml-xs" (click)="reportDownloader.modal.show()"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.school-grade' | translate}}</button>
+    <span school-grade-report-download #reportDownloader
         [school]="currentSchool"
         [grade]="currentGrade"
+        [schoolYears]="filterOptions.schoolYears"
         [schoolYear]="currentSchoolYear"
-        (onShown)="initializeDownloader(downloader)"></span>
+        (onShow)="initializeDownloader(reportDownloader)"></span>
   </span>
 </div>
 

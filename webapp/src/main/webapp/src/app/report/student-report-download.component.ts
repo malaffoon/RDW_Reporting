@@ -21,7 +21,8 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
 
   constructor(notificationService: NotificationService,
               private service: ReportService) {
-    super('labels.reports.button-label.student', notificationService);
+    super(notificationService);
+    this.displayOrder = false;
   }
 
   createReport(): Observable<Report> {
