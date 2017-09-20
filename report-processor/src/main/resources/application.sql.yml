@@ -72,7 +72,7 @@ sql:
         id = :report_id;
 
   student:
-    findByExamQueryParams: >-
+    findByExamQueryParamsUnknownPermissions: >-
       select
         st.id,
         st.ssid,
@@ -83,7 +83,41 @@ sql:
         join exam e on e.student_id = st.id
         join asmt a on e.asmt_id=a.id
         join school s on e.school_id = s.id
-      where (:school_year is null or e.school_year=:school_year)
+      where (:student_id is null or st.id=:student_id)
+        and (:school_year is null or e.school_year=:school_year)
+        and (:school_id is null or s.id=:school_id)
+        and (:subject_id is null or a.subject_id=:subject_id)
+        and (:grade_id is null or e.grade_id=:grade_id)
+        and (:assessment_type is null or a.type_id=:assessment_type)
+        and ( # This query can run from the context of both GROUP_PII_READ and INDIVIDUAL_PII_READ, so need to evaluate both.
+              (1 = :individual_statewide OR s.district_id IN (:individual_district_ids) OR e.school_id IN (:individual_school_ids))
+              or (
+                exists(
+                    select 1
+                    from student_group_membership sgm
+                      join student_group sg on sgm.student_group_id = sg.id
+                    where sgm.student_group_id in (:group_ids)
+                          and sgm.student_id=st.id
+                          and (:subject_id is null or sg.subject_id is null or sg.subject_id = :subject_id)
+                )
+                and (1 = :group_statewide or s.district_id in (:group_district_ids) or e.school_id in (:group_school_ids))
+              )
+            )
+      group by st.id
+
+    findByExamQueryParamsIndividualPermissions: >-
+      select
+        st.id,
+        st.ssid,
+        st.first_name,
+        st.last_or_surname as last_name,
+        st.gender_code
+      from student st
+        join exam e on e.student_id = st.id
+        join asmt a on e.asmt_id=a.id
+        join school s on e.school_id = s.id
+      where (:student_id is null or st.id=:student_id)
+        and (:school_year is null or e.school_year=:school_year)
         and (:school_id is null or s.id=:school_id)
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or e.grade_id=:grade_id)
@@ -91,7 +125,7 @@ sql:
         and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
       group by st.id
 
-    findByExamQueryParamsWithGroup: >-
+    findByExamQueryParamsGroupPermissions: >-
       select
         st.id,
         st.ssid,
@@ -106,6 +140,7 @@ sql:
         join student_group sg on sgm.student_group_id = sg.id
           and (sg.subject_id is null or a.subject_id = sg.subject_id)
       where sg.id=:group_id
+        and (:student_id is null or st.id=:student_id)
         and (:school_year is null or e.school_year=:school_year)
         and (:school_id is null or s.id=:school_id)
         and (:subject_id is null or a.subject_id=:subject_id)
