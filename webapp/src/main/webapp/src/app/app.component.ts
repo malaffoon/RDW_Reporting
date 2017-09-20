@@ -5,7 +5,7 @@ import { UserService } from "./user/user.service";
 import { User } from "./user/model/user.model";
 import { Router } from "@angular/router";
 
-const RequiredPermissions = [ "GROUP_WRITE" ];
+const AdminPermissions = [ "GROUP_WRITE" ];
 const SupportedLanguages = [ 'en', 'ja' ];
 
 @Component({
@@ -38,7 +38,7 @@ export class AppComponent {
     this._userService.getCurrentUser().subscribe(user => {
 
       this._user = user;
-      let userHasAccess = user.permissions.some(permission => RequiredPermissions.indexOf(permission) !== -1);
+      let userHasAccess = user.permissions.some(permission => AdminPermissions.indexOf(permission) !== -1);
 
       if (!userHasAccess) {
         this.router.navigate([ 'access-denied' ]);
