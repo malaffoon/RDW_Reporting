@@ -8,6 +8,7 @@ import { ImportHistoryComponent } from "./groups/import/history/import-history.c
 import { ImportHistoryResolve } from "./groups/import/history/import-history.resolve";
 import { GroupImportDeactivateGuard } from "./groups/import/group-import.deactivate";
 import { FileFormatComponent } from "./groups/import/fileformat/file-format.component";
+import { AccessDeniedComponent } from "./access-denied/access-denied.component";
 
 export const routes: Routes = [
   {
@@ -72,5 +73,9 @@ export const routes: Routes = [
         ]
       }
     ]
+  }, {
+    path: 'access-denied',
+    pathMatch: 'full',
+    component: AccessDeniedComponent
   }
 ];

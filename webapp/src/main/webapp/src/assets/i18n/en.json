@@ -4,13 +4,16 @@
     "title": "Manage Student Groups"
   },
   "messages": {
-    "no-access": "Your user account does not have access to use this application.",
     "no-results-found": "No results found.",
     "noExamsSelected": "Please select from the assessments above",
     "notApplicable": "-",
     "logout": "Logout",
     "loading": "Loading",
-    "upload-in-progress": "Files are still uploading, are you sure you want to leave?"
+    "upload-in-progress": "Files are still uploading, are you sure you want to leave?",
+    "access-denied": {
+      "title": "Access Denied",
+      "message": "Your user account does not have access to use this application. If you believe you have reached this page in error, please contact your administrator."
+    }
   },
   "collapse": "Collapse",
   "select": "Select",

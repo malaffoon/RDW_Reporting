@@ -14,11 +14,13 @@ import { Angulartics2GoogleAnalytics, Angulartics2Module } from "angulartics2";
 import { GroupImportModule } from "./groups/import/group-import.module";
 import { GroupsModule } from "./groups/groups.module";
 import { FileFormatModule } from "./groups/import/fileformat/file-format.module";
+import { AccessDeniedComponent } from "./access-denied/access-denied.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    BreadcrumbsComponent
+    BreadcrumbsComponent,
+    AccessDeniedComponent
   ],
   imports: [
     BrowserModule,

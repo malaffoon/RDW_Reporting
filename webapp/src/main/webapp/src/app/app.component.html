@@ -46,12 +46,6 @@
 <div class="page-view pt-md">
   <div class="container">
     <router-outlet></router-outlet>
-
-    <div *ngIf="userHasAccess === false">
-      <div class="alert alert-danger">
-        {{ 'messages.no-access' | translate }}
-      </div>
-    </div>
   </div>
 </div>
 
