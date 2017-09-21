@@ -16,7 +16,6 @@ import { AssessmentsComponent } from "./assessments.component";
 import { AdvFiltersToggleComponent } from "./filters/adv-filters/adv-filters-toggle.component";
 import { ScaleScoreComponent } from "./results/scale-score.component";
 import { AverageScaleScoreComponent } from "./results/average-scale-score.component";
-import { InformationLabelComponent } from "./results/information-label.component";
 import { ItemViewerComponent } from "./items/item-viewer/item-viewer.component";
 import { ItemTabComponent } from "./items/item-tab.component";
 import { TabsModule } from "ngx-bootstrap/tabs";
@@ -31,6 +30,7 @@ import { ItemInfoComponent } from "./items/item-info/item-info.component";
 import { ItemInfoService } from "./items/item-info/item-info.service";
 import { PopoverModule } from "ngx-bootstrap";
 import { ClaimTargetComponent } from "./results/claim-target.component";
+import { ReportModule } from "../report/report.module";
 
 @NgModule({
   declarations: [
@@ -38,7 +38,6 @@ import { ClaimTargetComponent } from "./results/claim-target.component";
     AdvFiltersToggleComponent,
     AssessmentsComponent,
     AssessmentResultsComponent,
-    InformationLabelComponent,
     ItemTabComponent,
     ItemViewerComponent,
     PopupMenuComponent,
@@ -59,13 +58,13 @@ import { ClaimTargetComponent } from "./results/claim-target.component";
     PopoverModule.forRoot(),
     SharedModule,
     TabsModule,
-    Angulartics2Module.forChild()
+    Angulartics2Module.forChild(),
+    ReportModule,
   ],
   exports: [
     AdvFiltersComponent,
     AdvFiltersToggleComponent,
     AssessmentsComponent,
-    InformationLabelComponent,
     ItemTabComponent,
     PopupMenuComponent,
     ScaleScoreComponent,

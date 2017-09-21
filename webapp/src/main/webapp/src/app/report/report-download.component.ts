@@ -1,55 +1,102 @@
-import { OnInit, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { ReportOrder } from "./report-order.enum";
-import { PopoverDirective } from "ngx-bootstrap";
+import { ModalDirective } from "ngx-bootstrap";
+import { Observable } from "rxjs";
+import { Report } from "./report.model";
 
 /**
  * Abstract class used to carry the common logic between all exam report download components
  */
 export abstract class ReportDownloadComponent implements OnInit {
 
-  @ViewChild('downloadPopover')
-  protected popover: PopoverDirective;
+  @Input()
+  title: string = '';
 
   @Input()
-  public schoolYears: number[];
+  schoolYears: number[] = [];
 
   @Input()
-  public batch: boolean = false;
+  schoolYear: number;
+
+  @Input()
+  lockSchoolYear: boolean = false;
+
+  @Input()
+  assessmentType: AssessmentType = null;
+
+  @Input()
+  lockAssessmentType: boolean = false;
+
+  @Input()
+  subject: string;
+
+  @Input()
+  lockSubject: boolean = false;
+
+  @Input()
+  displayOrder: boolean = true;
+
+  @ViewChild('modal')
+  modal: ModalDirective;
 
   @Output()
-  public onShown: EventEmitter<any> = new EventEmitter<any>();
+  onShow: EventEmitter<any> = new EventEmitter<any>();
 
-  public onShownInternal(event: any) {
-    this.onShown.emit(event);
+  onShowInternal(event: any) {
+    this.onShow.emit(event);
   }
 
-  public assessmentTypes: AssessmentType[] = [ AssessmentType.IAB, AssessmentType.ICA ];
-  public subjectTypes: AssessmentSubjectType[] = [ AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
-  public languages: string[] = [ 'eng', 'spa', 'vie' ];
-  public orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
-  public options: ReportOptions;
+  AssessmentType: any = AssessmentType;
+  assessmentTypes: AssessmentType[] = [ null, AssessmentType.IAB, AssessmentType.ICA ];
+  subjectTypes: AssessmentSubjectType[] = [ null, AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
+  languages: string[] = [ 'eng', 'spa', 'vie' ];
+  orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
+  options: ReportOptions;
 
-  constructor(private buttonLabel: string, protected notificationService: NotificationService) {
+  constructor(protected notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
     let defaultOptions: ReportOptions = new ReportOptions();
-    defaultOptions.assessmentType = this.batch ? null : this.assessmentTypes[ 0 ];
-    defaultOptions.subject = this.batch ? null : this.subjectTypes[ 0 ];
-    defaultOptions.schoolYear = this.schoolYears[ 0 ];
+    defaultOptions.assessmentType = this.assessmentType != null ? this.assessmentType : this.assessmentTypes[ 0 ];
+    defaultOptions.subject = this.subject != null ? this.getSubjectFromString(this.subject) : this.subjectTypes[ 0 ];
+    defaultOptions.schoolYear = this.schoolYear != null ? this.schoolYear : this.schoolYears[ 0 ];
     defaultOptions.language = this.languages[ 0 ];
+    defaultOptions.accommodationsVisible = false;
     defaultOptions.order = this.orders[ 0 ];
     defaultOptions.grayscale = false;
     this.options = defaultOptions;
   }
-  
+
+  submit(): void {
+    this.createReport()
+      .subscribe(
+        () => {
+          this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
+        },
+        () => {
+          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
+        }
+      );
+  }
+
   /**
    * Implement this to give behavior to the exam report download form when it is submitted
    */
-  public abstract submit(): void;
+  abstract createReport(): Observable<Report>;
+
+  /**
+   * Converts the given string to an AssessmentSubjectType
+   *
+   * @param value the AssessmentSubjectType name
+   * @returns the AssessmentSubjectType for the given string assessment type name
+   */
+  private getSubjectFromString(value: string): AssessmentSubjectType {
+    return value === '' ? null : AssessmentSubjectType[value];
+  }
 
 }

@@ -2,10 +2,13 @@
   <span class="h3 blue-dark">{{'labels.groups.name' | translate}}</span>
   <span class="pull-right text-right">
     <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-    <span group-report-download #downloader class="ml-xs"
+    <button class="btn btn-default btn-sm ml-xs" (click)="reportDownloader.modal.show()"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.group' | translate}}</button>
+    <span group-report-download #reportDownloader
+          [title]="'labels.reports.form.title.multiple' | translate:currentGroup"
           [group]="currentGroup"
           [schoolYears]="filterOptions.schoolYears"
-          (onShown)="initializeDownloader(downloader)"></span>
+          [schoolYear]="currentSchoolYear"
+          (onShow)="initializeDownloader(reportDownloader)"></span>
   </span>
 </div>
 <div *ngIf="!currentGroup" class="alert alert-danger">

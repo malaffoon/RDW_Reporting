@@ -13,6 +13,7 @@ export class ReportOptions {
   public language: string;
   public grayscale: boolean;
   public order: ReportOrder;
+  public accommodationsVisible: boolean = false;
   public name: string;
 
 }

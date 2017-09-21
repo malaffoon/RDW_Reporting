@@ -17,8 +17,8 @@ import Timer = NodeJS.Timer;
 })
 export class ReportsComponent implements OnInit, OnDestroy {
 
-  public resolution: Resolution<Report[]>;
-  public reports: Report[];
+  resolution: Resolution<Report[]>;
+  reports: Report[];
 
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
@@ -44,12 +44,32 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.stopPollingStatus();
   }
 
-  private startPollingStatus() {
+  reload(): void {
+    window.location.reload();
+  }
+
+  download(report: Report): void {
+    this.service.getExamReport(report.id)
+      .subscribe(
+        (download: Download) => {
+          saveAs(download.content, download.name);
+        },
+        () => {
+          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
+        }
+      );
+  }
+
+  regenerate(report: Report): void {
+    this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
+  }
+
+  private startPollingStatus(): void {
     this.statusPollingTimer = setInterval(() => {
 
       // get all report IDs for reports that are in progress
       let ids: number[] = this.reports
-        .filter(report => report.isProcessing())
+        .filter(report => report.processing)
         .map(report => report.id);
 
       // optimally only call API if there are reports that are in progress
@@ -89,30 +109,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }, this.statusPollingInterval);
   }
 
-  private stopPollingStatus() {
+  private stopPollingStatus(): void {
     if (this.statusPollingTimer != null) {
       clearInterval(this.statusPollingTimer);
     }
-  }
-
-  public reload() {
-    window.location.reload();
-  }
-
-  public getReport(report: Report) {
-    this.service.getBatchExamReport(report.id)
-      .subscribe(
-        (download: Download) => {
-          saveAs(download.content, download.name);
-        },
-        () => {
-          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
-        }
-      );
-  }
-
-  public regenerateReport(report: Report) {
-    this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
   }
 
 }

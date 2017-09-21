@@ -115,7 +115,7 @@ app:
       zoom: 0.75
 
   reportservice:
-    url: http://localhost:8083
+    url: http://localhost:8085
 
   admin-webapp-url:
 

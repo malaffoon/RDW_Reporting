@@ -8,7 +8,7 @@ import { FilterBy } from "../../model/filter-by.model";
 import { CommonModule } from "../../../shared/common.module";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
 import { Angulartics2Module, Angulartics2 } from "angulartics2";
-import { InformationLabelComponent } from "../../results/information-label.component";
+import { InformationLabelComponent } from "../../../shared/information-label.component";
 import { PopoverModule } from "ngx-bootstrap";
 
 describe('AdvFiltersComponent', () => {
@@ -22,8 +22,7 @@ describe('AdvFiltersComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         TestComponentWrapper,
-        AdvFiltersComponent,
-        InformationLabelComponent
+        AdvFiltersComponent
       ],
       imports: [
         HttpModule,

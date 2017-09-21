@@ -67,7 +67,7 @@ export class DataService {
    * @returns {string} thre formatted name
    */
   private safelyFormatFileName(name: string) {
-    return name == null ? null : name.replace(/\s+/g, '_');
+    return name == null ? null : name.replace(/[&~@#$^*_+=/:?;\\|<>"',]/g, '').replace(/\s+/g, '_');
   }
 
   /**

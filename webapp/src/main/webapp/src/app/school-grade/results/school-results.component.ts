@@ -90,7 +90,7 @@ export class SchoolResultsComponent implements OnInit {
               private schoolService: SchoolService,
               private angulartics2: Angulartics2,
               private csvExportService: CsvExportService,
-              private translateService: TranslateService,
+              private translate: TranslateService,
               public assessmentProvider: SchoolAssessmentService) {
   }
 
@@ -179,7 +179,7 @@ export class SchoolResultsComponent implements OnInit {
 
   exportCsv(): void {
     let filename: string = this._currentSchool.name +
-      "-" + this.translateService.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
+      "-" + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
       "-" + new Date().toDateString();
 
     this.angulartics2.eventTrack.next({
@@ -195,7 +195,7 @@ export class SchoolResultsComponent implements OnInit {
   exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
     let assessment: Assessment =exportRequest.assessmentExam.assessment;
     let filename: string = this._currentSchool.name +
-      "-" + this.translateService.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
+      "-" + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
       "-" + assessment.name +
       "-ItemsByPoints" +
       "-" + new Date().toDateString();
@@ -233,6 +233,9 @@ export class SchoolResultsComponent implements OnInit {
    * @param downloader
    */
   private initializeDownloader(downloader: SchoolGradeDownloadComponent): void {
+    downloader.title = this.translate.instant('labels.reports.form.title.multiple', {
+      name: this._currentSchool.name + ' ' + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`)
+    });
     downloader.options.schoolYear = this.currentSchoolYear;
   }
 

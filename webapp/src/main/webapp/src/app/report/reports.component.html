@@ -12,14 +12,14 @@
 
     <p-column field="label" header="{{'labels.reports.column.label.header' | translate}}" sortable="true">
       <ng-template let-report="rowData" pTemplate="body">
-        <span *ngIf="report.isProcessing()">{{report.label}}</span>
-        <button *ngIf="report.isCompleted()" class="btn btn-info btn-xs" (click)="getReport(report)"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.form.submit' | translate}} {{report.label}}</button>
-        <button *ngIf="report.canRegenerate()" class="btn btn-default btn-xs" (click)="regenerateReport(report)"><i class="fa fa-refresh" aria-hidden="true"></i> {{'labels.reports.form.regenerate' | translate}} {{report.label}}</button>
+        <span *ngIf="report.processing">{{report.label}}</span>
+        <button *ngIf="report.completed" class="btn btn-info btn-xs" (click)="download(report)"><i class="fa fa-cloud-download mr-xs" aria-hidden="true"></i> {{report.label}}</button>
+        <button *ngIf="report.regenerable" class="btn btn-default btn-xs" (click)="regenerate(report)"><i class="fa fa-refresh mr-xs" aria-hidden="true"></i> {{report.label}}</button>
       </ng-template>
     </p-column>
     <p-column field="status" sortable="true" header="{{'labels.reports.column.status.header' | translate}}">
       <ng-template let-report="rowData" pTemplate="body">
-        <span class="label border-only {{report.getStatusColor()}}">{{ 'labels.reports.status.' + report.status | translate }}</span>
+        <span class="label border-only {{report.statusColor}}">{{ 'labels.reports.status.' + report.status | translate }}</span>
       </ng-template>
     </p-column>
     <p-column field="created" header="{{'labels.reports.column.created.header' | translate}}" sortable="true">
@@ -29,21 +29,9 @@
 
 </div>
 
-<div class="error-block" *ngIf="resolution.isError()">
-  <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-      <div class="alert alert-danger">
-        <p>{{'labels.reports.messages.get-reports-error' | translate}}</p>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="text-center">
-        <button class="btn btn-primary" (click)="reload()"><i class="fa fa-refresh"></i> {{'labels.reports.reload' | translate}}</button>
-      </div>
-    </div>
-  </div>
+<div class="well" *ngIf="resolution.isError()">
+  <p>{{'labels.reports.messages.get-reports-error' | translate}}</p>
+  <button class="btn btn-primary" (click)="reload()"><i class="fa fa-refresh"></i> {{'labels.reports.reload' | translate}}</button>
 </div>
 
 

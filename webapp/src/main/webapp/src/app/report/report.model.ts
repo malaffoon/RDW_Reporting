@@ -10,23 +10,23 @@ export class Report {
   public status: string;
   public created: Date;
 
-  public isCompleted(): boolean {
+  public get completed(): boolean {
     return this.status === 'COMPLETED';
   }
 
-  public isProcessing(): boolean {
+  public get processing(): boolean {
     return this.status === 'PENDING' || this.status === 'RUNNING';
   }
 
-  public canRegenerate(): boolean {
-    return !(this.isCompleted() || this.isProcessing());
+  public get regenerable(): boolean {
+    return !(this.completed || this.processing);
   }
 
-  public getStatusColor(): string {
-    if (this.isCompleted()) {
+  public get statusColor(): string {
+    if (this.completed) {
       return 'blue-dark';
     }
-    if (this.isProcessing()) {
+    if (this.processing) {
       return 'aqua';
     }
     return 'maroon';
