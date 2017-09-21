@@ -1,4 +1,4 @@
-import { OnInit, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
@@ -50,7 +50,7 @@ export abstract class ReportDownloadComponent implements OnInit {
     this.onShow.emit(event);
   }
 
-  AssessmentType: Object = AssessmentType;
+  AssessmentType: any = AssessmentType;
   assessmentTypes: AssessmentType[] = [ null, AssessmentType.IAB, AssessmentType.ICA ];
   subjectTypes: AssessmentSubjectType[] = [ null, AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
   languages: string[] = [ 'eng', 'spa', 'vie' ];
