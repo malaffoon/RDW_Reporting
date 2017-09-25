@@ -487,6 +487,10 @@
         "NO_RESULTS": "No Results"
       }
     },
+    "custom-export": {
+      "link": "Custom Exports",
+      "heading": "Customized Export"
+    },
     "select-year": "School Year",
     "export": {
       "csv": "Export CSV",

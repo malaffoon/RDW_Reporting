@@ -21,6 +21,7 @@ import { RdwRouteReuseStrategy } from "./shared/rdw-route-reuse.strategy";
 import { ErrorComponent } from './error/error.component';
 import { AuthenticatedHttpService } from "./shared/authentication/authenticated-http.service";
 import { AccessDeniedComponent } from './error/access-denied/access-denied.component';
+import { CustomExportModule } from "./custom-export/custom-export.module";
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { AccessDeniedComponent } from './error/access-denied/access-denied.compo
     GroupsModule,
     StudentModule,
     SchoolGradeModule,
+    CustomExportModule,
     RouterModule.forRoot(routes),
     UserModule,
     FormsModule,

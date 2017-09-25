@@ -23,6 +23,7 @@ import { StudentHistoryResponsesStudentResolve } from "./responses/student-histo
 import { CsvModule } from "../csv-export/csv-export.module";
 import { ReportModule } from "../report/report.module";
 import { PopoverModule } from "ngx-bootstrap";
+import { CustomExportModule } from "../custom-export/custom-export.module";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { PopoverModule } from "ngx-bootstrap";
     ReactiveFormsModule,
     SharedModule,
     Angulartics2Module.forChild(),
-    ReportModule
+    ReportModule,
+    CustomExportModule
   ],
   exports: [
     StudentComponent,
