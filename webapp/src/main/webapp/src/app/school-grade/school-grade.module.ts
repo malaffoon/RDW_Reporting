@@ -15,6 +15,7 @@ import { ReportModule } from "../report/report.module";
 import { SchoolSelectComponent } from "./school-select/school-select.component";
 import { TypeaheadModule } from "ngx-bootstrap";
 import { CustomExportModule } from "../custom-export/custom-export.module";
+import { UserModule } from "../user/user.module";
 
 /**
  * This module contains a search component for finding assessments
@@ -28,6 +29,7 @@ import { CustomExportModule } from "../custom-export/custom-export.module";
   ],
   imports: [
     CommonModule,
+    UserModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
@@ -39,7 +41,10 @@ import { CustomExportModule } from "../custom-export/custom-export.module";
     TypeaheadModule,
     Angulartics2Module.forChild()
   ],
-  exports: [ SchoolGradeComponent, SchoolResultsComponent ],
+  exports: [
+    SchoolGradeComponent,
+    SchoolResultsComponent
+  ],
   providers: [
     SchoolAssessmentResolve,
     CurrentSchoolResolve,

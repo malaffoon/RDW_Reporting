@@ -24,6 +24,7 @@ import { CsvModule } from "../csv-export/csv-export.module";
 import { ReportModule } from "../report/report.module";
 import { PopoverModule } from "ngx-bootstrap";
 import { CustomExportModule } from "../custom-export/custom-export.module";
+import { UserModule } from "../user/user.module";
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { CustomExportModule } from "../custom-export/custom-export.module";
   imports: [
     AssessmentsModule,
     CommonModule,
+    UserModule,
     CsvModule,
     BrowserAnimationsModule,
     BrowserModule,
