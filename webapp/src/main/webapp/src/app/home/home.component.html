@@ -9,7 +9,7 @@
       <div class="pull-right">
 
         <!-- Custom Exports Link -->
-        <custom-export-link></custom-export-link>
+        <a *sbAuthorize="['INDIVIDUAL_PII_READ']" routerLink="/custom-export" class="btn btn-xs btn-default"><i class="fa fa-table"></i> {{'labels.custom-export.link' | translate}}</a>
 
         <!-- Student Groups Admin Link -->
         <a *sbAuthorize="['GROUP_WRITE']" href="{{user.configuration.adminWebappUrl}}" class="btn btn-xs btn-info ml-xs"><i class="fa fa-gear"></i> {{'labels.groups.manage-group' | translate}}</a>

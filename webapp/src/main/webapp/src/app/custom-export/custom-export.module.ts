@@ -6,13 +6,11 @@ import { SharedModule } from "primeng/components/common/shared";
 import { Angulartics2Module } from "angulartics2";
 import { CommonModule } from "../shared/common.module";
 import { CustomExportComponent } from "./custom-export.component";
-import { CustomExportLinkComponent } from "./custom-export-link.component";
 import { UserModule } from "../user/user.module";
 
 @NgModule({
   declarations: [
-    CustomExportComponent,
-    CustomExportLinkComponent
+    CustomExportComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -25,8 +23,7 @@ import { UserModule } from "../user/user.module";
     Angulartics2Module.forChild()
   ],
   exports: [
-    CustomExportComponent,
-    CustomExportLinkComponent
+    CustomExportComponent
   ],
   providers: []
 })
