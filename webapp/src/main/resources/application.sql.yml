@@ -3,12 +3,6 @@ sql:
     findWarehouseImports: >-
       SELECT i.id, i.digest FROM import i limit 10;
 
-  district:
-    findAllIds: >-
-      select natural_id, id
-      from district
-      where natural_id in (:naturalIds)
-
   group:
     findAllDistinctSchoolYears: >-
       select distinct sg.school_year
@@ -41,11 +35,6 @@ sql:
         and (1=:statewide or s.district_id in (:district_ids) or sg.school_id in (:school_ids))
 
   school:
-    findAllIds: >-
-      select natural_id, id
-      from school
-      where natural_id in (:naturalIds)
-
     findAll: >-
       select name, id, natural_id
       from school
