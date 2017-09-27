@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { School } from "../../user/model/school.model";
+import { OrganizationService } from "../organization.service";
+import { isNullOrUndefined } from "util";
 
 @Component({
   selector: 'school-select',
@@ -19,14 +21,17 @@ export class SchoolSelectComponent implements OnInit {
   selectedSchoolName: string;
   schoolsMatchingSearch: School[] = [];
   schoolDropdownOptions: any[] = [];
-  constructor() {
+  constructor(private organizationService: OrganizationService) {
   }
 
   get showDropdown() {
-    return this.availableSchools && this.availableSchools.length < 25;
+    return isNullOrUndefined(this.availableSchools) || this.availableSchools.length < 25;
   }
 
   ngOnInit() {
+    if(isNullOrUndefined(this.availableSchools))
+      return;
+
     if(this.showDropdown){
       if(this.availableSchools.length == 1){
         this.selectedSchool = this.availableSchools[0];
@@ -40,6 +45,10 @@ export class SchoolSelectComponent implements OnInit {
           };
         });
     } else {
+      this.organizationService.getSchoolsWithDistricts().subscribe(schools =>{
+        this.availableSchools = schools;
+      });
+
       if(this.selectedSchool) {
         this.selectedSchoolName = this.selectedSchool.name;
       }
