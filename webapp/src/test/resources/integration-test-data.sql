@@ -1,16 +1,22 @@
 insert into import (id, status, content, contentType, digest) values
   (-1, 1, 1, '', '');
 
+insert into district_group (id, natural_id, name) values
+  (-9, 'districtgroup1', 'districtgroup1');
+
 insert into district (id, natural_id, name) values
   (-10, 'district1', 'district1'),
   (-20, 'district2', 'district2'),
   (-30, 'district3', 'district3');
 
-insert into school (id, district_id, natural_id, name, import_id, update_import_id) VALUES
-  (-10, -10, 'school1', 'school1', -1, -1),
-  (-20, -10, 'school2', 'school2', -1, -1),
-  (-30, -20, 'school3', 'school3', -1, -1),
-  (-40, -30, 'school4', 'school4', -1, -1);
+insert into school_group (id, natural_id, name) values
+  (-11, 'schoolgroup1', 'schoolgroup1');
+
+insert into school (id, district_group_id, district_id, school_group_id, natural_id, name, import_id, update_import_id) VALUES
+  (-10, -9, -10, -11, 'school1', 'school1', -1, -1),
+  (-20, -9, -10, -11, 'school2', 'school2', -1, -1),
+  (-30, null, -20, null, 'school3', 'school3', -1, -1),
+  (-40, null, -30, null, 'school4', 'school4', -1, -1);
 
 insert into grade (id, code, name) values
   (-1, 'g1', 'grade1'),
