@@ -1,8 +1,9 @@
 import { Component, Input } from "@angular/core";
-import { SearchableSelect } from "./searchable-select";
+import { SearchSelect } from "./search-select";
+import { isUndefined } from "util";
 
 @Component({
-  selector: '[searchable-select-with-button]',
+  selector: 'search-select-with-button,[search-select-with-button]',
   template: `
     <span class="input-group">
       <p-dropdown *ngIf="showDropdown"
@@ -34,17 +35,17 @@ import { SearchableSelect } from "./searchable-select";
     </span>
   `
 })
-export class SearchableSelectWithButton extends SearchableSelect {
+export class SearchSelectWithButton extends SearchSelect {
 
   @Input()
   buttonLabel: string = '';
 
   get buttonDisabled(): boolean {
-    return this.disabled || typeof this.value === 'undefined';
+    return this.disabled || isUndefined(this.value);
   }
 
   onButtonClick(): void {
-    if (typeof this.value !== 'undefined') {
+    if (!isUndefined(this.value)) {
       this.select.emit(this.value);
       this.value = undefined;
       this.search = undefined;

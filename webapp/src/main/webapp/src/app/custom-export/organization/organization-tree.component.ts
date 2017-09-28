@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Organization } from "./organization.model";
+import { Organization } from "./organization";
 import { Tree } from "./tree";
 
 @Component({

@@ -1,12 +1,13 @@
 import { Component, OnInit } from "@angular/core";
-import { Option } from "./searchable-select";
+import { Option } from "../shared/form/search-select";
 import { OrganizationService } from "./organization/organization.service";
 import { ActivatedRoute } from "@angular/router";
 import { OrganizationType } from "./organization/organization-type.enum";
 import { TranslateService } from "@ngx-translate/core";
 import { Tree } from "./organization/tree";
-import { Organization } from "./organization/organization.model";
+import { Organization } from "./organization/organization";
 import { OrganizationMapper } from "./organization/organization.mapper";
+import { FlatSchool } from "./organization/flat-school";
 
 @Component({
   selector: 'custom-export',
@@ -17,17 +18,17 @@ export class CustomExportComponent implements OnInit {
   /**
    * All organizations
    */
-  private _schools: any[];
+  private _schools: FlatSchool[];
 
   /**
    * All selected organizations
    */
-  private _selected: any[];
+  private _selected: FlatSchool[];
 
   /**
    * All unselected organizations
    */
-  private _unselected: any[];
+  private _unselected: FlatSchool[];
 
   /**
    * Option view models computed from schools
@@ -42,8 +43,7 @@ export class CustomExportComponent implements OnInit {
   /**
    * The sort order of the organizations
    */
-  private _comparator: (a: Organization, b: Organization) => number =
-    (a: Organization, b: Organization) => a.name && b.name ? a.name.localeCompare(b.name): 0;
+  private _comparator = (a: Organization, b: Organization) => a.name && b.name ? a.name.localeCompare(b.name): 0;
 
   constructor(private route: ActivatedRoute,
               private translate: TranslateService,
@@ -56,12 +56,12 @@ export class CustomExportComponent implements OnInit {
     this.selected = [];
   }
 
-  get selected(): any[] {
+  get selected(): FlatSchool[] {
     return this._selected;
   }
 
 
-  set selected(value: any[]) {
+  set selected(value: FlatSchool[]) {
     if (this._selected !== value) {
 
       this._selected = value.concat();
@@ -69,7 +69,7 @@ export class CustomExportComponent implements OnInit {
       this._unselected = this._schools
         .filter(organization => !value.some(x => x.id === organization.id));
 
-      // recompute the options available in the select/type-ahead
+      // recompute the options available in the search select
       this._options = this.mapper
         .organizations(this._unselected)
         .sort(this._comparator)
@@ -90,7 +90,7 @@ export class CustomExportComponent implements OnInit {
     return this._schools.length === this._selected.length;
   }
 
-  get options(): any[] {
+  get options(): Option[] {
     return this._options;
   }
 
@@ -98,10 +98,10 @@ export class CustomExportComponent implements OnInit {
     return this._tree;
   }
 
-  add(value: any): void {
+  add(value: Organization): void {
     this.selected = [
       ...this.selected,
-      ...this._unselected.filter(organization => value.isOrIsAncestorOf(organization))
+      ...this._unselected.filter(flatSchool => value.isOrIsAncestorOf(flatSchool))
     ];
   }
 
@@ -109,8 +109,8 @@ export class CustomExportComponent implements OnInit {
     this.selected = this._schools;
   }
 
-  remove(value: any): void {
-    this.selected = this.selected.filter(organization => !value.isOrIsAncestorOf(organization));
+  remove(value: Organization): void {
+    this.selected = this.selected.filter(flatSchool => !value.isOrIsAncestorOf(flatSchool));
   }
 
   removeAll(): void {

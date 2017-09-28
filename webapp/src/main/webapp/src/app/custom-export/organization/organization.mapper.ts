@@ -3,24 +3,25 @@ import { Injectable } from "@angular/core";
 import { OrganizationType } from "./organization-type.enum";
 import { Tree } from "./tree";
 import { isUndefined } from "util";
+import { FlatSchool } from "./flat-school";
 
 @Injectable()
 export class OrganizationMapper {
 
-  districtGroup(value: any): Organization {
+  districtGroup(value: FlatSchool): Organization {
     return {
       type: OrganizationType.DistrictGroup,
-      isOrIsAncestorOf: (x: any): boolean => value.districtGroupId === x.districtGroupId,
+      isOrIsAncestorOf: (x: Organization): boolean => value.districtGroupId === x.districtGroupId,
       id: value.districtGroupId,
       name: value.districtGroupName,
       districtGroupId: value.districtGroupId
     };
   }
 
-  district(value: any): Organization {
+  district(value: FlatSchool): Organization {
     return {
       type: OrganizationType.District,
-      isOrIsAncestorOf: (x: any): boolean => value.districtId === x.districtId,
+      isOrIsAncestorOf: (x: Organization): boolean => value.districtId === x.districtId,
       id: value.districtId,
       name: value.districtName,
       districtId: value.districtId,
@@ -28,26 +29,26 @@ export class OrganizationMapper {
     };
   }
 
-  schoolGroup(value: any): Organization {
+  schoolGroup(value: FlatSchool): Organization {
     return {
       type: OrganizationType.SchoolGroup,
-      isOrIsAncestorOf: (x: any): boolean => value.schoolGroupId === x.schoolGroupId,
-      id: value.groupId,
-      name: value.groupName,
-      schoolGroupId: value.groupId,
+      isOrIsAncestorOf: (x: Organization): boolean => value.schoolGroupId === x.schoolGroupId,
+      id: value.schoolGroupId,
+      name: value.schoolGroupName,
+      schoolGroupId: value.schoolGroupId,
       districtId: value.districtId,
       districtGroupId: value.districtGroupId,
     };
   }
 
-  school(value: any): Organization {
+  school(value: FlatSchool): Organization {
     return {
       type: OrganizationType.School,
-      isOrIsAncestorOf: (x: any): boolean => value.schoolId === x.schoolId,
+      isOrIsAncestorOf: (x: Organization): boolean => value.schoolId === x.schoolId,
       id: value.id,
       name: value.name,
       schoolId: value.id,
-      schoolGroupId: value.groupId,
+      schoolGroupId: value.schoolGroupId,
       districtId: value.districtId,
       districtGroupId: value.districtGroupId
     };
@@ -56,7 +57,7 @@ export class OrganizationMapper {
   // real implementation will accept no params and
   // get /districtGroups, /districts, /schoolGroups, /schools
   // pre sorted to show district groups first, then districts etc...
-  organizations(schools: any[]): Organization[] {
+  organizations(schools: FlatSchool[]): Organization[] {
     let organizations: Organization[] = [],
       districtGroups: Grouping<number, Organization> = new Grouping(organizations),
       districts: Grouping<number, Organization> = new Grouping(organizations),
@@ -71,7 +72,7 @@ export class OrganizationMapper {
     return organizations;
   }
 
-  organizationTree(schools: any[]): Tree<Organization> {
+  organizationTree(schools: FlatSchool[]): Tree<Organization> {
     let root = new Tree<Organization>();
     schools.forEach(school => root
       .getOrCreate(x => x.id === school.districtGroupId, this.districtGroup(school))

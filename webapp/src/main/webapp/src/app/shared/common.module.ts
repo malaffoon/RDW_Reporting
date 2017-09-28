@@ -32,6 +32,7 @@ import { AuthenticatedHttpService } from "./authentication/authenticated-http.se
 import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
+import { CommonFormModule } from "app/shared/form/common-form.module";
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { InformationLabelComponent } from "./information-label.component";
         useClass: RdwTranslateLoader
       }
     }),
-    PopoverModule.forRoot()
+    PopoverModule.forRoot(),
+    CommonFormModule
   ],
   exports: [
     AssessmentTypePipe,
@@ -82,7 +84,8 @@ import { InformationLabelComponent } from "./information-label.component";
     TranslateModule,
     LoaderComponent,
     DataTableRowExpanderComponent,
-    InformationLabelComponent
+    InformationLabelComponent,
+    CommonFormModule
   ],
   providers: [
     AuthenticatedHttpService,

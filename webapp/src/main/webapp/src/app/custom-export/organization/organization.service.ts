@@ -1,20 +1,19 @@
 import { Injectable } from "@angular/core";
 import { School } from "../../user/model/school.model";
-import { OrganizationMapper } from "./organization.mapper";
+import { FlatSchool } from "./flat-school";
 
 @Injectable()
 export class OrganizationService {
 
-  constructor(private mapper: OrganizationMapper) {
-  }
-
-  getSchoolsWithAncestry(schools: School[]): any[] {
-    return schools.map(school => <any>{
+  // TODO connect to API server
+  // the final pass at this method will accept no arguments and return fully populated flat school models
+  getSchoolsWithAncestry(schools: School[]): FlatSchool[] {
+    return schools.map(school => <FlatSchool>{
       id: school.id,
       name: school.name,
-      schoolId: school.id, // Allows Organization.isOrIsAncestorOf() method to work for schools
-      // groupId: school.groupId,
-      // groupName: school.groupName,
+      schoolId: school.id,
+      // schoolGroupId: school.groupId,
+      // schoolGroupName: school.groupName,
       districtId: school.districtId,
       districtName: school.districtName,
       // districtGroupId: school.districtGroupId,

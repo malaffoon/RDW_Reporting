@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
-  selector: '[searchable-select]',
+  selector: 'search-select,[search-select]',
   template: `    
       <p-dropdown *ngIf="showDropdown"
                   [disabled]="disabled"
@@ -23,7 +23,9 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
              [placeholder]="searchPlaceholder">
   `
 })
-export class SearchableSelect {
+export class SearchSelect {
+
+  private static readonly DefaultDropdownThreshold: number = 25;
 
   @Output()
   change: EventEmitter<any> = new EventEmitter();
@@ -32,7 +34,7 @@ export class SearchableSelect {
   select: EventEmitter<any> = new EventEmitter();
 
   @Input()
-  dropdownThreshold: number = 25;
+  dropdownThreshold: number = SearchSelect.DefaultDropdownThreshold;
 
   @Input()
   placeholder: string = '';
