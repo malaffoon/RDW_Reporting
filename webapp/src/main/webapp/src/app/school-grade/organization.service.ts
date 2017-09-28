@@ -46,7 +46,7 @@ export class OrganizationService {
 
   getDistricts() {
     return this.dataService
-      .get("/districts")
+      .get("/organizations/districts")
       .map(apiModels => new Map<number,string>(apiModels.map(x => [x.id, x.name])));
   }
 }
