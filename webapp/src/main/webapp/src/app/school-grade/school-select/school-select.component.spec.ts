@@ -4,6 +4,9 @@ import { CommonModule } from "../../shared/common.module";
 import { DropdownModule } from "primeng/components/dropdown/dropdown";
 import { TypeaheadModule } from "ngx-bootstrap";
 import { FormsModule } from "@angular/forms";
+import { OrganizationService } from "../organization.service";
+import { UserModule } from "../../user/user.module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe('SchoolSelectComponent', () => {
   let component: SchoolSelectComponent;
@@ -11,7 +14,8 @@ describe('SchoolSelectComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ CommonModule, DropdownModule, TypeaheadModule.forRoot(), FormsModule ],
+      imports: [ CommonModule, NoopAnimationsModule, DropdownModule, UserModule, TypeaheadModule.forRoot(), FormsModule ],
+      providers: [ OrganizationService ],
       declarations: [ SchoolSelectComponent ]
     })
     .compileComponents();

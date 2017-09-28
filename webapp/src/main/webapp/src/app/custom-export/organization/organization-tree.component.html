@@ -1,7 +1,7 @@
 <div *ngFor="let districtGroupTree of model.children" class="district-group-tree">
 
   <a *ngIf="districtGroupTree.value.name" (click)="onClick(districtGroupTree.value)" href="javascript:void(0)">
-    <h2>{{districtGroupTree.value.name}}District Group A <span><i class="fa fa-close"></i></span></h2>
+    <h2>{{districtGroupTree.value.name}} <span><i class="fa fa-close"></i></span></h2>
   </a>
 
   <div *ngFor="let districtTree of districtGroupTree.children" class="district-tree ml-xs">

@@ -50,6 +50,6 @@ export interface Organization {
    * @param x the organization to test
    * @returns <code>true</code> if the organization's ID is the same or it is an ancestor of the given organization
    */
-  isOrIsAncestorOf?: (x: any) => boolean;
+  isOrIsAncestorOf?: (x: Organization) => boolean;
 
 }

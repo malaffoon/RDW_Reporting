@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { Option } from "../shared/form/search-select";
-import { OrganizationService } from "./organization/organization.service";
-import { ActivatedRoute } from "@angular/router";
 import { OrganizationType } from "./organization/organization-type.enum";
 import { TranslateService } from "@ngx-translate/core";
 import { Tree } from "./organization/tree";
 import { Organization } from "./organization/organization";
 import { OrganizationMapper } from "./organization/organization.mapper";
 import { FlatSchool } from "./organization/flat-school";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'custom-export',
@@ -43,23 +42,21 @@ export class CustomExportComponent implements OnInit {
   /**
    * The sort order of the organizations
    */
-  private _comparator = (a: Organization, b: Organization) => a.name && b.name ? a.name.localeCompare(b.name): 0;
+  private _comparator = (a: Organization, b: Organization) => a.name && b.name ? a.name.localeCompare(b.name) : 0;
 
   constructor(private route: ActivatedRoute,
               private translate: TranslateService,
-              private service: OrganizationService,
               private mapper: OrganizationMapper) {
   }
 
   ngOnInit() {
-    this._schools = this.service.getSchoolsWithAncestry(this.route.snapshot.data[ 'user' ].schools);
+    this._schools = this.route.snapshot.data[ 'schools' ];
     this.selected = [];
   }
 
   get selected(): FlatSchool[] {
     return this._selected;
   }
-
 
   set selected(value: FlatSchool[]) {
     if (this._selected !== value) {
@@ -98,10 +95,10 @@ export class CustomExportComponent implements OnInit {
     return this._tree;
   }
 
-  add(value: Organization): void {
+  add(organization: Organization): void {
     this.selected = [
       ...this.selected,
-      ...this._unselected.filter(flatSchool => value.isOrIsAncestorOf(flatSchool))
+      ...this._unselected.filter(flatSchool => organization.isOrIsAncestorOf(flatSchool))
     ];
   }
 
@@ -109,8 +106,8 @@ export class CustomExportComponent implements OnInit {
     this.selected = this._schools;
   }
 
-  remove(value: Organization): void {
-    this.selected = this.selected.filter(flatSchool => !value.isOrIsAncestorOf(flatSchool));
+  remove(organization: Organization): void {
+    this.selected = this.selected.filter(flatSchool => !organization.isOrIsAncestorOf(flatSchool));
   }
 
   removeAll(): void {

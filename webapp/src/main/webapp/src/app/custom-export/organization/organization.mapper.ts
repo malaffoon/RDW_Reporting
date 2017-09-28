@@ -1,4 +1,4 @@
-import { Organization } from "./organization.model";
+import { Organization } from "./organization";
 import { Injectable } from "@angular/core";
 import { OrganizationType } from "./organization-type.enum";
 import { Tree } from "./tree";
@@ -11,7 +11,7 @@ export class OrganizationMapper {
   districtGroup(value: FlatSchool): Organization {
     return {
       type: OrganizationType.DistrictGroup,
-      isOrIsAncestorOf: (x: Organization): boolean => value.districtGroupId === x.districtGroupId,
+      isOrIsAncestorOf: x => value.districtGroupId === x.districtGroupId,
       id: value.districtGroupId,
       name: value.districtGroupName,
       districtGroupId: value.districtGroupId
@@ -21,7 +21,7 @@ export class OrganizationMapper {
   district(value: FlatSchool): Organization {
     return {
       type: OrganizationType.District,
-      isOrIsAncestorOf: (x: Organization): boolean => value.districtId === x.districtId,
+      isOrIsAncestorOf: x => value.districtId === x.districtId,
       id: value.districtId,
       name: value.districtName,
       districtId: value.districtId,
@@ -32,7 +32,7 @@ export class OrganizationMapper {
   schoolGroup(value: FlatSchool): Organization {
     return {
       type: OrganizationType.SchoolGroup,
-      isOrIsAncestorOf: (x: Organization): boolean => value.schoolGroupId === x.schoolGroupId,
+      isOrIsAncestorOf: x => value.schoolGroupId === x.schoolGroupId,
       id: value.schoolGroupId,
       name: value.schoolGroupName,
       schoolGroupId: value.schoolGroupId,
@@ -44,7 +44,7 @@ export class OrganizationMapper {
   school(value: FlatSchool): Organization {
     return {
       type: OrganizationType.School,
-      isOrIsAncestorOf: (x: Organization): boolean => value.schoolId === x.schoolId,
+      isOrIsAncestorOf: x => value.schoolId === x.schoolId,
       id: value.id,
       name: value.name,
       schoolId: value.id,
@@ -54,9 +54,6 @@ export class OrganizationMapper {
     };
   }
 
-  // real implementation will accept no params and
-  // get /districtGroups, /districts, /schoolGroups, /schools
-  // pre sorted to show district groups first, then districts etc...
   organizations(schools: FlatSchool[]): Organization[] {
     let organizations: Organization[] = [],
       districtGroups: Grouping<number, Organization> = new Grouping(organizations),

@@ -1,24 +1,70 @@
 import { Injectable } from "@angular/core";
-import { School } from "../../user/model/school.model";
 import { FlatSchool } from "./flat-school";
+import { Observable } from "rxjs/Observable";
+import { UserService } from "../../user/user.service";
+import { Observer } from "rxjs/Observer";
+import { CachingDataService } from "app/shared/cachingData.service";
+import { School } from "../../user/model/school.model";
 
 @Injectable()
 export class OrganizationService {
 
-  // TODO connect to API server
-  // the final pass at this method will accept no arguments and return fully populated flat school models
-  getSchoolsWithAncestry(schools: School[]): FlatSchool[] {
-    return schools.map(school => <FlatSchool>{
-      id: school.id,
-      name: school.name,
-      schoolId: school.id,
-      // schoolGroupId: school.groupId,
-      // schoolGroupName: school.groupName,
-      districtId: school.districtId,
-      districtName: school.districtName,
-      // districtGroupId: school.districtGroupId,
-      // districtGroupName: school.districtGroupName
-    });
+  constructor(private dataService: CachingDataService,
+              private userService: UserService) {
+  }
+
+  getSchoolsWithAncestry(): Observable<FlatSchool[]> {
+
+    let observer: Observer<FlatSchool[]>;
+    let observable = new Observable<FlatSchool[]>(o => observer = o);
+
+    Observable
+      .forkJoin(
+        this.getSchools(),
+        this.getSchoolGroups(),
+        this.getDistricts(),
+        this.getDistrictGroups()
+      )
+      .subscribe(response => {
+        let [ schools, schoolGroups, districts, districtGroups ] = response;
+        let schoolGroupNamesById = new Map<number, any>(schoolGroups.map(x => <any>[ x.id, x.name ]));
+        let districtNamesById = new Map<number, any>(districts.map(x => <any>[ x.id, x.name ]));
+        let districtGroupNamesById = new Map<number, any>(districtGroups.map(x => <any>[ x.id, x.name ]));
+
+        let flatSchools = schools
+          .map(school => <FlatSchool>{
+            id: school.id,
+            name: school.name,
+            schoolId: school.id,
+            schoolGroupId: school.schoolGroupId,
+            schoolGroupName: schoolGroupNamesById.get(school.schoolGroupId),
+            districtId: school.districtId,
+            districtName: districtNamesById.get(school.districtId),
+            districtGroupId: school.districtGroupId,
+            districtGroupName: districtGroupNamesById.get(school.districtGroupId)
+          });
+
+        observer.next(flatSchools);
+        observer.complete();
+      });
+
+    return observable;
+  }
+
+  private getSchools(): Observable<School[]> {
+    return this.userService.getCurrentUser().map(user => user.schools);
+  }
+
+  private getSchoolGroups(): Observable<any[]> {
+    return Observable.of([]); // TODO use this.dataService.get('/schoolGroups');
+  }
+
+  private getDistricts(): Observable<any[]> {
+    return this.dataService.get('/districts');
+  }
+
+  private getDistrictGroups(): Observable<any[]> {
+    return Observable.of([]); // TODO use this.dataService.get('/districtGroupsx');
   }
 
 }

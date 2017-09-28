@@ -9,6 +9,7 @@ import { UserModule } from "../user/user.module";
 import { OrganizationService } from "./organization/organization.service";
 import { OrganizationMapper } from "./organization/organization.mapper";
 import { OrganizationTreeComponent } from "./organization/organization-tree.component";
+import { FlatSchoolResolve } from "./organization/flat-school.resolve";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { OrganizationTreeComponent } from "./organization/organization-tree.comp
   ],
   providers: [
     OrganizationService,
-    OrganizationMapper
+    OrganizationMapper,
+    FlatSchoolResolve
   ]
 })
 export class CustomExportModule {

@@ -15,6 +15,7 @@ import { ReportModule } from "../report/report.module";
 import { SchoolSelectComponent } from "./school-select/school-select.component";
 import { TypeaheadModule } from "ngx-bootstrap";
 import { UserModule } from "../user/user.module";
+import { OrganizationService } from "./organization.service";
 
 /**
  * This module contains a search component for finding assessments
@@ -44,10 +45,11 @@ import { UserModule } from "../user/user.module";
     SchoolResultsComponent
   ],
   providers: [
-    SchoolAssessmentResolve,
     CurrentSchoolResolve,
-    SchoolService,
-    SchoolAssessmentService
+    OrganizationService,
+    SchoolAssessmentResolve,
+    SchoolAssessmentService,
+    SchoolService
   ]
 })
 export class SchoolGradeModule {

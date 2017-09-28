@@ -22,6 +22,7 @@ import { ErrorComponent } from "./error/error.component";
 import { AccessDeniedComponent } from "./error/access-denied/access-denied.component";
 import { AuthorizeAtleastOneCanActivate } from "./user/authorize-at-least-one.can-activate";
 import { CustomExportComponent } from "./custom-export/custom-export.component";
+import { FlatSchoolResolve } from "app/custom-export/organization/flat-school.resolve";
 
 
 const studentTestHistoryChildRoute = {
@@ -147,6 +148,7 @@ export const routes: Routes = [
         pathMatch: 'full',
         data: { breadcrumb: { translate: 'labels.custom-export.heading' }, permissions: [ 'INDIVIDUAL_PII_READ' ]},
         canActivate: [ AuthorizeCanActivate ],
+        resolve: { schools: FlatSchoolResolve },
         component: CustomExportComponent
       },
       {

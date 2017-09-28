@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SchoolGradeComponent } from "./school-grade.component";
-import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "../shared/common.module";
 import { SchoolService } from "./school.service";
 import { DropdownModule } from "primeng/components/dropdown/dropdown";
@@ -14,6 +14,9 @@ import { RouterModule } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { SchoolSelectComponent } from "./school-select/school-select.component";
 import { TypeaheadModule } from "ngx-bootstrap";
+import { OrganizationService } from "./organization.service";
+import { UserModule } from "../user/user.module";
+import { CachingDataService } from "../shared/cachingData.service";
 
 describe('SchoolGradeComponent', () => {
   let component: SchoolGradeComponent;
@@ -30,13 +33,18 @@ describe('SchoolGradeComponent', () => {
         RouterModule.forRoot([]),
         DropdownModule,
         TypeaheadModule,
-        SharedModule
+        SharedModule,
+        UserModule
       ],
       declarations: [ SchoolGradeComponent, SchoolSelectComponent ],
       providers: [
+        OrganizationService,
         { provide: APP_BASE_HREF, useValue: '/' },
         SchoolService, {
           provide: DataService,
+          useClass: MockDataService
+        }, {
+          provide: CachingDataService,
           useClass: MockDataService
         }
       ]
