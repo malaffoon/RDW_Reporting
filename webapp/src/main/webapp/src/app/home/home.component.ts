@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { User } from "../user/model/user.model";
 import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../shared/notification/notification.service";
 
 @Component({
   selector: 'home',

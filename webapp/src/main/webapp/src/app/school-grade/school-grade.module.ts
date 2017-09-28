@@ -14,7 +14,6 @@ import { Angulartics2Module } from "angulartics2";
 import { ReportModule } from "../report/report.module";
 import { SchoolSelectComponent } from "./school-select/school-select.component";
 import { TypeaheadModule } from "ngx-bootstrap";
-import { CustomExportModule } from "../custom-export/custom-export.module";
 import { UserModule } from "../user/user.module";
 
 /**
@@ -37,7 +36,6 @@ import { UserModule } from "../user/user.module";
     DropdownModule,
     SharedModule,
     ReportModule,
-    CustomExportModule,
     TypeaheadModule,
     Angulartics2Module.forChild()
   ],

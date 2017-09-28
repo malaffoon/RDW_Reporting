@@ -12,7 +12,6 @@ import { GroupAssessmentsResolve } from "./results/group-assessments.resolve";
 import { Angulartics2Module } from 'angulartics2';
 import { ReportModule } from "../report/report.module";
 import { PopoverModule } from "ngx-bootstrap";
-import { CustomExportModule } from "../custom-export/custom-export.module";
 import { UserModule } from "../user/user.module";
 
 @NgModule({
@@ -31,11 +30,15 @@ import { UserModule } from "../user/user.module";
     SharedModule,
     PopoverModule.forRoot(),
     ReportModule,
-    CustomExportModule,
     Angulartics2Module.forChild()
   ],
-  exports: [ GroupsComponent ],
-  providers: [ GroupAssessmentsResolve, GroupAssessmentService ]
+  exports: [
+    GroupsComponent
+  ],
+  providers: [
+    GroupAssessmentsResolve,
+    GroupAssessmentService
+  ]
 })
 export class GroupsModule {
 }

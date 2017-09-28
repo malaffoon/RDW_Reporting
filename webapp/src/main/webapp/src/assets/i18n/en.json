@@ -487,9 +487,28 @@
         "NO_RESULTS": "No Results"
       }
     },
+    "organization-tree": {
+      "header": "Selected Institutions",
+      "subheader-empty": "No institutions selected",
+      "subheader-not-empty": "Click an institution to remove it from the list"
+    },
     "custom-export": {
       "link": "Custom Exports",
-      "heading": "Customized Export"
+      "heading": "Customized Export",
+      "form": {
+        "organization": {
+          "label": "Search for a District, School or Institution",
+          "placeholder": "Start typing an institution name",
+          "add": "Add",
+          "select-all": "Select All",
+          "type": {
+            "School": "Schools",
+            "SchoolGroup": "School Groups",
+            "District": "Districts",
+            "DistrictGroup": "District Groups"
+          }
+        }
+      }
     },
     "select-year": "School Year",
     "export": {
