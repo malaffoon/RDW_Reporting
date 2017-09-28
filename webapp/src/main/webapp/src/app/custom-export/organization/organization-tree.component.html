@@ -1,24 +1,19 @@
-
-<h3 class="gray-darkest mb-0"><i class="fa fa-list-alt"></i> {{'labels.organization-tree.header' | translate}}</h3>
-<p class="small gray-dark" [hidden]="organizations.length != 0">{{'labels.organization-tree.subheader-empty' | translate}}</p>
-<p class="small gray-dark" [hidden]="organizations.length == 0">{{'labels.organization-tree.subheader-not-empty' | translate}}</p>
-
-<span *ngFor="let districtGroupTree of organizationTree.children" class="district-group-tree">
+<div *ngFor="let districtGroupTree of model.children" class="district-group-tree">
 
   <a *ngIf="districtGroupTree.value.name" (click)="onClick(districtGroupTree.value)" href="javascript:void(0)">
-    <h1>{{districtGroupTree.value.name}} <span><i class="fa fa-close"></i></span></h1>
+    <h2>{{districtGroupTree.value.name}}District Group A <span><i class="fa fa-close"></i></span></h2>
   </a>
 
-  <span *ngFor="let districtTree of districtGroupTree.children" class="district-tree">
+  <div *ngFor="let districtTree of districtGroupTree.children" class="district-tree ml-xs">
 
     <a *ngIf="districtTree.value.name" (click)="onClick(districtTree.value)" href="javascript:void(0)">
-      <h2>{{districtTree.value.name}} <span class="icon"><i class="fa fa-close"></i></span></h2>
+      <h3>{{districtTree.value.name}} <span class="icon"><i class="fa fa-close"></i></span></h3>
     </a>
 
-    <span *ngFor="let schoolGroupTree of districtTree.children" class="m-0 school-group-tree">
+    <div *ngFor="let schoolGroupTree of districtTree.children" class="school-group-tree ml-xs">
 
       <a *ngIf="schoolGroupTree.value.name" (click)="onClick(schoolGroupTree.value)" href="javascript:void(0)">
-        <h3>{{schoolGroupTree.value.name}} <span class="icon"><i class="fa fa-close"></i></span></h3>
+        <h4>{{schoolGroupTree.value.name}} <span class="icon"><i class="fa fa-close"></i></span></h4>
       </a>
 
       <div class="flex-children">
@@ -29,8 +24,8 @@
 
       </div>
 
-    </span>
+    </div>
 
-  </span>
+  </div>
 
-</span>
+</div>

@@ -8,5 +8,5 @@ export interface Organization {
   districtId?: number;
   districtGroupId?: number;
   type: OrganizationType;
-  equals?: (x: any) => boolean;
+  isOrIsAncestorOf?: (x: any) => boolean;
 }

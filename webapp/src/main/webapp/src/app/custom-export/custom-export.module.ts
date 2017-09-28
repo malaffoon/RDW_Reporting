@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/components/common/shared";
 import { Angulartics2Module } from "angulartics2";
@@ -37,7 +36,6 @@ import { SearchableSelectWithButton } from "./searchable-select-with-button";
   ],
   exports: [
     CustomExportComponent,
-    SearchableSelect,
     OrganizationTreeComponent
   ],
   providers: [
