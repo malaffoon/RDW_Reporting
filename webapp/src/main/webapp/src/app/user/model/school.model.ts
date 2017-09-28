@@ -1,8 +1,8 @@
 export class School {
   id: number;
   name: string;
-  schoolGroupId: number;
+  schoolGroupId?: number;
   districtId: number;
-  districtName: string;
-  districtGroupId: number;
+  districtName?: string;
+  districtGroupId?: number;
 }

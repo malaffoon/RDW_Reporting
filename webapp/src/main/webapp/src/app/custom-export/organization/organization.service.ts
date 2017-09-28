@@ -1,16 +1,13 @@
 import { Injectable } from "@angular/core";
 import { FlatSchool } from "./flat-school";
 import { Observable } from "rxjs/Observable";
-import { UserService } from "../../user/user.service";
 import { Observer } from "rxjs/Observer";
 import { CachingDataService } from "app/shared/cachingData.service";
-import { School } from "../../user/model/school.model";
 
 @Injectable()
 export class OrganizationService {
 
-  constructor(private dataService: CachingDataService,
-              private userService: UserService) {
+  constructor(private dataService: CachingDataService) {
   }
 
   getSchoolsWithAncestry(): Observable<FlatSchool[]> {
@@ -26,10 +23,14 @@ export class OrganizationService {
         this.getDistrictGroups()
       )
       .subscribe(response => {
-        let [ schools, schoolGroups, districts, districtGroups ] = response;
-        let schoolGroupNamesById = new Map<number, any>(schoolGroups.map(x => <any>[ x.id, x.name ]));
-        let districtNamesById = new Map<number, any>(districts.map(x => <any>[ x.id, x.name ]));
-        let districtGroupNamesById = new Map<number, any>(districtGroups.map(x => <any>[ x.id, x.name ]));
+
+
+        let [ schools, schoolGroups, districts, districtGroups ] = response,
+          schoolGroupNamesById = new Map<number, any>(schoolGroups.map(x => <any>[ x.id, x.name ])),
+          districtNamesById = new Map<number, any>(districts.map(x => <any>[ x.id, x.name ])),
+          districtGroupNamesById = new Map<number, any>(districtGroups.map(x => <any>[ x.id, x.name ]));
+
+        console.log('schools', schools);
 
         let flatSchools = schools
           .map(school => <FlatSchool>{
@@ -51,20 +52,20 @@ export class OrganizationService {
     return observable;
   }
 
-  private getSchools(): Observable<School[]> {
-    return this.userService.getCurrentUser().map(user => user.schools);
+  private getSchools(): Observable<any[]> {
+    return this.dataService.get('/organizations/schools');
   }
 
   private getSchoolGroups(): Observable<any[]> {
-    return Observable.of([]); // TODO use this.dataService.get('/schoolGroups');
+    return this.dataService.get('/organizations/schoolGroups');
   }
 
   private getDistricts(): Observable<any[]> {
-    return this.dataService.get('/districts');
+    return this.dataService.get('/organizations/districts');
   }
 
   private getDistrictGroups(): Observable<any[]> {
-    return Observable.of([]); // TODO use this.dataService.get('/districtGroupsx');
+    return this.dataService.get('/organizations/districtGroups');
   }
 
 }
