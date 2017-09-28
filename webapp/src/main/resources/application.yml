@@ -93,9 +93,8 @@ app:
         &characterEncoding=${app.datamart.datasource.character-encoding:utf8}\
         &useCompression=${app.datamart.datasource.use-compression:true}\
         "
-      username: sbac
-      password: cabscabs
-      url-server: rdw-aurora-qa-reporting.cugsexobhx8t.us-west-2.rds.amazonaws.com:3306
+      username: root
+      password:
       testWhileIdle: true
       validationQuery: SELECT 1
       driverClassName: com.mysql.jdbc.Driver
