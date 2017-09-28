@@ -4,8 +4,6 @@ import { CachingDataService } from "../shared/cachingData.service";
 import { Observable } from "rxjs";
 import { User } from "./model/user.model";
 import { isNullOrUndefined } from "util";
-import { ResponseUtils } from "../shared/response-utils";
-import { ErrorObservable } from "rxjs/observable/ErrorObservable";
 
 @Injectable()
 export class UserService {

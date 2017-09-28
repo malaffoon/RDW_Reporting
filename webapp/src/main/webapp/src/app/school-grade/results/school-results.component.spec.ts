@@ -25,6 +25,7 @@ import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
 import { SchoolSelectComponent } from "../school-select/school-select.component";
+import { OrganizationService } from "../organization.service";
 
 let availableGrades = [];
 
@@ -67,6 +68,7 @@ describe('SchoolResultsComponent', () => {
       ],
       declarations: [ SchoolResultsComponent, SchoolSelectComponent ],
       providers: [
+        OrganizationService,
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Router, useClass: MockRouter },
         SchoolAssessmentService,
