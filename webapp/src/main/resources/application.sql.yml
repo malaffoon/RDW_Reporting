@@ -514,7 +514,7 @@ sql:
           s.district_group_id,
           s.district_id
         from school_group sg
-          inner join school s on s.school_group_id = sg.id
+          join school s on s.school_group_id = sg.id
         where (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or s.id in (:school_ids))
 
     district:
@@ -531,7 +531,7 @@ sql:
         select distinct dg.id,
           dg.name
         from district_group dg
-          inner join school s on s.district_group_id = dg.id
+          join school s on s.district_group_id = dg.id
         where (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or s.id in (:school_ids))
 
   ethnicity:
