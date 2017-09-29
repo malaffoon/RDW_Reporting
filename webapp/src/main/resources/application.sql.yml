@@ -596,6 +596,7 @@ sql:
           s.natural_id as school_natural_id,
           d.name as district_name,
           d.natural_id as district_natural_id,
+          st.id as student_id,
           st.ssid as student_ssid,
           st.last_or_surname as student_last_name,
           st.first_name as student_first_name,
