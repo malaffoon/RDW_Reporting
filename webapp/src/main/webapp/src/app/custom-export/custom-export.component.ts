@@ -61,7 +61,7 @@ export class CustomExportComponent implements OnInit {
   set selected(value: FlatSchool[]) {
     if (this._selected !== value) {
 
-      this._selected = value.concat();
+      this._selected = value;
 
       this._unselected = this._schools
         .filter(organization => !value.some(x => x.id === organization.id));
