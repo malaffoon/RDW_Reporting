@@ -8,6 +8,10 @@ import { FlatSchool } from "./flat-school";
 @Injectable()
 export class OrganizationMapper {
 
+  constructor(){
+    console.log('new mapper')
+  }
+
   districtGroup(value: FlatSchool): Organization {
     return {
       type: OrganizationType.DistrictGroup,
@@ -82,6 +86,9 @@ export class OrganizationMapper {
 
 }
 
+/**
+ * Helper which prevents redundancy from occurring in the expanded set of organizations
+ */
 class Grouping<A, B> {
 
   private keys: Set<A> = new Set();
@@ -89,6 +96,12 @@ class Grouping<A, B> {
   constructor(private values: B[]) {
   }
 
+  /**
+   * Appends the result of the provided factory method to the given array if the key is not present
+   *
+   * @param {A} key
+   * @param {() => B} factory
+   */
   computeIfAbsent(key: A, factory: () => B): void {
     if (isUndefined(key) || this.keys.has(key)) {
       return;
