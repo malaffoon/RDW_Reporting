@@ -14,6 +14,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
   
       <input *ngIf="!showDropdown"
              class="form-control"
+             [disabled]="disabled"
              [(ngModel)]="search"
              (ngModelChange)="onSearch($event.value)"
              [typeahead]="options"
@@ -47,6 +48,7 @@ export class SearchSelect {
   private _options: Option[] = [];
   private _values: any[] = [];
   private _value: any = undefined;
+  private _disabled: boolean = false;
 
   get options(): Option[] {
     return this._options;
@@ -88,7 +90,12 @@ export class SearchSelect {
   }
 
   get disabled() {
-    return !this.options || this.options.length == 0;
+    return this._disabled || !this.options || this.options.length == 0;
+  }
+
+  @Input()
+  set disabled(value: boolean) {
+    this._disabled = value;
   }
 
   ngOnInit() {

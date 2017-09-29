@@ -1,38 +1,42 @@
 import { Injectable } from "@angular/core";
-import { FlatSchool } from "./flat-school";
 import { Observable } from "rxjs/Observable";
 import { CachingDataService } from "app/shared/cachingData.service";
+import { UserOrganizations } from "./user-organizations";
+import { Organization } from "./organization";
+import { OrganizationMapper } from "./organization.mapper";
 
 @Injectable()
 export class OrganizationService {
 
-  constructor(private dataService: CachingDataService) {
+  constructor(private dataService: CachingDataService,
+              private mapper: OrganizationMapper) {
   }
 
-  getSchoolsWithAncestry(): Observable<FlatSchool[]> {
+  /**
+   * Gets the all organizations entitled to the user and groups them by type
+   *
+   * @returns {Observable<UserOrganizations>}
+   */
+  getUserOrganizations(): Observable<UserOrganizations> {
     return Observable.forkJoin(
       this.getSchools(),
       this.getSchoolGroups(),
-      this.getDistricts(),
-      this.getDistrictGroups()
+      this.getDistricts()
     ).map(response => {
 
-      let [ schools, schoolGroups, districts, districtGroups ] = response,
-        schoolGroupNamesById = new Map<number, any>(schoolGroups.map(x => <any>[ x.id, x.name ])),
-        districtNamesById = new Map<number, any>(districts.map(x => <any>[ x.id, x.name ])),
-        districtGroupNamesById = new Map<number, any>(districtGroups.map(x => <any>[ x.id, x.name ]));
+      let [ remoteSchools, remoteSchoolGroups, remoteDistricts ] = response,
+        schools = remoteSchools.map(x => this.mapper.school(x)),
+        schoolGroups = remoteSchoolGroups.map(x => this.mapper.schoolGroup(x)).concat(this.mapper.nullSchoolGroup),
+        districts = remoteDistricts.map(x => this.mapper.district(x)).concat(this.mapper.nullDistrict);
 
-      return schools.map(school => <FlatSchool>{
-        id: school.id,
-        name: school.name,
-        schoolId: school.id,
-        schoolGroupId: school.schoolGroupId,
-        schoolGroupName: schoolGroupNamesById.get(school.schoolGroupId),
-        districtId: school.districtId,
-        districtName: districtNamesById.get(school.districtId),
-        districtGroupId: school.districtGroupId,
-        districtGroupName: districtGroupNamesById.get(school.districtGroupId)
-      });
+      return {
+        organizations: [ ...districts, ...schoolGroups, ...schools ],
+        schools: schools,
+        schoolGroups: schoolGroups,
+        schoolGroupsById: new Map<number, Organization>(schoolGroups.map(x => <any>[ x.id, x ])),
+        districts: districts,
+        districtsById: new Map<number, Organization>(districts.map(x => <any>[ x.id, x ]))
+      }
     });
   }
 
@@ -46,10 +50,6 @@ export class OrganizationService {
 
   private getDistricts(): Observable<any[]> {
     return this.dataService.get('/organizations/districts');
-  }
-
-  private getDistrictGroups(): Observable<any[]> {
-    return this.dataService.get('/organizations/districtGroups');
   }
 
 }

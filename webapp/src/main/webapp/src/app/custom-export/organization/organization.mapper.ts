@@ -2,82 +2,97 @@ import { Organization } from "./organization";
 import { Injectable } from "@angular/core";
 import { OrganizationType } from "./organization-type.enum";
 import { Tree } from "./tree";
-import { isUndefined } from "util";
-import { FlatSchool } from "./flat-school";
+import { Option } from "../../shared/form/search-select";
+import { UserOrganizations } from "./user-organizations";
 
 @Injectable()
 export class OrganizationMapper {
 
-  districtGroup(value: FlatSchool): Organization {
-    return {
-      type: OrganizationType.DistrictGroup,
-      isOrIsAncestorOf: x => value.districtGroupId === x.districtGroupId,
-      id: value.districtGroupId,
-      name: value.districtGroupName,
-      districtGroupId: value.districtGroupId
-    };
-  }
+  readonly nullDistrict: Organization = this.district({});
+  readonly nullSchoolGroup: Organization = this.schoolGroup({});
 
-  district(value: FlatSchool): Organization {
+  district(value: any): Organization {
     return {
+      uuid: this.districtUuid(value.id),
       type: OrganizationType.District,
-      isOrIsAncestorOf: x => value.districtId === x.districtId,
-      id: value.districtId,
-      name: value.districtName,
-      districtId: value.districtId,
-      districtGroupId: value.districtGroupId
+      isOrIsAncestorOf: x => value.id === x.districtId,
+      id: value.id,
+      name: value.name,
+      districtId: value.id
     };
   }
 
-  schoolGroup(value: FlatSchool): Organization {
+  schoolGroup(value: any): Organization {
     return {
+      uuid: this.schoolGroupUuid(value.id),
       type: OrganizationType.SchoolGroup,
-      isOrIsAncestorOf: x => value.schoolGroupId === x.schoolGroupId,
-      id: value.schoolGroupId,
-      name: value.schoolGroupName,
-      schoolGroupId: value.schoolGroupId,
-      districtId: value.districtId,
-      districtGroupId: value.districtGroupId,
+      isOrIsAncestorOf: x => value.id === x.schoolGroupId,
+      id: value.id,
+      name: value.name,
+      schoolGroupId: value.id,
+      districtId: value.districtId
     };
   }
 
-  school(value: FlatSchool): Organization {
+  school(value: any): Organization {
     return {
+      uuid: this.schoolUuid(value.id),
       type: OrganizationType.School,
-      isOrIsAncestorOf: x => value.schoolId === x.schoolId,
+      isOrIsAncestorOf: x => value.id === x.schoolId,
       id: value.id,
       name: value.name,
       schoolId: value.id,
       schoolGroupId: value.schoolGroupId,
-      districtId: value.districtId,
-      districtGroupId: value.districtGroupId
+      districtId: value.districtId
     };
   }
 
-  organizations(schools: FlatSchool[]): Organization[] {
-    let organizations: Organization[] = [],
-      districtGroups: Grouping<number, Organization> = new Grouping(organizations),
-      districts: Grouping<number, Organization> = new Grouping(organizations),
-      schoolGroups: Grouping<number, Organization> = new Grouping(organizations);
+  options(schools: Organization[], optionsByUuid: Map<string, Option>): Option[] {
+    let options: Option[] = [],
+      districts: Grouping<string, Option> = new Grouping(options),
+      schoolGroups: Grouping<string, Option> = new Grouping(options);
 
     schools.forEach(school => {
-      districtGroups.computeIfAbsent(school.districtGroupId, () => this.districtGroup(school));
-      districts.computeIfAbsent(school.districtId, () => this.district(school));
-      schoolGroups.computeIfAbsent(school.schoolGroupId, () => this.schoolGroup(school));
-      organizations.push(this.school(school));
+      let districtUuid = this.districtUuid(school.districtId),
+        schoolGroupUuid = this.schoolGroupUuid(school.schoolGroupId),
+        schoolUuid = school.uuid;
+
+      school.districtId && districts.computeIfAbsent(districtUuid, () => optionsByUuid.get(districtUuid));
+      school.schoolGroupId && schoolGroups.computeIfAbsent(schoolGroupUuid, () => optionsByUuid.get(schoolGroupUuid));
+      options.push(optionsByUuid.get(schoolUuid));
     });
-    return organizations;
+    return options;
   }
 
-  organizationTree(schools: FlatSchool[]): Tree<Organization> {
+  organizationTree(schools: Organization[], organizations: UserOrganizations): Tree<Organization> {
     let root = new Tree<Organization>();
     schools.forEach(school => root
-      .getOrCreate(x => x.id === school.districtGroupId, this.districtGroup(school))
-      .getOrCreate(x => x.id === school.districtId, this.district(school))
-      .getOrCreate(x => x.id === school.schoolGroupId, this.schoolGroup(school))
-      .create(this.school(school))
+        .getOrCreate(x => x.id === school.districtId, organizations.districtsById.get(school.districtId))
+        .getOrCreate(x => x.id === school.schoolGroupId, organizations.schoolGroupsById.get(school.schoolGroupId))
+        .create(school)
     );
     return root;
+  }
+
+  /**
+   * @param {OrganizationType} type the organization type
+   * @param {number} id the organization entity ID (these can collide because schools, districts etc. are modeled as unique entities by the API)
+   * @returns {string} <type_number>-<id_number>
+   */
+  private organizationUuid(type: OrganizationType, id: number): string {
+    return `${type}-${id}`;
+  }
+
+  private districtUuid(id: number): string {
+    return this.organizationUuid(OrganizationType.District, id);
+  }
+
+  private schoolGroupUuid(id: number): string {
+    return this.organizationUuid(OrganizationType.SchoolGroup, id);
+  }
+
+  private schoolUuid(id: number): string {
+    return this.organizationUuid(OrganizationType.School, id);
   }
 
 }
@@ -99,11 +114,10 @@ class Grouping<A, B> {
    * @param {() => B} factory the result of this method will be added to the array
    */
   computeIfAbsent(key: A, factory: () => B): void {
-    if (isUndefined(key) || this.keys.has(key)) {
-      return;
+    if (!this.keys.has(key)) {
+      this.keys.add(key);
+      this.values.push(factory());
     }
-    this.keys.add(key);
-    this.values.push(factory());
   }
 
 }

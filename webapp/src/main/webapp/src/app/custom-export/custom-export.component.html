@@ -12,6 +12,7 @@
                 {{'labels.custom-export.form.organization.label' | translate}}
               </label>
               <span search-select-with-button
+                    [disabled]="addDisabled"
                     [options]="options"
                     (select)="add($event)"
                     dropdownThreshold="10"
@@ -20,7 +21,8 @@
                     buttonLabel="{{'labels.custom-export.form.organization.add' | translate}}">
               </span>
               <div class="ml-xs mt-xs">
-                <a class="aqua"
+                <a *ngIf="selectAllDisabled"
+                   class="aqua"
                    href="javascript:void(0)"
                    [style.text-decoration]="'none'"
                    (click)="toggleSelectAll()"><i class="fa" [ngClass]="{'fa-check-square': selectedAll, 'fa-square-o': !selectedAll}"></i>

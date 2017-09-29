@@ -6,6 +6,11 @@ import { OrganizationType } from "./organization-type.enum";
 export interface Organization {
 
   /**
+   * Fully qualified organization ID
+   */
+  readonly uuid: string;
+
+  /**
    * The organization type (school, district, ...etc)
    */
   readonly type: OrganizationType;
@@ -50,6 +55,6 @@ export interface Organization {
    * @param x the organization to test
    * @returns <code>true</code> if the organization's ID is the same or it is an ancestor of the given organization
    */
-  isOrIsAncestorOf?: (x: Organization) => boolean;
+  readonly isOrIsAncestorOf?: (x: Organization) => boolean;
 
 }
