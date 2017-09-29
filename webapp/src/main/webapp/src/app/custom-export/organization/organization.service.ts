@@ -24,13 +24,10 @@ export class OrganizationService {
       )
       .subscribe(response => {
 
-
         let [ schools, schoolGroups, districts, districtGroups ] = response,
           schoolGroupNamesById = new Map<number, any>(schoolGroups.map(x => <any>[ x.id, x.name ])),
           districtNamesById = new Map<number, any>(districts.map(x => <any>[ x.id, x.name ])),
           districtGroupNamesById = new Map<number, any>(districtGroups.map(x => <any>[ x.id, x.name ]));
-
-        console.log('schools', schools);
 
         let flatSchools = schools
           .map(school => <FlatSchool>{
