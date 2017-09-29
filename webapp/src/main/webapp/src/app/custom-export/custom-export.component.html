@@ -12,7 +12,6 @@
                 {{'labels.custom-export.form.organization.label' | translate}}
               </label>
               <span search-select-with-button
-                    [disabled]="addDisabled"
                     [options]="options"
                     (select)="add($event)"
                     dropdownThreshold="10"

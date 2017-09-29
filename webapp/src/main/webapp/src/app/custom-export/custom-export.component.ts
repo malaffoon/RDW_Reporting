@@ -88,11 +88,6 @@ export class CustomExportComponent implements OnInit {
       this._unselected = this._organizations.schools
         .filter(organization => !value.some(x => x.id === organization.id));
 
-      console.log('un', this._unselected)
-
-      // let addDisabled = this._selected.length > 1
-      //   && this._selected.some(x => x.districtId !== this._selected[0].districtId);
-
       // restrict allowed additions to one district maximum
       let districtRestrictedUnselectedOrganizations = this._selected.length == 0
         ? this._unselected
