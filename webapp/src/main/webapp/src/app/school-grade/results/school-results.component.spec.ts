@@ -5,7 +5,7 @@ import { SharedModule } from "primeng/components/common/shared";
 import { BrowserModule } from "@angular/platform-browser";
 import { Observable } from "rxjs";
 import { RequestOptionsArgs } from "@angular/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { SchoolResultsComponent } from "./school-results.component";
 import { AssessmentsModule } from "../../assessments/assessments.module";
@@ -25,6 +25,8 @@ import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
 import { SchoolSelectComponent } from "../school-select/school-select.component";
+import { UserModule } from "../../user/user.module";
+import { RouterTestingModule } from "@angular/router/testing";
 import { OrganizationService } from "../organization.service";
 
 let availableGrades = [];
@@ -34,6 +36,8 @@ describe('SchoolResultsComponent', () => {
   let fixture: ComponentFixture<SchoolResultsComponent>;
   let exportService: any;
   let route: MockActivatedRoute;
+  let school = new School();
+  school.id = 1;
 
   beforeEach(async(() => {
     let user = new User();
@@ -55,9 +59,11 @@ describe('SchoolResultsComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
+        UserModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterTestingModule,
         AssessmentsModule,
         TypeaheadModule,
         DropdownModule,
@@ -70,21 +76,16 @@ describe('SchoolResultsComponent', () => {
       providers: [
         OrganizationService,
         { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: Router, useClass: MockRouter },
         SchoolAssessmentService,
         { provide: DataService, useClass: MockDataService },
         { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionService },
         { provide: SchoolService, useClass: MockSchoolService },
-        {
-          provide: ActivatedRoute,
-          useValue: route
-        },
+        { provide: ActivatedRoute, useValue: route },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         { provide: CsvExportService, useValue: exportService },
         { provide: UserService, useClass: MockUserService }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -96,7 +97,6 @@ describe('SchoolResultsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 
   it('should init if school is null', () => {
     route.snapshot.params[ "schoolId" ] = 212122;
@@ -111,7 +111,7 @@ describe('SchoolResultsComponent', () => {
     availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
 
     component.currentGrade = { code: "04", id: 4 };
-    component.schoolSelectChanged(new School());
+    component.schoolSelectChanged(school);
 
     expect(component.currentGrade.id).toBe(4);
   });
@@ -120,7 +120,7 @@ describe('SchoolResultsComponent', () => {
     availableGrades = [ { code: "03", id: 3 }, { code: "04", id: 4 }, { code: "05", id: 5 } ];
 
     component.currentGrade = { code: "11", id: 11 };
-    component.schoolSelectChanged(new School());
+    component.schoolSelectChanged(school);
 
     expect(component.currentGrade.id).toBe(3);
   });
@@ -129,7 +129,7 @@ describe('SchoolResultsComponent', () => {
     availableGrades = [];
 
     component.currentGrade = { code: "11", id: 11 };
-    component.schoolSelectChanged(new School());
+    component.schoolSelectChanged(school);
 
     expect(component.currentGrade).toBeUndefined();
   });
@@ -145,12 +145,6 @@ class MockDataService {
 class MockSchoolService {
   findGradesWithAssessmentsForSchool(school: School) {
     return Observable.of(availableGrades);
-  }
-}
-
-class MockRouter {
-  navigate(params: any[]) {
-    return Observable.empty().toPromise();
   }
 }
 

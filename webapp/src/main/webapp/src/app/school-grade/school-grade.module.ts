@@ -14,6 +14,7 @@ import { Angulartics2Module } from "angulartics2";
 import { ReportModule } from "../report/report.module";
 import { SchoolSelectComponent } from "./school-select/school-select.component";
 import { TypeaheadModule } from "ngx-bootstrap";
+import { UserModule } from "../user/user.module";
 import { OrganizationService } from "./organization.service";
 
 /**
@@ -28,6 +29,7 @@ import { OrganizationService } from "./organization.service";
   ],
   imports: [
     CommonModule,
+    UserModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
@@ -38,7 +40,10 @@ import { OrganizationService } from "./organization.service";
     TypeaheadModule,
     Angulartics2Module.forChild()
   ],
-  exports: [ SchoolGradeComponent, SchoolResultsComponent ],
+  exports: [
+    SchoolGradeComponent,
+    SchoolResultsComponent
+  ],
   providers: [
     CurrentSchoolResolve,
     OrganizationService,

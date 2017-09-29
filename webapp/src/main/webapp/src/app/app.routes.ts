@@ -21,6 +21,8 @@ import { ReportsComponent } from "./report/reports.component";
 import { ErrorComponent } from "./error/error.component";
 import { AccessDeniedComponent } from "./error/access-denied/access-denied.component";
 import { AuthorizeAtleastOneCanActivate } from "./user/authorize-at-least-one.can-activate";
+import { CustomExportComponent } from "./custom-export/custom-export.component";
+import { UserOrganizationsResolve } from "app/custom-export/organization/user-organizations.resolve";
 
 
 const studentTestHistoryChildRoute = {
@@ -140,6 +142,14 @@ export const routes: Routes = [
         canActivate: [ AuthorizeCanActivate ],
         resolve: { reports: ReportsResolve },
         component: ReportsComponent
+      },
+      {
+        path: 'custom-export',
+        pathMatch: 'full',
+        data: { breadcrumb: { translate: 'labels.custom-export.heading' }, permissions: [ 'INDIVIDUAL_PII_READ' ]},
+        canActivate: [ AuthorizeCanActivate ],
+        resolve: { organizations: UserOrganizationsResolve },
+        component: CustomExportComponent
       },
       {
         path: 'session-expired',

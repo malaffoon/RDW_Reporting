@@ -23,6 +23,7 @@ import { StudentHistoryResponsesStudentResolve } from "./responses/student-histo
 import { CsvModule } from "../csv-export/csv-export.module";
 import { ReportModule } from "../report/report.module";
 import { PopoverModule } from "ngx-bootstrap";
+import { UserModule } from "../user/user.module";
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { PopoverModule } from "ngx-bootstrap";
   imports: [
     AssessmentsModule,
     CommonModule,
+    UserModule,
     CsvModule,
     BrowserAnimationsModule,
     BrowserModule,

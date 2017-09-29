@@ -5,7 +5,7 @@ import { SharedModule } from "primeng/components/common/shared";
 import { BrowserModule } from "@angular/platform-browser";
 import { Observable } from "rxjs";
 import { RequestOptionsArgs } from "@angular/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { AssessmentsModule } from "../../assessments/assessments.module";
 import { CommonModule } from "../../shared/common.module";
@@ -22,6 +22,8 @@ import { MockActivatedRoute } from "../../../test/mock.activated-route";
 import { GroupResultsComponent } from "./group-results.component";
 import { GroupAssessmentService } from "./group-assessment.service";
 import { PopoverModule } from "ngx-bootstrap";
+import { UserModule } from "../../user/user.module";
+import { RouterTestingModule } from "@angular/router/testing";
 
 let availableGrades = [];
 
@@ -51,9 +53,11 @@ describe('GroupResultsComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
+        UserModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterTestingModule,
         AssessmentsModule,
         DropdownModule,
         SharedModule,
@@ -64,20 +68,15 @@ describe('GroupResultsComponent', () => {
       declarations: [ GroupResultsComponent ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: Router, useClass: MockRouter },
         GroupAssessmentService,
         { provide: DataService, useClass: MockDataService },
         { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionService },
-        {
-          provide: ActivatedRoute,
-          useValue: route
-        },
+        { provide: ActivatedRoute, useValue: route },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         { provide: CsvExportService, useValue: exportService },
         { provide: UserService, useClass: MockUserService }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -104,12 +103,6 @@ describe('GroupResultsComponent', () => {
 class MockDataService {
   get(url, options?: RequestOptionsArgs): Observable<any> {
     return Observable.of({});
-  }
-}
-
-class MockRouter {
-  navigate(params: any[]) {
-    return Observable.empty().toPromise();
   }
 }
 
