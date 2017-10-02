@@ -90,7 +90,6 @@ export class CustomExportComponent implements OnInit {
 
     this.selected = [];
 
-    // TODO should year drive the orgs and be part of the user organizations request?
     this.filterOptionService.getExamFilterOptions()
       .subscribe(options => {
         this._schoolYears = options.schoolYears;
