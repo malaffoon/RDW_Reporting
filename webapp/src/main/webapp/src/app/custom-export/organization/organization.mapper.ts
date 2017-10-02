@@ -4,6 +4,8 @@ import { OrganizationType } from "./organization-type.enum";
 import { Tree } from "./tree";
 import { Option } from "../../shared/form/search-select";
 import { UserOrganizations } from "./user-organizations";
+import { CustomExportRequest } from "../custom-export.service";
+import { isUndefined } from "util";
 
 @Injectable()
 export class OrganizationMapper {
@@ -64,13 +66,42 @@ export class OrganizationMapper {
     return options;
   }
 
-  organizationTree(schools: Organization[], organizations: UserOrganizations): Tree<Organization> {
+  /**
+   * Creates organization hierarchy for the given schools and master set of organizations.
+   * This method will add placeholder ancestor nodes to the school when then school group or district ID is undefined.
+   *
+   * @param {Organization[]} schools the schools to create the hierarchy with
+   * @param {UserOrganizations} organizations master set of organizations to draw into the tree when referenced by the school's ancestor IDs
+   * @returns {Tree<Organization>}
+   */
+  organizationTreeWithPlaceholders(schools: Organization[], organizations: UserOrganizations): Tree<Organization> {
     let root = new Tree<Organization>();
     schools.forEach(school => root
         .getOrCreate(x => x.id === school.districtId, organizations.districtsById.get(school.districtId))
         .getOrCreate(x => x.id === school.schoolGroupId, organizations.schoolGroupsById.get(school.schoolGroupId))
         .create(school)
     );
+    return root;
+  }
+
+  /**
+   * Creates organization hierarchy with the given organizations.
+   *
+   * @param {UserOrganizations} organizations master set of organizations to create the tree from
+   * @returns {Tree<Organization>} organization hierarchy
+   */
+  organizationTree(organizations: UserOrganizations): Tree<Organization> {
+    let root = new Tree<Organization>();
+    organizations.schools.forEach(school => {
+      let node = root;
+      if (!isUndefined(school.districtId)) {
+        node = node.getOrCreate(x => x.id === school.districtId, organizations.districtsById.get(school.districtId))
+      }
+      if (!isUndefined(school.schoolGroupId)) {
+        node = node.getOrCreate(x => x.id === school.schoolGroupId, organizations.schoolGroupsById.get(school.schoolGroupId))
+      }
+      node.create(school);
+    });
     return root;
   }
 

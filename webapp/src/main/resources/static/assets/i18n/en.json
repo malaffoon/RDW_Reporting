@@ -507,12 +507,6 @@
             "District": "Districts",
             "DistrictGroup": "District Groups"
           }
-        },
-        "school-year": {
-          "label": "School Year"
-        },
-        "submit": {
-          "label": "Export Results"
         }
       }
     },

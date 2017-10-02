@@ -10,6 +10,7 @@ import { OrganizationService } from "./organization/organization.service";
 import { OrganizationMapper } from "./organization/organization.mapper";
 import { OrganizationTreeComponent } from "./organization/organization-tree.component";
 import { UserOrganizationsResolve } from "./organization/user-organizations.resolve";
+import { CustomExportService } from "./custom-export.service";
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { UserOrganizationsResolve } from "./organization/user-organizations.reso
     OrganizationTreeComponent
   ],
   providers: [
+    CustomExportService,
     OrganizationService,
     OrganizationMapper,
     UserOrganizationsResolve
