@@ -12,6 +12,7 @@ import { GroupAssessmentsResolve } from "./results/group-assessments.resolve";
 import { Angulartics2Module } from 'angulartics2';
 import { ReportModule } from "../report/report.module";
 import { PopoverModule } from "ngx-bootstrap";
+import { UserModule } from "../user/user.module";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { PopoverModule } from "ngx-bootstrap";
   ],
   imports: [
     CommonModule,
+    UserModule,
     BrowserModule,
     BrowserAnimationsModule,
     AssessmentsModule,
@@ -30,8 +32,13 @@ import { PopoverModule } from "ngx-bootstrap";
     ReportModule,
     Angulartics2Module.forChild()
   ],
-  exports: [ GroupsComponent ],
-  providers: [ GroupAssessmentsResolve, GroupAssessmentService ]
+  exports: [
+    GroupsComponent
+  ],
+  providers: [
+    GroupAssessmentsResolve,
+    GroupAssessmentService
+  ]
 })
 export class GroupsModule {
 }

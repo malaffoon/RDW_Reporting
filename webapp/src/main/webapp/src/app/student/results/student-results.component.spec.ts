@@ -6,7 +6,7 @@ import { CommonModule } from "../../shared/common.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/components/common/shared";
 import { TranslateModule } from "@ngx-translate/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { StudentExamHistory } from "../model/student-exam-history.model";
 import { Student } from "../model/student.model";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
@@ -24,6 +24,8 @@ import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
 import { PopoverModule } from "ngx-bootstrap";
+import { UserModule } from "../../user/user.module";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -52,8 +54,10 @@ describe('StudentResultsComponent', () => {
         AssessmentsModule,
         BrowserModule,
         CommonModule,
+        UserModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterTestingModule,
         SharedModule,
         ReportModule,
         TranslateModule.forRoot(),
@@ -63,25 +67,14 @@ describe('StudentResultsComponent', () => {
       declarations: [
         StudentResultsComponent
       ],
-      providers: [ {
-        provide: ActivatedRoute,
-        useValue: route
-      }, {
-        provide: Router,
-        useValue: router
-      }, {
-        provide: CsvExportService,
-        useValue: exportService
-      }, {
-        provide: Angulartics2,
-        useValue: mockAngulartics2
-      }, {
-        provide: UserService,
-        useClass: MockUserService
-      } ],
+      providers: [
+        { provide: ActivatedRoute, useValue: route },
+        { provide: CsvExportService, useValue: exportService },
+        { provide: Angulartics2, useValue: mockAngulartics2 },
+        { provide: UserService, useClass: MockUserService }
+      ],
       schemas: [ NO_ERRORS_SCHEMA ]
-    })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(StudentResultsComponent);
     component = fixture.componentInstance;
