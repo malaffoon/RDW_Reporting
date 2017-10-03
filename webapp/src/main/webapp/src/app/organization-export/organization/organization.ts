@@ -44,8 +44,8 @@ export interface Organization {
   readonly districtId?: number;
 
   /**
-   * The organization's district ID
-   * This will be present on schools, school groups, districts or district groups and is used by the isOrIsAncestorOf() method
+   * The organization's createDistrict ID
+   * This will be present on schools, school groups, districts or createDistrict groups and is used by the isOrIsAncestorOf() method
    */
   readonly districtGroupId?: number;
 

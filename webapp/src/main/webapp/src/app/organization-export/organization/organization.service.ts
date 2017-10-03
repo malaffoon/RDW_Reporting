@@ -25,9 +25,9 @@ export class OrganizationService {
     ).map(response => {
 
       let [ remoteSchools, remoteSchoolGroups, remoteDistricts ] = response,
-        schools = remoteSchools.map(x => this.mapper.school(x)),
-        schoolGroups = remoteSchoolGroups.map(x => this.mapper.schoolGroup(x)).concat(this.mapper.nullSchoolGroup),
-        districts = remoteDistricts.map(x => this.mapper.district(x)).concat(this.mapper.nullDistrict);
+        schools = remoteSchools.map(x => this.mapper.createSchool(x)),
+        schoolGroups = remoteSchoolGroups.map(x => this.mapper.createSchoolGroup(x)).concat(this.mapper.nullSchoolGroup),
+        districts = remoteDistricts.map(x => this.mapper.createDistrict(x)).concat(this.mapper.nullDistrict);
 
       return {
         organizations: [ ...districts, ...schoolGroups, ...schools ],

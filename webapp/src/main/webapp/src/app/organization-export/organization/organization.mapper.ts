@@ -4,18 +4,17 @@ import { OrganizationType } from "./organization-type.enum";
 import { Tree } from "./tree";
 import { Option } from "../../shared/form/search-select";
 import { UserOrganizations } from "./user-organizations";
-import { CustomExportRequest } from "../custom-export.service";
 import { isUndefined } from "util";
 
 @Injectable()
 export class OrganizationMapper {
 
-  readonly nullDistrict: Organization = this.district({});
-  readonly nullSchoolGroup: Organization = this.schoolGroup({});
+  readonly nullDistrict: Organization = this.createDistrict({});
+  readonly nullSchoolGroup: Organization = this.createSchoolGroup({});
 
-  district(value: any): Organization {
+  createDistrict(value: any): Organization {
     return {
-      uuid: this.districtUuid(value.id),
+      uuid: this.createDistrictUuid(value.id),
       type: OrganizationType.District,
       isOrIsAncestorOf: x => value.id === x.districtId,
       id: value.id,
@@ -24,9 +23,9 @@ export class OrganizationMapper {
     };
   }
 
-  schoolGroup(value: any): Organization {
+  createSchoolGroup(value: any): Organization {
     return {
-      uuid: this.schoolGroupUuid(value.id),
+      uuid: this.createSchoolGroupUuid(value.id),
       type: OrganizationType.SchoolGroup,
       isOrIsAncestorOf: x => value.id === x.schoolGroupId,
       id: value.id,
@@ -36,9 +35,9 @@ export class OrganizationMapper {
     };
   }
 
-  school(value: any): Organization {
+  createSchool(value: any): Organization {
     return {
-      uuid: this.schoolUuid(value.id),
+      uuid: this.createSchoolUuid(value.id),
       type: OrganizationType.School,
       isOrIsAncestorOf: x => value.id === x.schoolId,
       id: value.id,
@@ -49,14 +48,21 @@ export class OrganizationMapper {
     };
   }
 
-  options(schools: Organization[], optionsByUuid: Map<string, Option>): Option[] {
+  /**
+   * Creates organization options for selection.
+   *
+   * @param {Organization[]} schools
+   * @param {Map<string, Option>} optionsByUuid
+   * @returns {Option[]}
+   */
+  createOptions(schools: Organization[], optionsByUuid: Map<string, Option>): Option[] {
     let options: Option[] = [],
       districts: Grouping<string, Option> = new Grouping(options),
       schoolGroups: Grouping<string, Option> = new Grouping(options);
 
     schools.forEach(school => {
-      let districtUuid = this.districtUuid(school.districtId),
-        schoolGroupUuid = this.schoolGroupUuid(school.schoolGroupId),
+      let districtUuid = this.createDistrictUuid(school.districtId),
+        schoolGroupUuid = this.createSchoolGroupUuid(school.schoolGroupId),
         schoolUuid = school.uuid;
 
       school.districtId && districts.computeIfAbsent(districtUuid, () => optionsByUuid.get(districtUuid));
@@ -68,13 +74,13 @@ export class OrganizationMapper {
 
   /**
    * Creates organization hierarchy for the given schools and master set of organizations.
-   * This method will add placeholder ancestor nodes to the school when then school group or district ID is undefined.
+   * This method will add placeholder ancestor nodes to the school when then school group or createDistrict ID is undefined.
    *
    * @param {Organization[]} schools the schools to create the hierarchy with
    * @param {UserOrganizations} organizations master set of organizations to draw into the tree when referenced by the school's ancestor IDs
    * @returns {Tree<Organization>}
    */
-  organizationTreeWithPlaceholders(schools: Organization[], organizations: UserOrganizations): Tree<Organization> {
+  createOrganizationTreeWithPlaceholders(schools: Organization[], organizations: UserOrganizations): Tree<Organization> {
     let root = new Tree<Organization>();
     schools.forEach(school => root
         .getOrCreate(x => x.id === school.districtId, organizations.districtsById.get(school.districtId))
@@ -90,7 +96,7 @@ export class OrganizationMapper {
    * @param {UserOrganizations} organizations master set of organizations to create the tree from
    * @returns {Tree<Organization>} organization hierarchy
    */
-  organizationTree(organizations: UserOrganizations): Tree<Organization> {
+  createOrganizationTree(organizations: UserOrganizations): Tree<Organization> {
     let root = new Tree<Organization>();
     organizations.schools.forEach(school => {
       let node = root;
@@ -110,20 +116,20 @@ export class OrganizationMapper {
    * @param {number} id the organization entity ID (these can collide because schools, districts etc. are modeled as unique entities by the API)
    * @returns {string} <type_number>-<id_number>
    */
-  private organizationUuid(type: OrganizationType, id: number): string {
+  private createOrganizationUuid(type: OrganizationType, id: number): string {
     return `${type}-${id}`;
   }
 
-  private districtUuid(id: number): string {
-    return this.organizationUuid(OrganizationType.District, id);
+  private createDistrictUuid(id: number): string {
+    return this.createOrganizationUuid(OrganizationType.District, id);
   }
 
-  private schoolGroupUuid(id: number): string {
-    return this.organizationUuid(OrganizationType.SchoolGroup, id);
+  private createSchoolGroupUuid(id: number): string {
+    return this.createOrganizationUuid(OrganizationType.SchoolGroup, id);
   }
 
-  private schoolUuid(id: number): string {
-    return this.organizationUuid(OrganizationType.School, id);
+  private createSchoolUuid(id: number): string {
+    return this.createOrganizationUuid(OrganizationType.School, id);
   }
 
 }
