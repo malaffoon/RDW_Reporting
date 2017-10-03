@@ -1,4 +1,136 @@
 sql:
+  export:
+    exam: >-
+      select
+        'DistrictId',
+        'DistrictName',
+
+        'NcesId',
+        'SchoolId',
+        'SchoolName',
+
+        'StudentIdentifier',
+        'FirstName',
+        'LastOrSurname',
+
+        'SubmitDateTime',
+        'SchoolYear',
+        'TestSessionId',
+
+        'AssessmentType',
+        'AssessmentName',
+        'Subject',
+
+        'GradeLevelWhenAssessed',
+        'Completeness',
+        'AdministrationCondition',
+
+        'ScaleScoreAchievementLevel',
+        'ScaleScore',
+        'ScaleScoreStandardError',
+
+        'Claim1ScoreAchievementLevel',
+        'Claim2ScoreAchievementLevel',
+        'Claim3ScoreAchievementLevel',
+        'Claim4ScoreAchievementLevel',
+
+        'Student Gender',
+        'Migrant Status',
+        'Section 504',
+        'Iep',
+        'Economic Disadvantage',
+        'Lep',
+
+        'HispanicOrLatinoEthnicity',
+        'AmericanIndianOrAlaskaNative',
+        'Asian',
+        'BlackOrAfricanAmerican',
+        'White',
+        'NativeHawaiianOrOtherPacificIslander',
+        'TwoOrMoreRaces',
+        'Filipino',
+
+        'AssignedAccommodationList'
+      union all
+      select
+        d.natural_id as district_natural_id,
+        d.name as district_name,
+
+        coalesce(s.external_id, '') as school_ncesid,
+        s.natural_id as school_natural_id,
+        s.name as school_name,
+
+        st.ssid as student_ssid,
+        st.first_name as student_first_name,
+        st.last_or_surname as student_last_name,
+
+        e.completed_at,
+        e.school_year,
+        e.session_id,
+
+        at.code as asmt_code,
+        a.label as asmt_label,
+        su.code as asmt_subject_code,
+
+        e.grade_code,
+        e.completeness_code,
+        e.administration_condition_code,
+
+        e.performance_level,
+        e.scale_score,
+        e.scale_score_std_err,
+
+        coalesce(e.claim1_category, ''),
+        coalesce(e.claim2_category, ''),
+        coalesce(e.claim3_category, ''),
+        coalesce(e.claim4_category, ''),
+
+        st.gender_code as student_gender_code,
+
+        (case when e.migrant_status then 'Yes' else 'No' end),
+        (case when e.section504 then 'Yes' else 'No' end),
+        (case when e.iep then 'Yes' else 'No' end),
+        (case when e.economic_disadvantage then 'Yes' else 'No' end),
+        (case when e.lep then 'Yes' else 'No' end),
+
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'HispanicOrLatinoEthnicity') then 'Yes' else 'No' end ),
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'AmericanIndianOrAlaskaNative') then 'Yes' else 'No' end ),
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'Asian') then 'Yes' else 'No' end ),
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'BlackOrAfricanAmerican') then 'Yes' else 'No' end ),
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'White') then 'Yes' else 'No' end ),
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'NativeHawaiianOrOtherPacificIslander') then 'Yes' else 'No' end ),
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'TwoOrMoreRaces') then 'Yes' else 'No' end ),
+        (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'Filipino') then 'Yes' else 'No' end ),
+
+        coalesce((select GROUP_CONCAT(a.code SEPARATOR '|')
+                  from exam_available_accommodation eaa
+                    join accommodation a on a.id = eaa.accommodation_id
+                  where eaa.exam_id = e.id), '')
+
+      into outfile ${app.export.destination} :export_location
+      fields terminated by ',' optionally enclosed by '"'
+      lines terminated by '\n'
+      from exam e
+        join student st on st.id = e.student_id
+        join asmt a on e.asmt_id = a.id
+        join subject su on su.id = a.subject_id
+        join asmt_type at on at.id = a.type_id
+        join school s on e.school_id = s.id
+        join district d on d.id = s.district_id
+      where e.school_year = :school_year and
+          (
+            1 = :individual_statewide
+            or s.district_group_id in (:individual_district_group_ids)
+            or s.district_id in (:individual_district_ids)
+            or s.school_group_id in (:individual_school_group_ids)
+            or e.school_id in (:individual_school_ids)
+          ) and (
+            s.district_group_id in (:query_district_group_ids)
+            or s.district_id in (:query_district_ids)
+            or s.school_group_id in (:query_school_group_ids)
+            or e.school_id in (:query_school_ids)
+          )
+
   report:
 
     create: >-
