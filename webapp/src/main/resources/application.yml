@@ -3,6 +3,9 @@ management:
   port: 8008
   security:
     enabled: false
+  health:
+    redis:
+      enabled: false
 
 saml:
   # SAML keystore path: file:/some/path/saml.jks
@@ -61,6 +64,9 @@ spring:
         output:
           destination: GROUPS
           group: default
+
+  session:
+    store-type: none
 
 # spring auto-configured aws defense
 cloud:
