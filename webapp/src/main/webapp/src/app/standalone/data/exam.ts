@@ -33,7 +33,7 @@
 //     state: {
 //       name: "California"
 //     },
-//     createDistrict: {
+//     district: {
 //       name: "Daybreak School District"
 //     },
 //     institution: {
