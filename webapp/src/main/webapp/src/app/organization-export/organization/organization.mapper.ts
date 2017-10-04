@@ -1,50 +1,62 @@
-import { Organization } from "./organization";
+import { District, Organization, School, SchoolGroup } from "./organization";
 import { Injectable } from "@angular/core";
-import { OrganizationType } from "./organization-type.enum";
 import { Tree } from "./tree";
 import { Option } from "../../shared/form/search-select";
 import { UserOrganizations } from "./user-organizations";
 import { isUndefined } from "util";
+import { OrganizationType } from "./organization-type.enum";
+import { createUuid } from "./organization-support";
 
 @Injectable()
 export class OrganizationMapper {
 
-  readonly nullDistrict: Organization = this.createDistrict({});
-  readonly nullSchoolGroup: Organization = this.createSchoolGroup({});
+  private readonly nullDistrict: Organization = this.createDistrict();
+  private readonly nullSchoolGroup: Organization = this.createSchoolGroup();
 
-  createDistrict(value: any): Organization {
-    return {
-      uuid: this.createDistrictUuid(value.id),
-      type: OrganizationType.District,
-      isOrIsAncestorOf: x => value.id === x.districtId,
-      id: value.id,
-      name: value.name,
-      districtId: value.id
-    };
+  createDistrict(value: any = {}): District {
+    let district = new District();
+    district.id = value.id;
+    district.name = value.name;
+    return district;
   }
 
-  createSchoolGroup(value: any): Organization {
-    return {
-      uuid: this.createSchoolGroupUuid(value.id),
-      type: OrganizationType.SchoolGroup,
-      isOrIsAncestorOf: x => value.id === x.schoolGroupId,
-      id: value.id,
-      name: value.name,
-      schoolGroupId: value.id,
-      districtId: value.districtId
-    };
+  createSchoolGroup(value: any = {}): SchoolGroup {
+    let schoolGroup = new SchoolGroup();
+    schoolGroup.id = value.id;
+    schoolGroup.name = value.name;
+    schoolGroup.districtId = value.districtId;
+    return schoolGroup;
   }
 
-  createSchool(value: any): Organization {
+  createSchool(value: any = {}): School {
+    let school = new School();
+    school.id = value.id;
+    school.name = value.name;
+    school.schoolGroupId = value.schoolGroupId;
+    school.districtId = value.districtId;
+    return school;
+  }
+
+  /**
+   * Creates local UserOrganizations model from the provided remote school, school group and district API models
+   *
+   * @param {any[]} remoteSchools
+   * @param {any[]} remoteSchoolGroups
+   * @param {any[]} remoteDistricts
+   * @returns {UserOrganizations}
+   */
+  createUserOrganizations(remoteSchools: any[], remoteSchoolGroups: any[], remoteDistricts: any[]): UserOrganizations {
+    let schools = remoteSchools.map(x => this.createSchool(x)),
+      schoolGroups = remoteSchoolGroups.map(x => this.createSchoolGroup(x)),
+      districts = remoteDistricts.map(x => this.createDistrict(x));
+
     return {
-      uuid: this.createSchoolUuid(value.id),
-      type: OrganizationType.School,
-      isOrIsAncestorOf: x => value.id === x.schoolId,
-      id: value.id,
-      name: value.name,
-      schoolId: value.id,
-      schoolGroupId: value.schoolGroupId,
-      districtId: value.districtId
+      organizations: [ ...districts, ...schoolGroups, ...schools ],
+      schools: schools,
+      schoolGroups: schoolGroups,
+      schoolGroupsById: new Map<number, Organization>(schoolGroups.map(x => <any>[ x.id, x ])),
+      districts: districts,
+      districtsById: new Map<number, Organization>(districts.map(x => <any>[ x.id, x ]))
     };
   }
 
@@ -61,8 +73,8 @@ export class OrganizationMapper {
       schoolGroups: Grouping<string, Option> = new Grouping(options);
 
     schools.forEach(school => {
-      let districtUuid = this.createDistrictUuid(school.districtId),
-        schoolGroupUuid = this.createSchoolGroupUuid(school.schoolGroupId),
+      let districtUuid = createUuid(OrganizationType.District, school.districtId),
+        schoolGroupUuid = createUuid(OrganizationType.SchoolGroup, school.schoolGroupId),
         schoolUuid = school.uuid;
 
       school.districtId && districts.computeIfAbsent(districtUuid, () => optionsByUuid.get(districtUuid));
@@ -83,8 +95,8 @@ export class OrganizationMapper {
   createOrganizationTreeWithPlaceholders(schools: Organization[], organizations: UserOrganizations): Tree<Organization> {
     let root = new Tree<Organization>();
     schools.forEach(school => root
-        .getOrCreate(x => x.id === school.districtId, organizations.districtsById.get(school.districtId))
-        .getOrCreate(x => x.id === school.schoolGroupId, organizations.schoolGroupsById.get(school.schoolGroupId))
+        .getOrCreate(x => x.id === school.districtId, this.or(organizations.districtsById.get(school.districtId), this.nullDistrict))
+        .getOrCreate(x => x.id === school.schoolGroupId, this.or(organizations.schoolGroupsById.get(school.schoolGroupId), this.nullSchoolGroup))
         .create(school)
     );
     return root;
@@ -111,25 +123,8 @@ export class OrganizationMapper {
     return root;
   }
 
-  /**
-   * @param {OrganizationType} type the organization type
-   * @param {number} id the organization entity ID (these can collide because schools, districts etc. are modeled as unique entities by the API)
-   * @returns {string} <type_number>-<id_number>
-   */
-  private createOrganizationUuid(type: OrganizationType, id: number): string {
-    return `${type}-${id}`;
-  }
-
-  private createDistrictUuid(id: number): string {
-    return this.createOrganizationUuid(OrganizationType.District, id);
-  }
-
-  private createSchoolGroupUuid(id: number): string {
-    return this.createOrganizationUuid(OrganizationType.SchoolGroup, id);
-  }
-
-  private createSchoolUuid(id: number): string {
-    return this.createOrganizationUuid(OrganizationType.School, id);
+  private or(a: any, b: any) {
+    return isUndefined(a) ? b : a;
   }
 
 }
