@@ -61,9 +61,6 @@ app:
   state:
     code: CA
 
-  export:
-    destination:
-
   archive:
     root: file:///tmp/
 

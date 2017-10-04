@@ -107,7 +107,7 @@ sql:
                     join accommodation a on a.id = eaa.accommodation_id
                   where eaa.exam_id = e.id), '')
 
-      into outfile ${app.export.destination} :export_location
+      into outfile ::EXPORT_DESTINATION:: :export_location
       fields terminated by ',' optionally enclosed by '"'
       lines terminated by '\n'
       from exam e
