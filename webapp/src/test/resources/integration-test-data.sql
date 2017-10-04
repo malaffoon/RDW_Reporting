@@ -1,13 +1,19 @@
-insert into district (id, natural_id, name) values
-  (-10, 'district1', 'district1'),
-  (-20, 'district2', 'district2'),
-  (-30, 'district3', 'district3');
+insert into school_group (id, natural_id, name) values
+  (-10, 'schoolGroup1', 'schoolGroup1');
 
-insert into school (id, district_id, natural_id, name, import_id, updated, migrate_id) VALUES
-  (-10, -10, 'school1', 'school1', -1, '1997-07-18 20:14:34.000000', -1),
-  (-20, -10, 'school2', 'school2', -1, '1997-07-18 20:14:34.000000', -1),
-  (-30, -20, 'school3', 'school3', -1, '1997-07-18 20:14:34.000000', -1),
-  (-40, -30, 'school4', 'school4', -1, '1997-07-18 20:14:34.000000', -1);
+insert into district_group (id, natural_id, name) values
+  (-10, 'districtGroup1', 'districtGroup1');
+
+insert into district (id, natural_id, name) values
+  (-10, 'districtNat1', 'district1'),
+  (-20, 'districtNat2', 'district2'),
+  (-30, 'districtNat3', 'district3');
+
+insert into school (id, district_id, natural_id, name, import_id, updated, migrate_id, school_group_id, district_group_id, external_id) VALUES
+  (-10, -10, 'schoolNat1', 'school1', -1, '1997-07-18 20:14:34.000000', -1, null, null, 'externalId1'),
+  (-20, -10, 'schoolNat2', 'school2', -1, '1997-07-18 20:14:34.000000', -1, -10, null, 'externalId2'),
+  (-30, -20, 'schoolNat3', 'school3', -1, '1997-07-18 20:14:34.000000', -1, null, -10, 'externalId3'),
+  (-40, -30, 'schoolNat4', 'school4', -1, '1997-07-18 20:14:34.000000', -1, null, -10, 'externalId4');
 
 insert into grade (id, code, name) values
   (-1, 'g1', 'grade1'),
@@ -32,7 +38,7 @@ insert into asmt (id, type_id, natural_id, grade_id, grade_code, subject_id, sch
   (-1, 1, 'ica1', -1, 'g1', 1, 1997, 'ica1', 'ica1', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1, '1997-07-18 20:14:34.000000', -1),
   (-2, 2, 'iab1', -1, 'g1', 1, 1997, 'iab1', 'iab1', 'v1', null, null, null, null, 1, null, 2, null, 3, -1, '1997-07-18 20:14:34.000000', -1),
   (-3, 3, 'sum1', -1, 'g1', 1, 1997, 'sum1', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '1997-07-18 20:14:34.000000', -1),
-  (-4, 3, 'sum2', -1, 'g1', 2, 1997, 'sum1', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '1997-07-18 20:14:34.000000', -1);
+  (-4, 3, 'sum2', -1, 'g1', 2, 1997, 'sum2', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '1997-07-18 20:14:34.000000', -1);
 
 insert into instructional_resource(name, resource) values
   ('iab1', 'http://www.google.com');

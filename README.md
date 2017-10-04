@@ -51,6 +51,7 @@ and add the following lines:
 [mysqld]
 explicit_defaults_for_timestamp=1
 default-time-zone='UTC'
+secure_file_priv=/tmp/
 ```
 
 Restart MySQL:

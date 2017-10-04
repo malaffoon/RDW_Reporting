@@ -5,10 +5,13 @@ insert into district (id, natural_id, name) values
   (-10, 'district1', 'district1');
 
 insert into school_group (id, natural_id, name) values
-  (-11, 'schoolgroup1', 'schoolgroup1');
+  (-11, 'schoolgroup1', 'schoolgroup1'),
+  (-20, 'schoolgroup2', 'schoolgroup2');
 
 insert into school (id, district_group_id, district_id, school_group_id, natural_id, name, import_id, updated, migrate_id) VALUES
-  (-10, -9, -10, -11, 'school1', 'school1', -1, '1997-07-18 20:14:34.000000', -1);
+  (-10, -9, -10, -11, 'school1', 'school1', -1, '1997-07-18 20:14:34.000000', -1),
+  (-11, -9, -10, null, 'school2', 'school2', -1, '1997-07-18 20:14:34.000000', -1),
+  (-12, -9, -10, -20, 'school3', 'school3', -1, '1997-07-18 20:14:34.000000', -1);
 
 insert into grade (id, code, name) values
   (-1, 'g1', 'grade1'),
@@ -60,7 +63,9 @@ insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, oppo
   (-13, 2, -1, 'g1', -2, -10, 1, 0, 0, 0, 0, 1997, -6, 'v1', 2, 'Complete', 1, 'Valid', 'session10', 2100, 21, 2, '1997-01-05 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '1997-07-18 20:14:34.000000', -1),
   (-14, 2, -1, 'g1', -2, -10, 1, 0, 0, 0, 0, 1997, -7, 'v1', 2, 'Complete', 1, 'Valid', 'session11', 2100, 21, 2, '1997-01-06 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '1997-07-18 20:14:34.000000', -1),
   (-15, 1, -1, 'g1', -2, -10, 0, 0, 0, 0, 0, 1997, -1, 'v1', 2, 'Complete', 1, 'Valid', 'session2', 2000, 20, 1, '2016-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, -1, '1997-07-18 20:14:34.000000', -1),
-  (-16, 2, -2, 'g2', -2, -10, 1, 0, 0, 0, 0, 1997, -2, 'v1', 2, 'Complete', 1, 'Valid', 'session3', 2100, 21, 2, '1997-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '1997-07-18 20:14:34.000000', -1);
+  (-16, 2, -2, 'g2', -2, -10, 1, 0, 0, 0, 0, 1997, -2, 'v1', 2, 'Complete', 1, 'Valid', 'session3', 2100, 21, 2, '1997-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '1997-07-18 20:14:34.000000', -1),
+  (-17, 2, -2, 'g2', -2, -11, 1, 0, 0, 0, 0, 1997, -2, 'v1', 2, 'Complete', 1, 'Valid', 'session3', 2100, 21, 2, '1997-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '1997-07-18 20:14:34.000000', -1),
+  (-18, 2, -2, 'g2', -2, -12, 1, 0, 0, 0, 0, 1997, -2, 'v1', 2, 'Complete', 1, 'Valid', 'session3', 2100, 21, 2, '1997-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, -1, '1997-07-18 20:14:34.000000', -1);
 
 -- groups
 insert into student_group (id, name, school_id, school_year, subject_id, import_id, updated, migrate_id) values

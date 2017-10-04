@@ -568,4 +568,3 @@ sql:
       from common_core_standard ccs
         join item_common_core_standard iccs on iccs.common_core_standard_id = ccs.id
       where iccs.item_id = :item_id
-
