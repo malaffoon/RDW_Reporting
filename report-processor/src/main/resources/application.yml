@@ -21,6 +21,11 @@ spring:
   cloud:
     stream:
       bindings:
+        ReportExportExams:
+          group: default
+          producer:
+            requiredGroups: default
+
         ReportFetchStudents:
           group: default
           producer:
