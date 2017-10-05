@@ -1,5 +1,9 @@
 ## Change Log
 
+#### 1.0.3 - 2017-10-04
+
+* Fix to handle large SAML response payloads (DWR-1052).
+
 #### 1.0.2 - 2017-09-15
 
 * Update landing/home page links and text (DWR-1000, DWR-1001, DWR-1020).
