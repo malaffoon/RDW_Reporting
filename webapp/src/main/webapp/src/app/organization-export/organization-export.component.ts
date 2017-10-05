@@ -107,18 +107,6 @@ export class OrganizationExportComponent implements OnInit {
           this._selectedSchoolYear = schoolYears[ 0 ];
         }
       });
-
-    this._sub = this.router.events
-      .filter(event => event instanceof NavigationEnd)
-      .subscribe((event: NavigationEnd) => {
-        console.log('event:', event);
-      });
-  }
-
-  private _sub;
-
-  ngOnDestroy() {
-    this._sub.unsubscribe();
   }
 
   get selectedSchools(): Organization[] {
