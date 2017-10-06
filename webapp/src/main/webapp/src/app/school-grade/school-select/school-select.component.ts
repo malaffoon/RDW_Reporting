@@ -29,7 +29,7 @@ export class SchoolSelectComponent implements OnInit {
   }
 
   get showDropdown() {
-    return isNullOrUndefined(this.availableSchools) || this.availableSchools.length < 1;
+    return isNullOrUndefined(this.availableSchools) || this.availableSchools.length < 25;
   }
 
   ngOnInit() {

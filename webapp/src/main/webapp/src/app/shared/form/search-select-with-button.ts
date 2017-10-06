@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { SearchSelect } from "./search-select";
 import { isUndefined } from "util";
 
@@ -36,6 +36,9 @@ import { isUndefined } from "util";
   `
 })
 export class SearchSelectWithButton extends SearchSelect {
+
+  @Output()
+  select: EventEmitter<any> = new EventEmitter();
 
   @Input()
   buttonLabel: string = '';

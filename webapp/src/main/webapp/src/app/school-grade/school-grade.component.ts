@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { School } from "../user/model/school.model";
 import { SchoolService } from "./school.service";
 import { isNullOrUndefined } from "util";
 import { Grade } from "./grade.model";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { Option } from "../shared/form/search-select";
+import { OrganizationService } from "./organization.service";
 
 /**
  * This component is responsible for displaying a search widget allowing
@@ -14,82 +16,124 @@ import { Router } from "@angular/router";
   selector: 'school-grade',
   templateUrl: './school-grade.component.html'
 })
-export class SchoolGradeComponent implements OnInit {
-  /**
-   * The array of available schools a user has
-   * access to.
-   * @type {Array}
-   */
-  @Input()
-  set availableSchools(schools: School[]) {
-    this._availableSchools = schools;
-  };
+export class SchoolGradeComponent {
 
-  get availableSchools(): School[] {
-    return this._availableSchools;
-  }
+  searchForm: FormGroup = new FormGroup({
+    school: new FormControl({ value: undefined }, Validators.required),
+    grade: new FormControl({ value: undefined, disabled: true }, Validators.required)
+  });
 
-  searchForm: FormGroup;
-  selectNullOptionValue: any = null;
+  private _schools: School[] = [];
+  private _schoolOptions: Option[] = [];
+  private _gradeOptions: Grade[] = [];
+  private _noGradeOptionResults: boolean = false;
 
-  availableGrades: Grade[] = [];
-  gradesAreUnavailable: boolean = false;
-
-  private _availableSchools: School[];
-
-  constructor(private schoolService: SchoolService, private router: Router) {
-    this.availableGrades = [];
-  }
-
-  ngOnInit() {
-    this.searchForm = new FormGroup({
-      school: new FormControl(null, Validators.required),
-      grade: new FormControl({ value: this.selectNullOptionValue, disabled: true }, Validators.required)
-    });
+  constructor(private schoolService: SchoolService,
+              private organizationService: OrganizationService,
+              private router: Router) {
   }
 
   performSearch() {
-    if(this.searchForm.valid) {
-      this.router.navigate([ 'schools', this.schoolControl.value.id, { gradeId: this.gradeControl.value.id } ]);
+    if (this.searchForm.valid) {
+      this.router.navigate([ 'schools', this.school.id, { gradeId: this.grade.id } ]);
     }
   }
 
-  schoolChanged(school: School) {
-    this.schoolControl.setValue(school);
-    this.availableGrades = [];
-    this.gradesAreUnavailable = false;
+  schoolChanged(value: School) {
+    this.school = value;
+  }
 
+  get school(): School {
+    return this.schoolControl.value;
+  }
+
+  @Input()
+  set schools(values: School[]) {
+    if (this._schools !== values) {
+      this._schools = values ? values.concat() : [];
+      if (this._schools.length) {
+        this.loadSchoolOptions();
+      }
+    }
+  }
+
+  set school(value: School) {
+    this.schoolControl.setValue(value);
+
+    // update grades when school changes
     this.gradeControl.disable();
-
-    if (!isNullOrUndefined(school)) {
-      this.loadAvailableGrades(school);
+    this.grade = undefined;
+    if (!isNullOrUndefined(value)) {
+      this.loadGradeOptions(value);
     }
   }
 
-  private get gradeControl() {
-    return this.searchForm.controls[ "grade" ];
+  get schoolOptions(): Option[] {
+    return this._schoolOptions;
+  }
+
+  set schoolOptions(values: Option[]) {
+    if (this._schoolOptions !== values) {
+      this._schoolOptions = values ? values.concat() : [];
+      this.school = this._schoolOptions.length == 1
+        ? this._schoolOptions[ 0 ].value
+        : undefined;
+    }
+  }
+
+  get grade(): Grade {
+    return this.gradeControl.value;
+  }
+
+  set grade(value: Grade) {
+    this.gradeControl.setValue(value);
+  }
+
+  get gradeOptions(): Grade[] {
+    return this._gradeOptions;
+  }
+
+  set gradeOptions(values: Grade[]) {
+    if (this._gradeOptions !== values) {
+      this._gradeOptions = values ? values.concat() : [];
+      this._noGradeOptionResults = !this._gradeOptions.length;
+
+      if (values.length) {
+        this.gradeControl.enable();
+      }
+      this.grade = values.length == 1
+        ? values[ 0 ]
+        : undefined;
+    }
+  }
+
+  get noGradeOptionResults(): boolean {
+    return this._noGradeOptionResults;
   }
 
   private get schoolControl() {
-    return this.searchForm.controls[ "school" ];
+    return this.searchForm.controls[ 'school' ];
   }
 
-  private loadAvailableGrades(school: School) {
-    this.schoolService
-      .findGradesWithAssessmentsForSchool(school)
+  private get gradeControl() {
+    return this.searchForm.controls[ 'grade' ];
+  }
+
+  private loadSchoolOptions(): void {
+    this.organizationService.getSchoolsWithDistricts()
+      .subscribe(schools => {
+        this._schoolOptions = schools.map(school => <Option>{
+          label: school.name,
+          group: school.districtName,
+          value: school
+        });
+      });
+  }
+
+  private loadGradeOptions(school: School): void {
+    this.schoolService.findGradesWithAssessmentsForSchool(school)
       .subscribe(grades => {
-        this.availableGrades = grades;
-        this.gradesAreUnavailable = grades.length == 0;
-
-        if (!this.gradesAreUnavailable)
-          this.gradeControl.enable();
-
-        if (grades.length == 1) {
-          this.gradeControl.setValue(grades[ 0 ]);
-        }
-        else {
-          this.gradeControl.setValue(this.selectNullOptionValue);
-        }
+        this.gradeOptions = grades;
       });
   }
 }

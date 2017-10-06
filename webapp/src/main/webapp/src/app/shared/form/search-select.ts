@@ -1,36 +1,34 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { SelectItem } from 'primeng/primeng'
 
 @Component({
   selector: 'search-select,[search-select]',
-  template: `    
-      <p-dropdown *ngIf="dropdown"
-                  [disabled]="disabled"
-                  [(ngModel)]="value"
-                  [options]="options"
-                  [filter]="true"
-                  filterBy="label"
-                  [placeholder]="placeholder"
-                  [filterPlaceholder]="searchPlaceholder"></p-dropdown>
-  
-      <input *ngIf="!dropdown"
-             class="form-control"
-             [disabled]="disabled"
-             [(ngModel)]="search"
-             (ngModelChange)="onSearch($event.value)"
-             [typeahead]="options"
-             typeaheadOptionField="label"
-             typeaheadGroupField="group"
-             (typeaheadOnSelect)="onSelect($event.item)"
-             [placeholder]="searchPlaceholder">
+  template: `
+    <p-dropdown *ngIf="dropdown"
+                [disabled]="disabled"
+                [(ngModel)]="value"
+                [options]="options"
+                [filter]="true"
+                filterBy="label"
+                [placeholder]="placeholder"
+                [filterPlaceholder]="searchPlaceholder"></p-dropdown>
+
+    <input *ngIf="!dropdown"
+           class="form-control"
+           [disabled]="disabled"
+           [(ngModel)]="search"
+           (ngModelChange)="onSearch($event.value)"
+           [typeahead]="options"
+           typeaheadOptionField="label"
+           typeaheadGroupField="group"
+           (typeaheadOnSelect)="onSelect($event.value)"
+           [placeholder]="searchPlaceholder">
   `
 })
 export class SearchSelect {
 
   @Output()
   change: EventEmitter<any> = new EventEmitter();
-
-  @Output()
-  select: EventEmitter<any> = new EventEmitter();
 
   @Input()
   dropdown: boolean = false;
@@ -89,12 +87,15 @@ export class SearchSelect {
 
   ngOnInit() {
     this.updateValue();
+
+    // initialize the text if the value is already set
     if (!this.dropdown && this.value) {
       this.search = this.value.name;
     }
   }
 
   private updateValue() {
+    // auto select the first option if it is the only option
     if (this.dropdown && this.options.length == 1) {
       this.value = this.options[ 0 ].value;
     }
@@ -102,8 +103,6 @@ export class SearchSelect {
 
 }
 
-export class Option {
-  label: string; // p-dropdown requires the text/name field to be called 'label'
+export interface Option extends SelectItem {
   group: string;
-  value: any;
 }
