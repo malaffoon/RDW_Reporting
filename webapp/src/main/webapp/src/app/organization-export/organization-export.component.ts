@@ -109,6 +109,10 @@ export class OrganizationExportComponent implements OnInit {
       });
   }
 
+  get organizations(): UserOrganizations {
+    return this._organizations;
+  }
+
   get selectedSchools(): Organization[] {
     return this._selectedSchools;
   }

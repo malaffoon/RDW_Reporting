@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 @Component({
   selector: 'search-select,[search-select]',
   template: `    
-      <p-dropdown *ngIf="showDropdown"
+      <p-dropdown *ngIf="dropdown"
                   [disabled]="disabled"
                   [(ngModel)]="value"
                   [options]="options"
@@ -12,7 +12,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
                   [placeholder]="placeholder"
                   [filterPlaceholder]="searchPlaceholder"></p-dropdown>
   
-      <input *ngIf="!showDropdown"
+      <input *ngIf="!dropdown"
              class="form-control"
              [disabled]="disabled"
              [(ngModel)]="search"
@@ -26,8 +26,6 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 })
 export class SearchSelect {
 
-  private static readonly DefaultDropdownThreshold: number = 25;
-
   @Output()
   change: EventEmitter<any> = new EventEmitter();
 
@@ -35,7 +33,7 @@ export class SearchSelect {
   select: EventEmitter<any> = new EventEmitter();
 
   @Input()
-  dropdownThreshold: number = SearchSelect.DefaultDropdownThreshold;
+  dropdown: boolean = false;
 
   @Input()
   placeholder: string = '';
@@ -46,7 +44,6 @@ export class SearchSelect {
   search: string;
 
   private _options: Option[] = [];
-  private _values: any[] = [];
   private _value: any = undefined;
   private _disabled: boolean = false;
 
@@ -57,13 +54,9 @@ export class SearchSelect {
   @Input()
   set options(options: Option[]) {
     if (this._options !== options) {
-      this._options = options.concat();
-      this._values = options.map(option => option.value);
+      this._options = options ? options.concat() : [];
+      this.updateValue();
     }
-  }
-
-  get values(): any {
-    return this._values;
   }
 
   get value(): any {
@@ -85,12 +78,8 @@ export class SearchSelect {
     this.value = option.value;
   }
 
-  get showDropdown() {
-    return this.options && this.options.length < this.dropdownThreshold;
-  }
-
   get disabled() {
-    return this._disabled || !this.options || this.options.length == 0;
+    return this._disabled || this.options.length == 0;
   }
 
   @Input()
@@ -99,14 +88,15 @@ export class SearchSelect {
   }
 
   ngOnInit() {
-    if (this.showDropdown) {
-      if (this.options.length == 1) {
-        this.value = this.options[ 0 ];
-      }
-    } else {
-      if (this.value) {
-        this.search = this.value.name;
-      }
+    this.updateValue();
+    if (!this.dropdown && this.value) {
+      this.search = this.value.name;
+    }
+  }
+
+  private updateValue() {
+    if (this.dropdown && this.options.length == 1) {
+      this.value = this.options[ 0 ].value;
     }
   }
 

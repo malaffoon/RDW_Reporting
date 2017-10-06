@@ -1,52 +1,49 @@
 import { Injectable } from "@angular/core";
 import { UserService } from "../user/user.service";
 import { School } from "../user/model/school.model";
-import { User } from "../user/model/user.model";
-import { DataService } from "../shared/data/data.service";
 import { Observable } from "rxjs/Observable";
-import { Observer } from "rxjs/Observer";
+import { CachingDataService } from "../shared/cachingData.service";
 
 @Injectable()
 export class OrganizationService {
-  private schoolsWithDistricts: School[] = null;
-  private schoolsLoaded: boolean = false;
 
-  constructor(private userService: UserService, private dataService: DataService) {
+  private schoolsWithDistricts: Observable<School[]>;
+
+  constructor(private userService: UserService,
+              private dataService: CachingDataService) {
   }
 
+  /**
+   * Gets schools with district names.
+   * This implementation caches the results for later calls.
+   *
+   * @returns {Observable<School[]>}
+   */
   getSchoolsWithDistricts(): Observable<School[]> {
-    if (this.schoolsLoaded && this.schoolsWithDistricts != null) {
-      return Observable.of(this.schoolsWithDistricts);
+    if (this.schoolsWithDistricts) {
+      console.log('cached');
+      return this.schoolsWithDistricts;
     }
-
-    let schoolObserver: Observer<School[]>;
-    let observable = new Observable<School[]>(observer=> schoolObserver = observer);
-
-    Observable
-      .forkJoin(this.userService.getCurrentUser(), this.getDistricts())
-      .subscribe(response => {
-        let user: User = response[ 0 ];
-        let districts =response[ 1 ];
-
-        let schools = user.schools
-          .map(school => {
-            school.districtName = districts.get(school.districtId);
-            return school;
-          });
-
-        this.schoolsLoaded = true;
-        this.schoolsWithDistricts = schools;
-
-        schoolObserver.next(schools);
-        schoolObserver.complete();
+    console.log('no cache')
+    return this.schoolsWithDistricts = Observable
+      .forkJoin(
+        this.userService.getCurrentUser(),
+        this.getDistrictNamesById()
+      )
+      .map(response => {
+        let [ user, districts ] = response;
+        let res = user.schools.map(school => {
+          school.districtName = districts.get(school.districtId);
+          return school;
+        });
+        console.log('map res', res)
+return res;
       });
-
-    return observable;
   }
 
-  getDistricts() {
+  private getDistrictNamesById() {
     return this.dataService
-      .get("/organizations/districts")
-      .map(apiModels => new Map<number,string>(apiModels.map(x => [x.id, x.name])));
+      .get('/organizations/districts')
+      .map(districts => new Map<number, string>(districts.map(x => [ x.id, x.name ])));
   }
 }

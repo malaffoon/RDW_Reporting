@@ -180,3 +180,42 @@ footer {
 organization-export form button[type='submit'] {
   margin-top: 27px;
 }
+
+a.link-button:hover {
+  text-decoration: none;
+}
+
+/*
+  Prevents anchor 'click-box' from extending to the width of its container.
+  Instead it extends to the width of its text.
+ */
+a > h1,
+a > h2,
+a > h3,
+a > h4,
+a > h5,
+a > h6 {
+  display: inline-block;
+}
+
+.hover-icon-holder {
+  .icon,.fa {
+    visibility: hidden;
+  }
+  &:hover {
+    .icon, .fa {
+      visibility: visible;
+    }
+  }
+}
+
+/*
+  Not sure what to do to get these line-heights right without explicit styles.
+  btn-[size] didn't quite match things up
+ */
+
+organization-export form button[type='submit'],
+search-select-with-button .input-group-btn > .btn,
+[search-select-with-button] .input-group-btn > .btn {
+  line-height: 1.48;
+}

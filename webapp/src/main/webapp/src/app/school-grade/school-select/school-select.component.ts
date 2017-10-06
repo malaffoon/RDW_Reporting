@@ -3,6 +3,9 @@ import { School } from "../../user/model/school.model";
 import { OrganizationService } from "../organization.service";
 import { isNullOrUndefined } from "util";
 
+/**
+ * @deprecated use search-select.ts
+ */
 @Component({
   selector: 'school-select',
   templateUrl: './school-select.component.html'
@@ -21,49 +24,50 @@ export class SchoolSelectComponent implements OnInit {
   selectedSchoolName: string;
   schoolsMatchingSearch: School[] = [];
   schoolDropdownOptions: any[] = [];
+
   constructor(private organizationService: OrganizationService) {
   }
 
   get showDropdown() {
-    return isNullOrUndefined(this.availableSchools) || this.availableSchools.length < 25;
+    return isNullOrUndefined(this.availableSchools) || this.availableSchools.length < 1;
   }
 
   ngOnInit() {
-    if(isNullOrUndefined(this.availableSchools))
+    if (isNullOrUndefined(this.availableSchools))
       return;
 
-    if(this.showDropdown){
-      if(this.availableSchools.length == 1){
-        this.selectedSchool = this.availableSchools[0];
+    if (this.showDropdown) {
+      if (this.availableSchools.length == 1) {
+        this.selectedSchool = this.availableSchools[ 0 ];
         this.schoolChanged.emit(this.selectedSchool);
       }
 
       this.schoolDropdownOptions = this.availableSchools.map(school => {
-          return {
-            label: school.name,
-            value: school
-          };
-        });
+        return {
+          label: school.name,
+          value: school
+        };
+      });
     } else {
-      this.organizationService.getSchoolsWithDistricts().subscribe(schools =>{
+      this.organizationService.getSchoolsWithDistricts().subscribe(schools => {
         this.availableSchools = schools;
       });
 
-      if(this.selectedSchool) {
+      if (this.selectedSchool) {
         this.selectedSchoolName = this.selectedSchool.name;
       }
     }
 
   }
 
-  schoolTextChanged(event){
-    if(this.selectedSchool){
+  schoolTextChanged(event) {
+    if (this.selectedSchool) {
       this.selectedSchool = null;
       this.schoolChanged.emit(this.selectedSchool);
     }
   }
 
-  schoolSelect(event){
+  schoolSelect(event) {
     this.selectedSchool = event;
     this.schoolChanged.emit(event);
   }
