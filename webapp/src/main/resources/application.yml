@@ -32,7 +32,7 @@ server:
     accept-count: 10
   compression:
     enabled: true
-    mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
 
 spring:
   datasource:
