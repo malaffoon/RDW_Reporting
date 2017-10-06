@@ -21,7 +21,7 @@ import { SelectItem } from 'primeng/primeng'
            [typeahead]="options"
            typeaheadOptionField="label"
            typeaheadGroupField="group"
-           (typeaheadOnSelect)="onSelect($event.value)"
+           (typeaheadOnSelect)="onSelect($event.item)"
            [placeholder]="searchPlaceholder">
   `
 })
