@@ -27,7 +27,7 @@ import { SelectItem } from 'primeng/primeng'
 })
 export class SearchSelect {
 
-  private static DefaultDropdownThreshold: number = 5;
+  private static DefaultDropdownThreshold: number = 25;
 
   @Output()
   change: EventEmitter<any> = new EventEmitter();
