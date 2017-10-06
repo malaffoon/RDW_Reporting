@@ -27,11 +27,16 @@ import { SelectItem } from 'primeng/primeng'
 })
 export class SearchSelect {
 
+  private static DefaultDropdownThreshold: number = 5;
+
   @Output()
   change: EventEmitter<any> = new EventEmitter();
 
   @Input()
-  dropdown: boolean = false;
+  dropdownThreshold: number = SearchSelect.DefaultDropdownThreshold;
+
+  @Input()
+  dropdown: boolean;
 
   @Input()
   placeholder: string = '';
@@ -53,6 +58,7 @@ export class SearchSelect {
   set options(options: Option[]) {
     if (this._options !== options) {
       this._options = options ? options.concat() : [];
+      this.decideMode();
       this.updateValue();
     }
   }
@@ -95,7 +101,13 @@ export class SearchSelect {
     }
   }
 
-  private updateValue() {
+  private decideMode(): void {
+    if (this.dropdown === undefined && this._options.length) {
+      this.dropdown = this._options.length < this.dropdownThreshold;
+    }
+  }
+
+  private updateValue(): void {
     // auto select the first option if it is the only option
     if (this.dropdown && this.options.length == 1) {
       this.value = this.options[ 0 ].value;

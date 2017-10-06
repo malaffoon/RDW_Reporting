@@ -79,6 +79,7 @@ describe('SchoolResultsComponent', () => {
         { provide: DataService, useClass: MockDataService },
         { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionService },
         { provide: SchoolService, useClass: MockSchoolService },
+        { provide: OrganizationService, useValue: new MockOrganizationService(user.schools)},
         { provide: ActivatedRoute, useValue: route },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         { provide: CsvExportService, useValue: exportService },
@@ -144,6 +145,16 @@ class MockDataService {
 class MockSchoolService {
   findGradesWithAssessmentsForSchool(school: School) {
     return Observable.of(availableGrades);
+  }
+}
+
+class MockOrganizationService {
+
+  constructor(private schools: School[]){
+  }
+
+  getSchoolsWithDistricts(): Observable<School[]> {
+    return Observable.of(this.schools);
   }
 }
 

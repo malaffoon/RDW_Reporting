@@ -27,7 +27,8 @@ import { isUndefined } from "util";
              [placeholder]="searchPlaceholder">
       
       <span class="input-group-btn">
-        <button class="btn btn-default"
+        <button type="button"
+                class="btn btn-default"
                 (click)="onButtonClick()"
                 [disabled]="buttonDisabled"><span [ngClass]="{'gray': buttonDisabled}"><i class="fa fa-plus"></i> {{buttonLabel}}</span>
         </button>

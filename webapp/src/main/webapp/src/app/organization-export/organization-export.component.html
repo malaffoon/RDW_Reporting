@@ -12,7 +12,6 @@
             <span search-select-with-button
                   [options]="organizationOptions"
                   (select)="add($event)"
-                  [dropdown]="organizations.organizations.length < 25"
                   placeholder="{{'prompt.select' | translate}}"
                   searchPlaceholder="{{'labels.organization-export.form.organization.placeholder' | translate}}"
                   buttonLabel="{{'labels.organization-export.form.organization.add' | translate}}">

@@ -29,7 +29,6 @@
       <search-select [options]="schoolOptions"
                      [value]="currentSchool"
                      (change)="schoolSelectChanged($event)"
-                     [dropdown]="schoolOptions.length < 25"
                      placeholder="{{'prompt.select' | translate}}"
                      searchPlaceholder="{{'labels.school-grade.school-name.prompt' | translate}}"></search-select>
     </div>
