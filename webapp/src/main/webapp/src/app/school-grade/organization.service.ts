@@ -21,10 +21,8 @@ export class OrganizationService {
    */
   getSchoolsWithDistricts(): Observable<School[]> {
     if (this.schoolsWithDistricts) {
-      console.log('cached');
       return this.schoolsWithDistricts;
     }
-    console.log('no cache')
     return this.schoolsWithDistricts = Observable
       .forkJoin(
         this.userService.getCurrentUser(),
@@ -32,12 +30,10 @@ export class OrganizationService {
       )
       .map(response => {
         let [ user, districts ] = response;
-        let res = user.schools.map(school => {
+        return user.schools.map(school => {
           school.districtName = districts.get(school.districtId);
           return school;
         });
-        console.log('map res', res)
-return res;
       });
   }
 
