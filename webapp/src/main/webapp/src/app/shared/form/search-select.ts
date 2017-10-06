@@ -61,8 +61,9 @@ export class SearchSelect {
     return this._value;
   }
 
+  @Input()
   set value(value: any) {
-    if (this._value !== value) {
+    if (this._value !== value && this.hasOption(value)) {
       this._value = value;
       this.change.emit(value);
     }
@@ -99,6 +100,10 @@ export class SearchSelect {
     if (this.dropdown && this.options.length == 1) {
       this.value = this.options[ 0 ].value;
     }
+  }
+
+  private hasOption(value: any): boolean {
+    return this.options.findIndex(x => x.value === value) !== -1;
   }
 
 }

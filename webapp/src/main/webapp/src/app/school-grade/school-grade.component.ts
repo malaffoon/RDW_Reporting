@@ -131,7 +131,7 @@ export class SchoolGradeComponent {
   }
 
   private loadGradeOptions(school: School): void {
-    this.schoolService.findGradesWithAssessmentsForSchool(school)
+    this.schoolService.findGradesWithAssessmentsForSchool(school.id)
       .subscribe(grades => {
         this.gradeOptions = grades;
       });
