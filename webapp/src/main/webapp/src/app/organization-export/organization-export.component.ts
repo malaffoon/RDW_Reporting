@@ -157,6 +157,10 @@ export class OrganizationExportComponent implements OnInit {
     return this._organizations.districts.length < 2;
   }
 
+  get editingDisabled(): boolean {
+    return this._organizations.schools.length <= 1;
+  }
+
   get schoolYearOptions(): number[] {
     return this._schoolYearOptions;
   }

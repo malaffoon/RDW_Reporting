@@ -5,8 +5,7 @@
   <div class="well">
     <form ngForm="form" (submit)="submit()">
       <div class="row">
-
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="!editingDisabled">
           <div class="form-group">
             <label>{{'labels.organization-export.form.organization.label' | translate}}</label>
             <span search-select-with-button
@@ -25,7 +24,6 @@
               </a>
             </div>
           </div>
-
         </div>
         <div class="col-md-2">
           <div class="form-group">
@@ -35,6 +33,7 @@
             </select>
           </div>
         </div>
+        <div class="col-md-6" *ngIf="editingDisabled"></div>
         <div class="col-md-4 text-right">
           <button type="submit" class="btn btn-info aqua" [disabled]="selectedSchools.length == 0"><i class="fa fa-cloud-download"></i> {{'labels.organization-export.form.submit.label' | translate}}</button>
         </div>
@@ -44,9 +43,10 @@
 
   <div class="well gray-lightest">
     <h3 class="gray-darkest mb-0"><i class="fa fa-list-alt"></i> {{'labels.organization-tree.header' | translate}}</h3>
-    <p class="small gray-dark" [hidden]="selectedSchools.length != 0">{{'labels.organization-tree.subheader-empty' | translate}}</p>
-    <p class="small gray-dark" [hidden]="selectedSchools.length == 0">{{'labels.organization-tree.subheader-not-empty' | translate}}</p>
-    <organization-tree [model]="organizationTree" (select)="remove($event)"></organization-tree>
+    <p class="small gray-dark" [hidden]="editingDisabled || selectedSchools.length != 0">{{'labels.organization-tree.subheader-empty' | translate}}</p>
+    <p class="small gray-dark" [hidden]="editingDisabled || selectedSchools.length == 0">{{'labels.organization-tree.subheader-not-empty' | translate}}</p>
+    <p class="pt-sm" *ngIf="editingDisabled"></p>
+    <organization-tree [model]="organizationTree" (select)="remove($event)" [disabled]="editingDisabled"></organization-tree>
   </div>
 
 </div>
