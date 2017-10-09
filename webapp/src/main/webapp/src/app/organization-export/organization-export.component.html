@@ -33,8 +33,7 @@
             </select>
           </div>
         </div>
-        <div class="col-md-6" *ngIf="editingDisabled"></div>
-        <div class="col-md-4 text-right">
+        <div class="text-right" [ngClass]="{'col-md-4': !editingDisabled, 'col-md-10': editingDisabled}">
           <button type="submit" class="btn btn-info aqua" [disabled]="selectedSchools.length == 0"><i class="fa fa-cloud-download"></i> {{'labels.organization-export.form.submit.label' | translate}}</button>
         </div>
       </div>
