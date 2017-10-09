@@ -58,7 +58,6 @@ export class SearchSelect {
   set options(options: Option[]) {
     if (this._options !== options) {
       this._options = options ? options.concat() : [];
-      this.decideMode();
       this.updateValue();
     }
   }
@@ -69,7 +68,7 @@ export class SearchSelect {
 
   @Input()
   set value(value: any) {
-    if (this._value !== value && this.hasOption(value)) {
+    if (this._value !== value) {
       this._value = value;
       this.change.emit(value);
     }
@@ -93,6 +92,9 @@ export class SearchSelect {
   }
 
   ngOnInit() {
+
+    this.initializeDropdownMode();
+
     this.updateValue();
 
     // initialize the text if the value is already set
@@ -101,7 +103,11 @@ export class SearchSelect {
     }
   }
 
-  private decideMode(): void {
+  /**
+   * Determines whether or not the component should behave as a dropdown/select or type-ahead based on the
+   * initial state and amount of options
+   */
+  private initializeDropdownMode(): void {
     if (this.dropdown === undefined && this._options.length) {
       this.dropdown = this._options.length < this.dropdownThreshold;
     }
@@ -112,10 +118,6 @@ export class SearchSelect {
     if (this.dropdown && this.options.length == 1) {
       this.value = this.options[ 0 ].value;
     }
-  }
-
-  private hasOption(value: any): boolean {
-    return this.options.findIndex(x => x.value === value) !== -1;
   }
 
 }
