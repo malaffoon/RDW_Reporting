@@ -12,16 +12,14 @@
             <span search-select-with-button
                   [options]="organizationOptions"
                   (select)="add($event)"
-                  dropdownThreshold="10"
                   placeholder="{{'prompt.select' | translate}}"
                   searchPlaceholder="{{'labels.organization-export.form.organization.placeholder' | translate}}"
                   buttonLabel="{{'labels.organization-export.form.organization.add' | translate}}">
             </span>
             <div class="ml-xs mt-xs">
               <a *ngIf="selectAllEnabled"
-                 class="aqua"
+                 class="link-button aqua"
                  href="javascript:void(0)"
-                 [style.text-decoration]="'none'"
                  (click)="toggleSelectAll()"><i class="fa" [ngClass]="{'fa-check-square': selectedAll, 'fa-square-o': !selectedAll}"></i>
                 {{'labels.organization-export.form.organization.select-all' | translate}}
               </a>

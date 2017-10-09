@@ -12,7 +12,6 @@ import { SchoolAssessmentService } from "./results/school-assessment.service";
 import { CurrentSchoolResolve } from "./results/current-school.resolve";
 import { Angulartics2Module } from "angulartics2";
 import { ReportModule } from "../report/report.module";
-import { SchoolSelectComponent } from "./school-select/school-select.component";
 import { TypeaheadModule } from "ngx-bootstrap";
 import { UserModule } from "../user/user.module";
 import { OrganizationService } from "./organization.service";
@@ -24,8 +23,7 @@ import { OrganizationService } from "./organization.service";
 @NgModule({
   declarations: [
     SchoolGradeComponent,
-    SchoolResultsComponent,
-    SchoolSelectComponent
+    SchoolResultsComponent
   ],
   imports: [
     CommonModule,

@@ -24,7 +24,6 @@ import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
 import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
-import { SchoolSelectComponent } from "../school-select/school-select.component";
 import { UserModule } from "../../user/user.module";
 import { RouterTestingModule } from "@angular/router/testing";
 import { OrganizationService } from "../organization.service";
@@ -72,7 +71,7 @@ describe('SchoolResultsComponent', () => {
         PopoverModule.forRoot(),
         ReportModule
       ],
-      declarations: [ SchoolResultsComponent, SchoolSelectComponent ],
+      declarations: [ SchoolResultsComponent ],
       providers: [
         OrganizationService,
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -80,6 +79,7 @@ describe('SchoolResultsComponent', () => {
         { provide: DataService, useClass: MockDataService },
         { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionService },
         { provide: SchoolService, useClass: MockSchoolService },
+        { provide: OrganizationService, useValue: new MockOrganizationService(user.schools)},
         { provide: ActivatedRoute, useValue: route },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         { provide: CsvExportService, useValue: exportService },
@@ -145,6 +145,16 @@ class MockDataService {
 class MockSchoolService {
   findGradesWithAssessmentsForSchool(school: School) {
     return Observable.of(availableGrades);
+  }
+}
+
+class MockOrganizationService {
+
+  constructor(private schools: School[]){
+  }
+
+  getSchoolsWithDistricts(): Observable<School[]> {
+    return Observable.of(this.schools);
   }
 }
 

@@ -15,6 +15,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
 import { SchoolGradeDownloadComponent } from "../../report/school-grade-report-download.component";
+import { Option } from "../../shared/form/search-select";
+import { OrganizationService } from "../organization.service";
 
 @Component({
   selector: 'app-group-results',
@@ -32,7 +34,8 @@ export class SchoolResultsComponent implements OnInit {
   schools: School[];
   assessmentExams: AssessmentExam[] = [];
   availableAssessments: Assessment[] = [];
-  availableSchools: any[];
+  schoolOptions: Option[] = [];
+  schoolIsAvailable: boolean = true;
 
   availableGrades: Grade[];
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
@@ -44,7 +47,7 @@ export class SchoolResultsComponent implements OnInit {
 
   /**
    * The currently selected school
-|  */
+   |  */
   get currentSchool() {
     return this._currentSchool;
   }
@@ -52,7 +55,7 @@ export class SchoolResultsComponent implements OnInit {
   set currentSchool(value) {
     this._currentSchool = value;
 
-    if(!isNullOrUndefined(value))
+    if (!isNullOrUndefined(value))
       this.assessmentProvider.schoolId = value.id;
   }
 
@@ -67,7 +70,7 @@ export class SchoolResultsComponent implements OnInit {
   set currentGrade(value: Grade) {
     this._currentGrade = value;
 
-    if(!isNullOrUndefined(value))
+    if (!isNullOrUndefined(value))
       this.assessmentProvider.gradeId = value.id;
   }
 
@@ -91,16 +94,25 @@ export class SchoolResultsComponent implements OnInit {
               private angulartics2: Angulartics2,
               private csvExportService: CsvExportService,
               private translate: TranslateService,
-              public assessmentProvider: SchoolAssessmentService) {
+              public assessmentProvider: SchoolAssessmentService,
+              private organizationService: OrganizationService) {
   }
 
   ngOnInit() {
     this.schools = this.route.snapshot.data[ "user" ].schools;
-    this.availableSchools = this.schools;
+    let schoolId = Number.parseInt(this.route.snapshot.params[ "schoolId" ]);
 
-    let schoolId = this.route.snapshot.params[ "schoolId" ];
-
-    this.currentSchool = this.schools.find(x => x.id == schoolId);
+    // get schools with districts
+    this.organizationService.getSchoolsWithDistricts()
+      .subscribe(schools => {
+        this.schoolOptions = schools.map(school => <Option>{
+          label: school.name,
+          group: school.districtName,
+          value: school
+        });
+        this.currentSchool = schools.find(x => x.id == schoolId);
+        this.schoolIsAvailable = this.currentSchool !== undefined;
+      });
 
     this.filterOptionService
       .getExamFilterOptions()
@@ -109,16 +121,13 @@ export class SchoolResultsComponent implements OnInit {
         this.currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
       });
 
-    if(this.currentSchool) {
-      this.schoolService
-        .findGradesWithAssessmentsForSchool(this.currentSchool)
-        .subscribe(grades => {
-          this.availableGrades = grades;
-          this.gradesAreUnavailable = this.availableGrades.length == 0;
-
-          this.currentGrade = this.availableGrades.find(grade => grade.id == this.route.snapshot.params[ "gradeId" ]);
-        });
-    }
+    this.schoolService
+      .findGradesWithAssessmentsForSchool(schoolId)
+      .subscribe(grades => {
+        this.availableGrades = grades;
+        this.gradesAreUnavailable = this.availableGrades.length == 0;
+        this.currentGrade = this.availableGrades.find(grade => grade.id == this.route.snapshot.params[ "gradeId" ]);
+      });
 
     this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
   }
@@ -131,12 +140,12 @@ export class SchoolResultsComponent implements OnInit {
     }
   }
 
-  schoolSelectChanged(school){
-    if(school) {
+  schoolSelectChanged(school) {
+    if (school) {
       this.currentSchool = school;
 
       this.schoolService
-        .findGradesWithAssessmentsForSchool(this.currentSchool)
+        .findGradesWithAssessmentsForSchool(this.currentSchool.id)
         .subscribe(grades => {
           this.availableGrades = grades;
           this.gradesAreUnavailable = this.availableGrades.length == 0;
@@ -150,10 +159,9 @@ export class SchoolResultsComponent implements OnInit {
             this.currentGrade = isNullOrUndefined(grade)
               ? grades[ 0 ]
               : grade;
-          }
-          else
+          } else {
             this.currentGrade = undefined;
-
+          }
           this.updateRoute('School');
         });
     }
@@ -163,10 +171,10 @@ export class SchoolResultsComponent implements OnInit {
     let params: any = {};
     params.schoolYear = this.currentSchoolYear;
 
-    if(!isNullOrUndefined(this.currentGrade))
+    if (!isNullOrUndefined(this.currentGrade))
       params.gradeId = this.currentGrade.id;
 
-    this.router.navigate(['schools', this.currentSchool.id, params ]).then(() => {
+    this.router.navigate([ 'schools', this.currentSchool.id, params ]).then(() => {
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     });
 
@@ -193,7 +201,7 @@ export class SchoolResultsComponent implements OnInit {
   }
 
   exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
-    let assessment: Assessment =exportRequest.assessmentExam.assessment;
+    let assessment: Assessment = exportRequest.assessmentExam.assessment;
     let filename: string = this._currentSchool.name +
       "-" + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
       "-" + assessment.name +
@@ -204,27 +212,25 @@ export class SchoolResultsComponent implements OnInit {
   }
 
   private trackAnalyticsEvent(changedFilter: string) {
-    let details: any;
-
-    switch (changedFilter) {
-      case 'Year':
-        details = this.currentSchoolYear;
-        break;
-      case 'Grade':
-        details = this.currentGrade.code;
-        break;
-      case 'School':
-        details = this.currentSchool.name;
-        break;
-    }
-
     this.angulartics2.eventTrack.next({
       action: 'Change' + changedFilter,
       properties: {
         category: 'AssessmentResults',
-        label: details
+        label: this.getAnalyticsEventLabel(changedFilter)
       }
     });
+  }
+
+  private getAnalyticsEventLabel(changedFilter: string): any {
+    switch (changedFilter) {
+      case 'Year':
+        return this.currentSchoolYear;
+      case 'Grade':
+        return this.currentGrade.code;
+      case 'School':
+        return this.currentSchool.name;
+    }
+    return undefined;
   }
 
   /**
