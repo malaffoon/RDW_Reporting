@@ -3,11 +3,13 @@ import { Observable } from "rxjs/Observable";
 import { CachingDataService } from "app/shared/cachingData.service";
 import { UserOrganizations } from "./user-organizations";
 import { OrganizationMapper } from "./organization.mapper";
+import { UserService } from "../../user/user.service";
 
 @Injectable()
 export class OrganizationService {
 
   constructor(private dataService: CachingDataService,
+              private userService: UserService,
               private mapper: OrganizationMapper) {
   }
 
@@ -18,17 +20,13 @@ export class OrganizationService {
    */
   getUserOrganizations(): Observable<UserOrganizations> {
     return Observable.forkJoin(
-      this.getSchools(),
+      this.userService.getCurrentUser(),
       this.getSchoolGroups(),
       this.getDistricts()
     ).map(response => {
-      let [ schools, schoolGroups, districts ] = response;
-      return this.mapper.createUserOrganizations(schools, schoolGroups, districts);
+      let [ user, schoolGroups, districts ] = response;
+      return this.mapper.createUserOrganizations(user.schools, schoolGroups, districts);
     });
-  }
-
-  private getSchools(): Observable<any[]> {
-    return this.dataService.get('/organizations/schools');
   }
 
   private getSchoolGroups(): Observable<any[]> {

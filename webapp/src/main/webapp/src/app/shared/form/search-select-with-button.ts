@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { SearchSelect } from "./search-select";
 import { isUndefined } from "util";
 
@@ -6,7 +6,7 @@ import { isUndefined } from "util";
   selector: 'search-select-with-button,[search-select-with-button]',
   template: `
     <span class="input-group">
-      <p-dropdown *ngIf="showDropdown"
+      <p-dropdown *ngIf="dropdown"
                   [disabled]="disabled"
                   [(ngModel)]="value"
                   [options]="options"
@@ -15,8 +15,9 @@ import { isUndefined } from "util";
                   [placeholder]="placeholder"
                   [filterPlaceholder]="searchPlaceholder"></p-dropdown>
   
-      <input *ngIf="!showDropdown"
+      <input *ngIf="!dropdown" 
              class="form-control"
+             [disabled]="disabled"
              [(ngModel)]="search"
              (ngModelChange)="onSearch($event.value)"
              [typeahead]="options"
@@ -26,8 +27,8 @@ import { isUndefined } from "util";
              [placeholder]="searchPlaceholder">
       
       <span class="input-group-btn">
-        <button class="btn btn-default"
-                [style.line-height]="1.48"
+        <button type="button"
+                class="btn btn-default"
                 (click)="onButtonClick()"
                 [disabled]="buttonDisabled"><span [ngClass]="{'gray': buttonDisabled}"><i class="fa fa-plus"></i> {{buttonLabel}}</span>
         </button>
@@ -36,6 +37,9 @@ import { isUndefined } from "util";
   `
 })
 export class SearchSelectWithButton extends SearchSelect {
+
+  @Output()
+  select: EventEmitter<any> = new EventEmitter();
 
   @Input()
   buttonLabel: string = '';

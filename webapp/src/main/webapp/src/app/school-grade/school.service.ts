@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { DataService } from "../shared/data/data.service";
 import { Observable } from "rxjs";
-import { School } from "../user/model/school.model";
 import { isNullOrUndefined } from "util";
 import { Grade } from "./grade.model";
 import { ResponseUtils } from "../shared/response-utils";
@@ -18,15 +17,16 @@ export class SchoolService {
   /**
    * Given a school, find the grades with visible assessments.
    *
-   * @param school                  A school
+   * @param schoolId                The school's entity ID
    * @returns {Observable<number>}  Observable of the grades with visible assessments
    */
-  findGradesWithAssessmentsForSchool(school: School): Observable<Grade[]> {
+  findGradesWithAssessmentsForSchool(schoolId: number): Observable<Grade[]> {
     return this.dataService
-      .get(`/schools/${school.id}/assessmentGrades`)
+      .get(`/schools/${schoolId}/assessmentGrades`)
       .catch(ResponseUtils.badResponseToNull)
-      .map((apiGrades) => this.mapGradesFromApi(apiGrades));
+      .map(apiGrades => this.mapGradesFromApi(apiGrades));
   }
+
   private mapGradesFromApi(apiGrades: any[]): Grade[] {
     return apiGrades
       .filter(apiGrade => !isNullOrUndefined(apiGrade) && !isNullOrUndefined(apiGrade.code))
@@ -35,10 +35,9 @@ export class SchoolService {
 
   private mapGradeFromApi(apiModel: any): Grade {
     let uiModel = new Grade();
-
     uiModel.id = apiModel.id;
     uiModel.code = apiModel.code;
-
     return uiModel;
   }
+
 }
