@@ -1,20 +1,23 @@
 <div *ngFor="let districtTree of model.children" class="district-tree">
 
-  <a class="link-button hover-icon-holder" *ngIf="districtTree.value.name" (click)="onClick(districtTree.value)" href="javascript:void(0)">
+  <a *ngIf="districtTree.value.name && !disabled" class="link-button hover-icon-holder" (click)="onClick(districtTree.value)" href="javascript:void(0)">
     <h3>{{districtTree.value.name}} <span class="icon"><i class="fa fa-close"></i></span></h3>
   </a>
+  <h3 *ngIf="districtTree.value.name && disabled">{{districtTree.value.name}}</h3>
 
   <div *ngFor="let schoolGroupTree of districtTree.children" class="school-group-tree ml-xs">
 
-    <a class="link-button hover-icon-holder" *ngIf="schoolGroupTree.value.name" (click)="onClick(schoolGroupTree.value)" href="javascript:void(0)">
+    <a *ngIf="schoolGroupTree.value.name && !disabled" class="link-button hover-icon-holder" (click)="onClick(schoolGroupTree.value)" href="javascript:void(0)">
       <h4>{{schoolGroupTree.value.name}} <span class="icon"><i class="fa fa-close"></i></span></h4>
     </a>
+    <h4 *ngIf="schoolGroupTree.value.name && disabled">{{schoolGroupTree.value.name}}</h4>
 
     <div class="flex-children">
 
-      <a *ngFor="let schoolTree of schoolGroupTree.children" class="school-tree tag tag-xs" (click)="onClick(schoolTree.value)" href="javascript:void(0)">
+      <a *ngFor="let schoolTree of (disabled ? [] : schoolGroupTree.children)" class="school-tree tag tag-xs" (click)="onClick(schoolTree.value)" href="javascript:void(0)">
         <span class="pr-xs"></span> {{schoolTree.value.name}} <span class="icon"><i class="fa fa-close"></i></span>
       </a>
+      <span *ngFor="let schoolTree of (disabled ? schoolGroupTree.children : [])" class="school-tree tag tag-xs">{{schoolTree.value.name}}</span>
 
     </div>
 

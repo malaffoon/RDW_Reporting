@@ -68,9 +68,9 @@ export class OrganizationMapper {
    * @returns {Option[]}
    */
   createOptions(schools: Organization[], optionsByUuid: Map<string, Option>): Option[] {
-    let options: Option[] = [],
-      districts: Grouping<string, Option> = new Grouping(options),
-      schoolGroups: Grouping<string, Option> = new Grouping(options);
+    let options = [],
+      districts = new Grouping<string, Option>(options),
+      schoolGroups = new Grouping<string, Option>(options);
 
     schools.forEach(school => {
       let districtUuid = createUuid(OrganizationType.District, school.districtId),
