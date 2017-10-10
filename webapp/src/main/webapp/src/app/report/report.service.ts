@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ResponseContentType, Headers } from "@angular/http";
+import { Headers, ResponseContentType } from "@angular/http";
 import { ReportOptions } from "./report-options.model";
 import { Observable } from "rxjs";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
@@ -19,7 +19,7 @@ import { ReportNamingService } from "./report-naming.service";
 export class ReportService {
 
   constructor(private dataService: DataService,
-    private namingService: ReportNamingService) {
+              private namingService: ReportNamingService) {
   }
 
   /**
@@ -143,6 +143,10 @@ export class ReportService {
     local.label = remote.label;
     local.status = remote.status;
     local.created = remote.created;
+    local.reportType = remote.reportType;
+    local.assessmentType = AssessmentType[ remote.assessmentType as string ];
+    local.subjectId = AssessmentSubjectType[ remote.subject as string ] || 0;
+    local.schoolYear = remote.schoolYear;
     return local;
   }
 
