@@ -76,7 +76,7 @@ subprojects {
 
             // commonly used libraries
             dependency 'com.google.guava:guava:21.0'
-            dependency 'org.apache.commons:commons-io:1.3.2'
+            dependency 'commons-io:commons-io:2.5'
             dependency 'org.slf4j:slf4j-api:1.7.25'
             dependency 'org.thymeleaf:thymeleaf:3.0.6.RELEASE'
 

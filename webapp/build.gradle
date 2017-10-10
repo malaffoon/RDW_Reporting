@@ -33,7 +33,7 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
     compile 'com.google.guava:guava'
     compile 'mysql:mysql-connector-java'
-    compile 'org.apache.commons:commons-io'
+    compile 'commons-io:commons-io'
     compile 'org.opentestsystem.rdw.common:rdw-common-archive'
     compile 'org.opentestsystem.rdw.common:rdw-common-messaging'
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
