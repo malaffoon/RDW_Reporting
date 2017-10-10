@@ -28,7 +28,7 @@ export class OrganizationExportService {
   }
 
   private createExportInternal(request: OrganizationExportRequest): Observable<void> {
-    return this.dataService.post('/organizations/examExport', request)
+    return this.dataService.post('/exams/export', { name: 'export-exams',  options: request })
       .catch(ResponseUtils.throwError);
   }
 
