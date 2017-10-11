@@ -2,36 +2,24 @@ import { MockDataService } from "../../test/mock.data.service";
 import { inject, TestBed } from "@angular/core/testing";
 import { DataService } from "../shared/data/data.service";
 import { ReportService } from "./report.service";
-import { ReportNamingService } from "./report-naming.service";
 import { Student } from "../student/model/student.model";
-import { ReportOptions } from "./report-options.model";
-import { Group } from "../user/model/group.model";
-import { Grade } from "../school-grade/grade.model";
-import { School } from "../user/model/school.model";
 import { Report } from "./report.model";
 import { Observable } from "rxjs/Observable";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
-import Spy = jasmine.Spy;
-import createSpy = jasmine.createSpy;
 
 describe('ReportService', () => {
   let dataService: MockDataService;
-  let namingService: MockNamingService;
   let service: ReportService;
 
   beforeEach(() => {
     dataService = new MockDataService();
-
 
     TestBed.configureTestingModule({
       providers: [
         ReportService, {
           provide: DataService,
           useValue: dataService
-        }, {
-          provide: ReportNamingService,
-          useValue: namingService
         }
       ]
     });
@@ -58,7 +46,7 @@ describe('ReportService', () => {
       expect(reports[0].reportType).toBe("Student");
       expect(reports[0].status).toBe("PENDING");
       expect(reports[0].schoolYear).toBe(1234);
-      expect(reports[0].created.getTime()).toBeLessThan(new Date().getTime());
+      expect(reports[0].created.getTime()).toBeLessThanOrEqual(new Date().getTime());
       expect(reports[0].assessmentType).toBeUndefined();
       expect(reports[0].subjectId).toBe(0);
 
@@ -90,24 +78,3 @@ describe('ReportService', () => {
     return apiObj;
   }
 });
-
-
-class MockNamingService {
-  nameStudentExamReport: Spy = createSpy("nameStudentExamReport");
-  nameGroupExamReport: Spy = createSpy("nameGroupExamReport");
-  nameSchoolGradeExamReport: Spy = createSpy("nameSchoolGradeExamReport");
-
-  constructor() {
-    this.nameStudentExamReport.and.callFake((student: Student, options: ReportOptions) => {
-      return student.ssid;
-    });
-
-    this.nameGroupExamReport.and.callFake((group: Group, options: ReportOptions) => {
-      return group.name;
-    });
-
-    this.nameSchoolGradeExamReport.and.callFake((school: School, grade: Grade, options: ReportOptions) => {
-      return school.name;
-    });
-  }
-}
