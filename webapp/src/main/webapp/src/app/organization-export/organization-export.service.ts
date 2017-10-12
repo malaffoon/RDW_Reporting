@@ -28,13 +28,13 @@ export class OrganizationExportService {
   }
 
   private createExportInternal(request: OrganizationExportRequest): Observable<void> {
-    return this.dataService.post('/organizations/examExport', request)
+    return this.dataService.post('/exams/export', request)
       .catch(ResponseUtils.throwError);
   }
 
   private createExportRequest(schoolYear: number, schools: Organization[], organizations: UserOrganizations): OrganizationExportRequest {
     return Object.assign(
-      { schoolYear: schoolYear },
+      { schoolYear: schoolYear, name: "export-exams" },
       this.groupSelectedOrganizationIdsByType(schools, organizations)
     );
   }
@@ -126,6 +126,8 @@ export class OrganizationExportService {
  * Represents custom export request and holds different exam result filter options
  */
 interface OrganizationExportRequest extends GroupedOrganizationIds {
+
+  name: string;
 
   /**
    * School year to filter on

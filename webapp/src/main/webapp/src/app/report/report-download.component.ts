@@ -48,6 +48,7 @@ export abstract class ReportDownloadComponent implements OnInit {
 
   onShowInternal(event: any) {
     this.onShow.emit(event);
+    this.options.name = this.generateName();
   }
 
   AssessmentType: any = AssessmentType;
@@ -88,6 +89,13 @@ export abstract class ReportDownloadComponent implements OnInit {
    * Implement this to give behavior to the exam report download form when it is submitted
    */
   abstract createReport(): Observable<Report>;
+
+  /**
+   * Generate a default report name to suggest to the user.
+   *
+   * @returns {string} The default report name
+   */
+  abstract generateName(): string;
 
   /**
    * Converts the given string to an AssessmentSubjectType
