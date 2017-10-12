@@ -89,8 +89,8 @@ sql:
 
         st.gender_code as student_gender_code,
 
-        (case when e.migrant_status then 'Yes' else 'No' end),
-        (case when e.section504 then 'Yes' else 'No' end),
+        (case when e.migrant_status = 1 then 'Yes' when e.migrant_status = 0 then 'No' else '' end),
+        (case when e.section504 = 1 then 'Yes' when e.section504 = 0 then 'No' else '' end),
         (case when e.iep then 'Yes' else 'No' end),
         (case when e.economic_disadvantage then 'Yes' else 'No' end),
         (case when e.lep then 'Yes' else 'No' end),
