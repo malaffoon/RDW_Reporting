@@ -26,8 +26,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [],
       districtIds: []
     };
-    expect(service.name(options, organizations))
-      .toBe(`${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('1000');
   });
 
   it('should return school name when one school', () => {
@@ -37,8 +36,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [],
       districtIds: []
     };
-    expect(service.name(options, organizations))
-      .toBe(`${organizations.schoolsById.get(1).name} ${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('School 1 1000');
   });
 
   it('should return school group name when two schools of same group', () => {
@@ -48,8 +46,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [],
       districtIds: []
     };
-    expect(service.name(options, organizations))
-      .toBe(`${organizations.schoolGroupsById.get(1).name} ${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('School Group 1 1000');
   });
 
   it('should return district name when two schools of different group', () => {
@@ -59,8 +56,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [],
       districtIds: []
     };
-    expect(service.name(options, organizations))
-      .toBe(`${organizations.districtsById.get(1).name} ${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('District 1 1000');
   });
 
   it('should return school group name when one school group', () => {
@@ -70,8 +66,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [ 1 ],
       districtIds: []
     };
-    expect(service.name(options, organizations))
-      .toBe(`${organizations.schoolGroupsById.get(1).name} ${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('School Group 1 1000');
   });
 
   it('should return district name when multiple school groups', () => {
@@ -81,8 +76,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [ 1, 2 ],
       districtIds: []
     };
-    expect(service.name(options, organizations))
-      .toBe(`${organizations.districtsById.get(1).name} ${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('District 1 1000');
   });
 
   it('should return district name when school group and schools are selected', () => {
@@ -92,8 +86,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [ 2 ],
       districtIds: []
     };
-    expect(service.name(options, organizations))
-      .toBe(`${organizations.districtsById.get(1).name} ${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('District 1 1000');
   });
 
   it('should return district name when one district', () => {
@@ -103,8 +96,7 @@ describe('OrganizationExportNamingService', () => {
       schoolGroupIds: [],
       districtIds: [ 1 ]
     };
-    expect(service.name(options, organizations))
-      .toBe(`${organizations.districtsById.get(1).name} ${options.schoolYear}`);
+    expect(service.name(options, organizations)).toBe('District 1 1000');
   });
 
 });
