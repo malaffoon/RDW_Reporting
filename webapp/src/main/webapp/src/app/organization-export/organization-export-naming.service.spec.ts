@@ -1,41 +1,23 @@
 import { OrganizationMapper } from "./organization/organization.mapper";
-import { District, School, SchoolGroup } from "./organization/organization";
 import { OrganizationExportNamingService } from "./organization-export-naming.service";
 
 describe('OrganizationExportNamingService', () => {
 
   let service: OrganizationExportNamingService = new OrganizationExportNamingService();
-  let organizations = (() => {
-
-    let mapper = new OrganizationMapper();
-
-    let schools: School[] = [
-        { id: 1, name: 'School 1', schoolGroupId: 1, districtId: 1 },
-        { id: 2, name: 'School 2', schoolGroupId: 1, districtId: 1 },
-        { id: 3, name: 'School 3', schoolGroupId: 2, districtId: 1 },
-        { id: 4, name: 'School 4', districtId: 2 },
-        { id: 5, name: 'School 5', districtId: 2 }
-      ].map(x => mapper.createSchool(x)),
-      schoolGroups: SchoolGroup[] = [
-        { id: 1, name: 'School Group 1', districtId: 1 },
-        { id: 2, name: 'School Group 2', districtId: 1 },
-        { id: 3, name: 'School Group 3', districtId: 2 }
-      ].map(x => mapper.createSchoolGroup(x)),
-      districts: District[] = [
-        { id: 1, name: 'District 1' },
-        { id: 2, name: 'District 2' }
-      ].map(x => mapper.createDistrict(x));
-
-    return {
-      organizations: [ ...districts, ...schoolGroups, ...schools ],
-      schools: schools,
-      schoolsById: new Map<number, School>(schools.map(x => <any>[ x.id, x ])),
-      schoolGroups: schoolGroups,
-      schoolGroupsById: new Map<number, SchoolGroup>(schoolGroups.map(x => <any>[ x.id, x ])),
-      districts: districts,
-      districtsById: new Map<number, District>(districts.map(x => <any>[ x.id, x ]))
-    };
-  })();
+  let organizations = new OrganizationMapper().createUserOrganizations([
+    { id: 1, name: 'School 1', schoolGroupId: 1, districtId: 1 },
+    { id: 2, name: 'School 2', schoolGroupId: 1, districtId: 1 },
+    { id: 3, name: 'School 3', schoolGroupId: 2, districtId: 1 },
+    { id: 4, name: 'School 4', districtId: 2 },
+    { id: 5, name: 'School 5', districtId: 2 }
+  ], [
+    { id: 1, name: 'School Group 1', districtId: 1 },
+    { id: 2, name: 'School Group 2', districtId: 1 },
+    { id: 3, name: 'School Group 3', districtId: 2 }
+  ], [
+    { id: 1, name: 'District 1' },
+    { id: 2, name: 'District 2' }
+  ]);
 
   it('should return school year as name when there is no selection', () => {
     let options = {
