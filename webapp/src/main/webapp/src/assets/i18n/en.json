@@ -458,21 +458,20 @@
       },
       "form": {
         "title": {
-          "single": "Print {{firstName}}'s Report",
-          "single-prepopulated": "Print {{name}}'s {{schoolYear}} {{subject}} {{assessmentType}} Report",
-          "multiple": "Print {{name}} Student Reports"
+          "single": "Create {{firstName}}'s Report",
+          "single-prepopulated": "Create {{name}}'s {{schoolYear}} {{subject}} {{assessmentType}} Report",
+          "multiple": "Create {{name}} Student Reports"
         },
         "report-name": "Report Name",
-        "regenerate": "Regenerate",
         "assessment-type": "Assessment Type",
         "subject": "Subject",
         "school-year": "School Year",
         "accommodations": {
           "title": "Student Accommodations",
-          "info": "TODO"
+          "info": ""
         },
         "order": "Sort Order",
-        "submit": "Download",
+        "submit": "Create",
         "cancel": "Cancel"
       },
       "orders": {
@@ -534,7 +533,7 @@
         "submit": {
           "label": "Export Results",
           "success-html": "Creating export. See <a href=\"/reports\">status</a>.",
-          "failure": "Error creating report. Please try again."
+          "failure": "Error creating export. Please try again."
         }
       }
     },
