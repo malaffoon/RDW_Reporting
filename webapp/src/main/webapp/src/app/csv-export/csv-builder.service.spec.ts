@@ -91,6 +91,27 @@ describe('CsvBuilder', () => {
       expect(tabularData[2]).toEqual(["", "", ""]);
     }));
 
+  it('should join accommodation codes by a pipe',
+    inject([ CsvBuilder ], (builder: CsvBuilder) => {
+      let exams = [ { codes: [ "ABC", "ACE", "ACDC"]}, { codes: [ "123" ] }].map(x => {
+        let exam = new Exam();
+        exam.accommodationCodes = x.codes;
+        return exam;
+      });
+
+      builder
+        .newBuilder()
+        .withAccommodationCodes(exam => exam)
+        .build(exams);
+
+      let tabularData: string[][] = angular2Csv.export.calls.mostRecent().args[0];
+
+      expect(tabularData.length).toBe(3);
+      expect(tabularData[0]).toEqual(["labels.export.cols.accommodation-codes"]);
+      expect(tabularData[1]).toEqual(["ABC|ACE|ACDC"]);
+      expect(tabularData[2]).toEqual(["123"]);
+    }));
+
 });
 
 export class MockDatePipe {

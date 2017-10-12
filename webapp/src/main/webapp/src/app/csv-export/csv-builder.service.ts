@@ -179,6 +179,18 @@ export class CsvBuilder {
     )
   }
 
+  withAccommodationCodes(getExam: (item: any) => Exam) {
+    return this.withColumn(
+      this.translateService.instant('labels.export.cols.accommodation-codes'),
+      (item) => {
+        let exam: Exam = getExam(item);
+        if (!exam || !exam.accommodationCodes) return "";
+
+        return exam.accommodationCodes.join("|");
+      }
+    )
+  }
+
   withReportingCategory(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('labels.groups.results.assessment.exams.cols.iab.performance'),

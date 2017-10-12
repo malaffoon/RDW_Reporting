@@ -103,6 +103,11 @@ export class AssessmentExamMapper {
       uiModel.standardError = apiModel.scaleScore.standardError;
     }
 
+    uiModel.accommodationCodes = [];
+    if(apiModel.accommodationCodes) {
+      apiModel.accommodationCodes.forEach(code => uiModel.accommodationCodes.push(code));
+    }
+
     return uiModel;
   }
 
