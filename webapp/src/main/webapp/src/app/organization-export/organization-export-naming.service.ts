@@ -8,15 +8,14 @@ export class OrganizationExportNamingService {
    * Generates a name for an export request for the given parameters.
    * This method does not support naming exports with organizations from multiple districts.
    *
-   * @param {OrganizationExportOptions} request the export request
+   * @param {OrganizationExportOptions} schoolYear the export request schoolYear
+   * @param {OrganizationExportOptions} options the export request options
    * @param {UserOrganizations} organizations all user organizations
    * @returns {string} the default export name
    */
-  name(request: OrganizationExportOptions, organizations: UserOrganizations): string {
-    return [
-      this.getSelectedOrganizationOrFirstCommonAncestorName(request, organizations),
-      request.schoolYear.toString()
-    ].join(' ').trim();
+  name(options: OrganizationExportOptions, organizations: UserOrganizations): string {
+    let basename = this.getSelectedOrganizationOrFirstCommonAncestorName(options, organizations);
+    return `${basename} ${options.schoolYear}`.trim();
   }
 
   /**

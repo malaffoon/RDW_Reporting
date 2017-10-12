@@ -58,6 +58,19 @@ describe('OrganizationGroupingService', () => {
     });
   });
 
+  it('should return district when all schools of the district are selected', () => {
+    expect(service.groupSelectedOrganizationIdsByType([
+        organizations.schoolsById.get(1),
+        organizations.schoolsById.get(2),
+        organizations.schoolsById.get(3),
+      ], organizations
+    )).toEqual({
+      districtIds: [ 1 ],
+      schoolGroupIds: [],
+      schoolIds: []
+    });
+  });
+
 });
 
 

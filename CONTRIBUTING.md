@@ -46,56 +46,55 @@ and then run the integration tests as usual, but using the local SNAPSHOT versio
 #### SAML
 The application uses a SAML IDP so, when running the application locally, you must configure it to connect to the 
 staging OpenAM server. The location of the keystore file and the credentials to read it must be provided in the 
-spring configuration file, `application.yml`. It will contain entries similar to:
-```text
-saml:
-  key-store-file: file:/opt/rdw-reporting/config/saml.jks
-  key-store-password: [redacted]
-  private-key-entry-alias: rdw-reporting-ui-sp
-  private-key-entry-password: [redacted]
-  idp-metadata-url: https://sso-deployment.sbtds.org/auth/saml2/jsp/exportmetadata.jsp?realm=/sbac
-  sp-entity-id: rdw-reporting-ui-local
-```
-For developers with access to internal resources there is a keystore and yml file available to download:
+spring configuration file, `application.yml`. To make things easier, there are placeholders that can be set using
+environment variables or VM options. You'll need to set the keystore path and credentials, and AWS access/secret keys 
+(for credentials that can access the S3 resource root). For environment variables, edit ~/.bash_profile and add:
 ```bash
-# create a local application data folder
-mkdir -p /opt/rdw-reporting/config
-
-# download the application.yml and saml.jks made for your local environment into this directory
-curl <application_properties_url> > /opt/rdw-reporting/config/application.yml
-curl <saml_jks_url> > /opt/rdw-reporting/config/saml.jks
+# RDW environment settings
+export RDW_REPORTING_KEYSTORE_PATH=file:~/Downloads/rdw-reporting-saml.jks
+export RDW_REPORTING_KEYSTORE_PASSWORD=mypassword
+export RDW_REPORTING_KEYSTORE_ALIAS=rdw-reporting-ui-sp
+export RDW_REPORTING_KEYSTORE_ENTRY_PASSWORD=mypassword
+export RDW_REPORTING_IDP=https://sso-deployment.sbtds.org/auth/saml2/jsp/exportmetadata.jsp?realm=/sbac
+export RDW_REPORTING_ENTITYID=rdw-reporting-ui-local
+export RDW_AWS_ACCESS_KEY=myAccessKey
+export RDW_AWS_SECRET_KEY=mySecretKey
+export RDW_RESOURCE_ROOT=s3://rdw-resources/
+export RDW_PERMISSION_SERVICE=http://perm-web-deployment.sbtds.org:8080/rest
+export RDW_REPORTING_IRIS_VENDORID=2B3C34BF-064C-462A-93EA-41E9E3EB8333
+export RDW_REPORTING_IRIS_URL=http://iris-dev.sbacdw.org:8080/iris/
+export RDW_REPORTING_ARTIFACTS_EXAM_ITEM_DIRECTORY=item-content/bank/items/Item-{0}/
 ```
-_There is nothing magical about the location and names of the files, but being consistent will make things easier._ 
+For IntelliJ, create a new Spring Boot configuration and add the following to VM Options:
+```text
+-Drdw.reporting.keystore.path=file:~/Downloads/rdw-reporting-saml.jks
+-Drdw.reporting.keystore.password=mypassword
+-Drdw.reporting.keystore.alias=rdw-reporting-ui-sp
+-Drdw.reporting.keystore.entry.password=mypassword
+-Drdw.reporting.idp=https://sso-deployment.sbtds.org/auth/saml2/jsp/exportmetadata.jsp?realm=/sbac
+-Drdw.reporting.entityId=rdw-reporting-ui-local
+-Drdw.aws.access.key=myAccessKey
+-Drdw.aws.secret.key=mySecretKey
+-Drdw.resource.root=s3://rdw-resources/
+-Drdw.permission.service=http://perm-web-deployment.sbtds.org:8080/rest
+-Drdw.reporting.iris.vendorId=2B3C34BF-064C-462A-93EA-41E9E3EB8333
+-Drdw.reporting.iris.url=http://iris-dev.sbacdw.org:8080/iris/
+-Drdw.reporting.artifacts.exam.item.directory=item-content/bank/items/Item-{0}/
+```
+_NOTE: there is nothing magical about the location and names of the files, but being consistent will make things easier._ 
 
-#### Running From IntelliJ
-The README outlines how to run the applications using docker. As a developer you will want to run an application 
-locally from the IDE. To start, have IDEA open the root `build.gradle` file. You'll probably want to create a run/debug
-configuration, either:
-* In the Run/Debug Configurations dialog, hit ^N (ctrl-n) and select Spring Boot
-	* For the new configuration, name it as you wish
-	* Main class: org.opentestsystem.rdw.reporting.Application
-	* Program arguments: --spring.config.location=/opt/rdw-reporting/config/application.yml
-	* Use classpath of module: rdw-reporting-service_main
-	
-OR
-* Create a new run/debug configuration:  (Menu)[Run->Edit Configurations...]
-* In the Run/Debug Configurations dialog, hit ^N (ctrl-n) and select Gradle
-	* For the new configuration, name it as you wish
-	* In Gradle Project: Select RDW_Reporting
-	* In Tasks: Enter bootRun as the Task
-	* In Script Parameters: -PjvmArgs="-Dspring.config.location=/opt/rdw-reporting/config/application.yml"
 
 #### Running Using Gradle
+Once the environment variables are set up you should be able to:
 ```bash
-gradle bootRun -PjvmArgs="-Dspring.config.location=/opt/rdw-reporting/config/application.yml"
+gradle bootRun 
 open http://localhost:8080
 ```
 #### Running Standalone
-The artifact is a Spring Boot executable jar so you can just run it. Just as when running from the IDE the default
-is to run without a configuration server so the configuration must be specified on the command line. You can also
-change the port if desired, e.g.:
+The artifact is a Spring Boot executable jar so you can just run it. Once the environment variables are set up you 
+should be able to (you can also change the port if desired):
 ```bash
-java -jar build/libs/rdw-reporting*.jar --spring.config.location=/opt/rdw-reporting/config/application.yml --server.port=8088
+java -jar build/libs/rdw-reporting*.jar --server.port=8088
 open http://localhost:8088
 ```
 

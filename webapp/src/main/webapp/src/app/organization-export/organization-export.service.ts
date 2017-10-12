@@ -1,7 +1,6 @@
 import { Observable } from "rxjs/Observable";
 import { DataService } from "../shared/data/data.service";
 import { Injectable } from "@angular/core";
-import { ResponseUtils } from "../shared/response-utils";
 import { Organization } from "./organization/organization";
 import { UserOrganizations } from "./organization/user-organizations";
 import { OrganizationExportOptions } from "./organization-export-options";
@@ -26,18 +25,13 @@ export class OrganizationExportService {
    */
   createExport(schoolYear: number, schools: Organization[], organizations: UserOrganizations): Observable<void> {
     return this.dataService.post('/exams/export', this.createExportRequest(schoolYear, schools, organizations))
-      .catch(ResponseUtils.throwError);
   }
 
   private createExportRequest(schoolYear: number, schools: Organization[], organizations: UserOrganizations): OrganizationExportRequest {
-    let options = Object.assign(
-      { schoolYear: schoolYear },
-      this.groupingService.groupSelectedOrganizationIdsByType(schools, organizations));
-
-    return {
-      name: this.namingService.name(options, organizations),
-      options: options
-    };
+    let ids = this.groupingService.groupSelectedOrganizationIdsByType(schools, organizations);
+    let options = Object.assign({ schoolYear: schoolYear }, ids);
+    let name = this.namingService.name(options, organizations);
+    return Object.assign({ name: name }, options);
   }
 
 }
@@ -45,16 +39,11 @@ export class OrganizationExportService {
 /**
  * Represents an organization export request and holds different exam result filter options
  */
-interface OrganizationExportRequest {
+interface OrganizationExportRequest extends OrganizationExportOptions {
 
   /**
    * The export file name
    */
   readonly name: string;
-
-  /**
-   * The test result filter options
-   */
-  readonly options: OrganizationExportOptions;
 
 }

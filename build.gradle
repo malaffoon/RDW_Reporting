@@ -31,7 +31,7 @@ ext['thymeleaf-layout-dialect.version'] = '2.1.1'
 apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.0.0-SNAPSHOT`
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.1.0-43"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.1.0-47"
 String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.1.0-210"
 String dockerPrefix = "smarterbalanced"
 
@@ -104,9 +104,6 @@ subprojects {
         testCompile 'org.assertj:assertj-core'
         testCompile 'org.mockito:mockito-all'
     }
-
-    // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
-    test.finalizedBy(jacocoTestReport)
 
     // task to generate build-info.properties with build.version, build.timestamp
     // using this approach instead of resource filtering to avoid modifying source
@@ -182,6 +179,7 @@ subprojects {
     //This task for for manually running the integration tests against schemas being developed simultaneously with this
     // project, versus the schemas that are "fixed" under the RDW_Schema submodule in this project
     task manualIT(type: Test) {
+        include '**/*IT.*'
         outputs.upToDateWhen { false }
         doFirst {
             println "Running Manual Integration Tests..."
@@ -190,6 +188,7 @@ subprojects {
 
     //The omission of the ':' in manualIT is on purpose - we need the relative path to manualIT
     task IT(type: Test, dependsOn:[":cleanReportingTest", ":migrateReportingTest"]) {
+        include '**/*IT.*'
         outputs.upToDateWhen { false }
         doLast {
             println "Running Integration Tests..."
@@ -198,14 +197,19 @@ subprojects {
 
     //Specific integration test task that will automatically migrate the test database schemas
     task moIT(type: Test, dependsOn:[":migrateReportingTest"]) {
+        include '**/*IT.*'
         outputs.upToDateWhen { false }
         doFirst {
             println "Running Integration Tests without cleaning database (flyway migrate only)..."
         }
     }
 
-    tasks.withType(Test) {
-        reports.html.destination = file("${reporting.baseDir}/${name}")
+    task coverage(type: Task, dependsOn: [test, IT]) {
+        doFirst {
+            jacocoTestReport.executionData(test, IT)
+            jacocoTestReport.reports.html.destination = file("${reporting.baseDir}/${name}")
+        }
+        finalizedBy(jacocoTestReport)
     }
 }
 

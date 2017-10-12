@@ -18,6 +18,7 @@ sql:
         'TestSessionId',
 
         'AssessmentType',
+        'AssessmentSubType',
         'AssessmentName',
         'Subject',
 
@@ -68,7 +69,8 @@ sql:
         e.school_year,
         e.session_id,
 
-        at.code as asmt_code,
+        case when at.code = 'sum' then 'Summative' else 'Interim' end,
+        upper(at.code),
         a.label as asmt_label,
         su.code as asmt_subject_code,
 
