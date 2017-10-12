@@ -20,7 +20,7 @@
 
             <div class="form-group">
               <label for="report-name">{{'labels.reports.form.report-name' | translate}}</label>
-              <input id="report-name" name="report-name" class="form-control input-sm" type="text" [(ngModel)]="options.name" required>
+              <input id="report-name" name="report-name" class="form-control input-sm" type="text" maxlength="255" [(ngModel)]="options.name" required>
             </div>
 
             <div class="form-group">
