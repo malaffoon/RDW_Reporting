@@ -1,4 +1,4 @@
-import { Organization } from "./organization";
+import { District, Organization, School, SchoolGroup } from "./organization";
 
 /**
  * Represents the organizations the user is permitted to access exam results for
@@ -13,26 +13,31 @@ export interface UserOrganizations {
   /**
    * All schools entitled to the user
    */
-  readonly schools: Organization[];
+  readonly schools: School[];
+
+  /**
+   * All schools entitled to the user indexed by ID
+   */
+  readonly schoolsById: Map<number, School>;
 
   /**
    * All school groups entitled to the user
    */
-  readonly schoolGroups: Organization[];
+  readonly schoolGroups: SchoolGroup[];
 
   /**
    * All school groups entitled to the user indexed by ID
    */
-  readonly schoolGroupsById: Map<number, Organization>;
+  readonly schoolGroupsById: Map<number, SchoolGroup>;
 
   /**
    * All districts entitled to the user
    */
-  readonly districts: Organization[];
+  readonly districts: District[];
 
   /**
    * All districts entitled to the user indexed by ID
    */
-  readonly districtsById: Map<number, Organization>;
+  readonly districtsById: Map<number, District>;
 
 }

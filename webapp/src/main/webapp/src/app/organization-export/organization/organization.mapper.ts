@@ -53,11 +53,16 @@ export class OrganizationMapper {
     return {
       organizations: [ ...districts, ...schoolGroups, ...schools ],
       schools: schools,
+      schoolsById: this.index(schools, x => x.id),
       schoolGroups: schoolGroups,
-      schoolGroupsById: new Map<number, Organization>(schoolGroups.map(x => <any>[ x.id, x ])),
+      schoolGroupsById: this.index(schoolGroups, x => x.id),
       districts: districts,
-      districtsById: new Map<number, Organization>(districts.map(x => <any>[ x.id, x ]))
+      districtsById: this.index(districts, x => x.id)
     };
+  }
+
+  private index<K, V>(array: V[], indexer: (value: V) => K ): Map<K, V> {
+    return new Map<K, V>(array.map(x => <any>[ indexer(x), x ]))
   }
 
   /**

@@ -25,6 +25,7 @@ export class OrganizationService {
       this.getDistricts()
     ).map(response => {
       let [ user, schoolGroups, districts ] = response;
+      // return this.mapper.createUserOrganizations([user.schools[0]], [], districts.filter(x => x.id === user.schools[0].districtId));
       return this.mapper.createUserOrganizations(user.schools, schoolGroups, districts);
     });
   }
