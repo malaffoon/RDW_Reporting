@@ -204,6 +204,7 @@
         "select-year": "School Year",
         "collapse-all": "Collapse Results",
         "expand-all": "Expand Results",
+        "add-assessment-filters": "Add Assessment Filters",
         "adv-filters": {
           "label": "Advanced Filters",
           "subhead": "Click an item to remove it from the list",
