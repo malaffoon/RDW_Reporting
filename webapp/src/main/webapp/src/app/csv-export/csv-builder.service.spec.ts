@@ -5,6 +5,7 @@ import { DatePipe, DecimalPipe } from "@angular/common";
 import { Angular2CsvProvider } from "./angular-csv.provider";
 import Spy = jasmine.Spy;
 import {Exam} from "../assessments/model/exam.model";
+import { Student } from "../student/model/student.model";
 
 describe('CsvBuilder', () => {
   let datePipe: MockDatePipe;
@@ -116,6 +117,7 @@ describe('CsvBuilder', () => {
     inject([ CsvBuilder ], (builder: CsvBuilder) => {
       let exams = [ { codes: [ "ethnicity1", "ethnicity2", "ethnicity3" ]}, { codes: [ "ethnicity7" ] }].map(x => {
         let exam = new Exam();
+        exam.student = new Student();
         exam.student.ethnicityCodes = x.codes;
         return exam;
       });
