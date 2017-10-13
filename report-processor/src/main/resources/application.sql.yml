@@ -104,7 +104,7 @@ sql:
         (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'TwoOrMoreRaces') then 'Yes' else 'No' end ),
         (case when exists (select 1 from student_ethnicity where student_id = st.id and ethnicity_code = 'Filipino') then 'Yes' else 'No' end ),
 
-        e.available_accommodation_codes
+        coalesce(e.available_accommodation_codes, '')
 
       into outfile ::EXPORT_DESTINATION:: :export_location
       fields terminated by ',' optionally enclosed by '"'
