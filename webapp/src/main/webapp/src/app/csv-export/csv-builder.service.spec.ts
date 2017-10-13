@@ -136,9 +136,6 @@ describe('CsvBuilder', () => {
       expect(tabularData[1]).toEqual(["enum.polar.1", "enum.polar.1", "enum.polar.1", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2"]);
       expect(tabularData[2]).toEqual(["enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.1"]);
     }));
-
-
-
 });
 
 export class MockDatePipe {
