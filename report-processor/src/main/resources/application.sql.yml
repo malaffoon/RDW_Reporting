@@ -35,12 +35,12 @@ sql:
         'Claim3ScoreAchievementLevel',
         'Claim4ScoreAchievementLevel',
 
-        'Student Gender',
-        'Migrant Status',
+        'Sex',
+        'MigrantStatus',
         'Section 504',
-        'Iep',
-        'Economic Disadvantage',
-        'Lep',
+        'IDEAIndicator',
+        'EconomicDisadvantageStatus',
+        'LEPStatus',
 
         'HispanicOrLatinoEthnicity',
         'AmericanIndianOrAlaskaNative',

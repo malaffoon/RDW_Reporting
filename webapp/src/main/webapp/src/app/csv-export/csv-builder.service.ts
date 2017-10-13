@@ -69,7 +69,7 @@ export class CsvBuilder {
    * @param dataProvider    The column data provider
    * @returns {CsvBuilder}  This builder
    */
-  withColumn(labelKey: string, dataProvider: (item:any) => any) {
+  withColumn(labelKey: string, dataProvider: (item: any) => any) {
     let column = new CsvColumn();
     column.label = labelKey;
     column.dataProvider = dataProvider;
@@ -92,59 +92,59 @@ export class CsvBuilder {
 
   withStudentId(getStudent: (item: any) => Student) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.student-id'),
+      this.translateHeader('student-id'),
       (item) => getStudent(item).ssid
     );
   }
 
   withStudentName(getStudent: (item: any) => Student) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.student-first-name'),
+      this.translateHeader('student-first-name'),
       (item) => getStudent(item).firstName
     ).withColumn(
-      this.translateService.instant('labels.export.cols.student-last-name'),
+      this.translateHeader('student-last-name'),
       (item) => getStudent(item).lastName
     );
   }
 
   withExamDate(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.student.results.cols.date'),
+      this.translateHeader('submit-date-time'),
       (item) => this.datePipe.transform(getExam(item).date)
     )
   }
 
   withExamSession(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.groups.results.assessment.exams.cols.session'),
+      this.translateHeader('assessment-session-id'),
       (item) => getExam(item).session
     )
   }
 
   withAssessmentType(getAssessment: (item: any) => Assessment) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.assessment-type'),
-      (item) => AssessmentType[getAssessment(item).type]
+      this.translateHeader('assessment-type'),
+      (item) => AssessmentType[ getAssessment(item).type ]
     )
   }
 
   withAssessmentName(getAssessment: (item: any) => Assessment) {
     return this.withColumn(
-      this.translateService.instant('labels.student.results.cols.assessment'),
+      this.translateHeader('assessment-name'),
       (item) => getAssessment(item).name
     )
   }
 
   withAssessmentSubject(getAssessment: (item: any) => Assessment) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.subject'),
+      this.translateHeader('subject'),
       (item) => getAssessment(item).subject
     )
   }
 
   withExamGrade(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.student.results.cols.enrolled-grade'),
+      this.translateHeader('enrolled-grade'),
       (item) => {
         let gradeCode: string = getExam(item).enrolledGrade;
         return this.translateService.instant(`labels.grades.${gradeCode}.enrolled-name`)
@@ -152,6 +152,7 @@ export class CsvBuilder {
     )
   }
 
+  // TODO - Split out -- ?
   withExamStatus(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('labels.groups.results.assessment.exams.cols.status'),
@@ -169,7 +170,7 @@ export class CsvBuilder {
 
   withAchievementLevel(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.groups.results.assessment.exams.cols.ica.performance'),
+      this.translateHeader('achievement-level'),
       (item) => {
         let exam: Exam = getExam(item);
         if (!exam || !exam.level) return "";
@@ -181,7 +182,7 @@ export class CsvBuilder {
 
   withAccommodationCodes(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.accommodation-codes'),
+      this.translateHeader('accommodation-codes'),
       (item) => {
         let exam: Exam = getExam(item);
         if (!exam || !exam.accommodationCodes) return "";
@@ -191,6 +192,7 @@ export class CsvBuilder {
     )
   }
 
+  // TODO - Is this different than AchievementLevel now -- ?
   withReportingCategory(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('labels.groups.results.assessment.exams.cols.iab.performance'),
@@ -205,7 +207,7 @@ export class CsvBuilder {
 
   withScaleScore(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.groups.results.assessment.exams.cols.score'),
+      this.translateHeader('scale-score'),
       (item) => {
         let score = getExam(item).score;
         return !score ? '' : score;
@@ -215,7 +217,7 @@ export class CsvBuilder {
 
   withErrorBandMin(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.error-band-min'),
+      this.translateHeader('error-band-min'),
       (item) => {
         let exam: Exam = getExam(item);
         return !exam.score ? '' : exam.score - exam.standardError;
@@ -225,7 +227,7 @@ export class CsvBuilder {
 
   withErrorBandMax(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.error-band-max'),
+      this.translateHeader('error-band-max'),
       (item) => {
         let exam: Exam = getExam(item);
         return !exam.score ? '' : exam.score + exam.standardError;
@@ -234,11 +236,11 @@ export class CsvBuilder {
   }
 
   withMathClaimScores(getExam: (item: any) => Exam) {
-    return this.withClaimScores(['1', 'SOCK_2', '3'], getExam);
+    return this.withClaimScores([ '1', 'SOCK_2', '3' ], getExam);
   }
 
   withELAClaimScores(getExam: (item: any) => Exam) {
-    return this.withClaimScores(['SOCK_R', 'SOCK_LS', '2-W', '4-CR'], getExam);
+    return this.withClaimScores([ 'SOCK_R', 'SOCK_LS', '2-W', '4-CR' ], getExam);
   }
 
   withClaimScores(claims: string[], getExam: (item: any) => Exam) {
@@ -247,9 +249,9 @@ export class CsvBuilder {
         this.translateService.instant(`enum.subject-claim-code.${claim}`),
         (item) => {
           let exam: Exam = getExam(item);
-          if (!exam || !exam.claimScores[idx].level) return "";
+          if (!exam || !exam.claimScores[ idx ].level) return "";
 
-          return this.translateService.instant(`enum.iab-category.full.${exam.claimScores[idx].level}`);
+          return this.translateService.instant(`enum.iab-category.full.${exam.claimScores[ idx ].level}`);
         }
       )
     });
@@ -259,14 +261,14 @@ export class CsvBuilder {
 
   withGender(getStudent: (item: any) => Student) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.gender'),
+      this.translateHeader('gender'),
       (item) => this.translateService.instant(`enum.gender.${getStudent(item).genderCode}`)
     )
   }
 
   withMigrantStatus(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.migrant-status'),
+      this.translateHeader('migrant-status'),
       (item) => {
         let polarEnum = getExam(item).migrantStatus ? 1 : 2;
         return this.translateService.instant(`enum.polar.${polarEnum}`);
@@ -276,7 +278,7 @@ export class CsvBuilder {
 
   with504Plan(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.504-plan'),
+      this.translateHeader('504-plan'),
       (item) => {
         let polarEnum = getExam(item).plan504 ? 1 : 2;
         return this.translateService.instant(`enum.polar.${polarEnum}`);
@@ -286,7 +288,7 @@ export class CsvBuilder {
 
   withIep(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.iep'),
+      this.translateHeader('iep'),
       (item) => {
         let polarEnum = getExam(item).iep ? 1 : 2;
         return this.translateService.instant(`enum.polar.${polarEnum}`);
@@ -296,7 +298,7 @@ export class CsvBuilder {
 
   withEconomicDisadvantage(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.economic-disadvantage'),
+      this.translateHeader('economic-disadvantage'),
       (item) => {
         let polarEnum = getExam(item).economicDisadvantage ? 1 : 2;
         return this.translateService.instant(`enum.polar.${polarEnum}`);
@@ -306,7 +308,7 @@ export class CsvBuilder {
 
   withLimitedEnglish(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.limited-english'),
+      this.translateHeader('limited-english'),
       (item) => {
         let polarEnum = getExam(item).limitedEnglishProficiency ? 1 : 2;
         return this.translateService.instant(`enum.polar.${polarEnum}`);
@@ -316,7 +318,7 @@ export class CsvBuilder {
 
   withEthnicity(getExam: (item: any) => Exam) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.ethnicity'),
+      this.translateHeader('ethnicity'),
       (item) => {
         let ethnicities: string[] = getExam(item).student.ethnicityCodes
           .map((code) => this.translateService.instant(`enum.ethnicity.${code}`));
@@ -334,14 +336,14 @@ export class CsvBuilder {
 
   withClaim(getAssessmentItem: (item: any) => AssessmentItem) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.claim'),
+      this.translateHeader('claim'),
       (item) => this.translateService.instant(`definition.claim.${getAssessmentItem(item).claim}.name`)
     );
   }
 
   withTarget(getAssessmentItem: (item: any) => AssessmentItem) {
     return this.withColumn(
-      this.translateService.instant('labels.export.cols.target'),
+      this.translateHeader('target'),
       (item) => this.translateService.instant('labels.groups.results.assessment.items.target', getAssessmentItem(item))
     );
   }
@@ -380,7 +382,7 @@ export class CsvBuilder {
         column.points.toString(),
         (item) => {
           let field = showAsPercent ? column.percentField : column.numberField;
-          let value: number = getAssessmentItem(item)[field];
+          let value: number = getAssessmentItem(item)[ field ];
           if (isNullOrUndefined(value)) return "";
 
           return this.numberAsString(value, showAsPercent);
@@ -393,49 +395,53 @@ export class CsvBuilder {
   //Combination methods for commonly-associated columns
 
   withStudent(getStudent: (item: any) => Student) {
-    this.withStudentId(getStudent);
-    this.withStudentName(getStudent);
-    return this;
+    return this
+      .withStudentId(getStudent)
+      .withStudentName(getStudent);
   }
 
   withScoreAndErrorBand(getExam: (item: any) => Exam) {
-    this.withScaleScore(getExam);
-    this.withErrorBandMin(getExam);
-    this.withErrorBandMax(getExam);
-    return this;
+    return this
+      .withScaleScore(getExam)
+      .withErrorBandMin(getExam)
+      .withErrorBandMax(getExam);
   }
 
   withAssessmentTypeNameAndSubject(getAssessment: (item: any) => Assessment) {
-    this.withAssessmentType(getAssessment);
-    this.withAssessmentName(getAssessment);
-    this.withAssessmentSubject(getAssessment);
-    return this;
+    return this
+      .withAssessmentType(getAssessment)
+      .withAssessmentName(getAssessment)
+      .withAssessmentSubject(getAssessment);
   }
 
   withExamGradeAndStatus(getExam: (item: any) => Exam) {
-    this.withExamGrade(getExam);
-    this.withExamStatus(getExam);
-    return this;
+    return this
+      .withExamGrade(getExam)
+      .withExamStatus(getExam);
   }
 
   withExamDateAndSession(getExam: (item: any) => Exam) {
-    this.withExamDate(getExam);
-    this.withExamSession(getExam);
-    return this;
+    return this
+      .withExamDate(getExam)
+      .withExamSession(getExam);
   }
 
   withStudentContext(getExam: (item: any) => Exam) {
-    this.withMigrantStatus(getExam);
-    this.with504Plan(getExam);
-    this.withIep(getExam);
-    this.withEconomicDisadvantage(getExam);
-    this.withLimitedEnglish(getExam);
-    this.withEthnicity(getExam);
-    return this;
+    return this
+      .withMigrantStatus(getExam)
+      .with504Plan(getExam)
+      .withIep(getExam)
+      .withEconomicDisadvantage(getExam)
+      .withLimitedEnglish(getExam)
+      .withEthnicity(getExam);
   }
 
   private numberAsString(value: Number, showAsPercent: boolean) {
     return this.numberPipe.transform(value, '1.0-0') +
       (showAsPercent ? "%" : "");
+  }
+
+  private translateHeader(header: string): string {
+    return this.translateService.instant("labels.export.cols." + header);
   }
 }
