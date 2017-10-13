@@ -557,7 +557,8 @@
         "limited-english": "Limited English Proficiency",
         "ethnicity": "Race/Ethnicity",
         "claim": "Claim",
-        "target": "Target"
+        "target": "Target",
+        "accommodation-codes": "AssignedAccommodationList"
       }
     }
   },

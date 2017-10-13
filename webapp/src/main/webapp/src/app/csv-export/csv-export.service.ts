@@ -7,6 +7,7 @@ import { CsvBuilder } from "./csv-builder.service";
 import { StudentHistoryExamWrapper } from "../student/model/student-history-exam-wrapper.model";
 import { Student } from "../student/model/student.model";
 import { ItemByPointsEarnedExportRequest } from "../assessments/model/item-by-points-earned-export-request.model";
+import { exam } from "../standalone/data/exam";
 
 @Injectable()
 export class CsvExportService {
@@ -58,6 +59,7 @@ export class CsvExportService {
       .withELAClaimScores(getNonIABElaExam)
       .withGender(getStudent)
       .withStudentContext(getExam)
+      .withAccommodationCodes(getExam)
       .build(sourceData);
   }
 
@@ -91,6 +93,7 @@ export class CsvExportService {
       .withScoreAndErrorBand(getExam)
       .withMathClaimScores(getNonIABMathExam)
       .withELAClaimScores(getNonIABElaExam)
+      .withAccommodationCodes(getExam)
       .build(wrappers);
   }
 
