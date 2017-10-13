@@ -25,6 +25,7 @@ export class CsvExportService {
    */
   exportAssessmentExams(assessmentExams: AssessmentExam[],
                         filterBy: FilterBy,
+                        ethnicities: string[],
                         filename: string) {
     let sourceData: any[] = [];
     assessmentExams.forEach((assessmentExam: AssessmentExam) => {
@@ -58,7 +59,7 @@ export class CsvExportService {
       .withMathClaimScores(getNonIABMathExam)
       .withELAClaimScores(getNonIABElaExam)
       .withGender(getStudent)
-      .withStudentContext(getExam)
+      .withStudentContext(getExam, ethnicities)
       .withAccommodationCodes(getExam)
       .build(sourceData);
   }

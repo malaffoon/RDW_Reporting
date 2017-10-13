@@ -10,6 +10,8 @@ import { Angular2CsvProvider } from "./angular-csv.provider";
 import { AssessmentItem } from "../assessments/model/assessment-item.model";
 import { isNullOrUndefined } from "util";
 import { ItemPointField } from "../assessments/model/item-point-field.model";
+import { ExamFilterService } from "../assessments/filters/exam-filters/exam-filter.service";
+import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
 
 @Injectable()
 export class CsvBuilder {
@@ -316,15 +318,17 @@ export class CsvBuilder {
     )
   }
 
-  withEthnicity(getExam: (item: any) => Exam) {
-    return this.withColumn(
-      this.translateHeader('ethnicity'),
-      (item) => {
-        let ethnicities: string[] = getExam(item).student.ethnicityCodes
-          .map((code) => this.translateService.instant(`enum.ethnicity.${code}`));
-        return ethnicities.join(', ');
-      }
-    )
+  withEthnicity(getExam: (item: any) => Exam, ethnicities: string[]) {
+    for(let ethnicity of ethnicities) {
+      this.withColumn(
+        ethnicity,
+        (item) => {
+          let polarEnum = getExam(item).student.ethnicityCodes.some(code => code == ethnicity) ? 1 : 2;
+          return this.translateService.instant(`enum.polar.${polarEnum}`);
+        });
+    }
+
+    return this;
   }
 
   withItemNumber(getAssessmentItem: (item: any) => AssessmentItem) {
@@ -426,14 +430,14 @@ export class CsvBuilder {
       .withExamSession(getExam);
   }
 
-  withStudentContext(getExam: (item: any) => Exam) {
+  withStudentContext(getExam: (item: any) => Exam, ethnicities) {
     return this
       .withMigrantStatus(getExam)
       .with504Plan(getExam)
       .withIep(getExam)
       .withEconomicDisadvantage(getExam)
       .withLimitedEnglish(getExam)
-      .withEthnicity(getExam);
+      .withEthnicity(getExam, ethnicities);
   }
 
   private numberAsString(value: Number, showAsPercent: boolean) {

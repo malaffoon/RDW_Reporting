@@ -104,7 +104,7 @@ export class GroupResultsComponent implements OnInit {
     let filename: string = this.currentGroup.name +
       "-" + new Date().toDateString();
 
-    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, filename);
+    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, this.filterOptions.ethnicities, filename);
   }
 
   exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {

@@ -112,6 +112,31 @@ describe('CsvBuilder', () => {
       expect(tabularData[2]).toEqual(["123"]);
     }));
 
+  it('should add a column for each ethnicity',
+    inject([ CsvBuilder ], (builder: CsvBuilder) => {
+      let exams = [ { codes: [ "ethnicity1", "ethnicity2", "ethnicity3" ]}, { codes: [ "ethnicity7" ] }].map(x => {
+        let exam = new Exam();
+        exam.student.ethnicityCodes = x.codes;
+        return exam;
+      });
+
+      let ethnicityOptions = [ "ethnicity1", "ethnicity2", "ethnicity3", "ethnicity4", "ethnicity5", "ethnicity6", "ethnicity7" ];
+
+      builder
+        .newBuilder()
+        .withEthnicity(exam => exam, ethnicityOptions)
+        .build(exams);
+
+      let tabularData: string[][] = angular2Csv.export.calls.mostRecent().args[0];
+
+      expect(tabularData.length).toBe(3);
+      expect(tabularData[0]).toEqual(ethnicityOptions);
+      expect(tabularData[1]).toEqual(["enum.polar.1", "enum.polar.1", "enum.polar.1", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2"]);
+      expect(tabularData[2]).toEqual(["enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.1"]);
+    }));
+
+
+
 });
 
 export class MockDatePipe {
