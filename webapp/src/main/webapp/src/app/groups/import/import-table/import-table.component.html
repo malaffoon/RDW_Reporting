@@ -10,26 +10,24 @@
   sortOrder="-1"
   tableStyleClass="table table-striped table-hover"
   [tableStyle]="{'table-layout':'auto'}" >
-  <p-column expander="true" styleClass="col-icon"></p-column>
-  <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
+  <p-column field="position" header="{{'labels.groups.import.cols.file-name' | translate }}" >
     <ng-template let-import="rowData" pTemplate="body">
-      <a href="javascript:void(0)" *ngIf="import.isOk" class="label border-only green" (click)="dt.toggleRow(import)" >
-        <i class="fa fa-check-circle"></i> {{ 'enum.status.' + import.status | translate }}
-      </a>
-      <span *ngIf="!import.isOk">
-        <a href="javascript:void(0)" class="label border-only red pointer" (click)="dt.toggleRow(import)" >
-          <i class="fa fa-exclamation-circle"></i> {{ 'enum.status.' + import.status | translate }}
-        </a>
-      </span>
+      <datatable-row-expander [datatable]="dt" [row]="import" [text]="import.fileName"></datatable-row-expander>
     </ng-template>
   </p-column>
-  <p-column field="id" header="{{'labels.groups.import.cols.id' | translate }}" [sortable]="true"></p-column>
-  <p-column field="fileName" header="{{'labels.groups.import.cols.file-name' | translate }}" [sortable]="true"></p-column>
   <p-column field="created" header="{{'labels.groups.import.cols.created' | translate }}" [sortable]="true">
     <ng-template let-import="rowData" pTemplate="body">
       {{ import.created | date:'medium' }}
     </ng-template>
   </p-column>
+  <p-column field="status" header="{{'labels.groups.import.cols.status' | translate }}" [sortable]="true">
+    <ng-template let-import="rowData" pTemplate="body">
+      <div class="label border-only" [ngClass]="{ 'green': import.isOk, 'red': !import.isOk }">
+        <i class="fa " [ngClass]="{ 'fa-check-circle': import.isOk, 'fa-exclamation-circle': !import.isOk }"></i> {{ 'enum.status.' + import.status | translate }}
+      </div>
+    </ng-template>
+  </p-column>
+  <p-column field="id" header="{{'labels.groups.import.cols.id' | translate }}" [sortable]="true"></p-column>
   <ng-template let-import pTemplate="rowexpansion" class="white-space-normal">
     <div class="panel" [ngClass]="{ 'panel-success':import.isOk, 'panel-danger':!import.isOk }">
       <div class="panel-heading">
