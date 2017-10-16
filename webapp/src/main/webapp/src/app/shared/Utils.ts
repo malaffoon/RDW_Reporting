@@ -22,4 +22,8 @@ export class Utils {
   static polarEnumToBoolean(value): boolean {
     return value === 1;
   }
+
+  static isNullOrEmpty(value: string): boolean {
+    return value === null || value.length === 0;
+  }
 }

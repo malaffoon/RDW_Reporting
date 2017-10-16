@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { DataTable } from "primeng/components/datatable/datatable";
-import { Utils } from "../../../../../../../../../RDW_Reporting/webapp/src/main/webapp/src/app/shared/Utils";
+import { Utils } from "../Utils";
 
 /**
  * This component is responsible for displaying user notifications.
