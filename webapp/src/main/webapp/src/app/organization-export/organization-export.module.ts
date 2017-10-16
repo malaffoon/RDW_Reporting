@@ -11,6 +11,8 @@ import { OrganizationMapper } from "./organization/organization.mapper";
 import { OrganizationTreeComponent } from "./organization/organization-tree.component";
 import { UserOrganizationsResolve } from "./organization/user-organizations.resolve";
 import { OrganizationExportService } from "./organization-export.service";
+import { OrganizationExportNamingService } from "./organization-export-naming.service";
+import { OrganizationGroupingService } from "./organization-grouping.service";
 
 @NgModule({
   declarations: [
@@ -32,8 +34,10 @@ import { OrganizationExportService } from "./organization-export.service";
   ],
   providers: [
     OrganizationExportService,
+    OrganizationExportNamingService,
     OrganizationService,
     OrganizationMapper,
+    OrganizationGroupingService,
     UserOrganizationsResolve
   ]
 })

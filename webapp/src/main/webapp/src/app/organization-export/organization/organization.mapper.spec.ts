@@ -16,6 +16,7 @@ describe('OrganizationService', () => {
     let expected = {
       organizations: [ ...districts, ...schools ],
       schools: schools,
+      schoolsById: new Map([ [ 1, schools[ 0 ] ] ]),
       schoolGroups: schoolGroups,
       schoolGroupsById: new Map(),
       districts: districts,
@@ -113,9 +114,9 @@ describe('OrganizationService', () => {
   it('createOrganizationTreeWithPlaceholders() should create a tree representative of the given organizations with placeholders when ancestors are absent', () => {
 
     let organizations = fixture
-      .createUserOrganizations([ { id: 1, districtId: 2 }, { id: 3} ], [], [ { id: 2 } ]);
+      .createUserOrganizations([ { id: 1, districtId: 2 }, { id: 3 } ], [], [ { id: 2 } ]);
 
-    let actual = fixture.createOrganizationTreeWithPlaceholders([organizations.schools[0]], organizations);
+    let actual = fixture.createOrganizationTreeWithPlaceholders([ organizations.schools[ 0 ] ], organizations);
 
     let expected = new Tree();
     expected
