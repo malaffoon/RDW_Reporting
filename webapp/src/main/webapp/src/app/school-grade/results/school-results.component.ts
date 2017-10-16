@@ -15,7 +15,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
 import { SchoolGradeDownloadComponent } from "../../report/school-grade-report-download.component";
-import { Option } from "../../shared/form/search-select";
+import { Option } from "../../shared/form/sb-typeahead.component";
 import { OrganizationService } from "../organization.service";
 
 @Component({

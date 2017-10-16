@@ -8,11 +8,10 @@
         <div class="col-md-6" *ngIf="!editingDisabled">
           <div class="form-group">
             <label>{{'labels.organization-export.form.organization.label' | translate}}</label>
-            <span search-select-with-button
+            <span sb-button-typeahead
                   [options]="organizationOptions"
-                  (select)="add($event)"
+                  (buttonClick)="add($event)"
                   placeholder="{{'prompt.select' | translate}}"
-                  searchPlaceholder="{{'labels.organization-export.form.organization.placeholder' | translate}}"
                   buttonLabel="{{'labels.organization-export.form.organization.add' | translate}}">
             </span>
             <div class="ml-xs mt-xs">
