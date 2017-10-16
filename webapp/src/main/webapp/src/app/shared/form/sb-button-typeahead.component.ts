@@ -14,7 +14,6 @@ import { isUndefined } from "util";
              typeaheadGroupField="group"
              (typeaheadOnSelect)="onSelectInternal($event.item)"
              (ngModelChange)="onChangeInternal()"
-             (focus)="onFocusInternal()"
              [(ngModel)]="search"
              [placeholder]="placeholder">
       
