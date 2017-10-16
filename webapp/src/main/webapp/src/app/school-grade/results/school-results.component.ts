@@ -197,7 +197,7 @@ export class SchoolResultsComponent implements OnInit {
       }
     });
 
-    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, filename);
+    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, this.filterOptions.ethnicities, filename);
   }
 
   exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {

@@ -19,4 +19,5 @@ export class Exam {
   limitedEnglishProficiency: boolean;
   schoolYear: number;
   claimScores: ClaimScore[];
+  accommodationCodes: string[];
 }

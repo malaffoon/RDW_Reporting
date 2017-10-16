@@ -5,6 +5,7 @@ import { DatePipe, DecimalPipe } from "@angular/common";
 import { Angular2CsvProvider } from "./angular-csv.provider";
 import Spy = jasmine.Spy;
 import {Exam} from "../assessments/model/exam.model";
+import { Student } from "../student/model/student.model";
 
 describe('CsvBuilder', () => {
   let datePipe: MockDatePipe;
@@ -86,11 +87,55 @@ describe('CsvBuilder', () => {
       let tabularData: string[][] = angular2Csv.export.calls.mostRecent().args[0];
 
       expect(tabularData.length).toBe(3);
-      expect(tabularData[0]).toEqual(["labels.groups.results.assessment.exams.cols.score", "labels.groups.results.assessment.exams.cols.ica.performance", "labels.groups.results.assessment.exams.cols.iab.performance"]);
+      expect(tabularData[0]).toEqual(["labels.export.cols.scale-score", "labels.export.cols.achievement-level", "labels.groups.results.assessment.exams.cols.iab.performance"]);
       expect(tabularData[1]).toEqual([2580, "enum.achievement-level.full.1", "enum.iab-category.full.1"]);
       expect(tabularData[2]).toEqual(["", "", ""]);
     }));
 
+  it('should join accommodation codes by a pipe',
+    inject([ CsvBuilder ], (builder: CsvBuilder) => {
+      let exams = [ { codes: [ "ABC", "ACE", "ACDC"]}, { codes: [ "123" ] }].map(x => {
+        let exam = new Exam();
+        exam.accommodationCodes = x.codes;
+        return exam;
+      });
+
+      builder
+        .newBuilder()
+        .withAccommodationCodes(exam => exam)
+        .build(exams);
+
+      let tabularData: string[][] = angular2Csv.export.calls.mostRecent().args[0];
+
+      expect(tabularData.length).toBe(3);
+      expect(tabularData[0]).toEqual(["labels.export.cols.accommodation-codes"]);
+      expect(tabularData[1]).toEqual(["ABC|ACE|ACDC"]);
+      expect(tabularData[2]).toEqual(["123"]);
+    }));
+
+  it('should add a column for each ethnicity',
+    inject([ CsvBuilder ], (builder: CsvBuilder) => {
+      let exams = [ { codes: [ "ethnicity1", "ethnicity2", "ethnicity3" ]}, { codes: [ "ethnicity7" ] }].map(x => {
+        let exam = new Exam();
+        exam.student = new Student();
+        exam.student.ethnicityCodes = x.codes;
+        return exam;
+      });
+
+      let ethnicityOptions = [ "ethnicity1", "ethnicity2", "ethnicity3", "ethnicity4", "ethnicity5", "ethnicity6", "ethnicity7" ];
+
+      builder
+        .newBuilder()
+        .withEthnicity(exam => exam, ethnicityOptions)
+        .build(exams);
+
+      let tabularData: string[][] = angular2Csv.export.calls.mostRecent().args[0];
+
+      expect(tabularData.length).toBe(3);
+      expect(tabularData[0]).toEqual(ethnicityOptions);
+      expect(tabularData[1]).toEqual(["enum.polar.1", "enum.polar.1", "enum.polar.1", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2"]);
+      expect(tabularData[2]).toEqual(["enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.2", "enum.polar.1"]);
+    }));
 });
 
 export class MockDatePipe {

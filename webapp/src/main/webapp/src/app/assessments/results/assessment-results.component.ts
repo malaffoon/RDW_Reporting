@@ -358,6 +358,7 @@ export class AssessmentResultsComponent implements OnInit {
           options.assessmentType = this._assessmentExam.assessment.type;
           options.subject = this._assessmentExam.assessment.assessmentSubjectType;
           options.schoolYear = exam.schoolYear;
+          downloader.student = exam.student;
           downloader.title = this.translate.instant('labels.reports.form.title.single-prepopulated', {
             name: exam.student.firstName,
             schoolYear: exam.schoolYear,

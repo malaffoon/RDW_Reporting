@@ -31,4 +31,5 @@ dependencies {
         exclude(module: 'commons-logging')
     }
     testCompile 'org.springframework.cloud:spring-cloud-stream-test-support'
+    testCompile 'com.opencsv:opencsv:4.0'
 }
