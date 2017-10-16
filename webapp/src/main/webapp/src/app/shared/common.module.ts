@@ -17,6 +17,7 @@ import { GradeDisplayPipe } from "./grade-display.pipe";
 import { ColorService } from "./color.service";
 import { Angulartics2Module } from 'angulartics2';
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -25,6 +26,7 @@ export function HttpLoaderFactory(http: Http) {
 
 @NgModule({
   declarations: [
+    DataTableRowExpanderComponent,
     GradeDisplayPipe,
     PadStartPipe,
     SBRadioButtonComponent,
@@ -48,6 +50,7 @@ export function HttpLoaderFactory(http: Http) {
     Angulartics2Module.forChild()
   ],
   exports: [
+    DataTableRowExpanderComponent,
     GradeDisplayPipe,
     PadStartPipe,
     RemoveCommaPipe,
