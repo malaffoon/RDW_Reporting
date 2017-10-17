@@ -25,14 +25,7 @@ export class OrganizationService {
       this.getDistricts()
     ).map(response => {
       let [ user, schoolGroups, districts ] = response;
-
-      let schools = user.schools;
-      for (let i = 0; i < 10; i++) {
-        schools = schools.concat(schools);
-      }
-
       return this.mapper.createUserOrganizations(user.schools, schoolGroups, districts);
-      // return this.mapper.createUserOrganizations(schools, schoolGroups, districts);
     });
   }
 
