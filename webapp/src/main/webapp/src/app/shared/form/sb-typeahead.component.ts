@@ -77,16 +77,16 @@ export class SBTypeahead implements OnInit {
     }
   }
 
-  protected get disabledInternal(): boolean {
+  get disabledInternal(): boolean {
     return this.disabled || this.options.length == 0;
   }
 
-  protected onSelectInternal(option: Option): void {
+  onSelectInternal(option: Option): void {
     this.value = option.value;
     this.select.emit(option.value);
   }
 
-  protected onChangeInternal(): void {
+  onChangeInternal(): void {
     this.value = undefined;
   }
 

@@ -41,11 +41,11 @@ export class SBButtonTypeahead extends SBTypeahead {
   @Input()
   buttonLabel: string = '';
 
-  protected get buttonDisabledInternal(): boolean {
+  get buttonDisabledInternal(): boolean {
     return this.disabledInternal || isUndefined(this.value);
   }
 
-  protected onButtonClickInternal(): void {
+  onButtonClickInternal(): void {
     if (!isUndefined(this.value)) {
       this.buttonClick.emit(this.value);
       this.search = '';
