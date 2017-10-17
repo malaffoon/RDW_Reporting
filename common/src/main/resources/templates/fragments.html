@@ -50,7 +50,7 @@
         <div class="col-xs-9 text-right">
                 <span class="student-enrollment pull-right">
                     <span class="student-enrollment-item"><label
-                            th:text="#{report.student.grade.label}">Grade:</label> <span th:text="#{'report.grade.' + ${report.studentEnrollment.gradeCode}}" th:remove="tag"></span></span>
+                            th:text="#{report.student.grade.label}">Grade:</label> <span th:text="#{'report.enrollment-grade.' + ${report.studentEnrollment.gradeCode}}" th:remove="tag"></span></span>
                     <span class="student-enrollment-item ml-md"><label
                             th:text="#{report.student.school.label}">School:</label> <span th:text="${report.studentEnrollment.schoolName}" th:remove="tag"></span></span>
                     <span class="student-enrollment-item ml-md"><label
