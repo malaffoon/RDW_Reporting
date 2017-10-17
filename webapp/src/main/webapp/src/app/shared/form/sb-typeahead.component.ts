@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angu
 import { TypeaheadDirective } from "ngx-bootstrap";
 
 /**
- * TODO: parkinglot ->
- * should we always have it dropdown and just limit max results? we have that option
- * should we have the mode be dynamic
+ * This typeahead decorates the ngx-bootstrap typeahead directive
+ * giving it option grouping, and the behavior to show
+ * available options when the input field is focused.
  */
 @Component({
   selector: 'sb-typeahead,[sb-typeahead]',
@@ -23,9 +23,17 @@ import { TypeaheadDirective } from "ngx-bootstrap";
 })
 export class SBTypeahead implements OnInit {
 
+  /**
+   * Emits the value when the value changes.
+   * This is different than select in that it will emit when the value changes programmatically.
+   */
   @Output()
   change: EventEmitter<any> = new EventEmitter<any>();
 
+  /**
+   * Emits an option's value when an option is selected.
+   * This is different than change in that it will only emit when a user selects the value.
+   */
   @Output()
   select: EventEmitter<any> = new EventEmitter<any>();
 

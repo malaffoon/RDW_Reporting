@@ -2,6 +2,12 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { SBTypeahead } from "./sb-typeahead.component";
 import { isUndefined } from "util";
 
+/**
+ * This component adds a button on the right hand side of the sb-typeahead.
+ * If clicked when the an option is selected in the sb-typeahead,
+ * it will emit a buttonClick event with the option value and clear the selected option.
+ * The purpose of the button is to provide an intuitive way to take action with the given selection.
+ */
 @Component({
   selector: 'sb-button-typeahead,[sb-button-typeahead]',
   template: `
