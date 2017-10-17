@@ -77,7 +77,7 @@ sql:
       where (:school_year is null or e.school_year=:school_year)
         and (:school_id is null or s.id=:school_id)
         and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or e.grade_id=:grade_id)
+        and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
         and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
       group by st.id
@@ -100,7 +100,7 @@ sql:
         and (:school_year is null or e.school_year=:school_year)
         and (:school_id is null or s.id=:school_id)
         and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or e.grade_id=:grade_id)
+        and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
         and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
       group by st.id
