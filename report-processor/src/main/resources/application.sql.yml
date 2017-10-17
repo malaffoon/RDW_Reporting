@@ -218,7 +218,7 @@ sql:
         and (:school_year is null or e.school_year=:school_year)
         and (:school_id is null or s.id=:school_id)
         and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or e.grade_id=:grade_id)
+        and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
         and ( # This query can run from the context of both GROUP_PII_READ and INDIVIDUAL_PII_READ, so need to evaluate both.
               (1 = :individual_statewide
@@ -259,7 +259,7 @@ sql:
         and (:school_year is null or e.school_year=:school_year)
         and (:school_id is null or s.id=:school_id)
         and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or e.grade_id=:grade_id)
+        and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
         and (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or e.school_id in (:school_ids))
       group by st.id
@@ -283,7 +283,7 @@ sql:
         and (:school_year is null or e.school_year=:school_year)
         and (:school_id is null or s.id=:school_id)
         and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or e.grade_id=:grade_id)
+        and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
         and (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or e.school_id in (:school_ids))
       group by st.id
