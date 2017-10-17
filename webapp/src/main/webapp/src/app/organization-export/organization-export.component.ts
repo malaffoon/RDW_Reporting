@@ -200,15 +200,14 @@ export class OrganizationExportComponent implements OnInit {
   }
 
   submit(): void {
-    this.locationSupportService.goBackOrHome();
-    // this.service.createExport(this._selectedSchoolYear, this._selectedSchools, this._organizations)
-    //   .subscribe(
-    //     () => {
-    //       this.notificationService.info({ id: 'labels.organization-export.form.submit.success-html', html: true });
-    //       this.goBackOrHome();
-    //     },
-    //     () => this.notificationService.error({ id: 'labels.organization-export.form.submit.failure' })
-    //   );
+    this.service.createExport(this._selectedSchoolYear, this._selectedSchools, this._organizations)
+      .subscribe(
+        () => {
+          this.notificationService.info({ id: 'labels.organization-export.form.submit.success-html', html: true });
+          this.locationSupportService.goBackOrHome();
+        },
+        () => this.notificationService.error({ id: 'labels.organization-export.form.submit.failure' })
+      );
   }
 
 }
