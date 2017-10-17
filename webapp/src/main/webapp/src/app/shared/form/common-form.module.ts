@@ -1,26 +1,24 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { DropdownModule } from "primeng/primeng";
 import { TypeaheadModule } from "ngx-bootstrap";
-import { SearchSelectWithButton } from "./search-select-with-button";
-import { SearchSelect } from "./search-select";
+import { SBButtonTypeahead } from "./sb-button-typeahead.component";
+import { SBTypeahead } from "./sb-typeahead.component";
 
 @NgModule({
   declarations: [
-    SearchSelect,
-    SearchSelectWithButton
+    SBTypeahead,
+    SBButtonTypeahead
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    DropdownModule,
     TypeaheadModule
   ],
   exports: [
-    SearchSelect,
-    SearchSelectWithButton
+    SBTypeahead,
+    SBButtonTypeahead
   ]
 })
 export class CommonFormModule {

@@ -41,16 +41,16 @@ import { CommonFormModule } from "app/shared/form/common-form.module";
     NotificationComponent,
     PadStartPipe,
     RemoveCommaPipe,
-    SBRadioButtonComponent,
-    SBCheckboxList,
-    SBToggleComponent,
     SchoolYearPipe,
     SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
     LoaderComponent,
     DataTableRowExpanderComponent,
-    InformationLabelComponent
+    InformationLabelComponent,
+    SBRadioButtonComponent,
+    SBCheckboxList,
+    SBToggleComponent
   ],
   imports: [
     AlertModule,
@@ -74,9 +74,6 @@ import { CommonFormModule } from "app/shared/form/common-form.module";
     PadStartPipe,
     RemoveCommaPipe,
     RouterModule,
-    SBCheckboxList,
-    SBRadioButtonComponent,
-    SBToggleComponent,
     SchoolYearPipe,
     SearchPipe,
     SessionExpiredComponent,
@@ -85,7 +82,10 @@ import { CommonFormModule } from "app/shared/form/common-form.module";
     LoaderComponent,
     DataTableRowExpanderComponent,
     InformationLabelComponent,
-    CommonFormModule
+    CommonFormModule,
+    SBRadioButtonComponent,
+    SBCheckboxList,
+    SBToggleComponent
   ],
   providers: [
     AuthenticatedHttpService,

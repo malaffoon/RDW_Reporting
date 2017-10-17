@@ -4,10 +4,9 @@
       <label>
         {{'labels.school-grade.school-name.label' | translate}}
       </label>
-      <search-select [options]="schoolOptions"
-                     (change)="schoolChanged($event)"
-                     placeholder="{{'prompt.select' | translate}}"
-                     searchPlaceholder="{{'labels.school-grade.school-name.prompt' | translate}}"></search-select>
+      <sb-typeahead [options]="schoolOptions"
+                     (select)="schoolChanged($event)"
+                     placeholder="{{'prompt.select' | translate}}"></sb-typeahead>
     </div>
     <div class="flex-child">
       <label for="grade-select">{{'labels.grade' | translate}}</label>

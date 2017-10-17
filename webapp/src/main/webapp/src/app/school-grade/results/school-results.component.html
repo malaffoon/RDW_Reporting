@@ -26,11 +26,10 @@
     <!-- School Select -->
     <div class="col-md-4">
       <label>{{'labels.school-grade.results.basic-filters.school' | translate}}</label>
-      <search-select [options]="schoolOptions"
+      <sb-typeahead [options]="schoolOptions"
                      [value]="currentSchool"
-                     (change)="schoolSelectChanged($event)"
-                     placeholder="{{'prompt.select' | translate}}"
-                     searchPlaceholder="{{'labels.school-grade.school-name.prompt' | translate}}"></search-select>
+                     (select)="schoolSelectChanged($event)"
+                     placeholder="{{'prompt.select' | translate}}"></sb-typeahead>
     </div>
 
     <!-- Current Grade -->

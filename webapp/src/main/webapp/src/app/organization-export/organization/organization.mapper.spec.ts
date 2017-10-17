@@ -1,5 +1,5 @@
 import { OrganizationMapper } from "./organization.mapper";
-import { Option } from "../../shared/form/search-select";
+import { Option } from "../../shared/form/sb-typeahead.component";
 import { Organization } from "./organization";
 import { Tree } from "./tree";
 

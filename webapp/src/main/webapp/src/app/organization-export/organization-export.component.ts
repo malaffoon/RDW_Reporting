@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { Option } from "../shared/form/search-select";
+import { Option } from "../shared/form/sb-typeahead.component";
 import { OrganizationType } from "./organization/organization-type.enum";
 import { TranslateService } from "@ngx-translate/core";
 import { Tree } from "./organization/tree";
 import { Organization } from "./organization/organization";
 import { OrganizationMapper } from "./organization/organization.mapper";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { UserOrganizations } from "./organization/user-organizations";
 import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
 import { OrganizationExportService } from "./organization-export.service";

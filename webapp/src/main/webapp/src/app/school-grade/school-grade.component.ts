@@ -5,7 +5,7 @@ import { isNullOrUndefined } from "util";
 import { Grade } from "./grade.model";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Option } from "../shared/form/search-select";
+import { Option } from "../shared/form/sb-typeahead.component";
 import { OrganizationService } from "./organization.service";
 
 /**
