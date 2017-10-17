@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { NavigationEnd, NavigationStart, Router } from "@angular/router";
+import { NavigationStart, Router } from "@angular/router";
 
 @Injectable()
 export class LocationSupportService {
@@ -36,6 +36,7 @@ export class LocationSupportService {
     return this.hasInternalNavigationHistory
       // In the event that a user has internal navigation history but performed a page refresh,
       // we can still gather this information by checking if the document referrer matches the current domain.
+      // In the case that the browser does not support document.referrer this will compute false
       || this.referrerIsInternal;
   }
 
