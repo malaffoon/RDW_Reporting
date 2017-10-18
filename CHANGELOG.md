@@ -2,7 +2,8 @@
 
 #### 1.0.4 - 2017-10-17
 
-* Use assessment grade when filtering results for printed student reports.
+* Use assessment grade when filtering results for printed student reports (DWR-1101).
+* Fix display of grade and school year in printed student reports.
 
 #### 1.0.3 - 2017-10-04
 
