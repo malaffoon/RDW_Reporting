@@ -6,12 +6,10 @@ import { Tree } from "./organization/tree";
 import { Organization } from "./organization/organization";
 import { OrganizationMapper } from "./organization/organization.mapper";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from "@angular/common";
 import { UserOrganizations } from "./organization/user-organizations";
 import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
 import { OrganizationExportService } from "./organization-export.service";
 import { NotificationService } from "../shared/notification/notification.service";
-import { LocationSupportService } from "../shared/location-support.service";
 
 @Component({
   selector: 'organization-export',
@@ -65,7 +63,6 @@ export class OrganizationExportComponent implements OnInit {
   private _comparator = (a: Organization, b: Organization) => a.name && b.name ? a.name.localeCompare(b.name) : 0;
 
   constructor(private router: Router,
-              private locationSupportService: LocationSupportService,
               private route: ActivatedRoute,
               private translate: TranslateService,
               private service: OrganizationExportService,
@@ -200,11 +197,12 @@ export class OrganizationExportComponent implements OnInit {
   }
 
   submit(): void {
+    this.router.navigate([ '/reports' ]);
     this.service.createExport(this._selectedSchoolYear, this._selectedSchools, this._organizations)
       .subscribe(
         () => {
           this.notificationService.info({ id: 'labels.organization-export.form.submit.success-html', html: true });
-          this.locationSupportService.goBackOrHome();
+          this.router.navigate([ '/reports' ]);
         },
         () => this.notificationService.error({ id: 'labels.organization-export.form.submit.failure' })
       );

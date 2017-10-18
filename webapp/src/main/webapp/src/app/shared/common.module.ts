@@ -33,7 +33,6 @@ import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expande
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
 import { CommonFormModule } from "app/shared/form/common-form.module";
-import { LocationSupportService } from "./location-support.service";
 
 @NgModule({
   declarations: [
@@ -100,8 +99,7 @@ import { LocationSupportService } from "./location-support.service";
     NotificationService,
     RdwTranslateLoader,
     StorageService,
-    WindowRefService,
-    LocationSupportService
+    WindowRefService
   ]
 })
 export class CommonModule {
