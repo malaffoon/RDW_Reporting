@@ -197,7 +197,6 @@ export class OrganizationExportComponent implements OnInit {
   }
 
   submit(): void {
-    this.router.navigate([ '/reports' ]);
     this.service.createExport(this._selectedSchoolYear, this._selectedSchools, this._organizations)
       .subscribe(
         () => {
