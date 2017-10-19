@@ -37,7 +37,7 @@ sql:
 
         'Sex',
         'MigrantStatus',
-        'Section 504',
+        'Section504Status',
         'IDEAIndicator',
         'EconomicDisadvantageStatus',
         'LEPStatus',
@@ -62,8 +62,8 @@ sql:
         s.name as school_name,
 
         st.ssid as student_ssid,
-        st.first_name as student_first_name,
-        st.last_or_surname as student_last_name,
+        coalesce(st.first_name, '') as student_first_name,
+        coalesce(st.last_or_surname, '') as student_last_name,
 
         e.completed_at,
         e.school_year,
@@ -78,16 +78,16 @@ sql:
         e.completeness_code,
         e.administration_condition_code,
 
-        e.performance_level,
-        e.scale_score,
-        e.scale_score_std_err,
+        coalesce(e.performance_level, ''),
+        coalesce(e.scale_score, ''),
+        coalesce(e.scale_score_std_err, ''),
 
         coalesce(e.claim1_category, ''),
         coalesce(e.claim2_category, ''),
         coalesce(e.claim3_category, ''),
         coalesce(e.claim4_category, ''),
 
-        st.gender_code as student_gender_code,
+        coalesce(st.gender_code, '') as student_gender_code,
 
         (case when e.migrant_status = 1 then 'Yes' when e.migrant_status = 0 then 'No' else '' end),
         (case when e.section504 = 1 then 'Yes' when e.section504 = 0 then 'No' else '' end),
