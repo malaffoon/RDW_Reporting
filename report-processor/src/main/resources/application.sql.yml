@@ -37,7 +37,7 @@ sql:
 
         'Sex',
         'MigrantStatus',
-        'Section 504',
+        'Section504Status',
         'IDEAIndicator',
         'EconomicDisadvantageStatus',
         'LEPStatus',
