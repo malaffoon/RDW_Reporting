@@ -31,6 +31,9 @@ import { ItemInfoService } from "./items/item-info/item-info.service";
 import { PopoverModule } from "ngx-bootstrap";
 import { ClaimTargetComponent } from "./results/claim-target.component";
 import { ReportModule } from "../report/report.module";
+import { ByStudentComponent } from './results/view/by-student/by-student.component';
+import { ByDistractorComponent } from './results/view/by-distractor/by-distractor.component';
+import { ByItemComponent } from "./results/view/by-item/by-item.component";
 
 @NgModule({
   declarations: [
@@ -47,7 +50,10 @@ import { ReportModule } from "../report/report.module";
     ItemExemplarComponent,
     ItemScoresComponent,
     ItemInfoComponent,
-    ClaimTargetComponent
+    ClaimTargetComponent,
+    ByItemComponent,
+    ByStudentComponent,
+    ByDistractorComponent
   ],
   imports: [
     BrowserModule,

@@ -10,26 +10,22 @@ import { DataTableModule } from "primeng/components/datatable/datatable";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
-import { RemoveCommaPipe } from "../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { ScaleScoreComponent } from "./scale-score.component";
 import { AverageScaleScoreComponent } from "./average-scale-score.component";
-import { InformationLabelComponent } from "../../shared/information-label.component";
 import { ItemViewerComponent } from "../items/item-viewer/item-viewer.component";
 import { ItemTabComponent } from "../items/item-tab.component";
-import { TabsModule, PopoverModule } from "ngx-bootstrap";
+import { PopoverModule, TabsModule } from "ngx-bootstrap";
 import { Student } from "../../student/model/student.model";
 import { PopupMenuComponent } from "../menu/popup-menu.component";
-import { GradeDisplayPipe } from "../../shared/grade-display.pipe";
 import { ColorService } from "../../shared/color.service";
-import { Angulartics2Module, Angulartics2 } from "angulartics2";
+import { Angulartics2, Angulartics2Module } from "angulartics2";
 import { ItemExemplarComponent } from "../items/item-exemplar/item-exemplar.component";
 import { ItemScoresComponent } from "../items/item-scores/item-scores.component";
 import { TestModule } from "../../../test/test.module";
 import { ItemInfoComponent } from "../items/item-info/item-info.component";
 import { ScaleScoreService } from "../../shared/scale-score.service";
-import { ReportService } from "../../report/report.service";
 import { MockDataService } from "../../../test/mock.data.service";
 import { DataService } from "../../shared/data/data.service";
 import { NotificationService } from "../../shared/notification/notification.service";
@@ -39,9 +35,9 @@ import { UserService } from "../../user/user.service";
 import { UserMapper } from "../../user/user.mapper";
 import { CachingDataService } from "../../shared/cachingData.service";
 import { ClaimTargetComponent } from "./claim-target.component";
-import { DataTableRowExpanderComponent } from "../../shared/datatable/datatable-row-expander.component";
 import { ReportModule } from "../../report/report.module";
 import { CommonModule } from "../../shared/common.module";
+import { ByStudentComponent } from "./view/by-student/by-student.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -81,7 +77,8 @@ describe('AssessmentResultsComponent', () => {
         ScaleScoreComponent,
         AverageScaleScoreComponent,
         TestComponentWrapper,
-        ClaimTargetComponent
+        ClaimTargetComponent,
+        ByStudentComponent
       ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },

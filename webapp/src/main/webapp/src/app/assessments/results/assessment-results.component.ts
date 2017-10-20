@@ -1,15 +1,14 @@
-import { Component, Input, OnInit, EventEmitter, Output, ViewChild } from "@angular/core";
-import { trigger, transition, style, animate } from "@angular/animations";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { animate, style, transition, trigger } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { FilterBy } from "../model/filter-by.model";
-import { Subscription, Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
-import { PopupMenuAction } from "../menu/popup-menu-action.model";
 import { Angulartics2 } from "angulartics2";
 import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
@@ -17,10 +16,7 @@ import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
 import { ItemByPointsEarnedExportRequest } from "../model/item-by-points-earned-export-request.model";
 import { ItemPointField } from "../model/item-point-field.model";
-import { ReportOptions } from "../../report/report-options.model";
-import { saveAs } from "file-saver";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
-import { TranslateService } from "@ngx-translate/core";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -79,7 +75,7 @@ export class AssessmentResultsComponent implements OnInit {
       this.sessions = this.getDistinctExamSessions(assessment.exams);
 
       if (this.sessions.length > 0) {
-        this.toggleSession(this.sessions[0]);
+        this.toggleSession(this.sessions[ 0 ]);
       }
     }
   }
@@ -144,7 +140,7 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
 
-  actions: PopupMenuAction[];
+
 
   set collapsed(collapsed: boolean) {
     this.assessmentExam.collapsed = collapsed;
@@ -164,39 +160,6 @@ export class AssessmentResultsComponent implements OnInit {
     return this._assessmentExam.assessment.isIab;
   }
 
-  get isIca(): boolean {
-    return this._assessmentExam.assessment.isIca;
-  }
-
-  get showClaimToggle(): boolean {
-    return this._assessmentExam.assessment.isIca || this._assessmentExam.assessment.isSummative;
-  }
-
-  get claimCodes(): string[] {
-    return this._assessmentExam.assessment.claimCodes;
-  }
-
-  get isClaimScoreSelected() {
-    return this.displayState.table == ScoreViewState.CLAIM;
-  }
-
-  public setClaimScoreSelected() {
-    this.displayState.table = ScoreViewState.CLAIM;
-  }
-
-  public setOverallScoreSelected() {
-    this.displayState.table = ScoreViewState.OVERALL;
-  }
-
-  get performanceLevelHeader() {
-    return "labels.groups.results.assessment.exams.cols." +
-      (this.isIab ? "iab" : "ica") + ".performance";
-  }
-
-  get performanceLevelHeaderInfo() {
-    return this.performanceLevelHeader + "-info";
-  }
-
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
   private _assessmentItems: AssessmentItem[];
@@ -205,20 +168,18 @@ export class AssessmentResultsComponent implements OnInit {
   constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
-              private actionBuilder: MenuActionBuilder,
-              private translate: TranslateService,
+
               private angulartics2: Angulartics2) {
   }
 
   ngOnInit(): void {
-    this.actions = this.createActions();
   }
 
   getGradeIdx(gradeCode: string): number {
     return GradeCode.getIndex(gradeCode);
   }
 
-  getPointRowStyleClass(index: number){
+  getPointRowStyleClass(index: number) {
     return index == 0 ? 'level-down' : '';
   }
 
@@ -248,7 +209,7 @@ export class AssessmentResultsComponent implements OnInit {
         this.showItemsByPoints = true;
       });
     }
-    else{
+    else {
       this._assessmentItems = undefined;
       this.filteredAssessmentItems = undefined;
       this.showItemsByPoints = false;
@@ -282,7 +243,7 @@ export class AssessmentResultsComponent implements OnInit {
   private getDistinctExamSessions(exams: Exam[]) {
     let sessions = [];
 
-    for(let exam of exams){
+    for (let exam of exams) {
       if (!sessions.some(x => x.id == exam.session)) {
         sessions.push({ id: exam.session, date: exam.date, filter: false });
       }
@@ -320,7 +281,7 @@ export class AssessmentResultsComponent implements OnInit {
   private filterAssessmentItems(assessmentItems: AssessmentItem[]) {
     let filtered = [];
 
-    for(let assessmentItem of assessmentItems) {
+    for (let assessmentItem of assessmentItems) {
       let filteredItem = Object.assign(new AssessmentItem(), assessmentItem);
       filteredItem.scores = assessmentItem.scores.filter(score => this.exams.some(exam => exam.id == score.examId));
       filtered.push(filteredItem);
@@ -339,36 +300,4 @@ export class AssessmentResultsComponent implements OnInit {
 
     return stats;
   }
-
-  private createActions(): PopupMenuAction[] {
-    let builder = this.actionBuilder.newActions();
-
-    if (!this._assessmentExam.assessment.isSummative) {
-      builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
-    }
-
-    return builder
-      .withStudentHistory(exam => exam.student)
-      .withStudentReport(
-        () => this._assessmentExam,
-        exam => exam.student,
-        exam => {
-          let downloader: StudentReportDownloadComponent = this.reportDownloader;
-          let options: ReportOptions = downloader.options;
-          options.assessmentType = this._assessmentExam.assessment.type;
-          options.subject = this._assessmentExam.assessment.assessmentSubjectType;
-          options.schoolYear = exam.schoolYear;
-          downloader.student = exam.student;
-          downloader.title = this.translate.instant('labels.reports.form.title.single-prepopulated', {
-            name: exam.student.firstName,
-            schoolYear: exam.schoolYear,
-            subject: this.translate.instant(`labels.subjects.${this._assessmentExam.assessment.assessmentSubjectType}.short-name`),
-            assessmentType: this.translate.instant(`labels.assessmentTypes.${this._assessmentExam.assessment.assessmentSubjectType}.short-name`)
-          });
-          downloader.modal.show();
-        }
-      )
-      .build();
-  }
-
 }
