@@ -84,11 +84,10 @@
         {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
       </button>
 
-
       <div *ngIf="!showItemsByPoints">
         <by-student
           [exams]="exams"
-          [assessmentExam]="assessmentExam"
+          [assessment]="assessmentExam.assessment"
           [minimumItemDataYear]="minimumItemDataYear">
         </by-student>
       </div>

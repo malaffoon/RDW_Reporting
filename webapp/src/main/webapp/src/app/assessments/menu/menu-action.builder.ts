@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
 import { isNullOrUndefined } from "util";
 import { AssessmentExam } from "../model/assessment-exam.model";
+import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.
@@ -120,27 +121,12 @@ export class MenuActionBuilder {
     return this;
   }
 
-  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student, submitReport: (x:any) => void): MenuActionBuilder {
+  withStudentReport(getAssessmentType: (x:any) => AssessmentType, getStudent: (x:any) => Student, submitReport: (x:any) => void): MenuActionBuilder {
     let action: PopupMenuAction = new PopupMenuAction();
 
     action.displayName = ((actionable: any) => {
-      let assessmentExam = getAssessmentExam(actionable);
-      let assessmentType: string = '';
-
-      if (assessmentExam.assessment.isIab) {
-        assessmentType = 'iab';
-      }
-      else if (assessmentExam.assessment.isIca) {
-        assessmentType = 'ica';
-      }
-      else if (assessmentExam.assessment.isSummative) {
-        assessmentType = 'summative';
-      }
-      else {
-        return '';
-      }
-
-      return this.translateService.instant('labels.menus.student-report.' + assessmentType, getStudent(actionable));
+      let assessmentType = getAssessmentType(actionable);
+      return this.translateService.instant('labels.menus.student-report.' + AssessmentType[assessmentType].toLowerCase(), getStudent(actionable));
     }).bind(this);
     action.perform = ((actionable: any) => {
       submitReport(actionable);

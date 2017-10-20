@@ -19,8 +19,8 @@ import { DataService } from "../../../../shared/data/data.service";
 import { NotificationService } from "../../../../shared/notification/notification.service";
 import { CachingDataService } from "../../../../shared/cachingData.service";
 import { Component, EventEmitter } from "@angular/core";
-import { AssessmentExam } from "../../../model/assessment-exam.model";
 import { MockDataService } from "../../../../../test/mock.data.service";
+import { Assessment } from "../../../model/assessment.model";
 
 describe('ByStudentComponent', () => {
   let component: ByStudentComponent;
@@ -62,7 +62,7 @@ describe('ByStudentComponent', () => {
         { provide: CachingDataService, useValue: dataService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -78,10 +78,10 @@ describe('ByStudentComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: '<by-student [assessmentExam]="assessment" [exams]="[]" [minimumItemDataYear]="2017"></by-student>'
+  template: '<by-student [assessment]="assessment" [exams]="[]" [minimumItemDataYear]="2017"></by-student>'
 })
 class TestComponentWrapper {
-  assessment = new AssessmentExam();
+  assessment = new Assessment();
 }
 
 class MockNotificationService {

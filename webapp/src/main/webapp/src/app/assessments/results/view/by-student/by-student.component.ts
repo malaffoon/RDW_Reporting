@@ -4,9 +4,9 @@ import { AssessmentType } from "../../../../shared/enum/assessment-type.enum";
 import { PopupMenuAction } from "../../../menu/popup-menu-action.model";
 import { StudentReportDownloadComponent } from "../../../../report/student-report-download.component";
 import { ReportOptions } from "../../../../report/report-options.model";
-import { AssessmentExam } from "../../../model/assessment-exam.model";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuActionBuilder } from "../../../menu/menu-action.builder";
+import { Assessment } from "../../../model/assessment.model";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -25,10 +25,10 @@ export class ByStudentComponent implements OnInit {
   exams: Exam[];
 
   /**
-   * The assessment exam
+   * The assessment
    */
   @Input()
-  assessmentExam: AssessmentExam;
+  assessment: Assessment;
 
   /**
    * Represents the cutoff year for when there is no item level response data available.
@@ -46,7 +46,7 @@ export class ByStudentComponent implements OnInit {
   };
 
   get claimCodes() {
-    return this.assessmentExam.assessment.claimCodes;
+    return this.assessment.claimCodes;
   }
 
   get isClaimScoreSelected() {
@@ -77,7 +77,7 @@ export class ByStudentComponent implements OnInit {
   }
 
   get assessmentType() {
-    return this.assessmentExam.assessment.type;
+    return this.assessment.type;
   }
 
   get isIab() {
@@ -96,9 +96,7 @@ export class ByStudentComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.assessmentExam) {
-      this.actions = this.createActions();
-    }
+    this.actions = this.createActions();
   }
 
   private createActions(): PopupMenuAction[] {
@@ -111,21 +109,25 @@ export class ByStudentComponent implements OnInit {
     return builder
       .withStudentHistory(exam => exam.student)
       .withStudentReport(
-        () => this.assessmentExam,
+        () => this.assessmentType,
         exam => exam.student,
         exam => {
           let downloader: StudentReportDownloadComponent = this.reportDownloader;
           let options: ReportOptions = downloader.options;
+          let subject = this.assessment.assessmentSubjectType;
+
           options.assessmentType = this.assessmentType;
-          options.subject = this.assessmentExam.assessment.assessmentSubjectType;
+          options.subject = subject;
           options.schoolYear = exam.schoolYear;
+
           downloader.student = exam.student;
           downloader.title = this.translate.instant('labels.reports.form.title.single-prepopulated', {
             name: exam.student.firstName,
             schoolYear: exam.schoolYear,
-            subject: this.translate.instant(`labels.subjects.${this.assessmentExam.assessment.assessmentSubjectType}.short-name`),
-            assessmentType: this.translate.instant(`labels.assessmentTypes.${this.assessmentExam.assessment.assessmentSubjectType}.short-name`)
+            subject: this.translate.instant(`labels.subjects.${subject}.short-name`),
+            assessmentType: this.translate.instant(`labels.assessmentTypes.${subject}.short-name`)
           });
+
           downloader.modal.show();
         }
       )
