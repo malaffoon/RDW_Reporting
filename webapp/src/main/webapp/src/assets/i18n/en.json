@@ -469,7 +469,7 @@
         "school-year": "School Year",
         "accommodations": {
           "title": "Student Accommodations",
-          "info": ""
+          "info": "This feature allows student reports that may be shared with colleges and universities or other external organizations to be printed without reference to accommodations."
         },
         "order": "Sort Order",
         "submit": "Create",
