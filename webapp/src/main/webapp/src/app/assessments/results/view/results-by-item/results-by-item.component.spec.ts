@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ByItemComponent } from './by-item.component';
+import { ResultsByItemComponent } from './results-by-item.component';
 
-describe('ByItemComponent', () => {
-  let component: ByItemComponent;
-  let fixture: ComponentFixture<ByItemComponent>;
+describe('ResultsByItemComponent', () => {
+  let component: ResultsByItemComponent;
+  let fixture: ComponentFixture<ResultsByItemComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ByItemComponent ]
+      declarations: [ ResultsByItemComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ByItemComponent);
+    fixture = TestBed.createComponent(ResultsByItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

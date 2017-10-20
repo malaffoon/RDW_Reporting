@@ -14,10 +14,10 @@ enum ScoreViewState {
 }
 
 @Component({
-  selector: 'by-student',
-  templateUrl: './by-student.component.html'
+  selector: 'results-by-student',
+  templateUrl: './results-by-student.component.html'
 })
-export class ByStudentComponent implements OnInit {
+export class ResultsByStudentComponent implements OnInit {
   /**
    * The exams
    */

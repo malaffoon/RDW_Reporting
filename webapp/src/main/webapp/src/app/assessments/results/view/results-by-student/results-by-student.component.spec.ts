@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ByStudentComponent } from './by-student.component';
+import { ResultsByStudentComponent } from './results-by-student.component';
 import { DataTableModule, SharedModule } from "primeng/primeng";
 import { CommonModule } from "../../../../shared/common.module";
 import { ScaleScoreComponent } from "../../scale-score.component";
@@ -22,8 +22,8 @@ import { Component, EventEmitter } from "@angular/core";
 import { MockDataService } from "../../../../../test/mock.data.service";
 import { Assessment } from "../../../model/assessment.model";
 
-describe('ByStudentComponent', () => {
-  let component: ByStudentComponent;
+describe('ResultsByStudentComponent', () => {
+  let component: ResultsByStudentComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
 
   let dataService: MockDataService;
@@ -51,7 +51,7 @@ describe('ByStudentComponent', () => {
         PopupMenuComponent,
         ScaleScoreComponent,
         TestComponentWrapper,
-        ByStudentComponent
+        ResultsByStudentComponent
       ],
       providers: [
         { provide: Angulartics2, useValue: mockAngulartics2 },
@@ -78,7 +78,7 @@ describe('ByStudentComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: '<by-student [assessment]="assessment" [exams]="[]" [minimumItemDataYear]="2017"></by-student>'
+  template: '<results-by-student [assessment]="assessment" [exams]="[]" [minimumItemDataYear]="2017"></results-by-student>'
 })
 class TestComponentWrapper {
   assessment = new Assessment();

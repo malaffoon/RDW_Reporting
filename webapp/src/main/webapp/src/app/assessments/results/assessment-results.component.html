@@ -78,28 +78,35 @@
 
     <!-- Student Results -->
     <div *ngIf="!collapsed" @fadeAnimation>
-      <button *ngIf="assessmentExam.assessment.isInterim"
-              [disabled]="!hasItemLevelData"
-              class="btn btn-default btn-xs " (click)="viewItemsByPoints(true)">
-        {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
-      </button>
+
+      <div *ngIf="assessmentExam.assessment.isInterim">
+
+        <!-- TODO: Temporary until dropdown is here. -->
+        <button *ngIf="!showItemsByPoints"
+                [disabled]="!hasItemLevelData"
+                class="btn btn-default btn-xs " (click)="viewItemsByPoints(true)">
+          {{'labels.groups.results.assessment.button-items' | translate}} <i class="fa fa-chevron-right"></i>
+        </button>
+        <button *ngIf="showItemsByPoints"
+                class="btn btn-info btn-xs ml-xs"
+                (click)="viewItemsByPoints(false)">
+          <i class="fa fa-chevron-left"></i>
+          <span>{{'labels.groups.results.assessment.button-exams' | translate}}</span>
+        </button>
+      </div>
 
       <div *ngIf="!showItemsByPoints">
-        <by-student
+        <results-by-student
           [exams]="exams"
           [assessment]="assessmentExam.assessment"
           [minimumItemDataYear]="minimumItemDataYear">
-        </by-student>
+        </results-by-student>
       </div>
       <!-- Items By Points Earned -->
       <div *ngIf="showItemsByPoints">
         <h3 class="gray-darkest mb-sm">
           <span>{{'labels.groups.results.assessment.items.title' | translate}}</span>
-          <button class="btn btn-info btn-xs pull-right ml-xs"
-                  (click)="viewItemsByPoints(false)">
-            <i class="fa fa-chevron-left"></i>
-            <span>{{'labels.groups.results.assessment.button-exams' | translate}}</span>
-          </button>
+
           <button class="btn btn-default btn-xs pull-right"
                   (click)="exportItemsByPointsEarned()">
             <i class="fa fa-bold fa-table"></i>
@@ -173,3 +180,4 @@
       </div>
     </div>
   </div>
+</div>

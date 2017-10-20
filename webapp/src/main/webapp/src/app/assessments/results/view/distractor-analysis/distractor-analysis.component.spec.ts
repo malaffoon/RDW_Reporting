@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ByDistractorComponent } from './by-distractor.component';
+import { DistractorAnalysisComponent } from './distractor-analysis.component';
 
-describe('ByDistractorComponent', () => {
-  let component: ByDistractorComponent;
-  let fixture: ComponentFixture<ByDistractorComponent>;
+describe('DistractorAnalysisComponent', () => {
+  let component: DistractorAnalysisComponent;
+  let fixture: ComponentFixture<DistractorAnalysisComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ByDistractorComponent ]
+      declarations: [ DistractorAnalysisComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ByDistractorComponent);
+    fixture = TestBed.createComponent(DistractorAnalysisComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

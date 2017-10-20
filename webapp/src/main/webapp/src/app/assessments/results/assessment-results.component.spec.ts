@@ -37,7 +37,7 @@ import { CachingDataService } from "../../shared/cachingData.service";
 import { ClaimTargetComponent } from "./claim-target.component";
 import { ReportModule } from "../../report/report.module";
 import { CommonModule } from "../../shared/common.module";
-import { ByStudentComponent } from "./view/by-student/by-student.component";
+import { ResultsByStudentComponent } from "./view/results-by-student/results-by-student.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -78,7 +78,7 @@ describe('AssessmentResultsComponent', () => {
         AverageScaleScoreComponent,
         TestComponentWrapper,
         ClaimTargetComponent,
-        ByStudentComponent
+        ResultsByStudentComponent
       ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
