@@ -87,7 +87,6 @@ describe('AssessmentResultsComponent', () => {
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
-
         ColorService,
         ScaleScoreService,
         { provide: DataService, useValue: dataService },
