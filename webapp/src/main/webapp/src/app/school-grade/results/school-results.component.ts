@@ -13,7 +13,6 @@ import { Angulartics2 } from "angulartics2";
 import { AssessmentsComponent } from "../../assessments/assessments.component";
 import { TranslateService } from "@ngx-translate/core";
 import { CsvExportService } from "../../csv-export/csv-export.service";
-import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
 import { SchoolGradeDownloadComponent } from "../../report/school-grade-report-download.component";
 import { Option } from "../../shared/form/sb-typeahead.component";
 import { OrganizationService } from "../organization.service";
@@ -55,8 +54,10 @@ export class SchoolResultsComponent implements OnInit {
   set currentSchool(value) {
     this._currentSchool = value;
 
-    if (!isNullOrUndefined(value))
+    if (!isNullOrUndefined(value)) {
       this.assessmentProvider.schoolId = value.id;
+      this.assessmentProvider.schoolName = value.name;
+    }
   }
 
   /**
@@ -71,7 +72,7 @@ export class SchoolResultsComponent implements OnInit {
     this._currentGrade = value;
 
     if (!isNullOrUndefined(value))
-      this.assessmentProvider.gradeId = value.id;
+      this.assessmentProvider.grade = value;
   }
 
   /**
@@ -198,17 +199,6 @@ export class SchoolResultsComponent implements OnInit {
     });
 
     this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, this.filterOptions.ethnicities, filename);
-  }
-
-  exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
-    let assessment: Assessment = exportRequest.assessmentExam.assessment;
-    let filename: string = this._currentSchool.name +
-      "-" + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
-      "-" + assessment.name +
-      "-ItemsByPoints" +
-      "-" + new Date().toDateString();
-
-    this.csvExportService.exportItemsByPointsEarned(exportRequest, filename);
   }
 
   private trackAnalyticsEvent(changedFilter: string) {

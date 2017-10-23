@@ -8,7 +8,6 @@ import { GroupAssessmentService } from "./group-assessment.service";
 import { Angulartics2 } from "angulartics2";
 import { AssessmentsComponent } from "../../assessments/assessments.component";
 import { CsvExportService } from "../../csv-export/csv-export.service";
-import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
 import { GroupReportDownloadComponent } from "../../report/group-report-download.component";
 
 @Component({
@@ -34,6 +33,7 @@ export class GroupResultsComponent implements OnInit {
     this._currentGroup = value;
     if(this._currentGroup) {
       this.assessmentProvider.groupId = this._currentGroup.id;
+      this.assessmentProvider.groupName = this._currentGroup.name;
     }
   }
 
@@ -105,23 +105,6 @@ export class GroupResultsComponent implements OnInit {
       "-" + new Date().toDateString();
 
     this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, this.filterOptions.ethnicities, filename);
-  }
-
-  exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
-    let assessment: Assessment =exportRequest.assessmentExam.assessment;
-    let filename: string = this.currentGroup.name +
-      "-" + assessment.name +
-      "-ItemsByPoints" +
-      "-" + new Date().toDateString();
-
-    this.angulartics2.eventTrack.next({
-      action: 'Export Group Results',
-      properties: {
-        category: 'Export'
-      }
-    });
-
-    this.csvExportService.exportItemsByPointsEarned(exportRequest, filename);
   }
 
   /**

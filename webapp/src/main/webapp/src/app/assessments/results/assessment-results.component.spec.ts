@@ -38,6 +38,8 @@ import { ClaimTargetComponent } from "./claim-target.component";
 import { ReportModule } from "../../report/report.module";
 import { CommonModule } from "../../shared/common.module";
 import { ResultsByStudentComponent } from "./view/results-by-student/results-by-student.component";
+import { AssessmentProvider } from "../assessment-provider.interface";
+import { ResultsByItemComponent } from "./view/results-by-item/results-by-item.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -78,12 +80,14 @@ describe('AssessmentResultsComponent', () => {
         AverageScaleScoreComponent,
         TestComponentWrapper,
         ClaimTargetComponent,
-        ResultsByStudentComponent
+        ResultsByStudentComponent,
+        ResultsByItemComponent
       ],
       providers: [ { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
+
         ColorService,
         ScaleScoreService,
         { provide: DataService, useValue: dataService },
@@ -173,3 +177,4 @@ class TestComponentWrapper {
 class MockNotificationService {
   onNotification: EventEmitter<Notification> = new EventEmitter();
 }
+

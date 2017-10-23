@@ -101,7 +101,7 @@ export class CsvExportService {
   exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest,
                             filename: string) {
 
-    let getAssessment = () => exportRequest.assessmentExam.assessment;
+    let getAssessment = () => exportRequest.assessment;
     let getAssessmentItem = (item) => item;
 
     this.csvBuilder
