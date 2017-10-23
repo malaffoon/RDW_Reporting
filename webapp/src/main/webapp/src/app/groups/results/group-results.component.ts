@@ -104,6 +104,13 @@ export class GroupResultsComponent implements OnInit {
     let filename: string = this.currentGroup.name +
       "-" + new Date().toDateString();
 
+    this.angulartics2.eventTrack.next({
+      action: 'Export Group Results',
+      properties: {
+        category: 'Export'
+      }
+    });
+
     this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, this.filterOptions.ethnicities, filename);
   }
 
