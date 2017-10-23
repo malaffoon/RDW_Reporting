@@ -1,7 +1,6 @@
 build/
 out/
 !.mvn/wrapper/maven-wrapper.jar
-src/main/resources/static/
 
 ### STS ###
 .apt_generated

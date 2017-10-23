@@ -41,7 +41,7 @@ services:
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
 
-  webapp:
+  reporting-webapp:
     image: smarterbalanced/rdw-reporting-webapp
     ports:
       - 8080:8080
@@ -80,3 +80,36 @@ services:
     image: smarterbalanced/wkhtmltopdf-image:latest
     ports:
       - 8082:80
+
+  admin-webapp:
+    image: smarterbalanced/rdw-admin-webapp
+    ports:
+      - 8088:8080
+      - 8089:8008
+    volumes:
+      - /tmp:/tmp
+    links:
+      - config-server
+      - rabbitmq
+    environment:
+      - spring.profiles.active=local-docker
+      - CONFIG_SERVICE_ENABLED=true
+      - CONFIG_SERVICE_URL=http://config-server:8888
+    extra_hosts:
+      - "dwhost:$DATAWAREHOUSE_HOST"
+
+  group-processor:
+    image: smarterbalanced/rdw-ingest-group-processor
+    ports:
+      - 8090:8008
+    volumes:
+      - /tmp:/tmp
+    links:
+      - config-server
+      - rabbitmq
+    environment:
+      - spring.profiles.active=local-docker
+      - CONFIG_SERVICE_ENABLED=true
+      - CONFIG_SERVICE_URL=http://config-server:8888
+    extra_hosts:
+      - "dwhost:$DATAWAREHOUSE_HOST"
