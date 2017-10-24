@@ -1,9 +1,10 @@
 include ':common'
 include ':webapp'
 include ':report-processor'
+include ':admin-webapp'
 
 rootProject.name = "rdw-reporting"
 
 rootProject.children.each {
-    it.name = rootProject.name + "-" + it.name
+    it.name = "${rootProject.name}-${it.name}"
 }
