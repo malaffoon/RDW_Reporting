@@ -666,6 +666,11 @@
       "E": "Easy",
       "M": "Moderate",
       "D": "Difficult"
+    },
+    "results-view-state": {
+      "ByStudent": "Results By Student",
+      "ByItem": "Results By Item",
+      "DistractorAnalysis": "Distractor Analysis"
     }
   },
   "definition": {

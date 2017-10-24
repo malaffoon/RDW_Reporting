@@ -9,7 +9,6 @@ import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
-import { Angulartics2 } from "angulartics2";
 import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
 import { MenuActionBuilder } from "../menu/menu-action.builder";
@@ -18,9 +17,10 @@ import { ItemPointField } from "../model/item-point-field.model";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
 import { AssessmentProvider } from "../assessment-provider.interface";
 
-enum ScoreViewState {
-  OVERALL = 1,
-  CLAIM = 2
+enum ResultsViewState {
+  ByStudent =1,
+  ByItem = 2,
+  DistractorAnalysis = 3
 }
 
 @Component({
@@ -48,20 +48,6 @@ enum ScoreViewState {
   ],
 })
 export class AssessmentResultsComponent implements OnInit {
-
-  @ViewChild('menuReportDownloader')
-  reportDownloader: StudentReportDownloadComponent;
-
-  exams: Exam[] = [];
-  sessions = [];
-  statistics: ExamStatistics;
-  pointColumns: ItemPointField[];
-  showItemsByPoints: boolean = false;
-
-  get hasItemLevelData(): boolean {
-    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
-  }
-
   /**
    * The assessment exam in which to display results for.
    */
@@ -106,11 +92,6 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   minimumItemDataYear: number;
 
-  @Input()
-  displayState: any = {
-    showClaim: ScoreViewState.OVERALL
-  };
-
   /**
    * Exam filters applied, if any.
    */
@@ -131,10 +112,6 @@ export class AssessmentResultsComponent implements OnInit {
     }
   }
 
-  get assessmentExam() {
-    return this._assessmentExam;
-  }
-
   /**
    * Provider function which loads the assessment items when viewing
    * items by points earned.
@@ -150,15 +127,35 @@ export class AssessmentResultsComponent implements OnInit {
     return this.assessmentExam.collapsed;
   }
 
-  get examLevelEnum() {
-    return this.assessmentExam.assessment.isIab
-      ? "enum.iab-category.full."
-      : "enum.achievement-level.full.";
+  get assessmentExam() {
+    return this._assessmentExam;
   }
 
-  get isIab(): boolean {
-    return this._assessmentExam.assessment.isIab;
+  get hasItemLevelData(): boolean {
+    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
   }
+
+  get showStudentResults(): boolean {
+    return this.currentResultsViewState == ResultsViewState.ByStudent;
+  }
+
+  get showItemsByPointsEarned(): boolean {
+    return this.currentResultsViewState == ResultsViewState.ByItem;
+  }
+
+  get showDistractorAnalysis(): boolean {
+    return this.currentResultsViewState == ResultsViewState.DistractorAnalysis;
+  }
+
+  @ViewChild('menuReportDownloader')
+  reportDownloader: StudentReportDownloadComponent;
+
+  exams: Exam[] = [];
+  sessions = [];
+  statistics: ExamStatistics;
+  pointColumns: ItemPointField[];
+  currentResultsViewState: ResultsViewState = ResultsViewState.ByStudent;
+  viewStateOptions = [];
 
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
@@ -166,11 +163,29 @@ export class AssessmentResultsComponent implements OnInit {
 
   constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
-              private examFilterService: ExamFilterService,
-              private angulartics2: Angulartics2) {
+              private examFilterService: ExamFilterService) {
   }
 
   ngOnInit(): void {
+    this.viewStateOptions = this.getViewStateOptions();
+  }
+
+  getViewStateOptions() {
+    let states =[];
+
+    states.push(this.getResultViewState(ResultsViewState.ByStudent, true));
+    states.push(this.getResultViewState(ResultsViewState.ByItem, this.hasItemLevelData));
+    states.push(this.getResultViewState(ResultsViewState.DistractorAnalysis, false));
+
+    return states;
+  }
+
+  getResultViewState(viewState: ResultsViewState, enabled: boolean) {
+    return {
+      name: ResultsViewState[viewState],
+      value: viewState,
+      enabled: enabled
+    }
   }
 
   getGradeIdx(gradeCode: string): number {
@@ -188,17 +203,6 @@ export class AssessmentResultsComponent implements OnInit {
 
   openInstructionalResource() {
     window.open(this.assessmentExam.assessment.resourceUrl);
-  }
-
-  viewItemsByPoints(viewItemsByPoints: boolean) {
-    this.showItemsByPoints = viewItemsByPoints;
-
-    this.angulartics2.eventTrack.next({
-      action: (viewItemsByPoints ? 'View' : 'Hide') + 'ItemsByPointsEarned',
-      properties: {
-        category: 'AssessmentResults'
-      }
-    });
   }
 
   private getDistinctExamSessions(exams: Exam[]) {
@@ -236,10 +240,11 @@ export class AssessmentResultsComponent implements OnInit {
 
   private calculateStats(): ExamStatistics {
     let stats = new ExamStatistics();
+
     stats.total = this.exams.length;
     stats.average = this.examCalculator.calculateAverage(this.exams);
     stats.standardError = this.examCalculator.calculateStandardErrorOfTheMean(this.exams);
-    stats.levels = this.examCalculator.groupLevels(this.exams, this.isIab ? 3 : 4);
+    stats.levels = this.examCalculator.groupLevels(this.exams, this.assessmentExam.assessment.isIab ? 3 : 4);
     stats.percents = this.examCalculator.mapGroupLevelsToPercents(stats.levels);
 
     return stats;

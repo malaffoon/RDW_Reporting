@@ -40,6 +40,7 @@ import { CommonModule } from "../../shared/common.module";
 import { ResultsByStudentComponent } from "./view/results-by-student/results-by-student.component";
 import { AssessmentProvider } from "../assessment-provider.interface";
 import { ResultsByItemComponent } from "./view/results-by-item/results-by-item.component";
+import { DistractorAnalysisComponent } from "./view/distractor-analysis/distractor-analysis.component";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -70,6 +71,7 @@ describe('AssessmentResultsComponent', () => {
       ],
       declarations: [
         AssessmentResultsComponent,
+        DistractorAnalysisComponent,
         ItemTabComponent,
         ItemViewerComponent,
         ItemInfoComponent,

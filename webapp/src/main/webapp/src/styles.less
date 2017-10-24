@@ -225,3 +225,13 @@ sb-button-typeahead .input-group-btn > .btn,
   overflow: hidden;
   max-width: 330px;
 }
+
+/**
+  Required for controls that are placed above data tables, otherwise the data table
+  extends above its size.  The real fix for this would be tio fix the sizing of data tables
+  in the sbac-ui-kit.
+ */
+.z-index-over-data-table {
+  z-index: 1;
+  position: relative;
+}
