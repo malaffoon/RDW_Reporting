@@ -6,9 +6,5 @@ include ':admin-webapp'
 rootProject.name = "rdw-reporting"
 
 rootProject.children.each {
-    if (it.name == 'admin-webapp') {
-        it.name = "rdw-${it.name}"
-    } else {
-        it.name = "${rootProject.name}-${it.name}"
-    }
+    it.name = "${rootProject.name}-${it.name}"
 }
