@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
@@ -14,9 +14,9 @@ import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
 import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
-import { ItemByPointsEarnedExportRequest } from "../model/item-by-points-earned-export-request.model";
 import { ItemPointField } from "../model/item-point-field.model";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
+import { AssessmentProvider } from "../assessment-provider.interface";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -55,7 +55,6 @@ export class AssessmentResultsComponent implements OnInit {
   exams: Exam[] = [];
   sessions = [];
   statistics: ExamStatistics;
-  filteredAssessmentItems: AssessmentItem[];
   pointColumns: ItemPointField[];
   showItemsByPoints: boolean = false;
 
@@ -79,6 +78,12 @@ export class AssessmentResultsComponent implements OnInit {
       }
     }
   }
+
+  /**
+   * Service class which provides assessment data for this assessment and exam.
+   */
+  @Input()
+  assessmentProvider: AssessmentProvider;
 
   /**
    * If true, values will be shown as percents.  Otherwise values will be shown
@@ -126,9 +131,6 @@ export class AssessmentResultsComponent implements OnInit {
     }
   }
 
-  @Output()
-  onExportItemsByPointsEarned: EventEmitter<ItemByPointsEarnedExportRequest> = new EventEmitter();
-
   get assessmentExam() {
     return this._assessmentExam;
   }
@@ -139,8 +141,6 @@ export class AssessmentResultsComponent implements OnInit {
    */
   @Input()
   loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
-
-
 
   set collapsed(collapsed: boolean) {
     this.assessmentExam.collapsed = collapsed;
@@ -162,13 +162,11 @@ export class AssessmentResultsComponent implements OnInit {
 
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
-  private _assessmentItems: AssessmentItem[];
   private _filterBySubscription: Subscription;
 
   constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
-
               private angulartics2: Angulartics2) {
   }
 
@@ -193,27 +191,7 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   viewItemsByPoints(viewItemsByPoints: boolean) {
-    if (viewItemsByPoints && this.loadAssessmentItems) {
-      this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
-
-        let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
-
-        if (numOfScores != 0) {
-          this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
-
-          this._assessmentItems = assessmentItems;
-          this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
-
-          this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
-        }
-        this.showItemsByPoints = true;
-      });
-    }
-    else {
-      this._assessmentItems = undefined;
-      this.filteredAssessmentItems = undefined;
-      this.showItemsByPoints = false;
-    }
+    this.showItemsByPoints = viewItemsByPoints;
 
     this.angulartics2.eventTrack.next({
       action: (viewItemsByPoints ? 'View' : 'Hide') + 'ItemsByPointsEarned',
@@ -221,23 +199,6 @@ export class AssessmentResultsComponent implements OnInit {
         category: 'AssessmentResults'
       }
     });
-  }
-
-  exportItemsByPointsEarned(): void {
-    let exportRequest = new ItemByPointsEarnedExportRequest();
-    exportRequest.assessmentExam = this.assessmentExam;
-    exportRequest.assessmentItems = this.filteredAssessmentItems;
-    exportRequest.pointColumns = this.pointColumns;
-    exportRequest.showAsPercent = this.showValuesAsPercent;
-
-    this.angulartics2.eventTrack.next({
-      action: 'Export ItemsByPointsEarned',
-      properties: {
-        category: 'Export'
-      }
-    });
-
-    this.onExportItemsByPointsEarned.emit(exportRequest);
   }
 
   private getDistinctExamSessions(exams: Exam[]) {
@@ -259,11 +220,6 @@ export class AssessmentResultsComponent implements OnInit {
   private updateExamSessions() {
     this.exams = this.filterExams();
     this.statistics = this.calculateStats();
-
-    if (this._assessmentItems) {
-      this.filteredAssessmentItems = this.filterAssessmentItems(this._assessmentItems);
-      this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
-    }
   }
 
   private filterExams() {
@@ -276,18 +232,6 @@ export class AssessmentResultsComponent implements OnInit {
     }
 
     return exams;
-  }
-
-  private filterAssessmentItems(assessmentItems: AssessmentItem[]) {
-    let filtered = [];
-
-    for (let assessmentItem of assessmentItems) {
-      let filteredItem = Object.assign(new AssessmentItem(), assessmentItem);
-      filteredItem.scores = assessmentItem.scores.filter(score => this.exams.some(exam => exam.id == score.examId));
-      filtered.push(filteredItem);
-    }
-
-    return filtered;
   }
 
   private calculateStats(): ExamStatistics {

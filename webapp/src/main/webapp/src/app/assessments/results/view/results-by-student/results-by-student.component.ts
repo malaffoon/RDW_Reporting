@@ -19,7 +19,7 @@ enum ScoreViewState {
 })
 export class ResultsByStudentComponent implements OnInit {
   /**
-   * The exams
+   * The exams to display
    */
   @Input()
   exams: Exam[];

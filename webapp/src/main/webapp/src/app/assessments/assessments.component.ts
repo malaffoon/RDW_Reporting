@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Observable } from "rxjs";
 import { ordering } from "@kourge/ordering";
@@ -12,7 +12,6 @@ import { byGradeThenByName } from "./assessment.comparator";
 import { AssessmentProvider } from "./assessment-provider.interface";
 import { GradeCode } from "../shared/enum/grade-code.enum";
 import { ColorService } from "../shared/color.service";
-import { ItemByPointsEarnedExportRequest } from "./model/item-by-points-earned-export-request.model";
 import { UserService } from "../user/user.service";
 
 /**
@@ -50,9 +49,6 @@ export class AssessmentsComponent implements OnInit {
    */
   @Input()
   allowFilterBySessions: boolean = true;
-
-  @Output()
-  onExportItemsByPointsEarned: EventEmitter<ItemByPointsEarnedExportRequest> = new EventEmitter();
 
   showValuesAsPercent: boolean = true;
   filterDisplayOptions: any = {
@@ -221,10 +217,6 @@ export class AssessmentsComponent implements OnInit {
 
     // have all the assessments been selected
     this._isAllSelected = (this.selectedAssessments.length == this.availableAssessments.length);
-  }
-
-  exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
-    this.onExportItemsByPointsEarned.emit(exportRequest);
   }
 
   openAndScrollToAdvancedFilters() {

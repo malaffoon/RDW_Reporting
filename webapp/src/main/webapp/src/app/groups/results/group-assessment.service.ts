@@ -5,13 +5,23 @@ import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { AssessmentProvider } from "../../assessments/assessment-provider.interface";
 import { ResponseUtils } from "../../shared/response-utils";
+import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
+import { Assessment } from "../../assessments/model/assessment.model";
+import { CsvExportService } from "../../csv-export/csv-export.service";
+import { Angulartics2 } from "angulartics2";
 
 @Injectable()
 export class GroupAssessmentService implements AssessmentProvider {
+
   groupId: number;
   schoolYear: number;
+  groupName: string;
 
-  constructor(private dataService: DataService, private filterOptionService: ExamFilterOptionsService, private mapper: AssessmentExamMapper) {
+  constructor(private dataService: DataService,
+              private filterOptionService: ExamFilterOptionsService,
+              private mapper: AssessmentExamMapper,
+              private csvExportService: CsvExportService,
+              private angulartics2: Angulartics2) {
   }
 
   getMostRecentAssessment(groupId:number, schoolYear?: number) {
@@ -47,6 +57,22 @@ export class GroupAssessmentService implements AssessmentProvider {
       .map(x => {
         return this.mapper.mapAssessmentItemsFromApi(x);
       });
+  }
+  exportItemsToCsv(exportRequest: ItemByPointsEarnedExportRequest) {
+    let assessment: Assessment = exportRequest.assessment;
+    let filename: string = this.groupName +
+      "-" + assessment.name +
+      "-ItemsByPoints" +
+      "-" + new Date().toDateString();
+
+    this.angulartics2.eventTrack.next({
+      action: 'Export Group Items By Points Earned',
+      properties: {
+        category: 'Export'
+      }
+    });
+
+    this.csvExportService.exportItemsByPointsEarned(exportRequest, filename);
   }
 
   private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {

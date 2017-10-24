@@ -28,6 +28,9 @@ export class CsvExportService {
                         ethnicities: string[],
                         filename: string) {
     let sourceData: any[] = [];
+
+    // TODO: Is this filter needed?  I think we pass in the filtered exam collection we wouldn't need to
+    // TODO: apply the filter yet again here.
     assessmentExams.forEach((assessmentExam: AssessmentExam) => {
       let filteredExams: Exam[] = this.examFilterService.filterExams(assessmentExam, filterBy);
       filteredExams.forEach((exam) => {
@@ -101,7 +104,7 @@ export class CsvExportService {
   exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest,
                             filename: string) {
 
-    let getAssessment = () => exportRequest.assessmentExam.assessment;
+    let getAssessment = () => exportRequest.assessment;
     let getAssessmentItem = (item) => item;
 
     this.csvBuilder

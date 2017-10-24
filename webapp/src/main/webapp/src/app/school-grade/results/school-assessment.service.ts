@@ -6,14 +6,27 @@ import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters
 import { AssessmentProvider } from "../../assessments/assessment-provider.interface";
 import { isNullOrUndefined } from "util";
 import { ResponseUtils } from "../../shared/response-utils";
+import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
+import { Assessment } from "../../assessments/model/assessment.model";
+import { Grade } from "../grade.model";
+import { TranslateService } from "@ngx-translate/core";
+import { CsvExportService } from "../../csv-export/csv-export.service";
+import { Angulartics2 } from "angulartics2";
 
 @Injectable()
 export class SchoolAssessmentService implements AssessmentProvider {
+
   schoolId: number;
-  gradeId: number;
+  schoolName: string;
+  grade: Grade;
   schoolYear: number;
 
-  constructor(private dataService: DataService, private filterOptionService: ExamFilterOptionsService, private mapper: AssessmentExamMapper) {
+  constructor(private dataService: DataService,
+              private filterOptionService: ExamFilterOptionsService,
+              private csvExportService: CsvExportService,
+              private translate: TranslateService,
+              private angulartics2: Angulartics2,
+              private mapper: AssessmentExamMapper) {
   }
 
   getMostRecentAssessment(schoolId: number, gradeId :number, schoolYear?: number) {
@@ -28,7 +41,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getAvailableAssessments() {
-    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments`, { search: this.getSchoolYearParams(this.schoolYear) })
+    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments`, { search: this.getSchoolYearParams(this.schoolYear) })
       .catch(ResponseUtils.badResponseToNull)
       .map(x => {
         return this.mapper.mapAssessmentsFromApi(x);
@@ -36,7 +49,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getExams(assessmentId: number) {
-    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments/${assessmentId}/exams`, { search: this.getSchoolYearParams(this.schoolYear) })
+    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/exams`, { search: this.getSchoolYearParams(this.schoolYear) })
       .catch(ResponseUtils.badResponseToNull)
       .map(x => {
         return this.mapper.mapExamsFromApi(x);
@@ -44,11 +57,29 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getAssessmentItems(assessmentId: number) {
-    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.gradeId}/assessments/${assessmentId}/examitems`, { search: this.getSchoolYearParams(this.schoolYear) })
+    return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/examitems`, { search: this.getSchoolYearParams(this.schoolYear) })
       .catch(ResponseUtils.badResponseToNull)
       .map(x => {
         return this.mapper.mapAssessmentItemsFromApi(x);
       });
+  }
+
+  exportItemsToCsv(exportRequest: ItemByPointsEarnedExportRequest) {
+    let assessment: Assessment = exportRequest.assessment;
+    let filename: string = this.schoolName +
+      "-" + this.translate.instant(`labels.grades.${this.grade.code}.short-name`) +
+      "-" + assessment.name +
+      "-ItemsByPoints" +
+      "-" + new Date().toDateString();
+
+    this.angulartics2.eventTrack.next({
+      action: 'Export School/Grade Items By Points Earned',
+      properties: {
+        category: 'Export'
+      }
+    });
+
+    this.csvExportService.exportItemsByPointsEarned(exportRequest, filename);
   }
 
   private getRecentAssessmentBySchoolYear(schoolId: number, gradeId: number, schoolYear: number) {
