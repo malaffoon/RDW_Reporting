@@ -86,84 +86,62 @@ brew install Caskroom/cask/wkhtmltopdf
 For running the application, wkhtmltopdf is bundled as a service and is run in a docker container.
 
 ### Building
+After cloning the repository run:
+```bash
+./gradlew build it
+```
+The ```it``` task will trigger the integration tests.
+
+#### Building with locally modified RDW_Common
 RDW_Reporting makes use of RDW_Common modules. If you are developing RDW_Common and would like to test changes in this 
 project, you can build RDW_Common locally and install your changes to the local repository:
 ```bash
 git clone https://github.com/SmarterApp/RDW_Common
 cd RDW_Common
-git checkout develop
-//make code changes
+# make code changes
 ./gradlew install
 ```
 Then to use those new changes, you can specify the SNAPSHOT version of RDW_Common
 ```bash
-//In RDW_Reporting
 ./gradlew build it -Pcommon=1.1.0-SNAPSHOT
 ```
 
-Now you should be able to build and test the reporting app from where you cloned this project:
+#### Docker Images
+To build the docker images run:
 ```bash
-cd RDW_Reporting
-git checkout develop
-./gradlew build
-or to also run Integration Tests
-./gradlew build it
-``` 
+./gradlew buildImage
+```
 
+### Coverage Reports
 Code coverage reports can be found under each project in `./build/reports/coverage/index.html` after explicitly 
 generating them using:
 ```bash
 ./gradlew coverage
 ``` 
 
-You must explicitly build the docker images:
-```bash
-$ gradle buildImage
-$ docker images
-REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
-smarterbalanced/rdw-reporting-service            latest              da5207b421c0        30 seconds ago      150 MB
-smarterbalanced/configuration-service            latest              1b41406534c7        2 weeks ago         221 MB
-java                                    8-jre-alpine        d85b17c6762e        6 weeks ago         108 MB
-```
-
-After cycling through some builds you will end up with a number of dangling images, e.g.:
-```bash
-$ docker images
-REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
-smarterbalanced/rdw-reporting-service        latest              da5207b421c0        30 seconds ago      150 MB
-<none>                              <none>              13b96a973d59        About an hour ago   140 MB
-<none>                              <none>              cb5063cbcc56        2 hours ago         140 MB
-<none>                              <none>              2236259b73f0        3 hours ago         140 MB
-```
-These can be quickly cleaned up:
-```bash
-$ docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
-$ docker images
-REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
-smarterbalanced/rdw-reporting-service        latest              da5207b421c0        30 seconds ago      150 MB
-```
-
 ### Running
 Running the application locally depends on the local database being configured properly.
 ```bash
-To completely clean out any existing data you might have and start fresh:
+# To completely clean out any existing data you might have and start fresh:
 ./gradlew cleanallprod migrateallprod
-or, if you want to use a different version of the schema, say version 1.1.0-68 of RDW_Schema
+# or, if you want to use a different version of the schema, say version 1.1.0-68 of RDW_Schema
 ./gradlew -Pschema=1.1.0-68 cleannallprod migrateallprod
-or, SNAPSHOT version of RDW_Schema if you are doing simultaneous development with RDW_Schema
+# or, SNAPSHOT version of RDW_Schema if you are doing simultaneous development with RDW_Schema
 ./gradlew -Pschema=SNAPSHOT cleanallprod migriateallprod
 ```
 
-The apps are wrapped in docker containers and should be built and run that way. There is a docker-compose spec
-to make it easier: it runs the configuration server and the reporting service with the correct profile. Please 
-read the comments in the docker-compose script for setting required environment variables. Use docker-compose
-to run the services:
+The apps are wrapped in docker containers and should be built and run that way. There is a docker-compose spec for each webapp
+to make it easier: it runs the configuration server, webapps and other service dependencies service with the correct profile. Please 
+read the comments in the docker-compose script for setting required environment variables. 
+
+To use docker-compose to run the reporting or admin webapp. Go to the module directory and run:
 ```bash
-cd docker
 docker-compose up -d
-docker logs -f docker_reporting-service_1
 ```
-You may now navigate to `http://localhost:8080` in a browser. You'll need ART credentials to login.
+
+These apps are not meant to be run simultaneously in local-docker mode with the current docker-compose / IDP configuration.
+
+To test the app navigate to `http://localhost:8080` in a browser. You'll need ART credentials to login.
 The status end-point should be available without credentials at `http://localhost:8081/status?level=5`
 
 To shut down:
