@@ -56,12 +56,12 @@ export class ResultsByItemComponent implements OnInit {
     return this._exams;
   }
 
+  loading: boolean = false;
   pointColumns: ItemPointField[];
 
   private _assessmentItems: AssessmentItem[];
   private filteredAssessmentItems: AssessmentItem[];
   private _exams: Exam[];
-  private loading: boolean = false;
 
   constructor(private angulartics2: Angulartics2, private examCalculator: ExamStatisticsCalculator) {
   }
