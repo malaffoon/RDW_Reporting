@@ -1,4 +1,4 @@
-# docker-compose specs for rdw reporting service with the configuration server
+# docker-compose specs for rdw admin service with the configuration server
 # running in a container and MySQL running natively (outside the containers).
 #
 # The following environment variables MUST be set before running this spec:
@@ -14,7 +14,6 @@
 #
 # This configuration maps the config folder as outlined in CONTRIBUTING.md and the application.yml file from the config
 # server local-docker profile points to that folder so developers should be able to reuse the saml.jks file
-# (NOTE: developers may have to explicitly share the /opt folder in Docker, Preferences, File Sharing)
 
 version: '2'
 services:
@@ -41,51 +40,11 @@ services:
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
 
-  reporting-webapp:
-    image: smarterbalanced/rdw-reporting-webapp
+  webapp:
+    image: smarterbalanced/rdw-admin-webapp
     ports:
       - 8080:8080
       - 8081:8008
-    volumes:
-      - /opt/rdw-reporting/config:/opt/rdw-reporting/config
-    links:
-      - config-server
-      - rabbitmq
-      - wkhtmltopdf
-    environment:
-      - spring.profiles.active=local-docker
-      - CONFIG_SERVICE_ENABLED=true
-      - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
-
-  report-processor-service:
-    image: smarterbalanced/rdw-reporting-report-processor
-    ports:
-      - 8085:8080
-      - 8086:8008
-    volumes:
-      - /tmp:/tmp
-    links:
-      - config-server
-      - rabbitmq
-    environment:
-      - spring.profiles.active=local-docker
-      - CONFIG_SERVICE_ENABLED=true
-      - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
-
-  wkhtmltopdf:
-    image: smarterbalanced/wkhtmltopdf-image:latest
-    ports:
-      - 8082:80
-
-  admin-webapp:
-    image: smarterbalanced/rdw-admin-webapp
-    ports:
-      - 8088:8080
-      - 8089:8008
     volumes:
       - /tmp:/tmp
     links:
@@ -101,7 +60,7 @@ services:
   group-processor:
     image: smarterbalanced/rdw-ingest-group-processor
     ports:
-      - 8090:8008
+      - 8086:8008
     volumes:
       - /tmp:/tmp
     links:
