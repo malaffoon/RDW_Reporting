@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
-import { TypeaheadDirective } from "ngx-bootstrap";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ordering } from "@kourge/ordering";
-import { byNumber, byString, join } from "@kourge/ordering/comparator";
+import { byString, join } from "@kourge/ordering/comparator";
 
 /**
  * This typeahead decorates the ngx-bootstrap typeahead directive
