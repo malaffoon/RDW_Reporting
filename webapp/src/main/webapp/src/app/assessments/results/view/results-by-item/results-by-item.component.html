@@ -1,12 +1,13 @@
-<h3 class="gray-darkest mb-sm">
-  <span>{{'labels.groups.results.assessment.items.title' | translate}}</span>
+<div class="pull-right">
+  <div class="z-index-over-data-table">
+    <button class="btn btn-default btn-xs z-index-over-data-table"
+            (click)="exportItemsByPointsEarned()">
+      <i class="fa fa-bold fa-table"></i>
+      {{'labels.export.items-by-points-earned' | translate}}
+    </button>
+  </div>
+</div>
 
-  <button class="btn btn-default btn-xs pull-right"
-          (click)="exportItemsByPointsEarned()">
-    <i class="fa fa-bold fa-table"></i>
-    <span>{{'labels.export.items-by-points-earned' | translate}}</span>
-  </button>
-</h3>
 <div *ngIf="loading" class="loader">
   <div class="inner">
     <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="text">{{ 'messages.loading' | translate }}</span>
