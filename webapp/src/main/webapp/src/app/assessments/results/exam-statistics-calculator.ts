@@ -101,7 +101,11 @@ export class ExamStatisticsCalculator {
         let response = this.potentialResponses[ i ];
 
         if (item.scores.length > 0) {
-          let count = item.scores.filter(x => x.response == response).length;
+          let compareFunction = item.isMultipleSelect
+            ? (x => x.response != null && x.response.indexOf(response) !== -1)
+            : (x => x.response == response);
+
+          let count = item.scores.filter(compareFunction).length;
           item[ this.NumberFieldPrefix + response ] = count;
           item[ this.PercentFieldPrefix + response ] = count / item.scores.length * 100;
         }
@@ -115,9 +119,9 @@ export class ExamStatisticsCalculator {
 
   getChoiceFields(assessmentItems: AssessmentItem[]): DyanamicItemField[] {
     let maxNumberOfChoices = assessmentItems.reduce((x, y) => x.numberOfChoices > y.numberOfChoices ? x : y).numberOfChoices;
-    let pointFields: DyanamicItemField[] = [];
     this.assertNumberOfChoicesIsValid(maxNumberOfChoices);
 
+    let pointFields: DyanamicItemField[] = [];
     for (let i = 0; i < maxNumberOfChoices; i++) {
       let response = this.potentialResponses[ i ];
 
@@ -132,7 +136,8 @@ export class ExamStatisticsCalculator {
   }
 
   assertNumberOfChoicesIsValid(numberOfChoices) {
-    if (numberOfChoices > this.potentialResponses.length) {
+    // Assert we have a defined potential response for the given number of choices.
+    if (numberOfChoices >= this.potentialResponses.length) {
       throw Error("Undefined potential response for given number of choices.");
     }
   }

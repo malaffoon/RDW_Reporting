@@ -16,6 +16,7 @@ export class AssessmentItem {
   numberOfChoices: number;
   scores: ExamItemScore[] = [];
   isMultipleChoice: boolean;
+  isMultipleSelect: boolean;
 
   get hasCommonCoreStandards(): boolean {
     return this.commonCoreStandardIds && this.commonCoreStandardIds.length > 0
