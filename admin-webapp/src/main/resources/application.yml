@@ -97,14 +97,14 @@ cloud:
 archive:
   root: file:///tmp/
 
-application:
-  state: CA
-
 permissionservice:
   component: Reporting
   endpoint: ${rdw.permission.service}
 
 app:
+  state:
+    code: CA
+
   home-url: /
 
   # google analytics configuration
