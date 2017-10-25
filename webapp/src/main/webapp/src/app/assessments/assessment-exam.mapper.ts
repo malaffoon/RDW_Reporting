@@ -7,7 +7,7 @@ import { AssessmentItem } from "./model/assessment-item.model";
 import { ExamItemScore } from "./model/exam-item-score.model";
 import { byGradeThenByName } from "./assessment.comparator";
 import { ordering } from "@kourge/ordering";
-import { byNumber } from "@kourge/ordering/comparator";
+import { byNumber, byString } from "@kourge/ordering/comparator";
 import { ClaimScore } from "./model/claim-score.model";
 import { Student } from "../student/model/student.model";
 import { Utils } from "../shared/Utils";
@@ -48,6 +48,20 @@ export class AssessmentExamMapper {
         assessmentItem.scores.push(this.mapExamItemFromApi(apiExamItem));
       }
 
+      //TODO: DWR-1068: Move below mapping to mapAssessmentItemFromApi method.
+
+      // TODO: DWR-1068: Api should return this info instead of "guessing" here.
+      assessmentItem.isMultipleChoice = assessmentItem.scores.some(x => x.response != null && x.response.length == 1);
+
+      if (assessmentItem.isMultipleChoice) {
+        // TODO: DWR-1068: Api should return this info instead of "guessing' here.
+        assessmentItem.numberOfChoices = "_ABCDEFGHIJLKMNOPQRSTUVWXYZ"
+          .indexOf(assessmentItem.scores
+            .filter(x => x.response != null)
+            .sort(ordering(byString).reverse().on<ExamItemScore>(x => x.response).compare)
+            [ 0 ].response);
+      }
+
       uiModels.push(assessmentItem);
     }
 
@@ -81,7 +95,7 @@ export class AssessmentExamMapper {
     uiModel.completeness = apiModel.completenessCode;
     uiModel.schoolYear = apiModel.schoolYear;
 
-    if(apiModel.claimScaleScores) {
+    if (apiModel.claimScaleScores) {
       uiModel.claimScores = this.mapClaimScaleScoresFromApi(apiModel.claimScaleScores);
     }
 
@@ -104,7 +118,7 @@ export class AssessmentExamMapper {
     }
 
     uiModel.accommodationCodes = [];
-    if(apiModel.accommodationCodes) {
+    if (apiModel.accommodationCodes) {
       apiModel.accommodationCodes.forEach(code => uiModel.accommodationCodes.push(code));
     }
 
@@ -174,7 +188,7 @@ export class AssessmentExamMapper {
   private mapClaimScaleScoreFromApi(apiScaleScore: any): ClaimScore {
     let uiModel: ClaimScore = new ClaimScore();
 
-    if(apiScaleScore) {
+    if (apiScaleScore) {
       uiModel.level = apiScaleScore.level;
       uiModel.score = apiScaleScore.value;
       uiModel.standardError = apiScaleScore.standardError;

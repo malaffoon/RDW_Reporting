@@ -230,7 +230,7 @@ describe('Exam Calculator', () => {
     expect(actual.length).toBe(onePlusMaxOfMaxPoints);
 
     for(let i =0; i < actual.length; i++) {
-      expect(actual[i].points).toBe(i);
+      expect(actual[i].label).toBe(i.toString());
       expect(actual[i].numberField).toBe("number-point_" + i);
       expect(actual[i].percentField).toBe("percent-point_" + i);
     }

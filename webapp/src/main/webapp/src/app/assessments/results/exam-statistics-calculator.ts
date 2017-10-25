@@ -2,13 +2,14 @@ import { Injectable } from "@angular/core";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ExamStatisticsLevel } from "../model/exam-statistics.model";
 import { Exam } from "../model/exam.model";
-import { ItemPointField } from "../model/item-point-field.model";
+import { DyanamicItemField } from "../model/item-point-field.model";
 import * as math from "mathjs";
 
 @Injectable()
 export class ExamStatisticsCalculator {
   private readonly NumberFieldPrefix = "number-point_";
   private readonly PercentFieldPrefix = "percent-point_";
+  private readonly potentialResponses = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   calculateAverage(exams: Exam[]) {
     let scoredExams = this.getOnlyScoredExams(exams);
@@ -76,15 +77,46 @@ export class ExamStatisticsCalculator {
     }
   }
 
-  getPointFields(assessmentItems: AssessmentItem[]): ItemPointField[] {
+  getPointFields(assessmentItems: AssessmentItem[]): DyanamicItemField[] {
     let max = assessmentItems.reduce((x, y) => x.maxPoints > y.maxPoints ? x : y).maxPoints;
-    let pointFields: ItemPointField[] = [];
+    let pointFields: DyanamicItemField[] = [];
 
     for (let i = 0; i <= max; i++) {
-      let column: ItemPointField = new ItemPointField();
+      let column: DyanamicItemField = new DyanamicItemField();
       column.numberField = this.NumberFieldPrefix + i;
       column.percentField = this.PercentFieldPrefix + i;
-      column.points = i;
+      column.label = i.toString();
+      pointFields.push(column);
+    }
+
+    return pointFields;
+  }
+
+  aggregateItemsByResponse(assessmentItems: AssessmentItem[]) {
+    for(let item of assessmentItems){
+      for(let i=0; i <= item.numberOfChoices; i++){
+        if(item.scores.length > 0 ){
+          let count = item.scores.filter(x => x.response == this.potentialResponses[i]).length;
+          item[this.NumberFieldPrefix + i] = count;
+          item[this.PercentFieldPrefix + i] = count / item.scores.length * 100;
+        }
+        else {
+          item[this.NumberFieldPrefix+ i] = 0;
+          item[this.PercentFieldPrefix + i] = 0;
+        }
+      }
+    }
+  }
+
+  getChoiceFields(assessmentItems: AssessmentItem[]): DyanamicItemField[] {
+    let max = assessmentItems.reduce((x, y) => x.numberOfChoices > y.numberOfChoices ? x : y).numberOfChoices;
+    let pointFields: DyanamicItemField[] = [];
+
+    for (let i = 0; i < max; i++) {
+      let column: DyanamicItemField = new DyanamicItemField();
+      column.numberField = this.NumberFieldPrefix + i;
+      column.percentField = this.PercentFieldPrefix + i;
+      column.label = this.potentialResponses[i];
       pointFields.push(column);
     }
 

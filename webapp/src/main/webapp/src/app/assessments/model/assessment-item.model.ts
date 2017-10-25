@@ -13,7 +13,9 @@ export class AssessmentItem {
   difficulty: string;
   commonCoreStandardIds: string[];
   maxPoints: number;
+  numberOfChoices: number;
   scores: ExamItemScore[] = [];
+  isMultipleChoice: boolean;
 
   get hasCommonCoreStandards(): boolean {
     return this.commonCoreStandardIds && this.commonCoreStandardIds.length > 0
