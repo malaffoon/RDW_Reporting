@@ -9,6 +9,7 @@ import * as math from "mathjs";
 export class ExamStatisticsCalculator {
   private readonly NumberFieldPrefix = "number-point_";
   private readonly PercentFieldPrefix = "percent-point_";
+
   private readonly potentialResponses = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   calculateAverage(exams: Exam[]) {
@@ -62,16 +63,16 @@ export class ExamStatisticsCalculator {
   }
 
   aggregateItemsByPoints(assessmentItems: AssessmentItem[]) {
-    for(let item of assessmentItems){
-      for(let i=0; i <= item.maxPoints; i++){
-        if(item.scores.length > 0 ){
+    for (let item of assessmentItems) {
+      for (let i = 0; i <= item.maxPoints; i++) {
+        if (item.scores.length > 0) {
           let count = item.scores.filter(x => x.points == i).length;
-          item[this.NumberFieldPrefix + i] = count;
-          item[this.PercentFieldPrefix + i] = count / item.scores.length * 100;
+          item[ this.NumberFieldPrefix + i ] = count;
+          item[ this.PercentFieldPrefix + i ] = count / item.scores.length * 100;
         }
         else {
-          item[this.NumberFieldPrefix+ i] = 0;
-          item[this.PercentFieldPrefix + i] = 0;
+          item[ this.NumberFieldPrefix + i ] = 0;
+          item[ this.PercentFieldPrefix + i ] = 0;
         }
       }
     }
@@ -93,33 +94,46 @@ export class ExamStatisticsCalculator {
   }
 
   aggregateItemsByResponse(assessmentItems: AssessmentItem[]) {
-    for(let item of assessmentItems){
-      for(let i=0; i <= item.numberOfChoices; i++){
-        if(item.scores.length > 0 ){
-          let count = item.scores.filter(x => x.response == this.potentialResponses[i]).length;
-          item[this.NumberFieldPrefix + i] = count;
-          item[this.PercentFieldPrefix + i] = count / item.scores.length * 100;
+    for (let item of assessmentItems) {
+      this.assertNumberOfChoicesIsValid(item.numberOfChoices);
+
+      for (let i = 0; i < item.numberOfChoices; i++) {
+        let response = this.potentialResponses[ i ];
+
+        if (item.scores.length > 0) {
+          let count = item.scores.filter(x => x.response == response).length;
+          item[ this.NumberFieldPrefix + response ] = count;
+          item[ this.PercentFieldPrefix + response ] = count / item.scores.length * 100;
         }
         else {
-          item[this.NumberFieldPrefix+ i] = 0;
-          item[this.PercentFieldPrefix + i] = 0;
+          item[ this.NumberFieldPrefix + response ] = 0;
+          item[ this.PercentFieldPrefix + response ] = 0;
         }
       }
     }
   }
 
   getChoiceFields(assessmentItems: AssessmentItem[]): DyanamicItemField[] {
-    let max = assessmentItems.reduce((x, y) => x.numberOfChoices > y.numberOfChoices ? x : y).numberOfChoices;
+    let maxNumberOfChoices = assessmentItems.reduce((x, y) => x.numberOfChoices > y.numberOfChoices ? x : y).numberOfChoices;
     let pointFields: DyanamicItemField[] = [];
+    this.assertNumberOfChoicesIsValid(maxNumberOfChoices);
 
-    for (let i = 0; i < max; i++) {
+    for (let i = 0; i < maxNumberOfChoices; i++) {
+      let response = this.potentialResponses[ i ];
+
       let column: DyanamicItemField = new DyanamicItemField();
-      column.numberField = this.NumberFieldPrefix + i;
-      column.percentField = this.PercentFieldPrefix + i;
-      column.label = this.potentialResponses[i];
+      column.numberField = this.NumberFieldPrefix + response;
+      column.percentField = this.PercentFieldPrefix + response;
+      column.label = response;
       pointFields.push(column);
     }
 
     return pointFields;
+  }
+
+  assertNumberOfChoicesIsValid(numberOfChoices) {
+    if (numberOfChoices > this.potentialResponses.length) {
+      throw Error("Undefined potential response for given number of choices.");
+    }
   }
 }

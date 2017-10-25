@@ -17,11 +17,6 @@ import { ItemScoresComponent } from "../../../items/item-scores/item-scores.comp
 import { ItemViewerComponent } from "../../../items/item-viewer/item-viewer.component";
 import { Component } from "@angular/core";
 import { Assessment } from "../../../model/assessment.model";
-import { AssessmentProvider } from "../../../assessment-provider.interface";
-import { Observable } from "rxjs/Observable";
-import { Exam } from "../../../model/exam.model";
-import { AssessmentItem } from "../../../model/assessment-item.model";
-import { ItemByPointsEarnedExportRequest } from "../../../model/item-by-points-earned-export-request.model";
 import { DistractorAnalysisComponent } from "./distractor-analysis.component";
 import { MockAssessmentProvider } from "../../../../../test/mock.assessment.provider";
 
@@ -71,9 +66,7 @@ describe('DistractorAnalysisComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
-
 });
-
 
 @Component({
   selector: 'test-component-wrapper',
