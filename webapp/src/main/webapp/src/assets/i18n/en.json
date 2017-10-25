@@ -313,6 +313,7 @@
           "scores":{
             "score": "Student Score",
             "max": "Max Score",
+            "response": "Response",
             "correctness": "Correctness"
           },
           "student-scores": "Student Scores and Responses",
