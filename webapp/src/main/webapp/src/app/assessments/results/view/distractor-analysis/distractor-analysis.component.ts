@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Renderer2 } from '@angular/core';
 import { AssessmentItem } from "../../../model/assessment-item.model";
 import { Exam } from "../../../model/exam.model";
-import { DyanamicItemField } from "../../../model/item-point-field.model";
+import { DynamicItemField } from "../../../model/item-point-field.model";
 import { ExamStatisticsCalculator } from "../../exam-statistics-calculator";
 import { AssessmentProvider } from "../../../assessment-provider.interface";
 import { Assessment } from "../../../model/assessment.model";
@@ -47,13 +47,13 @@ export class DistractorAnalysisComponent implements OnInit {
   }
 
   loading: boolean = false;
-  choiceColumns: DyanamicItemField[];
+  choiceColumns: DynamicItemField[];
 
   private _multipleChoiceItems: AssessmentItem[];
   private filteredMultipleChoiceItems: AssessmentItem[];
   private _exams: Exam[];
 
-  constructor(private examCalculator: ExamStatisticsCalculator) {
+  constructor(private examCalculator: ExamStatisticsCalculator, private renderer: Renderer2) {
   }
 
   ngOnInit() {
@@ -80,7 +80,19 @@ export class DistractorAnalysisComponent implements OnInit {
   }
 
   getChoiceRowStyleClass(index: number) {
-    return index == 0 ? 'level-down' : '';
+    return index == 0
+      ? 'level-down'
+      : '';
+  }
+
+  // Unfortunately, this is a bit of dom hijacking to set the parent <td> class to green
+  // since primeng datatable does not currently support a setCellStyle function.
+  // https://github.com/primefaces/primeng/issues/2157
+  setTdClass(cell, item: AssessmentItem, column: DynamicItemField) {
+    if(item.answerKey && item.answerKey.indexOf(column.label)!==-1) {
+      let td = cell.parentNode.parentNode;
+      this.renderer.addClass(td, "green");
+    }
   }
 
   private filterMultipleChoiceItems(items: AssessmentItem[]) {

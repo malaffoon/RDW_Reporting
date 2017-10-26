@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AssessmentItem } from "../../../model/assessment-item.model";
 import { ItemByPointsEarnedExportRequest } from "../../../model/item-by-points-earned-export-request.model";
 import { Angulartics2 } from "angulartics2";
-import { DyanamicItemField } from "../../../model/item-point-field.model";
+import { DynamicItemField } from "../../../model/item-point-field.model";
 import { Observable } from "rxjs/Observable";
 import { AssessmentProvider } from "../../../assessment-provider.interface";
 import { ExamStatisticsCalculator } from "../../exam-statistics-calculator";
@@ -50,7 +50,7 @@ export class ResultsByItemComponent implements OnInit {
   }
 
   loading: boolean = false;
-  pointColumns: DyanamicItemField[];
+  pointColumns: DynamicItemField[];
 
   private _assessmentItems: AssessmentItem[];
   private filteredAssessmentItems: AssessmentItem[];

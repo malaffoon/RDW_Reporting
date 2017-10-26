@@ -56,18 +56,28 @@ export class AssessmentExamMapper {
       // TODO: DWR-1068: Api should return this info instead of "guessing" here.
       assessmentItem.isMultipleSelect = assessmentItem.scores.some(x => x.response != null && x.response.indexOf(',') !== -1);
 
+      // TODO: remove.
+      let choices = "_ABCDEFGHIJLKMNOPQRSTUVWXYZ";
+
       // TODO: DWR-1068: Api should return this info instead of "guessing' here.
       if (assessmentItem.isMultipleChoice) {
-        assessmentItem.numberOfChoices = "_ABCDEFGHIJLKMNOPQRSTUVWXYZ"
+        assessmentItem.numberOfChoices = choices
           .indexOf(assessmentItem.scores
             .filter(x => x.response != null)
             .sort(ordering(byString).reverse().on<ExamItemScore>(x => x.response).compare)
             [ 0 ].response);
+
+        let rand = Math.floor(Math.random() * assessmentItem.numberOfChoices + 1);
+        assessmentItem.answerKey = choices[rand];
       }
 
       // TODO: DWR-1068: Api should return this info instead of mocking it here.
       if (assessmentItem.isMultipleSelect) {
         assessmentItem.numberOfChoices = 4;
+        let rand1 = Math.floor(Math.random() * 2 + 1);
+        let rand2 = Math.floor(Math.random() * 2 + 3);
+
+        assessmentItem.answerKey = choices[rand1] + "," + choices[rand2];
       }
 
       uiModels.push(assessmentItem);

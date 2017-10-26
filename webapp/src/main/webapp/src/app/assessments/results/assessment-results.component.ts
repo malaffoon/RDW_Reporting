@@ -12,7 +12,7 @@ import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
 import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
-import { DyanamicItemField } from "../model/item-point-field.model";
+import { DynamicItemField } from "../model/item-point-field.model";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
 import { AssessmentProvider } from "../assessment-provider.interface";
 
@@ -145,7 +145,7 @@ export class AssessmentResultsComponent implements OnInit {
   exams: Exam[] = [];
   sessions = [];
   statistics: ExamStatistics;
-  pointColumns: DyanamicItemField[];
+  pointColumns: DynamicItemField[];
   currentResultsViewState: ResultsViewState = ResultsViewState.ByStudent;
   viewStateOptions = [];
 

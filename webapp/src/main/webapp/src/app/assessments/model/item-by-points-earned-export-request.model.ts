@@ -1,5 +1,5 @@
 import { AssessmentItem } from "./assessment-item.model";
-import { DyanamicItemField } from "./item-point-field.model";
+import { DynamicItemField } from "./item-point-field.model";
 import { Assessment } from "./assessment.model";
 
 /**
@@ -8,6 +8,6 @@ import { Assessment } from "./assessment.model";
 export class ItemByPointsEarnedExportRequest {
   assessment: Assessment;
   assessmentItems: AssessmentItem[];
-  pointColumns: DyanamicItemField[];
+  pointColumns: DynamicItemField[];
   showAsPercent: boolean;
 }

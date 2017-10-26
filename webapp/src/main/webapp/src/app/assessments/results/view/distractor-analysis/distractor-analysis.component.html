@@ -61,11 +61,12 @@
       <span [hidden]="!showValuesAsPercent">{{ item.fullCreditAsPercent | number:'1.0-0' }}%</span>
     </ng-template>
   </p-column>
-  <p-column *ngFor="let column of choiceColumns; let i = index" [field]="column.numberField"
+  <p-column *ngFor="let column of choiceColumns; let i=index;" [field]="column.numberField"
             header="{{column.label}}"
             [sortable]="true" [styleClass]="getChoiceRowStyleClass(i)">
     <ng-template let-item="rowData" pTemplate="body">
-      <span [hidden]="showValuesAsPercent">{{ item[column.numberField] }}</span>
+      <span #cell>{{ setTdClass(cell, item, column)}}</span>
+      <span [hidden]="showValuesAsPercent" >{{ item[column.numberField] }}</span>
       <span [hidden]="!showValuesAsPercent || item[column.percentField] == null">{{ item[column.percentField] | number:'1.0-0' }}%</span>
     </ng-template>
   </p-column>

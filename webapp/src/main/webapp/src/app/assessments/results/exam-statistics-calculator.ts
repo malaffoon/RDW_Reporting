@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AssessmentItem } from "../model/assessment-item.model";
 import { ExamStatisticsLevel } from "../model/exam-statistics.model";
 import { Exam } from "../model/exam.model";
-import { DyanamicItemField } from "../model/item-point-field.model";
+import { DynamicItemField } from "../model/item-point-field.model";
 import * as math from "mathjs";
 
 @Injectable()
@@ -78,12 +78,12 @@ export class ExamStatisticsCalculator {
     }
   }
 
-  getPointFields(assessmentItems: AssessmentItem[]): DyanamicItemField[] {
+  getPointFields(assessmentItems: AssessmentItem[]): DynamicItemField[] {
     let max = assessmentItems.reduce((x, y) => x.maxPoints > y.maxPoints ? x : y).maxPoints;
-    let pointFields: DyanamicItemField[] = [];
+    let pointFields: DynamicItemField[] = [];
 
     for (let i = 0; i <= max; i++) {
-      let column: DyanamicItemField = new DyanamicItemField();
+      let column: DynamicItemField = new DynamicItemField();
       column.numberField = this.NumberFieldPrefix + i;
       column.percentField = this.PercentFieldPrefix + i;
       column.label = i.toString();
@@ -117,15 +117,15 @@ export class ExamStatisticsCalculator {
     }
   }
 
-  getChoiceFields(assessmentItems: AssessmentItem[]): DyanamicItemField[] {
+  getChoiceFields(assessmentItems: AssessmentItem[]): DynamicItemField[] {
     let maxNumberOfChoices = assessmentItems.reduce((x, y) => x.numberOfChoices > y.numberOfChoices ? x : y).numberOfChoices;
     this.assertNumberOfChoicesIsValid(maxNumberOfChoices);
 
-    let pointFields: DyanamicItemField[] = [];
+    let pointFields: DynamicItemField[] = [];
     for (let i = 0; i < maxNumberOfChoices; i++) {
       let response = this.potentialResponses[ i ];
 
-      let column: DyanamicItemField = new DyanamicItemField();
+      let column: DynamicItemField = new DynamicItemField();
       column.numberField = this.NumberFieldPrefix + response;
       column.percentField = this.PercentFieldPrefix + response;
       column.label = response;
