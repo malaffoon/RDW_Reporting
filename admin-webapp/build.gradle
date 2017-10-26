@@ -12,6 +12,7 @@ dependencies {
     compile project(':rdw-reporting-common')
     compile 'org.opentestsystem.rdw.common:rdw-common-archive'
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
+    compile 'org.opentestsystem.rdw.common:rdw-common-messaging'
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
@@ -34,11 +35,6 @@ dependencies {
     compile 'com.google.guava:guava'
     compile 'mysql:mysql-connector-java'
     compile 'commons-io:commons-io'
-    compile 'org.opentestsystem.rdw.common:rdw-common-archive'
-    compile 'org.opentestsystem.rdw.common:rdw-common-messaging'
-    compile 'org.opentestsystem.rdw.common:rdw-common-model'
-    compile 'org.opentestsystem.rdw.common:rdw-common-status'
-    compile 'org.opentestsystem.rdw.common:rdw-common-utils'
 
     compile 'org.apache.commons:commons-csv:+'
 
