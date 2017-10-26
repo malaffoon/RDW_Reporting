@@ -313,6 +313,7 @@
           "scores":{
             "score": "Student Score",
             "max": "Max Score",
+            "response": "Response",
             "correctness": "Correctness"
           },
           "student-scores": "Student Scores and Responses",
@@ -542,6 +543,7 @@
     "export": {
       "csv": "Export CSV",
       "items-by-points-earned": "Export Results By Item",
+      "distractor-analysis": "Export Distractor Analysis",
       "cols": {
         "student-id": "StudentIdentifier",
         "student-first-name": "FirstName",
