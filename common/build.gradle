@@ -21,7 +21,6 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
     }
-    testCompile 'org.springframework.security:spring-security-test'
 
     // IT test complained about not having this
     testCompile 'org.hibernate:hibernate-validator:5.4.1.Final'
