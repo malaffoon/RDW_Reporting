@@ -342,6 +342,8 @@ sql:
         and a.grade_id=:grade_id
 
     exam:
+      # NOTE that findLatest does not sample the students' inferred schools
+      # because a student's inferred school is determined by their latest exam.
       findLatest: >-
         select
           a.id,
