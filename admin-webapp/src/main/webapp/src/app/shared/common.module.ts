@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
-import { SchoolYearPipe } from "./schoolYear.pipe";
 import { SearchPipe } from "../search.pipe";
 import { HttpModule, Http } from "@angular/http";
 import { DataService } from "./data/data.service";
@@ -18,6 +17,7 @@ import { ColorService } from "./color.service";
 import { Angulartics2Module } from 'angulartics2';
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
+import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -31,7 +31,6 @@ export function HttpLoaderFactory(http: Http) {
     PadStartPipe,
     SBRadioButtonComponent,
     SBCheckboxList,
-    SchoolYearPipe,
     SearchPipe,
     SubjectPipe,
     RemoveCommaPipe
@@ -57,10 +56,10 @@ export function HttpLoaderFactory(http: Http) {
     RouterModule,
     SBCheckboxList,
     SBRadioButtonComponent,
-    SchoolYearPipe,
     SearchPipe,
     SubjectPipe,
-    TranslateModule
+    TranslateModule,
+    RdwFormatModule
   ],
   providers: [
     DataService,

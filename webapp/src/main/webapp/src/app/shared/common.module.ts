@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
-import { SchoolYearPipe } from "./schoolYear.pipe";
 import { SearchPipe } from "../search.pipe";
 import { HttpModule } from "@angular/http";
 import { DataService } from "./data/data.service";
@@ -32,7 +31,8 @@ import { AuthenticatedHttpService } from "./authentication/authenticated-http.se
 import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
-import { CommonFormModule } from "app/shared/form/common-form.module";
+import { RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
+import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
   declarations: [
@@ -41,7 +41,6 @@ import { CommonFormModule } from "app/shared/form/common-form.module";
     NotificationComponent,
     PadStartPipe,
     RemoveCommaPipe,
-    SchoolYearPipe,
     SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
@@ -64,8 +63,7 @@ import { CommonFormModule } from "app/shared/form/common-form.module";
         useClass: RdwTranslateLoader
       }
     }),
-    PopoverModule.forRoot(),
-    CommonFormModule
+    PopoverModule.forRoot()
   ],
   exports: [
     AssessmentTypePipe,
@@ -74,7 +72,6 @@ import { CommonFormModule } from "app/shared/form/common-form.module";
     PadStartPipe,
     RemoveCommaPipe,
     RouterModule,
-    SchoolYearPipe,
     SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
@@ -82,10 +79,11 @@ import { CommonFormModule } from "app/shared/form/common-form.module";
     LoaderComponent,
     DataTableRowExpanderComponent,
     InformationLabelComponent,
-    CommonFormModule,
     SBRadioButtonComponent,
     SBCheckboxList,
-    SBToggleComponent
+    SBToggleComponent,
+    RdwFormModule,
+    RdwFormatModule
   ],
   providers: [
     AuthenticatedHttpService,
