@@ -7,8 +7,9 @@
       <div class="row">
         <div class="col-md-6" *ngIf="!editingDisabled">
           <div class="form-group">
-            <label>{{'labels.organization-export.form.organization.label' | translate}}</label>
+            <label for="search">{{'labels.organization-export.form.organization.label' | translate}}</label>
             <span sb-button-typeahead
+                  inputId="search"
                   [options]="organizationOptions"
                   (buttonClick)="add($event)"
                   placeholder="{{'prompt.select' | translate}}"
@@ -41,8 +42,8 @@
 
   <div class="well gray-lightest">
     <h3 class="gray-darkest mb-0"><i class="fa fa-list-alt"></i> {{'labels.organization-tree.header' | translate}}</h3>
-    <p class="small gray-dark" [hidden]="selectedSchools.length != 0" [ngClass]="{invisible: editingDisabled}">{{'labels.organization-tree.subheader-empty' | translate}}</p>
-    <p class="small gray-dark" [hidden]="selectedSchools.length == 0" [ngClass]="{invisible: editingDisabled}">{{'labels.organization-tree.subheader-not-empty' | translate}}</p>
+    <p class="small gray-darkest" [hidden]="selectedSchools.length != 0" [ngClass]="{invisible: editingDisabled}">{{'labels.organization-tree.subheader-empty' | translate}}</p>
+    <p class="small gray-darkest" [hidden]="selectedSchools.length == 0" [ngClass]="{invisible: editingDisabled}">{{'labels.organization-tree.subheader-not-empty' | translate}}</p>
     <organization-tree [model]="organizationTree" (select)="remove($event)" [disabled]="editingDisabled"></organization-tree>
   </div>
 

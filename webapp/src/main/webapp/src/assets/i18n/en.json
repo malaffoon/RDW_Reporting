@@ -263,6 +263,7 @@
           "exam-results": "Results By Student",
           "button-items": "Results By Item",
           "button-exams": "Results By Student",
+          "select-view": "Select View",
           "exams": {
             "title": "Results By Student",
             "empty-message": "No test results are available for the sessions and advanced filters selected.",
@@ -512,7 +513,8 @@
     "organization-tree": {
       "header": "Selected Institutions",
       "subheader-empty": "No institutions selected",
-      "subheader-not-empty": "Click an institution to remove it from the list"
+      "subheader-not-empty": "Click an item to remove it from the list",
+      "remove-district": "Remove District"
     },
     "organization-export": {
       "link": "Custom Exports",
@@ -550,6 +552,7 @@
         "student-first-name": "FirstName",
         "student-last-name": "LastOrSurname",
         "submit-date-time": "SubmitDateTime",
+        "school": "SchoolName",
         "assessment-session-id": "TestSessionId",
         "assessment-type": "AssessmentType",
         "assessment-subtype": "AssessmentSubType",
