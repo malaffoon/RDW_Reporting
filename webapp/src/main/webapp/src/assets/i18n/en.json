@@ -44,16 +44,16 @@
         "interpretive-guide-subtitle": "Interim Assessments"
       }
     },
-    "languages": {
-      "eng": {
+    "locale": {
+      "en": {
         "native": "English",
-        "default" : "English"
+        "default": "English"
       },
-      "spa": {
+      "es": {
         "native": "Español",
         "default": "Spanish"
       },
-      "vie": {
+      "vi": {
         "native": "Tiếng Việt",
         "default": "Vietnamese"
       }
@@ -469,6 +469,7 @@
         },
         "report-name": "Report Name",
         "assessment-type": "Assessment Type",
+        "language": "Report Language",
         "subject": "Subject",
         "school-year": "School Year",
         "accommodations": {
