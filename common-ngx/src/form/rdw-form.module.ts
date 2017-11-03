@@ -14,12 +14,12 @@ import { SBTypeahead } from "./sb-typeahead.component";
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    TypeaheadModule
+    TypeaheadModule.forRoot()
   ],
   exports: [
     SBTypeahead,
     SBButtonTypeahead
   ]
 })
-export class CommonFormModule {
+export class RdwFormModule {
 }

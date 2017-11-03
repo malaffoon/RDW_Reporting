@@ -1,5 +1,5 @@
 import { async } from "@angular/core/testing";
-import { SchoolYearPipe } from "./schoolYear.pipe";
+import { SchoolYearPipe } from "./school-year.pipe";
 
 describe('SchoolYearPipe', () => {
   it('should return return the academic year in the correct format', async(() => {
