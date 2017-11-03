@@ -73,11 +73,10 @@ export default {
       path.join(__dirname, 'src')
     ),
 
-    // does not work with es6 see: https://github.com/webpack/webpack/issues/2972
-    // new webpack.optimize.UglifyJsPlugin({
-    //   include: /\.min\.js$/,
-    //   sourceMap: true
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      sourceMap: true
+    }),
 
     new webpack.BannerPlugin({
       banner: `
