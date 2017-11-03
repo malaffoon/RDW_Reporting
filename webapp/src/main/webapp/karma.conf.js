@@ -39,7 +39,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['PhantomJS2'],
+    browsers: ['ChromeHeadless'],
     singleRun: false,
     //Quick fix for PhantomJS OOM issues
     browserNoActivityTimeout: 60000,

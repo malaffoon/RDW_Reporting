@@ -63,7 +63,9 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
         useClass: RdwTranslateLoader
       }
     }),
-    PopoverModule.forRoot()
+    PopoverModule.forRoot(),
+    RdwFormModule,
+    RdwFormatModule
   ],
   exports: [
     AssessmentTypePipe,

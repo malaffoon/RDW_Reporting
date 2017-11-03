@@ -15,7 +15,7 @@ export default {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     libraryTarget: 'umd',
-    library: 'ticktock'
+    library: '@sbac/rdw-reporting-common-ngx'
   },
   resolve: {
     extensions: [ '.ts', '.js', '.json' ]

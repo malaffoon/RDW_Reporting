@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
+    "lib": [ "es2015", "dom" ],
     "moduleResolution": "node",
     "noEmit": true,
     "sourceMap": true,
@@ -9,10 +10,6 @@
     "noImplicitAny": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": [
-      "es2015",
-      "dom"
-    ],
     "typeRoots" : [
       "./node_modules/@types"
     ],
