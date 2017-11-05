@@ -86,6 +86,7 @@
     "karma-webpack": "^2.0.3",
     "ngx-bootstrap": "^1.9.3",
     "node-sass": "^4.5.2",
+    "primeng": "^4.1.2",
     "raw-loader": "^0.5.1",
     "rimraf": "^2.6.1",
     "rxjs": "^5.3.1",

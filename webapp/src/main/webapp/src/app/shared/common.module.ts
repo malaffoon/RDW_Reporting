@@ -27,9 +27,9 @@ import { ScaleScoreService } from "./scale-score.service";
 import { LoaderComponent } from "./loader/loader.component";
 import { WindowRefService } from "./window-ref.service";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
-import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
+import { RdwDataTableModule } from "@sbac/rdw-reporting-common-ngx";
 import { RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
 import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
 
@@ -43,7 +43,6 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
     SessionExpiredComponent,
     SubjectPipe,
     LoaderComponent,
-    DataTableRowExpanderComponent,
     InformationLabelComponent,
     SBRadioButtonComponent,
     SBCheckboxList,
@@ -62,6 +61,7 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
       }
     }),
     PopoverModule.forRoot(),
+    RdwDataTableModule,
     RdwFormModule,
     RdwFormatModule
   ],
@@ -76,11 +76,11 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
     SubjectPipe,
     TranslateModule,
     LoaderComponent,
-    DataTableRowExpanderComponent,
     InformationLabelComponent,
     SBRadioButtonComponent,
     SBCheckboxList,
     SBToggleComponent,
+    RdwDataTableModule,
     RdwFormModule,
     RdwFormatModule
   ],

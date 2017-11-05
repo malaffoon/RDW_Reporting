@@ -9,7 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { Angulartics2Module } from 'angulartics2';
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { DataTableRowExpanderComponent } from "./datatable/datatable-row-expander.component";
+import { RdwDataTableModule } from "@sbac/rdw-reporting-common-ngx";
 import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
 
 // AoT requires an exported function for factories
@@ -19,7 +19,6 @@ export function HttpLoaderFactory(http: Http) {
 
 @NgModule({
   declarations: [
-    DataTableRowExpanderComponent,
     SubjectPipe
   ],
   imports: [
@@ -36,10 +35,10 @@ export function HttpLoaderFactory(http: Http) {
     Angulartics2Module.forChild()
   ],
   exports: [
-    DataTableRowExpanderComponent,
     RouterModule,
     SubjectPipe,
     TranslateModule,
+    RdwDataTableModule,
     RdwFormatModule
   ],
   providers: [
