@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
-import { SearchPipe } from "../search.pipe";
 import { HttpModule } from "@angular/http";
 import { DataService } from "./data/data.service";
 import { CachingDataService } from "./cachingData.service";
@@ -41,7 +40,6 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
     NotificationComponent,
     PadStartPipe,
     RemoveCommaPipe,
-    SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
     LoaderComponent,
@@ -74,7 +72,6 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
     PadStartPipe,
     RemoveCommaPipe,
     RouterModule,
-    SearchPipe,
     SessionExpiredComponent,
     SubjectPipe,
     TranslateModule,
