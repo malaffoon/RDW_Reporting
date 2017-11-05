@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { SubjectPipe } from "./subject.pipe";
-import { HttpModule, Http } from "@angular/http";
+import { Http, HttpModule } from "@angular/http";
 import { DataService } from "./data/data.service";
 import { CachingDataService } from "./data/caching-data.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -30,7 +30,7 @@ export function HttpLoaderFactory(http: Http) {
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [Http]
+        deps: [ Http ]
       }
     }),
     Angulartics2Module.forChild()
