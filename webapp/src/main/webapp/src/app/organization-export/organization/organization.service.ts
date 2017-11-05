@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
-import { CachingDataService } from "app/shared/cachingData.service";
+import { CachingDataService } from "app/shared/data/caching-data.service";
 import { UserOrganizations } from "./user-organizations";
 import { OrganizationMapper } from "./organization.mapper";
 import { UserService } from "../../user/user.service";

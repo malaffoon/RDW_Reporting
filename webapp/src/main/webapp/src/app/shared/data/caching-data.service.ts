@@ -3,7 +3,7 @@ import { RequestOptionsArgs } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
-import { DataService } from "./data/data.service";
+import { DataService } from "./data.service";
 
 @Injectable()
 export class CachingDataService {

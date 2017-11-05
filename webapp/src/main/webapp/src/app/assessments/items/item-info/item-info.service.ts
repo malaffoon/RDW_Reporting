@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { UserService } from "../../../user/user.service";
 import { Injectable } from "@angular/core";
-import { CachingDataService } from "../../../shared/cachingData.service";
+import { CachingDataService } from "../../../shared/data/caching-data.service";
 import { DataService } from "../../../shared/data/data.service";
 import { URLSearchParams } from "@angular/http";
 

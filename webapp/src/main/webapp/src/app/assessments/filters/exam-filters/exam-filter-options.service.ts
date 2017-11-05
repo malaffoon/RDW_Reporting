@@ -1,4 +1,4 @@
-import { CachingDataService } from "../../../shared/cachingData.service";
+import { CachingDataService } from "../../../shared/data/caching-data.service";
 import { Injectable } from "@angular/core";
 import { ExamFilterOptionsMapper } from "./exam-filter-options.mapper";
 

@@ -13,7 +13,7 @@ import { APP_BASE_HREF } from "@angular/common";
 import { TypeaheadModule } from "ngx-bootstrap";
 import { OrganizationService } from "./organization.service";
 import { UserModule } from "../user/user.module";
-import { CachingDataService } from "../shared/cachingData.service";
+import { CachingDataService } from "../shared/data/caching-data.service";
 import { MockDataService } from "../../test/mock.data.service";
 
 describe('SchoolGradeComponent', () => {

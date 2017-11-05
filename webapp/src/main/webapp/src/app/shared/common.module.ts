@@ -3,7 +3,7 @@ import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
 import { HttpModule } from "@angular/http";
 import { DataService } from "./data/data.service";
-import { CachingDataService } from "./cachingData.service";
+import { CachingDataService } from "./data/caching-data.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
 import { RemoveCommaPipe } from "./remove-comma.pipe";
