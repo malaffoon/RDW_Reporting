@@ -1,4 +1,4 @@
-import { CachingDataService } from "../../../shared/data/caching-data.service";
+import { CachingDataService } from "@sbac/rdw-reporting-common-ngx";
 import { Injectable } from "@angular/core";
 import { ExamFilterOptionsMapper } from "./exam-filter-options.mapper";
 

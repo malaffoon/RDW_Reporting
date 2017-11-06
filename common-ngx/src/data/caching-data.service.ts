@@ -8,25 +8,30 @@ import { DataService } from "./data.service";
 @Injectable()
 export class CachingDataService {
 
-  private cache: { [key: string]: any } = {};
+  private responseByUrl: { [key: string]: any } = {};
 
   constructor(private dataService: DataService) {
   }
 
   public get(url: string, options?: RequestOptionsArgs): Observable<any> {
-    if(this.cache[url]){
-      return Observable.of(this.cache[url]);
+
+    let previousResponse = this.responseByUrl[ url ];
+    if (previousResponse) {
+      return Observable.of(previousResponse);
     }
 
     let observable = this.dataService
       .get(url, options)
       .share();
 
-    observable
-      .subscribe(x => {
-        this.cache[url] = x;
-      }, (err) => Observable.throw(err));
+    observable.subscribe(
+      response => {
+        this.responseByUrl[ url ] = response;
+      },
+      error => Observable.throw(error)
+    );
 
     return observable;
   }
+
 }

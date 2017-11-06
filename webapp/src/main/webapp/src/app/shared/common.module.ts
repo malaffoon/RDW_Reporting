@@ -2,8 +2,6 @@ import { NgModule } from "@angular/core";
 import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
 import { HttpModule } from "@angular/http";
-import { DataService } from "./data/data.service";
-import { CachingDataService } from "./data/caching-data.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
 import { RemoveCommaPipe } from "./remove-comma.pipe";
@@ -29,9 +27,7 @@ import { WindowRefService } from "./window-ref.service";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
-import { RdwDataTableModule } from "@sbac/rdw-reporting-common-ngx";
-import { RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
-import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
+import { RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
   declarations: [
@@ -61,6 +57,7 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
       }
     }),
     PopoverModule.forRoot(),
+    RdwDataModule.forRoot(),
     RdwDataTableModule,
     RdwFormModule,
     RdwFormatModule
@@ -87,9 +84,7 @@ import { RdwFormatModule } from "@sbac/rdw-reporting-common-ngx";
   providers: [
     AuthenticatedHttpService,
     AuthenticationService,
-    DataService,
     DatePipe,
-    CachingDataService,
     ColorService,
     DecimalPipe,
     ScaleScoreService,
