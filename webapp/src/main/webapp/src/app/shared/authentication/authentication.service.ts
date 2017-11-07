@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { StorageService, StorageType } from "../storage.service";
+import { StorageService, StorageType } from "../../../../../../../../common-ngx/src/core/storage.service";
 import { WindowRefService } from "../window-ref.service";
 
 /**

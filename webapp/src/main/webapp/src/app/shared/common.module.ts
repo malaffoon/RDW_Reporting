@@ -19,15 +19,13 @@ import { NotificationComponent } from "./notification/notification.component";
 import { NotificationService } from "./notification/notification.service";
 import { AlertModule, PopoverModule } from "ngx-bootstrap";
 import { SessionExpiredComponent } from "./authentication/session-expired.component";
-import { StorageService } from "./storage.service";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { ScaleScoreService } from "./scale-score.service";
 import { LoaderComponent } from "./loader/loader.component";
-import { WindowRefService } from "./window-ref.service";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
-import { RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
+import { RdwCoreModule, RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
   declarations: [
@@ -57,6 +55,7 @@ import { RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } fro
       }
     }),
     PopoverModule.forRoot(),
+    RdwCoreModule,
     RdwDataModule.forRoot(),
     RdwDataTableModule,
     RdwFormModule,
@@ -89,9 +88,7 @@ import { RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } fro
     DecimalPipe,
     ScaleScoreService,
     NotificationService,
-    RdwTranslateLoader,
-    StorageService,
-    WindowRefService
+    RdwTranslateLoader
   ]
 })
 export class CommonModule {
