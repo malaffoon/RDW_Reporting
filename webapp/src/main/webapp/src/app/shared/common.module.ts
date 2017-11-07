@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
 import { HttpModule } from "@angular/http";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -20,7 +19,6 @@ import { NotificationService } from "./notification/notification.service";
 import { AlertModule, PopoverModule } from "ngx-bootstrap";
 import { SessionExpiredComponent } from "./authentication/session-expired.component";
 import { DatePipe, DecimalPipe } from "@angular/common";
-import { ScaleScoreService } from "./scale-score.service";
 import { LoaderComponent } from "./loader/loader.component";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { SBToggleComponent } from "./sb-toggle.component";
@@ -32,7 +30,6 @@ import { RdwCoreModule, RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwF
     AssessmentTypePipe,
     GradeDisplayPipe,
     NotificationComponent,
-    PadStartPipe,
     RemoveCommaPipe,
     SessionExpiredComponent,
     SubjectPipe,
@@ -65,7 +62,6 @@ import { RdwCoreModule, RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwF
     AssessmentTypePipe,
     GradeDisplayPipe,
     NotificationComponent,
-    PadStartPipe,
     RemoveCommaPipe,
     RouterModule,
     SessionExpiredComponent,
@@ -86,7 +82,6 @@ import { RdwCoreModule, RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwF
     DatePipe,
     ColorService,
     DecimalPipe,
-    ScaleScoreService,
     NotificationService,
     RdwTranslateLoader
   ]

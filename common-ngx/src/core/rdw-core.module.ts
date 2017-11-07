@@ -12,6 +12,6 @@ import { StorageService } from "./storage.service";
     WindowRefService
   ]
 })
-export class RdwDataModule {
+export class RdwCoreModule {
 
 }
