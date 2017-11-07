@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { PadStartPipe } from "./pad-start.pipe";
 import { SubjectPipe } from "./subject.pipe";
 import { HttpModule } from "@angular/http";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -19,30 +18,32 @@ import { NotificationComponent } from "./notification/notification.component";
 import { NotificationService } from "./notification/notification.service";
 import { AlertModule, PopoverModule } from "ngx-bootstrap";
 import { SessionExpiredComponent } from "./authentication/session-expired.component";
-import { StorageService } from "./storage.service";
 import { DatePipe, DecimalPipe } from "@angular/common";
-import { ScaleScoreService } from "./scale-score.service";
 import { LoaderComponent } from "./loader/loader.component";
-import { WindowRefService } from "./window-ref.service";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
-import { RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
+import {
+  RdwCoreModule,
+  RdwDataModule,
+  RdwDataTableModule,
+  RdwFormatModule,
+  RdwFormModule
+} from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
   declarations: [
     AssessmentTypePipe,
     GradeDisplayPipe,
+    InformationLabelComponent,
+    LoaderComponent,
     NotificationComponent,
-    PadStartPipe,
     RemoveCommaPipe,
     SessionExpiredComponent,
-    SubjectPipe,
-    LoaderComponent,
-    InformationLabelComponent,
-    SBRadioButtonComponent,
     SBCheckboxList,
-    SBToggleComponent
+    SBRadioButtonComponent,
+    SBToggleComponent,
+    SubjectPipe
   ],
   imports: [
     AlertModule,
@@ -50,48 +51,45 @@ import { RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } fro
     BrowserModule,
     FormsModule,
     HttpModule,
+    PopoverModule.forRoot(),
+    RdwCoreModule,
+    RdwDataModule.forRoot(),
+    RdwDataTableModule,
+    RdwFormModule,
+    RdwFormatModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useClass: RdwTranslateLoader
       }
-    }),
-    PopoverModule.forRoot(),
-    RdwDataModule.forRoot(),
-    RdwDataTableModule,
-    RdwFormModule,
-    RdwFormatModule
+    })
   ],
   exports: [
     AssessmentTypePipe,
     GradeDisplayPipe,
+    InformationLabelComponent,
+    LoaderComponent,
     NotificationComponent,
-    PadStartPipe,
     RemoveCommaPipe,
     RouterModule,
     SessionExpiredComponent,
     SubjectPipe,
-    TranslateModule,
-    LoaderComponent,
-    InformationLabelComponent,
-    SBRadioButtonComponent,
-    SBCheckboxList,
-    SBToggleComponent,
     RdwDataTableModule,
     RdwFormModule,
-    RdwFormatModule
+    RdwFormatModule,
+    SBCheckboxList,
+    SBRadioButtonComponent,
+    SBToggleComponent,
+    TranslateModule
   ],
   providers: [
     AuthenticatedHttpService,
     AuthenticationService,
-    DatePipe,
     ColorService,
+    DatePipe,
     DecimalPipe,
-    ScaleScoreService,
     NotificationService,
-    RdwTranslateLoader,
-    StorageService,
-    WindowRefService
+    RdwTranslateLoader
   ]
 })
 export class CommonModule {

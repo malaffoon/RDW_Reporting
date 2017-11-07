@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Assessment } from "../assessments/model/assessment.model";
-import {ExamStatisticsLevel} from "../assessments/model/exam-statistics.model";
+import { Assessment } from "../model/assessment.model";
+import {ExamStatisticsLevel} from "../model/exam-statistics.model";
 
 @Injectable()
 export class ScaleScoreService {

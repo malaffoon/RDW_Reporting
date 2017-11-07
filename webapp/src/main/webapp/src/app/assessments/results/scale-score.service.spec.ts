@@ -1,8 +1,8 @@
-import { Assessment } from "../assessments/model/assessment.model";
-import { AssessmentType } from "./enum/assessment-type.enum";
+import { Assessment } from "../model/assessment.model";
+import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { TestBed, inject } from "@angular/core/testing";
 import { ScaleScoreService } from "./scale-score.service";
-import { ExamStatisticsLevel } from "../assessments/model/exam-statistics.model";
+import { ExamStatisticsLevel } from "../model/exam-statistics.model";
 
 describe('Assessment Model', () => {
 
