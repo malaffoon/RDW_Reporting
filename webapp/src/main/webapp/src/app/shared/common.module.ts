@@ -23,21 +23,27 @@ import { LoaderComponent } from "./loader/loader.component";
 import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
-import { RdwCoreModule, RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwFormModule } from "@sbac/rdw-reporting-common-ngx";
+import {
+  RdwCoreModule,
+  RdwDataModule,
+  RdwDataTableModule,
+  RdwFormatModule,
+  RdwFormModule
+} from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
   declarations: [
     AssessmentTypePipe,
     GradeDisplayPipe,
+    InformationLabelComponent,
+    LoaderComponent,
     NotificationComponent,
     RemoveCommaPipe,
     SessionExpiredComponent,
-    SubjectPipe,
-    LoaderComponent,
-    InformationLabelComponent,
-    SBRadioButtonComponent,
     SBCheckboxList,
-    SBToggleComponent
+    SBRadioButtonComponent,
+    SBToggleComponent,
+    SubjectPipe
   ],
   imports: [
     AlertModule,
@@ -45,42 +51,42 @@ import { RdwCoreModule, RdwDataModule, RdwDataTableModule, RdwFormatModule, RdwF
     BrowserModule,
     FormsModule,
     HttpModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useClass: RdwTranslateLoader
-      }
-    }),
     PopoverModule.forRoot(),
     RdwCoreModule,
     RdwDataModule.forRoot(),
     RdwDataTableModule,
     RdwFormModule,
-    RdwFormatModule
+    RdwFormatModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useClass: RdwTranslateLoader
+      }
+    })
   ],
   exports: [
     AssessmentTypePipe,
     GradeDisplayPipe,
+    InformationLabelComponent,
+    LoaderComponent,
     NotificationComponent,
     RemoveCommaPipe,
     RouterModule,
     SessionExpiredComponent,
     SubjectPipe,
-    TranslateModule,
-    LoaderComponent,
-    InformationLabelComponent,
-    SBRadioButtonComponent,
-    SBCheckboxList,
-    SBToggleComponent,
     RdwDataTableModule,
     RdwFormModule,
-    RdwFormatModule
+    RdwFormatModule,
+    SBCheckboxList,
+    SBRadioButtonComponent,
+    SBToggleComponent,
+    TranslateModule
   ],
   providers: [
     AuthenticatedHttpService,
     AuthenticationService,
-    DatePipe,
     ColorService,
+    DatePipe,
     DecimalPipe,
     NotificationService,
     RdwTranslateLoader

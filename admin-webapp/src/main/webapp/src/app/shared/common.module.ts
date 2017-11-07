@@ -19,27 +19,27 @@ export function HttpLoaderFactory(http: Http) {
     SubjectPipe
   ],
   imports: [
-    HttpModule,
-    FormsModule,
+    Angulartics2Module.forChild(),
     BrowserModule,
+    FormsModule,
+    HttpModule,
+    RdwDataModule.forRoot(),
+    RdwDataTableModule,
+    RdwFormatModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
         deps: [ Http ]
       }
-    }),
-    Angulartics2Module.forChild(),
-    RdwDataModule.forRoot(),
-    RdwDataTableModule,
-    RdwFormatModule
+    })
   ],
   exports: [
-    RouterModule,
     SubjectPipe,
     TranslateModule,
     RdwDataTableModule,
-    RdwFormatModule
+    RdwFormatModule,
+    RouterModule
   ]
 })
 export class CommonModule {
