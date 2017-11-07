@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { DataTable } from "primeng/components/datatable/datatable";
-import { Utils } from "../Utils";
+import { Utils } from "../support";
 
 /**
  * This component is responsible for displaying user notifications.
@@ -9,7 +9,7 @@ import { Utils } from "../Utils";
   selector: 'datatable-row-expander',
   templateUrl: 'datatable-row-expander.component.html'
 })
-export class DataTableRowExpanderComponent {
+export class DataTableRowExpander {
 
   @Input()
   datatable: DataTable;

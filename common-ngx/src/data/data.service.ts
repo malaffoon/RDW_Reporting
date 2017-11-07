@@ -1,9 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Http, RequestOptionsArgs, Response, ResponseContentType } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 import { Download } from "./download.model";
+
+export const DATA_CONTEXT_URL = new InjectionToken<string>('CONTEXT_URL');
 
 /**
  * Central HTTP service used to proxy all requests to the API server
@@ -11,7 +13,8 @@ import { Download } from "./download.model";
 @Injectable()
 export class DataService {
 
-  constructor(private http: Http) {
+  constructor(private http: Http,
+              @Inject(DATA_CONTEXT_URL) private contextUrl: string = '/api') {
   }
 
   /**
@@ -21,9 +24,9 @@ export class DataService {
    * @param options parameters to communicate to the API
    * @returns {Observable<R>}
    */
-  public get(url: string, options?: RequestOptionsArgs): Observable<any> {
+  get(url: string, options?: RequestOptionsArgs): Observable<any> {
     return this.http
-      .get(`/api${url}`, options)
+      .get(`${this.contextUrl}${url}`, options)
       .map(this.getMapper(options));
   }
 
@@ -35,11 +38,25 @@ export class DataService {
    * @param options parameters to communicate to the API
    * @returns {Observable<R>}
    */
-  public post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
+  post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
     return this.http
-      .post(`/api${url}`, body, options)
+      .post(`${this.contextUrl}${url}`, body, options)
       .map(this.getMapper(options));
   }
+
+  /**
+   * Deletes data on the API server
+   *
+   * @param url the API endpoint
+   * @param options parameters to communicate to the API
+   * @returns {Observable<any>}
+   */
+  delete(url: string, options?: RequestOptionsArgs): Observable<any> {
+    return this.http
+      .delete(`${this.contextUrl}${url}`, options)
+      .map(this.getMapper(options));
+  }
+
 
   /**
    * Resolves which mapper to use when mapping HTTP responses from the API server.

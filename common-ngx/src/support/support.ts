@@ -1,22 +1,22 @@
 export class Utils {
 
-  static getPropertyValue(propertyName, object): any {
-    var parts = propertyName.split("."),
-      length = parts.length,
-      i,
+  static getPropertyValue(propertyPath: string, object: any): any {
+    let parts = propertyPath.split('.'),
       property = object || this;
 
-    for (i = 0; i < length; i++) {
+    for (let i = 0; i < parts.length; i++) {
       property = property[ parts[ i ] ];
     }
     return property;
   }
 
+  static newGuidReplacer(c: string): string {
+    let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  };
+
   static newGuid(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace('/[xy]/g', Utils.newGuidReplacer);
   }
 
   static polarEnumToBoolean(value: any): boolean {
@@ -38,3 +38,4 @@ export class Utils {
   }
 
 }
+
