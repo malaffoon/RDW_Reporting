@@ -15,7 +15,6 @@ export class AuthenticationService {
   private urlWhenSessionExpiredKey: string = 'urlWhenSessionExpired';
   private window: any;
 
-
   constructor(private router: Router,
               private location: Location,
               private storageService: StorageService,
@@ -60,7 +59,7 @@ export class AuthenticationService {
   private get authenticationUrl(): string {
     let url = this.urlWhenSessionExpired;
     if (!url) {
-      return this.location.prepareExternalUrl(this.defaultAuthenticationRoute || '/');
+      return this.location.prepareExternalUrl('/' + (this.defaultAuthenticationRoute || ''));
     }
     return url;
   }

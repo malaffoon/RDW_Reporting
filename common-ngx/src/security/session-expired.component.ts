@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { AuthenticationService } from "@sbac/rdw-reporting-common-ngx";
+import { AuthenticationService } from "./authentication.service";
 
 @Component({
   selector: 'session-expired',

@@ -11,7 +11,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MockActivatedRoute } from "../test/mock.activated-route";
 import { MockRouter } from "../test/mock.router";
 import { Location, LocationStrategy } from "@angular/common";
-import { RouterTestingModule } from "@angular/router/testing";
 
 let mockWindow = {
   location: {
@@ -24,7 +23,6 @@ let mockWindow = {
 describe('AuthenticationService', () => {
   let storageService: MockStorageService;
 
-
   beforeEach(() => {
     storageService = new MockStorageService();
 
@@ -36,7 +34,7 @@ describe('AuthenticationService', () => {
         // ])
       ],
       providers: [
-        { provide: Location, useValue: new MockLocation('') },
+        { provide: Location, useClass: MockLocation },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: Router, useClass: MockRouter },
         AuthenticationService,
@@ -86,12 +84,10 @@ describe('AuthenticationService', () => {
       expect(service.urlWhenSessionExpired).toBe("http://awsqa/home");
       expect(router.navigate).toHaveBeenCalledWith([ "session-expired" ]);
     }));
+
 });
 
 class MockLocation {
-  constructor(private baseUrl: string) {
-  }
-
   prepareExternalUrl(value: string): string {
     return `${value}`;
   }

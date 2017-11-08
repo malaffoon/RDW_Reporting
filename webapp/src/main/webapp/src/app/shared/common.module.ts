@@ -16,10 +16,8 @@ import { Angulartics2Module } from "angulartics2";
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationService } from "./notification/notification.service";
 import { AlertModule, PopoverModule } from "ngx-bootstrap";
-import { SessionExpiredComponent } from "./authentication/session-expired.component";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { LoaderComponent } from "./loader/loader.component";
-// import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
 import {
@@ -41,7 +39,6 @@ import {
     LoaderComponent,
     NotificationComponent,
     RemoveCommaPipe,
-    SessionExpiredComponent,
     SBCheckboxList,
     SBRadioButtonComponent,
     SBToggleComponent,
@@ -75,7 +72,6 @@ import {
     NotificationComponent,
     RemoveCommaPipe,
     RouterModule,
-    SessionExpiredComponent,
     SubjectPipe,
     RdwDataTableModule,
     RdwFormModule,
@@ -87,9 +83,8 @@ import {
     TranslateModule
   ],
   providers: [
-    // AuthenticatedHttpService,
     { provide: AuthenticationServiceAuthenticationExpiredRoute, useValue: 'session-expired' },
-    { provide: AuthenticationServiceDefaultAuthenticationRoute, useValue: '/home' },
+    { provide: AuthenticationServiceDefaultAuthenticationRoute, useValue: 'home' },
     ColorService,
     DatePipe,
     DecimalPipe,
