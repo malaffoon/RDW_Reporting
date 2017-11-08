@@ -27,12 +27,6 @@ describe('AuthenticationService', () => {
     storageService = new MockStorageService();
 
     TestBed.configureTestingModule({
-      imports: [
-        // RouterTestingModule.withRoutes([
-        //   // { path: 'session-expired' },
-        //   // { path: 'home' }
-        // ])
-      ],
       providers: [
         { provide: Location, useClass: MockLocation },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
