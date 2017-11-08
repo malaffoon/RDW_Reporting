@@ -7,7 +7,7 @@ export const AuthenticationServiceDefaultAuthenticationRoute = new InjectionToke
 export const AuthenticationServiceAuthenticationExpiredRoute = new InjectionToken<string>('AuthenticationServiceAuthenticationExpiredRoute');
 
 /**
- * This service is responsible for handling authentication errors.
+ * This service is responsible for handling authentication
  */
 @Injectable()
 export class AuthenticationService {
@@ -25,18 +25,19 @@ export class AuthenticationService {
   }
 
   /**
-   * On authentication failure, navigate the user to the session-timeout route.
+   * Call this on authentication failure.
+   * This will navigate the user to the session-timeout route.
    */
   navigateToAuthenticationExpiredRoute(): void {
     let url = this.window.location.href;
 
-    // If the url was the root, navigate to home instead so the user doesn't get the
-    // landing page.
+    // In the case the the root URL is reserved for public pages.
+    // Store the prefered default authentication route instead of the root URL.
     if (this.defaultAuthenticationRoute && this.window.location.pathname === '/') {
       url += this.defaultAuthenticationRoute;
     }
 
-    // Prevent looping of session-expired page.
+    // Prevents looping of the session-expired page when a authenticate() is called
     if (url.indexOf(this.authenticationExpiredRoute) === -1) {
       this.urlWhenSessionExpired = url;
     }
@@ -45,16 +46,17 @@ export class AuthenticationService {
   }
 
   /**
-   * Re-authenticates the user by navigating them to a URL where reauthentication is triggered
+   * Authenticates the user by navigating them to a URL where authentication is triggered
    */
   authenticate(): void {
     this.window.location.href = this.authenticationUrl;
   }
 
   /**
-   * Retrieve the user's url at the time of authentication failure.
+   * The URL needed for authentication.
+   * This will be a qualified URL to path "/" or "/{defaultAuthenticationRoute}" if a default authentication route is configured.
    *
-   * @returns {string|null} A url
+   * @returns {string}
    */
   private get authenticationUrl(): string {
     let url = this.urlWhenSessionExpired;
@@ -64,6 +66,11 @@ export class AuthenticationService {
     return url;
   }
 
+  /**
+   * The url at the time of authentication failure.
+   *
+   * @returns {string|null} A url
+   */
   get urlWhenSessionExpired(): string {
     return this.storageService.getStorage(StorageType.Session).getItem(this.urlWhenSessionExpiredKey);
   }
