@@ -24,7 +24,6 @@ export class UserMapper {
 
     local.analyticsTrackingId = remote.analyticsTrackingId;
     local.homeUrl = remote.homeUrl;
-    local.uiLanguages = remote.uiLanguages;
     return local;
   }
 

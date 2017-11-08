@@ -9,6 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
 import { GradeDisplayPipe } from "./grade-display.pipe";
+import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
 import { ColorService } from "./color.service";
 import { Angulartics2Module } from "angulartics2";
@@ -27,9 +28,7 @@ import {
   RdwDataModule,
   RdwDataTableModule,
   RdwFormatModule,
-  RdwFormModule,
-  RdwI18nModule,
-  RdwTranslateLoader,
+  RdwFormModule
 } from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
@@ -58,7 +57,6 @@ import {
     RdwDataTableModule,
     RdwFormModule,
     RdwFormatModule,
-    RdwI18nModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -90,7 +88,8 @@ import {
     ColorService,
     DatePipe,
     DecimalPipe,
-    NotificationService
+    NotificationService,
+    RdwTranslateLoader
   ]
 })
 export class CommonModule {
