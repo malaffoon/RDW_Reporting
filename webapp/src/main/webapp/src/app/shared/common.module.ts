@@ -13,14 +13,13 @@ import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
 import { ColorService } from "./color.service";
 import { Angulartics2Module } from "angulartics2";
-import { AuthenticationService } from "./authentication/authentication.service";
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationService } from "./notification/notification.service";
 import { AlertModule, PopoverModule } from "ngx-bootstrap";
 import { SessionExpiredComponent } from "./authentication/session-expired.component";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { LoaderComponent } from "./loader/loader.component";
-import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
+// import { AuthenticatedHttpService } from "./authentication/authenticated-http.service";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationLabelComponent } from "./information-label.component";
 import {
@@ -28,7 +27,10 @@ import {
   RdwDataModule,
   RdwDataTableModule,
   RdwFormatModule,
-  RdwFormModule
+  RdwFormModule,
+  RdwSecurityModule,
+  AuthenticationServiceAuthenticationExpiredRoute,
+  AuthenticationServiceDefaultAuthenticationRoute
 } from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
@@ -57,6 +59,7 @@ import {
     RdwDataTableModule,
     RdwFormModule,
     RdwFormatModule,
+    RdwSecurityModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -77,14 +80,16 @@ import {
     RdwDataTableModule,
     RdwFormModule,
     RdwFormatModule,
+    RdwSecurityModule,
     SBCheckboxList,
     SBRadioButtonComponent,
     SBToggleComponent,
     TranslateModule
   ],
   providers: [
-    AuthenticatedHttpService,
-    AuthenticationService,
+    // AuthenticatedHttpService,
+    { provide: AuthenticationServiceAuthenticationExpiredRoute, useValue: 'session-expired' },
+    { provide: AuthenticationServiceDefaultAuthenticationRoute, useValue: '/home' },
     ColorService,
     DatePipe,
     DecimalPipe,
