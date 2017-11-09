@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { SubjectPipe } from "./subject.pipe";
 import { HttpModule } from "@angular/http";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
@@ -41,8 +40,7 @@ import {
     RemoveCommaPipe,
     SBCheckboxList,
     SBRadioButtonComponent,
-    SBToggleComponent,
-    SubjectPipe
+    SBToggleComponent
   ],
   imports: [
     AlertModule,
@@ -72,7 +70,6 @@ import {
     NotificationComponent,
     RemoveCommaPipe,
     RouterModule,
-    SubjectPipe,
     RdwDataTableModule,
     RdwFormModule,
     RdwFormatModule,

@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { SubjectPipe } from "./subject.pipe";
 import { Http, HttpModule } from "@angular/http";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
@@ -21,9 +20,6 @@ export function HttpLoaderFactory(http: Http) {
 }
 
 @NgModule({
-  declarations: [
-    SubjectPipe
-  ],
   imports: [
     Angulartics2Module.forChild(),
     BrowserModule,
@@ -42,7 +38,6 @@ export function HttpLoaderFactory(http: Http) {
     })
   ],
   exports: [
-    SubjectPipe,
     TranslateModule,
     RdwDataTableModule,
     RdwFormatModule,
