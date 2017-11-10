@@ -12,9 +12,11 @@ import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
 import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
-import { DynamicItemField } from "../model/item-point-field.model";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
 import { AssessmentProvider } from "../assessment-provider.interface";
+import { TranslateService } from "@ngx-translate/core";
+import { ResultsByItemComponent } from "./view/results-by-item/results-by-item.component";
+import { DistractorAnalysisComponent } from "./view/distractor-analysis/distractor-analysis.component";
 
 enum ResultsViewState {
   ByStudent =1,
@@ -128,25 +130,40 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get showStudentResults(): boolean {
-    return this.currentResultsViewState == ResultsViewState.ByStudent;
+    return this.currentResultsView.value == ResultsViewState.ByStudent;
   }
 
   get showItemsByPointsEarned(): boolean {
-    return this.currentResultsViewState == ResultsViewState.ByItem;
+    return this.currentResultsView.value == ResultsViewState.ByItem;
   }
 
   get showDistractorAnalysis(): boolean {
-    return this.currentResultsViewState == ResultsViewState.DistractorAnalysis;
+    return this.currentResultsView.value == ResultsViewState.DistractorAnalysis;
+  }
+
+  get currentExportResults(): ExportResults {
+    if(this.showItemsByPointsEarned)
+      return this.resultsByItem;
+
+    if(this.showDistractorAnalysis)
+      return this.distractorAnalysis;
+
+    return undefined;
   }
 
   @ViewChild('menuReportDownloader')
   reportDownloader: StudentReportDownloadComponent;
 
+  @ViewChild('resultsByItem')
+  resultsByItem: ResultsByItemComponent;
+
+  @ViewChild('distractorAnalysis')
+  distractorAnalysis: DistractorAnalysisComponent;
+
   exams: Exam[] = [];
   sessions = [];
   statistics: ExamStatistics;
-  pointColumns: DynamicItemField[];
-  currentResultsViewState: ResultsViewState = ResultsViewState.ByStudent;
+  currentResultsView: ResultsView;
   viewStateOptions = [];
 
   private _filterBy: FilterBy;
@@ -154,30 +171,37 @@ export class AssessmentResultsComponent implements OnInit {
   private _filterBySubscription: Subscription;
 
   constructor(public colorService: ColorService,
+              public translate: TranslateService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService) {
   }
 
   ngOnInit(): void {
     this.viewStateOptions = this.getViewStateOptions();
+    this.setCurrentState(this.viewStateOptions[0]);
   }
 
   getViewStateOptions() {
     let states =[];
 
-    states.push(this.getResultViewState(ResultsViewState.ByStudent, true));
-    states.push(this.getResultViewState(ResultsViewState.ByItem, this.hasItemLevelData));
-    states.push(this.getResultViewState(ResultsViewState.DistractorAnalysis, this.hasItemLevelData));
+    states.push(this.getResultViewState(ResultsViewState.ByStudent, true, false));
+    states.push(this.getResultViewState(ResultsViewState.ByItem, this.hasItemLevelData, true));
+    states.push(this.getResultViewState(ResultsViewState.DistractorAnalysis, this.hasItemLevelData, true));
 
     return states;
   }
 
-  getResultViewState(viewState: ResultsViewState, enabled: boolean) {
+  getResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean): ResultsView {
     return {
-      name: ResultsViewState[viewState],
+      label: this.translate.instant('enum.results-view-state.' + ResultsViewState[viewState]),
       value: viewState,
-      enabled: enabled
+      disabled: !enabled,
+      canExport: canExport
     }
+  }
+
+  setCurrentState(viewState){
+    this.currentResultsView = viewState;
   }
 
   getGradeIdx(gradeCode: string): number {
@@ -241,4 +265,16 @@ export class AssessmentResultsComponent implements OnInit {
 
     return stats;
   }
+}
+
+interface ResultsView {
+  label: string;
+  value: ResultsViewState;
+  disabled: boolean;
+  canExport: boolean;
+}
+
+export interface ExportResults {
+  exportToCsv();
+  hasDataToExport();
 }
