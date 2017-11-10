@@ -38,7 +38,6 @@
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
-        "standalone": "environments/environment.standalone.ts",
         "prod": "environments/environment.prod.ts"
       }
     }

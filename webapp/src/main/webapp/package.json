@@ -26,7 +26,7 @@
     "@kourge/ordering": "^1.0.1",
     "@ngx-translate/core": "^6.0.1",
     "@ngx-translate/http-loader": "0.0.3",
-    "@sbac/sbac-ui-kit": "0.0.21",
+    "@sbac/sbac-ui-kit": "0.0.22",
     "@types/file-saver": "0.0.1",
     "@types/lodash": "^4.14.69",
     "angular2-csv": "^0.2.3",
