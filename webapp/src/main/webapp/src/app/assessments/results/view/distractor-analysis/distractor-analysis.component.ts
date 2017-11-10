@@ -79,7 +79,7 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
     });
   }
 
-  hasDataToExport() {
+  hasDataToExport(): boolean {
     return this.filteredMultipleChoiceItems && this.filteredMultipleChoiceItems.length > 0;
   }
 

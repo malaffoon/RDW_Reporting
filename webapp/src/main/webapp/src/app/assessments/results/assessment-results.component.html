@@ -83,7 +83,7 @@
           <label class="sr-only">{{ 'labels.groups.results.assessment.select-view' | translate }}</label>
           <div class="btn-group" dropdown>
             <button dropdownToggle type="button" class="btn btn-default btn-borderless dropdown-toggle">
-             {{ currentResultsView.label }} <i class="fa fa-angle-down"></i>
+             {{ currentResultsView.label | translate }} <i class="fa fa-angle-down"></i>
             </button>
             <ul *dropdownMenu class="dropdown-menu" role="menu">
               <li *ngFor="let state of viewStateOptions" role="menuitem">
@@ -94,8 +94,8 @@
                    [ngClass]="{'selected': currentResultsView == state }">
                   <button [disabled]="state.disabled"
                           class="btn btn-default btn-borderless"
-                          (click)="setCurrentState(state)">
-                    {{state.label}}
+                          (click)="setCurrentView(state)">
+                    {{ state.label | translate }}
                   </button>
                 </a>
               </li>
@@ -105,7 +105,7 @@
              class="btn btn-sm btn-default"
              [disabled]="!currentExportResults || !currentExportResults.hasDataToExport()"
              (click)="currentExportResults.exportToCsv()">
-            <i class="fa fa-cloud-download"></i> Export
+            <i class="fa fa-cloud-download"></i> {{ 'labels.export.title' | translate }}
           </button>
         </div>
       </div>

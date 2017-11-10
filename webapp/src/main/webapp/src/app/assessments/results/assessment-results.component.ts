@@ -14,7 +14,6 @@ import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
 import { AssessmentProvider } from "../assessment-provider.interface";
-import { TranslateService } from "@ngx-translate/core";
 import { ResultsByItemComponent } from "./view/results-by-item/results-by-item.component";
 import { DistractorAnalysisComponent } from "./view/distractor-analysis/distractor-analysis.component";
 
@@ -171,14 +170,13 @@ export class AssessmentResultsComponent implements OnInit {
   private _filterBySubscription: Subscription;
 
   constructor(public colorService: ColorService,
-              public translate: TranslateService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService) {
   }
 
   ngOnInit(): void {
     this.viewStateOptions = this.getViewStateOptions();
-    this.setCurrentState(this.viewStateOptions[0]);
+    this.setCurrentView(this.viewStateOptions[0]);
   }
 
   getViewStateOptions() {
@@ -193,23 +191,19 @@ export class AssessmentResultsComponent implements OnInit {
 
   getResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean): ResultsView {
     return {
-      label: this.translate.instant('enum.results-view-state.' + ResultsViewState[viewState]),
+      label: 'enum.results-view-state.' + ResultsViewState[viewState],
       value: viewState,
       disabled: !enabled,
       canExport: canExport
     }
   }
 
-  setCurrentState(viewState){
-    this.currentResultsView = viewState;
+  setCurrentView(view: ResultsView){
+    this.currentResultsView = view;
   }
 
   getGradeIdx(gradeCode: string): number {
     return GradeCode.getIndex(gradeCode);
-  }
-
-  getPointRowStyleClass(index: number) {
-    return index == 0 ? 'level-down' : '';
   }
 
   toggleSession(session) {
@@ -275,6 +269,6 @@ interface ResultsView {
 }
 
 export interface ExportResults {
-  exportToCsv();
-  hasDataToExport();
+  exportToCsv(): void;
+  hasDataToExport(): boolean;
 }
