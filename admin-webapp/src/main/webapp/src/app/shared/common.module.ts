@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { SubjectPipe } from "./subject.pipe";
 import { HttpModule } from "@angular/http";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
@@ -17,9 +16,6 @@ import {
 } from "@sbac/rdw-reporting-common-ngx";
 
 @NgModule({
-  declarations: [
-    SubjectPipe
-  ],
   imports: [
     Angulartics2Module.forChild(),
     BrowserModule,
@@ -38,7 +34,6 @@ import {
     })
   ],
   exports: [
-    SubjectPipe,
     TranslateModule,
     RdwDataTableModule,
     RdwFormatModule,
