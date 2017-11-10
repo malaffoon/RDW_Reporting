@@ -1,23 +1,19 @@
 import { NgModule } from "@angular/core";
-import { Http, HttpModule } from "@angular/http";
+import { HttpModule } from "@angular/http";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { Angulartics2Module } from 'angulartics2';
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import {
   AuthenticationServiceAuthenticationExpiredRoute,
   RdwDataModule,
   RdwDataTableModule,
   RdwFormatModule,
-  RdwSecurityModule
+  RdwI18nModule,
+  RdwSecurityModule,
+  RdwTranslateLoader
 } from "@sbac/rdw-reporting-common-ngx";
-
-// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: Http) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 @NgModule({
   imports: [
@@ -28,12 +24,12 @@ export function HttpLoaderFactory(http: Http) {
     RdwDataModule.forRoot(),
     RdwDataTableModule,
     RdwFormatModule,
+    RdwI18nModule,
     RdwSecurityModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [ Http ]
+        useClass: RdwTranslateLoader
       }
     })
   ],
