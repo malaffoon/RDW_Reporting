@@ -56,7 +56,19 @@ export class SchoolAssessmentService implements AssessmentProvider {
       });
   }
 
-  getAssessmentItems(assessmentId: number) {
+  getAssessmentItems(assessmentId: number, multipleChoiceMultipleSelectItems?: boolean) {
+    if (multipleChoiceMultipleSelectItems) {
+      return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/examitems`, {
+        params: {
+          types: [ 'MC', 'MS' ],
+          schoolYear: this.schoolYear.toString()
+        }
+      })
+        .catch(ResponseUtils.badResponseToNull)
+        .map(x => {
+          return this.mapper.mapAssessmentItemsFromApi(x);
+        });
+    }
     return this.dataService.get(`/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/examitems`, { search: this.getSchoolYearParams(this.schoolYear) })
       .catch(ResponseUtils.badResponseToNull)
       .map(x => {
