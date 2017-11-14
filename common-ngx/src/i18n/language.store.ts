@@ -25,11 +25,11 @@ export class LanguageStore {
    *
    * @returns {string[]}
    */
-  get languages(): string[] {
+  get availableLanguages(): string[] {
     return this.translateService.langs;
   }
 
-  set languages(values: string[]) {
+  set availableLanguages(values: string[]) {
     this.translateService.langs = values;
   }
 
@@ -38,12 +38,12 @@ export class LanguageStore {
    *
    * @returns {string}
    */
-  get language(): string {
+  get currentLanguage(): string {
     return this.translateService.currentLang;
   }
 
-  set language(value: string) {
-    if (this.language !== value) {
+  set currentLanguage(value: string) {
+    if (this.currentLanguage !== value) {
       this.translateService.use(value);
       this.userPreferenceService.setLanguage(value);
       this.languageChange.emit(value);

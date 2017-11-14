@@ -38,6 +38,11 @@ export class UserPreferenceService {
   /**
    * Gets the parent domain of the current domain so as to share the preference across domains.
    *
+   * WARNING:
+   * This is intended to enable sharing of the preference across admin and reporting webapp domains
+   * Supports domain naming like: admin.xyz.com, reporting.xyz.com
+   * Does not support naming like: staging.admin.xyz.com, staging.reporting.xyz.com
+   *
    * @returns {string}
    */
   private getParentDomain(): string {

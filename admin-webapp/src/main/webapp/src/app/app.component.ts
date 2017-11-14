@@ -1,5 +1,5 @@
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { UserService } from "./user/user.service";
 import { User } from "./user/model/user.model";
 import { Router } from "@angular/router";
@@ -11,7 +11,7 @@ const AdminPermissions = [ 'GROUP_WRITE' ];
   selector: 'app-component',
   templateUrl: './app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   private _user: User;
 
@@ -23,10 +23,9 @@ export class AppComponent {
   Even though the angulartics2GoogleAnalytics variable is not explicitly used, without it analytics data is not sent to the service
    */
   constructor(private _userService: UserService,
-              private languageStore: LanguageStore,
+              public languageStore: LanguageStore,
               private router: Router,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
-
   }
 
   ngOnInit() {

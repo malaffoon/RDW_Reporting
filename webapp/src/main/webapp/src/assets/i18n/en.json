@@ -51,20 +51,6 @@
         "interpretive-guide-subtitle": "Interim Assessments"
       }
     },
-    "locale": {
-      "en": {
-        "native": "English",
-        "default": "English"
-      },
-      "es": {
-        "native": "Español",
-        "default": "Spanish"
-      },
-      "vi": {
-        "native": "Tiếng Việt",
-        "default": "Vietnamese"
-      }
-    },
     "assessmentTypes": {
       "1": {
         "name": "Interim Comprehensive Assessment",
@@ -488,7 +474,14 @@
         },
         "report-name": "Report Name",
         "assessment-type": "Assessment Type",
-        "language": "Report Language",
+        "language": {
+          "header": "Report Language",
+          "options": {
+            "en": "English",
+            "es": "Spanish",
+            "vi": "Vietnamese"
+          }
+        },
         "subject": "Subject",
         "school-year": "School Year",
         "accommodations": {
