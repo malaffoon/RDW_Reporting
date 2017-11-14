@@ -534,7 +534,7 @@
       "title": "Custom Exports",
       "form": {
         "organization": {
-          "label": "Search for a District, School or Organization",
+          "label": "Search for an Organization",
           "placeholder": "Start typing an organization name",
           "add": "Add",
           "select-all": "Select All",
