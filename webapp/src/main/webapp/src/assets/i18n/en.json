@@ -567,6 +567,7 @@
         "student-last-name": "LastOrSurname",
         "submit-date-time": "SubmitDateTime",
         "school": "SchoolName",
+        "schoolYear":"SchoolYear",
         "assessment-session-id": "TestSessionId",
         "assessment-type": "AssessmentType",
         "assessment-subtype": "AssessmentSubType",
