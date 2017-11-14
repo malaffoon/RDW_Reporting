@@ -31,19 +31,21 @@ export class AppComponent {
 
   ngOnInit() {
     this._userService.getCurrentUser().subscribe(user => {
-
-      this._user = user;
-      let userHasAccess = user.permissions.some(permission => AdminPermissions.indexOf(permission) !== -1);
-
+      const userHasAccess = user.permissions.some(permission => AdminPermissions.indexOf(permission) !== -1);
       if (!userHasAccess) {
         this.router.navigate([ 'access-denied' ]);
       }
-
-      this.languageStore.configuredLanguages = ['es', 'vi'];
-
-      if (window[ 'ga' ] && user.configuration && user.configuration.analyticsTrackingId) {
-        window[ 'ga' ]('create', user.configuration.analyticsTrackingId, 'auto');
-      }
+      this._user = user;
+      this.languageStore.configuredLanguages = user.configuration.uiLanguages;
+      this.initializeAnalytics(user.configuration.analyticsTrackingId);
     });
   }
+
+  private initializeAnalytics(trackingId: string): void {
+    const googleAnalyticsProvider: Function = window[ 'ga' ];
+    if (googleAnalyticsProvider && trackingId) {
+      googleAnalyticsProvider('create', trackingId, 'auto');
+    }
+  }
+
 }

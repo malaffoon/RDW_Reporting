@@ -29,23 +29,26 @@ export class AppComponent {
   }
 
   ngOnInit() {
-
     this.userService.getCurrentUser().subscribe(user => {
       if (!isNullOrUndefined(user)) {
-
         this._user = user;
-
-        this.languageStore.configuredLanguages = [ 'es', 'vi' ];
-
-        if (window[ 'ga' ] && user.configuration && user.configuration.analyticsTrackingId) {
-          window[ 'ga' ]('create', user.configuration.analyticsTrackingId, 'auto');
-        }
-
+        this.languageStore.configuredLanguages = user.configuration.uiLanguages;
+        this.initializeAnalytics(user.configuration.analyticsTrackingId);
       } else {
         this.router.navigate([ 'error' ]);
       }
     });
+    this.initializeNavigationScrollReset();
+  }
 
+  private initializeAnalytics(trackingId: string): void {
+    const googleAnalyticsProvider: Function = window[ 'ga' ];
+    if (googleAnalyticsProvider && trackingId) {
+      googleAnalyticsProvider('create', trackingId, 'auto');
+    }
+  }
+
+  private initializeNavigationScrollReset(): void {
 
     // by listening to the PopStateEvent we can track the back button
     this.location.subscribe((event: PopStateEvent) => {
