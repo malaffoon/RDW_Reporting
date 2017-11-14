@@ -18,7 +18,8 @@
     "paths": {
       "@angular/*": [ "../node_modules/@angular/*" ],
       "@ngx-translate/*": [ "../node_modules/@ngx-translate/*" ],
-      "rxjs/*": [ "../node_modules/rxjs/*" ]
+      "rxjs/*": [ "../node_modules/rxjs/*" ],
+      "ngx-cookie/*": [ "../node_modules/ngx-cookie/*" ]
     }
   }
 }
