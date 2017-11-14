@@ -512,10 +512,10 @@
         }
       },
       "reportType": {
-        "Student": "Student",
-        "SchoolGrade": "School/Grade",
-        "Group": "Group",
-        "ExamExport": "Exam Export"
+        "Student": "Student Report",
+        "SchoolGrade": "School/Grade Report",
+        "Group": "Group Report",
+        "ExamExport": "Custom Export"
       },
       "status": {
         "PENDING": "Pending",
@@ -533,8 +533,7 @@
       "remove-district": "Remove District"
     },
     "organization-export": {
-      "link": "Custom Exports",
-      "heading": "Customized Export",
+      "title": "Custom Exports",
       "form": {
         "organization": {
           "label": "Search for a District, School or Institution",
