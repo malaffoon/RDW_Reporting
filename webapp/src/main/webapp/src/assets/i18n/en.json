@@ -527,8 +527,8 @@
       }
     },
     "organization-tree": {
-      "header": "Selected Institutions",
-      "subheader-empty": "No institutions selected",
+      "header": "Selected Organizations",
+      "subheader-empty": "No organizations selected",
       "subheader-not-empty": "Click an item to remove it from the list",
       "remove-district": "Remove District"
     },
@@ -536,8 +536,8 @@
       "title": "Custom Exports",
       "form": {
         "organization": {
-          "label": "Search for a District, School or Institution",
-          "placeholder": "Start typing an institution name",
+          "label": "Search for a District, School or Organization",
+          "placeholder": "Start typing an organization name",
           "add": "Add",
           "select-all": "Select All",
           "type": {
