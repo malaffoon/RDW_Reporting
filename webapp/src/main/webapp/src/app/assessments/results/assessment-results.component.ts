@@ -124,8 +124,8 @@ export class AssessmentResultsComponent implements OnInit {
     return this._assessmentExam;
   }
 
-  get hasItemLevelData(): boolean {
-    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
+  get displayItemLevelData(): boolean {
+    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear) && !this._assessmentExam.assessment.isSummative;
   }
 
   get showStudentResults(): boolean {
@@ -163,7 +163,9 @@ export class AssessmentResultsComponent implements OnInit {
   sessions = [];
   statistics: ExamStatistics;
   currentResultsView: ResultsView;
-  viewStateOptions = [];
+  resultsByStudentView: ResultsView;
+  resultsByItemView: ResultsView;
+  distractorAnalysisView: ResultsView;
 
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
@@ -175,18 +177,14 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.viewStateOptions = this.getViewStateOptions();
-    this.setCurrentView(this.viewStateOptions[0]);
+    this.setViews();
+    this.setCurrentView(this.resultsByStudentView);
   }
 
-  getViewStateOptions() {
-    let states =[];
-
-    states.push(this.getResultViewState(ResultsViewState.ByStudent, true, false));
-    states.push(this.getResultViewState(ResultsViewState.ByItem, this.hasItemLevelData, true));
-    states.push(this.getResultViewState(ResultsViewState.DistractorAnalysis, this.hasItemLevelData, true));
-
-    return states;
+  setViews(): void {
+    this.resultsByStudentView = this.getResultViewState(ResultsViewState.ByStudent, true, false);
+    this.resultsByItemView = this.getResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true)
+    this.distractorAnalysisView = this.getResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true);
   }
 
   getResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean): ResultsView {
