@@ -76,11 +76,11 @@ task buildFe(type: NpmTask) {
     outputs.dir('build/resources/static')
     dependsOn npm_install
     args = ['run', 'build']
-}
-
-task moveFeBuild(dependsOn: buildFe) {
-    copy { from "src/main/webapp/dist" into "src/main/resources/static" }
-    delete "src/main/webapp/dist"
+    // move build from dist to static resources
+    doLast {
+        copy { from "src/main/webapp/dist" into "src/main/resources/static" }
+        delete "src/main/webapp/dist"
+    }
 }
 
 task testFe(type: NpmTask) {
