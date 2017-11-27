@@ -1,6 +1,6 @@
 import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { Http, RequestOptions, RequestOptionsArgs, Response, ResponseOptions } from "@angular/http";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import Spy = jasmine.Spy;
 
 describe('RdwTranslateLoader', () => {
