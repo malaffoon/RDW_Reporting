@@ -1,7 +1,13 @@
 <!-- Breadcrumb -->
-<div [hidden]="breadcrumbs.length <= 1">
+<div [hidden]="breadcrumbs.length == 0">
   <div class="container">
     <ul class="breadcrumb">
+      <li>
+        <a routerLink="/">
+          <i class="fa fa-home"></i>
+          <span class="sr-only">{{ 'labels.home.name' | translate }}</span>
+        </a>
+      </li>
       <li *ngFor="let crumb of breadcrumbs; let last = last;" [ngClass]="{'active': last }">
         <a *ngIf="!last" [routerLink]="crumb.commands">
           {{ crumb.requiresTranslate? (crumb.label | translate:crumb.translateParams) : crumb.label }}
