@@ -62,7 +62,6 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url 'https://mvnrepository.com/artifact/com.healthmarketscience.sqlbuilder/sqlbuilder' }
     }
 
     dependencyManagement {
