@@ -20,12 +20,12 @@ sqlbuilder:
           join: >-
               JOIN ica_asmt a ON a.id = fe.asmt_id
 
-          conditions: >-
+          where: >-
               fe.school_year IN (:school_years) AND
               fe.asmt_grade_id IN (:asmt_grade_ids) AND
               a.grade_id IN (:asmt_grade_ids)
 
-          grouping: >-
+          groupBy: >-
               fe.school_year,
               fe.asmt_grade_id,
               a.subject_id
@@ -47,12 +47,12 @@ sqlbuilder:
                 join: >-
                     JOIN school sch ON sch.id = fe.school_id
 
-                grouping: >-
+                groupBy: >-
                     sch.district_id
 
       # ------------ achievement level by selected district(s)  -----------------------------------------------------------
             districts:
               clauses:
-                conditions: >-
+                where: >-
                    district_id in (:district_ids)
 
