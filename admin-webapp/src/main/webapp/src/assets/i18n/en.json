@@ -101,6 +101,39 @@
     "instructional-resource": {
       "title": "Manage Instructional Resources"
     },
+    "embargo": {
+      "title": "Manage Embargoes",
+      "toggle": {
+        "true": "On",
+        "false": "Off"
+      },
+      "state": {
+        "header": "State Embargo"
+      },
+      "district": {
+        "header": "District Embargoes"
+
+      },
+      "table": {
+        "column": {
+          "name": {
+            "header": "District Name"
+          },
+          "individualEmbargoed": {
+            "header": "Individual Embargo"
+          },
+          "aggregateEmbargoed": {
+            "header": "Aggregate Embargo"
+          },
+          "ELA": {
+            "header": "ELA"
+          },
+          "Math": {
+            "header": "Math"
+          }
+        }
+      }
+    },
     "menu": "Menu",
     "more-info": "More Information",
     "personName": "{{lastName}}, {{firstName}}",

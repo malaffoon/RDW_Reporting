@@ -1,0 +1,114 @@
+
+<h3 class="blue-dark mb-md">{{'labels.embargo.title' | translate}}</h3>
+
+<div class="well" *ngIf="embargoes && embargoes.stateEmbargo">
+  <div class="well-body">
+    <h4 class="mb-sm">{{'labels.embargo.state.header' | translate}}</h4>
+    <!--<div class="form-group row">-->
+      <!--<div class="col-md-3">-->
+        <!--<label>{{'labels.embargo.district.table.column.individualEmbargoed.header' | translate}}</label>-->
+        <!--<div class="btn-group btn-group-sm toggle-group btn-block">-->
+          <!--<label class="btn btn-primary" [(ngModel)]="embargoes.stateEmbargo.individualEmbargoed" [btnRadio]="true">{{'labels.embargo.toggle.true' | translate}}</label>-->
+          <!--<label class="btn btn-primary" [(ngModel)]="embargoes.stateEmbargo.individualEmbargoed" [btnRadio]="false">{{'labels.embargo.toggle.false' | translate}}</label>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="col-md-3">-->
+        <!--<label>{{'labels.embargo.district.table.column.aggregateEmbargoed.header' | translate}}</label>-->
+        <!--<div class="btn-group btn-group-sm toggle-group btn-block">-->
+          <!--<label class="btn btn-primary" [(ngModel)]="embargoes.stateEmbargo.aggregateEmbargoed" [btnRadio]="true">{{'labels.embargo.toggle.true' | translate}}</label>-->
+          <!--<label class="btn btn-primary" [(ngModel)]="embargoes.stateEmbargo.aggregateEmbargoed" [btnRadio]="false">{{'labels.embargo.toggle.false' | translate}}</label>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!-- probably shouldn't even show column if individual/aggregate features are disabled -->
+    <p-dataTable #datatable
+                 [value]="[embargoes.stateEmbargo]"
+                 sortField="organization.name"
+                 tableStyleClass="table table-striped table-hover"
+                 [tableStyle]="{'table-layout':'auto'}" >
+      <p-column field="name" header="{{'labels.embargo.table.column.name.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          {{embargo.organization.name}}
+        </ng-template>
+      </p-column>
+
+      <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.ELA.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          {{embargo.examCountsBySubject.ELA | number}}
+        </ng-template>
+      </p-column>
+      <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.Math.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          {{embargo.examCountsBySubject.Math | number}}
+        </ng-template>
+      </p-column>
+
+      <p-column field="individualEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.individualEmbargoed.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          <div class="btn-group btn-group-xs toggle-group">
+            <label class="btn btn-primary" [(ngModel)]="embargo.individualEmbargoed" (ngModelChange)="change($event)" [btnRadio]="true">{{'labels.embargo.toggle.true' | translate}}</label>
+            <label class="btn btn-primary" [(ngModel)]="embargo.individualEmbargoed" (ngModelChange)="change($event)" [btnRadio]="false">{{'labels.embargo.toggle.false' | translate}}</label>
+          </div>
+        </ng-template>
+      </p-column>
+      <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.aggregateEmbargoed.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          <div class="btn-group btn-group-xs toggle-group">
+            <label class="btn btn-primary" [(ngModel)]="embargo.aggregateEmbargoed" [btnRadio]="true">{{'labels.embargo.toggle.true' | translate}}</label>
+            <label class="btn btn-primary" [(ngModel)]="embargo.aggregateEmbargoed" [btnRadio]="false">{{'labels.embargo.toggle.false' | translate}}</label>
+          </div>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
+</div>
+
+<div class="well" *ngIf="embargoes && embargoes.districtEmbargoes">
+  <div class="well-body">
+    <h4 class="mb-sm">{{'labels.embargo.district.header' | translate}}</h4>
+
+    <!-- probably shouldn't even show column if individual/aggregate features are disabled -->
+    <p-dataTable #datatable
+                 [value]="embargoes.districtEmbargoes"
+                 sortField="organization.name"
+                 tableStyleClass="table table-striped table-hover"
+                 [tableStyle]="{'table-layout':'auto'}" >
+      <p-column field="name" header="{{'labels.embargo.table.column.name.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          {{embargo.organization.name}}
+        </ng-template>
+      </p-column>
+
+      <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.ELA.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          {{embargo.examCountsBySubject.ELA | number}}
+        </ng-template>
+      </p-column>
+      <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.Math.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          {{embargo.examCountsBySubject.Math | number}}
+        </ng-template>
+      </p-column>
+
+      <p-column field="individualEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.individualEmbargoed.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          <div class="btn-group btn-group-xs toggle-group">
+            <label class="btn btn-primary" [ngClass]="{disabled: !embargoes.stateEmbargo.individualEmbargoed}" [(ngModel)]="embargo.individualEmbargoed" [btnRadio]="true">{{'labels.embargo.toggle.true' | translate}}</label>
+            <label class="btn btn-primary" [ngClass]="{disabled: !embargoes.stateEmbargo.individualEmbargoed}" [(ngModel)]="embargo.individualEmbargoed" [btnRadio]="false">{{'labels.embargo.toggle.false' | translate}}</label>
+          </div>
+        </ng-template>
+      </p-column>
+      <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.aggregateEmbargoed.header' | translate }}" [sortable]="true">
+        <ng-template let-embargo="rowData" pTemplate="body">
+          <div class="btn-group btn-group-xs toggle-group disabled">
+            <label class="btn btn-primary" [ngClass]="{disabled: !embargoes.stateEmbargo.aggregateEmbargoed}" [(ngModel)]="embargo.aggregateEmbargoed" [btnRadio]="true">{{'labels.embargo.toggle.true' | translate}}</label>
+            <label class="btn btn-primary" [ngClass]="{disabled: !embargoes.stateEmbargo.aggregateEmbargoed}" [(ngModel)]="embargo.aggregateEmbargoed" [btnRadio]="false">{{'labels.embargo.toggle.false' | translate}}</label>
+          </div>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+
+
+  </div>
+</div>

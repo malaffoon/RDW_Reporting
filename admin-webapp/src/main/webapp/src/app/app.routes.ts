@@ -11,6 +11,8 @@ import { FileFormatComponent } from "./groups/import/fileformat/file-format.comp
 import { GroupImportDeactivateGuard } from "./groups/import/group-import.deactivate";
 import { GroupImportComponent } from "./groups/import/group-import.component";
 import { GroupsComponent } from "./groups/groups.component";
+import { EmbargoComponent } from "./embargo/embargo.component";
+import { EmbargoSettingsResolve } from "./embargo/embargo-settings.resolve";
 
 export const routes: Routes = [
   {
@@ -99,7 +101,24 @@ export const routes: Routes = [
                 ]
               },
             ]
+          },
+          {
+            path: 'embargoes',
+            pathMatch: 'prefix',
+            data: {
+              breadcrumb: { translate: 'labels.embargo.title' },
+              permissions: [ 'EMBARGO_WRITE' ]
+            },
+            children: [
+              {
+                path: '',
+                pathMatch: 'prefix',
+                component: EmbargoComponent,
+                resolve: { embargoes: EmbargoSettingsResolve }
+              }
+            ]
           }
+
         ]
       },
       {
