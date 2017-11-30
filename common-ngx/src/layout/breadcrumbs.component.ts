@@ -50,7 +50,7 @@ export interface Breadcrumb {
         <ul class="breadcrumb">
           <li>
             <a routerLink="/">
-              <i class="fa fa-home"></i> <span class="sr-only">{{ 'labels.home.name' | translate }}</span>
+              <i class="fa fa-home"></i> <span class="sr-only">{{ 'common-ngx.breadcrumbs.home-sr' | translate }}</span>
             </a>
           </li>
           <li *ngFor="let crumb of breadcrumbs; let last = last;" [ngClass]="{'active': last }">
@@ -154,7 +154,7 @@ export class Breadcrumbs implements OnInit {
       .concat()
       .reverse()
       .map(breadcrumb => breadcrumb.text)
-      .concat(this.translateService.instant('common-ngx.application.window-title'))
+      .concat(this.translateService.instant('common-ngx.breadcrumbs.window-title'))
       .join(BreadCrumbsTitleDelimiter);
   }
 
