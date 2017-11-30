@@ -123,3 +123,7 @@ sql:
           OR
           (s.id IS NOT NULL AND (1=:statewide OR sch.district_group_id IN (:district_group_ids) OR sch.district_id IN (:district_ids) OR sch.school_group_id IN (:school_group_ids) OR sch.id IN (:school_ids)))
         LIMIT 1
+
+  snippet:
+    basicPermission: >-
+        (1=:statewide or sc.district_group_id in (:district_group_ids) or sc.district_id in (:district_ids) or sc.school_group_id in (:school_group_ids) or sc.id in (:school_ids))
