@@ -48,8 +48,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=2
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.unknownScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.unknownScopePermission}
       order by e.completed_at desc
 
     findAllIabsByStudentIdsAndQueryParamsIndividualPermissions: >-
@@ -100,8 +100,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=2
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.individualScopePermission}
       order by e.completed_at desc
 
     findAllIabsByStudentIdsAndQueryParamsGroupPermissions: >-
@@ -156,8 +156,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=2
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.individualScopePermission}
       order by e.completed_at desc
 
     findAllIcasByStudentIdsAndQueryParamsUnknownPermissions: >-
@@ -228,8 +228,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=1
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.unknownScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.unknownScopePermission}
 
       order by e.completed_at asc
 
@@ -301,8 +301,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=1
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.individualScopePermission}
       order by e.completed_at asc
 
     findAllIcasByStudentIdsAndQueryParamsGroupPermissions: >-
@@ -377,8 +377,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=1
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.individualScopePermission}
       order by e.completed_at asc
 
   export:
@@ -623,7 +623,7 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
         and
         ( # This query can run from the context of both GROUP_PII_READ and INDIVIDUAL_PII_READ, so need to evaluate both.
           # Individual permissions test
@@ -676,8 +676,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.individualScopePermission}
       group by st.id
 
     findByExamQueryParamsGroupPermissions: >-
@@ -701,11 +701,11 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
-        and ${sql.reportingProcessor.snippet.schoolScopePermission}
-        and ${sql.reportingProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolScopePermission}
+        and ${sql.reportProcessor.snippet.individualScopePermission}
       group by st.id
 
-  reportingProcessor:
+  reportProcessor:
     snippet:
       unknownScopePermission: >-
           ( # This query can run from the context of both GROUP_PII_READ and INDIVIDUAL_PII_READ, so need to evaluate both.
