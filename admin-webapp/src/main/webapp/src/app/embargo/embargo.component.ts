@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
-import { EmbargoService } from "./embargo.service";
 import { ActivatedRoute } from "@angular/router";
-import { Embargo, EmbargoSettings } from "./embargo-settings";
+import { EmbargoSettings } from "./embargo-settings";
 
 @Component({
   selector: 'embargo',
@@ -11,8 +10,7 @@ export class EmbargoComponent {
 
   private _embargoes: EmbargoSettings;
 
-  constructor(private route: ActivatedRoute,
-              private embargoService: EmbargoService){
+  constructor(private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -21,14 +19,6 @@ export class EmbargoComponent {
 
   get embargoes(): EmbargoSettings {
     return this._embargoes;
-  }
-
-  change(event: any): void {
-    console.log('change', event);
-  }
-
-  toggleEmbargo(embargo: Embargo): void {
-    this.embargoService.toggleEmbargo(embargo);
   }
 
 }

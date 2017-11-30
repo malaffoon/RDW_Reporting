@@ -82,8 +82,4 @@ export class EmbargoService {
     });
   }
 
-  toggleEmbargo(embargo: Embargo): Observable<void> {
-    return null;
-  }
-
 }

@@ -117,7 +117,8 @@
       "table": {
         "column": {
           "name": {
-            "header": "District Name"
+            "state-header": "State",
+            "district-header": "District"
           },
           "individualEmbargoed": {
             "header": "Individual Embargo"

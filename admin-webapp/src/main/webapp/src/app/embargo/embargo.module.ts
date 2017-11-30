@@ -7,10 +7,14 @@ import { EmbargoComponent } from "./embargo.component";
 import { EmbargoSettingsResolve } from "./embargo-settings.resolve";
 import { DataTableModule } from "primeng/primeng";
 import { ButtonsModule } from "ngx-bootstrap";
+import { Toggle } from "./toggle.component";
+import { EmbargoTable } from "./embargo-table.component";
 
 @NgModule({
   declarations: [
-    EmbargoComponent
+    EmbargoComponent,
+    EmbargoTable,
+    Toggle
   ],
   imports: [
     BrowserModule,
