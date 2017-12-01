@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: 'footer-component',
+  selector: 'sb-footer',
   template: `
     <footer class="mt-md mb-md">
       <div class="container">
@@ -10,5 +10,5 @@ import { Component } from "@angular/core";
     </footer>
   `
 })
-export class FooterComponent {
+export class SbFooter {
 }

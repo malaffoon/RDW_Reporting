@@ -1,21 +1,19 @@
 import { NgModule } from "@angular/core";
-import { Breadcrumbs } from "./breadcrumbs.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
-import { FooterComponent } from "./footer.component";
-import { NavigationBarComponent } from "./navigation-bar.component";
 import { RdwI18nModule } from "../i18n/rdw-i18n.module";
-import { HeaderComponent } from "./header.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
 import { BsDropdownModule } from "ngx-bootstrap";
+import { SbBreadcrumbs } from "./sb-breadcrumbs.component";
+import { SbHeader } from "./sb-header.component";
+import { SbFooter } from "./sb-footer.component";
 
 @NgModule({
   declarations: [
-    Breadcrumbs,
-    NavigationBarComponent,
-    HeaderComponent,
-    FooterComponent
+    SbBreadcrumbs,
+    SbHeader,
+    SbFooter
   ],
   imports: [
     BrowserModule,
@@ -26,10 +24,9 @@ import { BsDropdownModule } from "ngx-bootstrap";
     BsDropdownModule
   ],
   exports: [
-    Breadcrumbs,
-    NavigationBarComponent,
-    HeaderComponent,
-    FooterComponent
+    SbBreadcrumbs,
+    SbHeader,
+    SbFooter
   ]
 })
 export class RdwLayoutModule {

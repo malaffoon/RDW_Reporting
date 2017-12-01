@@ -43,7 +43,7 @@ export interface Breadcrumb {
 }
 
 @Component({
-  selector: 'breadcrumbs',
+  selector: 'sb-breadcrumbs',
   template: `
     <div [hidden]="breadcrumbs.length == 0">
       <div class="container">
@@ -62,7 +62,7 @@ export interface Breadcrumb {
     </div>
   `
 })
-export class Breadcrumbs implements OnInit {
+export class SbBreadcrumbs implements OnInit {
 
   private _breadcrumbs: Breadcrumb[] = [];
 

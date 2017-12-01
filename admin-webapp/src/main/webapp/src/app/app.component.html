@@ -1,14 +1,12 @@
-<header-component>
-  <navigation-bar [user]="user" [homeUrl]="user ? user.configuration.homeUrl : '/'">
-    <li class="navbar-link"><a href="#">{{'labels.navigation.user-guide' | translate}}</a></li>
-  </navigation-bar>
-</header-component>
-
-<breadcrumbs></breadcrumbs>
+<sb-header [user]="user" [homeUrl]="user ? user.configuration.homeUrl : '/'">
+  <li class="navbar-link">
+    <a href="#">{{'labels.navigation.user-guide' | translate}}</a>
+  </li>
+</sb-header>
 
 <div class="container">
   <router-outlet></router-outlet>
 </div>
 
-<footer-component></footer-component>
+<sb-footer></sb-footer>
 
