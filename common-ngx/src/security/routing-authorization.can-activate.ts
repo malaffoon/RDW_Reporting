@@ -9,7 +9,7 @@ export const AccessDeniedRoute = new InjectionToken<string>('AccessDeniedRoute')
  * Allows access to a route as long as the permissions are not empty.
  */
 @Injectable()
-export class RoutingHasAnyPermissionCanActivate implements CanActivate {
+export class RoutingAuthorizationCanActivate implements CanActivate {
 
   constructor(@Inject(AccessDeniedRoute) private accessDeniedRoute: string,
               private permissionService: PermissionService,

@@ -11,7 +11,8 @@ import { APP_BASE_HREF } from "@angular/common";
 import { AuthorizationService } from "./authorization.service";
 import { AuthorizationDirective } from "./authorization.directive";
 import { PermissionService } from "./permission.service";
-import { AccessDeniedRoute } from "./routing-has-any-permission.can-activate";
+import { AccessDeniedRoute, RoutingAuthorizationCanActivate } from "./routing-authorization.can-activate";
+import { AuthorizationCanActivate } from "./authorization.can-activate";
 
 /**
  * Common security module.
@@ -44,6 +45,8 @@ import { AccessDeniedRoute } from "./routing-has-any-permission.can-activate";
     { provide: AccessDeniedRoute, useValue: 'access-denied' },
     AuthenticationService,
     AuthorizationService,
+    AuthorizationCanActivate,
+    RoutingAuthorizationCanActivate,
     PermissionService
   ]
 })

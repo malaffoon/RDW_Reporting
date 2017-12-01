@@ -3,9 +3,12 @@ import { AuthorizationService } from "./authorization.service";
 
 /**
  * Structural directive that conditionally renders an element if the user has permission to view it.
- * Example usage: <div *hasAnyPermission="['GROUP_READ', 'GROUP_WRITE']"></div>
+ *
+ * Example usages:
+ * <div *hasPermission="'GROUP_WRITE'"></div>
+ * <div *hasAnyPermission="['GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE']"></div>
  */
-@Directive({ selector: '[sbAuthorize],[hasAnyPermission]' })
+@Directive({ selector: '[sbAuthorize],[hasPermission],[hasAnyPermission]' })
 export class AuthorizationDirective {
 
   private displayed: boolean;
@@ -19,8 +22,21 @@ export class AuthorizationDirective {
    * @deprecated use hasAnyPermission
    */
   @Input()
-  set sbAuthorize(permissions: string[]) {
+  set sbAuthorize(permissions: any) {
     this.hasAnyPermission = permissions;
+  }
+
+  /**
+   * Will display the view if the user has the provided permission
+   *
+   * @param {string} permission
+   */
+  @Input()
+  set hasPermission(permission: string) {
+    if (!permission) {
+      throw new Error('Directive "hasPermission" permission argument must not be null or undefined');
+    }
+    this.update([ permission ]);
   }
 
   /**
@@ -30,11 +46,13 @@ export class AuthorizationDirective {
    */
   @Input()
   set hasAnyPermission(permissions: string[]) {
-
     if (!permissions || permissions.length == 0) {
-      throw new Error('Specify at least one permission to authorize against.');
+      throw new Error('Directive "hasAnyPermission" argument must not be null, undefined or empty');
     }
+    this.update(permissions);
+  }
 
+  private update(permissions: string[]): void {
     this.authorizationService.hasAnyPermission(permissions)
       .subscribe(hasPermission => {
         if (hasPermission && !this.displayed) {

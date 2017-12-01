@@ -7,7 +7,7 @@ import { AuthorizationService } from "./authorization.service";
  * Allows access to a route if a user has at least one of the permissions in ActivatedRouteSnapshot.data.permissions.
  */
 @Injectable()
-export class HasAnyPermissionCanActivate implements CanActivate {
+export class AuthorizationCanActivate implements CanActivate {
 
   constructor(private authorizationService: AuthorizationService) {
   }
