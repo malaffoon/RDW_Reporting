@@ -1,5 +1,8 @@
 {
   "common-ngx": {
+    "application": {
+      "window-title": "Smarter Balanced | Admin"
+    },
     "session-expired": {
       "title": "Authentication Expired",
       "message": "Click Ok to re-authenticate.",
@@ -13,7 +16,8 @@
   },
   "welcome": "Welcome {{firstName}} {{lastName}}",
   "application": {
-    "title": "Application Administration"
+    "title": "Application Administration",
+    "footer": "\u00A9 The Regents of the University of California \u2013 Smarter Balanced Assessment Consortium"
   },
   "messages": {
     "no-results-found": "No results found.",
@@ -94,8 +98,11 @@
         }
       },
       "history": {
-        "title": "Upload History"
+        "title": "View Uploads"
       }
+    },
+    "instructional-resource": {
+      "title": "Manage Instructional Resources"
     },
     "menu": "Menu",
     "more-info": "More Information",

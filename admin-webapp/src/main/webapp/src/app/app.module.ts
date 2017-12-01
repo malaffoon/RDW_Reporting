@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
-import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
 import { BsDropdownModule, TabsModule } from "ngx-bootstrap";
 import { CommonModule } from "./shared/common.module";
 import { UserModule } from "./user/user.module";
@@ -15,18 +14,21 @@ import { GroupImportModule } from "./groups/import/group-import.module";
 import { GroupsModule } from "./groups/groups.module";
 import { FileFormatModule } from "./groups/import/fileformat/file-format.module";
 import { AccessDeniedComponent } from "./access-denied/access-denied.component";
+import { InstructionalResourceModule } from "./instructional-resource/instructional-resource.module";
+import { HomeComponent } from "./home/home.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    BreadcrumbsComponent,
-    AccessDeniedComponent
+    AccessDeniedComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     CommonModule,
     GroupImportModule,
     GroupsModule,
+    InstructionalResourceModule,
     FileFormatModule,
     RouterModule.forRoot(routes),
     UserModule,
@@ -37,8 +39,7 @@ import { AccessDeniedComponent } from "./access-denied/access-denied.component";
     PopoverModule.forRoot(),
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ])
   ],
-  providers: [
-  ],
+  providers: [],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {
