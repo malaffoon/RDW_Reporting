@@ -3,38 +3,39 @@
              sortField="organization.name"
              tableStyleClass="table table-striped table-hover"
              [tableStyle]="{'table-layout':'auto'}" >
-  <p-column field="organizationName" header="{{organizationNameHeader}}" [sortable]="true">
+  <p-column field="organizationName" header="{{organizationNameHeader}}" [sortable]="sortable">
     <ng-template let-embargo="rowData" pTemplate="body">
       {{embargo.organization.name}}
     </ng-template>
   </p-column>
 
   <!-- would like these subject columns to be part of a forEach of sorted keys to allow for variable number of subjects -->
-  <p-column field="examCountsBySubjectELA" styleClass="text-right" header="{{'labels.embargo.table.column.ELA.header' | translate }}" [sortable]="true">
+  <p-column field="examCountsBySubjectELA" styleClass="text-right" header="{{'labels.embargo.table.column.ELA.header' | translate }}" [sortable]="sortable">
     <ng-template let-embargo="rowData" pTemplate="body">
       {{embargo.examCountsBySubject.ELA | number}}
     </ng-template>
   </p-column>
-  <p-column field="examCountsBySubjectMath" styleClass="text-right" header="{{'labels.embargo.table.column.Math.header' | translate }}" [sortable]="true">
+  <p-column field="examCountsBySubjectMath" styleClass="text-right" header="{{'labels.embargo.table.column.Math.header' | translate }}" [sortable]="sortable">
     <ng-template let-embargo="rowData" pTemplate="body">
       {{embargo.examCountsBySubject.Math | number}}
     </ng-template>
   </p-column>
 
-  <p-column field="individualEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.individualEmbargoed.header' | translate }}" [sortable]="true">
+  <p-column field="individualEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.individualEmbargoed.header' | translate }}" [sortable]="sortable">
     <ng-template let-embargo="rowData" pTemplate="body">
-      <toggle [(ngModel)]="embargo.individualEmbargoed" [disabled]="individualDisabled" [options]="[
+      <toggle [(ngModel)]="embargo.individualEmbargoed" [disabled]="embargo.readonly" [options]="[
         { value: true, text: 'labels.embargo.toggle.true' | translate },
         { value: false, text: 'labels.embargo.toggle.false' | translate }
       ]"></toggle>
     </ng-template>
   </p-column>
-  <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.aggregateEmbargoed.header' | translate }}" [sortable]="true">
+  <p-column field="aggregateEmbargoed" styleClass="text-right" header="{{'labels.embargo.table.column.aggregateEmbargoed.header' | translate }}" [sortable]="sortable">
     <ng-template let-embargo="rowData" pTemplate="body">
-      <toggle [(ngModel)]="embargo.aggregateEmbargoed" [disabled]="aggregateDisabled" [options]="[
+      <toggle [(ngModel)]="embargo.aggregateEmbargoed" [disabled]="embargo.readonly" [options]="[
         { value: true, text: 'labels.embargo.toggle.true' | translate },
         { value: false, text: 'labels.embargo.toggle.false' | translate }
       ]"></toggle>
     </ng-template>
   </p-column>
+
 </p-dataTable>

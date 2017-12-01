@@ -12,8 +12,6 @@
   <div class="well-body">
     <h4 class="mb-sm">{{'labels.embargo.district.header' | translate}}</h4>
     <embargo-table [embargoes]="embargoes.districtEmbargoes"
-                   [individualDisabled]="!embargoes.stateEmbargo.individualEmbargoed"
-                   [aggregateDisabled]="!embargoes.stateEmbargo.aggregateEmbargoed"
                    organizationNameHeader="{{'labels.embargo.table.column.name.district-header' | translate }}"></embargo-table>
   </div>
 </div>

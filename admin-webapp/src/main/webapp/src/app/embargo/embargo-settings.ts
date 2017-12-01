@@ -13,6 +13,7 @@ export interface EmbargoSettings {
 }
 
 export interface Embargo {
+  readonly readonly?: boolean;
   readonly individualEmbargoed: boolean;
   readonly aggregateEmbargoed: boolean;
   readonly organization: Organization;

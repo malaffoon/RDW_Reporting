@@ -11,12 +11,10 @@ export class EmbargoTable {
   embargoes: Embargo[] = [];
 
   @Input()
-  individualDisabled: boolean = false;
-
-  @Input()
-  aggregateDisabled: boolean = false;
-
-  @Input()
   organizationNameHeader: string = '';
+
+  get sortable(): boolean {
+    return this.embargoes.length > 1;
+  }
 
 }

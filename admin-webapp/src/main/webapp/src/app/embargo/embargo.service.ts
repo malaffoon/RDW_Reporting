@@ -6,6 +6,7 @@ export class EmbargoService {
   getEmbargoSettings(): Observable<EmbargoSettings> {
     return Observable.of({
       stateEmbargo: {
+        readonly: true,
         individualEmbargoed: false,
         aggregateEmbargoed: true,
         organization: {

@@ -102,7 +102,7 @@
       "title": "Manage Instructional Resources"
     },
     "embargo": {
-      "title": "Manage Embargoes",
+      "title": "Manage Embargo",
       "toggle": {
         "true": "On",
         "false": "Off"
@@ -111,7 +111,7 @@
         "header": "State Embargo"
       },
       "district": {
-        "header": "District Embargoes"
+        "header": "District Embargo"
 
       },
       "table": {
