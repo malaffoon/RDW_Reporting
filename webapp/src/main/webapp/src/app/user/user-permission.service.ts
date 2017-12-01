@@ -9,7 +9,7 @@ export class UserPermissionService {
   }
 
   getPermissions(): Observable<string[]> {
-    return this.userService.getCurrentUser().map(user => user.permissions);
+    return this.userService.getCurrentUser().map(user =>  user ? user.permissions : []);
   }
 
 }
