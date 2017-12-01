@@ -24,27 +24,21 @@
     <!-- Left Column Content Area -->
     <div class="col-md-9">
 
-
       <!-- Student ID Search -->
       <div *hasPermission="'GROUP_PII_READ'" class="student-id-search-container well">
         <student-search></student-search>
       </div>
 
       <!-- School & Grade Search -->
-      <div *hasPermission="'INDIVIDUAL_PII_READ'">
-        <div class="school-and-grade-search-container well">
-          <div >
-            <school-grade [schools]="user.schools"></school-grade>
-          </div>
-        </div>
+      <div *hasPermission="'INDIVIDUAL_PII_READ'" class="school-and-grade-search-container well">
+        <school-grade [schools]="user.schools"></school-grade>
       </div>
 
       <!-- My Groups Search -->
-      <div *hasPermission="'GROUP_PII_READ'">
-        <div class="my-groups-search-container well">
-          <groups [groups]="user.groups"></groups>
-        </div>
+      <div *hasPermission="'GROUP_PII_READ'" class="my-groups-search-container well">
+        <groups [groups]="user.groups"></groups>
       </div>
+
     </div>
 
     <!-- Right Column Content Area -->

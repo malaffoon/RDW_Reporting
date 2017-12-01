@@ -8,7 +8,7 @@ import { AuthorizationService } from "./authorization.service";
  * <div *hasPermission="'GROUP_WRITE'"></div>
  * <div *hasAnyPermission="['GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE']"></div>
  */
-@Directive({ selector: '[sbAuthorize],[hasPermission],[hasAnyPermission]' })
+@Directive({ selector: '[hasPermission],[hasAnyPermission]' })
 export class AuthorizationDirective {
 
   private displayed: boolean;
@@ -16,14 +16,6 @@ export class AuthorizationDirective {
   constructor(private authorizationService: AuthorizationService,
               private templateRef: TemplateRef<any>,
               private viewContainer: ViewContainerRef) {
-  }
-
-  /**
-   * @deprecated use hasAnyPermission
-   */
-  @Input()
-  set sbAuthorize(permissions: any) {
-    this.hasAnyPermission = permissions;
   }
 
   /**
