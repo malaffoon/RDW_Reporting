@@ -128,7 +128,7 @@ sql:
     basicPermission: >-
         (1=:statewide or sc.district_group_id in (:district_group_ids) or sc.district_id in (:district_ids) or sc.school_group_id in (:school_group_ids) or sc.id in (:school_ids))
 
-    claimData: >-
+    claimColumns: >-
           e.claim1_category,
           e.claim1_scale_score,
           e.claim1_scale_score_std_err,
