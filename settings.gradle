@@ -4,6 +4,7 @@ include ':common-ngx'
 include ':webapp'
 include ':report-processor'
 include ':admin-webapp'
+include ':olap-webapp'
 
 rootProject.name = "rdw-reporting"
 
