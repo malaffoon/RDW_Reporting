@@ -51,6 +51,10 @@ spring:
   thymeleaf:
     mode: HTML
 
+  ### this will go away when spring-session dep is moved from common-web to reporting
+  session:
+    store-type: none
+
 cloud:
   aws:
     region:
@@ -98,3 +102,7 @@ task:
 #    cron: 0 0 8 * * *
 #    max-report-lifetime-days: 30
 #    max-random-minutes: 20
+
+jwt:
+  secret: ${rdw.reporting.jwt.secret}
+

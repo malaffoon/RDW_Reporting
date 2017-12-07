@@ -134,3 +134,12 @@ zuul:
       path: /iris/**
       url: ${app.iris.url}
       stripPrefix: true
+    poc:
+      path: /api/poc/**
+      url: http://localhost:8085
+      stripPrefix: true
+
+
+jwt:
+  secret: ${rdw.reporting.jwt.secret}
+  producer: true
