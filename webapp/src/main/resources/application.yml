@@ -143,3 +143,5 @@ zuul:
 jwt:
   secret: ${rdw.reporting.jwt.secret}
   producer: true
+  routePaths: ${zuul.routes.poc.path}
+
