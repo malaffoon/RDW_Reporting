@@ -91,3 +91,14 @@ sqlbuilder:
                 select: >-
                     'overall' AS dimension,
                     NULL AS dimension_id
+
+            gender:
+              clauses:
+                select: >-
+                    'gender' AS dimension,
+                     s.gender_id AS dimension_id
+
+                join:
+                     JOIN student s ON fe.student_id = s.id
+                groupBy: >-
+                     s.gender_id
