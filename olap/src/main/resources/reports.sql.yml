@@ -89,4 +89,5 @@ sqlbuilder:
             overall:
               clauses:
                 select: >-
-                    'overall' AS type
+                    'overall' AS dimension,
+                    NULL AS dimension_id
