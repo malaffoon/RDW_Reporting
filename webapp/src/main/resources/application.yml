@@ -134,14 +134,13 @@ zuul:
       path: /iris/**
       url: ${app.iris.url}
       stripPrefix: true
-    poc:
-      path: /api/poc/**
+    report-processor:
+      path: /api/report-processor/**
       url: http://localhost:8085
       stripPrefix: true
-
 
 jwt:
   secret: ${rdw.reporting.jwt.secret}
   producer: true
-  routePaths: ${zuul.routes.poc.path}
+  routePaths: ${zuul.routes.report-processor.path}
 

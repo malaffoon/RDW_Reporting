@@ -22,16 +22,19 @@ spring:
     stream:
       bindings:
         ReportExportExams:
+          content-type: application/json
           group: default
           producer:
             requiredGroups: default
 
         ReportFetchStudents:
+          content-type: application/json
           group: default
           producer:
             requiredGroups: default
 
         ReportGenerateForStudents:
+          content-type: application/json
           group: default
           consumer:
             concurrency: 2
@@ -39,6 +42,7 @@ spring:
             requiredGroups: default
 
         ReportCollate:
+          content-type: application/json
           group: default
           producer:
             requiredGroups: default
