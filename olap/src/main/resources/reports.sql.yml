@@ -4,7 +4,7 @@ sqlbuilder:
         clauses:
           select: >-
               count(*) AS count,
-              avg(scale_score) AS score,
+              round(avg(scale_score)) AS score,
               sum(CASE WHEN performance_level = 1 THEN 1 ELSE 0 END) AS level1,
               sum(CASE WHEN performance_level = 2 THEN 1 ELSE 0 END) AS level2,
               sum(CASE WHEN performance_level = 3 THEN 1 ELSE 0 END) AS level3,
