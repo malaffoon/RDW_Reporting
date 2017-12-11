@@ -100,5 +100,18 @@ sqlbuilder:
 
                 join:
                      JOIN student s ON fe.student_id = s.id
+
                 groupBy: >-
                      s.gender_id
+
+            ethnicity:
+              clauses:
+                select: >-
+                    'ethnicity' AS dimension,
+                     se.ethnicity_id AS dimension_id
+
+                join:
+                     JOIN student_ethnicity se ON se.student_id = fe.student_id
+
+                groupBy: >-
+                     se.ethnicity_id
