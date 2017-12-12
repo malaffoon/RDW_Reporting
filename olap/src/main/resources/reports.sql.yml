@@ -3,7 +3,6 @@ sqlbuilder:
       customAggregate:
         clauses:
           select: >-
-              count(*) AS count,
               round(avg(scale_score)) AS score,
               round(sqrt(sum(power(scale_score_std_err, 2)) / count(*))) as std_err,
               sum(CASE WHEN performance_level = 1 THEN 1 ELSE 0 END) AS level1,
