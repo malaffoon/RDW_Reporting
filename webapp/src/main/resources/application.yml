@@ -111,9 +111,6 @@ app:
   analytics:
     trackingId: ${rdw.reporting.analytics.trackingId:}
 
-  reportservice:
-    url: http://localhost:8085
-
   admin-webapp-url:
 
   external-links:
@@ -136,7 +133,7 @@ zuul:
       stripPrefix: true
     report-processor:
       path: /api/report-processor/**
-      url: http://localhost:8085
+#      url: http://localhost:8085
       stripPrefix: true
 
 jwt:
