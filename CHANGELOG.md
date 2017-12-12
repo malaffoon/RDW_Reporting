@@ -6,7 +6,10 @@
 * Refactor report processor.
     * NOTE: reporting-webapp no longer talks directly to wkhtmltopdf, but does talk to report-processor
 * NOTE: change datasource URL configuration.
-
+* Added zuul service gateway to webapp.
+    * Webapp now proxies requests to services and authenticates using JWT
+    * Additional zuul and jwt properties are now required in the configuration
+    
 #### 1.0.4 - 2017-10-17
 
 * Use assessment grade when filtering results for printed student reports (DWR-1101).
