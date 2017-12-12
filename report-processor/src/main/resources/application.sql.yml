@@ -49,7 +49,7 @@ sql:
     findAllIcasByStudentIdsAndQueryParamsUnknownPermissions: >-
       select
         d.name as district_name,
-        ${sql.snippet.claimData},
+        ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       join district d on s.district_id=d.id
       where e.student_id in (:student_ids)
@@ -65,7 +65,7 @@ sql:
     findAllIcasByStudentIdsAndQueryParamsIndividualPermissions: >-
       select
         d.name as district_name,
-        ${sql.snippet.claimData},
+        ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       join district d on s.district_id=d.id
       where e.student_id in (:student_ids)
@@ -80,7 +80,7 @@ sql:
     findAllIcasByStudentIdsAndQueryParamsGroupPermissions: >-
       select
         d.name as district_name,
-        ${sql.snippet.claimData},
+        ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       join district d on s.district_id=d.id
       join student_group_membership sgm on st.id = sgm.student_id
@@ -253,62 +253,22 @@ sql:
         id = :id
 
     findAllByUser: >-
-      select
-        r.id,
-        r.user_login,
-        r.status,
-        r.report_resource_uri,
-        r.label,
-        r.report_request,
-        r.total_chunk_count,
-        r.complete_chunk_count,
-        r.created
-      from user_report r
+      ${sql.reportProcessor.snippet.selectFromUserReport}
       where r.user_login = :user
       order by r.id desc
 
     findAllByUserAndId: >-
-      select
-        r.id,
-        r.user_login,
-        r.status,
-        r.report_resource_uri,
-        r.label,
-        r.report_request,
-        r.total_chunk_count,
-        r.complete_chunk_count,
-        r.created
-      from user_report r
+      ${sql.reportProcessor.snippet.selectFromUserReport}
       where r.user_login = :user
         and r.id in (:report_ids)
       order by r.id desc
 
     findById: >-
-      select
-        r.id,
-        r.user_login,
-        r.status,
-        r.report_resource_uri,
-        r.label,
-        r.report_request,
-        r.total_chunk_count,
-        r.complete_chunk_count,
-        r.created
-      from user_report r
+      ${sql.reportProcessor.snippet.selectFromUserReport}
       where r.id = :report_id
 
     findAllOlderThanNumberOfDays: >-
-      select
-        r.id,
-        r.user_login,
-        r.status,
-        r.report_resource_uri,
-        r.label,
-        r.report_request,
-        r.total_chunk_count,
-        r.complete_chunk_count,
-        r.created
-      from user_report r
+      ${sql.reportProcessor.snippet.selectFromUserReport}
       where r.created < date_sub(now(), interval :number_of_days day);
 
     deleteByIds: >-
@@ -322,17 +282,7 @@ sql:
 
   student:
     findByExamQueryParamsUnknownPermissions: >-
-      select
-        st.id,
-        st.ssid,
-        st.first_name,
-        st.last_or_surname as last_name,
-        st.gender_code
-      from student st
-        join exam e on e.student_id = st.id
-        join asmt a on e.asmt_id=a.id
-        join school s on e.school_id = s.id
-        join school isch on st.inferred_school_id = isch.id
+      ${sql.reportProcessor.snippet.selectFromStudent}
       where (:student_id is null or st.id=:student_id)
         and (:school_year is null or e.school_year=:school_year)
         and (:subject_id is null or a.subject_id=:subject_id)
@@ -375,17 +325,7 @@ sql:
       group by st.id
 
     findByExamQueryParamsIndividualPermissions: >-
-      select
-        st.id,
-        st.ssid,
-        st.first_name,
-        st.last_or_surname as last_name,
-        st.gender_code
-      from student st
-        join exam e on e.student_id = st.id
-        join asmt a on e.asmt_id=a.id
-        join school s on e.school_id = s.id
-        join school isch on st.inferred_school_id = isch.id
+      ${sql.reportProcessor.snippet.selectFromStudent}
       where (:student_id is null or st.id=:student_id)
         and (:school_year is null or e.school_year=:school_year)
         and (:subject_id is null or a.subject_id=:subject_id)
@@ -396,17 +336,7 @@ sql:
       group by st.id
 
     findByExamQueryParamsGroupPermissions: >-
-      select
-        st.id,
-        st.ssid,
-        st.first_name,
-        st.last_or_surname as last_name,
-        st.gender_code
-      from student st
-        join exam e on e.student_id = st.id
-        join asmt a on e.asmt_id=a.id
-        join school s on e.school_id = s.id
-        join school isch on st.inferred_school_id = isch.id
+      ${sql.reportProcessor.snippet.selectFromStudent}
         join student_group_membership sgm on st.id = sgm.student_id
         join student_group sg on sgm.student_group_id = sg.id
           and (sg.subject_id is null or a.subject_id = sg.subject_id)
@@ -481,3 +411,29 @@ sql:
               )
             )
           )
+
+      selectFromUserReport: >-
+          select
+              r.id,
+              r.user_login,
+              r.status,
+              r.report_resource_uri,
+              r.label,
+              r.report_request,
+              r.total_chunk_count,
+              r.complete_chunk_count,
+              r.created
+            from user_report r
+
+      selectFromStudent: >-
+          select
+            st.id,
+            st.ssid,
+            st.first_name,
+            st.last_or_surname as last_name,
+            st.gender_code
+          from student st
+            join exam e on e.student_id = st.id
+            join asmt a on e.asmt_id=a.id
+            join school s on e.school_id = s.id
+            join school isch on st.inferred_school_id = isch.id
