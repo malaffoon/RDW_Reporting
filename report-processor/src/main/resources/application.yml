@@ -108,5 +108,5 @@ task:
 #    max-random-minutes: 20
 
 jwt:
-  secret: ${rdw.reporting.jwt.secret}
+  secret: ${rdw.reporting.jwt.secret:secret}
 
