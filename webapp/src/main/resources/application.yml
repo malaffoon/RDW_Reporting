@@ -136,9 +136,13 @@ zuul:
       path: /api/report-processor/**
       url: http://localhost:8085
       stripPrefix: true
+    report-processor:
+      path: /api/reporting-service/**
+      url: http://localhost:8180
+      stripPrefix: true
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
   producer: true
-  routePaths: ${zuul.routes.report-processor.path}
+  routePaths: ${zuul.routes.report-processor.path},${zuul.routes.reporting-service.path}
 
