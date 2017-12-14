@@ -9,8 +9,9 @@ INSERT INTO school (id, district_id, name, update_import_id, migrate_id) VALUES
 
 -- ------------------------------------------ Asmt ---------------------------------------------------------------------------------------------------------
 INSERT INTO ica_asmt (id, grade_id, subject_id, school_year, name, update_import_id, migrate_id) VALUES
-   (-8, -8, 1, 1999, 'asmt-8', -1, -1),
-   (-9, -9, 2, 1999, 'asmt-9', -1, -1);
+   (-8, -8, 1, 1888, 'asmt-8', -1, -1),
+   (-9, -9, 2, 1888, 'asmt-9', -1, -1),
+   (-10, -8, 1, 1888, 'asmt-10', -1, -1);
 
 -- ------------------------------------------ Student and Groups  ------------------------------------------------------------------------------------------------
 INSERT INTO student (id, gender_id, update_import_id, migrate_id) VALUES
@@ -45,4 +46,6 @@ INSERT INTO  fact_student_ica_exam (id, school_year, asmt_id, asmt_grade_id, com
   (-11, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1),
   (-12, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1),
   (-13, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1),
-  (-14, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1);
+
+   -- NOTE: we should not have two assessments for the same asmt_type/subject/grade and exam school year, but since we have no way to enforce it we need to test that we report correctly
+  (-14, 1999 , -10, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1);
