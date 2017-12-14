@@ -120,25 +120,6 @@ app:
 
   min-item-data-year: 2016
 
-# Netflix zuul configuration.
-zuul:
-  set-content-length: true
-  FormBodyWrapperFilter:
-    pre: disable
-  host:
-    socket-timeout-millis: 100000
-  routes:
-    iris:
-      path: /iris/**
-      url: ${app.iris.url}
-      stripPrefix: true
-    report-processor:
-      path: /api/report-processor/**
-      url: http://localhost:8085
-      stripPrefix: true
-
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
-  producer: true
-  routePaths: ${zuul.routes.report-processor.path}
 

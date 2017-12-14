@@ -54,6 +54,8 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
+      # need this until we have it on config server
+      - zuul.routes.reporting-service.url=http://reporting-service:8080
     extra_hosts:
       - "dwhost:$DATAWAREHOUSE_HOST"
 
