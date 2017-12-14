@@ -1,8 +1,9 @@
 apply plugin: 'org.springframework.boot'
 
-createDockerfile {
-    ext.java_opts = ["-Xmx768m"]
-}
+// TODO uncomment when docker hub repo is setup for this build
+//createDockerfile {
+//    ext.java_opts = ["-Xmx768m"]
+//}
 
 dependencies {
     compile project(':rdw-reporting-common')
