@@ -1,0 +1,11 @@
+app:
+  datamart:
+     olap_datasource:
+        url: "\
+            jdbc:redshift://${app.datamart.olap_datasource.url-server:localhost:5439}/dev\
+            ?ApplicationName=rdw-reporting-olap\
+            &currentSchema=${app.datamart.olap_datasource.url-schema:reporting_olap_rst}
+           "
+        username: awsrst
+        password:
+        driverClassName: com.amazon.redshift.jdbc42.Driver

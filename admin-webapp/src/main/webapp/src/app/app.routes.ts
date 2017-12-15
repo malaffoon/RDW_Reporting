@@ -1,6 +1,5 @@
 import { Routes } from "@angular/router";
 import { UserResolve } from "./user/user.resolve";
-import { AuthorizeCanActivate } from "./user/authorize.can-activate";
 import { AccessDeniedComponent } from "./access-denied/access-denied.component";
 import { SessionExpiredComponent } from "@sbac/rdw-reporting-common-ngx";
 import { InstructionalResourceComponent } from "./instructional-resource/instructional-resource.component";
@@ -13,12 +12,13 @@ import { GroupImportComponent } from "./groups/import/group-import.component";
 import { GroupsComponent } from "./groups/groups.component";
 import { EmbargoComponent } from "./embargo/embargo.component";
 import { EmbargoSettingsResolve } from "./embargo/embargo-settings.resolve";
+import { AuthorizationCanActivate } from "@sbac/rdw-reporting-common-ngx/security"
 
 export const routes: Routes = [
   {
     path: '',
     resolve: { user: UserResolve },
-    canActivate: [ AuthorizeCanActivate ],
+    canActivate: [ AuthorizationCanActivate ],
     data: {
       permissions: [ 'GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE' ]
     },
@@ -51,7 +51,7 @@ export const routes: Routes = [
                 data: {
                   permissions: [ 'GROUP_WRITE' ]
                 },
-                canActivate: [ AuthorizeCanActivate ],
+                canActivate: [ AuthorizationCanActivate ],
                 component: GroupsComponent
               },
               {
@@ -59,7 +59,7 @@ export const routes: Routes = [
                 data: {
                   breadcrumb: { translate: 'labels.groups.import.title' }, permissions: [ 'GROUP_WRITE' ]
                 },
-                canActivate: [ AuthorizeCanActivate ],
+                canActivate: [ AuthorizationCanActivate ],
                 children: [
                   {
                     path: '',
@@ -89,7 +89,7 @@ export const routes: Routes = [
                 data: {
                   permissions: [ 'GROUP_WRITE' ]
                 },
-                canActivate: [ AuthorizeCanActivate ],
+                canActivate: [ AuthorizationCanActivate ],
                 children: [
                   {
                     path: '',
@@ -109,6 +109,7 @@ export const routes: Routes = [
               breadcrumb: { translate: 'labels.embargo.title' },
               permissions: [ 'EMBARGO_WRITE' ]
             },
+            canActivate: [ AuthorizationCanActivate ],
             children: [
               {
                 path: '',
@@ -128,6 +129,7 @@ export const routes: Routes = [
           breadcrumb: { translate: 'labels.instructional-resource.title' },
           permissions: [ 'INSTRUCTIONAL_RESOURCE_WRITE' ]
         },
+        canActivate: [ AuthorizationCanActivate ],
         children: [
           {
             path: '',
@@ -137,15 +139,15 @@ export const routes: Routes = [
         ]
       },
       {
-        path: 'access-denied',
-        pathMatch: 'full',
-        component: AccessDeniedComponent
-      },
-      {
         path: 'session-expired',
         pathMatch: 'full',
         component: SessionExpiredComponent
       }
     ]
-  }
+  },
+  {
+    path: 'access-denied',
+    pathMatch: 'full',
+    component: AccessDeniedComponent
+  },
 ];

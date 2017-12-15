@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import { PopupMenuAction } from "./popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { PopupMenuAction, Utils } from "@sbac/rdw-reporting-common-ngx";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.
@@ -101,7 +100,7 @@ export class MenuActionBuilder {
     let resourcesAction: PopupMenuAction = new PopupMenuAction();
 
     resourcesAction.isDisabled = ((actionable) => {
-      return Utils.isNullOrUndefined(getResourceUrl(actionable));
+      return false;
     });
 
     resourcesAction.tooltip = ((actionable) => {

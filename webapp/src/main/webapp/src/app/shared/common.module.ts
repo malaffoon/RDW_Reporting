@@ -17,7 +17,7 @@ import { AlertModule, PopoverModule } from "ngx-bootstrap";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { LoaderComponent } from "./loader/loader.component";
 import { SBToggleComponent } from "./sb-toggle.component";
-import { InformationLabelComponent } from "./information-label.component";
+import { InformationButtonComponent } from "./button/information-button.component";
 import {
   AuthenticationServiceAuthenticationExpiredRoute,
   AuthenticationServiceDefaultAuthenticationRoute,
@@ -27,16 +27,19 @@ import {
   RdwFormatModule,
   RdwFormModule,
   RdwI18nModule,
+  RdwLayoutModule,
+  RdwMenuModule,
   RdwPreferenceModule,
   RdwSecurityModule,
   RdwTranslateLoader,
 } from "@sbac/rdw-reporting-common-ngx";
 
+
 @NgModule({
   declarations: [
     AssessmentTypePipe,
     GradeDisplayPipe,
-    InformationLabelComponent,
+    InformationButtonComponent,
     LoaderComponent,
     NotificationComponent,
     RemoveCommaPipe,
@@ -57,6 +60,8 @@ import {
     RdwFormModule,
     RdwFormatModule,
     RdwI18nModule,
+    RdwLayoutModule,
+    RdwMenuModule,
     RdwPreferenceModule,
     RdwSecurityModule,
     TranslateModule.forRoot({
@@ -69,7 +74,7 @@ import {
   exports: [
     AssessmentTypePipe,
     GradeDisplayPipe,
-    InformationLabelComponent,
+    InformationButtonComponent,
     LoaderComponent,
     NotificationComponent,
     RemoveCommaPipe,
@@ -78,6 +83,7 @@ import {
     RdwFormModule,
     RdwFormatModule,
     RdwI18nModule,
+    RdwLayoutModule,
     RdwPreferenceModule,
     RdwSecurityModule,
     SBCheckboxList,

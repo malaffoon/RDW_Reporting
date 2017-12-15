@@ -17,7 +17,7 @@
         <a *sbAuthorize="['INSTRUCTIONAL_RESOURCE_WRITE']" routerLink="instructional-resource">{{'labels.instructional-resource.title' | translate}}</a>
       </div>
       <div>
-        <a routerLink="embargoes">{{'labels.embargo.title' | translate}}</a>
+        <a *sbAuthorize="['EMBARGO_WRITE']" routerLink="embargoes">{{'labels.embargo.title' | translate}}</a>
       </div>
     </div>
   </div>

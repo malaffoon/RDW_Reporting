@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./home/home.component";
-import { BreadcrumbsComponent } from "./breadcrumbs/breadcrumbs.component";
 import { AlertModule, BsDropdownModule, PopoverModule, TabsModule } from "ngx-bootstrap";
 import { CommonModule } from "./shared/common.module";
 import { GroupsModule } from "./groups/groups.module";
@@ -19,16 +18,17 @@ import { RdwRouteReuseStrategy } from "./shared/rdw-route-reuse.strategy";
 import { ErrorComponent } from './error/error.component';
 import { AccessDeniedComponent } from './error/access-denied/access-denied.component';
 import { OrganizationExportModule } from "./organization-export/organization-export.module";
+import { AggregateReportsModule } from "./aggregate-report/aggregate-reports.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    BreadcrumbsComponent,
     HomeComponent,
     ErrorComponent,
     AccessDeniedComponent
   ],
   imports: [
+    AggregateReportsModule,
     AlertModule.forRoot(),
     BrowserModule,
     CommonModule,
