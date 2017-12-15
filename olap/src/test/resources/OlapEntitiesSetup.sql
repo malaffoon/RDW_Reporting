@@ -8,10 +8,10 @@ INSERT INTO school (id, district_id, name, update_import_id, migrate_id) VALUES
   (-9, -9, 'School-9', -1, -1);
 
 -- ------------------------------------------ Asmt ---------------------------------------------------------------------------------------------------------
-INSERT INTO ica_asmt (id, grade_id, subject_id, school_year, name, update_import_id, migrate_id) VALUES
-   (-8,  -8, 1, 1888, 'asmt-8', -1, -1),
-   (-9,  -9, 2, 1888, 'asmt-9', -1, -1),
-   (-10, -9, 2, 1888, 'asmt-10', -1, -1);
+INSERT INTO asmt (id, grade_id, subject_id, type_id, school_year, name, update_import_id, migrate_id) VALUES
+   (-8,  -8, 1, 1, 1888, 'asmt-8', -1, -1),
+   (-9,  -9, 2, 1, 1888, 'asmt-9', -1, -1),
+   (-10, -9, 2, 1, 1888, 'asmt-10', -1, -1);
 
 -- ------------------------------------------ Student and Groups  ------------------------------------------------------------------------------------------------
 INSERT INTO student (id, gender_id, update_import_id, migrate_id) VALUES
@@ -27,7 +27,7 @@ INSERT INTO student_ethnicity(student_id, ethnicity_id) values
     (-9,  -9);
 
 -- ------------------------------------------ Exams ---------------------------------------------------------------------------------------------
-INSERT INTO  fact_student_ica_exam (id, school_year, asmt_id, asmt_grade_id, completeness_id,
+INSERT INTO  fact_student_exam (id, school_year, asmt_id, asmt_grade_id, completeness_id,
                                     administration_condition_id, performance_level,
                                     scale_score, scale_score_std_err, grade_id, student_id, school_id,
                                     iep, lep, section504, economic_disadvantage, migrant_status,
