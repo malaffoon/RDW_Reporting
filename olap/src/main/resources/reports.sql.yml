@@ -15,10 +15,10 @@ sqlbuilder:
               a.subject_id
 
           from: >-
-              fact_student_ica_exam fe
+              fact_student_exam fe
 
           join: >-
-              JOIN ica_asmt a ON a.id = fe.asmt_id
+              JOIN asmt a ON a.id = fe.asmt_id
 
           where: >-
               fe.school_year IN (:school_years) AND
