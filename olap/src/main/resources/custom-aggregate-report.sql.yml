@@ -62,7 +62,7 @@ sqlbuilder:
                 where: >-
                     d.id in (:district_ids)
 
-            allSchools:
+            schools:
               clauses:
                 select: >-
                     'school' AS organization_type,
@@ -71,12 +71,11 @@ sqlbuilder:
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
 
-                groupBy: >-
-                     sch.id
-            schools:
-              clauses:
                 where: >-
                     sch.id in (:school_ids)
+
+                groupBy: >-
+                     sch.id
 
       # ---------- dimension parts -----------------------------------------------------------------------
             overall:
@@ -128,11 +127,6 @@ sqlbuilder:
                 from: >-
                   state_subject_grade_school_year x
 
-            allSchools:
-              clauses:
-                from: >-
-                  school_subject_grade_school_year x
-
             allDistricts:
               clauses:
                 from: >-
@@ -140,6 +134,9 @@ sqlbuilder:
 
             schools:
               clauses:
+                from: >-
+                  school_subject_grade_school_year x
+
                 where: >-
                   organization_id in (:school_ids)
 
