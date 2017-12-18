@@ -21,7 +21,8 @@ INSERT INTO school (id, district_id, name, update_import_id, migrate_id) VALUES
 INSERT INTO asmt (id, grade_id, subject_id, type_id, school_year, name, update_import_id, migrate_id) VALUES
   (-6, -5, 2, 1, 1888, 'asmt-6', -1, -1),
   (-5, -5, 1, 1, 1888, 'asmt-5', -1, -1),
-  (-8,  -8, 1, 1, 1888, 'asmt-8', -1, -1),
+  (-8,  -8, 1, 1, 1999, 'asmt-8', -1, -1),
+  (-18,  -8, 1, 1, 2000, 'asmt-8', -1, -1),
   (-9,  -9, 2, 1, 1888, 'asmt-9', -1, -1),
   (-10, -9, 2, 1, 1888, 'asmt-9-again', -1, -1),
   (-11, -9, 2, 2, 1888, 'asmt-11', -1, -1);
@@ -59,7 +60,5 @@ INSERT INTO  fact_student_exam (id, school_year, asmt_id, asmt_grade_id, complet
   (-20, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1),
   (-21, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1),
   (-22, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1),
-  (-23, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1),
+  (-23, 2000, -9, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1);
 
-  -- NOTE: we should not have two assessments for the same asmt_type/subject/grade and exam school year, but since we have no way to enforce it we need to test that we report correctly
-  (-34, 2000 , -10, -9, -9, -9, 1, 2500, 17, -8, -9, -9, true, true, false, false, true,  2000, 0.11, 1, 2100, 0.12, 2, 2500, 0.13, 3, 3500, .15, 4, '2016-08-14 19:05:33.000000', -1, -1);
