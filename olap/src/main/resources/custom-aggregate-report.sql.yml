@@ -41,13 +41,13 @@ sqlbuilder:
             state:
               clauses:
                 select: >-
-                     'state' AS organization_type,
+                     'State' AS organization_type,
                      -1 AS organization_id
 
             allDistricts:
               clauses:
                 select: >-
-                     'district' AS organization_type,
+                     'District' AS organization_type,
                      d.id AS organization_id
 
                 join: >-
@@ -65,7 +65,7 @@ sqlbuilder:
             allSchoolsInDistricts:
               clauses:
                 select: >-
-                    'school' AS organization_type,
+                    'School' AS organization_type,
                      sch.id AS organization_id
 
                 join: >-
@@ -80,7 +80,7 @@ sqlbuilder:
             schools:
               clauses:
                 select: >-
-                    'school' AS organization_type,
+                    'School' AS organization_type,
                      sch.id AS organization_id
 
                 join: >-
@@ -96,13 +96,13 @@ sqlbuilder:
             overall:
               clauses:
                 select: >-
-                    'overall' AS dimension,
+                    'Overall' AS dimension,
                     -1 AS dimension_id
 
             gender:
               clauses:
                 select: >-
-                    'gender' AS dimension,
+                    'Gender' AS dimension,
                      s.gender_id AS dimension_id
 
                 join:
@@ -114,7 +114,7 @@ sqlbuilder:
             ethnicity:
               clauses:
                 select: >-
-                    'ethnicity' AS dimension,
+                    'Ethnicity' AS dimension,
                      se.ethnicity_id AS dimension_id
 
                 join:
