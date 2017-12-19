@@ -62,6 +62,21 @@ sqlbuilder:
                 where: >-
                     d.id in (:district_ids)
 
+            allSchoolsInDistricts:
+              clauses:
+                select: >-
+                    'school' AS organization_type,
+                     sch.id AS organization_id
+
+                join: >-
+                     JOIN school sch ON sch.id = fe.school_id
+
+                where: >-
+                     sch.district_id in (:school_district_ids)
+
+                groupBy: >-
+                     sch.id
+
             schools:
               clauses:
                 select: >-
@@ -139,6 +154,17 @@ sqlbuilder:
 
                 where: >-
                   organization_id in (:school_ids)
+
+            allSchoolsInDistricts:
+              clauses:
+                from: >-
+                  school_subject_grade_school_year x
+
+                join:
+                  JOIN school sch on sch.id = x.organization_id
+
+                where: >-
+                  sch.district_id in (:school_district_ids)
 
             districts:
               clauses:
