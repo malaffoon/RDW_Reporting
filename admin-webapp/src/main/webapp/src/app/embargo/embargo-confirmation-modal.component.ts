@@ -1,9 +1,13 @@
 import { Component } from "@angular/core";
-import { EmbargoToggleEvent } from "./embargo-table.component";
 import { BsModalRef } from "ngx-bootstrap";
-import { EmbargoScope, OrganizationType } from "./embargo";
 import { EmbargoService } from "./embargo.service";
+import { EmbargoToggleEvent } from "./embargo-toggle-event";
+import { EmbargoScope } from "./embargo-scope.enum";
+import { OrganizationType } from "./organization-type.enum";
 
+/**
+ * Confirmation modal displayed to confirm whether the user wants to make an embargo setting change or not
+ */
 @Component({
   selector: 'embargo-confirmation-modal',
   template: `
@@ -28,9 +32,20 @@ import { EmbargoService } from "./embargo.service";
 })
 export class EmbargoConfirmationModal {
 
-  content: EmbargoConfirmationModalContent = <EmbargoConfirmationModalContent>{};
+  /**
+   * Translation code namespace
+   */
   private translateContext: string = 'labels.embargo.modal';
+
+  /**
+   * The event that triggered the modal
+   */
   private _event: EmbargoToggleEvent;
+
+  /**
+   * Re-computed when the event triggering the modal changes
+   */
+  content: EmbargoConfirmationModalContent = <EmbargoConfirmationModalContent>{};
 
   constructor(public modal: BsModalRef,
               private embargoService: EmbargoService) {
@@ -47,8 +62,12 @@ export class EmbargoConfirmationModal {
 
   accept() {
     const { embargo, scope, value, toggle } = this.event;
+
+    // apply desired embargo setting via the API
     this.embargoService.update(embargo, scope, value)
       .subscribe(() => {
+
+        // reflect new embargo setting in the UI
         if (scope === EmbargoScope.Individual) {
           embargo.individualEnabled = value;
         } else {
@@ -62,16 +81,14 @@ export class EmbargoConfirmationModal {
   private createContent(event: EmbargoToggleEvent): EmbargoConfirmationModalContent {
 
     const [ stateEmbargo, stateEnabled ] = event.embargo.organization.type === OrganizationType.State
-      ? [ event.embargo, event.value ]
+      ? [ event.embargo, event.embargoEnabled ]
       : [ event.overridingEmbargo, event.overridingEmbargoEnabled ];
 
     return {
       header: `${this.translateContext}.header.${event.scope}`,
-      stateDescription: `${this.translateContext}.state-description.${event.scope}.State-${stateEnabled}`,
-      commandDescription: event.embargo.organization.type === OrganizationType.State
-        ? `${this.translateContext}.command-description.${event.embargo.organization.type}.${event.scope}.State-${stateEnabled}`
-        : `${this.translateContext}.command-description.${event.embargo.organization.type}.${event.scope}.State-${stateEnabled}.District-${event.value}`,
-      accept: `${this.translateContext}.accept.${event.embargo.organization.type}.${event.value}`,
+      stateDescription: `${this.translateContext}.state-description.${event.scope}.${stateEnabled}`,
+      commandDescription: `${this.translateContext}.command-description.${event.embargo.organization.type}.${event.scope}.${event.value}`,
+      accept: `${this.translateContext}.accept.${event.value}`,
       decline: `${this.translateContext}.decline`,
       parameters: {
         stateName: stateEmbargo.organization.name,
@@ -84,6 +101,9 @@ export class EmbargoConfirmationModal {
 
 }
 
+/**
+ * Holds translation codes and parameters necessary to present the modal
+ */
 export class EmbargoConfirmationModalContent {
 
   header?: string;

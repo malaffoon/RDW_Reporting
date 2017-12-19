@@ -1,9 +1,10 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
-import { EmbargoToggleEvent } from "./embargo-table.component";
 import { EmbargoConfirmationModal } from "./embargo-confirmation-modal.component";
-import { Embargo, OrganizationType } from "./embargo";
+import { EmbargoToggleEvent } from "./embargo-toggle-event";
+import { OrganizationType } from "./organization-type.enum";
+import { Embargo } from "./embargo";
 
 @Component({
   selector: 'embargo',
@@ -26,6 +27,11 @@ export class EmbargoComponent {
     return this._embargoesByOrganizationType;
   }
 
+  /**
+   * Opens confirmation modal for the given embargo toggle event
+   *
+   * @param {EmbargoToggleEvent} event the toggle event
+   */
   confirmToggle(event: EmbargoToggleEvent): void {
     this._modal = this.modalService.show(EmbargoConfirmationModal);
     this._modal.content.event = event;

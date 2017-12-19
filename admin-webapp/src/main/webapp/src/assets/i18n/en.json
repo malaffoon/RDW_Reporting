@@ -181,95 +181,72 @@
     "embargo": {
       "title": "Manage Embargo",
       "state": {
-        "header": "State Embargo",
         "table": {
           "headers": {
             "name": "State",
-            "individualEnabled": "Individual Embargo",
-            "aggregateEnabled": "Aggregate Embargo",
+            "individualEnabled": "Individual Test Results",
+            "aggregateEnabled": "Aggregate Test Results",
             "ELA": "ELA",
             "MATH": "Math"
-          },
-          "toggle": {
-            "true": "Embargoed",
-            "false": "Released"
           }
         }
       },
       "district": {
-        "header": "District Embargo",
         "table": {
           "headers": {
             "name": "District",
-            "individualEnabled": "Individual Embargo",
-            "aggregateEnabled": "Aggregate Embargo",
+            "individualEnabled": "Individual Test Results",
+            "aggregateEnabled": "Aggregate Test Results",
             "ELA": "ELA",
             "MATH": "Math"
-          },
-          "toggle": {
-            "true": "Use State Setting",
-            "false": "Released"
           }
         }
       },
+      "toggle": {
+        "true": "Embargoed",
+        "false": "Released"
+      },
+      "released-by-state": "Released by State",
       "modal": {
         "header": {
-          "Individual": "Embargo Individual Test Results for {{stateName}}",
-          "Aggregate": "Embargo Aggregate Test Results for {{stateName}}"
+          "Individual": "Individual Test Results for {{organizationName}}",
+          "Aggregate": "Aggregate Test Results for {{organizationName}}"
         },
         "state-description": {
           "Individual": {
-            "State-true": "Currently the individual Summative test results for the state of {{stateName}} are embargoed.",
-            "State-false": "Currently the individual Summative test results for the state of {{stateName}} are released."
+            "true": "{{stateName}} individual Summative test results are currently embargoed.",
+            "false": "{{stateName}} individual Summative test results are currently released."
           },
           "Aggregate": {
-            "State-true": "Currently the aggregate Summative test results for the state of {{stateName}} are embargoed.",
-            "State-false": "Currently the aggregate Summative test results for the state of {{stateName}} are released."
+            "true": "{{stateName}} aggregate Summative test results are currently embargoed.",
+            "false": "{{stateName}} aggregate Summative test results are currently released."
           }
         },
         "command-description": {
           "State": {
             "Individual": {
-              "State-true": "Completing this action will withdrawal {{resultCount}} individual Summative test results. This setting can be overridden by individual districts that choose to release their results.",
-              "State-false": "Completing this action will release {{resultCount}} individual Summative test results."
+              "true": "Completing this action will prevent users from viewing {{resultCount}} individual Summative test results for {{organizationName}}. This setting can be overridden by individual districts that release their results ahead of the state.",
+              "false": "Completing this action will allow users to view {{resultCount}} individual Summative test results for {{organizationName}}."
             },
             "Aggregate": {
-              "State-true": "Completing this action will prevent users from viewing aggregate data for {{resultCount}} Summative test results.",
-              "State-false": "Completing this action will allow users to view aggregate data for {{resultCount}} Summative test results."
+              "true": "Completing this action will prevent users from viewing aggregate data for {{resultCount}} Summative test results for {{organizationName}}. This setting can be overridden by individual districts however, aggregate data views will not be available until all districts have released aggregate test results.",
+              "false": "Completing this action will allow users to view aggregate data for {{resultCount}} Summative test results for {{organizationName}}. Aggregate data views however, will not be available until the state or all districts have released aggregate test results."
             }
           },
           "District": {
             "Individual": {
-              "State-true": {
-                "District-true": "Completing this action result in the {{resultCount}} individual Summative test results of {{organizationName}} being released when the state releases individual Summative test results.",
-                "District-false": "Do you want to override this setting and release {{resultCount}} individual Summative test results for {{organizationName}}?"
-              },
-              "State-false": {
-                "District-true": "Completing this action will have no immediate effect. However, in the event that the state of {{stateName}} re-embargoes individual Summative test results, the {{resultCount}} individual Summative test results of {{organizationName}} will be embargoed.",
-                "District-false": "Completing this action will have no immediate effect. However, in the event that the state of {{stateName}} re-embargoes individual Summative test results, the {{resultCount}} individual Summative test results of {{organizationName}} will remain released."
-              }
+              "true": "Completing this action will prevent users from viewing {{resultCount}} individual Summative test results for {{organizationName}}. This setting will be overridden should the state release all individual Summative test results.",
+              "false": "Completing this action will allow users to view {{resultCount}} individual Summative test results for {{organizationName}}. Do you want to release before the state releases all individual Summative test results?"
             },
             "Aggregate": {
-              "State-true": {
-                "District-true": "Completing this action result in the {{resultCount}} aggregate Summative test results of {{organizationName}} being released when the state releases aggregate Summative test results.",
-                "District-false": "Do you want to override this setting and release {{resultCount}} aggregate Summative test results for {{organizationName}}?"
-              },
-              "State-false": {
-                "District-true": "Completing this action will have no immediate effect. However, in the event that the state of {{stateName}} re-embargoes aggregate Summative test results, the {{resultCount}} aggregate Summative test results of {{organizationName}} will be embargoed.",
-                "District-false": "Completing this action will have no immediate effect. However, in the event that the state of {{stateName}} re-embargoes aggregate Summative test results, the {{resultCount}} aggregate Summative test results of {{organizationName}} will remain released."
-              }
+              "true": "Completing this action will prevent users from viewing aggregate data for {{resultCount}} Summative test results for {{organizationName}}. This setting will be overridden should the state release all aggregate Summative test results.",
+              "false": "Completing this action will allow users to view aggregate data for {{resultCount}} Summative test results for {{organizationName}}. Do you want to release before the state releases all aggregate Summative test results?"
             }
           }
         },
         "accept": {
-          "State": {
-            "true": "Embargo",
-            "false": "Release"
-          },
-          "District": {
-            "true": "Use State Setting",
-            "false": "Release"
-          }
+          "true": "Embargo",
+          "false": "Release"
         },
         "decline": "Cancel"
       }

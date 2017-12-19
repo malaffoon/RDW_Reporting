@@ -1,8 +1,7 @@
 <h3 class="blue-dark mb-md">{{'labels.embargo.title' | translate}}</h3>
 
 <div class="well" *ngIf="embargoesByOrganizationType.has('State')">
-  <div class="well-body">
-    <h4 class="mb-sm">{{'labels.embargo.state.header' | translate}}</h4>
+  <div class="well-body mt-sm">
     <embargo-table translateContext="labels.embargo.state.table"
                    [embargoes]="embargoesByOrganizationType.get('State')"
                    (toggle)="confirmToggle($event)"></embargo-table>
@@ -10,8 +9,7 @@
 </div>
 
 <div class="well" *ngIf="embargoesByOrganizationType.has('District')">
-  <div class="well-body">
-    <h4 class="mb-sm">{{'labels.embargo.district.header' | translate}}</h4>
+  <div class="well-body mt-xsm">
     <embargo-table translateContext="labels.embargo.district.table"
                    [embargoes]="embargoesByOrganizationType.get('District')"
                    [overridingEmbargo]="embargoesByOrganizationType.get('State')[0]"

@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from "@angular/core";
-import { Embargo, EmbargoScope } from "./embargo";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Embargo } from "./embargo";
 import { Toggle } from "./toggle.component";
+import { EmbargoToggleEvent } from "./embargo-toggle-event";
+import { EmbargoScope } from "./embargo-scope.enum";
 
 @Component({
   selector: 'embargo-table',
@@ -20,11 +22,19 @@ export class EmbargoTable {
   @Output()
   toggle: EventEmitter<EmbargoToggleEvent> = new EventEmitter<EmbargoToggleEvent>();
 
-  // TODO later this will be provided by a service and be the codes
-  subjectCodes: string[] = ['ELA', 'MATH'];
+  // TODO later this will be provided by a service and will be the actual subject codes: ELA, Math
+  subjectCodes: string[] = [ 'ELA', 'MATH' ];
 
-  get sortable(): boolean {
+  get hasMultipleEmbargoes(): boolean {
     return this.embargoes.length > 1;
+  }
+
+  get overridingEmbargoReleasedIndividual(): boolean {
+    return this.overridingEmbargo && !this.overridingEmbargo.individualEnabled
+  }
+
+  get overridingEmbargoReleasedAggregate(): boolean {
+    return this.overridingEmbargo && !this.overridingEmbargo.aggregateEnabled;
   }
 
   toggleIndividual(toggle: Toggle, embargo: Embargo): void {
@@ -39,11 +49,17 @@ export class EmbargoTable {
 
   private toggleInternal(toggle: Toggle, embargo: Embargo, scope: EmbargoScope, embargoEnabled: boolean, overridingEmbargoEnabled: boolean): void {
     const value = toggle.value;
-    toggle.value = !value; // display fix
+
+    // Fixes display by undoing visual state change to toggle when clicked.
+    // It was not sufficient to prevent event propagation
+    // The new state will be programmatically applied when the confirmation is issued through the toggle event listener
+    toggle.value = !value;
+
     if (value !== embargoEnabled) {
       this.toggle.emit({
         toggle: toggle,
         embargo: embargo,
+        embargoEnabled: embargoEnabled,
         scope: scope,
         value: value,
         overridingEmbargo: this.overridingEmbargo,
@@ -52,13 +68,4 @@ export class EmbargoTable {
     }
   }
 
-}
-
-export interface EmbargoToggleEvent {
-  readonly toggle: Toggle;
-  readonly value: boolean;
-  readonly scope: EmbargoScope;
-  readonly embargo: Embargo;
-  readonly overridingEmbargo: Embargo;
-  readonly overridingEmbargoEnabled: boolean;
 }

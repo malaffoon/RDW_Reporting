@@ -1,17 +1,27 @@
 import { Observable } from "rxjs/Observable";
 import { Injectable } from "@angular/core";
-import { Embargo, EmbargoScope, OrganizationType } from "./embargo";
+import { Embargo } from "./embargo";
 import { isUndefined } from "util";
 import { HttpClient } from "@angular/common/http";
+import { EmbargoScope } from "./embargo-scope.enum";
+import { OrganizationType } from "./organization-type.enum";
 
 const ResourceContext = '/api/embargoes';
 
+/**
+ * Service responsible for managing organization embargo settings
+ */
 @Injectable()
 export class EmbargoService {
 
   constructor(private http: HttpClient) {
   }
 
+  /**
+   * Gets all organization embargo settings the user has access to view or edit
+   *
+   * @returns {Observable<Map<OrganizationType, Embargo[]>>}
+   */
   getEmbargoesByOrganizationType(): Observable<Map<OrganizationType, Embargo[]>> {
     return this.http.get(`${ResourceContext}`)
       .map((sourceEmbargoes: any[]) => {
@@ -25,6 +35,14 @@ export class EmbargoService {
       });
   }
 
+  /**
+   * Updates the provided embargo to the given value for the given scope
+   *
+   * @param {Embargo} embargo the embargo to update
+   * @param {EmbargoScope} scope the scope of the embargo setting to update
+   * @param {boolean} value the new value of the embargo setting
+   * @returns {Observable<Object>}
+   */
   update(embargo: Embargo, scope: EmbargoScope, value: boolean): Observable<Object> {
     return this.http.put(
       `${ResourceContext}/${embargo.organization.type}/${embargo.organization.id ? embargo.organization.id : -1}/${scope}`,
@@ -34,11 +52,13 @@ export class EmbargoService {
   }
 
   /**
-   * Coerces undefined individual and aggregate embargo state to "true" (embargoed)
-   * Assumes state embargo does not carry undefined state
+   * Maps an API provided embargo model to a UI model
    *
-   * @param source
-   * @returns {Embargo}
+   * NOTE: This method coerces individual and aggregate embargo enabled fields to <code>true</code> (embargoed) if undefined.
+   * This method assumes the state individual and aggregate embargo enabled fields will not be undefined.
+   *
+   * @param source the API embargo model
+   * @returns {Embargo} a UI embargo model
    */
   private toEmbargo(source: any): Embargo {
     return {
