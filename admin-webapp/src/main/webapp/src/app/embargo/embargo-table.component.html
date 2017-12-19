@@ -35,7 +35,7 @@
       </span>
 
       <span *ngIf="!overridingEmbargoReleasedIndividual && embargo.readonly" class="label border-only blue">
-        {{(translateContext + '.toggle.' + embargo.individualEnabled) | translate}}
+        {{('labels.embargo.toggle.' + embargo.individualEnabled) | translate}}
       </span>
 
       <toggle *ngIf="!overridingEmbargoReleasedIndividual && !embargo.readonly"
@@ -63,7 +63,7 @@
       </span>
 
       <span *ngIf="!overridingEmbargoReleasedAggregate && embargo.readonly" class="label border-only blue">
-        {{(translateContext + '.toggle.' + embargo.aggregateEnabled) | translate}}
+        {{('labels.embargo.toggle.' + embargo.aggregateEnabled) | translate}}
       </span>
 
       <toggle *ngIf="!overridingEmbargoReleasedAggregate && !embargo.readonly"
