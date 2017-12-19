@@ -28,7 +28,7 @@ sqlbuilder:
               fe.asmt_grade_id IN (:asmt_grade_ids) AND
               a.grade_id IN (:asmt_grade_ids) AND
               a.subject_id in (:subject_ids) AND
-              a.type_id = 1
+              a.type_id = :asmt_type_id
 
           groupBy: >-
               fe.school_year,
@@ -133,7 +133,7 @@ sqlbuilder:
               x.*
 
           where: >-
-              school_year in (:school_years) AND grade_id in (:asmt_grade_ids) and subject_id in (:subject_ids) and asmt_type_id = 1
+              school_year in (:school_years) AND grade_id in (:asmt_grade_ids) and subject_id in (:subject_ids) and asmt_type_id = :asmt_type_id
 
         addons:
      # ------------ organization parts ----------------------------------------------------------------
