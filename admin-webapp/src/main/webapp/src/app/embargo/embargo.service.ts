@@ -1,86 +1,58 @@
 import { Observable } from "rxjs/Observable";
-import { Embargo, EmbargoSettings } from "./embargo-settings";
+import { Injectable } from "@angular/core";
+import { Embargo, EmbargoScope, OrganizationType } from "./embargo";
+import { isUndefined } from "util";
+import { HttpClient } from "@angular/common/http";
 
+const ResourceContext = '/api/embargoes';
+
+@Injectable()
 export class EmbargoService {
 
-  getEmbargoSettings(): Observable<EmbargoSettings> {
-    return Observable.of({
-      stateEmbargo: {
-        readonly: true,
-        individualEmbargoed: false,
-        aggregateEmbargoed: true,
-        organization: {
-          id: 0,
-          name: 'California'
-        },
-        examCountsBySubject: {
-          ELA: 20000,
-          Math: 19000
-        }
+  constructor(private http: HttpClient) {
+  }
+
+  getEmbargoesByOrganizationType(): Observable<Map<OrganizationType, Embargo[]>> {
+    return this.http.get(`${ResourceContext}`)
+      .map((sourceEmbargoes: any[]) => {
+        return sourceEmbargoes.reduce((embargoesByOrganizationType, sourceEmbargo) => {
+          const embargo = this.toEmbargo(sourceEmbargo),
+            type = embargo.organization.type;
+
+          embargoesByOrganizationType.set(type, (embargoesByOrganizationType.get(type) || []).concat(embargo));
+          return embargoesByOrganizationType;
+        }, new Map());
+      });
+  }
+
+  update(embargo: Embargo, scope: EmbargoScope, value: boolean): Observable<Object> {
+    return this.http.put(
+      `${ResourceContext}/${embargo.organization.type}/${embargo.organization.id ? embargo.organization.id : -1}/${scope}`,
+      String(value),
+      { responseType: 'text' }
+    );
+  }
+
+  /**
+   * Coerces undefined individual and aggregate embargo state to "true" (embargoed)
+   * Assumes state embargo does not carry undefined state
+   *
+   * @param source
+   * @returns {Embargo}
+   */
+  private toEmbargo(source: any): Embargo {
+    return {
+      organization: {
+        id: source.organizationId,
+        name: source.organizationName,
+        type: source.organizationType
       },
-      districtEmbargoes: [
-        {
-          individualEmbargoed: false,
-          aggregateEmbargoed: false,
-          organization: {
-            id: 1,
-            name: 'San Diego Unified'
-          },
-          examCountsBySubject: {
-            ELA: 20000,
-            Math: 19000
-          }
-        },
-        {
-          individualEmbargoed: false,
-          aggregateEmbargoed: false,
-          organization: {
-            id: 2,
-            name: 'Chula Vista Unified'
-          },
-          examCountsBySubject: {
-            ELA: 20000,
-            Math: 19000
-          }
-        },
-        {
-          individualEmbargoed: true,
-          aggregateEmbargoed: false,
-          organization: {
-            id: 3,
-            name: 'Clairemont Mesa Unified'
-          },
-          examCountsBySubject: {
-            ELA: 20000,
-            Math: 19000
-          }
-        },
-        {
-          individualEmbargoed: false,
-          aggregateEmbargoed: true,
-          organization: {
-            id: 4,
-            name: 'Mira Mesa Unified'
-          },
-          examCountsBySubject: {
-            ELA: 20000,
-            Math: 19000
-          }
-        },
-        {
-          individualEmbargoed: true,
-          aggregateEmbargoed: true,
-          organization: {
-            id: 5,
-            name: 'Coronodo Unified'
-          },
-          examCountsBySubject: {
-            ELA: 20000,
-            Math: 19000
-          }
-        }
-      ]
-    });
+      schoolYear: source.schoolYear,
+      readonly: source.readOnly,
+      examCountsBySubject: source.examCounts,
+      individualEnabled: isUndefined(source.individualEnabled) ? true : source.individualEnabled,
+      aggregateEnabled: isUndefined(source.aggregateEnabled) ? true : source.aggregateEnabled
+    };
   }
 
 }

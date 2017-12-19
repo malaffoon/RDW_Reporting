@@ -11,7 +11,7 @@ import { GroupImportDeactivateGuard } from "./groups/import/group-import.deactiv
 import { GroupImportComponent } from "./groups/import/group-import.component";
 import { GroupsComponent } from "./groups/groups.component";
 import { EmbargoComponent } from "./embargo/embargo.component";
-import { EmbargoSettingsResolve } from "./embargo/embargo-settings.resolve";
+import { EmbargoResolve } from "./embargo/embargo.resolve";
 import { AuthorizationCanActivate } from "@sbac/rdw-reporting-common-ngx/security"
 
 export const routes: Routes = [
@@ -115,7 +115,7 @@ export const routes: Routes = [
                 path: '',
                 pathMatch: 'prefix',
                 component: EmbargoComponent,
-                resolve: { embargoes: EmbargoSettingsResolve }
+                resolve: { embargoesByOrganizationType: EmbargoResolve }
               }
             ]
           }

@@ -11,13 +11,13 @@
   <div class="well">
     <div class="well-body">
       <div>
-        <a *sbAuthorize="['GROUP_WRITE']" routerLink="groups">{{ 'labels.groups.title' | translate}}</a>
+        <a *hasPermission="'GROUP_WRITE'" routerLink="groups">{{ 'labels.groups.title' | translate}}</a>
       </div>
       <div>
-        <a *sbAuthorize="['INSTRUCTIONAL_RESOURCE_WRITE']" routerLink="instructional-resource">{{'labels.instructional-resource.title' | translate}}</a>
+        <a *hasPermission="'INSTRUCTIONAL_RESOURCE_WRITE'" routerLink="instructional-resource">{{'labels.instructional-resource.title' | translate}}</a>
       </div>
       <div>
-        <a *sbAuthorize="['EMBARGO_WRITE']" routerLink="embargoes">{{'labels.embargo.title' | translate}}</a>
+        <a *hasPermission="'EMBARGO_WRITE'" routerLink="embargoes">{{'labels.embargo.title' | translate}}</a>
       </div>
     </div>
   </div>

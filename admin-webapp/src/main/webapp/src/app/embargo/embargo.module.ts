@@ -4,31 +4,39 @@ import { FormsModule } from "@angular/forms";
 import { CommonModule } from "../shared/common.module";
 import { EmbargoService } from "./embargo.service";
 import { EmbargoComponent } from "./embargo.component";
-import { EmbargoSettingsResolve } from "./embargo-settings.resolve";
 import { DataTableModule } from "primeng/primeng";
-import { ButtonsModule } from "ngx-bootstrap";
+import { ButtonsModule, ModalModule } from "ngx-bootstrap";
 import { Toggle } from "./toggle.component";
 import { EmbargoTable } from "./embargo-table.component";
+import { EmbargoConfirmationModal } from "./embargo-confirmation-modal.component";
+import { HttpClientModule } from "@angular/common/http";
+import { EmbargoResolve } from "./embargo.resolve";
 
 @NgModule({
   declarations: [
     EmbargoComponent,
     EmbargoTable,
-    Toggle
+    Toggle,
+    EmbargoConfirmationModal
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     CommonModule,
     DataTableModule,
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
+    ModalModule.forRoot()
   ],
   exports: [
     EmbargoComponent
   ],
   providers: [
     EmbargoService,
-    EmbargoSettingsResolve
+    EmbargoResolve
+  ],
+  entryComponents: [
+    EmbargoConfirmationModal
   ]
 })
 export class EmbargoModule {

@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from "@angular/core";
+import { Component, ElementRef, EventEmitter, forwardRef, Input, Output } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { Utils } from "@sbac/rdw-reporting-common-ngx/support";
 
@@ -19,8 +19,11 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
   selector: 'toggle',
   template: `
     <div class="btn-group btn-group-xs toggle-group">
-      <label class="btn btn-primary" [(ngModel)]="value" [btnRadio]="options[0].value" [ngClass]="{disabled: disabled}">{{options[0].text}}</label>
-      <label class="btn btn-primary" [(ngModel)]="value" [btnRadio]="options[1].value" [ngClass]="{disabled: disabled}">{{options[1].text}}</label>
+      <label *ngFor="let option of options"
+             class="btn btn-primary"
+             [(ngModel)]="value"
+             [btnRadio]="option.value"
+             [ngClass]="{disabled: disabled}">{{option.text}}</label>
     </div>
   `
 })
@@ -28,6 +31,9 @@ export class Toggle implements ControlValueAccessor {
 
   @Input()
   disabled: boolean = false;
+
+  @Output()
+  click: EventEmitter<void> = new EventEmitter();
 
   private _options: Option[] = [];
   private _value: any;
@@ -62,6 +68,7 @@ export class Toggle implements ControlValueAccessor {
     return this._value;
   }
 
+  @Input()
   set value(value: any) {
     if (this._value !== value) {
       this._value = value;

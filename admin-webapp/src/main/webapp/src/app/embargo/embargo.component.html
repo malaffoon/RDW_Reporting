@@ -1,17 +1,22 @@
 <h3 class="blue-dark mb-md">{{'labels.embargo.title' | translate}}</h3>
 
-<div class="well" *ngIf="embargoes && embargoes.stateEmbargo">
+<div class="well" *ngIf="embargoesByOrganizationType.has('State')">
   <div class="well-body">
     <h4 class="mb-sm">{{'labels.embargo.state.header' | translate}}</h4>
-    <embargo-table [embargoes]="[embargoes.stateEmbargo]"
-                   organizationNameHeader="{{'labels.embargo.table.column.name.state-header' | translate }}"></embargo-table>
+    <embargo-table translateContext="labels.embargo.state.table"
+                   [embargoes]="embargoesByOrganizationType.get('State')"
+                   (toggle)="confirmToggle($event)"></embargo-table>
   </div>
 </div>
 
-<div class="well" *ngIf="embargoes && embargoes.districtEmbargoes">
+<div class="well" *ngIf="embargoesByOrganizationType.has('District')">
   <div class="well-body">
     <h4 class="mb-sm">{{'labels.embargo.district.header' | translate}}</h4>
-    <embargo-table [embargoes]="embargoes.districtEmbargoes"
-                   organizationNameHeader="{{'labels.embargo.table.column.name.district-header' | translate }}"></embargo-table>
+    <embargo-table translateContext="labels.embargo.district.table"
+                   [embargoes]="embargoesByOrganizationType.get('District')"
+                   [overridingEmbargo]="embargoesByOrganizationType.get('State')[0]"
+                   (toggle)="confirmToggle($event)"></embargo-table>
   </div>
 </div>
+
+
