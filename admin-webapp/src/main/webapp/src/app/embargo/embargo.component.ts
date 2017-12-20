@@ -23,8 +23,13 @@ export class EmbargoComponent {
     this._embargoesByOrganizationType = this.route.snapshot.data[ 'embargoesByOrganizationType' ];
   }
 
-  get embargoesByOrganizationType(): Map<OrganizationType, Embargo[]> {
-    return this._embargoesByOrganizationType;
+  get stateEmbargo() {
+    const stateEmbargoes = this._embargoesByOrganizationType.get(OrganizationType.State);
+    return stateEmbargoes ? stateEmbargoes[0] : undefined;
+  }
+
+  get districtEmbargoes() {
+    return this._embargoesByOrganizationType.get(OrganizationType.District);
   }
 
   /**
