@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Assessment } from "../../model/assessment.model";
 import * as _ from "lodash";
 import { ColorService } from "../../../shared/color.service";
@@ -34,7 +34,7 @@ export class SelectAssessmentsComponent {
     return GradeCode.getIndex(gradeCode);
   }
 
-  toggleSelectedAssessment(assessment: Assessment){
+  toggleSelectedAssessment(assessment: Assessment) {
     assessment.selected = !assessment.selected;
     this.selectedAssessmentsChanged.emit(assessment);
   }
