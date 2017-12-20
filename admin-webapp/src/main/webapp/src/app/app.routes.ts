@@ -10,6 +10,8 @@ import { FileFormatComponent } from "./groups/import/fileformat/file-format.comp
 import { GroupImportDeactivateGuard } from "./groups/import/group-import.deactivate";
 import { GroupImportComponent } from "./groups/import/group-import.component";
 import { GroupsComponent } from "./groups/groups.component";
+import { EmbargoComponent } from "./embargo/embargo.component";
+import { EmbargoResolve } from "./embargo/embargo.resolve";
 import { AuthorizationCanActivate } from "@sbac/rdw-reporting-common-ngx/security"
 
 export const routes: Routes = [
@@ -99,7 +101,25 @@ export const routes: Routes = [
                 ]
               },
             ]
+          },
+          {
+            path: 'embargoes',
+            pathMatch: 'prefix',
+            data: {
+              breadcrumb: { translate: 'labels.embargo.title' },
+              permissions: [ 'EMBARGO_WRITE' ]
+            },
+            canActivate: [ AuthorizationCanActivate ],
+            children: [
+              {
+                path: '',
+                pathMatch: 'prefix',
+                component: EmbargoComponent,
+                resolve: { embargoesByOrganizationType: EmbargoResolve }
+              }
+            ]
           }
+
         ]
       },
       {
