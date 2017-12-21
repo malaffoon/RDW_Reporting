@@ -27,7 +27,7 @@ INSERT INTO asmt (id, grade_id, subject_id, type_id, school_year, name, label, u
   (-10, -9, 2, 1, 1888, 'asmt-9-again','asmt-9-again', -1, -1),
   (-11, -9, 2, 3, 1888, 'asmt-11', 'asmt-11', -1, -1);
 
-INSERT INTO active_asmt_per_year(asmt_id, school_year) VALUES
+INSERT INTO asmt_active_year(asmt_id, school_year) VALUES
    (-18, 2000),
    (-11, 1888),
    (-11, 1999),
