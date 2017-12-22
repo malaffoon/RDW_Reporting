@@ -32,7 +32,7 @@ apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.1.0-SNAPSHOT`
 String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.1.0-58"
-String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.1.0-276"
+String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.1.0-275"
 String dockerPrefix = "smarterbalanced"
 
 allprojects {
@@ -192,7 +192,7 @@ subprojects {
     }
 
     //The omission of the ':' in manualIT is on purpose - we need the relative path to manualIT
-    task IT(type: Test, dependsOn:[":cleanReportingTest", ":migrateReportingTest"]) {
+    task IT(type: Test, dependsOn:[":cleanReportingTest", ":migrateReportingTest", ":cleanWarehouseTest", ":migrateWarehouseTest"]) {
         include '**/*IT.*'
         outputs.upToDateWhen { false }
         doLast {
@@ -201,7 +201,7 @@ subprojects {
     }
 
     //Specific integration test task that will automatically migrate the test database schemas
-    task moIT(type: Test, dependsOn:[":migrateReportingTest"]) {
+    task moIT(type: Test, dependsOn:[":migrateReportingTest", ":migrateWarehouseTest"]) {
         include '**/*IT.*'
         outputs.upToDateWhen { false }
         doFirst {
