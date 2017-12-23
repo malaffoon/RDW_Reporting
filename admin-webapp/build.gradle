@@ -7,7 +7,6 @@ createDockerfile {
 dependencies {
     compile project(':rdw-reporting-common')
     compile project(':rdw-reporting-common-web')
-    compile project(':rdw-reporting-common-ngx')
     compile 'org.opentestsystem.rdw.common:rdw-common-archive'
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
     compile 'org.opentestsystem.rdw.common:rdw-common-messaging'
@@ -16,23 +15,19 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
     optional 'org.springframework.boot:spring-boot-configuration-processor'
     runtime 'org.springframework.boot:spring-boot-devtools'
-    compile 'org.springframework.cloud:spring-cloud-starter-aws'
     compile 'org.springframework.boot:spring-boot-starter-aop'
-    compile 'org.springframework.boot:spring-boot-starter-data-redis'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.cloud:spring-cloud-starter-aws'
     compile 'org.springframework.cloud:spring-cloud-starter-config'
     compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
     compile 'org.springframework.cloud:spring-cloud-stream'
-    compile 'org.springframework.retry:spring-retry'
-    compile 'org.springframework.security.extensions:spring-security-saml2-core'
-    compile 'org.springframework.session:spring-session'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
     compile 'com.google.guava:guava'
     compile 'mysql:mysql-connector-java'
-    compile 'commons-io:commons-io'
+    compile 'org.apache.commons:commons-io:commons-io'
 
     compile 'org.apache.commons:commons-csv:+'
 
@@ -45,3 +40,13 @@ dependencies {
     testCompile 'org.springframework.security:spring-security-test'
     testCompile 'org.springframework.cloud:spring-cloud-stream-test-support'
 }
+
+IT {
+    dependsOn ":cleanWarehouseTest"
+    dependsOn ":migrateWarehouseTest"
+}
+
+moIT {
+    dependsOn ":migrateWarehouseTest"
+}
+

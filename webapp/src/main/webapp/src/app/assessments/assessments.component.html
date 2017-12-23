@@ -98,7 +98,7 @@
 <h2 class="blue-dark h3 mt-lg mb-md">
   {{'labels.groups.results.title' | translate}}
   <div class="pull-right float-none-xs">
-    <label for="value-format">{{'labels.groups.results.value-as' | translate }} </label>
+    <label for="value-format" class="pr-xs">{{'labels.groups.results.value-as' | translate }} </label>
     <div id="value-format" class="btn-group btn-group-primary btn-group-xs mr-md" role="group">
       <button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}"
               angulartics2On="click" angularticsEvent="ShowAsPercent" angularticsCategory="AssessmentResults"
@@ -117,17 +117,19 @@
 </h2>
 
 <!-- Results Container -->
-<div *ngFor="let assessment of assessmentExams; let i = index" class="groups-results-wrapper">
-  <assessment-results [assessmentExam]="assessment"
-                      [showValuesAsPercent]="showValuesAsPercent"
-                      [filterBy]="clientFilterBy"
-                      [allowFilterBySessions]="allowFilterBySessions"
-                      [assessmentProvider]="assessmentProvider"
-                      [minimumItemDataYear]="minimumItemDataYear"></assessment-results>
+<div *ngIf="!hideAssessments">
+  <div *ngFor="let assessment of assessmentExams; let i = index" class="groups-results-wrapper">
+    <assessment-results [assessmentExam]="assessment"
+                        [showValuesAsPercent]="showValuesAsPercent"
+                        [filterBy]="clientFilterBy"
+                        [allowFilterBySessions]="allowFilterBySessions"
+                        [assessmentProvider]="assessmentProvider"
+                        [minimumItemDataYear]="minimumItemDataYear"></assessment-results>
+  </div>
 </div>
 
 <!-- No Results Error -->
-<div class="alert alert-info" *ngIf="assessmentExams.length == 0">
+<div class="alert alert-info" *ngIf="assessmentExams.length == 0 || hideAssessments">
   {{'messages.no-results-found' | translate}}
 </div>
 
