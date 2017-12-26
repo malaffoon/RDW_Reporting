@@ -3,26 +3,11 @@ management:
   port: 8008
   security:
     enabled: false
+
+  ## TODO remove when saml redis deps are all in webapp
   health:
     redis:
       enabled: false
-
-saml:
-  # SAML keystore path: file:/some/path/saml.jks
-  key-store-file: ${rdw.admin.keystore.path}
-  key-store-password: ${rdw.admin.keystore.password}
-  private-key-entry-alias: ${rdw.admin.keystore.alias}
-  private-key-entry-password: ${rdw.admin.keystore.entry.password}
-  idp-metadata-url: ${rdw.admin.idp}
-  sp-entity-id: ${rdw.admin.entityId}
-  # SAML settings when hosting behind a load balancer or reverse proxy
-  load-balance:
-    enabled: false
-    scheme: https
-    hostname:
-    context-path: /
-    port: 8080
-    include-server-port: false
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
@@ -94,6 +79,7 @@ spring:
           destination: GROUPS
           group: default
 
+  ## TODO remove when saml redis deps are all in webapp
   session:
     store-type: none
 
@@ -116,15 +102,12 @@ cloud:
 archive:
   root: file:///tmp/
 
+## TODO remove when saml redis deps are all in webapp
 permissionservice:
   component: Reporting
   endpoint: ${rdw.permission.service}
 
 app:
-  # google analytics configuration
-  analytics:
-    trackingId: ${rdw.admin.analytics.trackingId:}
-  home-url: /
   school-year: 2018
   state:
     code: CA
