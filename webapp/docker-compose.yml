@@ -48,6 +48,7 @@ services:
       - 8081:8008
     links:
       - config-server
+      - admin-service
       - report-processor-service
       - reporting-service
     environment:
