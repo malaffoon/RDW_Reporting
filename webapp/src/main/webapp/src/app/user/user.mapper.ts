@@ -79,7 +79,6 @@ export class UserMapper {
     uiModel.interpretiveGuideUrl = apiModel.interpretiveGuideUrl;
     uiModel.userGuideUrl = apiModel.userGuideUrl;
     uiModel.minItemDataYear = apiModel.minItemDataYear;
-    uiModel.adminWebappUrl = apiModel.adminWebappUrl;
     uiModel.reportLanguages = apiModel.reportLanguages;
     uiModel.uiLanguages = apiModel.uiLanguages;
     uiModel.transferAccess = apiModel.transferAccess;
