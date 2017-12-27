@@ -1,8 +1,8 @@
 import { OrganizationMapper } from "./organization.mapper";
-import { Option } from "@sbac/rdw-reporting-common-ngx";
 import { Organization } from "./organization";
 import { Tree } from "./tree";
 import { UserOrganizations } from "./user-organizations";
+import { Option } from "../../shared/form/sb-typeahead.component";
 
 describe('OrganizationService', () => {
 

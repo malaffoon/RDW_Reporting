@@ -6,10 +6,10 @@ import { ReportOptions } from "../../../../report/report-options.model";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuActionBuilder } from "../../../menu/menu-action.builder";
 import { Assessment } from "../../../model/assessment.model";
-import { PopupMenuAction } from "@sbac/rdw-reporting-common-ngx";
 import { InstructionalResourcesService } from "../../instructional-resources.service";
 import { InstructionalResource } from "../../../model/instructional-resources.model";
 import { Observable } from "rxjs/Observable";
+import { PopupMenuAction } from "../../../../shared/menu/popup-menu-action.model";
 
 enum ScoreViewState {
   OVERALL = 1,

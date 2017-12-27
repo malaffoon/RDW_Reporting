@@ -5,7 +5,6 @@ import { APP_BASE_HREF } from "@angular/common";
 import { SchoolResultsComponent } from "./school-results.component";
 import { CommonModule } from "../../shared/common.module";
 import { SchoolService } from "../school.service";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { SchoolAssessmentService } from "./school-assessment.service";
 import { User } from "../../user/model/user.model";
 import { School } from "../../user/model/school.model";
@@ -23,6 +22,7 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { MockAuthorizeDirective } from "../../../test/mock.authorize.directive";
 import { MockTranslateService } from "../../../test/mock.translate.service";
 import { TranslateService } from "@ngx-translate/core";
+import { DataService } from "../../shared/data/data.service";
 
 let availableGrades = [];
 

@@ -24,7 +24,7 @@ import { CsvModule } from "../csv-export/csv-export.module";
 import { ReportModule } from "../report/report.module";
 import { PopoverModule } from "ngx-bootstrap";
 import { UserModule } from "../user/user.module";
-import { RdwMenuModule } from "@sbac/rdw-reporting-common-ngx";
+import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
 
 @NgModule({
   declarations: [

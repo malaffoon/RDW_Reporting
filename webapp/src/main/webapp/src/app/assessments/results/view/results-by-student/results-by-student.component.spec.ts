@@ -10,8 +10,8 @@ import { Component, NO_ERRORS_SCHEMA } from "@angular/core";
 import { MockDataService } from "../../../../../test/mock.data.service";
 import { Assessment } from "../../../model/assessment.model";
 import { InstructionalResourcesService } from "../../instructional-resources.service";
-import { CachingDataService } from "@sbac/rdw-reporting-common-ngx/data/caching-data.service";
-import { DataService } from "@sbac/rdw-reporting-common-ngx/data/data.service";
+import { CachingDataService } from "../../../../shared/data/caching-data.service";
+import { DataService } from "../../../../shared/data/data.service";
 
 describe('ResultsByStudentComponent', () => {
   let component: ResultsByStudentComponent;

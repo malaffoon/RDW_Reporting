@@ -1,11 +1,11 @@
 import { Observable } from "rxjs/Observable";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { Injectable } from "@angular/core";
 import { Organization } from "./organization/organization";
 import { UserOrganizations } from "./organization/user-organizations";
 import { OrganizationExportOptions } from "./organization-export-options";
 import { OrganizationExportNamingService } from "./organization-export-naming.service";
 import { OrganizationGroupingService } from "./organization-grouping.service";
+import { DataService } from "../shared/data/data.service";
 
 const ServiceRoute = '/report-processor';
 

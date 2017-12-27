@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { URLSearchParams } from "@angular/http";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { AssessmentProvider } from "../../assessments/assessment-provider.interface";
@@ -11,6 +10,7 @@ import { CsvExportService } from "../../csv-export/csv-export.service";
 import { Angulartics2 } from "angulartics2";
 import { TranslateService } from "@ngx-translate/core";
 import { Group } from "../../user/model/group.model";
+import { DataService } from "../../shared/data/data.service";
 
 const ServiceRoute = '/reporting-service';
 

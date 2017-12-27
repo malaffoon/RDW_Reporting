@@ -1,4 +1,3 @@
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { GroupFilterOptions } from "./model/group-filter-options.model";
 import { Observable } from "rxjs/Observable";
 import { School } from "./model/school.model";
@@ -8,6 +7,7 @@ import { byNumber, byString } from "@kourge/ordering/comparator";
 import { GroupQuery } from "./model/group-query.model";
 import { URLSearchParams } from "@angular/http";
 import { Group } from "./model/group.model";
+import { DataService } from "../../shared/data/data.service";
 
 const ServiceRoute = '/admin-service';
 const ALL = 'ALL';

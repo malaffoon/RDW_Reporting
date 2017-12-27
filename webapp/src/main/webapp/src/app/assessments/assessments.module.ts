@@ -33,9 +33,9 @@ import { ResultsByStudentComponent } from './results/view/results-by-student/res
 import { DistractorAnalysisComponent } from './results/view/distractor-analysis/distractor-analysis.component';
 import { ResultsByItemComponent } from "./results/view/results-by-item/results-by-item.component";
 import { ScaleScoreService } from "./results/scale-score.service";
-import { RdwMenuModule } from "@sbac/rdw-reporting-common-ngx";
 import { InstructionalResourcesService } from "./results/instructional-resources.service";
 import { InstructionalResourcePopoverComponent } from './popover/instructional-resource-popover.component';
+import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
 
 @NgModule({
   declarations: [

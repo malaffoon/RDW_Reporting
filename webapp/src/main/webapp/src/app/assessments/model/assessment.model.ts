@@ -1,6 +1,6 @@
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../../shared/support/support";
 
 export class Assessment {
   id: number;

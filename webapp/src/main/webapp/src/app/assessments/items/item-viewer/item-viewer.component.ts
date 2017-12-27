@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { UserService } from "../../../user/user.service";
 import { ItemScoringGuide } from "../item-exemplar/model/item-scoring-guide.model";
 import { ItemScoringService } from "../item-exemplar/item-scoring.service";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../../../shared/support/support";
 
 /**
  * IRiS is the vendor client which allows us to integrate with the

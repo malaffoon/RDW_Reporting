@@ -1,6 +1,6 @@
 import { UserOrganizations } from "./organization/user-organizations";
 import { GroupedOrganizationIds, OrganizationExportOptions } from "./organization-export-options";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../shared/support/support";
 
 export class OrganizationExportNamingService {
 

@@ -1,12 +1,14 @@
-import { CachingDataService } from "@sbac/rdw-reporting-common-ngx";
 import { Injectable } from "@angular/core";
 import { ExamFilterOptionsMapper } from "./exam-filter-options.mapper";
+import { CachingDataService } from "../../../shared/data/caching-data.service";
 
 const ServiceRoute = '/reporting-service';
 
 @Injectable()
 export class ExamFilterOptionsService {
-  constructor(private service: CachingDataService, private mapper: ExamFilterOptionsMapper) {
+
+  constructor(private service: CachingDataService,
+              private mapper: ExamFilterOptionsMapper) {
   }
 
   getExamFilterOptions() {

@@ -3,8 +3,8 @@ import { UserService } from "./user/user.service";
 import { NavigationEnd, Router } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { User } from "./user/model/user.model";
-import { LanguageStore } from "@sbac/rdw-reporting-common-ngx/i18n";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { LanguageStore } from "./shared/i18n/language.store";
+import { Utils } from "./shared/support/support";
 
 @Component({
   selector: 'app-component',

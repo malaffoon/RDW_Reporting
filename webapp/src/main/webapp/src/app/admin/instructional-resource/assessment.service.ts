@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { Assessment } from "./model/assessment.model";
 import { Observable } from "rxjs/Observable";
 import { AssessmentQuery } from "./model/assessment-query.model";
+import { DataService } from "../../shared/data/data.service";
 
 const ServiceRoute = '/admin-service';
 

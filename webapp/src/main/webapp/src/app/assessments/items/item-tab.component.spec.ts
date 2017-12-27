@@ -5,7 +5,6 @@ import { ItemViewerComponent } from "./item-viewer/item-viewer.component";
 import { CommonModule } from "../../shared/common.module";
 import { PopoverModule, TabsetConfig } from "ngx-bootstrap";
 import { MockDataService } from "../../../test/mock.data.service";
-import { CachingDataService } from "@sbac/rdw-reporting-common-ngx";
 import { ItemExemplarComponent } from "./item-exemplar/item-exemplar.component";
 import { ItemScoresComponent } from "./item-scores/item-scores.component";
 import { DataTableModule } from "primeng/components/datatable/datatable";
@@ -15,6 +14,7 @@ import { AssessmentItem } from "../model/assessment-item.model";
 import { TestModule } from "../../../test/test.module";
 import { ItemInfoComponent } from "./item-info/item-info.component";
 import { Angulartics2, Angulartics2Module } from "angulartics2";
+import { CachingDataService } from "../../shared/data/caching-data.service";
 
 describe('ItemTabComponent', () => {
   let component: ItemTabComponent;

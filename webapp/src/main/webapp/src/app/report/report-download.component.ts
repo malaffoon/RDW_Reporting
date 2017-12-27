@@ -8,7 +8,7 @@ import { ModalDirective } from "ngx-bootstrap";
 import { Observable } from "rxjs/Observable";
 import { Report } from "./report.model";
 import { UserService } from "../user/user.service";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../shared/support/support";
 
 /**
  * Abstract class used to carry the common logic between all exam report download components

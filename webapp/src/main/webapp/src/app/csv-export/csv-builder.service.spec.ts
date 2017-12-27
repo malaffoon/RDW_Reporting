@@ -6,7 +6,7 @@ import { Angular2CsvProvider } from "./angular-csv.provider";
 import Spy = jasmine.Spy;
 import {Exam} from "../assessments/model/exam.model";
 import { Student } from "../student/model/student.model";
-import { SchoolYearPipe } from "@sbac/rdw-reporting-common-ngx";
+import { SchoolYearPipe } from "../shared/format/school-year.pipe";
 
 describe('CsvBuilder', () => {
   let datePipe: MockDatePipe;

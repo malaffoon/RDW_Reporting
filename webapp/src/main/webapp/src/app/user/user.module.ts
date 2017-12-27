@@ -4,9 +4,9 @@ import { UserService } from "./user.service";
 import { UserMapper } from "./user.mapper";
 import { BrowserModule } from "@angular/platform-browser";
 import { UserResolve } from "./user.resolve";
-import { PermissionService } from "@sbac/rdw-reporting-common-ngx/security";
-import { RdwSecurityModule } from "@sbac/rdw-reporting-common-ngx/security";
 import { UserPermissionService } from "./user-permission.service";
+import { PermissionService } from "../shared/security/permission.service";
+import { RdwSecurityModule } from "../shared/security/rdw-security.module";
 
 @NgModule({
   imports: [

@@ -4,7 +4,6 @@ import { ReportOptions } from "./report-options.model";
 import { Observable } from "rxjs/Observable";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
-import { DataService, Download } from "@sbac/rdw-reporting-common-ngx";
 import { Report } from "./report.model";
 import { ReportOrder } from "./report-order.enum";
 import { ResponseUtils } from "../shared/response-utils";
@@ -12,6 +11,8 @@ import { Student } from "../student/model/student.model";
 import { Group } from "../user/model/group.model";
 import { School } from "../user/model/school.model";
 import { Grade } from "../school-grade/grade.model";
+import { DataService } from "../shared/data/data.service";
+import { Download } from "../shared/data/download.model";
 
 const ServiceRoute = '/report-processor';
 

@@ -15,8 +15,8 @@ import { TestModule } from "../../../test/test.module";
 import { MockDataService } from "../../../test/mock.data.service";
 import { CommonModule } from "../../shared/common.module";
 import { InstructionalResourcesService } from "./instructional-resources.service";
-import { CachingDataService } from "@sbac/rdw-reporting-common-ngx/data/caching-data.service";
-import { DataService } from "@sbac/rdw-reporting-common-ngx/data/data.service";
+import { CachingDataService } from "../../shared/data/caching-data.service";
+import { DataService } from "../../shared/data/data.service";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;

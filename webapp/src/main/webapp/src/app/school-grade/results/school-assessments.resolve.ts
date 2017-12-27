@@ -3,7 +3,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/r
 import { Observable } from "rxjs/Observable";
 import { SchoolAssessmentService } from "./school-assessment.service";
 import { AssessmentExam } from "../../assessments/model/assessment-exam.model";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../../shared/support/support";
 
 @Injectable()
 export class SchoolAssessmentResolve implements Resolve<AssessmentExam> {

@@ -2,13 +2,13 @@ import { Component, Input, OnInit } from "@angular/core";
 import { StudentHistoryExamWrapper } from "../../model/student-history-exam-wrapper.model";
 import { Student } from "../../model/student.model";
 import { MenuActionBuilder } from "../../../assessments/menu/menu-action.builder";
-import { PopupMenuAction } from "@sbac/rdw-reporting-common-ngx";
 import { InstructionalResourcesService } from "../../../assessments/results/instructional-resources.service";
 import {
   InstructionalResource,
   InstructionalResources
 } from "../../../assessments/model/instructional-resources.model";
 import { Observable } from "rxjs/Observable";
+import { PopupMenuAction } from "../../../shared/menu/popup-menu-action.model";
 
 @Component({
   selector: 'student-history-ica-summitive-table',

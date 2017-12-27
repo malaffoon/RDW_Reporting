@@ -2,7 +2,6 @@ import { StudentHistoryIABTableComponent } from "./student-history-iab-table.com
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { BrowserModule } from "@angular/platform-browser";
 import { SharedModule } from "primeng/components/common/shared";
-import { CachingDataService, PopupMenuComponent, SchoolYearPipe } from "@sbac/rdw-reporting-common-ngx";
 import { TranslateModule } from "@ngx-translate/core";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { InformationButtonComponent } from "../../../shared/button/information-button.component";
@@ -11,10 +10,13 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { GradeDisplayPipe } from "../../../shared/grade-display.pipe";
 import { PopoverModule } from "ngx-bootstrap";
 import { InstructionalResourcesService } from "../../../assessments/results/instructional-resources.service";
-import { DataService } from "@sbac/rdw-reporting-common-ngx/data/data.service";
 import { MockDataService } from "../../../../test/mock.data.service";
 import { InstructionalResourcePopoverComponent } from "../../../assessments/popover/instructional-resource-popover.component";
 import { ScaleScoreComponent } from "../../../shared/scale-score/scale-score.component";
+import { SchoolYearPipe } from "../../../shared/format/school-year.pipe";
+import { PopupMenuComponent } from "../../../shared/menu/popup-menu.component";
+import { CachingDataService } from "../../../shared/data/caching-data.service";
+import { DataService } from "../../../shared/data/data.service";
 
 describe('StudentHistoryIABTableComponent', () => {
   let component: StudentHistoryIABTableComponent;
