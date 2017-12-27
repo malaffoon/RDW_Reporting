@@ -1,12 +1,6 @@
 # actuator end-points should be served from a different port than the API/web content
 management:
   port: 8008
-  security:
-    enabled: false
-  # TODO remove when spring-session/redis is moved from common-web to webapp
-  health:
-    redis:
-      enabled: false
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
@@ -29,17 +23,6 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
-  cache:
-    type: SIMPLE
-    cache-names: permissionsByRole, internalTranslationsByCode, mergeTranslations
-
-  # TODO remove when spring-session/redis is moved from common-web to webapp
-  session:
-    store-type: none
-
-security:
-  filter-dispatcher-types: FORWARD, INCLUDE, REQUEST, ASYNC, ERROR
-
 cloud:
   aws:
     credentials:
@@ -60,11 +43,6 @@ artifacts:
   exam-item:
     directory: ${rdw.reporting.artifacts.exam.item.directory:local/items/Item-{0}/}
     file-name: item-{0}.xml
-
-# TODO remove when adding qualified reporting-service package
-permissionservice:
-  component: Reporting
-  endpoint: ${rdw.permission.service}
 
 app:
   state:
@@ -93,9 +71,6 @@ app:
   # google analytics configuration
   analytics:
     trackingId: ${rdw.reporting.analytics.trackingId:}
-
-  # TODO can go away when admin-webapp joins webapp
-  admin-webapp-url:
 
   external-links:
     interpretive-guide: https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf

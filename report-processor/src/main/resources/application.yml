@@ -2,27 +2,14 @@
 # since those are the only end-points, switch to a less standard port using the main server.port config
 management:
   port: 8008
-  security:
-    enabled: false
-
-  ### this can be removed when spring-session dep is moved from common-web to webapp
-  health:
-    redis:
-      enabled: false
-
-server:
-  port: 8080
 
 spring:
-
   batch:
-      job:
-        enabled: false
-
+    job:
+      enabled: false
   cache:
     type: SIMPLE
     cache-names: internalTranslationsByCode
-
   cloud:
     stream:
       bindings:
@@ -59,10 +46,6 @@ spring:
 
   thymeleaf:
     mode: HTML
-
-  ### this can be removed when spring-session dep is moved from common-web to webapp
-  session:
-    store-type: none
 
 cloud:
   aws:
