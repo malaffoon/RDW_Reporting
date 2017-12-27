@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs/Observable";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "./support/support";
 
 /**
  * This pipe is responsible for transforming a grade codes into a
