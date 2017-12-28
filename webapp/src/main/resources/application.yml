@@ -101,7 +101,7 @@ zuul:
       path: /api/admin-service/**
       url: http://localhost:8280
       stripPrefix: true
-    admin-service:
+    aggregate-service:
       path: /api/aggregate-service/**
       url: http://localhost:8380
       stripPrefix: true
