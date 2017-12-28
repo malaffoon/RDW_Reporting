@@ -6,11 +6,12 @@ import {
   AuthenticationServiceAuthenticationExpiredRoute,
   AuthenticationServiceDefaultAuthenticationRoute
 } from "./authentication.service";
-import { SBStorage, StorageService, StorageType, WindowRefService } from "../core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MockActivatedRoute } from "../test/mock.activated-route";
 import { MockRouter } from "../test/mock.router";
 import { Location } from "@angular/common";
+import { WindowRefService } from "../core/window-ref.service";
+import { SBStorage, StorageService, StorageType } from "../core/storage.service";
 
 let mockWindow = {
   location: {
