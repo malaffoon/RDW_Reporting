@@ -5,6 +5,7 @@ import { TranslateLoader } from "@ngx-translate/core";
 import { Observable } from "rxjs/Observable";
 import { EmbeddedLanguages } from "./language-settings";
 import { HttpClient } from "@angular/common/http";
+import "rxjs/add/observable/of";
 import "rxjs/add/observable/forkJoin";
 
 const EmptyObservable = Observable.of({});
