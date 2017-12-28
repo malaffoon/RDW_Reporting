@@ -2,6 +2,8 @@
 # since those are the only end-points, switch to a less standard port using the main server.port config
 management:
   port: 8008
+  security:
+    enabled: false
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
