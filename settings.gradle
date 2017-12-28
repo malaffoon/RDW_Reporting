@@ -11,7 +11,11 @@ rootProject.name = "rdw-reporting"
 
 rootProject.children.each {
     if (it.name == "reporting-service") {
+        // TODO? later rename module to service?
         it.name = "${rootProject.name}-service"
+    } else if (it.name == "olap") {
+        // TODO later rename module to aggregate-service
+        it.name = "${rootProject.name}-aggregate-service"
     } else {
         it.name = "${rootProject.name}-${it.name}"
     }
