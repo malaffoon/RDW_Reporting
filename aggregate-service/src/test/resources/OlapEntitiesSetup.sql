@@ -11,11 +11,11 @@ INSERT INTO district (id, name, natural_id, external_id, migrate_id) VALUES
   (-8, 'District-8', 'id-8', 'externalId-8', -1),
   (-9, 'District-9', 'id-9', 'externalId-9', -1);
 
-INSERT INTO school (id, district_id, name, natural_id, external_id, update_import_id, migrate_id) VALUES
-  (-7, -7, 'School-7', 'id-7', 'externalId-7', -1, -1),
-  (-8, -8, 'School-8', 'id-8', 'externalId-8',-1, -1),
-  (-9, -9, 'School-9', 'id-9', 'externalId-9',-1, -1),
-  (-10, -9, 'School-10','id-10', 'externalId-10', -1, -1);
+INSERT INTO school (id, district_id, name, natural_id, external_id, embargo_enabled, update_import_id, migrate_id) VALUES
+  (-7, -7, 'School-7', 'id-7', 'externalId-7', 1, -1, -1),
+  (-8, -8, 'School-8', 'id-8', 'externalId-8', 1, -1, -1),
+  (-9, -9, 'School-9', 'id-9', 'externalId-9', 1, -1, -1),
+  (-10, -9, 'School-10','id-10', 'externalId-10', 1,  -1, -1);
 
 -- ------------------------------------------ Asmt ---------------------------------------------------------------------------------------------------------
 INSERT INTO asmt (id, grade_id, subject_id, type_id, school_year, name, label, update_import_id, migrate_id) VALUES
