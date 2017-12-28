@@ -49,6 +49,8 @@ services:
     links:
       - config-server
       - admin-service
+#      TODO uncomment when aggregate-service is uncommented
+#      - aggregate-service
       - report-processor-service
       - reporting-service
     environment:
