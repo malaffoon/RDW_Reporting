@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ItemScoringGuide } from "./model/item-scoring-guide.model";
 import { ScoringCriterion } from "./model/scoring-criterion.model";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../../../shared/support/support";
 
 @Injectable()
 export class ItemScoringGuideMapper {

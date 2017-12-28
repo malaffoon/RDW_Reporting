@@ -10,8 +10,8 @@ import { ordering } from "@kourge/ordering";
 import { byNumber } from "@kourge/ordering/comparator";
 import { ClaimScore } from "./model/claim-score.model";
 import { Student } from "../student/model/student.model";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
 import { School } from "../user/model/school.model";
+import { Utils } from "../shared/support/support";
 
 @Injectable()
 export class AssessmentExamMapper {

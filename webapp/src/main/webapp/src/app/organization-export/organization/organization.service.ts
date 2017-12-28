@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
-import { CachingDataService } from "@sbac/rdw-reporting-common-ngx";
 import { UserOrganizations } from "./user-organizations";
 import { OrganizationMapper } from "./organization.mapper";
 import { UserService } from "../../user/user.service";
 import "rxjs/add/observable/forkJoin";
+import { CachingDataService } from "../../shared/data/caching-data.service";
 
 const ServiceRoute = '/reporting-service';
 

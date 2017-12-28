@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { AssessmentItem } from "../../model/assessment-item.model";
 import { ItemInfoService } from "./item-info.service";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../../../shared/support/support";
 
 @Component({
   selector: 'item-info',

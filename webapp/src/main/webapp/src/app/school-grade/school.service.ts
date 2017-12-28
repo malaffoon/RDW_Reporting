@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { DataService, Utils } from "@sbac/rdw-reporting-common-ngx";
 import { Observable } from "rxjs/Observable";
 import { Grade } from "./grade.model";
 import { ResponseUtils } from "../shared/response-utils";
+import { DataService } from "../shared/data/data.service";
+import { Utils } from "../shared/support/support";
 
 const ServiceRoute = '/reporting-service';
 

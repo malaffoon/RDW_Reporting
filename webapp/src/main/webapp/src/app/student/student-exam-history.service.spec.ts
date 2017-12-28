@@ -1,6 +1,5 @@
 import { inject, TestBed } from "@angular/core/testing";
 import { StudentExamHistoryService } from "./student-exam-history.service";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { MockDataService } from "../../test/mock.data.service";
 import { Observable } from "rxjs/Observable";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
@@ -10,6 +9,7 @@ import { Exam } from "../assessments/model/exam.model";
 import { Student } from "./model/student.model";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
+import { DataService } from "../shared/data/data.service";
 
 describe('StudentExamHistoryService', () => {
   let dataService: MockDataService;

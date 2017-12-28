@@ -8,10 +8,10 @@ import { CreateInstructionalResourceModal } from "./create-instructional-resourc
 import { InstructionalResourceService } from "./instructional-resource.service";
 import { AssessmentService } from "./assessment.service";
 import { OrganizationService } from "./organization.service";
-import { RdwMenuModule } from "@sbac/rdw-reporting-common-ngx";
 import { UpdateInstructionalResourceModal } from "./update-instructional-resource.modal";
 import { DeleteInstructionalResourceModal } from "./delete-instructional-resource.modal";
 import { CommonModule } from "../../shared/common.module";
+import { RdwMenuModule } from "../../shared/menu/rdw-menu.module";
 
 @NgModule({
   declarations: [

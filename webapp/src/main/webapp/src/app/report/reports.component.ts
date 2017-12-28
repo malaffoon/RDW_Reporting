@@ -3,10 +3,10 @@ import { saveAs } from "file-saver";
 import { Report } from "./report.model";
 import { ActivatedRoute } from "@angular/router";
 import { ReportService } from "./report.service";
-import { Download } from "@sbac/rdw-reporting-common-ngx";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Resolution } from "../shared/resolution.model";
 import Timer = NodeJS.Timer;
+import { Download } from "../shared/data/download.model";
 
 /**
  * Responsible for controlling the behavior of the reports page

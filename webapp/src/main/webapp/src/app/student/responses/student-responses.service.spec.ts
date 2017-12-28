@@ -3,10 +3,10 @@ import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import { TestBed, inject } from "@angular/core/testing";
 import { StudentResponsesService } from "./student-responses.service";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
 import { AssessmentItem } from "../../assessments/model/assessment-item.model";
 import { Observable } from "rxjs/Observable";
+import { DataService } from "../../shared/data/data.service";
 
 const ServiceRoute = '/reporting-service';
 

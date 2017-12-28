@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ItemScoringService } from "./item-scoring.service";
 import { ItemScoringGuide } from "./model/item-scoring-guide.model";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../../../shared/support/support";
 
 @Component({
   selector: 'item-exemplar',
@@ -33,7 +33,9 @@ export class ItemExemplarComponent implements OnInit {
           this.loading = false;
 
           // TODO re-look at this logic
-          this.notFound = guide.rubrics.length === 0 && guide.exemplars.length === 0 && Utils.isNullOrUndefined(guide.answerKeyValue);
+          this.notFound = guide.rubrics.length === 0
+            && guide.exemplars.length === 0
+            && Utils.isNullOrUndefined(guide.answerKeyValue);
         },
         (response) => {
 

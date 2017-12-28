@@ -3,7 +3,7 @@ import { GroupImportService } from "./group-import.service";
 import { ImportResult } from "./import-result.model";
 import { FileUploader } from "ng2-file-upload";
 import { TranslateService } from "@ngx-translate/core";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../../../shared/support/support";
 
 const URL = '/api/studentGroups/';
 

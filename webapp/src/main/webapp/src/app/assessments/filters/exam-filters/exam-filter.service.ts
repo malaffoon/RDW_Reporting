@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
 import { ExamFilter } from "../../model/exam-filter.model";
 import { AssessmentExam } from "../../model/assessment-exam.model";
 import { FilterBy } from "../../model/filter-by.model";
 import { Exam } from "../../model/exam.model";
 import { Assessment } from "../../model/assessment.model";
+import { Utils } from "../../../shared/support/support";
 
 @Injectable()
 export class ExamFilterService {

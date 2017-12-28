@@ -3,9 +3,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
-import { PopupMenuAction } from "@sbac/rdw-reporting-common-ngx";
 import { InstructionalResource } from "../model/instructional-resources.model";
 import { Observable } from "rxjs/Observable";
+import { PopupMenuAction } from "../../shared/menu/popup-menu-action.model";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.

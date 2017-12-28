@@ -7,8 +7,8 @@ import {
   InstructionalResource,
   InstructionalResources
 } from "../../../assessments/model/instructional-resources.model";
-import { PopupMenuAction } from "@sbac/rdw-reporting-common-ngx/menu/popup-menu-action.model";
 import { Observable } from "rxjs/Observable";
+import { PopupMenuAction } from "../../../shared/menu/popup-menu-action.model";
 
 @Component({
   selector: 'student-history-iab-table',

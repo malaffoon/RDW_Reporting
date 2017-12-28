@@ -14,15 +14,12 @@ import { TranslateResolve } from "./home/translate.resolve";
 import { StudentHistoryResponsesExamResolve } from "./student/responses/student-history-responses-exam.resolve";
 import { StudentHistoryResponsesAssessmentResolve } from "./student/responses/student-history-responses-assessment.resolve";
 import { StudentHistoryResponsesStudentResolve } from "./student/responses/student-history-responses-student.resolve";
-import { SessionExpiredComponent } from "@sbac/rdw-reporting-common-ngx";
 import { ReportsResolve } from "./report/reports.resolve";
 import { ReportsComponent } from "./report/reports.component";
 import { ErrorComponent } from "./error/error.component";
 import { AccessDeniedComponent } from "./error/access-denied/access-denied.component";
 import { OrganizationExportComponent } from "./organization-export/organization-export.component";
 import { UserOrganizationsResolve } from "./organization-export/organization/user-organizations.resolve";
-import { RoutingAuthorizationCanActivate } from "@sbac/rdw-reporting-common-ngx/security/routing-authorization.can-activate";
-import { AuthorizationCanActivate } from "@sbac/rdw-reporting-common-ngx/security/authorization.can-activate";
 import { AggregateReportsComponent } from "./aggregate-report/aggregate-reports.component";
 import { AggregateReportsResultsComponent } from "./aggregate-report/results/aggregate-reports-results.component";
 import { InstructionalResourceComponent } from "./admin/instructional-resource/instructional-resource.component";
@@ -35,6 +32,9 @@ import { GroupImportComponent } from "./admin/groups/import/group-import.compone
 import { GroupImportDeactivateGuard } from "./admin/groups/import/group-import.deactivate";
 import { GroupsComponent } from "./admin/groups/groups.component";
 import { HomeComponent as AdminHomeComponent } from "./admin/home/home.component";
+import { SessionExpiredComponent } from "./shared/security/session-expired.component";
+import { AuthorizationCanActivate } from "./shared/security/authorization.can-activate";
+import { RoutingAuthorizationCanActivate } from "./shared/security/routing-authorization.can-activate";
 
 const adminRoute = {
   path: 'admin',

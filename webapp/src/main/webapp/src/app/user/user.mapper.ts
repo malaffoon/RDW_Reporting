@@ -5,7 +5,7 @@ import { Group } from "./model/group.model";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
 import { Configuration } from "./model/configuration.model";
-import { Utils } from "@sbac/rdw-reporting-common-ngx";
+import { Utils } from "../shared/support/support";
 
 @Injectable()
 export class UserMapper {

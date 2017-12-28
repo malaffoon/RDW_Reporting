@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { URLSearchParams } from "@angular/http";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Student } from "./model/student.model";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
 import { StudentHistoryExamWrapper } from "./model/student-history-exam-wrapper.model";
 import { ResponseUtils } from "../shared/response-utils";
+import { DataService } from "../shared/data/data.service";
 
 const ServiceRoute = '/reporting-service';
 

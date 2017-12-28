@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { Option } from "@sbac/rdw-reporting-common-ngx";
 import { OrganizationType } from "./organization/organization-type.enum";
 import { TranslateService } from "@ngx-translate/core";
 import { Tree } from "./organization/tree";
@@ -10,6 +9,7 @@ import { UserOrganizations } from "./organization/user-organizations";
 import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
 import { OrganizationExportService } from "./organization-export.service";
 import { NotificationService } from "../shared/notification/notification.service";
+import { Option } from "../shared/form/sb-typeahead.component";
 
 @Component({
   selector: 'organization-export',

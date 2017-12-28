@@ -3,10 +3,10 @@ import { InstructionalResource } from "./model/instructional-resource.model";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { CreateInstructionalResourceModal } from "./create-instructional-resource.modal";
 import { InstructionalResourceService } from "./instructional-resource.service";
-import { PopupMenuAction } from "@sbac/rdw-reporting-common-ngx";
 import { TranslateService } from "@ngx-translate/core";
 import { UpdateInstructionalResourceModal } from "./update-instructional-resource.modal";
 import { DeleteInstructionalResourceModal } from "./delete-instructional-resource.modal";
+import { PopupMenuAction } from "../../shared/menu/popup-menu-action.model";
 
 /**
  * This component displays the user's permitted instructional resources.

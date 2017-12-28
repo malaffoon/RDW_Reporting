@@ -1,12 +1,12 @@
 import { MockDataService } from "../../test/mock.data.service";
 import { inject, TestBed } from "@angular/core/testing";
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { ReportService } from "./report.service";
 import { Student } from "../student/model/student.model";
 import { Report } from "./report.model";
 import { Observable } from "rxjs/Observable";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
+import { DataService } from "../shared/data/data.service";
 
 describe('ReportService', () => {
   let dataService: MockDataService;

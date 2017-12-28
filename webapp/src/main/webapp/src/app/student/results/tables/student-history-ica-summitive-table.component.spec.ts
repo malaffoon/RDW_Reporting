@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { BrowserModule } from "@angular/platform-browser";
 import { SharedModule } from "primeng/components/common/shared";
-import { CachingDataService, DataService, PopupMenuComponent, SchoolYearPipe } from "@sbac/rdw-reporting-common-ngx";
 import { TranslateModule } from "@ngx-translate/core";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { StudentHistoryICASummitiveTableComponent } from "./student-history-ica-summitive-table.component";
@@ -17,6 +16,10 @@ import { InstructionalResourcesService } from "../../../assessments/results/inst
 import { MockDataService } from "../../../../test/mock.data.service";
 import { InstructionalResourcePopoverComponent } from "../../../assessments/popover/instructional-resource-popover.component";
 import { ScaleScoreComponent } from "../../../shared/scale-score/scale-score.component";
+import { SchoolYearPipe } from "../../../shared/format/school-year.pipe";
+import { PopupMenuComponent } from "../../../shared/menu/popup-menu.component";
+import { DataService } from "../../../shared/data/data.service";
+import { CachingDataService } from "../../../shared/data/caching-data.service";
 
 describe('StudentHistoryICASummitiveTableComponent', () => {
   let component: StudentHistoryICASummitiveTableComponent;

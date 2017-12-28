@@ -1,10 +1,11 @@
 import { District, Organization, School, SchoolGroup } from "./organization";
 import { Injectable } from "@angular/core";
 import { Tree } from "./tree";
-import { Option, Utils } from "@sbac/rdw-reporting-common-ngx";
 import { UserOrganizations } from "./user-organizations";
 import { OrganizationType } from "./organization-type.enum";
 import { createUuid } from "./organization-support";
+import { Option } from "../../shared/form/sb-typeahead.component";
+import { Utils } from "../../shared/support/support";
 
 @Injectable()
 export class OrganizationMapper {

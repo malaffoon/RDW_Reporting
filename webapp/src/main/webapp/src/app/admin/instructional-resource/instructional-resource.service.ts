@@ -1,7 +1,7 @@
-import { DataService } from "@sbac/rdw-reporting-common-ngx";
 import { Injectable } from "@angular/core";
 import { InstructionalResource } from "./model/instructional-resource.model";
 import { Observable } from "rxjs/Observable";
+import { DataService } from "../../shared/data/data.service";
 
 const ServiceRoute = '/admin-service';
 
