@@ -25,6 +25,10 @@ cloud:
       instance-profile: false
 
 app:
+  state:
+    code: CA
+    name: California
+
   datamart:
      olap_datasource:
         url: "\
