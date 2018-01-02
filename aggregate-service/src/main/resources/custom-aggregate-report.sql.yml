@@ -149,7 +149,7 @@ sqlbuilder:
                 groupBy: >-
                      sb.id
 
-            Status504:
+            Section504:
               clauses:
                 select: >-
                      b.id AS dimension_id
@@ -219,6 +219,7 @@ sqlbuilder:
                    organization_id in (:district_ids)
 
          # ---------- dimension parts -----------------------------------------------------------------------
+         # These values correspond to the exact name of DimensionType enums
             Overall:
               clauses:
                 join: >-
@@ -249,10 +250,10 @@ sqlbuilder:
                 join: >-
                   CROSS JOIN (select 'EconomicDisadvantage' AS dimension, b.id AS dimension_id, b.code as dimension_code from strict_boolean b) d
 
-            Status504:
+            Section504:
               clauses:
                 join: >-
-                  CROSS JOIN (select 'Status504' AS dimension, b.id AS dimension_id, b.code as dimension_code from boolean b) d
+                  CROSS JOIN (select 'Section504' AS dimension, b.id AS dimension_id, b.code as dimension_code from boolean b) d
 
             MigrantStatus:
               clauses:
