@@ -25,3 +25,23 @@ sql:
       AND dim.organization_id = measure.organization_id
       AND measure.dimension_id = dim.dimension_id
       AND measure.asmt_id = dim.asmt_id
+      AND measure.dimension_id = dim.dimension_id
+
+ # unlike all other dimensions we are not back-filling missing enrolled grades
+  customAggregateByEnrolledGrade: >-
+     CASE WHEN organization_id = -1 THEN '${app.state.name}' else organization_name END,
+     CASE WHEN organization_id = -1 THEN null else organization_id END,
+     organization_type,
+     asmt_grade_id,
+     school_year,
+     subject_id,
+     dimension_code,
+     dimension,
+     asmt_id,
+     score,
+     std_err,
+     level1,
+     level2,
+     level3,
+     level4
+     FROM (@{template.customAggregate}) a
