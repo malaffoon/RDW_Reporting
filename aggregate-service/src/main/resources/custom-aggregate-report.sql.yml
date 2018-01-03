@@ -41,24 +41,19 @@ sqlbuilder:
             state:
               clauses:
                 select: >-
-                     'State' AS organization_type,
-                     -1 AS organization_id,
-                     NULL AS organization_name
+                     -1 AS organization_id
 
             allDistricts:
               clauses:
                 select: >-
-                     'District' AS organization_type,
-                     d.id AS organization_id,
-                     d.name AS organization_name
+                     d.id AS organization_id
 
                 join: >-
                     JOIN school sch ON sch.id = fe.school_id
                     JOIN district d ON d.id = sch.district_id
 
                 groupBy: >-
-                     d.id,
-                     d.name
+                     d.id
 
             districts:
               clauses:
@@ -68,9 +63,7 @@ sqlbuilder:
             allSchoolsInDistricts:
               clauses:
                 select: >-
-                    'School' AS organization_type,
-                     sch.id AS organization_id,
-                     sch.name as organization_name
+                     sch.id AS organization_id
 
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
@@ -79,15 +72,12 @@ sqlbuilder:
                      sch.district_id in (:school_district_ids)
 
                 groupBy: >-
-                     sch.id,
-                     sch.name
+                     sch.id
 
             schools:
               clauses:
                 select: >-
-                    'School' AS organization_type,
-                     sch.id AS organization_id,
-                     sch.name AS organization_name
+                     sch.id AS organization_id
 
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
@@ -96,8 +86,7 @@ sqlbuilder:
                     sch.id in (:school_ids)
 
                 groupBy: >-
-                     sch.id,
-                     sch.name
+                     sch.id
 
       # ---------- dimension parts -----------------------------------------------------------------------
             Overall:
@@ -181,22 +170,6 @@ sqlbuilder:
 
                 groupBy: >-
                      b.id
-
-            # unlike all other dimensions we are not back-filling missing enrolled grades
-            StudentEnrolledGrade:
-               clauses:
-                 select: >-
-                      'StudentEnrolledGrade' AS dimension,
-                      fe.grade_id AS dimension_id,
-                      g.code AS dimension_code
-
-                 join:
-                      JOIN grade g ON g.id = fe.grade_id
-
-                 groupBy: >-
-                      fe.grade_id,
-                      g.code
-
       # This represents the parts of the SQL query that generates all possible combinations of the dimensions for the report.
       # The query is assembled by combining the below clauses with 'organization' and 'dimension' parts.
       # One 'dimension' and at least one 'organization' part is required for a valid query.
