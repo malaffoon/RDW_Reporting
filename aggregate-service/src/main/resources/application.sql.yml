@@ -46,6 +46,7 @@ sql:
      level4
      FROM (@{template.customAggregate}) a
 
+  # SQL does not support an Aggregate Product, but this seems to be a recommended way
   estimateReportRowCount: >-
    SELECT round(exp(sum(ln(count)))) as count from (
     SELECT sum(org_count)  AS count, 'organizations' AS type
