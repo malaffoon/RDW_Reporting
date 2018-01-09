@@ -6,6 +6,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.cloud:spring-cloud-starter-aws'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.cloud:spring-cloud-starter-config'
 
     // this is for retrying connection to config server
@@ -20,6 +21,7 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
 
     compile project(':rdw-reporting-common')
+    compile project(':rdw-reporting-common-web')
 
     // fixes java 8 time marshaling
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.7'
