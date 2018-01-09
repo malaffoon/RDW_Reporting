@@ -4,14 +4,12 @@ sql:
 
   assessmentGrade:
     findAll: >-
-      select id,
-        code
-      from grade g where exists (
-          select a.grade_id
-          from fact_student_exam e
-            join asmt a on e.asmt_id=a.id
-          and g.id = a.grade_id
-      )
+      SELECT DISTINCT
+        g.id,
+        g.code
+      FROM fact_student_exam e
+        JOIN asmt a ON a.id = e.asmt_id
+        JOIN grade g ON g.id = a.grade_id
 
   assessmentType:
     findAll: select id, code from asmt_type
