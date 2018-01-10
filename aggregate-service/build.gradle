@@ -53,15 +53,13 @@ cleanReportingOlapTest migrateReportingOlapTest
 (export APP_DATAMART_OLAP_DATASOURCE_PASSWORD=secretkey; \
  gradle rst)
 */
-if (System.getenv('APP_DATAMART_OLAP_DATASOURCE_PASSWORD')) {
-    task RST(type: Test) {
-        include '**/*RST.*'
-        group = 'Verification'
-        description = 'Runs the redshift integration tests (slow!).'
-        outputs.upToDateWhen { false }
-        doFirst {
-            println "Running Redshift System Tests..."
-        }
+task RST(type: Test) {
+    include '**/*RST.*'
+    group = 'Verification'
+    description = 'Runs the redshift integration tests (slow!).'
+    outputs.upToDateWhen { false }
+    doFirst {
+        println "Running Redshift System Tests..."
     }
 }
 
