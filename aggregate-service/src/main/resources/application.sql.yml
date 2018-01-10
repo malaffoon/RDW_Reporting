@@ -7,8 +7,7 @@ sql:
       SELECT DISTINCT
         g.id,
         g.code
-      FROM fact_student_exam e
-        JOIN asmt a ON a.id = e.asmt_id
+      FROM asmt a
         JOIN grade g ON g.id = a.grade_id
 
   assessmentType:
