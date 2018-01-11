@@ -41,6 +41,8 @@ app:
         validationQuery: SELECT 1
         driverClassName: com.amazon.redshift.jdbc42.Driver
 
+  interim-aggregate-reports-for-statewide-users-enabled: false
+
 spring:
   jackson:
     default-property-inclusion: non_null
