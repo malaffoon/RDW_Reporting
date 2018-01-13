@@ -111,7 +111,7 @@ sqlbuilder:
                 select: >-
                      s.gender_id AS dimension_id
 
-                join:
+                join: >-
                      JOIN student s ON fe.student_id = s.id
 
                 groupBy: >-
@@ -122,7 +122,7 @@ sqlbuilder:
                 select: >-
                      se.ethnicity_id AS dimension_id
 
-                join:
+                join: >-
                      LEFT JOIN student_ethnicity se ON se.student_id = fe.student_id
 
                 groupBy: >-
@@ -176,7 +176,7 @@ sqlbuilder:
                       fe.grade_id AS dimension_id,
                       g.code AS dimension_code
 
-                 join:
+                 join: >-
                       JOIN grade g ON g.id = fe.grade_id
 
                  groupBy: >-
@@ -187,7 +187,7 @@ sqlbuilder:
             completeness:
                clauses:
                  where: >-
-                     cmp.code = :completeness_code
+                     cmp.code in (:completeness_codes)
 
                  join: >-
                     JOIN completeness cmp ON cmp.id = fe.completeness_id
@@ -195,7 +195,7 @@ sqlbuilder:
             administration_condition:
                clauses:
                  where: >-
-                     acnd.code = :administration_condition_code
+                     acnd.code in (:administration_condition_codes)
 
                  join: >-
                     JOIN administration_condition acnd ON acnd.id = fe.administration_condition_id
@@ -237,7 +237,7 @@ sqlbuilder:
                 from: >-
                   school_subject_grade_school_year x
 
-                join:
+                join: >-
                   JOIN school sch on sch.id = x.organization_id
 
                 where: >-
