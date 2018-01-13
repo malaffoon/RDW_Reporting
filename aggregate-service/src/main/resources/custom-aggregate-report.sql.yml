@@ -199,6 +199,23 @@ sqlbuilder:
                       fe.grade_id,
                       g.code
 
+      # ------------ filters -------------------------------------------------------------
+            completeness:
+               clauses:
+                 where: >-
+                     cmp.code = :completeness_code
+
+                 join: >-
+                    JOIN completeness cmp ON cmp.id = fe.completeness_id
+
+            administration_condition:
+               clauses:
+                 where: >-
+                     acnd.code = :administration_condition_code
+
+                 join: >-
+                    JOIN administration_condition acnd ON acnd.id = fe.administration_condition_id
+
       # This represents the parts of the SQL query that generates all possible combinations of the dimensions for the report.
       # The query is assembled by combining the below clauses with 'organization' and 'dimension' parts.
       # One 'dimension' and at least one 'organization' part is required for a valid query.
