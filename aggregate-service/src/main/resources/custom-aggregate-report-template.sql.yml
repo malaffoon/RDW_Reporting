@@ -116,7 +116,7 @@ sqlbuilder:
                      JOIN gender gn on gn.id = s.gender_id
 
                 where: >-
-                     ( true = :allGenders OR gn.code in (:gender_codes) )
+                     ( true = :all_genders OR gn.code in (:gender_codes) )
 
                 groupBy: >-
                      s.gender_id
@@ -275,7 +275,7 @@ sqlbuilder:
                   CROSS JOIN (select 'Gender' AS dimension, gen.id AS dimension_id, gen.code as dimension_code from gender gen) d
 
                 where: >-
-                  ( true = :allGenders OR d.dimension_code in (:gender_codes) )
+                  ( true = :all_genders OR d.dimension_code in (:gender_codes) )
 
             Ethnicity:
               clauses:
