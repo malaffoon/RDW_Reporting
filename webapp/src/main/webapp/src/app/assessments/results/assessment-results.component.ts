@@ -24,7 +24,8 @@ import { Observable } from "rxjs/Observable";
 enum ResultsViewState {
   ByStudent = 1,
   ByItem = 2,
-  DistractorAnalysis = 3
+  DistractorAnalysis = 3,
+  WritingTraitScores = 4
 }
 
 @Component({
@@ -132,6 +133,10 @@ export class AssessmentResultsComponent implements OnInit {
     return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear) && !this._assessmentExam.assessment.isSummative;
   }
 
+  get displayWritingTraitScores(): boolean {
+    return true; // TODO
+  }
+
   get showStudentResults(): boolean {
     return this.currentResultsView.value == ResultsViewState.ByStudent;
   }
@@ -142,6 +147,10 @@ export class AssessmentResultsComponent implements OnInit {
 
   get showDistractorAnalysis(): boolean {
     return this.currentResultsView.value == ResultsViewState.DistractorAnalysis;
+  }
+
+  get showWritingTraitScores(): boolean {
+    return this.currentResultsView.value == ResultsViewState.WritingTraitScores;
   }
 
   get currentExportResults(): ExportResults {
@@ -170,6 +179,7 @@ export class AssessmentResultsComponent implements OnInit {
   resultsByStudentView: ResultsView;
   resultsByItemView: ResultsView;
   distractorAnalysisView: ResultsView;
+  writingTraitScoresView: ResultsView;
   instructionalResourceProvider: () => Observable<InstructionalResource[]>;
 
   private _filterBy: FilterBy;
@@ -191,6 +201,7 @@ export class AssessmentResultsComponent implements OnInit {
     this.resultsByStudentView = this.getResultViewState(ResultsViewState.ByStudent, true, false);
     this.resultsByItemView = this.getResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true)
     this.distractorAnalysisView = this.getResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true);
+    this.writingTraitScoresView = this.getResultViewState(ResultsViewState.WritingTraitScores, this.displayItemLevelData, true);
   }
 
   getResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean): ResultsView {

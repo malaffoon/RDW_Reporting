@@ -10,7 +10,7 @@ import { ExportRequest } from "./model/export-request.model";
 export interface AssessmentProvider{
   getAvailableAssessments(): Observable<Assessment[]>;
   getExams(assessmentId: number): Observable<Exam[]>;
-  getAssessmentItems(assessmentId: number, multipleChoiceMultipleSelectItems?: boolean): Observable<AssessmentItem[]>;
+  getAssessmentItems(assessmentId: number, itemTypes?: string[]): Observable<AssessmentItem[]>;
   getSchoolId(): number;
 
   // TODO: Technically not a provider method, but if we add one more export, let's break

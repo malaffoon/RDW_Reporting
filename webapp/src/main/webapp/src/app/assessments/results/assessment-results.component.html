@@ -122,6 +122,19 @@
                   </button>
                 </a>
               </li>
+              <li role="menuitem">
+                <a class="dropdown-item"
+                   popover="{{ (!assessmentExam.assessment.isIab ? 'messages.no-writing-trait-for-none-iabs' : 'messages.no-writing-trait') | translate }}"
+                   triggers="{{ !writingTraitScoresView.disabled ? '': 'mouseenter:mouseleave'}}"
+                   placement="right"
+                   [ngClass]="{'selected': currentResultsView == writingTraitScoresView }">
+                  <button [disabled]="writingTraitScoresView.disabled"
+                          class="btn btn-default btn-borderless"
+                          (click)="setCurrentView(writingTraitScoresView)">
+                    {{ writingTraitScoresView.label | translate }}
+                  </button>
+                </a>
+              </li>
             </ul>
           </div>
           <button *ngIf="currentResultsView.canExport"
@@ -154,6 +167,14 @@
                              [assessment]="assessmentExam.assessment"
                              [exams]="exams">
         </distractor-analysis>
+      </div>
+      <div *ngIf="showWritingTraitScores">
+        <writing-trait-scores #writingTraitScores
+                             [showValuesAsPercent]="showValuesAsPercent"
+                             [assessmentProvider]="assessmentProvider"
+                             [assessment]="assessmentExam.assessment"
+                             [exams]="exams">
+        </writing-trait-scores>
       </div>
     </div>
   </div>

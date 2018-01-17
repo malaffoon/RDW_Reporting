@@ -11,10 +11,10 @@ import { RequestType } from "../../../../shared/enum/request-type.enum";
 import { ExportResults } from "../../assessment-results.component";
 
 @Component({
-  selector: 'distractor-analysis',
-  templateUrl: './distractor-analysis.component.html'
+  selector: 'writing-trait-scores',
+  templateUrl: './writing-trait-scores.component.html'
 })
-export class DistractorAnalysisComponent implements OnInit, ExportResults {
+export class WritingTraitScoresComponent implements OnInit, ExportResults {
   /**
    * If true, values will be shown as percentages
    */
@@ -62,7 +62,7 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
 
   ngOnInit() {
     this.loading = true;
-    this.assessmentProvider.getAssessmentItems(this.assessment.id, ['MC', 'MS']).subscribe(assessmentItems => {
+    this.assessmentProvider.getAssessmentItems(this.assessment.id, ['WER']).subscribe(assessmentItems => {
 
       let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
 
@@ -92,7 +92,7 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
 
 
     this.angulartics2.eventTrack.next({
-      action: 'Export DistractorAnalysis',
+      action: 'Export WritingTraitScores',
       properties: {
         category: 'Export'
       }
