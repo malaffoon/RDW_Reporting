@@ -1,4 +1,5 @@
 sql:
+
   administrationCondition:
     findAll: select id, code from administration_condition
 
@@ -18,6 +19,31 @@ sql:
 
   gender:
     findAll: select id, code from gender
+
+  organization:
+    aggregate:
+      findAllSchoolsAndDistricts: >-
+        SELECT
+          district.id,
+          district.name,
+          district.natural_id,
+          'District' as org_type,
+          sch.district_group_id,
+          null as district_id,
+          null as school_group_id
+        FROM district
+          JOIN school sch
+            ON sch.district_id = district.id
+        UNION
+        SELECT
+          school.id,
+          school.name,
+          school.natural_id,
+          'School' as org_type,
+          school.district_group_id,
+          school.district_id,
+          school.school_group_id
+        FROM school
 
   schoolYear:
     findAll: select year from school_year
