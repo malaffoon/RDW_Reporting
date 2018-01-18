@@ -137,7 +137,7 @@ sqlbuilder:
                      se.ethnicity_id AS dimension_id
 
                 join: >-
-                     LEFT JOIN student_ethnicity se ON se.student_id = fe.student_id
+                     JOIN student_ethnicity se ON se.student_id = fe.student_id
 
                 groupBy: >-
                      se.ethnicity_id
