@@ -1,5 +1,178 @@
-<div class="well">
-  <h3>Sample Aggregate Report Landing Page</h3>
-  <p><a routerLink="results">Sample Results View</a></p>
-  <p><a routerLink="query-builder">Query Builder</a></p>
+<div class="container">
+
+  <div class="row mt-sm">
+    <div class="col-md-6 col-md-offset-3">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.query-builder.customize.title' | translate}}
+      </h2>
+      <p class="small gray-darkest">{{'labels.aggregate-reports.query-builder.customize.description' | translate}}</p>
+    </div>
+  </div>
+
+  <div class="row mt-sm">
+    <div class="col-md-6 col-md-offset-3">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.query-builder.assessment-attributes.title' | translate}}
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="well-group">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6 pr-0">
+              <label info-button
+                     title="{{'labels.aggregate-reports.query-builder.assessment-attributes.assessment-type.label' | translate}}"
+                     content="{{'labels.aggregate-reports.query-builder.assessment-attributes.assessment-type.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <div class="pull-right">
+                <span *ngIf="options.assessmentTypes.length == 1">{{options.assessmentTypes[0].text}}</span>
+                <sb-toggle *ngIf="options.assessmentTypes.length > 1"
+                           [options]="options.assessmentTypes"
+                           [(ngModel)]="request.assessmentType"></sb-toggle>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6 pr-0">
+              <label info-button
+                     title="{{'labels.aggregate-reports.query-builder.assessment-attributes.subjects.label' | translate}}"
+                     content="{{'labels.aggregate-reports.query-builder.assessment-attributes.subjects.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <div class="pull-right">
+                <sb-checkbox-group [horizontal]="true"
+                                   [options]="options.subjects"
+                                   [(ngModel)]="request.subjects"
+                                   analyticsEvent="FilterClick"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   [allOptionAnalyticsProperties]="{label: 'Subject: All'}"></sb-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-4 pr-0">
+              <label info-button
+                     title="{{'labels.aggregate-reports.query-builder.assessment-attributes.assessment-grades.label' | translate}}"
+                     content="{{'labels.aggregate-reports.query-builder.assessment-attributes.assessment-grades.info' | translate}}"></label>
+            </div>
+            <div class="col-md-8">
+              <div class="pull-right">
+                <sb-checkbox-group [horizontal]="true"
+                                   [options]="options.assessmentGrades"
+                                   [(ngModel)]="request.assessmentGrades"
+                                   analyticsEvent="FilterClick"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"></sb-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6 pr-0">
+              <label info-button
+                     title="{{'labels.aggregate-reports.query-builder.assessment-attributes.school-year.label' | translate}}"
+                     content="{{'labels.aggregate-reports.query-builder.assessment-attributes.school-year.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <div class="pull-right">
+                <sb-checkbox-group [options]="options.schoolYears"
+                                   [(ngModel)]="request.schoolYears"
+                                   analyticsEvent="FilterClick"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"></sb-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-5 pr-0">
+              <label info-button
+                     title="{{'labels.aggregate-reports.query-builder.assessment-attributes.interim-administration-condition.label' | translate}}"
+                     content="{{'labels.aggregate-reports.query-builder.assessment-attributes.interim-administration-condition.info' | translate}}"></label>
+            </div>
+            <div class="col-md-7">
+              <div class="pull-right">
+                <sb-checkbox-group [horizontal]="true"
+                                   [options]="options.interimAdministrationConditions"
+                                   [(ngModel)]="request.interimAdministrationConditions"
+                                   analyticsEvent="FilterClick"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   [allOptionAnalyticsProperties]="{label: 'Manner of Administration: All'}"></sb-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6 pr-0">
+              <label info-button
+                     title="{{'labels.aggregate-reports.query-builder.assessment-attributes.summative-administration-condition.label' | translate}}"
+                     content="{{'labels.aggregate-reports.query-builder.assessment-attributes.summative-administration-condition.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <div class="pull-right">
+                <sb-checkbox-group [horizontal]="true"
+                                   [options]="options.summativeAdministrationConditions"
+                                   [(ngModel)]="request.summativeAdministrationConditions"
+                                   analyticsEvent="FilterClick"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   [allOptionAnalyticsProperties]="{label: 'Validity: All'}"></sb-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6 pr-0">
+              <label info-button
+                     title="{{'labels.aggregate-reports.query-builder.assessment-attributes.completeness.label' | translate}}"
+                     content="{{'labels.aggregate-reports.query-builder.assessment-attributes.completeness.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <div class="pull-right">
+                <sb-checkbox-group [horizontal]="true"
+                                   [options]="options.completenesses"
+                                   [(ngModel)]="request.completenesses"
+                                   analyticsEvent="FilterClick"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   [allOptionAnalyticsProperties]="{label: 'Completeness: All'}"></sb-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-sm">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="pull-right">
+        <button class="btn btn-default btn-sm float-none-xs"
+                analyticsEvent="GenerateReportExportCSV"
+                analyticsCategory="AggregateQueryBuilder"
+                angulartics2on="click"
+                container="body">
+          <i class="fa fa-table"></i> {{'labels.export.csv' | translate }}
+        </button>
+        <button class="btn btn-success btn-sm ml-xs green"
+                analyticsEvent="GenerateReport"
+                analyticsCategory="AggregateQueryBuilder"
+                angulartics2on="click"
+                container="body">
+          <i class="fa fa-gears"></i> {{'labels.aggregate-reports.query-builder.customize.generate-report-button' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 </div>

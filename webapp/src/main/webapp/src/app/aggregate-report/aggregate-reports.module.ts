@@ -13,6 +13,9 @@ import { QueryBuilderComponent } from "./results/query-builder.component";
 import { FormsModule } from "@angular/forms";
 import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 import { ReportOptionsService } from "./results/report-options.service";
+import { AggregateReportOptionsResolve } from "./aggregate-report-options.resolve";
+import { AggregateReportOptionsService } from "./aggregate-report-options.service";
+import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 
 @NgModule({
   declarations: [
@@ -40,7 +43,10 @@ import { ReportOptionsService } from "./results/report-options.service";
   providers: [
     AssessmentDetailsService,
     MockAggregateReportsService,
-    ReportOptionsService
+    ReportOptionsService,
+    AggregateReportOptionsResolve,
+    AggregateReportOptionsService,
+    AggregateReportFormOptionsMapper
   ]
 })
 export class AggregateReportsModule {
