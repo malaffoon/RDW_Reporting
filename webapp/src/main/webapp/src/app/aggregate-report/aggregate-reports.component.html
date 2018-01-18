@@ -31,8 +31,7 @@
                 <span *ngIf="options.assessmentTypes.length == 1">{{options.assessmentTypes[0].text}}</span>
                 <sb-toggle *ngIf="options.assessmentTypes.length > 1"
                            [options]="options.assessmentTypes"
-                           [(ngModel)]="request.assessmentType"
-                           (ngModelChange)="onChange($event)"></sb-toggle>
+                           [(ngModel)]="request.assessmentType"></sb-toggle>
               </div>
             </div>
           </div>
@@ -49,7 +48,6 @@
                 <sb-checkbox-group [horizontal]="true"
                                    [options]="options.subjects"
                                    [(ngModel)]="request.subjects"
-                                   (ngModelChange)="onChange($event)"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: 'Subject: All'}"></sb-checkbox-group>
@@ -69,7 +67,6 @@
                 <sb-checkbox-group [horizontal]="true"
                                    [options]="options.assessmentGrades"
                                    [(ngModel)]="request.assessmentGrades"
-                                   (ngModelChange)="onChange($event)"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"></sb-checkbox-group>
@@ -88,7 +85,6 @@
               <div class="pull-right">
                 <sb-checkbox-group [options]="options.schoolYears"
                                    [(ngModel)]="request.schoolYears"
-                                   (ngModelChange)="onChange($event)"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"></sb-checkbox-group>
@@ -108,7 +104,6 @@
                 <sb-checkbox-group [horizontal]="true"
                                    [options]="options.interimAdministrationConditions"
                                    [(ngModel)]="request.interimAdministrationConditions"
-                                   (ngModelChange)="onChange($event)"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: 'Manner of Administration: All'}"></sb-checkbox-group>
@@ -128,7 +123,6 @@
                 <sb-checkbox-group [horizontal]="true"
                                    [options]="options.summativeAdministrationConditions"
                                    [(ngModel)]="request.summativeAdministrationConditions"
-                                   (ngModelChange)="onChange($event)"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: 'Validity: All'}"></sb-checkbox-group>
@@ -148,7 +142,6 @@
                 <sb-checkbox-group [horizontal]="true"
                                    [options]="options.completenesses"
                                    [(ngModel)]="request.completenesses"
-                                   (ngModelChange)="onChange($event)"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: 'Completeness: All'}"></sb-checkbox-group>

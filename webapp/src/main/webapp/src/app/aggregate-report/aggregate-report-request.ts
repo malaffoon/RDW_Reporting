@@ -1,16 +1,3 @@
-// private AssessmentType assessmentType;
-// private Set<Integer> subjectIds;
-// private Set<Integer> schoolYears;
-// private Set<Integer> asmtGradeIds;
-// private boolean includeState;
-// private boolean includeAllDistricts;
-// private Map<Integer, Boolean> districts; // district ids and a flag to indicate whether to include all schools for the district
-// private Set<Integer> schoolIds;
-// private Set<DimensionType> dimensionTypes;
-// private Set<Integer> completenessIds;
-// private Set<Integer> administrativeConditionIds;
-// private Set<Integer> gendersId;
-
 import { CodedEntity } from "./aggregate-report-options";
 
 /**

@@ -38,8 +38,4 @@ export class AggregateReportsComponent {
     return request;
   }
 
-  onChange(event: any): void {
-    // console.log('change', event, this.request);
-  }
-
 }

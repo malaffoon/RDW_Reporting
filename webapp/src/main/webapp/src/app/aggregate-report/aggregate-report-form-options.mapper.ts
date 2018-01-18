@@ -6,9 +6,6 @@ import { Option as SbCheckboxGroupOption } from "../shared/form/sb-checkbox-grou
 import { TranslateService } from "@ngx-translate/core";
 import { SchoolYearPipe } from "../shared/format/school-year.pipe";
 
-const localeCompare = property => (a, b) => a[ property ].localeCompare(b[ property ]);
-const localeCompareText: (a: any, b: any) => number = (a, b) => a.text.localeCompare(b.text);
-
 @Injectable()
 export class AggregateReportFormOptionsMapper {
 
@@ -31,7 +28,7 @@ export class AggregateReportFormOptionsMapper {
           value: entity,
           text: this.translate.instant(`common.assessment-type.${entity.code}.short-name`)
         })
-        .sort(localeCompareText),
+        .sort((a, b) => a.text.localeCompare(b.text)),
       completenesses: options.completenesses
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
@@ -66,19 +63,6 @@ export class AggregateReportFormOptionsMapper {
         }),
     };
 
-    // return this.dataService.get(`${ServiceRoute}/reportOptions`)
-    //   .map(options => <AggregateReportOptions>{
-    //     ethnicities: options.ethnicities
-    //       .map(mapper(code => `labels.enum.ethnicity.${code}`))
-    //       .sort(localeCompareText),
-    //     genders: options.genders
-    //       .map(mapper(code => `labels.enum.gender.${code}`))
-    //       .sort(localeCompareText),
-    //     schoolYears: options.schoolYears
-    //       .sort((a, b) => a - b),
-    //   });
-
   }
-
 
 }

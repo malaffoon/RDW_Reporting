@@ -1,14 +1,14 @@
 export interface AggregateReportOptions {
 
-  assessmentGrades: CodedEntity[];
-  assessmentTypes: CodedEntity[];
-  completenesses: CodedEntity[];
-  ethnicities: CodedEntity[];
-  genders: CodedEntity[];
-  interimAdministrationConditions: CodedEntity[];
-  schoolYears: number[];
-  subjects: CodedEntity[];
-  summativeAdministrationConditions: CodedEntity[];
+  readonly assessmentGrades: CodedEntity[];
+  readonly assessmentTypes: CodedEntity[];
+  readonly completenesses: CodedEntity[];
+  readonly ethnicities: CodedEntity[];
+  readonly genders: CodedEntity[];
+  readonly interimAdministrationConditions: CodedEntity[];
+  readonly schoolYears: number[];
+  readonly subjects: CodedEntity[];
+  readonly summativeAdministrationConditions: CodedEntity[];
 
 }
 
