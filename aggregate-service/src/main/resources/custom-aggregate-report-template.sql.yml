@@ -122,17 +122,15 @@ sqlbuilder:
               clauses:
                 select: >-
                      s.gender_id AS dimension_id
-
                 join: >-
                      JOIN student s ON fe.student_id = s.id
                      JOIN gender gn on gn.id = s.gender_id
-
                 where: >-
                      ( true = :all_genders OR gn.code in (:gender_ids) )
-
                 groupBy: >-
                      s.gender_id
 
+            # If a student has multiple ethnicities, we are double-counting it - by design
             Ethnicity:
               clauses:
                 select: >-
@@ -148,7 +146,8 @@ sqlbuilder:
               clauses:
                 select: >-
                      fe.iep AS dimension_id
-
+                where: >-
+                     ( true = :all_ieps OR fe.iep in (:iep_ids) )
                 groupBy: >-
                      fe.iep
 
@@ -156,7 +155,8 @@ sqlbuilder:
               clauses:
                 select: >-
                      fe.lep AS dimension_id
-
+                where: >-
+                     ( true = :all_leps OR fe.lep in (:lep_ids) )
                 groupBy: >-
                      fe.lep
 
@@ -164,7 +164,8 @@ sqlbuilder:
               clauses:
                 select: >-
                      fe.economic_disadvantage AS dimension_id
-
+                where: >-
+                     ( true = :all_economic_disadvantages OR fe.economic_disadvantage in (:economic_disadvantage_ids) )
                 groupBy: >-
                      fe.economic_disadvantage
 
@@ -172,7 +173,8 @@ sqlbuilder:
               clauses:
                 select: >-
                      fe.section504 AS dimension_id
-
+                where: >-
+                     ( true = :all_section504s OR fe.section504 in (:section504_ids) )
                 groupBy: >-
                      fe.section504
 
@@ -180,7 +182,8 @@ sqlbuilder:
               clauses:
                 select: >-
                      fe.migrant_status AS dimension_id
-
+                where: >-
+                     ( true = :all_migrant_statuses OR fe.migrant_status in (:migrant_status_ids) )
                 groupBy: >-
                      fe.migrant_status
 
@@ -191,10 +194,8 @@ sqlbuilder:
                       'StudentEnrolledGrade' AS dimension,
                       fe.grade_id AS dimension_id,
                       g.code AS dimension_code
-
                  join: >-
                       JOIN grade g ON g.id = fe.grade_id
-
                  groupBy: >-
                       fe.grade_id,
                       g.code
@@ -214,9 +215,38 @@ sqlbuilder:
                clauses:
                  join: >-
                      JOIN student s ON fe.student_id = s.id
-
                  where: >-
                     s.gender_id in (:gender_ids)
+
+            Ethnicity_filter:
+               clauses:
+                 where: >-
+                     EXISTS (select 1 from student_ethnicity where ethnicity_id in (:ethnicity_ids) and student_id = fe.student_id)
+
+            IEP_filter:
+               clauses:
+                 where: >-
+                     fe.iep in (:iep_ids)
+
+            LEP_filter:
+               clauses:
+                 where: >-
+                     fe.lep in (:lep_ids)
+
+            EconomicDisadvantage_filter:
+               clauses:
+                 where: >-
+                     fe.economic_disadvantage in (:economic_disadvantage_ids)
+
+            Section504_filter:
+               clauses:
+                 where: >-
+                     fe.section504 in (:section504_ids)
+
+            MigrantStatus_filter:
+               clauses:
+                 where: >-
+                     fe.migrant_status in (:migrant_status_ids)
 
       # This represents the parts of the SQL query that generates all possible combinations of the dimensions for the report.
       # The query is assembled by combining the below clauses with 'organization' and 'dimension' parts.
@@ -226,7 +256,6 @@ sqlbuilder:
           select: >-
               d.*,
               x.*
-
           where: >-
               school_year in (:school_years) AND grade_id in (:asmt_grade_ids) and subject_id in (:subject_ids) and asmt_type_id = :asmt_type_id
 
@@ -246,7 +275,6 @@ sqlbuilder:
               clauses:
                 from: >-
                   school_subject_grade_school_year x
-
                 where: >-
                   organization_id in (:school_ids)
 
@@ -254,10 +282,8 @@ sqlbuilder:
               clauses:
                 from: >-
                   school_subject_grade_school_year x
-
                 join: >-
                   JOIN school sch on sch.id = x.organization_id
-
                 where: >-
                   sch.district_id in (:school_district_ids)
 
@@ -278,7 +304,6 @@ sqlbuilder:
               clauses:
                 join: >-
                   CROSS JOIN (select 'Gender' AS dimension, gen.id AS dimension_id, gen.code as dimension_code from gender gen) d
-
                 where: >-
                   ( true = :all_genders OR d.dimension_id in (:gender_ids) )
 
@@ -286,28 +311,40 @@ sqlbuilder:
               clauses:
                 join: >-
                   CROSS JOIN (select 'Ethnicity' AS dimension, e.id AS dimension_id, e.code as dimension_code from ethnicity e) d
+                where: >-
+                  (true = :all_ethnicities OR d.dimension_id in (:ethnicity_ids))
 
             IEP:
               clauses:
                 join: >-
                   CROSS JOIN (select 'IEP' AS dimension, b.id AS dimension_id, b.code as dimension_code from strict_boolean b) d
+                where: >-
+                  (true = :all_ieps OR d.dimension_id in (:iep_ids))
 
             LEP:
               clauses:
                 join: >-
                   CROSS JOIN (select 'LEP' AS dimension, b.id AS dimension_id, b.code as dimension_code from strict_boolean b) d
+                where: >-
+                  (true = :all_leps OR d.dimension_id in (:lep_ids))
 
             EconomicDisadvantage:
               clauses:
                 join: >-
                   CROSS JOIN (select 'EconomicDisadvantage' AS dimension, b.id AS dimension_id, b.code as dimension_code from strict_boolean b) d
+                where: >-
+                  (true = :all_economic_disadvantages OR d.dimension_id in (:economic_disadvantage_ids))
 
             Section504:
               clauses:
                 join: >-
                   CROSS JOIN (select 'Section504' AS dimension, b.id AS dimension_id, b.code as dimension_code from boolean b) d
+                where: >-
+                  (true = :all_section504s OR d.dimension_id in (:section504_ids))
 
             MigrantStatus:
               clauses:
                 join: >-
                   CROSS JOIN (select 'MigrantStatus' AS dimension, b.id AS dimension_id, b.code as dimension_code from boolean b) d
+                where: >-
+                  (true = :all_migrant_statuses OR d.dimension_id in (:migrant_status_ids))
