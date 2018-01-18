@@ -10,6 +10,8 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
 };
 
 /**
+ * TODO rename to sb-radio-button-group
+ *
  * A two state switch component that can be used in place of a checkbox
  * @example <code><sb-toggle [options]="[{value: true, text: 'On'}, {value: false, text: 'Off'}]" [(ngModel)]="myModel"></sb-toggle></code>
  */
@@ -59,9 +61,6 @@ export class SBToggleComponent implements ControlValueAccessor, OnInit {
   set options(options: Option[]) {
     if (options == null || typeof options === 'undefined') {
       this.throwError('options must not be null or undefined');
-    }
-    if (options.length != 2) {
-      this.throwError('expected two options but got ' + options.length);
     }
     this._options = options.map(option => <Option>{
       value: option.value,
