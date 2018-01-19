@@ -20,7 +20,7 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
 @Component({
   selector: 'sb-checkbox-group',
   template: `
-    <div [ngClass]="{'vertical': !horizontal}"
+    <div [ngClass]="{'vertical': !this.horizontal}"
          class="nested-btn-group btn-group-sm toggle-group"
          data-toggle="buttons">
       <label class="btn btn-primary" [ngClass]="{'active': selectedAllOptionInternal }">

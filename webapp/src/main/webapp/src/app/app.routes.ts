@@ -36,7 +36,7 @@ import { QueryBuilderComponent } from "./aggregate-report/results/query-builder.
 import { SessionExpiredComponent } from "./shared/security/session-expired.component";
 import { AuthorizationCanActivate } from "./shared/security/authorization.can-activate";
 import { RoutingAuthorizationCanActivate } from "./shared/security/routing-authorization.can-activate";
-import { AggregateReportOptionsResolve } from "./aggregate-report/aggregate-report-options.resolve";
+import { AggregateReportFormResolve } from "./aggregate-report/aggregate-report-form.resolve";
 
 const adminRoute = {
   path: 'admin',
@@ -275,7 +275,7 @@ export const routes: Routes = [
           {
             path: '',
             data: { canReuse: true },
-            resolve: { options: AggregateReportOptionsResolve },
+            resolve: { form: AggregateReportFormResolve },
             pathMatch: 'full',
             component: AggregateReportsComponent
           },

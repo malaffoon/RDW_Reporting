@@ -19,6 +19,11 @@
   },
   "collapse": "Collapse",
   "common": {
+    "form-field-boolean-values": {
+      "true": "Yes",
+      "false": "No",
+      "undefined": "Not Stated"
+    },
     "administration-condition": {
       "IN": "Invalid",
       "NS": "Nonstandardized",
@@ -38,6 +43,20 @@
         "name": "Summative",
         "short-name": "Summative"
       }
+    },
+    "ethnicity": {
+      "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
+      "Asian": "Asian",
+      "BlackOrAfricanAmerican": "Black or African American",
+      "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
+      "Filipino": "Filipino",
+      "HispanicOrLatinoEthnicity": "Hispanic/Latino",
+      "NativeHawaiianOrOtherPacificIslander": "Native Hawaiian or Pacific Islander",
+      "White": "White"
+    },
+    "gender": {
+      "Female": "Female",
+      "Male": "Male"
     },
     "subject": {
       "ELA": {
@@ -558,6 +577,73 @@
           }
         }
       },
+      "form": {
+        "heading": "Custom Aggregate Report",
+        "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\"",
+        "field": {
+          "assessment-grades": {
+            "label": "Assessment Grades",
+            "info": "Assessment Grades"
+          },
+          "assessment-type": {
+            "label": "Assessment Type",
+            "info": "Assessment Type"
+          },
+          "completeness": {
+            "label": "Completeness",
+            "info": "Completeness"
+          },
+          "interim-administration-condition": {
+            "label": "Manner of Administration",
+            "info": "Manner of Administration",
+            "qualifier": "Interim"
+          },
+          "school-year": {
+            "label": "Academic Years",
+            "info": "Academic Years"
+          },
+          "subjects": {
+            "label": "Subjects",
+            "info": "Subjects"
+          },
+          "summative-administration-condition": {
+            "label": "Validity",
+            "info": "Validity",
+            "qualifier": "Summative"
+          },
+          "gender": {
+            "label": "Gender",
+            "info": "Gender"
+          },
+          "ethnicity": {
+            "label": "Race / Ethnicity",
+            "info": "Race / Ethnicity"
+          },
+          "migrant-status": {
+            "label": "Migrant Status",
+            "info": "Migrant Status"
+          },
+          "iep": {
+            "label": "IEP",
+            "info": "IEP"
+          },
+          "504": {
+            "label": "504",
+            "info": "504"
+          },
+          "limited-english-proficiency": {
+            "label": "Limited English Proficiency",
+            "info": "Limited English Proficiency"
+          },
+          "economic-disadvantage": {
+            "label": "Economic Disadvantage",
+            "info": "Economic Disadvantage"
+          }
+        },
+        "assessment-attributes-heading": "Assessment Attributes",
+        "subgroup-filters-heading": "Subgroup Filters",
+        "submit": "Generate Report"
+      },
       "query-builder": {
         "heading": "Student Group Aggregate Report",
         "edit": "Edit",
@@ -579,37 +665,6 @@
           "selected-organizations": "Selected Organizations",
           "years": "Years",
           "assessment-grades": "Assessment Grade(s)"
-        },
-        "assessment-attributes": {
-          "title": "Assessment Attributes",
-          "assessment-grades": {
-            "label": "Assessment Grades",
-            "info": "Assessment Grades"
-          },
-          "assessment-type": {
-            "label": "Assessment Type",
-            "info": "Assessment Type"
-          },
-          "completeness": {
-            "label": "Completeness",
-            "info": "Completeness"
-          },
-          "interim-administration-condition": {
-            "label": "Manner of Administration",
-            "info": "Manner of Administration"
-          },
-          "school-year": {
-            "label": "Academic Years",
-            "info": "Academic Years"
-          },
-          "subjects": {
-            "label": "Subjects",
-            "info": "Subjects"
-          },
-          "summative-administration-condition": {
-            "label": "Validity",
-            "info": "Validity"
-          }
         },
         "filter-results": {
           "title": "Filter Results",
