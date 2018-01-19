@@ -47,6 +47,7 @@ app:
       refresh-cron: "0 0 1 * * *"
 
   aggregate-reports:
+    summative-enabled: true
     statewide-interim-enabled: false
 
 spring:
@@ -57,7 +58,7 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: internalTranslationsByCode, reportOptions, reportOrganizations
+    cache-names: internalTranslationsByCode, reportOptions, reportOrganizations, assessmentTypes
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
