@@ -22,7 +22,7 @@
     "form-field-boolean-values": {
       "true": "Yes",
       "false": "No",
-      "undefined": "Not stated"
+      "undefined": "Not Stated"
     },
     "administration-condition": {
       "IN": "Invalid",
