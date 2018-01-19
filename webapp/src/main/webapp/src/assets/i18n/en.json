@@ -654,6 +654,20 @@
               "Percent": "Percent",
               "Number": "Number"
             }
+          },
+          "comparative-subgroup": {
+            "label": "Subgroups",
+            "info": "Subgroups",
+            "value": {
+              "Gender": "Gender",
+              "Ethnicity": "Race / Ethnicity",
+              "LEP": "Limited English Proficiency",
+              "MigrantStatus": "Migrant Status",
+              "Section504": "504",
+              "IEP": "IEP",
+              "EconomicDisadvantage": "Economic Disadvantage",
+              "StudentEnrolledGrade": "Student Enrolled Grade"
+            }
           }
         },
         "organizations": {
@@ -663,6 +677,7 @@
         "assessment-attributes-heading": "Assessment Attributes",
         "subgroup-filters-heading": "Subgroup Filters",
         "report-features-heading": "Report Features",
+        "comparative-subgroups-heading": "Comparative Subgroups",
         "submit": "Generate Report"
       },
       "query-builder": {

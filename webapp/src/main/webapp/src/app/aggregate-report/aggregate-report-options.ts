@@ -16,6 +16,8 @@ export interface AggregateReportOptions {
   readonly limitedEnglishProficiencies: any[];
   readonly economicDisadvantages: any[];
 
+  readonly dimensionTypes: string[];
+
 }
 
 export interface CodedEntity {

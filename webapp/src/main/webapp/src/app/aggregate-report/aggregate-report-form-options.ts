@@ -22,6 +22,7 @@ export interface AggregateReportFormOptions {
   economicDisadvantages: SbCheckboxGroupOption[];
   achievementLevelDisplayTypes: SbToggleOption[];
   valueDisplayTypes: SbToggleOption[];
+  dimensionTypes: SbCheckboxGroupOption[];
 
 }
 
