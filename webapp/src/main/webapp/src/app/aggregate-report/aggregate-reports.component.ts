@@ -27,16 +27,25 @@ export class AggregateReportsComponent {
     return this.form.settings;
   }
 
+  /**
+   * @returns {boolean} <code>true</code> if a non-interim assessment type is selected
+   */
   get interimFieldsDisabled(): boolean {
+    // TODO implement as !assessmentType.interim
     return this.settings.assessmentType.code === 'sum';
   }
 
+  /**
+   * @returns {boolean} <code>true</code> if an non-summative assessment type is selected
+   */
   get summativeFieldsDisabled(): boolean {
     return !this.interimFieldsDisabled;
   }
 
   /**
-   * TODO change performance-comparison to accept coded entity or code
+   * TODO change performance-comparison to accept coded entity or code?
+   *
+   * Converts assessment type code to AssessmentType enum value
    *
    * @param {CodedEntity} assessmentType
    * @returns {AssessmentType}
@@ -45,6 +54,9 @@ export class AggregateReportsComponent {
     return [AssessmentType.ICA, AssessmentType.IAB, AssessmentType.SUMMATIVE][assessmentType.id - 1];
   }
 
+  /**
+   * Submits the form
+   */
   submit(): void {
     this.router.navigate([ 'results' ], {
       queryParams: this.toQueryParameters(this.settings),
