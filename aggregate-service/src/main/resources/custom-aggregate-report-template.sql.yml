@@ -47,9 +47,9 @@ sqlbuilder:
                 # the 'magic' number -1 is needed here to support JOIN in the final overarching query defined in the application.sql.yml
                 select: >-
                      'State' AS organization_type,
-                     -1 AS organization_id,
+                     NULL AS organization_id,
                      NULL AS organization_natural_id,
-                     NULL AS organization_name
+                     '${app.state.name}' AS organization_name
 
             allDistricts:
               clauses:
@@ -116,75 +116,108 @@ sqlbuilder:
               clauses:
               # the 'magic' number -1 is needed here to support JOIN in the final overarching query defined in the application.sql.yml
                 select: >-
-                    -1 AS dimension_id
+                    'Overall' AS dimension,
+                    -1  AS dimension_id,
+                    null AS dimension_code
             Gender:
               clauses:
                 select: >-
-                     s.gender_id AS dimension_id
+                     'Gender' AS dimension,
+                      s.gender_id  AS dimension_id,
+                      gn.code AS dimension_code
                 join: >-
                      JOIN student s ON fe.student_id = s.id
                      JOIN gender gn on gn.id = s.gender_id
                 where: >-
                      ( true = :all_genders OR gn.code in (:gender_ids) )
                 groupBy: >-
-                     s.gender_id
+                     s.gender_id,
+                     gn.code
 
             # If a student has multiple ethnicities, we are double-counting it - by design
             Ethnicity:
               clauses:
                 select: >-
-                     se.ethnicity_id AS dimension_id
-
+                     'Ethnicity' AS dimension,
+                     se.ethnicity_id AS dimension_id,
+                     e.code AS dimension_code
                 join: >-
                      JOIN student_ethnicity se ON se.student_id = fe.student_id
+                     JOIN ethnicity e ON e.id = se.ethnicity_id
 
                 groupBy: >-
-                     se.ethnicity_id
+                     se.ethnicity_id,
+                     e.code
 
             IEP:
               clauses:
                 select: >-
-                     fe.iep AS dimension_id
+                     'IEP' AS dimension,
+                     fe.iep AS dimension_id,
+                     sb.code AS dimension_code
+                join: >-
+                      JOIN strict_boolean sb ON sb.id = fe.iep
                 where: >-
                      ( true = :all_ieps OR fe.iep in (:iep_ids) )
                 groupBy: >-
-                     fe.iep
+                     fe.iep,
+                     sb.code
 
             LEP:
               clauses:
                 select: >-
-                     fe.lep AS dimension_id
+                     'EconomicDisadvantage' AS dimension,
+                     fe.lep AS dimension_id,
+                     sb.code AS dimension_code
+                join: >-
+                      JOIN strict_boolean sb ON sb.id = fe.lep
                 where: >-
                      ( true = :all_leps OR fe.lep in (:lep_ids) )
                 groupBy: >-
-                     fe.lep
+                     fe.lep,
+                     sb.code
 
             EconomicDisadvantage:
               clauses:
                 select: >-
-                     fe.economic_disadvantage AS dimension_id
+                     'EconomicDisadvantage' AS dimension,
+                     fe.economic_disadvantage AS dimension_id,
+                     sb.code AS dimension_code
+                join: >-
+                      JOIN strict_boolean sb ON sb.id = fe.economic_disadvantage
                 where: >-
                      ( true = :all_economic_disadvantages OR fe.economic_disadvantage in (:economic_disadvantage_ids) )
                 groupBy: >-
-                     fe.economic_disadvantage
+                     fe.economic_disadvantage,
+                     sb.code
 
             Section504:
               clauses:
                 select: >-
-                     fe.section504 AS dimension_id
+                     'Section504' AS dimension,
+                     fe.section504 AS dimension_id,
+                     b.code AS dimension_code
+                join: >-
+                      JOIN boolean b ON b.id = fe.section504
                 where: >-
                      ( true = :all_section504s OR fe.section504 in (:section504_ids) )
                 groupBy: >-
-                     fe.section504
+                     fe.section504,
+                     b.code
 
             MigrantStatus:
               clauses:
                 select: >-
-                     fe.migrant_status AS dimension_id
+                     'MigrantStatus' AS dimension,
+                     fe.migrant_status AS dimension_id,
+                     b.code AS dimension_code
+                join: >-
+                      JOIN boolean b ON b.id = fe.migrant_status
                 where: >-
                      ( true = :all_migrant_statuses OR fe.migrant_status in (:migrant_status_ids) )
                 groupBy: >-
-                     fe.migrant_status
+                     fe.migrant_status,
+                     b.code
 
             # unlike all other dimensions we are not back-filling missing enrolled grades
             StudentEnrolledGrade:
