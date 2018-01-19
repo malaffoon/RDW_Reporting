@@ -232,7 +232,8 @@
     "results-view-state": {
       "ByItem": "Results By Item",
       "ByStudent": "Results By Student",
-      "DistractorAnalysis": "Distractor Analysis"
+      "DistractorAnalysis": "Distractor Analysis",
+      "WritingTraitScores": "Writing Trait Scores"
     },
     "status": {
       "ACCEPTED": "Accepted",
@@ -852,6 +853,8 @@
           "items": {
             "cols": {
               "answer-key": "Answer Key",
+              "average": "Average",
+              "category": "Category",
               "claim": "Claim/Target",
               "claim-info-html": "Claims and targets are a way of classifying test content.  The claim is the major topic area.  For example, in English language arts, reading is a claim.  Within each claim, there are targets that describe the particular knowledge and skills that the test measures.  Each target may encompass one or more standards from the Common Core State Standards.  Within the Reading claim, for example, one of the targets is concerned with finding the central idea in a text.  For more information, see the <a href=\"http://www.smarterbalanced.org/assessments/development/\" target=\"_blank\">Smarter Balanced Content Specifications</a>.",
               "difficulty": "Item Difficulty",

@@ -4,6 +4,7 @@ import { ExamStatisticsLevel } from "../model/exam-statistics.model";
 import { Exam } from "../model/exam.model";
 import { DynamicItemField } from "../model/item-point-field.model";
 import * as math from "mathjs";
+import {WritingTraitScoreSummary} from "../model/writing-trait-scores.model";
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -91,6 +92,93 @@ export class ExamStatisticsCalculator {
     }
 
     return pointFields;
+  }
+
+  aggregateWritingTraitScores(assessmentItems: AssessmentItem[]) : WritingTraitScoreSummary[] {
+    let summary: WritingTraitScoreSummary[] = [];
+
+    // setup the basic structure
+    let summaryItem = new WritingTraitScoreSummary();
+    summaryItem.category = "Organization / Purpose";
+    // summaryItem.average = 1.4;
+    summaryItem.maxPoints = 4;
+    summaryItem.numbers = [0, 0, 0, 0, 0];
+    summaryItem.percents = [0, 0, 0, 0, 0];
+    summary.push(summaryItem);
+
+    summaryItem = new WritingTraitScoreSummary();
+    summaryItem.category = "Evidence / Elaboration";
+    // summaryItem.average = 3.5;
+    summaryItem.maxPoints = 4;
+    summaryItem.numbers = [0, 0, 0, 0, 0];
+    summaryItem.percents = [0, 0, 0, 0, 0];
+    summary.push(summaryItem);
+
+    summaryItem = new WritingTraitScoreSummary();
+    summaryItem.category = "Conventions";
+    // summaryItem.average = 1.8;
+    summaryItem.maxPoints = 2;
+    summaryItem.numbers = [0, 0, 0];
+    summaryItem.percents = [0, 0, 0];
+    summary.push(summaryItem);
+
+    summaryItem = new WritingTraitScoreSummary();
+    summaryItem.category = "Total Points";
+    summaryItem.maxPoints = 6;
+    summaryItem.numbers = [0, 0, 0, 0, 0, 0, 0];
+    summaryItem.percents = [0, 0, 0, 0, 0, 0, 0];
+    summary.push(summaryItem);
+
+    let totalAnswers = 0;
+    for (let item of assessmentItems) {
+      let items = item.scores.filter(x => x.writingTraitScores != null);
+      totalAnswers = items.length;
+
+      summary[0].numbers[0] = items.filter(x => x.writingTraitScores.organization == null || x.writingTraitScores.organization == 0).length;
+      summary[0].numbers[1] = items.filter(x => x.writingTraitScores.organization == 1).length;
+      summary[0].numbers[2] = items.filter(x => x.writingTraitScores.organization == 2).length;
+      summary[0].numbers[3] = items.filter(x => x.writingTraitScores.organization == 3).length;
+      summary[0].numbers[4] = items.filter(x => x.writingTraitScores.organization == 4).length;
+
+      summary[1].numbers[0] = items.filter(x => x.writingTraitScores.evidence == null || x.writingTraitScores.evidence == 0).length;
+      summary[1].numbers[1] = items.filter(x => x.writingTraitScores.evidence == 1).length;
+      summary[1].numbers[2] = items.filter(x => x.writingTraitScores.evidence == 2).length;
+      summary[1].numbers[3] = items.filter(x => x.writingTraitScores.evidence == 3).length;
+      summary[1].numbers[4] = items.filter(x => x.writingTraitScores.evidence == 4).length;
+
+      summary[2].numbers[0] = items.filter(x => x.writingTraitScores.conventions == null || x.writingTraitScores.conventions == 0).length;
+      summary[2].numbers[1] = items.filter(x => x.writingTraitScores.conventions == 1).length;
+      summary[2].numbers[2] = items.filter(x => x.writingTraitScores.conventions == 2).length;
+      summary[2].numbers[3] = items.filter(x => x.writingTraitScores.conventions == 3).length;
+      summary[2].numbers[4] = items.filter(x => x.writingTraitScores.conventions == 4).length;
+
+      summary[3].numbers[0] = items.filter(x => x.points == 0).length;
+      summary[3].numbers[1] = items.filter(x => x.points == 1).length;
+      summary[3].numbers[2] = items.filter(x => x.points == 2).length;
+      summary[3].numbers[3] = items.filter(x => x.points == 3).length;
+      summary[3].numbers[4] = items.filter(x => x.points== 4).length;
+    }
+
+    // now calc averages
+    for (let row of summary) {
+      let total = 0;
+      let count = 0;
+
+
+
+      row.numbers.forEach((num, index) => {
+        total += num * index;
+        count += num;
+
+        row.percents[index] = totalAnswers == 0 ? 0 : num / totalAnswers * 100;
+      });
+
+      row.average = count == 0 ? 0 : total / count;
+    }
+
+    console.log(summary);
+
+    return summary;
   }
 
   aggregateItemsByResponse(assessmentItems: AssessmentItem[]) {

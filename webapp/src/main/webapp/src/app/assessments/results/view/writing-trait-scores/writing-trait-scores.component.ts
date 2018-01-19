@@ -9,6 +9,7 @@ import { Assessment } from "../../../model/assessment.model";
 import { Angulartics2 } from "angulartics2";
 import { RequestType } from "../../../../shared/enum/request-type.enum";
 import { ExportResults } from "../../assessment-results.component";
+import {WritingTraitScoreSummary} from "../../../model/writing-trait-scores.model";
 
 @Component({
   selector: 'writing-trait-scores',
@@ -40,9 +41,9 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
   set exams(value: Exam[]) {
     this._exams = value;
 
-    if (this.filteredMultipleChoiceItems) {
-      this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(this._multipleChoiceItems);
-      this.examCalculator.aggregateItemsByResponse(this.filteredMultipleChoiceItems);
+    if (this.filteredItems) {
+      this.filteredItems = this.filterItems(this._writingTraitScoredItems);
+      this.traitScoreSummary = this.examCalculator.aggregateWritingTraitScores(this.filteredItems);
     }
   }
 
@@ -51,10 +52,11 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
   }
 
   loading: boolean = false;
-  choiceColumns: DynamicItemField[];
+  pointColumns: DynamicItemField[];
+  traitScoreSummary: WritingTraitScoreSummary[] = [];
 
-  private _multipleChoiceItems: AssessmentItem[];
-  private filteredMultipleChoiceItems: AssessmentItem[];
+  private _writingTraitScoredItems: AssessmentItem[];
+  private filteredItems: AssessmentItem[];
   private _exams: Exam[];
 
   constructor(private examCalculator: ExamStatisticsCalculator, private renderer: Renderer2, private angulartics2: Angulartics2) {
@@ -62,32 +64,34 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
 
   ngOnInit() {
     this.loading = true;
-    this.assessmentProvider.getAssessmentItems(this.assessment.id, ['WER']).subscribe(assessmentItems => {
 
+    this.assessmentProvider.getAssessmentItems(this.assessment.id, ['WER']).subscribe(assessmentItems => {
+      this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
       let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
 
       if (numOfScores != 0) {
-        this._multipleChoiceItems = assessmentItems;
-        this.choiceColumns = this.examCalculator.getChoiceFields(assessmentItems);
+        this._writingTraitScoredItems = assessmentItems;
 
-        this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(assessmentItems);
-        this.examCalculator.aggregateItemsByResponse(this.filteredMultipleChoiceItems);
+        this.filteredItems = this.filterItems(assessmentItems);
+        this.traitScoreSummary = this.examCalculator.aggregateWritingTraitScores(assessmentItems);
       }
+
+
 
       this.loading = false
     });
   }
 
   hasDataToExport(): boolean {
-    return this.filteredMultipleChoiceItems && this.filteredMultipleChoiceItems.length > 0;
+    return this.filteredItems && this.filteredItems.length > 0;
   }
 
   exportToCsv(): void {
     let exportRequest = new ExportRequest();
     exportRequest.assessment = this.assessment;
     exportRequest.showAsPercent = this.showValuesAsPercent;
-    exportRequest.assessmentItems = this.filteredMultipleChoiceItems;
-    exportRequest.pointColumns = this.choiceColumns;
+    exportRequest.assessmentItems = this.filteredItems;
+    exportRequest.pointColumns = this.pointColumns;
     exportRequest.type = RequestType.DistractorAnalysis;
 
 
@@ -101,7 +105,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     this.assessmentProvider.exportItemsToCsv(exportRequest);
   }
 
-  getChoiceRowStyleClass(index: number) {
+  getPointRowStyleClass(index: number) {
     return index == 0
       ? 'level-down'
       : '';
@@ -117,7 +121,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     }
   }
 
-  private filterMultipleChoiceItems(items: AssessmentItem[]) {
+  private filterItems(items: AssessmentItem[]) {
     let filtered = [];
 
     for (let item of items) {

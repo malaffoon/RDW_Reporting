@@ -3,8 +3,8 @@
     <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="text">{{ 'messages.loading' | translate }}</span>
   </div>
 </div>
-<p-dataTable *ngIf="!loading" #datatable [value]="filteredMultipleChoiceItems" sortField="position"
-             tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto'}"
+<p-dataTable *ngIf="!loading" #datatable [value]="filteredItems" sortField="position"
+             tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto', 'min-width': 'auto'}"
              expandableRows="true" rowExpandMode="single">
   <p-column field="position" header="{{'labels.groups.results.assessment.items.cols.number' | translate}}"
             sortable="true">
@@ -51,21 +51,34 @@
       <span [hidden]="!showValuesAsPercent">{{ item.fullCreditAsPercent | number:'1.0-0' }}%</span>
     </ng-template>
   </p-column>
-  <p-column *ngFor="let column of choiceColumns; let i=index;" [field]="column.numberField"
-            header="{{column.label}}"
-            [sortable]="true" [styleClass]="getChoiceRowStyleClass(i)">
-    <ng-template let-item="rowData" pTemplate="body">
-      <span #cell>{{ setTdClass(cell, item, column)}}</span>
-      <span [hidden]="showValuesAsPercent" >{{ item[column.numberField] }}</span>
-      <span [hidden]="!showValuesAsPercent || item[column.percentField] == null">{{ item[column.percentField] | number:'1.0-0' }}%</span>
-    </ng-template>
-  </p-column>
   <ng-template let-item pTemplate="rowexpansion">
     <item-tab [item]="item"
               [showResponse]="false"
               [exams]="exams"
-              [includeResponseInStudentScores]="true"
+              [includeResponseInStudentScores]="false"
               [showItemDetails]="assessment.isInterim"
     ></item-tab>
   </ng-template>
+</p-dataTable>
+
+
+<h3>Point Breakdown</h3>
+
+<p-dataTable *ngIf="!loading" #traitScoreTable [value]="traitScoreSummary"
+             tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto', 'min-width' : '65%'}">
+  <p-column field="category" header="{{'labels.groups.results.assessment.items.cols.category' | translate}}">  </p-column>
+
+  <p-column header="{{'labels.groups.results.assessment.items.cols.average' | translate}}" styleClass="level-up">
+    <ng-template let-item="rowData" pTemplate="body">
+      <strong>{{ item.average | number:'1.0-1' }}</strong> / {{ item.maxPoints | number:'1.0-0' }}
+    </ng-template>
+  </p-column>
+  <p-column *ngFor="let column of pointColumns; let i = index"
+            header="{{'labels.groups.results.assessment.items.cols.x-points' | translate:{id: column.label} }}"
+            [styleClass]="getPointRowStyleClass(i)">
+    <ng-template let-item="rowData" pTemplate="body">
+      <span [hidden]="showValuesAsPercent">{{ item.numbers[i] }}</span>
+      <span [hidden]="!showValuesAsPercent || item.percents[i] == null">{{ item.percents[i] | number:'1.0-0' }}%</span>
+    </ng-template>
+  </p-column>
 </p-dataTable>
