@@ -638,10 +638,31 @@
           "economic-disadvantage": {
             "label": "Economic Disadvantage",
             "info": "Economic Disadvantage"
+          },
+          "achievement-level-display-type": {
+            "label": "Achievement Level",
+            "info": "Achievement Level",
+            "value": {
+              "Separate": "Separate",
+              "Grouped": "Grouped"
+            }
+          },
+          "value-display-type": {
+            "label": "Show Value as",
+            "info": "Show Value as",
+            "value": {
+              "Percent": "Percent",
+              "Number": "Number"
+            }
           }
+        },
+        "organizations": {
+          "heading": "Schools and Districts",
+          "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\""
         },
         "assessment-attributes-heading": "Assessment Attributes",
         "subgroup-filters-heading": "Subgroup Filters",
+        "report-features-heading": "Report Features",
         "submit": "Generate Report"
       },
       "query-builder": {
