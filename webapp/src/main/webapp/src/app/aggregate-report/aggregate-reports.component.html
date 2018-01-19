@@ -85,7 +85,7 @@
             </div>
           </div>
         </div>
-        <div class="well">
+        <div class="well" [hidden]="interimFieldsDisabled">
           <div class="row">
             <div class="col-md-6">
               <label info-button
@@ -105,7 +105,7 @@
             </div>
           </div>
         </div>
-        <div class="well">
+        <div class="well" [hidden]="summativeFieldsDisabled">
           <div class="row">
             <div class="col-md-6">
               <label info-button
@@ -272,6 +272,53 @@
                                  analyticsEvent="FilterClick"
                                  analyticsCategory="AggregateQueryBuilder"
                                  [allOptionAnalyticsProperties]="{label: 'Economic Disadvantage: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subgroup Filters -->
+  <div class="row mt-sm">
+    <div class="col-md-8 col-md-offset-2">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.form.report-features-heading' | translate}}
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="well-group">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.achievement-level-display-type.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.achievement-level-display-type.info' | translate}}"></label>
+            </div>
+            <div class="col-md-3">
+              <sb-toggle [options]="options.achievementLevelDisplayTypes"
+                         [(ngModel)]="settings.achievementLevelDisplayType"></sb-toggle>
+            </div>
+            <div class="col-md-3">
+              <performance-comparison [assessmentType]="toAssessmentTypeEnum(settings.assessmentType)"
+                                      [groupPerformanceLevels]="settings.achievementLevelDisplayType === 'Grouped'"
+                                      [performanceGroupingCutpoint]="3"
+                                      [performancePercentages]="[50,50,50,50]"></performance-comparison>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.value-display-type.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.value-display-type.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-toggle [options]="options.valueDisplayTypes"
+                         [(ngModel)]="settings.valueDisplayType"></sb-toggle>
             </div>
           </div>
         </div>

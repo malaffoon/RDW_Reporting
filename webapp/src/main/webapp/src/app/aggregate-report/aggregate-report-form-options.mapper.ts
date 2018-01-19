@@ -109,7 +109,19 @@ export class AggregateReportFormOptionsMapper {
           value: value,
           text: this.translate.instant(`common.form-field-boolean-values.${value}`),
           analyticsProperties: { label: `Economic Disadvantage: ${value}` }
-        })
+        }),
+      achievementLevelDisplayTypes: [ 'Separate', 'Grouped' ]
+        .map(value => <SbCheckboxGroupOption>{
+          value: value,
+          text: this.translate.instant(`labels.aggregate-reports.form.field.achievement-level-display-type.value.${value}`),
+          analyticsProperties: { label: `Achievement Level Display Type: ${value}` }
+        }),
+      valueDisplayTypes: [ 'Percent', 'Number' ]
+        .map(value => <SbCheckboxGroupOption>{
+          value: value,
+          text: this.translate.instant(`labels.aggregate-reports.form.field.value-display-type.value.${value}`),
+          analyticsProperties: { label: `Value Display Type: ${value}` }
+        }),
     };
   }
 

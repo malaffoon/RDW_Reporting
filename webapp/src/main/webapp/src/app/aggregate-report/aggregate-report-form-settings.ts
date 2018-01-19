@@ -20,5 +20,7 @@ export interface AggregateReportFormSettings {
   plan504s: any[];
   limitedEnglishProficiencies: any[];
   economicDisadvantages: any[];
+  achievementLevelDisplayType: string;
+  valueDisplayType: string;
 
 }
