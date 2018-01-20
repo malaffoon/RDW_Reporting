@@ -685,7 +685,7 @@
           "add-district-or-school": "Add a District or School",
           "selected-organizations": "Selected Organizations",
           "years": "Years",
-          "assessment-grades": "Assessment Grade(s)"
+          "grades": "Assessment Grade(s)"
         },
         "filter-results": {
           "title": "Filter Results",
