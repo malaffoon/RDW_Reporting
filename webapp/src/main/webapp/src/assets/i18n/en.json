@@ -674,6 +674,20 @@
           "heading": "Schools and Districts",
           "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\""
         },
+        "summary": {
+          "heading": "Report Summary",
+          "edit": "Edit",
+          "column": {
+            "assessment": {
+              "heading": "Table Heading",
+              "label": "Assessment",
+              "attribute": {
+                "subject":  "Subjects",
+                "type": "Type"
+              }
+            }
+          }
+        },
         "assessment-attributes-heading": "Assessment Attributes",
         "subgroup-filters-heading": "Subgroup Filters",
         "report-features-heading": "Report Features",

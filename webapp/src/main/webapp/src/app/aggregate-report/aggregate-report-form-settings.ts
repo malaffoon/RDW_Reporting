@@ -22,5 +22,6 @@ export interface AggregateReportFormSettings {
   economicDisadvantages: any[];
   achievementLevelDisplayType: string;
   valueDisplayType: string;
+  dimensionTypes: string[];
 
 }
