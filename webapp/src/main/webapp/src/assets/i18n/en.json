@@ -685,6 +685,48 @@
                 "subject":  "Subjects",
                 "type": "Type"
               }
+            },
+            "organization": {
+              "heading": "Required Fields",
+              "label": "Organization",
+              "attribute": {
+                "organization":  "Organizations"
+              }
+            },
+            "assessment-grade": {
+              "label": "Assessment Grade",
+              "attribute": {
+                "grade":  "Grades"
+              }
+            },
+            "school-year": {
+              "label": "Academic Year",
+              "attribute": {
+                "year": "Years"
+              }
+            },
+            "comparative-subgroup": {
+              "heading": "Comparative Subgroups",
+              "label": "Subgroups",
+              "attribute": {
+                "subgroup": "Subgroups"
+              }
+            },
+            "students-tested": {
+              "heading": "Data Values",
+              "label": "Students Tested"
+            },
+            "average-scale-score": {
+              "label": "Average Scale Score",
+              "attribute": {
+                "value": "Values"
+              }
+            },
+            "achievement-level": {
+              "label": "Achievement Level",
+              "attribute": {
+                "grouping": "Grouping"
+              }
             }
           }
         },
