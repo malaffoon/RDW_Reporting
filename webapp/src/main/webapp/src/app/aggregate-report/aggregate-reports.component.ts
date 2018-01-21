@@ -5,7 +5,6 @@ import { AggregateReportForm } from "./aggregate-report-form";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { CodedEntity } from "./aggregate-report-options";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
-import { Column } from "./aggregate-report-summary.component";
 
 @Component({
   selector: 'aggregate-reports',
