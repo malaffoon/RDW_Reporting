@@ -362,18 +362,106 @@
     <div class="col-md-12">
       <div class="well-group">
         <div class="well">
-          <aggregate-report-summary [options]="options"
-                                    [settings]="settings"
-                                    [scrollElements]="[
-                                      assessmentSection,
-                                      null,
-                                      assessmentGradeSection,
-                                      schoolYearSection,
-                                      comparativeSubgroupSection,
-                                      reportFeatureSection,
-                                      reportFeatureSection
-                                    ]">
-          </aggregate-report-summary>
+
+          <aggregate-report-summary [columns]="[
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.assessment.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.assessment.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: assessmentSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.assessment.attribute.subject' | translate,
+                  options: options.subjects,
+                  values: settings.subjects
+                },
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.assessment.attribute.type' | translate,
+                  options: options.assessmentTypes,
+                  values: [ settings.assessmentType ]
+                }
+              ]
+            },
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.organization.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.organization.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: assessmentSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.organization.attribute.organization' | translate,
+                  options: [],
+                  values: []
+                }
+              ]
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.assessment-grade.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: assessmentGradeSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.assessment-grade.attribute.grade' | translate,
+                  options: options.assessmentGrades,
+                  values: settings.assessmentGrades
+                }
+              ]
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.school-year.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: schoolYearSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.school-year.attribute.year' | translate,
+                  options: options.schoolYears,
+                  values: settings.schoolYears
+                }
+              ]
+            },
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.comparative-subgroup.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.comparative-subgroup.label' | translate,
+              labelCssClasses: {'green': true},
+              scrollElement: comparativeSubgroupSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.comparative-subgroup.attribute.subgroup' | translate,
+                  options: options.dimensionTypes,
+                  values: settings.dimensionTypes
+                }
+              ]
+            },
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.students-tested.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.students-tested.label' | translate,
+              labelCssClasses: {'red': true}
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.average-scale-score.label' | translate,
+              labelCssClasses: {'red': true},
+              scrollElement: reportFeatureSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.average-scale-score.attribute.value' | translate,
+                  options: options.valueDisplayTypes,
+                  values: [ settings.valueDisplayType ]
+                }
+              ]
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.achievement-level.label' | translate,
+              labelCssClasses: {'red': true},
+              scrollElement: reportFeatureSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.achievement-level.attribute.grouping' | translate,
+                  options: options.achievementLevelDisplayTypes,
+                  values: [ settings.achievementLevelDisplayType ]
+                }
+              ]
+            }
+            ]"></aggregate-report-summary>
         </div>
       </div>
     </div>

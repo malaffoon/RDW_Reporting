@@ -4,250 +4,38 @@
     <h4>{{'labels.aggregate-reports.form.summary.heading' | translate}}</h4>
   </div>
 
-  <!--<div class="flex-children flex-cols-8">-->
-    <!--<div *ngFor="let column of columns" class="block-children" [ngClass]="{'heading-column': column.heading}">-->
-      <!--<div class="column-heading-container">-->
-        <!--<div *ngIf="column.heading" class="column-heading">-->
-          <!--<strong>{{column.heading}}</strong>-->
-        <!--</div>-->
-        <!--<div class="column-label-container">-->
-          <!--<div class="column-label" [ngClass]="column.labelCssClasses">-->
-            <!--{{column.label}}-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="column-values">-->
-        <!--<div *ngIf="column.editHref">-->
-          <!--<a class="aqua" href="{{column.editHref}}">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>-->
-        <!--</div>-->
-        <!--<div *ngFor="let attribute of column.attributes">-->
-          <!--<div>-->
-            <!--<label class="label"><span class="gray-dark"><strong>{{attribute.label}}</strong></span></label>-->
-          <!--</div>-->
-          <!--<div *ngIf="attribute.value">-->
-            <!--<label class="label"><span class="gray-dark">{{attribute.value}}</span></label>-->
-          <!--</div>-->
-          <!--<div *ngFor="let value of attribute.values">-->
-            <!--<label class="label"><span class="gray-dark">{{value}}</span></label>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
   <div class="flex-children flex-cols-8">
-    <div class="block-children heading-column">
+    <div *ngFor="let column of columns" class="block-children" [ngClass]="{'heading-column': column.heading}">
       <div class="column-heading-container">
         <div class="column-heading">
-          <strong>{{'labels.aggregate-reports.form.summary.column.assessment.heading' | translate}}</strong>
+          <strong>{{column.heading}}</strong>
         </div>
         <div class="column-label-container">
-          <div class="column-label aqua">
-            {{'labels.aggregate-reports.form.summary.column.assessment.label' | translate}}
+          <div class="column-label" [ngClass]="column.labelCssClasses">
+            {{column.label}}
           </div>
         </div>
       </div>
       <div class="column-values">
-        <div>
-          <a class="aqua" (click)="scrollElements[0].scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
+        <div *ngIf="column.scrollElement">
+          <a class="aqua" (click)="column.scrollElement.scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
         </div>
-        <div>
+        <ng-container *ngFor="let attribute of column.attributes">
           <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.assessment.attribute.subject' | translate}}</strong></span></label>
+            <label class="label"><span class="gray-dark"><strong>{{attribute.label}}</strong></span></label>
           </div>
-          <ng-container *ngIf="options.subjects.length === settings.subjects.length">
+          <ng-container *ngIf="summarizeSelection(attribute)">
             <label class="label"><span class="gray-dark">{{'buttons.all' | translate}}</span></label>
           </ng-container>
-          <ng-container *ngIf="options.subjects.length !== settings.subjects.length">
-            <div *ngFor="let subject of settings.subjects">
-              <label class="label"><span class="gray-dark">{{'common.subject.' + subject.code + '.short-name' | translate}}</span></label>
+          <ng-container *ngIf="!summarizeSelection(attribute)">
+            <div *ngFor="let value of getValues(attribute)">
+              <label class="label"><span class="gray-dark">{{value}}</span></label>
             </div>
           </ng-container>
-        </div>
-        <div>
-          <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.assessment.attribute.type' | translate}}</strong></span></label>
-          </div>
-          <div>
-            <label class="label"><span class="gray-dark">{{'common.assessment-type.' + settings.assessmentType.code + '.short-name' | translate}}</span></label>
-          </div>
-        </div>
+        </ng-container>
       </div>
     </div>
-
-    <div class="block-children heading-column">
-      <div class="column-heading-container">
-        <div class="column-heading">
-          <strong>{{'labels.aggregate-reports.form.summary.column.organization.heading' | translate}}</strong>
-        </div>
-        <div class="column-label-container">
-          <div class="column-label aqua">
-            {{'labels.aggregate-reports.form.summary.column.organization.label' | translate}}
-          </div>
-        </div>
-      </div>
-      <div class="column-values">
-        <div>
-          <a class="aqua" (click)="scrollElements[1].scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
-        </div>
-        <div>
-          <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.organization.attribute.organization' | translate}}</strong></span></label>
-          </div>
-          <div>
-            <label class="label"><span class="gray-dark">TODO</span></label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="block-children">
-      <div class="column-heading-container">
-        <div class="column-heading"></div>
-        <div class="column-label-container">
-          <div class="column-label aqua">
-            {{'labels.aggregate-reports.form.summary.column.assessment-grade.label' | translate}}
-          </div>
-        </div>
-      </div>
-      <div class="column-values">
-        <div>
-          <a class="aqua" (click)="scrollElements[2].scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
-        </div>
-        <div>
-          <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.assessment-grade.attribute.grade' | translate}}</strong></span></label>
-          </div>
-          <ng-container *ngIf="options.assessmentGrades.length === settings.assessmentGrades.length">
-            <label class="label"><span class="gray-dark">{{'buttons.all' | translate}}</span></label>
-          </ng-container>
-          <ng-container *ngIf="options.assessmentGrades.length !== settings.assessmentGrades.length">
-            <div *ngFor="let grade of settings.assessmentGrades">
-              <label class="label"><span class="gray-dark">{{'common.grade.' + grade.code + '.form-name' | translate}}</span></label>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-
-    <div class="block-children">
-      <div class="column-heading-container">
-        <div class="column-heading"></div>
-        <div class="column-label-container">
-          <div class="column-label aqua">
-            {{'labels.aggregate-reports.form.summary.column.school-year.label' | translate}}
-          </div>
-        </div>
-      </div>
-      <div class="column-values">
-        <div>
-          <a class="aqua" (click)="scrollElements[3].scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
-        </div>
-        <div>
-          <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.school-year.attribute.year' | translate}}</strong></span></label>
-          </div>
-          <div *ngFor="let year of settings.schoolYears">
-            <label class="label"><span class="gray-dark">{{year | schoolYear}}</span></label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="block-children heading-column">
-      <div class="column-heading-container">
-        <div class="column-heading">
-          <strong>{{'labels.aggregate-reports.form.summary.column.comparative-subgroup.heading' | translate}}</strong>
-        </div>
-        <div class="column-label-container">
-          <div class="column-label green">
-            {{'labels.aggregate-reports.form.summary.column.comparative-subgroup.label' | translate}}
-          </div>
-        </div>
-      </div>
-      <div class="column-values">
-        <div>
-          <a class="aqua" (click)="scrollElements[4].scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
-        </div>
-        <div>
-          <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.comparative-subgroup.attribute.subgroup' | translate}}</strong></span></label>
-          </div>
-          <ng-container *ngIf="options.dimensionTypes.length === settings.dimensionTypes.length">
-            <div>
-              <label class="label"><span class="gray-dark">{{'buttons.all' | translate}}</span></label>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="options.dimensionTypes.length !== settings.dimensionTypes.length">
-            <div *ngFor="let type of settings.dimensionTypes">
-              <label class="label"><span class="gray-dark">{{'labels.aggregate-reports.form.field.comparative-subgroup.value.' + type | translate}}</span></label>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-
-    <div class="block-children heading-column">
-      <div class="column-heading-container">
-        <div class="column-heading">
-          <strong>{{'labels.aggregate-reports.form.summary.column.students-tested.heading' | translate}}</strong>
-        </div>
-        <div class="column-label-container">
-          <div class="column-label red">
-            {{'labels.aggregate-reports.form.summary.column.students-tested.label' | translate}}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="block-children">
-      <div class="column-heading-container">
-        <div class="column-heading"></div>
-        <div class="column-label-container">
-          <div class="column-label red">
-            {{'labels.aggregate-reports.form.summary.column.average-scale-score.label' | translate}}
-          </div>
-        </div>
-      </div>
-      <div class="column-values">
-        <div>
-          <a class="aqua" (click)="scrollElements[5].scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
-        </div>
-        <div>
-          <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.average-scale-score.attribute.value' | translate}}</strong></span></label>
-          </div>
-          <div>
-            <label class="label"><span class="gray-dark">{{'labels.aggregate-reports.form.field.value-display-type.value.' + settings.valueDisplayType | translate}}</span></label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="block-children">
-      <div class="column-heading-container">
-        <div class="column-heading"></div>
-        <div class="column-label-container">
-          <div class="column-label red">
-            {{'labels.aggregate-reports.form.summary.column.achievement-level.label' | translate}}
-          </div>
-        </div>
-      </div>
-      <div class="column-values">
-        <div>
-          <a class="aqua" (click)="scrollElements[6].scrollIntoView()">{{'labels.aggregate-reports.form.summary.edit' | translate}}</a>
-        </div>
-        <div>
-          <div>
-            <label class="label"><span class="gray-dark"><strong>{{'labels.aggregate-reports.form.summary.column.achievement-level.attribute.grouping' | translate}}</strong></span></label>
-          </div>
-          <div>
-            <label class="label"><span class="gray-dark">{{'labels.aggregate-reports.form.field.achievement-level-display-type.value.' + settings.achievementLevelDisplayType | translate}}</span></label>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
+
 
 </div>

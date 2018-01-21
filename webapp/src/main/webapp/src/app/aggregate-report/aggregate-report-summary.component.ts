@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { AggregateReportFormOptions } from "./aggregate-report-form-options";
-import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
+
+const valueToOptionText = attribute => value => attribute.options.find(option => option.value === value).text
 
 @Component({
   selector: 'aggregate-report-summary',
@@ -9,12 +9,32 @@ import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 export class AggregateReportSummary {
 
   @Input()
-  options: AggregateReportFormOptions;
+  columns: Column[];
 
-  @Input()
-  settings: AggregateReportFormSettings;
+  summarizeSelection(attribute: Attribute): boolean {
+    return attribute.options.length > 1
+      && attribute.options.length === attribute.values.length;
+  }
 
-  @Input()
-  scrollElements: any[];
+  getValues(attribute: Attribute): string[] {
+    return attribute.valueMapper
+      ? attribute.values.map(attribute.valueMapper(attribute))
+      : attribute.values.map(valueToOptionText(attribute))
+  }
 
+}
+
+export class Column {
+  readonly heading?: string;
+  readonly label: string;
+  readonly labelCssClasses: any;
+  readonly scrollElement?: any;
+  readonly attributes?: Attribute[];
+}
+
+export class Attribute {
+  readonly label: string;
+  readonly options: any[];
+  readonly values: any[];
+  readonly valueMapper: (a: Attribute) => (value: any) => any;
 }
