@@ -1,7 +1,11 @@
 sql:
 
   administrationCondition:
-    findAll: select id, code from administration_condition
+    findAll: >-
+      SELECT id,
+        code
+      FROM administration_condition
+      ORDER BY id
 
   assessmentGrade:
     findAll: >-
@@ -10,15 +14,28 @@ sql:
         g.code
       FROM asmt a
         JOIN grade g ON g.id = a.grade_id
+      ORDER BY id
 
   assessmentType:
-    findAll: select id, code from asmt_type
+    findAll: >-
+      SELECT id,
+        code
+      FROM asmt_type
+      ORDER BY id
 
   completeness:
-    findAll: select id, code from completeness
+    findAll: >-
+      SELECT id,
+        code
+      FROM completeness
+      ORDER BY id
 
   gender:
-    findAll: select id, code from gender
+    findAll: >-
+      SELECT id,
+        code
+      FROM gender
+      ORDER BY id
 
   boolean:
     findAll: select id, code from boolean
@@ -52,13 +69,24 @@ sql:
         FROM school
 
   schoolYear:
-    findAll: select year from school_year
+    findAll: >-
+      SELECT year
+      FROM school_year
+      ORDER BY year DESC
 
   studentEthnicity:
-    findAll: select id, code from ethnicity
+    findAll: >-
+      SELECT id,
+        code
+      FROM ethnicity
+      ORDER BY id
 
   subject:
-    findAll: select id, code from subject
+    findAll: >-
+      SELECT id,
+        code
+      FROM subject
+      ORDER BY id
 
   # SQL does not support an Aggregate Product, but this seems to be a recommended way
   estimateReportRowCount: >-
