@@ -20,6 +20,12 @@ sql:
   gender:
     findAll: select id, code from gender
 
+  boolean:
+    findAll: select id, code from boolean
+
+  strictBoolean:
+    findAll: select id, code from strict_boolean
+
   organization:
     aggregate:
       findAllSchoolsAndDistricts: >-
