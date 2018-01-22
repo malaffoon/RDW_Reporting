@@ -47,6 +47,8 @@ app:
       refresh-cron: "0 0 1 * * *"
 
   aggregate-reports:
+    custom-aggregate-report-repository:
+      organization-partition-size: 5
     statewide-interim-enabled: false
 
 spring:

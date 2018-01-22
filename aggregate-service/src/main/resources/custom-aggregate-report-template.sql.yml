@@ -3,6 +3,7 @@ sqlbuilder:
       # This represents the parts of the SQL query that generates measures based on the available data.
       # The query is assembled by combining the below clauses with 'organization' and 'dimension' parts.
       # One 'dimension' and at least one 'organization' part is required for a valid query.
+      # Optionally, filter could be added on too.
       customAggregate:
         clauses:
           select: >-
@@ -12,12 +13,12 @@ sqlbuilder:
               sum(CASE WHEN performance_level = 2 THEN 1 ELSE 0 END) AS level2,
               sum(CASE WHEN performance_level = 3 THEN 1 ELSE 0 END) AS level3,
               sum(CASE WHEN performance_level = 4 THEN 1 ELSE 0 END) AS level4,
+              fe.school_year,
               fe.asmt_id,
               a.grade_id as asmt_grade_id,
-              fe.school_year,
               a.subject_id,
-              subject.code as subject_code,
-              a.label as asmt_label
+              a.label as asmt_label,
+              subject.code as subject_code
 
           from: >-
               fact_student_exam fe
@@ -37,14 +38,13 @@ sqlbuilder:
               fe.asmt_id,
               a.grade_id,
               a.subject_id,
-              subject.code,
-              a.label
+              a.label,
+              subject.code
 
       # ------------ organization parts -------------------------------------------------------------
         addons:
             state:
               clauses:
-                # the 'magic' number -1 is needed here to support JOIN in the final overarching query defined in the application.sql.yml
                 select: >-
                      'State' AS organization_type,
                      NULL AS organization_id,
@@ -76,11 +76,10 @@ sqlbuilder:
             allSchoolsInDistricts:
               clauses:
                 select: >-
-                    'School' AS organization_type,
+                     'School' AS organization_type,
                      sch.id AS organization_id,
                      sch.natural_id AS organization_natural_id,
-                     sch.name as organization_name
-
+                     sch.name AS organization_name
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
 
@@ -95,11 +94,10 @@ sqlbuilder:
             schools:
               clauses:
                 select: >-
-                    'School' AS organization_type,
+                     'School' AS organization_type,
                      sch.id AS organization_id,
                      sch.natural_id AS organization_natural_id,
                      sch.name AS organization_name
-
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
 
@@ -114,10 +112,9 @@ sqlbuilder:
       # ---------- dimension parts -----------------------------------------------------------------------
             Overall:
               clauses:
-              # the 'magic' number -1 is needed here to support JOIN in the final overarching query defined in the application.sql.yml
                 select: >-
                     'Overall' AS dimension,
-                    -1  AS dimension_id,
+                    null  AS dimension_id,
                     null AS dimension_code
             Gender:
               clauses:
@@ -154,70 +151,55 @@ sqlbuilder:
                 select: >-
                      'IEP' AS dimension,
                      fe.iep AS dimension_id,
-                     sb.code AS dimension_code
-                join: >-
-                      JOIN strict_boolean sb ON sb.id = fe.iep
+                     CASE WHEN fe.iep = 1 THEN 'yes' ELSE 'no' END AS dimension_code
                 where: >-
                      ( true = :all_ieps OR fe.iep in (:iep_ids) )
                 groupBy: >-
-                     fe.iep,
-                     sb.code
+                     fe.iep
 
             LEP:
               clauses:
                 select: >-
                      'EconomicDisadvantage' AS dimension,
                      fe.lep AS dimension_id,
-                     sb.code AS dimension_code
-                join: >-
-                      JOIN strict_boolean sb ON sb.id = fe.lep
+                     CASE WHEN fe.lep = 1 THEN 'yes' ELSE 'no' END AS dimension_code
                 where: >-
                      ( true = :all_leps OR fe.lep in (:lep_ids) )
                 groupBy: >-
-                     fe.lep,
-                     sb.code
+                     fe.lep
 
             EconomicDisadvantage:
               clauses:
                 select: >-
                      'EconomicDisadvantage' AS dimension,
                      fe.economic_disadvantage AS dimension_id,
-                     sb.code AS dimension_code
-                join: >-
-                      JOIN strict_boolean sb ON sb.id = fe.economic_disadvantage
+                     CASE WHEN fe.economic_disadvantage = 1 THEN 'yes' ELSE 'no' END AS dimension_code
                 where: >-
                      ( true = :all_economic_disadvantages OR fe.economic_disadvantage in (:economic_disadvantage_ids) )
                 groupBy: >-
-                     fe.economic_disadvantage,
-                     sb.code
+                     fe.economic_disadvantage
 
             Section504:
               clauses:
                 select: >-
                      'Section504' AS dimension,
                      fe.section504 AS dimension_id,
-                     b.code AS dimension_code
-                join: >-
-                      JOIN boolean b ON b.id = fe.section504
+                     CASE WHEN fe.section504 = 1 THEN 'yes' WHEN fe.section504 = 0 THEN 'no' ELSE 'undefined' END AS dimension_code
                 where: >-
                      ( true = :all_section504s OR fe.section504 in (:section504_ids) )
                 groupBy: >-
-                     fe.section504,
-                     b.code
+                     fe.section504
 
             MigrantStatus:
               clauses:
                 select: >-
                      'MigrantStatus' AS dimension,
                      fe.migrant_status AS dimension_id,
-                     b.code AS dimension_code
-                join: >-
-                      JOIN boolean b ON b.id = fe.migrant_status
+                     CASE WHEN fe.migrant_status = 1 THEN 'yes' WHEN fe.migrant_status = 0 THEN 'no' ELSE 'undefined' END AS dimension_code
                 where: >-
                      ( true = :all_migrant_statuses OR fe.migrant_status in (:migrant_status_ids) )
                 groupBy: >-
-                     fe.migrant_status,
-                     b.code
+                     fe.migrant_status
 
             # unlike all other dimensions we are not back-filling missing enrolled grades
             StudentEnrolledGrade:
@@ -232,7 +214,7 @@ sqlbuilder:
                       fe.grade_id,
                       g.code
 
-      # ------------ filters -------------------------------------------------------------
+      # ------------ filters, must be added on when a dimension and filter do not overlap --------------------------------------------------
             completeness:
                clauses:
                  where: >-
@@ -279,98 +261,3 @@ sqlbuilder:
                clauses:
                  where: >-
                      fe.migrant_status in (:migrant_status_ids)
-
-      # This represents the parts of the SQL query that generates all possible combinations of the dimensions for the report.
-      # The query is assembled by combining the below clauses with 'organization' and 'dimension' parts.
-      # One 'dimension' and at least one 'organization' part is required for a valid query.
-      customAggregateAllPermutations:
-        clauses:
-          select: >-
-              d.*,
-              x.*
-          where: >-
-              school_year in (:school_years) AND grade_id in (:asmt_grade_ids) and subject_id in (:subject_ids) and asmt_type_id = :asmt_type_id
-
-        addons:
-     # ------------ organization parts ----------------------------------------------------------------
-            state:
-              clauses:
-                from: >-
-                  state_subject_grade_school_year x
-
-            allDistricts:
-              clauses:
-                from: >-
-                 district_subject_grade_school_year x
-
-            schools:
-              clauses:
-                from: >-
-                  school_subject_grade_school_year x
-                where: >-
-                  organization_id in (:school_ids)
-
-            allSchoolsInDistricts:
-              clauses:
-                from: >-
-                  school_subject_grade_school_year x
-                join: >-
-                  JOIN school sch on sch.id = x.organization_id
-                where: >-
-                  sch.district_id in (:school_district_ids)
-
-            districts:
-              clauses:
-                where: >-
-                   organization_id in (:district_ids)
-
-         # ---------- dimension parts -----------------------------------------------------------------------
-         # These values correspond to the exact name of DimensionType enums
-            Overall:
-              # the 'magic' number -1 is needed here to support JOIN in the final overarching query defined in the application.sql.yml
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'Overall' AS dimension, -1 AS dimension_id, null as dimension_code) d
-                    ON true = true
-
-            Gender:
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'Gender' AS dimension, gen.id AS dimension_id, gen.code as dimension_code from gender gen) d
-                    ON ( true = :all_genders OR d.dimension_id in (:gender_ids) )
-
-            Ethnicity:
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'Ethnicity' AS dimension, e.id AS dimension_id, e.code as dimension_code from ethnicity e) d
-                    ON (true = :all_ethnicities OR d.dimension_id in (:ethnicity_ids))
-
-            IEP:
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'IEP' AS dimension, b.id AS dimension_id, b.code as dimension_code from strict_boolean b) d
-                    ON (true = :all_ieps OR d.dimension_id in (:iep_ids))
-
-            LEP:
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'LEP' AS dimension, b.id AS dimension_id, b.code as dimension_code from strict_boolean b) d
-                    ON (true = :all_leps OR d.dimension_id in (:lep_ids))
-
-            EconomicDisadvantage:
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'EconomicDisadvantage' AS dimension, b.id AS dimension_id, b.code as dimension_code from strict_boolean b) d
-                    ON (true = :all_economic_disadvantages OR d.dimension_id in (:economic_disadvantage_ids))
-
-            Section504:
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'Section504' AS dimension, b.id AS dimension_id, b.code as dimension_code from boolean b) d
-                    ON (true = :all_section504s OR d.dimension_id in (:section504_ids))
-
-            MigrantStatus:
-              clauses:
-                join: >-
-                  LEFT JOIN (select 'MigrantStatus' AS dimension, b.id AS dimension_id, b.code as dimension_code from boolean b) d
-                    ON (true = :all_migrant_statuses OR d.dimension_id in (:migrant_status_ids))
