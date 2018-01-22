@@ -20,11 +20,12 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
 @Component({
   selector: 'sb-checkbox-group',
   template: `
-    <div [ngClass]="{'vertical': !this.horizontal}"
+    <div [ngClass]="{'vertical': !horizontal}"
          class="nested-btn-group btn-group-sm toggle-group"
          data-toggle="buttons">
-      <label class="btn btn-primary" [ngClass]="{'active': selectedAllOptionInternal }">
+      <label class="btn btn-primary" [ngClass]="{ active: selectedAllOptionInternal, disabled: disabled }">
         <input type="checkbox"
+               [disabled]="disabled"
                [(ngModel)]="selectedAllOptionInternal"
                (ngModelChange)="allOptionChangedInternal()"
                autocomplete="off"
@@ -37,8 +38,9 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
       </label>
       <div class="btn-group">
         <label *ngFor="let option of options; let i = index" class="btn btn-primary"
-               [ngClass]="{'active': selectedOptionsInternal[ i ] }">
+               [ngClass]="{ active: selectedOptionsInternal[ i ], disabled: disabled }">
           <input type="checkbox"
+                 [disabled]="disabled"
                  [(ngModel)]="selectedOptionsInternal[ i ]"
                  (ngModelChange)="optionChangedInternal()"
                  autocomplete="off"
@@ -72,11 +74,16 @@ export class SBCheckboxGroup implements ControlValueAccessor, OnInit {
   private _value: any[] = [];
   private _onTouchedCallback: () => void = NOOP;
   private _onChangeCallback: (_: any) => void = NOOP;
+  private _disabled: boolean = false;
 
   // internal properties necessarily made public for ng build --prod
   // these are also needed for (ngModelChange) to fire
   public selectedAllOptionInternal: boolean = true;
   public selectedOptionsInternal: boolean[] = [];
+
+  get disabled(): boolean {
+    return this._disabled;
+  }
 
   get options(): Option[] {
     return this._options;
@@ -163,6 +170,14 @@ export class SBCheckboxGroup implements ControlValueAccessor, OnInit {
    */
   registerOnTouched(callback: any): void {
     this._onTouchedCallback = (callback !== null ? callback : NOOP);
+  }
+
+  /**
+   * @override
+   * @inheritDoc
+   */
+  setDisabledState(disabled: boolean): void {
+    this._disabled = disabled;
   }
 
 }

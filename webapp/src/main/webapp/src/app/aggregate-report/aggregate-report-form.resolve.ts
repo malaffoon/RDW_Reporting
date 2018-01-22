@@ -49,7 +49,10 @@ export class AggregateReportFormResolve implements Resolve<AggregateReportForm> 
       ieps: valuesOf(options.ieps),
       plan504s: valuesOf(options.plan504s),
       limitedEnglishProficiencies: valuesOf(options.limitedEnglishProficiencies),
-      economicDisadvantages: valuesOf(options.economicDisadvantages)
+      economicDisadvantages: valuesOf(options.economicDisadvantages),
+      achievementLevelDisplayType: firstValueOf(options.achievementLevelDisplayTypes),
+      valueDisplayType: firstValueOf(options.valueDisplayTypes),
+      dimensionTypes: valuesOf(options.dimensionTypes)
     };
   }
 

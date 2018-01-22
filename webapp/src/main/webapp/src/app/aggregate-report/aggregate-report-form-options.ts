@@ -20,6 +20,9 @@ export interface AggregateReportFormOptions {
   plan504s: SbCheckboxGroupOption[];
   limitedEnglishProficiencies: SbCheckboxGroupOption[];
   economicDisadvantages: SbCheckboxGroupOption[];
+  achievementLevelDisplayTypes: SbToggleOption[];
+  valueDisplayTypes: SbToggleOption[];
+  dimensionTypes: SbCheckboxGroupOption[];
 
 }
 

@@ -16,6 +16,7 @@ import { ReportOptionsService } from "./results/report-options.service";
 import { AggregateReportFormResolve } from "./aggregate-report-form.resolve";
 import { AggregateReportOptionsService } from "./aggregate-report-options.service";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
+import { AggregateReportSummary } from "./aggregate-report-summary.component";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-option
     AggregateReportsResultsComponent,
     AggregateReportsTableComponent,
     PerformanceComparisonComponent,
-    QueryBuilderComponent
+    QueryBuilderComponent,
+    AggregateReportSummary
   ],
   imports: [
     Angulartics2Module.forChild(),

@@ -5,6 +5,14 @@ import { Option as SbToggleOption } from "../shared/sb-toggle.component";
 import { Option as SbCheckboxGroupOption } from "../shared/form/sb-checkbox-group.component";
 import { TranslateService } from "@ngx-translate/core";
 import { SchoolYearPipe } from "../shared/format/school-year.pipe";
+import { ordering } from "@kourge/ordering";
+import { ranking } from "@kourge/ordering/comparator";
+
+const localeCompareText = (a, b) => a.text.localeCompare(b.text);
+
+const dimensionTypeComparator = ordering(ranking(
+  ['Gender', 'Ethnicity', 'LEP', 'MigrantStatus', 'Section504', 'IEP', 'EconomicDisadvantage', 'StudentEnrolledGrade']
+)).on((option: SbCheckboxGroupOption) => option.value).compare;
 
 @Injectable()
 export class AggregateReportFormOptionsMapper {
@@ -33,7 +41,7 @@ export class AggregateReportFormOptionsMapper {
           value: entity,
           text: this.translate.instant(`common.assessment-type.${entity.code}.short-name`)
         })
-        .sort((a, b) => a.text.localeCompare(b.text)),
+        .sort(localeCompareText),
       completenesses: options.completenesses
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
@@ -73,7 +81,7 @@ export class AggregateReportFormOptionsMapper {
           text: this.translate.instant(`common.subject.${entity.code}.short-name`),
           analyticsProperties: { label: `Subject: ${entity.code}` }
         })
-        .sort((a, b) => a.text.localeCompare(b.text)),
+        .sort(localeCompareText),
       summativeAdministrationConditions: options.summativeAdministrationConditions
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
@@ -109,7 +117,26 @@ export class AggregateReportFormOptionsMapper {
           value: value,
           text: this.translate.instant(`common.form-field-boolean-values.${value}`),
           analyticsProperties: { label: `Economic Disadvantage: ${value}` }
+        }),
+      achievementLevelDisplayTypes: [ 'Separate', 'Grouped' ]
+        .map(value => <SbCheckboxGroupOption>{
+          value: value,
+          text: this.translate.instant(`labels.aggregate-reports.form.field.achievement-level-display-type.value.${value}`),
+          analyticsProperties: { label: `Achievement Level Display Type: ${value}` }
+        }),
+      valueDisplayTypes: [ 'Percent', 'Number' ]
+        .map(value => <SbCheckboxGroupOption>{
+          value: value,
+          text: this.translate.instant(`labels.aggregate-reports.form.field.value-display-type.value.${value}`),
+          analyticsProperties: { label: `Value Display Type: ${value}` }
+        }),
+      dimensionTypes: options.dimensionTypes
+        .map(value => <SbCheckboxGroupOption>{
+          value: value,
+          text: this.translate.instant(`labels.aggregate-reports.form.field.comparative-subgroup.value.${value}`),
+          analyticsProperties: { label: `Comparative Subgroup: ${value}` }
         })
+        .sort(dimensionTypeComparator)
     };
   }
 
