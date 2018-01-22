@@ -34,14 +34,12 @@ export class AggregateReportFormOptionsMapper {
           value: entity,
           text: this.translate.instant(`common.grade.${entity.code}.form-name`),
           analyticsProperties: { label: `Assessment Grade: ${entity.code}` }
-        })
-        .sort((a, b) => a.value.id - b.value.id),
+        }),
       assessmentTypes: options.assessmentTypes
         .map(entity => <SbToggleOption>{
           value: entity,
           text: this.translate.instant(`common.assessment-type.${entity.code}.short-name`)
-        })
-        .sort(localeCompareText),
+        }),
       completenesses: options.completenesses
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
@@ -53,15 +51,13 @@ export class AggregateReportFormOptionsMapper {
           value: entity,
           text: this.translate.instant(`common.ethnicity.${entity.code}`),
           analyticsProperties: { label: `Ethnicity: ${entity.code}` }
-        })
-        .sort((a, b) => a.text.localeCompare(b.text)),
+        }),
       genders: options.genders
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
           text: this.translate.instant(`common.gender.${entity.code}`),
           analyticsProperties: { label: `Gender: ${entity.code}` }
-        })
-        .sort((a, b) => a.value.id - b.value.id),
+        }),
       interimAdministrationConditions: options.interimAdministrationConditions
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
@@ -73,15 +69,13 @@ export class AggregateReportFormOptionsMapper {
           value: year,
           text: this.schoolYearPipe.transform(year),
           analyticsProperties: { label: `Assessment Grade: ${year}` }
-        })
-        .sort((a, b) => b.value - a.value),
+        }),
       subjects: options.subjects
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
           text: this.translate.instant(`common.subject.${entity.code}.short-name`),
           analyticsProperties: { label: `Subject: ${entity.code}` }
-        })
-        .sort(localeCompareText),
+        }),
       summativeAdministrationConditions: options.summativeAdministrationConditions
         .map(entity => <SbCheckboxGroupOption>{
           value: entity,
@@ -136,7 +130,6 @@ export class AggregateReportFormOptionsMapper {
           text: this.translate.instant(`labels.aggregate-reports.form.field.comparative-subgroup.value.${value}`),
           analyticsProperties: { label: `Comparative Subgroup: ${value}` }
         })
-        .sort(dimensionTypeComparator)
     };
   }
 
