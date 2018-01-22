@@ -51,7 +51,8 @@ export class AggregateReportFormResolve implements Resolve<AggregateReportForm> 
       limitedEnglishProficiencies: valuesOf(options.limitedEnglishProficiencies),
       economicDisadvantages: valuesOf(options.economicDisadvantages),
       achievementLevelDisplayType: firstValueOf(options.achievementLevelDisplayTypes),
-      valueDisplayType: firstValueOf(options.valueDisplayTypes)
+      valueDisplayType: firstValueOf(options.valueDisplayTypes),
+      dimensionTypes: valuesOf(options.dimensionTypes)
     };
   }
 

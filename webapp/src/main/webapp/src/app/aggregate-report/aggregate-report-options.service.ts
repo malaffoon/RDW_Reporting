@@ -41,7 +41,9 @@ export class AggregateReportOptionsService {
         ieps: [true, false],
         plan504s: [true, false],
         limitedEnglishProficiencies: [true, false],
-        economicDisadvantages: [true, false]
+        economicDisadvantages: [true, false],
+
+        dimensionTypes: options.dimensionTypes
       });
   }
 
