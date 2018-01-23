@@ -20,10 +20,12 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
 @Component({
   selector: 'sb-checkbox-group',
   template: `
-    <div [ngClass]="{'vertical': !horizontal}"
+    <div data-toggle="buttons"
          class="nested-btn-group btn-group-sm toggle-group"
-         data-toggle="buttons">
-      <label class="btn btn-primary" [ngClass]="{ active: selectedAllOptionInternal, disabled: disabled }">
+         [ngClass]="{'vertical': !horizontal}">
+      <label *ngIf="allOptionEnabled"
+             class="btn btn-primary"
+             [ngClass]="{ active: selectedAllOptionInternal, disabled: disabled }">
         <input type="checkbox"
                [disabled]="disabled"
                [(ngModel)]="selectedAllOptionInternal"
@@ -37,7 +39,8 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
         {{'buttons.all' | translate}}
       </label>
       <div class="btn-group">
-        <label *ngFor="let option of options; let i = index" class="btn btn-primary"
+        <label *ngFor="let option of options; let i = index"
+               class="btn btn-primary"
                [ngClass]="{ active: selectedOptionsInternal[ i ], disabled: disabled }">
           <input type="checkbox"
                  [disabled]="disabled"
@@ -69,6 +72,9 @@ export class SBCheckboxGroup implements ControlValueAccessor, OnInit {
 
   @Input()
   public allOptionAnalyticsProperties: any = {};
+
+  @Input()
+  public allOptionEnabled: boolean = true;
 
   private _options: Option[];
   private _value: any[] = [];
@@ -107,9 +113,15 @@ export class SBCheckboxGroup implements ControlValueAccessor, OnInit {
 
   set value(value: any[]) {
     value = value || [];
-    this.selectedAllOptionInternal = value.length === this.options.length;
-    this.selectedOptionsInternal = this.selectedAllOptionInternal
-      ? [] : this.options.map(option => value.indexOf(option.value) != -1);
+    const valueMapper = option => value.indexOf(option.value) != -1;
+    if (this.allOptionEnabled) {
+      this.selectedAllOptionInternal = value.length === this.options.length;
+      this.selectedOptionsInternal = this.selectedAllOptionInternal
+        ? [] : this.options.map(valueMapper);
+    } else {
+      this.selectedOptionsInternal = this.options.map(valueMapper);
+    }
+    this.valueInternal = value;
   }
 
   private set valueInternal(value: any[]) {
@@ -121,8 +133,8 @@ export class SBCheckboxGroup implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit() {
-    if (this.options === undefined) {
-      this.throwError('options must not be null');
+    if (typeof this.options === 'undefined') {
+      this.throwError('options must not be null or undefined');
     }
   }
 
@@ -138,7 +150,7 @@ export class SBCheckboxGroup implements ControlValueAccessor, OnInit {
   }
 
   private updateValue(): void {
-    const selectedOptions = this.selectedAllOptionInternal
+    const selectedOptions = this.allOptionEnabled && this.selectedAllOptionInternal
       ? this.options
       : this.options.filter((option, index) => this.selectedOptionsInternal[ index ]);
     this.valueInternal = selectedOptions.map(option => option.value);
