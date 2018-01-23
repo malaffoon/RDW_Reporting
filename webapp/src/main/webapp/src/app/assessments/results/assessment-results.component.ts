@@ -20,6 +20,7 @@ import { InstructionalResourcesService } from "./instructional-resources.service
 import { InstructionalResource } from "../model/instructional-resources.model";
 import { Assessment } from "../model/assessment.model";
 import { Observable } from "rxjs/Observable";
+import {WritingTraitScoresComponent} from "./view/writing-trait-scores/writing-trait-scores.component";
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -154,11 +155,17 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get currentExportResults(): ExportResults {
-    if (this.showItemsByPointsEarned)
+    if (this.showItemsByPointsEarned) {
       return this.resultsByItem;
+    }
 
-    if (this.showDistractorAnalysis)
+    if (this.showDistractorAnalysis) {
       return this.distractorAnalysis;
+    }
+
+    if (this.showWritingTraitScores) {
+      return this.writingTraitScores;
+    }
 
     return undefined;
   }
@@ -171,6 +178,9 @@ export class AssessmentResultsComponent implements OnInit {
 
   @ViewChild('distractorAnalysis')
   distractorAnalysis: DistractorAnalysisComponent;
+
+  @ViewChild('writingTraitScores')
+  writingTraitScores: WritingTraitScoresComponent;
 
   exams: Exam[] = [];
   sessions = [];
@@ -219,6 +229,10 @@ export class AssessmentResultsComponent implements OnInit {
 
   getGradeIdx(gradeCode: string): number {
     return GradeCode.getIndex(gradeCode);
+  }
+
+  getCurrentViewIntroductionLabel(): string {
+    return 'labels.results-view-state-intro.' + ResultsViewState[ this.currentResultsView.value ];
   }
 
   toggleSession(session) {

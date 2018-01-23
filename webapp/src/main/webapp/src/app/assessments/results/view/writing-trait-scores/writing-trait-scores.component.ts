@@ -52,8 +52,9 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
   }
 
   loading: boolean = false;
-  pointColumns: DynamicItemField[];
-  traitScoreSummary: WritingTraitScoreSummary[] = [];
+  isWritingTraitItem: boolean = false;
+  traitScoreSummary: WritingTraitScoreSummary = new WritingTraitScoreSummary();
+  writingTraitType: string;
 
   private _writingTraitScoredItems: AssessmentItem[];
   private filteredItems: AssessmentItem[];
@@ -66,7 +67,6 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     this.loading = true;
 
     this.assessmentProvider.getAssessmentItems(this.assessment.id, ['WER']).subscribe(assessmentItems => {
-      this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
       let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
 
       if (numOfScores != 0) {
@@ -76,7 +76,10 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
         this.traitScoreSummary = this.examCalculator.aggregateWritingTraitScores(assessmentItems);
       }
 
-
+      if (assessmentItems.length != 0) {
+        this.isWritingTraitItem = true;
+        this.writingTraitType = assessmentItems[0].performanceTaskWritingType;
+      }
 
       this.loading = false
     });
@@ -92,7 +95,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     exportRequest.showAsPercent = this.showValuesAsPercent;
     exportRequest.assessmentItems = this.filteredItems;
     exportRequest.pointColumns = this.pointColumns;
-    exportRequest.type = RequestType.DistractorAnalysis;
+    exportRequest.type = RequestType.WritingTraitScores;
 
 
     this.angulartics2.eventTrack.next({

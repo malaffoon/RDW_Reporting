@@ -146,7 +146,9 @@
             </button>
           </div>
         </div>
-        <div class="col-md-8"></div>
+        <div class="col-md-8">
+          <span class="results-view-intro">{{ getCurrentViewIntroductionLabel() | translate }}</span>
+        </div>
       </div>
       <div *ngIf="showStudentResults">
         <results-by-student

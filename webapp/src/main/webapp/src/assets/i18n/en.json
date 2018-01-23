@@ -263,6 +263,12 @@
     "transfer": {
       "false": "Show",
       "true": "Hide"
+    },
+    "writing-trait": {
+      "evidence": "Evidence / Elaboration",
+      "organization": "Organization / Purpose",
+      "conventions": "Conventions",
+      "total": "Total Points"
     }
   },
   "html": {
@@ -1133,6 +1139,12 @@
         "2": "ELA"
       }
     },
+    "results-view-state-intro": {
+      "ByItem": "",
+      "ByStudent": "",
+      "DistractorAnalysis": "Some context about distractor analysis",
+      "WritingTraitScores": "Some context about writing trait scores"
+    },
     "school-grade": {
       "messages": {
         "no-results": "No results.",
@@ -1196,6 +1208,9 @@
         "name": "ELA/Literacy",
         "short-name": "ELA"
       }
+    },
+    "writing-trait-scores": {
+      "aggregate-header": "Point Breakdown: {{traitType}}"
     }
   },
   "messages": {
