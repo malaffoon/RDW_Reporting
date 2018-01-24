@@ -8,6 +8,8 @@ import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Forms } from "../shared/form/forms";
+import { AggregateReportItem } from "./model/aggregate-report-item.model";
+import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -32,6 +34,7 @@ export class AggregateReportsComponent {
    * Holds the form options and state
    */
   form: AggregateReportForm;
+  responsePreview: AggregateReportItem[] = [];
 
   /**
    * Responsible for tracking form validity
@@ -40,7 +43,8 @@ export class AggregateReportsComponent {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private mockAggregateReportsPreviewService: MockAggregateReportsPreviewService) {
     this.form = route.snapshot.data[ 'form' ];
     this.formGroup = new FormGroup({
       assessmentGrades: new FormControl(this.form.settings.assessmentGrades, notEmpty({
@@ -150,6 +154,16 @@ export class AggregateReportsComponent {
       assessmentType: settings.assessmentType.id,
       subjects: idsOf(settings.subjects) // TODO optimize to not include if default?
     }
+  }
+
+  generateReport() {
+    this.responsePreview = null;
+    setTimeout(() => {
+      this.responsePreview = null;
+      this.mockAggregateReportsPreviewService.generateSampleData(this.settings.dimensionTypes, this.settings).subscribe(next => {
+        this.responsePreview = next;
+      })
+    }, 0);
   }
 
 }

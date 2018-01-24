@@ -34,7 +34,8 @@
                            name="assessmentType"
                            [options]="options.assessmentTypes"
                            [(ngModel)]="settings.assessmentType"
-                           [ngModelOptions]="{standalone: true}"></sb-toggle>
+                           [ngModelOptions]="{standalone: true}"
+                           (change)="generateReport()"></sb-toggle>
               </div>
             </div>
           </div>
@@ -53,7 +54,8 @@
                                    name="subjects"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Subject: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Subject: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -78,7 +80,8 @@
                                      formControlName="assessmentGrades"
                                      analyticsEvent="FilterClick"
                                      analyticsCategory="AggregateQueryBuilder"
-                                     [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"></sb-checkbox-group>
+                                     [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"
+                                     (change)="generateReport()"></sb-checkbox-group>
                   <div *ngIf="showAssessmentGradeErrors">
                     <p *ngIf="assessmentGradesControl.errors.notEmpty" class="help-block small red">{{assessmentGradesControl.errors.notEmpty.messageId | translate}}</p>
                   </div>
@@ -100,7 +103,8 @@
                                    name="schoolYears"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -122,7 +126,8 @@
                                    name="interimAdministrationConditions"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Manner of Administration: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Manner of Administration: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -144,7 +149,8 @@
                                    name="summativeAdministrationConditions"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Validity: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Validity: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -163,7 +169,8 @@
                                    name="completenesses"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Completeness: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Completeness: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -197,7 +204,8 @@
                                    name="genders"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Gender: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Gender: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -215,7 +223,8 @@
                                    name="ethnicities"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Ethnicity: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Ethnicity: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -234,7 +243,8 @@
                                    name="migrantStatuses"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Migrant Status: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Migrant Status: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -253,7 +263,8 @@
                                    name="ieps"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'IEP: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'IEP: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -272,7 +283,8 @@
                                    name="plan504s"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: '504 Plan: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: '504 Plan: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -291,7 +303,8 @@
                                    name="limitedEnglishProficiencies"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Limited English Proficiency: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Limited English Proficiency: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -310,7 +323,8 @@
                                    name="economicDisadvantages"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Economic Disadvantage: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Economic Disadvantage: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -340,7 +354,8 @@
                 <sb-toggle [options]="options.achievementLevelDisplayTypes"
                            [(ngModel)]="settings.achievementLevelDisplayType"
                            [ngModelOptions]="{standalone: true}"
-                           name="achievementLevelDisplayType"></sb-toggle>
+                           name="achievementLevelDisplayType"
+                           (change)="generateReport()"></sb-toggle>
               </div>
               <div class="col-md-3">
                 <performance-comparison [assessmentType]="toAssessmentTypeEnum(settings.assessmentType)"
@@ -361,7 +376,8 @@
                 <sb-toggle [options]="options.valueDisplayTypes"
                            [(ngModel)]="settings.valueDisplayType"
                            [ngModelOptions]="{standalone: true}"
-                           name="valueDisplayType"></sb-toggle>
+                           name="valueDisplayType"
+                           (change)="generateReport()"></sb-toggle>
               </div>
             </div>
           </div>
@@ -395,7 +411,8 @@
                                    [allOptionEnabled]="false"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Comparative Subgroups: All'}"></sb-checkbox-group>
+                                   [allOptionAnalyticsProperties]="{label: 'Comparative Subgroups: All'}"
+                                   (change)="generateReport()"></sb-checkbox-group>
               </div>
             </div>
           </div>
@@ -510,6 +527,16 @@
               ]
             }
             ]"></aggregate-report-summary>
+          <div class="pt-md">
+            <span class="disabled-table-text" *ngIf="responsePreview">{{ 'labels.aggregate-reports.preview' | translate }}</span>
+            <div class="disabled-table-container">
+              <aggregate-reports-preview-table *ngIf="responsePreview" [reportItems]="responsePreview"
+                                               [query]="settings"
+                                               [showValuesAsPercent]="settings.valueDisplayType == 'Percent'"
+                                               [columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"
+                                               [groupPerformanceLevels]="groupPerformanceLevels"></aggregate-reports-preview-table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -535,6 +562,5 @@
       </div>
     </div>
   </div>
-
 
 </div>

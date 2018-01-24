@@ -17,13 +17,15 @@ import { AggregateReportFormResolve } from "./aggregate-report-form.resolve";
 import { AggregateReportOptionsService } from "./aggregate-report-options.service";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
-import { PopoverModule } from "ngx-bootstrap";
+import { AggregateReportsPreviewTableComponent } from "./aggregate-reports-preview-table.component";
+import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
 
 @NgModule({
   declarations: [
     AggregateReportsComponent,
     AggregateReportsResultsComponent,
     AggregateReportsTableComponent,
+    AggregateReportsPreviewTableComponent,
     PerformanceComparisonComponent,
     QueryBuilderComponent,
     AggregateReportSummary
@@ -41,12 +43,14 @@ import { PopoverModule } from "ngx-bootstrap";
     AggregateReportsComponent,
     AggregateReportsResultsComponent,
     AggregateReportsTableComponent,
+    AggregateReportsPreviewTableComponent,
     PerformanceComparisonComponent,
     QueryBuilderComponent
   ],
   providers: [
     AssessmentDetailsService,
     MockAggregateReportsService,
+    MockAggregateReportsPreviewService,
     ReportOptionsService,
     AggregateReportFormResolve,
     AggregateReportOptionsService,
