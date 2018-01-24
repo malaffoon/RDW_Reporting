@@ -1478,8 +1478,8 @@
     "results-view-state-intro": {
       "ByItem": "",
       "ByStudent": "",
-      "DistractorAnalysis": "Some context about distractor analysis",
-      "WritingTraitScores": "Some context about writing trait scores"
+      "DistractorAnalysis": "",
+      "WritingTraitScores": ""
     },
     "school-grade": {
       "messages": {
