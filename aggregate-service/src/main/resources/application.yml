@@ -47,7 +47,10 @@ app:
       refresh-cron: "0 0 1 * * *"
 
   aggregate-reports:
+    summative-enabled: true
     statewide-interim-enabled: false
+    custom-aggregate-report-repository:
+      organization-partition-size: 5
 
 spring:
   jackson:
@@ -57,7 +60,7 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: internalTranslationsByCode, reportOptions, reportOrganizations
+    cache-names: internalTranslationsByCode, administrationConditions, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, ethnicities, genders, schoolYears, subjects
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}

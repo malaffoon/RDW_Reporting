@@ -1,5 +1,493 @@
-<div class="well">
-  <h3>Sample Aggregate Report Landing Page</h3>
-  <p><a routerLink="results">Sample Results View</a></p>
-  <p><a routerLink="query-builder">Query Builder</a></p>
+<div class="container">
+
+  <div class="row mt-sm">
+    <div class="col-md-8 col-md-offset-2">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.form.heading' | translate}}
+      </h2>
+      <p class="small gray-darkest">{{'labels.aggregate-reports.form.subheading' | translate}}</p>
+    </div>
+  </div>
+
+  <!-- Assessment Attributes -->
+  <div class="row mt-sm" #assessmentSection>
+    <div class="col-md-8 col-md-offset-2">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.form.assessment-attributes-heading' | translate}}
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="well-group">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.assessment-type.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.assessment-type.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <span *ngIf="options.assessmentTypes.length == 1">{{options.assessmentTypes[0].text}}</span>
+              <sb-toggle *ngIf="options.assessmentTypes.length > 1"
+                         [options]="options.assessmentTypes"
+                         [(ngModel)]="settings.assessmentType"></sb-toggle>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.subjects.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.subjects.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.subjects"
+                                 [(ngModel)]="settings.subjects"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Subject: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well" #assessmentGradeSection>
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.assessment-grades.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.assessment-grades.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.assessmentGrades"
+                                 [(ngModel)]="settings.assessmentGrades"
+                                 [allOptionEnabled]="false"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well" #schoolYearSection>
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.school-year.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.school-year.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [options]="options.schoolYears"
+                                 [(ngModel)]="settings.schoolYears"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well" [hidden]="interimFieldsDisabled">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.interim-administration-condition.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.interim-administration-condition.info' | translate}}"></label>
+              <p class="small gray-darker">
+                {{'labels.aggregate-reports.form.field.interim-administration-condition.qualifier' | translate}}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.interimAdministrationConditions"
+                                 [(ngModel)]="settings.interimAdministrationConditions"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Manner of Administration: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well" [hidden]="summativeFieldsDisabled">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.summative-administration-condition.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.summative-administration-condition.info' | translate}}"></label>
+              <p class="small gray-darker">
+                {{'labels.aggregate-reports.form.field.summative-administration-condition.qualifier' | translate}}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.summativeAdministrationConditions"
+                                 [(ngModel)]="settings.summativeAdministrationConditions"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Validity: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.completeness.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.completeness.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.completenesses"
+                                 [(ngModel)]="settings.completenesses"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Completeness: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subgroup Filters -->
+  <div class="row mt-sm">
+    <div class="col-md-8 col-md-offset-2">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.form.subgroup-filters-heading' | translate}}
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="well-group">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.gender.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.gender.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.genders"
+                                 [(ngModel)]="settings.genders"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Gender: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.ethnicity.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.ethnicity.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [options]="options.ethnicities"
+                                 [(ngModel)]="settings.ethnicities"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Ethnicity: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.migrant-status.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.migrant-status.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.migrantStatuses"
+                                 [(ngModel)]="settings.migrantStatuses"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Migrant Status: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.iep.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.iep.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.ieps"
+                                 [(ngModel)]="settings.ieps"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'IEP: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.504.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.504.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.plan504s"
+                                 [(ngModel)]="settings.plan504s"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: '504 Plan: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.limited-english-proficiency.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.limited-english-proficiency.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.limitedEnglishProficiencies"
+                                 [(ngModel)]="settings.limitedEnglishProficiencies"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Limited English Proficiency: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.economic-disadvantage.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.economic-disadvantage.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-checkbox-group [horizontal]="true"
+                                 [options]="options.economicDisadvantages"
+                                 [(ngModel)]="settings.economicDisadvantages"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Economic Disadvantage: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report Features -->
+  <div class="row mt-sm" #reportFeatureSection>
+    <div class="col-md-8 col-md-offset-2">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.form.report-features-heading' | translate}}
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="well-group">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.achievement-level-display-type.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.achievement-level-display-type.info' | translate}}"></label>
+            </div>
+            <div class="col-md-3">
+              <sb-toggle [options]="options.achievementLevelDisplayTypes"
+                         [(ngModel)]="settings.achievementLevelDisplayType"></sb-toggle>
+            </div>
+            <div class="col-md-3">
+              <performance-comparison [assessmentType]="toAssessmentTypeEnum(settings.assessmentType)"
+                                      [groupPerformanceLevels]="settings.achievementLevelDisplayType === 'Grouped'"
+                                      [performanceGroupingCutpoint]="3"
+                                      [performancePercentages]="[50,50,50,50]"></performance-comparison>
+            </div>
+          </div>
+        </div>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.value-display-type.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.value-display-type.info' | translate}}"></label>
+            </div>
+            <div class="col-md-6">
+              <sb-toggle [options]="options.valueDisplayTypes"
+                         [(ngModel)]="settings.valueDisplayType"></sb-toggle>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparative Subgroups -->
+  <div class="row mt-sm" #comparativeSubgroupSection>
+    <div class="col-md-8 col-md-offset-2">
+      <h2 class="h3 gray-darkest">
+        {{'labels.aggregate-reports.form.comparative-subgroups-heading' | translate}}
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="well-group">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-6">
+              <label info-button
+                     title="{{'labels.aggregate-reports.form.field.comparative-subgroup.label' | translate}}"
+                     content="{{'labels.aggregate-reports.form.field.comparative-subgroup.info' | translate}}"></label>
+            </div>
+            <div class="col-md-3">
+              <sb-checkbox-group [options]="options.dimensionTypes"
+                                 [(ngModel)]="settings.dimensionTypes"
+                                 [allOptionEnabled]="false"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Comparative Subgroups: All'}"></sb-checkbox-group>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="well-group">
+        <div class="well">
+
+          <aggregate-report-summary [columns]="[
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.assessment.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.assessment.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: assessmentSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.assessment.attribute.subject' | translate,
+                  options: options.subjects,
+                  values: settings.subjects
+                },
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.assessment.attribute.type' | translate,
+                  options: options.assessmentTypes,
+                  values: [ settings.assessmentType ]
+                }
+              ]
+            },
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.organization.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.organization.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: assessmentSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.organization.attribute.organization' | translate,
+                  options: [],
+                  values: []
+                }
+              ]
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.assessment-grade.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: assessmentGradeSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.assessment-grade.attribute.grade' | translate,
+                  options: options.assessmentGrades,
+                  values: settings.assessmentGrades
+                }
+              ]
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.school-year.label' | translate,
+              labelCssClasses: {'aqua': true},
+              scrollElement: schoolYearSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.school-year.attribute.year' | translate,
+                  options: options.schoolYears,
+                  values: settings.schoolYears
+                }
+              ]
+            },
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.comparative-subgroup.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.comparative-subgroup.label' | translate,
+              labelCssClasses: {'green': true},
+              scrollElement: comparativeSubgroupSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.comparative-subgroup.attribute.subgroup' | translate,
+                  options: options.dimensionTypes,
+                  values: settings.dimensionTypes
+                }
+              ]
+            },
+            {
+              heading: 'labels.aggregate-reports.form.summary.column.students-tested.heading' | translate,
+              label: 'labels.aggregate-reports.form.summary.column.students-tested.label' | translate,
+              labelCssClasses: {'red': true}
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.average-scale-score.label' | translate,
+              labelCssClasses: {'red': true},
+              scrollElement: reportFeatureSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.average-scale-score.attribute.value' | translate,
+                  options: options.valueDisplayTypes,
+                  values: [ settings.valueDisplayType ]
+                }
+              ]
+            },
+            {
+              label: 'labels.aggregate-reports.form.summary.column.achievement-level.label' | translate,
+              labelCssClasses: {'red': true},
+              scrollElement: reportFeatureSection,
+              attributes: [
+                {
+                  label: 'labels.aggregate-reports.form.summary.column.achievement-level.attribute.grouping' | translate,
+                  options: options.achievementLevelDisplayTypes,
+                  values: [ settings.achievementLevelDisplayType ]
+                }
+              ]
+            }
+            ]"></aggregate-report-summary>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-sm">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button class="btn btn-default btn-sm float-none-xs"
+                analyticsEvent="GenerateReportExportCSV"
+                analyticsCategory="AggregateQueryBuilder"
+                angulartics2on="click">
+          <i class="fa fa-table"></i> {{'labels.export.csv' | translate }}
+        </button>
+        <button class="btn btn-success btn-sm ml-xs green"
+                (click)="submit()"
+                analyticsEvent="GenerateReport"
+                analyticsCategory="AggregateQueryBuilder"
+                angulartics2on="click">
+          <i class="fa fa-gears"></i> {{'labels.aggregate-reports.form.submit' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 </div>

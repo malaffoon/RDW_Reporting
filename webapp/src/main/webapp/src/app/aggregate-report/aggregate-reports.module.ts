@@ -13,6 +13,10 @@ import { QueryBuilderComponent } from "./results/query-builder.component";
 import { FormsModule } from "@angular/forms";
 import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 import { ReportOptionsService } from "./results/report-options.service";
+import { AggregateReportFormResolve } from "./aggregate-report-form.resolve";
+import { AggregateReportOptionsService } from "./aggregate-report-options.service";
+import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
+import { AggregateReportSummary } from "./aggregate-report-summary.component";
 
 @NgModule({
   declarations: [
@@ -20,7 +24,8 @@ import { ReportOptionsService } from "./results/report-options.service";
     AggregateReportsResultsComponent,
     AggregateReportsTableComponent,
     PerformanceComparisonComponent,
-    QueryBuilderComponent
+    QueryBuilderComponent,
+    AggregateReportSummary
   ],
   imports: [
     Angulartics2Module.forChild(),
@@ -40,7 +45,10 @@ import { ReportOptionsService } from "./results/report-options.service";
   providers: [
     AssessmentDetailsService,
     MockAggregateReportsService,
-    ReportOptionsService
+    ReportOptionsService,
+    AggregateReportFormResolve,
+    AggregateReportOptionsService,
+    AggregateReportFormOptionsMapper
   ]
 })
 export class AggregateReportsModule {

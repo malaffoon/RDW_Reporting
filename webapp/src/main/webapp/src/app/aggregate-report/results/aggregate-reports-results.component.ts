@@ -7,6 +7,7 @@ import { AssessmentDetailsService } from "./assessment-details.service";
 import { AggregateReportQuery } from "../model/aggregate-report-query.model";
 import { AssessmentDetails } from "../model/assessment-details.model";
 import { Observable } from "rxjs/Observable";
+import { ActivatedRoute, Router } from "@angular/router";
 
 /**
  * This component is responsible for performing the aggregate report query and
@@ -29,7 +30,9 @@ export class AggregateReportsResultsComponent implements OnInit {
 
   private reportDataBySubjectId: Map<number, AggregateReportItem[]> = new Map();
 
-  constructor(private service: MockAggregateReportsService,
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private service: MockAggregateReportsService,
               private assessmentDetailsService: AssessmentDetailsService) {
     this.query = new AggregateReportQuery();
     this.query.assessmentType = AssessmentType.ICA;
@@ -58,4 +61,9 @@ export class AggregateReportsResultsComponent implements OnInit {
       this.loading = false;
     });
   }
+
+  edit(): void {
+    this.router.navigate([ '..' ], { relativeTo: this.route });
+  }
+
 }

@@ -1,4 +1,4 @@
-{
+ {
   "application": {
     "title": "Reporting System"
   },
@@ -18,6 +18,183 @@
     }
   },
   "collapse": "Collapse",
+  "common": {
+    "form-field-boolean-values": {
+      "true": "Yes",
+      "false": "No",
+      "undefined": "Not Stated"
+    },
+    "administration-condition": {
+      "IN": "Invalid",
+      "NS": "Nonstandardized",
+      "SD": "Standardized",
+      "Valid": "Valid"
+    },
+    "assessment-type": {
+      "ica": {
+        "name": "Interim Comprehensive Assessment",
+        "short-name": "ICA"
+      },
+      "iab": {
+        "name": "Interim Assessment Blocks",
+        "short-name": "IAB"
+      },
+      "sum": {
+        "name": "Summative",
+        "short-name": "Summative"
+      }
+    },
+    "ethnicity": {
+      "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
+      "Asian": "Asian",
+      "BlackOrAfricanAmerican": "Black or African American",
+      "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
+      "Filipino": "Filipino",
+      "HispanicOrLatinoEthnicity": "Hispanic/Latino",
+      "NativeHawaiianOrOtherPacificIslander": "Native Hawaiian or Pacific Islander",
+      "White": "White"
+    },
+    "gender": {
+      "Female": "Female",
+      "Male": "Male"
+    },
+    "subject": {
+      "ELA": {
+        "name": "English Language Arts",
+        "short-name": "ELA"
+      },
+      "Math": {
+        "name": "Mathematics",
+        "short-name": "Math"
+      }
+    },
+    "completeness": {
+      "Partial": "Partial",
+      "Complete": "Complete"
+    },
+    "grade": {
+      "01": {
+        "enrolled-name": "G1",
+        "long-name": "Grade 1",
+        "short-name": "G1",
+        "form-name": "1"
+      },
+      "02": {
+        "enrolled-name": "G2",
+        "long-name": "Grade 2",
+        "short-name": "G2",
+        "form-name": "2"
+      },
+      "03": {
+        "enrolled-name": "G3",
+        "long-name": "Grade 3",
+        "short-name": "G3",
+        "form-name": "3"
+      },
+      "04": {
+        "enrolled-name": "G4",
+        "long-name": "Grade 4",
+        "short-name": "G4",
+        "form-name": "4"
+      },
+      "05": {
+        "enrolled-name": "G5",
+        "long-name": "Grade 5",
+        "short-name": "G5",
+        "form-name": "5"
+      },
+      "06": {
+        "enrolled-name": "G6",
+        "long-name": "Grade 6",
+        "short-name": "G6",
+        "form-name": "6"
+      },
+      "07": {
+        "enrolled-name": "G7",
+        "long-name": "Grade 7",
+        "short-name": "G7",
+        "form-name": "7"
+      },
+      "08": {
+        "enrolled-name": "G8",
+        "long-name": "Grade 8",
+        "short-name": "G8",
+        "form-name": "8"
+      },
+      "09": {
+        "enrolled-name": "G9",
+        "long-name": "High School",
+        "short-name": "HS",
+        "form-name": "HS"
+      },
+      "10": {
+        "enrolled-name": "G10",
+        "long-name": "High School",
+        "short-name": "HS",
+        "form-name": "HS"
+      },
+      "11": {
+        "enrolled-name": "G11",
+        "long-name": "High School",
+        "short-name": "HS",
+        "form-name": "HS"
+      },
+      "12": {
+        "enrolled-name": "G12",
+        "long-name": "High School",
+        "short-name": "HS",
+        "form-name": "HS"
+      },
+      "13": {
+        "enrolled-name": "G13",
+        "long-name": "Grade 13",
+        "short-name": "G13",
+        "form-name": "13"
+      },
+      "IT": {
+        "enrolled-name": "IT",
+        "long-name": "Infant/Toddler",
+        "short-name": "IT",
+        "form-name": "IT"
+      },
+      "KG": {
+        "enrolled-name": "KG",
+        "long-name": "Kindergarten",
+        "short-name": "KG",
+        "form-name": "KG"
+      },
+      "PK": {
+        "enrolled-name": "PK",
+        "long-name": "Prekindergarten",
+        "short-name": "PK",
+        "form-name": "PK"
+      },
+      "PR": {
+        "enrolled-name": "PR",
+        "long-name": "Preschool",
+        "short-name": "PR",
+        "form-name": "PR"
+      },
+      "PS": {
+        "enrolled-name": "PS",
+        "long-name": "Postsecondary",
+        "short-name": "PS",
+        "form-name": "PS"
+      },
+      "TK": {
+        "enrolled-name": "TK",
+        "long-name": "Transitional Kindergarten",
+        "short-name": "TK",
+        "form-name": "TK"
+      },
+      "UG": {
+        "enrolled-name": "UG",
+        "long-name": "Ungraded",
+        "short-name": "UG",
+        "form-name": "UG"
+      }
+    }
+  },
   "common-ngx": {
     "breadcrumbs": {
       "home-sr": "Home",
@@ -407,27 +584,186 @@
           }
         }
       },
+      "form": {
+        "heading": "Custom Aggregate Report",
+        "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\"",
+        "field": {
+          "assessment-grades": {
+            "label": "Assessment Grades",
+            "info": "Assessment Grades"
+          },
+          "assessment-type": {
+            "label": "Assessment Type",
+            "info": "Assessment Type"
+          },
+          "completeness": {
+            "label": "Completeness",
+            "info": "Indicates whether the test was completed or was partially complete."
+          },
+          "interim-administration-condition": {
+            "label": "Manner of Administration",
+            "info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
+            "qualifier": "Interim"
+          },
+          "school-year": {
+            "label": "Academic Years",
+            "info": "Academic Years"
+          },
+          "subjects": {
+            "label": "Subjects",
+            "info": "Subjects"
+          },
+          "summative-administration-condition": {
+            "label": "Validity",
+            "info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
+            "qualifier": "Summative"
+          },
+          "gender": {
+            "label": "Gender",
+            "info": "Student's reported gender"
+          },
+          "ethnicity": {
+            "label": "Race / Ethnicity",
+            "info": "Student race and ethnicity"
+          },
+          "migrant-status": {
+            "label": "Migrant Status",
+            "info": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons."
+          },
+          "iep": {
+            "label": "IEP",
+            "info": "Indicates that a student has an approved Individual Education Plan (IEP). These plans are for students with disabilities who require specialized instruction."
+          },
+          "504": {
+            "label": "504",
+            "info": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction."
+          },
+          "limited-english-proficiency": {
+            "label": "Limited English Proficiency",
+            "info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program."
+          },
+          "economic-disadvantage": {
+            "label": "Economic Disadvantage",
+            "info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage."
+          },
+          "achievement-level-display-type": {
+            "label": "Achievement Level",
+            "info": "Achievement Level",
+            "value": {
+              "Separate": "Separate",
+              "Grouped": "Grouped"
+            }
+          },
+          "value-display-type": {
+            "label": "Show Value as",
+            "info": "Show Value as",
+            "value": {
+              "Percent": "Percent",
+              "Number": "Number"
+            }
+          },
+          "comparative-subgroup": {
+            "label": "Subgroups",
+            "info": "Subgroups",
+            "value": {
+              "Gender": "Gender",
+              "Ethnicity": "Race / Ethnicity",
+              "LEP": "Limited English Proficiency",
+              "MigrantStatus": "Migrant Status",
+              "Section504": "504",
+              "IEP": "IEP",
+              "EconomicDisadvantage": "Economic Disadvantage",
+              "StudentEnrolledGrade": "Student Enrolled Grade"
+            }
+          }
+        },
+        "organizations": {
+          "heading": "Schools and Districts",
+          "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\""
+        },
+        "summary": {
+          "heading": "Report Summary",
+          "edit": "Edit",
+          "column": {
+            "assessment": {
+              "heading": "Table Heading",
+              "label": "Assessment",
+              "attribute": {
+                "subject":  "Subjects",
+                "type": "Type"
+              }
+            },
+            "organization": {
+              "heading": "Required Fields",
+              "label": "Organization",
+              "attribute": {
+                "organization":  "Organizations"
+              }
+            },
+            "assessment-grade": {
+              "label": "Assessment Grade",
+              "attribute": {
+                "grade":  "Grades"
+              }
+            },
+            "school-year": {
+              "label": "Academic Year",
+              "attribute": {
+                "year": "Years"
+              }
+            },
+            "comparative-subgroup": {
+              "heading": "Comparative Subgroups",
+              "label": "Subgroups",
+              "attribute": {
+                "subgroup": "Subgroups"
+              }
+            },
+            "students-tested": {
+              "heading": "Data Values",
+              "label": "Students Tested"
+            },
+            "average-scale-score": {
+              "label": "Average Scale Score",
+              "attribute": {
+                "value": "Values"
+              }
+            },
+            "achievement-level": {
+              "label": "Achievement Level",
+              "attribute": {
+                "grouping": "Grouping"
+              }
+            }
+          }
+        },
+        "assessment-attributes-heading": "Assessment Attributes",
+        "subgroup-filters-heading": "Subgroup Filters",
+        "report-features-heading": "Report Features",
+        "comparative-subgroups-heading": "Comparative Subgroups",
+        "submit": "Generate Report"
+      },
       "query-builder": {
         "heading": "Student Group Aggregate Report",
         "edit": "Edit",
         "assessment": "Assessment",
         "type": "Type",
         "customize": {
-          "title": "Customize School Aggregate Report",
-          "description": "Select the items you wish to include in your report. Then click <strong>\"Generate Report\"</strong>",
+          "title": "Custom Aggregate Report",
+          "description": "Select the attributes to include in the report. Then click \"Generate Report.\"",
           "generate-report-button": "Generate Report"
         },
         "organizations": {
-          "title": "Organizations",
-          "description": "Select schools and / or districts to compare.",
+          "title": "Schools and Districts",
+          "description": "Select schools and districts to compare.",
           "assessment-type": "Assessment Type",
           "assessment-type-info": "assessment-type-info",
-          "subject": "Subject",
+          "subject": "Subject(s)",
           "subject-info": "subject-info",
           "add-district-or-school": "Add a District or School",
           "selected-organizations": "Selected Organizations",
           "years": "Years",
-          "grades": "Grade(s)"
+          "grades": "Assessment Grade(s)"
         },
         "filter-results": {
           "title": "Filter Results",

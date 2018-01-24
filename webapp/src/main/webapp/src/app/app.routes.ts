@@ -36,6 +36,7 @@ import { QueryBuilderComponent } from "./aggregate-report/results/query-builder.
 import { SessionExpiredComponent } from "./shared/security/session-expired.component";
 import { AuthorizationCanActivate } from "./shared/security/authorization.can-activate";
 import { RoutingAuthorizationCanActivate } from "./shared/security/routing-authorization.can-activate";
+import { AggregateReportFormResolve } from "./aggregate-report/aggregate-report-form.resolve";
 
 const adminRoute = {
   path: 'admin',
@@ -268,12 +269,13 @@ export const routes: Routes = [
       },
       {
         path: 'aggregate-reports',
-        data: { breadcrumb: { translate: 'labels.aggregate-reports.heading'}, permissions: [ /*TODO*/ ]},
-        // canActivate: [ AuthorizationCanActivate ],
+        data: { breadcrumb: { translate: 'labels.aggregate-reports.heading'}, permissions: [ 'CUSTOM_AGGREGATE_READ' ]},
+        canActivate: [ AuthorizationCanActivate ],
         children: [
           {
             path: '',
             data: { canReuse: true },
+            resolve: { form: AggregateReportFormResolve },
             pathMatch: 'full',
             component: AggregateReportsComponent
           },
