@@ -125,7 +125,7 @@
                 </li>
                 <li role="menuitem" *ngIf="writingTraitScoresView.display">
                   <a class="dropdown-item"
-                     popover="{{ (assessmentExam.assessment.isSummative ? 'messages.no-writing-trait-for-summative-exams' : 'messages.no-writing-trait') | translate }}"
+                     popover="{{ (!assessmentExam.assessment.isIab ? 'messages.no-writing-trait-scores-for-summative-ica-exams' : 'messages.no-writing-trait-scores') | translate }}"
                      triggers="{{ !writingTraitScoresView.disabled ? '': 'mouseenter:mouseleave'}}"
                      placement="right"
                      [ngClass]="{'selected': currentResultsView == writingTraitScoresView }">
