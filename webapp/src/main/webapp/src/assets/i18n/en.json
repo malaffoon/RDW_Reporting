@@ -583,7 +583,7 @@
         "field": {
           "assessment-grades": {
             "label": "Assessment Grades",
-            "info": "Assessment Grades",
+            "info": "The grade of the assessment that was administered",
             "subtext": "* Required",
             "error-empty": "Please select an assessment grade."
           },
@@ -634,7 +634,7 @@
             "info": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction."
           },
           "limited-english-proficiency": {
-            "label": "Limited English Proficiency",
+            "label": "English Learners",
             "info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program."
           },
           "economic-disadvantage": {
@@ -642,8 +642,8 @@
             "info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage."
           },
           "achievement-level-display-type": {
-            "label": "Achievement Level",
-            "info": "Achievement Level",
+            "label": "Achievement Level Display",
+            "info": "Achievement Level Display",
             "value": {
               "Separate": "Separate",
               "Grouped": "Grouped"
@@ -663,7 +663,7 @@
             "value": {
               "Gender": "Gender",
               "Ethnicity": "Race / Ethnicity",
-              "LEP": "Limited English Proficiency",
+              "LEP": "English Learners",
               "MigrantStatus": "Migrant Status",
               "Section504": "504",
               "IEP": "IEP",
@@ -677,7 +677,7 @@
           "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\""
         },
         "summary": {
-          "heading": "Report Summary",
+          "heading": "Report Preview",
           "edit": "Edit",
           "column": {
             "assessment": {
@@ -727,7 +727,7 @@
             "achievement-level": {
               "label": "Achievement Level",
               "attribute": {
-                "grouping": "Grouping"
+                "grouping": "Display"
               }
             }
           }
