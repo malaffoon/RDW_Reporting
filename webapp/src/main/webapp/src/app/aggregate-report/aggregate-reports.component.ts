@@ -15,7 +15,7 @@ import { Forms } from "../shared/form/forms";
  * @param properties the properties to propagate when the control value is invalid
  * @return any|null
  */
-const arrayNotEmpty = properties => control => {
+const notEmpty = properties => control => {
   return control.value.length ? null : { notEmpty: properties };
 };
 
@@ -43,7 +43,7 @@ export class AggregateReportsComponent {
               private notificationService: NotificationService) {
     this.form = route.snapshot.data[ 'form' ];
     this.formGroup = new FormGroup({
-      assessmentGrades: new FormControl(this.form.settings.assessmentGrades, arrayNotEmpty({
+      assessmentGrades: new FormControl(this.form.settings.assessmentGrades, notEmpty({
         messageId: 'labels.aggregate-reports.form.field.assessment-grades.error-empty'
       }))
     });
