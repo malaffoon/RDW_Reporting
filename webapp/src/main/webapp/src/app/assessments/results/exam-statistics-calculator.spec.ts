@@ -169,6 +169,86 @@ describe('Exam Calculator', () => {
     expect(actual[ 2 ].value).toBe(0);
   });
 
+  it('should aggregate writing trait scores', () =>{
+    let assessmentItems = [{
+      maxPoints: 6,
+      results: [ 4, 6, 2, 4, 4],
+      traitScores: [
+        [ 2, 3, 1],
+        [ 4, 4, 2],
+        [ 1, 3, 0],
+        [ 3, 2, 1],
+        [ 4, 0, 2]
+      ]
+    }].map(ai => {
+      let item = new AssessmentItem();
+      item.maxPoints = ai.maxPoints;
+      item.scores = ai.results.map((result, i) => {
+        let score = new ExamItemScore();
+        score.points = result;
+        score.writingTraitScores = {
+          evidence: ai.traitScores[i][0],
+          organization: ai.traitScores[i][1],
+          conventions: ai.traitScores[i][2]
+        }
+        return score;
+      });
+
+      return item;
+    });
+
+    let fixture = new ExamStatisticsCalculator();
+    let summary = fixture.aggregateWritingTraitScores(assessmentItems);
+
+    expect(summary.evidence.average).toBe(2.8);
+    expect(summary.evidence.numbers[0]).toBe(0);
+    expect(summary.evidence.percents[0]).toBe(0);
+    expect(summary.evidence.numbers[1]).toBe(1);
+    expect(summary.evidence.percents[1]).toBe(20.0);
+    expect(summary.evidence.numbers[2]).toBe(1);
+    expect(summary.evidence.percents[2]).toBe(20.0);
+    expect(summary.evidence.numbers[3]).toBe(1);
+    expect(summary.evidence.percents[3]).toBe(20.0);
+    expect(summary.evidence.numbers[4]).toBe(2);
+    expect(summary.evidence.percents[4]).toBe(40.0);
+
+    expect(summary.organization.average).toBe(2.4);
+    expect(summary.organization.numbers[0]).toBe(1);
+    expect(summary.organization.percents[0]).toBe(20.0);
+    expect(summary.organization.numbers[1]).toBe(0);
+    expect(summary.organization.percents[1]).toBe(0);
+    expect(summary.organization.numbers[2]).toBe(1);
+    expect(summary.organization.percents[2]).toBe(20.0);
+    expect(summary.organization.numbers[3]).toBe(2);
+    expect(summary.organization.percents[3]).toBe(40.0);
+    expect(summary.organization.numbers[4]).toBe(1);
+    expect(summary.organization.percents[4]).toBe(20.0);
+
+    expect(summary.conventions.average).toBe(1.2);
+    expect(summary.conventions.numbers[0]).toBe(1);
+    expect(summary.conventions.percents[0]).toBe(20.0);
+    expect(summary.conventions.numbers[1]).toBe(2);
+    expect(summary.conventions.percents[1]).toBe(40.0);
+    expect(summary.conventions.numbers[2]).toBe(2);
+    expect(summary.conventions.percents[2]).toBe(40.0);
+
+    expect(summary.total.average).toBe(4.0);
+    expect(summary.total.numbers[0]).toBe(0);
+    expect(summary.total.percents[0]).toBe(0);
+    expect(summary.total.numbers[1]).toBe(0);
+    expect(summary.total.percents[1]).toBe(0);
+    expect(summary.total.numbers[2]).toBe(1);
+    expect(summary.total.percents[2]).toBe(20.0);
+    expect(summary.total.numbers[3]).toBe(0);
+    expect(summary.total.percents[3]).toBe(0);
+    expect(summary.total.numbers[4]).toBe(3);
+    expect(summary.total.percents[4]).toBe(60.0);
+    expect(summary.total.numbers[5]).toBe(0);
+    expect(summary.total.percents[5]).toBe(0);
+    expect(summary.total.numbers[6]).toBe(1);
+    expect(summary.total.percents[6]).toBe(20.0);
+  });
+
   it('should aggregate items by points', () =>{
     let assessmentItems = [{
       maxPoints: 3,

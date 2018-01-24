@@ -4,7 +4,7 @@ import { ExamStatisticsLevel } from "../model/exam-statistics.model";
 import { Exam } from "../model/exam.model";
 import { DynamicItemField } from "../model/item-point-field.model";
 import * as math from "mathjs";
-import {WritingTraitScoreSummary} from "../model/writing-trait-scores.model";
+import {WritingTraitScoreSummary} from "../model/writing-trait-score-summary.model";
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -101,12 +101,8 @@ export class ExamStatisticsCalculator {
       return summary;
     }
 
-
-    let totalAnswers = 0;
-    let assessmentItem = assessmentItems[0];
-
-    let itemsWithTraitScores = assessmentItem.scores.filter(x => x.writingTraitScores != null);
-    totalAnswers = itemsWithTraitScores.length;
+    let itemsWithTraitScores = assessmentItems[0].scores.filter(x => x.writingTraitScores != null);
+    let totalAnswers = itemsWithTraitScores.length;
 
     itemsWithTraitScores.forEach((score, index) => {
       summary.evidence.numbers[score.writingTraitScores.evidence]++;
@@ -115,8 +111,7 @@ export class ExamStatisticsCalculator {
       summary.total.numbers[score.points]++;
     });
 
-
-    // now calc averages
+    // calculate the averages and the percents based on the raw numbers
     summary.rows.forEach((aggregate, points) => {
       let total = 0;
       let count = 0;

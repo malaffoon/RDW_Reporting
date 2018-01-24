@@ -9,7 +9,7 @@ import { Assessment } from "../../../model/assessment.model";
 import { Angulartics2 } from "angulartics2";
 import { RequestType } from "../../../../shared/enum/request-type.enum";
 import { ExportResults } from "../../assessment-results.component";
-import {WritingTraitScoreSummary} from "../../../model/writing-trait-scores.model";
+import {WritingTraitScoreSummary} from "../../../model/writing-trait-score-summary.model";
 
 @Component({
   selector: 'writing-trait-scores',
@@ -47,10 +47,6 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     }
   }
 
-  get exams() {
-    return this._exams;
-  }
-
   loading: boolean = false;
   isWritingTraitItem: boolean = false;
   traitScoreSummary: WritingTraitScoreSummary = new WritingTraitScoreSummary();
@@ -67,9 +63,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     this.loading = true;
 
     this.assessmentProvider.getAssessmentItems(this.assessment.id, ['WER']).subscribe(assessmentItems => {
-      let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
-
-      if (numOfScores != 0) {
+      if (assessmentItems.some(x => x.scores.length > 0)) {
         this._writingTraitScoredItems = assessmentItems;
 
         this.filteredItems = this.filterItems(assessmentItems);
@@ -89,12 +83,13 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     return this.filteredItems && this.filteredItems.length > 0;
   }
 
+  // TODO: need to get this working still
   exportToCsv(): void {
     let exportRequest = new ExportRequest();
     exportRequest.assessment = this.assessment;
     exportRequest.showAsPercent = this.showValuesAsPercent;
     exportRequest.assessmentItems = this.filteredItems;
-    exportRequest.pointColumns = this.pointColumns;
+    //exportRequest.pointColumns = this.pointColumns;
     exportRequest.type = RequestType.WritingTraitScores;
 
 
@@ -112,16 +107,6 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     return index == 0
       ? 'level-down'
       : '';
-  }
-
-  // Unfortunately, this is a bit of dom hijacking to set the parent <td> class to green
-  // since primeng datatable does not currently support a setCellStyle function.
-  // https://github.com/primefaces/primeng/issues/2157
-  setTdClass(cell, item: AssessmentItem, column: DynamicItemField) {
-    if (item.answerKey && item.answerKey.indexOf(column.label) !== -1) {
-      let td = cell.parentNode.parentNode;
-      this.renderer.addClass(td, "green");
-    }
   }
 
   private filterItems(items: AssessmentItem[]) {

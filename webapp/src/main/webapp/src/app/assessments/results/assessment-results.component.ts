@@ -135,7 +135,7 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayWritingTraitScores(): boolean {
-    return true; // TODO
+    return this._assessmentExam.assessment.isIab && this._assessmentExam.assessment.subject == 'ELA';
   }
 
   get showStudentResults(): boolean {
@@ -208,17 +208,18 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   setViews(): void {
-    this.resultsByStudentView = this.getResultViewState(ResultsViewState.ByStudent, true, false);
-    this.resultsByItemView = this.getResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true)
-    this.distractorAnalysisView = this.getResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true);
-    this.writingTraitScoresView = this.getResultViewState(ResultsViewState.WritingTraitScores, this.displayItemLevelData, true);
+    this.resultsByStudentView = this.getResultViewState(ResultsViewState.ByStudent, true, false, true);
+    this.resultsByItemView = this.getResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, true)
+    this.distractorAnalysisView = this.getResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, true);
+    this.writingTraitScoresView = this.getResultViewState(ResultsViewState.WritingTraitScores, this.displayItemLevelData, true, this.displayWritingTraitScores);
   }
 
-  getResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean): ResultsView {
+  getResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean, display: boolean): ResultsView {
     return {
       label: 'enum.results-view-state.' + ResultsViewState[ viewState ],
       value: viewState,
       disabled: !enabled,
+      display: display,
       canExport: canExport
     }
   }
@@ -300,6 +301,7 @@ interface ResultsView {
   value: ResultsViewState;
   disabled: boolean;
   canExport: boolean;
+  display: boolean;
 }
 
 export interface ExportResults {

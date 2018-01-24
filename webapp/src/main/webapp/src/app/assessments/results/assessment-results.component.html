@@ -84,7 +84,7 @@
                 {{ currentResultsView.label | translate }} <i class="fa fa-angle-down"></i>
               </button>
               <ul *dropdownMenu class="dropdown-menu" role="menu">
-                <li role="menuitem">
+                <li role="menuitem" *ngIf="resultsByStudentView.display">
                   <a class="dropdown-item"
                      popover="{{'messages.no-results-by-item' | translate }}"
                      triggers="{{ !resultsByStudentView.disabled ? '': 'mouseenter:mouseleave'}}"
@@ -97,7 +97,7 @@
                     </button>
                   </a>
                 </li>
-                <li role="menuitem">
+                <li role="menuitem" *ngIf="resultsByItemView.display">
                   <a class="dropdown-item"
                      popover="{{ (assessmentExam.assessment.isSummative ? 'messages.no-results-by-item-for-summative-exams' : 'messages.no-results-by-item') | translate }}"
                      triggers="{{ !resultsByItemView.disabled ? '': 'mouseenter:mouseleave'}}"
@@ -110,7 +110,7 @@
                     </button>
                   </a>
                 </li>
-                <li role="menuitem">
+                <li role="menuitem" *ngIf="distractorAnalysisView.display">
                   <a class="dropdown-item"
                      popover="{{ (assessmentExam.assessment.isSummative ? 'messages.no-distractor-analysis-for-summative-exams' : 'messages.no-distractor-analysis') | translate }}"
                      triggers="{{ !distractorAnalysisView.disabled ? '': 'mouseenter:mouseleave'}}"
@@ -123,9 +123,9 @@
                     </button>
                   </a>
                 </li>
-                <li role="menuitem" *ngIf="assessmentExam.assessment.isIab">
+                <li role="menuitem" *ngIf="writingTraitScoresView.display">
                   <a class="dropdown-item"
-                     popover="{{ 'messages.no-writing-trait' | translate }}"
+                     popover="{{ (assessmentExam.assessment.isSummative ? 'messages.no-writing-trait-for-summative-exams' : 'messages.no-writing-trait') | translate }}"
                      triggers="{{ !writingTraitScoresView.disabled ? '': 'mouseenter:mouseleave'}}"
                      placement="right"
                      [ngClass]="{'selected': currentResultsView == writingTraitScoresView }">
