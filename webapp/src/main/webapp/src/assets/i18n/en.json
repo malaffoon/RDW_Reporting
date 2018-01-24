@@ -583,7 +583,9 @@
         "field": {
           "assessment-grades": {
             "label": "Assessment Grades",
-            "info": "Assessment Grades"
+            "info": "Assessment Grades",
+            "subtext": "* Required",
+            "error-empty": "Please select an assessment grade."
           },
           "assessment-type": {
             "label": "Assessment Type",
@@ -596,7 +598,7 @@
           "interim-administration-condition": {
             "label": "Manner of Administration",
             "info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
-            "qualifier": "Interim"
+            "subtext": "Interim"
           },
           "school-year": {
             "label": "Academic Years",
@@ -609,7 +611,7 @@
           "summative-administration-condition": {
             "label": "Validity",
             "info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
-            "qualifier": "Summative"
+            "subtext": "Summative"
           },
           "gender": {
             "label": "Gender",

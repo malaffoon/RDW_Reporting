@@ -1,5 +1,6 @@
 import { Component, forwardRef, Input, OnInit } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Utils } from "./support/support";
 
 const NOOP: () => void = () => {};
 
@@ -34,7 +35,7 @@ export class SBToggleComponent implements ControlValueAccessor, OnInit {
   disabled: boolean = false;
 
   @Input()
-  name: string;
+  name: string = Utils.newGuid();
 
   /**
    *  The analytics event to send when clicked
