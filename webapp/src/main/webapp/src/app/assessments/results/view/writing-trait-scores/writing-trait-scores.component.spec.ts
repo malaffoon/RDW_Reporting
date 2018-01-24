@@ -20,7 +20,7 @@ import { Assessment } from "../../../model/assessment.model";
 import { WritingTraitScoresComponent } from "./writing-trait-scores.component";
 import { MockAssessmentProvider } from "../../../../../test/mock.assessment.provider";
 
-describe('DistractorAnalysisComponent', () => {
+describe('WritingTraitScoresComponent', () => {
   let component: WritingTraitScoresComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
