@@ -546,14 +546,14 @@
     <div class="col-md-12">
       <div class="pull-right">
         <button class="btn btn-default btn-sm float-none-xs"
-                (click)="export(form)"
+                (click)="export()"
                 analyticsEvent="GenerateReportExportCSV"
                 analyticsCategory="AggregateQueryBuilder"
                 angulartics2on="click">
           <i class="fa fa-table"></i> {{'labels.export.csv' | translate }}
         </button>
         <button class="btn btn-success btn-sm ml-xs green"
-                (click)="submit(form)"
+                (click)="submit()"
                 analyticsEvent="GenerateReport"
                 analyticsCategory="AggregateQueryBuilder"
                 angulartics2on="click">
