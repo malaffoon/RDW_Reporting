@@ -60,8 +60,8 @@ export class AggregateReportsComponent {
   /**
    * @returns {any} The assessment grades form control
    */
-  get assessmentGradesControl(): FormGroup {
-    return <FormGroup>this.formGroup.get('assessmentGrades');
+  get assessmentGradesControl(): FormControl {
+    return <FormControl>this.formGroup.get('assessmentGrades');
   }
 
   /**
