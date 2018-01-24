@@ -10,7 +10,7 @@ import { AggregateReportsTableComponent } from "./results/aggregate-reports-tabl
 import { AssessmentDetailsService } from "./results/assessment-details.service";
 import { PerformanceComparisonComponent } from "./results/performance-comparison.component";
 import { QueryBuilderComponent } from "./results/query-builder.component";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 import { ReportOptionsService } from "./results/report-options.service";
 import { AggregateReportFormResolve } from "./aggregate-report-form.resolve";
@@ -35,6 +35,7 @@ import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-rep
     BrowserModule,
     FormsModule,
     CommonModule,
+    ReactiveFormsModule,
     DataTableModule,
     MultiselectDropdownModule
   ],
