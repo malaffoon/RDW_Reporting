@@ -35,7 +35,6 @@ import { PopoverModule } from "ngx-bootstrap";
     CommonModule,
     ReactiveFormsModule,
     DataTableModule,
-    PopoverModule,
     MultiselectDropdownModule
   ],
   exports: [
