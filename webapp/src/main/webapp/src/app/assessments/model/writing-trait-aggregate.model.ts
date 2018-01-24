@@ -1,5 +1,8 @@
 import { WritingTrait } from "./writing-trait.model";
 
+/**
+ * An aggregate representation of a writing trait for a group of results
+ */
 export class WritingTraitAggregate {
   trait: WritingTrait;
   average: number;

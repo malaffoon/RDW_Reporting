@@ -2,6 +2,9 @@ import { WritingTraitAggregate } from "./writing-trait-aggregate.model";
 import { WritingTraitType } from "./writing-trait-type.model";
 import { WritingTrait } from "./writing-trait.model";
 
+/**
+ * This class represents a writing trait score summary report (e.g. all of the rows of aggregate writing traits)
+ */
 export class WritingTraitScoreSummary {
   evidence: WritingTraitAggregate = new WritingTraitAggregate(new WritingTrait(WritingTraitType.Evidence, 4));
   organization: WritingTraitAggregate = new WritingTraitAggregate(new WritingTrait(WritingTraitType.Organization, 4));
