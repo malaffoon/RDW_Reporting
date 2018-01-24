@@ -15,13 +15,13 @@ sqlbuilder:
               sum(CASE WHEN performance_level = 4 THEN 1 ELSE 0 END) AS level4,
               fe.school_year,
               fe.asmt_id,
-              fe.asmt_grade_id,
-              fe.asmt_subject_id,
+              a.grade_id as asmt_grade_id,
+              a.subject_id,
               a.label as asmt_label,
               subject.code as subject_code
 
           from: >-
-              fact_student_exam_test fe
+              fact_student_exam fe
 
           join: >-
               JOIN asmt a ON a.id = fe.asmt_id
@@ -29,17 +29,15 @@ sqlbuilder:
 
           where: >-
               fe.school_year IN (:school_years) AND
-              fe.asmt_grade_id IN (:asmt_grade_ids) AND
-              fe.asmt_subject_id IN (:subject_ids) AND
               a.grade_id IN (:asmt_grade_ids) AND
-              a.subject_id IN (:subject_ids) AND
+              a.subject_id in (:subject_ids) AND
               a.type_id = :asmt_type_id
 
           groupBy: >-
               fe.school_year,
               fe.asmt_id,
-              fe.asmt_grade_id,
-              fe.asmt_subject_id,
+              a.grade_id,
+              a.subject_id,
               a.label,
               subject.code
 
@@ -122,14 +120,15 @@ sqlbuilder:
               clauses:
                 select: >-
                      'Gender' AS dimension,
-                      fe.student_gender_id  AS dimension_id,
+                      s.gender_id  AS dimension_id,
                       gn.code AS dimension_code
                 join: >-
-                     JOIN gender gn on gn.id = fe.student_gender_id
+                     JOIN student s ON fe.student_id = s.id
+                     JOIN gender gn on gn.id = s.gender_id
                 where: >-
                      ( true = :all_genders OR gn.code in (:gender_ids) )
                 groupBy: >-
-                     fe.student_gender_id,
+                     s.gender_id,
                      gn.code
 
             # If a student has multiple ethnicities, we are double-counting it - by design
