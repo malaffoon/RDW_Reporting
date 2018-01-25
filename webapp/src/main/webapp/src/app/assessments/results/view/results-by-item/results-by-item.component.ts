@@ -29,7 +29,7 @@ export class ResultsByItemComponent implements OnInit, ExportResults {
   assessmentProvider: AssessmentProvider;
 
   /**
-   * Service class which provides export capabilities=for this assessment and exam.
+   * Service class which provides export capabilities for this assessment and exam.
    */
   @Input()
   assessmentExporter: AssessmentExporter;

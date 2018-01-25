@@ -44,7 +44,7 @@ export class AssessmentsComponent implements OnInit {
 
   /**
    * The provider which implements the AssessmentExporter interface in order
-   * to export CSV data.
+   * to export data.
    */
   @Input()
   assessmentExporter: AssessmentExporter;
