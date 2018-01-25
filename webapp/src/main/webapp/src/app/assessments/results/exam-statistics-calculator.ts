@@ -94,39 +94,40 @@ export class ExamStatisticsCalculator {
     return pointFields;
   }
 
-  aggregateWritingTraitScores(assessmentItems: AssessmentItem[]) : WritingTraitScoreSummary {
-    let summary = new WritingTraitScoreSummary();
+  aggregateWritingTraitScores(assessmentItems: AssessmentItem[]) : WritingTraitScoreSummary[] {
+    let summaries: WritingTraitScoreSummary[] = [];
 
-    if (assessmentItems.length == 0) {
-      return summary;
-    }
+    assessmentItems.forEach(assessmentItem => {
+      let summary = new WritingTraitScoreSummary();
+      let itemsWithTraitScores = assessmentItem.scores.filter(x => x.writingTraitScores != null);
+      let totalAnswers = itemsWithTraitScores.length;
 
-    let itemsWithTraitScores = assessmentItems[0].scores.filter(x => x.writingTraitScores != null);
-    let totalAnswers = itemsWithTraitScores.length;
-
-    itemsWithTraitScores.forEach((score, index) => {
-      summary.evidence.numbers[score.writingTraitScores.evidence]++;
-      summary.organization.numbers[score.writingTraitScores.organization]++;
-      summary.conventions.numbers[score.writingTraitScores.conventions]++;
-      summary.total.numbers[score.points]++;
-    });
-
-    // calculate the averages and the percents based on the raw numbers
-    summary.rows.forEach((aggregate, points) => {
-      let total = 0;
-      let count = 0;
-
-      aggregate.numbers.forEach((num, index) => {
-        total += num * index;
-        count += num;
-
-        aggregate.percents[index] = totalAnswers == 0 ? 0 : num / totalAnswers * 100;
+      itemsWithTraitScores.forEach((score, index) => {
+        summary.evidence.numbers[score.writingTraitScores.evidence]++;
+        summary.organization.numbers[score.writingTraitScores.organization]++;
+        summary.conventions.numbers[score.writingTraitScores.conventions]++;
+        summary.total.numbers[score.points]++;
       });
 
-      aggregate.average = count == 0 ? 0 : total / count;
+      // calculate the averages and the percents based on the raw numbers
+      summary.rows.forEach((aggregate, points) => {
+        let total = 0;
+        let count = 0;
+
+        aggregate.numbers.forEach((num, index) => {
+          total += num * index;
+          count += num;
+
+          aggregate.percents[index] = totalAnswers == 0 ? 0 : num / totalAnswers * 100;
+        });
+
+        aggregate.average = count == 0 ? 0 : total / count;
+      });
+
+      summaries.push(summary);
     });
 
-    return summary;
+    return summaries;
   }
 
   aggregateItemsByResponse(assessmentItems: AssessmentItem[]) {

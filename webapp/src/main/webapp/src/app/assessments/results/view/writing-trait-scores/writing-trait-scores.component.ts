@@ -43,7 +43,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
 
     if (this.filteredItems) {
       this.filteredItems = this.filterItems(this._writingTraitScoredItems);
-      this.traitScoreSummary = this.examCalculator.aggregateWritingTraitScores(this.filteredItems);
+      this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(this.filteredItems);
     }
   }
 
@@ -53,7 +53,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
 
   loading: boolean = false;
   isWritingTraitItem: boolean = false;
-  traitScoreSummary: WritingTraitScoreSummary = new WritingTraitScoreSummary();
+  traitScoreSummaries: WritingTraitScoreSummary[];
   writingTraitType: string;
 
   private _writingTraitScoredItems: AssessmentItem[];
@@ -71,7 +71,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
         this._writingTraitScoredItems = assessmentItems;
 
         this.filteredItems = this.filterItems(assessmentItems);
-        this.traitScoreSummary = this.examCalculator.aggregateWritingTraitScores(assessmentItems);
+        this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(assessmentItems);
       }
 
       if (assessmentItems.length != 0) {

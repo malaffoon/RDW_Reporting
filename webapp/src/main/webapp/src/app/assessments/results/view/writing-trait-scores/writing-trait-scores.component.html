@@ -63,28 +63,30 @@
     </ng-template>
   </p-dataTable>
 
-  <h4 *ngIf="isWritingTraitItem" class="pt-md">{{'labels.writing-trait-scores.aggregate-header' | translate:{traitType:writingTraitType} }}</h4>
+  <div *ngFor="let traitScoreSummary of traitScoreSummaries">
+    <h4 *ngIf="isWritingTraitItem" class="pt-md">{{'labels.writing-trait-scores.aggregate-header' | translate:{traitType:writingTraitType} }}</h4>
 
-  <p-dataTable *ngIf="isWritingTraitItem" #traitScoreTable [value]="traitScoreSummary.rows"
-               tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto', 'min-width' : '65%'}">
-    <p-column header="{{'labels.groups.results.assessment.items.cols.category' | translate}}">
-      <ng-template let-item="rowData" pTemplate="body">
-        {{'enum.writing-trait.' + item.trait.type | translate}}
-      </ng-template>
-    </p-column>
+    <p-dataTable *ngIf="isWritingTraitItem" #traitScoreTable [value]="traitScoreSummary.rows"
+                 tableStyleClass="table table-striped table-hover" [tableStyle]="{'table-layout':'auto', 'min-width' : '65%'}">
+      <p-column header="{{'labels.groups.results.assessment.items.cols.category' | translate}}">
+        <ng-template let-item="rowData" pTemplate="body">
+          {{'enum.writing-trait.' + item.trait.type | translate}}
+        </ng-template>
+      </p-column>
 
-    <p-column header="{{'labels.groups.results.assessment.items.cols.average' | translate}}" styleClass="level-up">
-      <ng-template let-item="rowData" pTemplate="body">
-        <strong>{{ item.average | number:'1.0-1' }}</strong> / {{ item.trait.maxPoints | number:'1.0-0' }}
-      </ng-template>
-    </p-column>
-    <p-column *ngFor="let num of traitScoreSummary.total.numbers; let i = index"
-              header="{{'labels.groups.results.assessment.items.cols.x-points' | translate:{id: i} }}"
-              [styleClass]="getPointRowStyleClass(i)">
-      <ng-template let-item="rowData" pTemplate="body">
-        <span [hidden]="showValuesAsPercent">{{ item.numbers[i] }}</span>
-        <span [hidden]="!showValuesAsPercent || item.percents[i] == null">{{ item.percents[i] | number:'1.0-0' }}%</span>
-      </ng-template>
-    </p-column>
-  </p-dataTable>
+      <p-column header="{{'labels.groups.results.assessment.items.cols.average' | translate}}" styleClass="level-up">
+        <ng-template let-item="rowData" pTemplate="body">
+          <strong>{{ item.average | number:'1.0-1' }}</strong> / {{ item.trait.maxPoints | number:'1.0-0' }}
+        </ng-template>
+      </p-column>
+      <p-column *ngFor="let num of traitScoreSummary.total.numbers; let i = index"
+                header="{{'labels.groups.results.assessment.items.cols.x-points' | translate:{id: i} }}"
+                [styleClass]="getPointRowStyleClass(i)">
+        <ng-template let-item="rowData" pTemplate="body">
+          <span [hidden]="showValuesAsPercent">{{ item.numbers[i] }}</span>
+          <span [hidden]="!showValuesAsPercent || item.percents[i] == null">{{ item.percents[i] | number:'1.0-0' }}%</span>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
 </div>
