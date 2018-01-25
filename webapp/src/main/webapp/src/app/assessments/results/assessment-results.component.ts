@@ -122,11 +122,11 @@ export class AssessmentResultsComponent implements OnInit {
     this.assessmentExam.collapsed = collapsed;
   }
 
-  get collapsed() {
+  get collapsed(): boolean {
     return this.assessmentExam.collapsed;
   }
 
-  get assessmentExam() {
+  get assessmentExam(): AssessmentExam {
     return this._assessmentExam;
   }
 
@@ -135,7 +135,7 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayWritingTraitScores(): boolean {
-    return this._assessmentExam.assessment.subject == 'ELA';
+    return this._assessmentExam.assessment.isEla;
   }
 
   get enableWritingTraitScores(): boolean {
@@ -212,13 +212,13 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   setViews(): void {
-    this.resultsByStudentView = this.getResultViewState(ResultsViewState.ByStudent, true, false, true);
-    this.resultsByItemView = this.getResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, true)
-    this.distractorAnalysisView = this.getResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, true);
-    this.writingTraitScoresView = this.getResultViewState(ResultsViewState.WritingTraitScores, this.enableWritingTraitScores, true, this.displayWritingTraitScores);
+    this.resultsByStudentView = this.createResultViewState(ResultsViewState.ByStudent, true, false, true);
+    this.resultsByItemView = this.createResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, true)
+    this.distractorAnalysisView = this.createResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, true);
+    this.writingTraitScoresView = this.createResultViewState(ResultsViewState.WritingTraitScores, this.enableWritingTraitScores, true, this.displayWritingTraitScores);
   }
 
-  getResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean, display: boolean): ResultsView {
+  createResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean, display: boolean): ResultsView {
     return {
       label: 'enum.results-view-state.' + ResultsViewState[ viewState ],
       value: viewState,
@@ -228,7 +228,7 @@ export class AssessmentResultsComponent implements OnInit {
     }
   }
 
-  setCurrentView(view: ResultsView) {
+  setCurrentView(view: ResultsView): void {
     this.currentResultsView = view;
   }
 
@@ -240,21 +240,21 @@ export class AssessmentResultsComponent implements OnInit {
     return 'labels.results-view-state-intro.' + ResultsViewState[ this.currentResultsView.value ];
   }
 
-  toggleSession(session) {
+  toggleSession(session): void {
     session.filter = !session.filter;
     this.updateExamSessions();
   }
 
-  openInstructionalResource() {
+  openInstructionalResource(): void {
     window.open(this.assessmentExam.assessment.resourceUrl);
   }
 
-  loadInstructionalResources(assessment: Assessment, performanceLevel: number) {
+  loadInstructionalResources(assessment: Assessment, performanceLevel: number): void {
     this.instructionalResourceProvider = () => this.instructionalResourcesService.getInstructionalResources(assessment.id, this.assessmentProvider.getSchoolId())
         .map((resources) => resources.getResourcesByPerformance(performanceLevel));
   }
 
-  private getDistinctExamSessions(exams: Exam[]) {
+  private getDistinctExamSessions(exams: Exam[]): any[] {
     let sessions = [];
 
     for (let exam of exams) {
@@ -270,12 +270,12 @@ export class AssessmentResultsComponent implements OnInit {
         .compare);
   }
 
-  private updateExamSessions() {
+  private updateExamSessions(): void {
     this.exams = this.filterExams();
     this.statistics = this.calculateStats();
   }
 
-  private filterExams() {
+  private filterExams(): Exam[] {
     let exams: Exam[] = this.examFilterService
       .filterExams(this._assessmentExam, this._filterBy);
 

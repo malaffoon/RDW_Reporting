@@ -47,6 +47,10 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     }
   }
 
+  get exams(): Exam[] {
+    return this._exams;
+  }
+
   loading: boolean = false;
   isWritingTraitItem: boolean = false;
   traitScoreSummary: WritingTraitScoreSummary = new WritingTraitScoreSummary();

@@ -201,52 +201,20 @@ describe('Exam Calculator', () => {
     let summary = fixture.aggregateWritingTraitScores(assessmentItems);
 
     expect(summary.evidence.average).toBe(2.8);
-    expect(summary.evidence.numbers[0]).toBe(0);
-    expect(summary.evidence.percents[0]).toBe(0);
-    expect(summary.evidence.numbers[1]).toBe(1);
-    expect(summary.evidence.percents[1]).toBe(20.0);
-    expect(summary.evidence.numbers[2]).toBe(1);
-    expect(summary.evidence.percents[2]).toBe(20.0);
-    expect(summary.evidence.numbers[3]).toBe(1);
-    expect(summary.evidence.percents[3]).toBe(20.0);
-    expect(summary.evidence.numbers[4]).toBe(2);
-    expect(summary.evidence.percents[4]).toBe(40.0);
+    expect(summary.evidence.numbers).toEqual([0, 1, 1, 1, 2]);
+    expect(summary.evidence.percents).toEqual([0, 20.0, 20.0, 20.0, 40.0]);
 
     expect(summary.organization.average).toBe(2.4);
-    expect(summary.organization.numbers[0]).toBe(1);
-    expect(summary.organization.percents[0]).toBe(20.0);
-    expect(summary.organization.numbers[1]).toBe(0);
-    expect(summary.organization.percents[1]).toBe(0);
-    expect(summary.organization.numbers[2]).toBe(1);
-    expect(summary.organization.percents[2]).toBe(20.0);
-    expect(summary.organization.numbers[3]).toBe(2);
-    expect(summary.organization.percents[3]).toBe(40.0);
-    expect(summary.organization.numbers[4]).toBe(1);
-    expect(summary.organization.percents[4]).toBe(20.0);
+    expect(summary.organization.numbers).toEqual([1, 0, 1, 2, 1]);
+    expect(summary.organization.percents).toEqual([20.0, 0, 20.0, 40.0, 20.0]);
 
     expect(summary.conventions.average).toBe(1.2);
-    expect(summary.conventions.numbers[0]).toBe(1);
-    expect(summary.conventions.percents[0]).toBe(20.0);
-    expect(summary.conventions.numbers[1]).toBe(2);
-    expect(summary.conventions.percents[1]).toBe(40.0);
-    expect(summary.conventions.numbers[2]).toBe(2);
-    expect(summary.conventions.percents[2]).toBe(40.0);
+    expect(summary.conventions.numbers).toEqual([1, 2, 2]);
+    expect(summary.conventions.percents).toEqual([20.0, 40.0, 40.0]);
 
     expect(summary.total.average).toBe(4.0);
-    expect(summary.total.numbers[0]).toBe(0);
-    expect(summary.total.percents[0]).toBe(0);
-    expect(summary.total.numbers[1]).toBe(0);
-    expect(summary.total.percents[1]).toBe(0);
-    expect(summary.total.numbers[2]).toBe(1);
-    expect(summary.total.percents[2]).toBe(20.0);
-    expect(summary.total.numbers[3]).toBe(0);
-    expect(summary.total.percents[3]).toBe(0);
-    expect(summary.total.numbers[4]).toBe(3);
-    expect(summary.total.percents[4]).toBe(60.0);
-    expect(summary.total.numbers[5]).toBe(0);
-    expect(summary.total.percents[5]).toBe(0);
-    expect(summary.total.numbers[6]).toBe(1);
-    expect(summary.total.percents[6]).toBe(20.0);
+    expect(summary.total.numbers).toEqual([0, 0, 1, 0, 3, 0, 1]);
+    expect(summary.total.percents).toEqual([0, 0, 20.0, 0, 60.0, 0, 20.0]);
   });
 
   it('should aggregate items by points', () =>{
