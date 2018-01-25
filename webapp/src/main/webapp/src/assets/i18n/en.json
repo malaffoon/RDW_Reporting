@@ -1547,8 +1547,7 @@
         "short-name": "ELA"
       }
     },
-    "type": "Type"
-    },
+    "type": "Type",
     "writing-trait-scores": {
       "aggregate-header": "Point Breakdown: {{traitType}}"
     }
