@@ -341,7 +341,8 @@
       },
       "request-type": {
         "distractor-analysis": "DistractorAnalysis",
-        "results-by-item": "ResultsByItems"
+        "results-by-item": "ResultsByItems",
+        "writing-trait-scores": "WritingTraitScores"
       },
       "short": {
         "1": "Did Not Meet",
@@ -1205,7 +1206,9 @@
               "difficulty-info": "Item difficulty (easy, moderate, difficult) is based on the difficulty of the item for students in a reference population.  See the Interpretive Guide for a description of the reference population and how the difficulty categories are derived.",
               "full-credit": "Full Credit",
               "full-credit-info": "Percentage of students in the group who earned the maximum number of points available for a particular test item.",
+              "max-score": "Maximum Score",
               "number": "Item #",
+              "performance-task-writing-type": "Writing Type",
               "standard": "Standard",
               "standard-info-html": {
                 "ELA": "This column reflects the Common Core State Standard(s) associated with a test item. Test items may be associated with more than one standard.  For example, a question that asks students to evaluate research sources may assess both reading and research skills.  For more information, see the <a href=\"https://portal.smarterbalanced.org/library/en/english-language-artsliteracy-content-specifications.pdf\" target=\"_blank\">English Language Arts Content Specifications</a>.",
