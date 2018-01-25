@@ -341,7 +341,8 @@
       },
       "request-type": {
         "distractor-analysis": "DistractorAnalysis",
-        "results-by-item": "ResultsByItems"
+        "results-by-item": "ResultsByItems",
+        "writing-trait-scores": "WritingTraitScores"
       },
       "short": {
         "1": "Did Not Meet",
@@ -1205,6 +1206,7 @@
               "difficulty-info": "Item difficulty (easy, moderate, difficult) is based on the difficulty of the item for students in a reference population.  See the Interpretive Guide for a description of the reference population and how the difficulty categories are derived.",
               "full-credit": "Full Credit",
               "full-credit-info": "Percentage of students in the group who earned the maximum number of points available for a particular test item.",
+              "max-score": "Maximum Score",
               "number": "Item #",
               "standard": "Standard",
               "standard-info-html": {
