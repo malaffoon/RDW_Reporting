@@ -217,7 +217,7 @@ describe('Exam Calculator', () => {
       expect(summary.total.numbers).toEqual([0, 0, 1, 0, 3, 0, 1]);
       expect(summary.total.percents).toEqual([0, 0, 20.0, 0, 60.0, 0, 20.0]);
     });
-  })
+  });
 
 
   it('should aggregate items by points', () =>{
