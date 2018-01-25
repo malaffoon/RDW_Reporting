@@ -562,25 +562,25 @@
             "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
             "Filipino": "Filipino"
           },
-          "LimitedEnglishProficiency": {
-            "2": "Limited English Proficiency: No",
-            "1": "Limited English Proficiency: Yes"
+          "LEP": {
+            "default": "Limited English Proficiency: No",
+            "true": "Limited English Proficiency: Yes"
           },
           "IEP": {
-            "2": "IEP: No",
-            "1": "IEP: Yes"
+            "default": "IEP: No",
+            "true": "IEP: Yes"
           },
           "MigrantStatus": {
-            "2": "Migrant Status: No",
-            "1": "Migrant Status: Yes"
+            "default": "Migrant Status: No",
+            "true": "Migrant Status: Yes"
           },
           "EconomicDisadvantage": {
-            "2": "Economic Disadvantage: No",
-            "1": "Economic Disadvantage: Yes"
+            "default": "Economic Disadvantage: No",
+            "true": "Economic Disadvantage: Yes"
           },
-          "504Plan": {
-            "2": "504 Plan: No",
-            "1": "504 Plan: Yes"
+          "Section504": {
+            "default": "504 Plan: No",
+            "true": "504 Plan: Yes"
           }
         }
       },
@@ -590,7 +590,9 @@
         "field": {
           "assessment-grades": {
             "label": "Assessment Grades",
-            "info": "Assessment Grades"
+            "info": "The grade of the assessment that was administered",
+            "subtext": "* Required",
+            "error-empty": "Please select an assessment grade."
           },
           "assessment-type": {
             "label": "Assessment Type",
@@ -603,7 +605,7 @@
           "interim-administration-condition": {
             "label": "Manner of Administration",
             "info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
-            "qualifier": "Interim"
+            "subtext": "Interim"
           },
           "school-year": {
             "label": "Academic Years",
@@ -616,7 +618,7 @@
           "summative-administration-condition": {
             "label": "Validity",
             "info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
-            "qualifier": "Summative"
+            "subtext": "Summative"
           },
           "gender": {
             "label": "Gender",
@@ -639,7 +641,7 @@
             "info": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction."
           },
           "limited-english-proficiency": {
-            "label": "Limited English Proficiency",
+            "label": "English Learners",
             "info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program."
           },
           "economic-disadvantage": {
@@ -647,8 +649,8 @@
             "info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage."
           },
           "achievement-level-display-type": {
-            "label": "Achievement Level",
-            "info": "Achievement Level",
+            "label": "Achievement Level Display",
+            "info": "Achievement Level Display",
             "value": {
               "Separate": "Separate",
               "Grouped": "Grouped"
@@ -668,7 +670,7 @@
             "value": {
               "Gender": "Gender",
               "Ethnicity": "Race / Ethnicity",
-              "LEP": "Limited English Proficiency",
+              "LEP": "English Learners",
               "MigrantStatus": "Migrant Status",
               "Section504": "504",
               "IEP": "IEP",
@@ -682,7 +684,7 @@
           "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\""
         },
         "summary": {
-          "heading": "Report Summary",
+          "heading": "Report Preview",
           "edit": "Edit",
           "column": {
             "assessment": {
@@ -732,7 +734,7 @@
             "achievement-level": {
               "label": "Achievement Level",
               "attribute": {
-                "grouping": "Grouping"
+                "grouping": "Display"
               }
             }
           }
@@ -1544,6 +1546,8 @@
         "name": "ELA/Literacy",
         "short-name": "ELA"
       }
+    },
+    "type": "Type"
     },
     "writing-trait-scores": {
       "aggregate-header": "Point Breakdown: {{traitType}}"
