@@ -164,6 +164,7 @@ export class CsvExportService {
       .withItemDifficulty(getAssessmentItem)
       .withStandards(getAssessmentItem)
       .withFullCredit(getAssessmentItem, exportRequest.showAsPercent)
+      .withPerformanceTaskWritingType(getAssessmentItem)
       .withWritingTraitAggregate((item) => item.writingTraitAggregate, maxPoints, exportRequest.showAsPercent)
       .build(compositeRows);
   }

@@ -417,9 +417,17 @@ export class CsvBuilder {
     return this;
   }
 
+  withPerformanceTaskWritingType(getAssessmentItem: (item: any) => AssessmentItem) {
+    return this.withColumn(
+      this.translateService.instant('labels.groups.results.assessment.items.cols.performance-task-writing-type'),
+      (item) => getAssessmentItem(item).performanceTaskWritingType
+    );
+  }
+
   withWritingTraitAggregate(getWritingTraitAggregate: (item: any) => WritingTraitAggregate,
                             maxPoints: number,
                             showAsPercent: boolean) {
+
     this.withColumn(
       this.translateService.instant('labels.groups.results.assessment.items.cols.category'),
       (item) => this.translateService.instant('enum.writing-trait.' + getWritingTraitAggregate(item).trait.type)
