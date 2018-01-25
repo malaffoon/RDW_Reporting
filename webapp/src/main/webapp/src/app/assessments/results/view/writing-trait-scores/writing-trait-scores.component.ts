@@ -9,12 +9,13 @@ import { Assessment } from "../../../model/assessment.model";
 import { Angulartics2 } from "angulartics2";
 import { RequestType } from "../../../../shared/enum/request-type.enum";
 import { ExportResults } from "../../assessment-results.component";
+import {WritingTraitScoreSummary} from "../../../model/writing-trait-score-summary.model";
 
 @Component({
-  selector: 'distractor-analysis',
-  templateUrl: './distractor-analysis.component.html'
+  selector: 'writing-trait-scores',
+  templateUrl: './writing-trait-scores.component.html'
 })
-export class DistractorAnalysisComponent implements OnInit, ExportResults {
+export class WritingTraitScoresComponent implements OnInit, ExportResults {
   /**
    * If true, values will be shown as percentages
    */
@@ -40,21 +41,23 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
   set exams(value: Exam[]) {
     this._exams = value;
 
-    if (this.filteredMultipleChoiceItems) {
-      this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(this._multipleChoiceItems);
-      this.examCalculator.aggregateItemsByResponse(this.filteredMultipleChoiceItems);
+    if (this.filteredItems) {
+      this.filteredItems = this.filterItems(this._writingTraitScoredItems);
+      this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(this.filteredItems);
     }
   }
 
-  get exams() {
+  get exams(): Exam[] {
     return this._exams;
   }
 
   loading: boolean = false;
-  choiceColumns: DynamicItemField[];
+  isWritingTraitItem: boolean = false;
+  traitScoreSummaries: WritingTraitScoreSummary[];
+  writingTraitType: string;
 
-  private _multipleChoiceItems: AssessmentItem[];
-  private filteredMultipleChoiceItems: AssessmentItem[];
+  private _writingTraitScoredItems: AssessmentItem[];
+  private filteredItems: AssessmentItem[];
   private _exams: Exam[];
 
   constructor(private examCalculator: ExamStatisticsCalculator, private renderer: Renderer2, private angulartics2: Angulartics2) {
@@ -62,16 +65,18 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
 
   ngOnInit() {
     this.loading = true;
-    this.assessmentProvider.getAssessmentItems(this.assessment.id, ['MC', 'MS']).subscribe(assessmentItems => {
 
-      let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
+    this.assessmentProvider.getAssessmentItems(this.assessment.id, ['WER']).subscribe(assessmentItems => {
+      if (assessmentItems.some(x => x.scores.length > 0)) {
+        this._writingTraitScoredItems = assessmentItems;
 
-      if (numOfScores != 0) {
-        this._multipleChoiceItems = assessmentItems;
-        this.choiceColumns = this.examCalculator.getChoiceFields(assessmentItems);
+        this.filteredItems = this.filterItems(assessmentItems);
+        this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(assessmentItems);
+      }
 
-        this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(assessmentItems);
-        this.examCalculator.aggregateItemsByResponse(this.filteredMultipleChoiceItems);
+      if (assessmentItems.length != 0) {
+        this.isWritingTraitItem = true;
+        this.writingTraitType = assessmentItems[0].performanceTaskWritingType;
       }
 
       this.loading = false
@@ -79,20 +84,21 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
   }
 
   hasDataToExport(): boolean {
-    return this.filteredMultipleChoiceItems && this.filteredMultipleChoiceItems.length > 0;
+    return this.filteredItems && this.filteredItems.length > 0;
   }
 
+  // TODO: need to get this working still
   exportToCsv(): void {
     let exportRequest = new ExportRequest();
     exportRequest.assessment = this.assessment;
     exportRequest.showAsPercent = this.showValuesAsPercent;
-    exportRequest.assessmentItems = this.filteredMultipleChoiceItems;
-    exportRequest.pointColumns = this.choiceColumns;
-    exportRequest.type = RequestType.DistractorAnalysis;
+    exportRequest.assessmentItems = this.filteredItems;
+    //exportRequest.pointColumns = this.pointColumns;
+    exportRequest.type = RequestType.WritingTraitScores;
 
 
     this.angulartics2.eventTrack.next({
-      action: 'Export DistractorAnalysis',
+      action: 'Export WritingTraitScores',
       properties: {
         category: 'Export'
       }
@@ -101,23 +107,13 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
     this.assessmentProvider.exportItemsToCsv(exportRequest);
   }
 
-  getChoiceRowStyleClass(index: number) {
+  getPointRowStyleClass(index: number) {
     return index == 0
       ? 'level-down'
       : '';
   }
 
-  // Unfortunately, this is a bit of dom hijacking to set the parent <td> class to green
-  // since primeng datatable does not currently support a setCellStyle function.
-  // https://github.com/primefaces/primeng/issues/2157
-  setTdClass(cell, item: AssessmentItem, column: DynamicItemField) {
-    if (item.answerKey && item.answerKey.indexOf(column.label) !== -1) {
-      let td = cell.parentNode.parentNode;
-      this.renderer.addClass(td, "green");
-    }
-  }
-
-  private filterMultipleChoiceItems(items: AssessmentItem[]) {
+  private filterItems(items: AssessmentItem[]) {
     let filtered = [];
 
     for (let item of items) {

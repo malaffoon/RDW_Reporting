@@ -409,7 +409,8 @@
     "results-view-state": {
       "ByItem": "Results By Item",
       "ByStudent": "Results By Student",
-      "DistractorAnalysis": "Distractor Analysis"
+      "DistractorAnalysis": "Distractor Analysis",
+      "WritingTraitScores": "Writing Trait Scores"
     },
     "status": {
       "ACCEPTED": "Accepted",
@@ -439,6 +440,12 @@
     "transfer": {
       "false": "Show",
       "true": "Hide"
+    },
+    "writing-trait": {
+      "evidence": "Evidence / Elaboration",
+      "organization": "Organization / Purpose",
+      "conventions": "Conventions",
+      "total": "Total Points"
     }
   },
   "html": {
@@ -1190,6 +1197,8 @@
           "items": {
             "cols": {
               "answer-key": "Answer Key",
+              "average": "Average",
+              "category": "Category",
               "claim": "Claim/Target",
               "claim-info-html": "Claims and targets are a way of classifying test content.  The claim is the major topic area.  For example, in English language arts, reading is a claim.  Within each claim, there are targets that describe the particular knowledge and skills that the test measures.  Each target may encompass one or more standards from the Common Core State Standards.  Within the Reading claim, for example, one of the targets is concerned with finding the central idea in a text.  For more information, see the <a href=\"http://www.smarterbalanced.org/assessments/development/\" target=\"_blank\">Smarter Balanced Content Specifications</a>.",
               "difficulty": "Item Difficulty",
@@ -1468,6 +1477,12 @@
         "2": "ELA"
       }
     },
+    "results-view-state-intro": {
+      "ByItem": "",
+      "ByStudent": "",
+      "DistractorAnalysis": "",
+      "WritingTraitScores": ""
+    },
     "school-grade": {
       "messages": {
         "no-results": "No results.",
@@ -1533,6 +1548,10 @@
       }
     },
     "type": "Type"
+    },
+    "writing-trait-scores": {
+      "aggregate-header": "Point Breakdown: {{traitType}}"
+    }
   },
   "messages": {
     "no-grades-available": "No test results are available for the selected school.",
@@ -1545,11 +1564,13 @@
     "coming-soon": "{{featureName}} is coming soon.",
     "loading": "Loading",
     "logout": "Logout",
-    "no-distractor-analysis": "Distractor analysis is not available for tests administered prior to 2017-18 school year.",
-    "no-distractor-analysis-for-summative-exams": "Distractor analysis is not available for summative tests.",
-    "no-results-by-item": "Results by item is not available for tests administered prior to 2017-18 school year.",
-    "no-results-by-item-for-summative-exams": "Results by item is not available for summative tests.",
+    "no-distractor-analysis": "Distractor analysis is not available for assessments administered prior to 2017-18 school year.",
+    "no-distractor-analysis-for-summative-exams": "Distractor analysis is not available for summative assessments.",
+    "no-results-by-item": "Results by item is not available for assessments administered prior to 2017-18 school year.",
+    "no-results-by-item-for-summative-exams": "Results by item is not available for summative assessments.",
     "no-results-found": "No test results are available for the current selection.  If a new school year has begun recently, please check the year selected above.",
+    "no-writing-trait-scores": "Writing trait scores are not available for assessments administered prior to 2017-18 school year.",
+    "no-writing-trait-scores-for-summative-ica-exams": "Writing trait scores are only currently available for IAB assessments.",
     "noExams": "There are no exams associated with your account.",
     "noExamsMatchingCriteria": "There are no exams matching this criteria.",
     "noExamsSelected": "Please select from the assessments above",
