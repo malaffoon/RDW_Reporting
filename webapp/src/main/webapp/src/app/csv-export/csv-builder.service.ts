@@ -11,7 +11,7 @@ import { AssessmentItem } from "../assessments/model/assessment-item.model";
 import { DynamicItemField } from "../assessments/model/item-point-field.model";
 import { SchoolYearPipe } from "../shared/format/school-year.pipe";
 import { Utils } from "../shared/support/support";
-import {WritingTraitAggregate} from "../assessments/model/writing-trait-aggregate.model";
+import { WritingTraitAggregate } from "../assessments/model/writing-trait-aggregate.model";
 
 @Injectable()
 export class CsvBuilder {

@@ -23,7 +23,7 @@ import { MockAuthorizeDirective } from "../../../test/mock.authorize.directive";
 import { MockTranslateService } from "../../../test/mock.translate.service";
 import { TranslateService } from "@ngx-translate/core";
 import { DataService } from "../../shared/data/data.service";
-import {SchoolAssessmentExportService} from "./school-assessment-export.service";
+import { SchoolAssessmentExportService } from "./school-assessment-export.service";
 
 let availableGrades = [];
 

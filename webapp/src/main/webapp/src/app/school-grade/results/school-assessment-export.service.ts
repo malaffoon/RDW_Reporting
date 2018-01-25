@@ -1,13 +1,13 @@
-import {Injectable} from "@angular/core";
-import {AssessmentExporter} from "../../assessments/assessment-exporter.interface";
-import {ExportItemsRequest} from "../../assessments/model/export-items-request.model";
-import {ExportWritingTraitsRequest} from "../../assessments/model/export-writing-trait-request.model";
-import {ExportRequest} from "../../assessments/model/export-request.interface";
-import {Assessment} from "../../assessments/model/assessment.model";
-import {Angulartics2} from "angulartics2";
-import {CsvExportService} from "../../csv-export/csv-export.service";
-import {TranslateService} from "@ngx-translate/core";
-import {Grade} from "../grade.model";
+import { Injectable } from "@angular/core";
+import { AssessmentExporter } from "../../assessments/assessment-exporter.interface";
+import { ExportItemsRequest } from "../../assessments/model/export-items-request.model";
+import { ExportWritingTraitsRequest } from "../../assessments/model/export-writing-trait-request.model";
+import { ExportRequest } from "../../assessments/model/export-request.interface";
+import { Assessment } from "../../assessments/model/assessment.model";
+import { Angulartics2 } from "angulartics2";
+import { CsvExportService } from "../../csv-export/csv-export.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Grade } from "../grade.model";
 
 @Injectable()
 export class SchoolAssessmentExportService implements AssessmentExporter {
