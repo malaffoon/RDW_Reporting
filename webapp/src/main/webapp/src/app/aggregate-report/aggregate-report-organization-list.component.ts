@@ -19,7 +19,7 @@ const OrganizationComparator = (a, b) => a.organization.name.localeCompare(b.org
 export class AggregateReportOrganizationList extends AbstractControlValueAccessor<OrganizationSelection> {
 
   @Input()
-  statewideUser: boolean = false;
+  statewideReporter: boolean = false;
 
   constructor() {
     super();

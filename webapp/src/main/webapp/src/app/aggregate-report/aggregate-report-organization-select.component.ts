@@ -54,13 +54,13 @@ export class AggregateReportOrganizationSelect extends AbstractControlValueAcces
     this.list.value = value;
   }
 
-  get statewideUser(): boolean {
-    return this.list.statewideUser;
+  get statewideReporter(): boolean {
+    return this.list.statewideReporter;
   }
 
   @Input()
-  set statewideUser(value: boolean) {
-    this.list.statewideUser = value;
+  set statewideReporter(value: boolean) {
+    this.list.statewideReporter = value;
   }
 
   onTypeaheadSelect(organization: any): void {

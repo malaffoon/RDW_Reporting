@@ -6,6 +6,9 @@ import { OrganizationMapper } from "../shared/organization/organization.mapper";
 
 const ServiceRoute = '/aggregate-service';
 
+/**
+ * Responsible for getting aggregate report organizations from the server
+ */
 @Injectable()
 export class AggregateReportOrganizationService {
 

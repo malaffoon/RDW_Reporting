@@ -7,7 +7,7 @@
           <div class="col-sm-6">
             <label><input type="checkbox" class="mr-xs" [(ngModel)]="stateSelection.includeRollup"> {{'aggregate-report-organization-list.state.include' | translate}}</label>
           </div>
-          <div class="col-sm-6" *ngIf="statewideUser">
+          <div class="col-sm-6" *ngIf="statewideReporter">
             <label><input type="checkbox" class="mr-xs" [(ngModel)]="stateSelection.includeAllDistricts"> {{'aggregate-report-organization-list.state.include-all-districts' | translate}}</label>
           </div>
         </div>

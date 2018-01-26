@@ -20,7 +20,7 @@ export interface AggregateReportFormOptions {
   migrantStatuses: SbCheckboxGroupOption[];
   plan504s: SbCheckboxGroupOption[];
   schoolYears: SbCheckboxGroupOption[];
-  statewideUser: boolean;
+  statewideReporter: boolean;
   subjects: SbCheckboxGroupOption[];
   summativeAdministrationConditions: SbCheckboxGroupOption[];
   valueDisplayTypes: SbToggleOption[];

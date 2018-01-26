@@ -6,22 +6,22 @@ import { CodedEntity } from "./aggregate-report-options";
  */
 export interface AggregateReportFormSettings {
 
-  assessmentType: CodedEntity;
-  subjects: CodedEntity[];
-  schoolYears: number[];
-  assessmentGrades: CodedEntity[];
-  completenesses: CodedEntity[];
-  interimAdministrationConditions: CodedEntity[];
-  summativeAdministrationConditions: CodedEntity[];
-  genders: CodedEntity[];
-  ethnicities: CodedEntity[];
-  migrantStatuses: any[];
-  ieps: any[];
-  plan504s: any[];
-  limitedEnglishProficiencies: any[];
-  economicDisadvantages: any[];
   achievementLevelDisplayType: string;
-  valueDisplayType: string;
+  assessmentGrades: CodedEntity[];
+  assessmentType: CodedEntity;
+  completenesses: CodedEntity[];
+  economicDisadvantages: any[];
+  ethnicities: CodedEntity[];
   dimensionTypes: string[];
+  genders: CodedEntity[];
+  ieps: any[];
+  interimAdministrationConditions: CodedEntity[];
+  limitedEnglishProficiencies: any[];
+  migrantStatuses: any[];
+  plan504s: any[];
+  schoolYears: number[];
+  subjects: CodedEntity[];
+  summativeAdministrationConditions: CodedEntity[];
+  valueDisplayType: string;
 
 }

@@ -5,6 +5,9 @@ import { CachingDataService } from "../shared/data/caching-data.service";
 
 const ServiceRoute = '/aggregate-service';
 
+/**
+ * Service responsible for gathering aggregate report options from the server
+ */
 @Injectable()
 export class AggregateReportOptionsService {
 
@@ -45,7 +48,7 @@ export class AggregateReportOptionsService {
 
         dimensionTypes: options.dimensionTypes,
 
-        statewideUser: true /* TODO backend to return */
+        statewideReporter: options.statewideReporter
       });
   }
 
