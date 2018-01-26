@@ -1,5 +1,5 @@
 <div>
-  <label>Select a School or District</label>
+  <label>{{'labels.aggregate-reports.form.field.organization.label' | translate}}</label>
   <organization-typeahead #typeahead
                           [disabled]="value && value.stateSelection.includeAllDistricts"
                           [options]="typeaheadOptions"

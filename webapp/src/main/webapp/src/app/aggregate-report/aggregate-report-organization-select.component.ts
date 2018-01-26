@@ -15,17 +15,17 @@ import { NG_VALUE_ACCESSOR } from "@angular/forms";
  * Wrapper component for organization typeahead and organization list view
  */
 @Component({
-  selector: 'organization-select',
-  templateUrl: './organization-select.component.html',
+  selector: 'aggregate-report-organization-select',
+  templateUrl: './aggregate-report-organization-select.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => OrganizationSelect),
+      useExisting: forwardRef(() => AggregateReportOrganizationSelect),
       multi: true
     }
   ]
 })
-export class OrganizationSelect extends AbstractControlValueAccessor<OrganizationSelection> implements OnInit {
+export class AggregateReportOrganizationSelect extends AbstractControlValueAccessor<OrganizationSelection> implements OnInit {
 
   @ViewChild('typeahead')
   typeahead: OrganizationTypeahead;

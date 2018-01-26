@@ -17,6 +17,26 @@
       "show": "Show"
     }
   },
+  "aggregate-report-organization-list": {
+    "state": {
+      "heading": "State",
+      "include": "Include Rollup",
+      "include-all-districts": "Include All Districts"
+    },
+    "district": {
+      "heading": "Districts",
+      "include-all-schools": "Include All Schools"
+    },
+    "school": {
+      "heading": "School",
+      "include-district": "Include District"
+    }
+  },
+  "organization-typeahead": {
+    "type-label": "Type",
+    "placeholder": "Enter name",
+    "no-matches": "There are no organizations matching your search."
+  },
   "collapse": "Collapse",
   "common": {
     "organization": {
@@ -599,6 +619,9 @@
         "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\"",
         "required": "* Required",
         "field": {
+          "organization": {
+            "label": "Search a School or District"
+          },
           "assessment-grades": {
             "label": "Assessment Grades",
             "info": "The grade of the assessment that was administered",

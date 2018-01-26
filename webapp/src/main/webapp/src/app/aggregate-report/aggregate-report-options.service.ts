@@ -43,7 +43,9 @@ export class AggregateReportOptionsService {
         limitedEnglishProficiencies: [true, false],
         economicDisadvantages: [true, false],
 
-        dimensionTypes: options.dimensionTypes
+        dimensionTypes: options.dimensionTypes,
+
+        statewideUser: true /* TODO backend to return */
       });
   }
 

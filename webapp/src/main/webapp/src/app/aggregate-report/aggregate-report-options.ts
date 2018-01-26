@@ -18,6 +18,8 @@ export interface AggregateReportOptions {
 
   readonly dimensionTypes: string[];
 
+  readonly statewideUser: boolean;
+
 }
 
 export interface CodedEntity {

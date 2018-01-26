@@ -19,7 +19,7 @@ import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-option
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportsPreviewTableComponent } from "./aggregate-reports-preview-table.component";
 import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
-import { OrganizationSelect } from "./organization-select.component";
+import { AggregateReportOrganizationSelect } from "./aggregate-report-organization-select.component";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { TypeaheadModule } from "ngx-bootstrap";
 import { AggregateReportOrganizationList } from "./aggregate-report-organization-list.component";
@@ -33,7 +33,7 @@ import { AggregateReportOrganizationList } from "./aggregate-report-organization
     PerformanceComparisonComponent,
     QueryBuilderComponent,
     AggregateReportSummary,
-    OrganizationSelect,
+    AggregateReportOrganizationSelect,
     AggregateReportOrganizationList
   ],
   imports: [

@@ -18,15 +18,15 @@ import { AbstractControlValueAccessor } from "../form/abstract-control-value-acc
            [(ngModel)]="value"
            [typeaheadItemTemplate]="organizationTemplate"
            typeaheadOptionField="name"
-           placeholder="{{'labels.instructional-resource.form.organization-name' | translate}}">
+           placeholder="{{'organization-typeahead.placeholder' | translate}}">
     <div>
       <br [hidden]="loadingInternal || noResultsInternal">
-      <span [hidden]="!noResultsInternal" class="small gray-darker">{{'labels.instructional-resource.organizations.no-results' | translate}}</span>
+      <span [hidden]="!noResultsInternal" class="small gray-darker">{{'organization-typeahead.no-matches' | translate}}</span>
       <span [hidden]="!loadingInternal"><i class="fa fa-spinner"></i></span>
     </div>
     <ng-template #organizationTemplate let-organization="item" let-index="index" let-query="query">
       <p class="mb-0">{{organization.name}}</p>
-      <p class="h6"><span class="label label-default">{{'labels.type' | translate}}</span> {{ ('common.organization.type.' + organization.type) | translate }}</p>
+      <p class="h6"><span class="label label-default">{{'organization-typeahead.type-label' | translate}}</span> {{ ('common.organization.type.' + organization.type) | translate }}</p>
     </ng-template>
   `
 })

@@ -129,7 +129,8 @@ export class AggregateReportFormOptionsMapper {
           value: value,
           text: this.translate.instant(`labels.aggregate-reports.form.field.comparative-subgroup.value.${value}`),
           analyticsProperties: { label: `Comparative Subgroup: ${value}` }
-        })
+        }),
+      statewideUser: options.statewideUser
     };
   }
 
