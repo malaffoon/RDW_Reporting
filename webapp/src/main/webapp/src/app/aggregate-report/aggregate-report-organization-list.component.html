@@ -1,0 +1,49 @@
+<ng-container *ngIf="value">
+  <div>
+    <label>State</label>
+    <ul class="list-group list-group-sm small">
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-sm-6">
+            <label><input type="checkbox" class="mr-xs" [(ngModel)]="stateSelection.includeRollup"> Include Rollup</label>
+          </div>
+          <div class="col-sm-6" *ngIf="statewideUser">
+            <label><input type="checkbox" class="mr-xs" [(ngModel)]="stateSelection.includeAllDistricts"> Include All Districts</label>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="districtSelections.length" [hidden]="stateSelection.includeAllDistricts">
+    <label>Districts</label>
+    <ul class="list-group list-group-sm small">
+      <li class="list-group-item" *ngFor="let selection of districtSelections">
+        <div class="row">
+          <div class="col-sm-6">
+            <a class="mr-xs" href="javascript:void(0)" (click)="removeDistrict(selection.organization)"><i class="fa fa-close"></i></a>
+            {{selection.organization.name}}
+          </div>
+          <div class="col-sm-6">
+            <label><input type="checkbox" class="mr-xs" [(ngModel)]="selection.includeAllSchools"> Include All Schools</label>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="schoolSelections.length" [hidden]="stateSelection.includeAllDistricts">
+    <label>Schools</label>
+    <ul class="list-group list-group-sm small">
+      <li class="list-group-item" *ngFor="let selection of schoolSelections">
+        <div class="row">
+          <div class="col-sm-6">
+            <a class="mr-xs" href="javascript:void(0)" (click)="removeSchool(selection.organization)"><i class="fa fa-close"></i></a>
+            {{selection.organization.name}}
+          </div>
+          <div class="col-sm-6">
+            <label><input type="checkbox" class="mr-xs" [(ngModel)]="selection.includeDistrict"> Include District</label>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</ng-container>

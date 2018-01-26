@@ -10,12 +10,29 @@
       </div>
     </div>
 
+    <!-- Organization -->
+    <div class="row mt-sm" #assessmentSection>
+      <div class="col-md-8 col-md-offset-2">
+        <h3 class="h3 gray-darkest">
+          {{'labels.aggregate-reports.form.section.organization.heading' | translate}}
+        </h3>
+        <p class="small gray-darkest">{{'labels.aggregate-reports.form.section.organization.subtext' | translate}}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="well pb-0">
+          <organization-select [statewideUser]="true"></organization-select>
+        </div>
+      </div>
+    </div>
+
     <!-- Assessment Attributes -->
     <div class="row mt-sm" #assessmentSection>
       <div class="col-md-8 col-md-offset-2">
-        <h2 class="h3 gray-darkest">
-          {{'labels.aggregate-reports.form.assessment-attributes-heading' | translate}}
-        </h2>
+        <h3 class="h3 gray-darkest">
+          {{'labels.aggregate-reports.form.section.assessment.heading' | translate}}
+        </h3>
       </div>
     </div>
     <div class="row">
@@ -66,8 +83,8 @@
                        title="{{'labels.aggregate-reports.form.field.assessment-grades.label' | translate}}"
                        content="{{'labels.aggregate-reports.form.field.assessment-grades.info' | translate}}"></label>
                 <p class="small"
-                   [ngClass]="{'red': showAssessmentGradeErrors, 'gray-darker': !showAssessmentGradeErrors}">
-                  {{'labels.aggregate-reports.form.field.assessment-grades.subtext' | translate}}
+                   [ngClass]="{'red': showErrors(assessmentGradesControl), 'gray-darker': !showErrors(assessmentGradesControl)}">
+                  {{'labels.aggregate-reports.form.required' | translate}}
                 </p>
               </div>
               <div class="col-md-6">
@@ -82,7 +99,7 @@
                                      analyticsCategory="AggregateQueryBuilder"
                                      [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"
                                      (change)="generateReport()"></sb-checkbox-group>
-                  <div *ngIf="showAssessmentGradeErrors">
+                  <div *ngIf="showErrors(assessmentGradesControl)">
                     <p *ngIf="assessmentGradesControl.errors.notEmpty" class="help-block small red">{{assessmentGradesControl.errors.notEmpty.messageId | translate}}</p>
                   </div>
                 </div>
@@ -95,16 +112,28 @@
                 <label info-button
                        title="{{'labels.aggregate-reports.form.field.school-year.label' | translate}}"
                        content="{{'labels.aggregate-reports.form.field.school-year.info' | translate}}"></label>
+                <p class="small"
+                   [ngClass]="{'red': showErrors(schoolYearsControl), 'gray-darker': !showErrors(schoolYearsControl)}">
+                  {{'labels.aggregate-reports.form.required' | translate}}
+                </p>
               </div>
               <div class="col-md-6">
-                <sb-checkbox-group [options]="options.schoolYears"
-                                   [(ngModel)]="settings.schoolYears"
-                                   [ngModelOptions]="{standalone: true}"
-                                   name="schoolYears"
-                                   analyticsEvent="FilterClick"
-                                   analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"
-                                   (change)="generateReport()"></sb-checkbox-group>
+                <div class="form-group">
+                  <sb-checkbox-group [options]="options.schoolYears"
+                                     [(ngModel)]="settings.schoolYears"
+                                     [horizontal]="true"
+                                     [allOptionEnabled]="false"
+                                     formControlName="schoolYears"
+                                     name="schoolYears"
+                                     analyticsEvent="FilterClick"
+                                     analyticsCategory="AggregateQueryBuilder"
+                                     [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"
+                                     (change)="generateReport()"></sb-checkbox-group>
+                  <div *ngIf="showErrors(schoolYearsControl)">
+                    <p *ngIf="schoolYearsControl.errors.notEmpty" class="help-block small red">{{schoolYearsControl.errors.notEmpty.messageId | translate}}</p>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -181,9 +210,9 @@
     <!-- Subgroup Filters -->
     <div class="row mt-sm">
       <div class="col-md-8 col-md-offset-2">
-        <h2 class="h3 gray-darkest">
-          {{'labels.aggregate-reports.form.subgroup-filters-heading' | translate}}
-        </h2>
+        <h3 class="h3 gray-darkest">
+          {{'labels.aggregate-reports.form.section.subgroup-filters.heading' | translate}}
+        </h3>
       </div>
     </div>
     <div class="row">
@@ -335,9 +364,9 @@
     <!-- Report Features -->
     <div class="row mt-sm" #reportFeatureSection>
       <div class="col-md-8 col-md-offset-2">
-        <h2 class="h3 gray-darkest">
-          {{'labels.aggregate-reports.form.report-features-heading' | translate}}
-        </h2>
+        <h3 class="h3 gray-darkest">
+          {{'labels.aggregate-reports.form.section.report-features.heading' | translate}}
+        </h3>
       </div>
     </div>
     <div class="row">
@@ -388,9 +417,9 @@
     <!-- Comparative Subgroups -->
     <div class="row mt-sm" #comparativeSubgroupSection>
       <div class="col-md-8 col-md-offset-2">
-        <h2 class="h3 gray-darkest">
+        <h3 class="h3 gray-darkest">
           {{'labels.aggregate-reports.form.comparative-subgroups-heading' | translate}}
-        </h2>
+        </h3>
       </div>
     </div>
     <div class="row">

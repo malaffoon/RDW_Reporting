@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from "@angular/forms";
 
 /**
  * Holds common methods for dealing with angular form components
@@ -30,6 +30,16 @@ export class Forms {
       });
     });
     return holders;
+  }
+
+  /**
+   * True if the control has errors and has been touched or dirtied
+   *
+   * @param {FormControl} formControl the form control to test
+   * @returns {boolean}
+   */
+  public static showErrors(formControl: FormControl): boolean {
+    return formControl.invalid && (formControl.dirty || formControl.touched);
   }
 
 }

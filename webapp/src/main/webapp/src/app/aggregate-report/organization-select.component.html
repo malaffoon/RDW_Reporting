@@ -1,0 +1,10 @@
+<div>
+  <label>Select a School or District</label>
+  <organization-typeahead #typeahead
+                          [disabled]="value && value.stateSelection.includeAllDistricts"
+                          [options]="typeaheadOptions"
+                          (select)="onTypeaheadSelect($event)"></organization-typeahead>
+</div>
+<aggregate-report-organization-list #list
+                                    [statewideUser]="statewideUser"
+                                    [(ngModel)]="value"></aggregate-report-organization-list>

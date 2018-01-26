@@ -19,6 +19,10 @@ import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-option
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportsPreviewTableComponent } from "./aggregate-reports-preview-table.component";
 import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
+import { OrganizationSelect } from "./organization-select.component";
+import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
+import { TypeaheadModule } from "ngx-bootstrap";
+import { AggregateReportOrganizationList } from "./aggregate-report-organization-list.component";
 
 @NgModule({
   declarations: [
@@ -28,7 +32,9 @@ import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-rep
     AggregateReportsPreviewTableComponent,
     PerformanceComparisonComponent,
     QueryBuilderComponent,
-    AggregateReportSummary
+    AggregateReportSummary,
+    OrganizationSelect,
+    AggregateReportOrganizationList
   ],
   imports: [
     Angulartics2Module.forChild(),
@@ -37,7 +43,8 @@ import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-rep
     CommonModule,
     ReactiveFormsModule,
     DataTableModule,
-    MultiselectDropdownModule
+    MultiselectDropdownModule,
+    TypeaheadModule
   ],
   exports: [
     AggregateReportsComponent,
@@ -54,7 +61,8 @@ import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-rep
     ReportOptionsService,
     AggregateReportFormResolve,
     AggregateReportOptionsService,
-    AggregateReportFormOptionsMapper
+    AggregateReportFormOptionsMapper,
+    AggregateReportOrganizationService
   ]
 })
 export class AggregateReportsModule {

@@ -49,6 +49,9 @@ export class AggregateReportsComponent {
     this.formGroup = new FormGroup({
       assessmentGrades: new FormControl(this.form.settings.assessmentGrades, notEmpty({
         messageId: 'labels.aggregate-reports.form.field.assessment-grades.error-empty'
+      })),
+      schoolYears: new FormControl(this.form.settings.schoolYears, notEmpty({
+        messageId: 'labels.aggregate-reports.form.field.school-year.error-empty'
       }))
     });
   }
@@ -69,11 +72,17 @@ export class AggregateReportsComponent {
   }
 
   /**
-   * @returns {boolean} true if the assessment grade control has errors and has been touched or the form submitted
+   * @returns {any} The school years form control
    */
-  get showAssessmentGradeErrors(): boolean {
-    return this.assessmentGradesControl.invalid
-      && (this.assessmentGradesControl.dirty || this.assessmentGradesControl.touched);
+  get schoolYearsControl(): FormControl {
+    return <FormControl>this.formGroup.get('schoolYears');
+  }
+
+  /**
+   * @returns {boolean} true if the control has errors and has been touched or dirtied
+   */
+  showErrors(formControl: FormControl): boolean {
+    return Forms.showErrors(formControl);
   }
 
   /**

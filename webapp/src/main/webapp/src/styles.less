@@ -49,6 +49,17 @@
 @aqua: #0f6bad;
 
 /**
+ * Bootstrap addition
+ */
+.list-group.list-group-md > .list-group-item {
+  padding: 10px 15px;
+}
+.list-group.list-group-sm > .list-group-item {
+  padding: 8px 12px;
+}
+
+
+/**
   Required to meet WCAG 2 AA contrast ratio
  */
 .navbar-default {
@@ -725,6 +736,17 @@ aggregate-reports {
     }
     .column-label-container {
       border-left: none;
+    }
+  }
+}
+
+aggregate-report-organization-list {
+  .list-group {
+    margin-bottom: 10px; /* was 20 */
+  }
+  .list-group-item {
+    label {
+      font-weight: normal;
     }
   }
 }

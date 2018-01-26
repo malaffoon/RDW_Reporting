@@ -34,6 +34,7 @@ import {
   AuthenticationServiceAuthenticationExpiredRoute,
   AuthenticationServiceDefaultAuthenticationRoute
 } from "./security/authentication.service";
+import { OrganizationModule } from "./organization/organization.module";
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import {
     BrowserModule,
     FormsModule,
     HttpModule,
+    OrganizationModule,
     PopoverModule.forRoot(),
     RdwCoreModule,
     RdwDataModule.forRoot(),
@@ -79,6 +81,7 @@ import {
     InformationButtonComponent,
     LoaderComponent,
     NotificationComponent,
+    OrganizationModule,
     RemoveCommaPipe,
     RouterModule,
     RdwCoreModule,
