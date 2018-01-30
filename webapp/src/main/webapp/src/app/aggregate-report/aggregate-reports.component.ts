@@ -169,6 +169,7 @@ export class AggregateReportsComponent {
     if (index === -1) {
       // new array needed for change detection to kick in
       this.organizations = this.organizations.concat(organization);
+      this.organizationsControl.markAsTouched();
       if (organization.type === OrganizationType.District) {
         this.settings.districts.push(<District>organization);
         this.settings.districts.sort(OrganizationComparator);
