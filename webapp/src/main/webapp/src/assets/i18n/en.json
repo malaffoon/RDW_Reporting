@@ -1509,7 +1509,8 @@
     "student": {
       "messages": {
         "no-results": "Student does not exist or has no available test results.",
-        "null-student": "This student is unavailable.  Contact your building administrator if you think you should have access to this student."
+        "null-student": "This student is unavailable.  Contact your building administrator if you think you should have access to this student.",
+        "empty-filtered-results": "No test results are available for the filters selected."
       },
       "name": "{{lastName}}, {{firstName}}",
       "prompt": "Enter the Statewide Student Identifier (SSID)",
