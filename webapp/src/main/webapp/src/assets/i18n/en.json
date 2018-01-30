@@ -912,9 +912,9 @@
           "item-viewer-see-rubric": "See the Rubric and Exemplar tab to get more information on correct responses.",
           "scores": {
             "correctness": "Correctness",
-            "max": "Max Score",
+            "max": "Max Points",
             "response": "Response",
-            "score": "Student Score"
+            "score": "Student Points"
           },
           "student-scores": "Student Scores and Responses",
           "student-scores-intro-text": "Expand each student row to view their response to this item.",
@@ -1262,7 +1262,7 @@
               "full-credit-info": "Percentage of students in the group who earned the maximum number of points available for a particular test item.",
               "max-score": "Maximum Score",
               "number": "Item #",
-              "purpose": "Purpose",
+              "purpose": "Writing Purpose",
               "purpose-info": "The performance task writing purpose.",
               "standard": "Standard",
               "standard-info-html": {
@@ -1573,14 +1573,14 @@
         "cols": {
           "correctness": "Correctness",
           "correctness-info": "A value for the degree of correctness in a student's response to a test question. The correctness value is calculated by dividing the student's score on a particular question by the maximum score for that question.",
-          "max-score": "Max Score",
+          "max-points": "Max Points",
           "standard": "Standard",
-          "student-score": "Student Score",
+          "student-points": "Student Points",
           "writing-trait": "Writing Trait"
         },
         "crumb": "Student Responses",
         "title": "Student's Responses",
-        "writing-trait-purpose": "Purpose: {{traitType}}"
+        "writing-trait-purpose": "Writing Purpose: {{traitType}}"
       },
       "results": {
         "cols": {
