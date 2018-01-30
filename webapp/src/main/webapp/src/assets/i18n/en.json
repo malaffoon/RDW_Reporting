@@ -777,10 +777,10 @@
             "subtext": "Select schools and districts to compare.",
             "include": {
               "heading": "Include",
-              "state-results": "State Results (Summatives only)",
-              "all-districts": "All Districts",
-              "all-schools-of-districts": "Schools of the listed Districts",
-              "all-districts-of-schools": "District of the listed Schools"
+              "state-results": "State results (Summatives only)",
+              "all-districts": "All district results",
+              "all-schools-of-districts": "School results for listed districts",
+              "all-districts-of-schools": "District results for listed schools"
             },
             "district-list-heading": "Districts",
             "school-list-heading": "Schools"
