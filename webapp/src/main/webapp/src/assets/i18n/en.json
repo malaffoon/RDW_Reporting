@@ -17,21 +17,6 @@
       "show": "Show"
     }
   },
-  "aggregate-report-organization-list": {
-    "setting": {
-      "heading": "Settings",
-      "include": "Include State Results (Summatives only)",
-      "include-all-districts": "Include All Districts",
-      "include-all-schools-of-districts": "Include Schools of the listed Districts",
-      "include-all-districts-of-schools": "Include District of the listed Schools"
-    },
-    "district": {
-      "heading": "Districts"
-    },
-    "school": {
-      "heading": "Schools"
-    }
-  },
   "organization-typeahead": {
     "type-label": "Type",
     "placeholder": "Enter name",
@@ -737,6 +722,15 @@
                   "value": {
                     "multiple": "Multiple"
                   }
+                },
+                "include": {
+                  "label": "Includes",
+                  "value": {
+                    "state-results": "State Results",
+                    "all-districts": "All Districts",
+                    "all-schools-of-districts": "Districts' Schools",
+                    "all-districts-of-schools": "Schools' Districts"
+                  }
                 }
               }
             },
@@ -780,7 +774,16 @@
         "section": {
           "organization": {
             "heading": "Schools and Districts",
-            "subtext": "Select schools and districts to compare."
+            "subtext": "Select schools and districts to compare.",
+            "include": {
+              "heading": "Include",
+              "state-results": "State Results (Summatives only)",
+              "all-districts": "All Districts",
+              "all-schools-of-districts": "Schools of the listed Districts",
+              "all-districts-of-schools": "District of the listed Schools"
+            },
+            "district-list-heading": "Districts",
+            "school-list-heading": "Schools"
           },
           "assessment": {
             "heading": "Assessment Attributes"
