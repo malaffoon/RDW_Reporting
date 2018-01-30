@@ -865,11 +865,11 @@
           "student-scores-intro-text": "Expand each student row to view their response to this item."
         }
       },
+      "result": "Result",
+      "results": "Results",
       "student-score-distribution": {
         "title": "Student Score Distribution"
-      },
-      "student": "Student",
-      "students": "Students"
+      }
     },
     "instructional-resources": {
       "link": {
