@@ -28,7 +28,7 @@
             <label>{{'labels.aggregate-reports.form.field.organization.label' | translate}}</label>
             <organization-typeahead #organizationTypeahead
                                     [options]="organizationTypeaheadOptions"
-                                    (select)="onTypeaheadSelect($event)"></organization-typeahead>
+                                    (select)="onOrganizationTypeaheadSelect($event)"></organization-typeahead>
             <div class="form-group">
               <input type="hidden" [(ngModel)]="organizations" formControlName="organizations">
               <div *ngIf="showErrors(organizationsControl)">
@@ -78,12 +78,12 @@
           <div [hidden]="!settings.districts.length || settings.includeAllDistricts">
             <label>{{'labels.aggregate-reports.form.section.organization.district-list-heading' | translate}}</label>
             <aggregate-report-organization-list [organizations]="settings.districts"
-                                                (organizationClick)="removeOrganization($event)"></aggregate-report-organization-list>
+                                                (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
           </div>
           <div [hidden]="!settings.schools.length">
             <label>{{'labels.aggregate-reports.form.section.organization.school-list-heading' | translate}}</label>
             <aggregate-report-organization-list [organizations]="settings.schools"
-                                                (organizationClick)="removeOrganization($event)"></aggregate-report-organization-list>
+                                                (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
           </div>
         </div>
       </div>
@@ -549,10 +549,18 @@
                 {
                   label: 'labels.aggregate-reports.form.summary.column.organization.attribute.include.label' | translate,
                   values: [
-                    settings.includeStateResults ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.state-results' | translate) : undefined,
-                    settings.includeAllDistricts ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts' | translate) : undefined,
-                    settings.includeAllSchoolsOfSelectedDistricts ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.all-schools-of-districts' | translate) : undefined,
-                    settings.includeAllDistrictsOfSelectedSchools ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts-of-schools' | translate) : undefined
+                    settings.includeStateResults && settings.assessmentType.code === 'sum'
+                      ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.state-results' | translate)
+                      : undefined,
+                    settings.includeAllDistricts
+                      ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts' | translate)
+                      : undefined,
+                    settings.includeAllSchoolsOfSelectedDistricts
+                      ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.all-schools-of-districts' | translate)
+                      : undefined,
+                    settings.includeAllDistrictsOfSelectedSchools
+                      ? ('labels.aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts-of-schools' | translate)
+                      : undefined
                   ]
                 }
               ]

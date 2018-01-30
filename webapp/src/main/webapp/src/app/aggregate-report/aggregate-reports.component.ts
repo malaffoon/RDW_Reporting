@@ -153,9 +153,18 @@ export class AggregateReportsComponent {
    *
    * @param organization the selected organization
    */
-  onTypeaheadSelect(organization: any): void {
+  onOrganizationTypeaheadSelect(organization: any): void {
     this.organizationTypeahead.value = '';
     this.addOrganization(organization);
+  }
+
+  /**
+   * Organization list close handler
+   *
+   * @param organization
+   */
+  onOrganizationListItemClose(organization: any): void {
+    this.removeOrganization(organization);
   }
 
   /**
