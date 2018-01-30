@@ -410,7 +410,7 @@
     "results-view-state": {
       "ByItem": "Results By Item",
       "ByStudent": "Results By Student",
-      "DistractorAnalysis": "Distractor Analysis",
+      "DistractorAnalysis": "Key / Distractor Analysis",
       "WritingTraitScores": "Writing Trait Scores"
     },
     "status": {
@@ -865,11 +865,11 @@
           "student-scores-intro-text": "Expand each student row to view their response to this item."
         }
       },
+      "result": "Result",
+      "results": "Results",
       "student-score-distribution": {
         "title": "Student Score Distribution"
-      },
-      "student": "Student",
-      "students": "Students"
+      }
     },
     "instructional-resources": {
       "link": {
@@ -1007,8 +1007,6 @@
         "target": "Target"
       },
       "csv": "Export CSV",
-      "distractor-analysis": "Export Distractor Analysis",
-      "items-by-points-earned": "Export Results By Item",
       "title": "Export"
     },
     "filters": {
@@ -1373,7 +1371,7 @@
           "success-html": "Creating export."
         }
       },
-      "title": "Custom Exports"
+      "title": "District / School Exports"
     },
     "organization-tree": {
       "header": "Selected Organizations",
@@ -1567,8 +1565,8 @@
     "coming-soon": "{{featureName}} is coming soon.",
     "loading": "Loading",
     "logout": "Logout",
-    "no-distractor-analysis": "Distractor analysis is not available for assessments administered prior to 2017-18 school year.",
-    "no-distractor-analysis-for-summative-exams": "Distractor analysis is not available for summative assessments.",
+    "no-distractor-analysis": "Key / Distractor Analysis is not available for assessments administered prior to 2017-18 school year.",
+    "no-distractor-analysis-for-summative-exams": "Key / Distractor Analysis is not available for summative assessments.",
     "no-results-by-item": "Results by item is not available for assessments administered prior to 2017-18 school year.",
     "no-results-by-item-for-summative-exams": "Results by item is not available for summative assessments.",
     "no-results-found": "No test results are available for the current selection.  If a new school year has begun recently, please check the year selected above.",
