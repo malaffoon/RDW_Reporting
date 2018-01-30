@@ -35,6 +35,7 @@ import {
   AuthenticationServiceDefaultAuthenticationRoute
 } from "./security/authentication.service";
 import { OrganizationModule } from "./organization/organization.module";
+import { ScrollNavComponent } from "./nav/scroll-nav.component";
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { OrganizationModule } from "./organization/organization.module";
     GradeDisplayPipe,
     InformationButtonComponent,
     LoaderComponent,
+    ScrollNavComponent,
     NotificationComponent,
     RemoveCommaPipe,
     SBCheckboxList,
@@ -81,6 +83,7 @@ import { OrganizationModule } from "./organization/organization.module";
     InformationButtonComponent,
     LoaderComponent,
     NotificationComponent,
+    ScrollNavComponent,
     OrganizationModule,
     RemoveCommaPipe,
     RouterModule,
