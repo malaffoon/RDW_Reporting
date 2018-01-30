@@ -18,18 +18,18 @@
     }
   },
   "aggregate-report-organization-list": {
-    "state": {
-      "heading": "State",
-      "include": "Include Rollup",
-      "include-all-districts": "Include All Districts"
+    "setting": {
+      "heading": "Settings",
+      "include": "Include State Results (Summatives only)",
+      "include-all-districts": "Include All Districts",
+      "include-all-schools-of-districts": "Include Schools of the listed Districts",
+      "include-all-districts-of-schools": "Include District of the listed Schools"
     },
     "district": {
-      "heading": "Districts",
-      "include-all-schools": "Include All Schools"
+      "heading": "Districts"
     },
     "school": {
-      "heading": "School",
-      "include-district": "Include District"
+      "heading": "Schools"
     }
   },
   "organization-typeahead": {
@@ -620,7 +620,8 @@
         "required": "* Required",
         "field": {
           "organization": {
-            "label": "Search a School or District"
+            "label": "Search a School or District",
+            "error-empty": "Please select a school or district."
           },
           "assessment-grades": {
             "label": "Assessment Grades",
@@ -637,8 +638,7 @@
           },
           "interim-administration-condition": {
             "label": "Manner of Administration",
-            "info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
-            "subtext": "Interim"
+            "info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment."
           },
           "school-year": {
             "label": "Academic Years",
@@ -651,8 +651,7 @@
           },
           "summative-administration-condition": {
             "label": "Validity",
-            "info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
-            "subtext": "Summative"
+            "info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach."
           },
           "gender": {
             "label": "Gender",
@@ -731,9 +730,14 @@
             },
             "organization": {
               "heading": "Required Fields",
-              "label": "Organization",
+              "label": "Schools / Districts",
               "attribute": {
-                "organization":  "Organizations"
+                "organization":  {
+                  "label": "Schools / Districts",
+                  "value": {
+                    "multiple": "Multiple"
+                  }
+                }
               }
             },
             "assessment-grade": {

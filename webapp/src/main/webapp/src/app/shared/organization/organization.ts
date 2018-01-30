@@ -1,6 +1,7 @@
 export interface Organization {
   readonly name: string;
   readonly type: OrganizationType;
+  equals(other: Organization): boolean;
 }
 
 interface IdentifiableOrganization extends Organization {
@@ -8,13 +9,21 @@ interface IdentifiableOrganization extends Organization {
   readonly naturalId?: string;
 }
 
-class DefaultOrganization {
+abstract class AbstractOrganization {
   name: string;
+  abstract get type();
+  equals(other: Organization): boolean {
+    return this.type === other.type;
+  }
 }
 
-class DefaultIdentifiableOrganization extends DefaultOrganization {
+abstract class AbstractIdentifiableOrganization extends AbstractOrganization {
   id: number;
   naturalId: string;
+  equals(other: Organization): boolean {
+    return this.type === other.type
+      && this.id === (<IdentifiableOrganization>other).id;
+  }
 }
 
 export enum OrganizationType {
@@ -46,26 +55,26 @@ export interface School extends IdentifiableOrganization {
   readonly districtGroupId?: number;
 }
 
-export class DefaultState extends DefaultOrganization implements State {
+export class DefaultState extends AbstractOrganization implements State {
   get type(): OrganizationType {
     return OrganizationType.State;
   }
 }
 
-export class DefaultDistrictGroup extends DefaultIdentifiableOrganization implements DistrictGroup {
+export class DefaultDistrictGroup extends AbstractIdentifiableOrganization implements DistrictGroup {
   get type(): OrganizationType {
     return OrganizationType.DistrictGroup;
   }
 }
 
-export class DefaultDistrict extends DefaultIdentifiableOrganization implements District {
+export class DefaultDistrict extends AbstractIdentifiableOrganization implements District {
   districtGroupId: number;
   get type(): OrganizationType {
     return OrganizationType.District;
   }
 }
 
-export class DefaultSchoolGroup extends DefaultIdentifiableOrganization implements SchoolGroup {
+export class DefaultSchoolGroup extends AbstractIdentifiableOrganization implements SchoolGroup {
   districtId: number;
   districtGroupId: number;
   get type(): OrganizationType {
@@ -73,7 +82,7 @@ export class DefaultSchoolGroup extends DefaultIdentifiableOrganization implemen
   }
 }
 
-export class DefaultSchool extends DefaultIdentifiableOrganization implements School {
+export class DefaultSchool extends AbstractIdentifiableOrganization implements School {
   schoolGroupId: number;
   districtId: number;
   districtGroupId: number;

@@ -16,7 +16,7 @@ export class AggregateReportOrganizationService {
               private organizationMapper: OrganizationMapper) {
   }
 
-  getOrganizationsMatchingName(nameSearch: string): Observable<Organization> {
+  getOrganizationsMatchingName(nameSearch: string): Observable<Organization[]> {
     return this.dataService
       .get(`${ServiceRoute}/organizations`, { params: { name: nameSearch } })
       .map(organizations => organizations

@@ -1,49 +1,6 @@
-<ng-container *ngIf="value">
-  <div>
-    <label>{{'aggregate-report-organization-list.state.heading' | translate}}</label>
-    <ul class="list-group list-group-sm small">
-      <li class="list-group-item">
-        <div class="row">
-          <div class="col-sm-6">
-            <label><input type="checkbox" class="mr-xs" [(ngModel)]="stateSelection.includeRollup"> {{'aggregate-report-organization-list.state.include' | translate}}</label>
-          </div>
-          <div class="col-sm-6" *ngIf="statewideReporter">
-            <label><input type="checkbox" class="mr-xs" [(ngModel)]="stateSelection.includeAllDistricts"> {{'aggregate-report-organization-list.state.include-all-districts' | translate}}</label>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
-  <div *ngIf="districtSelections.length" [hidden]="stateSelection.includeAllDistricts">
-    <label>{{'aggregate-report-organization-list.district.heading' | translate}}</label>
-    <ul class="list-group list-group-sm small">
-      <li class="list-group-item" *ngFor="let selection of districtSelections">
-        <div class="row">
-          <div class="col-sm-6">
-            <a class="mr-xs" href="javascript:void(0)" (click)="removeDistrict(selection.organization)"><i class="fa fa-close"></i></a>
-            {{selection.organization.name}}
-          </div>
-          <div class="col-sm-6">
-            <label><input type="checkbox" class="mr-xs" [(ngModel)]="selection.includeAllSchools"> {{'aggregate-report-organization-list.district.include-all-schools' | translate}}</label>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
-  <div *ngIf="schoolSelections.length" [hidden]="stateSelection.includeAllDistricts">
-    <label>{{'aggregate-report-organization-list.school.heading' | translate}}</label>
-    <ul class="list-group list-group-sm small">
-      <li class="list-group-item" *ngFor="let selection of schoolSelections">
-        <div class="row">
-          <div class="col-sm-6">
-            <a class="mr-xs" href="javascript:void(0)" (click)="removeSchool(selection.organization)"><i class="fa fa-close"></i></a>
-            {{selection.organization.name}}
-          </div>
-          <div class="col-sm-6">
-            <label><input type="checkbox" class="mr-xs" [(ngModel)]="selection.includeDistrict"> {{'aggregate-report-organization-list.school.include-district' | translate}}</label>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
-</ng-container>
+<ul class="list-group list-group-sm small">
+  <li class="list-group-item" *ngFor="let organization of organizations">
+    <a class="mr-xs" href="javascript:void(0)" (click)="organizationClick.emit(organization)"><i class="fa fa-close"></i></a>
+    {{organization.name}}
+  </li>
+</ul>
