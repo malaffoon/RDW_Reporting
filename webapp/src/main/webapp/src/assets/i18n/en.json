@@ -1007,8 +1007,6 @@
         "target": "Target"
       },
       "csv": "Export CSV",
-      "distractor-analysis": "Export Key / Distractor Analysis",
-      "items-by-points-earned": "Export Results By Item",
       "title": "Export"
     },
     "filters": {
