@@ -28,7 +28,7 @@ sql:
       SELECT id,
         code
       FROM completeness
-      ORDER BY id DESC
+      ORDER BY id
 
   gender:
     findAll: >-
