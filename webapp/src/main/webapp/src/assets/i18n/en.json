@@ -460,7 +460,8 @@
       "evidence": "Evidence / Elaboration",
       "organization": "Organization / Purpose",
       "conventions": "Conventions",
-      "total": "Total Points"
+      "total": "Total Points",
+      "total-info": "total points more info text here"
     }
   },
   "html": {
@@ -911,12 +912,13 @@
           "item-viewer-see-rubric": "See the Rubric and Exemplar tab to get more information on correct responses.",
           "scores": {
             "correctness": "Correctness",
-            "max": "Max Score",
+            "max": "Max Points",
             "response": "Response",
-            "score": "Student Score"
+            "score": "Student Points"
           },
           "student-scores": "Student Scores and Responses",
-          "student-scores-intro-text": "Expand each student row to view their response to this item."
+          "student-scores-intro-text": "Expand each student row to view their response to this item.",
+          "writing-trait-scores": "Writing Trait Scores"
         }
       },
       "result": "Result",
@@ -1250,7 +1252,7 @@
           "items": {
             "cols": {
               "answer-key": "Answer Key",
-              "average": "Average",
+              "average": "Average / Max",
               "category": "Category",
               "claim": "Claim/Target",
               "claim-info-html": "Claims and targets are a way of classifying test content.  The claim is the major topic area.  For example, in English language arts, reading is a claim.  Within each claim, there are targets that describe the particular knowledge and skills that the test measures.  Each target may encompass one or more standards from the Common Core State Standards.  Within the Reading claim, for example, one of the targets is concerned with finding the central idea in a text.  For more information, see the <a href=\"http://www.smarterbalanced.org/assessments/development/\" target=\"_blank\">Smarter Balanced Content Specifications</a>.",
@@ -1260,7 +1262,8 @@
               "full-credit-info": "Percentage of students in the group who earned the maximum number of points available for a particular test item.",
               "max-score": "Maximum Score",
               "number": "Item #",
-              "performance-task-writing-type": "Writing Type",
+              "purpose": "Writing Purpose",
+              "purpose-info": "The performance task writing purpose.",
               "standard": "Standard",
               "standard-info-html": {
                 "ELA": "This column reflects the Common Core State Standard(s) associated with a test item. Test items may be associated with more than one standard.  For example, a question that asks students to evaluate research sources may assess both reading and research skills.  For more information, see the <a href=\"https://portal.smarterbalanced.org/library/en/english-language-artsliteracy-content-specifications.pdf\" target=\"_blank\">English Language Arts Content Specifications</a>.",
@@ -1570,12 +1573,14 @@
         "cols": {
           "correctness": "Correctness",
           "correctness-info": "A value for the degree of correctness in a student's response to a test question. The correctness value is calculated by dividing the student's score on a particular question by the maximum score for that question.",
-          "max-score": "Max Score",
+          "max-points": "Max Points",
           "standard": "Standard",
-          "student-score": "Student Score"
+          "student-points": "Student Points",
+          "writing-trait": "Writing Trait"
         },
         "crumb": "Student Responses",
-        "title": "Student's Responses"
+        "title": "Student's Responses",
+        "writing-trait-purpose": "Writing Purpose: {{traitType}}"
       },
       "results": {
         "cols": {
@@ -1605,7 +1610,7 @@
     },
     "type": "Type",
     "writing-trait-scores": {
-      "aggregate-header": "Point Breakdown: {{traitType}}"
+      "aggregate-header": "Points Breakdown"
     }
   },
   "messages": {
