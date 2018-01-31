@@ -50,8 +50,8 @@ export class MockAggregateReportsPreviewService {
     array = this.generateRowsForOption2(options, 'LEP', array, settings.limitedEnglishProficiencies, organizationNames, settings.schoolYears, settings.assessmentGrades);
     array = this.generateRowsForOption2(options, 'MigrantStatus', array, settings.migrantStatuses, organizationNames, settings.schoolYears, settings.assessmentGrades);
     array = this.generateRowsForOption2(options, 'EconomicDisadvantage', array, settings.economicDisadvantages, organizationNames, settings.schoolYears, settings.assessmentGrades);
-    array = this.generateRowsForOption2(options, 'IEP', array, settings.ieps, organizationNames, settings.schoolYears, settings.assessmentGrades);
-    array = this.generateRowsForOption2(options, 'Section504', array, settings.plan504s, organizationNames, settings.schoolYears, settings.assessmentGrades);
+    array = this.generateRowsForOption2(options, 'IEP', array, settings.individualEducationPlans, organizationNames, settings.schoolYears, settings.assessmentGrades);
+    array = this.generateRowsForOption2(options, 'Section504', array, settings.section504s, organizationNames, settings.schoolYears, settings.assessmentGrades);
 
     return array;
   }

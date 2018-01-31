@@ -33,9 +33,9 @@
         "School": "School"
       }
     },
-    "form-field-boolean-values": {
-      "true": "Yes",
-      "false": "No",
+    "strict-boolean": {
+      "yes": "Yes",
+      "no": "No",
       "undefined": "Not Stated"
     },
     "administration-condition": {
