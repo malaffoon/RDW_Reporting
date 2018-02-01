@@ -31,16 +31,24 @@ export class Utils {
     return undefined;
   }
 
-  static isNullOrEmpty(value: string): boolean {
-    return value === null || value.length === 0;
-  }
-
   static isUndefined(value: any): boolean {
     return typeof value === 'undefined';
   }
 
+  static isNull(value: any): boolean {
+    return value === null;
+  }
+
+  static isEmpty(value: string | any[]) {
+    return value.length === 0;
+  }
+
+  static isNullOrEmpty(value: string | any[]): boolean {
+    return Utils.isNull(value) || Utils.isEmpty(value);
+  }
+
   static isNullOrUndefined(value: any): boolean {
-    return value == null || Utils.isUndefined(value);
+    return Utils.isNull(value) || Utils.isUndefined(value);
   }
 
 }

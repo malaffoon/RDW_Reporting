@@ -2,6 +2,9 @@
   "application": {
     "title": "Reporting System"
   },
+  "spinner": {
+    "text": "Loading"
+  },
   "buttons": {
     "all": "All",
     "collapsible": {
@@ -24,6 +27,14 @@
   },
   "collapse": "Collapse",
   "common": {
+    "value-display-type": {
+      "Percent": "Percent",
+      "Number": "Number"
+    },
+    "achievement-level-display-type": {
+      "Separate": "Separate",
+      "Grouped": "Grouped"
+    },
     "organization": {
       "type": {
         "State": "State",

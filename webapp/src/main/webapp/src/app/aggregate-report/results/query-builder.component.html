@@ -264,12 +264,13 @@
       <div class="col-md-5 pull-right">
         <div class="col-md-5">
           <sb-toggle name="achivement-levels-toggle"
-                     analyticsEvent="FilterClick" analyticsCategory="AggregateQueryBuilder"
+                     analyticsEvent="FilterClick"
+                     analyticsCategory="AggregateQueryBuilder"
                      [(ngModel)]="aggregateReportQuery.achievementLevels"
                      [options]="[
-                           {value: false, text: 'labels.aggregate-reports.results.performance-separated' | translate, angularticsProperties: {label: 'Achievement Levels: Separated'}},
-                           {value: true, text: 'labels.aggregate-reports.results.performance-grouped' | translate, angularticsProperties: {label: 'Achievement Levels: Grouped'}}
-                         ]"></sb-toggle>
+                       {value: false, text: 'labels.aggregate-reports.results.performance-separated' | translate, analyticsProperties: {label: 'Achievement Levels: Separated'}},
+                       {value: true, text: 'labels.aggregate-reports.results.performance-grouped' | translate, analyticsProperties: {label: 'Achievement Levels: Grouped'}}
+                     ]"></sb-toggle>
         </div>
         <div class="col-md-4">
           <performance-comparison [assessmentType]="ICA"
@@ -287,12 +288,13 @@
              content="{{'labels.aggregate-reports.query-builder.filter-results.data-well.show-value-as-info' | translate}}"></label>
       <div class="col-md-5 pull-right">
         <sb-toggle name="show-value-as-toggle"
-                   analyticsEvent="FilterClick" analyticsCategory="AggregateQueryBuilder"
+                   analyticsEvent="FilterClick"
+                   analyticsCategory="AggregateQueryBuilder"
                    [(ngModel)]="aggregateReportQuery.showValueAs"
                    [options]="[
-                           {value: false, text: 'enum.show-value-as.1' | translate, angularticsProperties: {label: 'Show Value as: Percent'}},
-                           {value: true, text: 'enum.show-value-as.2' | translate, angularticsProperties: {label: 'Show Value as: Number'}}
-                         ]"></sb-toggle>
+                     {value: false, text: 'enum.show-value-as.1' | translate, analyticsProperties: {label: 'Show Value as: Percent'}},
+                     {value: true, text: 'enum.show-value-as.2' | translate, analyticsProperties: {label: 'Show Value as: Number'}}
+                   ]"></sb-toggle>
       </div>
     </div>
   </div>

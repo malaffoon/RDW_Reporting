@@ -2,8 +2,6 @@ import { Angulartics2Module } from "angulartics2";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "../shared/common.module";
 import { DataTableModule } from "primeng/primeng";
-import { AggregateReportsComponent } from "./aggregate-reports.component";
-import { AggregateReportsResultsComponent } from "./results/aggregate-reports-results.component";
 import { MockAggregateReportsService } from "./results/mock-aggregate-reports.service";
 import { BrowserModule } from "@angular/platform-browser";
 import { AggregateReportsTableComponent } from "./results/aggregate-reports-table.component";
@@ -25,12 +23,14 @@ import { AggregateReportOrganizationList } from "./aggregate-report-organization
 import { AggregateReportService } from "./aggregate-report.service";
 import { ReportModule } from "../report/report.module";
 import { AggregateReportConfirmationModal } from "./aggregate-report-confirmation.modal";
+import { AggregateReportFormComponent } from "./aggregate-report-form.component";
+import { AggregateReportComponent } from "./results/aggregate-report.component";
 
 @NgModule({
   declarations: [
     AggregateReportConfirmationModal,
-    AggregateReportsComponent,
-    AggregateReportsResultsComponent,
+    AggregateReportFormComponent,
+    AggregateReportComponent,
     AggregateReportsTableComponent,
     AggregateReportsPreviewTableComponent,
     PerformanceComparisonComponent,
@@ -51,8 +51,8 @@ import { AggregateReportConfirmationModal } from "./aggregate-report-confirmatio
     ReportModule
   ],
   exports: [
-    AggregateReportsComponent,
-    AggregateReportsResultsComponent,
+    AggregateReportComponent,
+    AggregateReportFormComponent,
     AggregateReportsTableComponent,
     AggregateReportsPreviewTableComponent,
     PerformanceComparisonComponent,

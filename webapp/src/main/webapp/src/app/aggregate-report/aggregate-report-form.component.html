@@ -486,6 +486,8 @@
                            [(ngModel)]="settings.achievementLevelDisplayType"
                            [ngModelOptions]="{standalone: true}"
                            name="achievementLevelDisplayType"
+                           analyticsEvent="FilterClick"
+                           analyticsCategory="AggregateQueryBuilder"
                            (change)="generateReport()"></sb-toggle>
               </div>
               <div class="col-md-3">
@@ -508,6 +510,8 @@
                            [(ngModel)]="settings.valueDisplayType"
                            [ngModelOptions]="{standalone: true}"
                            name="valueDisplayType"
+                           analyticsEvent="FilterClick"
+                           analyticsCategory="AggregateQueryBuilder"
                            (change)="generateReport()"></sb-toggle>
               </div>
             </div>

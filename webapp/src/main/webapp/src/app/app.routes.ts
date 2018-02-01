@@ -20,8 +20,6 @@ import { ErrorComponent } from "./error/error.component";
 import { AccessDeniedComponent } from "./error/access-denied/access-denied.component";
 import { OrganizationExportComponent } from "./organization-export/organization-export.component";
 import { UserOrganizationsResolve } from "./organization-export/organization/user-organizations.resolve";
-import { AggregateReportsComponent } from "./aggregate-report/aggregate-reports.component";
-import { AggregateReportsResultsComponent } from "./aggregate-report/results/aggregate-reports-results.component";
 import { InstructionalResourceComponent } from "./admin/instructional-resource/instructional-resource.component";
 import { EmbargoComponent } from "./admin/embargo/embargo.component";
 import { EmbargoResolve } from "./admin/embargo/embargo.resolve";
@@ -37,6 +35,9 @@ import { SessionExpiredComponent } from "./shared/security/session-expired.compo
 import { AuthorizationCanActivate } from "./shared/security/authorization.can-activate";
 import { RoutingAuthorizationCanActivate } from "./shared/security/routing-authorization.can-activate";
 import { AggregateReportFormResolve } from "./aggregate-report/aggregate-report-form.resolve";
+import { AggregateReportComponent } from "./aggregate-report/results/aggregate-report.component";
+import { AggregateReportFormComponent } from "./aggregate-report/aggregate-report-form.component";
+import { AggregateReportResolve } from "./aggregate-report/results/aggregate-report.resolve";
 
 const adminRoute = {
   path: 'admin',
@@ -277,13 +278,14 @@ export const routes: Routes = [
             data: { canReuse: true },
             resolve: { form: AggregateReportFormResolve },
             pathMatch: 'full',
-            component: AggregateReportsComponent
+            component: AggregateReportFormComponent
           },
           {
             path: ':id',
             pathMatch: 'full',
             data: { breadcrumb: { translate: 'labels.aggregate-reports.results.heading'}},
-            component: AggregateReportsResultsComponent
+            resolve: { report: AggregateReportResolve },
+            component: AggregateReportComponent
           },
           {
             path: 'query-builder',

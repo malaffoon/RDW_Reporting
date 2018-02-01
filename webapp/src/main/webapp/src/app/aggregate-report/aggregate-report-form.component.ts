@@ -40,10 +40,10 @@ const OrganizationComparator = (a: Organization, b: Organization) => a.name.loca
  * Aggregate report form component
  */
 @Component({
-  selector: 'aggregate-reports',
-  templateUrl: './aggregate-reports.component.html',
+  selector: 'aggregate-report-form',
+  templateUrl: './aggregate-report-form.component.html',
 })
-export class AggregateReportsComponent {
+export class AggregateReportFormComponent {
 
   /**
    * Holds the form options and state
