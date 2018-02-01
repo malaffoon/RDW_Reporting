@@ -14,6 +14,13 @@ import { District, Organization, OrganizationType, School } from "../shared/orga
 import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
+import { AggregateReportService } from "./aggregate-report.service";
+import { SupportedRowCount } from "./results/aggregate-reports-table.component";
+import "rxjs/add/observable/interval";
+import "rxjs/add/operator/switchMap";
+import { BsModalService } from "ngx-bootstrap";
+import { AggregateReportConfirmationModal } from "./aggregate-report-confirmation.modal";
+import { Report } from "../report/report.model";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -72,6 +79,8 @@ export class AggregateReportsComponent {
               private route: ActivatedRoute,
               private notificationService: NotificationService,
               private organizationService: AggregateReportOrganizationService,
+              private reportService: AggregateReportService,
+              private modalService: BsModalService,
               private mockAggregateReportsPreviewService: MockAggregateReportsPreviewService) {
 
     this.form = route.snapshot.data[ 'form' ];
@@ -220,22 +229,82 @@ export class AggregateReportsComponent {
   }
 
   /**
-   * Submits the form
+   * Creates a report if the form is valid
    */
-  submit(): void {
+  onGenerateButtonClick(): void {
     this.validate(this.formGroup, () => {
-      this.router.navigate([ 'results' ], {
-        queryParams: this.toQueryParameters(this.settings),
-        relativeTo: this.route
-      })
+      const request = this.createReportRequest(this.settings);
+      this.reportService.getReportRowCount(request)
+        .subscribe(
+          count => {
+            if (count < SupportedRowCount) {
+              this.createViewableReport(request);
+            } else {
+              this.showConfirmationModal(count, () => this.createNonViewableReport(request))
+            }
+          }
+        )
     });
   }
 
   /**
-   * Exports the data specified by the form
+   * Creates a non viewable report if the form is valid
    */
-  export(): void {
-    this.validate(this.formGroup, () => null /* TODO */);
+  onExportButtonClick(): void {
+    this.validate(this.formGroup, () => {
+      this.createNonViewableReport(this.reportService.createRequest(this.settings));
+    });
+  }
+
+  /**
+   * Submits request to create report then navigates user to the report view page
+   *
+   * @param {AggregateReportRequest} request
+   */
+  private createViewableReport(request: AggregateReportRequest): void {
+    this.createReport(request, resource => {
+      this.router.navigate([ resource.id ], { relativeTo: this.route });
+    })
+  }
+
+  /**
+   * Submits request to create report then navigates user to the reports page
+   *
+   * @param {AggregateReportRequest} request
+   */
+  private createNonViewableReport(request: AggregateReportRequest): void {
+    this.createReport(request, resource => {
+      this.router.navigate([ 'reports' ]);
+    })
+  }
+
+  /**
+   * Creates a report and then calls the provided callback on success.
+   * Displays failure notification if unsuccessful.
+   *
+   * @param {AggregateReportRequest} request
+   * @param {(resource: Report) => void} onCreated
+   */
+  private createReport(request: AggregateReportRequest, onCreated: (resource: Report) => void): void {
+    this.reportService.createReport(request)
+      .subscribe(
+        onCreated,
+        error => {
+          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
+        }
+      )
+  }
+
+  /**
+   * Displays confirmation modal
+   *
+   * @param {number} rowCount the count of rows of the report request
+   * @param {() => void} accept what to do when the modal is accepted
+   */
+  private showConfirmationModal(rowCount: number, accept: () => void): void {
+    const modal = this.modalService.show(AggregateReportConfirmationModal);
+    modal.content.rowCount = rowCount;
+    modal.content.accept = accept;
   }
 
   /**
@@ -263,17 +332,48 @@ export class AggregateReportsComponent {
     }
   }
 
-  private toQueryParameters(settings: AggregateReportFormSettings) {
-    // TODO finish/optimize
-    const idsOf = (a) => a.map(x => x.id);
+  /**
+   * Creates an aggregate report request from a
+   *
+   * @param {AggregateReportFormSettings} settings the form state
+   * @returns {AggregateReportRequest} the created request
+   */
+  createReportRequest(settings: AggregateReportFormSettings): AggregateReportRequest {
+    const idsOf = values => values.map(entity => entity.id);
     return {
-      assessmentType: settings.assessmentType.id,
-      subjects: idsOf(settings.subjects) // TODO optimize to not include if default?
+      achievementLevelDisplayType: settings.achievementLevelDisplayType,
+      administrationConditionIds: idsOf(
+        settings.interimAdministrationConditions.concat(settings.summativeAdministrationConditions)
+      ),
+      assessmentGradeIds: idsOf(settings.assessmentGrades),
+      assessmentTypeId: settings.assessmentType.id,
+      completenessIds: idsOf(settings.completenesses),
+      economicDisadvantageIds: idsOf(settings.economicDisadvantages),
+      ethnicityIds: idsOf(settings.ethnicities),
+      dimensionTypes: settings.dimensionTypes,
+      districtIds: idsOf(settings.districts),
+      genderIds: idsOf(settings.genders),
+      iepIds: idsOf(settings.individualEducationPlans),
+      includeAllDistricts: settings.includeAllDistricts,
+      includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
+      includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
+      includeState: settings.includeStateResults,
+      lepIds: idsOf(settings.limitedEnglishProficiencies),
+      migrantStatusIds: idsOf(settings.migrantStatuses),
+      section504Ids: idsOf(settings.section504s),
+      schoolYears: settings.schoolYears,
+      schoolIds: idsOf(settings.schools),
+      subjectIds: idsOf(settings.subjects),
+      valueDisplayType: settings.valueDisplayType
     }
   }
 
+  /**
+   * Reloads the report preview based on current form state
+   */
   generateReport() {
     this.responsePreview = null;
+    // TODO remove need for this timeout
     setTimeout(() => {
       this.responsePreview = null;
       this.mockAggregateReportsPreviewService.generateSampleData(this.settings.dimensionTypes, this.settings).subscribe(next => {

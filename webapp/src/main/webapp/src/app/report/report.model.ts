@@ -11,10 +11,13 @@ export class Report {
   public label: string;
   public status: string;
   public reportType: string;
+  // TODO change to use code or coded entity
   public assessmentType: AssessmentType;
+  // TODO change to use code or coded entity
   public subjectId: number;
   public schoolYear: number;
   public created: Date;
+  public metadata: {[key: string]: string};
 
   public get completed(): boolean {
     return this.status === 'COMPLETED';

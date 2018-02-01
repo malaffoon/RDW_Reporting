@@ -20,11 +20,15 @@ import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportsPreviewTableComponent } from "./aggregate-reports-preview-table.component";
 import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
-import { TypeaheadModule } from "ngx-bootstrap";
+import { ModalModule, TypeaheadModule } from "ngx-bootstrap";
 import { AggregateReportOrganizationList } from "./aggregate-report-organization-list.component";
+import { AggregateReportService } from "./aggregate-report.service";
+import { ReportModule } from "../report/report.module";
+import { AggregateReportConfirmationModal } from "./aggregate-report-confirmation.modal";
 
 @NgModule({
   declarations: [
+    AggregateReportConfirmationModal,
     AggregateReportsComponent,
     AggregateReportsResultsComponent,
     AggregateReportsTableComponent,
@@ -42,7 +46,9 @@ import { AggregateReportOrganizationList } from "./aggregate-report-organization
     ReactiveFormsModule,
     DataTableModule,
     MultiselectDropdownModule,
-    TypeaheadModule
+    TypeaheadModule,
+    ModalModule,
+    ReportModule
   ],
   exports: [
     AggregateReportsComponent,
@@ -52,11 +58,15 @@ import { AggregateReportOrganizationList } from "./aggregate-report-organization
     PerformanceComparisonComponent,
     QueryBuilderComponent
   ],
+  entryComponents: [
+    AggregateReportConfirmationModal
+  ],
   providers: [
     AssessmentDetailsService,
     MockAggregateReportsService,
     MockAggregateReportsPreviewService,
     ReportOptionsService,
+    AggregateReportService,
     AggregateReportFormResolve,
     AggregateReportOptionsService,
     AggregateReportFormOptionsMapper,
