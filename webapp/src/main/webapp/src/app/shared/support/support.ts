@@ -31,6 +31,10 @@ export class Utils {
     return undefined;
   }
 
+  // static isNullOrEmpty(value: string): boolean {
+  //   return !Utils.isUndefined(value) && (value === null || value.length === 0);
+  // }
+
   static isUndefined(value: any): boolean {
     return typeof value === 'undefined';
   }

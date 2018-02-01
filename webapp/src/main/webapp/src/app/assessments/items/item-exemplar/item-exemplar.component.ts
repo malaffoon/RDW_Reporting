@@ -29,34 +29,26 @@ export class ItemExemplarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.service.getGuide(this.item.bankItemKey)
-      .subscribe(guide => {
-          this.model = guide;
-          this.loading = false;
+    if (Utils.isNullOrUndefined(this.item.answerKey)) {
+      this.service.getGuide(this.item.bankItemKey)
+        .subscribe(guide => {
+            this.model = guide;
+            this.loading = false;
 
-          // TODO re-look at this logic
-          this.notFound = guide.rubrics.length === 0
-            && guide.exemplars.length === 0
-            && Utils.isNullOrUndefined(guide.answerKeyValue);
-        },
-        (response) => {
+            // TODO re-look at this logic
+            this.notFound = guide.rubrics.length === 0
+              && guide.exemplars.length === 0;
+          },
+          (response) => {
 
-          // TODO fix this?
-          if (response.status = 404)
-            this.notFound = true;
-          else
-            this.errorLoading = true;
+            // TODO fix this?
+            if (response.status = 404)
+              this.notFound = true;
+            else
+              this.errorLoading = true;
 
-          this.loading = false;
-        });
-  }
-
-  /**
-   * Returns true if this item is a MC or MS and has an answer key
-   * @param {AssessmentItem} item
-   * @returns {boolean}
-   */
-  hasAnswerKey(item: AssessmentItem): boolean {
-    return (item.type === 'MC' || item.type === 'MC') && (item.answerKey !== undefined || item.answerKey !== null);
+            this.loading = false;
+          });
+    }
   }
 }
