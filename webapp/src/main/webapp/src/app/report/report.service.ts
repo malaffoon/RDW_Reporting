@@ -79,6 +79,20 @@ export class ReportService {
   }
 
   /**
+   * Creates an aggregate report
+   *
+   * @param request the parameters to create the report with
+   * @returns {Observable<Report>} the handle used the get status on the download
+   */
+  public createAggregateReport(request: AggregateReportRequest): Observable<Report> {
+    return this.dataService.post(`${ServiceRoute}/aggregate`, request, {
+      headers: new Headers({ 'Content-Type': 'application/json' })
+    })
+    .map(this.toReport)
+    .catch(ResponseUtils.throwError);
+  }
+
+  /**
    * Gets an exam report download if ready, otherwise throws an exception
    *
    * @param reportId the handle used to lookup the download
@@ -145,6 +159,7 @@ export class ReportService {
     local.assessmentType = AssessmentType[ remote.assessmentType as string ];
     local.subjectId = AssessmentSubjectType[ remote.subject as string ] || 0;
     local.schoolYear = remote.schoolYear;
+    local.metadata = remote.metadata;
     return local;
   }
 

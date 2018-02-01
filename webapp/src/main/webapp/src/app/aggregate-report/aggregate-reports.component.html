@@ -1,5 +1,4 @@
-<scroll-nav
-  [sections]="[
+<scroll-nav [sections]="[
   {
     scrollTo: organizationSection,
     text: 'labels.aggregate-reports.form.section.organization.heading' | translate,
@@ -31,21 +30,20 @@
     isLink: true
   },
   {
-    clickAction: export.bind(this),
+    clickAction: onExportButtonClick.bind(this),
     text: 'labels.export.csv' | translate,
     classes: 'navbar-link btn btn-default btn-sm float-none-xs',
     isButton: true,
     iconClasses: 'fa fa-table'
   },
   {
-    clickAction: submit.bind(this),
+    clickAction: onGenerateButtonClick.bind(this),
     text: 'labels.aggregate-reports.form.submit' | translate,
     classes: 'navbar-link btn btn-success btn-sm ml-xs green',
     isButton: true,
     iconClasses: 'fa fa-gears'
-  }
+  }]"></scroll-nav>
 
-  ]"></scroll-nav>
 <div class="container">
 
   <form #form [formGroup]="formGroup">
@@ -393,7 +391,7 @@
                                    [options]="options.individualEducationPlans"
                                    [(ngModel)]="settings.individualEducationPlans"
                                    [ngModelOptions]="{standalone: true}"
-                                   name="ieps"
+                                   name="individualEducationPlans"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: 'IEP: All'}"
@@ -413,7 +411,7 @@
                                    [options]="options.section504s"
                                    [(ngModel)]="settings.section504s"
                                    [ngModelOptions]="{standalone: true}"
-                                   name="plan504s"
+                                   name="section504s"
                                    analyticsEvent="FilterClick"
                                    analyticsCategory="AggregateQueryBuilder"
                                    [allOptionAnalyticsProperties]="{label: '504 Plan: All'}"
@@ -687,5 +685,5 @@
     </div>
   </div>
 
-
 </div>
+

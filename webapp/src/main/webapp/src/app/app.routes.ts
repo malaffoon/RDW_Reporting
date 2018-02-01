@@ -280,7 +280,7 @@ export const routes: Routes = [
             component: AggregateReportsComponent
           },
           {
-            path: 'results',
+            path: ':id',
             pathMatch: 'full',
             data: { breadcrumb: { translate: 'labels.aggregate-reports.results.heading'}},
             component: AggregateReportsResultsComponent

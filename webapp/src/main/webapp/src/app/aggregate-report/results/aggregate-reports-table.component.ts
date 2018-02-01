@@ -10,6 +10,8 @@ import * as _ from "lodash";
 import { AssessmentDetailsService } from "./assessment-details.service";
 import { AggregateReportQuery } from "../model/aggregate-report-query.model";
 
+export const SupportedRowCount = 1000;
+
 /**
  * This component is responsible for displaying a table of aggregate report results
  * scoped to a single AssessmentType and Subject.
