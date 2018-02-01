@@ -1521,9 +1521,10 @@
       },
       "reload": "Reload",
       "reportType": {
-        "ExamExport": "Custom Export",
+        "AggregateReportRequest": "Aggregate Report",
+        "ExamExport": "District / School Export",
         "Group": "Group Report",
-        "SchoolGrade": "School/Grade Report",
+        "SchoolGrade": "School / Grade Report",
         "Student": "Student Report"
       },
       "status": {
