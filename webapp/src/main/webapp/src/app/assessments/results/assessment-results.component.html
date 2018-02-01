@@ -75,8 +75,7 @@
 
     <!-- Student Results -->
     <div *ngIf="!collapsed" @fadeAnimation>
-      <div class="row">
-        <div class="col-md-4 z-index-over-data-table mb-sm">
+      <div class="col-md-4 z-index-over-data-table pl-0 mb-sm">
           <div class="select-menu-group">
             <label class="sr-only">{{ 'labels.groups.results.assessment.select-view' | translate }}</label>
             <div class="btn-group" dropdown>
@@ -146,10 +145,7 @@
             </button>
           </div>
         </div>
-        <div class="col-md-8 pt-md">
-          <span class="results-view-intro">{{ getCurrentViewIntroductionLabel() | translate }}</span>
-        </div>
-      </div>
+
       <div *ngIf="showStudentResults">
         <results-by-student
           [exams]="exams"
