@@ -1,7 +1,7 @@
 /**
  * Represents an aggregate report request
  */
-interface AggregateReportRequest {
+export interface AggregateReportRequest {
   readonly achievementLevelDisplayType: string;
   readonly administrationConditionIds: number[];
   readonly assessmentGradeIds: number[];

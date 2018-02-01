@@ -21,6 +21,7 @@ import "rxjs/add/operator/switchMap";
 import { BsModalService } from "ngx-bootstrap";
 import { AggregateReportConfirmationModal } from "./aggregate-report-confirmation.modal";
 import { Report } from "../report/report.model";
+import { AggregateReportRequest } from "../report/aggregate-report-request";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -252,7 +253,7 @@ export class AggregateReportsComponent {
    */
   onExportButtonClick(): void {
     this.validate(this.formGroup, () => {
-      this.createNonViewableReport(this.reportService.createRequest(this.settings));
+      this.createNonViewableReport(this.createReportRequest(this.settings));
     });
   }
 
