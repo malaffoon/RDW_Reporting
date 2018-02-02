@@ -97,12 +97,12 @@ export class AggregateReportTableComponent implements OnInit {
   private previousSort: any;
 
   constructor(public colorService: ColorService) {
-    this.orderingByProperty.organization = ordering(join.apply(null, [
+    this.orderingByProperty.organization = ordering(join(
       OrderingOrganizationState.compare,
       OrderingOrganizationDistrictsWithSchools.compare,
       OrderingOrganizationDistrict.compare,
       OrderingOrganizationSchools.compare
-    ]));
+    ));
     this.orderingByProperty.assessmentGrade = ordering(byString).on((item) => item.gradeCode);
     this.orderingByProperty.schoolYear = ordering(byNumber).on((item) => item.schoolYear);
     this.orderingByProperty.dimension = ordering(join.apply(null, [
