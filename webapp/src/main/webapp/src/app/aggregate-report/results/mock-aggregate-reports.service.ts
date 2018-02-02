@@ -8,6 +8,8 @@ import { QueryBuilderModel } from "../model/query-builder.model";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { AssessmentDefinitionService } from "../assessment/assessment-definition.service";
 
+const AssessmentTypeCodesById = [null, 'ica', 'iab', 'sum'];
+
 /**
  * @deprecated
  *
@@ -33,14 +35,14 @@ export class MockAggregateReportsService {
         if (items === null) {
           return [];
         }
-        const definition = details.get([null, 'ica', 'ian', 'sum'][query.assessmentType]);
+        const definition = details.get(AssessmentTypeCodesById[query.assessmentType]);
         return this.mapReportItemsFromApi(definition, <any[]>items);
       });
   }
 
   public generateQueryBuilderSampleData(options: string[], query: AggregateReportQuery, queryModel: QueryBuilderModel) {
     return this.assessmentDetailsService.getDefinitionsByAssessmentTypeCode().map(details => {
-      const definition = details.get([null, 'ica', 'ian', 'sum'][query.assessmentType]);
+      const definition = details.get(AssessmentTypeCodesById[query.assessmentType]);
       return this.mapReportItemsFromApi(definition, this.createResponse(options, query, queryModel));
     });
   }
