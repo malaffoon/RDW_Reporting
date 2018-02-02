@@ -2,12 +2,20 @@ import { Injectable } from "@angular/core";
 import { AssessmentDefinition } from "./assessment-definition";
 import { Observable } from "rxjs/Observable";
 
-const IabDetails: AssessmentDefinition = {
+const Iab: AssessmentDefinition = {
+  typeCode: 'iab',
   performanceLevelCount: 3,
   performanceLevelGroupingCutPoint: 3
 };
 
-const IcaSummativeDetails: AssessmentDefinition = {
+const Ica: AssessmentDefinition = {
+  typeCode: 'ica',
+  performanceLevelCount: 4,
+  performanceLevelGroupingCutPoint: 3
+};
+
+const Summative: AssessmentDefinition = {
+  typeCode: 'sum',
   performanceLevelCount: 4,
   performanceLevelGroupingCutPoint: 3
 };
@@ -28,9 +36,9 @@ export class AssessmentDefinitionService {
    */
   public getDefinitionsByAssessmentTypeCode(): Observable<Map<string, AssessmentDefinition>> {
     return Observable.of(new Map([
-      [ 'ica', IcaSummativeDetails ],
-      [ 'iab', IabDetails ],
-      [ 'sum', IcaSummativeDetails ]
+      [ 'ica', Ica ],
+      [ 'iab', Iab ],
+      [ 'sum', Summative ]
     ]))
   }
 

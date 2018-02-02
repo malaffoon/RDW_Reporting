@@ -144,7 +144,7 @@
           "label": "Economic Disadvantage",
           "info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage."
         },
-        "achievement-level-display-type": {
+        "performance-level-display-type": {
           "label": "Achievement Level Display",
           "info": "Achievement Level Display",
           "value": {
@@ -236,15 +236,13 @@
             "label": "Students Tested"
           },
           "average-scale-score": {
-            "label": "Average Scale Score",
-            "attribute": {
-              "value": "Values"
-            }
+            "label": "Average Scale Score"
           },
-          "achievement-level": {
+          "performance-level": {
             "label": "Achievement Level",
             "attribute": {
-              "grouping": "Display"
+              "grouping": "Display",
+              "value": "Values"
             }
           }
         }

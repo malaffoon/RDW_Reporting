@@ -8,11 +8,6 @@ import { CodedEntity } from "../shared/coded-entity";
 export interface AggregateReportFormSettings {
 
   /**
-   * The achievement level graph display type
-   */
-  achievementLevelDisplayType: string;
-
-  /**
    * Assessment grades to be covered on the report
    */
   assessmentGrades: CodedEntity[];
@@ -66,6 +61,11 @@ export interface AggregateReportFormSettings {
    * Migrant status result filter
    */
   migrantStatuses: CodedEntity[];
+
+  /**
+   * The achievement level graph display type
+   */
+  performanceLevelDisplayType: string;
 
   /**
    * Plan 504 result filter

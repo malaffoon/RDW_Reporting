@@ -7,11 +7,7 @@
 <ng-container *ngIf="!reportSizeSupported">
   <div class="well">
     <p>{{'aggregate-report.unsupported-size-error' | translate}}</p>
-    <div class="mb-sm">
-      <button class="btn btn-default btn-sm" (click)="onUpdateRequestButtonClick()">
-        <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.update-request' | translate}}
-      </button>
-    </div>
+    <ng-container *ngTemplateOutlet="updateRequestButton"></ng-container>
   </div>
 
 </ng-container>
@@ -19,9 +15,7 @@
 <ng-container *ngIf="!loading">
 
   <div class="mb-sm">
-    <button class="btn btn-default btn-sm" (click)="onUpdateRequestButtonClick()">
-      <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.update-request' | translate}}
-    </button>
+    <ng-container *ngTemplateOutlet="updateRequestButton"></ng-container>
   </div>
 
   <div *ngFor="let table of reportTables" class="well wide-content-container">
@@ -32,10 +26,15 @@
 
     <div class="mt-xs">
       <aggregate-report-table [table]="table"
-                              [query]="report.request"
-                              [showValuesAsPercent]="true"
-                              [groupPerformanceLevels]="false"
-                              [columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"></aggregate-report-table>
+                              [showValuesAsPercent]="report.request.valueDisplayType === 'Percent'"
+                              [groupPerformanceLevels]="report.request.performanceLevelDisplayType === 'Grouped'"
+                              [columnOrdering]="['organization', 'assessmentGrade', 'schoolYear', 'dimension']"></aggregate-report-table>
     </div>
   </div>
 </ng-container>
+
+<ng-template #updateRequestButton>
+  <button class="btn btn-default btn-sm" (click)="onUpdateRequestButtonClick()">
+    <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.update-request' | translate}}
+  </button>
+</ng-template>

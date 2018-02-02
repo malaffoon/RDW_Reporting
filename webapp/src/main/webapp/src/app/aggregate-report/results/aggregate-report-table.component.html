@@ -15,7 +15,7 @@
                [rowsPerPageOptions]="[100, 500, 1000]"
                emptyMessage="{{'aggregate-reports.results.empty-message' | translate}}"
                tableStyleClass="table table-striped table-hover overflow">
-    <p-column field="organizationName"
+    <p-column field="organization"
               [sortable]="previewOnly ? false : 'custom'"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.organization-name' | translate}}">
@@ -27,7 +27,7 @@
         </div>
       </ng-template>
     </p-column>
-    <p-column field="gradeId"
+    <p-column field="assessmentGrade"
               [sortable]="previewOnly ? false : 'custom'"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.assessment-grade' | translate}}">
@@ -35,7 +35,7 @@
         <div *ngIf="treeColumns[i] <= colIndex(col)"
              class="full-cell pt-0"
              [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
-          {{row.gradeId}}
+          {{'common.grade.' + row.gradeCode + '.form-name' | translate}}
         </div>
       </ng-template>
     </p-column>
@@ -51,7 +51,7 @@
         </div>
       </ng-template>
     </p-column>
-    <p-column field="dimensionValue"
+    <p-column field="dimension"
               [sortable]="previewOnly ? false : 'custom'"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.dimension' | translate}}">
@@ -78,7 +78,7 @@
       <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
         <div class="full-cell pt-0 pb-0 pl-0 pr-0"
              [ngClass]="{'border-top': treeColumns[i] < columnOrdering.length - 1}">
-          <performance-comparison [assessmentTypeCode]="query.assessmentTypeCode"
+          <performance-comparison [assessmentTypeCode]="table.assessmentDefinition.typeCode"
                                   [performanceGroupingCutpoint]="table.assessmentDefinition.performanceLevelGroupingCutPoint"
                                   [groupPerformanceLevels]="groupPerformanceLevels"
                                   [performancePercentages]="row.performanceLevelPercents"></performance-comparison>
@@ -108,7 +108,7 @@
         <ng-template pTemplate="header">
           <div class="text-center">
             <span class="label"
-                  [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(query.assessmentTypeCode, level)">
+                  [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
               {{ (performanceLevelTranslationPrefix + level + '.short-name') | translate }}
             </span><br>
             <span>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</span>
@@ -136,7 +136,7 @@
           <div class="text-center">
             <span>{{('aggregate-reports.results.cols.grouped-performance-level-prefix.' + leveIdx) | translate}}</span><br>
             <span class="label"
-                  [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(query.assessmentTypeCode, level)">
+                  [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
               {{ (performanceLevelTranslationPrefix + level + '.short-name') | translate }}
             </span><br>
             <span>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</span>

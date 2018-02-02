@@ -6,7 +6,6 @@ import { ColorService } from "../../shared/color.service";
 import { Column, DataTable } from "primeng/primeng";
 import { isNullOrUndefined } from "util";
 import * as _ from "lodash";
-import { AggregateReportRequest } from "../../report/aggregate-report-request";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 
 export const SupportedRowCount = 10000;
@@ -47,14 +46,8 @@ export class AggregateReportTableComponent implements OnInit {
   public showValuesAsPercent: boolean;
 
   /**
-   * The report request query containing additional information on the report data.
-   */
-  @Input()
-  public query: AggregateReportRequest; // TODO rename field
-
-  /**
    * The tree column ordering as an array of field strings.
-   * e.g. ['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']
+   * e.g. ['organization', 'assessmentGrade', 'schoolYear', 'dimension']
    */
   @Input()
   public columnOrdering: string[];
@@ -80,17 +73,17 @@ export class AggregateReportTableComponent implements OnInit {
   private previousSort: any;
 
   constructor(public colorService: ColorService) {
-    this.orderingByProperty.organizationName = ordering(byString).on((item) => item.organizationName);
-    this.orderingByProperty.gradeId = ordering(byNumber).on((item) => item.gradeId);
+    this.orderingByProperty.organization = ordering(byString).on((item) => item.organizationName);
+    this.orderingByProperty.assessmentGrade = ordering(byString).on((item) => item.gradeCode);
     this.orderingByProperty.schoolYear = ordering(byNumber).on((item) => item.schoolYear);
-    this.orderingByProperty.dimensionValue = ordering(join.apply(null, [
+    this.orderingByProperty.dimension = ordering(join.apply(null, [
       OrderingDimensionType.compare,
       OrderingDimensionValue.compare
     ]));
   }
 
   ngOnInit(): void {
-    this.performanceLevelTranslationPrefix = `common.assessment-type.${this.query.assessmentTypeCode}.performance-level.`;
+    this.performanceLevelTranslationPrefix = `common.assessment-type.${this.table.assessmentDefinition.typeCode}.performance-level.`;
     for (let level = 1; level <= this.table.assessmentDefinition.performanceLevelCount; level++) {
       this.performanceLevels.push(level);
     }

@@ -18,7 +18,7 @@ export interface AggregateReportRowAssessment {
   /**
    * @deprecated
    */
-  readonly gradeId: number;
+  readonly gradeId?: number;
   readonly gradeCode: string; // TODO add to backend
   readonly subjectCode: string;
   readonly label: string;

@@ -345,7 +345,7 @@ export class AggregateReportFormComponent {
       section504s: valuesOf(options.section504s),
       limitedEnglishProficiencies: valuesOf(options.limitedEnglishProficiencies),
       economicDisadvantages: valuesOf(options.economicDisadvantages),
-      achievementLevelDisplayType: firstValueOf(options.achievementLevelDisplayTypes),
+      performanceLevelDisplayType: firstValueOf(options.performanceLevelDisplayTypes),
       valueDisplayType: firstValueOf(options.valueDisplayTypes),
       dimensionTypes: [],
       includeStateResults: true,
@@ -366,7 +366,7 @@ export class AggregateReportFormComponent {
   private createReportRequest(settings: AggregateReportFormSettings): AggregateReportRequest {
     const codesOf = values => values.map(entity => entity.code);
     return {
-      achievementLevelDisplayType: settings.achievementLevelDisplayType,
+      achievementLevelDisplayType: settings.performanceLevelDisplayType,
       administrationConditionCodes: codesOf(
         settings.interimAdministrationConditions.concat(settings.summativeAdministrationConditions)
       ),

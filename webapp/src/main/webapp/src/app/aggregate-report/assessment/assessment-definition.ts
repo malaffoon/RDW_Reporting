@@ -1,6 +1,11 @@
 export interface AssessmentDefinition {
 
   /**
+   * Reflective reference to the type code of the assessment
+   */
+  readonly typeCode: string;
+
+  /**
    * The total performance levels available for this assessment type.
    */
   readonly performanceLevelCount: number;
