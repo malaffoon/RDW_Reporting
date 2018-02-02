@@ -51,7 +51,7 @@ sql:
           name AS organization_name,
           natural_id AS organization_natural_id,
           'School' as organization_type,
-          district_id AS organization_parent_id
+          district_id
         FROM school
 
       findAllDistricts: >-
@@ -59,8 +59,7 @@ sql:
           id AS organization_id,
           name AS organization_name,
           natural_id AS organization_natural_id,
-          'District' as organization_type,
-          NULL AS organization_parent_id
+          'District' as organization_type
         FROM district
 
   schoolYear:

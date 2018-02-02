@@ -47,8 +47,7 @@ sqlbuilder:
                      'State' AS organization_type,
                      NULL AS organization_id,
                      NULL AS organization_natural_id,
-                     '${app.state.name}' AS organization_name,
-                     NULL AS organization_parent_id
+                     '${app.state.name}' AS organization_name
 
             allDistricts:
               clauses:
@@ -56,8 +55,7 @@ sqlbuilder:
                      'District' AS organization_type,
                      d.id AS organization_id,
                      d.natural_id AS organization_natural_id,
-                     d.name AS organization_name,
-                     NULL AS organization_parent_id
+                     d.name AS organization_name
 
                 join: >-
                     JOIN school sch ON sch.id = fe.school_id
@@ -80,7 +78,7 @@ sqlbuilder:
                      sch.id AS organization_id,
                      sch.natural_id AS organization_natural_id,
                      sch.name AS organization_name,
-                     sch.district_id AS organization_parent_id
+                     sch.district_id AS district_id
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
 
@@ -100,7 +98,7 @@ sqlbuilder:
                      sch.id AS organization_id,
                      sch.natural_id AS organization_natural_id,
                      sch.name AS organization_name,
-                     sch.district_id AS organization_parent_id
+                     sch.district_id AS district_id
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
 
