@@ -1,5 +1,5 @@
-import { CodedEntity } from "./aggregate-report-options";
 import { District, School } from "../shared/organization/organization";
+import { CodedEntity } from "../shared/coded-entity";
 
 /**
  * Client side representation of a report request.

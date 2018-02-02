@@ -1,60 +1,33 @@
-<h2 class="h3 blue-dark">Sample Aggregate Report Results</h2>
+<h2 class="h3 blue-dark">{{report.label}}</h2>
 
 <ng-container *ngIf="loading">
   <spinner></spinner>
 </ng-container>
 
+<ng-container *ngIf="!reportSizeSupported">
+  {{'aggregate-report.unsupported-size-error' | translate}}
+</ng-container>
+
 <ng-container *ngIf="!loading">
+
   <div class="mb-sm">
-    <button class="btn btn-default btn-sm" (click)="onUpdateRequestButtonClick()"><i class="fa fa-chevron-left mr-xs"></i> Update Query</button>
+    <button class="btn btn-default btn-sm" (click)="onUpdateRequestButtonClick()">
+      <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.update-request' | translate}}
+    </button>
   </div>
 
-  <h2 class="blue-dark h3 mt-lg mb-md">
-    {{'labels.groups.results.title' | translate}}
-  </h2>
+  <div *ngFor="let table of reportTables" class="well">
 
-  <div class="pull-right float-none-xs">
-      <label>{{'labels.groups.results.value-as' | translate}}</label>
-      <sb-toggle [options]="form.options.valueDisplayTypes"
-                 [(ngModel)]="form.settings.valueDisplayType"
-                 angularticsEvent="TableSettingChange"
-                 angularticsCategory="AggregateReportView"></sb-toggle>
+    <h3 class="h3 label-group green">
+      <span class="label">{{'common.assessment-type.' + report.request.assessmentTypeCode + '.short-name' | translate}}</span><span class="label">{{'common.subject.' + table.subjectCode + '.short-name' | translate}}</span>
+    </h3>
 
-      <!--<div id="value-format" class="btn-group btn-group-primary btn-group-xs mr-md" role="group">-->
-        <!--<button type="radio" (click)="showValuesAsPercent = true" [ngClass]="{'active':showValuesAsPercent}"-->
-                <!--angulartics2On="click" angularticsEvent="ShowAsPercent" angularticsCategory="AggregateReportResults"-->
-                <!--class="btn btn-default">{{'labels.groups.results.value-as-percent' | translate}}-->
-        <!--</button>-->
-        <!--<button type="radio" (click)="showValuesAsPercent = false" [ngClass]="{'active':!showValuesAsPercent}"-->
-                <!--angulartics2On="click" angularticsEvent="ShowAsNumber" angularticsCategory="AggregateReportResults"-->
-                <!--class="btn btn-default">{{'labels.groups.results.value-as-number' | translate}}-->
-        <!--</button>-->
-      <!--</div>-->
+    <div class="mt-xs">
+      <aggregate-report-table [table]="table"
+                              [query]="report.request"
+                              [showValuesAsPercent]="true"
+                              [groupPerformanceLevels]="false"
+                              [columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"></aggregate-report-table>
     </div>
-    <div *ngIf="performanceGroupingCutpoint >= 0"
-         class="pull-right float-none-xs">
-      <label>{{'labels.aggregate-reports.results.performance-group-prompt' | translate}}</label>
-      <sb-toggle [options]="form.options.achievementLevelDisplayTypes"
-                 [(ngModel)]="form.settings.achievementLevelDisplayType"
-                 angularticsEvent="TableSettingChange"
-                 angularticsCategory="AggregateReportView"></sb-toggle>
-      <!--<div id="group-performance" class="btn-group btn-group-primary btn-group-xs mr-md" role="group">-->
-        <!--<button type="radio" (click)="groupPerformanceLevels = false" [ngClass]="{'active':!groupPerformanceLevels}"-->
-                <!--angulartics2On="click" angularticsEvent="SeparatePerformanceLevels" angularticsCategory="AggregateReportResults"-->
-                <!--class="btn btn-default">{{'labels.aggregate-reports.results.performance-separated' | translate}}-->
-        <!--</button>-->
-        <!--<button type="radio" (click)="groupPerformanceLevels = true" [ngClass]="{'active':groupPerformanceLevels}"-->
-                <!--angulartics2On="click" angularticsEvent="GroupPerformanceLevels" angularticsCategory="AggregateReportResults"-->
-                <!--class="btn btn-default">{{'labels.aggregate-reports.results.performance-grouped' | translate}}-->
-        <!--</button>-->
-      <!--</div>-->
-    </div>
-
-  <!--<div *ngFor="let subjectId of subjectIds">-->
-    <!--<aggregate-reports-table [reportItems]="reportItemsBySubjectId.get(subjectId)"-->
-                             <!--[query]="query"-->
-                             <!--[groupPerformanceLevels]="settings.achievementLevelDisplayType === 'Grouped'"-->
-                             <!--[showValuesAsPercent]="settings.valueDisplayType === 'Percent'"-->
-                             <!--[columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"></aggregate-reports-table>-->
-  <!--</div>-->
+  </div>
 </ng-container>

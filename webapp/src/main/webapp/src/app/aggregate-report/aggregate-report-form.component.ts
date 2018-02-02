@@ -1,27 +1,27 @@
 import { Component, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
-import { AggregateReportForm } from "./aggregate-report-form";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { CodedEntity } from "./aggregate-report-options";
 import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Forms } from "../shared/form/forms";
-import { AggregateReportItem } from "./model/aggregate-report-item.model";
+import { AggregateReportItem } from "./results/aggregate-report-item";
 import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
 import { District, Organization, OrganizationType, School } from "../shared/organization/organization";
 import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportService } from "./aggregate-report.service";
-import { SupportedRowCount } from "./results/aggregate-reports-table.component";
+import { SupportedRowCount } from "./results/aggregate-report-table.component";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/switchMap";
 import { BsModalService } from "ngx-bootstrap";
 import { AggregateReportConfirmationModal } from "./aggregate-report-confirmation.modal";
 import { Report } from "../report/report.model";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
+import { CodedEntity } from "../shared/coded-entity";
+import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -46,9 +46,14 @@ const OrganizationComparator = (a: Organization, b: Organization) => a.name.loca
 export class AggregateReportFormComponent {
 
   /**
-   * Holds the form options and state
+   * Holds the form options
    */
-  form: AggregateReportForm;
+  options: AggregateReportFormOptions;
+
+  /**
+   * Holds the form state
+   */
+  settings: AggregateReportFormSettings;
 
   /**
    * The tabular data for the response preview
@@ -78,25 +83,14 @@ export class AggregateReportFormComponent {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
+              private optionMapper: AggregateReportFormOptionsMapper,
               private notificationService: NotificationService,
               private organizationService: AggregateReportOrganizationService,
               private reportService: AggregateReportService,
               private modalService: BsModalService,
               private mockAggregateReportsPreviewService: MockAggregateReportsPreviewService) {
 
-    this.form = route.snapshot.data[ 'form' ];
-
-    this.formGroup = new FormGroup({
-      organizations: new FormControl(this.organizations, notEmpty({
-        messageId: 'aggregate-reports.form.field.organization.error-empty'
-      })),
-      assessmentGrades: new FormControl(this.form.settings.assessmentGrades, notEmpty({
-        messageId: 'aggregate-reports.form.field.assessment-grades.error-empty'
-      })),
-      schoolYears: new FormControl(this.form.settings.schoolYears, notEmpty({
-        messageId: 'aggregate-reports.form.field.school-year.error-empty'
-      }))
-    });
+    this.options = optionMapper.map(route.parent.snapshot.data[ 'options' ]);
 
     this.organizationTypeaheadOptions = Observable.create(observer => {
       observer.next(this.organizationTypeahead.value);
@@ -105,14 +99,20 @@ export class AggregateReportFormComponent {
         organization => this.organizations.findIndex(x => organization.equals(x)) === -1
       ))
     );
-  }
 
-  get options(): AggregateReportFormOptions {
-    return this.form.options;
-  }
+    this.settings = this.createDefaultSettings(this.options);
 
-  get settings(): AggregateReportFormSettings {
-    return this.form.settings;
+    this.formGroup = new FormGroup({
+      organizations: new FormControl(this.organizations, notEmpty({
+        messageId: 'aggregate-reports.form.field.organization.error-empty'
+      })),
+      assessmentGrades: new FormControl(this.settings.assessmentGrades, notEmpty({
+        messageId: 'aggregate-reports.form.field.assessment-grades.error-empty'
+      })),
+      schoolYears: new FormControl(this.settings.schoolYears, notEmpty({
+        messageId: 'aggregate-reports.form.field.school-year.error-empty'
+      }))
+    });
   }
 
   /**
@@ -334,37 +334,73 @@ export class AggregateReportFormComponent {
   }
 
   /**
+   * Creates the default/initial state of the aggregate report form based on the available options
+   *
+   * @param {AggregateReportFormOptions} options the options available for selection
+   * @returns {AggregateReportFormSettings} the initial form state
+   */
+  private createDefaultSettings(options: AggregateReportFormOptions): AggregateReportFormSettings {
+    const valuesOf = options => options.map(option => option.value);
+    const firstValueOf = options => options[ 0 ].value;
+    return <AggregateReportFormSettings>{
+      assessmentGrades: [],
+      assessmentType: firstValueOf(options.assessmentTypes),
+      completenesses: [ firstValueOf(options.completenesses) ],
+      ethnicities: valuesOf(options.ethnicities),
+      genders: valuesOf(options.genders),
+      interimAdministrationConditions: [ firstValueOf(options.interimAdministrationConditions) ],
+      schoolYears: [ firstValueOf(options.schoolYears) ],
+      subjects: valuesOf(options.subjects),
+      summativeAdministrationConditions: [ firstValueOf(options.summativeAdministrationConditions) ],
+      migrantStatuses: valuesOf(options.migrantStatuses),
+      individualEducationPlans: valuesOf(options.individualEducationPlans),
+      section504s: valuesOf(options.section504s),
+      limitedEnglishProficiencies: valuesOf(options.limitedEnglishProficiencies),
+      economicDisadvantages: valuesOf(options.economicDisadvantages),
+      achievementLevelDisplayType: firstValueOf(options.achievementLevelDisplayTypes),
+      valueDisplayType: firstValueOf(options.valueDisplayTypes),
+      dimensionTypes: [],
+      includeStateResults: true,
+      includeAllDistricts: false,
+      includeAllSchoolsOfSelectedDistricts: false,
+      includeAllDistrictsOfSelectedSchools: true,
+      districts: [],
+      schools: []
+    };
+  }
+
+  /**
    * Creates an aggregate report request from a
    *
    * @param {AggregateReportFormSettings} settings the form state
    * @returns {AggregateReportRequest} the created request
    */
-  createReportRequest(settings: AggregateReportFormSettings): AggregateReportRequest {
-    const idsOf = values => values.map(entity => entity.id);
+  private createReportRequest(settings: AggregateReportFormSettings): AggregateReportRequest {
+    const codesOf = values => values.map(entity => entity.code);
     return {
       achievementLevelDisplayType: settings.achievementLevelDisplayType,
-      administrationConditionIds: idsOf(
+      administrationConditionCodes: codesOf(
         settings.interimAdministrationConditions.concat(settings.summativeAdministrationConditions)
       ),
-      assessmentGradeIds: idsOf(settings.assessmentGrades),
-      assessmentTypeId: settings.assessmentType.id,
-      completenessIds: idsOf(settings.completenesses),
-      economicDisadvantageIds: idsOf(settings.economicDisadvantages),
-      ethnicityIds: idsOf(settings.ethnicities),
+      assessmentGradeCodes: codesOf(settings.assessmentGrades),
+      assessmentTypeCode: settings.assessmentType.code,
+      completenessCodes: codesOf(settings.completenesses),
+      economicDisadvantageCodes: codesOf(settings.economicDisadvantages),
+      ethnicityCodes: codesOf(settings.ethnicities),
       dimensionTypes: settings.dimensionTypes,
-      districtIds: idsOf(settings.districts),
-      genderIds: idsOf(settings.genders),
-      iepIds: idsOf(settings.individualEducationPlans),
+      districtCodes: codesOf(settings.districts),
+      genderCodes: codesOf(settings.genders),
+      iepCodes: codesOf(settings.individualEducationPlans),
       includeAllDistricts: settings.includeAllDistricts,
       includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
       includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
       includeState: settings.includeStateResults,
-      lepIds: idsOf(settings.limitedEnglishProficiencies),
-      migrantStatusIds: idsOf(settings.migrantStatuses),
-      section504Ids: idsOf(settings.section504s),
+      lepCodes: codesOf(settings.limitedEnglishProficiencies),
+      migrantStatusCodes: codesOf(settings.migrantStatuses),
+      section504Codes: codesOf(settings.section504s),
       schoolYears: settings.schoolYears,
-      schoolIds: idsOf(settings.schools),
-      subjectIds: idsOf(settings.subjects),
+      schoolCodes: codesOf(settings.schools),
+      subjectCodes: codesOf(settings.subjects),
       valueDisplayType: settings.valueDisplayType
     }
   }

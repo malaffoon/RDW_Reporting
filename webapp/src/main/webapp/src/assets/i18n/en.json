@@ -2,6 +2,11 @@
   "application": {
     "title": "Reporting System"
   },
+  "aggregate-report": {
+    "heading": "Aggregate Report",
+    "update-request": "Update Query",
+    "unsupported-size-error": "This report is too large to view. Please modify the query and retry."
+  },
   "aggregate-reports": {
     "heading": "Aggregate Reports",
     "preview": "Table for preview purposes only. This is NOT actual data.",
@@ -344,8 +349,6 @@
       }
     }
   },
-  >>>>>>>
-  baaef5e1dd50ab18b6b5cfe0091cd49c7fc52d49
   "buttons": {
     "all": "All",
     "collapsible": {
@@ -399,11 +402,43 @@
     "assessment-type": {
       "ica": {
         "name": "Interim Comprehensive Assessment",
-        "short-name": "ICA"
+        "short-name": "ICA",
+        "performance-level": {
+          "1": {
+            "name": "Did Not Meet Standard",
+            "short-name": "Did Not Meet"
+          },
+          "2": {
+            "name": "Nearly Met Standard",
+            "short-name": "Nearly Met"
+          },
+          "3": {
+            "name": "Met Standard",
+            "short-name": "Met"
+          },
+          "4": {
+            "name": "Exceeded Standard",
+            "short-name": "Exceeded"
+          }
+        }
       },
       "iab": {
         "name": "Interim Assessment Blocks",
-        "short-name": "IAB"
+        "short-name": "IAB",
+        "performance-level": {
+          "1": {
+            "name": "Below Standard",
+            "short-name": "Below Standard"
+          },
+          "2": {
+            "name": "Near Standard",
+            "short-name": "Near Standard"
+          },
+          "3": {
+            "name": "Above Standard",
+            "short-name": "Above Standard"
+          }
+        }
       },
       "sum": {
         "name": "Summative",

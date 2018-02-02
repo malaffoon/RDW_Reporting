@@ -14,8 +14,8 @@ export class AggregateReportResolve implements Resolve<Report> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Report> {
-    return this.service.getReportsById([ Number.parseInt(route.params[ 'id' ]) ])
-      .map(reports => reports[0]);
+    const reportId = Number.parseInt(route.params[ 'id' ]);
+    return this.service.getReportById(reportId);
   }
 
 }

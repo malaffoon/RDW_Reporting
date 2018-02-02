@@ -491,7 +491,7 @@
                            (change)="generateReport()"></sb-toggle>
               </div>
               <div class="col-md-3">
-                <performance-comparison [assessmentType]="toAssessmentTypeEnum(settings.assessmentType)"
+                <performance-comparison [assessmentTypeCode]="settings.assessmentType.code"
                                         [groupPerformanceLevels]="settings.achievementLevelDisplayType === 'Grouped'"
                                         [performanceGroupingCutpoint]="3"
                                         [performancePercentages]="[50,50,50,50]"></performance-comparison>

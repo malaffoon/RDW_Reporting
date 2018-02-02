@@ -1,10 +1,15 @@
 import { Component, OnInit } from "@angular/core";
-import { AggregateReportItem } from "../model/aggregate-report-item.model";
-import { AssessmentDetailsService } from "./assessment-details.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AggregateReportForm } from "../aggregate-report-form";
 import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
+import { AggregateReportTable, SupportedRowCount } from "./aggregate-report-table.component";
+import { Observable } from "rxjs/Observable";
+import { AggregateReportOptions } from "../aggregate-report-options";
+import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
+import { AssessmentDefinition } from "../assessment/assessment-definition";
+import { AggregateReportRow } from "../../report/aggregate-report";
+
+const PollingInterval = 4000;
 
 /**
  * This component is responsible for performing the aggregate report query and
@@ -16,93 +21,83 @@ import { Report } from "../../report/report.model";
 })
 export class AggregateReportComponent implements OnInit {
 
-  form: AggregateReportForm;
-
-  reportResource: Report;
-
-  reportItemsBySubjectId: Map<number, AggregateReportItem[]>;
-
-  //TODO @Input
-  // public query: AggregateReportQuery;
-  // public subjectIds: number[] = [];
-  // public performanceGroupingCutpoint: number = -1;
+  assessmentDefinitionsByAssessmentTypeCode: Map<string, AssessmentDefinition>;
+  options: AggregateReportOptions;
+  report: Report;
+  reportTables: AggregateReportTable[];
+  reportSizeSupported: boolean;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private reportService: ReportService,
-              private assessmentDetailsService: AssessmentDetailsService) {
+              private itemMapper: AggregateReportItemMapper) {
 
-    this.form = this.route.parent.snapshot.data[ 'form' ];
-    this.reportResource = this.route.snapshot.data[ 'report' ];
-
-    // this.query = new AggregateReportQuery();
-    // this.query.assessmentType = AssessmentType.ICA;
-
-    // // TODO super common code
-    // this.options = {
-    //   achievementLevelDisplayTypeOptions: [ 'Separate', 'Grouped' ].map(value => <Option>{
-    //     value: value,
-    //     text: this.translate.instant(`common.achievement-level-display-type.${value}`),
-    //     analyticsProperties: { label: `Achievement Level Display Type: ${value}` }
-    //   }),
-    //   valueDisplayTypeOptions: [ 'Percent', 'Number' ].map(value => <Option>{
-    //     value: value,
-    //     text: this.translate.instant(`common.value-display-type.${value}`),
-    //     analyticsProperties: { label: `Value Display Type: ${value}` }
-    //   })
-    // };
-    // this.settings = {
-    //   achievementLevelDisplayType: this.options.achievementLevelDisplayTypeOptions[0].value,
-    //   valueDisplayType: this.options.valueDisplayTypeOptions[0].value
-    // };
+    this.assessmentDefinitionsByAssessmentTypeCode = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
+    this.options = this.route.parent.snapshot.data[ 'options' ];
+    this.report = this.route.snapshot.data[ 'report' ];
+    this.reportSizeSupported = Number.parseInt(this.report.metadata.row_count) < SupportedRowCount;
   }
 
   get loading(): boolean {
-    return !this.reportItemsBySubjectId;
+    return this.reportSizeSupported && !this.reportTables;
   }
 
   ngOnInit(): void {
-
-    // this.reportService.getReportsById([])
-
-    // Observable.interval(5000)
-    //   .switchMap(() => this.reportService.getReportResource(resource.id))
-    //   .subscribe(resource => {
-    //     if (resource.status === 'complete') {
-    //       // TODO remove loading spinner
-    //       this.router.navigate(['results', resource.id], {
-    //         relativeTo: this.route
-    //       });
-    //     }
-    //   });
-
-
-
-    // const detailsObservable: Observable<AssessmentDetails> = this.assessmentDetailsService.getDetails(this.query.assessmentType);
-    // const dataObservable: Observable<AggregateReportItem[]> = this.service.getReportData(this.query);
-    //
-    // Observable.forkJoin(detailsObservable, dataObservable).subscribe((value) => {
-    //   const details: AssessmentDetails = value[0];
-    //   const items: AggregateReportItem[] = value[1];
-    //
-    //   this.performanceGroupingCutpoint = details.performanceGroupingCutpoint;
-    //
-    //   //Break out results by subject to display in separate tables
-    //   items.forEach(item => {
-    //     if (!this.reportDataBySubjectId.get(item.subjectId)) {
-    //       this.reportDataBySubjectId.set(item.subjectId, []);
-    //       this.subjectIds.push(item.subjectId);
-    //     }
-    //     this.reportDataBySubjectId.get(item.subjectId).push(item);
-    //   });
-    //   this.subjectIds.sort(byNumber);
-    //
-    //   this.loading = false;
-    // });
+    if (this.reportSizeSupported) {
+      this.loadOrPollReport();
+    }
   }
 
   onUpdateRequestButtonClick(): void {
     this.router.navigate([ '..' ], { relativeTo: this.route });
+  }
+
+  private loadOrPollReport(): void {
+    if (this.report.completed) {
+      this.loadReport();
+    } else {
+      const subscription = Observable.interval(PollingInterval)
+        .switchMap(() => this.reportService.getReportById(this.report.id))
+        .subscribe(report => {
+          if (report.completed) {
+            subscription.unsubscribe();
+            this.loadReport();
+          }
+        });
+    }
+  }
+
+  private loadReport(): void {
+    this.reportService.getAggregateReport(this.report.id)
+      .subscribe(rows => this.initializeReportTables(rows));
+  }
+
+  private initializeReportTables(rows: AggregateReportRow[]): void {
+
+    const subjects = this.options.subjects;
+    const assessmentDefinition = this.assessmentDefinitionsByAssessmentTypeCode.get(this.report.request.assessmentTypeCode);
+
+    this.reportTables = rows.reduce((tables, row, index) => {
+
+      const item = this.itemMapper.map(assessmentDefinition, row, index);
+      const subject = subjects.find(option => option.code === row.assessment.subjectCode);
+      const table = tables.find(table => table.subjectCode === subject.code);
+
+      if (!table) {
+        tables.push({
+          subjectCode: subject.code,
+          assessmentDefinition: assessmentDefinition,
+          rows: [ item ]
+        });
+      } else {
+        table.rows.push(item);
+      }
+
+      return tables;
+    }, []).sort((a, b) => {
+      const rank = (x) => subjects.findIndex(subject => subject.code === x.code);
+      return rank(a) - rank(b);
+    })
   }
 
 }

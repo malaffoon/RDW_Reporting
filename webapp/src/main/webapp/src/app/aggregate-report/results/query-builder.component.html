@@ -273,7 +273,7 @@
                      ]"></sb-toggle>
         </div>
         <div class="col-md-4">
-          <performance-comparison [assessmentType]="ICA"
+          <performance-comparison [assessmentTypeCode]="'ica'"
                                   [performanceGroupingCutpoint]="3"
                                   [groupPerformanceLevels]="aggregateReportQuery.achievementLevels"
                                   [performancePercentages]="[50,50,50,50]"></performance-comparison>
@@ -488,13 +488,13 @@
       <span class="disabled-table-text"
             *ngIf="responsePreview">{{ 'aggregate-reports.preview' | translate }}</span>
       <div class="disabled-table">
-        <aggregate-reports-table *ngIf="responsePreview" [reportItems]="responsePreview"
-                                 [query]="aggregateReportQuery"
-                                 [showValuesAsPercent]="!aggregateReportQuery.showValueAs"
-                                 [columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"
-                                 [previewOnly]="true"
-                                 [groupPerformanceLevels]="groupPerformanceLevels"
-        ></aggregate-reports-table>
+        <!--<aggregate-report-table *ngIf="responsePreview" [reportItems]="responsePreview"-->
+                                 <!--[query]="aggregateReportQuery"-->
+                                 <!--[showValuesAsPercent]="!aggregateReportQuery.showValueAs"-->
+                                 <!--[columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"-->
+                                 <!--[previewOnly]="true"-->
+                                 <!--[groupPerformanceLevels]="groupPerformanceLevels"-->
+        <!--&gt;</aggregate-report-table>-->
       </div>
     </div>
   </div>

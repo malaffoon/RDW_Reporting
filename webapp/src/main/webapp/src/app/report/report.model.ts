@@ -17,6 +17,7 @@ export class Report {
   public subjectId: number;
   public schoolYear: number;
   public created: Date;
+  public request: any;
   public metadata: {[key: string]: string};
 
   public get completed(): boolean {

@@ -1,16 +1,22 @@
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Ordering, ordering } from "@kourge/ordering";
-import { AggregateReportItem } from "../model/aggregate-report-item.model";
-import { AssessmentType } from "../../shared/enum/assessment-type.enum";
+import { AggregateReportItem } from "./aggregate-report-item";
 import { byNumber, byString, Comparator, join, ranking } from "@kourge/ordering/comparator";
 import { ColorService } from "../../shared/color.service";
 import { Column, DataTable } from "primeng/primeng";
 import { isNullOrUndefined } from "util";
 import * as _ from "lodash";
-import { AssessmentDetailsService } from "./assessment-details.service";
-import { AggregateReportQuery } from "../model/aggregate-report-query.model";
+import { AggregateReportRequest } from "../../report/aggregate-report-request";
+import { AssessmentDefinition } from "../assessment/assessment-definition";
 
 export const SupportedRowCount = 10000;
+
+const OrderingDimensionType: Ordering<AggregateReportItem> = ordering(
+  ranking([ 'Overall', 'Gender', 'Ethnicity' ]) // TODO should be informed by report options
+).on((item) => item.dimensionType);
+
+const OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString)
+  .on((item) => item.dimensionValue.toString());
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -22,12 +28,16 @@ export const SupportedRowCount = 10000;
  *                  identified subject group
  */
 @Component({
-  selector: 'aggregate-reports-table',
-  templateUrl: './aggregate-reports-table.component.html',
+  selector: 'aggregate-report-table',
+  templateUrl: 'aggregate-report-table.component.html',
 })
-export class AggregateReportsTableComponent implements OnInit {
-  private static OrderingDimensionType: Ordering<AggregateReportItem> = ordering(ranking(['Overall', 'Gender', 'Ethnicity'])).on((item) => item.dimensionType);
-  private static OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString).on((item) => item.dimensionValue.toString());
+export class AggregateReportTableComponent implements OnInit {
+
+  /**
+   * The report data.
+   */
+  @Input()
+  public table: AggregateReportTable;
 
   /**
    * True if performance aggregate values should be displayed as percentages of total
@@ -40,7 +50,7 @@ export class AggregateReportsTableComponent implements OnInit {
    * The report request query containing additional information on the report data.
    */
   @Input()
-  public query: AggregateReportQuery;
+  public query: AggregateReportRequest; // TODO rename field
 
   /**
    * The tree column ordering as an array of field strings.
@@ -48,12 +58,6 @@ export class AggregateReportsTableComponent implements OnInit {
    */
   @Input()
   public columnOrdering: string[];
-
-  /**
-   * The report data.
-   */
-  @Input()
-  public reportItems: AggregateReportItem[];
 
   /**
    * True if performance levels should be grouped based upon the performance level rollup.
@@ -64,7 +68,7 @@ export class AggregateReportsTableComponent implements OnInit {
   @Input()
   public previewOnly: boolean = false;
 
-  @ViewChild("table")
+  @ViewChild("datatable")
   private resultsTable: DataTable;
 
   public treeColumns: number[] = [];
@@ -72,32 +76,24 @@ export class AggregateReportsTableComponent implements OnInit {
   public performanceLevelTranslationPrefix: string;
   public loading: boolean = true;
 
-  private orderingByProperty: {[key: string]: Ordering<AggregateReportItem>} = {};
+  private orderingByProperty: { [key: string]: Ordering<AggregateReportItem> } = {};
   private previousSort: any;
-  private performanceGroupingCutpoint: number;
 
-  constructor(public colorService: ColorService,
-              private assessmentDetailsService: AssessmentDetailsService) {
+  constructor(public colorService: ColorService) {
     this.orderingByProperty.organizationName = ordering(byString).on((item) => item.organizationName);
     this.orderingByProperty.gradeId = ordering(byNumber).on((item) => item.gradeId);
     this.orderingByProperty.schoolYear = ordering(byNumber).on((item) => item.schoolYear);
     this.orderingByProperty.dimensionValue = ordering(join.apply(null, [
-      AggregateReportsTableComponent.OrderingDimensionType.compare,
-      AggregateReportsTableComponent.OrderingDimensionValue.compare
+      OrderingDimensionType.compare,
+      OrderingDimensionValue.compare
     ]));
   }
 
   ngOnInit(): void {
-    this.performanceLevelTranslationPrefix = 'enum.' +
-      (this.query.assessmentType == AssessmentType.IAB ? 'iab-category' : 'achievement-level') +
-      '.short.';
-
-    this.assessmentDetailsService.getDetails(this.query.assessmentType).subscribe((details) => {
-      for (let level = 1; level <= details.performanceLevels; level++) {
-        this.performanceLevels.push(level);
-      }
-      this.performanceGroupingCutpoint = details.performanceGroupingCutpoint;
-    });
+    this.performanceLevelTranslationPrefix = `common.assessment-type.${this.query.assessmentTypeCode}.performance-level.`;
+    for (let level = 1; level <= this.table.assessmentDefinition.performanceLevelCount; level++) {
+      this.performanceLevels.push(level);
+    }
 
     // Give the datatable a chance to initialize, run this next frame
     setTimeout(() => {
@@ -111,7 +107,7 @@ export class AggregateReportsTableComponent implements OnInit {
         this.calculateTreeColumns();
       });
 
-      this.resultsTable.value = this.reportItems;
+      this.resultsTable.value = this.table.rows;
       this.loading = false;
     }, 0);
   }
@@ -165,7 +161,7 @@ export class AggregateReportsTableComponent implements OnInit {
     }
 
     //Sort the data based upon the ordered list of Comparators
-    this.reportItems.sort(join.apply(null, ordering));
+    this.table.rows.sort(join.apply(null, ordering));
     this.calculateTreeColumns();
   }
 
@@ -202,7 +198,7 @@ export class AggregateReportsTableComponent implements OnInit {
    * @returns {Comparator<AggregateReportItem>} A Comparator for ordering results by the given field
    */
   private getComparator(field: string, order: number): Comparator<AggregateReportItem> {
-    let rowOrdering: Ordering<AggregateReportItem> = this.orderingByProperty[field];
+    let rowOrdering: Ordering<AggregateReportItem> = this.orderingByProperty[ field ];
     if (!rowOrdering) {
       rowOrdering = ordering(byNumber).on((item) => _.get(item, field, 0));
     }
@@ -218,7 +214,7 @@ export class AggregateReportsTableComponent implements OnInit {
    */
   private getColumnOrdering(): Comparator<AggregateReportItem>[] {
     return this.resultsTable.columns
-      .map(column => this.orderingByProperty[column.field] ? this.orderingByProperty[column.field].compare : null)
+      .map(column => this.orderingByProperty[ column.field ] ? this.orderingByProperty[ column.field ].compare : null)
       .filter(value => !isNullOrUndefined(value));
   }
 
@@ -230,13 +226,13 @@ export class AggregateReportsTableComponent implements OnInit {
     let pageSize: number = this.resultsTable.rows;
     this.treeColumns = [];
     let previousItem: AggregateReportItem;
-    this.reportItems.forEach((item: AggregateReportItem, idx: number) => {
+    this.table.rows.forEach((item: AggregateReportItem, idx: number) => {
       if (!previousItem || idx % pageSize == 0) {
         this.treeColumns.push(0);
       } else {
         let colIdx: number;
         for (colIdx = 0; colIdx < this.columnOrdering.length - 1; colIdx++) {
-          let column: Column = this.resultsTable.columns[colIdx];
+          let column: Column = this.resultsTable.columns[ colIdx ];
           let previousValue = _.get(previousItem, column.field);
           let currentValue = _.get(item, column.field);
           if (previousValue != currentValue) {
@@ -250,3 +246,11 @@ export class AggregateReportsTableComponent implements OnInit {
     });
   }
 }
+
+
+export interface AggregateReportTable {
+  readonly subjectCode: string;
+  readonly assessmentDefinition: AssessmentDefinition;
+  readonly rows: AggregateReportItem[];
+}
+

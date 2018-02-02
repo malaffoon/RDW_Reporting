@@ -31,28 +31,22 @@ export class Utils {
     return undefined;
   }
 
-  // static isNullOrEmpty(value: string): boolean {
-  //   return !Utils.isUndefined(value) && (value === null || value.length === 0);
-  // }
+  /**
+   +   * Checks to see if the string or array is <code>null</code>, <code>undefined</code> or empty.
+   +   *
+   +   * @param {string | any[]} value
+   +   * @returns {boolean}
+   +   */
+  static isNullOrEmpty(value: string | any[]): boolean {
+    return Utils.isNullOrUndefined(value) || value.length === 0;
+  }
 
   static isUndefined(value: any): boolean {
     return typeof value === 'undefined';
   }
 
-  static isNull(value: any): boolean {
-    return value === null;
-  }
-
-  static isEmpty(value: string | any[]) {
-    return value.length === 0;
-  }
-
-  static isNullOrEmpty(value: string | any[]): boolean {
-    return Utils.isNull(value) || Utils.isEmpty(value);
-  }
-
   static isNullOrUndefined(value: any): boolean {
-    return Utils.isNull(value) || Utils.isUndefined(value);
+    return value == null;
   }
 
 }
