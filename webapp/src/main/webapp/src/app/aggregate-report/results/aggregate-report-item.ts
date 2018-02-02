@@ -4,8 +4,16 @@
 export class AggregateReportItem {
   itemId: number;
   assessmentId: number;
+  /**
+   * @deprecated
+   */
   gradeId: number;
+  gradeCode: string;
+  /**
+   * @deprecated
+   */
   subjectId: number;
+  subjectCode: string;
   schoolYear: number;
   avgScaleScore: number;
   avgStdErr: number;

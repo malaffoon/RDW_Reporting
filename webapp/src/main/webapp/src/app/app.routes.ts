@@ -20,8 +20,6 @@ import { ErrorComponent } from "./error/error.component";
 import { AccessDeniedComponent } from "./error/access-denied/access-denied.component";
 import { OrganizationExportComponent } from "./organization-export/organization-export.component";
 import { UserOrganizationsResolve } from "./organization-export/organization/user-organizations.resolve";
-import { AggregateReportsComponent } from "./aggregate-report/aggregate-reports.component";
-import { AggregateReportsResultsComponent } from "./aggregate-report/results/aggregate-reports-results.component";
 import { InstructionalResourceComponent } from "./admin/instructional-resource/instructional-resource.component";
 import { EmbargoComponent } from "./admin/embargo/embargo.component";
 import { EmbargoResolve } from "./admin/embargo/embargo.resolve";
@@ -36,7 +34,11 @@ import { QueryBuilderComponent } from "./aggregate-report/results/query-builder.
 import { SessionExpiredComponent } from "./shared/security/session-expired.component";
 import { AuthorizationCanActivate } from "./shared/security/authorization.can-activate";
 import { RoutingAuthorizationCanActivate } from "./shared/security/routing-authorization.can-activate";
-import { AggregateReportFormResolve } from "./aggregate-report/aggregate-report-form.resolve";
+import { AggregateReportComponent } from "./aggregate-report/results/aggregate-report.component";
+import { AggregateReportFormComponent } from "./aggregate-report/aggregate-report-form.component";
+import { AggregateReportResolve } from "./aggregate-report/results/aggregate-report.resolve";
+import { AggregateReportOptionsResolve } from "./aggregate-report/aggregate-report-options.resolve";
+import { AssessmentDefinitionResolve } from "./aggregate-report/assessment/assessment-definition.resolve";
 
 const adminRoute = {
   path: 'admin',
@@ -269,21 +271,30 @@ export const routes: Routes = [
       },
       {
         path: 'aggregate-reports',
-        data: { breadcrumb: { translate: 'aggregate-reports.heading'}, permissions: [ 'CUSTOM_AGGREGATE_READ' ]},
+        data: {
+          canReuse: true,
+          breadcrumb: { translate: 'aggregate-reports.heading' },
+          permissions: [ 'CUSTOM_AGGREGATE_READ' ]
+        },
+        resolve: {
+          options: AggregateReportOptionsResolve,
+          assessmentDefinitionsByAssessmentTypeCode: AssessmentDefinitionResolve
+        },
         canActivate: [ AuthorizationCanActivate ],
         children: [
           {
             path: '',
-            data: { canReuse: true },
-            resolve: { form: AggregateReportFormResolve },
             pathMatch: 'full',
-            component: AggregateReportsComponent
+            component: AggregateReportFormComponent
           },
           {
             path: ':id',
             pathMatch: 'full',
-            data: { breadcrumb: { translate: 'aggregate-reports.results.heading'}},
-            component: AggregateReportsResultsComponent
+            data: {
+              breadcrumb: { resolve: 'report.label' }
+            },
+            resolve: { report: AggregateReportResolve },
+            component: AggregateReportComponent
           },
           {
             path: 'query-builder',

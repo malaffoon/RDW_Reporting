@@ -3,12 +3,16 @@ import { MockAggregateReportsService } from "./mock-aggregate-reports.service";
 import { Observable } from "rxjs/Observable";
 import { AggregateReportQuery } from "../model/aggregate-report-query.model";
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
-import { AggregateReportItem } from "../model/aggregate-report-item.model";
+import { AggregateReportItem } from "./aggregate-report-item";
+import { AssessmentDefinitionService } from "../assessment/assessment-definition.service";
 
+/**
+ * @deprecated
+ */
 describe('MockAggregateReportsService', () => {
 
   let query: AggregateReportQuery;
-  let mockDetailsService: MockAssessmentDetailsService;
+  let mockAssessmentDefinitionService: MockAssessmentDefinitionService;
   let http: MockHttp;
   let service: MockAggregateReportsService;
 
@@ -16,14 +20,13 @@ describe('MockAggregateReportsService', () => {
     query = new AggregateReportQuery();
     query.assessmentType = AssessmentType.ICA;
 
-    mockDetailsService = new MockAssessmentDetailsService();
-    mockDetailsService.getDetails.and.returnValue(Observable.of({
-      performanceLevels: 4,
-      performanceGroupingCutpoint: 3
-    }));
+    mockAssessmentDefinitionService = new MockAssessmentDefinitionService();
+    mockAssessmentDefinitionService.getDefinitionsByAssessmentTypeCode.and.returnValue(
+      new AssessmentDefinitionService().getDefinitionsByAssessmentTypeCode()
+    );
 
     http = new MockHttp();
-    service = new MockAggregateReportsService(http as any, mockDetailsService as any);
+    service = new MockAggregateReportsService(http as any, mockAssessmentDefinitionService as any);
   });
 
   it('should map api report items to model instances', (done) => {
@@ -148,8 +151,8 @@ describe('MockAggregateReportsService', () => {
   }
 });
 
-class MockAssessmentDetailsService {
-  public getDetails: Spy = jasmine.createSpy("getDetails");
+class MockAssessmentDefinitionService {
+  public getDefinitionsByAssessmentTypeCode: Spy = jasmine.createSpy("getDefinitionsByAssessmentTypeCode");
 }
 
 class MockHttp {

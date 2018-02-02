@@ -14,6 +14,7 @@ import { Grade } from "../school-grade/grade.model";
 import { DataService } from "../shared/data/data.service";
 import { Download } from "../shared/data/download.model";
 import { AggregateReportRequest } from "./aggregate-report-request";
+import { AggregateReportRow } from "./aggregate-report";
 
 const ServiceRoute = '/report-processor';
 
@@ -35,12 +36,22 @@ export class ReportService {
   }
 
   /**
+   * Gets a single report by its entity ID
+   *
+   * @returns {Observable<Report[]>}
+   */
+  public getReportById(id: number): Observable<Report> {
+    return this.getReportsById([ id ])
+      .map(reports => reports[0]);
+  }
+
+  /**
    * Gets a list of all reports for the logged in user
    *
    * @returns {Observable<Report[]>}
    */
   public getReportsById(ids: number[]): Observable<Report[]> {
-    return this.dataService.get(`${ServiceRoute}/reports`, {params: {id: ids}})
+    return this.dataService.get(`${ServiceRoute}/reports`, { params: { id: ids } })
       .map(reports => reports.map(this.toReport))
       .catch(ResponseUtils.throwError);
   }
@@ -89,8 +100,8 @@ export class ReportService {
     return this.dataService.post(`${ServiceRoute}/aggregate`, request, {
       headers: new Headers({ 'Content-Type': 'application/json' })
     })
-    .map(this.toReport)
-    .catch(ResponseUtils.throwError);
+      .map(this.toReport)
+      .catch(ResponseUtils.throwError);
   }
 
   /**
@@ -103,6 +114,36 @@ export class ReportService {
     return this.dataService.get(`${ServiceRoute}/reports/${reportId}`, {
       headers: new Headers({
         'Accept': 'application/pdf',
+      }),
+      responseType: ResponseContentType.Blob
+    }).catch(ResponseUtils.throwError);
+  }
+
+  /**
+   * Gets an aggregate report download if ready, otherwise throws an exception
+   *
+   * @param reportId the handle used to lookup the download
+   * @returns {Observable<Download>}
+   */
+  public getAggregateReport(reportId: number): Observable<AggregateReportRow[]> {
+    return this.dataService.get(`${ServiceRoute}/reports/${reportId}`, {
+      headers: new Headers({
+        'Accept': 'application/json',
+      }),
+      responseType: ResponseContentType.Blob
+    }).catch(ResponseUtils.throwError);
+  }
+
+  /**
+   * Gets an aggregate report download if ready, otherwise throws an exception
+   *
+   * @param reportId the handle used to lookup the download
+   * @returns {Observable<Download>}
+   */
+  public getAggregateReportAsSpreadsheet(reportId: number): Observable<Download> {
+    return this.dataService.get(`${ServiceRoute}/reports/${reportId}`, {
+      headers: new Headers({
+        'Accept': 'text/csv',
       }),
       responseType: ResponseContentType.Blob
     }).catch(ResponseUtils.throwError);

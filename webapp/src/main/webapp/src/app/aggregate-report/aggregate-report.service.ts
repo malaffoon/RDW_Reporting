@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { DataService } from "../shared/data/data.service";
 import { Observable } from "rxjs/Observable";
 import { AggregateServiceRoute } from "../shared/service-route";
-import 'rxjs/add/operator/timeout';
 import { ReportService } from "../report/report.service";
 import { Report } from "../report/report.model";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
