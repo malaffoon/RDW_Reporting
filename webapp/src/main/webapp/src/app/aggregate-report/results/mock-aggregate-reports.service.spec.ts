@@ -10,7 +10,7 @@ import { OrganizationMapper } from "../../shared/organization/organization.mappe
 /**
  * @deprecated
  */
-fdescribe('MockAggregateReportsService', () => {
+describe('MockAggregateReportsService', () => {
 
   let query: AggregateReportQuery;
   let mockAssessmentDefinitionService: MockAssessmentDefinitionService;
