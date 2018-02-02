@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
@@ -8,6 +8,7 @@ import { AggregateReportOptions } from "../aggregate-report-options";
 import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { AggregateReportRow } from "../../report/aggregate-report";
+import { Subscription } from "rxjs/Subscription";
 
 const PollingInterval = 4000;
 
@@ -19,13 +20,14 @@ const PollingInterval = 4000;
   selector: 'aggregate-report',
   templateUrl: './aggregate-report.component.html',
 })
-export class AggregateReportComponent implements OnInit {
+export class AggregateReportComponent implements OnInit, OnDestroy {
 
   assessmentDefinitionsByAssessmentTypeCode: Map<string, AssessmentDefinition>;
   options: AggregateReportOptions;
   report: Report;
   reportTables: AggregateReportTable[];
   reportSizeSupported: boolean;
+  pollingSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -44,23 +46,27 @@ export class AggregateReportComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.reportSizeSupported) {
-      this.loadOrPollReport();
+      this.loadOrPollReportStatus();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe();
   }
 
   onUpdateRequestButtonClick(): void {
     this.router.navigate([ '..' ], { relativeTo: this.route });
   }
 
-  private loadOrPollReport(): void {
+  private loadOrPollReportStatus(): void {
     if (this.report.completed) {
       this.loadReport();
     } else {
-      const subscription = Observable.interval(PollingInterval)
+      this.pollingSubscription = Observable.interval(PollingInterval)
         .switchMap(() => this.reportService.getReportById(this.report.id))
         .subscribe(report => {
           if (report.completed) {
-            subscription.unsubscribe();
+            this.unsubscribe();
             this.loadReport();
           }
         });
@@ -98,6 +104,13 @@ export class AggregateReportComponent implements OnInit {
       const rank = (x) => subjects.findIndex(subject => subject.code === x.code);
       return rank(a) - rank(b);
     })
+  }
+
+  private unsubscribe(): void {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+      this.pollingSubscription = undefined;
+    }
   }
 
 }
