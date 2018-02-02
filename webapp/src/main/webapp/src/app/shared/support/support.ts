@@ -32,11 +32,11 @@ export class Utils {
   }
 
   /**
-   +   * Checks to see if the string or array is <code>null</code>, <code>undefined</code> or empty.
-   +   *
-   +   * @param {string | any[]} value
-   +   * @returns {boolean}
-   +   */
+   * Checks to see if the string or array is <code>null</code>, <code>undefined</code> or empty.
+   *
+   * @param {string | any[]} value
+   * @returns {boolean}
+   */
   static isNullOrEmpty(value: string | any[]): boolean {
     return Utils.isNullOrUndefined(value) || value.length === 0;
   }
