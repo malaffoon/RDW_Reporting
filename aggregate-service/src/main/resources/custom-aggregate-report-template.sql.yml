@@ -100,7 +100,7 @@ sqlbuilder:
                      sch.id AS organization_id,
                      sch.natural_id AS organization_natural_id,
                      sch.name AS organization_name,
-                     NULL AS organization_parent_id
+                     sch.district_id AS organization_parent_id
                 join: >-
                      JOIN school sch ON sch.id = fe.school_id
 
@@ -110,7 +110,8 @@ sqlbuilder:
                 groupBy: >-
                      sch.id,
                      sch.name,
-                     sch.natural_id
+                     sch.natural_id,
+                     sch.district_id
 
       # ---------- dimension parts -----------------------------------------------------------------------
             Overall:
