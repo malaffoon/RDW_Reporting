@@ -24,7 +24,7 @@
     </button>
   </div>
 
-  <div *ngFor="let table of reportTables" class="well">
+  <div *ngFor="let table of reportTables" class="well wide-content-container">
 
     <h3 class="h3 label-group green">
       <span class="label">{{'common.assessment-type.' + report.request.assessmentTypeCode + '.short-name' | translate}}</span><span class="label">{{'common.subject.' + table.subjectCode + '.short-name' | translate}}</span>
