@@ -2,12 +2,16 @@ import { Injectable } from "@angular/core";
 import { AggregateReportItem } from "./aggregate-report-item";
 import { AggregateReportRow } from "../../report/aggregate-report";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
+import { OrganizationMapper } from "../../shared/organization/organization.mapper";
 
 /**
  * Maps server modeled aggregate report rows into client friendly table rows
  */
 @Injectable()
 export class AggregateReportItemMapper {
+
+  constructor(private organizationMapper: OrganizationMapper) {
+  }
 
   map(assessmentDefinition: AssessmentDefinition, row: AggregateReportRow, uuid: number): AggregateReportItem {
     const item = new AggregateReportItem();
@@ -18,12 +22,7 @@ export class AggregateReportItemMapper {
     item.subjectId = row.assessment.subjectCode === 'Math' ? 1 : 2;
     item.subjectCode = row.assessment.subjectCode;
     item.schoolYear = row.assessment.examSchoolYear;
-    item.organizationType = row.organization.type;
-    //TODO: "California" should come from the back-end api populated via config-properties, should come user context
-    item.organizationName = (item.organizationType == "State")
-      ? "California"
-      : row.organization.name;
-    item.organizationId = row.organization.id;
+    item.organization = this.organizationMapper.map(row.organization);
     item.dimensionType = row.dimension.type;
     item.dimensionValue = row.dimension.code || 'default';
 

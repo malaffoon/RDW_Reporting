@@ -73,7 +73,7 @@ export class AggregateReportsPreviewTableComponent implements OnInit {
 
   constructor(public colorService: ColorService,
               private assessmentDefinitionService: AssessmentDefinitionService) {
-    this.orderingByProperty.organizationName = ordering(byString).on((item) => item.organizationName);
+    this.orderingByProperty.organizationName = ordering(byString).on((item) => item.organization.name);
     this.orderingByProperty.gradeId = ordering(byNumber).on((item) => item.gradeId);
     this.orderingByProperty.schoolYear = ordering(byNumber).on((item) => item.schoolYear);
     this.orderingByProperty.dimensionValue = ordering(join.apply(null, [

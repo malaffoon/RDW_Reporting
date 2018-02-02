@@ -7,6 +7,7 @@ import { Column, DataTable } from "primeng/primeng";
 import { isNullOrUndefined } from "util";
 import * as _ from "lodash";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
+import { District, OrganizationType, School } from "../../shared/organization/organization";
 
 export const SupportedRowCount = 10000;
 
@@ -16,6 +17,29 @@ const OrderingDimensionType: Ordering<AggregateReportItem> = ordering(
 
 const OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString)
   .on((item) => item.dimensionValue.toString());
+
+const OrderingOrganizationState: Ordering<AggregateReportItem> = ordering(
+  ranking([OrganizationType.State])
+).on((item) => item.organization.type);
+
+const OrderingOrganizationDistrictsWithSchools: Ordering<AggregateReportItem> = ordering(byNumber)
+  .on((item) => {
+    switch(item.organization.type) {
+      case OrganizationType.District:
+        return (item.organization as District).id;
+      case OrganizationType.School:
+        return (item.organization as School).districtId;
+      default:
+        return -1;
+    }
+});
+
+const OrderingOrganizationDistrict: Ordering<AggregateReportItem> = ordering(
+  ranking([OrganizationType.District])
+).on((item) => item.organization.type);
+
+const OrderingOrganizationSchools: Ordering<AggregateReportItem> = ordering(byString)
+  .on((item) => item.organization.name);
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -73,7 +97,12 @@ export class AggregateReportTableComponent implements OnInit {
   private previousSort: any;
 
   constructor(public colorService: ColorService) {
-    this.orderingByProperty.organization = ordering(byString).on((item) => item.organizationName);
+    this.orderingByProperty.organization = ordering(join.apply(null, [
+      OrderingOrganizationState.compare,
+      OrderingOrganizationDistrictsWithSchools.compare,
+      OrderingOrganizationDistrict.compare,
+      OrderingOrganizationSchools.compare
+    ]));
     this.orderingByProperty.assessmentGrade = ordering(byString).on((item) => item.gradeCode);
     this.orderingByProperty.schoolYear = ordering(byNumber).on((item) => item.schoolYear);
     this.orderingByProperty.dimension = ordering(join.apply(null, [

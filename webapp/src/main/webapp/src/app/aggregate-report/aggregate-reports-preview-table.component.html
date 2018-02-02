@@ -13,14 +13,14 @@
                [paginator]="true"
                emptyMessage="{{'aggregate-reports.results.empty-message' | translate}}"
                tableStyleClass="table table-striped table-hover overflow">
-    <p-column field="organizationName"
+    <p-column field="organization.name"
               [sortable]="false"
               header="{{'aggregate-reports.results.cols.organization-name' | translate}}">
       <ng-template let-col let-reportItem="rowData" let-i="rowIndex" pTemplate="body">
         <div *ngIf="treeColumns[i] <= colIndex(col)"
              class="full-cell pt-0"
              [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
-          {{reportItem.organizationName}}
+          {{reportItem.organization.name}}
         </div>
       </ng-template>
     </p-column>

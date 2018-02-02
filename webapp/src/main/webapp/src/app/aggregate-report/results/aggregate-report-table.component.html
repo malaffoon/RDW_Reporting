@@ -15,7 +15,7 @@
                [rowsPerPageOptions]="[100, 500, 1000]"
                emptyMessage="{{'aggregate-reports.results.empty-message' | translate}}"
                tableStyleClass="table table-striped table-hover overflow">
-    <p-column field="organization"
+    <p-column field="organization.name"
               [sortable]="previewOnly ? false : 'custom'"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.organization-name' | translate}}">
@@ -23,7 +23,7 @@
         <div *ngIf="treeColumns[i] <= colIndex(col)"
              class="full-cell pt-0"
              [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
-          {{row.organizationName}}
+          {{row.organization.name}}
         </div>
       </ng-template>
     </p-column>
