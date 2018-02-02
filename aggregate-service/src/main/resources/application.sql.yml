@@ -86,14 +86,16 @@ sql:
     findAllByType: >-
        SELECT
          a.id as asmt_id,
-         a.grade_id as asmt_grade_id,
+         g.code as asmt_grade_code,
          ay.school_year,
          s.code as subject_code,
          a.label as asmt_label
        FROM asmt_active_year ay
          JOIN asmt a ON a.id = ay.asmt_id
          JOIN subject s ON s.id = a.subject_id
-        WHERE a.type_id = :asmt_type_id
+         JOIN asmt_type at on at.id = a.type_id
+         JOIN grade g on g.id = a.grade_id
+        WHERE at.code= :asmt_type_code
 
   # SQL does not support an Aggregate Product, but this seems to be a recommended way
   estimateReportRowCount: >-
