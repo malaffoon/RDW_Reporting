@@ -10,13 +10,6 @@ import { AssessmentDefinition } from "../assessment/assessment-definition";
 
 export const SupportedRowCount = 10000;
 
-const OrderingDimensionType: Ordering<AggregateReportItem> = ordering(
-  ranking([ 'Overall', 'Gender', 'Ethnicity' ]) // TODO should be informed by report options
-).on((item) => item.dimensionType);
-
-const OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString)
-  .on((item) => item.dimensionValue.toString());
-
 /**
  * This component is responsible for displaying a table of aggregate report results
  * scoped to a single AssessmentType and Subject.
@@ -31,6 +24,10 @@ const OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString)
   templateUrl: 'aggregate-report-table.component.html',
 })
 export class AggregateReportTableComponent implements OnInit {
+
+  @Input()
+  public dimensionRanking: string[] = [];
+
 
   /**
    * The report data.
@@ -73,16 +70,17 @@ export class AggregateReportTableComponent implements OnInit {
   private previousSort: any;
 
   constructor(public colorService: ColorService) {
-    this.orderingByProperty.organization = ordering(byString).on((item) => item.organizationName);
-    this.orderingByProperty.assessmentGrade = ordering(byString).on((item) => item.gradeCode);
-    this.orderingByProperty.schoolYear = ordering(byNumber).on((item) => item.schoolYear);
-    this.orderingByProperty.dimension = ordering(join.apply(null, [
-      OrderingDimensionType.compare,
-      OrderingDimensionValue.compare
-    ]));
   }
 
   ngOnInit(): void {
+    this.orderingByProperty.organization = ordering(byString).on(item => item.organizationName);
+    this.orderingByProperty.assessmentGrade = ordering(byString).on(item => item.gradeCode);
+    this.orderingByProperty.schoolYear = ordering(byNumber).on(item => item.schoolYear);
+    this.orderingByProperty.dimension = ordering(join(
+      ordering(ranking([ 'Overall', ...this.dimensionRanking ])).on((item: AggregateReportItem) => item.dimensionType).compare,
+      ordering(byString).on((item: AggregateReportItem) => item.dimensionValue.toString()).compare
+    ));
+
     this.performanceLevelTranslationPrefix = `common.assessment-type.${this.table.assessmentDefinition.typeCode}.performance-level.`;
     for (let level = 1; level <= this.table.assessmentDefinition.performanceLevelCount; level++) {
       this.performanceLevels.push(level);

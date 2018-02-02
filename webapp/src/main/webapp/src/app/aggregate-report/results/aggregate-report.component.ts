@@ -44,6 +44,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     return this.reportSizeSupported && !this.reportTables;
   }
 
+  get dimensionRanking(): string[] {
+    return this.options.dimensionTypes;
+  }
+
   ngOnInit(): void {
     if (this.reportSizeSupported) {
       this.loadOrPollReportStatus();
