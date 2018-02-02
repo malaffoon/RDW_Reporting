@@ -218,18 +218,6 @@ export class AggregateReportFormComponent {
   }
 
   /**
-   * TODO change performance-comparison to accept coded entity or code?
-   *
-   * Converts assessment type code to AssessmentType enum value
-   *
-   * @param {CodedEntity} assessmentType
-   * @returns {AssessmentType}
-   */
-  toAssessmentTypeEnum(assessmentType: CodedEntity): AssessmentType {
-    return [ AssessmentType.ICA, AssessmentType.IAB, AssessmentType.SUMMATIVE ][ assessmentType.id - 1 ];
-  }
-
-  /**
    * Creates a report if the form is valid
    */
   onGenerateButtonClick(): void {
