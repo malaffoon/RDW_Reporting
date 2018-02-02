@@ -62,7 +62,6 @@ import { AssessmentDefinitionResolve } from "./assessment/assessment-definition.
     AggregateReportConfirmationModal
   ],
   providers: [
-    AssessmentDefinitionResolve,
     MockAggregateReportsService,
     MockAggregateReportsPreviewService,
     ReportOptionsService,
