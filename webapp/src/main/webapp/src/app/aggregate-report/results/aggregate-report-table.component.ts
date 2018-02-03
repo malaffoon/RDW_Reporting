@@ -20,9 +20,11 @@ const OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString)
 
 const OrderingOrganizationState: Ordering<AggregateReportItem> = ordering(
   ranking([OrganizationType.State])
-).on((item) => item.organization.type);
+).reverse().on((item) => {
+  return item.organization.type
+});
 
-const OrderingOrganizationDistrictsWithSchools: Ordering<AggregateReportItem> = ordering(byNumber)
+const OrderingOrganizationDistrictsWithSchoolsById: Ordering<AggregateReportItem> = ordering(byNumber)
   .on((item) => {
     switch(item.organization.type) {
       case OrganizationType.District:
@@ -36,7 +38,7 @@ const OrderingOrganizationDistrictsWithSchools: Ordering<AggregateReportItem> = 
 
 const OrderingOrganizationDistrict: Ordering<AggregateReportItem> = ordering(
   ranking([OrganizationType.District])
-).on((item) => item.organization.type);
+).reverse().on((item) => item.organization.type);
 
 const OrderingOrganizationSchools: Ordering<AggregateReportItem> = ordering(byString)
   .on((item) => item.organization.name);
@@ -64,7 +66,14 @@ export class AggregateReportTableComponent implements OnInit {
    * The report data.
    */
   @Input()
-  public table: AggregateReportTable;
+  public set table(value: AggregateReportTable) {
+    this._table = value;
+    this.buildDistrictIdToNameMap(value.rows);
+  }
+
+  public get table(): AggregateReportTable {
+    return this._table;
+  }
 
   /**
    * True if performance aggregate values should be displayed as percentages of total
@@ -99,6 +108,8 @@ export class AggregateReportTableComponent implements OnInit {
 
   private orderingByProperty: { [key: string]: Ordering<AggregateReportItem> } = {};
   private previousSort: any;
+  private _table: AggregateReportTable;
+  private districtIdToName: Map<number, string> = new Map();
 
   constructor(public colorService: ColorService) {
   }
@@ -106,7 +117,8 @@ export class AggregateReportTableComponent implements OnInit {
   ngOnInit(): void {
     this.orderingByProperty.organization = ordering(join(
       OrderingOrganizationState.compare,
-      OrderingOrganizationDistrictsWithSchools.compare,
+      this.orderingOrganizationDistrictsWithSchoolsByName().compare,
+      OrderingOrganizationDistrictsWithSchoolsById.compare,
       OrderingOrganizationDistrict.compare,
       OrderingOrganizationSchools.compare
     ));
@@ -271,6 +283,34 @@ export class AggregateReportTableComponent implements OnInit {
 
       previousItem = item;
     });
+  }
+
+  private buildDistrictIdToNameMap(items: AggregateReportItem[]) {
+    this.districtIdToName.clear();
+    items.forEach(item => {
+      if (item.organization.type != OrganizationType.District) {
+        return;
+      }
+      const district: District = item.organization as District;
+      this.districtIdToName.set(district.id, district.name)
+    });
+    console.log("map size", this.districtIdToName.size);
+  }
+
+  private orderingOrganizationDistrictsWithSchoolsByName(): Ordering<AggregateReportItem> {
+    return ordering(byString)
+      .on((item) => {
+        switch(item.organization.type) {
+          case OrganizationType.District:
+            console.log("d District name:", this.districtIdToName.get((item.organization as District).id));
+            return this.districtIdToName.get((item.organization as District).id);
+          case OrganizationType.School:
+            console.log("s District name:", this.districtIdToName.get((item.organization as School).districtId));
+            return this.districtIdToName.get((item.organization as School).districtId);
+          default:
+            return "";
+        }
+      });
   }
 }
 

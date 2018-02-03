@@ -15,7 +15,7 @@
                [rowsPerPageOptions]="[100, 500, 1000]"
                emptyMessage="{{'aggregate-reports.results.empty-message' | translate}}"
                tableStyleClass="table table-striped table-hover overflow">
-    <p-column field="organization.name"
+    <p-column field="organization"
               [sortable]="previewOnly ? false : 'custom'"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.organization-name' | translate}}">
