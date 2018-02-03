@@ -301,9 +301,9 @@ export class AggregateReportTableComponent implements OnInit {
       .on((item) => {
         switch(item.organization.type) {
           case OrganizationType.District:
-            return this.districtIdToName.get((item.organization as District).id);
+            return this.districtIdToName.get((item.organization as District).id) || "";
           case OrganizationType.School:
-            return this.districtIdToName.get((item.organization as School).districtId);
+            return this.districtIdToName.get((item.organization as School).districtId) || "";
           default:
             return "";
         }
