@@ -13,7 +13,7 @@
                [paginator]="true"
                emptyMessage="{{'aggregate-reports.results.empty-message' | translate}}"
                tableStyleClass="table table-striped table-hover overflow">
-    <p-column field="organization.name"
+    <p-column field="organization"
               [sortable]="false"
               header="{{'aggregate-reports.results.cols.organization-name' | translate}}">
       <ng-template let-col let-reportItem="rowData" let-i="rowIndex" pTemplate="body">
