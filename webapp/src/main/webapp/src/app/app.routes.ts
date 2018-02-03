@@ -193,13 +193,23 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [ RoutingAuthorizationCanActivate ],
-    resolve: { user: UserResolve, translateComplete: TranslateResolve },
+    resolve: {
+      user: UserResolve,
+      translateComplete: TranslateResolve
+    },
     children: [
-      { path: '', pathMatch: 'full', component: HomeComponent },
+      {
+        path: '',
+        pathMatch: 'full',
+        component: HomeComponent
+      },
       adminRoute,
       {
         path: 'groups/:groupId',
-        data: { breadcrumb: { translate: 'labels.groups.name' }, permissions: [ 'GROUP_PII_READ' ] },
+        data: {
+          breadcrumb: { translate: 'labels.groups.name' },
+          permissions: [ 'GROUP_PII_READ' ]
+        },
         canActivate: [ AuthorizationCanActivate ],
         children: [
           {
@@ -214,7 +224,10 @@ export const routes: Routes = [
       },
       {
         path: 'schools/:schoolId',
-        data: { breadcrumb: { resolve: 'school.name' }, permissions: [ 'INDIVIDUAL_PII_READ' ] },
+        data: {
+          breadcrumb: { resolve: 'school.name' },
+          permissions: [ 'INDIVIDUAL_PII_READ' ]
+        },
         resolve: { school: CurrentSchoolResolve },
         canActivate: [ AuthorizationCanActivate ],
         children: [
@@ -222,7 +235,10 @@ export const routes: Routes = [
             path: '',
             pathMatch: 'full',
             data: { canReuse: true },
-            resolve: { assessment: SchoolAssessmentResolve, school: CurrentSchoolResolve },
+            resolve: {
+              assessment: SchoolAssessmentResolve,
+              school: CurrentSchoolResolve
+            },
             component: SchoolResultsComponent
           },
           studentTestHistoryChildRoute
@@ -255,7 +271,9 @@ export const routes: Routes = [
               exam: StudentHistoryResponsesExamResolve,
               student: StudentHistoryResponsesStudentResolve
             },
-            data: { breadcrumb: { translate: 'labels.student.responses.crumb' } },
+            data: {
+              breadcrumb: { translate: 'labels.student.responses.crumb' }
+            },
             component: StudentResponsesComponent
           }
         ]
@@ -264,7 +282,9 @@ export const routes: Routes = [
         path: 'reports',
         pathMatch: 'full',
         data: {
-          breadcrumb: { translate: 'labels.reports.heading' }, permissions: [ 'GROUP_PII_READ' ]},
+          breadcrumb: { translate: 'labels.reports.heading' },
+          permissions: [ 'GROUP_PII_READ' ]
+        },
         canActivate: [ AuthorizationCanActivate ],
         resolve: { reports: ReportsResolve },
         component: ReportsComponent
@@ -272,7 +292,6 @@ export const routes: Routes = [
       {
         path: 'aggregate-reports',
         data: {
-          canReuse: true,
           breadcrumb: { translate: 'aggregate-reports.heading' },
           permissions: [ 'CUSTOM_AGGREGATE_READ' ]
         },
@@ -285,6 +304,7 @@ export const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
+            data: { canReuse: true },
             component: AggregateReportFormComponent
           },
           {
@@ -299,7 +319,9 @@ export const routes: Routes = [
           {
             path: 'query-builder',
             pathMatch: 'full',
-            data: { breadcrumb: { translate: 'aggregate-reports.query-builder.heading'}},
+            data: {
+              breadcrumb: { translate: 'aggregate-reports.query-builder.heading'}
+            },
             resolve: { organizations: UserOrganizationsResolve },
             component: QueryBuilderComponent
           }
@@ -308,7 +330,10 @@ export const routes: Routes = [
       {
         path: 'custom-export',
         pathMatch: 'full',
-        data: { breadcrumb: { translate: 'labels.organization-export.title' }, permissions: [ 'INDIVIDUAL_PII_READ' ]},
+        data: {
+          breadcrumb: { translate: 'labels.organization-export.title' },
+          permissions: [ 'INDIVIDUAL_PII_READ' ]
+        },
         canActivate: [ AuthorizationCanActivate ],
         resolve: { organizations: UserOrganizationsResolve },
         component: OrganizationExportComponent
