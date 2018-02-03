@@ -294,7 +294,6 @@ export class AggregateReportTableComponent implements OnInit {
       const district: District = item.organization as District;
       this.districtIdToName.set(district.id, district.name)
     });
-    console.log("map size", this.districtIdToName.size);
   }
 
   private orderingOrganizationDistrictsWithSchoolsByName(): Ordering<AggregateReportItem> {
@@ -302,10 +301,8 @@ export class AggregateReportTableComponent implements OnInit {
       .on((item) => {
         switch(item.organization.type) {
           case OrganizationType.District:
-            console.log("d District name:", this.districtIdToName.get((item.organization as District).id));
             return this.districtIdToName.get((item.organization as District).id);
           case OrganizationType.School:
-            console.log("s District name:", this.districtIdToName.get((item.organization as School).districtId));
             return this.districtIdToName.get((item.organization as School).districtId);
           default:
             return "";
