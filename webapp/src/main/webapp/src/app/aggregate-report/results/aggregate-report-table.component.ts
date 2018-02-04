@@ -11,13 +11,6 @@ import { District, OrganizationType, School } from "../../shared/organization/or
 
 export const SupportedRowCount = 10000;
 
-const OrderingDimensionType: Ordering<AggregateReportItem> = ordering(
-  ranking([ 'Overall', 'Gender', 'Ethnicity' ]) // TODO should be informed by report options
-).on((item) => item.dimensionType);
-
-const OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString)
-  .on((item) => item.dimensionValue.toString());
-
 const OrderingOrganizationState: Ordering<AggregateReportItem> = ordering(
   ranking([ OrganizationType.State ])
 ).reverse().on((item) => {
