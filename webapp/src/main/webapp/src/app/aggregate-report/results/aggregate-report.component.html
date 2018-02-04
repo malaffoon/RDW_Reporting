@@ -27,8 +27,8 @@
     <div class="mt-xs">
       <aggregate-report-table [table]="table"
                               [dimensionRanking]="dimensionRanking"
-                              [showValuesAsPercent]="report.request.valueDisplayType === 'Percent'"
-                              [groupPerformanceLevels]="report.request.performanceLevelDisplayType === 'Grouped'"
+                              [valueDisplayType]="report.request.valueDisplayType"
+                              [performanceLevelDisplayType]="report.request.performanceLevelDisplayType"
                               [columnOrdering]="['organization', 'assessmentGrade', 'schoolYear', 'dimension']"></aggregate-report-table>
     </div>
   </div>

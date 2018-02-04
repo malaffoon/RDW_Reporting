@@ -374,6 +374,10 @@
       "Percent": "Percent",
       "Number": "Number"
     },
+    "value-display-type-format": {
+      "Percent": "{{value}}%",
+      "Number": "{{value}}"
+    },
     "performance-level-display-type": {
       "Separate": "Separate",
       "Grouped": "Grouped"
@@ -441,7 +445,25 @@
       },
       "sum": {
         "name": "Summative",
-        "short-name": "Summative"
+        "short-name": "Summative",
+        "performance-level": {
+          "1": {
+            "name": "Did Not Meet Standard",
+            "short-name": "Did Not Meet"
+          },
+          "2": {
+            "name": "Nearly Met Standard",
+            "short-name": "Nearly Met"
+          },
+          "3": {
+            "name": "Met Standard",
+            "short-name": "Met"
+          },
+          "4": {
+            "name": "Exceeded Standard",
+            "short-name": "Exceeded"
+          }
+        }
       }
     },
     "ethnicity": {

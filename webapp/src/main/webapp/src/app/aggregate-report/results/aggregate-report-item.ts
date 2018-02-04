@@ -6,25 +6,33 @@ import { Organization } from "../../shared/organization/organization";
 export class AggregateReportItem {
   itemId: number;
   assessmentId: number;
-  /**
-   * @deprecated
-   */
-  gradeId: number;
+  /** @deprecated */ gradeId: number;
   gradeCode: string;
-  /**
-   * @deprecated
-   */
-  subjectId: number;
+  /** @deprecated */ subjectId: number;
   subjectCode: string;
   schoolYear: number;
   avgScaleScore: number;
   avgStdErr: number;
   studentsTested: any;
-  performanceLevelCounts: number[] = [];
-  performanceLevelPercents: number[] = [];
-  groupedPerformanceLevelCounts: number[] = [];
-  groupedPerformanceLevelPercents: number[] = [];
+  /** @deprecated */ performanceLevelCounts: number[] = [];
+  /** @deprecated */ performanceLevelPercents: number[] = [];
+  /** @deprecated */ groupedPerformanceLevelCounts: number[] = [];
+  /** @deprecated */ groupedPerformanceLevelPercents: number[] = [];
+  preformanceLevelByDisplayTypes: {
+    [performanceLevelDisplayType: string]: {
+      [valueDisplayType: string]: number[]
+    }
+  } = {
+    Separate: {
+      Number: [],
+      Percent: []
+    },
+    Grouped: {
+      Number: [],
+      Percent: []
+    }
+  };
   organization: Organization;
   dimensionType: string;
-  dimensionValue: string | boolean;
+  dimensionValue: string;
 }

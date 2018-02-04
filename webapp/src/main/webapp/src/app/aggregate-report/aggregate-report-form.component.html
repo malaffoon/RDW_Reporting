@@ -675,22 +675,17 @@
               ]
             }
             ]"></aggregate-report-summary>
-          <div class="pt-md" [hidden]="!previewTable.rows.length">
-            <span class="disabled-table-text">{{ 'aggregate-reports.preview' | translate }}</span>
-            <div class="disabled-table-container">
-              <aggregate-report-table [table]="previewTable"
-                                      [showValuesAsPercent]="settings.valueDisplayType == 'Percent'"
-                                      [groupPerformanceLevels]="settings.performanceLevelDisplayType == 'Grouped'"
-                                      [columnOrdering]="['organization', 'assessmentGrade', 'schoolYear', 'dimension']"></aggregate-report-table>
-
-<!--<aggregate-reports-preview-table *ngIf="responsePreview"-->
-                                               <!--[reportItems]="responsePreview"-->
-                                               <!--[query]="settings"-->
-                                               <!--[showValuesAsPercent]="settings.valueDisplayType == 'Percent'"-->
-                                               <!--[groupPerformanceLevels]="settings.performanceLevelDisplayType == 'Grouped'"-->
-                                               <!--[columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"></aggregate-reports-preview-table>-->
+          <div class="mt-md">
+            <div>
+              <span class="red label">{{ 'aggregate-reports.preview' | translate }}</span>
             </div>
-          </div>
+            <div>
+              <aggregate-report-table [preview]="true"
+                                      [table]="previewTable"
+                                      [valueDisplayType]="settings.valueDisplayType"
+                                      [performanceLevelDisplayType]="settings.performanceLevelDisplayType"
+                                      [columnOrdering]="['organization', 'assessmentGrade', 'schoolYear', 'dimension']"></aggregate-report-table>
+            </div>
         </div>
       </div>
     </div>

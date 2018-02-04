@@ -83,7 +83,7 @@ export class AggregateReportTableDataService {
     }
     const groupedPerformanceLevelCount = studentsTested * 0.5;
     const groupedPerformanceLevelCounts = [ groupedPerformanceLevelCount, groupedPerformanceLevelCount ];
-// console.log(organizations.length * assessmentGradeCodes.length * schoolYears.length * dimensions.length);
+
     let uuid = 0;
     const rows = [];
     for (let organization of organizations) {
@@ -94,32 +94,25 @@ export class AggregateReportTableDataService {
               itemId: uuid++,
               organization: organization,
               assessmentId: undefined,
-              gradeId: undefined,
               gradeCode: assessmentGradeCode,
-              subjectId: undefined,
               subjectCode: undefined,
               schoolYear: schoolYear,
               avgScaleScore: averageScaleScore,
               avgStdErr: averageStandardError,
               studentsTested: studentsTested,
-              performanceLevelCounts: performanceLevelCounts,
-              performanceLevelPercents: performanceLevelPercents,
-              groupedPerformanceLevelCounts: groupedPerformanceLevelCounts,
-              groupedPerformanceLevelPercents: groupedPerformanceLevelCounts,
-              dimensionType: dimension.type,
-              dimensionValue: dimension.code
               performanceLevelByDisplayType: {
                 Separate: {
-                  Number: [1, 2, 3, 5],
-                  Percent: [1, 2, 3, 5]
+                  Number: performanceLevelCounts,
+                  Percent: performanceLevelPercents
                 },
                 Grouped: {
-                  Number: [1, 2],
-                  Percents: [1, 2]
+                  Number: groupedPerformanceLevelCounts,
+                  Percents: groupedPerformanceLevelCounts
                 }
               },
-              dimension: git status
-
+              dimensionType: dimension.type,
+              dimensionValue: dimension.code
+              // dimension: dimension
             });
           }
         }
@@ -168,7 +161,7 @@ export class AggregateReportTableDataService {
 
 interface Dimension {
   readonly type: string;
-  readonly code?: string;
+  readonly code: string;
 }
 
 // when adding a new dimension type one needs to be defined here
