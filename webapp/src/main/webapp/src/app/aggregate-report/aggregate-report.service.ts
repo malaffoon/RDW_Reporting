@@ -25,8 +25,7 @@ export class AggregateReportService {
    * @returns {Observable<number>} the row count
    */
   getReportRowCount(request: AggregateReportRequest): Observable<number> {
-    // return this.dataService.post(`${AggregateServiceRoute}/aggregate/rowCount`, request);
-    return Observable.of(1);
+    return this.dataService.post(`${AggregateServiceRoute}/aggregate/rowCount`, request);
   }
 
   /**
@@ -36,27 +35,11 @@ export class AggregateReportService {
    * @returns {Observable<Report>} the report resource handle
    */
   createReport(request: AggregateReportRequest): Observable<Report> {
-    // return this.reportService.createAggregateReport(request);
-    return Observable.of(this.report('PENDING'));
+    return this.reportService.createAggregateReport(request);
   }
 
   getReportById(id: number): Observable<Report> {
-    // return this.reportService.getReportById(id);
-    return Observable.of(this.report('COMPLETED'));
-  }
-
-  private report(status: string): Report {
-    const report = new Report();
-    report.id = 1;
-    report.label = 'My Aggregate Report';
-    report.status = status;
-    report.request = {
-      assessmentTypeCode: 'ica'
-    };
-    report.metadata = {
-      row_count: '1'
-    };
-    return report;
+    return this.reportService.getReportById(id);
   }
 
 }
