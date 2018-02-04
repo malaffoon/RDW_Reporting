@@ -13,7 +13,7 @@ import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportService } from "./aggregate-report.service";
-import { SupportedRowCount } from "./results/aggregate-report-table.component";
+import { AggregateReportTable, SupportedRowCount } from "./results/aggregate-report-table.component";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/switchMap";
 import { BsModalService } from "ngx-bootstrap";
@@ -22,6 +22,8 @@ import { Report } from "../report/report.model";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
 import { CodedEntity } from "../shared/coded-entity";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
+import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
+import { AssessmentDefinition } from "./assessment/assessment-definition";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -81,6 +83,7 @@ export class AggregateReportFormComponent {
    */
   organizations: Organization[] = [];
 
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private optionMapper: AggregateReportFormOptionsMapper,
@@ -88,6 +91,7 @@ export class AggregateReportFormComponent {
               private organizationService: AggregateReportOrganizationService,
               private reportService: AggregateReportService,
               private modalService: BsModalService,
+              private tableDataService: AggregateReportTableDataService,
               private mockAggregateReportsPreviewService: MockAggregateReportsPreviewService) {
 
     this.options = optionMapper.map(route.parent.snapshot.data[ 'options' ]);
@@ -113,6 +117,7 @@ export class AggregateReportFormComponent {
         messageId: 'aggregate-reports.form.field.school-year.error-empty'
       }))
     });
+
   }
 
   /**
@@ -393,18 +398,30 @@ export class AggregateReportFormComponent {
     }
   }
 
+  previewTable: AggregateReportTable = {
+    assessmentDefinition: undefined,
+    rows: []
+  };
+
   /**
    * Reloads the report preview based on current form state
    */
   generateReport() {
-    this.responsePreview = null;
-    // TODO remove need for this timeout
-    setTimeout(() => {
-      this.responsePreview = null;
-      this.mockAggregateReportsPreviewService.generateSampleData(this.settings.dimensionTypes, this.settings).subscribe(next => {
-        this.responsePreview = next;
-      })
-    }, 0);
+
+    this.tableDataService.createSampleTable(this.settings)
+      .subscribe(table => {
+        this.previewTable = table;
+        console.log(table.rows);
+      });
+
+    // this.responsePreview = null;
+    // // TODO remove need for this timeout
+    // setTimeout(() => {
+    //   this.responsePreview = null;
+    //   this.mockAggregateReportsPreviewService.generateSampleData(this.settings.dimensionTypes, this.settings).subscribe(next => {
+    //     this.responsePreview = next;
+    //   })
+    // }, 0);
   }
 
 }

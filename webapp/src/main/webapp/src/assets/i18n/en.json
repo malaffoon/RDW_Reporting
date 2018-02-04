@@ -162,17 +162,7 @@
         },
         "comparative-subgroup": {
           "label": "Subgroups",
-          "info": "Subgroups",
-          "value": {
-            "Gender": "Gender",
-            "Ethnicity": "Race / Ethnicity",
-            "LEP": "English Learners",
-            "MigrantStatus": "Migrant Status",
-            "Section504": "504",
-            "IEP": "IEP",
-            "EconomicDisadvantage": "Economic Disadvantage",
-            "StudentEnrolledGrade": "Student Enrolled Grade"
-          }
+          "info": "Subgroups"
         }
       },
       "organizations": {
@@ -369,11 +359,22 @@
   },
   "collapse": "Collapse",
   "common": {
+    "dimension": {
+      "Overall": "Overall",
+      "Gender": "Gender",
+      "Ethnicity": "Race / Ethnicity",
+      "LEP": "English Learners",
+      "MigrantStatus": "Migrant Status",
+      "Section504": "504",
+      "IEP": "IEP",
+      "EconomicDisadvantage": "Economic Disadvantage",
+      "StudentEnrolledGrade": "Student Enrolled Grade"
+    },
     "value-display-type": {
       "Percent": "Percent",
       "Number": "Number"
     },
-    "achievement-level-display-type": {
+    "performance-level-display-type": {
       "Separate": "Separate",
       "Grouped": "Grouped"
     },

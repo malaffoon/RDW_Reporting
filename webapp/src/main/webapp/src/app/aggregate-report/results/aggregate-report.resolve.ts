@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/r
 import { Injectable } from "@angular/core";
 import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
+import { AggregateReportService } from "../aggregate-report.service";
 
 /**
  * This resolver is responsible for fetching assessment items for a student and exam.
@@ -10,7 +11,7 @@ import { Report } from "../../report/report.model";
 @Injectable()
 export class AggregateReportResolve implements Resolve<Report> {
 
-  constructor(private service: ReportService) {
+  constructor(private service: AggregateReportService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Report> {

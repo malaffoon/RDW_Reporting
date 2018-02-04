@@ -5,10 +5,8 @@ import { DataTableModule } from "primeng/primeng";
 import { MockAggregateReportsService } from "./results/mock-aggregate-reports.service";
 import { BrowserModule } from "@angular/platform-browser";
 import { PerformanceComparisonComponent } from "./results/performance-comparison.component";
-import { QueryBuilderComponent } from "./results/query-builder.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
-import { ReportOptionsService } from "./results/report-options.service";
 import { AggregateReportOptionsService } from "./aggregate-report-options.service";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
@@ -27,7 +25,7 @@ import { AggregateReportOptionsResolve } from "./aggregate-report-options.resolv
 import { AggregateReportItemMapper } from "./results/aggregate-report-item.mapper";
 import { AggregateReportTableComponent } from "./results/aggregate-report-table.component";
 import { AssessmentModule } from "./assessment/assessment.module";
-import { AssessmentDefinitionResolve } from "./assessment/assessment-definition.resolve";
+import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
 
 @NgModule({
   declarations: [
@@ -37,7 +35,6 @@ import { AssessmentDefinitionResolve } from "./assessment/assessment-definition.
     AggregateReportTableComponent,
     AggregateReportsPreviewTableComponent,
     PerformanceComparisonComponent,
-    QueryBuilderComponent,
     AggregateReportSummary,
     AggregateReportOrganizationList
   ],
@@ -62,9 +59,9 @@ import { AssessmentDefinitionResolve } from "./assessment/assessment-definition.
     AggregateReportConfirmationModal
   ],
   providers: [
+    AggregateReportTableDataService,
     MockAggregateReportsService,
     MockAggregateReportsPreviewService,
-    ReportOptionsService,
     AggregateReportService,
     AggregateReportResolve,
     AggregateReportOptionsResolve,

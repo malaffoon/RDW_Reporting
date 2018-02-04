@@ -69,6 +69,7 @@ export class AggregateReportTableComponent implements OnInit {
   public set table(value: AggregateReportTable) {
     this._table = value;
     this.buildDistrictIdToNameMap(value.rows);
+    this.loading || this.render();
   }
 
   public get table(): AggregateReportTable {
@@ -136,19 +137,22 @@ export class AggregateReportTableComponent implements OnInit {
 
     // Give the datatable a chance to initialize, run this next frame
     setTimeout(() => {
-      this.updateColumnOrder();
-      this.sort();
-      this.calculateTreeColumns();
-
       this.resultsTable.cols.changes.subscribe(() => {
         this.updateColumnOrder();
         this.sort(this.previousSort);
         this.calculateTreeColumns();
       });
 
-      this.resultsTable.value = this.table.rows;
+      this.render();
       this.loading = false;
     }, 0);
+  }
+
+  private render(): void {
+    this.updateColumnOrder();
+    this.sort();
+    this.calculateTreeColumns();
+    this.resultsTable.value = this.table.rows;
   }
 
   /**
@@ -313,7 +317,6 @@ export class AggregateReportTableComponent implements OnInit {
 
 
 export interface AggregateReportTable {
-  readonly subjectCode: string;
   readonly assessmentDefinition: AssessmentDefinition;
   readonly rows: AggregateReportItem[];
 }

@@ -76,7 +76,10 @@
                                     [options]="organizationTypeaheadOptions"
                                     (select)="onOrganizationTypeaheadSelect($event)"></organization-typeahead>
             <div class="form-group">
-              <input type="hidden" [(ngModel)]="organizations" formControlName="organizations">
+              <input type="hidden"
+                     [(ngModel)]="organizations"
+                     formControlName="organizations"
+                     (ngModelChange)="generateReport()">
               <div *ngIf="showErrors(organizationsControl)">
                 <p *ngIf="organizationsControl.errors.notEmpty" class="help-block small red">{{organizationsControl.errors.notEmpty.messageId | translate}}</p>
               </div>
@@ -672,15 +675,20 @@
               ]
             }
             ]"></aggregate-report-summary>
-          <div class="pt-md">
-            <span class="disabled-table-text" *ngIf="responsePreview">{{ 'aggregate-reports.preview' | translate }}</span>
+          <div class="pt-md" [hidden]="!previewTable.rows.length">
+            <span class="disabled-table-text">{{ 'aggregate-reports.preview' | translate }}</span>
             <div class="disabled-table-container">
-              <aggregate-reports-preview-table *ngIf="responsePreview"
-                                               [reportItems]="responsePreview"
-                                               [query]="settings"
-                                               [showValuesAsPercent]="settings.valueDisplayType == 'Percent'"
-                                               [groupPerformanceLevels]="settings.performanceLevelDisplayType == 'Grouped'"
-                                               [columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"></aggregate-reports-preview-table>
+              <aggregate-report-table [table]="previewTable"
+                                      [showValuesAsPercent]="settings.valueDisplayType == 'Percent'"
+                                      [groupPerformanceLevels]="settings.performanceLevelDisplayType == 'Grouped'"
+                                      [columnOrdering]="['organization', 'assessmentGrade', 'schoolYear', 'dimension']"></aggregate-report-table>
+
+<!--<aggregate-reports-preview-table *ngIf="responsePreview"-->
+                                               <!--[reportItems]="responsePreview"-->
+                                               <!--[query]="settings"-->
+                                               <!--[showValuesAsPercent]="settings.valueDisplayType == 'Percent'"-->
+                                               <!--[groupPerformanceLevels]="settings.performanceLevelDisplayType == 'Grouped'"-->
+                                               <!--[columnOrdering]="['organizationName', 'gradeId', 'schoolYear', 'dimensionValue']"></aggregate-reports-preview-table>-->
             </div>
           </div>
         </div>
