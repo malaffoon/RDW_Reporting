@@ -58,11 +58,6 @@ export class AggregateReportFormComponent {
   settings: AggregateReportFormSettings;
 
   /**
-   * The tabular data for the response preview
-   */
-  responsePreview: AggregateReportItem[] = [];
-
-  /**
    * Responsible for tracking form validity
    */
   formGroup: FormGroup;
@@ -82,6 +77,14 @@ export class AggregateReportFormComponent {
    * The selected organizations
    */
   organizations: Organization[] = [];
+
+  /**
+   * The preview table data
+   */
+  previewTable: AggregateReportTable = {
+    assessmentDefinition: undefined,
+    rows: []
+  };
 
 
   constructor(private router: Router,
@@ -398,30 +401,14 @@ export class AggregateReportFormComponent {
     }
   }
 
-  previewTable: AggregateReportTable = {
-    assessmentDefinition: undefined,
-    rows: []
-  };
-
   /**
    * Reloads the report preview based on current form state
    */
   generateReport() {
-
     this.tableDataService.createSampleTable(this.settings)
       .subscribe(table => {
         this.previewTable = table;
-        console.log(table.rows);
       });
-
-    // this.responsePreview = null;
-    // // TODO remove need for this timeout
-    // setTimeout(() => {
-    //   this.responsePreview = null;
-    //   this.mockAggregateReportsPreviewService.generateSampleData(this.settings.dimensionTypes, this.settings).subscribe(next => {
-    //     this.responsePreview = next;
-    //   })
-    // }, 0);
   }
 
 }

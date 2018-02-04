@@ -146,19 +146,11 @@
         },
         "performance-level-display-type": {
           "label": "Achievement Level Display",
-          "info": "Achievement Level Display",
-          "value": {
-            "Separate": "Separate",
-            "Grouped": "Grouped"
-          }
+          "info": "Achievement Level Display"
         },
         "value-display-type": {
           "label": "Show Value as",
-          "info": "Show Value as",
-          "value": {
-            "Percent": "Percent",
-            "Number": "Number"
-          }
+          "info": "Show Value as"
         },
         "comparative-subgroup": {
           "label": "Subgroups",
