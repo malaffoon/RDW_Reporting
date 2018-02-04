@@ -94,8 +94,7 @@ export class AggregateReportFormComponent {
               private organizationService: AggregateReportOrganizationService,
               private reportService: AggregateReportService,
               private modalService: BsModalService,
-              private tableDataService: AggregateReportTableDataService,
-              private mockAggregateReportsPreviewService: MockAggregateReportsPreviewService) {
+              private tableDataService: AggregateReportTableDataService) {
 
     this.options = optionMapper.map(route.parent.snapshot.data[ 'options' ]);
 

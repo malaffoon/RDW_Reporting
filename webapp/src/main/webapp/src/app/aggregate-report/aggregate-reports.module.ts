@@ -11,7 +11,6 @@ import { AggregateReportOptionsService } from "./aggregate-report-options.servic
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportsPreviewTableComponent } from "./aggregate-reports-preview-table.component";
-import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { ModalModule, TypeaheadModule } from "ngx-bootstrap";
 import { AggregateReportOrganizationList } from "./aggregate-report-organization-list.component";
@@ -61,7 +60,6 @@ import { AggregateReportTableDataService } from "./aggregate-report-table-data.s
   providers: [
     AggregateReportTableDataService,
     MockAggregateReportsService,
-    MockAggregateReportsPreviewService,
     AggregateReportService,
     AggregateReportResolve,
     AggregateReportOptionsResolve,
