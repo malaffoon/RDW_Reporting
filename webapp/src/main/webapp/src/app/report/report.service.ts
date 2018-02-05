@@ -192,16 +192,19 @@ export class ReportService {
    * @returns {Report} the local model
    */
   private toReport(remote: any): Report {
-    let local: Report = new Report();
+    const local: Report = new Report();
     local.id = remote.id;
     local.label = remote.label;
     local.status = remote.status;
     local.created = remote.created;
     local.reportType = remote.reportType;
     local.assessmentType = AssessmentType[ remote.assessmentType as string ];
+    // TODO report resource should hold the codes so we can remove this manual backend enum to code mapping
+    local.assessmentTypeCode = {"MATH": "Math", "ELA": "ELA"}[remote.assessmentType];
     local.subjectId = AssessmentSubjectType[ remote.subject as string ] || 0;
+    local.subjectCode = {"ICA": "ica", "IAB": "iab", "SUMMATIVE": "sum"}[remote.subject];
     local.schoolYear = remote.schoolYear;
-    local.metadata = remote.metadata;
+    local.metadata = remote.metadata || {};
     return local;
   }
 
