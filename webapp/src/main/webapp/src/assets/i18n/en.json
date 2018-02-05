@@ -92,8 +92,7 @@
           "error-empty": "Please select an assessment grade."
         },
         "assessment-type": {
-          "label": "Assessment Type",
-          "info": "Assessment Type"
+          "label": "Assessment Type"
         },
         "completeness": {
           "label": "Completeness",
@@ -105,12 +104,10 @@
         },
         "school-year": {
           "label": "Academic Years",
-          "info": "Academic Years",
           "error-empty": "Please select a school year."
         },
         "subjects": {
-          "label": "Subjects",
-          "info": "Subjects"
+          "label": "Subjects"
         },
         "summative-administration-condition": {
           "label": "Validity",
@@ -146,15 +143,14 @@
         },
         "performance-level-display-type": {
           "label": "Achievement Level Display",
-          "info": "Achievement Level Display"
+          "info": "Two options are available:  1) each of the four achievement levels are displayed or 2) Levels 1 and 2 are combined and levels 3 and 4 are combined to show two groups:  Below Standard and At/Above Standard."
         },
         "value-display-type": {
-          "label": "Show Value as",
-          "info": "Show Value as"
+          "label": "Show Value as"
         },
         "comparative-subgroup": {
           "label": "Subgroups",
-          "info": "Subgroups"
+          "info": "Select the student sub-groups to display separately in results."
         }
       },
       "organizations": {
@@ -861,7 +857,7 @@
       "organization": "Organization / Purpose",
       "conventions": "Conventions",
       "total": "Total Points",
-      "total-info": "total points more info text here"
+      "total-info": "To compute the total number of points earned, the scores for organization/purpose and evidence/elaboration are averaged and rounded up, and then added to the points earned for conventions. A student can earn a maximum of six points. For more information, see the Interpretive Guide."
     }
   },
   "html": {
@@ -1327,7 +1323,7 @@
               "max-points": "Max Points",
               "number": "Item #",
               "purpose": "Writing Purpose",
-              "purpose-info": "The performance task writing purpose.",
+              "purpose-info": "Students write extended responses that that have one of the following purposes: narrative, opinion, informational, explanatory, or argumentative. Writing purpose varies by grade of assessment. For more information, see the Interpretive Guide.",
               "standard": "Standard",
               "standard-info-html": {
                 "ELA": "This column reflects the Common Core State Standard(s) associated with a test item. Test items may be associated with more than one standard.  For example, a question that asks students to evaluate research sources may assess both reading and research skills.  For more information, see the <a href=\"https://portal.smarterbalanced.org/library/en/english-language-artsliteracy-content-specifications.pdf\" target=\"_blank\">English Language Arts Content Specifications</a>.",

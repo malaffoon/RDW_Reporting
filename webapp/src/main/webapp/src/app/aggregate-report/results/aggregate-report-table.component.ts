@@ -13,12 +13,13 @@ import { Utils } from "../../shared/support/support";
 export const SupportedRowCount = 10000;
 
 const OrderingOrganizationState: Ordering<AggregateReportItem> = ordering(
-  ranking([ OrganizationType.State ])
+  ranking([OrganizationType.State])
 ).reverse().on(item => item.organization.type);
 
 const OrderingOrganizationDistrictsWithSchoolsById: Ordering<AggregateReportItem> = ordering(byNumber)
   .on((item) => {
-    switch (item.organization.type) {
+    switch(item.organization.type) {
+
       case OrganizationType.District:
         return (item.organization as District).id;
       case OrganizationType.School:
@@ -34,6 +35,7 @@ const OrderingOrganizationDistrict: Ordering<AggregateReportItem> = ordering(
 
 const OrderingOrganizationSchools: Ordering<AggregateReportItem> = ordering(byString)
   .on(item => item.organization.name);
+
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -360,8 +362,8 @@ export class AggregateReportTableComponent implements OnInit {
 export interface AggregateReportTable {
   readonly rows: AggregateReportItem[];
   readonly assessmentDefinition: AssessmentDefinition;
-  // readonly assessmentGradeRanking?: string[];
-  // readonly dimensionRanking?: string[];
-  // readonly dimensionValueRankingByType?: { [dimensionType: string]: string[] };
+  readonly assessmentGradeRanking?: string[];
+  readonly dimensionRanking?: string[];
+  readonly dimensionValueRankingByType?: { [dimensionType: string]: string[] };
 }
 

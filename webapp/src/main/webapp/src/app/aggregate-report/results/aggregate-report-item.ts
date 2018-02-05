@@ -1,8 +1,8 @@
+import { Organization } from "../../shared/organization/organization";
+
 /**
  * This model represents an aggregate report data table row result.
  */
-import { Organization } from "../../shared/organization/organization";
-
 export class AggregateReportItem {
   itemId: number;
   assessmentId: number;
@@ -38,7 +38,9 @@ export class AggregateReportItem {
   dimension: Dimension;
 }
 
-
+/**
+ * Holds dimension information for display as a report item
+ */
 export interface Dimension {
   readonly type?: string;
   readonly code: string;
