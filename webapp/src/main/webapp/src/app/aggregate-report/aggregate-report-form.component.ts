@@ -2,12 +2,9 @@ import { Component, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Forms } from "../shared/form/forms";
-import { AggregateReportItem } from "./results/aggregate-report-item";
-import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
 import { District, Organization, OrganizationType, School } from "../shared/organization/organization";
 import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
@@ -20,7 +17,6 @@ import { BsModalService } from "ngx-bootstrap";
 import { AggregateReportConfirmationModal } from "./aggregate-report-confirmation.modal";
 import { Report } from "../report/report.model";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
-import { CodedEntity } from "../shared/coded-entity";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
@@ -86,6 +82,11 @@ export class AggregateReportFormComponent {
     rows: []
   };
 
+  /**
+   * Assessment definitions for use in generating sample data
+   */
+  assessmentDefinitionsByTypeCode: Map<string, AssessmentDefinition>;
+
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -95,6 +96,8 @@ export class AggregateReportFormComponent {
               private reportService: AggregateReportService,
               private modalService: BsModalService,
               private tableDataService: AggregateReportTableDataService) {
+
+    this.assessmentDefinitionsByTypeCode = route.parent.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
 
     this.options = optionMapper.map(route.parent.snapshot.data[ 'options' ]);
 
@@ -338,7 +341,8 @@ export class AggregateReportFormComponent {
     const valuesOf = options => options.map(option => option.value);
     const firstValueOf = options => options[ 0 ].value;
     return <AggregateReportFormSettings>{
-      assessmentGrades: [],
+      // assessmentGrades: [],
+      assessmentGrades: [firstValueOf(options.assessmentGrades)],
       assessmentType: firstValueOf(options.assessmentTypes),
       completenesses: [ firstValueOf(options.completenesses) ],
       ethnicities: valuesOf(options.ethnicities),
@@ -354,7 +358,8 @@ export class AggregateReportFormComponent {
       economicDisadvantages: valuesOf(options.economicDisadvantages),
       performanceLevelDisplayType: firstValueOf(options.performanceLevelDisplayTypes),
       valueDisplayType: firstValueOf(options.valueDisplayTypes),
-      dimensionTypes: [],
+      // dimensionTypes: [],
+      dimensionTypes: ['IEP'],
       includeStateResults: true,
       includeAllDistricts: false,
       includeAllSchoolsOfSelectedDistricts: false,
@@ -404,10 +409,30 @@ export class AggregateReportFormComponent {
    * Reloads the report preview based on current form state
    */
   generateReport() {
-    this.tableDataService.createSampleTable(this.settings)
-      .subscribe(table => {
-        this.previewTable = table;
-      });
+    const assessmentDefinition = this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType.code);
+    this.previewTable = {
+      rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings),
+      assessmentDefinition: assessmentDefinition,
+      // TODO this will be common code with results page. should be computed on option compute time?
+      // assessmentGradeRanking: codesOf(this.options.assessmentGrades),
+      // dimensionRanking: valuesOf(this.options.dimensionTypes),
+      // dimensionValueRankingByType: {
+      //   Gender: codesOf(this.options.genders),
+      //   Ethnicity: codesOf(this.options.ethnicities),
+      //   LEP: codesOf(this.options.limitedEnglishProficiencies),
+      //   MigrantStatus: codesOf(this.options.migrantStatuses),
+      //   Section504: codesOf(this.options.section504s),
+      //   IEP: codesOf(this.options.individualEducationPlans),
+      //   EconomicDisadvantage: codesOf(this.options.economicDisadvantages),
+      //   StudentEnrolledGrade: ['yes', 'no']
+      // }
+    };
+     // TODO should pass asmt def and it should just return rows
+     //  .subscribe(table => {
+        // console.log(table.rows.map(item => `${item.organization.name}: ${item.dimensionType}: ${item.dimensionValue}`));
+        // const valuesOf = values => values.map((x: any) => x.value.code);
+        // const codesOf = values => values.map((x: any) => x.value.code);
+      // });
   }
 
 }

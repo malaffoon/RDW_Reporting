@@ -35,7 +35,7 @@ export class AggregateReportFormOptionsMapper {
     const translate = code => this.translate.instant(code);
 
     // Used to hotfix natural order of completeness and strict booleans not being in "affirmative-first" order
-    const IdDescending = (a, b) => a.id - b.id;
+    const IdDescending = (a, b) => b.value.id - a.value.id;
 
     return <AggregateReportFormOptions>{
       assessmentGrades: options.assessmentGrades
@@ -128,7 +128,7 @@ export class AggregateReportFormOptionsMapper {
         .map(optionMapper(
           value => translate(`common.dimension.${value}`),
           value => `Comparative Subgroup: ${value}`
-        )),
+        )).reverse(), // TODO why do i need this ??
       statewideReporter: options.statewideReporter
     };
   }

@@ -33,6 +33,14 @@ export class AggregateReportItem {
     }
   };
   organization: Organization;
-  dimensionType: string;
-  dimensionValue: string;
+  /** @deprecated */ dimensionType: string;
+  /** @deprecated */ dimensionValue: string;
+  dimension: Dimension;
+}
+
+
+export interface Dimension {
+  readonly type?: string;
+  readonly code: string;
+  readonly codeTranslationCode: string;
 }

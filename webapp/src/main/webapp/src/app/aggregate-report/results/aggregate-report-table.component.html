@@ -15,53 +15,57 @@
                [rowsPerPageOptions]="[100, 500, 1000]"
                emptyMessage="{{'aggregate-reports.results.empty-message' | translate}}"
                tableStyleClass="table table-striped table-hover overflow">
-    <p-column field="organization"
+    <p-column colId="organization"
+              field="organization"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.organization-name' | translate}}">
       <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
-        <div *ngIf="treeColumns[i] <= colIndex(col)"
+        <div *ngIf="treeColumns[i] <= getColumnIndex(col)"
              class="full-cell pt-0"
-             [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
+             [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
           {{row.organization.name}}
         </div>
       </ng-template>
     </p-column>
-    <p-column field="assessmentGrade"
+    <p-column colId="assessmentGrade"
+              field="gradeCode"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.assessment-grade' | translate}}">
       <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
-        <div *ngIf="treeColumns[i] <= colIndex(col)"
+        <div *ngIf="treeColumns[i] <= getColumnIndex(col)"
              class="full-cell pt-0"
-             [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
+             [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
           {{'common.grade.' + row.gradeCode + '.form-name' | translate}}
         </div>
       </ng-template>
     </p-column>
-    <p-column field="schoolYear"
+    <p-column colId="schoolYear"
+              field="schoolYear"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.school-year' | translate}}">
       <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
-        <div *ngIf="treeColumns[i] <= colIndex(col)"
+        <div *ngIf="treeColumns[i] <= getColumnIndex(col)"
              class="full-cell pt-0"
-             [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
+             [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
           {{row.schoolYear | schoolYear}}
         </div>
       </ng-template>
     </p-column>
-    <p-column field="dimension"
+    <p-column colId="dimension"
+              field="dimension.code"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.dimension' | translate}}">
       <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
-        <div *ngIf="treeColumns[i] <= colIndex(col)"
+        <div *ngIf="treeColumns[i] <= getColumnIndex(col)"
              class="full-cell pt-0"
-             [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
+             [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
           {{
-            (row.dimensionType ? (('common.dimension.' + row.dimensionType) | translate) + ': ' : '')
-            + (row.dimensionValue ? (row.dimensionValue | translate) : '')
+            (row.dimension.type ? (('common.dimension.' + row.dimension.type) | translate) + ': ' : '')
+            + (row.dimension.code ? (row.dimension.codeTranslationCode | translate) : '')
           }}
         </div>
       </ng-template>
@@ -84,7 +88,7 @@
           <performance-comparison [assessmentTypeCode]="table.assessmentDefinition.typeCode"
                                   [performanceGroupingCutpoint]="table.assessmentDefinition.performanceLevelGroupingCutPoint"
                                   [groupPerformanceLevels]="groupPerformanceLevels"
-                                  [performancePercentages]="row.performanceLevelPercents"></performance-comparison>
+                                  [performancePercentages]="row.performanceLevelByDisplayType[performanceLevelDisplayType].Percent"></performance-comparison>
         </div>
       </ng-template>
     </p-column>

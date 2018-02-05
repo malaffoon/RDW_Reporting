@@ -5,8 +5,6 @@ import { AggregateServiceRoute } from "../shared/service-route";
 import { ReportService } from "../report/report.service";
 import { Report } from "../report/report.model";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
-import { MockAggregateReportsPreviewService } from "./results/mock-aggregate-reports-preview.service";
-import { AggregateReportRow } from "../report/aggregate-report";
 
 /**
  * Responsible for interfacing with aggregate report server
@@ -38,6 +36,12 @@ export class AggregateReportService {
     return this.reportService.createAggregateReport(request);
   }
 
+  /**
+   * Gets a single aggregate report by ID
+   *
+   * @param {number} id the report ID
+   * @returns {Observable<Report>} the report resource handle
+   */
   getReportById(id: number): Observable<Report> {
     return this.reportService.getReportById(id);
   }

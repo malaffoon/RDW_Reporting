@@ -8,14 +8,13 @@ import { isNullOrUndefined } from "util";
 import * as _ from "lodash";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { District, OrganizationType, School } from "../../shared/organization/organization";
+import { Utils } from "../../shared/support/support";
 
 export const SupportedRowCount = 10000;
 
 const OrderingOrganizationState: Ordering<AggregateReportItem> = ordering(
   ranking([ OrganizationType.State ])
-).reverse().on((item) => {
-  return item.organization.type
-});
+).reverse().on(item => item.organization.type);
 
 const OrderingOrganizationDistrictsWithSchoolsById: Ordering<AggregateReportItem> = ordering(byNumber)
   .on((item) => {
@@ -31,10 +30,10 @@ const OrderingOrganizationDistrictsWithSchoolsById: Ordering<AggregateReportItem
 
 const OrderingOrganizationDistrict: Ordering<AggregateReportItem> = ordering(
   ranking([ OrganizationType.District ])
-).reverse().on((item) => item.organization.type);
+).reverse().on(item => item.organization.type);
 
 const OrderingOrganizationSchools: Ordering<AggregateReportItem> = ordering(byString)
-  .on((item) => item.organization.name);
+  .on(item => item.organization.name);
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -51,9 +50,6 @@ const OrderingOrganizationSchools: Ordering<AggregateReportItem> = ordering(bySt
 })
 export class AggregateReportTableComponent implements OnInit {
 
-  @Input()
-  public dimensionRanking: string[] = [];
-
   /**
    * True if performance aggregate values should be displayed as percentages of total
    * students tested.  False to display absolute counts.
@@ -67,12 +63,6 @@ export class AggregateReportTableComponent implements OnInit {
   @Input()
   public performanceLevelDisplayType: string;
 
-  /**
-   * The tree column ordering as an array of field strings.
-   * e.g. ['organization', 'assessmentGrade', 'schoolYear', 'dimension']
-   */
-  @Input()
-  public columnOrdering: string[];
 
   @Input()
   public preview: boolean = false;
@@ -87,6 +77,7 @@ export class AggregateReportTableComponent implements OnInit {
   private orderingByProperty: { [key: string]: Ordering<AggregateReportItem> } = {};
   private previousSort: any;
   private _table: AggregateReportTable;
+  private _columnOrdering: string[];
   private districtIdToName: Map<number, string> = new Map();
 
   constructor(public colorService: ColorService) {
@@ -100,28 +91,19 @@ export class AggregateReportTableComponent implements OnInit {
       OrderingOrganizationDistrict.compare,
       OrderingOrganizationSchools.compare
     ));
-    this.orderingByProperty.assessmentGrade = ordering(byString).on(item => item.gradeCode);
     this.orderingByProperty.schoolYear = ordering(byNumber).on(item => item.schoolYear);
-    this.orderingByProperty.dimension = ordering(join(
-      ordering(ranking([ 'Overall', ...this.dimensionRanking ])).on((item: AggregateReportItem) => item.dimensionType).compare,
-      ordering(byString).on((item: AggregateReportItem) => item.dimensionValue.toString()).compare
-    ));
-
     this.performanceLevelTranslationPrefix = `common.assessment-type.${this.table.assessmentDefinition.typeCode}.performance-level.`;
 
     // Give the datatable a chance to initialize, run this next frame
-    setTimeout(() => {
+    Utils.setImmediate(() => {
       this.resultsTable.cols.changes.subscribe(() => {
-        this.updateColumnOrder();
-        this.sort(this.previousSort);
-        this.calculateTreeColumns();
+        this.renderWithPreviousRowSorting();
       });
-
-      this.render();
+      this.columnOrdering && this.updateColumnOrder();
+      this.table && this.render();
       this.loading = false;
-    }, 0);
+    });
   }
-
 
   /**
    * The report data.
@@ -129,14 +111,57 @@ export class AggregateReportTableComponent implements OnInit {
   @Input()
   set table(value: AggregateReportTable) {
     if (this._table !== value) {
-      this._table = value;
+      const table = {
+        rows: value.rows ? value.rows.concat() : [],
+        assessmentDefinition: value.assessmentDefinition,
+        assessmentGradeRanking: value.assessmentGradeRanking ? value.assessmentGradeRanking.concat() : [],
+        dimensionRanking: value.dimensionRanking ? value.dimensionRanking.concat() : [],
+        dimensionValueRankingByType: value.dimensionValueRankingByType ? value.dimensionValueRankingByType : {}
+      };
+
+      this.orderingByProperty.assessmentGrade = ordering(ranking(table.assessmentGradeRanking))
+        .on(item => item.gradeCode);
+
+      this.orderingByProperty.dimension = ordering(join(
+        ordering(ranking([ 'Overall', ...table.dimensionRanking ]))
+          .on((item: AggregateReportItem) => item.dimension.type).compare
+        // ,
+        // TODO wont work until the item dimension model is fixed to not put the translation code in the dimensionValue slot
+        // ...Object.keys(table.dimensionValueRankingByType)
+        //   .map((key, index) =>
+        //     ordering(ranking(table.dimensionValueRankingByType[ key ] || []))
+        //       .on((item: AggregateReportItem) => item.dimensionValue).compare
+        //   )
+      ));
+
       this.buildDistrictIdToNameMap(value.rows);
-      this.loading || this.render();
+
+      this._table = table;
+
+      if (!this.loading) {
+        this.render();
+      }
     }
   }
 
   get table(): AggregateReportTable {
     return this._table;
+  }
+
+  /**
+   * The tree column ordering as an array of field strings.
+   * e.g. ['organization', 'assessmentGrade', 'schoolYear', 'dimension']
+   */
+  @Input()
+  set columnOrdering(value: string[]) {
+    this._columnOrdering = value ? value.concat() : [];
+    if (!this.loading) {
+      this.updateColumnOrder();
+    }
+  }
+
+  get columnOrdering(): string[] {
+    return this._columnOrdering;
   }
 
   get performanceLevels(): number[] {
@@ -163,10 +188,12 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   private render(): void {
-    this.updateColumnOrder();
     this.sort();
-    this.calculateTreeColumns();
     this.resultsTable.value = this.table.rows;
+  }
+
+  private renderWithPreviousRowSorting(): void {
+    this.sort(this.previousSort);
   }
 
   /**
@@ -227,7 +254,7 @@ export class AggregateReportTableComponent implements OnInit {
    * @param {Column} column A PrimeNG Column instance
    * @returns {number}  The current display index of the column
    */
-  public colIndex(column: Column): number {
+  public getColumnIndex(column: Column): number {
     return this.resultsTable.columns.indexOf(column);
   }
 
@@ -236,12 +263,10 @@ export class AggregateReportTableComponent implements OnInit {
    * {@link #columnOrdering}
    */
   private updateColumnOrder(): void {
-    const columns: Column[] = this.resultsTable.columns.splice(0, this.columnOrdering.length);
-    const columnOrdering: Ordering<Column> = ordering(ranking(this.columnOrdering)).on(column => column.field);
-    columns.sort(columnOrdering.compare);
-    for (let i = columns.length - 1; i >= 0; i--) {
-      this.resultsTable.columns.unshift(columns[ i ]);
-    }
+    // Assumes the ordered columns always start from the first column and extend to some terminal column
+    const comparator = ordering(ranking(this.columnOrdering)).on((column: Column) => column.colId).compare;
+    const orderedColumns: Column[] = this.resultsTable.columns.slice(0, this.columnOrdering.length).sort(comparator);
+    this.resultsTable.columns.splice(0, this.columnOrdering.length, ...orderedColumns);
   }
 
   /**
@@ -269,7 +294,10 @@ export class AggregateReportTableComponent implements OnInit {
    */
   private getColumnOrdering(): Comparator<AggregateReportItem>[] {
     return this.resultsTable.columns
-      .map(column => this.orderingByProperty[ column.field ] ? this.orderingByProperty[ column.field ].compare : null)
+      .map((column: Column) => {
+        const ordering = this.orderingByProperty[ column.field ];
+        return ordering ? ordering.compare : null;
+      })
       .filter(value => !isNullOrUndefined(value));
   }
 
@@ -278,26 +306,29 @@ export class AggregateReportTableComponent implements OnInit {
    * This is used to display a tree-like structure which hides repetitive data in the left-most columns.
    */
   private calculateTreeColumns(): void {
-    let pageSize: number = this.resultsTable.rows;
-    this.treeColumns = [];
+    const treeColumns = [];
+    const pageSize: number = this.resultsTable.rows;
     let previousItem: AggregateReportItem;
-    this.table.rows.forEach((item: AggregateReportItem, idx: number) => {
-      if (!previousItem || idx % pageSize == 0) {
-        this.treeColumns.push(0);
-      } else {
-        let colIdx: number;
-        for (colIdx = 0; colIdx < this.columnOrdering.length - 1; colIdx++) {
-          let column: Column = this.resultsTable.columns[ colIdx ];
-          let previousValue = _.get(previousItem, column.field);
-          let currentValue = _.get(item, column.field);
-          if (previousValue != currentValue) {
-            break;
-          }
-        }
-        this.treeColumns.push(colIdx);
-      }
+    this.table.rows.forEach((item: AggregateReportItem, index: number) => {
+      treeColumns.push(!previousItem || (index % pageSize == 0)
+        ? 0 : this.getFirstUniqueColumnIndex(previousItem, item)
+      );
       previousItem = item;
     });
+    this.treeColumns = treeColumns;
+  }
+
+  private getFirstUniqueColumnIndex(previewItem: any, currentItem: any): number {
+    let index: number;
+    for (index = 0; index < this.columnOrdering.length - 1; index++) {
+      let column: Column = this.resultsTable.columns[ index ];
+      let previousValue = _.get(previewItem, column.field);
+      let currentValue = _.get(currentItem, column.field);
+      if (previousValue != currentValue) {
+        break;
+      }
+    }
+    return index;
   }
 
   private buildDistrictIdToNameMap(items: AggregateReportItem[]) {
@@ -327,7 +358,10 @@ export class AggregateReportTableComponent implements OnInit {
 }
 
 export interface AggregateReportTable {
-  readonly assessmentDefinition: AssessmentDefinition;
   readonly rows: AggregateReportItem[];
+  readonly assessmentDefinition: AssessmentDefinition;
+  // readonly assessmentGradeRanking?: string[];
+  // readonly dimensionRanking?: string[];
+  // readonly dimensionValueRankingByType?: { [dimensionType: string]: string[] };
 }
 

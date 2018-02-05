@@ -5,6 +5,7 @@ import { AggregateReportTable } from "./results/aggregate-report-table.component
 import { DefaultSchool, Organization, School } from "../shared/organization/organization";
 import { Observable } from "rxjs/Observable";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
+import { AggregateReportItem, Dimension } from "./results/aggregate-report-item";
 
 const codeOf = entity => entity.code;
 const codesOf = entities => entities.map(codeOf);
@@ -53,19 +54,7 @@ const DimensionConfigurationByType: { [dimensionType: string]: DimensionConfigur
 @Injectable()
 export class AggregateReportTableDataService {
 
-  constructor(private definitionService: AssessmentDefinitionService) {
-  }
-
-  createSampleTable(settings: AggregateReportFormSettings): Observable<AggregateReportTable> {
-    return this.definitionService.getDefinitionsByAssessmentTypeCode()
-      .map(definitions => this.createSampleTableInternal(settings, definitions));
-  }
-
-  private createSampleTableInternal(settings: AggregateReportFormSettings,
-                                    definitions: Map<string, AssessmentDefinition>): AggregateReportTable {
-
-    const assessmentTypeCode = settings.assessmentType.code;
-    const assessmentDefinition = definitions.get(assessmentTypeCode);
+  createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
     const organizations = this.createSampleOrganizations([ ...settings.districts, ...settings.schools ].length);
     const assessmentGradeCodes = codesOf(settings.assessmentGrades);
     const schoolYears = settings.schoolYears;
@@ -91,7 +80,7 @@ export class AggregateReportTableDataService {
         for (let schoolYear of schoolYears) {
           for (let dimension of dimensions) {
             rows.push({
-              itemId: uuid++,
+              itemId: ++uuid,
               organization: organization,
               assessmentId: undefined,
               gradeCode: assessmentGradeCode,
@@ -111,19 +100,17 @@ export class AggregateReportTableDataService {
                 }
               },
               dimensionType: dimension.type,
-              dimensionValue: dimension.code
-              // dimension: dimension
+              dimensionValue: dimension.code,
+              dimension: dimension
             });
           }
         }
       }
     }
-    return {
-      assessmentDefinition: assessmentDefinition,
-      rows: rows
-    };
+    return rows;
   }
 
+  // TODO outsource this logic to mapper ?
   private createDimensions(settings: AggregateReportFormSettings): Dimension[] {
     const dimensions = [];
     for (let dimensionType of settings.dimensionTypes) {
@@ -135,7 +122,8 @@ export class AggregateReportTableDataService {
       for (let code of codes) {
         dimensions.push({
           type: configuration.translateDimensionType ? dimensionType : undefined,
-          code: configuration.getTranslationCode(code)
+          code: code,
+          codeTranslationCode: configuration.getTranslationCode(code)
         });
       }
     }
@@ -144,7 +132,7 @@ export class AggregateReportTableDataService {
 
   private createSampleOrganizations(selectedOrganizationCount: number): Organization[] {
     const organizations: Organization[] = [];
-    for (let i = 0; i < selectedOrganizationCount && i < 2; i++) {
+    for (let i = 0; /*i < selectedOrganizationCount &&*/ i < 2; i++) {
       organizations.push(this.createSampleSchool(i + 1));
     }
     return organizations;
@@ -152,16 +140,12 @@ export class AggregateReportTableDataService {
 
   private createSampleSchool(id: number): School {
     const school = new DefaultSchool();
-    school.id = 2;
+    school.id = id;
     school.name = 'School / District ' + String(id);
+    school.districtId = id;
     return school;
   }
 
-}
-
-interface Dimension {
-  readonly type: string;
-  readonly code: string;
 }
 
 // when adding a new dimension type one needs to be defined here
