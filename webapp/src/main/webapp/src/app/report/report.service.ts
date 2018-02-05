@@ -199,7 +199,6 @@ export class ReportService {
     local.created = remote.created;
     local.reportType = remote.reportType;
     local.assessmentType = AssessmentType[ remote.assessmentType as string ];
-    // TODO report resource should hold the codes so we can remove this manual backend enum to code mapping
     local.assessmentTypeCode = remote.assessmentTypeCode;
     local.subjectId = AssessmentSubjectType[ remote.subject as string ] || 0;
     local.subjectCode = remote.subjectCode;
