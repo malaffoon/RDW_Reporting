@@ -23,7 +23,7 @@
         <div *ngIf="treeColumns[i] <= colIndex(col)"
              class="full-cell pt-0"
              [ngClass]="{'border-top': treeColumns[i] <= colIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
-          {{row.organizationName}}
+          {{row.organization.name}}
         </div>
       </ng-template>
     </p-column>

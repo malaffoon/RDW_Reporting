@@ -1,6 +1,8 @@
 /**
  * This model represents an aggregate report data table row result.
  */
+import { Organization } from "../../shared/organization/organization";
+
 export class AggregateReportItem {
   itemId: number;
   assessmentId: number;
@@ -22,9 +24,7 @@ export class AggregateReportItem {
   performanceLevelPercents: number[] = [];
   groupedPerformanceLevelCounts: number[] = [];
   groupedPerformanceLevelPercents: number[] = [];
-  organizationType: string;
-  organizationName: string;
-  organizationId: string;
+  organization: Organization;
   dimensionType: string;
   dimensionValue: string | boolean;
 }

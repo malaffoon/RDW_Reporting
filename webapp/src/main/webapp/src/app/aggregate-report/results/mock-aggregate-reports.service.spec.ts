@@ -5,6 +5,7 @@ import { AggregateReportQuery } from "../model/aggregate-report-query.model";
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { AggregateReportItem } from "./aggregate-report-item";
 import { AssessmentDefinitionService } from "../assessment/assessment-definition.service";
+import { OrganizationMapper } from "../../shared/organization/organization.mapper";
 
 /**
  * @deprecated
@@ -26,7 +27,7 @@ describe('MockAggregateReportsService', () => {
     );
 
     http = new MockHttp();
-    service = new MockAggregateReportsService(http as any, mockAssessmentDefinitionService as any);
+    service = new MockAggregateReportsService(http as any, mockAssessmentDefinitionService as any, new OrganizationMapper());
   });
 
   it('should map api report items to model instances', (done) => {
@@ -136,7 +137,7 @@ describe('MockAggregateReportsService', () => {
   let createApiItem = function(orgName: string): any {
     return {
       "dimension": { "type": "Overall" },
-      "organization": { "type": "School", "name": orgName, "id": 1 },
+      "organization": { "organizationType": "School", "name": orgName, "id": 1 },
       "assessment": { "id": 231, "gradeId": 6, "subjectId": 1 },
       "examSchoolYear": 2018,
       "measures": {

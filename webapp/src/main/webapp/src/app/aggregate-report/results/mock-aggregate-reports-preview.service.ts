@@ -4,6 +4,7 @@ import { AggregateReportFormSettings } from "../aggregate-report-form-settings";
 import { CodedEntity } from "../../shared/coded-entity";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { AssessmentDefinitionService } from "../assessment/assessment-definition.service";
+import { OrganizationMapper } from "../../shared/organization/organization.mapper";
 
 const avgScaleScore = 2500;
 const stdErr = 50;
@@ -15,7 +16,8 @@ const studentsTested = 120;
 @Injectable()
 export class MockAggregateReportsPreviewService {
 
-  constructor(private assessmentDefinitionService: AssessmentDefinitionService) {
+  constructor(private assessmentDefinitionService: AssessmentDefinitionService,
+              private organizationMapper: OrganizationMapper) {
   }
 
   public generateSampleData(options: string[], settings: AggregateReportFormSettings) {
@@ -80,8 +82,7 @@ export class MockAggregateReportsPreviewService {
     uiModel.assessmentId = apiModel.assessment.id;
     uiModel.gradeId = apiModel.assessment.gradeId;
     uiModel.schoolYear = apiModel.examSchoolYear;
-    uiModel.organizationType = apiModel.organization.type;
-    uiModel.organizationName = apiModel.organization.name;
+    uiModel.organization = this.organizationMapper.map(apiModel.organization);
     uiModel.dimensionType = apiModel.dimension.type;
     uiModel.dimensionValue = apiModel.dimension.code || 'default';
     uiModel.itemId = idx;

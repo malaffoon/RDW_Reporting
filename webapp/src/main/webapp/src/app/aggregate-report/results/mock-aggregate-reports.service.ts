@@ -7,6 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { QueryBuilderModel } from "../model/query-builder.model";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { AssessmentDefinitionService } from "../assessment/assessment-definition.service";
+import { OrganizationMapper } from "../../shared/organization/organization.mapper";
 
 const AssessmentTypeCodesById = [null, 'ica', 'iab', 'sum'];
 
@@ -22,7 +23,8 @@ const AssessmentTypeCodesById = [null, 'ica', 'iab', 'sum'];
 export class MockAggregateReportsService {
 
   constructor(private http: HttpClient,
-              private assessmentDetailsService: AssessmentDefinitionService) {
+              private assessmentDetailsService: AssessmentDefinitionService,
+              private organizationMapper: OrganizationMapper) {
   }
 
   public getReportData(query: AggregateReportQuery): Observable<AggregateReportItem[]> {
@@ -120,12 +122,7 @@ export class MockAggregateReportsService {
     uiModel.gradeId = apiModel.assessment.gradeId;
     uiModel.subjectId = apiModel.assessment.subjectId;
     uiModel.schoolYear = apiModel.examSchoolYear;
-    uiModel.organizationType = apiModel.organization.type;
-    //TODO: "California" should come from the back-end api populated via config-properties
-    uiModel.organizationName = (uiModel.organizationType == "State")
-      ? "California"
-      : apiModel.organization.name;
-    uiModel.organizationId = apiModel.organization.id;
+    uiModel.organization = this.organizationMapper.map(apiModel.organization);
     uiModel.dimensionType = apiModel.dimension.type;
     uiModel.dimensionValue = apiModel.dimension.code || 'default';
     uiModel.itemId = idx;

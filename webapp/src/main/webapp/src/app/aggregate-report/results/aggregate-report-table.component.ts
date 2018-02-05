@@ -7,8 +7,41 @@ import { Column, DataTable } from "primeng/primeng";
 import { isNullOrUndefined } from "util";
 import * as _ from "lodash";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
+import { District, OrganizationType, School } from "../../shared/organization/organization";
 
 export const SupportedRowCount = 10000;
+
+const OrderingDimensionType: Ordering<AggregateReportItem> = ordering(
+  ranking([ 'Overall', 'Gender', 'Ethnicity' ]) // TODO should be informed by report options
+).on((item) => item.dimensionType);
+
+const OrderingDimensionValue: Ordering<AggregateReportItem> = ordering(byString)
+  .on((item) => item.dimensionValue.toString());
+
+const OrderingOrganizationState: Ordering<AggregateReportItem> = ordering(
+  ranking([OrganizationType.State])
+).reverse().on((item) => {
+  return item.organization.type
+});
+
+const OrderingOrganizationDistrictsWithSchoolsById: Ordering<AggregateReportItem> = ordering(byNumber)
+  .on((item) => {
+    switch(item.organization.type) {
+      case OrganizationType.District:
+        return (item.organization as District).id;
+      case OrganizationType.School:
+        return (item.organization as School).districtId;
+      default:
+        return -1;
+    }
+});
+
+const OrderingOrganizationDistrict: Ordering<AggregateReportItem> = ordering(
+  ranking([OrganizationType.District])
+).reverse().on((item) => item.organization.type);
+
+const OrderingOrganizationSchools: Ordering<AggregateReportItem> = ordering(byString)
+  .on((item) => item.organization.name);
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -33,7 +66,14 @@ export class AggregateReportTableComponent implements OnInit {
    * The report data.
    */
   @Input()
-  public table: AggregateReportTable;
+  public set table(value: AggregateReportTable) {
+    this._table = value;
+    this.buildDistrictIdToNameMap(value.rows);
+  }
+
+  public get table(): AggregateReportTable {
+    return this._table;
+  }
 
   /**
    * True if performance aggregate values should be displayed as percentages of total
@@ -68,12 +108,20 @@ export class AggregateReportTableComponent implements OnInit {
 
   private orderingByProperty: { [key: string]: Ordering<AggregateReportItem> } = {};
   private previousSort: any;
+  private _table: AggregateReportTable;
+  private districtIdToName: Map<number, string> = new Map();
 
   constructor(public colorService: ColorService) {
   }
 
   ngOnInit(): void {
-    this.orderingByProperty.organization = ordering(byString).on(item => item.organizationName);
+    this.orderingByProperty.organization = ordering(join(
+      OrderingOrganizationState.compare,
+      this.orderingOrganizationDistrictsWithSchoolsByName().compare,
+      OrderingOrganizationDistrictsWithSchoolsById.compare,
+      OrderingOrganizationDistrict.compare,
+      OrderingOrganizationSchools.compare
+    ));
     this.orderingByProperty.assessmentGrade = ordering(byString).on(item => item.gradeCode);
     this.orderingByProperty.schoolYear = ordering(byNumber).on(item => item.schoolYear);
     this.orderingByProperty.dimension = ordering(join(
@@ -235,6 +283,31 @@ export class AggregateReportTableComponent implements OnInit {
 
       previousItem = item;
     });
+  }
+
+  private buildDistrictIdToNameMap(items: AggregateReportItem[]) {
+    this.districtIdToName.clear();
+    items.forEach(item => {
+      if (item.organization.type != OrganizationType.District) {
+        return;
+      }
+      const district: District = item.organization as District;
+      this.districtIdToName.set(district.id, district.name)
+    });
+  }
+
+  private orderingOrganizationDistrictsWithSchoolsByName(): Ordering<AggregateReportItem> {
+    return ordering(byString)
+      .on((item) => {
+        switch(item.organization.type) {
+          case OrganizationType.District:
+            return this.districtIdToName.get((item.organization as District).id) || "";
+          case OrganizationType.School:
+            return this.districtIdToName.get((item.organization as School).districtId) || "";
+          default:
+            return "";
+        }
+      });
   }
 }
 
