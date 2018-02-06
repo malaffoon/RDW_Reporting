@@ -128,8 +128,8 @@ export class AggregateReportFormOptionsMapper {
         .map(optionMapper(
           value => translate(`common.dimension.${value}`),
           value => `Comparative Subgroup: ${value}`
-        )).reverse(), // TODO why do i need this ??
-      statewideReporter: options.statewideReporter
+        )),
+      statewideReporter: options.statewideReporter // TODO move to user context?
     };
   }
 

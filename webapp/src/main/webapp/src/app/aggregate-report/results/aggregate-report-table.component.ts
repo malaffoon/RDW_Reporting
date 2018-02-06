@@ -13,6 +13,8 @@ import { AggregateReportOptions } from "../aggregate-report-options";
 
 export const SupportedRowCount = 10000;
 
+const OverallDimensionType: string = 'Overall';
+
 const StateOrdering: Ordering<AggregateReportItem> = ordering(
   ranking([ OrganizationType.State ])
 ).reverse().on(item => item.organization.type);
@@ -79,7 +81,7 @@ export class AggregateReportTableComponent implements OnInit {
   public loading: boolean = true;
 
   private _previousSortEvent: any;
-  private _table: AggregateReportTable;
+  private _table: any;
   private _columnOrdering: string[];
   private _districtNamesById: Map<number, string> = new Map();
   private _orderingByColumnId: { [key: string]: Ordering<AggregateReportItem> } = {};
@@ -88,8 +90,7 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._orderingByColumnId.organization = this.createOrganizationOrdering();
-    this._orderingByColumnId.schoolYear = SchoolYearOrdering;
+
     this.performanceLevelTranslationPrefix = `common.assessment-type.${this.table.assessmentDefinition.typeCode}.performance-level.`;
 
     // Give the datatable a chance to initialize, run this next frame
@@ -119,7 +120,7 @@ export class AggregateReportTableComponent implements OnInit {
       const options = table.options;
       const codesOf = values => values.map(value => value.code);
 
-      this._orderingByColumnId.assessmentGrade = ordering(ranking(codesOf(options.assessmentGrades)))
+      const assessmentGradeOrdering = ordering(ranking(codesOf(options.assessmentGrades)))
         .on((item: AggregateReportItem) => item.gradeCode);
 
       const dimensionOptionsByDimensionType = {
@@ -130,25 +131,23 @@ export class AggregateReportTableComponent implements OnInit {
         Section504: codesOf(options.migrantStatuses),
         IEP: codesOf(options.individualEducationPlans),
         EconomicDisadvantage: codesOf(options.economicDisadvantages),
-        StudentEnrolledGrade: [ 'yes', 'no' ]
+        StudentEnrolledGrade: codesOf(options.assessmentGrades)
       };
 
-      const dimensionTypeComparator = ordering(ranking([ 'Overall', ...table.options.dimensionTypes ]))
-        .on((item: AggregateReportItem) => item.dimension.type).compare;
-
-      const dimensionCodeComparators = Object.keys(dimensionOptionsByDimensionType)
+      const dimensionCodeComparators = table.options.dimensionTypes
         .map((dimensionType: string, index) =>
           ordering(ranking(
             (dimensionOptionsByDimensionType[ dimensionType ] || []).map(dimensionCode => `${dimensionType}.${dimensionCode}`)
           )).on((item: AggregateReportItem) => `${item.dimension.type}.${item.dimension.code}`).compare
         );
 
-      this._orderingByColumnId.dimension = ordering(join(
-        dimensionTypeComparator,
-        ...dimensionCodeComparators
-      ));
+      const dimensionOrdering = ordering(join(...dimensionCodeComparators));
 
       this._districtNamesById = this.getDistrictNamesById(value.rows);
+      this._orderingByColumnId.organization = this.createOrganizationOrdering();
+      this._orderingByColumnId.assessmentGrade = assessmentGradeOrdering;
+      this._orderingByColumnId.schoolYear = SchoolYearOrdering;
+      this._orderingByColumnId.dimension = dimensionOrdering;
       this._table = table;
 
       if (!this.loading) {
@@ -257,7 +256,7 @@ export class AggregateReportTableComponent implements OnInit {
     }
 
     //Sort the data based upon the ordered list of Comparators
-    this.table.rows.sort(join(...ordering));
+    this._table.rows = this.table.rows.sort(join(...ordering));
     this.calculateTreeColumns();
   }
 

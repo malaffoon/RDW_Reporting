@@ -55,7 +55,7 @@
       </ng-template>
     </p-column>
     <p-column colId="dimension"
-              field="dimension.code"
+              field="dimension"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.dimension' | translate}}">
@@ -64,7 +64,8 @@
              class="full-cell pt-0"
              [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
           {{
-            (row.dimension.type ? (('common.dimension.' + row.dimension.type) | translate) + ': ' : '')
+            (row.dimension.includeType ? (('common.dimension.' + row.dimension.type) | translate) : '')
+            + (row.dimension.includeType && row.dimension.code ? ': ' : '')
             + (row.dimension.code ? (row.dimension.codeTranslationCode | translate) : '')
           }}
         </div>

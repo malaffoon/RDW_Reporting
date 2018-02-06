@@ -355,8 +355,7 @@ export class AggregateReportFormComponent {
    */
   private createDefaultSettings(options: AggregateReportFormOptions): AggregateReportFormSettings {
     return <AggregateReportFormSettings>{
-      // assessmentGrades: [],
-      assessmentGrades: [firstValueOf(options.assessmentGrades)],
+      assessmentGrades: [],
       assessmentType: firstValueOf(options.assessmentTypes),
       completenesses: [ firstValueOf(options.completenesses) ],
       ethnicities: valuesOf(options.ethnicities),
@@ -372,8 +371,7 @@ export class AggregateReportFormComponent {
       economicDisadvantages: valuesOf(options.economicDisadvantages),
       performanceLevelDisplayType: firstValueOf(options.performanceLevelDisplayTypes),
       valueDisplayType: firstValueOf(options.valueDisplayTypes),
-      // dimensionTypes: [],
-      dimensionTypes: ['IEP'],
+      dimensionTypes: [],
       includeStateResults: true,
       includeAllDistricts: false,
       includeAllSchoolsOfSelectedDistricts: false,

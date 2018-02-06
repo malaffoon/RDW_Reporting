@@ -1,11 +1,10 @@
-import { AssessmentDefinitionService } from "./assessment/assessment-definition.service";
 import { Injectable } from "@angular/core";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { AggregateReportTable } from "./results/aggregate-report-table.component";
 import { DefaultSchool, Organization, School } from "../shared/organization/organization";
-import { Observable } from "rxjs/Observable";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportItem, Dimension } from "./results/aggregate-report-item";
+
+const OverallDimension: Dimension = { type: 'Overall', includeType: true };
 
 const codeOf = entity => entity.code;
 const codesOf = entities => entities.map(codeOf);
@@ -13,41 +12,43 @@ const codesOf = entities => entities.map(codeOf);
 const DimensionConfigurationByType: { [dimensionType: string]: DimensionConfiguration } = {
   Gender: {
     getDimensionValueCodes: settings => codesOf(settings.genders),
-    getTranslationCode: value => `common.gender.${value}`
+    getTranslationCode: value => `common.gender.${value}`,
+    includeType: true
   },
   Ethnicity: {
     getDimensionValueCodes: settings => codesOf(settings.ethnicities),
-    getTranslationCode: value => `common.ethnicity.${value}`
+    getTranslationCode: value => `common.ethnicity.${value}`,
+    includeType: true
   },
   LEP: {
     getDimensionValueCodes: settings => codesOf(settings.limitedEnglishProficiencies),
     getTranslationCode: value => `common.strict-boolean.${value}`,
-    translateDimensionType: true
+    includeType: true
   },
   MigrantStatus: {
     getDimensionValueCodes: settings => codesOf(settings.migrantStatuses),
     getTranslationCode: value => `common.strict-boolean.${value}`,
-    translateDimensionType: true
+    includeType: true
   },
   Section504: {
     getDimensionValueCodes: settings => codesOf(settings.section504s),
     getTranslationCode: value => `common.strict-boolean.${value}`,
-    translateDimensionType: true
+    includeType: true
   },
   IEP: {
     getDimensionValueCodes: settings => codesOf(settings.individualEducationPlans),
     getTranslationCode: value => `common.strict-boolean.${value}`,
-    translateDimensionType: true
+    includeType: true
   },
   EconomicDisadvantage: {
     getDimensionValueCodes: settings => codesOf(settings.economicDisadvantages),
     getTranslationCode: value => `common.strict-boolean.${value}`,
-    translateDimensionType: true
+    includeType: true
   },
   StudentEnrolledGrade: {
-    getDimensionValueCodes: settings => ['yes', 'no'],
-    getTranslationCode: value => `common.strict-boolean.${value}`,
-    translateDimensionType: true
+    getDimensionValueCodes: settings => [ settings.assessmentGrades[0].code ],
+    getTranslationCode: value => `common.grade.${value}.enrolled`,
+    includeType: true
   }
 };
 
@@ -58,7 +59,7 @@ export class AggregateReportTableDataService {
     const organizations = this.createSampleOrganizations([ ...settings.districts, ...settings.schools ].length);
     const assessmentGradeCodes = codesOf(settings.assessmentGrades);
     const schoolYears = settings.schoolYears;
-    const dimensions = [ <Dimension>{ type: 'Overall' }, ...this.createDimensions(settings) ];
+    const dimensions = [ OverallDimension, ...this.createDimensions(settings) ];
     const studentsTested = 100;
     const averageScaleScore = 2500;
     const averageStandardError = 50;
@@ -121,7 +122,8 @@ export class AggregateReportTableDataService {
       const codes = configuration.getDimensionValueCodes(settings);
       for (let code of codes) {
         dimensions.push({
-          type: configuration.translateDimensionType ? dimensionType : undefined,
+          type: dimensionType,
+          includeType: configuration.includeType,
           code: code,
           codeTranslationCode: configuration.getTranslationCode(code)
         });
@@ -152,7 +154,7 @@ export class AggregateReportTableDataService {
 interface DimensionConfiguration {
   readonly getDimensionValueCodes: (settings: AggregateReportFormSettings) => string[];
   readonly getTranslationCode: (dimensionCode: string) => string;
-  readonly translateDimensionType?: boolean;
+  readonly includeType?: boolean;
 }
 
 

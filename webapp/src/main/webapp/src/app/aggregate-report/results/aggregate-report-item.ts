@@ -42,7 +42,8 @@ export class AggregateReportItem {
  * Holds dimension information for display as a report item
  */
 export interface Dimension {
-  readonly type?: string;
-  readonly code: string;
-  readonly codeTranslationCode: string;
+  readonly type: string;
+  readonly includeType?: boolean;
+  readonly code?: string;
+  readonly codeTranslationCode?: string;
 }
