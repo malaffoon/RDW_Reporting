@@ -20,6 +20,8 @@ import { AggregateReportRequest } from "../report/aggregate-report-request";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
+import { AggregateReportOptions } from "./aggregate-report-options";
+import { AggregateReportItem } from "./results/aggregate-report-item";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -77,10 +79,12 @@ export class AggregateReportFormComponent {
   /**
    * The preview table data
    */
-  previewTable: AggregateReportTable = {
-    assessmentDefinition: undefined,
-    rows: []
-  };
+  previewTable: AggregateReportTable;
+
+  /**
+   * Holds the server report options
+   */
+  aggregateReportOptions: AggregateReportOptions;
 
   /**
    * Assessment definitions for use in generating sample data
@@ -99,7 +103,9 @@ export class AggregateReportFormComponent {
 
     this.assessmentDefinitionsByTypeCode = route.parent.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
 
-    this.options = optionMapper.map(route.parent.snapshot.data[ 'options' ]);
+    this.aggregateReportOptions = route.parent.snapshot.data[ 'options' ];
+
+    this.options = optionMapper.map(this.aggregateReportOptions);
 
     this.organizationTypeaheadOptions = Observable.create(observer => {
       observer.next(this.organizationTypeahead.value);
@@ -122,6 +128,12 @@ export class AggregateReportFormComponent {
         messageId: 'aggregate-reports.form.field.school-year.error-empty'
       }))
     });
+
+    this.previewTable = {
+      assessmentDefinition: this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType.code),
+      options: this.aggregateReportOptions,
+      rows: []
+    };
 
   }
 
@@ -408,31 +420,13 @@ export class AggregateReportFormComponent {
   /**
    * Reloads the report preview based on current form state
    */
-  generateReport() {
+  onSettingsChange() {
     const assessmentDefinition = this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType.code);
     this.previewTable = {
       rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings),
-      assessmentDefinition: assessmentDefinition,
-      // TODO this will be common code with results page. should be computed on option compute time?
-      // assessmentGradeRanking: codesOf(this.options.assessmentGrades),
-      // dimensionRanking: valuesOf(this.options.dimensionTypes),
-      // dimensionValueRankingByType: {
-      //   Gender: codesOf(this.options.genders),
-      //   Ethnicity: codesOf(this.options.ethnicities),
-      //   LEP: codesOf(this.options.limitedEnglishProficiencies),
-      //   MigrantStatus: codesOf(this.options.migrantStatuses),
-      //   Section504: codesOf(this.options.section504s),
-      //   IEP: codesOf(this.options.individualEducationPlans),
-      //   EconomicDisadvantage: codesOf(this.options.economicDisadvantages),
-      //   StudentEnrolledGrade: ['yes', 'no']
-      // }
+      options: this.aggregateReportOptions,
+      assessmentDefinition: assessmentDefinition
     };
-     // TODO should pass asmt def and it should just return rows
-     //  .subscribe(table => {
-        // console.log(table.rows.map(item => `${item.organization.name}: ${item.dimensionType}: ${item.dimensionValue}`));
-        // const valuesOf = values => values.map((x: any) => x.value.code);
-        // const codesOf = values => values.map((x: any) => x.value.code);
-      // });
   }
 
 }
