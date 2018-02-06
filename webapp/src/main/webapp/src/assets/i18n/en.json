@@ -16,7 +16,6 @@
       "decline": "Cancel"
     },
     "results": {
-      "heading": "Aggregate Report Results",
       "empty-message": "No Results Found",
       "performance-group-prompt": "Show performance as",
       "performance-grouped": "Grouped",
@@ -33,47 +32,6 @@
         "grouped-performance-level-prefix": {
           "0": "At or Below",
           "1": "At or Above"
-        }
-      },
-      "dimension": {
-        "Overall": {
-          "default": "Overall"
-        },
-        "Gender": {
-          "default": "Unspecified",
-          "Male": "Male",
-          "Female": "Female"
-        },
-        "Ethnicity": {
-          "default": "Unspecified",
-          "HispanicOrLatinoEthnicity": "Hispanic/Latino",
-          "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
-          "Asian": "Asian",
-          "BlackOrAfricanAmerican": "Black or African American",
-          "White": "White",
-          "NativeHawaiianOrOtherPacificIslander": "Native Hawaiian or Pacific Islander",
-          "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
-          "Filipino": "Filipino"
-        },
-        "LEP": {
-          "default": "Limited English Proficiency: No",
-          "true": "Limited English Proficiency: Yes"
-        },
-        "IEP": {
-          "default": "IEP: No",
-          "true": "IEP: Yes"
-        },
-        "MigrantStatus": {
-          "default": "Migrant Status: No",
-          "true": "Migrant Status: Yes"
-        },
-        "EconomicDisadvantage": {
-          "default": "Economic Disadvantage: No",
-          "true": "Economic Disadvantage: Yes"
-        },
-        "Section504": {
-          "default": "504 Plan: No",
-          "true": "504 Plan: Yes"
         }
       }
     },
