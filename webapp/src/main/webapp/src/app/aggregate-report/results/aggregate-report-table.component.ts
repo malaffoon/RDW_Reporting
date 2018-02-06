@@ -140,8 +140,6 @@ export class AggregateReportTableComponent implements OnInit {
         );
       }, []);
 
-      console.log('ranking', dimensionTypeAndCodeRanking);
-
       const dimensionOrdering = ordering(ranking(
         [OverallDimensionType, ...dimensionTypeAndCodeRanking]
       )).on((item: AggregateReportItem) => `${item.dimension.type}.${item.dimension.code}`);
