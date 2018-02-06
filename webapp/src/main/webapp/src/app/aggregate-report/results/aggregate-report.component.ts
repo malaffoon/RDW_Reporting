@@ -23,7 +23,7 @@ const PollingInterval = 4000;
 })
 export class AggregateReportComponent implements OnInit, OnDestroy {
 
-  assessmentDefinitionsByAssessmentTypeCode: Map<string, AssessmentDefinition>;
+  assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
   report: Report;
   reportTables: AggregateReportTable[];
@@ -35,9 +35,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
               private reportService: ReportService,
               private itemMapper: AggregateReportItemMapper) {
 
-    this.assessmentDefinitionsByAssessmentTypeCode = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.options = this.route.parent.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
+    this.assessmentDefinition = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ]
+      .get(this.report.assessmentTypeCode);
     this.reportSizeSupported = Utils.isUndefined(this.report.metadata.totalCount)
       || (Number.parseInt(this.report.metadata.totalCount) <= SupportedRowCount);
   }
@@ -87,18 +88,17 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   private initializeReportTables(rows: AggregateReportRow[]): void {
 
     const subjects = this.options.subjects;
-    const assessmentDefinition = this.assessmentDefinitionsByAssessmentTypeCode.get(this.report.request.reportQuery.assessmentTypeCode);
 
     this.reportTables = rows.reduce((tables, row, index) => {
 
-      const item = this.itemMapper.map(assessmentDefinition, row, index);
+      const item = this.itemMapper.map(this.assessmentDefinition, row, index);
       const subject = subjects.find(option => option.code === row.assessment.subjectCode);
       const table = tables.find(table => table.subjectCode === subject.code);
 
       if (!table) {
         tables.push({
-          subjectCode: subject.code,
-          assessmentDefinition: assessmentDefinition,
+          options: this.options,
+          assessmentDefinition: this.assessmentDefinition,
           rows: [ item ]
         });
       } else {
