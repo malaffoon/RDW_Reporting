@@ -129,8 +129,7 @@ export class ReportService {
     return this.dataService.get(`${ServiceRoute}/reports/${reportId}`, {
       headers: new Headers({
         'Accept': 'application/json',
-      }),
-      responseType: ResponseContentType.Json
+      })
     }).catch(ResponseUtils.throwError);
   }
 
@@ -142,9 +141,6 @@ export class ReportService {
    */
   public getAggregateReportAsSpreadsheet(reportId: number): Observable<Download> {
     return this.dataService.get(`${ServiceRoute}/reports/${reportId}`, {
-      headers: new Headers({
-        'Accept': 'text/csv',
-      }),
       responseType: ResponseContentType.Blob
     }).catch(ResponseUtils.throwError);
   }
