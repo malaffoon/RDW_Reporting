@@ -38,8 +38,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     this.assessmentDefinitionsByAssessmentTypeCode = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.options = this.route.parent.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
-    this.reportSizeSupported = !Utils.isUndefined(this.report.metadata.totalCount)
-      && (Number.parseInt(this.report.metadata.totalCount) < SupportedRowCount);
+    this.reportSizeSupported = Utils.isUndefined(this.report.metadata.totalCount)
+      || (Number.parseInt(this.report.metadata.totalCount) <= SupportedRowCount);
   }
 
   get loading(): boolean {
