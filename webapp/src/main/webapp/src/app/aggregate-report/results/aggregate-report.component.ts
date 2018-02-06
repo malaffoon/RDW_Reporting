@@ -38,8 +38,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     this.assessmentDefinitionsByAssessmentTypeCode = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.options = this.route.parent.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
-    this.reportSizeSupported = !Utils.isUndefined(this.report.metadata.row_count)
-      && (Number.parseInt(this.report.metadata.row_count) < SupportedRowCount);
+    this.reportSizeSupported = Utils.isUndefined(this.report.metadata.totalCount)
+      || (Number.parseInt(this.report.metadata.totalCount) <= SupportedRowCount);
   }
 
   get loading(): boolean {
@@ -87,7 +87,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   private initializeReportTables(rows: AggregateReportRow[]): void {
 
     const subjects = this.options.subjects;
-    const assessmentDefinition = this.assessmentDefinitionsByAssessmentTypeCode.get(this.report.request.assessmentTypeCode);
+    const assessmentDefinition = this.assessmentDefinitionsByAssessmentTypeCode.get(this.report.request.reportQuery.assessmentTypeCode);
 
     this.reportTables = rows.reduce((tables, row, index) => {
 

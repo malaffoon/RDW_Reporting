@@ -35,6 +35,10 @@ const notEmpty = properties => control => {
 
 const OrganizationComparator = (a: Organization, b: Organization) => a.name.localeCompare(b.name);
 
+const valuesOf = values => values.map(value => value.value);
+const firstValueOf = values => values[ 0 ].value;
+const codesOf = values => values.map(value => value.code);
+const idsOf = values => values.map(value => value.id);
 
 /**
  * Aggregate report form component
@@ -245,7 +249,7 @@ export class AggregateReportFormComponent {
   onGenerateButtonClick(): void {
     this.validate(this.formGroup, () => {
       const request = this.createReportRequest(this.settings);
-      this.reportService.getReportRowCount(request)
+      this.reportService.getEstimatedRowCount(request.reportQuery)
         .subscribe(
           count => {
             if (count < SupportedRowCount) {
@@ -350,8 +354,6 @@ export class AggregateReportFormComponent {
    * @returns {AggregateReportFormSettings} the initial form state
    */
   private createDefaultSettings(options: AggregateReportFormOptions): AggregateReportFormSettings {
-    const valuesOf = options => options.map(option => option.value);
-    const firstValueOf = options => options[ 0 ].value;
     return <AggregateReportFormSettings>{
       // assessmentGrades: [],
       assessmentGrades: [firstValueOf(options.assessmentGrades)],
@@ -388,32 +390,34 @@ export class AggregateReportFormComponent {
    * @returns {AggregateReportRequest} the created request
    */
   private createReportRequest(settings: AggregateReportFormSettings): AggregateReportRequest {
-    const codesOf = values => values.map(entity => entity.code);
     return {
-      achievementLevelDisplayType: settings.performanceLevelDisplayType,
-      administrationConditionCodes: codesOf(
-        settings.interimAdministrationConditions.concat(settings.summativeAdministrationConditions)
-      ),
-      assessmentGradeCodes: codesOf(settings.assessmentGrades),
-      assessmentTypeCode: settings.assessmentType.code,
-      completenessCodes: codesOf(settings.completenesses),
-      economicDisadvantageCodes: codesOf(settings.economicDisadvantages),
-      ethnicityCodes: codesOf(settings.ethnicities),
-      dimensionTypes: settings.dimensionTypes,
-      districtCodes: codesOf(settings.districts),
-      genderCodes: codesOf(settings.genders),
-      iepCodes: codesOf(settings.individualEducationPlans),
-      includeAllDistricts: settings.includeAllDistricts,
-      includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
-      includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
-      includeState: settings.includeStateResults,
-      lepCodes: codesOf(settings.limitedEnglishProficiencies),
-      migrantStatusCodes: codesOf(settings.migrantStatuses),
-      section504Codes: codesOf(settings.section504s),
-      schoolYears: settings.schoolYears,
-      schoolCodes: codesOf(settings.schools),
-      subjectCodes: codesOf(settings.subjects),
-      valueDisplayType: settings.valueDisplayType
+      name: 'Custom Aggregate Report', // TODO add form field for name
+      reportQuery: {
+        achievementLevelDisplayType: settings.performanceLevelDisplayType,
+        administrationConditionCodes: codesOf(
+          settings.interimAdministrationConditions.concat(settings.summativeAdministrationConditions)
+        ),
+        assessmentGradeCodes: codesOf(settings.assessmentGrades),
+        assessmentTypeCode: settings.assessmentType.code,
+        completenessCodes: codesOf(settings.completenesses),
+        economicDisadvantageCodes: codesOf(settings.economicDisadvantages),
+        ethnicityCodes: codesOf(settings.ethnicities),
+        dimensionTypes: settings.dimensionTypes,
+        districtIds: idsOf(settings.districts),
+        genderCodes: codesOf(settings.genders),
+        iepCodes: codesOf(settings.individualEducationPlans),
+        includeAllDistricts: settings.includeAllDistricts,
+        includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
+        includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
+        includeState: settings.includeStateResults,
+        lepCodes: codesOf(settings.limitedEnglishProficiencies),
+        migrantStatusCodes: codesOf(settings.migrantStatuses),
+        section504Codes: codesOf(settings.section504s),
+        schoolYears: settings.schoolYears,
+        schoolIds: idsOf(settings.schools),
+        subjectCodes: codesOf(settings.subjects),
+        valueDisplayType: settings.valueDisplayType
+      }
     }
   }
 
