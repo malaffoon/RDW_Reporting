@@ -130,7 +130,7 @@ export class ReportService {
       headers: new Headers({
         'Accept': 'application/json',
       }),
-      responseType: ResponseContentType.Blob
+      responseType: ResponseContentType.Json
     }).catch(ResponseUtils.throwError);
   }
 
@@ -204,6 +204,7 @@ export class ReportService {
     local.subjectCode = remote.subjectCode;
     local.schoolYear = remote.schoolYear;
     local.metadata = remote.metadata || {};
+    local.request = remote.request;
     return local;
   }
 
