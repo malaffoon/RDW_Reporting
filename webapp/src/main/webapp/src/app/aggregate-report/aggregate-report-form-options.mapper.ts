@@ -34,9 +34,6 @@ export class AggregateReportFormOptionsMapper {
     // Allows for translating messages incline concisely for better readability
     const translate = code => this.translate.instant(code);
 
-    // Used to hotfix natural order of completeness and strict booleans not being in "affirmative-first" order
-    const IdDescending = (a, b) => b.value.id - a.value.id;
-
     return <AggregateReportFormOptions>{
       assessmentGrades: options.assessmentGrades
         .map(optionMapper(
@@ -52,8 +49,7 @@ export class AggregateReportFormOptionsMapper {
         .map(optionMapper(
           value => translate(`common.completeness.${value.code}`),
           value => `Completeness: ${value.code}`
-        ))
-        .sort(IdDescending),
+        )),
       ethnicities: options.ethnicities
         .map(optionMapper(
           value => translate(`common.ethnicity.${value.code}`),
@@ -88,32 +84,27 @@ export class AggregateReportFormOptionsMapper {
         .map(optionMapper(
           value => translate(`common.strict-boolean.${value.code}`),
           value => `Migrant Status: ${value.code}`
-        ))
-        .sort(IdDescending),
+        )),
       individualEducationPlans: options.individualEducationPlans
         .map(optionMapper(
           value => translate(`common.strict-boolean.${value.code}`),
           value => `Individual Education Plan: ${value.code}`
-        ))
-        .sort(IdDescending),
+        )),
       section504s: options.section504s
         .map(optionMapper(
           value => translate(`common.strict-boolean.${value.code}`),
           value => `Section 504: ${value.code}`
-        ))
-        .sort(IdDescending),
+        )),
       limitedEnglishProficiencies: options.limitedEnglishProficiencies
         .map(optionMapper(
           value => translate(`common.strict-boolean.${value.code}`),
           value => `Limited English Proficiency: ${value.code}`
-        ))
-        .sort(IdDescending),
+        )),
       economicDisadvantages: options.economicDisadvantages
         .map(optionMapper(
           value => translate(`common.strict-boolean.${value.code}`),
           value => `Economic Disadvantage: ${value.code}`
-        ))
-        .sort(IdDescending),
+        )),
       performanceLevelDisplayTypes: [ 'Separate', 'Grouped' ]
         .map(optionMapper(
           value => translate(`common.performance-level-display-type.${value}`),

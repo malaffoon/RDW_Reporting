@@ -134,14 +134,17 @@ export class AggregateReportTableComponent implements OnInit {
         StudentEnrolledGrade: codesOf(options.assessmentGrades)
       };
 
-      const dimensionCodeComparators = table.options.dimensionTypes
-        .map((dimensionType: string, index) =>
-          ordering(ranking(
-            (dimensionOptionsByDimensionType[ dimensionType ] || []).map(dimensionCode => `${dimensionType}.${dimensionCode}`)
-          )).on((item: AggregateReportItem) => `${item.dimension.type}.${item.dimension.code}`).compare
+      const dimensionTypeAndCodeRanking = table.options.dimensionTypes.reduce((ranking, dimensionType) => {
+        return ranking.concat(
+          (dimensionOptionsByDimensionType[ dimensionType ] || []).map(dimensionCode => `${dimensionType}.${dimensionCode}`)
         );
+      }, []);
 
-      const dimensionOrdering = ordering(join(...dimensionCodeComparators));
+      console.log('ranking', dimensionTypeAndCodeRanking);
+
+      const dimensionOrdering = ordering(ranking(
+        [OverallDimensionType, ...dimensionTypeAndCodeRanking]
+      )).on((item: AggregateReportItem) => `${item.dimension.type}.${item.dimension.code}`);
 
       this._districtNamesById = this.getDistrictNamesById(value.rows);
       this._orderingByColumnId.organization = this.createOrganizationOrdering();

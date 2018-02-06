@@ -3,6 +3,7 @@ import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { DefaultSchool, Organization, School } from "../shared/organization/organization";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportItem, Dimension } from "./results/aggregate-report-item";
+import { Utils } from "../shared/support/support";
 
 const OverallDimension: Dimension = { type: 'Overall', includeType: true };
 
@@ -46,7 +47,7 @@ const DimensionConfigurationByType: { [dimensionType: string]: DimensionConfigur
     includeType: true
   },
   StudentEnrolledGrade: {
-    getDimensionValueCodes: settings => [ settings.assessmentGrades[0].code ],
+    getDimensionValueCodes: settings => Utils.isNullOrEmpty(settings.assessmentGrades) ? [] : [ settings.assessmentGrades[0].code ],
     getTranslationCode: value => `common.grade.${value}.enrolled`,
     includeType: true
   }
