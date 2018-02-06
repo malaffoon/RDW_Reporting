@@ -134,7 +134,7 @@ export class AggregateReportTableDataService {
 
   private createSampleOrganizations(selectedOrganizationCount: number): Organization[] {
     const organizations: Organization[] = [];
-    for (let i = 0; /*i < selectedOrganizationCount &&*/ i < 2; i++) {
+    for (let i = 0; i < selectedOrganizationCount && i < 2; i++) {
       organizations.push(this.createSampleSchool(i + 1));
     }
     return organizations;
