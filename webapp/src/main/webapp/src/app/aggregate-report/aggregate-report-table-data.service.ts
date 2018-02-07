@@ -81,7 +81,7 @@ export class AggregateReportTableDataService {
     const groupedPerformanceLevelCounts = [ groupedPerformanceLevelCount, groupedPerformanceLevelCount ];
 
     let uuid = 0;
-    const rows = [];
+    const rows: AggregateReportItem[] = [];
     for (let organization of organizations) {
       for (let assessmentGradeCode of assessmentGradeCodes) {
         for (let schoolYear of schoolYears) {
@@ -103,11 +103,9 @@ export class AggregateReportTableDataService {
                 },
                 Grouped: {
                   Number: groupedPerformanceLevelCounts,
-                  Percents: groupedPerformanceLevelCounts
+                  Percent: groupedPerformanceLevelCounts
                 }
               },
-              dimensionType: dimension.type,
-              dimensionValue: dimension.code,
               dimension: dimension
             });
           }
