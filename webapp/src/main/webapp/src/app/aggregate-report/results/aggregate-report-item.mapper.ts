@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AggregateReportItem } from "./aggregate-report-item";
+import { AggregateReportItem, Dimension } from "./aggregate-report-item";
 import { AggregateReportRow } from "../../report/aggregate-report";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { OrganizationMapper } from "../../shared/organization/organization.mapper";
@@ -15,21 +15,18 @@ export class AggregateReportItemMapper {
 
   map(assessmentDefinition: AssessmentDefinition, row: AggregateReportRow, uuid: number): AggregateReportItem {
     const item = new AggregateReportItem();
-    const itemPerformanceLevelCounts = item.preformanceLevelByDisplayTypes.Separate.Number;
-    const itemPerformanceLevelPercents = item.preformanceLevelByDisplayTypes.Separate.Percent;
-    const itemGroupedPerformanceLevelCounts = item.preformanceLevelByDisplayTypes.Grouped.Number;
-    const itemGroupedPerformanceLevelPercents = item.preformanceLevelByDisplayTypes.Grouped.Percent;
+    const itemPerformanceLevelCounts = item.performanceLevelByDisplayTypes.Separate.Number;
+    const itemPerformanceLevelPercents = item.performanceLevelByDisplayTypes.Separate.Percent;
+    const itemGroupedPerformanceLevelCounts = item.performanceLevelByDisplayTypes.Grouped.Number;
+    const itemGroupedPerformanceLevelPercents = item.performanceLevelByDisplayTypes.Grouped.Percent;
 
     item.itemId = uuid;
     item.assessmentId = row.assessment.id;
-    item.gradeId = row.assessment.gradeId;
     item.gradeCode = row.assessment.gradeCode;
-    item.subjectId = row.assessment.subjectCode === 'Math' ? 1 : 2;
     item.subjectCode = row.assessment.subjectCode;
     item.schoolYear = row.assessment.examSchoolYear;
     item.organization = this.organizationMapper.map(row.organization);
-    item.dimensionType = row.dimension.type;
-    item.dimensionValue = row.dimension.code || 'default';
+    item.dimension = this.mapDimension(row.dimension);
 
     const measures: any = row.measures || {};
     item.avgScaleScore = measures.avgScaleScore || 0;
@@ -38,7 +35,7 @@ export class AggregateReportItemMapper {
     let totalTested: number = 0;
 
     for (let level = 1; level <= assessmentDefinition.performanceLevelCount; level++) {
-      const count = measures[ `level${level}Count` ] || 0;
+      let count = measures[ `level${level}Count` ] || 0;
       totalTested += count;
       itemPerformanceLevelCounts.push(count);
     }
@@ -60,6 +57,7 @@ export class AggregateReportItemMapper {
           aboveCount += itemPerformanceLevelCounts[ level ];
         }
       }
+
       itemGroupedPerformanceLevelCounts.push(belowCount);
       itemGroupedPerformanceLevelCounts.push(aboveCount);
 
@@ -68,6 +66,16 @@ export class AggregateReportItemMapper {
     }
 
     return item;
+  }
+
+  private mapDimension(dimension: any): Dimension {
+    return {
+      id: `${dimension.type}.${dimension.code}`,
+      type: dimension.type,
+      includeType: true,
+      code: dimension.code,
+      codeTranslationCode: dimension.code // TODO
+    };
   }
 
 

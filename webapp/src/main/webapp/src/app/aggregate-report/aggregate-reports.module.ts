@@ -2,7 +2,6 @@ import { Angulartics2Module } from "angulartics2";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "../shared/common.module";
 import { DataTableModule } from "primeng/primeng";
-import { MockAggregateReportsService } from "./results/mock-aggregate-reports.service";
 import { BrowserModule } from "@angular/platform-browser";
 import { PerformanceComparisonComponent } from "./results/performance-comparison.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -59,7 +58,6 @@ import { AggregateReportTableDataService } from "./aggregate-report-table-data.s
   ],
   providers: [
     AggregateReportTableDataService,
-    MockAggregateReportsService,
     AggregateReportService,
     AggregateReportResolve,
     AggregateReportOptionsResolve,

@@ -143,10 +143,10 @@ export class AggregateReportTableComponent implements OnInit {
       )).on((item: AggregateReportItem) => `${item.dimension.type}.${item.dimension.code}`);
 
       this._districtNamesById = this.getDistrictNamesById(value.rows);
-      this._orderingByColumnField.organization = this.createOrganizationOrdering();
-      this._orderingByColumnField.gradeCode = assessmentGradeOrdering;
-      this._orderingByColumnField.schoolYear = SchoolYearOrdering;
-      this._orderingByColumnField.dimension = dimensionOrdering;
+      this._orderingByColumnField['organization.name'] = this.createOrganizationOrdering();
+      this._orderingByColumnField['gradeCode'] = assessmentGradeOrdering;
+      this._orderingByColumnField['schoolYear'] = SchoolYearOrdering;
+      this._orderingByColumnField['dimension.id'] = dimensionOrdering;
       this._table = table;
 
       if (!this.loading) {
@@ -168,6 +168,7 @@ export class AggregateReportTableComponent implements OnInit {
     this._columnOrdering = value ? value.concat() : [];
     if (!this.loading) {
       this.updateColumnOrder();
+      this.render();
     }
   }
 
@@ -184,7 +185,7 @@ export class AggregateReportTableComponent implements OnInit {
       ];
   }
 
-  getPreformanceLevelColumnHeaderTranslationCode(level: number): string {
+  getPerformanceLevelColumnHeaderTranslationCode(level: number): string {
     return this.performanceLevelDisplayType === 'Separate'
       ? this.performanceLevelTranslationPrefix + String(level) + '.short-name'
       : 'aggregate-reports.results.cols.grouped-performance-level-prefix.' + String(level - 2)
@@ -337,14 +338,15 @@ export class AggregateReportTableComponent implements OnInit {
    * @param currentItem
    * @returns {number}
    */
-  private indexOfFirstUniqueColumnValue(previewItem: any, currentItem: any): number {
+  private indexOfFirstUniqueColumnValue(previousItem: any, currentItem: any): number {
     let index: number;
     for (index = 0; index < this.columnOrdering.length - 1; index++) {
       let column: Column = this.resultsTable.columns[ index ];
-      let previousValue = _.get(previewItem, column.field);
+      let previousValue = _.get(previousItem, column.field); // TODO would be nice if this was based on "sortField" as opposed to field
       let currentValue = _.get(currentItem, column.field);
       if (previousValue != currentValue) {
         break;
+      } else {
       }
     }
     return index;

@@ -1,7 +1,6 @@
 import { Observable } from "rxjs/Observable";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { Injectable } from "@angular/core";
-import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
 import { AggregateReportService } from "../aggregate-report.service";
 

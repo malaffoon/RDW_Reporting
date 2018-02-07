@@ -6,19 +6,13 @@ import { Organization } from "../../shared/organization/organization";
 export class AggregateReportItem {
   itemId: number;
   assessmentId: number;
-  /** @deprecated */ gradeId: number;
   gradeCode: string;
-  /** @deprecated */ subjectId: number;
   subjectCode: string;
   schoolYear: number;
   avgScaleScore: number;
   avgStdErr: number;
   studentsTested: any;
-  /** @deprecated */ performanceLevelCounts: number[] = [];
-  /** @deprecated */ performanceLevelPercents: number[] = [];
-  /** @deprecated */ groupedPerformanceLevelCounts: number[] = [];
-  /** @deprecated */ groupedPerformanceLevelPercents: number[] = [];
-  preformanceLevelByDisplayTypes: {
+  performanceLevelByDisplayTypes: {
     [performanceLevelDisplayType: string]: {
       [valueDisplayType: string]: number[]
     }
@@ -33,8 +27,6 @@ export class AggregateReportItem {
     }
   };
   organization: Organization;
-  /** @deprecated */ dimensionType: string;
-  /** @deprecated */ dimensionValue: string;
   dimension: Dimension;
 }
 
@@ -42,6 +34,7 @@ export class AggregateReportItem {
  * Holds dimension information for display as a report item
  */
 export interface Dimension {
+  readonly id: string;
   readonly type: string;
   readonly includeType?: boolean;
   readonly code?: string;

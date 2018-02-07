@@ -10,6 +10,10 @@ import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { AggregateReportRow } from "../../report/aggregate-report";
 import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../../shared/support/support";
+import { ranking } from "@kourge/ordering/comparator";
+import { ordering } from "@kourge/ordering";
+import { AggregateReportQuery } from "../../report/aggregate-report-request";
+import { AggregateReportItem } from "./aggregate-report-item";
 
 const PollingInterval = 4000;
 
@@ -26,7 +30,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
   report: Report;
-  reportTables: AggregateReportTable[];
+  reportTables: AggregateReportSubjectTable[];
   reportSizeSupported: boolean;
   pollingSubscription: Subscription;
 
@@ -35,10 +39,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
               private reportService: ReportService,
               private itemMapper: AggregateReportItemMapper) {
 
-    this.options = this.route.parent.snapshot.data[ 'options' ];
+    this.options = this.route.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
     this.assessmentDefinition = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ]
-      .get(this.report.assessmentTypeCode);
+      .get(this.report.request.reportQuery.assessmentTypeCode);
     this.reportSizeSupported = Utils.isUndefined(this.report.metadata.totalCount)
       || (Number.parseInt(this.report.metadata.totalCount) <= SupportedRowCount);
   }
@@ -47,8 +51,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     return this.reportSizeSupported && !this.reportTables;
   }
 
-  get dimensionRanking(): string[] {
-    return this.options.dimensionTypes;
+  get query(): AggregateReportQuery {
+    return this.report.request.reportQuery;
   }
 
   ngOnInit(): void {
@@ -89,27 +93,31 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
     const subjects = this.options.subjects;
 
-    this.reportTables = rows.reduce((tables, row, index) => {
+    const comparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
+      .on((wrapper: any) => wrapper.subjectCode).compare;
+
+    this.reportTables = rows.reduce((tableWrappers, row, index) => {
 
       const item = this.itemMapper.map(this.assessmentDefinition, row, index);
-      const subject = subjects.find(option => option.code === row.assessment.subjectCode);
-      const table = tables.find(table => table.subjectCode === subject.code);
+      const subjectCode = subjects.find(option => option.code === row.assessment.subjectCode).code;
+      const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
 
-      if (!table) {
-        tables.push({
-          options: this.options,
-          assessmentDefinition: this.assessmentDefinition,
-          rows: [ item ]
+      if (!tableWrapper) {
+        tableWrappers.push({
+          subjectCode: subjectCode,
+          table: {
+            options: this.options,
+            assessmentDefinition: this.assessmentDefinition,
+            rows: [ item ]
+          }
         });
       } else {
-        table.rows.push(item);
+        tableWrapper.table.rows.push(item);
       }
 
-      return tables;
-    }, []).sort((a, b) => {
-      const rank = (x) => subjects.findIndex(subject => subject.code === x.code);
-      return rank(a) - rank(b);
-    })
+      return tableWrappers;
+    }, [])
+      .sort(comparator);
   }
 
   private unsubscribe(): void {
@@ -119,4 +127,9 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     }
   }
 
+}
+
+interface AggregateReportSubjectTable {
+  subjectCode: string;
+  table: AggregateReportTable;
 }

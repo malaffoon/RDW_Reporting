@@ -6,11 +6,12 @@ import { AggregateReportItem, Dimension } from "./results/aggregate-report-item"
 import { Utils } from "../shared/support/support";
 import { TranslateService } from "@ngx-translate/core";
 
-const OverallDimension: Dimension = { type: 'Overall', includeType: true };
+const OverallDimension: Dimension = { id: 'Overall', type: 'Overall', includeType: true };
 
 const codeOf = entity => entity.code;
 const codesOf = entities => entities.map(codeOf);
 
+// when adding a new dimension type one needs to be defined here
 const DimensionConfigurationByType: { [dimensionType: string]: DimensionConfiguration } = {
   Gender: {
     getDimensionValueCodes: settings => codesOf(settings.genders),
@@ -95,7 +96,7 @@ export class AggregateReportTableDataService {
               avgScaleScore: averageScaleScore,
               avgStdErr: averageStandardError,
               studentsTested: studentsTested,
-              performanceLevelByDisplayType: {
+              performanceLevelByDisplayTypes: {
                 Separate: {
                   Number: performanceLevelCounts,
                   Percent: performanceLevelPercents
@@ -127,6 +128,7 @@ export class AggregateReportTableDataService {
       const codes = configuration.getDimensionValueCodes(settings);
       for (let code of codes) {
         dimensions.push({
+          id: `${dimensionType}.${code}`,
           type: dimensionType,
           includeType: configuration.includeType,
           code: code,
@@ -155,7 +157,6 @@ export class AggregateReportTableDataService {
 
 }
 
-// when adding a new dimension type one needs to be defined here
 interface DimensionConfiguration {
   readonly getDimensionValueCodes: (settings: AggregateReportFormSettings) => string[];
   readonly getTranslationCode: (dimensionCode: string) => string;

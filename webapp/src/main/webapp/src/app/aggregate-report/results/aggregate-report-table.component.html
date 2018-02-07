@@ -16,7 +16,7 @@
                emptyMessage="{{'aggregate-reports.results.empty-message' | translate}}"
                tableStyleClass="table table-striped table-hover overflow">
     <p-column colId="organization"
-              field="organization"
+              field="organization.name"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.organization-name' | translate}}">
@@ -55,7 +55,7 @@
       </ng-template>
     </p-column>
     <p-column colId="dimension"
-              field="dimension"
+              field="dimension.id"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
               header="{{'aggregate-reports.results.cols.dimension' | translate}}">
@@ -86,10 +86,11 @@
       <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
         <div class="full-cell pt-0 pb-0 pl-0 pr-0"
              [ngClass]="{'border-top': treeColumns[i] < columnOrdering.length - 1}">
-          <performance-comparison [assessmentTypeCode]="table.assessmentDefinition.typeCode"
+          <performance-comparison *ngIf="row.studentsTested > 0"
+                                  [assessmentTypeCode]="table.assessmentDefinition.typeCode"
                                   [performanceGroupingCutpoint]="table.assessmentDefinition.performanceLevelGroupingCutPoint"
                                   [groupPerformanceLevels]="groupPerformanceLevels"
-                                  [performancePercentages]="row.performanceLevelByDisplayType[performanceLevelDisplayType].Percent"></performance-comparison>
+                                  [performancePercentages]="row.performanceLevelByDisplayTypes[performanceLevelDisplayType].Percent"></performance-comparison>
         </div>
       </ng-template>
     </p-column>
@@ -111,10 +112,10 @@
     <p-column *ngFor="let level of performanceLevels; let levelIndex = index"
               [sortable]="rowSortingEnabled"
               (sortFunction)="sort($event)"
-              field="{{ 'performanceLevelByDisplayType.' + performanceLevelDisplayType + '.' + valueDisplayType + '.' + levelIndex }}">
+              field="{{ 'performanceLevelByDisplayTypes.' + performanceLevelDisplayType + '.' + valueDisplayType + '.' + levelIndex }}">
       <ng-template pTemplate="header">
         <div class="text-center">
-          <span>{{getPreformanceLevelColumnHeaderTranslationCode(level) | translate}}</span><br>
+          <span>{{getPerformanceLevelColumnHeaderTranslationCode(level) | translate}}</span><br>
           <span class="label"
                 [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
             {{ (performanceLevelTranslationPrefix + level + '.short-name') | translate }}
@@ -126,7 +127,7 @@
         <div class="full-cell text-center"
              [ngClass]="{'border-top': treeColumns[i] < columnOrdering.length - 1}">
           <span *ngIf="!row.studentsTested">-</span>
-          <span *ngIf="row.studentsTested">{{('common.value-display-type-format.' + valueDisplayType) | translate:{ value: row.performanceLevelByDisplayType[performanceLevelDisplayType][valueDisplayType][levelIndex] } }}</span>
+          <span *ngIf="row.studentsTested">{{('common.value-display-type-format.' + valueDisplayType) | translate:{ value: row.performanceLevelByDisplayTypes[performanceLevelDisplayType][valueDisplayType][levelIndex] } }}</span>
         </div>
       </ng-template>
     </p-column>
