@@ -17,6 +17,9 @@ import { AggregateReportItem } from "./aggregate-report-item";
 
 const PollingInterval = 4000;
 
+const TableViewSubjectComparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
+  .on((wrapper: AggregateReportTableView) => wrapper.subjectCode).compare;
+
 /**
  * This component is responsible for performing the aggregate report query and
  * displaying the results.  Results are displayed in one table per subjectId.
@@ -30,7 +33,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
   report: Report;
-  reportTables: AggregateReportSubjectTable[];
+  reportTables: AggregateReportTableView[];
   reportSizeSupported: boolean;
   pollingSubscription: Subscription;
 
@@ -90,18 +93,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private initializeReportTables(rows: AggregateReportRow[]): void {
-
-    const subjects = this.options.subjects;
-
-    const comparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
-      .on((wrapper: any) => wrapper.subjectCode).compare;
-
     this.reportTables = rows.reduce((tableWrappers, row, index) => {
-
       const item = this.itemMapper.map(this.assessmentDefinition, row, index);
-      const subjectCode = subjects.find(option => option.code === row.assessment.subjectCode).code;
+      const subjectCode = row.assessment.subjectCode;
       const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
-
       if (!tableWrapper) {
         tableWrappers.push({
           subjectCode: subjectCode,
@@ -114,10 +109,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       } else {
         tableWrapper.table.rows.push(item);
       }
-
       return tableWrappers;
-    }, [])
-      .sort(comparator);
+    }, []).sort(TableViewSubjectComparator);
   }
 
   private unsubscribe(): void {
@@ -129,7 +122,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
 }
 
-interface AggregateReportSubjectTable {
+interface AggregateReportTableView {
   subjectCode: string;
   table: AggregateReportTable;
 }
