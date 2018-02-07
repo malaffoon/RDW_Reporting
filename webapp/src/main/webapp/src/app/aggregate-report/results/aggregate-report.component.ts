@@ -10,15 +10,11 @@ import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { AggregateReportRow } from "../../report/aggregate-report";
 import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../../shared/support/support";
-import { ranking } from "@kourge/ordering/comparator";
+import { Comparator, ranking } from "@kourge/ordering/comparator";
 import { ordering } from "@kourge/ordering";
 import { AggregateReportQuery } from "../../report/aggregate-report-request";
-import { AggregateReportItem } from "./aggregate-report-item";
 
 const PollingInterval = 4000;
-
-const TableViewSubjectComparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
-  .on((wrapper: AggregateReportTableView) => wrapper.subjectCode).compare;
 
 /**
  * This component is responsible for performing the aggregate report query and
@@ -36,6 +32,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   reportTables: AggregateReportTableView[];
   reportSizeSupported: boolean;
   pollingSubscription: Subscription;
+  private _tableViewComparator: Comparator<AggregateReportTableView>;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -48,6 +45,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       .get(this.report.request.reportQuery.assessmentTypeCode);
     this.reportSizeSupported = Utils.isUndefined(this.report.metadata.totalCount)
       || (Number.parseInt(this.report.metadata.totalCount) <= SupportedRowCount);
+    this._tableViewComparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
+      .on((wrapper: AggregateReportTableView) => wrapper.subjectCode).compare;
   }
 
   get loading(): boolean {
@@ -110,7 +109,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         tableWrapper.table.rows.push(item);
       }
       return tableWrappers;
-    }, []).sort(TableViewSubjectComparator);
+    }, []).sort(this._tableViewComparator);
   }
 
   private unsubscribe(): void {
