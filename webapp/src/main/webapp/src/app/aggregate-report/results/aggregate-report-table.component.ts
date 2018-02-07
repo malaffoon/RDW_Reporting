@@ -4,7 +4,6 @@ import { AggregateReportItem } from "./aggregate-report-item";
 import { byNumber, byString, Comparator, join, ranking } from "@kourge/ordering/comparator";
 import { ColorService } from "../../shared/color.service";
 import { Column, DataTable } from "primeng/primeng";
-import { isNullOrUndefined } from "util";
 import * as _ from "lodash";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { District, OrganizationType, School } from "../../shared/organization/organization";
@@ -84,7 +83,7 @@ export class AggregateReportTableComponent implements OnInit {
   private _table: any;
   private _columnOrdering: string[];
   private _districtNamesById: Map<number, string> = new Map();
-  private _orderingByColumnId: { [key: string]: Ordering<AggregateReportItem> } = {};
+  private _orderingByColumnField: { [key: string]: Ordering<AggregateReportItem> } = {};
 
   constructor(public colorService: ColorService) {
   }
@@ -145,10 +144,10 @@ export class AggregateReportTableComponent implements OnInit {
       )).on((item: AggregateReportItem) => `${item.dimension.type}.${item.dimension.code}`);
 
       this._districtNamesById = this.getDistrictNamesById(value.rows);
-      this._orderingByColumnId.organization = this.createOrganizationOrdering();
-      this._orderingByColumnId.assessmentGrade = assessmentGradeOrdering;
-      this._orderingByColumnId.schoolYear = SchoolYearOrdering;
-      this._orderingByColumnId.dimension = dimensionOrdering;
+      this._orderingByColumnField.organization = this.createOrganizationOrdering();
+      this._orderingByColumnField.gradeCode = assessmentGradeOrdering;
+      this._orderingByColumnField.schoolYear = SchoolYearOrdering;
+      this._orderingByColumnField.dimension = dimensionOrdering;
       this._table = table;
 
       if (!this.loading) {
@@ -202,7 +201,6 @@ export class AggregateReportTableComponent implements OnInit {
 
   private render(): void {
     this.sort();
-    this.resultsTable.value = this.table.rows;
   }
 
   private renderWithPreviousRowSorting(): void {
@@ -248,7 +246,7 @@ export class AggregateReportTableComponent implements OnInit {
       )
     ) {
       // Standard column sort.  Sort on the selected column first, then default sorting.
-      ordering.unshift(this.getComparator(event.colId, event.field, event.order));
+      ordering.unshift(this.getComparator(event.field, event.order));
       this._previousSortEvent = event;
     } else {
       //This is the third time sorting on the same column, reset to default sorting
@@ -259,6 +257,7 @@ export class AggregateReportTableComponent implements OnInit {
     //Sort the data based upon the ordered list of Comparators
     this._table.rows = this.table.rows.sort(join(...ordering));
     this.calculateTreeColumns();
+    this.resultsTable.value = this.table.rows;
   }
 
   /**
@@ -291,8 +290,8 @@ export class AggregateReportTableComponent implements OnInit {
    * @param {number} order  The sort order (1 for asc, -1 for desc)
    * @returns {Comparator<AggregateReportItem>} A Comparator for ordering results by the given field
    */
-  private getComparator(columnId: string, field: string, order: number): Comparator<AggregateReportItem> {
-    let rowOrdering: Ordering<AggregateReportItem> = this._orderingByColumnId[ columnId ];
+  private getComparator(field: string, order: number): Comparator<AggregateReportItem> {
+    let rowOrdering: Ordering<AggregateReportItem> = this._orderingByColumnField[ field ];
     if (!rowOrdering) {
       rowOrdering = ordering(byNumber).on(item => _.get(item, field, 0));
     }
@@ -308,10 +307,10 @@ export class AggregateReportTableComponent implements OnInit {
   private getColumnOrdering(): Comparator<AggregateReportItem>[] {
     return this.resultsTable.columns
       .map((column: Column) => {
-        const ordering = this._orderingByColumnId[ column.colId ];
+        const ordering = this._orderingByColumnField[ column.field ];
         return ordering ? ordering.compare : null;
       })
-      .filter(value => !isNullOrUndefined(value));
+      .filter(value => !Utils.isNullOrUndefined(value));
   }
 
   /**
