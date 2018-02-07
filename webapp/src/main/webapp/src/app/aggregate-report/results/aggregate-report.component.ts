@@ -92,10 +92,6 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private initializeReportTables(rows: AggregateReportRow[]): void {
-
-
-
-
     this.reportTables = rows.reduce((tableWrappers, row, index) => {
       const item = this.itemMapper.map(this.assessmentDefinition, row, index);
       const subjectCode = row.assessment.subjectCode;
