@@ -2,6 +2,9 @@
   "application": {
     "title": "Reporting System"
   },
+  "sample-aggregate-table-data-service": {
+    "organization-name-format": "School / District {{id}}"
+  },
   "aggregate-report": {
     "heading": "Aggregate Report",
     "update-request": "Update Query",

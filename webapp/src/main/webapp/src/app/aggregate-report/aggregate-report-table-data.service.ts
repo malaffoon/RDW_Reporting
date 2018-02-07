@@ -4,6 +4,7 @@ import { DefaultSchool, Organization, School } from "../shared/organization/orga
 import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportItem, Dimension } from "./results/aggregate-report-item";
 import { Utils } from "../shared/support/support";
+import { TranslateService } from "@ngx-translate/core";
 
 const OverallDimension: Dimension = { type: 'Overall', includeType: true };
 
@@ -55,6 +56,9 @@ const DimensionConfigurationByType: { [dimensionType: string]: DimensionConfigur
 
 @Injectable()
 export class AggregateReportTableDataService {
+
+  constructor(private translate: TranslateService) {
+  }
 
   createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
     const organizations = this.createSampleOrganizations([ ...settings.districts, ...settings.schools ].length);
@@ -144,7 +148,7 @@ export class AggregateReportTableDataService {
   private createSampleSchool(id: number): School {
     const school = new DefaultSchool();
     school.id = id;
-    school.name = 'School / District ' + String(id);
+    school.name = this.translate.instant('sample-aggregate-table-data-service.organization-name-format', {id: id});
     school.districtId = id;
     return school;
   }

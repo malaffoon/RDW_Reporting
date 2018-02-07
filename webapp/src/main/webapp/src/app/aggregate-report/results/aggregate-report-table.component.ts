@@ -14,14 +14,13 @@ export const SupportedRowCount = 10000;
 
 const OverallDimensionType: string = 'Overall';
 
-const StateOrdering: Ordering<AggregateReportItem> = ordering(
-  ranking([ OrganizationType.State ])
-).reverse().on(item => item.organization.type);
+const StateOrdering: Ordering<AggregateReportItem> = ordering(ranking([ OrganizationType.State ]))
+  .reverse()
+  .on(item => item.organization.type);
 
 const DistrictsWithSchoolsByIdOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
   .on(item => {
     switch (item.organization.type) {
-
       case OrganizationType.District:
         return (item.organization as District).id;
       case OrganizationType.School:
@@ -31,9 +30,9 @@ const DistrictsWithSchoolsByIdOrdering: Ordering<AggregateReportItem> = ordering
     }
   });
 
-const DistrictOrdering: Ordering<AggregateReportItem> = ordering(
-  ranking([ OrganizationType.District ])
-).reverse().on(item => item.organization.type);
+const DistrictOrdering: Ordering<AggregateReportItem> = ordering(ranking([ OrganizationType.District ]))
+  .reverse()
+  .on(item => item.organization.type);
 
 const SchoolOrdering: Ordering<AggregateReportItem> = ordering(byString)
   .on(item => item.organization.name);
