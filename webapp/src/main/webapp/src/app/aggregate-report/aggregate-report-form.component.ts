@@ -142,21 +142,28 @@ export class AggregateReportFormComponent {
   }
 
   /**
-   * @returns {any} The organizations form control
+   * @returns {boolean} True if the user does not have access to create aggregate reports
+   */
+  get accessDenied(): boolean {
+    return this.aggregateReportOptions.assessmentTypes.length === 0;
+  }
+
+  /**
+   * @returns {FormControl} The organizations form control
    */
   get organizationsControl(): FormControl {
     return <FormControl>this.formGroup.get('organizations');
   }
 
   /**
-   * @returns {any} The assessment grades form control
+   * @returns {FormControl} The assessment grades form control
    */
   get assessmentGradesControl(): FormControl {
     return <FormControl>this.formGroup.get('assessmentGrades');
   }
 
   /**
-   * @returns {any} The school years form control
+   * @returns {FormControl} The school years form control
    */
   get schoolYearsControl(): FormControl {
     return <FormControl>this.formGroup.get('schoolYears');
@@ -182,6 +189,10 @@ export class AggregateReportFormComponent {
    */
   get summativeFieldsDisabled(): boolean {
     return !this.interimFieldsDisabled;
+  }
+
+  get currentAssessmentDefinition(): AssessmentDefinition {
+    return this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType.code);
   }
 
   /**
@@ -423,7 +434,7 @@ export class AggregateReportFormComponent {
    * Reloads the report preview based on current form state
    */
   onSettingsChange() {
-    const assessmentDefinition = this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType.code);
+    const assessmentDefinition = this.currentAssessmentDefinition;
     this.previewTable = {
       rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings),
       options: this.aggregateReportOptions,
