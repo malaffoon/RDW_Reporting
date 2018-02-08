@@ -1,6 +1,7 @@
 import { Component, HostListener, Inject, Input } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { WindowRefService } from "../core/window-ref.service";
+import { Utils } from "../support/support";
 
 @Component({
   selector: 'scroll-nav',
@@ -8,9 +9,7 @@ import { WindowRefService } from "../core/window-ref.service";
 })
 export class ScrollNavComponent {
 
-  @Input()
-  items: ScrollNavItem[] = [];
-
+  private _items: ScrollNavItem[] = [];
   private _activeItem: ScrollNavItem;
   private _window: Window;
   private _enabled = true;
@@ -18,6 +17,17 @@ export class ScrollNavComponent {
   constructor(private windowRef: WindowRefService,
               @Inject(DOCUMENT) private _document: Document) {
     this._window = windowRef.nativeWindow;
+  }
+
+  get items(): ScrollNavItem[] {
+    return this._items;
+  }
+
+  @Input()
+  set items(items: ScrollNavItem[]) {
+    if (this._items !== items) {
+      this._items = Utils.isNullOrEmpty(items) ? [] : items.concat();
+    }
   }
 
   get activeItem(): ScrollNavItem {
@@ -50,14 +60,17 @@ export class ScrollNavComponent {
         const scrollItem = document.getElementById(item.scrollTo.id);
         const itemOffsetTop = scrollItem.offsetTop;
 
-        // minus small number (5) since clicking on scroll nav sometimes resulted in the link above the one clicked
+        // minus small number (20) since clicking on scroll nav sometimes resulted in the link above the one clicked
         // being highlighted until scrolling down a bit
-        if (itemOffsetTop - 5 <= scrollTop) {
+        if (itemOffsetTop - 20 <= scrollTop) {
           this._activeItem = item;
         } else {
           return;
         }
       });
+    if (!this.activeItem && this.items.length) {
+      this._activeItem = this.items[0];
+    }
   }
 }
 
