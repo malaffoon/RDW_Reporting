@@ -21,7 +21,7 @@ import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-option
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportOptions } from "./aggregate-report-options";
-import { AggregateReportItem } from "./results/aggregate-report-item";
+import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -37,8 +37,6 @@ const OrganizationComparator = (a: Organization, b: Organization) => a.name.loca
 
 const valuesOf = values => values.map(value => value.value);
 const firstValueOf = values => values[ 0 ].value;
-const codesOf = values => values.map(value => value.code);
-const idsOf = values => values.map(value => value.id);
 
 /**
  * Aggregate report form component
@@ -99,6 +97,7 @@ export class AggregateReportFormComponent {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private optionMapper: AggregateReportFormOptionsMapper,
+              private requestMapper: AggregateReportRequestMapper,
               private notificationService: NotificationService,
               private organizationService: AggregateReportOrganizationService,
               private reportService: AggregateReportService,
@@ -134,7 +133,7 @@ export class AggregateReportFormComponent {
     });
 
     this.previewTable = {
-      assessmentDefinition: this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType.code),
+      assessmentDefinition: this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType),
       options: this.aggregateReportOptions,
       rows: []
     };
@@ -180,8 +179,7 @@ export class AggregateReportFormComponent {
    * @returns {boolean} <code>true</code> if a non-interim assessment type is selected
    */
   get interimFieldsDisabled(): boolean {
-    // TODO implement as !assessmentType.interim
-    return this.settings.assessmentType.code === 'sum';
+    return !this.currentAssessmentDefinition.interim;
   }
 
   /**
@@ -192,7 +190,7 @@ export class AggregateReportFormComponent {
   }
 
   get currentAssessmentDefinition(): AssessmentDefinition {
-    return this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType.code);
+    return this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType);
   }
 
   /**
@@ -259,7 +257,7 @@ export class AggregateReportFormComponent {
    */
   onGenerateButtonClick(): void {
     this.validate(this.formGroup, () => {
-      const request = this.createReportRequest(this.settings);
+      const request = this.createReportRequest();
       this.reportService.getEstimatedRowCount(request.reportQuery)
         .subscribe(
           count => {
@@ -278,7 +276,7 @@ export class AggregateReportFormComponent {
    */
   onExportButtonClick(): void {
     this.validate(this.formGroup, () => {
-      this.createNonViewableReport(this.createReportRequest(this.settings));
+      this.createNonViewableReport(this.createReportRequest());
     });
   }
 
@@ -395,39 +393,10 @@ export class AggregateReportFormComponent {
   /**
    * Creates an aggregate report request from a
    *
-   * @param {AggregateReportFormSettings} settings the form state
    * @returns {AggregateReportRequest} the created request
    */
-  private createReportRequest(settings: AggregateReportFormSettings): AggregateReportRequest {
-    return {
-      name: 'Custom Aggregate Report', // TODO add form field for name
-      reportQuery: {
-        achievementLevelDisplayType: settings.performanceLevelDisplayType,
-        administrationConditionCodes: codesOf(
-          settings.interimAdministrationConditions.concat(settings.summativeAdministrationConditions)
-        ),
-        assessmentGradeCodes: codesOf(settings.assessmentGrades),
-        assessmentTypeCode: settings.assessmentType.code,
-        completenessCodes: codesOf(settings.completenesses),
-        economicDisadvantageCodes: codesOf(settings.economicDisadvantages),
-        ethnicityCodes: codesOf(settings.ethnicities),
-        dimensionTypes: settings.dimensionTypes,
-        districtIds: idsOf(settings.districts),
-        genderCodes: codesOf(settings.genders),
-        iepCodes: codesOf(settings.individualEducationPlans),
-        includeAllDistricts: settings.includeAllDistricts,
-        includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
-        includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
-        includeState: settings.includeStateResults,
-        lepCodes: codesOf(settings.limitedEnglishProficiencies),
-        migrantStatusCodes: codesOf(settings.migrantStatuses),
-        section504Codes: codesOf(settings.section504s),
-        schoolYears: settings.schoolYears,
-        schoolIds: idsOf(settings.schools),
-        subjectCodes: codesOf(settings.subjects),
-        valueDisplayType: settings.valueDisplayType
-      }
-    }
+  private createReportRequest(): AggregateReportRequest {
+    return this.requestMapper.map(this.options, this.settings);
   }
 
   /**

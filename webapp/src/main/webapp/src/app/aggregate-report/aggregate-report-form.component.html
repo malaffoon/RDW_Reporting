@@ -7,49 +7,41 @@
 
 <ng-container *ngIf="!accessDenied">
 
-  <scroll-nav [sections]="[
+  <scroll-nav [items]="[
   {
     scrollTo: organizationSection,
-    text: 'aggregate-reports.form.section.organization.heading' | translate,
-    isLink: true
+    text: 'aggregate-reports.form.section.organization.heading' | translate
   },
   {
     scrollTo: assessmentSection,
-    text: 'aggregate-reports.form.section.assessment.heading' | translate,
-    isLink: true
+    text: 'aggregate-reports.form.section.assessment.heading' | translate
   },
   {
     scrollTo: subgroupFiltersSection,
-    text: 'aggregate-reports.form.section.subgroup-filters.heading' | translate,
-    isLink: true
+    text: 'aggregate-reports.form.section.subgroup-filters.heading' | translate
   },
   {
     scrollTo: reportFeatureSection,
-    text: 'aggregate-reports.form.section.report-features.heading' | translate,
-    isLink: true
+    text: 'aggregate-reports.form.section.report-features.heading' | translate
   },
   {
     scrollTo: comparativeSubgroupSection,
-    text: 'aggregate-reports.form.section.comparative-subgroups.heading' | translate,
-    isLink: true
+    text: 'aggregate-reports.form.section.comparative-subgroups.heading' | translate
   },
   {
     scrollTo: reportPreviewSection,
-    text: 'aggregate-reports.form.summary.heading' | translate,
-    isLink: true
+    text: 'aggregate-reports.form.summary.heading' | translate
   },
   {
-    clickAction: onExportButtonClick.bind(this),
+    click: onExportButtonClick.bind(this),
     text: 'labels.export.csv' | translate,
     classes: 'navbar-link btn btn-default btn-sm float-none-xs',
-    isButton: true,
     iconClasses: 'fa fa-table'
   },
   {
-    clickAction: onGenerateButtonClick.bind(this),
+    click: onGenerateButtonClick.bind(this),
     text: 'aggregate-reports.form.submit' | translate,
     classes: 'navbar-link btn btn-success btn-sm ml-xs green',
-    isButton: true,
     iconClasses: 'fa fa-gears'
   }]"></scroll-nav>
 
@@ -82,7 +74,7 @@
             <label>{{'aggregate-reports.form.field.organization.label' | translate}}</label>
             <organization-typeahead #organizationTypeahead
                                     [options]="organizationTypeaheadOptions"
-                                    (select)="onOrganizationTypeaheadSelect($event)"></organization-typeahead>
+                                    (selected)="onOrganizationTypeaheadSelect($event)"></organization-typeahead>
             <div class="form-group">
               <input type="hidden"
                      [(ngModel)]="organizations"
@@ -497,7 +489,7 @@
               </div>
               <div class="col-md-3">
                 <!-- this doesnt quite work but it will be going away -->
-                <performance-comparison [assessmentTypeCode]="settings.assessmentType.code"
+                <performance-comparison [assessmentTypeCode]="settings.assessmentType"
                                         [groupPerformanceLevels]="settings.performanceLevelDisplayType === 'Grouped'"
                                         [performanceGroupingCutpoint]="currentAssessmentDefinition.performanceLevelGroupingCutPoint"
                                         [performancePercentages]="[50, 50, 50, 50]"></performance-comparison>
@@ -600,7 +592,7 @@
               {
                 label: 'aggregate-reports.form.summary.column.organization.attribute.include.label' | translate,
                 values: [
-                  settings.includeStateResults && settings.assessmentType.code === 'sum'
+                  settings.includeStateResults && !this.currentAssessmentDefinition.interim
                     ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.state-results' | translate)
                     : undefined,
                   settings.includeAllDistricts
