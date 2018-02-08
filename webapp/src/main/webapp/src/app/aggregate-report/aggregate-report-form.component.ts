@@ -256,80 +256,17 @@ export class AggregateReportFormComponent {
    * Creates a report if the form is valid
    */
   onGenerateButtonClick(): void {
-    console.log('called!')
     this.validate(this.formGroup, () => {
-      const request = this.createReportRequest();
-      this.reportService.getEstimatedRowCount(request.reportQuery)
+      this.reportService.createReport(this.createReportRequest())
         .subscribe(
-          count => {
-            if (count < SupportedRowCount) {
-              this.createViewableReport(request);
-            } else {
-              this.showConfirmationModal(count, () => this.createNonViewableReport(request))
-            }
+          resource => {
+            this.router.navigate([ resource.id ], { relativeTo: this.route });
+          },
+          error => {
+            this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
           }
-        )
+        );
     });
-  }
-
-  /**
-   * Creates a non viewable report if the form is valid
-   */
-  onExportButtonClick(): void {
-    this.validate(this.formGroup, () => {
-      this.createNonViewableReport(this.createReportRequest());
-    });
-  }
-
-  /**
-   * Submits request to create report then navigates user to the report view page
-   *
-   * @param {AggregateReportRequest} request
-   */
-  private createViewableReport(request: AggregateReportRequest): void {
-    this.createReport(request, resource => {
-      this.router.navigate([ resource.id ], { relativeTo: this.route });
-    })
-  }
-
-  /**
-   * Submits request to create report then navigates user to the reports page
-   *
-   * @param {AggregateReportRequest} request
-   */
-  private createNonViewableReport(request: AggregateReportRequest): void {
-    this.createReport(request, resource => {
-      this.router.navigate([ 'reports' ]);
-    })
-  }
-
-  /**
-   * Creates a report and then calls the provided callback on success.
-   * Displays failure notification if unsuccessful.
-   *
-   * @param {AggregateReportRequest} request
-   * @param {(resource: Report) => void} onCreated
-   */
-  private createReport(request: AggregateReportRequest, onCreated: (resource: Report) => void): void {
-    this.reportService.createReport(request)
-      .subscribe(
-        onCreated,
-        error => {
-          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
-        }
-      )
-  }
-
-  /**
-   * Displays confirmation modal
-   *
-   * @param {number} rowCount the count of rows of the report request
-   * @param {() => void} accept what to do when the modal is accepted
-   */
-  private showConfirmationModal(rowCount: number, accept: () => void): void {
-    const modal = this.modalService.show(AggregateReportConfirmationModal);
-    modal.content.rowCount = rowCount;
-    modal.content.accept = accept;
   }
 
   /**
