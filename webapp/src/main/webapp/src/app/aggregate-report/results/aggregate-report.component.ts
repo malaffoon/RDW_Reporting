@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
-import { AggregateReportTable } from "./aggregate-report-table.component";
+import { AggregateReportTable, SupportedRowCount } from "./aggregate-report-table.component";
 import { Observable } from "rxjs/Observable";
 import { AggregateReportOptions } from "../aggregate-report-options";
 import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
@@ -131,10 +131,9 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private isSupportedSize(report: Report): boolean {
-    // const rowCount: string = this.report.metadata.totalCount;
-    // return Utils.isUndefined(rowCount)
-    //   || (Number.parseInt(rowCount) <= SupportedRowCount);
-    return false;
+    const rowCount: string = this.report.metadata.totalCount;
+    return Utils.isUndefined(rowCount)
+      || (Number.parseInt(rowCount) <= SupportedRowCount);
   }
 
   private loadReport(): void {
