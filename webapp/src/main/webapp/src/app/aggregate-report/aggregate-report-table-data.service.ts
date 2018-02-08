@@ -7,7 +7,7 @@ import { Utils } from "../shared/support/support";
 import { TranslateService } from "@ngx-translate/core";
 import { DimensionConfigurationByType } from "./dimension-configuration";
 
-const OverallDimension: Dimension = { id: 'Overall', type: 'Overall', includeType: true };
+const OverallDimension: Dimension = { id: 'Overall', type: 'Overall' };
 
 // when adding a new dimension type one needs to be defined here
 

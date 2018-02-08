@@ -41,6 +41,6 @@ export const DimensionConfigurationByType: { [dimensionType: string]: DimensionC
   },
   StudentEnrolledGrade: {
     getDimensionValueCodes: settings => Utils.isNullOrEmpty(settings.assessmentGrades) ? [] : [ settings.assessmentGrades[0] ],
-    getTranslationCode: value => `common.grade.${value}.enrolled`
+    getTranslationCode: value => `common.enrolled-grade.${value}`
   }
 };
