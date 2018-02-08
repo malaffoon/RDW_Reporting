@@ -350,6 +350,10 @@
     },
     "strict-boolean": {
       "yes": "Yes",
+      "no": "No"
+    },
+    "boolean": {
+      "yes": "Yes",
       "no": "No",
       "undefined": "Not Stated"
     },
