@@ -1,13 +1,11 @@
 <nav class="sidebar affix leftnav">
   <ul class="nav nav-pills nav-stacked">
     <li *ngFor="let item of items">
-      <a *ngIf="item.scrollTo"
-         class="navbar-link"
+      <a class="navbar-link small"
+         href="javascript:void(0)"
          [ngClass]="{active: item === activeItem}"
-         (click)="onItemClickInternal(item)">{{item.text}}</a>
-      <button *ngIf="!item.scrollTo"
-              [className]="item.classes"
-              (click)="onItemClickInternal(item)"><i *ngIf="item.iconClasses" [class]="item.iconClasses"></i> {{item.text}}</button>
+         [class]="item.classes"
+         (click)="onItemClickInternal(item)"><ng-container *ngIf="item.iconClasses"><i [class]="item.iconClasses"></i> </ng-container>{{item.text}}</a>
     </li>
   </ul>
 </nav>

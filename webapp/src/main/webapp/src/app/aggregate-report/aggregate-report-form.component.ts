@@ -256,6 +256,7 @@ export class AggregateReportFormComponent {
    * Creates a report if the form is valid
    */
   onGenerateButtonClick(): void {
+    console.log('called!')
     this.validate(this.formGroup, () => {
       const request = this.createReportRequest();
       this.reportService.getEstimatedRowCount(request.reportQuery)
