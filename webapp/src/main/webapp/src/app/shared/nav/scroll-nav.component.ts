@@ -2,6 +2,7 @@ import { Component, HostListener, Inject, Input } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { WindowRefService } from "../core/window-ref.service";
 import { Utils } from "../support/support";
+import { nextTick } from "q";
 
 @Component({
   selector: 'scroll-nav',
@@ -35,8 +36,13 @@ export class ScrollNavComponent {
   }
 
   onItemClickInternal(item: ScrollNavItem): void {
-    item.scrollTo && item.scrollTo.scrollIntoView();
-    item.click && item.click();
+    if (item.scrollTo) {
+      item.scrollTo.scrollIntoView();
+      nextTick(() => { this._activeItem = item; });
+    }
+    if (item.click) {
+      item.click();
+    }
   }
 
   private getScrollTop(): number {
