@@ -3,11 +3,7 @@
     "title": "Reporting System"
   },
   "home": {
-    "section": {
-      "aggregate-report": {
-        "link-label": "Create Report"
-      }
-    }
+    "aggregate-reports-link": "Create Aggregate Report"
   },
   "sample-aggregate-table-data-service": {
     "organization-name-format": "School / District {{id}}"
