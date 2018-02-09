@@ -91,7 +91,6 @@ export class AggregateReportFormComponent {
    */
   assessmentDefinitionsByTypeCode: Map<string, AssessmentDefinition>;
 
-
   constructor(private router: Router,
               private route: ActivatedRoute,
               private optionMapper: AggregateReportFormOptionsMapper,
