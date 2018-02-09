@@ -70,12 +70,16 @@ export class AggregateReportItemMapper {
   }
 
   private mapDimension(dimension: any): Dimension {
-    return {
+    const dimensionConfiguration = DimensionConfigurationByType[dimension.type];
+    const dimensionBuilder: any = {
       id: `${dimension.type}.${dimension.code}`,
       type: dimension.type,
-      code: dimension.code,
-      codeTranslationCode: DimensionConfigurationByType[dimension.type].getTranslationCode(dimension.code)
+      code: dimension.code
     };
+    if (dimensionConfiguration) {
+      dimensionBuilder.codeTranslationCode = dimensionConfiguration.getTranslationCode(dimension.code);
+    }
+    return dimensionBuilder;
   }
 
 }
