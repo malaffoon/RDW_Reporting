@@ -64,9 +64,8 @@
              class="full-cell pt-0"
              [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
           {{
-            (row.dimension.includeType ? (('common.dimension.' + row.dimension.type) | translate) : '')
-            + (row.dimension.includeType && row.dimension.code ? ': ' : '')
-            + (row.dimension.code ? (row.dimension.codeTranslationCode | translate) : '')
+            (('common.dimension.' + row.dimension.type) | translate)
+            + (row.dimension.code ? ': ' + (row.dimension.codeTranslationCode | translate) : '')
           }}
         </div>
       </ng-template>
