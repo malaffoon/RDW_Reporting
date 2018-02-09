@@ -20,7 +20,6 @@ import { AggregateReportTableDataService } from "./aggregate-report-table-data.s
 import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportOptions } from "./aggregate-report-options";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
-import { ScrollNavItem } from "../shared/nav/scroll-nav.component";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
