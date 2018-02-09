@@ -14,8 +14,15 @@
   },
   "aggregate-report": {
     "heading": "Aggregate Report",
-    "update-request": "Update Query",
-    "unsupported-size-error": "This report is too large to view. Please modify the query and retry."
+    "form-link": "View Query",
+    "processing": "Your report is being generated. This may take several minutes. ",
+    "download-data": "Download Data",
+    "display-report": "Display Report",
+    "reports-link": "My Reports",
+    "error": {
+      "unloadable": "The requested report cannot be loaded. Visit \"My Reports\" to see status.",
+      "unsupported-size": "The requested report may be too large to view in the browser and may slow down or crash your browser if displayed. Would you like to download the report data as a spreadsheet instead?"
+    }
   },
   "aggregate-reports": {
     "heading": "Aggregate Reports",
