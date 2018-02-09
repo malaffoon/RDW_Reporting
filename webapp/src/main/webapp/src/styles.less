@@ -474,6 +474,15 @@ body .select-menu-group {
   padding: @table-cell-padding;
 }
 
+.table-row-size-fixed {
+  .full-cell {
+    height: 35px;
+  }
+  .full-cell.narrow-cell {
+    padding: 0 @table-cell-padding;
+  }
+}
+
 aggregate-report-results {
   .table .scale-score {
     font-size: inherit;
@@ -485,6 +494,7 @@ aggregate-report-results {
   }
 }
 
+.performance-level-distribution-chart,
 .performance-comparison-graph {
   position: relative;
   display: flex;

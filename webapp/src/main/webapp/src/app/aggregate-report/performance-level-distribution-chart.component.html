@@ -1,0 +1,17 @@
+<div class="bar-container" [attr.data-width]="performanceLevelBars.right ? 50 : 100">
+  <ng-container *ngFor="let bar of performanceLevelBars.left">
+    <ng-container *ngTemplateOutlet="barTemplate; context:{ $implicit: bar}"></ng-container>
+  </ng-container>
+</div>
+<div class="bar-container" *ngIf="performanceLevelBars.right" [attr.data-width]="50">
+  <ng-container *ngFor="let bar of performanceLevelBars.right">
+    <ng-container *ngTemplateOutlet="barTemplate; context:{ $implicit: bar}"></ng-container>
+  </ng-container>
+</div>
+
+<ng-template #barTemplate let-bar>
+  <div *ngIf="bar.width > 0"
+       class="bar"
+       [ngClass]="bar.classes"
+       [attr.data-width]="bar.width"></div>
+</ng-template>

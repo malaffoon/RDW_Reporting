@@ -26,7 +26,7 @@ export class AggregateReportOptionsService {
   getReportOptions(): Observable<AggregateReportOptions> {
     return this.dataService.get(`${ServiceRoute}/reportOptions`).map(options => <AggregateReportOptions>{
       assessmentGrades: options.assessmentGrades,
-      assessmentTypes: options.assessmentTypes,
+      assessmentTypes: ['iab'],
       completenesses: options.completenesses.sort(completenessComparator),
       dimensionTypes: options.dimensionTypes,
       economicDisadvantages: options.economicDisadvantages.sort(booleanComparator),
