@@ -8,3 +8,7 @@ app:
       url-db: ci
       username: ci
       password:
+
+  aggregate-reports:
+    custom-aggregate-report-repository:
+      query-partition-size: 2
