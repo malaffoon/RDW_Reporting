@@ -110,12 +110,11 @@
             field="{{ 'performanceLevelByDisplayTypes.' + performanceLevelDisplayType + '.' + valueDisplayType + '.' + levelIndex }}">
     <ng-template pTemplate="header">
       <div class="text-center">
-        <span>{{getPerformanceLevelColumnHeaderTranslationCode(level) | translate}}</span><br>
-        <span class="label"
+        <div class="label"
               [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
-          {{ (performanceLevelTranslationPrefix + level + '.short-name') | translate }}
-        </span><br>
-        <span>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</span>
+          {{ getPerformanceLevelColumnHeaderTranslationCode(level) | translate }}
+        </div>
+        <div>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</div>
       </div>
     </ng-template>
     <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">

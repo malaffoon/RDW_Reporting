@@ -11,9 +11,6 @@ const ServiceRoute = '/aggregate-service';
 const booleanComparator = ordering(ranking([ 'yes', 'no', 'undefined' ])).compare;
 const completenessComparator = ordering(ranking([ 'Complete', 'Partial' ])).compare;
 
-// IDs are no longer used by the UI
-const codesOf = values => values.map(value => value.code);
-
 /**
  * Service responsible for gathering aggregate report options from the server
  */
@@ -24,24 +21,25 @@ export class AggregateReportOptionsService {
   }
 
   getReportOptions(): Observable<AggregateReportOptions> {
-    return this.dataService.get(`${ServiceRoute}/reportOptions`).map(options => <AggregateReportOptions>{
-      assessmentGrades: options.assessmentGrades,
-      assessmentTypes: ['iab'],
-      completenesses: options.completenesses.sort(completenessComparator),
-      dimensionTypes: options.dimensionTypes,
-      economicDisadvantages: options.economicDisadvantages.sort(booleanComparator),
-      ethnicities: options.ethnicities,
-      genders: options.genders,
-      individualEducationPlans: options.individualEducationPlans.sort(booleanComparator),
-      interimAdministrationConditions: options.interimAdministrationConditions,
-      limitedEnglishProficiencies: options.limitedEnglishProficiencies.sort(booleanComparator),
-      migrantStatuses: options.migrantStatuses.sort(booleanComparator),
-      section504s: options.section504s.sort(booleanComparator),
-      schoolYears: options.schoolYears,
-      statewideReporter: options.statewideReporter,
-      subjects: options.subjects,
-      summativeAdministrationConditions: options.summativeAdministrationConditions
-    });
+    return this.dataService.get(`${ServiceRoute}/reportOptions`)
+      .map(options => <AggregateReportOptions>{
+        assessmentGrades: options.assessmentGrades,
+        assessmentTypes: options.assessmentTypes,
+        completenesses: options.completenesses.sort(completenessComparator),
+        dimensionTypes: options.dimensionTypes,
+        economicDisadvantages: options.economicDisadvantages.sort(booleanComparator),
+        ethnicities: options.ethnicities,
+        genders: options.genders,
+        individualEducationPlans: options.individualEducationPlans.sort(booleanComparator),
+        interimAdministrationConditions: options.interimAdministrationConditions,
+        limitedEnglishProficiencies: options.limitedEnglishProficiencies.sort(booleanComparator),
+        migrantStatuses: options.migrantStatuses.sort(booleanComparator),
+        section504s: options.section504s.sort(booleanComparator),
+        schoolYears: options.schoolYears,
+        statewideReporter: options.statewideReporter,
+        subjects: options.subjects,
+        summativeAdministrationConditions: options.summativeAdministrationConditions
+      });
   }
 
 }

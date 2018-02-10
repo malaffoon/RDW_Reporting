@@ -22,7 +22,7 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
   selector: 'sb-toggle',
   template: `
     <div class="btn-group toggle-group"
-         [ngClass]="ngClass"
+         [ngClass]="computeClassesInternal()"
          data-toggle="buttons">
       <label *ngFor="let option of options"
              class="btn"
@@ -73,9 +73,6 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
   @Input()
   set ngClass(value: any) {
     this._ngClass = value;
-      typeof value === 'string'
-      ? `${Object.keys(DefaultStyleClasses).join(' ')} ${value}`
-      : Object.assign({}, DefaultStyleClasses, );
   }
 
   get buttonNgClass(): any {
@@ -85,9 +82,6 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
   @Input()
   set buttonNgClass(value: any) {
     this._buttonNgClass = value;
-      typeof value === 'string'
-      ? `${Object.keys(DefaultButtonStyleClasses).join(' ')} ${value}`
-      : Object.assign({}, DefaultButtonStyleClasses, value);
   }
 
   get options(): Option[] {
