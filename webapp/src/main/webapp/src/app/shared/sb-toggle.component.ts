@@ -1,16 +1,10 @@
-import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Component, Input, OnInit } from "@angular/core";
 import { Utils } from "./support/support";
 import { AbstractControlValueAccessor } from "./form/abstract-control-value-accessor";
+import { Forms } from "./form/forms";
 
-const DefaultStyleClasses = {'btn-group-sm': true};
-const DefaultButtonStyleClasses = {'btn-primary': true};
-
-const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => SBToggleComponent),
-  multi: true
-};
+const DefaultStyleClasses = { 'btn-group-sm': true };
+const DefaultButtonStyleClasses = { 'btn-primary': true };
 
 /**
  * TODO rename to sb-radio-button-group
@@ -40,7 +34,9 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
       </label>
     </div>
   `,
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR ]
+  providers: [
+    Forms.valueAccessor(SBToggleComponent)
+  ]
 })
 export class SBToggleComponent extends AbstractControlValueAccessor<any> implements OnInit {
 

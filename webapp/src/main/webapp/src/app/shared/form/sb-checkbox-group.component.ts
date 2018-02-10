@@ -1,5 +1,4 @@
-import { Component, forwardRef, Input, OnInit } from "@angular/core";
-import { NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Component, Input, OnInit } from "@angular/core";
 import { AbstractControlValueAccessor } from "./abstract-control-value-accessor";
 import { Forms } from "./forms";
 
@@ -54,7 +53,7 @@ import { Forms } from "./forms";
     </div>
   `,
   providers: [
-    Forms.valueAccessor(() => SBCheckboxGroup)
+    Forms.valueAccessor(SBCheckboxGroup)
   ]
 })
 export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> implements OnInit {

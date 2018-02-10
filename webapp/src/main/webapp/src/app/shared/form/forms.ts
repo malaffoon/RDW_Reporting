@@ -9,10 +9,10 @@ export class Forms {
   /**
    * Provides the value accessor provider necessary for hooking {ControlValueAccessor}s into Angular rorms
    */
-  public static valueAccessor(forwardReferenceProvider: ForwardRefFn) {
+  public static valueAccessor(reference: any) {
     return {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(forwardReferenceProvider),
+      useExisting: forwardRef(() => reference),
       multi: true
     }
   }
