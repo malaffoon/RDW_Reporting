@@ -41,7 +41,7 @@
     </ng-template>
     <ng-template let-data="rowData" let-exam="rowData.exam" pTemplate="body">
       {{ 'enum.iab-category.full.' + (exam.level ? exam.level.toString() : 'missing') | translate }}
-      <button
+      <button *ngIf="exam.isIab"
         class="btn btn-borderless btn-xs icon-only pull-right"
         angulartics2On="click"
         angularticsEvent="InstructionalResource"
