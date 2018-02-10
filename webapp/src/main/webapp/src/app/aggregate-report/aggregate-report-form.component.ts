@@ -5,7 +5,7 @@ import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { NotificationService } from "../shared/notification/notification.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Forms } from "../shared/form/forms";
-import { District, Organization, OrganizationType, School } from "../shared/organization/organization";
+import { DefaultSchool, District, Organization, OrganizationType, School } from "../shared/organization/organization";
 import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
@@ -293,7 +293,7 @@ export class AggregateReportFormComponent {
    * @returns {AggregateReportRequest} the created request
    */
   private createReportRequest(): AggregateReportRequest {
-    return this.requestMapper.map(this.options, this.settings);
+    return this.requestMapper.map(this.options, this.settings, this.currentAssessmentDefinition);
   }
 
   /**

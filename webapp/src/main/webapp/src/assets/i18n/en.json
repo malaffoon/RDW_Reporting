@@ -324,6 +324,7 @@
   },
   "collapse": "Collapse",
   "common": {
+    "export": "Export",
     "dimension": {
       "Overall": "Overall",
       "Gender": "Gender",
@@ -335,6 +336,7 @@
       "EconomicDisadvantage": "Economic Disadvantage",
       "StudentEnrolledGrade": "Student Enrolled Grade"
     },
+    "value-display-type-input-label": "Show value as",
     "value-display-type": {
       "Percent": "Percent",
       "Number": "Number"
@@ -343,6 +345,7 @@
       "Percent": "{{value}}%",
       "Number": "{{value}}"
     },
+    "performance-level-display-type-input-label": "Show achievement levels",
     "performance-level-display-type": {
       "Separate": "Separate",
       "Grouped": "Grouped"

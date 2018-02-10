@@ -9,6 +9,8 @@ import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { District, OrganizationType, School } from "../../shared/organization/organization";
 import { Utils } from "../../shared/support/support";
 import { AggregateReportOptions } from "../aggregate-report-options";
+import { PerformanceLevelDisplayTypes } from "../../shared/display-options/performance-level-display-type";
+import { ValueDisplayTypes } from "../../shared/display-options/value-display-type";
 
 export const SupportedRowCount = 10000;
 
@@ -51,22 +53,11 @@ const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber).on(
 @Component({
   selector: 'aggregate-report-table',
   templateUrl: 'aggregate-report-table.component.html',
+  host: {
+    '[class.disabled-table]' : 'preview',
+  }
 })
 export class AggregateReportTableComponent implements OnInit {
-
-  /**
-   * True if performance aggregate values should be displayed as percentages of total
-   * students tested.  False to display absolute counts.
-   */
-  @Input()
-  public valueDisplayType: string;
-
-  /**
-   * True if performance levels should be grouped based upon the performance level rollup.
-   */
-  @Input()
-  public performanceLevelDisplayType: string;
-
 
   @Input()
   public preview: boolean = false;
@@ -84,6 +75,8 @@ export class AggregateReportTableComponent implements OnInit {
   private _paginationEnabled: boolean = false;
   private _districtNamesById: Map<number, string> = new Map();
   private _orderingByColumnField: { [key: string]: Ordering<AggregateReportItem> } = {};
+  private _valueDisplayType: string = ValueDisplayTypes.Percent;
+  private _performanceLevelDisplayType: string = PerformanceLevelDisplayTypes.Separate;
 
   constructor(public colorService: ColorService) {
   }
@@ -102,6 +95,24 @@ export class AggregateReportTableComponent implements OnInit {
       this.updatePagination();
       this.loading = false;
     });
+  }
+
+  get valueDisplayType(): string {
+    return this._valueDisplayType;
+  }
+
+  @Input()
+  set valueDisplayType(value: string) {
+    this._valueDisplayType = ValueDisplayTypes.valueOf(value);
+  }
+
+  get performanceLevelDisplayType(): string {
+    return this._performanceLevelDisplayType;
+  }
+
+  @Input()
+  set performanceLevelDisplayType(value: string) {
+    this._performanceLevelDisplayType = PerformanceLevelDisplayTypes.valueOf(value);
   }
 
   /**

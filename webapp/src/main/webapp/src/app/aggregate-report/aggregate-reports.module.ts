@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "../shared/common.module";
 import { DataTableModule } from "primeng/primeng";
 import { BrowserModule } from "@angular/platform-browser";
-import { PerformanceComparisonComponent } from "./results/performance-comparison.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 import { AggregateReportOptionsService } from "./aggregate-report-options.service";
@@ -23,6 +22,7 @@ import { AggregateReportTableComponent } from "./results/aggregate-report-table.
 import { AssessmentModule } from "./assessment/assessment.module";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
+import { PerformanceLevelDistributionChart } from "../shared/assessment/performanc-level/performance-level-distribution-chart.component";
 import { AggregateReportFormSettingsResolve } from "./aggregate-report-form-settings.resolve";
 
 @NgModule({
@@ -30,7 +30,6 @@ import { AggregateReportFormSettingsResolve } from "./aggregate-report-form-sett
     AggregateReportFormComponent,
     AggregateReportComponent,
     AggregateReportTableComponent,
-    PerformanceComparisonComponent,
     AggregateReportSummary,
     AggregateReportOrganizationList
   ],
