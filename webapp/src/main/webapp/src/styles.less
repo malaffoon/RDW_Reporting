@@ -339,7 +339,7 @@ body .select-menu-group,
 }
 
 body .select-menu-group {
-  padding: 0.5em 0.5em 0.5em 0;
+  display: inline-block;
 }
 
 /**
@@ -457,6 +457,8 @@ body .select-menu-group {
   border-left-color: @gray-mid;
   margin-top: @padding-base-vertical;
   margin-right: -@padding-base-horizontal;
+  position: relative;
+  top: 1px;
 }
 
 .dropdown-submenu.pull-left {
@@ -691,7 +693,7 @@ query-builder {
   border-radius: 5px;
 }
 
-aggregate-reports {
+aggregate-report-form {
   .well-group .well {
     padding-bottom: 20px;
   }
@@ -748,11 +750,6 @@ aggregate-reports {
   .leftnav {
     position: static;
   }
-}
-
-.leftnav {
-  border-left: 1px solid @gray-darker;
-  max-width: 200px;
 }
 
 .nav > li > button {

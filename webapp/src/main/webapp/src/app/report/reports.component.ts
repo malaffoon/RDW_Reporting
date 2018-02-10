@@ -1,12 +1,9 @@
-import { OnInit, Component, OnDestroy } from "@angular/core";
-import { saveAs } from "file-saver";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Report } from "./report.model";
 import { ActivatedRoute } from "@angular/router";
 import { ReportService } from "./report.service";
-import { NotificationService } from "../shared/notification/notification.service";
 import { Resolution } from "../shared/resolution.model";
 import Timer = NodeJS.Timer;
-import { Download } from "../shared/data/download.model";
 
 /**
  * Responsible for controlling the behavior of the reports page
@@ -24,8 +21,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   private statusPollingTimer: Timer;
 
   constructor(private route: ActivatedRoute,
-              private service: ReportService,
-              private notificationService: NotificationService) {
+              private service: ReportService) {
   }
 
   ngOnInit(): void {
@@ -46,22 +42,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   reload(): void {
     window.location.reload();
-  }
-
-  download(report: Report): void {
-    this.service.getExamReport(report.id)
-      .subscribe(
-        (download: Download) => {
-          saveAs(download.content, download.name);
-        },
-        () => {
-          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
-        }
-      );
-  }
-
-  regenerate(report: Report): void {
-    this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
   }
 
   private startPollingStatus(): void {

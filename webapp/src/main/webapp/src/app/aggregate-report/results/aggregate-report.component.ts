@@ -10,6 +10,10 @@ import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { AggregateReportRow } from "../../report/aggregate-report";
 import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../../shared/support/support";
+import { Comparator, ranking } from "@kourge/ordering/comparator";
+import { ordering } from "@kourge/ordering";
+import { AggregateReportQuery } from "../../report/aggregate-report-request";
+import { saveAs } from "file-saver";
 
 const PollingInterval = 4000;
 
@@ -19,41 +23,68 @@ const PollingInterval = 4000;
  */
 @Component({
   selector: 'aggregate-report',
-  templateUrl: './aggregate-report.component.html',
+  templateUrl: 'aggregate-report.component.html',
 })
 export class AggregateReportComponent implements OnInit, OnDestroy {
 
-  assessmentDefinitionsByAssessmentTypeCode: Map<string, AssessmentDefinition>;
+  assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
   report: Report;
-  reportTables: AggregateReportTable[];
-  reportSizeSupported: boolean;
-  pollingSubscription: Subscription;
+  reportTables: AggregateReportTableView[];
+  private _tableViewComparator: Comparator<AggregateReportTableView>;
+  private _pollingSubscription: Subscription;
+  private _displayLargeReport: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private reportService: ReportService,
               private itemMapper: AggregateReportItemMapper) {
-
-    this.assessmentDefinitionsByAssessmentTypeCode = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
-    this.options = this.route.parent.snapshot.data[ 'options' ];
+    this.options = this.route.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
-    this.reportSizeSupported = Utils.isUndefined(this.report.metadata.totalCount)
-      || (Number.parseInt(this.report.metadata.totalCount) <= SupportedRowCount);
+    this.assessmentDefinition = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ]
+      .get(this.report.request.reportQuery.assessmentTypeCode);
+    this._tableViewComparator = ordering(ranking(this.options.subjects))
+      .on((wrapper: AggregateReportTableView) => wrapper.subjectCode).compare;
   }
 
-  get loading(): boolean {
-    return this.reportSizeSupported && !this.reportTables;
+  get query(): AggregateReportQuery {
+    return this.report.request.reportQuery;
   }
 
-  get dimensionRanking(): string[] {
-    return this.options.dimensionTypes;
+  get viewState(): ViewState {
+    if (this.report.processing) {
+      return ViewState.ReportProcessing;
+    }
+    if (!this.report.loadable) {
+      return ViewState.ReportNotLoadable;
+    }
+    if (!this.isSupportedSize(this.report) && !this._displayLargeReport) {
+      return ViewState.ReportSizeNotSupported;
+    }
+    if (!Utils.isUndefined(this.reportTables) || this._displayLargeReport) {
+      return ViewState.ReportView;
+    }
+    return ViewState.ReportProcessing;
+  }
+
+  get reportProcessing(): boolean {
+    return this.viewState === ViewState.ReportProcessing;
+  }
+
+  get reportNotLoadable(): boolean {
+    return this.viewState === ViewState.ReportNotLoadable;
+  }
+
+  get reportSizeNotSupported(): boolean {
+    return this.viewState === ViewState.ReportSizeNotSupported;
+  }
+
+  get reportView(): boolean {
+    return this.viewState === ViewState.ReportView;
   }
 
   ngOnInit(): void {
-    if (this.reportSizeSupported) {
-      this.loadOrPollReportStatus();
-    }
+    this.loadOrPollReport();
   }
 
   ngOnDestroy(): void {
@@ -61,22 +92,47 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   onUpdateRequestButtonClick(): void {
-    this.router.navigate([ '..' ], { relativeTo: this.route });
+    this.router.navigate([ '..'  ], { relativeTo: this.route, queryParams: {src: this.report.id} });
   }
 
-  private loadOrPollReportStatus(): void {
+  onDisplayReportButtonClick(): void {
+    this._displayLargeReport = true;
+    this.loadReport();
+  }
+
+  onDownloadDataButtonClick(): void {
+    this.reportService.getAggregateReportAsSpreadsheet(this.report.id)
+      .subscribe(download => {
+        saveAs(download.content, download.name);
+      });
+  }
+
+  private loadOrPollReport(): void {
     if (this.report.completed) {
       this.loadReport();
-    } else {
-      this.pollingSubscription = Observable.interval(PollingInterval)
-        .switchMap(() => this.reportService.getReportById(this.report.id))
-        .subscribe(report => {
-          if (report.completed) {
-            this.unsubscribe();
-            this.loadReport();
-          }
-        });
+    } else if (this.report.processing) {
+      this.pollReport();
     }
+  }
+
+  private pollReport(): void {
+    this._pollingSubscription = Observable.interval(PollingInterval)
+      .switchMap(() => this.reportService.getReportById(this.report.id))
+      .subscribe(report => {
+        if (!report.processing) {
+          this.unsubscribe();
+        }
+        if (report.completed) {
+          this.loadReport();
+        }
+        this.report = report;
+      });
+  }
+
+  private isSupportedSize(report: Report): boolean {
+    const rowCount: string = this.report.metadata.totalCount;
+    return Utils.isUndefined(rowCount)
+      || (Number.parseInt(rowCount) <= SupportedRowCount);
   }
 
   private loadReport(): void {
@@ -85,38 +141,45 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private initializeReportTables(rows: AggregateReportRow[]): void {
-
-    const subjects = this.options.subjects;
-    const assessmentDefinition = this.assessmentDefinitionsByAssessmentTypeCode.get(this.report.request.reportQuery.assessmentTypeCode);
-
-    this.reportTables = rows.reduce((tables, row, index) => {
-
-      const item = this.itemMapper.map(assessmentDefinition, row, index);
-      const subject = subjects.find(option => option.code === row.assessment.subjectCode);
-      const table = tables.find(table => table.subjectCode === subject.code);
-
-      if (!table) {
-        tables.push({
-          subjectCode: subject.code,
-          assessmentDefinition: assessmentDefinition,
-          rows: [ item ]
+    this.reportTables = rows.reduce((tableWrappers, row, index) => {
+      const item = this.itemMapper.map(this.assessmentDefinition, row, index);
+      const subjectCode = row.assessment.subjectCode;
+      const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
+      if (!tableWrapper) {
+        tableWrappers.push({
+          subjectCode: subjectCode,
+          table: {
+            options: this.options,
+            assessmentDefinition: this.assessmentDefinition,
+            rows: [ item ]
+          }
         });
       } else {
-        table.rows.push(item);
+        tableWrapper.table.rows.push(item);
       }
-
-      return tables;
-    }, []).sort((a, b) => {
-      const rank = (x) => subjects.findIndex(subject => subject.code === x.code);
-      return rank(a) - rank(b);
-    })
+      return tableWrappers;
+    }, []).sort(this._tableViewComparator);
   }
 
   private unsubscribe(): void {
-    if (this.pollingSubscription) {
-      this.pollingSubscription.unsubscribe();
-      this.pollingSubscription = undefined;
+    if (this._pollingSubscription) {
+      this._pollingSubscription.unsubscribe();
+      this._pollingSubscription = undefined;
     }
   }
+
+}
+
+interface AggregateReportTableView {
+  subjectCode: string;
+  table: AggregateReportTable;
+}
+
+enum ViewState {
+
+  ReportProcessing,
+  ReportNotLoadable,
+  ReportSizeNotSupported,
+  ReportView
 
 }
