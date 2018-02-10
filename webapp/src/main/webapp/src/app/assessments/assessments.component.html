@@ -6,15 +6,21 @@
       <div class="form-group row">
         <ng-content></ng-content>
         <div class="col-md-2">
-        <!-- Advanced Filters Toggle -->
-          <label for="advanced" class="">{{'labels.filters.label' | translate}}</label>
-          <button id="advanced" class="form-control btn btn-default"
-                  (click)="showAdvancedFilters = !showAdvancedFilters"
-                  angulartics2On="click" angularticsEvent="ToggleAdvancedFilters" angularticsCategory="AssessmentResults">
-            {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
-            <i class="fa" [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}"
-               aria-hidden="true"></i>
-          </button>
+          <!-- Advanced Filters Toggle -->
+          <div class="pull-right">
+            <label for="advanced" class="pull-right">{{'labels.filters.label' | translate}}</label>
+            <button id="advanced"
+                    class="form-control btn btn-default pull-right btn-sm"
+                    (click)="showAdvancedFilters = !showAdvancedFilters"
+                    angulartics2On="click"
+                    angularticsEvent="ToggleAdvancedFilters"
+                    angularticsCategory="AssessmentResults">
+              {{'buttons.visibility.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
+              <i class="fa ml-xs"
+                 [ngClass]="{'fa-chevron-up': showAdvancedFilters, 'fa-chevron-down': !showAdvancedFilters}"
+                 aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -28,7 +34,9 @@
   </div>
 
   <!-- Advanced Filters -->
-  <div id="group-results-adv-filter-options" [hidden]="!showAdvancedFilters || !filterDisplayOptions.expanded" class="well gray-lighter">
+  <div id="group-results-adv-filter-options"
+       class="well gray-lighter"
+       [hidden]="!showAdvancedFilters || !filterDisplayOptions.expanded">
     <adv-filters [filterBy]="clientFilterBy" [filterOptions]="filterOptions"></adv-filters>
   </div>
 
@@ -136,8 +144,10 @@
 
     <button class="btn btn-default btn-xs ml-xs"
             (click)="allCollapsed = !allCollapsed">
-      <span *ngIf="!allCollapsed">{{'labels.groups.results.collapse-all' | translate}} <i class="fa fa-angle-down"></i></span>
-      <span *ngIf="allCollapsed">{{'labels.groups.results.expand-all' | translate}} <i class="fa fa-angle-up"></i></span>
+      <span>
+        {{('labels.groups.results.' + (allCollapsed ? 'expand-all' : 'collapse-all')) | translate }}
+        <i class="fa" [ngClass]="{'fa-angle-down': allCollapsed, 'fa-angle-up': !allCollapsed}"></i>
+      </span>
     </button>
 
     <button class="btn btn-default btn-xs"
