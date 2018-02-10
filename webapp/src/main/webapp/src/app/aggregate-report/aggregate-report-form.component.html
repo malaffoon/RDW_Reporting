@@ -452,62 +452,6 @@
       </div>
     </div>
 
-    <!-- Report Features -->
-    <div class="row mt-sm" #reportFeatureSection id="reportFeatureSection">
-      <div class="col-md-8 col-md-offset-2">
-        <h3 class="h3 gray-darkest">
-          {{'aggregate-reports.form.section.report-features.heading' | translate}}
-        </h3>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <div class="well-group">
-          <div class="well">
-            <div class="row">
-              <div class="col-md-6">
-                <label info-button
-                       title="{{'aggregate-reports.form.field.performance-level-display-type.label' | translate}}"
-                       content="{{'aggregate-reports.form.field.performance-level-display-type.info' | translate}}"></label>
-              </div>
-              <div class="col-md-3">
-                <sb-toggle [options]="options.performanceLevelDisplayTypes"
-                           [(ngModel)]="settings.performanceLevelDisplayType"
-                           [ngModelOptions]="{standalone: true}"
-                           name="performanceLevelDisplayType"
-                           analyticsEvent="FilterClick"
-                           analyticsCategory="AggregateQueryBuilder"
-                           (change)="onSettingsChange()"></sb-toggle>
-              </div>
-              <div class="col-md-3">
-                <!-- this doesnt quite work but it will be going away -->
-                <performance-comparison [assessmentTypeCode]="settings.assessmentType"
-                                        [groupPerformanceLevels]="settings.performanceLevelDisplayType === 'Grouped'"
-                                        [performanceGroupingCutpoint]="currentAssessmentDefinition.performanceLevelGroupingCutPoint"
-                                        [performancePercentages]="[50, 50, 50, 50]"></performance-comparison>
-              </div>
-            </div>
-          </div>
-          <div class="well">
-            <div class="row">
-              <div class="col-md-6">
-                <label>{{'aggregate-reports.form.field.value-display-type.label' | translate}}</label>
-              </div>
-              <div class="col-md-6">
-                <sb-toggle [options]="options.valueDisplayTypes"
-                           [(ngModel)]="settings.valueDisplayType"
-                           [ngModelOptions]="{standalone: true}"
-                           name="valueDisplayType"
-                           analyticsEvent="FilterClick"
-                           analyticsCategory="AggregateQueryBuilder"
-                           (change)="onSettingsChange()"></sb-toggle>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Comparative Subgroups -->
     <div class="row mt-sm" #comparativeSubgroupSection id="comparativeSubgroupSection">
       <div class="col-md-8 col-md-offset-2">
@@ -696,13 +640,34 @@
       </div>
     </div>
   </div>
+
   <div class="row">
     <div class="col-md-12 col-md-offset-2">
       <div class="well wide-content-container">
         <div>
           <span class="red label">{{ 'aggregate-reports.preview' | translate }}</span>
+          <div class="pull-right">
+            <span>
+              <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
+              <sb-toggle [options]="options.performanceLevelDisplayTypes"
+                         [(ngModel)]="settings.performanceLevelDisplayType"
+                         [ngClass]="'btn-group-xs'"
+                         [buttonNgClass]="'btn-default'"
+                         analyticsCategory="AggregateQueryBuilder"
+                         analyticsEvent="Change"></sb-toggle>
+            </span>
+            <span class="ml-sm">
+              <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
+              <sb-toggle [options]="options.valueDisplayTypes"
+                         [(ngModel)]="settings.valueDisplayType"
+                         [ngClass]="'btn-group-xs'"
+                         [buttonNgClass]="'btn-default'"
+                         analyticsCategory="AggregateQueryBuilder"
+                         analyticsEvent="Change"></sb-toggle>
+            </span>
+          </div>
         </div>
-        <div>
+        <div class="mt-sm">
           <aggregate-report-table [preview]="true"
                                   [table]="previewTable"
                                   [valueDisplayType]="settings.valueDisplayType"

@@ -1,9 +1,21 @@
-import { AbstractControl, FormControl, FormGroup, ValidationErrors } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, NG_VALUE_ACCESSOR, ValidationErrors } from "@angular/forms";
+import { forwardRef, ForwardRefFn } from "@angular/core";
 
 /**
  * Holds common methods for dealing with angular form components
  */
 export class Forms {
+
+  /**
+   * Provides the value accessor provider necessary for hooking {ControlValueAccessor}s into Angular rorms
+   */
+  public static valueAccessor(reference: any) {
+    return {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => reference),
+      multi: true
+    }
+  }
 
   /**
    * Gets all controls of the given form group

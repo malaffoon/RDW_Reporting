@@ -3,6 +3,8 @@ import { AggregateReportFormOptions } from "./aggregate-report-form-options";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { SchoolYearPipe } from "../shared/format/school-year.pipe";
+import { DisplayOptionService } from "../shared/display-options/display-option.service";
+
 
 /**
  * Responsible for mapping server provided report options into option
@@ -11,8 +13,9 @@ import { SchoolYearPipe } from "../shared/format/school-year.pipe";
 @Injectable()
 export class AggregateReportFormOptionsMapper {
 
-  constructor(private translate: TranslateService,
-              private schoolYearPipe: SchoolYearPipe) {
+  constructor(private translateService: TranslateService,
+              private schoolYearPipe: SchoolYearPipe,
+              private displayOptionService: DisplayOptionService) {
   }
 
   /**
@@ -22,18 +25,8 @@ export class AggregateReportFormOptionsMapper {
    * @returns {AggregateReportFormOptions} the client report options
    */
   map(options: AggregateReportOptions): AggregateReportFormOptions {
-
-    // Allows for creating option mappers concisely for better readability
-    const optionMapper = (translationProvider: (value: any) => string, labelProvider: (value: any) => string): any =>
-      (value: any) => <any>{
-        value: value,
-        text: translationProvider(value),
-        label: labelProvider(value)
-      };
-
-    // Allows for translating messages incline concisely for better readability
-    const translate = code => this.translate.instant(code);
-
+    const optionMapper = this.displayOptionService.createOptionMapper;
+    const translate = code => this.translateService.instant(code);
     return <AggregateReportFormOptions>{
       assessmentGrades: options.assessmentGrades
         .map(optionMapper(
@@ -105,16 +98,8 @@ export class AggregateReportFormOptionsMapper {
           value => translate(`common.strict-boolean.${value}`),
           value => `Economic Disadvantage: ${value}`
         )),
-      performanceLevelDisplayTypes: [ 'Separate', 'Grouped' ]
-        .map(optionMapper(
-          value => translate(`common.performance-level-display-type.${value}`),
-          value => `Achievement Level Display Type: ${value}`
-        )),
-      valueDisplayTypes: [ 'Percent', 'Number' ]
-        .map(optionMapper(
-          value => translate(`common.value-display-type.${value}`),
-          value => `Value Display Type: ${value}`
-        )),
+      performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions(),
+      valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
       dimensionTypes: options.dimensionTypes
         .map(optionMapper(
           value => translate(`common.dimension.${value}`),

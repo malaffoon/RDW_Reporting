@@ -3,6 +3,7 @@ import { AggregateReportQuery, AggregateReportRequest } from "../report/aggregat
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
 import { TranslateService } from "@ngx-translate/core";
+import { AssessmentDefinition } from "./assessment/assessment-definition";
 
 const equalSize = (a: any[], b: any[]) => a.length === b.length;
 const idsOf = values => values.map(value => value.id);
@@ -23,7 +24,10 @@ export class AggregateReportRequestMapper {
    * @param {AggregateReportFormSettings} settings the aggregate report form state
    * @returns {AggregateReportRequest}
    */
-  map(options: AggregateReportFormOptions, settings: AggregateReportFormSettings): AggregateReportRequest {
+  map(options: AggregateReportFormOptions,
+      settings: AggregateReportFormSettings,
+      assessmentDefinition: AssessmentDefinition): AggregateReportRequest {
+
     const query: any = <AggregateReportQuery>{
       achievementLevelDisplayType: settings.performanceLevelDisplayType,
       assessmentTypeCode: settings.assessmentType,
@@ -38,11 +42,16 @@ export class AggregateReportRequestMapper {
       valueDisplayType: settings.valueDisplayType
     };
 
-    if (!equalSize(settings.interimAdministrationConditions, options.interimAdministrationConditions)
-      || !equalSize(settings.summativeAdministrationConditions, options.summativeAdministrationConditions)) {
-      query.administrativeConditionCodes = settings.interimAdministrationConditions
-        .concat(settings.summativeAdministrationConditions);
+    if (assessmentDefinition.interim) {
+      if (!equalSize(settings.interimAdministrationConditions, options.interimAdministrationConditions)) {
+        query.administrativeConditionCodes = settings.interimAdministrationConditions;
+      }
+    } else {
+      if (!equalSize(settings.summativeAdministrationConditions, options.summativeAdministrationConditions)) {
+        query.administrativeConditionCodes = settings.summativeAdministrationConditions;
+      }
     }
+
     if (!equalSize(settings.completenesses, options.completenesses)) {
       query.completenessCodes = settings.completenesses;
     }
