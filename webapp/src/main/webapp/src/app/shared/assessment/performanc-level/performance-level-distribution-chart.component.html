@@ -1,12 +1,11 @@
 <ng-container *ngIf="visible">
-  <div *ngIf="performanceLevelBars.left.length"
-       [attr.data-width]="performanceLevelBars.right.length ? 50 : 100"
+  <div [attr.data-width]="performanceLevelBars.right.length ? 50 : 100"
        class="bar-container">
     <ng-container *ngFor="let bar of performanceLevelBars.left">
       <ng-container *ngTemplateOutlet="barTemplate; context:{ $implicit: bar }"></ng-container>
     </ng-container>
   </div>
-  <div *ngIf="performanceLevelBars.right.length"
+  <div *ngIf="center"
        [attr.data-width]="50"
        class="bar-container">
     <ng-container *ngFor="let bar of performanceLevelBars.right">

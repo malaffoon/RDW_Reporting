@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { PerformanceLevelDisplayTypes } from "../shared/display-options/performance-level-display-type";
-import { Utils } from "../shared/support/support";
-import { ColorService } from "../shared/color.service";
+import { Utils } from "../../support/support";
+import { ColorService } from "../../color.service";
+import { PerformanceLevelDisplayTypes } from "../../display-options/performance-level-display-type";
 
 /**
  * Performance level distribution chart view

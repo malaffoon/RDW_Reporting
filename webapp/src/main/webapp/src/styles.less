@@ -513,10 +513,12 @@ aggregate-report-results {
         border-right: 1px solid #fff;
       }
     }
-    &:last-child .bar:last-child {
+    &:last-child {
       border-left: 1px solid @gray-darkest;
-      border-top-right-radius: @border-radius-small;
-      border-bottom-right-radius: @border-radius-small;
+      .bar:last-child {
+        border-top-right-radius: @border-radius-small;
+        border-bottom-right-radius: @border-radius-small;
+      }
     }
   }
   .bar {
