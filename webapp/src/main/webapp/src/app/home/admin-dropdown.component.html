@@ -1,0 +1,20 @@
+<div dropdown style="display: inline-block;" class="btn-group ml-xs">
+  <a dropdownToggle type="button"
+     class="btn btn-xs btn-info" (click)="toggle()"
+     title="{{'labels.groups.admin-button' | translate}}">
+    {{'labels.groups.admin-button' | translate}}<i class="fa ml-xs"
+                                                   [ngClass]="{'fa-chevron-right': !expanded, 'fa-chevron-down': expanded}"></i></a>
+  <ul *dropdownMenu class="dropdown-menu" role="menu">
+    <li *hasPermission="'GROUP_WRITE'"><a routerLink="/admin-groups">{{ 'labels.admin-groups.title' |
+      translate}}</a>
+    </li>
+    <li *hasPermission="'INSTRUCTIONAL_RESOURCE_WRITE'">
+      <a routerLink="/instructional-resource">{{'labels.instructional-resource.title'
+        | translate}}</a>
+    </li>
+    <li *hasPermission="'EMBARGO_WRITE'">
+      <a routerLink="/embargoes">{{'labels.embargo.title' |
+        translate}}</a>
+    </li>
+  </ul>
+</div>
