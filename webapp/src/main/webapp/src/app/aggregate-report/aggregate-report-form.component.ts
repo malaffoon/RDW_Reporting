@@ -13,7 +13,6 @@ import { AggregateReportService } from "./aggregate-report.service";
 import { AggregateReportTable } from "./results/aggregate-report-table.component";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/switchMap";
-import { BsModalService } from "ngx-bootstrap";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
@@ -32,9 +31,6 @@ const notEmpty = properties => control => {
 };
 
 const OrganizationComparator = (a: Organization, b: Organization) => a.name.localeCompare(b.name);
-
-const valuesOf = values => values.map(value => value.value);
-const firstValueOf = values => values[ 0 ].value;
 
 /**
  * Aggregate report form component
@@ -98,12 +94,14 @@ export class AggregateReportFormComponent {
               private notificationService: NotificationService,
               private organizationService: AggregateReportOrganizationService,
               private reportService: AggregateReportService,
-              private modalService: BsModalService,
               private tableDataService: AggregateReportTableDataService) {
 
     this.assessmentDefinitionsByTypeCode = route.parent.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
 
     this.aggregateReportOptions = route.parent.snapshot.data[ 'options' ];
+
+    this.settings = route.snapshot.data[ 'settings' ];
+    this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
 
     this.options = optionMapper.map(this.aggregateReportOptions);
 
@@ -114,8 +112,6 @@ export class AggregateReportFormComponent {
         organization => this.organizations.findIndex(x => organization.equals(x)) === -1
       ))
     );
-
-    this.settings = this.createDefaultSettings(this.options);
 
     this.formGroup = new FormGroup({
       organizations: new FormControl(this.organizations, notEmpty({
@@ -289,40 +285,6 @@ export class AggregateReportFormComponent {
         this.notificationService.error({ id: error.properties.messageId });
       });
     }
-  }
-
-  /**
-   * Creates the default/initial state of the aggregate report form based on the available options
-   *
-   * @param {AggregateReportFormOptions} options the options available for selection
-   * @returns {AggregateReportFormSettings} the initial form state
-   */
-  private createDefaultSettings(options: AggregateReportFormOptions): AggregateReportFormSettings {
-    return <AggregateReportFormSettings>{
-      assessmentGrades: [],
-      assessmentType: firstValueOf(options.assessmentTypes),
-      completenesses: [ firstValueOf(options.completenesses) ],
-      ethnicities: valuesOf(options.ethnicities),
-      genders: valuesOf(options.genders),
-      interimAdministrationConditions: [ firstValueOf(options.interimAdministrationConditions) ],
-      schoolYears: [ firstValueOf(options.schoolYears) ],
-      subjects: valuesOf(options.subjects),
-      summativeAdministrationConditions: [ firstValueOf(options.summativeAdministrationConditions) ],
-      migrantStatuses: valuesOf(options.migrantStatuses),
-      individualEducationPlans: valuesOf(options.individualEducationPlans),
-      section504s: valuesOf(options.section504s),
-      limitedEnglishProficiencies: valuesOf(options.limitedEnglishProficiencies),
-      economicDisadvantages: valuesOf(options.economicDisadvantages),
-      performanceLevelDisplayType: firstValueOf(options.performanceLevelDisplayTypes),
-      valueDisplayType: firstValueOf(options.valueDisplayTypes),
-      dimensionTypes: [],
-      includeStateResults: true,
-      includeAllDistricts: false,
-      includeAllSchoolsOfSelectedDistricts: false,
-      includeAllDistrictsOfSelectedSchools: true,
-      districts: [],
-      schools: []
-    };
   }
 
   /**

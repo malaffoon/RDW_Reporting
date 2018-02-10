@@ -23,6 +23,7 @@ import { AssessmentModule } from "./assessment/assessment.module";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
 import { PerformanceLevelDistributionChart } from "./performance-level-distribution-chart.component";
+import { AggregateReportFormSettingsResolve } from "./aggregate-report-form-settings.resolve";
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { PerformanceLevelDistributionChart } from "./performance-level-distribut
     AggregateReportOptionsService,
     AggregateReportFormOptionsMapper,
     AggregateReportOrganizationService,
-    AggregateReportItemMapper
+    AggregateReportItemMapper,
+    AggregateReportFormSettingsResolve
   ]
 })
 export class AggregateReportsModule {

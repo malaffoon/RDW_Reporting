@@ -29,7 +29,6 @@ import { ImportHistoryResolve } from "./admin/groups/import/history/import-histo
 import { GroupImportComponent } from "./admin/groups/import/group-import.component";
 import { GroupImportDeactivateGuard } from "./admin/groups/import/group-import.deactivate";
 import { GroupsComponent } from "./admin/groups/groups.component";
-import { HomeComponent as AdminHomeComponent } from "./admin/home/home.component";
 import { SessionExpiredComponent } from "./shared/security/session-expired.component";
 import { AuthorizationCanActivate } from "./shared/security/authorization.can-activate";
 import { RoutingAuthorizationCanActivate } from "./shared/security/routing-authorization.can-activate";
@@ -38,20 +37,15 @@ import { AggregateReportFormComponent } from "./aggregate-report/aggregate-repor
 import { AggregateReportResolve } from "./aggregate-report/results/aggregate-report.resolve";
 import { AggregateReportOptionsResolve } from "./aggregate-report/aggregate-report-options.resolve";
 import { AssessmentDefinitionResolve } from "./aggregate-report/assessment/assessment-definition.resolve";
+import { AggregateReportFormSettingsResolve } from "./aggregate-report/aggregate-report-form-settings.resolve";
 
 const adminRoute = {
-  path: 'admin',
+  path: '',
   data: {
-    breadcrumb: { translate: 'labels.admin.title' },
     permissions: [ 'GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE', 'EMBARGO_WRITE' ]
   },
   canActivate: [ AuthorizationCanActivate ],
   children: [
-    {
-      path: '',
-      pathMatch: 'full',
-      component: AdminHomeComponent
-    },
     {
       path: 'admin-groups',
       pathMatch: 'prefix',
@@ -307,6 +301,9 @@ export const routes: Routes = [
             path: '',
             pathMatch: 'full',
             data: { canReuse: true },
+            resolve: {
+              settings: AggregateReportFormSettingsResolve
+            },
             component: AggregateReportFormComponent
           },
           {
