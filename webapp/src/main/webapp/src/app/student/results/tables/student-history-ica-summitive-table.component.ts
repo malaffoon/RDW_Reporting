@@ -2,12 +2,6 @@ import { Component, Input, OnInit } from "@angular/core";
 import { StudentHistoryExamWrapper } from "../../model/student-history-exam-wrapper.model";
 import { Student } from "../../model/student.model";
 import { MenuActionBuilder } from "../../../assessments/menu/menu-action.builder";
-import { InstructionalResourcesService } from "../../../assessments/results/instructional-resources.service";
-import {
-  InstructionalResource,
-  InstructionalResources
-} from "../../../assessments/model/instructional-resources.model";
-import { Observable } from "rxjs/Observable";
 import { PopupMenuAction } from "../../../shared/menu/popup-menu-action.model";
 
 @Component({
@@ -36,10 +30,8 @@ export class StudentHistoryICASummitiveTableComponent implements OnInit {
   };
 
   actions: PopupMenuAction[];
-  instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
 
-  constructor(private actionBuilder: MenuActionBuilder,
-              private instructionalResourcesService: InstructionalResourcesService) {
+  constructor(private actionBuilder: MenuActionBuilder) {
   }
 
   ngOnInit(): void {
@@ -54,23 +46,9 @@ export class StudentHistoryICASummitiveTableComponent implements OnInit {
    * @returns {string[]} The claimCode codes for this table.
    */
   public getClaims(): string[] {
-    if (this.exams.length === 0) return [];
-
-    return this.exams[ 0 ].assessment.claimCodes;
-  }
-
-  loadInstructionalResources(studentHistoryExam: StudentHistoryExamWrapper) {
-    let exam = studentHistoryExam.exam;
-    this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(studentHistoryExam.assessment.id, exam.school.id)
-      .map(resources => resources.getResourcesByPerformance(exam.level));
-  }
-
-  loadAssessmentInstructionalResources(studentHistoryExam: StudentHistoryExamWrapper): Observable<InstructionalResource[]> {
-    let exam = studentHistoryExam.exam;
-    return this.instructionalResourcesService.getInstructionalResources(studentHistoryExam.assessment.id, exam.school.id)
-      .map((resources: InstructionalResources) => {
-        return resources.getResourcesByPerformance(0);
-      });
+    return this.exams.length
+      ? this.exams[ 0 ].assessment.claimCodes
+      : [];
   }
 
   /**
@@ -79,10 +57,8 @@ export class StudentHistoryICASummitiveTableComponent implements OnInit {
    * @returns {PopupMenuAction[]} The table row menu actions
    */
   private createActions(): PopupMenuAction[] {
-    return this.actionBuilder
-      .newActions()
+    return this.actionBuilder.newActions()
       .withResponses(x => x.exam.id, () => this.student, x => x.exam.schoolYear > this.minimumItemDataYear)
-      .withShowResources(this.loadAssessmentInstructionalResources.bind(this))
       .build();
   }
 }
