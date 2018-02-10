@@ -9,6 +9,9 @@ export class DisplayOptionService {
   constructor(private translateService: TranslateService) {
   }
 
+  /**
+   * @returns {any[]} the common value type display options
+   */
   getValueDisplayTypeOptions(): any[] {
     return ValueDisplayTypes.values()
       .map(this.createOptionMapper(
@@ -17,6 +20,9 @@ export class DisplayOptionService {
       ));;
   }
 
+  /**
+   * @returns {any[]} the common performance level display type options
+   */
   getPerformanceLevelDisplayTypeOptions(): any[] {
     return PerformanceLevelDisplayTypes.values()
       .map(this.createOptionMapper(
@@ -25,11 +31,18 @@ export class DisplayOptionService {
       ));
   }
 
-  createOptionMapper(translationProvider: (value: any) => string, labelProvider: (value: any) => string): any {
+  /**
+   * Creates a generic option class given a translation provider and analytics label provider
+   *
+   * @param {(value: any) => string} translationProvider
+   * @param {(value: any) => string} labelProvider
+   * @returns {any}
+   */
+  createOptionMapper(translationProvider: (value: any) => string, analyticsLabelProvider: (value: any) => string): any {
     return (value: any) => <any>{
       value: value,
       text: translationProvider(value),
-      label: labelProvider(value)
+      label: analyticsLabelProvider(value)
     };
   }
 

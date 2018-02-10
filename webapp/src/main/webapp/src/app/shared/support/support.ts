@@ -1,5 +1,3 @@
-import Timer = NodeJS.Timer;
-
 export class Utils {
 
   static getPropertyValue(propertyPath: string, object: any): any {
@@ -51,10 +49,24 @@ export class Utils {
     return value == null;
   }
 
+  /**
+   * Calls the provided callback in the next frame
+   *
+   * @param {(...args: any[]) => void} callback the function to call
+   * @param args the callback function's arguments
+   * @returns {any} the timeout handle
+   */
   static setImmediate(callback: (...args: any[]) => void, ...args: any[]): any {
     return setTimeout(callback, 0, ...args);
   }
 
+  /**
+   * Creates one object from many ngClass formatted strings or objects.
+   * Expects arguments like: 'some-class another-class' or {'some-class': true, 'another-class': false}
+   *
+   * @param objectsOrStrings
+   * @returns {any}
+   */
   static toNgClass(...objectsOrStrings): any {
     const classes = {};
     if (!Utils.isNullOrEmpty(objectsOrStrings)) {
@@ -65,11 +77,18 @@ export class Utils {
     return classes;
   }
 
+  /**
+   * Takes a css class attribute formatted string and turns it into an object.
+   * If it is already an object it will return that object.
+   *
+   * @param value the css class string or ngClass object
+   * @returns {any} an ngClass object
+   */
   static toNgClassObject(value: any): any {
     switch (typeof value) {
       case 'string':
         return value.split(/s+/g).reduce((object, key) => {
-          object[key] = true;
+          object[ key ] = true;
           return object;
         }, {});
       case 'object':
