@@ -5,6 +5,11 @@
   "home": {
     "aggregate-reports-link": "Create Aggregate Report"
   },
+  "assessment-results": {
+    "result-view-select": {
+      "label": "Select a results view"
+    }
+  },
   "sample-aggregate-table-data-service": {
     "organization-name-format": "School / District {{id}}"
   },
