@@ -27,6 +27,7 @@
   },
   "aggregate-reports": {
     "heading": "Aggregate Reports",
+    "default-report-name": "Custom Aggregate Report",
     "preview": "Table for preview purposes only. This is NOT actual data.",
     "access-denied-error": "Your user account is not permitted to create aggregate reports by the system. If you believe you have reached this page in error, please contact your building administrator.",
     "confirmation-modal": {
@@ -128,6 +129,9 @@
         "comparative-subgroup": {
           "label": "Subgroups",
           "info": "Select the student sub-groups to display separately in results."
+        },
+        "report-name": {
+          "label": "Enter a name"
         }
       },
       "organizations": {
@@ -227,6 +231,9 @@
         },
         "comparative-subgroups": {
           "heading": "Comparative Subgroups"
+        },
+        "report-name": {
+          "heading": "Report Name"
         }
       },
       "submit": "Generate Report"
@@ -324,6 +331,7 @@
   },
   "collapse": "Collapse",
   "common": {
+    "copy-suffix": "(copy)",
     "dimension": {
       "Overall": "Overall",
       "Gender": "Gender",

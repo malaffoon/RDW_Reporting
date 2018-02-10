@@ -121,4 +121,9 @@ export interface AggregateReportFormSettings {
    */
   schools: School[];
 
+  /**
+   * The report name
+   */
+  name?: string;
+
 }

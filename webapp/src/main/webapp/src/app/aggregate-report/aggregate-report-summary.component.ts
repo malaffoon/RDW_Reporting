@@ -35,9 +35,10 @@ export class AggregateReportSummary {
 export class Column {
   readonly heading?: string;
   readonly label: string;
-  readonly labelCssClasses: any;
+  readonly labelStyles?: any;
   readonly scrollElement?: any;
   readonly attributes?: Attribute[];
+  readonly attributeStyles?: any;
 }
 
 export class Attribute {

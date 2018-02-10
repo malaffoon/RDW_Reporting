@@ -543,6 +543,32 @@
       </div>
     </div>
 
+    <!-- Report Name -->
+    <div class="row mt-sm" #reportName id="reportNameSection">
+      <div class="col-md-8 col-md-offset-2">
+        <h3 class="h3 gray-darkest">
+          {{'aggregate-reports.form.section.report-name.heading' | translate}}
+        </h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group mt-sm">
+                <input type="text"
+                       class="form-control"
+                       [(ngModel)]="settings.name"
+                       [ngModelOptions]="{standalone: true}"
+                       placeholder="{{'aggregate-reports.default-report-name' | translate}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </form>
 
   <!-- Summary -->
@@ -560,7 +586,7 @@
         {
           heading: 'aggregate-reports.form.summary.column.assessment.heading' | translate,
           label: 'aggregate-reports.form.summary.column.assessment.label' | translate,
-          labelCssClasses: {'aqua': true},
+          labelStyles: 'aqua',
           attributes: [
             {
               label: 'aggregate-reports.form.summary.column.assessment.attribute.subject' | translate,
@@ -577,7 +603,8 @@
         {
           heading: 'aggregate-reports.form.summary.column.organization.heading' | translate,
           label: 'aggregate-reports.form.summary.column.organization.label' | translate,
-          labelCssClasses: {'aqua': true},
+          labelStyles: 'aqua',
+          attributeStyles: 'white-space-normal',
           attributes: [
             {
               label: 'aggregate-reports.form.summary.column.organization.attribute.organization.label' | translate,
@@ -608,7 +635,7 @@
         },
         {
           label: 'aggregate-reports.form.summary.column.assessment-grade.label' | translate,
-          labelCssClasses: {'aqua': true},
+          labelStyles: 'aqua',
           attributes: [
             {
               label: 'aggregate-reports.form.summary.column.assessment-grade.attribute.grade' | translate,
@@ -619,7 +646,7 @@
         },
         {
           label: 'aggregate-reports.form.summary.column.school-year.label' | translate,
-          labelCssClasses: {'aqua': true},
+          labelStyles: 'aqua',
           attributes: [
             {
               label: 'aggregate-reports.form.summary.column.school-year.attribute.year' | translate,
@@ -631,7 +658,7 @@
         {
           heading: 'aggregate-reports.form.summary.column.comparative-subgroup.heading' | translate,
           label: 'aggregate-reports.form.summary.column.comparative-subgroup.label' | translate,
-          labelCssClasses: {'green': true},
+          labelStyles: 'green',
           attributes: [
             {
               label: 'aggregate-reports.form.summary.column.comparative-subgroup.attribute.subgroup' | translate,
@@ -643,15 +670,15 @@
         {
           heading: 'aggregate-reports.form.summary.column.students-tested.heading' | translate,
           label: 'aggregate-reports.form.summary.column.students-tested.label' | translate,
-          labelCssClasses: {'red': true}
+          labelStyles: 'red'
         },
         {
           label: 'aggregate-reports.form.summary.column.average-scale-score.label' | translate,
-          labelCssClasses: {'red': true}
+          labelStyles: 'red'
         },
         {
           label: 'aggregate-reports.form.summary.column.performance-level.label' | translate,
-          labelCssClasses: {'red': true},
+          labelStyles: 'red',
           attributes: [
             {
               label: 'aggregate-reports.form.summary.column.performance-level.attribute.grouping' | translate,
