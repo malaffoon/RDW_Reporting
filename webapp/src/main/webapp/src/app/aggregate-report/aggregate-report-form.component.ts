@@ -293,7 +293,7 @@ export class AggregateReportFormComponent {
    * @returns {AggregateReportRequest} the created request
    */
   private createReportRequest(): AggregateReportRequest {
-    return this.requestMapper.map(this.options, this.settings);
+    return this.requestMapper.map(this.options, this.settings, this.currentAssessmentDefinition);
   }
 
   /**

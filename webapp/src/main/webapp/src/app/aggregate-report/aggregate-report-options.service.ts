@@ -9,7 +9,7 @@ const ServiceRoute = '/aggregate-service';
 
 // Used to hotfix natural order of completeness and strict booleans not being in "affirmative-first" order
 const booleanComparator = ordering(ranking([ 'yes', 'no', 'undefined' ])).compare;
-const completenessComparator = ordering(ranking([ 'Partial', 'Complete' ])).compare;
+const completenessComparator = ordering(ranking([ 'Complete', 'Partial' ])).compare;
 
 // IDs are no longer used by the UI
 const codesOf = values => values.map(value => value.code);

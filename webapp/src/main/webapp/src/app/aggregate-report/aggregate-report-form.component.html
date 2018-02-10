@@ -613,13 +613,42 @@
       </div>
     </div>
   </div>
+
+  <div class="row mb-sm">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="pull-right">
+
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-md-12 col-md-offset-2">
       <div class="well wide-content-container">
         <div>
           <span class="red label">{{ 'aggregate-reports.preview' | translate }}</span>
+          <div class="pull-right">
+            <span>
+              <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
+              <sb-toggle [options]="options.performanceLevelDisplayTypes"
+                         [(ngModel)]="settings.performanceLevelDisplayType"
+                         [ngClass]="'btn-group-xs'"
+                         [buttonNgClass]="'btn-default'"
+                         analyticsCategory="AggregateQueryBuilder"
+                         analyticsEvent="Change"></sb-toggle>
+            </span>
+            <span class="ml-sm">
+              <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
+              <sb-toggle [options]="options.valueDisplayTypes"
+                         [(ngModel)]="settings.valueDisplayType"
+                         [ngClass]="'btn-group-xs'"
+                         [buttonNgClass]="'btn-default'"
+                         analyticsCategory="AggregateQueryBuilder"
+                         analyticsEvent="Change"></sb-toggle>
+            </span>
+          </div>
         </div>
-        <div>
+        <div class="mt-sm">
           <aggregate-report-table [preview]="true"
                                   [table]="previewTable"
                                   [valueDisplayType]="settings.valueDisplayType"

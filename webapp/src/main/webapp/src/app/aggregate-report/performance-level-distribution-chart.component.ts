@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { PerformanceLevelDisplayTypes } from "./performance-level-display-type";
+import { PerformanceLevelDisplayTypes } from "../shared/display-options/performance-level-display-type";
 import { Utils } from "../shared/support/support";
 import { ColorService } from "../shared/color.service";
 
@@ -19,6 +19,7 @@ export class PerformanceLevelDistributionChart implements OnInit {
   private _center: boolean = false;
   private _displayType: string = PerformanceLevelDisplayTypes.Separate;
   private _loaded: boolean = false;
+  private _visible: boolean = true;
   private _performanceLevelBarsByDisplayType: Map<string, Map<boolean, PerformanceLevelBars>> = new Map();
 
   constructor(private colorService: ColorService) {
@@ -106,6 +107,15 @@ export class PerformanceLevelDistributionChart implements OnInit {
   }
 
   /**
+   * True if the percentages amount to more than 0
+   *
+   * @returns {boolean}
+   */
+  get visible(): boolean {
+    return this._visible;
+  }
+
+  /**
    * Gets the performance level bar views based on the current display state
    *
    * @returns {PerformanceLevelBars}
@@ -175,17 +185,19 @@ export class PerformanceLevelDistributionChart implements OnInit {
       }
     ];
 
+    this._visible = this.percentages.reduce(sum) > 0;
+
     // create bars to switch to when centered flag is switched
     this._performanceLevelBarsByDisplayType
       .set(PerformanceLevelDisplayTypes.Separate, new Map<boolean, PerformanceLevelBars>([
         [ true, { left: separateBars.slice(0, cutPointIndex), right: separateBars.slice(cutPointIndex) } ],
-        [ false, { left: separateBars } ]
+        [ false, { left: separateBars, right: [] } ]
       ]));
 
     this._performanceLevelBarsByDisplayType
       .set(PerformanceLevelDisplayTypes.Grouped, new Map<boolean, PerformanceLevelBars>([
         [ true, { left: [ groupedBars[ 0 ] ], right: [ groupedBars[ 1 ] ] } ],
-        [ false, { left: groupedBars } ]
+        [ false, { left: groupedBars, right: [] } ]
       ]));
   }
 
@@ -224,7 +236,8 @@ interface PerformanceLevelBars {
   /**
    * Bars right of center when center is true
    */
-  readonly right?: PerformanceLevelBar[];
+  readonly right: PerformanceLevelBar[];
+
 }
 
 /**

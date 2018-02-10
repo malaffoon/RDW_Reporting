@@ -55,4 +55,27 @@ export class Utils {
     return setTimeout(callback, 0, ...args);
   }
 
+  static toNgClass(...objectsOrStrings): any {
+    const classes = {};
+    if (!Utils.isNullOrEmpty(objectsOrStrings)) {
+      objectsOrStrings.forEach(objectOrString => {
+        Object.assign(classes, Utils.toNgClassObject(objectOrString))
+      });
+    }
+    return classes;
+  }
+
+  static toNgClassObject(value: any): any {
+    switch (typeof value) {
+      case 'string':
+        return value.split(/s+/g).reduce((object, key) => {
+          object[key] = true;
+          return object;
+        }, {});
+      case 'object':
+        return value;
+    }
+    throw new Error('unsupported ngClass argument');
+  }
+
 }

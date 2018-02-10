@@ -37,6 +37,7 @@ import {
 import { OrganizationModule } from "./organization/organization.module";
 import { ScrollNavComponent } from "./nav/scroll-nav.component";
 import { OptionalPipe } from "./optional.pipe";
+import { RdwDisplayOptionsModule } from "./display-options/rdw-display-options.module";
 
 
 @NgModule({
@@ -64,6 +65,7 @@ import { OptionalPipe } from "./optional.pipe";
     RdwCoreModule,
     RdwDataModule.forRoot(),
     RdwDataTableModule,
+    RdwDisplayOptionsModule,
     RdwFormModule,
     RdwFormatModule,
     RdwI18nModule,
@@ -91,6 +93,7 @@ import { OptionalPipe } from "./optional.pipe";
     RouterModule,
     RdwCoreModule,
     RdwDataTableModule,
+    RdwDisplayOptionsModule,
     RdwFormModule,
     RdwFormatModule,
     RdwI18nModule,

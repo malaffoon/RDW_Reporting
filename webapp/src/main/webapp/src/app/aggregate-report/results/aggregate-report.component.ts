@@ -14,6 +14,7 @@ import { Comparator, ranking } from "@kourge/ordering/comparator";
 import { ordering } from "@kourge/ordering";
 import { AggregateReportQuery } from "../../report/aggregate-report-request";
 import { saveAs } from "file-saver";
+import { DisplayOptionService } from "../../shared/display-options/display-option.service";
 
 const PollingInterval = 4000;
 
@@ -34,17 +35,27 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   private _tableViewComparator: Comparator<AggregateReportTableView>;
   private _pollingSubscription: Subscription;
   private _displayLargeReport: boolean = false;
+  private _displayOptions: AggregateReportTableDisplayOptions;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private reportService: ReportService,
-              private itemMapper: AggregateReportItemMapper) {
+              private itemMapper: AggregateReportItemMapper,
+              private displayOptionService: DisplayOptionService) {
     this.options = this.route.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
     this.assessmentDefinition = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ]
       .get(this.report.request.reportQuery.assessmentTypeCode);
     this._tableViewComparator = ordering(ranking(this.options.subjects))
       .on((wrapper: AggregateReportTableView) => wrapper.subjectCode).compare;
+    this._displayOptions = {
+      valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
+      performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions()
+    };
+  }
+
+  get displayOptions(): AggregateReportTableDisplayOptions {
+    return this._displayOptions;
   }
 
   get query(): AggregateReportQuery {
@@ -107,6 +118,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       });
   }
 
+  onExportButtonClick(table: AggregateReportTableView): void {
+    // TODO implement CSV export of current table view
+  }
+
   private loadOrPollReport(): void {
     if (this.report.completed) {
       this.loadReport();
@@ -152,7 +167,9 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
             options: this.options,
             assessmentDefinition: this.assessmentDefinition,
             rows: [ item ]
-          }
+          },
+          valueDisplayType: this.query.valueDisplayType,
+          performanceLevelDisplayType: this.query.achievementLevelDisplayType
         });
       } else {
         tableWrapper.table.rows.push(item);
@@ -170,16 +187,21 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
 }
 
+interface AggregateReportTableDisplayOptions {
+  readonly valueDisplayTypes: any[];
+  readonly performanceLevelDisplayTypes: any[];
+}
+
 interface AggregateReportTableView {
   subjectCode: string;
   table: AggregateReportTable;
+  valueDisplayType: string;
+  performanceLevelDisplayType: string;
 }
 
 enum ViewState {
-
   ReportProcessing,
   ReportNotLoadable,
   ReportSizeNotSupported,
   ReportView
-
 }
