@@ -22,11 +22,11 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
   selector: 'sb-toggle',
   template: `
     <div class="btn-group toggle-group"
-         [ngClass]="computeClassesInternal()"
+         [ngClass]="getClassesInternal()"
          data-toggle="buttons">
       <label *ngFor="let option of options"
              class="btn"
-             [ngClass]="computeButtonClassesInternal({active: option.value === value, disabled: disabled})">
+             [ngClass]="getButtonClassesInternal({active: option.value === value, disabled: disabled})">
         <input type="radio"
                [id]="name"
                [name]="name"
@@ -105,12 +105,12 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
     }
   }
 
-  computeClassesInternal(): any {
-    return this._ngClass ? this._ngClass : DefaultStyleClasses;
+  getClassesInternal(): any {
+    return this._ngClass;
   }
 
-  computeButtonClassesInternal(classes: any): any {
-    return Utils.toNgClass(this._buttonNgClass ? this._buttonNgClass : DefaultButtonStyleClasses, classes);
+  getButtonClassesInternal(classes: any): any {
+    return Utils.toNgClass(this._buttonNgClass, classes);
   }
 
   private throwError(message: string): void {
