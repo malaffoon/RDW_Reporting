@@ -7,3 +7,6 @@ spring:
     url-db: ci
     username: ci
     password:
+
+  aggregate-reports:
+    query-pool-size: 2

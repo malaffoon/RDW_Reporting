@@ -30,6 +30,7 @@ app:
     statewide-interim-enabled: false
     custom-aggregate-report-repository:
       organization-partition-size: 10
+    query-pool-size: 6
     api-enabled: false
 
   archive:
