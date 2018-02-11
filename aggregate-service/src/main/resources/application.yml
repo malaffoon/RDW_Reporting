@@ -25,62 +25,61 @@ cloud:
       instance-profile: false
 
 app:
-  state:
-    code: CA
-    name: California
+  aggregate-reports:
+    summative-enabled: true
+    statewide-interim-enabled: false
+    custom-aggregate-report-repository:
+      organization-partition-size: 10
+    api-enabled: false
 
   archive:
       root: file:///tmp/
-
-  datamart:
-     olap_datasource:
-        url: "\
-           jdbc:redshift://${app.datamart.olap_datasource.url-server:localhost:5432}/${app.datamart.olap_datasource.url-db:dev}\
-           ?ApplicationName=rdw-reporting-aggregate-service\
-           "
-        username: root
-        password:
-        testWhileIdle: true
-        validationQuery: SELECT 1
-        driverClassName: com.amazon.redshift.jdbc42.Driver
 
   cache:
     repository:
       # every day at 1:00 am
       refresh-cron: "0 0 1 * * *"
 
-  aggregate-reports:
-    summative-enabled: true
-    statewide-interim-enabled: false
-    custom-aggregate-report-repository:
-      organization-partition-size: 10
-      query-partition-size: 6
-    api-access-enabled: true
+  state:
+    code: CA
+    name: California
+
 
 spring:
-  jackson:
-    default-property-inclusion: non_null
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-
   cache:
     type: SIMPLE
     cache-names: internalTranslationsByCode, reportOptions, administrationConditions, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, ethnicities, genders, schoolYears, subjects, activeAssessments
 
   cloud:
-      stream:
-        bindings:
-          AggregateRequest:
-            content-type: application/json
-            group: default
-            producer:
-              requiredGroups: default
+    stream:
+      bindings:
+        AggregateRequest:
+          content-type: application/json
+          group: default
+          producer:
+            requiredGroups: default
 
-          AggregateResponse:
-            content-type: application/json
-            group: default
-            producer:
-              requiredGroups: default
+        AggregateResponse:
+          content-type: application/json
+          group: default
+          producer:
+            requiredGroups: default
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  olap_datasource:
+    url: "\
+       jdbc:redshift://${spring.olap_datasource.url-server:localhost:5432}/${spring.olap_datasource.url-db:dev}\
+       ?ApplicationName=rdw-reporting-aggregate-service\
+       "
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    driverClassName: com.amazon.redshift.jdbc42.Driver
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
