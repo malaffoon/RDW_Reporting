@@ -24,6 +24,7 @@ import { AggregateReportTableDataService } from "./aggregate-report-table-data.s
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
 import { PerformanceLevelDistributionChart } from "../shared/assessment/performanc-level/performance-level-distribution-chart.component";
 import { AggregateReportFormSettingsResolve } from "./aggregate-report-form-settings.resolve";
+import { StickyDirective } from "../shared/nav/sticky.directive";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AggregateReportFormSettingsResolve } from "./aggregate-report-form-sett
     AggregateReportComponent,
     AggregateReportTableComponent,
     AggregateReportSummary,
-    AggregateReportOrganizationList
+    AggregateReportOrganizationList,
+    StickyDirective
   ],
   imports: [
     AssessmentModule,
