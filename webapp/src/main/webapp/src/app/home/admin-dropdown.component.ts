@@ -6,9 +6,4 @@ import { Component } from "@angular/core";
 })
 export class AdminDropdownComponent {
 
-  expanded: boolean = false;
-
-  toggle() {
-    this.expanded = !this.expanded;
-  }
 }
