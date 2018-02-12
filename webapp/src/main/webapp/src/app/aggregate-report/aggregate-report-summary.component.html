@@ -7,7 +7,7 @@
           <strong>{{column.heading}}</strong>
         </div>
         <div class="column-label-container">
-          <div class="column-label" [ngClass]="column.labelCssClasses">
+          <div class="column-label" [ngClass]="column.labelStyles">
             {{column.label}}
           </div>
         </div>
@@ -21,11 +21,11 @@
             <label class="label"><span class="gray-dark"><strong>{{attribute.label}}</strong></span></label>
           </div>
           <ng-container *ngIf="summarizeSelection(attribute)">
-            <label class="label"><span class="gray-dark">{{'buttons.all' | translate}}</span></label>
+            <label class="label" [ngClass]="column.attributeStyles"><span class="gray-dark">{{'buttons.all' | translate}}</span></label>
           </ng-container>
           <ng-container *ngIf="!summarizeSelection(attribute)">
             <div *ngFor="let value of getValues(attribute)">
-              <label class="label"><span class="gray-dark">{{value}}</span></label>
+              <label class="label" [ngClass]="column.attributeStyles"><span class="gray-dark">{{value}}</span></label>
             </div>
           </ng-container>
         </ng-container>

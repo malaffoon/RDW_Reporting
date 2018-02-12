@@ -97,4 +97,72 @@ export class Utils {
     throw new Error('unsupported ngClass argument');
   }
 
+  /**
+   * Rounds the provided number and formats it in CSS "{number}px" format
+   *
+   * @param {number} value the number to put in CSS pixel format
+   * @returns {string} the provided number in CSS pixel format
+   */
+  static formatPixels(value: number): string {
+    return `${Math.round(value)}px`;
+  }
+
+  /**
+   * Gets the provided element's absolute page offset from the top.
+   *
+   * @param element a native element
+   * @returns {number} the element's absolute page offset
+   */
+  static getAbsoluteOffsetTop(element: any): any {
+    let y = 0;
+    do {
+      y += element.offsetTop || 0;
+      element = element.offsetParent;
+    } while (element);
+    return y;
+  }
+
+  /**
+   * Gets the provided element's absolute page offset.
+   *
+   * @param element a native element
+   * @returns {{x: number, y: number}} the element's absolute page offset
+   */
+  static getAbsoluteOffset(element: any): any {
+    let x = 0, y = 0;
+    do {
+      x += element.offsetLeft || 0;
+      y += element.offsetTop || 0;
+      element = element.offsetParent;
+    } while (element);
+    return { x: x, y: y };
+  }
+
+  /**
+   * Gets the height of the input element
+   *
+   * @param {Element} element the element to get the height of
+   * @returns {number} the input element's height
+   */
+  static getHeight(element: Element): number {
+    const itemBounds = element.getBoundingClientRect();
+    return itemBounds.bottom - itemBounds.top;
+  }
+
+  /**
+   * Takes a string or number and returns it's integer value
+   *
+   * @param stringOrNumber the input
+   * @returns {number} the integer value of the string or number
+   */
+  static integerValueOf(stringOrNumber: any): number {
+    switch (typeof stringOrNumber) {
+      case 'string':
+        return Number.parseInt(stringOrNumber);
+      case 'number':
+        return stringOrNumber;
+    }
+    return 0;
+  }
+
 }

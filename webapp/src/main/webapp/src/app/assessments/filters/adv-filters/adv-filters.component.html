@@ -15,12 +15,12 @@
                   title="{{ translateRoot + 'test.off-grade-assessment' | translate }}"
                   content="{{ translateRoot + 'test.off-grade-assessment-info' | translate }}"></span>
         </label>
-        <sb-toggle name="off-grade-assessment-toggle"
+        <sb-radio-button-group name="off-grade-assessment-toggle"
                    [(ngModel)]="filterBy.offGradeAssessment"
                    [options]="[
                            {value: false, text: 'buttons.visibility.show' | translate, analyticsProperties: {label: 'Off-Grade: Show'}},
                            {value: true, text: 'buttons.visibility.hide' | translate, analyticsProperties: {label: 'Off-Grade: Hide'}}
-                         ]"></sb-toggle>
+                         ]"></sb-radio-button-group>
       </div>
       <!-- Transfer Assessments -->
       <div class="block-children" *ngIf="showStudentFilter && showTransferAccess">
@@ -29,12 +29,12 @@
                   title="{{ translateRoot + 'test.transfer-assessment' | translate }}"
                   content="{{ translateRoot + 'test.transfer-assessment-info' | translate }}"></span>
         </label>
-        <sb-toggle name="transfer-assessment-toggle"
+        <sb-radio-button-group name="transfer-assessment-toggle"
                    [(ngModel)]="filterBy.transferAssessment"
                    [options]="[
                            {value: false, text: 'buttons.visibility.show' | translate, analyticsProperties: {label: 'Transfer-Assessment: Show'}},
                            {value: true, text: 'buttons.visibility.hide' | translate, analyticsProperties: {label: 'Transfer-Assessment: Hide'}}
-                         ]"></sb-toggle>
+                         ]"></sb-radio-button-group>
       </div>
     </div>
   </div>

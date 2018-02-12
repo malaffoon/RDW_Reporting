@@ -46,21 +46,21 @@
             <div class="pull-right">
               <span>
                 <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
-                <sb-toggle [options]="displayOptions.performanceLevelDisplayTypes"
+                <sb-radio-button-group [options]="displayOptions.performanceLevelDisplayTypes"
                            [(ngModel)]="table.performanceLevelDisplayType"
-                           [ngClass]="'btn-group-xs'"
-                           [buttonNgClass]="'btn-default'"
+                           buttonGroupStyles="btn-group-xs"
+                           buttonStyles="btn-default"
                            analyticsCategory="AggregateReportControl"
-                           analyticsEvent="Change"></sb-toggle>
+                           analyticsEvent="Change"></sb-radio-button-group>
               </span>
               <span class="ml-sm">
                 <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
-                <sb-toggle [options]="displayOptions.valueDisplayTypes"
+                <sb-radio-button-group [options]="displayOptions.valueDisplayTypes"
                            [(ngModel)]="table.valueDisplayType"
-                           [ngClass]="'btn-group-xs'"
-                           [buttonNgClass]="'btn-default'"
+                           buttonGroupStyles="btn-group-xs"
+                           buttonStyles="btn-default"
                            analyticsCategory="AggregateReportControl"
-                           analyticsEvent="Change"></sb-toggle>
+                           analyticsEvent="Change"></sb-radio-button-group>
               </span>
             </div>
           </div>

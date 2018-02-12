@@ -1,24 +1,41 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { AbstractControlValueAccessor } from "./abstract-control-value-accessor";
 import { Forms } from "./forms";
+import { Utils } from "../support/support";
+
+
+const DefaultButtonGroupStyles = 'btn-group-sm';
+const DefaultButtonStyles = 'btn-primary';
 
 /**
- * A checkbox group with an all option for convenience
+ * A checkbox group with an optional select all button for convenience
+ *
+ * Vertical Display:
  *
  * All | (Option 1)
- *     | (Option 2)
- *     | (Option 3)
- *     | (Option 4)
+ *     | ...
+ *     | (Option N)
+ *
+ * Horizontal Display:
+ *
+ * All | (Option 1) ... (Option N)
  */
 @Component({
   selector: 'sb-checkbox-group',
   template: `
     <div data-toggle="buttons"
-         class="nested-btn-group btn-group-sm toggle-group"
-         [ngClass]="{'vertical': !horizontal, 'all-option': allOptionEnabled}">
+         class="btn-group-sm toggle-group"
+         [ngClass]="computeStylesInternal(buttonGroupStyles, {
+           'vertical': !horizontal, 
+           'all-option': allOptionEnabled,
+           'nested-btn-group': allOptionEnabled || !horizontal
+         })">
       <label *ngIf="allOptionEnabled"
              class="btn btn-primary"
-             [ngClass]="{ active: selectedAllOptionInternal, disabled: disabled }">
+             [ngClass]="computeStylesInternal(buttonStyles, { 
+               active: selectedAllOptionInternal, 
+               disabled: disabled
+             })">
         <input type="checkbox"
                [name]="name"
                [disabled]="disabled"
@@ -27,15 +44,19 @@ import { Forms } from "./forms";
                autocomplete="off"
                checked=""
                angulartics2On="click"
-               [angularticsEvent]="analyticsEvent"
-               [angularticsCategory]="analyticsCategory"
+               angularticsEvent="{{analyticsEvent}}"
+               angularticsCategory="{{analyticsCategory}}"
                [angularticsProperties]="allOptionAnalyticsProperties">
         {{'buttons.all' | translate}}
       </label>
-      <div class="btn-group">
+      <div class="btn-group"
+           [ngClass]="buttonGroupStyles">
         <label *ngFor="let option of options; let i = index"
                class="btn btn-primary"
-               [ngClass]="{ active: selectedOptionsInternal[ i ], disabled: disabled }">
+               [ngClass]="computeStylesInternal(buttonStyles, { 
+                   active: selectedOptionsInternal[ i ], 
+                   disabled: disabled 
+               })">
           <input type="checkbox"
                  [name]="name"
                  [disabled]="disabled"
@@ -44,8 +65,8 @@ import { Forms } from "./forms";
                  autocomplete="off"
                  [attr.selected]="selectedOptionsInternal[ i ] ? 'true' : 'false'"
                  angulartics2On="click"
-                 [angularticsEvent]="analyticsEvent"
-                 [angularticsCategory]="analyticsCategory"
+                 angularticsEvent="{{analyticsEvent}}"
+                 angularticsCategory="{{analyticsCategory}}"
                  [angularticsProperties]="option.analyticsProperties">
           {{option.text}}
         </label>
@@ -75,6 +96,9 @@ export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> impleme
 
   private _options: Option[];
 
+  private _buttonGroupStyles: any = DefaultButtonGroupStyles;
+  private _buttonStyles: any = DefaultButtonStyles;
+
   // internal properties necessarily made public for ng build --prod
   // these are also needed for (ngModelChange) to fire
   public selectedAllOptionInternal: boolean = true;
@@ -82,6 +106,24 @@ export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> impleme
 
   get options(): Option[] {
     return this._options;
+  }
+
+  get buttonGroupStyles(): any {
+    return this._buttonGroupStyles;
+  }
+
+  @Input()
+  set buttonGroupStyles(value: any) {
+    this._buttonGroupStyles = value ? value : DefaultButtonGroupStyles;
+  }
+
+  get buttonStyles(): any {
+    return this._buttonStyles;
+  }
+
+  @Input()
+  set buttonStyles(value: any) {
+    this._buttonStyles = value ? value : DefaultButtonStyles;
   }
 
   @Input()
@@ -136,6 +178,10 @@ export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> impleme
     this.selectedAllOptionInternal = true;
     this.selectedOptionsInternal = [];
     this.updateValue();
+  }
+
+  computeStylesInternal(...styles): any {
+    return Utils.toNgClass(...styles);
   }
 
   private updateValue(): void {

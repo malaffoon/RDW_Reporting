@@ -131,18 +131,6 @@ export class ReportService {
   }
 
   /**
-   * Gets an aggregate report download if ready, otherwise throws an exception
-   *
-   * @param reportId the handle used to lookup the download
-   * @returns {Observable<Download>}
-   */
-  public getAggregateReportAsSpreadsheet(reportId: number): Observable<Download> {
-    return this.dataService.get(`${ServiceRoute}/reports/${reportId}`, {
-      responseType: ResponseContentType.Blob
-    }).catch(ResponseUtils.throwError);
-  }
-
-  /**
    * Creates a batch exam report download
    *
    * @param url the endpoint to use to create the report

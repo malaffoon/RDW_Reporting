@@ -10,6 +10,7 @@ import { District, OrganizationType, School } from "../shared/organization/organ
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { Utils } from "../shared/support/support";
+import { TranslateService } from "@ngx-translate/core";
 
 const valuesOf = values => values.map(value => value.value);
 const firstValueOf = values => values[ 0 ].value;
@@ -24,7 +25,8 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
 
   constructor(private service: AggregateReportService,
               private optionMapper: AggregateReportFormOptionsMapper,
-              private organizationService: AggregateReportOrganizationService) {
+              private organizationService: AggregateReportOrganizationService,
+              private translate: TranslateService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<AggregateReportFormSettings> {
@@ -176,8 +178,7 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
       settings.schools = saturatedRequest.schools;
     }
 
-    //TODO set name once entered by user
-    // settings.name = request.name + translationService.instant("copy");
+    settings.name = `${request.name} ${this.translate.instant('common.copy-suffix')}`;
   }
 
 }

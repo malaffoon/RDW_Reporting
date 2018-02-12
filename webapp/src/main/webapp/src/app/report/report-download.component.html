@@ -54,12 +54,12 @@
                       title="{{'labels.filters.test.transfer-assessment' | translate}}"
                       content="{{'labels.filters.test.transfer-assessment-info' | translate}}"></span>
               </label>
-              <sb-toggle name="transfer-assessment-toggle"
+              <sb-radio-button-group name="transfer-assessment-toggle"
                          [(ngModel)]="options.disableTransferAccess"
                          [options]="[
                            {value: false, text: 'buttons.visibility.show' | translate},
                            {value: true, text: 'buttons.visibility.hide' | translate}
-                         ]"></sb-toggle>
+                         ]"></sb-radio-button-group>
             </div>
 
           </div>
@@ -91,13 +91,13 @@
                       title="{{'labels.reports.form.accommodations.title' | translate}}"
                       content="{{'labels.reports.form.accommodations.info' | translate}}"></span>
               </label>
-              <sb-toggle name="accommodations-toggle"
+              <sb-radio-button-group name="accommodations-toggle"
                          [(ngModel)]="options.accommodationsVisible"
                          [disabled]="options.assessmentType === AssessmentType.IAB"
                          [options]="[
                            {value: true, text: 'buttons.visibility.show' | translate},
                            {value: false, text: 'buttons.visibility.hide' | translate}
-                         ]"></sb-toggle>
+                         ]"></sb-radio-button-group>
             </div>
 
           </div>

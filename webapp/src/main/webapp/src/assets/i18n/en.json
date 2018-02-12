@@ -27,6 +27,7 @@
   },
   "aggregate-reports": {
     "heading": "Aggregate Reports",
+    "default-report-name": "Custom Aggregate Report",
     "preview": "Table for preview purposes only. This is NOT actual data.",
     "access-denied-error": "Your user account is not permitted to create aggregate reports by the system. If you believe you have reached this page in error, please contact your building administrator.",
     "confirmation-modal": {
@@ -61,7 +62,7 @@
       "field": {
         "organization": {
           "label": "Search a School or District",
-          "error-empty": "Please select a school or district."
+          "error-invalid": "Please select a school, district or include state results."
         },
         "assessment-grades": {
           "label": "Assessment Grades",
@@ -128,6 +129,10 @@
         "comparative-subgroup": {
           "label": "Subgroups",
           "info": "Select the student sub-groups to display separately in results."
+        },
+        "report-name": {
+          "label": "Enter a name",
+          "error-file-name": "The name cannot contain these special characters: <>:;,?\"*|\\/"
         }
       },
       "organizations": {
@@ -227,6 +232,9 @@
         },
         "comparative-subgroups": {
           "heading": "Comparative Subgroups"
+        },
+        "report-name": {
+          "heading": "Report Name"
         }
       },
       "submit": "Generate Report"
@@ -324,6 +332,7 @@
   },
   "collapse": "Collapse",
   "common": {
+    "copy-suffix": "(copy)",
     "export": "Export",
     "dimension": {
       "Overall": "Overall",

@@ -5,9 +5,10 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="!accessDenied">
+<div *ngIf="!accessDenied">
 
-  <scroll-nav [items]="[
+  <div sticky marginTop="12" [style.position]="'absolute'">
+    <scroll-nav [items]="[
       {
         scrollTo: organizationSection,
         text: 'aggregate-reports.form.section.organization.heading' | translate
@@ -21,21 +22,22 @@
         text: 'aggregate-reports.form.section.subgroup-filters.heading' | translate
       },
       {
-        scrollTo: reportFeatureSection,
-        text: 'aggregate-reports.form.section.report-features.heading' | translate
-      },
-      {
         scrollTo: comparativeSubgroupSection,
         text: 'aggregate-reports.form.section.comparative-subgroups.heading' | translate
+      },
+      {
+        scrollTo: reportNameSection,
+        text: 'aggregate-reports.form.section.report-name.heading' | translate
       },
       {
         scrollTo: reportPreviewSection,
         text: 'aggregate-reports.form.summary.heading' | translate
       }
-    ]">
-    <button class="btn btn-success btn-sm green ml-sm mt-xs"
-            (click)="onGenerateButtonClick()">{{'aggregate-reports.form.submit' | translate}}</button>
-  </scroll-nav>
+      ]">
+      <button class="btn btn-success btn-sm green ml-sm mt-xs"
+              (click)="onGenerateButtonClick()">{{'aggregate-reports.form.submit' | translate}}</button>
+    </scroll-nav>
+  </div>
 
   <div class="row mt-sm">
     <div class="col-md-8 col-md-offset-2">
@@ -73,7 +75,7 @@
                      formControlName="organizations"
                      (ngModelChange)="onSettingsChange()">
               <div *ngIf="showErrors(organizationsControl)">
-                <p *ngIf="organizationsControl.errors.notEmpty" class="help-block small red">{{organizationsControl.errors.notEmpty.messageId | translate}}</p>
+                <p *ngIf="organizationsControl.errors.invalid" class="help-block small red">{{organizationsControl.errors.invalid.messageId | translate}}</p>
               </div>
             </div>
           </div>
@@ -86,13 +88,19 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeStateResults" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeStateResults"
+                             [ngModelOptions]="{standalone: true}"
+                             (change)="onIncludeStateResultsChange()">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.state-results' | translate}}</span>
                     </label>
                   </div>
                   <div class="col-sm-6" *ngIf="options.statewideReporter">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeAllDistricts" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeAllDistricts"
+                             [ngModelOptions]="{standalone: true}"
+                             (change)="onIncludeAllDistrictsChange()">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-districts' | translate}}</span>
                     </label>
                   </div>
@@ -100,13 +108,17 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeAllSchoolsOfSelectedDistricts" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeAllSchoolsOfSelectedDistricts"
+                             [ngModelOptions]="{standalone: true}">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-schools-of-districts' | translate}}</span>
                     </label>
                   </div>
                   <div class="col-sm-6">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeAllDistrictsOfSelectedSchools" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeAllDistrictsOfSelectedSchools"
+                             [ngModelOptions]="{standalone: true}">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-districts-of-schools' | translate}}</span>
                     </label>
                   </div>
@@ -148,12 +160,12 @@
               </div>
               <div class="col-md-6">
                 <span *ngIf="options.assessmentTypes.length == 1">{{options.assessmentTypes[0].text}}</span>
-                <sb-toggle *ngIf="options.assessmentTypes.length > 1"
+                <sb-radio-button-group *ngIf="options.assessmentTypes.length > 1"
                            name="assessmentType"
                            [options]="options.assessmentTypes"
                            [(ngModel)]="settings.assessmentType"
                            [ngModelOptions]="{standalone: true}"
-                           (change)="onSettingsChange()"></sb-toggle>
+                           (change)="onSettingsChange()"></sb-radio-button-group>
               </div>
             </div>
           </div>
@@ -181,7 +193,7 @@
                 <label info-button
                        title="{{'aggregate-reports.form.field.assessment-grades.label' | translate}}"
                        content="{{'aggregate-reports.form.field.assessment-grades.info' | translate}}"></label>
-                <p class="small"
+                <p class="small mb-0"
                    [ngClass]="{'red': showErrors(assessmentGradesControl), 'gray-darker': !showErrors(assessmentGradesControl)}">
                   {{'aggregate-reports.form.required' | translate}}
                 </p>
@@ -209,7 +221,7 @@
             <div class="row">
               <div class="col-md-6">
                 <label>{{'aggregate-reports.form.field.school-year.label' | translate}}</label>
-                <p class="small"
+                <p class="small mb-0"
                    [ngClass]="{'red': showErrors(schoolYearsControl), 'gray-darker': !showErrors(schoolYearsControl)}">
                   {{'aggregate-reports.form.required' | translate}}
                 </p>
@@ -487,6 +499,36 @@
       </div>
     </div>
 
+    <!-- Report Name -->
+    <div class="row mt-sm" #reportNameSection id="reportNameSection">
+      <div class="col-md-8 col-md-offset-2">
+        <h3 class="h3 gray-darkest">
+          {{'aggregate-reports.form.section.report-name.heading' | translate}}
+        </h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="well">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group mt-sm">
+                <input type="text"
+                       class="form-control"
+                       formControlName="reportName"
+                       [(ngModel)]="settings.name"
+                       [required]="false"
+                       placeholder="{{'aggregate-reports.default-report-name' | translate}}">
+                <div *ngIf="showErrors(reportNameControl)">
+                  <p *ngIf="reportNameControl.errors.fileName" class="help-block small red">{{reportNameControl.errors.fileName.messageId | translate}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </form>
 
   <!-- Summary -->
@@ -499,117 +541,118 @@
   </div>
   <div class="row">
     <div class="col-md-12 col-md-offset-2">
-      <div class="well">
+      <div class="well wide-content-container">
         <aggregate-report-summary [columns]="[
+    {
+      heading: 'aggregate-reports.form.summary.column.assessment.heading' | translate,
+      label: 'aggregate-reports.form.summary.column.assessment.label' | translate,
+      labelStyles: 'aqua',
+      attributes: [
         {
-          heading: 'aggregate-reports.form.summary.column.assessment.heading' | translate,
-          label: 'aggregate-reports.form.summary.column.assessment.label' | translate,
-          labelCssClasses: {'aqua': true},
-          attributes: [
-            {
-              label: 'aggregate-reports.form.summary.column.assessment.attribute.subject' | translate,
-              options: options.subjects,
-              values: settings.subjects
-            },
-            {
-              label: 'aggregate-reports.form.summary.column.assessment.attribute.type' | translate,
-              options: options.assessmentTypes,
-              values: [ settings.assessmentType ]
-            }
+          label: 'aggregate-reports.form.summary.column.assessment.attribute.subject' | translate,
+          options: options.subjects,
+          values: settings.subjects
+        },
+        {
+          label: 'aggregate-reports.form.summary.column.assessment.attribute.type' | translate,
+          options: options.assessmentTypes,
+          values: [ settings.assessmentType ]
+        }
+      ]
+    },
+    {
+      heading: 'aggregate-reports.form.summary.column.organization.heading' | translate,
+      label: 'aggregate-reports.form.summary.column.organization.label' | translate,
+      labelStyles: 'aqua',
+      attributeStyles: 'white-space-normal',
+      attributes: [
+        {
+          label: 'aggregate-reports.form.summary.column.organization.attribute.organization.label' | translate,
+          values: [
+           organizations.length < 2
+              ? (organizations.length > 0 ? organizations[0].name : '')
+              : 'aggregate-reports.form.summary.column.organization.attribute.organization.value.multiple' | translate
           ]
         },
         {
-          heading: 'aggregate-reports.form.summary.column.organization.heading' | translate,
-          label: 'aggregate-reports.form.summary.column.organization.label' | translate,
-          labelCssClasses: {'aqua': true},
-          attributes: [
-            {
-              label: 'aggregate-reports.form.summary.column.organization.attribute.organization.label' | translate,
-              values: [
-               organizations.length < 2
-                  ? (organizations.length > 0 ? organizations[0].name : '')
-                  : 'aggregate-reports.form.summary.column.organization.attribute.organization.value.multiple' | translate
-              ]
-            },
-            {
-              label: 'aggregate-reports.form.summary.column.organization.attribute.include.label' | translate,
-              values: [
-                settings.includeStateResults && !this.currentAssessmentDefinition.interim
-                  ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.state-results' | translate)
-                  : undefined,
-                settings.includeAllDistricts
-                  ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts' | translate)
-                  : undefined,
-                settings.includeAllSchoolsOfSelectedDistricts
-                  ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.all-schools-of-districts' | translate)
-                  : undefined,
-                settings.includeAllDistrictsOfSelectedSchools
-                  ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts-of-schools' | translate)
-                  : undefined
-              ]
-            }
-          ]
-        },
-        {
-          label: 'aggregate-reports.form.summary.column.assessment-grade.label' | translate,
-          labelCssClasses: {'aqua': true},
-          attributes: [
-            {
-              label: 'aggregate-reports.form.summary.column.assessment-grade.attribute.grade' | translate,
-              options: options.assessmentGrades,
-              values: settings.assessmentGrades
-            }
-          ]
-        },
-        {
-          label: 'aggregate-reports.form.summary.column.school-year.label' | translate,
-          labelCssClasses: {'aqua': true},
-          attributes: [
-            {
-              label: 'aggregate-reports.form.summary.column.school-year.attribute.year' | translate,
-              options: options.schoolYears,
-              values: settings.schoolYears
-            }
-          ]
-        },
-        {
-          heading: 'aggregate-reports.form.summary.column.comparative-subgroup.heading' | translate,
-          label: 'aggregate-reports.form.summary.column.comparative-subgroup.label' | translate,
-          labelCssClasses: {'green': true},
-          attributes: [
-            {
-              label: 'aggregate-reports.form.summary.column.comparative-subgroup.attribute.subgroup' | translate,
-              options: options.dimensionTypes,
-              values: settings.dimensionTypes
-            }
-          ]
-        },
-        {
-          heading: 'aggregate-reports.form.summary.column.students-tested.heading' | translate,
-          label: 'aggregate-reports.form.summary.column.students-tested.label' | translate,
-          labelCssClasses: {'red': true}
-        },
-        {
-          label: 'aggregate-reports.form.summary.column.average-scale-score.label' | translate,
-          labelCssClasses: {'red': true}
-        },
-        {
-          label: 'aggregate-reports.form.summary.column.performance-level.label' | translate,
-          labelCssClasses: {'red': true},
-          attributes: [
-            {
-              label: 'aggregate-reports.form.summary.column.performance-level.attribute.grouping' | translate,
-              options: options.performanceLevelDisplayTypes,
-              values: [ settings.performanceLevelDisplayType ]
-            },
-            {
-              label: 'aggregate-reports.form.summary.column.performance-level.attribute.value' | translate,
-              options: options.valueDisplayTypes,
-              values: [ settings.valueDisplayType ]
-            }
+          label: 'aggregate-reports.form.summary.column.organization.attribute.include.label' | translate,
+          values: [
+            settings.includeStateResults && !this.currentAssessmentDefinition.interim
+              ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.state-results' | translate)
+              : undefined,
+            settings.includeAllDistricts
+              ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts' | translate)
+              : undefined,
+            settings.includeAllSchoolsOfSelectedDistricts
+              ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.all-schools-of-districts' | translate)
+              : undefined,
+            settings.includeAllDistrictsOfSelectedSchools
+              ? ('aggregate-reports.form.summary.column.organization.attribute.include.value.all-districts-of-schools' | translate)
+              : undefined
           ]
         }
-        ]"></aggregate-report-summary>
+      ]
+    },
+    {
+      label: 'aggregate-reports.form.summary.column.assessment-grade.label' | translate,
+      labelStyles: 'aqua',
+      attributes: [
+        {
+          label: 'aggregate-reports.form.summary.column.assessment-grade.attribute.grade' | translate,
+          options: options.assessmentGrades,
+          values: settings.assessmentGrades
+        }
+      ]
+    },
+    {
+      label: 'aggregate-reports.form.summary.column.school-year.label' | translate,
+      labelStyles: 'aqua',
+      attributes: [
+        {
+          label: 'aggregate-reports.form.summary.column.school-year.attribute.year' | translate,
+          options: options.schoolYears,
+          values: settings.schoolYears
+        }
+      ]
+    },
+    {
+      heading: 'aggregate-reports.form.summary.column.comparative-subgroup.heading' | translate,
+      label: 'aggregate-reports.form.summary.column.comparative-subgroup.label' | translate,
+      labelStyles: 'green',
+      attributes: [
+        {
+          label: 'aggregate-reports.form.summary.column.comparative-subgroup.attribute.subgroup' | translate,
+          options: options.dimensionTypes,
+          values: settings.dimensionTypes
+        }
+      ]
+    },
+    {
+      heading: 'aggregate-reports.form.summary.column.students-tested.heading' | translate,
+      label: 'aggregate-reports.form.summary.column.students-tested.label' | translate,
+      labelStyles: 'red'
+    },
+    {
+      label: 'aggregate-reports.form.summary.column.average-scale-score.label' | translate,
+      labelStyles: 'red'
+    },
+    {
+      label: 'aggregate-reports.form.summary.column.performance-level.label' | translate,
+      labelStyles: 'red',
+      attributes: [
+        {
+          label: 'aggregate-reports.form.summary.column.performance-level.attribute.grouping' | translate,
+          options: options.performanceLevelDisplayTypes,
+          values: [ settings.performanceLevelDisplayType ]
+        },
+        {
+          label: 'aggregate-reports.form.summary.column.performance-level.attribute.value' | translate,
+          options: options.valueDisplayTypes,
+          values: [ settings.valueDisplayType ]
+        }
+      ]
+    }
+    ]"></aggregate-report-summary>
       </div>
     </div>
   </div>
@@ -620,24 +663,24 @@
         <div>
           <span class="red label">{{ 'aggregate-reports.preview' | translate }}</span>
           <div class="pull-right">
-            <span>
-              <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
-              <sb-toggle [options]="options.performanceLevelDisplayTypes"
-                         [(ngModel)]="settings.performanceLevelDisplayType"
-                         [ngClass]="'btn-group-xs'"
-                         [buttonNgClass]="'btn-default'"
-                         analyticsCategory="AggregateQueryBuilder"
-                         analyticsEvent="Change"></sb-toggle>
-            </span>
+        <span>
+          <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
+          <sb-radio-button-group [options]="options.performanceLevelDisplayTypes"
+                     [(ngModel)]="settings.performanceLevelDisplayType"
+                     buttonGroupStyles="btn-group-xs"
+                     buttonStyles="btn-default"
+                     analyticsCategory="AggregateQueryBuilder"
+                     analyticsEvent="Change"></sb-radio-button-group>
+        </span>
             <span class="ml-sm">
-              <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
-              <sb-toggle [options]="options.valueDisplayTypes"
-                         [(ngModel)]="settings.valueDisplayType"
-                         [ngClass]="'btn-group-xs'"
-                         [buttonNgClass]="'btn-default'"
-                         analyticsCategory="AggregateQueryBuilder"
-                         analyticsEvent="Change"></sb-toggle>
-            </span>
+          <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
+          <sb-radio-button-group [options]="options.valueDisplayTypes"
+                     [(ngModel)]="settings.valueDisplayType"
+                     buttonGroupStyles="btn-group-xs"
+                     buttonStyles="btn-default"
+                     analyticsCategory="AggregateQueryBuilder"
+                     analyticsEvent="Change"></sb-radio-button-group>
+        </span>
           </div>
         </div>
         <div class="mt-sm">
@@ -651,4 +694,4 @@
     </div>
   </div>
 
-</ng-container>
+</div>

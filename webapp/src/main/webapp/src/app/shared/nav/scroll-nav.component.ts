@@ -57,10 +57,6 @@ export class ScrollNavComponent {
     }
   }
 
-  private getScrollTop(): number {
-    return this._window.pageYOffset || this._document.documentElement.scrollTop || this._document.body.scrollTop || 0;
-  }
-
   @HostListener("window:scroll", [])
   onWindowScroll(): void {
     this._enabled && this.updateActiveLink();
@@ -70,33 +66,39 @@ export class ScrollNavComponent {
 
     // Sets the last item to active if the user scrolls to the very bottom of the page
     if ((this._window.innerHeight + this._window.scrollY) >= this._document.body.offsetHeight) {
-      // you're at the bottom of the page
       this._activeItem = this.items[ this.items.length - 1 ];
       return;
     }
 
-    const scrollTop = this.getScrollTop();
-    const threshold = 20;
+    const scrollTop = this.getWindowPageYOffset();
 
-    // TODO clean up or use a 3rd party lib if possible
     // document.getElementById(item.scrollTo.id) is a HOTFIX for offsetTop javascript error
     // ngOnDestroy is not called in this component because it belongs to a "reusable" view
     // Angular does not currently support removal of global host listeners
     this.items
       .filter(item => item.scrollTo && document.getElementById(item.scrollTo.id))
       .forEach(item => {
-        const scrollItem = document.getElementById(item.scrollTo.id);
-        const itemOffsetTop = scrollItem.offsetTop;
-
-        // minus small number (20) since clicking on scroll nav sometimes resulted in the link above the one clicked
-        // being highlighted until scrolling down a bit
-        if ((itemOffsetTop - threshold) <= scrollTop) {
+        const itemOffsetTop = Utils.getAbsoluteOffsetTop(item.scrollTo) - Utils.getHeight(item.scrollTo);
+        if (itemOffsetTop <= scrollTop) {
           this._activeItem = item;
         } else {
           return;
         }
       });
   }
+
+  /**
+   * Gets the window's page y offset in a cross-browser compliant manner
+   *
+   * @returns {number} the windows page y offset
+   */
+  private getWindowPageYOffset(): number {
+    return this._window.pageYOffset
+      || this._document.documentElement.scrollTop
+      || this._document.body.scrollTop
+      || 0;
+  }
+
 }
 
 export interface ScrollNavItem {

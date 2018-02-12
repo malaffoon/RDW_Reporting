@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { AggregateReportQuery, AggregateReportRequest } from "../report/aggregate-report-request";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
+import { TranslateService } from "@ngx-translate/core";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
 
 const equalSize = (a: any[], b: any[]) => a.length === b.length;
@@ -13,6 +14,9 @@ const idsOf = values => values.map(value => value.id);
 @Injectable()
 export class AggregateReportRequestMapper {
 
+  constructor(private translate: TranslateService){
+  }
+
   /**
    * Creates an aggregate report request form the given options and settings tailored to optimize backend performance
    *
@@ -20,7 +24,10 @@ export class AggregateReportRequestMapper {
    * @param {AggregateReportFormSettings} settings the aggregate report form state
    * @returns {AggregateReportRequest}
    */
-  map(options: AggregateReportFormOptions, settings: AggregateReportFormSettings, assessmentDefinition: AssessmentDefinition): AggregateReportRequest {
+  map(options: AggregateReportFormOptions,
+      settings: AggregateReportFormSettings,
+      assessmentDefinition: AssessmentDefinition): AggregateReportRequest {
+
     const query: any = <AggregateReportQuery>{
       achievementLevelDisplayType: settings.performanceLevelDisplayType,
       assessmentTypeCode: settings.assessmentType,
@@ -75,8 +82,13 @@ export class AggregateReportRequestMapper {
     if (settings.schools.length) {
       query.schoolIds = idsOf(settings.schools)
     }
+
+    const name = settings.name
+      ? settings.name
+      : this.translate.instant('aggregate-reports.default-report-name');
+
     return {
-      name: 'Custom Aggregate Report', // TODO add form field for name
+      name: name,
       reportQuery: query
     }
   }
