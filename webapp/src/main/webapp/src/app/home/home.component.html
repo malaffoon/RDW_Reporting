@@ -17,7 +17,10 @@
            routerLink="/custom-export" class="btn btn-xs btn-default ml-xs"><i class="fa fa-bold fa-table"></i>
           {{'labels.organization-export.title' | translate}}</a>
 
-        <admin-dropdown *hasAnyPermission="['GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE', 'EMBARGO_WRITE']"></admin-dropdown>
+        <span class="ml-xs">
+          <admin-dropdown *hasAnyPermission="['GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE', 'EMBARGO_WRITE']"></admin-dropdown>
+        </span>
+
       </div>
     </div>
   </div>
