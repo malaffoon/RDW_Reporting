@@ -13,7 +13,7 @@ import { School } from "../user/model/school.model";
 import { Grade } from "../school-grade/grade.model";
 import { DataService } from "../shared/data/data.service";
 import { Download } from "../shared/data/download.model";
-import { AggregateReportRequest } from "./aggregate-report-request";
+import { AggregateReportRequest, AggregateReportQuery } from "./aggregate-report-request";
 import { AggregateReportRow } from "./aggregate-report";
 
 const ServiceRoute = '/report-processor';
@@ -180,7 +180,15 @@ export class ReportService {
     local.created = remote.created;
     local.reportType = remote.reportType;
     local.assessmentType = AssessmentType[ remote.assessmentType as string ];
-    local.assessmentTypeCode = remote.assessmentTypeCode;
+
+    // HOTFIX for aggreagte report assessment type display
+    // unable to use ExamReportAssessmentType enum because it does not support summatives
+    if (remote.reportType === 'AggregateReportRequest') {
+      local.assessmentTypeCode = (<AggregateReportRequest>remote.request).reportQuery.assessmentTypeCode;
+    } else {
+      local.assessmentTypeCode = remote.assessmentTypeCode;
+    }
+
     local.subjectId = AssessmentSubjectType[ remote.subject as string ] || 0;
     local.subjectCode = remote.subjectCode;
     local.schoolYear = remote.schoolYear;
