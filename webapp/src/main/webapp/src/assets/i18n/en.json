@@ -62,7 +62,7 @@
       "field": {
         "organization": {
           "label": "Search a School or District",
-          "error-empty": "Please select a school or district."
+          "error-invalid": "Please select a school, district or include state results."
         },
         "assessment-grades": {
           "label": "Assessment Grades",
@@ -131,7 +131,8 @@
           "info": "Select the student sub-groups to display separately in results."
         },
         "report-name": {
-          "label": "Enter a name"
+          "label": "Enter a name",
+          "error-file-name": "The name cannot contain these special characters: <>:;,?\"*|\\/"
         }
       },
       "organizations": {

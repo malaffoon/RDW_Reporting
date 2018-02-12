@@ -5,29 +5,52 @@ import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { NotificationService } from "../shared/notification/notification.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Forms } from "../shared/form/forms";
-import { DefaultSchool, District, Organization, OrganizationType, School } from "../shared/organization/organization";
+import { District, Organization, OrganizationType, School } from "../shared/organization/organization";
 import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportService } from "./aggregate-report.service";
 import { AggregateReportTable } from "./results/aggregate-report-table.component";
-import "rxjs/add/observable/interval";
-import "rxjs/add/operator/switchMap";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
 import { AggregateReportFormOptionsMapper } from "./aggregate-report-form-options.mapper";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportOptions } from "./aggregate-report-options";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
+import "rxjs/add/observable/interval";
+import "rxjs/add/operator/switchMap";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
  *
  * @param properties the properties to propagate when the control value is invalid
- * @return any|null
+ * @return {null|{notEmpty: any}}}
  */
 const notEmpty = properties => control => {
   return control.value.length ? null : { notEmpty: properties };
+};
+
+/**
+ * Form control validator that makes sure the control value is a valid filename
+ *
+ * @param properties the properties to propagate when the control value is invalid
+ * @return {null|{fileName: any}}}
+ */
+const fileName = (properties: any) => control => {
+  return /^[^\\<>:;,?"*|/]*$/.test((control.value || '').trim()) ? null : { fileName: properties };
+};
+
+/**
+ * Form control validator that makes sure the organization control is not empty
+ * or includeStateResults or inlcudeAllDistricts is flagged
+ *
+ * @param properties the properties to propagate when the control value is invalid
+ * @return {null|{notEmpty: any}}}
+ */
+const organizationValidator = (properties, settings) => control => {
+  return settings.includeStateResults
+    || settings.includeAllDistricts
+    || control.value.length ? null : { invalid: properties };
 };
 
 const OrganizationComparator = (a: Organization, b: Organization) => a.name.localeCompare(b.name);
@@ -114,15 +137,19 @@ export class AggregateReportFormComponent {
     );
 
     this.formGroup = new FormGroup({
-      organizations: new FormControl(this.organizations, notEmpty({
-        messageId: 'aggregate-reports.form.field.organization.error-empty'
-      })),
-      assessmentGrades: new FormControl(this.settings.assessmentGrades, notEmpty({
-        messageId: 'aggregate-reports.form.field.assessment-grades.error-empty'
-      })),
-      schoolYears: new FormControl(this.settings.schoolYears, notEmpty({
-        messageId: 'aggregate-reports.form.field.school-year.error-empty'
-      }))
+      organizations: new FormControl(this.organizations, organizationValidator(
+        { messageId: 'aggregate-reports.form.field.organization.error-invalid' },
+        this.settings
+      )),
+      assessmentGrades: new FormControl(this.settings.assessmentGrades, notEmpty(
+        { messageId: 'aggregate-reports.form.field.assessment-grades.error-empty' }
+      )),
+      schoolYears: new FormControl(this.settings.schoolYears, notEmpty(
+        { messageId: 'aggregate-reports.form.field.school-year.error-empty' }
+      )),
+      reportName: new FormControl(this.settings.name, fileName(
+        { messageId: 'aggregate-reports.form.field.report-name.error-file-name' }
+      ))
     });
 
     this.previewTable = {
@@ -159,6 +186,13 @@ export class AggregateReportFormComponent {
    */
   get schoolYearsControl(): FormControl {
     return <FormControl>this.formGroup.get('schoolYears');
+  }
+
+  /**
+   * @returns {FormControl} The report name form control
+   */
+  get reportNameControl(): FormControl {
+    return <FormControl>this.formGroup.get('reportName');
   }
 
   /**
@@ -205,6 +239,19 @@ export class AggregateReportFormComponent {
     this.removeOrganization(organization);
   }
 
+  onIncludeStateResultsChange(): void {
+    this.markOrganizationsControlTouched();
+  }
+
+  onIncludeAllDistrictsChange(): void {
+    this.markOrganizationsControlTouched();
+  }
+
+  private markOrganizationsControlTouched(): void {
+    this.organizationsControl.markAsDirty();
+    this.organizations = this.organizations.concat();
+  }
+
   /**
    * Adds an organization to the selected organizations
    *
@@ -214,9 +261,8 @@ export class AggregateReportFormComponent {
     const finder = value => value.equals(organization);
     const index = this.organizations.findIndex(finder);
     if (index === -1) {
-      // new array needed for change detection to kick in
-      this.organizations = this.organizations.concat(organization);
       this.organizationsControl.markAsTouched();
+      this.organizations = this.organizations.concat(organization);
       if (organization.type === OrganizationType.District) {
         this.settings.districts.push(<District>organization);
         this.settings.districts.sort(OrganizationComparator);
@@ -236,6 +282,7 @@ export class AggregateReportFormComponent {
     const finder = value => value.equals(organization);
     const index = this.organizations.findIndex(finder);
     if (index !== -1) {
+      this.organizationsControl.markAsTouched();
       this.organizations = this.organizations.filter(value => !organization.equals(value));
       if (organization.type === OrganizationType.District) {
         this.settings.districts.splice(this.settings.districts.findIndex(finder), 1);

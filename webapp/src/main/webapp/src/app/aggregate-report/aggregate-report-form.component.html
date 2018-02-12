@@ -75,7 +75,7 @@
                      formControlName="organizations"
                      (ngModelChange)="onSettingsChange()">
               <div *ngIf="showErrors(organizationsControl)">
-                <p *ngIf="organizationsControl.errors.notEmpty" class="help-block small red">{{organizationsControl.errors.notEmpty.messageId | translate}}</p>
+                <p *ngIf="organizationsControl.errors.invalid" class="help-block small red">{{organizationsControl.errors.invalid.messageId | translate}}</p>
               </div>
             </div>
           </div>
@@ -88,13 +88,19 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeStateResults" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeStateResults"
+                             [ngModelOptions]="{standalone: true}"
+                             (change)="onIncludeStateResultsChange()">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.state-results' | translate}}</span>
                     </label>
                   </div>
                   <div class="col-sm-6" *ngIf="options.statewideReporter">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeAllDistricts" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeAllDistricts"
+                             [ngModelOptions]="{standalone: true}"
+                             (change)="onIncludeAllDistrictsChange()">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-districts' | translate}}</span>
                     </label>
                   </div>
@@ -102,13 +108,17 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeAllSchoolsOfSelectedDistricts" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeAllSchoolsOfSelectedDistricts"
+                             [ngModelOptions]="{standalone: true}">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-schools-of-districts' | translate}}</span>
                     </label>
                   </div>
                   <div class="col-sm-6">
                     <label class="inline-label">
-                      <input type="checkbox" [(ngModel)]="settings.includeAllDistrictsOfSelectedSchools" [ngModelOptions]="{standalone: true}">
+                      <input type="checkbox"
+                             [(ngModel)]="settings.includeAllDistrictsOfSelectedSchools"
+                             [ngModelOptions]="{standalone: true}">
                       <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-districts-of-schools' | translate}}</span>
                     </label>
                   </div>
@@ -150,12 +160,12 @@
               </div>
               <div class="col-md-6">
                 <span *ngIf="options.assessmentTypes.length == 1">{{options.assessmentTypes[0].text}}</span>
-                <sb-toggle *ngIf="options.assessmentTypes.length > 1"
+                <sb-radio-button-group *ngIf="options.assessmentTypes.length > 1"
                            name="assessmentType"
                            [options]="options.assessmentTypes"
                            [(ngModel)]="settings.assessmentType"
                            [ngModelOptions]="{standalone: true}"
-                           (change)="onSettingsChange()"></sb-toggle>
+                           (change)="onSettingsChange()"></sb-radio-button-group>
               </div>
             </div>
           </div>
@@ -183,7 +193,7 @@
                 <label info-button
                        title="{{'aggregate-reports.form.field.assessment-grades.label' | translate}}"
                        content="{{'aggregate-reports.form.field.assessment-grades.info' | translate}}"></label>
-                <p class="small"
+                <p class="small mb-0"
                    [ngClass]="{'red': showErrors(assessmentGradesControl), 'gray-darker': !showErrors(assessmentGradesControl)}">
                   {{'aggregate-reports.form.required' | translate}}
                 </p>
@@ -211,7 +221,7 @@
             <div class="row">
               <div class="col-md-6">
                 <label>{{'aggregate-reports.form.field.school-year.label' | translate}}</label>
-                <p class="small"
+                <p class="small mb-0"
                    [ngClass]="{'red': showErrors(schoolYearsControl), 'gray-darker': !showErrors(schoolYearsControl)}">
                   {{'aggregate-reports.form.required' | translate}}
                 </p>
@@ -505,9 +515,13 @@
               <div class="form-group mt-sm">
                 <input type="text"
                        class="form-control"
+                       formControlName="reportName"
                        [(ngModel)]="settings.name"
-                       [ngModelOptions]="{standalone: true}"
+                       [required]="false"
                        placeholder="{{'aggregate-reports.default-report-name' | translate}}">
+                <div *ngIf="showErrors(reportNameControl)">
+                  <p *ngIf="reportNameControl.errors.fileName" class="help-block small red">{{reportNameControl.errors.fileName.messageId | translate}}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -651,21 +665,21 @@
           <div class="pull-right">
         <span>
           <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
-          <sb-toggle [options]="options.performanceLevelDisplayTypes"
+          <sb-radio-button-group [options]="options.performanceLevelDisplayTypes"
                      [(ngModel)]="settings.performanceLevelDisplayType"
-                     [ngClass]="'btn-group-xs'"
-                     [buttonNgClass]="'btn-default'"
+                     buttonGroupStyles="btn-group-xs"
+                     buttonStyles="btn-default"
                      analyticsCategory="AggregateQueryBuilder"
-                     analyticsEvent="Change"></sb-toggle>
+                     analyticsEvent="Change"></sb-radio-button-group>
         </span>
             <span class="ml-sm">
           <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
-          <sb-toggle [options]="options.valueDisplayTypes"
+          <sb-radio-button-group [options]="options.valueDisplayTypes"
                      [(ngModel)]="settings.valueDisplayType"
-                     [ngClass]="'btn-group-xs'"
-                     [buttonNgClass]="'btn-default'"
+                     buttonGroupStyles="btn-group-xs"
+                     buttonStyles="btn-default"
                      analyticsCategory="AggregateQueryBuilder"
-                     analyticsEvent="Change"></sb-toggle>
+                     analyticsEvent="Change"></sb-radio-button-group>
         </span>
           </div>
         </div>

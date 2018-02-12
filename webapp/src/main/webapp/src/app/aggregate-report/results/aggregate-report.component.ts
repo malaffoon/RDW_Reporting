@@ -15,6 +15,7 @@ import { ordering } from "@kourge/ordering";
 import { AggregateReportQuery } from "../../report/aggregate-report-request";
 import { saveAs } from "file-saver";
 import { DisplayOptionService } from "../../shared/display-options/display-option.service";
+import { NotificationService } from "../../shared/notification/notification.service";
 
 const PollingInterval = 4000;
 
@@ -41,7 +42,9 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
               private router: Router,
               private reportService: ReportService,
               private itemMapper: AggregateReportItemMapper,
-              private displayOptionService: DisplayOptionService) {
+              private displayOptionService: DisplayOptionService,
+              private notificationService: NotificationService) {
+
     this.options = this.route.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
     this.assessmentDefinition = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ]
@@ -112,7 +115,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   onDownloadDataButtonClick(): void {
-    this.reportService.getAggregateReportAsSpreadsheet(this.report.id)
+    this.reportService.getReportContent(this.report.id)
       .subscribe(download => {
         saveAs(download.content, download.name);
       });
@@ -120,6 +123,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   onExportButtonClick(table: AggregateReportTableView): void {
     // TODO implement CSV export of current table view
+    this.notificationService.info({id: 'CSV Export coming soon.'});
   }
 
   private loadOrPollReport(): void {

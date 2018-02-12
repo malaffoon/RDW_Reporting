@@ -7,9 +7,13 @@ import { Notification } from "./notification.model";
 @Injectable()
 export class NotificationService {
 
-  public onNotification: EventEmitter<Notification> = new EventEmitter();
+  private _onNotification: EventEmitter<Notification> = new EventEmitter();
 
   constructor() {
+  }
+
+  get onNotification(): EventEmitter<Notification> {
+    return this._onNotification;
   }
 
   /**
@@ -42,4 +46,3 @@ export class NotificationService {
   }
 
 }
-

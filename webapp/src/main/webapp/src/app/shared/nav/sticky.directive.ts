@@ -14,10 +14,10 @@ const PositionFixed = 'fixed';
 export class StickyDirective {
 
   private _window: Window;
-  private _initialPosition: string;
-  private _initialAbsoluteOffset: Point;
-  private _initialOffset: Point;
   private _marginTop: number = 0;
+  private _initialStyles: any;
+  private _initialAbsoluteOffset: Point;
+  private _initialized: boolean = false;
 
   constructor(private _element: ElementRef,
               windowReferenceService: WindowRefService) {
@@ -32,44 +32,55 @@ export class StickyDirective {
   ngAfterViewInit(): void {
     Utils.setImmediate(() => {
       const nativeElement = this._element.nativeElement;
-      this._initialPosition = nativeElement.style.position;
+      const style = nativeElement.style;
+      this._initialStyles = {
+        position: style.position,
+        top: style.top,
+        left: style.left
+      };
       this._initialAbsoluteOffset = Utils.getAbsoluteOffset(nativeElement);
-      this._initialOffset = {
-        x: nativeElement.offsetLeft,
-        y: nativeElement.offsetTop
-      }
+      this._initialized = true;
     });
   }
 
-  @HostListener('window:scroll', [])
-  onWindowScroll(): void {
+  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:resize', ['$event'])
+  onWindowScrollAndResize(event: Event): void {
 
-    const windowX = this._window.pageXOffset,
-      windowY = this._window.pageYOffset,
-      elementX = this._initialAbsoluteOffset.x,
-      elementY = this._initialAbsoluteOffset.y - this._marginTop,
-      pixelsOf = Utils.formatPixels,
-      style = this._element.nativeElement.style;
+    if (!this._initialized) {
+      return;
+    }
 
-    if (windowY > elementY) {
+    const pixelsOf = Utils.formatPixels,
+      style = this._element.nativeElement.style,
+      scrollX = this._window.pageXOffset,
+      scrollY = this._window.pageYOffset,
+      initialX = this._initialAbsoluteOffset.x,
+      initialY = this._initialAbsoluteOffset.y - this._marginTop;
 
-      // apply stickyness by adding position: fixed and manually correcting the top/left styles
+    if (scrollY > initialY) {
+
+      // apply sticky styles
       style.position = PositionFixed;
       style.top = pixelsOf(this._marginTop);
 
       // correct the position: fixed element's left offset
       // without this the element will move along the x-axis when the page scrolls horizontally
-      style.left = pixelsOf(elementX - windowX);
+      if (scrollX > 0) {
+
+        // TODO fix choppyness
+        style.left = `${initialX - scrollX}px`;
+      } else {
+        style.left = this._initialStyles.left;
+      }
 
     } else {
 
-      // set position back to original settings
-      style.position = this._initialPosition;
-      style.top = pixelsOf(this._initialOffset.y);
-      style.left = pixelsOf(this._initialOffset.x);
-
+      // reset styles
+      style.position = this._initialStyles.position;
+      style.top = this._initialStyles.top;
+      style.left = this._initialStyles.left;
     }
-
   }
 
 }

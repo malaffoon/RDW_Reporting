@@ -3,33 +3,34 @@ import { Utils } from "./support/support";
 import { AbstractControlValueAccessor } from "./form/abstract-control-value-accessor";
 import { Forms } from "./form/forms";
 
-const DefaultStyleClasses = { 'btn-group-sm': true };
-const DefaultButtonStyleClasses = { 'btn-primary': true };
+const DefaultButtonGroupStyles = 'btn-group-sm';
+const DefaultButtonStyles = 'btn-primary';
 
 /**
- * TODO rename to sb-radio-button-group
- *
  * A two state switch component that can be used in place of a checkbox
- * @example <code><sb-toggle [options]="[{value: true, text: 'On'}, {value: false, text: 'Off'}]" [(ngModel)]="myModel"></sb-toggle></code>
+ * @example <code><sb-radio-button-group [options]="[{value: true, text: 'On'}, {value: false, text: 'Off'}]" [(ngModel)]="myModel"></sb-radio-button-group></code>
  */
 @Component({
-  selector: 'sb-toggle',
+  selector: 'sb-toggle,sb-radio-button-group',
   template: `
     <div class="btn-group toggle-group"
-         [ngClass]="getClassesInternal()"
+         [ngClass]="buttonGroupStyles"
          data-toggle="buttons">
       <label *ngFor="let option of options"
              class="btn"
-             [ngClass]="getButtonClassesInternal({active: option.value === value, disabled: disabled})">
+             [ngClass]="computeStylesInternal(buttonStyles, {
+                 active: option.value === value, 
+                 disabled: disabled
+             })">
         <input type="radio"
-               [id]="name"
-               [name]="name"
+               id="{{name}}"
+               name="{{name}}"
                [disabled]="disabled"
                [value]="option.value"
                [(ngModel)]="value"
                angulartics2On="click"
-               [angularticsEvent]="analyticsEvent"
-               [angularticsCategory]="analyticsCategory"
+               angularticsEvent="{{analyticsEvent}}"
+               angularticsCategory="{{analyticsCategory}}"
                [angularticsProperties]="option.analyticsProperties || {label: option.text}">{{option.text}}
       </label>
     </div>
@@ -59,25 +60,25 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
   public analyticsCategory: string;
 
   private _options: Option[];
-  private _ngClass: any = DefaultStyleClasses;
-  private _buttonNgClass: any = DefaultButtonStyleClasses;
+  private _buttonGroupStyles: any = DefaultButtonGroupStyles;
+  private _buttonStyles: any = DefaultButtonStyles;
 
-  get ngClass(): any {
-    return this._ngClass;
+  get buttonGroupStyles(): any {
+    return this._buttonGroupStyles;
   }
 
   @Input()
-  set ngClass(value: any) {
-    this._ngClass = value;
+  set buttonGroupStyles(value: any) {
+    this._buttonGroupStyles = value ? value : DefaultButtonGroupStyles;
   }
 
-  get buttonNgClass(): any {
-    return this._buttonNgClass;
+  get buttonStyles(): any {
+    return this._buttonStyles;
   }
 
   @Input()
-  set buttonNgClass(value: any) {
-    this._buttonNgClass = value;
+  set buttonStyles(value: any) {
+    this._buttonStyles = value ? value : DefaultButtonStyles;
   }
 
   get options(): Option[] {
@@ -101,12 +102,8 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
     }
   }
 
-  getClassesInternal(): any {
-    return this._ngClass;
-  }
-
-  getButtonClassesInternal(classes: any): any {
-    return Utils.toNgClass(this._buttonNgClass, classes);
+  computeStylesInternal(...styles): any {
+    return Utils.toNgClass(...styles);
   }
 
   private throwError(message: string): void {
