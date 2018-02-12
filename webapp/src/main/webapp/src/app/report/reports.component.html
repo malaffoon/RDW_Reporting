@@ -22,8 +22,8 @@
     </p-column>
     <p-column field="assessmentType" header="{{'labels.reports.column.assessment-type.header' | translate}}" sortable="true">
       <ng-template let-report="rowData" pTemplate="body">
-        <span *ngIf="!report.assessmentType">{{'labels.reports.all' | translate}}</span>
-        <span *ngIf="report.assessmentType">{{report.assessmentType | assessmentType}}</span>
+        <span *ngIf="!report.assessmentTypeCode">{{'labels.reports.all' | translate}}</span>
+        <span *ngIf="report.assessmentTypeCode">{{'common.assessment-type.' + report.assessmentTypeCode + '.short-name' | translate}}</span>
       </ng-template>
     </p-column>
     <p-column field="subjectId" header="{{'labels.reports.column.subject.header' | translate}}" sortable="true">
