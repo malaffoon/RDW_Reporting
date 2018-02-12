@@ -19,17 +19,20 @@ import { Option as SbCheckboxGroupOption } from "../shared/form/sb-checkbox-grou
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import Spy = jasmine.Spy;
+import { TranslateService } from "@ngx-translate/core";
 
 describe('AggregateReportFormSettingsResolve', () => {
   let reportService: AggregateReportService;
   let optionMapper: AggregateReportFormOptionsMapper;
   let organizationService: AggregateReportOrganizationService;
+  let translateService: TranslateService;
   let resolve: AggregateReportFormSettingsResolve;
   let route: ActivatedRouteSnapshot;
   let report: Report;
   let options: AggregateReportFormOptions;
   let district: District;
   let school: School;
+  let reportName: string = 'report name';
 
   beforeEach(() => {
     route = mockRoute();
@@ -64,19 +67,19 @@ describe('AggregateReportFormSettingsResolve', () => {
         }
       });
 
+    translateService = jasmine.createSpyObj(
+      "TranslateService",
+      [ "instant" ]
+    );
+    (translateService.instant as Spy).and.callFake(() => reportName);
+
     TestBed.configureTestingModule({
       providers: [
         AggregateReportFormSettingsResolve,
-        {
-          provide: AggregateReportService,
-          useValue: reportService
-        }, {
-          provide: AggregateReportFormOptionsMapper,
-          useValue: optionMapper
-        }, {
-          provide: AggregateReportOrganizationService,
-          useValue: organizationService
-        }
+        { provide: AggregateReportService, useValue: reportService },
+        { provide: AggregateReportFormOptionsMapper, useValue: optionMapper },
+        { provide: AggregateReportOrganizationService, useValue: organizationService },
+        { provide: TranslateService, useValue: translateService }
       ]
     });
   });
