@@ -876,7 +876,7 @@
     }
   },
   "html": {
-    "system-news": "<h2 class=\"blue-dark h3 mb-md\">Summary Reports</h2><div class=\"summary-reports-container mb-md\"><p>(Coming Soon)</div><!-- Member Reporting Resources --><h2 class=\"blue-dark h3 mb-md\">Member Reporting Resources</h2><div class=\"member-reporting-resources-container\"><p>(Coming Soon)</p></div>"
+    "system-news": ""
   },
   "labels": {
     "admin": {
