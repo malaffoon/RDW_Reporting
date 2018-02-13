@@ -940,9 +940,9 @@
       "select-school-year": "School Year",
       "select-subject": "Subject",
       "subjects": {
-        "ALL": "MATH, ELA",
+        "ALL": "Math, ELA",
         "ELA": "ELA",
-        "Math": "MATH"
+        "Math": "Math"
       },
       "title": "Manage Student Groups"
     },
@@ -1376,9 +1376,9 @@
       },
       "search-label": "Search by My Groups",
       "subjects": {
-        "ALL": "MATH, ELA",
+        "ALL": "Math, ELA",
         "ELA": "ELA",
-        "Math": "MATH"
+        "Math": "Math"
       }
     },
     "homepage": {
@@ -1611,8 +1611,8 @@
         "RUNNING": "Running"
       },
       "subjects": {
-        "0": "MATH, ELA",
-        "1": "MATH",
+        "0": "Math, ELA",
+        "1": "Math",
         "2": "ELA"
       }
     },
