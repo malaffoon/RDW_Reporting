@@ -37,12 +37,10 @@ import { Utils } from "../support/support";
          triggers="{{ action.tooltip(item) == '' ? '': 'mouseenter:mouseleave'}}"
          placement="right"
          container="body"
-         (click)="action.isDisabled(item) || onMenuClick($event, action)">
-        <button class="btn btn-default btn-borderless"
-          [disabled]="action.isDisabled(item)">
+         (click)="action.isDisabled(item) || onMenuClick($event, action)"
+         [ngClass]="{disabled: action.isDisabled(item)}">
           <i *ngIf="isSubActionsLoading(action)" class="fa fa-spinner fa-pulse fa-fw"></i>
           {{action.displayName( item )}}
-        </button>
       </a>
       <ul *ngIf="getSubActions(action).length" class="dropdown-menu">
         <li *ngFor="let subAction of getSubActions(action)"
