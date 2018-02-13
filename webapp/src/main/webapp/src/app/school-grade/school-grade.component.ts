@@ -39,8 +39,12 @@ export class SchoolGradeComponent {
     }
   }
 
-  schoolChanged(value: School) {
-    this.school = value;
+  schoolChanged(value: any) {
+  // specifying a type on value of this method does not work for handling events
+  // instead, we have to check that this is an instance of what we want  before using the value
+    if (value instanceof School) {
+      this.school = value;
+    }
   }
 
   get school(): School {
