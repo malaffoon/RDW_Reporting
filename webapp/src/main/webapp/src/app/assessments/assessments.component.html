@@ -7,10 +7,10 @@
         <ng-content></ng-content>
         <div class="col-md-2">
           <!-- Advanced Filters Toggle -->
-          <div class="pull-right">
-            <label for="advanced" class="pull-right">{{'labels.filters.label' | translate}}</label>
+          <div class="pull-right text-right">
+            <label for="advanced">{{'labels.filters.label' | translate}}</label>
             <button id="advanced"
-                    class="form-control btn btn-default pull-right btn-sm"
+                    class="form-control btn btn-default pull-right"
                     (click)="showAdvancedFilters = !showAdvancedFilters"
                     angulartics2On="click"
                     angularticsEvent="ToggleAdvancedFilters"
