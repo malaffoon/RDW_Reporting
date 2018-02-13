@@ -1,12 +1,15 @@
-
 /**
  * Represents the aggregate report options as provided by the API
  */
+
+import { Organization } from "../shared/organization/organization";
+
 export interface AggregateReportOptions {
 
   readonly assessmentGrades: string[];
   readonly assessmentTypes: string[];
   readonly completenesses: string[];
+  readonly defaultOrganization: Organization;
   readonly dimensionTypes: string[];
   readonly economicDisadvantages: string[];
   readonly ethnicities: string[];
