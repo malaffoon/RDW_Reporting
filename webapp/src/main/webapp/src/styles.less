@@ -789,7 +789,7 @@ aggregate-report-organization-list {
   }
 }
 
-.dropdown-header, .dropdown-menu > li > a {
+:not(typeahead-container) > .dropdown-menu > li > a {
   color: #5b5e62;
   padding: @padding-large-vertical @padding-large-horizontal;
   &:hover {
@@ -800,3 +800,4 @@ aggregate-report-organization-list {
     opacity: .65;
   }
 }
+
