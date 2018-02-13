@@ -4,6 +4,7 @@ import { AggregateReportOptions } from "./aggregate-report-options";
 import { CachingDataService } from "../shared/data/caching-data.service";
 import { ordering } from "@kourge/ordering";
 import { ranking } from "@kourge/ordering/comparator";
+import { OrganizationMapper } from "../shared/organization/organization.mapper";
 
 const ServiceRoute = '/aggregate-service';
 
@@ -17,7 +18,8 @@ const completenessComparator = ordering(ranking([ 'Complete', 'Partial' ])).comp
 @Injectable()
 export class AggregateReportOptionsService {
 
-  constructor(private dataService: CachingDataService) {
+  constructor(private dataService: CachingDataService,
+              private organizationMapper: OrganizationMapper) {
   }
 
   getReportOptions(): Observable<AggregateReportOptions> {
@@ -26,6 +28,9 @@ export class AggregateReportOptionsService {
         assessmentGrades: options.assessmentGrades,
         assessmentTypes: options.assessmentTypes,
         completenesses: options.completenesses.sort(completenessComparator),
+        defaultOrganization: options.defaultOrganization
+          ? this.organizationMapper.map(options.defaultOrganization)
+          : undefined,
         dimensionTypes: options.dimensionTypes,
         economicDisadvantages: options.economicDisadvantages.sort(booleanComparator),
         ethnicities: options.ethnicities,

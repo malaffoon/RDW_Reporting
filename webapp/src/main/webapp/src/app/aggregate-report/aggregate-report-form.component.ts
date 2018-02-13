@@ -119,12 +119,22 @@ export class AggregateReportFormComponent {
               private reportService: AggregateReportService,
               private tableDataService: AggregateReportTableDataService) {
 
-    this.assessmentDefinitionsByTypeCode = route.parent.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
-
-    this.aggregateReportOptions = route.parent.snapshot.data[ 'options' ];
-
+    this.assessmentDefinitionsByTypeCode = route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
+    this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
+
     this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
+
+    const defaultOrganization = this.aggregateReportOptions.defaultOrganization;
+    if (this.organizations.length == 0 && defaultOrganization) {
+      this.addOrganizationToSettings(defaultOrganization);
+    }
+
+    this.previewTable = {
+      assessmentDefinition: this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType),
+      options: this.aggregateReportOptions,
+      rows: []
+    };
 
     this.options = optionMapper.map(this.aggregateReportOptions);
 
@@ -151,12 +161,6 @@ export class AggregateReportFormComponent {
         { messageId: 'aggregate-reports.form.field.report-name.error-file-name' }
       ))
     });
-
-    this.previewTable = {
-      assessmentDefinition: this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType),
-      options: this.aggregateReportOptions,
-      rows: []
-    };
 
   }
 
@@ -262,14 +266,18 @@ export class AggregateReportFormComponent {
     const index = this.organizations.findIndex(finder);
     if (index === -1) {
       this.organizationsControl.markAsTouched();
-      this.organizations = this.organizations.concat(organization);
-      if (organization.type === OrganizationType.District) {
-        this.settings.districts.push(<District>organization);
-        this.settings.districts.sort(OrganizationComparator);
-      } else if (organization.type === OrganizationType.School) {
-        this.settings.schools.push(<School>organization);
-        this.settings.schools.sort(OrganizationComparator);
-      }
+      this.addOrganizationToSettings(organization);
+    }
+  }
+
+  private addOrganizationToSettings(organization: Organization): void {
+    this.organizations = this.organizations.concat(organization);
+    if (organization.type === OrganizationType.District) {
+      this.settings.districts.push(<District>organization);
+      this.settings.districts.sort(OrganizationComparator);
+    } else if (organization.type === OrganizationType.School) {
+      this.settings.schools.push(<School>organization);
+      this.settings.schools.sort(OrganizationComparator);
     }
   }
 
@@ -283,12 +291,16 @@ export class AggregateReportFormComponent {
     const index = this.organizations.findIndex(finder);
     if (index !== -1) {
       this.organizationsControl.markAsTouched();
-      this.organizations = this.organizations.filter(value => !organization.equals(value));
-      if (organization.type === OrganizationType.District) {
-        this.settings.districts.splice(this.settings.districts.findIndex(finder), 1);
-      } else if (organization.type === OrganizationType.School) {
-        this.settings.schools.splice(this.settings.schools.findIndex(finder), 1);
-      }
+      this.removeOrganizationFromSettings(organization, finder);
+    }
+  }
+
+  private removeOrganizationFromSettings(organization: Organization, finder: any): void {
+    this.organizations = this.organizations.filter(value => !organization.equals(value));
+    if (organization.type === OrganizationType.District) {
+      this.settings.districts.splice(this.settings.districts.findIndex(finder), 1);
+    } else if (organization.type === OrganizationType.School) {
+      this.settings.schools.splice(this.settings.schools.findIndex(finder), 1);
     }
   }
 
