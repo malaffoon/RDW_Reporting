@@ -7,6 +7,7 @@ import { Utils } from "../shared/support/support";
 import { TranslateService } from "@ngx-translate/core";
 import { DimensionConfigurationByType } from "./dimension-configuration";
 
+const MaximumOrganizations = 2;
 const OverallDimension: Dimension = { id: 'Overall', type: 'Overall' };
 
 // when adding a new dimension type one needs to be defined here
@@ -18,7 +19,7 @@ export class AggregateReportTableDataService {
   }
 
   createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
-    const organizations = this.createSampleOrganizations([ ...settings.districts, ...settings.schools ].length);
+    const organizations = this.createSampleOrganizations(settings);
     const assessmentGradeCodes = settings.assessmentGrades;
     const schoolYears = settings.schoolYears;
     const dimensions = [ OverallDimension, ...this.createDimensions(settings) ];
@@ -92,15 +93,20 @@ export class AggregateReportTableDataService {
     return dimensions;
   }
 
-  private createSampleOrganizations(selectedOrganizationCount: number): Organization[] {
+  private createSampleOrganizations(settings: AggregateReportFormSettings): Organization[] {
+
+    const organizationCount = (settings.includeStateResults ? 1 : 0)
+      + (settings.includeAllDistricts ? MaximumOrganizations : 0)
+      + [ ...settings.districts, ...settings.schools ].length;
+
     const organizations: Organization[] = [];
-    for (let i = 0; i < selectedOrganizationCount && i < 2; i++) {
-      organizations.push(this.createSampleSchool(i + 1));
+    for (let i = 0; i < organizationCount && i < MaximumOrganizations; i++) {
+      organizations.push(this.createSampleOrganization(i + 1));
     }
     return organizations;
   }
 
-  private createSampleSchool(id: number): School {
+  private createSampleOrganization(id: number): School {
     const school = new DefaultSchool();
     school.id = id;
     school.name = this.translate.instant('sample-aggregate-table-data-service.organization-name-format', {id: id});

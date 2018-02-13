@@ -128,7 +128,7 @@
           </div>
 
           <!-- Selections -->
-          <div [hidden]="!settings.districts.length || settings.includeAllDistricts">
+          <div [hidden]="!settings.districts.length">
             <label>{{'aggregate-reports.form.section.organization.district-list-heading' | translate}}</label>
             <aggregate-report-organization-list [organizations]="settings.districts"
                                                 (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
