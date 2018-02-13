@@ -26,8 +26,8 @@ cloud:
 
 app:
   aggregate-reports:
-    summative-enabled: true
-    statewide-interim-enabled: false
+    assessment-types: ica,sum
+    statewide-user-assessment-types: sum
     custom-aggregate-report-repository:
       organization-partition-size: 10
     query-pool-size: 6
