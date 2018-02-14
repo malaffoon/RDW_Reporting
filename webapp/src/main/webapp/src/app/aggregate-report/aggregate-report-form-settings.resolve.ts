@@ -106,6 +106,7 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
   private mapOntoSettings(saturatedRequest: SaturatedRequest, options: AggregateReportFormOptions, settings: AggregateReportFormSettings): void {
     const request: AggregateReportRequest = saturatedRequest.request;
     const query: AggregateReportQuery = request.reportQuery;
+    settings.performanceLevelDisplayType = query.achievementLevelDisplayType;
     settings.assessmentType = query.assessmentTypeCode;
     settings.assessmentGrades = query.assessmentGradeCodes;
     settings.dimensionTypes = query.dimensionTypes;
@@ -115,60 +116,54 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
     settings.includeStateResults = query.includeState;
     settings.schoolYears = query.schoolYears;
     settings.subjects = query.subjectCodes;
+    settings.valueDisplayType = query.valueDisplayType;
 
-    if (query.achievementLevelDisplayType) {
-      settings.performanceLevelDisplayType = query.achievementLevelDisplayType;
-    }
+    settings.completenesses = Utils.isNullOrEmpty(query.completenessCodes)
+      ? valuesOf(options.completenesses)
+      : query.completenessCodes;
 
-    if (query.valueDisplayType) {
-      settings.valueDisplayType = query.valueDisplayType;
-    }
+    settings.economicDisadvantages = Utils.isNullOrEmpty(query.economicDisadvantageCodes)
+      ? valuesOf(options.economicDisadvantages)
+      : query.economicDisadvantageCodes;
 
-    if (!Utils.isNullOrEmpty(query.completenessCodes)) {
-      settings.completenesses = query.completenessCodes;
-    }
+    settings.ethnicities = Utils.isNullOrEmpty(query.ethnicityCodes)
+      ? valuesOf(options.ethnicities)
+      : query.ethnicityCodes;
 
-    if (!Utils.isNullOrEmpty(query.economicDisadvantageCodes)) {
-      settings.economicDisadvantages = query.economicDisadvantageCodes;
-    }
+    settings.genders = Utils.isNullOrEmpty(query.genderCodes)
+      ? valuesOf(options.genders)
+      : query.genderCodes;
 
-    if (!Utils.isNullOrEmpty(query.ethnicityCodes)) {
-      settings.ethnicities = query.ethnicityCodes;
-    }
+    settings.individualEducationPlans = Utils.isNullOrEmpty(query.iepCodes)
+      ? valuesOf(options.individualEducationPlans)
+      : query.iepCodes;
 
-    if (!Utils.isNullOrEmpty(query.genderCodes)) {
-      settings.genders = query.genderCodes;
-    }
+    settings.limitedEnglishProficiencies = Utils.isNullOrEmpty(query.lepCodes)
+      ? valuesOf(options.individualEducationPlans)
+      : query.lepCodes;
 
-    if (!Utils.isNullOrEmpty(query.iepCodes)) {
-      settings.individualEducationPlans = query.iepCodes;
-    }
+    settings.migrantStatuses = Utils.isNullOrEmpty(query.migrantStatusCodes)
+      ? valuesOf(options.migrantStatuses)
+      : query.migrantStatusCodes;
 
-    if (!Utils.isNullOrEmpty(query.lepCodes)) {
-      settings.limitedEnglishProficiencies = query.lepCodes;
-    }
+    settings.section504s = Utils.isNullOrEmpty(query.section504Codes)
+      ? valuesOf(options.section504s)
+      : query.section504Codes;
 
-    if (!Utils.isNullOrEmpty(query.migrantStatusCodes)) {
-      settings.migrantStatuses = query.migrantStatusCodes;
-    }
+    const queryInterimAdministrationConditions = query.administrativeConditionCodes
+      .filter(code => hasOption(options.interimAdministrationConditions, code));
 
-    if (!Utils.isNullOrEmpty(query.section504Codes)) {
-      settings.section504s = query.section504Codes;
-    }
+    settings.interimAdministrationConditions = queryInterimAdministrationConditions.length
+      ? queryInterimAdministrationConditions
+      : valuesOf(options.interimAdministrationConditions);
 
-    if (!Utils.isNullOrEmpty(query.administrativeConditionCodes)) {
-      const interim: string[] = query.administrativeConditionCodes
-        .filter(code => hasOption(options.interimAdministrationConditions, code));
-      if (interim.length) {
-        settings.interimAdministrationConditions = interim;
-      }
+    const querySummativeAdministrationConditions = query.administrativeConditionCodes
+      .filter(code => hasOption(options.summativeAdministrationConditions, code));
 
-      const summative: string[] = query.administrativeConditionCodes
-        .filter(code => hasOption(options.summativeAdministrationConditions, code));
-      if (summative.length) {
-        settings.summativeAdministrationConditions = summative;
-      }
-    }
+    settings.summativeAdministrationConditions = querySummativeAdministrationConditions.length
+      ? querySummativeAdministrationConditions
+      : valuesOf(options.interimAdministrationConditions);
+
 
     if (!Utils.isNullOrEmpty(saturatedRequest.districts)) {
       settings.districts = saturatedRequest.districts;
