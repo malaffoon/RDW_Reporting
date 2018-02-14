@@ -1429,7 +1429,7 @@
         "organization-name": "Organization",
         "organization-type": "Organization Type",
         "performance-level": "Performance Level",
-        "resource": "Resource"
+        "resource": "Resource URL"
       },
       "create": {
         "duplicate": "An Instructional Resource for this assessment, organization, and performance level already exists.",
