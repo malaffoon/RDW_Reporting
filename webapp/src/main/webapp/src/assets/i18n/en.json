@@ -364,9 +364,9 @@
     "organization": {
       "type": {
         "State": "State",
-        "DistrictGroup": "District Group",
+        "DistrictGroup": "Group of Districts",
         "District": "District",
-        "SchoolGroup": "School Group",
+        "SchoolGroup": "Group of Schools",
         "School": "School"
       }
     },
@@ -1452,8 +1452,8 @@
         "no-results": "No organizations found.",
         "type": {
           "District": "District",
-          "DistrictGroup": "District Group",
-          "SchoolGroup": "School Group",
+          "DistrictGroup": "Group of Districts",
+          "SchoolGroup": "Group of Schools",
           "State": "State"
         }
       },
@@ -1491,9 +1491,9 @@
           "select-all": "Select All",
           "type": {
             "District": "Districts",
-            "DistrictGroup": "District Groups",
+            "DistrictGroup": "Groups of Districts",
             "School": "Schools",
-            "SchoolGroup": "School Groups"
+            "SchoolGroup": "Groups of Schools"
           }
         },
         "school-year": {
