@@ -40,7 +40,7 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
 
     //Fetch the report, lookup schools/districts, map to settings
     return this.service.getReportById(Number.parseInt(reportId))
-      .flatMap(report => this.saturateOrgs(report.request))
+      .flatMap(report => this.addOrganizations(report.request))
       .map(saturatedRequest => {
         this.mapOntoSettings(saturatedRequest, options, settings);
         return settings;
@@ -81,7 +81,7 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
     };
   }
 
-  private saturateOrgs(request: AggregateReportRequest): Observable<SaturatedRequest> {
+  private addOrganizations(request: AggregateReportRequest): Observable<SaturatedRequest> {
     const schoolIds: number[] = request.reportQuery.schoolIds;
     const schools: Observable<School[]> = !Utils.isNullOrEmpty(schoolIds)
       ? this.organizationService.getOrganizationsByIdAndType(OrganizationType.School, schoolIds)
@@ -94,7 +94,7 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
 
     return Observable.forkJoin(schools, districts)
       .map((results) => {
-        let [ schools, districts ] = results;
+        const [ schools, districts ] = results;
         return {
           request: request,
           schools: schools,
@@ -156,15 +156,15 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
       settings.section504s = query.section504Codes;
     }
 
-    if (!Utils.isNullOrEmpty(query.administrationConditionCodes)) {
-      const interim: string[] = query.administrationConditionCodes
-        .filter((code) => hasOption(options.interimAdministrationConditions, code));
+    if (!Utils.isNullOrEmpty(query.administrativeConditionCodes)) {
+      const interim: string[] = query.administrativeConditionCodes
+        .filter(code => hasOption(options.interimAdministrationConditions, code));
       if (interim.length) {
         settings.interimAdministrationConditions = interim;
       }
 
-      const summative: string[] = query.administrationConditionCodes
-        .filter((code) => hasOption(options.summativeAdministrationConditions, code));
+      const summative: string[] = query.administrativeConditionCodes
+        .filter(code => hasOption(options.summativeAdministrationConditions, code));
       if (summative.length) {
         settings.summativeAdministrationConditions = summative;
       }
