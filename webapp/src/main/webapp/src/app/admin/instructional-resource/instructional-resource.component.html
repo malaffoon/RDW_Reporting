@@ -8,7 +8,7 @@
 <spinner *ngIf="loading" text="{{'messages.loading' | translate}}"></spinner>
 
 <!-- Results Table -->
-<div class="well" *ngIf="!loading">
+<div class="well wide-content-container" *ngIf="!loading">
   <div class="table-search-form-container">
     <label for="search" class="sr-only">{{'labels.instructional-resource.filter' | translate}}</label>
     <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text"
@@ -39,7 +39,11 @@
           <span *ngIf="performanceLevel > 0">{{ ('labels.instructional-resource.assessments.performance-levels.' + assessmentType + '.' + performanceLevel) | translate }}</span>
         </ng-template>
       </p-column>
-      <p-column field="resource" header="{{'labels.instructional-resource.cols.resource' | translate}}"></p-column>
+      <p-column field="resource" header="{{'labels.instructional-resource.cols.resource' | translate}}">
+        <ng-template let-resource="rowData.resource" pTemplate="body">
+          <a href="{{resource}}" target="_blank">{{resource}}</a>
+        </ng-template>
+      </p-column>
     </p-dataTable>
   </div>
 </div>

@@ -21,6 +21,10 @@ import { ValidationErrors } from "@angular/forms";
 })
 export class CreateInstructionalResourceModal {
 
+  log(thing): void {
+    console.log(thing);
+  }
+
   existingResources: InstructionalResource[] = [];
   unableToCreate: boolean = false;
   duplicateResource: boolean = false;
