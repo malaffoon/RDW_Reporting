@@ -17,14 +17,9 @@
   <div class="table-list-container">
     <p-dataTable [value]="filteredResources" emptyMessage="{{'labels.instructional-resource.no-results' | translate}}" sortField="assessmentName"
                  tableStyleClass="table table-striped table-hover overflow">
-      <p-column field="assessmentName" header="{{'labels.instructional-resource.cols.assessment-name' | translate}}" [sortable]="true">
-        <ng-template let-data="rowData" pTemplate="body">
-          <popup-menu [item]="data" [actions]="actions" [text]="data.assessmentName"></popup-menu>
-        </ng-template>
-      </p-column>
       <p-column field="assessmentLabel" header="{{'labels.instructional-resource.cols.assessment-label' | translate}}" [sortable]="true">
-        <ng-template let-label="rowData.assessmentLabel" pTemplate="body">
-          <div class="label-max-width" title="{{label}}">{{label}}</div>
+        <ng-template let-data="rowData" pTemplate="body">
+          <popup-menu [item]="data" [actions]="actions" [text]="data.assessmentLabel"></popup-menu>
         </ng-template>
       </p-column>
       <p-column field="organizationType" header="{{'labels.instructional-resource.cols.organization-type' | translate}}" [sortable]="true">
