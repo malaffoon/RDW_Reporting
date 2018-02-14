@@ -98,18 +98,16 @@ export class InstructionalResourceComponent implements OnInit {
   }
 
   private createActions(): PopupMenuAction[] {
-    let actions: PopupMenuAction[] = [];
 
-    let updateAction: PopupMenuAction = new PopupMenuAction();
-    updateAction.displayName = () => this.translateService.instant("labels.instructional-resource.update.title");
+    const updateAction: PopupMenuAction = new PopupMenuAction();
+    updateAction.displayName = () => this.translateService.instant("labels.instructional-resource.update.link");
     updateAction.perform = (resource: InstructionalResource) => this.openUpdateResourceModal(resource);
-    actions.push(updateAction);
 
-    let deleteAction: PopupMenuAction = new PopupMenuAction();
-    deleteAction.displayName = () => this.translateService.instant("labels.instructional-resource.delete.title");
+    const deleteAction: PopupMenuAction = new PopupMenuAction();
+    deleteAction.displayName = () => this.translateService.instant("labels.instructional-resource.delete.link");
     deleteAction.perform = (resource: InstructionalResource) => this.openDeleteResourceModal(resource);
-    actions.push(deleteAction);
 
-    return actions;
+    return [ updateAction, deleteAction ];
   }
+
 }

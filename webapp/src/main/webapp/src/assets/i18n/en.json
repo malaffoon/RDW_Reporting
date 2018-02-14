@@ -1429,7 +1429,7 @@
         "organization-name": "Organization",
         "organization-type": "Organization Type",
         "performance-level": "Performance Level",
-        "resource": "Resource URL"
+        "resource": "URL"
       },
       "create": {
         "duplicate": "An Instructional Resource for this assessment, organization, and performance level already exists.",
@@ -1439,6 +1439,7 @@
       },
       "delete": {
         "error": "Unable to delete instructional resource.",
+        "link": "Delete",
         "title": "Delete Instructional Resource",
         "warning": "WARNING: Deleting this resource cannot be undone."
       },
@@ -1475,7 +1476,8 @@
       "title": "Manage Instructional Resources",
       "update": {
         "error": "Unable to modify instructional resource.",
-        "title": "Update Instructional Resource"
+        "title": "Edit Instructional Resource",
+        "link": "Edit"
       }
     },
     "menu": "Menu",
