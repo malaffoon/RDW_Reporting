@@ -1429,7 +1429,7 @@
         "organization-name": "Organization",
         "organization-type": "Organization Type",
         "performance-level": "Performance Level",
-        "resource": "Resource"
+        "resource": "Resource URL"
       },
       "create": {
         "duplicate": "An Instructional Resource for this assessment, organization, and performance level already exists.",
@@ -1445,7 +1445,22 @@
       "filter": "Search by Assessment/Organization",
       "form": {
         "assessment-label": "Assessment Label",
-        "organization-name": "Organization Name"
+        "organization-name": "Organization Name",
+        "field": {
+          "assessment": {
+            "placeholder": "Search Assessment Label"
+          },
+          "organization": {
+            "placeholder": "Search Organization Name"
+          },
+          "resource": {
+            "placeholder": "Enter URL",
+            "error": {
+              "pattern": "URL must start with http:// or https://",
+              "required": "* Required"
+            }
+          }
+        }
       },
       "no-results": "No instructional resources found matching the given filter criteria.",
       "organizations": {
