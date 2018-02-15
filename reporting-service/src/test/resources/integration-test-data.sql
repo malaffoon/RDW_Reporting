@@ -110,6 +110,9 @@ insert into student_group_membership (student_group_id, student_id) values
   (-20, -1),
   (-20, -2);
 
+insert into user_student_group(student_group_id, user_login) values
+   (-10, 'someone@somewhere.com');
+
 -- transfer student test data
 insert into student (id, ssid, last_or_surname, first_name, gender_id, gender_code,
                      birthday, inferred_school_id, update_import_id, updated, migrate_id) values

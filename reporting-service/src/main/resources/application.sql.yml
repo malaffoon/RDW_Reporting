@@ -16,6 +16,24 @@ sql:
       where e.student_id=:student_id
         and ${sql.reporting.snippet.unknownScopePermission}
 
+    findAllByStudentIdTest: >-
+      SELECT
+        e.iep,
+        e.lep,
+        e.section504,
+        e.economic_disadvantage,
+        e.migrant_status,
+        ${sql.snippet.claimColumns},
+        ${sql.snippet.exam}
+      WHERE e.student_id = :student_id AND
+       (  1 = :individual_access OR
+        EXISTS(
+          SELECT 1 FROM student_group_membership gm JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
+                     WHERE gm.student_id = e.student_id AND usg.user_login = :user_login
+              )
+       )
+       AND ${sql.reporting.snippet.scopePermission}
+
     # NOTE that existsForStudentId does not sample the students' inferred schools
     # because a student's inferred school is determined by their latest exam.
     existsForStudentId: >-
@@ -349,6 +367,37 @@ sql:
               1 = :allow_transfer_access
               and isch.id = :school_id
               and (1=:statewide or isch.district_group_id in (:district_group_ids) or isch.district_id in (:district_ids) or isch.school_group_id in (:school_group_ids) or isch.id in (:school_ids))
+            )
+          )
+
+      scopePermission: >-
+          (
+             # Individual permissions test
+            (
+              (1 = :individual_statewide or s.district_group_id in (:individual_district_group_ids) or s.district_id in (:individual_district_ids) or s.school_group_id in (:individual_school_group_ids) or e.school_id in (:individual_school_ids))
+              or
+              (
+                1 = :allow_transfer_access
+                and (isch.district_group_id in (:individual_district_group_ids) or isch.district_id in (:individual_district_ids) or isch.school_group_id in (:individual_school_group_ids) or isch.id in (:individual_school_ids))
+              )
+            )
+            or
+            # Group permissions test
+            (
+              exists(
+                 SELECT 1 FROM student_group_membership gm
+                  JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
+                  WHERE gm.student_id = e.student_id AND usg.user_login = :user_login
+              )
+              and
+              (
+                (1 = :group_statewide or s.district_group_id in (:group_district_group_ids) or s.district_id in (:group_district_ids) or s.school_group_id in (:group_school_group_ids) or e.school_id in (:group_school_ids))
+                or
+                (
+                  1 = :allow_transfer_access
+                  and (isch.district_group_id in (:group_district_group_ids) or isch.district_id in (:group_district_ids) or isch.school_group_id in (:group_school_group_ids) or isch.id in (:group_school_ids))
+                )
+              )
             )
           )
       
