@@ -25,13 +25,7 @@ sql:
         e.migrant_status,
         ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
-      WHERE e.student_id = :student_id AND
-       (  1 = :individual_access OR
-        EXISTS(
-          SELECT 1 FROM student_group_membership gm JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
-                     WHERE gm.student_id = e.student_id AND usg.user_login = :user_login
-              )
-       )
+      WHERE e.student_id = :student_id
        AND ${sql.reporting.snippet.scopePermission}
 
     # NOTE that existsForStudentId does not sample the students' inferred schools
