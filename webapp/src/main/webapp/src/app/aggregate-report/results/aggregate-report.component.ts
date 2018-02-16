@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
@@ -18,6 +18,8 @@ import { DisplayOptionService } from "../../shared/display-options/display-optio
 import { TranslateService } from "@ngx-translate/core";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
 import { AggregateReportFormSettings } from "../aggregate-report-form-settings";
+import { SpinnerModal } from "../../shared/loading/spinner.modal";
+import "rxjs/add/operator/finally";
 
 const PollingInterval = 4000;
 
@@ -30,6 +32,9 @@ const PollingInterval = 4000;
   templateUrl: 'aggregate-report.component.html',
 })
 export class AggregateReportComponent implements OnInit, OnDestroy {
+
+  @ViewChild('spinnerModal')
+  spinnerModal: SpinnerModal;
 
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
@@ -127,7 +132,11 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   onDownloadDataButtonClick(): void {
+    this.spinnerModal.loading = true;
     this.reportService.getReportContent(this.report.id)
+      .finally(() => {
+        this.spinnerModal.loading = false;
+      })
       .subscribe(download => {
         saveAs(download.content, download.name);
       });

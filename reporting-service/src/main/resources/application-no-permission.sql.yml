@@ -1,0 +1,134 @@
+sql:
+  school_year:
+    findAll: >-
+      select year from school_year order by year desc;
+
+  group:
+    findAllForUsername: >-
+      select
+        sg.id,
+        sg.name,
+        sc.name as school_name,
+        sc.id as school_id,
+        s.code as subject_code
+      from user_student_group usg
+        join student_group sg on sg.id = usg.student_group_id
+        join school sc on sc.id = sg.school_id
+        left join subject s on s.id = sg.subject_id
+      where user_login=:user_login
+      and sg.id in (:group_ids)
+
+  assessment:
+    item:
+      findAllForAssessment: >-
+        ${sql.reporting.snippet.selectFromItem}
+          join asmt a on i.asmt_id=a.id
+        where a.type_id in (:assessmentTypes)
+        and i.asmt_id=:assessment_id
+        and (1=:includeAllItemTypes or i.type in (:types))
+
+      findAllForExam: >-
+        ${sql.reporting.snippet.selectFromItem}
+          join exam e on e.asmt_id = i.asmt_id
+        where e.id=:exam_id
+
+  student:
+    findOneById: >-
+      select id,
+        ssid,
+        first_name,
+        last_or_surname
+      from student s
+      where s.id=:studentId
+       and exists (select 1 from exam e where e.student_id = s.id)
+
+  ethnicity:
+    findAll: >-
+      select id, code
+      from ethnicity
+
+    findAllCodes: >-
+      select code
+      from ethnicity
+
+    findEthnicityCodesByStudentIds: >-
+      select student_id, ethnicity_code
+      from student_ethnicity
+      where student_id in (:student_ids)
+
+    findEthnicityCodesByStudentId: >-
+      select e.code
+      from student_ethnicity se
+        join ethnicity e on se.ethnicity_id=e.id
+      where se.student_id=:student_id
+
+  status:
+    readTest: >-
+      SELECT code FROM asmt_type
+
+  target:
+    findOneById: >-
+      SELECT id, description FROM target where id=:target_id
+
+  commonCoreStandard:
+    findAllByItemId: >-
+      select ccs.id, ccs.natural_id, ccs.description
+      from common_core_standard ccs
+        join item_common_core_standard iccs on iccs.common_core_standard_id = ccs.id
+      where iccs.item_id = :item_id
+
+  instructionalResource:
+    findAllByAssessmentId: >-
+      SELECT
+        ir.performance_level,
+        ir.resource,
+        ir.org_level,
+        coalesce(district_group.name, district.name, school_group.name) AS org_name
+      FROM instructional_resource ir
+        JOIN asmt
+          ON asmt.name = ir.asmt_name
+        JOIN school
+        LEFT JOIN district_group
+          ON ir.org_level = 'DistrictGroup'
+          AND district_group.id = school.district_group_id
+          AND district_group.id = ir.org_id
+        LEFT JOIN district
+          ON ir.org_level = 'District'
+          AND district.id = school.district_id
+          AND district.id = ir.org_id
+        LEFT JOIN school_group
+          ON ir.org_level = 'SchoolGroup'
+          AND school_group.id = school.school_group_id
+          AND school_group.id = ir.org_id
+      WHERE asmt.id = :asmt_id
+        AND school.id = :school_id
+        AND
+        (
+          ir.org_level = 'System'
+          OR ir.org_level = 'State'
+          OR (ir.org_level = 'DistrictGroup' AND district_group.id IS NOT NULL)
+          OR (ir.org_level = 'District' AND district.id IS NOT NULL)
+          OR (ir.org_level = 'SchoolGroup' AND school_group.id IS NOT NULL)
+        )
+
+  reporting:
+    snippet:
+        selectFromItem: >-
+           select
+              i.id,
+              i.natural_id,
+              i.position,
+              i.difficulty_code,
+              i.max_points,
+              i.claim_code,
+              i.target_code,
+              i.target_id,
+              i.dok_level_subject_id,
+              i.math_practice_code,
+              i.allow_calc,
+              i.common_core_standard_ids,
+              i.answer_key,
+              i.options_count,
+              i.type,
+              i.performance_task_writing_type
+            from item i
