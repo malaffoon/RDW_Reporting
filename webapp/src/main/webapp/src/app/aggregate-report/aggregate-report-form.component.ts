@@ -363,16 +363,16 @@ export class AggregateReportFormComponent {
    * Reloads the report preview based on current form state
    */
   onSettingsChange() {
-
-    this.summary && this.summary.updateColumns();
-
     const assessmentDefinition = this.currentAssessmentDefinition;
 
-    // this.previewTable = {
-    //   rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings),
-    //   options: this.aggregateReportOptions,
-    //   assessmentDefinition: assessmentDefinition
-    // };
+    // TODO this table should be lazily updated when it is scrolled into view. There is serious lag when changing settings above
+    this.previewTable = {
+      rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings),
+      options: this.aggregateReportOptions,
+      assessmentDefinition: assessmentDefinition
+    };
+
+    this.summary && this.summary.updateColumns();
   }
 
 }

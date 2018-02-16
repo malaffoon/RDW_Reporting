@@ -839,10 +839,6 @@ aggregate-report-organization-list {
   }
 }
 
-.well.well-inset {
-  box-shadow: 0 6px 6px -6px rgba(0, 0, 0, 0.16) inset, 0 1px 1px 1px rgba(255, 255, 255, 0.95);
-}
-
 // Fixes well group border radius - should be in kit
 .well-group {
   border-radius: @border-radius-base;
@@ -857,4 +853,8 @@ aggregate-report-organization-list {
       border-bottom-right-radius: @border-radius-base;
     }
   }
+}
+
+.well.well-compact {
+  padding: @padding-small-horizontal @padding-base-horizontal;
 }

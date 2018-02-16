@@ -191,7 +191,7 @@ export class AggregateReportSummary {
 
     this.columns = this.narrow
       ? [[...organizationRows, ...assessmentRows], [...filterRows, ...subgroupRows]]
-      : [[...organizationRows, ...assessmentRows], [...filterRows], [...subgroupRows]];
+      : [organizationRows, assessmentRows, filterRows, subgroupRows];
   }
 
 }

@@ -1,87 +1,98 @@
 <h2 class="h3 blue-dark">{{report.label}}</h2>
 
-  <div class="well">
-    <div>
+<div class="well well-compact">
+  <div class="row">
+    <div class="col-md-12">
       <button class="btn btn-default btn-sm"
               (click)="onUpdateRequestButtonClick()">
         <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.form-link' | translate}}
       </button>
       <button class="btn btn-default btn-sm icon-only pull-right"
               (click)="onToggleRequestViewButtonClick()">
-        <i class="fa" [ngClass]="showRequest ? 'fa-angle-down' : 'fa-angle-up'"></i>
+        <i class="fa" [ngClass]="showRequest ? 'fa-angle-up' : 'fa-angle-down'"></i>
       </button>
     </div>
-    <div>
-      <!-- TODO add summary view -->
+  </div>
+  <div [hidden]="!showRequest" class="row mt-md">
+    <div class="col-md-12">
+      <ng-container *ngIf="!assessmentDefinition || !options || !settings; else summaryLoaded">
+        <spinner></spinner>
+      </ng-container>
+      <ng-template #summaryLoaded>
+        <aggregate-report-summary [assessmentDefinition]="assessmentDefinition"
+                                  [options]="options"
+                                  [settings]="settings"></aggregate-report-summary>
+      </ng-template>
     </div>
   </div>
+</div>
 
-  <ng-container *ngIf="reportProcessing">
-    <spinner text="{{'aggregate-report.processing' | translate}}"></spinner>
-  </ng-container>
+<ng-container *ngIf="reportProcessing">
+  <spinner text="{{'aggregate-report.processing' | translate}}"></spinner>
+</ng-container>
 
-  <ng-container *ngIf="reportNotLoadable">
-    <div class="well">
-      <p>{{'aggregate-report.error.unloadable' | translate}}</p>
-      <button class="btn btn-primary" [routerLink]="['/reports']">{{'aggregate-report.reports-link' | translate}}</button>
+<ng-container *ngIf="reportNotLoadable">
+  <div class="well">
+    <p>{{'aggregate-report.error.unloadable' | translate}}</p>
+    <button class="btn btn-primary" [routerLink]="['/reports']">{{'aggregate-report.reports-link' | translate}}</button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="reportSizeNotSupported">
+  <div class="well">
+    <p>{{'aggregate-report.error.unsupported-size' | translate}}</p>
+    <div>
+      <button class="btn btn-danger btn-sm" (click)="onDisplayReportButtonClick()">{{'aggregate-report.display-report' | translate}}</button>
+      <button class="btn btn-default btn-sm" (click)="onDownloadDataButtonClick()">{{'aggregate-report.download-data' | translate}}</button>
     </div>
-  </ng-container>
+  </div>
+</ng-container>
 
-  <ng-container *ngIf="reportSizeNotSupported">
-    <div class="well">
-      <p>{{'aggregate-report.error.unsupported-size' | translate}}</p>
-      <div>
-        <button class="btn btn-danger btn-sm" (click)="onDisplayReportButtonClick()">{{'aggregate-report.display-report' | translate}}</button>
-        <button class="btn btn-default btn-sm" (click)="onDownloadDataButtonClick()">{{'aggregate-report.download-data' | translate}}</button>
-      </div>
-    </div>
-  </ng-container>
+<ng-container *ngIf="reportView">
+  <div *ngFor="let table of reportTables" class="well wide-content-container">
+    <div class="row">
+      <div class="col-md-12">
 
-  <ng-container *ngIf="reportView">
-    <div *ngFor="let table of reportTables" class="well wide-content-container">
-      <div class="row">
-        <div class="col-md-12">
+        <h3 class="h3 label-group green pull-left">
+          <span class="label">{{'common.assessment-type.' + query.assessmentTypeCode + '.short-name' | translate}}</span><span class="label">{{'common.subject.' + table.subjectCode + '.short-name' | translate}}</span>
+        </h3>
 
-          <h3 class="h3 label-group green pull-left">
-            <span class="label">{{'common.assessment-type.' + query.assessmentTypeCode + '.short-name' | translate}}</span><span class="label">{{'common.subject.' + table.subjectCode + '.short-name' | translate}}</span>
-          </h3>
+        <button class="btn btn-sm btn-default ml-sm"
+                (click)="reportTable.exportTable(getExportName(table))"><i class="fa fa-cloud-download"></i> {{'common.export' | translate}}</button>
 
-          <button class="btn btn-sm btn-default ml-sm"
-                  (click)="reportTable.exportTable(getExportName(table))"><i class="fa fa-cloud-download"></i> {{'common.export' | translate}}</button>
-
-          <div class="pull-right">
-            <span>
-              <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
-              <sb-radio-button-group [options]="displayOptions.performanceLevelDisplayTypes"
-                         [(ngModel)]="table.performanceLevelDisplayType"
-                         buttonGroupStyles="btn-group-xs"
-                         buttonStyles="btn-default"
-                         analyticsCategory="AggregateReportControl"
-                         analyticsEvent="Change"></sb-radio-button-group>
-            </span>
-            <span class="ml-sm">
-              <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
-              <sb-radio-button-group [options]="displayOptions.valueDisplayTypes"
-                         [(ngModel)]="table.valueDisplayType"
-                         buttonGroupStyles="btn-group-xs"
-                         buttonStyles="btn-default"
-                         analyticsCategory="AggregateReportControl"
-                         analyticsEvent="Change"></sb-radio-button-group>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mt-xs">
-        <div class="col-md-12">
-          <aggregate-report-table #reportTable
-                                  [table]="table.table"
-                                  [valueDisplayType]="table.valueDisplayType"
-                                  [performanceLevelDisplayType]="table.performanceLevelDisplayType"
-                                  [columnOrdering]="['organization', 'assessmentGrade', 'schoolYear', 'dimension']"></aggregate-report-table>
+        <div class="pull-right">
+          <span>
+            <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
+            <sb-radio-button-group [options]="displayOptions.performanceLevelDisplayTypes"
+                       [(ngModel)]="table.performanceLevelDisplayType"
+                       buttonGroupStyles="btn-group-xs"
+                       buttonStyles="btn-default"
+                       analyticsCategory="AggregateReportControl"
+                       analyticsEvent="Change"></sb-radio-button-group>
+          </span>
+          <span class="ml-sm">
+            <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
+            <sb-radio-button-group [options]="displayOptions.valueDisplayTypes"
+                       [(ngModel)]="table.valueDisplayType"
+                       buttonGroupStyles="btn-group-xs"
+                       buttonStyles="btn-default"
+                       analyticsCategory="AggregateReportControl"
+                       analyticsEvent="Change"></sb-radio-button-group>
+          </span>
         </div>
       </div>
     </div>
-  </ng-container>
+
+    <div class="row mt-xs">
+      <div class="col-md-12">
+        <aggregate-report-table #reportTable
+                                [table]="table.table"
+                                [valueDisplayType]="table.valueDisplayType"
+                                [performanceLevelDisplayType]="table.performanceLevelDisplayType"
+                                [columnOrdering]="['organization', 'assessmentGrade', 'schoolYear', 'dimension']"></aggregate-report-table>
+      </div>
+    </div>
+  </div>
+</ng-container>
 
 
