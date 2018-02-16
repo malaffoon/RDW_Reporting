@@ -1,22 +1,6 @@
 sql:
-  school_year:
-    findAll: >-
-      select year from school_year order by year desc;
-
   exam:
     findAllByStudentId: >-
-      select
-        e.iep,
-        e.lep,
-        e.section504,
-        e.economic_disadvantage,
-        e.migrant_status,
-        ${sql.snippet.claimColumns},
-        ${sql.snippet.exam}
-      where e.student_id=:student_id
-        and ${sql.reporting.snippet.unknownScopePermission}
-
-    findAllByStudentIdTest: >-
       SELECT
         e.iep,
         e.lep,
@@ -26,62 +10,30 @@ sql:
         ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       WHERE e.student_id = :student_id
-       AND ${sql.reporting.snippet.scopePermission}
+       AND ${sql.reporting.snippet.permission}
 
-    # NOTE that existsForStudentId does not sample the students' inferred schools
-    # because a student's inferred school is determined by their latest exam.
     existsForStudentId: >-
-      select st.id,
+      SELECT
+        st.id,
         st.ssid,
         st.first_name,
         st.last_or_surname
-      from student st
-        join exam e on e.student_id = st.id
-        join asmt a on a.id = e.asmt_id
-        join school s on e.school_id = s.id
-      where st.ssid=:student_ssid
-        and
-        (
-          (1 = :individual_statewide
-            or s.district_group_id in (:individual_district_group_ids)
-            or s.district_id in (:individual_district_ids)
-            or s.school_group_id in (:individual_school_group_ids)
-            or e.school_id in (:individual_school_ids))
-          or (
-            exists(
-                select 1
-                from student_group_membership sgm
-                  join student_group sg on sgm.student_group_id = sg.id
-                where sgm.student_group_id in (:group_ids)
-                      and sgm.student_id = st.id
-                      and (sg.subject_id is null or sg.subject_id = a.subject_id)
-            )
-            and (1 = :group_statewide or s.district_group_id in (:group_district_group_ids) or s.district_id in (:group_district_ids) or s.school_group_id in (:group_school_group_ids) or e.school_id in (:group_school_ids))
-          )
-        )
-      limit 1
+      FROM student st
+        JOIN exam e on e.student_id = st.id
+        JOIN asmt a on a.id = e.asmt_id
+        JOIN school s on e.school_id = s.id
+        JOIN school isch on st.inferred_school_id = isch.id
+      WHERE st.ssid=:student_ssid
+      AND ${sql.reporting.snippet.permission}
+      LIMIT 1
 
-    item:
+  examItem:
       findAllForExam: >-
         ${sql.reporting.snippet.selectFromExamItem}
-        where e.id=:exam_id
-          and ${sql.reporting.snippet.unknownScopePermission}
+        WHERE e.id=:exam_id
+        AND ${sql.reporting.snippet.permission}
 
   group:
-    findAllForUsername: >-
-      select
-        sg.id,
-        sg.name,
-        sc.name as school_name,
-        sc.id as school_id,
-        s.code as subject_code
-      from user_student_group usg
-        join student_group sg on sg.id = usg.student_group_id
-        join school sc on sc.id = sg.school_id
-        left join subject s on s.id = sg.subject_id
-      where user_login=:user_login
-      and sg.id in (:group_ids)
-
     assessment:
       findAll: >-
           select distinct
@@ -97,7 +49,6 @@ sql:
             and sgm.student_group_id=:group_id
             and (0=:group_subject_id or a.subject_id=:group_subject_id)
             and ${sql.reporting.snippet.individualScopePermission}
-
 
     exam:
       # NOTE that findLatest does not sample the students' inferred schools
@@ -211,135 +162,8 @@ sql:
             and g.id=a.grade_id
         )
 
-    item:
-      findAllForAssessment: >-
-        ${sql.reporting.snippet.selectFromItem}
-          join asmt a on i.asmt_id=a.id
-        where a.type_id in (:assessmentTypes)
-        and i.asmt_id=:assessment_id
-        and (1=:includeAllItemTypes or i.type in (:types))
-
-      findAllForExam: >-
-        ${sql.reporting.snippet.selectFromItem}
-          join exam e on e.asmt_id = i.asmt_id
-        where e.id=:exam_id
-
-  student:
-    findOneById: >-
-      select id,
-        ssid,
-        first_name,
-        last_or_surname
-      from student s
-      where s.id=:studentId
-       and exists (select 1 from exam e where e.student_id = s.id)
-
-  ethnicity:
-    findAll: >-
-      select id, code
-      from ethnicity
-
-    findAllCodes: >-
-      select code
-      from ethnicity
-
-    findEthnicityCodesByStudentIds: >-
-      select student_id, ethnicity_code
-      from student_ethnicity
-      where student_id in (:student_ids)
-
-    findEthnicityCodesByStudentId: >-
-      select e.code
-      from student_ethnicity se
-        join ethnicity e on se.ethnicity_id=e.id
-      where se.student_id=:student_id
-
-  status:
-    readTest: >-
-      SELECT code FROM asmt_type
-
-  target:
-    findOneById: >-
-      SELECT id, description FROM target where id=:target_id
-
-  commonCoreStandard:
-    findAllByItemId: >-
-      select ccs.id, ccs.natural_id, ccs.description
-      from common_core_standard ccs
-        join item_common_core_standard iccs on iccs.common_core_standard_id = ccs.id
-      where iccs.item_id = :item_id
-
-  instructionalResource:
-    findAllByAssessmentId: >-
-      SELECT
-        ir.performance_level,
-        ir.resource,
-        ir.org_level,
-        coalesce(district_group.name, district.name, school_group.name) AS org_name
-      FROM instructional_resource ir
-        JOIN asmt
-          ON asmt.name = ir.asmt_name
-        JOIN school
-        LEFT JOIN district_group
-          ON ir.org_level = 'DistrictGroup'
-          AND district_group.id = school.district_group_id
-          AND district_group.id = ir.org_id
-        LEFT JOIN district
-          ON ir.org_level = 'District'
-          AND district.id = school.district_id
-          AND district.id = ir.org_id
-        LEFT JOIN school_group
-          ON ir.org_level = 'SchoolGroup'
-          AND school_group.id = school.school_group_id
-          AND school_group.id = ir.org_id
-      WHERE asmt.id = :asmt_id
-        AND school.id = :school_id
-        AND
-        (
-          ir.org_level = 'System'
-          OR ir.org_level = 'State'
-          OR (ir.org_level = 'DistrictGroup' AND district_group.id IS NOT NULL)
-          OR (ir.org_level = 'District' AND district.id IS NOT NULL)
-          OR (ir.org_level = 'SchoolGroup' AND school_group.id IS NOT NULL)
-        )
-
-
   reporting:
     snippet:
-      unknownScopePermission: >-
-          (
-             # Individual permissions test
-            (
-              (1 = :individual_statewide or s.district_group_id in (:individual_district_group_ids) or s.district_id in (:individual_district_ids) or s.school_group_id in (:individual_school_group_ids) or e.school_id in (:individual_school_ids))
-              or
-              (
-                1 = :allow_transfer_access
-                and (isch.district_group_id in (:individual_district_group_ids) or isch.district_id in (:individual_district_ids) or isch.school_group_id in (:individual_school_group_ids) or isch.id in (:individual_school_ids))
-              )
-            )
-            or
-            # Group permissions test
-            (
-              exists(
-                  select 1
-                  from student_group_membership sgm
-                    join student_group sg on sgm.student_group_id = sg.id
-                  where sgm.student_group_id in (:group_ids)
-                        and sgm.student_id = st.id
-                        and (sg.subject_id is null or sg.subject_id = a.subject_id)
-              )
-              and
-              (
-                (1 = :group_statewide or s.district_group_id in (:group_district_group_ids) or s.district_id in (:group_district_ids) or s.school_group_id in (:group_school_group_ids) or e.school_id in (:group_school_ids))
-                or
-                (
-                  1 = :allow_transfer_access
-                  and (isch.district_group_id in (:group_district_group_ids) or isch.district_id in (:group_district_ids) or isch.school_group_id in (:group_school_group_ids) or isch.id in (:group_school_ids))
-                )
-              )
-            )
-          )
-
       individualScopePermission: >-
           (
             (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or e.school_id in (:school_ids))
@@ -364,37 +188,38 @@ sql:
             )
           )
 
-      scopePermission: >-
+      permission: >
           (
-             # Individual permissions test
+             # Individual permissions
             (
-              (1 = :individual_statewide or s.district_group_id in (:individual_district_group_ids) or s.district_id in (:individual_district_ids) or s.school_group_id in (:individual_school_group_ids) or e.school_id in (:individual_school_ids))
-              or
+              (1 = :individual_statewide OR s.district_group_id IN (:individual_district_group_ids) OR s.district_id IN (:individual_district_ids) OR s.school_group_id IN (:individual_school_group_ids) OR e.school_id IN (:individual_school_ids))
+              OR
               (
                 1 = :allow_transfer_access
-                and (isch.district_group_id in (:individual_district_group_ids) or isch.district_id in (:individual_district_ids) or isch.school_group_id in (:individual_school_group_ids) or isch.id in (:individual_school_ids))
+                AND (isch.district_group_id IN (:individual_district_group_ids) OR isch.district_id IN (:individual_district_ids) OR isch.school_group_id IN (:individual_school_group_ids) OR isch.id IN (:individual_school_ids))
               )
             )
-            or
-            # Group permissions test
+            OR
+            # Group permissions
             (
-              exists(
+              EXISTS(
                  SELECT 1 FROM student_group_membership gm
-                  JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
-                  WHERE gm.student_id = e.student_id AND usg.user_login = :user_login
+                       JOIN student_group sg ON sg.id = gm.student_group_id
+                       JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
+                          WHERE gm.student_id = e.student_id AND usg.user_login = :user_login and (sg.subject_id is null or sg.subject_id = a.subject_id)
               )
-              and
+              AND
               (
-                (1 = :group_statewide or s.district_group_id in (:group_district_group_ids) or s.district_id in (:group_district_ids) or s.school_group_id in (:group_school_group_ids) or e.school_id in (:group_school_ids))
-                or
+                (1 = :group_statewide OR s.district_group_id IN (:group_district_group_ids) OR s.district_id IN (:group_district_ids) OR s.school_group_id IN (:group_school_group_ids) OR e.school_id IN (:group_school_ids))
+                OR
                 (
                   1 = :allow_transfer_access
-                  and (isch.district_group_id in (:group_district_group_ids) or isch.district_id in (:group_district_ids) or isch.school_group_id in (:group_school_group_ids) or isch.id in (:group_school_ids))
+                  AND (isch.district_group_id IN (:group_district_group_ids) OR isch.district_id IN (:group_district_ids) OR isch.school_group_id IN (:group_school_group_ids) OR isch.id IN (:group_school_ids))
                 )
               )
             )
           )
-      
+
       assessmentColumns: >-
           a.id,
           a.label,
@@ -412,25 +237,6 @@ sql:
           a.cut_point_2,
           a.cut_point_3
 
-      selectFromItem: >-
-           select
-              i.id,
-              i.natural_id,
-              i.position,
-              i.difficulty_code,
-              i.max_points,
-              i.claim_code,
-              i.target_code,
-              i.target_id,
-              i.dok_level_subject_id,
-              i.math_practice_code,
-              i.allow_calc,
-              i.common_core_standard_ids,
-              i.answer_key,
-              i.options_count,
-              i.type,
-              i.performance_task_writing_type
-            from item i
 
       selectFromExamItem: >-
            select
