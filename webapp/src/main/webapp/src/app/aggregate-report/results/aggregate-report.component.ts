@@ -41,7 +41,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   settings: AggregateReportFormSettings;
   report: Report;
   reportTables: AggregateReportTableView[];
-  showRequest: boolean = true;
+  showRequest: boolean = false;
 
   private _tableViewComparator: Comparator<AggregateReportTableView>;
   private _pollingSubscription: Subscription;
