@@ -1,8 +1,14 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { ReportAction, ReportActionService } from "./report-action.service";
 import { PopupMenuAction } from "../shared/menu/popup-menu-action.model";
 import { Report } from "./report.model";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs/Observable";
+import { Download } from "../shared/data/download.model";
+import { saveAs } from "file-saver";
+import { SpinnerModal } from "../shared/loading/spinner.modal";
+import { NotificationService } from "../shared/notification/notification.service";
+import 'rxjs/add/operator/finally';
 
 /**
  * Responsible for providing a UI displaying and performing an action
@@ -13,6 +19,10 @@ import { TranslateService } from "@ngx-translate/core";
   templateUrl: './report-action.component.html'
 })
 export class ReportActionComponent implements OnInit {
+
+
+  @ViewChild('spinnerModal')
+  spinnerModal: SpinnerModal;
 
   @Input()
   public report: Report;
@@ -25,7 +35,8 @@ export class ReportActionComponent implements OnInit {
   }
 
   constructor(private actionService: ReportActionService,
-              private translateService: TranslateService) {
+              private translateService: TranslateService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -33,7 +44,20 @@ export class ReportActionComponent implements OnInit {
   }
 
   performAction(reportAction: ReportAction): void {
-    this.actionService.performAction(reportAction);
+    this.spinnerModal.loading = true;
+    const observable: Observable<Download> | void = this.actionService.performAction(reportAction);
+    if (observable) {
+      observable.finally(() => {
+        this.spinnerModal.loading = false;
+      }).subscribe(
+        (download: Download) => {
+          saveAs(download.content, download.name);
+        },
+        () => {
+          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
+        },
+      );
+    }
   }
 
   private toMenuAction(reportAction: ReportAction): PopupMenuAction {
