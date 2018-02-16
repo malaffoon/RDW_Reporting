@@ -1,0 +1,28 @@
+<ng-template #rowTemplate let-row>
+  <td><strong>{{row.label}}</strong></td>
+  <td>
+    <ng-container *ngIf="row.value">
+      {{row.value}}
+    </ng-container>
+    <ng-container *ngIf="row.values">
+      <ul class="list-unstyled">
+        <li *ngFor="let value of row.values">
+          {{value}}
+        </li>
+      </ul>
+    </ng-container>
+  </td>
+</ng-template>
+
+<div class="row">
+  <div class="col-md-4" *ngFor="let rows of columns">
+    <table class="table-striped">
+      <tbody>
+      <tr *ngFor="let row of rows">
+        <ng-container *ngTemplateOutlet="rowTemplate; context: {$implicit: row}"></ng-container>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
