@@ -19,6 +19,7 @@ import { AggregateReportOptions } from "./aggregate-report-options";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/switchMap";
+import { AggregateReportSummary } from "./aggregate-report-summary.component";
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -109,6 +110,9 @@ export class AggregateReportFormComponent {
    * Assessment definitions for use in generating sample data
    */
   assessmentDefinitionsByTypeCode: Map<string, AssessmentDefinition>;
+
+  @ViewChild('summary')
+  summary: AggregateReportSummary;
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -359,12 +363,16 @@ export class AggregateReportFormComponent {
    * Reloads the report preview based on current form state
    */
   onSettingsChange() {
+
+    this.summary && this.summary.updateColumns();
+
     const assessmentDefinition = this.currentAssessmentDefinition;
-    this.previewTable = {
-      rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings),
-      options: this.aggregateReportOptions,
-      assessmentDefinition: assessmentDefinition
-    };
+
+    // this.previewTable = {
+    //   rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings),
+    //   options: this.aggregateReportOptions,
+    //   assessmentDefinition: assessmentDefinition
+    // };
   }
 
 }

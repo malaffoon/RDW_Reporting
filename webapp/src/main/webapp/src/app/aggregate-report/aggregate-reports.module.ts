@@ -7,7 +7,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 import { AggregateReportOptionsService } from "./aggregate-report-options.service";
 import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
-import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { ModalModule, TypeaheadModule } from "ngx-bootstrap";
 import { AggregateReportOrganizationList } from "./aggregate-report-organization-list.component";
@@ -26,14 +25,15 @@ import { AggregateReportFormSettingsResolve } from "./aggregate-report-form-sett
 import { StickyDirective } from "../shared/nav/sticky.directive";
 import { CsvModule } from "../csv-export/csv-export.module";
 import { AggregateReportTableExportService } from "./results/aggregate-report-table-export.service";
+import { AggregateReportSummary } from "./aggregate-report-summary.component";
 
 @NgModule({
   declarations: [
     AggregateReportFormComponent,
     AggregateReportComponent,
     AggregateReportTableComponent,
-    AggregateReportSummary,
     AggregateReportOrganizationList,
+    AggregateReportSummary,
     StickyDirective
   ],
   imports: [

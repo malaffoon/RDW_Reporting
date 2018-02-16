@@ -16,6 +16,8 @@ import { AggregateReportQuery } from "../../report/aggregate-report-request";
 import { saveAs } from "file-saver";
 import { DisplayOptionService } from "../../shared/display-options/display-option.service";
 import { TranslateService } from "@ngx-translate/core";
+import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
+import { AggregateReportFormSettings } from "../aggregate-report-form-settings";
 
 const PollingInterval = 4000;
 
@@ -31,8 +33,11 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
+  settings: AggregateReportFormSettings;
   report: Report;
   reportTables: AggregateReportTableView[];
+  showRequest: boolean = true;
+
   private _tableViewComparator: Comparator<AggregateReportTableView>;
   private _pollingSubscription: Subscription;
   private _displayLargeReport: boolean = false;
@@ -41,6 +46,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private reportService: ReportService,
+              private requestMapper: AggregateReportRequestMapper,
               private itemMapper: AggregateReportItemMapper,
               private displayOptionService: DisplayOptionService,
               private translateService: TranslateService) {
@@ -55,6 +61,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
       performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions()
     };
+    this.requestMapper.toSettings(this.report.request, this.options)
+      .subscribe(settings => this.settings = settings);
   }
 
   get displayOptions(): AggregateReportTableDisplayOptions {
@@ -106,7 +114,11 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   onUpdateRequestButtonClick(): void {
-    this.router.navigate([ '..'  ], { relativeTo: this.route, queryParams: {src: this.report.id} });
+    this.router.navigate([ '..' ], { relativeTo: this.route, queryParams: { src: this.report.id } });
+  }
+
+  onToggleRequestViewButtonClick(): void {
+    this.showRequest = !this.showRequest;
   }
 
   onDisplayReportButtonClick(): void {

@@ -820,3 +820,41 @@ aggregate-report-organization-list {
   }
 }
 
+.aggregate-report-summary {
+  .small;
+  table {
+    width: 100%;
+    > tbody > tr {
+      > td {
+        vertical-align: top;
+        &:first-child {
+          color: @gray-darkest;
+        }
+        &:last-child {
+          color: @gray-darker;
+          padding-left: @padding-small-horizontal;
+        }
+      }
+    }
+  }
+}
+
+.well.well-inset {
+  box-shadow: 0 6px 6px -6px rgba(0, 0, 0, 0.16) inset, 0 1px 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+// Fixes well group border radius - should be in kit
+.well-group {
+  border-radius: @border-radius-base;
+  > .well {
+    &:first-child {
+      border-top: none;
+      border-top-left-radius: @border-radius-base;
+      border-top-right-radius: @border-radius-base;
+    }
+    &:last-child {
+      border-bottom-left-radius: @border-radius-base;
+      border-bottom-right-radius: @border-radius-base;
+    }
+  }
+}
