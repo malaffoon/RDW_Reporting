@@ -107,7 +107,7 @@ sql:
               join school isch on st.inferred_school_id = isch.id
             where e.school_year=:school_year
             and a.id = e.asmt_id
-            and isch.id = :school_id
+            and (s.id = :school_id OR (1 = :allow_transfer_access && isch.id = :school_id))
             and ${sql.reporting.snippet.permission}
         )
         and a.grade_id=:grade_id
