@@ -10,7 +10,7 @@ sql:
         ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       WHERE e.student_id = :student_id
-       AND ${sql.reporting.snippet.permission}
+       AND ${sql.snippet.studentExamPermission}
 
     existsForStudentId: >-
       SELECT
@@ -19,56 +19,57 @@ sql:
         st.first_name,
         st.last_or_surname
       FROM student st
-        JOIN exam e on e.student_id = st.id
-        JOIN asmt a on a.id = e.asmt_id
-        JOIN school s on e.school_id = s.id
-        JOIN school isch on st.inferred_school_id = isch.id
-      WHERE st.ssid=:student_ssid
-      AND ${sql.reporting.snippet.permission}
+        JOIN exam e ON e.student_id = st.id
+        JOIN asmt a ON a.id = e.asmt_id
+        JOIN school s ON e.school_id = s.id
+        JOIN school isch ON st.inferred_school_id = isch.id
+      WHERE st.ssid = :student_ssid
+      AND ${sql.snippet.studentExamPermission}
       LIMIT 1
 
   examItem:
       findAllForExam: >-
         ${sql.reporting.snippet.selectFromExamItem}
-        WHERE e.id=:exam_id
-        AND ${sql.reporting.snippet.permission}
+        WHERE e.id = :exam_id
+        AND ${sql.snippet.studentExamPermission}
 
   group:
     assessment:
       findAll: >-
-          select distinct
+          SELECT distinct
            ${sql.reporting.snippet.assessmentColumns}
-          from asmt a
-            join exam e on e.asmt_id = a.id
-            join student_group_membership sgm on e.student_id = sgm.student_id
-            join school s on e.school_id = s.id
-            join student st on e.student_id = st.id
-            join school isch on st.inferred_school_id = isch.id
-          where e.school_year=:school_year
-            and a.id = e.asmt_id
-            and sgm.student_group_id=:group_id
-            and (0=:group_subject_id or a.subject_id=:group_subject_id)
-            and ${sql.reporting.snippet.individualScopePermission}
+          FROM asmt a
+            JOIN exam e ON e.asmt_id = a.id
+            JOIN student_group_membership sgm ON e.student_id = sgm.student_id
+            JOIN student_group sg ON sg.id = sgm.student_group_id
+            JOIN school s ON e.school_id = s.id
+            JOIN student st ON e.student_id = st.id
+            JOIN school isch ON st.inferred_school_id = isch.id
+          WHERE e.school_year = :school_year
+            AND a.id = e.asmt_id
+            AND sg.id = :group_id
+            AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+            AND ${sql.snippet.studentExamPermission}
 
+      findLatestExam: >-
+          SELECT
+           ${sql.reporting.snippet.assessmentColumns}
+          FROM exam e
+            JOIN asmt a ON e.asmt_id=a.id
+            JOIN student_group_membership sgm ON e.student_id=sgm.student_id
+            JOIN student_group sg ON sg.id = sgm.student_group_id
+            JOIN school s ON e.school_id=s.id
+            JOIN student st ON e.student_id = st.id
+            JOIN school isch ON st.inferred_school_id = isch.id
+          WHERE e.school_year = :school_year
+            AND sgm.student_group_id = :group_id
+            AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+            AND ${sql.snippet.studentExamPermission}
+          ORDER BY e.completed_at desc
+          LIMIT 1
     exam:
-      # NOTE that findLatest does not sample the students' inferred schools
-      # because a student's inferred school is determined by their latest exam.
-      findLatest: >-
-          select
-           ${sql.reporting.snippet.assessmentColumns}
-          from exam e
-            join student_group_membership sgm on e.student_id=sgm.student_id
-            join asmt a on e.asmt_id=a.id
-            join school sc on e.school_id=sc.id
-          where e.school_year=:school_year
-            and sgm.student_group_id=:group_id
-            and (0=:group_subject_id or a.subject_id=:group_subject_id)
-            and ${sql.snippet.basicPermission}
-          order by e.completed_at desc
-          limit 1
-
       findAllForAssessment: >-
-        select
+        SELECT
           e.iep,
           e.lep,
           e.section504,
@@ -76,58 +77,61 @@ sql:
           e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
-        join student_group_membership sgm on e.student_id = sgm.student_id
-        where e.asmt_id=:assessment_id
-          and e.school_year=:school_year
-          and sgm.student_group_id=:group_id
-          and (0=:group_subject_id or a.subject_id=:group_subject_id)
-          and ${sql.reporting.snippet.individualScopePermission}
+        JOIN student_group_membership sgm ON e.student_id=sgm.student_id
+        JOIN student_group sg ON sg.id = sgm.student_group_id
+        WHERE a.id = :assessment_id
+          AND e.school_year = :school_year
+          AND sg.id = :group_id
+          AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+          AND ${sql.snippet.studentExamPermission}
 
-      item:
+    examItem:
         findAllExamItemScoresForAssessment:
           ${sql.reporting.snippet.selectFromExamItem}
-            join student_group_membership sgm on e.student_id=sgm.student_id
-          where e.asmt_id=:assessment_id
-            and e.school_year=:school_year
-            and sgm.student_group_id=:group_id
-            and (0=:group_subject_id or a.subject_id=:group_subject_id)
-            and ${sql.reporting.snippet.individualScopePermission}
+            JOIN student_group_membership sgm ON e.student_id=sgm.student_id
+            JOIN student_group sg ON sg.id = sgm.student_group_id
+          WHERE e.asmt_id = :assessment_id
+            AND e.school_year = :school_year
+            AND sg.id = :group_id
+            AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+            AND ${sql.snippet.studentExamPermission}
 
   schoolgrade:
     assessment:
       findAll: >-
-        select ${sql.reporting.snippet.assessmentColumns}
-        from asmt a
-        where exists (
-            select e.asmt_id
-            from exam e
-              join school s on e.school_id = s.id
-              join student st on e.student_id = st.id
-              join school isch on st.inferred_school_id = isch.id
-            where e.school_year=:school_year
-            and a.id = e.asmt_id
-            and ${sql.reporting.snippet.schoolScopePermission}
+        SELECT ${sql.reporting.snippet.assessmentColumns}
+        FROM asmt a
+        WHERE EXISTS (
+            SELECT e.asmt_id
+            FROM exam e
+              JOIN school s ON e.school_id = s.id
+              JOIN student st ON e.student_id = st.id
+              JOIN school isch ON st.inferred_school_id = isch.id
+            WHERE e.school_year = :school_year
+            AND a.id = e.asmt_id
+            AND (s.id = :school_id OR (1 = :allow_transfer_access AND isch.id = :school_id))
+            AND ${sql.snippet.studentExamPermission}
         )
-        and a.grade_id=:grade_id
+        AND a.grade_id = :grade_id
+
+      findLatestExam: >-
+        SELECT 
+          ${sql.reporting.snippet.assessmentColumns}
+        FROM exam e
+          JOIN asmt a ON e.asmt_id=a.id
+          JOIN school s ON e.school_id=s.id
+          JOIN student st ON e.student_id = st.id
+          JOIN school isch ON st.inferred_school_id = isch.id
+        WHERE e.school_year = :school_year
+        AND e.school_id = :school_id
+        AND a.grade_id = :grade_id
+        AND ${sql.snippet.studentExamPermission}
+        ORDER BY e.completed_at desc
+        LIMIT 1
 
     exam:
-      # NOTE that findLatest does not sample the students' inferred schools
-      # because a student's inferred school is determined by their latest exam.
-      findLatest: >-
-        select 
-          ${sql.reporting.snippet.assessmentColumns}
-        from exam e
-          join asmt a on e.asmt_id=a.id
-          join school sc on e.school_id=sc.id
-        where e.school_year=:school_year
-        and e.school_id=:school_id
-        and a.grade_id=:grade_id
-        and ${sql.snippet.basicPermission}
-        order by e.completed_at desc
-        limit 1
-
       findAllForAssessment: >-
-        select
+        SELECT
           e.iep,
           e.lep,
           e.section504,
@@ -135,91 +139,39 @@ sql:
           e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
-        where e.asmt_id=:assessment_id
-        and a.grade_id=:grade_id
-        and e.school_year=:school_year
-        and ${sql.reporting.snippet.schoolScopePermission}
+        WHERE a.id = :assessment_id
+        AND a.grade_id = :grade_id
+        AND e.school_year = :school_year
+        AND (s.id = :school_id OR (1 = :allow_transfer_access AND isch.id = :school_id))
+        AND ${sql.snippet.studentExamPermission}
 
-      item:
+    examItem:
         findAllExamItemScoresForAssessment:
           ${sql.reporting.snippet.selectFromExamItem}
-          where e.asmt_id=:assessment_id
-          and e.school_year=:school_year
-          and a.grade_id=:grade_id
-          and ${sql.reporting.snippet.schoolScopePermission}
+          WHERE e.asmt_id = :assessment_id
+          AND e.school_year = :school_year
+          AND a.grade_id = :grade_id
+          AND (s.id = :school_id OR (1 = :allow_transfer_access AND isch.id = :school_id))
+          AND ${sql.snippet.studentExamPermission}
 
   assessment:
     grade:
       findAllForSchool: >-
-        select id, code
-        from grade g where exists (
-            select a.grade_id
-            from exam e
-              join asmt a on e.asmt_id=a.id
-              join school sc on e.school_id=sc.id
-            where e.school_id=:school_id
-            and ${sql.snippet.basicPermission}
-            and g.id=a.grade_id
+        SELECT id, code
+        FROM grade g WHERE EXISTS (
+            SELECT a.grade_id
+            FROM exam e
+              JOIN asmt a ON a.id = e.asmt_id
+              JOIN school s ON e.school_id = s.id
+              JOIN student st ON e.student_id = st.id
+              JOIN school isch ON st.inferred_school_id = isch.id
+            WHERE e.school_id = :school_id
+            AND ${sql.snippet.studentExamPermission}
+            AND g.id=a.grade_id
         )
 
   reporting:
     snippet:
-      individualScopePermission: >-
-          (
-            (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or e.school_id in (:school_ids))
-            or
-            (
-              1 = :allow_transfer_access
-              and (isch.district_group_id in (:district_group_ids) or isch.district_id in (:district_ids) or isch.school_group_id in (:school_group_ids) or isch.id in (:school_ids))
-            )
-          )
-
-      schoolScopePermission:  >-
-          (
-            (
-              e.school_id=:school_id
-              and (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or e.school_id in (:school_ids))
-            )
-            or
-            (
-              1 = :allow_transfer_access
-              and isch.id = :school_id
-              and (1=:statewide or isch.district_group_id in (:district_group_ids) or isch.district_id in (:district_ids) or isch.school_group_id in (:school_group_ids) or isch.id in (:school_ids))
-            )
-          )
-
-      permission: >
-          (
-             # Individual permissions
-            (
-              (1 = :individual_statewide OR s.district_group_id IN (:individual_district_group_ids) OR s.district_id IN (:individual_district_ids) OR s.school_group_id IN (:individual_school_group_ids) OR e.school_id IN (:individual_school_ids))
-              OR
-              (
-                1 = :allow_transfer_access
-                AND (isch.district_group_id IN (:individual_district_group_ids) OR isch.district_id IN (:individual_district_ids) OR isch.school_group_id IN (:individual_school_group_ids) OR isch.id IN (:individual_school_ids))
-              )
-            )
-            OR
-            # Group permissions
-            (
-              EXISTS(
-                 SELECT 1 FROM student_group_membership gm
-                       JOIN student_group sg ON sg.id = gm.student_group_id
-                       JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
-                          WHERE gm.student_id = e.student_id AND usg.user_login = :user_login and (sg.subject_id is null or sg.subject_id = a.subject_id)
-              )
-              AND
-              (
-                (1 = :group_statewide OR s.district_group_id IN (:group_district_group_ids) OR s.district_id IN (:group_district_ids) OR s.school_group_id IN (:group_school_group_ids) OR e.school_id IN (:group_school_ids))
-                OR
-                (
-                  1 = :allow_transfer_access
-                  AND (isch.district_group_id IN (:group_district_group_ids) OR isch.district_id IN (:group_district_ids) OR isch.school_group_id IN (:group_school_group_ids) OR isch.id IN (:group_school_ids))
-                )
-              )
-            )
-          )
-
       assessmentColumns: >-
           a.id,
           a.label,
@@ -237,9 +189,8 @@ sql:
           a.cut_point_2,
           a.cut_point_3
 
-
       selectFromExamItem: >-
-           select
+           SELECT
               ei.id,
               ei.exam_id,
               ei.item_id,
@@ -249,9 +200,9 @@ sql:
               ei.trait_evidence_elaboration_score,
               ei.trait_organization_purpose_score,
               ei.trait_conventions_score
-            from exam_item ei
-            join exam e on ei.exam_id=e.id
-            join asmt a on e.asmt_id=a.id
-            join school s on e.school_id=s.id
-            join student st on st.id=e.student_id
-            join school isch on st.inferred_school_id = isch.id
+            FROM exam_item ei
+            JOIN exam e ON ei.exam_id=e.id
+            JOIN asmt a ON e.asmt_id=a.id
+            JOIN school s ON e.school_id=s.id
+            JOIN student st ON st.id=e.student_id
+            JOIN school isch ON st.inferred_school_id = isch.id

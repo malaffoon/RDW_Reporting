@@ -20,6 +20,9 @@ import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper
 import { AggregateReportFormSettings } from "../aggregate-report-form-settings";
 import { SpinnerModal } from "../../shared/loading/spinner.modal";
 import "rxjs/add/operator/finally";
+import { OrderableItem } from "../../shared/order-selector/order-selector.component";
+import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
+import { DefaultColumnOrder } from "../aggregate-report-options.mapper";
 
 const PollingInterval = 4000;
 
@@ -43,6 +46,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   reportTables: AggregateReportTableView[];
   showRequest: boolean = false;
 
+
   private _tableViewComparator: Comparator<AggregateReportTableView>;
   private _pollingSubscription: Subscription;
   private _displayLargeReport: boolean = false;
@@ -54,7 +58,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
               private requestMapper: AggregateReportRequestMapper,
               private itemMapper: AggregateReportItemMapper,
               private displayOptionService: DisplayOptionService,
-              private translateService: TranslateService) {
+              private translateService: TranslateService,
+              private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider) {
 
     this.options = this.route.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
@@ -150,6 +155,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     });
   }
 
+  onColumnOrderChange(tableView: AggregateReportTableView, items: OrderableItem[]) {
+    tableView.columnOrdering = items.map(item => item.value);
+  }
+
   private loadOrPollReport(): void {
     if (this.report.completed) {
       this.loadReport();
@@ -188,6 +197,9 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       const item = this.itemMapper.map(this.assessmentDefinition, row, index);
       const subjectCode = row.assessment.subjectCode;
       const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
+      const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.reportQuery.columnOrder)
+        ? DefaultColumnOrder
+        : this.report.request.reportQuery.columnOrder;
       if (!tableWrapper) {
         tableWrappers.push({
           subjectCode: subjectCode,
@@ -197,7 +209,9 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
             rows: [ item ]
           },
           valueDisplayType: this.query.valueDisplayType,
-          performanceLevelDisplayType: this.query.achievementLevelDisplayType
+          performanceLevelDisplayType: this.query.achievementLevelDisplayType,
+          columnOrdering: columnOrder,
+          columnOrderingItems: this.columnOrderableItemProvider.toOrderableItems(columnOrder)
         });
       } else {
         tableWrapper.table.rows.push(item);
@@ -225,6 +239,8 @@ interface AggregateReportTableView {
   table: AggregateReportTable;
   valueDisplayType: string;
   performanceLevelDisplayType: string;
+  columnOrdering: string[];
+  columnOrderingItems: OrderableItem[];
 }
 
 enum ViewState {

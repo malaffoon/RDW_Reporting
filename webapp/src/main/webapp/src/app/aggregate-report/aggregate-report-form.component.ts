@@ -19,6 +19,8 @@ import { AggregateReportOptions } from "./aggregate-report-options";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/switchMap";
+import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
+import { OrderableItem } from "../shared/order-selector/order-selector.component";
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 
 /**
@@ -114,6 +116,11 @@ export class AggregateReportFormComponent {
   @ViewChild('summary')
   summary: AggregateReportSummary;
 
+  /**
+   * The current column order
+   */
+  columnItems: OrderableItem[];
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private optionMapper: AggregateReportOptionsMapper,
@@ -121,7 +128,8 @@ export class AggregateReportFormComponent {
               private notificationService: NotificationService,
               private organizationService: AggregateReportOrganizationService,
               private reportService: AggregateReportService,
-              private tableDataService: AggregateReportTableDataService) {
+              private tableDataService: AggregateReportTableDataService,
+              private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider) {
 
     this.assessmentDefinitionsByTypeCode = route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
@@ -133,6 +141,8 @@ export class AggregateReportFormComponent {
     if (this.organizations.length == 0 && defaultOrganization) {
       this.addOrganizationToSettings(defaultOrganization);
     }
+
+    this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
 
     this.previewTable = {
       assessmentDefinition: this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType),
@@ -253,6 +263,10 @@ export class AggregateReportFormComponent {
 
   onIncludeAllDistrictsChange(): void {
     this.markOrganizationsControlTouched();
+  }
+
+  onColumnOrderChange(items: OrderableItem[]): void {
+    this.settings.columnOrder = items.map(item => item.value);
   }
 
   private markOrganizationsControlTouched(): void {

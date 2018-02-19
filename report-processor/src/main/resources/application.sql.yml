@@ -13,28 +13,10 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=2
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.unknownScopePermission}
+        and ${sql.reportProcessor.snippet.schoolFilter}
+        and ${sql.snippet.studentExamPermission}
       order by e.completed_at desc,
         i.performance_task_writing_type desc
-
-    findAllIabsByStudentIdsAndQueryParamsIndividualPermissions: >-
-      select
-        d.name as district_name,
-        ${sql.snippet.writingTraits},
-        ${sql.snippet.exam}
-      join district d on s.district_id=d.id
-      left join exam_item ei on ei.exam_id=e.id
-      left join item i on i.id=ei.item_id
-      where e.student_id in (:student_ids)
-        and (:school_year is null or e.school_year=:school_year)
-        and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or a.grade_id=:grade_id)
-        and a.type_id=2
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.individualScopePermission}
-      order by e.completed_at desc,
-              i.performance_task_writing_type desc
 
     findAllIabsByStudentIdsAndQueryParamsGroupPermissions: >-
       select
@@ -53,8 +35,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=2
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolFilter}
+        and ${sql.snippet.studentExamPermission}
       order by e.completed_at desc,
               i.performance_task_writing_type desc
 
@@ -69,24 +51,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=1
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.unknownScopePermission}
-
-      order by e.completed_at asc
-
-    findAllIcasByStudentIdsAndQueryParamsIndividualPermissions: >-
-      select
-        d.name as district_name,
-        ${sql.snippet.claimColumns},
-        ${sql.snippet.exam}
-      join district d on s.district_id=d.id
-      where e.student_id in (:student_ids)
-        and (:school_year is null or e.school_year=:school_year)
-        and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or a.grade_id=:grade_id)
-        and a.type_id=1
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolFilter}
+        and ${sql.snippet.studentExamPermission}
       order by e.completed_at asc
 
     findAllIcasByStudentIdsAndQueryParamsGroupPermissions: >-
@@ -104,8 +70,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and a.type_id=1
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolFilter}
+        and ${sql.snippet.studentExamPermission}
       order by e.completed_at asc
 
   export:
@@ -230,83 +196,18 @@ sql:
         e.school_year = :school_year
         and
         (
-          (1 = :statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or e.school_id in (:school_ids))
-          and
-          (s.district_group_id in (:query_district_group_ids) or s.district_id in (:query_district_ids) or s.school_group_id in (:query_school_group_ids) or e.school_id in (:query_school_ids))
+          (
+            s.district_group_id in (:query_district_group_ids) or s.district_id in (:query_district_ids) or s.school_group_id in (:query_school_group_ids) or e.school_id in (:query_school_ids)
+          )
+          or
+          (
+            (1 = :allow_transfer_access and 0 = :disable_transfer_access) and
+            (
+              isch.district_group_id in (:query_district_group_ids) or isch.district_id in (:query_district_ids) or isch.school_group_id in (:query_school_group_ids) or isch.id in (:query_school_ids)
+            )
+          )
         )
-        or
-        (
-          (1 = :allow_transfer_access and 0 = :disable_transfer_access)
-          and
-          (1 = :statewide or isch.district_group_id in (:district_group_ids) or isch.district_id in (:district_ids) or isch.school_group_id in (:school_group_ids) or isch.id in (:school_ids))
-          and
-          (isch.district_group_id in (:query_district_group_ids) or isch.district_id in (:query_district_ids) or isch.school_group_id in (:query_school_group_ids) or isch.id in (:query_school_ids))
-        )
-
-  report:
-
-    create: >-
-      insert into user_report
-        (user_login, status, report_resource_uri, label, report_request, created)
-        values
-        (:user_login, :status, :report_resource_uri, :label, :report_request, :created)
-
-    update: >-
-      update user_report
-      set
-        user_login = :user_login,
-        status = :status,
-        report_resource_uri = :report_resource_uri,
-        label = :label,
-        report_request = :report_request,
-        created = :created
-      where
-        id = :id
-
-    findAllByUser: >-
-      ${sql.reportProcessor.snippet.selectFromUserReport}
-      where r.user_login = :user
-      order by r.id desc
-
-    findAllByUserAndId: >-
-      ${sql.reportProcessor.snippet.selectFromUserReport}
-      where r.user_login = :user
-        and r.id in (:report_ids)
-      order by r.id desc
-
-    findById: >-
-      ${sql.reportProcessor.snippet.selectFromUserReport}
-      where r.id = :report_id
-
-    findAllOlderThanNumberOfDays: >-
-      ${sql.reportProcessor.snippet.selectFromUserReport}
-      where r.created < date_sub(now(), interval :number_of_days day);
-
-    deleteByIds: >-
-      delete from `user_report` WHERE `id` in (:ids);
-
-    completeChunk: >-
-      update user_report_metadata
-        set value = cast(LAST_INSERT_ID(cast(value as unsigned) + 1) AS CHAR)
-      where
-        report_id = :report_id and
-        name = 'completed_chunk_count';
-
-    insertMetadataForReport: >-
-      insert into user_report_metadata
-        (report_id, name, value)
-        values
-        (:report_id, :name, :value);
-
-    deleteMetadataForReport: >-
-      delete from user_report_metadata
-      where
-        report_id = :report_id;
-
-    findMetadataForReports: >-
-      select * from user_report_metadata
-      where
-        report_id IN (:report_ids);
+        and ${sql.snippet.studentExamPermission}
 
   student:
     findByExamQueryParamsUnknownPermissions: >-
@@ -316,51 +217,8 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and
-        ( # This query can run from the context of both GROUP_PII_READ and INDIVIDUAL_PII_READ, so need to evaluate both.
-          # Individual permissions test
-          (
-            (1 = :individual_statewide or s.district_group_id in (:individual_district_group_ids) or s.district_id in (:individual_district_ids) or s.school_group_id in (:individual_school_group_ids) or e.school_id in (:individual_school_ids))
-            or
-            (
-              (1 = :allow_transfer_access and 0 = :disable_transfer_access)
-              and (isch.district_group_id in (:individual_district_group_ids) or isch.district_id in (:individual_district_ids) or isch.school_group_id in (:individual_school_group_ids) or isch.id in (:individual_school_ids))
-            )
-          )
-          or
-          # Group permissions test
-          (
-            exists(
-                select 1
-                from student_group_membership sgm
-                  join student_group sg on sgm.student_group_id = sg.id
-                where sgm.student_group_id in (:group_ids)
-                      and sgm.student_id = st.id
-                      and (:subject_id is null or sg.subject_id is null or sg.subject_id = :subject_id)
-            )
-            and
-            (
-              (1 = :group_statewide or s.district_group_id in (:group_district_group_ids) or s.district_id in (:group_district_ids) or s.school_group_id in (:group_school_group_ids) or e.school_id in (:group_school_ids))
-              or
-              (
-                (1 = :allow_transfer_access and 0 = :disable_transfer_access)
-                and (isch.district_group_id in (:group_district_group_ids) or isch.district_id in (:group_district_ids) or isch.school_group_id in (:group_school_group_ids) or isch.id in (:group_school_ids))
-              )
-            )
-          )
-        )
-      group by st.id
-
-    findByExamQueryParamsIndividualPermissions: >-
-      ${sql.reportProcessor.snippet.selectFromStudent}
-      where (:student_id is null or st.id=:student_id)
-        and (:school_year is null or e.school_year=:school_year)
-        and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or a.grade_id=:grade_id)
-        and (:assessment_type is null or a.type_id=:assessment_type)
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolFilter}
+        and ${sql.snippet.studentExamPermission}
       group by st.id
 
     findByExamQueryParamsGroupPermissions: >-
@@ -374,82 +232,25 @@ sql:
         and (:subject_id is null or a.subject_id=:subject_id)
         and (:grade_id is null or a.grade_id=:grade_id)
         and (:assessment_type is null or a.type_id=:assessment_type)
-        and ${sql.reportProcessor.snippet.schoolScopePermission}
-        and ${sql.reportProcessor.snippet.individualScopePermission}
+        and ${sql.reportProcessor.snippet.schoolFilter}
+        and ${sql.snippet.studentExamPermission}
       group by st.id
 
   reportProcessor:
     snippet:
-      unknownScopePermission: >-
-          ( # This query can run from the context of both GROUP_PII_READ and INDIVIDUAL_PII_READ, so need to evaluate both.
-            # Individual permissions test
+      schoolFilter:
             (
-              (1 = :individual_statewide or s.district_group_id in (:individual_district_group_ids) or s.district_id in (:individual_district_ids) or s.school_group_id in (:individual_school_group_ids) or e.school_id in (:individual_school_ids))
+              :school_id is null
               or
               (
-                (1 = :allow_transfer_access and 0 = :disable_transfer_access)
-                and (isch.district_group_id in (:individual_district_group_ids) or isch.district_id in (:individual_district_ids) or isch.school_group_id in (:individual_school_group_ids) or isch.id in (:individual_school_ids))
-              )
-            )
-            or
-            # Group permissions test
-            (
-              exists(
-                  select 1
-                  from student_group_membership sgm
-                    join student_group sg on sgm.student_group_id = sg.id
-                  where sgm.student_group_id in (:group_ids)
-                        and sgm.student_id in (:student_ids)
-                        and (:subject_id is null or sg.subject_id is null or sg.subject_id = :subject_id)
-              )
-              and
-              (
-                (1 = :group_statewide or s.district_group_id in (:group_district_group_ids) or s.district_id in (:group_district_ids) or s.school_group_id in (:group_school_group_ids) or e.school_id in (:group_school_ids))
+                s.id=:school_id
                 or
-                  (
-                      (1 = :allow_transfer_access and 0 = :disable_transfer_access)
-                      and (isch.district_group_id in (:group_district_group_ids) or isch.district_id in (:group_district_ids) or isch.school_group_id in (:group_school_group_ids) or isch.id in (:group_school_ids))
-                    )
-                  )
+                (
+                  (1 = :allow_transfer_access and 0 = :disable_transfer_access)
+                  and isch.id = :school_id
+                )
               )
             )
-
-      individualScopePermission: >-
-          (
-            (1=:statewide or s.district_group_id in (:district_group_ids) or s.district_id in (:district_ids) or s.school_group_id in (:school_group_ids) or e.school_id in (:school_ids))
-            or
-            (
-              (1 = :allow_transfer_access and 0 = :disable_transfer_access)
-              and
-              (isch.district_group_id in (:district_group_ids) or isch.district_id in (:district_ids) or isch.school_group_id in (:school_group_ids) or isch.id in (:school_ids))
-            )
-          )
-
-      schoolScopePermission:  >-
-          (
-            :school_id is null
-            or
-            (
-              s.id=:school_id
-              or
-              (
-                (1 = :allow_transfer_access and 0 = :disable_transfer_access)
-                and
-                isch.id = :school_id
-              )
-            )
-          )
-
-      selectFromUserReport: >-
-          select
-              r.id,
-              r.user_login,
-              r.status,
-              r.report_resource_uri,
-              r.label,
-              r.report_request,
-              r.created
-            from user_report r
 
       selectFromStudent: >-
           select

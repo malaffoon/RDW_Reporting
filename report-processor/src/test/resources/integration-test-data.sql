@@ -94,6 +94,10 @@ insert into student_group_membership (student_group_id, student_id) values
   (-10, -1),
   (-20, -1);
 
+insert into user_student_group(student_group_id, user_login) values
+   (-10, 'someone@somewhere.com'),
+   (-20, 'someone@somewhere.com');
+
 insert into ethnicity (id, code) values
   (8, 'Filipino');
 
@@ -129,3 +133,6 @@ insert into student_group (id, name, school_id, school_year, subject_id, update_
 
 insert into student_group_membership (student_group_id, student_id) values
   (-100, -100);
+
+insert into user_student_group(student_group_id, user_login) values
+   (-100, 'someone@somewhere.com');

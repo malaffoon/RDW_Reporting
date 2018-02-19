@@ -26,6 +26,7 @@ import { StickyDirective } from "../shared/nav/sticky.directive";
 import { CsvModule } from "../csv-export/csv-export.module";
 import { AggregateReportTableExportService } from "./results/aggregate-report-table-export.service";
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
+import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { AggregateReportSummary } from "./aggregate-report-summary.component";
     AggregateReportOptionsMapper,
     AggregateReportOrganizationService,
     AggregateReportItemMapper,
-    AggregateReportFormSettingsResolve
+    AggregateReportFormSettingsResolve,
+    AggregateReportColumnOrderItemProvider
   ]
 })
 export class AggregateReportsModule {
