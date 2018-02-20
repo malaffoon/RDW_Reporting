@@ -41,6 +41,7 @@ app:
       # every day at 1:00 am
       refresh-cron: "0 0 1 * * *"
 
+  school-year: 2018
   state:
     code: CA
     name: California
