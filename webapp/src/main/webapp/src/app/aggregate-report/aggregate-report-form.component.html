@@ -549,11 +549,8 @@
 
         <!-- TODO add estimated row count section here -->
 
-        <aggregate-report-summary #summary
-                                  [narrow]="true"
-                                  [options]="aggregateReportOptions"
-                                  [settings]="settings"
-                                  [assessmentDefinition]="currentAssessmentDefinition"></aggregate-report-summary>
+        <aggregate-report-summary narrow="true"
+                                  [summary]="summary"></aggregate-report-summary>
       </div>
     </div>
   </div>

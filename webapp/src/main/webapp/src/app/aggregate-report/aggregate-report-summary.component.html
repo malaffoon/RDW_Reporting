@@ -10,13 +10,18 @@
 </ng-template>
 
 <div class="row">
-  <div *ngFor="let rows of columns" [ngClass]="narrow ? 'col-md-6' : 'col-md-3'">
-    <table>
-      <tbody>
-      <tr *ngFor="let row of rows">
-        <ng-container *ngTemplateOutlet="rowTemplate; context: {$implicit: row}"></ng-container>
-      </tr>
-      </tbody>
-    </table>
+  <div *ngFor="let sections of columns" [ngClass]="narrow ? 'col-md-6' : 'col-md-3'">
+    <div *ngFor="let section of sections">
+      <div class="h5 column-heading">
+        {{section.label}}
+      </div>
+      <table>
+        <tbody>
+        <tr *ngFor="let row of section.rows">
+          <ng-container *ngTemplateOutlet="rowTemplate; context: {$implicit: row}"></ng-container>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

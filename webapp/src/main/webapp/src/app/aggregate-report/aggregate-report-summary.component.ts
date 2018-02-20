@@ -4,7 +4,13 @@ import { SchoolYearPipe } from "../shared/format/school-year.pipe";
 import { AggregateReportOptions } from "./aggregate-report-options";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
+import { Utils } from "../shared/support/support";
 
+const NarrowColumnProvider: ColumnProvider = (organizationRows, assessmentRows, filterRows, subgroupRows) =>
+  [[organizationRows, assessmentRows], [filterRows, subgroupRows]];
+
+const WideColumnProvider: ColumnProvider = (organizationRows, assessmentRows, filterRows, subgroupRows) =>
+  [[organizationRows], [assessmentRows], [filterRows], [subgroupRows]];
 
 @Component({
   selector: 'aggregate-report-summary',
@@ -15,76 +21,47 @@ import { AssessmentDefinition } from "./assessment/assessment-definition";
 })
 export class AggregateReportSummary {
 
-  columns: Row[][];
+  columns: Section[][];
 
-  private _narrow: boolean = false;
-  private _options: AggregateReportOptions;
-  private _settings: AggregateReportFormSettings;
-  private _assessmentDefinition: AssessmentDefinition;
+  private _summary: AggregateReportRequestSummary;
+  private _columnProvider: ColumnProvider = WideColumnProvider;
 
   constructor(private translate: TranslateService,
               private schoolYearPipe: SchoolYearPipe) {
   }
 
-  get narrow(): boolean {
-    return this._narrow;
+  get narrow(): any {
+    return this._columnProvider === NarrowColumnProvider;
   }
 
   @Input()
-  set narrow(value: boolean) {
-    if (this._narrow !== value) {
-      this._narrow = value;
+  set narrow(value: any) {
+    value = Utils.booleanValueOf(value);
+    if (this.narrow !== value) {
+      this._columnProvider = value ? NarrowColumnProvider : WideColumnProvider;
       this.updateColumns();
     }
   }
 
-  get options(): AggregateReportOptions {
-    return this._options;
+  get summary(): AggregateReportRequestSummary {
+    return this._summary;
   }
 
   @Input()
-  set options(value: AggregateReportOptions) {
-    if (this._options !== value) {
-      this._options = value;
-      this.updateColumns();
-    }
-  }
-
-  get settings(): AggregateReportFormSettings {
-    return this._settings;
-  }
-
-  @Input()
-  set settings(value: AggregateReportFormSettings) {
-    if (this._settings !== value) {
-      this._settings = value;
-      this.updateColumns();
-    }
-  }
-
-  get assessmentDefinition(): AssessmentDefinition {
-    return this._assessmentDefinition;
-  }
-
-  @Input()
-  set assessmentDefinition(value: AssessmentDefinition) {
-    if (this._assessmentDefinition !== value) {
-      this._assessmentDefinition = value;
+  set summary(value: AggregateReportRequestSummary) {
+    if (this._summary !== value) {
+      this._summary = value;
       this.updateColumns();
     }
   }
 
   updateColumns(): void {
 
-    const options = this.options;
-    const settings = this.settings;
-    const assessmentDefinition = this.assessmentDefinition;
-
-    if (options == null
-    || settings == null
-    || assessmentDefinition == null) {
+    if (this.summary == null) {
       return;
     }
+
+    const {assessmentDefinition, options, settings} = this.summary;
 
     const equalSize = (a, b) => a.length === b.length;
     const translate = code => this.translate.instant(code);
@@ -99,14 +76,18 @@ export class AggregateReportSummary {
     const organizations = settings.districts.concat(settings.schools);
 
     const includes = [];
-    !assessmentDefinition.interim && settings.includeStateResults
-      && includes.push(translate('aggregate-reports-summary.field.include.state-results'));
-    settings.includeAllDistricts
-      && includes.push(translate('aggregate-reports-summary.field.include.all-districts'));
-    settings.includeAllSchoolsOfSelectedDistricts
-      && includes.push(translate('aggregate-reports-summary.field.include.all-schools-of-districts'));
-    settings.includeAllDistrictsOfSelectedSchools
-      && includes.push(translate('aggregate-reports-summary.field.include.all-districts-of-schools'));
+    if (!assessmentDefinition.interim && settings.includeStateResults) {
+      includes.push(translate('aggregate-reports-summary.field.include.state-results'));
+    }
+    if (settings.includeAllDistricts) {
+      includes.push(translate('aggregate-reports-summary.field.include.all-districts'));
+    }
+    if (settings.includeAllSchoolsOfSelectedDistricts) {
+      includes.push(translate('aggregate-reports-summary.field.include.all-schools-of-districts'));
+    }
+    if (settings.includeAllDistrictsOfSelectedSchools) {
+      includes.push(translate('aggregate-reports-summary.field.include.all-districts-of-schools'));
+    }
 
     const organizationRows = [
       {
@@ -189,15 +170,51 @@ export class AggregateReportSummary {
       }
     ];
 
-    this.columns = this.narrow
-      ? [[...organizationRows, ...assessmentRows], [...filterRows, ...subgroupRows]]
-      : [organizationRows, assessmentRows, filterRows, subgroupRows];
+    // this.columns = this._columnProvider(organizationRows, assessmentRows, filterRows, subgroupRows);
+    this.columns = this._columnProvider(
+      {
+        label: translate('aggregate-reports.form.section.organization.heading'),
+        rows: organizationRows
+      },
+      {
+        label: translate('aggregate-reports.form.section.assessment.heading'),
+        rows: assessmentRows
+      },
+      {
+        label: translate('aggregate-reports.form.section.subgroup-filters.heading'),
+        rows: filterRows
+      },
+      {
+        label: translate('aggregate-reports.form.section.comparative-subgroups.heading'),
+        rows: subgroupRows
+      }
+    );
   }
 
+}
+interface Section {
+  readonly label: string;
+  readonly rows: Row[];
 }
 
 interface Row {
   readonly label: string;
   readonly values: string[];
+}
+
+// interface ColumnProvider {
+//   (organizationRows: Row[], assessmentRows: Row[], filterRows: Row[], subgroupRows: Row[]): Row[][];
+// }
+
+interface ColumnProvider {
+  (organization: Section, assessment: Section, filter: Section, subgroup: Section): Section[][];
+}
+
+export interface AggregateReportRequestSummary {
+
+  readonly assessmentDefinition: AssessmentDefinition;
+  readonly options: AggregateReportOptions;
+  readonly settings: AggregateReportFormSettings;
+
 }
 

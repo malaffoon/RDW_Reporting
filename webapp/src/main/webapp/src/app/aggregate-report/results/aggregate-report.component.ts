@@ -23,6 +23,7 @@ import "rxjs/add/operator/finally";
 import { OrderableItem } from "../../shared/order-selector/order-selector.component";
 import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
 import { DefaultColumnOrder } from "../aggregate-report-options.mapper";
+import { AggregateReportRequestSummary } from "../aggregate-report-summary.component";
 
 const PollingInterval = 4000;
 
@@ -41,11 +42,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
-  settings: AggregateReportFormSettings;
   report: Report;
   reportTables: AggregateReportTableView[];
   showRequest: boolean = false;
-
+  summary: AggregateReportRequestSummary;
 
   private _tableViewComparator: Comparator<AggregateReportTableView>;
   private _pollingSubscription: Subscription;
@@ -72,7 +72,11 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions()
     };
     this.requestMapper.toSettings(this.report.request, this.options)
-      .subscribe(settings => this.settings = settings);
+      .subscribe(settings => this.summary = {
+        assessmentDefinition: this.assessmentDefinition,
+        options: this.options,
+        settings: settings
+      });
   }
 
   get displayOptions(): AggregateReportTableDisplayOptions {

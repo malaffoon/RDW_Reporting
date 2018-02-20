@@ -15,13 +15,11 @@
   </div>
   <div [hidden]="!showRequest" class="row mt-md">
     <div class="col-md-12">
-      <ng-container *ngIf="!assessmentDefinition || !options || !settings; else summaryLoaded">
-        <spinner></spinner>
+      <ng-container *ngIf="summary; else summaryLoading">
+        <aggregate-report-summary [summary]="summary"></aggregate-report-summary>
       </ng-container>
-      <ng-template #summaryLoaded>
-        <aggregate-report-summary [assessmentDefinition]="assessmentDefinition"
-                                  [options]="options"
-                                  [settings]="settings"></aggregate-report-summary>
+      <ng-template #summaryLoading>
+        <spinner></spinner>
       </ng-template>
     </div>
   </div>
