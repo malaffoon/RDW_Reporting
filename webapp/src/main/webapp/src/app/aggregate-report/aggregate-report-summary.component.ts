@@ -73,6 +73,8 @@ export class AggregateReportSummary {
       ? (equalSize(options, values) ? [ All ] : values.map(codeProvider))
       : [ None ];
 
+    const inline = values => [ values.join(', ') ];
+
     const organizations = settings.districts.concat(settings.schools);
 
     const includes = [];
@@ -117,7 +119,7 @@ export class AggregateReportSummary {
       },
       {
         label: translate('aggregate-reports.form.field.assessment-grades.label'),
-        values: orAll(options.assessmentGrades, settings.assessmentGrades, code => translate(`common.grade.${code}.form-name`))
+        values: inline(orAll(options.assessmentGrades, settings.assessmentGrades, code => translate(`common.grade.${code}.form-name`)))
       },
       {
         label: translate('aggregate-reports.form.field.school-year.label'),
@@ -143,7 +145,7 @@ export class AggregateReportSummary {
     const filterRows = [
       {
         label: translate('aggregate-reports.form.field.gender.label'),
-        values: orAll(options.genders, settings.genders, code => translate(`common.gender.${code}`))
+        values: inline(orAll(options.genders, settings.genders, code => translate(`common.gender.${code}`)))
       },
       {
         label: translate('aggregate-reports.form.field.ethnicity.label'),
@@ -151,15 +153,15 @@ export class AggregateReportSummary {
       },
       {
         label: translate('aggregate-reports.form.field.migrant-status.label'),
-        values: orAll(options.migrantStatuses, settings.migrantStatuses, code => translate(`common.boolean.${code}`))
+        values: inline(orAll(options.migrantStatuses, settings.migrantStatuses, code => translate(`common.boolean.${code}`)))
       },
       {
         label: translate('aggregate-reports.form.field.iep.label'),
-        values: orAll(options.individualEducationPlans, settings.individualEducationPlans, code => translate(`common.strict-boolean.${code}`))
+        values: inline(orAll(options.individualEducationPlans, settings.individualEducationPlans, code => translate(`common.strict-boolean.${code}`)))
       },
       {
         label: translate('aggregate-reports.form.field.504.label'),
-        values: orAll(options.section504s, settings.section504s, code => translate(`common.boolean.${code}`))
+        values: inline(orAll(options.section504s, settings.section504s, code => translate(`common.boolean.${code}`)))
       }
     ];
 
@@ -170,7 +172,6 @@ export class AggregateReportSummary {
       }
     ];
 
-    // this.columns = this._columnProvider(organizationRows, assessmentRows, filterRows, subgroupRows);
     this.columns = this._columnProvider(
       {
         label: translate('aggregate-reports.form.section.organization.heading'),
@@ -202,19 +203,13 @@ interface Row {
   readonly values: string[];
 }
 
-// interface ColumnProvider {
-//   (organizationRows: Row[], assessmentRows: Row[], filterRows: Row[], subgroupRows: Row[]): Row[][];
-// }
-
 interface ColumnProvider {
   (organization: Section, assessment: Section, filter: Section, subgroup: Section): Section[][];
 }
 
 export interface AggregateReportRequestSummary {
-
   readonly assessmentDefinition: AssessmentDefinition;
   readonly options: AggregateReportOptions;
   readonly settings: AggregateReportFormSettings;
-
 }
 
