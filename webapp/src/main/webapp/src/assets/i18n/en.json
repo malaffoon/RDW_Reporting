@@ -137,7 +137,7 @@
           "label": "Subgroups"
         },
         "report-name": {
-          "label": "Enter a name",
+          "label": "Report Name",
           "error-file-name": "The name cannot contain these special characters: <>:;,?\"*|\\/"
         }
       },
@@ -169,9 +169,6 @@
         "comparative-subgroups": {
           "heading": "Subgroups",
           "subtext": "The report will break down results by the subgroups you select."
-        },
-        "report-name": {
-          "heading": "Report Name"
         },
         "review": {
           "heading": "Report Review"
