@@ -1,81 +1,74 @@
-<!-- Home Page Content Area -->
-<div class="home-view">
-  <div class="row">
-    <div class="col-md-6">
-      <h1 class="sr-only">{{'labels.homepage.title' | translate}}</h1>
-      <h1 class="blue-dark h1 mb-md">{{'labels.homepage.title' | translate}}</h1>
-    </div>
-    <div class="col-md-6 text-right">
-
-      <!-- Aggregate Reports Link -->
-      <span class="flex-child mr-xs">
+<page-heading>
+  <ng-template #he>
+    <h1>{{'labels.homepage.title' | translate}}</h1>
+  </ng-template>
+  <ng-template #content>
+    <ul class="list-unstyled list-inline">
+      <li>
         <a *hasPermission="'CUSTOM_AGGREGATE_READ'"
            routerLink="/aggregate-reports"
            class="btn btn-xs btn-default">
           {{'aggregate-reports.form.heading' | translate}}
         </a>
-      </span>
-
-      <!-- Custom Exports Link -->
-      <span class="flex-child mr-xs">
+      </li>
+      <li>
         <a *hasPermission="'INDIVIDUAL_PII_READ'"
            routerLink="/custom-export"
            class="btn btn-xs btn-default">
           <i class="fa fa-bold fa-table"></i>
           {{'labels.organization-export.title' | translate}}
         </a>
-      </span>
-
-      <span class="flex-child mr-xs">
+      </li>
+      <li>
         <admin-dropdown *hasAnyPermission="['GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE', 'EMBARGO_WRITE']"></admin-dropdown>
-      </span>
+      </li>
+    </ul>
+  </ng-template>
+</page-heading>
 
+<div class="row">
+
+  <!-- Left Column Content Area -->
+  <div class="col-md-9">
+
+    <!-- Student ID Search -->
+    <div *hasPermission="'GROUP_PII_READ'" class="student-id-search-container well">
+      <student-search></student-search>
     </div>
+
+    <!-- School & Grade Search -->
+    <div *hasPermission="'INDIVIDUAL_PII_READ'" class="school-and-grade-search-container well">
+      <school-grade [schools]="user.schools"></school-grade>
+    </div>
+
+    <!-- My Groups Search -->
+    <div *hasPermission="'GROUP_PII_READ'" class="my-groups-search-container well">
+      <groups [groups]="user.groups"></groups>
+    </div>
+
   </div>
-  <div class="row">
 
-    <!-- Left Column Content Area -->
-    <div class="col-md-9">
+  <!-- Right Column Content Area -->
+  <div class="col-md-3">
 
-      <!-- Student ID Search -->
-      <div *hasPermission="'GROUP_PII_READ'" class="student-id-search-container well">
-        <student-search></student-search>
+    <!-- Welcome Content -->
+    <div class="welcome-container well">
+      <p class="lead">{{'labels.homepage.welcome.title' | translate}}</p>
+      <div class="mb-md">
+        <p [innerHTML]="'labels.homepage.welcome.user-guide-html' | translate:user.configuration"></p>
+        <a href="{{user.configuration.userGuideUrl}}" target="_blank" class="btn btn-primary">{{'labels.navigation.user-guide'
+          | translate}}</a>
       </div>
-
-      <!-- School & Grade Search -->
-      <div *hasPermission="'INDIVIDUAL_PII_READ'" class="school-and-grade-search-container well">
-        <school-grade [schools]="user.schools"></school-grade>
+      <div>
+        <p [innerHTML]="'labels.homepage.welcome.interpretive-guide-html' | translate:user.configuration"></p>
+        <a href="{{user.configuration.interpretiveGuideUrl}}" target="_blank" class="btn btn-success">
+          <small>{{'labels.homepage.welcome.interpretive-guide-subtitle' | translate}}</small>
+          <br>
+          {{'labels.navigation.interpretive-guide' | translate}}
+        </a>
       </div>
-
-      <!-- My Groups Search -->
-      <div *hasPermission="'GROUP_PII_READ'" class="my-groups-search-container well">
-        <groups [groups]="user.groups"></groups>
-      </div>
-
     </div>
-
-    <!-- Right Column Content Area -->
-    <div class="col-md-3">
-
-      <!-- Welcome Content -->
-      <div class="welcome-container well">
-        <p class="lead">{{'labels.homepage.welcome.title' | translate}}</p>
-        <div class="mb-md">
-          <p [innerHTML]="'labels.homepage.welcome.user-guide-html' | translate:user.configuration"></p>
-          <a href="{{user.configuration.userGuideUrl}}" target="_blank" class="btn btn-primary">{{'labels.navigation.user-guide'
-            | translate}}</a>
-        </div>
-        <div>
-          <p [innerHTML]="'labels.homepage.welcome.interpretive-guide-html' | translate:user.configuration"></p>
-          <a href="{{user.configuration.interpretiveGuideUrl}}" target="_blank" class="btn btn-success">
-            <small>{{'labels.homepage.welcome.interpretive-guide-subtitle' | translate}}</small>
-            <br>
-            {{'labels.navigation.interpretive-guide' | translate}}
-          </a>
-        </div>
-      </div>
-      <!-- Summary News Dynamic Content -->
-      <div [innerHTML]="'html.system-news' | translate"></div>
-    </div>
+    <!-- Summary News Dynamic Content -->
+    <div [innerHTML]="'html.system-news' | translate"></div>
   </div>
 </div>

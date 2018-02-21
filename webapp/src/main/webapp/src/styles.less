@@ -767,3 +767,22 @@ aggregate-report-organization-list {
   padding: @padding-small-horizontal @padding-base-horizontal;
 }
 
+.page-heading {
+  .display-table {
+    display: table;
+    height: 100%;
+    .display-table-cell {
+      display:table-cell;
+      &.align-bottom {
+        vertical-align: bottom;
+      }
+    }
+  }
+}
+
+.list-inline > li {
+  padding: 0;
+  &:not(:first-child) {
+    margin-left: @padding-xs-horizontal;
+  }
+}
