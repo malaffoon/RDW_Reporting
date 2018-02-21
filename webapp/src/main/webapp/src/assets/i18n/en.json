@@ -52,7 +52,7 @@
       "empty-message": "No Results Found",
       "performance-group-prompt": "Show performance as",
       "performance-grouped": "Grouped",
-      "performance-separated": "Separate",
+      "performance-separated": "All",
       "cols": {
         "achievement-comparison": "Achievement Comparison",
         "assessment-grade": "Assessment Grade",
@@ -133,16 +133,8 @@
           "label": "Economic Disadvantage",
           "info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage."
         },
-        "performance-level-display-type": {
-          "label": "Achievement Level Display",
-          "info": "Two options are available:  1) each of the four achievement levels are displayed or 2) Levels 1 and 2 are combined and levels 3 and 4 are combined to show two groups:  Below Standard and At/Above Standard."
-        },
-        "value-display-type": {
-          "label": "Show Value as"
-        },
         "comparative-subgroup": {
-          "label": "Subgroups",
-          "info": "Select the student sub-groups to display separately in results."
+          "label": "Subgroups"
         },
         "report-name": {
           "label": "Enter a name",
@@ -171,10 +163,12 @@
           "heading": "Assessment Attributes"
         },
         "subgroup-filters": {
-          "heading": "Subgroup Filters"
+          "heading": "Advanced Filters",
+          "subtext": "Refine results by selecting student attributes to filter by."
         },
         "comparative-subgroups": {
-          "heading": "Comparative Subgroups"
+          "heading": "Subgroups",
+          "subtext": "The results will be broken down by the subgroups you select."
         },
         "report-name": {
           "heading": "Report Name"
@@ -243,7 +237,7 @@
     },
     "performance-level-display-type-input-label": "Show achievement levels",
     "performance-level-display-type": {
-      "Separate": "Separate",
+      "Separate": "All",
       "Grouped": "Grouped"
     },
     "organization": {
