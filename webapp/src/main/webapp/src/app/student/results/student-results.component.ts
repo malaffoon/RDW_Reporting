@@ -256,7 +256,7 @@ export class StudentResultsComponent implements OnInit {
       downloader.options.schoolYear = this.filterState.schoolYear;
     }
     if (this.filterState.subject !== '') {
-      downloader.options.subject = AssessmentSubjectType[this.filterState.subject];
+      downloader.options.subject = this.filterState.subject;
     }
   }
 
