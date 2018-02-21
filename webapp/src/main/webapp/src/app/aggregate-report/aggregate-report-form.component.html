@@ -525,7 +525,8 @@
                        class="form-control"
                        formControlName="reportName"
                        [(ngModel)]="settings.name"
-                       [required]="false"
+                       required="false"
+                       maxlength="255"
                        placeholder="{{'aggregate-reports.default-report-name' | translate}}">
                 <div *ngIf="showErrors(reportNameControl)">
                   <p *ngIf="reportNameControl.errors.fileName" class="help-block small red">{{reportNameControl.errors.fileName.messageId | translate}}</p>
