@@ -135,7 +135,7 @@ export class AggregateReportRequestMapper {
     return Observable.forkJoin(schools, districts)
       .map((results) => {
         const [ schools, districts ] = results;
-        const unsorted = <AggregateReportFormSettings>{
+        return <AggregateReportFormSettings>{
           assessmentType: query.assessmentTypeCode,
           assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
           completenesses: or(
@@ -196,8 +196,6 @@ export class AggregateReportRequestMapper {
             DefaultColumnOrder
           )
         };
-
-        return unsorted;
       });
   }
 
