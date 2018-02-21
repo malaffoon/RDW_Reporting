@@ -4,8 +4,8 @@ import { Embargo } from "./embargo";
 import { isUndefined } from "util";
 import { EmbargoScope } from "./embargo-scope.enum";
 import { OrganizationType } from "./organization-type.enum";
-import { ResponseContentType } from "@angular/http";
 import { DataService } from "../../shared/data/data.service";
+import { ResponseContentType } from "@angular/http";
 
 const ResourceContext = '/admin-service/embargoes';
 
