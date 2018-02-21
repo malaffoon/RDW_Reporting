@@ -1,31 +1,3 @@
-<!--<ng-template #rowTemplate let-row>-->
-  <!--<td><strong>{{row.label}}</strong></td>-->
-  <!--<td>-->
-    <!--<ul class="list-unstyled">-->
-      <!--<li *ngFor="let value of row.values">-->
-        <!--{{value}}-->
-      <!--</li>-->
-    <!--</ul>-->
-  <!--</td>-->
-<!--</ng-template>-->
-
-<!--<div class="row">-->
-  <!--<div *ngFor="let sections of columns" [ngClass]="narrow ? 'col-md-6' : 'col-md-3'">-->
-    <!--<div *ngFor="let section of sections">-->
-      <!--<div class="h5 column-heading">-->
-        <!--{{section.label}}-->
-      <!--</div>-->
-      <!--<table>-->
-        <!--<tbody>-->
-        <!--<tr *ngFor="let row of section.rows">-->
-          <!--<ng-container *ngTemplateOutlet="rowTemplate; context: {$implicit: row}"></ng-container>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-      <!--</table>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</div>-->
-
 <div class="row">
   <div *ngFor="let sections of columns" [ngClass]="narrow ? 'col-md-6' : 'col-md-3'">
     <div *ngFor="let section of sections">
