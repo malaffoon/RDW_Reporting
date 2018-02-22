@@ -1,22 +1,33 @@
-<div class="mb-md" *ngIf="examHistory">
-  <span class="tag tag-lg blue">
-    <span class="label">{{'labels.student.name' | translate:examHistory.student}}</span>
-    <span>{{examHistory.student.ssid}}</span>
-  </span>
-  <span class="pull-right text-right">
-    <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-    <a *hasPermission="'INDIVIDUAL_PII_READ'" routerLink="/custom-export" class="btn btn-sm btn-default ml-xs"><i
-      class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
-    <button class="btn btn-default btn-sm ml-xs" (click)="reportDownloader.modal.show()"><i class="fa fa-cloud-download"
-                                                                                            aria-hidden="true"></i> {{'labels.reports.button-label.student' | translate}}</button>
-    <span student-report-download #reportDownloader
-          [title]="'labels.reports.form.title.single' | translate:examHistory.student"
-          [student]="examHistory.student"
-          [schoolYears]="filterState.years"
-          [subject]="filterState.subject"
-          (onShow)="initializeDownloader(reportDownloader)"></span>
-  </span>
-</div>
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'labels.student.name' | translate:examHistory.student}}</h2> <div class="small label gray-dark">{{examHistory.student.ssid}}</div>
+  </ng-template>
+  <ng-template #content>
+    <ul class="list-unstyled list-inline">
+      <li>
+        <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
+      </li>
+      <li *hasPermission="'INDIVIDUAL_PII_READ'">
+        <a routerLink="/custom-export"
+           class="btn btn-default btn-sm"><i
+          class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
+      </li>
+      <li>
+        <button class="btn btn-default btn-sm"
+                (click)="reportDownloader.modal.show()">
+          <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.student' | translate}}
+        </button>
+        <span student-report-download #reportDownloader
+              [title]="'labels.reports.form.title.single' | translate:examHistory.student"
+              [student]="examHistory.student"
+              [schoolYears]="filterState.years"
+              [subject]="filterState.subject"
+              (onShow)="initializeDownloader(reportDownloader)"></span>
+      </li>
+    </ul>
+  </ng-template>
+</page-heading>
+
 <div *ngIf="!examHistory" class="alert alert-danger">
   {{ 'labels.student.messages.null-student' | translate }}
 </div>
@@ -26,7 +37,11 @@
                         [filterOptions]="filterOptions"
                         (filterChange)="onFilterChange()"></student-results-filter>
 
-<h3 class="blue mb-md">{{'labels.student.results.title' | translate}}</h3>
+<page-heading>
+  <ng-template #heading>
+    <h3>{{'labels.student.results.title' | translate}}</h3>
+  </ng-template>
+</page-heading>
 
 <!-- Assessments Grouped by Type and Subject -->
 <div *ngIf="examHistory">

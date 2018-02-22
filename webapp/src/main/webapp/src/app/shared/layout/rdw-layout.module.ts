@@ -8,12 +8,14 @@ import { BsDropdownModule } from "ngx-bootstrap";
 import { SbBreadcrumbs } from "./sb-breadcrumbs.component";
 import { SbHeader } from "./sb-header.component";
 import { SbFooter } from "./sb-footer.component";
+import { PageHeading } from "./page-heading.component";
 
 @NgModule({
   declarations: [
     SbBreadcrumbs,
     SbHeader,
-    SbFooter
+    SbFooter,
+    PageHeading
   ],
   imports: [
     BrowserModule,
@@ -26,7 +28,8 @@ import { SbFooter } from "./sb-footer.component";
   exports: [
     SbBreadcrumbs,
     SbHeader,
-    SbFooter
+    SbFooter,
+    PageHeading
   ]
 })
 export class RdwLayoutModule {

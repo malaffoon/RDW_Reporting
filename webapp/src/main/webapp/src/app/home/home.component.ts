@@ -4,7 +4,10 @@ import { User } from "../user/model/user.model";
 
 @Component({
   selector: 'home',
-  templateUrl: 'home.component.html'
+  templateUrl: 'home.component.html',
+  host: {
+    'class': 'home-view'
+  }
 })
 export class HomeComponent {
 

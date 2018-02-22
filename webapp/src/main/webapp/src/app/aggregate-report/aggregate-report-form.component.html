@@ -5,7 +5,11 @@
 </ng-template>
 
 <ng-container *ngIf="accessDenied; else accessAllowed">
-  <h2 class="h3 gray-darkest">{{'aggregate-reports.form.heading' | translate}}</h2>
+  <page-heading>
+    <ng-template #heading>
+      <h2>{{'aggregate-reports.form.heading' | translate}}</h2>
+    </ng-template>
+  </page-heading>
   <div class="well">
     <p>{{'aggregate-reports.access-denied-error' | translate}}</p>
   </div>
@@ -46,12 +50,14 @@
     </scroll-nav>
   </div>
 
-  <div class="row mt-sm mb-sm">
+  <div class="row">
     <div class="col-md-8 col-md-offset-2">
-      <h2 class="h3 gray-darkest">
-        {{'aggregate-reports.form.heading' | translate}}
-      </h2>
-      <p class="small gray-darkest">{{'aggregate-reports.form.subheading' | translate}}</p>
+      <page-heading>
+        <ng-template #heading>
+          <h2>{{'aggregate-reports.form.heading' | translate}}</h2>
+          <p class="small gray-darkest mt-sm">{{'aggregate-reports.form.subheading' | translate}}</p>
+        </ng-template>
+      </page-heading>
     </div>
   </div>
 
