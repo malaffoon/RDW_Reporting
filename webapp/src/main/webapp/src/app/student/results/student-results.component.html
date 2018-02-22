@@ -1,6 +1,6 @@
-<page-heading>
+<page-heading *ngIf="examHistory">
   <ng-template #heading>
-    <h2>{{'labels.student.name' | translate:examHistory.student}}</h2> <div class="small label gray-dark">{{examHistory.student.ssid}}</div>
+    <h2>{{'labels.student.name' | translate:examHistory.student}}</h2> <div class="student-ssid-label">{{examHistory.student.ssid}}</div>
   </ng-template>
   <ng-template #content>
     <ul class="list-unstyled list-inline">
