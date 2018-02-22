@@ -760,7 +760,7 @@ aggregate-report-organization-list {
 // Fixes well group border radius - should be in kit
 .well-group {
   border-radius: @border-radius-base;
-  .well {
+  > .well {
     &:first-child {
       border-top: none;
       border-top-left-radius: @border-radius-base;
@@ -777,9 +777,12 @@ aggregate-report-organization-list {
   padding: @padding-small-horizontal @padding-base-horizontal;
 }
 
+.flex-child-no-label {
+  padding-top: @line-height-base * 1px;
+}
+
 @media (max-width: @screen-sm-max) {
   scroll-nav {
     display: none;
   }
 }
-

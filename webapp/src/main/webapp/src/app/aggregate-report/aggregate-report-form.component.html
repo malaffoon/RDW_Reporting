@@ -1,11 +1,17 @@
-<ng-container *ngIf="accessDenied">
+<ng-template #submitButtonTemplate>
+  <button class="btn btn-success btn-sm green"
+          [disabled]="submissionSubscription"
+          (click)="onGenerateButtonClick()">{{'aggregate-reports.form.submit' | translate}}</button>
+</ng-template>
+
+<ng-container *ngIf="accessDenied; else accessAllowed">
   <h2 class="h3 gray-darkest">{{'aggregate-reports.form.heading' | translate}}</h2>
   <div class="well">
     <p>{{'aggregate-reports.access-denied-error' | translate}}</p>
   </div>
 </ng-container>
 
-<div *ngIf="!accessDenied">
+<ng-template #accessAllowed>
 
   <div sticky marginTop="12" [style.position]="'absolute'">
     <scroll-nav [items]="[
@@ -26,10 +32,6 @@
         text: 'aggregate-reports.form.section.subgroup-filters.heading' | translate
       },
       {
-        scrollTo: reportNameSection,
-        text: 'aggregate-reports.form.section.report-name.heading' | translate
-      },
-      {
         scrollTo: reviewSection,
         text: 'aggregate-reports.form.section.review.heading' | translate
       },
@@ -38,9 +40,9 @@
         text: 'aggregate-reports.form.section.preview.heading' | translate
       }
       ]">
-      <button class="btn btn-success btn-sm green ml-sm mt-xs"
-              [disabled]="submissionSubscription"
-              (click)="onGenerateButtonClick()">{{'aggregate-reports.form.submit' | translate}}</button>
+      <div class="ml-sm mt-xs">
+        <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
+      </div>
     </scroll-nav>
   </div>
 
@@ -501,54 +503,48 @@
       </div>
     </div>
 
-    <!-- Report Name -->
-    <div class="row" #reportNameSection id="reportNameSection">
+    <!-- Summary -->
+    <div class="row" #reviewSection id="reviewSection">
       <div class="col-md-8 col-md-offset-2">
         <div class="well-group">
           <div class="well">
-            <h3>{{'aggregate-reports.form.section.report-name.heading' | translate}}</h3>
+            <h3>{{'aggregate-reports.form.section.review.heading' | translate}}</h3>
           </div>
           <div class="well">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group mt-sm">
-                  <input type="text"
-                         class="form-control"
-                         formControlName="reportName"
-                         [(ngModel)]="settings.name"
-                         [required]="false"
-                         placeholder="{{'aggregate-reports.default-report-name' | translate}}">
-                  <div *ngIf="showErrors(reportNameControl)">
-                    <p *ngIf="reportNameControl.errors.fileName" class="help-block small red">{{reportNameControl.errors.fileName.messageId | translate}}</p>
-                  </div>
+
+            <!-- TODO add estimated row count section here -->
+
+            <aggregate-report-summary narrow="true"
+                                      [summary]="summary"></aggregate-report-summary>
+          </div>
+          <div class="well">
+            <label>{{'aggregate-reports.form.field.report-name.label' | translate}}</label>
+            <div class="flex-children">
+              <div class="flex-child grow form-group">
+                <input type="text"
+                       class="form-control"
+                       formControlName="reportName"
+                       [(ngModel)]="settings.name"
+                       required="false"
+                       maxlength="255"
+                       placeholder="{{'aggregate-reports.default-report-name' | translate}}">
+                <div *ngIf="showErrors(reportNameControl)">
+                  <p *ngIf="reportNameControl.errors.fileName" class="help-block small red">{{reportNameControl.errors.fileName.messageId | translate}}</p>
+                </div>
+              </div>
+              <div class="flex-child flex-child-no-label">
+                <div class="ml-xs">
+                  <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
   </form>
-
-  <!-- Summary -->
-  <div class="row" #reviewSection id="reviewSection">
-    <div class="col-md-8 col-md-offset-2">
-      <div class="well-group">
-        <div class="well">
-          <h3>{{'aggregate-reports.form.section.review.heading' | translate}}</h3>
-        </div>
-        <div class="well">
-
-          <!-- TODO add estimated row count section here -->
-
-          <aggregate-report-summary narrow="true"
-                                    [summary]="summary"></aggregate-report-summary>
-        </div>
-      </div>
-
-    </div>
-  </div>
 
   <div class="row" #previewSection id="previewSection">
     <div class="col-md-12 col-md-offset-2">
@@ -602,4 +598,4 @@
     </div>
   </div>
 
-</div>
+</ng-template>
