@@ -761,7 +761,7 @@ aggregate-report-organization-list {
 // fixes well group border radius
 .well-group {
   border-radius: @border-radius-base;
-  .well {
+  > .well {
     &:first-child {
       border-top: none;
       border-top-left-radius: @border-radius-base;
@@ -779,18 +779,23 @@ aggregate-report-organization-list {
 h1 {
   .h1;
 }
+
 h2 {
   .h2;
 }
+
 h3 {
   .h3;
 }
+
 h4 {
   .h4;
 }
+
 h5 {
   .h5;
 }
+
 h6 {
   .h6;
 }
@@ -818,19 +823,24 @@ h6 {
   }
 }
 
+.flex-child-no-label {
+  padding-top: @line-height-base * 1px;
+}
+
 @media (max-width: @screen-sm-max) {
   scroll-nav {
     display: none;
   }
 }
+
 .vertical-align-top {
   position: relative;
   top: 100%;
 }
+
 .vertical-align-bottom {
   position: relative;
   top: 100%;
   transform: translateY(-100%);
   z-index: 1;
 }
-
