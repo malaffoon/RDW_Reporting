@@ -13,12 +13,6 @@
                 (click)="reportDownloader.modal.show()">
           <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.group' | translate}}
         </button>
-        <span group-report-download #reportDownloader
-              [title]="'labels.reports.form.title.multiple' | translate:currentGroup"
-              [group]="currentGroup"
-              [schoolYears]="filterOptions.schoolYears"
-              [schoolYear]="currentSchoolYear"
-              (onShow)="initializeDownloader(reportDownloader)"></span>
       </li>
     </ul>
   </ng-template>
@@ -57,3 +51,10 @@
   </div>
 
 </assessments>
+
+<span group-report-download #reportDownloader
+      [title]="'labels.reports.form.title.multiple' | translate:currentGroup"
+      [group]="currentGroup"
+      [schoolYears]="filterOptions.schoolYears"
+      [schoolYear]="currentSchoolYear"
+      (onShow)="initializeDownloader(reportDownloader)"></span>

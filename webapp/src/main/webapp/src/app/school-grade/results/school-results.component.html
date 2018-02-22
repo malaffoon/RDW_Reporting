@@ -19,12 +19,6 @@
                   (click)="reportDownloader.modal.show()">
             <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.school-grade' | translate}}
           </button>
-          <span school-grade-report-download #reportDownloader
-                [school]="currentSchool"
-                [grade]="currentGrade"
-                [schoolYears]="filterOptions.schoolYears"
-                [schoolYear]="currentSchoolYear"
-                (onShow)="initializeDownloader(reportDownloader)"></span>
         </li>
       </ul>
     </ng-template>
@@ -78,3 +72,10 @@
   </assessments>
 
 </div>
+
+<span school-grade-report-download #reportDownloader
+      [school]="currentSchool"
+      [grade]="currentGrade"
+      [schoolYears]="filterOptions.schoolYears"
+      [schoolYear]="currentSchoolYear"
+      (onShow)="initializeDownloader(reportDownloader)"></span>
