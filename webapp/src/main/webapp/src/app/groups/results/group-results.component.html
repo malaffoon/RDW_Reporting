@@ -10,8 +10,9 @@
       </li>
       <li>
         <button class="btn btn-default btn-sm"
-                (click)="reportDownloader.modal.show()"><i class="fa fa-cloud-download"
-                                                           aria-hidden="true"></i> {{'labels.reports.button-label.group' | translate}}</button>
+                (click)="reportDownloader.modal.show()">
+          <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.group' | translate}}
+        </button>
         <span group-report-download #reportDownloader
               [title]="'labels.reports.form.title.multiple' | translate:currentGroup"
               [group]="currentGroup"
