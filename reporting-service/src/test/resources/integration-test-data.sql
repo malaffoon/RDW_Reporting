@@ -13,10 +13,10 @@ insert into district (id, natural_id, name) values
   (-30, 'districtNat3', 'district3');
 
 insert into school (id, district_id, natural_id, name, embargo_enabled, update_import_id, updated, migrate_id, school_group_id, district_group_id, external_id) VALUES
-  (-10, -10, 'schoolNat1', 'school1', 0, -1, '1997-07-18 20:14:34.000000', -1, null, -40, 'externalId1'),
-  (-20, -10, 'schoolNat2', 'school2', 0, -1, '1997-07-18 20:14:34.000000', -1, -10, -10, 'externalId2'),
-  (-30, -20, 'schoolNat3', 'school3', 0, -1, '1997-07-18 20:14:34.000000', -1, null, -20, 'externalId3'),
-  (-40, -30, 'schoolNat4', 'school4', 0, -1, '1997-07-18 20:14:34.000000', -1, -40, -40, 'externalId4');
+  (-10, -10, 'schoolNat1', 'school1', 1, -1, '1997-07-18 20:14:34.000000', -1, null, -40, 'externalId1'),
+  (-20, -10, 'schoolNat2', 'school2', 1, -1, '1997-07-18 20:14:34.000000', -1, -10, -10, 'externalId2'),
+  (-30, -20, 'schoolNat3', 'school3', 1, -1, '1997-07-18 20:14:34.000000', -1, null, -20, 'externalId3'),
+  (-40, -30, 'schoolNat4', 'school4', 1, -1, '1997-07-18 20:14:34.000000', -1, -40, -40, 'externalId4');
 
 insert into grade (id, code, name) values
   (-1, 'g1', 'grade1'),
