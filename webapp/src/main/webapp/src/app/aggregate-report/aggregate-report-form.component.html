@@ -90,6 +90,18 @@
               </div>
             </div>
 
+            <!-- Selections -->
+            <div [hidden]="!settings.districts.length" class="mb-sm">
+              <label>{{'aggregate-reports.form.section.organization.district-list-heading' | translate}}</label>
+              <aggregate-report-organization-list [organizations]="settings.districts"
+                                                  (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
+            </div>
+            <div [hidden]="!settings.schools.length" class="mb-sm">
+              <label>{{'aggregate-reports.form.section.organization.school-list-heading' | translate}}</label>
+              <aggregate-report-organization-list [organizations]="settings.schools"
+                                                  (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
+            </div>
+
             <!-- Settings -->
             <div>
               <label>{{'aggregate-reports.form.section.organization.include.heading' | translate}}</label>
@@ -137,17 +149,6 @@
               </ul>
             </div>
 
-            <!-- Selections -->
-            <div [hidden]="!settings.districts.length">
-              <label>{{'aggregate-reports.form.section.organization.district-list-heading' | translate}}</label>
-              <aggregate-report-organization-list [organizations]="settings.districts"
-                                                  (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
-            </div>
-            <div [hidden]="!settings.schools.length">
-              <label>{{'aggregate-reports.form.section.organization.school-list-heading' | translate}}</label>
-              <aggregate-report-organization-list [organizations]="settings.schools"
-                                                  (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
-            </div>
           </div>
         </div>
       </div>
@@ -555,8 +556,9 @@
   <div class="row" #previewSection id="previewSection">
     <div class="col-md-12 col-md-offset-2">
       <div class="well-group wide-content-container">
-        <div class="well">
-          <h3>{{'aggregate-reports.form.section.preview.heading' | translate}} </h3>
+        <div class="well inline-headings">
+          <h3>{{'aggregate-reports.form.section.preview.heading' | translate}}</h3>
+          <span class="red label ml-sm">{{ 'aggregate-reports.preview' | translate }}</span>
         </div>
         <div class="well">
           <div>
@@ -592,7 +594,6 @@
             <div class="clearfix"></div>
           </div>
           <div class="mt-sm">
-            <div class="red label">{{ 'aggregate-reports.preview' | translate }}</div>
             <aggregate-report-table [preview]="true"
                                     [table]="previewTable"
                                     [valueDisplayType]="settings.valueDisplayType"

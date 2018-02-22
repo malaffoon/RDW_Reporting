@@ -198,7 +198,7 @@
   "organization-typeahead": {
     "type-label": "Type",
     "placeholder": "Enter name",
-    "no-matches": "There are no organizations matching your search."
+    "no-matches": "There are no unselected organizations matching your search."
   },
   "collapse": "Collapse",
   "common": {
