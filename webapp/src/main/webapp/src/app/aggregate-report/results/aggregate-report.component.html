@@ -11,9 +11,12 @@
               (click)="onUpdateRequestButtonClick()">
         <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.form-link' | translate}}
       </button>
+      <span class="text-muted">
+        {{'aggregate-reports.estimated-row-label.loaded' | translate}} <span class="label gray-darker">{{report.metadata.totalCount}}</span>
+      </span>
       <button class="btn btn-default btn-sm icon-only pull-right"
               (click)="onToggleRequestViewButtonClick()">
-        <i class="fa" [ngClass]="showRequest ? 'fa-angle-up' : 'fa-angle-down'"></i>
+        <i class="fa {{showRequest ? 'fa-angle-up' : 'fa-angle-down'}}"></i>
       </button>
     </div>
   </div>

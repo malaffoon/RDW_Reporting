@@ -48,6 +48,11 @@
       "accept": "Generate",
       "decline": "Cancel"
     },
+    "row-count-label": "Row count: ",
+    "estimated-row-count-label": {
+      "loading": "Estimating row count",
+      "loaded": "Estimated row count: "
+    },
     "results": {
       "empty-message": "No Results Found",
       "performance-group-prompt": "Show performance as",

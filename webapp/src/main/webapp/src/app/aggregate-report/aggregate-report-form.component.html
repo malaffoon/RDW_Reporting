@@ -516,12 +516,22 @@
         <div class="well-group">
           <div class="well">
             <h3>{{'aggregate-reports.form.section.review.heading' | translate}}</h3>
+            <div *ngIf="formGroup.valid"
+                 class="subtext">
+              <ng-container *ngIf="estimatedRowCount != null; else estimatedRowCountSpinner">
+                {{'aggregate-reports.estimated-row-count-label.loaded' | translate}} <span class="label {{estimatedRowCountIsLarge ? 'red' : 'gray-darker'}}">{{estimatedRowCount}}</span>
+              </ng-container>
+              <ng-template #estimatedRowCountSpinner>
+                {{'aggregate-reports.estimated-row-count-label.loading' | translate}} <i class="fa fa-spinner fa-pulse"></i>
+              </ng-template>
+            </div>
           </div>
           <div class="well">
 
             <!-- TODO add estimated row count section here -->
 
-            <aggregate-report-summary narrow="true"
+            <aggregate-report-summary *ngIf="summary"
+                                      narrow="true"
                                       [summary]="summary"></aggregate-report-summary>
           </div>
           <div class="well">
@@ -594,7 +604,8 @@
             <div class="clearfix"></div>
           </div>
           <div class="mt-sm">
-            <aggregate-report-table [preview]="true"
+            <aggregate-report-table *ngIf="previewTable"
+                                    [preview]="true"
                                     [table]="previewTable"
                                     [valueDisplayType]="settings.valueDisplayType"
                                     [performanceLevelDisplayType]="settings.performanceLevelDisplayType"
