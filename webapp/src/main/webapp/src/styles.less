@@ -757,7 +757,8 @@ aggregate-report-organization-list {
   }
 }
 
-// Fixes well group border radius - should be in kit
+// TODO move to UI KIT
+// fixes well group border radius
 .well-group {
   border-radius: @border-radius-base;
   .well {
@@ -773,20 +774,36 @@ aggregate-report-organization-list {
   }
 }
 
+// TODO move to UI KIT
+// fixes html heading element styles to be the same as the class styles
+h1 {
+  .h1;
+}
+h2 {
+  .h2;
+}
+h3 {
+  .h3;
+}
+h4 {
+  .h4;
+}
+h5 {
+  .h5;
+}
+h6 {
+  .h6;
+}
+
 .well.well-compact {
   padding: @padding-small-horizontal @padding-base-horizontal;
 }
 
 .page-heading {
-  .display-table {
-    display: table;
-    height: 100%;
-    .display-table-cell {
-      display:table-cell;
-      &.align-bottom {
-        vertical-align: bottom;
-      }
-    }
+  display: block;
+  margin-bottom: @padding-base-horizontal;
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    margin: 0;
   }
 }
 
@@ -801,5 +818,12 @@ aggregate-report-organization-list {
   scroll-nav {
     display: none;
   }
+}
+
+.vertical-align-bottom {
+  position: relative;
+  top: 100%;
+  transform: translateY(-100%);
+  z-index: 1;
 }
 

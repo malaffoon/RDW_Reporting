@@ -1,14 +1,26 @@
-<div class="mb-md">
-  <span class="h3 blue-dark">{{'labels.admin-groups.title' | translate}}</span>
-  <div class="pull-right">
-    <span class="btn btn-primary mr-xs" [routerLink]="['import']"><i class="fa fa-cloud-upload"></i> {{'labels.admin-groups.import.link' | translate}}</span>
-    <span class="btn btn-default" [routerLink]="['history']"><i class="fa fa-history"></i> {{'labels.admin-groups.history.title' | translate}}</span>
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'labels.admin-groups.title' | translate}}</h2>
+  </ng-template>
+  <ng-template #content>
+    <ul class="list-unstyled list-inline">
+      <li>
+        <span class="btn btn-primary btn-sm" [routerLink]="['import']"><i class="fa fa-cloud-upload"></i> {{'labels.admin-groups.import.link' | translate}}</span>
+      </li>
+      <li>
+        <span class="btn btn-default btn-sm" [routerLink]="['history']"><i class="fa fa-history"></i> {{'labels.admin-groups.history.title' | translate}}</span>
+      </li>
+    </ul>
+  </ng-template>
+</page-heading>
+
+<ng-container *ngIf="filterOptions && filterOptions.schools.length == 0">
+  <div class="alert alert-danger">
+    {{ 'labels.admin-groups.no-schools' | translate }}
   </div>
-</div>
-<div *ngIf="filterOptions && filterOptions.schools.length == 0" class="alert alert-danger">
-  {{ 'labels.admin-groups.no-schools' | translate }}
-</div>
-<div *ngIf="filterOptions && filterOptions.schools.length > 0">
+</ng-container>
+
+<ng-container *ngIf="filterOptions && filterOptions.schools.length > 0">
   <!-- Filters -->
   <div class="well">
     <div class="row">
@@ -87,4 +99,4 @@
       </p-dataTable>
     </div>
   </div>
-</div>
+</ng-container>

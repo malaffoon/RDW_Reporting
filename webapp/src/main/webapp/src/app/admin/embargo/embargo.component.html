@@ -1,4 +1,8 @@
-<h3 class="blue-dark mb-md">{{'labels.embargo.title' | translate}}</h3>
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'labels.embargo.title' | translate}}</h2>
+  </ng-template>
+</page-heading>
 
 <div class="well" *ngIf="stateEmbargo">
   <div class="well-body mt-sm">
