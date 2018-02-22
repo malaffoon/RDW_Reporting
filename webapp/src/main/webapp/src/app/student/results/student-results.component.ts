@@ -251,7 +251,7 @@ export class StudentResultsComponent implements OnInit {
    *
    * @param downloader
    */
-  private initializeDownloader(downloader: StudentReportDownloadComponent): void {
+  initializeDownloader(downloader: StudentReportDownloadComponent): void {
     if (this.filterState.schoolYear != 0) {
       downloader.options.schoolYear = this.filterState.schoolYear;
     }
