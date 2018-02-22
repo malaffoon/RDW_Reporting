@@ -118,40 +118,49 @@
   </div>
 
 </div>
+
 <!-- Results -->
-<h2 class="blue-dark h3 mt-lg mb-md">
-  {{'labels.groups.results.title' | translate}}
-  <div class="pull-right float-none-xs">
-    <label for="value-format">{{'labels.groups.results.value-as' | translate }}</label>
-    <div id="value-format" class="btn-group btn-group-primary btn-group-xs ml-xs" role="group">
-      <button type="radio"
-              (click)="showValuesAsPercent = true"
-              [ngClass]="{'active': showValuesAsPercent}"
-              angulartics2On="click"
-              angularticsEvent="ShowAsPercent"
-              angularticsCategory="AssessmentResults"
-              class="btn btn-default">{{'labels.groups.results.value-as-percent' | translate}}
-      </button>
-      <button type="radio"
-              (click)="showValuesAsPercent = false"
-              [ngClass]="{'active': !showValuesAsPercent}"
-              angulartics2On="click"
-              angularticsEvent="ShowAsNumber"
-              angularticsCategory="AssessmentResults"
-              class="btn btn-default">{{'labels.groups.results.value-as-number' | translate}}
-      </button>
-    </div>
-
-    <button class="btn btn-default btn-xs ml-xs"
-            (click)="allCollapsed = !allCollapsed">
-      {{('labels.groups.results.' + (allCollapsed ? 'expand-all' : 'collapse-all')) | translate }}
-      <i class="fa" [ngClass]="{'fa-angle-down': allCollapsed, 'fa-angle-up': !allCollapsed}"></i>
-    </button>
-
-    <button class="btn btn-default btn-xs ml-xs"
-            (click)="callExport()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-  </div>
-</h2>
+<page-heading>
+  <ng-template #heading>
+    <h3>{{'labels.groups.results.title' | translate}}</h3>
+  </ng-template>
+  <ng-template #content>
+    <ul class="list-unstyled list-inline">
+      <li>
+        <label for="value-format">{{'labels.groups.results.value-as' | translate }}</label>
+        <div id="value-format" class="btn-group btn-group-primary btn-group-xs ml-xs" role="group">
+          <button type="radio"
+                  (click)="showValuesAsPercent = true"
+                  [ngClass]="{'active': showValuesAsPercent}"
+                  angulartics2On="click"
+                  angularticsEvent="ShowAsPercent"
+                  angularticsCategory="AssessmentResults"
+                  class="btn btn-default">{{'labels.groups.results.value-as-percent' | translate}}
+          </button>
+          <button type="radio"
+                  (click)="showValuesAsPercent = false"
+                  [ngClass]="{'active': !showValuesAsPercent}"
+                  angulartics2On="click"
+                  angularticsEvent="ShowAsNumber"
+                  angularticsCategory="AssessmentResults"
+                  class="btn btn-default">{{'labels.groups.results.value-as-number' | translate}}
+          </button>
+        </div>
+      </li>
+      <li>
+        <button class="btn btn-default btn-xs"
+                (click)="allCollapsed = !allCollapsed">
+          {{('labels.groups.results.' + (allCollapsed ? 'expand-all' : 'collapse-all')) | translate }}
+          <i class="fa" [ngClass]="{'fa-angle-down': allCollapsed, 'fa-angle-up': !allCollapsed}"></i>
+        </button>
+      </li>
+      <li>
+        <button class="btn btn-default btn-xs"
+                (click)="callExport()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
+      </li>
+    </ul>
+  </ng-template>
+</page-heading>
 
 <!-- Results Container -->
 <ng-container *ngIf="!hideAssessments">

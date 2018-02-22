@@ -807,10 +807,13 @@ h6 {
   }
 }
 
-.list-inline > li {
-  padding: 0;
-  &:not(:first-child) {
-    margin-left: @padding-xs-horizontal;
+.list-inline {
+  margin-left: 0;
+  > li {
+    padding: 0;
+    &:not(:first-child) {
+      margin-left: @padding-xs-horizontal;
+    }
   }
 }
 
