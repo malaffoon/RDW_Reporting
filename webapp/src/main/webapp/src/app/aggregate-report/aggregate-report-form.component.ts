@@ -142,9 +142,9 @@ export class AggregateReportFormComponent {
   submissionSubscription: Subscription;
 
   /**
-   * Next is called on this when the form state is updated
-   * We use an observable to debounce quick updates to the form
-   * that can make the form unresponsive during quick successive changes
+   * This observer's next() method is to be invoked when a change happens to the form inputs
+   * This is then piped through a debounce operator in order to make the form more responsive when the user makes
+   * quick successive changes
    */
   settingsChangedObserver: Observer<void>;
 
@@ -313,7 +313,7 @@ export class AggregateReportFormComponent {
     // informs the view that it should display a loader
     this.estimatedRowCount = undefined;
 
-    // defer rendering the summary view, estated row count and preview table
+    // informs the debounced observable that the view has changed
     this.settingsChangedObserver.next(undefined);
   }
 
