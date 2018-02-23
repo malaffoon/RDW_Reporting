@@ -434,7 +434,17 @@ body .select-menu-group {
 
 .average-scale-score-display {
 
+  .table > tbody > tr:first-child {
+    > td:first-child {
+      border-top-left-radius: @border-radius-base;
+    }
+    > td:last-child {
+      border-top-right-radius: @border-radius-base;
+    }
+  }
+
   .well {
+    overflow: hidden;
     padding: 0;
     margin-bottom: 0;
 
