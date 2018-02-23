@@ -113,7 +113,7 @@
                         <input type="checkbox"
                                [(ngModel)]="settings.includeStateResults"
                                [ngModelOptions]="{standalone: true}"
-                               (change)="onIncludeStateResultsChange()">
+                               (ngModelChange)="onIncludeStateResultsChange(); onSettingsChange()">
                         <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.state-results' | translate}}</span>
                       </label>
                     </div>
@@ -122,7 +122,7 @@
                         <input type="checkbox"
                                [(ngModel)]="settings.includeAllDistricts"
                                [ngModelOptions]="{standalone: true}"
-                               (change)="onIncludeAllDistrictsChange()">
+                               (ngModelChange)="onIncludeAllDistrictsChange(); onSettingsChange()">
                         <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-districts' | translate}}</span>
                       </label>
                     </div>
@@ -132,7 +132,8 @@
                       <label class="inline-label">
                         <input type="checkbox"
                                [(ngModel)]="settings.includeAllSchoolsOfSelectedDistricts"
-                               [ngModelOptions]="{standalone: true}">
+                               [ngModelOptions]="{standalone: true}"
+                               (ngModelChange)="onSettingsChange()">
                         <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-schools-of-districts' | translate}}</span>
                       </label>
                     </div>
@@ -140,7 +141,8 @@
                       <label class="inline-label">
                         <input type="checkbox"
                                [(ngModel)]="settings.includeAllDistrictsOfSelectedSchools"
-                               [ngModelOptions]="{standalone: true}">
+                               [ngModelOptions]="{standalone: true}"
+                               (ngModelChange)="onSettingsChange()">
                         <span class="ml-xs">{{'aggregate-reports.form.section.organization.include.all-districts-of-schools' | translate}}</span>
                       </label>
                     </div>
