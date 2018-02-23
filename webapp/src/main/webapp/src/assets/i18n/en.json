@@ -49,9 +49,10 @@
       "decline": "Cancel"
     },
     "row-count-label": "Row count: ",
-    "estimated-row-count-label": {
+    "estimated-row-count": {
       "loading": "Estimating row count",
-      "loaded": "Estimated row count: "
+      "label": "Estimated row count: ",
+      "warning": "This report is large and may result in a slow experience when viewed in your browser"
     },
     "results": {
       "empty-message": "No Results Found",

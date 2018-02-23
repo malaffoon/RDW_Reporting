@@ -521,16 +521,16 @@
             <ng-container *ngIf="formGroup.valid">
               <ng-container *ngIf="estimatedRowCount != null; else estimatedRowCountSpinner">
                 <p>
-                  <span class="text-muted small">{{'aggregate-reports.estimated-row-count-label.loaded' | translate}}</span>
+                  <span class="text-muted small">{{'aggregate-reports.estimated-row-count.label' | translate}}</span>
                   <strong class="label gray-darker">{{estimatedRowCount | number}}</strong>
                   <ng-container *ngIf="estimatedRowCountIsLarge">
-                    <ng-container *ngTemplateOutlet="warning; context: {$implicit: 'This report is large and may result in a slow experience when viewed in your browser'}"></ng-container>
+                    <ng-container *ngTemplateOutlet="warning; context: {$implicit: ('aggregate-reports.estimated-row-count.warning' | translate)}"></ng-container>
                   </ng-container>
                 </p>
               </ng-container>
               <ng-template #estimatedRowCountSpinner>
                 <p class="text-muted small">
-                  {{'aggregate-reports.estimated-row-count-label.loading' | translate}} <i class="fa fa-spinner fa-pulse"></i>
+                  {{'aggregate-reports.estimated-row-count.loading' | translate}} <i class="fa fa-spinner fa-pulse"></i>
                 </p>
               </ng-template>
             </ng-container>
