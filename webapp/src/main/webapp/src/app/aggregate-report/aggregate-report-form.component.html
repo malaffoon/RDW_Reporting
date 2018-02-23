@@ -69,7 +69,7 @@
         <div class="well-group">
           <div class="well">
             <h3>{{'aggregate-reports.form.section.organization.heading' | translate}}</h3>
-            <div class="subtext">{{'aggregate-reports.form.section.organization.subtext' | translate}}</div>
+            <p class="text-muted small">{{'aggregate-reports.form.section.organization.subtext' | translate}}</p>
           </div>
           <div class="well pb-0">
 
@@ -324,7 +324,7 @@
         <div class="well-group">
           <div class="well">
             <h3>{{'aggregate-reports.form.section.comparative-subgroups.heading' | translate}}</h3>
-            <div class="subtext">{{'aggregate-reports.form.section.comparative-subgroups.subtext' | translate}}</div>
+            <p class="text-muted small">{{'aggregate-reports.form.section.comparative-subgroups.subtext' | translate}}</p>
           </div>
           <div class="well">
             <div class="row">
@@ -355,7 +355,7 @@
             <div class="row">
               <div class="col-sm-6">
                 <h3>{{'aggregate-reports.form.section.subgroup-filters.heading' | translate}}</h3>
-                <div class="subtext">{{'aggregate-reports.form.section.subgroup-filters.subtext' | translate}}</div>
+                <p class="text-muted small">{{'aggregate-reports.form.section.subgroup-filters.subtext' | translate}}</p>
               </div>
               <div class="col-sm-6">
                 <button class="btn btn-default btn-sm icon-only pull-right"
@@ -516,15 +516,22 @@
         <div class="well-group">
           <div class="well">
             <h3>{{'aggregate-reports.form.section.review.heading' | translate}}</h3>
-            <div *ngIf="formGroup.valid"
-                 class="subtext">
+            <ng-container *ngIf="formGroup.valid">
               <ng-container *ngIf="estimatedRowCount != null; else estimatedRowCountSpinner">
-                {{'aggregate-reports.estimated-row-count-label.loaded' | translate}} <span class="label {{estimatedRowCountIsLarge ? 'red' : 'gray-darker'}}">{{estimatedRowCount}}</span>
+                <p>
+                  <span class="text-muted small">{{'aggregate-reports.estimated-row-count-label.loaded' | translate}}</span>
+                  <strong class="label gray-darker">{{22222 | number}}</strong>
+                  <ng-container *ngIf="estimatedRowCountIsLarge">
+                    <ng-container *ngTemplateOutlet="warning; context: {$implicit: 'This report is large and may result in a slow experience when viewed in your browser'}"></ng-container>
+                  </ng-container>
+                </p>
               </ng-container>
               <ng-template #estimatedRowCountSpinner>
-                {{'aggregate-reports.estimated-row-count-label.loading' | translate}} <i class="fa fa-spinner fa-pulse"></i>
+                <p class="text-muted small">
+                  {{'aggregate-reports.estimated-row-count-label.loading' | translate}} <i class="fa fa-spinner fa-pulse"></i>
+                </p>
               </ng-template>
-            </div>
+            </ng-container>
           </div>
           <div class="well">
 
@@ -568,7 +575,9 @@
       <div class="well-group wide-content-container">
         <div class="well inline-headings">
           <h3>{{'aggregate-reports.form.section.preview.heading' | translate}}</h3>
-          <span class="red label ml-sm">{{ 'aggregate-reports.preview' | translate }}</span>
+          <ng-container *ngIf="estimatedRowCountIsLarge">
+            <ng-container *ngTemplateOutlet="warning; context: {$implicit: ('aggregate-reports.preview' | translate)}"></ng-container>
+          </ng-container>
         </div>
         <div class="well">
           <div>
@@ -616,4 +625,11 @@
     </div>
   </div>
 
+</ng-template>
+
+<ng-template #warning let-text>
+  <span class="alert alert-warning small pt-xs pr-xs pb-xs pl-xs ml-sm">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{text}}
+  </span>
 </ng-template>

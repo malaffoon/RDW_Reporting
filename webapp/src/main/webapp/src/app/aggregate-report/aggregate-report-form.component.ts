@@ -267,7 +267,7 @@ export class AggregateReportFormComponent {
   }
 
   get estimatedRowCountIsLarge(): boolean {
-    return this.estimatedRowCount > SupportedRowCount;
+    return true;
   }
 
   /**
