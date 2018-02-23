@@ -61,6 +61,12 @@
 .list-group.list-group-sm > .list-group-item {
   padding: 8px 12px;
 }
+.table.table-borderless {
+  > thead > tr > th,
+  > tbody > tr > td {
+    border: 0;
+  }
+}
 
 /**
   Required to meet WCAG 2 AA contrast ratio
@@ -408,14 +414,6 @@ body .select-menu-group {
   margin-bottom: 5px;
 }
 
-.gray-light-bg {
-  background-color: @gray-light;
-}
-
-.gray-lightest-bg {
-  background-color: @gray-lightest;
-}
-
 .scale-score-graph table .bar-container {
   padding-bottom: 10px;
 }
@@ -433,6 +431,14 @@ body .select-menu-group {
 }
 
 .average-scale-score-display {
+
+  .scale-score {
+    margin-top: -4px;
+  }
+
+  .table > tbody > tr > td:not(.level-down) {
+    box-shadow: none;
+  }
 
   .table > tbody > tr:first-child {
     > td:first-child {
@@ -857,5 +863,14 @@ h6 {
   h1, h2, h3, h4, h5, h6 {
     display: inline-block;
     vertical-align: baseline;
+  }
+}
+
+td {
+  &.gray-lightest {
+    background-color: @gray-lightest;
+  }
+  &.gray-lighter {
+    background-color: @gray-lighter;
   }
 }

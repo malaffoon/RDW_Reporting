@@ -7,36 +7,37 @@
   <div class="row">
     <div class="col-md-5">
       <strong>{{ 'labels.assessments.average.title' | translate }}</strong>
-      <table class="table overflow table-borderless">
+      <div class="well">
+      <table class="table table-borderless">
         <tr>
-          <td class="col-md-6 gray-light-bg text-right">
-            <span info-button
-                  title="{{ 'labels.assessments.average.scale-score' | translate }}"
-                  content="{{ 'labels.assessments.average.scale-score-info' | translate }}"></span>
-            <div class="mt-sm">Number of Test Results</div>
-          </td>
-          <td class="level-down gray-lightest-bg pl-sm text-left">
-            <div class="scale-score font-large text-left">
-              <span class="score label label-primary">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
-              <span class="error-band black"> ± {{ statistics.standardError | number:'1.0-0' }}</span>
+          <td class="col-md-6 gray-lighter">
+            <div class="text-right">
+              <div info-button
+                   title="{{ 'labels.assessments.average.scale-score' | translate }}"
+                   content="{{ 'labels.assessments.average.scale-score-info' | translate }}"></div>
+              <div class="mt-md">Number of Test Results</div>
             </div>
-            <span class="gray-darkest">
-              <span class="font-large">
-                <span class="score">{{ statistics.total }}</span>
-              </span>
-              <span>{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
-            </span>
+          </td>
+          <td class="level-down gray-lightest">
+            <div class="text-left ml-sm">
+              <div class="scale-score font-large text-left">
+                <span class="score label label-primary">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+                <span class="error-band black"> ± {{ statistics.standardError | number:'1.0-0' }}</span>
+              </div>
+              <div class="mt-xs">
+                <span class="gray-darkest font-large">
+                  <span class="score">{{ statistics.total }}</span>
+                </span>
+                <span class="gray-darkest">{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
+              </div>
+              <div class="mt-xs">
+                <button class="btn btn-default btn-xs">Percentiles</button>
+              </div>
+            </div>
           </td>
         </tr>
-        <!--<tr>-->
-          <!--<td class="col-md-6 gray-light-bg text-right">-->
-            <!---->
-          <!--</td>-->
-          <!--<td class="level-down gray-lightest-bg pl-xs">-->
-            <!---->
-          <!--</td>-->
-        <!--</tr>-->
       </table>
+      </div>
     </div>
     <div class="col-md-7">
       <strong>{{ 'labels.assessments.student-score-distribution.title' | translate }}</strong>
