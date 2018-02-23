@@ -26,16 +26,10 @@ export class OrganizationService {
       this.getSchools(),
       this.getDistrictNamesById()
     ).pipe(
-      map(([ schools, districts ]) => {
+      map(([ schools, districtNamesById ]) => {
         return schools.map(school => {
-          const result = new School();
-          result.id = school.id;
-          result.name = school.name;
-          result.schoolGroupId = school.schoolGroupId;
-          result.districtId = school.districtId;
-          result.districtName = districts.get(school.districtId);
-          result.districtGroupId = school.districtGroupId;
-          return result;
+          school.districtName = districtNamesById.get(school.districtId);
+          return school;
         });
       }),
       // when combined these operators act as a cache of the first valid result of the observable
