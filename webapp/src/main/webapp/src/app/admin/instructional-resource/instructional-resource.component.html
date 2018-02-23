@@ -1,9 +1,11 @@
-<div class="mb-md">
-  <span class="h3 blue-dark">{{'labels.instructional-resource.title' | translate}}</span>
-  <div class="pull-right">
-    <span class="btn btn-primary mr-xs" (click)="openCreateResourceModal()"><i class="fa fa-plus"></i> {{'prompt.create' | translate}}</span>
-  </div>
-</div>
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'labels.instructional-resource.title' | translate}}</h2>
+  </ng-template>
+  <ng-template #content>
+    <span class="btn btn-primary btn-sm" (click)="openCreateResourceModal()"><i class="fa fa-plus fa-sm"></i> {{'prompt.create' | translate}}</span>
+  </ng-template>
+</page-heading>
 
 <spinner *ngIf="loading" text="{{'messages.loading' | translate}}"></spinner>
 

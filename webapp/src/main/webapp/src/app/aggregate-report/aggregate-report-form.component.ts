@@ -10,7 +10,7 @@ import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportService } from "./aggregate-report.service";
-import { AggregateReportTable } from "./results/aggregate-report-table.component";
+import { AggregateReportTable, SupportedRowCount } from "./results/aggregate-report-table.component";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
 import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
@@ -19,9 +19,15 @@ import { AggregateReportOptions } from "./aggregate-report-options";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
 import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
 import { OrderableItem } from "../shared/order-selector/order-selector.component";
-import { AggregateReportRequestSummary, AggregateReportSummary } from "./aggregate-report-summary.component";
+import { AggregateReportRequestSummary } from "./aggregate-report-summary.component";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/switchMap";
+import { Subscription } from "rxjs/Subscription";
+import { Utils } from "../shared/support/support";
+import { debounceTime } from "rxjs/operators";
+import { Observer } from "rxjs/Observer";
+
+const DefaultRenderDebounceMilliseconds = 500;
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -113,12 +119,34 @@ export class AggregateReportFormComponent {
    */
   assessmentDefinitionsByTypeCode: Map<string, AssessmentDefinition>;
 
+  /**
+   * Estimated row count based on the given report form settings
+   */
+  estimatedRowCount: number;
+
+  /**
+   * The report request summary view
+   */
   summary: AggregateReportRequestSummary;
 
   /**
    * The current column order
    */
   columnItems: OrderableItem[];
+
+  /**
+   * Determines whether or not the advanced filters section is visible
+   */
+  showAdvancedFilters: boolean = false;
+
+  submissionSubscription: Subscription;
+
+  /**
+   * This observer's next() method is to be invoked when a change happens to the form inputs
+   * This is then piped through a debounce operator in order to make the form more responsive when the user makes
+   * quick successive changes
+   */
+  settingsChangedObserver: Observer<void>;
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -133,6 +161,7 @@ export class AggregateReportFormComponent {
     this.assessmentDefinitionsByTypeCode = route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
+    this.showAdvancedFilters = this.hasExplicitAdvancedFilters(this.settings, this.aggregateReportOptions);
 
     this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
 
@@ -142,18 +171,6 @@ export class AggregateReportFormComponent {
     }
 
     this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
-
-    this.summary = {
-      assessmentDefinition: this.currentAssessmentDefinition,
-      options: this.aggregateReportOptions,
-      settings: this.settings
-    };
-
-    this.previewTable = {
-      assessmentDefinition: this.currentAssessmentDefinition,
-      options: this.aggregateReportOptions,
-      rows: []
-    };
 
     this.options = optionMapper.map(this.aggregateReportOptions);
 
@@ -181,6 +198,13 @@ export class AggregateReportFormComponent {
       ))
     });
 
+    Observable.create((observer) => this.settingsChangedObserver = observer)
+      .pipe(debounceTime(DefaultRenderDebounceMilliseconds))
+      .subscribe(() => this.applySettingsChange());
+  }
+
+  ngOnInit(): void {
+    this.onSettingsChange();
   }
 
   /**
@@ -243,6 +267,10 @@ export class AggregateReportFormComponent {
     return this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType);
   }
 
+  get estimatedRowCountIsLarge(): boolean {
+    return this.estimatedRowCount > SupportedRowCount;
+  }
+
   /**
    * Organization typeahead select handler
    *
@@ -270,8 +298,44 @@ export class AggregateReportFormComponent {
     this.markOrganizationsControlTouched();
   }
 
+  onAdvancedFiltersExpanderButtonClick(): void {
+    this.showAdvancedFilters = !this.showAdvancedFilters;
+  }
+
   onColumnOrderChange(items: OrderableItem[]): void {
     this.settings.columnOrder = items.map(item => item.value);
+  }
+
+  /**
+   * Reloads the report preview based on current form state
+   */
+  onSettingsChange(): void {
+    // informs the view that it should display a loader
+    this.estimatedRowCount = undefined;
+
+    // informs the debounced observable that the view has changed
+    this.settingsChangedObserver.next(undefined);
+  }
+
+  /**
+   * Creates a report if the form is valid
+   */
+  onGenerateButtonClick(): void {
+    this.validate(this.formGroup, () => {
+      this.submissionSubscription = this.reportService.createReport(this.createReportRequest())
+        .finally(() => {
+          this.submissionSubscription.unsubscribe();
+          this.submissionSubscription = undefined;
+        })
+        .subscribe(
+          resource => {
+            this.router.navigate([ resource.id ], { relativeTo: this.route });
+          },
+          error => {
+            this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
+          }
+        );
+    });
   }
 
   private markOrganizationsControlTouched(): void {
@@ -327,21 +391,24 @@ export class AggregateReportFormComponent {
     }
   }
 
-  /**
-   * Creates a report if the form is valid
-   */
-  onGenerateButtonClick(): void {
-    this.validate(this.formGroup, () => {
-      this.reportService.createReport(this.createReportRequest())
-        .subscribe(
-          resource => {
-            this.router.navigate([ resource.id ], { relativeTo: this.route });
-          },
-          error => {
-            this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
-          }
-        );
-    });
+  private applySettingsChange(): void {
+    if (this.formGroup.valid) {
+      this.reportService.getEstimatedRowCount(this.createReportRequest().reportQuery)
+        .subscribe(count => this.estimatedRowCount = count);
+    }
+
+    this.summary = {
+      assessmentDefinition: this.currentAssessmentDefinition,
+      options: this.aggregateReportOptions,
+      settings: this.settings
+    };
+
+    // TODO this table should be lazily updated when it is scrolled into view. There is serious lag when changing settings above
+    this.previewTable = {
+      assessmentDefinition: this.currentAssessmentDefinition,
+      options: this.aggregateReportOptions,
+      rows: this.tableDataService.createSampleData(this.currentAssessmentDefinition, this.settings)
+    };
   }
 
   /**
@@ -379,25 +446,19 @@ export class AggregateReportFormComponent {
   }
 
   /**
-   * Reloads the report preview based on current form state
+   * @param {AggregateReportFormSettings} settings
+   * @param {AggregateReportOptions} options
+   * @returns {boolean} True if the provided settings have explicitly set advanced filters that deviate from the defaults
    */
-  onSettingsChange() {
-
-    const assessmentDefinition = this.currentAssessmentDefinition;
-
-    this.summary = {
-      assessmentDefinition: assessmentDefinition,
-      options: this.aggregateReportOptions,
-      settings: this.settings
-    };
-
-    // TODO this table should be lazily updated when it is scrolled into view. There is serious lag when changing settings above
-    this.previewTable = {
-      assessmentDefinition: assessmentDefinition,
-      options: this.aggregateReportOptions,
-      rows: this.tableDataService.createSampleData(assessmentDefinition, this.settings)
-    };
-
+  private hasExplicitAdvancedFilters(settings: AggregateReportFormSettings, options: AggregateReportOptions): boolean {
+    const hasDifferentLength = (a: any[], b:any[]) => !Utils.hasEqualLength(a, b);
+    return hasDifferentLength(settings.genders, options.genders)
+      || hasDifferentLength(settings.ethnicities, options.ethnicities)
+      || hasDifferentLength(settings.migrantStatuses, options.migrantStatuses)
+      || hasDifferentLength(settings.individualEducationPlans, options.individualEducationPlans)
+      || hasDifferentLength(settings.section504s, options.section504s)
+      || hasDifferentLength(settings.limitedEnglishProficiencies, options.limitedEnglishProficiencies)
+      || hasDifferentLength(settings.economicDisadvantages, options.economicDisadvantages);
   }
 
 }

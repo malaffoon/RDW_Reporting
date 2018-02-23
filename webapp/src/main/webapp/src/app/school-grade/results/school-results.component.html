@@ -3,19 +3,26 @@
 </div>
 
 <div *ngIf="currentSchool">
-  <div class="mb-md">
-    <span class="h3 blue-dark">{{currentSchool.name}}<span *ngIf="currentGrade"> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></span>
-    <span class="pull-right text-right">
-      <a *hasPermission="'INDIVIDUAL_PII_READ'" routerLink="/custom-export" class="btn btn-sm btn-default ml-xs"><i class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
-      <button class="btn btn-default btn-sm ml-xs" (click)="reportDownloader.modal.show()"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.school-grade' | translate}}</button>
-      <span school-grade-report-download #reportDownloader
-            [school]="currentSchool"
-            [grade]="currentGrade"
-            [schoolYears]="filterOptions.schoolYears"
-            [schoolYear]="currentSchoolYear"
-            (onShow)="initializeDownloader(reportDownloader)"></span>
-    </span>
-  </div>
+
+  <page-heading>
+    <ng-template #heading>
+      <h2>{{currentSchool.name}}<span *ngIf="currentGrade"> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></h2>
+    </ng-template>
+    <ng-template #content>
+      <ul class="list-unstyled list-inline">
+        <li *hasPermission="'INDIVIDUAL_PII_READ'">
+          <a routerLink="/custom-export"
+             class="btn btn-default btn-sm"><i class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
+        </li>
+        <li>
+          <button class="btn btn-default btn-sm"
+                  (click)="reportDownloader.modal.show()">
+            <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.school-grade' | translate}}
+          </button>
+        </li>
+      </ul>
+    </ng-template>
+  </page-heading>
 
   <assessments [assessmentExams]="assessmentExams"
                [hideAssessments]="gradesAreUnavailable"
@@ -65,3 +72,10 @@
   </assessments>
 
 </div>
+
+<span school-grade-report-download #reportDownloader
+      [school]="currentSchool"
+      [grade]="currentGrade"
+      [schoolYears]="filterOptions.schoolYears"
+      [schoolYear]="currentSchoolYear"
+      (onShow)="initializeDownloader(reportDownloader)"></span>

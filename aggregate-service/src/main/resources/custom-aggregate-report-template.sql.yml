@@ -41,6 +41,11 @@ sqlbuilder:
                      NULL AS organization_id,
                      NULL AS organization_natural_id,
                      '${app.state.name}' AS organization_name
+                where: >-
+                     3 <> :asmt_type_id
+                     OR fe.school_year < ${app.school-year}
+                     OR EXISTS (SELECT 1 FROM state_embargo WHERE aggregate = 0)
+                     OR 1 = :state_embargo_admin
 
             allDistricts:
               clauses:
@@ -103,6 +108,15 @@ sqlbuilder:
                      sch.name,
                      sch.natural_id,
                      sch.district_id
+
+            embargo:
+              clauses:
+                where: >-
+                    fe.school_year < ${app.school-year}
+                    OR 3 <> :asmt_type_id
+                    OR sch.embargo_enabled = 0
+                    OR 1 = :state_embargo_admin
+                    OR sch.district_id IN (:district_embargo_admin_ids)
 
       # ---------- dimension parts -----------------------------------------------------------------------
             Overall:

@@ -659,11 +659,19 @@ aggregate-report-results {
 }
 
 aggregate-report-form {
-  .well-group .well {
-    padding-bottom: 20px;
-  }
-  .well-group > .well:not(:first-child) {
+  .well-group > .well {
     box-shadow: none;
+    padding-bottom: 20px;
+    &:not(:first-child) {
+      box-shadow: none;
+    }
+    &:first-child {
+      padding: 15px 20px;
+      > *:last-child,
+      > .row > [class^=col-]:first-child > *:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
   .nested-btn-group {
     margin-bottom: 0;
@@ -730,24 +738,18 @@ aggregate-report-organization-list {
     color: @gray-darker;
     padding-bottom: @padding-base-vertical;
   }
-  table {
-    width: 100%;
-    > tbody > tr {
-      > td {
-        vertical-align: top;
-        &:first-child {
-          color: @gray-darkest;
-        }
-        &:last-child {
-          color: @gray-darker;
-          padding-left: @padding-small-horizontal;
-        }
-      }
+  .row > div {
+    &:first-child {
+      color: @gray-darkest;
+    }
+    &:last-child {
+      color: @gray-darker;
     }
   }
 }
 
-// Fixes well group border radius - should be in kit
+// TODO move to UI KIT
+// fixes well group border radius
 .well-group {
   border-radius: @border-radius-base;
   > .well {
@@ -763,7 +765,86 @@ aggregate-report-organization-list {
   }
 }
 
+// TODO move to UI KIT
+// fixes html heading element styles to be the same as the class styles
+h1 {
+  .h1;
+}
+
+h2 {
+  .h2;
+}
+
+h3 {
+  .h3;
+}
+
+h4 {
+  .h4;
+}
+
+h5 {
+  .h5;
+}
+
+h6 {
+  .h6;
+}
+
 .well.well-compact {
   padding: @padding-small-horizontal @padding-base-horizontal;
 }
 
+.page-heading {
+  display: block;
+  margin-bottom: @padding-base-horizontal;
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    display: inline;
+    margin: 0;
+  }
+}
+
+.list-inline {
+  margin-left: 0;
+  > li {
+    padding: 0;
+    &:not(:first-child) {
+      margin-left: @padding-xs-horizontal;
+    }
+  }
+}
+
+.flex-child-no-label {
+  padding-top: @line-height-base * 1px;
+}
+
+@media (max-width: @screen-sm-max) {
+  scroll-nav {
+    display: none;
+  }
+}
+
+.vertical-align-bottom {
+  position: relative;
+  top: 100%;
+  transform: translateY(-100%);
+  z-index: 1;
+}
+
+// TODO temporary visual correction
+.student-ssid-label {
+  .small;
+  .label;
+  background-color: @blue-dark;
+  color: white;
+  position: relative;
+  top: -4px;
+  left: 4px;
+}
+
+.inline-headings {
+  h1, h2, h3, h4, h5, h6 {
+    display: inline-block;
+    vertical-align: baseline;
+  }
+}

@@ -115,7 +115,7 @@ export class GroupResultsComponent implements OnInit {
    *
    * @param downloader
    */
-  private initializeDownloader(downloader: GroupReportDownloadComponent): void {
+  initializeDownloader(downloader: GroupReportDownloadComponent): void {
     downloader.options.schoolYear = this.currentSchoolYear;
   }
 

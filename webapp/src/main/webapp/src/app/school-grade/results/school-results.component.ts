@@ -244,7 +244,7 @@ export class SchoolResultsComponent implements OnInit {
    *
    * @param downloader
    */
-  private initializeDownloader(downloader: SchoolGradeDownloadComponent): void {
+  initializeDownloader(downloader: SchoolGradeDownloadComponent): void {
     downloader.title = this.translate.instant('labels.reports.form.title.multiple', {
       name: this._currentSchool.name + ' ' + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`)
     });

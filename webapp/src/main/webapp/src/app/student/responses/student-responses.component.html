@@ -1,10 +1,15 @@
-<div *ngIf="student" class="mb-md">
-  <div class="tag tag-lg blue ">
-    <span class="label">{{'labels.student.name' | translate:student}}</span>
-    <span>{{student.ssid}}</span>
-  </div>
-</div>
-<h3 class="blue mb-md">{{'labels.student.responses.title' | translate}}</h3>
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'labels.student.name' | translate:student}}</h2> <div class="student-ssid-label">{{student.ssid}}</div>
+  </ng-template>
+</page-heading>
+
+<page-heading>
+  <ng-template #heading>
+    <h3>{{'labels.student.responses.title' | translate}}</h3>
+  </ng-template>
+</page-heading>
+
 <div *ngIf="!student || !assessment" class="alert alert-danger">
   {{ 'labels.student.messages.null-student' | translate }}
 </div>

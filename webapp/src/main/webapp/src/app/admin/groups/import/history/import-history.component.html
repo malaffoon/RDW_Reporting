@@ -1,8 +1,9 @@
-<div>
-  <div class="mb-md">
-    <span class="h3 blue-dark">{{'labels.admin-groups.history.title' | translate}}</span>
-  </div>
-  <div class="well">
-    <import-table [imports]="imports"></import-table>
-  </div>
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'labels.admin-groups.history.title' | translate}}</h2>
+  </ng-template>
+</page-heading>
+
+<div class="well">
+  <import-table [imports]="imports"></import-table>
 </div>

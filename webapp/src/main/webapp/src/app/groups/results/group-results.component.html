@@ -1,16 +1,23 @@
-<div class="mb-md" *ngIf="currentGroup">
-  <span class="h3 blue-dark">{{'labels.groups.name' | translate}}</span>
-  <span class="pull-right text-right">
-    <a *hasPermission="'INDIVIDUAL_PII_READ'" routerLink="/custom-export" class="btn btn-sm btn-default ml-xs"><i class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
-    <button class="btn btn-default btn-sm ml-xs" (click)="reportDownloader.modal.show()"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.group' | translate}}</button>
-    <span group-report-download #reportDownloader
-          [title]="'labels.reports.form.title.multiple' | translate:currentGroup"
-          [group]="currentGroup"
-          [schoolYears]="filterOptions.schoolYears"
-          [schoolYear]="currentSchoolYear"
-          (onShow)="initializeDownloader(reportDownloader)"></span>
-  </span>
-</div>
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'labels.groups.name' | translate}}</h2>
+  </ng-template>
+  <ng-template #content>
+    <ul class="list-unstyled list-inline" *ngIf="currentGroup">
+      <li *hasPermission="'INDIVIDUAL_PII_READ'">
+        <a routerLink="/custom-export"
+           class="btn btn-sm btn-default"><i class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
+      </li>
+      <li>
+        <button class="btn btn-default btn-sm"
+                (click)="reportDownloader.modal.show()">
+          <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.group' | translate}}
+        </button>
+      </li>
+    </ul>
+  </ng-template>
+</page-heading>
+
 <div *ngIf="!currentGroup" class="alert alert-danger">
   {{'labels.groups.results.null-group' | translate }}
 </div>
@@ -44,3 +51,10 @@
   </div>
 
 </assessments>
+
+<span group-report-download #reportDownloader
+      [title]="'labels.reports.form.title.multiple' | translate:currentGroup"
+      [group]="currentGroup"
+      [schoolYears]="filterOptions.schoolYears"
+      [schoolYear]="currentSchoolYear"
+      (onShow)="initializeDownloader(reportDownloader)"></span>

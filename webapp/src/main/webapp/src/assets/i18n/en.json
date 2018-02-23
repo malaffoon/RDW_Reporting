@@ -40,7 +40,7 @@
   "aggregate-reports": {
     "heading": "Aggregate Reports",
     "default-report-name": "Custom Aggregate Report",
-    "preview": "Table for preview purposes only. This is NOT actual data.",
+    "preview": "This table does not contain actual data and is for preview purposes only.",
     "access-denied-error": "Your user account is not permitted to create aggregate reports by the system. If you believe you have reached this page in error, please contact your building administrator.",
     "export-name": "{{label}}_{{subject}}_view",
     "confirmation-modal": {
@@ -48,11 +48,17 @@
       "accept": "Generate",
       "decline": "Cancel"
     },
+    "row-count-label": "Row count: ",
+    "estimated-row-count": {
+      "loading": "Estimating row count",
+      "label": "Estimated row count: ",
+      "warning": "This report is large and may result in a slow experience when viewed in your browser"
+    },
     "results": {
       "empty-message": "No Results Found",
       "performance-group-prompt": "Show performance as",
       "performance-grouped": "Grouped",
-      "performance-separated": "Separate",
+      "performance-separated": "All",
       "cols": {
         "achievement-comparison": "Achievement Comparison",
         "assessment-grade": "Assessment Grade",
@@ -64,7 +70,7 @@
         "students-tested": "Students Tested",
         "performance-level-suffix": "Standard",
         "grouped-performance-level-prefix": {
-          "0": "At or Below",
+          "0": "Below",
           "1": "At or Above"
         }
       }
@@ -85,10 +91,6 @@
         },
         "assessment-type": {
           "label": "Assessment Type"
-        },
-        "completeness": {
-          "label": "Completeness",
-          "info": "Indicates whether the test was completed or was partially complete."
         },
         "interim-administration-condition": {
           "label": "Manner of Administration",
@@ -133,19 +135,11 @@
           "label": "Economic Disadvantage",
           "info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage."
         },
-        "performance-level-display-type": {
-          "label": "Achievement Level Display",
-          "info": "Two options are available:  1) each of the four achievement levels are displayed or 2) Levels 1 and 2 are combined and levels 3 and 4 are combined to show two groups:  Below Standard and At/Above Standard."
-        },
-        "value-display-type": {
-          "label": "Show Value as"
-        },
         "comparative-subgroup": {
-          "label": "Subgroups",
-          "info": "Select the student sub-groups to display separately in results."
+          "label": "Subgroups"
         },
         "report-name": {
-          "label": "Enter a name",
+          "label": "Report Name",
           "error-file-name": "The name cannot contain these special characters: <>:;,?\"*|\\/"
         }
       },
@@ -171,13 +165,12 @@
           "heading": "Assessment Attributes"
         },
         "subgroup-filters": {
-          "heading": "Subgroup Filters"
+          "heading": "Advanced Filters",
+          "subtext": "Use this feature to include only selected student sub-groups, e.g. only male Hispanic students."
         },
         "comparative-subgroups": {
-          "heading": "Comparative Subgroups"
-        },
-        "report-name": {
-          "heading": "Report Name"
+          "heading": "Subgroups",
+          "subtext": "The report will break down results by the subgroups you select."
         },
         "review": {
           "heading": "Report Review"
@@ -211,13 +204,21 @@
   "organization-typeahead": {
     "type-label": "Type",
     "placeholder": "Enter name",
-    "no-matches": "There are no organizations matching your search."
+    "no-matches": "There are no unselected organizations matching your search."
   },
   "collapse": "Collapse",
   "common": {
     "collection-selection": {
       "all": "All",
       "none": "None"
+    },
+    "completeness": {
+      "Partial": "Partial",
+      "Complete": "Complete"
+    },
+    "completeness-form-control": {
+      "label": "Completeness",
+      "info": "A test is considered complete when the student provides an answer for every question."
     },
     "copy-suffix": "(copy)",
     "export": "Export",
@@ -243,7 +244,7 @@
     },
     "performance-level-display-type-input-label": "Show achievement levels",
     "performance-level-display-type": {
-      "Separate": "Separate",
+      "Separate": "All",
       "Grouped": "Grouped"
     },
     "organization": {
@@ -357,10 +358,6 @@
         "name": "Mathematics",
         "short-name": "Math"
       }
-    },
-    "completeness": {
-      "Partial": "Partial",
-      "Complete": "Complete"
     },
     "enrolled-grade": {
       "01": "1",
@@ -1033,8 +1030,6 @@
       "status": {
         "administration": "Manner of Administration (Interim)",
         "administration-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
-        "completion": "Complete/Partial",
-        "completion-info": "Indicates whether the test was completed or was partially complete.",
         "label": "Status",
         "summative": "Valid/Invalid (Summative)",
         "summative-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.  "
@@ -1617,8 +1612,8 @@
     "no-results-by-item-for-summative-exams": "Results by item is not available for summative assessments.",
     "no-results-found": "No test results are available for the current selection.  If a new school year has begun recently, please check the year selected above.",
     "no-writing-trait-scores": "Writing trait scores are not available for assessments administered prior to 2017-18 school year.",
-    "no-writing-trait-scores-for-summative-ica-exams": "Writing trait scores are only currently available for IAB assessments.",
-    "no-responses-for-summative-exams": "{{firstName}}'s Responses is not available is not available for summative assessments.",
+    "no-writing-trait-scores-for-summative-ica-exams": "Writing trait scores are currently available for only ELA Performance Task IABs.",
+    "no-responses-for-summative-exams": "Summative assessment responses are not made available by this system.",
     "noExams": "There are no exams associated with your account.",
     "noExamsMatchingCriteria": "There are no exams matching this criteria.",
     "noExamsSelected": "Please select from the assessments above",
