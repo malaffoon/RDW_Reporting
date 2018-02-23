@@ -1,30 +1,41 @@
 <!-- IAB display -->
+
+
+
+
 <div *ngIf="hasAverageScore" class="average-scale-score-display">
   <div class="row">
     <div class="col-md-5">
       <strong>{{ 'labels.assessments.average.title' | translate }}</strong>
-      <table class="table overflow">
+      <table class="table overflow table-borderless">
         <tr>
           <td class="col-md-6 gray-light-bg text-right">
             <span info-button
                   title="{{ 'labels.assessments.average.scale-score' | translate }}"
                   content="{{ 'labels.assessments.average.scale-score-info' | translate }}"></span>
+            <div class="mt-sm">Number of Test Results</div>
           </td>
-          <td class="level-down gray-lightest-bg">
-            <div class="pl-xs">
-              <div class="scale-score font-large text-left">
-                <span class="score label label-primary">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
-                <span class="error-band black pl-xs">±{{ statistics.standardError | number:'1.0-0' }}</span>
-              </div>
-              <span class="text-left gray-darkest">
-                <span class="font-large">
-                  <span class="score">{{ statistics.total }}</span>
-                </span>
-                <span class="pl-xs">{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
-              </span>
+          <td class="level-down gray-lightest-bg pl-sm text-left">
+            <div class="scale-score font-large text-left">
+              <span class="score label label-primary">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+              <span class="error-band black"> ± {{ statistics.standardError | number:'1.0-0' }}</span>
             </div>
+            <span class="gray-darkest">
+              <span class="font-large">
+                <span class="score">{{ statistics.total }}</span>
+              </span>
+              <span>{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
+            </span>
           </td>
         </tr>
+        <!--<tr>-->
+          <!--<td class="col-md-6 gray-light-bg text-right">-->
+            <!---->
+          <!--</td>-->
+          <!--<td class="level-down gray-lightest-bg pl-xs">-->
+            <!---->
+          <!--</td>-->
+        <!--</tr>-->
       </table>
     </div>
     <div class="col-md-7">
