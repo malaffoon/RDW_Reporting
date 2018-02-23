@@ -19,7 +19,7 @@ import { AggregateReportOptions } from "./aggregate-report-options";
 import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
 import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
 import { OrderableItem } from "../shared/order-selector/order-selector.component";
-import { AggregateReportRequestSummary, AggregateReportSummary } from "./aggregate-report-summary.component";
+import { AggregateReportRequestSummary } from "./aggregate-report-summary.component";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/switchMap";
 import { Subscription } from "rxjs/Subscription";
@@ -27,6 +27,7 @@ import { Utils } from "../shared/support/support";
 import { debounceTime } from "rxjs/operators";
 import { Observer } from "rxjs/Observer";
 
+const DefaultRenderDebounceMilliseconds = 500;
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -198,7 +199,7 @@ export class AggregateReportFormComponent {
     });
 
     Observable.create((observer) => this.settingsChangedObserver = observer)
-      .pipe(debounceTime(400))
+      .pipe(debounceTime(DefaultRenderDebounceMilliseconds))
       .subscribe(() => this.applySettingsChange());
   }
 
@@ -267,7 +268,7 @@ export class AggregateReportFormComponent {
   }
 
   get estimatedRowCountIsLarge(): boolean {
-    return true;
+    return this.estimatedRowCount > SupportedRowCount;
   }
 
   /**
@@ -309,22 +310,10 @@ export class AggregateReportFormComponent {
    * Reloads the report preview based on current form state
    */
   onSettingsChange(): void {
+    // informs the view that it should display a loader
+    this.estimatedRowCount = undefined;
 
-    if (this.formGroup.valid) {
-      // informs the view that it should display a loader
-      this.estimatedRowCount = undefined;
-      this.reportService.getEstimatedRowCount(this.createReportRequest().reportQuery)
-        .subscribe(count => this.estimatedRowCount = count);
-    }
-
-    // render the summary view immediately
-    this.summary = {
-      assessmentDefinition: this.currentAssessmentDefinition,
-      options: this.aggregateReportOptions,
-      settings: this.settings
-    };
-
-    // defer rendering the table
+    // defer rendering the summary view, estated row count and preview table
     this.settingsChangedObserver.next(undefined);
   }
 
@@ -403,6 +392,17 @@ export class AggregateReportFormComponent {
   }
 
   private applySettingsChange(): void {
+    if (this.formGroup.valid) {
+      this.reportService.getEstimatedRowCount(this.createReportRequest().reportQuery)
+        .subscribe(count => this.estimatedRowCount = count);
+    }
+
+    this.summary = {
+      assessmentDefinition: this.currentAssessmentDefinition,
+      options: this.aggregateReportOptions,
+      settings: this.settings
+    };
+
     // TODO this table should be lazily updated when it is scrolled into view. There is serious lag when changing settings above
     this.previewTable = {
       assessmentDefinition: this.currentAssessmentDefinition,

@@ -520,7 +520,7 @@
               <ng-container *ngIf="estimatedRowCount != null; else estimatedRowCountSpinner">
                 <p>
                   <span class="text-muted small">{{'aggregate-reports.estimated-row-count-label.loaded' | translate}}</span>
-                  <strong class="label gray-darker">{{22222 | number}}</strong>
+                  <strong class="label gray-darker">{{estimatedRowCount | number}}</strong>
                   <ng-container *ngIf="estimatedRowCountIsLarge">
                     <ng-container *ngTemplateOutlet="warning; context: {$implicit: 'This report is large and may result in a slow experience when viewed in your browser'}"></ng-container>
                   </ng-container>
