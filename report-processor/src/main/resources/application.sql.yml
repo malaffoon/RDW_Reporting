@@ -287,5 +287,5 @@ sql:
         )
 
       percentileLeftJoin: >-
-          LEFT JOIN percentile p ON e.asmt_id = p.asmt_id AND e.completed_at >= p.start_date AND e.completed_at <= p.end_date
+          LEFT JOIN percentile p ON e.asmt_id = p.asmt_id AND DATE(e.completed_at) >= p.start_date AND DATE(e.completed_at) <= p.end_date
           LEFT JOIN percentile_score ps ON ps.percentile_id = p.id AND e.scale_score >= ps.min_inclusive AND e.scale_score < ps.max_exclusive

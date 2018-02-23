@@ -11,7 +11,7 @@
 
             <div class="row">
                 <div class="col-xs-6"
-                     th:with="assessment=${report.examsByAssessment.firstEntry().key},exam=${report.examsByAssessment.firstEntry().value[0].exam}">
+                     th:with="assessment=${report.examsByAssessment.firstEntry().key},exam=${report.examsByAssessment.firstEntry().value[0]}">
                     <div>
                         <span class="h3 label-group green">
                             <span class="label" th:text="#{report.iab.short-name}"></span><span class="label"
@@ -41,7 +41,7 @@
 
             <div class="well-group well-group--horizontal sans" th:each="entry : ${report.examsByAssessment}">
                 <div class="well assessment-latest-result" data-width="60"
-                     th:with="assessment=${entry.key},exam=${entry.value[0].exam}">
+                     th:with="assessment=${entry.key},exam=${entry.value[0]}">
                     <div class="well-body">
                         <div class="row">
                             <div class="col-xs-12">
@@ -94,8 +94,8 @@
                 <div class="well gray-lightest assessment-instances" data-width="40">
                     <div class="well-body">
                         <ul class="previous-results">
-                            <li th:each="examWrapper : ${entry.value}" th:with="assessment=${entry.key}, exam=${examWrapper.exam}"  ><span
-                                    th:if="${examWrapperStat.index} > 0"><span class="previous-result"><span class="date"
+                            <li th:with="assessment=${entry.key}" th:each="exam : ${entry.value}"><span
+                                    th:if="${examStat.index} > 0"><span class="previous-result"><span class="date"
                                                                                                       th:text="${#dates.format(exam.dateTime, 'MM-dd-yyyy')}"></span> <span
                                     th:if="${exam.scaleScore != null}" class="scale-score"><span
                                     th:text="${exam.scaleScore.value}" th:remove="tag"></span> <span class="error-band">&plusmn;
@@ -109,9 +109,9 @@
                 </div>
 
                 <!-- Writing trait scores-->
-                <div class="col-lg-12" th:if="${entry.value[0].exam.writingTraitScores}"
+                <div class="col-lg-12" th:if="${entry.value[0].writingTraitScores}"
                      th:with="scored=true,assessment=${entry.key}">
-                    <div th:each="examWrapper : ${entry.value}"  th:with="exam=${examWrapper.exam}">
+                    <div th:each="exam : ${entry.value}">
                         <div class="row"
                              th:if="${exam.sessionId == entry.value[0].sessionId && exam.writingTraitScores != null}">
                             <h2 class="pb-sm pl-sm" th:if="${scored}"
