@@ -43,8 +43,8 @@ sql:
           ROUND(score) AS score
         FROM percentile p
           JOIN percentile_score ps ON ps.percentile_id = p.id
-        where p.asmt_id = :assessment_id
-        ORDER BY start_date, percentile_rank;
+        where p.asmt_id = :assessmentId AND :endDate >= start_date AND end_date >= :startDate
+        ORDER BY start_date, percentile_rank
 
   student:
     findOneById: >-
