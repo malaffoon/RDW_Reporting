@@ -1,42 +1,38 @@
 <!-- IAB display -->
-
-
-
-
 <div *ngIf="hasAverageScore" class="average-scale-score-display">
   <div class="row">
     <div class="col-md-5">
       <strong>{{ 'labels.assessments.average.title' | translate }}</strong>
       <div class="well">
-      <table class="table table-borderless">
-        <tr>
-          <td class="col-md-6 gray-lighter">
-            <div class="text-right">
+        <table class="table table-borderless">
+          <tr>
+            <td class="col-md-6 gray-lighter text-right">
               <div info-button
                    title="{{ 'labels.assessments.average.scale-score' | translate }}"
-                   content="{{ 'labels.assessments.average.scale-score-info' | translate }}"></div>
-              <div class="mt-md">Number of Test Results</div>
-            </div>
-          </td>
-          <td class="level-down gray-lightest">
-            <div class="text-left ml-sm">
-              <div class="scale-score font-large text-left">
-                <span class="score label label-primary">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
-                <span class="error-band black"> ± {{ statistics.standardError | number:'1.0-0' }}</span>
+                   content="{{ 'labels.assessments.average.scale-score-info' | translate }}">
               </div>
-              <div class="mt-xs">
-                <span class="gray-darkest font-large">
-                  <span class="score">{{ statistics.total }}</span>
-                </span>
-                <span class="gray-darkest">{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
+              <div class="mt-md">
+                {{'labels.assessments.results-label' | translate}}
               </div>
-              <div class="mt-xs">
-                <button class="btn btn-default btn-xs">Percentiles</button>
+            </td>
+            <td class="level-down gray-lightest">
+              <div class="pl-xs">
+                <div class="scale-score font-large text-left">
+                  <span class="score label label-primary">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
+                  <span class="error-band black"> ± {{ statistics.standardError | number:'1.0-0' }}</span>
+                </div>
+                <div class="mt-sm">
+                  <span class="text-left gray-darkest">
+                    <span class="font-large">
+                      <span class="score">{{ statistics.total }}</span>
+                    </span>
+                    <span class="pl-xs">{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
+                  </span>
+                </div>
               </div>
-            </div>
-          </td>
-        </tr>
-      </table>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
     <div class="col-md-7">
@@ -46,15 +42,15 @@
           <div class="text-right gray-lighter grid-item">
             {{ examLevelEnum + performanceLevel.id.toString() | translate }}
             <button *ngIf="assessmentExam.assessment.isIab"
-              class="btn btn-borderless btn-xs icon-only pull-right"
-              angulartics2On="click"
-              angularticsEvent="InstructionalResource"
-              angularticsCategory="AssessmentResults"
-              [popover]="buttonPopover"
-              popoverTitle="{{ 'labels.groups.results.assessment.instruct-button' | translate:{ level:((examLevelEnum + performanceLevel.id.toString()) | translate) } }}"
-              container="body"
-              (click)="loadInstructionalResources(performanceLevel)"
-              [outsideClick]="true"><i
+                    class="btn btn-borderless btn-xs icon-only pull-right"
+                    angulartics2On="click"
+                    angularticsEvent="InstructionalResource"
+                    angularticsCategory="AssessmentResults"
+                    [popover]="buttonPopover"
+                    popoverTitle="{{ 'labels.groups.results.assessment.instruct-button' | translate:{ level:((examLevelEnum + performanceLevel.id.toString()) | translate) } }}"
+                    container="body"
+                    (click)="loadInstructionalResources(performanceLevel)"
+                    [outsideClick]="true"><i
               class="fa fa-book"></i></button>
           </div>
           <div class="level-down text-right gray-lightest grid-item">

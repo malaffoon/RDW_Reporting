@@ -881,6 +881,7 @@
       },
       "result": "Result",
       "results": "Results",
+      "results-label": "Number of Test Results",
       "student-score-distribution": {
         "title": "Student Score Distribution"
       }
