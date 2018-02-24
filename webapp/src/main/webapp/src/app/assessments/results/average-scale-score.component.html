@@ -4,35 +4,37 @@
     <div class="col-md-5">
       <strong>{{ 'labels.assessments.average.title' | translate }}</strong>
       <div class="well">
-        <table class="table table-borderless">
-          <tr>
-            <td class="col-md-6 gray-lighter text-right">
-              <div info-button
-                   title="{{ 'labels.assessments.average.scale-score' | translate }}"
-                   content="{{ 'labels.assessments.average.scale-score-info' | translate }}">
-              </div>
-              <div class="mt-md">
-                {{'labels.assessments.results-label' | translate}}
-              </div>
-            </td>
-            <td class="level-down gray-lightest">
-              <div class="pl-xs">
+        <div class="assessment-results-summary">
+          <table class="table table-borderless">
+            <tr>
+              <td class="pl-sm">
+                <div info-button
+                      title="{{ 'labels.assessments.average.scale-score' | translate }}"
+                      content="{{ 'labels.assessments.average.scale-score-info' | translate }}"
+                      class="average-scale-score-label"></div>
+              </td>
+              <td>
                 <div class="scale-score font-large text-left">
                   <span class="score label label-primary">{{ statistics.average | number:'1.0-0' | removeComma }}</span>
                   <span class="error-band black"> ± {{ statistics.standardError | number:'1.0-0' }}</span>
                 </div>
-                <div class="mt-sm">
-                  <span class="text-left gray-darkest">
-                    <span class="font-large">
-                      <span class="score">{{ statistics.total }}</span>
-                    </span>
-                    <span class="pl-xs">{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
-                  </span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="result-count-label">
+                  {{'labels.assessments.results-label' | translate}}
                 </div>
-              </div>
-            </td>
-          </tr>
-        </table>
+              </td>
+              <td class="">
+                <span class="text-left gray-darkest">
+                  <span class="score font-large">{{ statistics.total }}</span>
+                  <span class="ml-xs">{{ (statistics.total == 1 ? 'labels.assessments.result' : 'labels.assessments.results') | translate }}</span>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
     <div class="col-md-7">
