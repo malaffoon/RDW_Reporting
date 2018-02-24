@@ -7,8 +7,7 @@
 <!-- Individual Assessment Result Container -->
 <div class="assessment-result well wide-content-container">
 
-  <button class="btn btn-default btn-xs"
-          (click)="onPercentileButtonClick(assessmentExam)">{{'assessment-percentile.button-label' | translate}}</button>
+  <assessment-percentile-button [precentileSource]="createPercentileSource(assessmentExam)"></assessment-percentile-button>
 
   <!-- Top Right Buttons -->
   <div class="row">

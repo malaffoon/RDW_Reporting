@@ -1,0 +1,19 @@
+<button class="btn btn-default btn-xs"
+        type="button"
+        (click)="onClickInternal()"
+        [popover]="popoverTemplate"
+        popoverTitle="{{'assessment-percentile-popover.title' | translate}}"
+        placement="{{placement}}"
+        container="body"
+        outsideClick="true">
+  {{'assessment-percentile-popover.button-label' | translate}}
+</button>
+
+<ng-template #popoverTemplate>
+  <ng-container *ngIf="percentiles; else loading">
+    <assessment-percentile-table [percentiles]="percentiles"></assessment-percentile-table>
+  </ng-container>
+  <ng-template #loading>
+    <i class="fa fa-spinner fa-pulse"></i>
+  </ng-template>
+</ng-template>

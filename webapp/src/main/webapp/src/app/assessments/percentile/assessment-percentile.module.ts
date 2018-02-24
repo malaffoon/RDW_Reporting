@@ -4,17 +4,23 @@ import { AssessmentPercentileTable } from "./assessment-percentile-table.compone
 import { AssessmentPercentileService } from "./assessment-percentile.service";
 import { CommonModule } from "../../shared/common.module";
 import { TableModule } from "primeng/table";
+import { AssessmentPercentileButton } from "./assessment-percentile-button.component";
+import { PopoverModule } from "ngx-bootstrap";
+import { BrowserModule } from "@angular/platform-browser";
 
 @NgModule({
   declarations: [
+    AssessmentPercentileButton,
     AssessmentPercentileTable
   ],
   imports: [
+    BrowserModule,
     CommonModule,
+    PopoverModule,
     TableModule
   ],
   exports: [
-    AssessmentPercentileTable
+    AssessmentPercentileButton
   ],
   providers: [
     AssessmentPercentileService

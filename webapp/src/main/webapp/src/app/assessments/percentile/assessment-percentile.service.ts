@@ -20,6 +20,6 @@ export class AssessmentPercentileService {
 
 export interface AssessmentPercentileRequest {
   assessmentId: number;
-  from: Date;
-  to: Date;
+  startDate: Date;
+  endDate: Date;
 }

@@ -1,25 +1,30 @@
 import { Component, Input } from "@angular/core";
-import { AssessmentPercentileRequest, AssessmentPercentileService } from "./assessment-percentile.service";
-import { refCount } from "rxjs/operators";
 import { Percentile } from "./assessment-percentile";
+import { Observable } from "rxjs/Observable";
 
 @Component({
-  selector: 'assessment-percentile-button,[assessment-percentile-button]',
+  selector: 'assessment-percentile-button',
   templateUrl: 'assessment-percentile-button.component.html'
 })
 export class AssessmentPercentileButton {
 
   @Input()
-  request: AssessmentPercentileRequest;
+  percentileSource: Observable<Percentile[]>;
+
+  @Input()
+  placement: string = 'top';
 
   percentiles: Percentile[];
 
-  constructor(private percentileService: AssessmentPercentileService) {
+  ngOnInit(): void {
+    if (this.percentileSource == null
+      || typeof this.percentileSource !== 'function') {
+      throw new Error('AssessmentPercentileButton percentileSource is required');
+    }
   }
 
-  onClick(): void {
-    this.percentileService.getPercentiles(this.request)
-      .pipe(refCount())
+  onClickInternal(): void {
+    this.percentileSource.subscribe(percentiles => this.percentiles = percentiles);
   }
 
 }
