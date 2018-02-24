@@ -25,7 +25,6 @@ import { AssessmentExporter } from "../assessment-exporter.interface";
 import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 import { Percentile } from "../percentile/assessment-percentile";
 import { publishReplay, refCount } from "rxjs/operators";
-import { AssessmentPercentileRequestMapper } from "../percentile/assessment-percentile-request.mapper";
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -215,16 +214,15 @@ export class AssessmentResultsComponent implements OnInit {
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
               private instructionalResourcesService: InstructionalResourcesService,
-              private percentileService: AssessmentPercentileService,
-              private percentileRequestMapper: AssessmentPercentileRequestMapper) {
+              private percentileService: AssessmentPercentileService) {
   }
 
   ngOnInit(): void {
-    this.setViews();
+    this.initializeViews();
     this.setCurrentView(this.resultsByStudentView);
   }
 
-  setViews(): void {
+  initializeViews(): void {
     this.resultsByStudentView = this.createResultViewState(ResultsViewState.ByStudent, true, false, true);
     this.resultsByItemView = this.createResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, true);
     this.distractorAnalysisView = this.createResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, true);
@@ -268,9 +266,13 @@ export class AssessmentResultsComponent implements OnInit {
       .map((resources) => resources.getResourcesByPerformance(performanceLevel));
   }
 
-  createPercentileSource(assessmentExam: AssessmentExam): Observable<Percentile[]> {
-    const request = this.percentileRequestMapper.fromAssessmentResults(assessmentExam);
-    return this.percentileService.getPercentiles(request).pipe(publishReplay(1), refCount());
+  createPercentileSource(results: AssessmentExam): Observable<Percentile[]> {
+    const dates = results.exams.map(exam => new Date(exam.date)).sort();
+    return this.percentileService.getPercentiles({
+      assessmentId: results.assessment.id,
+      from: dates[ 0 ],
+      to: dates[ dates.length - 1 ]
+    }).pipe(publishReplay(1), refCount());
   }
 
   private getDistinctExamSessions(exams: Exam[]): any[] {

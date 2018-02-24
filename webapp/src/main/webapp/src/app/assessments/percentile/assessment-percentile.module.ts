@@ -1,4 +1,3 @@
-
 import { NgModule } from "@angular/core";
 import { AssessmentPercentileTable } from "./assessment-percentile-table.component";
 import { AssessmentPercentileService } from "./assessment-percentile.service";
@@ -7,7 +6,6 @@ import { TableModule } from "primeng/table";
 import { AssessmentPercentileButton } from "./assessment-percentile-button.component";
 import { PopoverModule } from "ngx-bootstrap";
 import { BrowserModule } from "@angular/platform-browser";
-import { AssessmentPercentileRequestMapper } from "./assessment-percentile-request.mapper";
 
 @NgModule({
   declarations: [
@@ -24,8 +22,7 @@ import { AssessmentPercentileRequestMapper } from "./assessment-percentile-reque
     AssessmentPercentileButton
   ],
   providers: [
-    AssessmentPercentileService,
-    AssessmentPercentileRequestMapper
+    AssessmentPercentileService
   ]
 })
 export class AssessmentPercentileModule {

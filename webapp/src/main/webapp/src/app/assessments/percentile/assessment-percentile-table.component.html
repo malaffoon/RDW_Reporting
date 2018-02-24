@@ -1,14 +1,30 @@
-<!--<p-table>-->
-
-<!--</p-table>-->
 <ng-container *ngFor="let percentile of percentiles">
 
-  Percentile {{percentile.assessmentId}}
-
-  <ng-container *ngFor="let score of percentile.scores">
-    rank: {{score.rank}}, count: {{score.count}}
-
-  </ng-container>
+  <p-table [value]="[percentile]"
+           styleClass="table table-striped table-hover overflow">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Effective Dates</th>
+        <th>N</th>
+        <th>Mean</th>
+        <th>Standard Deviation</th>
+        <th *ngFor="let score of percentile.scores">
+          {{score.rank}}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-percentile>
+      <tr>
+        <td>{{percentile.startDate | date:'MM/dd'}} - {{percentile.endDate | date:'MM/dd'}}</td>
+        <td>{{percentile.count}}</td>
+        <td>{{percentile.mean}}</td>
+        <td>{{percentile.standardDeviation}}</td>
+        <td *ngFor="let score of percentile.scores">
+          {{score.count}}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 
 </ng-container>
 

@@ -5,7 +5,10 @@ import { Utils } from "../../shared/support/support";
 
 @Component({
   selector: 'assessment-percentile-button',
-  templateUrl: 'assessment-percentile-button.component.html'
+  templateUrl: 'assessment-percentile-button.component.html',
+  host: {
+    'class': 'assessment-percentile-button'
+  }
 })
 export class AssessmentPercentileButton {
 
@@ -24,9 +27,7 @@ export class AssessmentPercentileButton {
   }
 
   onClickInternal(): void {
-    // if (Utils.isNullOrUndefined(this.percentiles)) {
-      this.percentileSource.subscribe(percentiles => this.percentiles = percentiles);
-    // }
+    this.percentileSource.subscribe(percentiles => this.percentiles = percentiles);
   }
 
 }
