@@ -261,6 +261,10 @@ export class AssessmentResultsComponent implements OnInit {
         .map((resources) => resources.getResourcesByPerformance(performanceLevel));
   }
 
+  onPercentileButtonClick(assessmentExam: AssessmentExam): void {
+    this.percentileService.getPercentiles()
+  }
+
   private getDistinctExamSessions(exams: Exam[]): any[] {
     let sessions = [];
 
