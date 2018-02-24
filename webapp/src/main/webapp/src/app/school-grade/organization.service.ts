@@ -41,7 +41,9 @@ export class OrganizationService {
   private getSchools(): Observable<School[]> {
     // TODO use /reporting-service/organizations/schools instead of user payload to untie user from reporting-service
     return this.userService.getCurrentUser().pipe(
-      map(user => user.schools)
+      map(user => user.schools),
+      publishReplay(1),
+      refCount()
     );
   }
 
