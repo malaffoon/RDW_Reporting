@@ -7,6 +7,7 @@ import { TableModule } from "primeng/table";
 import { AssessmentPercentileButton } from "./assessment-percentile-button.component";
 import { PopoverModule } from "ngx-bootstrap";
 import { BrowserModule } from "@angular/platform-browser";
+import { AssessmentPercentileRequestMapper } from "./assessment-percentile-request.mapper";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { BrowserModule } from "@angular/platform-browser";
     AssessmentPercentileButton
   ],
   providers: [
-    AssessmentPercentileService
+    AssessmentPercentileService,
+    AssessmentPercentileRequestMapper
   ]
 })
 export class AssessmentPercentileModule {

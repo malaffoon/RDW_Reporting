@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { Percentile } from "./assessment-percentile";
 import { Observable } from "rxjs/Observable";
+import { Utils } from "../../shared/support/support";
 
 @Component({
   selector: 'assessment-percentile-button',
@@ -17,14 +18,15 @@ export class AssessmentPercentileButton {
   percentiles: Percentile[];
 
   ngOnInit(): void {
-    if (this.percentileSource == null
-      || typeof this.percentileSource !== 'function') {
+    if (Utils.isNullOrUndefined(this.percentileSource)) {
       throw new Error('AssessmentPercentileButton percentileSource is required');
     }
   }
 
   onClickInternal(): void {
-    this.percentileSource.subscribe(percentiles => this.percentiles = percentiles);
+    // if (Utils.isNullOrUndefined(this.percentiles)) {
+      this.percentileSource.subscribe(percentiles => this.percentiles = percentiles);
+    // }
   }
 
 }

@@ -5,6 +5,11 @@
   "home": {
     "aggregate-reports-link": "Create Aggregate Report"
   },
+  "assessment-percentile-popover": {
+    "button-label": "Percentiles",
+    "title": "Consortium Percentiles",
+    "no-results": "No results."
+  },
   "assessment-results": {
     "result-view-select": {
       "label": "Select a results view"

@@ -1,14 +1,14 @@
 <!--<p-table>-->
 
 <!--</p-table>-->
-
 <ng-container *ngFor="let percentile of percentiles">
 
   Percentile {{percentile.assessmentId}}
 
   <ng-container *ngFor="let score of percentile.scores">
-    {rank: {{score.rank}}, count: {{score.count}}}
+    rank: {{score.rank}}, count: {{score.count}}
 
   </ng-container>
 
 </ng-container>
+

@@ -22,9 +22,10 @@ import { Assessment } from "../model/assessment.model";
 import { Observable } from "rxjs/Observable";
 import { WritingTraitScoresComponent } from "./view/writing-trait-scores/writing-trait-scores.component";
 import { AssessmentExporter } from "../assessment-exporter.interface";
-import { AssessmentPercentileRequest, AssessmentPercentileService } from "../percentile/assessment-percentile.service";
+import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 import { Percentile } from "../percentile/assessment-percentile";
 import { publishReplay, refCount } from "rxjs/operators";
+import { AssessmentPercentileRequestMapper } from "../percentile/assessment-percentile-request.mapper";
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -214,7 +215,8 @@ export class AssessmentResultsComponent implements OnInit {
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
               private instructionalResourcesService: InstructionalResourcesService,
-              private percentileService: AssessmentPercentileService) {
+              private percentileService: AssessmentPercentileService,
+              private percentileRequestMapper: AssessmentPercentileRequestMapper) {
   }
 
   ngOnInit(): void {
@@ -224,7 +226,7 @@ export class AssessmentResultsComponent implements OnInit {
 
   setViews(): void {
     this.resultsByStudentView = this.createResultViewState(ResultsViewState.ByStudent, true, false, true);
-    this.resultsByItemView = this.createResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, true)
+    this.resultsByItemView = this.createResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, true);
     this.distractorAnalysisView = this.createResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, true);
     this.writingTraitScoresView = this.createResultViewState(ResultsViewState.WritingTraitScores, this.enableWritingTraitScores, true, this.displayWritingTraitScores);
   }
@@ -267,15 +269,8 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   createPercentileSource(assessmentExam: AssessmentExam): Observable<Percentile[]> {
-    const dates = assessmentExam.exams.map(exam => new Date(exam.date)).sort();
-    return this.percentileService.getPercentiles({
-      assessmentId: assessmentExam.assessment.id,
-      startDate: dates[0],
-      endDate: dates[ dates.length - 1 ]
-    }).pipe(
-      publishReplay(1),
-      refCount()
-    );
+    const request = this.percentileRequestMapper.fromAssessmentResults(assessmentExam);
+    return this.percentileService.getPercentiles(request).pipe(publishReplay(1), refCount());
   }
 
   private getDistinctExamSessions(exams: Exam[]): any[] {
