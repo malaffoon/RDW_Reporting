@@ -42,7 +42,25 @@ insert into asmt (id, type_id, natural_id, grade_id, grade_code, subject_id, sch
   (-1, 1, 'ica1', -1, 'g1', 1, 1997, 'ica1', 'ica1', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1, '1997-07-18 20:14:34.000000', -1),
   (-2, 2, 'iab1', -1, 'g1', 1, 1997, 'iab1', 'iab1', 'v1', null, null, null, null, 1, null, 2, null, 3, -1, '1997-07-18 20:14:34.000000', -1),
   (-3, 3, 'sum1', -1, 'g1', 1, 1997, 'sum1', 'sum1', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '1997-07-18 20:14:34.000000', -1),
-  (-4, 3, 'sum2', -1, 'g1', 2, 1997, 'sum2', 'sum2', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '1997-07-18 20:14:34.000000', -1);
+  (-4, 3, 'sum2', -1, 'g1', 2, 1997, 'sum2', 'sum2', 'v1', 'sum_claim1', 'sum_claim2', 'sum_claim3', null, 1000, 2000, 3000, 4000, 5000, -1, '1997-07-18 20:14:34.000000', -1),
+  (-6, 2, 'iab4', -1, 'g1', 2, 1997, 'iab2', 'iab4', 'v1', null, null, null, null, 1, null, 2, null, 3, -1, '1997-07-18 20:14:34.000000', -1),
+  (-7, 2, 'iab5', -1, 'g1', 2, 1997, 'iab3', 'iab5', 'v1', null, null, null, null, 1, null, 2, null, 3, -1, '1997-07-18 20:14:34.000000', -1);
+
+INSERT INTO percentile (id, asmt_id, start_date, end_date, count, mean, standard_deviation, min_score, max_score, update_import_id, updated, migrate_id) VALUES
+  (1, -2, '1996-01-01', '1997-01-07', 11, 2410.1, 88.9, 1, 1, -1, '1997-07-18 20:14:34.000000', -1),
+  (2, -2, '2016-01-02', '2018-06-30', 22, 2420.6, 77.9, 1, 1, -1, '1997-07-18 20:14:34.000000', -1);
+
+INSERT INTO percentile_score (percentile_id, percentile_rank, score, min_inclusive, max_exclusive) VALUES
+  (1,  5, 1113, 1111, 2000),
+  (1, 10, 2003, 2000, 2322),
+  (1, 20, 2325, 2322, 2354),
+  (1, 25, 2358, 2354, 2368),
+  (1, 90, 2370, 2368, 2566),
+  (1, 95, 2577.8, 2566, 4444),
+  (2,  5, 1121, 1111, 2303),
+  (2, 10, 2313, 2303, 2322),
+  (2, 15, 2332, 2322, 2338),
+  (2, 95, 2358, 2338, 4444);
 
 insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, opportunity, iep, lep, section504, economic_disadvantage,
   school_year, asmt_id, asmt_version, completeness_id, completeness_code, administration_condition_id, administration_condition_code, session_id,
