@@ -7,6 +7,9 @@ import { map } from "rxjs/operators";
 import * as _ from "lodash";
 import { ReportingServiceRoute } from "../../shared/service-route";
 
+/**
+ * Service responsible for retrieving assessment percentile information
+ */
 @Injectable()
 export class AssessmentPercentileService {
 
@@ -14,6 +17,12 @@ export class AssessmentPercentileService {
               private datePipe: DatePipe) {
   }
 
+  /**
+   * Gets the percentiles for the given assessment and date range
+   *
+   * @param {AssessmentPercentileRequest} request the request parameters
+   * @returns {Observable<Percentile[]>} the percentiles selected by the request
+   */
   getPercentiles(request: AssessmentPercentileRequest): Observable<Percentile[]> {
     return this.dataService
       .get(`${ReportingServiceRoute}/assessment-percentiles`, {
@@ -21,6 +30,12 @@ export class AssessmentPercentileService {
       });
   }
 
+  /**
+   * Gets the percentiles for the given assessment and date range and groups them if they share the same rank values.
+   *
+   * @param {AssessmentPercentileRequest} request the request parameters
+   * @returns {Observable<Percentile[]>} the grouped percentiles selected by the request
+   */
   getPercentilesGroupedByRank(request: AssessmentPercentileRequest): Observable<PercentileGroup[]> {
     return this.getPercentiles(request).pipe(map(percentiles => {
       if (percentiles.length == 0) {
@@ -59,14 +74,45 @@ export class AssessmentPercentileService {
 
 }
 
+/**
+ * Client API for making an assessment percentile request
+ */
 export interface AssessmentPercentileRequest {
+
+  /**
+   * The assessment entity ID
+   */
   assessmentId: number;
+
+  /**
+   * The start date of the date range
+   */
   from: Date;
+
+  /**
+   * The end date of the date range
+   */
   to: Date;
 }
 
+/**
+ * Server API for making an assessment percentile request
+ */
 interface AssessmentPercentileServerRequest {
+
+  /**
+   * The assessment entity ID
+   */
   assessmentId: number;
+
+  /**
+   * The start date of the date range in yyyy-MM-dd format
+   */
   startDate: string;
+
+  /**
+   * The end date of the date range in yyyy-MM-dd format
+   */
   endDate: string;
+
 }
