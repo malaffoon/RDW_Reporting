@@ -1,4 +1,18 @@
 sql:
+#  this is used in tests ONLY to verify the non-embargo SQL clause from studentExamPermissionWithEmbargo
+  examPermissionTest:
+    findAllByStudentId: >-
+      SELECT
+        e.iep,
+        e.lep,
+        e.section504,
+        e.economic_disadvantage,
+        e.migrant_status,
+        ${sql.snippet.claimColumns},
+        ${sql.snippet.exam}
+      WHERE e.student_id = :student_id
+       AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
+
   exam:
     findAllIabsByStudentIdsAndQueryParamsUnknownPermissions: >-
       SELECT
@@ -17,7 +31,7 @@ sql:
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id = 2
         AND ${sql.reportProcessor.snippet.schoolFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       ORDER BY e.completed_at DESC,
         i.performance_task_writing_type DESC
 
@@ -41,7 +55,7 @@ sql:
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=2
         AND ${sql.reportProcessor.snippet.schoolFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       ORDER BY e.completed_at DESC,
               i.performance_task_writing_type DESC
 
@@ -57,7 +71,7 @@ sql:
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=1
         AND ${sql.reportProcessor.snippet.schoolFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       ORDER BY e.completed_at asc
 
     findAllIcasByStudentIdsAndQueryParamsGroupPermissions: >-
@@ -76,7 +90,7 @@ sql:
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=1
         AND ${sql.reportProcessor.snippet.schoolFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       ORDER BY e.completed_at asc
 
   export:
@@ -198,7 +212,7 @@ sql:
         JOIN school isch ON st.inferred_school_id = isch.id
       WHERE
         ${sql.reportProcessor.snippet.exportExamsFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
 
     hasExams: >-
       SELECT 1
@@ -212,7 +226,7 @@ sql:
         JOIN school isch ON st.inferred_school_id = isch.id
       where
         ${sql.reportProcessor.snippet.exportExamsFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
 
   student:
     findByExamQueryParamsUnknownPermissions: >-
@@ -223,7 +237,7 @@ sql:
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       group by st.id
 
     findByExamQueryParamsGroupPermissions: >-
@@ -238,11 +252,22 @@ sql:
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
-        AND ${sql.snippet.studentExamPermission}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       GROUP BY st.id
 
   reportProcessor:
     snippet:
+      studentExamPermissionWithEmbargo: >-
+            ${sql.snippet.studentExamPermissionWithoutEmbargo}
+            AND
+            (
+               e.school_year < ${app.school-year}
+               OR e.type_id <> 3
+               OR s.embargo_enabled = 0
+               OR 1 = :state_embargo_admin
+               OR s.district_id IN (:district_embargo_admin_ids)
+            )
+
       schoolFilter:
             (
               :school_id is null
