@@ -5,9 +5,21 @@
   "home": {
     "aggregate-reports-link": "Create Aggregate Report"
   },
+  "assessment-percentile-table": {
+    "column": {
+      "effective-date": {
+        "header": "Effective Date",
+        "value-format": "{{from}} - {{to}}"
+      },
+      "count": "N",
+      "mean": "Mean",
+      "standard-deviation": "SD"
+    }
+  },
   "assessment-percentile-popover": {
     "button-label": "Percentiles",
-    "title": "Consortium Percentiles",
+    "title": "{{label}} Consortium Percentiles",
+    "body": "Some descriptive text...",
     "no-results": "No results."
   },
   "assessment-results": {

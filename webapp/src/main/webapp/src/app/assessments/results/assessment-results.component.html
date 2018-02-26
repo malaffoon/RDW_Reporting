@@ -7,31 +7,34 @@
 <!-- Individual Assessment Result Container -->
 <div class="assessment-result well wide-content-container">
 
-  <assessment-percentile-button [percentileSource]="createPercentileSource(assessmentExam)"
-                                placement="top left"></assessment-percentile-button>
-
-  <!-- Top Right Buttons -->
-  <div class="row">
-    <div class="col-xs-10 col-sm-11">
-      <div class="row">
-        <div class="col-md-12 mb-sm">
-          <!-- Assessment Title -->
-          <span class="tag tag-lg {{colorService.getColor(getGradeIdx(assessmentExam.assessment.grade))}}">
-                <span class="label">{{assessmentExam.assessment.grade | gradeDisplay}}</span>
-                {{assessmentExam.assessment.label}}
-            </span>
-        </div>
-      </div>
+  <div class="flex-children">
+    <div class="flex-child grow">
+      <span class="tag tag-lg {{colorService.getColor(getGradeIdx(assessmentExam.assessment.grade))}}">
+        <span class="label">{{assessmentExam.assessment.grade | gradeDisplay}}</span>
+        {{assessmentExam.assessment.label}}
+      </span>
+      <assessment-percentile-button
+        [percentileGroupSource]="createPercentileGroupSource(assessmentExam)"
+        popoverTitle="{{'assessment-percentile-popover.title' | translate:assessmentExam.assessment}}"
+        popoverPlacement="top"></assessment-percentile-button>
     </div>
-    <div class="col-xs-2 col-sm-1">
-      <button class="btn btn-default btn-sm icon-only pull-right"
-              (click)="collapsed = !collapsed"
-              angulartics2On="click"
-              angularticsEvent="ToggleCollapseResults"
-              angularticsCategory="AssessmentResults">
-        <i class="fa font-bold"
-           [ngClass]="{'fa-caret-square-o-up': !collapsed, 'fa-caret-square-o-down': collapsed}"></i> <span class="sr-only">{{'prompt.collapse' | translate}}</span>
-      </button>
+    <div class="flex-child">
+      <ul class="list-unstyled list-inline">
+        <li>
+
+        </li>
+        <li>
+          <button class="btn btn-default btn-sm icon-only"
+                  (click)="collapsed = !collapsed"
+                  angulartics2On="click"
+                  angularticsEvent="ToggleCollapseResults"
+                  angularticsCategory="AssessmentResults">
+            <i class="fa font-bold"
+               [ngClass]="collapsed ? 'fa-caret-square-o-down' : 'fa-caret-square-o-up'"></i>
+            <span class="sr-only">{{'prompt.collapse' | translate}}</span>
+          </button>
+        </li>
+      </ul>
     </div>
   </div>
 

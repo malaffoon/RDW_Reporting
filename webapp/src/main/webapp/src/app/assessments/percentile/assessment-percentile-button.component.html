@@ -2,18 +2,22 @@
         type="button"
         (click)="onClickInternal()"
         [popover]="popoverTemplate"
-        popoverTitle="{{'assessment-percentile-popover.title' | translate}}"
-        placement="{{placement}}"
-        container="body"
-        containerClass="popover-overflow"
+        popoverTitle="{{popoverTitle}}"
+        placement="{{popoverPlacement}}"
+        containerClass="popover-overflow popover-x"
         outsideClick="true">
   {{'assessment-percentile-popover.button-label' | translate}}
 </button>
 
 <ng-template #popoverTemplate>
-  <ng-container *ngIf="percentiles; else loading">
-    <ng-container *ngIf="percentiles.length; else noResults">
-      <assessment-percentile-table [percentiles]="percentiles"></assessment-percentile-table>
+  <ng-container *ngIf="percentileGroups; else loading">
+    <ng-container *ngIf="percentileGroups.length; else noResults">
+      <p class="mb-0">{{'assessment-percentile-popover.body' | translate}}</p>
+      <ng-container *ngFor="let group of percentileGroups">
+        <div class="mt-sm">
+          <assessment-percentile-table [percentiles]="group.percentiles"></assessment-percentile-table>
+        </div>
+      </ng-container>
     </ng-container>
     <ng-template #noResults>
       {{'assessment-percentile-popover.no-results' | translate}}

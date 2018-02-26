@@ -18,3 +18,9 @@ export interface PercentileScore {
   rank: number;
   score: number;
 }
+
+
+export interface PercentileGroup {
+  ranks: number[];
+  percentiles: Percentile[];
+}
