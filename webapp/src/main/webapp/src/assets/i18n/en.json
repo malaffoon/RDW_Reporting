@@ -18,7 +18,7 @@
   },
   "assessment-percentile-history": {
     "heading": "Consortium Percentiles",
-    "body": "Some descriptive text...",
+    "heading-info": "Some descriptive text...",
     "no-results": "There are currently no consortium percentiles uploaded for this assessment."
   },
   "assessment-results": {

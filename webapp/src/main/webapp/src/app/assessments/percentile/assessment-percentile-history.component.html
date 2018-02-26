@@ -1,11 +1,13 @@
 <div info-button
      title="{{'assessment-percentile-history.heading' | translate}}"
-     content="{{'assessment-percentile-history.body' | translate}}"></div>
+     content="{{'assessment-percentile-history.heading-info' | translate}}"></div>
 
 <ng-container *ngIf="percentileGroups; else loading">
   <ng-container *ngIf="percentileGroups.length; else noResults">
     <ng-container *ngFor="let group of percentileGroups">
-      <assessment-percentile-table [percentiles]="group.percentiles"></assessment-percentile-table>
+      <div class="mt-sm">
+        <assessment-percentile-table [percentiles]="group.percentiles"></assessment-percentile-table>
+      </div>
     </ng-container>
   </ng-container>
   <ng-template #noResults>
