@@ -1,0 +1,13 @@
+sql:
+  examPermissionTest:
+    findAllByStudentId: >-
+      SELECT
+        e.iep,
+        e.lep,
+        e.section504,
+        e.economic_disadvantage,
+        e.migrant_status,
+        ${sql.snippet.claimColumns},
+        ${sql.snippet.exam}
+      WHERE e.student_id = :student_id
+       AND ${sql.reportProcessor.snippet.studentExamPermission}
