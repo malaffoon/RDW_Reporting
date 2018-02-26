@@ -26,7 +26,8 @@
               angularticsEvent="ToggleCollapseResults"
               angularticsCategory="AssessmentResults">
         <i class="fa font-bold"
-           [ngClass]="{'fa-caret-square-o-up': !collapsed, 'fa-caret-square-o-down': collapsed}"></i> <span class="sr-only">{{'prompt.collapse' | translate}}</span>
+           [ngClass]="{'fa-caret-square-o-up': !collapsed, 'fa-caret-square-o-down': collapsed}"></i>
+        <span class="sr-only">{{'prompt.collapse' | translate}}</span>
       </button>
     </div>
   </div>
@@ -37,8 +38,7 @@
       <strong>{{'labels.groups.results.assessment.sessions-title' | translate}}</strong>
       <div class="flex-children">
         <a *ngFor="let session of sessions"
-           class="reverse multi-line btn flex-child"
-           [ngClass]="{'gray-dark':!session.filter, 'aqua': session.filter}"
+           class="reverse multi-line btn flex-child {{session.filter ? 'aqua' : 'gray-dark'}}"
            (click)="toggleSession(session)"
            angulartics2On="click"
            angularticsEvent="ToggleSession"
