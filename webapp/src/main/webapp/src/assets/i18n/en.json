@@ -16,11 +16,10 @@
       "standard-deviation": "SD"
     }
   },
-  "assessment-percentile-popover": {
-    "button-label": "Percentiles",
-    "title": "{{label}} Consortium Percentiles",
+  "assessment-percentile-history": {
+    "heading": "Consortium Percentiles",
     "body": "Some descriptive text...",
-    "no-results": "No results."
+    "no-results": "There are currently no consortium percentiles uploaded for this assessment."
   },
   "assessment-results": {
     "result-view-select": {
@@ -849,9 +848,9 @@
     },
     "assessments": {
       "average": {
-        "scale-score": "Scale Score / Error Band",
+        "scale-score": "Average Scale Score and Error Band",
         "scale-score-info": "Average scale score for the selected group of students and an error band based on the Standard Error of the Mean (SEM) associated with that score. Test scores are estimates of student achievement and come with a certain amount of measurement error. See the Interpretive Guide for additional information about scale scores and measurement error.",
-        "title": "Average"
+        "title": "Results Summary"
       },
       "items": {
         "tabs": {
@@ -898,6 +897,7 @@
       },
       "result": "Result",
       "results": "Results",
+      "results-label": "Number of Test Results",
       "student-score-distribution": {
         "title": "Student Score Distribution"
       }

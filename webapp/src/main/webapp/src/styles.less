@@ -64,6 +64,12 @@
 .list-group.list-group-sm > .list-group-item {
   padding: 8px 12px;
 }
+.table.table-borderless {
+  > thead > tr > th,
+  > tbody > tr > td {
+    border: 0;
+  }
+}
 
 /**
   Required to meet WCAG 2 AA contrast ratio
@@ -411,14 +417,6 @@ body .select-menu-group {
   margin-bottom: 5px;
 }
 
-.gray-light-bg {
-  background-color: @gray-light;
-}
-
-.gray-lightest-bg {
-  background-color: @gray-lightest;
-}
-
 .scale-score-graph table .bar-container {
   padding-bottom: 10px;
 }
@@ -437,12 +435,34 @@ body .select-menu-group {
 
 .average-scale-score-display {
 
-  .table > tbody > tr:first-child {
-    > td:first-child {
-      border-top-left-radius: @border-radius-base;
+  .assessment-results-summary {
+
+    .average-scale-score-label {
+      margin-top: 4px;
+      i {
+        margin-bottom: @padding-small-horizontal;
+      }
     }
-    > td:last-child {
-      border-top-right-radius: @border-radius-base;
+
+    .result-count-label {
+      margin-top: 18px;
+    }
+
+    .table > tbody > tr > td {
+      width: 50%;
+      &:first-child {
+        background-color: @gray-lighter;
+        text-align: right;
+      }
+      &:last-child {
+        .level-down;
+        background-color: @gray-lightest;
+        text-align: left;
+        padding-left: @padding-large-horizontal;
+      }
+      &:not(.level-down) {
+        box-shadow: none;
+      }
     }
   }
 
@@ -887,4 +907,18 @@ body .ui-widget.ui-datatable table .ui-datatable-data > tr > td.level-down,
 .assessment-percentile-popover .popover-x {
   top: 0px !important;
   left: 0px !important;
+}
+
+.assessment-percentile-container {
+  background-color: @gray-lightest;
+  border-bottom: 1px solid @gray-lighter;
+  box-shadow: 0 6px 6px -6px rgba(0, 0, 0, 0.16) inset;
+  margin: 10px -20px 15px -20px;
+  padding: 15px 20px 20px 20px;
+}
+
+.assessment-percentile-history {
+  table {
+    margin-top: @padding-base-horizontal;
+  }
 }

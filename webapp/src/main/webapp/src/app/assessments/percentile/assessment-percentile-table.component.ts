@@ -4,7 +4,10 @@ import { Utils } from "../../shared/support/support";
 
 @Component({
   selector: 'assessment-percentile-table',
-  templateUrl: 'assessment-percentile-table.component.html'
+  templateUrl: 'assessment-percentile-table.component.html',
+  host: {
+    'class': 'assessment-percentile-table'
+  }
 })
 export class AssessmentPercentileTable {
 

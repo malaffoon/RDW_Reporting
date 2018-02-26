@@ -22,8 +22,9 @@ import { Assessment } from "../model/assessment.model";
 import { Observable } from "rxjs/Observable";
 import { WritingTraitScoresComponent } from "./view/writing-trait-scores/writing-trait-scores.component";
 import { AssessmentExporter } from "../assessment-exporter.interface";
-import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
+import { AssessmentPercentileRequest, AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 import { PercentileGroup } from "../percentile/assessment-percentile";
+import { Utils } from "../../shared/support/support";
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -204,6 +205,8 @@ export class AssessmentResultsComponent implements OnInit {
   distractorAnalysisView: ResultsView;
   writingTraitScoresView: ResultsView;
   instructionalResourceProvider: () => Observable<InstructionalResource[]>;
+  showPercentileHistory: boolean = false;
+  percentileGroups: PercentileGroup[];
 
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
@@ -265,13 +268,19 @@ export class AssessmentResultsComponent implements OnInit {
       .map((resources) => resources.getResourcesByPerformance(performanceLevel));
   }
 
-  createPercentileGroupSource(results: AssessmentExam): Observable<PercentileGroup[]> {
-    const dates = results.exams.map(exam => new Date(exam.date)).sort();
-    return this.percentileService.getPercentilesGroupedByRank({
-      assessmentId: results.assessment.id,
-      from: dates[ 0 ],
-      to: dates[ dates.length - 1 ]
-    });
+  onPercentileButtonClickInternal(): void {
+    this.showPercentileHistory = !this.showPercentileHistory;
+    if (Utils.isNullOrUndefined(this.percentileGroups)) {
+      const results = this.assessmentExam;
+      const dates = results.exams.map(exam => new Date(exam.date)).sort();
+      const request = <AssessmentPercentileRequest>{
+        assessmentId: results.assessment.id,
+        from: dates[ 0 ],
+        to: dates[ dates.length - 1 ]
+      };
+      this.percentileService.getPercentilesGroupedByRank(request)
+        .subscribe(percentileGroups => this.percentileGroups = percentileGroups);
+    }
   }
 
   private getDistinctExamSessions(exams: Exam[]): any[] {
