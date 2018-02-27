@@ -18,7 +18,7 @@
   },
   "assessment-percentile-history": {
     "heading": "Consortium Percentiles",
-    "heading-info": "The percentile tables show the points at which a score is greater than X% of other student results for a given date range. N denotes the total results the percentiles are calculated from. SD is the standard deviation of the scores. The numbered columns on the right hand side of the table denote the percent of scores lower than the score displayed the column's rows.",
+    "heading-info": "The percentile tables show the points at which a score is greater than X% of other student results. The effective date range, number (N), mean, and standard deviation (SD) of the data are included for reference. The numbered columns on the right hand side of the table denote the percentile rank for the listed scores.",
     "button": {
       "show": "Show Percentiles",
       "hide": "Hide Percentiles"
