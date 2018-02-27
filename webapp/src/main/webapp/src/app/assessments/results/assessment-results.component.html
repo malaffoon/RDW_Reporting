@@ -60,6 +60,14 @@
     </div>
   </div>
 
+  <div class="row mt-md" [hidden]="!showPercentileHistory">
+    <div class="col-md-12">
+      <div class="assessment-percentile-container">
+        <assessment-percentile-history [percentileGroups]="percentileGroups"></assessment-percentile-history>
+      </div>
+    </div>
+  </div>
+
   <!-- Student Results -->
   <ng-container *ngIf="!collapsed" @fadeAnimation>
     <div class="row mt-md">
@@ -147,12 +155,14 @@
                 <i class="fa fa-book"></i> {{'labels.groups.results.assessment.instruct' | translate }}
               </button>
             </li>
-            <li>
-              <button class="btn btn-default btn-xs"
+            <li *ngIf="assessmentExam.assessment.isIab">
+              <button class="btn btn-default btn-sm"
                       type="button"
                       (click)="onPercentileButtonClickInternal()">
-                {{'assessment-percentile-history.heading' | translate}}
-                <i class="fa" [ngClass]="showPercentileHistory ? 'fa-caret-square-o-up' : 'fa-caret-square-o-down'"></i>
+                {{(showPercentileHistory
+                  ? 'assessment-percentile-history.button.hide'
+                  : 'assessment-percentile-history.button.show'
+                ) | translate}}
               </button>
             </li>
             <li *ngIf="currentResultsView.canExport">
@@ -166,10 +176,6 @@
         </div>
 
         <ng-container *ngIf="showStudentResults">
-          <div [hidden]="!showPercentileHistory"
-               class="assessment-percentile-container">
-            <assessment-percentile-history [percentileGroups]="percentileGroups"></assessment-percentile-history>
-          </div>
           <results-by-student [exams]="exams"
                               [assessment]="assessmentExam.assessment"
                               [minimumItemDataYear]="minimumItemDataYear"></results-by-student>
