@@ -4,6 +4,7 @@ import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 import { catchError } from "rxjs/operators";
 import { AggregateServiceRoute } from "../service-route";
+import { Organization } from "../organization/organization";
 
 @Injectable()
 export class AggregateEmbargoService {
@@ -17,7 +18,7 @@ export class AggregateEmbargoService {
    * @returns {Observable<boolean>}
    */
   isEmbargoed(): Observable<boolean> {
-    return this.dataService.get(`${AggregateServiceRoute}/user-organizations/embargoed`)
+    return this.dataService.get(`${AggregateServiceRoute}/organizations/embargoed`)
       // fill for backend - if the backend is not there return true by default
       .pipe(catchError(response => of({enabled: true})));
   }
