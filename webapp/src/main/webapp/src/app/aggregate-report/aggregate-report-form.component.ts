@@ -454,7 +454,7 @@ export class AggregateReportFormComponent {
    * @returns {boolean} True if the provided settings have explicitly set advanced filters that deviate from the defaults
    */
   private hasExplicitAdvancedFilters(settings: AggregateReportFormSettings, options: AggregateReportOptions): boolean {
-    const hasDifferentLength = (a: any[], b:any[]) => !Utils.hasEqualLength(a, b);
+    const hasDifferentLength = (a: any[], b: any[]) => !Utils.hasEqualLength(a, b);
     return hasDifferentLength(settings.genders, options.genders)
       || hasDifferentLength(settings.ethnicities, options.ethnicities)
       || hasDifferentLength(settings.migrantStatuses, options.migrantStatuses)
