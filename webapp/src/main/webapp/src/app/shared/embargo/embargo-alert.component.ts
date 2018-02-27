@@ -1,12 +1,7 @@
-import { Component } from "@angular/core";
 import { Utils } from "../support/support";
 import { ReportingEmbargoService } from "./reporting-embargo.service";
 import { AggregateEmbargoService } from "./aggregate-embargo.service";
 
-@Component({
-  selector: 'embargo-alert',
-  templateUrl: 'embargo-alert.component.html'
-})
 export class EmbargoAlert {
 
   private _showAlert: boolean;
