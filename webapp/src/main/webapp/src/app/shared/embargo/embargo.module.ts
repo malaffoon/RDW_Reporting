@@ -1,8 +1,9 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { EmbargoAlertService } from "./embargo-alert.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { EmbargoAlertComponent } from "./embargo-alert.component";
+import { AggregateEmbargoService } from "./aggregate-embargo.service";
+import { ReportingEmbargoService } from "./reporting-embargo.service";
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { EmbargoAlertComponent } from "./embargo-alert.component";
     TranslateModule.forRoot()
   ],
   providers: [
-    EmbargoAlertService
+    AggregateEmbargoService,
+    ReportingEmbargoService
   ],
   exports: [
     EmbargoAlertComponent

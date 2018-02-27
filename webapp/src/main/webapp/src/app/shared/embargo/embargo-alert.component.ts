@@ -1,7 +1,11 @@
-import { Component } from "@angular/core";
-import { EmbargoAlert } from "./embargo-alert";
+import { Component, Input } from "@angular/core";
 import { Utils } from "../support/support";
-import { EmbargoAlertService } from "./embargo-alert.service";
+import { ReportingEmbargoService } from "./reporting-embargo.service";
+import { AggregateEmbargoService } from "./aggregate-embargo.service";
+
+
+export const ReportingEmbargoAlertSource = 'reporting';
+export const AggregateEmbargoAlertSource = 'aggregate';
 
 @Component({
   selector: 'embargo-alert',
@@ -9,14 +13,32 @@ import { EmbargoAlertService } from "./embargo-alert.service";
 })
 export class EmbargoAlertComponent {
 
-  alert: EmbargoAlert;
+  private _showAlert: boolean = undefined;
+  private _source: string = ReportingEmbargoAlertSource;
 
-  constructor(private alertService: EmbargoAlertService){
+  constructor(private reportingEmbargoService: ReportingEmbargoService,
+              private aggregateEmbargoService: AggregateEmbargoService){
+  }
+
+  get showAlert(): boolean {
+    return this._showAlert;
+  }
+
+  @Input()
+  set source(value: string) {
+    this._source = value;
   }
 
   ngOnInit(): void {
-    if (Utils.isNullOrUndefined(this.alert)) {
-      this.alertService.getAlert().subscribe(alert => this.alert = alert);
+    if (Utils.isNullOrUndefined(this._showAlert)) {
+      switch (this._source) {
+        case ReportingEmbargoAlertSource:
+          this.reportingEmbargoService.isEmbargoed().subscribe(embargoed => this._showAlert = embargoed);
+          break;
+        case AggregateEmbargoAlertSource:
+          this.aggregateEmbargoService.isEmbargoed().subscribe(embargoed => this._showAlert = embargoed);
+          break;
+      }
     }
   }
 
