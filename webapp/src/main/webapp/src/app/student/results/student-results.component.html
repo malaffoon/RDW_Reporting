@@ -1,4 +1,4 @@
-<embargo-alert *hasPermission="'EMBARGO_READ'" source="reporting"></embargo-alert>
+<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
 
 <ng-container *ngIf="!examHistory; else hasExamHistory">
   <div *ngIf="!examHistory" class="alert alert-danger">

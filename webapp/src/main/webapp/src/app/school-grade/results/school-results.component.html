@@ -1,4 +1,4 @@
-<embargo-alert *hasPermission="'EMBARGO_READ'" source="reporting"></embargo-alert>
+<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
 
 <div *ngIf="!schoolIsAvailable" class="alert alert-danger">
   {{'labels.school-grade.messages.null-school' | translate }}
