@@ -1,3 +1,5 @@
+<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
+
 <ng-container *ngIf="!examHistory; else hasExamHistory">
   <div *ngIf="!examHistory" class="alert alert-danger">
     {{ 'labels.student.messages.null-student' | translate }}
