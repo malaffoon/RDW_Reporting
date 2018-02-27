@@ -41,6 +41,7 @@ import { RdwDisplayOptionsModule } from "./display-options/rdw-display-options.m
 import { RdwAssessmentModule } from "./assessment/rdw-assessment.module";
 import { OrderSelectorComponent } from "./order-selector/order-selector.component";
 import { NgxDnDModule } from "@swimlane/ngx-dnd";
+import { CommonEmbargoModule } from "./embargo/embargo.module";
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { NgxDnDModule } from "@swimlane/ngx-dnd";
     AlertModule,
     Angulartics2Module.forChild(),
     BrowserModule,
+    CommonEmbargoModule,
     FormsModule,
     HttpModule,
     NgxDnDModule,
@@ -89,6 +91,7 @@ import { NgxDnDModule } from "@swimlane/ngx-dnd";
   ],
   exports: [
     AssessmentTypePipe,
+    CommonEmbargoModule,
     GradeDisplayPipe,
     InformationButtonComponent,
     OptionalPipe,

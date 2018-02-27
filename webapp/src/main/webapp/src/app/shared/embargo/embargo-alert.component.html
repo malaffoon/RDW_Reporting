@@ -1,0 +1,12 @@
+<ng-container *ngIf="alert && alert.enabled">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-warning pt-sm pr-sm pb-sm pl-sm mb-sm">
+          <i class="fa fa-exclamation-triangle"></i>
+          {{'embargo-admin-alert.message' | translate}}
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
