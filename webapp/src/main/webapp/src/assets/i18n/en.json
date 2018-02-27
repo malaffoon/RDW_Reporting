@@ -5,6 +5,26 @@
   "home": {
     "aggregate-reports-link": "Create Aggregate Report"
   },
+  "assessment-percentile-table": {
+    "column": {
+      "effective-date": {
+        "header": "Effective Date",
+        "value-format": "{{from}} - {{to}}"
+      },
+      "count": "N",
+      "mean": "Mean",
+      "standard-deviation": "SD"
+    }
+  },
+  "assessment-percentile-history": {
+    "heading": "Consortium Percentiles",
+    "heading-info": "The percentile tables show the points at which a score is greater than X% of other student results. The effective date range, number (N), mean, and standard deviation (SD) of the data are included for reference. The numbered columns on the right hand side of the table denote the percentile rank for the listed scores.",
+    "button": {
+      "show": "Show Percentiles",
+      "hide": "Hide Percentiles"
+    },
+    "no-results": "There are currently no consortium percentiles uploaded for this assessment."
+  },
   "assessment-results": {
     "result-view-select": {
       "label": "Select a results view"
