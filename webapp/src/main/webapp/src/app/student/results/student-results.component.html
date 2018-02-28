@@ -1,56 +1,98 @@
-<div class="mb-md" *ngIf="examHistory">
-  <span class="tag tag-lg blue">
-    <span class="label">{{'labels.student.name' | translate:examHistory.student}}</span>
-    <span>{{examHistory.student.ssid}}</span>
-  </span>
-  <span class="pull-right text-right">
-    <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-    <span student-report-download #downloader class="ml-xs"
-          [student]="examHistory.student"
-          [schoolYears]="filterState.years"
-          (onShown)="initializeDownloader(downloader)"></span>
-  </span>
-</div>
-<div *ngIf="!examHistory" class="alert alert-danger">
-  {{ 'labels.student.messages.null-student' | translate }}
-</div>
+<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
 
-<!-- Results Filter -->
-<student-results-filter [filterState]="filterState"
-                        [filterOptions]="filterOptions"
-                        (filterChange)="onFilterChange()"></student-results-filter>
-
-<h3 class="blue mb-md">{{'labels.student.results.title' | translate}}</h3>
+<ng-container *ngIf="!examHistory; else hasExamHistory">
+  <div *ngIf="!examHistory" class="alert alert-danger">
+    {{ 'labels.student.messages.null-student' | translate }}
+  </div>
+</ng-container>
 
 <!-- Assessments Grouped by Type and Subject -->
-<div *ngIf="examHistory">
-  <div *ngFor="let assessmentType of assessmentTypes">
-    <div *ngFor="let subject of getSubjectsForType(assessmentType)" class="well">
-    <span class="h3 label-group {{ colorService.getColor(assessmentType) }}">
-      <span class="label">{{assessmentType | assessmentType}}</span><span class="label">{{subject}}</span>
-    </span>
-      <button class="btn btn-default btn-sm icon-only pull-right"
-              (click)="toggleCollapsed(assessmentType, subject)"
-              angulartics2On="click"
-              angularticsEvent="ToggleCollapseResults"
-              angularticsCategory="StudentHistory">
-        <span class="sr-only">{{ 'buttons.collapsible.collapse' | translate }}</span>
-        <i class="fa fa-bold {{ isCollapsed(assessmentType, subject) ? 'fa-angle-down' : 'fa-angle-up' }}"></i>
-      </button>
+<ng-template #hasExamHistory>
 
-      <div class="mt-md" [hidden]="isCollapsed(assessmentType, subject)">
-        <student-history-iab-table
-          *ngIf="(assessmentType | assessmentType) === 'IAB'"
-          [student]="examHistory.student"
-          [minimumItemDataYear]="minimumItemDataYear"
-          [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-iab-table>
-        <student-history-ica-summitive-table
-          *ngIf="(assessmentType | assessmentType) !== 'IAB'"
-          [student]="examHistory.student"
-          [minimumItemDataYear]="minimumItemDataYear"
-          [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-ica-summitive-table>
+  <page-heading *ngIf="examHistory">
+    <ng-template #heading>
+      <h2>{{'labels.student.name' | translate:examHistory.student}}</h2> <div class="student-ssid-label">{{examHistory.student.ssid}}</div>
+    </ng-template>
+    <ng-template #content>
+      <ul class="list-unstyled list-inline">
+        <li>
+          <button class="btn btn-default btn-sm"
+                  [disabled]="exportDisabled"
+                  (click)="exportCsv()">
+            <i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}
+          </button>
+        </li>
+        <li *hasPermission="'INDIVIDUAL_PII_READ'">
+          <a routerLink="/custom-export"
+             class="btn btn-default btn-sm"><i
+            class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
+        </li>
+        <li>
+          <button class="btn btn-default btn-sm"
+                  (click)="reportDownloader.modal.show()">
+            <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.student' | translate}}
+          </button>
+        </li>
+      </ul>
+
+    </ng-template>
+  </page-heading>
+
+  <!-- Results Filter -->
+  <student-results-filter [filterState]="filterState"
+                          [filterOptions]="filterOptions"
+                          (filterChange)="onFilterChange()"></student-results-filter>
+
+  <page-heading>
+    <ng-template #heading>
+      <h3>{{'labels.student.results.title' | translate}}</h3>
+    </ng-template>
+  </page-heading>
+
+
+  <ng-container *ngFor="let assessmentType of assessmentTypes">
+    <ng-container *ngFor="let subject of getSubjectsForType(assessmentType)">
+      <div class="well wide-content-container">
+        <span class="h3 label-group {{ colorService.getColor(assessmentType) }}">
+          <span class="label">{{assessmentType | assessmentType}}</span><span class="label">{{subject}}</span>
+        </span>
+        <button class="btn btn-default btn-sm icon-only pull-right"
+                (click)="toggleCollapsed(assessmentType, subject)"
+                angulartics2On="click"
+                angularticsEvent="ToggleCollapseResults"
+                angularticsCategory="StudentHistory">
+          <span class="sr-only">{{ 'buttons.collapsible.collapse' | translate }}</span>
+          <i class="fa fa-bold {{ isCollapsed(assessmentType, subject) ? 'fa-caret-square-o-down' : 'fa-caret-square-o-up' }}"></i>
+        </button>
+
+        <div class="mt-md" [hidden]="isCollapsed(assessmentType, subject)">
+          <student-history-iab-table
+            *ngIf="(assessmentType | assessmentType) === 'IAB'"
+            [student]="examHistory.student"
+            [minimumItemDataYear]="minimumItemDataYear"
+            [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-iab-table>
+          <student-history-ica-summative-table
+            *ngIf="(assessmentType | assessmentType) !== 'IAB'"
+            [type]="assessmentType"
+            [student]="examHistory.student"
+            [minimumItemDataYear]="minimumItemDataYear"
+            [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)"></student-history-ica-summative-table>
+        </div>
       </div>
-    </div>
+    </ng-container>
+  </ng-container>
+
+  <div *ngIf="!hasResults">
+    {{'labels.student.messages.empty-filtered-results' | translate}}
   </div>
-</div>
+
+  <span student-report-download #reportDownloader
+        [title]="'labels.reports.form.title.single' | translate:examHistory.student"
+        [student]="examHistory.student"
+        [schoolYears]="filterState.years"
+        [subject]="filterState.subject"
+        (onShow)="initializeDownloader(reportDownloader)"></span>
+
+</ng-template>
+
 

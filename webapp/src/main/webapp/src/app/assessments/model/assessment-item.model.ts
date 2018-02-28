@@ -13,7 +13,11 @@ export class AssessmentItem {
   difficulty: string;
   commonCoreStandardIds: string[];
   maxPoints: number;
+  numberOfChoices: number;
   scores: ExamItemScore[] = [];
+  type: string;
+  answerKey: string;
+  performanceTaskWritingType: string;
 
   get hasCommonCoreStandards(): boolean {
     return this.commonCoreStandardIds && this.commonCoreStandardIds.length > 0

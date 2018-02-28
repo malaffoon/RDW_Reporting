@@ -1,55 +1,109 @@
-import { OnInit, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
-import { AssessmentType } from "../shared/enum/assessment-type.enum";
-import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { NotificationService } from "../shared/notification/notification.service";
 import { ReportOrder } from "./report-order.enum";
-import { PopoverDirective } from "ngx-bootstrap";
+import { ModalDirective } from "ngx-bootstrap";
+import { Observable } from "rxjs/Observable";
+import { Report } from "./report.model";
+import { UserService } from "../user/user.service";
+import { Utils } from "../shared/support/support";
 
 /**
  * Abstract class used to carry the common logic between all exam report download components
  */
 export abstract class ReportDownloadComponent implements OnInit {
 
-  @ViewChild('downloadPopover')
-  protected popover: PopoverDirective;
+  @Input()
+  title: string = '';
 
   @Input()
-  public schoolYears: number[];
+  schoolYears: number[] = [];
 
   @Input()
-  public batch: boolean = false;
+  schoolYear: number;
+
+  @Input()
+  lockSchoolYear: boolean = false;
+
+  @Input()
+  assessmentType: string;
+
+  @Input()
+  lockAssessmentType: boolean = false;
+
+  @Input()
+  subject: string;
+
+  @Input()
+  lockSubject: boolean = false;
+
+  @Input()
+  displayOrder: boolean = true;
+
+  @ViewChild('modal')
+  modal: ModalDirective;
 
   @Output()
-  public onShown: EventEmitter<any> = new EventEmitter<any>();
+  onShow: EventEmitter<any> = new EventEmitter<any>();
 
-  public onShownInternal(event: any) {
-    this.onShown.emit(event);
-  }
+  assessmentTypes: string[] = [ null, 'ica', 'iab', 'sum' ];
+  subjectTypes: string[] = [ null, 'Math', 'ELA' ];
+  orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
+  options: ReportOptions;
+  reportLanguages: string[] = [ 'en' ];
+  transferAccess: boolean;
 
-  public assessmentTypes: AssessmentType[] = [ AssessmentType.IAB, AssessmentType.ICA ];
-  public subjectTypes: AssessmentSubjectType[] = [ AssessmentSubjectType.MATH, AssessmentSubjectType.ELA ];
-  public languages: string[] = [ 'eng', 'spa', 'vie' ];
-  public orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
-  public options: ReportOptions;
-
-  constructor(private buttonLabel: string, protected notificationService: NotificationService) {
+  constructor(protected notificationService: NotificationService,
+              protected userService: UserService) {
   }
 
   ngOnInit(): void {
-    let defaultOptions: ReportOptions = new ReportOptions();
-    defaultOptions.assessmentType = this.batch ? null : this.assessmentTypes[ 0 ];
-    defaultOptions.subject = this.batch ? null : this.subjectTypes[ 0 ];
-    defaultOptions.schoolYear = this.schoolYears[ 0 ];
-    defaultOptions.language = this.languages[ 0 ];
+    const defaultOptions: ReportOptions = new ReportOptions();
+    defaultOptions.assessmentType = this.assessmentType != null ? this.assessmentType : this.assessmentTypes[ 0 ];
+    defaultOptions.subject = this.subject != null ? this.subject : this.subjectTypes[ 0 ];
+    defaultOptions.schoolYear = this.schoolYear != null ? this.schoolYear : this.schoolYears[ 0 ];
+    defaultOptions.language = this.reportLanguages[ 0 ];
+    defaultOptions.accommodationsVisible = false;
     defaultOptions.order = this.orders[ 0 ];
     defaultOptions.grayscale = false;
+    defaultOptions.disableTransferAccess = false;
     this.options = defaultOptions;
+
+    this.userService.getCurrentUser().subscribe(user => {
+      if (!Utils.isNullOrUndefined(user)) {
+        this.reportLanguages = this.reportLanguages.concat(user.configuration.reportLanguages);
+        this.transferAccess = user.configuration.transferAccess;
+      }
+    });
   }
-  
+
+  submit(): void {
+    this.createReport()
+      .subscribe(
+        () => {
+          this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
+        },
+        () => {
+          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
+        }
+      );
+  }
+
+  onShowInternal(event: any) {
+    this.onShow.emit(event);
+    this.options.name = this.generateName();
+  }
+
   /**
    * Implement this to give behavior to the exam report download form when it is submitted
    */
-  public abstract submit(): void;
+  abstract createReport(): Observable<Report>;
+
+  /**
+   * Generate a default report name to suggest to the user.
+   *
+   * @returns {string} The default report name
+   */
+  abstract generateName(): string;
 
 }

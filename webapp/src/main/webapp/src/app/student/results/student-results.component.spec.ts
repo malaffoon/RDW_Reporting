@@ -1,11 +1,6 @@
 import { StudentResultsComponent } from "./student-results.component";
-import { ComponentFixture, TestBed, inject } from "@angular/core/testing";
-import { AssessmentsModule } from "../../assessments/assessments.module";
-import { BrowserModule } from "@angular/platform-browser";
+import { ComponentFixture, inject, TestBed } from "@angular/core/testing";
 import { CommonModule } from "../../shared/common.module";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SharedModule } from "primeng/components/common/shared";
-import { TranslateModule } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { StudentExamHistory } from "../model/student-exam-history.model";
 import { Student } from "../model/student.model";
@@ -15,15 +10,14 @@ import { Exam } from "../../assessments/model/exam.model";
 import { Assessment } from "../../assessments/model/assessment.model";
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { ClaimScore } from "../../assessments/model/claim-score.model";
-import { School } from "../../user/model/school.model";
 import { MockRouter } from "../../../test/mock.router";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { Angulartics2 } from "angulartics2";
 import { UserService } from "../../user/user.service";
 import { MockUserService } from "../../../test/mock.user.service";
-import { ReportModule } from "../../report/report.module";
 import { MockActivatedRoute } from "../../../test/mock.activated-route";
-import { PopoverModule } from "ngx-bootstrap";
+import { MockAuthorizeDirective } from "../../../test/mock.authorize.directive";
+import { ExamFilterService } from "../../assessments/filters/exam-filters/exam-filter.service";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -47,41 +41,26 @@ describe('StudentResultsComponent', () => {
 
     router = new MockRouter();
 
+    let mockUserService: MockUserService = new MockUserService();
+
     TestBed.configureTestingModule({
       imports: [
-        AssessmentsModule,
-        BrowserModule,
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        SharedModule,
-        ReportModule,
-        TranslateModule.forRoot(),
-        PopoverModule.forRoot(),
-        ReportModule
+        CommonModule
       ],
       declarations: [
-        StudentResultsComponent
+        StudentResultsComponent,
+        MockAuthorizeDirective
       ],
-      providers: [ {
-        provide: ActivatedRoute,
-        useValue: route
-      }, {
-        provide: Router,
-        useValue: router
-      }, {
-        provide: CsvExportService,
-        useValue: exportService
-      }, {
-        provide: Angulartics2,
-        useValue: mockAngulartics2
-      }, {
-        provide: UserService,
-        useClass: MockUserService
-      } ],
+      providers: [
+        { provide: ActivatedRoute, useValue: route },
+        { provide: CsvExportService, useValue: exportService },
+        { provide: Angulartics2, useValue: mockAngulartics2 },
+        { provide: UserService, useValue: mockUserService },
+        { provide: Router, useValue: router },
+        ExamFilterService
+      ],
       schemas: [ NO_ERRORS_SCHEMA ]
-    })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(StudentResultsComponent);
     component = fixture.componentInstance;
@@ -178,11 +157,6 @@ class MockBuilder {
     wrapper.exam = MockBuilder.exam(assessmentType);
     wrapper.assessment = MockBuilder.assessment(assessmentType, subject);
 
-    let school: School = new School();
-    school.id = 1;
-    school.name = "A School";
-    wrapper.school = school;
-
     return wrapper;
   }
 
@@ -226,7 +200,7 @@ class MockBuilder {
     let assessment: Assessment = new Assessment();
     assessment.grade = '05';
     assessment.id = MockBuilder.assessmentIdx++;
-    assessment.name = "Grade 5 ELA";
+    assessment.label = "Grade 5 ELA";
     assessment.subject = subject;
     assessment.type = type;
 

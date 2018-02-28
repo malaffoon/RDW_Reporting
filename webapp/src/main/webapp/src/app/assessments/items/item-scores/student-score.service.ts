@@ -21,6 +21,7 @@ export class StudentScoreService {
     score.date = exam.date;
     score.session = exam.session;
     score.enrolledGrade = exam.enrolledGrade;
+    score.school = exam.school;
     score.score = itemScore.points;
     score.maxScore = maxPoints;
 
@@ -29,6 +30,7 @@ export class StudentScoreService {
     }
 
     score.response = itemScore.response;
+    score.writingTraitScores = itemScore.writingTraitScores;
 
     return score;
   }

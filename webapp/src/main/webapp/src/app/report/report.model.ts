@@ -3,30 +3,44 @@
  * This model serves as a handle on a persisted report that can be downloaded,
  * or report request that can be reissued to regenerate a historic report for download again
  */
+import { AssessmentType } from "../shared/enum/assessment-type.enum";
+
 export class Report {
 
-  public id: number;
-  public label: string;
-  public status: string;
-  public created: Date;
+  id: number;
+  label: string;
+  status: string;
+  reportType: string;
+  /** @deprecated */ assessmentType: AssessmentType;
+  assessmentTypeCode: string;
+  /** @deprecated */ subjectId: number;
+  subjectCode: string;
+  schoolYear: number;
+  created: Date;
+  request: any;
+  metadata: {[key: string]: string};
 
-  public isCompleted(): boolean {
+  get completed(): boolean {
     return this.status === 'COMPLETED';
   }
 
-  public isProcessing(): boolean {
+  get empty(): boolean {
+    return this.status === 'NO_RESULTS';
+  }
+
+  get processing(): boolean {
     return this.status === 'PENDING' || this.status === 'RUNNING';
   }
 
-  public canRegenerate(): boolean {
-    return !(this.isCompleted() || this.isProcessing());
+  get regenerable(): boolean {
+    return !(this.completed || this.processing);
   }
 
-  public getStatusColor(): string {
-    if (this.isCompleted()) {
+  get statusColor(): string {
+    if (this.completed) {
       return 'blue-dark';
     }
-    if (this.isProcessing()) {
+    if (this.processing) {
       return 'aqua';
     }
     return 'maroon';

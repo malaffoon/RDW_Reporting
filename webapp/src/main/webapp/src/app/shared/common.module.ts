@@ -1,11 +1,5 @@
-import { NgModule, ErrorHandler } from "@angular/core";
-import { PadStartPipe } from "./pad-start.pipe";
-import { SubjectPipe } from "./subject.pipe";
-import { SchoolYearPipe } from "./schoolYear.pipe";
-import { SearchPipe } from "../search.pipe";
+import { NgModule } from "@angular/core";
 import { HttpModule } from "@angular/http";
-import { DataService } from "./data/data.service";
-import { CachingDataService } from "./cachingData.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
 import { RemoveCommaPipe } from "./remove-comma.pipe";
@@ -14,42 +8,80 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
 import { GradeDisplayPipe } from "./grade-display.pipe";
-import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { AssessmentTypePipe } from "./assessment-type.pipe";
 import { ColorService } from "./color.service";
 import { Angulartics2Module } from "angulartics2";
-import { AuthenticationService } from "./authentication/authentication.service";
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationService } from "./notification/notification.service";
-import { AlertModule } from "ngx-bootstrap";
-import { SessionExpiredComponent } from "./authentication/session-expired.component";
-import { StorageService } from "./storage.service";
+import { AlertModule, PopoverModule } from "ngx-bootstrap";
 import { DatePipe, DecimalPipe } from "@angular/common";
-import { SBErrorHandler } from "./sb-error-handler.service";
-import { ScaleScoreService } from "./scale-score.service";
-import { LoaderComponent } from "./loader/loader.component";
+import { RdwLoadingModule } from "./loading/rdw-loading.module";
+import { SBToggleComponent } from "./sb-toggle.component";
+import { InformationButtonComponent } from "./button/information-button.component";
+import { ScaleScoreComponent } from "./scale-score/scale-score.component";
+import { RdwDataTableModule } from "./datatable/rdw-datatable.module";
+import { RdwCoreModule } from "./core/rdw-core.module";
+import { RdwFormModule } from "./form/rdw-form.module";
+import { RdwDataModule } from "./data/rdw-data.module";
+import { RdwFormatModule } from "./format/rdw-format.module";
+import { RdwI18nModule } from "./i18n/rdw-i18n.module";
+import { RdwLayoutModule } from "./layout/rdw-layout.module";
+import { RdwMenuModule } from "./menu/rdw-menu.module";
+import { RdwPreferenceModule } from "./preference/rdw-preference.module";
+import { RdwSecurityModule } from "./security/rdw-security.module";
+import { RdwTranslateLoader } from "./i18n/rdw-translate-loader";
+import {
+  AuthenticationServiceAuthenticationExpiredRoute,
+  AuthenticationServiceDefaultAuthenticationRoute
+} from "./security/authentication.service";
+import { OrganizationModule } from "./organization/organization.module";
+import { ScrollNavComponent } from "./nav/scroll-nav.component";
+import { OptionalPipe } from "./optional.pipe";
+import { RdwDisplayOptionsModule } from "./display-options/rdw-display-options.module";
+import { RdwAssessmentModule } from "./assessment/rdw-assessment.module";
+import { OrderSelectorComponent } from "./order-selector/order-selector.component";
+import { NgxDnDModule } from "@swimlane/ngx-dnd";
+import { CommonEmbargoModule } from "./embargo/embargo.module";
+
 
 @NgModule({
   declarations: [
     AssessmentTypePipe,
     GradeDisplayPipe,
+    InformationButtonComponent,
+    OptionalPipe,
+    OrderSelectorComponent,
+    ScrollNavComponent,
     NotificationComponent,
-    PadStartPipe,
     RemoveCommaPipe,
-    SBRadioButtonComponent,
     SBCheckboxList,
-    SchoolYearPipe,
-    SearchPipe,
-    SessionExpiredComponent,
-    SubjectPipe,
-    LoaderComponent
+    SBRadioButtonComponent,
+    SBToggleComponent,
+    ScaleScoreComponent
   ],
   imports: [
     AlertModule,
     Angulartics2Module.forChild(),
     BrowserModule,
+    CommonEmbargoModule,
     FormsModule,
     HttpModule,
+    NgxDnDModule,
+    OrganizationModule,
+    PopoverModule.forRoot(),
+    RdwAssessmentModule,
+    RdwCoreModule,
+    RdwDataModule.forRoot(),
+    RdwDataTableModule,
+    RdwDisplayOptionsModule,
+    RdwFormModule,
+    RdwFormatModule,
+    RdwI18nModule,
+    RdwLayoutModule,
+    RdwLoadingModule,
+    RdwMenuModule,
+    RdwPreferenceModule,
+    RdwSecurityModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -59,34 +91,40 @@ import { LoaderComponent } from "./loader/loader.component";
   ],
   exports: [
     AssessmentTypePipe,
+    CommonEmbargoModule,
     GradeDisplayPipe,
+    InformationButtonComponent,
+    OptionalPipe,
+    OrderSelectorComponent,
     NotificationComponent,
-    PadStartPipe,
+    ScrollNavComponent,
+    OrganizationModule,
     RemoveCommaPipe,
     RouterModule,
+    RdwAssessmentModule,
+    RdwCoreModule,
+    RdwDataTableModule,
+    RdwDisplayOptionsModule,
+    RdwFormModule,
+    RdwFormatModule,
+    RdwI18nModule,
+    RdwLayoutModule,
+    RdwLoadingModule,
+    RdwPreferenceModule,
+    RdwSecurityModule,
     SBCheckboxList,
     SBRadioButtonComponent,
-    SchoolYearPipe,
-    SearchPipe,
-    SessionExpiredComponent,
-    SubjectPipe,
-    TranslateModule,
-    LoaderComponent
+    SBToggleComponent,
+    ScaleScoreComponent,
+    TranslateModule
   ],
   providers: [
-    AuthenticationService,
-    DataService,
-    DatePipe,
-    CachingDataService,
+    { provide: AuthenticationServiceAuthenticationExpiredRoute, useValue: 'session-expired' },
+    { provide: AuthenticationServiceDefaultAuthenticationRoute, useValue: 'home' },
     ColorService,
+    DatePipe,
     DecimalPipe,
-    ScaleScoreService,
-    NotificationService,
-    RdwTranslateLoader,
-    StorageService, {
-      provide: ErrorHandler,
-      useClass: SBErrorHandler
-    }
+    NotificationService
   ]
 })
 export class CommonModule {

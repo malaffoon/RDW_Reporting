@@ -1,106 +1,315 @@
 sql:
-  report:
+#  this is used in tests ONLY to verify the non-embargo SQL clause from studentExamPermissionWithEmbargo
+  examPermissionTest:
+    findAllByStudentId: >-
+      SELECT
+        e.iep,
+        e.lep,
+        e.section504,
+        e.economic_disadvantage,
+        e.migrant_status,
+        ${sql.snippet.claimColumns},
+        ${sql.snippet.exam}
+      WHERE e.student_id = :student_id
+       AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
 
-    insert: >-
-      insert into user_report
-        (user_login, job_execution_id, status, report_resource_uri, label, report_request, created)
-        values
-        (:user_login, :job_execution_id, :status, :report_resource_uri, :label, :report_request, :created)
+  exam:
+    findAllIabsByStudentIdsAndQueryParamsUnknownPermissions: >-
+      SELECT
+        d.name AS district_name,
+        round(p.mean) AS percentile_mean,
+        ps.percentile_rank,
+        ${sql.snippet.writingTraits},
+        ${sql.snippet.exam}
+      JOIN district d ON s.district_id=d.id
+      LEFT JOIN exam_item ei ON ei.exam_id=e.id
+      LEFT JOIN item i ON i.id = ei.item_id
+      ${sql.reportProcessor.snippet.percentileLeftJoin}
+      WHERE e.student_id in (:student_ids)
+        AND (:school_year is null or e.school_year=:school_year)
+        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:grade_id is null or a.grade_id=:grade_id)
+        AND a.type_id = 2
+        AND ${sql.reportProcessor.snippet.schoolFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
+      ORDER BY e.completed_at DESC,
+        i.performance_task_writing_type DESC
 
-    update: >-
-      update user_report
-      set
-        user_login = :user_login,
-        job_execution_id = :job_execution_id,
-        status = :status,
-        report_resource_uri = :report_resource_uri,
-        label = :label,
-        report_request = :report_request,
-        created = :created
+    findAllIabsByStudentIdsAndQueryParamsGroupPermissions: >-
+      SELECT
+        d.name AS district_name,
+        round(p.mean) AS percentile_mean,
+        ps.percentile_rank,
+        ${sql.snippet.writingTraits},
+        ${sql.snippet.exam}
+      JOIN district d ON s.district_id=d.id
+      LEFT JOIN exam_item ei ON ei.exam_id=e.id
+      LEFT JOIN item i ON i.id=ei.item_id
+      ${sql.reportProcessor.snippet.percentileLeftJoin}
+      JOIN student_group_membership sgm ON st.id = sgm.student_id
+      JOIN student_group sg ON sgm.student_group_id = sg.id AND (sg.subject_id is null or a.subject_id = sg.subject_id)
+      WHERE e.student_id in (:student_ids)
+        AND sg.id=:group_id
+        AND (:school_year is null or e.school_year=:school_year)
+        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:grade_id is null or a.grade_id=:grade_id)
+        AND a.type_id=2
+        AND ${sql.reportProcessor.snippet.schoolFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
+      ORDER BY e.completed_at DESC,
+              i.performance_task_writing_type DESC
+
+    findAllIcasByStudentIdsAndQueryParamsUnknownPermissions: >-
+      SELECT
+        d.name AS district_name,
+        ${sql.snippet.claimColumns},
+        ${sql.snippet.exam}
+      JOIN district d ON s.district_id=d.id
+      WHERE e.student_id in (:student_ids)
+        AND (:school_year is null or e.school_year=:school_year)
+        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:grade_id is null or a.grade_id=:grade_id)
+        AND a.type_id=1
+        AND ${sql.reportProcessor.snippet.schoolFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
+      ORDER BY e.completed_at asc
+
+    findAllIcasByStudentIdsAndQueryParamsGroupPermissions: >-
+      SELECT
+        d.name AS district_name,
+        ${sql.snippet.claimColumns},
+        ${sql.snippet.exam}
+      JOIN district d ON s.district_id=d.id
+      JOIN student_group_membership sgm ON st.id = sgm.student_id
+      JOIN student_group sg ON sgm.student_group_id = sg.id
+          AND (sg.subject_id is null or a.subject_id = sg.subject_id)
+      WHERE e.student_id in (:student_ids)
+        AND sg.id=:group_id
+        AND (:school_year is null or e.school_year=:school_year)
+        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:grade_id is null or a.grade_id=:grade_id)
+        AND a.type_id=1
+        AND ${sql.reportProcessor.snippet.schoolFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
+      ORDER BY e.completed_at asc
+
+  export:
+    exams: >-
+      SELECT
+        'DistrictId',
+        'DistrictName',
+
+        'NcesId',
+        'SchoolId',
+        'SchoolName',
+
+        'StudentIdentifier',
+        'FirstName',
+        'LastOrSurname',
+
+        'SubmitDateTime',
+        'SchoolYear',
+        'TestSessionId',
+
+        'AssessmentType',
+        'AssessmentSubType',
+        'AssessmentName',
+        'Subject',
+
+        'GradeLevelWhenAssessed',
+        'Completeness',
+        'AdministrationCondition',
+
+        'ScaleScoreAchievementLevel',
+        'ScaleScore',
+        'ScaleScoreStandardError',
+
+        'Claim1ScoreAchievementLevel',
+        'Claim2ScoreAchievementLevel',
+        'Claim3ScoreAchievementLevel',
+        'Claim4ScoreAchievementLevel',
+
+        'Sex',
+        'MigrantStatus',
+        'Section504Status',
+        'IDEAIndicator',
+        'EconomicDisadvantageStatus',
+        'LEPStatus',
+
+        'HispanicOrLatinoEthnicity',
+        'AmericanIndianOrAlaskaNative',
+        'Asian',
+        'BlackOrAfricanAmerican',
+        'White',
+        'NativeHawaiianOrOtherPacificIslander',
+        'TwoOrMoreRaces',
+        'Filipino',
+
+        'AssignedAccommodationList'
+      UNION ALL
+      SELECT
+        d.natural_id AS district_natural_id,
+        d.name AS district_name,
+
+        COALESCE(s.external_id, '') AS school_ncesid,
+        s.natural_id AS school_natural_id,
+        s.name AS school_name,
+
+        st.ssid AS student_ssid,
+        COALESCE(st.first_name, '') AS student_first_name,
+        COALESCE(st.last_or_surname, '') AS student_last_name,
+
+        e.completed_at,
+        e.school_year,
+        e.session_id,
+
+        CASE WHEN at.code = 'sum' THEN 'Summative' ELSE 'Interim' END,
+        upper(at.code),
+        a.label AS asmt_label,
+        su.code AS asmt_subject_code,
+
+        e.grade_code,
+        e.completeness_code,
+        e.administration_condition_code,
+
+        COALESCE(e.performance_level, ''),
+        COALESCE(e.scale_score, ''),
+        COALESCE(e.scale_score_std_err, ''),
+
+        COALESCE(e.claim1_category, ''),
+        COALESCE(e.claim2_category, ''),
+        COALESCE(e.claim3_category, ''),
+        COALESCE(e.claim4_category, ''),
+
+        COALESCE(st.gender_code, '') AS student_gender_code,
+
+        (CASE WHEN e.migrant_status = 1 THEN 'Yes' when e.migrant_status = 0 THEN 'No' ELSE '' END),
+        (CASE WHEN e.section504 = 1 THEN 'Yes' when e.section504 = 0 THEN 'No' ELSE '' END),
+        (CASE WHEN e.iep THEN 'Yes' ELSE 'No' END),
+        (CASE WHEN e.economic_disadvantage THEN 'Yes' ELSE 'No' END),
+        (CASE WHEN e.lep THEN 'Yes' ELSE 'No' END),
+
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'HispanicOrLatinoEthnicity') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'AmericanIndianOrAlaskaNative') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'Asian') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'BlackOrAfricanAmerican') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'White') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'NativeHawaiianOrOtherPacificIslander') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'TwoOrMoreRaces') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'Filipino') THEN 'Yes' ELSE 'No' END ),
+
+        COALESCE(e.available_accommodation_codes, '')
+      INTO OUTFILE ::EXPORT_DESTINATION:: :export_location
+      FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+      LINES TERMINATED by '\n'
+      FROM exam e
+        JOIN student st ON st.id = e.student_id
+        JOIN asmt a ON e.asmt_id = a.id
+        JOIN subject su ON su.id = a.subject_id
+        JOIN asmt_type at ON at.id = a.type_id
+        JOIN school s ON e.school_id = s.id
+        JOIN district d ON d.id = s.district_id
+        JOIN school isch ON st.inferred_school_id = isch.id
+      WHERE
+        ${sql.reportProcessor.snippet.exportExamsFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
+
+    hasExams: >-
+      SELECT 1
+      FROM exam e
+        JOIN student st ON st.id = e.student_id
+        JOIN asmt a ON e.asmt_id = a.id
+        JOIN subject su ON su.id = a.subject_id
+        JOIN asmt_type at ON at.id = a.type_id
+        JOIN school s ON e.school_id = s.id
+        JOIN district d ON d.id = s.district_id
+        JOIN school isch ON st.inferred_school_id = isch.id
       where
-        id = :id
-
-    findAllByUser: >-
-      select
-        r.id,
-        r.user_login,
-        r.job_execution_id,
-        r.status,
-        r.report_resource_uri,
-        r.label,
-        r.report_request,
-        r.created
-      from user_report r
-      where r.user_login = :user
-      order by r.id desc
-
-    findAllByUserAndId: >-
-      select
-        r.id,
-        r.user_login,
-        r.job_execution_id,
-        r.status,
-        r.report_resource_uri,
-        r.label,
-        r.report_request,
-        r.created
-      from user_report r
-      where r.user_login = :user
-        and r.id in (:report_ids)
-      order by r.id desc
-
-    findById: >-
-      select
-        r.id,
-        r.user_login,
-        r.job_execution_id,
-        r.status,
-        r.report_resource_uri,
-        r.label,
-        r.report_request,
-        r.created
-      from user_report r
-      where r.id = :report_id
+        ${sql.reportProcessor.snippet.exportExamsFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
 
   student:
-    findByExamQueryParams: >-
-      select
-        st.id,
-        st.ssid,
-        st.first_name,
-        st.last_or_surname as last_name,
-        st.gender_code
-      from student st
-        join exam e on e.student_id = st.id
-        join asmt a on e.asmt_id=a.id
-        join school s on e.school_id = s.id
-      where (:school_year is null or e.school_year=:school_year)
-        and (:school_id is null or s.id=:school_id)
-        and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or a.grade_id=:grade_id)
-        and (:assessment_type is null or a.type_id=:assessment_type)
-        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
+    findByExamQueryParamsUnknownPermissions: >-
+      ${sql.reportProcessor.snippet.selectFromStudent}
+      WHERE (:student_id is null or st.id = :student_id)
+        AND (:school_year is null or e.school_year = :school_year)
+        AND (:subject_id is null or a.subject_id = :subject_id)
+        AND (:grade_id is null or a.grade_id = :grade_id)
+        AND (:assessment_type is null or a.type_id = :assessment_type)
+        AND ${sql.reportProcessor.snippet.schoolFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       group by st.id
 
-    findByExamQueryParamsWithGroup: >-
-      select
-        st.id,
-        st.ssid,
-        st.first_name,
-        st.last_or_surname as last_name,
-        st.gender_code
-      from student st
-        join exam e on e.student_id = st.id
-        join asmt a on e.asmt_id=a.id
-        join school s on e.school_id = s.id
-        join student_group_membership sgm on st.id = sgm.student_id
-        join student_group sg on sgm.student_group_id = sg.id
-          and (sg.subject_id is null or a.subject_id = sg.subject_id)
-      where sg.id=:group_id
-        and (:school_year is null or e.school_year=:school_year)
-        and (:school_id is null or s.id=:school_id)
-        and (:subject_id is null or a.subject_id=:subject_id)
-        and (:grade_id is null or a.grade_id=:grade_id)
-        and (:assessment_type is null or a.type_id=:assessment_type)
-        and (1=:statewide or s.district_id in (:district_ids) or e.school_id in (:school_ids))
-      group by st.id
+    findByExamQueryParamsGroupPermissions: >-
+      ${sql.reportProcessor.snippet.selectFromStudent}
+        JOIN student_group_membership sgm ON st.id = sgm.student_id
+        JOIN student_group sg ON sgm.student_group_id = sg.id
+          AND (sg.subject_id is null or a.subject_id = sg.subject_id)
+      WHERE sg.id=:group_id
+        AND (:student_id is null or st.id = :student_id)
+        AND (:school_year is null or e.school_year = :school_year)
+        AND (:subject_id is null or a.subject_id = :subject_id)
+        AND (:grade_id is null or a.grade_id = :grade_id)
+        AND (:assessment_type is null or a.type_id = :assessment_type)
+        AND ${sql.reportProcessor.snippet.schoolFilter}
+        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
+      GROUP BY st.id
+
+  reportProcessor:
+    snippet:
+#    nobody is allowed to export the data or generated PDFs for embargoed data, including the embargo admins
+      studentExamPermissionWithEmbargo: >-
+            ${sql.snippet.studentExamPermissionWithoutEmbargo}
+            AND
+            (
+               e.school_year < ${app.school-year}
+               OR e.type_id <> 3
+               OR s.embargo_enabled = 0
+            )
+
+      schoolFilter:
+            (
+              :school_id is null
+              OR
+              (
+                s.id=:school_id
+                OR
+                (
+                  (1 = :allow_transfer_access AND 0 = :disable_transfer_access)
+                  AND isch.id = :school_id
+                )
+              )
+            )
+
+      selectFromStudent: >-
+          SELECT
+            st.id,
+            st.ssid,
+            st.first_name,
+            st.last_or_surname AS last_name,
+            st.gender_code
+          FROM student st
+            JOIN exam e ON e.student_id = st.id
+            JOIN asmt a ON e.asmt_id = a.id
+            JOIN school s ON e.school_id = s.id
+            JOIN school isch ON st.inferred_school_id = isch.id
+
+      exportExamsFilter: >-
+        e.school_year = :school_year
+        AND
+        (
+          (
+            s.district_group_id IN (:query_district_group_ids) OR s.district_id IN (:query_district_ids) OR s.school_group_id IN (:query_school_group_ids) OR e.school_id IN (:query_school_ids)
+          )
+          or
+          (
+            (1 = :allow_transfer_access AND 0 = :disable_transfer_access) AND
+            (
+              isch.district_group_id IN (:query_district_group_ids) OR isch.district_id IN (:query_district_ids) OR isch.school_group_id IN (:query_school_group_ids) OR isch.id IN (:query_school_ids)
+            )
+          )
+        )
+
+      percentileLeftJoin: >-
+          LEFT JOIN percentile p ON e.asmt_id = p.asmt_id AND DATE(e.completed_at) >= p.start_date AND DATE(e.completed_at) <= p.end_date
+          LEFT JOIN percentile_score ps ON ps.percentile_id = p.id AND e.scale_score >= ps.min_inclusive AND e.scale_score < ps.max_exclusive

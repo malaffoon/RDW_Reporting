@@ -1,19 +1,18 @@
-import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs";
 import { ordering } from "@kourge/ordering";
 import { FilterBy } from "./model/filter-by.model";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { ExamFilterOptions } from "./model/exam-filter-options.model";
 import { Assessment } from "./model/assessment.model";
 import { ExamFilterOptionsService } from "./filters/exam-filters/exam-filter-options.service";
-import { AssessmentItem } from "./model/assessment-item.model";
 import { byGradeThenByName } from "./assessment.comparator";
 import { AssessmentProvider } from "./assessment-provider.interface";
 import { GradeCode } from "../shared/enum/grade-code.enum";
 import { ColorService } from "../shared/color.service";
-import { ItemByPointsEarnedExportRequest } from "./model/item-by-points-earned-export-request.model";
 import { UserService } from "../user/user.service";
+import { AssessmentExporter } from "./assessment-exporter.interface";
+import { ReportingEmbargoService } from "../shared/embargo/reporting-embargo.service";
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -45,6 +44,16 @@ export class AssessmentsComponent implements OnInit {
   assessmentProvider: AssessmentProvider;
 
   /**
+   * The provider which implements the AssessmentExporter interface in order
+   * to export data.
+   */
+  @Input()
+  assessmentExporter: AssessmentExporter;
+
+  @Input()
+  hideAssessments: boolean = false;
+
+  /**
    * If true, the session toggles will be display with the most recent selected
    * by default.  Otherwise, they won't be displayed and all results will be shown.
    */
@@ -52,7 +61,7 @@ export class AssessmentsComponent implements OnInit {
   allowFilterBySessions: boolean = true;
 
   @Output()
-  onExportItemsByPointsEarned: EventEmitter<ItemByPointsEarnedExportRequest> = new EventEmitter();
+  export: EventEmitter<any> = new EventEmitter<any>();
 
   showValuesAsPercent: boolean = true;
   filterDisplayOptions: any = {
@@ -63,8 +72,8 @@ export class AssessmentsComponent implements OnInit {
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   availableAssessments: Assessment[] = [];
   assessmentsLoading: any[] = [];
-  boundLoadAssessmentItems: Function;
   minimumItemDataYear: number;
+  exportDisabled: boolean = true;
 
   get assessmentExams(): AssessmentExam[] {
     return this._assessmentExams;
@@ -84,7 +93,7 @@ export class AssessmentsComponent implements OnInit {
   }
 
   get expandAssessments(): boolean {
-    return this._expandAssessments;
+    return this._expandAssessments && this.assessmentExams.length > 0;
   }
 
   set expandAssessments(value: boolean) {
@@ -152,7 +161,8 @@ export class AssessmentsComponent implements OnInit {
   constructor(public colorService: ColorService,
               private route: ActivatedRoute,
               private filterOptionService: ExamFilterOptionsService,
-              private userService: UserService) {
+              private userService: UserService,
+              private embargoService: ReportingEmbargoService) {
     this.clientFilterBy = new FilterBy()
   }
 
@@ -167,7 +177,11 @@ export class AssessmentsComponent implements OnInit {
       this.minimumItemDataYear = user.configuration.minItemDataYear;
     });
 
-    this.boundLoadAssessmentItems = this.loadAssessmentItems.bind(this);
+    this.embargoService.isEmbargoed().subscribe(
+      embargoed => {
+        this.exportDisabled = embargoed;
+      }
+    )
   }
 
   getGradeIdx(gradeCode: string): number {
@@ -185,6 +199,9 @@ export class AssessmentsComponent implements OnInit {
 
   removeFilter(property) {
     if (property == 'offGradeAssessment') {
+      this.clientFilterBy[ property ] = false;
+    }
+    else if (property == 'transferAssessment') {
       this.clientFilterBy[ property ] = false;
     }
     else if (property.indexOf('ethnicities') > -1) {
@@ -205,8 +222,10 @@ export class AssessmentsComponent implements OnInit {
   }
 
   removeAssessment(assessment: Assessment) {
-    assessment.selected = false;
-    this.selectedAssessmentsChanged(assessment);
+    if (this.selectedAssessments.length > 1) {
+      assessment.selected = false;
+      this.selectedAssessmentsChanged(assessment);
+    }
   }
 
   selectedAssessmentsChanged(assessment: Assessment) {
@@ -223,10 +242,6 @@ export class AssessmentsComponent implements OnInit {
     this._isAllSelected = (this.selectedAssessments.length == this.availableAssessments.length);
   }
 
-  exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
-    this.onExportItemsByPointsEarned.emit(exportRequest);
-  }
-
   openAndScrollToAdvancedFilters() {
     this.showAdvancedFilters = true;
     setTimeout(() => {
@@ -234,13 +249,13 @@ export class AssessmentsComponent implements OnInit {
     }, 0);
   }
 
+  callExport() {
+    this.export.emit();
+  }
+
   private updateFilterOptions() {
     this.filterOptions.hasInterim = this.selectedAssessments.some(a => a.isInterim);
     this.filterOptions.hasSummative = this.selectedAssessments.some(a => a.isSummative);
-  }
-
-  private loadAssessmentItems(assessmentId: number): Observable<AssessmentItem[]> {
-    return this.assessmentProvider.getAssessmentItems(assessmentId);
   }
 
   private loadAssessmentExam(assessment: Assessment) {

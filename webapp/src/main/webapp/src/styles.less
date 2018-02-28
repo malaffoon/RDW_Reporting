@@ -14,16 +14,22 @@
 
 // Twitter Bootstrap
 @import "@{library-path}/bootstrap/less/bootstrap.less";
+@import "@{library-path}/bootstrap/less/mixins.less";
 
 // Font Awesome
 @import "@{library-path}/font-awesome/less/font-awesome.less";
 
+// ngx drag and drop
+@import "@{library-path}/@swimlane/ngx-dnd/release/ngx-dnd.css";
+
 // SBAC UI Kit
 @import "@{library-path}/@sbac/sbac-ui-kit/src/less/sbac-ui-kit.less";
+
+// Extensions
 @import "primeng-overrides.less";
 
 // Local variables
-@zindex-fab: 1065;
+@zindex-fab: 1040;
 
 @media (max-width: @screen-md-max) {
   .container {
@@ -31,21 +37,160 @@
   }
 }
 
+/**
+  Colors
+ */
+// new general gray
+@gray-mid: #73777D;
+
+// new orange
+@orange: #82440e;
+
+// new dark green
+@green-dark: #267738;
+// new green
+@green: #267738;
+
+// new aqua
+@aqua: #0f6bad;
+
+/**
+ * Bootstrap addition
+ */
+.list-group.list-group-md > .list-group-item {
+  padding: 10px 15px;
+}
+
+.list-group.list-group-sm > .list-group-item {
+  padding: 8px 12px;
+}
+
+.table.table-borderless {
+  > thead > tr > th,
+  > tbody > tr > td {
+    border: 0;
+  }
+}
+
+/**
+  Required to meet WCAG 2 AA contrast ratio
+ */
+.navbar-default {
+  .navbar-nav > li > a {
+    color: @gray-mid;
+  }
+  .btn-link {
+    color: @gray-mid;
+  }
+}
+
+.btn-default {
+  color: @gray-mid;
+}
+
+.form-control {
+  color: @gray-mid;
+}
+
+.btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+  color: @black;
+  &:hover,
+  &:active,
+  &.active {
+    color: @black;
+  }
+}
+
+.scale-title {
+  color: @gray-mid;
+}
+
+.tag.gray-mid.reverse.tag.gray-mid, .tag.gray-mid.active.tag.gray-mid {
+  background-color: @gray-mid;
+}
+
+.scale-score-graph .bar-container .bar .bar-label {
+  color: @gray-mid;
+}
+
+.table .scale-score .error-band {
+  color: @gray-mid;
+}
+
+h1 + p.pull-left, .h1 + p.pull-left, h2 + p.pull-left, .h2 + p.pull-left, h3 + p.pull-left, .h3 + p.pull-left {
+  color: @gray-darkest;
+}
+
+.toggle-group .btn-primary {
+  color: @gray-mid;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+  color: @gray-mid;
+}
+
+.btn.btn-borderless.btn-default, .scale-score-graph .bar-container .bar .bar-label, .table .scale-score .error-band {
+  color: darken(@gray-mid, 10%);
+}
+
+// ------------------------------
+// Drag-and-Drop default style overrides
+// ------------------------------
+
+.ngx-dnd-container {
+  border: inherit;
+  background-color: inherit;
+  margin: inherit;
+  padding: inherit;
+
+  &:nth-child(odd), &:nth-child(even) {
+    background-color: inherit;
+  }
+}
+
+.ngx-dnd-item {
+  margin: inherit;
+  padding: inherit;
+  background-color: transparent;
+  border: inherit;
+  display: inherit;
+
+  &:hover {
+    border: inherit;
+  }
+}
+
 // ------------------------------
 // RDW Custom Styles to Match Comps
 // ------------------------------
-.my-groups-search-form-container {
+.table-search-form-container {
+  background-color: @gray-lightest;
   border: 1px solid @gray-lighter;
-  border-radius: 5px 5px 0 0;
+  border-radius: @border-radius-base @border-radius-base 0 0;
+  padding: @padding-base-horizontal @padding-large-horizontal;
+  + .table-list-container .table > thead > tr {
+    > th:first-child {
+      border-top-left-radius: 0;
+    }
+    > th:last-child {
+      border-top-right-radius: 0;
+    }
+  }
 }
 
-.home-view .my-groups-list-container .table > thead > tr > th {
-  &:first-child {
-    border-top-left-radius: 0;
-  }
-  &:last-child {
-    border-top-right-radius: 0;
-  }
+.navbar-nav > li > div {
+  padding-top: 16.5px;
+  padding-bottom: 16.5px;
+}
+
+.navbar-nav > li > div {
+  line-height: 23px;
+}
+
+.nav > li > div {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
 }
 
 .ui-dropdown {
@@ -56,6 +201,10 @@
   width: 100% !important;
 }
 
+distractor-analysis .table > tbody > tr > td {
+  box-shadow: none;
+}
+
 // containing the header and footer
 // may pull this back to UI Kit if approved
 // -AS
@@ -63,28 +212,28 @@ header {
   background-color: transparent;
   .box-shadow(none);
   .well {
-    .border-top-radius(0px);
+    .border-top-radius(0);
   }
 }
 
 .breadcrumb {
   .small;
-  border-width: 1px 0px;
+  border-width: 1px 0;
   border-style: solid;
   border-color: @gray-light;
-  padding-right: 0px;
+  padding-right: 0;
   padding-left: @grid-gutter-width / 2;
   background-color: @gray-lighter;
   border-radius: @border-radius-base;
   .box-shadow(0 6px 6px -6px rgba(0, 0, 0, .16) inset, 0 1px 1px 1px rgba(255, 255, 255, .95););
   > .active {
-    color: @gray-darker;
+    color: @gray-darkest;
   }
 }
 
 footer {
   background-color: transparent;
-  padding: 0px;
+  padding: 0;
   border-top: none;
   color: @gray-dark;
   .box-shadow(none);
@@ -94,20 +243,16 @@ footer {
   white-space: normal;
 }
 
-.report-download-popover {
-  display: block;
-  max-width: 440px;
-  width: auto;
-  select {
-    font-weight: normal;
-  }
-}
-
 .notifications {
   position: fixed;
   top: 0;
   right: 0;
   z-index: 1030;
+}
+
+.district-tree > .tag {
+  margin-left: @grid-gutter-width / 2;
+  margin-top: 1px;
 }
 
 .tag {
@@ -169,4 +314,604 @@ footer {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+organization-export form button[type='submit'] {
+  margin-top: 27px;
+}
+
+a.link-button:hover {
+  text-decoration: none;
+}
+
+/*
+  Prevents anchor 'click-box' from extending to the width of its container.
+  Instead it extends to the width of its text.
+ */
+a > h1,
+a > h2,
+a > h3,
+a > h4,
+a > h5,
+a > h6 {
+  display: inline-block;
+}
+
+/*
+  Not sure what to do to get these line-heights right without explicit styles.
+  btn-[size] didn't quite match things up
+ */
+
+organization-export form button[type='submit'],
+sb-button-typeahead .input-group-btn > .btn,
+[sb-button-typeahead] .input-group-btn > .btn {
+  line-height: 1.48;
+}
+
+.label-max-width {
+  text-overflow: ellipsis;
+  text-align: left;
+  overflow: hidden;
+  max-width: 330px;
+}
+
+/**
+  Required for controls that are placed above data tables, otherwise the data table
+  extends above its size.  The real fix for this would be tio fix the sizing of data tables
+  in the sbac-ui-kit.
+ */
+.z-index-over-data-table {
+  z-index: 3;
+  position: relative;
+}
+
+body .select-menu-group,
+.average-scale-score-display > table,
+.scale-score-graph > table {
+  .selected {
+    background-color: #e8e8e8;
+  }
+  display: flex;
+  justify-content: space-between;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  -moz-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+
+body .select-menu-group {
+  display: inline-block;
+}
+
+/**
+ * TODO candidate for moving to UI kit
+ */
+.nested-btn-group.vertical .btn-group .btn:last-child {
+  margin-bottom: 0;
+}
+
+/**
+ * Minor style fixes for vertical checkbox group.
+ * The default btn-group style is margin-left: -1px
+ */
+.nested-btn-group.vertical .btn-group .btn + .btn {
+  margin-left: 0;
+}
+
+/**
+ * Removes left border for vertical checkbox groups without the all option
+ */
+.nested-btn-group.vertical:not(.all-option) .btn-group {
+  border-left: none;
+}
+
+/**
+ * Styles for horizontal checkbox groups without an all option
+ */
+.nested-btn-group.btn-group-sm:not(.all-option) .btn-group {
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+}
+
+.btn-group-vertical > .btn {
+  margin-bottom: 5px;
+}
+
+.scale-score-graph table .bar-container {
+  padding-bottom: 10px;
+}
+
+.popover-title {
+  line-height: 25px;
+}
+
+.popover-link {
+  word-wrap: break-word;
+}
+
+.level-down {
+  .box-shadow(inset 12px 0 8px -8px rgba(0, 0, 0, .12));
+}
+
+.average-scale-score-display {
+
+  .assessment-results-summary {
+
+    .average-scale-score-label {
+      margin-top: 4px;
+      i {
+        margin-bottom: @padding-small-horizontal;
+      }
+    }
+
+    .result-count-label {
+      margin-top: 18px;
+    }
+
+    .table > tbody > tr > td {
+      width: 50%;
+      &:first-child {
+        background-color: @gray-lighter;
+        text-align: right;
+      }
+      &:last-child {
+        .level-down;
+        background-color: @gray-lightest;
+        text-align: left;
+        padding-left: @padding-large-horizontal;
+      }
+      &:not(.level-down) {
+        box-shadow: none;
+      }
+    }
+  }
+
+  .well {
+    overflow: hidden;
+    padding: 0;
+    margin-bottom: 0;
+
+    .score-distribution-container:last-child > div {
+      padding-bottom: @table-cell-padding;
+    }
+  }
+
+  .bar-container {
+    padding-bottom: 0;
+  }
+
+  .font-large {
+    font-size: 2em;
+  }
+
+  .score-distribution-container {
+    width: 100%;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 40% 13% 1fr;
+    grid-template-columns: 40% 13% 1fr;
+
+    > div {
+      padding: @table-cell-padding @table-cell-padding 0 @table-cell-padding;
+    }
+
+    // Explicit positioning for IE11
+    > .grid-item {
+      &:nth-child(1) {
+        -ms-grid-column: 1;
+      }
+      &:nth-child(2) {
+        -ms-grid-column: 2;
+      }
+      &:nth-child(3) {
+        -ms-grid-column: 3;
+      }
+    }
+  }
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 @border-radius-base @border-radius-base @border-radius-base;
+}
+
+.dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+
+.dropdown-submenu > a > button:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: @gray-mid;
+  margin-top: @padding-base-vertical;
+  margin-right: -@padding-base-horizontal;
+  position: relative;
+  top: 1px;
+}
+
+.dropdown-submenu.pull-left {
+  float: none;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: @border-radius-base 0 @border-radius-base @border-radius-base;
+}
+
+.full-cell {
+  margin: -@table-cell-padding;
+  padding: @table-cell-padding;
+}
+
+.table-row-size-fixed {
+  .full-cell {
+    height: 35px;
+  }
+  .full-cell.narrow-cell {
+    padding: 0 @table-cell-padding;
+  }
+}
+
+aggregate-report-results {
+  .table .scale-score {
+    font-size: inherit;
+  }
+
+  .performance-comparison-graph {
+    margin: -@table-cell-padding;
+    padding: 0 @table-cell-padding;
+  }
+}
+
+.performance-level-distribution-chart,
+.performance-comparison-graph {
+  position: relative;
+  display: flex;
+  .bar-container {
+    display: flex;
+    padding: 0.6em 0;
+    &:first-child {
+      justify-content: flex-end;
+      .bar:first-child {
+        border-top-left-radius: @border-radius-small;
+        border-bottom-left-radius: @border-radius-small;
+      }
+      .bar:last-child {
+        border-right: 1px solid #fff;
+      }
+    }
+    &:last-child {
+      border-left: 1px solid @gray-darkest;
+      .bar:last-child {
+        border-top-right-radius: @border-radius-small;
+        border-bottom-right-radius: @border-radius-small;
+      }
+    }
+  }
+  .bar {
+    position: relative;
+    height: 1.48em;
+    text-align: center;
+    border-left: 1px solid #fff;
+  }
+}
+
+/** from admin webapp **/
+
+.white-space-preline {
+  white-space: pre-line;
+}
+
+.my-drop-zone {
+  border: dotted 3px lightgray;
+  border-radius: 5px;
+  height: 118px; /* Required for drag & drop to work in IE11 */
+}
+
+.nv-file-over {
+  border-color: #104564;
+}
+
+.font-weight-light {
+  font-weight: lighter;
+}
+
+.text-overflow-ellipsis {
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  overflow-y: visible;
+  white-space: nowrap;
+  padding: .2em 0 .3em;
+}
+
+/** used on well's containing wide data tables to push the well out with the table */
+.wide-content-container {
+  width: min-content;
+  width: -moz-min-content;
+  width: -webkit-min-content;
+  min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
+}
+
+.disabled-table-container {
+  .disabled-table {
+    cursor: not-allowed;
+    opacity: .7;
+  }
+  opacity: 1;
+  background-color: @black;
+  min-width: fit-content;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+@media (min-width: 768px) {
+  .container-jumbo {
+    min-width: 768px !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .container-jumbo {
+    min-width: 992px !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container-jumbo {
+    min-width: 1200px !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container-jumbo {
+    min-width: 1400px !important;
+    margin-left: -120px;
+  }
+}
+
+.disabled-table-text {
+  background: @red-dark;
+  color: @white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+aggregate-report-form {
+  .well-group > .well {
+    box-shadow: none;
+    padding-bottom: 20px;
+    &:not(:first-child) {
+      box-shadow: none;
+    }
+    &:first-child {
+      padding: 15px 20px;
+      > *:last-child,
+      > .row > [class^=col-]:first-child > *:last-child,
+      > .flex-children > .flex-child:first-child > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  .nested-btn-group {
+    margin-bottom: 0;
+  }
+  .performance-comparison-graph {
+    margin: -6px;
+  }
+  .inline-label {
+    font-weight: normal;
+  }
+}
+
+.writing-trait-scores {
+  min-width: 60% !important;
+}
+
+.nav > li > button {
+  position: relative;
+  display: block;
+  margin: 10px 15px;
+}
+
+scroll-nav li a {
+  &.active {
+    color: @blue-dark;
+    font-weight: bolder;
+  }
+}
+
+aggregate-report-organization-list {
+  .list-group {
+    margin-bottom: 10px; /* was 20 */
+  }
+}
+
+//Enable click-through on prime-ng data table headers
+//Workaround for https://github.com/primefaces/primeng/issues/4762
+//TODO convert from DataTable to the new TurboTable
+.ui-column-title > * {
+  pointer-events: none;
+  display: inline-block;
+
+  button {
+    pointer-events: auto;
+    position: relative;
+  }
+}
+
+:not(typeahead-container) > .dropdown-menu > li > a {
+  color: #5b5e62;
+  padding: @padding-large-vertical @padding-large-horizontal;
+  &:hover {
+    color: #5b5e62;
+  }
+  &.disabled {
+    cursor: not-allowed;
+    opacity: .65;
+  }
+}
+
+.aggregate-report-summary {
+  .small;
+  .column-heading {
+    color: @gray-darker;
+    padding-bottom: @padding-base-vertical;
+  }
+  .row > div {
+    &:first-child {
+      color: @gray-darkest;
+    }
+    &:last-child {
+      color: @gray-darker;
+    }
+  }
+}
+
+// TODO move to UI KIT
+// fixes well group border radius
+.well-group {
+  border-radius: @border-radius-base;
+  > .well {
+    &:first-child {
+      border-top: none;
+      border-top-left-radius: @border-radius-base;
+      border-top-right-radius: @border-radius-base;
+    }
+    &:last-child {
+      border-bottom-left-radius: @border-radius-base;
+      border-bottom-right-radius: @border-radius-base;
+    }
+  }
+}
+
+// TODO move to UI KIT
+// fixes html heading element styles to be the same as the class styles
+h1 {
+  .h1;
+}
+
+h2 {
+  .h2;
+}
+
+h3 {
+  .h3;
+}
+
+h4 {
+  .h4;
+}
+
+h5 {
+  .h5;
+}
+
+h6 {
+  .h6;
+}
+
+.well.well-compact {
+  padding: @padding-small-horizontal @padding-base-horizontal;
+}
+
+.page-heading {
+  display: block;
+  margin-bottom: @padding-base-horizontal;
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    display: inline;
+    margin: 0;
+  }
+}
+
+.list-inline {
+  margin-left: 0;
+  > li {
+    padding: 0;
+    &:not(:first-child) {
+      margin-left: @padding-xs-horizontal;
+    }
+  }
+}
+
+.flex-child-no-label {
+  padding-top: @line-height-base * 1px;
+}
+
+@media (max-width: @screen-sm-max) {
+  scroll-nav {
+    display: none;
+  }
+}
+
+.vertical-align-bottom {
+  position: relative;
+  top: 100%;
+  transform: translateY(-100%);
+  z-index: 1;
+}
+
+// TODO temporary visual correction
+.student-ssid-label {
+  .small;
+  .label;
+  background-color: @blue-dark;
+  color: white;
+  position: relative;
+  top: -4px;
+  left: 4px;
+}
+
+.inline-headings {
+  h1, h2, h3, h4, h5, h6 {
+    display: inline-block;
+    vertical-align: baseline;
+  }
+}
+
+// override prime override
+body .ui-widget.ui-datatable table .ui-datatable-thead > tr > th.level-down,
+body .ui-widget.ui-datatable table .ui-datatable-data > tr > td.level-down,
+.ui-table .ui-table-thead > tr > th.level-down,
+.ui-table .ui-table-tbody > tr > td.level-down {
+  padding-left: @padding-base-horizontal;
+}
+
+.assessment-percentile-container {
+  background-color: @gray-lightest;
+  border-bottom: 1px solid @gray-lighter;
+  box-shadow: 0 6px 6px -6px rgba(0, 0, 0, 0.16) inset;
+  margin: 0 -20px 0 -20px;
+  padding: 15px 20px 20px 20px;
+}
+
+.assessment-percentile-history {
+  [info-button] > button {
+    margin-top: -6px;
+  }
+  .assessment-percentile-history:not(:last-child) table {
+    margin-bottom: @padding-base-horizontal;
+  }
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+a.btn.disabled.with-pointer {
+  pointer-events: auto;
 }

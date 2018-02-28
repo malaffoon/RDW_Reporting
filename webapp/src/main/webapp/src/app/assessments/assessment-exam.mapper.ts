@@ -10,7 +10,8 @@ import { ordering } from "@kourge/ordering";
 import { byNumber } from "@kourge/ordering/comparator";
 import { ClaimScore } from "./model/claim-score.model";
 import { Student } from "../student/model/student.model";
-import { Utils } from "../shared/Utils";
+import { School } from "../user/model/school.model";
+import { Utils } from "../shared/support/support";
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -59,7 +60,7 @@ export class AssessmentExamMapper {
     let uiModel = new Assessment();
 
     uiModel.id = apiModel.id;
-    uiModel.name = apiModel.name;
+    uiModel.label = apiModel.label;
     uiModel.grade = apiModel.gradeCode;
     uiModel.type = AssessmentType[ apiModel.type as string ];
     uiModel.subject = apiModel.subject;
@@ -80,8 +81,14 @@ export class AssessmentExamMapper {
     uiModel.administrativeCondition = apiModel.administrativeConditionCode;
     uiModel.completeness = apiModel.completenessCode;
     uiModel.schoolYear = apiModel.schoolYear;
+    uiModel.transfer = apiModel.transfer;
 
-    if(apiModel.claimScaleScores) {
+    let school: School = new School();
+    school.name = apiModel.school.name;
+    school.id = apiModel.school.id;
+    uiModel.school = school;
+
+    if (apiModel.claimScaleScores) {
       uiModel.claimScores = this.mapClaimScaleScoresFromApi(apiModel.claimScaleScores);
     }
 
@@ -101,6 +108,11 @@ export class AssessmentExamMapper {
       uiModel.score = apiModel.scaleScore.value;
       uiModel.level = apiModel.scaleScore.level;
       uiModel.standardError = apiModel.scaleScore.standardError;
+    }
+
+    uiModel.accommodationCodes = [];
+    if (apiModel.accommodationCodes) {
+      apiModel.accommodationCodes.forEach(code => uiModel.accommodationCodes.push(code));
     }
 
     return uiModel;
@@ -128,6 +140,7 @@ export class AssessmentExamMapper {
     uiModel.points = apiModel.points;
     uiModel.position = apiModel.position;
     uiModel.response = apiModel.response;
+    uiModel.writingTraitScores = apiModel.writingTraitScores;
 
     return uiModel;
   }
@@ -147,6 +160,12 @@ export class AssessmentExamMapper {
     uiModel.difficulty = apiModel.difficultyCode;
     uiModel.maxPoints = apiModel.maximumPoints;
     uiModel.commonCoreStandardIds = apiModel.commonCoreStandardIds || [];
+    uiModel.type = apiModel.type;
+    uiModel.numberOfChoices = apiModel.optionsCount;
+    uiModel.performanceTaskWritingType = apiModel.performanceTaskWritingType;
+
+    // only multiple choice and multiple select have valid answer keys, so ignore the others
+    uiModel.answerKey = (apiModel.type === 'MC' || apiModel.type === 'MS') ? apiModel.answerKey : undefined;
 
     return uiModel;
   }
@@ -169,7 +188,7 @@ export class AssessmentExamMapper {
   private mapClaimScaleScoreFromApi(apiScaleScore: any): ClaimScore {
     let uiModel: ClaimScore = new ClaimScore();
 
-    if(apiScaleScore) {
+    if (apiScaleScore) {
       uiModel.level = apiScaleScore.level;
       uiModel.score = apiScaleScore.value;
       uiModel.standardError = apiScaleScore.standardError;

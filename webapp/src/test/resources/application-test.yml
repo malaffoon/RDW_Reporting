@@ -1,23 +1,17 @@
-artifacts:
-  root: "classpath:"
-  exam-item:
-    directory: items/Item-{0}/
+app:
+  test-mode: true
+
+  state:
+    code: CA
+
+  iris:
+    url: http://my-iris.somewhere.org/iris/
 
 permissionservice:
   endpoint:
 
-app:
-  state:
-    code: CA
+spring:
+  datasource:
+    url-schema: reporting_test
+    maxWait: 10000
 
-  datamart:
-    datasource:
-      url: jdbc:mysql://localhost:3306/reporting_test?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
-      initialSize: 4
-      maxActive: 10
-      maxIdle: 10
-      maxWait: 10000
-
-  iris:
-    vendorId: vendorId
-    url: http://my-iris.somewhere.org/iris/

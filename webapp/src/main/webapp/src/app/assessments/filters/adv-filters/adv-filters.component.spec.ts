@@ -7,9 +7,12 @@ import { Component } from "@angular/core";
 import { FilterBy } from "../../model/filter-by.model";
 import { CommonModule } from "../../../shared/common.module";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
-import { Angulartics2Module, Angulartics2 } from "angulartics2";
-import { InformationLabelComponent } from "../../results/information-label.component";
+import { Angulartics2, Angulartics2Module } from "angulartics2";
 import { PopoverModule } from "ngx-bootstrap";
+import { User } from "../../../user/model/user.model";
+import { Configuration } from "../../../user/model/configuration.model";
+import { Observable } from "rxjs/Observable";
+import { UserService } from "../../../user/user.service";
 
 describe('AdvFiltersComponent', () => {
   let component: AdvFiltersComponent;
@@ -18,12 +21,18 @@ describe('AdvFiltersComponent', () => {
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
+  let config: Configuration = new Configuration();
+  config.transferAccess = false;
+  let user: User = new User();
+  user.configuration = config;
+  let mockUserService = jasmine.createSpyObj('UserService', ['getCurrentUser']);
+  mockUserService.getCurrentUser.and.callFake(() => Observable.of(user));
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         TestComponentWrapper,
-        AdvFiltersComponent,
-        InformationLabelComponent
+        AdvFiltersComponent
       ],
       imports: [
         HttpModule,
@@ -34,7 +43,8 @@ describe('AdvFiltersComponent', () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: Angulartics2, useValue: mockAngulartics2 }
+        { provide: Angulartics2, useValue: mockAngulartics2 },
+        { provide: UserService, useValue: mockUserService }
       ]
     })
       .compileComponents();
@@ -49,6 +59,20 @@ describe('AdvFiltersComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should detect transfer access enabled', (done) => {
+    component.ngOnInit();
+    expect(component.showTransferAccess).toBe(false);
+
+    config.transferAccess = true;
+    component.ngOnInit();
+    fixture.detectChanges();
+    fixture.whenStable()
+      .then(() => {
+        expect(component.showTransferAccess).toBe(true);
+        done();
+      });
   });
 });
 

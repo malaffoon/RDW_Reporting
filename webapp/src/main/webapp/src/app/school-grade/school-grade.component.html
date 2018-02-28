@@ -1,27 +1,29 @@
 <form [formGroup]="searchForm" (ngSubmit)="performSearch()" class="form-group">
   <div class="flex-children">
     <div class="flex-child grow">
-      <label>
+      <label for="search-school-name">
         {{'labels.school-grade.school-name.label' | translate}}
       </label>
-      <school-select [availableSchools]="availableSchools" (schoolChanged)="schoolChanged($event)"></school-select>
+      <sb-typeahead inputId="search-school-name"
+                    [options]="schoolOptions"
+                    (select)="schoolChanged($event)"
+                    placeholder="{{'prompt.select' | translate}}"></sb-typeahead>
     </div>
     <div class="flex-child">
       <label for="grade-select">{{'labels.grade' | translate}}</label>
       <select id="rdw-school-grade-select-grade" name="grade" formControlName="grade" id="grade-select" class="form-control">
-        <option disabled [ngValue]="selectNullOptionValue">{{'prompt.select' | translate}}</option>
-        <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay:'long-name'}}</option>
+        <option disabled [ngValue]="undefined">{{'prompt.select' | translate}}</option>
+        <option *ngFor="let grade of gradeOptions" [ngValue]="grade">{{grade.code | gradeDisplay:'long-name'}}</option>
       </select>
     </div>
     <div class="flex-child">
-      <button
+      <button type="submit"
         id="rdw-school-grade-submit"
-        type="submit"
-        [disabled]="searchForm.invalid || gradesAreUnavailable"
+        [disabled]="searchForm.invalid || noGradeOptionResults"
         class="btn btn-primary mt-md">{{'prompt.search' | translate}}</button>
     </div>
   </div>
 </form>
-<div *ngIf="gradesAreUnavailable" class="alert alert-danger">
+<div *ngIf="noGradeOptionResults" class="alert alert-danger">
   {{'labels.school-grade.messages.no-grades-available' | translate}}
 </div>

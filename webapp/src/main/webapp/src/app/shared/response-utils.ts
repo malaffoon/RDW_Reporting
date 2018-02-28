@@ -1,6 +1,8 @@
 import { Response } from "@angular/http";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import { NotFoundError } from "./not-found.error";
+import "rxjs/add/observable/of";
+
 /**
  * This class holds common response handling utility methods.
  */
@@ -31,6 +33,9 @@ export class ResponseUtils {
    * @param response the HTTP response
    */
   static throwError(response: Response): Observable<any> {
+    if (response.status === 401) {
+      return Observable.empty();
+    }
     let message: string = `${response.status} ${response.statusText}`;
     let error:Error = response.status == 404
       ? new NotFoundError(message)

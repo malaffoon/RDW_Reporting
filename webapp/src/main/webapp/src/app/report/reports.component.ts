@@ -1,10 +1,7 @@
-import { OnInit, Component, OnDestroy } from "@angular/core";
-import { saveAs } from "file-saver";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Report } from "./report.model";
 import { ActivatedRoute } from "@angular/router";
 import { ReportService } from "./report.service";
-import { Download } from "../shared/data/download.model";
-import { NotificationService } from "../shared/notification/notification.service";
 import { Resolution } from "../shared/resolution.model";
 import Timer = NodeJS.Timer;
 
@@ -17,15 +14,14 @@ import Timer = NodeJS.Timer;
 })
 export class ReportsComponent implements OnInit, OnDestroy {
 
-  public resolution: Resolution<Report[]>;
-  public reports: Report[];
+  resolution: Resolution<Report[]>;
+  reports: Report[];
 
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
 
   constructor(private route: ActivatedRoute,
-              private service: ReportService,
-              private notificationService: NotificationService) {
+              private service: ReportService) {
   }
 
   ngOnInit(): void {
@@ -44,12 +40,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.stopPollingStatus();
   }
 
-  private startPollingStatus() {
+  reload(): void {
+    window.location.reload();
+  }
+
+  private startPollingStatus(): void {
     this.statusPollingTimer = setInterval(() => {
 
       // get all report IDs for reports that are in progress
       let ids: number[] = this.reports
-        .filter(report => report.isProcessing())
+        .filter(report => report.processing)
         .map(report => report.id);
 
       // optimally only call API if there are reports that are in progress
@@ -89,30 +89,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }, this.statusPollingInterval);
   }
 
-  private stopPollingStatus() {
+  private stopPollingStatus(): void {
     if (this.statusPollingTimer != null) {
       clearInterval(this.statusPollingTimer);
     }
-  }
-
-  public reload() {
-    window.location.reload();
-  }
-
-  public getReport(report: Report) {
-    this.service.getBatchExamReport(report.id)
-      .subscribe(
-        (download: Download) => {
-          saveAs(download.content, download.name);
-        },
-        (error: any) => {
-          this.notificationService.error({ id: 'labels.reports.messages.download-failed' });
-        }
-      );
-  }
-
-  public regenerateReport(report: Report) {
-    this.notificationService.info({ id: 'labels.reports.messages.coming-soon.report-regeneration' });
   }
 
 }

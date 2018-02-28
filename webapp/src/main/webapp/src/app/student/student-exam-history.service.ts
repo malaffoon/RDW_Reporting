@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import { URLSearchParams } from "@angular/http";
-import { DataService } from "../shared/data/data.service";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Student } from "./model/student.model";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
 import { StudentHistoryExamWrapper } from "./model/student-history-exam-wrapper.model";
-import { School } from "../user/model/school.model";
 import { ResponseUtils } from "../shared/response-utils";
+import { DataService } from "../shared/data/data.service";
+
+const ServiceRoute = '/reporting-service';
 
 @Injectable()
 export class StudentExamHistoryService {
@@ -23,7 +24,7 @@ export class StudentExamHistoryService {
    * @returns {Observable<StudentExamHistory>} The student's exam history
    */
   findOneById(id: number): Observable<StudentExamHistory> {
-    return this.dataService.get(`/students/${id}/exams`)
+    return this.dataService.get(`${ServiceRoute}/students/${id}/exams`)
       .catch(ResponseUtils.badResponseToNull)
       .map((apiExamHistory) => {
         if (apiExamHistory == null) return null;
@@ -45,8 +46,9 @@ export class StudentExamHistoryService {
   existsBySsid(ssid: string): Observable<Student> {
     let params: URLSearchParams = new URLSearchParams();
     params.set('hasExams', 'true');
+    let trimmedSsid: string = ssid.trim();
 
-    return this.dataService.get(`/students/${ssid}`, {params: params})
+    return this.dataService.get(`${ServiceRoute}/students/${trimmedSsid}`, {params: params})
       .catch(ResponseUtils.badResponseToNull)
       .map((apiStudent) => {
         if (apiStudent == null) return null;
@@ -65,12 +67,6 @@ export class StudentExamHistoryService {
     let uiModel: StudentHistoryExamWrapper = new StudentHistoryExamWrapper();
     uiModel.assessment = this.assessmentMapper.mapAssessmentFromApi(apiExamWrapper.assessment);
     uiModel.exam = this.assessmentMapper.mapExamFromApi(apiExamWrapper.exam);
-
-    let apiSchool: any = apiExamWrapper.school;
-    let school: School = new School();
-    school.id = apiSchool.id;
-    school.name = apiSchool.name;
-    uiModel.school = school;
 
     return uiModel;
   }

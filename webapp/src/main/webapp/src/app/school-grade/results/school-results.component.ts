@@ -8,13 +8,15 @@ import { SchoolAssessmentService } from "./school-assessment.service";
 import { School } from "../../user/model/school.model";
 import { SchoolService } from "../school.service";
 import { Grade } from "../grade.model";
-import { isNullOrUndefined } from "util";
 import { Angulartics2 } from "angulartics2";
 import { AssessmentsComponent } from "../../assessments/assessments.component";
 import { TranslateService } from "@ngx-translate/core";
 import { CsvExportService } from "../../csv-export/csv-export.service";
-import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
 import { SchoolGradeDownloadComponent } from "../../report/school-grade-report-download.component";
+import { OrganizationService } from "../organization.service";
+import { Option } from "../../shared/form/sb-typeahead.component";
+import { Utils } from "../../shared/support/support";
+import { SchoolAssessmentExportService } from "./school-assessment-export.service";
 
 @Component({
   selector: 'app-group-results',
@@ -32,7 +34,8 @@ export class SchoolResultsComponent implements OnInit {
   schools: School[];
   assessmentExams: AssessmentExam[] = [];
   availableAssessments: Assessment[] = [];
-  availableSchools: any[];
+  schoolOptions: Option[] = [];
+  schoolIsAvailable: boolean = true;
 
   availableGrades: Grade[];
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
@@ -44,44 +47,50 @@ export class SchoolResultsComponent implements OnInit {
 
   /**
    * The currently selected school
-|  */
-  get currentSchool() {
+   |  */
+  get currentSchool(): School {
     return this._currentSchool;
   }
 
-  set currentSchool(value) {
+  set currentSchool(value: School) {
     this._currentSchool = value;
 
-    if(!isNullOrUndefined(value))
+    if (!Utils.isNullOrUndefined(value)) {
       this.assessmentProvider.schoolId = value.id;
+      this.assessmentProvider.schoolName = value.name;
+      this.assessmentExporter.schoolId = value.id;
+      this.assessmentExporter.schoolName = value.name;
+    }
   }
 
   /**
    * The currently selected grade.
    * @returns {Grade}
    */
-  get currentGrade() {
+  get currentGrade(): Grade {
     return this._currentGrade;
   }
 
   set currentGrade(value: Grade) {
     this._currentGrade = value;
-
-    if(!isNullOrUndefined(value))
-      this.assessmentProvider.gradeId = value.id;
+    if (!Utils.isNullOrUndefined(value)) {
+      this.assessmentProvider.grade = value;
+      this.assessmentExporter.grade = value;
+    }
   }
 
   /**
    * The currently selected school year.
    * @returns {number}
    */
-  get currentSchoolYear() {
+  get currentSchoolYear(): number {
     return this._currentSchoolYear;
   }
 
-  set currentSchoolYear(value) {
+  set currentSchoolYear(value: number) {
     this._currentSchoolYear = value;
     this.assessmentProvider.schoolYear = value;
+    this.assessmentExporter.schoolYear = value;
   }
 
   constructor(private route: ActivatedRoute,
@@ -90,17 +99,27 @@ export class SchoolResultsComponent implements OnInit {
               private schoolService: SchoolService,
               private angulartics2: Angulartics2,
               private csvExportService: CsvExportService,
-              private translateService: TranslateService,
-              public assessmentProvider: SchoolAssessmentService) {
+              private translate: TranslateService,
+              public assessmentProvider: SchoolAssessmentService,
+              public assessmentExporter: SchoolAssessmentExportService,
+              private organizationService: OrganizationService) {
   }
 
   ngOnInit() {
     this.schools = this.route.snapshot.data[ "user" ].schools;
-    this.availableSchools = this.schools;
+    let schoolId = Number.parseInt(this.route.snapshot.params[ "schoolId" ]);
 
-    let schoolId = this.route.snapshot.params[ "schoolId" ];
-
-    this.currentSchool = this.schools.find(x => x.id == schoolId);
+    // get schools with districts
+    this.organizationService.getSchoolsWithDistricts()
+      .subscribe(schools => {
+        this.schoolOptions = schools.map(school => <Option>{
+          label: school.name,
+          group: school.districtName,
+          value: school
+        });
+        this.currentSchool = schools.find(x => x.id == schoolId);
+        this.schoolIsAvailable = this.currentSchool !== undefined;
+      });
 
     this.filterOptionService
       .getExamFilterOptions()
@@ -109,21 +128,18 @@ export class SchoolResultsComponent implements OnInit {
         this.currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
       });
 
-    if(this.currentSchool) {
-      this.schoolService
-        .findGradesWithAssessmentsForSchool(this.currentSchool)
-        .subscribe(grades => {
-          this.availableGrades = grades;
-          this.gradesAreUnavailable = this.availableGrades.length == 0;
-
-          this.currentGrade = this.availableGrades.find(grade => grade.id == this.route.snapshot.params[ "gradeId" ]);
-        });
-    }
+    this.schoolService
+      .findGradesWithAssessmentsForSchool(schoolId)
+      .subscribe(grades => {
+        this.availableGrades = grades;
+        this.gradesAreUnavailable = this.availableGrades.length == 0;
+        this.currentGrade = this.availableGrades.find(grade => grade.id == this.route.snapshot.params[ "gradeId" ]);
+      });
 
     this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
   }
 
-  updateAssessment(latestAssessment) {
+  updateAssessment(latestAssessment: AssessmentExam): void {
     this.assessmentExams = [];
 
     if (latestAssessment) {
@@ -131,55 +147,64 @@ export class SchoolResultsComponent implements OnInit {
     }
   }
 
-  schoolSelectChanged(school){
-    if(school) {
+  schoolSelectChanged(school: School): void {
+    if (school instanceof Event) {
+      return;
+    }
+    if (school && school.id) {
       this.currentSchool = school;
 
       this.schoolService
-        .findGradesWithAssessmentsForSchool(this.currentSchool)
+        .findGradesWithAssessmentsForSchool(this.currentSchool.id)
         .subscribe(grades => {
           this.availableGrades = grades;
           this.gradesAreUnavailable = this.availableGrades.length == 0;
 
           if (grades.length > 0) {
-            let grade = isNullOrUndefined(this.currentGrade)
+            let grade = Utils.isNullOrUndefined(this.currentGrade)
               ? undefined
               : this.availableGrades.find(grade => grade.id == this.currentGrade.id);
 
             // Try and keep the same grade selected, if it's available.
-            this.currentGrade = isNullOrUndefined(grade)
+            this.currentGrade = Utils.isNullOrUndefined(grade)
               ? grades[ 0 ]
               : grade;
-          }
-          else
+            this.updateRoute('School');
+          } else {
             this.currentGrade = undefined;
-
-          this.updateRoute('School');
+            this.assessmentExams = [];
+            this.gradesAreUnavailable = true;
+          }
         });
+    } else {
+      this.currentGrade = undefined;
+      this.assessmentExams = [];
+      this.gradesAreUnavailable = true;
     }
   }
 
-  updateRoute(changedFilter: string) {
+  updateRoute(changedFilter: string): void {
     let params: any = {};
     params.schoolYear = this.currentSchoolYear;
 
-    if(!isNullOrUndefined(this.currentGrade))
+    if (!Utils.isNullOrUndefined(this.currentGrade)) {
       params.gradeId = this.currentGrade.id;
+    }
 
-    this.router.navigate(['schools', this.currentSchool.id, params ]).then(() => {
+    this.router.navigate([ 'schools', this.currentSchool.id, params ]).then(() => {
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     });
 
     this.trackAnalyticsEvent(changedFilter);
   }
 
-  mapParamsToSchoolYear(params) {
+  mapParamsToSchoolYear(params): number {
     return Number.parseInt(params[ "schoolYear" ]) || this.filterOptions.schoolYears[ 0 ];
   }
 
   exportCsv(): void {
     let filename: string = this._currentSchool.name +
-      "-" + this.translateService.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
+      "-" + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
       "-" + new Date().toDateString();
 
     this.angulartics2.eventTrack.next({
@@ -189,42 +214,29 @@ export class SchoolResultsComponent implements OnInit {
       }
     });
 
-    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, filename);
+    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, this.filterOptions.ethnicities, filename);
   }
 
-  exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
-    let assessment: Assessment =exportRequest.assessmentExam.assessment;
-    let filename: string = this._currentSchool.name +
-      "-" + this.translateService.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
-      "-" + assessment.name +
-      "-ItemsByPoints" +
-      "-" + new Date().toDateString();
-
-    this.csvExportService.exportItemsByPointsEarned(exportRequest, filename);
-  }
-
-  private trackAnalyticsEvent(changedFilter: string) {
-    let details: any;
-
-    switch (changedFilter) {
-      case 'Year':
-        details = this.currentSchoolYear;
-        break;
-      case 'Grade':
-        details = this.currentGrade.code;
-        break;
-      case 'School':
-        details = this.currentSchool.name;
-        break;
-    }
-
+  private trackAnalyticsEvent(changedFilter: string): void {
     this.angulartics2.eventTrack.next({
       action: 'Change' + changedFilter,
       properties: {
         category: 'AssessmentResults',
-        label: details
+        label: this.getAnalyticsEventLabel(changedFilter)
       }
     });
+  }
+
+  private getAnalyticsEventLabel(changedFilter: string): string | number {
+    switch (changedFilter) {
+      case 'Year':
+        return this.currentSchoolYear;
+      case 'Grade':
+        return this.currentGrade.code;
+      case 'School':
+        return this.currentSchool.name;
+    }
+    return undefined;
   }
 
   /**
@@ -232,7 +244,10 @@ export class SchoolResultsComponent implements OnInit {
    *
    * @param downloader
    */
-  private initializeDownloader(downloader: SchoolGradeDownloadComponent): void {
+  initializeDownloader(downloader: SchoolGradeDownloadComponent): void {
+    downloader.title = this.translate.instant('labels.reports.form.title.multiple', {
+      name: this._currentSchool.name + ' ' + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`)
+    });
     downloader.options.schoolYear = this.currentSchoolYear;
   }
 

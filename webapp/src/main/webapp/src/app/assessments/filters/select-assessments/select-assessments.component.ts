@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Assessment } from "../../model/assessment.model";
 import * as _ from "lodash";
 import { ColorService } from "../../../shared/color.service";
@@ -34,9 +34,28 @@ export class SelectAssessmentsComponent {
     return GradeCode.getIndex(gradeCode);
   }
 
-  toggleSelectedAssessment(assessment: Assessment){
-    assessment.selected = !assessment.selected;
-    this.selectedAssessmentsChanged.emit(assessment);
+  toggleSelectedAssessment(assessment: Assessment) {
+    if (assessment.selected) {
+      this.deselectAssessment(assessment)
+    } else {
+      assessment.selected = true;
+      this.selectedAssessmentsChanged.emit(assessment);
+    }
+  }
+
+  private deselectAssessment(assessment: Assessment) {
+    let count = 0;
+    this._assessments.forEach(asmt => {
+        if (asmt.selected) {
+          count++;
+          if (count > 1) return;
+        }
+      }
+    );
+    if (count > 1) {
+      assessment.selected = false;
+      this.selectedAssessmentsChanged.emit(assessment);
+    }
   }
 
   private groupAssessmentsByGrade() {

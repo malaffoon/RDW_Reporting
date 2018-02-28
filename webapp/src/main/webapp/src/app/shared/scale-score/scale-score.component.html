@@ -1,0 +1,4 @@
+<span class="scale-score">
+  <span class="score">{{ score ? score : '-' }}</span>
+  <span *ngIf="score" class="error-band pl-xs">±{{ standardError | number:'1.0-0' }}</span>
+</span>

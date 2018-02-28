@@ -10,28 +10,27 @@ createDockerfile {
 
 dependencies {
     compile project(':rdw-reporting-common')
+    compile project(':rdw-reporting-common-web')
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
     optional 'org.springframework.boot:spring-boot-configuration-processor'
     runtime 'org.springframework.boot:spring-boot-devtools'
-    compile 'org.springframework.cloud:spring-cloud-starter-aws'
     compile 'org.springframework.boot:spring-boot-starter-aop'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-redis'
-    compile 'org.springframework.session:spring-session'
     compile 'org.springframework.cloud:spring-cloud-starter-config'
     compile 'org.springframework.cloud:spring-cloud-starter-zuul'
-    compile 'org.springframework.retry:spring-retry'
     compile 'org.springframework.security.extensions:spring-security-saml2-core'
+    compile 'org.springframework.session:spring-session'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
     compile 'com.google.guava:guava'
     compile 'mysql:mysql-connector-java'
-    compile 'org.apache.commons:commons-io'
+    compile 'commons-io:commons-io'
 
     testCompile project(path: ':rdw-reporting-common', configuration: 'tests')
     testCompile('org.springframework.boot:spring-boot-starter-test') {
@@ -41,8 +40,8 @@ dependencies {
 }
 
 node {
-    version = '7.10.0'
-    npmVersion = '4.5.0'
+    version = '8.9.1'
+    npmVersion = '5.5.1'
     download = true
     workDir = file("${project.projectDir}/src/main/webapp")
     nodeModulesDir = file("${project.projectDir}/src/main/webapp")
@@ -67,8 +66,12 @@ task buildFe(type: NpmTask) {
     outputs.dir('build/resources/static')
     dependsOn npm_install
     args = ['run', 'build']
+    // move build from dist to static resources
+    doLast {
+        copy { from "src/main/webapp/dist" into "src/main/resources/static" }
+        delete "src/main/webapp/dist"
+    }
 }
-
 
 task testFe(type: NpmTask) {
     inputs.files(fileTree("src/main/webapp/src"))
@@ -79,9 +82,9 @@ task testFe(type: NpmTask) {
     args = ['run', 'test-ci']
 }
 
-task gzipAllJs(dependsOn: buildFe) {
+task gzipBundles(dependsOn: buildFe) {
     doLast {
-        FileTree tree = fileTree(dir: "${project.projectDir}/src/main/resources/static/", include: "**/*.bundle.js")
+        FileTree tree = fileTree(dir: "${project.projectDir}/src/main/resources/static/", includes: ["**/*.bundle.js", "**/*.bundle.css"])
         tree.each { File file ->
             String fileName = file.getName()
             println "$fileName => ${fileName}.gz"
@@ -93,4 +96,4 @@ task gzipAllJs(dependsOn: buildFe) {
 // The processResources task takes care of gathering all of the resources in the project to the target directory.
 // In order to get the front end resources in to the final jar, the front end needs to be built
 // before all of the other resources are processed in order to get the static resouces in the right place
-processResources.dependsOn gzipAllJs
+processResources.dependsOn gzipBundles

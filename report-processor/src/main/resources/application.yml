@@ -5,24 +5,106 @@ management:
   security:
     enabled: false
 
-server:
-  port: 8080
-
 spring:
-
   batch:
-      job:
-        enabled: false
-
+    job:
+      enabled: false
   cache:
     type: SIMPLE
     cache-names: internalTranslationsByCode
+  cloud:
+    stream:
+      bindings:
+        ReportExportExamsOut:
+          content-type: application/json
+          destination: ReportExportExams
+          group: default
+          producer:
+            requiredGroups: default
 
+        ReportExportExamsIn:
+          content-type: application/json
+          destination: ReportExportExams
+          group: default
+
+        ReportFetchStudentsOut:
+          content-type: application/json
+          destination: ReportFetchStudents
+          group: default
+          producer:
+            requiredGroups: default
+
+        ReportFetchStudentsIn:
+          content-type: application/json
+          destination: ReportFetchStudents
+          group: default
+
+        ReportGenerateForStudentsOut:
+          content-type: application/json
+          destination: ReportGenerateForStudents
+          group: default
+          producer:
+            requiredGroups: default
+
+        ReportGenerateForStudentsIn:
+          content-type: application/json
+          destination: ReportGenerateForStudents
+          group: default
+          consumer:
+            concurrency: 2
+
+        ReportCollateOut:
+          content-type: application/json
+          destination: ReportCollate
+          group: default
+          producer:
+            requiredGroups: default
+
+        ReportCollateIn:
+          content-type: application/json
+          destination: ReportCollate
+          group: default
+
+        ReportAggregateReportsOut:
+          content-type: application/json
+          destination: ReportAggregateReports
+          group: default
+          producer:
+            requiredGroups: default
+
+        ReportAggregateReportsIn:
+          content-type: application/json
+          destination: ReportAggregateReports
+          group: default
+
+        AggregateRequest:
+          content-type: application/json
+          group: default
+          producer:
+            requiredGroups: default
+
+        AggregateResponse:
+          content-type: application/json
+          group: default
+          producer:
+            requiredGroups: default
+  datasource:
+    url: "\
+      jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting}\
+      ?useSSL=${spring.datasource.use-ssl:false}\
+      &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
+      &characterEncoding=${spring.datasource.character-encoding:utf8}\
+      "
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
   jackson:
       default-property-inclusion: non_null
       serialization:
         WRITE_DATES_AS_TIMESTAMPS: false
-
   thymeleaf:
     mode: HTML
 
@@ -38,24 +120,28 @@ cloud:
       instance-profile: false
 
 app:
+  school-year : 2018
   state:
     code: CA
 
   archive:
     root: file:///tmp/
 
-  datamart:
-    datasource:
-      url: jdbc:mysql://localhost:3306/reporting?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
-      username: root
-      password:
-      testWhileIdle: true
-      validationQuery: SELECT 1
-      driverClassName: com.mysql.jdbc.Driver
-      initialize: false
-
   wkhtmltopdf:
     url: http://localhost:8082
     options:
       page-size: Letter
       zoom: 0.75
+
+task:
+# by default, all tasks are disabled for local dev environment; uncomment and set secrets/hosts to test.
+#  remove-stale-reports:
+##### at seconds: (0), minutes: (0), hour: (8), every day of month (*), every month (*), every day of week (*).
+##### This runs at 8am GMT, regardless of the server's timezone setting
+#    cron: 0 0 8 * * *
+#    max-report-lifetime-days: 30
+#    max-random-minutes: 20
+
+jwt:
+  secret: ${rdw.reporting.jwt.secret:secret}
+

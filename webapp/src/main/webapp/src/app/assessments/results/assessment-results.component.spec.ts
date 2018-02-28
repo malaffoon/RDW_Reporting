@@ -2,49 +2,27 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { AssessmentResultsComponent } from "./assessment-results.component";
 import { APP_BASE_HREF } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
-import { FormsModule } from "@angular/forms";
-import { HttpModule } from "@angular/http";
-import { Component, EventEmitter } from "@angular/core";
-import { SharedModule } from "primeng/components/common/shared";
-import { DataTableModule } from "primeng/components/datatable/datatable";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { Component, NO_ERRORS_SCHEMA } from "@angular/core";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
-import { RemoveCommaPipe } from "../../shared/remove-comma.pipe";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
-import { ScaleScoreComponent } from "./scale-score.component";
-import { AverageScaleScoreComponent } from "./average-scale-score.component";
-import { InformationLabelComponent } from "./information-label.component";
-import { ItemViewerComponent } from "../items/item-viewer/item-viewer.component";
-import { ItemTabComponent } from "../items/item-tab.component";
-import { TabsModule, PopoverModule } from "ngx-bootstrap";
 import { Student } from "../../student/model/student.model";
-import { PopupMenuComponent } from "../menu/popup-menu.component";
-import { GradeDisplayPipe } from "../../shared/grade-display.pipe";
 import { ColorService } from "../../shared/color.service";
-import { Angulartics2Module, Angulartics2 } from "angulartics2";
-import { ItemExemplarComponent } from "../items/item-exemplar/item-exemplar.component";
-import { ItemScoresComponent } from "../items/item-scores/item-scores.component";
+import { Angulartics2 } from "angulartics2";
 import { TestModule } from "../../../test/test.module";
-import { ItemInfoComponent } from "../items/item-info/item-info.component";
-import { ScaleScoreService } from "../../shared/scale-score.service";
-import { ReportService } from "../../report/report.service";
 import { MockDataService } from "../../../test/mock.data.service";
+import { CommonModule } from "../../shared/common.module";
+import { InstructionalResourcesService } from "./instructional-resources.service";
+import { CachingDataService } from "../../shared/data/caching-data.service";
 import { DataService } from "../../shared/data/data.service";
-import { NotificationService } from "../../shared/notification/notification.service";
-import { Notification } from "../../shared/notification/notification.model";
-import { ItemInfoService } from "../items/item-info/item-info.service";
-import { UserService } from "../../user/user.service";
-import { UserMapper } from "../../user/user.mapper";
-import { CachingDataService } from "../../shared/cachingData.service";
-import { ClaimTargetComponent } from "./claim-target.component";
+import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
   let dataService: MockDataService;
-  let service: MockNotificationService;
 
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
@@ -54,47 +32,27 @@ describe('AssessmentResultsComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
-        DataTableModule,
-        FormsModule,
-        HttpModule,
-        PopoverModule.forRoot(),
-        SharedModule,
-        TabsModule,
+        NoopAnimationsModule,
+        CommonModule,
         TranslateModule.forRoot(),
-        Angulartics2Module,
         TestModule
       ],
       declarations: [
         AssessmentResultsComponent,
-        GradeDisplayPipe,
-        InformationLabelComponent,
-        ItemTabComponent,
-        ItemViewerComponent,
-        ItemInfoComponent,
-        ItemExemplarComponent,
-        ItemScoresComponent,
-        PopupMenuComponent,
-        RemoveCommaPipe,
-        ScaleScoreComponent,
-        AverageScaleScoreComponent,
-        TestComponentWrapper,
-        ClaimTargetComponent
+        TestComponentWrapper
       ],
-      providers: [ { provide: APP_BASE_HREF, useValue: '/' },
+      providers: [
+        { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
         ColorService,
-        ScaleScoreService,
-        ReportService,
-        { provide: DataService, useValue: dataService },
-        { provide: NotificationService, useValue: service },
-        ItemInfoService,
-        UserService,
-        UserMapper,
-        { provide: CachingDataService, useValue: dataService }
-      ]
+        InstructionalResourcesService,
+        CachingDataService,
+        DataService,
+        AssessmentPercentileService
+      ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponentWrapper);
@@ -172,6 +130,4 @@ class TestComponentWrapper {
   assessment = new AssessmentExam();
 }
 
-class MockNotificationService {
-  onNotification: EventEmitter<Notification> = new EventEmitter();
-}
+

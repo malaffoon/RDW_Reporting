@@ -1,10 +1,12 @@
 import { Component, Input } from "@angular/core";
 import { ReportService } from "./report.service";
-import { saveAs } from "file-saver";
 import { ReportDownloadComponent } from "./report-download.component";
-import { Download } from "../shared/data/download.model";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Student } from "../student/model/student.model";
+import { Report } from "./report.model";
+import { Observable } from "rxjs/Observable";
+import { TranslateService } from "@ngx-translate/core";
+import { UserService } from "../user/user.service";
 
 /**
  * Component used for single-student exam report download
@@ -16,32 +18,22 @@ import { Student } from "../student/model/student.model";
 export class StudentReportDownloadComponent extends ReportDownloadComponent {
 
   @Input()
-  public student: Student;
+  student: Student;
 
-  constructor(private service: ReportService, notificationService: NotificationService) {
-    super('labels.reports.button-label.student', notificationService);
+  constructor(notificationService: NotificationService,
+              userService: UserService,
+              private service: ReportService,
+              private translate: TranslateService) {
+    super(notificationService, userService);
+    this.displayOrder = false;
   }
 
-  public submit(): void {
+  createReport(): Observable<Report> {
+    return this.service.createStudentExamReport(this.student, this.options);
+  }
 
-    this.popover.hide();
-
-    this.notificationService.info({ id: 'labels.reports.messages.submitted-single' });
-
-    this.service.getStudentExamReport(this.student.id, this.options)
-      .subscribe(
-        (download: Download) => {
-          saveAs(download.content, download.name);
-        },
-        (error: any) => {
-          this.notificationService.error({
-            id: error.name === 'NotFoundError'
-              ? 'labels.reports.messages.404'
-              : 'labels.reports.messages.500'
-          });
-        }
-      )
-    ;
+  generateName(): string {
+    return this.translate.instant('labels.personName', this.student);
   }
 
 }

@@ -1,10 +1,10 @@
 import { AssessmentType } from "../../shared/enum/assessment-type.enum";
-import { isNullOrUndefined } from "util";
 import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
+import { Utils } from "../../shared/support/support";
 
 export class Assessment {
   id: number;
-  name: string;
+  label: string;
   resourceUrl: string;
   grade: string;
   type: AssessmentType;
@@ -13,12 +13,16 @@ export class Assessment {
   claimCodes: string[];
   cutPoints: number[];
 
+  get typeCode(): string {
+    return Utils.toAssessmentTypeCode(this.type);
+  }
+
   get assessmentSubjectType(): AssessmentSubjectType {
     return AssessmentSubjectType[this.subject];
   }
 
   get hasResourceUrl(): boolean {
-    return !isNullOrUndefined(this.resourceUrl);
+    return !Utils.isNullOrUndefined(this.resourceUrl);
   }
 
   get isIab(): boolean {
@@ -35,5 +39,13 @@ export class Assessment {
 
   get isSummative(): boolean {
     return this.type == AssessmentType.SUMMATIVE;
+  }
+
+  get isEla(): boolean {
+    return this.assessmentSubjectType == AssessmentSubjectType.ELA;
+  }
+
+  get isMath(): boolean {
+    return this.assessmentSubjectType == AssessmentSubjectType.MATH;
   }
 }

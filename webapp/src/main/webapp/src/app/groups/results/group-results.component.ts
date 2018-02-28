@@ -2,14 +2,14 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AssessmentExam } from "../../assessments/model/assessment-exam.model";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
-import { Assessment } from "../../assessments/model/assessment.model";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { GroupAssessmentService } from "./group-assessment.service";
 import { Angulartics2 } from "angulartics2";
 import { AssessmentsComponent } from "../../assessments/assessments.component";
 import { CsvExportService } from "../../csv-export/csv-export.service";
-import { ItemByPointsEarnedExportRequest } from "../../assessments/model/item-by-points-earned-export-request.model";
 import { GroupReportDownloadComponent } from "../../report/group-report-download.component";
+import { Group } from "../../user/model/group.model";
+import { GroupAssessmentExportService } from "./group-assessment-export.service";
 
 @Component({
   selector: 'app-group-results',
@@ -20,20 +20,19 @@ export class GroupResultsComponent implements OnInit {
   @ViewChild(AssessmentsComponent)
   assessmentsComponent: AssessmentsComponent;
 
-  groups;
+  groups: Group[];
   assessmentExams: AssessmentExam[] = [];
-  availableAssessments: Assessment[] = [];
-  assessmentsLoading: any[] = [];
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
 
-  get currentGroup() {
+  get currentGroup(): Group {
     return this._currentGroup;
   }
 
-  set currentGroup(value) {
+  set currentGroup(value: Group) {
     this._currentGroup = value;
     if(this._currentGroup) {
-      this.assessmentProvider.groupId = this._currentGroup.id;
+      this.assessmentProvider.group = this._currentGroup;
+      this.assessmentExporter.group = this._currentGroup;
     }
   }
 
@@ -46,10 +45,6 @@ export class GroupResultsComponent implements OnInit {
     this.assessmentProvider.schoolYear = value;
   }
 
-  get selectedAssessments() {
-    return this.availableAssessments.filter(x => x.selected);
-  }
-
   private _currentGroup;
   private _currentSchoolYear;
 
@@ -58,7 +53,8 @@ export class GroupResultsComponent implements OnInit {
               private filterOptionService: ExamFilterOptionsService,
               private angulartics2: Angulartics2,
               private csvExportService: CsvExportService,
-              public assessmentProvider: GroupAssessmentService) {
+              public assessmentProvider: GroupAssessmentService,
+              public assessmentExporter: GroupAssessmentExportService) {
   }
 
   ngOnInit() {
@@ -104,16 +100,6 @@ export class GroupResultsComponent implements OnInit {
     let filename: string = this.currentGroup.name +
       "-" + new Date().toDateString();
 
-    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, filename);
-  }
-
-  exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest): void {
-    let assessment: Assessment =exportRequest.assessmentExam.assessment;
-    let filename: string = this.currentGroup.name +
-      "-" + assessment.name +
-      "-ItemsByPoints" +
-      "-" + new Date().toDateString();
-
     this.angulartics2.eventTrack.next({
       action: 'Export Group Results',
       properties: {
@@ -121,7 +107,7 @@ export class GroupResultsComponent implements OnInit {
       }
     });
 
-    this.csvExportService.exportItemsByPointsEarned(exportRequest, filename);
+    this.csvExportService.exportAssessmentExams(this.assessmentsComponent.assessmentExams, this.assessmentsComponent.clientFilterBy, this.filterOptions.ethnicities, filename);
   }
 
   /**
@@ -129,7 +115,7 @@ export class GroupResultsComponent implements OnInit {
    *
    * @param downloader
    */
-  private initializeDownloader(downloader: GroupReportDownloadComponent): void {
+  initializeDownloader(downloader: GroupReportDownloadComponent): void {
     downloader.options.schoolYear = this.currentSchoolYear;
   }
 

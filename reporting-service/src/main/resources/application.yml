@@ -1,0 +1,85 @@
+# actuator end-points should be served from a different port than the API/web content
+management:
+  port: 8008
+  security:
+    enabled: false
+
+server:
+  # tomcat settings for reasonable performance: adjust for tiny/huge configurations
+  tomcat:
+    max-connections: 0
+    max-threads: 4
+    accept-count: 10
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
+
+spring:
+  datasource:
+    url: "\
+      jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting}\
+      ?useSSL=${spring.datasource.use-ssl:false}\
+      &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
+      &characterEncoding=${spring.datasource.character-encoding:utf8}\
+      &useCompression=${spring.datasource.use-compression:true}\
+      "
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  resources:
+    chain:
+      enabled: true
+      gzipped: true
+
+cloud:
+  aws:
+    credentials:
+      #AWS credentials are necessary if reading assessment files from S3
+      accessKey: ${rdw.aws.access.key:}
+      secretKey: ${rdw.aws.secret.key:}
+      instance-profile: false
+    region:
+      auto: false
+      static: us-west-2
+    # disable CloudFormation stuff
+    stack:
+      auto: false
+
+artifacts:
+  #Root location of assessment files [s3://some-bucket/ | classpath: | etc]
+  root: ${rdw.resource.root:"classpath:"}
+  exam-item:
+    directory: ${rdw.reporting.artifacts.exam.item.directory:local/items/Item-{0}/}
+    file-name: item-{0}.xml
+
+app:
+  school-year: 2018
+  state:
+    code: CA
+    name: California
+
+  iris:
+    vendorId: ${rdw.reporting.iris.vendorId}
+
+  # google analytics configuration
+  analytics:
+    trackingId: ${rdw.reporting.analytics.trackingId:}
+
+  external-links:
+    interpretive-guide: https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf
+    user-guide: https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf
+
+  min-item-data-year: 2016
+
+jwt:
+  secret: ${rdw.reporting.jwt.secret:secret}
+

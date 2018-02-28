@@ -1,4 +1,4 @@
-import { OnInit, Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { StudentExamHistory } from "../model/student-exam-history.model";
 import { StudentResultsFilterState } from "./model/student-results-filter-state.model";
@@ -13,6 +13,8 @@ import { Angulartics2 } from "angulartics2";
 import { UserService } from "../../user/user.service";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
 import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
+import { Utils } from "../../shared/support/support";
+import { ReportingEmbargoService } from "../../shared/embargo/reporting-embargo.service";
 
 @Component({
   selector: 'student-results',
@@ -26,6 +28,8 @@ export class StudentResultsComponent implements OnInit {
   examsByTypeAndSubject: Map<AssessmentType, Map<string, StudentHistoryExamWrapper[]>> = new Map();
   displayState: any = {};
   minimumItemDataYear: number;
+  hasResults: boolean;
+  exportDisabled: boolean = true;
 
   private typeDisplayOrder: AssessmentType[] = [AssessmentType.IAB, AssessmentType.ICA, AssessmentType.SUMMATIVE];
 
@@ -44,7 +48,8 @@ export class StudentResultsComponent implements OnInit {
               private router: Router,
               private angulartics2: Angulartics2,
               private userService: UserService,
-              private examFilterService: ExamFilterService) {
+              private examFilterService: ExamFilterService,
+              private embargoService: ReportingEmbargoService) {
   }
 
   ngOnInit(): void {
@@ -58,6 +63,12 @@ export class StudentResultsComponent implements OnInit {
     this.userService.getCurrentUser().subscribe(user => {
       this.minimumItemDataYear = user.configuration.minItemDataYear;
     });
+
+    this.embargoService.isEmbargoed().subscribe(
+      embargoed => {
+        this.exportDisabled = embargoed;
+      }
+    );
   }
 
   /**
@@ -135,6 +146,8 @@ export class StudentResultsComponent implements OnInit {
       this.filterState.filterBy
     );
 
+    this.hasResults = filteredExams.length != 0;
+
     let examsByTypeAndSubject: Map<AssessmentType, Map<string, StudentHistoryExamWrapper[]>> = new Map();
     filteredExams.forEach((wrapper) => {
       let type: AssessmentType = wrapper.assessment.type;
@@ -145,7 +158,7 @@ export class StudentResultsComponent implements OnInit {
       byType.set(subject, bySubject);
       examsByTypeAndSubject.set(type, byType);
 
-      //Initialize collapse state if it doesn't exist
+      // Initialize collapse state if it doesn't exist
       this.displayState[type] = this.displayState[type] || {};
       this.displayState[type][subject] = this.displayState[type][subject] || {};
       this.displayState[type][subject].collapsed = this.displayState[type][subject].collapsed || false;
@@ -248,12 +261,12 @@ export class StudentResultsComponent implements OnInit {
    *
    * @param downloader
    */
-  private initializeDownloader(downloader: StudentReportDownloadComponent): void {
+  initializeDownloader(downloader: StudentReportDownloadComponent): void {
     if (this.filterState.schoolYear != 0) {
       downloader.options.schoolYear = this.filterState.schoolYear;
     }
     if (this.filterState.subject !== '') {
-      downloader.options.subject = AssessmentSubjectType[this.filterState.subject];
+      downloader.options.subject = Utils.toSubjectCode(AssessmentSubjectType[ this.filterState.subject ]);
     }
   }
 

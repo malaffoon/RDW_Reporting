@@ -11,12 +11,7 @@ ng test
 ### Run ###
 ```
 #!bash
-ng serve --proxy-config /opt/rdw-reporting/config/proxy.conf.json
-```
-To run in standalone mode with static data, add the below arguments:
-```
-#!bash
-ng serve --target=development --environment=standalone
+ng start
 ```
 ### Integration Test ###
 ```
@@ -51,7 +46,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew install node
 
 # install angular cli
-npm install -g angular-cli
+npm install -g @angular/cli
 
 # create angular app in directory called "client"
 ng new client

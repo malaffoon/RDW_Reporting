@@ -1,0 +1,21 @@
+import { Observable } from "rxjs/Observable";
+import { Http, Response } from "@angular/http";
+import { TranslateService } from "@ngx-translate/core";
+import { Injectable } from "@angular/core";
+import { Download } from "../../../../shared/data/download.model";
+
+@Injectable()
+export class FileFormatService {
+
+  constructor(private http: Http, private translate: TranslateService) {
+  }
+
+  public getTemplateFile(): Observable<any> {
+    return this.http.get('/assets/template/groups-template.csv')
+      .map((response: Response) => new Download(
+        this.translate.instant('labels.admin-groups.import.file-format.template.file'),
+        new Blob([ response.text() ], { type: 'text/csv; charset=utf-8' })
+      ));
+  }
+
+}

@@ -25,12 +25,33 @@ saml:
     include-server-port: false
 
 server:
-  # straw-man values for restricting resource utilization
+  # tomcat settings for reasonable performance: adjust for tiny/huge configurations
   tomcat:
-    max-connections: 100
-    max-threads: 20
+    max-connections: 0
+    max-threads: 4
+    accept-count: 10
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
 
 spring:
+  datasource:
+    url: "\
+      jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting}\
+      ?useSSL=${spring.datasource.use-ssl:false}\
+      &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
+      &characterEncoding=${spring.datasource.character-encoding:utf8}\
+      &useCompression=${spring.datasource.use-compression:true}\
+      "
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+
   resources:
     chain:
       enabled: true
@@ -39,6 +60,7 @@ spring:
   session:
     store-type: none
 
+  # still need this for translations api
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -46,34 +68,10 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: permissionsByRole, internalTranslationsByCode
-
-  thymeleaf:
-    mode: HTML
+    cache-names: permissionsByRole, internalTranslationsByCode, mergeTranslations
 
 security:
   filter-dispatcher-types: FORWARD, INCLUDE, REQUEST, ASYNC, ERROR
-
-cloud:
-  aws:
-    credentials:
-      #AWS credentials are necessary if reading assessment files from S3
-      accessKey: ${rdw.aws.access.key:}
-      secretKey: ${rdw.aws.secret.key:}
-      instance-profile: false
-    region:
-      auto: false
-      static: us-west-2
-    # disable CloudFormation stuff
-    stack:
-      auto: false
-
-artifacts:
-  #Root location of assessment files [s3://some-bucket/ | classpath: | etc]
-  root: ${rdw.resource.root:"classpath:"}
-  exam-item:
-    directory: ${rdw.reporting.artifacts.exam.item.directory:local/items/Item-{0}/}
-    file-name: item-{0}.xml
 
 permissionservice:
   component: Reporting
@@ -82,41 +80,9 @@ permissionservice:
 app:
   state:
     code: CA
-
-  datamart:
-    datasource:
-      url: jdbc:mysql://localhost:3306/reporting?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&useCompression=true
-      username: root
-      password:
-      testWhileIdle: true
-      validationQuery: SELECT 1
-      driverClassName: com.mysql.jdbc.Driver
-      initialize: false
-
+    name: California
   iris:
-    vendorId: ${rdw.reporting.iris.vendorId}
     url: ${rdw.reporting.iris.url}
-
-  # google analytics configuration
-  analytics:
-    trackingId: ${rdw.reporting.analytics.trackingId:}
-
-  wkhtmltopdf:
-    url: http://localhost:8082
-    options:
-      page-size: Letter
-      zoom: 0.75
-
-  reportservice:
-    url: http://localhost:8083
-
-  admin-webapp-url:
-
-  external-links:
-    interpretive-guide: https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf
-    user-guide: https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf
-
-  min-item-data-year: 2016
 
 # Netflix zuul configuration.
 zuul:
@@ -130,3 +96,24 @@ zuul:
       path: /iris/**
       url: ${app.iris.url}
       stripPrefix: true
+    admin-service:
+      path: /api/admin-service/**
+      url: http://localhost:8280
+      stripPrefix: true
+    aggregate-service:
+      path: /api/aggregate-service/**
+      url: http://localhost:8380
+      stripPrefix: true
+    report-processor:
+      path: /api/report-processor/**
+      url: http://localhost:8085
+      stripPrefix: true
+    reporting-service:
+      path: /api/reporting-service/**
+      url: http://localhost:8180
+      stripPrefix: true
+
+jwt:
+  secret: ${rdw.reporting.jwt.secret:secret}
+  producer: true
+  routePaths: ${zuul.routes.admin-service.path},${zuul.routes.aggregate-service.path},${zuul.routes.report-processor.path},${zuul.routes.reporting-service.path}

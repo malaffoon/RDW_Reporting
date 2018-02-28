@@ -4,7 +4,7 @@ import { StudentExamHistoryService } from "./student-exam-history.service";
 import { CommonModule } from "../shared/common.module";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/components/common/shared";
 import { StudentResultsComponent } from "./results/student-results.component";
 import { StudentExamHistoryResolve } from "./results/student-exam-history.resolve";
@@ -12,7 +12,7 @@ import { AssessmentsModule } from "../assessments/assessments.module";
 import { StudentResultsFilterComponent } from "./results/student-results-filter.component";
 import { DataTableModule } from "primeng/components/datatable/datatable";
 import { StudentHistoryIABTableComponent } from "./results/tables/student-history-iab-table.component";
-import { StudentHistoryICASummitiveTableComponent } from "./results/tables/student-history-ica-summitive-table.component";
+import { StudentHistoryICASummativeTableComponent } from "./results/tables/student-history-ica-summative-table.component";
 import { Angulartics2Module } from "angulartics2";
 import { StudentResponsesComponent } from "./responses/student-responses.component";
 import { StudentResponsesService } from "./responses/student-responses.service";
@@ -23,6 +23,8 @@ import { StudentHistoryResponsesStudentResolve } from "./responses/student-histo
 import { CsvModule } from "../csv-export/csv-export.module";
 import { ReportModule } from "../report/report.module";
 import { PopoverModule } from "ngx-bootstrap";
+import { UserModule } from "../user/user.module";
+import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
 
 @NgModule({
   declarations: [
@@ -31,21 +33,23 @@ import { PopoverModule } from "ngx-bootstrap";
     StudentResultsComponent,
     StudentResultsFilterComponent,
     StudentHistoryIABTableComponent,
-    StudentHistoryICASummitiveTableComponent
+    StudentHistoryICASummativeTableComponent
   ],
   imports: [
+    Angulartics2Module.forChild(),
     AssessmentsModule,
-    CommonModule,
-    CsvModule,
     BrowserAnimationsModule,
     BrowserModule,
+    CommonModule,
+    CsvModule,
     DataTableModule,
     FormsModule,
     PopoverModule.forRoot(),
     ReactiveFormsModule,
+    RdwMenuModule,
+    ReportModule,
     SharedModule,
-    Angulartics2Module.forChild(),
-    ReportModule
+    UserModule
   ],
   exports: [
     StudentComponent,

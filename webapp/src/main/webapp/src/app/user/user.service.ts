@@ -1,38 +1,39 @@
 import { Injectable } from "@angular/core";
 import { UserMapper } from "./user.mapper";
-import { CachingDataService } from "../shared/cachingData.service";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import { User } from "./model/user.model";
-import { isNullOrUndefined } from "util";
-import { ResponseUtils } from "../shared/response-utils";
-import { ErrorObservable } from "rxjs/observable/ErrorObservable";
+import { CachingDataService } from "../shared/data/caching-data.service";
+import { Utils } from "../shared/support/support";
+
+const ServiceRoute = '/reporting-service';
 
 @Injectable()
 export class UserService {
-  constructor(private _mapper: UserMapper, private _dataService: CachingDataService) {
-  }
 
   private currentUser: User;
   private currentUserObservable: Observable<User>;
 
+  constructor(private _mapper: UserMapper,
+              private _dataService: CachingDataService) {
+  }
+
   getCurrentUser(): Observable<User> {
     // currentUser has already been populated, return that.
-    if(!isNullOrUndefined(this.currentUser))
+    if(!Utils.isNullOrUndefined(this.currentUser)) {
       return Observable.of(this.currentUser);
-
+    }
     // currentUser is not populated and a request is not in progress.
-    if(isNullOrUndefined(this.currentUserObservable)) {
+    if(Utils.isNullOrUndefined(this.currentUserObservable)) {
       this.currentUserObservable = this._dataService
-        .get("/user")
+        .get(`${ServiceRoute}/user`)
         .catch(res => {
           return Observable.of(null);
         })
         .share()
         .map(user => {
-          if(isNullOrUndefined(user)) {
+          if(Utils.isNullOrUndefined(user)) {
             return null;
           }
-
           return this._mapper.mapFromApi(user)
         });
 
@@ -43,10 +44,21 @@ export class UserService {
     return this.currentUserObservable;
   }
 
+  doesCurrentUserHaveAnyPermissions(): Observable<boolean> {
+    return new Observable(observer => {
+      this.getCurrentUser().subscribe(user => {
+        observer.next(!Utils.isNullOrUndefined(user)
+          ? user.permissions.length !== 0
+          : false);
+        observer.complete();
+      });
+    });
+  }
+
   doesCurrentUserHaveAtLeastOnePermission(permissions: string[]): Observable<boolean> {
     return new Observable(observer => {
       this.getCurrentUser().subscribe(user => {
-        observer.next(!isNullOrUndefined(user)
+        observer.next(!Utils.isNullOrUndefined(user)
           ? this.doesAtLeastOneExist(permissions, user.permissions)
           : false);
         observer.complete();

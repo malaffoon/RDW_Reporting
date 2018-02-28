@@ -6,34 +6,47 @@
 
   <!-- Test Filters -->
   <div id="filter-by-test" class="flex-child">
-    <p class="gray-darker border-bottom">{{ translateRoot + 'test.label' | translate }}</p>
+    <p class="border-bottom">{{ translateRoot + 'test.label' | translate }}</p>
     <div class="block-children">
-      <label>
-          <span info-label
-                title="{{ translateRoot + 'test.off-grade-assessment' | translate }}"
-                content="{{ translateRoot + 'test.off-grade-assessment-info' | translate }}"></span>
-      </label>
-      <div id="btn-group-off-grade-assessment" class="btn-group btn-group-sm toggle-group" data-toggle="buttons">
-        <label class="btn btn-primary" [ngClass]="{'active': !filterBy.offGradeAssessment}">
-          <input [value]="false" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle"
-                 angulartics2On="click" angularticsEvent="FilterClick" angularticsCategory="AdvancedFilters" [angularticsProperties]="{label: 'Off-Grade: Show'}">{{ 'buttons.visibility.show' | translate }}
+      <!-- Off-Grade Assessments -->
+      <div class="block-children">
+        <label for="off-grade-assessment-toggle">
+            <span info-button
+                  title="{{ translateRoot + 'test.off-grade-assessment' | translate }}"
+                  content="{{ translateRoot + 'test.off-grade-assessment-info' | translate }}"></span>
         </label>
-        <label class="btn btn-primary" [ngClass]="{'active': filterBy.offGradeAssessment}">
-          <input [value]="true" [(ngModel)]="filterBy.offGradeAssessment" type="radio" name="boolean-toggle"
-                 angulartics2On="click" angularticsEvent="FilterClick" angularticsCategory="AdvancedFilters" [angularticsProperties]="{label: 'Off-Grade: Hide'}">{{ 'buttons.visibility.hide' | translate }}
+        <sb-radio-button-group name="off-grade-assessment-toggle"
+                   [(ngModel)]="filterBy.offGradeAssessment"
+                   [options]="[
+                           {value: false, text: 'buttons.visibility.show' | translate, analyticsProperties: {label: 'Off-Grade: Show'}},
+                           {value: true, text: 'buttons.visibility.hide' | translate, analyticsProperties: {label: 'Off-Grade: Hide'}}
+                         ]"></sb-radio-button-group>
+      </div>
+      <!-- Transfer Assessments -->
+      <div class="block-children" *ngIf="showStudentFilter && showTransferAccess">
+        <label for="transfer-assessment-toggle">
+            <span info-button
+                  title="{{ translateRoot + 'test.transfer-assessment' | translate }}"
+                  content="{{ translateRoot + 'test.transfer-assessment-info' | translate }}"></span>
         </label>
+        <sb-radio-button-group name="transfer-assessment-toggle"
+                   [(ngModel)]="filterBy.transferAssessment"
+                   [options]="[
+                           {value: false, text: 'buttons.visibility.show' | translate, analyticsProperties: {label: 'Transfer-Assessment: Show'}},
+                           {value: true, text: 'buttons.visibility.hide' | translate, analyticsProperties: {label: 'Transfer-Assessment: Hide'}}
+                         ]"></sb-radio-button-group>
       </div>
     </div>
   </div>
 
   <!-- Status Filters -->
   <div id="filter-by-status" class="flex-child">
-    <p class="gray-darker border-bottom">{{ translateRoot + 'status.label' | translate }}</p>
+    <p class="border-bottom">{{ translateRoot + 'status.label' | translate }}</p>
     <div class="block-children">
       <!-- Manner of Administration -->
       <div class="block-children">
         <label>
-          <span info-label
+          <span info-button
                 title="{{ translateRoot + 'status.administration' | translate }}"
                 content="{{ translateRoot + 'status.administration-info' | translate }}"></span>
         </label>
@@ -44,7 +57,7 @@
       <!-- Summative Status -->
       <div class="block-children" *ngIf="filterOptions.hasSummative">
         <label>
-          <span info-label
+          <span info-button
                 title="{{ translateRoot + 'status.summative' | translate }}"
                 content="{{ translateRoot + 'status.summative-info' | translate }}"></span>
         </label>
@@ -55,9 +68,9 @@
       <!-- Completion -->
       <div class="block-children">
         <label>
-          <span info-label
-                title="{{ translateRoot + 'status.completion' | translate }}"
-                content="{{ translateRoot + 'status.completion-info' | translate }}"></span>
+          <span info-button
+                title="{{ 'common.completeness-form-control.label' | translate }}"
+                content="{{ 'common.completeness-form-control.info' | translate }}"></span>
         </label>
         <sb-radio-button-list [model]="filterBy" [values]="['Complete','Partial']" property="completion" enum="enum.completeness"
                               label="{{ translateRoot + 'status.completion' | translate }}"
@@ -68,14 +81,14 @@
 
   <!-- Student Filters -->
   <div *ngIf="showStudentFilter" id="filter-by-student" class="flex-child grow">
-    <p class="gray-darker border-bottom">{{ translateRoot + 'student.label' | translate }}</p>
+    <p class="border-bottom">{{ translateRoot + 'student.label' | translate }}</p>
     <div class="flex-children">
       <!-- Column 1 -->
       <div class="flex-child col1 no-margin">
         <!-- Gender -->
         <div class="block-children">
           <label>
-            <span info-label
+            <span info-button
                   title="{{ translateRoot + 'student.gender' | translate }}"
                   content="{{ translateRoot + 'student.gender-info' | translate }}"></span>
           </label>
@@ -86,7 +99,7 @@
         <!-- Migrant Status -->
         <div class="block-children">
           <label>
-            <span info-label
+            <span info-button
                   title="{{ translateRoot + 'student.migrant-status' | translate }}"
                   content="{{ translateRoot + 'student.migrant-status-info' | translate }}"></span>
           </label>
@@ -97,7 +110,7 @@
         <!-- 504 Plan -->
         <div class="block-children">
           <label>
-            <span info-label
+            <span info-button
                   title="{{ translateRoot + 'student.504-plan' | translate }}"
                   content="{{ translateRoot + 'student.504-plan-info' | translate }}"></span>
           </label>
@@ -108,21 +121,10 @@
       </div>
       <!-- Column 2 -->
       <div class="flex-child col2 no-margin">
-        <!-- IEP -->
-        <div class="block-children">
-          <label>
-            <span info-label
-                  title="{{ translateRoot + 'student.iep' | translate }}"
-                  content="{{ translateRoot + 'student.iep-info' | translate }}"></span>
-          </label>
-          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="iep" enum="enum.polar"
-                                label="{{ translateRoot + 'student.iep' | translate }}"
-                                analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
-        </div>
         <!-- Economic Disadvantage -->
         <div class="block-children">
           <label>
-            <span info-label
+            <span info-button
                   title="{{ translateRoot + 'student.economic-disadvantage' | translate }}"
                   content="{{ translateRoot + 'student.economic-disadvantage-info' | translate }}"></span>
           </label>
@@ -133,12 +135,23 @@
         <!-- Limited English Proficiency -->
         <div class="block-children">
           <label>
-            <span info-label
+            <span info-button
                   title="{{ translateRoot + 'student.limited-english-proficiency' | translate }}"
                   content="{{ translateRoot + 'student.limited-english-proficiency-info' | translate }}"></span>
           </label>
           <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="limitedEnglishProficiency" enum="enum.polar"
                                 label="{{ translateRoot + 'student.limited-english-proficiency' | translate }}"
+                                analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
+        </div>
+        <!-- IEP -->
+        <div class="block-children">
+          <label>
+            <span info-button
+                  title="{{ translateRoot + 'student.iep' | translate }}"
+                  content="{{ translateRoot + 'student.iep-info' | translate }}"></span>
+          </label>
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="iep" enum="enum.polar"
+                                label="{{ translateRoot + 'student.iep' | translate }}"
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </div>
       </div>
@@ -147,7 +160,7 @@
         <!-- Race / Ethnicity -->
         <div class="block-children">
           <label>
-            <span info-label
+            <span info-button
                   title="{{ translateRoot + 'student.ethnicity' | translate }}"
                   content="{{ translateRoot + 'student.ethnicity-info' | translate }}"></span>
           </label>

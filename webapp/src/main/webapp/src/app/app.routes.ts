@@ -2,7 +2,6 @@ import { HomeComponent } from "./home/home.component";
 import { Routes } from "@angular/router";
 import { GroupResultsComponent } from "./groups/results/group-results.component";
 import { GroupAssessmentsResolve } from "./groups/results/group-assessments.resolve";
-import { AuthorizeCanActivate } from "./user/authorize.can-activate";
 import { UserResolve } from "./user/user.resolve";
 import { SchoolAssessmentResolve } from "./school-grade/results/school-assessments.resolve";
 import { SchoolResultsComponent } from "./school-grade/results/school-results.component";
@@ -15,10 +14,135 @@ import { TranslateResolve } from "./home/translate.resolve";
 import { StudentHistoryResponsesExamResolve } from "./student/responses/student-history-responses-exam.resolve";
 import { StudentHistoryResponsesAssessmentResolve } from "./student/responses/student-history-responses-assessment.resolve";
 import { StudentHistoryResponsesStudentResolve } from "./student/responses/student-history-responses-student.resolve";
-import { SessionExpiredComponent } from "./shared/authentication/session-expired.component";
 import { ReportsResolve } from "./report/reports.resolve";
 import { ReportsComponent } from "./report/reports.component";
 import { ErrorComponent } from "./error/error.component";
+import { AccessDeniedComponent } from "./error/access-denied/access-denied.component";
+import { OrganizationExportComponent } from "./organization-export/organization-export.component";
+import { UserOrganizationsResolve } from "./organization-export/organization/user-organizations.resolve";
+import { InstructionalResourceComponent } from "./admin/instructional-resource/instructional-resource.component";
+import { EmbargoComponent } from "./admin/embargo/embargo.component";
+import { EmbargoResolve } from "./admin/embargo/embargo.resolve";
+import { ImportHistoryComponent } from "./admin/groups/import/history/import-history.component";
+import { FileFormatComponent } from "./admin/groups/import/fileformat/file-format.component";
+import { ImportHistoryResolve } from "./admin/groups/import/history/import-history.resolve";
+import { GroupImportComponent } from "./admin/groups/import/group-import.component";
+import { GroupImportDeactivateGuard } from "./admin/groups/import/group-import.deactivate";
+import { GroupsComponent } from "./admin/groups/groups.component";
+import { SessionExpiredComponent } from "./shared/security/session-expired.component";
+import { AuthorizationCanActivate } from "./shared/security/authorization.can-activate";
+import { RoutingAuthorizationCanActivate } from "./shared/security/routing-authorization.can-activate";
+import { AggregateReportComponent } from "./aggregate-report/results/aggregate-report.component";
+import { AggregateReportFormComponent } from "./aggregate-report/aggregate-report-form.component";
+import { AggregateReportResolve } from "./aggregate-report/results/aggregate-report.resolve";
+import { AggregateReportOptionsResolve } from "./aggregate-report/aggregate-report-options.resolve";
+import { AssessmentDefinitionResolve } from "./aggregate-report/assessment/assessment-definition.resolve";
+import { AggregateReportFormSettingsResolve } from "./aggregate-report/aggregate-report-form-settings.resolve";
+
+const adminRoute = {
+  path: '',
+  data: {
+    permissions: [ 'GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE', 'EMBARGO_WRITE' ]
+  },
+  canActivate: [ AuthorizationCanActivate ],
+  children: [
+    {
+      path: 'admin-groups',
+      pathMatch: 'prefix',
+      data: {
+        breadcrumb: {
+          translate: 'labels.admin-groups.title',
+        },
+        permissions: [ 'GROUP_WRITE' ],
+        denyAccess: true
+      },
+      canActivate: [ AuthorizationCanActivate ],
+      children: [
+        {
+          path: '',
+          pathMatch: 'prefix',
+          component: GroupsComponent
+        },
+        {
+          path: 'import',
+          data: {
+            breadcrumb: { translate: 'labels.admin-groups.import.title' },
+          },
+          children: [
+            {
+              path: '',
+              pathMatch: 'prefix',
+              component: GroupImportComponent,
+              canDeactivate: [ GroupImportDeactivateGuard ]
+            },
+            {
+              path: 'fileformat',
+              pathMatch: 'prefix',
+              data: {
+                breadcrumb: { translate: 'labels.admin-groups.import.file-format.header' }
+              },
+              children: [
+                {
+                  path: '',
+                  pathMatch: 'prefix',
+                  component: FileFormatComponent
+                }
+              ]
+            }
+          ]
+        },
+        {
+          path: 'history',
+          pathMatch: 'prefix',
+          children: [
+            {
+              path: '',
+              pathMatch: 'prefix',
+              component: ImportHistoryComponent,
+              resolve: { imports: ImportHistoryResolve },
+              data: { breadcrumb: { translate: 'labels.admin-groups.history.title' } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      path: 'instructional-resource',
+      pathMatch: 'prefix',
+      data: {
+        breadcrumb: { translate: 'labels.instructional-resource.title' },
+        permissions: [ 'INSTRUCTIONAL_RESOURCE_WRITE' ],
+        denyAccess: true
+      },
+      canActivate: [ AuthorizationCanActivate ],
+      children: [
+        {
+          path: '',
+          pathMatch: 'prefix',
+          component: InstructionalResourceComponent
+        }
+      ]
+    },
+    {
+      path: 'embargoes',
+      pathMatch: 'prefix',
+      data: {
+        breadcrumb: { translate: 'labels.embargo.title' },
+        permissions: [ 'EMBARGO_WRITE' ]
+      },
+      canActivate: [ AuthorizationCanActivate ],
+      children: [
+        {
+          path: '',
+          pathMatch: 'prefix',
+          component: EmbargoComponent,
+          resolve: { embargoesByOrganizationType: EmbargoResolve }
+        }
+      ]
+    }
+
+  ]
+};
 
 
 const studentTestHistoryChildRoute = {
@@ -64,13 +188,25 @@ export const routes: Routes = [
   },
   {
     path: '',
-    resolve: { user: UserResolve, translateComplete: TranslateResolve },
+    canActivate: [ RoutingAuthorizationCanActivate ],
+    resolve: {
+      user: UserResolve,
+      translateComplete: TranslateResolve
+    },
     children: [
-      { path: '', pathMatch: 'full', component: HomeComponent },
+      {
+        path: '',
+        pathMatch: 'full',
+        component: HomeComponent
+      },
+      adminRoute,
       {
         path: 'groups/:groupId',
-        data: { breadcrumb: { translate: 'labels.groups.name' }, permissions: [ 'GROUP_PII_READ' ] },
-        canActivate: [ AuthorizeCanActivate ],
+        data: {
+          breadcrumb: { translate: 'labels.groups.name' },
+          permissions: [ 'GROUP_PII_READ' ]
+        },
+        canActivate: [ AuthorizationCanActivate ],
         children: [
           {
             path: '',
@@ -84,15 +220,21 @@ export const routes: Routes = [
       },
       {
         path: 'schools/:schoolId',
-        data: { breadcrumb: { resolve: 'school.name' }, permissions: [ 'INDIVIDUAL_PII_READ' ] },
+        data: {
+          breadcrumb: { resolve: 'school.name' },
+          permissions: [ 'INDIVIDUAL_PII_READ' ]
+        },
         resolve: { school: CurrentSchoolResolve },
-        canActivate: [ AuthorizeCanActivate ],
+        canActivate: [ AuthorizationCanActivate ],
         children: [
           {
             path: '',
             pathMatch: 'full',
             data: { canReuse: true },
-            resolve: { assessment: SchoolAssessmentResolve, school: CurrentSchoolResolve },
+            resolve: {
+              assessment: SchoolAssessmentResolve,
+              school: CurrentSchoolResolve
+            },
             component: SchoolResultsComponent
           },
           studentTestHistoryChildRoute
@@ -108,7 +250,7 @@ export const routes: Routes = [
           },
           permissions: [ 'GROUP_PII_READ' ]
         },
-        canActivate: [ AuthorizeCanActivate ],
+        canActivate: [ AuthorizationCanActivate ],
         children: [
           {
             path: '',
@@ -125,7 +267,9 @@ export const routes: Routes = [
               exam: StudentHistoryResponsesExamResolve,
               student: StudentHistoryResponsesStudentResolve
             },
-            data: { breadcrumb: { translate: 'labels.student.responses.crumb' } },
+            data: {
+              breadcrumb: { translate: 'labels.student.responses.crumb' }
+            },
             component: StudentResponsesComponent
           }
         ]
@@ -133,10 +277,55 @@ export const routes: Routes = [
       {
         path: 'reports',
         pathMatch: 'full',
-        data: { breadcrumb: { translate: 'labels.reports.heading' }, permissions: [ 'GROUP_PII_READ' ]},
-        canActivate: [ AuthorizeCanActivate ],
+        data: {
+          breadcrumb: { translate: 'labels.reports.heading' },
+          permissions: [ 'GROUP_PII_READ' ]
+        },
+        canActivate: [ AuthorizationCanActivate ],
         resolve: { reports: ReportsResolve },
         component: ReportsComponent
+      },
+      {
+        path: 'aggregate-reports',
+        data: {
+          breadcrumb: { translate: 'aggregate-reports.heading' },
+          permissions: [ 'CUSTOM_AGGREGATE_READ' ]
+        },
+        resolve: {
+          options: AggregateReportOptionsResolve,
+          assessmentDefinitionsByAssessmentTypeCode: AssessmentDefinitionResolve
+        },
+        canActivate: [ AuthorizationCanActivate ],
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            resolve: {
+              settings: AggregateReportFormSettingsResolve
+            },
+            component: AggregateReportFormComponent
+          },
+          {
+            path: ':id',
+            pathMatch: 'full',
+            data: {
+              breadcrumb: { resolve: 'report.label' }
+            },
+            resolve: { report: AggregateReportResolve },
+            component: AggregateReportComponent
+          }
+        ]
+      },
+      {
+        path: 'custom-export',
+        pathMatch: 'full',
+        data: {
+          breadcrumb: { translate: 'labels.organization-export.title' },
+          permissions: [ 'INDIVIDUAL_PII_READ' ]
+        },
+        canActivate: [ AuthorizationCanActivate ],
+        resolve: { organizations: UserOrganizationsResolve },
+        component: OrganizationExportComponent
       },
       {
         path: 'session-expired',
@@ -149,5 +338,10 @@ export const routes: Routes = [
         component: ErrorComponent
       }
     ]
+  },
+  {
+    path: 'access-denied',
+    pathMatch: 'full',
+    component: AccessDeniedComponent
   }
 ];

@@ -169,6 +169,57 @@ describe('Exam Calculator', () => {
     expect(actual[ 2 ].value).toBe(0);
   });
 
+  it('should aggregate writing trait scores', () =>{
+    let assessmentItems = [{
+      maxPoints: 6,
+      results: [ 4, 6, 2, 4, 4],
+      traitScores: [
+        [ 2, 3, 1],
+        [ 4, 4, 2],
+        [ 1, 3, 0],
+        [ 3, 2, 1],
+        [ 4, 0, 2]
+      ]
+    }].map(ai => {
+      let item = new AssessmentItem();
+      item.maxPoints = ai.maxPoints;
+      item.scores = ai.results.map((result, i) => {
+        let score = new ExamItemScore();
+        score.points = result;
+        score.writingTraitScores = {
+          evidence: ai.traitScores[i][0],
+          organization: ai.traitScores[i][1],
+          conventions: ai.traitScores[i][2]
+        }
+        return score;
+      });
+
+      return item;
+    });
+
+    let fixture = new ExamStatisticsCalculator();
+    let summaries = fixture.aggregateWritingTraitScores(assessmentItems);
+
+    summaries.forEach(summary => {
+      expect(summary.evidence.average).toEqual(2.8);
+      expect(summary.evidence.numbers).toEqual([0, 1, 1, 1, 2]);
+      expect(summary.evidence.percents).toEqual([0, 20.0, 20.0, 20.0, 40.0]);
+
+      expect(summary.organization.average).toEqual(2.4);
+      expect(summary.organization.numbers).toEqual([1, 0, 1, 2, 1]);
+      expect(summary.organization.percents).toEqual([20.0, 0, 20.0, 40.0, 20.0]);
+
+      expect(summary.conventions.average).toEqual(1.2);
+      expect(summary.conventions.numbers).toEqual([1, 2, 2]);
+      expect(summary.conventions.percents).toEqual([20.0, 40.0, 40.0]);
+
+      expect(summary.total.average).toEqual(4.0);
+      expect(summary.total.numbers).toEqual([0, 0, 1, 0, 3, 0, 1]);
+      expect(summary.total.percents).toEqual([0, 0, 20.0, 0, 60.0, 0, 20.0]);
+    });
+  });
+
+
   it('should aggregate items by points', () =>{
     let assessmentItems = [{
       maxPoints: 3,
@@ -216,6 +267,52 @@ describe('Exam Calculator', () => {
     expect(actual["percent-point_3"]).toBeUndefined();
   });
 
+  it('should aggregate items by response', () =>{
+    let assessmentItems = [{
+      numberOfChoices: 2,
+      responses: [ 'B', 'A', 'A', 'A']
+    }, {
+      numberOfChoices: 4,
+      responses: ['D', 'D', 'A', 'A', 'A']
+    }].map(ai => {
+     let item = new AssessmentItem();
+     item.numberOfChoices = ai.numberOfChoices;
+     item.scores = ai.responses.map(result => {
+       let score = new ExamItemScore();
+       score.response = result;
+       return score;
+     });
+
+     return item;
+    });
+
+    let fixture = new ExamStatisticsCalculator();
+    fixture.aggregateItemsByResponse(assessmentItems);
+    let actual = assessmentItems[0];
+
+    expect(actual["number-point_A"]).toBe(3);
+    expect(actual["number-point_B"]).toBe(1);
+    expect(actual["number-point_C"]).toBeUndefined()
+    expect(actual["number-point_D"]).toBeUndefined();
+
+    expect(actual["percent-point_A"]).toBe(75);
+    expect(actual["percent-point_B"]).toBe(25);
+    expect(actual["percent-point_C"]).toBeUndefined();
+    expect(actual["percent-point_D"]).toBeUndefined();
+
+    actual = assessmentItems[1];
+
+    expect(actual["number-point_A"]).toBe(3);
+    expect(actual["number-point_B"]).toBe(0);
+    expect(actual["number-point_C"]).toBe(0)
+    expect(actual["number-point_D"]).toBe(2)
+
+    expect(actual["percent-point_A"]).toBe(60);
+    expect(actual["percent-point_B"]).toBe(0);
+    expect(actual["percent-point_C"]).toBe(0);
+    expect(actual["percent-point_D"]).toBe(40);
+  });
+
   it('should return fields based on the max of max points', () => {
     let assessmentItems = [ 3, 1, 2, 4 ,2, 1, 2, 3 ].map(x =>{
       let item = new AssessmentItem();
@@ -230,9 +327,31 @@ describe('Exam Calculator', () => {
     expect(actual.length).toBe(onePlusMaxOfMaxPoints);
 
     for(let i =0; i < actual.length; i++) {
-      expect(actual[i].points).toBe(i);
+      expect(actual[i].label).toBe(i.toString());
       expect(actual[i].numberField).toBe("number-point_" + i);
       expect(actual[i].percentField).toBe("percent-point_" + i);
+    }
+  });
+
+  it('should return fields based on the max of number of choices', () => {
+    let assessmentItems = [ 3, 1, 2, 4 ,2, 1, 2, 3 ].map(x =>{
+      let item = new AssessmentItem();
+      item.numberOfChoices = x;
+      return item;
+    });
+
+    let fixture = new ExamStatisticsCalculator();
+    let actual = fixture.getChoiceFields(assessmentItems);
+
+    let expectedLength = 4;
+    expect(actual.length).toBe(expectedLength);
+
+    let potentialResponses = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    for(let i =0; i < actual.length; i++) {
+      expect(actual[i].label).toBe(potentialResponses[i]);
+      expect(actual[i].numberField).toBe("number-point_" + potentialResponses[i]);
+      expect(actual[i].percentField).toBe("percent-point_" + potentialResponses[i]);
     }
   });
 });

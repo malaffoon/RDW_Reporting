@@ -6,7 +6,9 @@ import { ExamFilterService } from "../assessments/filters/exam-filters/exam-filt
 import { CsvBuilder } from "./csv-builder.service";
 import { StudentHistoryExamWrapper } from "../student/model/student-history-exam-wrapper.model";
 import { Student } from "../student/model/student.model";
-import { ItemByPointsEarnedExportRequest } from "../assessments/model/item-by-points-earned-export-request.model";
+import { ExportItemsRequest} from "../assessments/model/export-items-request.model";
+import { RequestType } from "../shared/enum/request-type.enum";
+import {ExportWritingTraitsRequest} from "../assessments/model/export-writing-trait-request.model";
 
 @Injectable()
 export class CsvExportService {
@@ -24,8 +26,12 @@ export class CsvExportService {
    */
   exportAssessmentExams(assessmentExams: AssessmentExam[],
                         filterBy: FilterBy,
+                        ethnicities: string[],
                         filename: string) {
     let sourceData: any[] = [];
+
+    // TODO: Is this filter needed?  I think we pass in the filtered exam collection we wouldn't need to
+    // TODO: apply the filter yet again here.
     assessmentExams.forEach((assessmentExam: AssessmentExam) => {
       let filteredExams: Exam[] = this.examFilterService.filterExams(assessmentExam, filterBy);
       filteredExams.forEach((exam) => {
@@ -49,6 +55,8 @@ export class CsvExportService {
       .withFilename(filename)
       .withStudent(getStudent)
       .withExamDateAndSession(getExam)
+      .withSchool(getExam)
+      .withSchoolYear(getExam)
       .withAssessmentTypeNameAndSubject(getAssessment)
       .withExamGradeAndStatus(getExam)
       .withAchievementLevel(getNonIABExam)
@@ -57,7 +65,8 @@ export class CsvExportService {
       .withMathClaimScores(getNonIABMathExam)
       .withELAClaimScores(getNonIABElaExam)
       .withGender(getStudent)
-      .withStudentContext(getExam)
+      .withStudentContext(getExam, ethnicities)
+      .withAccommodationCodes(getExam)
       .build(sourceData);
   }
 
@@ -84,6 +93,8 @@ export class CsvExportService {
       .withFilename(filename)
       .withStudent(getStudent)
       .withExamDateAndSession(getExam)
+      .withSchool(getExam)
+      .withSchoolYear(getExam)
       .withAssessmentTypeNameAndSubject(getAssessment)
       .withExamGradeAndStatus(getExam)
       .withAchievementLevel(getNonIABExam)
@@ -91,16 +102,17 @@ export class CsvExportService {
       .withScoreAndErrorBand(getExam)
       .withMathClaimScores(getNonIABMathExam)
       .withELAClaimScores(getNonIABElaExam)
+      .withAccommodationCodes(getExam)
       .build(wrappers);
   }
 
-  exportItemsByPointsEarned(exportRequest: ItemByPointsEarnedExportRequest,
-                            filename: string) {
+  exportResultItems(exportRequest: ExportItemsRequest,
+                    filename: string) {
 
-    let getAssessment = () => exportRequest.assessmentExam.assessment;
+    let getAssessment = () => exportRequest.assessment;
     let getAssessmentItem = (item) => item;
 
-    this.csvBuilder
+    let builder = this.csvBuilder
       .newBuilder()
       .withFilename(filename)
       .withAssessmentTypeNameAndSubject(getAssessment)
@@ -109,8 +121,51 @@ export class CsvExportService {
       .withTarget(getAssessmentItem)
       .withItemDifficulty(getAssessmentItem)
       .withStandards(getAssessmentItem)
-      .withFullCredit(getAssessmentItem, exportRequest.showAsPercent)
-      .withPoints(getAssessmentItem, exportRequest.pointColumns, exportRequest.showAsPercent)
+      .withFullCredit(getAssessmentItem, exportRequest.showAsPercent);
+
+      if (exportRequest.type == RequestType.DistractorAnalysis) {
+        builder = builder.withItemAnswerKey(getAssessmentItem)
+      }
+
+      builder.withPoints(getAssessmentItem, exportRequest.pointColumns, exportRequest.showAsPercent)
       .build(exportRequest.assessmentItems);
+  }
+
+  exportWritingTraitScores(exportRequest: ExportWritingTraitsRequest,
+                           filename: string) {
+
+    let compositeRows: any[] = [];
+    let maxPoints: number = 0;
+
+    // since there can be multiple items, we need to iterate over multiple summary table rows if there are multiple items that have writing trait scores
+    //  here we flatten the items and summary rows into a single array the CSV builder can iterate over
+    exportRequest.assessmentItems.forEach((item, i) => {
+
+      exportRequest.summaries[i].rows.forEach(summary => {
+        compositeRows.push({
+          assessmentItem: item,
+          writingTraitAggregate: summary
+        });
+
+        if (summary.trait.maxPoints > maxPoints) maxPoints = summary.trait.maxPoints;
+      });
+
+    });
+
+    let getAssessmentItem = (item) => item.assessmentItem;
+
+    this.csvBuilder
+      .newBuilder()
+      .withFilename(filename)
+      .withAssessmentTypeNameAndSubject(() => exportRequest.assessment)
+      .withItemNumber(getAssessmentItem)
+      .withClaim(getAssessmentItem)
+      .withTarget(getAssessmentItem)
+      .withItemDifficulty(getAssessmentItem)
+      .withStandards(getAssessmentItem)
+      .withFullCredit(getAssessmentItem, exportRequest.showAsPercent)
+      .withPerformanceTaskWritingType(getAssessmentItem)
+      .withWritingTraitAggregate((item) => item.writingTraitAggregate, maxPoints, exportRequest.showAsPercent)
+      .build(compositeRows);
   }
 }

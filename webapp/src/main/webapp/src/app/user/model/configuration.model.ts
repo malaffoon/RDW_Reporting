@@ -4,5 +4,7 @@ export class Configuration {
   interpretiveGuideUrl: string;
   userGuideUrl: string;
   minItemDataYear: number;
-  adminWebappUrl: string;
+  reportLanguages: string[];
+  uiLanguages: string[];
+  transferAccess: boolean;
 }

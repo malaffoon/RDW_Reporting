@@ -1,0 +1,21 @@
+artifacts:
+  root: "classpath:"
+  exam-item:
+    directory: items/Item-{0}/
+
+# TODO remove when adding qualified reporting-service package
+permissionservice:
+  endpoint:
+
+app:
+  state:
+    code: CA
+  iris:
+    vendorId: vendorId
+    url: http://my-iris.somewhere.org/iris/
+
+  test-mode: true
+
+spring:
+  datasource:
+    url-schema: reporting_test

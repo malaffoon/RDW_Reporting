@@ -1,9 +1,19 @@
-include ':common'
-include ':webapp'
-include ':report-processor'
+include 'admin-service'
+include 'aggregate-service'
+include 'common'
+include 'common-web'
+include 'report-processor'
+include 'reporting-service'
+include 'webapp'
 
 rootProject.name = "rdw-reporting"
 
 rootProject.children.each {
-    it.name = rootProject.name + "-" + it.name
+    if (it.name == "reporting-service") {
+        // TODO? later rename module to service?
+        it.name = "${rootProject.name}-service"
+    } else {
+        it.name = "${rootProject.name}-${it.name}"
+    }
 }
+

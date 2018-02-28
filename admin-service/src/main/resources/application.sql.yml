@@ -1,0 +1,310 @@
+sql:
+  admin:
+    findWarehouseImports: >-
+      SELECT i.id, i.digest FROM import i LIMIT 10;
+
+  assessment:
+    reporting:
+      findAll: >-
+        SELECT
+          a.id,
+          a.label,
+          a.name,
+          a.grade_code,
+          a.type_id,
+          a.subject_id,
+          a.school_year,
+          a.claim1_score_code,
+          a.claim2_score_code,
+          a.claim3_score_code,
+          a.claim4_score_code,
+          a.min_score,
+          a.max_score,
+          a.cut_point_1,
+          a.cut_point_2,
+          a.cut_point_3
+        FROM asmt a
+        WHERE (:label_query IS NULL OR a.label LIKE concat('%', :label_query, '%'))
+          AND (:name_query IS NULL OR a.name LIKE concat('%', :name_query, '%'))
+        ORDER BY a.school_year DESC
+        LIMIT :limit
+
+  embargo:
+    # query to find all embargo records given a school year and a list of (user's) districts
+    # this includes counts of summative exams grouped by each org so it has performance implications
+    findAllBySchoolYear: >-
+      SELECT st.*, se.individual, se.aggregate, cnt.subject_id, cnt.count
+      FROM (SELECT 'State' AS org_type, NULL AS org_id, NULL AS org_name, :school_year AS school_year) st
+        LEFT JOIN state_embargo se ON se.school_year = :school_year
+        LEFT JOIN (SELECT a.subject_id, count(e.id) AS count
+                     FROM exam e JOIN asmt a ON a.id = e.asmt_id
+                     WHERE a.type_id = 3 AND e.deleted = 0 AND e.school_year = :school_year
+                     GROUP BY a.subject_id) cnt ON 1=1
+      UNION ALL
+      SELECT 'District' AS org_type, d.id AS org_id, d.name AS org_name, :school_year AS school_year, de.individual, de.aggregate, cnt.subject_id, cnt.count
+      FROM district d
+        LEFT JOIN district_embargo de ON d.id = de.district_id and de.school_year = :school_year
+        LEFT JOIN (SELECT s.district_id, a.subject_id, count(e.id) AS count
+                   FROM school s
+                     JOIN exam e ON e.school_id = s.id
+                     JOIN asmt a ON a.id = e.asmt_id
+                   WHERE s.district_id IN (:district_ids) AND e.deleted = 0 AND a.type_id = 3 AND e.school_year = :school_year
+                   GROUP BY s.district_id, a.subject_id) cnt ON d.id = cnt.district_id
+      WHERE d.id IN (:district_ids)
+
+    findOneBySchoolYearAndState: >-
+      SELECT 'State' AS org_type, NULL AS org_id, NULL AS org_name, :school_year AS school_year, se.individual, se.aggregate
+      FROM state_embargo se
+      WHERE se.school_year = :school_year
+
+    findOneBySchoolYearAndDistrict: >-
+      SELECT 'District' AS org_type, d.id AS org_id, d.name AS org_name, :school_year AS school_year, de.individual, de.aggregate
+      FROM district d
+        JOIN district_embargo de ON d.id = de.district_id
+      WHERE de.school_year = :school_year AND d.id = :district_id
+
+    createState: >-
+      INSERT INTO state_embargo (school_year, individual, aggregate, updated_by)
+      VALUES (:school_year, :individual, :aggregate, :updated_by)
+
+    createDistrict: >-
+      INSERT INTO district_embargo (district_id, school_year, individual, aggregate, updated_by)
+      VALUES (:district_id, :school_year, :individual, :aggregate, :updated_by)
+
+    updateState: >-
+      UPDATE state_embargo
+      SET individual = :individual, aggregate = :aggregate, updated_by = :updated_by
+      WHERE school_year = :school_year
+
+    updateDistrict: >-
+      UPDATE district_embargo
+      SET individual = :individual, aggregate = :aggregate, updated_by = :updated_by
+      WHERE district_id = :district_id AND school_year = :school_year
+
+  group:
+    findAllDistinctSchoolYears: >-
+      SELECT distinct sg.school_year
+      FROM student_group sg
+        JOIN school sc ON sc.id = sg.school_id
+      WHERE sg.deleted = 0
+        and ${sql.snippet.basicPermission}
+
+    findAllByQuery: >-
+      SELECT sg.id,
+        sg.name AS group_name,
+        sc.name AS school_name,
+        sc.id AS school_id,
+        sg.school_year,
+        (SELECT count(*) FROM student_group_membership sgm WHERE sgm.student_group_id = sg.id) AS student_count,
+        s.code AS subject_code
+      FROM student_group sg
+        JOIN school sc ON sc.id = sg.school_id
+        left JOIN subject s ON s.id = sg.subject_id
+      WHERE sg.school_id = :school_id
+        and sg.deleted = 0
+        and (sg.subject_id is null or sg.subject_id in (:subject_ids))
+        and sg.school_year = :school_year
+        and ${sql.snippet.basicPermission}
+
+    delete: >-
+      update student_group sg
+        JOIN school sc ON sg.school_id = sc.id
+      set sg.deleted = 1,
+        sg.update_import_id = :import_id
+      WHERE sg.id = :id
+        and ${sql.snippet.basicPermission}
+
+  school:
+    findAll: >-
+      SELECT name, id, natural_id
+      FROM school sc
+      WHERE ${sql.snippet.basicPermission}
+
+  schoolYear:
+    findAll: >-
+      SELECT year FROM school_year ORDER BY year
+
+  status:
+    readTest: >-
+      SELECT ist.name FROM import_status ist
+
+  student_group_batch:
+    create: >-
+      INSERT INTO upload_student_group_batch (status, digest, creator, message, filename)
+        VALUES (:status, :digest, :creator, :message, :filename)
+
+    findOne: >-
+      SELECT * FROM upload_student_group_batch WHERE id=:id
+
+    findOneByDigest: >-
+      SELECT * FROM upload_student_group_batch WHERE digest=:digest LIMIT 1
+
+    sqlFindByCreator: >-
+      SELECT * FROM upload_student_group_batch WHERE creator=:creator
+
+  import:
+    createQuery: >-
+      INSERT INTO import (status, content, contentType, digest, batch) VALUES
+        (0, :content, :contentType, :digest, :batch)
+
+    triggerQuery: >-
+      UPDATE import
+      SET status = 1
+      WHERE id = :id
+
+    statusQuery: >-
+      UPDATE import
+      SET status = :status, message = :message
+      WHERE id = :id
+
+  instructionalResource:
+    findAll: >-
+      SELECT DISTINCT
+        GROUP_CONCAT(DISTINCT a.label ORDER BY a.id DESC SEPARATOR ', ') AS asmt_label,
+        a.type_id AS asmt_type_id,
+        ir.asmt_name,
+        ir.performance_level,
+        ir.org_level,
+        ir.resource,
+        ir.org_id,
+        coalesce(district_group.name, district.name, school_group.name) AS org_name
+      FROM instructional_resource ir
+        JOIN asmt a
+          ON a.name = ir.asmt_name
+        LEFT JOIN district_group
+          ON ir.org_level = 'DistrictGroup'
+          AND district_group.id = ir.org_id
+        LEFT JOIN district
+          ON ir.org_level = 'District'
+          AND district.id = ir.org_id
+        LEFT JOIN school_group
+          ON ir.org_level = 'SchoolGroup'
+          AND school_group.id = ir.org_id
+      LEFT JOIN school sch
+        ON sch.district_id = ir.org_id
+        OR sch.school_group_id = ir.org_id
+      WHERE ir.org_level != 'System'
+        AND
+        (
+          1=:statewide
+          OR
+          (
+            (ir.org_level = 'DistrictGroup' AND district_group.id in (:district_group_ids))
+            OR
+            (
+              ir.org_level = 'District'
+              AND
+              (
+                district.id in (:district_ids)
+                OR
+                (district.id = sch.district_id AND sch.district_group_id in (:district_group_ids))
+              )
+            )
+            OR
+            (
+              ir.org_level = 'SchoolGroup'
+              AND
+              (
+                school_group.id in (:school_group_ids)
+                OR
+                (school_group.id = sch.school_group_id AND (sch.district_id in (:district_ids) OR sch.district_group_id in (:district_group_ids)))
+              )
+            )
+          )
+        )
+      GROUP BY a.type_id, ir.asmt_name, ir.performance_level, ir.org_level, ir.resource, ir.org_id, district_group.name, district.name, school_group.name
+
+    findOne: >-
+      SELECT
+        GROUP_CONCAT(DISTINCT a.label ORDER BY a.id DESC SEPARATOR ', ') AS asmt_label,
+        a.type_id AS asmt_type_id,
+        ir.asmt_name,
+        ir.performance_level,
+        ir.org_level,
+        ir.resource,
+        ir.org_id,
+        coalesce(district_group.name, district.name, school_group.name) AS org_name
+      FROM instructional_resource ir
+        JOIN asmt a
+          ON a.name = ir.asmt_name
+        LEFT JOIN district_group
+          ON ir.org_level = 'DistrictGroup'
+          AND district_group.id = ir.org_id
+        LEFT JOIN district
+          ON ir.org_level = 'District'
+          AND district.id = ir.org_id
+        LEFT JOIN school_group
+          ON ir.org_level = 'SchoolGroup'
+          AND school_group.id = ir.org_id
+      LEFT JOIN school sch
+        ON sch.district_id = ir.org_id
+        OR sch.school_group_id = ir.org_id
+      WHERE ir.org_level != 'System'
+        AND ir.org_level = :org_level
+        AND ir.asmt_name = :asmt_name
+        AND ir.performance_level = :performance_level
+        AND ir.org_id <=> :org_id
+        AND
+        (
+          1=:statewide
+          OR
+          (
+            (ir.org_level = 'DistrictGroup' AND district_group.id in (:district_group_ids))
+            OR
+            (
+              ir.org_level = 'District'
+              AND
+              (
+                district.id in (:district_ids)
+                OR
+                (district.id = sch.district_id AND sch.district_group_id in (:district_group_ids))
+              )
+            )
+            OR
+            (
+              ir.org_level = 'SchoolGroup'
+              AND
+              (
+                school_group.id in (:school_group_ids)
+                OR
+                (school_group.id = sch.school_group_id AND (sch.district_id in (:district_ids) OR sch.district_group_id in (:district_group_ids)))
+              )
+            )
+          )
+        )
+      GROUP BY a.type_id, ir.asmt_name, ir.performance_level, ir.org_level, ir.resource, ir.org_id, district_group.name, district.name, school_group.name
+
+    update: >-
+      UPDATE instructional_resource ir
+      SET
+        ir.resource = :resource
+      WHERE ir.org_level != 'System'
+        AND ir.org_level = :org_level
+        AND ir.asmt_name = :asmt_name
+        AND ir.performance_level = :performance_level
+        AND ir.org_id <=> :org_id
+
+    create: >-
+      INSERT INTO instructional_resource (asmt_name, resource, org_level, performance_level, org_id)
+        SELECT DISTINCT
+          :asmt_name,
+          :resource,
+          :org_level,
+          :performance_level,
+          :org_id
+        FROM asmt a
+          LEFT JOIN instructional_resource ir
+            ON ir.asmt_name = a.name
+              AND ir.performance_level = :performance_level
+              AND ir.org_level = :org_level
+              AND ir.org_id <=> :org_id
+        WHERE a.name = :asmt_name
+          AND ir.asmt_name IS NULL
+
+    delete: >-
+      DELETE FROM instructional_resource
+      WHERE org_level != 'System'
+        AND org_level = :org_level
+        AND asmt_name = :asmt_name
+        AND performance_level = :performance_level
+        AND org_id <=> :org_id

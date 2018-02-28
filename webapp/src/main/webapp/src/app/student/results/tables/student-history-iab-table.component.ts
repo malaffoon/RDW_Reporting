@@ -1,8 +1,14 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { StudentHistoryExamWrapper } from "../../model/student-history-exam-wrapper.model";
 import { Student } from "../../model/student.model";
-import { PopupMenuAction } from "../../../assessments/menu/popup-menu-action.model";
 import { MenuActionBuilder } from "../../../assessments/menu/menu-action.builder";
+import { InstructionalResourcesService } from "../../../assessments/results/instructional-resources.service";
+import {
+  InstructionalResource,
+  InstructionalResources
+} from "../../../assessments/model/instructional-resources.model";
+import { Observable } from "rxjs/Observable";
+import { PopupMenuAction } from "../../../shared/menu/popup-menu-action.model";
 
 @Component({
   selector: 'student-history-iab-table',
@@ -26,8 +32,10 @@ export class StudentHistoryIABTableComponent implements OnInit {
 
 
   actions: PopupMenuAction[];
+  instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
 
-  constructor(private actionBuilder: MenuActionBuilder) {
+  constructor(private actionBuilder: MenuActionBuilder,
+              private instructionalResourcesService: InstructionalResourcesService) {
   }
 
   ngOnInit(): void {
@@ -42,8 +50,22 @@ export class StudentHistoryIABTableComponent implements OnInit {
   private createActions(): PopupMenuAction[] {
     return this.actionBuilder
       .newActions()
-      .withResponses(x => x.exam.id, ()=> this.student, x => x.exam.schoolYear > this.minimumItemDataYear)
-      .withShowResources(x => x.assessment.resourceUrl)
+      .withResponses(x => x.exam.id, () => this.student, x => x.exam.schoolYear > this.minimumItemDataYear)
+      .withShowResources(this.loadAssessmentInstructionalResources.bind(this))
       .build();
+  }
+
+  loadInstructionalResources(studentHistoryExam: StudentHistoryExamWrapper): void {
+    let exam = studentHistoryExam.exam;
+    this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(studentHistoryExam.assessment.id, exam.school.id)
+      .map(resources => resources.getResourcesByPerformance(exam.level));
+  }
+
+  loadAssessmentInstructionalResources(studentHistoryExam: StudentHistoryExamWrapper): Observable<InstructionalResource[]> {
+    let exam = studentHistoryExam.exam;
+    return this.instructionalResourcesService.getInstructionalResources(studentHistoryExam.assessment.id, exam.school.id)
+      .map((resources: InstructionalResources) => {
+        return resources.getResourcesByPerformance(0);
+      });
   }
 }

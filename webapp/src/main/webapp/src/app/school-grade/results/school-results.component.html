@@ -1,55 +1,83 @@
-<div *ngIf="currentSchool" class="mb-md">
-  <span class="h3 blue-dark">{{currentSchool.name}}<span *ngIf="currentGrade"> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></span>
-  <span class="pull-right text-right">
-    <button class="btn btn-default btn-sm" (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'labels.export.csv' | translate}}</button>
-    <span school-grade-report-download #downloader class="ml-xs"
-        *ngIf="currentGrade"
-        [school]="currentSchool"
-        [grade]="currentGrade"
-        [schoolYears]="filterOptions.schoolYears"
-        (onShown)="initializeDownloader(downloader)"></span>
-  </span>
-</div>
+<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
 
-<div *ngIf="!currentSchool" class="alert alert-danger">
+<div *ngIf="!schoolIsAvailable" class="alert alert-danger">
   {{'labels.school-grade.messages.null-school' | translate }}
 </div>
 
-<assessments [assessmentExams]="assessmentExams"
-             [assessmentProvider]="assessmentProvider"
-             [allowFilterBySessions]="false"
-             (onExportItemsByPointsEarned)="exportItemsByPointsEarned($event)">
+<div *ngIf="currentSchool">
 
-  <!-- School Select -->
-  <div class="col-md-4">
-    <label>{{'labels.school-grade.results.basic-filters.school' | translate}}</label>
-    <school-select [availableSchools]="availableSchools"
-                   [selectedSchool] = "currentSchool"
-                   (schoolChanged)="schoolSelectChanged($event)">
-    </school-select>
-  </div>
+  <page-heading>
+    <ng-template #heading>
+      <h2>{{currentSchool.name}}<span *ngIf="currentGrade"> - {{currentGrade.code | gradeDisplay:'long-name'}}</span></h2>
+    </ng-template>
+    <ng-template #content>
+      <ul class="list-unstyled list-inline">
+        <li *hasPermission="'INDIVIDUAL_PII_READ'">
+          <a routerLink="/custom-export"
+             class="btn btn-default btn-sm"><i class="fa fa-table"></i> {{'labels.organization-export.title' | translate}}</a>
+        </li>
+        <li>
+          <button class="btn btn-default btn-sm"
+                  (click)="reportDownloader.modal.show()">
+            <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'labels.reports.button-label.school-grade' | translate}}
+          </button>
+        </li>
+      </ul>
+    </ng-template>
+  </page-heading>
 
-  <!-- Current Grade -->
-  <div class="col-md-2">
-    <label for="current-grade">{{'labels.school-grade.results.basic-filters.current-grade' | translate}}</label>
-    <select id="current-grade" class="form-control"
-      title="{{ (gradesAreUnavailable ? 'labels.school-grade.messages.no-grades-available': '') | translate}}"
-      [disabled]="!availableGrades || availableGrades.length == 0" [(ngModel)]="currentGrade" (change)="updateRoute('Grade')">
-      <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay:'long-name' }}</option>
-    </select>
-  </div>
+  <assessments [assessmentExams]="assessmentExams"
+               [hideAssessments]="gradesAreUnavailable"
+               [assessmentProvider]="assessmentProvider"
+               [assessmentExporter]="assessmentExporter"
+               (export)="exportCsv()"
+               [allowFilterBySessions]="false">
 
-  <!-- School Year -->
-  <div class="col-md-2">
-    <label for="school-year">{{'labels.school-grade.results.basic-filters.school-year' | translate}}</label>
-    <select id="school-year" [(ngModel)]="currentSchoolYear" (change)="updateRoute('Year')" class="form-control">
-      <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
-    </select>
-  </div>
+    <!-- School Select -->
+    <div class="col-md-4">
+      <label for="school-search-name">{{'labels.school-grade.results.basic-filters.school' | translate}}</label>
+      <sb-typeahead  inputId="school-search-name"
+                     [options]="schoolOptions"
+                     [value]="currentSchool"
+                     (select)="schoolSelectChanged($event)"
+                     placeholder="{{'prompt.select' | translate}}"></sb-typeahead>
+    </div>
 
-  <!-- spacer for pushing Advanced Filters to the right -->
-  <div class="col-md-2">
-    <!-- can't do it in the assessments.component because it depends on how many dropdowns there are here -->
-  </div>
+    <!-- Current Grade -->
+    <div class="col-md-2">
+      <label for="current-grade">{{'labels.school-grade.results.basic-filters.current-grade' | translate}}</label>
 
-</assessments>
+      <select *ngIf="gradesAreUnavailable" id="current-dsiabled-grade" class="form-control"
+              [disabled]="true">
+        <option selected>{{'labels.school-grade.messages.no-results' | translate}}</option>
+      </select>
+      <select *ngIf="!gradesAreUnavailable" id="current-grade" class="form-control"
+              [(ngModel)]="currentGrade" (change)="updateRoute('Grade')">
+        <option *ngFor="let grade of availableGrades" [ngValue]="grade">{{grade.code | gradeDisplay:'long-name' }}</option>
+      </select>
+    </div>
+
+    <!-- School Year -->
+    <div class="col-md-2">
+      <label for="school-year">{{'labels.school-grade.results.basic-filters.school-year' | translate}}</label>
+      <select id="school-year" [disabled]="gradesAreUnavailable" [(ngModel)]="currentSchoolYear" (change)="updateRoute('Year')" class="form-control">
+        <option *ngFor="let year of filterOptions.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
+        <option *ngIf="gradesAreUnavailable" selected>{{'labels.school-grade.messages.no-results' | translate}}</option>
+      </select>
+    </div>
+
+    <!-- spacer for pushing Advanced Filters to the right -->
+    <div class="col-md-2">
+      <!-- can't do it in the assessments.component because it depends on how many dropdowns there are here -->
+    </div>
+
+  </assessments>
+
+</div>
+
+<span school-grade-report-download #reportDownloader
+      [school]="currentSchool"
+      [grade]="currentGrade"
+      [schoolYears]="filterOptions.schoolYears"
+      [schoolYear]="currentSchoolYear"
+      (onShow)="initializeDownloader(reportDownloader)"></span>

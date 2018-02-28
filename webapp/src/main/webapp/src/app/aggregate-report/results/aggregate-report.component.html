@@ -1,0 +1,152 @@
+<aggregate-embargo-alert *hasPermission="'EMBARGO_READ'"></aggregate-embargo-alert>
+
+<page-heading>
+  <ng-template #heading>
+    <h2>{{report.label}}</h2>
+  </ng-template>
+</page-heading>
+
+<div class="well well-compact">
+  <div class="flex-children">
+    <div class="flex-child grow">
+      <button class="btn btn-default btn-sm"
+              (click)="onUpdateRequestButtonClick()">
+        <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.form-link' | translate}}
+      </button>
+    </div>
+    <div *ngIf="reportView" class="flex-child text-muted pt-xs">
+      {{'aggregate-reports.row-count-label' | translate}} <span class="label gray-darker">{{report.metadata.totalCount | number}}</span>
+    </div>
+
+    <div class="flex-child">
+      <button class="form-control btn btn-default pull-right"
+              (click)="onToggleRequestViewButtonClick()">
+        {{'buttons.visibility.' + (showRequest ? 'hide' : 'show') | translate}}
+        <i class="fa ml-xs"
+           [ngClass]="{'fa-caret-square-o-up': showRequest, 'fa-caret-square-o-down': !showRequest}"
+           aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <div [hidden]="!showRequest" class="row mt-md">
+    <div class="col-md-12">
+      <ng-container *ngIf="summary; else summaryLoading">
+        <aggregate-report-summary [summary]="summary"></aggregate-report-summary>
+      </ng-container>
+      <ng-template #summaryLoading>
+        <spinner></spinner>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+
+    <ng-container *ngIf="reportProcessing">
+      <spinner text="{{'aggregate-report.processing' | translate}}"></spinner>
+    </ng-container>
+
+    <ng-container *ngIf="reportEmpty">
+      <div class="well">
+        <p>{{'aggregate-report.empty' | translate}}</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="reportNotLoadable">
+      <div class="well">
+        <p>{{'aggregate-report.error.unloadable' | translate}}</p>
+        <button class="btn btn-primary" [routerLink]="['/reports']">{{'aggregate-report.reports-link' | translate}}
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="reportSizeNotSupported">
+      <div class="well">
+        <p>{{'aggregate-report.error.unsupported-size' | translate}}</p>
+        <ul class="list-unstyled list-inline">
+          <li>
+            <button class="btn btn-danger btn-sm"
+                    (click)="onDisplayReportButtonClick()">{{'aggregate-report.display-report' | translate}}
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default btn-sm"
+                    [disabled]="spinnerModal.loading"
+                    (click)="onDownloadDataButtonClick()">{{'aggregate-report.download-data' | translate}}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="reportView">
+      <div *ngFor="let table of reportTables" class="well wide-content-container">
+        <div class="row">
+          <div class="col-md-12">
+            <div>
+              <h3 class="h3 label-group green pull-left">
+                <span
+                  class="label">{{'common.assessment-type.' + query.assessmentTypeCode + '.short-name' | translate}}</span><span
+                class="label">{{'common.subject.' + table.subjectCode + '.short-name' | translate}}</span>
+              </h3>
+              <a class="btn btn-sm btn-default ml-sm with-pointer"
+                 [ngClass]="{'disabled': isEmbargoed()}"
+                 popover="{{ (isEmbargoed() ? 'labels.reports.report-actions.embargoed' : '') | translate }}"
+                 triggers="{{ isEmbargoed() ? 'mouseenter:mouseleave': '' }}"
+                 placement="top"
+                 container="body"
+                 (click)="!isEmbargoed() && reportTable.exportTable(getExportName(table))"><i class="fa fa-cloud-download"></i>
+                {{'common.export' | translate}}
+              </a>
+            </div>
+            <div class="clearfix"></div>
+            <div>
+              <span class="pull-left flex-child">
+                <label class="mr-xs">
+                  <info-button title="{{'aggregate-report.column-order' | translate}}"
+                               content="{{'aggregate-report.column-order-info' | translate}}">
+                  </info-button>
+                </label>
+                <order-selector [items]="table.columnOrderingItems"
+                                (itemsChange)="onColumnOrderChange(table, $event)"></order-selector>
+              </span>
+              <span class="pull-right flex-child ml-xs">
+                <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
+                <sb-radio-button-group [options]="displayOptions.valueDisplayTypes"
+                                       [(ngModel)]="table.valueDisplayType"
+                                       buttonGroupStyles="btn-group-xs"
+                                       buttonStyles="btn-default"
+                                       analyticsCategory="AggregateReportControl"
+                                       analyticsEvent="Change"></sb-radio-button-group>
+              </span>
+              <span class="pull-right flex-child ml-xs">
+                <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
+                <sb-radio-button-group [options]="displayOptions.performanceLevelDisplayTypes"
+                                       [(ngModel)]="table.performanceLevelDisplayType"
+                                       buttonGroupStyles="btn-group-xs"
+                                       buttonStyles="btn-default"
+                                       analyticsCategory="AggregateReportControl"
+                                       analyticsEvent="Change"></sb-radio-button-group>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-xs">
+          <div class="col-md-12">
+            <aggregate-report-table #reportTable
+                                    [table]="table.table"
+                                    [valueDisplayType]="table.valueDisplayType"
+                                    [performanceLevelDisplayType]="table.performanceLevelDisplayType"
+                                    [columnOrdering]="table.columnOrdering"></aggregate-report-table>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>
+
+<spinner-modal #spinnerModal></spinner-modal>

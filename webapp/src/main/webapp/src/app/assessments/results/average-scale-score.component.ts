@@ -1,7 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { ExamStatistics, ExamStatisticsLevel } from "../model/exam-statistics.model";
-import { ScaleScoreService } from "../../shared/scale-score.service";
+import { InstructionalResource } from "../model/instructional-resources.model";
+import { InstructionalResourcesService } from "./instructional-resources.service";
+import { ColorService } from "../../shared/color.service";
+import { AssessmentProvider } from "../assessment-provider.interface";
+import { Observable } from "rxjs/Observable";
 
 /**
  * This component is responsible for displaying the average scale score visualization
@@ -12,9 +16,6 @@ import { ScaleScoreService } from "../../shared/scale-score.service";
 })
 export class AverageScaleScoreComponent {
 
-  levelPercents: any[];
-  private _statistics: ExamStatistics;
-
   @Input()
   showValuesAsPercent: boolean = true;
 
@@ -23,31 +24,38 @@ export class AverageScaleScoreComponent {
 
   @Input()
   set statistics(value: ExamStatistics) {
+    // reverse percents and levels so scale score statistics appear in descending order ("good" statistics levels comes before "bad")
+    value.percents = value.percents.reverse();
+    value.levels = value.levels.reverse();
     this._statistics = value;
 
-    if (this._statistics) {
-      this.levelPercents = this.scaleScoreService.calculateDisplayScoreDistribution(this._statistics.percents);
+    if (value && value.levels) {
+      this._totalCount = value.levels
+        .map(examStatisticsLevel => examStatisticsLevel.value)
+        .reduce((total, levelCount) => {
+          return total + levelCount;
+        });
     }
   }
+
+  @Input()
+  assessmentProvider: AssessmentProvider;
 
   get statistics(): ExamStatistics {
     return this._statistics;
   }
 
-  constructor(private scaleScoreService: ScaleScoreService) {
+  instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
 
+  private _statistics: ExamStatistics;
+  private _totalCount: number;
+
+  constructor(public colorService: ColorService,
+              private instructionalResourcesService: InstructionalResourcesService) {
   }
 
   get hasAverageScore(): boolean {
     return !isNaN(this.statistics.average);
-  }
-
-  get showIab(): boolean {
-    return this.assessmentExam.assessment.isIab && this.statistics && this.statistics.total > 0;
-  }
-
-  get showIcaSummative(): boolean {
-    return !this.assessmentExam.assessment.isIab && this.statistics && this.statistics.total > 0;
   }
 
   get examLevelEnum() {
@@ -57,13 +65,34 @@ export class AverageScaleScoreComponent {
   }
 
   get performanceLevels(): ExamStatisticsLevel[] {
-    if (this.showValuesAsPercent)
-      return this.statistics.percents;
-    else
-      return this.statistics.levels;
+    return this.showValuesAsPercent ? this.statistics.percents : this.statistics.levels;
   }
 
-  getLevelPercent(num: number): number {
-    return this.levelPercents[num];
+  /**
+   * Calculates the amount of the bar filled by the ExamStatisticsLevel
+   * @param {ExamStatisticsLevel} examStatisticsLevel
+   * @returns {number} the amount filled by the examStatisticsLevel (0-100)
+   */
+  filledLevel(examStatisticsLevel: ExamStatisticsLevel): number {
+    return this.showValuesAsPercent ? Math.floor(examStatisticsLevel.value) : this.levelCountPercent(examStatisticsLevel.value);
   }
+
+  /**
+   * Calculates the amount of the bar unfilled by the ExamStatisticsLevel
+   * @param {ExamStatisticsLevel} examStatisticsLevel
+   * @returns {number} the amount unfilled by the examStatisticsLevel (0-100)
+   */
+  unfilledLevel(examStatisticsLevel: ExamStatisticsLevel): number {
+    return 100 - this.filledLevel(examStatisticsLevel);
+  }
+
+  private levelCountPercent(levelCount: number): number {
+    return Math.floor(levelCount / this._totalCount * 100);
+  }
+
+  loadInstructionalResources(performanceLevel: ExamStatisticsLevel) {
+    this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this.assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
+      .map(resources => resources.getResourcesByPerformance(performanceLevel.id));
+  }
+
 }

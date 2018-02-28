@@ -1,0 +1,87 @@
+# this app is expected to run inside the security perimeter so disable security for actuator end-points and,
+# since those are the only end-points, switch to a less standard port using the main server.port config
+management:
+  port: 8008
+  security:
+    enabled: false
+
+server:
+  # tomcat settings for reasonable performance: adjust for tiny/huge configurations
+  tomcat:
+    max-connections: 0
+    max-threads: 4
+    accept-count: 10
+
+cloud:
+  aws:
+    # there must be a default region when running locally
+    region:
+      auto: false
+      static: us-west-2
+    # disable CloudFormation stuff
+    stack:
+      auto: false
+    credentials:
+      instance-profile: false
+
+app:
+  aggregate-reports:
+    assessment-types: ica,sum
+    statewide-user-assessment-types: sum
+    custom-aggregate-report-repository:
+      organization-partition-size: 10
+    query-pool-size: 6
+    api-enabled: false
+
+  archive:
+      root: file:///tmp/
+
+  cache:
+    repository:
+      # every day at 2:00 am (GMT)
+      refresh-cron: "0 0 2 * * *"
+
+  school-year: 2018
+  state:
+    code: CA
+    name: California
+
+
+spring:
+  cache:
+    type: SIMPLE
+    cache-names: internalTranslationsByCode, reportOptions, administrationConditions, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, ethnicities, genders, schoolYears, subjects, activeAssessments, embargo
+
+  cloud:
+    stream:
+      bindings:
+        AggregateRequest:
+          content-type: application/json
+          group: default
+          producer:
+            requiredGroups: default
+
+        AggregateResponse:
+          content-type: application/json
+          group: default
+          producer:
+            requiredGroups: default
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  olap_datasource:
+    url: "\
+       jdbc:redshift://${spring.olap_datasource.url-server:localhost:5432}/${spring.olap_datasource.url-db:dev}\
+       ?ApplicationName=rdw-reporting-aggregate-service\
+       "
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    driverClassName: com.amazon.redshift.jdbc42.Driver
+
+jwt:
+  secret: ${rdw.reporting.jwt.secret:secret}

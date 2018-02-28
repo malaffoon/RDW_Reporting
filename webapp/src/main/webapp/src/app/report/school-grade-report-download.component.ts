@@ -1,12 +1,13 @@
 import { Component, Input } from "@angular/core";
 import { ReportService } from "./report.service";
-import { saveAs } from "file-saver";
 import { ReportDownloadComponent } from "./report-download.component";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Report } from "./report.model";
 import { School } from "../user/model/school.model";
 import { Grade } from "../school-grade/grade.model";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs/Observable";
+import { UserService } from "../user/user.service";
 
 /**
  * Component used for single-student exam report download
@@ -18,41 +19,25 @@ import { TranslateService } from "@ngx-translate/core";
 export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
 
   @Input()
-  public school: School;
+  school: School;
 
   @Input()
-  public grade: Grade;
+  grade: Grade;
 
-  constructor(private service: ReportService, notificationService: NotificationService, private translate: TranslateService) {
-    super('labels.reports.button-label.school-grade', notificationService);
-    this.batch = true;
+  constructor(notificationService: NotificationService,
+              userService: UserService,
+              private service: ReportService,
+              private translate: TranslateService) {
+    super(notificationService, userService);
   }
 
-  public submit(): void {
-
-    this.popover.hide();
-
-    this.options.name = this.getName();
-
-    this.service.createSchoolGradeExamReport(this.school.id, this.grade.id, this.options)
-      .subscribe(
-        (report: Report) => {
-          this.notificationService.info({ id: 'labels.reports.messages.submitted.html', html: true });
-        },
-        (error: any) => {
-          this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
-        }
-      );
+  createReport(): Observable<Report> {
+    return this.service.createSchoolGradeExamReport(this.school, this.grade, this.options);
   }
 
-  private getName(): string {
-    return [
-      this.school.name,
-      this.translate.instant(`labels.grades.${this.grade.code}.short-name`),
-      this.options.schoolYear.toString(),
-      this.options.language === this.languages[ 0 ]
-        ? '' : this.translate.instant(`labels.languages.${this.options.language}.default`)
-    ].join(' ').trim();
+  generateName(): string {
+    let gradeLabel: string = this.translate.instant(`labels.grades.${this.grade.code}.short-name`);
+    return `${this.school.name} ${gradeLabel}`;
   }
 
 }

@@ -1,33 +1,36 @@
-import { Component, Input, OnInit, EventEmitter, Output } from "@angular/core";
-import { trigger, transition, style, animate } from "@angular/animations";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { animate, style, transition, trigger } from "@angular/animations";
 import { AssessmentExam } from "../model/assessment-exam.model";
 import { Exam } from "../model/exam.model";
 import { ExamStatisticsCalculator } from "./exam-statistics-calculator";
 import { FilterBy } from "../model/filter-by.model";
-import { Subscription, Observable } from "rxjs";
+import { Subscription } from "rxjs/Subscription";
 import { ExamFilterService } from "../filters/exam-filters/exam-filter.service";
-import { AssessmentItem } from "../model/assessment-item.model";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
-import { PopupMenuAction } from "../menu/popup-menu-action.model";
-import { Angulartics2 } from "angulartics2";
 import { GradeCode } from "../../shared/enum/grade-code.enum";
 import { ColorService } from "../../shared/color.service";
 import { MenuActionBuilder } from "../menu/menu-action.builder";
 import { ExamStatistics } from "../model/exam-statistics.model";
-import { ItemByPointsEarnedExportRequest } from "../model/item-by-points-earned-export-request.model";
-import { ItemPointField } from "../model/item-point-field.model";
-import { ReportService } from "../../report/report.service";
-import { NotificationService } from "../../shared/notification/notification.service";
-import { Download } from "../../shared/data/download.model";
-import { ReportOptions } from "../../report/report-options.model";
-import { ReportOrder } from "../../report/report-order.enum";
-import { saveAs } from "file-saver";
-import { ItemInfoService } from "../items/item-info/item-info.service";
+import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
+import { AssessmentProvider } from "../assessment-provider.interface";
+import { ResultsByItemComponent } from "./view/results-by-item/results-by-item.component";
+import { DistractorAnalysisComponent } from "./view/distractor-analysis/distractor-analysis.component";
+import { InstructionalResourcesService } from "./instructional-resources.service";
+import { InstructionalResource } from "../model/instructional-resources.model";
+import { Assessment } from "../model/assessment.model";
+import { Observable } from "rxjs/Observable";
+import { WritingTraitScoresComponent } from "./view/writing-trait-scores/writing-trait-scores.component";
+import { AssessmentExporter } from "../assessment-exporter.interface";
+import { AssessmentPercentileRequest, AssessmentPercentileService } from "../percentile/assessment-percentile.service";
+import { PercentileGroup } from "../percentile/assessment-percentile";
+import { Utils } from "../../shared/support/support";
 
-enum ScoreViewState {
-  OVERALL = 1,
-  CLAIM = 2
+enum ResultsViewState {
+  ByStudent = 1,
+  ByItem = 2,
+  DistractorAnalysis = 3,
+  WritingTraitScores = 4
 }
 
 @Component({
@@ -55,17 +58,6 @@ enum ScoreViewState {
   ],
 })
 export class AssessmentResultsComponent implements OnInit {
-  exams: Exam[] = [];
-  sessions = [];
-  statistics: ExamStatistics;
-  filteredAssessmentItems: AssessmentItem[];
-  pointColumns: ItemPointField[];
-  showItemsByPoints: boolean = false;
-
-  get hasItemLevelData(): boolean {
-    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
-  }
-
   /**
    * The assessment exam in which to display results for.
    */
@@ -78,10 +70,22 @@ export class AssessmentResultsComponent implements OnInit {
       this.sessions = this.getDistinctExamSessions(assessment.exams);
 
       if (this.sessions.length > 0) {
-        this.toggleSession(this.sessions[0]);
+        this.toggleSession(this.sessions[ 0 ]);
       }
     }
   }
+
+  /**
+   * Service class which provides assessment data for this assessment and exam.
+   */
+  @Input()
+  assessmentProvider: AssessmentProvider;
+
+  /**
+   * Service class which provides export capabilities=for this assessment and exam.
+   */
+  @Input()
+  assessmentExporter: AssessmentExporter;
 
   /**
    * If true, values will be shown as percents.  Otherwise values will be shown
@@ -104,11 +108,6 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   minimumItemDataYear: number;
 
-  @Input()
-  displayState: any = {
-    showClaim: ScoreViewState.OVERALL
-  };
-
   /**
    * Exam filters applied, if any.
    */
@@ -129,160 +128,165 @@ export class AssessmentResultsComponent implements OnInit {
     }
   }
 
-  @Output()
-  onExportItemsByPointsEarned: EventEmitter<ItemByPointsEarnedExportRequest> = new EventEmitter();
-
-  get assessmentExam() {
-    return this._assessmentExam;
-  }
-
-  /**
-   * Provider function which loads the assessment items when viewing
-   * items by points earned.
-   */
-  @Input()
-  loadAssessmentItems: (number) => Observable<AssessmentItem[]>;
-
-  actions: PopupMenuAction[];
-
   set collapsed(collapsed: boolean) {
     this.assessmentExam.collapsed = collapsed;
   }
 
-  get collapsed() {
+  get collapsed(): boolean {
     return this.assessmentExam.collapsed;
   }
 
-  get examLevelEnum() {
-    return this.assessmentExam.assessment.isIab
-      ? "enum.iab-category.full."
-      : "enum.achievement-level.full.";
+  get assessmentExam(): AssessmentExam {
+    return this._assessmentExam;
   }
 
-  get isIab(): boolean {
-    return this._assessmentExam.assessment.isIab;
+  get displayItemLevelData(): boolean {
+    return !this._assessmentExam.assessment.isSummative && this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
   }
 
-  get isIca(): boolean {
-    return this._assessmentExam.assessment.isIca;
+  get displayWritingTraitScores(): boolean {
+    return this._assessmentExam.assessment.isEla;
   }
 
-  get showClaimToggle(): boolean {
-    return this._assessmentExam.assessment.isIca || this._assessmentExam.assessment.isSummative;
+  get enableWritingTraitScores(): boolean {
+    return this._assessmentExam.assessment.isIab && this.displayItemLevelData;
   }
 
-  get claimCodes(): string[] {
-    return this._assessmentExam.assessment.claimCodes;
+  get showStudentResults(): boolean {
+    return this.currentResultsView.value == ResultsViewState.ByStudent;
   }
 
-  get isClaimScoreSelected() {
-    return this.displayState.table == ScoreViewState.CLAIM;
+  get showItemsByPointsEarned(): boolean {
+    return this.currentResultsView.value == ResultsViewState.ByItem;
   }
 
-  public setClaimScoreSelected() {
-    this.displayState.table = ScoreViewState.CLAIM;
+  get showDistractorAnalysis(): boolean {
+    return this.currentResultsView.value == ResultsViewState.DistractorAnalysis;
   }
 
-  public setOverallScoreSelected() {
-    this.displayState.table = ScoreViewState.OVERALL;
+  get showWritingTraitScores(): boolean {
+    return this.currentResultsView.value == ResultsViewState.WritingTraitScores;
   }
 
-  get performanceLevelHeader() {
-    return "labels.groups.results.assessment.exams.cols." +
-      (this.isIab ? "iab" : "ica") + ".performance";
+  get currentExportResults(): ExportResults {
+    if (this.showItemsByPointsEarned) {
+      return this.resultsByItem;
+    }
+
+    if (this.showDistractorAnalysis) {
+      return this.distractorAnalysis;
+    }
+
+    if (this.showWritingTraitScores) {
+      return this.writingTraitScores;
+    }
+
+    return undefined;
   }
 
-  get performanceLevelHeaderInfo() {
-    return this.performanceLevelHeader + "-info";
-  }
+  @ViewChild('menuReportDownloader')
+  reportDownloader: StudentReportDownloadComponent;
+
+  @ViewChild('resultsByItem')
+  resultsByItem: ResultsByItemComponent;
+
+  @ViewChild('distractorAnalysis')
+  distractorAnalysis: DistractorAnalysisComponent;
+
+  @ViewChild('writingTraitScores')
+  writingTraitScores: WritingTraitScoresComponent;
+
+  exams: Exam[] = [];
+  sessions = [];
+  statistics: ExamStatistics;
+  currentResultsView: ResultsView;
+  resultsByStudentView: ResultsView;
+  resultsByItemView: ResultsView;
+  distractorAnalysisView: ResultsView;
+  writingTraitScoresView: ResultsView;
+  instructionalResourceProvider: () => Observable<InstructionalResource[]>;
+  showPercentileHistory: boolean = false;
+  percentileGroups: PercentileGroup[];
 
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
-  private _assessmentItems: AssessmentItem[];
   private _filterBySubscription: Subscription;
 
   constructor(public colorService: ColorService,
               private examCalculator: ExamStatisticsCalculator,
               private examFilterService: ExamFilterService,
-              private reportService: ReportService,
-              private notificationService: NotificationService,
-              private actionBuilder: MenuActionBuilder,
-              private angulartics2: Angulartics2) {
+              private instructionalResourcesService: InstructionalResourcesService,
+              private percentileService: AssessmentPercentileService) {
   }
 
   ngOnInit(): void {
-    this.actions = this.createActions();
+    this.initializeViews();
+    this.setCurrentView(this.resultsByStudentView);
+  }
+
+  initializeViews(): void {
+    this.resultsByStudentView = this.createResultViewState(ResultsViewState.ByStudent, true, false, true);
+    this.resultsByItemView = this.createResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, true);
+    this.distractorAnalysisView = this.createResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, true);
+    this.writingTraitScoresView = this.createResultViewState(ResultsViewState.WritingTraitScores, this.enableWritingTraitScores, true, this.displayWritingTraitScores);
+  }
+
+  createResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean, display: boolean): ResultsView {
+    return {
+      label: 'enum.results-view-state.' + ResultsViewState[ viewState ],
+      value: viewState,
+      disabled: !enabled,
+      display: display,
+      canExport: canExport
+    }
+  }
+
+  setCurrentView(view: ResultsView): void {
+    this.currentResultsView = view;
   }
 
   getGradeIdx(gradeCode: string): number {
     return GradeCode.getIndex(gradeCode);
   }
 
-  getPointRowStyleClass(index: number){
-    return index == 0 ? 'level-down' : '';
+  getCurrentViewIntroductionLabel(): string {
+    return 'labels.results-view-state-intro.' + ResultsViewState[ this.currentResultsView.value ];
   }
 
-  toggleSession(session) {
+  toggleSession(session): void {
     session.filter = !session.filter;
     this.updateExamSessions();
   }
 
-  openInstructionalResource() {
+  openInstructionalResource(): void {
     window.open(this.assessmentExam.assessment.resourceUrl);
   }
 
-  viewItemsByPoints(viewItemsByPoints: boolean) {
-    if (viewItemsByPoints && this.loadAssessmentItems) {
-      this.loadAssessmentItems(this.assessmentExam.assessment.id).subscribe(assessmentItems => {
-
-        let numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
-
-        if (numOfScores != 0) {
-          this.pointColumns = this.examCalculator.getPointFields(assessmentItems);
-
-          this._assessmentItems = assessmentItems;
-          this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
-
-          this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
-        }
-        this.showItemsByPoints = true;
-      });
-    }
-    else{
-      this._assessmentItems = undefined;
-      this.filteredAssessmentItems = undefined;
-      this.showItemsByPoints = false;
-    }
-
-    this.angulartics2.eventTrack.next({
-      action: (viewItemsByPoints ? 'View' : 'Hide') + 'ItemsByPointsEarned',
-      properties: {
-        category: 'AssessmentResults'
-      }
-    });
+  loadInstructionalResources(assessment: Assessment, performanceLevel: number): void {
+    this.instructionalResourceProvider = () => this.instructionalResourcesService
+      .getInstructionalResources(assessment.id, this.assessmentProvider.getSchoolId())
+      .map((resources) => resources.getResourcesByPerformance(performanceLevel));
   }
 
-  exportItemsByPointsEarned(): void {
-    let exportRequest = new ItemByPointsEarnedExportRequest();
-    exportRequest.assessmentExam = this.assessmentExam;
-    exportRequest.assessmentItems = this.filteredAssessmentItems;
-    exportRequest.pointColumns = this.pointColumns;
-    exportRequest.showAsPercent = this.showValuesAsPercent;
-
-    this.angulartics2.eventTrack.next({
-      action: 'Export ItemsByPointsEarned',
-      properties: {
-        category: 'Export'
-      }
-    });
-
-    this.onExportItemsByPointsEarned.emit(exportRequest);
+  onPercentileButtonClickInternal(): void {
+    this.showPercentileHistory = !this.showPercentileHistory;
+    if (Utils.isNullOrUndefined(this.percentileGroups)) {
+      const results = this.assessmentExam;
+      const dates = results.exams.map(exam => new Date(exam.date)).sort();
+      const request = <AssessmentPercentileRequest>{
+        assessmentId: results.assessment.id,
+        from: dates[ 0 ],
+        to: dates[ dates.length - 1 ]
+      };
+      this.percentileService.getPercentilesGroupedByRank(request)
+        .subscribe(percentileGroups => this.percentileGroups = percentileGroups);
+    }
   }
 
-  private getDistinctExamSessions(exams: Exam[]) {
+  private getDistinctExamSessions(exams: Exam[]): any[] {
     let sessions = [];
 
-    for(let exam of exams){
+    for (let exam of exams) {
       if (!sessions.some(x => x.id == exam.session)) {
         sessions.push({ id: exam.session, date: exam.date, filter: false });
       }
@@ -295,17 +299,12 @@ export class AssessmentResultsComponent implements OnInit {
         .compare);
   }
 
-  private updateExamSessions() {
+  private updateExamSessions(): void {
     this.exams = this.filterExams();
     this.statistics = this.calculateStats();
-
-    if (this._assessmentItems) {
-      this.filteredAssessmentItems = this.filterAssessmentItems(this._assessmentItems);
-      this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
-    }
   }
 
-  private filterExams() {
+  private filterExams(): Exam[] {
     let exams: Exam[] = this.examFilterService
       .filterExams(this._assessmentExam, this._filterBy);
 
@@ -317,69 +316,29 @@ export class AssessmentResultsComponent implements OnInit {
     return exams;
   }
 
-  private filterAssessmentItems(assessmentItems: AssessmentItem[]) {
-    let filtered = [];
-
-    for(let assessmentItem of assessmentItems) {
-      let filteredItem = Object.assign(new AssessmentItem(), assessmentItem);
-      filteredItem.scores = assessmentItem.scores.filter(score => this.exams.some(exam => exam.id == score.examId));
-      filtered.push(filteredItem);
-    }
-
-    return filtered;
-  }
-
   private calculateStats(): ExamStatistics {
     let stats = new ExamStatistics();
+
     stats.total = this.exams.length;
     stats.average = this.examCalculator.calculateAverage(this.exams);
     stats.standardError = this.examCalculator.calculateStandardErrorOfTheMean(this.exams);
-    stats.levels = this.examCalculator.groupLevels(this.exams, this.isIab ? 3 : 4);
+    stats.levels = this.examCalculator.groupLevels(this.exams, this.assessmentExam.assessment.isIab ? 3 : 4);
     stats.percents = this.examCalculator.mapGroupLevelsToPercents(stats.levels);
 
     return stats;
   }
+}
 
-  private createActions(): PopupMenuAction[] {
-    let builder = this.actionBuilder.newActions();
+interface ResultsView {
+  label: string;
+  value: ResultsViewState;
+  disabled: boolean;
+  canExport: boolean;
+  display: boolean;
+}
 
-    if (!this._assessmentExam.assessment.isSummative) {
-      builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
-    }
+export interface ExportResults {
+  exportToCsv(): void;
 
-    return builder
-      .withStudentHistory(exam => exam.student)
-      .withStudentReport(
-        () => this._assessmentExam,
-        exam => exam.student,
-        exam => {
-          let reportOptions: ReportOptions = new ReportOptions();
-          reportOptions.assessmentType = this._assessmentExam.assessment.type;
-          reportOptions.subject = this._assessmentExam.assessment.assessmentSubjectType;
-          reportOptions.schoolYear = exam.schoolYear;
-          reportOptions.language = 'eng';
-          reportOptions.order = ReportOrder.STUDENT_NAME;
-          reportOptions.grayscale = false;
-
-          this.notificationService.info({ id: 'labels.reports.messages.submitted-single' });
-
-          this.reportService.getStudentExamReport(exam.student.id, reportOptions)
-            .subscribe(
-              (download: Download) => {
-                saveAs(download.content, download.name);
-              },
-              (error: any) => {
-                this.notificationService.error({
-                  id: error.name === 'NotFoundError'
-                    ? 'labels.reports.messages.404'
-                    : 'labels.reports.messages.500'
-                });
-              }
-            )
-          ;
-        }
-      )
-      .build();
-  }
-
+  hasDataToExport(): boolean;
 }

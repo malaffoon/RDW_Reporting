@@ -1,9 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Http, RequestOptionsArgs, Response, ResponseContentType } from "@angular/http";
-import { Observable } from "rxjs/Rx";
+import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 import { Download } from "./download.model";
+
+export const DATA_CONTEXT_URL = new InjectionToken<string>('CONTEXT_URL');
 
 /**
  * Central HTTP service used to proxy all requests to the API server
@@ -11,7 +13,8 @@ import { Download } from "./download.model";
 @Injectable()
 export class DataService {
 
-  constructor(private http: Http) {
+  constructor(private http: Http,
+              @Inject(DATA_CONTEXT_URL) private contextUrl: string = '/api') {
   }
 
   /**
@@ -21,9 +24,9 @@ export class DataService {
    * @param options parameters to communicate to the API
    * @returns {Observable<R>}
    */
-  public get(url: string, options?: RequestOptionsArgs): Observable<any> {
+  get(url: string, options?: RequestOptionsArgs): Observable<any> {
     return this.http
-      .get(`/api${url}`, options)
+      .get(`${this.contextUrl}${url}`, options)
       .map(this.getMapper(options));
   }
 
@@ -35,9 +38,36 @@ export class DataService {
    * @param options parameters to communicate to the API
    * @returns {Observable<R>}
    */
-  public post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
+  post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
     return this.http
-      .post(`/api${url}`, body, options)
+      .post(`${this.contextUrl}${url}`, body, options)
+      .map(this.getMapper(options));
+  }
+
+  /**
+   * Puts data to the API server
+   *
+   * @param url the API endpoint
+   * @param body the request body
+   * @param options parameters to communicate to the API
+   * @returns {Observable<R>}
+   */
+  put(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
+    return this.http
+      .put(`${this.contextUrl}${url}`, body, options)
+      .map(this.getMapper(options));
+  }
+
+  /**
+   * Deletes data on the API server
+   *
+   * @param url the API endpoint
+   * @param options parameters to communicate to the API
+   * @returns {Observable<any>}
+   */
+  delete(url: string, options?: RequestOptionsArgs): Observable<any> {
+    return this.http
+      .delete(`${this.contextUrl}${url}`, options)
       .map(this.getMapper(options));
   }
 
@@ -56,7 +86,14 @@ export class DataService {
         new Blob([ response.blob() ], { type: this.getContentType(response) })
       );
     }
-    return response => response.json();
+    return response => {
+      const contentLength = response.headers.get("content-length");
+      // content-length is 0 when there is no response body and is optional otherwise
+      // response.json() throws an exception when content-length is 0
+      if (contentLength == null || Number.parseInt(contentLength) > 0)
+        return response.json();
+      return null;
+    }
   }
 
   /**
@@ -67,7 +104,7 @@ export class DataService {
    * @returns {string} thre formatted name
    */
   private safelyFormatFileName(name: string) {
-    return name == null ? null : name.replace(/\s+/g, '_');
+    return name == null ? null : name.replace(/[&~@#$^*_+=/:?;\\|<>"',]/g, '').replace(/\s+/g, '_');
   }
 
   /**

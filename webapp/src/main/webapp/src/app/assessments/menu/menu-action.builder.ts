@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
-import { PopupMenuAction } from "./popup-menu-action.model";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Student } from "../../student/model/student.model";
-import { isNullOrUndefined } from "util";
-import { AssessmentExam } from "../model/assessment-exam.model";
+import { AssessmentType } from "../../shared/enum/assessment-type.enum";
+import { InstructionalResource } from "../model/instructional-resources.model";
+import { Observable } from "rxjs/Observable";
+import { PopupMenuAction } from "../../shared/menu/popup-menu-action.model";
 
 /**
  * This builder will create the menu actions used by the PopupMenuComponent.
@@ -16,12 +17,11 @@ import { AssessmentExam } from "../model/assessment-exam.model";
  */
 @Injectable()
 export class MenuActionBuilder {
-  private actions: PopupMenuAction[];
+  private actions: PopupMenuAction[] = [];
 
   constructor(private translateService: TranslateService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.actions = [];
   }
 
   newActions(): MenuActionBuilder {
@@ -81,7 +81,7 @@ export class MenuActionBuilder {
 
     responsesAction.tooltip = ((actionable) => {
       return responsesAction.isDisabled(actionable)
-        ? this.translateService.instant('messages.no-item-level-data')
+        ? this.translateService.instant('messages.no-results-by-item')
         : '';
     });
 
@@ -90,57 +90,41 @@ export class MenuActionBuilder {
   }
 
   /**
-   * Adds an action item which shows resources.  If the resource url is null
-   * or undefined then the action item will be disabled with a tooltip.
+   * Adds an action item which shows instructional resources.
    *
-   * @param getResourceUrl lambda which accesses the assessment resource url.
+   * @param loadResources lambda which fetches the instructional resources for a row item
    * @returns {MenuActionBuilder}
    */
-  withShowResources(getResourceUrl: (actionable: any) => string) {
+  withShowResources(loadResources: (actionable: any) => Observable<InstructionalResource[]>) {
     let resourcesLabel: string = this.translateService.instant('labels.menus.resources');
+
     let resourcesAction: PopupMenuAction = new PopupMenuAction();
-
-    resourcesAction.isDisabled = ((actionable) => {
-      return isNullOrUndefined(getResourceUrl(actionable));
-    });
-
-    resourcesAction.tooltip = ((actionable) => {
-      return resourcesAction.isDisabled(actionable)
-        ? this.translateService.instant('labels.menus.resources-disabled-message')
-        : '';
+    resourcesAction.getSubActions = ((actionable) => {
+      return loadResources(actionable)
+        .map((resources: InstructionalResource[]) => {
+          if (!resources.length) {
+            let noResourcesAction = new PopupMenuAction();
+            noResourcesAction.isDisabled = () => true;
+            noResourcesAction.displayName = () => this.translateService.instant('labels.groups.results.assessment.no-instruct-found');
+            return [noResourcesAction];
+          }
+          return this.asInstructionalResourceActions.call(this, resources);
+        });
     });
 
     resourcesAction.displayName = (() => resourcesLabel);
-    resourcesAction.perform = ((actionable) => {
-      window.open(getResourceUrl(actionable));
-      console.log(`Show Resources: ${getResourceUrl(actionable)}`)
-    }).bind(this);
+    resourcesAction.perform = (() => {});
 
     this.actions.push(resourcesAction);
     return this;
   }
 
-  withStudentReport(getAssessmentExam: (x:any) => AssessmentExam, getStudent: (x:any) => Student, submitReport: (x:any) => void): MenuActionBuilder {
+  withStudentReport(getAssessmentType: (x:any) => AssessmentType, getStudent: (x:any) => Student, submitReport: (x:any) => void): MenuActionBuilder {
     let action: PopupMenuAction = new PopupMenuAction();
 
     action.displayName = ((actionable: any) => {
-      let assessmentExam = getAssessmentExam(actionable);
-      let assessmentType: string = '';
-
-      if (assessmentExam.assessment.isIab) {
-        assessmentType = 'iab';
-      }
-      else if (assessmentExam.assessment.isIca) {
-        assessmentType = 'ica';
-      }
-      else if (assessmentExam.assessment.isSummative) {
-        assessmentType = 'summative';
-      }
-      else {
-        return '';
-      }
-
-      return this.translateService.instant('labels.menus.student-report.' + assessmentType, getStudent(actionable));
+      let assessmentType = getAssessmentType(actionable);
+      return this.translateService.instant('labels.menus.student-report.' + AssessmentType[assessmentType].toLowerCase(), getStudent(actionable));
     }).bind(this);
     action.perform = ((actionable: any) => {
       submitReport(actionable);
@@ -152,5 +136,21 @@ export class MenuActionBuilder {
 
   build(): PopupMenuAction[] {
     return this.actions;
+  }
+
+  private asInstructionalResourceActions(resources: InstructionalResource[]): PopupMenuAction[] {
+    return resources.map(this.asInstructionalResourceAction.bind(this));
+  }
+
+  private asInstructionalResourceAction(resource: InstructionalResource): PopupMenuAction {
+    let action: PopupMenuAction = new PopupMenuAction();
+    action.displayName = (() => {
+      return this.translateService.instant(`labels.instructional-resources.link.${resource.organizationLevel}`, resource);
+    });
+    action.perform = (() => {
+      window.open(resource.url, "_blank");
+    });
+
+    return action;
   }
 }

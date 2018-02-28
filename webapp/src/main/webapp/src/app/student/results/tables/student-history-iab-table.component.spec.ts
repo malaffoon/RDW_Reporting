@@ -1,27 +1,34 @@
 import { StudentHistoryIABTableComponent } from "./student-history-iab-table.component";
-import { ComponentFixture, async, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { BrowserModule } from "@angular/platform-browser";
 import { SharedModule } from "primeng/components/common/shared";
-import { SchoolYearPipe } from "../../../shared/schoolYear.pipe";
 import { TranslateModule } from "@ngx-translate/core";
 import { DataTableModule } from "primeng/components/datatable/datatable";
-import { ScaleScoreComponent } from "../../../assessments/results/scale-score.component";
-import { InformationLabelComponent } from "../../../assessments/results/information-label.component";
-import { PopupMenuComponent } from "../../../assessments/menu/popup-menu.component";
+import { InformationButtonComponent } from "../../../shared/button/information-button.component";
 import { MockRouter } from "../../../../test/mock.router";
-import { Router, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { GradeDisplayPipe } from "../../../shared/grade-display.pipe";
 import { PopoverModule } from "ngx-bootstrap";
+import { InstructionalResourcesService } from "../../../assessments/results/instructional-resources.service";
+import { MockDataService } from "../../../../test/mock.data.service";
+import { InstructionalResourcePopoverComponent } from "../../../assessments/popover/instructional-resource-popover.component";
+import { ScaleScoreComponent } from "../../../shared/scale-score/scale-score.component";
+import { SchoolYearPipe } from "../../../shared/format/school-year.pipe";
+import { PopupMenuComponent } from "../../../shared/menu/popup-menu.component";
+import { CachingDataService } from "../../../shared/data/caching-data.service";
+import { DataService } from "../../../shared/data/data.service";
 
 describe('StudentHistoryIABTableComponent', () => {
   let component: StudentHistoryIABTableComponent;
   let fixture: ComponentFixture<StudentHistoryIABTableComponent>;
   let router: MockRouter;
   let activatedRoute: ActivatedRoute;
+  let dataService: MockDataService;
 
   beforeEach(async(() => {
     router = new MockRouter();
     activatedRoute = new ActivatedRoute();
+    dataService = new MockDataService();
 
     TestBed.configureTestingModule({
       imports: [
@@ -33,19 +40,26 @@ describe('StudentHistoryIABTableComponent', () => {
       ],
       declarations: [
         GradeDisplayPipe,
-        InformationLabelComponent,
+        InformationButtonComponent,
         StudentHistoryIABTableComponent,
+        InstructionalResourcePopoverComponent,
         SchoolYearPipe,
         ScaleScoreComponent,
         PopupMenuComponent
       ],
-      providers: [{
+      providers: [ {
         provide: Router,
         useValue: router
       }, {
         provide: ActivatedRoute,
         useValue: activatedRoute
-      }]
+      }, {
+        provide: DataService,
+        useValue: dataService
+      },
+        InstructionalResourcesService,
+        CachingDataService
+      ]
     })
       .compileComponents();
   }));

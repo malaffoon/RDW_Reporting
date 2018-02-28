@@ -14,23 +14,31 @@ import { ExamFilterOptionsMapper } from "./filters/exam-filters/exam-filter-opti
 import { SelectAssessmentsComponent } from "./filters/select-assessments/select-assessments.component";
 import { AssessmentsComponent } from "./assessments.component";
 import { AdvFiltersToggleComponent } from "./filters/adv-filters/adv-filters-toggle.component";
-import { ScaleScoreComponent } from "./results/scale-score.component";
 import { AverageScaleScoreComponent } from "./results/average-scale-score.component";
-import { InformationLabelComponent } from "./results/information-label.component";
 import { ItemViewerComponent } from "./items/item-viewer/item-viewer.component";
 import { ItemTabComponent } from "./items/item-tab.component";
 import { TabsModule } from "ngx-bootstrap/tabs";
-import { PopupMenuComponent } from "./menu/popup-menu.component";
 import { Angulartics2Module } from "angulartics2";
 import { ItemExemplarComponent } from "./items/item-exemplar/item-exemplar.component";
 import { ItemScoringService } from "./items/item-exemplar/item-scoring.service";
 import { ItemScoringGuideMapper } from "./items/item-exemplar/item-scoring-guide.mapper";
 import { ItemScoresComponent } from "./items/item-scores/item-scores.component";
+import { ItemWritingTraitScoresComponent } from "./items/item-writing-trait-scores/item-writing-trait-scores.component";
 import { StudentScoreService } from "./items/item-scores/student-score.service";
 import { ItemInfoComponent } from "./items/item-info/item-info.component";
 import { ItemInfoService } from "./items/item-info/item-info.service";
-import { PopoverModule } from "ngx-bootstrap";
+import { BsDropdownModule, PopoverModule } from "ngx-bootstrap";
 import { ClaimTargetComponent } from "./results/claim-target.component";
+import { ReportModule } from "../report/report.module";
+import { ResultsByStudentComponent } from './results/view/results-by-student/results-by-student.component';
+import { DistractorAnalysisComponent } from './results/view/distractor-analysis/distractor-analysis.component';
+import { WritingTraitScoresComponent } from './results/view/writing-trait-scores/writing-trait-scores.component';
+import { ResultsByItemComponent } from "./results/view/results-by-item/results-by-item.component";
+import { ScaleScoreService } from "./results/scale-score.service";
+import { InstructionalResourcesService } from "./results/instructional-resources.service";
+import { InstructionalResourcePopoverComponent } from './popover/instructional-resource-popover.component';
+import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
+import { AssessmentPercentileModule } from "./percentile/assessment-percentile.module";
 
 @NgModule({
   declarations: [
@@ -38,38 +46,43 @@ import { ClaimTargetComponent } from "./results/claim-target.component";
     AdvFiltersToggleComponent,
     AssessmentsComponent,
     AssessmentResultsComponent,
-    InformationLabelComponent,
     ItemTabComponent,
     ItemViewerComponent,
-    PopupMenuComponent,
-    ScaleScoreComponent,
     AverageScaleScoreComponent,
     SelectAssessmentsComponent,
     ItemExemplarComponent,
     ItemScoresComponent,
+    ItemWritingTraitScoresComponent,
     ItemInfoComponent,
-    ClaimTargetComponent
+    ClaimTargetComponent,
+    ResultsByItemComponent,
+    ResultsByStudentComponent,
+    DistractorAnalysisComponent,
+    WritingTraitScoresComponent,
+    InstructionalResourcePopoverComponent
   ],
   imports: [
+    Angulartics2Module.forChild(),
     BrowserModule,
     BrowserAnimationsModule,
+    BsDropdownModule.forRoot(),
     CommonModule,
     DataTableModule,
     FormsModule,
     PopoverModule.forRoot(),
+    RdwMenuModule,
+    ReportModule,
     SharedModule,
     TabsModule,
-    Angulartics2Module.forChild()
+    AssessmentPercentileModule
   ],
   exports: [
     AdvFiltersComponent,
     AdvFiltersToggleComponent,
     AssessmentsComponent,
-    InformationLabelComponent,
     ItemTabComponent,
-    PopupMenuComponent,
-    ScaleScoreComponent,
-    ClaimTargetComponent
+    ClaimTargetComponent,
+    InstructionalResourcePopoverComponent
   ],
   providers: [
     AssessmentExamMapper,
@@ -80,7 +93,9 @@ import { ClaimTargetComponent } from "./results/claim-target.component";
     ItemScoringService,
     ItemScoringGuideMapper,
     ItemInfoService,
-    StudentScoreService
+    StudentScoreService,
+    ScaleScoreService,
+    InstructionalResourcesService
   ]
 })
 export class AssessmentsModule {

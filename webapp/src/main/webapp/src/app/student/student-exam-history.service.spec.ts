@@ -1,8 +1,7 @@
-import { TestBed, inject } from "@angular/core/testing";
+import { inject, TestBed } from "@angular/core/testing";
 import { StudentExamHistoryService } from "./student-exam-history.service";
-import { DataService } from "../shared/data/data.service";
 import { MockDataService } from "../../test/mock.data.service";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Assessment } from "../assessments/model/assessment.model";
@@ -10,6 +9,7 @@ import { Exam } from "../assessments/model/exam.model";
 import { Student } from "./model/student.model";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
+import { DataService } from "../shared/data/data.service";
 
 describe('StudentExamHistoryService', () => {
   let dataService: MockDataService;
@@ -60,6 +60,20 @@ describe('StudentExamHistoryService', () => {
       });
   }));
 
+  it('should trim the ssid value before checking if student exists',
+    inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
+
+      dataService.get.and.returnValue(Observable.of({
+        id: 123
+      }));
+
+      service.existsBySsid(" ssid ").subscribe((exists) => {
+        expect(exists.id).toEqual(123);
+      });
+
+      expect(dataService.get.calls.first().args[0]).toMatch("/ssid$");
+    }));
+
   it('should throw for a 404 response when retrieving history for a student',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
@@ -85,9 +99,6 @@ describe('StudentExamHistoryService', () => {
           },
           assessment: {
             id: 2
-          },
-          school: {
-            id: 3
           }
         }]
       }));
@@ -97,7 +108,6 @@ describe('StudentExamHistoryService', () => {
         expect(history.exams.length).toBe(1);
         expect(history.exams[0].exam.id).toBe(1);
         expect(history.exams[0].assessment.id).toBe(2);
-        expect(history.exams[0].school.id).toBe(3);
       });
     }));
 });

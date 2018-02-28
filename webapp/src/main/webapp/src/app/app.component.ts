@@ -1,18 +1,21 @@
-import { Angulartics2GoogleAnalytics } from "angulartics2";
-import { Component } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+///<reference path="../../node_modules/@angular/router/src/events.d.ts"/>
+import { Component, ViewChild } from "@angular/core";
 import { UserService } from "./user/user.service";
-import { Router, NavigationEnd } from "@angular/router";
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
-import { NotificationService } from "./shared/notification/notification.service";
-import { isNullOrUndefined } from "util";
 import { User } from "./user/model/user.model";
+import { LanguageStore } from "./shared/i18n/language.store";
+import { Utils } from "./shared/support/support";
+import { SpinnerModal } from "./shared/loading/spinner.modal";
 
 @Component({
   selector: 'app-component',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
+
+  @ViewChild('spinnerModal')
+  spinnerModal: SpinnerModal;
 
   private _lastPoppedUrl: string;
   private _user: User;
@@ -24,33 +27,34 @@ export class AppComponent {
   /*
    Even though the angulartics2GoogleAnalytics variable is not explicitly used, without it analytics data is not sent to the service
    */
-  constructor(public translate: TranslateService,
+  constructor(public languageStore: LanguageStore,
               private userService: UserService,
               private router: Router,
-              private location: Location,
-              private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
-
-    let languages = [ 'en', 'ja' ];
-    let defaultLanguage = languages[ 0 ];
-    translate.addLangs(languages);
-    translate.setDefaultLang(defaultLanguage);
-    translate.use(languages.indexOf(translate.getBrowserLang()) != -1 ? translate.getBrowserLang() : defaultLanguage);
+              private location: Location) {
   }
 
   ngOnInit() {
-
     this.userService.getCurrentUser().subscribe(user => {
-      if (!isNullOrUndefined(user)) {
+      if (!Utils.isNullOrUndefined(user)) {
         this._user = user;
-
-        if (window[ 'ga' ] && user.configuration && user.configuration.analyticsTrackingId) {
-          window[ 'ga' ]('create', user.configuration.analyticsTrackingId, 'auto');
-        }
+        this.languageStore.configuredLanguages = user.configuration.uiLanguages;
+        this.initializeAnalytics(user.configuration.analyticsTrackingId);
       } else {
         this.router.navigate([ 'error' ]);
       }
     });
+    this.initializeNavigationScrollReset();
+    this.initializeNavigationLoadingSpinner();
+  }
 
+  private initializeAnalytics(trackingId: string): void {
+    const googleAnalyticsProvider: Function = window[ 'ga' ];
+    if (googleAnalyticsProvider && trackingId) {
+      googleAnalyticsProvider('create', trackingId, 'auto');
+    }
+  }
+
+  private initializeNavigationScrollReset(): void {
 
     // by listening to the PopStateEvent we can track the back button
     this.location.subscribe((event: PopStateEvent) => {
@@ -71,4 +75,17 @@ export class AppComponent {
       }
     });
   }
+
+  private initializeNavigationLoadingSpinner(): void {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.spinnerModal.loading = true;
+      } else if (event instanceof NavigationEnd
+        || event instanceof NavigationCancel
+        || event instanceof NavigationError) {
+        this.spinnerModal.loading = false;
+      }
+    })
+  }
+
 }
