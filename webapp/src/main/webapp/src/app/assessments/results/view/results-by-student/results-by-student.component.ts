@@ -81,7 +81,7 @@ export class ResultsByStudentComponent implements OnInit {
   }
 
   get showClaimToggle() {
-    return !this.assessment.type;
+    return !this.assessment.isIab;
   }
 
   constructor(private actionBuilder: MenuActionBuilder,
