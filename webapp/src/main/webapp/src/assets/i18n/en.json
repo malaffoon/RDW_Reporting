@@ -11,7 +11,7 @@
   "assessment-percentile-table": {
     "column": {
       "effective-date": {
-        "header": "Effective Date",
+        "header": "Effective Dates",
         "value-format": "{{from}} - {{to}}"
       },
       "count": "N",
