@@ -11,8 +11,8 @@
   <ng-template pTemplate="body" let-percentile>
     <tr>
       <td>{{'assessment-percentile-table.column.effective-date.value-format' | translate:({
-        from: (percentile.startDate | date),
-        to: (percentile.endDate | date)
+        from: (percentile.startDate | date:'MM/dd'),
+        to: (percentile.endDate | date:'MM/dd')
       })}}</td>
       <td>{{percentile.count | number}}</td>
       <td>{{percentile.mean}}</td>
