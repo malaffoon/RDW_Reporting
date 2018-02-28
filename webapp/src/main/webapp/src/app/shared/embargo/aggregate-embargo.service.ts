@@ -18,9 +18,7 @@ export class AggregateEmbargoService {
    * @returns {Observable<boolean>}
    */
   isEmbargoed(): Observable<boolean> {
-    return this.dataService.get(`${AggregateServiceRoute}/organizations/embargoed`)
-      // fill for backend - if the backend is not there return true by default
-      .pipe(catchError(response => of({enabled: true})));
+    return this.dataService.get(`${AggregateServiceRoute}/organizations/embargoed`);
   }
 
 }
