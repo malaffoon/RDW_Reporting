@@ -1,5 +1,11 @@
 ## Change Log
 
+#### 1.1.1 - 2018-03-01
+
+* Restore the Overall/Claim toggle button when viewing student results.
+* Fix individual embargo handling.
+* Fix missing label text in a couple places.
+
 #### 1.1.0 - 2018-02-27
 
 * Custom Aggregate Reporting.
