@@ -1,17 +1,31 @@
 ## Change Log
 
-#### 1.1.x
+#### 1.1.1 - 2018-03-01
 
-* Introduce zuul and jwt (add config)
-* Rename rdw-admin-webapp to rdw-reporting-admin-webapp (affects configuration files).
-* Refactor report processor.
-    * NOTE: reporting-webapp no longer talks directly to wkhtmltopdf (remove config for url), 
-    but does talk to report-processor (set report-processor url).
-* NOTE: change datasource URL configuration.
-* Added zuul service gateway to webapp.
-    * Webapp now proxies requests to services and authenticates using JWT
-    * Additional zuul and jwt properties are now required in the configuration
-    * Additional service pods required in deployment, service/ELB/CNAME changes required to differentiate webapp from reporting-service pods
+* Add app-level flag to disable Percentiles feature in UI (DWR-1535).
+* Fix title of printing modal for student reports (DWR-1534).
+* Restore Distractor Analysis coloring of correct answers (DWR-1529).
+* Restore the Overall/Claim toggle button when viewing student results (DWR-1521).
+* Fix individual embargo handling (DWR-1520).
+* Fix missing label text in a couple places (DWR-1519).
+
+#### 1.1.0 - 2018-02-27
+
+* Custom Aggregate Reporting.
+* Norms, aka Percentiles.
+* Embargo.
+* Distractor Analysis.
+* Writing Trait Scores.
+* Digital Library Advanced Links.
+* District/School Export.
+* Improve architecture:
+    * Consolidate UI into a single web app (i.e. get rid of admin webapp).
+    * Separate UI from back-end services using zuul and jwt.
+    * Refactor back-end services to isolate responsibilities.
+    * NOTE: all this requires changes to deployment specs and config
+* Enhance test item data.
+* Change datasource URL configuration.
+    * NOTE: this requires updating configuration files for services.    
 
 #### 1.0.2 (Admin) - 2017-12-05
 

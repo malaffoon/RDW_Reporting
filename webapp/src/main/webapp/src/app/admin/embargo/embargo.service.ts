@@ -1,7 +1,6 @@
 import { Observable } from "rxjs/Observable";
 import { Injectable } from "@angular/core";
 import { Embargo } from "./embargo";
-import { isUndefined } from "util";
 import { EmbargoScope } from "./embargo-scope.enum";
 import { OrganizationType } from "./organization-type.enum";
 import { DataService } from "../../shared/data/data.service";
@@ -55,9 +54,6 @@ export class EmbargoService {
   /**
    * Maps an API provided embargo model to a UI model
    *
-   * NOTE: This method coerces individual and aggregate embargo enabled fields to <code>true</code> (embargoed) if undefined.
-   * This method assumes the state individual and aggregate embargo enabled fields will not be undefined.
-   *
    * @param source the API embargo model
    * @returns {Embargo} a UI embargo model
    */
@@ -71,8 +67,8 @@ export class EmbargoService {
       schoolYear: source.schoolYear,
       readonly: source.readOnly,
       examCountsBySubject: source.examCounts,
-      individualEnabled: isUndefined(source.individualEnabled) ? true : source.individualEnabled,
-      aggregateEnabled: isUndefined(source.aggregateEnabled) ? true : source.aggregateEnabled
+      individualEnabled: source.individualEnabled,
+      aggregateEnabled: source.aggregateEnabled
     };
   }
 
