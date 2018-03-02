@@ -290,9 +290,10 @@ export class AssessmentsComponent implements OnInit {
 
   private getAvailableAssessments() {
     if (this._expandAssessments) {
-      let observable = this.assessmentProvider.getAvailableAssessments().share();
+      const observable = this.assessmentProvider.getAvailableAssessments().share();
 
       observable.subscribe(result => {
+        // TODO fix this so that we don't need an Array.map callback with side-effects
         this.availableAssessments = result.map(available => {
           available.selected = this._assessmentExams.some(assessmentExam => assessmentExam.assessment.id == available.id);
           return available;

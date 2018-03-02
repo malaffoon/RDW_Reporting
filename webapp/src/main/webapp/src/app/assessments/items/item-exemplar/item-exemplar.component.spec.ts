@@ -3,13 +3,13 @@ import { ItemExemplarComponent } from "./item-exemplar.component";
 import { ItemScoringService } from "./item-scoring.service";
 import { ItemScoringGuideMapper } from "./item-scoring-guide.mapper";
 import { CommonModule } from "../../../shared/common.module";
-import { Observable } from "rxjs/Observable";
 import { ItemScoringGuide } from "./model/item-scoring-guide.model";
 import { MockDataService } from "../../../../test/mock.data.service";
 import { CachingDataService } from "../../../shared/data/caching-data.service";
 import { DataService } from "../../../shared/data/data.service";
 import {AssessmentItem} from "../../model/assessment-item.model";
 import {Component} from "@angular/core";
+import { of } from 'rxjs/observable/of';
 
 describe('ItemExemplarComponent', () => {
   let component: ItemExemplarComponent;
@@ -43,7 +43,7 @@ describe('ItemExemplarComponent', () => {
 
 class MockItemScoringService extends ItemScoringService {
   getGuide(item: string) {
-    return Observable.of(new ItemScoringGuide());
+    return of(new ItemScoringGuide());
   }
 }
 

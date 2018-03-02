@@ -1,12 +1,9 @@
 import { Injectable } from "@angular/core";
 import { RequestOptionsArgs } from "@angular/http";
 import { Observable } from "rxjs/Observable";
-import "rxjs/add/operator/map";
-import "rxjs/add/operator/catch";
-import "rxjs/add/operator/share";
-import "rxjs/add/observable/of";
-import "rxjs/add/observable/throw";
 import { DataService } from "./data.service";
+import { of } from 'rxjs/observable/of';
+import { _throw } from 'rxjs/observable/throw';
 
 @Injectable()
 export class CachingDataService {
@@ -18,12 +15,12 @@ export class CachingDataService {
 
   public get(url: string, options?: RequestOptionsArgs): Observable<any> {
 
-    let previousResponse = this.responseByUrl[ url ];
+    const previousResponse = this.responseByUrl[ url ];
     if (previousResponse) {
-      return Observable.of(previousResponse);
+      return of(previousResponse);
     }
 
-    let observable = this.dataService
+    const observable = this.dataService
       .get(url, options)
       .share();
 
@@ -31,7 +28,7 @@ export class CachingDataService {
       response => {
         this.responseByUrl[ url ] = response;
       },
-      error => Observable.throw(error)
+      error => _throw(error)
     );
 
     return observable;
