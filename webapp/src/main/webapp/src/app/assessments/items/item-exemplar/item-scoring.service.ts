@@ -22,7 +22,7 @@ export class ItemScoringService {
             return null;
           }
           return this.mapper.mapFromApi(guide);
-        }
+        })
       );
   }
 

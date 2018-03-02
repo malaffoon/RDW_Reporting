@@ -38,10 +38,10 @@ export class ItemInfoService {
     return this.dataService.get(`${ServiceRoute}/commonCoreStandards`, { search: params })
       .pipe(
         map(standards => standards.map(standard => <any>{
-            code: standard.code,
-            description: standard.description
-          })
-        );
+          code: standard.code,
+          description: standard.description
+        }))
+      );
   }
 
 }

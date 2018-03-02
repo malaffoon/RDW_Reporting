@@ -7,6 +7,7 @@ import { ResponseUtils } from "../../shared/response-utils";
 import { Grade } from "../grade.model";
 import { DataService } from "../../shared/data/data.service";
 import { Utils } from "../../shared/support/support";
+import { catchError, map } from 'rxjs/operators';
 
 const ServiceRoute = '/reporting-service';
 
@@ -23,7 +24,7 @@ export class SchoolAssessmentService implements AssessmentProvider {
               private mapper: AssessmentExamMapper) {
   }
 
-  getMostRecentAssessment(schoolId: number, gradeId :number, schoolYear?: number) {
+  getMostRecentAssessment(schoolId: number, gradeId: number, schoolYear?: number) {
     if (Utils.isNullOrUndefined(schoolYear)) {
       return this.filterOptionService.getExamFilterOptions().mergeMap(options => {
         return this.getRecentAssessmentBySchoolYear(schoolId, gradeId, options.schoolYears[ 0 ]);
@@ -33,19 +34,21 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getAvailableAssessments() {
-    return this.dataService.get(`${ServiceRoute}/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments`, { search: this.getSchoolYearParams(this.schoolYear) })
-      .catch(ResponseUtils.badResponseToNull)
-      .map(x => {
-        return this.mapper.mapAssessmentsFromApi(x);
-      });
+    return this.dataService.get(`${ServiceRoute}/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments`, {
+      search: this.getSchoolYearParams(this.schoolYear)
+    }).pipe(
+      catchError(ResponseUtils.badResponseToNull),
+      map(serverAssessments => this.mapper.mapAssessmentsFromApi(serverAssessments))
+    );
   }
 
   getExams(assessmentId: number) {
-    return this.dataService.get(`${ServiceRoute}/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/exams`, { search: this.getSchoolYearParams(this.schoolYear) })
-      .catch(ResponseUtils.badResponseToNull)
-      .map(x => {
-        return this.mapper.mapExamsFromApi(x);
-      });
+    return this.dataService.get(`${ServiceRoute}/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/exams`, {
+      search: this.getSchoolYearParams(this.schoolYear)
+    }).pipe(
+      catchError(ResponseUtils.badResponseToNull),
+      map(serverExams => this.mapper.mapExamsFromApi(serverExams))
+    );
   }
 
   getSchoolId() {
@@ -53,31 +56,33 @@ export class SchoolAssessmentService implements AssessmentProvider {
   }
 
   getAssessmentItems(assessmentId: number, itemTypes?: string[]) {
-      return this.dataService.get(`${ServiceRoute}/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/examitems`, {
-          params: {
-            types: itemTypes,
-            schoolYear: this.schoolYear.toString()
-          }
-        })
-        .catch(ResponseUtils.badResponseToNull)
-        .map(x => {
-          return this.mapper.mapAssessmentItemsFromApi(x);
-        });
+    return this.dataService.get(`${ServiceRoute}/schools/${this.schoolId}/assessmentGrades/${this.grade.id}/assessments/${assessmentId}/examitems`, {
+      params: {
+        types: itemTypes,
+        schoolYear: this.schoolYear.toString()
+      }
+    }).pipe(
+      catchError(ResponseUtils.badResponseToNull),
+      map(serverAssessments => this.mapper.mapAssessmentItemsFromApi(serverAssessments))
+    );
   }
 
   private getRecentAssessmentBySchoolYear(schoolId: number, gradeId: number, schoolYear: number) {
-    return this.dataService.get(`${ServiceRoute}/schools/${schoolId}/assessmentGrades/${gradeId}/latestassessment`, { search: this.getSchoolYearParams(schoolYear) })
-      .catch(ResponseUtils.badResponseToNull)
-      .map(x => {
-        if (x == null) {
-          return x;
+    return this.dataService.get(`${ServiceRoute}/schools/${schoolId}/assessmentGrades/${gradeId}/latestassessment`, {
+      search: this.getSchoolYearParams(schoolYear)
+    }).pipe(
+      catchError(ResponseUtils.badResponseToNull),
+      map(serverAssessment => {
+        if (serverAssessment == null) {
+          return null;
         }
-        return this.mapper.mapFromApi(x);
-      });
+        this.mapper.mapFromApi(serverAssessment)
+      })
+    );
   }
 
   private getSchoolYearParams(schoolYear: number): URLSearchParams {
-    let params: URLSearchParams = new URLSearchParams();
+    const params: URLSearchParams = new URLSearchParams();
     params.set('schoolYear', schoolYear.toString());
     return params;
   }

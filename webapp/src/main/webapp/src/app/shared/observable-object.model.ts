@@ -1,5 +1,6 @@
 import { Observable } from "rxjs/Observable";
 import { Observer } from "rxjs/Observer";
+import { share } from 'rxjs/operators';
 
 export class ObservableObject {
   get onChanges(): Observable<any> {
@@ -11,7 +12,7 @@ export class ObservableObject {
   private oldObject: any = {};
 
   constructor() {
-    this._onChanges = new Observable<any>(observer => this.onChangesObserver = observer).share();
+    this._onChanges = new Observable<any>(observer => this.onChangesObserver = observer).pipe(share());
     Object.assign(this.oldObject, this);
   }
 
