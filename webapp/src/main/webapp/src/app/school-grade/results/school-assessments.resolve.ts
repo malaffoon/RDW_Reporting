@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { SchoolAssessmentService } from "./school-assessment.service";
 import { AssessmentExam } from "../../assessments/model/assessment-exam.model";
@@ -15,7 +15,7 @@ export class SchoolAssessmentResolve implements Resolve<AssessmentExam> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<AssessmentExam> {
     const { schoolId, gradeId, schoolYear } = route.params;
     if (Utils.isNullOrUndefined(schoolId)
-    || Utils.isNullOrUndefined(gradeId)) {
+      || Utils.isNullOrUndefined(gradeId)) {
       return empty();
     }
     return this.service.getMostRecentAssessment(schoolId, gradeId, schoolYear);

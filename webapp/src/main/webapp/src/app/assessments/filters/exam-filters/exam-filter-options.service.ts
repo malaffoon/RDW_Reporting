@@ -17,7 +17,7 @@ export class ExamFilterOptionsService {
   getExamFilterOptions(): Observable<ExamFilterOptions> {
     return this.service.get(`${ServiceRoute}/examFilterOptions`)
       .pipe(
-        map(x => this.mapper.mapFromApi(x))
+        map(serverOptions => this.mapper.mapFromApi(serverOptions))
       );
   }
 }
