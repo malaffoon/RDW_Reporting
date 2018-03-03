@@ -8,8 +8,6 @@ import { Grade } from "../grade.model";
 import { DataService } from "../../shared/data/data.service";
 import { Utils } from "../../shared/support/support";
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
-import "rxjs/add/operator/mergeMap"
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
 import { Observable } from 'rxjs/Observable';
 import { Assessment } from '../../assessments/model/assessment.model';

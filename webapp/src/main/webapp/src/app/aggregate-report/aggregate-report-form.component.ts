@@ -22,7 +22,7 @@ import { OrderableItem } from "../shared/order-selector/order-selector.component
 import { AggregateReportRequestSummary } from "./aggregate-report-summary.component";
 import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../shared/support/support";
-import { debounceTime, map, mergeMap } from "rxjs/operators";
+import { debounceTime, finalize, map, mergeMap } from "rxjs/operators";
 import { Observer } from "rxjs/Observer";
 
 const DefaultRenderDebounceMilliseconds = 500;
@@ -320,10 +320,12 @@ export class AggregateReportFormComponent {
   onGenerateButtonClick(): void {
     this.validate(this.formGroup, () => {
       this.submissionSubscription = this.reportService.createReport(this.createReportRequest())
-        .finally(() => {
-          this.submissionSubscription.unsubscribe();
-          this.submissionSubscription = undefined;
-        })
+        .pipe(
+          finalize(() => {
+            this.submissionSubscription.unsubscribe();
+            this.submissionSubscription = undefined;
+          })
+        )
         .subscribe(
           resource => {
             this.router.navigate([ resource.id ], { relativeTo: this.route });
