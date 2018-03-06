@@ -150,7 +150,7 @@ export class AggregateReportFormComponent {
 
     this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
 
-    const defaultOrganization = this.aggregateReportOptions.defaultOrganization;
+    const defaultOrganization = this.defaultOrganization;
     if (this.organizations.length == 0 && defaultOrganization) {
       this.addOrganizationToSettings(defaultOrganization);
     }
@@ -194,6 +194,20 @@ export class AggregateReportFormComponent {
 
   ngOnInit(): void {
     this.onSettingsChange();
+  }
+
+  /**
+   * @returns {boolean} True if the default organization exists and it is a school
+   */
+  get hasDefaultSchoolOrganization(): boolean {
+    return this.defaultOrganization && this.defaultOrganization.type === OrganizationType.School;
+  }
+
+  /**
+   * @returns {Organization} The default organization, if one exists
+   */
+  get defaultOrganization(): Organization {
+    return this.aggregateReportOptions.defaultOrganization;
   }
 
   /**
