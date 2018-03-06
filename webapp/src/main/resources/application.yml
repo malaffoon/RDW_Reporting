@@ -35,9 +35,6 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
 
 spring:
-  mvc:
-    log-resolved-exception: false
-
   datasource:
     url: "\
       jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting}\

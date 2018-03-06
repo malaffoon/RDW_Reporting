@@ -48,9 +48,6 @@ app:
 
 
 spring:
-  mvc:
-    log-resolved-exception: false
-
   cache:
     type: SIMPLE
     cache-names: internalTranslationsByCode, reportOptions, administrationConditions, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, ethnicities, genders, schoolYears, subjects, activeAssessments, embargo
