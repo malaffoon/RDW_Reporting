@@ -6,6 +6,8 @@ management:
     enabled: false
 
 spring:
+  mvc:
+    log-resolved-exception: false
   batch:
     job:
       enabled: false
