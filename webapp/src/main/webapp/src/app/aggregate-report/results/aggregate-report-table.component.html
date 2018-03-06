@@ -60,8 +60,8 @@
            class="full-cell pt-0"
            [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
         {{
-          (('common.dimension.' + row.dimension.type) | translate)
-          + (row.dimension.code ? ': ' + (row.dimension.codeTranslationCode | translate) : '')
+        (('common.dimension.' + row.dimension.type) | translate)
+        + (row.dimension.code ? ': ' + (row.dimension.codeTranslationCode | translate) : '')
         }}
       </div>
     </ng-template>
@@ -104,14 +104,26 @@
       </div>
     </ng-template>
   </p-column>
+  <ng-container *ngTemplateOutlet="performanceLevelsTemplate; context: {
+                                   hidden: performanceLevelDisplayType !== 'Separate',
+                                   performanceLevelDisplayType: 'Separate'}"></ng-container>
+  <ng-container *ngTemplateOutlet="performanceLevelsTemplate; context: {
+                                   hidden: performanceLevelDisplayType !== 'Grouped',
+                                   performanceLevelDisplayType: 'Grouped'}"></ng-container>
+</p-dataTable>
+
+<ng-template #performanceLevelsTemplate
+             let-hidden="hidden"
+             let-performanceLevelDisplayType="performanceLevelDisplayType">
   <p-column *ngFor="let level of performanceLevels; let levelIndex = index"
+            [hidden]="hidden"
             [sortable]="rowSortingEnabled"
             (sortFunction)="sort($event)"
             field="{{ 'performanceLevelByDisplayTypes.' + performanceLevelDisplayType + '.' + valueDisplayType + '.' + levelIndex }}">
     <ng-template pTemplate="header">
       <div class="text-center">
         <div class="label"
-              [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
+             [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
           {{ getPerformanceLevelColumnHeaderTranslationCode(level) | translate }}
         </div>
         <div>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</div>
@@ -125,4 +137,4 @@
       </div>
     </ng-template>
   </p-column>
-</p-dataTable>
+</ng-template>
