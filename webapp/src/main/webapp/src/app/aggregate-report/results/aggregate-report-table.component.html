@@ -20,6 +20,10 @@
       <div *ngIf="treeColumns[i] <= getColumnIndex(col)"
            class="full-cell pt-0"
            [ngClass]="{'border-top': treeColumns[i] <= getColumnIndex(col) && treeColumns[i] < columnOrdering.length - 1}">
+        <span class="label mr-xs"
+              [ngClass]="getOrganizationTypeColor(row.organization.type)">
+          {{('common.organization.type.' + row.organization.type) | translate}}
+        </span>
         {{row.organization.name}}
       </div>
     </ng-template>
