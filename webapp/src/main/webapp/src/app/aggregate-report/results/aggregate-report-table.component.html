@@ -109,9 +109,6 @@
     </ng-template>
   </p-column>
 
-  <!--<ng-container *ngTemplateOutlet="performanceLevelColumnsTemplate; context: {displayType: 'Separate', hidden: performanceLevelDisplayType !== 'Separate'}"></ng-container>-->
-  <!--<ng-container ng-templateateOutlet="performanceLevelColumnsTemplate; context: {displayType: 'Grouped', hidden: performanceLevelDisplayType !== 'Grouped'}"></ng-container>-->
-
   <p-column *ngFor="let level of performanceLevelsByDisplayType.Separate; let levelIndex = index"
             [hidden]="performanceLevelDisplayType !== 'Separate'"
             [sortable]="rowSortingEnabled"
