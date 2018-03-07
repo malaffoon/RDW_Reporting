@@ -109,23 +109,29 @@
     </ng-template>
   </p-column>
 
+  <!--<ng-container *ngTemplateOutlet="performanceLevelColumnsTemplate; context: {displayType: 'Separate', hidden: performanceLevelDisplayType !== 'Separate'}"></ng-container>-->
+  <!--<ng-container ng-templateateOutlet="performanceLevelColumnsTemplate; context: {displayType: 'Grouped', hidden: performanceLevelDisplayType !== 'Grouped'}"></ng-container>-->
+
   <p-column *ngFor="let level of performanceLevelsByDisplayType.Separate; let levelIndex = index"
             [hidden]="performanceLevelDisplayType !== 'Separate'"
             [sortable]="rowSortingEnabled"
             (sortFunction)="sort($event)"
             field="{{ 'performanceLevelByDisplayTypes.Separate.' + valueDisplayType + '.' + levelIndex }}">
     <ng-template pTemplate="header">
-      <ng-container *ngTemplateOutlet="performanceLevelHeaderTemplate; context: {
-                                       level: level,
-                                       levelIndex: levelIndex,
-                                       performanceLevelDisplayType: 'Separate'}"></ng-container>
-    </ng-template>
+      <div class="text-center">
+        <div class="label"
+             [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
+          {{ getPerformanceLevelColumnHeaderTranslationCode(level) | translate }}
+        </div>
+        <div>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</div>
+      </div>
+    </ng-template>[performanceLevelDisplayType]
     <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
-      <ng-container *ngTemplateOutlet="performanceLevelCellTemplate; context: {
-                                       row: row,
-                                       i: i,
-                                       levelIndex: levelIndex,
-                                       performanceLevelDisplayType: 'Separate'}"></ng-container>
+      <div class="full-cell text-center"
+           [ngClass]="{'border-top': treeColumns[i] < columnOrdering.length - 1}">
+        <span *ngIf="!row.studentsTested">-</span>
+        <span *ngIf="row.studentsTested">{{('common.value-display-type-format.' + valueDisplayType) | translate:{ value: row.performanceLevelByDisplayTypes.Separate[valueDisplayType][levelIndex] } }}</span>
+      </div>
     </ng-template>
   </p-column>
 
@@ -135,43 +141,72 @@
             (sortFunction)="sort($event)"
             field="{{ 'performanceLevelByDisplayTypes.Grouped.' + valueDisplayType + '.' + levelIndex }}">
     <ng-template pTemplate="header">
-      <ng-container *ngTemplateOutlet="performanceLevelHeaderTemplate; context: {
-                                       level: level,
-                                       levelIndex: levelIndex,
-                                       performanceLevelDisplayType: 'Grouped'}"></ng-container>
-    </ng-template>
+      <div class="text-center">
+        <div class="label"
+             [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
+          {{ getPerformanceLevelColumnHeaderTranslationCode(level) | translate }}
+        </div>
+        <div>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</div>
+      </div>
+    </ng-template>[performanceLevelDisplayType]
     <ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">
-      <ng-container *ngTemplateOutlet="performanceLevelCellTemplate; context: {
-                                       row: row,
-                                       i: i,
-                                       levelIndex: levelIndex,
-                                       performanceLevelDisplayType: 'Grouped'}"></ng-container>
+      <div class="full-cell text-center"
+           [ngClass]="{'border-top': treeColumns[i] < columnOrdering.length - 1}">
+        <span *ngIf="!row.studentsTested">-</span>
+        <span *ngIf="row.studentsTested">{{('common.value-display-type-format.' + valueDisplayType) | translate:{ value: row.performanceLevelByDisplayTypes.Grouped[valueDisplayType][levelIndex] } }}</span>
+      </div>
     </ng-template>
   </p-column>
+
 </p-dataTable>
 
+<!--<ng-template #performanceLevelColumnsTemplate-->
+             <!--let-displayType="displayType"-->
+             <!--let-hidden="hidden">-->
+  <!--<p-column *ngFor="let level of performanceLevelsByDisplayType[displayType]; let levelIndex = index"-->
+            <!--[hidden]="hidden"-->
+            <!--[sortable]="rowSortingEnabled"-->
+            <!--(sortFunction)="sort($event)"-->
+            <!--field="{{ 'performanceLevelByDisplayTypes.' + displayType + '.' + valueDisplayType + '.' + levelIndex }}">-->
+    <!--<ng-template pTemplate="header">-->
+      <!--<ng-container *ngTemplateOutlet="performanceLevelHeaderTemplate; context: {-->
+                                       <!--level: level,-->
+                                       <!--levelIndex: levelIndex,-->
+                                       <!--performanceLevelDisplayType: displayType}"></ng-container>-->
+    <!--</ng-template>-->
+    <!--<ng-template let-col let-row="rowData" let-i="rowIndex" pTemplate="body">-->
+      <!--<ng-container *ngTemplateOutlet="performanceLevelCellTemplate; context: {-->
+                                       <!--row: row,-->
+                                       <!--i: i,-->
+                                       <!--levelIndex: levelIndex,-->
+                                       <!--performanceLevelDisplayType: displayType}"></ng-container>-->
+    <!--</ng-template>-->
+  <!--</p-column>-->
 
-<ng-template #performanceLevelHeaderTemplate
-             let-level="level"
-             let-levelIndex="levelIndex"
-             let-performanceLevelDisplayType="performanceLevelDisplayType">
-  <div class="text-center">
-    <div class="label"
-         [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">
-      {{ getPerformanceLevelColumnHeaderTranslationCode(level) | translate }}
-    </div>
-    <div>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</div>
-  </div>
-</ng-template>
+<!--</ng-template>-->
 
-<ng-template #performanceLevelCellTemplate
-             let-row="row"
-             let-i="i"
-             let-levelIndex="levelIndex"
-             let-performanceLevelDisplayType="performanceLevelDisplayType">
-  <div class="full-cell text-center"
-       [ngClass]="{'border-top': treeColumns[i] < columnOrdering.length - 1}">
-    <span *ngIf="!row.studentsTested">-</span>
-    <span *ngIf="row.studentsTested">{{('common.value-display-type-format.' + valueDisplayType) | translate:{ value: row.performanceLevelByDisplayTypes[performanceLevelDisplayType][valueDisplayType][levelIndex] } }}</span>
-  </div>
-</ng-template>
+
+<!--<ng-template #performanceLevelHeaderTemplate-->
+             <!--let-level="level"-->
+             <!--let-levelIndex="levelIndex"-->
+             <!--let-performanceLevelDisplayType="performanceLevelDisplayType">-->
+  <!--<div class="text-center">-->
+    <!--<div class="label"-->
+         <!--[ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(table.assessmentDefinition.typeCode, level)">-->
+      <!--{{ getPerformanceLevelColumnHeaderTranslationCode(level) | translate }}-->
+    <!--</div>-->
+    <!--<div>{{ 'aggregate-reports.results.cols.performance-level-suffix' | translate }}</div>-->
+  <!--</div>-->
+<!--</ng-template>-->
+
+<!--<ng-template #performanceLevelCellTemplate-->
+             <!--let-row="row"-->
+             <!--let-i="i"-->
+             <!--let-levelIndex="levelIndex"-->
+             <!--let-performanceLevelDisplayType="performanceLevelDisplayType">-->
+  <!--<div class="full-cell text-center"-->
+       <!--[ngClass]="{'border-top': treeColumns[i] < columnOrdering.length - 1}">-->
+    <!--<span *ngIf="!row.studentsTested">-</span>-->
+    <!--<span *ngIf="row.studentsTested">{{('common.value-display-type-format.' + valueDisplayType) | translate:{ value: row.performanceLevelByDisplayTypes[performanceLevelDisplayType][valueDisplayType][levelIndex] } }}</span>-->
+  <!--</div>-->
+<!--</ng-template>-->
