@@ -114,13 +114,11 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   get performanceLevelDisplayType(): string {
-    console.log('get', this._performanceLevelDisplayType)
     return this._performanceLevelDisplayType;
   }
 
   @Input()
   set performanceLevelDisplayType(value: string) {
-    console.log('set', value);
     this._performanceLevelDisplayType = PerformanceLevelDisplayTypes.valueOf(value);
   }
 
