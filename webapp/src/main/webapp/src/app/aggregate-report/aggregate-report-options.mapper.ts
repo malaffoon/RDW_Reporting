@@ -122,13 +122,13 @@ export class AggregateReportOptionsMapper {
    */
   toDefaultSettings(options: AggregateReportOptions): AggregateReportFormSettings {
     return <AggregateReportFormSettings>{
-      assessmentGrades: [],
+      assessmentGrades: [ '03', '04' ],
       assessmentType: options.assessmentTypes[0],
       completenesses: [ options.completenesses[0] ],
       ethnicities: options.ethnicities,
       genders: options.genders,
       interimAdministrationConditions: [ options.interimAdministrationConditions[0] ],
-      schoolYears: [ options.schoolYears[0] ],
+      schoolYears: [ options.schoolYears[0], options.schoolYears[1] ],
       subjects: options.subjects,
       summativeAdministrationConditions: [ options.summativeAdministrationConditions[0] ],
       migrantStatuses: options.migrantStatuses,
