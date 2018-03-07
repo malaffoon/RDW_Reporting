@@ -111,12 +111,12 @@ export class AssessmentsComponent implements OnInit {
 
   set showOnlyMostRecent(value: boolean) {
     this.expandAssessments = !value;
+    this._showOnlyMostRecent = value;
+
     if (value) {
       this.availableAssessments = [];
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     }
-
-    this._showOnlyMostRecent = value;
   }
 
   get selectedAssessments() {
