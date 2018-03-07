@@ -13,6 +13,7 @@ import { ColorService } from "../shared/color.service";
 import { UserService } from "../user/user.service";
 import { AssessmentExporter } from "./assessment-exporter.interface";
 import { ReportingEmbargoService } from "../shared/embargo/reporting-embargo.service";
+import { share } from 'rxjs/operators';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -290,9 +291,10 @@ export class AssessmentsComponent implements OnInit {
 
   private getAvailableAssessments() {
     if (this._expandAssessments) {
-      let observable = this.assessmentProvider.getAvailableAssessments().share();
+      const observable = this.assessmentProvider.getAvailableAssessments().pipe(share());
 
       observable.subscribe(result => {
+        // TODO fix this so that we don't need an Array.map callback with side-effects
         this.availableAssessments = result.map(available => {
           available.selected = this._assessmentExams.some(assessmentExam => assessmentExam.assessment.id == available.id);
           return available;
