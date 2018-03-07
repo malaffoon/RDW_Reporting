@@ -175,13 +175,14 @@ export class AggregateReportTableComponent implements OnInit {
     return this._columnOrdering;
   }
 
-  get performanceLevels(): number[] {
-    return this.performanceLevelDisplayType === 'Separate'
-      ? this.table.assessmentDefinition.performanceLevels
-      : [
+  get performanceLevelsByDisplayType(): any {
+    return {
+      Separate: this.table.assessmentDefinition.performanceLevels,
+      Grouped: [
         this.table.assessmentDefinition.performanceLevelGroupingCutPoint - 1,
         this.table.assessmentDefinition.performanceLevelGroupingCutPoint
-      ];
+      ]
+    }
   }
 
   get paginationEnabled(): boolean {
