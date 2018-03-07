@@ -11,7 +11,6 @@ import { AssessmentItem } from "../../model/assessment-item.model";
 import { Component } from "@angular/core";
 import { of } from 'rxjs/observable/of';
 
-
 describe('ItemExemplarComponent', () => {
   let component: ItemExemplarComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
