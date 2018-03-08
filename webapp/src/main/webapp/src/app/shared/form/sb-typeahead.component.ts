@@ -19,7 +19,6 @@ import { byString, join } from "@kourge/ordering/comparator";
            typeaheadOptionField="label"
            typeaheadGroupField="group"
            (typeaheadOnSelect)="onSelectInternal($event.item)"
-           (typeaheadNoResults)="noResults = $event"
            (ngModelChange)="onChangeInternal()"
            [(ngModel)]="search"
            [placeholder]="placeholder">
@@ -57,8 +56,6 @@ export class SBTypeahead implements OnInit {
 
   @Input()
   inputId: string;
-
-  noResults = false;
 
   private _options: Option[] = [];
 
