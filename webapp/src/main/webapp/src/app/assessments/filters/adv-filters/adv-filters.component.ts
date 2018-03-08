@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FilterBy } from "../../model/filter-by.model";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
-import { UserService } from "../../../user/user.service";
+import { ActivatedRoute } from '@angular/router';
 
 /*
   This component contains all of the selectable advanced filters
@@ -11,7 +11,7 @@ import { UserService } from "../../../user/user.service";
   selector: 'adv-filters',
   templateUrl: './adv-filters.component.html'
 })
-export class AdvFiltersComponent implements OnInit {
+export class AdvFiltersComponent {
   private _filterBy: FilterBy;
 
   get filterBy(): FilterBy {
@@ -31,18 +31,13 @@ export class AdvFiltersComponent implements OnInit {
 
   showTransferAccess: boolean = false;
 
-  constructor(private userService: UserService) {
-  }
-
-  ngOnInit() {
-    this.userService.getCurrentUser()
-      .toPromise()
-      .then((user) => {
-        this.showTransferAccess = user.configuration.transferAccess;
-      });
+  constructor(private route: ActivatedRoute) {
+    const { applicationSettings } = this.route.snapshot.data;
+    this.showTransferAccess = applicationSettings.transferAccess;
   }
 
   get translateRoot() {
     return "labels.filters.";
   }
+
 }

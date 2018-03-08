@@ -10,9 +10,9 @@ import { ExamFilterOptions } from "../../model/exam-filter-options.model";
 import { Angulartics2, Angulartics2Module } from "angulartics2";
 import { PopoverModule } from "ngx-bootstrap";
 import { User } from "../../../user/model/user.model";
-import { Configuration } from "../../../user/model/configuration.model";
 import { UserService } from "../../../user/user.service";
 import { of } from 'rxjs/observable/of';
+import { ApplicationSettingsService } from '../../../app-settings.service';
 
 describe('AdvFiltersComponent', () => {
   let component: AdvFiltersComponent;
@@ -21,10 +21,11 @@ describe('AdvFiltersComponent', () => {
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
-  let config: Configuration = new Configuration();
-  config.transferAccess = false;
+  const settings: any = { transferAccess: false };
+  const mockApplicationSettingsService = jasmine.createSpyObj('ApplicationSettingsService', [ 'getSettings' ]);
+  mockApplicationSettingsService.getSettings.and.callFake(() => of(settings));
+
   let user: User = new User();
-  user.configuration = config;
   let mockUserService = jasmine.createSpyObj('UserService', [ 'getCurrentUser' ]);
   mockUserService.getCurrentUser.and.callFake(() => of(user));
 
@@ -44,10 +45,10 @@ describe('AdvFiltersComponent', () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
+        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
         { provide: UserService, useValue: mockUserService }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -65,7 +66,7 @@ describe('AdvFiltersComponent', () => {
     component.ngOnInit();
     expect(component.showTransferAccess).toBe(false);
 
-    config.transferAccess = true;
+    settings.transferAccess = true;
     component.ngOnInit();
     fixture.detectChanges();
     fixture.whenStable()

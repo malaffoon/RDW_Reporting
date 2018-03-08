@@ -1,12 +1,18 @@
 ///<reference path="../../node_modules/@angular/router/src/events.d.ts"/>
 import { Component, ViewChild } from "@angular/core";
 import { UserService } from "./user/user.service";
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
+import {
+  ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart,
+  Router
+} from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { User } from "./user/model/user.model";
 import { LanguageStore } from "./shared/i18n/language.store";
 import { Utils } from "./shared/support/support";
 import { SpinnerModal } from "./shared/loading/spinner.modal";
+import { ApplicationSettings } from './app-settings';
+import { ApplicationSettingsService } from './app-settings.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
   selector: 'app-component',
@@ -18,31 +24,41 @@ export class AppComponent {
   spinnerModal: SpinnerModal;
 
   private _lastPoppedUrl: string;
-  private _user: User;
 
-  get user() {
-    return this._user;
-  }
+  user: User;
+  applicationSettings: ApplicationSettings;
 
   /*
    Even though the angulartics2GoogleAnalytics variable is not explicitly used, without it analytics data is not sent to the service
    */
   constructor(public languageStore: LanguageStore,
-              private userService: UserService,
               private router: Router,
-              private location: Location) {
+              private location: Location,
+              private userService: UserService,
+              private applicationSettingsService: ApplicationSettingsService) {
+
+    forkJoin(
+      this.userService.getCurrentUser(),
+      this.applicationSettingsService.getSettings()
+    ).subscribe(([user, settings]) => {
+
+      if (Utils.isNullOrUndefined(user)
+      || Utils.isNullOrUndefined(settings)) {
+
+        this.router.navigate([ 'error' ]);
+
+      } else {
+
+        this.user = user;
+        this.applicationSettings = settings;
+
+        this.languageStore.configuredLanguages = settings.uiLanguages;
+        this.initializeAnalytics(settings.analyticsTrackingId);
+      }
+    })
   }
 
   ngOnInit() {
-    this.userService.getCurrentUser().subscribe(user => {
-      if (!Utils.isNullOrUndefined(user)) {
-        this._user = user;
-        this.languageStore.configuredLanguages = user.configuration.uiLanguages;
-        this.initializeAnalytics(user.configuration.analyticsTrackingId);
-      } else {
-        this.router.navigate([ 'error' ]);
-      }
-    });
     this.initializeNavigationScrollReset();
     this.initializeNavigationLoadingSpinner();
   }
