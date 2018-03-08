@@ -162,7 +162,7 @@ export class CsvBuilder {
       this.translateService.instant('labels.export.cols.enrolled-grade'),
       (item) => {
         let gradeCode: string = getExam(item).enrolledGrade;
-        return this.translateService.instant(`labels.grades.${gradeCode}.enrolled-name`)
+        return this.translateService.instant(`common.grade.${gradeCode}.enrolled-name`)
       }
     )
   }
@@ -174,9 +174,9 @@ export class CsvBuilder {
       (item) => {
         let exam: Exam = getExam(item);
         let adminCondition: string = exam.administrativeCondition;
-        let status: string = this.translateService.instant(`enum.administrative-condition.${adminCondition}`);
+        let status: string = this.translateService.instant(`common.administration-condition.${adminCondition}`);
         if (exam.completeness === 'Partial') {
-          status += " " + this.translateService.instant('enum.completeness.Partial');
+          status += " " + this.translateService.instant('common.completeness.Partial');
         }
         return status;
       }
@@ -190,7 +190,7 @@ export class CsvBuilder {
         let exam: Exam = getExam(item);
         if (!exam || !exam.level) return "";
 
-        return this.translateService.instant(`enum.achievement-level.full.${exam.level}`);
+        return this.translateService.instant(`common.assessment-type.ica.performance-level.${exam.level ? exam.level : 'missing'}.name`);
       }
     )
   }
@@ -215,7 +215,7 @@ export class CsvBuilder {
         let exam: Exam = getExam(item);
         if (!exam || !exam.level) return "";
 
-        return this.translateService.instant(`enum.iab-category.full.${exam.level}`);
+        return this.translateService.instant(`common.assessment-type.iab.performance-level.${exam.level ? exam.level : 'missing'}.name`);
       }
     )
   }
@@ -266,7 +266,7 @@ export class CsvBuilder {
           let exam: Exam = getExam(item);
           if (!exam || !exam.claimScores[ idx ].level) return "";
 
-          return this.translateService.instant(`enum.iab-category.full.${exam.claimScores[ idx ].level}`);
+          return this.translateService.instant(`common.assessment-type.iab.performance-level.${exam.claimScores[ idx ].level ? exam.claimScores[ idx ].level : 'missing'}.name`);
         }
       )
     });
@@ -277,7 +277,7 @@ export class CsvBuilder {
   withGender(getStudent: (item: any) => Student) {
     return this.withColumn(
       this.translateService.instant('labels.export.cols.gender'),
-      (item) => this.translateService.instant(`enum.gender.${getStudent(item).genderCode}`)
+      (item) => this.translateService.instant(`common.gender.${getStudent(item).genderCode}`)
     )
   }
 

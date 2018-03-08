@@ -41,7 +41,6 @@
     "processing": "Your report is being generated. This may take several minutes. ",
     "download-data": "Download Data",
     "display-report": "Display Report",
-    "reports-link": "My Reports",
     "error": {
       "unloadable": "The requested report cannot be loaded. Visit \"My Reports\" to see status.",
       "unsupported-size": "The requested report may be too large to view in the browser and may slow down or crash your browser if displayed. Would you like to download the report data as a spreadsheet instead?"
@@ -298,6 +297,10 @@
           "4": {
             "name": "Exceeded Standard",
             "short-name": "Exceeded"
+          },
+          "missing": {
+            "name": "-",
+            "short-name": "-"
           }
         }
       },
@@ -315,6 +318,10 @@
           "3": {
             "name": "Above Standard",
             "short-name": "Above Standard"
+          },
+          "missing": {
+            "name": "-",
+            "short-name": "-"
           }
         }
       },
@@ -336,6 +343,10 @@
           "4": {
             "name": "Exceeded Standard",
             "short-name": "Exceeded"
+          },
+          "missing": {
+            "name": "-",
+            "short-name": "-"
           }
         }
       }
@@ -354,11 +365,25 @@
       "Female": "Female",
       "Male": "Male"
     },
+    "current-grade-typeahead-label": "Assessment Grade",
+    "subject-typeahead-label": "Subject",
+    "school-typeahead-label": "School",
+    "school-year-typeahead-label": "School Year",
     "subject": {
+      "ALL": {
+        "name": "Math, ELA",
+        "short-name": "All"
+      },
       "ELA": {
+        "name": "ELA",
         "short-name": "ELA"
       },
       "Math": {
+        "name": "Math",
+        "short-name": "Math"
+      },
+      "MATH": {
+        "name": "Math",
         "short-name": "Math"
       }
     },
@@ -386,63 +411,123 @@
     },
     "grade": {
       "01": {
+        "enrolled-name": "G1",
+        "long-name": "Grade 1",
+        "short-name": "G1",
         "form-name": "1"
       },
       "02": {
+        "enrolled-name": "G2",
+        "long-name": "Grade 2",
+        "short-name": "G2",
         "form-name": "2"
       },
       "03": {
+        "enrolled-name": "G3",
+        "long-name": "Grade 3",
+        "short-name": "G3",
         "form-name": "3"
       },
       "04": {
+        "enrolled-name": "G4",
+        "long-name": "Grade 4",
+        "short-name": "G4",
         "form-name": "4"
       },
       "05": {
+        "enrolled-name": "G5",
+        "long-name": "Grade 5",
+        "short-name": "G5",
         "form-name": "5"
       },
       "06": {
+        "enrolled-name": "G6",
+        "long-name": "Grade 6",
+        "short-name": "G6",
         "form-name": "6"
       },
       "07": {
+        "enrolled-name": "G7",
+        "long-name": "Grade 7",
+        "short-name": "G7",
         "form-name": "7"
       },
       "08": {
+        "enrolled-name": "G8",
+        "long-name": "Grade 8",
+        "short-name": "G8",
         "form-name": "8"
       },
       "09": {
+        "enrolled-name": "G9",
+        "long-name": "High School",
+        "short-name": "HS",
         "form-name": "HS"
       },
       "10": {
+        "enrolled-name": "G10",
+        "long-name": "High School",
+        "short-name": "HS",
         "form-name": "HS"
       },
       "11": {
+        "enrolled-name": "G11",
+        "long-name": "High School",
+        "short-name": "HS",
         "form-name": "HS"
       },
       "12": {
+        "enrolled-name": "G12",
+        "long-name": "High School",
+        "short-name": "HS",
         "form-name": "HS"
       },
       "13": {
+        "enrolled-name": "G13",
+        "long-name": "Grade 13",
+        "short-name": "G13",
         "form-name": "13"
       },
       "IT": {
+        "enrolled-name": "IT",
+        "long-name": "Infant/Toddler",
+        "short-name": "IT",
         "form-name": "IT"
       },
       "KG": {
+        "enrolled-name": "KG",
+        "long-name": "Kindergarten",
+        "short-name": "KG",
         "form-name": "KG"
       },
       "PK": {
+        "enrolled-name": "PK",
+        "long-name": "Prekindergarten",
+        "short-name": "PK",
         "form-name": "PK"
       },
       "PR": {
+        "enrolled-name": "PR",
+        "long-name": "Preschool",
+        "short-name": "PR",
         "form-name": "PR"
       },
       "PS": {
+        "enrolled-name": "PS",
+        "long-name": "Postsecondary",
+        "short-name": "PS",
         "form-name": "PS"
       },
       "TK": {
+        "enrolled-name": "TK",
+        "long-name": "Transitional Kindergarten",
+        "short-name": "TK",
         "form-name": "TK"
       },
       "UG": {
+        "enrolled-name": "UG",
+        "long-name": "Ungraded",
+        "short-name": "UG",
         "form-name": "UG"
       }
     }
@@ -584,68 +669,16 @@
   },
   "enum": {
     "achievement-level": {
-      "full": {
-        "1": "Did Not Meet Standard",
-        "2": "Nearly Met Standard",
-        "3": "Met Standard",
-        "4": "Exceeded Standard",
-        "missing": "-"
-      },
       "request-type": {
         "distractor-analysis": "DistractorAnalysis",
         "results-by-item": "ResultsByItems",
         "writing-trait-scores": "WritingTraitScores"
-      },
-      "short": {
-        "1": "Did Not Meet",
-        "2": "Nearly Met",
-        "3": "Met",
-        "4": "Exceeded",
-        "missing": "-"
       }
-    },
-    "administrative-condition": {
-      "IN": "Invalid",
-      "NS": "Nonstandardized",
-      "SD": "Standardized",
-      "Valid": "Valid"
-    },
-    "completeness": {
-      "Complete": "Complete",
-      "Partial": "Partial"
     },
     "difficulty": {
       "D": "Difficult",
       "E": "Easy",
       "M": "Moderate"
-    },
-    "ethnicity": {
-      "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
-      "Asian": "Asian",
-      "BlackOrAfricanAmerican": "Black or African American",
-      "DemographicRaceTwoOrMoreRaces": "Demographic Race of Two or More",
-      "Filipino": "Filipino",
-      "HispanicOrLatinoEthnicity": "Hispanic/Latino",
-      "NativeHawaiianOrOtherPacificIslander": "Native Hawaiian or Pacific Islander",
-      "White": "White"
-    },
-    "gender": {
-      "Female": "Female",
-      "Male": "Male"
-    },
-    "iab-category": {
-      "full": {
-        "1": "Below Standard",
-        "2": "Near Standard",
-        "3": "Above Standard",
-        "missing": "-"
-      },
-      "short": {
-        "1": "Below Standard",
-        "2": "Near Standard",
-        "3": "Above Standard",
-        "missing": "-"
-      }
     },
     "off-grade": {
       "false": "Show",
@@ -670,12 +703,6 @@
       "UNAUTHORIZED": "Unauthorized",
       "UNKNOWN_ASMT": "Unknown Assessment",
       "UNKNOWN_SCHOOL": "Unknown School"
-    },
-    "subject": {
-      "ALL": "All",
-      "ELA": "ELA",
-      "MATH": "Math",
-      "Math": "Math"
     },
     "subject-claim-code": {
       "1": "Concepts & Procedures",
@@ -752,14 +779,6 @@
       "no-results": "No groups found matching the given filter criteria.",
       "no-schools": "Your user account does not have access to view the groups of any schools.",
       "search-school": "Start typing a school name...",
-      "select-school": "School",
-      "select-school-year": "School Year",
-      "select-subject": "Subject",
-      "subjects": {
-        "ALL": "Math, ELA",
-        "ELA": "ELA",
-        "Math": "Math"
-      },
       "title": "Manage Student Groups"
     },
     "assessments": {
@@ -968,108 +987,6 @@
       }
     },
     "grade": "Grade",
-    "grades": {
-      "10": {
-        "enrolled-name": "G10",
-        "long-name": "High School",
-        "short-name": "HS"
-      },
-      "11": {
-        "enrolled-name": "G11",
-        "long-name": "High School",
-        "short-name": "HS"
-      },
-      "12": {
-        "enrolled-name": "G12",
-        "long-name": "High School",
-        "short-name": "HS"
-      },
-      "13": {
-        "enrolled-name": "G13",
-        "long-name": "Grade 13",
-        "short-name": "G13"
-      },
-      "01": {
-        "enrolled-name": "G1",
-        "long-name": "Grade 1",
-        "short-name": "G1"
-      },
-      "02": {
-        "enrolled-name": "G2",
-        "long-name": "Grade 2",
-        "short-name": "G2"
-      },
-      "03": {
-        "enrolled-name": "G3",
-        "long-name": "Grade 3",
-        "short-name": "G3"
-      },
-      "04": {
-        "enrolled-name": "G4",
-        "long-name": "Grade 4",
-        "short-name": "G4"
-      },
-      "05": {
-        "enrolled-name": "G5",
-        "long-name": "Grade 5",
-        "short-name": "G5"
-      },
-      "06": {
-        "enrolled-name": "G6",
-        "long-name": "Grade 6",
-        "short-name": "G6"
-      },
-      "07": {
-        "enrolled-name": "G7",
-        "long-name": "Grade 7",
-        "short-name": "G7"
-      },
-      "08": {
-        "enrolled-name": "G8",
-        "long-name": "Grade 8",
-        "short-name": "G8"
-      },
-      "09": {
-        "enrolled-name": "G9",
-        "long-name": "High School",
-        "short-name": "HS"
-      },
-      "IT": {
-        "enrolled-name": "IT",
-        "long-name": "Infant/Toddler",
-        "short-name": "IT"
-      },
-      "KG": {
-        "enrolled-name": "KG",
-        "long-name": "Kindergarten",
-        "short-name": "KG"
-      },
-      "PK": {
-        "enrolled-name": "PK",
-        "long-name": "Prekindergarten",
-        "short-name": "PK"
-      },
-      "PR": {
-        "enrolled-name": "PR",
-        "long-name": "Preschool",
-        "short-name": "PR"
-      },
-      "PS": {
-        "enrolled-name": "PS",
-        "long-name": "Postsecondary",
-        "short-name": "PS"
-      },
-      "TK": {
-        "enrolled-name": "TK",
-        "long-name": "Transitional Kindergarten",
-        "short-name": "TK"
-      },
-      "UG": {
-        "enrolled-name": "UG",
-        "long-name": "Ungraded",
-        "short-name": "UG"
-      }
-    },
     "groups": {
       "admin-button": "Application Administration",
       "cols": {
@@ -1149,17 +1066,9 @@
         "selected-assessments-instruct": "Click an assessment to remove it from the list",
         "selected-assessments-title": "Selected Assessments",
         "session-unknown": "[Unknown]",
-        "title": "Results",
-        "value-as": "Show value as",
-        "value-as-number": "Number",
-        "value-as-percent": "Percent"
+        "title": "Results"
       },
-      "search-label": "Search by My Groups",
-      "subjects": {
-        "ALL": "Math, ELA",
-        "ELA": "ELA",
-        "Math": "Math"
-      }
+      "search-label": "Search by My Groups"
     },
     "homepage": {
       "title": "Access Assessment Results",
@@ -1344,8 +1253,6 @@
         },
         "order": "Sort Order",
         "report-name": "Report Name",
-        "school-year": "School Year",
-        "subject": "Subject",
         "submit": "Create",
         "title": {
           "multiple": "Create {{name}} Student Reports",
@@ -1409,25 +1316,16 @@
         "no-grades-available": "No test results are available for the selected school.",
         "null-school": "This school is unavailable.  Contact your building administrator if you think you should have access to this school."
       },
-      "results": {
-        "basic-filters": {
-          "current-grade": "Assessment Grade",
-          "school": "School",
-          "school-year": "School Year"
-        }
-      },
       "school-name": {
         "label": "Search by School Name"
       }
     },
-    "select-year": "School Year",
     "student": {
       "messages": {
         "no-results": "Student does not exist or has no available test results.",
         "null-student": "This student is unavailable.  Contact your building administrator if you think you should have access to this student.",
         "empty-filtered-results": "No test results are available for the filters selected."
       },
-      "name": "{{lastName}}, {{firstName}}",
       "prompt": "Enter the Statewide Student Identifier (SSID)",
       "responses": {
         "cols": {
@@ -1449,9 +1347,6 @@
           "school-year": "School Year"
         },
         "crumb": "Student: {{lastName}}, {{firstName}}",
-        "labels": {
-          "select-subject": "Subject"
-        },
         "title": "Student Test History Report"
       },
       "title": "Search by Student ID"
