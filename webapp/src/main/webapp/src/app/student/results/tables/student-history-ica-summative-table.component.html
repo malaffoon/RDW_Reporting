@@ -18,7 +18,7 @@
 
 <!-- Data Table -->
 <p-dataTable [value]="exams"
-             emptyMessage="{{'messages.noExamsMatchingCriteria' | translate}}"
+             emptyMessage="{{'messages.no-exams-matching-criteria' | translate}}"
              sortField="exam.date"
              sortOrder="-1"
              tableStyleClass="table table-striped table-hover">
@@ -40,7 +40,7 @@
   <p-column field="exam.enrolledGrade" header="{{'labels.student.results.cols.enrolled-grade' | translate}}"
             sortable="true">
     <ng-template let-exam="rowData.exam" pTemplate="body">
-      {{ exam.enrolledGrade | gradeDisplay }}
+      {{ 'common.enrolled-grade-label.' + exam.enrolledGrade | translate }}
     </ng-template>
   </p-column>
 
@@ -53,8 +53,8 @@
             content="{{'labels.groups.results.assessment.exams.cols.status-info' | translate}}"></span>
     </ng-template>
     <ng-template let-exam="rowData.exam" pTemplate="body">
-      <span *ngIf="exam.administrativeCondition !== 'Valid'" class="label border-only maroon">{{ 'enum.administrative-condition.' + exam.administrativeCondition | translate }}</span>
-      <span *ngIf="exam.completeness == 'Partial'" class="label border-only maroon">{{ 'enum.completeness.Partial' | translate }}</span>
+      <span *ngIf="exam.administrativeCondition !== 'Valid'" class="label border-only maroon">{{ 'common.administration-condition.' + exam.administrativeCondition | translate }}</span>
+      <span *ngIf="exam.completeness == 'Partial'" class="label border-only maroon">{{ 'common.completeness.Partial' | translate }}</span>
     </ng-template>
   </p-column>
   <p-column field="exam.level"
@@ -65,7 +65,7 @@
             content="{{'labels.groups.results.assessment.exams.cols.ica.performance-info' | translate}}"></span>
     </ng-template>
     <ng-template let-data="rowData" let-exam="rowData.exam" pTemplate="body">
-      {{ 'enum.achievement-level.full.' + (exam.level ? exam.level.toString() : 'missing') | translate }}
+      {{ 'common.assessment-type.ica.performance-level.' + (exam.level ? exam.level.toString() : 'missing') + '.name' | translate }}
     </ng-template>
   </p-column>
   <p-column field="exam.score"
@@ -89,7 +89,7 @@
             sortable="true"
             [hidden]="displayState.table !== 'claim'">
     <ng-template let-exam="rowData.exam" pTemplate="body">
-      <span *ngIf="exam.claimScores[idx].level">{{ 'enum.iab-category.full.' + (exam.claimScores[idx] ? exam.claimScores[idx].level.toString() : 'missing') | translate }}</span>
+      <span *ngIf="exam.claimScores[idx].level">{{ 'common.assessment-type.iab.performance-level.' + (exam.claimScores[idx] ? exam.claimScores[idx].level.toString() : 'missing') + '.name' | translate }}</span>
       <span *ngIf="!exam.claimScores[idx].level">-</span>
     </ng-template>
   </p-column>

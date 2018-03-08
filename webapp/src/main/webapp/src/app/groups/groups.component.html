@@ -47,9 +47,10 @@
                   [sortable]="true">
 
           <ng-template let-group="rowData" pTemplate="body">
-            {{ 'labels.groups.subjects.' + (group.subjectCode || 'ALL') | translate }}
+            {{ 'common.subject.' + (group.subjectCode || 'ALL') + '.name' | translate }}
           </ng-template>
         </p-column>
+
       </p-dataTable>
     </div>
   </div>
