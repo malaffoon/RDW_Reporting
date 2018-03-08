@@ -19,6 +19,7 @@ import { byString, join } from "@kourge/ordering/comparator";
            typeaheadOptionField="label"
            typeaheadGroupField="group"
            (typeaheadOnSelect)="onSelectInternal($event.item)"
+           (typeaheadNoResults)="noResults = $event"
            (ngModelChange)="onChangeInternal()"
            [(ngModel)]="search"
            [placeholder]="placeholder">
@@ -34,11 +35,16 @@ export class SBTypeahead implements OnInit {
   change: EventEmitter<any> = new EventEmitter<any>();
 
   /**
+   * @deprecated use selected - this output name has issues because it shadows the dom event name
+   *
    * Emits an option's value when an option is selected.
    * This is different than change in that it will only emit when a user selects the value.
    */
   @Output()
   select: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output()
+  selected: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
   placeholder: string = '';
@@ -51,6 +57,8 @@ export class SBTypeahead implements OnInit {
 
   @Input()
   inputId: string;
+
+  noResults = false;
 
   private _options: Option[] = [];
 
@@ -95,8 +103,12 @@ export class SBTypeahead implements OnInit {
   }
 
   onSelectInternal(option: Option): void {
-    this.value = option.value;
-    this.select.emit(option.value);
+    const { value } = option;
+    if (value) {
+      this.value = value;
+      this.select.emit(value);
+      this.selected.emit(value);
+    }
   }
 
   onChangeInternal(): void {
