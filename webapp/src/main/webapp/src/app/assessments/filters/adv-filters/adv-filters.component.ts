@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FilterBy } from "../../model/filter-by.model";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
 import { ActivatedRoute } from '@angular/router';
+import { ApplicationSettingsService } from '../../../app-settings.service';
 
 /*
   This component contains all of the selectable advanced filters
@@ -12,28 +13,22 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './adv-filters.component.html'
 })
 export class AdvFiltersComponent {
-  private _filterBy: FilterBy;
-
-  get filterBy(): FilterBy {
-    return this._filterBy;
-  }
-
-  @Input()
-  set filterBy(value: FilterBy) {
-    this._filterBy = value;
-  }
 
   @Input()
   filterOptions: ExamFilterOptions;
+
+  @Input()
+  filterBy: FilterBy;
 
   @Input()
   showStudentFilter: boolean = true;
 
   showTransferAccess: boolean = false;
 
-  constructor(private route: ActivatedRoute) {
-    const { applicationSettings } = this.route.snapshot.data;
-    this.showTransferAccess = applicationSettings.transferAccess;
+  constructor(private applicationSettingsService: ApplicationSettingsService) {
+    applicationSettingsService.getSettings().subscribe(settings => {
+      this.showTransferAccess = settings.transferAccess;
+    })
   }
 
 }

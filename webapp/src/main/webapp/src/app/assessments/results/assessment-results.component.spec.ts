@@ -19,7 +19,7 @@ import { CachingDataService } from "../../shared/data/caching-data.service";
 import { DataService } from "../../shared/data/data.service";
 import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 import { MockUserService } from "../../../test/mock.user.service";
-import { UserService } from "../../user/user.service";
+import { ActivatedRoute } from '@angular/router';
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -29,6 +29,8 @@ describe('AssessmentResultsComponent', () => {
 
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
+
+  const settings = {percentileDisplayEnabled: true};
 
   beforeEach(async(() => {
     dataService = new MockDataService();
@@ -48,14 +50,14 @@ describe('AssessmentResultsComponent', () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
-        { provide: UserService, useValue: mockUserService },
         ExamStatisticsCalculator,
         ExamFilterService,
         ColorService,
         InstructionalResourcesService,
         CachingDataService,
         DataService,
-        AssessmentPercentileService
+        AssessmentPercentileService,
+        { provide: ActivatedRoute, useValue: {snapshot: {data: {applicationSettings: settings}}}}
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();

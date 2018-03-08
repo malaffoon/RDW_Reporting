@@ -9,8 +9,6 @@ import { CommonModule } from "../../../shared/common.module";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
 import { Angulartics2, Angulartics2Module } from "angulartics2";
 import { PopoverModule } from "ngx-bootstrap";
-import { User } from "../../../user/model/user.model";
-import { UserService } from "../../../user/user.service";
 import { of } from 'rxjs/observable/of';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 
@@ -21,13 +19,9 @@ describe('AdvFiltersComponent', () => {
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
-  const settings: any = { transferAccess: false };
+  const settings: any = { transferAccess: true };
   const mockApplicationSettingsService = jasmine.createSpyObj('ApplicationSettingsService', [ 'getSettings' ]);
   mockApplicationSettingsService.getSettings.and.callFake(() => of(settings));
-
-  let user: User = new User();
-  let mockUserService = jasmine.createSpyObj('UserService', [ 'getCurrentUser' ]);
-  mockUserService.getCurrentUser.and.callFake(() => of(user));
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,8 +39,7 @@ describe('AdvFiltersComponent', () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Angulartics2, useValue: mockAngulartics2 },
-        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
-        { provide: UserService, useValue: mockUserService }
+        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService }
       ]
     }).compileComponents();
   }));
@@ -54,27 +47,14 @@ describe('AdvFiltersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestComponentWrapper);
     component = fixture.debugElement.children[ 0 ].componentInstance;
-
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.showTransferAccess).toBe(true);
   });
 
-  it('should detect transfer access enabled', (done) => {
-    component.ngOnInit();
-    expect(component.showTransferAccess).toBe(false);
-
-    settings.transferAccess = true;
-    component.ngOnInit();
-    fixture.detectChanges();
-    fixture.whenStable()
-      .then(() => {
-        expect(component.showTransferAccess).toBe(true);
-        done();
-      });
-  });
 });
 
 @Component({
