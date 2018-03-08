@@ -36,8 +36,4 @@ export class AdvFiltersComponent {
     this.showTransferAccess = applicationSettings.transferAccess;
   }
 
-  get translateRoot() {
-    return "labels.filters.";
-  }
-
 }

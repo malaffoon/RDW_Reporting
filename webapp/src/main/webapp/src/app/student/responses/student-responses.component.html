@@ -2,7 +2,7 @@
 
 <page-heading>
   <ng-template #heading>
-    <h2>{{'labels.student.name' | translate:student}}</h2> <div class="student-ssid-label">{{student.ssid}}</div>
+    <h2>{{'labels.person-name' | translate:student}}</h2> <div class="student-ssid-label">{{student.ssid}}</div>
   </ng-template>
 </page-heading>
 
@@ -18,7 +18,7 @@
 <div *ngIf="student && assessment" class="well">
   <div class="mb-md">
     <span class="tag tag-md {{colorService.getColor(getGradeIndex(assessment.grade))}}">
-      <span class="label">{{assessment.grade | gradeDisplay}}</span>
+      <span class="label">{{'common.assessment-grade-short-label.' + assessment.grade | translate }}</span>
           <span>{{assessment.label}}</span>
     </span>
     <span class="pull-right pt-sm">
@@ -28,7 +28,7 @@
   </div>
 
   <p-dataTable #datatable *ngIf="assessmentItems" [value]="assessmentItems"
-               emptyMessage="{{'messages.noExamsMatchingCriteria' | translate}}"
+               emptyMessage="{{'messages.no-exams-matching-criteria' | translate}}"
                sortField="assessmentItem.position"
                tableStyleClass="table table-striped table-hover"
                rowExpandMode="single"
