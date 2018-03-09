@@ -19,7 +19,8 @@ import { CachingDataService } from "../../shared/data/caching-data.service";
 import { DataService } from "../../shared/data/data.service";
 import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 import { MockUserService } from "../../../test/mock.user.service";
-import { ActivatedRoute } from '@angular/router';
+import { ApplicationSettingsService } from '../../app-settings.service';
+import { of } from 'rxjs/observable/of';
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -30,7 +31,12 @@ describe('AssessmentResultsComponent', () => {
   let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
   mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
 
-  const settings = {percentileDisplayEnabled: true};
+  const settings = {
+    percentileDisplayEnabled: true
+  };
+
+  const mockApplicationSettingsService = jasmine.createSpyObj('ApplicationSettingsService', [ 'getSettings' ]);
+  mockApplicationSettingsService.getSettings.and.callFake(() => of(settings));
 
   beforeEach(async(() => {
     dataService = new MockDataService();
@@ -57,7 +63,7 @@ describe('AssessmentResultsComponent', () => {
         CachingDataService,
         DataService,
         AssessmentPercentileService,
-        { provide: ActivatedRoute, useValue: {snapshot: {data: {applicationSettings: settings}}}}
+        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();

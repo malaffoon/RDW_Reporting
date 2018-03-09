@@ -1,7 +1,9 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { User } from "../user/model/user.model";
+import { User } from "../user/user";
 import { ApplicationSettings } from '../app-settings';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { UserService } from '../user/user.service';
+import { ApplicationSettingsService } from '../app-settings.service';
 
 @Component({
   selector: 'home',
@@ -15,10 +17,16 @@ export class HomeComponent {
   user: User;
   applicationSettings: ApplicationSettings;
 
-  constructor(route: ActivatedRoute) {
-    const { user, applicationSettings } = route.snapshot.data;
-    this.user = user;
-    this.applicationSettings = applicationSettings;
+  constructor(userService: UserService,
+              applicationSettingsService: ApplicationSettingsService) {
+
+    forkJoin(
+      userService.getUser(),
+      applicationSettingsService.getSettings()
+    ).subscribe(([user, settings]) => {
+      this.user = user;
+      this.applicationSettings = settings;
+    });
   }
 
 }

@@ -2,8 +2,11 @@ import { ApplicationSettings } from './app-settings';
 import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
 import { CachingDataService } from './shared/data/caching-data.service';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ReportingServiceRoute } from './shared/service-route';
+import { of } from 'rxjs/observable/of';
+
+const EmptySettings = of(<any>{});
 
 @Injectable()
 export class ApplicationSettingsService {
@@ -23,7 +26,9 @@ export class ApplicationSettingsService {
         uiLanguages: serverSettings.uiLanguages,
         transferAccess: serverSettings.transferAccessEnabled,
         percentileDisplayEnabled: serverSettings.percentileDisplayEnabled
-      }));
+      }),
+      catchError(error => EmptySettings)
+    );
   }
 
 }

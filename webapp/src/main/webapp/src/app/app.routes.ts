@@ -191,8 +191,6 @@ export const routes: Routes = [
     path: '',
     canActivate: [ RoutingAuthorizationCanActivate ],
     resolve: {
-      applicationSettings: ApplicationSettingsResolve,
-      user: UserResolve,
       translateComplete: TranslateResolve
     },
     children: [
