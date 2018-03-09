@@ -3,7 +3,7 @@ import { ReportService } from "./report.service";
 import { ReportDownloadComponent } from "./report-download.component";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Report } from "./report.model";
-import { Group } from "../user/model/group.model";
+import { Group } from "../groups/group";
 import { Observable } from "rxjs/Observable";
 import { ApplicationSettingsService } from '../app-settings.service';
 

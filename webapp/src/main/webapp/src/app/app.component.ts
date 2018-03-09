@@ -1,12 +1,9 @@
 ///<reference path="../../node_modules/@angular/router/src/events.d.ts"/>
 import { Component, ViewChild } from "@angular/core";
 import { UserService } from "./user/user.service";
-import {
-  ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart,
-  Router
-} from "@angular/router";
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
-import { User } from "./user/model/user.model";
+import { User } from "./user/user";
 import { LanguageStore } from "./shared/i18n/language.store";
 import { Utils } from "./shared/support/support";
 import { SpinnerModal } from "./shared/loading/spinner.modal";
@@ -38,12 +35,12 @@ export class AppComponent {
               private applicationSettingsService: ApplicationSettingsService) {
 
     forkJoin(
-      this.userService.getCurrentUser(),
+      this.userService.getUser(),
       this.applicationSettingsService.getSettings()
-    ).subscribe(([user, settings]) => {
+    ).subscribe(([ user, settings ]) => {
 
       if (Utils.isNullOrUndefined(user)
-      || Utils.isNullOrUndefined(settings)) {
+        || Utils.isNullOrUndefined(settings)) {
 
         this.router.navigate([ 'error' ]);
 

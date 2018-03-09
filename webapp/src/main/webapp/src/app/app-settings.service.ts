@@ -2,7 +2,7 @@ import { ApplicationSettings } from './app-settings';
 import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
 import { CachingDataService } from './shared/data/caching-data.service';
-import { map } from 'rxjs/operators';
+import { map, publishReplay, refCount } from 'rxjs/operators';
 import { ReportingServiceRoute } from './shared/service-route';
 
 @Injectable()
@@ -23,7 +23,10 @@ export class ApplicationSettingsService {
         uiLanguages: serverSettings.uiLanguages,
         transferAccess: serverSettings.transferAccessEnabled,
         percentileDisplayEnabled: serverSettings.percentileDisplayEnabled
-      }));
+      }),
+      publishReplay(1),
+      refCount()
+    );
   }
 
 }
