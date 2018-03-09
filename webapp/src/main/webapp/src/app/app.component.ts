@@ -1,15 +1,15 @@
-///<reference path="../../node_modules/@angular/router/src/events.d.ts"/>
 import { Component, ViewChild } from "@angular/core";
 import { UserService } from "./user/user.service";
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { User } from "./user/user";
 import { LanguageStore } from "./shared/i18n/language.store";
-import { Utils } from "./shared/support/support";
 import { SpinnerModal } from "./shared/loading/spinner.modal";
 import { ApplicationSettings } from './app-settings';
 import { ApplicationSettingsService } from './app-settings.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
+import { catchError } from 'rxjs/operators';
+import { _throw } from 'rxjs/observable/throw';
 
 @Component({
   selector: 'app-component',
@@ -33,29 +33,27 @@ export class AppComponent {
               private location: Location,
               private userService: UserService,
               private applicationSettingsService: ApplicationSettingsService) {
+  }
+
+  ngOnInit() {
 
     forkJoin(
       this.userService.getUser(),
       this.applicationSettingsService.getSettings()
+    ).pipe(
+      catchError((error, values) => {
+        this.router.navigate([ 'error' ]);
+        return _throw(error);
+      })
     ).subscribe(([ user, settings ]) => {
 
-      if (Utils.isNullOrUndefined(user)
-        || Utils.isNullOrUndefined(settings)) {
+      this.user = user;
+      this.applicationSettings = settings;
 
-        this.router.navigate([ 'error' ]);
+      this.languageStore.configuredLanguages = settings.uiLanguages;
+      this.initializeAnalytics(settings.analyticsTrackingId);
+    });
 
-      } else {
-
-        this.user = user;
-        this.applicationSettings = settings;
-
-        this.languageStore.configuredLanguages = settings.uiLanguages;
-        this.initializeAnalytics(settings.analyticsTrackingId);
-      }
-    })
-  }
-
-  ngOnInit() {
     this.initializeNavigationScrollReset();
     this.initializeNavigationLoadingSpinner();
   }

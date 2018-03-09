@@ -2,8 +2,15 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { User } from "./user";
 import { CachingDataService } from "../shared/data/caching-data.service";
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../shared/service-route';
+import { of } from 'rxjs/observable/of';
+
+const UnauthenticatedUser = of({
+  firstName: '',
+  lastName: '',
+  permissions: []
+});
 
 @Injectable()
 export class UserService {
@@ -17,7 +24,8 @@ export class UserService {
         firstName: serverUser.firstName,
         lastName: serverUser.lastName,
         permissions: serverUser.permissions
-      })
+      }),
+      catchError(error => UnauthenticatedUser)
     )
   }
 

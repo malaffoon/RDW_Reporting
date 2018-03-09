@@ -14,6 +14,7 @@ import { AssessmentExporter } from "./assessment-exporter.interface";
 import { ReportingEmbargoService } from "../shared/embargo/reporting-embargo.service";
 import { share } from 'rxjs/operators';
 import { ApplicationSettingsService } from '../app-settings.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -168,18 +169,16 @@ export class AssessmentsComponent {
 
     this.clientFilterBy = new FilterBy();
 
-    applicationSettingsService.getSettings().subscribe(settings => {
+    forkJoin(
+      applicationSettingsService.getSettings(),
+      filterOptionService.getExamFilterOptions(),
+      embargoService.isEmbargoed()
+    ).subscribe(([settings, filterOptions, embargoed]) => {
       this.minimumItemDataYear = settings.minItemDataYear;
-    });
-
-    filterOptionService.getExamFilterOptions().subscribe(filterOptions => {
       this.filterOptions = filterOptions;
       this.updateFilterOptions();
-    });
-
-    embargoService.isEmbargoed().subscribe(embargoed => {
       this.exportDisabled = embargoed;
-    })
+    });
   }
 
   getGradeIdx(gradeCode: string): number {
