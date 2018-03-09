@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { User } from "./user";
 import { CachingDataService } from "../shared/data/caching-data.service";
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, publishReplay, refCount, share } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../shared/service-route';
 import { of } from 'rxjs/observable/of';
 
