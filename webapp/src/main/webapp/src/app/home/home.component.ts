@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { User } from "../user/model/user.model";
+import { ApplicationSettings } from '../app-settings';
 
 @Component({
   selector: 'home',
@@ -12,9 +13,12 @@ import { User } from "../user/model/user.model";
 export class HomeComponent {
 
   user: User;
+  applicationSettings: ApplicationSettings;
 
   constructor(route: ActivatedRoute) {
-    this.user = route.snapshot.data[ 'user' ];
+    const { user, applicationSettings } = route.snapshot.data;
+    this.user = user;
+    this.applicationSettings = applicationSettings;
   }
 
 }
