@@ -7,13 +7,13 @@ artifacts:
 permissionservice:
   endpoint:
 
-app:
+reporting:
+  school-year: 2018
   state:
     code: CA
-  iris:
-    vendorId: vendorId
-    url: http://my-iris.somewhere.org/iris/
+    name: California
 
+app:
   test-mode: true
 
 spring:
