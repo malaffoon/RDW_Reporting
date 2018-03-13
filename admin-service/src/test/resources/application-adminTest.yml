@@ -7,9 +7,6 @@ spring:
 artifacts:
   root: "classpath:"
 
-permissionservice:
-  endpoint:
-
 app:
   test-mode: true
 
