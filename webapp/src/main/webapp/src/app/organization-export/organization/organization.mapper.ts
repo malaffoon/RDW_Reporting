@@ -135,7 +135,9 @@ export class OrganizationMapper {
     }
 
     const district: District = new District();
-    district.id = id;
+    if (!Utils.isNullOrUndefined(id)) {
+      district.id = id;
+    }
     return district;
   }
 
@@ -145,7 +147,9 @@ export class OrganizationMapper {
     }
 
     const schoolGroup: SchoolGroup = new SchoolGroup();
-    schoolGroup.id = id;
+    if (!Utils.isNullOrUndefined(id)) {
+      schoolGroup.id = id;
+    }
     return schoolGroup;
   }
 
