@@ -3,56 +3,54 @@
 </ng-container>
 
 <ng-template #loaded>
-  <div class="home-view">
+  <div class="flex-child grow">
+    <label>{{'groups.search-label' | translate }}</label>
+  </div>
 
-    <div class="flex-child grow">
-      <label>{{'groups.search-label' | translate }}</label>
-    </div>
+  <!-- My Groups Search Input -->
+  <div *ngIf="groups.length > 2"
+       class="table-search-form-container">
+    <label for="search" class="sr-only">{{'groups.filter' | translate}}</label>
+    <input [(ngModel)]="searchTerm"
+           class="search form-control"
+           id="search"
+           type="text"
+           placeholder="{{'groups.filter' | translate}}"
+           autocomplete="off"
+           (ngModelChange)="onSearchChange($event)">
+  </div>
 
-    <!-- My Groups Search Input -->
-    <div *ngIf="groups.length > 2"
-         class="table-search-form-container">
-      <label for="search" class="sr-only">{{'groups.filter' | translate}}</label>
-      <input [(ngModel)]="searchTerm"
-             class="search form-control"
-             id="search"
-             type="text"
-             placeholder="{{'groups.filter' | translate}}"
-             autocomplete="off"
-             (ngModelChange)="onSearchChange($event)">
-    </div>
+  <!-- My Groups Search Results List -->
+  <div class="table-list-container">
+    <p-dataTable [value]="filteredGroups"
+                 emptyMessage="{{ emptyMessageTranslateKey | translate}}"
+                 sortField="name"
+                 tableStyleClass="table table-striped table-hover">
 
-    <!-- My Groups Search Results List -->
-    <div class="table-list-container">
-      <p-dataTable [value]="filteredGroups"
-                   emptyMessage="{{ emptyMessageTranslateKey | translate}}"
-                   sortField="name"
-                   tableStyleClass="table table-striped table-hover">
+      <p-column field="name"
+                header="{{'groups.columns.group' | translate}}"
+                [sortable]="true">
 
-        <p-column field="name"
-                  header="{{'groups.columns.group' | translate}}"
-                  [sortable]="true">
-
-          <ng-template let-group="rowData" pTemplate="body">
+        <ng-template let-group="rowData" pTemplate="body">
+          <div class="label-max-width">
             <a routerLink="/groups/{{group.id}}">{{group.name}}</a>
-          </ng-template>
-        </p-column>
+          </div>
+        </ng-template>
+      </p-column>
 
+      <p-column field="schoolName"
+                header="{{'groups.columns.school' | translate}}"
+                [sortable]="true"></p-column>
 
-        <p-column field="schoolName"
-                  header="{{'groups.columns.school' | translate}}"
-                  [sortable]="true"></p-column>
+      <p-column field="subjectId"
+                header="{{'groups.columns.subject' | translate}}"
+                [sortable]="true">
 
-        <p-column field="subjectId"
-                  header="{{'groups.columns.subject' | translate}}"
-                  [sortable]="true">
+        <ng-template let-group="rowData" pTemplate="body">
+          {{ 'common.subject.' + (group.subjectCode || 'ALL') + '.name' | translate }}
+        </ng-template>
+      </p-column>
 
-          <ng-template let-group="rowData" pTemplate="body">
-            {{ 'common.subject.' + (group.subjectCode || 'ALL') + '.name' | translate }}
-          </ng-template>
-        </p-column>
-
-      </p-dataTable>
-    </div>
+    </p-dataTable>
   </div>
 </ng-template>
