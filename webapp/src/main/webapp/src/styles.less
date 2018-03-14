@@ -919,11 +919,18 @@ distractor-analysis .ui-widget.ui-datatable table .ui-datatable-data td.green {
   background-color: @green;
 }
 
-// Bootstrap fix
+// TODO move to UI kit
 .form-control {
   &.btn-primary {
     color: @btn-primary-color;
     background-color: @btn-primary-bg;
     border-color: @btn-primary-border;
   }
+}
+
+.modal-title {
+  max-width: 96%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
