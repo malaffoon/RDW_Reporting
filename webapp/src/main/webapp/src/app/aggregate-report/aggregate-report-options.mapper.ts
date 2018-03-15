@@ -7,9 +7,7 @@ import { DisplayOptionService } from "../shared/display-options/display-option.s
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { ValueDisplayTypes } from "../shared/display-options/value-display-type";
 import { PerformanceLevelDisplayTypes } from "../shared/display-options/performance-level-display-type";
-
-
-export const DefaultColumnOrder: string[] = ['organization', 'assessmentGrade', 'schoolYear', 'dimension'];
+import { DefaultColumnOrder } from './results/aggregate-report-table.component';
 
 /**
  * Responsible for mapping server provided report options into option

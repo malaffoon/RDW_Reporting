@@ -9,12 +9,12 @@ import { Observable } from "rxjs/Observable";
 import { District, OrganizationType, School } from "../shared/organization/organization";
 import { Utils } from "../shared/support/support";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
-import { DefaultColumnOrder } from "./aggregate-report-options.mapper";
 import { ranking } from "@kourge/ordering/comparator";
 import { ordering } from "@kourge/ordering";
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
+import { DefaultColumnOrder } from './results/aggregate-report-table.component';
 
 const equalSize = (a: any[], b: any[]) => a.length === b.length;
 const idsOf = values => values.map(value => value.id);
@@ -196,7 +196,7 @@ export class AggregateReportRequestMapper {
             valueDisplayType: query.valueDisplayType,
             columnOrder: or(
               request.reportQuery.columnOrder,
-              DefaultColumnOrder
+              DefaultColumnOrder.filter(columnId => query.assessmentTypeCode !== 'iab' && columnId !== 'assessmentLabel')
             )
           };
         })

@@ -10,7 +10,10 @@ import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportService } from "./aggregate-report.service";
-import { AggregateReportTable, SupportedRowCount } from "./results/aggregate-report-table.component";
+import {
+  AggregateReportTable, DefaultColumnOrder,
+  SupportedRowCount
+} from "./results/aggregate-report-table.component";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
 import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
@@ -313,6 +316,18 @@ export class AggregateReportFormComponent {
 
   onAdvancedFiltersExpanderButtonClick(): void {
     this.showAdvancedFilters = !this.showAdvancedFilters;
+  }
+
+  onAssessmentTypeChange(type: string): void {
+
+    // RESETS ORDER
+    this.settings.columnOrder = DefaultColumnOrder.filter(columnId => type !== 'iab' && columnId !== 'assessmentLabel');
+    this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
+
+    // do i need this? it was there already
+    this.markOrganizationsControlTouched();
+
+    this.onSettingsChange();
   }
 
   onColumnOrderChange(items: OrderableItem[]): void {

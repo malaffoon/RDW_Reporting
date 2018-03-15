@@ -15,8 +15,8 @@ import { Table } from "primeng/table";
 import { SortEvent } from "primeng/api";
 
 export const SupportedRowCount = 10000;
-
 export const DefaultRowsPerPageOptions = [100, 500, 1000];
+export const DefaultColumnOrder: string[] = ['organization', 'assessmentLabel', 'assessmentGrade', 'schoolYear', 'dimension'];
 
 const OverallDimensionType: string = 'Overall';
 
