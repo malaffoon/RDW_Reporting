@@ -5,7 +5,7 @@
 * Improved architecture:
     * Web application no longer requires reporting service to be running for basic functionality
     * Organizes system level configuration more logically
-    NOTE: this requires updating configuration files for each module
+    * NOTE: this requires updating configuration files for each module
 
 #### 1.1.2 - 2018-03-07
 
