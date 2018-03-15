@@ -5,98 +5,124 @@
   <ng-template #content>
     <ul class="list-unstyled list-inline">
       <li>
-        <span class="btn btn-primary btn-sm" [routerLink]="['import']"><i class="fa fa-cloud-upload"></i> {{'group-import.link' | translate}}</span>
+        <a class="btn btn-primary btn-sm"
+           [routerLink]="['import']"><i class="fa fa-cloud-upload"></i> {{'group-import.link' | translate}}</a>
       </li>
       <li>
-        <span class="btn btn-default btn-sm" [routerLink]="['history']"><i class="fa fa-history"></i> {{'import-history.title' | translate}}</span>
+        <a class="btn btn-default btn-sm"
+           [routerLink]="['history']"><i class="fa fa-history"></i> {{'import-history.title' | translate}}</a>
       </li>
     </ul>
   </ng-template>
 </page-heading>
 
-<ng-container *ngIf="filterOptions && filterOptions.schools.length == 0">
-  <div class="alert alert-danger">
-    {{ 'admin-groups.no-schools' | translate }}
-  </div>
-</ng-container>
+<ng-container *ngIf="filterOptions">
 
-<ng-container *ngIf="filterOptions && filterOptions.schools.length > 0">
-  <!-- Filters -->
-  <div class="well">
-    <div class="row">
-      <!-- School Select -->
-      <div class="col-md-6">
-        <label>{{'common.school-typeahead-label' | translate}}</label>
-        <p-dropdown id="select-school"
-                    [options]="schoolDropdownOptions"
-                    [(ngModel)]="query.school"
-                    (onChange)="updateRoute()"
-                    [filter]="true"
-                    filterBy="label"
-                    placeholder="{{'prompt.select' | translate}}"
-                    filterPlaceholder="{{'admin-groups.search-school' | translate}}">
-          <ng-template let-school pTemplate="item">
-            <div class="ui-helper-clearfix">
-              <div>{{school.name}}
-                <div class="font-weight-light small">{{school.naturalId}}</div>
+  <ng-container *ngIf="filterOptions.schools.length == 0; else hasSchools">
+    <div class="alert alert-info">
+      {{ 'admin-groups.no-schools' | translate }}
+    </div>
+  </ng-container>
+
+  <ng-template #hasSchools>
+    <!-- Filters -->
+    <div class="well">
+      <div class="row">
+        <!-- School Select -->
+        <div class="col-md-6">
+          <label>{{'common.school-typeahead-label' | translate}}</label>
+          <p-dropdown id="select-school"
+                      [options]="schoolDropdownOptions"
+                      [(ngModel)]="query.school"
+                      (onChange)="updateRoute()"
+                      [filter]="true"
+                      filterBy="label"
+                      placeholder="{{'prompt.select' | translate}}"
+                      filterPlaceholder="{{'admin-groups.search-school' | translate}}">
+            <ng-template let-school pTemplate="item">
+              <div class="ui-helper-clearfix">
+                <div>{{school.name}}
+                  <div class="font-weight-light small">{{school.naturalId}}</div>
+                </div>
               </div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <!-- School Year Select -->
-      <div class="col-md-2">
-        <label for="select-schoolyear">{{'common.school-year-select-label' | translate}}</label>
-        <select id="select-schoolyear" [(ngModel)]="query.schoolYear" class="form-control" (change)="updateRoute()">
-          <option *ngFor="let schoolYear of filterOptions.schoolYears" [ngValue]="schoolYear">{{schoolYear | schoolYear
-            }}
-          </option>
-        </select>
-      </div>
-      <!-- Subject Select -->
-      <div class="col-md-2">
-        <label for="select-subject">{{'common.subject-select-label' | translate}}</label>
-        <select id="select-subject" [(ngModel)]="query.subject" class="form-control" (change)="updateRoute()">
-          <option *ngFor="let subject of filterOptions.subjects" [ngValue]="subject">{{'common.subject.' + subject + '.short-name' |
-            translate }}
-          </option>
-        </select>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <!-- School Year Select -->
+        <div class="col-md-2">
+          <label for="select-schoolyear">{{'common.school-year-select-label' | translate}}</label>
+          <select id="select-schoolyear"
+                  [(ngModel)]="query.schoolYear"
+                  class="form-control"
+                  (change)="updateRoute()">
+            <option *ngFor="let schoolYear of filterOptions.schoolYears"
+                    [ngValue]="schoolYear">
+              {{schoolYear | schoolYear}}
+            </option>
+          </select>
+        </div>
+        <!-- Subject Select -->
+        <div class="col-md-2">
+          <label for="select-subject">{{'common.subject-select-label' | translate}}</label>
+          <select id="select-subject"
+                  [(ngModel)]="query.subject"
+                  class="form-control"
+                  (change)="updateRoute()">
+            <option *ngFor="let subject of filterOptions.subjects"
+                    [ngValue]="subject">{{'common.subject.' + subject + '.short-name' | translate}}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Results Table -->
-  <div class="well">
-    <div class="table-search-form-container">
-      <label for="search" class="sr-only">{{'admin-groups.filter' | translate}}</label>
-      <input [(ngModel)]="searchTerm" class="search form-control" id="search" type="text"
-             placeholder="{{'admin-groups.filter' | translate}}" autocomplete="off" (ngModelChange)="onSearchChange()">
+    <!-- Results Table -->
+    <div class="well">
+      <div class="table-search-form-container">
+        <label for="search" class="sr-only">{{'admin-groups.filter' | translate}}</label>
+        <input [(ngModel)]="searchTerm"
+               class="search form-control"
+               id="search"
+               type="text"
+               placeholder="{{'admin-groups.filter' | translate}}"
+               autocomplete="off"
+               (ngModelChange)="onSearchChange()">
+      </div>
+      <div class="table-list-container">
+        <p-dataTable [value]="filteredGroups"
+                     emptyMessage="{{'admin-groups.no-results' | translate}}"
+                     sortField="name"
+                     tableStyleClass="table table-striped table-hover overflow">
+          <p-column field="name" header="{{'admin-groups.columns.name' | translate}}" [sortable]="true">
+            <ng-template let-group="rowData" pTemplate="body">
+              <div class="label-max-width"
+                   title="{{group.name}}">
+                {{group.name}}
+              </div>
+            </ng-template>
+          </p-column>
+          <p-column field="schoolName" header="{{'admin-groups.columns.school' | translate}}" [sortable]="true"></p-column>
+          <p-column field="schoolYear" header="{{'admin-groups.columns.school-year' | translate}}" [sortable]="true">
+            <ng-template let-group="rowData" pTemplate="body">
+              {{ group.schoolYear | schoolYear }}
+            </ng-template>
+          </p-column>
+          <p-column field="subject" header="{{'admin-groups.columns.subjects' | translate}}" [sortable]="true">
+            <ng-template let-group="rowData" pTemplate="body">
+              {{ 'common.subject.' + (group.subject || 'ALL') + '.name' | translate }}
+            </ng-template>
+          </p-column>
+          <p-column field="studentCount" header="{{'admin-groups.columns.student-count' | translate}}"
+                    [sortable]="true"></p-column>
+          <p-column field="isDeleted">
+            <ng-template let-group="rowData" pTemplate="body">
+              <a href="javascript:void(0)" (click)="openDeleteGroupModal(group)">
+                <i class="fa fa-minus-square-o"></i> {{ 'admin-groups.columns.delete' | translate }}
+              </a>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
     </div>
-    <div class="table-list-container">
-      <p-dataTable [value]="filteredGroups" emptyMessage="{{'admin-groups.no-results' | translate}}" sortField="name"
-                   tableStyleClass="table table-striped table-hover overflow">
-        <p-column field="name" header="{{'admin-groups.columns.name' | translate}}" [sortable]="true"></p-column>
-        <p-column field="schoolName" header="{{'admin-groups.columns.school' | translate}}" [sortable]="true"></p-column>
-        <p-column field="schoolYear" header="{{'admin-groups.columns.school-year' | translate}}" [sortable]="true">
-          <ng-template let-group="rowData" pTemplate="body">
-            {{ group.schoolYear | schoolYear }}
-          </ng-template>
-        </p-column>
-        <p-column field="subject" header="{{'admin-groups.columns.subjects' | translate}}" [sortable]="true">
-          <ng-template let-group="rowData" pTemplate="body">
-            {{ 'common.subject.' + (group.subject || 'ALL') + '.name' | translate }}
-          </ng-template>
-        </p-column>
-        <p-column field="studentCount" header="{{'admin-groups.columns.student-count' | translate}}"
-                  [sortable]="true"></p-column>
-        <p-column field="isDeleted">
-          <ng-template let-group="rowData" pTemplate="body">
-            <a href="javascript:void(0)" (click)="openDeleteGroupModal(group)">
-              <i class="fa fa-minus-square-o"></i> {{ 'admin-groups.columns.delete' | translate }}
-            </a>
-          </ng-template>
-        </p-column>
-      </p-dataTable>
-    </div>
-  </div>
+  </ng-template>
 </ng-container>
