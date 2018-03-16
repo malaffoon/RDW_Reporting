@@ -16,9 +16,6 @@ sqlbuilder:
               fe.school_year,
               fe.asmt_id
 
-          from: >-
-              fact_student_exam fe
-
           join: >-
               JOIN asmt a ON a.id = fe.asmt_id
 
@@ -34,6 +31,16 @@ sqlbuilder:
 
       # ------------ organization parts -------------------------------------------------------------
         addons:
+            icaOrSummative:
+              clauses:
+                from: >-
+                   fact_student_exam fe
+
+            iab:
+              clauses:
+                from: >-
+                   fact_student_iab_exam fe
+
             state:
               clauses:
                 select: >-

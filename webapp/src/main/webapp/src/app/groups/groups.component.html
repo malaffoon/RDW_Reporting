@@ -33,7 +33,8 @@
 
         <ng-template let-group="rowData" pTemplate="body">
           <div class="label-max-width">
-            <a routerLink="/groups/{{group.id}}">{{group.name}}</a>
+            <a routerLink="/groups/{{group.id}}"
+               title="{{group.name}}">{{group.name}}</a>
           </div>
         </ng-template>
       </p-column>
