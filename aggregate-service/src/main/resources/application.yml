@@ -26,7 +26,7 @@ cloud:
 
 app:
   aggregate-reports:
-    assessment-types: ica,sum
+    assessment-types: ica,sum,iab
     statewide-user-assessment-types: sum
     state-aggregate-assessment-types: sum
     custom-aggregate-report-repository:
