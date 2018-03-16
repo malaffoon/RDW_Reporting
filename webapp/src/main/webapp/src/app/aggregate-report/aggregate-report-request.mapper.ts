@@ -196,7 +196,9 @@ export class AggregateReportRequestMapper {
             valueDisplayType: query.valueDisplayType,
             columnOrder: or(
               request.reportQuery.columnOrder,
-              DefaultColumnOrder.filter(columnId => query.assessmentTypeCode !== 'iab' && columnId !== 'assessmentLabel')
+              query.assessmentTypeCode === 'iab'
+                ? DefaultColumnOrder
+                : DefaultColumnOrder.filter(columnId => columnId !== 'assessmentLabel')
             )
           };
         })

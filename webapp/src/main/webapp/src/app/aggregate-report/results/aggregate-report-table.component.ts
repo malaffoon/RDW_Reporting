@@ -15,8 +15,14 @@ import { Table } from "primeng/table";
 import { SortEvent } from "primeng/api";
 
 export const SupportedRowCount = 10000;
-export const DefaultRowsPerPageOptions = [100, 500, 1000];
-export const DefaultColumnOrder: string[] = ['organization', 'assessmentLabel', 'assessmentGrade', 'schoolYear', 'dimension'];
+export const DefaultRowsPerPageOptions = [ 100, 500, 1000 ];
+export const DefaultColumnOrder: string[] = [
+  'assessmentLabel',
+  'organization',
+  'assessmentGrade',
+  'schoolYear',
+  'dimension'
+];
 
 const OverallDimensionType: string = 'Overall';
 
@@ -43,7 +49,11 @@ const DistrictOrdering: Ordering<AggregateReportItem> = ordering(ranking([ Organ
 const SchoolOrdering: Ordering<AggregateReportItem> = ordering(byString)
   .on(item => item.organization.name);
 
-const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber).on(item => item.schoolYear);
+const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
+  .on(item => item.schoolYear);
+
+const AssessmentLabelOrdering: Ordering<AggregateReportItem> = ordering(byString)
+  .on(item => item.assessmentLabel);
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -58,7 +68,7 @@ const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber).on(
   selector: 'aggregate-report-table',
   templateUrl: 'aggregate-report-table.component.html',
   host: {
-    '[class.disabled-table]' : 'preview',
+    '[class.disabled-table]': 'preview'
   }
 })
 export class AggregateReportTableComponent implements OnInit {
@@ -89,17 +99,18 @@ export class AggregateReportTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.columns = [
-      new Column({id: "organization", field: "organization.name"}),
+      new Column({ id: "organization", field: "organization.name" }),
       ...this.getAssessmentLabelColumns(),
-      new Column({id: "assessmentGrade", field: "assessmentGradeCode"}),
-      new Column({id: "schoolYear"}),
-      new Column({id: "dimension", field: "dimension.id"}),
-      new Column({id: "studentsTested"}),
-      new Column({id: "achievementComparison", sortable: false}),
-      new Column({id: "avgScaleScore"}),
+      new Column({ id: "assessmentGrade", field: "assessmentGradeCode" }),
+      new Column({ id: "schoolYear" }),
+      new Column({ id: "dimension", field: "dimension.id" }),
+      new Column({ id: "studentsTested" }),
+      new Column({ id: "achievementComparison", sortable: false }),
+      new Column({ id: "avgScaleScore" }),
       ...this.getPerformanceLevelColumns()
     ];
     this.updateColumnOrder();
+    this.calculateTreeColumns();
   }
 
   get valueDisplayType(): string {
@@ -141,11 +152,13 @@ export class AggregateReportTableComponent implements OnInit {
         .on((item: AggregateReportItem) => item.assessmentGradeCode);
 
       this._districtNamesById = this.getDistrictNamesById(value.rows);
-      this._orderingByColumnField['organization.name'] = this.createOrganizationOrdering();
-      this._orderingByColumnField['assessmentGradeCode'] = assessmentGradeOrdering;
-      this._orderingByColumnField['schoolYear'] = SchoolYearOrdering;
-      this._orderingByColumnField['dimension.id'] = this.createDimensionOrdering(options);
+      this._orderingByColumnField[ 'organization.name' ] = this.createOrganizationOrdering();
+      this._orderingByColumnField[ 'assessmentLabel' ] = AssessmentLabelOrdering;
+      this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
+      this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
+      this._orderingByColumnField[ 'dimension.id' ] = this.createDimensionOrdering(options);
       this._table = table;
+      this.updateAssessmentLabelColumns();
     }
   }
 
@@ -228,9 +241,9 @@ export class AggregateReportTableComponent implements OnInit {
     }
 
     if (!this._previousSortEvent ||
-        event === this._previousSortEvent ||
-        event.order != 1 ||
-        event.field != this._previousSortEvent.field) {
+      event === this._previousSortEvent ||
+      event.order != 1 ||
+      event.field != this._previousSortEvent.field) {
       // Standard column sort.  Sort on the selected column first, then default sorting.
       ordering.unshift(this.getComparator(event.field, event.order));
       this._previousSortEvent = event;
@@ -252,6 +265,7 @@ export class AggregateReportTableComponent implements OnInit {
   public toDash(str: string): string {
     return Utils.camelCaseToDash(str);
   }
+
   /**
    * Export the current table contents in the currently-displayed format as a csv.
    */
@@ -324,7 +338,7 @@ export class AggregateReportTableComponent implements OnInit {
         return item.studentsTested === 0 ? defaultValue : _.get(item, field, defaultValue);
       });
     }
-    return ascending ?  rowOrdering.compare : rowOrdering.reverse().compare;
+    return ascending ? rowOrdering.compare : rowOrdering.reverse().compare;
   }
 
   /**
@@ -401,28 +415,22 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   private getAssessmentLabelColumns(): Column[] {
-    if (this.table.assessmentDefinition.typeCode !== 'iab') {
-      return [];
-    }
     return [
       new Column({
         id: "assessmentLabel",
-        // displayType: displayType,
-        // level: level,
-        // visible: this.performanceLevelDisplayType === displayType,
-        // index: index,
+        visible: this.table.assessmentDefinition.typeCode === 'iab',
         field: 'assessmentLabel',
-        headerKey: 'assessment-label',
-        // headerColor: this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(this.table.assessmentDefinition.typeCode, level)
+        headerKey: 'assessment-label'
       })
     ]
   }
 
   private getPerformanceLevelColumns(): Column[] {
+    // TODO fix IAB columns - this assumes ICA/Summative i think
     const performanceColumns: Column[] = [];
     Object.keys(this.performanceLevelsByDisplayType)
       .forEach((displayType) => {
-        this.performanceLevelsByDisplayType[displayType].forEach((level, index) => {
+        this.performanceLevelsByDisplayType[ displayType ].forEach((level, index) => {
           performanceColumns.push(new Column({
             id: "performanceLevel",
             displayType: displayType,
@@ -439,20 +447,22 @@ export class AggregateReportTableComponent implements OnInit {
     return performanceColumns;
   }
 
+  private updateAssessmentLabelColumns() {
+    (this.columns || [])
+      .filter(column => column.id === 'assessmentLabel')
+      .forEach((column) => {
+        column.visible = this.table.assessmentDefinition.typeCode === 'iab';
+      });
+  }
+
   private updatePerformanceLevelColumns() {
-    if (!this.columns) {
-      return;
-    }
-
-    this.columns.forEach((column) => {
-      if (column.id !== "performanceLevel") {
-        return;
-      }
-
-      column.visible = column.displayType === this.performanceLevelDisplayType;
-      column.field = `performanceLevelByDisplayTypes.${column.displayType}.${this.valueDisplayType}.${column.index}`;
-      column.headerKey = this.getPerformanceLevelColumnHeaderTranslationCode(column.level, column.index);
-    });
+    (this.columns || [])
+      .filter(column => column.id === 'performanceLevel')
+      .forEach((column) => {
+        column.visible = column.displayType === this.performanceLevelDisplayType;
+        column.field = `performanceLevelByDisplayTypes.${column.displayType}.${this.valueDisplayType}.${column.index}`;
+        column.headerKey = this.getPerformanceLevelColumnHeaderTranslationCode(column.level, column.index);
+      });
   }
 
   private createOrganizationOrdering(): Ordering<AggregateReportItem> {
@@ -496,7 +506,7 @@ export class AggregateReportTableComponent implements OnInit {
     }, []);
 
     const dimensionTypeAndCodeComparator: Comparator<AggregateReportItem> = ordering(ranking(
-      [OverallDimensionType, ...dimensionTypeAndCodeRankingValues]
+      [ OverallDimensionType, ...dimensionTypeAndCodeRankingValues ]
     ))
       .on((item: AggregateReportItem) => `${item.dimension.type}.${item.dimension.code}`)
       .compare;
@@ -549,7 +559,8 @@ class Column {
   headerKey?: string;
   headerColor?: string;
 
-  constructor({ id,
+  constructor({
+                id,
                 field = "",
                 sortable = true,
                 visible = true,
@@ -557,7 +568,8 @@ class Column {
                 level = -1,
                 index = -1,
                 headerKey = "",
-                headerColor = ""}) {
+                headerColor = ""
+              }) {
     this.id = id;
     this.field = field ? field : id;
     this.sortable = sortable;

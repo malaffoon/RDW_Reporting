@@ -44,7 +44,7 @@ export class AggregateReportTableDataService {
               itemId: ++uuid,
               organization: organization,
               assessmentId: undefined,
-              assessmentLabel: assessmentDefinition.typeCode === 'iab' ? `Assessment ${uuid}` : undefined,
+              assessmentLabel: this.translate.instant('sample-aggregate-table-data-service.assessment-label'),
               assessmentGradeCode: assessmentGradeCode,
               subjectCode: undefined,
               schoolYear: schoolYear,
@@ -107,7 +107,7 @@ export class AggregateReportTableDataService {
   private createSampleOrganization(id: number): School {
     const school = new DefaultSchool();
     school.id = id;
-    school.name = this.translate.instant('sample-aggregate-table-data-service.organization-name-format', { id: id });
+    school.name = this.translate.instant('sample-aggregate-table-data-service.school-name', { id: id });
     school.districtId = id;
     return school;
   }

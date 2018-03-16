@@ -1171,7 +1171,8 @@
     "create-single-prepopulated-report": "Create {{name}}'s {{schoolYear}} {{subject}} {{assessmentType}} Report"
   },
   "sample-aggregate-table-data-service": {
-    "organization-name-format": "School / District {{id}}"
+    "assessment-label": "Assessment 1",
+    "school-name": "School {{id}}"
   },
   "school-grade": {
     "grade": "Grade",

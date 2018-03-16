@@ -160,8 +160,6 @@ export class AggregateReportFormComponent {
 
     this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
 
-    console.log('init', this.settings.columnOrder)
-
     this.options = optionMapper.map(this.aggregateReportOptions);
 
     this.organizationTypeaheadOptions = Observable.create(observer => {
@@ -322,13 +320,14 @@ export class AggregateReportFormComponent {
 
   onAssessmentTypeChange(type: string): void {
 
-    // RESETS ORDER
-    this.settings.columnOrder = DefaultColumnOrder.filter(columnId => type !== 'iab' && columnId !== 'assessmentLabel');
+    // This approach resets any column order on assessment type change
+    this.settings.columnOrder = type === 'iab'
+      ? DefaultColumnOrder
+      : DefaultColumnOrder.filter(columnId => columnId !== 'assessmentLabel');
+
     this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
 
-    // do i need this? it was there already
     this.markOrganizationsControlTouched();
-
     this.onSettingsChange();
   }
 
@@ -442,6 +441,7 @@ export class AggregateReportFormComponent {
       options: this.aggregateReportOptions,
       rows: this.tableDataService.createSampleData(this.currentAssessmentDefinition, this.settings)
     };
+
   }
 
   /**
