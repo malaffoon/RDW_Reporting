@@ -99,8 +99,12 @@ export class AggregateReportTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.columns = [
+      new Column({
+        id: 'assessmentLabel',
+        field: 'assessmentLabel',
+        visible: this.table.assessmentDefinition.typeCode === 'iab'
+      }),
       new Column({ id: "organization", field: "organization.name" }),
-      ...this.getAssessmentLabelColumns(),
       new Column({ id: "assessmentGrade", field: "assessmentGradeCode" }),
       new Column({ id: "schoolYear" }),
       new Column({ id: "dimension", field: "dimension.id" }),
@@ -152,8 +156,8 @@ export class AggregateReportTableComponent implements OnInit {
         .on((item: AggregateReportItem) => item.assessmentGradeCode);
 
       this._districtNamesById = this.getDistrictNamesById(value.rows);
-      this._orderingByColumnField[ 'organization.name' ] = this.createOrganizationOrdering();
       this._orderingByColumnField[ 'assessmentLabel' ] = AssessmentLabelOrdering;
+      this._orderingByColumnField[ 'organization.name' ] = this.createOrganizationOrdering();
       this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
       this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
       this._orderingByColumnField[ 'dimension.id' ] = this.createDimensionOrdering(options);
@@ -412,17 +416,6 @@ export class AggregateReportTableComponent implements OnInit {
       }
     });
     return districtNamesById;
-  }
-
-  private getAssessmentLabelColumns(): Column[] {
-    return [
-      new Column({
-        id: "assessmentLabel",
-        visible: this.table.assessmentDefinition.typeCode === 'iab',
-        field: 'assessmentLabel',
-        headerKey: 'assessment-label'
-      })
-    ]
   }
 
   private getPerformanceLevelColumns(): Column[] {
