@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
-import { AggregateReportTable, SupportedRowCount } from "./aggregate-report-table.component";
+import { AggregateReportTable, DefaultColumnOrder, SupportedRowCount } from "./aggregate-report-table.component";
 import { AggregateReportOptions } from "../aggregate-report-options";
 import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
@@ -18,7 +18,6 @@ import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper
 import { SpinnerModal } from "../../shared/loading/spinner.modal";
 import { OrderableItem } from "../../shared/order-selector/order-selector.component";
 import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
-import { DefaultColumnOrder } from "../aggregate-report-options.mapper";
 import { AggregateReportRequestSummary } from "../aggregate-report-summary.component";
 import { interval } from 'rxjs/observable/interval';
 import { finalize, switchMap } from 'rxjs/operators';
@@ -223,7 +222,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       const subjectCode = row.assessment.subjectCode;
       const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
       const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.reportQuery.columnOrder)
-        ? DefaultColumnOrder
+        ? DefaultColumnOrder.filter(columnId => this.assessmentDefinition.typeCode !== 'iab' && columnId !== 'assessmentLabel')
         : this.report.request.reportQuery.columnOrder;
       if (!tableWrapper) {
         tableWrappers.push({

@@ -64,6 +64,11 @@
             {{rowData.organization.name}}
           </div>
 
+          <div *ngSwitchCase="'assessmentLabel'"
+               class="text-right">
+            {{rowData.assessmentLabel}}
+          </div>
+
           <div *ngSwitchCase="'assessmentGrade'"
                class="text-right">
             {{'common.assessment-grade.' + rowData.assessmentGradeCode | translate}}

@@ -160,6 +160,8 @@ export class AggregateReportFormComponent {
 
     this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
 
+    console.log('init', this.settings.columnOrder)
+
     this.options = optionMapper.map(this.aggregateReportOptions);
 
     this.organizationTypeaheadOptions = Observable.create(observer => {

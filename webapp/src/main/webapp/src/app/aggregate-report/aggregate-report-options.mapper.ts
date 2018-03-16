@@ -136,7 +136,7 @@ export class AggregateReportOptionsMapper {
       economicDisadvantages: options.economicDisadvantages,
       performanceLevelDisplayType: PerformanceLevelDisplayTypes.Separate,
       valueDisplayType: ValueDisplayTypes.Percent,
-      columnOrder: DefaultColumnOrder,
+      columnOrder: DefaultColumnOrder.filter(columnId => options.assessmentTypes[0] !== 'iab' && columnId !== 'assessmentLabel'),
       dimensionTypes: [],
       includeStateResults: true,
       includeAllDistricts: false,

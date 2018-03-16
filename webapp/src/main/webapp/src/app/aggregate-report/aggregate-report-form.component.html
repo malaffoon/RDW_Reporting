@@ -122,7 +122,8 @@
                                [(ngModel)]="includeStateResults"
                                [ngModelOptions]="{standalone: true}"
                                (ngModelChange)="onIncludeStateResultsChange()">
-                        <span class="ml-xs">{{'aggregate-report-form.section.organization.include.state-results' | translate}}</span>
+                        <span class="ml-xs"
+                              [ngClass]="{'text-muted': summativeFieldsDisabled}">{{'aggregate-report-form.section.organization.include.state-results' | translate}}</span>
                       </label>
                     </div>
                     <div class="col-sm-6" *ngIf="options.statewideReporter">

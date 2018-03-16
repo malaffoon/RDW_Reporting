@@ -90,6 +90,7 @@ export class AggregateReportTableComponent implements OnInit {
   ngOnInit(): void {
     this.columns = [
       new Column({id: "organization", field: "organization.name"}),
+      ...this.getAssessmentLabelColumns(),
       new Column({id: "assessmentGrade", field: "assessmentGradeCode"}),
       new Column({id: "schoolYear"}),
       new Column({id: "dimension", field: "dimension.id"}),
@@ -397,6 +398,24 @@ export class AggregateReportTableComponent implements OnInit {
       }
     });
     return districtNamesById;
+  }
+
+  private getAssessmentLabelColumns(): Column[] {
+    if (this.table.assessmentDefinition.typeCode !== 'iab') {
+      return [];
+    }
+    return [
+      new Column({
+        id: "assessmentLabel",
+        // displayType: displayType,
+        // level: level,
+        // visible: this.performanceLevelDisplayType === displayType,
+        // index: index,
+        field: 'assessmentLabel',
+        headerKey: 'assessment-label',
+        // headerColor: this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(this.table.assessmentDefinition.typeCode, level)
+      })
+    ]
   }
 
   private getPerformanceLevelColumns(): Column[] {
