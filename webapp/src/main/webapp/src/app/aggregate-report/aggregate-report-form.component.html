@@ -616,7 +616,8 @@
                                        analyticsCategory="AggregateQueryBuilder"
                                        analyticsEvent="Change"></sb-radio-button-group>
               </span>
-              <span class="pull-right flex-child ml-xs">
+              <span class="pull-right flex-child ml-xs"
+                    *ngIf="currentAssessmentDefinition.typeCode !== 'iab'">
                 <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
                 <sb-radio-button-group [options]="options.performanceLevelDisplayTypes"
                                        [(ngModel)]="settings.performanceLevelDisplayType"

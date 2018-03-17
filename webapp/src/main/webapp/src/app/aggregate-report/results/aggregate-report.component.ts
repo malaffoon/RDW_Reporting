@@ -223,7 +223,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
       const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.reportQuery.columnOrder)
         ? this.assessmentDefinition.typeCode === 'iab'
-          ? DefaultColumnOrder
+          ? DefaultColumnOrder.concat()
           : DefaultColumnOrder.filter(columnId => columnId !== 'assessmentLabel')
         : this.report.request.reportQuery.columnOrder;
       if (!tableWrapper) {

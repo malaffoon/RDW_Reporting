@@ -320,12 +320,16 @@ export class AggregateReportFormComponent {
 
   onAssessmentTypeChange(type: string): void {
 
-    // This approach resets any column order on assessment type change
-    this.settings.columnOrder = type === 'iab'
-      ? DefaultColumnOrder
-      : DefaultColumnOrder.filter(columnId => columnId !== 'assessmentLabel');
+    // Preserve column order between changing assessment types
+    let order = this.settings.columnOrder.concat();
+    if (type === 'iab') {
+      order.splice(order.indexOf('assessmentGrade') + 1, 0, 'assessmentLabel');
+    } else {
+      order = order.filter(columnId => columnId !== 'assessmentLabel');
+    }
 
-    this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
+    this.settings.columnOrder = order;
+    this.columnItems = this.columnOrderableItemProvider.toOrderableItems(order);
 
     this.markOrganizationsControlTouched();
     this.onSettingsChange();

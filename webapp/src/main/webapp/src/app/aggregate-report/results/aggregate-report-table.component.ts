@@ -17,9 +17,9 @@ import { SortEvent } from "primeng/api";
 export const SupportedRowCount = 10000;
 export const DefaultRowsPerPageOptions = [ 100, 500, 1000 ];
 export const DefaultColumnOrder: string[] = [
-  'assessmentLabel',
   'organization',
   'assessmentGrade',
+  'assessmentLabel',
   'schoolYear',
   'dimension'
 ];
@@ -87,7 +87,7 @@ export class AggregateReportTableComponent implements OnInit {
 
   private _previousSortEvent: any;
   private _table: AggregateReportTable;
-  private _columnOrdering: string[];
+  private _columnOrdering: string[] = DefaultColumnOrder.concat();
   private _districtNamesById: Map<number, string> = new Map();
   private _orderingByColumnField: { [key: string]: Ordering<AggregateReportItem> } = {};
   private _valueDisplayType: string = ValueDisplayTypes.Percent;
@@ -98,23 +98,7 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.columns = [
-      new Column({
-        id: 'assessmentLabel',
-        field: 'assessmentLabel',
-        visible: this.table.assessmentDefinition.typeCode === 'iab'
-      }),
-      new Column({ id: "organization", field: "organization.name" }),
-      new Column({ id: "assessmentGrade", field: "assessmentGradeCode" }),
-      new Column({ id: "schoolYear" }),
-      new Column({ id: "dimension", field: "dimension.id" }),
-      new Column({ id: "studentsTested" }),
-      new Column({ id: "achievementComparison", sortable: false }),
-      new Column({ id: "avgScaleScore" }),
-      ...this.getPerformanceLevelColumns()
-    ];
-    this.updateColumnOrder();
-    this.calculateTreeColumns();
+
   }
 
   get valueDisplayType(): string {
@@ -143,26 +127,12 @@ export class AggregateReportTableComponent implements OnInit {
   @Input()
   set table(value: AggregateReportTable) {
     if (this._table !== value) {
-      const table = {
+      this._table = {
         rows: value.rows ? value.rows.concat() : [],
         assessmentDefinition: value.assessmentDefinition,
         options: value.options
       };
-
-      // TODO outsource this common logic
-      const options = table.options;
-
-      const assessmentGradeOrdering = ordering(ranking(options.assessmentGrades))
-        .on((item: AggregateReportItem) => item.assessmentGradeCode);
-
-      this._districtNamesById = this.getDistrictNamesById(value.rows);
-      this._orderingByColumnField[ 'assessmentLabel' ] = AssessmentLabelOrdering;
-      this._orderingByColumnField[ 'organization.name' ] = this.createOrganizationOrdering();
-      this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
-      this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
-      this._orderingByColumnField[ 'dimension.id' ] = this.createDimensionOrdering(options);
-      this._table = table;
-      this.updateAssessmentLabelColumns();
+      this.buildAndRender(this._table);
     }
   }
 
@@ -184,24 +154,8 @@ export class AggregateReportTableComponent implements OnInit {
     return this._columnOrdering;
   }
 
-  get performanceLevelsByDisplayType(): any {
-    return {
-      Separate: this.table.assessmentDefinition.performanceLevels,
-      Grouped: [
-        this.table.assessmentDefinition.performanceLevelGroupingCutPoint - 1,
-        this.table.assessmentDefinition.performanceLevelGroupingCutPoint
-      ]
-    }
-  }
-
   get rowSortingEnabled(): boolean | string {
     return this.preview ? false : 'custom';
-  }
-
-  getPerformanceLevelColumnHeaderTranslationCode(level: number, index: number): string {
-    return this.performanceLevelDisplayType === 'Separate'
-      ? `common.assessment-type.${this.table.assessmentDefinition.typeCode}.performance-level.${level}.short-name`
-      : `aggregate-report-table.columns.grouped-performance-level-prefix.${index}`
   }
 
   /**
@@ -263,7 +217,7 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   public readField(item: AggregateReportItem, field: string) {
-    return _.get(item, field, "");
+    return _.get(item, field, '');
   }
 
   public toDash(str: string): string {
@@ -296,6 +250,54 @@ export class AggregateReportTableComponent implements OnInit {
     return this.colorService.getColor(0);
   }
 
+  private buildAndRender({ rows, options, assessmentDefinition }: AggregateReportTable): void {
+
+    // configure row sorting
+    const assessmentGradeOrdering = ordering(ranking(options.assessmentGrades))
+      .on((item: AggregateReportItem) => item.assessmentGradeCode);
+
+    this._districtNamesById = this.getDistrictNamesById(rows);
+    this._orderingByColumnField[ 'assessmentLabel' ] = AssessmentLabelOrdering;
+    this._orderingByColumnField[ 'organization.name' ] = this.createOrganizationOrdering();
+    this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
+    this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
+    this._orderingByColumnField[ 'dimension.id' ] = this.createDimensionOrdering(options);
+
+    // create columns
+    const performanceLevelsByDisplayType = {
+      Separate: assessmentDefinition.performanceLevels,
+      Grouped: [
+        assessmentDefinition.performanceLevelGroupingCutPoint - 1,
+        assessmentDefinition.performanceLevelGroupingCutPoint
+      ]
+    };
+
+    const assessmentLabelColumns = assessmentDefinition.typeCode === 'iab'
+      ? [new Column({ id: 'assessmentLabel', field: 'assessmentLabel' })]
+      : [];
+
+    //, visible: assessmentDefinition.typeCode === 'iab'
+
+    this.columns = [
+      new Column({ id: "organization", field: "organization.name" }),
+      new Column({ id: "assessmentGrade", field: "assessmentGradeCode" }),
+      ...assessmentLabelColumns,
+      new Column({ id: "schoolYear" }),
+      new Column({ id: "dimension", field: "dimension.id" }),
+      new Column({ id: "studentsTested" }),
+      new Column({ id: "achievementComparison", sortable: false }),
+      new Column({ id: "avgScaleScore" }),
+      ...this.createPerformanceLevelColumns(performanceLevelsByDisplayType, assessmentDefinition)
+    ];
+
+    this.columnOrdering = assessmentDefinition.typeCode === 'iab'
+      ? this.columnOrdering // TODO do i need to add assessmentLabel here?
+      : this.columnOrdering.filter(columnId => columnId !== 'assessmentLabel');
+
+    this.updateColumnOrder();
+    this.calculateTreeColumns();
+  }
+
   private renderWithPreviousRowSorting(): void {
     if (!this._previousSortEvent) {
       //re-apply default sorting
@@ -318,6 +320,7 @@ export class AggregateReportTableComponent implements OnInit {
     // Assumes the ordered columns always start from the first column and extend to some terminal column
     const comparator = ordering(ranking(this.columnOrdering)).on((column: Column) => column.id).compare;
     const orderedColumns: Column[] = this.columns.slice(0, this.columnOrdering.length).sort(comparator);
+
     this.columns.splice(0, this.columnOrdering.length, ...orderedColumns);
     this.renderWithPreviousRowSorting();
   }
@@ -418,21 +421,20 @@ export class AggregateReportTableComponent implements OnInit {
     return districtNamesById;
   }
 
-  private getPerformanceLevelColumns(): Column[] {
-    // TODO fix IAB columns - this assumes ICA/Summative i think
+  private createPerformanceLevelColumns(performanceLevelsByDisplayType: any, assessmentDefinition: AssessmentDefinition): Column[] {
     const performanceColumns: Column[] = [];
-    Object.keys(this.performanceLevelsByDisplayType)
-      .forEach((displayType) => {
-        this.performanceLevelsByDisplayType[ displayType ].forEach((level, index) => {
+    Object.keys(performanceLevelsByDisplayType)
+      .forEach(displayType => {
+        performanceLevelsByDisplayType[ displayType ].forEach((level, index) => {
           performanceColumns.push(new Column({
-            id: "performanceLevel",
+            id: 'performanceLevel',
             displayType: displayType,
             level: level,
             visible: this.performanceLevelDisplayType === displayType,
             index: index,
             field: `performanceLevelByDisplayTypes.${displayType}.${this.valueDisplayType}.${index}`,
-            headerKey: this.getPerformanceLevelColumnHeaderTranslationCode(level, index),
-            headerColor: this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(this.table.assessmentDefinition.typeCode, level)
+            headerKey: this.getPerformanceLevelColumnHeaderTranslationCode(displayType, level, index),
+            headerColor: this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(assessmentDefinition.typeCode, level)
           }));
         });
       });
@@ -440,22 +442,28 @@ export class AggregateReportTableComponent implements OnInit {
     return performanceColumns;
   }
 
-  private updateAssessmentLabelColumns() {
-    (this.columns || [])
-      .filter(column => column.id === 'assessmentLabel')
-      .forEach((column) => {
-        column.visible = this.table.assessmentDefinition.typeCode === 'iab';
-      });
-  }
+  // private updateAssessmentLabelColumns() {
+  //   (this.columns || [])
+  //     .filter(column => column.id === 'assessmentLabel')
+  //     .forEach((column) => {
+  //       column.visible = this.table.assessmentDefinition.typeCode === 'iab';
+  //     });
+  // }
 
   private updatePerformanceLevelColumns() {
     (this.columns || [])
       .filter(column => column.id === 'performanceLevel')
-      .forEach((column) => {
+      .forEach(column => {
         column.visible = column.displayType === this.performanceLevelDisplayType;
         column.field = `performanceLevelByDisplayTypes.${column.displayType}.${this.valueDisplayType}.${column.index}`;
-        column.headerKey = this.getPerformanceLevelColumnHeaderTranslationCode(column.level, column.index);
+        column.headerKey = this.getPerformanceLevelColumnHeaderTranslationCode(column.displayType, column.level, column.index);
       });
+  }
+
+  private getPerformanceLevelColumnHeaderTranslationCode(displayType: string, level: number, index: number) {
+    return displayType === 'Separate'
+      ? `common.assessment-type.${this.table.assessmentDefinition.typeCode}.performance-level.${level}.short-name`
+      : `aggregate-report-table.columns.grouped-performance-level-prefix.${index}`;
   }
 
   private createOrganizationOrdering(): Ordering<AggregateReportItem> {

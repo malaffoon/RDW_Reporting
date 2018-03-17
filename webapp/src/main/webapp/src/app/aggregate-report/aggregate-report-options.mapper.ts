@@ -137,7 +137,7 @@ export class AggregateReportOptionsMapper {
       performanceLevelDisplayType: PerformanceLevelDisplayTypes.Separate,
       valueDisplayType: ValueDisplayTypes.Percent,
       columnOrder: options.assessmentTypes[0] === 'iab'
-        ? DefaultColumnOrder
+        ? DefaultColumnOrder.concat()
         : DefaultColumnOrder.filter(columnId => columnId !== 'assessmentLabel'),
       dimensionTypes: [],
       includeStateResults: true,

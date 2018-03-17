@@ -197,7 +197,7 @@ export class AggregateReportRequestMapper {
             columnOrder: or(
               request.reportQuery.columnOrder,
               query.assessmentTypeCode === 'iab'
-                ? DefaultColumnOrder
+                ? DefaultColumnOrder.concat()
                 : DefaultColumnOrder.filter(columnId => columnId !== 'assessmentLabel')
             )
           };
