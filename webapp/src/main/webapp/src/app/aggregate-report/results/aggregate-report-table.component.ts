@@ -276,8 +276,6 @@ export class AggregateReportTableComponent implements OnInit {
       ? [new Column({ id: 'assessmentLabel', field: 'assessmentLabel' })]
       : [];
 
-    //, visible: assessmentDefinition.typeCode === 'iab'
-
     this.columns = [
       new Column({ id: "organization", field: "organization.name" }),
       new Column({ id: "assessmentGrade", field: "assessmentGradeCode" }),
@@ -441,14 +439,6 @@ export class AggregateReportTableComponent implements OnInit {
 
     return performanceColumns;
   }
-
-  // private updateAssessmentLabelColumns() {
-  //   (this.columns || [])
-  //     .filter(column => column.id === 'assessmentLabel')
-  //     .forEach((column) => {
-  //       column.visible = this.table.assessmentDefinition.typeCode === 'iab';
-  //     });
-  // }
 
   private updatePerformanceLevelColumns() {
     (this.columns || [])
