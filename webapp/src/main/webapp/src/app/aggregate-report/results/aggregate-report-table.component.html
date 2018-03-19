@@ -53,7 +53,7 @@
              [ngClass]="{
               'pt-0': column.id === 'achievementComparison',
               'hidden': treeColumns[i] > columnIdx,
-              'border-top': treeColumns[i] <= columnIdx && treeColumns[i] < columnOrdering.length - 1
+              'border-top': treeColumns[i] <= columnIdx && treeColumns[i] < identityColumns.length - 1
              }">
 
           <div *ngSwitchCase="'organization'">

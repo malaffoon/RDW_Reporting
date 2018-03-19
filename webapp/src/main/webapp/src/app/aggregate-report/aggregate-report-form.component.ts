@@ -11,7 +11,7 @@ import { OrganizationTypeahead } from "../shared/organization/organization-typea
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportService } from "./aggregate-report.service";
 import {
-  AggregateReportTable, DefaultColumnOrder,
+  AggregateReportTable,
   SupportedRowCount
 } from "./results/aggregate-report-table.component";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
@@ -27,6 +27,8 @@ import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../shared/support/support";
 import { debounceTime, finalize, map, mergeMap } from "rxjs/operators";
 import { Observer } from "rxjs/Observer";
+import { ranking } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
 
 const DefaultRenderDebounceMilliseconds = 500;
 
@@ -321,12 +323,12 @@ export class AggregateReportFormComponent {
   onAssessmentTypeChange(type: string): void {
 
     // Preserve column order between changing assessment types
-    let order = this.settings.columnOrder.concat();
-    if (type === 'iab') {
-      order.splice(order.indexOf('assessmentGrade') + 1, 0, 'assessmentLabel');
-    } else {
-      order = order.filter(columnId => columnId !== 'assessmentLabel');
+    const currentOrder = this.settings.columnOrder.concat();
+    if (!currentOrder.includes('assessmentLabel')) {
+      currentOrder.splice(currentOrder.indexOf('assessmentGrade') + 1, 0, 'assessmentLabel');
     }
+    const order = this.currentAssessmentDefinition.aggregateReportIdentityColumns.concat()
+      .sort(ordering(ranking(currentOrder)).compare);
 
     this.settings.columnOrder = order;
     this.columnItems = this.columnOrderableItemProvider.toOrderableItems(order);

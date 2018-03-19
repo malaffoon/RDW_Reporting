@@ -14,7 +14,6 @@ import { ordering } from "@kourge/ordering";
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
-import { DefaultColumnOrder } from './results/aggregate-report-table.component';
 
 const equalSize = (a: any[], b: any[]) => a.length === b.length;
 const idsOf = values => values.map(value => value.id);
@@ -194,12 +193,7 @@ export class AggregateReportRequestMapper {
             schools: schools,
             subjects: sort(query.subjectCodes, options.subjects),
             valueDisplayType: query.valueDisplayType,
-            columnOrder: or(
-              request.reportQuery.columnOrder,
-              query.assessmentTypeCode === 'iab'
-                ? DefaultColumnOrder.concat()
-                : DefaultColumnOrder.filter(columnId => columnId !== 'assessmentLabel')
-            )
+            columnOrder: request.reportQuery.columnOrder
           };
         })
       );

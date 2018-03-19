@@ -27,4 +27,9 @@ export interface AssessmentDefinition {
    */
   readonly performanceLevelGroupingCutPoint: number;
 
+  /**
+   * The identity columns to use in aggregate reports for the given assessment definition
+   */
+  readonly aggregateReportIdentityColumns: string[];
+
 }

@@ -3,7 +3,6 @@ import { Ordering, ordering } from "@kourge/ordering";
 import { AggregateReportItem } from "./aggregate-report-item";
 import { byNumber, byString, Comparator, join, ranking } from "@kourge/ordering/comparator";
 import { ColorService } from "../../shared/color.service";
-import * as _ from "lodash";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { District, OrganizationType, School } from "../../shared/organization/organization";
 import { Utils } from "../../shared/support/support";
@@ -13,10 +12,11 @@ import { ValueDisplayTypes } from "../../shared/display-options/value-display-ty
 import { AggregateReportTableExportService, ExportOptions } from "./aggregate-report-table-export.service";
 import { Table } from "primeng/table";
 import { SortEvent } from "primeng/api";
+import * as _ from 'lodash';
 
 export const SupportedRowCount = 10000;
 export const DefaultRowsPerPageOptions = [ 100, 500, 1000 ];
-export const DefaultColumnOrder: string[] = [
+export const IdentityColumnOptions: string[] = [
   'organization',
   'assessmentGrade',
   'assessmentLabel',
@@ -87,7 +87,7 @@ export class AggregateReportTableComponent implements OnInit {
 
   private _previousSortEvent: any;
   private _table: AggregateReportTable;
-  private _columnOrdering: string[] = DefaultColumnOrder.concat();
+  private _identityColumns: string[] = IdentityColumnOptions.concat();
   private _districtNamesById: Map<number, string> = new Map();
   private _orderingByColumnField: { [key: string]: Ordering<AggregateReportItem> } = {};
   private _valueDisplayType: string = ValueDisplayTypes.Percent;
@@ -145,13 +145,26 @@ export class AggregateReportTableComponent implements OnInit {
    * e.g. ['organization', 'assessmentGrade', 'schoolYear', 'dimension']
    */
   @Input()
-  set columnOrdering(value: string[]) {
-    this._columnOrdering = value ? value.concat() : [];
-    this.updateColumnOrder();
+  set identityColumns(value: string[]) {
+    const previousColumns = this._identityColumns;
+    const newColumns = value ? value.concat() : [];
+
+    this._identityColumns = newColumns;
+
+    // did the columns present change?
+    if (_.isEqual(previousColumns.concat().sort(), newColumns.concat().sort())) {
+      // did the order of the columns present change?
+      if (!_.isEqual(previousColumns, newColumns)) {
+        this.updateColumnOrder();
+      }
+    } else {
+      // rebuild the table with the new identity columns
+      this.buildAndRender(this.table);
+    }
   }
 
-  get columnOrdering(): string[] {
-    return this._columnOrdering;
+  get identityColumns(): string[] {
+    return this._identityColumns;
   }
 
   get rowSortingEnabled(): boolean | string {
@@ -189,7 +202,7 @@ export class AggregateReportTableComponent implements OnInit {
    * @param event {{order: number, field: string}} An optional sort event
    */
   public sort(event?: SortEvent): void {
-    const ordering: Comparator<AggregateReportItem>[] = this.getColumnOrdering();
+    const ordering: Comparator<AggregateReportItem>[] = this.getidentityColumns();
 
     if (!event.field) {
       //We're not sorting on a field.  Just apply the default column ordering
@@ -231,7 +244,7 @@ export class AggregateReportTableComponent implements OnInit {
     const options: ExportOptions = {
       valueDisplayType: this.valueDisplayType,
       performanceLevelDisplayType: this.performanceLevelDisplayType,
-      columnOrdering: this.columnOrdering,
+      columnOrdering: this.identityColumns,
       assessmentDefinition: this.table.assessmentDefinition,
       name: name
     };
@@ -272,27 +285,25 @@ export class AggregateReportTableComponent implements OnInit {
       ]
     };
 
-    const assessmentLabelColumns = assessmentDefinition.typeCode === 'iab'
-      ? [new Column({ id: 'assessmentLabel', field: 'assessmentLabel' })]
-      : [];
-
-    this.columns = [
+    const IdentityColumns: Column[] = [
       new Column({ id: "organization", field: "organization.name" }),
       new Column({ id: "assessmentGrade", field: "assessmentGradeCode" }),
-      ...assessmentLabelColumns,
+      new Column({ id: 'assessmentLabel' }),
       new Column({ id: "schoolYear" }),
       new Column({ id: "dimension", field: "dimension.id" }),
+    ];
+
+    this.columns = [
+      ...this.identityColumns
+        .map(columnId => IdentityColumns.find(column => column.id === columnId)),
       new Column({ id: "studentsTested" }),
       new Column({ id: "achievementComparison", sortable: false }),
       new Column({ id: "avgScaleScore" }),
       ...this.createPerformanceLevelColumns(performanceLevelsByDisplayType, assessmentDefinition)
     ];
 
-    this.columnOrdering = assessmentDefinition.typeCode === 'iab'
-      ? this.columnOrdering // TODO do i need to add assessmentLabel here?
-      : this.columnOrdering.filter(columnId => columnId !== 'assessmentLabel');
+    console.log('columns', this.columns.map(c => c.id))
 
-    this.updateColumnOrder();
     this.calculateTreeColumns();
   }
 
@@ -308,7 +319,7 @@ export class AggregateReportTableComponent implements OnInit {
 
   /**
    * Modify the PrimeNG Table to display tree columns in the order specified by
-   * {@link #columnOrdering}
+   * {@link #identityColumns}
    */
   private updateColumnOrder(): void {
     if (!this.columns) {
@@ -316,10 +327,10 @@ export class AggregateReportTableComponent implements OnInit {
     }
 
     // Assumes the ordered columns always start from the first column and extend to some terminal column
-    const comparator = ordering(ranking(this.columnOrdering)).on((column: Column) => column.id).compare;
-    const orderedColumns: Column[] = this.columns.slice(0, this.columnOrdering.length).sort(comparator);
+    const comparator = ordering(ranking(this.identityColumns)).on((column: Column) => column.id).compare;
+    const orderedColumns: Column[] = this.columns.slice(0, this.identityColumns.length).sort(comparator);
 
-    this.columns.splice(0, this.columnOrdering.length, ...orderedColumns);
+    this.columns.splice(0, this.identityColumns.length, ...orderedColumns);
     this.renderWithPreviousRowSorting();
   }
 
@@ -352,7 +363,7 @@ export class AggregateReportTableComponent implements OnInit {
    *
    * @returns {Comparator<AggregateReportItem>[]} The ordered list of comparators
    */
-  private getColumnOrdering(): Comparator<AggregateReportItem>[] {
+  private getidentityColumns(): Comparator<AggregateReportItem>[] {
     return this.columns
       .map((column: Column) => {
         const ordering = this._orderingByColumnField[ column.field ];
@@ -389,7 +400,7 @@ export class AggregateReportTableComponent implements OnInit {
    */
   private indexOfFirstUniqueColumnValue(previousItem: AggregateReportItem, currentItem: AggregateReportItem): number {
     let index: number;
-    for (index = 0; index < this.columnOrdering.length - 1; index++) {
+    for (index = 0; index < this.identityColumns.length - 1; index++) {
       const column: Column = this.columns[ index ];
       if (column.id === "organization") {
         const previousOrg = previousItem.organization;
