@@ -46,6 +46,7 @@ describe('AggregateReportOptionsMapper', () => {
         interim: true,
         performanceLevels: [],
         performanceLevelCount: 0,
+        performanceLevelDisplayTypes: ['displayTypeA'],
         performanceLevelGroupingCutPoint: 0,
         aggregateReportIdentityColumns: ['columnA']
       }]])
@@ -71,7 +72,7 @@ describe('AggregateReportOptionsMapper', () => {
     };
     fixture.toDefaultSettings(options).subscribe(settings => {
       expect(settings).toEqual({
-        performanceLevelDisplayType: PerformanceLevelDisplayTypes.Separate,
+        performanceLevelDisplayType: 'displayTypeA',
         interimAdministrationConditions: [options.interimAdministrationConditions[0]],
         summativeAdministrationConditions: [options.summativeAdministrationConditions[0]],
         assessmentGrades: [],
