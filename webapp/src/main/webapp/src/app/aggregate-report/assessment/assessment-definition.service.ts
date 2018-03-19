@@ -3,13 +3,14 @@ import { AssessmentDefinition } from "./assessment-definition";
 import { Observable } from "rxjs/Observable";
 import { of } from 'rxjs/observable/of';
 import { IdentityColumnOptions } from '../results/aggregate-report-table.component';
+import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
 
 const Iab: AssessmentDefinition = {
   typeCode: 'iab',
   interim: true,
   performanceLevels: [1, 2, 3],
   performanceLevelCount: 3,
-  performanceLevelGroupingCutPoint: 3,
+  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
   aggregateReportIdentityColumns: IdentityColumnOptions.concat()
 };
 
@@ -18,6 +19,7 @@ const Ica: AssessmentDefinition = {
   interim: true,
   performanceLevels: [1, 2, 3, 4],
   performanceLevelCount: 4,
+  performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
   performanceLevelGroupingCutPoint: 3,
   aggregateReportIdentityColumns: IdentityColumnOptions
     .filter(option => option !== 'assessmentLabel')
@@ -28,6 +30,7 @@ const Summative: AssessmentDefinition = {
   interim: false,
   performanceLevels: [1, 2, 3, 4],
   performanceLevelCount: 4,
+  performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
   performanceLevelGroupingCutPoint: 3,
   aggregateReportIdentityColumns: IdentityColumnOptions
     .filter(option => option !== 'assessmentLabel')

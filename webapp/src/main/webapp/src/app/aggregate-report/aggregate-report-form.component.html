@@ -617,7 +617,7 @@
                                        analyticsEvent="Change"></sb-radio-button-group>
               </span>
               <span class="pull-right flex-child ml-xs"
-                    *ngIf="currentAssessmentDefinition.typeCode !== 'iab'">
+                    *ngIf="currentAssessmentDefinition.performanceLevelDisplayTypes.length > 1">
                 <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
                 <sb-radio-button-group [options]="options.performanceLevelDisplayTypes"
                                        [(ngModel)]="settings.performanceLevelDisplayType"
@@ -634,7 +634,10 @@
                                     [preview]="true"
                                     [table]="previewTable"
                                     [valueDisplayType]="settings.valueDisplayType"
-                                    [performanceLevelDisplayType]="settings.performanceLevelDisplayType"
+                                    [performanceLevelDisplayType]="
+                                      currentAssessmentDefinition.performanceLevelDisplayTypes.includes(settings.performanceLevelDisplayType)
+                                        ? settings.performanceLevelDisplayType
+                                        : currentAssessmentDefinition.performanceLevelDisplayTypes[0]"
                                     [identityColumns]="settings.columnOrder"></aggregate-report-table>
           </div>
         </div>

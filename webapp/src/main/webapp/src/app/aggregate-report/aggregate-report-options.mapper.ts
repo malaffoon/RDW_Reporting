@@ -141,7 +141,7 @@ export class AggregateReportOptionsMapper {
           section504s: options.section504s,
           limitedEnglishProficiencies: options.limitedEnglishProficiencies,
           economicDisadvantages: options.economicDisadvantages,
-          performanceLevelDisplayType: PerformanceLevelDisplayTypes.Separate,
+          performanceLevelDisplayType: assessmentDefinition.performanceLevelDisplayTypes[ 0 ],
           valueDisplayType: ValueDisplayTypes.Percent,
           columnOrder: assessmentDefinition.aggregateReportIdentityColumns,
           dimensionTypes: [],

@@ -26,6 +26,7 @@ describe('AggregateReportTableExportService', () => {
         interim: true,
         performanceLevels: [1, 2, 3, 4],
         performanceLevelCount: 4,
+        performanceLevelDisplayTypes: [],
         performanceLevelGroupingCutPoint: 3,
         aggregateReportIdentityColumns: ['columnA']
       },

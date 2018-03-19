@@ -94,8 +94,8 @@
             <performance-level-distribution-chart [percentages]="rowData.performanceLevelByDisplayTypes.Separate.Percent"
                                                   [cutPoint]="table.assessmentDefinition.performanceLevelGroupingCutPoint"
                                                   [assessmentTypeCode]="table.assessmentDefinition.typeCode"
-                                                  [displayType]="table.assessmentDefinition.typeCode !== 'iab' ? performanceLevelDisplayType : 'Separate'"
-                                                  [center]="table.assessmentDefinition.typeCode !== 'iab'"></performance-level-distribution-chart>
+                                                  [displayType]="performanceLevelDisplayType"
+                                                  [center]="table.assessmentDefinition.performanceLevelGroupingCutPoint != null"></performance-level-distribution-chart>
           </div>
 
           <div *ngSwitchCase="'avgScaleScore'"

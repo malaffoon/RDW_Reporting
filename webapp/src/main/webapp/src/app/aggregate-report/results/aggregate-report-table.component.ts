@@ -302,8 +302,6 @@ export class AggregateReportTableComponent implements OnInit {
       ...this.createPerformanceLevelColumns(performanceLevelsByDisplayType, assessmentDefinition)
     ];
 
-    console.log('columns', this.columns.map(c => c.id))
-
     this.calculateTreeColumns();
   }
 
