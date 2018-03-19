@@ -320,7 +320,7 @@ export class AggregateReportFormComponent {
     this.showAdvancedFilters = !this.showAdvancedFilters;
   }
 
-  onAssessmentTypeChange(type: string): void {
+  onAssessmentTypeChange(): void {
 
     // Preserve column order between changing assessment types
     const currentOrder = this.settings.columnOrder.concat();
