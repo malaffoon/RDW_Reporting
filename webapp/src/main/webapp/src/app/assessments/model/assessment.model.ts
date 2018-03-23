@@ -5,11 +5,13 @@ import { Utils } from "../../shared/support/support";
 export class Assessment {
   id: number;
   label: string;
+  /** @deprecated TODO this does not belong here but in a UI wrapper */
   resourceUrl: string;
   grade: string;
-  type: AssessmentType;
+  /** @deprecated */ type: AssessmentType;
+  /** @deprecated TODO this does not belong here but in a UI wrapper */
   selected: boolean;
-  subject: string;
+  /** @deprecated */ subject: string;
   claimCodes: string[];
   cutPoints: number[];
 
@@ -17,6 +19,11 @@ export class Assessment {
     return Utils.toAssessmentTypeCode(this.type);
   }
 
+  get subjectCode(): string {
+    return Utils.toSubjectCode(AssessmentSubjectType[ this.subject as string ]);
+  }
+
+  /** @deprecated */
   get assessmentSubjectType(): AssessmentSubjectType {
     return AssessmentSubjectType[this.subject];
   }

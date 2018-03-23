@@ -9,8 +9,8 @@
                 [(ngModel)]="filterState.schoolYear"
                 (change)="onFilterChange('Year')"
                 class="form-control">
-          <option selected value="0">{{ 'common.buttons.all' | translate }}</option>
-          <option *ngFor="let year of filterState.years" [ngValue]="year">{{year | schoolYear}}</option>
+          <option selected [ngValue]="undefined">{{ 'common.buttons.all' | translate }}</option>
+          <option *ngFor="let year of filterState.schoolYears" [ngValue]="year">{{year | schoolYear}}</option>
         </select>
       </div>
 
@@ -22,8 +22,8 @@
                 class="form-control"
                 [(ngModel)]="filterState.subject"
                 (change)="onFilterChange('Subject')">
-          <option selected value="">{{ 'common.buttons.all' | translate }}</option>
-          <option *ngFor="let subject of filterState.subjects" [ngValue]="subject">{{subject}}</option>
+          <option selected [ngValue]="undefined">{{'common.buttons.all' | translate}}</option>
+          <option *ngFor="let subject of filterState.subjects" [ngValue]="subject">{{'common.subject.' + subject + '.short-name' | translate}}</option>
         </select>
       </div>
 
@@ -50,13 +50,13 @@
   <!-- Selected Filters -->
   <div id="results-adv-filters" [hidden]="!showAdvancedFilters" class="well gray-lightest">
     <adv-filters-toggle [displayOptions]="filterDisplayOptions"
-                        [filterBy]="filterState.filterBy"
+                        [filterBy]="advancedFilters"
                         (removed)="removeFilter($event)"></adv-filters-toggle>
   </div>
 
   <!-- Advanced Filters -->
   <div id="group-results-adv-filter-options" [hidden]="!showAdvancedFilters || !filterDisplayOptions.expanded" class="well gray-lighter">
-    <adv-filters [filterBy]="filterState.filterBy"
+    <adv-filters [filterBy]="advancedFilters"
                  [filterOptions]="filterOptions"
                  [showStudentFilter]="false"></adv-filters>
   </div>

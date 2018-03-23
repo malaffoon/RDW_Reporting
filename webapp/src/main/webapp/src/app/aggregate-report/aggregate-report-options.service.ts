@@ -2,18 +2,15 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { AggregateReportOptions } from "./aggregate-report-options";
 import { CachingDataService } from "../shared/data/caching-data.service";
-import { ordering } from "@kourge/ordering";
-import { ranking } from "@kourge/ordering/comparator";
 import { OrganizationMapper } from "../shared/organization/organization.mapper";
 import { map } from 'rxjs/operators';
 import { AggregateServiceRoute } from '../shared/service-route';
+import { AssessmentTypeOrdering, BooleanOrdering, CompletenessOrdering } from '../shared/ordering/orderings';
 
 const ServiceRoute = AggregateServiceRoute;
-
-// Used to hotfix natural order of completeness and strict booleans not being in "affirmative-first" order
-const assessmentTypeComparator = ordering(ranking([ 'sum', 'ica', 'iab' ])).compare;
-const booleanComparator = ordering(ranking([ 'yes', 'no', 'undefined' ])).compare;
-const completenessComparator = ordering(ranking([ 'Complete', 'Partial' ])).compare;
+const assessmentTypeComparator = AssessmentTypeOrdering.compare;
+const booleanComparator = BooleanOrdering.compare;
+const completenessComparator = CompletenessOrdering.compare;
 
 /**
  * Service responsible for gathering aggregate report options from the server

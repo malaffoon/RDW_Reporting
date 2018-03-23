@@ -9,7 +9,7 @@
 <!-- Assessments Grouped by Type and Subject -->
 <ng-template #hasExamHistory>
 
-  <page-heading *ngIf="examHistory">
+  <page-heading>
     <ng-template #heading>
       <h2>{{'common.person-name' | translate:examHistory.student}}</h2> <div class="student-ssid-label">{{examHistory.student.ssid}}</div>
     </ng-template>
@@ -39,7 +39,8 @@
   <!-- Results Filter -->
   <student-results-filter [filterState]="filterState"
                           [filterOptions]="filterOptions"
-                          (filterChange)="onFilterChange()"></student-results-filter>
+                          (filterChange)="onFilterChange()"
+                          [advancedFilters]="advancedFilters"></student-results-filter>
 
   <page-heading>
     <ng-template #heading>
@@ -47,44 +48,45 @@
     </ng-template>
   </page-heading>
 
+  <ng-container *ngFor="let section of sections">
+    <div class="well wide-content-container"
+         [hidden]="!section.filteredExams.length">
+      <span class="h3 label-group"
+            [ngClass]="section.assessmentTypeColor">
+        <span class="label">{{'common.assessment-type.' + section.assessmentTypeCode + '.short-name' | translate}}</span><span
+          class="label">{{'common.subject.' + section.subjectCode + '.short-name' | translate}}</span>
+      </span>
+      <button class="btn btn-default pull-right"
+              (click)="section.collapsed = !section.collapsed"
+              angulartics2On="click"
+              angularticsEvent="ToggleCollapseResults"
+              angularticsCategory="StudentHistory">
+        {{'common.action.' + (section.collapsed ? 'expand' : 'collapse') | translate}}
+        <span class="sr-only">{{ 'common.action.collapse' | translate }}</span>
+        <i class="fa fa-bold {{ section.collapsed ? 'fa-caret-square-o-down' : 'fa-caret-square-o-up' }}"></i>
+      </button>
 
-  <ng-container *ngFor="let assessmentType of assessmentTypes">
-    <ng-container *ngFor="let subject of getSubjectsForType(assessmentType)">
-      <div class="well wide-content-container">
-        <span class="h3 label-group"
-              [ngClass]="getAssessmentTypeColor(assessmentType)">
-          <span class="label">{{'common.assessment-type.' + assessmentType + '.short-name' | translate}}</span><span class="label">{{'common.subject.' + subject + '.short-name' | translate}}</span>
-        </span>
-        <button class="btn btn-default pull-right"
-                (click)="toggleCollapsed(assessmentType, subject)"
-                angulartics2On="click"
-                angularticsEvent="ToggleCollapseResults"
-                angularticsCategory="StudentHistory">
-          {{'common.action.' + (isCollapsed(assessmentType, subject) ? 'expand' : 'collapse') | translate}}
-          <span class="sr-only">{{ 'common.action.collapse' | translate }}</span>
-          <i class="fa fa-bold {{ isCollapsed(assessmentType, subject) ? 'fa-caret-square-o-down' : 'fa-caret-square-o-up' }}"></i>
-        </button>
-
-        <div class="mt-md"
-             [hidden]="isCollapsed(assessmentType, subject)">
-          <student-history-table [assessmentType]="assessmentType"
-                                 [student]="examHistory.student"
-                                 [minimumItemDataYear]="minimumItemDataYear"
-                                 [exams]="examsByTypeAndSubject.get(assessmentType).get(subject)">
-          </student-history-table>
-        </div>
+      <div class="mt-md"
+           [hidden]="section.collapsed">
+        <student-history-table [assessmentType]="section.assessmentTypeCode"
+                               [student]="examHistory.student"
+                               [minimumItemDataYear]="minimumItemDataYear"
+                               [exams]="section.filteredExams">
+        </student-history-table>
       </div>
-    </ng-container>
+    </div>
   </ng-container>
 
   <div *ngIf="!hasResults">
-    {{'student-results.empty-filtered-results-message' | translate}}
+    <div class="alert alert-info">
+      {{'student-results.empty-filtered-results-message' | translate}}
+    </div>
   </div>
 
   <span student-report-download #reportDownloader
         [title]="'student-results.create-report' | translate:examHistory.student"
         [student]="examHistory.student"
-        [schoolYears]="filterState.years"
+        [schoolYears]="filterState.schoolYears"
         (onShow)="initializeDownloader(reportDownloader)"></span>
 
 </ng-template>
