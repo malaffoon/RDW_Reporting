@@ -7,6 +7,7 @@ import { User } from "./user/model/user.model";
 import { LanguageStore } from "./shared/i18n/language.store";
 import { Utils } from "./shared/support/support";
 import { SpinnerModal } from "./shared/loading/spinner.modal";
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
 @Component({
   selector: 'app-component',
@@ -19,6 +20,7 @@ export class AppComponent {
 
   private _lastPoppedUrl: string;
   private _user: User;
+  private _doNotDeleteThisAnalytics: Angulartics2GoogleAnalytics;
 
   get user() {
     return this._user;
@@ -30,7 +32,15 @@ export class AppComponent {
   constructor(public languageStore: LanguageStore,
               private userService: UserService,
               private router: Router,
-              private location: Location) {
+              private location: Location,
+              angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
+
+    /*
+      Even though the angulartics2GoogleAnalytics variable is not explicitly used,
+      without it analytics data is not sent to the service.  This private variable prevents
+      unintended removal by autoformatting
+    */
+    this._doNotDeleteThisAnalytics = angulartics2GoogleAnalytics;
   }
 
   ngOnInit() {

@@ -20,7 +20,6 @@ export class ExamFilterService {
     new ExamFilter('migrantStatus', this.root + 'student.migrant-status', 'enum.polar', this.filterByMigrantStatus),
     new ExamFilter('plan504', this.root + 'student.504-plan', 'enum.polar', this.filterByplan504),
     new ExamFilter('iep', this.root + 'student.iep', 'enum.polar', this.filterByIep),
-    new ExamFilter('economicDisadvantage', this.root + 'student.economic-disadvantage', 'enum.polar', this.filterByEconomicDisadvantage),
     new ExamFilter('limitedEnglishProficiency', this.root + 'student.limited-english-proficiency', 'enum.polar', this.filterByLimitedEnglishProficiency),
     new ExamFilter('ethnicities', this.root + 'student.ethnicity', 'enum.ethnicity', this.filterByEthnicity)
   ];
@@ -149,10 +148,6 @@ export class ExamFilterService {
 
   private filterByIep(exam: Exam, filterValue: any): boolean {
     return exam.iep === Utils.polarEnumToBoolean(filterValue);
-  }
-
-  private filterByEconomicDisadvantage(exam: Exam, filterValue: any): boolean {
-    return exam.economicDisadvantage === Utils.polarEnumToBoolean(filterValue);
   }
 
   private filterByLimitedEnglishProficiency(exam: Exam, filterValue: any): boolean {
