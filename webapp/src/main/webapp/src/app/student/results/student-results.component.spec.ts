@@ -90,39 +90,43 @@ describe('StudentResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should retrieve subjects by assessment type', () => {
-    expect(component.getSubjectsForType('ica'))
-      .toEqual([ 'ELA', 'MATH' ]);
-    expect(component.getSubjectsForType('iab'))
-      .toEqual([ 'MATH' ]);
-    expect(component.getSubjectsForType('sum'))
-      .toEqual([ 'ELA' ]);
-  });
-
   it('should filter by year on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
     // Filter to the single 2017 exam
-    let snapshot = route.snapshot;
+    const snapshot = route.snapshot;
     snapshot.params[ 'schoolYear' ] = '2017';
 
     component.ngOnInit();
 
-    let assessmentTypes = component.assessmentTypes;
-    expect(assessmentTypes.length).toBe(1);
-    let subjects = component.getSubjectsForType(assessmentTypes[ 0 ]);
-    expect(subjects.length).toBe(1);
-    expect(component.examsByTypeAndSubject.get(assessmentTypes[ 0 ]).get(subjects[ 0 ]).length).toBe(1);
+    const filteredExams = component.sections.reduce((exams, section) => {
+      exams.push(...section.filteredExams);
+      return exams;
+    }, []);
+
+    const totalAssessmentTypes = filteredExams.reduce(
+      (collection, exam) => collection.add(exam.assessment.typeCode), new Set()).size;
+
+    const totalSubjects = filteredExams.reduce(
+      (collection, exam) => collection.add(exam.assessment.subjectCode), new Set()).size;
+
+    expect(totalAssessmentTypes).toBe(1);
+    expect(totalSubjects).toBe(1);
+
   }));
 
   it('should filter by subject on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
-    let snapshot = route.snapshot;
+    const snapshot = route.snapshot;
     snapshot.params[ 'subject' ] = 'MATH';
 
     component.ngOnInit();
 
-    let assessmentTypes = component.assessmentTypes;
-    expect(assessmentTypes.length).toBe(2);
-    expect(component.getSubjectsForType(assessmentTypes[ 0 ])).toEqual([ 'MATH' ]);
-    expect(component.getSubjectsForType(assessmentTypes[ 1 ])).toEqual([ 'MATH' ]);
+    const filteredExams = component.sections.reduce((exams, section) => {
+      exams.push(...section.filteredExams);
+      return exams;
+    }, []);
+
+    filteredExams.forEach(exam => {
+      expect(exam.assessment.subjectCode).toBe('MATH');
+    });
   }));
 
 });

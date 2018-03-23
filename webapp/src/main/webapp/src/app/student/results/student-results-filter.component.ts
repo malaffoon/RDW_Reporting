@@ -1,16 +1,17 @@
-import { OnInit, Component, Input, EventEmitter, Output } from "@angular/core";
+import { Component, Input, EventEmitter, Output } from "@angular/core";
 import { StudentResultsFilterState } from "./model/student-results-filter-state.model";
 import { Angulartics2 } from "angulartics2";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
+import { FilterBy } from '../../assessments/model/filter-by.model';
 
 @Component({
   selector: 'student-results-filter',
   templateUrl: './student-results-filter.component.html'
 })
-export class StudentResultsFilterComponent implements OnInit {
+export class StudentResultsFilterComponent {
 
   @Input()
-  filterState: StudentResultsFilterState = new StudentResultsFilterState();
+  filterState: StudentResultsFilterState = { schoolYears: [], subjects: [] };
 
   @Input()
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
@@ -21,6 +22,9 @@ export class StudentResultsFilterComponent implements OnInit {
   filterDisplayOptions: any = {
     expanded: true
   };
+
+  @Input()
+  advancedFilters: FilterBy = new FilterBy();
 
   private _showAdvancedFilters: boolean;
 
@@ -36,31 +40,27 @@ export class StudentResultsFilterComponent implements OnInit {
     return this._showAdvancedFilters;
   }
 
-  ngOnInit(): void {
-    this.filterState.filterBy.onChanges.subscribe(() => this.onFilterChange(''));
-  }
-
   /**
    * When a filter value is changed, emit a notification event.
    */
-  public onFilterChange(changeSource: string): void {
-    this.filterChange.emit();
+  public onFilterChange(changedProperty: string): void {
+    this.filterChange.emit(changedProperty);
 
     // track change event since wiring select boxes on change as HTML attribute is not possible
     this.angulartics2.eventTrack.next({
-      action: 'Change' + changeSource,
+      action: 'Change' + changedProperty,
       properties: {
         category: 'StudentHistoryAdvancedFilters',
-        label: changeSource === 'Subject' ? this.filterState.subject : this.filterState.schoolYear
+        label: changedProperty
       }
     });
   }
 
   public removeFilter(property: string) {
     if (property == 'offGradeAssessment') {
-      this.filterState.filterBy[ property ] = false;
+      this.advancedFilters[ property ] = false;
     } else {
-      this.filterState.filterBy[ property ] = -1;
+      this.advancedFilters[ property ] = -1;
     }
   }
 

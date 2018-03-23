@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
-import { URLSearchParams } from "@angular/http";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Student } from "./model/student.model";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
@@ -15,9 +14,9 @@ const ServiceRoute = ReportingServiceRoute;
 @Injectable()
 export class StudentExamHistoryService {
 
-  constructor(
-    private dataService: DataService,
-    private assessmentMapper: AssessmentExamMapper) {}
+  constructor(private dataService: DataService,
+              private assessmentMapper: AssessmentExamMapper) {
+  }
 
   /**
    * Retrieve the exam history for a student by id.
@@ -48,20 +47,15 @@ export class StudentExamHistoryService {
    * @returns {Observable<boolean>} True if the student exists
    */
   existsBySsid(ssid: string): Observable<Student> {
-    const params: URLSearchParams = new URLSearchParams();
-    params.set('hasExams', 'true');
-    const trimmedSsid: string = ssid.trim();
-
-    return this.dataService.get(`${ServiceRoute}/students/${trimmedSsid}`, {params: params})
-      .pipe(
-        catchError(ResponseUtils.badResponseToNull),
-        map(serverStudent => {
-          if (serverStudent == null) {
-            return null;
-          }
-          return this.assessmentMapper.mapStudentFromApi(serverStudent);
-        })
-      );
+    return this.dataService.get(`${ServiceRoute}/students/${ssid.trim()}`).pipe(
+      catchError(ResponseUtils.badResponseToNull),
+      map(serverStudent => {
+        if (serverStudent == null) {
+          return null;
+        }
+        return this.assessmentMapper.mapStudentFromApi(serverStudent);
+      })
+    );
   }
 
   private mapExamWrappers(serverExamWrappers: any): StudentHistoryExamWrapper[] {
