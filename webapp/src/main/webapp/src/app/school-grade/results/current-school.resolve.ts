@@ -1,21 +1,18 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { Observable } from "rxjs/Observable";
-import { School } from "../../school-grade/school";
-import { OrganizationService } from '../organization.service';
-import { map } from 'rxjs/operators';
+import { School } from "../../shared/organization/organization";
+import { SchoolService } from "../../shared/school/school.service";
 
 @Injectable()
 export class CurrentSchoolResolve implements Resolve<School> {
 
-  constructor(private organizationService: OrganizationService) {
+  constructor(private schoolService: SchoolService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<School> {
     const { schoolId } = route.params;
-    return this.organizationService.getSchoolsWithDistricts().pipe(
-      map(schools => schools.find(school => school.id == schoolId))
-    );
+    return this.schoolService.getSchool(schoolId);
   }
 
 }
