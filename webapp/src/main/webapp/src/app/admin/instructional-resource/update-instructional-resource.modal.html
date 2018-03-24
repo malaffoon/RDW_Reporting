@@ -47,7 +47,8 @@
                    placeholder="{{'labels.instructional-resource.form.field.resource.placeholder' | translate}}"
                    [(ngModel)]="resource.resource"
                    pattern="https?://.+"
-                   required>
+                   required
+                   autocomplete="off">
             <div *ngIf="resourceControl.invalid && (resourceControl.dirty || resourceControl.touched)">
               <p *ngIf="resourceControl.errors.pattern"
                  class="help-block small red">{{'labels.instructional-resource.form.field.resource.error.pattern' | translate}}</p>
