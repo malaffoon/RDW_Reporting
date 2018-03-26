@@ -31,8 +31,7 @@
                      type="text"
                      maxlength="255"
                      [(ngModel)]="options.name"
-                     required
-                     autocomplete="off">
+                     required>
             </div>
             <div *ngIf="resourceControl.invalid && (resourceControl.dirty || resourceControl.touched)">
               <p *ngIf="resourceControl.errors.required"
