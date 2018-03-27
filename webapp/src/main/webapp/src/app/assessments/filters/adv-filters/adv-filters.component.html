@@ -1,39 +1,39 @@
 <!-- My Groups Advanced Filters -->
 <!-- Instructions -->
-<p>{{ translateRoot + 'instruct' | translate}}</p>
+<p>{{ 'adv-filters.instruct' | translate}}</p>
 
 <div class="flex-children">
 
   <!-- Test Filters -->
   <div id="filter-by-test" class="flex-child">
-    <p class="border-bottom">{{ translateRoot + 'test.label' | translate }}</p>
+    <p class="border-bottom">{{ 'common.filters.test.label' | translate }}</p>
     <div class="block-children">
       <!-- Off-Grade Assessments -->
       <div class="block-children">
         <label for="off-grade-assessment-toggle">
             <span info-button
-                  title="{{ translateRoot + 'test.off-grade-assessment' | translate }}"
-                  content="{{ translateRoot + 'test.off-grade-assessment-info' | translate }}"></span>
+                  title="{{ 'common.filters.test.off-grade-assessment' | translate }}"
+                  content="{{ 'common.filters.test.off-grade-assessment-info' | translate }}"></span>
         </label>
         <sb-radio-button-group name="off-grade-assessment-toggle"
                    [(ngModel)]="filterBy.offGradeAssessment"
                    [options]="[
-                           {value: false, text: 'buttons.visibility.show' | translate, analyticsProperties: {label: 'Off-Grade: Show'}},
-                           {value: true, text: 'buttons.visibility.hide' | translate, analyticsProperties: {label: 'Off-Grade: Hide'}}
+                           {value: false, text: 'common.action.show' | translate, analyticsProperties: {label: 'Off-Grade: Show'}},
+                           {value: true, text: 'common.action.hide' | translate, analyticsProperties: {label: 'Off-Grade: Hide'}}
                          ]"></sb-radio-button-group>
       </div>
       <!-- Transfer Assessments -->
       <div class="block-children" *ngIf="showStudentFilter && showTransferAccess">
         <label for="transfer-assessment-toggle">
             <span info-button
-                  title="{{ translateRoot + 'test.transfer-assessment' | translate }}"
-                  content="{{ translateRoot + 'test.transfer-assessment-info' | translate }}"></span>
+                  title="{{ 'common.filters.test.transfer-assessment' | translate }}"
+                  content="{{ 'common.filters.test.transfer-assessment-info' | translate }}"></span>
         </label>
         <sb-radio-button-group name="transfer-assessment-toggle"
                    [(ngModel)]="filterBy.transferAssessment"
                    [options]="[
-                           {value: false, text: 'buttons.visibility.show' | translate, analyticsProperties: {label: 'Transfer-Assessment: Show'}},
-                           {value: true, text: 'buttons.visibility.hide' | translate, analyticsProperties: {label: 'Transfer-Assessment: Hide'}}
+                           {value: false, text: 'common.action.show' | translate, analyticsProperties: {label: 'Transfer-Assessment: Show'}},
+                           {value: true, text: 'common.action.hide' | translate, analyticsProperties: {label: 'Transfer-Assessment: Hide'}}
                          ]"></sb-radio-button-group>
       </div>
     </div>
@@ -41,28 +41,28 @@
 
   <!-- Status Filters -->
   <div id="filter-by-status" class="flex-child">
-    <p class="border-bottom">{{ translateRoot + 'status.label' | translate }}</p>
+    <p class="border-bottom">{{ 'common.filters.status.label' | translate }}</p>
     <div class="block-children">
       <!-- Manner of Administration -->
       <div class="block-children">
         <label>
           <span info-button
-                title="{{ translateRoot + 'status.administration' | translate }}"
-                content="{{ translateRoot + 'status.administration-info' | translate }}"></span>
+                title="{{ 'common.filters.status.administration' | translate }}"
+                content="{{ 'common.filters.status.administration-info' | translate }}"></span>
         </label>
-        <sb-radio-button-list [model]="filterBy" [values]="['SD','NS']" property="administration" enum="enum.administrative-condition"
-                              label="{{ translateRoot + 'status.label' | translate }}" [disabled]="!filterOptions.hasInterim"
+        <sb-radio-button-list [model]="filterBy" [values]="['SD','NS']" property="administration" enum="common.administration-condition"
+                              label="{{ 'common.filters.status.label' | translate }}" [disabled]="!filterOptions.hasInterim"
                               analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
       </div>
       <!-- Summative Status -->
       <div class="block-children" *ngIf="filterOptions.hasSummative">
         <label>
           <span info-button
-                title="{{ translateRoot + 'status.summative' | translate }}"
-                content="{{ translateRoot + 'status.summative-info' | translate }}"></span>
+                title="{{ 'common.filters.status.summative' | translate }}"
+                content="{{ 'common.filters.status.summative-info' | translate }}"></span>
         </label>
-        <sb-radio-button-list [model]="filterBy" [values]="['Valid','IN']" property="summativeStatus" enum="enum.administrative-condition"
-                              label="{{ translateRoot + 'status.summative' | translate }}"
+        <sb-radio-button-list [model]="filterBy" [values]="['Valid','IN']" property="summativeStatus" enum="common.administration-condition"
+                              label="{{ 'common.filters.status.summative' | translate }}"
                               analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
       </div>
       <!-- Completion -->
@@ -85,7 +85,7 @@
 
   <!-- Student Filters -->
   <div *ngIf="showStudentFilter" id="filter-by-student" class="flex-child grow">
-    <p class="border-bottom">{{ translateRoot + 'student.label' | translate }}</p>
+    <p class="border-bottom">{{ 'common.filters.student.label' | translate }}</p>
     <div class="flex-children">
       <!-- Column 1 -->
       <div class="flex-child col1 no-margin">
@@ -93,59 +93,58 @@
         <div class="block-children">
           <label>
             <span info-button
-                  title="{{ translateRoot + 'student.gender' | translate }}"
-                  content="{{ translateRoot + 'student.gender-info' | translate }}"></span>
+                  title="{{ 'common.filters.student.gender' | translate }}"
+                  content="{{ 'common.filters.student.gender-info' | translate }}"></span>
           </label>
-          <sb-radio-button-list [model]="filterBy" [values]="['Male','Female']" property="gender" enum="enum.gender"
-                                label="{{ translateRoot + 'student.gender' | translate }}"
+          <sb-radio-button-list [model]="filterBy" [values]="['Male','Female']" property="gender" enum="common.gender"
+                                label="{{ 'common.filters.student.gender' | translate }}"
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </div>
         <!-- Migrant Status -->
         <div class="block-children">
           <label>
             <span info-button
-                  title="{{ translateRoot + 'student.migrant-status' | translate }}"
-                  content="{{ translateRoot + 'student.migrant-status-info' | translate }}"></span>
+                  title="{{ 'common.filters.student.migrant-status' | translate }}"
+                  content="{{ 'common.filters.student.migrant-status-info' | translate }}"></span>
           </label>
-          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="migrantStatus" enum="enum.polar"
-                                label="{{ translateRoot + 'student.migrant-status' | translate }}"
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="migrantStatus" enum="common.polar"
+                                label="{{ 'common.filters.student.migrant-status' | translate }}"
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </div>
         <!-- 504 Plan -->
         <div class="block-children">
           <label>
             <span info-button
-                  title="{{ translateRoot + 'student.504-plan' | translate }}"
-                  content="{{ translateRoot + 'student.504-plan-info' | translate }}"></span>
+                  title="{{ 'common.filters.student.504-plan' | translate }}"
+                  content="{{ 'common.filters.student.504-plan-info' | translate }}"></span>
           </label>
-          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="plan504" enum="enum.polar"
-                                label="{{ translateRoot + 'student.504-plan' | translate }}"
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="plan504" enum="common.polar"
+                                label="{{ 'common.filters.student.504-plan' | translate }}"
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </div>
       </div>
       <!-- Column 2 -->
       <div class="flex-child col2 no-margin">
-
         <!-- Limited English Proficiency -->
         <div class="block-children">
           <label>
             <span info-button
-                  title="{{ translateRoot + 'student.limited-english-proficiency' | translate }}"
-                  content="{{ translateRoot + 'student.limited-english-proficiency-info' | translate }}"></span>
+                  title="{{ 'common.filters.student.limited-english-proficiency' | translate }}"
+                  content="{{ 'common.filters.student.limited-english-proficiency-info' | translate }}"></span>
           </label>
-          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="limitedEnglishProficiency" enum="enum.polar"
-                                label="{{ translateRoot + 'student.limited-english-proficiency' | translate }}"
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="limitedEnglishProficiency" enum="common.polar"
+                                label="{{ 'common.filters.student.limited-english-proficiency' | translate }}"
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </div>
         <!-- IEP -->
         <div class="block-children">
           <label>
             <span info-button
-                  title="{{ translateRoot + 'student.iep' | translate }}"
-                  content="{{ translateRoot + 'student.iep-info' | translate }}"></span>
+                  title="{{ 'common.filters.student.iep' | translate }}"
+                  content="{{ 'common.filters.student.iep-info' | translate }}"></span>
           </label>
-          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="iep" enum="enum.polar"
-                                label="{{ translateRoot + 'student.iep' | translate }}"
+          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="iep" enum="common.polar"
+                                label="{{ 'common.filters.student.iep' | translate }}"
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </div>
       </div>
@@ -155,11 +154,11 @@
         <div class="block-children">
           <label>
             <span info-button
-                  title="{{ translateRoot + 'student.ethnicity' | translate }}"
-                  content="{{ translateRoot + 'student.ethnicity-info' | translate }}"></span>
+                  title="{{ 'common.filters.student.ethnicity' | translate }}"
+                  content="{{ 'common.filters.student.ethnicity-info' | translate }}"></span>
           </label>
-          <sb-checkbox-list [model]="filterBy" [values]="filterOptions.ethnicities" property="ethnicities" enum="enum.ethnicity"
-                            label="{{ translateRoot + 'student.ethnicity' | translate }}"
+          <sb-checkbox-list [model]="filterBy" [values]="filterOptions.ethnicities" property="ethnicities" enum="common.ethnicity"
+                            label="{{ 'common.filters.student.ethnicity' | translate }}"
                             analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-checkbox-list>
         </div>
       </div>

@@ -8,8 +8,10 @@ import { GroupQuery } from "./model/group-query.model";
 import { URLSearchParams } from "@angular/http";
 import { Group } from "./model/group.model";
 import { DataService } from "../../shared/data/data.service";
+import { map } from 'rxjs/operators';
+import { AdminServiceRoute } from '../../shared/service-route';
 
-const ServiceRoute = '/admin-service';
+const ServiceRoute = AdminServiceRoute;
 const ALL = 'ALL';
 
 @Injectable()
@@ -21,13 +23,17 @@ export class GroupService {
   getFilterOptions(): Observable<GroupFilterOptions> {
     return this.dataService
       .get(`${ServiceRoute}/groups/filters`)
-      .map(this.mapFilterOptionsFromApi.bind(this));
+      .pipe(
+        map(this.mapFilterOptionsFromApi.bind(this))
+      );
   }
 
   getGroups(query: GroupQuery): Observable<Group[]> {
     return this.dataService
       .get(`${ServiceRoute}/groups`, { search: this.mapQueryToParams(query) })
-      .map(groups => groups.map(this.mapGroupFromApi));
+      .pipe(
+        map(groups => groups.map(this.mapGroupFromApi))
+      );
   }
 
   delete(group: Group): Observable<any> {

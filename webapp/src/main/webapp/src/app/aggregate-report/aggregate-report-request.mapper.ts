@@ -9,9 +9,11 @@ import { Observable } from "rxjs/Observable";
 import { District, OrganizationType, School } from "../shared/organization/organization";
 import { Utils } from "../shared/support/support";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
-import { DefaultColumnOrder } from "./aggregate-report-options.mapper";
 import { ranking } from "@kourge/ordering/comparator";
 import { ordering } from "@kourge/ordering";
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { map } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
 
 const equalSize = (a: any[], b: any[]) => a.length === b.length;
 const idsOf = values => values.map(value => value.id);
@@ -98,7 +100,7 @@ export class AggregateReportRequestMapper {
 
     const name = settings.name
       ? settings.name
-      : this.translate.instant('aggregate-reports.default-report-name');
+      : this.translate.instant('aggregate-report-form.default-report-name');
 
     return {
       name: name,
@@ -119,12 +121,12 @@ export class AggregateReportRequestMapper {
     const schoolIds: number[] = request.reportQuery.schoolIds;
     const schools: Observable<School[]> = !Utils.isNullOrEmpty(schoolIds)
       ? this.organizationService.getOrganizationsByIdAndType(OrganizationType.School, schoolIds)
-      : Observable.of([]);
+      : of([]);
 
     const districtIds: number[] = request.reportQuery.districtIds;
     const districts: Observable<District[]> = !Utils.isNullOrEmpty(districtIds)
       ? this.organizationService.getOrganizationsByIdAndType(OrganizationType.District, districtIds)
-      : Observable.of([]);
+      : of([]);
 
     // Returns the first argument that is not null or undefined
     const or = (a: any, b: any) => Utils.isNullOrEmpty(a) ? b : a;
@@ -132,71 +134,69 @@ export class AggregateReportRequestMapper {
     // Safely sorts the provided values ranked by the provided options
     const sort = (values: any[], options: any[]) => (values || []).sort(ordering(ranking(options)).compare);
 
-    return Observable.forkJoin(schools, districts)
-      .map((results) => {
-        const [ schools, districts ] = results;
-        return <AggregateReportFormSettings>{
-          assessmentType: query.assessmentTypeCode,
-          assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
-          completenesses: or(
-            sort(query.completenessCodes, options.completenesses),
-            options.completenesses
-          ),
-          dimensionTypes: or(
-            sort(query.dimensionTypes, options.dimensionTypes),
-            []
-          ),
-          districts: districts,
-          economicDisadvantages: or(
-            sort(query.economicDisadvantageCodes, options.economicDisadvantages),
-            options.economicDisadvantages
-          ),
-          ethnicities: or(
-            sort(query.ethnicityCodes, options.ethnicities),
-            options.ethnicities
-          ),
-          genders: or(
-            sort(query.genderCodes, options.genders),
-            options.genders
-          ),
-          includeAllDistricts: query.includeAllDistricts,
-          includeAllDistrictsOfSelectedSchools: query.includeAllDistrictsOfSchools,
-          includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
-          includeStateResults: query.includeState,
-          individualEducationPlans: or(
-            sort(query.iepCodes, options.individualEducationPlans),
-            options.individualEducationPlans
-          ),
-          interimAdministrationConditions: !queryInterimAdministrationConditions.length
-            ? options.interimAdministrationConditions
-            : queryInterimAdministrationConditions,
-          limitedEnglishProficiencies: or(
-            sort(query.lepCodes, options.individualEducationPlans),
-            options.individualEducationPlans
-          ),
-          migrantStatuses: or(
-            sort(query.migrantStatusCodes, options.migrantStatuses),
-            options.migrantStatuses
-          ),
-          name: request.name,
-          performanceLevelDisplayType: query.achievementLevelDisplayType,
-          section504s: or(
-            sort(query.section504Codes, options.section504s),
-            options.section504s
-          ),
-          summativeAdministrationConditions: !querySummativeAdministrationConditions.length
-            ? options.summativeAdministrationConditions
-            : querySummativeAdministrationConditions,
-          schoolYears: query.schoolYears.sort((a, b) => b - a),
-          schools: schools,
-          subjects: sort(query.subjectCodes, options.subjects),
-          valueDisplayType: query.valueDisplayType,
-          columnOrder: or(
-            request.reportQuery.columnOrder,
-            DefaultColumnOrder
-          )
-        };
-      });
+    return forkJoin(schools, districts)
+      .pipe(
+        map(([ schools, districts ]) => {
+          return <AggregateReportFormSettings>{
+            assessmentType: query.assessmentTypeCode,
+            assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
+            completenesses: or(
+              sort(query.completenessCodes, options.completenesses),
+              options.completenesses
+            ),
+            dimensionTypes: or(
+              sort(query.dimensionTypes, options.dimensionTypes),
+              []
+            ),
+            districts: districts,
+            economicDisadvantages: or(
+              sort(query.economicDisadvantageCodes, options.economicDisadvantages),
+              options.economicDisadvantages
+            ),
+            ethnicities: or(
+              sort(query.ethnicityCodes, options.ethnicities),
+              options.ethnicities
+            ),
+            genders: or(
+              sort(query.genderCodes, options.genders),
+              options.genders
+            ),
+            includeAllDistricts: query.includeAllDistricts,
+            includeAllDistrictsOfSelectedSchools: query.includeAllDistrictsOfSchools,
+            includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
+            includeStateResults: query.includeState,
+            individualEducationPlans: or(
+              sort(query.iepCodes, options.individualEducationPlans),
+              options.individualEducationPlans
+            ),
+            interimAdministrationConditions: !queryInterimAdministrationConditions.length
+              ? options.interimAdministrationConditions
+              : queryInterimAdministrationConditions,
+            limitedEnglishProficiencies: or(
+              sort(query.lepCodes, options.individualEducationPlans),
+              options.individualEducationPlans
+            ),
+            migrantStatuses: or(
+              sort(query.migrantStatusCodes, options.migrantStatuses),
+              options.migrantStatuses
+            ),
+            name: request.name,
+            performanceLevelDisplayType: query.achievementLevelDisplayType,
+            section504s: or(
+              sort(query.section504Codes, options.section504s),
+              options.section504s
+            ),
+            summativeAdministrationConditions: !querySummativeAdministrationConditions.length
+              ? options.summativeAdministrationConditions
+              : querySummativeAdministrationConditions,
+            schoolYears: query.schoolYears.sort((a, b) => b - a),
+            schools: schools,
+            subjects: sort(query.subjectCodes, options.subjects),
+            valueDisplayType: query.valueDisplayType,
+            columnOrder: request.reportQuery.columnOrder
+          };
+        })
+      );
   }
 
 }

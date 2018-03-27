@@ -4,8 +4,10 @@ import { Observable } from "rxjs/Observable";
 import { AssessmentItem } from "../../assessments/model/assessment-item.model";
 import { ResponseUtils } from "../../shared/response-utils";
 import { DataService } from "../../shared/data/data.service";
+import { catchError, map } from 'rxjs/operators';
+import { ReportingServiceRoute } from '../../shared/service-route';
 
-const ServiceRoute = '/reporting-service';
+const ServiceRoute = ReportingServiceRoute;
 
 /**
  * This service is responsible for providing student response information.
@@ -13,9 +15,10 @@ const ServiceRoute = '/reporting-service';
 @Injectable()
 export class StudentResponsesService {
 
-  constructor(
-    private dataService: DataService,
-    private assessmentMapper: AssessmentExamMapper) {}
+  constructor(private dataService: DataService,
+              private assessmentMapper: AssessmentExamMapper) {
+
+  }
 
   /**
    * Retrieve the exam responses for a given exam.
@@ -26,11 +29,13 @@ export class StudentResponsesService {
    */
   findItemsByStudentAndExam(studentId: number, examId: number): Observable<AssessmentItem[]> {
     return this.dataService.get(`${ServiceRoute}/students/${studentId}/exams/${examId}/examitems`)
-      .catch(ResponseUtils.badResponseToNull)
-      .map((apiExamItems) => {
-        if (!apiExamItems) return null;
+      .pipe(
+        catchError(ResponseUtils.badResponseToNull),
+        map((apiExamItems) => {
+          if (!apiExamItems) return null;
 
-       return this.assessmentMapper.mapAssessmentItemsFromApi(apiExamItems);
-      });
+          return this.assessmentMapper.mapAssessmentItemsFromApi(apiExamItems);
+        })
+      );
   }
 }

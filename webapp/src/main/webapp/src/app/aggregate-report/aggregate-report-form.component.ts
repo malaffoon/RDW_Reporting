@@ -10,7 +10,10 @@ import { Observable } from "rxjs/Observable";
 import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
 import { AggregateReportService } from "./aggregate-report.service";
-import { AggregateReportTable, SupportedRowCount } from "./results/aggregate-report-table.component";
+import {
+  AggregateReportTable,
+  SupportedRowCount
+} from "./results/aggregate-report-table.component";
 import { AggregateReportRequest } from "../report/aggregate-report-request";
 import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
 import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
@@ -20,12 +23,12 @@ import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper"
 import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
 import { OrderableItem } from "../shared/order-selector/order-selector.component";
 import { AggregateReportRequestSummary } from "./aggregate-report-summary.component";
-import "rxjs/add/observable/interval";
-import "rxjs/add/operator/switchMap";
 import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../shared/support/support";
-import { debounceTime } from "rxjs/operators";
+import { debounceTime, finalize, map, mergeMap } from "rxjs/operators";
 import { Observer } from "rxjs/Observer";
+import { ranking } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
 
 const DefaultRenderDebounceMilliseconds = 500;
 
@@ -56,7 +59,7 @@ const OrganizationComparator = (a: Organization, b: Organization) => a.name.loca
  */
 @Component({
   selector: 'aggregate-report-form',
-  templateUrl: './aggregate-report-form.component.html',
+  templateUrl: './aggregate-report-form.component.html'
 })
 export class AggregateReportFormComponent {
 
@@ -152,7 +155,7 @@ export class AggregateReportFormComponent {
 
     this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
 
-    const defaultOrganization = this.aggregateReportOptions.defaultOrganization;
+    const defaultOrganization = this.defaultOrganization;
     if (this.organizations.length == 0 && defaultOrganization) {
       this.addOrganizationToSettings(defaultOrganization);
     }
@@ -163,8 +166,9 @@ export class AggregateReportFormComponent {
 
     this.organizationTypeaheadOptions = Observable.create(observer => {
       observer.next(this.organizationTypeahead.value);
-    }).mergeMap(search => this.organizationService.getOrganizationsMatchingName(search)
-      .map(organizations => organizations.filter(
+    }).pipe(
+      mergeMap((search: string) => this.organizationService.getOrganizationsMatchingName(search)),
+      map((organizations: Organization[]) => organizations.filter(
         organization => this.organizations.findIndex(x => organization.equals(x)) === -1
       ))
     );
@@ -174,17 +178,17 @@ export class AggregateReportFormComponent {
         return this.includeStateResults
         || this.settings.includeAllDistricts
         || control.value.length ? null : {
-          invalid: { messageId: 'aggregate-reports.form.field.organization.error-invalid' }
+          invalid: { messageId: 'aggregate-report-form.field.organization-invalid-error' }
         };
       }),
       assessmentGrades: new FormControl(this.settings.assessmentGrades, notEmpty(
-        { messageId: 'aggregate-reports.form.field.assessment-grades.error-empty' }
+        { messageId: 'aggregate-report-form.field.assessment-grades-empty-error' }
       )),
       schoolYears: new FormControl(this.settings.schoolYears, notEmpty(
-        { messageId: 'aggregate-reports.form.field.school-year.error-empty' }
+        { messageId: 'aggregate-report-form.field.school-year-empty-error' }
       )),
       reportName: new FormControl(this.settings.name, fileName(
-        { messageId: 'aggregate-reports.form.field.report-name.error-file-name' }
+        { messageId: 'aggregate-report-form.field.report-name-file-name-error' }
       ))
     });
 
@@ -195,6 +199,20 @@ export class AggregateReportFormComponent {
 
   ngOnInit(): void {
     this.onSettingsChange();
+  }
+
+  /**
+   * @returns {boolean} True if the default organization exists and it is a school
+   */
+  get hasDefaultSchoolOrganization(): boolean {
+    return this.defaultOrganization && this.defaultOrganization.type === OrganizationType.School;
+  }
+
+  /**
+   * @returns {Organization} The default organization, if one exists
+   */
+  get defaultOrganization(): Organization {
+    return this.aggregateReportOptions.defaultOrganization;
   }
 
   /**
@@ -277,6 +295,7 @@ export class AggregateReportFormComponent {
   onOrganizationTypeaheadSelect(organization: any): void {
     this.organizationTypeahead.value = '';
     this.addOrganization(organization);
+    this.markOrganizationsControlTouched();
   }
 
   /**
@@ -290,14 +309,33 @@ export class AggregateReportFormComponent {
 
   onIncludeStateResultsChange(): void {
     this.markOrganizationsControlTouched();
+    this.onSettingsChange();
   }
 
   onIncludeAllDistrictsChange(): void {
     this.markOrganizationsControlTouched();
+    this.onSettingsChange();
   }
 
   onAdvancedFiltersExpanderButtonClick(): void {
     this.showAdvancedFilters = !this.showAdvancedFilters;
+  }
+
+  onAssessmentTypeChange(): void {
+
+    // Preserve column order between changing assessment types
+    const currentOrder = this.settings.columnOrder.concat();
+    if (!currentOrder.includes('assessmentLabel')) {
+      currentOrder.splice(currentOrder.indexOf('assessmentGrade') + 1, 0, 'assessmentLabel');
+    }
+    const order = this.currentAssessmentDefinition.aggregateReportIdentityColumns.concat()
+      .sort(ordering(ranking(currentOrder)).compare);
+
+    this.settings.columnOrder = order;
+    this.columnItems = this.columnOrderableItemProvider.toOrderableItems(order);
+
+    this.markOrganizationsControlTouched();
+    this.onSettingsChange();
   }
 
   onColumnOrderChange(items: OrderableItem[]): void {
@@ -321,24 +359,27 @@ export class AggregateReportFormComponent {
   onGenerateButtonClick(): void {
     this.validate(this.formGroup, () => {
       this.submissionSubscription = this.reportService.createReport(this.createReportRequest())
-        .finally(() => {
-          this.submissionSubscription.unsubscribe();
-          this.submissionSubscription = undefined;
-        })
+        .pipe(
+          finalize(() => {
+            this.submissionSubscription.unsubscribe();
+            this.submissionSubscription = undefined;
+          })
+        )
         .subscribe(
           resource => {
             this.router.navigate([ resource.id ], { relativeTo: this.route });
           },
           error => {
-            this.notificationService.error({ id: 'labels.reports.messages.submission-failed.html', html: true });
+            this.notificationService.error({ id: 'common.messages.submission-failed', html: true });
           }
         );
     });
   }
 
   private markOrganizationsControlTouched(): void {
+    this.organizationsControl.setValue(this.organizations);
     this.organizationsControl.markAsDirty();
-    this.organizations = this.organizations.concat();
+    this.organizationsControl.updateValueAndValidity();
   }
 
   /**
@@ -350,7 +391,6 @@ export class AggregateReportFormComponent {
     const finder = value => value.equals(organization);
     const index = this.organizations.findIndex(finder);
     if (index === -1) {
-      this.organizationsControl.markAsTouched();
       this.addOrganizationToSettings(organization);
     }
   }
@@ -375,7 +415,6 @@ export class AggregateReportFormComponent {
     const finder = value => value.equals(organization);
     const index = this.organizations.findIndex(finder);
     if (index !== -1) {
-      this.organizationsControl.markAsTouched();
       this.removeOrganizationFromSettings(organization, finder);
     }
   }
@@ -387,6 +426,7 @@ export class AggregateReportFormComponent {
     } else if (organization.type === OrganizationType.School) {
       this.settings.schools.splice(this.settings.schools.findIndex(finder), 1);
     }
+    this.markOrganizationsControlTouched();
   }
 
   private applySettingsChange(): void {
@@ -407,6 +447,7 @@ export class AggregateReportFormComponent {
       options: this.aggregateReportOptions,
       rows: this.tableDataService.createSampleData(this.currentAssessmentDefinition, this.settings)
     };
+
   }
 
   /**
@@ -422,6 +463,8 @@ export class AggregateReportFormComponent {
     // Mark form as dirty
     Forms.controls(this.formGroup)
       .forEach(control => control.markAsDirty());
+
+    this.formGroup.updateValueAndValidity();
 
     if (formGroup.valid) {
       // Execute callback if the form is valid

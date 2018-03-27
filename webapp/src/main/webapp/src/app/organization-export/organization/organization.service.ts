@@ -2,18 +2,20 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { UserOrganizations } from "./user-organizations";
 import { OrganizationMapper } from "./organization.mapper";
-import { UserService } from "../../user/user.service";
-import "rxjs/add/observable/forkJoin";
 import { CachingDataService } from "../../shared/data/caching-data.service";
+import { map } from 'rxjs/operators';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { ReportingServiceRoute } from '../../shared/service-route';
+import { OrganizationService as ExtendOrganizationService } from "../../shared/organization/organization.service";
 
-const ServiceRoute = '/reporting-service';
+const ServiceRoute = ReportingServiceRoute;
 
 @Injectable()
-export class OrganizationService {
+export class OrganizationService extends ExtendOrganizationService {
 
-  constructor(private dataService: CachingDataService,
-              private userService: UserService,
+  constructor(protected dataService: CachingDataService,
               private mapper: OrganizationMapper) {
+    super(dataService);
   }
 
   /**
@@ -22,22 +24,15 @@ export class OrganizationService {
    * @returns {Observable<UserOrganizations>}
    */
   getUserOrganizations(): Observable<UserOrganizations> {
-    return Observable.forkJoin(
-      this.userService.getCurrentUser(),
+    return forkJoin(
+      this.getSchools(),
       this.getSchoolGroups(),
       this.getDistricts()
-    ).map(response => {
-      let [ user, schoolGroups, districts ] = response;
-      return this.mapper.createUserOrganizations(user.schools, schoolGroups, districts);
-    });
-  }
-
-  private getSchoolGroups(): Observable<any[]> {
-    return this.dataService.get(`${ServiceRoute}/organizations/schoolGroups`);
-  }
-
-  private getDistricts(): Observable<any[]> {
-    return this.dataService.get(`${ServiceRoute}/organizations/districts`);
+    ).pipe(
+      map(([ schools, schoolGroups, districts ]) => {
+        return this.mapper.createUserOrganizations(schools, schoolGroups, districts);
+      })
+    );
   }
 
 }

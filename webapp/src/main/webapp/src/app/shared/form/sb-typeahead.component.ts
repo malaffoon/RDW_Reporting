@@ -33,12 +33,8 @@ export class SBTypeahead implements OnInit {
   @Output()
   change: EventEmitter<any> = new EventEmitter<any>();
 
-  /**
-   * Emits an option's value when an option is selected.
-   * This is different than change in that it will only emit when a user selects the value.
-   */
   @Output()
-  select: EventEmitter<any> = new EventEmitter<any>();
+  selected: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
   placeholder: string = '';
@@ -95,8 +91,11 @@ export class SBTypeahead implements OnInit {
   }
 
   onSelectInternal(option: Option): void {
-    this.value = option.value;
-    this.select.emit(option.value);
+    const { value } = option;
+    if (value) {
+      this.value = value;
+      this.selected.emit(value);
+    }
   }
 
   onChangeInternal(): void {

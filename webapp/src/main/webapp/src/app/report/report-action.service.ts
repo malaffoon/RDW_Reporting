@@ -3,7 +3,6 @@ import { Report } from "./report.model";
 import { ReportService } from "./report.service";
 import { Router } from "@angular/router";
 import { NotificationService } from "../shared/notification/notification.service";
-import "rxjs/add/observable/empty";
 
 export const AggregateReportType: string = "AggregateReportRequest";
 
@@ -105,7 +104,7 @@ class DefaultActionProvider implements ActionProvider {
       {
         type: ActionType.Download,
         value: report.id,
-        labelKey: 'labels.reports.report-actions.download-report'
+        labelKey: 'report-action.download-report'
       }
     ];
   }
@@ -132,20 +131,20 @@ class AggregateReportActionProvider extends DefaultActionProvider {
       {
         type: ActionType.Navigate,
         value: `/aggregate-reports/${report.id}`,
-        labelKey: 'labels.reports.report-actions.view-report',
+        labelKey: 'report-action.view-report',
         disabled: disableViewAndDownload
       },
       {
         type: ActionType.Navigate,
         value: `/aggregate-reports?src=${report.id}`,
-        labelKey: 'labels.reports.report-actions.view-query'
+        labelKey: 'report-action.view-query'
       },
       {
         type: ActionType.Download,
         value: report.id,
-        labelKey: 'labels.reports.report-actions.download-report',
+        labelKey: 'report-action.download-report',
         disabled: disableViewAndDownload || embargoed,
-        popoverKey: embargoed ? 'labels.reports.report-actions.embargoed' : undefined
+        popoverKey: embargoed ? 'report-action.embargoed' : undefined
       }
     ];
   }

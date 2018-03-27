@@ -3,8 +3,10 @@ import { Observable } from "rxjs/Observable";
 import { Organization } from "./model/organization.model";
 import { OrganizationQuery } from "./model/organization-query.model";
 import { DataService } from "../../shared/data/data.service";
+import { map } from 'rxjs/operators';
+import { AdminServiceRoute } from '../../shared/service-route';
 
-const ServiceRoute = '/admin-service';
+const ServiceRoute = AdminServiceRoute;
 
 /**
  * This service is responsible for interacting with organizations.
@@ -22,21 +24,23 @@ export class OrganizationService {
    * @returns {Observable<Organization[]>}  The matching organizations
    */
   find(query: OrganizationQuery): Observable<Organization[]> {
-    return this.dataService.get(`${ServiceRoute}/organizations`, {params: query})
-      .map(OrganizationService.mapOrganizationsFromApi);
+    return this.dataService.get(`${ServiceRoute}/organizations`, { params: query })
+      .pipe(
+        map(OrganizationService.mapOrganizationsFromApi)
+      );
   }
 
-  private static mapOrganizationsFromApi(apiModels): Organization[] {
-    return apiModels.map(x => OrganizationService.mapOrganizationFromApi(x));
+  private static mapOrganizationsFromApi(serverOrganizations: any[]): Organization[] {
+    return serverOrganizations.map(serverOrganization => OrganizationService.mapOrganizationFromApi(serverOrganization));
   }
 
-  private static mapOrganizationFromApi(apiModel: any): Organization {
-    let uiModel: Organization = new Organization();
-
-    uiModel.id = apiModel.id;
-    uiModel.name = apiModel.name;
-    uiModel.organizationType = apiModel.organizationType;
-    uiModel.naturalId = apiModel.naturalId;
-    return uiModel;
+  private static mapOrganizationFromApi(serverOrganization: any): Organization {
+    const organization: Organization = new Organization();
+    organization.id = serverOrganization.id;
+    organization.name = serverOrganization.name;
+    organization.organizationType = serverOrganization.organizationType;
+    organization.naturalId = serverOrganization.naturalId;
+    return organization;
   }
+
 }

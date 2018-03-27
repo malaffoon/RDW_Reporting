@@ -1,10 +1,8 @@
 import { Angulartics2Module } from "angulartics2";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "../shared/common.module";
-import { DataTableModule } from "primeng/primeng";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 import { AggregateReportOptionsService } from "./aggregate-report-options.service";
 import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
@@ -27,6 +25,7 @@ import { CsvModule } from "../csv-export/csv-export.module";
 import { AggregateReportTableExportService } from "./results/aggregate-report-table-export.service";
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
+import { TableModule } from "primeng/table";
 
 @NgModule({
   declarations: [
@@ -43,13 +42,12 @@ import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-colum
     BrowserModule,
     CommonModule,
     CsvModule,
-    DataTableModule,
     FormsModule,
     ModalModule,
-    MultiselectDropdownModule,
     PopoverModule.forRoot(),
     ReactiveFormsModule,
     ReportModule,
+    TableModule,
     TypeaheadModule
   ],
   exports: [
