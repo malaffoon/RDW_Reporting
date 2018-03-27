@@ -11,17 +11,17 @@ import { byString, join } from "@kourge/ordering/comparator";
   selector: 'sb-typeahead,[sb-typeahead]',
   template: `
     <input class="form-control"
-           [id]="inputId"
+           id="{{inputId}}"
            [disabled]="disabledInternal"
            [typeahead]="options"
            [typeaheadMinLength]="0"
-           typeaheadWaitMs="300"
            typeaheadOptionField="label"
            typeaheadGroupField="group"
            (typeaheadOnSelect)="onSelectInternal($event.item)"
            (ngModelChange)="onChangeInternal()"
            [(ngModel)]="search"
-           [placeholder]="placeholder">
+           placeholder="{{placeholder}}"
+           autocomplete="off">
   `
 })
 export class SBTypeahead implements OnInit {

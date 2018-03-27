@@ -561,7 +561,8 @@
                        [(ngModel)]="settings.name"
                        required="false"
                        maxlength="255"
-                       placeholder="{{'aggregate-reports.default-report-name' | translate}}">
+                       placeholder="{{'aggregate-reports.default-report-name' | translate}}"
+                       autocomplete="off">
                 <div *ngIf="showErrors(reportNameControl)">
                   <p *ngIf="reportNameControl.errors.fileName" class="help-block small red">{{reportNameControl.errors.fileName.messageId | translate}}</p>
                 </div>

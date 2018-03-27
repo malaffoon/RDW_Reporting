@@ -125,17 +125,7 @@
       </div>
       <!-- Column 2 -->
       <div class="flex-child col2 no-margin">
-        <!-- Economic Disadvantage -->
-        <div class="block-children">
-          <label>
-            <span info-button
-                  title="{{ translateRoot + 'student.economic-disadvantage' | translate }}"
-                  content="{{ translateRoot + 'student.economic-disadvantage-info' | translate }}"></span>
-          </label>
-          <sb-radio-button-list [model]="filterBy" [values]="[1,2]" property="economicDisadvantage" enum="enum.polar"
-                                label="{{ translateRoot + 'student.economic-disadvantage' | translate }}"
-                                analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
-        </div>
+
         <!-- Limited English Proficiency -->
         <div class="block-children">
           <label>
