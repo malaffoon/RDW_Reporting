@@ -6,6 +6,13 @@
     * Web application no longer requires reporting service to be running for basic functionality
     * Organizes system level configuration more logically
     * NOTE: this requires updating configuration files for each module
+    
+#### 1.1.3 - 2018-03-26
+
+* Remove individual student economic disadvantage from UI and reports (DWR-1633).
+* Re-enable Google analytics.
+* Disable browser auto-complete on search fields (DWR-1590).
+* Improve performance and memory usage in aggregate service.
 
 #### 1.1.2 - 2018-03-07
 
