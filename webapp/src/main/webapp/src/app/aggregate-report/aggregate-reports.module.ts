@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AggregateReportOptionsService } from "./aggregate-report-options.service";
 import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
 import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
-import { ModalModule, PopoverModule, TypeaheadModule } from "ngx-bootstrap";
+import {ModalModule, PopoverModule, TabsModule, TypeaheadModule} from "ngx-bootstrap";
 import { AggregateReportOrganizationList } from "./aggregate-report-organization-list.component";
 import { AggregateReportService } from "./aggregate-report.service";
 import { ReportModule } from "../report/report.module";
@@ -48,6 +48,7 @@ import { TableModule } from "primeng/table";
     ReactiveFormsModule,
     ReportModule,
     TableModule,
+    TabsModule.forRoot(),
     TypeaheadModule
   ],
   exports: [

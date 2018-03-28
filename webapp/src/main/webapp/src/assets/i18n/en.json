@@ -104,7 +104,16 @@
       "review-heading": "Report Review",
       "preview-heading": "Report Preview"
     },
-    "submit": "Generate Report"
+    "submit": "Generate Report",
+    "tab": {
+      "subgroup-and-filter": {
+        "heading": "Subgroup and Filter"
+      },
+      "custom-subgroup" : {
+        "heading": "Customize Subgroups",
+        "description": "You can create multiple custom subgroups by selecting the combination of attributes below and clicking \"Create Subgroup.\" Each custom subgroup will represent a row in the results table. See the preview table below to see how it will look."
+      }
+    }
   },
   "aggregate-report-table": {
     "columns": {
