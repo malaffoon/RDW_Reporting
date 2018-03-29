@@ -78,10 +78,7 @@
           </div>
 
           <div *ngSwitchCase="'dimension'">
-            {{
-            (('common.dimension.' + rowData.dimension.type) | translate)
-            + (rowData.dimension.code ? ': ' + (rowData.dimension.codeTranslationCode | translate) : '')
-            }}
+            {{rowData.dimension.name}}
           </div>
 
           <div *ngSwitchCase="'studentsTested'"

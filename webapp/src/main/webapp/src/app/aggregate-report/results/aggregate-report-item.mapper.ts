@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { AggregateReportItem, Dimension } from "./aggregate-report-item";
+import { AggregateReportItem } from "./aggregate-report-item";
 import { AggregateReportRow } from "../../report/aggregate-report";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { OrganizationMapper } from "../../shared/organization/organization.mapper";
-import { DimensionConfigurationByType } from "../dimension-configuration";
+import {SubgroupMapper} from "../subgroup.mapper";
 
 /**
  * Maps server modeled aggregate report rows into client friendly table rows
@@ -11,7 +11,8 @@ import { DimensionConfigurationByType } from "../dimension-configuration";
 @Injectable()
 export class AggregateReportItemMapper {
 
-  constructor(private organizationMapper: OrganizationMapper) {
+  constructor(private organizationMapper: OrganizationMapper,
+              private subgroupMapper: SubgroupMapper) {
   }
 
   map(assessmentDefinition: AssessmentDefinition, row: AggregateReportRow, uuid: number): AggregateReportItem {
@@ -28,7 +29,7 @@ export class AggregateReportItemMapper {
     item.subjectCode = row.assessment.subjectCode;
     item.schoolYear = row.assessment.examSchoolYear;
     item.organization = this.organizationMapper.map(row.organization);
-    item.dimension = this.mapDimension(row.dimension);
+    item.dimension = this.subgroupMapper.createSubgroup(row.dimension.type, row.dimension.code);
 
     const measures: any = row.measures || {};
     item.avgScaleScore = measures.avgScaleScore || 0;
@@ -68,19 +69,6 @@ export class AggregateReportItemMapper {
     }
 
     return item;
-  }
-
-  private mapDimension(dimension: any): Dimension {
-    const dimensionConfiguration = DimensionConfigurationByType[dimension.type];
-    const dimensionBuilder: any = {
-      id: `${dimension.type}.${dimension.code}`,
-      type: dimension.type,
-      code: dimension.code
-    };
-    if (dimensionConfiguration) {
-      dimensionBuilder.codeTranslationCode = dimensionConfiguration.getTranslationCode(dimension.code);
-    }
-    return dimensionBuilder;
   }
 
 }

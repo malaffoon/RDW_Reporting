@@ -29,6 +29,9 @@ import { debounceTime, finalize, map, mergeMap } from "rxjs/operators";
 import { Observer } from "rxjs/Observer";
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
+import {equals, isEqualToDefaults, SubgroupFilters} from "./subgroup-filters";
+import {SubgroupMapper} from "./subgroup.mapper";
+import {SubgroupFilterOptions} from "./subgroup-filter-options";
 
 const DefaultRenderDebounceMilliseconds = 500;
 
@@ -138,6 +141,11 @@ export class AggregateReportFormComponent {
    */
   settingsChangedObserver: Observer<void>;
 
+  customSubgroup: SubgroupFilters;
+
+  // TODO move to settings
+  customSubgroups: any[] = [];
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private optionMapper: AggregateReportOptionsMapper,
@@ -146,17 +154,30 @@ export class AggregateReportFormComponent {
               private organizationService: AggregateReportOrganizationService,
               private reportService: AggregateReportService,
               private tableDataService: AggregateReportTableDataService,
-              private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider) {
+              private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
+              private subgroupMapper: SubgroupMapper) {
 
     this.assessmentDefinitionsByTypeCode = route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
-    this.showAdvancedFilters = this.hasExplicitAdvancedFilters(this.settings, this.aggregateReportOptions);
+
+    // holds custom subgroup form state
+    this.customSubgroup = {
+      economicDisadvantages: this.aggregateReportOptions.economicDisadvantages.concat(),
+      ethnicities: this.aggregateReportOptions.ethnicities.concat(),
+      genders: this.aggregateReportOptions.genders.concat(),
+      individualEducationPlans: this.aggregateReportOptions.individualEducationPlans.concat(),
+      limitedEnglishProficiencies: this.aggregateReportOptions.limitedEnglishProficiencies.concat(),
+      migrantStatuses: this.aggregateReportOptions.migrantStatuses.concat(),
+      section504s: this.aggregateReportOptions.section504s.concat()
+    };
+
+    this.showAdvancedFilters = !isEqualToDefaults(this.settings, this.aggregateReportOptions);
 
     this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
 
     const defaultOrganization = this.defaultOrganization;
-    if (this.organizations.length == 0 && defaultOrganization) {
+    if (this.organizations.length === 0 && defaultOrganization) {
       this.addOrganizationToSettings(defaultOrganization);
     }
 
@@ -195,6 +216,25 @@ export class AggregateReportFormComponent {
     Observable.create((observer) => this.settingsChangedObserver = observer)
       .pipe(debounceTime(DefaultRenderDebounceMilliseconds))
       .subscribe(() => this.applySettingsChange());
+  }
+
+  onCreateCustomSubgroupButtonClick(): void {
+    this.customSubgroups = this.customSubgroups.concat(
+      this.subgroupMapper.createCustomSubgroup(this.customSubgroup, this.aggregateReportOptions)
+    );
+  }
+
+  onCustomSubgroupItemRemoveButtonClick(item): void {
+    this.customSubgroups = this.customSubgroups
+        .filter(subgroup => (<any>subgroup).guid !== item.guid);
+  }
+
+  get createCustomSubgroupButtonDisabled(): boolean {
+    if (isEqualToDefaults(this.customSubgroup, this.aggregateReportOptions)) {
+      return true;
+    }
+    const { uuid } = this.subgroupMapper.createCustomSubgroup(this.customSubgroup, this.aggregateReportOptions);
+    return this.customSubgroups.some(subgroup => subgroup.uuid === uuid);
   }
 
   ngOnInit(): void {
@@ -484,22 +524,6 @@ export class AggregateReportFormComponent {
    */
   private createReportRequest(): AggregateReportRequest {
     return this.requestMapper.map(this.options, this.settings, this.currentAssessmentDefinition);
-  }
-
-  /**
-   * @param {AggregateReportFormSettings} settings
-   * @param {AggregateReportOptions} options
-   * @returns {boolean} True if the provided settings have explicitly set advanced filters that deviate from the defaults
-   */
-  private hasExplicitAdvancedFilters(settings: AggregateReportFormSettings, options: AggregateReportOptions): boolean {
-    const hasDifferentLength = (a: any[], b: any[]) => !Utils.hasEqualLength(a, b);
-    return hasDifferentLength(settings.genders, options.genders)
-      || hasDifferentLength(settings.ethnicities, options.ethnicities)
-      || hasDifferentLength(settings.migrantStatuses, options.migrantStatuses)
-      || hasDifferentLength(settings.individualEducationPlans, options.individualEducationPlans)
-      || hasDifferentLength(settings.section504s, options.section504s)
-      || hasDifferentLength(settings.limitedEnglishProficiencies, options.limitedEnglishProficiencies)
-      || hasDifferentLength(settings.economicDisadvantages, options.economicDisadvantages);
   }
 
 }

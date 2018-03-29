@@ -2,24 +2,24 @@ import { Injectable } from "@angular/core";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { DefaultSchool, Organization, School } from "../shared/organization/organization";
 import { AssessmentDefinition } from "./assessment/assessment-definition";
-import { AggregateReportItem, Dimension } from "./results/aggregate-report-item";
+import { AggregateReportItem } from "./results/aggregate-report-item";
 import { TranslateService } from "@ngx-translate/core";
-import { DimensionConfigurationByType } from "./dimension-configuration";
+import {SubgroupMapper} from "./subgroup.mapper";
 
 const MaximumOrganizations = 2;
-const OverallDimension: Dimension = { id: 'Overall', type: 'Overall' };
 
 @Injectable()
 export class AggregateReportTableDataService {
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService,
+              private subgroupMapper: SubgroupMapper) {
   }
 
   createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
     const organizations = this.createSampleOrganizations(settings);
     const assessmentGradeCodes = settings.assessmentGrades;
     const schoolYears = settings.schoolYears;
-    const dimensions = [ OverallDimension, ...this.createDimensions(settings) ];
+    const dimensions = this.subgroupMapper.createSubgroups(['Overall', ...settings.dimensionTypes], settings);
     const studentsTested = 100;
     const averageScaleScore = 2500;
     const averageStandardError = 50;
@@ -68,27 +68,6 @@ export class AggregateReportTableDataService {
       }
     }
     return rows;
-  }
-
-  // TODO outsource this logic to mapper ?
-  private createDimensions(settings: AggregateReportFormSettings): Dimension[] {
-    const dimensions = [];
-    for (let dimensionType of settings.dimensionTypes) {
-      const configuration = DimensionConfigurationByType[ dimensionType ];
-      if (!configuration) {
-        continue;
-      }
-      const codes = configuration.getDimensionValueCodes(settings);
-      for (let code of codes) {
-        dimensions.push({
-          id: `${dimensionType}.${code}`,
-          type: dimensionType,
-          code: code,
-          codeTranslationCode: configuration.getTranslationCode(code)
-        });
-      }
-    }
-    return dimensions;
   }
 
   private createSampleOrganizations(settings: AggregateReportFormSettings): Organization[] {

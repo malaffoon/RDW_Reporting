@@ -105,7 +105,7 @@ export class AggregateReportRequestMapper {
     return {
       name: name,
       reportQuery: query
-    }
+    };
   }
 
   toSettings(request: AggregateReportRequest, options: AggregateReportOptions): Observable<AggregateReportFormSettings> {

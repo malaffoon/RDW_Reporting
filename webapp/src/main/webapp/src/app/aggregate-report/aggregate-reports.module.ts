@@ -26,6 +26,9 @@ import { AggregateReportTableExportService } from "./results/aggregate-report-ta
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
 import { TableModule } from "primeng/table";
+import { SubgroupFiltersComponent } from "./subgroup-filters.component";
+import {ListGroupComponent} from "./list-group.component";
+import {SubgroupMapper} from "./subgroup.mapper";
 
 @NgModule({
   declarations: [
@@ -34,7 +37,9 @@ import { TableModule } from "primeng/table";
     AggregateReportTableComponent,
     AggregateReportOrganizationList,
     AggregateReportSummary,
-    StickyDirective
+    ListGroupComponent,
+    StickyDirective,
+    SubgroupFiltersComponent
   ],
   imports: [
     AssessmentModule,
@@ -67,7 +72,8 @@ import { TableModule } from "primeng/table";
     AggregateReportOrganizationService,
     AggregateReportItemMapper,
     AggregateReportFormSettingsResolve,
-    AggregateReportColumnOrderItemProvider
+    AggregateReportColumnOrderItemProvider,
+    SubgroupMapper
   ]
 })
 export class AggregateReportsModule {
