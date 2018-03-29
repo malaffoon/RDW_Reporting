@@ -2,8 +2,6 @@ import { Inject, Injectable } from "@angular/core";
 import { Headers, ResponseContentType } from "@angular/http";
 import { ReportOptions } from "./report-options.model";
 import { Observable } from "rxjs/Observable";
-import { AssessmentType } from "../shared/enum/assessment-type.enum";
-import { AssessmentSubjectType } from "../shared/enum/assessment-subject-type.enum";
 import { Report } from "./report.model";
 import { ReportOrder } from "./report-order.enum";
 import { ResponseUtils } from "../shared/response-utils";
@@ -12,7 +10,7 @@ import { Group } from "../groups/group";
 import { Grade } from "../school-grade/grade.model";
 import { DATA_CONTEXT_URL, DataService } from "../shared/data/data.service";
 import { Download } from "../shared/data/download.model";
-import { AggregateReportRequest } from "./aggregate-report-request";
+import { BasicAggregateReportRequest } from "./basic-aggregate-report-request";
 import { AggregateReportRow } from "./aggregate-report";
 import { Utils } from "../shared/support/support";
 import { catchError, map } from 'rxjs/operators';
@@ -106,7 +104,7 @@ export class ReportService {
    * @param request the parameters to create the report with
    * @returns {Observable<Report>} the handle used the get status on the download
    */
-  public createAggregateReport(request: AggregateReportRequest): Observable<Report> {
+  public createAggregateReport(request: BasicAggregateReportRequest): Observable<Report> {
     return this.dataService.post(`${ServiceRoute}/aggregate`, request, {
       headers: new Headers({ 'Content-Type': 'application/json' })
     }).pipe(
@@ -207,19 +205,9 @@ export class ReportService {
     report.status = serverReport.status;
     report.created = serverReport.created;
     report.reportType = serverReport.reportType;
-    report.assessmentType = AssessmentType[ serverReport.assessmentType as string ];
-
-    // HOTFIX for aggreagte report assessment type display
-    // unable to use ExamReportAssessmentType enum because it does not support summatives
-    if (serverReport.reportType === 'AggregateReportRequest') {
-      report.assessmentTypeCode = (<AggregateReportRequest>serverReport.request).reportQuery.assessmentTypeCode;
-    } else {
-      report.assessmentTypeCode = serverReport.assessmentTypeCode;
-    }
-
-    report.subjectId = AssessmentSubjectType[ serverReport.subject as string ] || 0;
-    report.subjectCode = serverReport.subjectCode || 'ALL';
-    report.schoolYear = serverReport.schoolYear;
+    report.assessmentTypeCode = serverReport.assessmentTypeCode;
+    report.subjectCodes = serverReport.subjectCodes || [];
+    report.schoolYears = serverReport.schoolYears || [];
     report.metadata = serverReport.metadata || {};
     report.request = serverReport.request;
     return report;
