@@ -23,10 +23,14 @@ export class AdvFiltersComponent {
   showStudentFilter: boolean = true;
 
   showTransferAccess: boolean = false;
+  showElas: boolean = false;
+  showLep: boolean = false;
 
   constructor(private applicationSettingsService: ApplicationSettingsService) {
     applicationSettingsService.getSettings().subscribe(settings => {
       this.showTransferAccess = settings.transferAccess;
+      this.showElas = settings.elasEnabled;
+      this.showLep = settings.lepEnabled;
     })
   }
 
