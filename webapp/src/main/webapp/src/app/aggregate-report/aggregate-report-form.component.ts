@@ -316,6 +316,11 @@ export class AggregateReportFormComponent {
       ));
   }
 
+  onTabChange(queryType: 'Basic' | 'FilteredSubgroup'): void {
+    this.settings.queryType = queryType;
+    this.onSettingsChange();
+  }
+
   onCreateCustomSubgroupButtonClick(): void {
     this.settings.subgroups = this.settings.subgroups.concat([
       // SubgroupFilterSupport.prune(this.customSubgroup)

@@ -336,7 +336,7 @@
         <tabset>
           <tab [heading]="'aggregate-report-form.tab.subgroup-and-filter' | translate"
                [active]="settings.queryType === 'Basic'"
-               (select)="settings.queryType = 'Basic'">
+               (select)="onTabChange('Basic')">
 
             <!-- Subgroups -->
             <div class="well-group" id="subgroupSection">
@@ -386,7 +386,7 @@
           </tab>
           <tab [heading]="'aggregate-report-form.tab.custom-subgroup' | translate"
                [active]="settings.queryType === 'FilteredSubgroup'"
-               (select)="settings.queryType = 'FilteredSubgroup'">
+               (select)="onTabChange('FilteredSubgroup')">
 
             <div class="well-group">
 
