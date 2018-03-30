@@ -167,6 +167,8 @@ export class AggregateReportFormComponent {
 
     // this.customSubgroup = SubgroupFilterSupport.empty();
     this.customSubgroup = SubgroupFilterSupport.copy(this.aggregateReportOptions.studentFilters);
+    this.subgroupItems = this.settings.subgroups
+      .map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
 
     this.showAdvancedFilters = !SubgroupFilterSupport.equals(this.settings.studentFilters, this.aggregateReportOptions.studentFilters);
 

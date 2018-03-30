@@ -22,8 +22,8 @@ import { SubgroupFilters, SubgroupFilterSupport } from './subgroup-filters';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);
-
 const hasOption = (options: any[], value) => options.find(option => option === value) != null;
+const notNullOrEmpty = (value) => !Utils.isNullOrEmpty(value);
 
 /**
  * Responsible for creating aggregate report requests from supplied models
@@ -127,11 +127,55 @@ export class AggregateReportRequestMapper {
       ? this.organizationService.getOrganizationsByIdAndType(OrganizationType.District, districtIds)
       : of([]);
 
-    // Returns the first argument that is not null or undefined
+    // Returns the first argument that is not null or empty
     const or = (a: any, b: any) => Utils.isNullOrEmpty(a) ? b : a;
 
     // Safely sorts the provided values ranked by the provided options
     const sort = (values: any[], options: any[]) => (values || []).sort(ordering(ranking(options)).compare);
+
+    const studentFilters = query.queryType === 'Basic'
+      ? {
+        economicDisadvantages: or(
+          sort(filters.economicDisadvantageCodes, options.studentFilters.economicDisadvantages),
+          options.studentFilters.economicDisadvantages
+        ),
+        ethnicities: or(
+          sort(filters.ethnicityCodes, options.studentFilters.ethnicities),
+          options.studentFilters.ethnicities
+        ),
+        genders: or(
+          sort(filters.genderCodes, options.studentFilters.genders),
+          options.studentFilters.genders
+        ),
+        individualEducationPlans: or(
+          sort(filters.iepCodes, options.studentFilters.individualEducationPlans),
+          options.studentFilters.individualEducationPlans
+        ),
+        limitedEnglishProficiencies: or(
+          sort(filters.lepCodes, options.studentFilters.individualEducationPlans),
+          options.studentFilters.individualEducationPlans
+        ),
+        migrantStatuses: or(
+          sort(filters.migrantStatusCodes, options.studentFilters.migrantStatuses),
+          options.studentFilters.migrantStatuses
+        ),
+        section504s: or(
+          sort(filters.section504Codes, options.studentFilters.section504s),
+          options.studentFilters.section504s
+        ),
+      }
+      : {};
+
+    const subgroups = query.queryType === 'FilteredSubgroup'
+      ? this.createSubgroupFilters(query.subgroups)
+      : [];
+
+    console.log('qs', query.subgroups)
+    console.log('qs.values()', Object.values(query.subgroups))
+    console.log('qs.values().map()', Object.values(query.subgroups)
+      .map(remoteSubgroup => SubgroupFilterSupport.prune(remoteSubgroup as SubgroupFilters)));
+
+    console.log('sg', subgroups);
 
     return forkJoin(schools, districts)
       .pipe(
@@ -139,6 +183,7 @@ export class AggregateReportRequestMapper {
           return <AggregateReportFormSettings>{
             assessmentType: query.assessmentTypeCode,
             assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
+            columnOrder: query.columnOrder,
             completenesses: or(
               sort(query.completenessCodes, options.completenesses),
               options.completenesses
@@ -158,46 +203,15 @@ export class AggregateReportRequestMapper {
             name: request.name,
             performanceLevelDisplayType: query.achievementLevelDisplayType,
             queryType: query.queryType,
-            subgroups: Object.values(query.subgroups)
-              .map(remoteSubgroup => SubgroupFilterSupport.prune(remoteSubgroup as SubgroupFilters)),
+            schoolYears: query.schoolYears.sort((a, b) => b - a),
+            schools: schools,
+            studentFilters: studentFilters,
+            subjects: sort(query.subjectCodes, options.subjects),
+            subgroups: subgroups,
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
               : querySummativeAdministrationConditions,
-            schoolYears: query.schoolYears.sort((a, b) => b - a),
-            schools: schools,
-            studentFilters: {
-              economicDisadvantages: or(
-                sort(filters.economicDisadvantageCodes, options.studentFilters.economicDisadvantages),
-                options.studentFilters.economicDisadvantages
-              ),
-              ethnicities: or(
-                sort(filters.ethnicityCodes, options.studentFilters.ethnicities),
-                options.studentFilters.ethnicities
-              ),
-              genders: or(
-                sort(filters.genderCodes, options.studentFilters.genders),
-                options.studentFilters.genders
-              ),
-              individualEducationPlans: or(
-                sort(filters.iepCodes, options.studentFilters.individualEducationPlans),
-                options.studentFilters.individualEducationPlans
-              ),
-              limitedEnglishProficiencies: or(
-                sort(filters.lepCodes, options.studentFilters.individualEducationPlans),
-                options.studentFilters.individualEducationPlans
-              ),
-              migrantStatuses: or(
-                sort(filters.migrantStatusCodes, options.studentFilters.migrantStatuses),
-                options.studentFilters.migrantStatuses
-              ),
-              section504s: or(
-                sort(filters.section504Codes, options.studentFilters.section504s),
-                options.studentFilters.section504s
-              ),
-            },
-            subjects: sort(query.subjectCodes, options.subjects),
-            valueDisplayType: query.valueDisplayType,
-            columnOrder: query.columnOrder
+            valueDisplayType: query.valueDisplayType
           };
         })
       );
@@ -229,8 +243,8 @@ export class AggregateReportRequestMapper {
     return queryFilters;
   }
 
-  private createSubgroupFilters(settingFilters: SubgroupFilters): StudentFilters {
-    const notNullOrEmpty = (value) => !Utils.isNullOrEmpty(value);
+  private createStudentFiltersFromSubgroup(settingFilters: SubgroupFilters): StudentFilters {
+
     const queryFilters: any = {};
     if (notNullOrEmpty(settingFilters.economicDisadvantages)) {
       queryFilters.economicDisadvantageCodes = settingFilters.economicDisadvantages;
@@ -258,9 +272,38 @@ export class AggregateReportRequestMapper {
 
   private createSubgroups(settingFilters: SubgroupFilters[]): {[key: string]: StudentFilters} {
     return settingFilters.reduce((subgroups, filters, index) => {
-      subgroups[(index + 1).toString()] = this.createSubgroupFilters(filters);
+      subgroups[(index + 1).toString()] = this.createStudentFiltersFromSubgroup(filters);
       return subgroups;
     }, {});
+  }
+
+  private createSubgroupFilters(querySubgroups: {[key: string]: StudentFilters}): StudentFilters[] {
+    return Object.values(querySubgroups) // This ignores the keys as we do not use them at the moment
+      .map(queryFilters => {
+        const subgroupFilters: any = {};
+        if (notNullOrEmpty(queryFilters.economicDisadvantageCodes)) {
+          subgroupFilters.economicDisadvantages = queryFilters.economicDisadvantageCodes;
+        }
+        if (notNullOrEmpty(queryFilters.ethnicityCodes)) {
+          subgroupFilters.ethnicities = queryFilters.ethnicityCodes;
+        }
+        if (notNullOrEmpty(queryFilters.genderCodes)) {
+          subgroupFilters.genders = queryFilters.genderCodes;
+        }
+        if (notNullOrEmpty(queryFilters.iepCodes)) {
+          subgroupFilters.individualEducationPlans = queryFilters.iepCodes;
+        }
+        if (notNullOrEmpty(queryFilters.lepCodes)) {
+          subgroupFilters.limitedEnglishProficiencies = queryFilters.lepCodes;
+        }
+        if (notNullOrEmpty(queryFilters.migrantStatusCodes)) {
+          subgroupFilters.migrantStatuses = queryFilters.migrantStatusCodes;
+        }
+        if (notNullOrEmpty(queryFilters.section504Codes)) {
+          subgroupFilters.section504Codes = queryFilters.section504Codes;
+        }
+        return subgroupFilters;
+      });
   }
 
 }
