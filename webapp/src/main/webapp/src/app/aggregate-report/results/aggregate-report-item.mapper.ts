@@ -29,7 +29,7 @@ export class AggregateReportItemMapper {
     item.subjectCode = row.assessment.subjectCode;
     item.schoolYear = row.assessment.examSchoolYear;
     item.organization = this.organizationMapper.map(row.organization);
-    item.dimension = this.subgroupMapper.createSubgroup(row.dimension.type, row.dimension.code);
+    item.dimension = this.subgroupMapper.createDimension(row.dimension.type, row.dimension.code);
 
     const measures: any = row.measures || {};
     item.avgScaleScore = measures.avgScaleScore || 0;
@@ -38,7 +38,7 @@ export class AggregateReportItemMapper {
     let totalTested: number = 0;
 
     for (let level = 1; level <= assessmentDefinition.performanceLevelCount; level++) {
-      let count = measures[ `level${level}Count` ] || 0;
+      const count = measures[ `level${level}Count` ] || 0;
       totalTested += count;
       itemPerformanceLevelCounts.push(count);
     }
@@ -49,7 +49,7 @@ export class AggregateReportItemMapper {
       itemPerformanceLevelPercents.push(percent);
     }
 
-    //If there is a rollup level, calculate the grouped values
+    // If there is a rollup level, calculate the grouped values
     if (assessmentDefinition.performanceLevelGroupingCutPoint > 0) {
       let belowCount: number = 0;
       let aboveCount: number = 0;

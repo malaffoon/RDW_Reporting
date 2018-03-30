@@ -18,8 +18,9 @@ import { ordering } from "@kourge/ordering";
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
+import { SubgroupFilters } from './subgroup-filters';
 
-const equalSize = (a: any[], b: any[]) => a.length === b.length;
+const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);
 
 const hasOption = (options: any[], value) => options.find(option => option === value) != null;
@@ -46,8 +47,6 @@ export class AggregateReportRequestMapper {
       settings: AggregateReportFormSettings,
       assessmentDefinition: AssessmentDefinition): BasicAggregateReportRequest {
 
-    const filters: any = {};
-
     const performanceLevelDisplayType = assessmentDefinition.performanceLevelDisplayTypes.includes(settings.performanceLevelDisplayType)
       ? settings.performanceLevelDisplayType
       : assessmentDefinition.performanceLevelDisplayTypes[0];
@@ -60,13 +59,12 @@ export class AggregateReportRequestMapper {
       includeAllDistricts: settings.includeAllDistricts,
       includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
       includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
-      includeState: settings.includeStateResults && settings.assessmentType == "sum",
-      queryType: 'Basic',
+      includeState: settings.includeStateResults && settings.assessmentType === 'sum',
+      queryType: settings.queryType,
       schoolYears: settings.schoolYears,
       subjectCodes: settings.subjects,
       valueDisplayType: settings.valueDisplayType,
-      columnOrder: settings.columnOrder,
-      studentFilters: filters
+      columnOrder: settings.columnOrder
     };
 
     if (assessmentDefinition.interim) {
@@ -82,32 +80,27 @@ export class AggregateReportRequestMapper {
     if (!equalSize(settings.completenesses, options.completenesses)) {
       query.completenessCodes = settings.completenesses;
     }
-    if (!equalSize(settings.economicDisadvantages, options.economicDisadvantages)) {
-      filters.economicDisadvantageCodes = settings.economicDisadvantages;
-    }
-    if (!equalSize(settings.ethnicities, options.ethnicities)) {
-      filters.ethnicityCodes = settings.ethnicities;
-    }
+
     if (settings.districts.length) {
-      query.districtIds = idsOf(settings.districts)
+      query.districtIds = idsOf(settings.districts);
     }
-    if (!equalSize(settings.genders, options.genders)) {
-      filters.genderCodes = settings.genders;
-    }
-    if (!equalSize(settings.individualEducationPlans, options.individualEducationPlans)) {
-      filters.iepCodes = settings.individualEducationPlans;
-    }
-    if (!equalSize(settings.limitedEnglishProficiencies, options.limitedEnglishProficiencies)) {
-      filters.lepCodes = settings.limitedEnglishProficiencies;
-    }
-    if (!equalSize(settings.migrantStatuses, options.migrantStatuses)) {
-      filters.migrantStatusCodes = settings.migrantStatuses;
-    }
-    if (!equalSize(settings.section504s, options.section504s)) {
-      filters.section504Codes = settings.section504s;
-    }
+
     if (settings.schools.length) {
-      query.schoolIds = idsOf(settings.schools)
+      query.schoolIds = idsOf(settings.schools);
+    }
+
+    // Set type-specific parameters
+    if (settings.queryType === 'Basic') {
+      this.addStudentFilters(
+        query.studentFilters = {},
+        settings.studentFilters,
+        options.studentFilters
+      );
+    } else if (settings.queryType === 'FilteredSubgroup') {
+      this.addFilteredSubgroups(
+        query.subgroups = {},
+        settings.subgroups
+      );
     }
 
     const name = settings.name
@@ -162,54 +155,88 @@ export class AggregateReportRequestMapper {
               []
             ),
             districts: districts,
-            economicDisadvantages: or(
-              sort(filters.economicDisadvantageCodes, options.economicDisadvantages),
-              options.economicDisadvantages
-            ),
-            ethnicities: or(
-              sort(filters.ethnicityCodes, options.ethnicities),
-              options.ethnicities
-            ),
-            genders: or(
-              sort(filters.genderCodes, options.genders),
-              options.genders
-            ),
             includeAllDistricts: query.includeAllDistricts,
             includeAllDistrictsOfSelectedSchools: query.includeAllDistrictsOfSchools,
             includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
             includeStateResults: query.includeState,
-            individualEducationPlans: or(
-              sort(filters.iepCodes, options.individualEducationPlans),
-              options.individualEducationPlans
-            ),
             interimAdministrationConditions: !queryInterimAdministrationConditions.length
               ? options.interimAdministrationConditions
               : queryInterimAdministrationConditions,
-            limitedEnglishProficiencies: or(
-              sort(filters.lepCodes, options.individualEducationPlans),
-              options.individualEducationPlans
-            ),
-            migrantStatuses: or(
-              sort(filters.migrantStatusCodes, options.migrantStatuses),
-              options.migrantStatuses
-            ),
             name: request.name,
             performanceLevelDisplayType: query.achievementLevelDisplayType,
-            section504s: or(
-              sort(filters.section504Codes, options.section504s),
-              options.section504s
-            ),
+            queryType: query.queryType,
+            subgroups: [], // TODO
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
               : querySummativeAdministrationConditions,
             schoolYears: query.schoolYears.sort((a, b) => b - a),
             schools: schools,
+            studentFilters: {
+              economicDisadvantages: or(
+                sort(filters.economicDisadvantageCodes, options.studentFilters.economicDisadvantages),
+                options.studentFilters.economicDisadvantages
+              ),
+              ethnicities: or(
+                sort(filters.ethnicityCodes, options.studentFilters.ethnicities),
+                options.studentFilters.ethnicities
+              ),
+              genders: or(
+                sort(filters.genderCodes, options.studentFilters.genders),
+                options.studentFilters.genders
+              ),
+              individualEducationPlans: or(
+                sort(filters.iepCodes, options.studentFilters.individualEducationPlans),
+                options.studentFilters.individualEducationPlans
+              ),
+              limitedEnglishProficiencies: or(
+                sort(filters.lepCodes, options.studentFilters.individualEducationPlans),
+                options.studentFilters.individualEducationPlans
+              ),
+              migrantStatuses: or(
+                sort(filters.migrantStatusCodes, options.studentFilters.migrantStatuses),
+                options.studentFilters.migrantStatuses
+              ),
+              section504s: or(
+                sort(filters.section504Codes, options.studentFilters.section504s),
+                options.studentFilters.section504s
+              ),
+            },
             subjects: sort(query.subjectCodes, options.subjects),
             valueDisplayType: query.valueDisplayType,
             columnOrder: query.columnOrder
           };
         })
       );
+  }
+
+  private addStudentFilters(queryFilters, settingFilters, optionFilters): void {
+    if (!equalSize(settingFilters.economicDisadvantages, optionFilters.economicDisadvantages)) {
+      queryFilters.economicDisadvantageCodes = settingFilters.economicDisadvantages;
+    }
+    if (!equalSize(settingFilters.ethnicities, optionFilters.ethnicities)) {
+      queryFilters.ethnicityCodes = settingFilters.ethnicities;
+    }
+    if (!equalSize(settingFilters.genders, optionFilters.genders)) {
+      queryFilters.genderCodes = settingFilters.genders;
+    }
+    if (!equalSize(settingFilters.individualEducationPlans, optionFilters.individualEducationPlans)) {
+      queryFilters.iepCodes = settingFilters.individualEducationPlans;
+    }
+    if (!equalSize(settingFilters.limitedEnglishProficiencies, optionFilters.limitedEnglishProficiencies)) {
+      queryFilters.lepCodes = settingFilters.limitedEnglishProficiencies;
+    }
+    if (!equalSize(settingFilters.migrantStatuses, optionFilters.migrantStatuses)) {
+      queryFilters.migrantStatusCodes = settingFilters.migrantStatuses;
+    }
+    if (!equalSize(settingFilters.section504s, optionFilters.section504s)) {
+      queryFilters.section504Codes = settingFilters.section504s;
+    }
+  }
+
+  private addFilteredSubgroups(querySubgroups, settingSubgroups: SubgroupFilters[]): void {
+    settingSubgroups.forEach((subgroup, index) => {
+      querySubgroups[(index + 1).toString()] = subgroup;
+    });
   }
 
 }

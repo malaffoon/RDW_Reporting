@@ -29,6 +29,7 @@ import { TableModule } from "primeng/table";
 import { SubgroupFiltersComponent } from "./subgroup-filters.component";
 import {ListGroupComponent} from "./list-group.component";
 import {SubgroupMapper} from "./subgroup.mapper";
+import { SubgroupFiltersListComponent } from './subgroup-filters-list.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {SubgroupMapper} from "./subgroup.mapper";
     AggregateReportSummary,
     ListGroupComponent,
     StickyDirective,
-    SubgroupFiltersComponent
+    SubgroupFiltersComponent,
+    SubgroupFiltersListComponent
   ],
   imports: [
     AssessmentModule,

@@ -146,46 +146,46 @@ export class AggregateReportSummary {
     ];
 
     const filterRows = [];
-    if (!equalSize(options.genders, settings.genders)) {
+    if (!equalSize(options.studentFilters.genders, settings.studentFilters.genders)) {
       filterRows.push({
         label: translate('aggregate-report-form.field.gender-label'),
-        values: inline(orAll(options.genders, settings.genders, code => translate(`common.gender.${code}`)))
+        values: inline(orAll(options.studentFilters.genders, settings.studentFilters.genders, code => translate(`common.gender.${code}`)))
       });
     }
-    if (!equalSize(options.ethnicities, settings.ethnicities)) {
+    if (!equalSize(options.studentFilters.ethnicities, settings.studentFilters.ethnicities)) {
       filterRows.push({
         label: translate('aggregate-report-form.field.ethnicity-label'),
-        values: orAll(options.ethnicities, settings.ethnicities, code => translate(`common.ethnicity.${code}`))
+        values: orAll(options.studentFilters.ethnicities, settings.studentFilters.ethnicities, code => translate(`common.ethnicity.${code}`))
       });
     }
-    if (!equalSize(options.limitedEnglishProficiencies, settings.limitedEnglishProficiencies)) {
+    if (!equalSize(options.studentFilters.limitedEnglishProficiencies, settings.studentFilters.limitedEnglishProficiencies)) {
       filterRows.push({
         label: translate('aggregate-report-form.field.limited-english-proficiency-label'),
-        values: inline(orAll(options.limitedEnglishProficiencies, settings.limitedEnglishProficiencies, code => translate(`common.boolean.${code}`)))
+        values: inline(orAll(options.studentFilters.limitedEnglishProficiencies, settings.studentFilters.limitedEnglishProficiencies, code => translate(`common.boolean.${code}`)))
       });
     }
-    if (!equalSize(options.section504s, settings.section504s)) {
+    if (!equalSize(options.studentFilters.section504s, settings.studentFilters.section504s)) {
       filterRows.push({
         label: translate('aggregate-report-form.field.504-label'),
-        values: inline(orAll(options.section504s, settings.section504s, code => translate(`common.boolean.${code}`)))
+        values: inline(orAll(options.studentFilters.section504s, settings.studentFilters.section504s, code => translate(`common.boolean.${code}`)))
       });
     }
-    if (!equalSize(options.individualEducationPlans, settings.individualEducationPlans)) {
+    if (!equalSize(options.studentFilters.individualEducationPlans, settings.studentFilters.individualEducationPlans)) {
       filterRows.push({
         label: translate('aggregate-report-form.field.iep-label'),
-        values: inline(orAll(options.individualEducationPlans, settings.individualEducationPlans, code => translate(`common.strict-boolean.${code}`)))
+        values: inline(orAll(options.studentFilters.individualEducationPlans, settings.studentFilters.individualEducationPlans, code => translate(`common.strict-boolean.${code}`)))
       });
     }
-    if (!equalSize(options.migrantStatuses, settings.migrantStatuses)) {
+    if (!equalSize(options.studentFilters.migrantStatuses, settings.studentFilters.migrantStatuses)) {
       filterRows.push({
         label: translate('aggregate-report-form.field.migrant-status-label'),
-        values: inline(orAll(options.migrantStatuses, settings.migrantStatuses, code => translate(`common.boolean.${code}`)))
+        values: inline(orAll(options.studentFilters.migrantStatuses, settings.studentFilters.migrantStatuses, code => translate(`common.boolean.${code}`)))
       });
     }
-    if (!equalSize(options.economicDisadvantages, settings.economicDisadvantages)) {
+    if (!equalSize(options.studentFilters.economicDisadvantages, settings.studentFilters.economicDisadvantages)) {
       filterRows.push({
         label: translate('aggregate-report-form.field.economic-disadvantage-label'),
-        values: inline(orAll(options.economicDisadvantages, settings.economicDisadvantages, code => translate(`common.boolean.${code}`)))
+        values: inline(orAll(options.studentFilters.economicDisadvantages, settings.studentFilters.economicDisadvantages, code => translate(`common.boolean.${code}`)))
       });
     }
 

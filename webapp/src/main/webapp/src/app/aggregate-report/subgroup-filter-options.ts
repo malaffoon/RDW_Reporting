@@ -1,11 +1,5 @@
-export interface SubgroupFilterOptions {
+import { SubgroupFilters } from './subgroup-filters';
 
-  readonly economicDisadvantages: string[];
-  readonly ethnicities: string[];
-  readonly genders: string[];
-  readonly individualEducationPlans: string[];
-  readonly limitedEnglishProficiencies: string[];
-  readonly migrantStatuses: string[];
-  readonly section504s: string[];
+export interface SubgroupFilterOptions extends SubgroupFilters {
 
 }

@@ -4,7 +4,7 @@ import { SubgroupFilterOptions } from "./subgroup-filter-options";
 /**
  * Represents the aggregate report options as provided by the API
  */
-export interface AggregateReportOptions extends SubgroupFilterOptions {
+export interface AggregateReportOptions {
 
   readonly assessmentGrades: string[];
   readonly assessmentTypes: string[];
@@ -12,9 +12,10 @@ export interface AggregateReportOptions extends SubgroupFilterOptions {
   readonly defaultOrganization?: Organization;
   readonly dimensionTypes?: string[];
   readonly interimAdministrationConditions: string[];
+  readonly queryTypes: string[];
   readonly schoolYears: number[];
   readonly statewideReporter: boolean;
   readonly subjects: string[];
   readonly summativeAdministrationConditions: string[];
-
+  readonly studentFilters: SubgroupFilterOptions;
 }

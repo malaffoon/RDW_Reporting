@@ -15,11 +15,15 @@ export class AggregateReportTableDataService {
               private subgroupMapper: SubgroupMapper) {
   }
 
+  // TODO this is sample data for Basic reports
   createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
     const organizations = this.createSampleOrganizations(settings);
     const assessmentGradeCodes = settings.assessmentGrades;
     const schoolYears = settings.schoolYears;
-    const dimensions = this.subgroupMapper.createSubgroups(['Overall', ...settings.dimensionTypes], settings);
+    const dimensions = this.subgroupMapper.createDimensionPermutations(
+      settings.studentFilters,
+      ['Overall', ...settings.dimensionTypes]
+    );
     const studentsTested = 100;
     const averageScaleScore = 2500;
     const averageStandardError = 50;

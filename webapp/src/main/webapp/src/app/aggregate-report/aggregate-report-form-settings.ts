@@ -1,11 +1,12 @@
 import { District, School } from "../shared/organization/organization";
 import {SubgroupFilters} from "./subgroup-filters";
+import { DimensionGroup } from './subgroup.mapper';
 
 /**
  * Client side representation of a report request.
  * This object must be mapped into a format that the server supports
  */
-export interface AggregateReportFormSettings extends SubgroupFilters {
+export interface AggregateReportFormSettings {
 
   /**
    * Assessment grades to be covered on the report
@@ -100,10 +101,15 @@ export interface AggregateReportFormSettings extends SubgroupFilters {
   /**
    * The type of report
    */
-  reportType: 'basic' | 'customAnalysis';
+  queryType: 'Basic' | 'FilteredSubgroup';
 
   /**
-   * The custom subgroups
+   * The advanced filters applied to basic reports
+   */
+  studentFilters: SubgroupFilters;
+
+  /**
+   * The custom subgroups applied to subgroup filter reports
    */
   subgroups: SubgroupFilters[];
 

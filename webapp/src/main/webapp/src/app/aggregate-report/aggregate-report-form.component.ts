@@ -21,14 +21,13 @@ import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-colum
 import { OrderableItem } from "../shared/order-selector/order-selector.component";
 import { AggregateReportRequestSummary } from "./aggregate-report-summary.component";
 import { Subscription } from "rxjs/Subscription";
-import { Utils } from "../shared/support/support";
 import { debounceTime, finalize, map, mergeMap } from "rxjs/operators";
 import { Observer } from "rxjs/Observer";
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import {equals, isEqualToDefaults, SubgroupFilters} from "./subgroup-filters";
-import {SubgroupMapper} from "./subgroup.mapper";
-import {SubgroupFilterOptions} from "./subgroup-filter-options";
+import { SubgroupFilters, SubgroupFilterSupport } from "./subgroup-filters";
+import { DimensionGroup, SubgroupMapper } from "./subgroup.mapper";
+import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
 
 const DefaultRenderDebounceMilliseconds = 500;
 
@@ -129,6 +128,9 @@ export class AggregateReportFormComponent {
    */
   showAdvancedFilters: boolean = false;
 
+  /**
+   * Handle on the request submission
+   */
   submissionSubscription: Subscription;
 
   /**
@@ -138,10 +140,15 @@ export class AggregateReportFormComponent {
    */
   settingsChangedObserver: Observer<void>;
 
+  /**
+   * Holds the custom subgroup form state
+   */
   customSubgroup: SubgroupFilters;
 
-  // TODO move to settings
-  customSubgroups: any[] = [];
+  /**
+   * Custom subgroup display items
+   */
+  subgroupItems: SubgroupFiltersListItem[] = [];
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -158,18 +165,9 @@ export class AggregateReportFormComponent {
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
 
-    // holds custom subgroup form state
-    this.customSubgroup = {
-      economicDisadvantages: this.aggregateReportOptions.economicDisadvantages.concat(),
-      ethnicities: this.aggregateReportOptions.ethnicities.concat(),
-      genders: this.aggregateReportOptions.genders.concat(),
-      individualEducationPlans: this.aggregateReportOptions.individualEducationPlans.concat(),
-      limitedEnglishProficiencies: this.aggregateReportOptions.limitedEnglishProficiencies.concat(),
-      migrantStatuses: this.aggregateReportOptions.migrantStatuses.concat(),
-      section504s: this.aggregateReportOptions.section504s.concat()
-    };
+    this.customSubgroup = SubgroupFilterSupport.copy(this.aggregateReportOptions.studentFilters);
 
-    this.showAdvancedFilters = !isEqualToDefaults(this.settings, this.aggregateReportOptions);
+    this.showAdvancedFilters = !SubgroupFilterSupport.equals(this.settings.studentFilters, this.aggregateReportOptions.studentFilters);
 
     this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
 
@@ -213,25 +211,6 @@ export class AggregateReportFormComponent {
     Observable.create((observer) => this.settingsChangedObserver = observer)
       .pipe(debounceTime(DefaultRenderDebounceMilliseconds))
       .subscribe(() => this.applySettingsChange());
-  }
-
-  onCreateCustomSubgroupButtonClick(): void {
-    this.customSubgroups = this.customSubgroups.concat(
-      this.subgroupMapper.createCustomSubgroup(this.customSubgroup, this.aggregateReportOptions)
-    );
-  }
-
-  onCustomSubgroupItemRemoveButtonClick(item): void {
-    this.customSubgroups = this.customSubgroups
-        .filter(subgroup => (<any>subgroup).guid !== item.guid);
-  }
-
-  get createCustomSubgroupButtonDisabled(): boolean {
-    if (isEqualToDefaults(this.customSubgroup, this.aggregateReportOptions)) {
-      return true;
-    }
-    const { uuid } = this.subgroupMapper.createCustomSubgroup(this.customSubgroup, this.aggregateReportOptions);
-    return this.customSubgroups.some(subgroup => subgroup.uuid === uuid);
   }
 
   ngOnInit(): void {
@@ -322,6 +301,27 @@ export class AggregateReportFormComponent {
 
   set includeStateResults(value: boolean) {
     this.settings.includeStateResults = value;
+  }
+
+  get createCustomSubgroupButtonDisabled(): boolean {
+    return SubgroupFilterSupport.equals(this.customSubgroup, this.aggregateReportOptions.studentFilters)
+      || this.settings.subgroups.some(subgroup => SubgroupFilterSupport.equals(
+        subgroup,
+        SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
+      ));
+  }
+
+  onCreateCustomSubgroupButtonClick(): void {
+    this.settings.subgroups = this.settings.subgroups.concat(
+      SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters));
+    this.subgroupItems = this.settings.subgroups.map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
+  }
+
+  onCustomSubgroupItemRemoveButtonClick(item): void {
+    this.settings.subgroups = this.settings.subgroups
+      .filter(subgroup => subgroup !== item);
+    this.subgroupItems = this.subgroupItems
+      .filter(subgroupItem => subgroupItem.value !== item);
   }
 
   /**
@@ -523,4 +523,8 @@ export class AggregateReportFormComponent {
     return this.requestMapper.map(this.options, this.settings, this.currentAssessmentDefinition);
   }
 
+}
+
+interface DimensionGroupListItem extends DimensionGroup {
+  readonly guid?: string;
 }

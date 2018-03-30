@@ -1,5 +1,3 @@
-import {Utils} from "../shared/support/support";
-import {SubgroupFilterOptions} from "./subgroup-filter-options";
 import * as _ from 'lodash';
 
 export interface SubgroupFilters {
@@ -41,35 +39,63 @@ export interface SubgroupFilters {
 
 }
 
-/**
- * @param {SubgroupFilters} a the settings
- * @param {SubgroupFilterOptions} b the default options
- * @returns {boolean} True if the provided filters are equal to the default options
- */
-export function isEqualToDefaults(a: SubgroupFilters, b: SubgroupFilterOptions): boolean {
-  const equalLength = Utils.hasEqualLength;
-  return equalLength(a.genders, b.genders)
-    && equalLength(a.ethnicities, b.ethnicities)
-    && equalLength(a.migrantStatuses, b.migrantStatuses)
-    && equalLength(a.individualEducationPlans, b.individualEducationPlans)
-    && equalLength(a.section504s, b.section504s)
-    && equalLength(a.limitedEnglishProficiencies, b.limitedEnglishProficiencies)
-    && equalLength(a.economicDisadvantages, b.economicDisadvantages);
+const equalSets = (a: any[], b: any[]) => {
+  return a === b
+    || (
+      a != null
+      && b != null
+      && a.length === b.length
+      && _.isEqual(a.sort(), b.sort()
+      )
+    );
+};
+
+const leftDifference = (a: {[key: string]: any}, b: {[key: string]: any}): {[key: string]: any} => {
+  return Object.entries(a).reduce((difference, [key, value]) => {
+    if (!equalSets(value, b[key])) {
+      difference[key] = value;
+    }
+    return difference;
+  }, {});
+};
+
+export class SubgroupFilterSupport {
+
+  /**
+   * @param {SubgroupFilters} a
+   * @param {SubgroupFilters} b
+   * @returns {boolean} True if the provided filters are equal
+   */
+  static equals(a: SubgroupFilters, b: SubgroupFilters): boolean {
+    return equalSets(a.genders, b.genders)
+      && equalSets(a.ethnicities, b.ethnicities)
+      && equalSets(a.migrantStatuses, b.migrantStatuses)
+      && equalSets(a.individualEducationPlans, b.individualEducationPlans)
+      && equalSets(a.section504s, b.section504s)
+      && equalSets(a.limitedEnglishProficiencies, b.limitedEnglishProficiencies)
+      && equalSets(a.economicDisadvantages, b.economicDisadvantages);
+  }
+
+  static copy(input: SubgroupFilters): SubgroupFilters {
+    return <SubgroupFilters>{
+      economicDisadvantages: input.economicDisadvantages.concat(),
+      ethnicities: input.ethnicities.concat(),
+      genders: input.genders.concat(),
+      individualEducationPlans: input.individualEducationPlans.concat(),
+      limitedEnglishProficiencies: input.limitedEnglishProficiencies.concat(),
+      migrantStatuses: input.migrantStatuses.concat(),
+      section504s: input.section504s.concat()
+    };
+  }
+
+  static leftDifference(a: SubgroupFilters, b: SubgroupFilters): SubgroupFilters {
+    return leftDifference(a, b) as SubgroupFilters;
+  }
+
 }
 
-/**
- * @param {SubgroupFilters} a
- * @param {SubgroupFilters} b
- * @returns {boolean} True if the provided filters are equal
- */
-export function equals(a: SubgroupFilters, b: SubgroupFilters): boolean {
-  const equal = _.isEqual;
-  return equal(a.genders, b.genders)
-    && equal(a.ethnicities, b.ethnicities)
-    && equal(a.migrantStatuses, b.migrantStatuses)
-    && equal(a.individualEducationPlans, b.individualEducationPlans)
-    && equal(a.section504s, b.section504s)
-    && equal(a.limitedEnglishProficiencies, b.limitedEnglishProficiencies)
-    && equal(a.economicDisadvantages, b.economicDisadvantages);
-}
+
+
+
+
 

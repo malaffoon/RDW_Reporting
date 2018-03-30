@@ -1,4 +1,5 @@
 import { Organization } from "../../shared/organization/organization";
+import { Dimension, DimensionGroup } from '../subgroup.mapper';
 
 /**
  * This model represents an aggregate report data table row result.
@@ -31,12 +32,3 @@ export class AggregateReportItem {
   dimension: Dimension;
 }
 
-/**
- * Holds dimension information for display as a report item
- */
-export interface Dimension {
-  readonly id: string;
-  readonly type: string;
-  readonly code?: string;
-  readonly codeTranslationCode?: string;
-}

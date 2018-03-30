@@ -334,7 +334,9 @@
       <div class="col-md-8 col-md-offset-2">
 
         <tabset>
-          <tab [heading]="'aggregate-report-form.tab.subgroup-and-filter' | translate">
+          <tab [heading]="'aggregate-report-form.tab.subgroup-and-filter' | translate"
+               [active]="settings.queryType === 'Basic'"
+               (select)="settings.queryType = 'Basic'">
 
             <!-- Subgroups -->
             <div class="well-group" id="subgroupSection">
@@ -376,14 +378,15 @@
                 </div>
               </div>
               <subgroup-filters *ngIf="showAdvancedFilters"
-                                [options]="options"
-                                [settings]="settings"
+                                [options]="options.studentFilters"
+                                [settings]="settings.studentFilters"
                                 (changed)="onSettingsChange()"></subgroup-filters>
             </div>
 
           </tab>
           <tab [heading]="'aggregate-report-form.tab.custom-subgroup' | translate"
-               [active]="true">
+               [active]="settings.queryType === 'FilteredSubgroup'"
+               (select)="settings.queryType = 'FilteredSubgroup'">
 
             <div class="well-group">
 
@@ -391,7 +394,7 @@
                 <p class="text-muted small">{{'aggregate-report-form.section.custom-subgroup.description' | translate}}</p>
               </div>
 
-              <subgroup-filters [options]="options"
+              <subgroup-filters [options]="options.studentFilters"
                                 [settings]="customSubgroup"></subgroup-filters>
 
               <div class="well">
@@ -405,18 +408,10 @@
                     </button>
                   </div>
                 </div>
-                <ng-container *ngIf="customSubgroups.length">
+                <ng-container *ngIf="subgroupItems.length">
                   <label>{{'aggregate-report-form.section.custom-subgroup.list-label' | translate}}</label>
-                  <list-group #customSubgroupList
-                              [items]="customSubgroups"
-                              [itemTemplate]="customSubgroupItemTemplate"></list-group>
-                  <ng-template #customSubgroupItemTemplate let-subgroup>
-                    <a *ngIf="!customSubgroupList.disabled"
-                       class="mr-xs"
-                       href="javascript:void(0)"
-                       (click)="onCustomSubgroupItemRemoveButtonClick(subgroup)"><i class="fa fa-close"></i></a>
-                    {{subgroup.name}}
-                  </ng-template>
+                  <subgroup-filters-list [items]="subgroupItems"
+                                         (itemRemoved)="onCustomSubgroupItemRemoveButtonClick($event)"></subgroup-filters-list>
                 </ng-container>
               </div>
 

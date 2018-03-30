@@ -1,8 +1,8 @@
-import {SubgroupFilters} from "./subgroup-filters";
-import {SubgroupFilterOptions} from "./subgroup-filter-options";
-import {Utils} from "../shared/support/support";
-import {Injectable} from "@angular/core";
-import {TranslateService} from "@ngx-translate/core";
+import { SubgroupFilters } from "./subgroup-filters";
+import { Utils } from "../shared/support/support";
+import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
 
 @Injectable()
 export class SubgroupMapper {
@@ -10,61 +10,66 @@ export class SubgroupMapper {
   constructor(private translate: TranslateService) {
   }
 
-  createCustomSubgroup(settings: SubgroupFilters, options: SubgroupFilterOptions): any {
-    const subgroups = this.createCustomSubgroups(settings, options);
+  createSubgroupFiltersListItem(value: SubgroupFilters): SubgroupFiltersListItem {
+    const dimensions = this.createDimensions(value);
     return {
-      guid: Utils.newGuid(),
-      uuid: subgroups.map(subgroup => subgroup.id).join(';'),
-      name: subgroups.map(subgroup => subgroup.name).join(', '),
-      subgroups: subgroups
+      value: value,
+      id: dimensions.map(dimension => dimension.id).join(';'),
+      name: dimensions.map(dimension => dimension.name).join(', ')
     };
   }
 
-  createCustomSubgroups(settings: SubgroupFilters, options: SubgroupFilterOptions): any[] {
+  createDimensions(settings: SubgroupFilters): Dimension[] {
     return DimensionConfigurations.reduce((subgroups, dimension) => {
       const type = dimension.type;
       const valueCodes = dimension.getDimensionValueCodes(settings) || [];
-      const optionCodes = dimension.getDimensionValueCodes(options) || [];
-      if (!Utils.hasEqualLength(valueCodes, optionCodes)) {
-        for (const value of valueCodes) {
-          subgroups.push(this.createSubgroupInternal(type, value, dimension));
-        }
+      for (const value of valueCodes) {
+        subgroups.push(this.createDimension(type, value, dimension));
       }
       return subgroups;
     }, []);
   }
 
-  createSubgroups(types: string[], settings: SubgroupFilters): any {
+  createDimensionPermutations(settings: SubgroupFilters, types: string[]): Dimension[] {
     const subgroups = [];
     for (const type of types) {
       const dimension = DimensionConfigurationByType[ type ];
       if (dimension) {
         const values = dimension.getDimensionValueCodes(settings);
         for (const value of values) {
-          subgroups.push(this.createSubgroupInternal(type, value, dimension));
+          subgroups.push(this.createDimension(type, value, dimension));
         }
       } else {
-        subgroups.push(this.createSubgroupInternal(type));
+        subgroups.push(this.createDimension(type));
       }
     }
     return subgroups;
   }
 
-  createSubgroup(type: string, value?: any): any {
-    return this.createSubgroupInternal(type, value, DimensionConfigurationByType[type]);
-  }
-
-  private createSubgroupInternal(type: string, value?: any, dimension?: DimensionConfiguration): any {
+  createDimension(type: string, value?: any, dimension?: DimensionConfiguration): Dimension {
     const translate = (code) => this.translate.instant(code);
     const suffix = value && dimension ? `: ${translate(dimension.getTranslationCode(value))}` : '';
     return {
       id: `${type}:${value}`,
+      name: `${translate(`common.dimension.${type}`)}${suffix}`,
       type: type,
-      code: value,
-      name: `${translate(`common.dimension.${type}`)}${suffix}`
+      code: value
     };
   }
 
+}
+
+export interface Dimension {
+  readonly id: string;
+  readonly name: string;
+  readonly type: string;
+  readonly code: string;
+}
+
+export interface DimensionGroup {
+  readonly id: string;
+  readonly name: string;
+  readonly dimensions: Dimension[];
 }
 
 interface DimensionConfiguration {
@@ -111,7 +116,7 @@ const DimensionConfigurations: DimensionConfiguration[] = [
   },
   {
     type: 'StudentEnrolledGrade',
-    getDimensionValueCodes: settings => Utils.isNullOrEmpty(settings.assessmentGrades) ? [] : [ settings.assessmentGrades[0] ],
+    getDimensionValueCodes: settings => Utils.isNullOrEmpty(settings.assessmentGrades) ? [] : [ settings.assessmentGrades[ 0 ] ],
     getTranslationCode: value => `common.enrolled-grade.${value}`
   }
 ];
@@ -123,7 +128,7 @@ const DimensionConfigurations: DimensionConfiguration[] = [
  */
 const DimensionConfigurationByType: { [dimensionType: string]: DimensionConfiguration } = DimensionConfigurations
   .reduce((byType, dimension) => {
-    byType[dimension.type] = dimension;
+    byType[ dimension.type ] = dimension;
     return byType;
   }, {});
 
