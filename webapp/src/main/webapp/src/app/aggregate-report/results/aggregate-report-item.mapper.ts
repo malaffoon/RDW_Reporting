@@ -4,6 +4,12 @@ import { AggregateReportRow } from "../../report/aggregate-report";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { OrganizationMapper } from "../../shared/organization/organization.mapper";
 import {SubgroupMapper} from "../subgroup.mapper";
+import { SubgroupFilters } from '../subgroup-filters';
+import {
+  BasicAggregateReportQuery, BasicAggregateReportRequest,
+  StudentFilters
+} from '../../report/basic-aggregate-report-request';
+import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
 
 /**
  * Maps server modeled aggregate report rows into client friendly table rows
@@ -12,10 +18,46 @@ import {SubgroupMapper} from "../subgroup.mapper";
 export class AggregateReportItemMapper {
 
   constructor(private organizationMapper: OrganizationMapper,
-              private subgroupMapper: SubgroupMapper) {
+              private subgroupMapper: SubgroupMapper,
+              private requestMapper: AggregateReportRequestMapper) {
   }
 
-  map(assessmentDefinition: AssessmentDefinition, row: AggregateReportRow, uuid: number): AggregateReportItem {
+  createRow(query: BasicAggregateReportQuery,
+            assessmentDefinition: AssessmentDefinition,
+            row: AggregateReportRow,
+            uuid: number): AggregateReportItem {
+
+    if (query.queryType === 'Basic') {
+      return this.createBasicRow(assessmentDefinition, row, uuid);
+    }
+    if (query.queryType === 'FilteredSubgroup') {
+      return this.createFilteredSubgroupRow(assessmentDefinition, row, uuid, query.subgroups);
+    }
+    throw new Error(`Unsupported query type "${query.queryType}"`);
+  }
+
+  createBasicRow(assessmentDefinition: AssessmentDefinition,
+                 row: AggregateReportRow,
+                 uuid: number): AggregateReportItem {
+
+    const item = this.createRowInternal(assessmentDefinition, row, uuid);
+    item.dimension = this.subgroupMapper.createDimension(row.dimension.type, row.dimension.code);
+    return item;
+  }
+
+  createFilteredSubgroupRow(assessmentDefinition: AssessmentDefinition,
+                            row: AggregateReportRow,
+                            uuid: number,
+                            subgroups: {[key: string]: StudentFilters}): AggregateReportItem {
+
+    const item = this.createRowInternal(assessmentDefinition, row, uuid);
+    item.subgroup = this.subgroupMapper.createSubgroupFiltersListItem(
+      this.requestMapper.createSubgroupFilters(subgroups[row.subgroupKey])
+    );
+    return item;
+  }
+
+  private createRowInternal(assessmentDefinition: AssessmentDefinition, row: AggregateReportRow, uuid: number): AggregateReportItem {
     const item = new AggregateReportItem();
     const itemPerformanceLevelCounts = item.performanceLevelByDisplayTypes.Separate.Number;
     const itemPerformanceLevelPercents = item.performanceLevelByDisplayTypes.Separate.Percent;
@@ -29,13 +71,12 @@ export class AggregateReportItemMapper {
     item.subjectCode = row.assessment.subjectCode;
     item.schoolYear = row.assessment.examSchoolYear;
     item.organization = this.organizationMapper.map(row.organization);
-    item.dimension = this.subgroupMapper.createDimension(row.dimension.type, row.dimension.code);
 
     const measures: any = row.measures || {};
     item.avgScaleScore = measures.avgScaleScore || 0;
     item.avgStdErr = measures.avgStdErr || 0;
 
-    let totalTested: number = 0;
+    let totalTested = 0;
 
     for (let level = 1; level <= assessmentDefinition.performanceLevelCount; level++) {
       const count = measures[ `level${level}Count` ] || 0;
@@ -45,14 +86,14 @@ export class AggregateReportItemMapper {
     item.studentsTested = totalTested;
 
     for (let level = 0; level < itemPerformanceLevelCounts.length; level++) {
-      const percent = totalTested == 0 ? 0 : Math.floor((itemPerformanceLevelCounts[ level ] / totalTested) * 100);
+      const percent = totalTested === 0 ? 0 : Math.floor((itemPerformanceLevelCounts[ level ] / totalTested) * 100);
       itemPerformanceLevelPercents.push(percent);
     }
 
     // If there is a rollup level, calculate the grouped values
     if (assessmentDefinition.performanceLevelGroupingCutPoint > 0) {
-      let belowCount: number = 0;
-      let aboveCount: number = 0;
+      let belowCount = 0;
+      let aboveCount = 0;
       for (let level = 0; level < itemPerformanceLevelCounts.length; level++) {
         if (level < assessmentDefinition.performanceLevelGroupingCutPoint - 1) {
           belowCount += itemPerformanceLevelCounts[ level ];

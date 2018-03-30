@@ -1,8 +1,10 @@
 import { Organization } from "../../shared/organization/organization";
 import { Dimension, DimensionGroup } from '../subgroup.mapper';
+import { SubgroupFiltersListItem } from '../subgroup-filters-list-item';
 
 /**
  * This model represents an aggregate report data table row result.
+ * TODO rename to row?
  */
 export class AggregateReportItem {
   itemId: number;
@@ -29,6 +31,11 @@ export class AggregateReportItem {
     }
   };
   organization: Organization;
-  dimension: Dimension;
+
+  // Present for Basic queries
+  dimension?: Dimension;
+
+  // Present for FilteredSubgroup queries
+  subgroup?: SubgroupFiltersListItem;
 }
 

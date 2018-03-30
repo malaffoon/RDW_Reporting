@@ -501,7 +501,7 @@ export class AggregateReportTableComponent implements OnInit {
 
     const dimensionTypeAndCodeRankingValues = options.dimensionTypes.reduce((ranking, dimensionType) => {
       return ranking.concat(
-        (dimensionOptionsByDimensionType[ dimensionType ] || []).map(dimensionCode => `${dimensionType}.${dimensionCode}`)
+        (dimensionOptionsByDimensionType[ dimensionType ] || []).map(dimensionCode => `${dimensionType}:${dimensionCode}`)
       );
     }, []);
 

@@ -295,9 +295,7 @@ interface Row {
   readonly values: string[];
 }
 
-interface ColumnProvider {
-  (...sections: Section[]): Section[][];
-}
+type ColumnProvider = (...sections: Section[]) => Section[][];
 
 export interface AggregateReportRequestSummary {
   readonly assessmentDefinition: AssessmentDefinition;

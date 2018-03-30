@@ -15,15 +15,11 @@ export class AggregateReportTableDataService {
               private subgroupMapper: SubgroupMapper) {
   }
 
-  // TODO this is sample data for Basic reports
   createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
     const organizations = this.createSampleOrganizations(settings);
     const assessmentGradeCodes = settings.assessmentGrades;
     const schoolYears = settings.schoolYears;
-    const dimensions = this.subgroupMapper.createDimensionPermutations(
-      settings.studentFilters,
-      ['Overall', ...settings.dimensionTypes]
-    );
+
     const studentsTested = 100;
     const averageScaleScore = 2500;
     const averageStandardError = 50;
@@ -38,40 +34,59 @@ export class AggregateReportTableDataService {
     const groupedPerformanceLevelCount = studentsTested * 0.5;
     const groupedPerformanceLevelCounts = [ groupedPerformanceLevelCount, groupedPerformanceLevelCount ];
 
-    let uuid = 0;
-    const rows: AggregateReportItem[] = [];
-    for (let organization of organizations) {
-      for (let assessmentGradeCode of assessmentGradeCodes) {
-        for (let schoolYear of schoolYears) {
-          for (let dimension of dimensions) {
-            rows.push({
-              itemId: ++uuid,
-              organization: organization,
-              assessmentId: undefined,
-              assessmentLabel: this.translate.instant('sample-aggregate-table-data-service.assessment-label'),
-              assessmentGradeCode: assessmentGradeCode,
-              subjectCode: undefined,
-              schoolYear: schoolYear,
-              avgScaleScore: averageScaleScore,
-              avgStdErr: averageStandardError,
-              studentsTested: studentsTested,
-              performanceLevelByDisplayTypes: {
-                Separate: {
-                  Number: performanceLevelCounts,
-                  Percent: performanceLevelPercents
-                },
-                Grouped: {
-                  Number: groupedPerformanceLevelCounts,
-                  Percent: groupedPerformanceLevelCounts
+    const createRows = (values: any[], setter: (row: AggregateReportItem, value: any) => void): AggregateReportItem[] => {
+      let uuid = 0;
+      const rows: AggregateReportItem[] = [];
+      for (const organization of organizations) {
+        for (const assessmentGradeCode of assessmentGradeCodes) {
+          for (const schoolYear of schoolYears) {
+            for (const value of values) {
+              const row = {
+                itemId: ++uuid,
+                organization: organization,
+                assessmentId: undefined,
+                assessmentLabel: this.translate.instant('sample-aggregate-table-data-service.assessment-label'),
+                assessmentGradeCode: assessmentGradeCode,
+                subjectCode: undefined,
+                schoolYear: schoolYear,
+                avgScaleScore: averageScaleScore,
+                avgStdErr: averageStandardError,
+                studentsTested: studentsTested,
+                performanceLevelByDisplayTypes: {
+                  Separate: {
+                    Number: performanceLevelCounts,
+                    Percent: performanceLevelPercents
+                  },
+                  Grouped: {
+                    Number: groupedPerformanceLevelCounts,
+                    Percent: groupedPerformanceLevelCounts
+                  }
                 }
-              },
-              dimension: dimension
-            });
+              };
+              setter(row, value);
+              rows.push(row);
+            }
           }
         }
       }
+      return rows;
+    };
+
+    if (settings.queryType === 'Basic') {
+      const dimensions = this.subgroupMapper.createDimensionPermutations(
+        settings.studentFilters,
+        ['Overall', ...settings.dimensionTypes]
+      );
+      return createRows(dimensions, (item, value) => item.dimension = value);
+    } else if (settings.queryType === 'FilteredSubgroup') {
+      const subgroups = [{
+        name: 'Overall'
+      }].concat(
+        settings.subgroups.map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup))
+      );
+      return createRows(subgroups, (item, value) => item.subgroup = value);
     }
-    return rows;
+    throw new Error(`Unsupported query type "${settings.queryType}"`);
   }
 
   private createSampleOrganizations(settings: AggregateReportFormSettings): Organization[] {
