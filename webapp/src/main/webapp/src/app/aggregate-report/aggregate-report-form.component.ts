@@ -165,7 +165,8 @@ export class AggregateReportFormComponent {
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
 
-    this.customSubgroup = SubgroupFilterSupport.empty();
+    // this.customSubgroup = SubgroupFilterSupport.empty();
+    this.customSubgroup = SubgroupFilterSupport.copy(this.aggregateReportOptions.studentFilters);
 
     this.showAdvancedFilters = !SubgroupFilterSupport.equals(this.settings.studentFilters, this.aggregateReportOptions.studentFilters);
 
@@ -305,21 +306,23 @@ export class AggregateReportFormComponent {
 
   get createCustomSubgroupButtonDisabled(): boolean {
     return SubgroupFilterSupport.equals(this.customSubgroup, this.aggregateReportOptions.studentFilters)
-      || SubgroupFilterSupport.equals(this.customSubgroup, SubgroupFilterSupport.empty())
+      // || SubgroupFilterSupport.equals(this.customSubgroup, SubgroupFilterSupport.empty())
       || this.settings.subgroups.some(subgroup => SubgroupFilterSupport.equals(
         subgroup,
-        SubgroupFilterSupport.prune(this.customSubgroup)
+        // SubgroupFilterSupport.prune(this.customSubgroup)
+        SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
       ));
   }
 
   onCreateCustomSubgroupButtonClick(): void {
-    console.log('before', this.settings.subgroups)
     this.settings.subgroups = this.settings.subgroups.concat([
-      SubgroupFilterSupport.prune(this.customSubgroup)
+      // SubgroupFilterSupport.prune(this.customSubgroup)
+      SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
     ]);
-    console.log('after', this.settings.subgroups)
     this.subgroupItems = this.settings.subgroups
       .map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
+
+    this.onSettingsChange();
   }
 
   onCustomSubgroupItemRemoveButtonClick(item): void {
@@ -327,6 +330,8 @@ export class AggregateReportFormComponent {
       .filter(subgroup => subgroup !== item);
     this.subgroupItems = this.subgroupItems
       .filter(subgroupItem => subgroupItem.value !== item);
+
+    this.onSettingsChange();
   }
 
   /**

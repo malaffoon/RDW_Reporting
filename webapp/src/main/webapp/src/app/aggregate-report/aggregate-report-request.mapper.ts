@@ -230,26 +230,27 @@ export class AggregateReportRequestMapper {
   }
 
   private createSubgroupFilters(settingFilters: SubgroupFilters): StudentFilters {
+    const notNullOrEmpty = (value) => !Utils.isNullOrEmpty(value);
     const queryFilters: any = {};
-    if (settingFilters.economicDisadvantages.length) {
+    if (notNullOrEmpty(settingFilters.economicDisadvantages)) {
       queryFilters.economicDisadvantageCodes = settingFilters.economicDisadvantages;
     }
-    if (settingFilters.ethnicities.length) {
+    if (notNullOrEmpty(settingFilters.ethnicities)) {
       queryFilters.ethnicityCodes = settingFilters.ethnicities;
     }
-    if (settingFilters.genders) {
+    if (notNullOrEmpty(settingFilters.genders)) {
       queryFilters.genderCodes = settingFilters.genders;
     }
-    if (settingFilters.individualEducationPlans.length) {
+    if (notNullOrEmpty(settingFilters.individualEducationPlans)) {
       queryFilters.iepCodes = settingFilters.individualEducationPlans;
     }
-    if (settingFilters.limitedEnglishProficiencies.length) {
+    if (notNullOrEmpty(settingFilters.limitedEnglishProficiencies)) {
       queryFilters.lepCodes = settingFilters.limitedEnglishProficiencies;
     }
-    if (settingFilters.migrantStatuses.length) {
+    if (notNullOrEmpty(settingFilters.migrantStatuses)) {
       queryFilters.migrantStatusCodes = settingFilters.migrantStatuses;
     }
-    if (settingFilters.section504s.length) {
+    if (notNullOrEmpty(settingFilters.section504s)) {
       queryFilters.section504Codes = settingFilters.section504s;
     }
     return queryFilters;
