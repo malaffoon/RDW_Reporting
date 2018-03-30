@@ -1,6 +1,5 @@
 import { District, School } from "../shared/organization/organization";
 import {SubgroupFilters} from "./subgroup-filters";
-import { DimensionGroup } from './subgroup.mapper';
 
 /**
  * Client side representation of a report request.

@@ -26,7 +26,7 @@ import { Observer } from "rxjs/Observer";
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { SubgroupFilters, SubgroupFilterSupport } from "./subgroup-filters";
-import { DimensionGroup, SubgroupMapper } from "./subgroup.mapper";
+import { SubgroupMapper } from "./subgroup.mapper";
 import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
 
 const DefaultRenderDebounceMilliseconds = 500;
@@ -165,7 +165,6 @@ export class AggregateReportFormComponent {
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
 
-    // this.customSubgroup = SubgroupFilterSupport.empty();
     this.customSubgroup = SubgroupFilterSupport.copy(this.aggregateReportOptions.studentFilters);
     this.subgroupItems = this.settings.subgroups
       .map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
@@ -308,10 +307,8 @@ export class AggregateReportFormComponent {
 
   get createCustomSubgroupButtonDisabled(): boolean {
     return SubgroupFilterSupport.equals(this.customSubgroup, this.aggregateReportOptions.studentFilters)
-      // || SubgroupFilterSupport.equals(this.customSubgroup, SubgroupFilterSupport.empty())
       || this.settings.subgroups.some(subgroup => SubgroupFilterSupport.equals(
         subgroup,
-        // SubgroupFilterSupport.prune(this.customSubgroup)
         SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
       ));
   }
@@ -323,7 +320,6 @@ export class AggregateReportFormComponent {
 
   onCreateCustomSubgroupButtonClick(): void {
     this.settings.subgroups = this.settings.subgroups.concat([
-      // SubgroupFilterSupport.prune(this.customSubgroup)
       SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
     ]);
     this.subgroupItems = this.settings.subgroups
@@ -540,8 +536,4 @@ export class AggregateReportFormComponent {
     return this.requestMapper.map(this.options, this.settings, this.currentAssessmentDefinition);
   }
 
-}
-
-interface DimensionGroupListItem extends DimensionGroup {
-  readonly guid?: string;
 }

@@ -66,12 +66,6 @@ export interface Dimension {
   readonly code: string;
 }
 
-export interface DimensionGroup {
-  readonly id: string;
-  readonly name: string;
-  readonly dimensions: Dimension[];
-}
-
 interface DimensionConfiguration {
   readonly type: string;
   readonly getDimensionValueCodes: (settings: any) => string[];

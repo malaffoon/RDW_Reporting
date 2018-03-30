@@ -1,5 +1,5 @@
 import { Organization } from "../../shared/organization/organization";
-import { Dimension, DimensionGroup } from '../subgroup.mapper';
+import { Dimension } from '../subgroup.mapper';
 import { SubgroupFiltersListItem } from '../subgroup-filters-list-item';
 
 /**
