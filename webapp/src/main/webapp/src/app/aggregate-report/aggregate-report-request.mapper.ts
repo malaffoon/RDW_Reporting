@@ -164,18 +164,11 @@ export class AggregateReportRequestMapper {
           options.studentFilters.section504s
         ),
       }
-      : {};
+      : SubgroupFilterSupport.copy(options.studentFilters);
 
     const subgroups = query.queryType === 'FilteredSubgroup'
       ? this.createSubgroupFilters(query.subgroups)
       : [];
-
-    console.log('qs', query.subgroups)
-    console.log('qs.values()', Object.values(query.subgroups))
-    console.log('qs.values().map()', Object.values(query.subgroups)
-      .map(remoteSubgroup => SubgroupFilterSupport.prune(remoteSubgroup as SubgroupFilters)));
-
-    console.log('sg', subgroups);
 
     return forkJoin(schools, districts)
       .pipe(
