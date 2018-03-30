@@ -61,6 +61,27 @@ const leftDifference = (a: {[key: string]: any}, b: {[key: string]: any}): {[key
 
 export class SubgroupFilterSupport {
 
+  static empty(): SubgroupFilters {
+    return {
+      economicDisadvantages: [],
+      ethnicities: [],
+      genders: [],
+      individualEducationPlans: [],
+      limitedEnglishProficiencies: [],
+      migrantStatuses: [],
+      section504s: []
+    };
+  }
+
+  static prune(input: SubgroupFilters): SubgroupFilters {
+    return Object.entries(input).reduce((pruned, [key, value]) => {
+      if (value.length !== 0) {
+        pruned[key] = value;
+      }
+      return pruned;
+    }, {}) as SubgroupFilters;
+  }
+
   /**
    * @param {SubgroupFilters} a
    * @param {SubgroupFilters} b

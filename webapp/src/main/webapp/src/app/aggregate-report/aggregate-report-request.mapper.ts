@@ -18,7 +18,7 @@ import { ordering } from "@kourge/ordering";
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
-import { SubgroupFilters } from './subgroup-filters';
+import { SubgroupFilters, SubgroupFilterSupport } from './subgroup-filters';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);
@@ -91,16 +91,9 @@ export class AggregateReportRequestMapper {
 
     // Set type-specific parameters
     if (settings.queryType === 'Basic') {
-      this.addStudentFilters(
-        query.studentFilters = {},
-        settings.studentFilters,
-        options.studentFilters
-      );
+      query.studentFilters = this.createStudentFilters(settings.studentFilters, options.studentFilters);
     } else if (settings.queryType === 'FilteredSubgroup') {
-      this.addFilteredSubgroups(
-        query.subgroups = {},
-        settings.subgroups
-      );
+      query.subgroups = this.createSubgroups(settings.subgroups);
     }
 
     const name = settings.name
@@ -165,7 +158,8 @@ export class AggregateReportRequestMapper {
             name: request.name,
             performanceLevelDisplayType: query.achievementLevelDisplayType,
             queryType: query.queryType,
-            subgroups: [], // TODO
+            subgroups: Object.values(query.subgroups)
+              .map(remoteSubgroup => SubgroupFilterSupport.prune(remoteSubgroup as SubgroupFilters)),
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
               : querySummativeAdministrationConditions,
@@ -209,7 +203,8 @@ export class AggregateReportRequestMapper {
       );
   }
 
-  private addStudentFilters(queryFilters, settingFilters, optionFilters): void {
+  private createStudentFilters(settingFilters, optionFilters): StudentFilters {
+    const queryFilters: any = {};
     if (!equalSize(settingFilters.economicDisadvantages, optionFilters.economicDisadvantages)) {
       queryFilters.economicDisadvantageCodes = settingFilters.economicDisadvantages;
     }
@@ -231,12 +226,40 @@ export class AggregateReportRequestMapper {
     if (!equalSize(settingFilters.section504s, optionFilters.section504s)) {
       queryFilters.section504Codes = settingFilters.section504s;
     }
+    return queryFilters;
   }
 
-  private addFilteredSubgroups(querySubgroups, settingSubgroups: SubgroupFilters[]): void {
-    settingSubgroups.forEach((subgroup, index) => {
-      querySubgroups[(index + 1).toString()] = subgroup;
-    });
+  private createSubgroupFilters(settingFilters: SubgroupFilters): StudentFilters {
+    const queryFilters: any = {};
+    if (settingFilters.economicDisadvantages.length) {
+      queryFilters.economicDisadvantageCodes = settingFilters.economicDisadvantages;
+    }
+    if (settingFilters.ethnicities.length) {
+      queryFilters.ethnicityCodes = settingFilters.ethnicities;
+    }
+    if (settingFilters.genders) {
+      queryFilters.genderCodes = settingFilters.genders;
+    }
+    if (settingFilters.individualEducationPlans.length) {
+      queryFilters.iepCodes = settingFilters.individualEducationPlans;
+    }
+    if (settingFilters.limitedEnglishProficiencies.length) {
+      queryFilters.lepCodes = settingFilters.limitedEnglishProficiencies;
+    }
+    if (settingFilters.migrantStatuses.length) {
+      queryFilters.migrantStatusCodes = settingFilters.migrantStatuses;
+    }
+    if (settingFilters.section504s.length) {
+      queryFilters.section504Codes = settingFilters.section504s;
+    }
+    return queryFilters;
+  }
+
+  private createSubgroups(settingFilters: SubgroupFilters[]): {[key: string]: StudentFilters} {
+    return settingFilters.reduce((subgroups, filters, index) => {
+      subgroups[(index + 1).toString()] = this.createSubgroupFilters(filters);
+      return subgroups;
+    }, {});
   }
 
 }

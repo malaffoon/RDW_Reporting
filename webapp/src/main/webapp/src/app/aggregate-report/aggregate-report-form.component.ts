@@ -165,7 +165,7 @@ export class AggregateReportFormComponent {
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
 
-    this.customSubgroup = SubgroupFilterSupport.copy(this.aggregateReportOptions.studentFilters);
+    this.customSubgroup = SubgroupFilterSupport.empty();
 
     this.showAdvancedFilters = !SubgroupFilterSupport.equals(this.settings.studentFilters, this.aggregateReportOptions.studentFilters);
 
@@ -305,16 +305,21 @@ export class AggregateReportFormComponent {
 
   get createCustomSubgroupButtonDisabled(): boolean {
     return SubgroupFilterSupport.equals(this.customSubgroup, this.aggregateReportOptions.studentFilters)
+      || SubgroupFilterSupport.equals(this.customSubgroup, SubgroupFilterSupport.empty())
       || this.settings.subgroups.some(subgroup => SubgroupFilterSupport.equals(
         subgroup,
-        SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
+        SubgroupFilterSupport.prune(this.customSubgroup)
       ));
   }
 
   onCreateCustomSubgroupButtonClick(): void {
-    this.settings.subgroups = this.settings.subgroups.concat(
-      SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters));
-    this.subgroupItems = this.settings.subgroups.map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
+    console.log('before', this.settings.subgroups)
+    this.settings.subgroups = this.settings.subgroups.concat([
+      SubgroupFilterSupport.prune(this.customSubgroup)
+    ]);
+    console.log('after', this.settings.subgroups)
+    this.subgroupItems = this.settings.subgroups
+      .map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
   }
 
   onCustomSubgroupItemRemoveButtonClick(item): void {
