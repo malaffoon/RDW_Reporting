@@ -19,7 +19,7 @@ export interface BasicAggregateReportQuery {
   readonly includeAllDistrictsOfSchools: boolean;
   readonly includeAllSchoolsOfDistricts: boolean;
   readonly includeState: boolean;
-  readonly queryType: 'Basic' | 'FilteredSubgroup';
+  readonly queryType: 'Basic' | 'FilteredSubgroup'; // See AggregateQueryType for possible values
   readonly schoolIds?: number[];
   readonly schoolYears: number[];
   readonly studentFilters?: StudentFilters; // Basic only

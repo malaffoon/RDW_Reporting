@@ -17,9 +17,10 @@ export class FilterBy extends ObservableObject {
   private _iep: number = -1;
   private _limitedEnglishProficiency: number = -1;
   private _ethnicities: boolean[] = [ true ];
+  private _elasCodes: boolean[] = [ true ];
 
   private _filters = ['offGradeAssessment', 'transferAssessment', 'administration', 'summativeStatus', 'completion', 'genders', 'migrantStatus',
-                      'plan504', 'iep', 'limitedEnglishProficiency', 'ethnicities'];
+                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities'];
 
   get filteredEthnicities(): any[] {
     return this.filterArray(this._ethnicities);
@@ -29,9 +30,13 @@ export class FilterBy extends ObservableObject {
     return this.filterArray(this._genders);
   }
 
+  get filteredElasCodes(): any[] {
+    return this.filterArray(this._elasCodes);
+  }
+
   private filterArray(array: any[]): any[] {
     const returnArray: any[] = [];
-    for (let i in array) {
+    for (const i in array) {
       if (array.hasOwnProperty(i) && i != "0" && array[ i ]) {
         returnArray.push(i);
       }
@@ -43,16 +48,21 @@ export class FilterBy extends ObservableObject {
   get all(): string[] {
     const all = [];
 
-    for (let property of this._filters) {
+    for (const property of this._filters) {
       if (property == "ethnicities") {
         const filteredEthnicities = this.filteredEthnicities;
-        for (let filteredEthnicity of filteredEthnicities) {
+        for (const filteredEthnicity of filteredEthnicities) {
           all.push(property + "." + filteredEthnicity);
         }
       } else if (property == "genders") {
         const filteredGenders = this.filteredGenders;
-        for (let filteredGender of filteredGenders) {
+        for (const filteredGender of filteredGenders) {
           all.push(property + "." + filteredGender);
+        }
+      } else if (property == "elasCodes") {
+        const filteredElasCodes = this.filteredElasCodes;
+        for (const filteredElasCode of filteredElasCodes) {
+          all.push(property + "." + filteredElasCode);
         }
       } else if (this.isFilterEnabled(property)) {
         all.push(property);
@@ -69,6 +79,15 @@ export class FilterBy extends ObservableObject {
   set ethnicities(value: boolean[]) {
     this._ethnicities = value;
     this.notifyChange('ethnicities');
+  }
+
+  get elasCodes(): boolean[] {
+    return this._elasCodes;
+  }
+
+  set elasCodes(value: boolean[]) {
+    this._elasCodes = value;
+    this.notifyChange('elasCodes');
   }
 
   get offGradeAssessment(): boolean {
