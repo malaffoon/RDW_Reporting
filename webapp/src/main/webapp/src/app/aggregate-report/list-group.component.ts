@@ -16,13 +16,22 @@ import {Component, Input, TemplateRef} from "@angular/core";
 export class ListGroupComponent {
 
   @Input()
-  items: any[];
-
-  @Input()
   itemTemplate: TemplateRef<any>;
 
   @Input()
-  disabled: boolean = false;
+  disabled = false;
+
+  private _items: any[] = [];
+
+  get items(): any[] {
+    return this._items;
+  }
+
+  @Input()
+  set items(items: any[]) {
+    this._items = items ? items.concat() : [];
+    console.log('set', this._items);
+  }
 
 }
 

@@ -99,16 +99,21 @@
             <!-- Selections -->
             <div [hidden]="!settings.districts.length" class="mb-sm">
               <label>{{'aggregate-report-form.section.organization.district-list-heading' | translate}}</label>
-              <aggregate-report-organization-list [organizations]="settings.districts"
-                                                  (organizationClick)="onOrganizationListItemClose($event)"></aggregate-report-organization-list>
+              <editable-list-group [items]="settings.districts"
+                                   [itemTemplate]="organizationListItemTemplate"
+                                   (itemRemoveButtonClick)="onOrganizationListItemClose($event)"></editable-list-group>
             </div>
             <div [hidden]="!settings.schools.length" class="mb-sm">
               <label>{{'aggregate-report-form.section.organization.school-list-heading' | translate}}</label>
-              <aggregate-report-organization-list [organizations]="settings.schools"
-                                                  (organizationClick)="onOrganizationListItemClose($event)"
-                                                  [disabled]="hasDefaultSchoolOrganization"></aggregate-report-organization-list>
+              <editable-list-group [items]="settings.schools"
+                                   [itemTemplate]="organizationListItemTemplate"
+                                   (itemRemoveButtonClick)="onOrganizationListItemClose($event)"
+                                   [disabled]="hasDefaultSchoolOrganization"></editable-list-group>
             </div>
 
+            <ng-template #organizationListItemTemplate let-item>
+              {{item.name}}
+            </ng-template>
             <!-- Settings -->
             <div>
               <label>{{'aggregate-report-form.section.organization.include.heading' | translate}}</label>
@@ -410,8 +415,12 @@
                 </div>
                 <ng-container *ngIf="subgroupItems.length">
                   <label>{{'aggregate-report-form.section.custom-subgroup.list-label' | translate}}</label>
-                  <subgroup-filters-list [items]="subgroupItems"
-                                         (itemRemoved)="onCustomSubgroupItemRemoveButtonClick($event)"></subgroup-filters-list>
+                  <editable-list-group [items]="subgroupItems"
+                                       [itemTemplate]="subgroupListItemTemplate"
+                                       (itemRemoveButtonClick)="onCustomSubgroupItemRemoveButtonClick($event)"></editable-list-group>
+                  <ng-template #subgroupListItemTemplate let-item>
+                    {{item.name}}
+                  </ng-template>
                 </ng-container>
               </div>
 

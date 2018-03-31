@@ -3,6 +3,7 @@ import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper"
 import { ValueDisplayTypes } from "../shared/display-options/value-display-type";
 import Spy = jasmine.Spy;
 import { of } from 'rxjs/observable/of';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 
 describe('AggregateReportOptionsMapper', () => {
 
@@ -57,6 +58,7 @@ describe('AggregateReportOptionsMapper', () => {
       completenesses: [ '1', '2' ],
       dimensionTypes: [ '1', '2' ],
       interimAdministrationConditions: [ '1', '2' ],
+      queryTypes: ['queryTypeA', 'queryTypeB'],
       schoolYears: [ 1, 2 ],
       statewideReporter: false,
       subjects: [ '1', '2' ],
@@ -72,7 +74,7 @@ describe('AggregateReportOptionsMapper', () => {
       }
     };
     fixture.toDefaultSettings(options).subscribe(settings => {
-      expect(settings).toEqual({
+      expect(settings).toEqual(<AggregateReportFormSettings>{
         performanceLevelDisplayType: 'displayTypeA',
         interimAdministrationConditions: [options.interimAdministrationConditions[0]],
         summativeAdministrationConditions: [options.summativeAdministrationConditions[0]],
@@ -85,9 +87,11 @@ describe('AggregateReportOptionsMapper', () => {
         includeAllDistrictsOfSelectedSchools: true,
         includeAllSchoolsOfSelectedDistricts: false,
         includeStateResults: true,
+        queryType: options.queryTypes[0],
         schools: [],
         schoolYears: [options.schoolYears[0]],
         subjects: options.subjects,
+        subgroups: [],
         valueDisplayType: ValueDisplayTypes.Percent,
         columnOrder: ['columnA'],
         studentFilters: {
@@ -100,7 +104,7 @@ describe('AggregateReportOptionsMapper', () => {
           section504s: options.studentFilters.section504s
         }
       });
-    })
+    });
 
   });
 

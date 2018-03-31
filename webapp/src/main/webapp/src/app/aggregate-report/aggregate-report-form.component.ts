@@ -328,12 +328,11 @@ export class AggregateReportFormComponent {
     this.onSettingsChange();
   }
 
-  onCustomSubgroupItemRemoveButtonClick(item): void {
+  onCustomSubgroupItemRemoveButtonClick(item: SubgroupFiltersListItem): void {
     this.settings.subgroups = this.settings.subgroups
-      .filter(subgroup => subgroup !== item);
+      .filter(subgroup => subgroup !== item.value);
     this.subgroupItems = this.subgroupItems
-      .filter(subgroupItem => subgroupItem.value !== item);
-
+      .filter(subgroupItem => subgroupItem !== item);
     this.onSettingsChange();
   }
 
@@ -346,6 +345,7 @@ export class AggregateReportFormComponent {
     this.organizationTypeahead.value = '';
     this.addOrganization(organization);
     this.markOrganizationsControlTouched();
+    this.onSettingsChange();
   }
 
   /**
@@ -355,6 +355,7 @@ export class AggregateReportFormComponent {
    */
   onOrganizationListItemClose(organization: any): void {
     this.removeOrganization(organization);
+    this.onSettingsChange();
   }
 
   onIncludeStateResultsChange(): void {
@@ -448,11 +449,13 @@ export class AggregateReportFormComponent {
   private addOrganizationToSettings(organization: Organization): void {
     this.organizations = this.organizations.concat(organization);
     if (organization.type === OrganizationType.District) {
-      this.settings.districts.push(<District>organization);
-      this.settings.districts.sort(OrganizationComparator);
+      this.settings.districts = this.settings.districts
+        .concat(<District>organization)
+        .sort(OrganizationComparator);
     } else if (organization.type === OrganizationType.School) {
-      this.settings.schools.push(<School>organization);
-      this.settings.schools.sort(OrganizationComparator);
+      this.settings.schools = this.settings.schools
+        .concat(<School>organization)
+        .sort(OrganizationComparator);
     }
   }
 
@@ -465,16 +468,18 @@ export class AggregateReportFormComponent {
     const finder = value => value.equals(organization);
     const index = this.organizations.findIndex(finder);
     if (index !== -1) {
-      this.removeOrganizationFromSettings(organization, finder);
+      this.removeOrganizationFromSettings(organization);
     }
   }
 
-  private removeOrganizationFromSettings(organization: Organization, finder: any): void {
+  private removeOrganizationFromSettings(organization: Organization): void {
     this.organizations = this.organizations.filter(value => !organization.equals(value));
     if (organization.type === OrganizationType.District) {
-      this.settings.districts.splice(this.settings.districts.findIndex(finder), 1);
+      this.settings.districts = this.settings.districts
+        .filter(district => !organization.equals(district));
     } else if (organization.type === OrganizationType.School) {
-      this.settings.schools.splice(this.settings.schools.findIndex(finder), 1);
+      this.settings.schools = this.settings.schools
+        .filter(school => !organization.equals(school));
     }
     this.markOrganizationsControlTouched();
   }
