@@ -155,9 +155,9 @@ export class SchoolResultsComponent implements OnInit {
               (search: string) =>
                 this.organizationService.searchSchoolsWithDistrictsBySchoolName(search)
                   .pipe(map(
-                    (organizations: any[]) =>
-                      organizations.filter(
-                        organization => this.organizations.findIndex(x => organization.equals(x)) === -1
+                    (schools: School[]) =>
+                      schools.filter(
+                        (school: School) => this.organizations.findIndex(x => school.equals(x)) === -1
                       ))
                   )));
           this.currentSchool = school;
