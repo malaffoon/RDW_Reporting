@@ -12,17 +12,25 @@ import { Utils } from "../shared/support/support";
 import { WritingTraitAggregate } from "../assessments/model/writing-trait-aggregate.model";
 import { TranslateDatePipe } from "../shared/i18n/translate-date.pipe";
 import { TranslateNumberPipe } from "../shared/i18n/translate-number.pipe";
+import { ApplicationSettingsService } from "../app-settings.service";
 
 @Injectable()
 export class CsvBuilder {
   private columns: CsvColumn[] = [];
   private filename = 'export';
+ private showElas: boolean = false;
+ private showLep: boolean = false;
 
   constructor(private angular2csv: Angular2CsvProvider,
               private translateService: TranslateService,
               private datePipe: TranslateDatePipe,
               private schoolYearPipe: SchoolYearPipe,
-              private numberPipe: TranslateNumberPipe) {
+              private numberPipe: TranslateNumberPipe,
+              private applicationSettingsService: ApplicationSettingsService) {
+    applicationSettingsService.getSettings().subscribe(settings => {
+      this.showElas = settings.elasEnabled;
+      this.showLep = settings.lepEnabled;
+    });
   }
 
   /**
@@ -36,7 +44,8 @@ export class CsvBuilder {
       this.translateService,
       this.datePipe,
       this.schoolYearPipe,
-      this.numberPipe
+      this.numberPipe,
+   this.applicationSettingsService
     );
   }
 
@@ -323,6 +332,16 @@ export class CsvBuilder {
     );
   }
 
+  withElas(getExam: (item: any) => Exam) {
+    return this.withColumn(
+      this.translateService.instant('csv-builder.elas'),
+      (item) => {
+        const elasCode = getExam(item).elasCode;
+        return elasCode ? this.translateService.instant(`common.elas.${getExam(item).elasCode}`) : '';
+      }
+    )
+  }
+
   withEthnicity(getExam: (item: any) => Exam, ethnicities: string[]) {
     for (const ethnicity of ethnicities) {
       this.withColumn(
@@ -482,12 +501,19 @@ export class CsvBuilder {
   }
 
   withStudentContext(getExam: (item: any) => Exam, ethnicities) {
-    return this
+    let studentContext = this
       .withMigrantStatus(getExam)
       .with504Plan(getExam)
-      .withIep(getExam)
-      .withLimitedEnglish(getExam)
-      .withEthnicity(getExam, ethnicities);
+      .withIep(getExam);
+    if (this.showLep) {
+      studentContext = studentContext.withLimitedEnglish(getExam);
+    }
+    if (this.showElas) {
+      studentContext = studentContext.withElas(getExam);
+    }
+
+    studentContext = studentContext.withEthnicity(getExam, ethnicities);
+    return studentContext;
   }
 
   private numberAsString(value: Number, showAsPercent: boolean) {
