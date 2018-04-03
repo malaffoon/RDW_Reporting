@@ -79,12 +79,12 @@ export class AggregateReportTableDataService {
       );
       return createRows(dimensions, (item, value) => item.dimension = value);
     } else if (settings.queryType === 'FilteredSubgroup') {
-      const subgroups = [{
-        name: 'Overall'
-      }].concat(
+      const subgroups = [
+        this.subgroupMapper.createOverallSubgroupFiltersListItem()
+      ].concat(
         settings.subgroups.map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup))
       );
-      return createRows(subgroups, (item, value) => item.subgroup = value);
+      return createRows(subgroups, (item, value) => item.dimension = value);
     }
     throw new Error(`Unsupported query type "${settings.queryType}"`);
   }
