@@ -197,24 +197,6 @@ export class Utils {
       && a.length === b.length;
   }
 
-  // TODO stop using subject/assessment type enums. use codes instead.
-
-  static toServerSubjectEnum(code: string): string {
-    return { 'Math': 'MATH', 'ELA': 'ELA' }[ code ];
-  }
-
-  static toSubjectCode(subject: AssessmentSubjectType): string {
-    return [ undefined, 'Math', 'ELA' ][ subject ];
-  }
-
-  static toServerAssessmentTypeEnum(code: string): string {
-    return { 'ica': 'ICA', 'iab': 'IAB', 'sum': 'SUMMATIVE' }[ code ];
-  }
-
-  static toAssessmentTypeCode(assessmentType: AssessmentType): string {
-    return [ undefined, 'ica', 'iab', 'sum' ][ assessmentType ];
-  }
-
   /**
    * Given the name "My Name" this method will return "My Name (1)"
    * Given the name "My Name (1)" this method will return "My Name (2)"

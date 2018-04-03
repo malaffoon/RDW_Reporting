@@ -1,5 +1,3 @@
-import { Utils } from "../../shared/support/support";
-
 export class Assessment {
   id: number;
   label: string;
@@ -16,15 +14,11 @@ export class Assessment {
 
   /** @deprecated this belongs in a UI wrapper */
   get hasResourceUrl(): boolean {
-    return !Utils.isNullOrUndefined(this.resourceUrl);
+    return this.resourceUrl != null;
   }
 
   get isIab(): boolean {
     return this.type === 'iab';
-  }
-
-  get isIca(): boolean {
-    return this.type === 'ica';
   }
 
   get isInterim(): boolean {
@@ -39,7 +33,4 @@ export class Assessment {
     return this.subject === 'ELA';
   }
 
-  get isMath(): boolean {
-    return this.subject === 'Math';
-  }
 }
