@@ -59,7 +59,7 @@
 
           <ng-container *ngSwitchCase="'subject-header'">
             <ng-container *ngIf="!report.subjectCodes.length">
-              {{ 'common.collection-selection.ALL' | translate }}
+              {{ 'common.subject.ALL.name' | translate }}
             </ng-container>
             <ng-container *ngFor="let subjectCode of report.subjectCodes; let last = last">
               {{ 'common.subject.' + subjectCode + '.name' | translate }}<ng-container *ngIf="!last">, </ng-container>
