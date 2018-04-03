@@ -40,6 +40,7 @@ export class AssessmentExamMapper {
         item.scores = serverAssessmentExamItems.examItems
           .filter(serverExamItem => serverExamItem.itemId === serverAssessmentItem.id)
           .map(serverExamItem => this.mapExamItemFromApi(serverExamItem));
+        return item;
       })
       .sort(ordering(byNumber).on<AssessmentItem>(ai => ai.position).compare);
   }

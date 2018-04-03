@@ -694,6 +694,10 @@
         "name": "Math, ELA",
         "short-name": "All"
       },
+      "ELA": {
+        "name": "English / Language Arts",
+        "short-name": "ELA"
+      },
       "Math": {
         "name": "Math",
         "short-name": "Math"

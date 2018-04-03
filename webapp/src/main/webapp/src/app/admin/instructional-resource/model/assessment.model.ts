@@ -1,7 +1,7 @@
 /**
  * TODO could just be an interface
  */
-export interface Assessment {
+export class Assessment {
   id: number;
   label: string;
   name: string;
