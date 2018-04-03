@@ -30,7 +30,7 @@ describe('ExamFilterService', () => {
 
   it('should filter exams by Administrative condition for IABs', () => {
     filterBy.administration = AdministrativeCondition.Standard;
-    assessmentExam.assessment.type = AssessmentType.IAB;
+    assessmentExam.assessment.type = 'iab';
 
     assessmentExam.exams[ 0 ].administrativeCondition =  AdministrativeCondition.Standard;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.NonStandard;
@@ -45,7 +45,7 @@ describe('ExamFilterService', () => {
 
   it('should not filter exams by Administrative condition for Summative', () => {
     filterBy.administration = AdministrativeCondition.Standard;
-    assessmentExam.assessment.type = AssessmentType.SUMMATIVE;
+    assessmentExam.assessment.type = 'sum';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Standard;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.NonStandard;
@@ -60,7 +60,7 @@ describe('ExamFilterService', () => {
 
   it('should filter exams by summative status for Summative', () => {
     filterBy.summativeStatus = AdministrativeCondition.Valid;
-    assessmentExam.assessment.type = AssessmentType.SUMMATIVE;
+    assessmentExam.assessment.type = 'sum';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.Invalid;
@@ -75,7 +75,7 @@ describe('ExamFilterService', () => {
 
   it('should not filter exams by summative status for IABs', () => {
     filterBy.summativeStatus = AdministrativeCondition.Valid;
-    assessmentExam.assessment.type = AssessmentType.IAB;
+    assessmentExam.assessment.type = 'iab';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.Invalid;

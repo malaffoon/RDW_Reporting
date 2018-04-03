@@ -1,4 +1,7 @@
-export class Assessment {
+/**
+ * TODO could just be an interface
+ */
+export interface Assessment {
   id: number;
   label: string;
   name: string;

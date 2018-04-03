@@ -49,8 +49,8 @@ export class AssessmentExamMapper {
     assessment.id = serverAssessment.id;
     assessment.label = serverAssessment.label;
     assessment.grade = serverAssessment.gradeCode;
-    assessment.type = AssessmentType[ serverAssessment.type as string ];
-    assessment.subject = serverAssessment.subject;
+    assessment.type = serverAssessment.typeCode;
+    assessment.subject = serverAssessment.subjectCode;
     assessment.claimCodes = serverAssessment.claimCodes || [];
     assessment.cutPoints = serverAssessment.cutPoints || [];
     assessment.resourceUrl = serverAssessment.resourceUrl;
