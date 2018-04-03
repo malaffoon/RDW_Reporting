@@ -8,7 +8,6 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { StudentHistoryExamWrapper } from "../model/student-history-exam-wrapper.model";
 import { Exam } from "../../assessments/model/exam.model";
 import { Assessment } from "../../assessments/model/assessment.model";
-import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { ClaimScore } from "../../assessments/model/claim-score.model";
 import { MockRouter } from "../../../test/mock.router";
 import { CsvExportService } from "../../csv-export/csv-export.service";

@@ -1,5 +1,4 @@
 import { ExamFilterService } from "./exam-filter.service";
-import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { AdministrativeCondition } from "../../../shared/enum/administrative-condition.enum";
 import { Completeness } from "../../../shared/enum/completeness.enum";
 import { AssessmentExam } from "../../model/assessment-exam.model";

@@ -1,6 +1,3 @@
-import { AssessmentSubjectType } from "../enum/assessment-subject-type.enum";
-import { AssessmentType } from "../enum/assessment-type.enum";
-
 export class Utils {
 
   static getPropertyValue(propertyPath: string, object: any): any {

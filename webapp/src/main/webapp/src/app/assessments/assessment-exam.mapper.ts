@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { AssessmentExam } from "./model/assessment-exam.model";
 import { Assessment } from "./model/assessment.model";
 import { Exam } from "./model/exam.model";
-import { AssessmentType } from "../shared/enum/assessment-type.enum";
 import { AssessmentItem } from "./model/assessment-item.model";
 import { ExamItemScore } from "./model/exam-item-score.model";
 import { byGradeThenByName } from "./assessment.comparator";
