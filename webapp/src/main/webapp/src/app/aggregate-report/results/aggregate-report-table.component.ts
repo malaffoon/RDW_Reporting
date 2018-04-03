@@ -516,7 +516,7 @@ export class AggregateReportTableComponent implements OnInit {
     // TODO we should have a specific ordering for all grade codes, although the system only currently uses "03" - "12"
     const enrolledGradeComparator: Comparator<AggregateReportItem> = ordering(byNumber)
       .on((item: AggregateReportItem) => {
-        const { type, code } = item.dimension;
+        const { type, code } = <any>item.dimension;
         if (type == null || type !== 'StudentEnrolledGrade') {
           return -1;
         }
