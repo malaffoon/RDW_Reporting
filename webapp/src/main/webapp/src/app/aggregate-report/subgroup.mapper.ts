@@ -32,7 +32,7 @@ export class SubgroupMapper {
       const type = dimension.type;
       const valueCodes = dimension.getDimensionValueCodes(settings) || [];
       for (const value of valueCodes) {
-        subgroups.push(this.createDimension(type, value, dimension));
+        subgroups.push(this.createDimensionInternal(type, value, dimension));
       }
       return subgroups;
     }, []);
@@ -45,16 +45,20 @@ export class SubgroupMapper {
       if (dimension) {
         const values = dimension.getDimensionValueCodes(settings);
         for (const value of values) {
-          subgroups.push(this.createDimension(type, value, dimension));
+          subgroups.push(this.createDimensionInternal(type, value, dimension));
         }
       } else {
-        subgroups.push(this.createDimension(type));
+        subgroups.push(this.createDimensionInternal(type));
       }
     }
     return subgroups;
   }
 
-  createDimension(type: string, value?: any, dimension?: DimensionConfiguration): Dimension {
+  createDimension(type: string, value?: any): Dimension {
+    return this.createDimensionInternal(type, value, DimensionConfigurationByType[ type ]);
+  }
+
+  private createDimensionInternal(type: string, value?: any, dimension?: DimensionConfiguration): Dimension {
     const translate = (code) => this.translate.instant(code);
     const suffix = value && dimension ? `: ${translate(dimension.getTranslationCode(value))}` : '';
     return {
