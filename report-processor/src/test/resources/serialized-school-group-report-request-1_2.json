@@ -3,7 +3,7 @@
   "subject": "MATH",
   "schoolYear": 2018,
   "language": "en",
-  "name": "sg - old",
+  "name": "SchoolGradeExamReportRequest v1.2.X",
   "accommodationsVisible": false,
   "disableTransferAccess": false,
   "order": "STUDENT_NAME",
