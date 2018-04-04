@@ -545,18 +545,18 @@
       },
       "performance-levels": {
         "all": "All Levels",
-        "IAB": {
+        "iab": {
           "1": "Below Standard",
           "2": "Near Standard",
           "3": "Above Standard"
         },
-        "ICA": {
+        "ica": {
           "1": "Standard Not Met",
           "2": "Standard Nearly Met",
           "3": "Standard Met",
           "4": "Standard Exceeded"
         },
-        "SUMMATIVE": {
+        "sum": {
           "1": "Standard Not Met",
           "2": "Standard Nearly Met",
           "3": "Standard Met",
