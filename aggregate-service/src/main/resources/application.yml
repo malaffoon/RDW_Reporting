@@ -27,7 +27,7 @@ cloud:
 app:
   aggregate-reports:
     assessment-types: ica,sum,iab
-    statewide-user-assessment-types: sum
+    statewide-user-assessment-types: sum,iab,ica
     state-aggregate-assessment-types: sum
     custom-aggregate-report-repository:
       organization-partition-size: 10
