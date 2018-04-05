@@ -72,9 +72,6 @@ export class SBTypeahead implements OnInit {
   @Input()
   set options(options: Option[]) {
     if (this._options !== options) {
-      for (let i = 0; i < 3; i++ ) {
-        options = options.concat(options);
-      }
       this._options = options
         ? options
           .sort(
