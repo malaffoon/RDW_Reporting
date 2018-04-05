@@ -21,6 +21,9 @@ import { byString, join } from "@kourge/ordering/comparator";
            (ngModelChange)="onChangeInternal()"
            [(ngModel)]="search"
            placeholder="{{placeholder}}"
+           [typeaheadOptionsLimit]="optionsLimit"
+           [typeaheadOptionsInScrollableView]="20"
+           [typeaheadScrollable]="true"
            autocomplete="off">
   `
 })
@@ -51,6 +54,8 @@ export class SBTypeahead implements OnInit {
 
   @Input()
   inputId: string;
+
+  optionsLimit: number = Number.MAX_SAFE_INTEGER;
 
   private _options: Option[] = [];
 
