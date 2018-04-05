@@ -13,7 +13,7 @@ export class SubgroupMapper {
   createOverallSubgroupFiltersListItem(): SubgroupFiltersListItem {
     return {
       id: '',
-      name: this.translate.instant('common.dimension.Overall'),
+      name: this.translate.instant('common.dimension-short-name.Overall'),
       value: undefined
     };
   }
@@ -63,7 +63,7 @@ export class SubgroupMapper {
     const suffix = value && dimension ? `: ${translate(dimension.getTranslationCode(value))}` : '';
     return {
       id: `${type}:${value}`,
-      name: `${translate(`common.dimension.${type}`)}${suffix}`,
+      name: `${translate(`common.dimension-short-name.${type}`)}${suffix}`,
       type: type,
       code: value
     };
