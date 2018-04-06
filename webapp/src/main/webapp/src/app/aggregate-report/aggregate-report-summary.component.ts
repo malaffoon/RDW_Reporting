@@ -7,20 +7,10 @@ import { AssessmentDefinition } from './assessment/assessment-definition';
 import { Utils } from '../shared/support/support';
 import { SubgroupMapper } from './subgroup.mapper';
 
-const createColumnProvider = (columnCount: number = Number.MAX_VALUE): ColumnProvider => {
-  return (...sections) => {
-    const parentColumns = [];
-    sections.forEach((section, index) => {
-      const parentColumnIndex = Math.floor(index / columnCount);
-      const columns = parentColumns[ parentColumnIndex ] = parentColumns[ parentColumnIndex ] || [];
-      columns.push(section);
-    });
-    return parentColumns;
-  };
-};
-
-const NarrowColumnProvider: ColumnProvider = createColumnProvider(2);
-const WideColumnProvider: ColumnProvider = createColumnProvider();
+const NarrowColumnProvider: ColumnProvider = (...sections) =>
+  [ [ sections[ 0 ], sections[ 1 ] ], [ sections[ 2 ], sections[ 3 ] ] ];
+const WideColumnProvider: ColumnProvider = (...sections) =>
+  [ [ sections[ 0 ] ], [ sections[ 1 ] ], [ sections[ 2 ] ], [ sections[ 3 ] ] ];
 
 @Component({
   selector: 'aggregate-report-summary',
