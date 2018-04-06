@@ -2,7 +2,7 @@
 
 #### 1.1.4 - 2018-04-06
 
-* Tweak school search to weight more complete matches.
+* Tweak organization search to be scrollable so all matches may be viewed.
 * Change SAML integration to use "mail" instead of "NameID".
 
 #### 1.1.3 - 2018-03-26
