@@ -57,6 +57,8 @@
       "assessment-grades-info": "The grade of the assessment that was administered",
       "assessment-grades-empty-error": "Please select an assessment grade.",
       "assessment-type-label": "Assessment Type",
+      "elas-label": "English Language Acquisition Status",
+      "elas-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
       "interim-administration-condition-label": "Manner of Administration",
       "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
       "school-year-label": "Academic Years",
@@ -415,10 +417,23 @@
       "Gender": "Gender",
       "IEP": "IEP",
       "LEP": "English Learners",
+      "ELAS": "English Language Acquisition Status",
       "MigrantStatus": "Migrant Status",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Student Enrolled Grade"
+    },
+    "dimension-short-name": {
+      "EconomicDisadvantage": "Economic Disadvantage",
+      "Ethnicity": "Ethnicity",
+      "Gender": "Gender",
+      "IEP": "IEP",
+      "LEP": "English Learners",
+      "ELAS": "ELAS",
+      "MigrantStatus": "Migrant Status",
+      "Overall": "Overall",
+      "Section504": "504",
+      "StudentEnrolledGrade": "Enrolled Grade"
     },
     "elas": {
       "EO": "English Only",
@@ -545,18 +560,18 @@
       },
       "performance-levels": {
         "all": "All Levels",
-        "IAB": {
+        "iab": {
           "1": "Below Standard",
           "2": "Near Standard",
           "3": "Above Standard"
         },
-        "ICA": {
+        "ica": {
           "1": "Standard Not Met",
           "2": "Standard Nearly Met",
           "3": "Standard Met",
           "4": "Standard Exceeded"
         },
-        "SUMMATIVE": {
+        "sum": {
           "1": "Standard Not Met",
           "2": "Standard Nearly Met",
           "3": "Standard Met",
@@ -671,7 +686,7 @@
         "standard": "Standard",
         "standard-info": {
           "ELA": "This column reflects the Common Core State Standard(s) associated with a test item. Test items may be associated with more than one standard.  For example, a question that asks students to evaluate research sources may assess both reading and research skills.  For more information, see the <a href=\"https://portal.smarterbalanced.org/library/en/english-language-artsliteracy-content-specifications.pdf\" target=\"_blank\">English Language Arts Content Specifications</a>.",
-          "MATH": "This column reflects the Common Core State Standard(s) associated with a test item. Test items may be associated with more than one standard.  Items that assess mathematical practices (problem solving, modeling and data analysis, and communicating reasoning) are also aligned to standards that describe the mathematical content with which students engage. For example, an item may ask students to communicate their reasoning when solving a problem about geometry or fractions. For more information, see the <a href=\"https://portal.smarterbalanced.org/library/en/mathematics-content-specifications.pdf\" target=\"_blank\">Mathematics Content Specifications</a>."
+          "Math": "This column reflects the Common Core State Standard(s) associated with a test item. Test items may be associated with more than one standard.  Items that assess mathematical practices (problem solving, modeling and data analysis, and communicating reasoning) are also aligned to standards that describe the mathematical content with which students engage. For example, an item may ask students to communicate their reasoning when solving a problem about geometry or fractions. For more information, see the <a href=\"https://portal.smarterbalanced.org/library/en/mathematics-content-specifications.pdf\" target=\"_blank\">Mathematics Content Specifications</a>."
         },
         "x-points": "{{id}}"
       },
@@ -699,10 +714,6 @@
         "short-name": "ELA"
       },
       "Math": {
-        "name": "Math",
-        "short-name": "Math"
-      },
-      "MATH": {
         "name": "Math",
         "short-name": "Math"
       }
@@ -818,9 +829,7 @@
       "table": {
         "headers": {
           "aggregateEnabled": "Aggregate Test Results",
-          "ELA": "ELA",
           "individualEnabled": "Individual Test Results",
-          "MATH": "Math",
           "name": "District"
         }
       }
@@ -829,9 +838,7 @@
       "table": {
         "headers": {
           "aggregateEnabled": "Aggregate Test Results",
-          "ELA": "ELA",
           "individualEnabled": "Individual Test Results",
-          "MATH": "Math",
           "name": "State"
         }
       }
@@ -1148,11 +1155,6 @@
       "NO_RESULTS": "No Results",
       "PENDING": "Pending",
       "RUNNING": "Running"
-    },
-    "subjects": {
-      "0": "Math, ELA",
-      "1": "Math",
-      "2": "ELA"
     }
   },
   "results-by-student": {

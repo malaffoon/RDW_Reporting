@@ -493,6 +493,7 @@ export class AggregateReportTableComponent implements OnInit {
       Gender: options.studentFilters.genders,
       Ethnicity: options.studentFilters.ethnicities,
       LEP: options.studentFilters.limitedEnglishProficiencies,
+      ELAS: options.studentFilters.englishLanguageAcquisitionStatuses,
       MigrantStatus: options.studentFilters.migrantStatuses,
       Section504: options.studentFilters.migrantStatuses,
       IEP: options.studentFilters.individualEducationPlans,
