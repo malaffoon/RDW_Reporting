@@ -21,6 +21,9 @@ import { byString, join } from "@kourge/ordering/comparator";
            (ngModelChange)="onChangeInternal()"
            [(ngModel)]="search"
            placeholder="{{placeholder}}"
+           [typeaheadOptionsLimit]="100"
+           [typeaheadOptionsInScrollableView]="20"
+           [typeaheadScrollable]="true"
            autocomplete="off">
   `
 })
