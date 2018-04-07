@@ -67,6 +67,7 @@ export class AggregateReportOptionsMapper {
           value => this.schoolYearPipe.transform(value),
           value => `School Year: ${value}`
         )),
+      schoolYearCounts: options.schoolYearCounts,
       subjects: options.subjects
         .map(optionMapper(
           value => translate(`common.subject.${value}.short-name`),
@@ -83,6 +84,11 @@ export class AggregateReportOptionsMapper {
         .map(optionMapper(
           value => translate(`common.dimension.${value}`),
           value => `Comparative Subgroup: ${value}`
+        )),
+      reportTypes: options.reportTypes
+        .map(optionMapper(
+          value => translate(`common.aggregate-report-type.${value}`),
+          value => `Aggregate Report Type: ${value}`
         )),
       statewideReporter: options.statewideReporter, // TODO move to user context?
       studentFilters: {
@@ -147,8 +153,12 @@ export class AggregateReportOptionsMapper {
         const defaultAssessmentType = options.assessmentTypes[ 0 ];
         const assessmentDefinition = definitions.get(defaultAssessmentType);
         return <AggregateReportFormSettings>{
-          assessmentGrades: [],
           assessmentType: defaultAssessmentType,
+          cohort: {
+            fromAssessmentGrade: undefined,
+            fromSchoolYear: options.schoolYears[ 0 ],
+            schoolYearCount: 2
+          },
           columnOrder: assessmentDefinition.aggregateReportIdentityColumns,
           completenesses: [ options.completenesses[ 0 ] ],
           dimensionTypes: [],
@@ -160,9 +170,13 @@ export class AggregateReportOptionsMapper {
           interimAdministrationConditions: [ options.interimAdministrationConditions[ 0 ] ],
           performanceLevelDisplayType: assessmentDefinition.performanceLevelDisplayTypes[ 0 ],
           queryType: options.queryTypes[ 0 ],
+          reportType: options.reportTypes[ 0 ],
           summativeAdministrationConditions: [ options.summativeAdministrationConditions[ 0 ] ],
           schools: [],
-          schoolYears: [ options.schoolYears[ 0 ] ],
+          generalPopulation: {
+            assessmentGrades: [],
+            schoolYears: [ options.schoolYears[ 0 ] ]
+          },
           studentFilters: {
             economicDisadvantages: options.studentFilters.economicDisadvantages,
             ethnicities: options.studentFilters.ethnicities,

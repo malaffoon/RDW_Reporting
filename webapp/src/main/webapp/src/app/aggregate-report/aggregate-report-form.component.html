@@ -65,6 +65,34 @@
 
   <form #form [formGroup]="formGroup">
 
+    <!-- Report Type -->
+    <!--<div class="row" #reportTypeSection id="reportTypeSection">-->
+      <!--<div class="col-md-8 col-md-offset-2">-->
+        <!--<div class="well-group">-->
+          <!--<div class="well">-->
+            <!--<h3>{{'aggregate-report-form.section.report-type.heading' | translate}}</h3>-->
+            <!--<p class="text-muted small">{{'aggregate-report-form.section.report-type.subtext' | translate}}</p>-->
+            <!--&lt;!&ndash;<h2>{{'aggregate-report-form.heading' | translate}}</h2>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="small gray-darkest mt-sm">{{'aggregate-report-form.subheading' | translate}}</p>&ndash;&gt;-->
+          <!--</div>-->
+          <!--<div class="well">-->
+            <!--<div class="row">-->
+              <!--<div class="col-md-6">-->
+                <!--<label>{{'aggregate-report-form.field.report-type-label' | translate}}</label>-->
+              <!--</div>-->
+              <!--<div class="col-md-6">-->
+                <!--<sb-radio-button-group name="reportType"-->
+                                       <!--[options]="options.reportTypes"-->
+                                       <!--[(ngModel)]="settings.reportType"-->
+                                       <!--[ngModelOptions]="{standalone: true}"-->
+                                       <!--(onModelChange)="onSettingsChange()"></sb-radio-button-group>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
     <!-- Organization -->
     <div class="row" #organizationSection id="organizationSection">
       <div class="col-md-8 col-md-offset-2">
@@ -211,65 +239,153 @@
               </div>
             </div>
           </div>
-          <div class="well">
-            <div class="row">
-              <div class="col-md-6">
-                <label info-button
-                       title="{{'aggregate-report-form.field.assessment-grades-label' | translate}}"
-                       content="{{'aggregate-report-form.field.assessment-grades-info' | translate}}"></label>
-                <p class="small mb-0"
-                   [ngClass]="{'red': showErrors(assessmentGradesControl), 'gray-darker': !showErrors(assessmentGradesControl)}">
-                  {{'common.form-field-message.required' | translate}}
-                </p>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <sb-checkbox-group [horizontal]="true"
-                                     [options]="options.assessmentGrades"
-                                     [(ngModel)]="settings.assessmentGrades"
-                                     [allOptionEnabled]="false"
-                                     name="assessmentGrades"
-                                     formControlName="assessmentGrades"
-                                     analyticsEvent="FilterClick"
-                                     analyticsCategory="AggregateQueryBuilder"
-                                     [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"
-                                     (change)="onSettingsChange()"></sb-checkbox-group>
-                  <div *ngIf="showErrors(assessmentGradesControl)">
-                    <p *ngIf="assessmentGradesControl.errors.notEmpty" class="help-block small red">{{assessmentGradesControl.errors.notEmpty.messageId | translate}}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="well">
-            <div class="row">
-              <div class="col-md-6">
-                <label>{{'aggregate-report-form.field.school-year-label' | translate}}</label>
-                <p class="small mb-0"
-                   [ngClass]="{'red': showErrors(schoolYearsControl), 'gray-darker': !showErrors(schoolYearsControl)}">
-                  {{'common.form-field-message.required' | translate}}
-                </p>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <sb-checkbox-group [options]="options.schoolYears"
-                                     [(ngModel)]="settings.schoolYears"
-                                     [horizontal]="true"
-                                     [allOptionEnabled]="false"
-                                     formControlName="schoolYears"
-                                     name="schoolYears"
-                                     analyticsEvent="FilterClick"
-                                     analyticsCategory="AggregateQueryBuilder"
-                                     [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"
-                                     (change)="onSettingsChange()"></sb-checkbox-group>
-                  <div *ngIf="showErrors(schoolYearsControl)">
-                    <p *ngIf="schoolYearsControl.errors.notEmpty" class="help-block small red">{{schoolYearsControl.errors.notEmpty.messageId | translate}}</p>
-                  </div>
-                </div>
 
+          <div class="well">
+            <div class="row">
+              <div class="col-md-6">
+                <label>{{'aggregate-report-form.field.report-type-label' | translate}}</label>
+              </div>
+              <div class="col-md-6">
+                <sb-radio-button-group name="reportType"
+                                       [options]="options.reportTypes"
+                                       [(ngModel)]="settings.reportType"
+                                       [ngModelOptions]="{standalone: true}"
+                                       (onModelChange)="onSettingsChange()"></sb-radio-button-group>
               </div>
             </div>
           </div>
+
+          <div [hidden]="settings.reportType !== 'GeneralPopulation'">
+
+            <div class="well">
+              <div class="row">
+                <div class="col-md-6">
+                  <label info-button
+                         title="{{'aggregate-report-form.field.assessment-grades-label' | translate}}"
+                         content="{{'aggregate-report-form.field.assessment-grades-info' | translate}}"></label>
+                  <p class="small mb-0"
+                     [ngClass]="showErrors(assessmentGradesControl) ? 'red': 'gray-darker'">
+                    {{'common.form-field-message.required' | translate}}
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <sb-checkbox-group [horizontal]="true"
+                                       [options]="options.assessmentGrades"
+                                       [(ngModel)]="settings.generalPopulation.assessmentGrades"
+                                       [allOptionEnabled]="false"
+                                       name="assessmentGrades"
+                                       formControlName="assessmentGrades"
+                                       analyticsEvent="FilterClick"
+                                       analyticsCategory="AggregateQueryBuilder"
+                                       [allOptionAnalyticsProperties]="{label: 'Assessment Grade: All'}"
+                                       (change)="onSettingsChange()"></sb-checkbox-group>
+                    <div *ngIf="showErrors(assessmentGradesControl)">
+                      <p *ngIf="assessmentGradesControl.errors.notEmpty" class="help-block small red">{{assessmentGradesControl.errors.notEmpty.messageId | translate}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="well">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>{{'aggregate-report-form.field.school-year-label' | translate}}</label>
+                  <p class="small mb-0"
+                     [ngClass]="showErrors(schoolYearsControl) ? 'red' : 'gray-darker'">
+                    {{'common.form-field-message.required' | translate}}
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <sb-checkbox-group [options]="options.schoolYears"
+                                       [(ngModel)]="settings.generalPopulation.schoolYears"
+                                       [horizontal]="true"
+                                       [allOptionEnabled]="false"
+                                       formControlName="schoolYears"
+                                       name="schoolYears"
+                                       analyticsEvent="FilterClick"
+                                       analyticsCategory="AggregateQueryBuilder"
+                                       [allOptionAnalyticsProperties]="{label: 'Academic Year: All'}"
+                                       (change)="onSettingsChange()"></sb-checkbox-group>
+                    <div *ngIf="showErrors(schoolYearsControl)">
+                      <p *ngIf="schoolYearsControl.errors.notEmpty" class="help-block small red">{{schoolYearsControl.errors.notEmpty.messageId | translate}}</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div [hidden]="settings.reportType !== 'Cohort'">
+
+            <div class="well">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>{{'aggregate-report-form.field.from-assessment-grade-label' | translate}}</label>
+                  <p class="small mb-0"
+                     [ngClass]="showErrors(fromAssessmentGradeControl) ? 'red' : 'gray-darker'">
+                    {{'common.form-field-message.required' | translate}}
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <sb-radio-button-group [options]="options.assessmentGrades"
+                                           [(ngModel)]="settings.cohort.fromAssessmentGrade"
+                                           name="fromAssessmentGrade"
+                                           formControlName="fromAssessmentGrade"
+                                           (change)="onSettingsChange()"></sb-radio-button-group>
+                    <div *ngIf="showErrors(fromAssessmentGradeControl)">
+                      <p *ngIf="fromAssessmentGradeControl.errors.required" class="help-block small red">{{fromAssessmentGradeControl.errors.required.messageId | translate}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="well">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>{{'aggregate-report-form.field.from-school-year-label' | translate}}</label>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <sb-radio-button-group [options]="options.schoolYears"
+                                           [(ngModel)]="settings.cohort.fromSchoolYear"
+                                           name="fromSchoolYear"
+                                           formControlName="fromSchoolYear"
+                                           (change)="onSettingsChange()"></sb-radio-button-group>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="well">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>{{'aggregate-report-form.field.school-year-count-label' | translate}}</label>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <div class="col-sm-3">
+                      <select class="form-control"
+                              name="schoolYearCount"
+                              formControlName="schoolYearCount"
+                              [(ngModel)]="settings.cohort.schoolYearCount"
+                              (ngModelChange)="onSettingsChange()">
+                        <option *ngFor="let count of options.schoolYearCounts"
+                                [ngValue]="count">
+                          {{count}}
+                        </option>
+                      </select>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="well" [hidden]="interimFieldsDisabled">
             <div class="row">
               <div class="col-md-6">
@@ -334,7 +450,39 @@
       </div>
     </div>
 
-    <!-- Tabs -->
+    <!-- Report Type Tabs -->
+    <!--<div class="row">-->
+      <!--<div class="col-md-8 col-md-offset-2">-->
+
+        <!--<tabset>-->
+          <!--<tab [heading]="'General Population'"-->
+               <!--[active]="settings.reportType === 'GeneralPopulation'"-->
+               <!--(select)="settings.reportType = 'GeneralPopulation'">-->
+            <!--<div class="well-group">-->
+              <!--<div class="well">-->
+                <!--<p class="text-muted small">General population report type description...</p>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</tab>-->
+          <!--<tab [heading]="'Cohort'"-->
+               <!--[active]="settings.reportType === 'Cohort'"-->
+               <!--(select)="settings.reportType = 'Cohort'">-->
+
+            <!--<div class="well-group">-->
+              <!--<div class="well">-->
+                <!--<p class="text-muted small">Cohort report type description</p>-->
+              <!--</div>-->
+            <!--</div>-->
+
+          <!--</tab>-->
+        <!--</tabset>-->
+
+      <!--</div>-->
+    <!--</div>-->
+
+
+
+    <!-- Query Type Tabs -->
     <div class="row" #subgroupSection>
       <div class="col-md-8 col-md-offset-2">
 

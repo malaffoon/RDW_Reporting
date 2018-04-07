@@ -112,6 +112,7 @@ export class AggregateReportSummary {
       });
     }
 
+    // TODO support Cohort report type
     const assessmentRows = [
       {
         label: translate('aggregate-report-form.field.assessment-type-label'),
@@ -121,14 +122,20 @@ export class AggregateReportSummary {
         label: translate('aggregate-report-form.field.subjects-label'),
         values: orAll(options.subjects, settings.subjects, code => translate(`common.subject.${code}.short-name`))
       },
-      {
-        label: translate('aggregate-report-form.field.assessment-grades-label'),
-        values: inline(orAll(options.assessmentGrades, settings.assessmentGrades, code => translate(`common.assessment-grade.${code}`)))
-      },
-      {
-        label: translate('aggregate-report-form.field.school-year-label'),
-        values: settings.schoolYears.map(value => this.schoolYearPipe.transform(value))
-      },
+      ...(settings.reportType === 'GeneralPopulation'
+        ? [
+            {
+              label: translate('aggregate-report-form.field.assessment-grades-label'),
+              values: inline(orAll(options.assessmentGrades, settings.generalPopulation.assessmentGrades, code => translate(`common.assessment-grade.${code}`)))
+            },
+            {
+              label: translate('aggregate-report-form.field.school-year-label'),
+              values: settings.generalPopulation.schoolYears.map(value => this.schoolYearPipe.transform(value))
+            }
+          ]
+        : [
+          // TODO support cohort report type
+        ]),
       ...[
         assessmentDefinition.interim
           ? {

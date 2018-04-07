@@ -35,7 +35,15 @@ export class AggregateReportOptionsService {
           dimensionTypes: options.dimensionTypes,
           interimAdministrationConditions: options.interimAdministrationConditions,
           queryTypes: [ 'Basic', 'FilteredSubgroup' ],
+          reportTypes: [ 'GeneralPopulation', 'Cohort' ],
           schoolYears: options.schoolYears,
+          schoolYearCounts: (() => {
+            const counts = [];
+            for (let i = 2; i <= options.schoolYears.length; i++) {
+              counts.push(i);
+            }
+            return counts;
+          })(),
           statewideReporter: options.statewideReporter,
           subjects: options.subjects,
           summativeAdministrationConditions: options.summativeAdministrationConditions,

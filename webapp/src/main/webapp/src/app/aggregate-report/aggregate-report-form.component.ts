@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { NotificationService } from "../shared/notification/notification.service";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Forms } from "../shared/form/forms";
 import { District, Organization, OrganizationType, School } from "../shared/organization/organization";
 import { Observable } from "rxjs/Observable";
@@ -30,6 +30,11 @@ import { SubgroupMapper } from "./subgroup.mapper";
 import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
 
 const DefaultRenderDebounceMilliseconds = 500;
+
+// TODO this doesn't work...
+const when = (condition, validator) => control => {
+  return condition() ? validator(control) : null;
+};
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -199,15 +204,20 @@ export class AggregateReportFormComponent {
           invalid: { messageId: 'aggregate-report-form.field.organization-invalid-error' }
         };
       }),
-      assessmentGrades: new FormControl(this.settings.assessmentGrades, notEmpty(
-        { messageId: 'aggregate-report-form.field.assessment-grades-empty-error' }
+      assessmentGrades: new FormControl(this.settings.generalPopulation.assessmentGrades, when(
+        () => this.settings.reportType === 'GeneralPopulation',
+        notEmpty({ messageId: 'aggregate-report-form.field.assessment-grades-empty-error' })
       )),
-      schoolYears: new FormControl(this.settings.schoolYears, notEmpty(
-        { messageId: 'aggregate-report-form.field.school-year-empty-error' }
+      schoolYears: new FormControl(this.settings.generalPopulation.schoolYears, when(
+        () => this.settings.reportType === 'GeneralPopulation',
+        notEmpty({ messageId: 'aggregate-report-form.field.school-year-empty-error' })
       )),
-      reportName: new FormControl(this.settings.name, fileName(
-        { messageId: 'aggregate-report-form.field.report-name-file-name-error' }
-      ))
+      reportName: new FormControl(this.settings.name,
+        fileName({ messageId: 'aggregate-report-form.field.report-name-file-name-error' })
+      ),
+      fromAssessmentGrade: new FormControl(this.settings.cohort.fromAssessmentGrade, [ Validators.required ]),
+      fromSchoolYear: new FormControl(this.settings.cohort.fromSchoolYear, []),
+      schoolYearCount: new FormControl(this.settings.cohort.schoolYearCount, [])
     });
 
     Observable.create((observer) => this.settingsChangedObserver = observer)
@@ -266,6 +276,14 @@ export class AggregateReportFormComponent {
    */
   get reportNameControl(): FormControl {
     return <FormControl>this.formGroup.get('reportName');
+  }
+
+  get fromAssessmentGradeControl(): FormControl {
+    return <FormControl>this.formGroup.get('fromAssessmentGrade');
+  }
+
+  get fromSchoolYearControl(): FormControl {
+    return <FormControl>this.formGroup.get('fromAssessmentGrade');
   }
 
   /**

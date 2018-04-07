@@ -51,17 +51,15 @@ export class AggregateReportRequestMapper {
       ? settings.performanceLevelDisplayType
       : assessmentDefinition.performanceLevelDisplayTypes[ 0 ];
 
-    const query: any = <BasicAggregateReportQuery>{
+    const query: any = {
       achievementLevelDisplayType: performanceLevelDisplayType,
       assessmentTypeCode: settings.assessmentType,
-      assessmentGradeCodes: settings.assessmentGrades,
       dimensionTypes: settings.dimensionTypes,
       includeAllDistricts: settings.includeAllDistricts,
       includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
       includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
       includeState: settings.includeStateResults && settings.assessmentType === 'sum',
       queryType: settings.queryType,
-      schoolYears: settings.schoolYears,
       subjectCodes: settings.subjects,
       valueDisplayType: settings.valueDisplayType,
       columnOrder: settings.columnOrder
@@ -89,11 +87,21 @@ export class AggregateReportRequestMapper {
       query.schoolIds = idsOf(settings.schools);
     }
 
-    // Set type-specific parameters
+    // Set query type specific parameters
     if (settings.queryType === 'Basic') {
       query.studentFilters = this.createStudentFilters(settings.studentFilters, options.studentFilters);
     } else if (settings.queryType === 'FilteredSubgroup') {
       query.subgroups = this.createSubgroups(settings.subgroups);
+    }
+
+    // Set report type specific parameters
+    if (settings.reportType === 'GeneralPopulation') {
+      query.assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
+      query.schoolYears = settings.generalPopulation.schoolYears;
+    } else if (settings.reportType === 'Cohort') {
+      query.fromAssessmentGradeCode = settings.cohort.fromAssessmentGrade;
+      query.fromSchoolYear = settings.cohort.fromSchoolYear;
+      query.schoolYearCount = settings.cohort.schoolYearCount;
     }
 
     const name = settings.name
@@ -179,7 +187,7 @@ export class AggregateReportRequestMapper {
         map(([ schools, districts ]) => {
           return <AggregateReportFormSettings>{
             assessmentType: query.assessmentTypeCode,
-            assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
+
             columnOrder: query.columnOrder,
             completenesses: or(
               sort(query.completenessCodes, options.completenesses),
@@ -200,7 +208,7 @@ export class AggregateReportRequestMapper {
             name: request.name,
             performanceLevelDisplayType: query.achievementLevelDisplayType,
             queryType: query.queryType,
-            schoolYears: query.schoolYears.sort((a, b) => b - a),
+            reportType: query.reportType,
             schools: schools,
             studentFilters: studentFilters,
             subjects: sort(query.subjectCodes, options.subjects),
@@ -208,7 +216,16 @@ export class AggregateReportRequestMapper {
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
               : querySummativeAdministrationConditions,
-            valueDisplayType: query.valueDisplayType
+            valueDisplayType: query.valueDisplayType,
+            generalPopulation: {
+              assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
+              schoolYears: query.schoolYears.sort((a, b) => b - a),
+            },
+            cohort: {
+              fromAssessmentGrade: query.fromAssessmentGradeCode,
+              fromSchoolYear: query.fromSchoolYear,
+              schoolYearCount: query.schoolYearCount
+            }
           };
         })
       );

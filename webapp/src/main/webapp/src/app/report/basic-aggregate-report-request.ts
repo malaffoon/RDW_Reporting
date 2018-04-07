@@ -8,9 +8,9 @@ export interface BasicAggregateReportRequest {
 
 export interface BasicAggregateReportQuery {
 
+  // Common params
   readonly achievementLevelDisplayType: string;
   readonly administrativeConditionCodes?: string[];
-  readonly assessmentGradeCodes: string[];
   readonly assessmentTypeCode: string;
   readonly completenessCodes?: string[];
   readonly dimensionTypes?: string[];
@@ -19,14 +19,31 @@ export interface BasicAggregateReportQuery {
   readonly includeAllDistrictsOfSchools: boolean;
   readonly includeAllSchoolsOfDistricts: boolean;
   readonly includeState: boolean;
-  readonly queryType: 'Basic' | 'FilteredSubgroup'; // See AggregateQueryType for possible values
   readonly schoolIds?: number[];
-  readonly schoolYears: number[];
-  readonly studentFilters?: StudentFilters; // Basic only
   readonly subjectCodes?: string[];
-  readonly subgroups?: {[key: string]: StudentFilters}; // FilteredSubgroup only
   readonly valueDisplayType: string;
   readonly columnOrder?: string[];
+
+  // Needed for mapping back into form state
+  readonly queryType: 'Basic' | 'FilteredSubgroup'; // See AggregateQueryType for possible values
+
+  // Basic query type params
+  readonly studentFilters?: StudentFilters;
+
+  // FilteredSubgroup query type params
+  readonly subgroups?: {[key: string]: StudentFilters};
+
+  // Needed for mapping back into form state
+  readonly reportType: 'GeneralPopulation' | 'Cohort';
+
+  // GeneralPopulation report type params
+  readonly assessmentGradeCodes?: string[];
+  readonly schoolYears: number[];
+
+  // Cohort report type params
+  readonly fromAssessmentGradeCode?: string;
+  readonly fromSchoolYear?: number;
+  readonly schoolYearCount?: number;
 }
 
 export interface StudentFilters {

@@ -5,6 +5,7 @@ import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportItem } from "./results/aggregate-report-item";
 import { TranslateService } from "@ngx-translate/core";
 import {SubgroupMapper} from "./subgroup.mapper";
+import set = Reflect.set;
 
 const MaximumOrganizations = 2;
 
@@ -17,8 +18,18 @@ export class AggregateReportTableDataService {
 
   createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
     const organizations = this.createSampleOrganizations(settings);
-    const assessmentGradeCodes = settings.assessmentGrades;
-    const schoolYears = settings.schoolYears;
+
+    let assessmentGradeCodes: string[],
+      schoolYears: number[];
+
+    if (settings.reportType === 'GeneralPopulation') {
+      assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
+      schoolYears = settings.generalPopulation.schoolYears;
+    } else {
+      // TODO support cohort
+      assessmentGradeCodes = [ settings.cohort.fromAssessmentGrade ];
+      schoolYears = [ settings.cohort.fromSchoolYear ];
+    }
 
     const studentsTested = 100;
     const averageScaleScore = 2500;
