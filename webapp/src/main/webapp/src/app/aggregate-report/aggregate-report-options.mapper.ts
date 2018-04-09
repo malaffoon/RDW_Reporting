@@ -67,7 +67,6 @@ export class AggregateReportOptionsMapper {
           value => this.schoolYearPipe.transform(value),
           value => `School Year: ${value}`
         )),
-      schoolYearCounts: options.schoolYearCounts,
       subjects: options.subjects
         .map(optionMapper(
           value => translate(`common.subject.${value}.short-name`),
@@ -154,11 +153,6 @@ export class AggregateReportOptionsMapper {
         const assessmentDefinition = definitions.get(defaultAssessmentType);
         return <AggregateReportFormSettings>{
           assessmentType: defaultAssessmentType,
-          cohort: {
-            fromAssessmentGrade: undefined,
-            fromSchoolYear: options.schoolYears[ 0 ],
-            schoolYearCount: 2
-          },
           columnOrder: assessmentDefinition.aggregateReportIdentityColumns,
           completenesses: [ options.completenesses[ 0 ] ],
           dimensionTypes: [],
@@ -176,6 +170,10 @@ export class AggregateReportOptionsMapper {
           generalPopulation: {
             assessmentGrades: [],
             schoolYears: [ options.schoolYears[ 0 ] ]
+          },
+          longitudinalCohort: {
+            assessmentGrades: [],
+            toSchoolYear: options.schoolYears[ 0 ]
           },
           studentFilters: {
             economicDisadvantages: options.studentFilters.economicDisadvantages,

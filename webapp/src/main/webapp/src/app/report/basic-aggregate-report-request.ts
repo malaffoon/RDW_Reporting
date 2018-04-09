@@ -11,6 +11,7 @@ export interface BasicAggregateReportQuery {
   // Common params
   readonly achievementLevelDisplayType: string;
   readonly administrativeConditionCodes?: string[];
+  readonly assessmentGradeCodes: string[];
   readonly assessmentTypeCode: string;
   readonly completenessCodes?: string[];
   readonly dimensionTypes?: string[];
@@ -34,16 +35,13 @@ export interface BasicAggregateReportQuery {
   readonly subgroups?: {[key: string]: StudentFilters};
 
   // Needed for mapping back into form state
-  readonly reportType: 'GeneralPopulation' | 'Cohort';
+  readonly reportType: 'GeneralPopulation' | 'LongitudinalCohort';
 
   // GeneralPopulation report type params
-  readonly assessmentGradeCodes?: string[];
-  readonly schoolYears: number[];
+  readonly schoolYears?: number[];
 
-  // Cohort report type params
-  readonly fromAssessmentGradeCode?: string;
-  readonly fromSchoolYear?: number;
-  readonly schoolYearCount?: number;
+  // LongitudinalCohort report type params
+  readonly toSchoolYear?: number;
 }
 
 export interface StudentFilters {

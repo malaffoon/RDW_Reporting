@@ -318,26 +318,28 @@
             </div>
           </div>
 
-          <div [hidden]="settings.reportType !== 'Cohort'">
+          <div [hidden]="settings.reportType !== 'LongitudinalCohort'">
 
             <div class="well">
               <div class="row">
                 <div class="col-md-6">
-                  <label>{{'aggregate-report-form.field.from-assessment-grade-label' | translate}}</label>
+                  <label>{{'aggregate-report-form.field.assessment-grade-range-label' | translate}}</label>
                   <p class="small mb-0"
-                     [ngClass]="showErrors(fromAssessmentGradeControl) ? 'red' : 'gray-darker'">
+                     [ngClass]="showErrors(assessmentGradeRangeControl) ? 'red' : 'gray-darker'">
                     {{'common.form-field-message.required' | translate}}
                   </p>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <sb-radio-button-group [options]="options.assessmentGrades"
-                                           [(ngModel)]="settings.cohort.fromAssessmentGrade"
-                                           name="fromAssessmentGrade"
-                                           formControlName="fromAssessmentGrade"
-                                           (change)="onSettingsChange()"></sb-radio-button-group>
-                    <div *ngIf="showErrors(fromAssessmentGradeControl)">
-                      <p *ngIf="fromAssessmentGradeControl.errors.required" class="help-block small red">{{fromAssessmentGradeControl.errors.required.messageId | translate}}</p>
+                    <sb-checkbox-group [options]="options.assessmentGrades"
+                                       [(ngModel)]="settings.longitudinalCohort.assessmentGrades"
+                                       [horizontal]="true"
+                                       [allOptionEnabled]="false"
+                                       name="assessmentGrades"
+                                       formControlName="assessmentGrades"
+                                       (change)="onSettingsChange()"></sb-checkbox-group>
+                    <div *ngIf="showErrors(assessmentGradeRangeControl)">
+                      <p *ngIf="assessmentGradeRangeControl.errors.required" class="help-block small red">{{assessmentGradeRangeControl.errors.required.messageId | translate}}</p>
                     </div>
                   </div>
                 </div>
@@ -346,41 +348,16 @@
             <div class="well">
               <div class="row">
                 <div class="col-md-6">
-                  <label>{{'aggregate-report-form.field.from-school-year-label' | translate}}</label>
+                  <label>{{'aggregate-report-form.field.to-school-year-label' | translate}}</label>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <sb-radio-button-group [options]="options.schoolYears"
-                                           [(ngModel)]="settings.cohort.fromSchoolYear"
-                                           name="fromSchoolYear"
-                                           formControlName="fromSchoolYear"
+                                           [(ngModel)]="settings.longitudinalCohort.toSchoolYear"
+                                           name="toSchoolYear"
+                                           formControlName="toSchoolYear"
                                            (change)="onSettingsChange()"></sb-radio-button-group>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div class="well">
-              <div class="row">
-                <div class="col-md-6">
-                  <label>{{'aggregate-report-form.field.school-year-count-label' | translate}}</label>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <div class="col-sm-3">
-                      <select class="form-control"
-                              name="schoolYearCount"
-                              formControlName="schoolYearCount"
-                              [(ngModel)]="settings.cohort.schoolYearCount"
-                              (ngModelChange)="onSettingsChange()">
-                        <option *ngFor="let count of options.schoolYearCounts"
-                                [ngValue]="count">
-                          {{count}}
-                        </option>
-                      </select>
-                    </div>
-
-                  </div>
-
                 </div>
               </div>
             </div>

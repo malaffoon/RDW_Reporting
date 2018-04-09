@@ -215,9 +215,9 @@ export class AggregateReportFormComponent {
       reportName: new FormControl(this.settings.name,
         fileName({ messageId: 'aggregate-report-form.field.report-name-file-name-error' })
       ),
-      fromAssessmentGrade: new FormControl(this.settings.cohort.fromAssessmentGrade, [ Validators.required ]),
-      fromSchoolYear: new FormControl(this.settings.cohort.fromSchoolYear, []),
-      schoolYearCount: new FormControl(this.settings.cohort.schoolYearCount, [])
+      // TODO https://scotch.io/tutorials/how-to-implement-conditional-validation-in-angular-2-model-driven-forms
+      assessmentGradeRange: new FormControl(this.settings.longitudinalCohort.assessmentGrades, []),
+      toSchoolYear: new FormControl(this.settings.longitudinalCohort.toSchoolYear, []),
     });
 
     Observable.create((observer) => this.settingsChangedObserver = observer)
@@ -278,12 +278,12 @@ export class AggregateReportFormComponent {
     return <FormControl>this.formGroup.get('reportName');
   }
 
-  get fromAssessmentGradeControl(): FormControl {
-    return <FormControl>this.formGroup.get('fromAssessmentGrade');
+  get assessmentGradeRangeControl(): FormControl {
+    return <FormControl>this.formGroup.get('assessmentGradeRange');
   }
 
-  get fromSchoolYearControl(): FormControl {
-    return <FormControl>this.formGroup.get('fromAssessmentGrade');
+  get toSchoolYearControl(): FormControl {
+    return <FormControl>this.formGroup.get('toSchoolYear');
   }
 
   /**
@@ -560,3 +560,5 @@ export class AggregateReportFormComponent {
   }
 
 }
+
+

@@ -26,9 +26,9 @@ export class AggregateReportTableDataService {
       assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
       schoolYears = settings.generalPopulation.schoolYears;
     } else {
+      assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
       // TODO support cohort
-      assessmentGradeCodes = [ settings.cohort.fromAssessmentGrade ];
-      schoolYears = [ settings.cohort.fromSchoolYear ];
+      schoolYears = [ settings.longitudinalCohort.toSchoolYear ];
     }
 
     const studentsTested = 100;

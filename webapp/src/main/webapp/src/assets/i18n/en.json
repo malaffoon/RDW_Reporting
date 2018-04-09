@@ -52,9 +52,8 @@
     "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\"",
     "field": {
       "report-type-label": "Target",
-      "from-assessment-grade-label": "Starting Assessment Grade",
-      "from-school-year-label": "Starting Academic Year",
-      "school-year-count-label": "Total Academic Years",
+      "assessment-grade-range-label": "Assessment Grades",
+      "to-school-year-label": "End Academic Year",
       "organization-label": "Search a School or District",
       "organization-invalid-error": "Please select a school, district or include state results.",
       "assessment-grades-label": "Assessment Grades",
@@ -237,7 +236,7 @@
     },
     "aggregate-report-type": {
       "GeneralPopulation": "General Population",
-      "Cohort": "Longitudinal Cohort"
+      "LongitudinalCohort": "Longitudinal Cohort"
     },
     "assessment-grade": {
       "10": "HS",

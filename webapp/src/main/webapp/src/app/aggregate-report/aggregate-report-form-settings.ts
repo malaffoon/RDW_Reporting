@@ -97,7 +97,7 @@ export interface AggregateReportFormSettings {
   /**
    * Defines the report type (standard or longitudinal)
    */
-  reportType: 'GeneralPopulation' | 'Cohort';
+  reportType: 'GeneralPopulation' | 'LongitudinalCohort';
 
   /**
    * The advanced filters applied to basic reports
@@ -117,34 +117,29 @@ export interface AggregateReportFormSettings {
     /**
      * Assessment grades to be covered on the report
      */
-    assessmentGrades: string[]
+    assessmentGrades: string[];
 
     /**
      * The school years to be covered on the report
      */
-    schoolYears: number[],
+    schoolYears: number[];
 
   };
 
   /**
    * Longitudinal report settings
    */
-  cohort: {
+  longitudinalCohort: {
 
     /**
      * Assessment grades to be covered on the report
      */
-    fromAssessmentGrade: string,
+    assessmentGrades: string[];
 
     /**
      * The school years to be covered on the report
      */
-    fromSchoolYear: number,
-
-    /**
-     * The number of school years before the base school year
-     */
-    schoolYearCount: number
+    toSchoolYear: number;
 
   };
 

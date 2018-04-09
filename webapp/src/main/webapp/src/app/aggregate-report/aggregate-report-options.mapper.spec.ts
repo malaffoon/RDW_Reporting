@@ -4,7 +4,6 @@ import { ValueDisplayTypes } from '../shared/display-options/value-display-type'
 import { of } from 'rxjs/observable/of';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import Spy = jasmine.Spy;
-import { ApplicationSettings } from '../app-settings';
 import { Observable } from 'rxjs/Observable';
 
 describe('AggregateReportOptionsMapper', () => {

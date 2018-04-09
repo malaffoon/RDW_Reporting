@@ -98,10 +98,9 @@ export class AggregateReportRequestMapper {
     if (settings.reportType === 'GeneralPopulation') {
       query.assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
       query.schoolYears = settings.generalPopulation.schoolYears;
-    } else if (settings.reportType === 'Cohort') {
-      query.fromAssessmentGradeCode = settings.cohort.fromAssessmentGrade;
-      query.fromSchoolYear = settings.cohort.fromSchoolYear;
-      query.schoolYearCount = settings.cohort.schoolYearCount;
+    } else if (settings.reportType === 'LongitudinalCohort') {
+      query.assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
+      query.toSchoolYear = settings.longitudinalCohort.toSchoolYear;
     }
 
     const name = settings.name
@@ -187,7 +186,6 @@ export class AggregateReportRequestMapper {
         map(([ schools, districts ]) => {
           return <AggregateReportFormSettings>{
             assessmentType: query.assessmentTypeCode,
-
             columnOrder: query.columnOrder,
             completenesses: or(
               sort(query.completenessCodes, options.completenesses),
@@ -221,10 +219,9 @@ export class AggregateReportRequestMapper {
               assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
               schoolYears: query.schoolYears.sort((a, b) => b - a),
             },
-            cohort: {
-              fromAssessmentGrade: query.fromAssessmentGradeCode,
-              fromSchoolYear: query.fromSchoolYear,
-              schoolYearCount: query.schoolYearCount
+            longitudinalCohort: {
+              assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
+              toSchoolYear: query.toSchoolYear
             }
           };
         })

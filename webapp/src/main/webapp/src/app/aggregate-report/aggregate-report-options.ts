@@ -15,7 +15,6 @@ export interface AggregateReportOptions {
   readonly queryTypes: string[];
   readonly reportTypes: string[];
   readonly schoolYears: number[];
-  readonly schoolYearCounts: number[];
   readonly statewideReporter: boolean;
   readonly subjects: string[];
   readonly summativeAdministrationConditions: string[];
