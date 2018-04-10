@@ -28,28 +28,9 @@ import { ordering } from '@kourge/ordering';
 import { SubgroupFilters, SubgroupFilterSupport } from "./subgroup-filters";
 import { SubgroupMapper } from "./subgroup.mapper";
 import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
+import { fileName, notEmpty } from '../shared/form/validators';
 
 const DefaultRenderDebounceMilliseconds = 500;
-
-/**
- * Form control validator that makes sure the control value is not an empty array
- *
- * @param properties the properties to propagate when the control value is invalid
- * @return {null|{notEmpty: any}}}
- */
-const notEmpty = properties => control => {
-  return control.value.length ? null : { notEmpty: properties };
-};
-
-/**
- * Form control validator that makes sure the control value is a valid filename
- *
- * @param properties the properties to propagate when the control value is invalid
- * @return {null|{fileName: any}}}
- */
-const fileName = (properties: any) => control => {
-  return /^[^\\<>:;,?"*|/]*$/.test((control.value || '').trim()) ? null : { fileName: properties };
-};
 
 const OrganizationComparator = (a: Organization, b: Organization) => a.name.localeCompare(b.name);
 
