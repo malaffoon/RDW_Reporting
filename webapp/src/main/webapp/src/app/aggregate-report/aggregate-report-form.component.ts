@@ -31,11 +31,6 @@ import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
 
 const DefaultRenderDebounceMilliseconds = 500;
 
-// TODO this doesn't work...
-const when = (condition, validator) => control => {
-  return condition() ? validator(control) : null;
-};
-
 /**
  * Form control validator that makes sure the control value is not an empty array
  *

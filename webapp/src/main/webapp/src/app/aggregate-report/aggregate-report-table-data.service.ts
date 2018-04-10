@@ -5,7 +5,6 @@ import { AssessmentDefinition } from "./assessment/assessment-definition";
 import { AggregateReportItem } from "./results/aggregate-report-item";
 import { TranslateService } from "@ngx-translate/core";
 import {SubgroupMapper} from "./subgroup.mapper";
-import set = Reflect.set;
 import { computeEffectiveYears } from './support';
 
 const MaximumOrganizations = 2;
