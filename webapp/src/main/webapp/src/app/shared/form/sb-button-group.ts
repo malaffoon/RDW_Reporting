@@ -31,7 +31,7 @@ class Radio implements InputTypeStateHandler {
     return false;
   }
 
-  onButtonClick(context: SmarterButtonGroup, state: State, option: Option): void {
+  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     selectedOptions.clear();
     selectedOptions.add(option);
@@ -45,11 +45,12 @@ class Checkbox implements InputTypeStateHandler {
     return true;
   }
 
-  onButtonClick(context: SmarterButtonGroup, state: State, option: Option): void {
-    if (state.selectedOptions.has(option)) {
-      state.selectedOptions.delete(option);
+  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+    const { selectedOptions } = state;
+    if (selectedOptions.has(option)) {
+      selectedOptions.delete(option);
     } else {
-      state.selectedOptions.add(option);
+      selectedOptions.add(option);
     }
   }
 
@@ -61,13 +62,14 @@ class Range implements InputTypeStateHandler {
     return true;
   }
 
-  onButtonClick(context: SmarterButtonGroup, state: State, option: Option): void {
-    if (state.selectedOptions.has(option)) {
-      state.selectedOptions.delete(option);
-      this.unfill(state.selectedOptions, context.options, option);
+  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+    const { selectedOptions } = state;
+    if (selectedOptions.has(option)) {
+      selectedOptions.delete(option);
+      this.unfill(selectedOptions, context.options, option);
     } else {
-      state.selectedOptions.add(option);
-      this.fill(state.selectedOptions, context.options);
+      selectedOptions.add(option);
+      this.fill(selectedOptions, context.options);
     }
   }
 
@@ -195,7 +197,6 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
     this._options = this.parseInputOptions(this._initialOptions);
     this._value = this.parseInputValues(this._initialValues);
     this._state = this.computeState(this.options, this.value);
-    console.log(this._value);
     this._initialized = true;
   }
 
