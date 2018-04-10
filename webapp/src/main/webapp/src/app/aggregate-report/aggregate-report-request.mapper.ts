@@ -181,6 +181,31 @@ export class AggregateReportRequestMapper {
       ? this.createSubgroupFiltersFromSubgroups(query.subgroups)
       : [];
 
+    const defaultGeneralPopulation = {
+      assessmentGrades: [],
+      schoolYears: [ options.schoolYears[0] ]
+    };
+
+    const defaultLongitudinalCohort = {
+      assessmentGrades: [],
+      toSchoolYear: options.schoolYears[0]
+    };
+
+    let generalPopulation = defaultGeneralPopulation,
+      longitudinalCohort = defaultLongitudinalCohort;
+
+    if (query.reportType === 'GeneralPopulation') {
+      generalPopulation = {
+        assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
+        schoolYears: query.schoolYears.sort((a, b) => b - a),
+      };
+    } else if (query.reportType === 'LongitudinalCohort') {
+      longitudinalCohort = {
+        assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
+        toSchoolYear: query.toSchoolYear
+      };
+    }
+
     return forkJoin(schools, districts)
       .pipe(
         map(([ schools, districts ]) => {
@@ -215,14 +240,8 @@ export class AggregateReportRequestMapper {
               ? options.summativeAdministrationConditions
               : querySummativeAdministrationConditions,
             valueDisplayType: query.valueDisplayType,
-            generalPopulation: {
-              assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
-              schoolYears: query.schoolYears.sort((a, b) => b - a),
-            },
-            longitudinalCohort: {
-              assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
-              toSchoolYear: query.toSchoolYear
-            }
+            generalPopulation: generalPopulation,
+            longitudinalCohort: longitudinalCohort
           };
         })
       );
