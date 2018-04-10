@@ -87,7 +87,7 @@ export class Utils {
   static toNgClassObject(value: any): any {
     switch (typeof value) {
       case 'string':
-        return value.split(/s+/g).reduce((object, key) => {
+        return value.split(/\s+/g).reduce((object, key) => {
           object[ key ] = true;
           return object;
         }, {});

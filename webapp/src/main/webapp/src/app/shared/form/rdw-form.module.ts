@@ -8,13 +8,15 @@ import { SBCheckboxGroup } from "./sb-checkbox-group.component";
 import { Angulartics2Module } from "angulartics2";
 import { TranslateModule } from "@ngx-translate/core";
 import { SBButtonGroup } from './sb-button-group';
+import { SBRadioGroup } from './sb-radio-group';
 
 @NgModule({
   declarations: [
     SBTypeahead,
     SBButtonTypeahead,
     SBCheckboxGroup,
-    SBButtonGroup
+    SBButtonGroup,
+    SBRadioGroup
   ],
   imports: [
     BrowserModule,
@@ -28,7 +30,8 @@ import { SBButtonGroup } from './sb-button-group';
     SBTypeahead,
     SBButtonTypeahead,
     SBCheckboxGroup,
-    SBButtonGroup
+    SBButtonGroup,
+    SBRadioGroup
   ]
 })
 export class RdwFormModule {
