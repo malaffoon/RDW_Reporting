@@ -65,34 +65,6 @@
 
   <form #form [formGroup]="formGroup">
 
-    <!-- Report Type -->
-    <!--<div class="row" #reportTypeSection id="reportTypeSection">-->
-      <!--<div class="col-md-8 col-md-offset-2">-->
-        <!--<div class="well-group">-->
-          <!--<div class="well">-->
-            <!--<h3>{{'aggregate-report-form.section.report-type.heading' | translate}}</h3>-->
-            <!--<p class="text-muted small">{{'aggregate-report-form.section.report-type.subtext' | translate}}</p>-->
-            <!--&lt;!&ndash;<h2>{{'aggregate-report-form.heading' | translate}}</h2>&ndash;&gt;-->
-            <!--&lt;!&ndash;<p class="small gray-darkest mt-sm">{{'aggregate-report-form.subheading' | translate}}</p>&ndash;&gt;-->
-          <!--</div>-->
-          <!--<div class="well">-->
-            <!--<div class="row">-->
-              <!--<div class="col-md-6">-->
-                <!--<label>{{'aggregate-report-form.field.report-type-label' | translate}}</label>-->
-              <!--</div>-->
-              <!--<div class="col-md-6">-->
-                <!--<sb-radio-button-group name="reportType"-->
-                                       <!--[options]="options.reportTypes"-->
-                                       <!--[(ngModel)]="settings.reportType"-->
-                                       <!--[ngModelOptions]="{standalone: true}"-->
-                                       <!--(onModelChange)="onSettingsChange()"></sb-radio-button-group>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-
     <!-- Organization -->
     <div class="row" #organizationSection id="organizationSection">
       <div class="col-md-8 col-md-offset-2">
@@ -331,13 +303,14 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <sb-checkbox-group [options]="options.assessmentGrades"
-                                       [(ngModel)]="settings.longitudinalCohort.assessmentGrades"
-                                       [horizontal]="true"
-                                       [allOptionEnabled]="false"
-                                       name="assessmentGrades"
-                                       formControlName="assessmentGrades"
-                                       (change)="onSettingsChange()"></sb-checkbox-group>
+                    <sb-button-group type="range"
+                                     [options]="options.assessmentGrades"
+                                     [(ngModel)]="settings.longitudinalCohort.assessmentGrades"
+                                     [horizontal]="true"
+                                     [allOptionEnabled]="false"
+                                     name="assessmentGrades"
+                                     formControlName="assessmentGrades"
+                                     (change)="onSettingsChange()"></sb-button-group>
                     <div *ngIf="showErrors(assessmentGradeRangeControl)">
                       <p *ngIf="assessmentGradeRangeControl.errors.required" class="help-block small red">{{assessmentGradeRangeControl.errors.required.messageId | translate}}</p>
                     </div>
@@ -426,38 +399,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Report Type Tabs -->
-    <!--<div class="row">-->
-      <!--<div class="col-md-8 col-md-offset-2">-->
-
-        <!--<tabset>-->
-          <!--<tab [heading]="'General Population'"-->
-               <!--[active]="settings.reportType === 'GeneralPopulation'"-->
-               <!--(select)="settings.reportType = 'GeneralPopulation'">-->
-            <!--<div class="well-group">-->
-              <!--<div class="well">-->
-                <!--<p class="text-muted small">General population report type description...</p>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</tab>-->
-          <!--<tab [heading]="'Cohort'"-->
-               <!--[active]="settings.reportType === 'Cohort'"-->
-               <!--(select)="settings.reportType = 'Cohort'">-->
-
-            <!--<div class="well-group">-->
-              <!--<div class="well">-->
-                <!--<p class="text-muted small">Cohort report type description</p>-->
-              <!--</div>-->
-            <!--</div>-->
-
-          <!--</tab>-->
-        <!--</tabset>-->
-
-      <!--</div>-->
-    <!--</div>-->
-
-
 
     <!-- Query Type Tabs -->
     <div class="row" #subgroupSection>

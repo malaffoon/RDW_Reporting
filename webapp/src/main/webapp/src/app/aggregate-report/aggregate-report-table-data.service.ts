@@ -6,6 +6,7 @@ import { AggregateReportItem } from "./results/aggregate-report-item";
 import { TranslateService } from "@ngx-translate/core";
 import {SubgroupMapper} from "./subgroup.mapper";
 import set = Reflect.set;
+import { computeEffectiveYears } from './support';
 
 const MaximumOrganizations = 2;
 
@@ -27,8 +28,7 @@ export class AggregateReportTableDataService {
       schoolYears = settings.generalPopulation.schoolYears;
     } else {
       assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
-      // TODO support cohort
-      schoolYears = [ settings.longitudinalCohort.toSchoolYear ];
+      schoolYears = computeEffectiveYears(settings.longitudinalCohort.toSchoolYear, assessmentGradeCodes);
     }
 
     const studentsTested = 100;

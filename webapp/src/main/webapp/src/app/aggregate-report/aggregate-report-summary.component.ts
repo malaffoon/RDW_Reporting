@@ -6,6 +6,7 @@ import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import { Utils } from '../shared/support/support';
 import { SubgroupMapper } from './subgroup.mapper';
+import { computeEffectiveYears } from './support';
 
 const NarrowColumnProvider: ColumnProvider = (...sections) =>
   [ [ sections[ 0 ], sections[ 1 ] ], [ sections[ 2 ], sections[ 3 ] ] ];
@@ -137,8 +138,11 @@ export class AggregateReportSummary {
             {
               label: translate('aggregate-report-form.field.assessment-grades-label'),
               values: inline(orAll(options.assessmentGrades, settings.longitudinalCohort.assessmentGrades, code => translate(`common.assessment-grade.${code}`)))
+            },
+            {
+              label: translate('aggregate-report-form.field.school-year-label'),
+              values: computeEffectiveYears(settings.longitudinalCohort.toSchoolYear, settings.longitudinalCohort.assessmentGrades).map(value => this.schoolYearPipe.transform(value))
             }
-          // TODO support cohort report type
         ]),
       ...[
         assessmentDefinition.interim
