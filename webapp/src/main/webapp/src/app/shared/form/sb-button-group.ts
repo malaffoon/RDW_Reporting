@@ -22,7 +22,7 @@ interface State {
 
 interface InputTypeStateHandler {
   readonly multivalued: boolean;
-  onButtonClick(context: SbButtonGroup, state: State, option: Option): void;
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void;
 }
 
 class Radio implements InputTypeStateHandler {
@@ -31,7 +31,7 @@ class Radio implements InputTypeStateHandler {
     return false;
   }
 
-  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     selectedOptions.clear();
     selectedOptions.add(option);
@@ -45,7 +45,7 @@ class Checkbox implements InputTypeStateHandler {
     return true;
   }
 
-  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     if (selectedOptions.has(option)) {
       selectedOptions.delete(option);
@@ -62,7 +62,7 @@ class Range implements InputTypeStateHandler {
     return true;
   }
 
-  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     if (selectedOptions.has(option)) {
       selectedOptions.delete(option);
@@ -152,10 +152,10 @@ const StateHandlerByInputType: {[inpuType: string]: InputTypeStateHandler} = {
     </div>
   `,
   providers: [
-    Forms.valueAccessor(SbButtonGroup)
+    Forms.valueAccessor(SBButtonGroup)
   ]
 })
-export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
+export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
 
   @Input()
   public vertical: boolean = false;
