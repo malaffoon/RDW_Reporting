@@ -199,15 +199,14 @@
                 <label>{{'aggregate-report-form.field.subjects-label' | translate}}</label>
               </div>
               <div class="col-md-6">
-                <sb-checkbox-group [horizontal]="true"
-                                   [options]="options.subjects"
-                                   [(ngModel)]="settings.subjects"
-                                   [ngModelOptions]="{standalone: true}"
-                                   name="subjects"
-                                   analyticsEvent="FilterClick"
-                                   analyticsCategory="AggregateQueryBuilder"
-                                   [allOptionAnalyticsProperties]="{label: 'Subject: All'}"
-                                   (change)="onSettingsChange()"></sb-checkbox-group>
+                <sb-button-group name="subjects"
+                                 analyticsEvent="FilterClick"
+                                 analyticsCategory="AggregateQueryBuilder"
+                                 [allOptionAnalyticsProperties]="{label: 'Subject: All'}"
+                                 [options]="options.subjects"
+                                 [(ngModel)]="settings.subjects"
+                                 [ngModelOptions]="{standalone: true}"
+                                 (change)="onSettingsChange()"></sb-button-group>
               </div>
             </div>
           </div>
@@ -218,12 +217,11 @@
                 <label>{{'aggregate-report-form.field.report-type-label' | translate}}</label>
               </div>
               <div class="col-md-6">
-                <sb-button-group type="radio"
-                                 name="reportType"
-                                 [options]="options.reportTypes"
-                                 [(ngModel)]="settings.reportType"
-                                 [ngModelOptions]="{standalone: true}"
-                                 (change)="onReportTypeChange()"></sb-button-group>
+                <sb-radio-group name="reportType"
+                                [options]="options.reportTypes"
+                                [(ngModel)]="settings.reportType"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="onReportTypeChange()"></sb-radio-group>
               </div>
             </div>
           </div>
@@ -243,11 +241,11 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <sb-button-group type="checkbox"
-                                     name="assessmentGrades"
+                    <sb-button-group name="assessmentGrades"
                                      formControlName="assessmentGrades"
                                      analyticsEvent="FilterClick"
                                      analyticsCategory="AggregateQueryBuilder"
+                                     [allOptionEnabled]="false"
                                      [options]="options.assessmentGrades"
                                      [(ngModel)]="settings.generalPopulation.assessmentGrades"
                                      (change)="onSettingsChange()"></sb-button-group>
@@ -269,11 +267,11 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <sb-button-group type="checkbox"
-                                     name="schoolYears"
+                    <sb-button-group name="schoolYears"
                                      formControlName="schoolYears"
                                      analyticsEvent="FilterClick"
                                      analyticsCategory="AggregateQueryBuilder"
+                                     [allOptionEnabled]="false"
                                      [options]="options.schoolYears"
                                      [(ngModel)]="settings.generalPopulation.schoolYears"
                                      (change)="onSettingsChange()"></sb-button-group>
@@ -303,6 +301,7 @@
                     <sb-button-group type="range"
                                      name="assessmentGradeRange"
                                      formControlName="assessmentGradeRange"
+                                     [allOptionEnabled]="false"
                                      [options]="options.assessmentGrades"
                                      [(ngModel)]="settings.longitudinalCohort.assessmentGrades"
                                      (change)="onSettingsChange()"></sb-button-group>
@@ -320,12 +319,11 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <sb-button-group type="radio"
-                                     name="toSchoolYear"
-                                     formControlName="toSchoolYear"
-                                     [options]="options.schoolYears"
-                                     [(ngModel)]="settings.longitudinalCohort.toSchoolYear"
-                                     (change)="onSettingsChange()"></sb-button-group>
+                    <sb-radio-group name="toSchoolYear"
+                                    formControlName="toSchoolYear"
+                                    [options]="options.schoolYears"
+                                    [(ngModel)]="settings.longitudinalCohort.toSchoolYear"
+                                    (change)="onSettingsChange()"></sb-radio-group>
                   </div>
                 </div>
               </div>
