@@ -1,9 +1,9 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, Inject, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
 import { NotificationService } from "../shared/notification/notification.service";
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Forms } from "../shared/form/forms";
 import { District, Organization, OrganizationType, School } from "../shared/organization/organization";
 import { Observable } from "rxjs/Observable";
@@ -155,7 +155,8 @@ export class AggregateReportFormComponent {
    */
   subgroupItems: SubgroupFiltersListItem[] = [];
 
-  constructor(private router: Router,
+  constructor(@Inject(FormBuilder) formBuilder: FormBuilder,
+              private router: Router,
               private route: ActivatedRoute,
               private optionMapper: AggregateReportOptionsMapper,
               private requestMapper: AggregateReportRequestMapper,
@@ -178,7 +179,7 @@ export class AggregateReportFormComponent {
 
     this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
 
-    const defaultOrganization = this.defaultOrganization;
+    const defaultOrganization = this.aggregateReportOptions.defaultOrganization;
     if (this.organizations.length === 0 && defaultOrganization) {
       this.addOrganizationToSettings(defaultOrganization);
     }
@@ -196,29 +197,28 @@ export class AggregateReportFormComponent {
       ))
     );
 
-    this.formGroup = new FormGroup({
-      organizations: new FormControl(this.organizations, control => {
-        return this.includeStateResults
-        || this.settings.includeAllDistricts
-        || control.value.length ? null : {
-          invalid: { messageId: 'aggregate-report-form.field.organization-invalid-error' }
-        };
-      }),
-      assessmentGrades: new FormControl(this.settings.generalPopulation.assessmentGrades, when(
-        () => this.settings.reportType === 'GeneralPopulation',
-        notEmpty({ messageId: 'aggregate-report-form.field.assessment-grades-empty-error' })
-      )),
-      schoolYears: new FormControl(this.settings.generalPopulation.schoolYears, when(
-        () => this.settings.reportType === 'GeneralPopulation',
-        notEmpty({ messageId: 'aggregate-report-form.field.school-year-empty-error' })
-      )),
-      reportName: new FormControl(this.settings.name,
+    this.formGroup = formBuilder.group({
+      organizations: [
+        this.organizations,
+        control => {
+          return this.includeStateResults
+            || this.settings.includeAllDistricts
+            || control.value.length
+              ? null
+              : { invalid: { messageId: 'aggregate-report-form.field.organization-invalid-error' } };
+        }
+      ],
+      reportName: [
+        this.settings.name,
         fileName({ messageId: 'aggregate-report-form.field.report-name-file-name-error' })
-      ),
-      // TODO https://scotch.io/tutorials/how-to-implement-conditional-validation-in-angular-2-model-driven-forms
-      assessmentGradeRange: new FormControl(this.settings.longitudinalCohort.assessmentGrades, []),
-      toSchoolYear: new FormControl(this.settings.longitudinalCohort.toSchoolYear, []),
+      ],
+      assessmentGrades: [ this.settings.generalPopulation.assessmentGrades ],
+      schoolYears: [ this.settings.generalPopulation.schoolYears ],
+      assessmentGradeRange: [ this.settings.longitudinalCohort.assessmentGrades ],
+      toSchoolYear: [ this.settings.longitudinalCohort.toSchoolYear ],
     });
+
+    this.updateValidators();
 
     Observable.create((observer) => this.settingsChangedObserver = observer)
       .pipe(debounceTime(DefaultRenderDebounceMilliseconds))
@@ -227,6 +227,29 @@ export class AggregateReportFormComponent {
 
   ngOnInit(): void {
     this.onSettingsChange();
+  }
+
+  private updateValidators(): void {
+    const setValidators = (control: FormControl, validators: ValidatorFn | ValidatorFn[] | null): void => {
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+    };
+
+    if (this.settings.reportType === 'GeneralPopulation') {
+      setValidators(this.assessmentGradesControl, [
+        notEmpty({ messageId: 'aggregate-report-form.field.assessment-grades-empty-error' })
+      ]);
+      setValidators(this.schoolYearsControl, [
+        notEmpty({ messageId: 'aggregate-report-form.field.school-year-empty-error' })
+      ]);
+      setValidators(this.assessmentGradeRangeControl, null);
+    } else {
+      setValidators(this.assessmentGradesControl, null);
+      setValidators(this.schoolYearsControl, null);
+      setValidators(this.assessmentGradeRangeControl, [
+        notEmpty({ messageId: 'aggregate-report-form.field.assessment-grades-empty-error' })
+      ]);
+    }
   }
 
   /**
@@ -250,30 +273,18 @@ export class AggregateReportFormComponent {
     return this.aggregateReportOptions.assessmentTypes.length === 0;
   }
 
-  /**
-   * @returns {FormControl} The organizations form control
-   */
   get organizationsControl(): FormControl {
     return <FormControl>this.formGroup.get('organizations');
   }
 
-  /**
-   * @returns {FormControl} The assessment grades form control
-   */
   get assessmentGradesControl(): FormControl {
     return <FormControl>this.formGroup.get('assessmentGrades');
   }
 
-  /**
-   * @returns {FormControl} The school years form control
-   */
   get schoolYearsControl(): FormControl {
     return <FormControl>this.formGroup.get('schoolYears');
   }
 
-  /**
-   * @returns {FormControl} The report name form control
-   */
   get reportNameControl(): FormControl {
     return <FormControl>this.formGroup.get('reportName');
   }
@@ -329,6 +340,11 @@ export class AggregateReportFormComponent {
         subgroup,
         SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
       ));
+  }
+
+  onReportTypeChange(): void {
+    this.updateValidators();
+    this.onSettingsChange();
   }
 
   onTabChange(queryType: 'Basic' | 'FilteredSubgroup'): void {
@@ -415,6 +431,7 @@ export class AggregateReportFormComponent {
    * Reloads the report preview based on current form state
    */
   onSettingsChange(): void {
+
     // informs the view that it should display a loader
     this.estimatedRowCount = undefined;
 
