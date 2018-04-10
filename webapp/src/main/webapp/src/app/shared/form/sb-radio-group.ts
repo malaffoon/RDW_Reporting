@@ -1,19 +1,17 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Utils } from "./support/support";
-import { AbstractControlValueAccessor } from "./form/abstract-control-value-accessor";
-import { Forms } from "./form/forms";
+import { AbstractControlValueAccessor } from "./abstract-control-value-accessor";
+import { Forms } from "./forms";
+import { Option } from './option';
+import { Utils } from '../support/support';
 
 const DefaultButtonGroupStyles = 'btn-group-sm';
 const DefaultButtonStyles = 'btn-primary';
 
 /**
- * @deprecated use <sb-button-group type="radio">
- *
- * A two state switch component that can be used in place of a checkbox
- * @example <code><sb-radio-button-group [options]="[{value: true, text: 'On'}, {value: false, text: 'Off'}]" [(ngModel)]="myModel"></sb-radio-button-group></code>
+ * Radio button group to be used in place of a single valued <select> element
  */
 @Component({
-  selector: 'sb-toggle,sb-radio-button-group',
+  selector: 'sb-radio-group',
   template: `
     <div class="btn-group toggle-group"
          [ngClass]="buttonGroupStyles"
@@ -27,43 +25,35 @@ const DefaultButtonStyles = 'btn-primary';
         <input type="radio"
                id="{{name}}"
                name="{{name}}"
+               [attr.selected]="option.value === value"
                [disabled]="disabled"
                [value]="option.value"
                [(ngModel)]="value"
                angulartics2On="click"
                angularticsEvent="{{analyticsEvent}}"
                angularticsCategory="{{analyticsCategory}}"
-               [angularticsProperties]="option.analyticsProperties || {label: option.text}">{{option.text}}
+               [angularticsProperties]="option.analyticsProperties">
+        {{option.text}}
       </label>
     </div>
   `,
   providers: [
-    Forms.valueAccessor(SBToggleComponent)
+    Forms.valueAccessor(SBRadioGroup)
   ]
 })
-export class SBToggleComponent extends AbstractControlValueAccessor<any> implements OnInit {
+export class SBRadioGroup extends AbstractControlValueAccessor<any> implements OnInit {
 
-  @Input()
-  disabled: boolean = false;
-
-  @Input()
-  name: string = Utils.newGuid();
-
-  /**
-   *  The analytics event to send when clicked
-   */
   @Input()
   public analyticsEvent: string;
 
-  /**
-   * The analytics category to use
-   */
   @Input()
   public analyticsCategory: string;
 
   private _options: Option[];
   private _buttonGroupStyles: any = DefaultButtonGroupStyles;
   private _buttonStyles: any = DefaultButtonStyles;
+  private _initialized: boolean = false;
+  private _initialOptions: Option[];
 
   get buttonGroupStyles(): any {
     return this._buttonGroupStyles;
@@ -89,36 +79,54 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
 
   @Input()
   set options(options: Option[]) {
-    if (options == null || typeof options === 'undefined') {
-      this.throwError('options must not be null or undefined');
+    if (this._initialized) {
+      this._options = this.parseInputOptions(options);
+    } else {
+      this._initialOptions = options;
     }
-    this._options = options.map(option => <Option>{
-      value: option.value,
-      text: option.text ? option.text : option.value
-    });
+  }
+
+  get value(): any {
+    return this._value;
+  }
+
+  @Input()
+  set value(value: any) {
+    if (this._initialized) {
+      if (this._value !== value) {
+        this._value = value;
+        this._onChangeCallback(value);
+      }
+    } else {
+      this._value = value;
+    }
   }
 
   ngOnInit() {
-    if (this.options === undefined) {
-      this.throwError('options must not be null');
-    }
+    this._options = this.parseInputOptions(this._initialOptions);
+    this._initialized = true;
   }
 
   computeStylesInternal(...styles): any {
     return Utils.toNgClass(...styles);
   }
 
+  private parseInputOptions(options: Option[]): Option[] {
+    if (options == null) {
+      this.throwError('options must not be null or undefined');
+    }
+    if (options.length < 2) {
+      this.throwError('at least two options are required');
+    }
+    return options.map(option => <Option>{
+      value: option.value,
+      text: option.text ? option.text : option.value,
+      analyticsProperties: option.analyticsProperties
+    });
+  }
+
   private throwError(message: string): void {
     throw new Error(this.constructor.name + ' ' + message);
   }
 
-}
-
-/**
- * Describes what properties to give to the toggle's options instances when initializing it.
- */
-export interface Option {
-  value: any;
-  text?: string;
-  analyticsProperties?: any;
 }
