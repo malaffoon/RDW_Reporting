@@ -150,10 +150,10 @@ const StateHandlerByInputType: {[inpuType: string]: InputTypeStateHandler} = {
     </div>
   `,
   providers: [
-    Forms.valueAccessor(SmarterButtonGroup)
+    Forms.valueAccessor(SbButtonGroup)
   ]
 })
-export class SmarterButtonGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
+export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
 
   @Input()
   public horizontal: boolean = false;
