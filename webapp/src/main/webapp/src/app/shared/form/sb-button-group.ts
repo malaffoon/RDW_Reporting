@@ -21,17 +21,17 @@ interface State {
 }
 
 interface InputTypeStateHandler {
-  readonly supportsAllOption: boolean;
-  onButtonClick(context: SmarterButtonGroup, state: State, option: Option): void;
+  readonly multivalued: boolean;
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void;
 }
 
 class Radio implements InputTypeStateHandler {
 
-  get supportsAllOption(): boolean {
+  get multivalued(): boolean {
     return false;
   }
 
-  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     selectedOptions.clear();
     selectedOptions.add(option);
@@ -41,11 +41,11 @@ class Radio implements InputTypeStateHandler {
 
 class Checkbox implements InputTypeStateHandler {
 
-  get supportsAllOption(): boolean {
+  get multivalued(): boolean {
     return true;
   }
 
-  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     if (selectedOptions.has(option)) {
       selectedOptions.delete(option);
@@ -58,11 +58,11 @@ class Checkbox implements InputTypeStateHandler {
 
 class Range implements InputTypeStateHandler {
 
-  get supportsAllOption(): boolean {
+  get multivalued(): boolean {
     return true;
   }
 
-  onButtonClick(context: SbButtonGroup, state: State, option: Option): void {
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     if (selectedOptions.has(option)) {
       selectedOptions.delete(option);
@@ -128,7 +128,7 @@ const StateHandlerByInputType: {[inpuType: string]: InputTypeStateHandler} = {
         {{option.text}}
       </label>
     </ng-template>
-    
+
     <div *ngIf="initializedInternal"
          data-toggle="buttons"
          class="btn-group toggle-group"
@@ -140,25 +140,25 @@ const StateHandlerByInputType: {[inpuType: string]: InputTypeStateHandler} = {
           isAllOption: true
         }"></ng-container>
       </ng-container>
-      
+
       <div class="btn-group"
            [ngClass]="buttonGroupStyles">
-        
+
         <ng-container *ngFor="let option of options">
           <ng-container *ngTemplateOutlet="button; context:{$implicit:option}"></ng-container>
         </ng-container>
-        
+
       </div>
     </div>
   `,
   providers: [
-    Forms.valueAccessor(SbButtonGroup)
+    Forms.valueAccessor(SBButtonGroup)
   ]
 })
-export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
+export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
 
   @Input()
-  public horizontal: boolean = false;
+  public vertical: boolean = false;
 
   @Input()
   public analyticsEvent: string;
@@ -170,7 +170,7 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
   public allOptionAnalyticsProperties: any = {};
 
   @Input()
-  public allOptionEnabled: boolean = true;
+  public allOptionEnabled: boolean = false;
 
   @Input()
   public noneStateEnabled: boolean = false;
@@ -196,7 +196,7 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
   ngOnInit(): void {
     this._options = this.parseInputOptions(this._initialOptions);
     this._value = this.parseInputValues(this._initialValues);
-    this._state = this.computeState(this.options, this.value);
+    this._state = this.computeState(this._options, this._value);
     this._initialized = true;
   }
 
@@ -230,16 +230,16 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
     this._stateHandler = stateHandler;
   }
 
-  get value(): any[] {
+  get value(): any {
     return this._value;
   }
 
-  set value(values: any[]) {
+  set value(value: any) {
     if (this._initialized) {
-      this.setValueAndNotifyChanges(this.parseInputValues(values));
-      this._state = this.computeState(this.options, this.value);
+      this.setValueAndNotifyChanges(value);
+      this._state = this.computeState(this._options, this._value);
     } else {
-      this._initialValues = values;
+      this._initialValues = value;
     }
   }
 
@@ -274,7 +274,7 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
   }
 
   get effectiveAllOptionEnabled(): boolean {
-    return this._stateHandler.supportsAllOption && this.allOptionEnabled;
+    return this._stateHandler.multivalued && this.allOptionEnabled;
   }
 
   get effectiveNoneStateEnabled(): boolean {
@@ -282,7 +282,7 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
   }
 
   onAllOptionClickInternal(): void {
-    if (!this._stateHandler.supportsAllOption || !this.allOptionEnabled) {
+    if (!this._stateHandler.multivalued || !this.allOptionEnabled) {
       return;
     }
 
@@ -320,7 +320,10 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
       .filter(option => this._state.selectedAllOption || this._state.selectedOptions.has(option))
       .map(option => option.value);
 
-    this.setValueAndNotifyChanges(values.length > 0 ? values : this.noneStateValue);
+    this.setValueAndNotifyChanges(values.length > 0
+      ? (this._stateHandler.multivalued ? values : values[0])
+      : this.noneStateValue
+    );
   }
 
   private parseInputOptions(options: Option[]): Option[] {
@@ -337,17 +340,21 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
     });
   }
 
-  private parseInputValues(values: any[]): any[] {
-    if (values == null) {
-      if (this.noneStateEnabled || !this._stateHandler.supportsAllOption || !this.allOptionEnabled) {
-        return this.noneStateValue;
+  private parseInputValues(value: any): any[] {
+    if (this._stateHandler.multivalued) {
+      if (value == null) {
+        if (this.noneStateEnabled || !this.allOptionEnabled) {
+          return this.noneStateValue;
+        }
+        return this.options.map(option => option.value);
       }
-      return this.options.map(option => option.value);
+      return value.concat();
     }
-    return values.concat();
+    return value;
   }
 
-  private computeState(options: Option[], values: any[]): State {
+  private computeState(options: Option[], value: any): State {
+    const values = this._stateHandler.multivalued ? value : [ value ];
     if (this.effectiveAllOptionEnabled) {
       const effectivelySelectedAllOption = values.length === options.length;
       return {
@@ -367,10 +374,10 @@ export class SbButtonGroup extends AbstractControlValueAccessor<any[]> implement
     };
   }
 
-  private setValueAndNotifyChanges(values: any[]) {
-    if (!_.isEqual(this._value, values)) {
-      this._value = values;
-      this._onChangeCallback(values);
+  private setValueAndNotifyChanges(value: any) {
+    if (this._stateHandler.multivalued ? !_.isEqual(this._value, value) : this._value !== value) {
+      this._value = value;
+      this._onChangeCallback(value);
     }
   }
 
