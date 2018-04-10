@@ -5,21 +5,45 @@ import * as _ from 'lodash';
 import { Utils } from '../support/support';
 import { Option } from './option';
 
+/**
+ * All input types that can be used to change the component click behavior
+ */
 export type InputType = 'checkbox' | 'range';
 
+/**
+ * Default component styles
+ */
 const DefaultButtonGroupStyles = 'btn-group-sm';
 const DefaultButtonStyles = 'btn-primary';
 
+/**
+ * Holds the internal button selection state
+ */
 interface State {
+
+  /**
+   * True when the all option is selected
+   */
   selectedAllOption: boolean;
+
+  /**
+   * Holds all selected option buttons
+   */
   selectedOptions: Set<Option>;
 }
 
-interface InputTypeStateHandler {
+/**
+ * Contract for an input type controller.
+ * This can be implemented to provide a new mode of behavior with the button group
+ */
+interface InputController {
   onButtonClick(context: SBButtonGroup, state: State, option: Option): void;
 }
 
-class Checkbox implements InputTypeStateHandler {
+/**
+ * Makes the button group behave as a checkbox group
+ */
+class Checkbox implements InputController {
   onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     if (selectedOptions.has(option)) {
@@ -30,7 +54,10 @@ class Checkbox implements InputTypeStateHandler {
   }
 }
 
-class Range implements InputTypeStateHandler {
+/**
+ * Makes the button group behave as a range selector
+ */
+class Range implements InputController {
 
   onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
@@ -43,6 +70,12 @@ class Range implements InputTypeStateHandler {
     }
   }
 
+  /**
+   * Adds all unselected options between selected options to the provided selectedOptions set
+   *
+   * @param {Set<Option>} selectedOptions
+   * @param {Option[]} options
+   */
   private fill(selectedOptions: Set<Option>, options: Option[]): void {
     let firstIndex, lastIndex;
     options.forEach((option, index) => {
@@ -60,6 +93,14 @@ class Range implements InputTypeStateHandler {
     }
   }
 
+  /**
+   * Clears all selected options except the provided option
+   * if the provided option has selected options to both the left and right
+   *
+   * @param {Set<Option>} selectedOptions
+   * @param {Option[]} options
+   * @param {Option} option
+   */
   private unfill(selectedOptions: Set<Option>, options: Option[], option: Option): void {
     const index = options.indexOf(option);
     const leftOptionSelected = options.slice(0, index).find(option => selectedOptions.has(option));
@@ -71,11 +112,14 @@ class Range implements InputTypeStateHandler {
   }
 }
 
-const StateHandlerByInputType: {[inpuType: string]: InputTypeStateHandler} = {
+const ControllerByInputType: {[inpuType: string]: InputController} = {
   checkbox: new Checkbox(),
   range: new Range()
 };
 
+/**
+ * A checkbox group to be used in place of a traditional multivalued <select> element
+ */
 @Component({
   selector: 'sb-button-group',
   template: `
@@ -102,7 +146,7 @@ const StateHandlerByInputType: {[inpuType: string]: InputTypeStateHandler} = {
          data-toggle="buttons"
          class="toggle-group"
          [ngClass]="computeStylesInternal(buttonGroupStyles, {
-           'vertical': vertical, 
+           'vertical': vertical,
            'all-option': allOptionEnabled,
            'nested-btn-group': allOptionEnabled || vertical
          })">
@@ -148,12 +192,9 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
   @Input()
   public noneStateEnabled: boolean = false;
 
-  @Input()
-  public noneStateValue: any = [];
-
   private _options: Option[];
   private _type: InputType;
-  private _stateHandler: InputTypeStateHandler;
+  private _controller: InputController;
   private _state: State;
   private _initialized: boolean = false;
   private _initialOptions: Option[];
@@ -173,6 +214,20 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     this._initialized = true;
   }
 
+  get type(): InputType {
+    return this._type;
+  }
+
+  @Input()
+  set type(value: InputType) {
+    const controller = ControllerByInputType[value];
+    if (controller == null) {
+      this.throwError(`Unknown input type: "${value}"`);
+    }
+    this._type = value;
+    this._controller = controller;
+  }
+
   get options(): Option[] {
     return this._options;
   }
@@ -181,26 +236,10 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
   set options(options: Option[]) {
     if (this._initialized) {
       this._options = this.parseInputOptions(options);
+      this._state = this.computeState(this._options, this._value);
     } else {
       this._initialOptions = options;
     }
-  }
-
-  get type(): InputType {
-    return this._type;
-  }
-
-  @Input()
-  set type(value: InputType) {
-    if (this._initialized) {
-      this.throwError(`Input type cannot be updated after initialization`);
-    }
-    const stateHandler = StateHandlerByInputType[value];
-    if (stateHandler == null) {
-      this.throwError(`Unknown input type: "${value}"`);
-    }
-    this._type = value;
-    this._stateHandler = stateHandler;
   }
 
   get value(): any {
@@ -242,51 +281,88 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     return this._state;
   }
 
-  get stateHandlerInternal(): InputTypeStateHandler {
-    return this._stateHandler;
-  }
-
   get effectiveNoneStateEnabled(): boolean {
     return this.noneStateEnabled || !this.allOptionEnabled;
   }
 
+  /**
+   * All button click handler
+   */
   onAllOptionClickInternal(): void {
 
-    if (this._state.selectedAllOption) {
+    const state = this._state,
+      options = this._options;
+
+    if (state.selectedAllOption) {
       if (this.effectiveNoneStateEnabled) {
-        this._state.selectedAllOption = false;
+        // If the all button is already selected,
+        // and the component allows a no-value state
+        // toggle the all button off
+        state.selectedAllOption = false;
       }
     } else {
-      this._state.selectedAllOption = true;
+      // If the all button is not selected, select it
+      state.selectedAllOption = true;
     }
 
-    this._state.selectedOptions.clear();
-    this.updateValue();
+    // Clicking the all button will always result
+    // in a deselection of all options buttons
+    state.selectedOptions.clear();
+
+    this.updateValue(state, options);
   }
 
+  /**
+   * Option button click handler
+   *
+   * @param {Option} option
+   */
   onOptionClickInternal(option: Option): void {
-    this._state.selectedAllOption = false;
-    this._stateHandler.onButtonClick(this, this._state, option);
 
-    if (this._state.selectedOptions.size === 0 && !this.effectiveNoneStateEnabled) {
-      this._state.selectedAllOption = true;
+    const state = this._state,
+      options = this._options;
+
+    // Clicking an option button will always result
+    // in a deselection of the all button
+    state.selectedAllOption = false;
+
+    // Delegate what should happen when an option is clicked to the state handler
+    this._controller.onButtonClick(this, state, option);
+
+    // If the component is made to have no selection but is set to not support a
+    // no value state, make the component return to a selected all state
+    if (state.selectedOptions.size === 0 && !this.effectiveNoneStateEnabled) {
+      state.selectedAllOption = true;
     }
 
-    this.updateValue();
+    this.updateValue(state, options);
   }
 
   computeStylesInternal(...styles): any {
     return Utils.toNgClass(...styles.filter(style => style != null));
   }
 
-  private updateValue(): void {
-    const values = this.options
-      .filter(option => this._state.selectedAllOption || this._state.selectedOptions.has(option))
+  /**
+   * This method is called after a state change initiated through user input
+   *
+   * @param {State} state
+   * @param {Option[]} options
+   */
+  private updateValue(state, options: Option[]): void {
+    const values = options
+      .filter(option => state.selectedAllOption || state.selectedOptions.has(option))
       .map(option => option.value);
 
-    this.setValueAndNotifyChanges(values.length > 0 ? values : this.noneStateValue);
+    this.setValueAndNotifyChanges(values);
   }
 
+  /**
+   * Normalizes, copies and makes options sensible defaults.
+   * This should be used to process all options provided to the option field
+   *
+   * @param value
+   * @returns {any[]}
+   */
   private parseInputOptions(options: Option[]): Option[] {
     if (options == null) {
       this.throwError('options must not be null or undefined');
@@ -301,16 +377,34 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     });
   }
 
+  /**
+   * Normalizes and copies values
+   * This should be used to process all values provided to the value field
+   *
+   * @param value
+   * @returns {any[]}
+   */
   private parseInputValues(value: any): any[] {
     if (value == null) {
-      if (this.noneStateEnabled || !this.allOptionEnabled) {
-        return this.noneStateValue;
+      // If the value is undefined and the component allows a no-value state, set value to empty
+      if (this.effectiveNoneStateEnabled) {
+        return [];
       }
+      // If the component does not allow a no-value state, set the value to all values
       return this.options.map(option => option.value);
     }
+    // Make a copy of the value to avoid side effects
     return value.concat();
   }
 
+  /**
+   * Initializes component state based on the component options and values
+   * This method should be called after any externally initiated update to the component options or values
+   *
+   * @param {Option[]} options
+   * @param {any[]} values
+   * @returns {State}
+   */
   private computeState(options: Option[], values: any[]): State {
     if (this.allOptionEnabled) {
       const effectivelySelectedAllOption = values.length === options.length;
@@ -318,16 +412,12 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
         selectedAllOption: effectivelySelectedAllOption,
         selectedOptions: effectivelySelectedAllOption
           ? new Set()
-          : new Set(
-            options.filter(option => values.includes(option.value))
-          )
+          : new Set(options.filter(option => values.includes(option.value)))
       };
     }
     return {
       selectedAllOption: false,
-      selectedOptions: new Set(
-        options.filter(option => values.includes(option.value))
-      )
+      selectedOptions: new Set(options.filter(option => values.includes(option.value)))
     };
   }
 

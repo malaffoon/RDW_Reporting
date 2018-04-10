@@ -7,6 +7,9 @@ import { Utils } from '../support/support';
 const DefaultButtonGroupStyles = 'btn-group-sm';
 const DefaultButtonStyles = 'btn-primary';
 
+/**
+ * Radio button group to be used in place of a single valued <select> element
+ */
 @Component({
   selector: 'sb-radio-group',
   template: `
