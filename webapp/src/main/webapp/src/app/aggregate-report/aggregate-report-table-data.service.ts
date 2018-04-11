@@ -19,15 +19,19 @@ export class AggregateReportTableDataService {
   createSampleData(assessmentDefinition: AssessmentDefinition, settings: AggregateReportFormSettings): AggregateReportItem[] {
     const organizations = this.createSampleOrganizations(settings);
 
-    let assessmentGradeCodes: string[],
-      schoolYears: number[];
-
+    const gradesAndYears: {grade: string, year: number}[] = [];
     if (settings.reportType === 'GeneralPopulation') {
-      assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
-      schoolYears = settings.generalPopulation.schoolYears;
-    } else {
-      assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
-      schoolYears = computeEffectiveYears(settings.longitudinalCohort.toSchoolYear, assessmentGradeCodes);
+      for (const grade of settings.generalPopulation.assessmentGrades) {
+        for (const year of settings.generalPopulation.schoolYears) {
+          gradesAndYears.push({grade, year});
+        }
+      }
+    } else if (settings.reportType === 'LongitudinalCohort') {
+      const assessmentGrades = settings.longitudinalCohort.assessmentGrades;
+      const schoolYears = computeEffectiveYears(settings.longitudinalCohort.toSchoolYear, assessmentGrades);
+      for (let i = 0; i < assessmentGrades.length; i++) {
+        gradesAndYears.push({grade: assessmentGrades[i], year: schoolYears[i]});
+      }
     }
 
     const studentsTested = 100;
@@ -48,34 +52,32 @@ export class AggregateReportTableDataService {
       let uuid = 0;
       const rows: AggregateReportItem[] = [];
       for (const organization of organizations) {
-        for (const assessmentGradeCode of assessmentGradeCodes) {
-          for (const schoolYear of schoolYears) {
-            for (const value of values) {
-              const row: any = {
-                itemId: ++uuid,
-                organization: organization,
-                assessmentId: undefined,
-                assessmentLabel: this.translate.instant('sample-aggregate-table-data-service.assessment-label'),
-                assessmentGradeCode: assessmentGradeCode,
-                subjectCode: undefined,
-                schoolYear: schoolYear,
-                avgScaleScore: averageScaleScore,
-                avgStdErr: averageStandardError,
-                studentsTested: studentsTested,
-                performanceLevelByDisplayTypes: {
-                  Separate: {
-                    Number: performanceLevelCounts,
-                    Percent: performanceLevelPercents
-                  },
-                  Grouped: {
-                    Number: groupedPerformanceLevelCounts,
-                    Percent: groupedPerformanceLevelCounts
-                  }
+        for (const {grade, year} of gradesAndYears) {
+          for (const value of values) {
+            const row: any = {
+              itemId: ++uuid,
+              organization: organization,
+              assessmentId: undefined,
+              assessmentLabel: this.translate.instant('sample-aggregate-table-data-service.assessment-label'),
+              assessmentGradeCode: grade,
+              subjectCode: undefined,
+              schoolYear: year,
+              avgScaleScore: averageScaleScore,
+              avgStdErr: averageStandardError,
+              studentsTested: studentsTested,
+              performanceLevelByDisplayTypes: {
+                Separate: {
+                  Number: performanceLevelCounts,
+                  Percent: performanceLevelPercents
                 },
-                dimension: value
-              };
-              rows.push(row);
-            }
+                Grouped: {
+                  Number: groupedPerformanceLevelCounts,
+                  Percent: groupedPerformanceLevelCounts
+                }
+              },
+              dimension: value
+            };
+            rows.push(row);
           }
         }
       }
