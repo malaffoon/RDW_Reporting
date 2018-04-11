@@ -432,7 +432,12 @@
       </div>
     </div>
     <!-- Summary -->
-    <div class="row" #reviewSection id="reviewSection">
+    <div class="row"
+         #reviewSection
+         id="reviewSection"
+         (inView)="onReviewSectionInView($event)"
+         [inViewInvalidator]="reviewSectionViewInvalidator">
+
       <div class="col-md-8 col-md-offset-2">
         <div class="well-group">
           <div class="well">
@@ -490,7 +495,13 @@
 
   </form>
 
-  <div class="row" #previewSection id="previewSection">
+  <div class="row"
+       #previewSection
+       id="previewSection"
+       (inView)="onPreviewSectionInView($event)"
+       [inViewInvalidator]="previewSectionViewInvalidator">
+       <!--[inViewValid]="holder.previewSectionValid">-->
+
     <div class="col-md-12 col-md-offset-2">
       <div class="well-group wide-content-container">
         <div class="well inline-headings">

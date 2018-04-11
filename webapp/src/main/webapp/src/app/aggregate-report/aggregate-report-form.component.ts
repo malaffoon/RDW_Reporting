@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
@@ -28,6 +28,8 @@ import { ordering } from '@kourge/ordering';
 import { SubgroupFilters, SubgroupFilterSupport } from "./subgroup-filters";
 import { SubgroupMapper } from "./subgroup.mapper";
 import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
+import { Utils } from '../shared/support/support';
+import { WindowRefService } from '../shared/core/window-ref.service';
 
 const DefaultRenderDebounceMilliseconds = 500;
 
@@ -134,13 +136,6 @@ export class AggregateReportFormComponent {
   submissionSubscription: Subscription;
 
   /**
-   * This observer's next() method is to be invoked when a change happens to the form inputs
-   * This is then piped through a debounce operator in order to make the form more responsive when the user makes
-   * quick successive changes
-   */
-  settingsChangedObserver: Observer<void>;
-
-  /**
    * Holds the custom subgroup form state
    */
   customSubgroup: SubgroupFilters;
@@ -149,6 +144,15 @@ export class AggregateReportFormComponent {
    * Custom subgroup display items
    */
   subgroupItems: SubgroupFiltersListItem[] = [];
+
+  /**
+   * Controls for view invalidation
+   */
+  reviewSectionInvalid: Observer;
+  reviewSectionViewInvalidator: Observable = Observable.create(observer => this.reviewSectionInvalid = observer);
+
+  previewSectionInvalid: Observer;
+  previewSectionViewInvalidator: Observable = Observable.create(observer => this.previewSectionInvalid = observer);
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -209,14 +213,6 @@ export class AggregateReportFormComponent {
         { messageId: 'aggregate-report-form.field.report-name-file-name-error' }
       ))
     });
-
-    Observable.create((observer) => this.settingsChangedObserver = observer)
-      .pipe(debounceTime(DefaultRenderDebounceMilliseconds))
-      .subscribe(() => this.applySettingsChange());
-  }
-
-  ngOnInit(): void {
-    this.onSettingsChange();
   }
 
   /**
@@ -393,15 +389,41 @@ export class AggregateReportFormComponent {
     this.settings.columnOrder = items.map(item => item.value);
   }
 
+  onReviewSectionInView(): void {
+    // compute and render estimated row count
+    if (this.formGroup.valid) {
+      this.reportService.getEstimatedRowCount(this.createReportRequest().query)
+        .subscribe(count => this.estimatedRowCount = count);
+    }
+    // compute and render summary data
+    this.summary = {
+      assessmentDefinition: this.currentAssessmentDefinition,
+      options: this.aggregateReportOptions,
+      settings: this.settings
+    };
+  }
+
+  onPreviewSectionInView(): void {
+    // compute and render preview table
+    this.previewTable = {
+      assessmentDefinition: this.currentAssessmentDefinition,
+      options: this.aggregateReportOptions,
+      rows: this.tableDataService.createSampleData(this.currentAssessmentDefinition, this.settings)
+    };
+  }
+
   /**
    * Reloads the report preview based on current form state
    */
   onSettingsChange(): void {
-    // informs the view that it should display a loader
+    // invalidate all setting-dependent views
     this.estimatedRowCount = undefined;
-
-    // informs the debounced observable that the view has changed
-    this.settingsChangedObserver.next(undefined);
+    if (this.reviewSectionInvalid) {
+      this.reviewSectionInvalid.next(undefined);
+    }
+    if (this.previewSectionInvalid) {
+      this.previewSectionInvalid.next(undefined);
+    }
   }
 
   /**
@@ -482,27 +504,6 @@ export class AggregateReportFormComponent {
         .filter(school => !organization.equals(school));
     }
     this.markOrganizationsControlTouched();
-  }
-
-  private applySettingsChange(): void {
-    if (this.formGroup.valid) {
-      this.reportService.getEstimatedRowCount(this.createReportRequest().query)
-        .subscribe(count => this.estimatedRowCount = count);
-    }
-
-    this.summary = {
-      assessmentDefinition: this.currentAssessmentDefinition,
-      options: this.aggregateReportOptions,
-      settings: this.settings
-    };
-
-    // TODO this table should be lazily updated when it is scrolled into view. There is serious lag when changing settings above
-    this.previewTable = {
-      assessmentDefinition: this.currentAssessmentDefinition,
-      options: this.aggregateReportOptions,
-      rows: this.tableDataService.createSampleData(this.currentAssessmentDefinition, this.settings)
-    };
-
   }
 
   /**
