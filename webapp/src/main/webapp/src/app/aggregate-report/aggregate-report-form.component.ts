@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { AggregateReportFormOptions } from "./aggregate-report-form-options";
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
@@ -21,17 +21,13 @@ import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-colum
 import { OrderableItem } from "../shared/order-selector/order-selector.component";
 import { AggregateReportRequestSummary } from "./aggregate-report-summary.component";
 import { Subscription } from "rxjs/Subscription";
-import { debounceTime, finalize, map, mergeMap } from "rxjs/operators";
+import { finalize, map, mergeMap } from "rxjs/operators";
 import { Observer } from "rxjs/Observer";
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { SubgroupFilters, SubgroupFilterSupport } from "./subgroup-filters";
 import { SubgroupMapper } from "./subgroup.mapper";
 import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
-import { Utils } from '../shared/support/support';
-import { WindowRefService } from '../shared/core/window-ref.service';
-
-const DefaultRenderDebounceMilliseconds = 500;
 
 /**
  * Form control validator that makes sure the control value is not an empty array
@@ -148,11 +144,11 @@ export class AggregateReportFormComponent {
   /**
    * Controls for view invalidation
    */
-  reviewSectionInvalid: Observer;
-  reviewSectionViewInvalidator: Observable = Observable.create(observer => this.reviewSectionInvalid = observer);
+  reviewSectionInvalid: Observer<void>;
+  reviewSectionViewInvalidator: Observable<void> = Observable.create(observer => this.reviewSectionInvalid = observer);
 
-  previewSectionInvalid: Observer;
-  previewSectionViewInvalidator: Observable = Observable.create(observer => this.previewSectionInvalid = observer);
+  previewSectionInvalid: Observer<void>;
+  previewSectionViewInvalidator: Observable<void> = Observable.create(observer => this.previewSectionInvalid = observer);
 
   constructor(private router: Router,
               private route: ActivatedRoute,

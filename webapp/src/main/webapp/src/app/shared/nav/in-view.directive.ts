@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class InViewDirective implements OnDestroy {
 
   @Output()
-  inView: EventEmitter = new EventEmitter();
+  inView: EventEmitter<InViewDirective> = new EventEmitter();
 
   private _window: Window;
   private _valid: boolean = false;
@@ -36,7 +36,7 @@ export class InViewDirective implements OnDestroy {
   }
 
   @Input('inViewInvalidator')
-  set invalidator(observable: Observable) {
+  set invalidator(observable: Observable<void>) {
     if (observable == null) {
       throw new Error(`invalidator must not be null or undefined`);
     }

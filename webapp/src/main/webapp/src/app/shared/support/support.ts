@@ -153,14 +153,13 @@ export class Utils {
    * True if the provided element is visible in the provided window
    *
    * @param {Element} element
-   * @param {Window} windowReference
+   * @param {Window} window
    * @returns {boolean}
    */
-  static inView(element: Element, windowReference?: Window): boolean {
-    if (element == null) {
+  static inView(element: Element, window: Window): boolean {
+    if (element == null || window == null) {
       return false;
     }
-    const window = windowReference || window;
     const bounds = element.getBoundingClientRect();
     return bounds.bottom > 0
       && bounds.right > 0
