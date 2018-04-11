@@ -1170,6 +1170,8 @@
   },
   "sample-aggregate-table-data-service": {
     "assessment-label": "Assessment 1",
+    "state-name": "State",
+    "district-name": "District {{id}}",
     "school-name": "School {{id}}"
   },
   "school-grade": {
