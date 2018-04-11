@@ -1,32 +1,32 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
-import { AggregateReportFormOptions } from "./aggregate-report-form-options";
-import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { NotificationService } from "../shared/notification/notification.service";
-import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { Forms } from "../shared/form/forms";
-import { District, Organization, OrganizationType, School } from "../shared/organization/organization";
-import { Observable } from "rxjs/Observable";
-import { OrganizationTypeahead } from "../shared/organization/organization-typeahead";
-import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
-import { AggregateReportService } from "./aggregate-report.service";
-import { AggregateReportTable, SupportedRowCount } from "./results/aggregate-report-table.component";
-import { BasicAggregateReportRequest } from "../report/basic-aggregate-report-request";
-import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
-import { AggregateReportTableDataService } from "./aggregate-report-table-data.service";
-import { AssessmentDefinition } from "./assessment/assessment-definition";
-import { AggregateReportOptions } from "./aggregate-report-options";
-import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
-import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
-import { OrderableItem } from "../shared/order-selector/order-selector.component";
-import { AggregateReportRequestSummary } from "./aggregate-report-summary.component";
-import { Subscription } from "rxjs/Subscription";
-import { finalize, map, mergeMap } from "rxjs/operators";
-import { Observer } from "rxjs/Observer";
+import { ActivatedRoute, Router } from '@angular/router';
+import { AggregateReportFormOptions } from './aggregate-report-form-options';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
+import { NotificationService } from '../shared/notification/notification.service';
+import { FormBuilder, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { Forms } from '../shared/form/forms';
+import { District, Organization, OrganizationType, School } from '../shared/organization/organization';
+import { Observable } from 'rxjs/Observable';
+import { OrganizationTypeahead } from '../shared/organization/organization-typeahead';
+import { AggregateReportOrganizationService } from './aggregate-report-organization.service';
+import { AggregateReportService } from './aggregate-report.service';
+import { AggregateReportTable, SupportedRowCount } from './results/aggregate-report-table.component';
+import { BasicAggregateReportRequest } from '../report/basic-aggregate-report-request';
+import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
+import { AggregateReportTableDataService } from './aggregate-report-table-data.service';
+import { AssessmentDefinition } from './assessment/assessment-definition';
+import { AggregateReportOptions } from './aggregate-report-options';
+import { AggregateReportRequestMapper } from './aggregate-report-request.mapper';
+import { AggregateReportColumnOrderItemProvider } from './aggregate-report-column-order-item.provider';
+import { OrderableItem } from '../shared/order-selector/order-selector.component';
+import { AggregateReportRequestSummary } from './aggregate-report-summary.component';
+import { Subscription } from 'rxjs/Subscription';
+import { finalize, map, mergeMap } from 'rxjs/operators';
+import { Observer } from 'rxjs/Observer';
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { SubgroupFilters, SubgroupFilterSupport } from "./subgroup-filters";
-import { SubgroupMapper } from "./subgroup.mapper";
+import { SubgroupFilters, SubgroupFilterSupport } from './subgroup-filters';
+import { SubgroupMapper } from './subgroup.mapper';
 import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
 import { fileName, notEmpty } from '../shared/form/validators';
 
@@ -178,10 +178,10 @@ export class AggregateReportFormComponent {
         this.organizations,
         control => {
           return this.includeStateResults
-            || this.settings.includeAllDistricts
-            || control.value.length
-              ? null
-              : { invalid: { messageId: 'aggregate-report-form.field.organization-invalid-error' } };
+          || this.settings.includeAllDistricts
+          || control.value.length
+            ? null
+            : { invalid: { messageId: 'aggregate-report-form.field.organization-invalid-error' } };
         }
       ],
       reportName: [
