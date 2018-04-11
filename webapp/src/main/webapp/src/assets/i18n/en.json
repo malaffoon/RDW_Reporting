@@ -53,7 +53,7 @@
     "field": {
       "report-type-label": "Target",
       "assessment-grade-range-label": "Assessment Grades",
-      "to-school-year-label": "End Academic Year",
+      "to-school-year-label": "Final Academic Year",
       "organization-label": "Search a School or District",
       "organization-invalid-error": "Please select a school, district or include state results.",
       "assessment-grades-label": "Assessment Grades",
