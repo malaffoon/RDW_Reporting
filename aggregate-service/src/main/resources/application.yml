@@ -34,6 +34,8 @@ app:
       jdbc-fetch-size: -1
     query-pool-size: 6
     api-enabled: false
+  high-school:
+    accountability-grade: '11'
 
   archive:
       root: file:///tmp/
