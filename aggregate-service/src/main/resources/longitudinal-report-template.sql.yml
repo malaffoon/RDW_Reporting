@@ -6,7 +6,7 @@ sql:
   schoolYearGradePairsSnippet: >-
        AND
        (
-            (school_year = :school_year_grade_hs AND g.code = '${app.high-school.accountability-grade}')
+            (school_year = :school_year_grade_11 AND asmt_grade_id = 11)
          OR (school_year = :school_year_grade_08 AND asmt_grade_id = 8)
          OR (school_year = :school_year_grade_07 AND asmt_grade_id = 7)
          OR (school_year = :school_year_grade_06 AND asmt_grade_id = 6)
@@ -24,7 +24,8 @@ sqlbuilder:
       longitudinal:
         clauses:
           select: >-
-              SUM(CASE WHEN fe.years_in_one_org = :cohort_years THEN 1 ELSE 0 END) AS cohort_size,
+              SUM(CASE WHEN fe.years_in_one_org = :cohort_years THEN 1 ELSE 0 END) AS cohort_count,
+              count(*) as count,
               round(avg(CASE WHEN fe.years_in_one_org = :cohort_years THEN fe.scale_score ELSE NULL END)) AS cohort_score,
               round(avg(fe.scale_score)) AS score,
               round(stddev_samp(CASE WHEN fe.years_in_one_org = :cohort_years THEN fe.scale_score ELSE NULL END)) AS cohort_stdev,
@@ -297,6 +298,8 @@ sqlbuilder:
                       g.code
 
       # ------------ filters, must be added on when a dimension and filter do not overlap --------------------------------------------------
+      # Note that this adds all filters to the outer SQL. While logically it seems that adding filters to the inner SQL should perform better, testing
+      # it on Redshift showed opposite results.
             completeness:
                clauses:
                  where: >-
