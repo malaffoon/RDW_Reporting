@@ -1,3 +1,4 @@
+-- because of the nature of the SQL, we need the real grade ids and codes.
 INSERT INTO grade(id, code) SELECT * FROM(
     SELECT 3, '03'
     UNION SELECT 4, '04'
