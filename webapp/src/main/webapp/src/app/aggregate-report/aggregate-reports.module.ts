@@ -29,6 +29,7 @@ import { SubgroupFiltersComponent } from "./subgroup-filters.component";
 import { ListGroupComponent } from "./list-group.component";
 import { SubgroupMapper } from "./subgroup.mapper";
 import { EditableListGroupComponent } from './editable-list-group.component';
+import { LongitudinalCohortChartComponent } from './results/longitudinal-cohort-chart.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { EditableListGroupComponent } from './editable-list-group.component';
     AggregateReportSummary,
     EditableListGroupComponent,
     ListGroupComponent,
+    LongitudinalCohortChartComponent,
     StickyDirective,
     SubgroupFiltersComponent
   ],

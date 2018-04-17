@@ -4,7 +4,7 @@
     <div class="chart-series-legend pallet-a">
       <ul class="list-unstyled">
         <li *ngFor="let series of organizationPerformanceSeries; let index = index"
-            class="mb-sm">
+            class="mb-xs">
           <button class="btn chart-series color-{{index}} text-left"
                   [ngClass]="{'chart-series-hidden': !series.visible}"
                   (click)="toggleSeries(series)">
@@ -20,5 +20,11 @@
     </div>
 
   </div>
-  <div class="flex-child grow" #chartContainer></div>
+  <div class="flex-child grow">
+
+    <svg #chartContainer
+         class="longitudinal-cohort-chart"
+         width="100%"></svg>
+
+  </div>
 </div>

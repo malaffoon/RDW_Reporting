@@ -205,18 +205,19 @@ export class LongitudinalCohortChartComponent implements OnInit {
       data: line
     });
 
-    const
-      outerWidth = 800,
-      outerHeight = 600,
-      p = 20,
+    const bounds = this.root.node().getBoundingClientRect(),
+      outerWidth = bounds.width,
+      outerHeight = bounds.height,
+      p = 40,
       m = 40,
-      margin = { top: 0, right: m, bottom: m, left: m },
-      padding = { top: 0, right: p * 3, bottom: p, left: p },
+      tickPadding = 10,
+      margin = { top: 0, right: 0, bottom: 0, left: 0 },
+      padding = { top: 0, right: p * 5, bottom: p, left: p },
       innerWidth = outerWidth - margin.left - margin.right,
       innerHeight = outerHeight - margin.top - margin.bottom,
-      width = innerWidth - padding.left - padding.right,
-      height = innerHeight - padding.top - padding.bottom,
-      domainMargin = { x: 0.33, y: 33 };
+      width = innerWidth - padding.left - padding.right - tickPadding,
+      height = innerHeight - padding.top - padding.bottom - tickPadding,
+      domainMargin = { top: 33, right: 0.33, bottom: 33, left: 0.33 };
 
     const d3line = d3.line<any>()
       .x(({ x }) => xScale(x))
@@ -229,15 +230,15 @@ export class LongitudinalCohortChartComponent implements OnInit {
 
     const xScale = d3.scaleLinear()
       .range([ 0, width ])
-      .domain([ yearsAndGrades[ 0 ].year - domainMargin.x, yearsAndGrades[ yearsAndGrades.length - 1 ].year + domainMargin.x ]);
+      .domain([ yearsAndGrades[ 0 ].year - domainMargin.left, yearsAndGrades[ yearsAndGrades.length - 1 ].year + domainMargin.right ]);
 
     const yScale = d3.scaleLinear()
       .range([ height, 0 ])
-      .domain([ scaleScoreRange[ 0 ] - domainMargin.y, scaleScoreRange[ 1 ] + domainMargin.y ]);
+      .domain([ scaleScoreRange[ 0 ] - domainMargin.bottom, scaleScoreRange[ 1 ] + domainMargin.top ]);
 
     const xAxis = d3.axisBottom(xScale)
       .tickSize(-height)
-      .tickPadding(m * 0.25)
+      .tickPadding(tickPadding)
       .tickFormat((d: number, i: number) => {
         // const {year, grade} = yearsAndGrades[i];
         const year = d;
@@ -248,17 +249,16 @@ export class LongitudinalCohortChartComponent implements OnInit {
 
     const yAxis = d3.axisLeft(yScale)
       .tickSize(-width)
-      .tickPadding(m * 0.25);
+      .tickPadding(tickPadding);
 
-    const svg = this.root.append('svg')
-      .classed(`longitudinal-cohort-chart`, true)
+    const svg = this.root
       .attrs({
-        width: outerWidth,
-        height: outerHeight
+        height: outerHeight,
+        transform: `translate(${margin.left}, ${margin.top})`
       })
       .append('g')
       .attrs({
-        transform: `translate(${margin.left}, ${margin.top})`
+        transform: `translate(${padding.left}, ${padding.top})`
       });
 
     svg.append('g')
@@ -338,12 +338,10 @@ export class LongitudinalCohortChartComponent implements OnInit {
       })
       .on('mouseover', (d, i, circles) => {
         d3.select(circles[i])
-          .transition()
           .attr('r', 10);
       })
       .on('mouseout', (d, i, circles) => {
         d3.select(circles[i])
-          .transition()
           .attr('r', 5);
       })
       .on('click', (d, i, circles) => {
@@ -396,11 +394,10 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .classed('scale-score-area-labels-description', true);
 
     const title1 = bandTitle.append('text')
-      .classed('text', true)
+      .classed('strong', true)
       .text(this.translate.instant('longitudinal-cohort-chart.area-description.text'));
 
     const title2 = bandTitle.append('text')
-      .classed('subtext', true)
       .text(this.translate.instant('longitudinal-cohort-chart.area-description.subtext'));
 
     const title1Bounds = title1.node().getBBox();
@@ -451,6 +448,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       width: (d, i) => labelTextBounds[ i ].width + labelPadding.left + labelPadding.right,
       height: (d, i) => labelTextBounds[ i ].height + labelPadding.top + labelPadding.bottom
     });
+
 
   }
 

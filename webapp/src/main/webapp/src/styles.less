@@ -937,6 +937,11 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 //   }
 // }
 
+@opacity-softest: 0.09;
+@opacity-softer: 0.18;
+@opacity-soft: 0.45;
+@opacity-softened: 0.66;
+
 .chart-series-legend {
 
   &.pallet-a {
@@ -950,19 +955,22 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
   .chart-series {
     color: #fff;
     font-size: 80%;
-    padding: @padding-small-vertical @padding-small-horizontal;
+    padding: @padding-xs-vertical @padding-xs-horizontal;
     border-radius: @border-radius-base;
     outline: none;
     &:active,&:focus {
       outline: none;
     }
     &.chart-series-hidden {
-      opacity: 0.33;
+      opacity: @opacity-softer;
     }
   }
 }
 
 .longitudinal-cohort-chart {
+
+  min-width: 800px;
+  height: 520px;
 
   @stroke-width-1: 3px;
   @stroke-width-2: 4px;
@@ -994,27 +1002,27 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 
     &.x .tick {
       line {
-        opacity: 0.2;
+        opacity: @opacity-softer;
       }
       text {
-        opacity: 0.8;
+        opacity: @opacity-softened;
       }
     }
     &.y .tick {
       &:nth-child(odd) {
         line {
-          opacity: 0.1;
+          opacity: @opacity-softest;
         }
         text {
-          opacity: 0.5;
+          opacity: @opacity-soft;
         }
       }
       &:nth-child(even) {
         line {
-          opacity: 0.2;
+          opacity: @opacity-softer;
         }
         text {
-          opacity: 0.8;
+          opacity: @opacity-softened;
         }
       }
     }
@@ -1047,7 +1055,7 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 
   .scale-score-areas {
     .scale-score-area {
-      fill-opacity: 0.18;
+      fill-opacity: @opacity-softer;
     }
     .scale-score-area:last-child .area-divider {
       display: none;
