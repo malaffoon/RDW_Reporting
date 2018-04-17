@@ -921,3 +921,196 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
   overflow: hidden;
   white-space: nowrap;
 }
+
+/**
+ * Longitudinal Cohort Chart
+ */
+
+@color-1: #845EC2;
+@color-2: #D65DB1;
+@color-3: #FF6F91;
+@color-4: #FF9671;
+@color-5: #FFC75F;
+@color-6: #F9F871;
+@stroke-width-1: 3px;
+@stroke-width-2: 4px;
+
+// .svg-container {
+//   width: 400px;
+//   height: 400px;
+//   > svg {
+//     width: 100%;
+//     height: 100%;
+//     display: block;
+//   }
+// }
+
+.chart-series-legend {
+
+  &.pallet-a {
+    .chart-series {
+      &.color-0 { background-color: @gray-darkest; }
+      &.color-1 { background-color: @aqua; }
+      &.color-2 { background-color: @green; }
+    }
+  }
+
+  .chart-series {
+    color: #fff;
+    font-size: 80%;
+    padding: @padding-small-vertical @padding-small-horizontal;
+    border-radius: @border-radius-base;
+    outline: none;
+    &:active,&:focus {
+      outline: none;
+    }
+    &.chart-series-hidden {
+      opacity: 0.33;
+    }
+  }
+}
+
+.longitudinal-cohort-chart {
+
+  font-size: 10px;
+
+  path {
+    fill: none;
+  }
+
+  text {
+    fill: #000;
+  }
+
+  .axis {
+
+    .domain {
+      stroke: none;
+    }
+
+    path,
+    line {
+      shape-rendering: crispEdges;
+    }
+
+    .tick line {
+      stroke: #000;
+    }
+
+    &.x .tick {
+      line {
+        opacity: 0.2;
+      }
+      text {
+        opacity: 0.8;
+      }
+    }
+    &.y .tick {
+      &:nth-child(odd) {
+        line {
+          opacity: 0.1;
+        }
+        text {
+          opacity: 0.5;
+        }
+      }
+      &:nth-child(even) {
+        line {
+          opacity: 0.2;
+        }
+        text {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
+  .performance-level-trend {
+    .line {
+      stroke-width: @stroke-width-2;
+    }
+    .point {
+      stroke-width: @stroke-width-1;
+      fill: #fff;
+      cursor: pointer;
+      /* opacity: 0;
+      &:hover {
+        opacity: 1;
+      }
+      */
+    }
+  }
+
+  .area {
+    fill-opacity: 0.18;
+  }
+
+  .area-divider {
+    stroke: #fff;
+    stroke-width: @stroke-width-1;
+  }
+
+  .performance-level-area:last-child .area-divider {
+    display: none;
+  }
+
+  .grade {
+    font-weight: bold;
+    font-size: 90%;
+    transform: translate(0, 28px);
+  }
+
+  .performance-level-bands {
+    .performance-level-band {
+      .performance-level-band-title {
+        > .text {
+          font-weight: bold;
+        }
+      }
+      .performance-level-band-subtitle {
+
+      }
+      .bracket {
+        stroke-width: @stroke-width-1;
+      }
+      .label-text {
+        fill: #fff;
+      }
+    }
+  }
+
+  .pallet-a {
+    .color-0 {
+      .color-stroke { stroke: @gray-darkest; }
+      .color-fill { fill: @gray-darkest; }
+    }
+    .color-1 {
+      .color-stroke { stroke: @aqua; }
+      .color-fill { fill: @aqua; }
+    }
+    .color-2 {
+      .color-stroke { stroke: @green; }
+      .color-fill { fill: @green; }
+    }
+  }
+
+  .pallet-b {
+    .color-0 {
+      .color-stroke { stroke: @maroon; }
+      .color-fill { fill: @maroon; }
+    }
+    .color-1 {
+      .color-stroke { stroke: @gray-darkest; }
+      .color-fill { fill: @gray-darkest; }
+    }
+    .color-2 {
+      .color-stroke { stroke: @green-dark; }
+      .color-fill { fill: @green-dark; }
+    }
+    .color-3 {
+      .color-stroke { stroke: @blue-dark; }
+      .color-fill { fill: @blue-dark; }
+    }
+  }
+
+}
