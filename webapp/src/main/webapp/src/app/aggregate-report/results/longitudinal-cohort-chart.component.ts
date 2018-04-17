@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import 'd3-selection-multi';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultSchool, Organization } from '../../shared/organization/organization';
+import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 
 // todo group "band" and area "assessment-performance-category-series"
 
@@ -175,7 +176,8 @@ export class LongitudinalCohortChartComponent implements OnInit {
   @ViewChild('chartContainer')
   private chartContainer: ElementRef;
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService,
+              private schoolYearPipe: SchoolYearPipe) {
 
   }
 
@@ -239,11 +241,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
     const xAxis = d3.axisBottom(xScale)
       .tickSize(-height)
       .tickPadding(tickPadding)
-      .tickFormat((d: number, i: number) => {
-        // const {year, grade} = yearsAndGrades[i];
-        const year = d;
-        return `${year} - ${year + 1}`;
-      })
+      .tickFormat(d => this.schoolYearPipe.transform(d))
       .ticks(yearsAndGrades.length)
       .tickValues(yearsWithoutGaps);
 
