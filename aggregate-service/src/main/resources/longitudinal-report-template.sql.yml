@@ -24,8 +24,6 @@ sqlbuilder:
       longitudinal:
         clauses:
           select: >-
-              SUM(CASE WHEN fe.years_in_one_org = :cohort_years THEN 1 ELSE 0 END) AS cohort_count,
-              count(*) as count,
               round(avg(CASE WHEN fe.years_in_one_org = :cohort_years THEN fe.scale_score ELSE NULL END)) AS cohort_score,
               round(avg(fe.scale_score)) AS score,
               round(stddev_samp(CASE WHEN fe.years_in_one_org = :cohort_years THEN fe.scale_score ELSE NULL END)) AS cohort_stdev,
@@ -61,7 +59,6 @@ sqlbuilder:
                          f.*,
                          count(*) OVER (PARTITION BY f.student_id ) AS years_in_one_org
                        FROM fact_student_exam_longitudinal f
-                        JOIN grade g on g.id = f.asmt_grade_id
                        WHERE
                          f.subject_id = :subject_id
                          ${sql.schoolYearGradePairsSnippet}
@@ -78,10 +75,10 @@ sqlbuilder:
                       SELECT
                         f.*,
                         sch.district_id,
+                        sch.embargo_enabled,
                         count(*) OVER (PARTITION BY f.student_id, sch.district_id ) AS years_in_one_org
                       FROM fact_student_exam_longitudinal f
                        JOIN school sch ON sch.id = f.school_id
-                       JOIN grade g on g.id = fe.asmt_grade_id
                       WHERE
                         f.subject_id = :subject_id
                         ${sql.schoolYearGradePairsSnippet}
@@ -101,10 +98,10 @@ sqlbuilder:
                       SELECT
                         f.*,
                         sch.district_id,
+                        sch.embargo_enabled,
                         count(*) OVER (PARTITION BY f.student_id, sch.district_id ) AS years_in_one_org
                       FROM fact_student_exam_longitudinal f
                        JOIN school sch ON sch.id = f.school_id
-                       JOIN grade g on g.id = f.asmt_grade_id
                       WHERE
                         f.subject_id = :subject_id
                         ${sql.schoolYearGradePairsSnippet}
@@ -125,10 +122,10 @@ sqlbuilder:
                        SELECT
                          f.*,
                          sch.district_id,
+                         sch.embargo_enabled,
                          count(*) OVER (PARTITION BY f.student_id, f.school_id ) AS years_in_one_org
                        FROM fact_student_exam_longitudinal f
                         JOIN school sch ON sch.id = f.school_id
-                        JOIN grade g on g.id = f.asmt_grade_id
                        WHERE
                          f.subject_id = :subject_id
                          ${sql.schoolYearGradePairsSnippet}
@@ -149,10 +146,10 @@ sqlbuilder:
                        SELECT
                          f.*,
                          sch.district_id,
+                         sch.embargo_enabled,
                          count(*) OVER (PARTITION BY f.student_id, f.school_id ) AS years_in_one_org
                        FROM fact_student_exam_longitudinal f
                         JOIN school sch ON sch.id = f.school_id
-                        JOIN grade g on g.id = f.asmt_grade_id
                        WHERE
                          subject_id = :subject_id
                          ${sql.schoolYearGradePairsSnippet}
@@ -166,7 +163,7 @@ sqlbuilder:
               clauses:
                 where: >-
                     fe.school_year < ${reporting.school-year}
-                    OR sch.embargo_enabled = 0
+                    OR fe.embargo_enabled = 0
                     OR 1 = :state_embargo_admin
                     OR fe.district_id IN (:district_embargo_admin_ids)
 
