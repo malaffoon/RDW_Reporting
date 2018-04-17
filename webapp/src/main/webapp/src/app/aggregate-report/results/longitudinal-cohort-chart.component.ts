@@ -26,10 +26,9 @@ interface GradeYearScaleScoreRange {
   readonly scaleScoreRange: Range<number>;
 }
 
-interface OrganizationPerformanceSeries {
+interface OrganizationPerformance {
   readonly organization: Organization;
   readonly gradeYearScaleScores: GradeYearScaleScore[];
-  visible: boolean;
 }
 
 interface PerformanceLevel {
@@ -37,9 +36,17 @@ interface PerformanceLevel {
   name: string;
 }
 
-interface PerformanceLevelSeries {
+interface AssessmentPerformance {
   level: PerformanceLevel;
   gradeYearScaleScoreRanges: GradeYearScaleScoreRange[];
+}
+
+interface Series<T> {
+
+  readonly selector: string;
+  visible: boolean;
+  readonly data: T;
+
 }
 
 function createYearsAndGrades(first, count, step = 1, initialGap = 0) {
@@ -85,7 +92,7 @@ function computeBands(areas, xScale, yScale) {
     });
 }
 
-function createAreas(count, yearsAndGrades, scaleScoreRange: number[]): PerformanceLevelSeries[] {
+function createAreas(count, yearsAndGrades, scaleScoreRange: number[]): AssessmentPerformance[] {
   const [ minimumScaleScore, maximumScaleScore ] = scaleScoreRange;
   const areas = [];
   for (let i = 0; i < count; i++) {
@@ -115,7 +122,7 @@ function createAreas(count, yearsAndGrades, scaleScoreRange: number[]): Performa
   return areas;
 }
 
-function createLines(count, yearsAndGrades, scaleScoreRange: number[]): OrganizationPerformanceSeries[] {
+function createLines(count, yearsAndGrades, scaleScoreRange: number[]): OrganizationPerformance[] {
   const [ minimumScaleScore, maximumScaleScore ] = scaleScoreRange;
   const spread = maximumScaleScore - minimumScaleScore;
   const lines = [];
@@ -161,7 +168,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
   @Input()
   pallet: string = 'pallet-a';
 
-  organizationPerformanceTrends: OrganizationPerformanceSeries[];
+  organizationPerformanceSeries: Series<OrganizationPerformance>[];
 
   private assessmentTypeCode: string = 'sum'; // for coloring;
 
@@ -176,9 +183,9 @@ export class LongitudinalCohortChartComponent implements OnInit {
     return (<any>d3.select(this.chartContainer.nativeElement));
   }
 
-  toggleSeries(series: OrganizationPerformanceSeries, index: number): void {
+  toggleSeries<T>(series: Series<T>): void {
     series.visible = !series.visible;
-    this.root.selectAll(`.performance-level-series-${index}`)
+    this.root.selectAll(series.selector)
       .classed('hidden', !series.visible);
   }
 
@@ -192,17 +199,15 @@ export class LongitudinalCohortChartComponent implements OnInit {
     const lines = createLines(3, yearsAndGrades, scaleScoreRange);
 
     // set lines
-    this.organizationPerformanceTrends = lines;
-
-    window['x'] = this.root;
-
-    const bounds = this.root.node().getBoundingClientRect();
-    const outerWidth = bounds.width * 0.8,
-      outerHeight = Math.floor(outerWidth * 0.66);
+    this.organizationPerformanceSeries = lines.map((line, index) => <any>{
+      selector: `.series-${index}`,
+      visible: true,
+      data: line
+    });
 
     const
-      // outerWidth = 800,
-      // outerHeight = 600,
+      outerWidth = 800,
+      outerHeight = 600,
       p = 20,
       m = 40,
       margin = { top: 0, right: m, bottom: m, left: m },
@@ -270,27 +275,27 @@ export class LongitudinalCohortChartComponent implements OnInit {
     // Draw areas
 
     const performanceLevelArea = svg.append('g')
-      .classed('performance-level-areas pallet-b', true)
-      .selectAll('.performance-level-area')
+      .classed('scale-score-areas pallet-b', true)
+      .selectAll('.scale-score-area')
       .data(areas)
       .enter()
       .append('g')
       .attrs({
-        class: (d, i) => `performance-level-area color-${i}`
+        class: (d, i) => `scale-score-area color-${i}`
       });
 
     performanceLevelArea.append('path')
+      .classed('color-fill', true)
       .attrs({
         d: d => d3area(d.gradeYearScaleScoreRanges.map(a => <any>{
           x: a.gradeYear.year,
           y0: a.scaleScoreRange.minimum,
           y1: a.scaleScoreRange.maximum
-        })),
-        class: (d, i) => `area color-fill`
+        }))
       });
 
     performanceLevelArea.append('path')
-      .classed('area-divider', true)
+      .classed('scale-score-area-divider', true)
       .attrs({
         d: d => d3line(d.gradeYearScaleScoreRanges.map(a => <any>{
           x: a.gradeYear.year,
@@ -301,13 +306,13 @@ export class LongitudinalCohortChartComponent implements OnInit {
     // Draw lines
 
     const performanceLevelTrend = svg.append('g')
-      .classed('performance-level-trends pallet-a', true)
-      .selectAll('.performance-level-trend')
+      .classed('scale-score-lines pallet-a', true)
+      .selectAll('.scale-score-line')
       .data(lines)
       .enter()
       .append('g')
       .attrs({
-        class: (d, i) => `performance-level-trend performance-level-series-${i} color-${i}`
+        class: (d, i) => `scale-score-line series-${i} color-${i}`
       });
 
     performanceLevelTrend.append('path')
@@ -331,8 +336,18 @@ export class LongitudinalCohortChartComponent implements OnInit {
         cx: d => xScale(d.gradeYear.year),
         cy: d => yScale(d.scaleScore)
       })
-      .on('click', (d) => {
-        console.log(d.scaleScore);
+      .on('mouseover', (d, i, circles) => {
+        d3.select(circles[i])
+          .transition()
+          .attr('r', 10);
+      })
+      .on('mouseout', (d, i, circles) => {
+        d3.select(circles[i])
+          .transition()
+          .attr('r', 5);
+      })
+      .on('click', (d, i, circles) => {
+
       });
 
     // Correct x axis tick labels
@@ -359,26 +374,26 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .y(({ y }) => y);
 
     const bands = svg.append('g')
-      .classed('performance-level-bands pallet-b', true)
+      .classed('scale-score-area-labels pallet-b', true)
       .attrs({
         transform: `translate(${width}, 0)`
       });
 
     const bandData = computeBands(areas, xScale, yScale);
 
-    const band = bands.selectAll('.performance-level-band')
+    const band = bands.selectAll('.scale-score-area-label')
       .data(bandData)
       .enter()
       .append('g')
       .attrs({
         transform: d => `translate(0, ${yScale(d.scaleScoreRange.minimum)})`,
-        class: (d, i) => `performance-level-band color-${i}`
+        class: (d, i) => `scale-score-area-label color-${i}`
       });
 
     const bandTitle = band
       .filter((d, i) => i === bandData.length - 1)
       .append('g')
-      .classed('performance-level-band-title', true);
+      .classed('scale-score-area-labels-description', true);
 
     const title1 = bandTitle.append('text')
       .classed('text', true)

@@ -926,14 +926,6 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
  * Longitudinal Cohort Chart
  */
 
-@color-1: #845EC2;
-@color-2: #D65DB1;
-@color-3: #FF6F91;
-@color-4: #FF9671;
-@color-5: #FFC75F;
-@color-6: #F9F871;
-@stroke-width-1: 3px;
-@stroke-width-2: 4px;
 
 // .svg-container {
 //   width: 400px;
@@ -971,6 +963,9 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 }
 
 .longitudinal-cohort-chart {
+
+  @stroke-width-1: 3px;
+  @stroke-width-2: 4px;
 
   font-size: 10px;
 
@@ -1023,53 +1018,53 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
         }
       }
     }
+
+    .grade {
+      font-weight: bold;
+      font-size: 90%;
+      transform: translate(0, 28px);
+    }
+
   }
 
-  .performance-level-trend {
-    .line {
-      stroke-width: @stroke-width-2;
-    }
-    .point {
-      stroke-width: @stroke-width-1;
-      fill: #fff;
-      cursor: pointer;
-      /* opacity: 0;
-      &:hover {
-        opacity: 1;
+  .scale-score-lines {
+    .scale-score-line {
+      .line {
+        stroke-width: @stroke-width-2;
       }
-      */
-    }
-  }
-
-  .area {
-    fill-opacity: 0.18;
-  }
-
-  .area-divider {
-    stroke: #fff;
-    stroke-width: @stroke-width-1;
-  }
-
-  .performance-level-area:last-child .area-divider {
-    display: none;
-  }
-
-  .grade {
-    font-weight: bold;
-    font-size: 90%;
-    transform: translate(0, 28px);
-  }
-
-  .performance-level-bands {
-    .performance-level-band {
-      .performance-level-band-title {
-        > .text {
-          font-weight: bold;
+      .point {
+        stroke-width: @stroke-width-1;
+        fill: #fff;
+        cursor: pointer;
+        /* opacity: 0;
+        &:hover {
+          opacity: 1;
         }
+        */
       }
-      .performance-level-band-subtitle {
+    }
+  }
 
+  .scale-score-areas {
+    .scale-score-area {
+      fill-opacity: 0.18;
+    }
+    .scale-score-area:last-child .area-divider {
+      display: none;
+    }
+    .scale-score-area-divider {
+      stroke: #fff;
+      stroke-width: @stroke-width-1;
+    }
+  }
+
+  .scale-score-area-labels {
+    .scale-score-area-labels-description {
+      .strong {
+        font-weight: bold;
       }
+    }
+    .scale-score-area-label {
       .bracket {
         stroke-width: @stroke-width-1;
       }

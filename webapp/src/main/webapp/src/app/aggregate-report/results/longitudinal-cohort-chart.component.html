@@ -3,16 +3,16 @@
 
     <div class="chart-series-legend pallet-a">
       <ul class="list-unstyled">
-        <li *ngFor="let series of organizationPerformanceTrends; let index = index"
+        <li *ngFor="let series of organizationPerformanceSeries; let index = index"
             class="mb-sm">
-          <button class="btn color-{{index}} text-left chart-series"
+          <button class="btn chart-series color-{{index}} text-left"
                   [ngClass]="{'chart-series-hidden': !series.visible}"
-                  (click)="toggleSeries(series, index)">
+                  (click)="toggleSeries(series)">
             <div>
-              {{series.organization.name}}
+              {{series.data.organization.name}}
             </div>
             <div class="small">
-              {{'common.organization.type.' + series.organization.type | translate}}
+              {{'common.organization.type.' + series.data.organization.type | translate}}
             </div>
           </button>
         </li>
