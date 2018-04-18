@@ -95,10 +95,12 @@ export class AggregateReportRequestMapper {
     }
 
     // Set report type specific parameters
-    if (settings.reportType === 'GeneralPopulation') {
+    // The assessment definition check is tacked on because the form state can be set to longitudinal cohort
+    // and then the assessment definition can be changed to a type that does not support longitudinal cohort
+    if (settings.reportType === 'GeneralPopulation' || !assessmentDefinition.aggregateReportLongitudinalCohortEnabled) {
       query.assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
       query.schoolYears = settings.generalPopulation.schoolYears;
-    } else if (settings.reportType === 'LongitudinalCohort') {
+    } else if (settings.reportType === 'LongitudinalCohort' && assessmentDefinition.aggregateReportLongitudinalCohortEnabled) {
       query.assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
       query.toSchoolYear = settings.longitudinalCohort.toSchoolYear;
     }
