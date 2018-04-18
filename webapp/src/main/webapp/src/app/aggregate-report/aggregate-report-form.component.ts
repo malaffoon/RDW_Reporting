@@ -201,7 +201,7 @@ export class AggregateReportFormComponent {
       control.updateValueAndValidity();
     };
 
-    if (this.settings.reportType === 'GeneralPopulation') {
+    if (this.settings.reportType === 'GeneralPopulation' || !this.currentAssessmentDefinition.aggregateReportLongitudinalCohortEnabled) {
       setValidators(this.assessmentGradesControl, [
         notEmpty({ messageId: 'aggregate-report-form.field.assessment-grades-empty-error' })
       ]);
@@ -209,7 +209,7 @@ export class AggregateReportFormComponent {
         notEmpty({ messageId: 'aggregate-report-form.field.school-year-empty-error' })
       ]);
       setValidators(this.assessmentGradeRangeControl, null);
-    } else {
+    } else if (this.settings.reportType === 'LongitudinalCohort' && this.currentAssessmentDefinition.aggregateReportLongitudinalCohortEnabled) {
       setValidators(this.assessmentGradesControl, null);
       setValidators(this.schoolYearsControl, null);
       setValidators(this.assessmentGradeRangeControl, [
@@ -309,7 +309,6 @@ export class AggregateReportFormComponent {
   }
 
   onReportTypeChange(): void {
-    this.updateValidators();
     this.onSettingsChange();
   }
 
@@ -420,6 +419,8 @@ export class AggregateReportFormComponent {
    * Reloads the report preview based on current form state
    */
   onSettingsChange(): void {
+    this.updateValidators();
+
     // invalidate all setting-dependent views
     this.estimatedRowCount = undefined;
     if (this.reviewSectionInvalid) {

@@ -28,13 +28,13 @@ export class AggregateReportTableDataService {
     const organizations = this.createSampleOrganizations(settings, assessmentDefinition);
 
     const gradesAndYears: { grade: string, year: number }[] = [];
-    if (settings.reportType === 'GeneralPopulation') {
+    if (settings.reportType === 'GeneralPopulation' || !assessmentDefinition.aggregateReportLongitudinalCohortEnabled) {
       for (const grade of settings.generalPopulation.assessmentGrades) {
         for (const year of settings.generalPopulation.schoolYears) {
           gradesAndYears.push({ grade, year });
         }
       }
-    } else if (settings.reportType === 'LongitudinalCohort') {
+    } else if (settings.reportType === 'LongitudinalCohort' && assessmentDefinition.aggregateReportLongitudinalCohortEnabled) {
       const assessmentGrades = settings.longitudinalCohort.assessmentGrades;
       const schoolYears = computeEffectiveYears(settings.longitudinalCohort.toSchoolYear, assessmentGrades);
       for (let i = 0; i < assessmentGrades.length; i++) {
