@@ -475,7 +475,7 @@
                                        [itemTemplate]="subgroupListItemTemplate"
                                        (itemRemoveButtonClick)="onCustomSubgroupItemRemoveButtonClick($event)"></editable-list-group>
                   <ng-template #subgroupListItemTemplate let-item>
-                    {{item.name}}
+                    <subgroup [subgroup]="item.subgroup"></subgroup>
                   </ng-template>
                 </ng-container>
               </div>

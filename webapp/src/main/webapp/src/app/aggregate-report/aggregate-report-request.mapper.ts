@@ -18,7 +18,7 @@ import { ordering } from '@kourge/ordering';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
-import { SubgroupFilters, SubgroupFilterSupport } from './subgroup-filters';
+import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);

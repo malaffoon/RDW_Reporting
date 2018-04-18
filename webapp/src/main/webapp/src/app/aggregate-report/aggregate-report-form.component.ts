@@ -25,10 +25,10 @@ import { finalize, map, mergeMap } from 'rxjs/operators';
 import { Observer } from 'rxjs/Observer';
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { SubgroupFilters, SubgroupFilterSupport } from './subgroup-filters';
-import { SubgroupMapper } from './subgroup.mapper';
-import { SubgroupFiltersListItem } from './subgroup-filters-list-item';
+import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
+import { SubgroupMapper } from './subgroup/subgroup.mapper';
 import { fileName, notEmpty } from '../shared/form/validators';
+import { SubgroupItem } from './subgroup/subgroup-item';
 
 const OrganizationComparator = (a: Organization, b: Organization) => a.name.localeCompare(b.name);
 
@@ -120,7 +120,7 @@ export class AggregateReportFormComponent {
   /**
    * Custom subgroup display items
    */
-  subgroupItems: SubgroupFiltersListItem[] = [];
+  subgroupItems: SubgroupItem[] = [];
 
   /**
    * Controls for view invalidation
@@ -149,7 +149,7 @@ export class AggregateReportFormComponent {
 
     this.customSubgroup = SubgroupFilterSupport.copy(this.aggregateReportOptions.studentFilters);
     this.subgroupItems = this.settings.subgroups
-      .map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
+      .map(subgroup => this.subgroupMapper.createItemsFromFilters(subgroup, this.aggregateReportOptions.dimensionTypes));
 
     this.showAdvancedFilters = !SubgroupFilterSupport.equals(this.settings.studentFilters, this.aggregateReportOptions.studentFilters);
 
@@ -319,20 +319,23 @@ export class AggregateReportFormComponent {
   }
 
   onCreateCustomSubgroupButtonClick(): void {
-    this.settings.subgroups = this.settings.subgroups.concat([
-      SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
-    ]);
-    this.subgroupItems = this.settings.subgroups
-      .map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup));
+    const created = SubgroupFilterSupport
+      .leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters);
+
+    const createdItem = this.subgroupMapper
+      .createItemsFromFilters(created, this.aggregateReportOptions.dimensionTypes);
+
+    this.settings.subgroups = this.settings.subgroups.concat(created);
+    this.subgroupItems = this.subgroupItems.concat(createdItem);
 
     this.onSettingsChange();
   }
 
-  onCustomSubgroupItemRemoveButtonClick(item: SubgroupFiltersListItem): void {
+  onCustomSubgroupItemRemoveButtonClick(item: SubgroupItem): void {
     this.settings.subgroups = this.settings.subgroups
-      .filter(subgroup => subgroup !== item.value);
+      .filter(subgroup => subgroup !== item.source);
     this.subgroupItems = this.subgroupItems
-      .filter(subgroupItem => subgroupItem !== item);
+      .filter(subgroup => subgroup !== item);
     this.onSettingsChange();
   }
 
@@ -412,7 +415,11 @@ export class AggregateReportFormComponent {
     this.previewTable = {
       assessmentDefinition: this.currentAssessmentDefinition,
       options: this.aggregateReportOptions,
-      rows: this.tableDataService.createSampleData(this.currentAssessmentDefinition, this.settings)
+      rows: this.tableDataService.createSampleData(
+        this.currentAssessmentDefinition,
+        this.settings,
+        this.aggregateReportOptions
+      )
     };
   }
 
