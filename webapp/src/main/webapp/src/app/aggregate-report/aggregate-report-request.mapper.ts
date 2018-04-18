@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
-  BasicAggregateReportQuery,
-  BasicAggregateReportRequest,
+  AggregateReportQuery,
+  AggregateReportRequest,
   StudentFilters
-} from '../report/basic-aggregate-report-request';
+} from '../report/aggregate-report-request';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AggregateReportFormOptions } from './aggregate-report-form-options';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,11 +41,11 @@ export class AggregateReportRequestMapper {
    * @param {AggregateReportFormOptions} options the available report options
    * @param {AggregateReportFormSettings} settings the aggregate report form state
    * @param {AssessmentDefinition} assessmentDefinition
-   * @returns {BasicAggregateReportRequest}
+   * @returns {AggregateReportRequest}
    */
   map(options: AggregateReportFormOptions,
       settings: AggregateReportFormSettings,
-      assessmentDefinition: AssessmentDefinition): BasicAggregateReportRequest {
+      assessmentDefinition: AssessmentDefinition): AggregateReportRequest {
 
     const performanceLevelDisplayType = assessmentDefinition.performanceLevelDisplayTypes.includes(settings.performanceLevelDisplayType)
       ? settings.performanceLevelDisplayType
@@ -113,9 +113,11 @@ export class AggregateReportRequestMapper {
     };
   }
 
-  toSettings(request: BasicAggregateReportRequest, options: AggregateReportOptions): Observable<AggregateReportFormSettings> {
+  toSettings(request: AggregateReportRequest, options: AggregateReportOptions): Observable<AggregateReportFormSettings> {
 
-    const query: BasicAggregateReportQuery = request.query;
+    const query: AggregateReportQuery = request.query;
+    const queryType: string = request.query.queryType || 'Basic';
+    const reportType: string = request.query.reportType || 'GeneralPopulation';
     const filters: StudentFilters = query.studentFilters || {};
 
     const queryInterimAdministrationConditions = (query.administrativeConditionCodes || [])
@@ -140,7 +142,7 @@ export class AggregateReportRequestMapper {
     // Safely sorts the provided values ranked by the provided options
     const sort = (values: any[], options: any[]) => (values || []).sort(ordering(ranking(options)).compare);
 
-    const studentFilters = query.queryType === 'Basic'
+    const studentFilters = queryType === 'Basic'
       ? {
         economicDisadvantages: or(
           sort(filters.economicDisadvantageCodes, options.studentFilters.economicDisadvantages),
@@ -177,7 +179,7 @@ export class AggregateReportRequestMapper {
       }
       : SubgroupFilterSupport.copy(options.studentFilters);
 
-    const subgroups = query.queryType === 'FilteredSubgroup'
+    const subgroups = queryType === 'FilteredSubgroup'
       ? this.createSubgroupFiltersFromSubgroups(query.subgroups)
       : [];
 
@@ -191,19 +193,21 @@ export class AggregateReportRequestMapper {
       toSchoolYear: options.schoolYears[0]
     };
 
-    let generalPopulation = defaultGeneralPopulation,
-      longitudinalCohort = defaultLongitudinalCohort;
+    let generalPopulation,
+      longitudinalCohort;
 
-    if (query.reportType === 'GeneralPopulation') {
+    if (reportType === 'GeneralPopulation') {
       generalPopulation = {
         assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
         schoolYears: query.schoolYears.sort((a, b) => b - a),
       };
-    } else if (query.reportType === 'LongitudinalCohort') {
+      longitudinalCohort = defaultLongitudinalCohort;
+    } else if (reportType === 'LongitudinalCohort') {
       longitudinalCohort = {
         assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
         toSchoolYear: query.toSchoolYear
       };
+      generalPopulation = defaultGeneralPopulation;
     }
 
     return forkJoin(schools, districts)
@@ -230,8 +234,8 @@ export class AggregateReportRequestMapper {
               : queryInterimAdministrationConditions,
             name: request.name,
             performanceLevelDisplayType: query.achievementLevelDisplayType,
-            queryType: query.queryType,
-            reportType: query.reportType,
+            queryType: queryType,
+            reportType: reportType,
             schools: schools,
             studentFilters: studentFilters,
             subjects: sort(query.subjectCodes, options.subjects),
