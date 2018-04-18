@@ -5,8 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { DefaultSchool, Organization } from '../../shared/organization/organization';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 
-// todo group "band" and area "assessment-performance-category-series"
-
 interface GradeYear {
   grade: string;
   year: number;
@@ -43,11 +41,9 @@ interface AssessmentPerformance {
 }
 
 interface Series<T> {
-
+  readonly data: T;
   readonly selector: string;
   visible: boolean;
-  readonly data: T;
-
 }
 
 function createYearsAndGrades(first, count, step = 1, initialGap = 0) {
@@ -241,7 +237,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
     const xAxis = d3.axisBottom(xScale)
       .tickSize(-height)
       .tickPadding(tickPadding)
-      .tickFormat(d => this.schoolYearPipe.transform(d))
+      .tickFormat((d: number) => this.schoolYearPipe.transform(d))
       .ticks(yearsAndGrades.length)
       .tickValues(yearsWithoutGaps);
 
@@ -336,7 +332,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       })
       .on('mouseover', (d, i, circles) => {
         d3.select(circles[i])
-          .attr('r', 10);
+          .attr('r', 8);
       })
       .on('mouseout', (d, i, circles) => {
         d3.select(circles[i])
@@ -405,7 +401,8 @@ export class LongitudinalCohortChartComponent implements OnInit {
 
     const bandTitleBounds = bandTitle.node().getBBox();
     bandTitle.attrs({
-      transform: d => `translate(10, ${(yScale(d.scaleScoreRange.maximum) - yScale(d.scaleScoreRange.minimum)) + bandTitleBounds.height * 0.4})` // magic number 0.4
+      // 0.33 is a magic number, should be 0 with alignment-baseline hanging...
+      transform: d => `translate(10, ${(yScale(d.scaleScoreRange.maximum) - yScale(d.scaleScoreRange.minimum)) + bandTitleBounds.height * 0.33})`
     });
 
     band.append('path')
@@ -421,13 +418,13 @@ export class LongitudinalCohortChartComponent implements OnInit {
       });
 
     const labelPadding = { top: 3, right: 5, bottom: 3, left: 3 };
-    const labelRounding = (labelPadding.top + labelPadding.left) * 0.25;
+    const labelBourderRadius = (labelPadding.top + labelPadding.left) * 0.25; // proportional to height and width
 
     const labelRect = label.append('rect')
       .classed('color-fill', true)
       .attrs({
-        rx: labelRounding,
-        ry: labelRounding
+        rx: labelBourderRadius,
+        ry: labelBourderRadius
       });
 
     const labelText = label.append('text')
@@ -437,7 +434,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
     const labelTextBounds = labelText._groups[0].map(a => a.getBBox());
 
     labelText.attrs({
-      // not sure why this y transform looks better than 0.5
+      // 0.33 is a magic number, translate y should be 0 with alignment middle...
       transform: (d, i) => `translate(${labelPadding.left}, ${labelTextBounds[ i ].height * 0.33})`
     });
 
