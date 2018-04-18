@@ -5,8 +5,8 @@ import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { OrganizationMapper } from '../../shared/organization/organization.mapper';
 import { SubgroupMapper } from '../subgroup.mapper';
 import {
-  BasicAggregateReportQuery, StudentFilters
-} from '../../report/basic-aggregate-report-request';
+  AggregateReportQuery, StudentFilters
+} from '../../report/aggregate-report-request';
 import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
 import { SubgroupFiltersListItem } from '../subgroup-filters-list-item';
 
@@ -21,7 +21,7 @@ export class AggregateReportItemMapper {
               private requestMapper: AggregateReportRequestMapper) {
   }
 
-  createRow(query: BasicAggregateReportQuery,
+  createRow(query: AggregateReportQuery,
             assessmentDefinition: AssessmentDefinition,
             row: AggregateReportRow,
             uuid: number): AggregateReportItem {
