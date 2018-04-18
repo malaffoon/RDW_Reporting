@@ -2,19 +2,15 @@ import { NgModule } from "@angular/core";
 import { HttpModule } from "@angular/http";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { RouterModule } from "@angular/router";
-import { RemoveCommaPipe } from "./remove-comma.pipe";
 import { SBRadioButtonComponent } from "./sb-radio-button-list.component";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { SBCheckboxList } from "./sb-checkbox-list.component";
-import { GradeDisplayPipe } from "./grade-display.pipe";
-import { AssessmentTypePipe } from "./assessment-type.pipe";
 import { ColorService } from "./color.service";
 import { Angulartics2Module } from "angulartics2";
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationService } from "./notification/notification.service";
 import { AlertModule, PopoverModule } from "ngx-bootstrap";
-import { DatePipe, DecimalPipe } from "@angular/common";
 import { RdwLoadingModule } from "./loading/rdw-loading.module";
 import { SBToggleComponent } from "./sb-toggle.component";
 import { InformationButtonComponent } from "./button/information-button.component";
@@ -41,31 +37,34 @@ import { RdwDisplayOptionsModule } from "./display-options/rdw-display-options.m
 import { RdwAssessmentModule } from "./assessment/rdw-assessment.module";
 import { OrderSelectorComponent } from "./order-selector/order-selector.component";
 import { NgxDnDModule } from "@swimlane/ngx-dnd";
+import { CommonEmbargoModule } from "./embargo/embargo.module";
+import { SchoolModule } from "./school/school.module";
+import { InViewDirective } from './nav/in-view.directive';
 
 
 @NgModule({
   declarations: [
-    AssessmentTypePipe,
-    GradeDisplayPipe,
     InformationButtonComponent,
     OptionalPipe,
     OrderSelectorComponent,
     ScrollNavComponent,
     NotificationComponent,
-    RemoveCommaPipe,
     SBCheckboxList,
     SBRadioButtonComponent,
     SBToggleComponent,
-    ScaleScoreComponent
+    ScaleScoreComponent,
+    InViewDirective
   ],
   imports: [
     AlertModule,
     Angulartics2Module.forChild(),
     BrowserModule,
+    CommonEmbargoModule,
     FormsModule,
     HttpModule,
     NgxDnDModule,
     OrganizationModule,
+    SchoolModule,
     PopoverModule.forRoot(),
     RdwAssessmentModule,
     RdwCoreModule,
@@ -88,15 +87,14 @@ import { NgxDnDModule } from "@swimlane/ngx-dnd";
     })
   ],
   exports: [
-    AssessmentTypePipe,
-    GradeDisplayPipe,
+    CommonEmbargoModule,
     InformationButtonComponent,
     OptionalPipe,
     OrderSelectorComponent,
     NotificationComponent,
     ScrollNavComponent,
     OrganizationModule,
-    RemoveCommaPipe,
+    SchoolModule,
     RouterModule,
     RdwAssessmentModule,
     RdwCoreModule,
@@ -113,14 +111,13 @@ import { NgxDnDModule } from "@swimlane/ngx-dnd";
     SBRadioButtonComponent,
     SBToggleComponent,
     ScaleScoreComponent,
-    TranslateModule
+    TranslateModule,
+    InViewDirective
   ],
   providers: [
     { provide: AuthenticationServiceAuthenticationExpiredRoute, useValue: 'session-expired' },
     { provide: AuthenticationServiceDefaultAuthenticationRoute, useValue: 'home' },
     ColorService,
-    DatePipe,
-    DecimalPipe,
     NotificationService
   ]
 })

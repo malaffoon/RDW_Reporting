@@ -8,6 +8,8 @@ const DefaultButtonGroupStyles = 'btn-group-sm';
 const DefaultButtonStyles = 'btn-primary';
 
 /**
+ * @deprecated use <sb-button-group type="checkbox">
+ *
  * A checkbox group with an optional select all button for convenience
  *
  * Vertical Display:
@@ -47,7 +49,7 @@ const DefaultButtonStyles = 'btn-primary';
                angularticsEvent="{{analyticsEvent}}"
                angularticsCategory="{{analyticsCategory}}"
                [angularticsProperties]="allOptionAnalyticsProperties">
-        {{'buttons.all' | translate}}
+        {{'common.buttons.all' | translate}}
       </label>
       <div class="btn-group"
            [ngClass]="buttonGroupStyles">

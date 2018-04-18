@@ -168,7 +168,8 @@ h1 + p.pull-left, .h1 + p.pull-left, h2 + p.pull-left, .h2 + p.pull-left, h3 + p
   border: 1px solid @gray-lighter;
   border-radius: @border-radius-base @border-radius-base 0 0;
   padding: @padding-base-horizontal @padding-large-horizontal;
-  + .table-list-container .table > thead > tr {
+  + .table-list-container .table > thead > tr,
+  + .table-list-container > p-table > .table > .ui-table-wrapper > table > thead > tr {
     > th:first-child {
       border-top-left-radius: 0;
     }
@@ -385,18 +386,18 @@ body .select-menu-group {
 }
 
 /**
- * TODO candidate for moving to UI kit
+ * TODO move to UI Kit
  */
-.nested-btn-group.vertical .btn-group .btn:last-child {
-  margin-bottom: 0;
-}
-
-/**
- * Minor style fixes for vertical checkbox group.
- * The default btn-group style is margin-left: -1px
- */
-.nested-btn-group.vertical .btn-group .btn + .btn {
-  margin-left: 0;
+.nested-btn-group.vertical {
+  .btn-group .btn {
+    margin-right: 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    + .btn {
+      margin-left: 0;
+    }
+  }
 }
 
 /**
@@ -556,6 +557,10 @@ body .select-menu-group {
 .full-cell {
   margin: -@table-cell-padding;
   padding: @table-cell-padding;
+
+  &.pt-0 {
+    padding-top: 0;
+  }
 }
 
 .table-row-size-fixed {
@@ -567,15 +572,8 @@ body .select-menu-group {
   }
 }
 
-aggregate-report-results {
-  .table .scale-score {
-    font-size: inherit;
-  }
-
-  .performance-comparison-graph {
-    margin: -@table-cell-padding;
-    padding: 0 @table-cell-padding;
-  }
+aggregate-report-table .label {
+  vertical-align: middle;
 }
 
 .performance-level-distribution-chart,
@@ -585,7 +583,7 @@ aggregate-report-results {
   .bar-container {
     display: flex;
     padding: 0.6em 0;
-    &:first-child {
+    &:nth-child(1) {
       justify-content: flex-end;
       .bar:first-child {
         border-top-left-radius: @border-radius-small;
@@ -595,7 +593,7 @@ aggregate-report-results {
         border-right: 1px solid #fff;
       }
     }
-    &:last-child {
+    &:nth-child(2) {
       border-left: 1px solid @gray-darkest;
       .bar:last-child {
         border-top-right-radius: @border-radius-small;
@@ -693,7 +691,7 @@ aggregate-report-results {
 }
 
 aggregate-report-form {
-  .well-group > .well {
+  .well-group .well {
     box-shadow: none;
     padding-bottom: 20px;
     &:not(:first-child) {
@@ -719,8 +717,9 @@ aggregate-report-form {
   }
 }
 
-.writing-trait-scores {
-  min-width: 60% !important;
+.writing-trait-scores > .ui-table-wrapper {
+    display: inline-block;
+    min-width: 65%;
 }
 
 .nav > li > button {
@@ -739,19 +738,6 @@ scroll-nav li a {
 aggregate-report-organization-list {
   .list-group {
     margin-bottom: 10px; /* was 20 */
-  }
-}
-
-//Enable click-through on prime-ng data table headers
-//Workaround for https://github.com/primefaces/primeng/issues/4762
-//TODO convert from DataTable to the new TurboTable
-.ui-column-title > * {
-  pointer-events: none;
-  display: inline-block;
-
-  button {
-    pointer-events: auto;
-    position: relative;
   }
 }
 
@@ -885,8 +871,6 @@ h6 {
 }
 
 // override prime override
-body .ui-widget.ui-datatable table .ui-datatable-thead > tr > th.level-down,
-body .ui-widget.ui-datatable table .ui-datatable-data > tr > td.level-down,
 .ui-table .ui-table-thead > tr > th.level-down,
 .ui-table .ui-table-tbody > tr > td.level-down {
   padding-left: @padding-base-horizontal;
@@ -910,4 +894,30 @@ body .ui-widget.ui-datatable table .ui-datatable-data > tr > td.level-down,
   > *:last-child {
     margin-bottom: 0;
   }
+}
+
+a.btn.disabled.with-pointer {
+  pointer-events: auto;
+}
+
+//TODO move to SBAC UI kit
+distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
+  color: contrast(@green, darken(@green, 100%), lighten(@green, 100%));
+  background-color: @green;
+}
+
+// TODO move to UI kit
+.form-control {
+  &.btn-primary {
+    color: @btn-primary-color;
+    background-color: @btn-primary-bg;
+    border-color: @btn-primary-border;
+  }
+}
+
+.modal-title {
+  max-width: 96%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ordering } from "@kourge/ordering";
 import { FilterBy } from "./model/filter-by.model";
@@ -10,8 +10,11 @@ import { byGradeThenByName } from "./assessment.comparator";
 import { AssessmentProvider } from "./assessment-provider.interface";
 import { GradeCode } from "../shared/enum/grade-code.enum";
 import { ColorService } from "../shared/color.service";
-import { UserService } from "../user/user.service";
 import { AssessmentExporter } from "./assessment-exporter.interface";
+import { ReportingEmbargoService } from "../shared/embargo/reporting-embargo.service";
+import { share } from 'rxjs/operators';
+import { ApplicationSettingsService } from '../app-settings.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -21,9 +24,10 @@ import { AssessmentExporter } from "./assessment-exporter.interface";
  */
 @Component({
   selector: 'assessments',
-  templateUrl: './assessments.component.html',
+  templateUrl: './assessments.component.html'
 })
-export class AssessmentsComponent implements OnInit {
+export class AssessmentsComponent {
+
   /**
    * The array of asssessment exams to show.
    * @param value
@@ -72,6 +76,7 @@ export class AssessmentsComponent implements OnInit {
   availableAssessments: Assessment[] = [];
   assessmentsLoading: any[] = [];
   minimumItemDataYear: number;
+  exportDisabled: boolean = true;
 
   get assessmentExams(): AssessmentExam[] {
     return this._assessmentExams;
@@ -108,12 +113,12 @@ export class AssessmentsComponent implements OnInit {
 
   set showOnlyMostRecent(value: boolean) {
     this.expandAssessments = !value;
+    this._showOnlyMostRecent = value;
+
     if (value) {
       this.availableAssessments = [];
       this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
     }
-
-    this._showOnlyMostRecent = value;
   }
 
   get selectedAssessments() {
@@ -158,22 +163,22 @@ export class AssessmentsComponent implements OnInit {
 
   constructor(public colorService: ColorService,
               private route: ActivatedRoute,
-              private filterOptionService: ExamFilterOptionsService,
-              private userService: UserService) {
-    this.clientFilterBy = new FilterBy()
-  }
+              applicationSettingsService: ApplicationSettingsService,
+              filterOptionService: ExamFilterOptionsService,
+              embargoService: ReportingEmbargoService) {
 
-  ngOnInit() {
-    this.filterOptionService.getExamFilterOptions().subscribe(filterOptions => {
+    this.clientFilterBy = new FilterBy();
+
+    forkJoin(
+      applicationSettingsService.getSettings(),
+      filterOptionService.getExamFilterOptions(),
+      embargoService.isEmbargoed()
+    ).subscribe(([settings, filterOptions, embargoed]) => {
+      this.minimumItemDataYear = settings.minItemDataYear;
       this.filterOptions = filterOptions;
-
       this.updateFilterOptions();
+      this.exportDisabled = embargoed;
     });
-
-    this.userService.getCurrentUser().subscribe(user => {
-      this.minimumItemDataYear = user.configuration.minItemDataYear;
-    });
-
   }
 
   getGradeIdx(gradeCode: string): number {
@@ -189,6 +194,24 @@ export class AssessmentsComponent implements OnInit {
     this.clientFilterBy.ethnicities = Object.assign({}, this.clientFilterBy.ethnicities);
   }
 
+  removeGender(gender) {
+    this.clientFilterBy.genders[ gender ] = false;
+    if (this.clientFilterBy.filteredGenders.length == 0) {
+      this.clientFilterBy.genders[ 0 ] = true; // None are selected, set all to true.
+    }
+
+    this.clientFilterBy.genders = Object.assign({}, this.clientFilterBy.genders);
+  }
+
+  removeElasCode(elasCode) {
+    this.clientFilterBy.elasCodes[ elasCode ] = false;
+    if (this.clientFilterBy.filteredElasCodes.length == 0) {
+      this.clientFilterBy.elasCodes[ 0 ] = true; // None are selected, set all to true.
+    }
+
+    this.clientFilterBy.elasCodes = Object.assign({}, this.clientFilterBy.elasCodes);
+  }
+
   removeFilter(property) {
     if (property == 'offGradeAssessment') {
       this.clientFilterBy[ property ] = false;
@@ -198,6 +221,10 @@ export class AssessmentsComponent implements OnInit {
     }
     else if (property.indexOf('ethnicities') > -1) {
       this.removeEthnicity(property.substring(property.indexOf('.') + 1));
+    } else if (property.indexOf('genders') > -1) {
+      this.removeGender(property.substring(property.indexOf('.') + 1));
+    } else if (property.indexOf('elasCodes') > -1) {
+      this.removeElasCode(property.substring(property.indexOf('.') + 1));
     }
     else {
       this.clientFilterBy[ property ] = -1;
@@ -282,9 +309,10 @@ export class AssessmentsComponent implements OnInit {
 
   private getAvailableAssessments() {
     if (this._expandAssessments) {
-      let observable = this.assessmentProvider.getAvailableAssessments().share();
+      const observable = this.assessmentProvider.getAvailableAssessments().pipe(share());
 
       observable.subscribe(result => {
+        // TODO fix this so that we don't need an Array.map callback with side-effects
         this.availableAssessments = result.map(available => {
           available.selected = this._assessmentExams.some(assessmentExam => assessmentExam.assessment.id == available.id);
           return available;

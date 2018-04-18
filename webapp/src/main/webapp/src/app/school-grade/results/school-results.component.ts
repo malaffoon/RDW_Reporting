@@ -5,7 +5,6 @@ import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.m
 import { Assessment } from "../../assessments/model/assessment.model";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { SchoolAssessmentService } from "./school-assessment.service";
-import { School } from "../../user/model/school.model";
 import { SchoolService } from "../school.service";
 import { Grade } from "../grade.model";
 import { Angulartics2 } from "angulartics2";
@@ -13,13 +12,20 @@ import { AssessmentsComponent } from "../../assessments/assessments.component";
 import { TranslateService } from "@ngx-translate/core";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { SchoolGradeDownloadComponent } from "../../report/school-grade-report-download.component";
-import { OrganizationService } from "../organization.service";
 import { Option } from "../../shared/form/sb-typeahead.component";
 import { Utils } from "../../shared/support/support";
 import { SchoolAssessmentExportService } from "./school-assessment-export.service";
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { School } from "../../shared/organization/organization";
+import { OrganizationService } from "../../shared/organization/organization.service";
+import { SchoolService as CommonSchoolService } from "../../shared/school/school.service";
+import { Observable } from "rxjs/Observable";
+import { SchoolTypeahead } from "../../shared/school/school-typeahead";
+import { map, mergeMap } from "rxjs/operators";
+import { limit } from "../limit";
 
 @Component({
-  selector: 'app-group-results',
+  selector: 'school-results',
   templateUrl: './school-results.component.html',
 })
 /**
@@ -31,19 +37,27 @@ export class SchoolResultsComponent implements OnInit {
   @ViewChild(AssessmentsComponent)
   assessmentsComponent: AssessmentsComponent;
 
-  schools: School[];
   assessmentExams: AssessmentExam[] = [];
   availableAssessments: Assessment[] = [];
-  schoolOptions: Option[] = [];
+  schoolOptions: Option[] | Observable<School[]>;
   schoolIsAvailable: boolean = true;
+  aboveLimit: boolean = false;
 
   availableGrades: Grade[];
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   gradesAreUnavailable: boolean;
+  organizations: any[] = [];
 
   private _currentSchool: School;
   private _currentGrade: Grade;
   private _currentSchoolYear: number;
+
+  /**
+   * The school typeahead
+   */
+  @ViewChild('schoolTypeahead')
+  schoolTypeahead: SchoolTypeahead;
+
 
   /**
    * The currently selected school
@@ -102,49 +116,78 @@ export class SchoolResultsComponent implements OnInit {
               private translate: TranslateService,
               public assessmentProvider: SchoolAssessmentService,
               public assessmentExporter: SchoolAssessmentExportService,
-              private organizationService: OrganizationService) {
+              private organizationService: OrganizationService,
+              private commonSchoolService: CommonSchoolService) {
   }
 
-  ngOnInit() {
-    this.schools = this.route.snapshot.data[ "user" ].schools;
-    let schoolId = Number.parseInt(this.route.snapshot.params[ "schoolId" ]);
+  ngOnInit(): void {
+    const { schoolId, gradeId, schoolYear } = this.route.snapshot.params;
+    const schoolIdParam = Number.parseInt(schoolId);
+    const gradeIdParam = Number.parseInt(gradeId);
 
-    // get schools with districts
-    this.organizationService.getSchoolsWithDistricts()
-      .subscribe(schools => {
-        this.schoolOptions = schools.map(school => <Option>{
-          label: school.name,
-          group: school.districtName,
-          value: school
+    this.organizationService.getSchoolsWithDistricts(limit + 1).subscribe((schools: School[]) => {
+      if (schools.length <= limit) {
+        this.aboveLimit = false;
+        forkJoin(
+          this.filterOptionService.getExamFilterOptions(),
+          this.schoolService.findGradesWithAssessmentsForSchool(schoolIdParam)
+        ).subscribe(([ filterOptions, grades ]) => {
+
+          this.schoolOptions = schools.map(school => <Option>{
+            label: school.name,
+            group: school.districtName,
+            value: school
+          });
+          this.currentSchool = schools.find(x => x.id === schoolIdParam);
+          this.initFilterOptionsSchoolYearGrades(filterOptions, schoolYear, grades, gradeIdParam);
         });
-        this.currentSchool = schools.find(x => x.id == schoolId);
-        this.schoolIsAvailable = this.currentSchool !== undefined;
-      });
+      } else {
+        this.aboveLimit = true;
+        forkJoin(
+          this.commonSchoolService.getSchool(schoolIdParam),
+          this.filterOptionService.getExamFilterOptions(),
+          this.schoolService.findGradesWithAssessmentsForSchool(schoolIdParam)
+        ).subscribe(([ school, filterOptions, grades ]) => {
+          this.schoolOptions = Observable.create(observer => {
+            observer.next(this.schoolTypeahead.value);
+          }).pipe(
+            mergeMap(
+              (search: string) =>
+                this.organizationService.searchSchoolsWithDistrictsBySchoolName(search)
+                  .pipe(map(
+                    (schools: School[]) =>
+                      schools.filter(
+                        (school: School) => this.organizations.findIndex(x => school.equals(x)) === -1
+                      ))
+                  )));
+          this.currentSchool = school;
+          this.initFilterOptionsSchoolYearGrades(filterOptions, schoolYear, grades, gradeIdParam);
+        });
+      }
+    });
 
-    this.filterOptionService
-      .getExamFilterOptions()
-      .subscribe(filterOptions => {
-        this.filterOptions = filterOptions;
-        this.currentSchoolYear = this.mapParamsToSchoolYear(this.route.snapshot.params);
-      });
 
-    this.schoolService
-      .findGradesWithAssessmentsForSchool(schoolId)
-      .subscribe(grades => {
-        this.availableGrades = grades;
-        this.gradesAreUnavailable = this.availableGrades.length == 0;
-        this.currentGrade = this.availableGrades.find(grade => grade.id == this.route.snapshot.params[ "gradeId" ]);
-      });
+    const { assessment } = this.route.snapshot.data;
+    this.updateAssessment(assessment);
+  }
 
-    this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
+  private initFilterOptionsSchoolYearGrades(filterOptions: ExamFilterOptions, schoolYear: any, grades: Grade[], gradeIdParam: number) {
+    this.schoolIsAvailable = this.currentSchool !== undefined;
+
+    this.filterOptions = filterOptions;
+    this.currentSchoolYear = Number.parseInt(schoolYear) || this.filterOptions.schoolYears[ 0 ];
+
+    this.availableGrades = grades;
+    this.gradesAreUnavailable = this.availableGrades.length == 0;
+    this.currentGrade = this.availableGrades.find(grade => grade.id === gradeIdParam);
+  }
+
+  deselectSchool(value: any) {
+    this.currentSchool = null;
   }
 
   updateAssessment(latestAssessment: AssessmentExam): void {
-    this.assessmentExams = [];
-
-    if (latestAssessment) {
-      this.assessmentExams.push(latestAssessment);
-    }
+    this.assessmentExams = latestAssessment ? [ latestAssessment ] : [];
   }
 
   schoolSelectChanged(school: School): void {
@@ -198,13 +241,9 @@ export class SchoolResultsComponent implements OnInit {
     this.trackAnalyticsEvent(changedFilter);
   }
 
-  mapParamsToSchoolYear(params): number {
-    return Number.parseInt(params[ "schoolYear" ]) || this.filterOptions.schoolYears[ 0 ];
-  }
-
   exportCsv(): void {
     let filename: string = this._currentSchool.name +
-      "-" + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`) +
+      "-" + this.translate.instant(`common.assessment-grade-short-label.${this._currentGrade.code}`) +
       "-" + new Date().toDateString();
 
     this.angulartics2.eventTrack.next({
@@ -245,8 +284,8 @@ export class SchoolResultsComponent implements OnInit {
    * @param downloader
    */
   initializeDownloader(downloader: SchoolGradeDownloadComponent): void {
-    downloader.title = this.translate.instant('labels.reports.form.title.multiple', {
-      name: this._currentSchool.name + ' ' + this.translate.instant(`labels.grades.${this._currentGrade.code}.short-name`)
+    downloader.title = this.translate.instant('common.reports.form.title.multiple', {
+      name: this._currentSchool.name + ' ' + this.translate.instant(`common.assessment-grade-short-label.${this._currentGrade.code}`)
     });
     downloader.options.schoolYear = this.currentSchoolYear;
   }

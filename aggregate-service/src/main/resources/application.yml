@@ -26,10 +26,12 @@ cloud:
 
 app:
   aggregate-reports:
-    assessment-types: ica,sum
+    assessment-types: ica,sum,iab
     statewide-user-assessment-types: sum
+    state-aggregate-assessment-types: sum
     custom-aggregate-report-repository:
       organization-partition-size: 10
+      jdbc-fetch-size: -1
     query-pool-size: 6
     api-enabled: false
 
@@ -41,16 +43,10 @@ app:
       # every day at 2:00 am (GMT)
       refresh-cron: "0 0 2 * * *"
 
-  school-year: 2018
-  state:
-    code: CA
-    name: California
-
-
 spring:
   cache:
     type: SIMPLE
-    cache-names: internalTranslationsByCode, reportOptions, administrationConditions, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, ethnicities, genders, schoolYears, subjects, activeAssessments, embargo
+    cache-names: internalTranslationsByCode, reportOptions, administrationConditions, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, ethnicities, genders, elases, schoolYears, subjects, activeAssessments, embargo
 
   cloud:
     stream:
@@ -85,3 +81,13 @@ spring:
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
+
+reporting:
+  school-year: 2018
+  state:
+    code: CA
+    name: California
+
+  # english-learners should be lep or elas
+  english-learners:
+    - elas

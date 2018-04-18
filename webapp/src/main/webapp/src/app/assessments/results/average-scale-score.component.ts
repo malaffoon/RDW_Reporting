@@ -6,6 +6,7 @@ import { InstructionalResourcesService } from "./instructional-resources.service
 import { ColorService } from "../../shared/color.service";
 import { AssessmentProvider } from "../assessment-provider.interface";
 import { Observable } from "rxjs/Observable";
+import { TranslateService } from "@ngx-translate/core";
 
 /**
  * This component is responsible for displaying the average scale score visualization
@@ -28,8 +29,15 @@ export class AverageScaleScoreComponent {
     value.percents = value.percents.reverse();
     value.levels = value.levels.reverse();
     this._statistics = value;
+    if (!value) {
+      return;
+    }
 
-    if (value && value.levels) {
+    if (!isNaN(value.average)) {
+      this.averageScore = Math.round(value.average);
+    }
+
+    if (value.levels) {
       this._totalCount = value.levels
         .map(examStatisticsLevel => examStatisticsLevel.value)
         .reduce((total, levelCount) => {
@@ -47,21 +55,18 @@ export class AverageScaleScoreComponent {
 
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
 
+  averageScore: number;
+
   private _statistics: ExamStatistics;
   private _totalCount: number;
 
   constructor(public colorService: ColorService,
-              private instructionalResourcesService: InstructionalResourcesService) {
+              private instructionalResourcesService: InstructionalResourcesService,
+              private translate: TranslateService) {
   }
 
   get hasAverageScore(): boolean {
-    return !isNaN(this.statistics.average);
-  }
-
-  get examLevelEnum() {
-    return this.assessmentExam.assessment.isIab
-      ? "enum.iab-category.short."
-      : "enum.achievement-level.short.";
+    return !isNaN(this.averageScore);
   }
 
   get performanceLevels(): ExamStatisticsLevel[] {
@@ -84,6 +89,10 @@ export class AverageScaleScoreComponent {
    */
   unfilledLevel(examStatisticsLevel: ExamStatisticsLevel): number {
     return 100 - this.filledLevel(examStatisticsLevel);
+  }
+
+  examLevelTranslation(performanceLevel: ExamStatisticsLevel): string {
+    return this.translate.instant(performanceLevel.id ? `common.assessment-type.${this.assessmentExam.assessment.type}.performance-level.${performanceLevel.id}.short-name` : 'common.missing')
   }
 
   private levelCountPercent(levelCount: number): number {

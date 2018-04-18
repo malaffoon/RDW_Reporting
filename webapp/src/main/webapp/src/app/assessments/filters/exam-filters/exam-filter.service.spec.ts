@@ -1,5 +1,4 @@
 import { ExamFilterService } from "./exam-filter.service";
-import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { AdministrativeCondition } from "../../../shared/enum/administrative-condition.enum";
 import { Completeness } from "../../../shared/enum/completeness.enum";
 import { AssessmentExam } from "../../model/assessment-exam.model";
@@ -30,7 +29,7 @@ describe('ExamFilterService', () => {
 
   it('should filter exams by Administrative condition for IABs', () => {
     filterBy.administration = AdministrativeCondition.Standard;
-    assessmentExam.assessment.type = AssessmentType.IAB;
+    assessmentExam.assessment.type = 'iab';
 
     assessmentExam.exams[ 0 ].administrativeCondition =  AdministrativeCondition.Standard;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.NonStandard;
@@ -45,7 +44,7 @@ describe('ExamFilterService', () => {
 
   it('should not filter exams by Administrative condition for Summative', () => {
     filterBy.administration = AdministrativeCondition.Standard;
-    assessmentExam.assessment.type = AssessmentType.SUMMATIVE;
+    assessmentExam.assessment.type = 'sum';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Standard;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.NonStandard;
@@ -60,7 +59,7 @@ describe('ExamFilterService', () => {
 
   it('should filter exams by summative status for Summative', () => {
     filterBy.summativeStatus = AdministrativeCondition.Valid;
-    assessmentExam.assessment.type = AssessmentType.SUMMATIVE;
+    assessmentExam.assessment.type = 'sum';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.Invalid;
@@ -75,7 +74,7 @@ describe('ExamFilterService', () => {
 
   it('should not filter exams by summative status for IABs', () => {
     filterBy.summativeStatus = AdministrativeCondition.Valid;
-    assessmentExam.assessment.type = AssessmentType.IAB;
+    assessmentExam.assessment.type = 'iab';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.Invalid;
@@ -166,17 +165,19 @@ describe('ExamFilterService', () => {
   });
 
   it('should filter exams by gender', () => {
-    filterBy.gender = 'Male';
+    filterBy.genders["Male"] = false;
+    filterBy.genders["Female"] = true;
+    filterBy.genders["Nonbinary"] = true;
 
     assessmentExam.exams[ 0 ].student.genderCode = 'Female';
     assessmentExam.exams[ 1 ].student.genderCode = 'Male';
     assessmentExam.exams[ 2 ].student.genderCode = 'Female';
-    assessmentExam.exams[ 3 ].student.genderCode = 'Male';
+    assessmentExam.exams[ 3 ].student.genderCode = 'Nonbinary';
 
     let actual = fixture.filterExams(assessmentExam, filterBy);
 
-    expect(actual.length).toBe(2);
-    expect(actual.some(x => x.student.genderCode == 'Female')).toBeFalsy();
+    expect(actual.length).toBe(3);
+    expect(actual.some(x => x.student.genderCode == 'Male')).toBeFalsy();
   });
 
   it('should filter exams by migrant status as Yes', () => {
@@ -239,21 +240,6 @@ describe('ExamFilterService', () => {
     expect(actual.length).toBe(1);
     expect(actual.some(x => x.iep === true)).toBeTruthy();
     expect(actual.some(x => x.iep === false)).toBeFalsy();
-  });
-
-  it('should filter exams by Economic Disadvantage', () => {
-    filterBy.economicDisadvantage = 1;
-
-    assessmentExam.exams[ 0 ].economicDisadvantage = true;
-    assessmentExam.exams[ 1 ].economicDisadvantage = false;
-    assessmentExam.exams[ 2 ].economicDisadvantage = false;
-    assessmentExam.exams[ 3 ].economicDisadvantage = false;
-
-    let actual = fixture.filterExams(assessmentExam, filterBy);
-
-    expect(actual.length).toBe(1);
-    expect(actual.some(x => x.economicDisadvantage === true)).toBeTruthy();
-    expect(actual.some(x => x.economicDisadvantage === false)).toBeFalsy();
   });
 
   it('should filter exams by Limited English Proficiency', () => {

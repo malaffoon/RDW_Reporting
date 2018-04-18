@@ -1,10 +1,12 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, Output } from "@angular/core";
+import { AfterViewChecked, ChangeDetectorRef, Component, Input } from "@angular/core";
 import { Utils } from "./support/support";
 
-/*
-  A generic component which builds and binds a radio button list.
-  It is most typically used as:
-  (All) [ (Option 1) (Option 2) ]
+/**
+ * @deprecated use <sb-button-group type="radio">
+ *
+ * A generic component which builds and binds a radio button list.
+ * It is most typically used as:
+ * (All) [ (Option 1) (Option 2) ]
  */
 @Component({
   selector: 'sb-radio-button-list',
@@ -15,7 +17,7 @@ import { Utils } from "./support/support";
                [attr.disabled]="disabled?'disabled':null"
                angulartics2On="click" [angularticsEvent]="analyticsEvent"
                [angularticsCategory]="analyticsCategory"
-               [angularticsProperties]="{label: label + ': All'}">{{ 'buttons.all' | translate }}
+               [angularticsProperties]="{label: label + ': All'}">{{ 'common.buttons.all' | translate }}
       </label>
       <div class="btn-group">
         <label *ngFor="let value of values" class="btn btn-primary"

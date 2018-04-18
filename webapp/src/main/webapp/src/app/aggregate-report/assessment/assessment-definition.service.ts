@@ -1,13 +1,19 @@
 import { Injectable } from "@angular/core";
 import { AssessmentDefinition } from "./assessment-definition";
 import { Observable } from "rxjs/Observable";
+import { of } from 'rxjs/observable/of';
+import { IdentityColumnOptions } from '../results/aggregate-report-table.component';
+import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
 
 const Iab: AssessmentDefinition = {
   typeCode: 'iab',
   interim: true,
   performanceLevels: [1, 2, 3],
   performanceLevelCount: 3,
-  performanceLevelGroupingCutPoint: 3
+  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  aggregateReportIdentityColumns: IdentityColumnOptions.concat(),
+  aggregateReportStateResultsEnabled: false,
+  aggregateReportLongitudinalCohortEnabled: false
 };
 
 const Ica: AssessmentDefinition = {
@@ -15,7 +21,12 @@ const Ica: AssessmentDefinition = {
   interim: true,
   performanceLevels: [1, 2, 3, 4],
   performanceLevelCount: 4,
-  performanceLevelGroupingCutPoint: 3
+  performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
+  performanceLevelGroupingCutPoint: 3,
+  aggregateReportIdentityColumns: IdentityColumnOptions
+    .filter(option => option !== 'assessmentLabel'),
+  aggregateReportStateResultsEnabled: false,
+  aggregateReportLongitudinalCohortEnabled: false
 };
 
 const Summative: AssessmentDefinition = {
@@ -23,7 +34,12 @@ const Summative: AssessmentDefinition = {
   interim: false,
   performanceLevels: [1, 2, 3, 4],
   performanceLevelCount: 4,
-  performanceLevelGroupingCutPoint: 3
+  performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
+  performanceLevelGroupingCutPoint: 3,
+  aggregateReportIdentityColumns: IdentityColumnOptions
+    .filter(option => option !== 'assessmentLabel'),
+  aggregateReportStateResultsEnabled: true,
+  aggregateReportLongitudinalCohortEnabled: true
 };
 
 /**
@@ -41,11 +57,11 @@ export class AssessmentDefinitionService {
    * @returns {Observable<Map<string, AssessmentDefinition>>}
    */
   public getDefinitionsByAssessmentTypeCode(): Observable<Map<string, AssessmentDefinition>> {
-    return Observable.of(new Map([
+    return of(new Map([
       [ 'ica', Ica ],
       [ 'iab', Iab ],
       [ 'sum', Summative ]
-    ]))
+    ]));
   }
 
 }

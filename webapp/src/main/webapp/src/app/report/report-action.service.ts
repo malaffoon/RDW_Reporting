@@ -2,8 +2,6 @@ import { Injectable } from "@angular/core";
 import { Report } from "./report.model";
 import { ReportService } from "./report.service";
 import { Router } from "@angular/router";
-import { NotificationService } from "../shared/notification/notification.service";
-import "rxjs/add/observable/empty";
 
 export const AggregateReportType: string = "AggregateReportRequest";
 
@@ -20,8 +18,7 @@ export class ReportActionService {
   ];
 
   constructor(private reportService: ReportService,
-              private router: Router,
-              private notificationService: NotificationService) {
+              private router: Router) {
   }
 
   /**
@@ -42,6 +39,10 @@ export class ReportActionService {
    * @param {ReportAction} action An action
    */
   public performAction(action: ReportAction): void {
+    if (action.disabled) {
+      return;
+    }
+
     if (action.type == ActionType.Download) {
       this.performDownload(action);
     }
@@ -69,6 +70,7 @@ export interface ReportAction {
   readonly icon?: string;
   readonly labelKey?: string;
   readonly disabled?: boolean;
+  readonly popoverKey?: string;
 }
 
 /**
@@ -100,7 +102,7 @@ class DefaultActionProvider implements ActionProvider {
       {
         type: ActionType.Download,
         value: report.id,
-        labelKey: 'labels.reports.report-actions.download-report'
+        labelKey: 'report-action.download-report'
       }
     ];
   }
@@ -121,24 +123,26 @@ class AggregateReportActionProvider extends DefaultActionProvider {
   }
 
   public getActions(report: Report): ReportAction[] {
-    const disableViewAndDownload = !report.completed && !report.processing;
+    const disableViewAndDownload: boolean = !report.completed && !report.processing;
+    const embargoed: boolean = report.metadata.createdWhileDataEmbargoed === "true";
     return [
       {
         type: ActionType.Navigate,
         value: `/aggregate-reports/${report.id}`,
-        labelKey: 'labels.reports.report-actions.view-report',
+        labelKey: 'report-action.view-report',
         disabled: disableViewAndDownload
       },
       {
         type: ActionType.Navigate,
         value: `/aggregate-reports?src=${report.id}`,
-        labelKey: 'labels.reports.report-actions.view-query'
+        labelKey: 'report-action.view-query'
       },
       {
         type: ActionType.Download,
         value: report.id,
-        labelKey: 'labels.reports.report-actions.download-report',
-        disabled: disableViewAndDownload
+        labelKey: 'report-action.download-report',
+        disabled: disableViewAndDownload || embargoed,
+        popoverKey: embargoed ? 'report-action.embargoed' : undefined
       }
     ];
   }

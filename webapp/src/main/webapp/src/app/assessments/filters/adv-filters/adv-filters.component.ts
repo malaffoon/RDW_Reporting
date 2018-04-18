@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FilterBy } from "../../model/filter-by.model";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
-import { UserService } from "../../../user/user.service";
+import { ApplicationSettingsService } from '../../../app-settings.service';
 
 /*
   This component contains all of the selectable advanced filters
@@ -11,38 +11,27 @@ import { UserService } from "../../../user/user.service";
   selector: 'adv-filters',
   templateUrl: './adv-filters.component.html'
 })
-export class AdvFiltersComponent implements OnInit {
-  private _filterBy: FilterBy;
-
-  get filterBy(): FilterBy {
-    return this._filterBy;
-  }
-
-  @Input()
-  set filterBy(value: FilterBy) {
-    this._filterBy = value;
-  }
+export class AdvFiltersComponent {
 
   @Input()
   filterOptions: ExamFilterOptions;
 
   @Input()
+  filterBy: FilterBy;
+
+  @Input()
   showStudentFilter: boolean = true;
 
   showTransferAccess: boolean = false;
+  showElas: boolean = false;
+  showLep: boolean = false;
 
-  constructor(private userService: UserService) {
+  constructor(private applicationSettingsService: ApplicationSettingsService) {
+    applicationSettingsService.getSettings().subscribe(settings => {
+      this.showTransferAccess = settings.transferAccess;
+      this.showElas = settings.elasEnabled;
+      this.showLep = settings.lepEnabled;
+    })
   }
 
-  ngOnInit() {
-    this.userService.getCurrentUser()
-      .toPromise()
-      .then((user) => {
-        this.showTransferAccess = user.configuration.transferAccess;
-      });
-  }
-
-  get translateRoot() {
-    return "labels.filters.";
-  }
 }

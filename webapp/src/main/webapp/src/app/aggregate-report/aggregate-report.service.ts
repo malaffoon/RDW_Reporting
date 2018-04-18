@@ -19,7 +19,7 @@ export class AggregateReportService {
   /**
    * Gets the estimated report row count for the provided report request
    *
-   * @param {AggregateReportRequest} request the report parameters
+   * @param {AggregateReportQuery} query the report parameters
    * @returns {Observable<number>} the row count
    */
   getEstimatedRowCount(query: AggregateReportQuery): Observable<number> {

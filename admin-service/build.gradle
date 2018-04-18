@@ -1,9 +1,5 @@
 apply plugin: 'org.springframework.boot'
 
-createDockerfile {
-    ext.java_opts = ["-Xmx768m"]
-}
-
 dependencies {
     compile project(':rdw-reporting-common')
     compile project(':rdw-reporting-common-web')
@@ -24,7 +20,6 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
     compile 'org.springframework.cloud:spring-cloud-stream'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
     compile 'com.google.guava:guava'
     compile 'mysql:mysql-connector-java'
     compile 'commons-io:commons-io'

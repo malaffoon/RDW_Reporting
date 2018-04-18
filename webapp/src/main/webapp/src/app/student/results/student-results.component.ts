@@ -1,19 +1,19 @@
-import { OnInit, Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { StudentExamHistory } from "../model/student-exam-history.model";
 import { StudentResultsFilterState } from "./model/student-results-filter-state.model";
 import { StudentHistoryExamWrapper } from "../model/student-history-exam-wrapper.model";
-import { AssessmentType } from "../../shared/enum/assessment-type.enum";
 import { ExamFilterService } from "../../assessments/filters/exam-filters/exam-filter.service";
 import { ColorService } from "../../shared/color.service";
 import { ExamFilterOptions } from "../../assessments/model/exam-filter-options.model";
-import { Student } from "../model/student.model";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { Angulartics2 } from "angulartics2";
-import { UserService } from "../../user/user.service";
 import { StudentReportDownloadComponent } from "../../report/student-report-download.component";
-import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
-import { Utils } from "../../shared/support/support";
+import { ReportingEmbargoService } from "../../shared/embargo/reporting-embargo.service";
+import { ApplicationSettingsService } from '../../app-settings.service';
+import { AssessmentTypeOrdering, SubjectOrdering } from '../../shared/ordering/orderings';
+import { join } from '@kourge/ordering/comparator';
+import { FilterBy } from '../../assessments/model/filter-by.model';
 
 @Component({
   selector: 'student-results',
@@ -22,96 +22,61 @@ import { Utils } from "../../shared/support/support";
 export class StudentResultsComponent implements OnInit {
 
   examHistory: StudentExamHistory;
-  filterState: StudentResultsFilterState = new StudentResultsFilterState();
+  sections: Section[] = [];
+  filterState: StudentResultsFilterState;
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
-  examsByTypeAndSubject: Map<AssessmentType, Map<string, StudentHistoryExamWrapper[]>> = new Map();
-  displayState: any = {};
+  advancedFilters: FilterBy = new FilterBy();
   minimumItemDataYear: number;
   hasResults: boolean;
+  exportDisabled: boolean = true;
 
-  private typeDisplayOrder: AssessmentType[] = [AssessmentType.IAB, AssessmentType.ICA, AssessmentType.SUMMATIVE];
-
-  get assessmentTypes(): AssessmentType[] {
-    return Array.from(this.examsByTypeAndSubject.keys())
-      .sort((a, b) => {
-        let aIdx = this.typeDisplayOrder.indexOf(a);
-        let bIdx = this.typeDisplayOrder.indexOf(b);
-        return aIdx - bIdx;
-      });
-  }
-
-  constructor(public colorService: ColorService,
+  constructor(private colorService: ColorService,
               private csvExportService: CsvExportService,
               private route: ActivatedRoute,
               private router: Router,
               private angulartics2: Angulartics2,
-              private userService: UserService,
-              private examFilterService: ExamFilterService) {
+              private applicationSettingsService: ApplicationSettingsService,
+              private examFilterService: ExamFilterService,
+              private embargoService: ReportingEmbargoService) {
   }
 
   ngOnInit(): void {
-    this.examHistory = this.route.snapshot.data[ "examHistory" ];
 
-    if(this.examHistory) {
-      this.initializeFilter(this.examHistory.exams,this.route.snapshot.params);
+    const { examHistory } = this.route.snapshot.data;
+    if (examHistory) {
+      this.examHistory = examHistory;
+
+      const { exams } = examHistory;
+      this.filterState = this.createFilterState(exams, this.route.snapshot.params);
+      this.filterOptions.hasSummative = exams.some(wrapper => wrapper.assessment.isSummative);
+      this.filterOptions.hasInterim = exams.some(wrapper => wrapper.assessment.isInterim);
+      this.advancedFilters.onChanges.subscribe(property => this.onAdvancedFilterChange());
+      this.sections = this.createSections(exams);
       this.applyFilter();
     }
 
-    this.userService.getCurrentUser().subscribe(user => {
-      this.minimumItemDataYear = user.configuration.minItemDataYear;
+    this.applicationSettingsService.getSettings().subscribe(settings => {
+      this.minimumItemDataYear = settings.minItemDataYear;
     });
-  }
 
-  /**
-   * Retrieve an ordered list of subjects available for the given assessment type.
-   *
-   * @param type  An assessment type
-   * @returns {Array<string>} The ordered list of subjects available
-   */
-  getSubjectsForType(type: AssessmentType): string[] {
-    return Array.from(this.examsByTypeAndSubject.get(type).keys())
-      .sort((a, b) => a.localeCompare(b));
+    this.embargoService.isEmbargoed().subscribe(embargoed => {
+      this.exportDisabled = embargoed;
+    });
   }
 
   /**
    * Handle a filter state change.
    */
   onFilterChange(): void {
-    if(this.hasBasicFilterChanged()) {
-      this.updateRoute();
-    }
-
+    this.updateRoute();
     this.applyFilter();
   }
 
-  hasBasicFilterChanged(): boolean {
-    let params:any = this.route.snapshot.params;
-
-    return this.filterState.schoolYear != params.schoolYear
-      || this.filterState.subject != params.subject;
-  }
-
-  isCollapsed(assessmentType: AssessmentType, subject: string): boolean {
-    return this.displayState[assessmentType][subject].collapsed;
-  }
-
-  toggleCollapsed(assessmentType: AssessmentType, subject: string): void {
-    this.displayState[assessmentType][subject].collapsed = !this.displayState[assessmentType][subject].collapsed;
+  private onAdvancedFilterChange(): void {
+    this.applyFilter();
   }
 
   exportCsv(): void {
-    let student: Student = this.examHistory.student;
-    let filename: string = student.lastName +
-      "-" + student.firstName +
-      "-" + student.ssid +
-      "-" + new Date().toDateString();
-
-    let sourceData: StudentHistoryExamWrapper[] = [];
-    Array.from(this.examsByTypeAndSubject.values()).forEach(bySubject => {
-      Array.from(bySubject.values()).forEach(wrappers => {
-        sourceData = sourceData.concat(wrappers);
-      });
-    });
 
     this.angulartics2.eventTrack.next({
       action: 'Export Student Exam History',
@@ -120,94 +85,90 @@ export class StudentResultsComponent implements OnInit {
       }
     });
 
-    this.csvExportService.exportStudentHistory(sourceData, () => this.examHistory.student, filename);
+    const { student } = this.examHistory;
+    this.csvExportService.exportStudentHistory(
+      this.sections.reduce((exams, section) => {
+        exams.push(...section.exams);
+        return exams;
+      }, []),
+      () => this.examHistory.student,
+      `${student.lastName}-${student.firstName}-${student.ssid}-${new Date().toDateString()}`
+    );
+  }
+
+  getAssessmentTypeColor(assessmentType: string) {
+    const index = [ 'ica', 'iab', 'sum' ].indexOf(assessmentType);
+    const totalAssessmentTypes = 3;
+    const colorIndex = index >= 0 ? index + 1 : totalAssessmentTypes;
+    return this.colorService.getColor(colorIndex);
   }
 
   /**
    * Apply the current filter state to the exams.
    */
   private applyFilter(): void {
-    let filteredExams: StudentHistoryExamWrapper[] = this.examHistory.exams
-      .filter((wrapper) => this.isExamVisible(wrapper));
+    const examsFilteredByYearAndSubject = this.examHistory.exams
+      .filter(wrapper => {
+        const { schoolYear, subject } = this.filterState;
+        return (schoolYear == null || schoolYear === wrapper.exam.schoolYear)
+          && (subject == null || subject === wrapper.assessment.subject)
+      });
 
-    filteredExams = this.examFilterService.filterItems(
-      (wrapper) => wrapper.assessment,
-      (wrapper) => wrapper.exam,
-      filteredExams,
-      this.filterState.filterBy
+    const filteredExams = this.examFilterService.filterItems(
+      wrapper => wrapper.assessment,
+      wrapper => wrapper.exam,
+      examsFilteredByYearAndSubject,
+      this.advancedFilters
     );
 
-    this.hasResults = filteredExams.length != 0;
-
-    let examsByTypeAndSubject: Map<AssessmentType, Map<string, StudentHistoryExamWrapper[]>> = new Map();
-    filteredExams.forEach((wrapper) => {
-      let type: AssessmentType = wrapper.assessment.type;
-      let subject: string = wrapper.assessment.subject;
-      let byType: Map<string, StudentHistoryExamWrapper[]> = examsByTypeAndSubject.get(type) || new Map();
-      let bySubject: StudentHistoryExamWrapper[] = byType.get(subject) || [];
-      bySubject.push(wrapper);
-      byType.set(subject, bySubject);
-      examsByTypeAndSubject.set(type, byType);
-
-      // Initialize collapse state if it doesn't exist
-      this.displayState[type] = this.displayState[type] || {};
-      this.displayState[type][subject] = this.displayState[type][subject] || {};
-      this.displayState[type][subject].collapsed = this.displayState[type][subject].collapsed || false;
-
-      // check for at least one interim or summative while already going thru the exams
-      if (wrapper.assessment.isSummative) {
-        this.filterOptions.hasSummative = true;
-      }
-      if (wrapper.assessment.isInterim) {
-        this.filterOptions.hasInterim = true;
-      }
-
+    this.hasResults = filteredExams.length !== 0;
+    this.sections.forEach(section => {
+      section.filteredExams = section.exams.filter(exam => filteredExams.find(x => x.exam.id === exam.exam.id));
     });
-
-    this.examsByTypeAndSubject = examsByTypeAndSubject;
-  }
-
-  /**
-   * Filter an exam by the current filter state.
-   *
-   * @param wrapper The exam wrapper to filter
-   * @returns {boolean} True if the exam should be visible
-   */
-  private isExamVisible(wrapper: StudentHistoryExamWrapper): boolean {
-    // School Year filter
-    if (this.filterState.schoolYear > 0) {
-      if (wrapper.exam.schoolYear !== this.filterState.schoolYear) {
-        return false;
-      }
-    }
-    // Subject filter
-    if (this.filterState.subject) {
-      if (wrapper.assessment.subject !== this.filterState.subject) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   /**
    * Update the current route based upon the current filter state.
-   * TODO Do not re-load the page or re-fetch data.
    */
   private updateRoute(): void {
-    let params: any = {};
-    if (this.filterState.schoolYear > 0) {
-      params.schoolYear = this.filterState.schoolYear.toString();
+    const parameters: any = {};
+    if (this.filterState.schoolYear) {
+      parameters.schoolYear = this.filterState.schoolYear;
     }
     if (this.filterState.subject) {
-      params.subject = this.filterState.subject;
+      parameters.subject = this.filterState.subject;
     }
 
-    let navigationExtras = this.route.parent.parent.snapshot.url.length > 0
-      ? { relativeTo: this.route.parent.parent }
-      : undefined;
+    this.router.navigate([
+      'students',
+      this.examHistory.student.id,
+      parameters
+    ], {
+      relativeTo: this.route.parent.parent
+    });
+  }
 
-    this.router.navigate(['students', this.examHistory.student.id, params], navigationExtras);
+  private createSections(exams: StudentHistoryExamWrapper[]): Section[] {
+    return exams.reduce((sections, wrapper) => {
+      const { type, subject } = wrapper.assessment;
+      const section = sections.find(section => section.assessmentTypeCode === type && section.subjectCode === subject);
+      if (section) {
+        section.exams.push(wrapper);
+      } else {
+        sections.push({
+          assessmentTypeCode: type,
+          assessmentTypeColor: this.getAssessmentTypeColor(type),
+          subjectCode: subject,
+          exams: [ wrapper ],
+          filteredExams: [],
+          collapsed: false
+        });
+      }
+      return sections;
+    }, []).sort(join(
+      AssessmentTypeOrdering.on<Section>(section => section.assessmentTypeCode).compare,
+      SubjectOrdering.on<Section>(section => section.subjectCode).compare
+    ));
   }
 
   /**
@@ -216,35 +177,37 @@ export class StudentResultsComponent implements OnInit {
    * @param exams       The available exams
    * @param params      The route params
    */
-  private initializeFilter(exams: StudentHistoryExamWrapper[], params: Params): void {
+  private createFilterState(exams: StudentHistoryExamWrapper[], parameters: any): StudentResultsFilterState {
 
-    let years: number[] = [];
-    let subjects: string[] = [];
+    const filterState: StudentResultsFilterState = exams.reduce((filterState, wrapper: StudentHistoryExamWrapper) => {
+        const { schoolYear } = wrapper.exam;
+        if (filterState.schoolYears.indexOf(schoolYear) === -1) {
+          filterState.schoolYears.push(schoolYear);
+        }
+        const { subject } = wrapper.assessment;
+        if (filterState.subjects.indexOf(subject) === -1) {
+          filterState.subjects.push(subject);
+        }
+        return filterState;
+      },
+      {
+        schoolYears: [],
+        subjects: []
+      }
+    );
 
-    //Parse available years and subjects from exam history
-    exams
-      .forEach((exam: StudentHistoryExamWrapper) => {
-        years.push(exam.exam.schoolYear);
-        subjects.push(exam.assessment.subject)
-      });
+    filterState.schoolYears.sort((a, b) => b - a);
+    filterState.subjects.sort(SubjectOrdering.compare);
 
-    //Reduce years to ordered unique list
-    this.filterState.years = years
-      .sort((a: number, b: number) => b - a)
-      .filter((year: number, idx: number, array: number[]) => idx == 0 || year != array[ idx - 1 ]);
-
-    if (params[ "schoolYear" ]) {
-      this.filterState.schoolYear = parseInt(params[ 'schoolYear' ]);
+    const { schoolYear, subject } = parameters;
+    if (schoolYear) {
+      filterState.schoolYear = parseInt(schoolYear);
+    }
+    if (subject) {
+      filterState.subject = subject;
     }
 
-    //Reduce subjects to ordered unique list
-    this.filterState.subjects = subjects
-      .sort((a: string, b: string) => a.localeCompare(b))
-      .filter((subject: string, idx: number, array: string[]) => idx == 0 || subject != array[ idx - 1 ]);
-
-    if (params[ "subject" ]) {
-      this.filterState.subject = params[ 'subject' ];
-    }
+    return filterState;
   }
 
   /**
@@ -253,12 +216,22 @@ export class StudentResultsComponent implements OnInit {
    * @param downloader
    */
   initializeDownloader(downloader: StudentReportDownloadComponent): void {
-    if (this.filterState.schoolYear != 0) {
-      downloader.options.schoolYear = this.filterState.schoolYear;
-    }
-    if (this.filterState.subject !== '') {
-      downloader.options.subject = Utils.toSubjectCode(AssessmentSubjectType[ this.filterState.subject ]);
-    }
+    downloader.options.schoolYear = this.filterState.schoolYear
+      ? this.filterState.schoolYear
+      : this.filterState.schoolYears[0];
+    downloader.options.subject = this.filterState.subject;
   }
 
+}
+
+/**
+ * Represents a page section where exams of a specific type and subject are displayed
+ */
+interface Section {
+  assessmentTypeCode: string;
+  assessmentTypeColor: string;
+  subjectCode: string;
+  exams: StudentHistoryExamWrapper[];
+  filteredExams: StudentHistoryExamWrapper[];
+  collapsed: boolean;
 }

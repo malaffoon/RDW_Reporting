@@ -6,14 +6,6 @@ sql:
       where namespace=:namespace
       and language_code=:language_code
 
-  group:
-    membership:
-      findAllForUsername: >-
-        select sg.id, sg.subject_id, sg.school_id
-        from user_student_group usg
-          join student_group sg on sg.id = usg.student_group_id
-        where user_login=:user_login
-
   organization:
     reporting:
       findAll: >-
@@ -74,6 +66,7 @@ sql:
         WHERE 1=:allow_school
           AND (:name_query IS NULL OR school.name LIKE concat('%', :name_query, '%'))
           AND (1=:statewide OR school.district_group_id IN (:district_group_ids) OR school.district_id IN (:district_ids) OR school.school_group_id IN (:school_group_ids) OR school.id IN (:school_ids))
+        ORDER BY LENGTH(name)
         LIMIT :limit
 
       findOne: >-
@@ -202,6 +195,7 @@ sql:
         e.performance_level,
         e.asmt_id,
         e.available_accommodation_codes,
+        e.elas_code,
         a.id as asmt_id,
         a.label as asmt_label,
         a.grade_code as asmt_grade_code,

@@ -1,11 +1,11 @@
 import { Observable } from "rxjs/Observable";
 import { Injectable } from "@angular/core";
 import { Embargo } from "./embargo";
-import { isUndefined } from "util";
 import { EmbargoScope } from "./embargo-scope.enum";
 import { OrganizationType } from "./organization-type.enum";
 import { DataService } from "../../shared/data/data.service";
 import { ResponseContentType } from "@angular/http";
+import { map } from 'rxjs/operators';
 
 const ResourceContext = '/admin-service/embargoes';
 
@@ -25,15 +25,17 @@ export class EmbargoService {
    */
   getEmbargoesByOrganizationType(): Observable<Map<OrganizationType, Embargo[]>> {
     return this.dataService.get(`${ResourceContext}`)
-      .map((sourceEmbargoes: any[]) => {
-        return sourceEmbargoes.reduce((embargoesByOrganizationType, sourceEmbargo) => {
-          const embargo = this.toEmbargo(sourceEmbargo),
-            type = embargo.organization.type;
+      .pipe(
+        map((sourceEmbargoes: any[]) => {
+          return sourceEmbargoes.reduce((embargoesByOrganizationType, sourceEmbargo) => {
+            const embargo = this.toEmbargo(sourceEmbargo),
+              type = embargo.organization.type;
 
-          embargoesByOrganizationType.set(type, (embargoesByOrganizationType.get(type) || []).concat(embargo));
-          return embargoesByOrganizationType;
-        }, new Map());
-      });
+            embargoesByOrganizationType.set(type, (embargoesByOrganizationType.get(type) || []).concat(embargo));
+            return embargoesByOrganizationType;
+          }, new Map());
+        })
+      );
   }
 
   /**
@@ -55,9 +57,6 @@ export class EmbargoService {
   /**
    * Maps an API provided embargo model to a UI model
    *
-   * NOTE: This method coerces individual and aggregate embargo enabled fields to <code>true</code> (embargoed) if undefined.
-   * This method assumes the state individual and aggregate embargo enabled fields will not be undefined.
-   *
    * @param source the API embargo model
    * @returns {Embargo} a UI embargo model
    */
@@ -71,8 +70,8 @@ export class EmbargoService {
       schoolYear: source.schoolYear,
       readonly: source.readOnly,
       examCountsBySubject: source.examCounts,
-      individualEnabled: isUndefined(source.individualEnabled) ? true : source.individualEnabled,
-      aggregateEnabled: isUndefined(source.aggregateEnabled) ? true : source.aggregateEnabled
+      individualEnabled: source.individualEnabled,
+      aggregateEnabled: source.aggregateEnabled
     };
   }
 

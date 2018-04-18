@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
 import { AggregateReportTable, SupportedRowCount } from "./aggregate-report-table.component";
-import { Observable } from "rxjs/Observable";
 import { AggregateReportOptions } from "../aggregate-report-options";
 import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
@@ -17,11 +16,11 @@ import { DisplayOptionService } from "../../shared/display-options/display-optio
 import { TranslateService } from "@ngx-translate/core";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
 import { SpinnerModal } from "../../shared/loading/spinner.modal";
-import "rxjs/add/operator/finally";
 import { OrderableItem } from "../../shared/order-selector/order-selector.component";
 import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
-import { DefaultColumnOrder } from "../aggregate-report-options.mapper";
 import { AggregateReportRequestSummary } from "../aggregate-report-summary.component";
+import { interval } from 'rxjs/observable/interval';
+import { finalize, switchMap } from 'rxjs/operators';
 
 const PollingInterval = 4000;
 
@@ -63,7 +62,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     this.options = this.route.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
     this.assessmentDefinition = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ]
-      .get(this.report.request.reportQuery.assessmentTypeCode);
+      .get(this.report.request.query.assessmentTypeCode);
     this._tableViewComparator = ordering(ranking(this.options.subjects))
       .on((wrapper: AggregateReportTableView) => wrapper.subjectCode).compare;
     this._displayOptions = {
@@ -83,7 +82,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   get query(): AggregateReportQuery {
-    return this.report.request.reportQuery;
+    return this.report.request.query;
   }
 
   get reportProcessing(): boolean {
@@ -129,12 +128,12 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   onDownloadDataButtonClick(): void {
     this.reportService.downloadReportContent(this.report.id);
-    this.router.navigateByUrl("/reports");
+    this.router.navigateByUrl('/reports');
   }
 
   getExportName(table: AggregateReportTableView): string {
     const subjectLabel: string = this.translateService.instant(`common.subject.${table.subjectCode}.short-name`);
-    return this.translateService.instant('aggregate-reports.export-name', {
+    return this.translateService.instant('aggregate-report.export-name', {
       label: this.report.label,
       subject: subjectLabel
     });
@@ -144,8 +143,12 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     tableView.columnOrdering = items.map(item => item.value);
   }
 
+  isEmbargoed(): boolean {
+    return this.report.metadata.createdWhileDataEmbargoed === 'true';
+  }
+
   private updateViewState(): void {
-    let targetViewState: ViewState = this.getTargetViewState();
+    const targetViewState = this.getTargetViewState();
     this.onViewStateChange(this._viewState, targetViewState);
     this._viewState = targetViewState;
   }
@@ -170,24 +173,26 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private onViewStateChange(oldState: ViewState, newState: ViewState) {
-    if (oldState == newState) {
+    if (oldState === newState) {
       return;
     }
 
-    if (oldState == ViewState.ReportProcessing) {
+    if (oldState === ViewState.ReportProcessing) {
       this.unsubscribe();
     }
-    if (newState == ViewState.ReportProcessing) {
+    if (newState === ViewState.ReportProcessing) {
       this.pollReport();
     }
-    if (newState == ViewState.ReportView) {
+    if (newState === ViewState.ReportView) {
       this.loadReport();
     }
   }
 
   private pollReport(): void {
-    this._pollingSubscription = Observable.interval(PollingInterval)
-      .switchMap(() => this.reportService.getReportById(this.report.id))
+    this._pollingSubscription = interval(PollingInterval)
+      .pipe(
+        switchMap(() => this.reportService.getReportById(this.report.id))
+      )
       .subscribe(report => {
         this.report = report;
         this.updateViewState();
@@ -203,20 +208,23 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   private loadReport(): void {
     this.spinnerModal.loading = true;
     this.reportService.getAggregateReport(this.report.id)
-      .finally(() => {
-        this.spinnerModal.loading = false;
-      })
-      .subscribe(rows => this.initializeReportTables(rows));
+      .pipe(
+        finalize(() => {
+          this.spinnerModal.loading = false;
+        })
+      )
+      .subscribe(rows => this.initializeReportTables(this.report.request.query, rows));
   }
 
-  private initializeReportTables(rows: AggregateReportRow[]): void {
+  private initializeReportTables(query: AggregateReportQuery, rows: AggregateReportRow[]): void {
     this.reportTables = rows.reduce((tableWrappers, row, index) => {
-      const item = this.itemMapper.map(this.assessmentDefinition, row, index);
+      const item = this.itemMapper.createRow(query, this.assessmentDefinition, row, index);
       const subjectCode = row.assessment.subjectCode;
-      const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
-      const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.reportQuery.columnOrder)
-        ? DefaultColumnOrder
-        : this.report.request.reportQuery.columnOrder;
+      const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode === subjectCode);
+      const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.query.columnOrder)
+        ? this.assessmentDefinition.aggregateReportIdentityColumns.concat()
+        : this.report.request.query.columnOrder;
+
       if (!tableWrapper) {
         tableWrappers.push({
           subjectCode: subjectCode,

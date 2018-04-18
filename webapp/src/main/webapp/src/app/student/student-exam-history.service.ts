@@ -1,21 +1,22 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
-import { URLSearchParams } from "@angular/http";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Student } from "./model/student.model";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
 import { StudentHistoryExamWrapper } from "./model/student-history-exam-wrapper.model";
 import { ResponseUtils } from "../shared/response-utils";
 import { DataService } from "../shared/data/data.service";
+import { catchError, map } from 'rxjs/operators';
+import { ReportingServiceRoute } from '../shared/service-route';
 
-const ServiceRoute = '/reporting-service';
+const ServiceRoute = ReportingServiceRoute;
 
 @Injectable()
 export class StudentExamHistoryService {
 
-  constructor(
-    private dataService: DataService,
-    private assessmentMapper: AssessmentExamMapper) {}
+  constructor(private dataService: DataService,
+              private assessmentMapper: AssessmentExamMapper) {
+  }
 
   /**
    * Retrieve the exam history for a student by id.
@@ -25,16 +26,18 @@ export class StudentExamHistoryService {
    */
   findOneById(id: number): Observable<StudentExamHistory> {
     return this.dataService.get(`${ServiceRoute}/students/${id}/exams`)
-      .catch(ResponseUtils.badResponseToNull)
-      .map((apiExamHistory) => {
-        if (apiExamHistory == null) return null;
-
-        let uiModel: StudentExamHistory = new StudentExamHistory();
-        uiModel.student = this.assessmentMapper.mapStudentFromApi(apiExamHistory.student);
-        uiModel.exams = this.mapExamWrappers(apiExamHistory.exams);
-
-        return uiModel;
-      });
+      .pipe(
+        catchError(ResponseUtils.badResponseToNull),
+        map(serverExamHistory => {
+          if (serverExamHistory == null) {
+            return null;
+          }
+          const history: StudentExamHistory = new StudentExamHistory();
+          history.student = this.assessmentMapper.mapStudentFromApi(serverExamHistory.student);
+          history.exams = this.mapExamWrappers(serverExamHistory.exams);
+          return history;
+        })
+      );
   }
 
   /**
@@ -44,30 +47,26 @@ export class StudentExamHistoryService {
    * @returns {Observable<boolean>} True if the student exists
    */
   existsBySsid(ssid: string): Observable<Student> {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set('hasExams', 'true');
-    let trimmedSsid: string = ssid.trim();
-
-    return this.dataService.get(`${ServiceRoute}/students/${trimmedSsid}`, {params: params})
-      .catch(ResponseUtils.badResponseToNull)
-      .map((apiStudent) => {
-        if (apiStudent == null) return null;
-
-        return this.assessmentMapper.mapStudentFromApi(apiStudent);
-      });
+    return this.dataService.get(`${ServiceRoute}/students/${ssid.trim()}`).pipe(
+      catchError(ResponseUtils.badResponseToNull),
+      map(serverStudent => {
+        if (serverStudent == null) {
+          return null;
+        }
+        return this.assessmentMapper.mapStudentFromApi(serverStudent);
+      })
+    );
   }
 
-  private mapExamWrappers(apiExamWrappers: any): StudentHistoryExamWrapper[] {
-    if (!apiExamWrappers) return [];
-
-    return apiExamWrappers.map((apiWrapper) => this.mapExamWrapper(apiWrapper));
+  private mapExamWrappers(serverExamWrappers: any): StudentHistoryExamWrapper[] {
+    return (serverExamWrappers || []).map(serverExamWrapper => this.mapExamWrapper(serverExamWrapper));
   }
 
-  private mapExamWrapper(apiExamWrapper: any): StudentHistoryExamWrapper {
-    let uiModel: StudentHistoryExamWrapper = new StudentHistoryExamWrapper();
-    uiModel.assessment = this.assessmentMapper.mapAssessmentFromApi(apiExamWrapper.assessment);
-    uiModel.exam = this.assessmentMapper.mapExamFromApi(apiExamWrapper.exam);
-
-    return uiModel;
+  private mapExamWrapper(serverExamWrapper: any): StudentHistoryExamWrapper {
+    const wrapper: StudentHistoryExamWrapper = new StudentHistoryExamWrapper();
+    wrapper.assessment = this.assessmentMapper.mapAssessmentFromApi(serverExamWrapper.assessment);
+    wrapper.exam = this.assessmentMapper.mapExamFromApi(serverExamWrapper.exam);
+    return wrapper;
   }
+
 }

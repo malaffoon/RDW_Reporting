@@ -24,10 +24,6 @@ export class ItemExemplarComponent implements OnInit {
   constructor(private service: ItemScoringService) {
   }
 
-  public get translateRoot() {
-    return 'labels.assessments.items.tabs.exemplar.';
-  }
-
   ngOnInit() {
     if (Utils.isNullOrUndefined(this.item.answerKey)) {
       this.service.getGuide(this.item.bankItemKey)
@@ -37,7 +33,8 @@ export class ItemExemplarComponent implements OnInit {
 
             // TODO re-look at this logic
             this.notFound = guide.rubrics.length === 0
-              && guide.exemplars.length === 0;
+              && guide.exemplars.length === 0
+              && Utils.isNullOrEmpty(guide.answerKeyValue);
           },
           (response) => {
 

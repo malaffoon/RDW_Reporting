@@ -1,13 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Utils } from "./support/support";
 
-/*
-  A generic component which builds and binds a checkbox list in which
-  All and the array of values are mutually exclusive.
-  All | (Option 1)
-      | (Option 2)
-      | (Option 3)
-      | (Option 4) ...
+/**
+ * @deprecated use <sb-button-group type="checkbox">
  */
 @Component({
   selector: 'sb-checkbox-list',
@@ -18,7 +13,7 @@ import { Utils } from "./support/support";
                checked=""
                angulartics2On="click" [angularticsEvent]="analyticsEvent"
                [angularticsCategory]="analyticsCategory" [angularticsProperties]="{label: label + ': All'}">
-        {{ 'buttons.all' | translate }}
+        {{ 'common.buttons.all' | translate }}
       </label>
       <div class="btn-group">
         <label *ngFor="let value of values" class="btn btn-primary" [ngClass]="{'active': modelValue[value] }">

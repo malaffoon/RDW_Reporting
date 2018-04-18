@@ -3,21 +3,28 @@ import { ItemScoringGuideMapper } from "./item-scoring-guide.mapper";
 import { ItemScoringGuide } from "./model/item-scoring-guide.model";
 import { Observable } from "rxjs/Observable";
 import { DataService } from "../../../shared/data/data.service";
+import { map } from 'rxjs/operators';
+import { ReportingServiceRoute } from '../../../shared/service-route';
 
-const ServiceRoute = '/reporting-service';
+const ServiceRoute = ReportingServiceRoute;
 
 @Injectable()
 export class ItemScoringService {
-  constructor(private dataService: DataService, private mapper: ItemScoringGuideMapper){
+
+  constructor(private dataService: DataService,
+              private mapper: ItemScoringGuideMapper){
   }
 
   getGuide(bankItemKey: string): Observable<ItemScoringGuide>{
-    return this.dataService
-      .get(`${ServiceRoute}/examitems/${bankItemKey}/scoring`)
-      .map((guide) => {
-        if (guide == null) return null;
-
-        return this.mapper.mapFromApi(guide);
-      });
+    return this.dataService.get(`${ServiceRoute}/examitems/${bankItemKey}/scoring`)
+      .pipe(
+        map(guide => {
+          if (guide == null) {
+            return null;
+          }
+          return this.mapper.mapFromApi(guide);
+        })
+      );
   }
+
 }

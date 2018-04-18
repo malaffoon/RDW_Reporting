@@ -1,18 +1,21 @@
-import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
-import { TranslateService } from "@ngx-translate/core";
-import { AggregateReportOrganizationService } from "./aggregate-report-organization.service";
+import { AggregateReportRequestMapper } from './aggregate-report-request.mapper';
+import { TranslateService } from '@ngx-translate/core';
+import { AggregateReportOrganizationService } from './aggregate-report-organization.service';
 import {
   DefaultDistrict,
   DefaultSchool,
   District,
   OrganizationType,
   School
-} from "../shared/organization/organization";
-import { Observable } from "rxjs/Observable";
-import { AggregateReportOptions } from "./aggregate-report-options";
-import { AggregateReportQuery, AggregateReportRequest } from "../report/aggregate-report-request";
-import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { DefaultColumnOrder } from "./aggregate-report-options.mapper";
+} from '../shared/organization/organization';
+import { AggregateReportOptions } from './aggregate-report-options';
+import {
+  AggregateReportQuery,
+  AggregateReportRequest,
+  StudentFilters
+} from '../report/aggregate-report-request';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
+import { of } from 'rxjs/observable/of';
 import Spy = jasmine.Spy;
 
 describe('AggregateReportRequestMapper', () => {
@@ -29,18 +32,30 @@ describe('AggregateReportRequestMapper', () => {
 
   it('toSettings should map a request to settings', () => {
 
+    const options = mockOptions();
     const schools = [ mockSchool() ];
     const districts = [ mockDistrict() ];
 
     (organizationService.getOrganizationsByIdAndType as Spy).and
       .callFake((type: OrganizationType) => {
         if (type === OrganizationType.District) {
-          return Observable.of(districts);
+          return of(districts);
         }
         if (type === OrganizationType.School) {
-          return Observable.of(schools);
+          return of(schools);
         }
       });
+
+    const studentFilters: StudentFilters = {
+      economicDisadvantageCodes: [ 'yes' ],
+      ethnicityCodes: [ 'Asian', 'White' ],
+      genderCodes: [ 'Female' ],
+      iepCodes: [ 'yes' ],
+      lepCodes: [ 'yes' ],
+      elasCodes: [ 'EO' ],
+      migrantStatusCodes: [ 'yes' ],
+      section504Codes: [ 'yes' ],
+    };
 
     const query: AggregateReportQuery = {
       achievementLevelDisplayType: 'Separate',
@@ -48,60 +63,68 @@ describe('AggregateReportRequestMapper', () => {
       assessmentGradeCodes: [ '03', '04' ],
       assessmentTypeCode: 'ica',
       completenessCodes: [ 'Complete' ],
-      economicDisadvantageCodes: [ 'yes' ],
-      ethnicityCodes: [ 'Asian', 'White' ],
       dimensionTypes: [ 'Gender' ],
       districtIds: [ 1 ],
-      genderCodes: [ "Female" ],
-      iepCodes: [ 'yes' ],
       includeAllDistricts: false,
       includeAllDistrictsOfSchools: true,
       includeAllSchoolsOfDistricts: true,
       includeState: true,
-      lepCodes: [ 'yes' ],
-      migrantStatusCodes: [ 'yes' ],
-      section504Codes: [ 'yes' ],
+      queryType: 'Basic',
+      reportType: 'GeneralPopulation',
       schoolIds: [ 2 ],
       schoolYears: [ 2000 ],
+      studentFilters: studentFilters,
       subjectCodes: [ 'Math' ],
       valueDisplayType: 'Number',
-      columnOrder: ['columnA', 'columnB']
+      columnOrder: [ 'columnA', 'columnB' ]
     };
 
     const request: AggregateReportRequest = {
       name: 'Report Name',
-      reportQuery: query
+      query: query
     };
 
     const expected: AggregateReportFormSettings = {
       performanceLevelDisplayType: query.achievementLevelDisplayType,
       interimAdministrationConditions: [ 'SD' ],
       summativeAdministrationConditions: [ 'Valid' ],
-      assessmentGrades: query.assessmentGradeCodes,
       assessmentType: query.assessmentTypeCode,
       completenesses: query.completenessCodes,
-      economicDisadvantages: query.economicDisadvantageCodes,
-      ethnicities: query.ethnicityCodes,
       dimensionTypes: query.dimensionTypes,
       districts: districts,
-      genders: query.genderCodes,
-      individualEducationPlans: query.iepCodes,
       includeAllDistricts: query.includeAllDistricts,
       includeAllDistrictsOfSelectedSchools: query.includeAllDistrictsOfSchools,
       includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
       includeStateResults: query.includeState,
-      limitedEnglishProficiencies: query.lepCodes,
-      migrantStatuses: query.migrantStatusCodes,
-      section504s: query.section504Codes,
+      queryType: query.queryType,
+      reportType: query.reportType,
       schools: schools,
-      schoolYears: query.schoolYears,
       subjects: query.subjectCodes,
+      subgroups: [],
       valueDisplayType: query.valueDisplayType,
       name: request.name,
-      columnOrder: ['columnA', 'columnB']
+      columnOrder: [ 'columnA', 'columnB' ],
+      studentFilters: {
+        economicDisadvantages: studentFilters.economicDisadvantageCodes,
+        ethnicities: studentFilters.ethnicityCodes,
+        genders: studentFilters.genderCodes,
+        individualEducationPlans: studentFilters.iepCodes,
+        limitedEnglishProficiencies: studentFilters.lepCodes,
+        englishLanguageAcquisitionStatuses: studentFilters.elasCodes,
+        migrantStatuses: studentFilters.migrantStatusCodes,
+        section504s: studentFilters.section504Codes
+      },
+      generalPopulation: {
+        assessmentGrades: query.assessmentGradeCodes,
+        schoolYears: query.schoolYears,
+      },
+      longitudinalCohort: {
+        assessmentGrades: [],
+        toSchoolYear: options.schoolYears[0]
+      }
     };
 
-    fixture.toSettings(request, mockOptions())
+    fixture.toSettings(request, options)
       .subscribe(actual => {
         expect(actual).toEqual(expected);
       });
@@ -120,42 +143,57 @@ describe('AggregateReportRequestMapper', () => {
       includeAllDistrictsOfSchools: true,
       includeAllSchoolsOfDistricts: true,
       includeState: true,
+      queryType: 'Basic',
+      reportType: 'GeneralPopulation',
       schoolYears: [ 2000 ],
+      studentFilters: {},
       subjectCodes: [ 'Math' ],
-      valueDisplayType: 'Percent'
+      valueDisplayType: 'Percent',
     };
 
     const request: AggregateReportRequest = {
       name: 'Report Name',
-      reportQuery: query
+      query: query
     };
 
     const expected: AggregateReportFormSettings = {
       performanceLevelDisplayType: query.achievementLevelDisplayType,
       interimAdministrationConditions: options.interimAdministrationConditions,
       summativeAdministrationConditions: options.summativeAdministrationConditions,
-      assessmentGrades: query.assessmentGradeCodes,
       assessmentType: query.assessmentTypeCode,
       completenesses: options.completenesses,
-      economicDisadvantages: options.economicDisadvantages,
-      ethnicities: options.ethnicities,
       dimensionTypes: [],
       districts: [],
-      genders: options.genders,
-      individualEducationPlans: options.individualEducationPlans,
       includeAllDistricts: query.includeAllDistricts,
       includeAllDistrictsOfSelectedSchools: query.includeAllDistrictsOfSchools,
       includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
       includeStateResults: query.includeState,
-      limitedEnglishProficiencies: options.limitedEnglishProficiencies,
-      migrantStatuses: options.migrantStatuses,
-      section504s: options.section504s,
+      queryType: query.queryType,
+      reportType: query.reportType,
       schools: [],
-      schoolYears: query.schoolYears,
       subjects: query.subjectCodes,
+      subgroups: [],
       valueDisplayType: query.valueDisplayType,
       name: request.name,
-      columnOrder: DefaultColumnOrder
+      columnOrder: query.columnOrder,
+      studentFilters: {
+        economicDisadvantages: options.studentFilters.economicDisadvantages,
+        ethnicities: options.studentFilters.ethnicities,
+        englishLanguageAcquisitionStatuses: options.studentFilters.englishLanguageAcquisitionStatuses,
+        genders: options.studentFilters.genders,
+        individualEducationPlans: options.studentFilters.individualEducationPlans,
+        limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies,
+        migrantStatuses: options.studentFilters.migrantStatuses,
+        section504s: options.studentFilters.section504s
+      },
+      generalPopulation: {
+        assessmentGrades: query.assessmentGradeCodes,
+        schoolYears: query.schoolYears,
+      },
+      longitudinalCohort: {
+        assessmentGrades: [],
+        toSchoolYear: options.schoolYears[0]
+      }
     };
 
     fixture.toSettings(request, options)
@@ -173,34 +211,39 @@ describe('AggregateReportRequestMapper', () => {
       assessmentTypes: [ 'ica', 'iab', 'sum' ],
       completenesses: [ 'Complete', 'Partial' ],
       dimensionTypes: [ 'Gender', 'Ethnicity' ],
-      economicDisadvantages: strictBooleans,
-      ethnicities: [ 'Asian', 'White' ],
-      genders: [ 'Male', 'Female' ],
-      individualEducationPlans: strictBooleans,
       interimAdministrationConditions: [ 'SD', 'NS' ],
-      limitedEnglishProficiencies: strictBooleans,
-      migrantStatuses: booleans,
-      section504s: booleans,
+      queryTypes: [ 'Basic', 'FilteredSubgroup' ],
+      reportTypes: [ 'GeneralPopulation', 'LongitudinalCohort' ],
       schoolYears: [ 2000, 1999 ],
       statewideReporter: false,
       subjects: [ 'Math', 'ELA' ],
-      summativeAdministrationConditions: [ 'Valid', 'IN' ]
+      summativeAdministrationConditions: [ 'Valid', 'IN' ],
+      studentFilters: {
+        economicDisadvantages: strictBooleans,
+        ethnicities: [ 'Asian', 'White' ],
+        genders: [ 'Male', 'Female' ],
+        individualEducationPlans: strictBooleans,
+        limitedEnglishProficiencies: strictBooleans,
+        englishLanguageAcquisitionStatuses: [ 'EO' ],
+        migrantStatuses: booleans,
+        section504s: booleans
+      }
     }
   }
 
   function mockDistrict(): District {
     const district: DefaultDistrict = new DefaultDistrict();
     district.id = 1;
-    district.name = "District 1";
-    district.naturalId = "district_1";
+    district.name = 'District 1';
+    district.naturalId = 'district_1';
     return district;
   }
 
   function mockSchool(): School {
     const school: DefaultSchool = new DefaultSchool();
     school.id = 2;
-    school.name = "School 2";
-    school.naturalId = "school_2";
+    school.name = 'School 2';
+    school.naturalId = 'school_2';
     school.districtId = 1;
     return school;
   }

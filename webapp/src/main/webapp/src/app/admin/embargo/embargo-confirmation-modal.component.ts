@@ -4,6 +4,7 @@ import { EmbargoService } from "./embargo.service";
 import { EmbargoToggleEvent } from "./embargo-toggle-event";
 import { EmbargoScope } from "./embargo-scope.enum";
 import { OrganizationType } from "./organization-type.enum";
+import { finalize } from 'rxjs/operators';
 
 /**
  * Confirmation modal displayed to confirm whether the user wants to make an embargo setting change or not
@@ -33,11 +34,6 @@ import { OrganizationType } from "./organization-type.enum";
 export class EmbargoConfirmationModal {
 
   /**
-   * Translation code namespace
-   */
-  private translateContext: string = 'labels.embargo.modal';
-
-  /**
    * The event that triggered the modal
    */
   private _event: EmbargoToggleEvent;
@@ -65,9 +61,11 @@ export class EmbargoConfirmationModal {
 
     // apply desired embargo setting via the API
     this.embargoService.update(embargo, scope, value)
-      .finally(() => {
-        this.modal.hide();
-      })
+      .pipe(
+        finalize(() => {
+          this.modal.hide();
+        })
+      )
       .subscribe(() => {
 
         // reflect new embargo setting in the UI
@@ -87,11 +85,11 @@ export class EmbargoConfirmationModal {
       : [ event.overridingEmbargo, event.overridingEmbargoEnabled ];
 
     return {
-      header: `${this.translateContext}.header.${event.scope}`,
-      stateDescription: `${this.translateContext}.state-description.${event.scope}.${stateEnabled}`,
-      commandDescription: `${this.translateContext}.command-description.${event.embargo.organization.type}.${event.scope}.${event.value}`,
-      accept: `${this.translateContext}.accept.${event.value}`,
-      decline: `${this.translateContext}.decline`,
+      header: `embargo-confirmation-modal.header.${event.scope}`,
+      stateDescription: `embargo-confirmation-modal.state-description.${event.scope}.${stateEnabled}`,
+      commandDescription: `embargo-confirmation-modal.command-description.${event.embargo.organization.type}.${event.scope}.${event.value}`,
+      accept: `embargo-confirmation-modal.accept.${event.value}`,
+      decline: `embargo-confirmation-modal.decline`,
       parameters: {
         stateName: stateEmbargo.organization.name,
         organizationName: event.embargo.organization.name,

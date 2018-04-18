@@ -3,8 +3,10 @@ import { ExamFilterOptionsMapper } from "./exam-filter-options.mapper";
 import { CachingDataService } from "../../../shared/data/caching-data.service";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
 import { Observable } from "rxjs/Observable";
+import { map } from 'rxjs/operators';
+import { ReportingServiceRoute } from '../../../shared/service-route';
 
-const ServiceRoute = '/reporting-service';
+const ServiceRoute = ReportingServiceRoute;
 
 @Injectable()
 export class ExamFilterOptionsService {
@@ -14,8 +16,9 @@ export class ExamFilterOptionsService {
   }
 
   getExamFilterOptions(): Observable<ExamFilterOptions> {
-    return this.service
-      .get(`${ServiceRoute}/examFilterOptions`)
-      .map(x => this.mapper.mapFromApi(x));
+    return this.service.get(`${ServiceRoute}/examFilterOptions`)
+      .pipe(
+        map(serverOptions => this.mapper.mapFromApi(serverOptions))
+      );
   }
 }

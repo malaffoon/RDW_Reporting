@@ -1,16 +1,16 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { AggregateReportOptions } from "./aggregate-report-options";
-import { CachingDataService } from "../shared/data/caching-data.service";
-import { ordering } from "@kourge/ordering";
-import { ranking } from "@kourge/ordering/comparator";
-import { OrganizationMapper } from "../shared/organization/organization.mapper";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { AggregateReportOptions } from './aggregate-report-options';
+import { CachingDataService } from '../shared/data/caching-data.service';
+import { OrganizationMapper } from '../shared/organization/organization.mapper';
+import { map } from 'rxjs/operators';
+import { AggregateServiceRoute } from '../shared/service-route';
+import { AssessmentTypeOrdering, BooleanOrdering, CompletenessOrdering } from '../shared/ordering/orderings';
 
-const ServiceRoute = '/aggregate-service';
-
-// Used to hotfix natural order of completeness and strict booleans not being in "affirmative-first" order
-const booleanComparator = ordering(ranking([ 'yes', 'no', 'undefined' ])).compare;
-const completenessComparator = ordering(ranking([ 'Complete', 'Partial' ])).compare;
+const ServiceRoute = AggregateServiceRoute;
+const assessmentTypeComparator = AssessmentTypeOrdering.compare;
+const booleanComparator = BooleanOrdering.compare;
+const completenessComparator = CompletenessOrdering.compare;
 
 /**
  * Service responsible for gathering aggregate report options from the server
@@ -24,27 +24,34 @@ export class AggregateReportOptionsService {
 
   getReportOptions(): Observable<AggregateReportOptions> {
     return this.dataService.get(`${ServiceRoute}/reportOptions`)
-      .map(options => <AggregateReportOptions>{
-        assessmentGrades: options.assessmentGrades,
-        assessmentTypes: options.assessmentTypes,
-        completenesses: options.completenesses.sort(completenessComparator),
-        defaultOrganization: options.defaultOrganization
-          ? this.organizationMapper.map(options.defaultOrganization)
-          : undefined,
-        dimensionTypes: options.dimensionTypes,
-        economicDisadvantages: options.economicDisadvantages.sort(booleanComparator),
-        ethnicities: options.ethnicities,
-        genders: options.genders,
-        individualEducationPlans: options.individualEducationPlans.sort(booleanComparator),
-        interimAdministrationConditions: options.interimAdministrationConditions,
-        limitedEnglishProficiencies: options.limitedEnglishProficiencies.sort(booleanComparator),
-        migrantStatuses: options.migrantStatuses.sort(booleanComparator),
-        section504s: options.section504s.sort(booleanComparator),
-        schoolYears: options.schoolYears,
-        statewideReporter: options.statewideReporter,
-        subjects: options.subjects,
-        summativeAdministrationConditions: options.summativeAdministrationConditions
-      });
+      .pipe(
+        map(options => <AggregateReportOptions>{
+          assessmentGrades: options.assessmentGrades.reverse(),
+          assessmentTypes: options.assessmentTypes.sort(assessmentTypeComparator),
+          completenesses: options.completenesses.sort(completenessComparator),
+          defaultOrganization: options.defaultOrganization
+            ? this.organizationMapper.map(options.defaultOrganization)
+            : undefined,
+          dimensionTypes: options.dimensionTypes,
+          interimAdministrationConditions: options.interimAdministrationConditions,
+          queryTypes: [ 'Basic', 'FilteredSubgroup' ],
+          reportTypes: [ 'GeneralPopulation', 'LongitudinalCohort' ],
+          schoolYears: options.schoolYears,
+          statewideReporter: options.statewideReporter,
+          subjects: options.subjects,
+          summativeAdministrationConditions: options.summativeAdministrationConditions,
+          studentFilters: {
+            economicDisadvantages: options.economicDisadvantages.sort(booleanComparator),
+            ethnicities: options.ethnicities,
+            genders: options.genders,
+            individualEducationPlans: options.individualEducationPlans.sort(booleanComparator),
+            limitedEnglishProficiencies: options.limitedEnglishProficiencies.sort(booleanComparator),
+            englishLanguageAcquisitionStatuses: options.englishLanguageAcquisitionStatuses,
+            migrantStatuses: options.migrantStatuses.sort(booleanComparator),
+            section504s: options.section504s.sort(booleanComparator)
+          }
+        })
+      );
   }
 
 }

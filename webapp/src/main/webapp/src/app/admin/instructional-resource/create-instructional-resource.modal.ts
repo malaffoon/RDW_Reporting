@@ -13,6 +13,7 @@ import { OrganizationQuery } from "./model/organization-query.model";
 import { ValidationErrors } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
 import { NavigationStart, Router } from "@angular/router";
+import { filter, mergeMap } from 'rxjs/operators';
 
 /**
  * This modal component displays an instructional resource creation form.
@@ -55,13 +56,19 @@ export class CreateInstructionalResourceModal implements OnDestroy {
 
     this.assessmentSource = Observable.create((observer: any) => {
       observer.next(this.assessmentSearch);
-    }).mergeMap((token: string) => this.findAssessments(token));
+    }).pipe(
+      mergeMap((token: string) => this.findAssessments(token))
+    );
 
     this.organizationSource = Observable.create((observer: any) => {
       observer.next(this.organizationSearch);
-    }).mergeMap((token: string) => this.findOrganizations(token));
+    }).pipe(
+      mergeMap((token: string) => this.findOrganizations(token))
+    );
 
-    this._subscription = router.events.filter(e => e instanceof NavigationStart).subscribe(() => {
+    this._subscription = router.events.pipe(
+      filter(e => e instanceof NavigationStart)
+    ).subscribe(() => {
       this.cancel();
     });
   }
@@ -75,7 +82,7 @@ export class CreateInstructionalResourceModal implements OnDestroy {
   }
 
   create() {
-    let resource: InstructionalResource = new InstructionalResource();
+    const resource: InstructionalResource = new InstructionalResource();
     resource.performanceLevel = this.performanceLevel;
     resource.organizationType = this.organization.organizationType;
     resource.assessmentName = this.assessment.name;
@@ -92,7 +99,7 @@ export class CreateInstructionalResourceModal implements OnDestroy {
   }
 
   findAssessments(search: string): Observable<Assessment[]> {
-    let query: AssessmentQuery = new AssessmentQuery();
+    const query: AssessmentQuery = new AssessmentQuery();
     query.label = search;
 
     return this.assessmentService.find(query)
@@ -106,10 +113,9 @@ export class CreateInstructionalResourceModal implements OnDestroy {
   }
 
   findOrganizations(search: string): Observable<Organization[]> {
-    let query: OrganizationQuery = new OrganizationQuery();
-    query.types = ['State', 'DistrictGroup', 'District', 'SchoolGroup'];
+    const query: OrganizationQuery = new OrganizationQuery();
+    query.types = [ 'State', 'DistrictGroup', 'District', 'SchoolGroup' ];
     query.name = search;
-
     return this.organizationService.find(query);
   }
 
@@ -132,30 +138,30 @@ export class CreateInstructionalResourceModal implements OnDestroy {
   private validateExisting(): ValidationErrors | null {
     if (!this.organization || !this.assessment || this.performanceLevel < 0) {
       this.duplicateResource = false;
-      return
+      return;
     }
 
-    let existingResource = this.existingResources.find((existingResource: InstructionalResource) => {
-      return existingResource.assessmentName == this.assessment.name &&
-        existingResource.organizationType == this.organization.organizationType &&
-        existingResource.organizationId == this.organization.id &&
-        existingResource.performanceLevel == this.performanceLevel;
+    const existingResource = this.existingResources.find((resource: InstructionalResource) => {
+      return resource.assessmentName === this.assessment.name &&
+        resource.organizationType === this.organization.organizationType &&
+        resource.organizationId === this.organization.id &&
+        resource.performanceLevel === this.performanceLevel;
     });
     this.duplicateResource = (existingResource != null);
   }
 
   private removeDuplicateNames(assessments: Assessment[]): Assessment[] {
-    let assessmentNames = [];
+    const assessmentNames = [];
     return assessments.filter(assessment => {
       if (assessmentNames.indexOf(assessment.name) >= 0) {
         return false;
       }
       assessmentNames.push(assessment.name);
       return true;
-    })
+    });
   }
 
   private getPerformanceLevels(assessmentType: string): number[] {
-    return assessmentType == "IAB" ? [1, 2, 3] : [1, 2, 3, 4];
+    return assessmentType === 'iab' ? [ 1, 2, 3 ] : [ 1, 2, 3, 4 ];
   }
 }

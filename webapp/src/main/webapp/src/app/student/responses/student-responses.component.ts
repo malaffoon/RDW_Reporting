@@ -1,4 +1,4 @@
-import { OnInit, Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AssessmentItem } from "../../assessments/model/assessment-item.model";
 import { Exam } from "../../assessments/model/exam.model";
@@ -23,6 +23,15 @@ export class StudentResponsesComponent implements OnInit {
   assessmentItems: StudentResponsesAssessmentItem[];
   exam: Exam;
   student: Student;
+  columns: Column[] = [
+    new Column({id: 'number', field: 'assessmentItem.position'}),
+    new Column({id: 'claim', field: 'assessmentItem.claimTarget', headerInfo: true}),
+    new Column({id: 'difficulty', field: 'assessmentItem.difficulty', headerInfo: true}),
+    new Column({id: 'standard', field: 'assessmentItem.commonCoreStandardIds'}),
+    new Column({id: 'student-points', field: 'score'}),
+    new Column({id: 'max-points', field: 'assessmentItem.maxPoints'}),
+    new Column({id: 'correctness', headerInfo: true})
+  ];
 
   constructor(public colorService: ColorService,
               private route: ActivatedRoute) {
@@ -44,16 +53,38 @@ export class StudentResponsesComponent implements OnInit {
   }
 
   private mapAssessmentItem(item: AssessmentItem): StudentResponsesAssessmentItem {
-    let responseItem = new StudentResponsesAssessmentItem();
+    const responseItem = new StudentResponsesAssessmentItem();
     responseItem.assessmentItem = item;
 
-    let score: ExamItemScore = item.scores.length === 1 ?  item.scores[0] : null;
-    responseItem.score = score && item.scores[0].points >= 0 ? item.scores[0].points : null;
-    let maxScore = item.maxPoints;
-    responseItem.correctness = responseItem.score !== null ? responseItem.score / maxScore : null;
-    responseItem.response = score ? score.response : null;
-    responseItem.writingTraitScores =  score.writingTraitScores;
+    if (item.scores.length !== 1) {
+      return responseItem;
+    }
+
+    const score: ExamItemScore = item.scores[0];
+    if (score.points >= 0) {
+      responseItem.score = score.points;
+      responseItem.correctness = responseItem.score / item.maxPoints;
+    }
+
+    responseItem.response = score.response;
+    responseItem.writingTraitScores = score.writingTraitScores;
 
     return responseItem;
+  }
+}
+
+class Column {
+  id: string;
+  field: string;
+  headerInfo: boolean;
+
+  constructor({
+                id,
+                field = '',
+                headerInfo = false
+              }) {
+    this.id = id;
+    this.field = field ? field : id;
+    this.headerInfo = headerInfo;
   }
 }
