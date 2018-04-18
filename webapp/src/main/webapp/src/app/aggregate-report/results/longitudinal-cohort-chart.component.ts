@@ -228,7 +228,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
 
     const xScale = d3.scaleLinear()
       .range([ 0, width ])
-      .domain([ yearsAndGrades[ 0 ].year - domainMargin.left, yearsAndGrades[ yearsAndGrades.length - 1 ].year + domainMargin.right ]);
+      .domain([ 0 - domainMargin.left, yearsAndGrades.length - 1 + domainMargin.right ]);
 
     const yScale = d3.scaleLinear()
       .range([ height, 0 ])
@@ -237,9 +237,9 @@ export class LongitudinalCohortChartComponent implements OnInit {
     const xAxis = d3.axisBottom(xScale)
       .tickSize(-height)
       .tickPadding(tickPadding)
-      .tickFormat((d: number) => this.schoolYearPipe.transform(d))
+      .tickFormat((d: GradeYear) => this.schoolYearPipe.transform(yearsAndGrades[d].year))
       .ticks(yearsAndGrades.length)
-      .tickValues(yearsWithoutGaps);
+      .tickValues(yearsAndGrades.map((d, i) => i));
 
     const yAxis = d3.axisLeft(yScale)
       .tickSize(-width)
@@ -282,7 +282,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .classed('color-fill', true)
       .attrs({
         d: d => d3area(d.gradeYearScaleScoreRanges.map(a => <any>{
-          x: a.gradeYear.year,
+          x: yearsAndGrades.indexOf(a.gradeYear),
           y0: a.scaleScoreRange.minimum,
           y1: a.scaleScoreRange.maximum
         }))
@@ -292,7 +292,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .classed('scale-score-area-divider', true)
       .attrs({
         d: d => d3line(d.gradeYearScaleScoreRanges.map(a => <any>{
-          x: a.gradeYear.year,
+          x: yearsAndGrades.indexOf(a.gradeYear),
           y: a.scaleScoreRange.maximum
         }))
       });
@@ -313,7 +313,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .classed('line color-stroke', true)
       .attrs({
         d: d => d3line(d.gradeYearScaleScores.map(a => <any>{
-          x: a.gradeYear.year,
+          x: yearsAndGrades.indexOf(a.gradeYear),
           y: a.scaleScore
         })),
       });
@@ -327,7 +327,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .classed('point color-stroke', true)
       .attrs({
         r: 5,
-        cx: d => xScale(d.gradeYear.year),
+        cx: d => xScale(yearsAndGrades.indexOf(d.gradeYear)),
         cy: d => yScale(d.scaleScore)
       })
       .on('mouseover', (d, i, circles) => {
@@ -345,7 +345,6 @@ export class LongitudinalCohortChartComponent implements OnInit {
     // Correct x axis tick labels
 
     svg.selectAll('.axis.x .tick')
-      .filter(d => yearsAndGrades.find(x => x.year === d))
       .append('text')
       .text((d, i) => {
         const grade = yearsAndGrades[ i ].grade.toString();
