@@ -274,7 +274,7 @@ export class AggregateReportTableComponent implements OnInit {
     this._orderingByColumnField[ 'organization.name' ] = this.createOrganizationOrdering();
     this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
     this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
-    this._orderingByColumnField[ 'dimension.id' ] = this.createDimensionOrdering(options);
+    this._orderingByColumnField[ 'subgroup.id' ] = this.createDimensionOrdering(options);
 
     // create columns
     const performanceLevelsByDisplayType = {
@@ -290,7 +290,7 @@ export class AggregateReportTableComponent implements OnInit {
       new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
       new Column({ id: 'assessmentLabel' }),
       new Column({ id: 'schoolYear' }),
-      new Column({ id: 'dimension', field: 'dimension.id' })
+      new Column({ id: 'dimension', field: 'subgroup.id' })
     ];
 
     this.columns = [
