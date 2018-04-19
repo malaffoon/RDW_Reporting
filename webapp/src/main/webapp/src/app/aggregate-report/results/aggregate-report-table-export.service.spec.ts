@@ -8,6 +8,7 @@ import { ValueDisplayTypes } from '../../shared/display-options/value-display-ty
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
 import Spy = jasmine.Spy;
 import CallInfo = jasmine.CallInfo;
+import { Subgroup } from '../subgroup/subgroup';
 
 describe('AggregateReportTableExportService', () => {
   let itemIdx: number = 1;
@@ -179,11 +180,18 @@ describe('AggregateReportTableExportService', () => {
     org.naturalId = 'school_a';
     item.organization = org;
 
-    item.dimension = <any>{
+    item.subgroup = <Subgroup>{
       id: 'Gender:Male',
-      type: 'Gender',
-      code: 'Male',
-      name: 'Gender: Male'
+      name: 'Gender: Male',
+      dimensionGroups: {
+        type: 'Gender',
+        values: [
+          {
+            code: 'Male',
+            translationCode: ''
+          }
+        ]
+      }
     };
 
     return item;
