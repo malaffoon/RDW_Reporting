@@ -25,10 +25,9 @@ import { AggregateReportTableExportService } from "./results/aggregate-report-ta
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
 import { TableModule } from "primeng/table";
-import { SubgroupFiltersComponent } from "./subgroup-filters.component";
 import { ListGroupComponent } from "./list-group.component";
-import { SubgroupMapper } from "./subgroup.mapper";
 import { EditableListGroupComponent } from './editable-list-group.component';
+import { SubgroupModule } from './subgroup/subgroup.module';
 
 @NgModule({
   declarations: [
@@ -38,8 +37,7 @@ import { EditableListGroupComponent } from './editable-list-group.component';
     AggregateReportSummary,
     EditableListGroupComponent,
     ListGroupComponent,
-    StickyDirective,
-    SubgroupFiltersComponent
+    StickyDirective
   ],
   imports: [
     AssessmentModule,
@@ -52,6 +50,7 @@ import { EditableListGroupComponent } from './editable-list-group.component';
     PopoverModule.forRoot(),
     ReactiveFormsModule,
     ReportModule,
+    SubgroupModule,
     TableModule,
     TabsModule.forRoot(),
     TypeaheadModule
@@ -72,8 +71,7 @@ import { EditableListGroupComponent } from './editable-list-group.component';
     AggregateReportOrganizationService,
     AggregateReportItemMapper,
     AggregateReportFormSettingsResolve,
-    AggregateReportColumnOrderItemProvider,
-    SubgroupMapper
+    AggregateReportColumnOrderItemProvider
   ]
 })
 export class AggregateReportsModule {
