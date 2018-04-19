@@ -1,12 +1,11 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import 'd3-selection-multi';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultSchool, Organization } from '../../shared/organization/organization';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 import { select } from 'd3-selection';
 import { area, line } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
-import { ScaleContinuousNumeric, scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 
 interface YearGrade {
   // TODO make this string code when data comes from backend
@@ -66,7 +65,7 @@ function computeBands(areas: AssessmentPerformance[], xScale: (x: number) => num
   // gets the rightmost entries of each area
     .map(area => area.gradeYearScaleScoreRanges[ area.gradeYearScaleScoreRanges.length - 1 ])
     .map(area => {
-      const h = yScale(area.scaleScoreRange.maximum) - yScale(area.scaleScoreRange.minimum) ;
+      const h = yScale(area.scaleScoreRange.maximum) - yScale(area.scaleScoreRange.minimum);
       // const h = Math.abs( yScale(area.scaleScoreRange.maximum) - yScale(area.scaleScoreRange.minimum) );
       const m = { x: 5, y: -2 };
 
@@ -91,10 +90,10 @@ function createAreas(count: number, yearsAndGrades: YearGrade[], scaleScoreRange
     for (let j = 0; j < yearsAndGrades.length; j++) {
 
       const previous = areas[ i - 1 ] != null
-        && areas[ i - 1 ].gradeYearScaleScoreRanges != null
-        && areas[ i - 1 ].gradeYearScaleScoreRanges[j] != null
-          ? areas[ i - 1 ].gradeYearScaleScoreRanges[j].scaleScoreRange.maximum
-          : minimumScaleScore + 10 * j + 25 * Math.random();
+      && areas[ i - 1 ].gradeYearScaleScoreRanges != null
+      && areas[ i - 1 ].gradeYearScaleScoreRanges[ j ] != null
+        ? areas[ i - 1 ].gradeYearScaleScoreRanges[ j ].scaleScoreRange.maximum
+        : minimumScaleScore + 10 * j + 25 * Math.random();
 
       const gradeYear = yearsAndGrades[ j ];
       area.push({
@@ -122,11 +121,11 @@ function createLines(count: number, yearsAndGrades: YearGrade[], scaleScoreRange
     for (let j = 0; j < yearsAndGrades.length; j++) {
       const gradeYear = yearsAndGrades[ j ];
 
-      const previous = lines[i - 1] != null
-        && lines[i - 1].gradeYearScaleScores != null
-        && lines[i - 1].gradeYearScaleScores[j] != null
-          ? lines[i - 1].gradeYearScaleScores[j].scaleScore
-          : minimumScaleScore + spread * 0.2 + spread * 0.02 * j + spread * 0.2 * Math.random()
+      const previous = lines[ i - 1 ] != null
+      && lines[ i - 1 ].gradeYearScaleScores != null
+      && lines[ i - 1 ].gradeYearScaleScores[ j ] != null
+        ? lines[ i - 1 ].gradeYearScaleScores[ j ].scaleScore
+        : minimumScaleScore + spread * 0.2 + spread * 0.02 * j + spread * 0.2 * Math.random();
 
       line.push({
         gradeYear: gradeYear,
@@ -154,7 +153,7 @@ function createOrganization(id: number): Organization {
   selector: 'longitudinal-cohort-chart',
   templateUrl: 'longitudinal-cohort-chart.component.html'
 })
-export class LongitudinalCohortChartComponent {
+export class LongitudinalCohortChartComponent implements OnInit {
 
   @Input()
   linePallet: string = 'pallet-a';
@@ -234,27 +233,21 @@ export class LongitudinalCohortChartComponent {
       .tickPadding(tickPadding)
       .ticks(yearsAndGrades.length)
       .tickValues(yearsAndGrades.map((d, i) => i))
-      .tickFormat((d, i) => this.schoolYearPipe.transform(yearsAndGrades[i].year));
+      .tickFormat((d, i) => this.schoolYearPipe.transform(yearsAndGrades[ i ].year));
 
     const yAxis = axisLeft(yScale)
       .tickSize(-width)
       .tickPadding(tickPadding);
 
     const svg = this.root
-      .attrs({
-        height: outerHeight,
-        transform: `translate(${margin.left}, ${margin.top})`
-      })
+      .attr('height', outerHeight)
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .append('g')
-      .attrs({
-        transform: `translate(${padding.left}, ${padding.top})`
-      });
+      .attr('transform', `translate(${padding.left}, ${padding.top})`);
 
     svg.append('g')
       .classed('x axis', true)
-      .attrs({
-        transform: `translate(0, ${height})`
-      })
+      .attr('transform', `translate(0, ${height})`)
       .call(xAxis);
 
     svg.append('g')
@@ -269,28 +262,22 @@ export class LongitudinalCohortChartComponent {
       .data(areas)
       .enter()
       .append('g')
-      .attrs({
-        class: (d, i) => `scale-score-area color-${i}`
-      });
+      .attr('class', (d, i) => `scale-score-area color-${i}`);
 
     performanceLevelArea.append('path')
       .classed('color-fill', true)
-      .attrs({
-        d: d => d3area(d.gradeYearScaleScoreRanges.map(a => <any>{
-          x: yearsAndGrades.indexOf(a.gradeYear),
-          y0: a.scaleScoreRange.minimum,
-          y1: a.scaleScoreRange.maximum
-        }))
-      });
+      .attr('d', d => d3area(d.gradeYearScaleScoreRanges.map(a => <any>{
+        x: yearsAndGrades.indexOf(a.gradeYear),
+        y0: a.scaleScoreRange.minimum,
+        y1: a.scaleScoreRange.maximum
+      })));
 
     performanceLevelArea.append('path')
       .classed('scale-score-area-divider', true)
-      .attrs({
-        d: d => d3line(d.gradeYearScaleScoreRanges.map(a => <any>{
-          x: yearsAndGrades.indexOf(a.gradeYear),
-          y: a.scaleScoreRange.maximum
-        }))
-      });
+      .attr('d', d => d3line(d.gradeYearScaleScoreRanges.map(a => <any>{
+        x: yearsAndGrades.indexOf(a.gradeYear),
+        y: a.scaleScoreRange.maximum
+      })));
 
     // Draw lines
 
@@ -300,18 +287,14 @@ export class LongitudinalCohortChartComponent {
       .data(lines)
       .enter()
       .append('g')
-      .attrs({
-        class: (d, i) => `scale-score-line series-${i} color-${i}`
-      });
+      .attr('class', (d, i) => `scale-score-line series-${i} color-${i}`);
 
     performanceLevelTrend.append('path')
       .classed('line color-stroke', true)
-      .attrs({
-        d: d => d3line(d.gradeYearScaleScores.map(a => <any>{
-          x: yearsAndGrades.indexOf(a.gradeYear),
-          y: a.scaleScore
-        })),
-      });
+      .attr('d', d => d3line(d.gradeYearScaleScores.map(a => <any>{
+        x: yearsAndGrades.indexOf(a.gradeYear),
+        y: a.scaleScore
+      })));
 
     // Draw dots
 
@@ -320,17 +303,15 @@ export class LongitudinalCohortChartComponent {
       .enter()
       .append('circle')
       .classed('point color-stroke', true)
-      .attrs({
-        r: 5,
-        cx: d => xScale(yearsAndGrades.indexOf(d.gradeYear)),
-        cy: d => yScale(d.scaleScore)
-      })
+      .attr('r', 5)
+      .attr('cx', d => xScale(yearsAndGrades.indexOf(d.gradeYear)))
+      .attr('cy', d => yScale(d.scaleScore))
       .on('mouseover', (d, i, circles) => {
-        select(circles[i])
+        select(circles[ i ])
           .attr('r', 8);
       })
       .on('mouseout', (d, i, circles) => {
-        select(circles[i])
+        select(circles[ i ])
           .attr('r', 5);
       })
       .on('click', (d, i, circles) => {
@@ -347,10 +328,8 @@ export class LongitudinalCohortChartComponent {
         return this.translate.instant(`common.assessment-grade-label.${gradeCode}`);
       })
       .classed('grade', true)
-      .attrs({
-        'alignment-baseline': 'middle',
-        'text-anchor': 'middle'
-      });
+      .attr('alignment-baseline', 'middle')
+      .attr('text-anchor', 'middle');
 
     // Draw area labels
 
@@ -361,9 +340,7 @@ export class LongitudinalCohortChartComponent {
 
     const bands = svg.append('g')
       .classed(`scale-score-area-labels ${this.areaPallet}`, true)
-      .attrs({
-        transform: `translate(${width}, 0)`
-      });
+      .attr('transform', `translate(${width}, 0)`);
 
     const bandData = computeBands(areas, xScale, yScale);
 
@@ -371,10 +348,8 @@ export class LongitudinalCohortChartComponent {
       .data(bandData)
       .enter()
       .append('g')
-      .attrs({
-        transform: d => `translate(0, ${yScale(d.scaleScoreRange.minimum)})`,
-        class: (d, i) => `scale-score-area-label color-${i}`
-      });
+      .attr('transform', d => `translate(0, ${yScale(d.scaleScoreRange.minimum)})`)
+      .attr('class', (d, i) => `scale-score-area-label color-${i}`);
 
     const bandTitle = band
       .filter((d, i) => i === bandData.length - 1)
@@ -389,55 +364,39 @@ export class LongitudinalCohortChartComponent {
       .text(this.translate.instant('longitudinal-cohort-chart.area-description.subtext'));
 
     const title1Bounds = title1.node().getBBox();
-    title2.attrs({
-      transform: `translate(0, ${title1Bounds.height})`
-    });
+    title2.attr('transform', `translate(0, ${title1Bounds.height})`);
 
     const bandTitleBounds = bandTitle.node().getBBox();
-    bandTitle.attrs({
-      // 0.33 is a magic number, should be 0 with alignment-baseline hanging...
-      transform: d => `translate(10, ${(yScale(d.scaleScoreRange.maximum) - yScale(d.scaleScoreRange.minimum)) + bandTitleBounds.height * 0.33})`
-    });
+    // 0.33 is a magic number, should be 0 with alignment-baseline hanging...
+    bandTitle.attr('transform', d => `translate(10, ${(yScale(d.scaleScoreRange.maximum) - yScale(d.scaleScoreRange.minimum)) + bandTitleBounds.height * 0.33})`);
 
     band.append('path')
       .classed('bracket color-stroke', true)
-      .attrs({
-        d: d => d3lineNoScale(d.bracket.path)
-      });
+      .attr('d', d => d3lineNoScale(d.bracket.path));
 
     const label = band.append('g')
       .classed('label-container', true)
-      .attrs({
-        transform: d => `translate(5, ${(yScale(d.scaleScoreRange.maximum) - yScale(d.scaleScoreRange.minimum)) * 0.5})`
-      });
+      .attr('transform', d => `translate(5, ${(yScale(d.scaleScoreRange.maximum) - yScale(d.scaleScoreRange.minimum)) * 0.5})`);
 
     const labelPadding = { top: 3, right: 5, bottom: 3, left: 3 };
-    const labelBourderRadius = (labelPadding.top + labelPadding.left) * 0.25; // proportional to height and width
+    const labelBorderRadius = (labelPadding.top + labelPadding.left) * 0.25; // proportional to height and width
 
     const labelRect = label.append('rect')
       .classed('color-fill', true)
-      .attrs({
-        rx: labelBourderRadius,
-        ry: labelBourderRadius
-      });
+      .attr('rx', labelBorderRadius)
+      .attr('ry', labelBorderRadius);
 
     const labelText = label.append('text')
       .classed('label-text', true)
       .text((d, i) => this.translate.instant(`common.assessment-type.${this.assessmentTypeCode}.performance-level.${i + 1}.name-prefix`));
 
-    const labelTextBounds = labelText._groups[0].map(a => a.getBBox());
+    const labelTextBounds = labelText._groups[ 0 ].map(a => a.getBBox());
+    // 0.33 is a magic number, translate y should be 0 with alignment middle...
+    labelText.attr('transform', (d, i) => `translate(${labelPadding.left}, ${labelTextBounds[ i ].height * 0.33})`);
 
-    labelText.attrs({
-      // 0.33 is a magic number, translate y should be 0 with alignment middle...
-      transform: (d, i) => `translate(${labelPadding.left}, ${labelTextBounds[ i ].height * 0.33})`
-    });
-
-    labelRect.attrs({
-      y: (d, i) => -(labelTextBounds[ i ].height + labelPadding.top + labelPadding.bottom) * 0.5,
-      width: (d, i) => labelTextBounds[ i ].width + labelPadding.left + labelPadding.right,
-      height: (d, i) => labelTextBounds[ i ].height + labelPadding.top + labelPadding.bottom
-    });
-
+    labelRect.attr('y', (d, i) => -(labelTextBounds[ i ].height + labelPadding.top + labelPadding.bottom) * 0.5)
+      .attr('width', (d, i) => labelTextBounds[ i ].width + labelPadding.left + labelPadding.right)
+      .attr('height', (d, i) => labelTextBounds[ i ].height + labelPadding.top + labelPadding.bottom);
 
   }
 
