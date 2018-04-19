@@ -27,6 +27,8 @@ import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-colum
 import { TableModule } from "primeng/table";
 import { ListGroupComponent } from "./list-group.component";
 import { EditableListGroupComponent } from './editable-list-group.component';
+import { LongitudinalCohortChartComponent } from './results/longitudinal-cohort-chart.component';
+import { LongitudinalPlaygroundComponent } from './results/longitudinal-playground.component';
 import { SubgroupModule } from './subgroup/subgroup.module';
 
 @NgModule({
@@ -37,6 +39,8 @@ import { SubgroupModule } from './subgroup/subgroup.module';
     AggregateReportSummary,
     EditableListGroupComponent,
     ListGroupComponent,
+    LongitudinalCohortChartComponent,
+    LongitudinalPlaygroundComponent,
     StickyDirective
   ],
   imports: [
@@ -71,7 +75,8 @@ import { SubgroupModule } from './subgroup/subgroup.module';
     AggregateReportOrganizationService,
     AggregateReportItemMapper,
     AggregateReportFormSettingsResolve,
-    AggregateReportColumnOrderItemProvider
+    AggregateReportColumnOrderItemProvider,
+    LongitudinalPlaygroundComponent
   ]
 })
 export class AggregateReportsModule {
