@@ -25,12 +25,11 @@ import { AggregateReportTableExportService } from "./results/aggregate-report-ta
 import { AggregateReportSummary } from "./aggregate-report-summary.component";
 import { AggregateReportColumnOrderItemProvider } from "./aggregate-report-column-order-item.provider";
 import { TableModule } from "primeng/table";
-import { SubgroupFiltersComponent } from "./subgroup-filters.component";
 import { ListGroupComponent } from "./list-group.component";
-import { SubgroupMapper } from "./subgroup.mapper";
 import { EditableListGroupComponent } from './editable-list-group.component';
 import { LongitudinalCohortChartComponent } from './results/longitudinal-cohort-chart.component';
 import { LongitudinalPlaygroundComponent } from './results/longitudinal-playground.component';
+import { SubgroupModule } from './subgroup/subgroup.module';
 
 @NgModule({
   declarations: [
@@ -42,8 +41,7 @@ import { LongitudinalPlaygroundComponent } from './results/longitudinal-playgrou
     ListGroupComponent,
     LongitudinalCohortChartComponent,
     LongitudinalPlaygroundComponent,
-    StickyDirective,
-    SubgroupFiltersComponent
+    StickyDirective
   ],
   imports: [
     AssessmentModule,
@@ -56,6 +54,7 @@ import { LongitudinalPlaygroundComponent } from './results/longitudinal-playgrou
     PopoverModule.forRoot(),
     ReactiveFormsModule,
     ReportModule,
+    SubgroupModule,
     TableModule,
     TabsModule.forRoot(),
     TypeaheadModule
@@ -77,8 +76,7 @@ import { LongitudinalPlaygroundComponent } from './results/longitudinal-playgrou
     AggregateReportItemMapper,
     AggregateReportFormSettingsResolve,
     AggregateReportColumnOrderItemProvider,
-    LongitudinalPlaygroundComponent,
-    SubgroupMapper
+    LongitudinalPlaygroundComponent
   ]
 })
 export class AggregateReportsModule {
