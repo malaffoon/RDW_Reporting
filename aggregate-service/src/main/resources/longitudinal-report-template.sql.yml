@@ -9,8 +9,8 @@ sqlbuilder:
           select: >-
               round(avg(CASE WHEN fe.years_in_one_org = :cohort_years THEN fe.scale_score ELSE NULL END)) AS cohort_score,
               round(avg(fe.scale_score)) AS score,
-              round(stddev_samp(CASE WHEN fe.years_in_one_org = :cohort_years THEN fe.scale_score ELSE NULL END)) AS cohort_stdev,
-              round(stddev_samp(fe.scale_score)) AS stdev,
+              round(stddev_samp(CASE WHEN fe.years_in_one_org = :cohort_years THEN fe.scale_score ELSE NULL END)/sqrt(sum(CASE WHEN fe.years_in_one_org = :cohort_years THEN 1 ELSE 0 END))) AS cohort_stddev,
+              round(stddev_samp(fe.scale_score)/sqrt(count(*))) as stddev,
               sum(CASE WHEN fe.performance_level = 1 THEN 1 ELSE 0 END) AS level1,
               sum(CASE WHEN fe.performance_level = 2 THEN 1 ELSE 0 END) AS level2,
               sum(CASE WHEN fe.performance_level = 3 THEN 1 ELSE 0 END) AS level3,
