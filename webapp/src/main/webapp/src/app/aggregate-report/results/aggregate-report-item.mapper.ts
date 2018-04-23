@@ -52,7 +52,7 @@ export class AggregateReportItemMapper {
                             overall: Subgroup): AggregateReportItem {
 
     const item = this.createRowInternal(assessmentDefinition, row, uuid);
-    const serverSubgroup = subgroups[ row.subgroupKey ];
+    const serverSubgroup = subgroups[ row.dimension.code ];
     item.subgroup = serverSubgroup
       ? this.subgroupMapper.fromFilters(
         this.requestMapper.createSubgroupFilters(serverSubgroup)
