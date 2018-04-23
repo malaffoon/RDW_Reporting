@@ -518,12 +518,11 @@ export class AggregateReportTableComponent implements OnInit {
     const enrolledGradeComparator: Comparator<AggregateReportItem> = ordering(byNumber)
       .on((item: AggregateReportItem) => {
         const { type, codes } = <any>item.subgroup;
-        const [code] = codes;
         if (type == null || type !== 'StudentEnrolledGrade') {
           return -1;
         }
         try {
-          return Number.parseInt(code);
+          return Number.parseInt(codes[0]);
         } catch (error) {
           return 1;
         }
