@@ -1,5 +1,5 @@
 import { Angulartics2Module } from "angulartics2";
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from "../shared/common.module";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -77,9 +77,6 @@ import { SubgroupModule } from './subgroup/subgroup.module';
     AggregateReportFormSettingsResolve,
     AggregateReportColumnOrderItemProvider,
     LongitudinalPlaygroundComponent
-  ],
-  schemas: [
-    NO_ERRORS_SCHEMA
   ]
 })
 export class AggregateReportsModule {
