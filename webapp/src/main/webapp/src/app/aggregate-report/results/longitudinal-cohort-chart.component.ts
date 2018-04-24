@@ -2,16 +2,11 @@ import {
   Component,
   ElementRef,
   Input,
-  OnInit,
+  OnInit
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultSchool, Organization } from '../../shared/organization/organization';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
-// import { select, event } from 'd3-selection';
-// import { area, line } from 'd3-shape';
-// import { axisBottom, axisLeft } from 'd3-axis';
-// import { scaleLinear } from 'd3-scale';
-// import { zoom } from 'd3-zoom';
 import * as d3 from 'd3';
 
 interface YearGrade {
@@ -277,8 +272,8 @@ export class LongitudinalCohortChartComponent implements OnInit {
 
     this.chart = <LongitudinalCohortChart>{
       scaleScoreRange: <Range<number>>{
-        minimum: scaleScoreRange[0],
-        maximum: scaleScoreRange[1]
+        minimum: scaleScoreRange[ 0 ],
+        maximum: scaleScoreRange[ 1 ]
       },
       yearGrades: yearsAndGrades,
       assessmentPerformances: areas.map((area, i) => <ChartArea<PerformanceLevel, void>>{
