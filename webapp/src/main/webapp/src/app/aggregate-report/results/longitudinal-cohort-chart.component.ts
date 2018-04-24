@@ -1,12 +1,8 @@
 import {
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver, ComponentRef,
   ElementRef,
-  Inject,
   Input,
   OnInit,
-  ViewChild, ViewContainerRef
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultSchool, Organization } from '../../shared/organization/organization';
@@ -17,7 +13,6 @@ import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 // import { scaleLinear } from 'd3-scale';
 // import { zoom } from 'd3-zoom';
 import * as d3 from 'd3';
-import { LongitudinalCohortChartDataPointComponent } from './longitudinal-cohort-chart-data-point.component';
 
 interface YearGrade {
   // TODO make this string code when data comes from backend
@@ -63,7 +58,7 @@ interface Series<T> {
 }
 
 interface ChartArea<T, U> {
-  readonly points: ChartAreaPoint<U>;
+  readonly points: ChartAreaPoint<U>[];
   readonly data: T;
   readonly styles?: any;
 }
@@ -281,10 +276,13 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .domain([ scaleScoreRange[ 0 ] - domainMargin.bottom, scaleScoreRange[ 1 ] + domainMargin.top ]);
 
     this.chart = <LongitudinalCohortChart>{
-      scaleScoreRange: scaleScoreRange,
+      scaleScoreRange: <Range<number>>{
+        minimum: scaleScoreRange[0],
+        maximum: scaleScoreRange[1]
+      },
       yearGrades: yearsAndGrades,
       assessmentPerformances: areas.map((area, i) => <ChartArea<PerformanceLevel, void>>{
-        points: area.gradeYearScaleScoreRanges.map((interval, j) => <ChartAreaPoint>{
+        points: area.gradeYearScaleScoreRanges.map((interval, j) => <ChartAreaPoint<void>>{
           x: j,
           y0: interval.scaleScoreRange.minimum,
           y1: interval.scaleScoreRange.maximum
@@ -296,9 +294,9 @@ export class LongitudinalCohortChartComponent implements OnInit {
         selector: `.series-${i}`,
         styles: `series-${i}`,
         visible: true,
-        data: <ChartLine>{
+        data: <ChartLine<Organization, DataPoint>>{
           data: line.organization,
-          points: line.gradeYearScaleScores.map((scores, j) => <ChartPoint>{
+          points: line.gradeYearScaleScores.map((scores, j) => <ChartPoint<DataPoint>>{
             x: j,
             y: scores.scaleScore,
             data: <DataPoint>{
@@ -400,7 +398,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
 
     const label = band.append('g')
       .classed('label-container', true)
-      .attr('transform', d => `translate(5, ${(d.bracket.height * 0.5})`);
+      .attr('transform', d => `translate(5, ${d.bracket.height * 0.5})`);
 
     const labelPadding = { top: 3, right: 5, bottom: 3, left: 3 };
     const labelBorderRadius = (labelPadding.top + labelPadding.left) * 0.25; // proportional to height and width

@@ -22,7 +22,7 @@
   </div>
   <div class="flex-child grow">
 
-    <svg #container
+    <svg #chartContainer
          class="longitudinal-cohort-chart"
          [attr.width]="displayConfiguration.outerWidth"
          [attr.height]="displayConfiguration.outerHeight">
@@ -77,5 +77,5 @@
 </div>
 
 <ng-template #dataPointPopoverTemplate let-scores>
-  <span class="label maroon">{{scores.scaleScore}}</span>
+  {{scores.scaleScore}}
 </ng-template>
