@@ -1,5 +1,9 @@
 import { Organization } from '../../shared/organization/organization';
+import { Subgroup } from '../subgroup/subgroup';
 
+/**
+ * Logical modal for the longitudinal cohort chart
+ */
 export interface LongitudinalCohortChart {
 
   /**
@@ -14,6 +18,9 @@ export interface LongitudinalCohortChart {
 
 }
 
+/**
+ * Represents the assessment performance level and its changes in scale score range over time
+ */
 export interface PerformanceLevel {
   readonly id: number;
   readonly name: string;
@@ -21,28 +28,44 @@ export interface PerformanceLevel {
   readonly yearGradeScaleScoreRanges: YearGradeScaleScoreRange[];
 }
 
+/**
+ * Represents an organization - subgroup combination's average scale scores over time
+ */
 export interface OrganizationPerformance {
   readonly organization: Organization;
+  readonly subgroup?: Subgroup;
   readonly yearGradeScaleScores: YearGradeScaleScore[];
 }
 
+/**
+ * A year-grade combination
+ */
 export interface YearGrade {
   readonly year: number;
   // TODO make this string code when data comes from backend
   readonly grade: number;
 }
 
-export interface Range<T> {
-  readonly minimum: T;
-  readonly maximum: T;
+/**
+ * A number range
+ */
+export interface NumberRange {
+  readonly minimum: number;
+  readonly maximum: number;
 }
 
+/**
+ * A scale score for a specific year and grade
+ */
 export interface YearGradeScaleScore {
   readonly yearGrade: YearGrade;
   readonly scaleScore: number;
 }
 
+/**
+ * A scale score range for a specific year and grade
+ */
 export interface YearGradeScaleScoreRange {
   readonly yearGrade: YearGrade;
-  readonly scaleScoreRange: Range<number>;
+  readonly scaleScoreRange: NumberRange;
 }

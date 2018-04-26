@@ -6,21 +6,49 @@ import {
   LongitudinalCohortChart,
   OrganizationPerformance,
   PerformanceLevel,
-  Range,
+  NumberRange,
   YearGrade
 } from './longitudinal-cohort-chart';
 import { byNumber } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { Organization } from '../../shared/organization/organization';
 
-interface DiscretePath<T extends Point> extends Path {
-  readonly points: T[];
+
+/**
+ * Represents the display configuration parameters
+ */
+export interface ChartDisplay {
+  readonly outerWidth: number;
+  readonly outerHeight: number;
+  readonly margin: Spacing;
+  readonly padding: Spacing;
+  readonly domainMargin: Spacing;
+  readonly tickPadding: number;
+}
+
+/**
+ * The chart's view model. This model carries the chart data pre-processed for display
+ */
+interface ChartView {
+  readonly performancePaths: PerformancePath[];
+  readonly performanceLevelPaths: PerformanceLevelPath[];
+  readonly performanceLevelPathLabels: PerformanceLevelPathLabel[];
+}
+
+export interface Spacing {
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+  readonly left: number;
 }
 
 interface Path {
   readonly styles?: any;
   readonly pathData: string;
-  visible: boolean;
+}
+
+interface DiscretePath<T extends Point> extends Path {
+  readonly points: T[];
 }
 
 interface Point {
@@ -32,10 +60,11 @@ interface Point {
 interface PerformancePath extends DiscretePath<PerformancePoint> {
   readonly organization: Organization;
   readonly subgroup: any;
+  visible: boolean;
 }
 
 interface PerformancePoint extends Point {
-  readonly scaleScoreRange: Range<number>;
+  readonly scaleScoreRange: NumberRange;
   readonly scaleScore: number;
 }
 
@@ -55,29 +84,7 @@ interface PerformanceLevelPathLabel {
 
 interface LevelRange {
   readonly level: PerformanceLevel;
-  readonly scaleScoreRange: Range<number>;
-}
-
-interface ChartView {
-  readonly performancePaths: PerformancePath[];
-  readonly performanceLevelPaths: PerformanceLevelPath[];
-  readonly performanceLevelPathLabels: PerformanceLevelPathLabel[];
-}
-
-export interface Spacing {
-  readonly top: number;
-  readonly right: number;
-  readonly bottom: number;
-  readonly left: number;
-}
-
-export interface ChartDisplay {
-  readonly outerWidth: number;
-  readonly outerHeight: number;
-  readonly margin: Spacing;
-  readonly padding: Spacing;
-  readonly domainMargin: Spacing;
-  readonly tickPadding: number;
+  readonly scaleScoreRange: NumberRange;
 }
 
 @Component({
@@ -92,8 +99,10 @@ export class LongitudinalCohortChartComponent implements OnInit {
   @Input()
   areaPallet: string = 'pallet-b';
 
-  @Input()
-  display: ChartDisplay = {
+  private _initialized: boolean = false;
+  private _chart: LongitudinalCohortChart;
+  private _chartView: ChartView;
+  private _display: ChartDisplay = {
     outerWidth: 960,
     outerHeight: 480,
     margin: { top: 0, right: 0, bottom: 0, left: 0 },
@@ -101,9 +110,6 @@ export class LongitudinalCohortChartComponent implements OnInit {
     domainMargin: { top: 25, right: 0.25, bottom: 25, left: 0.25 },
     tickPadding: 10
   };
-
-  private _chart: LongitudinalCohortChart;
-  private _chartView: ChartView;
 
   constructor(private elementReference: ElementRef,
               private translate: TranslateService,
@@ -118,6 +124,23 @@ export class LongitudinalCohortChartComponent implements OnInit {
   set chart(value: LongitudinalCohortChart) {
     if (this._chart !== value) {
       this._chart = value;
+      if (this._initialized) {
+        this.render();
+      }
+    }
+  }
+
+  get display(): ChartDisplay {
+    return this._display;
+  }
+
+  @Input()
+  set display(value: ChartDisplay) {
+    if (this._display !== value) {
+      this._display = value;
+      if (this._initialized) {
+        this.render();
+      }
     }
   }
 
@@ -126,6 +149,16 @@ export class LongitudinalCohortChartComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.render();
+    this._initialized = true;
+  }
+
+  private render(): void {
+
+    if (this.chart == null
+    || this.display == null) {
+      return;
+    }
 
     const scaleScoreRange = this.parseScaleScoreRange(this.chart.performanceLevels);
     const yearGrades = this.parseYearGrades(this.chart.organizationPerformances);
@@ -145,20 +178,20 @@ export class LongitudinalCohortChartComponent implements OnInit {
       width = innerWidth - padding.left - padding.right - tickPadding,
       height = innerHeight - padding.top - padding.bottom - tickPadding;
 
-    const xScale = this.xScale = d3.scaleLinear()
+    const xScale = d3.scaleLinear()
       .range([ 0, width ])
       .domain([ -domainMargin.left, yearGrades.length - 1 + domainMargin.right ]);
 
-    const yScale = this.yScale = d3.scaleLinear()
+    const yScale = d3.scaleLinear()
       .range([ height, 0 ])
       .domain([ scaleScoreRange.minimum - domainMargin.bottom, scaleScoreRange.maximum + domainMargin.top ]);
 
-    const d3area = this.d3area = d3.area<any>()
+    const d3area = d3.area<any>()
       .x(({ x }) => xScale(x))
       .y0(({ y0 }) => yScale(y0))
       .y1(({ y1 }) => yScale(y1));
 
-    const d3line = this.d3line = d3.line<any>()
+    const d3line = d3.line<any>()
       .x(({ x }) => xScale(x))
       .y(({ y }) => yScale(y));
 
@@ -236,6 +269,8 @@ export class LongitudinalCohortChartComponent implements OnInit {
       })
     };
 
+    // Create axes
+
     const xAxis = d3.axisBottom(xScale)
       .tickSize(-height)
       .tickPadding(tickPadding)
@@ -248,16 +283,22 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .tickPadding(tickPadding)
       .tickFormat(d => d);
 
-    const xAxisContainer = this.axesContainer.append('g')
+    // Clear previous axes drawings
+
+    this.axesContainer.selectAll('*').remove();
+
+    // Draw axes
+
+    this.axesContainer.append('g')
       .classed('x axis', true)
       .attr('transform', `translate(0, ${height})`)
       .call(xAxis);
 
-    const yAxisContainer = this.axesContainer.append('g')
+    this.axesContainer.append('g')
       .classed('y axis', true)
       .call(yAxis);
 
-    // Correct x axis tick labels
+    // Correct x axis labels
 
     this.axesContainer.selectAll('.axis.x .tick')
       .append('text')
@@ -270,10 +311,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       .attr('alignment-baseline', 'middle')
       .attr('text-anchor', 'middle');
 
-    // Draw area labels
-
-    // shouldn't need this...
-
+    // Draw second y axis
 
     const bands = this.axesContainer.append('g')
       .classed(`scale-score-area-labels ${this.areaPallet}`, true)
@@ -334,7 +372,6 @@ export class LongitudinalCohortChartComponent implements OnInit {
     labelRect.attr('y', (d, i) => -(labelTextBounds[ i ].height + labelPadding.top + labelPadding.bottom) * 0.5)
       .attr('width', (d, i) => labelTextBounds[ i ].width + labelPadding.left + labelPadding.right)
       .attr('height', (d, i) => labelTextBounds[ i ].height + labelPadding.top + labelPadding.bottom);
-
   }
 
   private get axesContainer(): any {
@@ -343,7 +380,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
     );
   }
 
-  private parseScaleScoreRange(performanceLevels: PerformanceLevel[]): Range<number> {
+  private parseScaleScoreRange(performanceLevels: PerformanceLevel[]): NumberRange {
     return performanceLevels.reduce((range, level) => {
       level.yearGradeScaleScoreRanges.forEach(({ scaleScoreRange }) => {
         if (scaleScoreRange.maximum > range.maximum) {
