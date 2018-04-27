@@ -64,7 +64,7 @@ interface PerformancePath extends DiscretePath<PerformancePoint> {
 }
 
 interface PerformancePoint extends Point {
-  readonly scaleScoreRange: NumberRange;
+  readonly levelRange: LevelRange;
   readonly scaleScore: number;
 }
 
@@ -76,7 +76,7 @@ interface PerformanceLevelPath extends Path {
 interface PerformanceLevelPathLabel {
   readonly text: string;
   readonly margin: Spacing;
-  readonly x: number;
+  readonly y: number;
   readonly height: number;
   readonly pathData: string;
   readonly styles?: any;
@@ -380,6 +380,12 @@ export class LongitudinalCohortChartComponent implements OnInit {
     );
   }
 
+  /**
+   * Computes the overall scale score range for a given set of performance level cut points
+   *
+   * @param {PerformanceLevel[]} performanceLevels
+   * @returns {NumberRange}
+   */
   private parseScaleScoreRange(performanceLevels: PerformanceLevel[]): NumberRange {
     return performanceLevels.reduce((range, level) => {
       level.yearGradeScaleScoreRanges.forEach(({ scaleScoreRange }) => {
@@ -397,16 +403,22 @@ export class LongitudinalCohortChartComponent implements OnInit {
     });
   }
 
+  /**
+   * Computes the all year-grade pairs for the given organization performances
+   *
+   * @param {OrganizationPerformance[]} performances
+   * @returns {YearGrade[]}
+   */
   private parseYearGrades(performances: OrganizationPerformance[]): YearGrade[] {
     const yearGrades: YearGrade[] = [];
-    performances.forEach(performance => {
-      performance.yearGradeScaleScores.forEach(({ yearGrade }) => {
+    performances.forEach(({ yearGradeScaleScores }) => {
+      yearGradeScaleScores.forEach(({ yearGrade }) => {
         if (yearGrades.find(({ year }) => year === yearGrade.year) == null) {
           yearGrades.push(yearGrade);
         }
       });
     });
-    return yearGrades.sort(ordering(byNumber).on(yearGrade => yearGrade.year).compare);
+    return yearGrades.sort(ordering(byNumber).on((yearGrade: YearGrade) => yearGrade.year).compare);
   }
 
 }
