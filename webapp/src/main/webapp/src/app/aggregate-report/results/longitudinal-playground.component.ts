@@ -16,10 +16,6 @@ export class LongitudinalPlaygroundComponent {
 
   constructor(mapper: LongitudinalCohortChartMapper) {
     this.chart = mapper.createStubChart();
-    setTimeout(() => {
-      this.chart = mapper.createStubChart();
-    }, 2000);
-
   }
 
 }
