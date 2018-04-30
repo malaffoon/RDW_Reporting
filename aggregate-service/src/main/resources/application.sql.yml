@@ -17,16 +17,11 @@ sql:
         a.cut_point_1,
         a.cut_point_2,
         a.cut_point_3,
-        a.max_score,
-        a.claim1_score_code,
-        a.claim2_score_code,
-        a.claim3_score_code,
-        a.claim4_score_code
+        a.max_score
       FROM asmt a
         JOIN asmt_type at on at.id = a.type_id
         JOIN subject s on s.id = a.subject_id
         JOIN grade g on g.id =  a.grade_id
-      WHERE :ids is NULL or a.id in (:ids)
 
   assessmentGrade:
     findAll: >-
