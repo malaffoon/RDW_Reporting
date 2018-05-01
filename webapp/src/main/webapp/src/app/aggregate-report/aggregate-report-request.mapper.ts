@@ -51,6 +51,8 @@ export class AggregateReportRequestMapper {
       ? settings.performanceLevelDisplayType
       : assessmentDefinition.performanceLevelDisplayTypes[ 0 ];
 
+    const serverQueryType = this.toServerQueryType(settings.queryType, settings.reportType);
+
     const query: any = {
       achievementLevelDisplayType: performanceLevelDisplayType,
       assessmentTypeCode: settings.assessmentType,
@@ -59,7 +61,7 @@ export class AggregateReportRequestMapper {
       includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
       includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
       includeState: settings.includeStateResults && assessmentDefinition.aggregateReportStateResultsEnabled,
-      queryType: settings.queryType,
+      queryType: serverQueryType,
       subjectCodes: settings.subjects,
       valueDisplayType: settings.valueDisplayType,
       columnOrder: settings.columnOrder
@@ -118,8 +120,9 @@ export class AggregateReportRequestMapper {
   toSettings(request: AggregateReportRequest, options: AggregateReportOptions): Observable<AggregateReportFormSettings> {
 
     const query: AggregateReportQuery = request.query;
-    const queryType: string = request.query.queryType || 'Basic';
-    const reportType: string = request.query.reportType || 'GeneralPopulation';
+
+    const { queryType, reportType } = this.parseTypes(query.queryType);
+
     const filters: StudentFilters = query.studentFilters || {};
 
     const queryInterimAdministrationConditions = (query.administrativeConditionCodes || [])
@@ -251,6 +254,42 @@ export class AggregateReportRequestMapper {
           };
         })
       );
+  }
+
+  /**
+   * Gets the server query type based on the settings queryType and reportType fields
+   *
+   * @param {string} queryType
+   * @param {string} reportType
+   * @returns {string} the server queryType
+   */
+  private toServerQueryType(queryType: string, reportType: string): string {
+    return reportType === 'GeneralPopulation'
+      ? queryType
+      : `${queryType}Longitudinal`;
+  }
+
+  /**
+   * Parses server queryType into client queryType and reportType fields
+   *
+   * @param {AggregateReportQuery} serverQueryType the server query
+   * @returns {{queryType: string; reportType: string}} the form types
+   */
+  private parseTypes(serverQueryType: string): {queryType: string, reportType: string} {
+    let queryType = 'Basic', reportType = 'GeneralPopulation';
+    switch (serverQueryType) {
+      case 'FilteredSubgroup':
+        queryType = 'FilteredSubgroup';
+        break;
+      case 'BasicLongitudinal':
+        reportType = 'LongitudinalCohort';
+        break;
+      case 'FilteredSubgroupLongitudinal':
+        queryType = 'FilteredSubgroup';
+        reportType = 'LongitudinalCohort';
+        break;
+    }
+    return { queryType, reportType };
   }
 
   private createStudentFilters(settingFilters, optionFilters): StudentFilters {
