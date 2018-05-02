@@ -8,6 +8,12 @@ import {
 } from './longitudinal-cohort-chart';
 import { DefaultSchool, Organization } from '../../shared/organization/organization';
 import { ColorService } from '../../shared/color.service';
+import { LongitudinalReport } from "../aggregate-report.service";
+import { AggregateReportRow } from "../../report/aggregate-report";
+import { OrganizationMapper } from "../../shared/organization/organization.mapper";
+import { SubgroupMapper } from "../subgroup/subgroup.mapper";
+import { AggregateReportQuery } from '../../report/aggregate-report-request';
+import { Assessment } from '../assessment/assessment';
 
 
 function createStubGradeYears(first: YearGrade, count: number, step: number = 1, initialGap: number = 0) {
@@ -103,6 +109,8 @@ function createOrganization(id: number): Organization {
 export class LongitudinalCohortChartMapper {
 
   constructor(private translate: TranslateService,
+              private organizationMapper: OrganizationMapper,
+              private subgroupMapper: SubgroupMapper,
               private colorService: ColorService) {
   }
 
@@ -118,6 +126,96 @@ export class LongitudinalCohortChartMapper {
       performanceLevels: createStubPerformanceLevels(4, yearGrades, scaleScoreRange, nameProvider, colorProvider),
       organizationPerformances: createStubOrganizationPerformances(3, yearGrades, scaleScoreRange)
     };
+  }
+
+  /**
+   * Creates a chart from a longitudinal cohort report
+   *
+   * @param {AggregateReportQuery} query the query used to create the report
+   * @param {LongitudinalReport} report the report data
+   * @returns {LongitudinalCohortChart} the resulting chart
+   */
+  fromReport(query: AggregateReportQuery, report: LongitudinalReport): LongitudinalCohortChart {
+    if (report.rows.length === 0
+      || report.assessments.length === 0) {
+      return { performanceLevels: [], organizationPerformances: [] };
+    }
+    return {
+      organizationPerformances: this.createOrganizationPerformances(query, report.rows),
+      performanceLevels: this.createPerformanceLevels(report.assessments)
+    };
+  }
+
+  private createOrganizationPerformances(query: AggregateReportQuery, rows: AggregateReportRow[]): OrganizationPerformance[] {
+    const performanceByOrganizationSubgroup: Map<string, OrganizationPerformance> = new Map();
+    const overall = this.subgroupMapper.createOverall();
+
+    rows.forEach((row: AggregateReportRow) => {
+
+      const yearGradeScaleScore = <YearGradeScaleScore>{
+        yearGrade: <YearGrade>{
+          year: row.assessment.examSchoolYear,
+          grade: row.assessment.gradeCode
+        },
+        scaleScore: row.cohortMeasures.avgScaleScore
+      };
+
+      const key = `${row.organization.id}_${row.dimension}`;
+      const performance = performanceByOrganizationSubgroup.get(key);
+      if (performance != null) {
+        performance.yearGradeScaleScores.push(yearGradeScaleScore)
+      } else {
+        performanceByOrganizationSubgroup.set(key, <OrganizationPerformance>{
+          organization: this.organizationMapper.map(row.organization),
+          subgroup: this.subgroupMapper.fromAggregateReportRow(query, row, overall),
+          yearGradeScaleScores: [ yearGradeScaleScore ]
+        })
+      }
+    });
+
+    return Array.from(performanceByOrganizationSubgroup.values());
+  }
+
+  private createPerformanceLevels(assessments: Assessment[]): PerformanceLevel[] {
+
+    const performanceLevels = [];
+    const assessmentType = assessments[ 0 ].type;
+
+    assessments.forEach(assessment => {
+      assessment.cutPoints.forEach((cutPoint, index, cutPoints) => {
+
+        const nextCutPoint = cutPoints[ index + 1 ];
+        if (nextCutPoint == null) {
+          return;
+        }
+
+        const range = <YearGradeScaleScoreRange>{
+          yearGrade: {
+            year: assessment.schoolYear,
+            grade: assessment.grade
+          },
+          scaleScoreRange: {
+            minimum: cutPoint,
+            maximum: nextCutPoint
+          }
+        };
+
+        const performanceLevel = performanceLevels[ index ];
+        if (performanceLevel != null) {
+          performanceLevel.yearGradeScaleScoreRanges.push(range)
+        } else {
+          const level = index + 1;
+          performanceLevels.push(<PerformanceLevel>{
+            id: level,
+            name: this.translate.instant(`common.assessment-type.${assessmentType}.performance-level.${level}.name-prefix`),
+            color: this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(assessmentType, level),
+            yearGradeScaleScoreRanges: [ range ]
+          })
+        }
+      })
+    });
+
+    return performanceLevels;
   }
 
 }

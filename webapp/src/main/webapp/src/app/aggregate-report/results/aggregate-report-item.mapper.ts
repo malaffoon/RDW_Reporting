@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AggregateReportItem } from './aggregate-report-item';
-import { AggregateReportRow } from '../../report/aggregate-report';
+import {AggregateReportRow, AggregateReportRowDimension} from '../../report/aggregate-report';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { OrganizationMapper } from '../../shared/organization/organization.mapper';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';

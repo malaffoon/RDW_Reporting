@@ -9,6 +9,16 @@ export interface AggregateReportRow {
   readonly organization: any;
   readonly assessment: AggregateReportRowAssessment;
   readonly measures: AggregateReportRowMeasure;
+
+  // Longitudinals only
+  readonly cohortMeasures: AggregateReportRowMeasure;
+}
+
+export interface ServerOrganization {
+  readonly id: number;
+  readonly naturalId: string;
+  readonly name: string;
+  readonly organizationType: string;
 }
 
 export interface AggregateReportRowDimension {
