@@ -66,16 +66,13 @@ export class SubgroupMapper {
   }
 
   fromAggregateReportRow(query: AggregateReportQuery, row: AggregateReportRow, overallFlyweight?: Subgroup): Subgroup {
-    if (query.queryType === 'Basic') {
+    if (query.subgroups == null) {
       return this.fromTypeAndCode(row.dimension.type, row.dimension.code);
     }
-    if (query.queryType === 'FilteredSubgroup') {
-      const serverSubgroup = query.subgroups[ row.dimension.code ];
-      return serverSubgroup
-        ? this.fromFilters(this.requestMapper.createSubgroupFilters(serverSubgroup))
-        : (overallFlyweight || this.createOverall());
-    }
-    throw new Error(`Unsupported query type "${query.queryType}"`);
+    const serverSubgroup = query.subgroups[ row.dimension.code ];
+    return serverSubgroup
+      ? this.fromFilters(this.requestMapper.createSubgroupFilters(serverSubgroup))
+      : (overallFlyweight || this.createOverall());
   }
 
   createPermutationsFromFilters(input: SubgroupFilters, dimensionTypes: string[]): Subgroup[] {

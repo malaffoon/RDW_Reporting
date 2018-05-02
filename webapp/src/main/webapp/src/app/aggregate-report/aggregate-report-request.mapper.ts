@@ -61,7 +61,7 @@ export class AggregateReportRequestMapper {
       includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
       includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
       includeState: settings.includeStateResults && assessmentDefinition.aggregateReportStateResultsEnabled,
-      queryType: serverQueryType,
+      reportType: this.toServerReportType(settings.reportType),
       subjectCodes: settings.subjects,
       valueDisplayType: settings.valueDisplayType,
       columnOrder: settings.columnOrder
@@ -120,9 +120,8 @@ export class AggregateReportRequestMapper {
   toSettings(request: AggregateReportRequest, options: AggregateReportOptions): Observable<AggregateReportFormSettings> {
 
     const query: AggregateReportQuery = request.query;
-
-    const { queryType, reportType } = this.parseTypes(query.queryType);
-
+    const queryType: string = request.query.subgroups ? 'FilteredSubgroup' : 'Basic';
+    const reportType: string = this.fromServerReportType(request.query.reportType);
     const filters: StudentFilters = query.studentFilters || {};
 
     const queryInterimAdministrationConditions = (query.administrativeConditionCodes || [])
@@ -190,12 +189,12 @@ export class AggregateReportRequestMapper {
 
     const defaultGeneralPopulation = {
       assessmentGrades: [],
-      schoolYears: [ options.schoolYears[0] ]
+      schoolYears: [ options.schoolYears[ 0 ] ]
     };
 
     const defaultLongitudinalCohort = {
       assessmentGrades: [],
-      toSchoolYear: options.schoolYears[0]
+      toSchoolYear: options.schoolYears[ 0 ]
     };
 
     let generalPopulation,
@@ -387,9 +386,31 @@ export class AggregateReportRequestMapper {
       subgroupFilters.migrantStatuses = subgroup.migrantStatusCodes;
     }
     if (notNullOrEmpty(subgroup.section504Codes)) {
-      subgroupFilters.section504Codes = subgroup.section504Codes;
+      subgroupFilters.section504s = subgroup.section504Codes;
     }
     return subgroupFilters;
+  }
+
+  // TODO consolidate type names to remove need for extra mapping
+
+  private ServerReportTypeByClientType = {
+    GeneralPopulation: 'CustomAggregate',
+    LongitudinalCohort: 'Longitudinal',
+    Claim: 'Claim'
+  };
+
+  private ClientReportTypeBSyerverType = {
+    CustomAggregate: 'GeneralPopulation',
+    Longitudinal: 'LongitudinalCohort',
+    Claim: 'Claim'
+  };
+
+  private toServerReportType(type: string) {
+    return this.ServerReportTypeByClientType[ type ];
+  }
+
+  private fromServerReportType(type: string) {
+    return this.ClientReportTypeBSyerverType[ type ];
   }
 
 }

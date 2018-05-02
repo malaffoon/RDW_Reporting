@@ -102,13 +102,18 @@
               </a>
             </div>
 
-            <div *ngIf="view.chart">
-              <longitudinal-cohort-chart [chart]="view.chart"></longitudinal-cohort-chart>
-            </div>
+          </div>
+        </div>
 
-            <div class="clearfix"></div>
+        <!-- not quite ready to see light -->
+        <div class="row" *ngIf="view.chart">
+          <div class="col-md-12">
+            <longitudinal-cohort-chart [chart]="view.chart"></longitudinal-cohort-chart>
+          </div>
+        </div>
 
-
+        <div class="row">
+          <div class="col-md-12">
             <div>
               <span class="pull-left flex-child">
                 <label class="mr-xs">

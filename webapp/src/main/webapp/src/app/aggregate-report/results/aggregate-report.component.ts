@@ -219,11 +219,11 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       this.spinnerModal.loading = false;
     });
 
-    if (this.query.queryType.endsWith('Longitudinal')) {
+    if (this.query.reportType === 'Longitudinal') {
       this.reportService.getLongitudinalReport(this.report.id).pipe(
         finalizer
       ).subscribe(report => {
-        this.initializeReportViews(this.query, report.rows, this.chartMapper.fromReport(report));
+        this.initializeReportViews(this.query, report.rows, this.chartMapper.fromReport(this.query, report));
       });
     } else {
       this.reportService.getAggregateReport(this.report.id).pipe(

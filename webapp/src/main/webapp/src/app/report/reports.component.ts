@@ -36,6 +36,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.reports = (this.resolution = this.route.snapshot.data[ 'reports' ]).data;
 
+    console.log('reps', this.reports)
+
     /*
      Start report status polling
      Since reports currently cannot be generated on this page we do not have to dynamically update the IDs to pull

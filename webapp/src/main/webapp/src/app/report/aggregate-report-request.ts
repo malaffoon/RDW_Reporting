@@ -28,14 +28,14 @@ export interface AggregateReportQuery {
   readonly valueDisplayType: string;
   readonly columnOrder?: string[];
 
-  // Needed for mapping back into form state
-  readonly queryType: 'Basic' | 'FilteredSubgroup' | 'BasicLongitudinal' | 'FilteredSubgroupLongitudinal';
-
   // Basic query type params
   readonly studentFilters?: StudentFilters;
 
   // FilteredSubgroup query type params
   readonly subgroups?: {[key: string]: StudentFilters};
+
+  // Needed for mapping back into form state
+  readonly reportType: 'CustomAggregate' | 'Longitudinal' | 'Claim';
 
   // GeneralPopulation report type params
   readonly schoolYears?: number[];
