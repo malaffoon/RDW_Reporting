@@ -149,6 +149,9 @@ export class LongitudinalCohortChartMapper {
   private createOrganizationPerformances(query: AggregateReportQuery, rows: AggregateReportRow[]): OrganizationPerformance[] {
     const performanceByOrganizationSubgroup: Map<string, OrganizationPerformance> = new Map();
     const overall = this.subgroupMapper.createOverall();
+    const keyGenerator = query.subgroups == null
+      ? row => `${row.organization.id}:${row.dimension.type}:${row.dimension.code}`
+      : row => `${row.organization.id}:${row.dimension.code}`;
 
     rows.forEach((row: AggregateReportRow) => {
 
@@ -160,7 +163,7 @@ export class LongitudinalCohortChartMapper {
         scaleScore: row.cohortMeasures.avgScaleScore
       };
 
-      const key = `${row.organization.id}_${row.dimension}`;
+      const key = keyGenerator(row);
       const performance = performanceByOrganizationSubgroup.get(key);
       if (performance != null) {
         performance.yearGradeScaleScores.push(yearGradeScaleScore)
@@ -172,6 +175,8 @@ export class LongitudinalCohortChartMapper {
         })
       }
     });
+
+    console.log(Array.from(performanceByOrganizationSubgroup.values()))
 
     return Array.from(performanceByOrganizationSubgroup.values());
   }

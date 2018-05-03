@@ -10,10 +10,11 @@ import {AssessmentService} from "./assessment/assessment.service";
 import {map} from "rxjs/operators";
 import {Assessment} from "./assessment/assessment";
 
-
-export interface LongitudinalReport {
-  readonly query: AggregateReportQuery;
+export interface BasicReport {
   readonly rows: AggregateReportRow[];
+}
+
+export interface LongitudinalReport extends BasicReport {
   readonly assessments: Assessment[];
 }
 
@@ -58,8 +59,10 @@ export class AggregateReportService {
     return this.reportService.getReportById(id);
   }
 
-  getAggregateReport(id: number): Observable<AggregateReportRow[]> {
-    return this.reportService.getAggregateReport(id);
+  getAggregateReport(id: number): Observable<BasicReport> {
+    return this.reportService.getAggregateReport(id).pipe(
+      map(rows => <BasicReport>{ rows })
+    );
   }
 
   downloadReportContent(id: number): void {
@@ -68,7 +71,7 @@ export class AggregateReportService {
 
   getLongitudinalReport(id: number): Observable<LongitudinalReport> {
     return this.getAggregateReport(id)
-      .flatMap(rows => {
+      .flatMap(({ rows }) => {
         return this.assessmentService.getAssessments({
           ids: rows.reduce((ids, row: AggregateReportRow) => {
             if (ids.indexOf(row.assessment.id) === -1) {
