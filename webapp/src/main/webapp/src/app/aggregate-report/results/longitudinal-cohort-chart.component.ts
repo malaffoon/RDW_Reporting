@@ -210,7 +210,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       });
     });
 
-    const findPerformanceLevelRange = (levelRangesByYearGradeIndex: LevelRange[][], yearGradeIndex: number, scaleScore: number, x): LevelRange => {
+    const findPerformanceLevelRange = (levelRangesByYearGradeIndex: LevelRange[][], yearGradeIndex: number, scaleScore: number): LevelRange => {
       return levelRangesByYearGradeIndex[ yearGradeIndex ].find(levelRange =>
         levelRange.scaleScoreRange.minimum <= scaleScore
         && levelRange.scaleScoreRange.maximum > scaleScore
