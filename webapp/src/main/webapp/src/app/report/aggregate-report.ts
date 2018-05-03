@@ -3,14 +3,14 @@
  */
 export interface AggregateReportRow {
 
-  // Present on Basic query
-  readonly dimension?: AggregateReportRowDimension;
-
-  readonly organization: any;
+  readonly dimension: AggregateReportRowDimension;
+  readonly organization: ServerOrganization;
   readonly assessment: AggregateReportRowAssessment;
   readonly measures: AggregateReportRowMeasure;
 
-  // Longitudinals only
+  /**
+   * These measures are present on longitudinal reports only
+   */
   readonly cohortMeasures?: AggregateReportRowMeasure;
 }
 
