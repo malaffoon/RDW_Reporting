@@ -14,6 +14,8 @@ import { OrganizationMapper } from "../../shared/organization/organization.mappe
 import { SubgroupMapper } from "../subgroup/subgroup.mapper";
 import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { Assessment } from '../assessment/assessment';
+import { ordering } from '@kourge/ordering';
+import { byNumber } from '@kourge/ordering/comparator';
 
 
 function createStubGradeYears(first: YearGrade, count: number, step: number = 1, initialGap: number = 0) {
@@ -105,6 +107,9 @@ function createOrganization(id: number): Organization {
   return organization;
 }
 
+const rowYearAscending = ordering(byNumber).on(row => row.assessment.examSchoolYear).compare;
+const assessmentYearAscending = ordering(byNumber).on(assessment => assessment.schoolYear).compare;
+
 @Injectable()
 export class LongitudinalCohortChartMapper {
 
@@ -147,13 +152,16 @@ export class LongitudinalCohortChartMapper {
   }
 
   private createOrganizationPerformances(query: AggregateReportQuery, rows: AggregateReportRow[]): OrganizationPerformance[] {
+
     const performanceByOrganizationSubgroup: Map<string, OrganizationPerformance> = new Map();
     const overall = this.subgroupMapper.createOverall();
     const keyGenerator = query.subgroups == null
       ? row => `${row.organization.id}:${row.dimension.type}:${row.dimension.code}`
       : row => `${row.organization.id}:${row.dimension.code}`;
 
-    rows.forEach((row: AggregateReportRow) => {
+    rows.concat()
+      .sort(rowYearAscending)
+      .forEach((row: AggregateReportRow) => {
 
       const yearGradeScaleScore = <YearGradeScaleScore>{
         yearGrade: <YearGrade>{
@@ -184,7 +192,9 @@ export class LongitudinalCohortChartMapper {
     const performanceLevels = [];
     const assessmentType = assessments[ 0 ].type;
 
-    assessments.forEach(assessment => {
+    assessments.concat()
+      .sort(assessmentYearAscending)
+      .forEach(assessment => {
       assessment.cutPoints.forEach((cutPoint, index, cutPoints) => {
 
         const nextCutPoint = cutPoints[ index + 1 ];
