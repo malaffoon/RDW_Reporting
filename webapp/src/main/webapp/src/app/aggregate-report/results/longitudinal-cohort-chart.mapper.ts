@@ -23,7 +23,7 @@ function createStubGradeYears(first: YearGrade, count: number, step: number = 1,
   for (let i = 1 + initialGap; i < count; i++) {
     yearsAndGrades.push({
       year: first.year + i * step,
-      grade: first.grade + i * step
+      grade: String(Number.parseInt(first.grade) + i * step)
     });
   }
   return yearsAndGrades;
@@ -107,8 +107,8 @@ function createOrganization(id: number): Organization {
   return organization;
 }
 
-const rowYearAscending = ordering(byNumber).on(row => row.assessment.examSchoolYear).compare;
-const assessmentYearAscending = ordering(byNumber).on(assessment => assessment.schoolYear).compare;
+const rowYearAscending = ordering(byNumber).on<AggregateReportRow>(row => row.assessment.examSchoolYear).compare;
+const assessmentYearAscending = ordering(byNumber).on<Assessment>(assessment => assessment.schoolYear).compare;
 
 @Injectable()
 export class LongitudinalCohortChartMapper {
@@ -121,7 +121,7 @@ export class LongitudinalCohortChartMapper {
 
   createStubChart(assessmentTypeCode: string = 'sum'): LongitudinalCohortChart {
     const scaleScoreRange = [ 2000, 2800 ];
-    const yearGrades = createStubGradeYears({ year: 2000, grade: 3 }, 10, 1, 4);
+    const yearGrades = createStubGradeYears({ year: 2000, grade: '03' }, 10, 1, 4);
     const nameProvider = (level) => this.translate
       .instant(`common.assessment-type.${assessmentTypeCode}.performance-level.${level}.name-prefix`);
     const colorProvider = (level) => this.colorService

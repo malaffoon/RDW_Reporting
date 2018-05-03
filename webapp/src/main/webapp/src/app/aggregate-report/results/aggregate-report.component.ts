@@ -225,24 +225,25 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   }
 
-  private initializeReportViews(query: AggregateReportQuery, { rows, assessments }): void {
+  private initializeReportViews(query: AggregateReportQuery, report: any): void {
 
+    const { rows, assessments } = report;
     const isLongitudinal = assessments != null;
 
-    const rowMapper: (...args) => AggregateReportItem = isLongitudinal
-      ? (...args) => this.itemMapper.createRowUsingCohortMeasures(...args)
-      : (...args) => this.itemMapper.createRow(...args);
+    const rowMapper: (query, assessmentDefinition, row, index) => AggregateReportItem = isLongitudinal
+      ? (query, assessmentDefinition, row, index) => this.itemMapper.createRowUsingCohortMeasures(query, assessmentDefinition, row, index)
+      : (query, assessmentDefinition, row, index) => this.itemMapper.createRow(query, assessmentDefinition, row, index);
 
     this.reportViews = rows.reduce((views, row, index) => {
       const item = rowMapper(query, this.assessmentDefinition, row, index);
       const subjectCode = row.assessment.subjectCode;
-      const view = views.find(wrapper => wrapper.subjectCode === subjectCode);
+      let view = views.find(wrapper => wrapper.subjectCode === subjectCode);
       const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.query.columnOrder)
         ? this.assessmentDefinition.aggregateReportIdentityColumns.concat()
         : this.report.request.query.columnOrder;
 
       if (!view) {
-        const view = <any>{
+        view = <any>{
           subjectCode: subjectCode,
           table: {
             options: this.options,

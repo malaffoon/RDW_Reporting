@@ -228,14 +228,14 @@ export class LongitudinalCohortChartComponent implements OnInit {
             x: j,
             y: scaleScore
           })),
-          points: performance.yearGradeScaleScores.reduce((points, { scaleScore }, j, x) => {
+          points: performance.yearGradeScaleScores.reduce((points, { scaleScore }, j) => {
             if (scaleScore != null) {
               points.push(<PerformancePoint>{
                 styles: `point color-stroke`,
                 x: xScale(j),
                 y: yScale(scaleScore),
                 scaleScore: scaleScore,
-                levelRange: findPerformanceLevelRange(levelRangesByYearGradeIndex, j, scaleScore, x)
+                levelRange: findPerformanceLevelRange(levelRangesByYearGradeIndex, j, scaleScore)
               });
             }
             return points;
