@@ -176,8 +176,6 @@ export class LongitudinalCohortChartMapper {
       }
     });
 
-    console.log(Array.from(performanceByOrganizationSubgroup.values()))
-
     return Array.from(performanceByOrganizationSubgroup.values());
   }
 
