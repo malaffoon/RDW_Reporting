@@ -1,12 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ReportService } from "../../report/report.service";
 import { Report } from "../../report/report.model";
 import { AggregateReportTable, SupportedRowCount } from "./aggregate-report-table.component";
 import { AggregateReportOptions } from "../aggregate-report-options";
 import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
-import { AggregateReportRow } from "../../report/aggregate-report";
 import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../../shared/support/support";
 import { Comparator, ranking } from "@kourge/ordering/comparator";
@@ -21,11 +19,8 @@ import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-colu
 import { AggregateReportRequestSummary } from "../aggregate-report-summary.component";
 import { interval } from 'rxjs/observable/interval';
 import { finalize, switchMap } from 'rxjs/operators';
-import {Assessment} from "../assessment/assessment";
-import {LongitudinalCohortChart} from "./longitudinal-cohort-chart";
-import {AssessmentService} from "../assessment/assessment.service";
-import { AggregateReportService, BasicReport, LongitudinalReport } from "../aggregate-report.service";
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { LongitudinalCohortChart } from "./longitudinal-cohort-chart";
+import { AggregateReportService, LongitudinalReport } from "../aggregate-report.service";
 import { LongitudinalCohortChartMapper } from './longitudinal-cohort-chart.mapper';
 import { AggregateReportItem } from './aggregate-report-item';
 
@@ -230,7 +225,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   }
 
-  private initializeReportViews(query: AggregateReportQuery, { rows, assessments}): void {
+  private initializeReportViews(query: AggregateReportQuery, { rows, assessments }): void {
 
     const isLongitudinal = assessments != null;
 

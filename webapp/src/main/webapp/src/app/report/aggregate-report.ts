@@ -11,7 +11,7 @@ export interface AggregateReportRow {
   readonly measures: AggregateReportRowMeasure;
 
   // Longitudinals only
-  readonly cohortMeasures: AggregateReportRowMeasure;
+  readonly cohortMeasures?: AggregateReportRowMeasure;
 }
 
 export interface ServerOrganization {
