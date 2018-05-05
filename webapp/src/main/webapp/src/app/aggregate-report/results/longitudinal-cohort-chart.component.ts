@@ -9,11 +9,9 @@ import {
   NumberRange,
   YearGrade
 } from './longitudinal-cohort-chart';
-import { byNumber, byString, join, ranking } from '@kourge/ordering/comparator';
+import { byNumber } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { District, Organization, OrganizationType } from '../../shared/organization/organization';
-import { Subgroup } from '../subgroup/subgroup';
-import { organizationOrdering } from '../support';
+import { Organization } from '../../shared/organization/organization';
 
 
 /**
@@ -169,7 +167,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
   private render(): void {
 
     if (this.chart == null
-    || this.display == null) {
+      || this.display == null) {
       return;
     }
 
@@ -254,19 +252,19 @@ export class LongitudinalCohortChartComponent implements OnInit {
           organization: performance.organization,
           subgroup: performance.subgroup
         }),
-        performanceLevelPaths: this._chart.performanceLevels.map((level, i) => <PerformanceLevelPath>{
-          styles: `scale-score-area color-${i % 4}`,
-          pathData: d3area(level.yearGradeScaleScoreRanges.map(({ scaleScoreRange }, j) => <any>{
-            x: j,
-            y0: scaleScoreRange.minimum,
-            y1: scaleScoreRange.maximum
-          })),
-          dividerPathData: d3line(level.yearGradeScaleScoreRanges.map(({ scaleScoreRange }, j) => <any>{
-            x: j,
-            y: scaleScoreRange.maximum
-          })),
-          performanceLevel: level
-        }),
+      performanceLevelPaths: this._chart.performanceLevels.map((level, i) => <PerformanceLevelPath>{
+        styles: `scale-score-area color-${i % 4}`,
+        pathData: d3area(level.yearGradeScaleScoreRanges.map(({ scaleScoreRange }, j) => <any>{
+          x: j,
+          y0: scaleScoreRange.minimum,
+          y1: scaleScoreRange.maximum
+        })),
+        dividerPathData: d3line(level.yearGradeScaleScoreRanges.map(({ scaleScoreRange }, j) => <any>{
+          x: j,
+          y: scaleScoreRange.maximum
+        })),
+        performanceLevel: level
+      }),
       performanceLevelPathLabels: levelRangesByYearGradeIndex[ levelRangesByYearGradeIndex.length - 1 ].map(levelRange => {
         const height = yScale(levelRange.scaleScoreRange.maximum) - yScale(levelRange.scaleScoreRange.minimum);
         const margin = { left: 5, top: -2, right: 0, bottom: 2 };

@@ -4,7 +4,7 @@ import { AggregateReportItem } from './aggregate-report-item';
 import { byNumber, byString, Comparator, join, ranking } from '@kourge/ordering/comparator';
 import { ColorService } from '../../shared/color.service';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
-import { District, OrganizationType, School } from '../../shared/organization/organization';
+import { OrganizationType } from '../../shared/organization/organization';
 import { Utils } from '../../shared/support/support';
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
