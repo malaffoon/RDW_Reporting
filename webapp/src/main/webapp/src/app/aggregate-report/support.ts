@@ -26,7 +26,7 @@ export function computeEffectiveYears(endYear: number, gradeCodes: string[]): nu
  */
 export function organizationOrdering<T>(organizationGetter: (item: T) => Organization, items: T[]): Ordering<T> {
 
-  const districtNamesById = items.reduce((districtNamesById, item) => {
+  const districtNamesById = items.reduce((districtNamesById: Map<number, string>, item: T) => {
     const organization = organizationGetter(item);
     if (organization.type === OrganizationType.District) {
       districtNamesById.set((<District>organization).id, organization.name);
@@ -36,27 +36,29 @@ export function organizationOrdering<T>(organizationGetter: (item: T) => Organiz
 
   const stateOrdering = ordering(ranking([ OrganizationType.State ]))
     .reverse()
-    .on(item => organizationGetter(item).type);
+    .on((item: T) => organizationGetter(item).type);
 
-  const districtsWithSchoolsByName: Ordering = ordering(byString)
-    .on(item => {
-      switch (organizationGetter(item).type) {
+  const districtsWithSchoolsByName = ordering(byString)
+    .on((item: T) => {
+      const organization = organizationGetter(item);
+      switch (organization.type) {
         case OrganizationType.District:
-          return districtNamesById.get((organizationGetter(item) as District).id) || '';
+          return districtNamesById.get((<District>organization).id) || '';
         case OrganizationType.School:
-          return districtNamesById.get((organizationGetter(item) as School).districtId) || '';
+          return districtNamesById.get((<School>organization).districtId) || '';
         default:
           return '';
       }
     });
 
   const districtsWithSchoolsByIdOrdering = ordering(byNumber)
-    .on(item => {
-      switch (organizationGetter(item).type) {
+    .on((item: T) => {
+      const organization = organizationGetter(item);
+      switch (organization.type) {
         case OrganizationType.District:
-          return (item.organization as District).id;
+          return (<District>organization).id;
         case OrganizationType.School:
-          return (item.organization as School).districtId;
+          return (<School>organization).districtId;
         default:
           return -1;
       }
@@ -64,10 +66,10 @@ export function organizationOrdering<T>(organizationGetter: (item: T) => Organiz
 
   const districtOrdering = ordering(ranking([ OrganizationType.District ]))
     .reverse()
-    .on(item => organizationGetter(item).type);
+    .on((item: T) => organizationGetter(item).type);
 
   const schoolOrdering = ordering(byString)
-    .on(item => organizationGetter(item).name);
+    .on((item: T) => organizationGetter(item).name);
 
   return ordering(
     join(
@@ -81,7 +83,7 @@ export function organizationOrdering<T>(organizationGetter: (item: T) => Organiz
 }
 
 
-export function subgroupOrdering<T>(subgroupGetter: (item: T) => Subgroup,options: AggregateReportOptions): Ordering<T> {
+export function subgroupOrdering<T>(subgroupGetter: (item: T) => Subgroup, options: AggregateReportOptions): Ordering<T> {
 
   const dimensionOptionsByDimensionType = {
     Gender: options.studentFilters.genders,
@@ -100,32 +102,33 @@ export function subgroupOrdering<T>(subgroupGetter: (item: T) => Subgroup,option
     );
   }, []);
 
-  const dimensionTypeAndCodeComparator = ordering(ranking(
+  const dimensionTypeAndCodeOrdering = ordering(ranking(
     [ OverallDimensionType, ...dimensionTypeAndCodeRankingValues ]
-  ))
-    .on(item => subgroupGetter(item).id)
-    .compare;
+  )).on((item: T) => subgroupGetter(item).id);
 
   // Attempt to sort based upon the enrolled grade code as a number ("01", "02", "KG", "UG", etc)
   // If the code cannot be parsed as a number, the order is undefined
   // TODO we should have a specific ordering for all grade codes, although the system only currently uses "03" - "12"
-  const enrolledGradeComparator = ordering(byNumber)
-    .on(item => {
-      const { type, codes } = subgroupGetter(item);
+  const enrolledGradeOrdering = ordering(byNumber)
+    .on((item: T) => {
+      const subgroup = subgroupGetter(item);
+      if (subgroup == null || subgroup.dimensionGroups.length == 0) {
+        return -1;
+      }
+      const { type, values } = subgroup.dimensionGroups[0];
       if (type == null || type !== 'StudentEnrolledGrade') {
         return -1;
       }
       try {
-        return Number.parseInt(codes[ 0 ]);
+        return Number.parseInt(values[ 0 ].code);
       } catch (error) {
         return 1;
       }
-    })
-    .compare;
+    });
 
   return ordering(join(
-    dimensionTypeAndCodeComparator,
-    enrolledGradeComparator,
+    dimensionTypeAndCodeOrdering.compare,
+    enrolledGradeOrdering.compare,
     // hotfix Overall order on FilteredSubgroup results
     (a: T, b: T) => {
       if (subgroupGetter(a).id === 'Overall:') {
@@ -136,6 +139,6 @@ export function subgroupOrdering<T>(subgroupGetter: (item: T) => Subgroup,option
       }
       return 0;
     },
-    ordering(byString).on(({ subgroup }) => subgroup.id).compare
+    ordering(byString).on((item: T) => subgroupGetter(item).id).compare
   ));
 }
