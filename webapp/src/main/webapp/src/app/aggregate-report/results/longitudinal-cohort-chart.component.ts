@@ -9,9 +9,11 @@ import {
   NumberRange,
   YearGrade
 } from './longitudinal-cohort-chart';
-import { byNumber } from '@kourge/ordering/comparator';
+import { byNumber, byString, join, ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { Organization } from '../../shared/organization/organization';
+import { District, Organization, OrganizationType } from '../../shared/organization/organization';
+import { Subgroup } from '../subgroup/subgroup';
+import { organizationOrdering } from '../support';
 
 
 /**
@@ -111,6 +113,8 @@ export class LongitudinalCohortChartComponent implements OnInit {
     tickPadding: 10
   };
 
+  private _selectedPaths: Set<number> = new Set();
+
   constructor(private elementReference: ElementRef,
               private translate: TranslateService,
               private schoolYearPipe: SchoolYearPipe) {
@@ -151,6 +155,15 @@ export class LongitudinalCohortChartComponent implements OnInit {
   ngOnInit(): void {
     this.render();
     this._initialized = true;
+  }
+
+  onChartSeriesToggleClick(path: PerformancePath, pathIndex: number): void {
+    this._selectedPaths.has(pathIndex)
+      ? this._selectedPaths.delete(pathIndex)
+      : this._selectedPaths.add(pathIndex);
+
+    this._chartView.performancePaths
+      .forEach((path, index) => path.visible = this._selectedPaths.size === 0 || this._selectedPaths.has(index));
   }
 
   private render(): void {
@@ -219,8 +232,6 @@ export class LongitudinalCohortChartComponent implements OnInit {
 
     this._chartView = <ChartView>{
       performancePaths: this._chart.organizationPerformances
-        // TODO allow different subgroup selection
-        .filter(performance => performance.subgroup.id === 'Overall:')
         .map((performance, i) => <PerformancePath>{
           styles: `scale-score-line color-${i % 3} series-${i}`,
           visible: true,
