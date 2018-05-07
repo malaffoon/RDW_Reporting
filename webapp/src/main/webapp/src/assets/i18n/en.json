@@ -513,6 +513,7 @@
       "TK": "TK",
       "UG": "UG"
     },
+    "error-band-value": "± {{errorBand}}",
     "ethnicity": {
       "AmericanIndianOrAlaskaNative": "American Indian or Alaska Native",
       "Asian": "Asian",
