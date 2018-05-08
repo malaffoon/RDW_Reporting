@@ -7,7 +7,7 @@ import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { Subscription } from "rxjs/Subscription";
 import { Utils } from "../../shared/support/support";
-import { Comparator, ranking } from "@kourge/ordering/comparator";
+import { Comparator, join, ranking } from "@kourge/ordering/comparator";
 import { ordering } from "@kourge/ordering";
 import { AggregateReportQuery } from "../../report/aggregate-report-request";
 import { DisplayOptionService } from "../../shared/display-options/display-option.service";
@@ -23,6 +23,7 @@ import { LongitudinalCohortChart } from "./longitudinal-cohort-chart";
 import { AggregateReportService, LongitudinalReport } from "../aggregate-report.service";
 import { LongitudinalCohortChartMapper } from './longitudinal-cohort-chart.mapper';
 import { AggregateReportItem } from './aggregate-report-item';
+import { organizationOrdering, subgroupOrdering } from '../support';
 
 const PollingInterval = 4000;
 
@@ -261,6 +262,13 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
             rows: rows.filter(row => row.assessment.subjectCode === subjectCode),
             assessments: assessments.filter(assessment => assessment.subject === subjectCode)
           });
+
+          view.chart.organizationPerformances.sort(
+            join(
+              organizationOrdering(path => path.organization, view.chart.organizationPerformances).compare,
+              subgroupOrdering(path => path.subgroup, this.options).compare
+            )
+          );
         }
 
         views.push(view);
