@@ -52,14 +52,31 @@ sql:
             JOIN student_group_membership sgm ON e.student_id = sgm.student_id
             JOIN student_group sg ON sg.id = sgm.student_group_id
             JOIN user_student_group usg ON usg.student_group_id = sg.id
+            JOIN teacher_student_group_membership tsgm ON e.student_id = tsgm.student_id
+            JOIN teacher_student_group tsg ON tsg.id = tsgm.teacher_stuent_group_id
             JOIN school s ON e.school_id = s.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
           WHERE e.school_year = :school_year
             AND a.id = e.asmt_id
-            AND sg.id = :group_id
-            AND usg.user_login = :user_login
-            AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+            AND (
+              :group_id IS NULL
+              OR
+              (
+                sg.id = :group_id
+                AND usg.user_login = :user_login
+                AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+              )
+            )
+            AND (
+              :teacher_group_id IS NULL
+              OR
+              (
+                tsg.id = :teacher_group_id
+                AND tsg.user_login = :user_login
+                AND (tsg.subject_id IS NULL OR tsg.subject_id = :a.subject_id)
+              )
+            )
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
       findLatestExam: >-
