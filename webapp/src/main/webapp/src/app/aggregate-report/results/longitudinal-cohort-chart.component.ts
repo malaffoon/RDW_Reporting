@@ -4,9 +4,9 @@ import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 import * as d3 from 'd3';
 import {
   LongitudinalCohortChart,
+  NumberRange,
   OrganizationPerformance,
   PerformanceLevel,
-  NumberRange,
   YearGrade
 } from './longitudinal-cohort-chart';
 import { byNumber } from '@kourge/ordering/comparator';
@@ -60,7 +60,7 @@ interface Point {
 interface PerformancePath extends DiscretePath<PerformancePoint> {
   readonly organization: Organization;
   readonly subgroup: any;
-  visible: boolean;
+  fade: boolean;
 }
 
 interface PerformancePoint extends Point {
@@ -100,6 +100,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
   @Input()
   areaPallet: string = 'pallet-b';
 
+  private previousPoint: { path: PerformancePath, point: PerformancePoint };
   private _initialized: boolean = false;
   private _chart: LongitudinalCohortChart;
   private _chartView: ChartView;
@@ -162,7 +163,23 @@ export class LongitudinalCohortChartComponent implements OnInit {
       : this._selectedPaths.add(pathIndex);
 
     this._chartView.performancePaths
-      .forEach((path, index) => path.visible = this._selectedPaths.size === 0 || this._selectedPaths.has(index));
+      .forEach((path, index) => path.fade = this._selectedPaths.size !== 0 && !this._selectedPaths.has(index));
+    this.previousPoint = null;
+  }
+
+  toggleFadeOnPoint(path: PerformancePath, point: PerformancePoint): void {
+    if (this.previousPoint && this.previousPoint.path === path) {
+      // do nothing...same line
+      return;
+    }
+    this.previousPoint = { path, point };
+    for (const performancePath of this.chartView.performancePaths) {
+      if (performancePath !== path) {
+        performancePath.fade = !performancePath.fade;
+      } else {
+        performancePath.fade = false;
+      }
+    }
   }
 
   private render(): void {
@@ -233,7 +250,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
       performancePaths: this._chart.organizationPerformances
         .map((performance, i) => <PerformancePath>{
           styles: `scale-score-line color-${i % 3} series-${i}`,
-          visible: true,
+          fade: false,
           pathData: d3line(performance.yearGradeScaleScores.map(({ scaleScore }, j) => <any>{
             x: j,
             y: scaleScore
