@@ -88,7 +88,7 @@ export class StudentResultsComponent implements OnInit {
     const { student } = this.examHistory;
     this.csvExportService.exportStudentHistory(
       this.sections.reduce((exams, section) => {
-        exams.push(...section.exams);
+        exams.push(...section.filteredExams);
         return exams;
       }, []),
       () => this.examHistory.student,
