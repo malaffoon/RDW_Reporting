@@ -19,7 +19,7 @@ import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-colu
 import { AggregateReportRequestSummary } from "../aggregate-report-summary.component";
 import { interval } from 'rxjs/observable/interval';
 import { finalize, switchMap } from 'rxjs/operators';
-import { LongitudinalCohortChart } from "./longitudinal-cohort-chart";
+import { LongitudinalCohortChart, OrganizationPerformance } from './longitudinal-cohort-chart';
 import { AggregateReportService, LongitudinalReport } from "../aggregate-report.service";
 import { LongitudinalCohortChartMapper } from './longitudinal-cohort-chart.mapper';
 import { AggregateReportItem } from './aggregate-report-item';
@@ -265,8 +265,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
           view.chart.organizationPerformances.sort(
             join(
-              organizationOrdering(path => path.organization, view.chart.organizationPerformances).compare,
-              subgroupOrdering(path => path.subgroup, this.options).compare
+              organizationOrdering((path: OrganizationPerformance) => path.organization, view.chart.organizationPerformances).compare,
+              subgroupOrdering((path: OrganizationPerformance) => path.subgroup, this.options).compare
             )
           );
         }
