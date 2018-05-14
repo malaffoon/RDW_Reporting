@@ -52,7 +52,7 @@ sql:
       WHERE tsg.id = :id
 
   teacherGroupMembership:
-    findAllStudentIdsByGroupId:
+    findAllStudentIdsByGroupId: >-
       SELECT student_id
       FROM teacher_student_group_membership
       WHERE teacher_student_group_id = :group_id
@@ -66,12 +66,12 @@ sql:
       WHERE group_id = :group_id
         AND student_id = :student_id
 
-    deleteAllByGroupId:
+    deleteAllByGroupId: >-
       DELETE FROM teacher_student_group_membership
       WHERE group_id = :group_id
 
   student:
-    findAllIds:
+    findAllIds: >-
       SELECT e.student_id,
       FROM exam e
         JOIN school s ON s.id = e.school_id
