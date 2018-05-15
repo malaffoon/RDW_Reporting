@@ -39,12 +39,19 @@ sql:
 
     create: >-
       INSERT INTO teacher_student_group (name, school_id, subject_id, user_login)
-      VALUES (:name, :school_id, :subject_id, :user_login)
+      SELECT
+        :name,
+        :school_id,
+        CASE WHEN (:subject_code IS NULL)
+          THEN NULL
+          ELSE (SELECT id from subject where code = :subject_code) END,
+        :user_login
 
     update: >-
       UPDATE teacher_student_group tsg SET
         name = :name,
-        subject_id = :subject_id
+        subject_id = s.id
+      LEFT JOIN subject s ON s.code = :subject_code
       WHERE tsg.id = :id
 
     delete: >-
