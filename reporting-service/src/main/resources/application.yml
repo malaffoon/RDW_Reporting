@@ -64,6 +64,13 @@ artifacts:
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
 
+jdbc:
+  retry:
+    default:
+      max-attempts: 3
+      delay: 30
+      multiplier: 2
+
 reporting:
   school-year: 2018
   state:
