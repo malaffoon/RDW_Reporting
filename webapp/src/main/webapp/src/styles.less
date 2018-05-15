@@ -971,7 +971,7 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
   @stroke-width-1: 3px;
   @stroke-width-2: 4px;
 
-  font-size: 10px;
+  font-size: 12px;
 
   path {
     fill: none;
@@ -992,8 +992,13 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
       shape-rendering: crispEdges;
     }
 
-    .tick line {
-      stroke: #000;
+    .tick {
+      line {
+        stroke: #000;
+      }
+      text {
+        font-size: 12px;
+      }
     }
 
     &.x .tick {
@@ -1025,7 +1030,7 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 
     .grade {
       font-weight: bold;
-      font-size: 90%;
+      font-size: 11px !important;
       transform: translate(0, 28px);
     }
 
