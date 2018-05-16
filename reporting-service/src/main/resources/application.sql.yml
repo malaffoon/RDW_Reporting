@@ -13,11 +13,8 @@ sql:
       SELECT
         tsg.id,
         tsg.name,
-        sc.name as school_name,
-        sc.id as school_id,
         s.code as subject_code
       FROM teacher_student_group tsg
-        JOIN school sc ON sc.id = tsg.school_id
         LEFT JOIN subject s ON s.id = tsg.subject_id
       WHERE user_login = :user_login
 
@@ -25,12 +22,9 @@ sql:
       SELECT
         tsg.id,
         tsg.name,
-        sc.name as school_name,
-        sc.id as school_id,
         s.code as subject_code,
         GROUP_CONCAT(tsgm.student_id SEPARATOR '|') AS student_ids
       FROM teacher_student_group tsg
-        JOIN school sc ON sc.id = tsg.school_id
         LEFT JOIN subject s ON s.id = tsg.subject_id
         LEFT JOIN teacher_student_group_membership tsgm ON tsgm.teacher_student_group_id = tsg.id
       WHERE user_login = :user_login
@@ -38,10 +32,9 @@ sql:
       GROUP BY tsg.id
 
     create: >-
-      INSERT INTO teacher_student_group (name, school_id, subject_id, user_login)
+      INSERT INTO teacher_student_group (name, subject_id, user_login)
       SELECT
         :name,
-        :school_id,
         CASE WHEN (:subject_code IS NULL)
           THEN NULL
           ELSE (SELECT id from subject where code = :subject_code) END,
