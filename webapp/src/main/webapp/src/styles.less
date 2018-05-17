@@ -932,14 +932,35 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 @opacity-soft: 0.45;
 @opacity-softened: 0.66;
 
+@colorwheel-0: #5e4fa2;
+@colorwheel-1: #3288bd;
+@colorwheel-2: #66c2a5;
+@colorwheel-3: #abdda4;
+@colorwheel-4: #e6f598;
+@colorwheel-5: #fee08b;
+@colorwheel-6: #fdae61;
+@colorwheel-7: #f46d43;
+@colorwheel-8: #d53e4f;
+@colorwheel-9: #9e0142;
+
+
 .chart-series-legend {
+  overflow-y: auto;
+  max-width: 325px;
 
   &.pallet-a {
     .chart-series,
     .chart-series-icon {
-      &.color-0 { background-color: @gray-darkest; }
-      &.color-1 { background-color: @aqua; }
-      &.color-2 { background-color: @green; }
+      &.color-0 { background-color: @colorwheel-0; }
+      &.color-1 { background-color: @colorwheel-1; }
+      &.color-2 { background-color: @colorwheel-2; }
+      &.color-3 { background-color: @colorwheel-3; }
+      &.color-4 { background-color: @colorwheel-4; }
+      &.color-5 { background-color: @colorwheel-5; }
+      &.color-6 { background-color: @colorwheel-6; }
+      &.color-7 { background-color: @colorwheel-7; }
+      &.color-8 { background-color: @colorwheel-8; }
+      &.color-9 { background-color: @colorwheel-9; }
     }
   }
 
@@ -950,7 +971,7 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
     display: block;
   }
 
-  @chart-series-icon-size: 8px;
+  @chart-series-icon-size: 11px;
 
   .chart-series-icon {
     width: @chart-series-icon-size;
@@ -971,7 +992,7 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
   @stroke-width-1: 3px;
   @stroke-width-2: 4px;
 
-  font-size: 10px;
+  font-size: 12px;
 
   path {
     fill: none;
@@ -992,8 +1013,13 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
       shape-rendering: crispEdges;
     }
 
-    .tick line {
-      stroke: #000;
+    .tick {
+      line {
+        stroke: #000;
+      }
+      text {
+        font-size: 12px;
+      }
     }
 
     &.x .tick {
@@ -1025,7 +1051,7 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 
     .grade {
       font-weight: bold;
-      font-size: 90%;
+      font-size: 11px !important;
       transform: translate(0, 28px);
     }
 
@@ -1079,16 +1105,44 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 
   .pallet-a {
     .color-0 {
-      .color-stroke { stroke: @gray-darkest; }
-      .color-fill { fill: @gray-darkest; }
+      .color-stroke { stroke: @colorwheel-0; }
+      .color-fill { fill: @colorwheel-0; }
     }
     .color-1 {
-      .color-stroke { stroke: @aqua; }
-      .color-fill { fill: @aqua; }
+      .color-stroke { stroke: @colorwheel-1; }
+      .color-fill { fill: @colorwheel-1; }
     }
     .color-2 {
-      .color-stroke { stroke: @green; }
-      .color-fill { fill: @green; }
+      .color-stroke { stroke: @colorwheel-2; }
+      .color-fill { fill: @colorwheel-2; }
+    }
+    .color-3 {
+      .color-stroke { stroke: @colorwheel-3; }
+      .color-fill { fill: @colorwheel-3; }
+    }
+    .color-4 {
+      .color-stroke { stroke: @colorwheel-4; }
+      .color-fill { fill: @colorwheel-4; }
+    }
+    .color-5 {
+      .color-stroke { stroke: @colorwheel-5; }
+      .color-fill { fill: @colorwheel-5; }
+    }
+    .color-6 {
+      .color-stroke { stroke: @colorwheel-6; }
+      .color-fill { fill: @colorwheel-6; }
+    }
+    .color-7 {
+      .color-stroke { stroke: @colorwheel-7; }
+      .color-fill { fill: @colorwheel-7; }
+    }
+    .color-8 {
+      .color-stroke { stroke: @colorwheel-8; }
+      .color-fill { fill: @colorwheel-8; }
+    }
+    .color-9 {
+      .color-stroke { stroke: @colorwheel-9; }
+      .color-fill { fill: @colorwheel-9; }
     }
   }
 
