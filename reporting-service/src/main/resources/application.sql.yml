@@ -8,77 +8,7 @@ sql:
           AND ${sql.snippet.basicPermission}
         LIMIT 1) AS embargo_enabled
 
-  teacherGroup:
-    findAllByUsername: >-
-      SELECT
-        tsg.id,
-        tsg.name,
-        s.code as subject_code
-      FROM teacher_student_group tsg
-        LEFT JOIN subject s ON s.id = tsg.subject_id
-      WHERE user_login = :user_login
-
-    findOneByUsernameAndId: >-
-      SELECT
-        tsg.id,
-        tsg.name,
-        s.code as subject_code,
-        GROUP_CONCAT(tsgm.student_id SEPARATOR '|') AS student_ids
-      FROM teacher_student_group tsg
-        LEFT JOIN subject s ON s.id = tsg.subject_id
-        LEFT JOIN teacher_student_group_membership tsgm ON tsgm.teacher_student_group_id = tsg.id
-      WHERE user_login = :user_login
-        AND tsg.id = :id
-      GROUP BY tsg.id
-
-    create: >-
-      INSERT INTO teacher_student_group (name, subject_id, user_login)
-      SELECT
-        :name,
-        CASE WHEN (:subject_code IS NULL)
-          THEN NULL
-          ELSE (SELECT id from subject where code = :subject_code) END,
-        :user_login
-
-    update: >-
-      UPDATE teacher_student_group tsg SET
-        name = :name,
-        subject_id = s.id
-      LEFT JOIN subject s ON s.code = :subject_code
-      WHERE tsg.id = :id
-
-    delete: >-
-      DELETE FROM teacher_student_group tsg
-      WHERE tsg.id = :id
-
-  teacherGroupMembership:
-    findAllStudentIdsByGroupId: >-
-      SELECT student_id
-      FROM teacher_student_group_membership
-      WHERE teacher_student_group_id = :group_id
-
-    create: >-
-      INSERT INTO teacher_student_group_membership (teacher_student_group_id, student_id)
-      VALUES (:group_id, :student_id)
-
-    delete: >-
-      DELETE FROM teacher_student_group_membership
-      WHERE group_id = :group_id
-        AND student_id = :student_id
-
-    deleteAllByGroupId: >-
-      DELETE FROM teacher_student_group_membership
-      WHERE group_id = :group_id
-
   student:
-    findAllIds: >-
-      SELECT e.student_id,
-      FROM exam e
-        JOIN school s ON s.id = e.school_id
-        JOIN school isch ON st.inferred_school_id = isch.id
-        JOIN asmt a ON a.id = e.asmt_id
-      WHERE ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
-
     findAll:
       SELECT
         st.id,
@@ -118,7 +48,7 @@ sql:
           )
         )
         AND (:school_id IS NULL OR e.school_id = :school_id)
-        AND (:student_ids IS NULL OR e.student_id in (:student_ids))
+        AND (:student_ids IS NULL OR e.student_id IN (:student_ids))
         AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
       GROUP BY e.student_id
       ORDER BY st.last_or_surname, st.first_name, st.ssid
