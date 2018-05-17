@@ -170,6 +170,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
         || (!event.target.parentElement.className.toString().includes('chart-series-toggle'))
       )
     ) {
+      this._selectedPaths.clear();
       this.chartView.performancePaths
         .forEach(perfPath => perfPath.fade = false);
     }
