@@ -282,7 +282,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
                 x: xScale(j),
                 y: yScale(scaleScore),
                 scaleScore: scaleScore,
-                standardError: standardError,
+                standardError: standardError || 0,
                 levelRange: findPerformanceLevelRange(levelRangesByYearGradeIndex, j, scaleScore)
               });
             }
