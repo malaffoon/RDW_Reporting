@@ -31,6 +31,24 @@ spring:
     initialize: false
     initialSize: 4
     maxActive: 10
+
+  writeable_datasource:
+    url: "\
+      jdbc:mysql://${spring.writeable_datasource.url-server:localhost:3306}/${spring.writeable_datasource.url-schema:reporting}\
+      ?useSSL=${spring.writeable_datasource.use-ssl:false}\
+      &useLegacyDatetimeCode=${spring.writeable_datasource.use-legacy-datetime-code:false}\
+      &characterEncoding=${spring.writeable_datasource.character-encoding:utf8}\
+      &rewriteBatchedStatements=${spring.writeable_datasource.rewrite-batched-statements:true}\
+      &useCompression=${spring.writeable_datasource.use-compression:true}\
+      "
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -63,6 +81,13 @@ artifacts:
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
+
+jdbc:
+  retry:
+    default:
+      max-attempts: 3
+      delay: 30
+      multiplier: 2
 
 reporting:
   school-year: 2018

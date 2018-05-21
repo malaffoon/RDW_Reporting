@@ -43,11 +43,12 @@ sql:
           OR EXISTS (
             SELECT 1 FROM student_group_membership sgm
               JOIN student_group sg ON sg.id = sgm.student_group_id
-            WHERE student_id = st.id
+            WHERE sgm.student_id = st.id
               AND sg.id = :group_id
           )
         )
         AND (:school_id IS NULL OR e.school_id = :school_id)
+        AND (:search_student_ids IS FALSE OR e.student_id IN (:student_ids))
         AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
       GROUP BY e.student_id
       ORDER BY st.last_or_surname, st.first_name, st.ssid
