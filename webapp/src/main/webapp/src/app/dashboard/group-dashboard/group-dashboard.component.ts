@@ -9,6 +9,8 @@ import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.m
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { AssessmentCardEvent } from './group-assessment-card.component';
 import { GroupReportDownloadComponent } from '../../report/group-report-download.component';
+import { byString } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
 
 @Component({
   selector: 'group-dashboard',
@@ -24,7 +26,7 @@ export class GroupDashboardComponent implements OnInit {
   currentGroup: Group;
   private _currentSubject: string;
   private selectedAssessments: MeasuredAssessment[] = [];
-  private _availableSubjects: Set<string>;
+  private _availableSubjects: Set<string> = new Set<string>();
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -46,7 +48,7 @@ export class GroupDashboardComponent implements OnInit {
       this.filterOptions = filterOptions;
       this.currentSchoolYear = Number.parseInt(schoolYear) || filterOptions.schoolYears[ 0 ];
       this.groupDashboardService.getAvailableMeasuredAssessments(group, this.currentSchoolYear).subscribe(measuredAssessments => {
-        this.measuredAssessments = measuredAssessments;
+        this.measuredAssessments = this.sortMeasuredAssessments(measuredAssessments);
         this.setAvailableSubjects(measuredAssessments);
       });
     });
@@ -60,6 +62,10 @@ export class GroupDashboardComponent implements OnInit {
     return this.selectedAssessments.length !== 0;
   }
 
+  sortMeasuredAssessments(measuredAssessments: MeasuredAssessment[]): MeasuredAssessment[] {
+    return measuredAssessments.sort(ordering(byString).on<MeasuredAssessment>(x => x.assessment.label).compare);
+  }
+
   updateRoute(changeSource: string): void {
     this.selectedAssessments = [];
     this.router.navigate([ 'group-dashboard', this.currentGroup.id, {
@@ -70,10 +76,10 @@ export class GroupDashboardComponent implements OnInit {
         this.groupDashboardService.getAvailableMeasuredAssessments(group, this.currentSchoolYear).subscribe(measuredAssessments => {
           this.setAvailableSubjects(measuredAssessments);
           if (!this.currentSubject) {
-            this.measuredAssessments = measuredAssessments;
+            this.measuredAssessments = this.sortMeasuredAssessments(measuredAssessments);
           } else {
-            this.measuredAssessments = measuredAssessments.filter(
-              measuredAssessment => measuredAssessment.assessment.subject === this._currentSubject);
+            this.measuredAssessments = this.sortMeasuredAssessments(measuredAssessments.filter(
+              measuredAssessment => measuredAssessment.assessment.subject === this._currentSubject));
           }
         });
       });

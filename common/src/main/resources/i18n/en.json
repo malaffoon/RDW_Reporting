@@ -9,6 +9,11 @@
           "assessment": "AssessmentName",
           "assessment-type": "AssessmentType",
           "attributes": "Attributes",
+          "cohort": {
+            "score": "CohortScaleScore",
+            "standard-deviation": "CohortScaleScoreStandardDeviation",
+            "student-count": "CohortStudentsTested"
+          },
           "dimension": "Subgroup",
           "dimension-code": "SubgroupValue",
           "grade": "TestGrade",
@@ -18,7 +23,8 @@
           "standard-deviation": "ScaleScoreStandardDeviation",
           "student-count": "StudentsTested",
           "subject": "Subject",
-          "year": "SchoolYear"
+          "year": "SchoolYear",
+          "claim": "Claim"
         }
       }
     },

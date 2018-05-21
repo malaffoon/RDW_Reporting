@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 import * as d3 from 'd3';
@@ -24,6 +24,7 @@ export interface ChartDisplay {
   readonly padding: Spacing;
   readonly domainMargin: Spacing;
   readonly tickPadding: number;
+  readonly totalLineColors: number;
 }
 
 /**
@@ -100,24 +101,25 @@ export class LongitudinalCohortChartComponent implements OnInit {
   @Input()
   areaPallet: string = 'pallet-b';
 
-  private previousPoint: { path: PerformancePath, point: PerformancePoint };
   private _initialized: boolean = false;
   private _chart: LongitudinalCohortChart;
   private _chartView: ChartView;
   private _display: ChartDisplay = {
-    outerWidth: 960,
+    outerWidth: 910,
     outerHeight: 480,
     margin: { top: 0, right: 0, bottom: 0, left: 0 },
-    padding: { top: 0, right: 200, bottom: 40, left: 40 },
+    padding: { top: 0, right: 150, bottom: 40, left: 40 },
     domainMargin: { top: 25, right: 0.25, bottom: 25, left: 0.25 },
-    tickPadding: 10
+    tickPadding: 10,
+    totalLineColors: 10
   };
 
   private _selectedPaths: Set<number> = new Set();
 
   constructor(private elementReference: ElementRef,
               private translate: TranslateService,
-              private schoolYearPipe: SchoolYearPipe) {
+              private schoolYearPipe: SchoolYearPipe,
+              private elementRef: ElementRef) {
   }
 
   get chart(): LongitudinalCohortChart {
@@ -157,29 +159,43 @@ export class LongitudinalCohortChartComponent implements OnInit {
     this._initialized = true;
   }
 
+  @HostListener('document:click', [ '$event' ])
+  handleClick(event) {
+    if (
+      (!this.elementRef.nativeElement.contains(event.target)
+        || event.target.tagName !== 'circle'
+      )
+      && (event.target.parentElement === undefined
+        || event.target.parentElement.className === undefined
+        || (!event.target.parentElement.className.toString().includes('chart-series-toggle'))
+      )
+    ) {
+      this._selectedPaths.clear();
+      this.chartView.performancePaths
+        .forEach(perfPath => perfPath.fade = false);
+    }
+  }
+
   onChartSeriesToggleClick(path: PerformancePath, pathIndex: number): void {
-    this._selectedPaths.has(pathIndex)
-      ? this._selectedPaths.delete(pathIndex)
-      : this._selectedPaths.add(pathIndex);
+    if (this._selectedPaths.has(pathIndex)) {
+      this._selectedPaths.delete(pathIndex);
+    } else if (!path.fade
+      && this._selectedPaths.size === 0
+      && this.chartView.performancePaths.filter(val => !val.fade).length === 1) {
+      path.fade = true;
+    } else {
+      this._selectedPaths.add(pathIndex);
+    }
 
     this._chartView.performancePaths
       .forEach((path, index) => path.fade = this._selectedPaths.size !== 0 && !this._selectedPaths.has(index));
-    this.previousPoint = null;
   }
 
   toggleFadeOnPoint(path: PerformancePath, point: PerformancePoint): void {
-    if (this.previousPoint && this.previousPoint.path === path) {
-      // do nothing...same line
-      return;
-    }
-    this.previousPoint = { path, point };
-    for (const performancePath of this.chartView.performancePaths) {
-      if (performancePath !== path) {
-        performancePath.fade = !performancePath.fade;
-      } else {
-        performancePath.fade = false;
-      }
-    }
+    path.fade = false;
+    this.chartView.performancePaths
+      .filter(perfPath => perfPath !== path)
+      .forEach(perfPath => perfPath.fade = true);
   }
 
   private render(): void {
@@ -249,12 +265,16 @@ export class LongitudinalCohortChartComponent implements OnInit {
     this._chartView = <ChartView>{
       performancePaths: this._chart.organizationPerformances
         .map((performance, i) => <PerformancePath>{
-          styles: `scale-score-line color-${i % 3} series-${i}`,
+          styles: `scale-score-line color-${i % this.display.totalLineColors} series-${i}`,
           fade: false,
-          pathData: d3line(performance.yearGradeScaleScores.map(({ scaleScore }, j) => <any>{
-            x: j,
-            y: scaleScore
-          })),
+          pathData: d3line(
+            performance.yearGradeScaleScores
+              .map(({ scaleScore }, j) => <any>{
+                  x: j,
+                  y: scaleScore
+                })
+              .filter(({ y }) => y != null)
+          ),
           points: performance.yearGradeScaleScores.reduce((points, { scaleScore, standardError }, j) => {
             if (scaleScore != null) {
               points.push(<PerformancePoint>{
@@ -262,7 +282,7 @@ export class LongitudinalCohortChartComponent implements OnInit {
                 x: xScale(j),
                 y: yScale(scaleScore),
                 scaleScore: scaleScore,
-                standardError: standardError,
+                standardError: standardError || 0,
                 levelRange: findPerformanceLevelRange(levelRangesByYearGradeIndex, j, scaleScore)
               });
             }
