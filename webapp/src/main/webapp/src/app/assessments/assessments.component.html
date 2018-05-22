@@ -187,8 +187,12 @@
 </ng-container>
 
 <!-- No Results Error -->
-<div class="alert alert-info" *ngIf="assessmentExams.length == 0 || hideAssessments">
+<div class="alert alert-info" *ngIf="(!loadingInitialResults && assessmentExams.length == 0) || hideAssessments">
   {{'common.assessments.no-results-found' | translate}}
+</div>
+
+<div class="alert alert-info" *ngIf="loadingInitialResults && assessmentExams.length == 0">
+  <i class="fa fa-spinner fa-pulse fa-2x"></i> {{'common.messages.loading' | translate}}
 </div>
 
 <div class="fab">
