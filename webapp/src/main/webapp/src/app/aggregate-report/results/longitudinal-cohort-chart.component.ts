@@ -105,8 +105,8 @@ export class LongitudinalCohortChartComponent implements OnInit {
   private _chart: LongitudinalCohortChart;
   private _chartView: ChartView;
   private _display: ChartDisplay = {
-    outerWidth: 910,
-    outerHeight: 480,
+    outerWidth: 840,
+    outerHeight: 470,
     margin: { top: 0, right: 0, bottom: 0, left: 0 },
     padding: { top: 0, right: 150, bottom: 40, left: 40 },
     domainMargin: { top: 25, right: 0.25, bottom: 25, left: 0.25 },
