@@ -317,17 +317,16 @@ sql:
              OR s.district_id IN (:district_embargo_admin_ids)
           )
 
-      # deps: st.id, a.subject_id, :group_id, :user_group_id
+      # dependencies: student st, asmt a, :group_id, :user_group_id
       schoolGradeOrGroupOrUserGroupFilters: >-
         (
           (
             :group_id IS NULL
             OR EXISTS(
-              SELECT 1 FROM student_group_membership sgm
-                JOIN student_group sg
-                  ON sg.id = sgm.student_group_id
-                JOIN user_student_group usg
-                  ON usg.student_group_id = sgm.student_group_id
+              SELECT 1
+              FROM student_group_membership sgm
+                JOIN student_group sg ON sg.id = sgm.student_group_id
+                JOIN user_student_group usg ON usg.student_group_id = sgm.student_group_id
               WHERE sgm.student_group_id = :group_id
                 AND sgm.student_id = st.id
                 AND usg.user_login = :user_login
@@ -339,8 +338,7 @@ sql:
             OR EXISTS(
               SELECT 1
               FROM teacher_student_group_membership tsgm
-                JOIN teacher_student_group tsg
-                  ON tsg.id = tsgm.teacher_student_group_id
+                JOIN teacher_student_group tsg ON tsg.id = tsgm.teacher_student_group_id
               WHERE tsgm.teacher_student_group_id = :user_group_id
                 AND tsgm.student_id = st.id
                 AND tsg.user_login = :user_login
