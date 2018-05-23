@@ -107,35 +107,6 @@ describe('AssessmentsComponent', () => {
 
     expect(actual.length).toBe(0);
   });
-
-  it('should cancel assessments in flight', () => {
-    let assessment = new Assessment();
-    assessment.id = 54;
-    assessment.selected = true;
-
-    component.showOnlyMostRecent = false;
-    component.availableAssessments = [ assessment ];
-
-    component.selectedAssessmentsChanged(assessment);
-
-    let actual = component.assessmentsLoading;
-    expect(actual.length).toBe(1);
-    expect(actual[ 0 ].assessment.id).toBe(assessment.id);
-    expect(component.assessmentExams.length).toBe(0);
-
-    assessment.selected = false;
-    component.selectedAssessmentsChanged(assessment);
-
-    actual = component.assessmentsLoading;
-    expect(actual.length).toBe(0);
-    expect(component.assessmentExams.length).toBe(0);
-
-    // Return mock api result, no one should be listening.
-    examObserver.next([ new Exam(), new Exam(), new Exam() ]);
-
-    expect(actual.length).toBe(0);
-    expect(component.assessmentExams.length).toBe(0);
-  });
 });
 
 

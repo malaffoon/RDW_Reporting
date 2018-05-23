@@ -16,6 +16,8 @@ import { share } from 'rxjs/operators';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Utils } from '../shared/support/support';
+import { Exam } from './model/exam.model';
+import { Observable } from 'rxjs/Observable';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -78,9 +80,10 @@ export class AssessmentsComponent implements OnInit {
 
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   availableAssessments: Assessment[] = [];
-  assessmentsLoading: any[] = [];
+  assessmentsLoading: Map<number, Assessment> = new Map<number, Assessment>();
   minimumItemDataYear: number;
   exportDisabled = true;
+  loadingInitialResults = true;
 
   get assessmentExams(): AssessmentExam[] {
     return this._assessmentExams;
@@ -188,17 +191,27 @@ export class AssessmentsComponent implements OnInit {
     const { assessmentIds } = this.route.snapshot.params;
     if (!assessmentIds) {
       this.showOnlyMostRecent = true;
+      this.loadingInitialResults = false;
     } else {
       this.assessmentProvider.getAvailableAssessments().subscribe((availableAssessment) => {
+        const loadingObservables: Observable<Exam[]>[] = [];
+
         const preselectedAssessments = availableAssessment.filter((assessment) => assessmentIds.split(',').indexOf(assessment.id.toString()) >= 0);
         preselectedAssessments.forEach((assessment) => {
           assessment.selected = true;
-          this.loadAssessmentExam(assessment);
+          loadingObservables.push(this.loadAssessmentExam(assessment));
         });
-        this._hasInitialAssessment = true;
-        this.updateFilterOptions();
-        this.showOnlyMostRecent = false;
-        this.expandAssessments = false;
+
+        forkJoin(loadingObservables).subscribe(args => {
+            args.forEach((exams, index) => this.processLoadAssessmentExam(preselectedAssessments[index].id, exams));
+
+            this._hasInitialAssessment = true;
+            this.updateFilterOptions();
+            this.showOnlyMostRecent = false;
+            this.expandAssessments = false;
+          this.loadingInitialResults = false;
+        });
+
       });
     }
   }
@@ -268,7 +281,8 @@ export class AssessmentsComponent implements OnInit {
 
   selectedAssessmentsChanged(assessment: Assessment) {
     if (assessment.selected) {
-      this.loadAssessmentExam(assessment);
+      this.loadAssessmentExam(assessment)
+        .subscribe(exams => this.processLoadAssessmentExam(assessment.id, exams));
     } else {
       this.removeUnselectedAssessmentExams();
     }
@@ -295,34 +309,27 @@ export class AssessmentsComponent implements OnInit {
     this.filterOptions.hasSummative = this.selectedAssessments.some(a => a.isSummative);
   }
 
-  private loadAssessmentExam(assessment: Assessment) {
-    const subscription = this.assessmentProvider.getExams(assessment.id)
-      .subscribe(exams => {
-        const assessmentLoaded = this.assessmentsLoading.splice(this.assessmentsLoading.findIndex(al => al.assessment.id == assessment.id), 1);
-        const assessmentExam = new AssessmentExam();
-        assessmentExam.assessment = assessmentLoaded[ 0 ].assessment;
-        assessmentExam.exams = exams;
+  private loadAssessmentExam(assessment: Assessment): Observable<Exam[]> {
+    this.assessmentsLoading.set(assessment.id, assessment);
 
-        this._assessmentExams.push(assessmentExam);
-        this._assessmentExams.sort(ordering(byGradeThenByName).on<AssessmentExam>(assessmentExam => assessmentExam.assessment).compare);
-      });
+    return this.assessmentProvider.getExams(assessment.id);
+  }
 
-    // Keeping track of this array allows us to unsubscribe from api calls in flight
-    // should the user decide to remove an assessment before it's finished loading.
-    this.assessmentsLoading.push({ assessment: assessment, subscription: subscription });
+  private processLoadAssessmentExam(assessmentId: number, exams: Exam[]) {
+    if (!this.assessmentsLoading.has(assessmentId)) return;
+
+    const assessmentExam = new AssessmentExam();
+    assessmentExam.assessment = this.assessmentsLoading.get(assessmentId);
+    assessmentExam.exams = exams;
+
+    this._assessmentExams.push(assessmentExam);
+    this._assessmentExams.sort(ordering(byGradeThenByName).on<AssessmentExam>(assessmentExam => assessmentExam.assessment).compare);
+
+    this.assessmentsLoading.delete(assessmentId);
   }
 
   private removeUnselectedAssessmentExams() {
     this._assessmentExams = this._assessmentExams.filter(loaded => this.selectedAssessments.some(selected => loaded.assessment.id == selected.id));
-
-    const assessmentsLoading = this.assessmentsLoading.filter(loading => !this.selectedAssessments.some(selected => loading.assessment.id == selected.id));
-
-    // cancel api calls in flight.
-    for (const loading of assessmentsLoading) {
-      loading.subscription.unsubscribe();
-    }
-
-    this.assessmentsLoading = this.assessmentsLoading.filter(loading => this.selectedAssessments.some(selected => loading.assessment.id == selected.id));
   }
 
   private getAvailableAssessments() {
