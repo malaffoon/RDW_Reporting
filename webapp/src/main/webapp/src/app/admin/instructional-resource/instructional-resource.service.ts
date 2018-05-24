@@ -46,7 +46,7 @@ export class InstructionalResourceService {
    * @returns {Observable<InstructionalResource>} The updated instructional resource
    */
   update(resource: InstructionalResource): Observable<InstructionalResource> {
-    return this.dataService.put(`${ServiceRoute}/instructional-resources`, resource).pipe(
+    return this.dataService.put(`${ServiceRoute}/instructional-resources`, this.toServerFormat(resource)).pipe(
       map(InstructionalResourceService.mapResourceFromApi)
     );
   }
@@ -58,11 +58,16 @@ export class InstructionalResourceService {
    * @returns {Observable<any>} Empty if the action was successful
    */
   delete(resource: InstructionalResource): Observable<any> {
-    return this.dataService.delete(`${ServiceRoute}/instructional-resources`, { params: <any>resource });
+    return this.dataService.delete(`${ServiceRoute}/instructional-resources`, { params: <any>this.toServerFormat(resource) });
   }
 
   private static mapResourcesFromApi(serverResources) {
     return serverResources.map(serverResource => InstructionalResourceService.mapResourceFromApi(serverResource));
+  }
+
+  private toServerFormat(resource: InstructionalResource): InstructionalResource {
+    resource.assessmentType = AssessmentType[resource.assessmentType];
+    return resource;
   }
 
   private static mapResourceFromApi(serverResource): InstructionalResource {
@@ -72,9 +77,15 @@ export class InstructionalResourceService {
     resource.organizationType = serverResource.organizationType;
     resource.assessmentLabel = serverResource.assessmentLabel;
     resource.assessmentName = serverResource.assessmentName;
-    resource.assessmentType = serverResource.assessmentType;
+    resource.assessmentType = serverResource.assessmentTypeCode;
     resource.resource = serverResource.resource;
     resource.performanceLevel = serverResource.performanceLevel;
     return resource;
   }
+}
+
+enum AssessmentType {
+  iab = 'IAB',
+  ica = 'ICA',
+  sum = 'SUMMATIVE'
 }
