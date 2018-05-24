@@ -25,11 +25,11 @@
             </div>
             <div th:if="${studentCompositeReport.summativeMath != null}"
                  th:with="report=${studentCompositeReport.summativeMath}">
-                <div th:replace="ica-body::body"></div>
+                <div th:replace="sum-body::body"></div>
             </div>
             <div th:if="${studentCompositeReport.summativeEla != null}"
                  th:with="report=${studentCompositeReport.summativeEla}">
-                <div th:replace="ica-body::body"></div>
+                <div th:replace="sum-body::body"></div>
             </div>
         </div>
     </body>
