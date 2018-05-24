@@ -1,0 +1,45 @@
+<ng-container *ngIf="loading; else loaded">
+  <spinner></spinner>
+</ng-container>
+
+<ng-template #loaded>
+
+  <page-heading>
+    <ng-template #heading>
+      <h2>{{'user-group.heading' | translate}}</h2>
+    </ng-template>
+    <ng-template #content>
+      <button class="btn btn-primary btn-sm"
+              (click)="onSaveButtonClick()">{{'common.action.save' | translate}}</button>
+    </ng-template>
+  </page-heading>
+
+  <div class="well">
+
+    <form>
+      <div class="form-group">
+        <label class="">
+          Group Name
+          <input type="text"
+                 class="form-control"
+                 name="name"
+                 [(ngModel)]="group.name">
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          Subjects
+
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          Students
+          ...list
+        </label>
+      </div>
+
+    </form>
+
+  </div>
+</ng-template>

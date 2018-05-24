@@ -1,0 +1,39 @@
+<page-heading>
+  <ng-template #heading>
+    <h2>{{'user-groups.heading' | translate}}</h2>
+  </ng-template>
+  <ng-template #content>
+    <button class="btn btn-primary btn-sm"
+            (click)="onCreateGroupButtonClick()"><i class="fa fa-plus fa-sm"></i> {{'common.action.create' | translate}}</button>
+  </ng-template>
+</page-heading>
+
+<ng-container *ngIf="!groups; else loaded">
+  <spinner></spinner>
+</ng-container>
+
+<ng-template #loaded>
+
+  <div class="well wide-content-container">
+    <ng-container *ngIf="groups.length === 0; else hasGroups">
+      {{'user-groups.no-groups' | translate}}
+    </ng-container>
+    <ng-template #hasGroups>
+      <div class="table-search-form-container">
+        <label class="sr-only">{{'user-groups.search-input.placeholder' | translate}}
+          <input [(ngModel)]="search"
+                 class="search form-control"
+                 type="text"
+                 autocomplete="off"
+                 placeholder="{{'user-groups.search-input.placeholder' | translate}}"
+                 (ngModelChange)="onSearchChange()">
+        </label>
+      </div>
+      <div class="table-list-container">
+        <user-groups-table [groups]="filteredGroups"></user-groups-table>
+      </div>
+    </ng-template>
+
+  </div>
+
+</ng-template>

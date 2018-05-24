@@ -6,12 +6,25 @@
   <div class="flex-child grow">
     <label>{{'groups.search-label' | translate }}</label>
 
-    <a *ngIf="defaultGroup" 
-       routerLink="/group-dashboard/{{ defaultGroup.id }}"
-       title="{{ 'groups.view-dashboard' | translate }}"
-       class="btn btn-xs btn-default pull-right">
-      <i class="fa fa-bars"></i> {{ 'groups.view-dashboard' | translate }}
-    </a>
+    <ul class="list-unstyled list-inline pull-right">
+      <li>
+        <a *ngIf="defaultGroup"
+           routerLink="/group-dashboard/{{ defaultGroup.id }}"
+           title="{{ 'groups.view-dashboard' | translate }}"
+           class="btn btn-xs btn-default">
+          <i class="fa fa-bars"></i> {{'groups.view-dashboard' | translate}}
+        </a>
+      </li>
+      <li>
+        <a *hasPermission="'GROUP_PII_READ'"
+           routerLink="/userGroups/new"
+           title="{{ 'common.action.create' | translate }}"
+           class="btn btn-xs btn-success">
+          <i class="fa fa-plus"></i> {{'common.action.create' | translate}}
+        </a>
+      </li>
+    </ul>
+
   </div>
 
   <!-- My Groups Search Input -->

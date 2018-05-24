@@ -39,6 +39,8 @@ import { AssessmentDefinitionResolve } from './aggregate-report/assessment/asses
 import { AggregateReportFormSettingsResolve } from './aggregate-report/aggregate-report-form-settings.resolve';
 import { LongitudinalPlaygroundComponent } from './aggregate-report/results/longitudinal-playground.component';
 import { GroupDashboardComponent } from './dashboard/group-dashboard/group-dashboard.component';
+import { UserGroupComponent } from './user-group/user-group.component';
+import { DefaultUserGroupResolve, UserGroupResolve } from './user-group/user-group.resolve';
 
 const adminRoute = {
   path: '',
@@ -182,6 +184,33 @@ const studentTestHistoryChildRoute = {
   ]
 };
 
+const UserGroupRoutes = {
+  path: 'userGroups',
+  data: {
+    breadcrumb: { translate: 'user-groups.heading' },
+    permissions: [ 'GROUP_PII_READ' ]
+  },
+  canActivate: [ RoutingAuthorizationCanActivate ],
+  children: [
+    {
+      path: 'new',
+      pathMatch: 'full',
+      component: UserGroupComponent,
+      resolve: {
+        group: DefaultUserGroupResolve
+      }
+    },
+    {
+      path: ':groupId',
+      pathMatch: 'full',
+      component: UserGroupComponent,
+      resolve: {
+        group: UserGroupResolve
+      }
+    }
+  ]
+};
+
 export const routes: Routes = [
   {
     path: 'home',
@@ -201,6 +230,7 @@ export const routes: Routes = [
         component: HomeComponent
       },
       adminRoute,
+      UserGroupRoutes,
       {
         path: 'groups/:groupId',
         data: {
