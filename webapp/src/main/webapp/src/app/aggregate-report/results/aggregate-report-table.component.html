@@ -61,10 +61,10 @@
              }">
 
           <div *ngSwitchCase="'organization'">
-            <span class="label mr-xs"
-                  [ngClass]="getOrganizationTypeColor(rowData.organization.type)">
-              {{('common.organization.type.' + rowData.organization.type) | translate}}
-            </span>
+                <span class="label mr-xs"
+                      [ngClass]="getOrganizationTypeColor(rowData.organization.type)">
+                  {{('common.organization.type.' + rowData.organization.type) | translate}}
+                </span>
             {{rowData.organization.name}}
           </div>
 
@@ -101,19 +101,20 @@
           <div *ngSwitchCase="'achievementComparison'">
             <performance-level-distribution-chart
               [percentages]="rowData.performanceLevelByDisplayTypes.Separate.Percent"
-              [cutPoint]="table.assessmentDefinition.performanceLevelGroupingCutPoint"
-              [assessmentTypeCode]="table.assessmentDefinition.typeCode"
+              [cutPoint]="cutPoint"
+              [performanceLevels]="rowData.claimCode ? 3 : null"
+              [assessmentTypeCode]="assessmentTypeCode"
               [displayType]="performanceLevelDisplayType"
-              [center]="table.assessmentDefinition.performanceLevelGroupingCutPoint != null"></performance-level-distribution-chart>
+              [center]="center"></performance-level-distribution-chart>
           </div>
 
           <div *ngSwitchCase="'avgScaleScore'"
                class="text-center">
             <span *ngIf="!rowData.studentsTested">-</span>
             <span *ngIf="rowData.studentsTested">
-              <scale-score [score]="rowData.avgScaleScore"
-                           [standardError]="rowData.avgStdErr"></scale-score>
-            </span>
+                  <scale-score [score]="rowData.avgScaleScore"
+                               [standardError]="rowData.avgStdErr"></scale-score>
+                </span>
           </div>
 
           <div *ngSwitchCase="'performanceLevel'"
@@ -127,7 +128,6 @@
               }}
             </span>
           </div>
-
         </div>
       </td>
     </tr>

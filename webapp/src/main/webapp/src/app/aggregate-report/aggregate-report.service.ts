@@ -1,14 +1,15 @@
-import {Injectable} from "@angular/core";
-import {DataService} from "../shared/data/data.service";
-import {Observable} from "rxjs/Observable";
-import {AggregateServiceRoute} from "../shared/service-route";
-import {ReportService} from "../report/report.service";
-import {Report} from "../report/report.model";
-import {AggregateReportQuery, AggregateReportRequest} from "../report/aggregate-report-request";
-import {AggregateReportRow} from "../report/aggregate-report";
-import {AssessmentService} from "./assessment/assessment.service";
-import {map} from "rxjs/operators";
-import {Assessment} from "./assessment/assessment";
+import { Injectable } from '@angular/core';
+import { DataService } from '../shared/data/data.service';
+import { Observable } from 'rxjs/Observable';
+import { AggregateServiceRoute } from '../shared/service-route';
+import { ReportService } from '../report/report.service';
+import { Report } from '../report/report.model';
+import { AggregateReportQuery, AggregateReportRequest } from '../report/aggregate-report-request';
+import { AggregateReportRow } from '../report/aggregate-report';
+import { AssessmentService } from './assessment/assessment.service';
+import { map } from 'rxjs/operators';
+import { Assessment } from './assessment/assessment';
+import { AssessmentDefinition } from './assessment/assessment-definition';
 
 export interface BasicReport {
   readonly rows: AggregateReportRow[];
@@ -17,6 +18,8 @@ export interface BasicReport {
 export interface LongitudinalReport extends BasicReport {
   readonly assessments: Assessment[];
 }
+
+const DefaultReportType = 'GeneralPopulation';
 
 /**
  * Responsible for interfacing with aggregate report server
@@ -37,6 +40,20 @@ export class AggregateReportService {
    */
   getEstimatedRowCount(query: AggregateReportQuery): Observable<number> {
     return this.dataService.post(`${AggregateServiceRoute}/aggregate/estimatedRowCount`, query);
+  }
+
+  /**
+   * Gets the effective report type
+   *
+   * @param {"GeneralPopulation" | "LongitudinalCohort" | "Claim"} reportType the report type
+   * @param {AssessmentDefinition} definition the assessment definition
+   * @returns {"GeneralPopulation" | "LongitudinalCohort" | "Claim"}
+   */
+  getEffectiveReportType(reportType: 'GeneralPopulation' | 'LongitudinalCohort' | 'Claim', definition: AssessmentDefinition):
+    'GeneralPopulation' | 'LongitudinalCohort' | 'Claim' {
+    return definition.aggregateReportTypes.includes(reportType)
+      ? reportType
+      : DefaultReportType;
   }
 
   /**

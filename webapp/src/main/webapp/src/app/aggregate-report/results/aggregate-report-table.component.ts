@@ -15,6 +15,7 @@ import { SortEvent } from 'primeng/api';
 import * as _ from 'lodash';
 import { organizationOrdering, subgroupOrdering } from '../support';
 import { TranslateService } from '@ngx-translate/core';
+import { AggregateReportService } from '../aggregate-report.service';
 
 export const SupportedRowCount = 10000;
 export const DefaultRowsPerPageOptions = [ 100, 500, 1000 ];
@@ -72,10 +73,14 @@ export class AggregateReportTableComponent implements OnInit {
   private _orderingByColumnField: { [ key: string ]: Ordering<AggregateReportItem> } = {};
   private _valueDisplayType: string = ValueDisplayTypes.Percent;
   private _performanceLevelDisplayType: string = PerformanceLevelDisplayTypes.Separate;
+  private _assessmentTypeCode: string;
+  private _cutPoint: number;
+  private _center: boolean;
 
   constructor(public colorService: ColorService,
               private translate: TranslateService,
-              private exportService: AggregateReportTableExportService) {
+              private exportService: AggregateReportTableExportService,
+              private reportService: AggregateReportService) {
   }
 
   ngOnInit(): void {
@@ -96,6 +101,18 @@ export class AggregateReportTableComponent implements OnInit {
     return this._performanceLevelDisplayType;
   }
 
+  get cutPoint(): number {
+    return this.table.assessmentDefinition.performanceLevelGroupingCutPoint;
+  }
+
+  get assessmentTypeCode(): string {
+    return this.table.assessmentDefinition.typeCode;
+  }
+
+  get center(): boolean {
+    return this.table.assessmentDefinition.performanceLevelGroupingCutPoint != null;
+  }
+
   @Input()
   set performanceLevelDisplayType(value: string) {
     this._performanceLevelDisplayType = PerformanceLevelDisplayTypes.valueOf(value);
@@ -111,7 +128,8 @@ export class AggregateReportTableComponent implements OnInit {
       this._table = {
         rows: value.rows ? value.rows.concat() : [],
         assessmentDefinition: value.assessmentDefinition,
-        options: value.options
+        options: value.options,
+        reportType: value.reportType || 'GeneralPopulation'
       };
       this.buildAndRender(this._table);
     }
@@ -234,8 +252,8 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   public getOrganizationTypeColor(type: OrganizationType): string {
-    let i: number = 0;
-    for (let value in OrganizationType) {
+    let i = 0;
+    for (const value in OrganizationType) {
       if (value === type) {
         return this.colorService.getColor(i);
       }
@@ -252,7 +270,9 @@ export class AggregateReportTableComponent implements OnInit {
     return this.translate.instant(this.getClaimCodeTranslationKey(row));
   }
 
-  private buildAndRender({ rows, options, assessmentDefinition }: AggregateReportTable): void {
+  private buildAndRender({ rows, options, assessmentDefinition, reportType }: AggregateReportTable): void {
+
+    const hasClaimCodes = reportType === 'Claim';
 
     // configure row sorting
     const assessmentGradeOrdering = ordering(ranking(options.assessmentGrades))
@@ -263,7 +283,18 @@ export class AggregateReportTableComponent implements OnInit {
     this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
     this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
     this._orderingByColumnField[ 'subgroup.id' ] = subgroupOrdering(item => item.subgroup, options);
-    this._orderingByColumnField[ 'claimCode' ] = ClaimOrdering;
+    if (hasClaimCodes) {
+      this._orderingByColumnField[ 'claimCode' ] = ClaimOrdering;
+    }
+
+    const IdentityColumns: Column[] = [
+      new Column({ id: 'organization', field: 'organization.name' }),
+      new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
+      new Column({ id: 'assessmentLabel' }),
+      new Column({ id: 'schoolYear' }),
+      new Column({ id: 'dimension', field: 'subgroup.id' }),
+      ...hasClaimCodes ? [ new Column({ id: 'claim', field: 'claimCode' }) ] : []
+    ].filter(col => col !== undefined);
 
     // create columns
     const performanceLevelsByDisplayType = {
@@ -274,23 +305,14 @@ export class AggregateReportTableComponent implements OnInit {
       ]
     };
 
-    const IdentityColumns: Column[] = [
-      new Column({ id: 'organization', field: 'organization.name' }),
-      new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
-      new Column({ id: 'assessmentLabel' }),
-      new Column({ id: 'schoolYear' }),
-      new Column({ id: 'dimension', field: 'subgroup.id' }),
-      new Column({ id: 'claim', field: 'claimCode' })
-    ];
-
     this.columns = [
       ...this.identityColumns
         .map(columnId => IdentityColumns.find(column => column.id === columnId)),
       new Column({ id: 'studentsTested' }),
       new Column({ id: 'achievementComparison', sortable: false }),
-      new Column({ id: 'avgScaleScore' }),
+      ...hasClaimCodes ? [] : [ new Column({ id: 'avgScaleScore' }) ],
       ...this.createPerformanceLevelColumns(performanceLevelsByDisplayType, assessmentDefinition)
-    ];
+    ].filter(col => col !== undefined);
 
     this.calculateTreeColumns();
   }
@@ -420,7 +442,7 @@ export class AggregateReportTableComponent implements OnInit {
             index: index,
             field: `performanceLevelByDisplayTypes.${displayType}.${this.valueDisplayType}.${index}`,
             headerKey: this.getPerformanceLevelColumnHeaderTranslationCode(displayType, level, index),
-            headerColor: this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(assessmentDefinition.typeCode, level)
+            headerColor: this.colorService.getPerformanceLevelColorsByNumberOfPerformanceLevels(assessmentDefinition.performanceLevelCount, level)
           }));
         });
       });
@@ -450,6 +472,7 @@ export interface AggregateReportTable {
   readonly rows: AggregateReportItem[];
   readonly assessmentDefinition: AssessmentDefinition;
   readonly options: AggregateReportOptions;
+  readonly reportType: string;
 }
 
 class Column {

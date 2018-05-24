@@ -5,6 +5,8 @@ import { of } from 'rxjs/observable/of';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { Observable } from 'rxjs/Observable';
 import Spy = jasmine.Spy;
+import { DefinitionKey } from './assessment/assessment-definition.service';
+import { AssessmentDefinition } from './assessment/assessment-definition';
 
 describe('AggregateReportOptionsMapper', () => {
 
@@ -28,7 +30,7 @@ describe('AggregateReportOptionsMapper', () => {
       'createOptionMapper'
     ]);
     assessmentDefinitionService = jasmine.createSpyObj('AssessmentDefinitionService', [
-      'getDefinitionsByAssessmentTypeCode'
+      'get'
     ]);
     applicationSettingService = new MockApplicationSettingsService();
     fixture = new AggregateReportOptionsMapper(
@@ -44,9 +46,8 @@ describe('AggregateReportOptionsMapper', () => {
 
     const reportName = 'Report Name';
     (translateService.instant as Spy).and.callFake(() => reportName);
-    (assessmentDefinitionService.getDefinitionsByAssessmentTypeCode as Spy).and.callFake(() => of(
-      new Map([ [ '1', {
-        typeCode: '1',
+    (assessmentDefinitionService.get as Spy).and.callFake(() => <AssessmentDefinition>{
+        typeCode: 'iab',
         interim: true,
         performanceLevels: [],
         performanceLevelCount: 0,
@@ -54,9 +55,9 @@ describe('AggregateReportOptionsMapper', () => {
         performanceLevelGroupingCutPoint: 0,
         aggregateReportIdentityColumns: [ 'columnA' ],
         aggregateReportStateResultsEnabled: true,
-        aggregateReportTypes: ['LongitudinalCohort', 'Claim']
-      } ] ])
-    ));
+        aggregateReportTypes: [ 'LongitudinalCohort', 'Claim' ]
+      }
+    );
 
     const options: AggregateReportOptions = {
       assessmentGrades: [ '1', '2' ],

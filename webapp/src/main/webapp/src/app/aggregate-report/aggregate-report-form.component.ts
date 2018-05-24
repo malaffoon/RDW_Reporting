@@ -32,7 +32,7 @@ import { SubgroupItem } from './subgroup/subgroup-item';
 import { Utils } from '../shared/support/support';
 import { Claim } from './aggregate-report-options.service';
 import { Option as SbCheckboxGroupOption } from '../shared/form/sb-checkbox-group.component';
-import { AssessmentDefinitionService } from './assessment/assessment-definition.service';
+import { AssessmentDefinitionService, DefinitionKey } from './assessment/assessment-definition.service';
 
 const OrganizationComparator = (a: Organization, b: Organization) => a.name.localeCompare(b.name);
 
@@ -87,11 +87,6 @@ export class AggregateReportFormComponent {
   aggregateReportOptions: AggregateReportOptions;
 
   /**
-   * Assessment definitions for use in generating sample data
-   */
-  assessmentDefinitionsByTypeCode: Map<string, AssessmentDefinition>;
-
-  /**
    * Estimated row count based on the given report form settings
    */
   estimatedRowCount: number;
@@ -144,13 +139,12 @@ export class AggregateReportFormComponent {
               private requestMapper: AggregateReportRequestMapper,
               private notificationService: NotificationService,
               private organizationService: AggregateReportOrganizationService,
+              private assessmentDefinitionService: AssessmentDefinitionService,
               private reportService: AggregateReportService,
               private tableDataService: AggregateReportTableDataService,
               private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
-              private subgroupMapper: SubgroupMapper,
-              private assessmentDefinitionService: AssessmentDefinitionService) {
+              private subgroupMapper: SubgroupMapper) {
 
-    this.assessmentDefinitionsByTypeCode = route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
 
@@ -220,7 +214,7 @@ export class AggregateReportFormComponent {
   }
 
   get effectiveReportType() {
-    return this.assessmentDefinitionService.getEffectiveReportType(this.settings.reportType, this.currentAssessmentDefinition);
+    return this.reportService.getEffectiveReportType(this.settings.reportType, this.currentAssessmentDefinition);
   }
 
   private updateValidators(): void {
@@ -335,7 +329,7 @@ export class AggregateReportFormComponent {
   }
 
   get currentAssessmentDefinition(): AssessmentDefinition {
-    return this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType);
+    return this.assessmentDefinitionService.get(this.settings.assessmentType, this.settings.reportType);
   }
 
   get estimatedRowCountIsLarge(): boolean {
@@ -529,7 +523,8 @@ export class AggregateReportFormComponent {
         this.currentAssessmentDefinition,
         this.settings,
         this.aggregateReportOptions
-      )
+      ),
+      reportType: this.settings.reportType
     };
   }
 
