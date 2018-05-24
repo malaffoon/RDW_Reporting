@@ -22,9 +22,12 @@
           "score": "ScaleScore",
           "standard-deviation": "ScaleScoreStandardDeviation",
           "student-count": "StudentsTested",
+          "student-relative-residual-scores-level": "StudentRelativeResidualScoresLevel",
+          "standard-met-relative-residual-level": "StandardMetRelativeResidualLevel",
           "subject": "Subject",
           "year": "SchoolYear",
-          "claim": "Claim"
+          "claim": "Claim",
+          "target": "Target"
         }
       }
     },
