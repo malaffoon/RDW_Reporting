@@ -267,7 +267,9 @@ def taskMap = [
         "cleanWarehouse_test": "Cleans the schemas that integration tests depend on",
         "migrateWarehouse_test": "Migrates the schemas that integration tests depend on",
         "cleanReporting_olap_test": "Cleans the schemas that redshift tests depend on",
-        "migrateReporting_olap_test": "Migrates the schemas that redshift tests depend on"
+        "migrateReporting_olap_test": "Migrates the schemas that redshift tests depend on",
+        "cleanAll_test": "Cleans the schemas that integration tests depend on",
+        "migrateAll_test": "Migrates the schemas that integration tests depend on",
 ]
 
 taskMap.keySet().each { key ->
