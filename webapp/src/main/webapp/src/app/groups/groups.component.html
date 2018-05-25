@@ -17,7 +17,7 @@
       </li>
       <li>
         <a *hasPermission="'GROUP_PII_READ'"
-           routerLink="/userGroups/new"
+           routerLink="/userGroups"
            title="{{ 'common.action.create' | translate }}"
            class="btn btn-xs btn-success">
           <i class="fa fa-plus"></i> {{'common.action.create' | translate}}
@@ -74,10 +74,20 @@
 
             <div *ngSwitchCase="'group'"
                  class="label-max-width">
-              <a routerLink="/groups/{{group.id}}"
+              <a *ngIf="!group.userCreated"
+                 routerLink="/groups/{{group.id}}"
                  title="{{group.name}}">
                 {{group.name}}
               </a>
+              <span *ngIf="group.userCreated">
+                <a routerLink="/teacherGroups/{{group.id}}"
+                   title="{{group.name}}">
+                  {{group.name}}
+                </a>
+                <a routerLink="userGroups/{{group.id}}">
+                  <i class="fa fa-pencil"></i>
+                </a>
+              </span>
             </div>
 
             <ng-container *ngSwitchCase="'school'">

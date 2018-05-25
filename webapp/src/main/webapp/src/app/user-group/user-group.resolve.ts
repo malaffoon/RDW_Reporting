@@ -13,19 +13,9 @@ export class UserGroupResolve implements Resolve<UserGroup> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<UserGroup> {
     const { groupId } = route.params;
-    return this.service.getGroup(groupId);
-  }
-
-}
-
-@Injectable()
-export class DefaultUserGroupResolve implements Resolve<UserGroup> {
-
-  constructor(private service: UserGroupService) {
-  }
-
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<UserGroup> {
-    return of(this.service.createDefaultGroup());
+    return groupId
+      ? this.service.getGroup(groupId)
+      : of(null);
   }
 
 }

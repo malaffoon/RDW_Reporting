@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ReportingServiceRoute } from '../shared/service-route';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Student, UserGroup, UserGroupRequest } from './user-group';
 import { Observable } from 'rxjs/Observable';
 import { DataService } from '../shared/data/data.service';
-import { of } from 'rxjs/observable/of';
 import { TranslateService } from '@ngx-translate/core';
-import { _throw } from 'rxjs/observable/throw';
+import { Utils } from '../shared/support/support';
 
 @Injectable()
 export class UserGroupService {
@@ -21,29 +20,10 @@ export class UserGroupService {
     );
   }
 
-  // getGroupOrDefaultGroup(groupId: number): Observable<UserGroup> {
-  //   return this.getGroup(groupId).pipe(
-  //     catchError(response => {
-  //       if (response.status === 404) {
-  //         return of(this.createDefaultGroup());
-  //       }
-  //       return _throw(response);
-  //     })
-  //   );
-  // }
-
   getGroup(groupId: number): Observable<UserGroup> {
     return this.dataService.get(`${ReportingServiceRoute}/userGroups/${groupId}`).pipe(
       map(serverGroup => this.toUserGroup(serverGroup))
     );
-  }
-
-  createDefaultGroup(): UserGroup {
-    return {
-      name: this.translate.instant('user-group.default-name'),
-      subjectCodes: [],
-      students: []
-    };
   }
 
   saveGroup(group: UserGroup): Observable<UserGroup> {
@@ -53,7 +33,16 @@ export class UserGroupService {
     return this.updateGroup(group).pipe(map(() => group));
   }
 
+  deleteGroup(group: UserGroup): Observable<void> {
+    return this.dataService.delete(`${ReportingServiceRoute}/userGroups/${group.id}`);
+  }
+
   private createGroup(group: UserGroup): Observable<UserGroup> {
+    if (Utils.isNullOrEmpty(group.name)) {
+      group = Object.assign(group, {
+        name: this.translate.instant('user-group.default-name')
+      });
+    }
     return this.dataService.post(`${ReportingServiceRoute}/userGroups`, this.toUserGroupRequest(group)).pipe(
       map(serverGroup => this.toUserGroup(serverGroup))
     );
@@ -61,10 +50,6 @@ export class UserGroupService {
 
   private updateGroup(group: UserGroup): Observable<UserGroup> {
     return this.dataService.put(`${ReportingServiceRoute}/userGroups`, this.toUserGroupRequest(group));
-  }
-
-  deleteGroup(groupId: number): Observable<void> {
-    return this.dataService.delete(`${ReportingServiceRoute}/userGroups/${groupId}`);
   }
 
   private toUserGroupRequest(group: UserGroup): UserGroupRequest {

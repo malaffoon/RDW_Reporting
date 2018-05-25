@@ -228,6 +228,7 @@
       "expand": "Expand",
       "go-home": "Go Home",
       "hide": "Hide",
+      "save": "Save",
       "search": "Search",
       "select": "Select",
       "show": "Show",
@@ -1313,6 +1314,26 @@
     "error": "Unable to modify instructional resource.",
     "link": "Edit",
     "title": "Edit Instructional Resource"
+  },
+  "user-group": {
+    "new-heading": "Create Group",
+    "edit-heading": "Edit Group",
+    "default-name": "My Group",
+    "form": {
+      "field": {
+        "name": {
+          "label": "Group Name"
+        },
+        "subjects": {
+          "label": "Subjects"
+        },
+        "students": {
+          "label": "Students"
+        }
+      }
+    },
+    "save-error": "Unable to save this group. Please try again later.",
+    "delete-error": "Unable to delete this group. Please try again later."
   },
   "writing-trait-scores": {
     "aggregate-header": "Points Breakdown"

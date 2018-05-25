@@ -1,4 +1,4 @@
-<ng-container *ngIf="loading; else loaded">
+<ng-container *ngIf="!initialized; else loaded">
   <spinner></spinner>
 </ng-container>
 
@@ -6,37 +6,63 @@
 
   <page-heading>
     <ng-template #heading>
-      <h2>{{'user-group.heading' | translate}}</h2>
+      <h2 *ngIf="group.id == null">{{'user-group.new-heading' | translate}}</h2>
+      <h2 *ngIf="group.id != null">{{originalGroup.name}}</h2>
     </ng-template>
     <ng-template #content>
-      <button class="btn btn-primary btn-sm"
-              (click)="onSaveButtonClick()">{{'common.action.save' | translate}}</button>
+      <ul class="list-unstyled list-inline">
+        <li *ngIf="group.id != null">
+          <button type="button"
+                  class="btn btn-danger btn-sm"
+                  [disabled]="deleteButtonDisabled"
+                  (click)="onDeleteButtonClick()">{{'common.action.delete' | translate}}</button>
+        </li>
+        <li>
+          <button type="submit"
+                  class="btn btn-primary btn-sm"
+                  [disabled]="saveButtonDisabled"
+                  (click)="onSaveButtonClick()">{{'common.action.save' | translate}}</button>
+        </li>
+        <li>
+          <button type="button"
+                  class="btn btn-default btn-sm"
+                  (click)="onCancelButtonClick()">{{'common.action.cancel' | translate}}</button>
+        </li>
+      </ul>
     </ng-template>
   </page-heading>
 
   <div class="well">
 
-    <form>
-      <div class="form-group">
-        <label class="">
-          Group Name
-          <input type="text"
-                 class="form-control"
-                 name="name"
-                 [(ngModel)]="group.name">
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Subjects
+    <form [formGroup]="formGroup">
 
-        </label>
+      <div class="form-group">
+        <label for="name">{{'user-group.form.field.name.label' | translate}}</label>
+        <input type="text"
+               class="form-control"
+               id="name"
+               name="name"
+               formControlName="name"
+               placeholder="{{'user-group.default-name' | translate}}"
+               [(ngModel)]="group.name"
+               autocomplete="off"
+               required
+               minlength="1"
+               maxlength="255">
       </div>
       <div class="form-group">
-        <label>
-          Students
-          ...list
-        </label>
+        <label for="subjects">{{'user-group.form.field.subjects.label' | translate}}</label>
+        <sb-button-group id="subjects"
+                         name="subjects"
+                         [options]="formOptions.subjects"
+                         [(ngModel)]="group.subjectCodes"
+                         [ngModelOptions]="{standalone: true}"></sb-button-group>
+
+      </div>
+      <div class="form-group">
+        <label>{{'user-group.form.field.students.label' | translate}}</label>
+
+
       </div>
 
     </form>
