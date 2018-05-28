@@ -19,7 +19,7 @@
         <a *hasPermission="'GROUP_PII_READ'"
            routerLink="/userGroups"
            title="{{ 'common.action.create' | translate }}"
-           class="btn btn-xs btn-success">
+           class="btn btn-xs btn-primary">
           <i class="fa fa-plus"></i> {{'common.action.create' | translate}}
         </a>
       </li>
@@ -80,12 +80,12 @@
                 {{group.name}}
               </a>
               <span *ngIf="group.userCreated">
+                <a routerLink="userGroups/{{group.id}}">
+                  <i class="fa fa-pencil"></i>
+                </a>
                 <a routerLink="/teacherGroups/{{group.id}}"
                    title="{{group.name}}">
                   {{group.name}}
-                </a>
-                <a routerLink="userGroups/{{group.id}}">
-                  <i class="fa fa-pencil"></i>
                 </a>
               </span>
             </div>

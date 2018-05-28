@@ -7,7 +7,7 @@
   <page-heading>
     <ng-template #heading>
       <h2 *ngIf="group.id == null">{{'user-group.new-heading' | translate}}</h2>
-      <h2 *ngIf="group.id != null">{{originalGroup.name}}</h2>
+      <h2 *ngIf="group.id != null">{{group.name}}</h2>
     </ng-template>
     <ng-template #content>
       <ul class="list-unstyled list-inline">
@@ -32,40 +32,45 @@
     </ng-template>
   </page-heading>
 
-  <div class="well">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="well">
 
-    <form [formGroup]="formGroup">
-
-      <div class="form-group">
-        <label for="name">{{'user-group.form.field.name.label' | translate}}</label>
-        <input type="text"
-               class="form-control"
-               id="name"
-               name="name"
-               formControlName="name"
-               placeholder="{{'user-group.default-name' | translate}}"
-               [(ngModel)]="group.name"
-               autocomplete="off"
-               required
-               minlength="1"
-               maxlength="255">
-      </div>
-      <div class="form-group">
-        <label for="subjects">{{'user-group.form.field.subjects.label' | translate}}</label>
-        <sb-button-group id="subjects"
-                         name="subjects"
-                         [options]="formOptions.subjects"
-                         [(ngModel)]="group.subjectCodes"
-                         [ngModelOptions]="{standalone: true}"></sb-button-group>
+        <user-group-form #groupForm
+                         [options]="formOptions"
+                         [group]="group"
+                         (studentClick)="onGroupStudentClick($event)"></user-group-form>
 
       </div>
-      <div class="form-group">
-        <label>{{'user-group.form.field.students.label' | translate}}</label>
+    </div>
+    <div class="col-md-8">
+      <div class="well-group">
+        <!--<div class="well">-->
+          <!--<p class="small text-muted">You can search for students by school, group, name or SSID. Students can be added by clicking on the plus button next to the student name.</p>-->
+        <!--</div>-->
+        <div class="well">
+          <student-search-form
+                               [options]="studentFormOptions"
+                               [(ngModel)]="studentForm"
+                               (schoolChange)="onStudentFormSearchChange($event)"
+                               (groupChange)="onStudentFormSearchChange($event)"
+                               (nameChange)="onStudentFormFilterChange($event)"></student-search-form>
 
+        </div>
+        <div class="well gray-lightest">
 
+          <label>Students</label>
+          <actionable-list-group [items]="filteredStudents"
+                      [itemTemplate]="studentFormStudentTemplate"
+                      (itemClick)="onFormStudentClick($event)"></actionable-list-group>
+        </div>
       </div>
-
-    </form>
-
+    </div>
   </div>
+
+</ng-template>
+
+
+<ng-template #studentFormStudentTemplate let-student>
+  <i class="fa fa-plus mr-xs"></i> {{'common.person-name' | translate: student}}
 </ng-template>

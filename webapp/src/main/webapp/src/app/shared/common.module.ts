@@ -40,6 +40,7 @@ import { NgxDnDModule } from "@swimlane/ngx-dnd";
 import { CommonEmbargoModule } from "./embargo/embargo.module";
 import { SchoolModule } from "./school/school.module";
 import { InViewDirective } from './nav/in-view.directive';
+import { RdwListModule } from './list/rdw-list.module';
 
 
 @NgModule({
@@ -75,6 +76,7 @@ import { InViewDirective } from './nav/in-view.directive';
     RdwFormatModule,
     RdwI18nModule,
     RdwLayoutModule,
+    RdwListModule,
     RdwLoadingModule,
     RdwMenuModule,
     RdwPreferenceModule,
@@ -104,6 +106,7 @@ import { InViewDirective } from './nav/in-view.directive';
     RdwFormatModule,
     RdwI18nModule,
     RdwLayoutModule,
+    RdwListModule,
     RdwLoadingModule,
     RdwPreferenceModule,
     RdwSecurityModule,

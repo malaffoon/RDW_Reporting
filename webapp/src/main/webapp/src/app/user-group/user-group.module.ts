@@ -10,10 +10,13 @@ import { UserGroupsTableComponent } from './user-groups-table.component';
 import { UserGroupResolve } from './user-group.resolve';
 import { UserGroupComponent } from './user-group.component';
 import { UserGroupOptionsService } from './user-group-options.service';
+import { StudentSearchModule } from '../student/search/student-search.module';
+import { UserGroupFormComponent } from './user-group-form.component';
 
 @NgModule({
   declarations: [
     UserGroupComponent,
+    UserGroupFormComponent,
     UserGroupsComponent,
     UserGroupsTableComponent
   ],
@@ -23,6 +26,7 @@ import { UserGroupOptionsService } from './user-group-options.service';
     FormsModule,
     ReactiveFormsModule,
     PopoverModule.forRoot(),
+    StudentSearchModule,
     TableModule
   ],
   exports: [

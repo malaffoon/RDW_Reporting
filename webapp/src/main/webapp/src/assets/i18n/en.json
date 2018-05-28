@@ -28,6 +28,9 @@
     "label": "Advanced Filters",
     "subhead": "Click an item to remove it from the list"
   },
+  "advanced-filters": {
+    "label": "Advanced Filters"
+  },
   "aggregate-report": {
     "display-report": "Display Report",
     "download-data": "Download Data",
