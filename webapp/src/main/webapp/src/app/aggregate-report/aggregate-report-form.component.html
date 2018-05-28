@@ -381,8 +381,11 @@
                                      [(ngModel)]="settings.longitudinalCohort.assessmentGrades"
                                      (change)="onSettingsChange()"></sb-button-group>
                     <div *ngIf="showErrors(assessmentGradeRangeControl)">
-                      <p *ngIf="assessmentGradeRangeControl.errors.notEmpty" class="help-block small red">
-                        {{assessmentGradeRangeControl.errors.notEmpty.messageId | translate}}</p>
+                      <p *ngIf="assessmentGradeRangeControl.errors.isGreaterThan" class="help-block small red">
+                        {{assessmentGradeRangeControl.errors.isGreaterThan.messageId | translate}}</p>
+                      <p *ngIf="assessmentGradeRangeControl.errors.withinBounds" class="help-block small red">
+                        {{assessmentGradeRangeControl.errors.withinBounds.messageId | translate:
+                        {lowestAvailableSchoolYear: lowestAvailableSchoolYear | schoolYear} }}</p>
                     </div>
                   </div>
                 </div>
@@ -696,7 +699,7 @@
                                        analyticsEvent="Change"></sb-radio-button-group>
               </span>
               <span class="pull-right flex-child ml-xs"
-                    *ngIf="currentAssessmentDefinition.performanceLevelDisplayTypes.length > 1">
+                    *ngIf="effectiveReportType !== 'Claim' && currentAssessmentDefinition.performanceLevelDisplayTypes.length > 1">
                 <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
                 <sb-radio-button-group [options]="filteredOptions.performanceLevelDisplayTypes"
                                        [(ngModel)]="settings.performanceLevelDisplayType"

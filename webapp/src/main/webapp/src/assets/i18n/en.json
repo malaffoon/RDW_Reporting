@@ -65,6 +65,8 @@
       "assessment-grades-label": "Assessment Grades",
       "assessment-grades-info": "The grade of the assessment that was administered",
       "assessment-grades-empty-error": "Please select an assessment grade.",
+      "assessment-grades-exceed-available-school-years-error": "You've selected too many grades. There are no results prior to {{lowestAvailableSchoolYear}}.",
+      "assessment-grades-less-than-minimum-error": "Please select more than one assessment grade.",
       "assessment-type-label": "Assessment Type",
       "elas-label": "English Language Acquisition Status",
       "elas-info": "Status determined by the Home Language Survey and the Initial ELPAC.",
@@ -249,18 +251,18 @@
     },
     "aggregate-report-type": {
       "Claim": {
-        "description": "Examine claim specific performance across groups",
-        "disabled": "Claim Focus is only available for ICA and Summative assessments.",
-        "label": "Claim Focus"
+        "description": "Compare claim-level performance across groups.",
+        "disabled": "Claim Reports are only available for ICA and Summative assessments.",
+        "label": "Claim Report"
       },
       "GeneralPopulation": {
-        "description": "Compare aggregate scores across groups",
-        "label": "General Report"
+        "description": "Compare performance across groups.",
+        "label": "Yearly Report"
       },
       "LongitudinalCohort": {
-        "description": "Compare performance within a population of cohorts",
-        "disabled": "Longitudinal is only available for Summative assessments.",
-        "label": "Longitudinal"
+        "description": "Track performance over time.",
+        "disabled": "Longitudinal Reports are only available for Summative assessments.",
+        "label": "Longitudinal Report"
       }
     },
     "assessment-grade": {
@@ -735,7 +737,7 @@
         "difficulty": "Item Difficulty",
         "difficulty-info": "Item difficulty (easy, moderate, difficult) is based on the difficulty of the item for students in a reference population.  See the Interpretive Guide for a description of the reference population and how the difficulty categories are derived.",
         "full-credit": "Full Credit",
-        "full-credit-info": "Percentage of students in the group who earned the maximum number of points available for a particular test item.",
+        "full-credit-info": "Students in the group who earned the maximum number of points available for a particular test item.",
         "max-points": "Max Points",
         "number": "Item #",
         "purpose": "Writing Purpose",
@@ -1136,7 +1138,7 @@
     "student-scores-intro-text": "Expand each student row to view their response to this item."
   },
   "item-tab": {
-    "student-scores": "Student Scores and Responses",
+    "student-scores": "Student Points and Responses",
     "writing-trait-scores": "Writing Trait Scores"
   },
   "item-viewer": {
@@ -1153,7 +1155,8 @@
     "area-description": {
       "text": "Achievement Level",
       "subtext": ""
-    }
+    },
+    "instructions": "To view the graph for only some groups, select the name(s) in the legend."
   },
   "order-selector": {
     "move-left": "Move Left",
@@ -1234,13 +1237,14 @@
     },
     "get-reports-error": "There was an unexpected error while getting your reports. Please click the button below to reload the page and try again.",
     "heading": "My Reports",
+    "instructions": "When the status of the report is \"Completed,\" click on the report name to view the report or the report query, or to download the report data.",
     "link": "My Reports",
     "no-reports-html": "<p>To create a report, first select a group or school from the <a href=\"/\">Home page</a>. Next click the \"Student Reports\" button to get started.",
     "reload": "Reload",
     "report-type": {
       "AggregateReportRequest": "Aggregate Report",
       "AggregateReportRequest CustomAggregate": "Aggregate Report",
-      "AggregateReportRequest Claims": "Aggregate Report: Claims",
+      "AggregateReportRequest Claim": "Aggregate Report: Claims",
       "AggregateReportRequest Longitudinal": "Aggregate Report: Longitudinal",
       "ExamExport": "District / School Export",
       "Group": "Group Report",

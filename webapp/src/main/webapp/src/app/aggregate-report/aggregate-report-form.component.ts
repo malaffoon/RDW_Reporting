@@ -27,7 +27,7 @@ import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
 import { SubgroupMapper } from './subgroup/subgroup.mapper';
-import { fileName, notEmpty } from '../shared/form/validators';
+import { fileName, isGreaterThan, notEmpty, withinBounds } from '../shared/form/validators';
 import { SubgroupItem } from './subgroup/subgroup-item';
 import { Utils } from '../shared/support/support';
 import { Claim } from './aggregate-report-options.service';
@@ -87,11 +87,6 @@ export class AggregateReportFormComponent {
   aggregateReportOptions: AggregateReportOptions;
 
   /**
-   * Assessment definitions for use in generating sample data
-   */
-  assessmentDefinitionsByTypeCode: Map<string, AssessmentDefinition>;
-
-  /**
    * Estimated row count based on the given report form settings
    */
   estimatedRowCount: number;
@@ -126,6 +121,11 @@ export class AggregateReportFormComponent {
    */
   subgroupItems: SubgroupItem[] = [];
 
+  /**
+   * Lowest available school year
+   */
+  lowestAvailableSchoolYear: number;
+
   private options: AggregateReportFormOptions;
 
   /**
@@ -144,13 +144,12 @@ export class AggregateReportFormComponent {
               private requestMapper: AggregateReportRequestMapper,
               private notificationService: NotificationService,
               private organizationService: AggregateReportOrganizationService,
+              private assessmentDefinitionService: AssessmentDefinitionService,
               private reportService: AggregateReportService,
               private tableDataService: AggregateReportTableDataService,
               private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
-              private subgroupMapper: SubgroupMapper,
-              private assessmentDefinitionService: AssessmentDefinitionService) {
+              private subgroupMapper: SubgroupMapper) {
 
-    this.assessmentDefinitionsByTypeCode = route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ];
     this.aggregateReportOptions = route.snapshot.data[ 'options' ];
     this.settings = route.snapshot.data[ 'settings' ];
 
@@ -170,6 +169,7 @@ export class AggregateReportFormComponent {
     this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
 
     this.options = optionMapper.map(this.aggregateReportOptions);
+    this.lowestAvailableSchoolYear = Math.min(...this.options.schoolYears.map(schoolYear => schoolYear.value));
     if (!this.settings.assessmentType.includes('sum')) {
       this.options.reportTypes = this.options.reportTypes.filter(reportType => reportType.value !== 'LongitudinalCohort');
     }
@@ -220,7 +220,7 @@ export class AggregateReportFormComponent {
   }
 
   get effectiveReportType() {
-    return this.assessmentDefinitionService.getEffectiveReportType(this.settings.reportType, this.currentAssessmentDefinition);
+    return this.reportService.getEffectiveReportType(this.settings.reportType, this.currentAssessmentDefinition);
   }
 
   private updateValidators(): void {
@@ -245,7 +245,11 @@ export class AggregateReportFormComponent {
       setValidators(this.claimAssessmentGradesControl, null);
       setValidators(this.claimSchoolYearsControl, null);
       setValidators(this.assessmentGradeRangeControl, [
-        notEmpty({ messageId: 'aggregate-report-form.field.assessment-grades-empty-error' })
+        isGreaterThan(1, { messageId: 'aggregate-report-form.field.assessment-grades-less-than-minimum-error' }),
+        withinBounds(this.settings.longitudinalCohort.toSchoolYear,
+          this.settings.longitudinalCohort.assessmentGrades,
+          this.lowestAvailableSchoolYear,
+          { messageId: 'aggregate-report-form.field.assessment-grades-exceed-available-school-years-error' })
       ]);
     } else if (this.effectiveReportType === 'Claim') {
       setValidators(this.assessmentGradeRangeControl, null);
@@ -335,7 +339,7 @@ export class AggregateReportFormComponent {
   }
 
   get currentAssessmentDefinition(): AssessmentDefinition {
-    return this.assessmentDefinitionsByTypeCode.get(this.settings.assessmentType);
+    return this.assessmentDefinitionService.get(this.settings.assessmentType, this.settings.reportType);
   }
 
   get estimatedRowCountIsLarge(): boolean {
@@ -529,7 +533,8 @@ export class AggregateReportFormComponent {
         this.currentAssessmentDefinition,
         this.settings,
         this.aggregateReportOptions
-      )
+      ),
+      reportType: this.settings.reportType
     };
   }
 

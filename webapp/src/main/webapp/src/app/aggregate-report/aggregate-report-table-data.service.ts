@@ -17,7 +17,7 @@ import { computeEffectiveYears } from './support';
 import { AggregateReportOptions } from './aggregate-report-options';
 import { Subgroup } from './subgroup/subgroup';
 import { Claim } from './aggregate-report-options.service';
-import { AssessmentDefinitionService } from './assessment/assessment-definition.service';
+import { AggregateReportService } from './aggregate-report.service';
 
 const MaximumOrganizations = 3;
 
@@ -26,7 +26,7 @@ export class AggregateReportTableDataService {
 
   constructor(private translate: TranslateService,
               private subgroupMapper: SubgroupMapper,
-              private assessmentDefinitionService: AssessmentDefinitionService) {
+              private reportService: AggregateReportService) {
   }
 
   createSampleData(assessmentDefinition: AssessmentDefinition,
@@ -36,19 +36,19 @@ export class AggregateReportTableDataService {
     const organizations = this.createSampleOrganizations(settings, assessmentDefinition);
 
     const gradesAndYears: { grade: string, year: number }[] = [];
-    if (this.assessmentDefinitionService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'GeneralPopulation') {
+    if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'GeneralPopulation') {
       for (const grade of settings.generalPopulation.assessmentGrades) {
         for (const year of settings.generalPopulation.schoolYears) {
           gradesAndYears.push({ grade, year });
         }
       }
-    } else if (this.assessmentDefinitionService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'LongitudinalCohort') {
+    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'LongitudinalCohort') {
       const assessmentGrades = settings.longitudinalCohort.assessmentGrades;
       const schoolYears = computeEffectiveYears(settings.longitudinalCohort.toSchoolYear, assessmentGrades);
       for (let i = 0; i < assessmentGrades.length; i++) {
-        gradesAndYears.push({ grade: assessmentGrades[ i ], year: schoolYears[ i ] });
+        gradesAndYears.push({ grade: assessmentGrades[ i ], year: schoolYears[ assessmentGrades.length - 1 - i ] });
       }
-    } else if (this.assessmentDefinitionService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Claim') {
+    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Claim') {
       for (const grade of settings.claimReport.assessmentGrades) {
         for (const year of settings.claimReport.schoolYears) {
           gradesAndYears.push({ grade, year });
@@ -134,10 +134,6 @@ export class AggregateReportTableDataService {
                       Separate: {
                         Number: performanceLevelCounts,
                         Percent: performanceLevelPercents
-                      },
-                      Grouped: {
-                        Number: groupedPerformanceLevelCounts,
-                        Percent: groupedPerformanceLevelCounts
                       }
                     },
                     subgroup: subgroup
@@ -198,7 +194,7 @@ export class AggregateReportTableDataService {
 
       if (settings.schools.length >= schoolId
         || ((settings.districts.length || settings.includeAllDistricts) && settings.includeAllSchoolsOfSelectedDistricts)) {
-        organizations.push(this.createSampleSchool(schoolId++));
+        organizations.push(this.createSampleSchool(schoolId++, districtId - 1));
       }
     }
 
@@ -218,11 +214,11 @@ export class AggregateReportTableDataService {
     return district;
   }
 
-  private createSampleSchool(id: number): School {
+  private createSampleSchool(id: number, districtId: number): School {
     const school = new DefaultSchool();
     school.id = id;
     school.name = this.translate.instant('sample-aggregate-table-data-service.school-name', { id: id });
-    school.districtId = id;
+    school.districtId = districtId;
     return school;
   }
 

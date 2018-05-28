@@ -22,9 +22,12 @@
           "score": "ScaleScore",
           "standard-deviation": "ScaleScoreStandardDeviation",
           "student-count": "StudentsTested",
+          "student-relative-residual-scores-level": "StudentRelativeResidualScoresLevel",
+          "standard-met-relative-residual-level": "StandardMetRelativeResidualLevel",
           "subject": "Subject",
           "year": "SchoolYear",
-          "claim": "Claim"
+          "claim": "Claim",
+          "target": "Target"
         }
       }
     },
@@ -509,15 +512,15 @@
       },
       "level": {
         "1": {
-          "color": "blue-dark",
+          "color": "sb-iab-red",
           "label": "Below Standard"
         },
         "2": {
-          "color": "blue",
+          "color": "sb-iab-yellow",
           "label": "Near Standard"
         },
         "3": {
-          "color": "aqua",
+          "color": "sb-iab-green",
           "label": "Above Standard"
         }
       },
@@ -837,6 +840,72 @@
       "Math": {
         "name": "Math"
       }
+    },
+    "sum": {
+      "date": {
+        "label": "Date Taken:"
+      },
+      "grade": {
+        "title": {
+          "03": "Grade 3 Summative Assessment {0}-{1}",
+          "04": "Grade 4 Summative Assessment {0}-{1}",
+          "05": "Grade 5 Summative Assessment {0}-{1}",
+          "06": "Grade 6 Summative Assessment {0}-{1}",
+          "07": "Grade 7 Summative Assessment {0}-{1}",
+          "08": "Grade 8 Summative Assessment {0}-{1}",
+          "11": "High School Summative Assessment {0}-{1}"
+        }
+      },
+      "level": {
+        "1": {
+          "color": "maroon",
+          "description": "Did Not Meet Standard",
+          "label": "L1",
+          "name": "Standard Not Met (Level 1) {0}-{1}"
+        },
+        "2": {
+          "color": "gray-darkest",
+          "description": "Nearly Met Standard",
+          "label": "L2",
+          "name": "Standard Nearly Met (Level 2) {0}-{1}"
+        },
+        "3": {
+          "color": "green-dark",
+          "description": "Met Standard",
+          "label": "L3",
+          "name": "Standard Met (Level 3) {0}-{1}"
+        },
+        "4": {
+          "color": "blue-dark",
+          "description": "Exceeded Standard",
+          "label": "L4",
+          "name": "Standard Exceeded (Level 4) {0}-{1}"
+        },
+        "cohort": {
+          "1": {
+            "description": "Cohort - Did Not Meet Standard"
+          },
+          "2": {
+            "description": "Cohort - Nearly Met Standard"
+          },
+          "3": {
+            "description": "Cohort - Met Standard"
+          },
+          "4": {
+            "description": "Cohort - Exceeded Standard"
+          }
+        }
+      },
+      "section": {
+        "claim": {
+          "header": "Student Achievement by Claim"
+        },
+        "scale-score": {
+          "header": "Overall Achievement"
+        }
+      },
+      "short-name": "SUM",
+      "title": "Summative Assessment Report"
     },
     "writing": {
       "trait": {

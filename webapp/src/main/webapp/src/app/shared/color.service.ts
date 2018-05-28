@@ -11,7 +11,7 @@ const Colors: string[] = [
 ];
 
 const Pallets: any[] = [
-  [ 'blue-dark', 'blue-dark aqua', 'aqua' ],
+  [ 'sb-iab-red', 'sb-iab-yellow', 'sb-iab-green' ],
   [ 'maroon', 'gray-darkest', 'green-dark', 'blue-dark' ],
   [ 'maroon', 'gray-darkest', 'green-dark', 'blue-dark' ],
 ];
@@ -20,6 +20,11 @@ const PerformanceLevelColorsByAssessmentTypeCode: Map<string, string[]> = new Ma
   [ 'iab', Pallets[ 0 ] ],
   [ 'ica', Pallets[ 1 ] ],
   [ 'sum', Pallets[ 2 ] ]
+]);
+
+const PerformanceLevelColorsNumberOfPerformanceLevels: Map<number, string[]> = new Map([
+  [ 3, Pallets[ 0 ] ],
+  [ 4, Pallets[ 1 ] ]
 ]);
 
 /**
@@ -47,6 +52,17 @@ export class ColorService {
    */
   getPerformanceLevelColorsByAssessmentTypeCode(code: string, performanceLevel: number): string {
     return PerformanceLevelColorsByAssessmentTypeCode.get(code)[ performanceLevel - 1 ];
+  }
+
+  /**
+   * Retrieves the color for the performance level (1-based) and total number of performance levels
+   *
+   * @param {number} total performance levels
+   * @param {number} performanceLevel (1-based)
+   * @returns {string} the class of the color
+   */
+  getPerformanceLevelColorsByNumberOfPerformanceLevels(levels: number, performanceLevel: number): string {
+    return PerformanceLevelColorsNumberOfPerformanceLevels.get(levels)[ performanceLevel - 1 ];
   }
 
 }
