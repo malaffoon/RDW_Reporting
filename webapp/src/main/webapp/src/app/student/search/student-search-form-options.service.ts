@@ -19,8 +19,8 @@ export class StudentSearchFormOptionsService {
       this.groupService.getGroups()
     ).pipe(
       map(([schools, groups]) => <StudentSearchFormOptions>{
-        schools: schools.slice(0, 10),
-        groups: groups.slice(0, 10)
+        schools: schools,
+        groups: groups
       })
     );
   }
