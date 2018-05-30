@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UserGroup } from './user-group';
 
 @Component({
   selector: 'user-group-table',
   templateUrl: './user-group-table.component.html'
 })
-export class UserGroupTableComponent implements OnInit {
+export class UserGroupTableComponent {
 
   @Input()
   groups: UserGroup[];

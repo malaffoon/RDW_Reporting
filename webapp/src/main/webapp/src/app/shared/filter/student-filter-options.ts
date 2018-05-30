@@ -1,6 +1,4 @@
-import { StudentFilter } from './student-filter';
-
-export interface StudentFilterOptions extends StudentFilter {
+export interface StudentFilterOptions {
   readonly genders: string[];
   readonly ethnicities: string[];
   readonly englishLanguageAcquisitionStatuses: string[];

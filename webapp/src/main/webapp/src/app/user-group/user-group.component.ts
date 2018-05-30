@@ -103,7 +103,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
       if (this.originalGroup == null) {
         this.group = <UserGroup>{
           name: '',
-          subjectCodes: options.subjects.concat(),
+          subjects: options.subjects.concat(),
           students: []
         };
       } else {
@@ -276,7 +276,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
       .sort(StudentComparator);
   }
 
-  private updateSaveButtonDisabled(): boolean {
+  private updateSaveButtonDisabled(): void {
     this._saveButtonDisabled = !this.initialized
       || this.groupForm == null
       || !this.groupForm.formGroup.valid

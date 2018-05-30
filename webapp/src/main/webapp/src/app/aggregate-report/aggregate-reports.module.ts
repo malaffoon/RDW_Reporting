@@ -25,8 +25,6 @@ import { AggregateReportTableExportService } from './results/aggregate-report-ta
 import { AggregateReportSummary } from './aggregate-report-summary.component';
 import { AggregateReportColumnOrderItemProvider } from './aggregate-report-column-order-item.provider';
 import { TableModule } from 'primeng/table';
-import { ListGroupComponent } from '../shared/list/list-group.component';
-import { EditableListGroupComponent } from '../shared/list/editable-list-group.component';
 import { LongitudinalCohortChartComponent } from './results/longitudinal-cohort-chart.component';
 import { LongitudinalPlaygroundComponent } from './results/longitudinal-playground.component';
 import { SubgroupModule } from './subgroup/subgroup.module';
@@ -41,8 +39,6 @@ import { TargetReportFormComponent } from './target/target-report-form.component
     AggregateReportTableComponent,
     AggregateReportSummary,
     WideRadioGroupComponent,
-    EditableListGroupComponent,
-    ListGroupComponent,
     LongitudinalCohortChartComponent,
     LongitudinalPlaygroundComponent,
     StickyDirective,
