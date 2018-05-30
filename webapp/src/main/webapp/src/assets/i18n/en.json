@@ -28,6 +28,9 @@
     "label": "Advanced Filters",
     "subhead": "Click an item to remove it from the list"
   },
+  "advanced-filters": {
+    "label": "Advanced Filters"
+  },
   "aggregate-report": {
     "display-report": "Display Report",
     "download-data": "Download Data",
@@ -257,6 +260,7 @@
       "expand": "Expand",
       "go-home": "Go Home",
       "hide": "Hide",
+      "save": "Save",
       "search": "Search",
       "select": "Select",
       "show": "Show",
@@ -1348,6 +1352,43 @@
     "error": "Unable to modify instructional resource.",
     "link": "Edit",
     "title": "Edit Instructional Resource"
+  },
+  "user-group": {
+    "new-heading": "New Group",
+    "edit-heading": "Editing: {{name}}",
+    "default-name": "My Group",
+    "form": {
+      "field": {
+        "name": {
+          "label": "Group Name"
+        },
+        "subjects": {
+          "label": "Subjects"
+        },
+        "students": {
+          "label": "Students"
+        }
+      }
+    },
+    "student-search": {
+      "results-label": "Students",
+      "find-students-prompt": "Search for students to add to your group.",
+      "add-student-prompt": "Add students to your group by clicking on their name.",
+      "no-results": "There are no students matching the current search."
+    },
+    "save-error": "Unable to save this group. Please try again later.",
+    "delete-error": "Unable to delete this group. Please try again later."
+  },
+  "user-groups": {
+    "heading": "Search by My Created Groups"
+  },
+  "user-group-table": {
+    "edit": "Edit"
+  },
+  "student-search-form": {
+    "school-label": "School",
+    "group-label": "Group",
+    "name-ssid-label": "Student Name or SSID"
   },
   "writing-trait-scores": {
     "aggregate-header": "Points Breakdown"
