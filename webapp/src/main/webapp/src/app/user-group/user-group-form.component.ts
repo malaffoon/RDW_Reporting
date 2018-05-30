@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserGroupFormOptions } from './user-group-form-options';
 import { Student } from '../student/search/student';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { notEmpty } from '../shared/form/validators';
 import { UserGroup } from './user-group';
 
@@ -38,10 +38,14 @@ export class UserGroupFormComponent implements OnInit {
     return this._formGroup;
   }
 
+  get studentsControl(): AbstractControl {
+    return this.formGroup.get('students');
+  }
+
   ngOnInit(): void {
     this._formGroup = this.formBuilder.group({
       name: [ this.group.name ],
-      students: [ this.group.students, notEmpty({ messageId: 'user-group.students-empty-error' }) ]
+      students: [ this.group.students, notEmpty({ messageId: 'user-group.field.students-empty-error' }) ]
     });
   }
 
@@ -58,10 +62,9 @@ export class UserGroupFormComponent implements OnInit {
       .filter(x => x.id !== student.id);
 
     // Hacky intervention to get angular form validation to kick in
-    this.formGroup.get('students').setValue(this.group.students);
+    this.studentsControl.setValue(this.group.students);
 
     this.studentsChange.emit(this.group.students);
-
   }
 
 }
