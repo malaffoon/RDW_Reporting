@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '../shared/common.module';
-import { PopoverModule } from 'ngx-bootstrap';
+import { ModalModule, PopoverModule } from 'ngx-bootstrap';
 import { UserGroupResolve } from './user-group.resolve';
 import { UserGroupComponent } from './user-group.component';
 import { UserGroupOptionsService } from './user-group-options.service';
@@ -25,6 +25,7 @@ import { UserGroupTableComponent } from './user-group-table.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    ModalModule.forRoot(),
     PopoverModule.forRoot(),
     StudentSearchModule,
     TableModule

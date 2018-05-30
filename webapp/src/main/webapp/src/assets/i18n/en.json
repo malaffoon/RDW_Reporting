@@ -1382,19 +1382,6 @@
     "new-heading": "New Group",
     "edit-heading": "Editing: {{name}}",
     "default-name": "My Group",
-    "form": {
-      "field": {
-        "name": {
-          "label": "Group Name"
-        },
-        "subjects": {
-          "label": "Subjects"
-        },
-        "students": {
-          "label": "Students"
-        }
-      }
-    },
     "student-search": {
       "results-label": "Students",
       "find-students-prompt": "Search for students to add to your group.",
@@ -1402,7 +1389,25 @@
       "no-results": "There are no students matching the current search."
     },
     "save-error": "Unable to save this group. Please try again later.",
-    "delete-error": "Unable to delete this group. Please try again later."
+    "delete-error": "Unable to delete this group. Please try again later.",
+    "delete-modal": {
+      "header": "Delete {{name}}?",
+      "body": "This action cannot be undone. Are you sure you would like to continue?"
+    }
+  },
+  "user-group-form": {
+    "field": {
+      "name": {
+        "label": "Group Name"
+      },
+      "subjects": {
+        "label": "Subjects"
+      },
+      "students": {
+        "label": "Students",
+        "empty-error": "None selected"
+      }
+    }
   },
   "user-groups": {
     "heading": "Search by My Created Groups"
