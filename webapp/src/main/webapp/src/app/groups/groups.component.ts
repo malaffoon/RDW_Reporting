@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Group } from '../groups/group';
+import { Group } from './group';
 import { GroupService } from './group.service';
 
 @Component({
@@ -11,7 +11,7 @@ export class GroupsComponent implements OnInit {
   groups: Group[];
   defaultGroup: Group;
 
-  searchTerm: string;
+  search: string;
   searchThreshold: number = 10;
   filteredGroups: Group[] = [];
 
@@ -30,16 +30,16 @@ export class GroupsComponent implements OnInit {
       if (this.groups && this.groups.length != 0) {
         this.defaultGroup = this.groups[ 0 ];
       }
-    })
+    });
   }
 
   ngOnInit() {
     this.filteredGroups = this.groups;
   }
 
-  onSearchChange(event) {
+  onSearchChange() {
     this.filteredGroups = this.groups.filter( group =>
-      group.name.toUpperCase().indexOf(this.searchTerm.toUpperCase()) >= 0);
+      group.name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0);
   }
 
   /**
@@ -49,7 +49,7 @@ export class GroupsComponent implements OnInit {
    * @returns {string} translation key to use
    */
   get emptyMessageTranslateKey(): string {
-    return this.groups && this.groups.length != 0 ?
+    return this.groups && this.groups.length ?
       'groups.empty-message' :
       'groups.no-groups-message';
   }
