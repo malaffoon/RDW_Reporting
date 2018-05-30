@@ -32,7 +32,7 @@ export interface AggregateReportQuery {
   readonly studentFilters?: StudentFilters;
 
   // FilteredSubgroup query type params
-  readonly subgroups?: {[key: string]: StudentFilters};
+  readonly subgroups?: { [ key: string ]: StudentFilters };
 
   // Needed for mapping back into form state
   readonly reportType: 'CustomAggregate' | 'Longitudinal' | 'Claim';
@@ -42,6 +42,13 @@ export interface AggregateReportQuery {
 
   // LongitudinalCohort report type params
   readonly toSchoolYear?: number;
+
+  // Claim report type params
+  readonly claimCodesBySubject?: any;
+
+  // Target report type params
+  readonly schoolYear?: number;
+  readonly subjectCode?: string;
 }
 
 export interface StudentFilters {

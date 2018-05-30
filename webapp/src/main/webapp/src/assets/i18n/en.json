@@ -28,6 +28,9 @@
     "label": "Advanced Filters",
     "subhead": "Click an item to remove it from the list"
   },
+  "advanced-filters": {
+    "label": "Advanced Filters"
+  },
   "aggregate-report": {
     "display-report": "Display Report",
     "download-data": "Download Data",
@@ -47,27 +50,36 @@
       "loading": "Estimating row count",
       "warning": "This report is large and may result in a slow experience when viewed in your browser"
     },
-    "heading": "Custom Aggregate Report",
+    "heading": {
+      "default": "Custom Aggregate Report",
+      "target": "Target Aggregate Report"
+    },
     "preview": "This table does not contain actual data and is for preview purposes only.",
     "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\"",
     "field": {
       "report-type-label": "Report Type",
       "report-type-info": "TODO",
+      "claim-codes-label": "Claim Codes",
       "assessment-grade-range-label": "Assessment Grades",
       "to-school-year-label": "Most Recent Academic Year",
       "to-school-year-info": "TODO",
       "organization-label": "Search a School or District",
       "organization-invalid-error": "Please select a school, district or include state results.",
+      "assessment-grade-label": "Assessment Grade",
       "assessment-grades-label": "Assessment Grades",
       "assessment-grades-info": "The grade of the assessment that was administered",
       "assessment-grades-empty-error": "Please select an assessment grade.",
+      "assessment-grades-exceed-available-school-years-error": "You've selected too many grades. There are no results prior to {{lowestAvailableSchoolYear}}.",
+      "assessment-grades-less-than-minimum-error": "Please select more than one assessment grade.",
       "assessment-type-label": "Assessment Type",
       "elas-label": "English Language Acquisition Status",
       "elas-info": "Status determined by the Home Language Survey and the Initial ELPAC.",
       "interim-administration-condition-label": "Manner of Administration",
       "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
-      "school-year-label": "Academic Years",
+      "school-year-label": "Academic Year",
+      "school-years-label": "Academic Years",
       "school-year-empty-error": "Please select a school year.",
+      "subject-label": "Subject",
       "subjects-label": "Subjects",
       "summative-administration-condition-label": "Validity",
       "summative-administration-condition-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
@@ -87,9 +99,13 @@
       "economic-disadvantage-info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage.",
       "comparative-subgroup-label": "Subgroups",
       "report-name-label": "Report Name",
-      "report-name-file-name-error": "The name cannot contain these special characters: <>:;,?\"*|\\/"
+      "report-name-file-name-error": "The name cannot contain these special characters: <>:;,?\"*|\\/",
+      "target": {
+        "organization-invalid-error": "Please select a school or district."
+      }
     },
     "section": {
+      "claim-heading": "Claim",
       "organization": {
         "heading": "Schools and Districts",
         "subtext": "Select schools and districts to compare.",
@@ -108,6 +124,7 @@
       "subgroup-filters-subtext": "Use this feature to include only selected student sub-groups, e.g. only male Hispanic students.",
       "comparative-subgroups-heading": "Subgroups",
       "comparative-subgroups-subtext": "The report will break down results by the subgroups you select.",
+      "report-type-heading": "Report Type",
       "review-heading": "Report Review",
       "preview-heading": "Report Preview",
       "custom-subgroup": {
@@ -130,6 +147,7 @@
       "assessment-grade": "Assessment Grade",
       "avg-scale-score": "Average Scale Score",
       "avg-scale-score-suffix": "± Error Band",
+      "claim": "Claim",
       "dimension": "Subgroup",
       "grouped-performance-level-prefix": {
         "0": "Below",
@@ -139,12 +157,39 @@
       "organization": "Organization",
       "performance-level-suffix": "Standard",
       "school-year": "Academic Year",
-      "students-tested": "Students Tested"
+      "student-relative-residual-scores-level": "Performance relative to other targets",
+      "standard-met-relative-residual-level": "Performance relative to achievement standards",
+      "students-tested": "Students Tested",
+      "target": "Target"
     },
-    "empty-message": "No Results Found"
+    "empty-message": "No Results Found",
+    "target-description": "<strong>Target {{name}}</strong> {{description}}",
+    "sample": {
+      "claim": "Sample Claim {{code}}",
+      "target": "<strong>Sample Target {{name}}</strong> Sample target description"
+    },
+    "target": {
+      "overall": {
+        "Above": "Better",
+        "Below": "Worse",
+        "Excluded": "Excluded",
+        "InsufficientData": "Insufficient Data",
+        "Near": "Similar to Overall"
+      },
+      "standard": {
+        "Above": "Above",
+        "Below": "Below",
+        "Excluded": "Excluded",
+        "InsufficientData": "Insufficient Data",
+        "Near": "Near"
+      }
+    }
   },
   "aggregate-reports": {
-    "heading": "Aggregate Reports"
+    "heading": "Aggregate Reports",
+    "targets": {
+      "heading": "Target Reports"
+    }
   },
   "aggregate-reports-summary": {
     "include-all-districts": "All Districts",
@@ -189,7 +234,8 @@
       "ByItem": "Results By Item",
       "ByStudent": "Results By Student",
       "DistractorAnalysis": "Key / Distractor Analysis",
-      "WritingTraitScores": "Writing Trait Scores"
+      "WritingTraitScores": "Writing Trait Scores",
+      "TargetReport": "Target Report"
     }
   },
   "assessments": {
@@ -224,6 +270,7 @@
       "expand": "Expand",
       "go-home": "Go Home",
       "hide": "Hide",
+      "save": "Save",
       "search": "Search",
       "select": "Select",
       "show": "Show",
@@ -240,8 +287,24 @@
       "column-order-info": "Change your result column order to easily compare your results broken down in different ways."
     },
     "aggregate-report-type": {
-      "GeneralPopulation": "General",
-      "LongitudinalCohort": "Longitudinal"
+      "Claim": {
+        "description": "Compare claim-level performance across groups.",
+        "disabled": "Claim Reports are only available for ICA and Summative assessments.",
+        "label": "Claim Report"
+      },
+      "GeneralPopulation": {
+        "description": "Compare performance across groups.",
+        "label": "Yearly Report"
+      },
+      "LongitudinalCohort": {
+        "description": "Track performance over time.",
+        "disabled": "Longitudinal Reports are only available for Summative assessments.",
+        "label": "Longitudinal Report"
+      },
+      "Target": {
+        "description": "Compare target-level performance across groups.",
+        "label": "Target Report"
+      }
     },
     "assessment-grade": {
       "10": "HS",
@@ -715,7 +778,7 @@
         "difficulty": "Item Difficulty",
         "difficulty-info": "Item difficulty (easy, moderate, difficult) is based on the difficulty of the item for students in a reference population.  See the Interpretive Guide for a description of the reference population and how the difficulty categories are derived.",
         "full-credit": "Full Credit",
-        "full-credit-info": "Percentage of students in the group who earned the maximum number of points available for a particular test item.",
+        "full-credit-info": "Students in the group who earned the maximum number of points available for a particular test item.",
         "max-points": "Max Points",
         "number": "Item #",
         "purpose": "Writing Purpose",
@@ -748,11 +811,36 @@
       },
       "ELA": {
         "name": "ELA",
-        "short-name": "ELA"
+        "short-name": "ELA",
+        "claim": {
+          "2-W": {
+            "name": "Writing"
+          },
+          "4-CR": {
+            "name": "Research & Inquiry"
+          },
+          "SOCK_LS": {
+            "name": "Listening"
+          },
+          "SOCK_R": {
+            "name": "Reading"
+          }
+        }
       },
       "Math": {
         "name": "Math",
-        "short-name": "Math"
+        "short-name": "Math",
+        "claim": {
+          "1": {
+            "name": "Concepts & Procedures"
+          },
+          "3": {
+            "name": "Reasoning"
+          },
+          "SOCK_2": {
+            "name": "Problem Solving"
+          }
+        }
       }
     },
     "subject-claim-code": {
@@ -1091,7 +1179,7 @@
     "student-scores-intro-text": "Expand each student row to view their response to this item."
   },
   "item-tab": {
-    "student-scores": "Student Scores and Responses",
+    "student-scores": "Student Points and Responses",
     "writing-trait-scores": "Writing Trait Scores"
   },
   "item-viewer": {
@@ -1108,7 +1196,8 @@
     "area-description": {
       "text": "Achievement Level",
       "subtext": ""
-    }
+    },
+    "instructions": "To view the graph for only some groups, select the name(s) in the legend."
   },
   "order-selector": {
     "move-left": "Move Left",
@@ -1189,13 +1278,14 @@
     },
     "get-reports-error": "There was an unexpected error while getting your reports. Please click the button below to reload the page and try again.",
     "heading": "My Reports",
+    "instructions": "When the status of the report is \"Completed,\" click on the report name to view the report or the report query, or to download the report data.",
     "link": "My Reports",
     "no-reports-html": "<p>To create a report, first select a group or school from the <a href=\"/\">Home page</a>. Next click the \"Student Reports\" button to get started.",
     "reload": "Reload",
     "report-type": {
       "AggregateReportRequest": "Aggregate Report",
       "AggregateReportRequest CustomAggregate": "Aggregate Report",
-      "AggregateReportRequest Claims": "Aggregate Report: Claims",
+      "AggregateReportRequest Claim": "Aggregate Report: Claims",
       "AggregateReportRequest Longitudinal": "Aggregate Report: Longitudinal",
       "ExamExport": "District / School Export",
       "Group": "Group Report",
@@ -1268,10 +1358,62 @@
     "student-button-label": "Student Report",
     "title": "Student Test History Report"
   },
+  "target-report": {
+    "columns": {
+      "claim": "Claim",
+      "claim-info": "Claim TODO",
+      "target": "Target",
+      "target-info": "Target TODO",
+      "subgroup": "Subgroup",
+      "subgroup-info": "Subgroup TODO",
+      "students-tested": "Students Tested",
+      "student-relative-residual-scores-level": "Performance relative to other targets",
+      "student-relative-residual-scores-level-info": "Performance relative to other targets TODO",
+      "standard-met-relative-residual-level": "Performance relative to achievement standards",
+      "standard-met-relative-residual-level-info": "Performance relative to achievement standards TODO"
+    }
+  },
   "update-instructional-resource-modal": {
     "error": "Unable to modify instructional resource.",
     "link": "Edit",
     "title": "Edit Instructional Resource"
+  },
+  "user-group": {
+    "new-heading": "New Group",
+    "edit-heading": "Editing: {{name}}",
+    "default-name": "My Group",
+    "form": {
+      "field": {
+        "name": {
+          "label": "Group Name"
+        },
+        "subjects": {
+          "label": "Subjects"
+        },
+        "students": {
+          "label": "Students"
+        }
+      }
+    },
+    "student-search": {
+      "results-label": "Students",
+      "find-students-prompt": "Search for students to add to your group.",
+      "add-student-prompt": "Add students to your group by clicking on their name.",
+      "no-results": "There are no students matching the current search."
+    },
+    "save-error": "Unable to save this group. Please try again later.",
+    "delete-error": "Unable to delete this group. Please try again later."
+  },
+  "user-groups": {
+    "heading": "Search by My Created Groups"
+  },
+  "user-group-table": {
+    "edit": "Edit"
+  },
+  "student-search-form": {
+    "school-label": "School",
+    "group-label": "Group",
+    "name-ssid-label": "Student Name or SSID"
   },
   "writing-trait-scores": {
     "aggregate-header": "Points Breakdown"

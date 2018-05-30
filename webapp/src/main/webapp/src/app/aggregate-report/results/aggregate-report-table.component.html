@@ -12,7 +12,7 @@
          [sortMode]="rowSortingEnabled && 'single'"
          [customSort]="true"
          [autoLayout]="true"
-         styleClass="table table-striped table-hover overflow table-row-size-fixed">
+         styleClass="table table-striped table-hover overflow">
   <ng-template pTemplate="header"
                let-columns>
     <tr>
@@ -20,11 +20,18 @@
           [hidden]="!column.visible"
           [pSortableColumn]="column.field"
           [pSortableColumnDisabled]="!column.sortable"
-          [ngSwitch]="column.id">
+          [ngSwitch]="column.id"
+          [ngClass]="{
+            'wrapping': column.id !== 'achievementComparison'
+              && column.id !== 'dimension'
+              && column.id !== 'organization'
+              && column.id !== 'claim'
+              && column.id !== 'target'
+          }">
 
         <div *ngSwitchCase="'avgScaleScore'" class="text-center">
-          <div>{{'aggregate-report-table.columns.avg-scale-score' | translate}}</div>
-          <div>{{'aggregate-report-table.columns.avg-scale-score-suffix' | translate}}</div>
+          <div class="no-wrap">{{'aggregate-report-table.columns.avg-scale-score' | translate}}</div>
+          <div class="no-wrap">{{'aggregate-report-table.columns.avg-scale-score-suffix' | translate}}</div>
         </div>
 
         <div *ngSwitchCase="'performanceLevel'"
@@ -56,19 +63,22 @@
              class="full-cell"
              [ngClass]="{
               'pt-0': column.id === 'achievementComparison',
+              'pb-0': column.id === 'achievementComparison',
               'hidden': treeColumns[i] > columnIdx,
               'border-top': treeColumns[i] <= columnIdx && treeColumns[i] < identityColumns.length - 1
              }">
 
           <div *ngSwitchCase="'organization'">
-            <span class="label mr-xs"
-                  [ngClass]="getOrganizationTypeColor(rowData.organization.type)">
-              {{('common.organization.type.' + rowData.organization.type) | translate}}
-            </span>
+                <span class="label mr-xs"
+                      [ngClass]="getOrganizationTypeColor(rowData.organization.type)">
+                  {{('common.organization.type.' + rowData.organization.type) | translate}}
+                </span>
             {{rowData.organization.name}}
           </div>
 
-          <div *ngSwitchCase="'assessmentLabel'">
+          <div *ngSwitchCase="'assessmentLabel'"
+              class="label-max-width-sm"
+              title="{{rowData.assessmentLabel}}">
             {{rowData.assessmentLabel}}
           </div>
 
@@ -80,6 +90,26 @@
           <div *ngSwitchCase="'schoolYear'"
                class="text-right">
             {{rowData.schoolYear | schoolYear}}
+          </div>
+
+          <div *ngSwitchCase="'claim'"
+               class="text-right">
+            <span *ngIf="!preview || table.reportType !== 'Target'; else targetClaimPreview">
+              {{ getClaimCodeTranslation(rowData) }}
+            </span>
+            <ng-template #targetClaimPreview>
+              {{'aggregate-report-table.sample.claim' | translate:{code: rowData.claimCode} }}
+            </ng-template>
+          </div>
+
+          <div *ngSwitchCase="'target'"
+               class="text-right wrapping-max-width">
+            <span *ngIf="!preview; else targetPreview"
+                  [innerHTML]="'aggregate-report-table.target-description' | translate: getTargetDisplay(rowData)">
+            </span>
+            <ng-template #targetPreview>
+              <span [innerHTML]="'aggregate-report-table.sample.target' | translate:{name: rowData.targetNaturalId}"></span>
+            </ng-template>
           </div>
 
           <div *ngSwitchCase="'dimension'"
@@ -96,19 +126,20 @@
           <div *ngSwitchCase="'achievementComparison'">
             <performance-level-distribution-chart
               [percentages]="rowData.performanceLevelByDisplayTypes.Separate.Percent"
-              [cutPoint]="table.assessmentDefinition.performanceLevelGroupingCutPoint"
-              [assessmentTypeCode]="table.assessmentDefinition.typeCode"
+              [cutPoint]="cutPoint"
+              [performanceLevels]="rowData.claimCode ? 3 : null"
+              [assessmentTypeCode]="assessmentTypeCode"
               [displayType]="performanceLevelDisplayType"
-              [center]="table.assessmentDefinition.performanceLevelGroupingCutPoint != null"></performance-level-distribution-chart>
+              [center]="center"></performance-level-distribution-chart>
           </div>
 
           <div *ngSwitchCase="'avgScaleScore'"
                class="text-center">
             <span *ngIf="!rowData.studentsTested">-</span>
             <span *ngIf="rowData.studentsTested">
-              <scale-score [score]="rowData.avgScaleScore"
-                           [standardError]="rowData.avgStdErr"></scale-score>
-            </span>
+                  <scale-score [score]="rowData.avgScaleScore"
+                               [standardError]="rowData.avgStdErr"></scale-score>
+                </span>
           </div>
 
           <div *ngSwitchCase="'performanceLevel'"
@@ -123,6 +154,58 @@
             </span>
           </div>
 
+          <div *ngSwitchCase="'studentRelativeResidualScoresLevel'">
+
+            <!-- pick the icon -->
+            <span [ngSwitch]="rowData.studentRelativeResidualScoresLevel">
+              <span *ngSwitchCase="'Above'"
+                    class="sb-iab-green">
+                <sb-icon class="fa-lg" icon="sbac-above-average"></sb-icon>
+              </span>
+              <span *ngSwitchCase="'Near'"
+                    class="sb-iab-yellow">
+                <sb-icon class="fa-lg" icon="sbac-average"></sb-icon>
+              </span>
+              <span *ngSwitchCase="'Below'"
+                    class="sb-iab-red">
+                <sb-icon class="fa-lg" icon="sbac-below-average"></sb-icon>
+              </span>
+              <span *ngSwitchCase="'InsufficientData'"
+                    class="gray-light">
+                <sb-icon class="fa-lg" icon="sbac-insufficient-data"></sb-icon>
+              </span>
+            </span>
+            {{'aggregate-report-table.target.overall.' + rowData.studentRelativeResidualScoresLevel | translate}}
+          </div>
+
+          <div *ngSwitchCase="'standardMetRelativeResidualLevel'">
+
+            <!-- pick the label color -->
+            <span [ngSwitch]="rowData.standardMetRelativeResidualLevel">
+              <span *ngSwitchCase="'Above'"
+                    class="label sb-iab-green">
+                {{'aggregate-report-table.target.standard.Above' | translate}}
+              </span>
+              <span *ngSwitchCase="'Near'"
+                    class="label sb-iab-yellow">
+                {{'aggregate-report-table.target.standard.Near' | translate}}
+              </span>
+              <span *ngSwitchCase="'Below'"
+                    class="label sb-iab-red">
+                {{'aggregate-report-table.target.standard.Below' | translate}}
+              </span>
+              <span *ngSwitchCase="'InsufficientData'">
+                <span class="gray-light">
+                  <sb-icon class="fa-lg" icon="sbac-insufficient-data"></sb-icon>
+                </span>
+                {{'aggregate-report-table.target.standard.InsufficientData' | translate}}
+              </span>
+              <span *ngSwitchCase="'Excluded'">
+                {{'aggregate-report-table.target.standard.Excluded' | translate}}
+              </span>
+            </span>
+
+          </div>
         </div>
       </td>
     </tr>

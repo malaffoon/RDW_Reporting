@@ -121,6 +121,7 @@
 
         <div class="row mt-xs" *ngIf="view.chart">
           <div class="col-md-12">
+            <p>{{ 'longitudinal-cohort-chart.instructions' | translate }}</p>
             <longitudinal-cohort-chart [chart]="view.chart"></longitudinal-cohort-chart>
           </div>
         </div>
@@ -147,7 +148,7 @@
                                        analyticsEvent="Change"></sb-radio-button-group>
               </span>
               <span class="pull-right flex-child ml-xs"
-                    *ngIf="view.table.assessmentDefinition.performanceLevelDisplayTypes.length > 1">
+                    *ngIf="effectiveReportType !== 'Claim' && view.table.assessmentDefinition.performanceLevelDisplayTypes.length > 1">
                 <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
                 <sb-radio-button-group [options]="displayOptions.performanceLevelDisplayTypes"
                                        [(ngModel)]="view.performanceLevelDisplayType"

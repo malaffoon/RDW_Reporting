@@ -35,10 +35,12 @@ import { AggregateReportComponent } from './aggregate-report/results/aggregate-r
 import { AggregateReportFormComponent } from './aggregate-report/aggregate-report-form.component';
 import { AggregateReportResolve } from './aggregate-report/results/aggregate-report.resolve';
 import { AggregateReportOptionsResolve } from './aggregate-report/aggregate-report-options.resolve';
-import { AssessmentDefinitionResolve } from './aggregate-report/assessment/assessment-definition.resolve';
 import { AggregateReportFormSettingsResolve } from './aggregate-report/aggregate-report-form-settings.resolve';
 import { LongitudinalPlaygroundComponent } from './aggregate-report/results/longitudinal-playground.component';
 import { GroupDashboardComponent } from './dashboard/group-dashboard/group-dashboard.component';
+import { UserGroupComponent } from './user-group/user-group.component';
+import { UserGroupResolve } from './user-group/user-group.resolve';
+import { TargetReportFormComponent } from "./aggregate-report/target/target-report-form.component";
 
 const adminRoute = {
   path: '',
@@ -182,6 +184,39 @@ const studentTestHistoryChildRoute = {
   ]
 };
 
+const UserGroupRoutes = {
+  path: 'userGroups',
+  data: {
+
+    permissions: [ 'GROUP_PII_READ' ]
+  },
+  canActivate: [ RoutingAuthorizationCanActivate ],
+  children: [
+    {
+      path: '',
+      pathMatch: 'full',
+      component: UserGroupComponent,
+      data: {
+        breadcrumb: { translate: 'user-group.new-heading' },
+      },
+      resolve: {
+        group: UserGroupResolve
+      }
+    },
+    {
+      path: ':groupId',
+      pathMatch: 'full',
+      component: UserGroupComponent,
+      data: {
+        breadcrumb: { resolve: 'group.name' },
+      },
+      resolve: {
+        group: UserGroupResolve
+      }
+    }
+  ]
+};
+
 export const routes: Routes = [
   {
     path: 'home',
@@ -201,6 +236,7 @@ export const routes: Routes = [
         component: HomeComponent
       },
       adminRoute,
+      UserGroupRoutes,
       {
         path: 'groups/:groupId',
         data: {
@@ -276,8 +312,7 @@ export const routes: Routes = [
           permissions: [ 'CUSTOM_AGGREGATE_READ' ]
         },
         resolve: {
-          options: AggregateReportOptionsResolve,
-          assessmentDefinitionsByAssessmentTypeCode: AssessmentDefinitionResolve
+          options: AggregateReportOptionsResolve
         },
         canActivate: [ AuthorizationCanActivate ],
         children: [
@@ -288,6 +323,17 @@ export const routes: Routes = [
               settings: AggregateReportFormSettingsResolve
             },
             component: AggregateReportFormComponent
+          },
+          {
+            path: 'targets',
+            pathMatch: 'full',
+            data: {
+              breadcrumb: { translate: 'aggregate-reports.targets.heading' },
+            },
+            resolve: {
+              settings: AggregateReportFormSettingsResolve
+            },
+            component: TargetReportFormComponent
           },
           {
             path: ':id',

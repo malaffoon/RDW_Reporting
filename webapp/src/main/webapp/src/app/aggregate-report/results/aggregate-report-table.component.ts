@@ -14,6 +14,8 @@ import { Table } from 'primeng/table';
 import { SortEvent } from 'primeng/api';
 import * as _ from 'lodash';
 import { organizationOrdering, subgroupOrdering } from '../support';
+import { TranslateService } from '@ngx-translate/core';
+import { AggregateReportService } from '../aggregate-report.service';
 
 export const SupportedRowCount = 10000;
 export const DefaultRowsPerPageOptions = [ 100, 500, 1000 ];
@@ -22,7 +24,7 @@ export const IdentityColumnOptions: string[] = [
   'assessmentGrade',
   'assessmentLabel',
   'schoolYear',
-  'dimension'
+  'dimension',
 ];
 
 
@@ -31,6 +33,12 @@ const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
 
 const AssessmentLabelOrdering: Ordering<AggregateReportItem> = ordering(byString)
   .on(item => item.assessmentLabel);
+
+const ClaimOrdering: Ordering<AggregateReportItem> = ordering(byString)
+  .on(item => item.claimCode);
+
+const TargetOrdering: Ordering<AggregateReportItem> = ordering(byString)
+  .on(item => item.targetNaturalId);
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -70,7 +78,9 @@ export class AggregateReportTableComponent implements OnInit {
   private _performanceLevelDisplayType: string = PerformanceLevelDisplayTypes.Separate;
 
   constructor(public colorService: ColorService,
-              private exportService: AggregateReportTableExportService) {
+              private translate: TranslateService,
+              private exportService: AggregateReportTableExportService,
+              private reportService: AggregateReportService) {
   }
 
   ngOnInit(): void {
@@ -91,6 +101,18 @@ export class AggregateReportTableComponent implements OnInit {
     return this._performanceLevelDisplayType;
   }
 
+  get cutPoint(): number {
+    return this.table.assessmentDefinition.performanceLevelGroupingCutPoint;
+  }
+
+  get assessmentTypeCode(): string {
+    return this.table.assessmentDefinition.typeCode;
+  }
+
+  get center(): boolean {
+    return this.table.assessmentDefinition.performanceLevelGroupingCutPoint != null;
+  }
+
   @Input()
   set performanceLevelDisplayType(value: string) {
     this._performanceLevelDisplayType = PerformanceLevelDisplayTypes.valueOf(value);
@@ -106,10 +128,16 @@ export class AggregateReportTableComponent implements OnInit {
       this._table = {
         rows: value.rows ? value.rows.concat() : [],
         assessmentDefinition: value.assessmentDefinition,
-        options: value.options
+        options: value.options,
+        reportType: value.reportType || 'GeneralPopulation'
       };
       this.buildAndRender(this._table);
     }
+    // Latest TurboTable version (1.5.7) does not sort when row data
+    // changes.  Manually trigger a sort after setting row data.
+    setTimeout(() => {
+      this.sort({data: this._table.rows});
+    });
   }
 
   get table(): AggregateReportTable {
@@ -178,7 +206,7 @@ export class AggregateReportTableComponent implements OnInit {
    * @param event {{order: number, field: string}} An optional sort event
    */
   public sort(event?: SortEvent): void {
-    const ordering: Comparator<AggregateReportItem>[] = this.getidentityColumns();
+    const ordering: Comparator<AggregateReportItem>[] = this.getIdentityColumns();
 
     if (!event.field) {
       // We're not sorting on a field.  Just apply the default column ordering
@@ -229,8 +257,8 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   public getOrganizationTypeColor(type: OrganizationType): string {
-    let i: number = 0;
-    for (let value in OrganizationType) {
+    let i = 0;
+    for (const value in OrganizationType) {
       if (value === type) {
         return this.colorService.getColor(i);
       }
@@ -239,7 +267,19 @@ export class AggregateReportTableComponent implements OnInit {
     return this.colorService.getColor(0);
   }
 
-  private buildAndRender({ rows, options, assessmentDefinition }: AggregateReportTable): void {
+  private getClaimCodeTranslationKey(row: AggregateReportItem): string {
+    return `common.subject.${row.subjectCode}.claim.${row.claimCode}.name`;
+  }
+
+  getClaimCodeTranslation(row: AggregateReportItem): string {
+    return this.translate.instant(this.getClaimCodeTranslationKey(row));
+  }
+
+  getTargetDisplay(row: AggregateReportItem): string {
+    return "Fetch target display from API here";
+  }
+
+  private buildAndRender({ rows, options, assessmentDefinition, reportType }: AggregateReportTable): void {
 
     // configure row sorting
     const assessmentGradeOrdering = ordering(ranking(options.assessmentGrades))
@@ -250,8 +290,21 @@ export class AggregateReportTableComponent implements OnInit {
     this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
     this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
     this._orderingByColumnField[ 'subgroup.id' ] = subgroupOrdering(item => item.subgroup, options);
+    this._orderingByColumnField[ 'claimCode' ] = ClaimOrdering;
+    this._orderingByColumnField[ 'targetNaturalId' ] = TargetOrdering;
 
-    // create columns
+    // Create columns
+
+    const IdentityColumns: Column[] = [
+      new Column({ id: 'organization', field: 'organization.name' }),
+      new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
+      new Column({ id: 'assessmentLabel' }),
+      new Column({ id: 'schoolYear' }),
+      new Column({ id: 'dimension', field: 'subgroup.id' }),
+      new Column({ id: 'claim', field: 'claimCode' }),
+      new Column({ id: 'target', field: 'targetNaturalId' })
+    ];
+
     const performanceLevelsByDisplayType = {
       Separate: assessmentDefinition.performanceLevels,
       Grouped: [
@@ -260,21 +313,37 @@ export class AggregateReportTableComponent implements OnInit {
       ]
     };
 
-    const IdentityColumns: Column[] = [
-      new Column({ id: 'organization', field: 'organization.name' }),
-      new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
-      new Column({ id: 'assessmentLabel' }),
-      new Column({ id: 'schoolYear' }),
-      new Column({ id: 'dimension', field: 'subgroup.id' })
-    ];
+    const dataColumns: Column[] = [];
+    switch(reportType) {
+      case 'GeneralPopulation':
+      case 'LongitudinalCohort':
+        dataColumns.push(
+          new Column({ id: 'studentsTested' }),
+          new Column({ id: 'achievementComparison', sortable: false }),
+          new Column({ id: 'avgScaleScore' }),
+          ...this.createPerformanceLevelColumns(performanceLevelsByDisplayType, assessmentDefinition)
+        );
+        break;
+      case 'Claim':
+        dataColumns.push(
+          new Column({ id: 'studentsTested' }),
+          new Column({ id: 'achievementComparison', sortable: false }),
+          ...this.createPerformanceLevelColumns(performanceLevelsByDisplayType, assessmentDefinition)
+        );
+        break;
+      case 'Target':
+        dataColumns.push(
+          new Column({ id: 'studentsTested' }),
+          new Column({ id: 'studentRelativeResidualScoresLevel' }),
+          new Column({ id: 'standardMetRelativeResidualLevel' })
+        );
+        break;
+    }
 
     this.columns = [
       ...this.identityColumns
         .map(columnId => IdentityColumns.find(column => column.id === columnId)),
-      new Column({ id: 'studentsTested' }),
-      new Column({ id: 'achievementComparison', sortable: false }),
-      new Column({ id: 'avgScaleScore' }),
-      ...this.createPerformanceLevelColumns(performanceLevelsByDisplayType, assessmentDefinition)
+      ...dataColumns
     ];
 
     this.calculateTreeColumns();
@@ -336,7 +405,7 @@ export class AggregateReportTableComponent implements OnInit {
    *
    * @returns {Comparator<AggregateReportItem>[]} The ordered list of comparators
    */
-  private getidentityColumns(): Comparator<AggregateReportItem>[] {
+  private getIdentityColumns(): Comparator<AggregateReportItem>[] {
     return this.columns
       .map((column: Column) => {
         const ordering = this._orderingByColumnField[ column.field ];
@@ -405,7 +474,7 @@ export class AggregateReportTableComponent implements OnInit {
             index: index,
             field: `performanceLevelByDisplayTypes.${displayType}.${this.valueDisplayType}.${index}`,
             headerKey: this.getPerformanceLevelColumnHeaderTranslationCode(displayType, level, index),
-            headerColor: this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(assessmentDefinition.typeCode, level)
+            headerColor: this.colorService.getPerformanceLevelColorsByNumberOfPerformanceLevels(assessmentDefinition.performanceLevelCount, level)
           }));
         });
       });
@@ -435,6 +504,7 @@ export interface AggregateReportTable {
   readonly rows: AggregateReportItem[];
   readonly assessmentDefinition: AssessmentDefinition;
   readonly options: AggregateReportOptions;
+  readonly reportType: string;
 }
 
 class Column {

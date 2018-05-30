@@ -8,7 +8,7 @@
         <a *hasPermission="'CUSTOM_AGGREGATE_READ'"
            routerLink="/aggregate-reports"
            class="btn btn-xs btn-default">
-          {{'aggregate-report-form.heading' | translate}}
+          {{'aggregate-report-form.heading.default' | translate}}
         </a>
       </li>
       <li>
@@ -44,6 +44,11 @@
     <!-- My Groups Search -->
     <div *hasPermission="'GROUP_PII_READ'" class="my-groups-search-container well">
       <groups></groups>
+    </div>
+
+    <!-- My User Groups Search -->
+    <div *hasAnyPermission="['INDIVIDUAL_PII_READ', 'GROUP_PII_READ']" class="well">
+      <user-groups></user-groups>
     </div>
 
   </div>

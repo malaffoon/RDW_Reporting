@@ -61,8 +61,23 @@ sql:
       SELECT
         d.name AS district_name,
         ${sql.snippet.claimColumns},
+        wt.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        wt.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        wt.trait_conventions_score as ei_trait_conventions_score,
+        wt.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
+      LEFT JOIN (
+        SELECT
+          ei.exam_id,
+          ei.trait_evidence_elaboration_score,
+          ei.trait_organization_purpose_score,
+          ei.trait_conventions_score,
+          i.performance_task_writing_type
+        FROM exam_item ei
+        JOIN item i ON i.id=ei.item_id
+        WHERE i.performance_task_writing_type is not null
+      ) as wt on wt.exam_id = e.id
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
         AND (:subject_id is null or a.subject_id=:subject_id)
@@ -76,8 +91,23 @@ sql:
       SELECT
         d.name AS district_name,
         ${sql.snippet.claimColumns},
+        wt.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        wt.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        wt.trait_conventions_score as ei_trait_conventions_score,
+        wt.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
+      LEFT JOIN (
+        SELECT
+          ei.exam_id,
+          ei.trait_evidence_elaboration_score,
+          ei.trait_organization_purpose_score,
+          ei.trait_conventions_score,
+          i.performance_task_writing_type
+        FROM exam_item ei
+        JOIN item i ON i.id=ei.item_id
+        WHERE i.performance_task_writing_type is not null
+      ) wt ON wt.exam_id = e.id
       WHERE e.student_id in (:student_ids)
         AND ${sql.snippet.groupFilters}
         AND (:school_year is null or e.school_year=:school_year)

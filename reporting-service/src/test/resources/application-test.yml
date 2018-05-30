@@ -16,5 +16,5 @@ spring:
   datasource:
     url-schema: reporting_test
 
-  writeable_datasource:
+  writable_datasource:
     url-schema: reporting_test

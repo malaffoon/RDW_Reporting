@@ -12,6 +12,7 @@ sql:
         at.code as type_code,
         s.code as subject_code,
         g.code as grade_code,
+        g.sequence as grade_sequence,
         a.school_year,
         a.min_score,
         a.cut_point_1,
@@ -43,6 +44,12 @@ sql:
         FROM subject_claim_score scs
           JOIN subject s ON scs.subject_id = s.id
           JOIN asmt_type at ON at.id = scs.asmt_type_id
+
+  target:
+    findAll: >-
+      SELECT t.id, t.natural_id, t.claim_code, at.asmt_id, at.include_in_report
+        FROM asmt_target at
+          JOIN target t ON at.target_id =  t.id
 
   completeness:
     findAll: >-

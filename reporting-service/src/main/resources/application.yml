@@ -32,14 +32,14 @@ spring:
     initialSize: 4
     maxActive: 10
 
-  writeable_datasource:
+  writable_datasource:
     url: "\
-      jdbc:mysql://${spring.writeable_datasource.url-server:localhost:3306}/${spring.writeable_datasource.url-schema:reporting}\
-      ?useSSL=${spring.writeable_datasource.use-ssl:false}\
-      &useLegacyDatetimeCode=${spring.writeable_datasource.use-legacy-datetime-code:false}\
-      &characterEncoding=${spring.writeable_datasource.character-encoding:utf8}\
-      &rewriteBatchedStatements=${spring.writeable_datasource.rewrite-batched-statements:true}\
-      &useCompression=${spring.writeable_datasource.use-compression:true}\
+      jdbc:mysql://${spring.writable_datasource.url-server:localhost:3306}/${spring.writable_datasource.url-schema:reporting}\
+      ?useSSL=${spring.writable_datasource.use-ssl:false}\
+      &useLegacyDatetimeCode=${spring.writable_datasource.use-legacy-datetime-code:false}\
+      &characterEncoding=${spring.writable_datasource.character-encoding:utf8}\
+      &rewriteBatchedStatements=${spring.writable_datasource.rewrite-batched-statements:true}\
+      &useCompression=${spring.writable_datasource.use-compression:true}\
       "
     username: root
     password:
