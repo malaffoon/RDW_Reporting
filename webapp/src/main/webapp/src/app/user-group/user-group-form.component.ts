@@ -24,6 +24,9 @@ export class UserGroupFormComponent implements OnInit {
   subjectsChange: EventEmitter<string[]> = new EventEmitter<string[]>();
 
   @Output()
+  studentsChange: EventEmitter<Student[]> = new EventEmitter<Student[]>();
+
+  @Output()
   studentClick: EventEmitter<Student> = new EventEmitter<Student>();
 
   private _formGroup: FormGroup;
@@ -38,7 +41,7 @@ export class UserGroupFormComponent implements OnInit {
   ngOnInit(): void {
     this._formGroup = this.formBuilder.group({
       name: [ this.group.name ],
-      students: [ this.group.students, notEmpty({ messageId: 'notEmpty' }) ]
+      students: [ this.group.students, notEmpty({ messageId: 'user-group.students-empty-error' }) ]
     });
   }
 
@@ -48,6 +51,17 @@ export class UserGroupFormComponent implements OnInit {
 
   onSubjectsChange(): void {
     this.subjectsChange.emit(this.group.subjects);
+  }
+
+  onStudentClick(student: Student): void {
+    this.group.students = this.group.students
+      .filter(x => x.id !== student.id);
+
+    // Hacky intervention to get angular form validation to kick in
+    this.formGroup.get('students').setValue(this.group.students);
+
+    this.studentsChange.emit(this.group.students);
+
   }
 
 }

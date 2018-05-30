@@ -41,7 +41,7 @@ export class UserGroupService {
   private createGroup(group: UserGroup): Observable<UserGroup> {
     if (Utils.isNullOrEmpty(group.name)) {
       group = Object.assign(group, {
-        name: this.translate.instant('user-group.default-name')
+        name: `this.translate.instant('user-group.default-name') ${Date.now()}`
       });
     }
     return this.dataService.post(`${ReportingServiceRoute}/userGroups`, this.toUserGroupRequest(group)).pipe(

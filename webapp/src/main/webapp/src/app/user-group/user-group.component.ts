@@ -34,12 +34,12 @@ const StudentComparator = join(
 })
 export class UserGroupComponent implements OnInit, OnDestroy {
 
-  // group
+  // group form
   formOptions: UserGroupFormOptions;
   originalGroup: UserGroup;
   group: UserGroup;
 
-  // student
+  // student form
   studentFormOptions: StudentSearchFormOptions;
   studentForm: StudentSearchForm;
   studentFilterOptions: StudentFilterOptions;
@@ -48,11 +48,12 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   filteredStudents: Student[] = [];
   applicationSettings: ApplicationSettings;
   showAdvancedFilters: boolean = false;
+  loadingStudents: boolean = true;
 
   processingSubscription: Subscription;
   initialized: boolean;
 
-  saveButtonDisabled: boolean = true;
+  private _saveButtonDisabled: boolean = true;
 
   @ViewChild('groupForm')
   groupForm: UserGroupFormComponent;
@@ -68,6 +69,10 @@ export class UserGroupComponent implements OnInit, OnDestroy {
               private translate: TranslateService,
               private notificationService: NotificationService) {
     this.originalGroup = this.route.snapshot.data[ 'group' ];
+  }
+
+  get saveButtonDisabled(): boolean {
+    return this.processingSubscription != null || this._saveButtonDisabled;
   }
 
   get deleteButtonDisabled(): boolean {
@@ -184,10 +189,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
     this.updateSaveButtonDisabled();
   }
 
-  onGroupStudentClick(student: Student): void {
-    this.group.students = this.group.students
-      .filter(x => x !== student)
-      .sort(StudentComparator);
+  onGroupStudentsChange(students: Student[]): void {
     this.updateFormStudents();
     this.updateSaveButtonDisabled();
   }
@@ -196,8 +198,13 @@ export class UserGroupComponent implements OnInit, OnDestroy {
     this.group.students = this.group.students
       .concat(student)
       .sort(StudentComparator);
-    this.updateFormStudents();
-    this.updateSaveButtonDisabled();
+
+    // Hacky fix to allow angular forms to process validity checks before we update based on that validity
+    setTimeout(() => {
+      this.updateFormStudents();
+      this.updateSaveButtonDisabled();
+    }, 0);
+
   }
 
   onShowAdvancedFiltersChange(value: boolean): void {
@@ -221,11 +228,20 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   private searchStudents(): void {
     const search = this.createStudentSearch(this.studentForm);
     if (search != null) {
+      this.loadingStudents = true;
       this.studentService.getStudents(search)
         .subscribe(students => {
-          this.students = students.sort(StudentComparator);
-          this.updateFormStudents();
-        });
+            this.loadingStudents = false;
+            this.students = students.sort(StudentComparator);
+            this.updateFormStudents();
+          },
+          () => {
+            this.loadingStudents = false;
+            this.students = [];
+          });
+    } else {
+      this.students = [];
+      this.updateFormStudents();
     }
   }
 
@@ -261,8 +277,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   }
 
   private updateSaveButtonDisabled(): boolean {
-    this.saveButtonDisabled = !this.initialized
-      || this.processingSubscription != null
+    this._saveButtonDisabled = !this.initialized
       || this.groupForm == null
       || !this.groupForm.formGroup.valid
       || equals(this.originalGroup, this.group);

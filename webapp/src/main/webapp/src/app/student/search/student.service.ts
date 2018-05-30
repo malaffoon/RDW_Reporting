@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataService } from '../../shared/data/data.service';
 import { ReportingServiceRoute } from '../../shared/service-route';
 import { Student } from './student';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 
 export interface StudentSearch {
@@ -29,12 +29,11 @@ export class StudentService {
         gender: serverStudent.genderCode,
         ethnicities: serverStudent.ethnicityCodes,
         englishLanguageAcquisitionStatus: serverStudent.englishLanguageAcquisitionStatusCode,
-        individualEducationPlan:  this.toBooleanCode(serverStudent.individualEducationPlan),
-        limitedEnglishProficiency:  this.toBooleanCode(serverStudent.limitedEnglishProficiency),
-        section504:  this.toBooleanCode(serverStudent.section504),
-        migrantStatus:  this.toBooleanCode(serverStudent.migrantStatus)
-      })),
-      tap(x => console.log(x))
+        individualEducationPlan: this.toBooleanCode(serverStudent.individualEducationPlan),
+        limitedEnglishProficiency: this.toBooleanCode(serverStudent.limitedEnglishProficiency),
+        section504: this.toBooleanCode(serverStudent.section504),
+        migrantStatus: this.toBooleanCode(serverStudent.migrantStatus)
+      }))
     );
   }
 
@@ -47,7 +46,7 @@ export class StudentService {
    * @returns {string}
    */
   private toBooleanCode(value?: boolean): string {
-    if (typeof value === 'undefined') {
+    if (value == null) {
       return 'undefined';
     }
     return value ? 'yes' : 'no';

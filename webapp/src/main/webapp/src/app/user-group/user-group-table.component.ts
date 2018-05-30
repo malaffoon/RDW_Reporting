@@ -1,19 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UserGroup } from './user-group';
 
-class Column {
-  id: string;
-  field: string;
-
-  constructor({
-                id,
-                field = ''
-              }) {
-    this.id = id;
-    this.field = field;
-  }
-}
-
 @Component({
   selector: 'user-group-table',
   templateUrl: './user-group-table.component.html'
@@ -32,4 +19,14 @@ export class UserGroupTableComponent implements OnInit {
     new Column({ id: 'action' })
   ];
 
+}
+
+class Column {
+  id: string;
+  field: string;
+
+  constructor({ id, field = ''}) {
+    this.id = id;
+    this.field = field;
+  }
 }

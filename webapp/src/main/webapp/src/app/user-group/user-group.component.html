@@ -63,12 +63,24 @@
 
         <div class="well gray-lightest">
 
-          <label>Students</label>
-          <p *ngIf="filteredStudents.length"
-             class="small">{{'user-group.student-search.add-student-prompt' | translate}}</p>
+          <label>{{'user-group.student-search.results-label' | translate}}</label>
 
-          <p *ngIf="!filteredStudents.length"
-             class="small">{{'user-group.student-search.no-results' | translate}}</p>
+          <p class="small">
+
+            <ng-container *ngIf="loadingStudents; else studentsLoaded">
+              <i class="fa fa-spinner fa-pulse fa-fw"></i>
+            </ng-container>
+            <ng-template #studentsLoaded>
+
+              <ng-container *ngIf="filteredStudents.length; else noResults">
+                {{'user-group.student-search.add-student-prompt' | translate}}
+              </ng-container>
+              <ng-template #noResults>
+                {{'user-group.student-search.no-results' | translate}}
+              </ng-template>
+
+            </ng-template>
+          </p>
 
           <actionable-list-group [items]="filteredStudents"
                                  [itemTemplate]="studentFormStudentTemplate"
@@ -85,7 +97,7 @@
                            [group]="group"
                            (nameChange)="onGroupNameChange()"
                            (subjectsChange)="onGroupSubjectsChange()"
-                           (studentClick)="onGroupStudentClick($event)"></user-group-form>
+                           (studentsChange)="onGroupStudentsChange($event)"></user-group-form>
         </div>
       </div>
     </div>

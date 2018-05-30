@@ -1340,6 +1340,7 @@
       }
     },
     "student-search": {
+      "results-label": "Students",
       "find-students-prompt": "Search for students to add to your group.",
       "add-student-prompt": "Add students to your group by clicking on their name.",
       "no-results": "There are no students matching the current search."

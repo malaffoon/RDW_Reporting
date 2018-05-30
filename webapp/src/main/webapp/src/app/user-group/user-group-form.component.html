@@ -33,7 +33,7 @@
 
     <actionable-list-group [items]="group.students"
                            [itemTemplate]="studentTemplate"
-                           (itemClick)="studentClick.emit($event)"></actionable-list-group>
+                           (itemClick)="onStudentClick($event)"></actionable-list-group>
   </div>
 
 </form>
