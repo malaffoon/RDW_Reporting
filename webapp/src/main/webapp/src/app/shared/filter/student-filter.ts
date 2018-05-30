@@ -2,8 +2,14 @@ import { StudentFilterOptions } from './student-filter-options';
 import { Utils } from '../support/support';
 import { Student } from '../../student/search/student';
 
-export interface StudentFilter extends StudentFilterOptions {
-
+export interface StudentFilter {
+  genders: string[];
+  ethnicities: string[];
+  englishLanguageAcquisitionStatuses: string[];
+  individualEducationPlans: string[];
+  limitedEnglishProficiencies?: string[];
+  section504s?: string[];
+  migrantStatuses?: string[];
 }
 
 export function createDefaultStudentFilter(options: StudentFilterOptions): StudentFilter {
