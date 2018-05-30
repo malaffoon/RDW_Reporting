@@ -4,12 +4,12 @@ export interface Student {
   readonly ssid: string;
   readonly firstName: string;
   readonly lastName: string;
-  readonly genderCode: string;
-  readonly ethnicityCodes: string[];
-  readonly englishLanguageAcquisitionStatusCode?: string;
-  readonly individualEducationPlan: boolean;
-  readonly limitedEnglishProficiency: boolean;
-  readonly section504?: boolean;
-  readonly migrantStatus?: boolean;
+  readonly gender: string;
+  readonly ethnicities: string[];
+  readonly englishLanguageAcquisitionStatus: string;
+  readonly individualEducationPlan: string;
+  readonly limitedEnglishProficiency: string;
+  readonly section504: string;
+  readonly migrantStatus: string;
 
 }

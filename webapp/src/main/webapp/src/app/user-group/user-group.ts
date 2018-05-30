@@ -5,7 +5,7 @@ export interface UserGroup {
 
   id?: number;
   name: string;
-  subjectCodes: string[];
+  subjects: string[];
   students: Student[];
 
 }
@@ -18,14 +18,16 @@ export interface UserGroupRequest {
 }
 
 export function copy(group: UserGroup): UserGroup {
-  const copy = <any>{};
+  const copied = <any>{};
   if (group.id != null) {
-    copy.id = group.id;
+    copied.id = group.id;
   }
-  copy.name = group.name;
-  copy.subjectCodes = group.subjectCodes.concat();
-  copy.students = group.students.concat();
-  return copy;
+  copied.name = group.name;
+  if (group.subjects != null) {
+    copied.subjects = group.subjects.concat();
+  }
+  copied.students = group.students.concat();
+  return copied;
 }
 
 export function equals(a: UserGroup, b: UserGroup): boolean {
@@ -36,7 +38,7 @@ export function equals(a: UserGroup, b: UserGroup): boolean {
       && b != null
       && a.id === b.id
       && a.name === b.name
-      && Utils.equalSets(a.subjectCodes, b.subjectCodes)
+      && Utils.equalSets(a.subjects, b.subjects)
       && Utils.equalSets(idsOf(a.students), idsOf(b.students))
     );
 }

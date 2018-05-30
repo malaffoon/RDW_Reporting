@@ -18,6 +18,12 @@ export class UserGroupFormComponent implements OnInit {
   group: UserGroup;
 
   @Output()
+  nameChange: EventEmitter<string> = new EventEmitter<string>();
+
+  @Output()
+  subjectsChange: EventEmitter<string[]> = new EventEmitter<string[]>();
+
+  @Output()
   studentClick: EventEmitter<Student> = new EventEmitter<Student>();
 
   private _formGroup: FormGroup;
@@ -34,6 +40,14 @@ export class UserGroupFormComponent implements OnInit {
       name: [ this.group.name ],
       students: [ this.group.students, notEmpty({ messageId: 'notEmpty' }) ]
     });
+  }
+
+  onNameChange(): void {
+    this.nameChange.emit(this.group.name);
+  }
+
+  onSubjectsChange(): void {
+    this.subjectsChange.emit(this.group.subjects);
   }
 
 }

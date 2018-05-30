@@ -169,7 +169,7 @@ h1 + p.pull-left, .h1 + p.pull-left, h2 + p.pull-left, .h2 + p.pull-left, h3 + p
   border-radius: @border-radius-base @border-radius-base 0 0;
   padding: @padding-base-horizontal @padding-large-horizontal;
   + .table-list-container .table > thead > tr,
-  + .table-list-container > p-table > .table > .ui-table-wrapper > table > thead > tr {
+  + .table-list-container p-table > .table > .ui-table-wrapper > table > thead > tr {
     > th:first-child {
       border-top-left-radius: 0;
     }
@@ -689,6 +689,24 @@ aggregate-report-table .label {
   color: @white;
   padding: 5px;
   border-radius: 5px;
+}
+
+.well-group {
+  &.ignore-last-margin-bottom {
+    .well {
+      padding: 15px 20px 20px 20px;
+      /**
+       * pseudo-recursive last child selector
+       */
+      > :last-child,
+      > :last-child > :last-child,
+      > :last-child > :last-child > :last-child,
+      > :last-child > :last-child > :last-child > :last-child,
+      > :last-child > :last-child > :last-child > :last-child > :last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
 aggregate-report-form {

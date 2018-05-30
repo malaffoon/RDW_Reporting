@@ -57,7 +57,7 @@ export class UserGroupService {
     return {
       id: group.id,
       name: group.name,
-      subjectCodes: group.subjectCodes,
+      subjectCodes: group.subjects,
       studentIds: group.students.map(student => student.id)
     };
   }
@@ -66,7 +66,8 @@ export class UserGroupService {
     return {
       id: serverGroup.id,
       name: serverGroup.name,
-      subjectCodes: serverGroup.subjectCodes,
+      // TODO need to saturate empty subject filter with all subjects
+      subjects: serverGroup.subjectCodes,
       students: serverGroup.students != null
         ? serverGroup.students.map(serverStudent => this.toStudent(serverStudent))
         : []
@@ -79,9 +80,9 @@ export class UserGroupService {
       ssid: serverStudent.ssid,
       firstName: serverStudent.firstName,
       lastName: serverStudent.lastName,
-      genderCode: serverStudent.genderCode,
-      ethnicityCodes: serverStudent.ethnicityCodes,
-      englishLanguageAcquisitionStatusCode: serverStudent.englishLanguageAcquisitionStatusCode,
+      gender: serverStudent.genderCode,
+      ethnicities: serverStudent.ethnicityCodes,
+      englishLanguageAcquisitionStatus: serverStudent.englishLanguageAcquisitionStatusCode,
       individualEducationPlan: serverStudent.individualEducationPlan,
       limitedEnglishProficiency: serverStudent.limitedEnglishProficiency,
       section504: serverStudent.section504,

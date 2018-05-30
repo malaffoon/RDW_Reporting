@@ -9,9 +9,12 @@ import { GroupService } from './group.service';
 export class GroupsComponent implements OnInit {
 
   groups: Group[];
-  filteredGroups: Group[] = [];
-  searchTerm : string;
   defaultGroup: Group;
+
+  searchTerm: string;
+  searchThreshold: number = 10;
+  filteredGroups: Group[] = [];
+
   columns: Column[] = [
     new Column({id: 'group', field: 'name'}),
     new Column({id: 'school', field: 'schoolName'}),

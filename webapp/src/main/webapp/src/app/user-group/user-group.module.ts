@@ -10,11 +10,15 @@ import { UserGroupComponent } from './user-group.component';
 import { UserGroupOptionsService } from './user-group-options.service';
 import { StudentSearchModule } from '../student/search/student-search.module';
 import { UserGroupFormComponent } from './user-group-form.component';
+import { UserGroupsComponent } from './user-groups.component';
+import { UserGroupTableComponent } from './user-group-table.component';
 
 @NgModule({
   declarations: [
     UserGroupComponent,
-    UserGroupFormComponent
+    UserGroupFormComponent,
+    UserGroupsComponent,
+    UserGroupTableComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +30,8 @@ import { UserGroupFormComponent } from './user-group-form.component';
     TableModule
   ],
   exports: [
-    UserGroupComponent
+    UserGroupComponent,
+    UserGroupsComponent
   ],
   providers: [
     UserGroupService,

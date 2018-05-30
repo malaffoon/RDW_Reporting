@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataService } from '../../shared/data/data.service';
 import { ReportingServiceRoute } from '../../shared/service-route';
 import { Student } from './student';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 
 export interface StudentSearch {
@@ -26,15 +26,31 @@ export class StudentService {
         ssid: serverStudent.ssid,
         firstName: serverStudent.firstName,
         lastName: serverStudent.lastName,
-        genderCode: serverStudent.genderCode,
-        ethnicityCodes: serverStudents.ethnicityCodes,
-        englishLanguageAcquisitionStatusCode: serverStudent.englishLanguageAcquisitionStatusCode,
-        individualEducationPlan: serverStudents.individualEducationPlan,
-        limitedEnglishProficiency: serverStudents.limitedEnglishProficiency,
-        section504: serverStudents.section504,
-        migrantStatus: serverStudents.migrantStatus
-      }))
+        gender: serverStudent.genderCode,
+        ethnicities: serverStudent.ethnicityCodes,
+        englishLanguageAcquisitionStatus: serverStudent.englishLanguageAcquisitionStatusCode,
+        individualEducationPlan:  this.toBooleanCode(serverStudent.individualEducationPlan),
+        limitedEnglishProficiency:  this.toBooleanCode(serverStudent.limitedEnglishProficiency),
+        section504:  this.toBooleanCode(serverStudent.section504),
+        migrantStatus:  this.toBooleanCode(serverStudent.migrantStatus)
+      })),
+      tap(x => console.log(x))
     );
+  }
+
+  /**
+   * TODO move to API repository layer
+   *
+   * Converts javascript booleans into string boolean codes
+   *
+   * @param {boolean} value
+   * @returns {string}
+   */
+  private toBooleanCode(value?: boolean): string {
+    if (typeof value === 'undefined') {
+      return 'undefined';
+    }
+    return value ? 'yes' : 'no';
   }
 
 }

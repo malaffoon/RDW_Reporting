@@ -30,6 +30,11 @@ export class StudentSearchFormComponent extends AbstractControlValueAccessor<Stu
   @Output()
   nameChange: EventEmitter<string> = new EventEmitter<string>();
 
+  @Output()
+  showAdvancedFiltersChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  showAdvancedFilters: boolean;
+
   constructor() {
     super();
   }
@@ -50,6 +55,11 @@ export class StudentSearchFormComponent extends AbstractControlValueAccessor<Stu
 
   onNameChange(): void {
     this.nameChange.emit(this.value.name);
+  }
+
+  onAdvancedFiltersToggleClick(): void {
+    this.showAdvancedFilters = !this.showAdvancedFilters;
+    this.showAdvancedFiltersChange.emit(this.showAdvancedFilters);
   }
 
 }

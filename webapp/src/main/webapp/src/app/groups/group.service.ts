@@ -4,7 +4,6 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Group } from './group';
 import { DataService } from '../shared/data/data.service';
 import { CachingDataService } from '../shared/data/caching-data.service';
@@ -17,12 +16,8 @@ export class GroupService {
   }
 
   getGroups(): Observable<Group[]> {
-    return forkJoin(
-      this.cachingDataService.get(`${ReportingServiceRoute}/groups`),
-      this.dataService.get(`${ReportingServiceRoute}/userGroups`)
-    ).pipe(
-      map(([serverGroups, serverUserGroups]) => serverGroups
-        .concat(serverUserGroups)
+    return this.cachingDataService.get(`${ReportingServiceRoute}/groups`).pipe(
+      map(serverGroups => serverGroups
         .map(serverGroup => this.toGroup(serverGroup))
         .sort(ordering(byString).on<Group>(group => group.name).compare)
       )

@@ -1323,8 +1323,8 @@
     "title": "Edit Instructional Resource"
   },
   "user-group": {
-    "new-heading": "Create Group",
-    "edit-heading": "Edit Group",
+    "new-heading": "New Group",
+    "edit-heading": "Editing: {{name}}",
     "default-name": "My Group",
     "form": {
       "field": {
@@ -1339,8 +1339,24 @@
         }
       }
     },
+    "student-search": {
+      "find-students-prompt": "Search for students to add to your group.",
+      "add-student-prompt": "Add students to your group by clicking on their name.",
+      "no-results": "There are no students matching the current search."
+    },
     "save-error": "Unable to save this group. Please try again later.",
     "delete-error": "Unable to delete this group. Please try again later."
+  },
+  "user-groups": {
+    "heading": "Search by My Created Groups"
+  },
+  "user-group-table": {
+    "edit": "Edit"
+  },
+  "student-search-form": {
+    "school-label": "School",
+    "group-label": "Group",
+    "name-ssid-label": "Student Name or SSID"
   },
   "writing-trait-scores": {
     "aggregate-header": "Points Breakdown"

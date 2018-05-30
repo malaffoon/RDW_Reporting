@@ -5,7 +5,7 @@
 
     <div class="flex-child">
       <div class="form-group">
-        <label>School</label>
+        <label>{{'student-search-form.school-label' | translate}}</label>
         <select name="school"
                 class="form-control"
                 [(ngModel)]="value.school"
@@ -19,7 +19,7 @@
 
     <div class="flex-child">
       <div class="form-group">
-        <label>Group</label>
+        <label>{{'student-search-form.group-label' | translate}}</label>
         <select name="group"
                 class="form-control"
                 [(ngModel)]="value.group"
@@ -33,7 +33,7 @@
 
     <div class="flex-child grow">
       <div class="form-group">
-        <label>Student Name / SSID</label>
+        <label>{{'student-search-form.name-ssid-label' | translate}}</label>
         <input type="text"
                name="name"
                class="form-control"
@@ -43,14 +43,15 @@
       </div>
     </div>
 
-    <div class="flex-child">
-      <!-- TODO implement advanced filters section -->
+    <div class="flex-child text-right">
       <label>{{'advanced-filters.label' | translate}}</label>
       <button id="advanced"
-              class="form-control btn btn-sm btn-default">
-        {{'common.action.show' | translate}}
+              class="form-control btn btn-sm btn-default"
+              (click)="onAdvancedFiltersToggleClick()">
+        {{(showAdvancedFilters ? 'common.action.hide' : 'common.action.show') | translate}}
         <i aria-hidden="true"
-           class="fa fa-caret-square-o-down ml-xs"></i>
+           class="fa ml-xs"
+           [ngClass]="showAdvancedFilters ? 'fa-caret-square-o-up' : 'fa-caret-square-o-down'"></i>
       </button>
     </div>
 

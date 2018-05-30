@@ -3,24 +3,16 @@
 </ng-container>
 
 <ng-template #loaded>
-  <div class="flex-child grow">
-    <label>{{'groups.search-label' | translate }}</label>
+  <div class="flex-child grow clearfix">
+    <label>{{'groups.search-label' | translate}}</label>
 
     <ul class="list-unstyled list-inline pull-right">
       <li>
         <a *ngIf="defaultGroup"
-           routerLink="/group-dashboard/{{ defaultGroup.id }}"
-           title="{{ 'groups.view-dashboard' | translate }}"
+           routerLink="/group-dashboard/{{defaultGroup.id}}"
+           title="{{'groups.view-dashboard' | translate}}"
            class="btn btn-xs btn-default">
           <i class="fa fa-bars"></i> {{'groups.view-dashboard' | translate}}
-        </a>
-      </li>
-      <li>
-        <a *hasPermission="'GROUP_PII_READ'"
-           routerLink="/userGroups"
-           title="{{ 'common.action.create' | translate }}"
-           class="btn btn-xs btn-primary">
-          <i class="fa fa-plus"></i> {{'common.action.create' | translate}}
         </a>
       </li>
     </ul>
@@ -28,10 +20,10 @@
   </div>
 
   <!-- My Groups Search Input -->
-  <div *ngIf="groups.length > 2"
+  <div *ngIf="groups.length > searchThreshold"
        class="table-search-form-container">
     <label for="search" class="sr-only">{{'groups.filter' | translate}}</label>
-    <input [(ngModel)]="searchTerm"
+    <input [(ngModel)]="search"
            class="search form-control"
            id="search"
            type="text"
@@ -74,20 +66,10 @@
 
             <div *ngSwitchCase="'group'"
                  class="label-max-width">
-              <a *ngIf="!group.userCreated"
-                 routerLink="/groups/{{group.id}}"
+              <a routerLink="/groups/{{group.id}}"
                  title="{{group.name}}">
                 {{group.name}}
               </a>
-              <span *ngIf="group.userCreated">
-                <a routerLink="userGroups/{{group.id}}">
-                  <i class="fa fa-pencil"></i>
-                </a>
-                <a routerLink="/teacherGroups/{{group.id}}"
-                   title="{{group.name}}">
-                  {{group.name}}
-                </a>
-              </span>
             </div>
 
             <ng-container *ngSwitchCase="'school'">
