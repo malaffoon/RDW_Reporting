@@ -40,6 +40,7 @@ import { LongitudinalPlaygroundComponent } from './aggregate-report/results/long
 import { GroupDashboardComponent } from './dashboard/group-dashboard/group-dashboard.component';
 import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
+import { TargetReportFormComponent } from "./aggregate-report/target/target-report-form.component";
 
 const adminRoute = {
   path: '',
@@ -322,6 +323,14 @@ export const routes: Routes = [
               settings: AggregateReportFormSettingsResolve
             },
             component: AggregateReportFormComponent
+          },
+          {
+            path: 'targets',
+            pathMatch: 'full',
+            resolve: {
+              settings: AggregateReportFormSettingsResolve
+            },
+            component: TargetReportFormComponent
           },
           {
             path: ':id',

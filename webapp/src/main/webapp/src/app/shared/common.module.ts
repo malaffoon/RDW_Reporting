@@ -41,6 +41,7 @@ import { SchoolModule } from './school/school.module';
 import { InViewDirective } from './nav/in-view.directive';
 import { RdwListModule } from './list/rdw-list.module';
 import { RdwFilterModule } from './filter/rdw-filter.module';
+import { RdwIconModule } from "./icon/rdw-icon.module";
 
 
 @NgModule({
@@ -75,6 +76,7 @@ import { RdwFilterModule } from './filter/rdw-filter.module';
     RdwFormModule,
     RdwFormatModule,
     RdwI18nModule,
+    RdwIconModule,
     RdwLayoutModule,
     RdwListModule,
     RdwLoadingModule,
@@ -105,6 +107,7 @@ import { RdwFilterModule } from './filter/rdw-filter.module';
     RdwFormModule,
     RdwFormatModule,
     RdwI18nModule,
+    RdwIconModule,
     RdwLayoutModule,
     RdwListModule,
     RdwLoadingModule,
@@ -115,7 +118,8 @@ import { RdwFilterModule } from './filter/rdw-filter.module';
     SBToggleComponent,
     ScaleScoreComponent,
     TranslateModule,
-    InViewDirective
+    InViewDirective,
+
   ],
   providers: [
     { provide: AuthenticationServiceAuthenticationExpiredRoute, useValue: 'session-expired' },
