@@ -838,7 +838,7 @@
             "name": "Reasoning"
           },
           "SOCK_2": {
-            "name": "Problem Solving"
+            "name": "Problem Solving & Modeling / Data Analysis"
           }
         }
       }
@@ -848,7 +848,7 @@
       "3": "Communicating Reasoning",
       "2-W": "Writing",
       "4-CR": "Research & Inquiry",
-      "SOCK_2": "Problem Solving",
+      "SOCK_2": "Problem Solving & Modeling / Data Analysis",
       "SOCK_LS": "Listening",
       "SOCK_R": "Reading"
     },
