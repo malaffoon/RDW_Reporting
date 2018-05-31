@@ -466,7 +466,7 @@
       },
       "p3": {
         "header": "Note:",
-        "html": "These results represent only one indicator of a student's performance. These results should be used along with other information, such as classwork and other tests when making educational decisions. Specific questions about individual student results should be directed to the student's teacher."
+        "html": "These results represent only one indicator of a student''s performance. These results should be used along with other information, such as classwork and other tests when making educational decisions. Specific questions about individual student results should be directed to the student''s teacher."
       }
     },
     "grade": {
@@ -764,7 +764,7 @@
       "rank": "Score is higher than {0}% of students."
     },
     "scale-score": {
-      "description": "A student's test score can vary if the test is taken several times. If this student was tested again, it is likely that the scale score would fall within this range.",
+      "description": "A student''s test score can vary if the test is taken several times. If this student was tested again, it is likely that the scale score would fall within this range.",
       "error-band": "Error Band"
     },
     "student": {
