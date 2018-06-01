@@ -17,10 +17,12 @@ import { GroupAssessmentExportService } from './results/group-assessment-export.
 import { GroupService } from './group.service';
 import { TableModule } from 'primeng/table';
 import { UserGroupModule } from '../user-group/user-group.module';
+import { GroupTableComponent } from './group-table.component';
 
 @NgModule({
   declarations: [
     GroupsComponent,
+    GroupTableComponent,
     GroupResultsComponent
   ],
   imports: [
