@@ -40,7 +40,7 @@
       <p class="help-block small red">{{'user-group-form.field.students.required-error' | translate}}</p>
     </ng-container>
     <ng-template #hideStudentsErrors>
-      <p *ngIf="!group.students.length && !showErrors(studentsControl)"
+      <p *ngIf="!group.students.length"
          class="small text-muted">{{'user-group-form.field.students.none-selected' | translate}}</p>
     </ng-template>
 

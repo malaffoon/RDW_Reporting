@@ -10,7 +10,7 @@
                let-columns>
     <tr>
       <th *ngFor="let column of columns"
-          [pSortableColumn]="column.id"
+          [pSortableColumn]="column.field"
           [ngSwitch]="column.id">
 
         <ng-container *ngSwitchCase="'action'"></ng-container>

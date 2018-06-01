@@ -55,13 +55,17 @@ export class Forms {
   }
 
   public static submit(form: FormGroup, onValid: () => void, onInvalid?: () => void): void {
-    if (!form.valid) {
+    if (form.valid) {
+      onValid();
+    } else {
       Forms.controls(form)
         .forEach(control => control.markAsDirty());
       form.updateValueAndValidity();
-      return;
+
+      if (typeof onInvalid === 'function') {
+        onInvalid();
+      }
     }
-    onValid();
   }
 
 }
