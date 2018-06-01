@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserGroupService } from './user-group.service';
 import { UserGroup } from './user-group';
 import { FilterOptionsService } from '../shared/filter/filter-options.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
   selector: 'user-groups',
@@ -10,7 +9,9 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 })
 export class UserGroupsComponent implements OnInit {
 
+  @Input()
   groups: UserGroup[];
+
   defaultGroup: UserGroup;
   subjects: string[];
 
@@ -25,19 +26,12 @@ export class UserGroupsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    forkJoin(
-      this.service.getGroups(),
-      this.filterOptionService.getFilterOptions()
-    ).subscribe(([ groups, options ]) => {
-      this.groups = groups;
-      this.filteredGroups = groups.concat();
-
-      if (groups && groups.length) {
-        this.defaultGroup = groups[ 0 ];
+    this.filterOptionService.getFilterOptions().subscribe(options => {
+      this.filteredGroups = this.groups.concat();
+      if (this.groups.length) {
+        this.defaultGroup = this.groups[ 0 ];
       }
-
       this.subjects = options.subjects;
-
       this.initialized = true;
     });
   }
@@ -45,12 +39,6 @@ export class UserGroupsComponent implements OnInit {
   onSearchChange() {
     this.filteredGroups = this.groups
       .filter(group => group.name.toLowerCase().includes(this.search.toLowerCase()));
-  }
-
-  get emptyMessageCode(): string {
-    return this.groups && this.groups.length > 0 ?
-      'groups.empty-message' :
-      'groups.no-groups-message';
   }
 
 }

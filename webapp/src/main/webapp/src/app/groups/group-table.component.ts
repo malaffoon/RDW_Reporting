@@ -16,18 +16,6 @@ export class GroupTableComponent {
     new Column({ id: 'subject', field: 'subjectCode' })
   ];
 
-  /**
-   * Determines if the empty message displayed should be for when there are groups and the filter didn't have any matches
-   * or if there were never any groups to start with
-   *
-   * @returns {string} translation key to use
-   */
-  get emptyMessageTranslateKey(): string {
-    return this.groups && this.groups.length ?
-      'groups.empty-message' :
-      'groups.no-groups-message';
-  }
-
 }
 
 class Column {

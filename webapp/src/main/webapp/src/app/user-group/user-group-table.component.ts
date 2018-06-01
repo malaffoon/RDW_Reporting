@@ -13,9 +13,6 @@ export class UserGroupTableComponent {
   @Input()
   subjects: string[];
 
-  @Input()
-  emptyMessage: string;
-
   initialized: boolean = false;
 
   columns: Column[] = [

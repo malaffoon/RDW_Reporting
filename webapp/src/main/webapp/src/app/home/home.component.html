@@ -40,18 +40,7 @@
     </div>
 
     <ng-container *hasPermission="'GROUP_PII_READ'">
-      <tabset>
-        <tab heading="{{'home.groups-well.assigned-groups-heading' | translate}}">
-          <div class="well">
-            <groups></groups>
-          </div>
-        </tab>
-        <tab heading="{{'home.groups-well.created-groups-heading' | translate}}">
-          <div class="well">
-            <user-groups></user-groups>
-          </div>
-        </tab>
-      </tabset>
+      <group-tabs></group-tabs>
     </ng-container>
 
   </div>
