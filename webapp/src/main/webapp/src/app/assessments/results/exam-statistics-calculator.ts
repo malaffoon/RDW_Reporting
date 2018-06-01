@@ -6,6 +6,8 @@ import { DynamicItemField } from '../model/item-point-field.model';
 import * as math from 'mathjs';
 import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
 import { ClaimStatistics } from '../model/claim-score.model';
+import { TargetScoreExam } from '../model/target-score-exam.model';
+import { AggregateTargetScoreRow, TargetReportingLevel } from '../model/aggregate-target-score-row.model';
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -14,10 +16,10 @@ export class ExamStatisticsCalculator {
 
   private readonly potentialResponses = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  calculateAverage(exams: Exam[]): number {
-    let scoredExams = this.getOnlyScoredExams(exams);
-    return scoredExams.reduce((x, y) => x + y.score, 0)
-      / scoredExams.length;
+  calculateAverage(scores: number[]): number {
+    let scored = scores.filter(x => x != null);
+    return scored.reduce((x, y) => x + y, 0)
+      / scored.length;
   }
 
   /**
@@ -27,15 +29,14 @@ export class ExamStatisticsCalculator {
    * @param exams
    * @returns {number}
    */
-  calculateStandardErrorOfTheMean(exams: Exam[]): number {
-    let scoredExams = this.getOnlyScoredExams(exams);
-    let scores = scoredExams.map(x => x.score);
+  calculateStandardErrorOfTheMean(scores: number[]): number {
+    let scored = scores.filter(x => x != null);
 
-    if (scores.length == 0) {
+    if (scored.length == 0) {
       return 0;
     }
 
-    return math.std(scores) / math.sqrt(scores.length);
+    return math.std(scored) / math.sqrt(scored.length);
   }
 
   calculateClaimStatistics(exams: Exam[], numberOfLevels: number): ClaimStatistics[] {
@@ -111,6 +112,49 @@ export class ExamStatisticsCalculator {
     }
 
     return pointFields;
+  }
+
+  aggregateTargetScores(targetScoreExams: TargetScoreExam[]): AggregateTargetScoreRow[] {
+    let grouped = targetScoreExams.reduce((groupedExams, exam) => {
+      let index = groupedExams.findIndex(x => x.targetId == exam.targetId);
+      if (index === -1) {
+        groupedExams.push({
+          targetId: exam.targetId,
+          standardMetScores:[],
+          studentScores: []
+        });
+
+        index = groupedExams.length - 1;
+      }
+
+      groupedExams[ index ].standardMetScores.push(exam.standardMetRelativeResidualScore);
+      groupedExams[ index ].studentScores.push(exam.studentRelativeResidualScore);
+
+      return groupedExams;
+    }, []);
+
+    let rows = grouped.map(entry => {
+      return <AggregateTargetScoreRow>{
+        targetId: entry.targetId,
+        standardMetRelativeLevel: this.mapTargetScoreDeltaToReportingLevel(
+          this.calculateAverage(entry.standardMetScores),
+          this.calculateStandardErrorOfTheMean(entry.standardMetScores)
+        ),
+        studentRelativeLevel: this.mapTargetScoreDeltaToReportingLevel(
+          this.calculateAverage(entry.studentScores),
+          this.calculateStandardErrorOfTheMean(entry.studentScores)
+        )
+      };
+    });
+
+    return rows;
+  }
+
+  mapTargetScoreDeltaToReportingLevel(delta: number, standardError: number): TargetReportingLevel {
+    if (standardError > 0.2) return TargetReportingLevel.InsufficientData;
+    if (delta >= standardError) return TargetReportingLevel.Above;
+    if (delta <= -standardError) return TargetReportingLevel.Below;
+    return TargetReportingLevel.Near;
   }
 
   aggregateWritingTraitScores(assessmentItems: AssessmentItem[]): WritingTraitScoreSummary[] {
