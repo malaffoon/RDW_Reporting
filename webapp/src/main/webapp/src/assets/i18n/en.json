@@ -1423,9 +1423,13 @@
   "user-group-table": {
     "edit": "Edit"
   },
+  "school-and-group-typeahead": {
+    "school-group": "Schools",
+    "assigned-group-group": "Assigned Groups",
+    "created-group-group": "Groups I Created"
+  },
   "student-search-form": {
-    "school-label": "School",
-    "group-label": "Group",
+    "school-or-group-label": "School or Group",
     "name-ssid-label": "Student Name or SSID"
   },
   "writing-trait-scores": {
