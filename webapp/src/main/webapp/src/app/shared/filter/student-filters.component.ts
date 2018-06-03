@@ -46,6 +46,7 @@ export class StudentFiltersComponent {
   }
 
   onChange(): void {
+    console.log('filter', this._value)
     this.changed.emit(this._value);
   }
 
