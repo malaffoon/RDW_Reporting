@@ -12,19 +12,6 @@ export interface StudentFilter {
   migrantStatuses?: string[];
 }
 
-export function createDefaultStudentFilter(options: StudentFilterOptions): StudentFilter {
-  // return {
-  //   genders: options.genders.concat(),
-  //   ethnicities: options.ethnicities.concat(),
-  //   englishLanguageAcquisitionStatuses: [],
-  //   individualEducationPlans: options.individualEducationPlans.concat(),
-  //   limitedEnglishProficiencies: options.limitedEnglishProficiencies.concat(),
-  //   section504s: options.section504s.concat(),
-  //   migrantStatuses: options.migrantStatuses.concat()
-  // };
-  return {};
-}
-
 export type ArrayFilter<T> = (student: T, index: number, students: T[]) => boolean;
 export type StudentArrayFilter = ArrayFilter<Student>;
 
