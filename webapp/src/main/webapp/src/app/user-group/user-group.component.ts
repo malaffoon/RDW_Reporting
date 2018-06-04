@@ -17,7 +17,12 @@ import { StudentSearch, StudentService } from '../student/search/student.service
 import { byString, join } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupFormComponent } from './user-group-form.component';
-import { createStudentArrayFilter, StudentArrayFilter, StudentFilter } from '../shared/filter/student-filter';
+import {
+  countFilters,
+  createStudentArrayFilter,
+  StudentArrayFilter,
+  StudentFilter
+} from '../shared/filter/student-filter';
 import { StudentFilterOptions } from '../shared/filter/student-filter-options';
 import { FilterOptionsService } from '../shared/filter/filter-options.service';
 import { ApplicationSettingsService } from '../app-settings.service';
@@ -50,6 +55,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   applicationSettings: ApplicationSettings;
   showAdvancedFilters: boolean = false;
   loadingStudents: boolean = true;
+  advancedFilterCount: number = 0;
 
   processingSubscription: Subscription;
   initialized: boolean;
@@ -224,6 +230,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
 
   onAdvancedFilterChange(filter: StudentFilter): void {
     this.studentArrayFilter = createStudentArrayFilter(filter);
+    this.advancedFilterCount = countFilters(filter);
     this.updateFormStudents();
   }
 

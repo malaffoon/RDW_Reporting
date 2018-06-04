@@ -47,13 +47,14 @@
           <student-search-form #studentSearchForm
                                [options]="studentFormOptions"
                                [(ngModel)]="studentForm"
+                               [advancedFilterCount]="advancedFilterCount"
                                (schoolChange)="onStudentFormSearchChange($event)"
                                (groupChange)="onStudentFormSearchChange($event)"
                                (nameChange)="onStudentFormFilterChange($event)"
                                (showAdvancedFiltersChange)="onShowAdvancedFiltersChange($event)"></student-search-form>
         </div>
 
-        <div *ngIf="showAdvancedFilters"
+        <div [hidden]="!showAdvancedFilters"
              class="well gray-lighter">
           <student-filters [options]="studentFilterOptions"
                            [showEnglishLanguageAcquisitionStatusFilter]="applicationSettings.elasEnabled"
