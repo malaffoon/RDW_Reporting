@@ -204,7 +204,7 @@
     "no-results": "There are currently no consortium percentiles uploaded for this assessment."
   },
   "assessment-card": {
-    "student-count": "<strong>{{ studentsTested }}</strong> of {{ groupCount }} students",
+    "student-count": "{{ studentsTested }} of {{ groupCount }} students tested",
     "view-assessments": "View Assessments"
   },
   "assessment-percentile-table": {
