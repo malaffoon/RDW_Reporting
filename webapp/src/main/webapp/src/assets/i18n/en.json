@@ -171,7 +171,7 @@
         "Below": "Worse",
         "Excluded": "Excluded",
         "InsufficientData": "Insufficient Data",
-        "Near": "Similar to Overall"
+        "Near": "Similar"
       },
       "standard": {
         "Above": "Above",
@@ -446,7 +446,9 @@
       "no-results-found": "No test results are available for the current selection.  If a new school year has begun recently, please check the year selected above."
     },
     "boolean": {
+      "false": "No",
       "no": "No",
+      "true": "Yes",
       "undefined": "Not Stated",
       "yes": "Yes"
     },
@@ -527,7 +529,8 @@
       "EL": "English Learner",
       "IFEP": "Initial Fluent English Proficient",
       "RFEP": "Reclassified Fluent English Proficient",
-      "TBD": "To Be Determined"
+      "TBD": "To Be Determined",
+      "null": "Not Stated"
     },
     "embargo-export-disabled": "Embargoed results can be viewed online, but may not be exported.",
     "enrolled-grade": {
@@ -792,7 +795,9 @@
     "school-typeahead-label": "School",
     "school-year-select-label": "School Year",
     "strict-boolean": {
+      "false": "No",
       "no": "No",
+      "true": "Yes",
       "yes": "Yes"
     },
     "student-response-columns": {
@@ -1361,19 +1366,19 @@
     "title": "Student Test History Report"
   },
   "target-report": {
+    "caution-message": "TODO - caution message here",
     "columns": {
       "claim": "Claim",
-      "claim-info": "Claim TODO",
       "target": "Target",
-      "target-info": "Target TODO",
       "subgroup": "Subgroup",
-      "subgroup-info": "Subgroup TODO",
-      "students-tested": "Students Tested",
-      "student-relative-residual-scores-level": "Performance relative to other targets",
-      "student-relative-residual-scores-level-info": "Performance relative to other targets TODO",
-      "standard-met-relative-residual-level": "Performance relative to achievement standards",
-      "standard-met-relative-residual-level-info": "Performance relative to achievement standards TODO"
-    }
+      "studentsTested": "Students Tested",
+      "student-relative-residual-scores-level": "Performance relative to test",
+      "student-relative-residual-scores-level-info": "Performance relative to test TODO",
+      "standard-met-relative-residual-level": "Performance relative to the standard",
+      "standard-met-relative-residual-level-info": "Performance relative to the standard TODO"
+    },
+    "not-enough-results": "TODO - not enough results",
+    "subgroup-options": "Subgroups"
   },
   "update-instructional-resource-modal": {
     "error": "Unable to modify instructional resource.",
