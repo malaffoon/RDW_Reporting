@@ -10,8 +10,8 @@ export class GroupAssessmentResolve implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const { groupId, schoolYear } = route.params;
-    return this.service.getMostRecentAssessment(groupId, schoolYear);
+    const { groupId, userGroupId, schoolYear } = route.params;
+    return this.service.getMostRecentAssessment({groupId, userGroupId, schoolYear});
   }
 
 }

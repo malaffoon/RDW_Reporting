@@ -1,59 +1,71 @@
 import { Injectable } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
 import { AssessmentExamMapper } from '../../assessments/assessment-exam.mapper';
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
-import { AssessmentProvider } from '../../assessments/assessment-provider.interface';
 import { ResponseUtils } from '../../shared/response-utils';
-import { Group } from '../group';
 import { DataService } from '../../shared/data/data.service';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../../shared/service-route';
 
 const ServiceRoute = ReportingServiceRoute;
 
-@Injectable()
-export class GroupAssessmentService implements AssessmentProvider {
+export interface Search {
+  readonly groupId?: number;
+  readonly userGroupId?: number;
+  readonly schoolId?: number; // use later
+  readonly schoolYear: number;
+}
 
-  group: Group;
-  schoolYear: number;
+export interface ExamSearch extends Search {
+  readonly assessmentId?: number;
+}
+
+export interface ExamItemSearch extends ExamSearch {
+  readonly itemTypes?: string[];
+}
+
+@Injectable()
+export class GroupAssessmentService {
 
   constructor(private dataService: DataService,
               private filterOptionService: ExamFilterOptionsService,
               private mapper: AssessmentExamMapper) {
   }
 
-  getMostRecentAssessment(groupId: number, schoolYear?: number) {
-    if (schoolYear == undefined) {
-      return this.filterOptionService.getExamFilterOptions()
-        .pipe(
-          mergeMap(options => this.getRecentAssessmentBySchoolYear(groupId, options.schoolYears[ 0 ]))
-        );
+  getMostRecentAssessment(search: Search) {
+    if (search.schoolYear == null) {
+      return this.filterOptionService.getExamFilterOptions().pipe(
+        mergeMap(({ schoolYears }) => this.getRecentAssessmentBySchoolYear(
+          Object.assign({}, search, { schoolYear: schoolYears[ 0 ] }))
+        )
+      );
     }
-    return this.getRecentAssessmentBySchoolYear(groupId, schoolYear);
+    return this.getRecentAssessmentBySchoolYear(search);
   }
 
-  getAvailableAssessments() {
-    return this.dataService.get(`${ServiceRoute}/groups/${this.group.id}/assessments`, {
-      search: this.getSchoolYearParams(this.schoolYear)
+  getAvailableAssessments(search: Search) {
+    return this.dataService.get(`${ServiceRoute}/assessments`, {
+      params: <any>search
     }).pipe(
       catchError(ResponseUtils.badResponseToNull),
       map(serverAssessments => this.mapper.mapAssessmentsFromApi(serverAssessments))
     );
   }
 
-  getExams(assessmentId: number) {
-    return this.dataService.get(`${ServiceRoute}/groups/${this.group.id}/assessments/${assessmentId}/exams`, {
-      search: this.getSchoolYearParams(this.schoolYear)
+  getExams(search: ExamSearch) {
+    return this.dataService.get(`${ServiceRoute}/exams`, {
+      params: <any>search
     }).pipe(
       catchError(ResponseUtils.badResponseToNull),
       map(serverExams => this.mapper.mapExamsFromApi(serverExams))
     );
   }
 
-  getTargetScoreExams(assessmentId: number) {
-    return this.dataService.get(`${ServiceRoute}/groups/${this.group.id}/assessments/${assessmentId}/examsWithTargetScores`, {
+  getTargetScoreExams(groupId: number, schoolYear: number, assessmentId: number) {
+    return this.dataService.get(`${ServiceRoute}/examsWithTargetScores`, {
       params: {
-        schoolYear: this.schoolYear.toString()
+        assessmentId: assessmentId,
+        groupId: groupId,
+        schoolYear: schoolYear
       }
     }).pipe(
       catchError(ResponseUtils.badResponseToNull),
@@ -73,25 +85,18 @@ export class GroupAssessmentService implements AssessmentProvider {
     );
   }
 
-  getAssessmentItems(assessmentId: number, itemTypes?: string[]) {
-    return this.dataService.get(`${ServiceRoute}/groups/${this.group.id}/assessments/${assessmentId}/examitems`, {
-      params: {
-        types: itemTypes,
-        schoolYear: this.schoolYear.toString()
-      }
+  getAssessmentItems(search: ExamItemSearch) {
+    return this.dataService.get(`${ServiceRoute}/examitems`, {
+      params: <any>search
     }).pipe(
       catchError(ResponseUtils.badResponseToNull),
       map(serverAssessmentItems => this.mapper.mapAssessmentItemsFromApi(serverAssessmentItems))
     );
   }
 
-  getSchoolId() {
-    return this.group.schoolId;
-  }
-
-  private getRecentAssessmentBySchoolYear(groupId: number, schoolYear: number) {
-    return this.dataService.get(`${ServiceRoute}/groups/${groupId}/latestassessment`, {
-      search: this.getSchoolYearParams(schoolYear)
+  private getRecentAssessmentBySchoolYear(search: Search) {
+    return this.dataService.get(`${ServiceRoute}/latestassessment`, {
+      search: <any>search
     }).pipe(
       catchError(ResponseUtils.badResponseToNull),
       map(serverAssessment => {
@@ -101,12 +106,6 @@ export class GroupAssessmentService implements AssessmentProvider {
         return this.mapper.mapFromApi(serverAssessment);
       })
     );
-  }
-
-  private getSchoolYearParams(schoolYear): URLSearchParams {
-    const params: URLSearchParams = new URLSearchParams();
-    params.set('schoolYear', schoolYear.toString());
-    return params;
   }
 
 }

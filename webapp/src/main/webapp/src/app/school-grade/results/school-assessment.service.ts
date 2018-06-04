@@ -21,7 +21,6 @@ const ServiceRoute = ReportingServiceRoute;
 export class SchoolAssessmentService implements AssessmentProvider {
 
   schoolId: number;
-  schoolName: string;
   grade: Grade;
   schoolYear: number;
 
@@ -32,10 +31,9 @@ export class SchoolAssessmentService implements AssessmentProvider {
 
   getMostRecentAssessment(schoolId: number, gradeId: number, schoolYear?: number): Observable<AssessmentExam> {
     if (Utils.isNullOrUndefined(schoolYear)) {
-      return this.filterOptionService.getExamFilterOptions()
-        .pipe(
-          mergeMap(options => this.getRecentAssessmentBySchoolYear(schoolId, gradeId, options.schoolYears[ 0 ]))
-        );
+      return this.filterOptionService.getExamFilterOptions().pipe(
+        mergeMap(options => this.getRecentAssessmentBySchoolYear(schoolId, gradeId, options.schoolYears[ 0 ]))
+      );
     }
     return this.getRecentAssessmentBySchoolYear(schoolId, gradeId, schoolYear);
   }

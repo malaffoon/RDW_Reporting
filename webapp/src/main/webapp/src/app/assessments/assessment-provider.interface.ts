@@ -1,7 +1,7 @@
-import { Observable } from "rxjs/Observable";
-import { Assessment } from "./model/assessment.model";
-import { Exam } from "./model/exam.model";
-import { AssessmentItem } from "./model/assessment-item.model";
+import { Observable } from 'rxjs/Observable';
+import { Assessment } from './model/assessment.model';
+import { Exam } from './model/exam.model';
+import { AssessmentItem } from './model/assessment-item.model';
 
 /**
  * Implementations of this interface are responsible for providing context-based assessment and exam data.

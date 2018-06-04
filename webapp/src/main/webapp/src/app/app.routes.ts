@@ -41,6 +41,7 @@ import { GroupDashboardComponent } from './dashboard/group-dashboard/group-dashb
 import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
 import { TargetReportFormComponent } from "./aggregate-report/target/target-report-form.component";
+import { UserGroupResultsComponent } from './groups/results/user-group-results.component';
 
 const adminRoute = {
   path: '',
@@ -184,38 +185,73 @@ const studentTestHistoryChildRoute = {
   ]
 };
 
-const UserGroupRoutes = {
-  path: 'userGroups',
-  data: {
-
-    permissions: [ 'GROUP_PII_READ' ]
-  },
-  canActivate: [ RoutingAuthorizationCanActivate ],
-  children: [
-    {
-      path: '',
-      pathMatch: 'full',
-      component: UserGroupComponent,
-      data: {
-        breadcrumb: { translate: 'user-group.new-heading' },
-      },
-      resolve: {
-        group: UserGroupResolve
-      }
+const UserGroupRoutes = [
+  {
+    path: 'user-groups',
+    data: {
+      permissions: [ 'GROUP_PII_READ' ]
     },
-    {
-      path: ':groupId',
-      pathMatch: 'full',
-      component: UserGroupComponent,
-      data: {
-        breadcrumb: { resolve: 'group.name' },
+    canActivate: [ AuthorizationCanActivate ],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: UserGroupComponent,
+        data: {
+          breadcrumb: { translate: 'user-group.new-heading' },
+        },
+        resolve: {
+          group: UserGroupResolve
+        }
       },
-      resolve: {
-        group: UserGroupResolve
+      {
+        path: ':groupId',
+        pathMatch: 'full',
+        component: UserGroupComponent,
+        data: {
+          breadcrumb: { resolve: 'group.name' },
+        },
+        resolve: {
+          group: UserGroupResolve
+        }
       }
-    }
-  ]
-};
+    ]
+  },
+  {
+    path: 'user-group-exams/:userGroupId',
+    data: {
+      breadcrumb: { translate: 'groups.name' },
+      permissions: [ 'GROUP_PII_READ' ]
+    },
+    canActivate: [ AuthorizationCanActivate ],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        data: { canReuse: true },
+        resolve: { assessment: GroupAssessmentResolve },
+        component: UserGroupResultsComponent
+      },
+      studentTestHistoryChildRoute
+    ]
+  },
+  {
+    path: 'user-group-dashboard/:groupId',
+    data: {
+      breadcrumb: { translate: 'group-dashboard.name' },
+      permissions: [ 'GROUP_PII_READ' ]
+    },
+    canActivate: [ AuthorizationCanActivate ],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        data: { canReuse: true },
+        component: GroupDashboardComponent
+      }
+    ]
+  },
+];
 
 export const routes: Routes = [
   {
@@ -236,7 +272,7 @@ export const routes: Routes = [
         component: HomeComponent
       },
       adminRoute,
-      UserGroupRoutes,
+      ...UserGroupRoutes,
       {
         path: 'groups/:groupId',
         data: {
