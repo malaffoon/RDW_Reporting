@@ -12,20 +12,18 @@ import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Target } from '../../../model/target.model';
 import { ordering } from '@kourge/ordering';
-import { byString, join, ranking } from '@kourge/ordering/comparator';
+import { join } from '@kourge/ordering/comparator';
 import { TargetService } from '../../../../shared/target/target.service';
 import { AssessmentExamMapper } from '../../../assessment-exam.mapper';
 import { BaseColumn } from '../../../../shared/datatable/base-column.model';
 import { Table } from 'primeng/table';
 import { DataTableService } from '../../../../shared/datatable/datatable-service';
-import { SubgroupMapper } from '../../../../aggregate-report/subgroup/subgroup.mapper';
 import { ExamFilterOptionsService } from '../../../filters/exam-filters/exam-filter-options.service';
 import { ExamFilterOptions } from '../../../model/exam-filter-options.model';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
 import { Subgroup } from '../../../../aggregate-report/subgroup/subgroup';
-import { AggregateReportOptionsService } from '../../../../aggregate-report/aggregate-report-options.service';
+import { SubjectClaimOrderings } from '../../../../shared/ordering/orderings';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
-import { ApplicationSettings } from '../../../../app-settings';
 
 @Component({
   selector: 'target-report',
@@ -113,7 +111,7 @@ export class TargetReportComponent implements OnInit {
     this.loading = true;
 
     this.columns = [
-      new Column({ id: 'claim' }),
+      new Column({ id: 'claim', sortField: 'claimOrder' }),
       new Column({ id: 'target' }),
       new Column({ id: 'subgroup' }),
       new Column({ id: 'studentsTested' }),
@@ -146,6 +144,7 @@ export class TargetReportComponent implements OnInit {
 
 
       this.aggregateTargetScoreRows = this.targetStatisticsCalculator.aggregateOverallScores(
+        this.assessment.subject,
         allTargets,
         this.targetScoreExams);
 
@@ -191,7 +190,7 @@ export class TargetReportComponent implements OnInit {
 
     this.aggregateTargetScoreRows.sort(
       join(
-        ordering(byString).on<AggregateTargetScoreRow>(row => row.claim).compare,
+        SubjectClaimOrderings.get(this.assessment.subject).on<AggregateTargetScoreRow>(row => row.claim).compare,
         ordering(byTarget).on<AggregateTargetScoreRow>(row => row.target).compare,
         ordering(bySubgroup).on<AggregateTargetScoreRow>(row => row.subgroup).compare
       )
@@ -215,7 +214,7 @@ export class TargetReportComponent implements OnInit {
 
   addSubgroup(subgroupCode: string) {
     this.aggregateTargetScoreRows.push(
-      ...this.targetStatisticsCalculator.aggregateSubgroupScores(this.allTargets, this.targetScoreExams, [subgroupCode], this.subgroupOptions)
+      ...this.targetStatisticsCalculator.aggregateSubgroupScores(this.assessment.subject, this.allTargets, this.targetScoreExams, [subgroupCode], this.subgroupOptions)
     );
 
     this.updateTargetScoreTable();
@@ -268,15 +267,18 @@ export class TargetReportComponent implements OnInit {
 class Column implements BaseColumn {
   id: string;
   field: string;
+  sortField: string;
   headerInfo: boolean;
 
   constructor({
                 id,
                 field = '',
+                sortField = '',
                 headerInfo = false,
               }) {
     this.id = id;
     this.field = field ? field : id;
+    this.sortField = sortField ? sortField : this.field;
     this.headerInfo = headerInfo;
   }
 }
