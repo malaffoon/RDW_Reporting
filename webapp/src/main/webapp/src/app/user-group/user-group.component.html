@@ -47,12 +47,13 @@
           <student-search-form #studentSearchForm
                                [schoolAndGroupTypeaheadOptions]="schoolAndGroupTypeaheadOptions"
                                [(ngModel)]="studentForm"
+                               [advancedFilterCount]="advancedFilterCount"
                                (schoolOrGroupChange)="onStudentFormSearchChange($event)"
                                (nameOrSsidChange)="onStudentFormFilterChange($event)"
                                (showAdvancedFiltersChange)="onShowAdvancedFiltersChange($event)"></student-search-form>
         </div>
 
-        <div *ngIf="showAdvancedFilters"
+        <div [hidden]="!showAdvancedFilters"
              class="well gray-lighter">
           <student-filters [options]="studentFilterOptions"
                            [showEnglishLanguageAcquisitionStatusFilter]="applicationSettings.elasEnabled"
@@ -61,16 +62,26 @@
         </div>
 
         <div class="well gray-lightest">
-          <label>{{'user-group.student-search.results-label' | translate}}</label>
+          <div class="flex-children">
+            <div class="flex-child grow">
+              <label>{{'user-group.student-search.results-label' | translate}}</label>
 
-          <i class="fa fa-spinner fa-pulse fa-fw" *ngIf="loadingStudents"></i>
+              <i class="fa fa-spinner fa-pulse fa-fw" *ngIf="loadingStudents"></i>
 
-          <ng-container *ngIf="filteredStudents.length; else noResults">
-            <p class="small">{{'user-group.student-search.add-student-prompt' | translate}}</p>
-          </ng-container>
-          <ng-template #noResults>
-            <p class="small">{{'user-group.student-search.no-results' | translate}}</p>
-          </ng-template>
+              <ng-container *ngIf="filteredStudents.length; else noResults">
+                <p class="small">{{'user-group.student-search.add-student-prompt' | translate}}</p>
+              </ng-container>
+              <ng-template #noResults>
+                <p class="small">{{'user-group.student-search.no-results' | translate}}</p>
+              </ng-template>
+            </div>
+            <div *ngIf="filteredStudents.length" class="flex-child">
+              <a class="small link-button"
+                 (click)="addAllStudentsButtonClick()">
+                <i class="fa fa-plus mr-xs"></i> {{'user-group.student-search.add-all' | translate}}
+              </a>
+            </div>
+          </div>
 
           <actionable-list-group [items]="filteredStudents"
                                  [itemTemplate]="studentFormStudentTemplate"
