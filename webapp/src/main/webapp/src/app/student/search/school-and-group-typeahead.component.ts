@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { School } from '../../admin/groups/model/school.model';
 import { Group } from '../../groups/group';
 import { UserGroup } from '../../user-group/user-group';
@@ -27,9 +27,22 @@ export class SchoolAndGroupTypeaheadComponent extends AbstractControlValueAccess
 
   search: string = '';
 
+  writeValue(value: any): void {
+    super.writeValue(value);
+    if (value) {
+      this.search = value.label;
+    }
+  }
+
   onFocusInternal(): void {
     if (this.value) {
       this.search = '';
+    }
+  }
+
+  onBlurInternal(): void {
+    if (this.value) {
+      this.search = this.value.label;
     }
   }
 

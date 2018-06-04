@@ -12,25 +12,26 @@ export class SchoolAndGroupTypeaheadOptionMapper {
   constructor(private translateService: TranslateService) {
   }
 
-  createOptions({schools, groups, userGroups}): Option[] {
+  createOptions(schoolsAndGroups: any): Option[] {
+    const {schools, groups, userGroups} = schoolsAndGroups;
     return [
-      ...groups.map(group => <Option>{
+      ...(schools || []).map(school => <Option>{
+        label: school.name,
+        group: this.translateService.instant('school-and-group-typeahead.school-group'),
+        value: school,
+        valueType: 'School'
+      }),
+      ...(groups || []).map(group => <Option>{
         label: group.name,
         group: this.translateService.instant('school-and-group-typeahead.assigned-group-group'),
         value: group,
         valueType: 'Group'
       }),
-      ...userGroups.map(userGroup => <Option>{
+      ...(userGroups || []).map(userGroup => <Option>{
         label: userGroup.name,
         group: this.translateService.instant('school-and-group-typeahead.created-group-group'),
         value: userGroup,
         valueType: 'UserGroup'
-      }),
-      ...schools.map(school => <Option>{
-        label: school.name,
-        group: this.translateService.instant('school-and-group-typeahead.school-group'),
-        value: school,
-        valueType: 'School'
       })
     ];
   }

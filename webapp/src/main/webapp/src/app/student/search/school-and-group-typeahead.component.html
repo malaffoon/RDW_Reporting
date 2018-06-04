@@ -1,6 +1,7 @@
 <input type="text"
        class="form-control"
        (focus)="onFocusInternal()"
+       (blur)="onBlurInternal()"
        (change)="onChangeInternal()"
        [(ngModel)]="search"
        [typeahead]="options"
@@ -12,5 +13,5 @@
        typeaheadGroupField="group"
        typeaheadLatinize="false"
        typeaheadScrollable="true"
-       [placeholder]="selectedOption ? selectedOption.label : ('school-typeahead.placeholder' | translate)"
+       [placeholder]="value ? value.label : ('school-typeahead.placeholder' | translate)"
        autocomplete="off">

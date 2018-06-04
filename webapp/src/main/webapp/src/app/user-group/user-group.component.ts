@@ -123,8 +123,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
             groups: this.originalGroup == null
               ? studentFormOptions.groups
               : studentFormOptions.groups
-                .filter(group => !(group.userCreated && group.id === this.originalGroup.id)),
-            userGroups: studentFormOptions.userGroups
+                .filter(group => !(group.userCreated && group.id === this.originalGroup.id))
           });
 
       this.studentForm = {
