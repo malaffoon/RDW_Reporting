@@ -45,12 +45,11 @@
       <div class="well-group ignore-last-margin-bottom">
         <div class="well">
           <student-search-form #studentSearchForm
-                               [options]="studentFormOptions"
+                               [schoolAndGroupTypeaheadOptions]="schoolAndGroupTypeaheadOptions"
                                [(ngModel)]="studentForm"
                                [advancedFilterCount]="advancedFilterCount"
-                               (schoolChange)="onStudentFormSearchChange($event)"
-                               (groupChange)="onStudentFormSearchChange($event)"
-                               (nameChange)="onStudentFormFilterChange($event)"
+                               (schoolOrGroupChange)="onStudentFormSearchChange($event)"
+                               (nameOrSsidChange)="onStudentFormFilterChange($event)"
                                (showAdvancedFiltersChange)="onShowAdvancedFiltersChange($event)"></student-search-form>
         </div>
 
