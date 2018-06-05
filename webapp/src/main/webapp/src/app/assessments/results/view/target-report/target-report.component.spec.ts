@@ -79,7 +79,8 @@ describe('TargetReportComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: '<target-report [assessment]="assessment"></target-report>'
+  template: `<target-report [assessmentProvider]="{}"
+                            [assessment]="assessment"></target-report>`
 })
 class TestComponentWrapper {
   assessment = new Assessment();
