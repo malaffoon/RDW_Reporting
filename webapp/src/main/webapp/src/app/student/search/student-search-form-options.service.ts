@@ -20,7 +20,7 @@ export class StudentSearchFormOptionsService {
     return forkJoin(
       this.organizationService.getSchools(),
       this.groupService.getGroups(),
-      this.userGroupService.safelyGetUserGroupsAsGroups()
+      this.userGroupService.safelyGetGroups()
     ).pipe(
       map(([schools, groups, userGroups]) => <StudentSearchFormOptions>{
         schools: schools,

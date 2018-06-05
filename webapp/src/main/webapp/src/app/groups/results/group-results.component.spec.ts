@@ -55,7 +55,7 @@ describe('GroupResultsComponent', () => {
     availableGrades = [];
     exportService = {};
 
-    const mockUserGroupService = {getGroupsAsGroups: () => of([])};
+    const mockUserGroupService = {safelyGetUserGroupsAsGroups: () => of([])};
     const mockGroupAssessmentService = {};
     const mockGroupAssessmentExportService = {};
     const mockUserService = new MockUserService();
