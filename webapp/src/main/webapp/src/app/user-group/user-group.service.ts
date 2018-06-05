@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ReportingServiceRoute } from '../shared/service-route';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { UserGroup, UserGroupRequest } from './user-group';
 import { Observable } from 'rxjs/Observable';
 import { DataService } from '../shared/data/data.service';
 import { Student } from '../student/search/student';
 import { Group } from '../groups/group';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class UserGroupService {
@@ -13,7 +14,7 @@ export class UserGroupService {
   constructor(private dataService: DataService) {
   }
 
-  getGroupsAsGroups(): Observable<Group[]> {
+  safelyGetUserGroupsAsGroups(): Observable<Group[]> {
     return this.getGroups().pipe(
       map(userGroups => userGroups.map(userGroup => <Group>{
         id: userGroup.id,
@@ -22,7 +23,8 @@ export class UserGroupService {
         schoolName: '',
         subjectCode: userGroup.subjects != null ? userGroup.subjects[ 0 ] : undefined,
         userCreated: true
-      }))
+      })),
+      catchError(() => of([]))
     );
   }
 

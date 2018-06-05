@@ -13,6 +13,8 @@ import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { Search } from '../../groups/results/group-assessment.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'group-dashboard',
@@ -42,7 +44,7 @@ export class GroupDashboardComponent implements OnInit {
     const { groupId, userGroupId, schoolYear } = this.route.snapshot.params;
     forkJoin(
       this.groupService.getGroups(),
-      this.userGroupService.getGroupsAsGroups(),
+      this.userGroupService.safelyGetUserGroupsAsGroups(),
       this.filterOptionsService.getExamFilterOptions()
     ).subscribe(([ groups, userGroups, filterOptions ]) => {
       this.groups = groups.concat(userGroups)

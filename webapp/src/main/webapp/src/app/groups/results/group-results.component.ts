@@ -20,6 +20,8 @@ import { AssessmentProvider } from '../../assessments/assessment-provider.interf
 import { GroupReportDownloadComponent } from '../../report/group-report-download.component';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'group-results',
@@ -88,7 +90,7 @@ export class GroupResultsComponent implements OnInit, StateProvider {
   ngOnInit() {
     forkJoin(
       this.groupService.getGroups(),
-      this.userGroupService.getGroupsAsGroups(),
+      this.userGroupService.safelyGetUserGroupsAsGroups(),
       this.filterOptionService.getExamFilterOptions()
     ).subscribe(([ groups, userGroups, filterOptions ]) => {
       this.groups = groups.concat(userGroups)
