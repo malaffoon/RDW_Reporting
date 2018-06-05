@@ -23,7 +23,7 @@ import { ExamFilterOptions } from '../../../model/exam-filter-options.model';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
 import { Subgroup } from '../../../../aggregate-report/subgroup/subgroup';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
-import { SubjectClaimOrderings } from '../../../../shared/ordering/orderings';
+import { byNumericString, SubjectClaimOrderings } from '../../../../shared/ordering/orderings';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
 import { ExportResults } from '../../assessment-results.component';
 
@@ -207,17 +207,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   sortRows() {
-    const byTarget = (a: string, b: string) => {
-      const numA = Number(a);
-      const numB = Number(b);
-
-      if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
-        return numA - numB;
-      }
-
-      return a.localeCompare(b);
-    };
-
     const bySubgroup = (a: Subgroup, b: Subgroup) => {
       // Overall should be first
       if (a.name.startsWith('Overall') && !b.name.startsWith('Overall')) {
@@ -235,7 +224,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
     this.aggregateTargetScoreRows.sort(
       join(
         claimOrdering.on<AggregateTargetScoreRow>(row => row.claim).compare,
-        ordering(byTarget).on<AggregateTargetScoreRow>(row => row.target).compare,
+        ordering(byNumericString).on<AggregateTargetScoreRow>(row => row.target).compare,
         ordering(bySubgroup).on<AggregateTargetScoreRow>(row => row.subgroup).compare
       )
     );
