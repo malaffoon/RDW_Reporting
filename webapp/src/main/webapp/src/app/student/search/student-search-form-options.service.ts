@@ -4,8 +4,9 @@ import { StudentSearchFormOptions } from './student-search-form-options';
 import { GroupService } from '../../groups/group.service';
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { UserGroupService } from '../../user-group/user-group.service';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class StudentSearchFormOptionsService {
@@ -19,7 +20,7 @@ export class StudentSearchFormOptionsService {
     return forkJoin(
       this.organizationService.getSchools(),
       this.groupService.getGroups(),
-      this.userGroupService.getGroups()
+      this.userGroupService.safelyGetUserGroupsAsGroups()
     ).pipe(
       map(([schools, groups, userGroups]) => <StudentSearchFormOptions>{
         schools: schools,

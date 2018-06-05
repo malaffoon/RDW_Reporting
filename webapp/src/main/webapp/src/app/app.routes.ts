@@ -240,7 +240,7 @@ export const routes: Routes = [
       {
         path: 'group-exams',
         data: {
-          breadcrumb: { translate: 'groups.name' },
+          breadcrumb: { translate: 'groups.heading' },
           permissions: [ 'GROUP_PII_READ' ]
         },
         canActivate: [ AuthorizationCanActivate ],
