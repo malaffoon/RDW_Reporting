@@ -6,6 +6,7 @@ import { CommonModule } from '../shared/common.module';
 import { SchoolGradeModule } from '../school-grade/school-grade.module';
 import { GroupsModule } from '../groups/groups.module';
 import { StudentModule } from '../student/student.module';
+import { BsDropdownModule } from 'ngx-bootstrap';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { StudentModule } from '../student/student.module';
     CommonModule,
     StudentModule,
     SchoolGradeModule,
-    GroupsModule
+    GroupsModule,
+    BsDropdownModule.forRoot()
   ],
   exports: [
     HomeComponent
