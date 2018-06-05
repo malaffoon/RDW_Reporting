@@ -13,6 +13,7 @@ import { UserGroupAssessmentProvider } from './user-group-assessment.provider';
 import { DefaultAssessmentExporter } from './default-assessment-exporter';
 import { TranslateService } from '@ngx-translate/core';
 import { UserGroupService } from '../../user-group/user-group.service';
+import { GroupService } from '../group.service';
 
 @Component({
   selector: 'user-group-results',
@@ -28,21 +29,14 @@ export class UserGroupResultsComponent extends AbstractGroupExamsComponent imple
               assessmentService: GroupAssessmentService,
               assessmentExportService: GroupAssessmentExportService,
               translateService: TranslateService,
-              private groupService: UserGroupService) {
-    super(route, router, filterOptionService, angulartics2, csvExportService);
+              groupService: GroupService,
+              userGroupService: UserGroupService) {
+    super(route, router, filterOptionService, angulartics2, csvExportService, groupService, userGroupService);
 
     this.assessmentProvider = new UserGroupAssessmentProvider(assessmentService, this);
     this.assessmentExporter = new DefaultAssessmentExporter(assessmentExportService, request =>
       `${this.group.name}-${request.assessment.label}-${translateService.instant(request.type.toString())}-${new Date().toDateString()}`
     );
-  }
-
-  getGroups(): Observable<Group[]> {
-    return this.groupService.getGroupsAsGroups();
-  }
-
-  get dashboardPath(): string {
-    return 'group-dashboard';
   }
 
 }

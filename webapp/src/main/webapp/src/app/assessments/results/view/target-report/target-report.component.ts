@@ -24,12 +24,18 @@ import { ExamFilterOptions } from '../../../model/exam-filter-options.model';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
 import { Subgroup } from '../../../../aggregate-report/subgroup/subgroup';
 import { AggregateReportOptionsService } from '../../../../aggregate-report/aggregate-report-options.service';
+import { GroupAssessmentProvider } from '../../../../groups/results/group-assessment.provider';
+import { AssessmentProvider } from '../../../assessment-provider.interface';
 
 @Component({
   selector: 'target-report',
   templateUrl: './target-report.component.html'
 })
 export class TargetReportComponent implements OnInit {
+
+  @Input()
+  assessmentProvider: AssessmentProvider;
+
   /**
    * The assessment
    */
@@ -106,8 +112,8 @@ export class TargetReportComponent implements OnInit {
               private targetService: TargetService,
               private dataTableService: DataTableService,
               private assessmentExamMapper: AssessmentExamMapper,
-              private assessmentProvider: GroupAssessmentService,
               private filterOptionService: ExamFilterOptionsService) {
+
   }
 
   ngOnInit() {

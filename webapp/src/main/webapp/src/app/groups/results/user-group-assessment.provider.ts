@@ -4,6 +4,7 @@ import { AssessmentItem } from '../../assessments/model/assessment-item.model';
 import { Exam } from '../../assessments/model/exam.model';
 import { GroupAssessmentService } from './group-assessment.service';
 import { Assessment } from '../../assessments/model/assessment.model';
+import { TargetScoreExam } from '../../assessments/model/target-score-exam.model';
 
 export interface StateProvider {
   group: { id, schoolId? };
@@ -29,6 +30,11 @@ export class UserGroupAssessmentProvider implements AssessmentProvider {
   getExams(assessmentId: number): Observable<Exam[]> {
     const { group, schoolYear } = this.stateProvider;
     return this.service.getExams({userGroupId: group.id, schoolYear, assessmentId});
+  }
+
+  getTargetScoreExams(assessmentId: number): Observable<TargetScoreExam[]> {
+    const { group, schoolYear } = this.stateProvider;
+    return this.service.getTargetScoreExams({userGroupId: group.id, schoolYear, assessmentId});
   }
 
   getSchoolId(): number {

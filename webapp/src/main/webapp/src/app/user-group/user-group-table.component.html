@@ -33,7 +33,7 @@
 
         <div *ngSwitchCase="'group'"
              class="label-max-width">
-          <a routerLink="/user-group-exams/{{group.id}}"
+          <a [routerLink]="['exams', {userGroupId: group.id}]"
              title="{{group.name}}">
             {{group.name}}
           </a>

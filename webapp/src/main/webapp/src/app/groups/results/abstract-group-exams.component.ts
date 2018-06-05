@@ -13,6 +13,8 @@ import { AssessmentProvider } from '../../assessments/assessment-provider.interf
 import { StateProvider } from './group-assessment.provider';
 import { Observable } from 'rxjs/Observable';
 import { AssessmentExporter } from '../../assessments/assessment-exporter.interface';
+import { UserGroupService } from '../../user-group/user-group.service';
+import { GroupService } from '../group.service';
 
 export abstract class AbstractGroupExamsComponent implements OnInit, StateProvider {
 
@@ -44,34 +46,38 @@ export abstract class AbstractGroupExamsComponent implements OnInit, StateProvid
     this._schoolYear = value;
   }
 
+  get routeParameters(): any {
+    return Object.assign({}, this.route.snapshot.params, this.route.snapshot.queryParams);
+  }
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private filterOptionService: ExamFilterOptionsService,
               private angulartics2: Angulartics2,
-              private csvExportService: CsvExportService) {
+              private csvExportService: CsvExportService,
+              private groupService: GroupService,
+              private userGroupService: UserGroupService) {
   }
-
-  abstract getGroups(): Observable<Group[]>;
-  abstract get dashboardPath(): string; // 'group-dashboard'
 
   ngOnInit() {
     forkJoin(
-      this.getGroups(),
+      this.groupService.getGroups(),
+      this.userGroupService.getGroupsAsGroups(),
       this.filterOptionService.getExamFilterOptions()
-    ).subscribe(([ groups, filterOptions ]) => {
-      this.groups = groups;
+    ).subscribe(([ groups, userGroups, filterOptions ]) => {
+      this.groups = groups.concat(userGroups); // TODO sort
       this.filterOptions = filterOptions;
-      const { groupId, userGroupId, schoolYear } = this.route.snapshot.params;
-      this.group = this.groups.find(group => group.id == groupId || group.id == userGroupId);
+      const { groupId, userGroupId, schoolYear } = this.routeParameters;
+      this.group = this.groups.find(group => group.userCreated
+        ? group.id == userGroupId
+        : group.id == groupId
+      );
       this.schoolYear = Number.parseInt(schoolYear) || this.filterOptions.schoolYears[ 0 ];
-
-      console.log('g', groupId, this.group, this.groups, this.schoolYear)
-      console.log('ug', userGroupId, this.group, this.groups, this.schoolYear)
     });
   }
 
   viewDashboard() {
-    this.router.navigate([ this.dashboardPath, this.group.id, {
+    this.router.navigate([ 'group-dashboard', this.group.id, {
       schoolYear: this.schoolYear
     } ]);
   }
@@ -84,7 +90,17 @@ export abstract class AbstractGroupExamsComponent implements OnInit, StateProvid
   }
 
   updateRoute(changeSource: string): void {
-    this.router.navigate([ '.', this.group.id, { schoolYear: this.schoolYear } ])
+
+    const params = <any>{};
+    if (this.group.userCreated) {
+      params.userGroupId = this.group.id;
+    } else {
+      params.groupId = this.group.id;
+    }
+    params.schoolYear = this.schoolYear;
+
+    this.router.navigate([ params ])
+    // this.router.navigate([ 'groups', this.group.id, { schoolYear: this.schoolYear } ])
       .then(() => {
         this.updateAssessment(this.route.snapshot.data[ 'assessment' ]);
       });

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { GroupAssessmentService } from './group-assessment.service';
+import { GroupAssessmentService, Search } from './group-assessment.service';
 
 @Injectable()
 export class GroupAssessmentResolve implements Resolve<any> {
@@ -10,8 +10,7 @@ export class GroupAssessmentResolve implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const { groupId, userGroupId, schoolYear } = route.params;
-    return this.service.getMostRecentAssessment({groupId, userGroupId, schoolYear});
+    return this.service.getMostRecentAssessment(<Search>route.params);
   }
 
 }

@@ -12,6 +12,7 @@ import { AbstractGroupExamsComponent } from './abstract-group-exams.component';
 import { Observable } from 'rxjs/Observable';
 import { DefaultAssessmentExporter } from './default-assessment-exporter';
 import { TranslateService } from '@ngx-translate/core';
+import { UserGroupService } from '../../user-group/user-group.service';
 
 @Component({
   selector: 'group-results',
@@ -26,23 +27,16 @@ export class GroupResultsComponent extends AbstractGroupExamsComponent implement
               csvExportService: CsvExportService,
               assessmentService: GroupAssessmentService,
               assessmentExportService: GroupAssessmentExportService,
-              private translateService: TranslateService,
-              private groupService: GroupService) {
-    super(route, router, filterOptionService, angulartics2, csvExportService);
+              groupService: GroupService,
+              userGroupService: UserGroupService,
+              private translateService: TranslateService) {
+    super(route, router, filterOptionService, angulartics2, csvExportService, groupService, userGroupService);
 
     this.assessmentProvider = new GroupAssessmentProvider(assessmentService, this);
     this.assessmentExporter = new DefaultAssessmentExporter(assessmentExportService, request =>
       `${this.group.name}-${request.assessment.label}-${this.translateService.instant(request.type.toString())}-${new Date().toDateString()}`
     );
 
-  }
-
-  getGroups(): Observable<Group[]> {
-    return this.groupService.getGroups();
-  }
-
-  get dashboardPath(): string {
-    return 'group-dashboard';
   }
 
 }

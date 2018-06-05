@@ -2,7 +2,7 @@ import { AssessmentProvider } from '../../assessments/assessment-provider.interf
 import { Observable } from 'rxjs/Observable';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
 import { Exam } from '../../assessments/model/exam.model';
-import { GroupAssessmentService } from './group-assessment.service';
+import { GroupAssessmentService, Search } from './group-assessment.service';
 import { Assessment } from '../../assessments/model/assessment.model';
 
 export interface StateProvider {
@@ -18,21 +18,35 @@ export class GroupAssessmentProvider implements AssessmentProvider {
 
   getAssessmentItems(assessmentId: number, itemTypes?: string[]): Observable<AssessmentItem[]> {
     const { group, schoolYear } = this.stateProvider;
-    return this.service.getAssessmentItems({groupId: group.id, schoolYear, assessmentId, itemTypes});
+    return this.service.getAssessmentItems(this.addGroup({schoolYear, assessmentId, itemTypes}, group));
   }
 
   getAvailableAssessments(): Observable<Assessment[]> {
     const { group, schoolYear } = this.stateProvider;
-    return this.service.getAvailableAssessments({groupId: group.id, schoolYear});
+    return this.service.getAvailableAssessments(this.addGroup({schoolYear}, group));
   }
 
   getExams(assessmentId: number): Observable<Exam[]> {
     const { group, schoolYear } = this.stateProvider;
-    return this.service.getExams({groupId: group.id, schoolYear, assessmentId});
+    return this.service.getExams(this.addGroup({schoolYear, assessmentId}, group));
+  }
+
+  getTargetScoreExams(assessmentId: number) {
+    const { group, schoolYear } = this.stateProvider;
+    return this.service.getTargetScoreExams(this.addGroup({schoolYear, assessmentId}, group));
   }
 
   getSchoolId(): number {
     return this.stateProvider.group.schoolId;
+  }
+
+  private addGroup<T extends Search>(search: T, group): T {
+    if (group.userCreated) {
+      search.userGroupId = group.id;
+    } else {
+      search.groupId = group.id;
+    }
+    return search;
   }
 
 }

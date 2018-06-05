@@ -9,10 +9,13 @@ import { ReportingServiceRoute } from '../../shared/service-route';
 const ServiceRoute = ReportingServiceRoute;
 
 export interface Search {
-  readonly groupId?: number;
-  readonly userGroupId?: number;
-  readonly schoolId?: number; // use later
-  readonly schoolYear: number;
+  // TODO make this all generic?
+  // schoolId?: number;
+  // gradeId?: number;
+
+  groupId?: number;
+  userGroupId?: number;
+  schoolYear: number;
 }
 
 export interface ExamSearch extends Search {
@@ -60,18 +63,13 @@ export class GroupAssessmentService {
     );
   }
 
-  getTargetScoreExams(groupId: number, schoolYear: number, assessmentId: number) {
+  getTargetScoreExams(search: ExamSearch) {
     return this.dataService.get(`${ServiceRoute}/examsWithTargetScores`, {
-      params: {
-        assessmentId: assessmentId,
-        groupId: groupId,
-        schoolYear: schoolYear
-      }
+      params: <any>search
     }).pipe(
       catchError(ResponseUtils.badResponseToNull),
       map(serverTargetScoreExams => this.mapper.mapTargetScoreExamsFromApi(serverTargetScoreExams))
     );
-
   }
 
   getTargetsForAssessment(assessmentId: number) {
