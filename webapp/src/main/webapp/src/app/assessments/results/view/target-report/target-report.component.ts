@@ -119,8 +119,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
               private dataTableService: DataTableService,
               private assessmentExamMapper: AssessmentExamMapper,
               private filterOptionService: ExamFilterOptionsService,
-              private assessmentProvider: GroupAssessmentService,
-              private filterOptionService: ExamFilterOptionsService,
+              private assessmentService: GroupAssessmentService,
               private applicationSettingsService: ApplicationSettingsService) {
   }
 
