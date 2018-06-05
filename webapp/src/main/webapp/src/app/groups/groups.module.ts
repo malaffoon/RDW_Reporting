@@ -19,15 +19,13 @@ import { TableModule } from 'primeng/table';
 import { UserGroupModule } from '../user-group/user-group.module';
 import { GroupTableComponent } from './group-table.component';
 import { GroupTabsComponent } from './group-tabs.component';
-import { UserGroupResultsComponent } from './results/user-group-results.component';
 
 @NgModule({
   declarations: [
     GroupsComponent,
     GroupTableComponent,
     GroupTabsComponent,
-    GroupResultsComponent,
-    UserGroupResultsComponent
+    GroupResultsComponent
   ],
   imports: [
     Angulartics2Module.forChild(),

@@ -39,7 +39,6 @@ import { LongitudinalPlaygroundComponent } from './aggregate-report/results/long
 import { GroupDashboardComponent } from './dashboard/group-dashboard/group-dashboard.component';
 import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
-import { UserGroupResultsComponent } from './groups/results/user-group-results.component';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 
 const adminRoute = {
@@ -215,60 +214,6 @@ const UserGroupRoutes = [
         }
       }
     ]
-  },
-  {
-    path: 'exams',
-    data: {
-      breadcrumb: { translate: 'groups.name' },
-      permissions: [ 'GROUP_PII_READ' ]
-    },
-    canActivate: [ AuthorizationCanActivate ],
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        data: {
-          canReuse: true
-        },
-        resolve: { assessment: GroupAssessmentResolve },
-        component: GroupResultsComponent
-      },
-      studentTestHistoryChildRoute
-    ]
-  },
-  {
-    path: 'user-group-exams/:userGroupId',
-    data: {
-      breadcrumb: { translate: 'groups.name' },
-      permissions: [ 'GROUP_PII_READ' ]
-    },
-    canActivate: [ AuthorizationCanActivate ],
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        data: { canReuse: true },
-        resolve: { assessment: GroupAssessmentResolve },
-        component: UserGroupResultsComponent
-      },
-      studentTestHistoryChildRoute
-    ]
-  },
-  {
-    path: 'user-group-dashboard/:groupId',
-    data: {
-      breadcrumb: { translate: 'group-dashboard.name' },
-      permissions: [ 'GROUP_PII_READ' ]
-    },
-    canActivate: [ AuthorizationCanActivate ],
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        data: { canReuse: true },
-        component: GroupDashboardComponent
-      }
-    ]
   }
 ];
 
@@ -293,7 +238,7 @@ export const routes: Routes = [
       adminRoute,
       ...UserGroupRoutes,
       {
-        path: 'groups/:groupId',
+        path: 'group-exams',
         data: {
           breadcrumb: { translate: 'groups.name' },
           permissions: [ 'GROUP_PII_READ' ]
@@ -311,7 +256,7 @@ export const routes: Routes = [
         ]
       },
       {
-        path: 'group-dashboard/:groupId',
+        path: 'group-dashboard',
         data: {
           breadcrumb: { translate: 'group-dashboard.name' },
           permissions: [ 'GROUP_PII_READ' ]

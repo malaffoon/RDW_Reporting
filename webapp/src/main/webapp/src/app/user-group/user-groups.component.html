@@ -16,7 +16,7 @@
         </a>
       </li>
       <li *ngIf="defaultGroup">
-        <a routerLink="/group-dashboard/{{defaultGroup.id}}"
+        <a [routerLink]="['group-dashboard', {userGroupId: defaultGroup.id}]"
            title="{{'groups.view-dashboard' | translate}}"
            class="btn btn-xs btn-default">
           <i class="fa fa-bars"></i> {{'groups.view-dashboard' | translate}}
