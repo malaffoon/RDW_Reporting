@@ -1076,7 +1076,7 @@
     },
     "empty-message": "There are no groups that match your search.  Please try again.",
     "filter": "Search by Group Name",
-    "name": "My Groups",
+    "heading": "Groups",
     "no-groups-message": "Contact your building administrator for access to group-level test results.",
     "search-label": "Search by Group",
     "view-dashboard": "View IAB Dashboard"
