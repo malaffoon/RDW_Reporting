@@ -82,18 +82,24 @@
 
 
 <div class="col-md-12 mt-md">
-  <div class="card-grid">
+  <!-- Loading and No Results Error -->
+  <div class="alert alert-info"
+       *ngIf="measuredAssessments.length == 0 && !loading">
+    {{'group-dashboard.no-results-found' | translate}}
+  </div>
+  <div class="alert alert-info"
+       *ngIf="loading">
+    <spinner text="{{'common.messages.loading' | translate}}"></spinner>
+  </div>
+  <div class="card-grid"
+       *ngIf="!loading">
     <div *ngFor="let measuredAssessment of filteredMeasuredAssessments">
       <group-assessment-card (selectedAssessment)="onCardSelection($event)"
                              [group]="group"
                              [measuredAssessment]="measuredAssessment"></group-assessment-card>
     </div>
   </div>
-  <!-- No Results Error -->
-  <div class="alert alert-info"
-       *ngIf="measuredAssessments.length == 0">
-    {{'group-dashboard.no-results-found' | translate}}
-  </div>
+
 </div>
 
 <span group-report-download

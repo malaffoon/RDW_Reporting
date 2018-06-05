@@ -29,6 +29,7 @@ export class GroupDashboardComponent implements OnInit {
   schoolYear: number;
   subjects: string[];
   subject: string;
+  loading: boolean = false;
 
   private selectedAssessments: MeasuredAssessment[] = [];
 
@@ -41,18 +42,17 @@ export class GroupDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = true;
     const { groupId, userGroupId, schoolYear } = this.route.snapshot.params;
     forkJoin(
+      this.groupService.getGroup(groupId),
       this.groupService.getGroups(),
       this.userGroupService.safelyGetUserGroupsAsGroups(),
       this.filterOptionsService.getExamFilterOptions()
-    ).subscribe(([ groups, userGroups, filterOptions ]) => {
+    ).subscribe(([ group, groups, userGroups, filterOptions ]) => {
       this.groups = groups.concat(userGroups)
         .sort(ordering(byString).on<Group>(({ name }) => name).compare);
-      this.group = this.groups.find(group => group.userCreated
-        ? group.id == userGroupId
-        : group.id == groupId
-      );
+      this.group = group;
 
       this.filterOptions = filterOptions;
       this.schoolYear = Number.parseInt(schoolYear) || filterOptions.schoolYears[ 0 ];
@@ -87,18 +87,20 @@ export class GroupDashboardComponent implements OnInit {
   }
 
   updateRoute(changeSource: string): void {
+    this.loading = true;
     this.selectedAssessments = [];
     this.router.navigate([ this.stateAsNavigationParameters ]).then(() => {
-      // TODO why call service to get group here?
-      // we could make the assessment selection update the URL in the group-exams
-      this.groupDashboardService.getAvailableMeasuredAssessments(this.createSearch(this.group))
-        .subscribe(measuredAssessments => {
+      this.groupService.getGroup(this.group.id).subscribe((group) => {
+        this.group = group;
+        this.groupDashboardService.getAvailableMeasuredAssessments(this.createSearch(this.group)).subscribe(measuredAssessments => {
           this.updateMeasuredAssessments(measuredAssessments);
         });
+      });
     });
   }
 
   updateMeasuredAssessments(assessments: MeasuredAssessment[]): void {
+    this.loading = false;
     this.measuredAssessments = assessments
       .sort(ordering(byString).on<MeasuredAssessment>(x => x.assessment.label).compare);
 
