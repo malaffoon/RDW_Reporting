@@ -39,11 +39,9 @@ sql:
       SELECT
         tsg.id,
         tsg.name,
-        s.code as subject_code,
-        count(tsgm.student_id) as student_count
+        s.code as subject_code
       FROM teacher_student_group tsg
         LEFT JOIN subject s ON s.id = tsg.subject_id
-        LEFT JOIN teacher_student_group_membership tsgm ON tsgm.teacher_student_group_id = tsg.id
       WHERE tsg.user_login = :user_login
         AND tsg.school_year = :school_year
       GROUP BY tsg.id

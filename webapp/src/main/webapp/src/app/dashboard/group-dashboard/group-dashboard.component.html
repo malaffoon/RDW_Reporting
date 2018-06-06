@@ -32,6 +32,7 @@
       <!--TODO: type ahead? -->
       <select id="select-group"
               class="form-control"
+              [compareWith]="groupEquals"
               [(ngModel)]="group"
               (ngModelChange)="updateRoute('Group')">
         <option *ngFor="let group of groups"
@@ -82,18 +83,31 @@
 
 
 <div class="col-md-12 mt-md">
-  <div class="card-grid">
-    <div *ngFor="let measuredAssessment of filteredMeasuredAssessments">
-      <group-assessment-card (selectedAssessment)="onCardSelection($event)"
-                             [group]="group"
-                             [measuredAssessment]="measuredAssessment"></group-assessment-card>
-    </div>
-  </div>
-  <!-- No Results Error -->
-  <div class="alert alert-info"
-       *ngIf="measuredAssessments.length == 0">
-    {{'group-dashboard.no-results-found' | translate}}
-  </div>
+  <!-- Loading and No Results Error -->
+  <ng-container *ngIf="loadingMeasuredAssessments; else measuredAssessmentsLoaded">
+      <spinner></spinner>
+  </ng-container>
+  <ng-template #measuredAssessmentsLoaded>
+    <ng-container *ngIf="measuredAssessments.length === 0; else hasMeasuredAssessments">
+
+      <div class="alert alert-info">
+        {{'group-dashboard.no-results-found' | translate}}
+      </div>
+
+    </ng-container>
+    <ng-template #hasMeasuredAssessments>
+
+      <div class="card-grid">
+        <div *ngFor="let measuredAssessment of filteredMeasuredAssessments">
+          <group-assessment-card (selectedAssessment)="onCardSelection($event)"
+                                 [group]="group"
+                                 [measuredAssessment]="measuredAssessment"></group-assessment-card>
+        </div>
+      </div>
+
+    </ng-template>
+  </ng-template>
+
 </div>
 
 <span group-report-download

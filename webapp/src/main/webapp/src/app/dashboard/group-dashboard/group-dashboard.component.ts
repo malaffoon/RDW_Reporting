@@ -27,6 +27,7 @@ export class GroupDashboardComponent implements OnInit {
   schoolYear: number;
   subjects: string[];
   subject: string;
+  loadingMeasuredAssessments: boolean = true;
 
   private selectedAssessments: MeasuredAssessment[] = [];
 
@@ -41,17 +42,16 @@ export class GroupDashboardComponent implements OnInit {
   ngOnInit() {
     const { groupId, userGroupId, schoolYear } = this.route.snapshot.params;
     forkJoin(
+      groupId != null
+        ? this.groupService.getGroup(groupId)
+        : this.userGroupService.getUserGroupAsGroup(userGroupId),
       this.groupService.getGroups(),
       this.userGroupService.safelyGetUserGroupsAsGroups(),
       this.filterOptionsService.getExamFilterOptions()
-    ).subscribe(([ groups, userGroups, filterOptions ]) => {
+    ).subscribe(([ group, groups, userGroups, filterOptions ]) => {
+      this.group = group;
       this.groups = groups.concat(userGroups)
         .sort(ordering(byString).on<Group>(({ name }) => name).compare);
-      this.group = this.groups.find(group => group.userCreated
-        ? group.id == userGroupId
-        : group.id == groupId
-      );
-
       this.filterOptions = filterOptions;
       this.schoolYear = Number.parseInt(schoolYear) || filterOptions.schoolYears[ 0 ];
       this.groupDashboardService.getAvailableMeasuredAssessments(this.createSearch(this.group))
@@ -59,6 +59,14 @@ export class GroupDashboardComponent implements OnInit {
           this.updateMeasuredAssessments(measuredAssessments);
         });
     });
+  }
+
+  groupEquals(a: Group, b: Group): boolean {
+    return a === b || (
+      a != null
+      && b != null
+      && a.id === b.id
+    );
   }
 
   get filteredMeasuredAssessments() {
@@ -86,14 +94,20 @@ export class GroupDashboardComponent implements OnInit {
 
   updateRoute(changeSource: string): void {
     this.selectedAssessments = [];
-    this.router.navigate([ this.stateAsNavigationParameters ]).then(() => {
-      // TODO why call service to get group here?
-      // we could make the assessment selection update the URL in the group-exams
-      this.groupDashboardService.getAvailableMeasuredAssessments(this.createSearch(this.group))
-        .subscribe(measuredAssessments => {
-          this.updateMeasuredAssessments(measuredAssessments);
+    this.router.navigate([ this.stateAsNavigationParameters ])
+      .then(() => {
+        this.loadingMeasuredAssessments = true;
+        const getGroup = this.group.userCreated
+          ? this.userGroupService.getUserGroupAsGroup(this.group.id)
+          : this.groupService.getGroup(this.group.id);
+        getGroup.subscribe(group => {
+          this.group = group;
+          this.groupDashboardService.getAvailableMeasuredAssessments(this.createSearch(this.group))
+            .subscribe(measuredAssessments => {
+              this.updateMeasuredAssessments(measuredAssessments);
+            });
         });
-    });
+      });
   }
 
   updateMeasuredAssessments(assessments: MeasuredAssessment[]): void {
@@ -103,12 +117,13 @@ export class GroupDashboardComponent implements OnInit {
     const assessmentSubjects = new Set(assessments.map(x => x.assessment.subject));
     this.subjects = this.filterOptions.subjects
       .filter(subject => assessmentSubjects.has(subject));
+
+    this.loadingMeasuredAssessments = false;
   }
 
   viewAssessments(): void {
     this.router.navigate([ 'group-exams', this.stateAsNavigationParameters ]).then(() => {
       // reset selected assessments to avoid issues with going back to previous page
-      // TODO pass through assessment provider
       this.selectedAssessments = [];
       this.groupDashboardService.getAvailableMeasuredAssessments(this.createSearch(this.group))
         .subscribe(measuredAssessments => {
