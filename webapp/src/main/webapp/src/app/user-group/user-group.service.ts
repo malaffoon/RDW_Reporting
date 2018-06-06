@@ -28,6 +28,20 @@ export class UserGroupService {
     );
   }
 
+  getUserGroupAsGroup(groupId: number): Observable<Group> {
+    return this.getGroup(groupId).pipe(
+      map(userGroup => <Group>{
+        id: userGroup.id,
+        name: userGroup.name,
+        schoolId: null,
+        schoolName: '',
+        subjectCode: userGroup.subjects != null ? userGroup.subjects[ 0 ] : undefined,
+        totalStudents: userGroup.students.length,
+        userCreated: true
+      })
+    );
+  }
+
   safelyGetGroups(): Observable<UserGroup[]> {
     return this.getGroups().pipe(
       catchError(() => of([]))
