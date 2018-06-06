@@ -134,8 +134,8 @@ export const IabAssessmentIconsByAssessmentName = {
 @Component({
   selector: 'assessment-icon',
   template: `
-    <sb-icon *ngIf="assessmentName"
-             [icon]="icon"
+    <sb-icon *ngIf="icon"
+             [icon]="'assessment-icon/' + icon"
              [styles]="styles"></sb-icon>
   `
 })
@@ -144,21 +144,15 @@ export class AssessmentIconComponent {
   @Input()
   styles: any;
 
-  private _assessmentName: string;
   private _icon: string;
 
   get icon(): string {
     return this._icon;
   }
 
-  get assessmentName(): string {
-    return this._assessmentName;
-  }
-
   @Input()
   set assessmentName(value: string) {
-    this._assessmentName = value;
-    this._icon = `assessment-icon/${IabAssessmentIconsByAssessmentName[ value ]}`;
+    this._icon = IabAssessmentIconsByAssessmentName[ value ];
   }
 
 }
