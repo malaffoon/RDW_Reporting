@@ -13,8 +13,6 @@ import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { Search } from '../../groups/results/group-assessment.service';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'group-dashboard',

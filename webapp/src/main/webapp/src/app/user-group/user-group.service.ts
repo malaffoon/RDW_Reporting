@@ -28,6 +28,12 @@ export class UserGroupService {
     );
   }
 
+  safelyGetGroups(): Observable<UserGroup[]> {
+    return this.getGroups().pipe(
+      catchError(() => of([]))
+    );
+  }
+
   getGroups(): Observable<UserGroup[]> {
     return this.dataService.get(`${ReportingServiceRoute}/userGroups`).pipe(
       map(serverGroups => serverGroups.map(serverGroup => this.toUserGroup(serverGroup)))
