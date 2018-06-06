@@ -212,6 +212,7 @@ sql:
         st.last_or_surname as student_last_name,
         st.first_name as student_first_name,
         a.id as asmt_id,
+        a.name as asmt_name,
         a.label as asmt_label,
         a.grade_code as asmt_grade_code,
         a.type_id as asmt_type_id,

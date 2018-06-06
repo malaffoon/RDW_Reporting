@@ -1,5 +1,6 @@
 export class Assessment {
   id: number;
+  name: string;
   label: string;
   grade: string;
   type: string;
