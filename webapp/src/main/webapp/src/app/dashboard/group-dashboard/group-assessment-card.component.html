@@ -5,16 +5,25 @@
   <div class="check">
     <i class="fa fa-check"></i>
   </div>
-  <div class="label"
-       [ngClass]="getGradeColor()">
-    {{'common.assessment-grade-short-label.' + measuredAssessment.assessment.grade | translate}}
+
+  <div class="row">
+    <div class="col-xs-4"
+         *ngIf="measuredAssessment.assessment.type === 'iab'">
+      <div class="icon">
+        <assessment-icon [assessmentName]="measuredAssessment.assessment.name"></assessment-icon>
+      </div>
+    </div>
+    <div [ngClass]="measuredAssessment.assessment.type === 'iab' ? 'col-xs-8' : 'col-xs-12'">
+      <div class="label"
+           [ngClass]="getGradeColor()">
+        {{'common.assessment-grade-short-label.' + measuredAssessment.assessment.grade | translate}}
+      </div>
+      <div class="title">
+        {{measuredAssessment.assessment.label}}
+      </div>
+    </div>
   </div>
-  <div class="title">
-    {{measuredAssessment.assessment.label}}
-  </div>
-  <div class="icon">
-    <assessment-icon [assessmentName]="measuredAssessment.assessment.name"></assessment-icon>
-  </div>
+
   <div class="students">
       <span class="caption"
             [innerHTML]="'assessment-card.student-count' | translate: {studentsTested: measuredAssessment.studentsTested, groupCount: group.totalStudents }"></span>
