@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
-import { byNumber, byString, join } from '@kourge/ordering/comparator';
+import { byNumber, byString, Comparator, join } from '@kourge/ordering/comparator';
 import { TargetService } from '../../../../shared/target/target.service';
 import { AssessmentExamMapper } from '../../../assessment-exam.mapper';
 import { BaseColumn } from '../../../../shared/datatable/base-column.model';
@@ -35,6 +35,8 @@ import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { ExamStatistics } from '../../../model/exam-statistics.model';
 import { Exam } from '../../../model/exam.model';
 import { SortEvent } from 'primeng/api';
+import { AggregateReportItem } from '../../../../aggregate-report/results/aggregate-report-item';
+import { Utils } from '../../../../shared/support/support';
 
 const SubgroupOrdering = ordering((a: Subgroup, b: Subgroup) => {
   // Overall should be first
@@ -143,6 +145,8 @@ export class TargetReportComponent implements OnInit, ExportResults {
   private _sessions: any[];
   private _filterBy: FilterBy;
   private _filterBySubscription: Subscription;
+  private _orderingByIdentityField: { [ key: string ]: Ordering<AggregateTargetScoreRow> } = {};
+  private _previousSortEvent: SortEvent;
 
   constructor(private examFilterService: ExamFilterService,
               private actionBuilder: MenuActionBuilder,
@@ -168,13 +172,17 @@ export class TargetReportComponent implements OnInit, ExportResults {
     this.loading = true;
 
     this.columns = [
-      new Column({ id: 'claim', sortField: 'claimOrder' }),
+      new Column({ id: 'claim' }),
       new Column({ id: 'target' }),
       new Column({ id: 'subgroup' }),
       new Column({ id: 'studentsTested' }),
       new Column({ id: 'student-relative-residual-scores-level', headerInfo: true }),
       new Column({ id: 'standard-met-relative-residual-level', headerInfo: true })
     ];
+
+    this.identityColumns.forEach(column => {
+      this._orderingByIdentityField[ column ] = this.createOrdering(column);
+    });
 
     forkJoin(
       this.targetService.getTargetsForAssessment(this.assessment.id),
@@ -221,15 +229,49 @@ export class TargetReportComponent implements OnInit, ExportResults {
    * @param event {{order: number, field: string}} An optional sort event
    */
   public sort(event?: SortEvent): void {
-    const { field, data } = event;
-    const ascending = event.order > 0;
+    const ordering: Comparator<AggregateTargetScoreRow>[] = this.getIdentityColumnsComparator();
+
+    if (!this._previousSortEvent ||
+      event === this._previousSortEvent ||
+      event.order !== 1 ||
+      event.field !== this._previousSortEvent.field) {
+      // Standard column sort.  Sort on the selected column first, then default sorting.
+      ordering.unshift(this.getComparator(event.field, event.order));
+      this._previousSortEvent = event;
+    } else {
+      // This is the third time sorting on the same column, reset to default sorting
+      delete this._previousSortEvent;
+      this.dataTable.reset();
+    }
+
+    event.data.sort(join(...ordering));
+    this.calculateTreeColumns();
+  }
+
+  private getComparator(field, order): Comparator<AggregateTargetScoreRow> {
+    const ascending = order > 0;
     const columnOrdering = this.createOrdering(field);
-    ascending ? data.sort(columnOrdering.compare) : data.sort(columnOrdering.reverse().compare);
+    return ascending ? columnOrdering.compare : columnOrdering.reverse().compare;
+  }
+
+  /**
+   * Get the ordered list of Comparators that result in a tree-like display.
+   * The order of Comparators depends upon the column order.
+   *
+   * @returns {Comparator<AggregateReportItem>[]} The ordered list of comparators
+   */
+  private getIdentityColumnsComparator(): Comparator<AggregateTargetScoreRow>[] {
+    return this.columns
+      .map((column: Column) => {
+        const ordering = this._orderingByIdentityField[ column.field ];
+        return ordering ? ordering.compare : null;
+      })
+      .filter(value => !Utils.isNullOrUndefined(value));
   }
 
   private createOrdering(field: string): Ordering<AggregateTargetScoreRow> {
     switch (field) {
-      case 'claimOrder':
+      case 'claim':
         const claimOrdering: Ordering<string> = (SubjectClaimOrderings.get(this.assessment.subject) || ordering(byString));
         return claimOrdering.on<AggregateTargetScoreRow>(row => row.claim);
       case 'target':
@@ -277,7 +319,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
     );
   }
 
-  sortRows() {
+  private sortRows() {
     // when there isn't a subject specific claim ordering, then default ot a simple alpha sort
     const claimOrdering: Ordering<string> = (SubjectClaimOrderings.get(this.assessment.subject) || ordering(byString));
 
@@ -390,18 +432,15 @@ export class TargetReportComponent implements OnInit, ExportResults {
 class Column implements BaseColumn {
   id: string;
   field: string;
-  sortField: string;
   headerInfo: boolean;
 
   constructor({
                 id,
                 field = '',
-                sortField = '',
                 headerInfo = false
               }) {
     this.id = id;
     this.field = field ? field : id;
-    this.sortField = sortField ? sortField : this.field;
     this.headerInfo = headerInfo;
   }
 }
