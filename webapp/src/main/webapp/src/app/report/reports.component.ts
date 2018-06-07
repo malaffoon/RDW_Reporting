@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Report } from "./report.model";
-import { ActivatedRoute } from "@angular/router";
-import { ReportService } from "./report.service";
-import { Resolution } from "../shared/resolution.model";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Report } from './report.model';
+import { ActivatedRoute } from '@angular/router';
+import { ReportService } from './report.service';
+import { Resolution } from '../shared/resolution.model';
 import Timer = NodeJS.Timer;
 
 /**
@@ -18,7 +18,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   reports: Report[];
 
   private statusPollingInterval: number = 20000;
-  private statusPollingTimer: number;
+  private statusPollingTimer: Timer;
 
   constructor(private route: ActivatedRoute,
               private service: ReportService) {
@@ -45,7 +45,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   private startPollingStatus(): void {
-    this.statusPollingTimer = setInterval(() => {
+    this.statusPollingTimer = <Timer>setInterval(() => {
 
       // get all report IDs for reports that are in progress
       const ids: number[] = this.reports
