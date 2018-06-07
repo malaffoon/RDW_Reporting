@@ -16,18 +16,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   resolution: Resolution<Report[]>;
   reports: Report[];
-  columns: Column[] = [
-    new Column({id: 'label-header', field: 'label'}),
-    new Column({id: 'report-type-header', field: 'reportType'}),
-    new Column({id: 'assessment-type-header', field: 'assessmentType'}),
-    new Column({id: 'subject-header', field: 'subjectCodes'}),
-    new Column({id: 'school-year-header', field: 'schoolYears'}),
-    new Column({id: 'status-header', field: 'status'}),
-    new Column({id: 'created-header', field: 'created'})
-  ];
 
   private statusPollingInterval: number = 20000;
-  private statusPollingTimer: Timer;
+  private statusPollingTimer: number;
 
   constructor(private route: ActivatedRoute,
               private service: ReportService) {
@@ -53,17 +44,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
-  getReportTypeTranslateValue(report: Report) {
-    return report.request && report.request.reportTypeDisplayValue
-      ? report.request.reportTypeDisplayValue
-      : report.reportType;
-  }
-
   private startPollingStatus(): void {
     this.statusPollingTimer = setInterval(() => {
 
       // get all report IDs for reports that are in progress
-      let ids: number[] = this.reports
+      const ids: number[] = this.reports
         .filter(report => report.processing)
         .map(report => report.id);
 
@@ -78,8 +63,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
             let updated: boolean = false;
 
             // creates a copy of the existing report collection and updates it with reports that have changed
-            let updatedReports: Report[] = this.reports.map(local => {
-              let remote: Report = remoteReports.find(remote => remote.id === local.id);
+            const updatedReports: Report[] = this.reports.map(local => {
+              const remote: Report = remoteReports.find(remote => remote.id === local.id);
               if (remote !== undefined && remote.status !== local.status) {
                 updated = true;
                 return remote;
@@ -110,17 +95,4 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-}
-
-class Column {
-  id: string;
-  field: string;
-
-  constructor({
-                id,
-                field
-  }) {
-    this.id = id;
-    this.field = field;
-  }
 }

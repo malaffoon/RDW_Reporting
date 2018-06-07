@@ -16,10 +16,12 @@ import { ReportActionService } from "./report-action.service";
 import { ReportActionComponent } from "./report-action.component";
 import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
 import { TableModule } from "primeng/table";
+import { ReportTableComponent } from './report-table.component';
 
 @NgModule({
   declarations: [
     ReportsComponent,
+    ReportTableComponent,
     StudentReportDownloadComponent,
     GroupReportDownloadComponent,
     SchoolGradeDownloadComponent,

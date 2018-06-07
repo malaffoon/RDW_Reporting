@@ -206,7 +206,9 @@ export class ReportService {
     report.label = serverReport.label;
     report.status = serverReport.status;
     report.created = serverReport.created;
-    report.reportType = serverReport.reportType;
+    report.reportType = serverReport.request && serverReport.request.reportTypeDisplayValue
+      ? serverReport.request.reportTypeDisplayValue
+      : serverReport.reportType;
     report.assessmentTypeCode = serverReport.assessmentTypeCode;
     report.subjectCodes = serverReport.subjectCodes || [];
     report.schoolYears = serverReport.schoolYears || [];
