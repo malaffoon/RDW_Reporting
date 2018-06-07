@@ -295,8 +295,6 @@ export class AggregateReportTableComponent {
 
     // Create columns
 
-    console.log('claims', options.claims)
-
     const IdentityColumns: Column[] = [
       new Column({ id: 'organization', field: 'organization.name' }),
       new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
