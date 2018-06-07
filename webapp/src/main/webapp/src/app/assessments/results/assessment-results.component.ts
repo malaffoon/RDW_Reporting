@@ -120,6 +120,9 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   isDefaultCollapsed = false;
 
+  @Input()
+  displayedFor: string;
+
   /**
    * Represents the cutoff year for when there is no item level response data available.
    * If there are no exams that are after this school year, then disable the ability to go there and show proper message
@@ -305,7 +308,7 @@ export class AssessmentResultsComponent implements OnInit {
     this.resultsByItemView = this.createResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, this.displayResultsByItem);
     this.distractorAnalysisView = this.createResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, this.displayDistractorAnalysis);
     this.writingTraitScoresView = this.createResultViewState(ResultsViewState.WritingTraitScores, this.enableWritingTraitScores, true, this.displayWritingTraitScores);
-    this.targetReportView = this.createResultViewState(ResultsViewState.TargetReport, true, false, this.displayTargetReport);
+    this.targetReportView = this.createResultViewState(ResultsViewState.TargetReport, true, true, this.displayTargetReport);
   }
 
   setCurrentView(view: ResultsView): void {

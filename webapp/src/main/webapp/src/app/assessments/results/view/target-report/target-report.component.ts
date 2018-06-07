@@ -26,6 +26,10 @@ import { AssessmentProvider } from '../../../assessment-provider.interface';
 import { byNumericString, SubjectClaimOrderings } from '../../../../shared/ordering/orderings';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
 import { ExportResults } from '../../assessment-results.component';
+import { ExportTargetReportRequest } from '../../../model/export-target-report-request.model';
+import { AssessmentExporter } from '../../../assessment-exporter.interface';
+import { ExamStatistics } from '../../../model/exam-statistics.model';
+import { Exam } from '../../../model/exam.model';
 
 @Component({
   selector: 'target-report',
@@ -47,6 +51,21 @@ export class TargetReportComponent implements OnInit, ExportResults {
    */
   @Input()
   studentsTested: number;
+
+  @Input()
+  statistics: ExamStatistics;
+
+  @Input()
+  displayedFor: string;
+
+  @Input()
+  set exams(exams: Exam[]) {
+    if (exams && exams.length > 0) {
+      this.schoolYear = exams[ 0 ].schoolYear;
+    }
+  }
+
+  schoolYear: number;
 
   @Input()
   set sessions(value: any) {
@@ -73,6 +92,12 @@ export class TargetReportComponent implements OnInit, ExportResults {
       });
     }
   }
+
+  /**
+   * Service class which provides export capabilities for this assessment and exam.
+   */
+  @Input()
+  assessmentExporter: AssessmentExporter;
 
   @ViewChild('menuReportDownloader')
   reportDownloader: StudentReportDownloadComponent;
@@ -171,18 +196,19 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   hasDataToExport(): boolean {
-    return false;
-    // return this.filteredItems && this.filteredItems.length > 0;
+    return this.aggregateTargetScoreRows && this.aggregateTargetScoreRows.length !== 0;
   }
 
   exportToCsv(): void {
-    // let exportRequest = new ExportWritingTraitsRequest();
-    // exportRequest.assessment = this.assessment;
-    // exportRequest.showAsPercent = this.showValuesAsPercent;
-    // exportRequest.assessmentItems = this.filteredItems;
-    // exportRequest.summaries = this.traitScoreSummaries;
+    const exportRequest = new ExportTargetReportRequest();
+    exportRequest.assessment = this.assessment;
+    exportRequest.targetScoreRows = this.aggregateTargetScoreRows;
+    exportRequest.group = this.displayedFor;
+    exportRequest.schoolYear = this.schoolYear;
+    exportRequest.averageScaleScore = Math.round(this.statistics.average);
+    exportRequest.standardError = Math.round(this.statistics.standardError);
 
-    //this.assessmentExporter.exportWritingTraitScoresToCsv(exportRequest);
+    this.assessmentExporter.exportTargetScoresToCsv(exportRequest);
   }
 
   get showResults(): boolean {
@@ -291,10 +317,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
     return exams.filter(x => this._sessions.some(y => y.filter && y.id === x.session));
   }
 
-  private getClaimCodeTranslationKey(row: AggregateTargetScoreRow): string {
-    return `common.claim-name.${row.claim}`;
-  }
-
   private createAllSubgroups(settings: any): any[] {
     const subgroups = [
       { code: 'Gender', translatecode: 'gender-label', selected: false },
@@ -315,7 +337,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   getClaimCodeTranslation(row: AggregateTargetScoreRow): string {
-    return this.translate.instant(this.getClaimCodeTranslationKey(row));
+    return this.translate.instant(`common.claim-name.${row.claim}`);
   }
 
   getTargetDisplay(row: AggregateTargetScoreRow): any {
