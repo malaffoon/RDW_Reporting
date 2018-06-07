@@ -1,14 +1,33 @@
-<div class="card assessment-aggregate" [ngClass]="{'selected': selected}" (click)="selectCard()">
+<div class="card assessment-aggregate"
+     [ngClass]="{selected: selected}"
+     (click)="selectCard()">
 
-  <span class="check"><i class="fa fa-check"></i></span>
-  <span
-    class="label" [ngClass]="getGradeColor()">{{ 'common.assessment-grade-short-label.' + measuredAssessment.assessment.grade | translate}}</span>
-  <span class="title">{{ measuredAssessment.assessment.label }}</span>
-  <div class="students">
+  <div class="check">
+    <i class="fa fa-check"></i>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-4"
+         *ngIf="measuredAssessment.assessment.type === 'iab'">
+      <div class="icon">
+        <assessment-icon [assessmentName]="measuredAssessment.assessment.name"></assessment-icon>
+      </div>
+    </div>
+    <div [ngClass]="measuredAssessment.assessment.type === 'iab' ? 'col-xs-8' : 'col-xs-12'">
+      <div class="label"
+           [ngClass]="getGradeColor()">
+        {{'common.assessment-grade-short-label.' + measuredAssessment.assessment.grade | translate}}
+      </div>
+      <div class="title">
+        {{measuredAssessment.assessment.label}}
+      </div>
+    </div>
+  </div>
+
+  <div class="students mt-sm">
       <span class="caption"
             [innerHTML]="'assessment-card.student-count' | translate: {studentsTested: measuredAssessment.studentsTested, groupCount: group.totalStudents }"></span>
   </div>
-
   <div class="aggregate-graph">
     <!-- TODO: custom subjects need to dynamically pull performance levels for the current assessment type -->
     <div class="perc-container grid-3">

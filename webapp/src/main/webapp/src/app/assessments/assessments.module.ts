@@ -43,12 +43,14 @@ import { TableModule } from 'primeng/table';
 import { TargetReportComponent } from './results/view/target-report/target-report.component';
 import { TargetStatisticsCalculator } from './results/target-statistics-calculator';
 import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
+import { AssessmentIconComponent } from './assessment-icon.component';
 
 @NgModule({
   declarations: [
     AdvFiltersComponent,
     AdvFiltersToggleComponent,
     AssessmentsComponent,
+    AssessmentIconComponent,
     AssessmentResultsComponent,
     ItemTabComponent,
     ItemViewerComponent,
@@ -87,6 +89,7 @@ import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
     AdvFiltersComponent,
     AdvFiltersToggleComponent,
     AssessmentsComponent,
+    AssessmentIconComponent,
     ItemTabComponent,
     ClaimTargetComponent,
     InstructionalResourcePopoverComponent

@@ -1304,13 +1304,13 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 @easing-sharp: cubic-bezier(0.4, 0.0, 0.6, 1);
 
 // cards per row
-@cards-per-row: 4;
+@cards-per-row: 3;
 
 // copy below CSS
 .card-grid {
   display: grid;
   grid-gap: @spacer;
-  grid-template-columns: repeat(@cards-per-row, @spacer * 15.7);
+  grid-template-columns: repeat(@cards-per-row, @spacer * 21);
 }
 
 .card {
@@ -1395,7 +1395,6 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
     font-style: italic;
   }
   > .students {
-    margin-top: 1.5em;
     font-size: 12.8px;
     .caption {
       display: inline-block;
@@ -1571,4 +1570,14 @@ user-group {
 .performance-label {
   display: inline-block;
   min-width: 75px;
+}
+
+@assessment-icon-size: 80px;
+
+assessment-icon i.icon.sbac {
+  color: @blue;
+  width: @assessment-icon-size;
+  height: @assessment-icon-size;
+  display: block;
+  margin: 0 auto;
 }

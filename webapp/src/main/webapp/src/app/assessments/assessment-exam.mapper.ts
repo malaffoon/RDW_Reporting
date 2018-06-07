@@ -75,6 +75,7 @@ export class AssessmentExamMapper {
   mapAssessmentFromApi(serverAssessment: any): Assessment {
     const assessment = new Assessment();
     assessment.id = serverAssessment.id;
+    assessment.name = serverAssessment.name;
     assessment.label = serverAssessment.label;
     assessment.grade = serverAssessment.gradeCode;
     assessment.type = serverAssessment.typeCode;

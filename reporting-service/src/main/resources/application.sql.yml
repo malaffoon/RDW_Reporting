@@ -151,6 +151,7 @@ sql:
       findAll: >-
         SELECT
           count(*) as tested,
+          a.name as asmt_name,
           a.label as asmt_label,
           a.subject_id as asmt_subject_id,
           a.type_id as asmt_type_id,
@@ -260,13 +261,13 @@ sql:
         AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
     examItem:
-        findAllExamItemScoresForAssessment:
-          ${sql.reporting.snippet.selectFromExamItem}
-          WHERE e.asmt_id = :assessment_id
-          AND e.school_year = :school_year
-          AND a.grade_id = :grade_id
-          AND (s.id = :school_id OR (1 = :allow_transfer_access AND isch.id = :school_id))
-          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+      findAllExamItemScoresForAssessment:
+        ${sql.reporting.snippet.selectFromExamItem}
+        WHERE e.asmt_id = :assessment_id
+        AND e.school_year = :school_year
+        AND a.grade_id = :grade_id
+        AND (s.id = :school_id OR (1 = :allow_transfer_access AND isch.id = :school_id))
+        AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   assessment:
     grade:
@@ -287,49 +288,50 @@ sql:
   reporting:
     snippet:
       assessmentColumns: >-
-          a.id,
-          a.label,
-          a.grade_code,
-          a.type_id,
-          a.subject_id,
-          a.school_year,
-          a.claim1_score_code,
-          a.claim2_score_code,
-          a.claim3_score_code,
-          a.claim4_score_code,
-          a.min_score,
-          a.max_score,
-          a.cut_point_1,
-          a.cut_point_2,
-          a.cut_point_3,
-          EXISTS(SELECT 1 FROM item i WHERE i.asmt_id = a.id AND i.type = 'WER') as has_wer_item
+        a.id,
+        a.name,
+        a.label,
+        a.grade_code,
+        a.type_id,
+        a.subject_id,
+        a.school_year,
+        a.claim1_score_code,
+        a.claim2_score_code,
+        a.claim3_score_code,
+        a.claim4_score_code,
+        a.min_score,
+        a.max_score,
+        a.cut_point_1,
+        a.cut_point_2,
+        a.cut_point_3,
+        EXISTS(SELECT 1 FROM item i WHERE i.asmt_id = a.id AND i.type = 'WER') as has_wer_item
 
 
       selectFromExamItem: >-
-           SELECT
-              ei.id,
-              ei.exam_id,
-              ei.item_id,
-              ei.score,
-              ei.position,
-              ei.response,
-              ei.trait_evidence_elaboration_score,
-              ei.trait_organization_purpose_score,
-              ei.trait_conventions_score
-            FROM exam_item ei
-            JOIN exam e ON ei.exam_id=e.id
-            JOIN asmt a ON e.asmt_id=a.id
-            JOIN school s ON e.school_id=s.id
-            JOIN student st ON st.id=e.student_id
-            JOIN school isch ON st.inferred_school_id = isch.id
+       SELECT
+          ei.id,
+          ei.exam_id,
+          ei.item_id,
+          ei.score,
+          ei.position,
+          ei.response,
+          ei.trait_evidence_elaboration_score,
+          ei.trait_organization_purpose_score,
+          ei.trait_conventions_score
+        FROM exam_item ei
+        JOIN exam e ON ei.exam_id=e.id
+        JOIN asmt a ON e.asmt_id=a.id
+        JOIN school s ON e.school_id=s.id
+        JOIN student st ON st.id=e.student_id
+        JOIN school isch ON st.inferred_school_id = isch.id
             
       studentExamPermissionWithEmbargo: >-
-          ${sql.snippet.studentExamPermissionWithoutEmbargo}
-          AND
-          (
-             e.school_year < ${reporting.school-year}
-             OR e.type_id <> 3
-             OR s.embargo_enabled = 0
-             OR 1 = :state_embargo_admin
-             OR s.district_id IN (:district_embargo_admin_ids)
-          )
+        ${sql.snippet.studentExamPermissionWithoutEmbargo}
+        AND
+        (
+           e.school_year < ${reporting.school-year}
+           OR e.type_id <> 3
+           OR s.embargo_enabled = 0
+           OR 1 = :state_embargo_admin
+           OR s.district_id IN (:district_embargo_admin_ids)
+        )

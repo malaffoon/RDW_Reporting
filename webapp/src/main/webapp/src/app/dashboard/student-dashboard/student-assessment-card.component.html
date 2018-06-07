@@ -1,10 +1,35 @@
-<div class="card assessment-aggregate" [ngClass]="{'selected': latestExam.selected}" (click)="selectCard()">
+<div class="card assessment-aggregate"
+     [ngClass]="{selected: latestExam.selected}"
+     (click)="selectCard()">
 
-  <div class="check"><i class="fa fa-check"></i></div>
-  <div
-    class="label" [ngClass]="getGradeColor()">{{ 'common.assessment-grade-short-label.' + latestExam.assessment.grade | translate}}</div>
-  <div class="title">{{ latestExam.assessment.label }}</div>
-  <div class="date">{{ latestExam.exam.date | date }}</div>
-  <div class="distribution mt-sm" [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(latestExam.assessment.type, level)">{{ 'common.assessment-type.'+ latestExam.assessment.type + '.performance-level.' + level + '.name' | translate }}</div>
-  <div class="result-count center-block mt-md">{{'student-assessment-card.results' | translate:{resultCount: resultCount} }}</div>
+  <div class="check">
+    <i class="fa fa-check"></i>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-4"
+         *ngIf="latestExam.assessment.type === 'iab'">
+      <div class="icon">
+        <assessment-icon [assessmentName]="latestExam.assessment.name"></assessment-icon>
+      </div>
+    </div>
+    <div [ngClass]="latestExam.assessment.type === 'iab' ? 'col-xs-8' : 'col-xs-12'">
+      <div class="label"
+           [ngClass]="getGradeColor()">
+        {{'common.assessment-grade-short-label.' + latestExam.assessment.grade | translate}}
+      </div>
+      <div class="title">
+        {{latestExam.assessment.label}}
+      </div>
+    </div>
+  </div>
+  <div class="date mt-sm">
+    {{latestExam.exam.date | date}}
+  </div>
+  <div class="distribution mt-sm" [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(latestExam.assessment.type, level)">
+    {{'common.assessment-type.'+ latestExam.assessment.type + '.performance-level.' + level + '.name' | translate}}
+  </div>
+  <div class="result-count center-block mt-sm">
+    {{'student-assessment-card.results' | translate:{resultCount: resultCount} }}
+  </div>
 </div>
