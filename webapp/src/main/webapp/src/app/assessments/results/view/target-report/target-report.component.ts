@@ -4,7 +4,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { Assessment } from '../../../model/assessment.model';
 import { TargetScoreExam } from '../../../model/target-score-exam.model';
-import { AggregateTargetScoreRow, TargetReportingLevel } from '../../../model/aggregate-target-score-row.model';
+import {
+  AggregateTargetScoreRow,
+  byTargetReportingLevel,
+  TargetReportingLevel
+} from '../../../model/aggregate-target-score-row.model';
 import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.service';
 import { FilterBy } from '../../../model/filter-by.model';
 import { GroupAssessmentService } from '../../../../groups/results/group-assessment.service';
@@ -12,7 +16,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
-import { byString, join } from '@kourge/ordering/comparator';
+import { byNumber, byString, join } from '@kourge/ordering/comparator';
 import { TargetService } from '../../../../shared/target/target.service';
 import { AssessmentExamMapper } from '../../../assessment-exam.mapper';
 import { BaseColumn } from '../../../../shared/datatable/base-column.model';
@@ -30,6 +34,18 @@ import { ExportTargetReportRequest } from '../../../model/export-target-report-r
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { ExamStatistics } from '../../../model/exam-statistics.model';
 import { Exam } from '../../../model/exam.model';
+import { SortEvent } from 'primeng/api';
+
+const SubgroupOrdering = ordering((a: Subgroup, b: Subgroup) => {
+  // Overall should be first
+  if (a.name.startsWith('Overall') && !b.name.startsWith('Overall')) {
+    return -1;
+  }
+  if (!a.name.startsWith('Overall') && b.name.startsWith('Overall')) {
+    return 1;
+  }
+  return a.name.localeCompare(b.name);
+});
 
 @Component({
   selector: 'target-report',
@@ -199,6 +215,39 @@ export class TargetReportComponent implements OnInit, ExportResults {
     return this.aggregateTargetScoreRows && this.aggregateTargetScoreRows.length !== 0;
   }
 
+  /**
+   * Sort the data
+   *
+   * @param event {{order: number, field: string}} An optional sort event
+   */
+  public sort(event?: SortEvent): void {
+    const { field, data } = event;
+    const ascending = event.order > 0;
+    const columnOrdering = this.createOrdering(field);
+    ascending ? data.sort(columnOrdering.compare) : data.sort(columnOrdering.reverse().compare);
+  }
+
+  private createOrdering(field: string): Ordering<AggregateTargetScoreRow> {
+    switch (field) {
+      case 'claimOrder':
+        const claimOrdering: Ordering<string> = (SubjectClaimOrderings.get(this.assessment.subject) || ordering(byString));
+        return claimOrdering.on<AggregateTargetScoreRow>(row => row.claim);
+      case 'target':
+        return ordering(byString).on<AggregateTargetScoreRow>(row => row.target);
+      case 'subgroup':
+        return SubgroupOrdering.on<AggregateTargetScoreRow>(row => row.subgroup);
+      case 'studentsTested':
+        return ordering(byNumber).on<AggregateTargetScoreRow>(row => row.studentsTested);
+      case 'student-relative-residual-scores-level':
+        return ordering(byTargetReportingLevel).on<AggregateTargetScoreRow>(row => row.studentRelativeLevel);
+      case 'standard-met-relative-residual-level':
+        return ordering(byTargetReportingLevel).on<AggregateTargetScoreRow>(row => row.standardMetRelativeLevel);
+      default:
+        throw Error(field + ' not accounted for in sorting');
+    }
+  }
+
+
   exportToCsv(): void {
     const exportRequest = new ExportTargetReportRequest();
     exportRequest.assessment = this.assessment;
@@ -229,25 +278,14 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   sortRows() {
-    const bySubgroup = (a: Subgroup, b: Subgroup) => {
-      // Overall should be first
-      if (a.name.startsWith('Overall') && !b.name.startsWith('Overall')) {
-        return -1;
-      }
-      if (!a.name.startsWith('Overall') && b.name.startsWith('Overall')) {
-        return 1;
-      }
-      return a.name.localeCompare(b.name);
-    };
-
     // when there isn't a subject specific claim ordering, then default ot a simple alpha sort
-    let claimOrdering: Ordering<string> = (SubjectClaimOrderings.get(this.assessment.subject) || ordering(byString));
+    const claimOrdering: Ordering<string> = (SubjectClaimOrderings.get(this.assessment.subject) || ordering(byString));
 
     this.aggregateTargetScoreRows.sort(
       join(
         claimOrdering.on<AggregateTargetScoreRow>(row => row.claim).compare,
         ordering(byNumericString).on<AggregateTargetScoreRow>(row => row.target).compare,
-        ordering(bySubgroup).on<AggregateTargetScoreRow>(row => row.subgroup).compare
+        SubgroupOrdering.on<AggregateTargetScoreRow>(row => row.subgroup).compare
       )
     );
   }
