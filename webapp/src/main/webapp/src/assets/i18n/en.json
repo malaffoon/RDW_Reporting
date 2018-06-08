@@ -1293,7 +1293,7 @@
     "reload": "Reload",
     "report-type": {
       "AggregateReportRequest": "Aggregate Report",
-      "AggregateReportRequest CustomAggregate": "Aggregate Report",
+      "AggregateReportRequest CustomAggregate": "Aggregate Report: Yearly",
       "AggregateReportRequest Claim": "Aggregate Report: Claims",
       "AggregateReportRequest Longitudinal": "Aggregate Report: Longitudinal",
       "AggregateReportRequest Target": "Aggregate Report: Target",

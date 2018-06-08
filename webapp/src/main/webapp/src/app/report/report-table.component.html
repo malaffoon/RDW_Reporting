@@ -1,5 +1,5 @@
 <p-table [columns]="columns"
-         [value]="reports"
+         [value]="reportViews"
          [autoLayout]="true"
          sortField="created"
          [sortOrder]="-1"
@@ -10,65 +10,55 @@
                let-columns>
     <tr>
       <th *ngFor="let column of columns"
-          [pSortableColumn]="column.field"
+          [pSortableColumn]="column.sortField"
           [ngSwitch]="column.id">
 
         <div *ngSwitchDefault>
           {{ ('reports.column.' + column.id) | translate }}
         </div>
 
-        <p-sortIcon [field]="column.field"></p-sortIcon>
+        <p-sortIcon [field]="column.sortField"></p-sortIcon>
       </th>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="body"
-               let-report
+               let-view
                let-columns="columns">
     <tr>
       <td *ngFor="let column of columns"
           [ngSwitch]="column.id">
 
         <report-action *ngSwitchCase="'label-header'"
-                       [report]="report">
+                       [report]="view.report">
         </report-action>
 
         <ng-container *ngSwitchCase="'report-type-header'">
-          {{ 'reports.report-type.' + report.reportType | translate }}
+          {{view.translatedReportType}}
         </ng-container>
 
         <ng-container *ngSwitchCase="'assessment-type-header'">
-            <span *ngIf="!report.assessmentTypeCode">
-              {{'reports.all' | translate}}
-            </span>
-          <span *ngIf="report.assessmentTypeCode">
-              {{'common.assessment-type.' + report.assessmentTypeCode + '.short-name' | translate}}
-            </span>
+          {{view.translatedAssessmentType}}
         </ng-container>
 
         <ng-container *ngSwitchCase="'subject-header'">
-          <ng-container *ngIf="!report.subjectCodes.length">
-            {{ 'common.subject.ALL.name' | translate }}
-          </ng-container>
-          <ng-container *ngFor="let subjectCode of report.subjectCodes; let last = last">
-            {{ 'common.subject.' + subjectCode + '.name' | translate }}<ng-container *ngIf="!last">, </ng-container>
-          </ng-container>
+          {{view.translatedSubjectCodes}}
         </ng-container>
 
         <ng-container *ngSwitchCase="'school-year-header'">
-          <ng-container *ngFor="let schoolYear of report.schoolYears; let last = last">
+          <ng-container *ngFor="let schoolYear of view.report.schoolYears; let last = last">
             {{ schoolYear | schoolYear }}<ng-container *ngIf="!last">, </ng-container>
           </ng-container>
         </ng-container>
 
         <span *ngSwitchCase="'status-header'"
               class="label border-only"
-              [ngClass]="report.statusColor">
-            {{ 'reports.status.' + report.status | translate }}
+              [ngClass]="view.report.statusColor">
+            {{ 'reports.status.' + view.report.status | translate }}
           </span>
 
         <ng-container *ngSwitchCase="'created-header'">
-          {{ report.created | date:'medium' }}
+          {{ view.report.created | date:'medium' }}
         </ng-container>
 
       </td>
