@@ -8,9 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ReportTableComponent {
 
-  @Input()
-  subjects: string[];
-
   private _reportViews: ReportView[];
 
   columns: Column[] = [
