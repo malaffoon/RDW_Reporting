@@ -103,4 +103,8 @@ class Column {
       this.code = code;
     }
   }
+
+  get serverSubjectCode() {
+    return this.code ? this.code.toUpperCase() : this.code;
+  }
 }
