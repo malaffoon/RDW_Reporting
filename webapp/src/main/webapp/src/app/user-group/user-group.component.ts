@@ -29,6 +29,7 @@ import { Forms } from '../shared/form/forms';
 import { SchoolAndGroupTypeaheadOptionMapper } from '../student/search/school-and-group-typeahead-option.mapper';
 import { Option as SchoolAndGroupTypeaheadOption } from '../student/search/school-and-group-typeahead.component';
 import { Option } from '../shared/form/option';
+import * as deepEqual from "fast-deep-equal";
 
 const StudentComparator = join(
   ordering(byString).on<Student>(student => student.lastName).compare,
@@ -62,6 +63,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   initialized: boolean;
 
   private _saveButtonDisabled: boolean = true;
+  private _previousSearch: StudentSearch = null;
 
   @ViewChild('groupForm')
   groupForm: UserGroupFormComponent;
@@ -248,6 +250,12 @@ export class UserGroupComponent implements OnInit, OnDestroy {
 
   private searchStudents(): void {
     const search = this.createStudentSearch(this.studentForm);
+
+    if (this.isSameSearchRequest(search)) {
+      return;
+    }
+
+    this._previousSearch = search;
     if (Object.keys(search).length) {
       this.loadingStudents = true;
       this.studentService.getStudents(search)
@@ -264,6 +272,10 @@ export class UserGroupComponent implements OnInit, OnDestroy {
       this.students = [];
       this.updateFormStudents();
     }
+  }
+
+  private isSameSearchRequest(search: StudentSearch) {
+    return deepEqual(this._previousSearch, search);
   }
 
   private createStudentSearch(searchForm: StudentSearchForm): StudentSearch {
