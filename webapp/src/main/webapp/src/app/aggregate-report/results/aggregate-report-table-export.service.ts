@@ -34,6 +34,12 @@ export class AggregateReportTableExportService {
       builder = this.appendUserOrderedColumn(column, options, builder);
     });
 
+    builder
+      .withColumn(
+        this.translateService.instant('aggregate-report-table.columns.students-tested'),
+        (item: AggregateReportItem) => item.studentsTested
+      );
+
     if (options.reportType === AggregateReportType.Target) {
       builder
         .withColumn(
@@ -49,25 +55,15 @@ export class AggregateReportTableExportService {
           (item: AggregateReportItem) => {
             if (!item.studentsTested) return '';
 
-            return this.translateService.instant(`aggregate-report-table.target.standard.${item.studentRelativeResidualScoresLevel}`);
+            return this.translateService.instant(`aggregate-report-table.target.standard.${item.standardMetRelativeResidualLevel}`);
           }
-        )
-
-    } else if (options.reportType === AggregateReportType.Claim) {
-      builder
-        .withColumn(
-          this.translateService.instant('aggregate-report-table.columns.students-tested'),
-          (item: AggregateReportItem) => item.studentsTested
         );
 
+    } else if (options.reportType === AggregateReportType.Claim) {
       this.addPerformanceLevelColumns(builder, options);
 
     } else {
       builder
-        .withColumn(
-          this.translateService.instant('aggregate-report-table.columns.students-tested'),
-          (item: AggregateReportItem) => item.studentsTested
-        )
         .withColumn(
           this.translateService.instant('aggregate-report-table.columns.avg-scale-score'),
           (item: AggregateReportItem) => item.studentsTested
