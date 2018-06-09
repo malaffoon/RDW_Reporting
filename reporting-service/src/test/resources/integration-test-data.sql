@@ -193,7 +193,7 @@ insert into item_common_core_standard (item_id, common_core_standard_id) values
 
 -- groups
 insert into student_group (id, name, school_id, school_year, subject_id, update_import_id, updated, migrate_id) values
-  (-10, 'group1', -10, 1997, 2, -1, '1997-07-18 20:14:34.000000', -1),
+  (-10, 'group1', -10, 1997, 1, -1, '1997-07-18 20:14:34.000000', -1),
   (-20, 'group_ela', -10, 1997, 2, -1, '1997-07-18 20:14:34.000000', -1),
   (-30, 'group_all', -10, 1997, null, -1, '1997-07-18 20:14:34.000000', -1),
   (-40, 'group4', -10, 1997, null, -1, '1997-07-18 20:14:34.000000', -1),
