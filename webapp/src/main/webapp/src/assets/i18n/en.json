@@ -1233,6 +1233,7 @@
         "success-html": "Creating export."
       }
     },
+    "instructions": "Download all district or school data",
     "title": "District / School Exports"
   },
   "organization-tree": {
