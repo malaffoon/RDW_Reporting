@@ -1496,12 +1496,8 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 wide-radio-group {
 
   .btn-toolbar-grid {
-    display: grid;
-    grid-template-rows: repeat(2, auto);
-    grid-auto-flow: column;
-    grid-gap: 0 @spacer;
-    &:before {
-      content: none;
+    .btn > input {
+        display: none;
     }
   }
 
