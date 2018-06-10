@@ -104,6 +104,7 @@ sql:
             JOIN school s ON e.school_id = s.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
           WHERE e.school_year = :school_year
             AND a.id = e.asmt_id
             AND ${sql.snippet.groupFilters}
@@ -117,6 +118,7 @@ sql:
             JOIN school s ON e.school_id=s.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
           WHERE e.school_year = :school_year
             AND ${sql.snippet.groupFilters}
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
@@ -132,6 +134,7 @@ sql:
           e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
+          JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
         WHERE a.id = :assessment_id
           AND e.school_year = :school_year
           AND ${sql.snippet.groupFilters}
@@ -152,6 +155,7 @@ sql:
           JOIN school isch on st.inferred_school_id = isch.id
           JOIN exam_target_score ets on ets.exam_id = e.id
           JOIN target t on t.id = ets.target_id
+          JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
          WHERE a.id = :assessment_id
             AND e.school_year = :school_year
             AND ${sql.snippet.groupFilters}
@@ -185,26 +189,28 @@ sql:
           SELECT
             e1.id
           FROM (
-                 SELECT ex1.id, ex1.student_id, ex1.asmt_id, ex1.school_year, ex1.completed_at
-                 FROM exam ex1
-                   JOIN asmt a ON a.id = ex1.asmt_id
-                   JOIN student st ON st.id = ex1.student_id
-                 WHERE ex1.type_id = 2
-                       AND ex1.school_year = :school_year
-                       AND ex1.scale_score IS NOT NULL
-                       AND ex1.scale_score_std_err IS NOT NULL
-                       AND ex1.performance_level IS NOT NULL
+                 SELECT e.id, e.student_id, e.asmt_id, e.school_year, e.completed_at
+                 FROM exam e
+                   JOIN asmt a ON a.id = e.asmt_id
+                   JOIN student st ON st.id = e.student_id
+                   JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+                 WHERE e.type_id = 2
+                       AND e.school_year = :school_year
+                       AND e.scale_score IS NOT NULL
+                       AND e.scale_score_std_err IS NOT NULL
+                       AND e.performance_level IS NOT NULL
                        AND ${sql.snippet.groupFilters}
                ) AS e1 LEFT OUTER JOIN
-            ( SELECT ex2.id, ex2.student_id, ex2.asmt_id, ex2.school_year, ex2.completed_at
-              FROM exam ex2
-                JOIN asmt a ON a.id = ex2.asmt_id
-                JOIN student st ON st.id = ex2.student_id
-            WHERE ex2.type_id = 2
-                  AND ex2.school_year = :school_year
-                  AND ex2.scale_score IS NOT NULL
-                  AND ex2.scale_score_std_err IS NOT NULL
-                  AND ex2.performance_level IS NOT NULL
+            ( SELECT e.id, e.student_id, e.asmt_id, e.school_year, e.completed_at
+              FROM exam e
+                JOIN asmt a ON a.id = e.asmt_id
+                JOIN student st ON st.id = e.student_id
+                JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+            WHERE e.type_id = 2
+                  AND e.school_year = :school_year
+                  AND e.scale_score IS NOT NULL
+                  AND e.scale_score_std_err IS NOT NULL
+                  AND e.performance_level IS NOT NULL
                   AND ${sql.snippet.groupFilters}
             ) AS e2
               ON e1.student_id = e2.student_id  AND e1.asmt_id = e2.asmt_id AND e1.school_year = e2.school_year
@@ -217,6 +223,7 @@ sql:
     examItem:
         findAllExamItemScoresForAssessment:
           ${sql.reporting.snippet.selectFromExamItem}
+          JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
           WHERE e.asmt_id = :assessment_id
             AND e.school_year = :school_year
             AND ${sql.snippet.groupFilters}
