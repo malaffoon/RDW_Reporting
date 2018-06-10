@@ -124,7 +124,7 @@ sql:
         (
            # Individual permissions
           (
-            (1 = :individual_statewide OR s.district_group_id IN (:individual_district_group_ids) OR s.district_id IN (:individual_district_ids) OR s.school_group_id IN (:individual_school_group_ids) OR e.school_id IN (:individual_school_ids))
+            (1 = :individual_statewide OR s.district_group_id IN (:individual_district_group_ids) OR s.district_id IN (:individual_district_ids) OR s.school_group_id IN (:individual_school_group_ids) OR s.id IN (:individual_school_ids))
             OR
             (
              # this flag represents a combination of the system setting and a user choice to turn it off when available
