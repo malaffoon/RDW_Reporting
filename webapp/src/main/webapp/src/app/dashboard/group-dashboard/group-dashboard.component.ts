@@ -13,6 +13,7 @@ import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { Search } from '../../groups/results/group-assessment.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'group-dashboard',
@@ -28,6 +29,8 @@ export class GroupDashboardComponent implements OnInit {
   subjects: string[];
   subject: string;
   loadingMeasuredAssessments: boolean = true;
+  itemsPerRow: number = 3;
+  rows: MeasuredAssessment[][] = [];
 
   private selectedAssessments: MeasuredAssessment[] = [];
 
@@ -61,6 +64,18 @@ export class GroupDashboardComponent implements OnInit {
     });
   }
 
+  onGroupChange(): void {
+    this.updateRoute('Group');
+  }
+
+  onSchoolYearChange(): void {
+    this.updateRoute('SchoolYear');
+  }
+
+  onSubjectChange(): void {
+    this.updateRows();
+  }
+
   groupEquals(a: Group, b: Group): boolean {
     return a === b || (
       a != null
@@ -69,9 +84,10 @@ export class GroupDashboardComponent implements OnInit {
     );
   }
 
-  get filteredMeasuredAssessments() {
-    return this.measuredAssessments
+  updateRows(): void {
+    const filteredAssessments = this.measuredAssessments
       .filter(measuredAssessment => this.subject == null || measuredAssessment.assessment.subject === this.subject);
+    this.rows = _.chunk(filteredAssessments, this.itemsPerRow);
   }
 
   get cardViewEnabled() {
@@ -117,6 +133,8 @@ export class GroupDashboardComponent implements OnInit {
     const assessmentSubjects = new Set(assessments.map(x => x.assessment.subject));
     this.subjects = this.filterOptions.subjects
       .filter(subject => assessmentSubjects.has(subject));
+
+    this.updateRows();
 
     this.loadingMeasuredAssessments = false;
   }

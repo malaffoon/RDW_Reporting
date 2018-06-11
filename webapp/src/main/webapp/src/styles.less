@@ -1306,13 +1306,6 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 // cards per row
 @cards-per-row: 3;
 
-// copy below CSS
-.card-grid {
-  display: grid;
-  grid-gap: @spacer;
-  grid-template-columns: repeat(@cards-per-row, @spacer * 21);
-}
-
 .card {
   position: relative;
   background-color: @white;
@@ -1523,7 +1516,7 @@ wide-radio-group {
 
   > svg {
     width: 96%;
-    height: 96%%;
+    height: 96%;
     fill: currentColor;
   }
 }
@@ -1568,19 +1561,18 @@ user-group {
   min-width: 75px;
 }
 
-.icon-wrapper {
+@assessment-icon-size: 80px;
+
+.assessment-icon {
   padding: 5px;
   background-color: @gray-lightest;
   border-radius: 6px;
   border: 1px solid @gray;
-}
+  display: inline-block;
 
-@assessment-icon-size: 80px;
-
-assessment-icon i.icon.sbac {
-  color: @blue;
-  width: @assessment-icon-size;
-  height: @assessment-icon-size;
-  display: block;
-  margin: 0;
+  i.icon.sbac {
+    color: @blue;
+    width: @assessment-icon-size;
+    height: @assessment-icon-size;
+  }
 }

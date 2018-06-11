@@ -137,7 +137,10 @@ export const IabAssessmentIconsByAssessmentName = {
     <sb-icon *ngIf="icon"
              [icon]="'assessment-icon/' + icon"
              [styles]="styles"></sb-icon>
-  `
+  `,
+  host: {
+    class: 'assessment-icon'
+  }
 })
 export class AssessmentIconComponent {
 
