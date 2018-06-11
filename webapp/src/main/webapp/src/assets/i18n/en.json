@@ -1081,7 +1081,7 @@
     "empty-message": "There are no groups that match your search.  Please try again.",
     "filter": "Search by Group Name",
     "heading": "Groups",
-    "no-groups-message": "Contact your building administrator for access to group-level test results.",
+    "no-groups": "Contact your building administrator for access to group-level test results.",
     "search-label": "Search by Group",
     "view-dashboard": "View IAB Dashboard"
   },
@@ -1429,6 +1429,7 @@
   "user-groups": {
     "heading": "Search by Group",
     "create-group-prompt": "Click the create button to create your own group.",
+    "create-button-disabled-popover": "You can create your own groups once one or more groups assigned to you.",
     "no-results": "No results"
   },
   "user-group-table": {
