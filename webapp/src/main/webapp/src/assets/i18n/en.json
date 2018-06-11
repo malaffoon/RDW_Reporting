@@ -10,6 +10,7 @@
   "admin-groups": {
     "columns": {
       "delete": "Delete",
+      "delete-title": "Delete {{groupName}}",
       "name": "Name",
       "school": "School",
       "school-year": "School Year",
@@ -1433,7 +1434,8 @@
     "no-results": "No results"
   },
   "user-group-table": {
-    "edit": "Edit"
+    "edit": "Edit",
+    "edit-title": "Edit {{groupName}}"
   },
   "school-and-group-typeahead": {
     "school-group": "Schools",
