@@ -110,7 +110,7 @@ export class StudentHistoryTableComponent implements OnInit {
       .indexOf(this.studentHistoryCards.find(studentHistoryCard => studentHistoryCard.selected));
 
     if (selectedCardIndex < 0) {
-      delete this.selectedCardTableIndex;
+      delete this.selectedCardRowIndex;
     }
     this.selectedCardRowIndex = Math.floor(selectedCardIndex / this.itemsPerRow);
   }
