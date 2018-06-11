@@ -1418,14 +1418,9 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
   .grid-6 { grid-template-columns: repeat(6, 1fr); }
 
   .perc-container {
-    display: grid;
-    grid-gap: @spacer / 4.2;
 
     .bar {
-      display: flex;
-      align-items: center;
       font-size: 12.8px;
-      & { justify-self: left; }
     }
     .bar.description {
       font-size: 11px;
@@ -1438,6 +1433,8 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
       margin-right: 0.25em;
       background-color: currentcolor;
       border-radius: 3px;
+      position: relative;
+      top: 2px;
       &.blue-dark.aqua {
         .textured-blue;
       }
