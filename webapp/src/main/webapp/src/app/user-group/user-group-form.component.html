@@ -13,7 +13,7 @@
            (ngModelChange)="onNameChange()"
            autocomplete="off"
            required
-           [aria-invalid]="showErrors(nameControl)"
+           [attr.aria-invalid]="showErrors(nameControl)"
            minlength="1"
            maxlength="255">
     <p *ngIf="showErrors(nameControl)"
