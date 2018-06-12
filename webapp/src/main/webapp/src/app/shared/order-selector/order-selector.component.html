@@ -8,15 +8,16 @@
           class="ngx-dnd-item"
           ngxDraggable
           [model]="item">
-      <span class="btn btn-sm"
+      <a class="btn btn-sm"
             [ngClass]="{
               'btn-primary': item === selectedItem,
               'btn-default': item !== selectedItem
               }"
+            href="javascript:void(0)"
             (click)="selectItem(item)">
         <span *ngIf="item.label">{{item.label}}</span>
         <span *ngIf="item.labelKey">{{item.labelKey | translate}}</span>
-      </span>
+      </a>
     </span>
   </span>
   <span class="btn-group flex-child">
