@@ -241,23 +241,29 @@ sql:
       ei.trait_conventions_score as ei_trait_conventions_score,
       i.performance_task_writing_type
 
-    # dependencies: sg (sql.snippet.selectFromBothGroupTypes), student st, asmt a
-    groupFilters: >-
-      sg.id = :group_id
-      AND sg.user_login = :user_login
-      AND sg.group_type = :group_type
-      AND sg.student_id = st.id
-      AND (sg.subject_id IS NULL OR sg.subject_id = a.subject_id)
+    # There are multiple group related queries that need to join to either admin created groups or teacher groups.
+    # To avoid duplicate queries we use 'placeholder' that at run time get replaced by these snippets.
+    #
+    # Placeholders: $[groupJoinPlaceholder] and $[groupFilterPlaceholder]
+    #
+    # dependencies: exam e, asmt a
+    adminUserGroups:
+      join: >-
+        JOIN student_group_membership gm ON gm.student_id = e.student_id
+        JOIN student_group sg ON sg.id = gm.student_group_id
+        JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
 
-    selectFromBothGroupTypes: >-
-      (SELECT sg.id, gm.student_id, sg.subject_id, usg.user_login, 1 AS group_type
-        FROM student_group_membership gm
-          JOIN student_group sg ON sg.id = gm.student_group_id
-          JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
+      filter: >-
+        sg.id = :group_id
+        AND usg.user_login = :user_login
+        AND (sg.subject_id IS NULL OR sg.subject_id = a.subject_id)
 
-      UNION ALL
+    teacherGroups:
+      join: >-
+        JOIN teacher_student_group_membership tsgm ON tsgm.student_id = e.student_id
+        JOIN teacher_student_group tsg ON tsg.id = tsgm.teacher_student_group_id
 
-      SELECT tsg.id, tsgm.student_id, tsg.subject_id, tsg.user_login, 2 AS group_type
-        FROM teacher_student_group_membership tsgm
-          JOIN teacher_student_group tsg ON tsg.id = tsgm.teacher_student_group_id
-      )
+      filter: >-
+        tsg.id = :group_id
+        AND tsg.user_login = :user_login
+        AND (tsg.subject_id IS NULL OR tsg.subject_id = a.subject_id)
