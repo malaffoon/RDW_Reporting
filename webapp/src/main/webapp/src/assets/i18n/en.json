@@ -1430,7 +1430,7 @@
   "user-groups": {
     "heading": "Search by Group",
     "create-group-prompt": "Click the create button to create your own group.",
-    "create-button-disabled-popover": "You can create your own groups once one or more groups assigned to you.",
+    "create-button-disabled-popover": "You can create your own groups once one or more groups are assigned to you.",
     "no-results": "No results"
   },
   "user-group-table": {
