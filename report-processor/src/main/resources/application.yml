@@ -99,6 +99,7 @@ spring:
       &connectTimeout=${spring.reporting_datasource.connect-timeout:10000}\
       &socketTimeout=${spring.reporting_datasource.socket-timeout:130000}\
       "
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.reporting_datasource.query-timeout:120})"
     username: root
     password:
     testWhileIdle: true
@@ -109,7 +110,6 @@ spring:
     maxActive: 20
     initialSize: 4
     maxWait: 10000
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=120)"
 
   jackson:
       default-property-inclusion: non_null

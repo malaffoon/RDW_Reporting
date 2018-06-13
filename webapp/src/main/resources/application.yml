@@ -75,6 +75,7 @@ spring:
       &connectTimeout=${spring.datasource.connect-timeout:10000}\
       &socketTimeout=${spring.datasource.socket-timeout:40000}\
       "
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.datasource.query-timeout:30})"
     username: root
     password:
     testWhileIdle: true
@@ -84,7 +85,6 @@ spring:
     initialize: false
     initialSize: 4
     maxActive: 10
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=30)"
 
   resources:
     chain:
