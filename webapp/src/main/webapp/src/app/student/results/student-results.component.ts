@@ -47,12 +47,25 @@ export class StudentResultsComponent implements OnInit {
       this.examHistory = examHistory;
 
       const { exams } = examHistory;
-      this.filterState = this.createFilterState(exams, this.route.snapshot.params);
+      this.filterState = this.createFilterState(exams);
       this.filterOptions.hasSummative = exams.some(wrapper => wrapper.assessment.isSummative);
       this.filterOptions.hasInterim = exams.some(wrapper => wrapper.assessment.isInterim);
       this.advancedFilters.onChanges.subscribe(property => this.onAdvancedFilterChange());
       this.sections = this.createSections(exams);
-      this.applyFilter();
+
+      // when the route changes, change the form state and apply the filters
+      this.route.params.subscribe(parameters => {
+        this.updateFilterState(parameters);
+        this.applyFilter();
+      });
+
+      // apply defaults
+      const { schoolYear } = this.route.snapshot.params;
+      if (schoolYear == null) {
+        this.filterState.schoolYear = this.filterState.schoolYears[ 0 ];
+        this.updateRoute(true);
+      }
+
     }
 
     this.applicationSettingsService.getSettings().subscribe(settings => {
@@ -69,7 +82,6 @@ export class StudentResultsComponent implements OnInit {
    */
   onFilterChange(): void {
     this.updateRoute();
-    this.applyFilter();
   }
 
   private onAdvancedFilterChange(): void {
@@ -96,7 +108,7 @@ export class StudentResultsComponent implements OnInit {
     );
   }
 
-  getAssessmentTypeColor(assessmentType: string) {
+  getAssessmentTypeColor(assessmentType: string): string {
     const index = [ 'ica', 'iab', 'sum' ].indexOf(assessmentType);
     const totalAssessmentTypes = 3;
     const colorIndex = index >= 0 ? index + 1 : totalAssessmentTypes;
@@ -131,7 +143,7 @@ export class StudentResultsComponent implements OnInit {
   /**
    * Update the current route based upon the current filter state.
    */
-  private updateRoute(): void {
+  private updateRoute(replaceUrl: boolean = false): void {
     const parameters: any = {};
     if (this.filterState.schoolYear) {
       parameters.schoolYear = this.filterState.schoolYear;
@@ -144,8 +156,8 @@ export class StudentResultsComponent implements OnInit {
     }
 
     // this is needed since the route can be for a group (/groups/1/students/2 or directly to the student (/students/2)
-    let navigationExtras = this.route.parent.parent.snapshot.url.length > 0
-      ? { relativeTo: this.route.parent.parent }
+    const navigationExtras = this.route.parent.parent.snapshot.url.length > 0
+      ? { relativeTo: this.route.parent.parent, replaceUrl }
       : undefined;
 
     this.router.navigate([
@@ -181,7 +193,7 @@ export class StudentResultsComponent implements OnInit {
    * @param exams       The available exams
    * @param params      The route params
    */
-  private createFilterState(exams: StudentHistoryExamWrapper[], parameters: any): StudentResultsFilterState {
+  private createFilterState(exams: StudentHistoryExamWrapper[]): StudentResultsFilterState {
 
     const filterState: StudentResultsFilterState = exams.reduce((filterState, wrapper: StudentHistoryExamWrapper) => {
         const { schoolYear } = wrapper.exam;
@@ -202,18 +214,15 @@ export class StudentResultsComponent implements OnInit {
     filterState.subjects.sort(SubjectOrdering.compare);
     filterState.assessmentTypes.sort(AssessmentTypeOrdering.compare);
 
-    const { schoolYear, subject, assessmentType } = parameters;
-    if (schoolYear) {
-      filterState.schoolYear = parseInt(schoolYear);
-    }
-    if (subject) {
-      filterState.subject = subject;
-    }
-    if (assessmentType) {
-      filterState.assessmentType = assessmentType;
-    }
-
     return filterState;
+  }
+
+  private updateFilterState(parameters: any): void {
+    const { schoolYear, subject, assessmentType } = parameters;
+    const filterState = this.filterState;
+    filterState.schoolYear = schoolYear != null ? Number.parseInt(schoolYear) : undefined;
+    filterState.subject = subject;
+    filterState.assessmentType = assessmentType;
   }
 
   /**
