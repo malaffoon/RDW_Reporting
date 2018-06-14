@@ -232,7 +232,9 @@ export class SchoolResultsComponent implements OnInit {
 
           const previousGrade = this.currentGrade;
           this.currentGrade = grades.find(grade => grade.id === this.currentGrade.id) || grades[ 0 ];
-          if (previousGrade.id !== this.currentGrade.id) {
+          if (previousGrade
+            && this.currentGrade
+            && this.currentGrade.id !== previousGrade.id) {
             this.trackAnalyticsEvent('Grade', this.currentGrade.code);
           }
 

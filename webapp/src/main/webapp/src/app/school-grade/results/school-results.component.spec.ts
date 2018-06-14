@@ -132,7 +132,8 @@ describe('SchoolResultsComponent', () => {
 
     expect(component.currentGrade.id).toBe(4);
     expect(mockRouter.navigate).toHaveBeenCalledWith(
-      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: 4 } ]
+      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: 4 } ],
+      { replaceUrl: false }
     );
   });
 
@@ -144,7 +145,8 @@ describe('SchoolResultsComponent', () => {
 
     expect(component.currentGrade.id).toBe(3);
     expect(mockRouter.navigate).toHaveBeenCalledWith(
-      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: 3 } ]
+      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: 3 } ],
+      { replaceUrl: false }
     );
   });
 
@@ -157,7 +159,10 @@ describe('SchoolResultsComponent', () => {
     expect(component.currentGrade).toBeUndefined();
     expect(component.assessmentExams).toEqual([]);
     expect(component.gradesAreUnavailable).toEqual(true);
-    expect(mockRouter.navigate).toHaveBeenCalledTimes(0);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: undefined } ],
+      { replaceUrl: false }
+    );
   });
 });
 

@@ -156,9 +156,9 @@ export class StudentResultsComponent implements OnInit {
     }
 
     // this is needed since the route can be for a group (/groups/1/students/2 or directly to the student (/students/2)
-    const navigationExtras = this.route.parent.parent.snapshot.url.length > 0
+    const navigationExtras = this.route.parent && this.route.parent.parent.snapshot.url.length > 0
       ? { relativeTo: this.route.parent.parent, replaceUrl }
-      : undefined;
+      : { replaceUrl };
 
     this.router.navigate([
       'students',

@@ -57,13 +57,15 @@ export class GroupResultsComponent implements OnInit, StateProvider {
   }
 
   get stateAsNavigationParameters(): any {
-    const parameters = <any>{
+    const parameters: any = Object.assign({}, this.route.snapshot.params, {
       schoolYear: this.schoolYear
-    };
-    if (this.group.userCreated) {
-      parameters.userGroupId = this.group.id;
-    } else {
-      parameters.groupId = this.group.id;
+    });
+    if (this.group) {
+      if (this.group.userCreated) {
+        parameters.userGroupId = this.group.id;
+      } else {
+        parameters.groupId = this.group.id;
+      }
     }
     return parameters;
   }
