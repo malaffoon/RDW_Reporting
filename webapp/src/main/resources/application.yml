@@ -107,7 +107,7 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: permissionsByRole, translations
+    cache-names: permissionsByRole, translations, translation_properties
 
 # Netflix zuul configuration.
 zuul:
