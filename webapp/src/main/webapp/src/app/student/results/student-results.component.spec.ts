@@ -88,19 +88,13 @@ describe('StudentResultsComponent', () => {
     snapshot.data[ 'examHistory' ] = null;
     route.params.emit({ schoolYear: 2017 });
 
-    component.ngOnInit();
-    fixture.detectChanges();
-
     expect(component).toBeTruthy();
   });
 
-  /* Temporary Ignore
+  /* Temporary Ignore */
   it('should filter by year on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
     // Filter to the single 2017 exam
-
     route.params.emit({ schoolYear: 2017 });
-
-    component.ngOnInit();
 
     const filteredExams = component.sections.reduce((exams, section) => {
       exams.push(...section.filteredExams);
@@ -117,12 +111,10 @@ describe('StudentResultsComponent', () => {
     expect(totalSubjects).toBe(1);
 
   }));
-  */
+
 
   it('should filter by subject on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
     route.params.emit({ subject: 'MATH' });
-
-    component.ngOnInit();
 
     const filteredExams = component.sections.reduce((exams, section) => {
       exams.push(...section.filteredExams);
