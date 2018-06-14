@@ -1350,6 +1350,7 @@
     "title": "Search by Student"
   },
   "student-assessment-card": {
+    "result": "{{resultCount}} result",
     "results": "{{resultCount}} results"
   },
   "student-exam-history-table": {
