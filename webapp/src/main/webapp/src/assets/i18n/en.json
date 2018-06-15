@@ -287,12 +287,12 @@
     },
     "aggregate-report-type": {
       "Claim": {
-        "description": "Compare claim-level performance across groups.",
+        "description": "Compare claim-level performance across subgroups.",
         "disabled": "Claim Reports are only available for ICA and Summative assessments.",
         "label": "Claim Report"
       },
       "GeneralPopulation": {
-        "description": "Compare performance across groups.",
+        "description": "Compare performance across subgroups.",
         "label": "Yearly Report"
       },
       "LongitudinalCohort": {
@@ -301,7 +301,7 @@
         "label": "Longitudinal Report"
       },
       "Target": {
-        "description": "Compare target-level performance across groups.",
+        "description": "Compare target-level performance across subgroups for a single assessment.",
         "label": "Target Report"
       }
     },
@@ -627,7 +627,8 @@
       }
     },
     "form-field-message": {
-      "required": "* Required"
+      "required": "* Required",
+      "select-one": "(select one)"
     },
     "gender": {
       "Female": "Female",
