@@ -430,6 +430,23 @@ body .select-menu-group {
 }
 
 /**
+ * TODO move to UI Kit
+ */
+.nested-btn-group {
+  > a:first-child {
+    display: table-cell;
+  }
+  &.vertical {
+    > a:first-child {
+      display: flex;
+      align-self: flex-start;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+/**
  * Removes left border for vertical checkbox groups without the all option
  */
 .nested-btn-group.vertical:not(.all-option) .btn-group {

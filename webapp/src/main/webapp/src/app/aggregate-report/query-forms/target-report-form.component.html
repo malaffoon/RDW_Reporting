@@ -72,9 +72,9 @@
                                 name="subject"
                                 analyticsEvent="FilterClick"
                                 analyticsCategory="AggregateQueryBuilder"
-                                [ngModelOptions]="{standalone: true}"
                                 [options]="filteredOptions.subjects"
                                 [(ngModel)]="settings.targetReport.subjectCode"
+                                [ngModelOptions]="{standalone: true}"
                                 (change)="onSettingsChange()"></sb-radio-group>
               </div>
             </div>

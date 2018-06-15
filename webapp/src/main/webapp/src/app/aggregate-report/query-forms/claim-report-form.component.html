@@ -147,9 +147,9 @@
               <div class="col-md-3">
                 <sb-button-group id="subjects"
                                  name="subjects"
-                                 [vertical]="true"
                                  analyticsEvent="FilterClick"
                                  analyticsCategory="AggregateQueryBuilder"
+                                 [vertical]="true"
                                  [allOptionAnalyticsProperties]="{label: 'Subject: All'}"
                                  [options]="filteredOptions.subjects"
                                  [(ngModel)]="settings.subjects"
