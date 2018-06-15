@@ -690,9 +690,9 @@
         "System": "Smarter Balanced Instructional Resource"
       }
     },
-    "longitudinal-type-input-label": "Show",
+    "longitudinal-type-input-label": "Select population",
     "longitudinal-display-type": {
-      "GeneralPopulation": "General Population",
+      "GeneralPopulation": "All Students",
       "Cohort": "Cohort"
     },
     "menus": {
