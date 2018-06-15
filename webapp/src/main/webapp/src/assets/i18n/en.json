@@ -1215,7 +1215,7 @@
     },
     "instructions": "To view the graph for only some groups, select the name(s) in the legend.",
     "population-toggle-label": "Select population",
-    "population-toggle-label-info": "The All Students report includes test results for students who tested during the selected years, regardless of where they tested. The cohort report includes test results for only those students who tested at the same school or district during the selected years. Users should consider this limitation when making Inferences about student performance."
+    "population-toggle-label-info": "The All Students Longitudinal Report includes test results for all students who tested during the selected years, regardless of where they tested. The Cohort Report includes test results for only those students who tested at the same school or district during the selected years. Users should consider this limitation when making inferences about student performance."
   },
   "order-selector": {
     "move-left": "Move Left",
