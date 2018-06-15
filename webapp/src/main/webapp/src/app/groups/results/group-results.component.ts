@@ -124,24 +124,12 @@ export class GroupResultsComponent implements OnInit, StateProvider {
   }
 
   onGroupChange(): void {
-    this.angulartics2.eventTrack.next({
-      action: 'Change Group',
-      properties: {
-        category: 'AssessmentResults',
-        label: this.group.id
-      }
-    });
+    this.trackAnalyticsEvent('Group', this.group.id);
     this.updateRoute();
   }
 
   onSchoolYearChange(): void {
-    this.angulartics2.eventTrack.next({
-      action: 'Change Year',
-      properties: {
-        category: 'AssessmentResults',
-        label: this.schoolYear
-      }
-    });
+    this.trackAnalyticsEvent('Year', this.schoolYear);
     this.updateRoute();
   }
 
@@ -185,6 +173,16 @@ export class GroupResultsComponent implements OnInit, StateProvider {
       [ this.stateAsNavigationParameters ],
       { replaceUrl }
     );
+  }
+
+  private trackAnalyticsEvent(source: string, label: any): void {
+    this.angulartics2.eventTrack.next({
+      action: 'Change' + source,
+      properties: {
+        category: 'AssessmentResults',
+        label: label
+      }
+    });
   }
 
 }
