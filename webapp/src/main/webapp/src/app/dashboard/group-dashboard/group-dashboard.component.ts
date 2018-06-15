@@ -63,13 +63,14 @@ export class GroupDashboardComponent implements OnInit {
     this.route.params.pipe(
       mergeMap(parameters => {
         const { groupId, userGroupId, schoolYear } = parameters;
-        const { currentParameters } = this.route.snapshot.params;
+        const { params: currentParameters } = this.route.snapshot;
 
-        const reload = currentParameters.schoolYear != schoolYear
+        const reload = this.group == null
+          || currentParameters.schoolYear != schoolYear
           || (currentParameters.groupId != null && currentParameters.groupId != groupId)
           || (currentParameters.userGroupId != null && currentParameters.userGroupId != userGroupId);
 
-        // exit early if we dont need to re fetch the assessment data
+        // exit early if we don't need to re fetch the assessment data
         if (!reload) {
           return of({ ...parameters, reload });
         }
