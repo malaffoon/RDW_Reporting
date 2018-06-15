@@ -1324,7 +1324,7 @@
   },
   "results-by-student": {
     "assessment-exams-empty-message": "No test results are available for the sessions and advanced filters selected.",
-    "create-single-prepopulated-report": "Create {{name}}'s {{schoolYear}} {{subject}} {{assessmentType}} Report"
+    "create-single-prepopulated-report": "Create {{name}}'s {{schoolYear}} {{subject}} {{assessmentType}} Printable Report"
   },
   "sample-aggregate-table-data-service": {
     "assessment-label": "Assessment 1",
@@ -1373,7 +1373,7 @@
     "title": "Student's Responses"
   },
   "student-results": {
-    "create-report": "Create {{firstName}}'s Report",
+    "create-report": "Create {{firstName}}'s Printable Report",
     "crumb": "Student: {{lastName}}, {{firstName}}",
     "empty-filtered-results-message": "No test results are available for the filters selected.",
     "student-button-label": "Student Report",
