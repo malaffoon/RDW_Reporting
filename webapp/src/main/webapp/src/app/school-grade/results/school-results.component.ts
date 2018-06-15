@@ -160,18 +160,11 @@ export class SchoolResultsComponent implements OnInit {
       }
 
       this.subscribeToRouteChanges();
-
-      // apply defaults
-      const { schoolYear } = this.route.snapshot.params;
-      if (schoolYear == null) {
-        this.currentSchoolYear = this.filterOptions.schoolYears[ 0 ];
-        this.updateRoute(true);
-      }
+      this.updateRouteWithDefaultFilters();
     });
   }
 
   private subscribeToRouteChanges(): void {
-
     this.route.params.pipe(
       mergeMap(parameters => {
         const { schoolId } = parameters;
@@ -206,6 +199,14 @@ export class SchoolResultsComponent implements OnInit {
       this.updateAssessment(assessment);
     });
 
+  }
+
+  private updateRouteWithDefaultFilters(): void {
+    const { schoolYear } = this.route.snapshot.params;
+    if (schoolYear == null) {
+      this.currentSchoolYear = this.filterOptions.schoolYears[ 0 ];
+      this.updateRoute(true);
+    }
   }
 
   deselectSchool(): void {

@@ -54,48 +54,54 @@ export class GroupDashboardComponent implements OnInit {
         .concat(userGroups)
         .sort(ordering(byString).on<Group>(({ name }) => name).compare);
 
-      this.route.params.pipe(
-        mergeMap(parameters => {
-          const { groupId, userGroupId, schoolYear } = parameters;
-
-          const reload = this.route.snapshot.params != schoolYear
-            || (this.route.snapshot.params.groupId != null && this.route.snapshot.params.groupId != groupId)
-            || (this.route.snapshot.params.userGroupId != null && this.route.snapshot.params.userGroupId != userGroupId);
-
-          // signal page state change, without reload
-          if (!reload) {
-            return of({ ...parameters, reload });
-          }
-
-          return forkJoin(
-            groupId != null
-              ? this.groupService.getGroup(groupId)
-              : this.userGroupService.getUserGroupAsGroup(userGroupId),
-            this.groupDashboardService.getAvailableMeasuredAssessments(parameters)
-          ).pipe(
-            map(([ group, measuredAssessments ]) => <any>{ ...parameters, group, measuredAssessments, reload })
-          );
-
-        })
-      ).subscribe(resolvedParameters => {
-        const { reload, group, schoolYear, subject, measuredAssessments } = resolvedParameters;
-        if (reload) {
-          this.group = group;
-          this.schoolYear = Number.parseInt(schoolYear) || undefined;
-          this.updateMeasuredAssessments(measuredAssessments);
-        }
-        this.subject = subject;
-        this.updateRows();
-        this.loadingMeasuredAssessments = false;
-      });
-
-      // Apply defaults
-      const { schoolYear } = this.route.snapshot.params;
-      if (schoolYear == null) {
-        this.schoolYear = filterOptions.schoolYears[ 0 ];
-        this.updateRoute(true);
-      }
+      this.subscribeToRouteChanges();
+      this.updateRouteWithDefaultFilters();
     });
+  }
+
+  private subscribeToRouteChanges(): void {
+    this.route.params.pipe(
+      mergeMap(parameters => {
+        const { groupId, userGroupId, schoolYear } = parameters;
+        const { currentParameters } = this.route.snapshot.params;
+
+        const reload = currentParameters.schoolYear != schoolYear
+          || (currentParameters.groupId != null && currentParameters.groupId != groupId)
+          || (currentParameters.userGroupId != null && currentParameters.userGroupId != userGroupId);
+
+        // exit early if we dont need to re fetch the assessment data
+        if (!reload) {
+          return of({ ...parameters, reload });
+        }
+
+        return forkJoin(
+          groupId != null
+            ? this.groupService.getGroup(groupId)
+            : this.userGroupService.getUserGroupAsGroup(userGroupId),
+          this.groupDashboardService.getAvailableMeasuredAssessments(<any>parameters)
+        ).pipe(
+          map(([ group, measuredAssessments ]) => <any>{ ...parameters, group, measuredAssessments, reload })
+        );
+      })
+    ).subscribe(resolvedParameters => {
+      const { reload, group, schoolYear, subject, measuredAssessments } = resolvedParameters;
+      if (reload) {
+        this.group = group;
+        this.schoolYear = Number.parseInt(schoolYear) || undefined;
+        this.updateMeasuredAssessments(measuredAssessments);
+      }
+      this.subject = subject;
+      this.updateRows();
+      this.loadingMeasuredAssessments = false;
+    });
+  }
+
+  private updateRouteWithDefaultFilters(): void {
+    const { schoolYear } = this.route.snapshot.params;
+    if (schoolYear == null) {
+      this.schoolYear = this.filterOptions.schoolYears[ 0 ];
+      this.updateRoute(true);
+    }
   }
 
   onGroupChange(): void {

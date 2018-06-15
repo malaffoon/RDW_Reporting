@@ -97,30 +97,35 @@ export class GroupResultsComponent implements OnInit, StateProvider {
         .sort(ordering(byString).on<Group>(({ name }) => name).compare);
       this.filterOptions = filterOptions;
 
-      // update state when route changes
-      this.route.params.subscribe(parameters => {
-        const { groupId, userGroupId, schoolYear } = parameters;
-        this.schoolYear = schoolYear != null ? Number.parseInt(schoolYear) : undefined;
-        this.group = this.groups.find(group => group.userCreated
-          ? group.id == userGroupId
-          : group.id == groupId
-        );
-      });
-
-      // update latest assessment when resolved route data changes
-      // this and the resolve could be replaced later by a manual invocation when the route params change
-      this.route.data.subscribe(({ assessment }) => {
-        this.updateAssessment(assessment);
-      });
-
-      // apply defaults
-      const { schoolYear } = this.route.snapshot.params;
-      if (schoolYear == null) {
-        this.schoolYear = this.filterOptions.schoolYears[ 0 ];
-        this.updateRoute(true);
-      }
-
+      this.subscribeToRouteChanges();
+      this.updateRouteWithDefaultFilters();
     });
+  }
+
+  private subscribeToRouteChanges(): void {
+    // update state when route changes
+    this.route.params.subscribe(parameters => {
+      const { groupId, userGroupId, schoolYear } = parameters;
+      this.schoolYear = schoolYear != null ? Number.parseInt(schoolYear) : undefined;
+      this.group = this.groups.find(group => group.userCreated
+        ? group.id == userGroupId
+        : group.id == groupId
+      );
+    });
+
+    // update latest assessment when resolved route data changes
+    // this and the resolve could be replaced later by a manual invocation when the route params change
+    this.route.data.subscribe(({ assessment }) => {
+      this.updateAssessment(assessment);
+    });
+  }
+
+  private updateRouteWithDefaultFilters(): void {
+    const { schoolYear } = this.route.snapshot.params;
+    if (schoolYear == null) {
+      this.schoolYear = this.filterOptions.schoolYears[ 0 ];
+      this.updateRoute(true);
+    }
   }
 
   onGroupChange(): void {

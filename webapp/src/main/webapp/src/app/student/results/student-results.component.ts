@@ -53,28 +53,33 @@ export class StudentResultsComponent implements OnInit {
       this.advancedFilters.onChanges.subscribe(property => this.onAdvancedFilterChange());
       this.sections = this.createSections(exams);
 
-      // when the route changes, change the form state and apply the filters
-      this.route.params.subscribe(parameters => {
-        this.updateFilterState(parameters);
-        this.applyFilter();
+      this.subscribeToRouteChanges();
+      this.updateRouteWithDefaultFilters();
+
+      this.applicationSettingsService.getSettings().subscribe(settings => {
+        this.minimumItemDataYear = settings.minItemDataYear;
       });
 
-      // apply defaults
-      const { schoolYear } = this.route.snapshot.params;
-      if (schoolYear == null) {
-        this.filterState.schoolYear = this.filterState.schoolYears[ 0 ];
-        this.updateRoute(true);
-      }
+      this.embargoService.isEmbargoed().subscribe(embargoed => {
+        this.exportDisabled = embargoed;
+      });
 
     }
+  }
 
-    this.applicationSettingsService.getSettings().subscribe(settings => {
-      this.minimumItemDataYear = settings.minItemDataYear;
+  private subscribeToRouteChanges(): void {
+    this.route.params.subscribe(parameters => {
+      this.updateFilterState(parameters);
+      this.applyFilter();
     });
+  }
 
-    this.embargoService.isEmbargoed().subscribe(embargoed => {
-      this.exportDisabled = embargoed;
-    });
+  private updateRouteWithDefaultFilters(): void {
+    const { schoolYear } = this.route.snapshot.params;
+    if (schoolYear == null) {
+      this.filterState.schoolYear = this.filterState.schoolYears[ 0 ];
+      this.updateRoute(true);
+    }
   }
 
   /**
