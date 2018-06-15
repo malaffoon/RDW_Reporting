@@ -40,9 +40,7 @@ export class AverageScaleScoreComponent {
       return;
     }
 
-    if (!isNaN(value.average)) {
-      this.averageScore = Math.round(value.average);
-    }
+    this.averageScore = !isNaN(value.average) ? Math.round(value.average) : value.average;
 
     if (value.levels) {
       this._totalCount = value.levels
@@ -146,7 +144,7 @@ export class AverageScaleScoreComponent {
   }
 
   examLevelTranslation(performanceLevel: ExamStatisticsLevel): string {
-    return this.translate.instant(performanceLevel.id ? `common.assessment-type.${this.assessmentExam.assessment.type}.performance-level.${performanceLevel.id}.short-name` : 'common.missing')
+    return this.translate.instant(performanceLevel.id ? `common.assessment-type.${this.assessmentExam.assessment.type}.performance-level.${performanceLevel.id}.name` : 'common.missing')
   }
 
   private levelCountPercent(levelCount: number): number {

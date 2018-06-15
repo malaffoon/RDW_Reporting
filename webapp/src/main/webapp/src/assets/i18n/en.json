@@ -226,7 +226,7 @@
     "no-writing-trait-scores": "Writing trait scores are not available for assessments administered prior to 2017-18 school year.",
     "result-view-select": "Select a results view",
     "select-view": "Select View",
-    "session-unknown": "[Unknown]",
+    "session-unknown": "Not provided",
     "sessions-title": "Sessions",
     "transfer-student-instructions": "The highlighted row(s) indicate test results from a previous school.",
     "view": {
@@ -287,12 +287,12 @@
     },
     "aggregate-report-type": {
       "Claim": {
-        "description": "Compare claim-level performance across groups.",
+        "description": "Compare claim-level performance across subgroups.",
         "disabled": "Claim Reports are only available for ICA and Summative assessments.",
         "label": "Claim Report"
       },
       "GeneralPopulation": {
-        "description": "Compare performance across groups.",
+        "description": "Compare performance across subgroups.",
         "label": "Yearly Report"
       },
       "LongitudinalCohort": {
@@ -301,7 +301,7 @@
         "label": "Longitudinal Report"
       },
       "Target": {
-        "description": "Compare target-level performance across groups.",
+        "description": "Compare target-level performance across subgroups for a single assessment.",
         "label": "Target Report"
       }
     },
@@ -457,7 +457,8 @@
     "buttons": {
       "all": "All",
       "display-claim": "Claim Scores",
-      "display-overall": "Overall Scores"
+      "display-overall": "Overall Scores",
+      "printable-student-reports": "Printable Reports"
     },
     "claim-description": {
       "1": "Concepts and Procedures - Students can explain and apply mathematical concepts and interpret and carry out mathematical procedures with precision and fluency.",
@@ -477,8 +478,8 @@
       "2": "Problem Solving",
       "3": "Communicating Reasoning",
       "4": "Modeling and Data Analysis",
-      "1-IT": "Reading",
-      "1-LT": "Reading",
+      "1-IT": "Reading - Informational Text",
+      "1-LT": "Reading - Literary Text",
       "2-W": "Writing",
       "3-L": "Listening",
       "3-S": "Listening",
@@ -626,12 +627,17 @@
       }
     },
     "form-field-message": {
-      "required": "* Required"
+      "required": "* Required",
+      "select-one": "(select one)"
     },
     "gender": {
       "Female": "Female",
       "Male": "Male",
       "Nonbinary": "Nonbinary"
+    },
+    "info": {
+      "claim": "Claims are a way of classifying test content. The claim is the major topic area. For example, in English language arts, reading is a claim and in Math, Concepts and Procedures is a claim.",
+      "target": "Within each claim, there are targets that describe the particular knowledge and skills that the test measures. Each target may encompass one or more standards from the Common Core State Standards. Within the Reading claim, for example, one of the targets is concerned with finding the central idea in a text. For more information, see the Smarter Balanced Content Specifications."
     },
     "instructional-resource": {
       "columns": {
@@ -685,11 +691,6 @@
         "System": "Smarter Balanced Instructional Resource"
       }
     },
-    "longitudinal-type-input-label": "Show",
-    "longitudinal-display-type": {
-      "GeneralPopulation": "General Population",
-      "Cohort": "Cohort"
-    },
     "menus": {
       "resources": "Instructional Resources",
       "responses": "{{firstName}}'s Responses",
@@ -737,7 +738,7 @@
       "form": {
         "report-name": "Report Name",
         "title": {
-          "multiple": "Create {{name}} Student Reports"
+          "multiple": "Create Printable {{name}} Student Reports"
         }
       }
     },
@@ -1068,7 +1069,6 @@
     "warning-html": "<p><strong class=\"mr-xs\">WARNING:</strong> Groups in the uploaded file will replace existing groups if they have the same school ID, school year and group name.</p><p>All other groups will not be deleted or changed.</p>"
   },
   "group-results": {
-    "group-button-label": "Student Reports",
     "null-group": "This group is unavailable.  Contact your building administrator if you think you should have access to this group.",
     "select-group": "Group"
   },
@@ -1209,7 +1209,13 @@
       "text": "Achievement Level",
       "subtext": ""
     },
-    "instructions": "To view the graph for only some groups, select the name(s) in the legend."
+    "display-type": {
+      "GeneralPopulation": "All Students",
+      "Cohort": "Cohort"
+    },
+    "instructions": "To view the graph for only some groups, select the name(s) in the legend.",
+    "population-toggle-label": "Select population",
+    "population-toggle-label-info": "The All Students Longitudinal Report includes test results for all students who tested during the selected years, regardless of where they tested. The Cohort Report includes test results for only those students who tested at the same school or district during the selected years. Users should consider this limitation when making inferences about student performance."
   },
   "order-selector": {
     "move-left": "Move Left",
@@ -1333,8 +1339,7 @@
   "school-results": {
     "current-grade-select-label": "Assessment Grade",
     "no-results": "No results.",
-    "null-school": "This school is unavailable.  Contact your building administrator if you think you should have access to this school.",
-    "school-grade-button-label": "Student Reports"
+    "null-school": "This school is unavailable.  Contact your building administrator if you think you should have access to this school."
   },
   "school-typeahead": {
     "no-matches": "No schools found.",
@@ -1350,6 +1355,7 @@
     "title": "Search by Student"
   },
   "student-assessment-card": {
+    "result": "{{resultCount}} result",
     "results": "{{resultCount}} results"
   },
   "student-exam-history-table": {
@@ -1384,7 +1390,7 @@
       "standard-met-relative-residual-level": "Performance Relative to Standard Met (Level 3)",
       "standard-met-relative-residual-level-info": "Indicates whether students' performance on a target was above, near, or below Standard Met (Level 3).  A \"Below Standard Met\" indicator suggests that students have not yet mastered the content assessed in a target; however, the students' overall performance on the test may be near or above standard."
     },
-    "not-enough-results": "TODO - not enough results",
+    "not-enough-results": "There are currently not enough results available to display the target level report.",
     "subgroup-options": "Subgroups"
   },
   "update-instructional-resource-modal": {
@@ -1430,7 +1436,7 @@
   "user-groups": {
     "heading": "Search by Group",
     "create-group-prompt": "Click the create button to create your own group.",
-    "create-button-disabled-popover": "You can create your own groups once one or more groups assigned to you.",
+    "create-button-disabled-popover": "You can create your own groups once one or more groups are assigned to you.",
     "no-results": "No results"
   },
   "user-group-table": {

@@ -430,6 +430,23 @@ body .select-menu-group {
 }
 
 /**
+ * TODO move to UI Kit
+ */
+.nested-btn-group {
+  > a:first-child {
+    display: table-cell;
+  }
+  &.vertical {
+    > a:first-child {
+      display: flex;
+      align-self: flex-start;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+/**
  * Removes left border for vertical checkbox groups without the all option
  */
 .nested-btn-group.vertical:not(.all-option) .btn-group {
@@ -1318,6 +1335,8 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
   will-change: transform, border-color;
   transition-duration: @duration-exit;
   transition-timing-function: @easing-decel;
+  width: 100%;
+  display: block;
   .check {
     position: absolute;
     top: @spacer / 1.7;
@@ -1339,7 +1358,7 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
     transition-duration: @duration-exit;
     transition-timing-function: @easing-decel;
   }
-  &:hover {
+  &:hover, &:focus {
     border-color: @gray-light;
     cursor: pointer;
     .check {
@@ -1493,7 +1512,7 @@ wide-radio-group {
 
   .toggle-group .btn.disabled {
     pointer-events: auto;
-    &:hover, &:active {
+    &:hover, &:focus, &:active {
       background-color: @white;
       border-color: @gray-light;
       color: @gray-mid;

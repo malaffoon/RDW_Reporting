@@ -62,7 +62,7 @@
         <div *ngSwitchCase="'name'">
           <popup-menu [item]="exam"
                       [actions]="actions"
-                      [text]="'common.person-name' | translate:exam.student"></popup-menu>
+                      [text]="exam.student | studentName"></popup-menu>
         </div>
 
         <div *ngSwitchCase="'date'">
@@ -70,7 +70,7 @@
         </div>
 
         <div *ngSwitchCase="'session'">
-          {{ exam.session }}
+          {{ exam.session | session }}
         </div>
 
         <div *ngSwitchCase="'grade'">
@@ -82,7 +82,7 @@
         </div>
 
         <div *ngSwitchCase="'status'">
-          <span *ngIf="exam.administrativeCondition !== 'Valid'" class="label border-only maroon">{{ 'common.administration-condition.' + exam.administrativeCondition | translate }}</span>
+          <span *ngIf="exam.administrativeCondition && exam.administrativeCondition !== 'Valid'" class="label border-only maroon">{{ 'common.administration-condition.' + exam.administrativeCondition | translate }}</span>
           <span *ngIf="exam.completeness == 'Partial'" class="label border-only maroon">{{ 'common.completeness.' + exam.completeness | translate }}</span>
         </div>
 

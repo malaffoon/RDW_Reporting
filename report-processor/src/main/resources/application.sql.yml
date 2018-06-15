@@ -43,12 +43,12 @@ sql:
         ${sql.snippet.writingTraits},
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
-      JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+      $[groupJoinPlaceholder]
       LEFT JOIN exam_item ei ON ei.exam_id=e.id
       LEFT JOIN item i ON i.id=ei.item_id
       ${sql.reportProcessor.snippet.percentileLeftJoin}
       WHERE e.student_id in (:student_ids)
-        AND ${sql.snippet.groupFilters}
+        AND $[groupFilterPlaceholder]
         AND (:school_year is null or e.school_year=:school_year)
         AND (:subject_id is null or a.subject_id=:subject_id)
         AND (:grade_id is null or a.grade_id=:grade_id)
@@ -109,9 +109,9 @@ sql:
         JOIN item i ON i.id=ei.item_id
         WHERE i.performance_task_writing_type is not null
       ) wt ON wt.exam_id = e.id
-      JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+      $[groupJoinPlaceholder]
       WHERE e.student_id in (:student_ids)
-        AND ${sql.snippet.groupFilters}
+        AND $[groupFilterPlaceholder]
         AND (:school_year is null or e.school_year=:school_year)
         AND (:subject_id is null or a.subject_id=:subject_id)
         AND (:grade_id is null or a.grade_id=:grade_id)
@@ -243,21 +243,6 @@ sql:
         ${sql.reportProcessor.snippet.exportExamsFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
 
-    hasExams: >-
-      SELECT EXISTS (SELECT 1
-      FROM exam e
-        JOIN student st ON st.id = e.student_id
-        JOIN asmt a ON e.asmt_id = a.id
-        JOIN subject su ON su.id = a.subject_id
-        JOIN asmt_type at ON at.id = a.type_id
-        JOIN school s ON e.school_id = s.id
-        JOIN district d ON d.id = s.district_id
-        JOIN school isch ON st.inferred_school_id = isch.id
-      where
-        ${sql.reportProcessor.snippet.exportExamsFilter}
-        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
-      )
-
   student:
     findByExamQueryParamsUnknownPermissions: >-
       ${sql.reportProcessor.snippet.selectFromStudent}
@@ -272,8 +257,8 @@ sql:
 
     findByExamQueryParamsGroupPermissions: >-
       ${sql.reportProcessor.snippet.selectFromStudent}
-      JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
-      WHERE ${sql.snippet.groupFilters}
+      $[groupJoinPlaceholder]
+      WHERE $[groupFilterPlaceholder]
         AND (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
         AND (:subject_id is null or a.subject_id = :subject_id)

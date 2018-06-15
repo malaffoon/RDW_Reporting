@@ -104,25 +104,29 @@ sql:
             JOIN school s ON e.school_id = s.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+            $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND a.id = e.asmt_id
-            AND ${sql.snippet.groupFilters}
+            AND $[groupFilterPlaceholder]
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
+      # NOTE that we're grouping by a.id and selecting the max(e.completed_at) timestamp
+      # to improve final ordering performance
       findLatestExam: >-
           SELECT
-           ${sql.reporting.snippet.assessmentColumns}
+           ${sql.reporting.snippet.assessmentColumns},
+           max(e.completed_at) as max_completed
           FROM exam e
             JOIN asmt a ON e.asmt_id=a.id
             JOIN school s ON e.school_id=s.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+            $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
-            AND ${sql.snippet.groupFilters}
+            AND $[groupFilterPlaceholder]
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
-          ORDER BY e.completed_at desc
+          GROUP BY a.id
+          ORDER BY max_completed desc
           LIMIT 1
 
     exam:
@@ -134,10 +138,10 @@ sql:
           e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
-          JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+          $[groupJoinPlaceholder]
         WHERE a.id = :assessment_id
           AND e.school_year = :school_year
-          AND ${sql.snippet.groupFilters}
+          AND $[groupFilterPlaceholder]
           AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
     examWithTargetScore:
@@ -155,10 +159,10 @@ sql:
           JOIN school isch on st.inferred_school_id = isch.id
           JOIN exam_target_score ets on ets.exam_id = e.id
           JOIN target t on t.id = ets.target_id
-          JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+          $[groupJoinPlaceholder]
          WHERE a.id = :assessment_id
             AND e.school_year = :school_year
-            AND ${sql.snippet.groupFilters}
+            AND $[groupFilterPlaceholder]
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
     measuredAssessment:
@@ -193,25 +197,25 @@ sql:
                  FROM exam e
                    JOIN asmt a ON a.id = e.asmt_id
                    JOIN student st ON st.id = e.student_id
-                   JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+                   $[groupJoinPlaceholder]
                  WHERE e.type_id = 2
                        AND e.school_year = :school_year
                        AND e.scale_score IS NOT NULL
                        AND e.scale_score_std_err IS NOT NULL
                        AND e.performance_level IS NOT NULL
-                       AND ${sql.snippet.groupFilters}
+                       AND $[groupFilterPlaceholder]
                ) AS e1 LEFT OUTER JOIN
             ( SELECT e.id, e.student_id, e.asmt_id, e.school_year, e.completed_at
               FROM exam e
                 JOIN asmt a ON a.id = e.asmt_id
                 JOIN student st ON st.id = e.student_id
-                JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+                $[groupJoinPlaceholder]
             WHERE e.type_id = 2
                   AND e.school_year = :school_year
                   AND e.scale_score IS NOT NULL
                   AND e.scale_score_std_err IS NOT NULL
                   AND e.performance_level IS NOT NULL
-                  AND ${sql.snippet.groupFilters}
+                  AND $[groupFilterPlaceholder]
             ) AS e2
               ON e1.student_id = e2.student_id  AND e1.asmt_id = e2.asmt_id AND e1.school_year = e2.school_year
                  AND ( e1.completed_at < e2.completed_at OR (e1.completed_at = e2.completed_at AND e1.id < e2.id))
@@ -223,16 +227,17 @@ sql:
     examItem:
         findAllExamItemScoresForAssessment:
           ${sql.reporting.snippet.selectFromExamItem}
-          JOIN ${sql.snippet.selectFromBothGroupTypes} sg ON sg.student_id = e.student_id
+          $[groupJoinPlaceholder]
           WHERE e.asmt_id = :assessment_id
             AND e.school_year = :school_year
-            AND ${sql.snippet.groupFilters}
+            AND $[groupFilterPlaceholder]
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   schoolgrade:
     assessment:
       findAll: >-
-        SELECT ${sql.reporting.snippet.assessmentColumns}
+        SELECT distinct
+          ${sql.reporting.snippet.assessmentColumns}
         FROM asmt a
         WHERE EXISTS (
             SELECT e.asmt_id
@@ -247,9 +252,12 @@ sql:
         )
         AND a.grade_id = :grade_id
 
+      # NOTE that we're grouping by a.id and selecting the max(e.completed_at) timestamp
+      # to improve final ordering performance
       findLatestExam: >-
-        SELECT 
-          ${sql.reporting.snippet.assessmentColumns}
+        SELECT
+          ${sql.reporting.snippet.assessmentColumns},
+          max(e.completed_at) as max_completed
         FROM exam e
           JOIN asmt a ON e.asmt_id=a.id
           JOIN school s ON e.school_id=s.id
@@ -259,7 +267,8 @@ sql:
         AND e.school_id = :school_id
         AND a.grade_id = :grade_id
         AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
-        ORDER BY e.completed_at desc
+        GROUP BY a.id
+        ORDER BY max_completed desc
         LIMIT 1
 
     exam:

@@ -47,8 +47,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     this._exams = value;
 
     if (this.filteredItems) {
-      this.filteredItems = this.filterItems(this._writingTraitScoredItems);
-      this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(this.filteredItems);
+      this.updateResults(this._writingTraitScoredItems);
     }
   }
 
@@ -76,17 +75,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
     this.assessmentProvider.getAssessmentItems(this.assessment.id, ['WER']).subscribe(assessmentItems => {
       if (assessmentItems.some(x => x.scores.length > 0)) {
         this._writingTraitScoredItems = assessmentItems;
-
-        this.filteredItems = this.filterItems(assessmentItems);
-        this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(assessmentItems);
-        this.traitScoreSummaries.forEach((summary) => {
-          const columns = [
-            new Column({id: 'category', sortable: false}),
-            new Column({id: 'average-max', sortable: false, styleClass: "level-up"}),
-            ...this.toTraitSummaryColumns(summary)
-          ];
-          this._columnsByTraitSummary.set(summary, columns);
-        });
+        this.updateResults(assessmentItems);
       }
 
       if (assessmentItems.length != 0) {
@@ -146,11 +135,24 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
 
     for (let item of items) {
       let filteredItem = Object.assign(new AssessmentItem(), item);
-      filteredItem.scores = item.scores.filter(score => score.points >= 0 && this._exams.some(exam => exam.id == score.examId));
+      filteredItem.scores = item.scores.filter(score => this._exams.some(exam => exam.id == score.examId));
       filtered.push(filteredItem);
     }
 
     return filtered;
+  }
+
+  private updateResults(items: AssessmentItem[]) {
+    this.filteredItems = this.filterItems(items);
+    this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(this.filteredItems);
+    this.traitScoreSummaries.forEach((summary) => {
+      const columns = [
+        new Column({id: 'category', sortable: false}),
+        new Column({id: 'average-max', sortable: false, styleClass: 'level-up'}),
+        ...this.toTraitSummaryColumns(summary)
+      ];
+      this._columnsByTraitSummary.set(summary, columns);
+    });
   }
 }
 
