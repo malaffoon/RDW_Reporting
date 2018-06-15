@@ -57,14 +57,14 @@ export class GroupResultsComponent implements OnInit, StateProvider {
   }
 
   get stateAsNavigationParameters(): any {
-    const parameters: any = Object.assign({}, this.route.snapshot.params, {
-      schoolYear: this.schoolYear
-    });
-    if (this.group) {
-      if (this.group.userCreated) {
-        parameters.userGroupId = this.group.id;
+    const { group, schoolYear } = this;
+    // TODO forward assessment Ids here once assessments.component can support it
+    const parameters: any = { schoolYear };
+    if (group) {
+      if (group.userCreated) {
+        parameters.userGroupId = group.id;
       } else {
-        parameters.groupId = this.group.id;
+        parameters.groupId = group.id;
       }
     }
     return parameters;
