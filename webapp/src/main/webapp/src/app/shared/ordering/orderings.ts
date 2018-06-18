@@ -10,6 +10,16 @@ export const BooleanOrdering = ordering(ranking([ 'yes', 'no', 'undefined' ]));
 
 export const CompletenessOrdering = ordering(ranking([ 'Complete', 'Partial' ]));
 
+export const ScorableClaimOrder: Map<string, string[]> = new Map([
+  [ 'Math', [ '1', 'SOCK_2', '3' ] ],
+  [ 'ELA', [ 'SOCK_R', '2-W', 'SOCK_LS', '4-CR' ] ]
+]);
+
+export const ScorableClaimOrderings: Map<string, Ordering<string>> = new Map([
+  [ 'Math', ordering(ranking(ScorableClaimOrder.get('Math'))) ],
+  [ 'ELA', ordering(ranking(ScorableClaimOrder.get('ELA'))) ]
+]);
+
 // TODO:ConfigurableSubjects this needs to be provided by the backend
 export const SubjectClaimOrder: Map<string, string[]> = new Map([
   ['Math', ['1', '2', '3', '4']],
