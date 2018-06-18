@@ -9,7 +9,7 @@ import { InstructionalResourcesService } from "../../instructional-resources.ser
 import { InstructionalResource } from "../../../model/instructional-resources.model";
 import { Observable } from "rxjs/Observable";
 import { PopupMenuAction } from "../../../../shared/menu/popup-menu-action.model";
-import { ScorableClaimOrderingProvider, ScorableClaimOrderings } from '../../../../shared/ordering/orderings';
+import { ScorableClaimOrderings } from '../../../../shared/ordering/orderings';
 import { Ordering, ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 
