@@ -2,18 +2,17 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { UserGroupOptions } from './user-group-options';
 import { map } from 'rxjs/operators';
-import { CachingDataService } from '../shared/data/caching-data.service';
-import { ReportingServiceRoute } from '../shared/service-route';
+import { SubjectService } from '../subject/subject.service';
 
 
 @Injectable()
 export class UserGroupOptionsService {
 
-  constructor(private dataService: CachingDataService) {
+  constructor(private subjectService: SubjectService) {
   }
 
   getOptions(): Observable<UserGroupOptions> {
-    return this.dataService.get(`${ReportingServiceRoute}/examFilterOptions`).pipe(
+    return this.subjectService.getSubjectCodes().pipe(
       map(serverOptions => <UserGroupOptions>{
         subjects: serverOptions.subjects
       })
