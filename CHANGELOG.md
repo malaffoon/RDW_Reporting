@@ -1,11 +1,16 @@
 ## Change Log
 
-#### 1.2.X
+#### 1.2.0 - 2018-06-23
 
+* Extend Custom Aggregate Reports to include IABs.
+* Longitudinal Reports.
+* Student Response Reports.
+* Teacher-Created Groups
+* English Language Acquisition Status
 * Improved architecture:
     * Web application no longer requires reporting service to be running for basic functionality
     * Organizes system level configuration more logically
-    * NOTE: this requires updating configuration files for each module
+    * NOTE: this requires updating configuration and container spec files for each module
 
 #### 1.1.4 - 2018-04-06
 
