@@ -9,6 +9,9 @@ import { InstructionalResourcesService } from "../../instructional-resources.ser
 import { InstructionalResource } from "../../../model/instructional-resources.model";
 import { Observable } from "rxjs/Observable";
 import { PopupMenuAction } from "../../../../shared/menu/popup-menu-action.model";
+import { ScorableClaimOrderingProvider, ScorableClaimOrderings } from '../../../../shared/ordering/orderings';
+import { Ordering, ordering } from '@kourge/ordering';
+import { byString } from '@kourge/ordering/comparator';
 
 @Component({
   selector: 'results-by-student',
@@ -89,8 +92,19 @@ export class ResultsByStudentComponent implements OnInit {
     if (!this.assessment.claimCodes) {
       return [];
     }
-    return this.assessment.claimCodes.map((code, index) =>
-      new Column({id: 'claim', field: `claimScores.${index}.level`, index: index, claim: code}));
+
+    const ScorableClaimOrderingProvider: (subjectCode: string) => Ordering<any> = (subjectCode) => {
+      const currentOrdering: Ordering<string> = ScorableClaimOrderings.has(subjectCode)
+        ? ScorableClaimOrderings.get(subjectCode)
+        : ordering(byString);
+      return currentOrdering.on(claim => claim);
+    };
+
+    return this.assessment.claimCodes
+      .sort(ScorableClaimOrderingProvider(this.assessment.subject).compare)
+      .map((code, index) =>
+        new Column({id: 'claim', field: `claimScores.${index}.level`, index: index, claim: code})
+      );
   }
 
   private createActions(): PopupMenuAction[] {
