@@ -73,8 +73,6 @@ export class GroupDashboardComponent implements OnInit {
 
         this._previousRouteParameters = parameters;
 
-        console.log('diff', previousParameters, parameters, reload);
-
         // exit early if we don't need to re fetch the assessment data
         if (!reload) {
           return of({ ...parameters, reload });
@@ -147,6 +145,8 @@ export class GroupDashboardComponent implements OnInit {
     });
     if (subject) {
       parameters.subject = subject;
+    } else {
+      delete parameters.subject;
     }
     if (group) {
       if (group.userCreated) {
