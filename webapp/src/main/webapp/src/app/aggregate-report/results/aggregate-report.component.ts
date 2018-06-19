@@ -189,6 +189,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     return this.query.reportType === ServerAggregateReportType.Longitudinal;
   }
 
+  get showTargetMathCautionMessage(): boolean {
+    return this.query.reportType == ServerAggregateReportType.Target && this.query.subjectCode == 'Math';
+  }
+
   private updateViewState(): void {
     const targetViewState = this.getTargetViewState();
     this.onViewStateChange(this._viewState, targetViewState);
