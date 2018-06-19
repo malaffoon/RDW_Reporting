@@ -7,7 +7,7 @@
 
 <div *ngIf="showResults" class="row mb-xs">
   <div class="col-md-10">
-    <span class="target-caution-message">* {{ 'target-report.caution-message' | translate }}</span>
+    <p class="small">{{ 'target-report.caution-message' | translate }}</p>
   </div>
   <div class="col-md-2 text-right">
     <span>
@@ -184,3 +184,5 @@
     </tr>
   </ng-template>
 </p-table>
+
+<p *ngIf="isMath" class="small mt-sm">{{ 'target-report.math-claim-caution-message' | translate }}</p>
