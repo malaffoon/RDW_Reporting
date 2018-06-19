@@ -52,6 +52,7 @@ export class SchoolResultsComponent implements OnInit {
   private _currentSchool: School;
   private _currentGrade: Grade;
   private _currentSchoolYear: number;
+  private _previousRouteParameters: any;
 
   /**
    * The school typeahead
@@ -137,7 +138,7 @@ export class SchoolResultsComponent implements OnInit {
       this.organizationService.getSchoolsWithDistricts(limit + 1)
     ).subscribe(([ filterOptions, schools ]) => {
       this.filterOptions = filterOptions;
-      this.aboveLimit = schools.length <= limit;
+      this.aboveLimit = schools.length > limit;
       if (!this.aboveLimit) {
         this._schools = schools;
         this.schoolOptions = schools.map(school => <Option>{
@@ -167,16 +168,24 @@ export class SchoolResultsComponent implements OnInit {
   private subscribeToRouteChanges(): void {
     this.route.params.pipe(
       mergeMap(parameters => {
-        const { schoolId } = parameters;
+        const { schoolId, gradeId } = parameters;
+        const previousParameters = this._previousRouteParameters;
+
+        const gradeIsNullOrChanged = this.currentGrade == null || previousParameters.gradeId != gradeId;
+        const schoolIsNullOrChanged = this.currentSchool == null || previousParameters.schoolId != schoolId;
+
         return forkJoin(
           // if we don't have the grades for the school look them up
-          !this.grades
+          gradeIsNullOrChanged
             ? this.schoolService.findGradesWithAssessmentsForSchool(schoolId)
             : of(this.grades),
           // if we have don't have the current school look it up
-          !this._schools
-            ? this.commonSchoolService.getSchool(schoolId)
-            : of(this.currentSchool ? this.currentSchool : this._schools.find(({ id }) => schoolId == id)),
+          schoolIsNullOrChanged
+            ? (this._schools == null
+              ? this.commonSchoolService.getSchool(schoolId)
+              : of(this._schools.find(({ id }) => id == schoolId))
+            )
+            : of(this.currentSchool),
           of(parameters)
         ).pipe(
           map(([ grades, school, parameters ]) => <any>{
@@ -187,12 +196,17 @@ export class SchoolResultsComponent implements OnInit {
         );
       })
     ).subscribe(resolvedParameters => {
+
+      console.log('route change', resolvedParameters);
+
       const { schoolYear, gradeId, school, grades } = resolvedParameters;
       this.currentSchoolYear = schoolYear != null ? Number.parseInt(schoolYear) : undefined;
       this.currentSchool = school;
       this.currentGrade = grades.find(grade => grade.id == gradeId) || grades[ 0 ];
       this.grades = grades;
       this.gradesAreUnavailable = grades.length === 0;
+
+      this._previousRouteParameters = resolvedParameters;
     });
 
     this.route.data.subscribe(({ assessment }) => {
