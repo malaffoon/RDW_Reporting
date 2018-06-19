@@ -1,4 +1,4 @@
-import { ranking } from '@kourge/ordering/comparator';
+import { byString, ranking } from '@kourge/ordering/comparator';
 import { Ordering, ordering } from '@kourge/ordering';
 
 export const AssessmentTypeOrdering = ordering(ranking(['sum', 'ica', 'iab']));
@@ -19,6 +19,12 @@ export const ScorableClaimOrderings: Map<string, Ordering<string>> = new Map([
   [ 'Math', ordering(ranking(ScorableClaimOrder.get('Math'))) ],
   [ 'ELA', ordering(ranking(ScorableClaimOrder.get('ELA'))) ]
 ]);
+
+export const createScorableClaimOrdering: (subjectCode: string) => Ordering<any> = (subjectCode) => {
+  return ScorableClaimOrderings.has(subjectCode)
+    ? ScorableClaimOrderings.get(subjectCode)
+    : ordering(byString);
+};
 
 // TODO:ConfigurableSubjects this needs to be provided by the backend
 export const SubjectClaimOrder: Map<string, string[]> = new Map([
