@@ -45,12 +45,12 @@
           <span [hidden]="!schoolTypeahead.noResults" class="small gray-darker">{{'school-typeahead.no-matches' | translate}}</span>
         </div>
       </div>
-      <sb-typeahead  inputId="school-search-name"
-                     *ngIf="!aboveLimit"
-                     [options]="schoolOptions"
-                     [value]="currentSchool"
-                     (selected)="onSchoolChange($event)"
-                     placeholder="{{'common.action.select' | translate}}"></sb-typeahead>
+      <sb-typeahead inputId="school-search-name"
+                    *ngIf="!aboveLimit"
+                    [options]="schoolOptions"
+                    [value]="currentSchool"
+                    (selected)="onSchoolChange($event)"
+                    placeholder="{{'common.action.select' | translate}}"></sb-typeahead>
 
     </div>
 
