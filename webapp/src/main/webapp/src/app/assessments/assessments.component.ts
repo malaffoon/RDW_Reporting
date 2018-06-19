@@ -224,6 +224,8 @@ export class AssessmentsComponent implements OnInit {
         });
 
         forkJoin(loadingObservables).subscribe(args => {
+          // since this is loading the preselected assessments, make sure the latest assessment is not loaded
+          this._assessmentExams = [];
           args.forEach((exams, index) => this.processLoadAssessmentExam(preselectedAssessments[ index ].id, exams));
 
           this._hasInitialAssessment = true;
