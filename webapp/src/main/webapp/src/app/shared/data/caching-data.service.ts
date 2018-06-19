@@ -4,6 +4,7 @@ import { Observable } from "rxjs/Observable";
 import { DataService } from "./data.service";
 import { share, tap } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
+import { serializeURLParameters } from '../support/support';
 
 /**
  * Caches HTTP get responses and makes sure that concurrent requests
@@ -60,10 +61,7 @@ export class CachingDataService {
       return url;
     }
     const parameters = options.params || options.search || {};
-    return url + '?' + Object.entries(parameters)
-      .sort(([ a ], [ b ]) => a.localeCompare(b))
-      .map(([ key, value ]) => key + '=' + value)
-      .join('&');
+    return url + '?' + serializeURLParameters(parameters);
   }
 
 }
