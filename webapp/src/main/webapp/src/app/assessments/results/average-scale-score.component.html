@@ -40,30 +40,32 @@
     <div class="col-md-7">
       <strong>{{ 'average-scale-score.student-score-distribution' | translate }}</strong>
       <div class="well">
-        <div *ngFor="let performanceLevel of performanceLevels; let i = index" class="score-distribution-container">
+        <div *ngFor="let level of performanceLevels; let i = index" class="score-distribution-container">
           <div class="text-right gray-lighter grid-item">
-            {{ examLevelTranslation(performanceLevel) }}
+            {{ level.definition.displayLabelCode | translate }}
             <button *ngIf="assessmentExam.assessment.isIab"
                     class="btn btn-borderless btn-xs icon-only pull-right"
                     angulartics2On="click"
                     angularticsEvent="InstructionalResource"
                     angularticsCategory="AssessmentResults"
                     [popover]="buttonPopover"
-                    popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(examLevelTranslation(performanceLevel)) } }}"
+                    popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(level.definition.displayLabelCode | translate) } }}"
                     container="body"
-                    (click)="loadInstructionalResources(performanceLevel)"
+                    (click)="loadInstructionalResources(level.definition.value)"
                     [outsideClick]="true"><i
               class="fa fa-book"></i></button>
           </div>
           <div class="level-down text-right gray-lightest grid-item">
-            <strong>{{ performanceLevel.value | number:'1.0-0' }}{{ performanceLevel.suffix }}</strong>
+            <strong>{{ level.data.value | number:'1.0-0' }}{{ level.data.suffix }}</strong>
           </div>
           <div class="level-down scale-score-graph rounded blend-middle gray-lightest grid-item">
             <div class="bar-container">
-              <div *ngIf="performanceLevel.value != 0" class="bar" [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(assessmentExam.assessment.type, performanceLevels.length - i)"
-                   [attr.data-width]="filledLevel(performanceLevel)"></div>
-              <div *ngIf="filledLevel(performanceLevel) < 100" class="bar gray"
-                   [attr.data-width]="unfilledLevel(performanceLevel)">
+              <div *ngIf="level.data.value != 0"
+                   class="bar"
+                   [ngClass]="level.definition.styleClasses"
+                   [attr.data-width]="filledLevel(level.data)"></div>
+              <div *ngIf="filledLevel(level.data) < 100" class="bar gray"
+                   [attr.data-width]="unfilledLevel(level.data)">
               </div>
             </div>
           </div>
@@ -94,8 +96,9 @@
                 <div class="scale-score-graph rounded blend-middle mb-sm">
                   <div class="bar-container">
                     <div *ngFor="let level of claimStats.levels; let i = index">
-                      <div class="bar" *ngIf="claimStats.percents[i].value != 0"
-                           [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode('iab', i + 1)"
+                      <div *ngIf="claimStats.percents[i].value != 0"
+                           class="bar"
+                           [ngClass]="subjectDefinition.scoreableClaimPerformanceLevels[i].styleClasses"
                            [attr.data-width]="getClaimDataWidth(claimIndex, i)"></div>
                     </div>
                   </div>
@@ -104,16 +107,15 @@
                 <div class="perc-container row">
                   <div class="bar col-xs-4" *ngFor="let level of claimStats.levels; let i = index">
                     <span class="square"
-                          [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode('iab', i + 1)"></span>
+                          [ngClass]="subjectDefinition.scoreableClaimPerformanceLevels[i].styleClasses"></span>
                     {{ getClaimValue(claimStats, i) }}{{ getClaimSuffix(claimStats, i) }}
-                    <span
-                      class="sr-only">{{ 'common.assessment-type.iab.performance-level.' + i + 1 + '.name' | translate }}</span>
+                    <span class="sr-only">{{ subjectDefinition.scoreableClaimPerformanceLevels[i].displayLabelCode | translate }}</span>
                   </div>
                 </div>
 
                 <div class="perc-container row mt-xs">
                   <div class="bar col-xs-4 description" *ngFor="let level of claimStats.levels; let i = index">
-                    {{ 'common.assessment-type.iab.performance-level.' + (i+1) + '.name' | translate }}
+                    {{ subjectDefinition.scoreableClaimPerformanceLevels[i].displayLabelCode | translate }}
                   </div>
                 </div>
               </div>
