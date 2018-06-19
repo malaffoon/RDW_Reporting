@@ -5,7 +5,7 @@ class="well admin-tools-well">
       <h3>{{ 'home.admin-tools.titles.analyze' | translate }}</h3>
 
       <div class="row">
-        <div *hasPermission="'CUSTOM_AGGREGATE_READ'" class="col-xs-6">
+        <div *hasPermission="'CUSTOM_AGGREGATE_READ'" class="col-xs-6 mb-sm">
           <p class="small">{{'home.admin-tools.custom-aggregate.description' | translate}}</p>
           <a routerLink="/aggregate-reports"
              class="btn btn-primary btn-xs">
@@ -13,7 +13,7 @@ class="well admin-tools-well">
             {{'home.admin-tools.custom-aggregate.button' | translate}}
           </a>
         </div>
-        <div *hasPermission="'INDIVIDUAL_PII_READ'" class="col-xs-6">
+        <div *hasPermission="'INDIVIDUAL_PII_READ'" class="col-xs-6 mb-sm">
           <p class="small">{{'home.admin-tools.organizational-export.description' | translate}}</p>
           <a routerLink="/custom-export"
              class="btn btn-primary btn-xs">
@@ -29,7 +29,7 @@ class="well admin-tools-well">
       <h3>{{ 'home.admin-tools.titles.manage' | translate }}</h3>
 
       <div class="row">
-        <div *hasPermission="'GROUP_WRITE'" class="col-xs-6">
+        <div *hasPermission="'GROUP_WRITE'" class="col-xs-6 mb-sm">
           <p class="small">{{ 'home.admin-tools.student-groups.description' | translate}}</p>
           <a routerLink="/admin-groups"
              class="btn btn-primary btn-xs">
@@ -37,7 +37,7 @@ class="well admin-tools-well">
             {{ 'home.admin-tools.student-groups.button' | translate}}
           </a>
         </div>
-        <div *hasPermission="'INSTRUCTIONAL_RESOURCE_WRITE'" class="col-xs-6">
+        <div *hasPermission="'INSTRUCTIONAL_RESOURCE_WRITE'" class="col-xs-6 mb-sm">
           <p class="small">{{ 'home.admin-tools.instructional-resources.description' | translate}}</p>
           <a routerLink="/instructional-resource"
              class="btn btn-primary btn-xs">
@@ -45,7 +45,7 @@ class="well admin-tools-well">
             {{ 'home.admin-tools.instructional-resources.button' | translate}}
           </a>
         </div>
-        <div *hasPermission="'EMBARGO_WRITE'" class="col-xs-6">
+        <div *hasPermission="'EMBARGO_WRITE'" class="col-xs-6 mb-sm">
           <p class="small">{{ 'home.admin-tools.embargo.description' | translate}}</p>
           <a routerLink="/embargoes"
              class="btn btn-primary btn-xs">
