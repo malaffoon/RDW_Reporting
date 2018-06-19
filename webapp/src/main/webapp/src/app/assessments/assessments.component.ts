@@ -12,13 +12,14 @@ import { GradeCode } from '../shared/enum/grade-code.enum';
 import { ColorService } from '../shared/color.service';
 import { AssessmentExporter } from './assessment-exporter.interface';
 import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.service';
-import { share } from 'rxjs/operators';
+import { share, tap } from 'rxjs/operators';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { Utils } from '../shared/support/support';
+import { serializeURLParameters, Utils } from '../shared/support/support';
 import { Exam } from './model/exam.model';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import { empty } from 'rxjs/observable/empty';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -126,10 +127,18 @@ export class AssessmentsComponent implements OnInit {
 
   set expandAssessments(value: boolean) {
     this._expandAssessments = value;
-    this.getAvailableAssessments();
+    this.getAvailableAssessments().subscribe(result => {
+      // TODO fix this so that we don't need an Array.map callback with side-effects
+      this.availableAssessments = result.map(available => {
+        available.selected = this._assessmentExams
+          .some(assessmentExam => assessmentExam.assessment.id === available.id);
+        return available;
+      });
+    });
 
-    if (value)
+    if (value) {
       this._showOnlyMostRecent = false;
+    }
   }
 
   get showOnlyMostRecent(): boolean {
@@ -149,11 +158,9 @@ export class AssessmentsComponent implements OnInit {
   get selectedAssessments(): Assessment[] {
     if (this.showOnlyMostRecent && this._assessmentExams) {
       return this._assessmentExams.map(x => x.assessment);
-    }
-    else if (this.availableAssessments) {
+    } else if (this.availableAssessments) {
       return this.availableAssessments.filter(x => x.selected);
     }
-
     return [];
   }
 
@@ -185,7 +192,7 @@ export class AssessmentsComponent implements OnInit {
   private _showOnlyMostRecent = true;
   private _assessmentExams: AssessmentExam[];
   private _isAllSelected = false;
-  private _allAvailableAssessments: Assessment[];
+  private _assessmentsByRouteParameters: Map<string, Assessment[]> = new Map();
 
   constructor(public colorService: ColorService,
               private route: ActivatedRoute,
@@ -212,13 +219,11 @@ export class AssessmentsComponent implements OnInit {
       this.showOnlyMostRecent = true;
       this.loadingInitialResults = false;
     } else {
-      this.assessmentProvider.getAvailableAssessments().subscribe((availableAssessments) => {
-        this._allAvailableAssessments = availableAssessments;
-
+      this.assessmentProvider.getAvailableAssessments().subscribe(availableAssessments => {
         const loadingObservables: Observable<Exam[]>[] = [];
 
-        const preselectedAssessments = availableAssessments.filter((assessment) => assessmentIds.split(',').indexOf(assessment.id.toString()) >= 0);
-        preselectedAssessments.forEach((assessment) => {
+        const preselectedAssessments = availableAssessments.filter(assessment => assessmentIds.split(',').indexOf(assessment.id.toString()) >= 0);
+        preselectedAssessments.forEach(assessment => {
           assessment.selected = true;
           loadingObservables.push(this.loadAssessmentExam(assessment));
         });
@@ -313,7 +318,7 @@ export class AssessmentsComponent implements OnInit {
     this.updateFilterOptions();
 
     // have all the assessments been selected
-    this._isAllSelected = (this.selectedAssessments.length == this.availableAssessments.length);
+    this._isAllSelected = (this.selectedAssessments.length === this.availableAssessments.length);
   }
 
   openAndScrollToAdvancedFilters() {
@@ -351,27 +356,23 @@ export class AssessmentsComponent implements OnInit {
     this.assessmentsLoading.delete(assessmentId);
   }
 
-  private removeUnselectedAssessmentExams() {
+  private removeUnselectedAssessmentExams(): void {
     this._assessmentExams = this._assessmentExams.filter(loaded => this.selectedAssessments.some(selected => loaded.assessment.id == selected.id));
   }
 
-  private getAvailableAssessments() {
+  private getAvailableAssessments(): Observable<Assessment[]> {
     if (this._expandAssessments) {
-      const observable = this._allAvailableAssessments != null && this._allAvailableAssessments.length != 0
-        ? of(this._allAvailableAssessments)
-        : this.assessmentProvider.getAvailableAssessments().pipe(share());
-
-      observable.subscribe(result => {
-        this._allAvailableAssessments = result;
-
-        // TODO fix this so that we don't need an Array.map callback with side-effects
-        this.availableAssessments = result.map(available => {
-          available.selected = this._assessmentExams.some(assessmentExam => assessmentExam.assessment.id == available.id);
-          return available;
-        });
-      });
-
-      return observable;
+      const key = serializeURLParameters(this.route.snapshot.params);
+      const assessments = this._assessmentsByRouteParameters.get(key);
+      if (assessments) {
+        return of(assessments);
+      }
+      return this.assessmentProvider.getAvailableAssessments().pipe(
+        tap(assessments => this._assessmentsByRouteParameters.set(key, assessments)),
+        share()
+      );
     }
+    return empty();
   }
+
 }

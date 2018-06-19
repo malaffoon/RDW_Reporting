@@ -251,3 +251,18 @@ export class Utils {
   }
 
 }
+
+/**
+ * Creates a string based on the provided parameters
+ * This method assumes the parameters is a basic javascript object and contains only primitive types
+ * This is useful when caching results based on request or route parameters
+ *
+ * @param parameters the object to create the key from
+ * @returns {string} the key
+ */
+export function serializeURLParameters(parameters: any): string {
+  return Object.entries(parameters)
+    .sort(([ a ], [ b ]) => a.localeCompare(b))
+    .map(([ key, value ]) => key + '=' + value) // TODO add explicit support for array values
+    .join('&');
+}
