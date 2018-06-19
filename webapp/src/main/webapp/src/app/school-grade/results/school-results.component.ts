@@ -196,9 +196,6 @@ export class SchoolResultsComponent implements OnInit {
         );
       })
     ).subscribe(resolvedParameters => {
-
-      console.log('route change', resolvedParameters);
-
       const { schoolYear, gradeId, school, grades } = resolvedParameters;
       this.currentSchoolYear = schoolYear != null ? Number.parseInt(schoolYear) : undefined;
       this.currentSchool = school;
