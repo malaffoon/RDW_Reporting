@@ -151,8 +151,10 @@ export class GroupDashboardComponent implements OnInit {
     if (group) {
       if (group.userCreated) {
         parameters.userGroupId = group.id;
+        delete parameters.groupId;
       } else {
         parameters.groupId = group.id;
+        delete parameters.userGroupId;
       }
     }
     return parameters;
