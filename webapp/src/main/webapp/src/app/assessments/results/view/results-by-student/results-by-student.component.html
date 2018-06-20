@@ -112,8 +112,8 @@
         </div>
 
         <div *ngSwitchCase="'claim'">
-          {{ exam.claimScores[column.index].level | optiona:(
-            'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + exam.claimScores[column.index].level + '.name') | translate
+          {{ exam.claimScores[column.index].level | optional:(
+            'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + exam.claimScores[column.index].level + '.name' | translate
           ) }}
         </div>
       </td>
