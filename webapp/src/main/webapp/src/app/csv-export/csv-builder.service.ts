@@ -264,7 +264,7 @@ export class CsvBuilder {
   withClaimScores(subject: string, claims: string[], getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
     claims.forEach((claim, index) => {
       this.withColumn(
-        this.translateService.instant(`subject.${subject}.claim.${claim}.name`),
+        `${this.translateService.instant(`subject.${subject}.name`)}: ${this.translateService.instant(`subject.${subject}.claim.${claim}.name`)}`,
         (item) => {
           const exam: Exam = getExam(item);
           if (!exam || !exam.claimScores[ index ].level) {

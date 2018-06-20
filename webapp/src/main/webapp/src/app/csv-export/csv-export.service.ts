@@ -10,7 +10,12 @@ import { ExportItemsRequest } from '../assessments/model/export-items-request.mo
 import { RequestType } from '../shared/enum/request-type.enum';
 import { ExportWritingTraitsRequest } from '../assessments/model/export-writing-trait-request.model';
 import { ExportTargetReportRequest } from '../assessments/model/export-target-report-request.model';
+import { Assessment } from '../assessments/model/assessment.model';
+import { ordering } from '@kourge/ordering';
+import { ranking } from '@kourge/ordering/comparator';
+import { Observable } from 'rxjs/Observable';
 import { SubjectService } from '../subject/subject.service';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class CsvExportService {
@@ -48,11 +53,11 @@ export class CsvExportService {
     const getStudent = (item) => item.exam.student;
     const getExam = (item) => item.exam;
     const getAssessment = (item) => item.assessment;
+    const getNonIABAssessment = (item) => item.assessment.isIab ? null : item.assessment;
     const getIABExam = (item) => item.assessment.isIab ? item.exam : null;
     const getNonIABExam = (item) => item.assessment.isIab ? null : item.exam;
 
-    this.subjectService.getSubjectDefinitions().subscribe(definitions => {
-
+    this.getSubjectClaims(sourceData, getNonIABAssessment).subscribe(subjectClaims => {
       const builder = this.csvBuilder.newBuilder()
         .withFilename(filename)
         .withStudent(getStudent)
@@ -65,13 +70,14 @@ export class CsvExportService {
         .withReportingCategory(getAssessment, getIABExam)
         .withScoreAndErrorBand(getExam);
 
-      // TODO: Makes repeated columns because we don't know that subject+assessmentType combos share scorable claims
-      definitions.forEach(definition => {
+      console.log('sc', subjectClaims);
+
+      subjectClaims.forEach(entry => {
         builder.withClaimScores(
-          definition.subject,
-          definition.scorableClaims,
+          entry.subject,
+          entry.claims,
           getAssessment,
-          (item) => !item.assessment.isIab && item.assessment.subject === definition.subject ? item.exam : null
+          (item) => !item.assessment.isIab && item.assessment.subject === entry.subject ? item.exam : null
         );
       });
 
@@ -96,10 +102,11 @@ export class CsvExportService {
 
     const getExam = (wrapper: StudentHistoryExamWrapper) => wrapper.exam;
     const getAssessment = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment;
+    const getNonIABAssessment = (item) => item.assessment.isIab ? null : item.assessment;
     const getIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? wrapper.exam : null;
     const getNonIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? null : wrapper.exam;
 
-    this.subjectService.getSubjectDefinitions().subscribe(definitions => {
+    this.getSubjectClaims(wrappers, getNonIABAssessment).subscribe(subjectClaims => {
       const builder = this.csvBuilder.newBuilder()
         .withFilename(filename)
         .withStudent(getStudent)
@@ -112,13 +119,12 @@ export class CsvExportService {
         .withReportingCategory(getAssessment, getIABExam)
         .withScoreAndErrorBand(getExam)
 
-      // TODO: Makes repeated columns because we don't know that subject+assessmentType combos share scorable claims
-      definitions.forEach(definition => {
+      subjectClaims.forEach(entry => {
         builder.withClaimScores(
-          definition.subject,
-          definition.scorableClaims,
+          entry.subject,
+          entry.claims,
           getAssessment,
-          (item) => !item.assessment.isIab && item.assessment.subject === definition.subject ? item.exam : null
+          (item) => !item.assessment.isIab && item.assessment.subject === entry.subject ? item.exam : null
         );
       });
 
@@ -202,4 +208,33 @@ export class CsvExportService {
       .build(exportRequest.targetScoreRows);
 
   }
+
+  private getSubjectClaims(data: any[], getAssessment: (datum) => Assessment): Observable<SubjectClaims[]> {
+    return this.subjectService.getSubjectCodes().pipe(
+      map(subjects => {
+        return (data || []).reduce((subjectClaims, datum) => {
+          const assessment = getAssessment(datum);
+          if (assessment != null) {
+            const { subject, claimCodes } = assessment;
+            const entry = subjectClaims.find(subjectClaim => subjectClaim.subject === subject);
+            if (entry == null) {
+              subjectClaims.push({
+                subject: subject,
+                claims: claimCodes.concat()
+              });
+            }
+          }
+          return subjectClaims;
+        }, []).sort(
+          ordering(ranking(subjects)).on(({subject}) => subject).compare
+        );
+      })
+    );
+  }
+
+}
+
+interface SubjectClaims {
+  subject: string;
+  claims: string[];
 }
