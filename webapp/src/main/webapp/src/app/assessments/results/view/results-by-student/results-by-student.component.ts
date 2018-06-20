@@ -80,10 +80,6 @@ export class ResultsByStudentComponent implements OnInit {
       .map(resources => resources.getResourcesByPerformance(exam.level));
   }
 
-  examLevelTranslation(exam: Exam): string {
-    return this.translate.instant(exam.level ? `common.assessment-type.${this.assessment.type}.performance-level.${exam.level}.name` : 'common.missing');
-  }
-
   private getClaimColumns(): Column[] {
     if (!this.assessment.claimCodes) {
       return [];

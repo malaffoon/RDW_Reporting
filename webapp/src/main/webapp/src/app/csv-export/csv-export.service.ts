@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
-import { AssessmentExam } from "../assessments/model/assessment-exam.model";
-import { FilterBy } from "../assessments/model/filter-by.model";
-import { Exam } from "../assessments/model/exam.model";
-import { ExamFilterService } from "../assessments/filters/exam-filters/exam-filter.service";
-import { CsvBuilder } from "./csv-builder.service";
-import { StudentHistoryExamWrapper } from "../student/model/student-history-exam-wrapper.model";
-import { Student } from "../student/model/student.model";
-import { ExportItemsRequest} from "../assessments/model/export-items-request.model";
-import { RequestType } from "../shared/enum/request-type.enum";
-import {ExportWritingTraitsRequest} from "../assessments/model/export-writing-trait-request.model";
+import { Injectable } from '@angular/core';
+import { AssessmentExam } from '../assessments/model/assessment-exam.model';
+import { FilterBy } from '../assessments/model/filter-by.model';
+import { Exam } from '../assessments/model/exam.model';
+import { ExamFilterService } from '../assessments/filters/exam-filters/exam-filter.service';
+import { CsvBuilder } from './csv-builder.service';
+import { StudentHistoryExamWrapper } from '../student/model/student-history-exam-wrapper.model';
+import { Student } from '../student/model/student.model';
+import { ExportItemsRequest } from '../assessments/model/export-items-request.model';
+import { RequestType } from '../shared/enum/request-type.enum';
+import { ExportWritingTraitsRequest } from '../assessments/model/export-writing-trait-request.model';
 import { ExportTargetReportRequest } from '../assessments/model/export-target-report-request.model';
 import { SubjectService } from '../subject/subject.service';
 
@@ -62,7 +62,7 @@ export class CsvExportService {
         .withAssessmentTypeNameAndSubject(getAssessment)
         .withExamGradeAndStatus(getExam)
         .withAchievementLevel(getNonIABExam)
-        .withReportingCategory(getIABExam)
+        .withReportingCategory(getAssessment, getIABExam)
         .withScoreAndErrorBand(getExam);
 
       // TODO: Makes repeated columns because we don't know that subject+assessmentType combos share scorable claims
@@ -109,7 +109,7 @@ export class CsvExportService {
         .withAssessmentTypeNameAndSubject(getAssessment)
         .withExamGradeAndStatus(getExam)
         .withAchievementLevel(getNonIABExam)
-        .withReportingCategory(getIABExam)
+        .withReportingCategory(getAssessment, getIABExam)
         .withScoreAndErrorBand(getExam)
 
       // TODO: Makes repeated columns because we don't know that subject+assessmentType combos share scorable claims

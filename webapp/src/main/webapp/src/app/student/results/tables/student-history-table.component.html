@@ -133,12 +133,9 @@
 
             <div *ngSwitchCase="'performance'"
                  class="text-center">
-              <ng-container *ngIf="rowData.exam.level">
-                {{ 'common.assessment-type.' + assessmentType + '.performance-level.' + rowData.exam.level + '.name' | translate }}
-              </ng-container>
-              <ng-container *ngIf="!rowData.exam.level">
-                {{ 'common.missing' | translate }}
-              </ng-container>
+              {{ rowData.exam.level | optional:(
+                'subject.' + subject + '.asmt-type.' + assessmentType + '.level.' + rowData.exam.level + '.name' | translate
+              )}}
 
               <button *ngIf="assessmentType === 'iab'"
                       class="btn btn-borderless btn-xs icon-only pull-right"
@@ -147,7 +144,9 @@
                       angularticsCategory="AssessmentResults"
                       [disabled]="false"
                       [popover]="buttonPopover"
-                      popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:((rowData.exam.level ? 'common.assessment-type.iab.performance-level.' + rowData.exam.level +'.name' : 'common.missing') | translate) } }}"
+                      popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(
+                        (rowData.exam.level ? 'subject.' + subject + '.asmt-type.' + assessmentType  + '.level.' + rowData.exam.level +'.name' : 'common.missing') | translate
+                      ) } }}"
                       container="body"
                       (click)="loadInstructionalResources(rowData)"
                       [outsideClick]="true"><i class="fa fa-book"></i></button>
@@ -159,10 +158,11 @@
 
             <div *ngSwitchCase="'claim'"
                  class="text-center">
-              <ng-container *ngIf="rowData.exam.claimScores[column.index] && rowData.exam.claimScores[column.index].level">
-                {{ 'common.assessment-type.iab.performance-level.' + rowData.exam.claimScores[column.index].level + '.name' | translate }}
+
+              <ng-container *ngIf="rowData.exam.level">
+                {{ 'subject.' + subject + '.asmt-type.' + assessmentType + '.claim-score.level.' + rowData.exam.claimScores[column.index].level + '.name' | translate }}
               </ng-container>
-              <ng-container *ngIf="!rowData.exam.claimScores[column.index] || !rowData.exam.claimScores[column.index].level">
+              <ng-container *ngIf="!rowData.exam.level">
                 {{ 'common.missing' | translate }}
               </ng-container>
             </div>

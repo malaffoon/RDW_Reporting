@@ -216,7 +216,7 @@ export class CsvBuilder {
   }
 
   // TODO - Is this different than AchievementLevel now -- ?
-  withReportingCategory(getExam: (item: any) => Exam) {
+  withReportingCategory(getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('common.results.assessment-exam-columns.iab.performance'),
       (item) => {
@@ -224,8 +224,9 @@ export class CsvBuilder {
         if (!exam || !exam.level) {
           return '';
         }
+        const { subject, type } = getAssessment(item);
         return this.translateService.instant(
-          `common.assessment-type.iab.performance-level.${exam.level}.name`);
+          `subject.${subject}.asmt-type.${type}.level.${exam.level}.name`);
       }
     );
   }

@@ -29,7 +29,7 @@
   <div *ngIf="level > 0"
        class="distribution mt-sm"
        [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode(latestExam.assessment.type, level)">
-    {{'common.assessment-type.'+ latestExam.assessment.type + '.performance-level.' + level + '.name' | translate}}
+    {{'subject.' + latestExam.assessment.subject + '.asmt-type.'+ latestExam.assessment.type + '.level.' + level + '.name' | translate}}
   </div>
   <div *ngIf="!level"
        class="distribution mt-sm gray-light">
