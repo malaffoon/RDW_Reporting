@@ -573,32 +573,6 @@
       "display-overall": "Overall Scores",
       "printable-student-reports": "Printable Reports"
     },
-    "claim-description": {
-      "1": "Concepts and Procedures - Students can explain and apply mathematical concepts and interpret and carry out mathematical procedures with precision and fluency.",
-      "2": "Problem Solving - Students can solve a range of complex well-posed problems in pure and applied mathematics, making productive use of knowledge and problem solving strategies.",
-      "3": "Communicating Reasoning - Students can clearly and precisely construct viable arguments to support their own reasoning and to critique the reasoning of others.",
-      "4": "Modeling and Data Analysis - Students can analyze complex, real-world scenarios and can construct and use mathematical models to interpret and solve problems.",
-      "1-IT": "Read Analytically: Informational Text - Students can read closely and analytically to comprehend a range of increasingly complex literary and informational texts.",
-      "1-LT": "Read Analytically: Literary Text - Students can read closely and analytically to comprehend a range of increasingly complex literary and informational texts.",
-      "2-W": "Write Effectively - Students can produce effective and well-grounded writing for a range of purposes and audiences.",
-      "3-L": "Speak and Listen purposefully - Students can employ effective speaking and listening skills for a range of purposes and audiences.",
-      "3-S": "Speak and Listen purposefully - Students can employ effective speaking and listening skills for a range of purposes and audiences.",
-      "4-CR": "Conduct Research - Students can engage in research/ inquiry to investigate topics and to analyze, integrate, and present information.",
-      "NA": "NA"
-    },
-    "claim-name": {
-      "1": "Concepts and Procedures",
-      "2": "Problem Solving",
-      "3": "Communicating Reasoning",
-      "4": "Modeling and Data Analysis",
-      "1-IT": "Reading - Informational Text",
-      "1-LT": "Reading - Literary Text",
-      "2-W": "Writing",
-      "3-L": "Listening",
-      "3-S": "Listening",
-      "4-CR": "Research and Inquiry",
-      "NA": "NA"
-    },
     "collection-selection": {
       "all": "All",
       "none": "None"
@@ -768,26 +742,6 @@
           "DistrictGroup": "Group of Districts",
           "SchoolGroup": "Group of Schools",
           "State": "State"
-        }
-      },
-      "performance-levels": {
-        "all": "All Levels",
-        "iab": {
-          "1": "Below Standard",
-          "2": "Near Standard",
-          "3": "Above Standard"
-        },
-        "ica": {
-          "1": "Standard Not Met",
-          "2": "Standard Nearly Met",
-          "3": "Standard Met",
-          "4": "Standard Exceeded"
-        },
-        "sum": {
-          "1": "Standard Not Met",
-          "2": "Standard Nearly Met",
-          "3": "Standard Met",
-          "4": "Standard Exceeded"
         }
       }
     },
