@@ -194,7 +194,7 @@ export class StudentHistoryTableComponent implements OnInit {
       .map((claim: string, index: number) => {
         return new Column({
           id: 'claim',
-          field: 'exam.claimScores.${index}.level',
+          field: `exam.claimScores.${index}.level`,
           claim: claim,
           index: index
         });
