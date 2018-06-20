@@ -694,13 +694,13 @@
     },
     "menus": {
       "resources": "Instructional Resources",
-      "responses": "{{firstName}}'s Responses",
+      "responses": "{{name}}'s Responses",
       "student-report": {
-        "iab": "Print {{firstName}}'s Full IAB Report",
-        "ica": "Print {{firstName}}'s ICA Report",
-        "sum": "Print {{firstName}}'s Summative Report"
+        "iab": "Print {{name}}'s Full IAB Report",
+        "ica": "Print {{name}}'s ICA Report",
+        "sum": "Print {{name}}'s Summative Report"
       },
-      "test-history": "{{firstName}}'s Test History"
+      "test-history": "{{name}}'s Test History"
     },
     "messages": {
       "loading": "Loading",
@@ -1399,8 +1399,8 @@
     "title": "Student's Responses"
   },
   "student-results": {
-    "create-report": "Create {{firstName}}'s Printable Report",
-    "crumb": "Student: {{lastName}}, {{firstName}}",
+    "create-report": "Create {{value}}'s Printable Report",
+    "crumb": "Student: {{value}}",
     "empty-filtered-results-message": "No test results are available for the filters selected.",
     "title": "Student Test History Report"
   },
