@@ -1,18 +1,18 @@
-import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { CsvColumn } from "./csv-column.model";
-import { Student } from "../student/model/student.model";
-import { Exam } from "../assessments/model/exam.model";
-import { Assessment } from "../assessments/model/assessment.model";
-import { Angular2CsvProvider } from "./angular-csv.provider";
-import { AssessmentItem } from "../assessments/model/assessment-item.model";
-import { DynamicItemField } from "../assessments/model/item-point-field.model";
-import { SchoolYearPipe } from "../shared/format/school-year.pipe";
-import { Utils } from "../shared/support/support";
-import { WritingTraitAggregate } from "../assessments/model/writing-trait-aggregate.model";
-import { TranslateDatePipe } from "../shared/i18n/translate-date.pipe";
-import { TranslateNumberPipe } from "../shared/i18n/translate-number.pipe";
-import { ApplicationSettingsService } from "../app-settings.service";
+import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { CsvColumn } from './csv-column.model';
+import { Student } from '../student/model/student.model';
+import { Exam } from '../assessments/model/exam.model';
+import { Assessment } from '../assessments/model/assessment.model';
+import { Angular2CsvProvider } from './angular-csv.provider';
+import { AssessmentItem } from '../assessments/model/assessment-item.model';
+import { DynamicItemField } from '../assessments/model/item-point-field.model';
+import { SchoolYearPipe } from '../shared/format/school-year.pipe';
+import { Utils } from '../shared/support/support';
+import { WritingTraitAggregate } from '../assessments/model/writing-trait-aggregate.model';
+import { TranslateDatePipe } from '../shared/i18n/translate-date.pipe';
+import { TranslateNumberPipe } from '../shared/i18n/translate-number.pipe';
+import { ApplicationSettingsService } from '../app-settings.service';
 import { AggregateTargetScoreRow, TargetReportingLevel } from '../assessments/model/aggregate-target-score-row.model';
 
 @Injectable()
@@ -28,6 +28,8 @@ export class CsvBuilder {
               private schoolYearPipe: SchoolYearPipe,
               private numberPipe: TranslateNumberPipe,
               private applicationSettingsService: ApplicationSettingsService) {
+
+    // TODO technically there can be a race condition here.
     applicationSettingsService.getSettings().subscribe(settings => {
       this.showElas = settings.elasEnabled;
       this.showLep = settings.lepEnabled;
@@ -154,7 +156,7 @@ export class CsvBuilder {
   withAssessmentSubject(getAssessment: (item: any) => Assessment) {
     return this.withColumn(
       this.translateService.instant('csv-builder.subject'),
-      (item) => this.translateService.instant(`common.subject.${getAssessment(item).subject}.short-name`)
+      (item) => this.translateService.instant(`subject.${getAssessment(item).subject}.name`)
     );
   }
 
@@ -258,31 +260,23 @@ export class CsvBuilder {
     );
   }
 
-  withMathClaimScores(getExam: (item: any) => Exam) {
-    return this.withClaimScores([ '1', 'SOCK_2', '3' ], getExam);
-  }
-
-  withELAClaimScores(getExam: (item: any) => Exam) {
-    return this.withClaimScores([ 'SOCK_R', 'SOCK_LS', '2-W', '4-CR' ], getExam);
-  }
-
-  withClaimScores(claims: string[], getExam: (item: any) => Exam) {
+  withClaimScores(subject: string, claims: string[], getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
     claims.forEach((claim, idx) => {
       this.withColumn(
-        this.translateService.instant(`common.subject-claim-code.${claim}`),
+        this.translateService.instant(`subject.${subject}.claim.${claim}.name`),
         (item) => {
           const exam: Exam = getExam(item);
           if (!exam || !exam.claimScores[ idx ].level) {
             return '';
           }
+          const assessment = getAssessment(item);
           return this.translateService.instant(exam.claimScores[ idx ].level
-            ? `common.assessment-type.iab.performance-level.${exam.claimScores[ idx ].level}.name`
+            ? `subject.${assessment.subject}.asmt-type.${assessment.type}.claim-score.level.${exam.claimScores[ idx ].level}.name`
             : 'common.missing'
           );
         }
       );
     });
-
     return this;
   }
 
@@ -545,6 +539,7 @@ export class CsvBuilder {
       .withMigrantStatus(getExam)
       .with504Plan(getExam)
       .withIep(getExam);
+
     if (this.showLep) {
       studentContext = studentContext.withLimitedEnglish(getExam);
     }

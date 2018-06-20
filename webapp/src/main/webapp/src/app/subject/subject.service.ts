@@ -1,22 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { SubjectAssessmentType } from './subject';
+import { SubjectDefinition } from './subject';
+import { join, ranking } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
 
-const MathScoreableClaims = [
-  '1',
-  'SOCK_2',
-  '3'
-];
+const Subjects = [ 'Math', 'ELA' ];
+const MathScorableClaims = [ '1', 'SOCK_2', '3' ];
+const ELAScorableClaims = [ 'SOCK_R', 'SOCK_LS', '2-W', '4-CR' ];
 
-const ELAScoreableClaims = [
-  'SOCK_R',
-  'SOCK_LS',
-  '2-W',
-  '4-CR'
-];
-
-const SubjectAssessmentTypes = [
+const SubjectDefinitions: SubjectDefinition[] = [
   {
     subject: 'Math',
     assessmentType: 'ica'
@@ -41,22 +34,27 @@ const SubjectAssessmentTypes = [
     subject: 'ELA',
     assessmentType: 'sum'
   }
-].map(type => {
+].sort(
+  join(
+    ordering(ranking([ 'Math', 'ELA' ])).on<SubjectDefinition>(({ subject }) => subject).compare,
+    ordering(ranking([ 'sum', 'ica', 'iab' ])).on<SubjectDefinition>(({ assessmentType }) => assessmentType).compare
+  )
+).map(type => {
 
   const iab = type.assessmentType === 'iab';
-  const scoreableClaims = type.subject === 'Math'
-    ? MathScoreableClaims
-    : ELAScoreableClaims;
+  const scorableClaims = type.subject === 'Math'
+    ? MathScorableClaims
+    : ELAScorableClaims;
 
   return Object.assign({}, type, {
     performanceLevelStandardCutoff: iab ? undefined : 3,
     performanceLevelCount: iab ? 3 : 4,
-    scoreableClaims: scoreableClaims,
-    scoreableClaimPerformanceLevelCount: iab ? 0 : 3
+    scorableClaims: scorableClaims,
+    scorableClaimPerformanceLevelCount: iab ? 0 : 3
   });
 });
 
-const DefinitionsBySubjectAndAssessmentType: { [ key: string ]: SubjectAssessmentType } = SubjectAssessmentTypes.reduce((map, type) => {
+const DefinitionsBySubjectAndAssessmentType: { [ key: string ]: SubjectDefinition } = SubjectDefinitions.reduce((map, type) => {
   const { subject, assessmentType } = type;
   map[ `${subject}/${assessmentType}` ] = type;
   return map;
@@ -66,15 +64,15 @@ const DefinitionsBySubjectAndAssessmentType: { [ key: string ]: SubjectAssessmen
 export class SubjectService {
 
   getSubjectCodes(): Observable<string[]> {
-    return of([ 'Math', 'ELA' ]);
+    return of(Subjects);
   }
 
-  getSubjectDefinition(subject: string, assessmentType: string): Observable<SubjectAssessmentType> {
+  getSubjectDefinition(subject: string, assessmentType: string): Observable<SubjectDefinition> {
     return of(DefinitionsBySubjectAndAssessmentType[ `${subject}/${assessmentType}` ]);
   }
 
-  getSubjectDefinitionForAssessment({ type, subject }): Observable<SubjectAssessmentType> {
-    return this.getSubjectDefinition(subject, type);
+  getSubjectDefinitions(): Observable<SubjectDefinition[]> {
+    return of(SubjectDefinitions);
   }
 
 }

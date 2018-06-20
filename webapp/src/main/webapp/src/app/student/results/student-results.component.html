@@ -53,8 +53,7 @@
     <div class="well wide-content-container"
          [hidden]="!section.filteredExams.length">
       <span class="h3 label-group orange">
-        <span
-          class="label">{{'common.subject.' + section.subjectCode + '.short-name' | translate}}</span>
+        <span class="label">{{'subject.' + section.subjectCode + '.name' | translate}}</span>
       </span>
       <button class="btn btn-default pull-right"
               (click)="section.collapsed = !section.collapsed"
@@ -69,6 +68,7 @@
       <div class="mt-md"
            [hidden]="section.collapsed">
         <student-history-table [student]="examHistory.student"
+                               [subject]="section.subjectCode"
                                [minimumItemDataYear]="minimumItemDataYear"
                                [exams]="section.filteredExams">
         </student-history-table>

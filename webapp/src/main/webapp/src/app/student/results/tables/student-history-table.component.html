@@ -70,7 +70,7 @@
         </span>
 
             <span *ngSwitchCase="'claim'">
-          {{ 'common.subject-claim-code.' + column.claim | translate }}
+          {{ 'subject.' + subject + '.claim.' + column.claim + '.name' | translate }}
         </span>
 
             <span *ngSwitchCase="'score'"

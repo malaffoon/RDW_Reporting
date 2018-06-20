@@ -304,7 +304,7 @@ export class AggregateReportTableComponent implements OnInit {
   private getClaimCodeTranslationKey(row: AggregateReportItem): string {
     return this.table.reportType === AggregateReportType.Target
       ? `common.claim-name.${row.claimCode}`
-      : `common.subject.${row.subjectCode}.claim.${row.claimCode}.name`;
+      : `subject.${row.subjectCode}.claim.${row.claimCode}.name`;
   }
 
   getClaimCodeTranslation(row: AggregateReportItem): string {

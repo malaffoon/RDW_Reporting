@@ -134,7 +134,7 @@ export class AggregateReportTableExportService {
           (item: AggregateReportItem) => {
             const translationKey: string = options.reportType === AggregateReportType.Target
               ? `common.claim-name.${item.claimCode}`
-              : `common.subject.${item.subjectCode}.claim.${item.claimCode}.name`;
+              : `subject.${item.subjectCode}.claim.${item.claimCode}.name`;
             return this.translateService.instant(translationKey);
           }
         )

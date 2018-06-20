@@ -55,8 +55,9 @@
                     ) } }}"
                     container="body"
                     (click)="loadInstructionalResources(level.id)"
-                    [outsideClick]="true"><i
-              class="fa fa-book"></i></button>
+                    [outsideClick]="true">
+              <i class="fa fa-book"></i>
+            </button>
           </div>
           <div class="level-down text-right gray-lightest grid-item">
             <strong>{{ level.value | number:'1.0-0' }}{{ level.suffix }}</strong>
@@ -67,7 +68,8 @@
                    class="bar"
                    [ngClass]="'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.level.' + level.id + '.color' | translate"
                    [attr.data-width]="filledLevel(level)"></div>
-              <div *ngIf="filledLevel(level) < 100" class="bar gray"
+              <div *ngIf="filledLevel(level) < 100"
+                   class="bar gray"
                    [attr.data-width]="unfilledLevel(level)">
               </div>
             </div>
@@ -99,7 +101,8 @@
                 <div class="scale-score-graph rounded blend-middle mb-sm">
                   <div class="bar-container">
                     <div *ngFor="let level of claimStats.levels; let i = index">
-                      <div class="bar" *ngIf="claimStats.percents[i].value != 0"
+                      <div *ngIf="claimStats.percents[i].value != 0"
+                           class="bar"
                            [ngClass]="'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + (i + 1) + '.color' | translate"
                            [attr.data-width]="getClaimDataWidth(claimIndex, i)"></div>
                     </div>

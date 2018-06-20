@@ -117,7 +117,7 @@
             <div class="form-group">
               <label for="subject-select">{{'common.subject-select-label' | translate}}</label>
               <div *ngIf="lockSubject && options.subject">
-                <span>{{'common.subject.' + options.subject + '.short-name' | translate}}</span>
+                <span>{{'subject.' + options.subject + '.name' | translate}}</span>
               </div>
               <select *ngIf="!lockSubject"
                       id="subject-select"
@@ -125,7 +125,7 @@
                       name="subject"
                       [(ngModel)]="options.subject">
                 <option *ngFor="let subject of subjectTypes"
-                        [ngValue]="subject">{{(subject != null ? 'common.subject.' + subject + '.short-name' : 'common.collection-selection.all') | translate}}</option>
+                        [ngValue]="subject">{{(subject != null ? 'subject.' + subject + '.name' : 'common.collection-selection.all') | translate}}</option>
               </select>
             </div>
 

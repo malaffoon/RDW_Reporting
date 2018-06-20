@@ -43,8 +43,8 @@ export class ReportTableComponent {
       // Not ideal, we should not have empty/null subject codes for reports,
       // it should be the subjects the report was created for at the time of creation
       translatedSubjectCodes: report.subjectCodes.length
-        ? report.subjectCodes.map(code => translate(`common.subject.${code}.name`)).join(', ')
-        : translate('common.subject.ALL.name'),
+        ? report.subjectCodes.map(code => translate(`subject.${code}.name`)).join(', ')
+        : translate('common.collection-selection.all'),
       translatedReportType: translate(`reports.report-type.${report.reportType}`)
     });
   }

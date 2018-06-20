@@ -922,54 +922,6 @@
       "max-points": "Max Points",
       "student-points": "Student Points"
     },
-    "subject": {
-      "ALL": {
-        "name": "Math, ELA",
-        "short-name": "All"
-      },
-      "ELA": {
-        "name": "ELA",
-        "short-name": "ELA",
-        "claim": {
-          "2-W": {
-            "name": "Writing"
-          },
-          "4-CR": {
-            "name": "Research & Inquiry"
-          },
-          "SOCK_LS": {
-            "name": "Listening"
-          },
-          "SOCK_R": {
-            "name": "Reading"
-          }
-        }
-      },
-      "Math": {
-        "name": "Math",
-        "short-name": "Math",
-        "claim": {
-          "1": {
-            "name": "Concepts & Procedures"
-          },
-          "3": {
-            "name": "Communicating Reasoning"
-          },
-          "SOCK_2": {
-            "name": "Problem Solving & Modeling / Data Analysis"
-          }
-        }
-      }
-    },
-    "subject-claim-code": {
-      "1": "Concepts & Procedures",
-      "3": "Communicating Reasoning",
-      "2-W": "Writing",
-      "4-CR": "Research & Inquiry",
-      "SOCK_2": "Problem Solving & Modeling / Data Analysis",
-      "SOCK_LS": "Listening",
-      "SOCK_R": "Reading"
-    },
     "subject-select-label": "Subject",
     "unknown": "Unknown",
     "unscored": "No Score Recorded",

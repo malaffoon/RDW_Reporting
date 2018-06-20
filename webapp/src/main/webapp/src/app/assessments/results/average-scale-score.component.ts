@@ -34,6 +34,7 @@ export class AverageScaleScoreComponent {
   @Input()
   set statistics(value: ExamStatistics) {
     // reverse percents and levels so scale score statistics appear in descending order ("good" statistics levels comes before "bad")
+    // TODO refactor - this has side-effects on the provided value
     value.percents = value.percents.reverse();
     value.levels = value.levels.reverse();
     this._statistics = value;
@@ -142,28 +143,6 @@ export class AverageScaleScoreComponent {
    */
   unfilledLevel(examStatisticsLevel: ExamStatisticsLevel): number {
     return 100 - this.filledLevel(examStatisticsLevel);
-  }
-
-  getPerformanceLevelNameCode(level: number): string {
-    const { subject, type } = this.assessment;
-    return level != null
-      ? `subject.${subject}.asmt-type.${type}.level.${level}.name`
-      : 'common.missing';
-  }
-
-  getPerformanceLevelColorCode(level: number): string {
-    const { subject, type } = this.assessment;
-    return ``;
-  }
-
-  getScorableClaimPerformanceLevelNameCode(level: number): string {
-    const { subject, type } = this.assessment;
-    return `subject.${subject}.asmt-type.${type}.claim-score.level.${level}.name`;
-  }
-
-  getScorableClaimPerformanceLevelColorCode(level: number): string {
-    const { subject, type } = this.assessment;
-    return `subject.${subject}.asmt-type.${type}.claim-score.level.${level}.color`;
   }
 
   private levelCountPercent(levelCount: number): number {

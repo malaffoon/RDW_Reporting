@@ -1,8 +1,8 @@
-export interface SubjectAssessmentType {
+export interface SubjectDefinition {
   readonly subject: string;
   readonly assessmentType: string;
-  readonly performanceLevelStandardCutoff: number;
   readonly performanceLevelCount: number;
-  readonly scoreableClaims: string[];
-  readonly scoreableClaimPerformanceLevelCount: number;
+  readonly performanceLevelStandardCutoff: number;
+  readonly scorableClaims: string[];
+  readonly scorableClaimPerformanceLevelCount: number;
 }
