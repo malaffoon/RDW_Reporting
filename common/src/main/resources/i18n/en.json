@@ -600,6 +600,19 @@
       "item1": "Interim assessments may be scored by local teachers. This scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.",
       "item2": "Exposure to, and familiarity with test questions may affect student performance and the accuracy of interim results."
     },
+    "item-claim-name": {
+      "1": "Concepts and Procedures",
+      "2": "Problem Solving",
+      "3": "Communicating Reasoning",
+      "4": "Modeling and Data Analysis",
+      "1-IT": "Reading - Informational Text",
+      "1-LT": "Reading - Literary Text",
+      "2-W": "Writing",
+      "3-L": "Listening",
+      "3-S": "Listening",
+      "4-CR": "Research and Inquiry",
+      "NA": "NA"
+    },
     "not-scored": "Not Scored",
     "overall-achievement": {
       "grade": {
@@ -901,6 +914,24 @@
       "score-range": "{0}-{1}",
       "short-name": "SUM",
       "title": "Summative Assessment Report"
+    },
+    "target": {
+      "overall": {
+        "Above": "Better",
+        "Below": "Worse",
+        "Excluded": "Excluded",
+        "InsufficientData": "Insufficient Data",
+        "Near": "Similar",
+        "NoResults": "-"
+      },
+      "standard": {
+        "Above": "Above",
+        "Below": "Below",
+        "Excluded": "Excluded",
+        "InsufficientData": "Insufficient Data",
+        "Near": "Near",
+        "NoResults": "-"
+      }
     },
     "writing": {
       "description": "Students write an extended response (i.e., essay) with one of the following purposes: narrative, opinion, informational, explanatory, or argumentative. {0} received the following scores on the essay:",
