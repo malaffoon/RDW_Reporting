@@ -49,7 +49,7 @@ export class CsvExportService {
     let getIABExam = (item) => item.assessment.isIab ? item.exam : null;
     let getNonIABExam = (item) => item.assessment.isIab ? null: item.exam;
     // TODO:ConfigurableSubjects needs to support configurable subjects
-    let getNonIABMathExam = (item) => !item.assessment.isIab && item.assessment.subject === 'MATH' ? item.exam : null;
+    let getNonIABMathExam = (item) => !item.assessment.isIab && item.assessment.subject === 'Math' ? item.exam : null;
     let getNonIABElaExam = (item) => !item.assessment.isIab && item.assessment.subject === 'ELA' ? item.exam : null;
 
     this.csvBuilder
