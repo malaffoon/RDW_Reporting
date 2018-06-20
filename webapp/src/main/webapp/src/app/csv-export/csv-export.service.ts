@@ -57,7 +57,7 @@ export class CsvExportService {
     const getIABExam = (item) => item.assessment.isIab ? item.exam : null;
     const getNonIABExam = (item) => item.assessment.isIab ? null : item.exam;
 
-    this.getSubjectClaims(sourceData, getNonIABAssessment).subscribe(subjectClaims => {
+    this.getSubjectScorableClaims(sourceData, getNonIABAssessment).subscribe(subjectClaims => {
       const builder = this.csvBuilder.newBuilder()
         .withFilename(filename)
         .withStudent(getStudent)
@@ -104,7 +104,7 @@ export class CsvExportService {
     const getIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? wrapper.exam : null;
     const getNonIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? null : wrapper.exam;
 
-    this.getSubjectClaims(wrappers, getNonIABAssessment).subscribe(subjectClaims => {
+    this.getSubjectScorableClaims(wrappers, getNonIABAssessment).subscribe(subjectClaims => {
       const builder = this.csvBuilder.newBuilder()
         .withFilename(filename)
         .withStudent(getStudent)
@@ -207,7 +207,15 @@ export class CsvExportService {
 
   }
 
-  private getSubjectClaims(data: any[], getAssessment: (datum) => Assessment): Observable<SubjectClaims[]> {
+  /**
+   * Scans the provided data for what scorable claims are present and returns a collection of
+   * subject - scorable claim collection pairs to iterate over when generating export columns
+   *
+   * @param {any[]} data the data to scan
+   * @param {(datum) => Assessment} getAssessment used to get the assessment from a data entry
+   * @returns {Observable<SubjectScorableClaims[]>} subject - scorable claim collection pairs present in the given data set
+   */
+  private getSubjectScorableClaims(data: any[], getAssessment: (datum) => Assessment): Observable<SubjectScorableClaims[]> {
     return this.subjectService.getSubjectCodes().pipe(
       map(subjects => {
         return (data || []).reduce((subjectClaims, datum) => {
@@ -232,7 +240,7 @@ export class CsvExportService {
 
 }
 
-interface SubjectClaims {
+interface SubjectScorableClaims {
   subject: string;
   claims: string[];
 }
