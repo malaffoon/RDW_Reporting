@@ -127,10 +127,10 @@ describe('AggregateReportTableExportService', () => {
       'aggregate-report-table.columns.dimension',
       'aggregate-report-table.columns.students-tested',
       'aggregate-report-table.columns.avg-scale-score',
-      'common.assessment-type.ica.performance-level.1.name-prefix aggregate-report-table.columns.performance-level-suffix',
-      'common.assessment-type.ica.performance-level.2.name-prefix aggregate-report-table.columns.performance-level-suffix',
-      'common.assessment-type.ica.performance-level.3.name-prefix aggregate-report-table.columns.performance-level-suffix',
-      'common.assessment-type.ica.performance-level.4.name-prefix aggregate-report-table.columns.performance-level-suffix'
+      'subject.Math.asmt-type.ica.level.1.short-name subject.Math.asmt-type.ica.level.1.suffix',
+      'subject.Math.asmt-type.ica.level.2.short-name subject.Math.asmt-type.ica.level.2.suffix',
+      'subject.Math.asmt-type.ica.level.3.short-name subject.Math.asmt-type.ica.level.3.suffix',
+      'subject.Math.asmt-type.ica.level.4.short-name subject.Math.asmt-type.ica.level.4.suffix'
     ]);
   });
 
@@ -149,8 +149,8 @@ describe('AggregateReportTableExportService', () => {
       'aggregate-report-table.columns.dimension',
       'aggregate-report-table.columns.students-tested',
       'aggregate-report-table.columns.avg-scale-score',
-      'aggregate-report-table.columns.grouped-performance-level-prefix.0 aggregate-report-table.columns.performance-level-suffix',
-      'aggregate-report-table.columns.grouped-performance-level-prefix.1 aggregate-report-table.columns.performance-level-suffix'
+      'aggregate-report-table.columns.grouped-performance-level-prefix.0 subject.Math.asmt-type.ica.level.0.suffix',
+      'aggregate-report-table.columns.grouped-performance-level-prefix.1 subject.Math.asmt-type.ica.level.1.suffix'
     ]);
 
   });

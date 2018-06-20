@@ -186,7 +186,7 @@ export class CsvBuilder {
     )
   }
 
-  withAchievementLevel(getExam: (item: any) => Exam) {
+  withAchievementLevel(getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.achievement-level'),
       (item) => {
@@ -194,8 +194,9 @@ export class CsvBuilder {
         if (!exam || !exam.level) {
           return '';
         }
+        const { subject, type } = getAssessment(item);
         return this.translateService.instant(exam.level
-          ? `common.assessment-type.ica.performance-level.${exam.level}.name`
+          ? `subject.${subject}.asmt-type.${type}.level.${exam.level}.name`
           : 'common.missing'
         );
       }

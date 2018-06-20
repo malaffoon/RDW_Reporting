@@ -66,7 +66,7 @@ export class CsvExportService {
         .withSchoolYear(getExam)
         .withAssessmentTypeNameAndSubject(getAssessment)
         .withExamGradeAndStatus(getExam)
-        .withAchievementLevel(getNonIABExam)
+        .withAchievementLevel(getNonIABAssessment, getNonIABExam)
         .withReportingCategory(getAssessment, getIABExam)
         .withScoreAndErrorBand(getExam);
 
@@ -113,7 +113,7 @@ export class CsvExportService {
         .withSchoolYear(getExam)
         .withAssessmentTypeNameAndSubject(getAssessment)
         .withExamGradeAndStatus(getExam)
-        .withAchievementLevel(getNonIABExam)
+        .withAchievementLevel(getNonIABAssessment, getNonIABExam)
         .withReportingCategory(getAssessment, getIABExam)
         .withScoreAndErrorBand(getExam)
 

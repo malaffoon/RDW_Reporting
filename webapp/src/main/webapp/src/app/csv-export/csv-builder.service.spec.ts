@@ -10,6 +10,7 @@ import { TranslateNumberPipe } from "../shared/i18n/translate-number.pipe";
 import Spy = jasmine.Spy;
 import { ApplicationSettingsService } from "../app-settings.service";
 import { of } from "rxjs/observable/of";
+import { Assessment } from '../assessments/model/assessment.model';
 
 describe('CsvBuilder', () => {
   let datePipe: MockDatePipe;
@@ -82,18 +83,20 @@ describe('CsvBuilder', () => {
         return exam;
       });
 
+      const assessment = <Assessment>{ subject: 'Math', type: 'ica' };
+
       builder
         .newBuilder()
         .withScaleScore((exam) => exam)
-        .withAchievementLevel((exam) => exam)
-        .withReportingCategory((exam) => exam)
+        .withAchievementLevel(() => assessment,(exam) => exam)
+        .withReportingCategory(() => assessment, (exam) => exam)
         .build(exams);
 
       let tabularData: string[][] = angular2Csv.export.calls.mostRecent().args[0];
 
       expect(tabularData.length).toBe(3);
       expect(tabularData[0]).toEqual(["csv-builder.scale-score", "csv-builder.achievement-level", "common.results.assessment-exam-columns.iab.performance"]);
-      expect(tabularData[1]).toEqual(<any>[2580, "subject.Math.asmt-type.ica.level.1.name", "subject.ELA.asmt-type.iab.level.1.name"]);
+      expect(tabularData[1]).toEqual(<any>[2580, "subject.Math.asmt-type.ica.level.1.name", "subject.Math.asmt-type.ica.level.1.name"]);
       expect(tabularData[2]).toEqual(["", "", ""]);
     }));
 
