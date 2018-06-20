@@ -1,65 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { PerformanceLevel, SubjectAssessmentType } from './subject';
-
-const IabPerformanceLevels: PerformanceLevel[] = [
-  {
-    value: 1,
-    colorCode: 'sb-iab-red'
-  },
-  {
-    value: 2,
-    colorCode: 'sb-iab-yellow'
-  },
-  {
-    value: 3,
-    colorCode: 'sb-iab-green'
-  }
-].map(level => Object.assign(level, {
-  displayLabelCode: `common.assessment-type.iab.performance-level.${level.value}.name`,
-  shortDisplayLabelCode: `common.assessment-type.iab.performance-level.${level.value}.short-name`
-}));
-
-const IcaSummativePerformanceLevels: PerformanceLevel[] = [
-  {
-    value: 1,
-    colorCode: 'maroon'
-  },
-  {
-    value: 2,
-    colorCode: 'gray-darkest'
-  },
-  {
-    value: 3,
-    colorCode: 'green-dark'
-  },
-  {
-    value: 4,
-    colorCode: 'blue-dark'
-  }
-].map(level => Object.assign(level, {
-  displayLabelCode: `common.assessment-type.ica.performance-level.${level.value}.name`,
-  shortDisplayLabelCode: `common.assessment-type.ica.performance-level.${level.value}.short-name`
-}));
-
-const ScoreableClaimPerformanceLevels: PerformanceLevel[] = <any>[
-  {
-    value: 1,
-    colorCode: 'sb-iab-red'
-  },
-  {
-    value: 2,
-    colorCode: 'sb-iab-yellow'
-  },
-  {
-    value: 3,
-    colorCode: 'sb-iab-green'
-  }
-].map(level => Object.assign(level, {
-  displayLabelCode: `common.assessment-type.iab.performance-level.${level.value}.name`,
-  shortDisplayLabelCode: `common.assessment-type.iab.performance-level.${level.value}.short-name`
-}));
+import { SubjectAssessmentType } from './subject';
 
 const MathScoreableClaims = [
   '1',

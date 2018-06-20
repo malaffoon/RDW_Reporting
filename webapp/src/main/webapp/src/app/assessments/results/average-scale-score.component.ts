@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AssessmentExam } from '../model/assessment-exam.model';
 import { ExamStatistics, ExamStatisticsLevel } from '../model/exam-statistics.model';
 import { InstructionalResource } from '../model/instructional-resources.model';
@@ -9,17 +9,11 @@ import { Observable } from 'rxjs/Observable';
 import { TranslateService } from '@ngx-translate/core';
 import { ClaimStatistics } from '../model/claim-score.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
-import { PerformanceLevel, SubjectDefinition } from '../../subject/subject';
-import { SubjectService } from '../../subject/subject.service';
+import { Assessment } from '../model/assessment.model';
 
 enum ScoreViewState {
   OVERALL = 1,
   CLAIM = 2
-}
-
-interface PerformanceLevelView {
-  readonly data: ExamStatisticsLevel;
-  readonly definition: PerformanceLevel;
 }
 
 /**
@@ -29,16 +23,39 @@ interface PerformanceLevelView {
   selector: 'average-scale-score',
   templateUrl: './average-scale-score.component.html'
 })
-export class AverageScaleScoreComponent implements OnInit {
+export class AverageScaleScoreComponent {
 
   @Input()
   showValuesAsPercent: boolean = true;
 
   @Input()
-  assessmentExam: AssessmentExam;
+  public assessmentExam: AssessmentExam;
 
   @Input()
-  statistics: ExamStatistics;
+  set statistics(value: ExamStatistics) {
+    // reverse percents and levels so scale score statistics appear in descending order ("good" statistics levels comes before "bad")
+    value.percents = value.percents.reverse();
+    value.levels = value.levels.reverse();
+    this._statistics = value;
+    if (!value) {
+      return;
+    }
+
+    this.averageScore = !isNaN(value.average) ? Math.round(value.average) : value.average;
+
+    if (value.levels) {
+      this._totalCount = value.levels
+        .map(examStatisticsLevel => examStatisticsLevel.value)
+        .reduce((total, levelCount) => {
+          return total + levelCount;
+        });
+    }
+
+    // pre-calculates the data widths for the graph representation for all of the claims
+    this._claimDataWidths = value.claims.map(claimStatistics =>
+      this.examCalculator.getDataWidths(claimStatistics.percents.map(percent => percent.value))
+    );
+  }
 
   @Input()
   assessmentProvider: AssessmentProvider;
@@ -48,74 +65,27 @@ export class AverageScaleScoreComponent implements OnInit {
 
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
 
+  averageScore: number;
   displayState: any = {
     showClaim: ScoreViewState.OVERALL
   };
 
-  private _averageScore: number;
+  private _statistics: ExamStatistics;
   private _totalCount: number;
   private _claimDataWidths: Array<number[]>;
-  private _subjectDefinition: SubjectDefinition;
-  private _performanceLevelPercents: PerformanceLevelView[];
-  private _performanceLevelCounts: PerformanceLevelView[];
 
   constructor(public colorService: ColorService,
               private instructionalResourcesService: InstructionalResourcesService,
               private translate: TranslateService,
-              private examCalculator: ExamStatisticsCalculator,
-              private subjectService: SubjectService) {
+              private examCalculator: ExamStatisticsCalculator) {
   }
 
-  ngOnInit(): void {
-    this.subjectService.getSubjectDefinitionForAssessment(this.assessmentExam.assessment)
-      .subscribe(subjectDefinition => {
-        this._subjectDefinition = subjectDefinition;
-
-        // init
-        const value = this.statistics;
-        if (!value) {
-          return;
-        }
-
-        this._averageScore = !isNaN(value.average) ? Math.round(value.average) : value.average;
-
-        if (value.levels) {
-          this._totalCount = value.levels
-            .map(examStatisticsLevel => examStatisticsLevel.value)
-            .reduce((total, levelCount) => total + levelCount);
-        }
-
-        // pre-calculates the data widths for the graph representation for all of the claims
-        this._claimDataWidths = value.claims.map(claimStatistics =>
-          this.examCalculator.getDataWidths(claimStatistics.percents.map(percent => percent.value))
-        );
-
-        this._performanceLevelPercents = this.statistics.percents
-          .map((value, index) => <PerformanceLevelView>{
-            data: value,
-            definition: this._subjectDefinition.performanceLevels[ index ]
-          })
-          .reverse();
-
-        this._performanceLevelCounts = this.statistics.levels
-          .map((value, index) => <PerformanceLevelView>{
-            data: value,
-            definition: this._subjectDefinition.performanceLevels[ index ]
-          })
-          .reverse();
-      });
+  get statistics(): ExamStatistics {
+    return this._statistics;
   }
 
-  get subjectDefinition(): SubjectDefinition {
-    return this._subjectDefinition;
-  }
-
-  get averageScore(): number {
-    return this._averageScore;
-  }
-
-  get claimCodes(): string[] {
-    return this.assessmentExam.assessment.claimCodes;
+  get assessment(): Assessment {
+    return this.assessmentExam.assessment;
   }
 
   getClaimDataWidth(claimIndex: number, levelIndex: number): number {
@@ -152,10 +122,8 @@ export class AverageScaleScoreComponent implements OnInit {
     return !isNaN(this.averageScore);
   }
 
-  get performanceLevels(): PerformanceLevelView[] {
-    return this.showValuesAsPercent
-      ? this._performanceLevelPercents
-      : this._performanceLevelCounts;
+  get performanceLevels(): ExamStatisticsLevel[] {
+    return this.showValuesAsPercent ? this.statistics.percents : this.statistics.levels;
   }
 
   /**
@@ -176,16 +144,34 @@ export class AverageScaleScoreComponent implements OnInit {
     return 100 - this.filledLevel(examStatisticsLevel);
   }
 
-  // examLevelTranslation(performanceLevel: ExamStatisticsLevel): string {
-  //   return this.translate.instant(performanceLevel.id ? `common.assessment-type.${this.assessmentExam.assessment.type}.performance-level.${performanceLevel.id}.name` : 'common.missing')
-  // }
+  getPerformanceLevelNameCode(level: number): string {
+    const { subject, type } = this.assessment;
+    return level != null
+      ? `subject.${subject}.asmt-type.${type}.level.${level}.name`
+      : 'common.missing';
+  }
+
+  getPerformanceLevelColorCode(level: number): string {
+    const { subject, type } = this.assessment;
+    return ``;
+  }
+
+  getScorableClaimPerformanceLevelNameCode(level: number): string {
+    const { subject, type } = this.assessment;
+    return `subject.${subject}.asmt-type.${type}.claim-score.level.${level}.name`;
+  }
+
+  getScorableClaimPerformanceLevelColorCode(level: number): string {
+    const { subject, type } = this.assessment;
+    return `subject.${subject}.asmt-type.${type}.claim-score.level.${level}.color`;
+  }
 
   private levelCountPercent(levelCount: number): number {
     return Math.floor(levelCount / this._totalCount * 100);
   }
 
-  loadInstructionalResources(performanceLevel: number) {
+  loadInstructionalResources(level: number): void {
     this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this.assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
-      .map(resources => resources.getResourcesByPerformance(performanceLevel));
+      .map(resources => resources.getResourcesByPerformance(level));
   }
 }

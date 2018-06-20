@@ -8,9 +8,9 @@
             <tr>
               <td class="pl-sm">
                 <div info-button
-                      title="{{ 'average-scale-score.scale-score' | translate }}"
-                      content="{{ 'average-scale-score.scale-score-info' | translate }}"
-                      class="average-scale-score-label"></div>
+                     title="{{ 'average-scale-score.scale-score' | translate }}"
+                     content="{{ 'average-scale-score.scale-score-info' | translate }}"
+                     class="average-scale-score-label"></div>
               </td>
               <td>
                 <div *ngIf="hasAverageScore"
@@ -40,32 +40,35 @@
     <div class="col-md-7">
       <strong>{{ 'average-scale-score.student-score-distribution' | translate }}</strong>
       <div class="well">
-        <div *ngFor="let level of performanceLevels; let i = index" class="score-distribution-container">
+        <div *ngFor="let level of performanceLevels; let i = index"
+             class="score-distribution-container">
           <div class="text-right gray-lighter grid-item">
-            {{ level.definition.displayLabelCode | translate }}
+            {{ level.id | optional:('subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.level.' + level.id + '.name' | translate) }}
             <button *ngIf="assessmentExam.assessment.isIab"
                     class="btn btn-borderless btn-xs icon-only pull-right"
                     angulartics2On="click"
                     angularticsEvent="InstructionalResource"
                     angularticsCategory="AssessmentResults"
                     [popover]="buttonPopover"
-                    popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(level.definition.displayLabelCode | translate) } }}"
+                    popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(
+                      level.id | optional:('subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.level.' + level.id + '.name' | translate)
+                    ) } }}"
                     container="body"
-                    (click)="loadInstructionalResources(level.definition.value)"
+                    (click)="loadInstructionalResources(level.id)"
                     [outsideClick]="true"><i
               class="fa fa-book"></i></button>
           </div>
           <div class="level-down text-right gray-lightest grid-item">
-            <strong>{{ level.data.value | number:'1.0-0' }}{{ level.data.suffix }}</strong>
+            <strong>{{ level.value | number:'1.0-0' }}{{ level.suffix }}</strong>
           </div>
           <div class="level-down scale-score-graph rounded blend-middle gray-lightest grid-item">
             <div class="bar-container">
-              <div *ngIf="level.data.value != 0"
+              <div *ngIf="level.value != 0"
                    class="bar"
-                   [ngClass]="level.definition.styleClasses"
-                   [attr.data-width]="filledLevel(level.data)"></div>
-              <div *ngIf="filledLevel(level.data) < 100" class="bar gray"
-                   [attr.data-width]="unfilledLevel(level.data)">
+                   [ngClass]="'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.level.' + level.id + '.color' | translate"
+                   [attr.data-width]="filledLevel(level)"></div>
+              <div *ngIf="filledLevel(level) < 100" class="bar gray"
+                   [attr.data-width]="unfilledLevel(level)">
               </div>
             </div>
           </div>
@@ -78,14 +81,14 @@
     <div class="col-md-12">
       <strong info-button
               title="{{'average-scale-score.student-claim-distribution' | translate}}"
-              content="{{('common.info.claim') | translate}}"></strong>
+              content="{{'common.info.claim' | translate}}"></strong>
       <div class="ui-table-wrapper">
         <table class="table table-striped table-hover student-claim-distribution">
           <thead class="ui-table-thead">
           <tr>
             <th *ngFor="let claimStats of statistics.claims; let i = index">
-              <i class="fa {{ 'report.claim.' + claimCodes[i] + '.icon' | translate }}"></i>
-              {{('common.subject-claim-code.' + claimCodes[i]) | translate}}
+              <i class="fa {{ 'subject.' + assessment.subject + '.claim.' + assessment.claimCodes[i] + '.icon' | translate }}"></i>
+              {{ 'subject.' + assessment.subject + '.claim.' + assessment.claimCodes[i] + '.name' | translate}}
             </th>
           </tr>
           </thead>
@@ -96,9 +99,8 @@
                 <div class="scale-score-graph rounded blend-middle mb-sm">
                   <div class="bar-container">
                     <div *ngFor="let level of claimStats.levels; let i = index">
-                      <div *ngIf="claimStats.percents[i].value != 0"
-                           class="bar"
-                           [ngClass]="subjectDefinition.scoreableClaimPerformanceLevels[i].styleClasses"
+                      <div class="bar" *ngIf="claimStats.percents[i].value != 0"
+                           [ngClass]="'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + (i + 1) + '.color' | translate"
                            [attr.data-width]="getClaimDataWidth(claimIndex, i)"></div>
                     </div>
                   </div>
@@ -107,15 +109,15 @@
                 <div class="perc-container row">
                   <div class="bar col-xs-4" *ngFor="let level of claimStats.levels; let i = index">
                     <span class="square"
-                          [ngClass]="subjectDefinition.scoreableClaimPerformanceLevels[i].styleClasses"></span>
+                          [ngClass]="'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + (i + 1) + '.color' | translate"></span>
                     {{ getClaimValue(claimStats, i) }}{{ getClaimSuffix(claimStats, i) }}
-                    <span class="sr-only">{{ subjectDefinition.scoreableClaimPerformanceLevels[i].displayLabelCode | translate }}</span>
+                    <span class="sr-only">{{ 'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + (i + 1) + '.name' | translate }}</span>
                   </div>
                 </div>
 
                 <div class="perc-container row mt-xs">
                   <div class="bar col-xs-4 description" *ngFor="let level of claimStats.levels; let i = index">
-                    {{ subjectDefinition.scoreableClaimPerformanceLevels[i].displayLabelCode | translate }}
+                    {{ 'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + (i + 1) + '.name' | translate }}
                   </div>
                 </div>
               </div>

@@ -13,8 +13,8 @@ export class UserGroupOptionsService {
 
   getOptions(): Observable<UserGroupOptions> {
     return this.subjectService.getSubjectCodes().pipe(
-      map(serverOptions => <UserGroupOptions>{
-        subjects: serverOptions.subjects
+      map(subjects => <UserGroupOptions>{
+        subjects: subjects
       })
     );
   }
