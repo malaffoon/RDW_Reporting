@@ -158,11 +158,10 @@
 
             <div *ngSwitchCase="'claim'"
                  class="text-center">
-
-              <ng-container *ngIf="rowData.exam.level">
+              <ng-container *ngIf="rowData.exam.claimScores[column.index] && rowData.exam.claimScores[column.index].level">
                 {{ 'subject.' + subject + '.asmt-type.' + assessmentType + '.claim-score.level.' + rowData.exam.claimScores[column.index].level + '.name' | translate }}
               </ng-container>
-              <ng-container *ngIf="!rowData.exam.level">
+              <ng-container *ngIf="!rowData.exam.claimScores[column.index] || !rowData.exam.claimScores[column.index].level">
                 {{ 'common.missing' | translate }}
               </ng-container>
             </div>
