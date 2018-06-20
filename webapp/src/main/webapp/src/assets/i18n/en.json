@@ -1106,6 +1106,32 @@
     "view-dashboard": "View IAB Dashboard"
   },
   "home": {
+    "admin-tools": {
+      "custom-aggregate": {
+        "button": "Custom Aggregate Report",
+        "description": "Create a customized report of student performance."
+      },
+      "embargo": {
+        "button": "Embargo",
+        "description": "Manage embargoed summative results."
+      },
+      "instructional-resources": {
+        "button": "Instructional Resources",
+        "description": "Upload instructional resources in the system."
+      },
+      "organizational-export": {
+        "button": "District / School Exports",
+        "description": "Export data for analysis in another application."
+      },
+      "student-groups": {
+        "button": "Student Groups",
+        "description": "Create and manage student groups for teachers."
+      },
+      "titles": {
+        "analyze": "Analyze Data",
+        "manage": "Manage"
+      }
+    },
     "groups-well": {
       "assigned-groups-heading": "Assigned Groups",
       "created-groups-heading": "My Groups"
@@ -1394,7 +1420,6 @@
     "create-report": "Create {{firstName}}'s Printable Report",
     "crumb": "Student: {{lastName}}, {{firstName}}",
     "empty-filtered-results-message": "No test results are available for the filters selected.",
-    "student-button-label": "Student Report",
     "title": "Student Test History Report"
   },
   "target-report": {
@@ -1409,6 +1434,7 @@
       "standard-met-relative-residual-level": "Performance Relative to Standard Met (Level 3)",
       "standard-met-relative-residual-level-info": "Indicates whether students' performance on a target was above, near, or below Standard Met (Level 3).  A \"Below Standard Met\" indicator suggests that students have not yet mastered the content assessed in a target; however, the students' overall performance on the test may be near or above standard."
     },
+    "math-claim-caution-message": "For mathematics, target reports are only available for the Concepts and Procedures claim. The mathematics targets are the cluster headings of the Standards for Mathematical Content. See the Interpretive Guide for additional information about target reports.",
     "not-enough-results": "There are currently not enough results available to display the target level report.",
     "subgroup-options": "Subgroups"
   },

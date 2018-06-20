@@ -182,6 +182,14 @@
                                     [identityColumns]="view.columnOrdering"></aggregate-report-table>
           </div>
         </div>
+
+        <div *ngIf="showTargetMathCautionMessage"
+             class="row mt-sm">
+          <div class="col-md-12">
+            <p class="small">{{ 'target-report.math-claim-caution-message' | translate }}</p>
+          </div>
+        </div>
+
       </div>
     </ng-container>
 

@@ -9,6 +9,7 @@ import { InstructionalResourcesService } from "../../instructional-resources.ser
 import { InstructionalResource } from "../../../model/instructional-resources.model";
 import { Observable } from "rxjs/Observable";
 import { PopupMenuAction } from "../../../../shared/menu/popup-menu-action.model";
+import { createScorableClaimOrdering } from '../../../../shared/ordering/orderings';
 
 @Component({
   selector: 'results-by-student',
@@ -46,6 +47,7 @@ export class ResultsByStudentComponent implements OnInit {
   hasTransferStudent: boolean = false;
 
   get performanceLevelHeader() {
+    // TODO why not just `common.results.assessment-exam-columns.${assessment.type}.performance`
     return 'common.results.assessment-exam-columns.' +
       (this.assessment.isIab ? 'iab' : 'ica') + '.performance';
   }
@@ -84,8 +86,12 @@ export class ResultsByStudentComponent implements OnInit {
     if (!this.assessment.claimCodes) {
       return [];
     }
-    return this.assessment.claimCodes.map((code, index) =>
-      new Column({id: 'claim', field: `claimScores.${index}.level`, index: index, claim: code}));
+
+    return this.assessment.claimCodes
+      .sort(createScorableClaimOrdering(this.assessment.subject).compare)
+      .map((code, index) =>
+        new Column({id: 'claim', field: `claimScores.${index}.level`, index: index, claim: code})
+      );
   }
 
   private createActions(): PopupMenuAction[] {

@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 import { StudentResultsFilterService } from '../student-results-filter.service';
+import { createScorableClaimOrdering } from '../../../shared/ordering/orderings';
 
 @Component({
   selector: 'student-history-table',
@@ -131,6 +132,19 @@ export class StudentHistoryTableComponent implements OnInit {
       exam.assessment.label === event.assessment.label);
 
     this.updateSelectedCardRowIndex();
+
+    // build the columns based off the selected assessment since it impacts the claim columns used
+    this.columns = [
+      new Column({ id: 'date', field: 'exam.date' }),
+      new Column({ id: 'assessment', field: 'assessment.label' }),
+      new Column({ id: 'school-year', field: 'exam.schoolYear' }),
+      new Column({ id: 'school', field: 'exam.school.name' }),
+      new Column({ id: 'enrolled-grade', field: 'exam.enrolledGrade' }),
+      new Column({ id: 'status', commonHeader: true, field: 'exam.administrativeCondition', overall: true }),
+      new Column({ id: 'performance', field: 'exam.level', overall: true }),
+      new Column({ id: 'score', commonHeader: true, field: 'exam.score', overall: true }),
+      ...this.getClaimColumns()
+    ];
   }
 
   loadInstructionalResources(studentHistoryExam: StudentHistoryExamWrapper): void {
@@ -178,14 +192,16 @@ export class StudentHistoryTableComponent implements OnInit {
       return [];
     }
 
-    return this.exams[ 0 ].assessment.claimCodes.map((claim: string, index: number) => {
-      return new Column({
-        id: 'claim',
-        field: 'exam.claimScores.' + index + '.level',
-        claim: claim,
-        index: index
+    return this.exams[ 0 ].assessment.claimCodes
+      .sort(createScorableClaimOrdering(this.exams[ 0 ].assessment.subject).compare)
+      .map((claim: string, index: number) => {
+        return new Column({
+          id: 'claim',
+          field: 'exam.claimScores.${index}.level',
+          claim: claim,
+          index: index
+        });
       });
-    });
   }
 
 }

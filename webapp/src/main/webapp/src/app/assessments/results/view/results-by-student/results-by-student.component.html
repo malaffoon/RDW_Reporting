@@ -22,7 +22,10 @@
       <th *ngFor="let column of columns"
           [hidden]="(showClaimScores && column.overall) || (!showClaimScores && column.claim)"
           [pSortableColumn]="column.field"
-          [ngSwitch]="column.id">
+          [ngSwitch]="column.id"
+          [ngClass]="{
+            'wrapping wrapping-max-width-sm': column.claim
+          }">
 
         <span *ngSwitchCase="'level'"
               info-button

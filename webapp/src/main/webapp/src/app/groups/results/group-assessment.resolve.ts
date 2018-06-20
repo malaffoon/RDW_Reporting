@@ -12,9 +12,9 @@ export class GroupAssessmentResolve implements Resolve<AssessmentExam> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<AssessmentExam> {
-    // if there are pre-selected assessments, don't call to get the most recent assessment
-    const { schoolYear, assessmentIds } = route.params;
-    if (schoolYear == null || assessmentIds != null) {
+    // if school year isn't specified, don't call to get the most recent assessment
+    const { schoolYear } = route.params;
+    if (schoolYear == null) {
       return empty();
     }
     return this.service.getMostRecentAssessment(<Search>route.params);

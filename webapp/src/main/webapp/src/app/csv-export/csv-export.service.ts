@@ -131,8 +131,8 @@ export class CsvExportService {
   exportResultItems(exportRequest: ExportItemsRequest,
                     filename: string) {
 
-    let getAssessment = () => exportRequest.assessment;
-    let getAssessmentItem = (item) => item;
+    const getAssessment = () => exportRequest.assessment;
+    const getAssessmentItem = (item) => item;
 
     let builder = this.csvBuilder
       .newBuilder()
@@ -146,7 +146,7 @@ export class CsvExportService {
       .withFullCredit(getAssessmentItem, exportRequest.showAsPercent);
 
       if (exportRequest.type == RequestType.DistractorAnalysis) {
-        builder = builder.withItemAnswerKey(getAssessmentItem)
+        builder = builder.withItemAnswerKey(getAssessmentItem);
       }
 
       builder.withPoints(getAssessmentItem, exportRequest.pointColumns, exportRequest.showAsPercent)
@@ -156,7 +156,7 @@ export class CsvExportService {
   exportWritingTraitScores(exportRequest: ExportWritingTraitsRequest,
                            filename: string) {
 
-    let compositeRows: any[] = [];
+    const compositeRows: any[] = [];
     let maxPoints: number = 0;
 
     exportRequest.assessmentItems.forEach((item, i) => {
@@ -172,7 +172,7 @@ export class CsvExportService {
 
     });
 
-    let getAssessmentItem = (item) => item.assessmentItem;
+    const getAssessmentItem = (item) => item.assessmentItem;
 
     this.csvBuilder
       .newBuilder()

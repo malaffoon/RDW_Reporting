@@ -221,6 +221,10 @@ export class TargetReportComponent implements OnInit, ExportResults {
     return this.aggregateTargetScoreRows && this.aggregateTargetScoreRows.length !== 0;
   }
 
+  get isMath(): boolean {
+    return this.assessment.subject == 'Math';
+  }
+
   /**
    * Sort the data
    *

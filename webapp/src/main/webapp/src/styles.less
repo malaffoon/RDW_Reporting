@@ -365,6 +365,12 @@ sb-button-typeahead .input-group-btn > .btn,
   max-width: 250px;
 }
 
+.wrapping-max-width-sm {
+  white-space: normal;
+  text-align: left;
+  max-width: 190px;
+}
+
 .wrapping-max-width {
   white-space: normal;
   text-align: left;
@@ -444,6 +450,11 @@ body .select-menu-group {
       border-bottom-right-radius: 0;
     }
   }
+}
+
+.claim-button-group .nested-btn-group .btn {
+  white-space: normal;
+  width: 200px;
 }
 
 /**
@@ -1585,11 +1596,6 @@ table.student-claim-distribution {
   }
 }
 
-.target-caution-message {
-  font-color: @gray-darkest;
-  font-size: 0.8em;
-}
-
 user-group {
   student-filters {
     .flex-children .flex-child {
@@ -1633,4 +1639,8 @@ tr.highlight {
 
 .iab-dashboard-filters {
   background-color: @gray-lightest;
+}
+
+.admin-tools-well {
+  background-color: @gray-lighter;
 }
