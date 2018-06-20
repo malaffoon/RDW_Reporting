@@ -770,7 +770,7 @@
         "score-info": "A student's test score and an error band based on the Standard Error of Measurement (SEM) associated with that score.  Smarter Balanced test scores are on a vertical scale, meaning that scores for all grades are reported on a single continuous scale to reflect the increased expectations as students advance through the grades.  The error band is included because test scores are estimates of student achievement and come with a certain amount of measurement error. See the Interpretive Guide for additional information about scale scores and measurement error.",
         "session": "Session",
         "status": "Status",
-        "status-info": "Refers to whether an assessment has been flagged as standardized/nonstandardized, complete/partial, and valid/invalid."
+        "status-info": "Refers to whether an interim assessment has been flagged as standardized/nonstandardized and as partially complete and whether a summative assessment has been flagged as invalid and/or partially complete."
       },
       "assessment-item-columns": {
         "answer-key": "Answer Key",
@@ -1083,7 +1083,7 @@
     "empty-message": "There are no groups that match your search.  Please try again.",
     "filter": "Search by Group Name",
     "heading": "Groups",
-    "no-groups": "Contact your building administrator for access to group-level test results.",
+    "no-groups": "Contact your administrator for access to group-level test results.",
     "search-label": "Search by Group",
     "view-dashboard": "View IAB Dashboard"
   },
