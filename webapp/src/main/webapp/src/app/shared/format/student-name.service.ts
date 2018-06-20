@@ -16,6 +16,7 @@ export class StudentNameService {
       return student.ssid;
     }
 
-    return this.translate.instant("common.person-name", student)
+
+    return this.translate.instant('common.person-name', student);
   }
 }

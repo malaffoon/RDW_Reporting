@@ -70,8 +70,6 @@ export class CsvExportService {
         .withReportingCategory(getAssessment, getIABExam)
         .withScoreAndErrorBand(getExam);
 
-      console.log('sc', subjectClaims);
-
       subjectClaims.forEach(entry => {
         builder.withClaimScores(
           entry.subject,

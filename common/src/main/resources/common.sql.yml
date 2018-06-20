@@ -1,9 +1,17 @@
 sql:
   translation:
     findAllForLanguage: >-
-        select label_code, label
-        from accommodation_translation
-        where language_code=:language_code
+        SELECT
+          label_code,
+          label
+        FROM accommodation_translation
+        WHERE language_code=:language_code
+        UNION ALL
+        SELECT
+          label_code,
+          label
+        FROM subject_translation
+        WHERE 'eng' = :language_code
 
   organization:
     reporting:
@@ -115,6 +123,18 @@ sql:
           OR
           (s.id IS NOT NULL AND (1=:statewide OR sch.district_group_id IN (:district_group_ids) OR sch.district_id IN (:district_ids) OR sch.school_group_id IN (:school_group_ids) OR sch.id IN (:school_ids)))
         LIMIT 1
+
+  subjectDefinition:
+    findAll: >-
+      SELECT
+        at.code as asmt_type_code,
+        s.code as subject_code,
+        sat.performance_level_count,
+        sat.performance_level_standard_cutoff,
+        sat.claim_score_performance_level_count
+      FROM subject_asmt_type sat
+        JOIN asmt_type at ON at.id = sat.asmt_type_id
+        JOIN subject s ON s.id = sat.subject_id
 
   snippet:
     basicPermission: >-

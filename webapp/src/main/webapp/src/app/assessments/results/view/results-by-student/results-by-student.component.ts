@@ -119,7 +119,7 @@ export class ResultsByStudentComponent implements OnInit {
 
           downloader.student = exam.student;
           downloader.title = this.translate.instant('results-by-student.create-single-prepopulated-report', {
-            name: exam.student.firstName,
+            name: exam.student.firstName || exam.student.ssid,
             schoolYear: exam.schoolYear,
             subject: this.translate.instant(`subject.${subject}.name`),
             assessmentType: this.translate.instant(`common.assessment-type.${assessmentType}.short-name`)
