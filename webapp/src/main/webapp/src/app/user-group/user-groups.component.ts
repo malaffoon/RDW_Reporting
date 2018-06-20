@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UserGroupService } from './user-group.service';
 import { UserGroup } from './user-group';
-import { FilterOptionsService } from '../shared/filter/filter-options.service';
 import { PermissionService } from '../shared/security/permission.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Router } from '@angular/router';
 import { Group } from '../groups/group';
+import { SubjectService } from '../subject/subject.service';
 
 @Component({
   selector: 'user-groups',
@@ -36,21 +36,21 @@ export class UserGroupsComponent implements OnInit {
   initialized: boolean = false;
 
   constructor(private service: UserGroupService,
-              private filterOptionService: FilterOptionsService,
+              private subjectService: SubjectService,
               private permissionService: PermissionService,
               private router: Router) {
   }
 
   ngOnInit(): void {
     forkJoin(
-      this.filterOptionService.getFilterOptions(),
+      this.subjectService.getSubjectCodes(),
       this.permissionService.getPermissions()
-    ).subscribe(([ options, permissions ]) => {
+    ).subscribe(([ subjects, permissions ]) => {
       this.filteredGroups = this.groups.concat();
       if (this.groups.length !== 0) {
         this.defaultGroup = this.groups[ 0 ];
       }
-      this.subjects = options.subjects;
+      this.subjects = subjects;
       this.createButtonDisabled = this.assignedGroups.length === 0
         && permissions.indexOf('INDIVIDUAL_PII_READ') === -1;
       this.initialized = true;

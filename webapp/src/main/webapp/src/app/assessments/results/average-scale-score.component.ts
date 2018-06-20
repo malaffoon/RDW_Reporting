@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { AssessmentExam } from "../model/assessment-exam.model";
-import { ExamStatistics, ExamStatisticsLevel } from "../model/exam-statistics.model";
-import { InstructionalResource } from "../model/instructional-resources.model";
-import { InstructionalResourcesService } from "./instructional-resources.service";
-import { ColorService } from "../../shared/color.service";
-import { AssessmentProvider } from "../assessment-provider.interface";
-import { Observable } from "rxjs/Observable";
-import { TranslateService } from "@ngx-translate/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AssessmentExam } from '../model/assessment-exam.model';
+import { ExamStatistics, ExamStatisticsLevel } from '../model/exam-statistics.model';
+import { InstructionalResource } from '../model/instructional-resources.model';
+import { InstructionalResourcesService } from './instructional-resources.service';
+import { ColorService } from '../../shared/color.service';
+import { AssessmentProvider } from '../assessment-provider.interface';
+import { Observable } from 'rxjs/Observable';
+import { TranslateService } from '@ngx-translate/core';
 import { ClaimStatistics } from '../model/claim-score.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
+import { Assessment } from '../model/assessment.model';
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -20,7 +21,7 @@ enum ScoreViewState {
  */
 @Component({
   selector: 'average-scale-score',
-  templateUrl: './average-scale-score.component.html',
+  templateUrl: './average-scale-score.component.html'
 })
 export class AverageScaleScoreComponent {
 
@@ -33,6 +34,7 @@ export class AverageScaleScoreComponent {
   @Input()
   set statistics(value: ExamStatistics) {
     // reverse percents and levels so scale score statistics appear in descending order ("good" statistics levels comes before "bad")
+    // TODO refactor - this has side-effects on the provided value
     value.percents = value.percents.reverse();
     value.levels = value.levels.reverse();
     this._statistics = value;
@@ -83,20 +85,20 @@ export class AverageScaleScoreComponent {
     return this._statistics;
   }
 
-  get claimCodes(): string[] {
-    return this.assessmentExam.assessment.claimCodes;
+  get assessment(): Assessment {
+    return this.assessmentExam.assessment;
   }
 
   getClaimDataWidth(claimIndex: number, levelIndex: number): number {
-    return this._claimDataWidths[claimIndex][levelIndex];
+    return this._claimDataWidths[ claimIndex ][ levelIndex ];
   }
 
   getClaimValue(claimStats: ClaimStatistics, index: number): number {
-    return this.showValuesAsPercent ? Math.round(claimStats.percents[index].value) : claimStats.levels[index].value;
+    return this.showValuesAsPercent ? Math.round(claimStats.percents[ index ].value) : claimStats.levels[ index ].value;
   }
 
   getClaimSuffix(claimStats: ClaimStatistics, index: number): string {
-    return this.showValuesAsPercent ? claimStats.percents[index].suffix : claimStats.levels[index].suffix;
+    return this.showValuesAsPercent ? claimStats.percents[ index ].suffix : claimStats.levels[ index ].suffix;
   }
 
   get isClaimScoreSelected(): boolean {
@@ -143,16 +145,12 @@ export class AverageScaleScoreComponent {
     return 100 - this.filledLevel(examStatisticsLevel);
   }
 
-  examLevelTranslation(performanceLevel: ExamStatisticsLevel): string {
-    return this.translate.instant(performanceLevel.id ? `common.assessment-type.${this.assessmentExam.assessment.type}.performance-level.${performanceLevel.id}.name` : 'common.missing')
-  }
-
   private levelCountPercent(levelCount: number): number {
     return Math.floor(levelCount / this._totalCount * 100);
   }
 
-  loadInstructionalResources(performanceLevel: ExamStatisticsLevel) {
+  loadInstructionalResources(level: number): void {
     this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this.assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
-      .map(resources => resources.getResourcesByPerformance(performanceLevel.id));
+      .map(resources => resources.getResourcesByPerformance(level));
   }
 }

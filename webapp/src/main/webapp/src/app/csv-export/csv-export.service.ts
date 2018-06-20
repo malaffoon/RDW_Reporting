@@ -1,21 +1,28 @@
-import { Injectable } from "@angular/core";
-import { AssessmentExam } from "../assessments/model/assessment-exam.model";
-import { FilterBy } from "../assessments/model/filter-by.model";
-import { Exam } from "../assessments/model/exam.model";
-import { ExamFilterService } from "../assessments/filters/exam-filters/exam-filter.service";
-import { CsvBuilder } from "./csv-builder.service";
-import { StudentHistoryExamWrapper } from "../student/model/student-history-exam-wrapper.model";
-import { Student } from "../student/model/student.model";
-import { ExportItemsRequest} from "../assessments/model/export-items-request.model";
-import { RequestType } from "../shared/enum/request-type.enum";
-import {ExportWritingTraitsRequest} from "../assessments/model/export-writing-trait-request.model";
+import { Injectable } from '@angular/core';
+import { AssessmentExam } from '../assessments/model/assessment-exam.model';
+import { FilterBy } from '../assessments/model/filter-by.model';
+import { Exam } from '../assessments/model/exam.model';
+import { ExamFilterService } from '../assessments/filters/exam-filters/exam-filter.service';
+import { CsvBuilder } from './csv-builder.service';
+import { StudentHistoryExamWrapper } from '../student/model/student-history-exam-wrapper.model';
+import { Student } from '../student/model/student.model';
+import { ExportItemsRequest } from '../assessments/model/export-items-request.model';
+import { RequestType } from '../shared/enum/request-type.enum';
+import { ExportWritingTraitsRequest } from '../assessments/model/export-writing-trait-request.model';
 import { ExportTargetReportRequest } from '../assessments/model/export-target-report-request.model';
+import { Assessment } from '../assessments/model/assessment.model';
+import { ordering } from '@kourge/ordering';
+import { ranking } from '@kourge/ordering/comparator';
+import { Observable } from 'rxjs/Observable';
+import { SubjectService } from '../subject/subject.service';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class CsvExportService {
 
   constructor(private examFilterService: ExamFilterService,
-              private csvBuilder: CsvBuilder) {
+              private csvBuilder: CsvBuilder,
+              private subjectService: SubjectService) {
   }
 
   /**
@@ -29,12 +36,12 @@ export class CsvExportService {
                         filterBy: FilterBy,
                         ethnicities: string[],
                         filename: string) {
-    let sourceData: any[] = [];
+    const sourceData: any[] = [];
 
     // TODO: Is this filter needed?  I think we pass in the filtered exam collection we wouldn't need to
     // TODO: apply the filter yet again here.
     assessmentExams.forEach((assessmentExam: AssessmentExam) => {
-      let filteredExams: Exam[] = this.examFilterService.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
+      const filteredExams = this.examFilterService.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
       filteredExams.forEach((exam) => {
         sourceData.push({
           assessment: assessmentExam.assessment,
@@ -43,33 +50,41 @@ export class CsvExportService {
       });
     });
 
-    let getStudent = (item) => item.exam.student;
-    let getExam = (item) => item.exam;
-    let getAssessment = (item) => item.assessment;
-    let getIABExam = (item) => item.assessment.isIab ? item.exam : null;
-    let getNonIABExam = (item) => item.assessment.isIab ? null: item.exam;
-    // TODO:ConfigurableSubjects needs to support configurable subjects
-    let getNonIABMathExam = (item) => !item.assessment.isIab && item.assessment.subject === 'Math' ? item.exam : null;
-    let getNonIABElaExam = (item) => !item.assessment.isIab && item.assessment.subject === 'ELA' ? item.exam : null;
+    const getStudent = (item) => item.exam.student;
+    const getExam = (item) => item.exam;
+    const getAssessment = (item) => item.assessment;
+    const getNonIABAssessment = (item) => item.assessment.isIab ? null : item.assessment;
+    const getIABExam = (item) => item.assessment.isIab ? item.exam : null;
+    const getNonIABExam = (item) => item.assessment.isIab ? null : item.exam;
 
-    this.csvBuilder
-      .newBuilder()
-      .withFilename(filename)
-      .withStudent(getStudent)
-      .withExamDateAndSession(getExam)
-      .withSchool(getExam)
-      .withSchoolYear(getExam)
-      .withAssessmentTypeNameAndSubject(getAssessment)
-      .withExamGradeAndStatus(getExam)
-      .withAchievementLevel(getNonIABExam)
-      .withReportingCategory(getIABExam)
-      .withScoreAndErrorBand(getExam)
-      .withMathClaimScores(getNonIABMathExam)
-      .withELAClaimScores(getNonIABElaExam)
-      .withGender(getStudent)
-      .withStudentContext(getExam, ethnicities)
-      .withAccommodationCodes(getExam)
-      .build(sourceData);
+    this.getSubjectScorableClaims(sourceData, getNonIABAssessment).subscribe(subjectClaims => {
+      const builder = this.csvBuilder.newBuilder()
+        .withFilename(filename)
+        .withStudent(getStudent)
+        .withExamDateAndSession(getExam)
+        .withSchool(getExam)
+        .withSchoolYear(getExam)
+        .withAssessmentTypeNameAndSubject(getAssessment)
+        .withExamGradeAndStatus(getExam)
+        .withAchievementLevel(getNonIABAssessment, getNonIABExam)
+        .withReportingCategory(getAssessment, getIABExam)
+        .withScoreAndErrorBand(getExam);
+
+      subjectClaims.forEach(entry => {
+        builder.withClaimScores(
+          entry.subject,
+          entry.claims,
+          getAssessment,
+          (item) => !item.assessment.isIab && item.assessment.subject === entry.subject ? item.exam : null
+        );
+      });
+
+      builder
+        .withGender(getStudent)
+        .withStudentContext(getExam, ethnicities)
+        .withAccommodationCodes(getExam)
+        .build(sourceData);
+    });
   }
 
   /**
@@ -83,37 +98,45 @@ export class CsvExportService {
                        getStudent: () => Student,
                        filename: string) {
 
-    let getExam = (wrapper: StudentHistoryExamWrapper) => wrapper.exam;
-    let getAssessment = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment;
-    let getIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? wrapper.exam : null;
-    let getNonIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? null: wrapper.exam;
-    // TODO:ConfigurableSubjects needs to support configurable subjects
-    let getNonIABMathExam = (wrapper: StudentHistoryExamWrapper) => !wrapper.assessment.isIab && wrapper.assessment.subject === 'Math' ? wrapper.exam : null;
-    let getNonIABElaExam = (wrapper: StudentHistoryExamWrapper) => !wrapper.assessment.isIab && wrapper.assessment.subject === 'ELA' ? wrapper.exam : null;
+    const getExam = (wrapper: StudentHistoryExamWrapper) => wrapper.exam;
+    const getAssessment = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment;
+    const getNonIABAssessment = (item) => item.assessment.isIab ? null : item.assessment;
+    const getIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? wrapper.exam : null;
+    const getNonIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? null : wrapper.exam;
 
-    this.csvBuilder
-      .newBuilder()
-      .withFilename(filename)
-      .withStudent(getStudent)
-      .withExamDateAndSession(getExam)
-      .withSchool(getExam)
-      .withSchoolYear(getExam)
-      .withAssessmentTypeNameAndSubject(getAssessment)
-      .withExamGradeAndStatus(getExam)
-      .withAchievementLevel(getNonIABExam)
-      .withReportingCategory(getIABExam)
-      .withScoreAndErrorBand(getExam)
-      .withMathClaimScores(getNonIABMathExam)
-      .withELAClaimScores(getNonIABElaExam)
-      .withAccommodationCodes(getExam)
-      .build(wrappers);
+    this.getSubjectScorableClaims(wrappers, getNonIABAssessment).subscribe(subjectClaims => {
+      const builder = this.csvBuilder.newBuilder()
+        .withFilename(filename)
+        .withStudent(getStudent)
+        .withExamDateAndSession(getExam)
+        .withSchool(getExam)
+        .withSchoolYear(getExam)
+        .withAssessmentTypeNameAndSubject(getAssessment)
+        .withExamGradeAndStatus(getExam)
+        .withAchievementLevel(getNonIABAssessment, getNonIABExam)
+        .withReportingCategory(getAssessment, getIABExam)
+        .withScoreAndErrorBand(getExam)
+
+      subjectClaims.forEach(entry => {
+        builder.withClaimScores(
+          entry.subject,
+          entry.claims,
+          getAssessment,
+          (item) => !item.assessment.isIab && item.assessment.subject === entry.subject ? item.exam : null
+        );
+      });
+
+      builder
+        .withAccommodationCodes(getExam)
+        .build(wrappers);
+    });
   }
 
   exportResultItems(exportRequest: ExportItemsRequest,
                     filename: string) {
 
-    let getAssessment = () => exportRequest.assessment;
-    let getAssessmentItem = (item) => item;
+    const getAssessment = () => exportRequest.assessment;
+    const getAssessmentItem = (item) => item;
 
     let builder = this.csvBuilder
       .newBuilder()
@@ -127,7 +150,7 @@ export class CsvExportService {
       .withFullCredit(getAssessmentItem, exportRequest.showAsPercent);
 
       if (exportRequest.type == RequestType.DistractorAnalysis) {
-        builder = builder.withItemAnswerKey(getAssessmentItem)
+        builder = builder.withItemAnswerKey(getAssessmentItem);
       }
 
       builder.withPoints(getAssessmentItem, exportRequest.pointColumns, exportRequest.showAsPercent)
@@ -137,7 +160,7 @@ export class CsvExportService {
   exportWritingTraitScores(exportRequest: ExportWritingTraitsRequest,
                            filename: string) {
 
-    let compositeRows: any[] = [];
+    const compositeRows: any[] = [];
     let maxPoints: number = 0;
 
     exportRequest.assessmentItems.forEach((item, i) => {
@@ -153,7 +176,7 @@ export class CsvExportService {
 
     });
 
-    let getAssessmentItem = (item) => item.assessmentItem;
+    const getAssessmentItem = (item) => item.assessmentItem;
 
     this.csvBuilder
       .newBuilder()
@@ -183,4 +206,41 @@ export class CsvExportService {
       .build(exportRequest.targetScoreRows);
 
   }
+
+  /**
+   * Scans the provided data for what scorable claims are present and returns a collection of
+   * subject - scorable claim collection pairs to iterate over when generating export columns
+   *
+   * @param {any[]} data the data to scan
+   * @param {(datum) => Assessment} getAssessment used to get the assessment from a data entry
+   * @returns {Observable<SubjectScorableClaims[]>} subject - scorable claim collection pairs present in the given data set
+   */
+  private getSubjectScorableClaims(data: any[], getAssessment: (datum) => Assessment): Observable<SubjectScorableClaims[]> {
+    return this.subjectService.getSubjectCodes().pipe(
+      map(subjects => {
+        return (data || []).reduce((subjectClaims, datum) => {
+          const assessment = getAssessment(datum);
+          if (assessment != null) {
+            const { subject, claimCodes } = assessment;
+            const entry = subjectClaims.find(subjectClaim => subjectClaim.subject === subject);
+            if (entry == null) {
+              subjectClaims.push({
+                subject: subject,
+                claims: claimCodes.concat()
+              });
+            }
+          }
+          return subjectClaims;
+        }, []).sort(
+          ordering(ranking(subjects)).on(({subject}) => subject).compare
+        );
+      })
+    );
+  }
+
+}
+
+interface SubjectScorableClaims {
+  subject: string;
+  claims: string[];
 }

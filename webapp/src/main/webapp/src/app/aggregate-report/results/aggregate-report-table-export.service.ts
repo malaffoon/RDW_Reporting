@@ -134,7 +134,7 @@ export class AggregateReportTableExportService {
           (item: AggregateReportItem) => {
             const translationKey: string = options.reportType === AggregateReportType.Target
               ? `common.claim-name.${item.claimCode}`
-              : `common.subject.${item.subjectCode}.claim.${item.claimCode}.name`;
+              : `subject.${item.subjectCode}.claim.${item.claimCode}.name`;
             return this.translateService.instant(translationKey);
           }
         )
@@ -174,9 +174,10 @@ export class AggregateReportTableExportService {
       if (options.performanceLevelDisplayType === PerformanceLevelDisplayTypes.Grouped) {
         header = this.translateService.instant(`aggregate-report-table.columns.grouped-performance-level-prefix.${level}`);
       } else {
-        header = this.translateService.instant(`common.assessment-type.${options.assessmentDefinition.typeCode}.performance-level.${level}.name-prefix`);
+        // TODO:ConfigurableSubjects hardcoded Math here for now
+        header = this.translateService.instant(`subject.Math.asmt-type.${options.assessmentDefinition.typeCode}.level.${level}.short-name`);
       }
-      return header + ' ' + this.translateService.instant('aggregate-report-table.columns.performance-level-suffix');
+      return header + ' ' + this.translateService.instant(`subject.Math.asmt-type.${options.assessmentDefinition.typeCode}.level.${level}.suffix`);
     };
 
     const levels: number[] = options.performanceLevelDisplayType === PerformanceLevelDisplayTypes.Grouped

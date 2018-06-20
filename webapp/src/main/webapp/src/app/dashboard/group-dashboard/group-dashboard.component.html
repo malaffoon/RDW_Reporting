@@ -61,9 +61,10 @@
                   [(ngModel)]="subject"
                   class="form-control"
                   (change)="onSubjectChange()">
-            <option selected [ngValue]="undefined">{{'common.subject.ALL.short-name' | translate}}</option>
+            <option selected
+                    [ngValue]="undefined">{{'common.collection-selection.all' | translate}}</option>
             <option *ngFor="let subject of subjects"
-                    [ngValue]="subject">{{'common.subject.' + subject + '.short-name' | translate}}
+                    [ngValue]="subject">{{'subject.' + subject + '.name' | translate}}
             </option>
           </select>
         </div>

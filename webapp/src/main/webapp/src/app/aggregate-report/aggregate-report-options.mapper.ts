@@ -55,7 +55,7 @@ export class AggregateReportOptionsMapper {
         )),
       claimCodes: options.claims
         .map(optionMapper(
-          (value: Claim) => translate(`common.subject-claim-code.${value.code}`),
+          (value: Claim) => translate(`subject.${value.subject}.claim.${value.code}.name`),
           (value: Claim) => `Claim Code: ${value.code}`
         )),
       completenesses: options.completenesses
@@ -75,7 +75,7 @@ export class AggregateReportOptionsMapper {
         )),
       subjects: options.subjects
         .map(optionMapper(
-          value => translate(`common.subject.${value}.short-name`),
+          value => translate(`subject.${value}.name`),
           value => `Subject: ${value}`
         )),
       summativeAdministrationConditions: options.summativeAdministrationConditions

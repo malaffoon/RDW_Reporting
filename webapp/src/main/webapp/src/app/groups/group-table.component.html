@@ -41,7 +41,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'subject'">
-          {{'common.subject.' + group.subjectCode + '.name' | translate }}
+          {{ (group.subjectCode ? 'subject.' + group.subjectCode + '.name' : 'common.collection-selection.all') | translate }}
         </ng-container>
       </td>
     </tr>

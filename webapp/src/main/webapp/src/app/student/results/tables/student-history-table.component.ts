@@ -25,6 +25,9 @@ export class StudentHistoryTableComponent implements OnInit {
   @Input()
   student: Student;
 
+  @Input()
+  subject: string;
+
   assessmentType: string;
 
   studentHistoryCards: StudentHistoryExamWrapper[] = [];

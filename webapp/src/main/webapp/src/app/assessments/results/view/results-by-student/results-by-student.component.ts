@@ -82,10 +82,6 @@ export class ResultsByStudentComponent implements OnInit {
       .map(resources => resources.getResourcesByPerformance(exam.level));
   }
 
-  examLevelTranslation(exam: Exam): string {
-    return this.translate.instant(exam.level ? `common.assessment-type.${this.assessment.type}.performance-level.${exam.level}.name` : 'common.missing');
-  }
-
   private getClaimColumns(): Column[] {
     if (!this.assessment.claimCodes) {
       return [];
@@ -125,7 +121,7 @@ export class ResultsByStudentComponent implements OnInit {
           downloader.title = this.translate.instant('results-by-student.create-single-prepopulated-report', {
             name: exam.student.firstName || exam.student.ssid,
             schoolYear: exam.schoolYear,
-            subject: this.translate.instant(`common.subject.${subject}.short-name`),
+            subject: this.translate.instant(`subject.${subject}.name`),
             assessmentType: this.translate.instant(`common.assessment-type.${assessmentType}.short-name`)
           });
 

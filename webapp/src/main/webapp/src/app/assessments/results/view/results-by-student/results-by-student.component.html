@@ -34,7 +34,7 @@
         </span>
 
         <span *ngSwitchCase="'claim'">
-          {{('common.subject-claim-code.' + column.claim) | translate}}
+          {{('subject.' + assessment.subject + '.claim.' + column.claim + '.name') | translate}}
         </span>
 
         <span *ngSwitchDefault>
@@ -91,7 +91,7 @@
 
         <div *ngSwitchCase="'level'">
           <span class="pull-left">
-            {{ examLevelTranslation(exam) }}
+            {{ exam.label | optional:('subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.level.' + exam.level + '.name' | translate) }}
           </span>
           <span class="pull-right" *ngIf="assessment.isIab">
             <button
@@ -100,7 +100,9 @@
               angularticsEvent="InstructionalResource"
               angularticsCategory="AssessmentResults"
               [popover]="buttonPopover"
-              popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(examLevelTranslation(exam)) } }}"
+              popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(
+                exam.label | optional:('subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.level.' + exam.level + '.name' | translate)
+              ) } }}"
               container="body"
               (click)="loadInstructionalResources(exam)"
               [outsideClick]="true"><i class="fa fa-book"></i></button>
@@ -113,8 +115,9 @@
         </div>
 
         <div *ngSwitchCase="'claim'">
-          <span *ngIf="exam.claimScores[column.index].level">{{ ('common.assessment-type.iab.performance-level.' + exam.claimScores[column.index].level.toString() + '.name') | translate }}</span>
-          <span *ngIf="!exam.claimScores[column.index].level">-</span>
+          {{ exam.claimScores[column.index].level | optional:(
+            'subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.claim-score.level.' + exam.claimScores[column.index].level + '.name' | translate
+          ) }}
         </div>
       </td>
     </tr>
