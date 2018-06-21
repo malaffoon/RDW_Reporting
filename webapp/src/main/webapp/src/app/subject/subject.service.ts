@@ -80,7 +80,7 @@ export class SubjectService {
     return of(SubjectDefinitions);
   }
 
-  getgetScorableClaimsBySubject(): Observable<Map<string, string[]>> {
+  getScorableClaimsBySubject(): Observable<Map<string, string[]>> {
     return of(ScorableClaimsBySubject);
   }
 
