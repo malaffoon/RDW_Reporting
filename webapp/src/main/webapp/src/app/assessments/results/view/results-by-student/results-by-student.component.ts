@@ -68,7 +68,7 @@ export class ResultsByStudentComponent implements OnInit {
         new Column({ id: 'status', headerInfo: true, overall: true }),
         new Column({ id: 'level', overall: true }),
         new Column({ id: 'score', headerInfo: true, overall: true }),
-        ...this.getClaimColumns(
+        ...this.createClaimColumns(
           createRankingOrStringOrdering(scorableClaimsBySubject.get(this.assessment.subject))
         )
       ];
@@ -82,7 +82,7 @@ export class ResultsByStudentComponent implements OnInit {
       .map(resources => resources.getResourcesByPerformance(exam.level));
   }
 
-  private getClaimColumns(ordering: Ordering<string>): Column[] {
+  private createClaimColumns(ordering: Ordering<string>): Column[] {
     if (!this.assessment.claimCodes) {
       return [];
     }
