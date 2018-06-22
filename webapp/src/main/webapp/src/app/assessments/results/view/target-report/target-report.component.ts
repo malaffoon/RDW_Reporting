@@ -37,7 +37,6 @@ import { Exam } from '../../../model/exam.model';
 import { SortEvent } from 'primeng/api';
 import { AggregateReportItem } from '../../../../aggregate-report/results/aggregate-report-item';
 import { Utils } from '../../../../shared/support/support';
-import { SubjectService } from '../../../../subject/subject.service';
 import { SubjectDefinition } from '../../../../subject/subject';
 
 const SubgroupOrdering = ordering((a: Subgroup, b: Subgroup) => {
@@ -56,6 +55,9 @@ const SubgroupOrdering = ordering((a: Subgroup, b: Subgroup) => {
   templateUrl: './target-report.component.html'
 })
 export class TargetReportComponent implements OnInit, ExportResults {
+
+  @Input()
+  subjectDefinition: SubjectDefinition;
 
   @Input()
   assessmentProvider: AssessmentProvider;
@@ -145,8 +147,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
 
   allSubgroups: any[] = [];
 
-  subjectDefinition: SubjectDefinition;
-
   private _sessions: any[];
   private _filterBy: FilterBy;
   private _filterBySubscription: Subscription;
@@ -162,8 +162,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
               private assessmentExamMapper: AssessmentExamMapper,
               private filterOptionService: ExamFilterOptionsService,
               private assessmentService: GroupAssessmentService,
-              private applicationSettingsService: ApplicationSettingsService,
-              private subjectService: SubjectService) {
+              private applicationSettingsService: ApplicationSettingsService) {
 
     applicationSettingsService.getSettings().subscribe(settings => {
       this.allSubgroups = this.createAllSubgroups(settings);
@@ -171,6 +170,31 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   ngOnInit(): void {
+    this.columns = [
+      new Column({
+        id: 'claim',
+        headerInfoTranslationCode: 'common.info.claim'
+      }),
+      new Column({
+        id: 'target',
+        headerInfoTranslationCode: 'common.info.target'
+      }),
+      new Column({ id: 'subgroup' }),
+      new Column({ id: 'studentsTested' }),
+      new Column({
+        id: 'student-relative-residual-scores-level',
+        headerInfoTranslationCode: 'target-report.columns.student-relative-residual-scores-level-info'
+      }),
+      new Column({
+        id: 'standard-met-relative-residual-level',
+        headerInfoTranslationCode: 'target-report.columns.standard-met-relative-residual-level-info',
+        headerResolve: {
+          name: this.translate.instant(`subject.${this.assessment.subject}.asmt-type.${this.assessment.type}.level.${this.subjectDefinition.performanceLevelStandardCutoff}.name`),
+          id: this.subjectDefinition.performanceLevelStandardCutoff
+        }
+      })
+    ];
+
     if (!this.showResults) {
       this.loading = false;
       return;
@@ -184,13 +208,11 @@ export class TargetReportComponent implements OnInit, ExportResults {
       this.targetService.getTargetsForAssessment(this.assessment.id),
       this.assessmentProvider.getTargetScoreExams(this.assessment.id),
       this.filterOptionService.getExamFilterOptions(),
-      this.applicationSettingsService.getSettings(),
-      this.subjectService.getSubjectDefinitionForAssessment(this.assessment)
-    ).subscribe(([ allTargets, targetScoreExams, subgroupOptions, applicationSettings, subjectDefinition ]) => {
+      this.applicationSettingsService.getSettings()
+    ).subscribe(([ allTargets, targetScoreExams, subgroupOptions, applicationSettings ]) => {
       this.originalTargetScoreExams = this.targetScoreExams = targetScoreExams;
       this.subgroupOptions = subgroupOptions;
       this.allTargets = allTargets;
-      this.subjectDefinition = subjectDefinition;
 
       this.minimumStudentCount = applicationSettings.targetReport.minimumStudentCount;
       this.targetStatisticsCalculator.insufficientDataCutoff = applicationSettings.targetReport.insufficientDataCutoff;
@@ -201,7 +223,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
           description: target.description,
           claim: target.claimCode
         });
-
         return targetMap;
       }, new Map<number, any>());
 
@@ -211,7 +232,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
         this.targetScoreExams);
 
       this.updateTargetScoreExamFilters();
-
       this.loading = false;
     });
   }
@@ -314,6 +334,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   calculateTreeColumns() {
+    console.log('calc tree cols?', this.dataTable)
     if (this.dataTable == null) {
       return;
     }
@@ -421,8 +442,8 @@ export class TargetReportComponent implements OnInit, ExportResults {
 interface ColumnDefinition {
   id: string;
   field?: string;
-  headerInfoText?: string;
-  headerResolve: any;
+  headerInfoTranslationCode?: string;
+  headerResolve?: any;
 }
 
 class Column implements BaseColumn {
@@ -435,11 +456,12 @@ class Column implements BaseColumn {
                 id,
                 field = '',
                 headerInfoTranslationCode,
-                headerResolve = {}
+                headerResolve
               }: ColumnDefinition) {
     this.id = id;
     this.field = field ? field : id;
     this.headerInfoTranslationCode = headerInfoTranslationCode;
+    this.headerResolve = headerResolve;
   }
 
 }
