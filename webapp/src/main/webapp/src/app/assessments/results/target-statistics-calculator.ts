@@ -8,7 +8,6 @@ import { Target } from '../model/target.model';
 import * as deepEqual from "fast-deep-equal";
 import { ExamFilterOptions } from '../model/exam-filter-options.model';
 import { Subgroup } from '../../aggregate-report/subgroup/subgroup';
-import { SubjectClaimOrder } from '../../shared/ordering/orderings';
 
 @Injectable()
 export class TargetStatisticsCalculator {
@@ -89,7 +88,6 @@ export class TargetStatisticsCalculator {
     return <AggregateTargetScoreRow>{
       targetId: groupedScore.targetId,
       claim: groupedScore.claim,
-      claimOrder: (SubjectClaimOrder.get(groupedScore.subject) || []).indexOf(groupedScore.claim),
       target: groupedScore.target,
       subgroup: groupedScore.subgroup,
       studentsTested: numStudents,

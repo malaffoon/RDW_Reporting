@@ -56,7 +56,7 @@ export class ResultsByStudentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subjectService.getScorableClaimsBySubject().subscribe(scorableClaimsBySubject => {
+    this.subjectService.getSubjectDefinition(this.assessment.subject, this.assessment.type).subscribe(subjectDefinition => {
       this.columns = [
         new Column({ id: 'name', field: 'student.lastName' }),
         new Column({ id: 'date' }),
@@ -67,7 +67,7 @@ export class ResultsByStudentComponent implements OnInit {
         new Column({ id: 'level', overall: true }),
         new Column({ id: 'score', headerInfo: true, overall: true }),
         ...this.createClaimColumns(
-          createRankingOrStringOrdering(scorableClaimsBySubject.get(this.assessment.subject))
+          createRankingOrStringOrdering(subjectDefinition.scorableClaims)
         )
       ];
       this.actions = this.createActions();

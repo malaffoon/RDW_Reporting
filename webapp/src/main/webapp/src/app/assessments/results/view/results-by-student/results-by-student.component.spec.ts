@@ -4,21 +4,26 @@ import { ResultsByStudentComponent } from './results-by-student.component';
 import { CommonModule } from "../../../../shared/common.module";
 import { MenuActionBuilder } from "../../../menu/menu-action.builder";
 import { TestModule } from "../../../../../test/test.module";
-import { TranslateModule } from "@ngx-translate/core";
 import { Component, NO_ERRORS_SCHEMA } from "@angular/core";
 import { Assessment } from "../../../model/assessment.model";
 import { InstructionalResourcesService } from "../../instructional-resources.service";
 import { CachingDataService } from "../../../../shared/data/caching-data.service";
+import { SubjectService } from "../../../../subject/subject.service";
+import { of } from "rxjs/observable/of";
 
 describe('ResultsByStudentComponent', () => {
   let component: ResultsByStudentComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
 
+  const mockSubjectService = jasmine.createSpyObj('SubjectService', [ 'getSubjectDefinition' ]);
+  mockSubjectService.getSubjectDefinition.and.returnValue(of({
+    scorableClaims: []
+  }));
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
-        TranslateModule.forRoot(),
         TestModule
       ],
       declarations: [
@@ -28,7 +33,8 @@ describe('ResultsByStudentComponent', () => {
       providers: [
         MenuActionBuilder,
         InstructionalResourcesService,
-        CachingDataService
+        CachingDataService,
+        {provide: SubjectService, useValue: mockSubjectService}
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
