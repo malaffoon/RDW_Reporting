@@ -9,9 +9,8 @@ import { InstructionalResourcesService } from '../../instructional-resources.ser
 import { InstructionalResource } from '../../../model/instructional-resources.model';
 import { Observable } from 'rxjs/Observable';
 import { PopupMenuAction } from '../../../../shared/menu/popup-menu-action.model';
-import { createRankingOrStringOrdering, } from '../../../../shared/ordering/orderings';
-import { SubjectService } from '../../../../subject/subject.service';
 import { Ordering } from '@kourge/ordering';
+import { OrderingService } from "../../../../shared/ordering/ordering.service";
 
 @Component({
   selector: 'results-by-student',
@@ -52,11 +51,11 @@ export class ResultsByStudentComponent implements OnInit {
   constructor(private actionBuilder: MenuActionBuilder,
               private translate: TranslateService,
               private instructionalResourcesService: InstructionalResourcesService,
-              private subjectService: SubjectService) {
+              private orderingService: OrderingService) {
   }
 
   ngOnInit() {
-    this.subjectService.getScorableClaimsBySubject().subscribe(scorableClaimsBySubject => {
+    this.orderingService.getScorableClaimOrdering(this.assessment.subject, this.assessment.type).subscribe(ordering => {
       this.columns = [
         new Column({ id: 'name', field: 'student.lastName' }),
         new Column({ id: 'date' }),
@@ -66,9 +65,7 @@ export class ResultsByStudentComponent implements OnInit {
         new Column({ id: 'status', headerInfo: true, overall: true }),
         new Column({ id: 'level', overall: true }),
         new Column({ id: 'score', headerInfo: true, overall: true }),
-        ...this.createClaimColumns(
-          createRankingOrStringOrdering(scorableClaimsBySubject.get(this.assessment.subject))
-        )
+        ...this.createClaimColumns(ordering)
       ];
       this.actions = this.createActions();
       this.hasTransferStudent = this.exams.some(x => x.transfer);

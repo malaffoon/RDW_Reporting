@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
-import { byNumber, byString, Comparator, join } from '@kourge/ordering/comparator';
+import { byNumber, Comparator, join } from '@kourge/ordering/comparator';
 import { TargetService } from '../../../../shared/target/target.service';
 import { AssessmentExamMapper } from '../../../assessment-exam.mapper';
 import { BaseColumn } from '../../../../shared/datatable/base-column.model';
@@ -27,7 +27,7 @@ import { ExamFilterOptions } from '../../../model/exam-filter-options.model';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
 import { Subgroup } from '../../../../aggregate-report/subgroup/subgroup';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
-import { byNumericString, SubjectClaimOrderings } from '../../../../shared/ordering/orderings';
+import { byNumericString, getOrganizationalClaimOrdering } from '../../../../shared/ordering/orderings';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
 import { ExportResults } from '../../assessment-results.component';
 import { ExportTargetReportRequest } from '../../../model/export-target-report-request.model';
@@ -286,7 +286,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   private createOrdering(field: string): Ordering<AggregateTargetScoreRow> {
     switch (field) {
       case 'claim':
-        const claimOrdering: Ordering<string> = (SubjectClaimOrderings.get(this.assessment.subject) || ordering(byString));
+        const claimOrdering: Ordering<string> = getOrganizationalClaimOrdering(this.assessment.subject);
         return claimOrdering.on<AggregateTargetScoreRow>(row => row.claim);
       case 'target':
         return ordering(byNumericString).on<AggregateTargetScoreRow>(row => this.targetDisplayMap.get(row.targetId).name);

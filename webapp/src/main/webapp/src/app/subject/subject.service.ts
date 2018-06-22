@@ -82,10 +82,6 @@ export class SubjectService {
     };
   }
 
-  getScorableClaimsBySubject(): Observable<Map<string, string[]>> {
-    return of(ScorableClaimsBySubject);
-  }
-
   getOrganizationalClaimsBySubject(): Observable<Map<string, string[]>> {
     return of(OrganizationalClaimsBySubject);
   }
