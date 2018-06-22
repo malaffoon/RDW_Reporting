@@ -16,6 +16,9 @@ export class ClaimTargetComponent {
   @Input()
   item: AssessmentItem;
 
+  @Input()
+  subject: string;
+
   target: string;
 
   constructor(private service: ItemInfoService) {

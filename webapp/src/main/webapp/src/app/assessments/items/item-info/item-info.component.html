@@ -1,7 +1,7 @@
 <div class="white-space-normal">
   <p>
     <b>{{ 'item-info.claim' | translate}}</b>
-    {{ 'common.claim-description.' + item.claim | translate }}
+    {{ 'subject.' + subject + '.claim.' + item.claim + '.name' | translate }}
   </p>
   <p>
     <b>{{ 'common.results.assessment-item-target' | translate:item}}: </b>
@@ -9,7 +9,9 @@
   </p>
   <p>
     <b>{{ 'item-info.dok-label' | translate}}</b>
+    <!-- TODO:ConfigurableSubjects needs to be subject.${subject}.dok.${item.dokId}.name -->
     {{ 'item-info.dok-description.' + item.depthOfKnowledge | translate }}
+    <!-- TODO:ConfigurableSubjects needs to be pulled from DB -->
     <a href="{{ 'item-info.dok-reference.' + item.depthOfKnowledge | translate }}" target="_blank">{{ 'item-info.view-ref' | translate}}</a>
   </p>
   <p>
