@@ -235,7 +235,7 @@ sql:
   reporting:
     snippet:
         selectFromItem: >-
-           select
+           SELECT
               i.id,
               i.natural_id,
               i.position,
@@ -244,12 +244,14 @@ sql:
               i.claim_code,
               i.target_code,
               i.target_id,
-              i.dok_level_subject_id,
               i.math_practice_code,
               i.allow_calc,
               i.common_core_standard_ids,
               i.answer_key,
               i.options_count,
               i.type,
-              i.performance_task_writing_type
-            from item i
+              i.performance_task_writing_type,
+              dok.level as dok_level,
+              dok.reference as dok_reference
+            FROM item i
+              JOIN depth_of_knowledge dok ON dok.id = i.dok_id

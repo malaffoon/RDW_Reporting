@@ -128,7 +128,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   columns: Column[];
 
   allTargets: Target[] = [];
-  loading: boolean = false;
+  loading: boolean = true;
   targetDisplayMap: Map<number, any>;
   aggregateTargetScoreRows: AggregateTargetScoreRow[] = [];
   identityColumns: string[] = [ 'claim', 'target', 'subgroup' ];
@@ -172,10 +172,9 @@ export class TargetReportComponent implements OnInit, ExportResults {
 
   ngOnInit(): void {
     if (!this.showResults) {
+      this.loading = false;
       return;
     }
-
-    this.loading = true;
 
     this.identityColumns.forEach(column => {
       this._orderingByIdentityField[ column ] = this.createOrdering(column);

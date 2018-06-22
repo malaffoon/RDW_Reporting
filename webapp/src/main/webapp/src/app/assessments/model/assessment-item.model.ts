@@ -1,5 +1,10 @@
 import { ExamItemScore } from "./exam-item-score.model";
 
+export interface DepthOfKnowledge {
+  readonly level: number;
+  readonly referenceUrl: string;
+}
+
 export class AssessmentItem {
   id: number;
   bankItemKey: string;
@@ -7,7 +12,7 @@ export class AssessmentItem {
   claim: string;
   target: string;
   targetId: number;
-  depthOfKnowledge: string;
+  depthOfKnowledge: DepthOfKnowledge;
   mathPractice: string;
   allowCalculator: string;
   difficulty: string;
@@ -19,10 +24,6 @@ export class AssessmentItem {
   answerKey: string;
   performanceTaskWritingType: string;
 
-  get hasCommonCoreStandards(): boolean {
-    return this.commonCoreStandardIds && this.commonCoreStandardIds.length > 0
-  }
-
   get difficultySortOrder() {
     switch (this.difficulty) {
       case 'E':
@@ -32,7 +33,6 @@ export class AssessmentItem {
       case 'D':
         return 3;
     }
-
     return 0;
   }
 

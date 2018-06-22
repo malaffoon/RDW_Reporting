@@ -147,32 +147,35 @@ export class AssessmentExamMapper {
     return examItem;
   }
 
-  private mapAssessmentItemFromApi(apiModel): AssessmentItem {
-    const uiModel: AssessmentItem = new AssessmentItem();
+  private mapAssessmentItemFromApi(serverItem: any): AssessmentItem {
+    const item: AssessmentItem = new AssessmentItem();
 
-    uiModel.id = apiModel.id;
-    uiModel.bankItemKey = apiModel.bankItemKey;
-    uiModel.position = apiModel.position;
-    uiModel.claim = apiModel.claimCode;
-    uiModel.target = this.formatTarget(apiModel.targetCode);
-    uiModel.targetId = apiModel.targetId;
-    uiModel.depthOfKnowledge = apiModel.depthOfKnowledgeCode;
-    uiModel.mathPractice = apiModel.mathPracticeCode;
-    uiModel.allowCalculator = Utils.booleanToPolarEnum(apiModel.allowCalculator);
-    uiModel.difficulty = apiModel.difficultyCode;
-    uiModel.maxPoints = apiModel.maximumPoints;
-    uiModel.commonCoreStandardIds = apiModel.commonCoreStandardIds || [];
-    uiModel.type = apiModel.type;
-    uiModel.numberOfChoices = apiModel.optionsCount;
-    uiModel.performanceTaskWritingType = apiModel.performanceTaskWritingType;
+    item.id = serverItem.id;
+    item.bankItemKey = serverItem.bankItemKey;
+    item.position = serverItem.position;
+    item.claim = serverItem.claimCode;
+    item.target = this.formatTarget(serverItem.targetCode);
+    item.targetId = serverItem.targetId;
+    item.depthOfKnowledge = {
+      level: serverItem.depthOfKnowledge.level,
+      referenceUrl: serverItem.depthOfKnowledge.referenceUrl
+    };
+    item.mathPractice = serverItem.mathPracticeCode;
+    item.allowCalculator = Utils.booleanToPolarEnum(serverItem.allowCalculator);
+    item.difficulty = serverItem.difficultyCode;
+    item.maxPoints = serverItem.maximumPoints;
+    item.commonCoreStandardIds = serverItem.commonCoreStandardIds || [];
+    item.type = serverItem.type;
+    item.numberOfChoices = serverItem.optionsCount;
+    item.performanceTaskWritingType = serverItem.performanceTaskWritingType;
 
     // only multiple choice and multiple select have valid answer keys, so ignore the others
-    uiModel.answerKey = (apiModel.type === 'MC' || apiModel.type === 'MS') ? apiModel.answerKey : undefined;
+    item.answerKey = (serverItem.type === 'MC' || serverItem.type === 'MS') ? serverItem.answerKey : undefined;
 
-    return uiModel;
+    return item;
   }
 
-  formatTarget(target) {
+  formatTarget(target: string): string {
     const dashIndex = target.indexOf('-');
 
     return dashIndex === -1
