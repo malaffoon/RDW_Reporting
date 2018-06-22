@@ -86,8 +86,8 @@
           </table-row-expander>
 
           <claim-target *ngSwitchCase="'claim'"
-                        [item]="item.assessmentItem">
-          </claim-target>
+                        [item]="item.assessmentItem"
+                        [subject]="assessment.subject"></claim-target>
 
           <ng-container *ngSwitchCase="'difficulty'">
             {{ ('common.difficulty.' + item.assessmentItem.difficulty) | translate }}
