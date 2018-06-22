@@ -8,17 +8,17 @@ import { Component, NO_ERRORS_SCHEMA } from "@angular/core";
 import { Assessment } from "../../../model/assessment.model";
 import { InstructionalResourcesService } from "../../instructional-resources.service";
 import { CachingDataService } from "../../../../shared/data/caching-data.service";
-import { SubjectService } from "../../../../subject/subject.service";
 import { of } from "rxjs/observable/of";
+import { ordering } from "@kourge/ordering";
+import { byString } from "@kourge/ordering/comparator";
+import { OrderingService } from "../../../../shared/ordering/ordering.service";
 
 describe('ResultsByStudentComponent', () => {
   let component: ResultsByStudentComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
 
-  const mockSubjectService = jasmine.createSpyObj('SubjectService', [ 'getSubjectDefinition' ]);
-  mockSubjectService.getSubjectDefinition.and.returnValue(of({
-    scorableClaims: []
-  }));
+  const mockOrderingService = jasmine.createSpyObj('OrderingService', [ 'getScorableClaimOrdering' ]);
+  mockOrderingService.getScorableClaimOrdering.and.returnValue(of(ordering(byString)));
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -34,7 +34,7 @@ describe('ResultsByStudentComponent', () => {
         MenuActionBuilder,
         InstructionalResourcesService,
         CachingDataService,
-        {provide: SubjectService, useValue: mockSubjectService}
+        {provide: OrderingService, useValue: mockOrderingService}
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })

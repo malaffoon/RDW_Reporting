@@ -46,7 +46,3 @@ export const byNumericString = (a: string, b: string) => {
 
   return a.localeCompare(b);
 };
-
-export function createRankingOrStringOrdering<T>(rankings: any[]): Ordering<T> {
-  return ordering(rankings != null ? ranking(rankings) : byString);
-}
