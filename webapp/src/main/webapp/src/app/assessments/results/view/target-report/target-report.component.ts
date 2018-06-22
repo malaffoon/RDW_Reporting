@@ -410,10 +410,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
     return subgroups;
   }
 
-  getClaimCodeTranslation(row: AggregateTargetScoreRow): string {
-    return this.translate.instant(`common.claim-name.${row.claim}`);
-  }
-
   getTargetDisplay(row: AggregateTargetScoreRow): any {
     return this.targetDisplayMap.get(row.targetId);
   }
@@ -426,17 +422,15 @@ export class TargetReportComponent implements OnInit, ExportResults {
 class Column implements BaseColumn {
   id: string;
   field: string;
-  headerInfo: boolean;
   headerInfoText: string;
 
   constructor({
                 id,
                 field = '',
-                headerInfoText = ''
+                headerInfoText
               }) {
     this.id = id;
     this.field = field ? field : id;
-    this.headerInfo = headerInfoText != '';
     this.headerInfoText = headerInfoText;
   }
 }

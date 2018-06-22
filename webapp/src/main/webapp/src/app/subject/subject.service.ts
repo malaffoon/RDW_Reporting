@@ -44,6 +44,17 @@ export class SubjectService {
   /**
    * Retrieve the definition for the given subject and assessment type
    *
+   * @param {any} subject        A subject code
+   * @param {any} type  An assessment type code
+   * @returns {Observable<SubjectDefinition>} The definition
+   */
+  getSubjectDefinition({subject, type}): Observable<SubjectDefinition> {
+    return this.getSubjectDefinition(subject, type);
+  }
+
+  /**
+   * Retrieve the definition for the given subject and assessment type
+   *
    * @param {string} subject        A subject code
    * @param {string} assessmentType An assessment type code
    * @returns {Observable<SubjectDefinition>} The definition
