@@ -94,7 +94,7 @@ export class ResultsByStudentComponent implements OnInit {
           claim: code
         })
       )
-      .sort(createScorableClaimOrdering(this.assessment.subject)
+      .sort(ordering
         .on((column: Column) => column.claim)
         .compare);
   }
