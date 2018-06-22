@@ -334,7 +334,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   calculateTreeColumns() {
-    console.log('calc tree cols?', this.dataTable)
     if (this.dataTable == null) {
       return;
     }
