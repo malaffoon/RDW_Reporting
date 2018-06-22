@@ -60,10 +60,10 @@
           class="wrapping">
 
         <span *ngSwitchDefault>
-          <span *ngIf="!column.headerInfo">
+          <span *ngIf="!column.headerInfoText">
             {{('target-report.columns.' + column.id) | translate}}
           </span>
-          <span *ngIf="column.headerInfo"
+          <span *ngIf="column.headerInfoText"
                 info-button
                 title="{{('target-report.columns.' + column.id) | translate}}"
                 content="{{column.headerInfoText | translate}}">
@@ -90,7 +90,7 @@
 
           <div *ngSwitchCase="'claim'">
             <span>
-              {{ getClaimCodeTranslation(rowData) }}
+              {{ 'subject.' + assessment.subject + '.claim.' + rowData.claim + '.name' | translate }}
             </span>
           </div>
 

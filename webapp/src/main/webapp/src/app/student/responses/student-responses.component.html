@@ -90,7 +90,7 @@
                         [subject]="assessment.subject"></claim-target>
 
           <ng-container *ngSwitchCase="'difficulty'">
-            {{ ('common.difficulty.' + item.assessmentItem.difficulty) | translate }}
+            {{ 'common.difficulty.' + item.assessmentItem.difficulty | translate }}
           </ng-container>
 
           <ng-container *ngSwitchCase="'standard'">
