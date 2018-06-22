@@ -411,7 +411,11 @@ export class AggregateReportTableComponent implements OnInit {
       const orderingObservables: Observable<Comparator<AggregateReportItem>>[] = subjects.map(subject =>
         this.orderingService.getScorableClaimOrdering(subject, assessmentDefinition.typeCode)
           .pipe(
-            map(ordering => ordering.on((row: AggregateReportItem) => row.claimCode).compare)
+            map(ordering => ordering
+              .on((row: AggregateReportItem) =>
+                row.subjectCode === subject ? row.claimCode : null
+              ).compare
+            )
           ));
       forkJoin(orderingObservables)
         .subscribe(comparators => {
