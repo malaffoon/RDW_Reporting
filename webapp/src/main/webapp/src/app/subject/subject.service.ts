@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { SubjectDefinition } from './subject';
-import { CachingDataService } from "../shared/data/caching-data.service";
-import { ReportingServiceRoute } from "../shared/service-route";
-import { ResponseUtils } from "../shared/response-utils";
-import { catchError, map } from "rxjs/operators";
-import { of } from "rxjs/observable/of";
+import { CachingDataService } from '../shared/data/caching-data.service';
+import { ReportingServiceRoute } from '../shared/service-route';
+import { ResponseUtils } from '../shared/response-utils';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
+import { Assessment } from '../assessments/model/assessment.model';
 
 const ServiceRoute = ReportingServiceRoute;
 
 const MathScorableClaims = [ '1', 'SOCK_2', '3' ];
 const ELAScorableClaims = [ 'SOCK_R', '2-W', 'SOCK_LS', '4-CR' ];
-const ScorableClaimsBySubject: Map<string, string[]>  = new Map([
+const ScorableClaimsBySubject: Map<string, string[]> = new Map([
   [ 'Math', MathScorableClaims ],
   [ 'ELA', ELAScorableClaims ]
 ]);
-const MathOrganizationalClaims = ['1', '2', '3', '4'];
-const ELAOrganizationalClaims = ['1-LT', '1-IT', '2-W', '3-L', '3-S', '4-CR'];
-const OrganizationalClaimsBySubject: Map<string, string[]>  = new Map([
+const MathOrganizationalClaims = [ '1', '2', '3', '4' ];
+const ELAOrganizationalClaims = [ '1-LT', '1-IT', '2-W', '3-L', '3-S', '4-CR' ];
+const OrganizationalClaimsBySubject: Map<string, string[]> = new Map([
   [ 'Math', MathOrganizationalClaims ],
   [ 'ELA', ELAOrganizationalClaims ]
 ]);
@@ -55,6 +56,16 @@ export class SubjectService {
           definition.subject === subject &&
           definition.assessmentType === assessmentType))
       );
+  }
+
+  /**
+   * Retrieve the definition for the given assessment's subject and type
+   *
+   * @param {string} assessment The assessment to get the definition for
+   * @returns {Observable<SubjectDefinition>} The definition
+   */
+  getSubjectDefinitionForAssessment(assessment: Assessment): Observable<SubjectDefinition> {
+    return this.getSubjectDefinition(assessment.subject, assessment.type);
   }
 
   /**

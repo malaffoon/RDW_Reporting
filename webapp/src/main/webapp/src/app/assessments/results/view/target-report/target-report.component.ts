@@ -37,6 +37,8 @@ import { Exam } from '../../../model/exam.model';
 import { SortEvent } from 'primeng/api';
 import { AggregateReportItem } from '../../../../aggregate-report/results/aggregate-report-item';
 import { Utils } from '../../../../shared/support/support';
+import { SubjectService } from '../../../../subject/subject.service';
+import { SubjectDefinition } from '../../../../subject/subject';
 
 const SubgroupOrdering = ordering((a: Subgroup, b: Subgroup) => {
   // Overall should be first
@@ -123,20 +125,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   @ViewChild('dataTable')
   private dataTable: Table;
 
-  columns: Column[] = [
-    new Column({ id: 'claim', headerInfoText: 'common.info.claim' }),
-    new Column({ id: 'target', headerInfoText: 'common.info.target' }),
-    new Column({ id: 'subgroup' }),
-    new Column({ id: 'studentsTested' }),
-    new Column({
-      id: 'student-relative-residual-scores-level',
-      headerInfoText: 'target-report.columns.student-relative-residual-scores-level-info'
-    }),
-    new Column({
-      id: 'standard-met-relative-residual-level',
-      headerInfoText: 'target-report.columns.standard-met-relative-residual-level-info'
-    })
-  ];
+  columns: Column[];
 
   allTargets: Target[] = [];
   loading: boolean = false;
@@ -156,6 +145,8 @@ export class TargetReportComponent implements OnInit, ExportResults {
 
   allSubgroups: any[] = [];
 
+  subjectDefinition: SubjectDefinition;
+
   private _sessions: any[];
   private _filterBy: FilterBy;
   private _filterBySubscription: Subscription;
@@ -171,7 +162,8 @@ export class TargetReportComponent implements OnInit, ExportResults {
               private assessmentExamMapper: AssessmentExamMapper,
               private filterOptionService: ExamFilterOptionsService,
               private assessmentService: GroupAssessmentService,
-              private applicationSettingsService: ApplicationSettingsService) {
+              private applicationSettingsService: ApplicationSettingsService,
+              private subjectService: SubjectService) {
 
     applicationSettingsService.getSettings().subscribe(settings => {
       this.allSubgroups = this.createAllSubgroups(settings);
@@ -193,11 +185,13 @@ export class TargetReportComponent implements OnInit, ExportResults {
       this.targetService.getTargetsForAssessment(this.assessment.id),
       this.assessmentProvider.getTargetScoreExams(this.assessment.id),
       this.filterOptionService.getExamFilterOptions(),
-      this.applicationSettingsService.getSettings()
-    ).subscribe(([ allTargets, targetScoreExams, subgroupOptions, applicationSettings ]) => {
+      this.applicationSettingsService.getSettings(),
+      this.subjectService.getSubjectDefinitionForAssessment(this.assessment)
+    ).subscribe(([ allTargets, targetScoreExams, subgroupOptions, applicationSettings, subjectDefinition ]) => {
       this.originalTargetScoreExams = this.targetScoreExams = targetScoreExams;
       this.subgroupOptions = subgroupOptions;
       this.allTargets = allTargets;
+      this.subjectDefinition = subjectDefinition;
 
       this.minimumStudentCount = applicationSettings.targetReport.minimumStudentCount;
       this.targetStatisticsCalculator.insufficientDataCutoff = applicationSettings.targetReport.insufficientDataCutoff;
@@ -429,20 +423,24 @@ interface ColumnDefinition {
   id: string;
   field?: string;
   headerInfoText?: string;
+  headerResolve: any;
 }
 
 class Column implements BaseColumn {
   id: string;
   field: string;
-  headerInfoText: string;
+  headerInfoTranslationCode: string;
+  headerResolve: any;
 
   constructor({
                 id,
                 field = '',
-                headerInfoText
+                headerInfoTranslationCode,
+                headerResolve = {}
               }: ColumnDefinition) {
     this.id = id;
     this.field = field ? field : id;
-    this.headerInfoText = headerInfoText;
+    this.headerInfoTranslationCode = headerInfoTranslationCode;
   }
+
 }

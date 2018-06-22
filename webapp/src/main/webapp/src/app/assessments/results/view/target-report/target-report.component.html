@@ -45,6 +45,7 @@
 
 <!-- Target Report Table -->
 <p-table #dataTable
+         *ngIf="columns"
          [columns]="columns"
          [value]="showResults ? aggregateTargetScoreRows : []"
          [autoLayout]="true"
@@ -60,13 +61,13 @@
           class="wrapping">
 
         <span *ngSwitchDefault>
-          <span *ngIf="!column.headerInfoText">
-            {{('target-report.columns.' + column.id) | translate}}
+          <span *ngIf="!column.headerInfoTranslationCode">
+            {{'target-report.columns.' + column.id | translate:column.headerResolve}}
           </span>
-          <span *ngIf="column.headerInfoText"
+          <span *ngIf="column.headerInfoTranslationCode"
                 info-button
-                title="{{('target-report.columns.' + column.id) | translate}}"
-                content="{{column.headerInfoText | translate}}">
+                title="{{'target-report.columns.' + column.id | translate}}"
+                content="{{column.headerInfoTranslationCode | translate:column.headerResolve}}">
           </span>
         </span>
 
