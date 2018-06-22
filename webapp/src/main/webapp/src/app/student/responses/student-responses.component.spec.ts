@@ -3,8 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { TranslateModule } from "@ngx-translate/core";
-import { AssessmentTypePipe } from "../../shared/assessment-type.pipe";
-import { GradeDisplayPipe } from "../../shared/grade-display.pipe";
 import { ColorService } from "../../shared/color.service";
 import { AssessmentItem } from "../../assessments/model/assessment-item.model";
 import { Exam } from "../../assessments/model/exam.model";
@@ -18,6 +16,8 @@ import { PermissionService } from "../../shared/security/permission.service";
 import { WritingTraitScores } from "../../assessments/model/writing-trait-scores.model";
 import createSpy = jasmine.createSpy;
 import Spy = jasmine.Spy;
+import { CommonModule } from '../../shared/common.module';
+import { RdwFormatModule } from '../../shared/format/rdw-format.module';
 
 describe('StudentResponsesComponent', () => {
   let component: StudentResponsesComponent;
@@ -39,12 +39,11 @@ describe('StudentResponsesComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        RdwFormatModule
       ],
       declarations: [
         AuthorizationDirective,
-        AssessmentTypePipe,
-        GradeDisplayPipe,
         OptionalPipe,
         StudentResponsesComponent
       ],

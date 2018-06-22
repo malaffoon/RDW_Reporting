@@ -5,12 +5,24 @@ management:
   security:
     enabled: false
 
-server:
-  # tomcat settings for reasonable performance: adjust for tiny/huge configurations
-  tomcat:
-    max-connections: 0
-    max-threads: 4
-    accept-count: 10
+app:
+  aggregate-reports:
+    assessment-types: ica,sum,iab
+    statewide-user-assessment-types: sum
+    state-aggregate-assessment-types: sum
+    custom-aggregate-report-repository:
+      organization-partition-size: 10
+      jdbc-fetch-size: -1
+    query-pool-size: 6
+    api-enabled: false
+
+  archive:
+      root: file:///tmp/
+
+  cache:
+    repository:
+      # every day at 2:00 am (GMT)
+      refresh-cron: "0 0 2 * * *"
 
 cloud:
   aws:
@@ -24,33 +36,32 @@ cloud:
     credentials:
       instance-profile: false
 
-app:
-  aggregate-reports:
-    assessment-types: ica,sum
-    statewide-user-assessment-types: sum
-    custom-aggregate-report-repository:
-      organization-partition-size: 10
-    query-pool-size: 6
-    api-enabled: false
+jwt:
+  secret: ${rdw.reporting.jwt.secret:secret}
 
-  archive:
-      root: file:///tmp/
-
-  cache:
-    repository:
-      # every day at 2:00 am (GMT)
-      refresh-cron: "0 0 2 * * *"
-
+reporting:
+  # english-learners should be lep or elas
+  english-learners:
+    - elas
   school-year: 2018
   state:
     code: CA
     name: California
+  target-report:
+    insufficient-data-cutoff: 0.2
+    min-number-of-students: 0
 
+server:
+  # tomcat settings for reasonable performance: adjust for tiny/huge configurations
+  tomcat:
+    max-connections: 0
+    max-threads: 4
+    accept-count: 10
 
 spring:
   cache:
     type: SIMPLE
-    cache-names: internalTranslationsByCode, reportOptions, administrationConditions, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, ethnicities, genders, schoolYears, subjects, activeAssessments, embargo
+    cache-names: internalTranslationsByCode, reportOptions, administrationConditions, assessments, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, claims, targets, ethnicities, genders, elases, schoolYears, subjects, activeAssessments, embargo
 
   cloud:
     stream:
@@ -74,14 +85,14 @@ spring:
 
   olap_datasource:
     url: "\
-       jdbc:redshift://${spring.olap_datasource.url-server:localhost:5432}/${spring.olap_datasource.url-db:dev}\
-       ?ApplicationName=rdw-reporting-aggregate-service\
-       "
+      jdbc:redshift://${spring.olap_datasource.url-server:localhost:5432}/${spring.olap_datasource.url-db:dev}\
+      ?ApplicationName=rdw-reporting-aggregate-service\
+      &loginTimeout=${spring.olap_datasource.connect-timeout:10}\
+      &socketTimeout=${spring.olap_datasource.socket-timeout:0}\
+      "
     username: root
     password:
     testWhileIdle: true
     validationQuery: SELECT 1
+    validationQueryTimeout: 30000
     driverClassName: com.amazon.redshift.jdbc42.Driver
-
-jwt:
-  secret: ${rdw.reporting.jwt.secret:secret}

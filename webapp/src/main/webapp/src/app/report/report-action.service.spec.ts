@@ -5,7 +5,7 @@ import { NotificationService } from "../shared/notification/notification.service
 import { Router } from "@angular/router";
 import { ActionType, AggregateReportType, ReportAction, ReportActionService } from "./report-action.service";
 import { Report } from "./report.model";
-import { Observable } from "rxjs/Observable";
+import { empty } from 'rxjs/observable/empty';
 import Spy = jasmine.Spy;
 
 describe('ReportActionService', () => {
@@ -22,7 +22,7 @@ describe('ReportActionService', () => {
       "ReportService",
       ["getReportContent", "downloadReportContent"]
     );
-    (reportService.getReportContent as Spy).and.callFake(() => Observable.empty());
+    (reportService.getReportContent as Spy).and.callFake(() => empty());
 
     notificationService = jasmine.createSpyObj(
       "NotificationService",

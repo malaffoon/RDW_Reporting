@@ -1,9 +1,11 @@
-import { Injectable } from "@angular/core";
-import { AggregateReportItem, Dimension } from "./aggregate-report-item";
-import { AggregateReportRow } from "../../report/aggregate-report";
-import { AssessmentDefinition } from "../assessment/assessment-definition";
-import { OrganizationMapper } from "../../shared/organization/organization.mapper";
-import { DimensionConfigurationByType } from "../dimension-configuration";
+import { Injectable } from '@angular/core';
+import { AggregateReportItem } from './aggregate-report-item';
+import { AggregateReportRow, AggregateReportRowMeasure } from '../../report/aggregate-report';
+import { AssessmentDefinition } from '../assessment/assessment-definition';
+import { OrganizationMapper } from '../../shared/organization/organization.mapper';
+import { SubgroupMapper } from '../subgroup/subgroup.mapper';
+import { AggregateReportQuery } from '../../report/aggregate-report-request';
+import { Utils } from "../../shared/support/support";
 
 /**
  * Maps server modeled aggregate report rows into client friendly table rows
@@ -11,10 +13,16 @@ import { DimensionConfigurationByType } from "../dimension-configuration";
 @Injectable()
 export class AggregateReportItemMapper {
 
-  constructor(private organizationMapper: OrganizationMapper) {
+  constructor(private organizationMapper: OrganizationMapper,
+              private subgroupMapper: SubgroupMapper) {
   }
 
-  map(assessmentDefinition: AssessmentDefinition, row: AggregateReportRow, uuid: number): AggregateReportItem {
+  createRow(query: AggregateReportQuery,
+            assessmentDefinition: AssessmentDefinition,
+            row: any,
+            uuid: number,
+            measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure): AggregateReportItem {
+
     const item = new AggregateReportItem();
     const itemPerformanceLevelCounts = item.performanceLevelByDisplayTypes.Separate.Number;
     const itemPerformanceLevelPercents = item.performanceLevelByDisplayTypes.Separate.Percent;
@@ -23,34 +31,43 @@ export class AggregateReportItemMapper {
 
     item.itemId = uuid;
     item.assessmentId = row.assessment.id;
+    item.assessmentLabel = row.assessment.label;
     item.assessmentGradeCode = row.assessment.gradeCode;
     item.subjectCode = row.assessment.subjectCode;
     item.schoolYear = row.assessment.examSchoolYear;
     item.organization = this.organizationMapper.map(row.organization);
-    item.dimension = this.mapDimension(row.dimension);
+    item.claimCode = row.claimCode;
+    item.targetNaturalId = row.targetNaturalId;
+    item.studentRelativeResidualScoresLevel = row.studentRelativeResidualScoresLevel;
+    item.standardMetRelativeResidualLevel = row.standardMetRelativeResidualLevel;
+    item.targetDescription = row.targetDescription;
 
-    const measures: any = row.measures || {};
+    const dashIndex = Utils.isNullOrUndefined(row.targetCode) ? -1 : row.targetCode.indexOf('-');
+    item.targetCode = dashIndex === -1
+      ? row.targetCode
+      : row.targetCode.substring(0, dashIndex);
+
+    item.subgroup = this.subgroupMapper.fromAggregateReportRow(query, row);
+
+    const measures: any = measuresGetter(row) || {};
     item.avgScaleScore = measures.avgScaleScore || 0;
     item.avgStdErr = measures.avgStdErr || 0;
-
-    let totalTested: number = 0;
+    item.studentsTested = measures.studentCount;
 
     for (let level = 1; level <= assessmentDefinition.performanceLevelCount; level++) {
-      let count = measures[ `level${level}Count` ] || 0;
-      totalTested += count;
+      const count = measures[ `level${level}Count` ] || 0;
       itemPerformanceLevelCounts.push(count);
     }
-    item.studentsTested = totalTested;
 
     for (let level = 0; level < itemPerformanceLevelCounts.length; level++) {
-      const percent = totalTested == 0 ? 0 : Math.floor((itemPerformanceLevelCounts[ level ] / totalTested) * 100);
+      const percent = item.studentsTested === 0 ? 0 : Math.floor((itemPerformanceLevelCounts[ level ] / item.studentsTested) * 100);
       itemPerformanceLevelPercents.push(percent);
     }
 
-    //If there is a rollup level, calculate the grouped values
+    // If there is a rollup level, calculate the grouped values
     if (assessmentDefinition.performanceLevelGroupingCutPoint > 0) {
-      let belowCount: number = 0;
-      let aboveCount: number = 0;
+      let belowCount = 0;
+      let aboveCount = 0;
       for (let level = 0; level < itemPerformanceLevelCounts.length; level++) {
         if (level < assessmentDefinition.performanceLevelGroupingCutPoint - 1) {
           belowCount += itemPerformanceLevelCounts[ level ];
@@ -62,24 +79,11 @@ export class AggregateReportItemMapper {
       itemGroupedPerformanceLevelCounts.push(belowCount);
       itemGroupedPerformanceLevelCounts.push(aboveCount);
 
-      itemGroupedPerformanceLevelPercents.push(totalTested === 0 ? 0 : Math.floor((belowCount / totalTested) * 100));
-      itemGroupedPerformanceLevelPercents.push(totalTested === 0 ? 0 : Math.floor((aboveCount / totalTested) * 100));
+      itemGroupedPerformanceLevelPercents.push(item.studentsTested === 0 ? 0 : Math.floor((belowCount / item.studentsTested) * 100));
+      itemGroupedPerformanceLevelPercents.push(item.studentsTested === 0 ? 0 : Math.floor((aboveCount / item.studentsTested) * 100));
     }
 
     return item;
-  }
-
-  private mapDimension(dimension: any): Dimension {
-    const dimensionConfiguration = DimensionConfigurationByType[dimension.type];
-    const dimensionBuilder: any = {
-      id: `${dimension.type}.${dimension.code}`,
-      type: dimension.type,
-      code: dimension.code
-    };
-    if (dimensionConfiguration) {
-      dimensionBuilder.codeTranslationCode = dimensionConfiguration.getTranslationCode(dimension.code);
-    }
-    return dimensionBuilder;
   }
 
 }

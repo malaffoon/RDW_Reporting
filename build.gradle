@@ -23,21 +23,16 @@ plugins {
     id 'com.jfrog.artifactory' version '4.4.18'
 }
 
-// fixes spring boot 1.5 auto configuration from thymeleaf 2 to 3
-ext['thymeleaf.version'] = '3.0.6.RELEASE'
-ext['thymeleaf-layout-dialect.version'] = '2.1.1'
-
-
 apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.1.0-SNAPSHOT`
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.1.0-68"
-String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.1.0-321"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.2.0-91"
+String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.2.0-372"
 String dockerPrefix = "smarterbalanced"
 
 allprojects {
     group = 'org.opentestsystem.rdw.reporting'
-    version = '1.1.4-SNAPSHOT'
+    version = '1.2.0-SNAPSHOT'
 
     apply plugin: 'idea'
     apply plugin: 'propdeps'
@@ -69,6 +64,7 @@ subprojects {
 
         dependencies {
             dependency "org.opentestsystem.rdw.common:rdw-common-messaging:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-group:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-model:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-utils:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-security:${rdwCommonVersion}"
@@ -76,32 +72,24 @@ subprojects {
             dependency "org.opentestsystem.rdw.common:rdw-common-archive:${rdwCommonVersion}"
 
             // commonly used libraries
-            dependency 'com.google.guava:guava:21.0'
-            dependency 'commons-io:commons-io:2.4'
+            dependency 'com.google.guava:guava:23.0'
+            dependency 'commons-io:commons-io:2.6'
+            dependency 'io.jsonwebtoken:jjwt:0.9.0'
+            dependency 'org.apache.pdfbox:pdfbox:2.0.7'
             dependency 'org.slf4j:slf4j-api:1.7.25'
             dependency 'org.thymeleaf:thymeleaf:3.0.6.RELEASE'
 
             // spring extensions aren't included in the the bom
             dependency 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE'
 
-            // pdf tooling
-            dependency 'org.apache.pdfbox:pdfbox:2.0.7'
-
             // commonly used test libraries
-            dependency 'org.assertj:assertj-core:3.6.2'
-            dependency 'org.mockito:mockito-all:1.10.19'
             dependency 'junit:junit:4.12'
-
-            // jwt
-            dependency 'io.jsonwebtoken:jjwt:0.9.0'
-
-            // override default spring boot zuul version to handle multipart form proxy requests
-            // TODO remove this override after upgrading to Camden.SR7 or above
-            dependency 'org.springframework.cloud:spring-cloud-netflix-core:1.2.7.RELEASE'
+            dependency 'org.assertj:assertj-core:3.6.2'
+            dependency 'org.mockito:mockito-core:2.16.0'
         }
         imports {
-            // spring cloud Camden.SR5 includes spring cloud stream Brooklyn.SR2
-            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
+            // https://github.com/spring-projects/spring-cloud/wiki/Spring-Cloud-Camden-Release-Notes
+            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR7'
         }
     }
 
@@ -110,7 +98,7 @@ subprojects {
 
         testCompile 'junit:junit'
         testCompile 'org.assertj:assertj-core'
-        testCompile 'org.mockito:mockito-all'
+        testCompile 'org.mockito:mockito-core'
     }
 
     // task to generate build-info.properties with build.version, build.timestamp
@@ -153,7 +141,7 @@ subprojects {
             label([maintainer: 'Fairway Technologies'])
             copyFile("${jar.archivePath.name}", "${jar.archivePath.name}")
             exposePort(8008, 8080)
-            runCommand("apk add --no-cache tini")
+            runCommand("apk add --no-cache tini curl jq")
             entryPoint("/sbin/tini", "--")
             environmentVariable("MAX_HEAP_SIZE", "-Xmx384m")
             instruction('CMD exec java $MAX_HEAP_SIZE $JAVA_OPTS -jar ' + "${jar.archivePath.name}")
@@ -191,7 +179,6 @@ subprojects {
         }
     }
 
-    //The omission of the ':' in manualIT is on purpose - we need the relative path to manualIT
     task IT(type: Test, dependsOn:[":cleanReportingTest", ":migrateReportingTest"]) {
         include '**/*IT.*'
         group = 'Verification'
@@ -272,7 +259,9 @@ def taskMap = [
         "cleanWarehouse_test": "Cleans the schemas that integration tests depend on",
         "migrateWarehouse_test": "Migrates the schemas that integration tests depend on",
         "cleanReporting_olap_test": "Cleans the schemas that redshift tests depend on",
-        "migrateReporting_olap_test": "Migrates the schemas that redshift tests depend on"
+        "migrateReporting_olap_test": "Migrates the schemas that redshift tests depend on",
+        "cleanAll_test": "Cleans the schemas that integration tests depend on",
+        "migrateAll_test": "Migrates the schemas that integration tests depend on",
 ]
 
 taskMap.keySet().each { key ->

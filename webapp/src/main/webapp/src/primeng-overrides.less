@@ -15,25 +15,24 @@ body {
   }
 }
 
-
-// TODO Added .ui-table* to apply styles to primeng 5 turbo table.
-// TODO Once we move all tables to p-table we can remove the .ui-datatable* selectors here
 // Tables
-body .ui-widget.ui-datatable,
+.ui-table-auto-layout > .ui-table-wrapper {
+  overflow: visible;
+}
+
 body .ui-table {
   font-family: @font-family-serif;
   font-size: @font-size-small;
   table {
     border-collapse: separate;
+    border: none;
     width: auto;
     max-width: none;
     min-width: 100%;
     // head, foot, and data
-    .ui-datatable-thead,
     .ui-table-thead,
-    .ui-datatable-tfoot,
     .ui-table-tfoot,
-    .ui-datatable-data,
+    .ui-table-tbody,
     .ui-table-data {
       > tr {
         > th,
@@ -42,6 +41,8 @@ body .ui-table {
           padding: @table-cell-padding;
           background-color: @table-bg;
           white-space: nowrap;
+          vertical-align: middle;
+          box-shadow: none;
           &:first-child {
             border-left: 1px solid @table-border-color;
           }
@@ -67,7 +68,14 @@ body .ui-table {
             }
           }
         }
-        > th {padding: (@table-cell-padding / 2) @table-cell-padding}
+        > th {
+          padding: (@table-cell-padding / 2) @table-cell-padding;
+
+          &.wrapping {
+            white-space: normal;
+            text-align: center;
+          }
+        }
         &:last-child td {
           border-bottom: 1px solid @table-border-color;
         }
@@ -81,9 +89,7 @@ body .ui-table {
       }
     }
     // head, and foot
-    .ui-datatable-thead,
     .ui-table-thead,
-    .ui-datatable-tfoot,
     .ui-table-tfoot {
       > tr {
         > th,
@@ -100,7 +106,6 @@ body .ui-table {
       }
     }
     // head
-    .ui-datatable-thead,
     .ui-table-thead {
       > tr {
         > th {
@@ -121,14 +126,13 @@ body .ui-table {
       }
     }
     // body
-    .ui-datatable-data,
+    .ui-table-tbody,
     .ui-table-data {
       > tr {
         > td {
           border-right: 1px solid rgba(213, 213, 213, 0.26);
           border-bottom: 1px solid @table-border-color;
         }
-        &.ui-datatable-even:hover,
         &.ui-table-even:hover {
           background-color: @table-bg-hover;
         }
@@ -136,18 +140,13 @@ body .ui-table {
     }
   }
   // fixing the scrollable table
-  &.ui-datatable-scrollable,
   &.ui-table-scrollable {
-    margin: 0px;
-    width: 100;
+    margin: 0;
+    width: 100%;
     max-width: 100%;
-    .ui-datatable-scrollable-wrapper,
     .ui-table-scrollable-wrapper {
-      .ui-datatable-scrollable-view,
       .ui-table-scrollable-view {
-        .ui-datatable-scrollable-header,
         .ui-table-scrollable-header {
-          .ui-datatable-scrollable-header-box,
           .ui-table-scrollable-header-box {
             table {
               width: auto;
@@ -155,7 +154,6 @@ body .ui-table {
             }
           }
         }
-        .ui-datatable-scrollable-body,
         .ui-table-scrollable-body {
           > div {
             table {
@@ -224,8 +222,6 @@ body .ui-table {
     width: 100% !important;
   }
 }
-
-
 
 p-table {
   table {

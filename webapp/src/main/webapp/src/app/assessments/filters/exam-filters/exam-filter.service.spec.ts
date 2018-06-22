@@ -1,5 +1,4 @@
 import { ExamFilterService } from "./exam-filter.service";
-import { AssessmentType } from "../../../shared/enum/assessment-type.enum";
 import { AdministrativeCondition } from "../../../shared/enum/administrative-condition.enum";
 import { Completeness } from "../../../shared/enum/completeness.enum";
 import { AssessmentExam } from "../../model/assessment-exam.model";
@@ -30,14 +29,14 @@ describe('ExamFilterService', () => {
 
   it('should filter exams by Administrative condition for IABs', () => {
     filterBy.administration = AdministrativeCondition.Standard;
-    assessmentExam.assessment.type = AssessmentType.IAB;
+    assessmentExam.assessment.type = 'iab';
 
-    assessmentExam.exams[ 0 ].administrativeCondition =  AdministrativeCondition.Standard;
+    assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Standard;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.NonStandard;
     assessmentExam.exams[ 2 ].administrativeCondition = AdministrativeCondition.Standard;
     assessmentExam.exams[ 3 ].administrativeCondition = AdministrativeCondition.NonStandard;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(2);
     expect(actual.some(x => x.administrativeCondition == AdministrativeCondition.NonStandard)).toBeFalsy();
@@ -45,14 +44,14 @@ describe('ExamFilterService', () => {
 
   it('should not filter exams by Administrative condition for Summative', () => {
     filterBy.administration = AdministrativeCondition.Standard;
-    assessmentExam.assessment.type = AssessmentType.SUMMATIVE;
+    assessmentExam.assessment.type = 'sum';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Standard;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.NonStandard;
     assessmentExam.exams[ 2 ].administrativeCondition = AdministrativeCondition.Standard;
     assessmentExam.exams[ 3 ].administrativeCondition = AdministrativeCondition.NonStandard;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(4);
     expect(actual.some(x => x.administrativeCondition == AdministrativeCondition.NonStandard)).toBeTruthy();
@@ -60,14 +59,14 @@ describe('ExamFilterService', () => {
 
   it('should filter exams by summative status for Summative', () => {
     filterBy.summativeStatus = AdministrativeCondition.Valid;
-    assessmentExam.assessment.type = AssessmentType.SUMMATIVE;
+    assessmentExam.assessment.type = 'sum';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.Invalid;
     assessmentExam.exams[ 2 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 3 ].administrativeCondition = AdministrativeCondition.Invalid;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(2);
     expect(actual.some(x => x.administrativeCondition == AdministrativeCondition.Invalid)).toBeFalsy();
@@ -75,14 +74,14 @@ describe('ExamFilterService', () => {
 
   it('should not filter exams by summative status for IABs', () => {
     filterBy.summativeStatus = AdministrativeCondition.Valid;
-    assessmentExam.assessment.type = AssessmentType.IAB;
+    assessmentExam.assessment.type = 'iab';
 
     assessmentExam.exams[ 0 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 1 ].administrativeCondition = AdministrativeCondition.Invalid;
     assessmentExam.exams[ 2 ].administrativeCondition = AdministrativeCondition.Valid;
     assessmentExam.exams[ 3 ].administrativeCondition = AdministrativeCondition.Invalid;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(4);
     expect(actual.some(x => x.administrativeCondition == AdministrativeCondition.Invalid)).toBeTruthy();
@@ -96,7 +95,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].completeness = Completeness.Partial;
     assessmentExam.exams[ 3 ].completeness = Completeness.Complete;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(2);
     expect(actual.some(x => x.completeness == Completeness.Complete)).toBeFalsy();
@@ -112,7 +111,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].enrolledGrade = '02';
     assessmentExam.exams[ 3 ].enrolledGrade = '03';
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(2);
     expect(actual.some(x => x.enrolledGrade == '03')).toBeFalsy();
@@ -128,7 +127,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].enrolledGrade = '02';
     assessmentExam.exams[ 3 ].enrolledGrade = '03';
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(4);
     expect(actual.some(x => x.enrolledGrade == '03')).toBeTruthy();
@@ -156,7 +155,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].administrativeCondition = AdministrativeCondition.Standard;
     assessmentExam.exams[ 2 ].completeness = Completeness.Complete;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(1);
 
@@ -166,17 +165,19 @@ describe('ExamFilterService', () => {
   });
 
   it('should filter exams by gender', () => {
-    filterBy.gender = 'Male';
+    filterBy.genders["Male"] = false;
+    filterBy.genders["Female"] = true;
+    filterBy.genders["Nonbinary"] = true;
 
     assessmentExam.exams[ 0 ].student.genderCode = 'Female';
     assessmentExam.exams[ 1 ].student.genderCode = 'Male';
     assessmentExam.exams[ 2 ].student.genderCode = 'Female';
-    assessmentExam.exams[ 3 ].student.genderCode = 'Male';
+    assessmentExam.exams[ 3 ].student.genderCode = 'Nonbinary';
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
-    expect(actual.length).toBe(2);
-    expect(actual.some(x => x.student.genderCode == 'Female')).toBeFalsy();
+    expect(actual.length).toBe(3);
+    expect(actual.some(x => x.student.genderCode == 'Male')).toBeFalsy();
   });
 
   it('should filter exams by migrant status as Yes', () => {
@@ -187,7 +188,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].migrantStatus = undefined;
     assessmentExam.exams[ 3 ].migrantStatus = undefined;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(1);
     expect(actual.some(x => x.migrantStatus === true)).toBeTruthy();
@@ -203,7 +204,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].migrantStatus = undefined;
     assessmentExam.exams[ 3 ].migrantStatus = undefined;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(1);
     expect(actual.some(x => x.migrantStatus === false)).toBeTruthy();
@@ -219,7 +220,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].plan504 = false;
     assessmentExam.exams[ 3 ].plan504 = false;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(3);
     expect(actual.some(x => x.plan504 === false)).toBeTruthy();
@@ -234,7 +235,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].iep = false;
     assessmentExam.exams[ 3 ].iep = false;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(1);
     expect(actual.some(x => x.iep === true)).toBeTruthy();
@@ -249,7 +250,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].limitedEnglishProficiency = false;
     assessmentExam.exams[ 3 ].limitedEnglishProficiency = false;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(3);
     expect(actual.some(x => x.limitedEnglishProficiency === false)).toBeTruthy();
@@ -272,7 +273,7 @@ describe('ExamFilterService', () => {
       return exam;
     });
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.length).toBe(2);
     expect(actual[0].session).toBe("0");
@@ -287,7 +288,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].transfer = true;
     assessmentExam.exams[ 3 ].transfer = false;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.map(exam => exam.id)).toEqual([0, 3]);
   });
@@ -300,7 +301,7 @@ describe('ExamFilterService', () => {
     assessmentExam.exams[ 2 ].transfer = true;
     assessmentExam.exams[ 3 ].transfer = false;
 
-    let actual = fixture.filterExams(assessmentExam, filterBy);
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
 
     expect(actual.map(exam => exam.id)).toEqual([0, 1, 2, 3]);
   });

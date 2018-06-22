@@ -9,12 +9,7 @@ import { InstructionalResourcesService } from "../../instructional-resources.ser
 import { InstructionalResource } from "../../../model/instructional-resources.model";
 import { Observable } from "rxjs/Observable";
 import { PopupMenuAction } from "../../../../shared/menu/popup-menu-action.model";
-import { Utils } from "../../../../shared/support/support";
-
-enum ScoreViewState {
-  OVERALL = 1,
-  CLAIM = 2
-}
+import { createScorableClaimOrdering } from '../../../../shared/ordering/orderings';
 
 @Component({
   selector: 'results-by-student',
@@ -40,48 +35,25 @@ export class ResultsByStudentComponent implements OnInit {
   @Input()
   minimumItemDataYear: number;
 
+  @Input()
+  showClaimScores: boolean;
+
   @ViewChild('menuReportDownloader')
   reportDownloader: StudentReportDownloadComponent;
 
+  columns: Column[];
   actions: PopupMenuAction[];
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
-  displayState: any = {
-    showClaim: ScoreViewState.OVERALL
-  };
-
-  get claimCodes() {
-    return this.assessment.claimCodes;
-  }
-
-  get isClaimScoreSelected() {
-    return this.displayState.table == ScoreViewState.CLAIM;
-  }
-
-  public setClaimScoreSelected() {
-    this.displayState.table = ScoreViewState.CLAIM;
-  }
-
-  public setOverallScoreSelected() {
-    this.displayState.table = ScoreViewState.OVERALL;
-  }
+  hasTransferStudent: boolean = false;
 
   get performanceLevelHeader() {
-    return "labels.groups.results.assessment.exams.cols." +
-      (this.assessment.isIab ? "iab" : "ica") + ".performance";
+    // TODO why not just `common.results.assessment-exam-columns.${assessment.type}.performance`
+    return 'common.results.assessment-exam-columns.' +
+      (this.assessment.isIab ? 'iab' : 'ica') + '.performance';
   }
 
   get performanceLevelHeaderInfo() {
-    return this.performanceLevelHeader + "-info";
-  }
-
-  get examLevelEnum() {
-    return this.assessment.isIab
-      ? "enum.iab-category.full."
-      : "enum.achievement-level.full.";
-  }
-
-  get showClaimToggle() {
-    return !this.assessment.isIab;
+    return this.performanceLevelHeader + '-info';
   }
 
   constructor(private actionBuilder: MenuActionBuilder,
@@ -90,12 +62,47 @@ export class ResultsByStudentComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.columns = [
+      new Column({id: 'name', field: 'student.lastName'}),
+      new Column({id: 'date'}),
+      new Column({id: 'session'}),
+      new Column({id: 'grade', field: 'enrolledGrade', overall: true}),
+      new Column({id: 'school', field: 'school.name'}),
+      new Column({id: 'status', headerInfo: true, overall: true}),
+      new Column({id: 'level', overall: true}),
+      new Column({id: 'score', headerInfo: true, overall: true}),
+      ...this.getClaimColumns()
+    ];
     this.actions = this.createActions();
+    this.hasTransferStudent = this.exams.some(x => x.transfer);
   }
 
   loadInstructionalResources(exam: Exam) {
     this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this.assessment.id, exam.school.id)
       .map(resources => resources.getResourcesByPerformance(exam.level));
+  }
+
+  examLevelTranslation(exam: Exam): string {
+    return this.translate.instant(exam.level ? `common.assessment-type.${this.assessment.type}.performance-level.${exam.level}.name` : 'common.missing');
+  }
+
+  private getClaimColumns(): Column[] {
+    if (!this.assessment.claimCodes) {
+      return [];
+    }
+
+    return this.assessment.claimCodes
+      .map((code, index) =>
+        new Column({
+          id: 'claim',
+          field: `claimScores.${index}.level`,
+          index: index,
+          claim: code
+        })
+      )
+      .sort(createScorableClaimOrdering(this.assessment.subject)
+        .on((column: Column) => column.claim)
+        .compare);
   }
 
   private createActions(): PopupMenuAction[] {
@@ -114,15 +121,15 @@ export class ResultsByStudentComponent implements OnInit {
 
           const downloader: StudentReportDownloadComponent = this.reportDownloader;
           const options: ReportOptions = downloader.options;
-          const subject = Utils.toSubjectCode(this.assessment.assessmentSubjectType);
-          const assessmentType = Utils.toAssessmentTypeCode(this.assessment.type);
+          const subject = this.assessment.subject;
+          const assessmentType = this.assessment.type;
 
           options.assessmentType = assessmentType;
           options.subject = subject;
           options.schoolYear = exam.schoolYear;
 
           downloader.student = exam.student;
-          downloader.title = this.translate.instant('labels.reports.form.title.single-prepopulated', {
+          downloader.title = this.translate.instant('results-by-student.create-single-prepopulated-report', {
             name: exam.student.firstName,
             schoolYear: exam.schoolYear,
             subject: this.translate.instant(`common.subject.${subject}.short-name`),
@@ -133,5 +140,36 @@ export class ResultsByStudentComponent implements OnInit {
         }
       )
       .build();
+  }
+}
+
+class Column {
+  id: string;
+  field: string;
+  headerInfo: boolean;
+  overall: boolean;
+
+  //Claim properties
+  index?: number;
+  claim?: string;
+
+  constructor({
+                id,
+                field = '',
+                headerInfo = false,
+                overall = false,
+                index = -1,
+                claim = ''
+              }) {
+    this.id = id;
+    this.field = field ? field : id;
+    this.headerInfo = headerInfo;
+    this.overall = overall;
+    if (index >= 0) {
+      this.index = index;
+    }
+    if (claim) {
+      this.claim = claim;
+    }
   }
 }

@@ -2,46 +2,72 @@ sql:
 
   administrationCondition:
     findAll: >-
-      SELECT id,
-        code
-      FROM administration_condition
-      ORDER BY id
+      SELECT id, code FROM administration_condition ORDER BY id
+
+  assessment:
+    findAll: >-
+      SELECT a.id,
+        a.name,
+        a.label,
+        at.code as type_code,
+        s.code as subject_code,
+        g.code as grade_code,
+        g.sequence as grade_sequence,
+        a.school_year,
+        a.min_score,
+        a.cut_point_1,
+        a.cut_point_2,
+        a.cut_point_3,
+        a.max_score
+      FROM asmt a
+        JOIN asmt_type at on at.id = a.type_id
+        JOIN subject s on s.id = a.subject_id
+        JOIN grade g on g.id =  a.grade_id
 
   assessmentGrade:
     findAll: >-
       SELECT DISTINCT
         g.id,
-        g.code
+        g.code,
+        g.sequence
       FROM asmt a
         JOIN grade g ON g.id = a.grade_id
       ORDER BY id
 
   assessmentType:
     findAll: >-
-      SELECT id,
-        code
-      FROM asmt_type
-      ORDER BY id
+      SELECT id, code FROM asmt_type ORDER BY id
+
+  claim:
+    findAll: >-
+      SELECT scs.id, scs.code, s.code as subject_code, at.code as asmt_type_code
+        FROM subject_claim_score scs
+          JOIN subject s ON scs.subject_id = s.id
+          JOIN asmt_type at ON at.id = scs.asmt_type_id
+
+  target:
+    findAll: >-
+      SELECT t.id, t.natural_id, t.claim_code, at.asmt_id, at.include_in_report
+        FROM asmt_target at
+          JOIN target t ON at.target_id =  t.id
 
   completeness:
     findAll: >-
-      SELECT id,
-        code
-      FROM completeness
-      ORDER BY id
+      SELECT id, code FROM completeness ORDER BY id
+
+  elas:
+    findAll: >-
+      SELECT id, code FROM elas ORDER BY id
 
   gender:
     findAll: >-
-      SELECT id,
-        code
-      FROM gender
-      ORDER BY id
+      SELECT id, code FROM gender ORDER BY id
 
   boolean:
-    findAll: select id, code from boolean order by id
+    findAll: SELECT id, code FROM boolean ORDER BY id
 
   strictBoolean:
-    findAll: select id, code from strict_boolean order by id
+    findAll: SELECT id, code FROM strict_boolean ORDER BY id
 
   embargo:
     isStateEmbargoed: >-

@@ -23,8 +23,7 @@ describe('StudentResultsFilterComponent', () => {
         { provide: Angulartics2, useValue: mockAngulartics2 }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -37,23 +36,9 @@ describe('StudentResultsFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit an event if advanced filters change', (done) => {
-    component.filterChange.subscribe(() => {
-      //Assert that the output emits
-      done();
-    });
-
-    component.filterState.filterBy.administration = "new value";
-  });
-
   it('should remove an advanced filter', () => {
-    let eventCount = 0;
-    component.filterChange.subscribe(() => {
-      eventCount++;
-    });
-
-    component.filterState.filterBy.administration = "new value";
+    component.advancedFilters.administration = "new value";
     component.removeFilter("administration");
-    expect(eventCount).toBe(2);
+    expect(component.advancedFilters.administration).toBe(-1);
   });
 });

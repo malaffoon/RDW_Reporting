@@ -1,11 +1,20 @@
-import { AssessmentSubjectType } from "../enum/assessment-subject-type.enum";
-import { AssessmentType } from "../enum/assessment-type.enum";
+import * as _ from 'lodash';
 
 export class Utils {
 
+  static equalSets(a: any[], b: any[]): boolean {
+    return a === b
+      || (
+        a != null
+        && b != null
+        && a.length === b.length
+        && _.isEqual(a.concat().sort(), b.concat().sort())
+      );
+  }
+
   static getPropertyValue(propertyPath: string, object: any): any {
-    let parts = propertyPath.split('.'),
-      property = object || this;
+    const parts = propertyPath.split('.');
+    let property = object || this;
 
     for (let i = 0; i < parts.length; i++) {
       property = property[ parts[ i ] ];
@@ -90,7 +99,7 @@ export class Utils {
   static toNgClassObject(value: any): any {
     switch (typeof value) {
       case 'string':
-        return value.split(/s+/g).reduce((object, key) => {
+        return value.split(/\s+/g).reduce((object, key) => {
           object[ key ] = true;
           return object;
         }, {});
@@ -153,6 +162,24 @@ export class Utils {
   }
 
   /**
+   * True if the provided element is visible in the provided window
+   *
+   * @param {Element} element
+   * @param {Window} window
+   * @returns {boolean}
+   */
+  static inView(element: Element, window: Window): boolean {
+    if (element == null || window == null) {
+      return false;
+    }
+    const bounds = element.getBoundingClientRect();
+    return bounds.bottom > 0
+      && bounds.right > 0
+      && bounds.left < (window.innerWidth || document.documentElement.clientWidth)
+      && bounds.top < (window.innerHeight || document.documentElement.clientHeight);
+  }
+
+  /**
    * Takes a string or number and returns it's integer value
    *
    * @param stringOrNumber the input
@@ -197,24 +224,6 @@ export class Utils {
       && a.length === b.length;
   }
 
-  // TODO stop using subject/assessment type enums. use codes instead.
-
-  static toServerSubjectEnum(code: string): string {
-    return { 'Math': 'MATH', 'ELA': 'ELA' }[ code ];
-  }
-
-  static toSubjectCode(subject: AssessmentSubjectType): string {
-    return [ undefined, 'Math', 'ELA' ][ subject ];
-  }
-
-  static toServerAssessmentTypeEnum(code: string): string {
-    return { 'ica': 'ICA', 'iab': 'IAB', 'sum': 'SUMMATIVE' }[ code ];
-  }
-
-  static toAssessmentTypeCode(assessmentType: AssessmentType): string {
-    return [ undefined, 'ica', 'iab', 'sum' ][ assessmentType ];
-  }
-
   /**
    * Given the name "My Name" this method will return "My Name (1)"
    * Given the name "My Name (1)" this method will return "My Name (2)"
@@ -223,11 +232,37 @@ export class Utils {
    * @returns {string} the given name suffixed with "(N + 1)" or " (1)" if no "(N)" is provided
    */
   static appendOrIncrementFileNameSuffix(name: string): string {
-    return name.replace(/((\((\d+)\)(\s)?)?$)/, (a) => {
-      if (a == '') {
+    return name.replace(/((\((\d+)\)(\s)?)?$)/, (a: string) => {
+      if (a === '') {
         return ` (1)`;
       }
       return `(${Number(a.replace(/[()]/g, '')) + 1})`;
     });
   }
+
+  /**
+   * Given a string "ThisString" this method will return "this-string"
+   *
+   * @param {string}
+   * @returns {string} the lowercase string with every non-initial capitalized letter separated by a dash
+   */
+  static camelCaseToDash(str: string): string {
+    return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+  }
+
+}
+
+/**
+ * Creates a string based on the provided parameters
+ * This method assumes the parameters is a basic javascript object and contains only primitive types
+ * This is useful when caching results based on request or route parameters
+ *
+ * @param parameters the object to create the key from
+ * @returns {string} the key
+ */
+export function serializeURLParameters(parameters: any): string {
+  return Object.entries(parameters)
+    .sort(([ a ], [ b ]) => a.localeCompare(b))
+    .map(([ key, value ]) => key + '=' + value) // TODO add explicit support for array values
+    .join('&');
 }

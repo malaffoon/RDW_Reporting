@@ -26,6 +26,7 @@ import { Utils } from "../support/support";
              [typeaheadOptionsInScrollableView]="20"
              [typeaheadScrollable]="true"
              [(ngModel)]="search"
+             autocomplete="off"
              [placeholder]="placeholder">
       
       <span class="input-group-btn">

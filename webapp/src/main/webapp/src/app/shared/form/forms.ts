@@ -47,11 +47,25 @@ export class Forms {
   /**
    * True if the control has errors and has been touched or dirtied
    *
-   * @param {FormControl} formControl the form control to test
+   * @param {AbstractControl} formControl the form control to test
    * @returns {boolean}
    */
-  public static showErrors(formControl: FormControl): boolean {
-    return formControl.invalid && (formControl.dirty || formControl.touched);
+  public static showErrors(control: AbstractControl): boolean {
+    return control.invalid && (control.dirty || control.touched);
+  }
+
+  public static submit(form: FormGroup, onValid: () => void, onInvalid?: () => void): void {
+    if (form.valid) {
+      onValid();
+    } else {
+      Forms.controls(form)
+        .forEach(control => control.markAsDirty());
+      form.updateValueAndValidity();
+
+      if (typeof onInvalid === 'function') {
+        onInvalid();
+      }
+    }
   }
 
 }

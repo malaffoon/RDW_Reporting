@@ -1,51 +1,39 @@
-import { AssessmentType } from "../../shared/enum/assessment-type.enum";
-import { AssessmentSubjectType } from "../../shared/enum/assessment-subject-type.enum";
-import { Utils } from "../../shared/support/support";
-
 export class Assessment {
   id: number;
+  name: string;
   label: string;
-  resourceUrl: string;
   grade: string;
-  type: AssessmentType;
-  selected: boolean;
+  type: string;
   subject: string;
   claimCodes: string[];
   cutPoints: number[];
+  hasWerItem: boolean;
 
-  get typeCode(): string {
-    return Utils.toAssessmentTypeCode(this.type);
-  }
+  /** @deprecated TODO this does not belong here but in a UI wrapper */
+  resourceUrl: string;
+  /** @deprecated TODO this does not belong here but in a UI wrapper */
+  selected: boolean;
 
-  get assessmentSubjectType(): AssessmentSubjectType {
-    return AssessmentSubjectType[this.subject];
-  }
-
+  /** @deprecated this belongs in a UI wrapper */
   get hasResourceUrl(): boolean {
-    return !Utils.isNullOrUndefined(this.resourceUrl);
+    return this.resourceUrl != null;
   }
 
   get isIab(): boolean {
-    return this.type == AssessmentType.IAB;
-  }
-
-  get isIca(): boolean {
-    return this.type == AssessmentType.ICA;
+    return this.type === 'iab';
   }
 
   get isInterim(): boolean {
-    return this.type != AssessmentType.SUMMATIVE;
+    return this.type !== 'sum';
   }
 
   get isSummative(): boolean {
-    return this.type == AssessmentType.SUMMATIVE;
+    return this.type === 'sum';
   }
 
+  // TODO:ConfigurableSubjects we need to change from using Assessment.isELA to AssessmentAndSubject.isXYZSupported
   get isEla(): boolean {
-    return this.assessmentSubjectType == AssessmentSubjectType.ELA;
+    return this.subject === 'ELA';
   }
 
-  get isMath(): boolean {
-    return this.assessmentSubjectType == AssessmentSubjectType.MATH;
-  }
 }

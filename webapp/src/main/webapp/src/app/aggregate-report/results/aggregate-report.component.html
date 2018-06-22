@@ -3,6 +3,26 @@
 <page-heading>
   <ng-template #heading>
     <h2>{{report.label}}</h2>
+
+    <div *ngIf="reportView && isLongitudinal" class="pull-right flex-child ml-xs">
+      <fieldset>
+        <label for="longitudinal-type-toggle"
+               info-button
+               title="{{'longitudinal-cohort-chart.population-toggle-label' | translate}}"
+               content="{{'longitudinal-cohort-chart.population-toggle-label-info' | translate}}"
+               placement="bottom"
+               class="mr-xs"></label>
+        <sb-radio-button-group id="longitudinal-type-toggle"
+                               name="longitudinal-type-toggle"
+                               [options]="displayOptions.longitudinalDisplayTypes"
+                               [(ngModel)]="longitudinalDisplayType"
+                               (ngModelChange)="onLongitudinalDisplayTypeChange()"
+                               buttonGroupStyles="btn-group-sm"
+                               buttonStyles="btn-primary"
+                               analyticsCategory="AggregateReportControl"
+                               analyticsEvent="Change"></sb-radio-button-group>
+      </fieldset>
+    </div>
   </ng-template>
 </page-heading>
 
@@ -14,14 +34,17 @@
         <i class="fa fa-chevron-left mr-xs"></i>{{'aggregate-report.form-link' | translate}}
       </button>
     </div>
+
+
+
     <div *ngIf="reportView" class="flex-child text-muted pt-xs">
-      {{'aggregate-reports.row-count-label' | translate}} <span class="label gray-darker">{{report.metadata.totalCount | number}}</span>
+      {{'aggregate-report.row-count-label' | translate}} <span class="label gray-darker">{{report.metadata.totalCount | number}}</span>
     </div>
 
     <div class="flex-child">
       <button class="form-control btn btn-default pull-right"
               (click)="onToggleRequestViewButtonClick()">
-        {{'buttons.visibility.' + (showRequest ? 'hide' : 'show') | translate}}
+        {{'common.action.' + (showRequest ? 'hide' : 'show') | translate}}
         <i class="fa ml-xs"
            [ngClass]="{'fa-caret-square-o-up': showRequest, 'fa-caret-square-o-down': !showRequest}"
            aria-hidden="true"></i>
@@ -56,15 +79,15 @@
 
     <ng-container *ngIf="reportNotLoadable">
       <div class="well">
-        <p>{{'aggregate-report.error.unloadable' | translate}}</p>
-        <button class="btn btn-primary" [routerLink]="['/reports']">{{'aggregate-report.reports-link' | translate}}
+        <p>{{'aggregate-report.unloadable-error' | translate}}</p>
+        <button class="btn btn-primary" [routerLink]="['/reports']">{{'reports.link' | translate}}
         </button>
       </div>
     </ng-container>
 
     <ng-container *ngIf="reportSizeNotSupported">
       <div class="well">
-        <p>{{'aggregate-report.error.unsupported-size' | translate}}</p>
+        <p>{{'aggregate-report.unsupported-size-error' | translate}}</p>
         <ul class="list-unstyled list-inline">
           <li>
             <button class="btn btn-danger btn-sm"
@@ -82,49 +105,66 @@
     </ng-container>
 
     <ng-container *ngIf="reportView">
-      <div *ngFor="let table of reportTables" class="well wide-content-container">
+      <div *ngFor="let view of reportViews" class="well wide-content-container">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-xs-12 col-sm-6">
             <div>
               <h3 class="h3 label-group green pull-left">
                 <span
                   class="label">{{'common.assessment-type.' + query.assessmentTypeCode + '.short-name' | translate}}</span><span
-                class="label">{{'common.subject.' + table.subjectCode + '.short-name' | translate}}</span>
+                class="label">{{'common.subject.' + view.subjectCode + '.short-name' | translate}}</span>
               </h3>
               <a class="btn btn-sm btn-default ml-sm with-pointer"
                  [ngClass]="{'disabled': isEmbargoed()}"
-                 popover="{{ (isEmbargoed() ? 'labels.reports.report-actions.embargoed' : '') | translate }}"
+                 popover="{{ (isEmbargoed() ? 'report-action.embargoed' : '') | translate }}"
                  triggers="{{ isEmbargoed() ? 'mouseenter:mouseleave': '' }}"
                  placement="top"
                  container="body"
-                 (click)="!isEmbargoed() && reportTable.exportTable(getExportName(table))"><i class="fa fa-cloud-download"></i>
+                 href="javascript:void(0)"
+                 (click)="!isEmbargoed() && reportTable.exportTable(getExportName(view))"><i class="fa fa-cloud-download"></i>
                 {{'common.export' | translate}}
               </a>
             </div>
-            <div class="clearfix"></div>
+          </div>
+          <div *ngIf="view.table.reportType === 'Target'"
+               class="col-xs-12 col-sm-6 mb-md">
+            <aggregate-target-overview [table]="view.table"></aggregate-target-overview>
+          </div>
+        </div>
+
+        <div class="row mt-xs" *ngIf="view.chart">
+          <div class="col-md-12">
+            <p>{{ 'longitudinal-cohort-chart.instructions' | translate }}</p>
+            <longitudinal-cohort-chart [chart]="view.chart"></longitudinal-cohort-chart>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
             <div>
               <span class="pull-left flex-child">
                 <label class="mr-xs">
-                  <info-button title="{{'aggregate-report.column-order' | translate}}"
-                               content="{{'aggregate-report.column-order-info' | translate}}">
+                  <info-button title="{{'common.aggregate-report.column-order' | translate}}"
+                               content="{{'common.aggregate-report.column-order-info' | translate}}">
                   </info-button>
                 </label>
-                <order-selector [items]="table.columnOrderingItems"
-                                (itemsChange)="onColumnOrderChange(table, $event)"></order-selector>
+                <order-selector [items]="view.columnOrderingItems"
+                                (itemsChange)="onColumnOrderChange(view, $event)"></order-selector>
               </span>
-              <span class="pull-right flex-child ml-xs">
+              <span *ngIf="effectiveReportType !== 'Target'" class="pull-right flex-child ml-xs">
                 <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
                 <sb-radio-button-group [options]="displayOptions.valueDisplayTypes"
-                                       [(ngModel)]="table.valueDisplayType"
+                                       [(ngModel)]="view.valueDisplayType"
                                        buttonGroupStyles="btn-group-xs"
                                        buttonStyles="btn-default"
                                        analyticsCategory="AggregateReportControl"
                                        analyticsEvent="Change"></sb-radio-button-group>
               </span>
-              <span class="pull-right flex-child ml-xs">
+              <span class="pull-right flex-child ml-xs"
+                    *ngIf="effectiveReportType !== 'Claim' && view.table.assessmentDefinition.performanceLevelDisplayTypes.length > 1">
                 <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
                 <sb-radio-button-group [options]="displayOptions.performanceLevelDisplayTypes"
-                                       [(ngModel)]="table.performanceLevelDisplayType"
+                                       [(ngModel)]="view.performanceLevelDisplayType"
                                        buttonGroupStyles="btn-group-xs"
                                        buttonStyles="btn-default"
                                        analyticsCategory="AggregateReportControl"
@@ -137,12 +177,20 @@
         <div class="row mt-xs">
           <div class="col-md-12">
             <aggregate-report-table #reportTable
-                                    [table]="table.table"
-                                    [valueDisplayType]="table.valueDisplayType"
-                                    [performanceLevelDisplayType]="table.performanceLevelDisplayType"
-                                    [columnOrdering]="table.columnOrdering"></aggregate-report-table>
+                                    [table]="view.table"
+                                    [valueDisplayType]="view.valueDisplayType"
+                                    [performanceLevelDisplayType]="view.performanceLevelDisplayType"
+                                    [identityColumns]="view.columnOrdering"></aggregate-report-table>
           </div>
         </div>
+
+        <div *ngIf="showTargetMathCautionMessage"
+             class="row mt-sm">
+          <div class="col-md-12">
+            <p class="small">{{ 'target-report.math-claim-caution-message' | translate }}</p>
+          </div>
+        </div>
+
       </div>
     </ng-container>
 

@@ -1,6 +1,6 @@
 import { ClaimScore } from "./claim-score.model";
 import { Student } from "../../student/model/student.model";
-import { School } from "../../user/model/school.model";
+import { School } from "../../shared/organization/organization";
 
 export class Exam {
   id: number;
@@ -22,4 +22,5 @@ export class Exam {
   accommodationCodes: string[];
   school: School;
   transfer: boolean;
+  elasCode: string;
 }

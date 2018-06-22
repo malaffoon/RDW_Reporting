@@ -1,9 +1,11 @@
-import { Injectable } from "@angular/core";
-import { InstructionalResource } from "./model/instructional-resource.model";
-import { Observable } from "rxjs/Observable";
-import { DataService } from "../../shared/data/data.service";
+import { Injectable } from '@angular/core';
+import { InstructionalResource } from './model/instructional-resource.model';
+import { Observable } from 'rxjs/Observable';
+import { DataService } from '../../shared/data/data.service';
+import { map } from 'rxjs/operators';
+import { AdminServiceRoute } from '../../shared/service-route';
 
-const ServiceRoute = '/admin-service';
+const ServiceRoute = AdminServiceRoute;
 
 /**
  * This service is responsible for interacting with instructional resources.
@@ -20,8 +22,9 @@ export class InstructionalResourceService {
    * @returns {Observable<InstructionalResource[]>} The user's instructional resources
    */
   findAll(): Observable<InstructionalResource[]> {
-    return this.dataService.get(`${ServiceRoute}/instructional-resources`)
-      .map(InstructionalResourceService.mapResourcesFromApi);
+    return this.dataService.get(`${ServiceRoute}/instructional-resources`).pipe(
+      map(InstructionalResourceService.mapResourcesFromApi)
+    );
   }
 
   /**
@@ -31,8 +34,9 @@ export class InstructionalResourceService {
    * @returns {Observable<InstructionalResource>} The created instructional resource
    */
   create(resource: InstructionalResource): Observable<InstructionalResource> {
-    return this.dataService.post(`${ServiceRoute}/instructional-resources`, resource)
-      .map(InstructionalResourceService.mapResourceFromApi);
+    return this.dataService.post(`${ServiceRoute}/instructional-resources`, resource).pipe(
+      map(InstructionalResourceService.mapResourceFromApi)
+    );
   }
 
   /**
@@ -42,8 +46,9 @@ export class InstructionalResourceService {
    * @returns {Observable<InstructionalResource>} The updated instructional resource
    */
   update(resource: InstructionalResource): Observable<InstructionalResource> {
-    return this.dataService.put(`${ServiceRoute}/instructional-resources`, resource)
-      .map(InstructionalResourceService.mapResourceFromApi);
+    return this.dataService.put(`${ServiceRoute}/instructional-resources`, this.toServerFormat(resource)).pipe(
+      map(InstructionalResourceService.mapResourceFromApi)
+    );
   }
 
   /**
@@ -53,23 +58,34 @@ export class InstructionalResourceService {
    * @returns {Observable<any>} Empty if the action was successful
    */
   delete(resource: InstructionalResource): Observable<any> {
-    return this.dataService.delete(`${ServiceRoute}/instructional-resources`, {params: resource});
+    return this.dataService.delete(`${ServiceRoute}/instructional-resources`, { params: <any>this.toServerFormat(resource) });
   }
 
-  private static mapResourcesFromApi(apiModels) {
-    return apiModels.map(apiModel => InstructionalResourceService.mapResourceFromApi(apiModel));
+  private static mapResourcesFromApi(serverResources) {
+    return serverResources.map(serverResource => InstructionalResourceService.mapResourceFromApi(serverResource));
   }
 
-  private static mapResourceFromApi(apiModel): InstructionalResource {
-    let uiModel: InstructionalResource = new InstructionalResource();
-    uiModel.organizationId = apiModel.organizationId;
-    uiModel.organizationName = apiModel.organizationName;
-    uiModel.organizationType = apiModel.organizationType;
-    uiModel.assessmentLabel = apiModel.assessmentLabel;
-    uiModel.assessmentName = apiModel.assessmentName;
-    uiModel.assessmentType = apiModel.assessmentType;
-    uiModel.resource = apiModel.resource;
-    uiModel.performanceLevel = apiModel.performanceLevel;
-    return uiModel;
+  private toServerFormat(resource: InstructionalResource): InstructionalResource {
+    resource.assessmentType = AssessmentType[resource.assessmentType] ? AssessmentType[resource.assessmentType] : resource.assessmentType;
+    return resource;
   }
+
+  private static mapResourceFromApi(serverResource): InstructionalResource {
+    const resource: InstructionalResource = new InstructionalResource();
+    resource.organizationId = serverResource.organizationId;
+    resource.organizationName = serverResource.organizationName;
+    resource.organizationType = serverResource.organizationType;
+    resource.assessmentLabel = serverResource.assessmentLabel;
+    resource.assessmentName = serverResource.assessmentName;
+    resource.assessmentType = serverResource.assessmentTypeCode;
+    resource.resource = serverResource.resource;
+    resource.performanceLevel = serverResource.performanceLevel;
+    return resource;
+  }
+}
+
+enum AssessmentType {
+  iab = 'IAB',
+  ica = 'ICA',
+  sum = 'SUMMATIVE'
 }

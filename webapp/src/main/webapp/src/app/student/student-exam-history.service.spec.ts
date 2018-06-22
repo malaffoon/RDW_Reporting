@@ -10,6 +10,8 @@ import { Student } from "./model/student.model";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import { DataService } from "../shared/data/data.service";
+import { _throw } from 'rxjs/observable/throw';
+import { of } from 'rxjs/observable/of';
 
 describe('StudentExamHistoryService', () => {
   let dataService: MockDataService;
@@ -41,7 +43,7 @@ describe('StudentExamHistoryService', () => {
   it('should return null for a 404 response when finding student by ssid',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(Observable.throw({status: 404}));
+      dataService.get.and.returnValue(_throw({status: 404}));
 
       service.existsBySsid("ssid").subscribe((exists) => {
         expect(exists).toBeNull();
@@ -51,7 +53,7 @@ describe('StudentExamHistoryService', () => {
   it('should return the student if it exists',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(Observable.of({
+      dataService.get.and.returnValue(of({
         id: 123
       }));
 
@@ -63,7 +65,7 @@ describe('StudentExamHistoryService', () => {
   it('should trim the ssid value before checking if student exists',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(Observable.of({
+      dataService.get.and.returnValue(of({
         id: 123
       }));
 
@@ -77,7 +79,7 @@ describe('StudentExamHistoryService', () => {
   it('should throw for a 404 response when retrieving history for a student',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(Observable.throw("4xx/5xx response"));
+      dataService.get.and.returnValue(_throw("4xx/5xx response"));
 
       service.findOneById(123).subscribe(() => {
         fail("Error expected");
@@ -86,16 +88,26 @@ describe('StudentExamHistoryService', () => {
       });
   }));
 
-  it('should return a student\'s exam history',
+  it('should return a student\'s exam history ordered most recent exam date',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(Observable.of({
+      dataService.get.and.returnValue(of({
         student: {
           id: 123
         },
         exams: [ {
           exam: {
-            id: 1
+            id: 1,
+            dateTime: '2017-03-15T09:24:22.561Z'
+          },
+          assessment: {
+            id: 2
+          }
+        },
+        {
+          exam: {
+            id: 2,
+            dateTime: '2017-09-15T09:24:22.561Z'
           },
           assessment: {
             id: 2
@@ -105,9 +117,11 @@ describe('StudentExamHistoryService', () => {
 
       service.findOneById(123).subscribe((history: StudentExamHistory) => {
         expect(history.student.id).toBe(123);
-        expect(history.exams.length).toBe(1);
-        expect(history.exams[0].exam.id).toBe(1);
+        expect(history.exams.length).toBe(2);
+        expect(history.exams[0].exam.id).toBe(2);
         expect(history.exams[0].assessment.id).toBe(2);
+        expect(history.exams[1].exam.id).toBe(1);
+        expect(history.exams[1].assessment.id).toBe(2);
       });
     }));
 });

@@ -9,6 +9,7 @@ import { Student } from "../student/model/student.model";
 import { ExportItemsRequest} from "../assessments/model/export-items-request.model";
 import { RequestType } from "../shared/enum/request-type.enum";
 import {ExportWritingTraitsRequest} from "../assessments/model/export-writing-trait-request.model";
+import { ExportTargetReportRequest } from '../assessments/model/export-target-report-request.model';
 
 @Injectable()
 export class CsvExportService {
@@ -33,7 +34,7 @@ export class CsvExportService {
     // TODO: Is this filter needed?  I think we pass in the filtered exam collection we wouldn't need to
     // TODO: apply the filter yet again here.
     assessmentExams.forEach((assessmentExam: AssessmentExam) => {
-      let filteredExams: Exam[] = this.examFilterService.filterExams(assessmentExam, filterBy);
+      let filteredExams: Exam[] = this.examFilterService.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
       filteredExams.forEach((exam) => {
         sourceData.push({
           assessment: assessmentExam.assessment,
@@ -47,7 +48,8 @@ export class CsvExportService {
     let getAssessment = (item) => item.assessment;
     let getIABExam = (item) => item.assessment.isIab ? item.exam : null;
     let getNonIABExam = (item) => item.assessment.isIab ? null: item.exam;
-    let getNonIABMathExam = (item) => !item.assessment.isIab && item.assessment.subject === 'MATH' ? item.exam : null;
+    // TODO:ConfigurableSubjects needs to support configurable subjects
+    let getNonIABMathExam = (item) => !item.assessment.isIab && item.assessment.subject === 'Math' ? item.exam : null;
     let getNonIABElaExam = (item) => !item.assessment.isIab && item.assessment.subject === 'ELA' ? item.exam : null;
 
     this.csvBuilder
@@ -85,7 +87,8 @@ export class CsvExportService {
     let getAssessment = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment;
     let getIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? wrapper.exam : null;
     let getNonIABExam = (wrapper: StudentHistoryExamWrapper) => wrapper.assessment.isIab ? null: wrapper.exam;
-    let getNonIABMathExam = (wrapper: StudentHistoryExamWrapper) => !wrapper.assessment.isIab && wrapper.assessment.subject === 'MATH' ? wrapper.exam : null;
+    // TODO:ConfigurableSubjects needs to support configurable subjects
+    let getNonIABMathExam = (wrapper: StudentHistoryExamWrapper) => !wrapper.assessment.isIab && wrapper.assessment.subject === 'Math' ? wrapper.exam : null;
     let getNonIABElaExam = (wrapper: StudentHistoryExamWrapper) => !wrapper.assessment.isIab && wrapper.assessment.subject === 'ELA' ? wrapper.exam : null;
 
     this.csvBuilder
@@ -137,8 +140,6 @@ export class CsvExportService {
     let compositeRows: any[] = [];
     let maxPoints: number = 0;
 
-    // since there can be multiple items, we need to iterate over multiple summary table rows if there are multiple items that have writing trait scores
-    //  here we flatten the items and summary rows into a single array the CSV builder can iterate over
     exportRequest.assessmentItems.forEach((item, i) => {
 
       exportRequest.summaries[i].rows.forEach(summary => {
@@ -158,7 +159,6 @@ export class CsvExportService {
       .newBuilder()
       .withFilename(filename)
       .withAssessmentTypeNameAndSubject(() => exportRequest.assessment)
-      .withItemNumber(getAssessmentItem)
       .withClaim(getAssessmentItem)
       .withTarget(getAssessmentItem)
       .withItemDifficulty(getAssessmentItem)
@@ -167,5 +167,20 @@ export class CsvExportService {
       .withPerformanceTaskWritingType(getAssessmentItem)
       .withWritingTraitAggregate((item) => item.writingTraitAggregate, maxPoints, exportRequest.showAsPercent)
       .build(compositeRows);
+  }
+
+  exportTargetScoresToCsv(exportRequest: ExportTargetReportRequest,
+                           filename: string) {
+
+    this.csvBuilder
+      .newBuilder()
+      .withFilename(filename)
+      .withGroupName(() => exportRequest.group)
+      .withSchoolYear(() => <Exam>{ schoolYear: exportRequest.schoolYear})
+      .withAssessmentTypeNameAndSubject(() => exportRequest.assessment)
+      .withScoreAndErrorBand(() => <Exam>{ score: exportRequest.averageScaleScore, standardError: exportRequest.standardError})
+      .withTargetReportAggregate((item) => item)
+      .build(exportRequest.targetScoreRows);
+
   }
 }

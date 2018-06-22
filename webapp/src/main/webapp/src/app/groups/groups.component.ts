@@ -1,39 +1,30 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, Input, OnInit } from '@angular/core';
+import { Group } from './group';
 
 @Component({
   selector: 'groups',
   templateUrl: 'groups.component.html'
 })
 export class GroupsComponent implements OnInit {
-  /**
-   * The array of groups that a user has access to.
-   */
+
   @Input()
-  groups = [];
+  groups: Group[];
 
-  filteredGroups = [];
-  searchTerm : string;
-
-  constructor() {}
+  defaultGroup: Group;
+  search: string;
+  searchThreshold: number = 10;
+  filteredGroups: Group[] = [];
 
   ngOnInit() {
-    this.filteredGroups = this.groups;
+    this.filteredGroups = this.groups.concat();
+    if (this.groups.length) {
+      this.defaultGroup = this.groups[ 0 ];
+    }
   }
 
-  onSearchChange(event) {
-    this.filteredGroups = this.groups.filter( x => x.name.toUpperCase().indexOf(this.searchTerm.toUpperCase()) >= 0)
+  onSearchChange() {
+    this.filteredGroups = this.groups.filter( group =>
+      group.name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0);
   }
 
-  /**
-   * Determines if the empty message displayed should be for when there are groups and the filter didn't have any matches
-   * or if there were never any groups to start with
-   *
-   * @returns {string} translation key to use
-   */
-  get emptyMessageTranslateKey(): string {
-    return this.groups && this.groups.length != 0 ?
-      'labels.groups.empty-message' :
-      'labels.groups.no-groups-message';
-  }
 }

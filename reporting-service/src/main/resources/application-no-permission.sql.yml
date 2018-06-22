@@ -16,15 +16,99 @@ sql:
         join school sc on sc.id = sg.school_id
         left join subject s on s.id = sg.subject_id
       where user_login=:user_login
-      and sg.id in (:group_ids)
+
+    findOneByUsernameAndId: >-
+      select
+        sg.id,
+        sg.name,
+        sc.name as school_name,
+        sc.id as school_id,
+        s.code as subject_code,
+        count(sgm.student_id) as students
+      from user_student_group usg
+        join student_group sg on sg.id = usg.student_group_id
+        join school sc on sc.id = sg.school_id
+        join student_group_membership sgm on sgm.student_group_id = usg.student_group_id
+        left join subject s on s.id = sg.subject_id
+      where user_login=:user_login
+        and sg.id=:group_id
+      group by sg.id
+
+  teacherGroup:
+    findAllByUsername: >-
+      SELECT
+        tsg.id,
+        tsg.name,
+        s.code as subject_code
+      FROM teacher_student_group tsg
+        LEFT JOIN subject s ON s.id = tsg.subject_id
+      WHERE tsg.user_login = :user_login
+        AND tsg.school_year = :school_year
+      GROUP BY tsg.id
+
+    findOneByUsernameAndId: >-
+      SELECT
+        tsg.id,
+        tsg.name,
+        s.code as subject_code,
+        GROUP_CONCAT(tsgm.student_id SEPARATOR '|') AS student_ids
+      FROM teacher_student_group tsg
+        LEFT JOIN subject s ON s.id = tsg.subject_id
+        LEFT JOIN teacher_student_group_membership tsgm ON tsgm.teacher_student_group_id = tsg.id
+      WHERE tsg.id = :id
+        AND tsg.user_login = :user_login
+        AND tsg.school_year = :school_year
+      GROUP BY tsg.id
+
+    create: >-
+      INSERT INTO teacher_student_group (name, subject_id, school_year, user_login)
+      SELECT
+        :name,
+        CASE WHEN (:subject_code IS NULL)
+          THEN NULL
+          ELSE (SELECT id from subject where code = :subject_code) END,
+        :school_year,
+        :user_login
+
+    update: >-
+      UPDATE teacher_student_group tsg
+      LEFT JOIN subject s ON s.code = :subject_code
+      SET
+        name = :name,
+        subject_id = s.id
+      WHERE tsg.id = :id
+        AND tsg.school_year = :school_year
+
+    delete: >-
+      DELETE FROM teacher_student_group
+      WHERE id = :id
+        AND school_year = :school_year
+
+  teacherGroupMembership:
+    findAllStudentIdsByGroupId: >-
+      SELECT student_id
+      FROM teacher_student_group_membership
+      WHERE teacher_student_group_id = :group_id
+
+    create: >-
+      INSERT INTO teacher_student_group_membership (teacher_student_group_id, student_id)
+      VALUES (:group_id, :student_id)
+
+    delete: >-
+      DELETE FROM teacher_student_group_membership
+      WHERE teacher_student_group_id = :group_id
+        AND student_id = :student_id
+
+    deleteAllByGroupId: >-
+      DELETE FROM teacher_student_group_membership
+      WHERE teacher_student_group_id = :group_id
 
   assessment:
     item:
       findAllForAssessment: >-
         ${sql.reporting.snippet.selectFromItem}
           join asmt a on i.asmt_id=a.id
-        where a.type_id in (:assessmentTypes)
-        and i.asmt_id=:assessment_id
+        where i.asmt_id=:assessment_id
         and (1=:includeAllItemTypes or i.type in (:types))
 
       findAllForExam: >-
@@ -46,6 +130,14 @@ sql:
         where p.asmt_id = :assessmentId AND :endDate >= start_date AND end_date >= :startDate
         ORDER BY start_date, percentile_rank
 
+    target:
+      findAllForAssessment: >-
+         SELECT t.id, t.natural_id, t.code, t.description, c.code as claim_code, at.asmt_id, at.include_in_report
+            FROM asmt_target at
+              JOIN target t ON at.target_id =  t.id
+              JOIN claim c ON c.id = t.claim_id
+            WHERE at.asmt_id = :asmt_id
+
   student:
     findOneById: >-
       select id,
@@ -56,14 +148,17 @@ sql:
       where s.id=:studentId
        and exists (select 1 from exam e where e.student_id = s.id)
 
-  ethnicity:
+  elas:
     findAll: >-
-      select id, code
-      from ethnicity
+      select code
+      from elas
+      order by id
 
+  ethnicity:
     findAllCodes: >-
       select code
       from ethnicity
+      order by id
 
     findEthnicityCodesByStudentIds: >-
       select student_id, ethnicity_code
@@ -75,6 +170,18 @@ sql:
       from student_ethnicity se
         join ethnicity e on se.ethnicity_id=e.id
       where se.student_id=:student_id
+
+  gender:
+    findAll: >-
+      select code
+      from gender
+      order by id
+
+  subject:
+    findAll: >-
+      select code
+      from subject
+      order by id
 
   status:
     readTest: >-

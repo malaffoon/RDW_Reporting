@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { ExamFilter } from "../../model/exam-filter.model";
-import { AssessmentExam } from "../../model/assessment-exam.model";
 import { FilterBy } from "../../model/filter-by.model";
 import { Exam } from "../../model/exam.model";
 import { Assessment } from "../../model/assessment.model";
@@ -8,20 +7,20 @@ import { Utils } from "../../../shared/support/support";
 
 @Injectable()
 export class ExamFilterService {
-  private root = 'labels.filters.';
 
   private filterDefinitions = [
-    new ExamFilter('offGradeAssessment', this.root + 'test.off-grade-assessment', 'enum.off-grade', this.filterByEnrolledGradeOff),
-    new ExamFilter('transferAssessment', this.root + 'test.transfer-assessment', 'enum.transfer', this.filterByTransferAssessment),
-    new ExamFilter('administration', this.root + 'status.administration', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isInterim),
-    new ExamFilter('summativeStatus', this.root + 'status.summative', 'enum.administrative-condition', this.filterByAdministrativeCondition, x => x.isSummative),
+    new ExamFilter('offGradeAssessment', 'common.filters.test.off-grade-assessment', 'exam-filter.off-grade', this.filterByEnrolledGradeOff),
+    new ExamFilter('transferAssessment', 'common.filters.test.transfer-assessment', 'exam-filter.transfer', this.filterByTransferAssessment),
+    new ExamFilter('administration', 'common.filters.status.administration', 'common.administration-condition', this.filterByAdministrativeCondition, x => x.isInterim),
+    new ExamFilter('summativeStatus', 'common.filters.status.summative', 'common.administration-condition', this.filterByAdministrativeCondition, x => x.isSummative),
     new ExamFilter('completion', 'common.completeness-form-control.label', 'common.completeness', this.filterByCompleteness),
-    new ExamFilter('gender', this.root + 'student.gender', 'enum.gender', this.filterByGender),
-    new ExamFilter('migrantStatus', this.root + 'student.migrant-status', 'enum.polar', this.filterByMigrantStatus),
-    new ExamFilter('plan504', this.root + 'student.504-plan', 'enum.polar', this.filterByplan504),
-    new ExamFilter('iep', this.root + 'student.iep', 'enum.polar', this.filterByIep),
-    new ExamFilter('limitedEnglishProficiency', this.root + 'student.limited-english-proficiency', 'enum.polar', this.filterByLimitedEnglishProficiency),
-    new ExamFilter('ethnicities', this.root + 'student.ethnicity', 'enum.ethnicity', this.filterByEthnicity)
+    new ExamFilter('genders', 'common.filters.student.gender', 'common.gender', this.filterByGender),
+    new ExamFilter('migrantStatus', 'common.filters.student.migrant-status', 'common.polar', this.filterByMigrantStatus),
+    new ExamFilter('plan504', 'common.filters.student.504-plan', 'common.polar', this.filterByplan504),
+    new ExamFilter('iep', 'common.filters.student.iep', 'common.polar', this.filterByIep),
+    new ExamFilter('limitedEnglishProficiency', 'common.filters.student.limited-english-proficiency', 'common.polar', this.filterByLimitedEnglishProficiency),
+    new ExamFilter('elasCodes', 'common.filters.student.elas', 'common.elas', this.filterByElasCode),
+    new ExamFilter('ethnicities', 'common.filters.student.ethnicity', 'common.ethnicity', this.filterByEthnicity)
   ];
 
   getFilterDefinitions(): ExamFilter[] {
@@ -33,15 +32,14 @@ export class ExamFilterService {
   }
 
   /**
-   * Filter exams within an AssessmentExam.
+   * Filter exams
    *
-   * @param assessmentExam  An assessment exam
-   * @param filterBy        The currently-applied filters
+   * @param exams  The exams
+   * @param assessment The assessment
+   * @param filterBy   The currently-applied filters
    * @returns {Exam[]} The filtered exams
    */
-  filterExams(assessmentExam: AssessmentExam, filterBy: FilterBy): Exam[] {
-    let exams = assessmentExam.exams;
-
+  filterExams(exams: Exam[], assessment: Assessment, filterBy: FilterBy): Exam[] {
     if (filterBy == null)
       return exams;
 
@@ -49,13 +47,17 @@ export class ExamFilterService {
     for (let filter of filters) {
       let filterDefinition = this.getFilterDefinitionFor(filter);
 
-      if (filterDefinition.precondition(assessmentExam.assessment)) {
-        let filterValue = filterBy[filter];
+      if (filterDefinition.precondition(assessment)) {
+        let filterValue = filterBy[ filter ];
 
-        if(filter == 'offGradeAssessment')
-          filterValue = assessmentExam.assessment.grade;
-        else if(filter == 'ethnicities')
+        if (filter == 'offGradeAssessment')
+          filterValue = assessment.grade;
+        else if (filter == 'ethnicities')
           filterValue = filterBy.filteredEthnicities;
+        else if (filter == 'genders')
+          filterValue = filterBy.filteredGenders;
+        else if (filter == 'elasCodes')
+          filterValue = filterBy.filteredElasCodes;
 
         exams = exams.filter(exam => filterDefinition.apply(exam, filterValue));
       }
@@ -94,29 +96,45 @@ export class ExamFilterService {
           if (!filterDefinition.precondition(assessment)) return true;
 
           let exam: Exam = examProvider(item);
-          let filterValue = filterBy[filter];
+          let filterValue = filterBy[ filter ];
 
-          if(filter == 'offGradeAssessment') {
+          if (filter == 'offGradeAssessment') {
             filterValue = assessment.grade;
           }
-          else if(filter == 'ethnicities') {
+          else if (filter == 'ethnicities') {
             filterValue = filterBy.filteredEthnicities;
+          } else if (filter == 'genders') {
+            filterValue = filterBy.filteredGenders;
+          } else if (filter == 'elasCodes') {
+            filterValue = filterBy.filteredElasCodes;
           }
 
           return filterDefinition.apply(exam, filterValue);
-      });
+        });
     }
 
     return results;
   }
 
-  private getFilters(filterBy : FilterBy): string[] {
+  private getFilters(filterBy: FilterBy): string[] {
     let filters = filterBy.all;
-    if(filters.some(x => x.indexOf('ethnicities') > -1)){
-      // remove individual 'ethnicities.code' and add just one ethnicities
+    if (filters.some(x => x.indexOf('ethnicities') > -1)) {
+      // remove individual 'ethnicity.code' and add just one ethnicity
       // as ethnicities need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('ethnicities') == -1);
       filters.push('ethnicities');
+    }
+    if (filters.some(x => x.indexOf('genders') > -1)) {
+      // remove individual 'gender.code' and add just one gender
+      // as genders need to be evaluated all at once.
+      filters = filters.filter(x => x.indexOf('genders') == -1);
+      filters.push('genders');
+    }
+    if (filters.some(x => x.indexOf('elasCodes') > -1)) {
+      // remove individual 'elas.code' and add just one elas
+      // as elas need to be evaluated all at once.
+      filters = filters.filter(x => x.indexOf('elasCodes') == -1);
+      filters.push('elasCodes');
     }
 
     return filters;
@@ -135,7 +153,11 @@ export class ExamFilterService {
   }
 
   private filterByGender(exam: Exam, filterValue: any): boolean {
-    return exam.student && exam.student.genderCode === filterValue;
+    return exam.student && !filterValue.length || filterValue.some(gender => gender == exam.student.genderCode);
+  }
+
+  private filterByElasCode(exam: Exam, filterValue: any): boolean {
+    return exam.student && !filterValue.length || filterValue.some(elasCode => elasCode == exam.elasCode);
   }
 
   private filterByMigrantStatus(exam: Exam, filterValue: any): boolean {

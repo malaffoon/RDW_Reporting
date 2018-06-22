@@ -1,23 +1,25 @@
-import { StudentResultsComponent } from "./student-results.component";
-import { ComponentFixture, inject, TestBed } from "@angular/core/testing";
-import { CommonModule } from "../../shared/common.module";
-import { ActivatedRoute, Router } from "@angular/router";
-import { StudentExamHistory } from "../model/student-exam-history.model";
-import { Student } from "../model/student.model";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { StudentHistoryExamWrapper } from "../model/student-history-exam-wrapper.model";
-import { Exam } from "../../assessments/model/exam.model";
-import { Assessment } from "../../assessments/model/assessment.model";
-import { AssessmentType } from "../../shared/enum/assessment-type.enum";
-import { ClaimScore } from "../../assessments/model/claim-score.model";
-import { MockRouter } from "../../../test/mock.router";
-import { CsvExportService } from "../../csv-export/csv-export.service";
-import { Angulartics2 } from "angulartics2";
-import { UserService } from "../../user/user.service";
-import { MockUserService } from "../../../test/mock.user.service";
-import { MockActivatedRoute } from "../../../test/mock.activated-route";
-import { MockAuthorizeDirective } from "../../../test/mock.authorize.directive";
-import { ExamFilterService } from "../../assessments/filters/exam-filters/exam-filter.service";
+import { StudentResultsComponent } from './student-results.component';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { CommonModule } from '../../shared/common.module';
+import { ActivatedRoute } from '@angular/router';
+import { StudentExamHistory } from '../model/student-exam-history.model';
+import { Student } from '../model/student.model';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { StudentHistoryExamWrapper } from '../model/student-history-exam-wrapper.model';
+import { Exam } from '../../assessments/model/exam.model';
+import { Assessment } from '../../assessments/model/assessment.model';
+import { ClaimScore } from '../../assessments/model/claim-score.model';
+import { MockRouter } from '../../../test/mock.router';
+import { CsvExportService } from '../../csv-export/csv-export.service';
+import { Angulartics2 } from 'angulartics2';
+import { ExamFilterService } from '../../assessments/filters/exam-filters/exam-filter.service';
+import { of } from 'rxjs/observable/of';
+import { ApplicationSettingsService } from '../../app-settings.service';
+import { MockUserService } from '../../../test/mock.user.service';
+import { TestModule } from '../../../test/test.module';
+import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
+import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
+import { StudentResultsFilterService } from './student-results-filter.service';
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -25,44 +27,56 @@ describe('StudentResultsComponent', () => {
   let route: MockActivatedRoute;
   let router: MockRouter;
   let exportService: any;
+  let embargoService: any;
 
   beforeEach(() => {
-    route = new MockActivatedRoute();
     exportService = {};
+    embargoService = jasmine.createSpyObj('ReportingEmbargoService', [ 'isEmbargoed' ]);
+    embargoService.isEmbargoed.and.returnValue(of(false));
 
-    let mockRouteSnapshot: any = {};
-    mockRouteSnapshot.data = {};
-    mockRouteSnapshot.data.examHistory = MockBuilder.history();
-    mockRouteSnapshot.params = {};
-    route.snapshotResult.and.returnValue(mockRouteSnapshot);
+    const mockRouteSnapshot = {
+      params: {},
+      data: {
+        examHistory: MockBuilder.history()
+      }
+    };
 
-    let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
+    const mockRoute = new MockActivatedRoute();
+
+    const mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
     mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
+
+    const mockApplicationSettingsService = jasmine.createSpyObj('ApplicationSettingsService', [ 'getSettings' ]);
+    mockApplicationSettingsService.getSettings.and.callFake(() => of({ minItemDataYear: 2016 }));
+
+    const mockUserService = new MockUserService();
 
     router = new MockRouter();
 
-    let mockUserService: MockUserService = new MockUserService();
-
     TestBed.configureTestingModule({
       imports: [
-        CommonModule
+        CommonModule,
+        TestModule
       ],
       declarations: [
-        StudentResultsComponent,
-        MockAuthorizeDirective
+        StudentResultsComponent
       ],
       providers: [
-        { provide: ActivatedRoute, useValue: route },
         { provide: CsvExportService, useValue: exportService },
         { provide: Angulartics2, useValue: mockAngulartics2 },
-        { provide: UserService, useValue: mockUserService },
-        { provide: Router, useValue: router },
+        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
+        { provide: ReportingEmbargoService, useValue: embargoService },
+        { provide: ActivatedRoute, useValue: mockRoute },
+        StudentResultsFilterService,
         ExamFilterService
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(StudentResultsComponent);
+    route = TestBed.get(ActivatedRoute);
+    route.snapshotResult.and.returnValue(mockRouteSnapshot);
+
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -72,54 +86,46 @@ describe('StudentResultsComponent', () => {
   });
 
   it('should create without error when history is null', () => {
-    let snapshot = route.snapshot;
-    snapshot.params[ 'schoolYear' ] = '2017';
-    snapshot.data['examHistory'] = null;
-
-    component.ngOnInit();
-    fixture.detectChanges();
+    const snapshot = route.snapshot;
+    snapshot.data[ 'examHistory' ] = null;
+    route.params.emit({ schoolYear: 2017 });
 
     expect(component).toBeTruthy();
   });
 
-  it('should retrieve sorted assessment types', () => {
-    expect(component.assessmentTypes)
-      .toEqual([ AssessmentType.IAB, AssessmentType.ICA, AssessmentType.SUMMATIVE ]);
-  });
-
-  it('should retrieve subjects by assessment type', () => {
-    expect(component.getSubjectsForType(AssessmentType.ICA))
-      .toEqual([ "ELA", "MATH" ]);
-    expect(component.getSubjectsForType(AssessmentType.IAB))
-      .toEqual([ "MATH" ]);
-    expect(component.getSubjectsForType(AssessmentType.SUMMATIVE))
-      .toEqual([ "ELA" ]);
-  });
-
+  /* Temporary Ignore */
   it('should filter by year on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
     // Filter to the single 2017 exam
-    let snapshot = route.snapshot;
-    snapshot.params[ 'schoolYear' ] = '2017';
+    route.params.emit({ schoolYear: 2017 });
 
-    component.ngOnInit();
+    const filteredExams = component.sections.reduce((exams, section) => {
+      exams.push(...section.filteredExams);
+      return exams;
+    }, []);
 
-    let assessmentTypes = component.assessmentTypes;
-    expect(assessmentTypes.length).toBe(1);
-    let subjects = component.getSubjectsForType(assessmentTypes[ 0 ]);
-    expect(subjects.length).toBe(1);
-    expect(component.examsByTypeAndSubject.get(assessmentTypes[ 0 ]).get(subjects[ 0 ]).length).toBe(1);
+    const totalAssessmentTypes = filteredExams.reduce(
+      (collection, exam) => collection.add(exam.assessment.type), new Set()).size;
+
+    const totalSubjects = filteredExams.reduce(
+      (collection, exam) => collection.add(exam.assessment.subject), new Set()).size;
+
+    expect(totalAssessmentTypes).toBe(1);
+    expect(totalSubjects).toBe(1);
+
   }));
 
+
   it('should filter by subject on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
-    let snapshot = route.snapshot;
-    snapshot.params[ 'subject' ] = 'MATH';
+    route.params.emit({ subject: 'MATH' });
 
-    component.ngOnInit();
+    const filteredExams = component.sections.reduce((exams, section) => {
+      exams.push(...section.filteredExams);
+      return exams;
+    }, []);
 
-    let assessmentTypes = component.assessmentTypes;
-    expect(assessmentTypes.length).toBe(2);
-    expect(component.getSubjectsForType(assessmentTypes[ 0 ])).toEqual([ 'MATH' ]);
-    expect(component.getSubjectsForType(assessmentTypes[ 1 ])).toEqual([ 'MATH' ]);
+    filteredExams.forEach(exam => {
+      expect(exam.assessment.subject).toBe('MATH');
+    });
   }));
 
 });
@@ -134,34 +140,33 @@ class MockBuilder {
     MockBuilder.examIdx = 0;
     MockBuilder.oddExam = false;
 
-    let student: Student = new Student();
+    const student: Student = new Student();
     student.id = 123;
-    student.ssid = "ssid";
-    student.firstName = "first";
-    student.lastName = "last";
+    student.ssid = 'ssid';
+    student.firstName = 'first';
+    student.lastName = 'last';
 
-    let exams: StudentHistoryExamWrapper[] = [];
-    exams.push(MockBuilder.examWrapper(AssessmentType.ICA, "MATH"));
-    exams.push(MockBuilder.examWrapper(AssessmentType.ICA, "ELA"));
-    exams.push(MockBuilder.examWrapper(AssessmentType.IAB, "MATH"));
-    exams.push(MockBuilder.examWrapper(AssessmentType.SUMMATIVE, "ELA"));
+    const exams: StudentHistoryExamWrapper[] = [];
+    exams.push(MockBuilder.examWrapper('ica', 'MATH'));
+    exams.push(MockBuilder.examWrapper('ica', 'ELA'));
+    exams.push(MockBuilder.examWrapper('iab', 'MATH'));
+    exams.push(MockBuilder.examWrapper('sum', 'ELA'));
 
-    let history: StudentExamHistory = new StudentExamHistory();
+    const history: StudentExamHistory = new StudentExamHistory();
     history.student = student;
     history.exams = exams;
     return history;
   }
 
-  private static examWrapper(assessmentType: AssessmentType, subject: string): StudentHistoryExamWrapper {
-    let wrapper: StudentHistoryExamWrapper = new StudentHistoryExamWrapper();
+  private static examWrapper(assessmentType: string, subject: string): StudentHistoryExamWrapper {
+    const wrapper: StudentHistoryExamWrapper = new StudentHistoryExamWrapper();
     wrapper.exam = MockBuilder.exam(assessmentType);
     wrapper.assessment = MockBuilder.assessment(assessmentType, subject);
-
     return wrapper;
   }
 
-  private static exam(type: AssessmentType): Exam {
-    let exam: Exam = new Exam();
+  private static exam(type: string): Exam {
+    const exam: Exam = new Exam();
     exam.date = new Date();
     exam.id = MockBuilder.examIdx++;
     exam.iep = false;
@@ -170,54 +175,53 @@ class MockBuilder {
     exam.migrantStatus = false;
     exam.plan504 = false;
     exam.score = 2594;
-    exam.session = "PRI-6888";
+    exam.session = 'PRI-6888';
     exam.standardError = 52;
 
-    //Give each exam an earlier year than the one before.
+    // Give each exam an earlier year than the one before.
     exam.schoolYear = 2017 - exam.id;
 
-    //toggle whether we're off-grade on each exam
+    // toggle whether we're off-grade on each exam
     exam.enrolledGrade = MockBuilder.oddExam ? '04' : '05';
 
-    //toggle completeness on each exam
+    // toggle completeness on each exam
     exam.completeness = MockBuilder.oddExam ? 'Partial' : 'Complete';
 
     MockBuilder.oddExam = !MockBuilder.oddExam;
 
     exam.claimScores = [];
-    if (type !== AssessmentType.IAB) {
+    if (type !== 'iab') {
       exam.claimScores.push(MockBuilder.claimScore(1));
       exam.claimScores.push(MockBuilder.claimScore(2));
     }
 
-    exam.administrativeCondition = type === AssessmentType.SUMMATIVE ? 'Valid' : 'NS';
+    exam.administrativeCondition = type === 'sum' ? 'Valid' : 'NS';
 
     return exam;
   }
 
-  private static assessment(type: AssessmentType, subject: string): Assessment {
-    let assessment: Assessment = new Assessment();
+  private static assessment(type: string, subject: string): Assessment {
+    const assessment: Assessment = new Assessment();
     assessment.grade = '05';
     assessment.id = MockBuilder.assessmentIdx++;
-    assessment.label = "Grade 5 ELA";
+    assessment.label = 'Grade 5 ELA';
     assessment.subject = subject;
     assessment.type = type;
 
     assessment.claimCodes = [];
-    if (type !== AssessmentType.IAB) {
-      assessment.claimCodes.push("1");
-      assessment.claimCodes.push("2-W");
+    if (type !== 'iab') {
+      assessment.claimCodes.push('1');
+      assessment.claimCodes.push('2-W');
     }
 
     return assessment;
   }
 
   private static claimScore(level: number): ClaimScore {
-    let score: ClaimScore = new ClaimScore();
+    const score: ClaimScore = new ClaimScore();
     score.level = level;
     score.score = 1234;
     score.standardError = 25;
-
     return score;
   }
 }

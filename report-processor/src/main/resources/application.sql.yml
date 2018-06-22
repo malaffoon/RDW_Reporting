@@ -43,13 +43,12 @@ sql:
         ${sql.snippet.writingTraits},
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
+      $[groupJoinPlaceholder]
       LEFT JOIN exam_item ei ON ei.exam_id=e.id
       LEFT JOIN item i ON i.id=ei.item_id
       ${sql.reportProcessor.snippet.percentileLeftJoin}
-      JOIN student_group_membership sgm ON st.id = sgm.student_id
-      JOIN student_group sg ON sgm.student_group_id = sg.id AND (sg.subject_id is null or a.subject_id = sg.subject_id)
       WHERE e.student_id in (:student_ids)
-        AND sg.id=:group_id
+        AND $[groupFilterPlaceholder]
         AND (:school_year is null or e.school_year=:school_year)
         AND (:subject_id is null or a.subject_id=:subject_id)
         AND (:grade_id is null or a.grade_id=:grade_id)
@@ -59,36 +58,64 @@ sql:
       ORDER BY e.completed_at DESC,
               i.performance_task_writing_type DESC
 
-    findAllIcasByStudentIdsAndQueryParamsUnknownPermissions: >-
+    findAllIcasOrSummativesByStudentIdsAndQueryParamsUnknownPermissions: >-
       SELECT
         d.name AS district_name,
         ${sql.snippet.claimColumns},
+        wt.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        wt.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        wt.trait_conventions_score as ei_trait_conventions_score,
+        wt.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
+      LEFT JOIN (
+        SELECT
+          ei.exam_id,
+          ei.trait_evidence_elaboration_score,
+          ei.trait_organization_purpose_score,
+          ei.trait_conventions_score,
+          i.performance_task_writing_type
+        FROM exam_item ei
+        JOIN item i ON i.id=ei.item_id
+        WHERE i.performance_task_writing_type is not null
+      ) as wt on wt.exam_id = e.id
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
         AND (:subject_id is null or a.subject_id=:subject_id)
         AND (:grade_id is null or a.grade_id=:grade_id)
-        AND a.type_id=1
+        AND a.type_id=:type_id
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       ORDER BY e.completed_at asc
 
-    findAllIcasByStudentIdsAndQueryParamsGroupPermissions: >-
+    findAllIcasOrSummativesByStudentIdsAndQueryParamsGroupPermissions: >-
       SELECT
         d.name AS district_name,
         ${sql.snippet.claimColumns},
+        wt.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        wt.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        wt.trait_conventions_score as ei_trait_conventions_score,
+        wt.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
-      JOIN student_group_membership sgm ON st.id = sgm.student_id
-      JOIN student_group sg ON sgm.student_group_id = sg.id
-          AND (sg.subject_id is null or a.subject_id = sg.subject_id)
+      LEFT JOIN (
+        SELECT
+          ei.exam_id,
+          ei.trait_evidence_elaboration_score,
+          ei.trait_organization_purpose_score,
+          ei.trait_conventions_score,
+          i.performance_task_writing_type
+        FROM exam_item ei
+        JOIN item i ON i.id=ei.item_id
+        WHERE i.performance_task_writing_type is not null
+      ) wt ON wt.exam_id = e.id
+      $[groupJoinPlaceholder]
       WHERE e.student_id in (:student_ids)
-        AND sg.id=:group_id
+        AND $[groupFilterPlaceholder]
         AND (:school_year is null or e.school_year=:school_year)
         AND (:subject_id is null or a.subject_id=:subject_id)
         AND (:grade_id is null or a.grade_id=:grade_id)
-        AND a.type_id=1
+        AND a.type_id=:type_id
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       ORDER BY e.completed_at asc
@@ -134,6 +161,8 @@ sql:
         'Section504Status',
         'IDEAIndicator',
         'LEPStatus',
+        'EnglishLanguageAcquisitionStatus',
+        'EnglishLanguageAcquisitionStatusStartDate',
 
         'HispanicOrLatinoEthnicity',
         'AmericanIndianOrAlaskaNative',
@@ -186,6 +215,8 @@ sql:
         (CASE WHEN e.section504 = 1 THEN 'Yes' when e.section504 = 0 THEN 'No' ELSE '' END),
         (CASE WHEN e.iep THEN 'Yes' ELSE 'No' END),
         (CASE WHEN e.lep THEN 'Yes' ELSE 'No' END),
+        COALESCE(e.elas_code, ''),
+        COALESCE(e.elas_start_at, ''),
 
         (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'HispanicOrLatinoEthnicity') THEN 'Yes' ELSE 'No' END ),
         (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'AmericanIndianOrAlaskaNative') THEN 'Yes' ELSE 'No' END ),
@@ -212,21 +243,6 @@ sql:
         ${sql.reportProcessor.snippet.exportExamsFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
 
-    hasExams: >-
-      SELECT EXISTS (SELECT 1
-      FROM exam e
-        JOIN student st ON st.id = e.student_id
-        JOIN asmt a ON e.asmt_id = a.id
-        JOIN subject su ON su.id = a.subject_id
-        JOIN asmt_type at ON at.id = a.type_id
-        JOIN school s ON e.school_id = s.id
-        JOIN district d ON d.id = s.district_id
-        JOIN school isch ON st.inferred_school_id = isch.id
-      where
-        ${sql.reportProcessor.snippet.exportExamsFilter}
-        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
-      )
-
   student:
     findByExamQueryParamsUnknownPermissions: >-
       ${sql.reportProcessor.snippet.selectFromStudent}
@@ -241,10 +257,8 @@ sql:
 
     findByExamQueryParamsGroupPermissions: >-
       ${sql.reportProcessor.snippet.selectFromStudent}
-        JOIN student_group_membership sgm ON st.id = sgm.student_id
-        JOIN student_group sg ON sgm.student_group_id = sg.id
-          AND (sg.subject_id is null or a.subject_id = sg.subject_id)
-      WHERE sg.id=:group_id
+      $[groupJoinPlaceholder]
+      WHERE $[groupFilterPlaceholder]
         AND (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
         AND (:subject_id is null or a.subject_id = :subject_id)
@@ -261,7 +275,7 @@ sql:
             ${sql.snippet.studentExamPermissionWithoutEmbargo}
             AND
             (
-               e.school_year < ${app.school-year}
+               e.school_year < ${reporting.school-year}
                OR e.type_id <> 3
                OR s.embargo_enabled = 0
             )

@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Report } from "./report.model";
-import { ActivatedRoute } from "@angular/router";
-import { ReportService } from "./report.service";
-import { Resolution } from "../shared/resolution.model";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Report } from './report.model';
+import { ActivatedRoute } from '@angular/router';
+import { ReportService } from './report.service';
+import { Resolution } from '../shared/resolution.model';
 import Timer = NodeJS.Timer;
 
 /**
@@ -45,10 +45,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   private startPollingStatus(): void {
-    this.statusPollingTimer = setInterval(() => {
+    this.statusPollingTimer = <Timer>setInterval(() => {
 
       // get all report IDs for reports that are in progress
-      let ids: number[] = this.reports
+      const ids: number[] = this.reports
         .filter(report => report.processing)
         .map(report => report.id);
 
@@ -63,8 +63,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
             let updated: boolean = false;
 
             // creates a copy of the existing report collection and updates it with reports that have changed
-            let updatedReports: Report[] = this.reports.map(local => {
-              let remote: Report = remoteReports.find(remote => remote.id === local.id);
+            const updatedReports: Report[] = this.reports.map(local => {
+              const remote: Report = remoteReports.find(remote => remote.id === local.id);
               if (remote !== undefined && remote.status !== local.status) {
                 updated = true;
                 return remote;
@@ -79,7 +79,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
           },
           error => {
-            console.error('Error polling report status');
+            console.error('Error polling report status', error);
           }
         );
       } else {

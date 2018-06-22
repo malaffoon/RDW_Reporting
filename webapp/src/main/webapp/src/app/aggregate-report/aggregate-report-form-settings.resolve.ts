@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
-import { AggregateReportService } from "./aggregate-report.service";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
-import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { AggregateReportRequest } from "../report/aggregate-report-request";
-import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
-import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper";
-import { AggregateReportOptions } from "./aggregate-report-options";
-import { TranslateService } from "@ngx-translate/core";
-import { Utils } from "../shared/support/support";
+import { Injectable } from '@angular/core';
+import { AggregateReportService } from './aggregate-report.service';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
+import { AggregateReportRequest } from '../report/aggregate-report-request';
+import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
+import { AggregateReportRequestMapper } from './aggregate-report-request.mapper';
+import { AggregateReportOptions } from './aggregate-report-options';
+import { Utils } from '../shared/support/support';
+import { map } from 'rxjs/operators';
 
 /**
  * This resolver is responsible for fetching an aggregate report based upon
@@ -19,8 +19,7 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
 
   constructor(private service: AggregateReportService,
               private optionMapper: AggregateReportOptionsMapper,
-              private requestMapper: AggregateReportRequestMapper,
-              private translate: TranslateService) {
+              private requestMapper: AggregateReportRequestMapper) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<AggregateReportFormSettings> {
@@ -29,11 +28,14 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
     if (reportId) {
       return this.service.getReportById(Number.parseInt(reportId))
         .flatMap(report => this.requestMapper.toSettings(<AggregateReportRequest>report.request, options))
-        .map(settings => Object.assign(settings, {
-          name: Utils.appendOrIncrementFileNameSuffix(settings.name)
-        }));
+        .pipe(
+          map(settings => Object.assign(settings, {
+            name: Utils.appendOrIncrementFileNameSuffix(settings.name)
+          }))
+        );
     }
-    return Observable.of(this.optionMapper.toDefaultSettings(options));
+
+    return this.optionMapper.toDefaultSettings(options);
   }
 
 }

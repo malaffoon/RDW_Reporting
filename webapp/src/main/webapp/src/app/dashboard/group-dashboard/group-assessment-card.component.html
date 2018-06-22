@@ -1,0 +1,45 @@
+<a class="card assessment-aggregate"
+   href="javascript:void(0)"
+   [ngClass]="{selected: selected}"
+   (click)="selectCard()">
+
+  <div class="check">
+    <i class="fa fa-check"></i>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-4">
+      <div class="icon-wrapper">
+        <assessment-icon [assessment]="measuredAssessment.assessment"></assessment-icon>
+      </div>
+    </div>
+    <div class="col-xs-8">
+      <div class="label"
+           [ngClass]="getGradeColor()">
+        {{'common.assessment-grade-short-label.' + measuredAssessment.assessment.grade | translate}}
+      </div>
+      <div class="title">
+        {{measuredAssessment.assessment.label}}
+      </div>
+    </div>
+  </div>
+
+  <div class="students mt-sm">
+      <span class="caption"
+            [innerHTML]="'assessment-card.student-count' | translate: {studentsTested: measuredAssessment.studentsTested, groupCount: group.totalStudents }"></span>
+  </div>
+  <div class="aggregate-graph row">
+    <!-- TODO:ConfigurableSubjects custom subjects need to dynamically pull performance levels for the current assessment type -->
+    <div class="perc-container col-xs-4"
+         *ngFor="let i of [1, 2, 3]">
+      <div class="bar">
+        <span class="square"
+              [ngClass]="colorService.getPerformanceLevelColorsByAssessmentTypeCode('iab', i)"></span>
+        <strong>{{ 'common.value-display-type-format.Percent' | translate: { value: percents[i-1] } }}</strong>
+      </div>
+      <div class="bar description">
+        <span>{{ 'common.assessment-type.iab.performance-level.' + i + '.name' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</a>

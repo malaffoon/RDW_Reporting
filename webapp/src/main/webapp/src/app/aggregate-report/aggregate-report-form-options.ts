@@ -1,5 +1,6 @@
-import { Option as SbToggleOption } from "../shared/sb-toggle.component";
-import { Option as SbCheckboxGroupOption } from "../shared/form/sb-checkbox-group.component";
+import { Option as SbToggleOption } from '../shared/sb-toggle.component';
+import { Option as SbCheckboxGroupOption } from '../shared/form/sb-checkbox-group.component';
+import { SubgroupFilterFormOptions } from './subgroup/subgroup-filter-form-options';
 
 /**
  * Represents the options available in the aggregate report form
@@ -8,22 +9,18 @@ export interface AggregateReportFormOptions {
 
   assessmentGrades: SbCheckboxGroupOption[];
   assessmentTypes: SbToggleOption[];
+  claimCodes: SbCheckboxGroupOption[];
   completenesses: SbCheckboxGroupOption[];
   dimensionTypes: SbCheckboxGroupOption[];
-  economicDisadvantages: SbCheckboxGroupOption[];
-  ethnicities: SbCheckboxGroupOption[];
-  genders: SbCheckboxGroupOption[];
-  individualEducationPlans: SbCheckboxGroupOption[];
   interimAdministrationConditions: SbCheckboxGroupOption[];
-  limitedEnglishProficiencies: SbCheckboxGroupOption[];
-  migrantStatuses: SbCheckboxGroupOption[];
   performanceLevelDisplayTypes: SbToggleOption[];
-  section504s: SbCheckboxGroupOption[];
+  reportTypes: SbCheckboxGroupOption[];
   schoolYears: SbCheckboxGroupOption[];
   statewideReporter: boolean;
   subjects: SbCheckboxGroupOption[];
   summativeAdministrationConditions: SbCheckboxGroupOption[];
   valueDisplayTypes: SbToggleOption[];
+  studentFilters: SubgroupFilterFormOptions;
 
 }
 

@@ -1,15 +1,16 @@
-import { AggregateReportOptions } from "./aggregate-report-options";
-import { AggregateReportFormOptions } from "./aggregate-report-form-options";
-import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { SchoolYearPipe } from "../shared/format/school-year.pipe";
-import { DisplayOptionService } from "../shared/display-options/display-option.service";
-import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { ValueDisplayTypes } from "../shared/display-options/value-display-type";
-import { PerformanceLevelDisplayTypes } from "../shared/display-options/performance-level-display-type";
-
-
-export const DefaultColumnOrder: string[] = ['organization', 'assessmentGrade', 'schoolYear', 'dimension'];
+import { AggregateReportOptions } from './aggregate-report-options';
+import { AggregateReportFormOptions } from './aggregate-report-form-options';
+import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SchoolYearPipe } from '../shared/format/school-year.pipe';
+import { DisplayOptionService } from '../shared/display-options/display-option.service';
+import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
+import { ValueDisplayTypes } from '../shared/display-options/value-display-type';
+import { AssessmentDefinitionService } from './assessment/assessment-definition.service';
+import { Observable } from 'rxjs/Observable';
+import { ApplicationSettingsService } from '../app-settings.service';
+import { Claim } from './aggregate-report-options.service';
+import { of } from 'rxjs/observable/of';
 
 /**
  * Responsible for mapping server provided report options into option
@@ -18,9 +19,18 @@ export const DefaultColumnOrder: string[] = ['organization', 'assessmentGrade', 
 @Injectable()
 export class AggregateReportOptionsMapper {
 
+  private showElas = false;
+  private showLep = false;
+
   constructor(private translateService: TranslateService,
               private schoolYearPipe: SchoolYearPipe,
-              private displayOptionService: DisplayOptionService) {
+              private displayOptionService: DisplayOptionService,
+              private assessmentDefinitionService: AssessmentDefinitionService,
+              private applicationSettingsService: ApplicationSettingsService) {
+    applicationSettingsService.getSettings().subscribe(settings => {
+      this.showElas = settings.elasEnabled;
+      this.showLep = settings.lepEnabled;
+    });
   }
 
   /**
@@ -35,7 +45,7 @@ export class AggregateReportOptionsMapper {
     return <AggregateReportFormOptions>{
       assessmentGrades: options.assessmentGrades
         .map(optionMapper(
-          value => translate(`common.grade.${value}.form-name`),
+          value => translate(`common.assessment-grade.${value}`),
           value => `Assessment Grade: ${value}`
         )),
       assessmentTypes: options.assessmentTypes
@@ -43,27 +53,22 @@ export class AggregateReportOptionsMapper {
           value => translate(`common.assessment-type.${value}.short-name`),
           value => `Assessment Type: ${value}`
         )),
+      claimCodes: options.claims
+        .map(optionMapper(
+          (value: Claim) => translate(`common.subject-claim-code.${value.code}`),
+          (value: Claim) => `Claim Code: ${value.code}`
+        )),
       completenesses: options.completenesses
         .map(optionMapper(
           value => translate(`common.completeness.${value}`),
           value => `Completeness: ${value}`
-        )),
-      ethnicities: options.ethnicities
-        .map(optionMapper(
-          value => translate(`common.ethnicity.${value}`),
-          value => `Ethnicity: ${value}`
-        )),
-      genders: options.genders
-        .map(optionMapper(
-          value => translate(`common.gender.${value}`),
-          value => `Gender: ${value}`
         )),
       interimAdministrationConditions: options.interimAdministrationConditions
         .map(optionMapper(
           value => translate(`common.administration-condition.${value}`),
           value => `Manner of Administration: ${value}`
         )),
-      schoolYears: options.schoolYears
+      schoolYears: options.schoolYears.concat().sort()
         .map(optionMapper(
           value => this.schoolYearPipe.transform(value),
           value => `School Year: ${value}`
@@ -78,40 +83,69 @@ export class AggregateReportOptionsMapper {
           value => translate(`common.administration-condition.${value}`),
           value => `Validity: ${value}`
         )),
-      migrantStatuses: options.migrantStatuses
-        .map(optionMapper(
-          value => translate(`common.boolean.${value}`),
-          value => `Migrant Status: ${value}`
-        )),
-      individualEducationPlans: options.individualEducationPlans
-        .map(optionMapper(
-          value => translate(`common.strict-boolean.${value}`),
-          value => `Individual Education Plan: ${value}`
-        )),
-      section504s: options.section504s
-        .map(optionMapper(
-          value => translate(`common.boolean.${value}`),
-          value => `Section 504: ${value}`
-        )),
-      limitedEnglishProficiencies: options.limitedEnglishProficiencies
-        .map(optionMapper(
-          value => translate(`common.strict-boolean.${value}`),
-          value => `Limited English Proficiency: ${value}`
-        )),
-      economicDisadvantages: options.economicDisadvantages
-        .map(optionMapper(
-          value => translate(`common.strict-boolean.${value}`),
-          value => `Economic Disadvantage: ${value}`
-        )),
       performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions(),
       valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
-      dimensionTypes: options.dimensionTypes
+      dimensionTypes: options.dimensionTypes.filter((dimensionType) => this.filterElasOrLep(dimensionType))
         .map(optionMapper(
           value => translate(`common.dimension.${value}`),
           value => `Comparative Subgroup: ${value}`
         )),
-      statewideReporter: options.statewideReporter // TODO move to user context?
+      reportTypes: options.reportTypes
+        .map(optionMapper(
+          value => translate(`common.aggregate-report-type.${value}.label`),
+          value => `Aggregate Report Type: ${value}`,
+          value => translate(`common.aggregate-report-type.${value}.description`),
+          value => translate(`common.aggregate-report-type.${value}.disabled`)
+        )),
+      statewideReporter: options.statewideReporter, // TODO move to user context?
+      studentFilters: {
+        economicDisadvantages: options.studentFilters.economicDisadvantages
+          .map(optionMapper(
+            value => translate(`common.strict-boolean.${value}`),
+            value => `Economic Disadvantage: ${value}`
+          )),
+        ethnicities: options.studentFilters.ethnicities
+          .map(optionMapper(
+            value => translate(`common.ethnicity.${value}`),
+            value => `Ethnicity: ${value}`
+          )),
+        genders: options.studentFilters.genders
+          .map(optionMapper(
+            value => translate(`common.gender.${value}`),
+            value => `Gender: ${value}`
+          )),
+        individualEducationPlans: options.studentFilters.individualEducationPlans
+          .map(optionMapper(
+            value => translate(`common.strict-boolean.${value}`),
+            value => `Individual Education Plan: ${value}`
+          )),
+        limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies
+          .map(optionMapper(
+            value => translate(`common.strict-boolean.${value}`),
+            value => `Limited English Proficiency: ${value}`
+          )),
+        englishLanguageAcquisitionStatuses: options.studentFilters.englishLanguageAcquisitionStatuses
+          .map(optionMapper(
+            value => translate(`common.elas.${value}`),
+            value => `English Language Acquisition Status: ${value}`
+          )),
+        migrantStatuses: options.studentFilters.migrantStatuses
+          .map(optionMapper(
+            value => translate(`common.boolean.${value}`),
+            value => `Migrant Status: ${value}`
+          )),
+        section504s: options.studentFilters.section504s
+          .map(optionMapper(
+            value => translate(`common.boolean.${value}`),
+            value => `Section 504: ${value}`
+          ))
+      }
     };
+  }
+
+  private filterElasOrLep(dimensionType: string): boolean {
+    return (dimensionType !== 'LEP' || this.showLep)
+      && (dimensionType !== 'ELAS' || this.showElas);
   }
 
   /**
@@ -120,33 +154,59 @@ export class AggregateReportOptionsMapper {
    * @param {AggregateReportFormOptions} options the options available for selection
    * @returns {AggregateReportFormSettings} the initial form state
    */
-  toDefaultSettings(options: AggregateReportOptions): AggregateReportFormSettings {
-    return <AggregateReportFormSettings>{
-      assessmentGrades: [],
-      assessmentType: options.assessmentTypes[0],
-      completenesses: [ options.completenesses[0] ],
-      ethnicities: options.ethnicities,
-      genders: options.genders,
-      interimAdministrationConditions: [ options.interimAdministrationConditions[0] ],
-      schoolYears: [ options.schoolYears[0] ],
-      subjects: options.subjects,
-      summativeAdministrationConditions: [ options.summativeAdministrationConditions[0] ],
-      migrantStatuses: options.migrantStatuses,
-      individualEducationPlans: options.individualEducationPlans,
-      section504s: options.section504s,
-      limitedEnglishProficiencies: options.limitedEnglishProficiencies,
-      economicDisadvantages: options.economicDisadvantages,
-      performanceLevelDisplayType: PerformanceLevelDisplayTypes.Separate,
-      valueDisplayType: ValueDisplayTypes.Percent,
-      columnOrder: DefaultColumnOrder,
+  toDefaultSettings(options: AggregateReportOptions): Observable<AggregateReportFormSettings> {
+    const defaultAssessmentType = options.assessmentTypes[ 0 ];
+    const defaultReportType: AggregateReportType = options.reportTypes[ 0 ];
+    const assessmentDefinition = this.assessmentDefinitionService.get(defaultAssessmentType, defaultReportType);
+    return of(<AggregateReportFormSettings>{
+      assessmentType: defaultAssessmentType,
+      columnOrder: assessmentDefinition.aggregateReportIdentityColumns.concat(),
+      completenesses: [ options.completenesses[ 0 ] ],
       dimensionTypes: [],
+      districts: [],
       includeStateResults: true,
       includeAllDistricts: false,
       includeAllSchoolsOfSelectedDistricts: false,
       includeAllDistrictsOfSelectedSchools: true,
-      districts: [],
-      schools: []
-    };
+      interimAdministrationConditions: [ options.interimAdministrationConditions[ 0 ] ],
+      performanceLevelDisplayType: assessmentDefinition.performanceLevelDisplayTypes[ 0 ],
+      queryType: options.queryTypes[ 0 ],
+      reportType: options.reportTypes[ 0 ],
+      summativeAdministrationConditions: [ options.summativeAdministrationConditions[ 0 ] ],
+      schools: [],
+      generalPopulation: {
+        assessmentGrades: [],
+        schoolYears: [ options.schoolYears[ 0 ] ]
+      },
+      claimReport: {
+        assessmentGrades: [],
+        schoolYears: [ options.schoolYears[ 0 ] ],
+        claimCodesBySubject: []
+      },
+      longitudinalCohort: {
+        assessmentGrades: [],
+        toSchoolYear: options.schoolYears[ 0 ]
+      },
+      studentFilters: {
+        economicDisadvantages: options.studentFilters.economicDisadvantages.concat(),
+        ethnicities: options.studentFilters.ethnicities.concat(),
+        genders: options.studentFilters.genders.concat(),
+        individualEducationPlans: options.studentFilters.individualEducationPlans.concat(),
+        limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies.concat(),
+        englishLanguageAcquisitionStatuses: options.studentFilters.englishLanguageAcquisitionStatuses.concat(),
+        migrantStatuses: options.studentFilters.migrantStatuses.concat(),
+        section504s: options.studentFilters.section504s.concat()
+      },
+      targetReport: {
+        assessmentGrade: options.assessmentGrades[ 0 ],
+        schoolYear: options.schoolYears[ 0 ],
+        subjectCode: options.subjects[ 0 ]
+      },
+      subjects: options.subjects.concat(),
+      subgroups: [],
+      valueDisplayType: ValueDisplayTypes.Percent
+    });
   }
+
 
 }

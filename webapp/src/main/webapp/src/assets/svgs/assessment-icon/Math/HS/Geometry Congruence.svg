@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linejoin="round" transform="translate(1 2)">
+    <path stroke-width=".5" d="M26.58,84.3 C26.81,84.22 26.34,84.3 26.58,84.3 C31.332404,83.2066156 36.0761522,86.1547076 37.2,90.9 C37.3484501,91.4897662 37.4388803,92.0926342 37.47,92.7"/>
+    <polyline stroke-linecap="round" stroke-width="1.5" points="89.61 43.04 98.08 .75 11.59 9.23"/>
+    <path stroke-width=".5" d="M95.61,14.11 C95.34,14.11 95.07,14.11 94.8,14.11 C89.259599,14.1100438 84.7620294,9.63035723 84.74,4.09 C84.7426192,3.41847483 84.809592,2.74874629 84.94,2.09"/>
+    <g stroke-width=".5" transform="translate(15 10)" style="mix-blend-mode:multiply">
+      <path d="M71.91,31.87 L70.53,31.28"/>
+      <path stroke-dasharray="3.001 3.001" d="M67.78,30.08 L3.07,2.04"/>
+      <path d="M1.69,1.44 L0.32,0.84"/>
+    </g>
+    <polyline stroke-linecap="round" stroke-width="1.5" points=".91 33.63 3.99 58.48 54.09 37.95"/>
+    <path stroke-width=".5" d="M2.9,50.67 L3.35,50.5 C4.8179433,50.0094532 6.42070138,50.1227493 7.80504056,50.8149189 C9.18937974,51.5070885 10.2416715,52.7213173 10.73,54.19 C10.8626541,54.5654823 10.9532088,54.9545323 11,55.35"/>
+    <g stroke-width=".5" transform="translate(2 33)" style="mix-blend-mode:multiply">
+      <path d="M0.62,0.78 L2.12,0.9"/>
+      <path stroke-dasharray="3.031 3.031" d="M5.14,1.14 L45.93,4.43"/>
+      <path d="M47.44,4.55 L48.94,4.67"/>
+    </g>
+    <polyline stroke-linecap="round" stroke-width="1.5" points="37.88 59.97 21.06 96.9 97.48 77.18"/>
+    <g stroke-width=".5" transform="translate(40 60)" style="mix-blend-mode:multiply">
+      <path d="M0.57,0.74 L2.01,1.16"/>
+      <path stroke-dasharray="3.073 3.073" d="M4.97,2.01 L50.72,15.23"/>
+      <path d="M52.2,15.66 L53.64,16.07"/>
+    </g>
+  </g>
+</svg>

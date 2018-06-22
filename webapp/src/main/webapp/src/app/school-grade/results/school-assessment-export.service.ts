@@ -8,6 +8,7 @@ import { Angulartics2 } from "angulartics2";
 import { CsvExportService } from "../../csv-export/csv-export.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Grade } from "../grade.model";
+import { ExportTargetReportRequest } from '../../assessments/model/export-target-report-request.model';
 
 @Injectable()
 export class SchoolAssessmentExportService implements AssessmentExporter {
@@ -48,10 +49,23 @@ export class SchoolAssessmentExportService implements AssessmentExporter {
     this.csvExportService.exportWritingTraitScores(exportRequest, filename);
   }
 
+  exportTargetScoresToCsv(exportRequest: ExportTargetReportRequest) {
+    let filename: string = this.getFilename(exportRequest);
+
+    this.angulartics2.eventTrack.next({
+      action: 'Export School/Grade Target Report Scores',
+      properties: {
+        category: 'Export'
+      }
+    });
+
+    this.csvExportService.exportTargetScoresToCsv(exportRequest, filename);
+  }
+
   private getFilename(exportRequest: ExportRequest) {
     let assessment: Assessment = exportRequest.assessment;
     return this.schoolName +
-      "-" + this.translate.instant(`labels.grades.${this.grade.code}.short-name`) +
+      "-" + this.translate.instant(`common.assessment-grade-short-label.${this.grade.code}`) +
       "-" + assessment.label + "-" + this.translate.instant(exportRequest.type.toString()) + "-" + new Date().toDateString();
   }
 }

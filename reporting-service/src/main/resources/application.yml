@@ -22,15 +22,42 @@ spring:
       &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
       &characterEncoding=${spring.datasource.character-encoding:utf8}\
       &useCompression=${spring.datasource.use-compression:true}\
+      &connectTimeout=${spring.datasource.connect-timeout:10000}\
+      &socketTimeout=${spring.datasource.socket-timeout:40000}\
       "
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.datasource.query-timeout:30})"
     username: root
     password:
     testWhileIdle: true
     validationQuery: SELECT 1
+    validationQueryTimeout: 10000
     driverClassName: com.mysql.jdbc.Driver
     initialize: false
     initialSize: 4
     maxActive: 10
+
+  writable_datasource:
+    url: "\
+      jdbc:mysql://${spring.writable_datasource.url-server:localhost:3306}/${spring.writable_datasource.url-schema:reporting}\
+      ?useSSL=${spring.writable_datasource.use-ssl:false}\
+      &useLegacyDatetimeCode=${spring.writable_datasource.use-legacy-datetime-code:false}\
+      &characterEncoding=${spring.writable_datasource.character-encoding:utf8}\
+      &rewriteBatchedStatements=${spring.writable_datasource.rewrite-batched-statements:true}\
+      &useCompression=${spring.writable_datasource.use-compression:true}\
+      &connectTimeout=${spring.writable_datasource.connect-timeout:10000}\
+      &socketTimeout=${spring.writable_datasource.socket-timeout:40000}\
+      "
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.writable_datasource.query-timeout:30})"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationQueryTimeout: 10000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -61,25 +88,23 @@ artifacts:
     directory: ${rdw.reporting.artifacts.exam.item.directory:local/items/Item-{0}/}
     file-name: item-{0}.xml
 
-app:
+jwt:
+  secret: ${rdw.reporting.jwt.secret:secret}
+
+jdbc:
+  retry:
+    default:
+      max-attempts: 3
+      delay: 30
+      multiplier: 2
+
+reporting:
   school-year: 2018
   state:
     code: CA
     name: California
 
-  iris:
-    vendorId: ${rdw.reporting.iris.vendorId}
-
-  # google analytics configuration
-  analytics:
-    trackingId: ${rdw.reporting.analytics.trackingId:}
-
-  external-links:
-    interpretive-guide: https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf
-    user-guide: https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf
-
-  min-item-data-year: 2016
-
-jwt:
-  secret: ${rdw.reporting.jwt.secret:secret}
+  # english-learners should be lep or elas
+  english-learners:
+    - elas
 

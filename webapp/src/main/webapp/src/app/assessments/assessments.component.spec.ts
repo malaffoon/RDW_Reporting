@@ -15,6 +15,8 @@ import { CommonModule } from "../shared/common.module";
 import { Angulartics2 } from 'angulartics2';
 import { UserService } from "../user/user.service";
 import { MockUserService } from "../../test/mock.user.service";
+import { of } from 'rxjs/observable/of';
+import { ApplicationSettingsService } from '../app-settings.service';
 
 let examObserver: Observer<Exam[]>;
 describe('AssessmentsComponent', () => {
@@ -22,8 +24,12 @@ describe('AssessmentsComponent', () => {
   let fixture;
   let mockRouteSnapshot;
 
-  let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', ['eventTrack']);
-  mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', ['next']);
+  let mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
+  mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
+
+  const settings: any = {};
+  const mockApplicationSettingsService = jasmine.createSpyObj('ApplicationSettingsService', [ 'getSettings' ]);
+  mockApplicationSettingsService.getSettings.and.callFake(() => of(settings));
 
   beforeEach(async(() => {
 
@@ -41,7 +47,8 @@ describe('AssessmentsComponent', () => {
         { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionsService },
         { provide: GroupAssessmentService, useClass: MockAssessmentService },
         { provide: Angulartics2, useValue: mockAngulartics2 },
-        { provide: UserService, useClass: MockUserService }
+        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
+        { provide: UserService, useValue: new MockUserService() }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
@@ -74,12 +81,12 @@ describe('AssessmentsComponent', () => {
     component.selectedAssessmentsChanged(assessment);
 
     // Return mock api result.
-    examObserver.next([new Exam(), new Exam(), new Exam()]);
+    examObserver.next([ new Exam(), new Exam(), new Exam() ]);
 
     let actual = component.assessmentExams;
     expect(actual.length).toBe(1);
-    expect(actual[0].assessment.id).toBe(assessment.id);
-    expect(actual[0].exams.length).toBe(3);
+    expect(actual[ 0 ].assessment.id).toBe(assessment.id);
+    expect(actual[ 0 ].exams.length).toBe(3);
   });
 
   it('should remove assessment exams when selected assessments changed', () => {
@@ -100,53 +107,12 @@ describe('AssessmentsComponent', () => {
 
     expect(actual.length).toBe(0);
   });
-
-  it('should cancel assessments in flight', () => {
-    let assessment = new Assessment();
-    assessment.id = 54;
-    assessment.selected = true;
-
-    component.showOnlyMostRecent = false;
-    component.availableAssessments = [ assessment ];
-
-    component.selectedAssessmentsChanged(assessment);
-
-    let actual = component.assessmentsLoading;
-    expect(actual.length).toBe(1);
-    expect(actual[0].assessment.id).toBe(assessment.id);
-    expect(component.assessmentExams.length).toBe(0);
-
-    assessment.selected = false;
-    component.selectedAssessmentsChanged(assessment);
-
-    actual = component.assessmentsLoading;
-    expect(actual.length).toBe(0);
-    expect(component.assessmentExams.length).toBe(0);
-
-    // Return mock api result, no one should be listening.
-    examObserver.next([new Exam(), new Exam(), new Exam()]);
-
-    expect(actual.length).toBe(0);
-    expect(component.assessmentExams.length).toBe(0);
-  });
 });
 
 
 function getRouteSnapshot() {
   return {
-    data: {
-      user: {
-        groups: [
-          {
-            id: 2,
-            name: "Anderson's 4th grade."
-          }
-        ],
-        assessments: [ {
-          label: "Measurements & Data"
-        } ]
-      }
-    },
+    data: {},
     params: {
       groupId: 2
     }
@@ -155,22 +121,19 @@ function getRouteSnapshot() {
 
 class MockExamFilterOptionsService {
   public getExamFilterOptions() {
-
-    let result = new ExamFilterOptions();
+    const result = new ExamFilterOptions();
     result.schoolYears = [ 2009, 2008, 2007, 2006, 2005 ];
     result.ethnicities = [ "AmericanIndianOrAlaskaNative", "Asian", "BlackOrAfricanAmerican" ];
-
-    return Observable.of(result);
+    return of(result);
   }
 }
 
 class MockAssessmentService {
   public getAvailableAssessments() {
-    return Observable.of([])
+    return of([])
   }
 
   public getExams() {
-    let observable = new Observable<Exam[]>(observer => examObserver = observer);
-    return observable;
+    return new Observable<Exam[]>(observer => examObserver = observer);
   }
 }

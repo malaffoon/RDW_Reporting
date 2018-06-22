@@ -1,27 +1,32 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ReportService } from "../../report/report.service";
-import { Report } from "../../report/report.model";
-import { AggregateReportTable, SupportedRowCount } from "./aggregate-report-table.component";
-import { Observable } from "rxjs/Observable";
-import { AggregateReportOptions } from "../aggregate-report-options";
-import { AggregateReportItemMapper } from "./aggregate-report-item.mapper";
-import { AssessmentDefinition } from "../assessment/assessment-definition";
-import { AggregateReportRow } from "../../report/aggregate-report";
-import { Subscription } from "rxjs/Subscription";
-import { Utils } from "../../shared/support/support";
-import { Comparator, ranking } from "@kourge/ordering/comparator";
-import { ordering } from "@kourge/ordering";
-import { AggregateReportQuery } from "../../report/aggregate-report-request";
-import { DisplayOptionService } from "../../shared/display-options/display-option.service";
-import { TranslateService } from "@ngx-translate/core";
-import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
-import { SpinnerModal } from "../../shared/loading/spinner.modal";
-import "rxjs/add/operator/finally";
-import { OrderableItem } from "../../shared/order-selector/order-selector.component";
-import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
-import { DefaultColumnOrder } from "../aggregate-report-options.mapper";
-import { AggregateReportRequestSummary } from "../aggregate-report-summary.component";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Report } from '../../report/report.model';
+import { AggregateReportTable, SupportedRowCount } from './aggregate-report-table.component';
+import { AggregateReportOptions } from '../aggregate-report-options';
+import { AggregateReportItemMapper } from './aggregate-report-item.mapper';
+import { AssessmentDefinition } from '../assessment/assessment-definition';
+import { Subscription } from 'rxjs/Subscription';
+import { Utils } from '../../shared/support/support';
+import { Comparator, join, ranking } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
+import { AggregateReportQuery } from '../../report/aggregate-report-request';
+import { DisplayOptionService } from '../../shared/display-options/display-option.service';
+import { TranslateService } from '@ngx-translate/core';
+import { AggregateReportRequestMapper, ServerAggregateReportType } from '../aggregate-report-request.mapper';
+import { SpinnerModal } from '../../shared/loading/spinner.modal';
+import { OrderableItem } from '../../shared/order-selector/order-selector.component';
+import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
+import { AggregateReportRequestSummary } from '../aggregate-report-summary.component';
+import { interval } from 'rxjs/observable/interval';
+import { finalize, switchMap } from 'rxjs/operators';
+import { LongitudinalCohortChart, OrganizationPerformance } from './longitudinal-cohort-chart';
+import { AggregateReportService, LongitudinalReport } from '../aggregate-report.service';
+import { LongitudinalCohortChartMapper } from './longitudinal-cohort-chart.mapper';
+import { AggregateReportItem } from './aggregate-report-item';
+import { organizationOrdering, subgroupOrdering } from '../support';
+import { LongitudinalDisplayType } from '../../shared/display-options/longitudinal-display-type';
+import { AssessmentDefinitionService } from '../assessment/assessment-definition.service';
+import { AggregateReportType } from "../aggregate-report-form-settings";
 
 const PollingInterval = 4000;
 
@@ -41,34 +46,39 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
   report: Report;
-  reportTables: AggregateReportTableView[];
+  reportViews: AggregateReportView[];
   showRequest: boolean = false;
   summary: AggregateReportRequestSummary;
+  longitudinalDisplayType = LongitudinalDisplayType.GeneralPopulation;
 
-  private _tableViewComparator: Comparator<AggregateReportTableView>;
+  private _viewComparator: Comparator<AggregateReportView>;
   private _pollingSubscription: Subscription;
   private _displayLargeReport: boolean = false;
   private _displayOptions: AggregateReportTableDisplayOptions;
   private _viewState: ViewState;
+  private _aggregateReport: any;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private reportService: ReportService,
+              private reportService: AggregateReportService,
               private requestMapper: AggregateReportRequestMapper,
               private itemMapper: AggregateReportItemMapper,
               private displayOptionService: DisplayOptionService,
               private translateService: TranslateService,
-              private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider) {
+              private definitionService: AssessmentDefinitionService,
+              private columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
+              private chartMapper: LongitudinalCohortChartMapper) {
 
     this.options = this.route.snapshot.data[ 'options' ];
     this.report = this.route.snapshot.data[ 'report' ];
-    this.assessmentDefinition = this.route.snapshot.data[ 'assessmentDefinitionsByAssessmentTypeCode' ]
-      .get(this.report.request.reportQuery.assessmentTypeCode);
-    this._tableViewComparator = ordering(ranking(this.options.subjects))
-      .on((wrapper: AggregateReportTableView) => wrapper.subjectCode).compare;
+
+    this.assessmentDefinition = this.definitionService.get(this.query.assessmentTypeCode, this.mapToReportType(this.query.reportType));
+    this._viewComparator = ordering(ranking(this.options.subjects))
+      .on((wrapper: AggregateReportView) => wrapper.subjectCode).compare;
     this._displayOptions = {
       valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
-      performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions()
+      performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions(),
+      longitudinalDisplayTypes: this.displayOptionService.getLongitudinalDisplayTypeOptions()
     };
     this.requestMapper.toSettings(this.report.request, this.options)
       .subscribe(settings => this.summary = {
@@ -78,12 +88,16 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       });
   }
 
+  get effectiveReportType() {
+    return this.reportService.getEffectiveReportType(this.mapToReportType(this.query.reportType), this.assessmentDefinition);
+  }
+
   get displayOptions(): AggregateReportTableDisplayOptions {
     return this._displayOptions;
   }
 
   get query(): AggregateReportQuery {
-    return this.report.request.reportQuery;
+    return this.report.request.query;
   }
 
   get reportProcessing(): boolean {
@@ -129,27 +143,58 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   onDownloadDataButtonClick(): void {
     this.reportService.downloadReportContent(this.report.id);
-    this.router.navigateByUrl("/reports");
+    this.router.navigateByUrl('/reports');
   }
 
-  getExportName(table: AggregateReportTableView): string {
+  getExportName(table: AggregateReportView): string {
     const subjectLabel: string = this.translateService.instant(`common.subject.${table.subjectCode}.short-name`);
-    return this.translateService.instant('aggregate-reports.export-name', {
+    return this.translateService.instant('aggregate-report.export-name', {
       label: this.report.label,
       subject: subjectLabel
     });
   }
 
-  onColumnOrderChange(tableView: AggregateReportTableView, items: OrderableItem[]) {
+  onColumnOrderChange(tableView: AggregateReportView, items: OrderableItem[]) {
     tableView.columnOrdering = items.map(item => item.value);
   }
 
   isEmbargoed(): boolean {
-    return this.report.metadata.createdWhileDataEmbargoed === "true";
+    return this.report.metadata.createdWhileDataEmbargoed === 'true';
+  }
+
+  onLongitudinalDisplayTypeChange(): void {
+    if (!this._aggregateReport) {
+      return;
+    }
+
+    this.initializeReportViews(this.query, this._aggregateReport);
+  }
+
+  mapToReportType(serverReportType: ServerAggregateReportType): AggregateReportType {
+    if (serverReportType == ServerAggregateReportType.Longitudinal) {
+      return AggregateReportType.LongitudinalCohort
+    }
+    if (serverReportType == ServerAggregateReportType.CustomAggregate) {
+      return AggregateReportType.GeneralPopulation
+    }
+    if (serverReportType == ServerAggregateReportType.Claim) {
+      return AggregateReportType.Claim;
+    }
+    if (serverReportType == ServerAggregateReportType.Target) {
+      return AggregateReportType.Target;
+    }
+  }
+
+  get isLongitudinal(): boolean {
+    return this.query.reportType === ServerAggregateReportType.Longitudinal;
+  }
+
+  get showTargetMathCautionMessage(): boolean {
+    return this.query.reportType == ServerAggregateReportType.Target && this.query.subjectCode == 'Math';
   }
 
   private updateViewState(): void {
-    let targetViewState: ViewState = this.getTargetViewState();
+    const targetViewState = this.getTargetViewState();
     this.onViewStateChange(this._viewState, targetViewState);
     this._viewState = targetViewState;
   }
@@ -174,24 +219,26 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private onViewStateChange(oldState: ViewState, newState: ViewState) {
-    if (oldState == newState) {
+    if (oldState === newState) {
       return;
     }
 
-    if (oldState == ViewState.ReportProcessing) {
+    if (oldState === ViewState.ReportProcessing) {
       this.unsubscribe();
     }
-    if (newState == ViewState.ReportProcessing) {
+    if (newState === ViewState.ReportProcessing) {
       this.pollReport();
     }
-    if (newState == ViewState.ReportView) {
+    if (newState === ViewState.ReportView) {
       this.loadReport();
     }
   }
 
   private pollReport(): void {
-    this._pollingSubscription = Observable.interval(PollingInterval)
-      .switchMap(() => this.reportService.getReportById(this.report.id))
+    this._pollingSubscription = interval(PollingInterval)
+      .pipe(
+        switchMap(() => this.reportService.getReportById(this.report.id))
+      )
       .subscribe(report => {
         this.report = report;
         this.updateViewState();
@@ -206,39 +253,94 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   private loadReport(): void {
     this.spinnerModal.loading = true;
-    this.reportService.getAggregateReport(this.report.id)
-      .finally(() => {
+
+    let observable;
+    if (this.effectiveReportType === AggregateReportType.LongitudinalCohort) {
+      observable = this.reportService.getLongitudinalReport(this.report.id);
+    } else if (this.effectiveReportType === AggregateReportType.Target) {
+      observable = this.reportService.getTargetReport(this.report.id);
+    } else {
+      observable = this.reportService.getAggregateReport(this.report.id);
+    }
+
+    observable.pipe(
+      finalize(() => {
         this.spinnerModal.loading = false;
       })
-      .subscribe(rows => this.initializeReportTables(rows));
+    ).subscribe(report => {
+      this._aggregateReport = report;
+      this.initializeReportViews(this.query, report);
+    });
+
   }
 
-  private initializeReportTables(rows: AggregateReportRow[]): void {
-    this.reportTables = rows.reduce((tableWrappers, row, index) => {
-      const item = this.itemMapper.map(this.assessmentDefinition, row, index);
+  private initializeReportViews(query: AggregateReportQuery, report: any): void {
+    const { rows, assessments } = report;
+    const hasLongitudinalData = assessments != null;
+
+    const measuresGetter = hasLongitudinalData && this.longitudinalDisplayType == LongitudinalDisplayType.Cohort
+      ? (row) => row.cohortMeasures : (row) => row.measures;
+
+    const rowMapper: (query, assessmentDefinition, row, index) => AggregateReportItem =
+      (query, assessmentDefinition, row, index) => this.itemMapper.createRow(query, assessmentDefinition, row, index, measuresGetter);
+
+    // Preserve existing display type choices if they exist
+    const displayBySubject: Map<string, any> = (this.reportViews || []).reduce((map, view) => {
+      map.set(view.subjectCode, {
+        valueDisplayType: view.valueDisplayType,
+        performanceLevelDisplayType: view.performanceLevelDisplayType
+      });
+      return map;
+    }, new Map());
+
+    this.reportViews = rows.reduce((views, row, index) => {
+      const item = rowMapper(query, this.assessmentDefinition, row, index);
       const subjectCode = row.assessment.subjectCode;
-      const tableWrapper = tableWrappers.find(wrapper => wrapper.subjectCode == subjectCode);
-      const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.reportQuery.columnOrder)
-        ? DefaultColumnOrder
-        : this.report.request.reportQuery.columnOrder;
-      if (!tableWrapper) {
-        tableWrappers.push({
+      let view = views.find(wrapper => wrapper.subjectCode === subjectCode);
+      const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.query.columnOrder)
+        ? this.assessmentDefinition.aggregateReportIdentityColumns.concat()
+        : this.report.request.query.columnOrder;
+
+      if (!view) {
+        const displayTypes = displayBySubject.get(subjectCode) || {
+          valueDisplayType: this.query.valueDisplayType,
+          performanceLevelDisplayType: this.query.achievementLevelDisplayType,
+        };
+
+        view = <any>{
           subjectCode: subjectCode,
           table: {
             options: this.options,
             assessmentDefinition: this.assessmentDefinition,
-            rows: [ item ]
+            rows: [ item ],
+            reportType: this.effectiveReportType
           },
-          valueDisplayType: this.query.valueDisplayType,
-          performanceLevelDisplayType: this.query.achievementLevelDisplayType,
+          valueDisplayType: displayTypes.valueDisplayType,
+          performanceLevelDisplayType: displayTypes.performanceLevelDisplayType,
           columnOrdering: columnOrder,
           columnOrderingItems: this.columnOrderableItemProvider.toOrderableItems(columnOrder)
-        });
+        };
+
+        if (hasLongitudinalData) {
+          view.chart = this.chartMapper.fromReport(this.query, <LongitudinalReport>{
+            rows: rows.filter(row => row.assessment.subjectCode === subjectCode),
+            assessments: assessments.filter(assessment => assessment.subject === subjectCode)
+          }, measuresGetter);
+
+          view.chart.organizationPerformances.sort(
+            join(
+              organizationOrdering((path: OrganizationPerformance) => path.organization, view.chart.organizationPerformances).compare,
+              subgroupOrdering((path: OrganizationPerformance) => path.subgroup, this.options).compare
+            )
+          );
+        }
+
+        views.push(view);
       } else {
-        tableWrapper.table.rows.push(item);
+        view.table.rows.push(item);
       }
-      return tableWrappers;
-    }, []).sort(this._tableViewComparator);
+      return views;
+    }, []).sort(this._viewComparator);
   }
 
   private unsubscribe(): void {
@@ -253,15 +355,17 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 interface AggregateReportTableDisplayOptions {
   readonly valueDisplayTypes: any[];
   readonly performanceLevelDisplayTypes: any[];
+  readonly longitudinalDisplayTypes: any[];
 }
 
-interface AggregateReportTableView {
+interface AggregateReportView {
   subjectCode: string;
   table: AggregateReportTable;
   valueDisplayType: string;
   performanceLevelDisplayType: string;
   columnOrdering: string[];
   columnOrderingItems: OrderableItem[];
+  chart?: LongitudinalCohortChart;
 }
 
 enum ViewState {
@@ -271,3 +375,4 @@ enum ViewState {
   ReportSizeNotSupported,
   ReportView
 }
+

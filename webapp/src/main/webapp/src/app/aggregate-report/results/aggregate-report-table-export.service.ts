@@ -5,6 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { AssessmentDefinition } from "../assessment/assessment-definition";
 import { PerformanceLevelDisplayTypes } from "../../shared/display-options/performance-level-display-type";
 import { ValueDisplayTypes } from "../../shared/display-options/value-display-type";
+import { AggregateReportType } from "../aggregate-report-form-settings";
 
 /**
  * Service responsible for exporting the currently-viewed aggregate report table
@@ -30,52 +31,87 @@ export class AggregateReportTableExportService {
       .withFilename(options.name);
 
     options.columnOrdering.forEach((column) => {
-      builder = this.appendUserOrderedColumn(column, builder)
+      builder = this.appendUserOrderedColumn(column, options, builder);
     });
 
     builder
       .withColumn(
-        this.translateService.instant('aggregate-reports.results.cols.students-tested'),
+        this.translateService.instant('aggregate-report-table.columns.students-tested'),
         (item: AggregateReportItem) => item.studentsTested
-      )
-      .withColumn(
-        this.translateService.instant('aggregate-reports.results.cols.avg-scale-score'),
-        (item: AggregateReportItem) => item.studentsTested
-            ? `${item.avgScaleScore} ± ${item.avgStdErr}`
-            : ''
       );
 
-    builder = this.addPerformanceLevelColumns(builder, options);
+    if (options.reportType === AggregateReportType.Target) {
+      builder
+        .withColumn(
+          this.translateService.instant('target-report.columns.student-relative-residual-scores-level'),
+          (item: AggregateReportItem) => {
+            if (!item.studentsTested) return '';
+
+            return this.translateService.instant(`aggregate-report-table.target.overall.${item.studentRelativeResidualScoresLevel}`);
+          }
+        )
+        .withColumn(
+          this.translateService.instant('target-report.columns.standard-met-relative-residual-level'),
+          (item: AggregateReportItem) => {
+            if (!item.studentsTested) return '';
+
+            return this.translateService.instant(`aggregate-report-table.target.standard.${item.standardMetRelativeResidualLevel}`);
+          }
+        );
+
+    } else if (options.reportType === AggregateReportType.Claim) {
+      this.addPerformanceLevelColumns(builder, options);
+
+    } else {
+      builder
+        .withColumn(
+          this.translateService.instant('aggregate-report-table.columns.avg-scale-score'),
+          (item: AggregateReportItem) => item.studentsTested
+            ? `${item.avgScaleScore} ± ${item.avgStdErr}`
+            : ''
+        );
+
+      this.addPerformanceLevelColumns(builder, options);
+    }
+
     builder.build(rows);
   }
 
-  private appendUserOrderedColumn(column: string, builder: CsvBuilder): CsvBuilder {
+  private appendUserOrderedColumn(column: string, options: ExportOptions, builder: CsvBuilder): CsvBuilder {
     if ('organization' === column) {
       return builder
         .withColumn(
-          this.translateService.instant('aggregate-reports.results.cols.organization-name'),
+          this.translateService.instant('aggregate-report-table.columns.organization'),
           (item: AggregateReportItem) => item.organization.name
         )
         .withColumn(
-          this.translateService.instant('aggregate-reports.results.cols.organization-id'),
+          this.translateService.instant('aggregate-report-table.columns.organization-id'),
           (item: AggregateReportItem) => (item.organization as any).naturalId ? (item.organization as any).naturalId : ''
+        );
+    }
+
+    if ('assessmentLabel' === column) {
+      return builder
+        .withColumn(
+          this.translateService.instant('aggregate-report-table.columns.assessment-label'),
+          (item: AggregateReportItem) => item.assessmentLabel
         );
     }
 
     if ('assessmentGrade' === column) {
       return builder
         .withColumn(
-          this.translateService.instant('aggregate-reports.results.cols.assessment-grade'),
-          (item: AggregateReportItem) => this.translateService.instant(`common.grade.${item.assessmentGradeCode}.form-name`)
+          this.translateService.instant('aggregate-report-table.columns.assessment-grade'),
+          (item: AggregateReportItem) => this.translateService.instant(`common.assessment-grade.${item.assessmentGradeCode}`)
         );
     }
 
     if ('schoolYear' === column) {
       return builder
         .withColumn(
-          this.translateService.instant('aggregate-reports.results.cols.school-year'),
+          this.translateService.instant('aggregate-report-table.columns.school-year'),
           (item: AggregateReportItem) => {
-            let valueAsString = item.schoolYear.toString();
+            const valueAsString = item.schoolYear.toString();
             if (valueAsString.length !== 4) {
               return item.schoolYear;
             }
@@ -87,12 +123,33 @@ export class AggregateReportTableExportService {
     if ('dimension' === column) {
       return builder
         .withColumn(
-          this.translateService.instant('aggregate-reports.results.cols.dimension'),
+          this.translateService.instant('aggregate-report-table.columns.dimension'),
+          (item: AggregateReportItem) => item.subgroup.name);
+    }
+
+    if ('claim' === column) {
+      return builder
+        .withColumn(
+          this.translateService.instant('aggregate-report-table.columns.claim'),
           (item: AggregateReportItem) => {
-            return this.translateService.instant(`common.dimension.${item.dimension.type}`) +
-              (item.dimension.code ? ': ' + this.translateService.instant(item.dimension.codeTranslationCode) : '')
+            const translationKey: string = options.reportType === AggregateReportType.Target
+              ? `common.claim-name.${item.claimCode}`
+              : `common.subject.${item.subjectCode}.claim.${item.claimCode}.name`;
+            return this.translateService.instant(translationKey);
           }
-        );
+        )
+    }
+
+    if ('target' === column) {
+      return builder
+        .withColumn(
+          this.translateService.instant('aggregate-report-table.columns.target'),
+          (item: AggregateReportItem) => {
+            return item.targetCode
+              ? item.targetCode
+              : this.translateService.instant('common.unknown') + ' (' + item.targetNaturalId + ')';
+          }
+        )
     }
   }
 
@@ -115,11 +172,11 @@ export class AggregateReportTableExportService {
     const headerForPerformanceLevel = (level: number) => {
       let header: string;
       if (options.performanceLevelDisplayType === PerformanceLevelDisplayTypes.Grouped) {
-        header = this.translateService.instant(`aggregate-reports.results.cols.grouped-performance-level-prefix.${level}`);
+        header = this.translateService.instant(`aggregate-report-table.columns.grouped-performance-level-prefix.${level}`);
       } else {
-        header = this.translateService.instant(`common.assessment-type.${options.assessmentDefinition.typeCode}.performance-level.${level}.short-name`)
+        header = this.translateService.instant(`common.assessment-type.${options.assessmentDefinition.typeCode}.performance-level.${level}.name-prefix`);
       }
-      return header + " " + this.translateService.instant('aggregate-reports.results.cols.performance-level-suffix');
+      return header + ' ' + this.translateService.instant('aggregate-report-table.columns.performance-level-suffix');
     };
 
     const levels: number[] = options.performanceLevelDisplayType === PerformanceLevelDisplayTypes.Grouped
@@ -131,7 +188,7 @@ export class AggregateReportTableExportService {
         .withColumn(
           headerForPerformanceLevel(levels[levelIndex]),
           dataProviderForPerformanceLevel(levelIndex)
-        )
+        );
     }
 
     return builder;
@@ -144,4 +201,5 @@ export interface ExportOptions {
   readonly columnOrdering: string[];
   readonly assessmentDefinition: AssessmentDefinition;
   readonly name: string;
+  readonly reportType: AggregateReportType
 }

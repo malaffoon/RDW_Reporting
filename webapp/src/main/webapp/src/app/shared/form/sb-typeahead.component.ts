@@ -1,6 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { ordering } from "@kourge/ordering";
-import { byString, join } from "@kourge/ordering/comparator";
 
 /**
  * This typeahead decorates the ngx-bootstrap typeahead directive
@@ -36,12 +34,8 @@ export class SBTypeahead implements OnInit {
   @Output()
   change: EventEmitter<any> = new EventEmitter<any>();
 
-  /**
-   * Emits an option's value when an option is selected.
-   * This is different than change in that it will only emit when a user selects the value.
-   */
   @Output()
-  select: EventEmitter<any> = new EventEmitter<any>();
+  selected: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
   placeholder: string = '';
@@ -70,14 +64,7 @@ export class SBTypeahead implements OnInit {
   @Input()
   set options(options: Option[]) {
     if (this._options !== options) {
-      this._options = options
-        ? options
-          .sort(
-            join(
-              ordering(byString).on<Option>(o => o.group === undefined ? '' : o.group).compare,
-              ordering(byString).on<Option>(o => o.label).compare
-            ))
-        : [];
+      this._options = options;
     }
   }
 
@@ -89,17 +76,23 @@ export class SBTypeahead implements OnInit {
   set value(value: any) {
     if (this._value !== value) {
       this._value = value;
+      if (this._options) {
+        this.search = this.getSearchFromValue(value);
+      }
       this.change.emit(value);
     }
   }
 
   get disabledInternal(): boolean {
-    return this.disabled || this.options.length == 0;
+    return this.disabled || this.options.length === 0;
   }
 
   onSelectInternal(option: Option): void {
-    this.value = option.value;
-    this.select.emit(option.value);
+    const { value } = option;
+    if (value) {
+      this.value = value;
+      this.selected.emit(value);
+    }
   }
 
   onChangeInternal(): void {
@@ -108,8 +101,8 @@ export class SBTypeahead implements OnInit {
 
   private getSearchFromValue(value: any): string {
     if (value) {
-      let option = this.options.find(option => option.value === value);
-      if (option) {
+      const option = this.options.find(option => option.value === value);
+      if (option != null) {
         return option.label;
       }
     }

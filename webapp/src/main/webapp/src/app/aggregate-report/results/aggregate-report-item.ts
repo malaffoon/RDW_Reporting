@@ -1,4 +1,6 @@
-import { Organization } from "../../shared/organization/organization";
+import { Organization } from '../../shared/organization/organization';
+import { Subgroup } from '../subgroup/subgroup';
+import { TargetReportingLevel } from "../../assessments/model/aggregate-target-score-row.model";
 
 /**
  * This model represents an aggregate report data table row result.
@@ -6,6 +8,7 @@ import { Organization } from "../../shared/organization/organization";
 export class AggregateReportItem {
   itemId: number;
   assessmentId: number;
+  assessmentLabel: string;
   assessmentGradeCode: string;
   subjectCode: string;
   schoolYear: number;
@@ -13,8 +16,8 @@ export class AggregateReportItem {
   avgStdErr: number;
   studentsTested: any;
   performanceLevelByDisplayTypes: {
-    [performanceLevelDisplayType: string]: {
-      [valueDisplayType: string]: number[]
+    [ performanceLevelDisplayType: string ]: {
+      [ valueDisplayType: string ]: number[]
     }
   } = {
     Separate: {
@@ -27,15 +30,15 @@ export class AggregateReportItem {
     }
   };
   organization: Organization;
-  dimension: Dimension;
+  subgroup: Subgroup;
+  studentRelativeResidualScoresLevel?: TargetReportingLevel;
+  standardMetRelativeResidualLevel?: TargetReportingLevel;
+  targetNaturalId?: string;
+  targetCode?: string;
+  targetDescription?: string;
+
+  // NOTE That for Claim reports, this represents a Scorable claim code (e.g. SOCK_R)
+  // For Target reports, this represents an Organizational claim code (e.g. 1-LT)
+  claimCode?: string;
 }
 
-/**
- * Holds dimension information for display as a report item
- */
-export interface Dimension {
-  readonly id: string;
-  readonly type: string;
-  readonly code?: string;
-  readonly codeTranslationCode?: string;
-}
