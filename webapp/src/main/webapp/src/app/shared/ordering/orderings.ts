@@ -27,6 +27,12 @@ export const createScorableClaimOrdering: (subjectCode: string) => Ordering<any>
     : ordering(byString);
 };
 
+export const createScorableClaimOrdering: (subjectCode: string) => Ordering<any> = (subjectCode) => {
+  return ScorableClaimOrderings.has(subjectCode)
+    ? ScorableClaimOrderings.get(subjectCode)
+    : ordering(byString);
+};
+
 // TODO:ConfigurableSubjects this needs to be provided by the backend
 /** @deprecated */
 export const SubjectClaimOrder: Map<string, string[]> = new Map([
