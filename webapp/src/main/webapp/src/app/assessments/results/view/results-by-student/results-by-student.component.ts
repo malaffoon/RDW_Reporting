@@ -86,11 +86,17 @@ export class ResultsByStudentComponent implements OnInit {
     }
 
     return this.assessment.claimCodes
-      // TODO add .concat() as sort() is an in-place sort
-      .sort(ordering.compare)
       .map((code, index) =>
-        new Column({ id: 'claim', field: `claimScores.${index}.level`, index: index, claim: code })
-      );
+        new Column({
+          id: 'claim',
+          field: `claimScores.${index}.level`,
+          index: index,
+          claim: code
+        })
+      )
+      .sort(ordering
+        .on((column: Column) => column.claim)
+        .compare);
   }
 
   private createActions(): PopupMenuAction[] {
