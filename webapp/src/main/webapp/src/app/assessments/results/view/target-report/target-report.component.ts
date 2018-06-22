@@ -128,8 +128,14 @@ export class TargetReportComponent implements OnInit, ExportResults {
     new Column({ id: 'target', headerInfoText: 'common.info.target' }),
     new Column({ id: 'subgroup' }),
     new Column({ id: 'studentsTested' }),
-    new Column({ id: 'student-relative-residual-scores-level', headerInfoText: 'target-report.columns.student-relative-residual-scores-level-info' }),
-    new Column({ id: 'standard-met-relative-residual-level', headerInfoText: 'target-report.columns.standard-met-relative-residual-level-info' })
+    new Column({
+      id: 'student-relative-residual-scores-level',
+      headerInfoText: 'target-report.columns.student-relative-residual-scores-level-info'
+    }),
+    new Column({
+      id: 'standard-met-relative-residual-level',
+      headerInfoText: 'target-report.columns.standard-met-relative-residual-level-info'
+    })
   ];
 
   allTargets: Target[] = [];
@@ -370,7 +376,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   private updateTargetScoreTable(): void {
-    this.sort({data: this.aggregateTargetScoreRows});
+    this.sort({ data: this.aggregateTargetScoreRows });
   }
 
   private updateTargetScoreExamFilters() {
@@ -419,6 +425,12 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 }
 
+interface ColumnDefinition {
+  id: string;
+  field?: string;
+  headerInfoText?: string;
+}
+
 class Column implements BaseColumn {
   id: string;
   field: string;
@@ -428,7 +440,7 @@ class Column implements BaseColumn {
                 id,
                 field = '',
                 headerInfoText
-              }) {
+              }: ColumnDefinition) {
     this.id = id;
     this.field = field ? field : id;
     this.headerInfoText = headerInfoText;
