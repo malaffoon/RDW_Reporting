@@ -12,6 +12,9 @@ export class ItemInfoComponent implements OnInit {
   @Input()
   item: AssessmentItem;
 
+  @Input()
+  subject: string;
+
   interpretiveGuideUrl: string;
   targetDescription: string;
   commonCoreStandards: any[];

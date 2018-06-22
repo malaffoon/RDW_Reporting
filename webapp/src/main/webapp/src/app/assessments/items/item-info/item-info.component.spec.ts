@@ -44,7 +44,7 @@ describe('ItemInfoComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: '<item-info [item]="item" ></item-info>'
+  template: '<item-info [item]="item" subject="Math"></item-info>'
 })
 class TestComponentWrapper {
   item = new AssessmentItem();
