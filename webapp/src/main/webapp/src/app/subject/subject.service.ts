@@ -7,6 +7,7 @@ import { ResponseUtils } from '../shared/response-utils';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import { Assessment } from '../assessments/model/assessment.model';
+import { range } from '../shared/support/support';
 
 const ServiceRoute = ReportingServiceRoute;
 
@@ -82,14 +83,16 @@ export class SubjectService {
       );
   }
 
-  private mapDefinition(apiDefinition: any): SubjectDefinition {
+  private mapDefinition(serverDefinition: any): SubjectDefinition {
     return <SubjectDefinition>{
-      subject: apiDefinition.subjectCode,
-      assessmentType: apiDefinition.asmtTypeCode,
-      performanceLevelCount: apiDefinition.performanceLevelCount,
-      performanceLevelStandardCutoff: apiDefinition.performanceLevelStandardCutoff,
-      scorableClaims: apiDefinition.scorableClaims,
-      scorableClaimPerformanceLevelCount: apiDefinition.claimScorePerformanceLevelCount
+      subject: serverDefinition.subjectCode,
+      assessmentType: serverDefinition.asmtTypeCode,
+      performanceLevels: range(1, serverDefinition.performanceLevelCount),
+      performanceLevelCount: serverDefinition.performanceLevelCount,
+      performanceLevelStandardCutoff: serverDefinition.performanceLevelStandardCutoff,
+      scorableClaims: serverDefinition.scorableClaims,
+      scorableClaimPerformanceLevels: range(1, serverDefinition.claimScorePerformanceLevelCount),
+      scorableClaimPerformanceLevelCount: serverDefinition.claimScorePerformanceLevelCount
     };
   }
 
