@@ -359,10 +359,14 @@ export class CsvBuilder {
     );
   }
 
-  withClaim(getAssessmentItem: (item: any) => AssessmentItem) {
+  withClaim(getAssessment: (item: any) => Assessment, getAssessmentItem: (item: any) => AssessmentItem) {
     return this.withColumn(
       this.translateService.instant('csv-builder.claim'),
-      (item) => this.translateService.instant(`common.claim-name.${getAssessmentItem(item).claim}`)
+      (item) => {
+        const assessment = getAssessment(item);
+        const assessmentItem = getAssessmentItem(item);
+        return this.translateService.instant(`subject.${assessment.subject}.claim.${assessmentItem.claim}.name`);
+      }
     );
   }
 
@@ -436,13 +440,17 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('groups.columns.group'),
       (item) => getGroupName(item)
-    )
+    );
   }
 
-  withTargetReportAggregate(getTargetReportAggregate: (item: any) => AggregateTargetScoreRow) {
+  withTargetReportAggregate(getAssessment: (item: any) => Assessment, getTargetReportAggregate: (item: any) => AggregateTargetScoreRow) {
     this.withColumn(
       this.translateService.instant('target-report.columns.claim'),
-      (item) => this.translateService.instant(`common.claim-name.${getTargetReportAggregate(item).claim}`)
+      (item) => {
+        const assessment = getAssessment(item);
+        const row = getTargetReportAggregate(item);
+        return this.translateService.instant(`subject.${assessment.subject}.claim.${row.claim}.name`);
+      }
     );
     this.withColumn(
       this.translateService.instant('target-report.columns.target'),
