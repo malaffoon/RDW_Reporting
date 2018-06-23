@@ -37,6 +37,7 @@ import { Exam } from '../../../model/exam.model';
 import { SortEvent } from 'primeng/api';
 import { AggregateReportItem } from '../../../../aggregate-report/results/aggregate-report-item';
 import { Utils } from '../../../../shared/support/support';
+import { SubjectDefinition } from '../../../../subject/subject';
 
 const SubgroupOrdering = ordering((a: Subgroup, b: Subgroup) => {
   // Overall should be first
@@ -54,6 +55,9 @@ const SubgroupOrdering = ordering((a: Subgroup, b: Subgroup) => {
   templateUrl: './target-report.component.html'
 })
 export class TargetReportComponent implements OnInit, ExportResults {
+
+  @Input()
+  subjectDefinition: SubjectDefinition;
 
   @Input()
   assessmentProvider: AssessmentProvider;
@@ -123,20 +127,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   @ViewChild('dataTable')
   private dataTable: Table;
 
-  columns: Column[] = [
-    new Column({ id: 'claim', headerInfoText: 'common.info.claim' }),
-    new Column({ id: 'target', headerInfoText: 'common.info.target' }),
-    new Column({ id: 'subgroup' }),
-    new Column({ id: 'studentsTested' }),
-    new Column({
-      id: 'student-relative-residual-scores-level',
-      headerInfoText: 'target-report.columns.student-relative-residual-scores-level-info'
-    }),
-    new Column({
-      id: 'standard-met-relative-residual-level',
-      headerInfoText: 'target-report.columns.standard-met-relative-residual-level-info'
-    })
-  ];
+  columns: Column[];
 
   allTargets: Target[] = [];
   loading: boolean = true;
@@ -179,6 +170,31 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   ngOnInit(): void {
+    this.columns = [
+      new Column({
+        id: 'claim',
+        headerInfoTranslationCode: 'common.info.claim'
+      }),
+      new Column({
+        id: 'target',
+        headerInfoTranslationCode: 'common.info.target'
+      }),
+      new Column({ id: 'subgroup' }),
+      new Column({ id: 'studentsTested' }),
+      new Column({
+        id: 'student-relative-residual-scores-level',
+        headerInfoTranslationCode: 'target-report.columns.student-relative-residual-scores-level-info'
+      }),
+      new Column({
+        id: 'standard-met-relative-residual-level',
+        headerInfoTranslationCode: 'target-report.columns.standard-met-relative-residual-level-info',
+        headerResolve: {
+          name: this.translate.instant(`subject.${this.assessment.subject}.asmt-type.${this.assessment.type}.level.${this.subjectDefinition.performanceLevelStandardCutoff}.name`),
+          id: this.subjectDefinition.performanceLevelStandardCutoff
+        }
+      })
+    ];
+
     if (!this.showResults) {
       this.loading = false;
       return;
@@ -207,7 +223,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
           description: target.description,
           claim: target.claimCode
         });
-
         return targetMap;
       }, new Map<number, any>());
 
@@ -217,7 +232,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
         this.targetScoreExams);
 
       this.updateTargetScoreExamFilters();
-
       this.loading = false;
     });
   }
@@ -427,21 +441,26 @@ export class TargetReportComponent implements OnInit, ExportResults {
 interface ColumnDefinition {
   id: string;
   field?: string;
-  headerInfoText?: string;
+  headerInfoTranslationCode?: string;
+  headerResolve?: any;
 }
 
 class Column implements BaseColumn {
   id: string;
   field: string;
-  headerInfoText: string;
+  headerInfoTranslationCode: string;
+  headerResolve: any;
 
   constructor({
                 id,
                 field = '',
-                headerInfoText
+                headerInfoTranslationCode,
+                headerResolve
               }: ColumnDefinition) {
     this.id = id;
     this.field = field ? field : id;
-    this.headerInfoText = headerInfoText;
+    this.headerInfoTranslationCode = headerInfoTranslationCode;
+    this.headerResolve = headerResolve;
   }
+
 }

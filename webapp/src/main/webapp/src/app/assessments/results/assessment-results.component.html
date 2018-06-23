@@ -71,7 +71,11 @@
 
   <!-- Student Results -->
   <ng-container *ngIf="!collapsed" @fadeAnimation>
-    <div class="row">
+
+    <spinner *ngIf="!currentResultsView"></spinner>
+
+    <div *ngIf="currentResultsView"
+         class="row">
       <div class="col-md-12">
 
         <!-- Result view selector -->
@@ -237,7 +241,8 @@
                          [exams]="exams"
                          [studentsTested]="statistics.total"
                          [sessions]="sessions"
-                         [filterBy]="filterBy"></target-report>
+                         [filterBy]="filterBy"
+                         [subjectDefinition]="subjectDefinition"></target-report>
         </ng-container>
       </div>
     </div>
