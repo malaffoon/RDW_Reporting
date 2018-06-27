@@ -454,7 +454,11 @@ export class CsvBuilder {
     );
     this.withColumn(
       this.translateService.instant('target-report.columns.target'),
-      (item) => getTargetReportAggregate(item).target
+      (item) => {
+        const assessment = getAssessment(item);
+        const row = getTargetReportAggregate(item);
+        return this.translateService.instant(`subject.${assessment.subject}.claim.${row.claim}.target.${row.targetNaturalId}.name`);
+      }
     );
     this.withColumn(
       this.translateService.instant('target-report.columns.subgroup'),

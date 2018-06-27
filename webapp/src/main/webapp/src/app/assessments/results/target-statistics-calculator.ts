@@ -88,7 +88,7 @@ export class TargetStatisticsCalculator {
     return <AggregateTargetScoreRow>{
       targetId: groupedScore.targetId,
       claim: groupedScore.claim,
-      target: groupedScore.target,
+      targetNaturalId: groupedScore.targetNaturalId,
       subgroup: groupedScore.subgroup,
       studentsTested: numStudents,
       standardMetRelativeLevel: groupedScore.includeInReport
@@ -111,7 +111,7 @@ export class TargetStatisticsCalculator {
     return allTargets.map(target => <GroupedTargetScore>{
       subject: subjectCode,
       targetId: target.id,
-      target: target.code,
+      targetNaturalId: target.naturalId,
       claim: target.claimCode,
       subgroup: overallSubgroup,
       standardMetScores: [],
@@ -159,7 +159,7 @@ export class TargetStatisticsCalculator {
           ...allTargets.map(target => <GroupedTargetScore>{
             subject: subjectCode,
             targetId: target.id,
-            target: target.code,
+            targetNaturalId: target.naturalId,
             claim: target.claimCode,
             subgroup: subgroup,
             standardMetScores: [],
@@ -215,6 +215,7 @@ export interface GroupedTargetScore {
   subject: string;
   targetId: number;
   target: string;
+  targetNaturalId: string;
   claim: string;
   subgroup: Subgroup;
   standardMetScores: number[];

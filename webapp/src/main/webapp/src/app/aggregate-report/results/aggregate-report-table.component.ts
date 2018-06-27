@@ -41,9 +41,6 @@ const OrganizationalClaimOrderingProvider: (subjectCode: string, preview: boolea
   return currentOrdering.on(item => item.claimCode);
 };
 
-const TargetOrdering: Ordering<AggregateReportItem> = ordering(byNumericString)
-  .on(item => item.targetCode || item.targetNaturalId);
-
 /**
  * This component is responsible for displaying a table of aggregate report results
  * scoped to a single AssessmentType and Subject.
@@ -316,17 +313,6 @@ export class AggregateReportTableComponent implements OnInit {
     return this.translate.instant(this.getClaimCodeTranslationKey(row));
   }
 
-  getTargetDisplay(row: AggregateReportItem): { name: string, description: string } {
-    const targetName: string = row.targetCode
-      ? row.targetCode
-      : this.translate.instant('common.unknown') + ' (' + row.targetNaturalId + ')';
-
-    return {
-      name: targetName,
-      description: row.targetDescription || ''
-    };
-  }
-
   private buildAndRender({ rows, options, assessmentDefinition, reportType }: AggregateReportTable): void {
 
     // configure row sorting
@@ -338,7 +324,8 @@ export class AggregateReportTableComponent implements OnInit {
     this._orderingByColumnField[ 'assessmentGradeCode' ] = assessmentGradeOrdering;
     this._orderingByColumnField[ 'schoolYear' ] = SchoolYearOrdering;
     this._orderingByColumnField[ 'subgroup.id' ] = subgroupOrdering(item => item.subgroup, options);
-    this._orderingByColumnField[ 'targetNaturalId' ] = TargetOrdering;
+    this._orderingByColumnField[ 'targetNaturalId' ] = ordering(byNumericString)
+      .on(item => this.translate.instant(`subject.${item.subjectCode}.claim.${item.claimCode}.target.${item.targetNaturalId}.name`));
     this._orderingByColumnField[ 'studentRelativeResidualScoresLevel' ] = ordering(byTargetReportingLevel)
       .on(item => item.studentRelativeResidualScoresLevel);
     this._orderingByColumnField[ 'standardMetRelativeResidualLevel' ] = ordering(byTargetReportingLevel)

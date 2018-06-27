@@ -15,8 +15,6 @@ export class ItemInfoComponent implements OnInit {
   subject: string;
 
   interpretiveGuideUrl: string;
-  targetDescription: string;
-  commonCoreStandards: any[];
 
   constructor(private service: ItemInfoService) {
   }
@@ -25,18 +23,6 @@ export class ItemInfoComponent implements OnInit {
     this.service
       .getInterpretiveGuide()
       .subscribe(guide => this.interpretiveGuideUrl = guide);
-
-    if (this.item.targetId != null) {
-      this.service
-        .getTargetDescription(this.item.targetId)
-        .subscribe(description => this.targetDescription = description);
-    }
-
-    if (this.item.commonCoreStandardIds && this.item.commonCoreStandardIds.length) {
-      this.service
-        .getCommonCoreStandards(this.item.id)
-        .subscribe(standards => this.commonCoreStandards = standards);
-    }
   }
 
 }

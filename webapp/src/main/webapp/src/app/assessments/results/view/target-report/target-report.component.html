@@ -95,8 +95,13 @@
 
             <div *ngSwitchCase="'target'"
                  class="text-right wrapping-max-width-xl">
-            <span [innerHTML]="'aggregate-report-table.target-description' | translate: getTargetDisplay(rowData)">
-            </span>
+              <strong>
+                {{'common.results.assessment-item-target' | translate:{
+                    target: 'subject.' + assessment.subject + '.claim.' + rowData.claim + '.target.' + rowData.targetNaturalId + '.name' | translate
+                  }
+                }}
+              </strong>
+              {{ 'subject.' + assessment.subject + '.claim.' + rowData.claim + '.target.' + rowData.targetNaturalId + '.description' | translate }}
             </div>
 
             <div *ngSwitchCase="'subgroup'"
