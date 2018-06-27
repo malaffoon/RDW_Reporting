@@ -65,8 +65,6 @@ export class AssessmentExamMapper {
         assessmentId: serverTarget.assessmentId,
         claimCode: serverTarget.claimCode,
         naturalId: serverTarget.naturalId,
-        code: serverTarget.code,
-        description: serverTarget.description,
         includeInReport: serverTarget.includeInReport,
       };
     });
@@ -154,8 +152,8 @@ export class AssessmentExamMapper {
     item.bankItemKey = serverItem.bankItemKey;
     item.position = serverItem.position;
     item.claim = serverItem.claimCode;
-    item.target = this.formatTarget(serverItem.targetCode);
     item.targetId = serverItem.targetId;
+    item.targetNaturalId = serverItem.targetNaturalId;
     item.depthOfKnowledge = {
       level: serverItem.depthOfKnowledge.level,
       referenceUrl: serverItem.depthOfKnowledge.referenceUrl
@@ -173,14 +171,6 @@ export class AssessmentExamMapper {
     item.answerKey = (serverItem.type === 'MC' || serverItem.type === 'MS') ? serverItem.answerKey : undefined;
 
     return item;
-  }
-
-  formatTarget(target: string): string {
-    const dashIndex = target.indexOf('-');
-
-    return dashIndex === -1
-      ? target
-      : target.substring(0, dashIndex);
   }
 
   private mapClaimScaleScoreFromApi(apiScaleScore: any): ClaimScore {

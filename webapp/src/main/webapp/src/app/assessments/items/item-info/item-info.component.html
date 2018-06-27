@@ -4,8 +4,14 @@
     {{ 'subject.' + subject + '.claim.' + item.claim + '.description' | translate }}
   </p>
   <p>
-    <strong>{{ 'common.results.assessment-item-target' | translate:item}}: </strong>
-    {{ targetDescription }}
+    <strong>
+      {{
+        'common.results.assessment-item-target' | translate:{
+            target: 'subject.' + subject + '.claim.' + item.claim + '.target.' + item.targetNaturalId + '.name' | translate
+        }
+      }}:
+    </strong>
+    {{ 'subject.' + subject + '.claim.' + item.claim + '.target.' + item.targetNaturalId + '.description' | translate }}
   </p>
   <p *ngIf="item.depthOfKnowledge">
     <strong>{{ 'item-info.dok-label' | translate}}</strong>
@@ -16,10 +22,13 @@
     <strong>{{ 'item-info.difficulty' | translate}}</strong>
     {{ 'common.difficulty.' + item.difficulty | translate }}
   </p>
-  <span *ngIf="commonCoreStandards">
+  <span *ngIf="item.commonCoreStandardIds">
     <p><strong>{{ 'item-info.ccs' | translate}}</strong></p>
-    <p *ngFor="let standard of commonCoreStandards">
-      <span class="label border-only blue mr-xs">{{ standard.code }}</span> {{ standard.description }}
+    <p *ngFor="let standard of item.commonCoreStandardIds">
+      <span class="label border-only blue mr-xs">
+        {{ standard }}
+      </span>
+      {{ 'subject.' + subject + '.standard.' + standard + '.description' | translate }}
     </p>
   </span>
   <p *ngIf="item.mathPractice">

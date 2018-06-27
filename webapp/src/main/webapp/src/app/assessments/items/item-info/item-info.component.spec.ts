@@ -12,7 +12,7 @@ describe('ItemInfoComponent', () => {
   let fixture: ComponentFixture<TestComponentWrapper>;
   const mockApplicationSettingsService = {
     getSettings: () => of({})
-  }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

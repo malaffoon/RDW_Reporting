@@ -3,7 +3,7 @@ import { ranking } from '@kourge/ordering/comparator';
 
 export class AggregateTargetScoreRow {
   targetId: number;
-  target: string;
+  targetNaturalId: string;
   claim: string;
   subgroup: Subgroup;
   studentsTested: number;

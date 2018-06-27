@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { StudentReportDownloadComponent } from '../../../../report/student-report-download.component';
 import { TranslateService } from '@ngx-translate/core';
-import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { Assessment } from '../../../model/assessment.model';
 import { TargetScoreExam } from '../../../model/target-score-exam.model';
 import {
@@ -11,14 +10,12 @@ import {
 } from '../../../model/aggregate-target-score-row.model';
 import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.service';
 import { FilterBy } from '../../../model/filter-by.model';
-import { GroupAssessmentService } from '../../../../groups/results/group-assessment.service';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
 import { byNumber, Comparator, join } from '@kourge/ordering/comparator';
 import { TargetService } from '../../../../shared/target/target.service';
-import { AssessmentExamMapper } from '../../../assessment-exam.mapper';
 import { BaseColumn } from '../../../../shared/datatable/base-column.model';
 import { Table } from 'primeng/table';
 import { DataTableService } from '../../../../shared/datatable/datatable-service';
@@ -131,9 +128,8 @@ export class TargetReportComponent implements OnInit, ExportResults {
 
   allTargets: Target[] = [];
   loading: boolean = true;
-  targetDisplayMap: Map<number, any>;
   aggregateTargetScoreRows: AggregateTargetScoreRow[] = [];
-  identityColumns: string[] = [ 'claim', 'target', 'subgroup' ];
+  identityColumns: string[] = [ 'claim', 'targetId', 'subgroup' ];
   treeColumns: number[] = [];
   subgroupOptions: ExamFilterOptions = new ExamFilterOptions();
   showSubgroupOptions: boolean = false;
@@ -154,14 +150,11 @@ export class TargetReportComponent implements OnInit, ExportResults {
   private _previousSortEvent: SortEvent;
 
   constructor(private examFilterService: ExamFilterService,
-              private actionBuilder: MenuActionBuilder,
               private translate: TranslateService,
               private targetStatisticsCalculator: TargetStatisticsCalculator,
               private targetService: TargetService,
               private dataTableService: DataTableService,
-              private assessmentExamMapper: AssessmentExamMapper,
               private filterOptionService: ExamFilterOptionsService,
-              private assessmentService: GroupAssessmentService,
               private applicationSettingsService: ApplicationSettingsService) {
 
     applicationSettingsService.getSettings().subscribe(settings => {
@@ -177,6 +170,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
       }),
       new Column({
         id: 'target',
+        field: 'targetId',
         headerInfoTranslationCode: 'common.info.target'
       }),
       new Column({ id: 'subgroup' }),
@@ -216,15 +210,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
 
       this.minimumStudentCount = applicationSettings.targetReport.minimumStudentCount;
       this.targetStatisticsCalculator.insufficientDataCutoff = applicationSettings.targetReport.insufficientDataCutoff;
-
-      this.targetDisplayMap = allTargets.reduce((targetMap, target) => {
-        targetMap.set(target.id, {
-          name: this.assessmentExamMapper.formatTarget(target.code),
-          description: target.description,
-          claim: target.claimCode
-        });
-        return targetMap;
-      }, new Map<number, any>());
 
       this.aggregateTargetScoreRows = this.targetStatisticsCalculator.aggregateOverallScores(
         this.assessment.subject,
@@ -301,8 +286,10 @@ export class TargetReportComponent implements OnInit, ExportResults {
       case 'claim':
         const claimOrdering: Ordering<string> = getOrganizationalClaimOrdering(this.assessment.subject);
         return claimOrdering.on<AggregateTargetScoreRow>(row => row.claim);
-      case 'target':
-        return ordering(byNumericString).on<AggregateTargetScoreRow>(row => this.targetDisplayMap.get(row.targetId).name);
+      case 'targetId':
+        return ordering(byNumericString).on<AggregateTargetScoreRow>(row =>
+          this.translate.instant(`subject.${this.assessment.subject}.claim.${row.claim}.target.${row.targetNaturalId}.name`)
+        );
       case 'subgroup':
         return SubgroupOrdering.on<AggregateTargetScoreRow>(row => row.subgroup);
       case 'studentsTested':
@@ -427,10 +414,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
       { code: 'MigrantStatus', translatecode: 'migrant-status-label', selected: false }
     );
     return subgroups;
-  }
-
-  getTargetDisplay(row: AggregateTargetScoreRow): any {
-    return this.targetDisplayMap.get(row.targetId);
   }
 
   getTargetReportingLevelString(level: TargetReportingLevel): string {
