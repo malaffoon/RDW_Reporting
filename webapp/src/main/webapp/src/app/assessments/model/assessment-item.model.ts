@@ -10,8 +10,8 @@ export class AssessmentItem {
   bankItemKey: string;
   position: number;
   claim: string;
-  target: string;
   targetId: number;
+  targetNaturalId: string;
   depthOfKnowledge: DepthOfKnowledge;
   mathPractice: string;
   allowCalculator: string;
@@ -37,7 +37,7 @@ export class AssessmentItem {
   }
 
   get claimTarget() {
-    return this.claim + ' / ' + this.target;
+    return this.claim + ' / ' + this.targetNaturalId;
   }
 
   get fullCredit(): number {
