@@ -115,14 +115,14 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.submit-date-time'),
       (item) => this.datePipe.transform(getExam(item).date)
-    )
+    );
   }
 
   withExamSession(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.assessment-session-id'),
       (item) => getExam(item).session
-    )
+    );
   }
 
   withSchool(getExam: (item: any) => Exam) {
@@ -177,13 +177,13 @@ export class CsvBuilder {
       (item) => {
         const exam: Exam = getExam(item);
         const adminCondition: string = exam.administrativeCondition;
-        let status: string = this.translateService.instant(`common.administration-condition.${adminCondition}`);
+        let status: string = adminCondition ? this.translateService.instant(`common.administration-condition.${adminCondition}`) : '';
         if (exam.completeness === 'Partial') {
           status += ' ' + this.translateService.instant('common.completeness.Partial');
         }
         return status;
       }
-    )
+    );
   }
 
   withAchievementLevel(getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
@@ -286,15 +286,19 @@ export class CsvBuilder {
   withGender(getStudent: (item: any) => Student) {
     return this.withColumn(
       this.translateService.instant('csv-builder.gender'),
-      (item) => this.translateService.instant(`common.gender.${getStudent(item).genderCode}`)
-    )
+      (item) => getStudent(item).genderCode ? this.translateService.instant(`common.gender.${getStudent(item).genderCode}`) : ''
+    );
   }
 
   withMigrantStatus(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.migrant-status'),
       (item) => {
-        const polarEnum = getExam(item).migrantStatus ? 1 : 2;
+        const migrantStatus = getExam(item).migrantStatus;
+        if (migrantStatus == null) {
+          return '';
+        }
+        const polarEnum = migrantStatus ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -304,7 +308,11 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.504-plan'),
       (item) => {
-        const polarEnum = getExam(item).plan504 ? 1 : 2;
+        const plan504 = getExam(item).plan504;
+        if (plan504 == null) {
+          return '';
+        }
+        const polarEnum = plan504 ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -314,7 +322,11 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.iep'),
       (item) => {
-        const polarEnum = getExam(item).iep ? 1 : 2;
+        const iep = getExam(item).iep;
+        if (iep == null) {
+          return '';
+        }
+        const polarEnum = iep ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -324,7 +336,11 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.limited-english'),
       (item) => {
-        const polarEnum = getExam(item).limitedEnglishProficiency ? 1 : 2;
+        const limitedEnglishProficiency = getExam(item).limitedEnglishProficiency;
+        if (limitedEnglishProficiency == null) {
+          return '';
+        }
+        const polarEnum = limitedEnglishProficiency ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -345,8 +361,11 @@ export class CsvBuilder {
       this.withColumn(
         ethnicity,
         (item) => {
-          const polarEnum = getExam(item).student.ethnicityCodes.some(code => code == ethnicity) ? 1 : 2;
-          return this.getPolarTranslation(polarEnum);
+          if (getExam(item).student.ethnicityCodes.some(code => code == ethnicity)) {
+            return this.getPolarTranslation(1);
+          } else {
+            return '';
+          }
         });
     }
     return this;
