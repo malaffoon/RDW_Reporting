@@ -419,13 +419,22 @@
       },
       "level": {
         "1": {
-          "label": "Below Standard"
+          "label": "Level1"
         },
         "2": {
-          "label": "Near Standard"
+          "label": "Level2"
         },
         "3": {
-          "label": "Above Standard"
+          "label": "Level3"
+        },
+        "4": {
+          "label": "Level4"
+        },
+        "5": {
+          "label": "Level5"
+        },
+        "6": {
+          "label": "Level6"
         }
       }
     },
@@ -550,23 +559,29 @@
       "level": {
         "1": {
           "color": "maroon",
-          "description": "Did Not Meet Standard",
+          "description": "Level1",
           "label": "L1"
         },
         "2": {
           "color": "gray-darkest",
-          "description": "Nearly Met Standard",
+          "description": "Level2",
           "label": "L2"
         },
         "3": {
           "color": "green-dark",
-          "description": "Met Standard",
+          "description": "Level3",
           "label": "L3"
         },
         "4": {
           "color": "blue-dark",
-          "description": "Exceeded Standard",
+          "description": "Level4",
           "label": "L4"
+        },
+        "5": {
+          "description": "Level5"
+        },
+        "6": {
+          "description": "Level6"
         },
         "cohort": {
           "1": {

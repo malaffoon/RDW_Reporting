@@ -11,7 +11,7 @@ sqlbuilder:
               sum(CASE WHEN ecs.category = 2 THEN 1 ELSE 0 END) AS level2,
               sum(CASE WHEN ecs.category = 3 THEN 1 ELSE 0 END) AS level3,
               sum(CASE WHEN ecs.category = 4 THEN 1 ELSE 0 END) AS level4,
-              sum(CASE WHEN ecs.category = 6 THEN 1 ELSE 0 END) AS level5,
+              sum(CASE WHEN ecs.category = 5 THEN 1 ELSE 0 END) AS level5,
               sum(CASE WHEN ecs.category = 6 THEN 1 ELSE 0 END) AS level6,
               e.school_year,
               e.asmt_id,
