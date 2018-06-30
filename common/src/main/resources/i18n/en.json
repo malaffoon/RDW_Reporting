@@ -614,22 +614,22 @@
       "level": {
         "1": {
           "color": "maroon",
-          "description": "Level1",
+          "description": "Did Not Meet Standard",
           "label": "L1"
         },
         "2": {
           "color": "gray-darkest",
-          "description": "Level2",
+          "description": "Nearly Met Standard",
           "label": "L2"
         },
         "3": {
           "color": "green-dark",
-          "description": "Level3",
+          "description": "Met Standard",
           "label": "L3"
         },
         "4": {
           "color": "blue-dark",
-          "description": "Level4",
+          "description": "Exceeded Standard",
           "label": "L4"
         },
         "cohort": {
