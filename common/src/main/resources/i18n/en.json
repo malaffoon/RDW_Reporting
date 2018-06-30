@@ -419,22 +419,13 @@
       },
       "level": {
         "1": {
-          "label": "Level1"
+          "label": "Below Standard"
         },
         "2": {
-          "label": "Level2"
+          "label": "Near Standard"
         },
         "3": {
-          "label": "Level3"
-        },
-        "4": {
-          "label": "Level4"
-        },
-        "5": {
-          "label": "Level5"
-        },
-        "6": {
-          "label": "Level6"
+          "label": "Above Standard"
         }
       }
     },
@@ -508,6 +499,70 @@
         "label": "HS"
       }
     },
+    "generic": {
+      "performance-level": {
+        "1": {
+          "label": "Level1"
+        },
+        "2": {
+          "label": "Level2"
+        },
+        "3": {
+          "label": "Level3"
+        },
+        "4": {
+          "label": "Level4"
+        },
+        "5": {
+          "label": "Level5"
+        },
+        "6": {
+          "label": "Level6"
+        },
+        "cohort": {
+          "1": {
+            "label": "Level1"
+          },
+          "2": {
+            "label": "Level2"
+          },
+          "3": {
+            "label": "Level3"
+          },
+          "4": {
+            "label": "Level4"
+          },
+          "5": {
+            "label": "Level5"
+          },
+          "6": {
+            "label": "Level6"
+          }
+        }
+      },
+      "claim": {
+        "performance-level": {
+          "1": {
+            "label": "Level1"
+          },
+          "2": {
+            "label": "Level2"
+          },
+          "3": {
+            "label": "Level3"
+          },
+          "4": {
+            "label": "Level4"
+          },
+          "5": {
+            "name": "Level5"
+          },
+          "6": {
+            "name": "Level6"
+          }
+        }
+      }
+    },
     "iab": {
       "grade": {
         "title": {
@@ -576,12 +631,6 @@
           "color": "blue-dark",
           "description": "Level4",
           "label": "L4"
-        },
-        "5": {
-          "description": "Level5"
-        },
-        "6": {
-          "description": "Level6"
         },
         "cohort": {
           "1": {
