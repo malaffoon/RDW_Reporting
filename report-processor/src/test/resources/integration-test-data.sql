@@ -14,9 +14,9 @@ insert into school (id, district_group_id, district_id, school_group_id, natural
   (-12, -9, -10, -20, 'schoolNat3', 'school3', 0, -1, '1997-07-18 20:14:34.000000', -1),
   (-13, -9, -10, -20, 'schoolNat4', 'school4', 0, -1, '1997-07-18 20:14:34.000000', -1);
 
-insert into grade (id, code, name, sequence) values
-  (-1, 'g1', 'grade1', 1),
-  (-2, 'g2', 'grade2', 2);
+insert into grade (id, code, sequence) values
+  (-1, 'g1', 1),
+  (-2, 'g2', 2);
 
 insert into gender (id, code) values
   (-1, 'g1');
@@ -85,20 +85,20 @@ INSERT INTO percentile_score (percentile_id, percentile_rank, score, min_inclusi
   (4, 90, 1, 2538, 2566),
   (4, 95, 1, 2566, 4444);
 
-insert into claim (id, subject_id, code, name, description) values
-  (-1, 1, 'c1', 'c1', 'c1');
+insert into claim (id, subject_id, code) values
+  (-1, 1, 'c1');
 
-insert into target (id, code, natural_id, claim_id, description) VALUES
-  (-1, 't1', 't1', -1, 't1');
+insert into target (id, natural_id, claim_id) VALUES
+  (-1, 't1', -1);
 
 insert into math_practice (practice, description, code) values
   (-1, 'mp1', '-1');
 
-insert into depth_of_knowledge (id, level, subject_id, description, reference) values
-  (-1, 1, 1, 'dok1', 'dok1');
+insert into depth_of_knowledge (id, level, subject_id, reference) values
+  (-1, 1, 1, 'dok1');
 
-insert into item (id, natural_id, claim_id, claim_code, target_id, target_code, asmt_id, math_practice, math_practice_code, dok_id, dok_level_subject_id, difficulty_code, max_points, common_core_standard_ids) values
-  (-1, '200-3391', -1, 'c1', -1, 't1', -1, -1, '-1', -1,'-1_1', 'E', 3, 'S-ID.1');
+insert into item (id, natural_id, claim_id, claim_code, target_id, asmt_id, math_practice, math_practice_code, dok_id, difficulty_code, max_points, common_core_standard_ids) values
+  (-1, '200-3391', -1, 'c1', -1, -1, -1, '-1', -1, 'E', 3, 'S-ID.1');
 
 insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, opportunity, migrant_status, iep, lep, section504, economic_disadvantage,
                   school_year, asmt_id, asmt_version, completeness_code, administration_condition_code, session_id,
