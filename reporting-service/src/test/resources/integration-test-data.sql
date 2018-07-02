@@ -6,13 +6,13 @@ insert into subject (id, code, updated, update_import_id, migrate_id) values
 insert into subject_asmt_type (asmt_type_id, subject_id, performance_level_count, performance_level_standard_cutoff, claim_score_performance_level_count) values
   (1, -1, 6, 3, 6);
 
-insert into subject_claim_score (id, subject_id, asmt_type_id, code, name, display_order, data_order) values
-  (-1, -1, 1, 'claim1', 'claim1', 1, 1),
-  (-2, -1, 1, 'claim2', 'claim2', 2, 2),
-  (-3, -1, 1, 'claim3', 'claim3', 3, 3),
-  (-4, -1, 1, 'claim4', 'claim4', 4, 4),
-  (-5, -1, 1, 'claim5', 'claim5', 5, 5),
-  (-6, -1, 1, 'claim6', 'claim6', 6, 6);
+insert into subject_claim_score (id, subject_id, asmt_type_id, code, display_order, data_order) values
+  (-1, -1, 1, 'claim1', 1, 1),
+  (-2, -1, 1, 'claim2', 2, 2),
+  (-3, -1, 1, 'claim3', 3, 3),
+  (-4, -1, 1, 'claim4', 4, 4),
+  (-5, -1, 1, 'claim5', 5, 5),
+  (-6, -1, 1, 'claim6', 6, 6);
 
 insert into school_group (id, natural_id, name) values
   (-10, 'schoolGroup1', 'schoolGroup1'),
@@ -38,10 +38,10 @@ insert into school (id, district_id, natural_id, name, embargo_enabled, update_i
   (-40, -30, 'schoolNat4', 'school4', 1, -1, '1997-07-18 20:14:34.000000', -1, -40, -40, 'externalId4'),
   (-50, -50, 'schoolNat5', 'school5', 1, -1, '1997-07-18 20:14:34.000000', -1, -50, -50, 'externalId5');
 
-insert into grade (id, code, name, sequence) values
-  (-1, 'g1', 'grade1', 1),
-  (-2, 'g2', 'grade2', 2),
-  (-3, 'g3', 'grade3', 3);
+insert into grade (id, code, sequence) values
+  (-1, 'g1', 1),
+  (-2, 'g2', 2),
+  (-3, 'g3', 3);
 
 insert into gender (id, code) values
   (-1, 'g1');
@@ -95,25 +95,25 @@ INSERT INTO percentile_score (percentile_id, percentile_rank, score, min_inclusi
   (2, 15, 2332, 2322, 2338),
   (2, 95, 2358, 2338, 4444);
 
-insert into claim (id, subject_id, code, name, description) values
-  (-1,  1, 'c1', 'c1', 'c1'),
-  (-11, 2, '1',  'ELA-claim1', 'ELA-c1'),
-  (-12, 2, '2',  'ELA-claim2', 'ELA-c2'),
-  (-13, 2, '3',  'ELA-claim3', 'ELA-c3'),
-  (-14, 2, '4',  'ELA-claim4', 'ELA-c4');
+insert into claim (id, subject_id, code) values
+  (-1,  1, 'c1'),
+  (-11, 2, '1'),
+  (-12, 2, '2'),
+  (-13, 2, '3'),
+  (-14, 2, '4');
 
-INSERT INTO target(id, code, natural_id, claim_id, description) VALUES
-  (-11,  'E-3', 'NBT|E-3', -11,  'NBT|E-3-1'),
-  (-12,  'J-3',  'MD|J-3', -11,  'MD|J-3-1' ),
-  (-21,  'D',    'OA|D',   -12,  'OA|D-2'   ),
-  (-22,  'A',    'OA|A',   -12,  'OA|A-2'   ),
-  (-31,  'C',    'NF|C',   -13,  'NF|C-3'   ),
-  (-32,  'D',    'MD|D',   -13,  'MD|D-3'   ),
-  (-33,  'E',    'MD|E',   -13,  'MD|E-3'   ),
-  (-34,  'E',    'OA|E',   -13,  'OA|E-3'   ),
-  (-41,  'E',    'OA|E',   -14,  'OA|E-4'   ),
-  (-42,  'D',    'MD|D',   -14,  'MD|D-4'   ),
-  (-43,  'A',    'OA|A',   -14,  'OA|A-4'   );
+INSERT INTO target(id, natural_id, claim_id) VALUES
+  (-11, 'NBT|E-3', -11),
+  (-12,  'MD|J-3', -11),
+  (-21,  'OA|D',   -12),
+  (-22,  'OA|A',   -12),
+  (-31,  'NF|C',   -13),
+  (-32,  'MD|D',   -13),
+  (-33,  'MD|E',   -13),
+  (-34,  'OA|E',   -13),
+  (-41,  'OA|E',   -14),
+  (-42,  'MD|D',   -14),
+  (-43,  'OA|A',   -14);
 
 INSERT INTO asmt_target (target_id, asmt_id, include_in_report) VALUES
   (-11, -4, 1),
@@ -180,19 +180,19 @@ INSERT INTO exam_target_score (id, target_id, exam_id, student_relative_residual
 insert into math_practice (practice, description, code) values
   (-1, 'mp1', '-1');
 
-insert into depth_of_knowledge (id, level, subject_id, description, reference) values
-  (-1, 1, 1, 'dok1', 'dok1');
+insert into depth_of_knowledge (id, level, subject_id, reference) values
+  (-1, 1, 1, 'dok1');
 
 -- items
-insert into item (id, natural_id, claim_id, claim_code, target_id, target_code, asmt_id, math_practice, math_practice_code, dok_id, dok_level_subject_id, difficulty_code, max_points, common_core_standard_ids, answer_key, options_count, type, performance_task_writing_type) values
-  (-1, '200-3391', -11, '1', -11, 't1', -1, -1, '-1', -1, '-1_1', 'E', 3, 'S-ID.1','C',3,'MS',null),
-  (-2, '200-3392', -11, '1', -12, 't2', -1, -1, '-1', -1, '-1_1', 'D', 4, 'S-ID.3',null,null,'EQ',null),
-  (-3, '200-3393', -12, '2', -21, 't3', -1, -1, '-1', -1, '-1_1', 'M', 5, 'S-ID.4|S-ID.7','B',2,'MC',null),
-  (-4, '200-3394', -13, '3', -31, 't3', -4, -1, '-1', -1, '-1_1', 'M', 5, 'S-ID.4|S-ID.7','D',4,'MC',null),
-  (-5, '200-3395', -13, '3', -32, 't3', -4, -1, '-1', -1, '-1_1', 'M', 5, 'S-ID.4|S-ID.7','A',5,'MS',null),
-  (-6, '200-3396', -13, '3', -33, 't3', -4, -1, '-1', -1, '-1_1', 'M', 5, 'S-ID.4|S-ID.7','B',5,'MC',null),
-  (-7, '200-3397', -14, '4', -34, 't3', -1, -1, '-1', -1, '-1_1', 'M', 5, 'S-ID.4|S-ID.7','Hand',null,'WER','Narrative'),
-  (-8, '200-3398', -14, '4', -41, 't3', -4, -1, '-1', -1, '-1_1', 'M', 5, 'S-ID.4|S-ID.7','Hand',null,'WER','Opinion');
+insert into item (id, natural_id, claim_id, claim_code, target_id, asmt_id, math_practice, math_practice_code, dok_id, difficulty_code, max_points, common_core_standard_ids, answer_key, options_count, type, performance_task_writing_type) values
+  (-1, '200-3391', -11, '1', -11, -1, -1, '-1', -1, 'E', 3, 'S-ID.1',       'C',   3,    'MS',null),
+  (-2, '200-3392', -11, '1', -12, -1, -1, '-1', -1, 'D', 4, 'S-ID.3',        null, null, 'EQ',null),
+  (-3, '200-3393', -12, '2', -21, -1, -1, '-1', -1, 'M', 5, 'S-ID.4|S-ID.7','B',   2,    'MC',null),
+  (-4, '200-3394', -13, '3', -31, -4, -1, '-1', -1, 'M', 5, 'S-ID.4|S-ID.7','D',   4,    'MC',null),
+  (-5, '200-3395', -13, '3', -32, -4, -1, '-1', -1, 'M', 5, 'S-ID.4|S-ID.7','A',   5,    'MS',null),
+  (-6, '200-3396', -13, '3', -33, -4, -1, '-1', -1, 'M', 5, 'S-ID.4|S-ID.7','B',   5,    'MC',null),
+  (-7, '200-3397', -14, '4', -34, -1, -1, '-1', -1, 'M', 5, 'S-ID.4|S-ID.7','Hand',null, 'WER','Narrative'),
+  (-8, '200-3398', -14, '4', -41, -4, -1, '-1', -1, 'M', 5, 'S-ID.4|S-ID.7','Hand',null, 'WER','Opinion');
 
 insert into exam_item (id, exam_id, item_id, score, position, response, trait_evidence_elaboration_score, trait_organization_purpose_score, trait_conventions_score) values
   (-1, -1, -1, 0, 1, 'A', null, null, null),
@@ -203,11 +203,11 @@ insert into exam_item (id, exam_id, item_id, score, position, response, trait_ev
   (-101, -101, -1, 1, 1, 'D', 3, 4, 1);
 
 
-insert into common_core_standard (id, natural_id, subject_id, description) values
-  (-1, 'ABC.223.1', 1, 'test-description1'),
-  (-2, 'DEF.224.1', 1, 'test-description2'),
-  (-3, 'GHI.225.1', 1, 'test-description3'),
-  (-4, 'JKL.226.1', 1, 'test-description4');
+insert into common_core_standard (id, natural_id, subject_id) values
+  (-1, 'ABC.223.1', 1),
+  (-2, 'DEF.224.1', 1),
+  (-3, 'GHI.225.1', 1),
+  (-4, 'JKL.226.1', 1);
 
 insert into item_common_core_standard (item_id, common_core_standard_id) values
   (-1, -1),
