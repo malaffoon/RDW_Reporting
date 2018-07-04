@@ -27,7 +27,7 @@ sql:
       ${sql.reportProcessor.snippet.percentileLeftJoin}
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id = 2
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -50,7 +50,7 @@ sql:
       WHERE e.student_id in (:student_ids)
         AND $[groupFilterPlaceholder]
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=2
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -81,7 +81,7 @@ sql:
       ) as wt on wt.exam_id = e.id
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=:type_id
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -112,8 +112,8 @@ sql:
       $[groupJoinPlaceholder]
       WHERE e.student_id in (:student_ids)
         AND $[groupFilterPlaceholder]
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=:type_id
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -252,7 +252,7 @@ sql:
       ${sql.reportProcessor.snippet.selectFromStudent}
       WHERE (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_id is null or a.subject_id = :subject_id)
+        AND (:subject_code is null or sub.code = :subject_code)
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -265,7 +265,7 @@ sql:
       WHERE $[groupFilterPlaceholder]
         AND (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_id is null or a.subject_id = :subject_id)
+        AND (:subject_code is null or sub.code = :subject_code)
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -317,6 +317,7 @@ sql:
             JOIN asmt a ON e.asmt_id = a.id
             JOIN school s ON e.school_id = s.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject sub ON sub.id=a.subject_id
 
       exportExamsFilter: >-
         e.school_year = :school_year
