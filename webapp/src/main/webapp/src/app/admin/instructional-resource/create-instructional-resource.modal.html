@@ -82,7 +82,7 @@
                   (change)="onPerformanceLevelSelect()"
                   [disabled]="!assessment" >
             <option disabled [ngValue]="-1">{{'common.action.select' | translate}}</option>
-            <option *ngIf="assessment" [ngValue]="0">{{'common.instructional-resource.all-performance-levels' | translate}}</option>
+            <option *ngIf="assessment" [ngValue]="0">{{'common.collection-selection.all' | translate}}</option>
             <option *ngFor="let performanceLevel of performanceLevels" [ngValue]="performanceLevel">{{ ('subject.' + assessment.subject + '.asmt-type.' + assessment.type + '.level.' + performanceLevel + '.name') | translate }}</option>
           </select>
         </div>

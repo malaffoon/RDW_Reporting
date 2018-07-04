@@ -70,7 +70,7 @@
 
             <div *ngSwitchCase="'performance-level'">
               <span *ngIf="resource.performanceLevel == 0">
-                {{ 'common.instructional-resource.all-performance-levels' | translate }}
+                {{ 'common.collection-selection.all' | translate }}
               </span>
               <span *ngIf="resource.performanceLevel > 0">
                 {{ ('subject.' + resource.assessmentSubjectCode + '.asmt-type.' + resource.assessmentType + '.level.' + resource.performanceLevel + '.name') | translate }}
