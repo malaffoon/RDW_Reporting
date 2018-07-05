@@ -148,8 +148,8 @@ describe('AggregateReportTableExportService', () => {
       'aggregate-report-table.columns.dimension',
       'aggregate-report-table.columns.students-tested',
       'aggregate-report-table.columns.avg-scale-score',
-      'aggregate-report-table.columns.grouped-performance-level-prefix.0 subject.Math.asmt-type.ica.level.0.suffix',
-      'aggregate-report-table.columns.grouped-performance-level-prefix.1 subject.Math.asmt-type.ica.level.1.suffix'
+      'aggregate-report-table.columns.grouped-performance-level-prefix.0',
+      'aggregate-report-table.columns.grouped-performance-level-prefix.1'
     ]);
 
   });
