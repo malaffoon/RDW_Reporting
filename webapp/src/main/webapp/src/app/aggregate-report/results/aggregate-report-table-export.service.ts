@@ -173,9 +173,12 @@ export class AggregateReportTableExportService {
         header = this.translateService.instant(`aggregate-report-table.columns.grouped-performance-level-prefix.${level}`);
       } else {
         header = this.translateService.instant(`subject.${options.subjectDefinition.subject}.asmt-type.${options.subjectDefinition.assessmentType}.level.${level}.short-name`);
+
+        const suffix = this.translateService.instant(`subject.${options.subjectDefinition.subject}.asmt-type.${options.subjectDefinition.assessmentType}.level.${level}.suffix`);
+        header += (suffix ? ' ' + suffix : '');
       }
-      const suffix = this.translateService.instant(`subject.${options.subjectDefinition.subject}.asmt-type.${options.subjectDefinition.assessmentType}.level.${level}.suffix`);
-      return header + (suffix ? ' ' + suffix : '');
+
+      return header;
     };
 
     const levels: number[] = options.performanceLevelDisplayType === PerformanceLevelDisplayTypes.Grouped
