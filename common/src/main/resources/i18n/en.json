@@ -130,22 +130,22 @@
         },
         "cohort": {
           "1": {
-            "label": "Level1"
+            "label": "CohortLevel1"
           },
           "2": {
-            "label": "Level2"
+            "label": "CohortLevel2"
           },
           "3": {
-            "label": "Level3"
+            "label": "CohortLevel3"
           },
           "4": {
-            "label": "Level4"
+            "label": "CohortLevel4"
           },
           "5": {
-            "label": "Level5"
+            "label": "CohortLevel5"
           },
           "6": {
-            "label": "Level6"
+            "label": "CohortLevel6"
           }
         }
       },
