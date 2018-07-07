@@ -191,7 +191,9 @@ export class TargetStatisticsCalculator {
       case 'IEP': return exam.iep;
       case 'MigrantStatus': return exam.migrantStatus;
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
-      case 'ELAS': return exam.elasCode;
+
+      // this is returned as undefined, but for subgrouping it needs to be null to match
+      case 'ELAS': return exam.elasCode !+ null ? exam.elasCode : null;
     }
 
     return null;
