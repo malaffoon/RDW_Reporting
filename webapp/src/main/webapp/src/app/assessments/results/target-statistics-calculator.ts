@@ -191,6 +191,7 @@ export class TargetStatisticsCalculator {
       case 'IEP': return exam.iep;
       case 'MigrantStatus': return exam.migrantStatus;
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
+      case 'ELAS': return exam.elasCode;
     }
 
     return null;

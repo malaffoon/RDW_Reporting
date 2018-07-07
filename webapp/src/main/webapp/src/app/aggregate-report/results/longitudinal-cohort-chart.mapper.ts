@@ -45,12 +45,14 @@ export class LongitudinalCohortChartMapper {
       return { performanceLevels: [], organizationPerformances: [] };
     }
     return {
-      organizationPerformances: this.createOrganizationPerformances(query, report.rows, measuresGetter),
+      organizationPerformances: this.createOrganizationPerformances(query, report.assessments, report.rows, measuresGetter),
       performanceLevels: this.createPerformanceLevels(report.assessments, subjectDefinition)
     };
   }
 
-  private createOrganizationPerformances(query: AggregateReportQuery, rows: AggregateReportRow[],
+  private createOrganizationPerformances(query: AggregateReportQuery,
+                                         assessments: Assessment[],
+                                         rows: AggregateReportRow[],
                                          measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure): OrganizationPerformance[] {
 
     const performanceByOrganizationSubgroup: Map<string, OrganizationPerformance> = new Map();
@@ -59,8 +61,9 @@ export class LongitudinalCohortChartMapper {
       ? row => `${row.organization.id}:${row.organization.organizationType}:${row.dimension.type}:${row.dimension.code}`
       : row => `${row.organization.id}:${row.organization.organizationType}:${row.dimension.code}`;
 
-    const firstYear: number = query.toSchoolYear - query.assessmentGradeCodes.length + 1;
-    const years: number[] = query.assessmentGradeCodes.map((code, i) => firstYear + i);
+    //Create the scores-by-year array based upon the number of years/assessments we have data for
+    const firstYear: number = query.toSchoolYear - assessments.length + 1;
+    const years: number[] = assessments.map((code, i) => firstYear + i);
     const yearGradeScaleScoresTemplate: YearGradeScaleScore[] = [].fill({}, 0, years.length);
 
     rows.concat()
