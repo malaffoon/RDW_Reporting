@@ -7,7 +7,7 @@ import { GroupDashboardService } from './group-dashboard.service';
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { AssessmentCardEvent } from './group-assessment-card.component';
+import { AssessmentCardEvent, GroupCard } from './group-assessment-card.component';
 import { GroupReportDownloadComponent } from '../../report/group-report-download.component';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
@@ -15,6 +15,8 @@ import { UserGroupService } from '../../user-group/user-group.service';
 import * as _ from 'lodash';
 import { map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
+import { SubjectService } from '../../subject/subject.service';
+import { SubjectDefinition } from '../../subject/subject';
 
 @Component({
   selector: 'group-dashboard',
@@ -31,25 +33,29 @@ export class GroupDashboardComponent implements OnInit {
   subject: string;
   loadingMeasuredAssessments: boolean = true;
   itemsPerRow: number = 3;
-  rows: MeasuredAssessment[][] = [];
+  rows: GroupCard[][] = [];
 
   private selectedAssessments: MeasuredAssessment[] = [];
   private _previousRouteParameters: any;
+  private _subjectDefinitions: SubjectDefinition[];
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private groupService: GroupService,
               private userGroupService: UserGroupService,
               private groupDashboardService: GroupDashboardService,
-              private filterOptionsService: ExamFilterOptionsService) {
+              private filterOptionsService: ExamFilterOptionsService,
+              private subjectService: SubjectService) {
   }
 
   ngOnInit() {
     forkJoin(
+      this.subjectService.getSubjectDefinitions(),
       this.filterOptionsService.getExamFilterOptions(),
       this.groupService.getGroups(),
       this.userGroupService.safelyGetUserGroupsAsGroups()
-    ).subscribe(([ filterOptions, groups, userGroups ]) => {
+    ).subscribe(([ subjectDefinitions, filterOptions, groups, userGroups ]) => {
+      this._subjectDefinitions = subjectDefinitions;
       this.filterOptions = filterOptions;
       this.groups = groups
         .concat(userGroups)
@@ -63,7 +69,7 @@ export class GroupDashboardComponent implements OnInit {
   private subscribeToRouteChanges(): void {
     this.route.params.pipe(
       mergeMap(parameters => {
-        const { groupId, userGroupId, schoolYear } = parameters;
+        const { groupId, userGroupId, schoolYear, subject } = parameters;
         const previousParameters = this._previousRouteParameters;
 
         const reload = previousParameters == null
@@ -71,11 +77,13 @@ export class GroupDashboardComponent implements OnInit {
           || (previousParameters.groupId != null && previousParameters.groupId != groupId)
           || (previousParameters.userGroupId != null && previousParameters.userGroupId != userGroupId);
 
+        const defaultsParametersRequired = isNaN(Number(schoolYear)) || schoolYear === '';
+
         this._previousRouteParameters = parameters;
 
-        // exit early if we don't need to re fetch the assessment data
-        if (!reload) {
-          return of({ ...parameters, reload });
+        // exit early if we don't need to re fetch the assessment data or we need to update route with default parameters
+        if (!reload || defaultsParametersRequired) {
+          return of({ ...parameters, reload, defaultsParametersRequired });
         }
 
         return forkJoin(
@@ -84,17 +92,26 @@ export class GroupDashboardComponent implements OnInit {
             : this.userGroupService.getUserGroupAsGroup(userGroupId),
           this.groupDashboardService.getAvailableMeasuredAssessments(<any>parameters)
         ).pipe(
-          map(([ group, measuredAssessments ]) => <any>{ ...parameters, group, measuredAssessments, reload })
+          map(([ group, measuredAssessments ]) => <any>{ ...parameters, group, measuredAssessments, reload, defaultsParametersRequired })
         );
       })
     ).subscribe(resolvedParameters => {
-      const { reload, group, schoolYear, subject, measuredAssessments } = resolvedParameters;
+      const { defaultsParametersRequired, reload, group, schoolYear, subject, measuredAssessments } = resolvedParameters;
+      // exit method. Default parameters will be handled outside the method and will reload the page
+      if (defaultsParametersRequired) {
+        return;
+      }
       if (reload) {
         this.group = group;
         this.schoolYear = Number.parseInt(schoolYear) || undefined;
         this.updateMeasuredAssessments(measuredAssessments);
       }
-      this.subject = subject;
+      if (this.subjects && this.subjects.includes(subject)) {
+        this.subject = subject;
+      } else {
+        delete this.subject;
+        this.updateRoute(true);
+      }
       this.updateRows();
       this.loadingMeasuredAssessments = false;
     });
@@ -102,8 +119,13 @@ export class GroupDashboardComponent implements OnInit {
 
   private updateRouteWithDefaultFilters(): void {
     const { schoolYear } = this.route.snapshot.params;
-    if (schoolYear == null) {
+    const schoolYearNumber = Number(schoolYear);
+    let update = false;
+    if (isNaN(schoolYearNumber) || this.filterOptions.schoolYears.indexOf(schoolYearNumber) < 0) {
       this.schoolYear = this.filterOptions.schoolYears[ 0 ];
+      update = true;
+    }
+    if (update) {
       this.updateRoute(true);
     }
   }
@@ -129,9 +151,15 @@ export class GroupDashboardComponent implements OnInit {
   }
 
   updateRows(): void {
-    const filteredAssessments = this.measuredAssessments
-      .filter(measuredAssessment => this.subject == null || measuredAssessment.assessment.subject === this.subject);
-    this.rows = _.chunk(filteredAssessments, this.itemsPerRow);
+    const filteredCards = this.measuredAssessments
+      .filter(measuredAssessment => this.subject == null || measuredAssessment.assessment.subject === this.subject)
+      .map(measuredAssessment => <GroupCard>{
+        group: this.group,
+        measuredAssessment: measuredAssessment,
+        performanceLevels: this._subjectDefinitions.find(definition => definition.subject === measuredAssessment.assessment.subject
+          && definition.assessmentType === measuredAssessment.assessment.type).performanceLevels
+      });
+    this.rows = _.chunk(filteredCards, this.itemsPerRow);
   }
 
   get viewAssessmentsButtonEnabled(): boolean {

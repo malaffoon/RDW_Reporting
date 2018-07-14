@@ -41,7 +41,7 @@
 
         <ng-container *ngSwitchCase="'subject'">
           <ng-container *ngFor="let subject of (group.subjects || subjects); let last = last">
-            {{'common.subject.' + subject + '.name' | translate}}{{last ? '' : ', '}}
+            {{'subject.' + subject + '.name' | translate}}{{last ? '' : ', '}}
           </ng-container>
         </ng-container>
 

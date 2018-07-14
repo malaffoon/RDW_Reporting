@@ -35,12 +35,13 @@ import { AggregateReportComponent } from './aggregate-report/results/aggregate-r
 import { AggregateReportResolve } from './aggregate-report/results/aggregate-report.resolve';
 import { AggregateReportOptionsResolve } from './aggregate-report/aggregate-report-options.resolve';
 import { AggregateReportFormSettingsResolve } from './aggregate-report/aggregate-report-form-settings.resolve';
-import { LongitudinalPlaygroundComponent } from './aggregate-report/results/longitudinal-playground.component';
 import { GroupDashboardComponent } from './dashboard/group-dashboard/group-dashboard.component';
 import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
+import { StudentPipe } from './shared/format/student.pipe';
 
+const studentPipe = new StudentPipe();
 const adminRoute = {
   path: '',
   data: {
@@ -169,7 +170,8 @@ const studentTestHistoryChildRoute = {
   data: {
     breadcrumb: {
       translate: 'student-results.crumb',
-      translateResolve: 'examHistory.student'
+      translateResolve: 'examHistory.student',
+      transform: (student) => studentPipe.transform(student)
     }
   },
   children: [
@@ -355,11 +357,6 @@ export const routes: Routes = [
         path: 'error',
         pathMatch: 'full',
         component: ErrorComponent
-      },
-      // temporary TODO remove
-      {
-        path: 'longitudinal-playground',
-        component: LongitudinalPlaygroundComponent
       }
     ]
   },

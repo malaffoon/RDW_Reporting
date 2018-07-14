@@ -38,9 +38,9 @@
              class="text-center">
           <div class="label"
                [ngClass]="column.headerColor">
-            {{ column.headerKey | translate }}
+            {{ column.headerText }}
           </div>
-          <div>{{ 'aggregate-report-table.columns.performance-level-suffix' | translate }}</div>
+          <div *ngIf="column.headerSuffix">{{ column.headerSuffix }}</div>
         </div>
 
         <span *ngSwitchCase="'claim'"
@@ -57,14 +57,14 @@
 
         <span *ngSwitchCase="'studentRelativeResidualScoresLevel'"
               info-button
-              title="{{'target-report.columns.' + toDash(column.id) | translate}}"
-              content="{{('target-report.columns.' + toDash(column.id) + '-info') | translate}}">
+              title="{{'target-report.columns.student-relative-residual-scores-level' | translate}}"
+              content="{{('target-report.columns.student-relative-residual-scores-level-info') | translate}}">
         </span>
 
         <span *ngSwitchCase="'standardMetRelativeResidualLevel'"
               info-button
-              title="{{'target-report.columns.' + toDash(column.id) | translate}}"
-              content="{{('target-report.columns.' + toDash(column.id) + '-info') | translate}}">
+              title="{{'target-report.columns.standard-met-relative-residual-level' | translate:standardMetRelativeResidualLevelResolve}}"
+              content="{{('target-report.columns.standard-met-relative-residual-level-info') | translate}}">
         </span>
 
         <span *ngSwitchDefault>
@@ -128,8 +128,14 @@
 
           <div *ngSwitchCase="'target'"
                class="text-right wrapping-max-width">
-            <span *ngIf="!preview; else targetPreview"
-                  [innerHTML]="'aggregate-report-table.target-description' | translate: getTargetDisplay(rowData)">
+            <span *ngIf="!preview; else targetPreview">
+              <strong>
+                {{'common.results.assessment-item-target' | translate:{
+                    target: 'subject.' + rowData.subjectCode + '.claim.' + rowData.claimCode + '.target.' + rowData.targetNaturalId + '.name' | translate
+                  }
+                }}
+              </strong>
+              {{ 'subject.' + rowData.subjectCode + '.claim.' + rowData.claimCode + '.target.' + rowData.targetNaturalId + '.description' | translate }}
             </span>
             <ng-template #targetPreview>
               <span [innerHTML]="'aggregate-report-table.sample.target' | translate:{name: rowData.targetNaturalId}"></span>
@@ -147,14 +153,13 @@
             {{rowData.studentsTested}}
           </div>
 
-          <!-- TODO:ConfigurableSubjects do all claims have 3 levels? -->
           <div *ngSwitchCase="'achievementComparison'">
             <performance-level-distribution-chart
               [percentages]="rowData.performanceLevelByDisplayTypes.Separate.Percent"
               [cutPoint]="cutPoint"
-              [performanceLevels]="rowData.claimCode ? 3 : null"
-              [assessmentTypeCode]="assessmentTypeCode"
+              [subjectDefinition]="subjectDefinition"
               [displayType]="performanceLevelDisplayType"
+              [useClaimColors]="isClaimReportType"
               [center]="center"></performance-level-distribution-chart>
           </div>
 

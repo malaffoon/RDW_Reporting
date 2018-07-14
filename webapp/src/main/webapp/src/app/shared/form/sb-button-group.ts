@@ -8,7 +8,7 @@ import { Option } from './option';
 /**
  * All input types that can be used to change the component click behavior
  */
-export type InputType = 'checkbox' | 'range';
+export type InputType = 'checkbox' | 'radio' | 'range';
 
 /**
  * Default component styles
@@ -55,6 +55,19 @@ class Checkbox implements InputController {
 }
 
 /**
+ * Makes the button group behave as a radio group with an optional "All" option
+ */
+class Radio implements InputController {
+  onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
+    const { selectedOptions } = state;
+    if (!selectedOptions.has(option)) {
+      selectedOptions.clear();
+      selectedOptions.add(option);
+    }
+  }
+}
+
+/**
  * Makes the button group behave as a range selector
  */
 class Range implements InputController {
@@ -88,7 +101,7 @@ class Range implements InputController {
     });
     if (firstIndex != null && lastIndex != null && firstIndex !== lastIndex) {
       for (let i = firstIndex + 1; i < lastIndex; i++) {
-        selectedOptions.add(options[i]);
+        selectedOptions.add(options[ i ]);
       }
     }
   }
@@ -112,8 +125,9 @@ class Range implements InputController {
   }
 }
 
-const ControllerByInputType: {[inpuType: string]: InputController} = {
+const ControllerByInputType: { [ inputType: string ]: InputController } = {
   checkbox: new Checkbox(),
+  radio: new Radio(),
   range: new Range()
 };
 
@@ -127,12 +141,12 @@ const ControllerByInputType: {[inpuType: string]: InputController} = {
       <label class="btn"
              [ngClass]="computeStylesInternal(buttonStyles, { 
                  active: isAllOption ? stateInternal.selectedAllOption : stateInternal.selectedOptions.has(option), 
-                 disabled: disabled 
+                 disabled: option.disabled 
              })">
         <input type="checkbox"
                [attr.checked]="isAllOption ? stateInternal.selectedAllOption : stateInternal.selectedOptions.has(option)"
                [name]="name"
-               [disabled]="disabled"
+               [disabled]="option.disabled"
                (click)="isAllOption ? onAllOptionClickInternal() : onOptionClickInternal(option)"
                angulartics2On="click"
                angularticsEvent="{{analyticsEvent}}"
@@ -221,7 +235,7 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
 
   @Input()
   set type(value: InputType) {
-    const controller = ControllerByInputType[value];
+    const controller = ControllerByInputType[ value ];
     if (controller == null) {
       this.throwError(`Unknown input type: "${value}"`);
     }
@@ -238,9 +252,27 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     if (options.length) {
       if (this._initialized) {
         this._options = this.parseInputOptions(options);
-        if (!this.effectiveNoneStateEnabled && (!this._value || this._value.length === 0)) {
-          this._value = this.parseInputValues(this._initialValues);
+
+        //Only allow enabled values
+        const enabledOptions = options.filter(x => !x.disabled);
+        let updatedValues: any[] = this._value;
+        if (updatedValues) {
+          updatedValues = enabledOptions
+            .map(option => option.value)
+            .filter(value => this._value.includes(value));
         }
+
+        //Optionally allow no selection
+        if (!this.effectiveNoneStateEnabled && (!updatedValues || updatedValues.length === 0)) {
+          updatedValues = this.parseInputValues(this._initialValues);
+        }
+
+        //Preserve "All" selection state
+        if (this._state && this._state.selectedAllOption) {
+          updatedValues = this.parseInputValues(null);
+        }
+
+        this.setValueAndNotifyChanges(updatedValues);
         this._state = this.computeState(this._options, this._value);
       } else {
         this._initialOptions = options;
@@ -367,7 +399,7 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     const values = state.selectedAllOption && this._allOptionReturnsUndefined
       ? undefined
       : options
-        .filter(option => state.selectedAllOption || state.selectedOptions.has(option))
+        .filter(option => !option.disabled && (state.selectedAllOption || state.selectedOptions.has(option)))
         .map(option => option.value);
 
     this.setValueAndNotifyChanges(values);
@@ -390,7 +422,8 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     return options.map(option => <Option>{
       value: option.value,
       text: option.text ? option.text : option.value,
-      analyticsProperties: option.analyticsProperties
+      analyticsProperties: option.analyticsProperties,
+      disabled: option.disabled
     });
   }
 
@@ -407,8 +440,10 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
       if (this.effectiveNoneStateEnabled) {
         return [];
       }
-      // If the component does not allow a no-value state, set the value to all values
-      return this.options.map(option => option.value);
+      // If the component does not allow a no-value state, set the value to all enabled values
+      return this.options
+        .filter(option => !option.disabled)
+        .map(option => option.value);
     }
     // Make a copy of the value to avoid side effects
     return values.concat();
@@ -424,8 +459,9 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
    */
   private computeState(options: Option[], values: any[]): State {
     if (this.allOptionEnabled) {
-      const effectiveOptions = options.filter(option => values.includes(option.value));
-      const effectivelySelectedAllOption = values.length === options.length || options.length === effectiveOptions.length;
+      let enabledOptions = options.filter(x => !x.disabled);
+      const effectiveOptions = enabledOptions.filter(option => values.includes(option.value));
+      const effectivelySelectedAllOption = values.length === enabledOptions.length || enabledOptions.length === effectiveOptions.length;
       return {
         selectedAllOption: effectivelySelectedAllOption,
         selectedOptions: effectivelySelectedAllOption

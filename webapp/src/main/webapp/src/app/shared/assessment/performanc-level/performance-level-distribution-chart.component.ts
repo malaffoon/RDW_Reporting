@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Utils } from '../../support/support';
-import { ColorService } from '../../color.service';
 import { PerformanceLevelDisplayTypes } from '../../display-options/performance-level-display-type';
+import { SubjectDefinition } from '../../../subject/subject';
+import { TranslateService } from '@ngx-translate/core';
+import { AggregateReportType } from '../../../aggregate-report/aggregate-report-form-settings';
 
 /**
  * Performance level distribution chart view
@@ -14,25 +16,16 @@ import { PerformanceLevelDisplayTypes } from '../../display-options/performance-
 export class PerformanceLevelDistributionChart implements OnInit {
 
   private _percentages: number[] = [];
-  private _assessmentTypeCode: string;
-  private _performanceLevels?: number = null;
+  private _subjectDefinition: SubjectDefinition;
   private _cutPoint: number;
   private _center: boolean = false;
   private _displayType: string = PerformanceLevelDisplayTypes.Separate;
   private _loaded: boolean = false;
   private _visible: boolean = true;
   private _performanceLevelBarsByDisplayType: Map<string, Map<boolean, PerformanceLevelBars>> = new Map();
+  private _useClaimColors: boolean = false;
 
-  constructor(private colorService: ColorService) {
-  }
-
-  get performanceLevels(): number {
-    return this._performanceLevels;
-  }
-
-  @Input()
-  set performanceLevels(value: number) {
-    this._performanceLevels = value;
+  constructor(private translateService: TranslateService) {
   }
 
   /**
@@ -59,15 +52,19 @@ export class PerformanceLevelDistributionChart implements OnInit {
    * @returns {string}
    */
   get assessmentTypeCode(): string {
-    return this._assessmentTypeCode;
+    return this._subjectDefinition.assessmentType;
   }
 
   @Input()
-  set assessmentTypeCode(value: string) {
-    if (this._assessmentTypeCode !== value) {
-      this._assessmentTypeCode = value;
+  set subjectDefinition(value: SubjectDefinition) {
+    if (this._subjectDefinition !== value) {
+      this._subjectDefinition = value;
       this._loaded && this.update();
     }
+  }
+
+  get subjectDefinition(): SubjectDefinition {
+    return this._subjectDefinition;
   }
 
   /**
@@ -116,6 +113,15 @@ export class PerformanceLevelDistributionChart implements OnInit {
     }
   }
 
+  get useClaimColors(): boolean {
+    return this._useClaimColors;
+  }
+
+  @Input()
+  set useClaimColors(value: boolean) {
+    this._useClaimColors = value;
+  }
+
   /**
    * True if the percentages amount to more than 0
    *
@@ -157,7 +163,7 @@ export class PerformanceLevelDistributionChart implements OnInit {
     if (this.percentages.length < 2) {
       throw new Error('value size must not be less than 2');
     }
-    if (Utils.isUndefined(this.assessmentTypeCode || this.performanceLevels)) {
+    if (Utils.isUndefined(this.assessmentTypeCode)) {
       throw new Error('assessment type code undefined');
     }
     if (Utils.isUndefined(this.displayType)) {
@@ -181,13 +187,13 @@ export class PerformanceLevelDistributionChart implements OnInit {
     const separateBars: PerformanceLevelBar[] = this.percentages
       .map((value, index) => <PerformanceLevelBar>{
         width: value,
-        classes: this.getPerformanceLevelColor(index + 1)
+        classes: this.getPerformanceLevelColor(index+1)
       });
 
     const groupedBars: PerformanceLevelBar[] = [
       {
         width: this.percentages.slice(0, cutPointIndex).reduce(sum),
-        classes: this.getPerformanceLevelColor(cutPoint - 1)
+        classes: this.getPerformanceLevelColor(cutPoint-1)
       },
       {
         width: this.percentages.slice(cutPointIndex).reduce(sum),
@@ -211,6 +217,11 @@ export class PerformanceLevelDistributionChart implements OnInit {
       ]));
   }
 
+  private getPerformanceLevelColor(level: number) {
+    const claimPlaceholder = this.useClaimColors ? 'claim-score.' : '';
+    return this.translateService.instant(`subject.${this.subjectDefinition.subject}.asmt-type.${this.subjectDefinition.assessmentType}.${claimPlaceholder}level.${level}.color`);
+  }
+
   /**
    * Gets the cut point or an assumed cut point if an explicit one was not set
    */
@@ -218,19 +229,6 @@ export class PerformanceLevelDistributionChart implements OnInit {
     return Utils.isUndefined(this._cutPoint)
       ? Math.ceil(this.percentages.length * 0.5)
       : this._cutPoint;
-  }
-
-  /**
-   * Gets the color class for the given performance level
-   *
-   * @param {number} level the performance level
-   * @returns {string} the color class
-   */
-  private getPerformanceLevelColor(level: number): string {
-    if (this.performanceLevels) {
-      return this.colorService.getPerformanceLevelColorsByNumberOfPerformanceLevels(this.performanceLevels, level);
-    }
-    return this.colorService.getPerformanceLevelColorsByAssessmentTypeCode(this.assessmentTypeCode, level);
   }
 
 }

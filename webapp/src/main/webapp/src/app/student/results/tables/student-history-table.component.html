@@ -69,11 +69,11 @@
             <span *ngSwitchCase="'performance'"
                   info-button
                   title="{{('common.results.assessment-exam-columns.' + assessmentType + '.performance') | translate}}"
-                  content="{{('common.results.assessment-exam-columns.' + assessmentType + '.performance-info') | translate}}">
+                  content="{{('subject.' + subject + '.' + assessmentType + '.performance-info') | translate}}">
             </span>
 
             <span *ngSwitchCase="'claim'">
-              {{ 'common.subject-claim-code.' + column.claim | translate }}
+              {{ 'subject.' + subject + '.claim.' + column.claim + '.name' | translate }}
             </span>
 
             <span *ngSwitchCase="'score'"
@@ -136,12 +136,9 @@
 
             <div *ngSwitchCase="'performance'"
                  class="text-center">
-              <ng-container *ngIf="rowData.exam.level">
-                {{ 'common.assessment-type.' + assessmentType + '.performance-level.' + rowData.exam.level + '.name' | translate }}
-              </ng-container>
-              <ng-container *ngIf="!rowData.exam.level">
-                {{ 'common.missing' | translate }}
-              </ng-container>
+              {{ rowData.exam.level | optional:(
+                'subject.' + subject + '.asmt-type.' + assessmentType + '.level.' + rowData.exam.level + '.name' | translate
+              )}}
 
               <button *ngIf="assessmentType === 'iab'"
                       class="btn btn-borderless btn-xs icon-only pull-right"
@@ -150,7 +147,9 @@
                       angularticsCategory="AssessmentResults"
                       [disabled]="false"
                       [popover]="buttonPopover"
-                      popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:((rowData.exam.level ? 'common.assessment-type.iab.performance-level.' + rowData.exam.level +'.name' : 'common.missing') | translate) } }}"
+                      popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(
+                        (rowData.exam.level ? 'subject.' + subject + '.asmt-type.' + assessmentType  + '.level.' + rowData.exam.level +'.name' : 'common.missing') | translate
+                      ) } }}"
                       container="body"
                       (click)="loadInstructionalResources(rowData)"
                       [outsideClick]="true"><i class="fa fa-book"></i></button>
@@ -163,7 +162,7 @@
             <div *ngSwitchCase="'claim'"
                  class="text-center">
               <ng-container *ngIf="rowData.exam.claimScores[column.index] && rowData.exam.claimScores[column.index].level">
-                {{ 'common.assessment-type.iab.performance-level.' + rowData.exam.claimScores[column.index].level + '.name' | translate }}
+                {{ 'subject.' + subject + '.asmt-type.' + assessmentType + '.claim-score.level.' + rowData.exam.claimScores[column.index].level + '.name' | translate }}
               </ng-container>
               <ng-container *ngIf="!rowData.exam.claimScores[column.index] || !rowData.exam.claimScores[column.index].level">
                 {{ 'common.missing' | translate }}

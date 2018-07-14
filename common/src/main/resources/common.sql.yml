@@ -1,9 +1,25 @@
 sql:
+  claim:
+    findAll: >-
+      SELECT scs.id, scs.code, s.code as subject_code, at.code as asmt_type_code
+      FROM subject_claim_score scs
+        JOIN subject s ON scs.subject_id = s.id
+        JOIN asmt_type at ON at.id = scs.asmt_type_id
+      ORDER BY scs.display_order
+
   translation:
     findAllForLanguage: >-
-        select label_code, label
-        from accommodation_translation
-        where language_code=:language_code
+        SELECT
+          label_code,
+          label
+        FROM accommodation_translation
+        WHERE language_code=:language_code
+        UNION ALL
+        SELECT
+          label_code,
+          label
+        FROM subject_translation
+        WHERE 'eng' = :language_code
 
   organization:
     reporting:
@@ -116,6 +132,18 @@ sql:
           (s.id IS NOT NULL AND (1=:statewide OR sch.district_group_id IN (:district_group_ids) OR sch.district_id IN (:district_ids) OR sch.school_group_id IN (:school_group_ids) OR sch.id IN (:school_ids)))
         LIMIT 1
 
+  subjectDefinition:
+    findAll: >-
+      SELECT
+        at.code as asmt_type_code,
+        s.code as subject_code,
+        sat.performance_level_count,
+        sat.performance_level_standard_cutoff,
+        sat.claim_score_performance_level_count
+      FROM subject_asmt_type sat
+        JOIN asmt_type at ON at.id = sat.asmt_type_id
+        JOIN subject s ON s.id = sat.subject_id
+
   snippet:
     basicPermission: >-
         (1=:statewide or sc.district_group_id in (:district_group_ids) or sc.district_id in (:district_ids) or sc.school_group_id in (:school_group_ids) or sc.id in (:school_ids))
@@ -164,17 +192,27 @@ sql:
         e.claim3_scale_score_std_err,
         e.claim4_category,
         e.claim4_scale_score,
-        e.claim4_scale_score_std_err
+        e.claim4_scale_score_std_err,
+        e.claim5_category,
+        e.claim5_scale_score,
+        e.claim5_scale_score_std_err,
+        e.claim6_category,
+        e.claim6_scale_score,
+        e.claim6_scale_score_std_err
 
     asmtClaimColumns: >-
         a.claim1_score_code,
         a.claim2_score_code,
         a.claim3_score_code,
         a.claim4_score_code,
+        a.claim5_score_code,
+        a.claim6_score_code,
         a.claim1_score_code as asmt_claim1_score_code,
         a.claim2_score_code as asmt_claim2_score_code,
         a.claim3_score_code as asmt_claim3_score_code,
-        a.claim4_score_code as asmt_claim4_score_code
+        a.claim4_score_code as asmt_claim4_score_code,
+        a.claim5_score_code as asmt_claim5_score_code,
+        a.claim6_score_code as asmt_claim6_score_code
 
     claimColumns: >-
        ${sql.snippet.examClaimColumns},
@@ -216,16 +254,19 @@ sql:
         a.label as asmt_label,
         a.grade_code as asmt_grade_code,
         a.type_id as asmt_type_id,
-        a.subject_id as asmt_subject_id,
+        su.code as asmt_subject_code,
         a.school_year as asmt_school_year,
         a.min_score as asmt_min_score,
         a.max_score as asmt_max_score,
         a.cut_point_1 as asmt_cut_point_1,
         a.cut_point_2 as asmt_cut_point_2,
-        a.cut_point_3 as asmt_cut_point_3
+        a.cut_point_3 as asmt_cut_point_3,
+        a.cut_point_4 as asmt_cut_point_4,
+        a.cut_point_5 as asmt_cut_point_5
         from exam e
           join student st on st.id = e.student_id
           join asmt a on e.asmt_id = a.id
+          join subject su on a.subject_id=su.id
           join school s on e.school_id = s.id
           join school isch on st.inferred_school_id = isch.id
 

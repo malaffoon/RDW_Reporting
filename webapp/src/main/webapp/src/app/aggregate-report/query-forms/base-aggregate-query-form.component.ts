@@ -1,5 +1,5 @@
 import { AggregateReportRequest } from "../../report/aggregate-report-request";
-import { FormGroup } from "@angular/forms";
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { Forms } from "../../shared/form/forms";
 import { NotificationService } from "../../shared/notification/notification.service";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
@@ -21,6 +21,9 @@ import { Observer } from "rxjs/Observer";
 import { Observable } from "rxjs/Observable";
 import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
 import { OrderableItem } from "../../shared/order-selector/order-selector.component";
+import { SubjectDefinition } from '../../subject/subject';
+import { SubjectService } from '../../subject/subject.service';
+import { Option } from '../../shared/form/option';
 
 /**
  * Base query component implementation for all aggregate report types.
@@ -78,11 +81,13 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   previewSectionViewInvalidator: Observable<void> = Observable.create(observer => this.previewSectionInvalid = observer);
 
   private _submitSubscription: Subscription;
+  protected subjectDefinitions: SubjectDefinition[] = [];
 
   constructor(protected columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
               protected notificationService: NotificationService,
               protected optionMapper: AggregateReportOptionsMapper,
               protected reportService: AggregateReportService,
+              protected subjectService: SubjectService,
               protected requestMapper: AggregateReportRequestMapper,
               protected route: ActivatedRoute,
               protected router: Router,
@@ -100,9 +105,16 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   abstract getFormGroup(): FormGroup;
 
   /**
-   * Responsible for tracking form validity
+   * Get the assessment definition
    */
   abstract getAssessmentDefinition(): AssessmentDefinition;
+
+  /**
+   * Get the subject definition
+   */
+  protected get subjectDefinition(): SubjectDefinition {
+    return this.subjectDefinitions.find(x => x.subject == this.settings.subjects[0] && x.assessmentType == this.settings.assessmentType);
+  }
 
   /**
    * Get the navigation items that can be scrolled to.
@@ -116,6 +128,13 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
 
   ngOnInit(): void {
     this.navItemChange.emit(this.getNavItems());
+
+    this.subjectService.getSubjectDefinitions().subscribe(subjectDefinitions => {
+      this.subjectDefinitions = subjectDefinitions;
+
+      this.updateSubjectsEnabled();
+    });
+
     this._submitSubscription = this.submitAction.subscribe(() => {
       this.onGenerateButtonClick();
     });
@@ -125,8 +144,8 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
     this._submitSubscription.unsubscribe();
   }
 
-  getControl(name: string) {
-    return this.getFormGroup().get(name);
+  getControl(name: string): AbstractControl {
+    return this.getFormGroup().contains(name) ? this.getFormGroup().get(name) : this.getFormGroup();
   }
 
   onColumnOrderChange(items: OrderableItem[]): void {
@@ -156,10 +175,30 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
     });
   }
 
+  updateSubjectsEnabled(): void {
+    const validSubjectDefinitions = this.subjectDefinitions.filter(x => x.assessmentType == this.settings.assessmentType);
+
+    // disable subjects that don't have a definition for the assessment type
+    let updatedOptions: Option[] = [];
+    this.filteredOptions.subjects.forEach(option => {
+      updatedOptions.push(
+        Object.assign(option, {
+          disabled: !validSubjectDefinitions.some(x => x.subject == option.value)
+        })
+      );
+    });
+
+    this.filteredOptions.subjects = updatedOptions;
+
+    // remove any disabled ones from the subject selection
+    const disabledOptions = updatedOptions.filter(x => x.disabled).map(x => x.value);
+    this.settings.subjects = this.settings.subjects.filter(subject => !disabledOptions.includes(subject));
+  }
+
   /**
    * @returns {boolean} true if the control has errors and has been touched or dirtied
    */
-  showErrors(name: string): boolean {
+  showErrors(name?: string): boolean {
     return Forms.showErrors(this.getControl(name));
   }
 
@@ -179,6 +218,7 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
       options: this.aggregateReportOptions,
       rows: this.tableDataService.createSampleData(
         this.getAssessmentDefinition(),
+        this.subjectDefinition,
         this.settings,
         this.aggregateReportOptions
       ),
@@ -222,11 +262,16 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
 
   protected setDefaultAssessmentType(): void {
     const supportedTypes: string[] = this.getSupportedAssessmentTypes();
+
     this.filteredOptions.assessmentTypes = this.filteredOptions.assessmentTypes
-      .filter((type) => supportedTypes.indexOf(type.value) >= 0);
-    this.settings.assessmentType = supportedTypes.indexOf(this.settings.assessmentType) >= 0
+      .filter((type) => supportedTypes.includes(type.value));
+
+    const allowedTypes: string[] = this.filteredOptions.assessmentTypes
+      .map(option => option.value);
+
+    this.settings.assessmentType = allowedTypes.includes(this.settings.assessmentType)
       ? this.settings.assessmentType
-      : supportedTypes[0];
+      : allowedTypes[0];
   }
 
   /**
@@ -251,7 +296,7 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
     } else {
       // Notify user of all form errors to correct
       Forms.errors(this.getFormGroup()).forEach(error => {
-        this.notificationService.error({ id: error.properties.messageId });
+        this.notificationService.error({ id: error.properties.messageId, args: error.properties.args });
       });
     }
   }

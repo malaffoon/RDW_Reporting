@@ -27,7 +27,7 @@ sql:
       ${sql.reportProcessor.snippet.percentileLeftJoin}
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id = 2
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -50,7 +50,7 @@ sql:
       WHERE e.student_id in (:student_ids)
         AND $[groupFilterPlaceholder]
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=2
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -81,7 +81,7 @@ sql:
       ) as wt on wt.exam_id = e.id
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=:type_id
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -112,8 +112,8 @@ sql:
       $[groupJoinPlaceholder]
       WHERE e.student_id in (:student_ids)
         AND $[groupFilterPlaceholder]
+        AND (:subject_code is null or su.code=:subject_code)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_id is null or a.subject_id=:subject_id)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=:type_id
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -155,6 +155,8 @@ sql:
         'Claim2ScoreAchievementLevel',
         'Claim3ScoreAchievementLevel',
         'Claim4ScoreAchievementLevel',
+        'Claim5ScoreAchievementLevel',
+        'Claim6ScoreAchievementLevel',
 
         'Sex',
         'MigrantStatus',
@@ -189,7 +191,7 @@ sql:
 
         e.completed_at,
         e.school_year,
-        e.session_id,
+        COALESCE(e.session_id, ''),
 
         CASE WHEN at.code = 'sum' THEN 'Summative' ELSE 'Interim' END,
         upper(at.code),
@@ -197,8 +199,8 @@ sql:
         su.code AS asmt_subject_code,
 
         e.grade_code,
-        e.completeness_code,
-        e.administration_condition_code,
+        COALESCE(e.completeness_code, ''),
+        COALESCE(e.administration_condition_code, ''),
 
         COALESCE(e.performance_level, ''),
         COALESCE(e.scale_score, ''),
@@ -208,24 +210,26 @@ sql:
         COALESCE(e.claim2_category, ''),
         COALESCE(e.claim3_category, ''),
         COALESCE(e.claim4_category, ''),
+        COALESCE(e.claim5_category, ''),
+        COALESCE(e.claim6_category, ''),
 
         COALESCE(st.gender_code, '') AS student_gender_code,
 
-        (CASE WHEN e.migrant_status = 1 THEN 'Yes' when e.migrant_status = 0 THEN 'No' ELSE '' END),
-        (CASE WHEN e.section504 = 1 THEN 'Yes' when e.section504 = 0 THEN 'No' ELSE '' END),
-        (CASE WHEN e.iep THEN 'Yes' ELSE 'No' END),
-        (CASE WHEN e.lep THEN 'Yes' ELSE 'No' END),
+        (CASE WHEN e.migrant_status = 1 THEN 'Yes' WHEN e.migrant_status = 0 THEN 'No' ELSE '' END),
+        (CASE WHEN e.section504 = 1 THEN 'Yes' WHEN e.section504 = 0 THEN 'No' ELSE '' END),
+        (CASE WHEN e.iep = 1 THEN 'Yes' WHEN e.iep = 0 THEN 'No' ELSE '' END),
+        (CASE WHEN e.lep = 1 THEN 'Yes' WHEN e.lep = 0 THEN 'No' ELSE '' END),
         COALESCE(e.elas_code, ''),
         COALESCE(e.elas_start_at, ''),
 
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'HispanicOrLatinoEthnicity') THEN 'Yes' ELSE 'No' END ),
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'AmericanIndianOrAlaskaNative') THEN 'Yes' ELSE 'No' END ),
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'Asian') THEN 'Yes' ELSE 'No' END ),
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'BlackOrAfricanAmerican') THEN 'Yes' ELSE 'No' END ),
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'White') THEN 'Yes' ELSE 'No' END ),
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'NativeHawaiianOrOtherPacificIslander') THEN 'Yes' ELSE 'No' END ),
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'TwoOrMoreRaces') THEN 'Yes' ELSE 'No' END ),
-        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'Filipino') THEN 'Yes' ELSE 'No' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'HispanicOrLatinoEthnicity') THEN 'Yes' ELSE '' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'AmericanIndianOrAlaskaNative') THEN 'Yes' ELSE '' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'Asian') THEN 'Yes' ELSE '' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'BlackOrAfricanAmerican') THEN 'Yes' ELSE '' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'White') THEN 'Yes' ELSE '' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'NativeHawaiianOrOtherPacificIslander') THEN 'Yes' ELSE '' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'TwoOrMoreRaces') THEN 'Yes' ELSE '' END ),
+        (CASE WHEN EXISTS (SELECT 1 from student_ethnicity WHERE student_id = st.id AND ethnicity_code = 'Filipino') THEN 'Yes' ELSE '' END ),
 
         COALESCE(e.available_accommodation_codes, '')
       INTO OUTFILE ::EXPORT_DESTINATION:: :export_location
@@ -248,7 +252,7 @@ sql:
       ${sql.reportProcessor.snippet.selectFromStudent}
       WHERE (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_id is null or a.subject_id = :subject_id)
+        AND (:subject_code is null or sub.code = :subject_code)
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -261,12 +265,19 @@ sql:
       WHERE $[groupFilterPlaceholder]
         AND (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_id is null or a.subject_id = :subject_id)
+        AND (:subject_code is null or sub.code = :subject_code)
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       GROUP BY st.id
+
+  subject:
+    findAll: >-
+      SELECT
+        code
+      FROM subject
+      ORDER BY id
 
   reportProcessor:
     snippet:
@@ -306,6 +317,7 @@ sql:
             JOIN asmt a ON e.asmt_id = a.id
             JOIN school s ON e.school_id = s.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject sub ON sub.id=a.subject_id
 
       exportExamsFilter: >-
         e.school_year = :school_year

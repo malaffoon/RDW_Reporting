@@ -19,7 +19,11 @@ import { Utils } from '../../shared/support/support';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { Claim } from '../aggregate-report-options.service';
 import { AggregateReportType } from '../aggregate-report-form-settings';
-import { createScorableClaimOrdering } from '../../shared/ordering/orderings';
+import { OrderingService } from "../../shared/ordering/ordering.service";
+import { Observable } from "rxjs/Observable";
+import { map } from "rxjs/operators";
+import { forkJoin } from "rxjs/observable/forkJoin";
+import { SubjectService } from '../../subject/subject.service';
 
 @Component({
   selector: 'claim-report-form',
@@ -50,14 +54,16 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
               protected optionMapper: AggregateReportOptionsMapper,
               protected organizationService: AggregateReportOrganizationService,
               protected reportService: AggregateReportService,
+              protected subjectService: SubjectService,
               protected requestMapper: AggregateReportRequestMapper,
               protected route: ActivatedRoute,
               protected router: Router,
               protected subgroupMapper: SubgroupMapper,
               protected tableDataService: AggregateReportTableDataService,
               @Inject(FormBuilder) formBuilder: FormBuilder,
-              protected assessmentDefinitionService: AssessmentDefinitionService) {
-    super(columnOrderableItemProvider, notificationService, optionMapper, organizationService, reportService, requestMapper, route, router, subgroupMapper, tableDataService);
+              protected assessmentDefinitionService: AssessmentDefinitionService,
+              protected orderingService: OrderingService) {
+    super(columnOrderableItemProvider, notificationService, optionMapper, organizationService, reportService, subjectService, requestMapper, route, router, subgroupMapper, tableDataService);
     this.settings.reportType = AggregateReportType.Claim;
     this.options = optionMapper.map(this.aggregateReportOptions);
 
@@ -132,6 +138,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
     this.updateColumnOrder();
     this.markOrganizationsControlTouched();
     this.initializeClaimsForAssessmentType();
+    this.updateSubjectsEnabled();
     this.onSubjectsChange();
   }
 
@@ -168,15 +175,25 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
   }
 
   private initializeClaimsForAssessmentType(): void {
-    this.filteredOptions.subjects.forEach(subject => {
+    const orderingObservables: Observable<boolean>[] = this.filteredOptions.subjects.map(subject => {
       const subjectCode = subject.value;
-      this.claimsBySubject[ subjectCode ] = this.filteredOptions.claimCodes
-        .filter(claim => claim.value.subject === subjectCode
-          && claim.value.assessmentType === this.settings.assessmentType)
-        .sort(createScorableClaimOrdering(subjectCode).on<any>(claim => claim.value.code).compare);
+      return this.orderingService.getScorableClaimOrdering(subject.value, this.settings.assessmentType)
+        .pipe(
+          map(claimOrdering => {
+            this.claimsBySubject[ subjectCode ] = this.filteredOptions.claimCodes
+              .filter(claim => claim.value.subject === subjectCode
+                && claim.value.assessmentType === this.settings.assessmentType)
+              .sort(claimOrdering.on<any>(claim => claim.value.code).compare);
+            return true;
+          })
+        );
     });
 
-    this.initializeSelectionBySubject();
+    //Once the orderings have been fetched, continue initialization
+    forkJoin(...orderingObservables)
+      .subscribe(() => {
+        this.initializeSelectionBySubject();
+      });
   }
 
   private initializeSelectionBySubject(): void {

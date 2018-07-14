@@ -44,6 +44,8 @@ import { RdwFilterModule } from './filter/rdw-filter.module';
 import { RdwIconModule } from "./icon/rdw-icon.module";
 import { TargetService } from './target/target.service';
 import { DataTableService } from './datatable/datatable-service';
+import { SubjectModule } from '../subject/subject.module';
+import { OrderingService } from "./ordering/ordering.service";
 
 
 @NgModule({
@@ -90,7 +92,8 @@ import { DataTableService } from './datatable/datatable-service';
         provide: TranslateLoader,
         useClass: RdwTranslateLoader
       }
-    })
+    }),
+    SubjectModule
   ],
   exports: [
     CommonEmbargoModule,
@@ -121,7 +124,7 @@ import { DataTableService } from './datatable/datatable-service';
     ScaleScoreComponent,
     TranslateModule,
     InViewDirective,
-
+    SubjectModule
   ],
   providers: [
     { provide: AuthenticationServiceAuthenticationExpiredRoute, useValue: 'session-expired' },
@@ -129,6 +132,7 @@ import { DataTableService } from './datatable/datatable-service';
     ColorService,
     DataTableService,
     NotificationService,
+    OrderingService,
     TargetService
   ]
 })

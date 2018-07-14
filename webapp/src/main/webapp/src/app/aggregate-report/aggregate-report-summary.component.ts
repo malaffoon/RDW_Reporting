@@ -147,7 +147,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`common.subject.${code}.short-name`))
+          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -163,7 +163,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`common.subject.${code}.short-name`))
+          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -179,7 +179,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subject-label'),
-          values: [ translate(`common.subject.${settings.targetReport.subjectCode}.short-name`) ]
+          values: [ translate(`subject.${settings.targetReport.subjectCode}.name`) ]
         },
         {
           label: translate('aggregate-report-form.field.assessment-grade-label'),
@@ -194,7 +194,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`common.subject.${code}.short-name`))
+          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -240,7 +240,7 @@ export class AggregateReportSummary {
         claimRows.push({
           label: translate('aggregate-report-form.field.claim-codes-label'),
           values: defaultAllOrAll(this.options.claims, this.settings.claimReport.claimCodesBySubject,
-            (claim: Claim) => translate(`common.subject.${claim.subject}.claim.${claim.code}.name`))
+            (claim: Claim) => translate(`subject.${claim.subject}.claim.${claim.code}.name`))
         });
       }
     }

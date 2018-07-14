@@ -14,9 +14,9 @@ insert into school (id, district_group_id, district_id, school_group_id, natural
   (-12, -9, -10, -20, 'schoolNat3', 'school3', 0, -1, '1997-07-18 20:14:34.000000', -1),
   (-13, -9, -10, -20, 'schoolNat4', 'school4', 0, -1, '1997-07-18 20:14:34.000000', -1);
 
-insert into grade (id, code, name, sequence) values
-  (-1, 'g1', 'grade1', 1),
-  (-2, 'g2', 'grade2', 2);
+insert into grade (id, code, sequence) values
+  (-1, 'g1', 1),
+  (-2, 'g2', 2);
 
 insert into gender (id, code) values
   (-1, 'g1');
@@ -26,6 +26,9 @@ insert into school_year (year) values
   (1996),
   (1997),
   (1998);
+
+insert into subject (id, code, update_import_id, migrate_id) values
+  (-1, 'sub', -1, -1);
 
 insert into student (id, ssid, last_or_surname, first_name, gender_id, gender_code, birthday, inferred_school_id, update_import_id, updated, migrate_id) values
   (-1, 'student1_ssid', 'student1_lastName', 'student1_firstName', -1, 'g1', '1997-01-01 00:00:00.000000', -10, -1, '1997-07-18 20:14:34.000000', -1),
@@ -49,7 +52,8 @@ insert into asmt (id, type_id, natural_id, grade_id, grade_code, subject_id, sch
   (-5, 1, 'ica2', -1, 'g1', 2, 1997, 'ica2', 'ica2', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1, '1997-07-18 20:14:34.000000', -1),
   (-6, 2, 'iab4', -1, 'g1', 2, 1997, 'iab2', 'iab4', 'v1', null, null, null, null, 1, null, 2, null, 3, -1, '1997-07-18 20:14:34.000000', -1),
   (-7, 2, 'iab5', -1, 'g1', 2, 1997, 'iab3', 'iab5', 'v1', null, null, null, null, 1, null, 2, null, 3, -1, '1997-07-18 20:14:34.000000', -1),
-  (-8, 3, 'sum1', -1, 'g1', 1, 1997, 'sum1', 'sum1', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1, '1997-07-18 20:14:34.000000', -1);
+  (-8, 3, 'sum1', -1, 'g1', 1, 1997, 'sum1', 'sum1', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1, '1997-07-18 20:14:34.000000', -1),
+  (-9, 3, 'sum2', -1, 'g1', -1, 1997, 'sum2', 'sum2', 'v1', 'ica_claim1', 'ica_claim2', 'ica_claim3', 'ica_claim4', 100, 200, 300, 400, 500, -1, '1997-07-18 20:14:34.000000', -1);
 
 -- mean values are intentionally unique here, the test relies on it
 INSERT INTO percentile (id, asmt_id, start_date, end_date, count, mean, standard_deviation, min_score, max_score, update_import_id, updated, migrate_id) VALUES
@@ -85,20 +89,20 @@ INSERT INTO percentile_score (percentile_id, percentile_rank, score, min_inclusi
   (4, 90, 1, 2538, 2566),
   (4, 95, 1, 2566, 4444);
 
-insert into claim (id, subject_id, code, name, description) values
-  (-1, 1, 'c1', 'c1', 'c1');
+insert into claim (id, subject_id, code) values
+  (-1, 1, 'c1');
 
-insert into target (id, code, natural_id, claim_id, description) VALUES
-  (-1, 't1', 't1', -1, 't1');
+insert into target (id, natural_id, claim_id) VALUES
+  (-1, 't1', -1);
 
 insert into math_practice (practice, description, code) values
   (-1, 'mp1', '-1');
 
-insert into depth_of_knowledge (id, level, subject_id, description, reference) values
-  (-1, 1, 1, 'dok1', 'dok1');
+insert into depth_of_knowledge (id, level, subject_id, reference) values
+  (-1, 1, 1, 'dok1');
 
-insert into item (id, natural_id, claim_id, claim_code, target_id, target_code, asmt_id, math_practice, math_practice_code, dok_id, dok_level_subject_id, difficulty_code, max_points, common_core_standard_ids) values
-  (-1, '200-3391', -1, 'c1', -1, 't1', -1, -1, '-1', -1,'-1_1', 'E', 3, 'S-ID.1');
+insert into item (id, natural_id, claim_id, claim_code, target_id, asmt_id, math_practice, math_practice_code, dok_id, difficulty_code, max_points, common_core_standard_ids) values
+  (-1, '200-3391', -1, 'c1', -1, -1, -1, '-1', -1, 'E', 3, 'S-ID.1');
 
 insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, opportunity, migrant_status, iep, lep, section504, economic_disadvantage,
                   school_year, asmt_id, asmt_version, completeness_code, administration_condition_code, session_id,
@@ -127,7 +131,8 @@ insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, oppo
   (-16, 2, -2, 'g2', -2, -10, 1, null, 0, 0, 0, 0, 1997, -2, 'v1', 'Complete', 'Valid', 'session3', 2100, 21, 2, '1997-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, null, 'EO', null, -1, '1997-07-18 20:14:34.000000', -1),
   (-17, 2, -2, 'g2', -2, -11, 1, null, 0, 1, 0, 0, 1997, -2, 'v1', 'Complete', 'Valid', 'session3', 2100, 21, 2, '1997-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, 'TDS_BT_UCT|NEA0|NEA_Abacus', 'RFEP', '1996-08-01', -1, '1997-07-18 20:14:34.000000', -1),
   (-18, 2, -2, 'g2', -2, -12, 1, null, 0, 0, 0, 0, 1997, -2, 'v1', 'Complete', 'Valid', 'session3', 2100, 21, 2, '1997-01-01 00:00:00.000000', null, null, null, null, null, null, null, null, null, null, null, null, null, 'EO', null, -1, '1997-07-18 20:14:34.000000', -1),
-  (-19, 3, -2, 'g2', -2, -10, 0, null, 0, 0, 0, 0, 1997, -8, 'v1', 'Complete', 'Valid', 'session12', 2000, 20, 1, '1997-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, null, 'EO', null, -1, '1997-07-18 20:14:34.000000', -1);
+  (-19, 3, -2, 'g2', -2, -10, 0, null, 0, 0, 0, 0, 1997, -8, 'v1', 'Complete', 'Valid', 'session12', 2000, 20, 1, '1997-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, null, 'EO', null, -1, '1997-07-18 20:14:34.000000', -1),
+  (-20, 3, -2, 'g2', -2, -10, 0, null, 0, 0, 0, 0, 1997, -9, 'v1', 'Complete', 'Valid', 'session12', 2000, 20, 1, '1997-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, null, 'EO', null, -1, '1997-07-18 20:14:34.000000', -1);
   -- transfer student test data
   insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, opportunity, iep, lep, section504, economic_disadvantage,
                   school_year, asmt_id, asmt_version, completeness_code, administration_condition_code, session_id,

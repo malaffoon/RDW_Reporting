@@ -20,6 +20,9 @@ import { TestModule } from '../../../test/test.module';
 import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { StudentResultsFilterService } from './student-results-filter.service';
+import { OrderingService } from "../../shared/ordering/ordering.service";
+import { ranking } from "@kourge/ordering/comparator";
+import { ordering } from "@kourge/ordering";
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -53,6 +56,9 @@ describe('StudentResultsComponent', () => {
 
     router = new MockRouter();
 
+    const mockOrderingService = jasmine.createSpyObj('OrderingService', [ 'getSubjectOrdering' ]);
+    mockOrderingService.getSubjectOrdering.and.returnValue(of(ordering(ranking(["Math", "ELA"]))));
+
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -67,6 +73,7 @@ describe('StudentResultsComponent', () => {
         { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
         { provide: ReportingEmbargoService, useValue: embargoService },
         { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: OrderingService, useValue: mockOrderingService },
         StudentResultsFilterService,
         ExamFilterService
       ],
@@ -96,7 +103,7 @@ describe('StudentResultsComponent', () => {
   /* Temporary Ignore */
   it('should filter by year on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
     // Filter to the single 2017 exam
-    route.params.emit({ schoolYear: 2017 });
+    route.params.emit({ historySchoolYear: 2017 });
 
     const filteredExams = component.sections.reduce((exams, section) => {
       exams.push(...section.filteredExams);

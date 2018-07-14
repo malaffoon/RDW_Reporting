@@ -5,6 +5,17 @@ import { ColorService } from '../../shared/color.service';
 import { GradeCode } from '../../shared/enum/grade-code.enum';
 import { ExamStatisticsCalculator } from '../../assessments/results/exam-statistics-calculator';
 
+export interface GroupCard {
+  readonly group: Group;
+  readonly measuredAssessment: MeasuredAssessment;
+  readonly performanceLevels: number[];
+}
+
+export interface AssessmentCardEvent {
+  readonly measuredAssessment: MeasuredAssessment;
+  readonly selected: boolean;
+}
+
 @Component({
   selector: 'group-assessment-card',
   templateUrl: './group-assessment-card.component.html'
@@ -12,17 +23,29 @@ import { ExamStatisticsCalculator } from '../../assessments/results/exam-statist
 export class GroupAssessmentCardComponent implements OnInit {
 
   @Input()
-  group: Group;
-  @Input()
-  measuredAssessment: MeasuredAssessment;
+  card: GroupCard;
+
   @Output()
   selectedAssessment: EventEmitter<AssessmentCardEvent> = new EventEmitter();
 
   percents: number[] = [];
   dataWidths: number[] = [];
   selected = false;
+  hasIcon: boolean = true;
 
   constructor(public colorService: ColorService, private examCalculator: ExamStatisticsCalculator) {
+  }
+
+  get measuredAssessment(): MeasuredAssessment {
+    return this.card.measuredAssessment;
+  }
+
+  get group(): Group {
+    return this.card.group;
+  }
+
+  get performanceLevels(): number[] {
+    return this.card.performanceLevels;
   }
 
   ngOnInit() {
@@ -52,9 +75,4 @@ export class GroupAssessmentCardComponent implements OnInit {
     return this.colorService.getColor(GradeCode.getIndex(this.measuredAssessment.assessment.grade));
   }
 
-}
-
-export interface AssessmentCardEvent {
-  readonly measuredAssessment: MeasuredAssessment;
-  readonly selected: boolean;
 }

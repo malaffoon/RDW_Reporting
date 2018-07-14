@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
-import { Title } from "@angular/platform-browser";
-import { ActivatedRoute, NavigationEnd, PRIMARY_OUTLET, Router } from "@angular/router";
-import * as _ from "lodash";
-import { TranslateService } from "@ngx-translate/core";
-import { Utils } from "../support/support";
+import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, PRIMARY_OUTLET, Router } from '@angular/router';
+import * as _ from 'lodash';
+import { TranslateService } from '@ngx-translate/core';
+import { Utils } from '../support/support';
 import { filter } from 'rxjs/operators';
 
 export const BreadCrumbsRouteDataKey = 'breadcrumb';
@@ -21,6 +21,7 @@ export interface BreadcrumbOptions {
   translate?: string;
   translateResolve?: string;
   resolve?: string;
+  transform?: (parameter) => string;
 }
 
 /**
@@ -78,7 +79,7 @@ export class SbBreadcrumbs implements OnInit {
     ).subscribe(() => {
       this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
     });
-    this.translateService.onLangChange.subscribe( () => {
+    this.translateService.onLangChange.subscribe(() => {
       this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
     })
   }
@@ -134,9 +135,17 @@ export class SbBreadcrumbs implements OnInit {
 
   private createBreadcrumb(options: BreadcrumbOptions, routeData: any, routerLinkParameters: any[]): Breadcrumb {
     if (options.translate) {
-      let text = options.translateResolve
-        ? this.translateService.instant(options.translate, Utils.getPropertyValue(options.translateResolve, routeData))
-        : this.translateService.instant(options.translate);
+      let text: string;
+      if (options.translateResolve) {
+        if (options.transform) {
+          text = this.translateService.instant(options.translate,
+            { value: options.transform(Utils.getPropertyValue(options.translateResolve, routeData)) });
+        } else {
+          text = Utils.getPropertyValue(options.translateResolve, routeData);
+        }
+      } else {
+        text = this.translateService.instant(options.translate);
+      }
 
       return {
         text: text,

@@ -104,7 +104,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
       this.formOptions = <UserGroupFormOptions>{
         subjects: options.subjects.map(code => <Option>{
           value: code,
-          text: this.translate.instant('common.subject.' + code + '.name'),
+          text: this.translate.instant('subject.' + code + '.name'),
           analyticsProperties: {
             label: `Subject: ${code}`
           }
@@ -204,7 +204,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
     this.updateSaveButtonDisabled();
   }
 
-  onGroupStudentsChange(students: Student[]): void {
+  onGroupStudentsChange(): void {
     this.updateFormStudents();
     this.updateSaveButtonDisabled();
   }

@@ -28,6 +28,9 @@ import { Utils } from '../../shared/support/support';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { Angulartics2 } from 'angulartics2';
 import { TargetReportComponent } from './view/target-report/target-report.component';
+import { SubjectService } from '../../subject/subject.service';
+import { SubjectDefinition } from '../../subject/subject';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -178,7 +181,7 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayWritingTraitScores(): boolean {
-    return this._assessmentExam.assessment.hasWerItem;
+    return this._assessmentExam.assessment.hasWerItem && this._assessmentExam.assessment.subject === 'ELA';
   }
 
   get enableWritingTraitScores(): boolean {
@@ -274,6 +277,7 @@ export class AssessmentResultsComponent implements OnInit {
   showPercentileHistory = false;
   percentileGroups: PercentileGroup[];
   showClaimScores = false;
+  subjectDefinition: SubjectDefinition;
 
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
@@ -286,17 +290,23 @@ export class AssessmentResultsComponent implements OnInit {
               private examFilterService: ExamFilterService,
               private instructionalResourcesService: InstructionalResourcesService,
               private percentileService: AssessmentPercentileService,
+              private subjectService: SubjectService,
               private angulartics2: Angulartics2) {
   }
 
   ngOnInit(): void {
     this._assessmentExam.collapsed = this.isDefaultCollapsed;
 
-    this.applicationSettingsService.getSettings().subscribe(settings => {
+    forkJoin(
+      this.applicationSettingsService.getSettings(),
+      this.subjectService.getSubjectDefinitionForAssessment(this.assessmentExam.assessment)
+    ).subscribe(([ settings, subjectDefinition ]) => {
       this.percentileDisplayEnabled = settings.percentileDisplayEnabled;
-    });
+      this.subjectDefinition = subjectDefinition;
+      this.setCurrentView(this.resultsByStudentView);
 
-    this.setCurrentView(this.resultsByStudentView);
+      this.updateExamSessions();
+    });
   }
 
   setShowClaimScores(value: boolean) {
@@ -329,11 +339,6 @@ export class AssessmentResultsComponent implements OnInit {
 
   toggleSession(session): void {
     session.filter = !session.filter;
-
-    if (this.showTargetReport) {
-      this.targetReport.sessions = this.sessions;
-    }
-
     this.updateExamSessions();
   }
 
@@ -400,7 +405,7 @@ export class AssessmentResultsComponent implements OnInit {
 
   private updateExamSessions(): void {
     this.exams = this.filterExams();
-    this.statistics = this.calculateStats();
+    this.statistics = this.subjectDefinition != null ? this.calculateStats() : null;
   }
 
   private filterExams(): Exam[] {
@@ -424,10 +429,9 @@ export class AssessmentResultsComponent implements OnInit {
     stats.average = this.examCalculator.calculateAverage(scores);
     stats.standardError = this.examCalculator.calculateStandardErrorOfTheMean(scores);
 
-    // TODO: determine a different way for configurable subjects
-    stats.levels = this.examCalculator.groupLevels(this.exams, this.assessmentExam.assessment.isIab ? 3 : 4);
+    stats.levels = this.examCalculator.groupLevels(this.exams, this.subjectDefinition.performanceLevelCount);
     stats.percents = this.examCalculator.mapGroupLevelsToPercents(stats.levels);
-    stats.claims = this.examCalculator.calculateClaimStatistics(this.exams, 3);
+    stats.claims = this.examCalculator.calculateClaimStatistics(this.exams, this.subjectDefinition.scorableClaimPerformanceLevelCount);
 
     return stats;
   }

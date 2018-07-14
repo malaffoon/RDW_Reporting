@@ -1,20 +1,20 @@
-import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { CsvColumn } from "./csv-column.model";
-import { Student } from "../student/model/student.model";
-import { Exam } from "../assessments/model/exam.model";
-import { Assessment } from "../assessments/model/assessment.model";
-import { Angular2CsvProvider } from "./angular-csv.provider";
-import { AssessmentItem } from "../assessments/model/assessment-item.model";
-import { DynamicItemField } from "../assessments/model/item-point-field.model";
-import { SchoolYearPipe } from "../shared/format/school-year.pipe";
-import { Utils } from "../shared/support/support";
-import { WritingTraitAggregate } from "../assessments/model/writing-trait-aggregate.model";
-import { TranslateDatePipe } from "../shared/i18n/translate-date.pipe";
-import { TranslateNumberPipe } from "../shared/i18n/translate-number.pipe";
-import { ApplicationSettingsService } from "../app-settings.service";
+import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { CsvColumn } from './csv-column.model';
+import { Student } from '../student/model/student.model';
+import { Exam } from '../assessments/model/exam.model';
+import { Assessment } from '../assessments/model/assessment.model';
+import { Angular2CsvProvider } from './angular-csv.provider';
+import { AssessmentItem } from '../assessments/model/assessment-item.model';
+import { DynamicItemField } from '../assessments/model/item-point-field.model';
+import { SchoolYearPipe } from '../shared/format/school-year.pipe';
+import { Utils } from '../shared/support/support';
+import { WritingTraitAggregate } from '../assessments/model/writing-trait-aggregate.model';
+import { TranslateDatePipe } from '../shared/i18n/translate-date.pipe';
+import { TranslateNumberPipe } from '../shared/i18n/translate-number.pipe';
+import { ApplicationSettingsService } from '../app-settings.service';
 import { AggregateTargetScoreRow, TargetReportingLevel } from '../assessments/model/aggregate-target-score-row.model';
-import { ScorableClaimOrder } from '../shared/ordering/orderings';
+import { SubjectDefinition } from '../subject/subject';
 
 @Injectable()
 export class CsvBuilder {
@@ -29,6 +29,8 @@ export class CsvBuilder {
               private schoolYearPipe: SchoolYearPipe,
               private numberPipe: TranslateNumberPipe,
               private applicationSettingsService: ApplicationSettingsService) {
+
+    // TODO technically there can be a race condition here.
     applicationSettingsService.getSettings().subscribe(settings => {
       this.showElas = settings.elasEnabled;
       this.showLep = settings.lepEnabled;
@@ -103,10 +105,10 @@ export class CsvBuilder {
   withStudentName(getStudent: (item: any) => Student) {
     return this.withColumn(
       this.translateService.instant('csv-builder.student-first-name'),
-      (item) => getStudent(item).firstName
+      (item) => getStudent(item).firstName ? getStudent(item).firstName : ''
     ).withColumn(
       this.translateService.instant('csv-builder.student-last-name'),
-      (item) => getStudent(item).lastName
+      (item) => getStudent(item).lastName ? getStudent(item).lastName : ''
     );
   }
 
@@ -114,14 +116,17 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.submit-date-time'),
       (item) => this.datePipe.transform(getExam(item).date)
-    )
+    );
   }
 
   withExamSession(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.assessment-session-id'),
-      (item) => getExam(item).session
-    )
+      (item) => {
+        const session = getExam(item).session;
+        return session ? session : '';
+      }
+    );
   }
 
   withSchool(getExam: (item: any) => Exam) {
@@ -141,7 +146,10 @@ export class CsvBuilder {
   withAssessmentType(getAssessment: (item: any) => Assessment) {
     return this.withColumn(
       this.translateService.instant('csv-builder.assessment-type'),
-      (item) => this.translateService.instant(`common.assessment-type.${getAssessment(item).type}.short-name`)
+      (item) => {
+        const assessment: Assessment = getAssessment(item);
+        return this.translateService.instant(`subject.${assessment.subject}.asmt-type.${assessment.type}.name`);
+      }
     );
   }
 
@@ -155,7 +163,7 @@ export class CsvBuilder {
   withAssessmentSubject(getAssessment: (item: any) => Assessment) {
     return this.withColumn(
       this.translateService.instant('csv-builder.subject'),
-      (item) => this.translateService.instant(`common.subject.${getAssessment(item).subject}.short-name`)
+      (item) => this.translateService.instant(`subject.${getAssessment(item).subject}.name`)
     );
   }
 
@@ -176,16 +184,16 @@ export class CsvBuilder {
       (item) => {
         const exam: Exam = getExam(item);
         const adminCondition: string = exam.administrativeCondition;
-        let status: string = this.translateService.instant(`common.administration-condition.${adminCondition}`);
+        let status: string = adminCondition ? this.translateService.instant(`common.administration-condition.${adminCondition}`) : '';
         if (exam.completeness === 'Partial') {
           status += ' ' + this.translateService.instant('common.completeness.Partial');
         }
         return status;
       }
-    )
+    );
   }
 
-  withAchievementLevel(getExam: (item: any) => Exam) {
+  withAchievementLevel(getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.achievement-level'),
       (item) => {
@@ -193,8 +201,9 @@ export class CsvBuilder {
         if (!exam || !exam.level) {
           return '';
         }
+        const { subject, type } = getAssessment(item);
         return this.translateService.instant(exam.level
-          ? `common.assessment-type.ica.performance-level.${exam.level}.name`
+          ? `subject.${subject}.asmt-type.${type}.level.${exam.level}.name`
           : 'common.missing'
         );
       }
@@ -215,7 +224,7 @@ export class CsvBuilder {
   }
 
   // TODO - Is this different than AchievementLevel now -- ?
-  withReportingCategory(getExam: (item: any) => Exam) {
+  withReportingCategory(getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('common.results.assessment-exam-columns.iab.performance'),
       (item) => {
@@ -223,8 +232,9 @@ export class CsvBuilder {
         if (!exam || !exam.level) {
           return '';
         }
+        const { subject, type } = getAssessment(item);
         return this.translateService.instant(
-          `common.assessment-type.iab.performance-level.${exam.level}.name`);
+          `subject.${subject}.asmt-type.${type}.level.${exam.level}.name`);
       }
     );
   }
@@ -259,55 +269,43 @@ export class CsvBuilder {
     );
   }
 
-  // TODO:ConfigurableSubjects needs to support configurable subjects
-  withMathClaimScores(getExam: (item: any) => Exam) {
-    return this.withClaimScores(ScorableClaimOrder.get('Math'), getExam);
-  }
-
-  // TODO:ConfigurableSubjects needs to support configurable subjects
-  withELAClaimScores(getExam: (item: any) => Exam) {
-    return this.withClaimScores(ScorableClaimOrder.get('ELA'), getExam);
-  }
-
-  withClaimScores(claims: string[], getExam: (item: any) => Exam) {
-    // TODO:ConfigurableSubjects
-    const claimCodeToDatabaseIndex: Map<string, number> = new Map([
-      ['1', 0], ['SOCK_2', 1], ['3', 2],
-      ['SOCK_R', 0], ['SOCK_LS', 1], ['2-W', 2], ['4-CR', 3]
-    ]);
-
-    claims.forEach((claim) => {
+  withClaimScores(subject: string, claims: string[], getAssessment: (item: any) => Assessment, getExam: (item: any) => Exam) {
+    claims.forEach((claim, index) => {
       this.withColumn(
-        this.translateService.instant(`common.subject-claim-code.${claim}`),
+        `${this.translateService.instant(`subject.${subject}.name`)}: ${this.translateService.instant(`subject.${subject}.claim.${claim}.name`)}`,
         (item) => {
           const exam: Exam = getExam(item);
-          const index = claimCodeToDatabaseIndex.get(claim);
           if (!exam || !exam.claimScores[ index ].level) {
             return '';
           }
-          return this.translateService.instant(exam.claimScores[ index ].level
-            ? `common.assessment-type.iab.performance-level.${exam.claimScores[ index ].level}.name`
+          const assessment = getAssessment(item);
+          const level = exam.claimScores[ index ].level;
+          return this.translateService.instant(level
+            ? `subject.${assessment.subject}.asmt-type.${assessment.type}.claim-score.level.${level}.name`
             : 'common.missing'
           );
         }
       );
     });
-
     return this;
   }
 
   withGender(getStudent: (item: any) => Student) {
     return this.withColumn(
       this.translateService.instant('csv-builder.gender'),
-      (item) => this.translateService.instant(`common.gender.${getStudent(item).genderCode}`)
-    )
+      (item) => getStudent(item).genderCode ? this.translateService.instant(`common.gender.${getStudent(item).genderCode}`) : ''
+    );
   }
 
   withMigrantStatus(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.migrant-status'),
       (item) => {
-        const polarEnum = getExam(item).migrantStatus ? 1 : 2;
+        const migrantStatus = getExam(item).migrantStatus;
+        if (migrantStatus == null) {
+          return '';
+        }
+        const polarEnum = migrantStatus ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -317,7 +315,11 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.504-plan'),
       (item) => {
-        const polarEnum = getExam(item).plan504 ? 1 : 2;
+        const plan504 = getExam(item).plan504;
+        if (plan504 == null) {
+          return '';
+        }
+        const polarEnum = plan504 ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -327,7 +329,11 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.iep'),
       (item) => {
-        const polarEnum = getExam(item).iep ? 1 : 2;
+        const iep = getExam(item).iep;
+        if (iep == null) {
+          return '';
+        }
+        const polarEnum = iep ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -337,7 +343,11 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('csv-builder.limited-english'),
       (item) => {
-        const polarEnum = getExam(item).limitedEnglishProficiency ? 1 : 2;
+        const limitedEnglishProficiency = getExam(item).limitedEnglishProficiency;
+        if (limitedEnglishProficiency == null) {
+          return '';
+        }
+        const polarEnum = limitedEnglishProficiency ? 1 : 2;
         return this.getPolarTranslation(polarEnum);
       }
     );
@@ -358,8 +368,11 @@ export class CsvBuilder {
       this.withColumn(
         ethnicity,
         (item) => {
-          const polarEnum = getExam(item).student.ethnicityCodes.some(code => code == ethnicity) ? 1 : 2;
-          return this.getPolarTranslation(polarEnum);
+          if (getExam(item).student.ethnicityCodes.some(code => code == ethnicity)) {
+            return this.getPolarTranslation(1);
+          } else {
+            return '';
+          }
         });
     }
     return this;
@@ -372,17 +385,26 @@ export class CsvBuilder {
     );
   }
 
-  withClaim(getAssessmentItem: (item: any) => AssessmentItem) {
+  withClaim(getAssessment: (item: any) => Assessment, getAssessmentItem: (item: any) => AssessmentItem) {
     return this.withColumn(
       this.translateService.instant('csv-builder.claim'),
-      (item) => this.translateService.instant(`common.claim-name.${getAssessmentItem(item).claim}`)
+      (item) => {
+        const assessment = getAssessment(item);
+        const assessmentItem = getAssessmentItem(item);
+        return this.translateService.instant(`subject.${assessment.subject}.claim.${assessmentItem.claim}.name`);
+      }
     );
   }
 
-  withTarget(getAssessmentItem: (item: any) => AssessmentItem) {
+  withTarget(getAssessment: (item: any) => Assessment, getAssessmentItem: (item: any) => AssessmentItem) {
     return this.withColumn(
       this.translateService.instant('csv-builder.target'),
-      (item) => this.translateService.instant('common.results.assessment-item-target', getAssessmentItem(item))
+      (item) => {
+        const assessment = getAssessment(item);
+        const assessmentItem = getAssessmentItem(item);
+        return this.translateService
+          .instant(`subject.${assessment.subject}.claim.${assessmentItem.claim}.target.${assessmentItem.targetNaturalId}.name`);
+      }
     );
   }
 
@@ -403,7 +425,7 @@ export class CsvBuilder {
   withStandards(getAssessmentItem: (item: any) => AssessmentItem) {
     return this.withColumn(
       this.translateService.instant('common.results.assessment-item-columns.standard'),
-      (item) => getAssessmentItem(item).commonCoreStandardIds.join(", ")
+      (item) => getAssessmentItem(item).commonCoreStandardIds.join(', ')
     );
   }
 
@@ -449,17 +471,27 @@ export class CsvBuilder {
     return this.withColumn(
       this.translateService.instant('groups.columns.group'),
       (item) => getGroupName(item)
-    )
+    );
   }
 
-  withTargetReportAggregate(getTargetReportAggregate: (item: any) => AggregateTargetScoreRow) {
+  withTargetReportAggregate(subjectDefinition: SubjectDefinition,
+                            getAssessment: (item: any) => Assessment,
+                            getTargetReportAggregate: (item: any) => AggregateTargetScoreRow) {
     this.withColumn(
       this.translateService.instant('target-report.columns.claim'),
-      (item) => this.translateService.instant(`common.claim-name.${getTargetReportAggregate(item).claim}`)
+      (item) => {
+        const assessment = getAssessment(item);
+        const row = getTargetReportAggregate(item);
+        return this.translateService.instant(`subject.${assessment.subject}.claim.${row.claim}.name`);
+      }
     );
     this.withColumn(
       this.translateService.instant('target-report.columns.target'),
-      (item) => getTargetReportAggregate(item).target
+      (item) => {
+        const assessment = getAssessment(item);
+        const row = getTargetReportAggregate(item);
+        return this.translateService.instant(`subject.${assessment.subject}.claim.${row.claim}.target.${row.targetNaturalId}.name`);
+      }
     );
     this.withColumn(
       this.translateService.instant('target-report.columns.subgroup'),
@@ -473,12 +505,29 @@ export class CsvBuilder {
 
     this.withColumn(
       this.translateService.instant('target-report.columns.student-relative-residual-scores-level'),
-      (item) => this.translateService.instant('aggregate-report-table.target.overall.' + TargetReportingLevel[ getTargetReportAggregate(item).studentRelativeLevel ])
+      (item) => {
+        const studentRelativeLevel = TargetReportingLevel[ getTargetReportAggregate(item).studentRelativeLevel ];
+        if (studentRelativeLevel === TargetReportingLevel.NoResults) {
+          return '';
+        }
+        return this.translateService.instant('aggregate-report-table.target.overall.' + studentRelativeLevel);
+      }
     );
 
+    const standardMetHeaderResolve: any = {
+      name: this.translateService.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.level.${subjectDefinition.performanceLevelStandardCutoff}.name`),
+      id: subjectDefinition.performanceLevelStandardCutoff
+    };
+
     this.withColumn(
-      this.translateService.instant('target-report.columns.standard-met-relative-residual-level'),
-      (item) => this.translateService.instant('aggregate-report-table.target.standard.' + TargetReportingLevel[ getTargetReportAggregate(item).standardMetRelativeLevel ])
+      this.translateService.instant('target-report.columns.standard-met-relative-residual-level', standardMetHeaderResolve),
+      (item) => {
+        const standardMetRelativeLevel = TargetReportingLevel[ getTargetReportAggregate(item).standardMetRelativeLevel ];
+        if (standardMetRelativeLevel === TargetReportingLevel.NoResults) {
+          return '';
+        }
+        return this.translateService.instant('aggregate-report-table.target.standard.' + standardMetRelativeLevel);
+      }
     );
 
     return this;
@@ -555,6 +604,7 @@ export class CsvBuilder {
       .withMigrantStatus(getExam)
       .with504Plan(getExam)
       .withIep(getExam);
+
     if (this.showLep) {
       studentContext = studentContext.withLimitedEnglish(getExam);
     }

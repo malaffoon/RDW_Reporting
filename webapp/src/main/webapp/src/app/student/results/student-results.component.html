@@ -17,14 +17,12 @@
       <ul class="list-unstyled list-inline">
         <li>
           <!-- Note: we have 'ml-md' as a class here to avoid an issue with flickering popovers -->
-          <button class="btn btn-default btn-sm ml-md"
-                  [ngClass]="{disabled: exportDisabled}"
+          <button *ngIf="!exportDisabled" class="btn btn-default btn-sm ml-md"
+                  (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'common.export-csv' | translate}}</button>
+          <button *ngIf="exportDisabled" class="btn btn-default btn-sm ml-md disabled"
                   popover="{{'common.embargo-export-disabled' | translate}}"
-                  [triggers]="exportDisabled ? 'mouseenter:mouseleave' : ''"
-                  placement="left"
-                  (click)="!exportDisabled && exportCsv()">
-            <i class="fa fa-bold fa-table"></i> {{'common.export-csv' | translate}}
-          </button>
+                  triggers="mouseenter:mouseleave"
+                  placement="left"><i class="fa fa-bold fa-table"></i> {{'common.export-csv' | translate}}</button>
         </li>
         <li>
           <button class="btn btn-default btn-sm"
@@ -53,8 +51,7 @@
     <div class="well wide-content-container"
          [hidden]="!section.filteredExams.length">
       <span class="h3 label-group orange">
-        <span
-          class="label">{{'common.subject.' + section.subjectCode + '.short-name' | translate}}</span>
+        <span class="label">{{'subject.' + section.subjectCode + '.name' | translate}}</span>
       </span>
       <button class="btn btn-default pull-right"
               (click)="section.collapsed = !section.collapsed"
@@ -69,6 +66,7 @@
       <div class="mt-md"
            [hidden]="section.collapsed">
         <student-history-table [student]="examHistory.student"
+                               [subject]="section.subjectCode"
                                [minimumItemDataYear]="minimumItemDataYear"
                                [exams]="section.filteredExams">
         </student-history-table>
@@ -83,7 +81,7 @@
   </div>
 
   <span student-report-download #reportDownloader
-        [title]="'student-results.create-report' | translate:examHistory.student"
+        [title]="'student-results.create-report' | translate: {value: getStudent(examHistory.student)}"
         [student]="examHistory.student"
         [schoolYears]="filterState.schoolYears"
         (onShow)="initializeDownloader(reportDownloader)"></span>
