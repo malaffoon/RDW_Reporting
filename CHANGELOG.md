@@ -1,5 +1,9 @@
 ## Change Log
 
+#### 1.2.2 - 2018-08-01
+
+* Address bug with schools not appearing in District/School Export screen.
+
 #### 1.2.1 - 2018-07-06
 
 * Configurable Subjects.
