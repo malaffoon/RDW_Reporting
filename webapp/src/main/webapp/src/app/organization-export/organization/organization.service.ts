@@ -19,13 +19,14 @@ export class OrganizationService extends ExtendOrganizationService {
    * Gets the all organizations entitled to the user and groups them by type
    * Because the component caches the schools and doesn't go back to the server
    * during type-ahead search or when adding districts/groups, this needs to
-   * get *every* school for the user. So use a large limit.
+   * get *every* school for the user. So use a large limit (20000 is more schools
+   * than any single state has so it should be enough even for a state user).
    *
    * @returns {Observable<UserOrganizations>}
    */
   getUserOrganizations(): Observable<UserOrganizations> {
     return forkJoin(
-      this.getSchools(1000),
+      this.getSchools(20000),
       this.getSchoolGroups(),
       this.getDistricts()
     ).pipe(
