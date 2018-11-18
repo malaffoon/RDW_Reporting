@@ -1,5 +1,9 @@
 ## Change Log
 
+#### 1.2.4 - 2018-11-19
+
+* Tweak organization selector in District/School Export screen to support more schools.
+
 #### 1.2.3 - 2018-10-01
 
 * Fix order of claims on ICA/Summative reports.
