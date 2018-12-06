@@ -24,7 +24,8 @@ include that information in any system status/monitoring end-points.
 
 ### Version Control Conventions
 Repo: https://github.com/SmarterApp/RDW_Reporting
-Config Repo: https://gitlab.com/fairwaytech/sbac-config-repo
+Deploy Repo: https://gitlab.com/fairwaytech/RDW_Deployment
+Config Repo: https://gitlab.com/fairwaytech/RDW_Config
 
 This project follows the common convention of having two main branches with infinite lifetime: `master` is the main
 branch where HEAD contains the production-ready state, while `develop` is the main branch where HEAD contains the 
