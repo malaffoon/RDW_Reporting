@@ -12,7 +12,7 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath("com.bmuschko:gradle-docker-plugin:3.0.11")
+        classpath("com.bmuschko:gradle-docker-plugin:3.6.2")
         classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
@@ -26,7 +26,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.1.0-SNAPSHOT`
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.2.0-101"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.2.2-RELEASE"
 String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.2.0-390"
 String dockerPrefix = "smarterbalanced"
 

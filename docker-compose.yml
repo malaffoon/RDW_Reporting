@@ -1,13 +1,7 @@
 # docker-compose specs for rdw reporting service with the configuration server
 # running in a container and MySQL running natively (outside the containers).
 #
-# The following environment variables MUST be set before running this spec:
-#
-# DATAWAREHOUSE_HOST - host running mysql with rdw reporting schema initialized
-# For mac developers running mysql natively, something like:
-#   $ export DATAWAREHOUSE_HOST=$(ipconfig getifaddr en0)
-# This value may have to be reset when you change networks.
-#
+# The following environment variables MUST be set before running this spec, for config server:
 # CONFIG_SERVICE_REPO - git repo url, e.g. https://gitlab.com/fairwaytech/rdw_config.git
 # GIT_USER - user with rights to access CONFIG_SERVICE_REPO
 # GIT_PASSWORD - password for GIT_USER
@@ -58,9 +52,6 @@ services:
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
 
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
-
   admin-service:
     image: smarterbalanced/rdw-reporting-admin-service
     ports:
@@ -75,8 +66,6 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
 
 # uncomment to enable aggregate service
 #  aggregate-service:
@@ -92,8 +81,6 @@ services:
 #      - spring.profiles.active=local-docker
 #      - CONFIG_SERVICE_ENABLED=true
 #      - CONFIG_SERVICE_URL=http://config-server:8888
-#    extra_hosts:
-#      - "dwhost:$DATAWAREHOUSE_HOST"
 
   reporting-service:
     image: smarterbalanced/rdw-reporting-service
@@ -106,8 +93,6 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
 
   report-processor-service:
     image: smarterbalanced/rdw-reporting-report-processor
@@ -124,8 +109,6 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
 
   wkhtmltopdf:
     image: smarterbalanced/wkhtmltopdf-image:latest
