@@ -11,7 +11,7 @@ import {
 import { AggregateReportOptions } from './aggregate-report-options';
 import { AggregateReportQuery, AggregateReportRequest, StudentFilters } from '../report/aggregate-report-request';
 import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { Claim } from './aggregate-report-options.service';
 import Spy = jasmine.Spy;
 

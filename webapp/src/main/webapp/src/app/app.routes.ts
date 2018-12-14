@@ -41,8 +41,8 @@ import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
 
-const studentPipe = new StudentPipe();
-const adminRoute = {
+export const studentPipe = new StudentPipe();
+export const adminRoute = {
   path: '',
   data: {
     permissions: [ 'GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE', 'EMBARGO_WRITE' ]
@@ -164,7 +164,7 @@ const studentTestExamHistoryChildRoute = {
   component: StudentResponsesComponent
 };
 
-const studentTestHistoryChildRoute = {
+export const studentTestHistoryChildRoute = {
   path: 'students/:studentId',
   resolve: { examHistory: StudentExamHistoryResolve },
   data: {
@@ -185,7 +185,7 @@ const studentTestHistoryChildRoute = {
   ]
 };
 
-const UserGroupRoutes = [
+export const UserGroupRoutes = [
   {
     path: 'user-groups',
     data: {

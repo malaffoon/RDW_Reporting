@@ -1,9 +1,6 @@
 import { Response } from "@angular/http";
-import { Observable } from "rxjs/Observable";
+import { Observable, of, throwError as _throw, empty } from "rxjs";
 import { NotFoundError } from "./not-found.error";
-import { of } from 'rxjs/observable/of';
-import { _throw } from 'rxjs/observable/throw';
-import { empty } from 'rxjs/observable/empty';
 
 /**
  * This class holds common response handling utility methods.

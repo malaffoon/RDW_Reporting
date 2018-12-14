@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Grade } from "./grade.model";
 import { ResponseUtils } from "../shared/response-utils";
 import { DataService } from "../shared/data/data.service";

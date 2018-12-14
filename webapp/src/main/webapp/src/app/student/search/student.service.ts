@@ -3,7 +3,7 @@ import { DataService } from '../../shared/data/data.service';
 import { ReportingServiceRoute } from '../../shared/service-route';
 import { Student } from './student';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export interface StudentSearch {
   schoolId?: number;

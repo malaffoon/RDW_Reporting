@@ -4,7 +4,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { DataService } from '../../shared/data/data.service';
 import { Embargo } from './embargo';
 import { OrganizationType, State } from '../../shared/organization/organization';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('EmbargoService', () => {
   let service: EmbargoService;

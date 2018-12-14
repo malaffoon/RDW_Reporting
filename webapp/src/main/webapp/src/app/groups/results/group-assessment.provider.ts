@@ -1,5 +1,5 @@
 import { AssessmentProvider } from '../../assessments/assessment-provider.interface';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
 import { Exam } from '../../assessments/model/exam.model';
 import { GroupAssessmentService, Search } from './group-assessment.service';

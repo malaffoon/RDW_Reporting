@@ -1,4 +1,4 @@
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { Organization } from "./organization/organization";
 import { UserOrganizations } from "./organization/user-organizations";

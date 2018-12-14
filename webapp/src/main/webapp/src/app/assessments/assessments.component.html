@@ -13,7 +13,7 @@
                     class="form-control btn btn-default pull-right"
                     (click)="showAdvancedFilters = !showAdvancedFilters"
                     angulartics2On="click"
-                    angularticsEvent="ToggleAdvancedFilters"
+                    angularticsAction="ToggleAdvancedFilters"
                     angularticsCategory="AssessmentResults">
               {{'common.action.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
               <i class="fa ml-xs"
@@ -57,14 +57,14 @@
                   class="btn btn-default"
                   [ngClass]="{'active': showOnlyMostRecent}"
                   angulartics2On="click"
-                  angularticsEvent="ShowOnlyMostRecent"
+                  angularticsAction="ShowOnlyMostRecent"
                   angularticsCategory="AssessmentResults">{{'assessments.results.filter-type-recent' | translate}}</button>
           <button type="radio"
                   (click)="showOnlyMostRecent = false"
                   class="btn btn-default"
                   [ngClass]="{'active': !showOnlyMostRecent}"
                   angulartics2On="click"
-                  angularticsEvent="ShowCustomAssessmentSelection"
+                  angularticsAction="ShowCustomAssessmentSelection"
                   angularticsCategory="AssessmentResults">{{'assessments.results.filter-type-custom' | translate}}</button>
         </div>
       </div>
@@ -77,7 +77,7 @@
              href="javascript:void(0)"
              (click)="removeAssessment(assessment)"
              angulartics2On="click"
-             angularticsEvent="RemoveAssessment"
+             angularticsAction="RemoveAssessment"
              angularticsCategory="AssessmentResults"
              [angularticsProperties]="{label: assessment.label}"
              class="tag tag-xs {{ colorService.getColor(getGradeIdx(assessment.grade)) }}">
@@ -90,7 +90,7 @@
                     class="btn btn-default btn-sm img-circle icon-only"
                     (click)="expandAssessments=true"
                     angulartics2On="click"
-                    angularticsEvent="ClickAssessmentPlus"
+                    angularticsAction="ClickAssessmentPlus"
                     angularticsCategory="AssessmentResults">
               <i class="fa fa-plus"></i>
               <span class="sr-only">{{'assessments.results.add-assessment-filters' | translate }}</span>
@@ -110,7 +110,7 @@
       <button class="form-control btn btn-sm"
               (click)="expandAssessments = false"
               angulartics2On="click"
-              angularticsEvent="HideCustomSelectionView"
+              angularticsAction="HideCustomSelectionView"
               angularticsCategory="AssessmentResults">
         <i class="fa fa-close" aria-hidden="true"></i>
       </button>
@@ -141,7 +141,7 @@
                   (click)="showValuesAsPercent = true"
                   [ngClass]="{'active': showValuesAsPercent}"
                   angulartics2On="click"
-                  angularticsEvent="ShowAsPercent"
+                  angularticsAction="ShowAsPercent"
                   angularticsCategory="AssessmentResults"
                   class="btn btn-default">{{'common.value-display-type.Percent' | translate}}
           </button>
@@ -149,7 +149,7 @@
                   (click)="showValuesAsPercent = false"
                   [ngClass]="{'active': !showValuesAsPercent}"
                   angulartics2On="click"
-                  angularticsEvent="ShowAsNumber"
+                  angularticsAction="ShowAsNumber"
                   angularticsCategory="AssessmentResults"
                   class="btn btn-default">{{'common.value-display-type.Number' | translate}}
           </button>

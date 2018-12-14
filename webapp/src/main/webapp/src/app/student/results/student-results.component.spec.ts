@@ -13,7 +13,7 @@ import { MockRouter } from '../../../test/mock.router';
 import { CsvExportService } from '../../csv-export/csv-export.service';
 import { Angulartics2 } from 'angulartics2';
 import { ExamFilterService } from '../../assessments/filters/exam-filters/exam-filter.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { MockUserService } from '../../../test/mock.user.service';
 import { TestModule } from '../../../test/test.module';

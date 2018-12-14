@@ -5,17 +5,17 @@ import { InstructionalResourceService } from "./instructional-resource.service";
 import { Assessment } from "./model/assessment.model";
 import { AssessmentService } from "./assessment.service";
 import { AssessmentQuery } from "./model/assessment-query.model";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  Subscription } from "rxjs";
 import { Organization } from "./model/organization.model";
 import { OrganizationService } from "./organization.service";
 import { OrganizationQuery } from "./model/organization-query.model";
 import { ValidationErrors } from "@angular/forms";
-import { Subscription } from "rxjs/Subscription";
 import { NavigationStart, Router } from "@angular/router";
 import { filter, mergeMap } from 'rxjs/operators';
 import { Utils } from "../../shared/support/support";
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
+import {map} from "rxjs/internal/operators";
 
 /**
  * This modal component displays an instructional resource creation form.
@@ -112,8 +112,8 @@ export class CreateInstructionalResourceModal implements OnDestroy {
     const query: AssessmentQuery = new AssessmentQuery();
     query.label = search;
 
-    return this.assessmentService.find(query)
-      .map(this.removeDuplicateNames);
+    return this.assessmentService.find(query).pipe(map(this.removeDuplicateNames))
+
   }
 
   onAssessmentSelect(assessment: Assessment): void {

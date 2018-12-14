@@ -30,7 +30,7 @@ const DefaultButtonStyles = 'btn-primary';
                [value]="option.value"
                [(ngModel)]="value"
                angulartics2On="click"
-               angularticsEvent="{{analyticsEvent}}"
+               angularticsAction="{{analyticsEvent}}"
                angularticsCategory="{{analyticsCategory}}"
                [angularticsProperties]="option.analyticsProperties">
         {{option.text}}

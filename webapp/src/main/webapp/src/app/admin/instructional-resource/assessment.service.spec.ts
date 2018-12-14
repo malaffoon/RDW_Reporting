@@ -2,7 +2,7 @@ import { AssessmentService } from './assessment.service';
 import { Assessment } from './model/assessment.model';
 import { AssessmentQuery } from './model/assessment-query.model';
 import { MockDataService } from '../../../test/mock.data.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('Assessment Service', () => {
   let dataService: MockDataService;

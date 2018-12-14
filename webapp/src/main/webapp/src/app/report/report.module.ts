@@ -28,7 +28,7 @@ import { ReportTableComponent } from './report-table.component';
     ReportActionComponent
   ],
   imports: [
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,

@@ -14,7 +14,7 @@
              (click)="toggleSelectedAssessment(assessment)"
              class="tag tag-xs {{colorService.getColor(getGradeIdx(byGrade.grade))}}"
              angulartics2On="click"
-             angularticsEvent="AddAssessment"
+             angularticsAction="AddAssessment"
              angularticsCategory="AssessmentResults"
              [angularticsProperties]="{label: assessment.label}"
              [ngClass]="{'active': assessment.selected}">{{assessment.label}}</a>

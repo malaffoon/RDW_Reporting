@@ -5,7 +5,7 @@ import { AssessmentItem } from "../../model/assessment-item.model";
 import { Component } from "@angular/core";
 import { ItemInfoService } from "./item-info.service";
 import { ApplicationSettingsService } from '../../../app-settings.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('ItemInfoComponent', () => {
   let component: ItemInfoComponent;

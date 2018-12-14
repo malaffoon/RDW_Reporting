@@ -2,12 +2,10 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import * as _ from "lodash";
 import { Injectable } from "@angular/core";
 import { TranslateLoader } from "@ngx-translate/core";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  forkJoin ,  of } from "rxjs";
 import { EmbeddedLanguages } from "./language-settings";
 import { HttpClient } from "@angular/common/http";
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 import { SubjectService } from "../../subject/subject.service";
 import { Utils } from "../support/support";
 

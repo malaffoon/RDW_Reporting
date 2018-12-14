@@ -10,8 +10,7 @@ import {
 } from '../../../model/aggregate-target-score-row.model';
 import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.service';
 import { FilterBy } from '../../../model/filter-by.model';
-import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Subscription ,  forkJoin } from 'rxjs';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
 import { byNumber, Comparator, join, ranking } from '@kourge/ordering/comparator';

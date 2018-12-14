@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../../shared/data/data.service';
 import { Assessment } from './assessment';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AggregateServiceRoute } from '../../shared/service-route';
 import { map } from 'rxjs/operators';
 

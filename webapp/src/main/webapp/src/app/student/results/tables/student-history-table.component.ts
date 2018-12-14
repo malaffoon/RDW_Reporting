@@ -3,7 +3,7 @@ import { MenuActionBuilder } from '../../../assessments/menu/menu-action.builder
 import { StudentHistoryExamWrapper } from '../../model/student-history-exam-wrapper.model';
 import { Student } from '../../model/student.model';
 import { PopupMenuAction } from '../../../shared/menu/popup-menu-action.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { InstructionalResourcesService } from '../../../assessments/results/instructional-resources.service';
 import { InstructionalResource } from '../../../assessments/model/instructional-resources.model';
 import { map } from 'rxjs/operators';
@@ -11,7 +11,6 @@ import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 import { StudentResultsFilterService } from '../student-results-filter.service';
 import { StudentPipe } from '../../../shared/format/student.pipe';
-import { of } from "rxjs/observable/of";
 import { OrderingService } from "../../../shared/ordering/ordering.service";
 import { Assessment } from "../../../assessments/model/assessment.model";
 

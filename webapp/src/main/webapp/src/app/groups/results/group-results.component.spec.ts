@@ -13,7 +13,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MockRouter } from '../../../test/mock.router';
 import { MockAuthorizeDirective } from '../../../test/mock.authorize.directive';
 import { GroupAssessmentExportService } from './group-assessment-export.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { GroupService } from '../group.service';
 import { MockUserService } from '../../../test/mock.user.service';
 import { UserService } from '../../user/user.service';

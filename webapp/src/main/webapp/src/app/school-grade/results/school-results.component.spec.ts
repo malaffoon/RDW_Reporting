@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { SchoolResultsComponent } from './school-results.component';
@@ -22,7 +22,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../shared/data/data.service';
 import { DefaultSchool, School } from '../../shared/organization/organization';
 import { SchoolAssessmentExportService } from './school-assessment-export.service';
-import { of } from 'rxjs/observable/of';
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 

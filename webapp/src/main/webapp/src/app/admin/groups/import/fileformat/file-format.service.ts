@@ -1,4 +1,4 @@
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Http } from "@angular/http";
 import { TranslateService } from "@ngx-translate/core";
 import { Injectable } from "@angular/core";

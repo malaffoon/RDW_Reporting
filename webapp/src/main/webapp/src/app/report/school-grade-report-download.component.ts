@@ -5,7 +5,7 @@ import { NotificationService } from "../shared/notification/notification.service
 import { Report } from "./report.model";
 import { Grade } from "../school-grade/grade.model";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { ApplicationSettingsService } from '../app-settings.service';
 import { School } from "../shared/organization/organization";
 import { SubjectService } from '../subject/subject.service';

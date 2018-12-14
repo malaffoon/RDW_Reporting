@@ -14,12 +14,9 @@ import { AssessmentExporter } from './assessment-exporter.interface';
 import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.service';
 import { share, tap } from 'rxjs/operators';
 import { ApplicationSettingsService } from '../app-settings.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin, Observable, of, empty } from 'rxjs';
 import { serializeURLParameters, Utils } from '../shared/support/support';
 import { Exam } from './model/exam.model';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { empty } from 'rxjs/observable/empty';
 
 /**
  * This component encompasses all the functionality for displaying and filtering

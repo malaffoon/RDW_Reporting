@@ -1,4 +1,4 @@
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { PermissionService } from "./permission.service";
 import { map } from 'rxjs/operators';

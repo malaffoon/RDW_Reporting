@@ -14,7 +14,7 @@ describe('SelectAssessmentsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SelectAssessmentsComponent ],
-      imports: [ HttpModule, FormsModule, CommonModule, Angulartics2Module ]
+      imports: [ HttpModule, FormsModule, CommonModule, Angulartics2Module.forRoot() ]
     })
     .compileComponents();
   }));

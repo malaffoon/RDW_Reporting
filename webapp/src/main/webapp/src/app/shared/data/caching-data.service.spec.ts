@@ -1,7 +1,7 @@
 import { MockDataService } from "../../../test/mock.data.service";
 import { inject, TestBed } from "@angular/core/testing";
 import { CachingDataService } from "../data/caching-data.service";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { DataService } from "./data.service";
 
 describe('CachingDataService', () => {

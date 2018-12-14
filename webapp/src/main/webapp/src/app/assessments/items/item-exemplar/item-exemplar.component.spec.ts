@@ -9,7 +9,7 @@ import { CachingDataService } from "../../../shared/data/caching-data.service";
 import { DataService } from "../../../shared/data/data.service";
 import { AssessmentItem } from "../../model/assessment-item.model";
 import { Component } from "@angular/core";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('ItemExemplarComponent', () => {
   let component: ItemExemplarComponent;

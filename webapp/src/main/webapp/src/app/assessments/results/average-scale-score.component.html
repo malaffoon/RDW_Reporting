@@ -47,7 +47,7 @@
             <button *ngIf="assessment.isIab"
                     class="btn btn-borderless btn-xs icon-only pull-right"
                     angulartics2On="click"
-                    angularticsEvent="InstructionalResource"
+                    angularticsAction="InstructionalResource"
                     angularticsCategory="AssessmentResults"
                     [popover]="buttonPopover"
                     popoverTitle="{{ 'common.results.assessment.instruct-button' | translate:{ level:(
@@ -143,7 +143,7 @@
     <button (click)="setOverallScoreSelected()"
             class="btn btn-default"
             angulartics2On="click"
-            angularticsEvent="ViewOverallScores"
+            angularticsAction="ViewOverallScores"
             angularticsCategory="AssessmentResults"
             [ngClass]="{'active': !isClaimScoreSelected}">
       {{'common.buttons.display-overall' | translate}}
@@ -151,7 +151,7 @@
     <button (click)="setClaimScoreSelected()"
             class="btn btn-default z-index-over-data-table"
             angulartics2On="click"
-            angularticsEvent="ViewClaimScores"
+            angularticsAction="ViewClaimScores"
             angularticsCategory="AssessmentResults"
             [ngClass]="{'active': isClaimScoreSelected}">
       <i class="fa fa-bold fa-table"></i>

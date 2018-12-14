@@ -1,6 +1,6 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Http, RequestOptionsArgs, Response, ResponseContentType } from "@angular/http";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Download } from "./download.model";
 import { map } from 'rxjs/operators';
 

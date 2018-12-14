@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { InstructionalResource } from "../model/instructional-resources.model";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Utils } from "../../shared/support/support";
 
 @Component({

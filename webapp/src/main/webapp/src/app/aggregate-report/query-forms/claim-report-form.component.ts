@@ -20,9 +20,8 @@ import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { Claim } from '../aggregate-report-options.service';
 import { AggregateReportType } from '../aggregate-report-form-settings';
 import { OrderingService } from "../../shared/ordering/ordering.service";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  forkJoin } from "rxjs";
 import { map } from "rxjs/operators";
-import { forkJoin } from "rxjs/observable/forkJoin";
 import { SubjectService } from '../../subject/subject.service';
 
 @Component({

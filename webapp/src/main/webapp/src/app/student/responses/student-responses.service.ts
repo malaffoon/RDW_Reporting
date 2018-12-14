@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { AssessmentItem } from "../../assessments/model/assessment-item.model";
 import { ResponseUtils } from "../../shared/response-utils";
 import { DataService } from "../../shared/data/data.service";

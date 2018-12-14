@@ -56,7 +56,7 @@
       <button class="btn btn-default pull-right"
               (click)="section.collapsed = !section.collapsed"
               angulartics2On="click"
-              angularticsEvent="ToggleCollapseResults"
+              angularticsAction="ToggleCollapseResults"
               angularticsCategory="StudentHistory">
         {{'common.action.' + (section.collapsed ? 'expand' : 'collapse') | translate}}
         <span class="sr-only">{{ 'common.action.collapse' | translate }}</span>

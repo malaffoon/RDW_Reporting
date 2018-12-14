@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ResponseUtils } from '../../shared/response-utils';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { InstructionalResource, InstructionalResources } from '../model/instructional-resources.model';
 import { URLSearchParams } from '@angular/http';
 import { DataService } from '../../shared/data/data.service';
-import { of } from 'rxjs/observable/of';
 import { catchError, map } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../../shared/service-route';
 import { CachingDataService } from '../../shared/data/caching-data.service';
