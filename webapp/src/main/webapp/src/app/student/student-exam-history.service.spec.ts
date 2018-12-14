@@ -1,7 +1,7 @@
 import { inject, TestBed } from "@angular/core/testing";
 import { StudentExamHistoryService } from "./student-exam-history.service";
 import { MockDataService } from "../../test/mock.data.service";
-import { Observable ,  throwError as _throw ,  of } from "rxjs";
+import { throwError,  of } from "rxjs";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Assessment } from "../assessments/model/assessment.model";
@@ -41,7 +41,7 @@ describe('StudentExamHistoryService', () => {
   it('should return null for a 404 response when finding student by ssid',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(_throw({status: 404}));
+      dataService.get.and.returnValue(throwError({status: 404}));
 
       service.existsBySsid("ssid").subscribe((exists) => {
         expect(exists).toBeNull();
@@ -77,7 +77,7 @@ describe('StudentExamHistoryService', () => {
   it('should throw for a 404 response when retrieving history for a student',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(_throw("4xx/5xx response"));
+      dataService.get.and.returnValue(throwError("4xx/5xx response"));
 
       service.findOneById(123).subscribe(() => {
         fail("Error expected");
