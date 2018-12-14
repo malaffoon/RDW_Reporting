@@ -6,9 +6,8 @@ import { GroupQuery } from "./model/group-query.model";
 import { Group } from "./model/group.model";
 import { DeleteGroupModalComponent } from "./delete-group.modal";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription ,  forkJoin } from "rxjs";
 import { SubjectService } from '../../subject/subject.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 
 
 @Component({

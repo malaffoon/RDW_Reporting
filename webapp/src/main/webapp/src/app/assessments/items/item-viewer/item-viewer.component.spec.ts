@@ -6,7 +6,7 @@ import { ItemScoringGuide } from "../item-exemplar/model/item-scoring-guide.mode
 import { ItemScoringGuideMapper } from "../item-exemplar/item-scoring-guide.mapper";
 import { Component } from "@angular/core";
 import { AssessmentItem } from "../../model/assessment-item.model";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 
 describe('ItemViewerComponent', () => {

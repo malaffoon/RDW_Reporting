@@ -1,5 +1,5 @@
 import { catchError, map } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ResponseUtils } from '../../shared/response-utils';
 import { Injectable } from '@angular/core';
 import { ReportingServiceRoute } from '../../shared/service-route';

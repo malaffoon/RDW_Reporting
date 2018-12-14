@@ -7,10 +7,9 @@ import { DisplayOptionService } from '../shared/display-options/display-option.s
 import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
 import { ValueDisplayTypes } from '../shared/display-options/value-display-type';
 import { AssessmentDefinitionService } from './assessment/assessment-definition.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { Claim } from './aggregate-report-options.service';
-import { of } from 'rxjs/observable/of';
 
 /**
  * Responsible for mapping server provided report options into option

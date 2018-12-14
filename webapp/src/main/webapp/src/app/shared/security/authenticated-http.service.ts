@@ -1,8 +1,6 @@
 import { Http, Request, RequestOptions, RequestOptionsArgs, Response, XHRBackend } from "@angular/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { of } from "rxjs/observable/of";
-import { _throw } from "rxjs/observable/throw";
+import { Observable, of, throwError as _throw } from "rxjs";
 import { AuthenticationService } from "./authentication.service";
 import { catchError } from 'rxjs/operators';
 
@@ -25,7 +23,7 @@ export class AuthenticatedHttpService extends Http {
    * @param {RequestOptionsArgs} options  The request options
    * @returns {Observable<Response>}  The response
    */
-  request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
+  request(url: string | Request, options?: RequestOptionsArgs): Observable<any> {
     return super.request(url, options)
       .pipe(
         catchError(error => {

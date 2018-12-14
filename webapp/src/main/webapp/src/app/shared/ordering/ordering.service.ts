@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { SubjectService } from "../../subject/subject.service";
 import { Ordering, ordering } from "@kourge/ordering";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { ranking } from "@kourge/ordering/comparator";
 import { map } from "rxjs/operators";
 

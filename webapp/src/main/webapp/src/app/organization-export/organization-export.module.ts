@@ -25,7 +25,7 @@ import { OrganizationGroupingService } from "./organization-grouping.service";
     CommonModule,
     SharedModule,
     UserModule,
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
   ],
   exports: [
     OrganizationExportComponent,

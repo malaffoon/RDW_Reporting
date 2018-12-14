@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { SubjectDefinition } from './subject';
 import { CachingDataService } from '../shared/data/caching-data.service';
 import { ReportingServiceRoute } from '../shared/service-route';
 import { ResponseUtils } from '../shared/response-utils';
 import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 import { Assessment } from '../assessments/model/assessment.model';
 import { range } from '../shared/support/support';
 

@@ -15,7 +15,7 @@ import { Utils } from "./support/support";
       <label class="btn btn-primary" [ngClass]="{'active': this.model[this.property] === -1, 'disabled': disabled }">
         <input [value]="-1" [(ngModel)]="model[property]" type="radio" [name]="name"
                [attr.disabled]="disabled?'disabled':null"
-               angulartics2On="click" [angularticsEvent]="analyticsEvent"
+               angulartics2On="click" [angularticsAction]="analyticsEvent"
                [angularticsCategory]="analyticsCategory"
                [angularticsProperties]="{label: label + ': All'}">{{ 'common.buttons.all' | translate }}
       </label>
@@ -24,7 +24,7 @@ import { Utils } from "./support/support";
                [ngClass]="{'active': model[property] == value, 'disabled': disabled }">
           <input [value]="value" [(ngModel)]="model[property]" type="radio" [name]="name"
                  [attr.disabled]="disabled?'disabled':null"
-                 angulartics2On="click" [angularticsEvent]="analyticsEvent"
+                 angulartics2On="click" [angularticsAction]="analyticsEvent"
                  [angularticsCategory]="analyticsCategory"
                  [angularticsProperties]="{label: label + ': ' + enum + '.' + value}">{{ enum + '.' + value | translate
           }}

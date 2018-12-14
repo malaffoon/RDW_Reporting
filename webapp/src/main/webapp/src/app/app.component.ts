@@ -7,10 +7,9 @@ import { LanguageStore } from "./shared/i18n/language.store";
 import { SpinnerModal } from "./shared/loading/spinner.modal";
 import { ApplicationSettings } from './app-settings';
 import { ApplicationSettingsService } from './app-settings.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin ,  throwError as _throw } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
-import { Angulartics2GoogleAnalytics } from "angulartics2";
+import { Angulartics2GoogleAnalytics } from "angulartics2/ga";
 import localeEs from '@angular/common/locales/es';
 
 @Component({
@@ -40,6 +39,7 @@ export class AppComponent {
       unintended removal by autoformatting
     */
     this._doNotDeleteThisAnalytics = angulartics2GoogleAnalytics;
+    angulartics2GoogleAnalytics.startTracking();
 
     this.registerLocales();
   }

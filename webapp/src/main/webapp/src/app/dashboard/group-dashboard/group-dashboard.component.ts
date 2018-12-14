@@ -6,7 +6,7 @@ import { GroupService } from '../../groups/group.service';
 import { GroupDashboardService } from './group-dashboard.service';
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin ,  of } from 'rxjs';
 import { AssessmentCardEvent, GroupCard } from './group-assessment-card.component';
 import { GroupReportDownloadComponent } from '../../report/group-report-download.component';
 import { byString } from '@kourge/ordering/comparator';
@@ -14,7 +14,6 @@ import { ordering } from '@kourge/ordering';
 import { UserGroupService } from '../../user-group/user-group.service';
 import * as _ from 'lodash';
 import { map, mergeMap } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
 

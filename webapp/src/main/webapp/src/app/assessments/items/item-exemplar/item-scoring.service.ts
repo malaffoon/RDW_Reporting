@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ItemScoringGuideMapper } from "./item-scoring-guide.mapper";
 import { ItemScoringGuide } from "./model/item-scoring-guide.model";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { DataService } from "../../../shared/data/data.service";
 import { map } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../../../shared/service-route';

@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
 import { RequestOptionsArgs } from "@angular/http";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  of } from "rxjs";
 import { DataService } from "./data.service";
 import { share, tap } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 import { serializeURLParameters } from '../support/support';
 
 /**

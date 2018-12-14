@@ -13,7 +13,7 @@ import { ExportTargetReportRequest } from '../assessments/model/export-target-re
 import { Assessment } from '../assessments/model/assessment.model';
 import { ordering } from '@kourge/ordering';
 import { ranking } from '@kourge/ordering/comparator';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { SubjectService } from '../subject/subject.service';
 import { map } from 'rxjs/operators';
 

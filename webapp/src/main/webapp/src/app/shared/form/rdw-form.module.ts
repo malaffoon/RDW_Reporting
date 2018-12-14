@@ -27,7 +27,7 @@ import { InformationButtonComponent } from './information-button.component';
     PopoverModule.forRoot(),
     TypeaheadModule.forRoot(),
     TranslateModule.forRoot(),
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
   ],
   exports: [
     SBTypeahead,

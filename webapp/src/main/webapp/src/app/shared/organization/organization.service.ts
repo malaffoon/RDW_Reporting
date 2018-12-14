@@ -1,9 +1,8 @@
-import { Observable } from "rxjs/Observable";
+import { Observable ,  forkJoin } from "rxjs";
 import { map, publishReplay, refCount } from "rxjs/operators";
 import { CachingDataService } from "../data/caching-data.service";
 import { DefaultSchool, OrganizationType, School } from "./organization";
 import { ReportingServiceRoute } from "../service-route";
-import { forkJoin } from "rxjs/observable/forkJoin";
 import { Injectable } from "@angular/core";
 
 @Injectable()

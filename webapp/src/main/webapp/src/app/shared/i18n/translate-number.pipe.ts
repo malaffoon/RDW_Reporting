@@ -2,7 +2,7 @@ import { OnDestroy, Pipe, PipeTransform } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { DecimalPipe } from "@angular/common";
 import { EmbeddedLanguage } from "./language-settings";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
 import { Utils } from "../support/support";
 
 /**

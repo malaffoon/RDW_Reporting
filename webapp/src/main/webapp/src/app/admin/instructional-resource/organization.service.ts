@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Organization } from "./model/organization.model";
 import { OrganizationQuery } from "./model/organization-query.model";
 import { DataService } from "../../shared/data/data.service";

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, empty } from 'rxjs';
 import { SchoolAssessmentService } from './school-assessment.service';
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
 import { Utils } from '../../shared/support/support';
-import { empty } from 'rxjs/observable/empty';
 
 @Injectable()
 export class SchoolAssessmentResolve implements Resolve<AssessmentExam> {

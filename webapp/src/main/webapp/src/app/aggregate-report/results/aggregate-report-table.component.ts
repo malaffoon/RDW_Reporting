@@ -22,8 +22,7 @@ import { AggregateReportType } from '../aggregate-report-form-settings';
 import { byTargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
 import { OrderingService } from "../../shared/ordering/ordering.service";
 import { map } from "rxjs/operators";
-import { Observable } from "rxjs/Observable";
-import { forkJoin } from "rxjs/observable/forkJoin";
+import { Observable ,  forkJoin } from "rxjs";
 import { SubjectDefinition } from '../../subject/subject';
 
 export const SupportedRowCount = 10000;

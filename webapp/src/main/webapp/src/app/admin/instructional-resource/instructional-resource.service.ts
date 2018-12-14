@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InstructionalResource } from './model/instructional-resource.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { DataService } from '../../shared/data/data.service';
 import { map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../shared/service-route';

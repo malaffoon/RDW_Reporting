@@ -4,7 +4,7 @@ import { BsModalRef } from "ngx-bootstrap";
 import { InstructionalResourceService } from "./instructional-resource.service";
 import * as _ from "lodash";
 import { NavigationStart, Router } from "@angular/router";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
 import { filter } from 'rxjs/operators';
 
 /**

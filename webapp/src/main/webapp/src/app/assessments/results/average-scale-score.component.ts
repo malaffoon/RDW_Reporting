@@ -5,11 +5,12 @@ import { InstructionalResource } from '../model/instructional-resources.model';
 import { InstructionalResourcesService } from './instructional-resources.service';
 import { ColorService } from '../../shared/color.service';
 import { AssessmentProvider } from '../assessment-provider.interface';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ClaimStatistics } from '../model/claim-score.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { Assessment } from '../model/assessment.model';
 import { OrderingService } from '../../shared/ordering/ordering.service';
+import {map} from "rxjs/internal/operators";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -167,8 +168,9 @@ export class AverageScaleScoreComponent {
   }
 
   loadInstructionalResources(level: number): void {
-    this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this._assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
-      .map(resources => resources.getResourcesByPerformance(level));
+    this.instructionalResourcesProvider = () =>
+      this.instructionalResourcesService.getInstructionalResources(this._assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
+        .pipe(map(resources => resources.getResourcesByPerformance(level)));
   }
 
   get claimLevelRows(): any[] {

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UserGroupService } from './user-group.service';
 import { UserGroup } from './user-group';
 import { PermissionService } from '../shared/security/permission.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { Group } from '../groups/group';
 import { SubjectService } from '../subject/subject.service';

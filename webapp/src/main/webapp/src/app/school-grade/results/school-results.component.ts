@@ -15,15 +15,13 @@ import { SchoolGradeDownloadComponent } from '../../report/school-grade-report-d
 import { Option } from '../../shared/form/sb-typeahead.component';
 import { Utils } from '../../shared/support/support';
 import { SchoolAssessmentExportService } from './school-assessment-export.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin ,  Observable ,  of } from 'rxjs';
 import { School } from '../../shared/organization/organization';
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { SchoolService as CommonSchoolService } from '../../shared/school/school.service';
-import { Observable } from 'rxjs/Observable';
 import { SchoolTypeahead } from '../../shared/school/school-typeahead';
 import { map, mergeMap } from 'rxjs/operators';
 import { limit } from '../limit';
-import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'school-results',

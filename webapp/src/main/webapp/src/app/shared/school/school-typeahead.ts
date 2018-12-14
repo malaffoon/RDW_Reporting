@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { School } from "../organization/organization";
 import { AbstractControlValueAccessor } from "../form/abstract-control-value-accessor";
 import { TypeaheadMatch } from "ngx-bootstrap";

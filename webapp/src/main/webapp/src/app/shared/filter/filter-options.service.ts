@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FilterOptions } from './filter-options';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { CachingDataService } from '../data/caching-data.service';
 import { ReportingServiceRoute } from '../service-route';
 import { map } from 'rxjs/operators';

@@ -3,11 +3,10 @@ import { ReportOptions } from "./report-options.model";
 import { NotificationService } from "../shared/notification/notification.service";
 import { ReportOrder } from "./report-order.enum";
 import { ModalDirective } from "ngx-bootstrap";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  forkJoin } from "rxjs";
 import { Report } from "./report.model";
 import { ApplicationSettingsService } from '../app-settings.service';
 import { SubjectService } from '../subject/subject.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 
 /**
  * Abstract class used to carry the common logic between all exam report download components

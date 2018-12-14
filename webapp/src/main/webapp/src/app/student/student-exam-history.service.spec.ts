@@ -1,7 +1,7 @@
 import { inject, TestBed } from "@angular/core/testing";
 import { StudentExamHistoryService } from "./student-exam-history.service";
 import { MockDataService } from "../../test/mock.data.service";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  throwError as _throw ,  of } from "rxjs";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Assessment } from "../assessments/model/assessment.model";
@@ -10,8 +10,6 @@ import { Student } from "./model/student.model";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import { DataService } from "../shared/data/data.service";
-import { _throw } from 'rxjs/observable/throw';
-import { of } from 'rxjs/observable/of';
 
 describe('StudentExamHistoryService', () => {
   let dataService: MockDataService;

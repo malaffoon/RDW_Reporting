@@ -1,7 +1,7 @@
 import { Component, Inject, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { District, Organization, OrganizationType, School } from "../../shared/organization/organization";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AggregateReportOptionsMapper } from "../aggregate-report-options.mapper";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";

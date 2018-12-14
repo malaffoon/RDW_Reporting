@@ -8,12 +8,11 @@ import { DataService } from "../../shared/data/data.service";
 import { Utils } from "../../shared/support/support";
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { Assessment } from '../../assessments/model/assessment.model';
 import { Exam } from '../../assessments/model/exam.model';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
 import { ReportingServiceRoute } from '../../shared/service-route';
-import { of } from 'rxjs/observable/of';
 import { TargetScoreExam } from '../../assessments/model/target-score-exam.model';
 
 const ServiceRoute = ReportingServiceRoute;

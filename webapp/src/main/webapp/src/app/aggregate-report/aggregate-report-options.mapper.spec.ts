@@ -1,9 +1,8 @@
 import { AggregateReportOptions } from './aggregate-report-options';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
 import { ValueDisplayTypes } from '../shared/display-options/value-display-type';
-import { of } from 'rxjs/observable/of';
+import { of ,  Observable } from 'rxjs';
 import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
-import { Observable } from 'rxjs/Observable';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import Spy = jasmine.Spy;
 

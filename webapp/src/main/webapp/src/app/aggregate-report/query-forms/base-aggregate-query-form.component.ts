@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { Forms } from "../../shared/form/forms";
 import { NotificationService } from "../../shared/notification/notification.service";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription ,  Observer ,  Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
 import { AggregateReportService } from "../aggregate-report.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -17,8 +17,6 @@ import { AggregateReportTableDataService } from "../aggregate-report-table-data.
 import { AggregateReportOptionsMapper } from "../aggregate-report-options.mapper";
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { ScrollNavItem } from "../../shared/nav/scroll-nav.component";
-import { Observer } from "rxjs/Observer";
-import { Observable } from "rxjs/Observable";
 import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
 import { OrderableItem } from "../../shared/order-selector/order-selector.component";
 import { SubjectDefinition } from '../../subject/subject';

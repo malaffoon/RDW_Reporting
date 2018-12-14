@@ -5,7 +5,7 @@ import { AbstractControl } from "@angular/forms";
 import { StudentExamHistoryService } from "./student-exam-history.service";
 import { Router } from "@angular/router";
 import { MockRouter } from "../../test/mock.router";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { TestModule } from "../../test/test.module";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import Spy = jasmine.Spy;

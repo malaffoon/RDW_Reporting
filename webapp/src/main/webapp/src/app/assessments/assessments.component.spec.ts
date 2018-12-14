@@ -1,6 +1,5 @@
 import { async, TestBed } from "@angular/core/testing";
-import { Observable } from "rxjs/Observable";
-import { Observer } from "rxjs/Observer";
+import { Observable ,  Observer ,  of } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { AssessmentsComponent } from "./assessments.component";
@@ -15,7 +14,6 @@ import { CommonModule } from "../shared/common.module";
 import { Angulartics2 } from 'angulartics2';
 import { UserService } from "../user/user.service";
 import { MockUserService } from "../../test/mock.user.service";
-import { of } from 'rxjs/observable/of';
 import { ApplicationSettingsService } from '../app-settings.service';
 
 let examObserver: Observer<Exam[]>;

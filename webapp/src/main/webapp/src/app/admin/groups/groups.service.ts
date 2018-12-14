@@ -1,5 +1,5 @@
 import { GroupFilterOptions } from "./model/group-filter-options.model";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { School } from "./model/school.model";
 import { Injectable } from "@angular/core";
 import { ordering } from "@kourge/ordering";

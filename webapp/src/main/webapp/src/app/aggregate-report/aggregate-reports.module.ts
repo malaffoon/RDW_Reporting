@@ -52,7 +52,7 @@ import { AggregateTargetOverviewComponent } from "./results/aggregate-target-ove
   ],
   imports: [
     AssessmentModule,
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     BrowserModule,
     CommonModule,
     CsvModule,

@@ -1,6 +1,5 @@
-import { Observable } from "rxjs/Observable";
+import { Observable ,  of } from "rxjs";
 import { Injectable } from "@angular/core";
-import { of } from 'rxjs/observable/of';
 
 /**
  * Null permission service placeholder.

@@ -9,8 +9,7 @@ import {
 } from '@angular/core';
 import { WindowRefService } from '../core/window-ref.service';
 import { Utils } from '../support/support';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 
 @Directive({
   selector: '[inView]'

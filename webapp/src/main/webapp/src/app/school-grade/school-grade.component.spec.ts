@@ -15,7 +15,7 @@ import { MockDataService } from "../../test/mock.data.service";
 import { DataService } from "../shared/data/data.service";
 import { CachingDataService } from "../shared/data/caching-data.service";
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { OrganizationService } from "../shared/organization/organization.service";
 
 describe('SchoolGradeComponent', () => {

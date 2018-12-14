@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Assessment } from './model/assessment.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AssessmentQuery } from './model/assessment-query.model';
 import { DataService } from '../../shared/data/data.service';
 import { map } from 'rxjs/operators';
