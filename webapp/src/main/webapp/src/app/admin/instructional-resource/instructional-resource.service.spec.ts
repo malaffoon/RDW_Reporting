@@ -1,7 +1,7 @@
 import { InstructionalResourceService } from './instructional-resource.service';
 import { InstructionalResource } from './model/instructional-resource.model';
 import { MockDataService } from '../../../test/mock.data.service';
-import { of ,  EMPTY as empty } from 'rxjs';
+import { of, empty } from 'rxjs';
 
 describe('Instructional Resource Service', () => {
   let dataService: MockDataService;
