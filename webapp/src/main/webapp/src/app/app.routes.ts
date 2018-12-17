@@ -147,7 +147,7 @@ export const adminRoute = {
   ]
 };
 
-const studentTestExamHistoryChildRoute = {
+export const studentTestExamHistoryChildRoute = {
   path: 'exams/:examId',
   pathMatch: 'full',
   resolve: {
@@ -164,6 +164,8 @@ const studentTestExamHistoryChildRoute = {
   component: StudentResponsesComponent
 };
 
+export const studentTransform = (student) => studentPipe.transform(student);
+
 export const studentTestHistoryChildRoute = {
   path: 'students/:studentId',
   resolve: { examHistory: StudentExamHistoryResolve },
@@ -171,7 +173,7 @@ export const studentTestHistoryChildRoute = {
     breadcrumb: {
       translate: 'student-results.crumb',
       translateResolve: 'examHistory.student',
-      transform: (student) => studentPipe.transform(student)
+      transform: studentTransform
     }
   },
   children: [
