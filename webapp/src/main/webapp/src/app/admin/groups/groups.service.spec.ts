@@ -3,7 +3,6 @@ import { GroupService } from "./groups.service";
 import { GroupQuery } from "./model/group-query.model";
 import { School } from "./model/school.model";
 import { DataService } from "../../shared/data/data.service";
-import {expect} from "jasmine";
 
 let filterObserver;
 let groupObserver;
