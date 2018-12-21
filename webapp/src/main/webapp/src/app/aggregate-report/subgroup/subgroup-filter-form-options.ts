@@ -10,5 +10,6 @@ export interface SubgroupFilterFormOptions {
   englishLanguageAcquisitionStatuses: Option[];
   migrantStatuses: Option[];
   section504s: Option[];
+  languages: Option[];
 
 }

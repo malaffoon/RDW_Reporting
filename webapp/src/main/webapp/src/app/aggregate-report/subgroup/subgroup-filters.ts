@@ -42,6 +42,10 @@ export interface SubgroupFilters {
    */
   section504s: string[];
 
+  /**
+   * Language  filter
+   */
+  languages: string[];
 }
 
 const leftDifference = (a: { [ key: string ]: any }, b: { [ key: string ]: any }): { [ key: string ]: any } => {
@@ -64,7 +68,8 @@ export class SubgroupFilterSupport {
       limitedEnglishProficiencies: [],
       englishLanguageAcquisitionStatuses: [],
       migrantStatuses: [],
-      section504s: []
+      section504s: [],
+      languages: []
     };
   }
 
