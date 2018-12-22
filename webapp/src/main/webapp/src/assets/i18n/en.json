@@ -935,7 +935,7 @@
       },
       "embargo": {
         "button": "Embargo",
-        "description": "Manage embargoed summative results."
+        "description": "Manage embargoes of summative results."
       },
       "instructional-resources": {
         "button": "Instructional Resources",
@@ -950,8 +950,7 @@
         "description": "Create and manage student groups for teachers."
       },
       "titles": {
-        "analyze": "Analyze Data",
-        "manage": "Manage"
+        "administrator-tools": "Administrator Tools"
       }
     },
     "groups-well": {
