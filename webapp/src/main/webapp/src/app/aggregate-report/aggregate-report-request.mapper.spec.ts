@@ -57,6 +57,7 @@ describe('AggregateReportRequestMapper', () => {
       elasCodes: [ 'EO' ],
       migrantStatusCodes: [ 'yes' ],
       section504Codes: [ 'yes' ],
+      languages: ['ENG', 'SPA']
     };
 
     const query: AggregateReportQuery = {
@@ -113,7 +114,8 @@ describe('AggregateReportRequestMapper', () => {
         limitedEnglishProficiencies: studentFilters.lepCodes,
         englishLanguageAcquisitionStatuses: studentFilters.elasCodes,
         migrantStatuses: studentFilters.migrantStatusCodes,
-        section504s: studentFilters.section504Codes
+        section504s: studentFilters.section504Codes,
+        languages: studentFilters.languages
       },
       generalPopulation: {
         assessmentGrades: query.assessmentGradeCodes,
@@ -194,7 +196,8 @@ describe('AggregateReportRequestMapper', () => {
         individualEducationPlans: options.studentFilters.individualEducationPlans,
         limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies,
         migrantStatuses: options.studentFilters.migrantStatuses,
-        section504s: options.studentFilters.section504s
+        section504s: options.studentFilters.section504s,
+        languages: options.studentFilters.languages
       },
       generalPopulation: {
         assessmentGrades: query.assessmentGradeCodes,
@@ -257,7 +260,8 @@ describe('AggregateReportRequestMapper', () => {
         limitedEnglishProficiencies: strictBooleans,
         englishLanguageAcquisitionStatuses: [ 'EO' ],
         migrantStatuses: booleans,
-        section504s: booleans
+        section504s: booleans,
+        languages:  ['ENG', 'SPA']
       }
     };
   }

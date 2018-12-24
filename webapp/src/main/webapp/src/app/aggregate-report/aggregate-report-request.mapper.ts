@@ -15,6 +15,7 @@ import { map } from 'rxjs/operators';
 import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
 import { Claim } from './aggregate-report-options.service';
 import { AggregateReportService } from './aggregate-report.service';
+import {settings} from "cluster";
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);
@@ -184,6 +185,10 @@ export class AggregateReportRequestMapper {
           sort(filters.section504Codes, options.studentFilters.section504s),
           options.studentFilters.section504s
         ),
+        languages: or(
+          sort(filters.languages, options.studentFilters.languages),
+          options.studentFilters.languages
+        )
       }
       : SubgroupFilterSupport.copy(options.studentFilters);
 
@@ -335,6 +340,9 @@ export class AggregateReportRequestMapper {
     if (!equalSize(settingFilters.section504s, optionFilters.section504s)) {
       queryFilters.section504Codes = settingFilters.section504s;
     }
+    if (!equalSize(settingFilters.languages, optionFilters.languages)) {
+      queryFilters.languages = settingFilters.languages;
+    }
     return queryFilters;
   }
 
@@ -364,6 +372,9 @@ export class AggregateReportRequestMapper {
     }
     if (notNullOrEmpty(settingFilters.section504s)) {
       queryFilters.section504Codes = settingFilters.section504s;
+    }
+    if(notNullOrEmpty(settingFilters.languages)) {
+      queryFilters.languages = settingFilters.languages;
     }
     return queryFilters;
   }
@@ -405,6 +416,9 @@ export class AggregateReportRequestMapper {
     }
     if (notNullOrEmpty(subgroup.section504Codes)) {
       subgroupFilters.section504s = subgroup.section504Codes;
+    }
+    if (notNullOrEmpty(subgroup.languages)) {
+      subgroupFilters.languages = subgroup.languages;
     }
     return subgroupFilters;
   }

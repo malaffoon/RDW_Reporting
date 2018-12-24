@@ -137,6 +137,11 @@ export class AggregateReportOptionsMapper {
           .map(optionMapper(
             value => translate(`common.boolean.${value}`),
             value => `Section 504: ${value}`
+          )),
+        languages: options.studentFilters.languages
+          .map(optionMapper(
+            value => translate(`common.languageCodes.${value}`),
+            value => `Primary Language Code: ${value}`
           ))
       }
     };
@@ -194,7 +199,8 @@ export class AggregateReportOptionsMapper {
         limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies.concat(),
         englishLanguageAcquisitionStatuses: options.studentFilters.englishLanguageAcquisitionStatuses.concat(),
         migrantStatuses: options.studentFilters.migrantStatuses.concat(),
-        section504s: options.studentFilters.section504s.concat()
+        section504s: options.studentFilters.section504s.concat(),
+        languages: options.studentFilters.languages.concat()
       },
       targetReport: {
         assessmentGrade: options.assessmentGrades[ 0 ],
