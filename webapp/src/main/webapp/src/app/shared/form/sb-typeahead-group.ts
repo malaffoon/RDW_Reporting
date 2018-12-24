@@ -228,8 +228,8 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
    * Normalizes, copies and makes options sensible defaults.
    * This should be used to process all options provided to the option field
    *
-   * @param value
-   * @returns {any[]}
+   * @param options to parse and copy
+   * @returns {Option[]}
    */
   private parseInputOptions(options: Option[]): Option[] {
     if (options == null) {
