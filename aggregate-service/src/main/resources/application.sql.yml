@@ -113,9 +113,12 @@ sql:
 
   subject:
     findAll: >-
-      SELECT id,
-        code
-      FROM subject
+      SELECT s.id,
+        s.code,
+        sat.target_report
+      FROM subject s
+      JOIN subject_asmt_type sat
+      ON s.id = sat.subject_id AND asmt_type_id = 3
       ORDER BY id
 
   activeAsmt:
