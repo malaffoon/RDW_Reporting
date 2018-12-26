@@ -11,5 +11,5 @@ export interface Student {
   readonly limitedEnglishProficiency: string;
   readonly section504: string;
   readonly migrantStatus: string;
-
+  readonly languages: string;
 }

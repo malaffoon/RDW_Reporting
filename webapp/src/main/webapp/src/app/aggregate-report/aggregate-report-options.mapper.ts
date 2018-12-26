@@ -140,8 +140,8 @@ export class AggregateReportOptionsMapper {
           )),
         languages: options.studentFilters.languages
           .map(optionMapper(
-            value => translate(`common.languageCodes.${value}`),
-            value => `Primary Language Code: ${value}`
+            value => translate(`common.languages.${value}`),
+            value => `Primary Language Codes: ${value}`
           ))
       }
     };

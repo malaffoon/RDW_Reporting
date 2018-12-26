@@ -163,6 +163,11 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     getTranslationCode: value => `common.boolean.${value}`
   },
   {
+    type: 'PrimaryLanguage',
+    getDimensionValueCodes: settings => settings.languages,
+    getTranslationCode: value => `common.languages.${value}`
+  },
+  {
     type: 'IEP',
     getDimensionValueCodes: settings => settings.individualEducationPlans,
     getTranslationCode: value => `common.boolean.${value}`

@@ -9,5 +9,6 @@ export interface StudentFilterFormOptions {
   readonly limitedEnglishProficiencies: Option[];
   readonly section504s: Option[];
   readonly migrantStatuses: Option[];
+  readonly languages: Option[];
 
 }

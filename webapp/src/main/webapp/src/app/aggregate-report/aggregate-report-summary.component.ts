@@ -309,6 +309,16 @@ export class AggregateReportSummary {
           ))
         });
       }
+      if (!equalSize(optionFilters.languages, settingFilters.languages)) {
+        filterRows.push({
+          label: translate('aggregate-report-form.field.languages'),
+          values: inline(orAll(
+            optionFilters.languages,
+            settingFilters.languages,
+            code => translate(`common.languages.${code}`)
+          ))
+        });
+      }
       if (!equalSize(optionFilters.individualEducationPlans, settingFilters.individualEducationPlans)) {
         filterRows.push({
           label: translate('aggregate-report-form.field.iep-label'),
