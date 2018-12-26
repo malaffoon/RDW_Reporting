@@ -93,6 +93,7 @@ export class SubgroupFilterSupport {
       && Utils.equalSets(a.migrantStatuses, b.migrantStatuses)
       && Utils.equalSets(a.individualEducationPlans, b.individualEducationPlans)
       && Utils.equalSets(a.section504s, b.section504s)
+      && Utils.equalSets(a.languages, b.languages)
       && Utils.equalSets(a.limitedEnglishProficiencies, b.limitedEnglishProficiencies)
       && Utils.equalSets(a.englishLanguageAcquisitionStatuses, b.englishLanguageAcquisitionStatuses)
       && Utils.equalSets(a.economicDisadvantages, b.economicDisadvantages);
@@ -107,7 +108,8 @@ export class SubgroupFilterSupport {
       limitedEnglishProficiencies: input.limitedEnglishProficiencies.concat(),
       englishLanguageAcquisitionStatuses: input.englishLanguageAcquisitionStatuses.concat(),
       migrantStatuses: input.migrantStatuses.concat(),
-      section504s: input.section504s.concat()
+      section504s: input.section504s.concat(),
+      languages: input.languages.concat()
     };
   }
 

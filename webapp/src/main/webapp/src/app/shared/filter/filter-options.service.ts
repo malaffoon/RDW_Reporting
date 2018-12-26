@@ -32,7 +32,8 @@ export class FilterOptionsService {
         individualEducationPlans: Booleans,
         limitedEnglishProficiencies: Booleans,
         section504s: Booleans,
-        migrantStatuses: Booleans
+        migrantStatuses: Booleans,
+        languages: serverOptions.languages
       })
     );
   }

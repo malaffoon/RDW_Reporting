@@ -51,7 +51,8 @@ export class AggregateReportOptionsService {
           limitedEnglishProficiencies: serverOptions.limitedEnglishProficiencies.concat().sort(booleanComparator),
           englishLanguageAcquisitionStatuses: serverOptions.englishLanguageAcquisitionStatuses.concat(),
           migrantStatuses: serverOptions.migrantStatuses.concat().sort(booleanComparator),
-          section504s: serverOptions.section504s.concat().sort(booleanComparator)
+          section504s: serverOptions.section504s.concat().sort(booleanComparator),
+          languages: serverOptions.languages.concat()
         }
       })
     );

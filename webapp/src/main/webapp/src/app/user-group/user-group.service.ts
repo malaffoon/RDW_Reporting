@@ -113,7 +113,8 @@ export class UserGroupService {
       individualEducationPlan: serverStudent.individualEducationPlan,
       limitedEnglishProficiency: serverStudent.limitedEnglishProficiency,
       section504: serverStudent.section504,
-      migrantStatus: serverStudent.migrantStatus
+      migrantStatus: serverStudent.migrantStatus,
+      languages: serverStudent.languages
     };
   }
 
