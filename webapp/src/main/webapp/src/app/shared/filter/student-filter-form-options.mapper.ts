@@ -44,11 +44,7 @@ export class StudentFilterFormOptionsMapper {
       migrantStatuses: options.migrantStatuses.map(optionMapper(
         value => translate(`common.boolean.${value}`),
         value => `Migrant Status: ${value}`
-      )),
-      languages: options.languages.map(optionMapper(
-        value => translate(`common.languages.${value}`),
-        value => `Primary Language Codes: ${value}`
-      )),
+      ))
     };
   }
 
