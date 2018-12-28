@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { AggregateServiceRoute } from '../shared/service-route';
 import { AssessmentTypeOrdering, BooleanOrdering, CompletenessOrdering } from '../shared/ordering/orderings';
 import { AggregateReportType } from "./aggregate-report-form-settings";
+import {SubjectDefinition} from "../subject/subject";
 
 const ServiceRoute = AggregateServiceRoute;
 const assessmentTypeComparator = AssessmentTypeOrdering.compare;
@@ -41,7 +42,7 @@ export class AggregateReportOptionsService {
           : [ AggregateReportType.GeneralPopulation, AggregateReportType.Claim ],
         schoolYears: serverOptions.schoolYears.concat(),
         statewideReporter: serverOptions.statewideReporter,
-        subjects: serverOptions.subjects.concat(),
+        subjects: this.mapSubjects(serverOptions.subjects.concat()),
         summativeAdministrationConditions: serverOptions.summativeAdministrationConditions.concat(),
         studentFilters: {
           economicDisadvantages: serverOptions.economicDisadvantages.concat().sort(booleanComparator),
@@ -66,10 +67,24 @@ export class AggregateReportOptionsService {
     });
   }
 
+  mapSubjects(subjects: any[]): Subject[] {
+    return subjects.map(subject => <Subject>{
+      assessmentType: subject.assessmentType,
+      code: subject.code,
+      targetReport: subject.targetReport
+    });
+  }
+
 }
 
 export interface Claim {
   readonly assessmentType: string;
   readonly subject: string;
   readonly code: string;
+}
+
+export interface Subject {
+  readonly code: string;
+  readonly assessmentType: string;
+  readonly targetReport: boolean;
 }

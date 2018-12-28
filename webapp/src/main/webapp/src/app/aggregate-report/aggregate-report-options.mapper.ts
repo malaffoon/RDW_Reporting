@@ -74,8 +74,8 @@ export class AggregateReportOptionsMapper {
         )),
       subjects: options.subjects
         .map(optionMapper(
-          value => translate(`subject.${value}.name`),
-          value => `Subject: ${value}`
+          value => translate(`subject.${value.code}.name`),
+          value => `Subject: ${value.code}`
         )),
       summativeAdministrationConditions: options.summativeAdministrationConditions
         .map(optionMapper(
@@ -205,9 +205,9 @@ export class AggregateReportOptionsMapper {
       targetReport: {
         assessmentGrade: options.assessmentGrades[ 0 ],
         schoolYear: options.schoolYears[ 0 ],
-        subjectCode: options.subjects[ 0 ]
+        subjectCode: options.subjects[ 0 ].code
       },
-      subjects: options.subjects.concat(),
+      subjects: options.subjects.map(subject => subject.code).concat(),
       subgroups: [],
       valueDisplayType: ValueDisplayTypes.Percent
     });

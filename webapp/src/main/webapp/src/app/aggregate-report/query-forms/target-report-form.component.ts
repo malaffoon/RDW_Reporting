@@ -127,6 +127,14 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
       ],
       assessmentGrade: [ this.settings.targetReport.assessmentGrade ],
       schoolYear: [ this.settings.targetReport.schoolYear ],
+      subject: [
+        this.hasTargetEnabledSubjects,
+        control => {
+          return control.value
+            ? null
+            : { invalid: { messageId: 'aggregate-report-form.field.target.subject-invalid-error' } };
+        }
+      ]
     });
   }
 
@@ -164,6 +172,11 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
   // override the base implementat since the target report stores subject code differently
   get subjectDefinition(): SubjectDefinition {
     return this.subjectDefinitions.find(x => x.subject == this.settings.targetReport.subjectCode && x.assessmentType == this.settings.assessmentType);
+  }
+
+  get hasTargetEnabledSubjects(): boolean {
+    return this.filteredOptions.subjects
+      .some(subject => subject.value.targetReport && subject.value.assessmentType === 'sum')
   }
 
   /**

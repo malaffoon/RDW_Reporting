@@ -99,7 +99,8 @@
       "report-name-label": "Report Name",
       "report-name-file-name-error": "The name cannot contain these special characters: <>:;,?\"*|\\/",
       "target": {
-        "organization-invalid-error": "Please select a school or district."
+        "organization-invalid-error": "Please select a school or district.",
+        "subject-invalid-error": "No subjects available for target reports."
       }
     },
     "section": {

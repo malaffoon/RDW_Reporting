@@ -175,8 +175,8 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
 
   private initializeClaimsForAssessmentType(): void {
     const orderingObservables: Observable<boolean>[] = this.filteredOptions.subjects.map(subject => {
-      const subjectCode = subject.value;
-      return this.orderingService.getScorableClaimOrdering(subject.value, this.settings.assessmentType)
+      const subjectCode = subject.value.code;
+      return this.orderingService.getScorableClaimOrdering(subjectCode, this.settings.assessmentType)
         .pipe(
           map(claimOrdering => {
             this.claimsBySubject[ subjectCode ] = this.filteredOptions.claimCodes

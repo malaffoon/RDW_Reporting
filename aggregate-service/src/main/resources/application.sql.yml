@@ -113,13 +113,15 @@ sql:
 
   subject:
     findAll: >-
-      SELECT s.id,
+      SELECT
+        s.id,
         s.code,
-        sat.target_report
+        sat.target_report,
+        at.code as asmt_type_code
       FROM subject s
-      JOIN subject_asmt_type sat
-      ON s.id = sat.subject_id AND asmt_type_id = 3
-      ORDER BY id
+        JOIN subject_asmt_type sat ON s.id = sat.subject_id
+        JOIN asmt_type at ON at.id = sat.asmt_type_id
+      ORDER BY s.id
 
   activeAsmt:
     findAllByType: >-

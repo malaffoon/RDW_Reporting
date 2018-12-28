@@ -16,25 +16,28 @@ const DefaultButtonStyles = 'btn-primary';
     <div class="btn-group toggle-group"
          [ngClass]="buttonGroupStyles"
          data-toggle="buttons">
-      <label *ngFor="let option of options"
-             class="btn"
-             [ngClass]="computeStylesInternal(buttonStyles, {
+      <ng-container *ngFor="let option of options">
+        <label
+          class="btn"
+          *ngIf="!option.hidden"
+          [ngClass]="computeStylesInternal(buttonStyles, {
                  active: option.value === value, 
                  disabled: option.disabled
              })">
-        <input type="radio"
-               id="{{name}}"
-               name="{{name}}"
-               [attr.selected]="option.value === value"
-               [disabled]="option.disabled"
-               [value]="option.value"
-               [(ngModel)]="value"
-               angulartics2On="click"
-               angularticsAction="{{analyticsEvent}}"
-               angularticsCategory="{{analyticsCategory}}"
-               [angularticsProperties]="option.analyticsProperties">
-        {{option.text}}
-      </label>
+          <input type="radio"
+                 id="{{name}}"
+                 name="{{name}}"
+                 [attr.selected]="option.value === value"
+                 [disabled]="option.disabled"
+                 [value]="option.value"
+                 [(ngModel)]="value"
+                 angulartics2On="click"
+                 angularticsAction="{{analyticsEvent}}"
+                 angularticsCategory="{{analyticsCategory}}"
+                 [angularticsProperties]="option.analyticsProperties">
+          {{option.text}}
+        </label> 
+      </ng-container>
     </div>
   `,
   providers: [
@@ -122,7 +125,8 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
       value: option.value,
       text: option.text ? option.text : option.value,
       analyticsProperties: option.analyticsProperties,
-      disabled: option.disabled
+      disabled: option.disabled,
+      hidden: option.hidden
     });
   }
 

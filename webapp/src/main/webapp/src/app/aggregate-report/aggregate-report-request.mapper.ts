@@ -13,7 +13,7 @@ import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { map } from 'rxjs/operators';
 import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
-import { Claim } from './aggregate-report-options.service';
+import {Claim, Subject} from './aggregate-report-options.service';
 import { AggregateReportService } from './aggregate-report.service';
 import {settings} from "cluster";
 
@@ -105,7 +105,10 @@ export class AggregateReportRequestMapper {
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Claim) {
       query.assessmentGradeCodes = settings.claimReport.assessmentGrades;
       query.schoolYears = settings.claimReport.schoolYears;
-      query.claimCodesBySubject = this.claimsBySubjectMapping(settings.subjects, settings.claimReport.claimCodesBySubject);
+      query.claimCodesBySubject = this.claimsBySubjectMapping(
+        settings.subjects,
+        settings.claimReport.claimCodesBySubject
+      );
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Target) {
       query.schoolYear = settings.targetReport.schoolYear;
       query.subjectCode = settings.targetReport.subjectCode;
@@ -215,7 +218,7 @@ export class AggregateReportRequestMapper {
     const defaultTargetReport = {
       assessmentGrade: options.assessmentGrades[ 0 ],
       schoolYear: options.schoolYears[ 0 ],
-      subjectCode: options.subjects[ 0 ]
+      subjectCode: options.subjects[ 0 ].code
     };
 
     let generalPopulation = defaultGeneralPopulation,
@@ -284,7 +287,7 @@ export class AggregateReportRequestMapper {
             reportType: reportType,
             schools: schools,
             studentFilters: studentFilters,
-            subjects: sort(query.subjectCodes || options.subjects, options.subjects),
+            subjects: sort(query.subjectCodes || this.getSubjectCodes(options.subjects), this.getSubjectCodes(options.subjects)),
             subgroups: subgroups,
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
@@ -297,6 +300,10 @@ export class AggregateReportRequestMapper {
           };
         })
       );
+  }
+
+  private getSubjectCodes(subjects: Subject[]): string[] {
+    return subjects.map(subject => subject.code);
   }
 
   private getClaims(assessmentType: string, claimOptions: Claim[], selectedClaims: any): Claim[] {

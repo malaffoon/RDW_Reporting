@@ -1,6 +1,6 @@
 import { Organization } from "../shared/organization/organization";
 import { SubgroupFilterOptions } from "./subgroup/subgroup-filter-options";
-import { Claim } from './aggregate-report-options.service';
+import {Claim, Subject} from './aggregate-report-options.service';
 import { AggregateReportType } from "./aggregate-report-form-settings";
 
 /**
@@ -19,7 +19,7 @@ export interface AggregateReportOptions {
   readonly reportTypes: AggregateReportType[];
   readonly schoolYears: number[];
   readonly statewideReporter: boolean;
-  readonly subjects: string[];
+  readonly subjects: Subject[];
   readonly summativeAdministrationConditions: string[];
   readonly studentFilters: SubgroupFilterOptions;
 
