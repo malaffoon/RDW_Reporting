@@ -97,16 +97,16 @@ export class AggregateReportRequestMapper {
     if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.GeneralPopulation) {
       query.assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
       query.schoolYears = settings.generalPopulation.schoolYears;
-      query.subjectCodes = settings.subjects;
+      query.subjectCodes = settings.subjects.map(subject => subject.code);
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.LongitudinalCohort) {
       query.assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
       query.toSchoolYear = settings.longitudinalCohort.toSchoolYear;
-      query.subjectCodes = settings.subjects;
+      query.subjectCodes = settings.subjects.map(subject => subject.code);
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Claim) {
       query.assessmentGradeCodes = settings.claimReport.assessmentGrades;
       query.schoolYears = settings.claimReport.schoolYears;
       query.claimCodesBySubject = this.claimsBySubjectMapping(
-        settings.subjects,
+        settings.subjects.map(subject => subject.code),
         settings.claimReport.claimCodesBySubject
       );
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Target) {

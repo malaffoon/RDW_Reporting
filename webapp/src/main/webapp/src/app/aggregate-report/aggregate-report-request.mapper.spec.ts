@@ -132,7 +132,7 @@ describe('AggregateReportRequestMapper', () => {
       },
       targetReport: {
         assessmentGrade: options.assessmentGrades[ 0 ],
-        subjectCode: options.subjects[ 0 ],
+        subjectCode: options.subjects[ 0 ].code,
         schoolYear: options.schoolYears[ 0 ]
       }
     };
@@ -214,7 +214,7 @@ describe('AggregateReportRequestMapper', () => {
       },
       targetReport: {
         assessmentGrade: options.assessmentGrades[ 0 ],
-        subjectCode: options.subjects[ 0 ],
+        subjectCode: options.subjects[ 0 ].code,
         schoolYear: options.schoolYears[ 0 ]
       }
     };

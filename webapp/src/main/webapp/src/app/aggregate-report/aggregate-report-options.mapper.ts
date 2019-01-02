@@ -207,7 +207,7 @@ export class AggregateReportOptionsMapper {
         schoolYear: options.schoolYears[ 0 ],
         subjectCode: options.subjects[ 0 ].code
       },
-      subjects: options.subjects.map(subject => subject.code).concat(),
+      subjects: options.subjects.concat(),
       subgroups: [],
       valueDisplayType: ValueDisplayTypes.Percent
     });

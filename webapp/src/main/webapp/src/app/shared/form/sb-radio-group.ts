@@ -103,7 +103,7 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
   @Input()
   set value(value: any) {
     if (this._initialized) {
-      if (this.property && this._value !== value) {
+      if (this.property && this._value !== value && typeof value == "object" ) {
           this._value = value ? value[this.property] : null;
           this._onChangeCallback(value ? value[this.property] : null);
       } else if (this._value !== value) {

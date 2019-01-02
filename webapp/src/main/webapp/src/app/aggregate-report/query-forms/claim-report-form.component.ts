@@ -168,7 +168,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
   private getAllSelectedClaims(): Claim[] {
     const claims: Claim[] = [];
     for (const subject of this.settings.subjects) {
-      claims.push(...this.selectionBySubject[ subject ]);
+      claims.push(...this.selectionBySubject[ subject.code ]);
     }
     return claims;
   }
@@ -206,7 +206,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
         return map;
       }, new Map());
 
-    for (let subject of this.settings.subjects) {
+    for (let subject of this.settings.subjects.map(subject => subject.code)) {
       if (selections.has(subject)) {
         // Initialize selection based on settings values
         this.selectionBySubject[ subject ] = selections.get(subject);
