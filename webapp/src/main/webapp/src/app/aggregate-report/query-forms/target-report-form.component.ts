@@ -107,6 +107,10 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
       this.setOrganization(defaultOrganization);
     }
 
+    if (!this.hasTargetEnabledSubjects) {
+      this.settings.targetReport.subjectCode = undefined;
+    }
+
     this.organizationTypeaheadOptions = Observable.create(observer => {
       observer.next(this._organizationTypeahead.value);
     }).pipe(

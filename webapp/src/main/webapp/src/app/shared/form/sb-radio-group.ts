@@ -21,13 +21,17 @@ const DefaultButtonStyles = 'btn-primary';
           class="btn"
           *ngIf="!option.hidden"
           [ngClass]="computeStylesInternal(buttonStyles, {
-                 active: option.value === value, 
+                 active: property 
+                            ? option.value[property] === value 
+                            : option.value === value, 
                  disabled: option.disabled
              })">
           <input type="radio"
                  id="{{name}}"
                  name="{{name}}"
-                 [attr.selected]="option.value === value"
+                 [attr.selected]="property 
+                            ? option.value[property] === value 
+                            : option.value === value"
                  [disabled]="option.disabled"
                  [value]="option.value"
                  [(ngModel)]="value"
@@ -51,6 +55,9 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
 
   @Input()
   public analyticsCategory: string;
+
+  @Input()
+  public property: string;
 
   private _options: Option[];
   private _buttonGroupStyles: any = DefaultButtonGroupStyles;
@@ -96,9 +103,12 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
   @Input()
   set value(value: any) {
     if (this._initialized) {
-      if (this._value !== value) {
-        this._value = value;
-        this._onChangeCallback(value);
+      if (this.property && this._value !== value) {
+          this._value = value ? value[this.property] : null;
+          this._onChangeCallback(value ? value[this.property] : null);
+      } else if (this._value !== value) {
+          this._value = value;
+          this._onChangeCallback(value);
       }
     } else {
       this._value = value;

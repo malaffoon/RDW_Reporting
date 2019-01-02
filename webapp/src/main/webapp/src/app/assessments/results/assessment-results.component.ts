@@ -196,7 +196,9 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayTargetReport(): boolean {
-    return this.allowTargetReport && this._assessmentExam.assessment.isSummative;
+    return this.allowTargetReport
+      && this._assessmentExam.assessment.isSummative
+      && this._assessmentExam.assessment.targetReportEnabled;
   }
 
   get showStudentResults(): boolean {
