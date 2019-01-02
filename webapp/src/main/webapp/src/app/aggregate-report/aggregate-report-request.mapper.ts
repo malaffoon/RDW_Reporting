@@ -287,7 +287,11 @@ export class AggregateReportRequestMapper {
             reportType: reportType,
             schools: schools,
             studentFilters: studentFilters,
-            subjects: sort(query.subjectCodes || this.getSubjectCodes(options.subjects), this.getSubjectCodes(options.subjects)),
+            subjects: sort(query.subjectCodes.map(code =>
+              ({
+                code: code,
+                assessmentType: query.assessmentTypeCode
+              })) || options.subjects, options.subjects),
             subgroups: subgroups,
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions

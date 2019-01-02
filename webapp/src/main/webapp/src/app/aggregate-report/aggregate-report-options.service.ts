@@ -86,5 +86,5 @@ export interface Claim {
 export interface Subject {
   readonly code: string;
   readonly assessmentType: string;
-  readonly targetReport: boolean;
+  readonly targetReport?: boolean;
 }

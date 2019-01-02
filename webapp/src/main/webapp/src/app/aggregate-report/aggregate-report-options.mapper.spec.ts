@@ -66,7 +66,17 @@ describe('AggregateReportOptionsMapper', () => {
       queryTypes: [ 'queryTypeA', 'queryTypeB' ],
       schoolYears: [ 1, 2 ],
       statewideReporter: false,
-      subjects: [ '1', '2' ],
+      subjects: [
+        {
+          code: '1',
+          assessmentType: '1',
+          targetReport: true
+        }, {
+          code: '2',
+          assessmentType: '2',
+          targetReport: true
+        }
+      ],
       summativeAdministrationConditions: [ '1', '2' ],
       studentFilters: {
         economicDisadvantages: [ '1', '2' ],
@@ -129,7 +139,7 @@ describe('AggregateReportOptionsMapper', () => {
         targetReport: {
           assessmentGrade: options.assessmentGrades[ 0 ],
           schoolYear: options.schoolYears[ 0 ],
-          subjectCode: options.subjects[ 0 ]
+          subjectCode: options.subjects[ 0 ].code
         },
       });
     });
