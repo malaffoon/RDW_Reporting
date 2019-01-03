@@ -290,21 +290,21 @@
     },
     "aggregate-report-type": {
       "Claim": {
-        "description": "Compare claim-level performance across subgroups.",
-        "disabled": "Claim Reports are only available for ICA and Summative assessments.",
+        "description": "Compare Claim-level performance on available assessments.",
+        "disabled": "Claim Reports are only available for ICA and summative assessments.",
         "label": "Claim Report"
       },
       "GeneralPopulation": {
-        "description": "Compare performance across subgroups.",
+        "description": "Compare performance by selected school years.",
         "label": "Yearly Report"
       },
       "LongitudinalCohort": {
-        "description": "Track performance over time.",
-        "disabled": "Longitudinal Reports are only available for Summative assessments.",
+        "description": "Track performance on summative assessments over time.",
+        "disabled": "Longitudinal Reports are only available for summative assessments.",
         "label": "Longitudinal Report"
       },
       "Target": {
-        "description": "Compare target-level performance across subgroups for a single assessment.",
+        "description": "Compare Target-level performance on summative assessments.",
         "label": "Target Report"
       }
     },
