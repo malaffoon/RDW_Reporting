@@ -287,11 +287,11 @@ export class AggregateReportRequestMapper {
             reportType: reportType,
             schools: schools,
             studentFilters: studentFilters,
-            subjects: sort(query.subjectCodes.map(code =>
+            subjects: sort(query.subjectCodes ? query.subjectCodes.map(code =>
               ({
                 code: code,
                 assessmentType: query.assessmentTypeCode
-              })) || options.subjects, options.subjects),
+              })) : options.subjects, options.subjects),
             subgroups: subgroups,
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
@@ -304,10 +304,6 @@ export class AggregateReportRequestMapper {
           };
         })
       );
-  }
-
-  private getSubjectCodes(subjects: Subject[]): string[] {
-    return subjects.map(subject => subject.code);
   }
 
   private getClaims(assessmentType: string, claimOptions: Claim[], selectedClaims: any): Claim[] {
