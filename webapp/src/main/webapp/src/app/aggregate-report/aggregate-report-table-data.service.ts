@@ -149,7 +149,8 @@ export class AggregateReportTableDataService {
                 ? options.claims
                 : settings.claimReport.claimCodesBySubject;
 
-              const subjectCode: string = context.settings.subjects.map(subject => subject.code)
+              const subjectCode: string = context.settings.subjects
+                .map(subject => subject.code)
                 .filter((subject) => !Utils.isNullOrUndefined(claims.find((claim) => claim.subject === subject)))
                 .find(subject => true);
 

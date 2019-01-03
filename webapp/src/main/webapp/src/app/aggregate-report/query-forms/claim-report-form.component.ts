@@ -206,7 +206,8 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
         return map;
       }, new Map());
 
-    for (let subject of this.settings.subjects.map(subject => subject.code)) {
+    const subjectCodes = this.settings.subjects.map(subject => subject.code);
+    for (let subject of subjectCodes) {
       if (selections.has(subject)) {
         // Initialize selection based on settings values
         this.selectionBySubject[ subject ] = selections.get(subject);
