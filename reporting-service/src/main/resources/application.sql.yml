@@ -99,7 +99,7 @@ sql:
       findAll: >-
           SELECT distinct
             ${sql.reporting.snippet.assessmentColumns},
-            sat.target_report as target_report_enabled
+            sat.target_report
           FROM asmt a
             JOIN exam e ON e.asmt_id = a.id
             JOIN school s ON e.school_id = s.id
@@ -119,7 +119,7 @@ sql:
           SELECT
             ${sql.reporting.snippet.assessmentColumns},
             max(e.completed_at) as max_completed,
-            sat.target_report as target_report_enabled
+            sat.target_report
           FROM exam e
             JOIN asmt a ON e.asmt_id=a.id
             JOIN school s ON e.school_id=s.id
