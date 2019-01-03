@@ -34,4 +34,8 @@ export interface Option {
    */
   readonly disabledText?: string;
 
+  /**
+   * Optional boolean to specify whether or not to hide the option
+   */
+  readonly hidden?: boolean;
 }

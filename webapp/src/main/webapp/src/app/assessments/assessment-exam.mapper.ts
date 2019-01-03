@@ -82,6 +82,7 @@ export class AssessmentExamMapper {
     assessment.cutPoints = serverAssessment.cutPoints || [];
     assessment.resourceUrl = serverAssessment.resourceUrl;
     assessment.hasWerItem = serverAssessment.werItem;
+    assessment.targetReportEnabled = serverAssessment.targetReportEnabled;
     return assessment;
   }
 

@@ -95,13 +95,15 @@ sql:
     assessment:
       findAll: >-
           SELECT distinct
-            ${sql.reporting.snippet.assessmentColumns}
+            ${sql.reporting.snippet.assessmentColumns},
+            sat.target_report
           FROM asmt a
             JOIN exam e ON e.asmt_id = a.id
             JOIN school s ON e.school_id = s.id
             JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
             $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND a.id = e.asmt_id
@@ -112,14 +114,16 @@ sql:
       # to improve final ordering performance
       findLatestExam: >-
           SELECT
-           ${sql.reporting.snippet.assessmentColumns},
-           max(e.completed_at) as max_completed
+            ${sql.reporting.snippet.assessmentColumns},
+            max(e.completed_at) as max_completed,
+            sat.target_report
           FROM exam e
             JOIN asmt a ON e.asmt_id=a.id
             JOIN school s ON e.school_id=s.id
             JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
             $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND $[groupFilterPlaceholder]
@@ -261,6 +265,7 @@ sql:
           JOIN subject su ON a.subject_id = su.id
           JOIN student st ON e.student_id = st.id
           JOIN school isch ON st.inferred_school_id = isch.id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND at.id = sat.asmt_type_id
         WHERE e.school_year = :school_year
         AND e.school_id = :school_id
         AND a.grade_id = :grade_id

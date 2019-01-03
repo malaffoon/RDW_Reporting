@@ -13,7 +13,7 @@ import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { map } from 'rxjs/operators';
 import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
-import { Claim } from './aggregate-report-options.service';
+import {Claim, Subject} from './aggregate-report-options.service';
 import { AggregateReportService } from './aggregate-report.service';
 import {settings} from "cluster";
 
@@ -97,15 +97,18 @@ export class AggregateReportRequestMapper {
     if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.GeneralPopulation) {
       query.assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
       query.schoolYears = settings.generalPopulation.schoolYears;
-      query.subjectCodes = settings.subjects;
+      query.subjectCodes = settings.subjects.map(subject => subject.code);
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.LongitudinalCohort) {
       query.assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
       query.toSchoolYear = settings.longitudinalCohort.toSchoolYear;
-      query.subjectCodes = settings.subjects;
+      query.subjectCodes = settings.subjects.map(subject => subject.code);
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Claim) {
       query.assessmentGradeCodes = settings.claimReport.assessmentGrades;
       query.schoolYears = settings.claimReport.schoolYears;
-      query.claimCodesBySubject = this.claimsBySubjectMapping(settings.subjects, settings.claimReport.claimCodesBySubject);
+      query.claimCodesBySubject = this.claimsBySubjectMapping(
+        settings.subjects.map(subject => subject.code),
+        settings.claimReport.claimCodesBySubject
+      );
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Target) {
       query.schoolYear = settings.targetReport.schoolYear;
       query.subjectCode = settings.targetReport.subjectCode;
@@ -215,7 +218,7 @@ export class AggregateReportRequestMapper {
     const defaultTargetReport = {
       assessmentGrade: options.assessmentGrades[ 0 ],
       schoolYear: options.schoolYears[ 0 ],
-      subjectCode: options.subjects[ 0 ]
+      subjectCode: options.subjects[ 0 ].code
     };
 
     let generalPopulation = defaultGeneralPopulation,
@@ -284,7 +287,11 @@ export class AggregateReportRequestMapper {
             reportType: reportType,
             schools: schools,
             studentFilters: studentFilters,
-            subjects: sort(query.subjectCodes || options.subjects, options.subjects),
+            subjects: sort(query.subjectCodes ? query.subjectCodes.map(code =>
+              ({
+                code: code,
+                assessmentType: query.assessmentTypeCode
+              })) : options.subjects, options.subjects),
             subgroups: subgroups,
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions

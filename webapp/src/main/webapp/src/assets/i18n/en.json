@@ -79,6 +79,7 @@
       "school-year-empty-error": "Please select a school year.",
       "subject-label": "Subject",
       "subjects-label": "Subjects",
+      "subjects-none": "No subjects available",
       "summative-administration-condition-label": "Validity",
       "summative-administration-condition-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
       "gender-label": "Gender",
@@ -101,7 +102,8 @@
       "report-name-label": "Report Name",
       "report-name-file-name-error": "The name cannot contain these special characters: <>:;,?\"*|\\/",
       "target": {
-        "organization-invalid-error": "Please select a school or district."
+        "organization-invalid-error": "Please select a school or district.",
+        "subject-invalid-error": "No subjects available for target reports."
       }
     },
     "section": {

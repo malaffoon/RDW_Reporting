@@ -147,7 +147,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -163,7 +163,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -194,7 +194,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),

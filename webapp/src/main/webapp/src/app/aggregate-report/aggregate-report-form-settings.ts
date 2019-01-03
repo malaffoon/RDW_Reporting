@@ -1,6 +1,6 @@
 import { District, School } from '../shared/organization/organization';
 import { SubgroupFilters } from './subgroup/subgroup-filters';
-import { Claim } from './aggregate-report-options.service';
+import {Claim, Subject} from './aggregate-report-options.service';
 
 /**
  * Client side representation of a report request.
@@ -36,7 +36,7 @@ export interface AggregateReportFormSettings {
   /**
    * Subject result filter
    */
-  subjects: string[];
+  subjects: Subject[];
 
   /**
    * Summative administration conditions result filter

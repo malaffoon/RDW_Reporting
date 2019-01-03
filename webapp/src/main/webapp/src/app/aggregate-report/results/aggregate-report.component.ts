@@ -76,7 +76,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     this.report = this.route.snapshot.data[ 'report' ];
 
     this.assessmentDefinition = this.definitionService.get(this.query.assessmentTypeCode, this.mapToReportType(this.query.reportType));
-    this._viewComparator = ordering(ranking(this.options.subjects))
+    this._viewComparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
       .on((wrapper: AggregateReportView) => wrapper.subjectCode).compare;
     this._displayOptions = {
       valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
