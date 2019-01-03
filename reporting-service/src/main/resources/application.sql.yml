@@ -95,8 +95,7 @@ sql:
     assessment:
       findAll: >-
           SELECT distinct
-            ${sql.reporting.snippet.assessmentColumns},
-            sat.target_report
+            ${sql.reporting.snippet.assessmentColumns}
           FROM asmt a
             JOIN exam e ON e.asmt_id = a.id
             JOIN school s ON e.school_id = s.id
@@ -115,8 +114,7 @@ sql:
       findLatestExam: >-
           SELECT
             ${sql.reporting.snippet.assessmentColumns},
-            max(e.completed_at) as max_completed,
-            sat.target_report
+            max(e.completed_at) as max_completed
           FROM exam e
             JOIN asmt a ON e.asmt_id=a.id
             JOIN school s ON e.school_id=s.id
@@ -240,6 +238,7 @@ sql:
           ${sql.reporting.snippet.assessmentColumns}
         FROM asmt a
         JOIN subject su ON a.subject_id = su.id
+        JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
         WHERE EXISTS (
             SELECT e.asmt_id
             FROM exam e
@@ -265,7 +264,7 @@ sql:
           JOIN subject su ON a.subject_id = su.id
           JOIN student st ON e.student_id = st.id
           JOIN school isch ON st.inferred_school_id = isch.id
-          JOIN subject_asmt_type sat on su.id = sat.subject_id AND at.id = sat.asmt_type_id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
         WHERE e.school_year = :school_year
         AND e.school_id = :school_id
         AND a.grade_id = :grade_id
@@ -333,7 +332,8 @@ sql:
         a.cut_point_4,
         a.cut_point_5,
         EXISTS(SELECT 1 FROM item i WHERE i.asmt_id = a.id AND i.type = 'WER') as has_wer_item,
-        su.code as subject_code
+        su.code as subject_code,
+        sat.target_report
 
 
       selectFromExamItem: >-
