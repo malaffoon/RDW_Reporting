@@ -106,8 +106,7 @@ sql:
             JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN asmt_type at ON at.id = a.type_id
-            JOIN subject_asmt_type sat on su.id = sat.subject_id AND at.id = sat.asmt_type_id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
             $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND a.id = e.asmt_id
@@ -127,8 +126,7 @@ sql:
             JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN asmt_type at ON at.id = a.type_id
-            JOIN subject_asmt_type sat on su.id = sat.subject_id AND at.id = sat.asmt_type_id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
             $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND $[groupFilterPlaceholder]
