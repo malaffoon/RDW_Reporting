@@ -65,10 +65,14 @@ import 'core-js/es7/array';
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
 
-
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+/**
+  Required for auth0 compatibility
+  See: https://github.com/angular/angular-cli/issues/8160
+ **/
+(window as any).global = window;
 
 /**
  * Date, currency, decimal and percent pipes.

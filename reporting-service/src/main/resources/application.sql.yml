@@ -20,6 +20,7 @@ sql:
         st.gender_code,
         e.iep,
         e.lep,
+        e.language_code,
         e.elas_code,
         e.section504,
         e.migrant_status
@@ -63,10 +64,6 @@ sql:
   exam:
     findAllByStudentId: >-
       SELECT
-        e.iep,
-        e.lep,
-        e.section504,
-        e.migrant_status,
         ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       WHERE e.student_id = :student_id
@@ -138,10 +135,6 @@ sql:
     exam:
       findAllForAssessment: >-
         SELECT
-          e.iep,
-          e.lep,
-          e.section504,
-          e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
           $[groupJoinPlaceholder]
@@ -284,10 +277,6 @@ sql:
     exam:
       findAllForAssessment: >-
         SELECT
-          e.iep,
-          e.lep,
-          e.section504,
-          e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
         WHERE a.id = :assessment_id

@@ -84,6 +84,8 @@
       "summative-administration-condition-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
       "gender-label": "Gender",
       "gender-info": "Student's reported gender",
+      "language-label": "Language",
+      "language-info": "Student's primary language",
       "ethnicity-label": "Race / Ethnicity",
       "ethnicity-info": "Student race and ethnicity",
       "migrant-status-label": "Migrant Status",
@@ -290,21 +292,21 @@
     },
     "aggregate-report-type": {
       "Claim": {
-        "description": "Compare claim-level performance across subgroups.",
-        "disabled": "Claim Reports are only available for ICA and Summative assessments.",
+        "description": "Compare Claim-level performance on available assessments.",
+        "disabled": "Claim Reports are only available for ICA and summative assessments.",
         "label": "Claim Report"
       },
       "GeneralPopulation": {
-        "description": "Compare performance across subgroups.",
+        "description": "Compare performance by selected school years.",
         "label": "Yearly Report"
       },
       "LongitudinalCohort": {
-        "description": "Track performance over time.",
-        "disabled": "Longitudinal Reports are only available for Summative assessments.",
+        "description": "Track performance on summative assessments over time.",
+        "disabled": "Longitudinal Reports are only available for summative assessments.",
         "label": "Longitudinal Report"
       },
       "Target": {
-        "description": "Compare target-level performance across subgroups for a single assessment.",
+        "description": "Compare Target-level performance on summative assessments.",
         "label": "Target Report"
       }
     },
@@ -426,6 +428,7 @@
       "IEP": "IEP",
       "LEP": "Limited English Proficiency",
       "ELAS": "English Language Acquisition Status",
+      "Language": "Primary Language",
       "MigrantStatus": "Migrant Status",
       "Overall": "Overall",
       "Section504": "504",
@@ -438,6 +441,7 @@
       "IEP": "IEP",
       "LEP": "LEP",
       "ELAS": "ELAS",
+      "Language": "Language",
       "MigrantStatus": "Migrant Status",
       "Overall": "Overall",
       "Section504": "504",
@@ -526,6 +530,8 @@
         "ethnicity-info": "Student race and ethnicity",
         "gender": "Gender",
         "gender-info": "Student's reported gender",
+        "language": "Language",
+        "language-info": "Student's primary language",
         "iep": "IEP",
         "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
         "label": "Student",
@@ -773,6 +779,7 @@
     "error-band-max": "Error Band Max",
     "error-band-min": "Error Band Min",
     "gender": "Sex",
+    "language": "LanguageCode",
     "iep": "IDEAIndicator",
     "limited-english": "LEPStatus",
     "migrant-status": "MigrantStatus",
