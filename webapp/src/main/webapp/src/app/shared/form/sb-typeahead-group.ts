@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Forms } from './forms';
 import { AbstractControlValueAccessor } from './abstract-control-value-accessor';
 import * as _ from 'lodash';
 import { Utils } from '../support/support';
 import { Option } from './option';
+import {AutoComplete} from "primeng/primeng";
 
 /**
  * Holds the internal button selection state
@@ -66,9 +67,10 @@ const DefaultButtonStyles = 'btn-primary';
                         [multiple]="true"
                         dataKey="value"
                         (completeMethod)="search($event)"
-                        (onFocus)="autoComplete.show()"
+                        (keydown)="onKeydown($event)"
                         styleClass="wid100"
                         [minLength]="0" 
+                        [dropdown]="true"
                         [placeholder]="placeholder" 
                         field="text" >
         </p-autoComplete> 
@@ -97,6 +99,9 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   private _buttonStyles: any = DefaultButtonStyles;
   private _buttonGroupStyles: any = DefaultButtonGroupStyles;
   private _state: State;
+
+  @ViewChild('autoComplete')
+  autoComplete: AutoComplete;
 
   filteredOptions: any[];
   @Input()
@@ -142,6 +147,12 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   }
   get options(): Option[] {
     return this._options;
+  }
+
+  onKeydown($event) {
+    if ($event.key === "ArrowDown" && !this.autoComplete.overlayVisible) {
+      this.autoComplete.handleDropdownClick(0);
+    }
   }
 
   @Input()
