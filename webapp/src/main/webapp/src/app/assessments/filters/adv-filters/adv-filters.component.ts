@@ -25,12 +25,16 @@ export class AdvFiltersComponent {
   showTransferAccess = false;
   showElas = false;
   showLep = false;
+  reportLanguages = [];
 
   constructor(private applicationSettingsService: ApplicationSettingsService) {
     applicationSettingsService.getSettings().subscribe(settings => {
       this.showTransferAccess = settings.transferAccess;
       this.showElas = settings.elasEnabled;
       this.showLep = settings.lepEnabled;
+      this.reportLanguages = settings.reportLanguages;
+      this.settings = settings;
+      console.log("settings are :", settings);
     });
   }
 
