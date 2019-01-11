@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FilterBy } from '../../model/filter-by.model';
 import { ExamFilterOptions } from '../../model/exam-filter-options.model';
 import { ApplicationSettingsService } from '../../../app-settings.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /*
   This component contains all of the selectable advanced filters
@@ -22,20 +23,36 @@ export class AdvFiltersComponent {
   @Input()
   showStudentFilter = true;
 
+  @Output()
+  changed: EventEmitter<any> = new EventEmitter();
+
   showTransferAccess = false;
   showElas = false;
   showLep = false;
-  reportLanguages = [];
 
-  constructor(private applicationSettingsService: ApplicationSettingsService) {
+  constructor(private applicationSettingsService: ApplicationSettingsService,
+              private translateService: TranslateService,
+              ) {
     applicationSettingsService.getSettings().subscribe(settings => {
       this.showTransferAccess = settings.transferAccess;
       this.showElas = settings.elasEnabled;
       this.showLep = settings.lepEnabled;
-      this.reportLanguages = settings.reportLanguages;
-      this.settings = settings;
-      console.log("settings are :", settings);
     });
+
   }
 
+  onSettingChangeInternal(): void {
+    this.changed.emit();
+  }
+
+  public getLanguagesMap(): any[] {
+    const translate = code => this.translateService.instant(code);
+    if(this.filterOptions && this.filterOptions.languages) {
+      return this.filterOptions.languages.map( val => {
+        return { text: translate(`common.languages.${val}`), value: val };
+      });
+    } else {
+      return [];
+    }
+  }
 }

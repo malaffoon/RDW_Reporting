@@ -11,6 +11,7 @@ export class ExamFilterOptionsMapper {
     options.genders = serverOptions.genders.concat();
     options.elasCodes = serverOptions.elasCodes.concat();
     options.subjects = serverOptions.subjects.concat();
+    options.languages = serverOptions.languages.concat();
     return options;
   }
 

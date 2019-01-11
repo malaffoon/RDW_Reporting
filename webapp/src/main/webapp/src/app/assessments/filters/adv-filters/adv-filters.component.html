@@ -127,9 +127,7 @@
                             analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-checkbox-list>
         </fieldset>
       </div>
-    </div>
-    <!-- Column 2 -->
-    <div class="col-md-2">
+
       <!-- Migrant Status -->
       <div class="block-children">
         <fieldset>
@@ -176,9 +174,9 @@
         </fieldset>
       </div>
     </div>
-    <!-- Column 3 -->
-    <div class="col-md-4">
 
+    <!-- Column 2 -->
+    <div class="col-md-3">
       <!-- Limited English Proficiency -->
       <div class="block-children" *ngIf="showLep">
         <fieldset>
@@ -211,10 +209,14 @@
                             analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-checkbox-list>
         </fieldset>
       </div>
+    </div>
+
+    <!-- Column 3 -->
+    <div class="col-md-4">
 
       <!-- Language Selection -->
       <div class="block-children">
-        <fieldset>
+        <fieldset class="marginLeft50">
           <label for="language-filter"
                  info-button
                  title="Primary Language"></label>
@@ -222,80 +224,11 @@
 
           <div class="toggle-group btn-group-sm vertical all-option nested-btn-group" >
             <!--TODO: We are mocking the suggestions - these should be seeded from the db -->
-            <sb-typeahead-group id="language-filter"
+              <!-- [(ngModel)]="filterOptions.languages" -->
+            <sb-typeahead-group id="language-filter" *ngIf="filterOptions.languages"
                               placeholder="{{'aggregate-report-form.field.language-placeholder' | translate}}"
-                              [suggestions]="[
-                              { text: 'English', value: 'eng' },
-                              { text: 'Spanish', value: 'spa' },
-                              { text: 'Vietnamese', value: 'vie' },
-                              { text: 'Chinese; Cantonese', value: 'chi' },
-                              { text: 'Korean', value: 'kor' },
-                              { text: 'Filipino; Pilipino', value: 'fil' },
-                              { text: 'Portuguese', value: 'por' },
-                              { text: 'Mandarin', value: 'mnd' },
-                              { text: 'Japanese', value: 'jpn' },
-                              { text: 'Mon-Khmer languages', value: 'mkh' },
-                              { text: 'Lao', value: 'lao' },
-                              { text: 'Arabic', value: 'ara' },
-                              { text: 'Armenian', value: 'arm' },
-                              { text: 'Burmese', value: 'bur' },
-                              { text: 'Dutch', value: 'dut' },
-                              { text: 'French', value: 'fre' },
-                              { text: 'German', value: 'ger' },
-                              { text: 'Greek', value: 'gre' },
-                              { text: 'Chamorro', value: 'cha' },
-                              { text: 'Hebrew', value: 'heb' },
-                              { text: 'Hindi', value: 'hin' },
-                              { text: 'Hmong; Mong', value: 'hmn' },
-                              { text: 'Hungarian', value: 'hun' },
-                              { text: 'Iloko; Ilocano', value: 'ilo' },
-                              { text: 'Indonesian', value: 'ind' },
-                              { text: 'Italian', value: 'ita' },
-                              { text: 'Panjabi; Punjabi', value: 'pan' },
-                              { text: 'Russian', value: 'rus' },
-                              { text: 'Samoan', value: 'smo' },
-                              { text: 'Thai', value: 'tha' },
-                              { text: 'Turkish', value: 'tur' },
-                              { text: 'Tongan', value: 'ton' },
-                              { text: 'Urdu', value: 'urd' },
-                              { text: 'Cebuano; Visayan', value: 'ceb' },
-                              { text: 'Sign Languages', value: 'sgn' },
-                              { text: 'Ukrainian', value: 'ukr' },
-                              { text: 'Chaozhou; Chiuchow; Teochew', value: 'chz' },
-                              { text: 'Pushto; Pashto', value: 'pus' },
-                              { text: 'Polish', value: 'pol' },
-                              { text: 'Syriac; Assyrian', value: 'syr' },
-                              { text: 'Gujarati', value: 'guj' },
-                              { text: 'Yao; Mien', value: 'yao' },
-                              { text: 'Romanian; Moldavian; Moldovan', value: 'rum' },
-                              { text: 'Taiwanese', value: 'taw' },
-                              { text: 'Lahu', value: 'lau' },
-                              { text: 'Marshallese', value: 'mah' },
-                              { text: 'Otomian languages; Mixteco', value: 'oto' },
-                              { text: 'Austronesian languages; Khmu', value: 'map' },
-                              { text: 'Kurdish', value: 'kur' },
-                              { text: 'Baltic languages', value: 'bat' },
-                              { text: 'Toishanese', value: 'toi' },
-                              { text: 'Afro-Asiatic languages; Chaldean', value: 'afa' },
-                              { text: 'Albanian', value: 'alb' },
-                              { text: 'Tigrinya', value: 'tir' },
-                              { text: 'Somali', value: 'som' },
-                              { text: 'Bengali', value: 'ben' },
-                              { text: 'Telugu', value: 'tel' },
-                              { text: 'Tamil', value: 'tam' },
-                              { text: 'Marathi', value: 'mar' },
-                              { text: 'Kannada', value: 'kan' },
-                              { text: 'Amharic', value: 'amh' },
-                              { text: 'Bulgarian', value: 'bul' },
-                              { text: 'Kikuyu; Gikuyu', value: 'kik' },
-                              { text: 'Kashmiri', value: 'kas' },
-                              { text: 'Swedish', value: 'swe' },
-                              { text: 'Zapotec', value: 'zap' },
-                              { text: 'Uzbek', value: 'uzb' },
-                              { text: 'Uncoded languages', value: 'mis' },
-                              { text: 'Persian; Farsi', value: 'per' },
-                              { text: 'Undetermined', value: 'und' }]"
-                              [(ngModel)]="settings.languages"
+                              [suggestions]="getLanguagesMap()"
+                              [(ngModel)]="filterBy.languages"
                               [ngModelOptions]="{standalone: true}"
                               name="languageCodes"
                               (change)="onSettingChangeInternal()"></sb-typeahead-group>
@@ -304,7 +237,7 @@
       </div>
     </div>
     <!-- Column 4 -->
-    <div class="col-md-4">
+    <div class="col-md-3">
       <!-- Race / Ethnicity -->
       <div class="block-children">
         <fieldset>
