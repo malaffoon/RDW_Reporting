@@ -311,10 +311,10 @@ export class AggregateReportSummary {
       }
       if (!equalSize(optionFilters.languages, settingFilters.languages)) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.languages'),
+          label: translate('aggregate-report-form.field.language-label'),
           values: inline(orAll(
-            optionFilters.languages,
-            settingFilters.languages,
+            optionFilters.languages.map(o => o),
+            settingFilters.languages.map(a => Object.keys(a)[0]),
             code => translate(`common.languages.${code}`)
           ))
         });

@@ -3,6 +3,7 @@ import { SubgroupFilters } from './subgroup-filters';
 import { SubgroupFilterFormOptions } from './subgroup-filter-form-options';
 import { ApplicationSettingsService } from '../../app-settings.service';
 
+
 @Component({
   selector: 'subgroup-filters',
   templateUrl: './subgroup-filters.component.html'
@@ -24,8 +25,18 @@ export class SubgroupFiltersComponent {
     applicationSettingsService.getSettings().subscribe(settings => this.appSettings = settings);
   }
 
-  onSettingChangeInternal(): void {
-    this.changed.emit();
+  onSettingChangeInternal(event): void {
+    this.changed.emit(event);
+  }
+
+  optionsChanged(event) {
+    let newLanguages = [];
+    this.settings.languages = newLanguages.concat(event.map(lang => {
+      let langCodeObj = {};
+      langCodeObj[lang.value] = true;
+      return langCodeObj;
+    }));
+    this.changed.emit(event);
   }
 
 }
