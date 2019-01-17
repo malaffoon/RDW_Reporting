@@ -314,7 +314,7 @@ export class AggregateReportSummary {
           label: translate('aggregate-report-form.field.language-label'),
           values: inline(orAll(
             optionFilters.languages.map(o => o),
-            settingFilters.languages.map(a => Object.keys(a)[0]),
+            settingFilters.languages,
             code => translate(`common.languages.${code}`)
           ))
         });

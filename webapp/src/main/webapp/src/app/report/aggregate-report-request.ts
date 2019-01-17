@@ -62,5 +62,5 @@ export interface StudentFilters {
   readonly elasCodes?: string[];
   readonly migrantStatusCodes?: string[];
   readonly section504Codes?: string[];
-  readonly languages?: string[];
+  readonly languageCodes?: string[];
 }
