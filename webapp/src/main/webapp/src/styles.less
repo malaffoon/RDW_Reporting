@@ -1713,6 +1713,7 @@ tr.highlight {
 }
 
 .typeahead-group {
+  white-space: nowrap;
   .ui-autocomplete-token {
     display: none;
   }
@@ -1761,4 +1762,9 @@ tr.highlight {
 
 fieldset.marginLeft50 {
   margin-left: 50px;
+}
+@media (max-width: @screen-lg-min) {
+  fieldset.marginLeft50 {
+    margin-left: 39px;
+  }
 }

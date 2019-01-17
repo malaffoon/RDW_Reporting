@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FilterBy } from '../../model/filter-by.model';
 import { ExamFilterOptions } from '../../model/exam-filter-options.model';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { TranslateService } from '@ngx-translate/core';
+import { SBTypeaheadGroup} from '../../../shared/form/sb-typeahead-group';
 
 /*
   This component contains all of the selectable advanced filters
@@ -26,6 +27,9 @@ export class AdvFiltersComponent {
   @Output()
   changed: EventEmitter<any> = new EventEmitter();
 
+  @ViewChild(SBTypeaheadGroup)
+  private sbTypeAheadGroup: SBTypeaheadGroup;
+
   showTransferAccess = false;
   showElas = false;
   showLep = false;
@@ -41,7 +45,26 @@ export class AdvFiltersComponent {
 
   }
 
-  onSettingChangeInternal(): void {
+  removeLanguageFilter(code) {
+    this.sbTypeAheadGroup.removeOption(this.sbTypeAheadGroup.options.find(option => {
+      return option.value === code;
+    }));
+  }
+
+  optionsChanged(event) {
+    console.log("optionsChanged event", event);
+    console.log("this.filterBy.languageCodes is ", this.filterBy.languageCodes);
+
+    let newLanguages = [];
+    this.filterBy.languageCodes = newLanguages.concat(event.map(lang => {
+      let langCodeObj = {};
+      langCodeObj[lang.value] = true;
+      return langCodeObj;
+    }));
+    console.log("NOW ... this.filterBy.languageCodes is ", this.filterBy.languageCodes);
+  }
+
+  onSettingChangeInternal(event): void {
     this.changed.emit();
   }
 

@@ -23,4 +23,5 @@ export class Exam {
   school: School;
   transfer: boolean;
   elasCode: string;
+  languageCode: string;
 }

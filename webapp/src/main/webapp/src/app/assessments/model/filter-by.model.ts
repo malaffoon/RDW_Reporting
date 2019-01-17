@@ -18,10 +18,10 @@ export class FilterBy extends ObservableObject {
   private _limitedEnglishProficiency: number = -1;
   private _ethnicities: boolean[] = [ true ];
   private _elasCodes: boolean[] = [ true ];
-  private _languages: boolean[] = [ true ];
+  private _languageCodes: boolean[] = [ true ];
 
   private _filters = ['offGradeAssessment', 'transferAssessment', 'administration', 'summativeStatus', 'completion', 'genders', 'migrantStatus',
-                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities', 'languages'];
+                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities', 'languageCodes'];
 
   get filteredEthnicities(): any[] {
     return this.filterArray(this._ethnicities);
@@ -36,7 +36,7 @@ export class FilterBy extends ObservableObject {
   }
 
   get filteredLanguages(): any[] {
-    return this.filterArray(this._languages);
+    return this.filterArray(Object.assign({}, ...this._languageCodes));
   }
 
   private filterArray(array: any[]): any[] {
@@ -69,7 +69,7 @@ export class FilterBy extends ObservableObject {
         for (const filteredElasCode of filteredElasCodes) {
           all.push(property + "." + filteredElasCode);
         }
-      } else if (property == "languages") {
+      } else if (property == "languageCodes") {
         const filteredLanguages = this.filteredLanguages;
         for (const filteredLanguage of filteredLanguages) {
           all.push(property + "." + filteredLanguage);
@@ -154,13 +154,13 @@ export class FilterBy extends ObservableObject {
     this.notifyChange('genders');
   }
 
-  get languages(): boolean[] {
-    return this._languages;
+  get languageCodes(): boolean[] {
+    return this._languageCodes;
   }
 
-  set languages(value: boolean[]) {
-    this._languages = value;
-    this.notifyChange('languages');
+  set languageCodes(value: boolean[]) {
+    this._languageCodes = value;
+    this.notifyChange('languageCodes');
   }
 
   get migrantStatus(): number {

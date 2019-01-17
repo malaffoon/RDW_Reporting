@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, ViewChild } from '@angular/core';
 import { Forms } from './forms';
 import { AbstractControlValueAccessor } from './abstract-control-value-accessor';
 import * as _ from 'lodash';
@@ -67,11 +67,13 @@ const DefaultButtonStyles = 'btn-primary';
                         [multiple]="true"
                         dataKey="value"
                         (completeMethod)="search($event)"
+                        (onSelect)="optionSelected($event)"
                         (keydown)="onKeydown($event)"
                         styleClass="wid100"
                         [minLength]="0" 
                         [dropdown]="true"
-                        [placeholder]="placeholder" 
+                        [placeholder]="placeholder"
+                        (ngModelChange)="modelChangeEvent($event)"
                         field="text" >
         </p-autoComplete> 
         <div class="languages-container btn-group-sm">
@@ -106,8 +108,20 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   filteredOptions: any[];
   @Input()
   placeholder = '';
+
   @Input()
   suggestions: Option[];
+
+  // An enum defined in the translations which has a value.
+  @Input()
+  public enum: string;
+
+  // The property to update and show.
+  @Input()
+  public property: string;
+
+  @Output()
+  optionsEvent = new EventEmitter <Option[]>();
 
   constructor() {
     super();
@@ -155,8 +169,14 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
     }
   }
 
+  modelChangeEvent(event) {
+    console.log("!!!!!!!!!!!!!!!!!!! modelChangeEvent in sb-typahead. event", event);
+    console.log("options are ", this.options);
+  }
+
   @Input()
   set options(options: Option[]) {
+    console.log("sbtypahead setting options to ", options);
     if (options.length) {
       if (this._initialized) {
         this._options = this.parseInputOptions(options);
@@ -208,12 +228,18 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
     )
   }
 
+  private optionSelected(event) {
+    console.log("optionSelected event", event);
+    this.optionsEvent.emit(this.options);
+  }
+
   removeOption(option: Option) {
     this.options.splice(this.options.indexOf(option), 1);
 
     if (this._options.length === 0) {
       this.onAllOptionClickInternal();
     }
+    this.optionsEvent.emit(this.options);
   }
 
   computeStylesInternal(...styles): any {
@@ -305,16 +331,21 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
     state.selectedOptions.clear();
     this._options = [];
     this.updateValue(state, options);
+    this.optionsEvent.emit(this.options);
   }
 
   private setValueAndNotifyChanges(value: any) {
     if (!_.isEqual(this._value, value)) {
+      console.log("setValueAndNotifyChanges not equal?", value);
+      console.log("this._value", this._value);
       this._value = value;
       this._onChangeCallback(value);
+      console.log("now this._value =", this._value);
     }
   }
 
   private throwError(message: string): void {
     throw new Error(`${this.constructor.name} ${message}`);
   }
+
 }
