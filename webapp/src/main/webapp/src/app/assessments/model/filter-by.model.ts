@@ -18,9 +18,10 @@ export class FilterBy extends ObservableObject {
   private _limitedEnglishProficiency: number = -1;
   private _ethnicities: boolean[] = [ true ];
   private _elasCodes: boolean[] = [ true ];
+  private _languageCodes: boolean[] = [ true ];
 
   private _filters = ['offGradeAssessment', 'transferAssessment', 'administration', 'summativeStatus', 'completion', 'genders', 'migrantStatus',
-                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities'];
+                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities', 'languageCodes'];
 
   get filteredEthnicities(): any[] {
     return this.filterArray(this._ethnicities);
@@ -32,6 +33,10 @@ export class FilterBy extends ObservableObject {
 
   get filteredElasCodes(): any[] {
     return this.filterArray(this._elasCodes);
+  }
+
+  get filteredLanguages(): any[] {
+    return this.filterArray(Object.assign({}, ...this._languageCodes));
   }
 
   private filterArray(array: any[]): any[] {
@@ -63,6 +68,11 @@ export class FilterBy extends ObservableObject {
         const filteredElasCodes = this.filteredElasCodes;
         for (const filteredElasCode of filteredElasCodes) {
           all.push(property + "." + filteredElasCode);
+        }
+      } else if (property == "languageCodes") {
+        const filteredLanguages = this.filteredLanguages;
+        for (const filteredLanguage of filteredLanguages) {
+          all.push(property + "." + filteredLanguage);
         }
       } else if (this.isFilterEnabled(property)) {
         all.push(property);
@@ -142,6 +152,15 @@ export class FilterBy extends ObservableObject {
   set genders(value: boolean[]) {
     this._genders = value;
     this.notifyChange('genders');
+  }
+
+  get languageCodes(): boolean[] {
+    return this._languageCodes;
+  }
+
+  set languageCodes(value: boolean[]) {
+    this._languageCodes = value;
+    this.notifyChange('languageCodes');
   }
 
   get migrantStatus(): number {

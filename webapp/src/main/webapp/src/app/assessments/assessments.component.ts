@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ordering } from '@kourge/ordering';
 import { FilterBy } from './model/filter-by.model';
@@ -17,6 +17,7 @@ import { ApplicationSettingsService } from '../app-settings.service';
 import { forkJoin, Observable, of, empty } from 'rxjs';
 import { serializeURLParameters, Utils } from '../shared/support/support';
 import { Exam } from './model/exam.model';
+import { AdvFiltersComponent } from './filters/adv-filters/adv-filters.component';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -87,6 +88,9 @@ export class AssessmentsComponent implements OnChanges {
 
   @Output()
   export: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild(AdvFiltersComponent)
+  private advFiltersComponent: AdvFiltersComponent;
 
   showValuesAsPercent = true;
   filterDisplayOptions: any = {
@@ -272,6 +276,12 @@ export class AssessmentsComponent implements OnChanges {
     this.clientFilterBy.elasCodes = Object.assign({}, this.clientFilterBy.elasCodes);
   }
 
+  removeLanguageCode(languageCode) {
+    this.clientFilterBy.languageCodes= this.clientFilterBy.languageCodes.filter( val => {
+      return Object.keys(val)[0] != languageCode;
+    })
+  }
+
   removeFilter(property) {
     if (property === 'offGradeAssessment') {
       this.clientFilterBy[ property ] = false;
@@ -283,6 +293,10 @@ export class AssessmentsComponent implements OnChanges {
       this.removeGender(property.substring(property.indexOf('.') + 1));
     } else if (property.indexOf('elasCodes') > -1) {
       this.removeElasCode(property.substring(property.indexOf('.') + 1));
+    } else if (property.indexOf('languageCodes') > -1) {
+      let code = property.substring(property.indexOf('.') + 1);
+      this.removeLanguageCode(code);
+      this.advFiltersComponent.removeLanguageFilter(code);
     } else {
       this.clientFilterBy[ property ] = -1;
     }

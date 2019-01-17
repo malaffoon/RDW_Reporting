@@ -4,6 +4,7 @@ export class ExamFilterOptions {
   genders: string[] = [];
   elasCodes: string[] = [];
   subjects: string[] = [];
+  languages: string[] = [];
   hasSummative: boolean = false;
   hasInterim: boolean = false;
 }

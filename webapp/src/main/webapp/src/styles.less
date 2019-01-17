@@ -1713,6 +1713,7 @@ tr.highlight {
 }
 
 .typeahead-group {
+  white-space: nowrap;
   .ui-autocomplete-token {
     display: none;
   }
@@ -1725,7 +1726,7 @@ tr.highlight {
 
         .ui-autocomplete-input-token input {
           height: 22px;
-          width: 188px;
+          width: 186px;
           padding-left: 6px;
           font-size: 14px;
         }
@@ -1734,6 +1735,10 @@ tr.highlight {
       .ui-autocomplete-dropdown {
         height: 32px;
         background-color: @aqua;
+
+        .pi-caret-down {
+          color: #fff;
+        }
       }
     }
 
@@ -1752,5 +1757,14 @@ tr.highlight {
         }
       }
     }
+  }
+}
+
+fieldset.marginLeft50 {
+  margin-left: 50px;
+}
+@media (max-width: @screen-lg-min) {
+  fieldset.marginLeft50 {
+    margin-left: 39px;
   }
 }
