@@ -276,7 +276,7 @@ export class AssessmentsComponent implements OnChanges {
     this.clientFilterBy.elasCodes = Object.assign({}, this.clientFilterBy.elasCodes);
   }
 
-  removeLanguageFilter(languageCode) {
+  removeLanguageCode(languageCode) {
     this.clientFilterBy.languageCodes= this.clientFilterBy.languageCodes.filter( val => {
       return Object.keys(val)[0] != languageCode;
     })
@@ -295,7 +295,7 @@ export class AssessmentsComponent implements OnChanges {
       this.removeElasCode(property.substring(property.indexOf('.') + 1));
     } else if (property.indexOf('languageCodes') > -1) {
       let code = property.substring(property.indexOf('.') + 1);
-      this.removeLanguageFilter(code);
+      this.removeLanguageCode(code);
       this.advFiltersComponent.removeLanguageFilter(code);
     } else {
       this.clientFilterBy[ property ] = -1;

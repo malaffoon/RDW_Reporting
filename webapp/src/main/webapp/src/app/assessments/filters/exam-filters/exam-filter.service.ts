@@ -193,7 +193,7 @@ export class ExamFilterService {
   }
 
   private filterByLanguageCode(exam: Exam, filterValue: any): boolean {
-    return exam.student && !filterValue.length || filterValue.some(languageCode => languageCode == exam.languageCode);
+    return (exam.student && !filterValue.length) || filterValue.some(languageCode => languageCode == exam.languageCode);
   }
 
   private filterByTransferAssessment(exam: Exam, filterValue: any): boolean {
