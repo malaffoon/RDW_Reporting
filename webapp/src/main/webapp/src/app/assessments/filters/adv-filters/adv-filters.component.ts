@@ -52,16 +52,12 @@ export class AdvFiltersComponent {
   }
 
   optionsChanged(event) {
-    console.log("optionsChanged event", event);
-    console.log("this.filterBy.languageCodes is ", this.filterBy.languageCodes);
-
     let newLanguages = [];
     this.filterBy.languageCodes = newLanguages.concat(event.map(lang => {
       let langCodeObj = {};
       langCodeObj[lang.value] = true;
       return langCodeObj;
     }));
-    console.log("NOW ... this.filterBy.languageCodes is ", this.filterBy.languageCodes);
   }
 
   onSettingChangeInternal(event): void {

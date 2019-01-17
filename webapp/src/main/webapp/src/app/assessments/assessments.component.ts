@@ -290,9 +290,7 @@ export class AssessmentsComponent implements OnChanges {
     } else if (property.indexOf('ethnicities') > -1) {
       this.removeEthnicity(property.substring(property.indexOf('.') + 1));
     } else if (property.indexOf('genders') > -1) {
-      console.log("this.clientFilterBy['genders'] starts as ", this.clientFilterBy['genders']);
       this.removeGender(property.substring(property.indexOf('.') + 1));
-      console.log("this.clientFilterBy['genders'] ends as ", this.clientFilterBy['genders']);
     } else if (property.indexOf('elasCodes') > -1) {
       this.removeElasCode(property.substring(property.indexOf('.') + 1));
     } else if (property.indexOf('languageCodes') > -1) {

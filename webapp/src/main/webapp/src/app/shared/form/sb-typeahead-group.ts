@@ -73,7 +73,6 @@ const DefaultButtonStyles = 'btn-primary';
                         [minLength]="0" 
                         [dropdown]="true"
                         [placeholder]="placeholder"
-                        (ngModelChange)="modelChangeEvent($event)"
                         field="text" >
         </p-autoComplete> 
         <div class="languages-container btn-group-sm">
@@ -169,14 +168,8 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
     }
   }
 
-  modelChangeEvent(event) {
-    console.log("!!!!!!!!!!!!!!!!!!! modelChangeEvent in sb-typahead. event", event);
-    console.log("options are ", this.options);
-  }
-
   @Input()
   set options(options: Option[]) {
-    console.log("sbtypahead setting options to ", options);
     if (options.length) {
       if (this._initialized) {
         this._options = this.parseInputOptions(options);
@@ -229,7 +222,6 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   }
 
   private optionSelected(event) {
-    console.log("optionSelected event", event);
     this.optionsEvent.emit(this.options);
   }
 
@@ -308,7 +300,7 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   private computeState(options: Option[], values: any[]): State {
     let enabledOptions = options.filter(x => !x.disabled);
     const effectiveOptions = enabledOptions.filter(option => values.includes(option.value));
-    const effectivelySelectedAllOption = values.length === enabledOptions.length || enabledOptions.length === effectiveOptions.length;
+    const effectivelySelectedAllOption = this.suggestions.length === enabledOptions.length || enabledOptions.length === effectiveOptions.length;
     return {
       selectedAllOption: effectivelySelectedAllOption,
       selectedOptions: effectivelySelectedAllOption
@@ -336,11 +328,8 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
 
   private setValueAndNotifyChanges(value: any) {
     if (!_.isEqual(this._value, value)) {
-      console.log("setValueAndNotifyChanges not equal?", value);
-      console.log("this._value", this._value);
       this._value = value;
       this._onChangeCallback(value);
-      console.log("now this._value =", this._value);
     }
   }
 
