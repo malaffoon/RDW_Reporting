@@ -96,11 +96,11 @@
   <fieldset>
     <div class="row">
       <div class="col-md-6">
-        <label for="language-subgroup-filter"
-               info-button
-               title="Primary Language"></label>
-               <!--title="{{'aggregate-report-form.field.elas-label' | translate}}"-->
-               <!--content="{{'aggregate-report-form.field.elas-info' | translate}}"></label>-->
+        <label for="language-subgroup-filter">
+          <span info-button
+                title="{{ 'common.filters.student.language' | translate }}"
+                content="{{ 'common.filters.student.language-info' | translate }}"></span>
+        </label>
       </div>
       <div class="col-md-6 toggle-group btn-group-sm vertical all-option nested-btn-group" >
         <!--TODO: We are mocking the suggestions - these should be seeded from the db -->
