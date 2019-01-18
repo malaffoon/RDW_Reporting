@@ -380,7 +380,7 @@ export class AggregateReportRequestMapper {
       queryFilters.section504Codes = settingFilters.section504s;
     }
     if(notNullOrEmpty(settingFilters.languages)) {
-      queryFilters.languages = settingFilters.languages;
+      queryFilters.languageCodes = settingFilters.languages;
     }
     return queryFilters;
   }
