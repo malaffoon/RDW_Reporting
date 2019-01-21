@@ -108,6 +108,7 @@
                             [suggestions]="options.languages"
                            [(ngModel)]="settings.languages"
                            [ngModelOptions]="{standalone: true}"
+                            [initialOptions]="getOptions()"
                            name="languageCodes" enum="common.languageCodes" property="languageCodes"
                             analyticsEvent="FilterClick"
                             analyticsCategory="AggregateQueryBuilder"

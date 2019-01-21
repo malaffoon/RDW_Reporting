@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SubgroupFilters } from './subgroup-filters';
 import { SubgroupFilterFormOptions } from './subgroup-filter-form-options';
 import { ApplicationSettingsService } from '../../app-settings.service';
+import { Option } from '../../shared/form/option';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -21,7 +23,8 @@ export class SubgroupFiltersComponent {
 
   appSettings: {elasEnabled: boolean, lepEnabled: boolean};
 
-  constructor(private applicationSettingsService: ApplicationSettingsService) {
+  constructor(private applicationSettingsService: ApplicationSettingsService,
+              private translateService: TranslateService,) {
     applicationSettingsService.getSettings().subscribe(settings => this.appSettings = settings);
   }
 
@@ -35,6 +38,18 @@ export class SubgroupFiltersComponent {
       return lang.value;
     }));
     this.changed.emit(event);
+  }
+
+  getOptions(): Option[] {
+    if((this.settings.languages.length == 0) || (this.settings.languages.length == this.options.languages.length)) {
+      return [];
+    }
+    const translate = code => this.translateService.instant(code);
+    return this.settings.languages.map( lang => <Option>{
+      value: lang,
+      text: translate(`common.languages.${lang}`),
+      disabled: false
+    });
   }
 
 }
