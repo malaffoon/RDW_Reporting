@@ -163,7 +163,7 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     getTranslationCode: value => `common.boolean.${value}`
   },
   {
-    type: 'PrimaryLanguage',
+    type: 'Language',
     getDimensionValueCodes: settings => settings.languages,
     getTranslationCode: value => `common.languages.${value}`
   },

@@ -4,6 +4,7 @@ import { ExamFilterOptions } from '../../model/exam-filter-options.model';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SBTypeaheadGroup} from '../../../shared/form/sb-typeahead-group';
+import { Option } from '../../../shared/form/option';
 
 /*
   This component contains all of the selectable advanced filters
@@ -43,6 +44,14 @@ export class AdvFiltersComponent {
       this.showLep = settings.lepEnabled;
     });
 
+  }
+
+  get filters(): FilterBy {
+    return this.filterBy;
+  }
+
+  get options(): ExamFilterOptions {
+    return this.filterOptions;
   }
 
   removeLanguageFilter(code) {

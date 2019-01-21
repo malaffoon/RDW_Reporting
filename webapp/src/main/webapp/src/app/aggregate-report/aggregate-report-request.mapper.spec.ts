@@ -51,7 +51,7 @@ describe('AggregateReportRequestMapper', () => {
       elasCodes: ['EO'],
       migrantStatusCodes: ['yes'],
       section504Codes: ['yes'],
-      languages: ['ENG', 'SPA']
+      languageCodes: ['ENG', 'SPA']
     };
 
     const query: AggregateReportQuery = {
@@ -112,7 +112,7 @@ describe('AggregateReportRequestMapper', () => {
         englishLanguageAcquisitionStatuses: studentFilters.elasCodes,
         migrantStatuses: studentFilters.migrantStatusCodes,
         section504s: studentFilters.section504Codes,
-        languages: studentFilters.languages
+        languages: studentFilters.languageCodes
       },
       generalPopulation: {
         assessmentGrades: query.assessmentGradeCodes,

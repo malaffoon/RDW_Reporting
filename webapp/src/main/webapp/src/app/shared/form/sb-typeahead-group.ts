@@ -111,6 +111,9 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   @Input()
   suggestions: Option[];
 
+  @Input()
+  initialOptions: Option[];
+
   // An enum defined in the translations which has a value.
   @Input()
   public enum: string;
@@ -127,6 +130,7 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   }
 
   ngOnInit(): void {
+    this._initialOptions = (this.initialOptions != null && this.initialOptions.length > 0) ? this.initialOptions : [];
     this._options = this.parseInputOptions(this._initialOptions);
     this._value = this.parseInputValues(this._initialValues);
     this._state = this.computeState(this._options, this._value);
