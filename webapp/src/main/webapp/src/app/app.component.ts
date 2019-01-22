@@ -26,6 +26,7 @@ export class AppComponent {
 
   user: User;
   applicationSettings: ApplicationSettings;
+  navbarOpen: boolean = false;
 
   constructor(public languageStore: LanguageStore,
               private router: Router,
@@ -71,6 +72,10 @@ export class AppComponent {
     setTimeout(() => {
       document.getElementById('maincontent').scrollIntoView();
     }, 0);
+  }
+
+  toggleNavCollapse(): void {
+    this.navbarOpen = !this.navbarOpen;
   }
 
   private initializeAnalytics(trackingId: string): void {
