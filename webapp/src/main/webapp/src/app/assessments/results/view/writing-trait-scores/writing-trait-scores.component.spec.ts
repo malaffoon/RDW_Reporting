@@ -41,6 +41,10 @@ describe('WritingTraitScoresComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should not be summative', () => {
+    expect(component.isSummative).toBe(false);
+  });
 });
 
 @Component({
