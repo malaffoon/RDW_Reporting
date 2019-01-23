@@ -64,12 +64,16 @@ export class TargetStatisticsCalculator {
 
     subgroupCodes.forEach(subgroupCode => {
       targetScoreExams.forEach(exam => {
+        console.log("exam, code", exam, subgroupCode);
         let value = this.getExamSubgroupValue(exam, subgroupCode);
         let subgroupValues = Array.isArray(value) ? value : [value];
+        console.log("value", value);
+        console.log("subgroupValues", subgroupValues);
 
         // always treat results as array since race/ethnicity will come back as array and we need to handle multiple as separate entries
         subgroupValues.forEach(examSubgroupValue => {
           let subgroup = this.subgroupMapper.fromTypeAndCode(subgroupCode, examSubgroupValue);
+          console.log("subgroup is ", subgroup);
 
           let index = groupedScores.findIndex(x => x.targetId == exam.targetId && deepEqual(x.subgroup, subgroup));
           if (index !== -1) {
@@ -191,6 +195,7 @@ export class TargetStatisticsCalculator {
       case 'IEP': return exam.iep;
       case 'MigrantStatus': return exam.migrantStatus;
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
+      case 'Language': return exam.languageCode;
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
       case 'ELAS': return exam.elasCode !+ null ? exam.elasCode : null;

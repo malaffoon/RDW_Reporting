@@ -180,6 +180,9 @@ export class TargetReportComponent implements OnInit, ExportResults {
       this.allSubgroups = this.createAllSubgroups(applicationSettings);
       this.originalTargetScoreExams = this.targetScoreExams = targetScoreExams;
       this.subgroupOptions = subgroupOptions;
+      console.log("subgroupOptions=", subgroupOptions);
+      console.log("allSubgroups=", this.allSubgroups);
+      console.log("applicationSettings", applicationSettings);
       this.allTargets = allTargets;
 
       this.identityColumns.forEach(column => {
@@ -423,7 +426,8 @@ export class TargetReportComponent implements OnInit, ExportResults {
     subgroups.push(
       { code: 'Section504', translatecode: '504-label', selected: false },
       { code: 'IEP', translatecode: 'iep-label', selected: false },
-      { code: 'MigrantStatus', translatecode: 'migrant-status-label', selected: false }
+      { code: 'MigrantStatus', translatecode: 'migrant-status-label', selected: false },
+      { code: 'Language', translatecode: 'language-label', selected: false}
     );
     return subgroups;
   }
