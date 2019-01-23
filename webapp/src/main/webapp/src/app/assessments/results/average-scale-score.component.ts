@@ -104,10 +104,16 @@ export class AverageScaleScoreComponent {
   }
 
   getClaimDataWidth(claimIndex: number, levelIndex: number): number {
+    if(!this._claimDataWidths || !this._claimDataWidths[claimIndex]) {
+      return 0;
+    }
     return this._claimDataWidths[ claimIndex ][ levelIndex ];
   }
 
   getClaimValue(claimStats: ClaimStatistics, index: number): number {
+    if(!this._claimDataWidths || !this._claimDataWidths[0]) {
+      return 0;
+    }
     return this.showValuesAsPercent ? Math.round(claimStats.percents[ index ].value) : claimStats.levels[ index ].value;
   }
 
@@ -143,6 +149,12 @@ export class AverageScaleScoreComponent {
     }
 
     return this.showValuesAsPercent ? this.statistics.percents : this.statistics.levels;
+  }
+
+  getLatestClaimReferences(): ClaimReference[] {
+    if(this.claimReferences) {
+      return this.claimReferences[this.claimReferences.length -1];
+    }
   }
 
   /**
