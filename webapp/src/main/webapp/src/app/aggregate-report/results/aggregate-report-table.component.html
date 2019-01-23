@@ -12,7 +12,7 @@
          [sortMode]="rowSortingEnabled && 'single'"
          [customSort]="true"
          [autoLayout]="true"
-         styleClass="table table-striped table-hover overflow">
+         styleClass="table table-striped table-hover overflow rdw-scrollable-table">
   <ng-template pTemplate="header"
                let-columns>
     <tr>
@@ -92,7 +92,7 @@
               'border-top': treeColumns[i] <= columnIdx && treeColumns[i] < identityColumns.length - 1
              }">
 
-          <div *ngSwitchCase="'organization'">
+          <div *ngSwitchCase="'organization'" class="label-max-width">
                 <span class="label mr-xs"
                       [ngClass]="getOrganizationTypeColor(rowData.organization.type)">
                   {{('common.organization.type.' + rowData.organization.type) | translate}}
