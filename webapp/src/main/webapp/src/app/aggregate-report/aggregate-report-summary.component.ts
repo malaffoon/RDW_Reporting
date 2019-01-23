@@ -300,8 +300,6 @@ export class AggregateReportSummary {
         });
       }
       if (!equalSize(optionFilters.section504s, settingFilters.section504s)) {
-        console.log("optionFilters.section504s:", optionFilters.section504s);
-        console.log("settingFilters.section504s:", settingFilters.section504s);
         filterRows.push({
           label: translate('aggregate-report-form.field.504-label'),
           values: inline(orAll(
