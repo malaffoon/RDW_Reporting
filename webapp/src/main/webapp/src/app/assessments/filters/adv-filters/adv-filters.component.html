@@ -128,6 +128,11 @@
         </fieldset>
       </div>
 
+
+    </div>
+
+    <!-- Column 2 -->
+    <div class="col-md-3">
       <!-- Migrant Status -->
       <div class="block-children">
         <fieldset>
@@ -173,10 +178,7 @@
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </fieldset>
       </div>
-    </div>
 
-    <!-- Column 2 -->
-    <div class="col-md-3">
       <!-- Limited English Proficiency -->
       <div class="block-children" *ngIf="showLep">
         <fieldset>
@@ -193,6 +195,10 @@
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </fieldset>
       </div>
+    </div>
+
+    <!-- Column 3 -->
+    <div class="col-md-4">
       <!-- English Language Acquisition Status -->
       <div class="block-children" *ngIf="showElas">
         <fieldset>
@@ -209,14 +215,9 @@
                             analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-checkbox-list>
         </fieldset>
       </div>
-    </div>
-
-    <!-- Column 3 -->
-    <div class="col-md-4">
-
       <!-- Language Selection -->
       <div class="block-children">
-        <fieldset class="marginLeft50">
+        <fieldset>
           <label for="language-filter">
             <span info-button
                   title="{{ 'common.filters.student.language' | translate }}"

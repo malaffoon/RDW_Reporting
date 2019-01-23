@@ -55,6 +55,16 @@ describe('AdvFiltersComponent', () => {
     expect(component.showTransferAccess).toBe(true);
   });
 
+  it('getLanguagesMap() should return an empty array', () => {
+    expect(component.getLanguagesMap().length).toBe(0);
+  });
+
+  it('should map added languages',() => {
+    component.filterOptions.languages = ['eng', 'ben'];
+    expect(component.getLanguagesMap()).toEqual([{text: 'common.languages.eng', value: 'eng'},
+      {text: 'common.languages.ben', value: 'ben'}]);
+  });
+
 });
 
 @Component({

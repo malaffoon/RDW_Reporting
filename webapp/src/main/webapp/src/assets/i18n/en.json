@@ -723,8 +723,8 @@
       "conventions": "Conventions",
       "evidence": "Evidence / Elaboration",
       "organization": "Organization / Purpose",
-      "total": "Total Points",
-      "total-info": "To compute the total number of points earned, the scores for organization/purpose and evidence/elaboration are averaged and rounded up, and then added to the points earned for conventions. A student can earn a maximum of six points. For more information, see the Interpretive Guide."
+      "total": "Transformed Points",
+      "total-info": "The Transformed Points value is calculated by adding the Conventions score to the average of the Organization/Purpose and Evidence/Elaboration scores. These two values represent two dimensions that are used to compute the student’s overall scale score and Claim 2 – Writing score. For more information, see the Interpretive Guide."
     }
   },
   "common-ngx": {
@@ -1309,6 +1309,6 @@
     "name-ssid-label": "Student Name or SSID"
   },
   "writing-trait-scores": {
-    "aggregate-header": "Points Breakdown"
+    "aggregate-header": "Points Distribution"
   }
 }
