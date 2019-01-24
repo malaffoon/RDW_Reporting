@@ -195,8 +195,6 @@ export class TargetStatisticsCalculator {
       case 'IEP': return exam.iep;
       case 'MigrantStatus': return exam.migrantStatus;
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
-
-      // if languageCode is undefined (for now) that means it was eng / English
       case 'Language': return exam.languageCode;
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
