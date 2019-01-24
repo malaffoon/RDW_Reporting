@@ -360,7 +360,17 @@ export class CsvBuilder {
         const elasCode = getExam(item).elasCode;
         return elasCode ? this.translateService.instant(`common.elas.${getExam(item).elasCode}`) : '';
       }
-    )
+    );
+  }
+
+  withLanguageCode(getExam: (item: any) => Exam) {
+    return this.withColumn(
+      this.translateService.instant('csv-builder.language'),
+      (item) => {
+        const languageCode = getExam(item).languageCode;
+        return languageCode ? this.translateService.instant(`common.languages.${getExam(item).languageCode}`) : '';
+      }
+    );
   }
 
   withEthnicity(getExam: (item: any) => Exam, ethnicities: string[]) {
@@ -612,7 +622,8 @@ export class CsvBuilder {
       studentContext = studentContext.withElas(getExam);
     }
 
-    studentContext = studentContext.withEthnicity(getExam, ethnicities);
+    studentContext = studentContext.withLanguageCode(getExam)
+      .withEthnicity(getExam, ethnicities);
     return studentContext;
   }
 
