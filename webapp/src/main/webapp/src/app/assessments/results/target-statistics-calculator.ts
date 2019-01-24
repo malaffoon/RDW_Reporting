@@ -57,8 +57,11 @@ export class TargetStatisticsCalculator {
    * @returns {AggregateTargetScoreRow[]}
    */
   aggregateSubgroupScores(subjectCode: string, allTargets: Target[], targetScoreExams: TargetScoreExam[], subgroupCodes: string[], subgroupOptions: ExamFilterOptions): AggregateTargetScoreRow[] {
+    // Special case for Languages, pull out just the used languageCodes for generatingSubgroupTargets
+    const activeLanguageCodes =  [...Array.from(new Set(targetScoreExams.map(e => e.languageCode))), 'und' ].filter( Boolean );
+
     // setup the placeholders to aggregate into
-    let groupedScores = this.generateSubgroupTargets(subjectCode, allTargets, subgroupCodes, subgroupOptions);
+    let groupedScores = this.generateSubgroupTargets(subjectCode, allTargets, subgroupCodes, subgroupOptions, activeLanguageCodes);
 
     if (targetScoreExams == null) targetScoreExams = [];
 
@@ -78,11 +81,7 @@ export class TargetStatisticsCalculator {
         });
       });
     });
-    return groupedScores.filter( groupedScore => {  // filter out when the language results were 0 or we'll get a list of every language every time
-      if(! ((groupedScore.standardMetScores.length == 0) && (groupedScore.subgroup.dimensionGroups[0].type === "Language"))) {
-        return groupedScore;
-      }
-    }).map(entry => this.mapToAggregateTargetScoreRow(entry));
+    return groupedScores.map(entry => this.mapToAggregateTargetScoreRow(entry));
   }
 
   private mapToAggregateTargetScoreRow(groupedScore: GroupedTargetScore): AggregateTargetScoreRow {
@@ -129,7 +128,7 @@ export class TargetStatisticsCalculator {
    * @param {ExamFilterOptions} subgroupOptions
    * @returns {GroupedTargetScore[]}
    */
-  private generateSubgroupTargets(subjectCode: string, allTargets: Target[], subgroupCodes: string[], subgroupOptions: ExamFilterOptions): GroupedTargetScore[] {
+  private generateSubgroupTargets(subjectCode: string, allTargets: Target[], subgroupCodes: string[], subgroupOptions: ExamFilterOptions, activeLanguageCodes: string[]): GroupedTargetScore[] {
     let groupedScores: GroupedTargetScore[] = [];
 
     subgroupCodes.forEach(subgroupCode => {
@@ -151,8 +150,9 @@ export class TargetStatisticsCalculator {
           break;
         case 'MigrantStatus':
           subgroupValues = [true, false, undefined];
+          break;
         case 'Language':
-          subgroupValues = subgroupOptions.languages;
+          subgroupValues = activeLanguageCodes;
           break;
       }
 
@@ -197,7 +197,7 @@ export class TargetStatisticsCalculator {
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
 
       // if languageCode is undefined (for now) that means it was eng / English
-      case 'Language': return exam.languageCode != undefined ? exam.languageCode : 'eng';
+      case 'Language': return exam.languageCode != undefined ? exam.languageCode : 'und';
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
       case 'ELAS': return exam.elasCode !+ null ? exam.elasCode : null;
