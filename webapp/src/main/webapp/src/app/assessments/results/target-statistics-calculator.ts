@@ -64,17 +64,12 @@ export class TargetStatisticsCalculator {
 
     subgroupCodes.forEach(subgroupCode => {
       targetScoreExams.forEach(exam => {
-        console.log("exam, code", exam, subgroupCode);
         let value = this.getExamSubgroupValue(exam, subgroupCode);
-        let subgroupValues = Array.isArray(value) ? value : [value];
-        console.log("value", value);
-        console.log("subgroupValues", subgroupValues);
+        let subgroupValues = Array.isArray(value) ? value : [ value ];
 
         // always treat results as array since race/ethnicity will come back as array and we need to handle multiple as separate entries
         subgroupValues.forEach(examSubgroupValue => {
           let subgroup = this.subgroupMapper.fromTypeAndCode(subgroupCode, examSubgroupValue);
-          console.log("subgroup is ", subgroup);
-
           let index = groupedScores.findIndex(x => x.targetId == exam.targetId && deepEqual(x.subgroup, subgroup));
           if (index !== -1) {
             groupedScores[ index ].standardMetScores.push(exam.standardMetRelativeResidualScore);
@@ -83,8 +78,11 @@ export class TargetStatisticsCalculator {
         });
       });
     });
-
-    return groupedScores.map(entry => this.mapToAggregateTargetScoreRow(entry));
+    return groupedScores.filter( groupedScore => {  // filter out when the language results were 0 or we'll get a list of every language every time
+      if(! ((groupedScore.standardMetScores.length == 0) && (groupedScore.subgroup.dimensionGroups[0].type === "Language"))) {
+        return groupedScore;
+      }
+    }).map(entry => this.mapToAggregateTargetScoreRow(entry));
   }
 
   private mapToAggregateTargetScoreRow(groupedScore: GroupedTargetScore): AggregateTargetScoreRow {
@@ -153,6 +151,8 @@ export class TargetStatisticsCalculator {
           break;
         case 'MigrantStatus':
           subgroupValues = [true, false, undefined];
+        case 'Language':
+          subgroupValues = subgroupOptions.languages;
           break;
       }
 
@@ -195,7 +195,9 @@ export class TargetStatisticsCalculator {
       case 'IEP': return exam.iep;
       case 'MigrantStatus': return exam.migrantStatus;
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
-      case 'Language': return exam.languageCode;
+
+      // if languageCode is undefined (for now) that means it was eng / English
+      case 'Language': return exam.languageCode != undefined ? exam.languageCode : 'eng';
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
       case 'ELAS': return exam.elasCode !+ null ? exam.elasCode : null;
