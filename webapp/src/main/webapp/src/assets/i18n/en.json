@@ -595,6 +595,9 @@
         "System": "Smarter Balanced Instructional Resource"
       }
     },
+    "languages": {
+      "undefined": "Not Stated"
+    },
     "menus": {
       "resources": "Instructional Resources",
       "responses": "{{name}}'s Responses",

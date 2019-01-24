@@ -58,7 +58,7 @@ export class TargetStatisticsCalculator {
    */
   aggregateSubgroupScores(subjectCode: string, allTargets: Target[], targetScoreExams: TargetScoreExam[], subgroupCodes: string[], subgroupOptions: ExamFilterOptions): AggregateTargetScoreRow[] {
     // Special case for Languages, pull out just the used languageCodes for generatingSubgroupTargets
-    const activeLanguageCodes =  [...Array.from(new Set(targetScoreExams.map(e => e.languageCode))), 'und' ].filter( Boolean );
+    const activeLanguageCodes =  Array.from(new Set(targetScoreExams.map(e => e.languageCode)));
 
     // setup the placeholders to aggregate into
     let groupedScores = this.generateSubgroupTargets(subjectCode, allTargets, subgroupCodes, subgroupOptions, activeLanguageCodes);
@@ -197,7 +197,7 @@ export class TargetStatisticsCalculator {
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
 
       // if languageCode is undefined (for now) that means it was eng / English
-      case 'Language': return exam.languageCode != undefined ? exam.languageCode : 'und';
+      case 'Language': return exam.languageCode;
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
       case 'ELAS': return exam.elasCode !+ null ? exam.elasCode : null;
