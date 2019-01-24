@@ -80,7 +80,7 @@ export class SubgroupMapper {
       .map(type => DimensionConfigurationByType[ type ])
       .reduce((subgroups, configuration) => {
         subgroups.push(
-          ...(configuration.getDimensionValueCodes(input) || []).map(
+          ...(configuration.getDimensionValueCodes(input) || []).slice(0,10).map(
             code => this.createSubgroupInternal([
               {
                 type: configuration.type,
