@@ -73,7 +73,7 @@ const DefaultButtonStyles = 'btn-primary';
                         [minLength]="0" 
                         [dropdown]="true"
                         [placeholder]="placeholder"
-                        [scrollHeight]="'148px'"
+                        [scrollHeight]="'158px'"
                         field="text" >
         </p-autoComplete> 
         <div class="languages-container btn-group-sm">
