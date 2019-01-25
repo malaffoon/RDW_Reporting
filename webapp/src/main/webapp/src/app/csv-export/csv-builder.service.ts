@@ -363,12 +363,22 @@ export class CsvBuilder {
     );
   }
 
-  withLanguageCode(getExam: (item: any) => Exam) {
+  withLanguage(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.language'),
       (item) => {
         const languageCode = getExam(item).languageCode;
         return languageCode ? this.translateService.instant(`common.languages.${getExam(item).languageCode}`) : '';
+      }
+    );
+  }
+
+  withLanguageCode(getExam: (item: any) => Exam) {
+    return this.withColumn(
+      this.translateService.instant('csv-builder.language-code'),
+      (item) => {
+        const languageCode = getExam(item).languageCode;
+        return languageCode ? languageCode : '';
       }
     );
   }
@@ -623,6 +633,7 @@ export class CsvBuilder {
     }
 
     studentContext = studentContext.withLanguageCode(getExam)
+      .withLanguage(getExam)
       .withEthnicity(getExam, ethnicities);
     return studentContext;
   }
