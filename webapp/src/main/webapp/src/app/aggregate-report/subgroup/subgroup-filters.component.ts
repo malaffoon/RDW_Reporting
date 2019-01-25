@@ -37,6 +37,11 @@ export class SubgroupFiltersComponent {
     this.settings.languages = newLanguages.concat(event.map(lang => {
       return lang.value;
     }));
+    if(this.settings.languages.length == 0) {
+      this.settings.languages = this.options.languages.map( option => {
+        return option.value;
+      });
+    }
     this.changed.emit(event);
   }
 
