@@ -175,18 +175,18 @@
 
         <div class="well gray-lighter" *ngIf="!claimsCollapsed">
           <ng-container *ngFor="let subject of settings.subjects">
-            <div class="row mt-md" *ngIf="claimsBySubject[subject].length != 0">
+            <div class="row mt-md" *ngIf="claimsBySubject[subject.code].length != 0">
               <fieldset>
                 <div class="col-md-6">
-                  <label>{{'subject.' + subject + '.name' | translate}}</label>
+                  <label>{{'subject.' + subject.code + '.name' | translate}}</label>
                 </div>
 
                 <div class="col-md-3">
                   <sb-button-group class="claim-button-group"
                                    type="checkbox"
                                    [vertical]="true"
-                                   [options]="claimsBySubject[subject]"
-                                   [(ngModel)]="selectionBySubject[subject]"
+                                   [options]="claimsBySubject[subject.code]"
+                                   [(ngModel)]="selectionBySubject[subject.code]"
                                    [ngModelOptions]="{standalone: true}"
                                    (change)="onClaimChange()"
                                    analyticsEvent="FilterClick"
