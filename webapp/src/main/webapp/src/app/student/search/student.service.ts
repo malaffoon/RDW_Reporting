@@ -33,7 +33,8 @@ export class StudentService {
         individualEducationPlan: this.toBooleanCode(serverStudent.individualEducationPlan),
         limitedEnglishProficiency: this.toBooleanCode(serverStudent.limitedEnglishProficiency),
         section504: this.toBooleanCode(serverStudent.section504),
-        migrantStatus: this.toBooleanCode(serverStudent.migrantStatus)
+        migrantStatus: this.toBooleanCode(serverStudent.migrantStatus),
+        languages: serverStudent.languageCode
       }))
     );
   }
