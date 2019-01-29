@@ -365,6 +365,14 @@ sb-button-typeahead .input-group-btn > .btn,
   max-width: 250px;
 }
 
+
+.label-max-width:hover {
+  overflow: visible;
+  font-weight: bold;
+  white-space: normal;
+}
+
+
 .wrapping-max-width-sm {
   white-space: normal;
   text-align: left;
@@ -712,6 +720,11 @@ aggregate-report-table {
   width: min-content;
   width: -moz-min-content;
   width: -webkit-min-content;
+  min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
+}
+
+.aggregate-report-content-container {
+  width: 1450px;
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
 }
 
@@ -1769,9 +1782,10 @@ fieldset.marginLeft50 {
   }
 }
 
+
 .rdw-scrollable-table {
   table ,tr td{
-    border: 1px solid red
+    border: 1px solid red;
   }
   tbody {
     display: block;
@@ -1785,15 +1799,23 @@ fieldset.marginLeft50 {
         text-align: left;
         overflow: hidden;
       }
+
+      td:nth-child(4) {
+        width: 288px;
+      }
+      td:nth-child(6) {
+        width: 150px;
+      }
+
     }
   }
   thead, tbody tr {
     display: table;
     width: 100%;
-    table-layout: fixed;/* even columns width , fix width of table too*/
+    table-layout: fixed;// even columns width , fix width of table too
   }
   thead {
-    width: calc( 100% - 1.1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+    //width: calc( 100% - 1.1em )// scrollbar is average 1em/16px width, remove it from thead width
   }
   th {
     white-space: normal !important;
@@ -1801,6 +1823,14 @@ fieldset.marginLeft50 {
   th:first-child {
     width: 175px;
   }
+
+  th:nth-child(4) {
+    width: 288px;
+  }
+  th:nth-child(6) {
+    width: 150px;
+  }
+
 }
 
 body .ui-paginator .ui-paginator-pages .ui-paginator-page {
