@@ -2,9 +2,14 @@
          [columns]="columns"
          [rows]="rowsPerPageOptions[0]"
          [value]="table.rows"
+
+         [scrollable]="true"
+         [virtualScroll]="true"
+         [totalRecords]="table.rows.length"
+         scrollHeight="500px"
+
          [rowTrackBy]="rowTrackBy"
-         [paginator]="true"
-         [pageLinks]="3"
+
          [alwaysShowPaginator]="false"
          [rowsPerPageOptions]="rowsPerPageOptions"
          (onPage)="onPage($event)"
@@ -12,6 +17,7 @@
          [sortMode]="rowSortingEnabled && 'single'"
          [customSort]="true"
          [autoLayout]="true"
+
          styleClass="table table-striped table-hover overflow rdw-scrollable-table">
   <ng-template pTemplate="header"
                let-columns>

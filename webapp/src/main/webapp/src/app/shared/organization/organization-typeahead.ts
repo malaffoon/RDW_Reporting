@@ -17,7 +17,7 @@ import { TypeaheadMatch } from "ngx-bootstrap";
            (typeaheadLoading)="loading = $event"
            (typeaheadNoResults)="noResults = $event"
            (typeaheadOnSelect)="onTypeaheadSelectInternal($event)"
-           [typeaheadMinLength]="3"
+           [typeaheadMinLength]="2"
            [typeaheadOptionsLimit]="100"
            [typeaheadOptionsInScrollableView]="20"
            [typeaheadScrollable]="true"
