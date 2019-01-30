@@ -90,7 +90,7 @@
                [ngClass]="getClaimColumnCountClass(index)">
           <thead class="ui-table-thead">
           <tr>
-            <th *ngFor="let claimReference of claimReferences[index]">
+            <th *ngFor="let claimReference of getLatestClaimReferences()">
               <i class="fa {{ 'subject.' + assessment.subject + '.claim.' + claimReference.code + '.icon' | translate }}"></i>
               {{ 'subject.' + assessment.subject + '.claim.' + claimReference.code + '.name' | translate}}
             </th>
@@ -98,7 +98,7 @@
           </thead>
           <tbody>
             <tr>
-              <td *ngFor="let claimReference of claimReferences[index]" class="claim-distribution">
+              <td *ngFor="let claimReference of getLatestClaimReferences()" class="claim-distribution">
                 <div class="assessment-aggregate">
                   <div class="scale-score-graph rounded blend-middle mb-sm">
                     <div class="bar-container">

@@ -309,7 +309,8 @@ export class AggregateReportSummary {
           ))
         });
       }
-      if (!equalSize(optionFilters.languages, settingFilters.languages)) {
+      if ((!equalSize(optionFilters.languages, settingFilters.languages)) &&
+        (settingFilters.languages.length > 0)) {
         filterRows.push({
           label: translate('aggregate-report-form.field.language-label'),
           values: inline(orAll(

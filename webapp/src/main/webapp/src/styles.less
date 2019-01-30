@@ -315,6 +315,15 @@ footer {
   #group-results-selected-assessments .col-md-6 .pull-right {
     .float-none-xs;
   }
+
+  .navbar-link > .btn-group {
+    left: -15px;
+    padding-top: 0px;
+  }
+
+  .navbar > select {
+    width: 281px;
+  }
 }
 
 .cursor-pointer {
@@ -1733,7 +1742,9 @@ tr.highlight {
           height: 22px;
           width: 186px;
           padding-left: 6px;
-          font-size: 14px;
+          font-size: 13px;
+          line-height: 1.5;
+          font-family: "PT Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
       }
 
@@ -1765,6 +1776,19 @@ tr.highlight {
   }
 }
 
+li.ui-autocomplete-list-item > span.ng-star-inserted {
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: "PT Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ui-autocomplete-list-item.ui-state-highlight {
+  background-color: @gray-mid;
+  span {
+    color: @white;
+  }
+}
+
 fieldset.marginLeft50 {
   margin-left: 50px;
 }
@@ -1773,7 +1797,6 @@ fieldset.marginLeft50 {
     margin-left: 39px;
   }
 }
-
 
 /*
   Aggregate Report Tables are too wide for the normal layout

@@ -85,7 +85,7 @@
       "summative-administration-condition-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
       "gender-label": "Gender",
       "gender-info": "Student's reported gender",
-      "language-label": "Language",
+      "language-label": "Primary Language",
       "language-info": "Student's primary language",
       "ethnicity-label": "Race / Ethnicity",
       "ethnicity-info": "Student race and ethnicity",
@@ -531,7 +531,7 @@
         "ethnicity-info": "Student race and ethnicity",
         "gender": "Gender",
         "gender-info": "Student's reported gender",
-        "language": "Language",
+        "language": "Primary Language",
         "language-info": "Student's primary language",
         "iep": "IEP",
         "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
@@ -594,6 +594,9 @@
         "State": "{{organizationName}} Instructional Resource",
         "System": "Smarter Balanced Instructional Resource"
       }
+    },
+    "languages": {
+      "undefined": "Not Stated"
     },
     "menus": {
       "resources": "Instructional Resources",
@@ -780,7 +783,8 @@
     "error-band-max": "Error Band Max",
     "error-band-min": "Error Band Min",
     "gender": "Sex",
-    "language": "LanguageCode",
+    "language": "Language",
+    "language-code": "LanguageCode",
     "iep": "IDEAIndicator",
     "limited-english": "LEPStatus",
     "migrant-status": "MigrantStatus",

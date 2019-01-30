@@ -73,6 +73,7 @@ const DefaultButtonStyles = 'btn-primary';
                         [minLength]="0" 
                         [dropdown]="true"
                         [placeholder]="placeholder"
+                        [scrollHeight]="'158px'"
                         field="text" >
         </p-autoComplete> 
         <div class="languages-container btn-group-sm">
@@ -186,7 +187,6 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
             .map(option => option.value)
             .filter(value => this._value.includes(value));
         }
-
         if (!updatedValues || updatedValues.length === 0) {
           updatedValues = this.parseInputValues(this._initialValues);
         }
@@ -304,7 +304,7 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   private computeState(options: Option[], values: any[]): State {
     let enabledOptions = options.filter(x => !x.disabled);
     const effectiveOptions = enabledOptions.filter(option => values.includes(option.value));
-    const effectivelySelectedAllOption = this.suggestions.length === enabledOptions.length || enabledOptions.length === effectiveOptions.length;
+    const effectivelySelectedAllOption = this.suggestions.length === enabledOptions.length || (enabledOptions.length == 0);
     return {
       selectedAllOption: effectivelySelectedAllOption,
       selectedOptions: effectivelySelectedAllOption

@@ -57,20 +57,22 @@ export class TargetStatisticsCalculator {
    * @returns {AggregateTargetScoreRow[]}
    */
   aggregateSubgroupScores(subjectCode: string, allTargets: Target[], targetScoreExams: TargetScoreExam[], subgroupCodes: string[], subgroupOptions: ExamFilterOptions): AggregateTargetScoreRow[] {
+    // Special case for Languages, pull out just the used languageCodes for generatingSubgroupTargets
+    const activeLanguageCodes =  Array.from(new Set(targetScoreExams.map(e => e.languageCode)));
+
     // setup the placeholders to aggregate into
-    let groupedScores = this.generateSubgroupTargets(subjectCode, allTargets, subgroupCodes, subgroupOptions);
+    let groupedScores = this.generateSubgroupTargets(subjectCode, allTargets, subgroupCodes, subgroupOptions, activeLanguageCodes);
 
     if (targetScoreExams == null) targetScoreExams = [];
 
     subgroupCodes.forEach(subgroupCode => {
       targetScoreExams.forEach(exam => {
         let value = this.getExamSubgroupValue(exam, subgroupCode);
-        let subgroupValues = Array.isArray(value) ? value : [value];
+        let subgroupValues = Array.isArray(value) ? value : [ value ];
 
         // always treat results as array since race/ethnicity will come back as array and we need to handle multiple as separate entries
         subgroupValues.forEach(examSubgroupValue => {
           let subgroup = this.subgroupMapper.fromTypeAndCode(subgroupCode, examSubgroupValue);
-
           let index = groupedScores.findIndex(x => x.targetId == exam.targetId && deepEqual(x.subgroup, subgroup));
           if (index !== -1) {
             groupedScores[ index ].standardMetScores.push(exam.standardMetRelativeResidualScore);
@@ -79,7 +81,6 @@ export class TargetStatisticsCalculator {
         });
       });
     });
-
     return groupedScores.map(entry => this.mapToAggregateTargetScoreRow(entry));
   }
 
@@ -127,7 +128,7 @@ export class TargetStatisticsCalculator {
    * @param {ExamFilterOptions} subgroupOptions
    * @returns {GroupedTargetScore[]}
    */
-  private generateSubgroupTargets(subjectCode: string, allTargets: Target[], subgroupCodes: string[], subgroupOptions: ExamFilterOptions): GroupedTargetScore[] {
+  private generateSubgroupTargets(subjectCode: string, allTargets: Target[], subgroupCodes: string[], subgroupOptions: ExamFilterOptions, activeLanguageCodes: string[]): GroupedTargetScore[] {
     let groupedScores: GroupedTargetScore[] = [];
 
     subgroupCodes.forEach(subgroupCode => {
@@ -149,6 +150,9 @@ export class TargetStatisticsCalculator {
           break;
         case 'MigrantStatus':
           subgroupValues = [true, false, undefined];
+          break;
+        case 'Language':
+          subgroupValues = activeLanguageCodes;
           break;
       }
 
@@ -191,6 +195,7 @@ export class TargetStatisticsCalculator {
       case 'IEP': return exam.iep;
       case 'MigrantStatus': return exam.migrantStatus;
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
+      case 'Language': return exam.languageCode;
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
       case 'ELAS': return exam.elasCode !+ null ? exam.elasCode : null;
