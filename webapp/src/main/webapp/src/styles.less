@@ -724,6 +724,11 @@ aggregate-report-table {
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
 }
 
+.aggregate-report-content-container {
+  width: 1450px;
+  min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
+}
+
 .disabled-table-container {
   .disabled-table {
     cursor: not-allowed;
@@ -1793,6 +1798,77 @@ fieldset.marginLeft50 {
   }
 }
 
+/*
+  Aggregate Report Tables are too wide for the normal layout
+  Several columns need to have set widths
+ */
+@agg-organization-width: 180px;
+@agg-dimension-width: 288px;
+@agg-achievementComparision-width: 150px;
+@agg-avgScaleScore-width: 140px;
+
+.rdw-scrollable-table {
+  table ,tr td{
+    border: 1px solid red;
+  }
+  tbody {
+    display: block;
+    overflow: auto;
+
+    tr {
+      td.aggregate-report-organization {
+        width: @agg-organization-width;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-align: left;
+        overflow: hidden;
+      }
+
+      td.aggregate-report-dimension {
+        width: @agg-dimension-width;
+      }
+      td.aggregate-report-achievementComparison {
+        width: @agg-achievementComparision-width;
+      }
+      td.aggregate-report-avgScaleScore {
+        width: @agg-avgScaleScore-width;
+      }
+
+    }
+  }
+  thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;// even columns width , fix width of table too
+  }
+  th {
+    white-space: normal !important;
+  }
+  th.aggregate-report-organization {
+    width: @agg-organization-width;
+  }
+
+  th.aggregate-report-dimension {
+    width: @agg-dimension-width;
+  }
+  th.aggregate-report-achievementComparison {
+    width: @agg-achievementComparision-width;
+  }
+  th.aggregate-report-avgScaleScore {
+    width: @agg-avgScaleScore-width;
+  }
+
+}
+
 body .ui-paginator .ui-paginator-pages .ui-paginator-page {
   padding-top: 0px;
+}
+
+.ui-paginator .ui-dropdown {
+  margin-left: 0em;
+}
+
+// fixes issue with slow/stuttering scrolling and a fixed position element like the nav-pills on the aggregate reports
+.fixed-aggregate-navpills {
+  will-change: transform;
 }
