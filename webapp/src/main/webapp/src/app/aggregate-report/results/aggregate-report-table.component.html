@@ -32,8 +32,8 @@
               && column.id !== 'dimension'
               && column.id !== 'organization'
               && column.id !== 'claim'
-              && column.id !== 'target'
-          }">
+              && column.id !== 'target'}
+          " class="aggregate-report-{{column.id}}">
 
         <div *ngSwitchCase="'avgScaleScore'" class="text-center">
           <div class="no-wrap">{{'aggregate-report-table.columns.avg-scale-score' | translate}}</div>
@@ -88,7 +88,7 @@
                let-columns="columns">
     <tr>
       <td *ngFor="let column of columns; let columnIdx = index;"
-          [hidden]="!column.visible">
+          [hidden]="!column.visible" class="aggregate-report-{{column.id}}">
         <div [ngSwitch]="column.id"
              class="full-cell"
              [ngClass]="{

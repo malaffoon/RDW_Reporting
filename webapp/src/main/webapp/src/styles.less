@@ -365,14 +365,6 @@ sb-button-typeahead .input-group-btn > .btn,
   max-width: 250px;
 }
 
-
-.label-max-width:hover {
-  overflow: visible;
-  font-weight: bold;
-  white-space: normal;
-}
-
-
 .wrapping-max-width-sm {
   white-space: normal;
   text-align: left;
@@ -1783,6 +1775,15 @@ fieldset.marginLeft50 {
 }
 
 
+/*
+  Aggregate Report Tables are too wide for the normal layout
+  Several columns need to have set widths
+ */
+@agg-organization-width: 180px;
+@agg-dimension-width: 288px;
+@agg-achievementComparision-width: 150px;
+@agg-avgScaleScore-width: 140px;
+
 .rdw-scrollable-table {
   table ,tr td{
     border: 1px solid red;
@@ -1792,19 +1793,22 @@ fieldset.marginLeft50 {
     overflow: auto;
 
     tr {
-      td:first-child {
-        width: 175px;
+      td.aggregate-report-organization {
+        width: @agg-organization-width;
         white-space: nowrap;
         text-overflow: ellipsis;
         text-align: left;
         overflow: hidden;
       }
 
-      td:nth-child(4) {
-        width: 288px;
+      td.aggregate-report-dimension {
+        width: @agg-dimension-width;
       }
-      td:nth-child(6) {
-        width: 150px;
+      td.aggregate-report-achievementComparison {
+        width: @agg-achievementComparision-width;
+      }
+      td.aggregate-report-avgScaleScore {
+        width: @agg-avgScaleScore-width;
       }
 
     }
@@ -1814,21 +1818,21 @@ fieldset.marginLeft50 {
     width: 100%;
     table-layout: fixed;// even columns width , fix width of table too
   }
-  thead {
-    //width: calc( 100% - 1.1em )// scrollbar is average 1em/16px width, remove it from thead width
-  }
   th {
     white-space: normal !important;
   }
-  th:first-child {
-    width: 175px;
+  th.aggregate-report-organization {
+    width: @agg-organization-width;
   }
 
-  th:nth-child(4) {
-    width: 288px;
+  th.aggregate-report-dimension {
+    width: @agg-dimension-width;
   }
-  th:nth-child(6) {
-    width: 150px;
+  th.aggregate-report-achievementComparison {
+    width: @agg-achievementComparision-width;
+  }
+  th.aggregate-report-avgScaleScore {
+    width: @agg-avgScaleScore-width;
   }
 
 }
