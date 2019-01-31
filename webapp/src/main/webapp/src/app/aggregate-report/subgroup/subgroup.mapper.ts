@@ -98,8 +98,12 @@ export class SubgroupMapper {
       }, []);
   }
 
+  /**
+   * Reduces the number of languageCodes returned. Grabs a random 'numLangs'-1 languages from the array and
+   * adds the first language (should be 'eng' for English) to the front of the returned array
+   */
   reduceLanguageDimensionCodes(codes: string[], configurationType: string, numLangs: number): string[] {
-    if(configurationType === "Language") {
+    if(configurationType === "Language" && codes.length > numLangs) {
       let shuffled = codes.slice(1,codes.length -1).sort(() => 0.5 - Math.random());
       shuffled.unshift(codes[0]); //add first element to the beginning (should be 'eng')
       return shuffled.slice(0,numLangs);
