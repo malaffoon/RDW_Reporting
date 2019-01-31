@@ -725,7 +725,7 @@ aggregate-report-table {
 }
 
 .aggregate-report-content-container, .summary-report-content-container {
-  width: 1450px;
+  width: 1550px;
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
 }
 
@@ -1807,6 +1807,10 @@ fieldset.marginLeft50 {
 @agg-achievementComparision-width: 150px;
 @agg-avgScaleScore-width: 140px;
 @agg-claim-width: 300px;
+@agg-assessmentGrade-width: 95px;
+@agg-SchoolYear-width: 82px;
+@agg-assessmentLabel-width: 225px;
+@agg-studentsTested-width: 75px;
 
 .rdw-scrollable-table {
   table ,tr td{
@@ -1825,8 +1829,24 @@ fieldset.marginLeft50 {
         overflow: hidden;
       }
 
+      td.aggregate-report-assessmentGrade {
+        width: @agg-assessmentGrade-width;
+      }
+
+      td.aggregate-report-schoolYear {
+        width: @agg-SchoolYear-width;
+      }
+
       td.aggregate-report-dimension {
         width: @agg-dimension-width;
+      }
+
+      td.aggregate-report-studentsTested {
+        width: @agg-studentsTested-width;
+      }
+
+      td.aggregate-report-assessmentLabel {
+        width: @agg-assessmentLabel-width;
       }
 
       td.aggregate-report-achievementComparison {
@@ -1854,9 +1874,20 @@ fieldset.marginLeft50 {
   th.aggregate-report-organization {
     width: @agg-organization-width;
   }
-
+  th.aggregate-report-assessmentGrade {
+    width: @agg-assessmentGrade-width;
+  }
+  th.aggregate-report-schoolYear {
+    width: @agg-SchoolYear-width;
+  }
   th.aggregate-report-dimension {
     width: @agg-dimension-width;
+  }
+  th.aggregate-report-studentsTested {
+    width: @agg-studentsTested-width;
+  }
+  th.aggregate-report-assessmentLabel {
+    width: @agg-assessmentLabel-width;
   }
   th.aggregate-report-achievementComparison {
     width: @agg-achievementComparision-width;
