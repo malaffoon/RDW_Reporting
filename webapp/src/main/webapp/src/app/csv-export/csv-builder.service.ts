@@ -632,8 +632,7 @@ export class CsvBuilder {
       studentContext = studentContext.withElas(getExam);
     }
 
-    studentContext = studentContext.withLanguageCode(getExam)
-      .withLanguage(getExam)
+    studentContext = studentContext.withLanguage(getExam)
       .withEthnicity(getExam, ethnicities);
     return studentContext;
   }
