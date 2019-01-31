@@ -724,7 +724,7 @@ aggregate-report-table {
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
 }
 
-.aggregate-report-content-container {
+.aggregate-report-content-container, .summary-report-content-container {
   width: 1450px;
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
 }
@@ -1806,6 +1806,7 @@ fieldset.marginLeft50 {
 @agg-dimension-width: 288px;
 @agg-achievementComparision-width: 150px;
 @agg-avgScaleScore-width: 140px;
+@agg-claim-width: 300px;
 
 .rdw-scrollable-table {
   table ,tr td{
@@ -1827,11 +1828,17 @@ fieldset.marginLeft50 {
       td.aggregate-report-dimension {
         width: @agg-dimension-width;
       }
+
       td.aggregate-report-achievementComparison {
         width: @agg-achievementComparision-width;
       }
+
       td.aggregate-report-avgScaleScore {
         width: @agg-avgScaleScore-width;
+      }
+
+      td.aggregate-report-claim {
+        width: @agg-claim-width;
       }
 
     }
@@ -1856,6 +1863,9 @@ fieldset.marginLeft50 {
   }
   th.aggregate-report-avgScaleScore {
     width: @agg-avgScaleScore-width;
+  }
+  th.aggregate-report-claim {
+    width: @agg-claim-width;
   }
 
 }
