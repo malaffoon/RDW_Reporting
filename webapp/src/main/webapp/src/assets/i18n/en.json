@@ -435,19 +435,6 @@
       "Section504": "504",
       "StudentEnrolledGrade": "Student Enrolled Grade"
     },
-    "dimension-table": {
-      "EconomicDisadvantage": "Economic Disadvantage",
-      "Ethnicity": "Race / Ethnicity",
-      "Gender": "Gender",
-      "IEP": "IEP",
-      "LEP": "Limited English Proficiency",
-      "ELAS": "ELAS",
-      "Language": "Primary Language",
-      "MigrantStatus": "Migrant Status",
-      "Overall": "Overall",
-      "Section504": "504",
-      "StudentEnrolledGrade": "Student Enrolled Grade"
-    },
     "dimension-short-name": {
       "EconomicDisadvantage": "Economic Disadvantage",
       "Ethnicity": "Ethnicity",
