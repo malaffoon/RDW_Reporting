@@ -126,7 +126,7 @@ export class SubgroupMapper {
         .join(';'),
       name: dimensionGroups
         .map(dimensionGroup => {
-          const typeName = translate(`common.dimension.${dimensionGroup.type}`);
+          const typeName = translate(`common.dimension-table.${dimensionGroup.type}`);
           const valueNames = dimensionGroup.values
             .map(value => translate(value.translationCode))
             .join(', ');
