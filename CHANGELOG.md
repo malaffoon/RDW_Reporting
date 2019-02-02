@@ -2,9 +2,13 @@
 
 #### 1.3.0
 
+* Change aggregate report table to scroll instead of paging.
+* Fix issue with responsive menu in app header.
+* Honor school-year discriminator for accommodation text.
 * Add language as a filter and subgroup for reports.
 * Honor target report flag for subject summative assessments.
-* Change administrator tools in landing page
+* Change aesthetics of writing trait score breakdown.
+* Change administrator tools aesthetics in landing page.
     * home.admin-tools.titles.{analyze,manage} replaced with home.admin-tools.titles.administrator-tools.
 * Upgraded node modules (Angular 5 to Angular 7, RxJs 5 to 6)
 
