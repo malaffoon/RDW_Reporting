@@ -326,6 +326,7 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
     // in a deselection of all options buttons
     state.selectedOptions.clear();
     this._options = [];
+    this._initialOptions = [];
     this.updateValue(state, options);
     this.optionsEvent.emit(this.options);
   }
