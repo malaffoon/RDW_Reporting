@@ -91,9 +91,10 @@
                     <span class="title" th:text="#{report.sum.section.claim.header}"></span>
                     <p th:text="#{('subject.' + ${report.subject} + '.report-grade.' + ${report.assessment.gradeCode} + '.asmt-type.sum.claim.title')(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></p>
                 </div>
-                <div class="level-description" th:each="claimCode : ${#lists.sort(report.assessment.claimCodes, support.getClaimCodeComparator(report))}"
+                <div class="level-description" th:each="claimCode, claimCodeStat : ${#lists.sort(report.assessment.claimCodes, support.getClaimCodeComparator(report))}"
+                     th:with="claimIdx=${report.assessment.claimCodes.indexOf(claimCode)}"
                      th:classappend="${support.isWritingTraitScoreClaim(claimCodeStat.last, report.exam.writingTraitScores)} ? 'level-description-writing-traits' : ''">
-                    <div class="main-claim">
+                      <div class="main-claim">
                         <span class="title">
                             <i class="fa"
                                th:classappend="#{'subject.' + ${report.subject} + '.claim.' + ${claimCode} + '.icon'}"></i>
