@@ -25,7 +25,7 @@ import { map } from "rxjs/operators";
 import { Observable ,  forkJoin } from "rxjs";
 import { SubjectDefinition } from '../../subject/subject';
 
-export const SupportedRowCount = 10000;
+export const SupportedRowCount = 4000;
 export const DefaultRowsPerPageOptions = [ 50, 100, 500, 1000 ];
 
 const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
