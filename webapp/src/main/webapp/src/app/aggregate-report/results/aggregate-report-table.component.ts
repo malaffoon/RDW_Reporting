@@ -26,7 +26,6 @@ import { Observable ,  forkJoin } from "rxjs";
 import { SubjectDefinition } from '../../subject/subject';
 
 export const SupportedRowCount = 4000;
-export const DefaultRowsPerPageOptions = [ 50, 100, 500, 1000 ];
 
 const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
   .on(item => item.schoolYear);
@@ -61,9 +60,6 @@ export class AggregateReportTableComponent implements OnInit {
 
   @Input()
   public preview: boolean = false;
-
-  @Input()
-  public rowsPerPageOptions: number[] = DefaultRowsPerPageOptions;
 
   @ViewChild('dataTable')
   private dataTable: Table;
