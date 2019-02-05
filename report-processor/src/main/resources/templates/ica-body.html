@@ -91,8 +91,9 @@
                     <span class="title" th:text="#{report.ica.section.claim.header}"></span>
                     <p th:text="#{('subject.' + ${report.subject} + '.report-grade.' + ${report.assessment.gradeCode} + '.asmt-type.ica.claim.title')(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></p>
                 </div>
-                <div class="level-description" th:each="claimCode : ${#lists.sort(report.assessment.claimCodes, support.getClaimCodeComparator(report))}"
-                    th:classappend="${support.isWritingTraitScoreClaim(claimCodeStat.last, report.exam.writingTraitScores)} ? 'level-description-writing-traits' : ''">
+                <div class="level-description" th:each="claimCode, claimCodeStat : ${#lists.sort(report.assessment.claimCodes, support.getClaimCodeComparator(report))}"
+                    th:with="claimIdx=${report.assessment.claimCodes.indexOf(claimCode)}, writingClaim=${support.isWritingTraitScoreClaim(claimCodeStat.last, report.exam.writingTraitScores)}"
+                    th:classappend="${writingClaim} ? 'level-description-writing-traits' : ''">
                     <div class="main-claim">
                         <span class="title">
                             <i class="fa"
@@ -100,19 +101,19 @@
                             <span th:text="#{'subject.' + ${report.subject} + '.claim.' + ${claimCode} + '.name'}" th:remove="tag"></span>
                         </span>
                         <span class="level-label label"
-                              th:if="${report.exam.claimScaleScores[claimCodeStat.index] != null}"
-                              th:classappend="#{'subject.' + ${report.subject} + '.asmt-type.ica.claim-score.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level} + '.color'}"
-                              th:text="#{'subject.' + ${report.subject} + '.asmt-type.ica.claim-score.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level} + '.name'}"></span>
+                              th:if="${report.exam.claimScaleScores[claimIdx] != null}"
+                              th:classappend="#{'subject.' + ${report.subject} + '.asmt-type.ica.claim-score.level.' + ${report.exam.claimScaleScores[claimIdx].level} + '.color'}"
+                              th:text="#{'subject.' + ${report.subject} + '.asmt-type.ica.claim-score.level.' + ${report.exam.claimScaleScores[claimIdx].level} + '.name'}"></span>
                         <span class="label gray"
-                              th:if="${report.exam.claimScaleScores[claimCodeStat.index] == null}"
+                              th:if="${report.exam.claimScaleScores[claimIdx] == null}"
                               th:text="#{'report.not-scored'}"></span>
                         <div class="description"
-                             th:if="${report.exam.claimScaleScores[claimCodeStat.index] != null}">
-                            <p th:text="#{('subject.' + ${report.subject} + '.report-grade.' + ${report.assessment.gradeCode} + '.asmt-type.ica.claim.' + ${claimCode} + '.level.' + ${report.exam.claimScaleScores[claimCodeStat.index].level})(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></p>
+                             th:if="${report.exam.claimScaleScores[claimIdx] != null}">
+                            <p th:text="#{('subject.' + ${report.subject} + '.report-grade.' + ${report.assessment.gradeCode} + '.asmt-type.ica.claim.' + ${claimCode} + '.level.' + ${report.exam.claimScaleScores[claimIdx].level})(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></p>
                         </div>
                     </div>
 
-                    <div class="writing-traits" th:if="${support.isWritingTraitScoreClaim(claimCodeStat.last, report.exam.writingTraitScores)}"
+                    <div class="writing-traits" th:if="${writingClaim}"
                          th:with="scored=true,assessment=${report.assessment},exam=${report.exam}">
                         <span class="title" th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></span>
                         <div class="description" th:text="#{('report.writing.description')(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></div>
