@@ -2,6 +2,7 @@
 
 #### 1.3.0
 
+* Fix issue with claim levels in the ISR (PDF report).
 * Change aggregate report table to scroll instead of paging.
 * Fix issue with responsive menu in app header.
 * Honor school-year discriminator for accommodation text.
