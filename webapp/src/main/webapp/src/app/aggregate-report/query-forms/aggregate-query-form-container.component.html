@@ -20,7 +20,7 @@
 
 <ng-template #accessAllowed>
   <div class="aggregate-report-form">
-    <div sticky marginTop="12" [style.position]="'absolute'">
+    <div sticky marginTop="12" [style.position]="'absolute'" class="fixed-aggregate-navpills">
       <scroll-nav [items]="navItems">
         <div class="ml-sm mt-xs">
           <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
@@ -63,21 +63,25 @@
     </div>
 
     <general-population-form *ngIf="hasGeneralPopulationReport"
+                             #generalPopulationForm
                              [hidden]="reportType !== 'GeneralPopulation'"
                              (navItemChange)="setNavItems('GeneralPopulation', $event)"
                              [submitAction]="submitActionsByReportType['GeneralPopulation']"></general-population-form>
 
     <longitudinal-cohort-form *ngIf="hasLongitudinalReport"
+                              #longitudinalCohortForm
                               [hidden]="reportType !== 'LongitudinalCohort'"
                               (navItemChange)="setNavItems('LongitudinalCohort', $event)"
                               [submitAction]="submitActionsByReportType['LongitudinalCohort']"></longitudinal-cohort-form>
 
     <claim-report-form *ngIf="hasClaimReport"
+                       #claimForm
                        [hidden]="reportType !== 'Claim'"
                        (navItemChange)="setNavItems('Claim', $event)"
                        [submitAction]="submitActionsByReportType['Claim']"></claim-report-form>
 
     <target-report-form *ngIf="hasTargetReport"
+                        #targetForm
                         [hidden]="reportType !== 'Target'"
                         (navItemChange)="setNavItems('Target', $event)"
                         [submitAction]="submitActionsByReportType['Target']"></target-report-form>

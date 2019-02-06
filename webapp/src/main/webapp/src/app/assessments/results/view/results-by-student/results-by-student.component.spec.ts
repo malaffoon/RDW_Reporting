@@ -8,7 +8,7 @@ import { Component, NO_ERRORS_SCHEMA } from "@angular/core";
 import { Assessment } from "../../../model/assessment.model";
 import { InstructionalResourcesService } from "../../instructional-resources.service";
 import { CachingDataService } from "../../../../shared/data/caching-data.service";
-import { of } from "rxjs/observable/of";
+import { of } from "rxjs";
 import { ordering } from "@kourge/ordering";
 import { byString } from "@kourge/ordering/comparator";
 import { OrderingService } from "../../../../shared/ordering/ordering.service";

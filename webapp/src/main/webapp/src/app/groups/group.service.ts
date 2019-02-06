@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ReportingServiceRoute } from '../shared/service-route';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { Group } from './group';

@@ -6,4 +6,5 @@ export interface StudentFilterOptions {
   readonly limitedEnglishProficiencies?: string[];
   readonly section504s?: string[];
   readonly migrantStatuses?: string[];
+  readonly languages?: string[];
 }

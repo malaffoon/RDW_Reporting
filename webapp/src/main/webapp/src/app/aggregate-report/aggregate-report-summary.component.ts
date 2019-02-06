@@ -147,7 +147,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -163,7 +163,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -194,7 +194,7 @@ export class AggregateReportSummary {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
-          values: orAll(options.subjects, settings.subjects, code => translate(`subject.${code}.name`))
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
         },
         {
           label: translate('aggregate-report-form.field.assessment-grades-label'),
@@ -306,6 +306,17 @@ export class AggregateReportSummary {
             optionFilters.section504s,
             settingFilters.section504s,
             code => translate(`common.boolean.${code}`)
+          ))
+        });
+      }
+      if ((!equalSize(optionFilters.languages, settingFilters.languages)) &&
+        (settingFilters.languages.length > 0)) {
+        filterRows.push({
+          label: translate('aggregate-report-form.field.language-label'),
+          values: inline(orAll(
+            optionFilters.languages.map(o => o),
+            settingFilters.languages,
+            code => translate(`common.languages.${code}`)
           ))
         });
       }

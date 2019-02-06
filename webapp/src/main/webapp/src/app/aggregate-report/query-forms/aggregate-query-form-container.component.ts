@@ -1,10 +1,14 @@
-import { Component, EventEmitter } from "@angular/core";
+import { Component, EventEmitter, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AggregateReportOptions } from "../aggregate-report-options";
 import { AggregateReportFormSettings, AggregateReportType } from "../aggregate-report-form-settings";
 import { AggregateReportFormOptions } from "../aggregate-report-form-options";
 import { AggregateReportOptionsMapper } from "../aggregate-report-options.mapper";
 import { ScrollNavItem } from "../../shared/nav/scroll-nav.component";
+import {TargetReportFormComponent} from "./target-report-form.component";
+import {ClaimReportFormComponent} from "./claim-report-form.component";
+import {GeneralPopulationFormComponent} from "./general-population-form.component";
+import {LongitudinalCohortFormComponent} from "./longitudinal-cohort-form.component";
 
 @Component({
   selector: 'aggregate-query-form-container',
@@ -16,6 +20,15 @@ export class AggregateQueryFormContainerComponent {
   aggregateReportOptions: AggregateReportOptions;
   reportType: AggregateReportType;
   filteredOptions: AggregateReportFormOptions;
+
+  @ViewChild('targetForm')
+  targetForm: TargetReportFormComponent;
+  @ViewChild('claimForm')
+  claimForm: ClaimReportFormComponent;
+  @ViewChild('generalPopulationForm')
+  generalPopulationForm: GeneralPopulationFormComponent;
+  @ViewChild('targetForm')
+  longitudinalCohortForm: LongitudinalCohortFormComponent;
 
   navItems: ScrollNavItem[];
   navItemsByReportType: {[key: string]: ScrollNavItem[]} = {};
@@ -52,6 +65,23 @@ export class AggregateQueryFormContainerComponent {
 
   onReportTypeChange(): void {
     this.navItems = this.navItemsByReportType[this.reportType];
+
+    switch (this.reportType) {
+      case 'GeneralPopulation':
+        this.generalPopulationForm.updateSubjectsEnabled();
+        break;
+      case 'Claim':
+        this.claimForm.updateSubjectsEnabled();
+        break;
+      case 'LongitudinalCohort':
+        this.longitudinalCohortForm.updateSubjectsEnabled();
+        break;
+      case 'Target':
+        this.targetForm.updateSubjectsEnabled();
+        break;
+      default:
+        console.error('Unknown report type');
+    }
   }
 
   submitQuery($event): void {

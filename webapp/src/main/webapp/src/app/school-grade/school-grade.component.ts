@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 import { Option } from "../shared/form/sb-typeahead.component";
 import { Utils } from "../shared/support/support";
 import { School } from "../shared/organization/organization";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { SchoolTypeahead } from "../shared/school/school-typeahead";
 import { OrganizationService } from "../shared/organization/organization.service";
 import { map, mergeMap } from "rxjs/operators";

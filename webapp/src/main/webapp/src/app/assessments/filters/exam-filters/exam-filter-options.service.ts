@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { ExamFilterOptionsMapper } from "./exam-filter-options.mapper";
 import { CachingDataService } from "../../../shared/data/caching-data.service";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { map } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../../../shared/service-route';
 

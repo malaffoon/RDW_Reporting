@@ -10,11 +10,14 @@ import { TranslateModule } from "@ngx-translate/core";
 import { SBButtonGroup } from './sb-button-group';
 import { SBRadioGroup } from './sb-radio-group';
 import { InformationButtonComponent } from './information-button.component';
+import { SBTypeaheadGroup } from "./sb-typeahead-group";
+import { AutoCompleteModule } from "primeng/primeng";
 
 @NgModule({
   declarations: [
     SBTypeahead,
     SBButtonTypeahead,
+    SBTypeaheadGroup,
     SBCheckboxGroup,
     SBButtonGroup,
     SBRadioGroup,
@@ -24,10 +27,11 @@ import { InformationButtonComponent } from './information-button.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    AutoCompleteModule,
     PopoverModule.forRoot(),
     TypeaheadModule.forRoot(),
     TranslateModule.forRoot(),
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
   ],
   exports: [
     SBTypeahead,
@@ -35,6 +39,7 @@ import { InformationButtonComponent } from './information-button.component';
     SBCheckboxGroup,
     SBButtonGroup,
     SBRadioGroup,
+    SBTypeaheadGroup,
     InformationButtonComponent
   ]
 })

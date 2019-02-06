@@ -2,7 +2,7 @@ import { BaseAggregateQueryFormComponent } from "./base-aggregate-query-form.com
 import { District, Organization, OrganizationType, School } from "../../shared/organization/organization";
 import { OrganizationTypeahead } from "../../shared/organization/organization-typeahead";
 import { ViewChild } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { NotificationService } from "../../shared/notification/notification.service";
 import { AggregateReportOptionsMapper } from "../aggregate-report-options.mapper";
 import { AggregateReportService } from "../aggregate-report.service";

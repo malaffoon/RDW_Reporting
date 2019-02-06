@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { ImportResult } from "../import-result.model";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { GroupImportService } from "../group-import.service";
 
 @Injectable()

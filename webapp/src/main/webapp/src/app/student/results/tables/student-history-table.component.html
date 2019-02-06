@@ -31,7 +31,7 @@
       <button (click)="viewState = 'overall'"
               class="btn btn-default"
               angulartics2On="click"
-              angularticsEvent="ViewOverallScores"
+              angularticsAction="ViewOverallScores"
               angularticsCategory="StudentHistory"
               [ngClass]="{'active': viewState === 'overall'}">
         {{'common.buttons.display-overall' | translate}}
@@ -39,7 +39,7 @@
       <button (click)="viewState = 'claim';"
               class="btn btn-default"
               angulartics2On="click"
-              angularticsEvent="ViewClaimScores"
+              angularticsAction="ViewClaimScores"
               angularticsCategory="StudentHistory"
               [ngClass]="{'active': viewState === 'claim'}">
         {{'common.buttons.display-claim' | translate}}
@@ -143,7 +143,7 @@
               <button *ngIf="assessmentType === 'iab'"
                       class="btn btn-borderless btn-xs icon-only pull-right"
                       angulartics2On="click"
-                      angularticsEvent="InstructionalResource"
+                      angularticsAction="InstructionalResource"
                       angularticsCategory="AssessmentResults"
                       [disabled]="false"
                       [popover]="buttonPopover"

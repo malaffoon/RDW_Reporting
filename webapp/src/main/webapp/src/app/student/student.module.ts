@@ -37,7 +37,7 @@ import { StudentResultsFilterService } from './results/student-results-filter.se
     StudentHistoryTableComponent
   ],
   imports: [
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     AssessmentsModule,
     BrowserAnimationsModule,
     BrowserModule,

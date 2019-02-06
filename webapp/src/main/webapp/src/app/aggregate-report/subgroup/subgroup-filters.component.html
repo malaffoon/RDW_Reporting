@@ -17,7 +17,7 @@
                            analyticsEvent="FilterClick"
                            analyticsCategory="AggregateQueryBuilder"
                            [allOptionAnalyticsProperties]="{label: 'Gender: All'}"
-                           (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
       </div>
     </div>
   </fieldset>
@@ -40,7 +40,7 @@
                            analyticsEvent="FilterClick"
                            analyticsCategory="AggregateQueryBuilder"
                            [allOptionAnalyticsProperties]="{label: 'Ethnicity: All'}"
-                           (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
       </div>
     </div>
   </fieldset>
@@ -64,7 +64,7 @@
                            analyticsEvent="FilterClick"
                            analyticsCategory="AggregateQueryBuilder"
                            [allOptionAnalyticsProperties]="{label: 'Limited English Proficiency: All'}"
-                           (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
       </div>
     </div>
   </fieldset>
@@ -87,7 +87,30 @@
                            analyticsEvent="FilterClick"
                            analyticsCategory="AggregateQueryBuilder"
                            [allOptionAnalyticsProperties]="{label: 'English Language Acquisition Status: All'}"
-                           (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
+      </div>
+    </div>
+  </fieldset>
+</div>
+<div class="well">
+  <fieldset>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="language-subgroup-filter">
+          <span info-button
+                title="{{ 'common.filters.student.language' | translate }}"
+                content="{{ 'common.filters.student.language-info' | translate }}"></span>
+        </label>
+      </div>
+      <div class="col-md-6 toggle-group btn-group-sm vertical all-option nested-btn-group" >
+        <sb-typeahead-group id="language-subgroup-filter" *ngIf="options.languages"
+                            placeholder="{{'aggregate-report-form.field.language-placeholder' | translate}}"
+                            [suggestions]="options.languages"
+                            [(ngModel)]="settings.languages"
+                            [ngModelOptions]="{standalone: true}"
+                            [initialOptions]="getOptions()"
+                            name="languageCodes" enum="common.languageCodes" property="languageCodes"
+                            (optionsEvent)="optionsChanged($event)"></sb-typeahead-group>
       </div>
     </div>
   </fieldset>
@@ -111,7 +134,7 @@
                            analyticsEvent="FilterClick"
                            analyticsCategory="AggregateQueryBuilder"
                            [allOptionAnalyticsProperties]="{label: '504 Plan: All'}"
-                           (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
       </div>
     </div>
   </fieldset>
@@ -135,7 +158,7 @@
                            analyticsEvent="FilterClick"
                            analyticsCategory="AggregateQueryBuilder"
                            [allOptionAnalyticsProperties]="{label: 'IEP: All'}"
-                           (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
       </div>
     </div>
   </fieldset>
@@ -159,7 +182,7 @@
                            analyticsEvent="FilterClick"
                            analyticsCategory="AggregateQueryBuilder"
                            [allOptionAnalyticsProperties]="{label: 'Migrant Status: All'}"
-                           (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
       </div>
     </div>
   </fieldset>
@@ -180,7 +203,7 @@
                          analyticsEvent="FilterClick"
                          analyticsCategory="AggregateQueryBuilder"
                          [allOptionAnalyticsProperties]="{label: 'Economic Disadvantage: All'}"
-                         (change)="onSettingChangeInternal()"></sb-checkbox-group>
+                         (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
     </div>
   </div>
 </div>

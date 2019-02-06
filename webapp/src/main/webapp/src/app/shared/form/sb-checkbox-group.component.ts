@@ -46,7 +46,7 @@ const DefaultButtonStyles = 'btn-primary';
                autocomplete="off"
                checked=""
                angulartics2On="click"
-               angularticsEvent="{{analyticsEvent}}"
+               angularticsAction="{{analyticsEvent}}"
                angularticsCategory="{{analyticsCategory}}"
                [angularticsProperties]="allOptionAnalyticsProperties">
         {{'common.buttons.all' | translate}}
@@ -67,7 +67,7 @@ const DefaultButtonStyles = 'btn-primary';
                  autocomplete="off"
                  [attr.selected]="selectedOptionsInternal[ i ] ? 'true' : 'false'"
                  angulartics2On="click"
-                 angularticsEvent="{{analyticsEvent}}"
+                 angularticsAction="{{analyticsEvent}}"
                  angularticsCategory="{{analyticsCategory}}"
                  [angularticsProperties]="option.analyticsProperties">
           {{option.text}}

@@ -127,9 +127,12 @@
                             analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-checkbox-list>
         </fieldset>
       </div>
+
+
     </div>
+
     <!-- Column 2 -->
-    <div class="col-md-2">
+    <div class="col-md-3">
       <!-- Migrant Status -->
       <div class="block-children">
         <fieldset>
@@ -175,9 +178,6 @@
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </fieldset>
       </div>
-    </div>
-    <!-- Column 3 -->
-    <div class="col-md-4">
 
       <!-- Limited English Proficiency -->
       <div class="block-children" *ngIf="showLep">
@@ -195,6 +195,10 @@
                                 analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-radio-button-list>
         </fieldset>
       </div>
+    </div>
+
+    <!-- Column 3 -->
+    <div class="col-md-4">
       <!-- English Language Acquisition Status -->
       <div class="block-children" *ngIf="showElas">
         <fieldset>
@@ -211,9 +215,29 @@
                             analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-checkbox-list>
         </fieldset>
       </div>
+      <!-- Language Selection -->
+      <div class="block-children">
+        <fieldset>
+          <label for="language-filter">
+            <span info-button
+                  title="{{ 'common.filters.student.language' | translate }}"
+                  content="{{ 'common.filters.student.language-info' | translate }}"></span>
+          </label>
+          <div class="toggle-group btn-group-sm vertical all-option nested-btn-group" >
+            <sb-typeahead-group id="language-filter" *ngIf="filterOptions.languages"
+                              placeholder="{{'aggregate-report-form.field.language-placeholder' | translate}}"
+                              [suggestions]="getLanguagesMap()"
+                              [(ngModel)]="filterBy.languageCodes"
+                              [ngModelOptions]="{standalone: true}" enum="common.languageCodes" property="languageCodes"
+                              analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"
+                              name="language-filter" (optionsEvent)="optionsChanged($event)"
+            ></sb-typeahead-group>
+          </div>
+        </fieldset>
+      </div>
     </div>
     <!-- Column 4 -->
-    <div class="col-md-4">
+    <div class="col-md-3">
       <!-- Race / Ethnicity -->
       <div class="block-children">
         <fieldset>

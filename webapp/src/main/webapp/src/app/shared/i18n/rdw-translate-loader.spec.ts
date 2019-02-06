@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { inject, TestBed } from "@angular/core/testing";
 import { SubjectService } from "../../subject/subject.service";
-import { of } from "rxjs/observable/of";
+import { of } from "rxjs";
 
 describe('RdwTranslateLoader', () => {
 

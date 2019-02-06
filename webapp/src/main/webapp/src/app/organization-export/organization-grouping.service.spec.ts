@@ -1,20 +1,25 @@
 import { OrganizationMapper } from "./organization/organization.mapper";
 import { OrganizationGroupingService } from "./organization-grouping.service";
+import { UserOrganizations } from "./organization/user-organizations";
 
 describe('OrganizationGroupingService', () => {
 
   let mapper = new OrganizationMapper();
   let service: OrganizationGroupingService = new OrganizationGroupingService(mapper);
-  let organizations = mapper.createUserOrganizations([
-    { id: 1, name: 'School 1', schoolGroupId: 1, districtId: 1 },
-    { id: 2, name: 'School 2', schoolGroupId: 1, districtId: 1 },
-    { id: 3, name: 'School 3', schoolGroupId: 2, districtId: 1 }
-  ], [
-    { id: 1, name: 'School Group 1', districtId: 1 },
-    { id: 2, name: 'School Group 2', districtId: 1 }
-  ], [
-    { id: 1, name: 'District 1' }
-  ]);
+  let organizations: UserOrganizations;
+
+  beforeEach(() => {
+    organizations = mapper.createUserOrganizations([
+      { id: 1, name: 'School 1', schoolGroupId: 1, districtId: 1 },
+      { id: 2, name: 'School 2', schoolGroupId: 1, districtId: 1 },
+      { id: 3, name: 'School 3', schoolGroupId: 2, districtId: 1 }
+    ], [
+      { id: 1, name: 'School Group 1', districtId: 1 },
+      { id: 2, name: 'School Group 2', districtId: 1 }
+    ], [
+      { id: 1, name: 'District 1' }
+    ]);
+  });
 
   it('should return one school when one school of multi-school group/district', () => {
     expect(service.groupSelectedOrganizationIdsByType([
@@ -72,5 +77,3 @@ describe('OrganizationGroupingService', () => {
   });
 
 });
-
-

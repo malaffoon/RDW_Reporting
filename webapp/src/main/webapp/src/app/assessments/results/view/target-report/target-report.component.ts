@@ -10,8 +10,7 @@ import {
 } from '../../../model/aggregate-target-score-row.model';
 import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.service';
 import { FilterBy } from '../../../model/filter-by.model';
-import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Subscription ,  forkJoin } from 'rxjs';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
 import { byNumber, Comparator, join, ranking } from '@kourge/ordering/comparator';
@@ -374,6 +373,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
     dimensionValuesByType.set("Gender", this.subgroupOptions.genders);
     dimensionValuesByType.set("Ethnicity", this.subgroupOptions.ethnicities);
     dimensionValuesByType.set("ELAS", this.subgroupOptions.elasCodes);
+    dimensionValuesByType.set("Language", this.subgroupOptions.languages);
     dimensionValuesByType.set("LEP", booleanOptions);
     dimensionValuesByType.set("Section504", booleanOptions);
     dimensionValuesByType.set("IEP", booleanOptions);
@@ -418,6 +418,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
     if (settings.elasEnabled) {
       subgroups.push({ code: 'ELAS', translatecode: 'elas-label', selected: false });
     }
+    subgroups.push({ code: 'Language', translatecode: 'language-label', selected: false});
     if (settings.lepEnabled) {
       subgroups.push({ code: 'LEP', translatecode: 'limited-english-proficiency-label', selected: false });
     }

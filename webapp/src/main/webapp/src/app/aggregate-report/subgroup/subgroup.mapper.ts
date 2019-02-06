@@ -80,7 +80,7 @@ export class SubgroupMapper {
       .map(type => DimensionConfigurationByType[ type ])
       .reduce((subgroups, configuration) => {
         subgroups.push(
-          ...(configuration.getDimensionValueCodes(input) || []).map(
+          ...(this.reduceLanguageDimensionCodes(configuration.getDimensionValueCodes(input), configuration.type, 4) || []).map(
             code => this.createSubgroupInternal([
               {
                 type: configuration.type,
@@ -98,6 +98,19 @@ export class SubgroupMapper {
       }, []);
   }
 
+  /**
+   * Reduces the number of languageCodes returned. Grabs a random 'numLangs'-1 languages from the array and
+   * adds the first language (should be 'eng' for English) to the front of the returned array
+   */
+  reduceLanguageDimensionCodes(codes: string[], configurationType: string, numLangs: number): string[] {
+    if((configurationType === "Language") && (codes.length > numLangs)) {
+      let shuffled = codes.slice(1,codes.length -1).sort(() => 0.5 - Math.random());
+      shuffled.unshift(codes[0]); //add first element to the beginning (should be 'eng')
+      return shuffled.slice(0,numLangs);
+    }
+    return codes;
+  }
+
   createItemsFromFilters(input: SubgroupFilters, dimensionTypes: string[]): SubgroupItem {
     return {
       source: input,
@@ -113,7 +126,7 @@ export class SubgroupMapper {
         .join(';'),
       name: dimensionGroups
         .map(dimensionGroup => {
-          const typeName = translate(`common.dimension.${dimensionGroup.type}`);
+          const typeName = translate(`common.dimension-short-name.${dimensionGroup.type}`);
           const valueNames = dimensionGroup.values
             .map(value => translate(value.translationCode))
             .join(', ');
@@ -161,6 +174,11 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     type: 'Section504',
     getDimensionValueCodes: settings => settings.section504s,
     getTranslationCode: value => `common.boolean.${value}`
+  },
+  {
+    type: 'Language',
+    getDimensionValueCodes: settings => settings.languages,
+    getTranslationCode: value => `common.languages.${value}`
   },
   {
     type: 'IEP',

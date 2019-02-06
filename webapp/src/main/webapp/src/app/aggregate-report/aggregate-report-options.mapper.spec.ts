@@ -1,9 +1,8 @@
 import { AggregateReportOptions } from './aggregate-report-options';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
 import { ValueDisplayTypes } from '../shared/display-options/value-display-type';
-import { of } from 'rxjs/observable/of';
+import { of ,  Observable } from 'rxjs';
 import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
-import { Observable } from 'rxjs/Observable';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import Spy = jasmine.Spy;
 
@@ -67,7 +66,17 @@ describe('AggregateReportOptionsMapper', () => {
       queryTypes: [ 'queryTypeA', 'queryTypeB' ],
       schoolYears: [ 1, 2 ],
       statewideReporter: false,
-      subjects: [ '1', '2' ],
+      subjects: [
+        {
+          code: '1',
+          assessmentType: '1',
+          targetReport: true
+        }, {
+          code: '2',
+          assessmentType: '2',
+          targetReport: true
+        }
+      ],
       summativeAdministrationConditions: [ '1', '2' ],
       studentFilters: {
         economicDisadvantages: [ '1', '2' ],
@@ -77,7 +86,8 @@ describe('AggregateReportOptionsMapper', () => {
         individualEducationPlans: [ '1', '2' ],
         limitedEnglishProficiencies: [ '1', '2' ],
         migrantStatuses: [ '1', '2' ],
-        section504s: [ '1', '2' ]
+        section504s: [ '1', '2' ],
+        languages: ['1', '2']
       },
       reportTypes: [ AggregateReportType.GeneralPopulation, AggregateReportType.LongitudinalCohort ],
       claims: []
@@ -110,7 +120,8 @@ describe('AggregateReportOptionsMapper', () => {
           individualEducationPlans: options.studentFilters.individualEducationPlans,
           limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies,
           migrantStatuses: options.studentFilters.migrantStatuses,
-          section504s: options.studentFilters.section504s
+          section504s: options.studentFilters.section504s,
+          languages: options.studentFilters.languages
         },
         generalPopulation: {
           assessmentGrades: [],
@@ -128,7 +139,7 @@ describe('AggregateReportOptionsMapper', () => {
         targetReport: {
           assessmentGrade: options.assessmentGrades[ 0 ],
           schoolYear: options.schoolYears[ 0 ],
-          subjectCode: options.subjects[ 0 ]
+          subjectCode: options.subjects[ 0 ].code
         },
       });
     });

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../shared/data/data.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AggregateServiceRoute } from '../shared/service-route';
 import { ReportService } from '../report/report.service';
 import { Report } from '../report/report.model';
 import { AggregateReportQuery, AggregateReportRequest } from '../report/aggregate-report-request';
 import { AggregateReportRow } from '../report/aggregate-report';
 import { AssessmentService } from './assessment/assessment.service';
-import { map } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
 import { Assessment } from './assessment/assessment';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import { AggregateReportType } from "./aggregate-report-form-settings";
@@ -88,7 +88,7 @@ export class AggregateReportService {
 
   getLongitudinalReport(id: number): Observable<LongitudinalReport> {
     return this.getAggregateReport(id)
-      .flatMap(({ rows }) => {
+      .pipe(flatMap(({ rows }) => {
         return this.assessmentService.getAssessments({
           ids: rows.reduce((ids, row: AggregateReportRow) => {
             if (ids.indexOf(row.assessment.id) === -1) {
@@ -99,6 +99,6 @@ export class AggregateReportService {
         }).pipe(
           map(assessments => <LongitudinalReport>{ rows, assessments })
         )
-      });
+      }));
   }
 }

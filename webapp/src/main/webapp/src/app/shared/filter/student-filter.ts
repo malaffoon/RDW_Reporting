@@ -10,6 +10,7 @@ export interface StudentFilter {
   limitedEnglishProficiencies?: string[];
   section504s?: string[];
   migrantStatuses?: string[];
+  languages?: string[];
 }
 
 export type ArrayFilter<T> = (student: T, index: number, students: T[]) => boolean;
@@ -39,6 +40,9 @@ export function createStudentArrayFilter(filter: StudentFilter): StudentArrayFil
     ) && (
       isNullOrEmpty(filter.migrantStatuses)
       || filter.migrantStatuses.includes(student.migrantStatus)
+    ) && (
+      isNullOrEmpty(filter.languages)
+      || filter.languages.includes(student.languages)
     );
   };
 }

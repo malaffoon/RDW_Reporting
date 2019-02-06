@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { ReportingServiceRoute } from '../shared/service-route';
 import { catchError, map } from 'rxjs/operators';
 import { UserGroup, UserGroupRequest } from './user-group';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { DataService } from '../shared/data/data.service';
 import { Student } from '../student/search/student';
 import { Group } from '../groups/group';
-import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class UserGroupService {
@@ -114,7 +113,8 @@ export class UserGroupService {
       individualEducationPlan: serverStudent.individualEducationPlan,
       limitedEnglishProficiency: serverStudent.limitedEnglishProficiency,
       section504: serverStudent.section504,
-      migrantStatus: serverStudent.migrantStatus
+      migrantStatus: serverStudent.migrantStatus,
+      languages: serverStudent.languages
     };
   }
 

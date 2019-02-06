@@ -4,7 +4,7 @@ import { ReportService } from "./report.service";
 import { Student } from "../student/model/student.model";
 import { Report } from "./report.model";
 import { DATA_CONTEXT_URL, DataService } from "../shared/data/data.service";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('ReportService', () => {
   let dataService: MockDataService;

@@ -160,7 +160,7 @@
                 <button class="form-control btn btn-default pull-right"
                         (click)="claimsCollapsed = !claimsCollapsed"
                         angulartics2On="click"
-                        angularticsEvent="ToggleClaimResults"
+                        angularticsAction="ToggleClaimResults"
                         angularticsCategory="AggregateQueryBuilder">
                   {{'aggregate-report-form.field.claim-codes-label' | translate}}
                   <i class="fa"
@@ -175,18 +175,18 @@
 
         <div class="well gray-lighter" *ngIf="!claimsCollapsed">
           <ng-container *ngFor="let subject of settings.subjects">
-            <div class="row mt-md" *ngIf="claimsBySubject[subject].length != 0">
+            <div class="row mt-md" *ngIf="claimsBySubject[subject.code].length != 0">
               <fieldset>
                 <div class="col-md-6">
-                  <label>{{'subject.' + subject + '.name' | translate}}</label>
+                  <label>{{'subject.' + subject.code + '.name' | translate}}</label>
                 </div>
 
                 <div class="col-md-3">
                   <sb-button-group class="claim-button-group"
                                    type="checkbox"
                                    [vertical]="true"
-                                   [options]="claimsBySubject[subject]"
-                                   [(ngModel)]="selectionBySubject[subject]"
+                                   [options]="claimsBySubject[subject.code]"
+                                   [(ngModel)]="selectionBySubject[subject.code]"
                                    [ngModelOptions]="{standalone: true}"
                                    (change)="onClaimChange()"
                                    analyticsEvent="FilterClick"
@@ -517,7 +517,7 @@
      [inViewInvalidator]="previewSectionViewInvalidator">
 
   <div class="col-md-12 col-md-offset-2">
-    <div class="well-group wide-content-container">
+    <div class="well-group summary-report-content-container">
       <div class="well inline-headings">
         <h3>{{'aggregate-report-form.section.preview-heading' | translate}}</h3>
         <p class="text-muted small">{{'aggregate-report-form.section.preview-heading-subtext' | translate}}</p>

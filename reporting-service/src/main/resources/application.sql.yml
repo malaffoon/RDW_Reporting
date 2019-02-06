@@ -20,6 +20,7 @@ sql:
         st.gender_code,
         e.iep,
         e.lep,
+        e.language_code,
         e.elas_code,
         e.section504,
         e.migrant_status
@@ -63,10 +64,6 @@ sql:
   exam:
     findAllByStudentId: >-
       SELECT
-        e.iep,
-        e.lep,
-        e.section504,
-        e.migrant_status,
         ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       WHERE e.student_id = :student_id
@@ -105,6 +102,7 @@ sql:
             JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
             $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND a.id = e.asmt_id
@@ -115,14 +113,15 @@ sql:
       # to improve final ordering performance
       findLatestExam: >-
           SELECT
-           ${sql.reporting.snippet.assessmentColumns},
-           max(e.completed_at) as max_completed
+            ${sql.reporting.snippet.assessmentColumns},
+            max(e.completed_at) as max_completed
           FROM exam e
             JOIN asmt a ON e.asmt_id=a.id
             JOIN school s ON e.school_id=s.id
             JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
             $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND $[groupFilterPlaceholder]
@@ -134,10 +133,6 @@ sql:
     exam:
       findAllForAssessment: >-
         SELECT
-          e.iep,
-          e.lep,
-          e.section504,
-          e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
           $[groupJoinPlaceholder]
@@ -243,6 +238,7 @@ sql:
           ${sql.reporting.snippet.assessmentColumns}
         FROM asmt a
         JOIN subject su ON a.subject_id = su.id
+        JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
         WHERE EXISTS (
             SELECT e.asmt_id
             FROM exam e
@@ -268,6 +264,7 @@ sql:
           JOIN subject su ON a.subject_id = su.id
           JOIN student st ON e.student_id = st.id
           JOIN school isch ON st.inferred_school_id = isch.id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
         WHERE e.school_year = :school_year
         AND e.school_id = :school_id
         AND a.grade_id = :grade_id
@@ -279,10 +276,6 @@ sql:
     exam:
       findAllForAssessment: >-
         SELECT
-          e.iep,
-          e.lep,
-          e.section504,
-          e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
         WHERE a.id = :assessment_id
@@ -339,7 +332,8 @@ sql:
         a.cut_point_4,
         a.cut_point_5,
         EXISTS(SELECT 1 FROM item i WHERE i.asmt_id = a.id AND i.type = 'WER') as has_wer_item,
-        su.code as subject_code
+        su.code as subject_code,
+        sat.target_report
 
 
       selectFromExamItem: >-

@@ -65,7 +65,9 @@ task buildFe(type: NpmTask) {
     workingDir = file("src/main/webapp")
     outputs.dir('build/resources/static')
     dependsOn npm_install
-    args = ['run', 'build']
+    args = project.hasProperty('prod')
+            ? ['run', 'build-prod']
+            : ['run', 'build']
     // move build from dist to static resources
     doLast {
         copy { from "src/main/webapp/dist" into "src/main/resources/static" }

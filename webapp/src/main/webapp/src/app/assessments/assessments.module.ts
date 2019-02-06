@@ -69,7 +69,7 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     InstructionalResourcePopoverComponent
   ],
   imports: [
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     AssessmentPercentileModule,
     BrowserModule,
     BrowserAnimationsModule,

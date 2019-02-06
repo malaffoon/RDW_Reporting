@@ -3,7 +3,7 @@ import { DataService } from '../../shared/data/data.service';
 import { ReportingServiceRoute } from '../../shared/service-route';
 import { Student } from './student';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export interface StudentSearch {
   schoolId?: number;
@@ -33,7 +33,8 @@ export class StudentService {
         individualEducationPlan: this.toBooleanCode(serverStudent.individualEducationPlan),
         limitedEnglishProficiency: this.toBooleanCode(serverStudent.limitedEnglishProficiency),
         section504: this.toBooleanCode(serverStudent.section504),
-        migrantStatus: this.toBooleanCode(serverStudent.migrantStatus)
+        migrantStatus: this.toBooleanCode(serverStudent.migrantStatus),
+        languages: serverStudent.languageCode
       }))
     );
   }

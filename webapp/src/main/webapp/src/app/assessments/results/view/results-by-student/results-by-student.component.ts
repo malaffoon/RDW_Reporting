@@ -7,10 +7,11 @@ import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { Assessment } from '../../../model/assessment.model';
 import { InstructionalResourcesService } from '../../instructional-resources.service';
 import { InstructionalResource } from '../../../model/instructional-resources.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { PopupMenuAction } from '../../../../shared/menu/popup-menu-action.model';
 import { Ordering } from '@kourge/ordering';
 import { OrderingService } from "../../../../shared/ordering/ordering.service";
+import {map} from "rxjs/internal/operators";
 
 @Component({
   selector: 'results-by-student',
@@ -74,7 +75,7 @@ export class ResultsByStudentComponent implements OnInit {
 
   loadInstructionalResources(exam: Exam): void {
     this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this.assessment.id, exam.school.id)
-      .map(resources => resources.getResourcesByPerformance(exam.level));
+      .pipe(map(resources => resources.getResourcesByPerformance(exam.level)));
   }
 
   private createClaimColumns(ordering: Ordering<string>): Column[] {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AggregateReportOptions } from './aggregate-report-options';
 import { CachingDataService } from '../shared/data/caching-data.service';
 import { OrganizationMapper } from '../shared/organization/organization.mapper';
@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { AggregateServiceRoute } from '../shared/service-route';
 import { AssessmentTypeOrdering, BooleanOrdering, CompletenessOrdering } from '../shared/ordering/orderings';
 import { AggregateReportType } from "./aggregate-report-form-settings";
+import {SubjectDefinition} from "../subject/subject";
 
 const ServiceRoute = AggregateServiceRoute;
 const assessmentTypeComparator = AssessmentTypeOrdering.compare;
@@ -41,7 +42,7 @@ export class AggregateReportOptionsService {
           : [ AggregateReportType.GeneralPopulation, AggregateReportType.Claim ],
         schoolYears: serverOptions.schoolYears.concat(),
         statewideReporter: serverOptions.statewideReporter,
-        subjects: serverOptions.subjects.concat(),
+        subjects: this.mapSubjects(serverOptions.subjects.concat()),
         summativeAdministrationConditions: serverOptions.summativeAdministrationConditions.concat(),
         studentFilters: {
           economicDisadvantages: serverOptions.economicDisadvantages.concat().sort(booleanComparator),
@@ -51,7 +52,8 @@ export class AggregateReportOptionsService {
           limitedEnglishProficiencies: serverOptions.limitedEnglishProficiencies.concat().sort(booleanComparator),
           englishLanguageAcquisitionStatuses: serverOptions.englishLanguageAcquisitionStatuses.concat(),
           migrantStatuses: serverOptions.migrantStatuses.concat().sort(booleanComparator),
-          section504s: serverOptions.section504s.concat().sort(booleanComparator)
+          section504s: serverOptions.section504s.concat().sort(booleanComparator),
+          languages: serverOptions.languages.concat()
         }
       })
     );
@@ -65,10 +67,24 @@ export class AggregateReportOptionsService {
     });
   }
 
+  mapSubjects(subjects: any[]): Subject[] {
+    return subjects.map(subject => <Subject>{
+      assessmentType: subject.assessmentType,
+      code: subject.code,
+      targetReport: subject.targetReport
+    });
+  }
+
 }
 
 export interface Claim {
   readonly assessmentType: string;
   readonly subject: string;
   readonly code: string;
+}
+
+export interface Subject {
+  readonly code: string;
+  readonly assessmentType: string;
+  readonly targetReport?: boolean;
 }

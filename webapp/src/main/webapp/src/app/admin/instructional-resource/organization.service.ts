@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Organization } from "./model/organization.model";
 import { OrganizationQuery } from "./model/organization-query.model";
 import { DataService } from "../../shared/data/data.service";
 import { map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../shared/service-route';
 
-const ServiceRoute = AdminServiceRoute;
+const ResourceContext = `${AdminServiceRoute}/organizations`;
+
 
 /**
  * This service is responsible for interacting with organizations.
@@ -24,7 +25,7 @@ export class OrganizationService {
    * @returns {Observable<Organization[]>}  The matching organizations
    */
   find(query: OrganizationQuery): Observable<Organization[]> {
-    return this.dataService.get(`${ServiceRoute}/organizations`, { params: query })
+    return this.dataService.get(`${ResourceContext}`, { params: query })
       .pipe(
         map(OrganizationService.mapOrganizationsFromApi)
       );

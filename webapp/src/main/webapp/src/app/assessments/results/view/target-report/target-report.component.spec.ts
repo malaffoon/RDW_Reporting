@@ -13,7 +13,7 @@ import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.ser
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
 import { ExamFilterOptionsService } from '../../../filters/exam-filters/exam-filter-options.service';
 import { ExamFilterOptionsMapper } from '../../../filters/exam-filters/exam-filter-options.mapper';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { DataTableService } from '../../../../shared/datatable/datatable-service';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
 import { SubgroupMapper } from '../../../../aggregate-report/subgroup/subgroup.mapper';

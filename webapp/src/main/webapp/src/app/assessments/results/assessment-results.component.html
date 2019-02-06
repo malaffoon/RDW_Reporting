@@ -19,7 +19,7 @@
       <button class="form-control btn btn-default pull-right"
               (click)="collapsed = !collapsed"
               angulartics2On="click"
-              angularticsEvent="ToggleCollapseResults"
+              angularticsAction="ToggleCollapseResults"
               angularticsCategory="AssessmentResults">
         {{'common.action.' + (collapsed ? 'expand-results' : 'collapse-results') | translate}}
         <i class="fa"
@@ -40,7 +40,7 @@
            href="javascript:void(0)"
            (click)="toggleSession(session)"
            angulartics2On="click"
-           angularticsEvent="ToggleSession"
+           angularticsAction="ToggleSession"
            angularticsCategory="AssessmentResults">
           <span class="block-children">
               <strong>{{session.date | date }}</strong>
@@ -170,7 +170,7 @@
             <li *ngIf="assessmentExam.assessment.isIab">
               <button class="btn btn-primary btn-sm"
                       angulartics2On="click"
-                      angularticsEvent="InstructionalResource"
+                      angularticsAction="InstructionalResource"
                       angularticsCategory="AssessmentResults"
                       [angularticsProperties]="{label: assessmentExam.assessment.label}"
                       [popover]="buttonPopover"

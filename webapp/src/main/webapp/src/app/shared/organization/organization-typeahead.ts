@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Organization } from "./organization";
 import { AbstractControlValueAccessor } from "../form/abstract-control-value-accessor";
 import { TypeaheadMatch } from "ngx-bootstrap";
@@ -17,7 +17,7 @@ import { TypeaheadMatch } from "ngx-bootstrap";
            (typeaheadLoading)="loading = $event"
            (typeaheadNoResults)="noResults = $event"
            (typeaheadOnSelect)="onTypeaheadSelectInternal($event)"
-           [typeaheadMinLength]="3"
+           [typeaheadMinLength]="2"
            [typeaheadOptionsLimit]="100"
            [typeaheadOptionsInScrollableView]="20"
            [typeaheadScrollable]="true"

@@ -87,6 +87,8 @@ spring:
     initialize: false
     initialSize: 4
     maxActive: 10
+    minIdle: ${spring.datasource.initialSize}
+    maxIdle: ${spring.datasource.maxActive}
 
   resources:
     chain:
@@ -115,7 +117,8 @@ spring:
 zuul:
   set-content-length: true
   FormBodyWrapperFilter:
-    pre: disable
+    pre:
+      disable: true
   host:
     socket-timeout-millis: 100000
   routes:

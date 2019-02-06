@@ -5,17 +5,15 @@ import { AggregateReportFormOptions } from './aggregate-report-form-options';
 import { TranslateService } from '@ngx-translate/core';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import { AggregateReportOptions } from './aggregate-report-options';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  forkJoin ,  of } from 'rxjs';
 import { District, OrganizationType, School } from '../shared/organization/organization';
 import { Utils } from '../shared/support/support';
 import { AggregateReportOrganizationService } from './aggregate-report-organization.service';
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
-import { Claim } from './aggregate-report-options.service';
+import {Claim, Subject} from './aggregate-report-options.service';
 import { AggregateReportService } from './aggregate-report.service';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
@@ -98,15 +96,18 @@ export class AggregateReportRequestMapper {
     if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.GeneralPopulation) {
       query.assessmentGradeCodes = settings.generalPopulation.assessmentGrades;
       query.schoolYears = settings.generalPopulation.schoolYears;
-      query.subjectCodes = settings.subjects;
+      query.subjectCodes = settings.subjects.map(subject => subject.code);
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.LongitudinalCohort) {
       query.assessmentGradeCodes = settings.longitudinalCohort.assessmentGrades;
       query.toSchoolYear = settings.longitudinalCohort.toSchoolYear;
-      query.subjectCodes = settings.subjects;
+      query.subjectCodes = settings.subjects.map(subject => subject.code);
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Claim) {
       query.assessmentGradeCodes = settings.claimReport.assessmentGrades;
       query.schoolYears = settings.claimReport.schoolYears;
-      query.claimCodesBySubject = this.claimsBySubjectMapping(settings.subjects, settings.claimReport.claimCodesBySubject);
+      query.claimCodesBySubject = this.claimsBySubjectMapping(
+        settings.subjects.map(subject => subject.code),
+        settings.claimReport.claimCodesBySubject
+      );
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Target) {
       query.schoolYear = settings.targetReport.schoolYear;
       query.subjectCode = settings.targetReport.subjectCode;
@@ -186,6 +187,10 @@ export class AggregateReportRequestMapper {
           sort(filters.section504Codes, options.studentFilters.section504s),
           options.studentFilters.section504s
         ),
+        languages: or(
+          sort(filters.languageCodes, options.studentFilters.languages),
+          options.studentFilters.languages
+        )
       }
       : SubgroupFilterSupport.copy(options.studentFilters);
 
@@ -212,7 +217,7 @@ export class AggregateReportRequestMapper {
     const defaultTargetReport = {
       assessmentGrade: options.assessmentGrades[ 0 ],
       schoolYear: options.schoolYears[ 0 ],
-      subjectCode: options.subjects[ 0 ]
+      subjectCode: options.subjects[ 0 ].code
     };
 
     let generalPopulation = defaultGeneralPopulation,
@@ -281,7 +286,11 @@ export class AggregateReportRequestMapper {
             reportType: reportType,
             schools: schools,
             studentFilters: studentFilters,
-            subjects: sort(query.subjectCodes || options.subjects, options.subjects),
+            subjects: sort(query.subjectCodes ? query.subjectCodes.map(code =>
+              ({
+                code: code,
+                assessmentType: query.assessmentTypeCode
+              })) : options.subjects, options.subjects),
             subgroups: subgroups,
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
@@ -337,6 +346,9 @@ export class AggregateReportRequestMapper {
     if (!equalSize(settingFilters.section504s, optionFilters.section504s)) {
       queryFilters.section504Codes = settingFilters.section504s;
     }
+    if (!equalSize(settingFilters.languages, optionFilters.languages)) {
+      queryFilters.languageCodes = settingFilters.languages;
+    }
     return queryFilters;
   }
 
@@ -366,6 +378,9 @@ export class AggregateReportRequestMapper {
     }
     if (notNullOrEmpty(settingFilters.section504s)) {
       queryFilters.section504Codes = settingFilters.section504s;
+    }
+    if(notNullOrEmpty(settingFilters.languages)) {
+      queryFilters.languageCodes = settingFilters.languages;
     }
     return queryFilters;
   }
@@ -407,6 +422,9 @@ export class AggregateReportRequestMapper {
     }
     if (notNullOrEmpty(subgroup.section504Codes)) {
       subgroupFilters.section504s = subgroup.section504Codes;
+    }
+    if (notNullOrEmpty(subgroup.languageCodes)) {
+      subgroupFilters.languages = subgroup.languageCodes;
     }
     return subgroupFilters;
   }

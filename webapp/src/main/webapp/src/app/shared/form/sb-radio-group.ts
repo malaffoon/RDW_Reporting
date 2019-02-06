@@ -16,25 +16,32 @@ const DefaultButtonStyles = 'btn-primary';
     <div class="btn-group toggle-group"
          [ngClass]="buttonGroupStyles"
          data-toggle="buttons">
-      <label *ngFor="let option of options"
-             class="btn"
-             [ngClass]="computeStylesInternal(buttonStyles, {
-                 active: option.value === value, 
+      <ng-container *ngFor="let option of options">
+        <label
+          class="btn"
+          *ngIf="!option.hidden"
+          [ngClass]="computeStylesInternal(buttonStyles, {
+                 active: property 
+                            ? option.value[property] === value 
+                            : option.value === value, 
                  disabled: option.disabled
              })">
-        <input type="radio"
-               id="{{name}}"
-               name="{{name}}"
-               [attr.selected]="option.value === value"
-               [disabled]="option.disabled"
-               [value]="option.value"
-               [(ngModel)]="value"
-               angulartics2On="click"
-               angularticsEvent="{{analyticsEvent}}"
-               angularticsCategory="{{analyticsCategory}}"
-               [angularticsProperties]="option.analyticsProperties">
-        {{option.text}}
-      </label>
+          <input type="radio"
+                 id="{{name}}"
+                 name="{{name}}"
+                 [attr.selected]="property 
+                            ? option.value[property] === value 
+                            : option.value === value"
+                 [disabled]="option.disabled"
+                 [value]="option.value"
+                 [(ngModel)]="value"
+                 angulartics2On="click"
+                 angularticsAction="{{analyticsEvent}}"
+                 angularticsCategory="{{analyticsCategory}}"
+                 [angularticsProperties]="option.analyticsProperties">
+          {{option.text}}
+        </label> 
+      </ng-container>
     </div>
   `,
   providers: [
@@ -48,6 +55,9 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
 
   @Input()
   public analyticsCategory: string;
+
+  @Input()
+  public property: string;
 
   private _options: Option[];
   private _buttonGroupStyles: any = DefaultButtonGroupStyles;
@@ -93,9 +103,12 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
   @Input()
   set value(value: any) {
     if (this._initialized) {
-      if (this._value !== value) {
-        this._value = value;
-        this._onChangeCallback(value);
+      if (this.property && this._value !== value && typeof value == "object" ) {
+          this._value = value ? value[this.property] : null;
+          this._onChangeCallback(value ? value[this.property] : null);
+      } else if (this._value !== value) {
+          this._value = value;
+          this._onChangeCallback(value);
       }
     } else {
       this._value = value;
@@ -122,7 +135,8 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
       value: option.value,
       text: option.text ? option.text : option.value,
       analyticsProperties: option.analyticsProperties,
-      disabled: option.disabled
+      disabled: option.disabled,
+      hidden: option.hidden
     });
   }
 

@@ -4,7 +4,7 @@ import { ReportDownloadComponent } from "./report-download.component";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Student } from "../student/model/student.model";
 import { Report } from "./report.model";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { ApplicationSettingsService } from "../app-settings.service";
 import { StudentNameService } from '../shared/format/student-name.service';
 import { SubjectService } from '../subject/subject.service';

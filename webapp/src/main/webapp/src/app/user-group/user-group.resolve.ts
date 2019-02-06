@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { UserGroupService } from './user-group.service';
 import { UserGroup } from './user-group';
-import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class UserGroupResolve implements Resolve<UserGroup> {

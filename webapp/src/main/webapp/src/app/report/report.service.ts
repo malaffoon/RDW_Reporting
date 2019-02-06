@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { Headers, ResponseContentType } from '@angular/http';
 import { ReportOptions } from './report-options.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Report } from './report.model';
 import { ReportOrder } from './report-order.enum';
 import { ResponseUtils } from '../shared/response-utils';

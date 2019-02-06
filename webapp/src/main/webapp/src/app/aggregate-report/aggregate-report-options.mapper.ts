@@ -7,10 +7,9 @@ import { DisplayOptionService } from '../shared/display-options/display-option.s
 import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
 import { ValueDisplayTypes } from '../shared/display-options/value-display-type';
 import { AssessmentDefinitionService } from './assessment/assessment-definition.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { Claim } from './aggregate-report-options.service';
-import { of } from 'rxjs/observable/of';
 
 /**
  * Responsible for mapping server provided report options into option
@@ -75,8 +74,8 @@ export class AggregateReportOptionsMapper {
         )),
       subjects: options.subjects
         .map(optionMapper(
-          value => translate(`subject.${value}.name`),
-          value => `Subject: ${value}`
+          value => translate(`subject.${value.code}.name`),
+          value => `Subject: ${value.code}`
         )),
       summativeAdministrationConditions: options.summativeAdministrationConditions
         .map(optionMapper(
@@ -138,6 +137,11 @@ export class AggregateReportOptionsMapper {
           .map(optionMapper(
             value => translate(`common.boolean.${value}`),
             value => `Section 504: ${value}`
+          )),
+        languages: options.studentFilters.languages
+          .map(optionMapper(
+            value => translate(`common.languages.${value}`),
+            value => `Primary Language Codes: ${value}`
           ))
       }
     };
@@ -195,12 +199,13 @@ export class AggregateReportOptionsMapper {
         limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies.concat(),
         englishLanguageAcquisitionStatuses: options.studentFilters.englishLanguageAcquisitionStatuses.concat(),
         migrantStatuses: options.studentFilters.migrantStatuses.concat(),
-        section504s: options.studentFilters.section504s.concat()
+        section504s: options.studentFilters.section504s.concat(),
+        languages: options.studentFilters.languages.concat()
       },
       targetReport: {
         assessmentGrade: options.assessmentGrades[ 0 ],
         schoolYear: options.schoolYears[ 0 ],
-        subjectCode: options.subjects[ 0 ]
+        subjectCode: options.subjects[ 0 ].code
       },
       subjects: options.subjects.concat(),
       subgroups: [],

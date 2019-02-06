@@ -4,8 +4,7 @@ import { UserGroup } from '../user-group/user-group';
 import { UserService } from '../user/user.service';
 import { UserGroupService } from '../user-group/user-group.service';
 import { GroupService } from './group.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { of } from 'rxjs/observable/of';
+import { forkJoin ,  of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Component({

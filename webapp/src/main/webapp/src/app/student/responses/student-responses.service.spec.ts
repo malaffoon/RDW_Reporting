@@ -5,9 +5,8 @@ import { TestBed, inject } from "@angular/core/testing";
 import { StudentResponsesService } from "./student-responses.service";
 import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
 import { AssessmentItem } from "../../assessments/model/assessment-item.model";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  of } from "rxjs";
 import { DataService } from "../../shared/data/data.service";
-import { of } from 'rxjs/observable/of';
 import { ReportingServiceRoute } from '../../shared/service-route';
 
 const ServiceRoute = ReportingServiceRoute;

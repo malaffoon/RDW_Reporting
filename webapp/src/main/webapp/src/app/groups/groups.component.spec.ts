@@ -9,7 +9,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { By } from '@angular/platform-browser';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { GroupService } from './group.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 let mockGroups = [
   { name: 'advanced mathematics' },

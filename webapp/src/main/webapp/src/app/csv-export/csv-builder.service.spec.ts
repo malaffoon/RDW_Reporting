@@ -9,7 +9,7 @@ import { TranslateDatePipe } from "../shared/i18n/translate-date.pipe";
 import { TranslateNumberPipe } from "../shared/i18n/translate-number.pipe";
 import Spy = jasmine.Spy;
 import { ApplicationSettingsService } from "../app-settings.service";
-import { of } from "rxjs/observable/of";
+import { of } from "rxjs";
 import { Assessment } from '../assessments/model/assessment.model';
 
 describe('CsvBuilder', () => {

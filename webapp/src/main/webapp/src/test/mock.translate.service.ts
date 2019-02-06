@@ -1,7 +1,7 @@
 import Spy = jasmine.Spy;
 import { DefaultLangChangeEvent, LangChangeEvent, TranslationChangeEvent } from "@ngx-translate/core";
 import { EventEmitter } from "@angular/core";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 export class MockTranslateService {
   instant: Spy = jasmine.createSpy("instant");

@@ -5,7 +5,7 @@ import { NotificationService } from "../shared/notification/notification.service
 import { Router } from "@angular/router";
 import { ActionType, AggregateReportType, ReportAction, ReportActionService } from "./report-action.service";
 import { Report } from "./report.model";
-import { empty } from 'rxjs/observable/empty';
+import { empty } from 'rxjs';
 import Spy = jasmine.Spy;
 
 describe('ReportActionService', () => {

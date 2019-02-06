@@ -20,7 +20,8 @@ export class ExamFilterService {
     new ExamFilter('iep', 'common.filters.student.iep', 'common.polar', this.filterByIep),
     new ExamFilter('limitedEnglishProficiency', 'common.filters.student.limited-english-proficiency', 'common.polar', this.filterByLimitedEnglishProficiency),
     new ExamFilter('elasCodes', 'common.filters.student.elas', 'common.elas', this.filterByElasCode),
-    new ExamFilter('ethnicities', 'common.filters.student.ethnicity', 'common.ethnicity', this.filterByEthnicity)
+    new ExamFilter('ethnicities', 'common.filters.student.ethnicity', 'common.ethnicity', this.filterByEthnicity),
+    new ExamFilter('languageCodes', 'common.filters.student.language','common.languages', this.filterByLanguageCode)
   ];
 
   getFilterDefinitions(): ExamFilter[] {
@@ -48,6 +49,7 @@ export class ExamFilterService {
       let filterDefinition = this.getFilterDefinitionFor(filter);
 
       if (filterDefinition.precondition(assessment)) {
+
         let filterValue = filterBy[ filter ];
 
         if (filter == 'offGradeAssessment')
@@ -58,6 +60,8 @@ export class ExamFilterService {
           filterValue = filterBy.filteredGenders;
         else if (filter == 'elasCodes')
           filterValue = filterBy.filteredElasCodes;
+        else if (filter == 'languageCodes')
+          filterValue = filterBy.filteredLanguages;
 
         exams = exams.filter(exam => filterDefinition.apply(exam, filterValue));
       }
@@ -107,6 +111,8 @@ export class ExamFilterService {
             filterValue = filterBy.filteredGenders;
           } else if (filter == 'elasCodes') {
             filterValue = filterBy.filteredElasCodes;
+          } else if (filter == 'langageCodes') {
+            filterValue = filterBy.filteredLanguages;
           }
 
           return filterDefinition.apply(exam, filterValue);
@@ -135,6 +141,12 @@ export class ExamFilterService {
       // as elas need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('elasCodes') == -1);
       filters.push('elasCodes');
+    }
+    if (filters.some(x => x.indexOf('languageCodes') > -1 )) {
+      // remove individual 'language.code' and add just one language
+      // as languages need to be evaluated all at once.
+      filters = filters.filter(x => x.indexOf('languageCodes') == -1);
+      filters.push('languageCodes');
     }
 
     return filters;
@@ -178,6 +190,10 @@ export class ExamFilterService {
 
   private filterByEthnicity(exam: Exam, filterValue: any): boolean {
     return exam.student && exam.student.ethnicityCodes.some(ethnicity => filterValue.some(code => code == ethnicity));
+  }
+
+  private filterByLanguageCode(exam: Exam, filterValue: any): boolean {
+    return (exam.student && !filterValue.length) || filterValue.some(languageCode => languageCode == exam.languageCode);
   }
 
   private filterByTransferAssessment(exam: Exam, filterValue: any): boolean {

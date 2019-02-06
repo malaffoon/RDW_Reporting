@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, empty } from 'rxjs';
 import { GroupAssessmentService, Search } from './group-assessment.service';
-import { empty } from 'rxjs/observable/empty';
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
 
 @Injectable()

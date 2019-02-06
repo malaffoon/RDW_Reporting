@@ -1,5 +1,18 @@
 ## Change Log
 
+#### 1.3.0
+
+* Fix issue with claim levels in the ISR (PDF report).
+* Change aggregate report table to scroll instead of paging.
+* Fix issue with responsive menu in app header.
+* Honor school-year discriminator for accommodation text.
+* Add language as a filter and subgroup for reports.
+* Honor target report flag for subject summative assessments.
+* Change aesthetics of writing trait score breakdown.
+* Change administrator tools aesthetics in landing page.
+    * home.admin-tools.titles.{analyze,manage} replaced with home.admin-tools.titles.administrator-tools.
+* Upgraded node modules (Angular 5 to Angular 7, RxJs 5 to 6)
+
 #### 1.2.4 - 2018-11-19
 
 * Tweak organization selector in District/School Export screen to support more schools.

@@ -68,14 +68,20 @@
                 <label for="subject">{{'aggregate-report-form.field.subject-label' | translate}}</label>
               </div>
               <div class="col-md-6">
-                <sb-radio-group id="subject"
-                                name="subject"
-                                analyticsEvent="FilterClick"
-                                analyticsCategory="AggregateQueryBuilder"
-                                [options]="filteredOptions.subjects"
-                                [(ngModel)]="settings.targetReport.subjectCode"
-                                [ngModelOptions]="{standalone: true}"
-                                (change)="onSettingsChange()"></sb-radio-group>
+                <span *ngIf="!hasTargetEnabledSubjects; else subjectOptions">
+                  {{ 'aggregate-report-form.field.subjects-none' | translate }}
+                </span>
+                <ng-template #subjectOptions>
+                  <sb-radio-group id="subject"
+                                  name="subject"
+                                  analyticsEvent="FilterClick"
+                                  analyticsCategory="AggregateQueryBuilder"
+                                  property="code"
+                                  [options]="filteredOptions.subjects"
+                                  [(ngModel)]="settings.targetReport.subjectCode"
+                                  [ngModelOptions]="{standalone: true}"
+                                  (change)="onSettingsChange()"></sb-radio-group>
+                </ng-template>
               </div>
             </div>
           </fieldset>
@@ -302,7 +308,7 @@
      [inViewInvalidator]="previewSectionViewInvalidator">
 
   <div class="col-md-12 col-md-offset-2">
-    <div class="well-group wide-content-container">
+    <div class="well-group summary-report-content-container">
       <div class="well inline-headings">
         <h3>{{'aggregate-report-form.section.preview-heading' | translate}}</h3>
         <p class="text-muted small">{{'aggregate-report-form.section.preview-heading-subtext' | translate}}</p>

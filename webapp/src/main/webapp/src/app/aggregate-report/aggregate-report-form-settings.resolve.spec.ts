@@ -5,7 +5,7 @@ import { AggregateReportRequestMapper } from "./aggregate-report-request.mapper"
 import { AggregateReportOptionsMapper } from "./aggregate-report-options.mapper";
 import Spy = jasmine.Spy;
 import { AggregateReportFormSettings } from "./aggregate-report-form-settings";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('AggregateReportFormSettingsResolve', () => {
   let reportService: AggregateReportService;

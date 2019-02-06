@@ -22,12 +22,10 @@ import { AggregateReportType } from '../aggregate-report-form-settings';
 import { byTargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
 import { OrderingService } from "../../shared/ordering/ordering.service";
 import { map } from "rxjs/operators";
-import { Observable } from "rxjs/Observable";
-import { forkJoin } from "rxjs/observable/forkJoin";
+import { Observable ,  forkJoin } from "rxjs";
 import { SubjectDefinition } from '../../subject/subject';
 
-export const SupportedRowCount = 10000;
-export const DefaultRowsPerPageOptions = [ 100, 500, 1000 ];
+export const SupportedRowCount = 4000;
 
 const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
   .on(item => item.schoolYear);
@@ -62,9 +60,6 @@ export class AggregateReportTableComponent implements OnInit {
 
   @Input()
   public preview: boolean = false;
-
-  @Input()
-  public rowsPerPageOptions: number[] = DefaultRowsPerPageOptions;
 
   @ViewChild('dataTable')
   private dataTable: Table;

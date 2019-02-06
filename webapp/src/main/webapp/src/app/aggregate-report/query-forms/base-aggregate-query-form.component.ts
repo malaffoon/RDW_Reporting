@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { Forms } from "../../shared/form/forms";
 import { NotificationService } from "../../shared/notification/notification.service";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription ,  Observer ,  Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
 import { AggregateReportService } from "../aggregate-report.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -17,8 +17,6 @@ import { AggregateReportTableDataService } from "../aggregate-report-table-data.
 import { AggregateReportOptionsMapper } from "../aggregate-report-options.mapper";
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { ScrollNavItem } from "../../shared/nav/scroll-nav.component";
-import { Observer } from "rxjs/Observer";
-import { Observable } from "rxjs/Observable";
 import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
 import { OrderableItem } from "../../shared/order-selector/order-selector.component";
 import { SubjectDefinition } from '../../subject/subject';
@@ -113,7 +111,7 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    * Get the subject definition
    */
   protected get subjectDefinition(): SubjectDefinition {
-    return this.subjectDefinitions.find(x => x.subject == this.settings.subjects[0] && x.assessmentType == this.settings.assessmentType);
+    return this.subjectDefinitions.find(x => x.subject == this.settings.subjects[0].code && x.assessmentType == this.settings.assessmentType);
   }
 
   /**
@@ -177,13 +175,25 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
 
   updateSubjectsEnabled(): void {
     const validSubjectDefinitions = this.subjectDefinitions.filter(x => x.assessmentType == this.settings.assessmentType);
+    const enabledSubjects = this.settings.reportType === 'Target'
+      ? this.filteredOptions.subjects
+          .filter(subject => subject.value.targetReport && subject.value.assessmentType === this.settings.assessmentType)
+          .map(subject => subject.value.code)
+      : this.filteredOptions.subjects
+          .filter(subject => subject.value.assessmentType === this.settings.assessmentType)
+          .map(subject => subject.value.code);
 
     // disable subjects that don't have a definition for the assessment type
+    // for target report, hide subjects that have the target_report flag set to false
     let updatedOptions: Option[] = [];
-    this.filteredOptions.subjects.forEach(option => {
+
+    this.filteredOptions.subjects
+      .filter(x => x.value.assessmentType === this.settings.assessmentType)
+      .forEach(option => {
       updatedOptions.push(
         Object.assign(option, {
-          disabled: !validSubjectDefinitions.some(x => x.subject == option.value)
+          disabled: !validSubjectDefinitions.some(x => x.subject == option.value.code),
+          hidden: !enabledSubjects.some(x => x === option.value.code)
         })
       );
     });
@@ -191,7 +201,7 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
     this.filteredOptions.subjects = updatedOptions;
 
     // remove any disabled ones from the subject selection
-    const disabledOptions = updatedOptions.filter(x => x.disabled).map(x => x.value);
+    const disabledOptions = updatedOptions.filter(x => x.disabled || x.hidden).map(x => x.value.code);
     this.settings.subjects = this.settings.subjects.filter(subject => !disabledOptions.includes(subject));
   }
 

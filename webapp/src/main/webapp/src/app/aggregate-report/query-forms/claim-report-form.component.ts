@@ -20,9 +20,8 @@ import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { Claim } from '../aggregate-report-options.service';
 import { AggregateReportType } from '../aggregate-report-form-settings';
 import { OrderingService } from "../../shared/ordering/ordering.service";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  forkJoin } from "rxjs";
 import { map } from "rxjs/operators";
-import { forkJoin } from "rxjs/observable/forkJoin";
 import { SubjectService } from '../../subject/subject.service';
 
 @Component({
@@ -169,15 +168,15 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
   private getAllSelectedClaims(): Claim[] {
     const claims: Claim[] = [];
     for (const subject of this.settings.subjects) {
-      claims.push(...this.selectionBySubject[ subject ]);
+      claims.push(...this.selectionBySubject[ subject.code ]);
     }
     return claims;
   }
 
   private initializeClaimsForAssessmentType(): void {
     const orderingObservables: Observable<boolean>[] = this.filteredOptions.subjects.map(subject => {
-      const subjectCode = subject.value;
-      return this.orderingService.getScorableClaimOrdering(subject.value, this.settings.assessmentType)
+      const subjectCode = subject.value.code;
+      return this.orderingService.getScorableClaimOrdering(subjectCode, this.settings.assessmentType)
         .pipe(
           map(claimOrdering => {
             this.claimsBySubject[ subjectCode ] = this.filteredOptions.claimCodes
@@ -207,7 +206,8 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
         return map;
       }, new Map());
 
-    for (let subject of this.settings.subjects) {
+    const subjectCodes = this.settings.subjects.map(subject => subject.code);
+    for (let subject of subjectCodes) {
       if (selections.has(subject)) {
         // Initialize selection based on settings values
         this.selectionBySubject[ subject ] = selections.get(subject);

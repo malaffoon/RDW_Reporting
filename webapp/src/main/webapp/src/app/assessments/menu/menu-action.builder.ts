@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Student } from '../../student/model/student.model';
 import { InstructionalResource } from '../model/instructional-resources.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { PopupMenuAction } from '../../shared/menu/popup-menu-action.model';
 import { map } from 'rxjs/operators';
 import { StudentPipe } from '../../shared/format/student.pipe';

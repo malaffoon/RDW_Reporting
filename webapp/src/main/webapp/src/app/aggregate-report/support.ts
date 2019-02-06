@@ -90,6 +90,8 @@ export function subgroupOrdering<T>(subgroupGetter: (item: T) => Subgroup, optio
     Ethnicity: options.studentFilters.ethnicities,
     LEP: getNullableOption(options.studentFilters.limitedEnglishProficiencies),
     ELAS: options.studentFilters.englishLanguageAcquisitionStatuses,
+    Language: options.studentFilters.languages,
+    StudentEnrolledGrade: options.assessmentGrades,
     MigrantStatus: options.studentFilters.migrantStatuses,
     Section504: options.studentFilters.section504s,
     IEP: getNullableOption(options.studentFilters.individualEducationPlans),

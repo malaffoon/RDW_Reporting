@@ -5,7 +5,7 @@ import { AggregateReportTable, SupportedRowCount } from './aggregate-report-tabl
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { AggregateReportItemMapper } from './aggregate-report-item.mapper';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  interval ,  forkJoin } from 'rxjs';
 import { Utils } from '../../shared/support/support';
 import { Comparator, join, ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
@@ -17,7 +17,6 @@ import { SpinnerModal } from '../../shared/loading/spinner.modal';
 import { OrderableItem } from '../../shared/order-selector/order-selector.component';
 import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
 import { AggregateReportRequestSummary } from '../aggregate-report-summary.component';
-import { interval } from 'rxjs/observable/interval';
 import { finalize, switchMap } from 'rxjs/operators';
 import { LongitudinalCohortChart, OrganizationPerformance } from './longitudinal-cohort-chart';
 import { AggregateReportService, LongitudinalReport } from '../aggregate-report.service';
@@ -28,7 +27,6 @@ import { LongitudinalDisplayType } from '../../shared/display-options/longitudin
 import { AssessmentDefinitionService } from '../assessment/assessment-definition.service';
 import { AggregateReportType } from "../aggregate-report-form-settings";
 import { SubjectService } from '../../subject/subject.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { SubjectDefinition } from '../../subject/subject';
 
 const PollingInterval = 4000;
@@ -78,7 +76,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     this.report = this.route.snapshot.data[ 'report' ];
 
     this.assessmentDefinition = this.definitionService.get(this.query.assessmentTypeCode, this.mapToReportType(this.query.reportType));
-    this._viewComparator = ordering(ranking(this.options.subjects))
+    this._viewComparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
       .on((wrapper: AggregateReportView) => wrapper.subjectCode).compare;
     this._displayOptions = {
       valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),

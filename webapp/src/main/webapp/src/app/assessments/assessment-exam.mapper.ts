@@ -82,6 +82,7 @@ export class AssessmentExamMapper {
     assessment.cutPoints = serverAssessment.cutPoints || [];
     assessment.resourceUrl = serverAssessment.resourceUrl;
     assessment.hasWerItem = serverAssessment.werItem;
+    assessment.targetReportEnabled = serverAssessment.targetReportEnabled;
     return assessment;
   }
 
@@ -100,12 +101,13 @@ export class AssessmentExamMapper {
       .map(serverScaleScore => this.mapClaimScaleScoreFromApi(serverScaleScore));
 
     if (serverExam.studentContext) {
-      const { migrantStatus, section504, iep, lep, elasCode } = serverExam.studentContext;
+      const { migrantStatus, section504, iep, lep, elasCode, languageCode } = serverExam.studentContext;
       exam.migrantStatus = migrantStatus;
       exam.plan504 = section504;
       exam.iep = iep;
       exam.limitedEnglishProficiency = lep;
       exam.elasCode = elasCode;
+      exam.languageCode = languageCode;
     }
 
     if (serverExam.student) {

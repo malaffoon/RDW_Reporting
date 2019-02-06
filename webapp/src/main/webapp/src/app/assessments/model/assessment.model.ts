@@ -8,6 +8,7 @@ export class Assessment {
   claimCodes: string[];
   cutPoints: number[];
   hasWerItem: boolean;
+  targetReportEnabled: boolean;
 
   /** @deprecated TODO this does not belong here but in a UI wrapper */
   resourceUrl: string;

@@ -71,7 +71,8 @@
       "assessment-grades-less-than-minimum-error": "Please select more than one assessment grade.",
       "assessment-type-label": "Assessment Type",
       "elas-label": "English Language Acquisition Status",
-      "elas-info": "Status determined by the Home Language Survey and the Initial ELPAC.",
+      "elas-info": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
+      "language-placeholder": "Enter language",
       "interim-administration-condition-label": "Manner of Administration",
       "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
       "school-year-label": "Academic Year",
@@ -79,10 +80,13 @@
       "school-year-empty-error": "Please select a school year.",
       "subject-label": "Subject",
       "subjects-label": "Subjects",
+      "subjects-none": "No subjects available",
       "summative-administration-condition-label": "Validity",
       "summative-administration-condition-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
       "gender-label": "Gender",
       "gender-info": "Student's reported gender",
+      "language-label": "Primary Language",
+      "language-info": "The primary language is determined from information submitted on the Home Language Survey.",
       "ethnicity-label": "Race / Ethnicity",
       "ethnicity-info": "Student race and ethnicity",
       "migrant-status-label": "Migrant Status",
@@ -99,7 +103,8 @@
       "report-name-label": "Report Name",
       "report-name-file-name-error": "The name cannot contain these special characters: <>:;,?\"*|\\/",
       "target": {
-        "organization-invalid-error": "Please select a school or district."
+        "organization-invalid-error": "Please select a school or district.",
+        "subject-invalid-error": "No subjects available for target reports."
       }
     },
     "section": {
@@ -288,21 +293,21 @@
     },
     "aggregate-report-type": {
       "Claim": {
-        "description": "Compare claim-level performance across subgroups.",
-        "disabled": "Claim Reports are only available for ICA and Summative assessments.",
+        "description": "Compare Claim-level performance on available assessments.",
+        "disabled": "Claim Reports are only available for ICA and summative assessments.",
         "label": "Claim Report"
       },
       "GeneralPopulation": {
-        "description": "Compare performance across subgroups.",
+        "description": "Compare performance by selected school years.",
         "label": "Yearly Report"
       },
       "LongitudinalCohort": {
-        "description": "Track performance over time.",
-        "disabled": "Longitudinal Reports are only available for Summative assessments.",
+        "description": "Track performance on summative assessments over time.",
+        "disabled": "Longitudinal Reports are only available for summative assessments.",
         "label": "Longitudinal Report"
       },
       "Target": {
-        "description": "Compare target-level performance across subgroups for a single assessment.",
+        "description": "Compare Target-level performance on summative assessments.",
         "label": "Target Report"
       }
     },
@@ -424,6 +429,7 @@
       "IEP": "IEP",
       "LEP": "Limited English Proficiency",
       "ELAS": "English Language Acquisition Status",
+      "Language": "Primary Language",
       "MigrantStatus": "Migrant Status",
       "Overall": "Overall",
       "Section504": "504",
@@ -436,6 +442,7 @@
       "IEP": "IEP",
       "LEP": "LEP",
       "ELAS": "ELAS",
+      "Language": "Language",
       "MigrantStatus": "Migrant Status",
       "Overall": "Overall",
       "Section504": "504",
@@ -519,11 +526,13 @@
         "504-plan": "504 Plan",
         "504-plan-info": "Indicates that a student has an approved 504 plan.  These plans are for students with disabilities who may need accommodations but do not require specialized instruction.",
         "elas": "English Language Acquisition Status",
-        "elas-info": "Status determined by the Home Language Survey and the Initial ELPAC.",
+        "elas-info": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
         "ethnicity": "Race/Ethnicity",
         "ethnicity-info": "Student race and ethnicity",
         "gender": "Gender",
         "gender-info": "Student's reported gender",
+        "language": "Primary Language",
+        "language-info": "The primary language is determined from information submitted on the Home Language Survey.",
         "iep": "IEP",
         "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
         "label": "Student",
@@ -585,6 +594,9 @@
         "State": "{{organizationName}} Instructional Resource",
         "System": "Smarter Balanced Instructional Resource"
       }
+    },
+    "languages": {
+      "undefined": "Not Stated"
     },
     "menus": {
       "resources": "Instructional Resources",
@@ -714,8 +726,8 @@
       "conventions": "Conventions",
       "evidence": "Evidence / Elaboration",
       "organization": "Organization / Purpose",
-      "total": "Total Points",
-      "total-info": "To compute the total number of points earned, the scores for organization/purpose and evidence/elaboration are averaged and rounded up, and then added to the points earned for conventions. A student can earn a maximum of six points. For more information, see the Interpretive Guide."
+      "total": "Transformed Points",
+      "total-info": "The Transformed Points value is calculated by adding the Conventions score to the average of the Organization/Purpose and Evidence/Elaboration scores. These two values represent two dimensions that are used to compute the student’s overall scale score and Claim 2 – Writing score. For more information, see the Interpretive Guide."
     }
   },
   "common-ngx": {
@@ -771,6 +783,8 @@
     "error-band-max": "Error Band Max",
     "error-band-min": "Error Band Min",
     "gender": "Sex",
+    "language": "Language",
+    "language-code": "LanguageCode",
     "iep": "IDEAIndicator",
     "limited-english": "LEPStatus",
     "migrant-status": "MigrantStatus",
@@ -935,7 +949,7 @@
       },
       "embargo": {
         "button": "Embargo",
-        "description": "Manage embargoed summative results."
+        "description": "Manage embargoes of summative results."
       },
       "instructional-resources": {
         "button": "Instructional Resources",
@@ -950,8 +964,7 @@
         "description": "Create and manage student groups for teachers."
       },
       "titles": {
-        "analyze": "Analyze Data",
-        "manage": "Manage"
+        "administrator-tools": "Administrator Tools"
       }
     },
     "groups-well": {
@@ -1300,6 +1313,6 @@
     "name-ssid-label": "Student Name or SSID"
   },
   "writing-trait-scores": {
-    "aggregate-header": "Points Breakdown"
+    "aggregate-header": "Points Distribution"
   }
 }

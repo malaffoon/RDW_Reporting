@@ -13,16 +13,18 @@ import { ExportTargetReportRequest } from '../assessments/model/export-target-re
 import { Assessment } from '../assessments/model/assessment.model';
 import { ordering } from '@kourge/ordering';
 import { ranking } from '@kourge/ordering/comparator';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { SubjectService } from '../subject/subject.service';
-import { map } from 'rxjs/operators';
+import { OrderingService } from '../shared/ordering/ordering.service';
+import{ map } from 'rxjs/operators';
 
 @Injectable()
 export class CsvExportService {
 
   constructor(private examFilterService: ExamFilterService,
               private csvBuilder: CsvBuilder,
-              private subjectService: SubjectService) {
+              private subjectService: SubjectService,
+              private orderingService: OrderingService) {
   }
 
   /**
@@ -71,6 +73,12 @@ export class CsvExportService {
         .withScoreAndErrorBand(getExam);
 
       subjectClaims.forEach(entry => {
+        this.orderingService
+          .getScorableClaimOrdering(entry.subject, entry.type).subscribe(
+          ordering => {
+            entry.claims.sort(ordering.on((claim) => claim).compare);
+          });
+
         builder.withClaimScores(
           entry.subject,
           entry.claims,
@@ -224,12 +232,13 @@ export class CsvExportService {
         return (data || []).reduce((subjectClaims, datum) => {
           const assessment = getAssessment(datum);
           if (assessment != null) {
-            const { subject, claimCodes } = assessment;
+            const { subject, claimCodes, type } = assessment;
             const entry = subjectClaims.find(subjectClaim => subjectClaim.subject === subject);
             if (entry == null) {
               subjectClaims.push({
                 subject: subject,
-                claims: claimCodes.concat()
+                claims: claimCodes.concat(),
+                type: type
               });
             }
           }
@@ -246,4 +255,5 @@ export class CsvExportService {
 interface SubjectScorableClaims {
   subject: string;
   claims: string[];
+  type: string;
 }

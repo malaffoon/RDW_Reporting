@@ -4,7 +4,7 @@ import { AssessmentExam } from '../model/assessment-exam.model';
 import { Exam } from '../model/exam.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { FilterBy } from '../model/filter-by.model';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  Observable ,  forkJoin } from 'rxjs';
 import { ExamFilterService } from '../filters/exam-filters/exam-filter.service';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
@@ -19,7 +19,6 @@ import { DistractorAnalysisComponent } from './view/distractor-analysis/distract
 import { InstructionalResourcesService } from './instructional-resources.service';
 import { InstructionalResource } from '../model/instructional-resources.model';
 import { Assessment } from '../model/assessment.model';
-import { Observable } from 'rxjs/Observable';
 import { WritingTraitScoresComponent } from './view/writing-trait-scores/writing-trait-scores.component';
 import { AssessmentExporter } from '../assessment-exporter.interface';
 import { AssessmentPercentileRequest, AssessmentPercentileService } from '../percentile/assessment-percentile.service';
@@ -30,7 +29,7 @@ import { Angulartics2 } from 'angulartics2';
 import { TargetReportComponent } from './view/target-report/target-report.component';
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import {map} from "rxjs/internal/operators";
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -197,7 +196,8 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayTargetReport(): boolean {
-    return this.allowTargetReport && this._assessmentExam.assessment.isSummative;
+    return this.allowTargetReport
+      && this._assessmentExam.assessment.targetReportEnabled;
   }
 
   get showStudentResults(): boolean {
@@ -349,7 +349,7 @@ export class AssessmentResultsComponent implements OnInit {
   loadInstructionalResources(assessment: Assessment, performanceLevel: number): void {
     this.instructionalResourceProvider = () => this.instructionalResourcesService
       .getInstructionalResources(assessment.id, this.assessmentProvider.getSchoolId())
-      .map((resources) => resources.getResourcesByPerformance(performanceLevel));
+      .pipe(map((resources) => resources.getResourcesByPerformance(performanceLevel)));
   }
 
   onPercentileButtonClickInternal(): void {

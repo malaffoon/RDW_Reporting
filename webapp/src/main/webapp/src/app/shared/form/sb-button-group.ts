@@ -149,7 +149,7 @@ const ControllerByInputType: { [ inputType: string ]: InputController } = {
                [disabled]="option.disabled"
                (click)="isAllOption ? onAllOptionClickInternal() : onOptionClickInternal(option)"
                angulartics2On="click"
-               angularticsEvent="{{analyticsEvent}}"
+               angularticsAction="{{analyticsEvent}}"
                angularticsCategory="{{analyticsCategory}}"
                [angularticsProperties]="isAllOption ? allOptionAnalyticsProperties : option.analyticsProperties">
         {{option.text}}

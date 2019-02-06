@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  forkJoin } from "rxjs";
 import { UserOrganizations } from "./user-organizations";
 import { OrganizationMapper } from "./organization.mapper";
 import { CachingDataService } from "../../shared/data/caching-data.service";
 import { map } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { OrganizationService as ExtendOrganizationService } from "../../shared/organization/organization.service";
 
 @Injectable()

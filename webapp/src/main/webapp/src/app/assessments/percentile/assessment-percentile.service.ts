@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { DataService } from "../../shared/data/data.service";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Percentile, PercentileGroup } from "./assessment-percentile";
 import { map } from "rxjs/operators";
 import * as _ from "lodash";

@@ -5,11 +5,12 @@ import { InstructionalResource } from '../model/instructional-resources.model';
 import { InstructionalResourcesService } from './instructional-resources.service';
 import { ColorService } from '../../shared/color.service';
 import { AssessmentProvider } from '../assessment-provider.interface';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ClaimStatistics } from '../model/claim-score.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { Assessment } from '../model/assessment.model';
 import { OrderingService } from '../../shared/ordering/ordering.service';
+import {map} from "rxjs/internal/operators";
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -103,10 +104,16 @@ export class AverageScaleScoreComponent {
   }
 
   getClaimDataWidth(claimIndex: number, levelIndex: number): number {
+    if(!this._claimDataWidths || !this._claimDataWidths[claimIndex]) {
+      return 0;
+    }
     return this._claimDataWidths[ claimIndex ][ levelIndex ];
   }
 
   getClaimValue(claimStats: ClaimStatistics, index: number): number {
+    if(!this._claimDataWidths || !this._claimDataWidths[0]) {
+      return 0;
+    }
     return this.showValuesAsPercent ? Math.round(claimStats.percents[ index ].value) : claimStats.levels[ index ].value;
   }
 
@@ -144,6 +151,12 @@ export class AverageScaleScoreComponent {
     return this.showValuesAsPercent ? this.statistics.percents : this.statistics.levels;
   }
 
+  getLatestClaimReferences(): ClaimReference[] {
+    if(this.claimReferences) {
+      return this.claimReferences[this.claimReferences.length -1];
+    }
+  }
+
   /**
    * Calculates the amount of the bar filled by the ExamStatisticsLevel
    * @param {ExamStatisticsLevel} examStatisticsLevel
@@ -167,8 +180,9 @@ export class AverageScaleScoreComponent {
   }
 
   loadInstructionalResources(level: number): void {
-    this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this._assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
-      .map(resources => resources.getResourcesByPerformance(level));
+    this.instructionalResourcesProvider = () =>
+      this.instructionalResourcesService.getInstructionalResources(this._assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
+        .pipe(map(resources => resources.getResourcesByPerformance(level)));
   }
 
   get claimLevelRows(): any[] {

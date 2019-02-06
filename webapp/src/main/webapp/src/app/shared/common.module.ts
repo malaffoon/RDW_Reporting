@@ -62,7 +62,7 @@ import { OrderingService } from "./ordering/ordering.service";
   ],
   imports: [
     AlertModule,
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     BrowserModule,
     CommonEmbargoModule,
     FormsModule,

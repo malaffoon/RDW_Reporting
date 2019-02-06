@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CachingDataService } from "../data/caching-data.service";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { AggregateServiceRoute } from "../service-route";
 
 @Injectable()

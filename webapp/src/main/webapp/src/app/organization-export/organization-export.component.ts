@@ -9,7 +9,7 @@ import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/ex
 import { OrganizationExport, OrganizationExportService } from "./organization-export.service";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Option } from "../shared/form/sb-typeahead.component";
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 
 @Component({

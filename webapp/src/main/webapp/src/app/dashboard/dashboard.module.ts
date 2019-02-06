@@ -23,7 +23,7 @@ import { StudentAssessmentCardComponent } from './student-dashboard/student-asse
     StudentAssessmentCardComponent,
   ],
   imports: [
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     AssessmentsModule,
     BrowserModule,
     BrowserAnimationsModule,

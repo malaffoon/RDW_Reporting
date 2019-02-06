@@ -13,8 +13,8 @@
 @import "@{library-path}/primeng/resources/themes/bootstrap/theme.css";
 
 // Twitter Bootstrap
-@import "@{library-path}/bootstrap/less/bootstrap.less";
-@import "@{library-path}/bootstrap/less/mixins.less";
+@import "assets/bootstrap/less/bootstrap.less";
+@import "assets/bootstrap/less/mixins.less";
 
 // Font Awesome
 @import "@{library-path}/font-awesome/less/font-awesome.less";
@@ -314,6 +314,15 @@ footer {
   #group-results-basic-filters .form-group .col-md-2.pull-right,
   #group-results-selected-assessments .col-md-6 .pull-right {
     .float-none-xs;
+  }
+
+  .navbar-link > .btn-group {
+    left: -15px;
+    padding-top: 0px;
+  }
+
+  .navbar > select {
+    width: 281px;
   }
 }
 
@@ -712,6 +721,11 @@ aggregate-report-table {
   width: min-content;
   width: -moz-min-content;
   width: -webkit-min-content;
+  min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
+}
+
+.aggregate-report-content-container, .summary-report-content-container {
+  width: 1550px;
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
 }
 
@@ -1706,5 +1720,196 @@ tr.highlight {
 }
 
 .admin-tools-well {
-  background-color: @gray-lighter;
+  min-width: 590px;
+  .btn {
+    width: 180px;
+  }
+}
+
+.typeahead-group {
+  white-space: nowrap;
+  .ui-autocomplete-token {
+    display: none;
+  }
+
+  .chips {
+
+    p-autoComplete {
+      .ui-autocomplete-multiple-container {
+        padding: 0;
+
+        .ui-autocomplete-input-token input {
+          height: 22px;
+          width: 186px;
+          padding-left: 6px;
+          font-size: 13px;
+          line-height: 1.5;
+          font-family: "PT Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+      }
+
+      .ui-autocomplete-dropdown {
+        height: 32px;
+        background-color: @aqua;
+
+        .pi-caret-down {
+          color: #fff;
+        }
+      }
+    }
+
+    .languages-container {
+      display: grid;
+
+      label {
+        cursor: default;
+        i {
+          line-height: 20px;
+          cursor: pointer;
+        }
+
+        &:first-child {
+          margin-top: 2px;
+        }
+      }
+    }
+  }
+}
+
+li.ui-autocomplete-list-item > span.ng-star-inserted {
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: "PT Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ui-autocomplete-list-item.ui-state-highlight {
+  background-color: @gray-mid;
+  span {
+    color: @white;
+  }
+}
+
+fieldset.marginLeft50 {
+  margin-left: 50px;
+}
+@media (max-width: @screen-lg-min) {
+  fieldset.marginLeft50 {
+    margin-left: 39px;
+  }
+}
+
+/*
+  Aggregate Report Tables are too wide for the normal layout
+  Several columns need to have set widths
+ */
+@agg-organization-width: 180px;
+@agg-dimension-width: 288px;
+@agg-achievementComparision-width: 150px;
+@agg-avgScaleScore-width: 140px;
+@agg-claim-width: 300px;
+@agg-assessmentGrade-width: 95px;
+@agg-SchoolYear-width: 82px;
+@agg-assessmentLabel-width: 225px;
+@agg-studentsTested-width: 75px;
+
+.rdw-scrollable-table {
+  table ,tr td{
+    border: 1px solid red;
+  }
+  tbody {
+    display: block;
+    overflow: auto;
+
+    tr {
+      td.aggregate-report-organization {
+        width: @agg-organization-width;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-align: left;
+        overflow: hidden;
+      }
+
+      td.aggregate-report-assessmentGrade {
+        width: @agg-assessmentGrade-width;
+      }
+
+      td.aggregate-report-schoolYear {
+        width: @agg-SchoolYear-width;
+      }
+
+      td.aggregate-report-dimension {
+        width: @agg-dimension-width;
+      }
+
+      td.aggregate-report-studentsTested {
+        width: @agg-studentsTested-width;
+      }
+
+      td.aggregate-report-assessmentLabel {
+        width: @agg-assessmentLabel-width;
+      }
+
+      td.aggregate-report-achievementComparison {
+        width: @agg-achievementComparision-width;
+      }
+
+      td.aggregate-report-avgScaleScore {
+        width: @agg-avgScaleScore-width;
+      }
+
+      td.aggregate-report-claim {
+        width: @agg-claim-width;
+      }
+
+    }
+  }
+  thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;// even columns width , fix width of table too
+  }
+  th {
+    white-space: normal !important;
+  }
+  th.aggregate-report-organization {
+    width: @agg-organization-width;
+  }
+  th.aggregate-report-assessmentGrade {
+    width: @agg-assessmentGrade-width;
+  }
+  th.aggregate-report-schoolYear {
+    width: @agg-SchoolYear-width;
+  }
+  th.aggregate-report-dimension {
+    width: @agg-dimension-width;
+  }
+  th.aggregate-report-studentsTested {
+    width: @agg-studentsTested-width;
+  }
+  th.aggregate-report-assessmentLabel {
+    width: @agg-assessmentLabel-width;
+  }
+  th.aggregate-report-achievementComparison {
+    width: @agg-achievementComparision-width;
+  }
+  th.aggregate-report-avgScaleScore {
+    width: @agg-avgScaleScore-width;
+  }
+  th.aggregate-report-claim {
+    width: @agg-claim-width;
+  }
+
+}
+
+body .ui-paginator .ui-paginator-pages .ui-paginator-page {
+  padding-top: 0px;
+}
+
+.ui-paginator .ui-dropdown {
+  margin-left: 0em;
+}
+
+// fixes issue with slow/stuttering scrolling and a fixed position element like the nav-pills on the aggregate reports
+.fixed-aggregate-navpills {
+  will-change: transform;
 }

@@ -20,7 +20,7 @@ import { DataService } from "../../shared/data/data.service";
 import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 import { MockUserService } from "../../../test/mock.user.service";
 import { ApplicationSettingsService } from '../../app-settings.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { SubjectService } from '../../subject/subject.service';
 
 describe('AssessmentResultsComponent', () => {

@@ -12,7 +12,7 @@ import { DefaultAssessmentExporter } from './default-assessment-exporter';
 import { TranslateService } from '@ngx-translate/core';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { AssessmentsComponent } from '../../assessments/assessments.component';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin } from 'rxjs';
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
 import { AssessmentExporter } from '../../assessments/assessment-exporter.interface';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';

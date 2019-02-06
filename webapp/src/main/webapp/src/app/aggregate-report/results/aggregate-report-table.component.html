@@ -1,18 +1,19 @@
 <p-table #dataTable
          [columns]="columns"
-         [rows]="rowsPerPageOptions[0]"
          [value]="table.rows"
+         [scrollable]="true"
+         [virtualScroll]="true"
+         [totalRecords]="table.rows.length"
+         scrollHeight="500px"
+         [virtualRowHeight]="37"
          [rowTrackBy]="rowTrackBy"
-         [paginator]="true"
-         [pageLinks]="3"
          [alwaysShowPaginator]="false"
-         [rowsPerPageOptions]="rowsPerPageOptions"
          (onPage)="onPage($event)"
          (sortFunction)="sort($event)"
          [sortMode]="rowSortingEnabled && 'single'"
          [customSort]="true"
          [autoLayout]="true"
-         styleClass="table table-striped table-hover overflow">
+         styleClass="table table-striped table-hover overflow rdw-scrollable-table">
   <ng-template pTemplate="header"
                let-columns>
     <tr>
@@ -26,8 +27,8 @@
               && column.id !== 'dimension'
               && column.id !== 'organization'
               && column.id !== 'claim'
-              && column.id !== 'target'
-          }">
+              && column.id !== 'target'}
+          " class="aggregate-report-{{column.id}}">
 
         <div *ngSwitchCase="'avgScaleScore'" class="text-center">
           <div class="no-wrap">{{'aggregate-report-table.columns.avg-scale-score' | translate}}</div>
@@ -82,7 +83,7 @@
                let-columns="columns">
     <tr>
       <td *ngFor="let column of columns; let columnIdx = index;"
-          [hidden]="!column.visible">
+          [hidden]="!column.visible" class="aggregate-report-{{column.id}}">
         <div [ngSwitch]="column.id"
              class="full-cell"
              [ngClass]="{
@@ -92,7 +93,7 @@
               'border-top': treeColumns[i] <= columnIdx && treeColumns[i] < identityColumns.length - 1
              }">
 
-          <div *ngSwitchCase="'organization'">
+          <div *ngSwitchCase="'organization'" class="label-max-width">
                 <span class="label mr-xs"
                       [ngClass]="getOrganizationTypeColor(rowData.organization.type)">
                   {{('common.organization.type.' + rowData.organization.type) | translate}}
