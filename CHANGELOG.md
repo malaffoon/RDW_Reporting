@@ -1,6 +1,9 @@
 ## Change Log
 
-#### 1.3.0
+#### 1.3.1
+
+
+#### 1.3.0 - 2019-02-05
 
 * Change aggregate report table to scroll instead of paging.
 * Fix issue with responsive menu in app header.
