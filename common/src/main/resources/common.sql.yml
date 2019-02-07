@@ -226,6 +226,7 @@ sql:
         e.iep,
         e.lep,
         e.language_code,
+        e.military_connected_code,
         e.elas_code,
         e.section504,
         e.migrant_status,

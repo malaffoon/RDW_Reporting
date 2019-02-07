@@ -66,6 +66,10 @@ sql:
     findAll: >-
       SELECT id, code FROM language ORDER BY id
 
+  militaryConnectedCode:
+    findAll: >-
+      SELECT id, code FROM military_connected ORDER BY id
+
   gender:
     findAll: >-
       SELECT id, code FROM gender ORDER BY id
