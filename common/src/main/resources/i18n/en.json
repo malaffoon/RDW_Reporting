@@ -190,7 +190,7 @@
           "header": "Overall Achievement"
         }
       },
-      "score-range": " ({0}-{1})"
+      "score-range": " ({0}-{1})*"
     },
     "important-information": {
       "header": "Important Information About Interim Assessments",
@@ -233,7 +233,7 @@
           "header": "Overall Achievement"
         }
       },
-      "score-range": "{0}-{1}"
+      "score-range": " ({0}-{1})*"
     },
     "target": {
       "overall": {
