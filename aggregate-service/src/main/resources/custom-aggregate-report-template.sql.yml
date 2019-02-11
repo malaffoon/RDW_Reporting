@@ -294,6 +294,11 @@ sqlbuilder:
                 where: >-
                   e.language_id in (:language_ids)
 
+            MilitaryConnectedCode_filter:
+              clauses:
+                where: >-
+                  e.military_connected_code in (:military_connected_codes)
+
             Ethnicity_filter:
                clauses:
                  where: >-
