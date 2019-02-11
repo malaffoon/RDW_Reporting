@@ -292,7 +292,7 @@ sqlbuilder:
             MilitaryConnectedCode_filter:
               clauses:
                 where: >-
-                  e.military_connected_code in (:military_connected_codes)
+                  e.military_connected_code in (:military_connected_code_ids)
 
             Ethnicity_filter:
                clauses:
