@@ -149,11 +149,15 @@ sqlbuilder:
               clauses:
                 select: >-
                   'MilitaryConnectedCode' AS dimension,
-                  e.military_connected_code AS dimension_id
+                  e.military_connected_id AS dimension_id,
+                  mc.code AS dimension_code
+                join: >-
+                  JOIN military_connected mc ON mc.id = e.military_connected_id
                 where: >-
-                  ( true = :all_military_connected_codes OR e.military_connected_code in (:military_connected_code_ids) )
+                  ( true = :all_military_connected OR e.military_connected_id in (:military_connected_ids) )
                 groupBy: >-
-                  e.military_connected_code
+                  e.military_connected_id,
+                  mc.code
 
             IEP:
               clauses:
