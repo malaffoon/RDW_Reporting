@@ -165,6 +165,7 @@ sql:
         'LEPStatus',
         'LanguageCode',
         'LanguageAltCode',
+        'MilitaryConnectedCode',
         'EnglishLanguageAcquisitionStatus',
         'EnglishLanguageAcquisitionStatusStartDate',
 
@@ -223,6 +224,7 @@ sql:
         (CASE WHEN e.lep = 1 THEN 'Yes' WHEN e.lep = 0 THEN 'No' ELSE '' END),
         COALESCE(e.language_code, ''),
         COALESCE(lan.altcode, ''),
+        COALESCE(e.military_connected_code, ''),
         COALESCE(e.elas_code, ''),
         COALESCE(e.elas_start_at, ''),
 
