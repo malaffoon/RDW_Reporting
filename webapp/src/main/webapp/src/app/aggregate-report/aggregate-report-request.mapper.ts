@@ -149,9 +149,7 @@ export class AggregateReportRequestMapper {
 
     // Returns the first argument that is not null or empty
     const or = (a: any, b: any) => Utils.isNullOrEmpty(a) ? b : a;
-
-    console.log("options", options);
-
+    
     // Safely sorts the provided values ranked by the provided options
     const sort = (values: any[], options: any[]) => (values || []).sort(ordering(ranking(options)).compare);
 

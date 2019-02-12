@@ -135,6 +135,7 @@ export class AssessmentExamMapper {
     student.lastName = serverStudent.lastName;
     student.genderCode = serverStudent.genderCode;
     student.ethnicityCodes = serverStudent.ethnicityCodes;
+    student.militaryConnectedCode = serverStudent.militaryConnectedCodes;
     return student;
   }
 
