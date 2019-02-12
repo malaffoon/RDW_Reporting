@@ -794,6 +794,7 @@
     "gender": "Sex",
     "language": "Language",
     "language-code": "LanguageCode",
+    "military-connected-code": "MilitaryConnectedStudentIndicator",
     "iep": "IDEAIndicator",
     "limited-english": "LEPStatus",
     "migrant-status": "MigrantStatus",
