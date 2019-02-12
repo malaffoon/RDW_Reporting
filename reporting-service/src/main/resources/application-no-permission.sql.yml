@@ -188,6 +188,12 @@ sql:
       from language
       order by display_order
 
+  militaryCode:
+    findAll: >-
+      select code
+      from military_connected
+      order by id
+
   subject:
     findAll: >-
       select code
