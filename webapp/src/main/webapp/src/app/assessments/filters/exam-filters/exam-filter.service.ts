@@ -21,7 +21,8 @@ export class ExamFilterService {
     new ExamFilter('limitedEnglishProficiency', 'common.filters.student.limited-english-proficiency', 'common.polar', this.filterByLimitedEnglishProficiency),
     new ExamFilter('elasCodes', 'common.filters.student.elas', 'common.elas', this.filterByElasCode),
     new ExamFilter('ethnicities', 'common.filters.student.ethnicity', 'common.ethnicity', this.filterByEthnicity),
-    new ExamFilter('languageCodes', 'common.filters.student.language','common.languages', this.filterByLanguageCode)
+    new ExamFilter('languageCodes', 'common.filters.student.language','common.languages', this.filterByLanguageCode),
+    new ExamFilter('militaryConnectedCodes', 'common.filters.student.military-connected', 'common.military-connected-code', this.filterByMilitaryConnectedCode)
   ];
 
   getFilterDefinitions(): ExamFilter[] {
@@ -62,6 +63,8 @@ export class ExamFilterService {
           filterValue = filterBy.filteredElasCodes;
         else if (filter == 'languageCodes')
           filterValue = filterBy.filteredLanguages;
+        else if (filter == 'militaryConnectedCodes')
+          filterValue = filterBy.filteredMilitaryConnectedCodes;
 
         exams = exams.filter(exam => filterDefinition.apply(exam, filterValue));
       }
@@ -113,6 +116,8 @@ export class ExamFilterService {
             filterValue = filterBy.filteredElasCodes;
           } else if (filter == 'langageCodes') {
             filterValue = filterBy.filteredLanguages;
+          } else if (filter == 'militaryConnectedCodes') {
+            filterValue = filterBy.filteredMilitaryConnectedCodes;
           }
 
           return filterDefinition.apply(exam, filterValue);
@@ -147,6 +152,12 @@ export class ExamFilterService {
       // as languages need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('languageCodes') == -1);
       filters.push('languageCodes');
+    }
+    if (filters.some(x => x.indexOf('militaryConnectedCodes') > -1 )) {
+      // remove individual 'militaryConnectedCode.code' and add just one militaryConnectedCode
+      // as militaryConnectedCode need to be evaluated all at once.
+      filters = filters.filter(x => x.indexOf('militaryConnectedCodes') == -1);
+      filters.push('militaryConnectedCodes');
     }
 
     return filters;
@@ -198,5 +209,9 @@ export class ExamFilterService {
 
   private filterByTransferAssessment(exam: Exam, filterValue: any): boolean {
     return !filterValue || !exam.transfer;
+  }
+
+  private filterByMilitaryConnectedCode(exam: Exam, filterValue: any): boolean {
+    return (exam.student && !filterValue.length) || filterValue.some(militaryConnectedCode => militaryConnectedCode == exam.militaryConnectedCode);
   }
 }

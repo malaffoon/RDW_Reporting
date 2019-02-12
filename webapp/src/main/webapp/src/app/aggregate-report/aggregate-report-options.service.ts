@@ -53,7 +53,8 @@ export class AggregateReportOptionsService {
           englishLanguageAcquisitionStatuses: serverOptions.englishLanguageAcquisitionStatuses.concat(),
           migrantStatuses: serverOptions.migrantStatuses.concat().sort(booleanComparator),
           section504s: serverOptions.section504s.concat().sort(booleanComparator),
-          languages: serverOptions.languages.concat()
+          languages: serverOptions.languages.concat(),
+          militaryConnectedCodes: serverOptions.militaryConnectedCodes.concat()
         }
       })
     );

@@ -194,6 +194,11 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     type: 'StudentEnrolledGrade',
     getDimensionValueCodes: settings => Utils.isNullOrEmpty(settings.assessmentGrades) ? [] : [ settings.assessmentGrades[ 0 ] ],
     getTranslationCode: value => `common.enrolled-grade.${value}`
+  },
+  {
+    type: 'MilitaryConnectedCode',
+    getDimensionValueCodes: settings => settings.militaryConnectedCodes,
+    getTranslationCode: value => `common.military-connected-code.${value}`
   }
 ];
 

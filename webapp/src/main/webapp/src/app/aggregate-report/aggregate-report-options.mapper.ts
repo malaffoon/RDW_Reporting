@@ -142,7 +142,12 @@ export class AggregateReportOptionsMapper {
           .map(optionMapper(
             value => translate(`common.languages.${value}`),
             value => `Primary Language Codes: ${value}`
-          ))
+          )),
+        militaryConnectedCodes: options.studentFilters.militaryConnectedCodes
+          .map(optionMapper(
+            value => translate(`common.military-connected-codes.${value}`),
+            value => `Military Connected Codes: ${value}`
+          )),
       }
     };
   }
@@ -200,7 +205,8 @@ export class AggregateReportOptionsMapper {
         englishLanguageAcquisitionStatuses: options.studentFilters.englishLanguageAcquisitionStatuses.concat(),
         migrantStatuses: options.studentFilters.migrantStatuses.concat(),
         section504s: options.studentFilters.section504s.concat(),
-        languages: options.studentFilters.languages.concat()
+        languages: options.studentFilters.languages.concat(),
+        militaryConnectedCodes: options.studentFilters.militaryConnectedCodes.concat()
       },
       targetReport: {
         assessmentGrade: options.assessmentGrades[ 0 ],

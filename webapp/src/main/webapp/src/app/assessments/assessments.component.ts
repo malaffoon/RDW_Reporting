@@ -282,6 +282,15 @@ export class AssessmentsComponent implements OnChanges {
     })
   }
 
+  removeMilitaryConnectedCode(militaryConnectedCode) {
+    this.clientFilterBy.militaryConnectedCodes[ militaryConnectedCode ] = false;
+    if (this.clientFilterBy.filteredMilitaryConnectedCodes.length == 0) {
+      this.clientFilterBy.militaryConnectedCodes[ 0 ] = true; // None are selected, set all to true.
+    }
+
+    this.clientFilterBy.militaryConnectedCodes = Object.assign({}, this.clientFilterBy.militaryConnectedCodes);
+  }
+
   removeFilter(property) {
     if (property === 'offGradeAssessment') {
       this.clientFilterBy[ property ] = false;
@@ -297,6 +306,9 @@ export class AssessmentsComponent implements OnChanges {
       let code = property.substring(property.indexOf('.') + 1);
       this.removeLanguageCode(code);
       this.advFiltersComponent.removeLanguageFilter(code);
+    } else if (property.indexOf('militaryConnectedCodes') > -1) {
+      let code = property.substring(property.indexOf('.') + 1);
+      this.removeMilitaryConnectedCode(code);
     } else {
       this.clientFilterBy[ property ] = -1;
     }

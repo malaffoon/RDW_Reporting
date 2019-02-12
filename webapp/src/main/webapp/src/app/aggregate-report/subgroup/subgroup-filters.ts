@@ -46,6 +46,11 @@ export interface SubgroupFilters {
    * Language  filter
    */
   languages: string[];
+
+  /**
+   * MilitaryConnectedCodes filter
+   */
+  militaryConnectedCodes: string[];
 }
 
 const leftDifference = (a: { [ key: string ]: any }, b: { [ key: string ]: any }): { [ key: string ]: any } => {
@@ -69,7 +74,8 @@ export class SubgroupFilterSupport {
       englishLanguageAcquisitionStatuses: [],
       migrantStatuses: [],
       section504s: [],
-      languages: []
+      languages: [],
+      militaryConnectedCodes: []
     };
   }
 
@@ -95,6 +101,7 @@ export class SubgroupFilterSupport {
       && Utils.equalSets(a.section504s, b.section504s)
       && Utils.equalSets(a.languages, b.languages)
       && Utils.equalSets(a.limitedEnglishProficiencies, b.limitedEnglishProficiencies)
+      && Utils.equalSets(a.militaryConnectedCodes, b.militaryConnectedCodes)
       && Utils.equalSets(a.englishLanguageAcquisitionStatuses, b.englishLanguageAcquisitionStatuses)
       && Utils.equalSets(a.economicDisadvantages, b.economicDisadvantages);
   }
@@ -109,7 +116,8 @@ export class SubgroupFilterSupport {
       englishLanguageAcquisitionStatuses: input.englishLanguageAcquisitionStatuses.concat(),
       migrantStatuses: input.migrantStatuses.concat(),
       section504s: input.section504s.concat(),
-      languages: input.languages.concat()
+      languages: input.languages.concat(),
+      militaryConnectedCodes: input.militaryConnectedCodes.concat()
     };
   }
 

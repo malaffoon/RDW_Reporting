@@ -24,4 +24,5 @@ export class Exam {
   transfer: boolean;
   elasCode: string;
   languageCode: string;
+  militaryConnectedCode: string;
 }
