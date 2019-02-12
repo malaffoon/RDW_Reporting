@@ -127,35 +127,27 @@ export class ExamFilterService {
     return results;
   }
 
+  // remove individual '*.code' (i.e. 'gender.code') and add just one gender/ethnicity/elas/language/...
+  // as they need to be evaluated all at once.
   private getFilters(filterBy: FilterBy): string[] {
     let filters = filterBy.all;
     if (filters.some(x => x.indexOf('ethnicities') > -1)) {
-      // remove individual 'ethnicity.code' and add just one ethnicity
-      // as ethnicities need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('ethnicities') == -1);
       filters.push('ethnicities');
     }
     if (filters.some(x => x.indexOf('genders') > -1)) {
-      // remove individual 'gender.code' and add just one gender
-      // as genders need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('genders') == -1);
       filters.push('genders');
     }
     if (filters.some(x => x.indexOf('elasCodes') > -1)) {
-      // remove individual 'elas.code' and add just one elas
-      // as elas need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('elasCodes') == -1);
       filters.push('elasCodes');
     }
     if (filters.some(x => x.indexOf('languageCodes') > -1 )) {
-      // remove individual 'language.code' and add just one language
-      // as languages need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('languageCodes') == -1);
       filters.push('languageCodes');
     }
     if (filters.some(x => x.indexOf('militaryConnectedCodes') > -1 )) {
-      // remove individual 'militaryConnectedCode.code' and add just one militaryConnectedCode
-      // as militaryConnectedCode need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('militaryConnectedCodes') == -1);
       filters.push('militaryConnectedCodes');
     }
