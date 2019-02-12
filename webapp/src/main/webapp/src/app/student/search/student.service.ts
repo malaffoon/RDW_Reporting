@@ -34,7 +34,8 @@ export class StudentService {
         limitedEnglishProficiency: this.toBooleanCode(serverStudent.limitedEnglishProficiency),
         section504: this.toBooleanCode(serverStudent.section504),
         migrantStatus: this.toBooleanCode(serverStudent.migrantStatus),
-        languages: serverStudent.languageCode
+        languages: serverStudent.languageCode,
+        militaryConnectedCode: serverStudent.militaryConnectedCode
       }))
     );
   }

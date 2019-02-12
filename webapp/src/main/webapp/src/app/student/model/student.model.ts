@@ -7,5 +7,6 @@ export class Student {
   public genderCode: string;
   public ethnicityCodes: string[];
   public languageCode: string;
+  public militaryConnectedCode: string;
 
 }

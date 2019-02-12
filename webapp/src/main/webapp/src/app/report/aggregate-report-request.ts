@@ -63,4 +63,5 @@ export interface StudentFilters {
   readonly migrantStatusCodes?: string[];
   readonly section504Codes?: string[];
   readonly languageCodes?: string[];
+  readonly militaryConnectedCodes?: string[];
 }

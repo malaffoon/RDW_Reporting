@@ -111,7 +111,7 @@
   <p class="border-bottom">{{ 'common.filters.student.label' | translate }}</p>
   <div class="row">
     <!-- Column 1 -->
-    <div class="col-md-2">
+    <div class="col-md-3">
       <!-- Gender -->
       <div class="block-children">
         <fieldset>
@@ -128,11 +128,27 @@
         </fieldset>
       </div>
 
+      <!-- Military Connected -->
+      <div class="block-children">
+        <fieldset>
+          <label for="military-connected-filter">
+            <span info-button
+                  title="{{ 'common.filters.student.military-connected' | translate }}"
+                  content="{{ 'common.filters.student.military-connected-info' | translate }}"></span>
+          </label>
+          <sb-checkbox-list id="military-connected-filter"
+                            name="military-connected-filter"
+                            [model]="filterBy" [values]="filterOptions.militaryConnectedCodes" property="militaryConnectedCodes"
+                            enum="common.military-connected-code"
+                            label="{{ 'common.filters.student.military-connected' | translate }}"
+                            analyticsEvent="FilterClick" analyticsCategory="AdvancedFilters"></sb-checkbox-list>
+        </fieldset>
+      </div>
 
     </div>
 
     <!-- Column 2 -->
-    <div class="col-md-3">
+    <div class="col-md-2">
       <!-- Migrant Status -->
       <div class="block-children">
         <fieldset>

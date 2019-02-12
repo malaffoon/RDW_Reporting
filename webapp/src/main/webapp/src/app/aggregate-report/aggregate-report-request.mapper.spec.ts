@@ -51,7 +51,8 @@ describe('AggregateReportRequestMapper', () => {
       elasCodes: ['EO'],
       migrantStatusCodes: ['yes'],
       section504Codes: ['yes'],
-      languageCodes: ['ENG', 'SPA']
+      languageCodes: ['ENG', 'SPA'],
+      militaryConnectedCodes: ['NotMilitaryConnected', 'ActiveDuty']
     };
 
     const query: AggregateReportQuery = {
@@ -112,7 +113,8 @@ describe('AggregateReportRequestMapper', () => {
         englishLanguageAcquisitionStatuses: studentFilters.elasCodes,
         migrantStatuses: studentFilters.migrantStatusCodes,
         section504s: studentFilters.section504Codes,
-        languages: studentFilters.languageCodes
+        languages: studentFilters.languageCodes,
+        militaryConnectedCodes: studentFilters.militaryConnectedCodes
       },
       generalPopulation: {
         assessmentGrades: query.assessmentGradeCodes,
@@ -197,7 +199,8 @@ describe('AggregateReportRequestMapper', () => {
         limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies,
         migrantStatuses: options.studentFilters.migrantStatuses,
         section504s: options.studentFilters.section504s,
-        languages: options.studentFilters.languages
+        languages: options.studentFilters.languages,
+        militaryConnectedCodes: options.studentFilters.militaryConnectedCodes
       },
       generalPopulation: {
         assessmentGrades: query.assessmentGradeCodes,
@@ -270,7 +273,8 @@ describe('AggregateReportRequestMapper', () => {
         englishLanguageAcquisitionStatuses: ['EO'],
         migrantStatuses: booleans,
         section504s: booleans,
-        languages: ['ENG', 'SPA']
+        languages: ['ENG', 'SPA'],
+        militaryConnectedCodes: ['NotMilitaryConnected', 'ActiveDuty', 'NationalGuardOrReserve']
       }
     };
   }

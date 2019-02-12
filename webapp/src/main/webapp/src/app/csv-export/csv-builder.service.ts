@@ -383,6 +383,16 @@ export class CsvBuilder {
     );
   }
 
+  withMilitaryConnectedCode(getExam: (item: any) => Exam) {
+    return this.withColumn(
+      this.translateService.instant('csv-builder.military-connected-code'),
+      (item) => {
+        const militaryConnectedCode = getExam(item).militaryConnectedCode;
+        return militaryConnectedCode ? this.translateService.instant(`common.military-connected-code.${getExam(item).militaryConnectedCode}`) : '';
+      }
+    );
+  }
+
   withEthnicity(getExam: (item: any) => Exam, ethnicities: string[]) {
     for (const ethnicity of ethnicities) {
       this.withColumn(
@@ -633,6 +643,7 @@ export class CsvBuilder {
     }
 
     studentContext = studentContext.withLanguage(getExam)
+      .withMilitaryConnectedCode(getExam)
       .withEthnicity(getExam, ethnicities);
     return studentContext;
   }

@@ -149,7 +149,7 @@ export class AggregateReportRequestMapper {
 
     // Returns the first argument that is not null or empty
     const or = (a: any, b: any) => Utils.isNullOrEmpty(a) ? b : a;
-
+    
     // Safely sorts the provided values ranked by the provided options
     const sort = (values: any[], options: any[]) => (values || []).sort(ordering(ranking(options)).compare);
 
@@ -190,6 +190,10 @@ export class AggregateReportRequestMapper {
         languages: or(
           sort(filters.languageCodes, options.studentFilters.languages),
           options.studentFilters.languages
+        ),
+        militaryConnectedCodes: or(
+          sort(filters.militaryConnectedCodes, options.studentFilters.militaryConnectedCodes),
+          options.studentFilters.militaryConnectedCodes
         )
       }
       : SubgroupFilterSupport.copy(options.studentFilters);
@@ -349,6 +353,9 @@ export class AggregateReportRequestMapper {
     if (!equalSize(settingFilters.languages, optionFilters.languages)) {
       queryFilters.languageCodes = settingFilters.languages;
     }
+    if (!equalSize(settingFilters.militaryConnectedCodes, optionFilters.militaryConnectedCodes)) {
+      queryFilters.militaryConnectedCodes = optionFilters.militaryConnectedCodes;
+    }
     return queryFilters;
   }
 
@@ -381,6 +388,9 @@ export class AggregateReportRequestMapper {
     }
     if(notNullOrEmpty(settingFilters.languages)) {
       queryFilters.languageCodes = settingFilters.languages;
+    }
+    if(notNullOrEmpty(settingFilters.militaryConnectedCodes)) {
+      queryFilters.militaryConnectedCodes = settingFilters.militaryConnectedCodes;
     }
     return queryFilters;
   }
@@ -425,6 +435,9 @@ export class AggregateReportRequestMapper {
     }
     if (notNullOrEmpty(subgroup.languageCodes)) {
       subgroupFilters.languages = subgroup.languageCodes;
+    }
+    if (notNullOrEmpty(subgroup.militaryConnectedCodes)) {
+      subgroupFilters.militaryConnectedCodes = subgroup.militaryConnectedCodes;
     }
     return subgroupFilters;
   }

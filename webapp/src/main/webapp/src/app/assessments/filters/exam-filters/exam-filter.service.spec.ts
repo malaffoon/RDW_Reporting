@@ -280,6 +280,23 @@ describe('ExamFilterService', () => {
     expect(actual[1].session).toBe("2");
   });
 
+  it('should filter exams by militaryConnectedCode', () => {
+    filterBy.militaryConnectedCodes ["ActiveDuty"] = true;
+    filterBy.militaryConnectedCodes["NotMilitaryConnected"] = true;
+    filterBy.militaryConnectedCodes["NationalGuardOrReserve"] = false;
+
+    assessmentExam.exams[ 0 ].militaryConnectedCode = "ActiveDuty";
+    assessmentExam.exams[ 1 ].militaryConnectedCode = "NotMilitaryConnected";
+    assessmentExam.exams[ 2 ].militaryConnectedCode = "NationalGuardOrReserve";
+    assessmentExam.exams[ 3 ].militaryConnectedCode = "ActiveDuty";
+
+    let actual = fixture.filterExams(assessmentExam.exams, assessmentExam.assessment, filterBy);
+
+    expect(actual.length).toBe(3);
+    expect(actual.some(x => x.militaryConnectedCode == 'NationalGuardOrReserve')).toBeFalsy();
+    expect(actual.some(x => x.militaryConnectedCode == 'ActiveDuty')).toBeTruthy();
+  });
+
   it('should hide transfer exams when transferAssessment is true', () => {
     filterBy.transferAssessment = true;
 

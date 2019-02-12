@@ -431,6 +431,7 @@
       "ELAS": "English Language Acquisition Status",
       "Language": "Primary Language",
       "MigrantStatus": "Migrant Status",
+      "MilitaryConnectedCode": "Military Connected",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Student Enrolled Grade"
@@ -444,6 +445,7 @@
       "ELAS": "ELAS",
       "Language": "Language",
       "MigrantStatus": "Migrant Status",
+      "MilitaryConnectedCode": "Military Connected",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Enrolled Grade"
@@ -533,6 +535,8 @@
         "gender-info": "Student's reported gender",
         "language": "Primary Language",
         "language-info": "The primary language is determined from information submitted on the Home Language Survey.",
+        "military-connected": "Military Connected",
+        "military-connected-info": "An indication that the student’s parent or guardian is on Active Duty, in the National Guard, or in the Reserve components of the United States military services.",
         "iep": "IEP",
         "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
         "label": "Student",
@@ -616,6 +620,11 @@
       "null-student": "This student is unavailable.  Contact your building administrator if you think you should have access to this student.",
       "submission-failed": "Error creating report. See <a href=\"/reports\">status</a>.",
       "unknown-error": "An unknown error has occurred. You can try the same action again or click the button below to go to the home page.  If this problem persists, please contact your building administrator."
+    },
+    "military-connected-code": {
+      "ActiveDuty": "Active Duty",
+      "NotMilitaryConnected": "Not Military Connected",
+      "NationalGuardOrReserve": "National Guard Or Reserve"
     },
     "missing": "-",
     "navigation": {
@@ -785,6 +794,7 @@
     "gender": "Sex",
     "language": "Language",
     "language-code": "LanguageCode",
+    "military-connected-code": "MilitaryConnectedStudentIndicator",
     "iep": "IDEAIndicator",
     "limited-english": "LEPStatus",
     "migrant-status": "MigrantStatus",

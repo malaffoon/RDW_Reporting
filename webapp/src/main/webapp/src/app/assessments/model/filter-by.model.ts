@@ -19,9 +19,10 @@ export class FilterBy extends ObservableObject {
   private _ethnicities: boolean[] = [ true ];
   private _elasCodes: boolean[] = [ true ];
   private _languageCodes: boolean[] = [ true ];
+  private _militaryConnectedCodes: boolean[] = [ true ];
 
   private _filters = ['offGradeAssessment', 'transferAssessment', 'administration', 'summativeStatus', 'completion', 'genders', 'migrantStatus',
-                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities', 'languageCodes'];
+                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities', 'languageCodes', 'militaryConnectedCodes'];
 
   get filteredEthnicities(): any[] {
     return this.filterArray(this._ethnicities);
@@ -37,6 +38,10 @@ export class FilterBy extends ObservableObject {
 
   get filteredLanguages(): any[] {
     return this.filterArray(Object.assign({}, ...this._languageCodes));
+  }
+
+  get filteredMilitaryConnectedCodes(): any[] {
+    return this.filterArray(this._militaryConnectedCodes);
   }
 
   private filterArray(array: any[]): any[] {
@@ -73,6 +78,11 @@ export class FilterBy extends ObservableObject {
         const filteredLanguages = this.filteredLanguages;
         for (const filteredLanguage of filteredLanguages) {
           all.push(property + "." + filteredLanguage);
+        }
+      } else if (property == "militaryConnectedCodes") {
+        const filteredMilitaryConnectedCodes = this.filteredMilitaryConnectedCodes;
+        for (const filteredMilitaryConnectedCode of filteredMilitaryConnectedCodes) {
+          all.push(property + "." + filteredMilitaryConnectedCode);
         }
       } else if (this.isFilterEnabled(property)) {
         all.push(property);
@@ -170,6 +180,15 @@ export class FilterBy extends ObservableObject {
   set migrantStatus(value: number) {
     this._migrantStatus = value;
     this.notifyChange('migrantStatus');
+  }
+
+  get militaryConnectedCodes() {
+    return this._militaryConnectedCodes;
+  }
+
+  set militaryConnectedCodes(value: boolean[]) {
+    this._militaryConnectedCodes = value;
+    this.notifyChange('militaryConnectedCodes');
   }
 
   get plan504(): number {

@@ -7,4 +7,5 @@ export class ExamFilterOptions {
   languages: string[] = [];
   hasSummative: boolean = false;
   hasInterim: boolean = false;
+  militaryConnectedCodes: string[] = [];
 }

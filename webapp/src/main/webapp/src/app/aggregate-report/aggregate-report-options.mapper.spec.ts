@@ -87,7 +87,8 @@ describe('AggregateReportOptionsMapper', () => {
         limitedEnglishProficiencies: [ '1', '2' ],
         migrantStatuses: [ '1', '2' ],
         section504s: [ '1', '2' ],
-        languages: ['1', '2']
+        languages: ['1', '2'],
+        militaryConnectedCodes: ['1', '2']
       },
       reportTypes: [ AggregateReportType.GeneralPopulation, AggregateReportType.LongitudinalCohort ],
       claims: []
@@ -121,7 +122,8 @@ describe('AggregateReportOptionsMapper', () => {
           limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies,
           migrantStatuses: options.studentFilters.migrantStatuses,
           section504s: options.studentFilters.section504s,
-          languages: options.studentFilters.languages
+          languages: options.studentFilters.languages,
+          militaryConnectedCodes: options.studentFilters.militaryConnectedCodes
         },
         generalPopulation: {
           assessmentGrades: [],

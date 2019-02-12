@@ -154,6 +154,9 @@ export class TargetStatisticsCalculator {
         case 'Language':
           subgroupValues = activeLanguageCodes;
           break;
+        case 'MilitaryConnectedCode':
+          subgroupValues = subgroupOptions.militaryConnectedCodes;
+          break;
       }
 
       subgroupValues.forEach(subgroupValue => {
@@ -196,6 +199,7 @@ export class TargetStatisticsCalculator {
       case 'MigrantStatus': return exam.migrantStatus;
       case 'StudentEnrolledGrade': return exam.enrolledGrade;
       case 'Language': return exam.languageCode;
+      case 'MilitaryConnectedCode': return exam.militaryConnectedCode;
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
       case 'ELAS': return exam.elasCode !+ null ? exam.elasCode : null;
