@@ -4,7 +4,7 @@ class="well admin-tools-well">
     <div class="col-xs-12">
       <h3>{{ 'home.admin-tools.titles.administrator-tools' | translate }}</h3>
       <div class="row">
-        <div *hasPermission="'CUSTOM_AGGREGATE_READ'" class="col-xs-4 mb-sm">
+        <div *hasPermission="'CUSTOM_AGGREGATE_READ'" class="col-xs-4 mb-sm admin-tool">
           <a routerLink="/aggregate-reports"
              class="btn btn-primary btn-xs mb-xs">
             <i class="fa fa-table"></i>
@@ -12,7 +12,7 @@ class="well admin-tools-well">
           </a>
           <p class="small">{{'home.admin-tools.custom-aggregate.description' | translate}}</p>
         </div>
-        <div *hasPermission="'INDIVIDUAL_PII_READ'" class="col-xs-4 mb-sm">
+        <div *hasPermission="'INDIVIDUAL_PII_READ'" class="col-xs-4 mb-sm admin-tool">
           <a routerLink="/custom-export"
              class="btn btn-primary btn-xs mb-xs">
             <i class="fa fa-cloud-download"></i>
@@ -20,7 +20,7 @@ class="well admin-tools-well">
           </a>
           <p class="small">{{'home.admin-tools.organizational-export.description' | translate}}</p>
         </div>
-        <div *hasPermission="'GROUP_WRITE'" class="col-xs-4 mb-sm">
+        <div *hasPermission="'GROUP_WRITE'" class="col-xs-4 mb-sm admin-tool">
           <a routerLink="/admin-groups"
              class="btn btn-primary btn-xs mb-xs">
             <i class="fa fa-edit"></i>
@@ -28,7 +28,7 @@ class="well admin-tools-well">
           </a>
           <p class="small">{{ 'home.admin-tools.student-groups.description' | translate}}</p>
         </div>
-        <div *hasPermission="'INSTRUCTIONAL_RESOURCE_WRITE'" class="col-xs-4 mb-sm">
+        <div *hasPermission="'INSTRUCTIONAL_RESOURCE_WRITE'" class="col-xs-4 mb-sm admin-tool">
           <a routerLink="/instructional-resource"
              class="btn btn-primary btn-xs mb-xs">
             <i class="fa fa-bold fa-calendar"></i>
@@ -36,7 +36,7 @@ class="well admin-tools-well">
           </a>
           <p class="small">{{ 'home.admin-tools.instructional-resources.description' | translate}}</p>
         </div>
-        <div *hasPermission="'EMBARGO_WRITE'" class="col-xs-4 mb-sm">
+        <div *hasPermission="'EMBARGO_WRITE'" class="col-xs-4 mb-sm admin-tool">
           <a routerLink="/embargoes"
              class="btn btn-primary btn-xs mb-xs">
             <i class="fa fa-eye-slash"></i>
