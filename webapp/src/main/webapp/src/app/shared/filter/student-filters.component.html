@@ -85,6 +85,24 @@
 
   <div class="flex-child">
 
+    <!-- Military Connected -->
+    <div>
+      <fieldset>
+        <label>
+            <span info-button
+                  title="{{ 'common.filters.student.military-connected' | translate }}"
+                  content="{{ 'common.filters.student.military-connected-info' | translate }}"></span>
+        </label>
+        <sb-button-group [options]="optionsInternal.militaryConnectedCodes"
+                         [(ngModel)]="value.militaryConnectedCodes"
+                         (ngModelChange)="onChange()"
+                         [vertical]="true"
+                         allOptionReturnsUndefined="true"
+                         analyticsEvent="FilterClick"
+                         analyticsCategory="AdvancedFilters"></sb-button-group>
+      </fieldset>
+    </div>
+
     <!-- ELAS -->
     <div *ngIf="showEnglishLanguageAcquisitionStatusFilter">
       <label>

@@ -1,4 +1,3 @@
-import { StudentFilterOptions } from './student-filter-options';
 import { Utils } from '../support/support';
 import { Student } from '../../student/search/student';
 
@@ -11,6 +10,7 @@ export interface StudentFilter {
   section504s?: string[];
   migrantStatuses?: string[];
   languages?: string[];
+  militaryConnectedCodes?: string[];
 }
 
 export type ArrayFilter<T> = (student: T, index: number, students: T[]) => boolean;
@@ -43,6 +43,9 @@ export function createStudentArrayFilter(filter: StudentFilter): StudentArrayFil
     ) && (
       isNullOrEmpty(filter.languages)
       || filter.languages.includes(student.languages)
+    )&& (
+      isNullOrEmpty(filter.militaryConnectedCodes)
+      || filter.militaryConnectedCodes.includes(student.militaryConnectedCodes)
     );
   };
 }

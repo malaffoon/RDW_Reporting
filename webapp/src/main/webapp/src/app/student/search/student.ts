@@ -12,4 +12,5 @@ export interface Student {
   readonly section504: string;
   readonly migrantStatus: string;
   readonly languages: string;
+  readonly militaryConnectedCodes: string;
 }

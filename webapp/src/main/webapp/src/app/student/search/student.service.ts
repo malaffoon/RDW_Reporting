@@ -35,7 +35,7 @@ export class StudentService {
         section504: this.toBooleanCode(serverStudent.section504),
         migrantStatus: this.toBooleanCode(serverStudent.migrantStatus),
         languages: serverStudent.languageCode,
-        militaryConnectedCode: serverStudent.militaryConnectedCode
+        militaryConnectedCodes: serverStudent.militaryConnectedCode
       }))
     );
   }
