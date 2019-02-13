@@ -18,7 +18,7 @@ import { Utils } from "./support/support";
       <div class="btn-group">
         <label *ngFor="let value of values" class="btn btn-primary" [ngClass]="{'active': modelValue[value] }">
           <input type="checkbox" [(ngModel)]="modelValue[value]" (ngModelChange)="valueChange($event)"
-                 autocomplete="off" [attr.selected]="value === selectedValue ? 'true' : 'false'"
+                 autocomplete="off" 
                  angulartics2On="click" [angularticsAction]="analyticsEvent"
                  [angularticsCategory]="analyticsCategory"
                  [angularticsProperties]="{label: enum === undefined ? value : label + ': ' + enum + '.' + value}">

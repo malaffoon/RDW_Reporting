@@ -114,7 +114,8 @@ export class UserGroupService {
       limitedEnglishProficiency: serverStudent.limitedEnglishProficiency,
       section504: serverStudent.section504,
       migrantStatus: serverStudent.migrantStatus,
-      languages: serverStudent.languages
+      languages: serverStudent.languages,
+      militaryConnectedCodes: serverStudent.militaryConnectedCodes
     };
   }
 

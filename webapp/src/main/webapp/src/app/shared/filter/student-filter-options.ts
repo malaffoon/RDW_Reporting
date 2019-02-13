@@ -7,4 +7,5 @@ export interface StudentFilterOptions {
   readonly section504s?: string[];
   readonly migrantStatuses?: string[];
   readonly languages?: string[];
+  readonly militaryConnectedCodes?: string[];
 }

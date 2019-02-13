@@ -33,7 +33,8 @@ export class FilterOptionsService {
         limitedEnglishProficiencies: Booleans,
         section504s: Booleans,
         migrantStatuses: Booleans,
-        languages: serverOptions.languages
+        languages: serverOptions.languages,
+        militaryConnectedCodes: serverOptions.militaryConnectedCodes
       })
     );
   }

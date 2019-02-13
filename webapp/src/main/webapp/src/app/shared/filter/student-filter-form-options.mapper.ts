@@ -44,6 +44,10 @@ export class StudentFilterFormOptionsMapper {
       migrantStatuses: options.migrantStatuses.map(optionMapper(
         value => translate(`common.boolean.${value}`),
         value => `Migrant Status: ${value}`
+      )),
+      militaryConnectedCodes: options.militaryConnectedCodes.map(optionMapper(
+        value => translate(`common.military-connected-code.${value}`),
+        value => `Military Status: ${value}`
       ))
     };
   }

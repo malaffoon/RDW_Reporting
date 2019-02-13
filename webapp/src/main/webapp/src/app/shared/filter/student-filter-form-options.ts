@@ -10,5 +10,6 @@ export interface StudentFilterFormOptions {
   readonly section504s: Option[];
   readonly migrantStatuses: Option[];
   readonly languages: Option[];
+  readonly militaryConnectedCodes: Option[];
 
 }
