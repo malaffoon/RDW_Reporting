@@ -374,6 +374,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
     dimensionValuesByType.set("Ethnicity", this.subgroupOptions.ethnicities);
     dimensionValuesByType.set("ELAS", this.subgroupOptions.elasCodes);
     dimensionValuesByType.set("Language", this.subgroupOptions.languages);
+    dimensionValuesByType.set("MilitaryConnected", this.subgroupOptions.militaryConnectedCodes);
     dimensionValuesByType.set("LEP", booleanOptions);
     dimensionValuesByType.set("Section504", booleanOptions);
     dimensionValuesByType.set("IEP", booleanOptions);
@@ -425,7 +426,8 @@ export class TargetReportComponent implements OnInit, ExportResults {
     subgroups.push(
       { code: 'Section504', translatecode: '504-label', selected: false },
       { code: 'IEP', translatecode: 'iep-label', selected: false },
-      { code: 'MigrantStatus', translatecode: 'migrant-status-label', selected: false }
+      { code: 'MigrantStatus', translatecode: 'migrant-status-label', selected: false },
+      { code: 'MilitaryConnectedCode', translatecode: 'military-connected-label', selected: false}
     );
     return subgroups;
   }
