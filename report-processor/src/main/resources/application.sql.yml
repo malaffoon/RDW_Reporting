@@ -165,7 +165,7 @@ sql:
         'LEPStatus',
         'LanguageCode',
         'LanguageAltCode',
-        'MilitaryConnectedCode',
+        'MilitaryConnectedStudentIndicator',
         'EnglishLanguageAcquisitionStatus',
         'EnglishLanguageAcquisitionStatusStartDate',
 
