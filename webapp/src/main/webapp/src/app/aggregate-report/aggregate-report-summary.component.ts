@@ -350,6 +350,16 @@ export class AggregateReportSummary {
           ))
         });
       }
+      if (!equalSize(optionFilters.militaryConnectedCodes, settingFilters.militaryConnectedCodes)) {
+        filterRows.push({
+          label: translate('aggregate-report-form.field.military-connected-label'),
+          values: inline(orAll(
+            optionFilters.militaryConnectedCodes,
+            settingFilters.militaryConnectedCodes,
+            code => translate(`common.military-connected-code.${code}`)
+          ))
+        });
+      }
 
       variableSections = [
         {
