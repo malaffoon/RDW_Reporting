@@ -91,6 +91,7 @@ export function subgroupOrdering<T>(subgroupGetter: (item: T) => Subgroup, optio
     LEP: getNullableOption(options.studentFilters.limitedEnglishProficiencies),
     ELAS: options.studentFilters.englishLanguageAcquisitionStatuses,
     Language: options.studentFilters.languages,
+    MilitaryConnectedCodes: options.studentFilters.militaryConnectedCodes,
     StudentEnrolledGrade: options.assessmentGrades,
     MigrantStatus: options.studentFilters.migrantStatuses,
     Section504: options.studentFilters.section504s,
