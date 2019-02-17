@@ -793,6 +793,17 @@ aggregate-report-table {
 }
 
 aggregate-report-form, .aggregate-report-form {
+  display: grid;
+  // left column is ideally max-content but the bold lettering shifts the right column in this setting
+  // could not use fr because of the "wide container" of the table at the bottom
+  grid-template-columns: 170px 780px 170px;
+  grid-gap: 30px;
+
+  .nav-container {
+    position: sticky;
+    top: 15px;
+  }
+
   .well-group .well {
     box-shadow: none;
     padding-bottom: 20px;
@@ -1928,7 +1939,8 @@ body .ui-paginator .ui-paginator-pages .ui-paginator-page {
   margin-left: 0em;
 }
 
-// fixes issue with slow/stuttering scrolling and a fixed position element like the nav-pills on the aggregate reports
-.fixed-aggregate-navpills {
-  will-change: transform;
+.sticky-top {
+  position: sticky;
+  top: 0;
+
 }

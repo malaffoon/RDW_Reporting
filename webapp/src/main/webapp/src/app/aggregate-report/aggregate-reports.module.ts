@@ -18,7 +18,6 @@ import { AssessmentModule } from './assessment/assessment.module';
 import { AggregateReportTableDataService } from './aggregate-report-table-data.service';
 import { AggregateReportRequestMapper } from './aggregate-report-request.mapper';
 import { AggregateReportFormSettingsResolve } from './aggregate-report-form-settings.resolve';
-import { StickyDirective } from '../shared/nav/sticky.directive';
 import { CsvModule } from '../csv-export/csv-export.module';
 import { AggregateReportTableExportService } from './results/aggregate-report-table-export.service';
 import { AggregateReportSummary } from './aggregate-report-summary.component';
@@ -46,7 +45,6 @@ import { AggregateTargetOverviewComponent } from "./results/aggregate-target-ove
     GeneralPopulationFormComponent,
     LongitudinalCohortChartComponent,
     LongitudinalCohortFormComponent,
-    StickyDirective,
     TargetReportFormComponent,
     WideRadioGroupComponent
   ],
