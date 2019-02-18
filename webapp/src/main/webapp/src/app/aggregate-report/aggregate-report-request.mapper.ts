@@ -354,7 +354,7 @@ export class AggregateReportRequestMapper {
       queryFilters.languageCodes = settingFilters.languages;
     }
     if (!equalSize(settingFilters.militaryConnectedCodes, optionFilters.militaryConnectedCodes)) {
-      queryFilters.militaryConnectedCodes = optionFilters.militaryConnectedCodes;
+      queryFilters.militaryConnectedCodes = settingFilters.militaryConnectedCodes;
     }
     return queryFilters;
   }

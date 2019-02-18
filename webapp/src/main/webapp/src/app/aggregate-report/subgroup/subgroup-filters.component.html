@@ -22,6 +22,7 @@
     </div>
   </fieldset>
 </div>
+
 <div class="well">
   <fieldset>
     <div class="row">
@@ -187,6 +188,31 @@
     </div>
   </fieldset>
 </div>
+
+<div class="well">
+  <fieldset>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="military-connected-subgroup-filter"
+               info-button
+               title="{{'aggregate-report-form.field.military-connected-label' | translate}}"
+               content="{{'aggregate-report-form.field.military-connected-info' | translate}}"></label>
+      </div>
+      <div class="col-md-6">
+        <sb-checkbox-group id="military-connected-subgroup-filter"
+                           [options]="options.militaryConnectedCodes"
+                           [(ngModel)]="settings.militaryConnectedCodes"
+                           [ngModelOptions]="{standalone: true}"
+                           name="militaryConnected"
+                           analyticsEvent="FilterClick"
+                           analyticsCategory="AggregateQueryBuilder"
+                           [allOptionAnalyticsProperties]="{label: 'Military Connected: All'}"
+                           (change)="onSettingChangeInternal($event)"></sb-checkbox-group>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
 <div class="well">
   <div class="row">
     <div class="col-md-6">

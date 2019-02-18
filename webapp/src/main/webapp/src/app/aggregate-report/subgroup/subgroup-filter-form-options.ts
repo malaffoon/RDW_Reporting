@@ -11,5 +11,6 @@ export interface SubgroupFilterFormOptions {
   migrantStatuses: Option[];
   section504s: Option[];
   languages: Option[];
+  militaryConnectedCodes: Option[];
 
 }
