@@ -7,7 +7,6 @@ import { map } from 'rxjs/operators';
 import { AggregateServiceRoute } from '../shared/service-route';
 import { AssessmentTypeOrdering, BooleanOrdering, CompletenessOrdering } from '../shared/ordering/orderings';
 import { AggregateReportType } from "./aggregate-report-form-settings";
-import {SubjectDefinition} from "../subject/subject";
 
 const ServiceRoute = AggregateServiceRoute;
 const assessmentTypeComparator = AssessmentTypeOrdering.compare;
