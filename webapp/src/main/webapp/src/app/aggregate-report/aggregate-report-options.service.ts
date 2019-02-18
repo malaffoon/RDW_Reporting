@@ -13,7 +13,6 @@ const assessmentTypeComparator = AssessmentTypeOrdering.compare;
 const booleanComparator = BooleanOrdering.compare;
 const completenessComparator = CompletenessOrdering.compare;
 
-
 /**
  * Service responsible for gathering aggregate report options from the server
  */
@@ -54,7 +53,7 @@ export class AggregateReportOptionsService {
           migrantStatuses: serverOptions.migrantStatuses.concat().sort(booleanComparator),
           section504s: serverOptions.section504s.concat().sort(booleanComparator),
           languages: serverOptions.languages.concat(),
-          militaryConnectedCodes: (serverOptions.militaryConnectedCodes ||[]).concat()
+          militaryConnectedCodes: serverOptions.militaryConnectedCodes.concat()
         }
       })
     );
