@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AggregateReportOptions } from './aggregate-report-options';
 import { CachingDataService } from '../shared/data/caching-data.service';
 import { OrganizationMapper } from '../shared/organization/organization.mapper';
