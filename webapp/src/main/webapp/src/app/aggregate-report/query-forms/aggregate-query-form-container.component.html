@@ -20,28 +20,29 @@
 
 <ng-template #accessAllowed>
   <div class="aggregate-report-form">
-    <div sticky marginTop="12" [style.position]="'absolute'" class="fixed-aggregate-navpills">
-      <scroll-nav [items]="navItems">
-        <div class="ml-sm mt-xs">
-          <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
-        </div>
-      </scroll-nav>
-    </div>
 
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <page-heading>
-          <ng-template #heading>
-            <h2>{{'aggregate-report-form.heading' | translate}}</h2>
-            <p class="small gray-darkest mt-sm">{{'aggregate-report-form.subheading' | translate}}</p>
-          </ng-template>
-        </page-heading>
+    <div>
+      <div class="nav-container">
+        <scroll-nav [items]="navItems">
+          <div class="ml-sm mt-xs">
+            <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
+          </div>
+        </scroll-nav>
       </div>
     </div>
 
-    <!-- Report Type -->
-    <div class="row" id="reportTypeSection">
-      <div class="col-md-8 col-md-offset-2">
+    <div>
+
+      <page-heading>
+        <ng-template #heading>
+          <h2>{{'aggregate-report-form.heading' | translate}}</h2>
+          <p class="small gray-darkest mt-sm">{{'aggregate-report-form.subheading' | translate}}</p>
+        </ng-template>
+      </page-heading>
+
+
+      <!-- Report Type -->
+      <div id="reportTypeSection">
         <div class="well-group">
           <div class="well">
             <h3>{{'aggregate-report-form.section.report-type-heading' | translate}}</h3>
@@ -60,30 +61,30 @@
           </div>
         </div>
       </div>
+
+      <general-population-form *ngIf="hasGeneralPopulationReport"
+                               #generalPopulationForm
+                               [hidden]="reportType !== 'GeneralPopulation'"
+                               (navItemChange)="setNavItems('GeneralPopulation', $event)"
+                               [submitAction]="submitActionsByReportType['GeneralPopulation']"></general-population-form>
+
+      <longitudinal-cohort-form *ngIf="hasLongitudinalReport"
+                                #longitudinalCohortForm
+                                [hidden]="reportType !== 'LongitudinalCohort'"
+                                (navItemChange)="setNavItems('LongitudinalCohort', $event)"
+                                [submitAction]="submitActionsByReportType['LongitudinalCohort']"></longitudinal-cohort-form>
+
+      <claim-report-form *ngIf="hasClaimReport"
+                         #claimForm
+                         [hidden]="reportType !== 'Claim'"
+                         (navItemChange)="setNavItems('Claim', $event)"
+                         [submitAction]="submitActionsByReportType['Claim']"></claim-report-form>
+
+      <target-report-form *ngIf="hasTargetReport"
+                          #targetForm
+                          [hidden]="reportType !== 'Target'"
+                          (navItemChange)="setNavItems('Target', $event)"
+                          [submitAction]="submitActionsByReportType['Target']"></target-report-form>
     </div>
-
-    <general-population-form *ngIf="hasGeneralPopulationReport"
-                             #generalPopulationForm
-                             [hidden]="reportType !== 'GeneralPopulation'"
-                             (navItemChange)="setNavItems('GeneralPopulation', $event)"
-                             [submitAction]="submitActionsByReportType['GeneralPopulation']"></general-population-form>
-
-    <longitudinal-cohort-form *ngIf="hasLongitudinalReport"
-                              #longitudinalCohortForm
-                              [hidden]="reportType !== 'LongitudinalCohort'"
-                              (navItemChange)="setNavItems('LongitudinalCohort', $event)"
-                              [submitAction]="submitActionsByReportType['LongitudinalCohort']"></longitudinal-cohort-form>
-
-    <claim-report-form *ngIf="hasClaimReport"
-                       #claimForm
-                       [hidden]="reportType !== 'Claim'"
-                       (navItemChange)="setNavItems('Claim', $event)"
-                       [submitAction]="submitActionsByReportType['Claim']"></claim-report-form>
-
-    <target-report-form *ngIf="hasTargetReport"
-                        #targetForm
-                        [hidden]="reportType !== 'Target'"
-                        (navItemChange)="setNavItems('Target', $event)"
-                        [submitAction]="submitActionsByReportType['Target']"></target-report-form>
   </div>
 </ng-template>
