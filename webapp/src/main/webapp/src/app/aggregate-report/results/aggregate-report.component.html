@@ -125,7 +125,7 @@
               </a>
             </div>
           </div>
-          <div *ngIf="view.table.reportType === 'Target'"
+          <div *ngIf="view.reportType === 'Target'"
                class="col-xs-12 col-sm-6 mb-md">
             <aggregate-target-overview [table]="view.table"></aggregate-target-overview>
           </div>
@@ -138,6 +138,7 @@
           </div>
         </div>
 
+        <!-- TODO consolidate this into component - used 5 times -->
         <div class="aggregate-report-table-controls">
           <span>
             <label for="column-order">
@@ -147,19 +148,20 @@
             </label>
             <order-selector id="column-order"
                             [items]="view.columnOrderingItems"
-                            (itemsChange)="onColumnOrderChange($event)"></order-selector>
+                            (itemsChange)="onColumnOrderChange(view, $event)"></order-selector>
           </span>
             <span class="aggregate-report-table-controls-right">
             <span>
               <label for="show-empty">
-                {{'common.show-empty-input-label' | translate: {value: 100} }}
+                {{'common.show-empty-input-label' | translate: {value: view.emptyRowCount} }}
               </label>
               <sb-radio-button-group id="show-empty"
                                      [options]="[
-                                       { value: true, text: 'Show' },
-                                       { value: false, text: 'Hide' }
+                                       { value: true, text: 'common.action.show' | translate },
+                                       { value: false, text: 'common.action.hide' | translate }
                                      ]"
                                      [(ngModel)]="view.showEmpty"
+                                     (ngModelChange)="onShowEmptyChange(view)"
                                      buttonGroupStyles="btn-group-xs"
                                      buttonStyles="btn-default"
                                      analyticsCategory="AggregateQueryBuilder"
@@ -193,8 +195,11 @@
         </div>
         <div class="mt-sm">
           <aggregate-report-table #reportTable
-                                  [table]="view.table"
+                                  [options]="view.options"
                                   [subjectDefinition]="getSubjectDefinitionForView(view)"
+                                  [reportType]="view.reportType"
+                                  [assessmentType]="view.assessmentType"
+                                  [rows]="view.rows"
                                   [valueDisplayType]="view.valueDisplayType"
                                   [performanceLevelDisplayType]="view.performanceLevelDisplayType"
                                   [identityColumns]="view.columnOrdering"></aggregate-report-table>

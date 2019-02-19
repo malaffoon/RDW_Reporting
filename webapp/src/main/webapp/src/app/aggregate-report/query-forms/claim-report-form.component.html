@@ -528,12 +528,12 @@
         <span class="aggregate-report-table-controls-right">
           <span>
             <label for="show-empty">
-              {{'common.show-empty-input-label' | translate: {value: 100} }}
+              {{'common.show-empty-input-label-preview' | translate }}
             </label>
             <sb-radio-button-group id="show-empty"
                                    [options]="[
-                                     { value: true, text: 'Show' },
-                                     { value: false, text: 'Hide' }
+                                     { value: true, text: 'common.action.show' | translate },
+                                     { value: false, text: 'common.action.hide' | translate }
                                    ]"
                                    [(ngModel)]="settings.showEmpty"
                                    buttonGroupStyles="btn-group-xs"
@@ -568,16 +568,21 @@
         </span>
       </div>
       <div class="mt-sm">
-        <aggregate-report-table *ngIf="previewTable"
-                                [preview]="true"
-                                [table]="previewTable"
-                                [subjectDefinition]="subjectDefinition"
-                                [valueDisplayType]="settings.valueDisplayType"
-                                [performanceLevelDisplayType]="
-                                    assessmentDefinition.performanceLevelDisplayTypes.includes(settings.performanceLevelDisplayType)
-                                      ? settings.performanceLevelDisplayType
-                                      : assessmentDefinition.performanceLevelDisplayTypes[0]"
-                                [identityColumns]="settings.columnOrder"></aggregate-report-table>
+        <aggregate-report-table
+          *ngIf="previewTable"
+          [preview]="true"
+          [options]="previewTable.options"
+          [subjectDefinition]="subjectDefinition"
+          [reportType]="previewTable.reportType"
+          [assessmentType]="previewTable.assessmentDefinition.typeCode"
+          [rows]="previewTable.rows"
+          [identityColumns]="settings.columnOrder"
+          [valueDisplayType]="settings.valueDisplayType"
+          [performanceLevelDisplayType]="
+            assessmentDefinition.performanceLevelDisplayTypes.includes(settings.performanceLevelDisplayType)
+              ? settings.performanceLevelDisplayType
+              : assessmentDefinition.performanceLevelDisplayTypes[0]"
+        ></aggregate-report-table>
       </div>
     </div>
   </div>

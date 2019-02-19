@@ -290,7 +290,7 @@ export class AggregateReportRequestMapper {
             queryType: queryType,
             reportType: reportType,
             schools: schools,
-            showEmpty: Utils.isUndefined(query.showEmpty) ? true : query.showEmpty,
+            showEmpty: query.showEmpty != null ? query.showEmpty : true,
             studentFilters: studentFilters,
             subjects: sort(query.subjectCodes ? query.subjectCodes.map(code =>
               ({

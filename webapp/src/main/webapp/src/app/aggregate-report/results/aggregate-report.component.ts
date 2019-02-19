@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Report } from '../../report/report.model';
-import { AggregateReportTable, SupportedRowCount } from './aggregate-report-table.component';
+import { SupportedRowCount } from './aggregate-report-table.component';
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { AggregateReportItemMapper } from './aggregate-report-item.mapper';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
@@ -28,9 +28,43 @@ import { AssessmentDefinitionService } from '../assessment/assessment-definition
 import { AggregateReportType } from "../aggregate-report-form-settings";
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
-import { AggregateReportRow } from '../../report/aggregate-report';
+import { ValueDisplayTypes } from '../../shared/display-options/value-display-type';
+import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
 
 const PollingInterval = 4000;
+
+interface AggregateReportTableDisplayOptions {
+  readonly valueDisplayTypes: any[];
+  readonly performanceLevelDisplayTypes: any[];
+  readonly longitudinalDisplayTypes: any[];
+}
+
+interface AggregateReportView {
+
+  originalRows: AggregateReportItem[];
+  rows: AggregateReportItem[];
+  subjectDefinition: SubjectDefinition;
+  options: AggregateReportOptions;
+  reportType: AggregateReportType;
+  assessmentType: string;
+
+  subjectCode: string;
+  valueDisplayType: string;
+  performanceLevelDisplayType: string;
+  columnOrdering: string[];
+  columnOrderingItems: OrderableItem[];
+  chart?: LongitudinalCohortChart;
+  showEmpty: boolean;
+  emptyRowCount: number;
+}
+
+enum ViewState {
+  ReportProcessing,
+  ReportEmpty,
+  ReportNotLoadable,
+  ReportSizeNotSupported,
+  ReportView
+}
 
 /**
  * This component is responsible for performing the aggregate report query and
@@ -100,7 +134,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   getSubjectDefinitionForView(view: AggregateReportView): SubjectDefinition {
-    return this.getSubjectDefinition(view.subjectCode, view.table.assessmentDefinition.typeCode);
+    return this.getSubjectDefinition(view.subjectCode, view.assessmentType);
   }
 
   getSubjectDefinition(subject: string, assessmentType: string): SubjectDefinition {
@@ -173,8 +207,13 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  onColumnOrderChange(tableView: AggregateReportView, items: OrderableItem[]) {
+  onColumnOrderChange(tableView: AggregateReportView, items: OrderableItem[]): void {
     tableView.columnOrdering = items.map(item => item.value);
+  }
+
+  onShowEmptyChange(view: AggregateReportView): void {
+    // console.log('onShowEmptyChange', )
+    view.rows = view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0);
   }
 
   isEmbargoed(): boolean {
@@ -320,23 +359,20 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
       if (!view) {
         const displayTypes = displayBySubject.get(subjectCode) || {
-          valueDisplayType: this.query.valueDisplayType,
-          performanceLevelDisplayType: this.query.achievementLevelDisplayType,
+          valueDisplayType: query.valueDisplayType || ValueDisplayTypes.Percent,
+          performanceLevelDisplayType: query.achievementLevelDisplayType || PerformanceLevelDisplayTypes.Separate,
         };
 
         view = <any>{
           subjectCode: subjectCode,
-          table: {
-            options: this.options,
-            assessmentDefinition: this.assessmentDefinition,
-            rows: [ item ],
-            reportType: this.effectiveReportType
-          },
+          originalRows: [ item ],
+          options: this.options,
+          assessmentType: this.assessmentDefinition.typeCode,
+          reportType: this.effectiveReportType,
           showEmpty: typeof query.showEmpty !== 'undefined' ? query.showEmpty : true,
-          valueDisplayType: displayTypes.valueDisplayType,
-          performanceLevelDisplayType: displayTypes.performanceLevelDisplayType,
           columnOrdering: columnOrder,
-          columnOrderingItems: this.columnOrderableItemProvider.toOrderableItems(columnOrder)
+          columnOrderingItems: this.columnOrderableItemProvider.toOrderableItems(columnOrder),
+          ...displayTypes
         };
 
         if (hasLongitudinalData) {
@@ -355,10 +391,16 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
         views.push(view);
       } else {
-        view.table.rows.push(item);
+        view.originalRows.push(item);
       }
       return views;
-    }, []).sort(this._viewComparator);
+    }, [])
+      .map(view => ({
+        ...view,
+        rows: view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0),
+        emptyRowCount: view.originalRows.reduce((count, row) => count + (row.studentsTested === 0 ? 1 : 0), 0)
+      }))
+      .sort(this._viewComparator);
   }
 
   private unsubscribe(): void {
@@ -369,28 +411,3 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
 }
-
-interface AggregateReportTableDisplayOptions {
-  readonly valueDisplayTypes: any[];
-  readonly performanceLevelDisplayTypes: any[];
-  readonly longitudinalDisplayTypes: any[];
-}
-
-interface AggregateReportView {
-  subjectCode: string;
-  table: AggregateReportTable;
-  valueDisplayType: string;
-  performanceLevelDisplayType: string;
-  columnOrdering: string[];
-  columnOrderingItems: OrderableItem[];
-  chart?: LongitudinalCohortChart;
-}
-
-enum ViewState {
-  ReportProcessing,
-  ReportEmpty,
-  ReportNotLoadable,
-  ReportSizeNotSupported,
-  ReportView
-}
-

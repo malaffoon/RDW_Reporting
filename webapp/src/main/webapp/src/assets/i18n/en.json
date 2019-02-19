@@ -710,6 +710,7 @@
     "school-typeahead-label": "School",
     "school-year-select-label": "School Year",
     "show-empty-input-label": "{{value}} empty rows",
+    "show-empty-input-label-preview": "Empty rows",
     "strict-boolean": {
       "false": "No",
       "no": "No",
