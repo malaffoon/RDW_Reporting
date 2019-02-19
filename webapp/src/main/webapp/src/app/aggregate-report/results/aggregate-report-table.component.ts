@@ -66,6 +66,7 @@ export class AggregateReportTableComponent implements OnInit {
 
   public treeColumns: number[] = [];
   public columns: Column[];
+  public showEmpty: boolean = true;
 
   private _previousSortEvent: any;
   private _orderingByColumnField: { [ key: string ]: Ordering<AggregateReportItem> } = {};
@@ -295,6 +296,7 @@ export class AggregateReportTableComponent implements OnInit {
       valueDisplayType: this.valueDisplayType,
       performanceLevelDisplayType: this.performanceLevelDisplayType,
       columnOrdering: this.identityColumns,
+      showEmpty: this.showEmpty,
       subjectDefinition: this.subjectDefinition,
       reportType: this.table.reportType,
       name: name

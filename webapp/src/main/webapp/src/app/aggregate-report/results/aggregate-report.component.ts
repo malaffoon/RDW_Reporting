@@ -28,6 +28,7 @@ import { AssessmentDefinitionService } from '../assessment/assessment-definition
 import { AggregateReportType } from "../aggregate-report-form-settings";
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
+import { AggregateReportRow } from '../../report/aggregate-report';
 
 const PollingInterval = 4000;
 
@@ -184,8 +185,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     if (!this._aggregateReport) {
       return;
     }
-
-    this.initializeReportViews(this.query, this._aggregateReport);
+    this.reportViews = this.createReportViews(this.query, this._aggregateReport);
   }
 
   mapToReportType(serverReportType: ServerAggregateReportType): AggregateReportType {
@@ -285,12 +285,12 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       })
     ).subscribe(report => {
       this._aggregateReport = report;
-      this.initializeReportViews(this.query, report);
+      this.reportViews = this.createReportViews(this.query, report);
     });
 
   }
 
-  private initializeReportViews(query: AggregateReportQuery, report: any): void {
+  private createReportViews(query: AggregateReportQuery, report: any): AggregateReportView[] {
     const { rows, assessments } = report;
     const hasLongitudinalData = assessments != null;
 
@@ -309,7 +309,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       return map;
     }, new Map());
 
-    this.reportViews = rows.reduce((views, row, index) => {
+    return rows.reduce((views, row, index) => {
       const subjectCode = row.assessment.subjectCode;
       const subjectDefinition = this.getSubjectDefinition(subjectCode, this.assessmentDefinition.typeCode);
       const item = rowMapper(query, subjectDefinition, row, index);
@@ -332,6 +332,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
             rows: [ item ],
             reportType: this.effectiveReportType
           },
+          showEmpty: typeof query.showEmpty !== 'undefined' ? query.showEmpty : true,
           valueDisplayType: displayTypes.valueDisplayType,
           performanceLevelDisplayType: displayTypes.performanceLevelDisplayType,
           columnOrdering: columnOrder,
@@ -339,7 +340,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         };
 
         if (hasLongitudinalData) {
-          view.chart = this.chartMapper.fromReport(this.query, <LongitudinalReport>{
+          view.chart = this.chartMapper.fromReport(query, <LongitudinalReport>{
             rows: rows.filter(row => row.assessment.subjectCode === subjectCode),
             assessments: assessments.filter(assessment => assessment.subject === subjectCode)
           }, measuresGetter, subjectDefinition);

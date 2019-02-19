@@ -206,6 +206,7 @@ export class AggregateReportTableExportService {
 }
 
 export interface ExportOptions {
+  readonly showEmpty: boolean;
   readonly valueDisplayType: string;
   readonly performanceLevelDisplayType: string;
   readonly columnOrdering: string[];

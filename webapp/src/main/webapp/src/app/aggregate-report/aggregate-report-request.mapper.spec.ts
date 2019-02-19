@@ -70,6 +70,7 @@ describe('AggregateReportRequestMapper', () => {
       reportType: ServerAggregateReportType.CustomAggregate,
       schoolIds: [2],
       schoolYears: [2000],
+      showEmpty: true,
       studentFilters: studentFilters,
       subjectCodes: ['Math'],
       valueDisplayType: 'Number',
@@ -96,6 +97,7 @@ describe('AggregateReportRequestMapper', () => {
       queryType: 'Basic',
       reportType: AggregateReportType.GeneralPopulation,
       schools: schools,
+      showEmpty: true,
       subjects: query.subjectCodes.map(code => ({
         code: code,
         assessmentType: query.assessmentTypeCode
@@ -157,6 +159,7 @@ describe('AggregateReportRequestMapper', () => {
       includeState: true,
       reportType: ServerAggregateReportType.CustomAggregate,
       schoolYears: [2000],
+      showEmpty: true,
       studentFilters: {},
       subjectCodes: ['Math'],
       valueDisplayType: 'Percent',
@@ -182,6 +185,7 @@ describe('AggregateReportRequestMapper', () => {
       queryType: 'Basic',
       reportType: AggregateReportType.GeneralPopulation,
       schools: [],
+      showEmpty: true,
       subjects: query.subjectCodes.map(code => ({
         code: code,
         assessmentType: query.assessmentTypeCode

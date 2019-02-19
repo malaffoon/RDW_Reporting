@@ -647,7 +647,7 @@
       "Grouped": "Grouped",
       "Separate": "All"
     },
-    "performance-level-display-type-input-label": "Show achievement levels",
+    "performance-level-display-type-input-label": "Achievement levels",
     "person-name": "{{lastName}}, {{firstName}}",
     "polar": {
       "1": "Yes",
@@ -709,6 +709,7 @@
     },
     "school-typeahead-label": "School",
     "school-year-select-label": "School Year",
+    "show-empty-input-label": "{{value}} empty rows",
     "strict-boolean": {
       "false": "No",
       "no": "No",
@@ -732,7 +733,7 @@
       "Number": "{{value}}",
       "Percent": "{{value}}%"
     },
-    "value-display-type-input-label": "Show value as",
+    "value-display-type-input-label": "Display value as",
     "writing-trait": {
       "conventions": "Conventions",
       "evidence": "Evidence / Elaboration",

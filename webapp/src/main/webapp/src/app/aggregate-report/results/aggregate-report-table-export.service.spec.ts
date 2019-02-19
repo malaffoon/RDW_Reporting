@@ -23,6 +23,7 @@ describe('AggregateReportTableExportService', () => {
       valueDisplayType: ValueDisplayTypes.Percent,
       performanceLevelDisplayType: PerformanceLevelDisplayTypes.Separate,
       columnOrdering: [ 'organization', 'assessmentGrade', 'schoolYear', 'dimension' ],
+      showEmpty: true,
       subjectDefinition: {
         assessmentType: 'ica',
         performanceLevels: [ 1, 2, 3, 4 ],

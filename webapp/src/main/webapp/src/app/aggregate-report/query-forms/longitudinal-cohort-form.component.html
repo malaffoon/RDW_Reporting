@@ -391,79 +391,80 @@
 
     </tabset>
   </div>
-</form>
 
-<!-- Summary -->
-<div id="longitudinalCohortReviewSection"
-     (inView)="onReviewSectionInView()"
-     [inViewInvalidator]="reviewSectionViewInvalidator">
 
-  <div class="well-group">
-    <div class="well">
-      <h3>{{'aggregate-report-form.section.review-heading' | translate}}</h3>
-      <ng-container *ngIf="formGroup.valid">
-        <ng-container *ngIf="estimatedRowCount != null; else estimatedRowCountSpinner">
-          <div class="flex-children">
-            <p>
-                <span
-                  class="text-muted small">{{'aggregate-report-form.estimated-row-count.label' | translate}}</span>
-              <strong class="label gray-darker">{{estimatedRowCount | number}}</strong>
+  <!-- Summary -->
+  <div id="longitudinalCohortReviewSection"
+       (inView)="onReviewSectionInView()"
+       [inViewInvalidator]="reviewSectionViewInvalidator">
+
+    <div class="well-group">
+      <div class="well">
+        <h3>{{'aggregate-report-form.section.review-heading' | translate}}</h3>
+        <ng-container *ngIf="formGroup.valid">
+          <ng-container *ngIf="estimatedRowCount != null; else estimatedRowCountSpinner">
+            <div class="flex-children">
+              <p>
+                  <span
+                    class="text-muted small">{{'aggregate-report-form.estimated-row-count.label' | translate}}</span>
+                <strong class="label gray-darker">{{estimatedRowCount | number}}</strong>
+              </p>
+              <ng-container *ngIf="estimatedRowCountIsLarge">
+                <ng-container
+                  *ngTemplateOutlet="warning; context: {$implicit: ('aggregate-report-form.estimated-row-count.warning' | translate)}"></ng-container>
+              </ng-container>
+            </div>
+          </ng-container>
+          <ng-template #estimatedRowCountSpinner *ngIf="capableOfRowEstimation()">
+            <p class="text-muted small">
+              {{'aggregate-report-form.estimated-row-count.loading' | translate}} <i
+              class="fa fa-spinner fa-pulse"></i>
             </p>
-            <ng-container *ngIf="estimatedRowCountIsLarge">
-              <ng-container
-                *ngTemplateOutlet="warning; context: {$implicit: ('aggregate-report-form.estimated-row-count.warning' | translate)}"></ng-container>
-            </ng-container>
-          </div>
+          </ng-template>
         </ng-container>
-        <ng-template #estimatedRowCountSpinner *ngIf="capableOfRowEstimation()">
-          <p class="text-muted small">
-            {{'aggregate-report-form.estimated-row-count.loading' | translate}} <i
-            class="fa fa-spinner fa-pulse"></i>
-          </p>
-        </ng-template>
-      </ng-container>
-    </div>
-    <div class="well">
-      <aggregate-report-summary *ngIf="summary"
-                                narrow="true"
-                                [summary]="summary"></aggregate-report-summary>
-    </div>
-    <div class="well">
-      <label for="reportName">{{'aggregate-report-form.field.report-name-label' | translate}}</label>
-      <div class="flex-children">
-        <div class="flex-child grow form-group">
-          <input id="reportName"
-                 type="text"
-                 class="form-control"
-                 #reportNameControl
-                 formControlName="reportName"
-                 [(ngModel)]="settings.name"
-                 required="false"
-                 maxlength="255"
-                 placeholder="{{'aggregate-report-form.default-report-name' | translate}}">
-          <div *ngIf="showErrors('reportName')">
-            <p *ngIf="getControl('reportName').errors.fileName"
-               aria-live="polite"
-               class="help-block small red">
-              {{getControl('reportName').errors.fileName.messageId | translate}}</p>
+      </div>
+      <div class="well">
+        <aggregate-report-summary *ngIf="summary"
+                                  narrow="true"
+                                  [summary]="summary"></aggregate-report-summary>
+      </div>
+      <div class="well">
+        <label for="reportName">{{'aggregate-report-form.field.report-name-label' | translate}}</label>
+        <div class="flex-children">
+          <div class="flex-child grow form-group">
+            <input id="reportName"
+                   type="text"
+                   class="form-control"
+                   #reportNameControl
+                   formControlName="reportName"
+                   [(ngModel)]="settings.name"
+                   required="false"
+                   maxlength="255"
+                   placeholder="{{'aggregate-report-form.default-report-name' | translate}}">
+            <div *ngIf="showErrors('reportName')">
+              <p *ngIf="getControl('reportName').errors.fileName"
+                 aria-live="polite"
+                 class="help-block small red">
+                {{getControl('reportName').errors.fileName.messageId | translate}}</p>
+            </div>
           </div>
-        </div>
-        <div class="flex-child flex-child-no-label">
-          <div class="ml-xs">
-            <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
+          <div class="flex-child flex-child-no-label">
+            <div class="ml-xs">
+              <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-</div>
+  </div>
+</form>
 
 <div id="longitudinalCohortPreviewSection"
      (inView)="onPreviewSectionInView()"
      [inViewInvalidator]="previewSectionViewInvalidator">
 
-  <div class="well-group summary-report-content-container">
+  <div class="well-group aggregate-report-content-container">
     <div class="well inline-headings">
       <h3>{{'aggregate-report-form.section.preview-heading' | translate}}</h3>
       <p class="text-muted small">{{'aggregate-report-form.section.preview-heading-subtext' | translate}}</p>
@@ -473,38 +474,58 @@
       </ng-container>
     </div>
     <div class="well">
-      <div>
-        <div>
-            <span class="pull-left flex-child">
-              <label class="mr-xs">
-                <info-button title="{{'common.aggregate-report.column-order' | translate}}"
-                             content="{{'common.aggregate-report.column-order-info' | translate}}">
-                </info-button>
-              </label>
-              <order-selector [items]="columnItems"
-                              (itemsChange)="onColumnOrderChange($event)"></order-selector>
-            </span>
-          <span class="pull-right flex-child ml-xs">
-              <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
-              <sb-radio-button-group [options]="filteredOptions.valueDisplayTypes"
-                                     [(ngModel)]="settings.valueDisplayType"
-                                     buttonGroupStyles="btn-group-xs"
-                                     buttonStyles="btn-default"
-                                     analyticsCategory="AggregateQueryBuilder"
-                                     analyticsEvent="Change"></sb-radio-button-group>
-            </span>
-          <span class="pull-right flex-child ml-xs"
-                *ngIf="assessmentDefinition.performanceLevelDisplayTypes.length > 1">
-              <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
-              <sb-radio-button-group [options]="filteredOptions.performanceLevelDisplayTypes"
-                                     [(ngModel)]="settings.performanceLevelDisplayType"
-                                     buttonGroupStyles="btn-group-xs"
-                                     buttonStyles="btn-default"
-                                     analyticsCategory="AggregateQueryBuilder"
-                                     analyticsEvent="Change"></sb-radio-button-group>
-            </span>
-        </div>
-        <div class="clearfix"></div>
+      <div class="aggregate-report-table-controls">
+        <span>
+          <label for="column-order">
+            <info-button title="{{'common.aggregate-report.column-order' | translate}}"
+                         content="{{'common.aggregate-report.column-order-info' | translate}}">
+            </info-button>
+          </label>
+          <order-selector id="column-order"
+                          [items]="columnItems"
+                          (itemsChange)="onColumnOrderChange($event)"></order-selector>
+        </span>
+        <span class="aggregate-report-table-controls-right">
+          <span>
+            <label for="show-empty">
+              {{'common.show-empty-input-label' | translate: {value: 100} }}
+            </label>
+            <sb-radio-button-group id="show-empty"
+                                   [options]="[
+                                     { value: true, text: 'Show' },
+                                     { value: false, text: 'Hide' }
+                                   ]"
+                                   [(ngModel)]="settings.showEmpty"
+                                   buttonGroupStyles="btn-group-xs"
+                                   buttonStyles="btn-default"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   analyticsEvent="Change"></sb-radio-button-group>
+          </span>
+          <span>
+            <label for="value-display-type">
+              {{'common.value-display-type-input-label' | translate}}
+            </label>
+            <sb-radio-button-group id="value-display-type"
+                                   [options]="filteredOptions.valueDisplayTypes"
+                                   [(ngModel)]="settings.valueDisplayType"
+                                   buttonGroupStyles="btn-group-xs"
+                                   buttonStyles="btn-default"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   analyticsEvent="Change"></sb-radio-button-group>
+          </span>
+          <span *ngIf="assessmentDefinition.performanceLevelDisplayTypes.length > 1">
+            <label for="performance-level-display-type">
+              {{'common.performance-level-display-type-input-label' | translate}}
+            </label>
+            <sb-radio-button-group id="performance-level-display-type"
+                                   [options]="filteredOptions.performanceLevelDisplayTypes"
+                                   [(ngModel)]="settings.performanceLevelDisplayType"
+                                   buttonGroupStyles="btn-group-xs"
+                                   buttonStyles="btn-default"
+                                   analyticsCategory="AggregateQueryBuilder"
+                                   analyticsEvent="Change"></sb-radio-button-group>
+          </span>
+        </span>
       </div>
       <div class="mt-sm">
         <aggregate-report-table *ngIf="previewTable"

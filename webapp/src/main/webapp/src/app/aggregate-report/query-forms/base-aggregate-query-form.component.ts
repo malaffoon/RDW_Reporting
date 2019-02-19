@@ -150,6 +150,10 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
     this.settings.columnOrder = items.map(item => item.value);
   }
 
+  onShowEmptyToggleButtonClick(): void {
+    this.settings.showEmpty = !this.settings.showEmpty;
+  }
+
   /**
    * Creates a report if the form is valid
    */

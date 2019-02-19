@@ -183,6 +183,7 @@ export class AggregateReportOptionsMapper {
       reportType: options.reportTypes[ 0 ],
       summativeAdministrationConditions: [ options.summativeAdministrationConditions[ 0 ] ],
       schools: [],
+      showEmpty: true,
       generalPopulation: {
         assessmentGrades: [],
         schoolYears: [ options.schoolYears[ 0 ] ]

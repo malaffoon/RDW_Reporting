@@ -138,50 +138,66 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-12">
-            <div>
-              <span class="pull-left flex-child">
-                <label class="mr-xs">
-                  <info-button title="{{'common.aggregate-report.column-order' | translate}}"
-                               content="{{'common.aggregate-report.column-order-info' | translate}}">
-                  </info-button>
-                </label>
-                <order-selector [items]="view.columnOrderingItems"
-                                (itemsChange)="onColumnOrderChange(view, $event)"></order-selector>
-              </span>
-              <span *ngIf="effectiveReportType !== 'Target'" class="pull-right flex-child ml-xs">
-                <label class="mr-xs">{{'common.value-display-type-input-label' | translate}}</label>
-                <sb-radio-button-group [options]="displayOptions.valueDisplayTypes"
-                                       [(ngModel)]="view.valueDisplayType"
-                                       buttonGroupStyles="btn-group-xs"
-                                       buttonStyles="btn-default"
-                                       analyticsCategory="AggregateReportControl"
-                                       analyticsEvent="Change"></sb-radio-button-group>
-              </span>
-              <span class="pull-right flex-child ml-xs"
-                    *ngIf="effectiveReportType !== 'Claim' && view.table.assessmentDefinition.performanceLevelDisplayTypes.length > 1">
-                <label class="mr-xs">{{'common.performance-level-display-type-input-label' | translate}}</label>
-                <sb-radio-button-group [options]="displayOptions.performanceLevelDisplayTypes"
-                                       [(ngModel)]="view.performanceLevelDisplayType"
-                                       buttonGroupStyles="btn-group-xs"
-                                       buttonStyles="btn-default"
-                                       analyticsCategory="AggregateReportControl"
-                                       analyticsEvent="Change"></sb-radio-button-group>
-              </span>
-            </div>
-          </div>
+        <div class="aggregate-report-table-controls">
+          <span>
+            <label for="column-order">
+              <info-button title="{{'common.aggregate-report.column-order' | translate}}"
+                           content="{{'common.aggregate-report.column-order-info' | translate}}">
+              </info-button>
+            </label>
+            <order-selector id="column-order"
+                            [items]="view.columnOrderingItems"
+                            (itemsChange)="onColumnOrderChange($event)"></order-selector>
+          </span>
+            <span class="aggregate-report-table-controls-right">
+            <span>
+              <label for="show-empty">
+                {{'common.show-empty-input-label' | translate: {value: 100} }}
+              </label>
+              <sb-radio-button-group id="show-empty"
+                                     [options]="[
+                                       { value: true, text: 'Show' },
+                                       { value: false, text: 'Hide' }
+                                     ]"
+                                     [(ngModel)]="view.showEmpty"
+                                     buttonGroupStyles="btn-group-xs"
+                                     buttonStyles="btn-default"
+                                     analyticsCategory="AggregateQueryBuilder"
+                                     analyticsEvent="Change"></sb-radio-button-group>
+            </span>
+            <span *ngIf="effectiveReportType !== 'Target'">
+              <label for="value-display-type">
+                {{'common.value-display-type-input-label' | translate}}
+              </label>
+              <sb-radio-button-group id="value-display-type"
+                                     [options]="displayOptions.valueDisplayTypes"
+                                     [(ngModel)]="view.valueDisplayType"
+                                     buttonGroupStyles="btn-group-xs"
+                                     buttonStyles="btn-default"
+                                     analyticsCategory="AggregateQueryBuilder"
+                                     analyticsEvent="Change"></sb-radio-button-group>
+            </span>
+            <span *ngIf="effectiveReportType !== 'Claim' && assessmentDefinition.performanceLevelDisplayTypes.length > 1">
+              <label for="performance-level-display-type">
+                {{'common.performance-level-display-type-input-label' | translate}}
+              </label>
+              <sb-radio-button-group id="performance-level-display-type"
+                                     [options]="displayOptions.performanceLevelDisplayTypes"
+                                     [(ngModel)]="view.performanceLevelDisplayType"
+                                     buttonGroupStyles="btn-group-xs"
+                                     buttonStyles="btn-default"
+                                     analyticsCategory="AggregateQueryBuilder"
+                                     analyticsEvent="Change"></sb-radio-button-group>
+            </span>
+          </span>
         </div>
-
-        <div class="row mt-xs">
-          <div class="col-md-12">
-            <aggregate-report-table #reportTable
-                                    [table]="view.table"
-                                    [subjectDefinition]="getSubjectDefinitionForView(view)"
-                                    [valueDisplayType]="view.valueDisplayType"
-                                    [performanceLevelDisplayType]="view.performanceLevelDisplayType"
-                                    [identityColumns]="view.columnOrdering"></aggregate-report-table>
-          </div>
+        <div class="mt-sm">
+          <aggregate-report-table #reportTable
+                                  [table]="view.table"
+                                  [subjectDefinition]="getSubjectDefinitionForView(view)"
+                                  [valueDisplayType]="view.valueDisplayType"
+                                  [performanceLevelDisplayType]="view.performanceLevelDisplayType"
+                                  [identityColumns]="view.columnOrdering"></aggregate-report-table>
         </div>
 
         <div *ngIf="showTargetMathCautionMessage"
