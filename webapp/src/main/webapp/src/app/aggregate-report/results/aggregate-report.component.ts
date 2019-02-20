@@ -212,7 +212,6 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   onShowEmptyChange(view: AggregateReportView): void {
-    // console.log('onShowEmptyChange', )
     view.rows = view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0);
   }
 

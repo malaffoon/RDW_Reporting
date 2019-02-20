@@ -470,10 +470,8 @@ export class AggregateReportTableComponent implements OnInit {
 
   private _subjectDefinition: SubjectDefinition;
   private _reportType: AggregateReportType;
-  // private _originalRows: AggregateReportItem[];
   private _rows: AggregateReportItem[] = [];
   private _identityColumns: string[];
-  // private _showEmpty: boolean;
   private _valueDisplayType: string;
   private _performanceLevelDisplayType: string;
 
@@ -558,19 +556,6 @@ export class AggregateReportTableComponent implements OnInit {
     }
   }
 
-  // get showEmpty() {
-  //   return this._showEmpty;
-  // }
-  //
-  // @Input()
-  // set showEmpty(value: boolean) {
-  //   const previousValue = this._showEmpty;
-  //   this._showEmpty = value;
-  //   if (this._initialized && previousValue !== value) {
-  //     this.buildAndRender();
-  //   }
-  // }
-
   get valueDisplayType(): string {
     return this._valueDisplayType;
   }
@@ -602,8 +587,6 @@ export class AggregateReportTableComponent implements OnInit {
       this.updatePerformanceLevelColumns();
     }
   }
-
-  /*** convenience methods ***/
 
   get cutPoint(): number {
     return this.subjectDefinition.performanceLevelStandardCutoff;
