@@ -201,8 +201,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  onColumnOrderChange(tableView: AggregateReportView, items: OrderableItem[]): void {
-    tableView.columnOrdering = items.map(item => item.value);
+  onColumnOrderChange(view: AggregateReportView, items: OrderableItem[]): void {
+    view.columnOrdering = items.map(item => item.value);
   }
 
   onShowEmptyChange(view: AggregateReportView): void {
@@ -391,13 +391,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
           showEmpty,
           columnOrdering,
           columnOrderingItems,
-          ...displayTypes,
-          // support for aggregate-target-overview
-          table: {
-            options,
-            reportType,
-            assessmentDefinition
-          }
+          ...displayTypes
         };
 
         if (hasLongitudinalData) {
