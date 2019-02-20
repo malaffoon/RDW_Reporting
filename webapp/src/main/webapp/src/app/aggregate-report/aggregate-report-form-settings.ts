@@ -34,6 +34,11 @@ export interface AggregateReportFormSettings {
   performanceLevelDisplayType: string;
 
   /**
+   * Whether or not to show empty results or not
+   */
+  showEmpty: boolean;
+
+  /**
    * Subject result filter
    */
   subjects: Subject[];

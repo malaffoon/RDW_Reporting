@@ -109,6 +109,7 @@ describe('AggregateReportOptionsMapper', () => {
         queryType: options.queryTypes[ 0 ],
         reportType: options.reportTypes[ 0 ],
         schools: [],
+        showEmpty: true,
         subjects: options.subjects,
         subgroups: [],
         valueDisplayType: ValueDisplayTypes.Percent,

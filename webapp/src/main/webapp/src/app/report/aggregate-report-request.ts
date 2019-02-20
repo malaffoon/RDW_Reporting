@@ -26,6 +26,7 @@ export interface AggregateReportQuery {
   readonly includeAllSchoolsOfDistricts: boolean;
   readonly includeState: boolean;
   readonly schoolIds?: number[];
+  readonly showEmpty: boolean;
   readonly subjectCodes?: string[];
   readonly valueDisplayType: string;
   readonly columnOrder?: string[];

@@ -724,9 +724,28 @@ aggregate-report-table {
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
 }
 
-.aggregate-report-content-container, .summary-report-content-container {
+.aggregate-report-content-container {
   width: 1550px;
   min-width: 100%; /* don't allow the div to be less than it's container when there are small tables */
+  .aggregate-report-table-controls {
+    display: flex;
+    > :first-child {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    .aggregate-report-table-controls-right {
+      display: flex;
+      > * {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      > :not(:first-child) {
+        margin-left: 15px;
+      }
+    }
+  }
 }
 
 .disabled-table-container {

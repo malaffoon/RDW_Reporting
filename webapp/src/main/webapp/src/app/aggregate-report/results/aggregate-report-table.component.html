@@ -1,14 +1,13 @@
 <p-table #dataTable
          [columns]="columns"
-         [value]="table.rows"
+         [value]="rows"
          [scrollable]="true"
          [virtualScroll]="true"
-         [totalRecords]="table.rows.length"
+         [totalRecords]="rows.length"
          scrollHeight="500px"
          [virtualRowHeight]="37"
          [rowTrackBy]="rowTrackBy"
          [alwaysShowPaginator]="false"
-         (onPage)="onPage($event)"
          (sortFunction)="sort($event)"
          [sortMode]="rowSortingEnabled && 'single'"
          [customSort]="true"
@@ -64,7 +63,12 @@
 
         <span *ngSwitchCase="'standardMetRelativeResidualLevel'"
               info-button
-              title="{{'target-report.columns.standard-met-relative-residual-level' | translate:standardMetRelativeResidualLevelResolve}}"
+              title="{{'target-report.columns.standard-met-relative-residual-level' | translate: {
+                id: subjectDefinition.performanceLevelStandardCutoff,
+                name: (
+                  'subject.' + subjectDefinition.subject + '.asmt-type.' + assessmentType + '.level.' + subjectDefinition.performanceLevelStandardCutoff + '.name'
+                  ) | translate
+              } }}"
               content="{{('target-report.columns.standard-met-relative-residual-level-info') | translate}}">
         </span>
 
@@ -119,11 +123,11 @@
 
           <div *ngSwitchCase="'claim'"
                class="text-right">
-            <span *ngIf="!preview || table.reportType !== 'Target'; else targetClaimPreview">
-              {{ getClaimCodeTranslation(rowData) }}
+            <span *ngIf="!preview || reportType !== 'Target'; else targetClaimPreview">
+              {{ 'subject.' + rowData.subjectCode + '.claim.' + rowData.claimCode + '.name' | translate }}
             </span>
             <ng-template #targetClaimPreview>
-              {{'aggregate-report-table.sample.claim' | translate:{code: rowData.claimCode} }}
+              {{'aggregate-report-table.sample.claim' | translate: {code: rowData.claimCode} }}
             </ng-template>
           </div>
 

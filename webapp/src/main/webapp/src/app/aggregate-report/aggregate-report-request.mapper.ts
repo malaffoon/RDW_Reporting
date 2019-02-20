@@ -13,7 +13,7 @@ import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { map } from 'rxjs/operators';
 import { SubgroupFilters, SubgroupFilterSupport } from './subgroup/subgroup-filters';
-import {Claim, Subject} from './aggregate-report-options.service';
+import { Claim } from './aggregate-report-options.service';
 import { AggregateReportService } from './aggregate-report.service';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
@@ -56,6 +56,7 @@ export class AggregateReportRequestMapper {
       includeAllDistrictsOfSchools: settings.includeAllDistrictsOfSelectedSchools,
       includeAllSchoolsOfDistricts: settings.includeAllSchoolsOfSelectedDistricts,
       includeState: settings.includeStateResults && assessmentDefinition.aggregateReportStateResultsEnabled,
+      showEmpty: settings.showEmpty,
       reportType: this.toServerReportType(settings.reportType),
       valueDisplayType: settings.valueDisplayType,
       columnOrder: settings.columnOrder
@@ -289,6 +290,7 @@ export class AggregateReportRequestMapper {
             queryType: queryType,
             reportType: reportType,
             schools: schools,
+            showEmpty: query.showEmpty != null ? query.showEmpty : true,
             studentFilters: studentFilters,
             subjects: sort(query.subjectCodes ? query.subjectCodes.map(code =>
               ({

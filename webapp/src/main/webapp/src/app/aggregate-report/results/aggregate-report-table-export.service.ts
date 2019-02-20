@@ -210,6 +210,6 @@ export interface ExportOptions {
   readonly performanceLevelDisplayType: string;
   readonly columnOrdering: string[];
   readonly subjectDefinition: SubjectDefinition;
+  readonly reportType: AggregateReportType;
   readonly name: string;
-  readonly reportType: AggregateReportType
 }
