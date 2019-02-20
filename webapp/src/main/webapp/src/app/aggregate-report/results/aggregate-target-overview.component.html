@@ -11,8 +11,8 @@
           </td>
           <td>
             <div class="scale-score font-large text-left">
-              <span class="score label label-primary">{{ overallRow.avgScaleScore }}</span>
-              <span class="error-band black"> {{'common.error-band-value' | translate: {errorBand: overallRow.avgStdErr | number:'1.0-0'} }}</span>
+              <span class="score label label-primary">{{ overview.averageScaleScore }}</span>
+              <span class="error-band black"> {{'common.error-band-value' | translate: {errorBand: overview.averageStandardError | number:'1.0-0'} }}</span>
             </div>
           </td>
         </tr>
@@ -24,8 +24,8 @@
           </td>
           <td>
             <span class="text-left gray-darkest">
-              <span class="score font-large">{{ overallRow.studentsTested }}</span>
-              <span class="ml-xs">{{ (overallRow.studentsTested == 1 ? 'average-scale-score.result' : 'average-scale-score.results') | translate }}</span>
+              <span class="score font-large">{{ overview.studentsTested }}</span>
+              <span class="ml-xs">{{ (overview.studentsTested == 1 ? 'average-scale-score.result' : 'average-scale-score.results') | translate }}</span>
             </span>
           </td>
         </tr>
