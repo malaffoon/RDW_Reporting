@@ -110,8 +110,8 @@
           <div class="col-xs-12 col-sm-6">
             <div>
               <h3 class="h3 label-group green pull-left">
-                <span class="label">{{'subject.' + view.subjectCode + '.asmt-type.' + query.assessmentTypeCode + '.name' | translate}}</span><span
-                class="label">{{'subject.' + view.subjectCode + '.name' | translate}}</span>
+                <span class="label">{{'subject.' + view.subjectDefinition.subject + '.asmt-type.' + view.subjectDefinition.assessmentType + '.name' | translate}}</span><span
+                class="label">{{'subject.' + view.subjectDefinition.subject + '.name' | translate}}</span>
               </h3>
               <a class="btn btn-sm btn-default ml-sm with-pointer"
                  [ngClass]="{'disabled': isEmbargoed()}"
@@ -196,9 +196,8 @@
         <div class="mt-sm">
           <aggregate-report-table #reportTable
                                   [options]="view.options"
-                                  [subjectDefinition]="getSubjectDefinitionForView(view)"
+                                  [subjectDefinition]="view.subjectDefinition"
                                   [reportType]="view.reportType"
-                                  [assessmentType]="view.assessmentType"
                                   [rows]="view.rows"
                                   [valueDisplayType]="view.valueDisplayType"
                                   [performanceLevelDisplayType]="view.performanceLevelDisplayType"

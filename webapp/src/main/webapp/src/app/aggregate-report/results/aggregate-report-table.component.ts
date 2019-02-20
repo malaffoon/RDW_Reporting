@@ -156,7 +156,6 @@ function createPerformanceLevelColumns(
   valueDisplayType: string,
   performanceLevelDisplayType: string
 ): Column[] {
-  //if (this.subjectDefinition == null) return [];
 
   const performanceLevelsByDisplayType = {
     Separate: reportType === AggregateReportType.Claim
@@ -471,9 +470,6 @@ export class AggregateReportTableComponent implements OnInit {
   @Input()
   public options: AggregateReportOptions;
 
-  @Input()
-  public assessmentType: string; // used only for translations
-
   @ViewChild('dataTable')
   private dataTable: Table;
 
@@ -557,6 +553,7 @@ export class AggregateReportTableComponent implements OnInit {
       rows,
       _orderingByColumnField
     } = this;
+
     const newColumns = safeCopy(value);
     this._identityColumns = newColumns;
     if (this._initialized && !_.isEqual(previousColumns, newColumns)) {
@@ -612,10 +609,6 @@ export class AggregateReportTableComponent implements OnInit {
 
   get cutPoint(): number {
     return this.subjectDefinition.performanceLevelStandardCutoff;
-  }
-
-  get assessmentTypeCode(): string {
-    return this.subjectDefinition.assessmentType;
   }
 
   get center(): boolean {
@@ -722,12 +715,6 @@ export class AggregateReportTableComponent implements OnInit {
     this.exportService.exportTable(this.rows, options);
   }
 
-  /**
-   * Initializes:
-   *  {@link #columns}
-   *  {@link #_orderingByColumnField}
-   *  {@link #_identityColumnComparators}
-   */
   private buildAndRender(): void {
 
     const {

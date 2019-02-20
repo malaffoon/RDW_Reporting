@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Report } from '../../report/report.model';
-import { SupportedRowCount } from './aggregate-report-table.component';
+import { AggregateReportTable, SupportedRowCount } from './aggregate-report-table.component';
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { AggregateReportItemMapper } from './aggregate-report-item.mapper';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
@@ -41,14 +41,15 @@ interface AggregateReportTableDisplayOptions {
 
 interface AggregateReportView {
 
+  /** @deprecated */
+  table: AggregateReportTable;
+
   originalRows: AggregateReportItem[];
   rows: AggregateReportItem[];
   subjectDefinition: SubjectDefinition;
   options: AggregateReportOptions;
   reportType: AggregateReportType;
-  assessmentType: string;
 
-  subjectCode: string;
   valueDisplayType: string;
   performanceLevelDisplayType: string;
   columnOrdering: string[];
@@ -112,7 +113,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
     this.assessmentDefinition = this.definitionService.get(this.query.assessmentTypeCode, this.mapToReportType(this.query.reportType));
     this._viewComparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
-      .on((wrapper: AggregateReportView) => wrapper.subjectCode).compare;
+      .on((wrapper: AggregateReportView) => wrapper.subjectDefinition.subject).compare;
     this._displayOptions = {
       valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
       performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions(),
@@ -131,14 +132,6 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
       this._subjectDefinitions = subjectDefinitions;
     });
-  }
-
-  getSubjectDefinitionForView(view: AggregateReportView): SubjectDefinition {
-    return this.getSubjectDefinition(view.subjectCode, view.assessmentType);
-  }
-
-  getSubjectDefinition(subject: string, assessmentType: string): SubjectDefinition {
-    return this._subjectDefinitions.find(x => x.subject == subject && x.assessmentType == assessmentType);
   }
 
   get effectiveReportType() {
@@ -199,8 +192,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/reports');
   }
 
-  getExportName(table: AggregateReportView): string {
-    const subjectLabel: string = this.translateService.instant(`subject.${table.subjectCode}.name`);
+  getExportName(view: AggregateReportView): string {
+    const subjectLabel: string = this.translateService.instant(`subject.${view.subjectDefinition.subject}.name`);
     return this.translateService.instant('aggregate-report.export-name', {
       label: this.report.label,
       subject: subjectLabel
@@ -329,18 +322,32 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private createReportViews(query: AggregateReportQuery, report: any): AggregateReportView[] {
+
+    const {
+      options,
+      effectiveReportType: reportType,
+      _subjectDefinitions,
+      assessmentDefinition,
+      columnOrderableItemProvider,
+      longitudinalDisplayType,
+      itemMapper,
+      reportViews,
+      chartMapper,
+      _viewComparator
+    } = this;
+
     const { rows, assessments } = report;
     const hasLongitudinalData = assessments != null;
 
-    const measuresGetter = hasLongitudinalData && this.longitudinalDisplayType == LongitudinalDisplayType.Cohort
+    const measuresGetter = hasLongitudinalData && longitudinalDisplayType == LongitudinalDisplayType.Cohort
       ? (row) => row.cohortMeasures : (row) => row.measures;
 
     const rowMapper: (query, subjectDefinition, row, index) => AggregateReportItem =
-      (query, subjectDefinition, row, index) => this.itemMapper.createRow(query, subjectDefinition, row, index, measuresGetter);
+      (query, subjectDefinition, row, index) => itemMapper.createRow(query, subjectDefinition, row, index, measuresGetter);
 
     // Preserve existing display type choices if they exist
-    const displayBySubject: Map<string, any> = (this.reportViews || []).reduce((map, view) => {
-      map.set(view.subjectCode, {
+    const displayBySubject: Map<string, any> = (reportViews || []).reduce((map, view) => {
+      map.set(view.subjectDefinition.subject, {
         valueDisplayType: view.valueDisplayType,
         performanceLevelDisplayType: view.performanceLevelDisplayType
       });
@@ -349,33 +356,51 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
     return rows.reduce((views, row, index) => {
       const subjectCode = row.assessment.subjectCode;
-      const subjectDefinition = this.getSubjectDefinition(subjectCode, this.assessmentDefinition.typeCode);
-      const item = rowMapper(query, subjectDefinition, row, index);
-      let view = views.find(wrapper => wrapper.subjectCode === subjectCode);
-      const columnOrder: string[] = Utils.isNullOrEmpty(this.report.request.query.columnOrder)
-        ? this.assessmentDefinition.aggregateReportIdentityColumns.concat()
-        : this.report.request.query.columnOrder;
 
+      const subjectDefinition = _subjectDefinitions
+        .find(({ subject, assessmentType }) =>
+          subject == subjectCode
+          && assessmentType == assessmentDefinition.typeCode
+        );
+
+      const item = rowMapper(query, subjectDefinition, row, index);
+
+      let view = views.find(({ subjectDefinition: { subject }}) => subject === subjectCode);
       if (!view) {
+
+        const columnOrdering: string[] = Utils.isNullOrEmpty(query.columnOrder)
+          ? assessmentDefinition.aggregateReportIdentityColumns.concat()
+          : query.columnOrder;
+
+        const columnOrderingItems = columnOrderableItemProvider.toOrderableItems(columnOrdering);
+
         const displayTypes = displayBySubject.get(subjectCode) || {
           valueDisplayType: query.valueDisplayType || ValueDisplayTypes.Percent,
           performanceLevelDisplayType: query.achievementLevelDisplayType || PerformanceLevelDisplayTypes.Separate,
         };
 
+        const showEmpty = typeof query.showEmpty !== 'undefined'
+          ? query.showEmpty : true;
+
         view = <any>{
-          subjectCode: subjectCode,
+          subjectDefinition,
           originalRows: [ item ],
-          options: this.options,
-          assessmentType: this.assessmentDefinition.typeCode,
-          reportType: this.effectiveReportType,
-          showEmpty: typeof query.showEmpty !== 'undefined' ? query.showEmpty : true,
-          columnOrdering: columnOrder,
-          columnOrderingItems: this.columnOrderableItemProvider.toOrderableItems(columnOrder),
-          ...displayTypes
+          options,
+          reportType,
+          showEmpty,
+          columnOrdering,
+          columnOrderingItems,
+          ...displayTypes,
+          // support for aggregate-target-overview
+          table: {
+            options,
+            reportType,
+            assessmentDefinition
+          }
         };
 
         if (hasLongitudinalData) {
-          view.chart = this.chartMapper.fromReport(query, <LongitudinalReport>{
+          view.chart = chartMapper.fromReport(query, <LongitudinalReport>{
             rows: rows.filter(row => row.assessment.subjectCode === subjectCode),
             assessments: assessments.filter(assessment => assessment.subject === subjectCode)
           }, measuresGetter, subjectDefinition);
@@ -383,7 +408,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
           view.chart.organizationPerformances.sort(
             join(
               organizationOrdering((path: OrganizationPerformance) => path.organization, view.chart.organizationPerformances).compare,
-              subgroupOrdering((path: OrganizationPerformance) => path.subgroup, this.options).compare
+              subgroupOrdering((path: OrganizationPerformance) => path.subgroup, options).compare
             )
           );
         }
@@ -397,9 +422,13 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       .map(view => ({
         ...view,
         rows: view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0),
-        emptyRowCount: view.originalRows.reduce((count, row) => count + (row.studentsTested === 0 ? 1 : 0), 0)
+        emptyRowCount: view.originalRows.reduce((count, row) => count + (row.studentsTested === 0 ? 1 : 0), 0),
+        table: {
+          ...view.table,
+          rows: view.originalRows // TODO support empty row filter?
+        }
       }))
-      .sort(this._viewComparator);
+      .sort(_viewComparator);
   }
 
   private unsubscribe(): void {
