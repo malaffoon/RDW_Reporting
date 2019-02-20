@@ -358,6 +358,15 @@ function createTreeColumns(columns: Column[], identityColumns: string[], rows: A
   return treeColumns;
 }
 
+function sortColumns(columns: Column[], identityColumns: string[]): Column[] {
+  // Assumes the ordered columns always start from the first column and extend the length of identity columns
+  const comparator = ordering(ranking(identityColumns))
+    .on((column: Column) => column.id).compare;
+  return [
+    ...columns.slice(0, identityColumns.length).sort(comparator),
+    ...columns.slice(identityColumns.length)
+  ];
+}
 
 /** @deprecated **/
 export interface AggregateReportTable {
@@ -542,13 +551,26 @@ export class AggregateReportTableComponent implements OnInit {
    */
   @Input()
   set identityColumns(value: string[]) {
-    const previousColumns = this._identityColumns;
+    const {
+      _identityColumns: previousColumns,
+      columns,
+      rows,
+      _orderingByColumnField
+    } = this;
     const newColumns = safeCopy(value);
     this._identityColumns = newColumns;
     if (this._initialized && !_.isEqual(previousColumns, newColumns)) {
       // did just the order change?
       if (_.isEqual(previousColumns.slice().sort(), newColumns.slice().sort())) {
-        this.updateColumnOrder();
+        this.columns = sortColumns(
+          columns,
+          newColumns
+        );
+        this._identityColumnComparators = identityColumnComparators(
+          columns,
+          _orderingByColumnField
+        );
+        this.sortRows(rows);
       } else {
         // rebuild the table with the new identity columns
         this.buildAndRender();
@@ -648,12 +670,14 @@ export class AggregateReportTableComponent implements OnInit {
   public sort(event?: SortEvent): void {
 
     const {
-      _identityColumnComparators: comparators,
       columns,
       identityColumns,
+      _identityColumnComparators,
       _orderingByColumnField,
       rows
     } = this;
+
+    const comparators = _identityColumnComparators.slice();
 
     if (!event.field) {
       // We're not sorting on a field.  Just apply the default column ordering
@@ -698,6 +722,12 @@ export class AggregateReportTableComponent implements OnInit {
     this.exportService.exportTable(this.rows, options);
   }
 
+  /**
+   * Initializes:
+   *  {@link #columns}
+   *  {@link #_orderingByColumnField}
+   *  {@link #_identityColumnComparators}
+   */
   private buildAndRender(): void {
 
     const {
@@ -754,25 +784,14 @@ export class AggregateReportTableComponent implements OnInit {
     this.dataTable.reset();
   }
 
-  /**
-   * Modify the PrimeNG Table to display tree columns in the order specified by
-   * {@link #identityColumns}
-   */
-  private updateColumnOrder(): void {
-
-    const { columns, identityColumns } = this;
-
-    // Assumes the ordered columns always start from the first column and extend to some terminal column
-    const comparator = ordering(ranking(identityColumns)).on((column: Column) => column.id).compare;
-    const orderedColumns: Column[] = columns.slice(0, identityColumns.length).sort(comparator);
-
-    columns.splice(0, identityColumns.length, ...orderedColumns);
-    this.sortRows(this.rows);
-  }
-
   private updatePerformanceLevelColumns() {
     const {
-      columns, subjectDefinition, reportType, valueDisplayType, performanceLevelDisplayType, translate
+      columns,
+      subjectDefinition,
+      reportType,
+      valueDisplayType,
+      performanceLevelDisplayType,
+      translate
     } = this;
 
     (columns || [])
