@@ -87,6 +87,9 @@ services:
 #      - /tmp:/tmp
 #    links:
 #      - config-server
+#    depends_on:
+#      config-server:
+#        condition: service_healthy
 #    environment:
 #      - spring.profiles.active=local-docker
 #      - CONFIG_SERVICE_ENABLED=true
