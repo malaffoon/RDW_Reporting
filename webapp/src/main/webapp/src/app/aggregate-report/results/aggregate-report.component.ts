@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Report } from '../../report/report.model';
-import { AggregateReportTable, SupportedRowCount } from './aggregate-report-table.component';
+import { SupportedRowCount } from './aggregate-report-table.component';
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { AggregateReportItemMapper } from './aggregate-report-item.mapper';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
-import { Subscription ,  interval ,  forkJoin } from 'rxjs';
+import { forkJoin, interval, Subscription } from 'rxjs';
 import { Utils } from '../../shared/support/support';
 import { Comparator, join, ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
@@ -25,11 +25,13 @@ import { AggregateReportItem } from './aggregate-report-item';
 import { organizationOrdering, subgroupOrdering } from '../support';
 import { LongitudinalDisplayType } from '../../shared/display-options/longitudinal-display-type';
 import { AssessmentDefinitionService } from '../assessment/assessment-definition.service';
-import { AggregateReportType } from "../aggregate-report-form-settings";
+import { AggregateReportType } from '../aggregate-report-form-settings';
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
 import { ValueDisplayTypes } from '../../shared/display-options/value-display-type';
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
+import { AggregateTargetOverview } from './aggregate-target-overview';
+import { createTargetOverview } from './aggregate-target-overviews';
 
 const PollingInterval = 4000;
 
@@ -41,8 +43,7 @@ interface AggregateReportTableDisplayOptions {
 
 interface AggregateReportView {
 
-  /** @deprecated */
-  table: AggregateReportTable;
+  targetOverview?: AggregateTargetOverview;
 
   originalRows: AggregateReportItem[];
   rows: AggregateReportItem[];
@@ -423,10 +424,9 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         ...view,
         rows: view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0),
         emptyRowCount: view.originalRows.reduce((count, row) => count + (row.studentsTested === 0 ? 1 : 0), 0),
-        table: {
-          ...view.table,
-          rows: view.originalRows // TODO support empty row filter?
-        }
+        targetOverview: reportType === AggregateReportType.Target
+          ? createTargetOverview(rows.find(row => row.subgroup.dimensionGroups[0].type === 'Overall'))
+          : undefined
       }))
       .sort(_viewComparator);
   }
