@@ -119,6 +119,10 @@ export class LongitudinalCohortFormComponent extends MultiOrganizationQueryFormC
     return this.assessmentDefinition;
   }
 
+  getReportType(): AggregateReportType {
+    return AggregateReportType.LongitudinalCohort;
+  }
+
   getNavItems(): ScrollNavItem[] {
     return [ {
       id: 'longitudinalCohortOrganizationSection',

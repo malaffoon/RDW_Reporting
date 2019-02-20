@@ -22,7 +22,8 @@
   <div class="aggregate-report-form">
 
     <div>
-      <div class="nav-container">
+      <div *ngIf="navItems"
+           class="nav-container">
         <scroll-nav [items]="navItems">
           <div class="ml-sm mt-xs">
             <ng-container *ngTemplateOutlet="submitButtonTemplate"></ng-container>
@@ -48,43 +49,49 @@
             <h3>{{'aggregate-report-form.section.report-type-heading' | translate}}</h3>
           </div>
           <div class="well pb-0">
-            <div class="row">
-              <div class="col-md-12">
-                <wide-radio-group name="reportType"
-                                  [options]="filteredOptions.reportTypes"
-                                  [(ngModel)]="reportType"
-                                  [ngModelOptions]="{standalone: true}"
-                                  rowCount="2"
-                                  (change)="onReportTypeChange()"></wide-radio-group>
-              </div>
-            </div>
+            <wide-radio-group name="reportType"
+                              [options]="filteredOptions.reportTypes"
+                              [(ngModel)]="reportType"
+                              [ngModelOptions]="{standalone: true}"
+                              rowCount="2"
+                              (change)="onReportTypeChange()"></wide-radio-group>
           </div>
         </div>
       </div>
 
-      <general-population-form *ngIf="hasGeneralPopulationReport"
-                               #generalPopulationForm
-                               [hidden]="reportType !== 'GeneralPopulation'"
-                               (navItemChange)="setNavItems('GeneralPopulation', $event)"
-                               [submitAction]="submitActionsByReportType['GeneralPopulation']"></general-population-form>
+      <ng-container *ngFor="let typeString of reportTypes">
+        <ng-container [ngSwitch]="typeString">
+          <general-population-form
+            *ngSwitchCase="'GeneralPopulation'"
+            #reportForm
+            [hidden]="reportType !== typeString"
+            [submitAction]="submitActionsByReportType[typeString]"
+          ></general-population-form>
 
-      <longitudinal-cohort-form *ngIf="hasLongitudinalReport"
-                                #longitudinalCohortForm
-                                [hidden]="reportType !== 'LongitudinalCohort'"
-                                (navItemChange)="setNavItems('LongitudinalCohort', $event)"
-                                [submitAction]="submitActionsByReportType['LongitudinalCohort']"></longitudinal-cohort-form>
+          <longitudinal-cohort-form
+            *ngSwitchCase="'LongitudinalCohort'"
+            #reportForm
+            [hidden]="reportType !== typeString"
+            [submitAction]="submitActionsByReportType[typeString]"
+          ></longitudinal-cohort-form>
 
-      <claim-report-form *ngIf="hasClaimReport"
-                         #claimForm
-                         [hidden]="reportType !== 'Claim'"
-                         (navItemChange)="setNavItems('Claim', $event)"
-                         [submitAction]="submitActionsByReportType['Claim']"></claim-report-form>
+          <claim-report-form
+            *ngSwitchCase="'Claim'"
+            #reportForm
+            [hidden]="reportType !== typeString"
+            [submitAction]="submitActionsByReportType[typeString]"
+          ></claim-report-form>
 
-      <target-report-form *ngIf="hasTargetReport"
-                          #targetForm
-                          [hidden]="reportType !== 'Target'"
-                          (navItemChange)="setNavItems('Target', $event)"
-                          [submitAction]="submitActionsByReportType['Target']"></target-report-form>
+          <target-report-form
+            *ngSwitchCase="'Target'"
+            #reportForm
+            [hidden]="reportType !== typeString"
+            [submitAction]="submitActionsByReportType[typeString]"
+          ></target-report-form>
+        </ng-container>
+      </ng-container>
+
+
     </div>
   </div>
 </ng-template>

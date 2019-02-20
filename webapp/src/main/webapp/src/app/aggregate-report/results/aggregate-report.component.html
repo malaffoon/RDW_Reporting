@@ -4,7 +4,8 @@
   <ng-template #heading>
     <h2>{{report.label}}</h2>
 
-    <div *ngIf="reportView && isLongitudinal" class="pull-right flex-child ml-xs">
+    <div *ngIf="viewState === ViewState.ReportView && isLongitudinal"
+         class="pull-right flex-child ml-xs">
       <fieldset>
         <label for="longitudinal-type-toggle"
                info-button
@@ -35,9 +36,8 @@
       </button>
     </div>
 
-
-
-    <div *ngIf="reportView" class="flex-child text-muted pt-xs">
+    <div *ngIf="viewState === ViewState.ReportView"
+         class="flex-child text-muted pt-xs">
       {{'aggregate-report.row-count-label' | translate}} <span class="label gray-darker">{{report.metadata.totalCount | number}}</span>
     </div>
 
@@ -67,17 +67,17 @@
 <div class="row">
   <div class="col-md-12">
 
-    <ng-container *ngIf="reportProcessing">
+    <ng-container *ngIf="viewState === ViewState.ReportProcessing">
       <spinner text="{{'aggregate-report.processing' | translate}}"></spinner>
     </ng-container>
 
-    <ng-container *ngIf="reportEmpty">
+    <ng-container *ngIf="viewState === ViewState.ReportEmpty">
       <div class="well">
         <p>{{'aggregate-report.empty' | translate}}</p>
       </div>
     </ng-container>
 
-    <ng-container *ngIf="reportNotLoadable">
+    <ng-container *ngIf="viewState === ViewState.ReportNotLoadable">
       <div class="well">
         <p>{{'aggregate-report.unloadable-error' | translate}}</p>
         <button class="btn btn-primary" [routerLink]="['/reports']">{{'reports.link' | translate}}
@@ -85,7 +85,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="reportSizeNotSupported">
+    <ng-container *ngIf="viewState === ViewState.ReportSizeNotSupported">
       <div class="well">
         <p>{{'aggregate-report.unsupported-size-error' | translate}}</p>
         <ul class="list-unstyled list-inline">
@@ -104,7 +104,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="reportView">
+    <ng-container *ngIf="viewState === ViewState.ReportView">
       <div *ngFor="let view of reportViews" class="well aggregate-report-content-container">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
@@ -114,13 +114,13 @@
                 class="label">{{'subject.' + view.subjectDefinition.subject + '.name' | translate}}</span>
               </h3>
               <a class="btn btn-sm btn-default ml-sm with-pointer"
-                 [ngClass]="{'disabled': isEmbargoed()}"
-                 popover="{{ isEmbargoed() ? ('report-action.embargoed' | translate) : '' }}"
-                 triggers="{{ isEmbargoed() ? 'mouseenter:mouseleave': '' }}"
+                 [ngClass]="{'disabled': isEmbargoed}"
+                 popover="{{ isEmbargoed ? ('report-action.embargoed' | translate) : '' }}"
+                 triggers="{{ isEmbargoed ? 'mouseenter:mouseleave': '' }}"
                  placement="top"
                  container="body"
                  href="javascript:void(0)"
-                 (click)="!isEmbargoed() && reportTable.exportTable(getExportName(view))"><i class="fa fa-cloud-download"></i>
+                 (click)="!isEmbargoed && reportTable.exportTable(getExportName(view))"><i class="fa fa-cloud-download"></i>
                 {{'common.export' | translate}}
               </a>
             </div>

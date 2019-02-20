@@ -93,6 +93,10 @@ export class GeneralPopulationFormComponent extends MultiOrganizationQueryFormCo
     return this.assessmentDefinition;
   }
 
+  getReportType(): AggregateReportType {
+    return AggregateReportType.GeneralPopulation;
+  }
+
   getNavItems(): ScrollNavItem[] {
     return [ {
       id: 'generalPopulationOrganizationSection',

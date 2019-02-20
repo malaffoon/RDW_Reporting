@@ -150,6 +150,10 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
     return this.formGroup;
   }
 
+  getReportType(): AggregateReportType {
+    return AggregateReportType.Target;
+  }
+
   getNavItems(): ScrollNavItem[] {
     return [ {
       id: 'targetOrganizationSection',

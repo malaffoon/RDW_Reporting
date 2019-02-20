@@ -10,12 +10,7 @@ import { range } from '../shared/support/support';
 
 const ServiceRoute = ReportingServiceRoute;
 
-const MathScorableClaims = [ '1', 'SOCK_2', '3' ];
-const ELAScorableClaims = [ 'SOCK_R', '2-W', 'SOCK_LS', '4-CR' ];
-const ScorableClaimsBySubject: Map<string, string[]> = new Map([
-  [ 'Math', MathScorableClaims ],
-  [ 'ELA', ELAScorableClaims ]
-]);
+
 const MathOrganizationalClaims = [ '1', '2', '3', '4' ];
 const ELAOrganizationalClaims = [ '1-LT', '1-IT', '2-W', '3-L', '3-S', '4-CR' ];
 const OrganizationalClaimsBySubject: Map<string, string[]> = new Map([

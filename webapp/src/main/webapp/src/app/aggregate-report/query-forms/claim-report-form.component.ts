@@ -19,9 +19,9 @@ import { Utils } from '../../shared/support/support';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { Claim } from '../aggregate-report-options.service';
 import { AggregateReportType } from '../aggregate-report-form-settings';
-import { OrderingService } from "../../shared/ordering/ordering.service";
-import { Observable ,  forkJoin } from "rxjs";
-import { map } from "rxjs/operators";
+import { OrderingService } from '../../shared/ordering/ordering.service';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { SubjectService } from '../../subject/subject.service';
 
 @Component({
@@ -106,6 +106,10 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
 
   getAssessmentDefinition(): AssessmentDefinition {
     return this.assessmentDefinition;
+  }
+
+  getReportType(): AggregateReportType {
+    return AggregateReportType.Claim;
   }
 
   getNavItems(): ScrollNavItem[] {
