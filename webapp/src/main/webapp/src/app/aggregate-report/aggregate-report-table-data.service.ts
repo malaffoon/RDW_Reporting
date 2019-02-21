@@ -22,15 +22,8 @@ import { Utils } from "../shared/support/support";
 import { SubjectDefinition } from '../subject/subject';
 
 const MaximumOrganizations = 3;
-const DefaultMaximumRowCount = 200;
+const DefaultMaximumRowCount = 100;
 
-/**
- * Composes functions which will be called in sequence on the provided arguments
- *
- * @param functions The functions to compose
- */
-const compose = (...functions) =>
-  functions.reduce((a, b) => (...args) => a(b(...args)), arg => arg);
 
 @Injectable()
 export class AggregateReportTableDataService {

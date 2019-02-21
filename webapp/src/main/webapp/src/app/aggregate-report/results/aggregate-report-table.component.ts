@@ -681,7 +681,6 @@ export class AggregateReportTableComponent implements OnInit {
    * @param event {{order: number, field: string}} An optional sort event
    */
   public sort(event?: SortEvent): void {
-
     const {
       columns,
       identityColumns,
@@ -689,15 +688,13 @@ export class AggregateReportTableComponent implements OnInit {
       _orderingByColumnField
     } = this;
 
-    const { field, order } = event;
+    const { data: rows, field, order } = event;
     const comparators = _identityColumnComparators.slice();
     const causedByHandler = field != null;
     if (!causedByHandler) {
       // We're not sorting on a field.  Just apply the default column ordering
-      event.data.sort(join(...comparators));
-      // TODO remove
-      event.data.forEach((row, index) => row.itemId = index + 1);
-      this.treeColumns = createTreeColumns(columns, identityColumns, event.data);
+      rows.sort(join(...comparators));
+      this.treeColumns = createTreeColumns(columns, identityColumns, rows);
       return;
     }
 
@@ -706,7 +703,7 @@ export class AggregateReportTableComponent implements OnInit {
       order !== 1 ||
       field !== this._previousSortEvent.field) {
       // Standard column sort.  Sort on the selected column first, then default sorting.
-      const comparator = getComparator(columns, _orderingByColumnField, field,order);
+      const comparator = getComparator(columns, _orderingByColumnField, field, order);
       comparators.unshift(comparator);
       this._previousSortEvent = event;
     } else {
@@ -715,10 +712,8 @@ export class AggregateReportTableComponent implements OnInit {
       this.dataTable.reset();
     }
     // Sort the data based upon the ordered list of Comparators
-    event.data.sort(join(...comparators));
-    // TODO remove
-    event.data.forEach((row, index) => row.itemId = index + 1);
-    this.treeColumns = createTreeColumns(columns, identityColumns, event.data);
+    rows.sort(join(...comparators));
+    this.treeColumns = createTreeColumns(columns, identityColumns, rows);
   }
 
   /**
