@@ -27,6 +27,16 @@ function safeCopy<T>(array: T[]): T[] {
   return array != null ? array.slice() : [];
 }
 
+function toRow(row: AggregateReportItem, colorService): AggregateReportItem & { organizationColor: string } {
+  const { organization = <any>{} } = row;
+  const colorIndex = Object.keys(OrganizationType).findIndex(value => value === organization.type);
+  const organizationColor = colorService.getColor(colorIndex < 0 ? 0 : colorIndex);
+  return {
+    ...row,
+    organizationColor
+  }
+}
+
 const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
   .on(item => item.schoolYear);
 
@@ -93,13 +103,13 @@ function createColumns(
 ): Column[] {
 
   const IdentityColumns: Column[] = [
-    new Column({ id: 'organization', field: 'organization.name' }),
+    new Column({ id: 'organization', field: 'organization.name', classes: 'wrapping' }),
     new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
     new Column({ id: 'assessmentLabel' }),
     new Column({ id: 'schoolYear' }),
-    new Column({ id: 'claim', field: 'claimCode' }),
-    new Column({ id: 'dimension', field: 'subgroup.id' }),
-    new Column({ id: 'target', field: 'targetNaturalId' })
+    new Column({ id: 'claim', field: 'claimCode', classes: 'wrapping' }),
+    new Column({ id: 'dimension', field: 'subgroup.id', classes: 'wrapping' }),
+    new Column({ id: 'target', field: 'targetNaturalId', classes: 'wrapping' })
   ];
 
   const dataColumns: Column[] = [];
@@ -108,7 +118,7 @@ function createColumns(
     case AggregateReportType.LongitudinalCohort:
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
-        new Column({ id: 'achievementComparison', sortable: false }),
+        new Column({ id: 'achievementComparison', sortable: false, classes: 'wrapping' }),
         new Column({ id: 'avgScaleScore', valueColumn: true }),
         ...createPerformanceLevelColumns(
           translate,
@@ -122,7 +132,7 @@ function createColumns(
     case AggregateReportType.Claim:
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
-        new Column({ id: 'achievementComparison', sortable: false }),
+        new Column({ id: 'achievementComparison', sortable: false, classes: 'wrapping' }),
         ...createPerformanceLevelColumns(
           translate,
           subjectDefinition,
@@ -255,7 +265,6 @@ function getPerformanceLevelColors(
   return translate.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === AggregateReportType.Claim ? 'claim-score.' : ''}level.${level}.color`);
 }
 
-
 /**
  * Get the ordered list of Comparators that result in a tree-like display.
  * The order of Comparators depends upon the column order.
@@ -302,7 +311,6 @@ function getComparator(
     ? join(NoResultsComparator.compare, rowOrdering.compare)
     : rowOrdering.compare;
 }
-
 
 /**
  * Gets the index of the first column of a row holding a value that does not
@@ -376,6 +384,10 @@ export interface AggregateReportTable {
 }
 
 class Column implements BaseColumn {
+
+  /** @deprecated use {@link #id} and change translation keys **/
+  translationId: string;
+
   // The column id/type
   id: string;
 
@@ -391,6 +403,9 @@ class Column implements BaseColumn {
   // True if the column represents a data value that has no meaning when there are no results
   // (Example: displays as '-' when there are no results)
   valueColumn: boolean;
+
+  // values to pass to column ngClass
+  classes: any;
 
   // The following properties are only used by performance level columns
   displayType?: string;
@@ -411,13 +426,18 @@ class Column implements BaseColumn {
                 headerText = '',
                 headerSuffix = '',
                 headerColor = '',
-                valueColumn = false
+                valueColumn = false,
+                classes = undefined
               }) {
+
+    this.translationId = Utils.camelCaseToDash(id);
+
     this.id = id;
     this.field = field ? field : id;
     this.sortable = sortable;
     this.visible = visible;
     this.valueColumn = valueColumn;
+    this.classes = classes;
 
     if (displayType) {
       this.displayType = displayType;
@@ -444,6 +464,8 @@ class Column implements BaseColumn {
     }
   }
 }
+
+const RowBuffer = 50;
 
 /**
  * This component is responsible for displaying a table of aggregate report results
@@ -473,21 +495,26 @@ export class AggregateReportTableComponent implements OnInit {
   @ViewChild('dataTable')
   private dataTable: Table;
 
-  private _subjectDefinition: SubjectDefinition;
-  private _reportType: AggregateReportType;
-  private _rows: AggregateReportItem[] = [];
-  private _identityColumns: string[];
-  private _valueDisplayType: string;
-  private _performanceLevelDisplayType: string;
-
   private _previousSortEvent: any;
   private _orderingByColumnField: { [ key: string ]: Ordering<AggregateReportItem> } = {};
   private _identityColumnComparators: Comparator<AggregateReportItem>[];
-  private _initialized: boolean = false;
+
+  // internals directly exposed for rendering performance enhancement
+  _initialized: boolean = false;
+  _subjectDefinition: SubjectDefinition;
+  _reportType: AggregateReportType;
+  _rows: AggregateReportItem[] = [];
+  _virtualRows: AggregateReportItem[] = [];
+  _identityColumns: string[];
+  _valueDisplayType: string;
+  _performanceLevelDisplayType: string;
 
   // computed
-  public treeColumns: number[] = [];
-  public columns: Column[];
+  treeColumns: number[] = [];
+  columns: Column[];
+  sortMode: boolean | string;
+  claimReport: boolean;
+  center: boolean;
 
   constructor(public colorService: ColorService,
               private translate: TranslateService,
@@ -495,6 +522,10 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.sortMode = this.preview ? false : 'single';
+    this.claimReport = this.reportType === AggregateReportType.Claim;
+    this.center = this.reportType !== AggregateReportType.Claim
+      && this.subjectDefinition.performanceLevelStandardCutoff != null;
     this.buildAndRender();
     this._initialized = true;
   }
@@ -508,6 +539,8 @@ export class AggregateReportTableComponent implements OnInit {
     const previousValue = this._subjectDefinition;
     this._subjectDefinition = value;
     if (this._initialized && previousValue !== value) {
+      this.center = this.reportType !== AggregateReportType.Claim
+        && this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
   }
@@ -521,6 +554,9 @@ export class AggregateReportTableComponent implements OnInit {
     const previousValue = this._reportType;
     this._reportType = value;
     if (this._initialized && previousValue !== value) {
+      this.claimReport = this.reportType === AggregateReportType.Claim;
+      this.center = this.reportType !== AggregateReportType.Claim
+        && this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
   }
@@ -531,7 +567,7 @@ export class AggregateReportTableComponent implements OnInit {
 
   @Input()
   set rows(value: AggregateReportItem[]) {
-    this._rows = safeCopy(value);
+    this._rows = value.map(value => toRow(value, this.colorService));
     if (this._initialized) {
       this.buildAndRender();
     }
@@ -607,37 +643,27 @@ export class AggregateReportTableComponent implements OnInit {
     }
   }
 
-  get cutPoint(): number {
-    return this.subjectDefinition.performanceLevelStandardCutoff;
-  }
-
-  get center(): boolean {
-    return this.reportType !== AggregateReportType.Claim && this.cutPoint != null;
-  }
-
-  get isClaimReportType(): boolean {
-    return this.reportType === AggregateReportType.Claim;
-  }
-
-  get rowSortingEnabled(): boolean | string {
-    return this.preview ? false : 'custom';
-  }
-
-  /**
-   * TODO remove the need for this & column translation provider by passing the column ID for translation
-   * aggregate-report-table.columns.${columnId}
-   */
-  toDash(str: string): string {
-    return Utils.camelCaseToDash(str);
-  }
-
+  // TODO find a way to avoid this as this is less performant than direct field reads
   readField(item: AggregateReportItem, field: string) {
     return _.get(item, field, '');
   }
 
-  getOrganizationTypeColor(type: OrganizationType): string {
-    const colorIndex = Object.keys(OrganizationType).findIndex(value => value === type);
-    return this.colorService.getColor(colorIndex < 0 ? 0 : colorIndex);
+  onLazyLoad(event: any): void {
+    // console.log('onLazyLoad', {
+    //   event,
+    //   first: event.first,
+    //   rows: this._rows,
+    //   before: this._virtualRows,
+    //   after: this._rows.slice(event.first, event.first + RowBuffer)
+    // });
+    setTimeout(() => {
+      const rows = this._rows.slice();
+
+      // our method does not work with sorting.
+      // this.sortRows(rows);
+
+      this._virtualRows = rows.slice(event.first, event.first + RowBuffer);
+    });
   }
 
   /**
@@ -666,25 +692,29 @@ export class AggregateReportTableComponent implements OnInit {
       columns,
       identityColumns,
       _identityColumnComparators,
-      _orderingByColumnField,
-      rows
+      _orderingByColumnField
     } = this;
 
+    const { field, order } = event;
     const comparators = _identityColumnComparators.slice();
+    const causedByHandler = field != null;
+    if (!causedByHandler) {
+      console.log('sort !field', event);
 
-    if (!event.field) {
       // We're not sorting on a field.  Just apply the default column ordering
       event.data.sort(join(...comparators));
-      this.treeColumns = createTreeColumns(columns, identityColumns, rows);
+      // TODO remove
+      event.data.forEach((row, index) => row.itemId = index + 1);
+      this.treeColumns = createTreeColumns(columns, identityColumns, event.data);
       return;
     }
 
     if (!this._previousSortEvent ||
       event === this._previousSortEvent ||
-      event.order !== 1 ||
-      event.field !== this._previousSortEvent.field) {
+      order !== 1 ||
+      field !== this._previousSortEvent.field) {
       // Standard column sort.  Sort on the selected column first, then default sorting.
-      const comparator = getComparator(columns, _orderingByColumnField, event.field, event.order);
+      const comparator = getComparator(columns, _orderingByColumnField, field,order);
       comparators.unshift(comparator);
       this._previousSortEvent = event;
     } else {
@@ -692,10 +722,12 @@ export class AggregateReportTableComponent implements OnInit {
       delete this._previousSortEvent;
       this.dataTable.reset();
     }
-
+    console.log('sort field', event);
     // Sort the data based upon the ordered list of Comparators
     event.data.sort(join(...comparators));
-    this.treeColumns = createTreeColumns(columns, identityColumns, rows);
+    // TODO remove
+    event.data.forEach((row, index) => row.itemId = index + 1);
+    this.treeColumns = createTreeColumns(columns, identityColumns, event.data);
   }
 
   /**
@@ -758,6 +790,8 @@ export class AggregateReportTableComponent implements OnInit {
     this._identityColumnComparators = comparators;
 
     this.sortRows(rows);
+
+    this._virtualRows = rows.slice(0, RowBuffer);
   }
 
   /**

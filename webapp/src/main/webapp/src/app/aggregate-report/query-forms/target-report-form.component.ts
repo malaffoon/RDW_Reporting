@@ -21,7 +21,6 @@ import { BaseAggregateQueryFormComponent } from "./base-aggregate-query-form.com
 import { ScrollNavItem } from "../../shared/nav/scroll-nav.component";
 import { AggregateReportType } from "../aggregate-report-form-settings";
 import { SubjectService } from '../../subject/subject.service';
-import { SubjectDefinition } from '../../subject/subject';
 
 @Component({
   selector: 'target-report-form',
@@ -64,6 +63,8 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
 
   assessmentDefinition: AssessmentDefinition;
 
+  hasTargetEnabledSubjects: boolean;
+
   private _organizationTypeahead: OrganizationTypeahead;
 
   constructor(protected columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
@@ -81,6 +82,9 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
     super(columnOrderableItemProvider, notificationService, optionMapper, reportService, subjectService, requestMapper, route, router, tableDataService);
 
     this.settings.reportType = AggregateReportType.Target;
+
+    this.hasTargetEnabledSubjects = this.filteredOptions.subjects
+      .some(subject => subject.value.targetReport && subject.value.assessmentType === 'sum');
 
     this.assessmentDefinition = this.assessmentDefinitionService.get(TargetSummativeKey.assessmentType, TargetSummativeKey.reportType);
 
@@ -175,16 +179,6 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
 
   getSupportedAssessmentTypes(): string[] {
     return ['sum'];
-  }
-
-  // override the base implementation since the target report stores subject code differently
-  get subjectDefinition(): SubjectDefinition {
-    return this.subjectDefinitions.find(x => x.subject == this.settings.targetReport.subjectCode && x.assessmentType == this.settings.assessmentType);
-  }
-
-  get hasTargetEnabledSubjects(): boolean {
-    return this.filteredOptions.subjects
-      .some(subject => subject.value.targetReport && subject.value.assessmentType === 'sum')
   }
 
   /**

@@ -83,7 +83,7 @@ function toReportType(type: ServerAggregateReportType): AggregateReportType {
   }
 }
 
-function getTargetViewState(report: Report, displayLargeReport: boolean): ViewState {
+function toViewState(report: Report, displayLargeReport: boolean): ViewState {
   if (report.processing) {
     return ViewState.ReportProcessing;
   }
@@ -247,15 +247,15 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   private updateViewState(): void {
-    const targetViewState = getTargetViewState(this.report, this._displayLargeReport);
-    this.onViewStateChange(this.viewState, targetViewState);
-    this.viewState = targetViewState;
+    const { viewState, report, _displayLargeReport } = this;
+    const nextViewState = toViewState(report, _displayLargeReport);
+    if (viewState !== nextViewState) {
+      this.onViewStateChange(viewState, nextViewState);
+      this.viewState = nextViewState;
+    }
   }
 
   private onViewStateChange(oldState: ViewState, newState: ViewState) {
-    if (oldState === newState) {
-      return;
-    }
     if (oldState === ViewState.ReportProcessing) {
       this.unsubscribe();
     }

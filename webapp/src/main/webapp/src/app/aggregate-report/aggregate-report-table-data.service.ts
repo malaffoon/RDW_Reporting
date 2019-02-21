@@ -226,6 +226,7 @@ export class AggregateReportTableDataService {
       standardMetRelativeResidualLevel: undefined,
       studentRelativeResidualScoresLevel: undefined,
       studentsTested: studentsTested,
+      //studentsTested: studentsTested,
       subgroup: undefined,
       subjectCode: undefined
     }

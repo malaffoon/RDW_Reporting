@@ -1,24 +1,23 @@
-import { AggregateReportRequest } from "../../report/aggregate-report-request";
+import { AggregateReportRequest } from '../../report/aggregate-report-request';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { Forms } from "../../shared/form/forms";
-import { NotificationService } from "../../shared/notification/notification.service";
-import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
-import { Subscription ,  Observer ,  Observable } from "rxjs";
-import { finalize } from "rxjs/operators";
-import { AggregateReportService } from "../aggregate-report.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AggregateReportFormOptions } from "../aggregate-report-form-options";
+import { Forms } from '../../shared/form/forms';
+import { NotificationService } from '../../shared/notification/notification.service';
+import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
+import { Observable, Observer, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { AggregateReportService } from '../aggregate-report.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { AggregateReportFormSettings, AggregateReportType } from '../aggregate-report-form-settings';
-import { AssessmentDefinition } from "../assessment/assessment-definition";
-import { AggregateReportOptions } from "../aggregate-report-options";
-import { AggregateReportTable } from "../results/aggregate-report-table.component";
-import { AggregateReportRequestSummary } from "../aggregate-report-summary.component";
-import { AggregateReportTableDataService } from "../aggregate-report-table-data.service";
-import { AggregateReportOptionsMapper } from "../aggregate-report-options.mapper";
-import { EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { ScrollNavItem } from "../../shared/nav/scroll-nav.component";
-import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
-import { OrderableItem } from "../../shared/order-selector/order-selector.component";
+import { AssessmentDefinition } from '../assessment/assessment-definition';
+import { AggregateReportOptions } from '../aggregate-report-options';
+import { AggregateReportRequestSummary } from '../aggregate-report-summary.component';
+import { AggregateReportTableDataService } from '../aggregate-report-table-data.service';
+import { AggregateReportOptionsMapper } from '../aggregate-report-options.mapper';
+import { EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
+import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
+import { OrderableItem } from '../../shared/order-selector/order-selector.component';
 import { SubjectDefinition } from '../../subject/subject';
 import { SubjectService } from '../../subject/subject.service';
 import { Option } from '../../shared/form/option';
@@ -109,7 +108,7 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   /**
    * Get the subject definition
    */
-  protected get subjectDefinition(): SubjectDefinition {
+  get subjectDefinition(): SubjectDefinition {
     const { settings } = this;
     return this.subjectDefinitions
       .find(x =>
@@ -226,12 +225,14 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   }
 
   onPreviewSectionInView(): void {
-    this.previewTableRows = this.tableDataService.createSampleData(
+    const previewTableRows = this.tableDataService.createSampleData(
       this.getAssessmentDefinition(),
       this.subjectDefinition,
       this.settings,
       this.aggregateReportOptions
     );
+    console.log({previewTableRows})
+    this.previewTableRows = previewTableRows.slice(200);
   }
 
   /**
