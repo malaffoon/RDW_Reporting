@@ -225,14 +225,12 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   }
 
   onPreviewSectionInView(): void {
-    const previewTableRows = this.tableDataService.createSampleData(
+    this.previewTableRows = this.tableDataService.createSampleData(
       this.getAssessmentDefinition(),
       this.subjectDefinition,
       this.settings,
       this.aggregateReportOptions
     );
-    console.log({previewTableRows})
-    this.previewTableRows = previewTableRows.slice(200);
   }
 
   /**

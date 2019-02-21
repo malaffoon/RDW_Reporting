@@ -22,6 +22,15 @@ import { Utils } from "../shared/support/support";
 import { SubjectDefinition } from '../subject/subject';
 
 const MaximumOrganizations = 3;
+const DefaultMaximumRowCount = 200;
+
+/**
+ * Composes functions which will be called in sequence on the provided arguments
+ *
+ * @param functions The functions to compose
+ */
+const compose = (...functions) =>
+  functions.reduce((a, b) => (...args) => a(b(...args)), arg => arg);
 
 @Injectable()
 export class AggregateReportTableDataService {
@@ -84,9 +93,10 @@ export class AggregateReportTableDataService {
   }
 
   createSampleData(assessmentDefinition: AssessmentDefinition,
-                    subjectDefinition: SubjectDefinition,
-                    settings: AggregateReportFormSettings,
-                    options: AggregateReportOptions): AggregateReportItem[] {
+                   subjectDefinition: SubjectDefinition,
+                   settings: AggregateReportFormSettings,
+                   options: AggregateReportOptions,
+                   maximumRows: number = DefaultMaximumRowCount): AggregateReportItem[] {
 
     let valueProviders: ValueProvider[] = [];
     switch (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition)) {
@@ -199,12 +209,13 @@ export class AggregateReportTableDataService {
 
     const rowTemplate: AggregateReportItem = this.createRowTemplate();
     return this.createRows(rowTemplate, valueProviders, {
-      assessmentDefinition: assessmentDefinition,
-      subjectDefinition: subjectDefinition,
-      settings: settings,
-      options: options,
-      itemId: 1
-    });
+      assessmentDefinition,
+      subjectDefinition,
+      settings,
+      options,
+      itemId: 1,
+      maximumRows
+    }).slice(0, maximumRows); // TODO implement early exit in createRows method
   }
 
   private createRowTemplate(): AggregateReportItem {
@@ -226,7 +237,6 @@ export class AggregateReportTableDataService {
       standardMetRelativeResidualLevel: undefined,
       studentRelativeResidualScoresLevel: undefined,
       studentsTested: studentsTested,
-      //studentsTested: studentsTested,
       subgroup: undefined,
       subjectCode: undefined
     }
@@ -238,10 +248,9 @@ export class AggregateReportTableDataService {
       row.itemId = context.itemId++;
       return [ row ];
     }
-
     const valueProvider: ValueProvider = valueProviders.shift();
     for (let values of valueProvider.getValues(context)) {
-      row = Object.assign({}, row, values);
+      row = { ...row, ...values };
       context.row = row;
       items = items.concat(this.createRows(row, valueProviders, context));
     }
@@ -309,4 +318,5 @@ class RowContext {
   options: AggregateReportOptions;
   itemId: number;
   row?: AggregateReportItem;
+  maximumRows: number;
 }

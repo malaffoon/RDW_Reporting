@@ -649,13 +649,7 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   onLazyLoad(event: any): void {
-    // console.log('onLazyLoad', {
-    //   event,
-    //   first: event.first,
-    //   rows: this._rows,
-    //   before: this._virtualRows,
-    //   after: this._rows.slice(event.first, event.first + RowBuffer)
-    // });
+
     setTimeout(() => {
       const rows = this._rows.slice();
 
@@ -699,8 +693,6 @@ export class AggregateReportTableComponent implements OnInit {
     const comparators = _identityColumnComparators.slice();
     const causedByHandler = field != null;
     if (!causedByHandler) {
-      console.log('sort !field', event);
-
       // We're not sorting on a field.  Just apply the default column ordering
       event.data.sort(join(...comparators));
       // TODO remove
@@ -722,7 +714,6 @@ export class AggregateReportTableComponent implements OnInit {
       delete this._previousSortEvent;
       this.dataTable.reset();
     }
-    console.log('sort field', event);
     // Sort the data based upon the ordered list of Comparators
     event.data.sort(join(...comparators));
     // TODO remove
