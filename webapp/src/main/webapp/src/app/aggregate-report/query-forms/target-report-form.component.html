@@ -1,4 +1,3 @@
-
 <form #form [formGroup]="formGroup">
 
   <!-- Organization -->
@@ -23,7 +22,8 @@
           </fieldset>
           <div>
             <br [hidden]="organizationTypeahead.noResults">
-            <span [hidden]="!organizationTypeahead.noResults" class="small gray-darker">{{'organization-typeahead.no-matches' | translate}}</span>
+            <span [hidden]="!organizationTypeahead.noResults"
+                  class="small gray-darker">{{'organization-typeahead.no-matches' | translate}}</span>
           </div>
           <div class="form-group">
             <input type="hidden"
@@ -129,11 +129,11 @@
               <div class="form-group">
                 <sb-radio-group id="schoolYear"
                                 name="schoolYear"
-                                 formControlName="schoolYear"
-                                 analyticsEvent="FilterClick"
-                                 analyticsCategory="AggregateQueryBuilder"
-                                 [options]="filteredOptions.schoolYears"
-                                 [(ngModel)]="settings.targetReport.schoolYear"
+                                formControlName="schoolYear"
+                                analyticsEvent="FilterClick"
+                                analyticsCategory="AggregateQueryBuilder"
+                                [options]="filteredOptions.schoolYears"
+                                [(ngModel)]="settings.targetReport.schoolYear"
                                 (change)="onSettingsChange()"></sb-radio-group>
               </div>
             </div>
@@ -356,11 +356,4 @@
           [disabled]="submissionSubscription"
           (click)="submitAction.emit($event)">{{'aggregate-report-form.submit' | translate}}
   </button>
-</ng-template>
-
-<ng-template #warning let-text>
-  <span class="alert alert-warning small pt-xs pr-xs pb-xs pl-xs ml-sm">
-    <i class="fa fa-exclamation-triangle"></i>
-    {{text}}
-  </span>
 </ng-template>

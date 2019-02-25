@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 import * as d3 from 'd3';
@@ -91,7 +91,8 @@ interface LevelRange {
 
 @Component({
   selector: 'longitudinal-cohort-chart',
-  templateUrl: 'longitudinal-cohort-chart.component.html'
+  templateUrl: 'longitudinal-cohort-chart.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LongitudinalCohortChartComponent implements OnInit {
 

@@ -406,7 +406,7 @@
     <div class="well-group">
       <div class="well">
         <h3>{{'aggregate-report-form.section.review-heading' | translate}}</h3>
-        <ng-container *ngIf="formGroup.valid">
+        <ng-container *ngIf="formGroup.valid && capableOfRowEstimation()">
           <ng-container *ngIf="estimatedRowCount != null; else estimatedRowCountSpinner">
             <div class="flex-children">
               <p>
@@ -420,7 +420,7 @@
               </ng-container>
             </div>
           </ng-container>
-          <ng-template #estimatedRowCountSpinner *ngIf="capableOfRowEstimation()">
+          <ng-template #estimatedRowCountSpinner>
             <p class="text-muted small">
               {{'aggregate-report-form.estimated-row-count.loading' | translate}} <i
               class="fa fa-spinner fa-pulse"></i>
@@ -555,4 +555,11 @@
           [disabled]="submissionSubscription"
           (click)="submitAction.emit($event)">{{'aggregate-report-form.submit' | translate}}
   </button>
+</ng-template>
+
+<ng-template #warning let-text>
+  <span class="alert alert-warning small pt-xs pr-xs pb-xs pl-xs ml-sm">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{text}}
+  </span>
 </ng-template>

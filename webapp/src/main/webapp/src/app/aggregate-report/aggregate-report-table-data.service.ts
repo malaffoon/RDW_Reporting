@@ -208,7 +208,7 @@ export class AggregateReportTableDataService {
       options,
       itemId: 1,
       maximumRows
-    }).slice(0, maximumRows); // TODO implement early exit in createRows method
+    });
   }
 
   private createRowTemplate(): AggregateReportItem {
@@ -236,16 +236,21 @@ export class AggregateReportTableDataService {
   }
 
   private createRows(row: AggregateReportItem, valueProviders: ValueProvider[], context: RowContext): AggregateReportItem[] {
-    let items: AggregateReportItem[] = [];
+    if (context.itemId > context.maximumRows) {
+      return [];
+    }
     if (valueProviders.length === 0) {
       row.itemId = context.itemId++;
       return [ row ];
     }
+    let items: AggregateReportItem[] = [];
     const valueProvider: ValueProvider = valueProviders.shift();
-    for (let values of valueProvider.getValues(context)) {
-      row = { ...row, ...values };
+    const values = valueProvider.getValues(context);
+    for (let index = 0; index < values.length; index++) {
+      const value = values[index];
+      row = { ...row, ...value };
       context.row = row;
-      items = items.concat(this.createRows(row, valueProviders, context));
+      items.push(...this.createRows(row, valueProviders, context));
     }
     valueProviders.unshift(valueProvider);
     return items;
