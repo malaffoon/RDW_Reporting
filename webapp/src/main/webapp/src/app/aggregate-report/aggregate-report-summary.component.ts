@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolYearPipe } from '../shared/format/school-year.pipe';
 import { AggregateReportOptions } from './aggregate-report-options';
@@ -35,7 +35,8 @@ const WideColumnProvider: ColumnProvider = createColumnProvider();
   templateUrl: 'aggregate-report-summary.component.html',
   host: {
     'class': 'aggregate-report-summary'
-  }
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AggregateReportSummary {
 

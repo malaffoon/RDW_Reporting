@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Ordering, ordering } from '@kourge/ordering';
 import { AggregateReportItem } from './aggregate-report-item';
 import { byNumber, byString, Comparator, join, ranking } from '@kourge/ordering/comparator';
@@ -481,7 +481,8 @@ const RowBuffer = 50;
   templateUrl: 'aggregate-report-table.component.html',
   host: {
     '[class.disabled-table]': 'preview'
-  }
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AggregateReportTableComponent implements OnInit {
 
@@ -595,12 +596,13 @@ export class AggregateReportTableComponent implements OnInit {
     if (this._initialized && !_.isEqual(previousColumns, newColumns)) {
       // did just the order change?
       if (_.isEqual(previousColumns.slice().sort(), newColumns.slice().sort())) {
-        this.columns = sortColumns(
+        const sortedColumns = sortColumns(
           columns,
           newColumns
         );
+        this.columns = sortedColumns;
         this._identityColumnComparators = identityColumnComparators(
-          columns,
+          sortedColumns,
           _orderingByColumnField
         );
         this.sortRows(rows);
