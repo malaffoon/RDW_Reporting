@@ -424,14 +424,9 @@
         </ng-container>
       </div>
       <div class="well">
-        <ng-container *ngIf="reviewSectionLoading; else reviewSectionLoaded">
-          <spinner></spinner>
-        </ng-container>
-        <ng-template #reviewSectionLoaded>
-          <aggregate-report-summary *ngIf="summary"
-                                    narrow="true"
-                                    [summary]="summary"></aggregate-report-summary>
-        </ng-template>
+        <aggregate-report-summary *ngIf="summary"
+                                  narrow="true"
+                                  [summary]="summary"></aggregate-report-summary>
       </div>
       <div class="well">
         <label for="reportName">{{'aggregate-report-form.field.report-name-label' | translate}}</label>
@@ -533,26 +528,20 @@
         </span>
       </div>
       <div class="mt-sm">
-        <ng-container *ngIf="previewSectionLoading; else previewSectionLoaded">
-          <spinner></spinner>
-        </ng-container>
-        <ng-template #previewSectionLoaded>
-          <aggregate-report-table
-            *ngIf="previewTableRows"
-            [preview]="true"
-            [options]="aggregateReportOptions"
-            [subjectDefinition]="subjectDefinition"
-            [reportType]="settings.reportType"
-            [rows]="previewTableRows"
-            [identityColumns]="settings.columnOrder"
-            [valueDisplayType]="settings.valueDisplayType"
-            [performanceLevelDisplayType]="
-            assessmentDefinition.performanceLevelDisplayTypes.includes(settings.performanceLevelDisplayType)
-              ? settings.performanceLevelDisplayType
-              : assessmentDefinition.performanceLevelDisplayTypes[0]"
-          ></aggregate-report-table>
-        </ng-template>
-
+        <aggregate-report-table
+          *ngIf="previewTableRows"
+          [preview]="true"
+          [options]="aggregateReportOptions"
+          [subjectDefinition]="subjectDefinition"
+          [reportType]="settings.reportType"
+          [rows]="previewTableRows"
+          [identityColumns]="settings.columnOrder"
+          [valueDisplayType]="settings.valueDisplayType"
+          [performanceLevelDisplayType]="
+          assessmentDefinition.performanceLevelDisplayTypes.includes(settings.performanceLevelDisplayType)
+            ? settings.performanceLevelDisplayType
+            : assessmentDefinition.performanceLevelDisplayTypes[0]"
+        ></aggregate-report-table>
       </div>
     </div>
   </div>

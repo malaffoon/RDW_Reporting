@@ -231,7 +231,6 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
       this.settings,
       this.aggregateReportOptions
     );
-    console.log('ptl', this.previewTableRows.length)
   }
 
   /**
