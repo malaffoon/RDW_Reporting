@@ -393,7 +393,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         rows: view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0),
         emptyRowCount: view.originalRows.reduce((count, row) => count + (row.studentsTested === 0 ? 1 : 0), 0),
         targetOverview: reportType === AggregateReportType.Target
-          ? createTargetOverview(rows.find(row => row.subgroup.dimensionGroups[0].type === 'Overall'))
+          ? createTargetOverview(view.originalRows.find(row => row.subgroup.dimensionGroups[0].type === 'Overall'))
           : undefined
       }))
       .sort(_viewComparator);
