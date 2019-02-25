@@ -529,12 +529,12 @@
       </div>
       <div class="mt-sm">
         <aggregate-report-table
-          *ngIf="previewTable"
+          *ngIf="previewTableRows"
           [preview]="true"
-          [options]="previewTable.options"
+          [options]="aggregateReportOptions"
           [subjectDefinition]="subjectDefinition"
-          [reportType]="previewTable.reportType"
-          [rows]="previewTable.rows"
+          [reportType]="settings.reportType"
+          [rows]="previewTableRows"
           [identityColumns]="settings.columnOrder"
           [valueDisplayType]="settings.valueDisplayType"
           [performanceLevelDisplayType]="

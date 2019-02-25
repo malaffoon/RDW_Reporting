@@ -68,6 +68,47 @@ enum ViewState {
   ReportView
 }
 
+function toReportType(type: ServerAggregateReportType): AggregateReportType {
+  if (type == ServerAggregateReportType.Longitudinal) {
+    return AggregateReportType.LongitudinalCohort
+  }
+  if (type == ServerAggregateReportType.CustomAggregate) {
+    return AggregateReportType.GeneralPopulation
+  }
+  if (type == ServerAggregateReportType.Claim) {
+    return AggregateReportType.Claim;
+  }
+  if (type == ServerAggregateReportType.Target) {
+    return AggregateReportType.Target;
+  }
+}
+
+function toViewState(report: Report, displayLargeReport: boolean): ViewState {
+  if (report.processing) {
+    return ViewState.ReportProcessing;
+  }
+  if (report.empty) {
+    return ViewState.ReportEmpty;
+  }
+  if (!report.completed) {
+    return ViewState.ReportNotLoadable;
+  }
+  if (!isSupportedSize(report) && !displayLargeReport) {
+    return ViewState.ReportSizeNotSupported;
+  }
+  if (report.completed) {
+    return ViewState.ReportView;
+  }
+  return ViewState.ReportProcessing;
+}
+
+function isSupportedSize(report: Report): boolean {
+  const rowCount: string = report.metadata.totalCount;
+  return Utils.isUndefined(rowCount)
+    || (Number.parseInt(rowCount) <= SupportedRowCount);
+}
+
+
 /**
  * This component is responsible for performing the aggregate report query and
  * displaying the results.  Results are displayed in one table per subjectId.
@@ -78,22 +119,29 @@ enum ViewState {
 })
 export class AggregateReportComponent implements OnInit, OnDestroy {
 
+  readonly ViewState = ViewState;
+
   @ViewChild('spinnerModal')
   spinnerModal: SpinnerModal;
 
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
   report: Report;
+  query: AggregateReportQuery;
   reportViews: AggregateReportView[];
   showRequest: boolean = false;
   summary: AggregateReportRequestSummary;
   longitudinalDisplayType = LongitudinalDisplayType.GeneralPopulation;
+  viewState: ViewState;
+  displayOptions: AggregateReportTableDisplayOptions;
+  effectiveReportType: AggregateReportType;
+  isEmbargoed: boolean;
+  isLongitudinal: boolean;
+  showTargetMathCautionMessage: boolean;
 
   private _viewComparator: Comparator<AggregateReportView>;
   private _pollingSubscription: Subscription;
   private _displayLargeReport: boolean = false;
-  private _displayOptions: AggregateReportTableDisplayOptions;
-  private _viewState: ViewState;
   private _aggregateReport: any;
   private _subjectDefinitions: SubjectDefinition[] = [];
 
@@ -109,62 +157,43 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
               private subjectService: SubjectService,
               private chartMapper: LongitudinalCohortChartMapper) {
 
-    this.options = this.route.snapshot.data[ 'options' ];
-    this.report = this.route.snapshot.data[ 'report' ];
+    const { options, report, report: { request: { query } } } = route.snapshot.data;
 
-    this.assessmentDefinition = this.definitionService.get(this.query.assessmentTypeCode, this.mapToReportType(this.query.reportType));
-    this._viewComparator = ordering(ranking(this.options.subjects.map(subject => subject.code)))
+    const reportType = toReportType(query.reportType);
+    const assessmentDefinition = definitionService.get(query.assessmentTypeCode, reportType);
+
+    this.options = options;
+    this.report = report;
+    this.query = query;
+    this.assessmentDefinition = assessmentDefinition;
+
+    this._viewComparator = ordering(ranking(options.subjects.map(subject => subject.code)))
       .on((wrapper: AggregateReportView) => wrapper.subjectDefinition.subject).compare;
-    this._displayOptions = {
-      valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
-      performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions(),
-      longitudinalDisplayTypes: this.displayOptionService.getLongitudinalDisplayTypeOptions()
+
+    this.displayOptions = {
+      valueDisplayTypes: displayOptionService.getValueDisplayTypeOptions(),
+      performanceLevelDisplayTypes: displayOptionService.getPerformanceLevelDisplayTypeOptions(),
+      longitudinalDisplayTypes: displayOptionService.getLongitudinalDisplayTypeOptions()
     };
+
+    this.effectiveReportType = reportService
+      .getEffectiveReportType(reportType, assessmentDefinition);
+
+    this.isEmbargoed = report.metadata.createdWhileDataEmbargoed === 'true';
+    this.isLongitudinal = query.reportType === ServerAggregateReportType.Longitudinal;
+    this.showTargetMathCautionMessage = query.reportType == ServerAggregateReportType.Target && query.subjectCode == 'Math';
 
     forkJoin(
       this.subjectService.getSubjectDefinitions(),
-      this.requestMapper.toSettings(this.report.request, this.options)
+      this.requestMapper.toSettings(report.request, options)
     ).subscribe(([subjectDefinitions, settings]) => {
       this.summary = {
-        assessmentDefinition: this.assessmentDefinition,
-        options: this.options,
-        settings: settings
+        assessmentDefinition,
+        options,
+        settings
       };
-
       this._subjectDefinitions = subjectDefinitions;
     });
-  }
-
-  get effectiveReportType() {
-    return this.reportService.getEffectiveReportType(this.mapToReportType(this.query.reportType), this.assessmentDefinition);
-  }
-
-  get displayOptions(): AggregateReportTableDisplayOptions {
-    return this._displayOptions;
-  }
-
-  get query(): AggregateReportQuery {
-    return this.report.request.query;
-  }
-
-  get reportProcessing(): boolean {
-    return this._viewState === ViewState.ReportProcessing;
-  }
-
-  get reportEmpty(): boolean {
-    return this._viewState === ViewState.ReportEmpty;
-  }
-
-  get reportNotLoadable(): boolean {
-    return this._viewState === ViewState.ReportNotLoadable;
-  }
-
-  get reportSizeNotSupported(): boolean {
-    return this._viewState === ViewState.ReportSizeNotSupported;
-  }
-
-  get reportView(): boolean {
-    return this._viewState === ViewState.ReportView;
   }
 
   ngOnInit(): void {
@@ -206,11 +235,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   onShowEmptyChange(view: AggregateReportView): void {
-    view.rows = view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0);
-  }
-
-  isEmbargoed(): boolean {
-    return this.report.metadata.createdWhileDataEmbargoed === 'true';
+    view.rows = view.originalRows
+      .filter(row => view.showEmpty || row.studentsTested > 0);
   }
 
   onLongitudinalDisplayTypeChange(): void {
@@ -220,59 +246,16 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     this.reportViews = this.createReportViews(this.query, this._aggregateReport);
   }
 
-  mapToReportType(serverReportType: ServerAggregateReportType): AggregateReportType {
-    if (serverReportType == ServerAggregateReportType.Longitudinal) {
-      return AggregateReportType.LongitudinalCohort
-    }
-    if (serverReportType == ServerAggregateReportType.CustomAggregate) {
-      return AggregateReportType.GeneralPopulation
-    }
-    if (serverReportType == ServerAggregateReportType.Claim) {
-      return AggregateReportType.Claim;
-    }
-    if (serverReportType == ServerAggregateReportType.Target) {
-      return AggregateReportType.Target;
-    }
-  }
-
-  get isLongitudinal(): boolean {
-    return this.query.reportType === ServerAggregateReportType.Longitudinal;
-  }
-
-  get showTargetMathCautionMessage(): boolean {
-    return this.query.reportType == ServerAggregateReportType.Target && this.query.subjectCode == 'Math';
-  }
-
   private updateViewState(): void {
-    const targetViewState = this.getTargetViewState();
-    this.onViewStateChange(this._viewState, targetViewState);
-    this._viewState = targetViewState;
-  }
-
-  private getTargetViewState(): ViewState {
-    if (this.report.processing) {
-      return ViewState.ReportProcessing;
+    const { viewState, report, _displayLargeReport } = this;
+    const nextViewState = toViewState(report, _displayLargeReport);
+    if (viewState !== nextViewState) {
+      this.onViewStateChange(viewState, nextViewState);
+      this.viewState = nextViewState;
     }
-    if (this.report.empty) {
-      return ViewState.ReportEmpty;
-    }
-    if (!this.report.completed) {
-      return ViewState.ReportNotLoadable;
-    }
-    if (!this.isSupportedSize(this.report) && !this._displayLargeReport) {
-      return ViewState.ReportSizeNotSupported;
-    }
-    if (this.report.completed) {
-      return ViewState.ReportView;
-    }
-    return ViewState.ReportProcessing;
   }
 
   private onViewStateChange(oldState: ViewState, newState: ViewState) {
-    if (oldState === newState) {
-      return;
-    }
-
     if (oldState === ViewState.ReportProcessing) {
       this.unsubscribe();
     }
@@ -295,21 +278,12 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       });
   }
 
-  private isSupportedSize(report: Report): boolean {
-    const rowCount: string = this.report.metadata.totalCount;
-    return Utils.isUndefined(rowCount)
-      || (Number.parseInt(rowCount) <= SupportedRowCount);
-  }
-
   private loadReport(): void {
     this.spinnerModal.loading = true;
 
-    let observable;
-    if (this.effectiveReportType === AggregateReportType.LongitudinalCohort) {
-      observable = this.reportService.getLongitudinalReport(this.report.id);
-    } else {
-      observable = this.reportService.getAggregateReport(this.report.id);
-    }
+    const observable = this.effectiveReportType === AggregateReportType.LongitudinalCohort
+      ? this.reportService.getLongitudinalReport(this.report.id)
+      : this.reportService.getAggregateReport(this.report.id);
 
     observable.pipe(
       finalize(() => {
@@ -361,7 +335,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       const subjectDefinition = _subjectDefinitions
         .find(({ subject, assessmentType }) =>
           subject == subjectCode
-          && assessmentType == assessmentDefinition.typeCode
+          && assessmentType == query.assessmentTypeCode
         );
 
       const item = rowMapper(query, subjectDefinition, row, index);
