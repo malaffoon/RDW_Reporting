@@ -5,7 +5,7 @@ import { AggregateReportFormOptions } from './aggregate-report-form-options';
 import { TranslateService } from '@ngx-translate/core';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import { AggregateReportOptions } from './aggregate-report-options';
-import { Observable ,  forkJoin ,  of } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { District, OrganizationType, School } from '../shared/organization/organization';
 import { Utils } from '../shared/support/support';
 import { AggregateReportOrganizationService } from './aggregate-report-organization.service';
@@ -20,6 +20,12 @@ const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);
 const hasOption = (options: any[], value) => options.find(option => option === value) != null;
 const notNullOrEmpty = (value) => !Utils.isNullOrEmpty(value);
+
+// Returns the first argument that is not null or empty
+const or = (a: any, b: any) => Utils.isNullOrEmpty(a) ? b : a;
+
+// Safely sorts the provided values ranked by the provided options
+const sort = (values: any[], options: any[]) => (values || []).sort(ordering(ranking(options)).compare);
 
 /**
  * Responsible for creating aggregate report requests from supplied models
@@ -112,7 +118,7 @@ export class AggregateReportRequestMapper {
     } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Target) {
       query.schoolYear = settings.targetReport.schoolYear;
       query.subjectCode = settings.targetReport.subjectCode;
-      query.assessmentGradeCodes = [settings.targetReport.assessmentGrade];
+      query.assessmentGradeCodes = [ settings.targetReport.assessmentGrade ];
     }
 
     const name = settings.name
@@ -147,12 +153,6 @@ export class AggregateReportRequestMapper {
     const districts: Observable<District[]> = !Utils.isNullOrEmpty(districtIds)
       ? this.organizationService.getOrganizationsByIdAndType(OrganizationType.District, districtIds)
       : of([]);
-
-    // Returns the first argument that is not null or empty
-    const or = (a: any, b: any) => Utils.isNullOrEmpty(a) ? b : a;
-    
-    // Safely sorts the provided values ranked by the provided options
-    const sort = (values: any[], options: any[]) => (values || []).sort(ordering(ranking(options)).compare);
 
     const studentFilters = queryType === 'Basic'
       ? {
@@ -233,7 +233,7 @@ export class AggregateReportRequestMapper {
     if (reportType === AggregateReportType.GeneralPopulation) {
       generalPopulation = {
         assessmentGrades: sort(query.assessmentGradeCodes, options.assessmentGrades),
-        schoolYears: query.schoolYears.sort((a, b) => b - a),
+        schoolYears: query.schoolYears.sort((a, b) => b - a)
       };
     } else if (reportType === AggregateReportType.LongitudinalCohort) {
       longitudinalCohort = {
@@ -260,8 +260,19 @@ export class AggregateReportRequestMapper {
           query.subjectCode,
           defaultTargetReport.subjectCode
         )
-      }
+      };
     }
+
+    const subjects = sort(
+      query.subjectCodes
+        ? query.subjectCodes.map(code =>
+          options.subjects.find(subject =>
+            subject.code === code
+            && subject.assessmentType === query.assessmentTypeCode
+          )
+        )
+        : options.subjects
+      , options.subjects);
 
     return forkJoin(schools, districts)
       .pipe(
@@ -277,7 +288,7 @@ export class AggregateReportRequestMapper {
               sort(query.dimensionTypes, options.dimensionTypes),
               []
             ),
-            districts: districts,
+            districts,
             includeAllDistricts: query.includeAllDistricts,
             includeAllDistrictsOfSelectedSchools: query.includeAllDistrictsOfSchools,
             includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
@@ -287,25 +298,21 @@ export class AggregateReportRequestMapper {
               : queryInterimAdministrationConditions,
             name: request.name,
             performanceLevelDisplayType: query.achievementLevelDisplayType,
-            queryType: queryType,
-            reportType: reportType,
-            schools: schools,
+            queryType,
+            reportType,
+            schools,
             showEmpty: query.showEmpty != null ? query.showEmpty : true,
-            studentFilters: studentFilters,
-            subjects: sort(query.subjectCodes ? query.subjectCodes.map(code =>
-              ({
-                code: code,
-                assessmentType: query.assessmentTypeCode
-              })) : options.subjects, options.subjects),
-            subgroups: subgroups,
+            studentFilters,
+            subjects,
+            subgroups,
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
               : querySummativeAdministrationConditions,
             valueDisplayType: query.valueDisplayType,
-            generalPopulation: generalPopulation,
-            longitudinalCohort: longitudinalCohort,
-            claimReport: claimReport,
-            targetReport: targetReport
+            generalPopulation,
+            longitudinalCohort,
+            claimReport,
+            targetReport
           };
         })
       );
@@ -388,10 +395,10 @@ export class AggregateReportRequestMapper {
     if (notNullOrEmpty(settingFilters.section504s)) {
       queryFilters.section504Codes = settingFilters.section504s;
     }
-    if(notNullOrEmpty(settingFilters.languages)) {
+    if (notNullOrEmpty(settingFilters.languages)) {
       queryFilters.languageCodes = settingFilters.languages;
     }
-    if(notNullOrEmpty(settingFilters.militaryConnectedCodes)) {
+    if (notNullOrEmpty(settingFilters.militaryConnectedCodes)) {
       queryFilters.militaryConnectedCodes = settingFilters.militaryConnectedCodes;
     }
     return queryFilters;
@@ -447,17 +454,17 @@ export class AggregateReportRequestMapper {
   // TODO consolidate type names to remove need for extra mapping
 
   private ServerReportTypeByClientType: Map<AggregateReportType, ServerAggregateReportType> = new Map([
-    [AggregateReportType.GeneralPopulation, ServerAggregateReportType.CustomAggregate],
-    [AggregateReportType.LongitudinalCohort, ServerAggregateReportType.Longitudinal],
-    [AggregateReportType.Claim, ServerAggregateReportType.Claim],
-    [AggregateReportType.Target, ServerAggregateReportType.Target]
+    [ AggregateReportType.GeneralPopulation, ServerAggregateReportType.CustomAggregate ],
+    [ AggregateReportType.LongitudinalCohort, ServerAggregateReportType.Longitudinal ],
+    [ AggregateReportType.Claim, ServerAggregateReportType.Claim ],
+    [ AggregateReportType.Target, ServerAggregateReportType.Target ]
   ]);
 
   private ClientReportTypeByServerType: Map<ServerAggregateReportType, AggregateReportType> = new Map([
-    [ServerAggregateReportType.CustomAggregate, AggregateReportType.GeneralPopulation],
-    [ServerAggregateReportType.Longitudinal, AggregateReportType.LongitudinalCohort],
-    [ServerAggregateReportType.Claim, AggregateReportType.Claim],
-    [ServerAggregateReportType.Target, AggregateReportType.Target]
+    [ ServerAggregateReportType.CustomAggregate, AggregateReportType.GeneralPopulation ],
+    [ ServerAggregateReportType.Longitudinal, AggregateReportType.LongitudinalCohort ],
+    [ ServerAggregateReportType.Claim, AggregateReportType.Claim ],
+    [ ServerAggregateReportType.Target, AggregateReportType.Target ]
   ]);
 
   private toServerReportType(type: AggregateReportType): ServerAggregateReportType {
