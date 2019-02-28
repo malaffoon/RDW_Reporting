@@ -9,7 +9,6 @@ export class ReportOptions {
   public subject: string;
   public schoolYear: number;
   public language: string;
-  public grayscale: boolean;
   public order: ReportOrder;
   public accommodationsVisible: boolean = false;
   public name: string;
