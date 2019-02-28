@@ -178,7 +178,6 @@ export class ReportService {
    * Gets the URL parameters for the given report options
    *
    * @param options the options to convert to url parameters
-   * @returns {{schoolYear: number, language: string, grayscale: boolean, order: any}}
    */
   private toReportRequestParameters(options: ReportOptions): Object {
     return {
@@ -192,7 +191,6 @@ export class ReportService {
       subjectCode: options.subject,
       schoolYear: options.schoolYear,
       language: options.language,
-      grayscale: options.grayscale,
       accommodationsVisible: options.accommodationsVisible,
       order: ReportOrder[ options.order ],
       disableTransferAccess: options.disableTransferAccess

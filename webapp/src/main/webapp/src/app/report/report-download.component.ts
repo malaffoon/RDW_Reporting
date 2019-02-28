@@ -74,7 +74,6 @@ export abstract class ReportDownloadComponent implements OnInit {
       defaultOptions.language = this.reportLanguages[ 0 ];
       defaultOptions.accommodationsVisible = false;
       defaultOptions.order = this.orders[ 0 ];
-      defaultOptions.grayscale = false;
       defaultOptions.disableTransferAccess = false;
       this.options = defaultOptions;
 
