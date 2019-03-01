@@ -1,17 +1,14 @@
-import { Component, Input } from "@angular/core";
-import { ReportService } from "./report.service";
-import { ReportDownloadComponent } from "./report-download.component";
-import { NotificationService } from "../shared/notification/notification.service";
-import { Report } from "./report.model";
-import { Grade } from "../school-grade/grade.model";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable } from "rxjs";
+import { Component, Input } from '@angular/core';
+import { ReportDownloadComponent } from './report-download.component';
+import { NotificationService } from '../shared/notification/notification.service';
+import { Grade } from '../school-grade/grade.model';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
-import { School } from "../shared/organization/organization";
+import { School } from '../shared/organization/organization';
 import { SubjectService } from '../subject/subject.service';
 import { UserReportService } from './user-report.service';
-import { PrintableReportOrder, SchoolGradePrintableReportQuery, UserReport } from './report';
-import { ReportOrder } from './report-order.enum';
+import { UserReport } from './report';
 
 /**
  * Component used for single-student exam report download
@@ -38,7 +35,8 @@ export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
 
   createReport(): Observable<UserReport> {
     const { school, grade, options } = this;
-    return this.service.createReport(<SchoolGradePrintableReportQuery>{
+    return this.service.createReport({
+      type: 'SchoolGrade',
       schoolId: school.id,
       gradeId: grade.id,
       name: options.name,

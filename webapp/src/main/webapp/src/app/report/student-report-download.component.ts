@@ -34,7 +34,8 @@ export class StudentReportDownloadComponent extends ReportDownloadComponent {
 
   createReport(): Observable<UserReport> {
     const { student, options } = this;
-    return this.service.createReport(<StudentPrintableReportQuery>{
+    return this.service.createReport({
+      type: 'Student',
       studentId: student.id,
       name: options.name,
       assessmentTypeCode: options.assessmentType,

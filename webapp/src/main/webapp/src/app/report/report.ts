@@ -107,10 +107,10 @@ export interface SchoolGradePrintableReportQuery extends BatchPrintableReportQue
 }
 
 export interface DistrictSchoolExportReportQuery extends ExamReportQuery {
-  schoolIds: number[];
-  schoolGroupIds: number[];
-  districtIds: number[];
-  districtGroupIds: number[];
+  schoolIds?: number[];
+  schoolGroupIds?: number[];
+  districtIds?: number[];
+  districtGroupIds?: number[];
 }
 
 export interface AggregateReportQuery extends ReportQuery {

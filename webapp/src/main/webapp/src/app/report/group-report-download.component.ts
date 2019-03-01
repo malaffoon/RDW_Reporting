@@ -1,13 +1,11 @@
-import { Component, Input } from "@angular/core";
-import { ReportService } from "./report.service";
-import { ReportDownloadComponent } from "./report-download.component";
-import { NotificationService } from "../shared/notification/notification.service";
-import { Report } from "./report.model";
-import { Group } from "../groups/group";
-import { Observable } from "rxjs";
+import { Component, Input } from '@angular/core';
+import { ReportDownloadComponent } from './report-download.component';
+import { NotificationService } from '../shared/notification/notification.service';
+import { Group } from '../groups/group';
+import { Observable } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { SubjectService } from '../subject/subject.service';
-import { GroupPrintableReportQuery, UserReport } from './report';
+import { UserReport } from './report';
 import { UserReportService } from './user-report.service';
 
 /**
@@ -31,7 +29,8 @@ export class GroupReportDownloadComponent extends ReportDownloadComponent {
 
   createReport(): Observable<UserReport> {
     const { group, options } = this;
-    return this.service.createReport(<GroupPrintableReportQuery>{
+    return this.service.createReport({
+      type: 'Group',
       groupId: {
         id: group.id,
         type: group.userCreated ? 'Teacher' : 'Admin'
