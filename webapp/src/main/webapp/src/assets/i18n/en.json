@@ -1153,8 +1153,8 @@
       "submit": "Create"
     },
     "orders": {
-      "0": "Student Name",
-      "1": "Student SSID"
+      "StudentName": "Student Name",
+      "StudentSSID": "Student SSID"
     },
     "submitted-message": "Creating report. See <a href=\"/reports\">status</a>."
   },

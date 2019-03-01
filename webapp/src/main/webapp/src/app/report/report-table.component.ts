@@ -82,7 +82,7 @@ function toReportView(report: UserReport, translate: (code: string) => string): 
     ),
     // Not ideal, we should not have empty/null subject codes for reports,
     // it should be the subjects the report was created for at the time of creation
-    translatedSubjectCodes: subjectCodes.length
+    translatedSubjectCodes: subjectCodes.filter(value => value != null).length
       ? subjectCodes.map(code => translate(`subject.${code}.name`)).join(', ')
       : translate('common.collection-selection.all'),
     translatedReportType: translate(`reports.report-type.${query.type}`)

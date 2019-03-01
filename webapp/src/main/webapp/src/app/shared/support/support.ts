@@ -1,5 +1,9 @@
 import * as _ from 'lodash';
 
+export function isNullOrEmpty(value: any): boolean {
+  return value == null || _.isEmpty(value);
+}
+
 export class Utils {
 
   static equalSets(a: any[], b: any[]): boolean {

@@ -20,6 +20,7 @@ import { SubjectDefinition } from '../../subject/subject';
 import {
   LongitudinalReportQuery
 } from '../../report/report';
+import { isNullOrEmpty } from '../../shared/support/support';
 
 
 const rowYearAscending = ordering(byNumber).on<AggregateReportRow>(row => row.assessment.examSchoolYear).compare;
@@ -60,7 +61,7 @@ export class LongitudinalCohortChartMapper {
 
     const performanceByOrganizationSubgroup: Map<string, OrganizationPerformance> = new Map();
     const overall = this.subgroupMapper.createOverall();
-    const keyGenerator = query.subgroups == null
+    const keyGenerator = isNullOrEmpty(query.subgroups)
       ? row => `${row.organization.id}:${row.organization.organizationType}:${row.dimension.type}:${row.dimension.code}`
       : row => `${row.organization.id}:${row.organization.organizationType}:${row.dimension.code}`;
 

@@ -81,9 +81,7 @@ export class UserReportService {
     return this.dataService
       .post(
         `${ServiceRoute}/reports`,
-        {
-          params: query
-        },
+        query,
         {
           headers: new Headers({'Content-Type': 'application/json'})
         }
