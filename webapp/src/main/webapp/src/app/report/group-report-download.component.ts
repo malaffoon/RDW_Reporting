@@ -7,6 +7,8 @@ import { Group } from "../groups/group";
 import { Observable } from "rxjs";
 import { ApplicationSettingsService } from '../app-settings.service';
 import { SubjectService } from '../subject/subject.service';
+import { GroupPrintableReportQuery, UserReport } from './report';
+import { UserReportService } from './user-report.service';
 
 /**
  * Component used for single-student exam report download
@@ -23,12 +25,26 @@ export class GroupReportDownloadComponent extends ReportDownloadComponent {
   constructor(notificationService: NotificationService,
               applicationSettingsService: ApplicationSettingsService,
               subjectService: SubjectService,
-              private service: ReportService) {
+              private service: UserReportService) {
     super(notificationService, applicationSettingsService, subjectService);
   }
 
-  createReport(): Observable<Report> {
-    return this.service.createGroupExamReport(this.group, this.options);
+  createReport(): Observable<UserReport> {
+    const { group, options } = this;
+    return this.service.createReport(<GroupPrintableReportQuery>{
+      groupId: {
+        id: group.id,
+        type: group.userCreated ? 'Teacher' : 'Admin'
+      },
+      name: options.name,
+      assessmentTypeCode: options.assessmentType,
+      subjectCode: options.subject,
+      schoolYear: options.schoolYear,
+      language: options.language,
+      accommodationsVisible: options.accommodationsVisible,
+      order: options.order,
+      disableTransferAccess: options.disableTransferAccess
+    });
   }
 
   generateName(): string {

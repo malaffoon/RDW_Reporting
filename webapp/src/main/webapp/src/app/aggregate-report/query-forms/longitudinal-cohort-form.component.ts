@@ -16,10 +16,10 @@ import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { MultiOrganizationQueryFormComponent } from './multi-organization-query-form.component';
 import { fileName, isGreaterThan } from '../../shared/form/validators';
 import { Utils } from '../../shared/support/support';
-import { AggregateReportType } from '../aggregate-report-form-settings';
 import { SubjectService } from '../../subject/subject.service';
 import { computeEffectiveYears } from '../support';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
+import { ReportQueryType } from '../../report/report';
 
 /**
  * Disable StudentEnrolledGrade as a longitudinal dimension type
@@ -63,7 +63,7 @@ export class LongitudinalCohortFormComponent extends MultiOrganizationQueryFormC
               protected assessmentDefinitionService: AssessmentDefinitionService,
               private schoolYearPipe: SchoolYearPipe) {
     super(columnOrderableItemProvider, notificationService, optionMapper, organizationService, reportService, subjectService, requestMapper, route, router, subgroupMapper, tableDataService);
-    this.settings.reportType = AggregateReportType.LongitudinalCohort;
+    this.settings.reportType = 'Longitudinal';
     this.settings.assessmentType = 'sum';
 
     //Strip disallowed dimension types
@@ -119,8 +119,8 @@ export class LongitudinalCohortFormComponent extends MultiOrganizationQueryFormC
     return this.assessmentDefinition;
   }
 
-  getReportType(): AggregateReportType {
-    return AggregateReportType.LongitudinalCohort;
+  getReportType(): ReportQueryType {
+    return 'Longitudinal';
   }
 
   getNavItems(): ScrollNavItem[] {

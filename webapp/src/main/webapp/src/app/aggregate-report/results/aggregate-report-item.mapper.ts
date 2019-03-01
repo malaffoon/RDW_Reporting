@@ -6,6 +6,7 @@ import { OrganizationMapper } from '../../shared/organization/organization.mappe
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { SubjectDefinition } from '../../subject/subject';
+import { AggregateReportQueryType } from '../../report/report';
 
 /**
  * Maps server modeled aggregate report rows into client friendly table rows
@@ -17,7 +18,7 @@ export class AggregateReportItemMapper {
               private subgroupMapper: SubgroupMapper) {
   }
 
-  createRow(query: AggregateReportQuery,
+  createRow(query: AggregateReportQueryType,
             subjectDefinition: SubjectDefinition,
             row: any,
             uuid: number,

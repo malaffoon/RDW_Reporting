@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolYearPipe } from '../shared/format/school-year.pipe';
 import { AggregateReportOptions } from './aggregate-report-options';
-import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import { Utils } from '../shared/support/support';
 import { SubgroupMapper } from './subgroup/subgroup.mapper';
@@ -144,7 +144,7 @@ export class AggregateReportSummary {
     }
 
     let assessmentAttributes = [];
-    if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.GeneralPopulation) {
+    if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'CustomAggregate') {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
@@ -160,7 +160,7 @@ export class AggregateReportSummary {
           values: this.settings.generalPopulation.schoolYears.map(value => this.schoolYearPipe.transform(value))
         }
       ];
-    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Claim) {
+    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Claim') {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subjects-label'),
@@ -176,7 +176,7 @@ export class AggregateReportSummary {
           values: this.settings.claimReport.schoolYears.map(value => this.schoolYearPipe.transform(value))
         }
       ];
-    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Target) {
+    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Target') {
       assessmentAttributes = [
         {
           label: translate('aggregate-report-form.field.subject-label'),
@@ -236,7 +236,7 @@ export class AggregateReportSummary {
     ];
 
     const claimRows = [];
-    if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === AggregateReportType.Claim) {
+    if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Claim') {
       if (!equalSize(options.claims, settings.claimReport.claimCodesBySubject)) {
         claimRows.push({
           label: translate('aggregate-report-form.field.claim-codes-label'),

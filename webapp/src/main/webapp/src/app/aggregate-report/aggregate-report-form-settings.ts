@@ -1,6 +1,7 @@
 import { District, School } from '../shared/organization/organization';
 import { SubgroupFilters } from './subgroup/subgroup-filters';
 import {Claim, Subject} from './aggregate-report-options.service';
+import { ReportQueryType } from '../report/report';
 
 /**
  * Client side representation of a report request.
@@ -101,7 +102,7 @@ export interface AggregateReportFormSettings {
   /**
    * Defines the report type (standard or longitudinal)
    */
-  reportType: AggregateReportType;
+  reportType: ReportQueryType;
 
   /**
    * The advanced filters applied to basic reports
@@ -191,9 +192,3 @@ export interface AggregateReportFormSettings {
   }
 }
 
-export enum AggregateReportType {
-  GeneralPopulation = 'GeneralPopulation',
-  LongitudinalCohort = 'LongitudinalCohort',
-  Claim = 'Claim',
-  Target = 'Target'
-}

@@ -180,7 +180,7 @@ export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQ
   onReviewSectionInView(): void {
     // compute and render estimated row count
     if (this.getFormGroup().valid && this.capableOfRowEstimation()) {
-      this.reportService.getEstimatedRowCount(this.createReportRequest().query)
+      this.reportService.getEstimatedRowCount(this.createReportRequest())
         .subscribe(count => this.estimatedRowCount = count);
     }
 

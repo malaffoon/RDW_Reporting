@@ -1,12 +1,11 @@
 import { EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { ReportOptions } from "./report-options.model";
 import { NotificationService } from "../shared/notification/notification.service";
-import { ReportOrder } from "./report-order.enum";
 import { ModalDirective } from "ngx-bootstrap";
 import { Observable ,  forkJoin } from "rxjs";
-import { Report } from "./report.model";
 import { ApplicationSettingsService } from '../app-settings.service';
 import { SubjectService } from '../subject/subject.service';
+import { PrintableReportOrder, UserReport } from './report';
 
 /**
  * Abstract class used to carry the common logic between all exam report download components
@@ -48,7 +47,7 @@ export abstract class ReportDownloadComponent implements OnInit {
 
   assessmentTypes: string[] = [ undefined, 'ica', 'iab', 'sum' ];
   subjectTypes: string[] = [];
-  orders: ReportOrder[] = [ ReportOrder.STUDENT_NAME, ReportOrder.STUDENT_SSID ];
+  orders: PrintableReportOrder[] = [ 'StudentName', 'StudentSSID' ];
   options: ReportOptions;
   reportLanguages: string[] = [ 'en' ];
   transferAccess: boolean;
@@ -102,7 +101,7 @@ export abstract class ReportDownloadComponent implements OnInit {
   /**
    * Implement this to give behavior to the exam report download form when it is submitted
    */
-  abstract createReport(): Observable<Report>;
+  abstract createReport(): Observable<UserReport>;
 
   /**
    * Generate a default report name to suggest to the user.

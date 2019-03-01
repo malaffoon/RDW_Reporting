@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import {
   DefaultDistrict,
   DefaultSchool,
@@ -94,7 +94,7 @@ export class AggregateReportTableDataService {
     let valueProviders: ValueProvider[] = [];
     switch (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition)) {
 
-      case AggregateReportType.GeneralPopulation:
+      case 'CustomAggregate':
         valueProviders.push(
           this.defaultOrganizationProvider,
           this.defaultSubgroupProvider,
@@ -107,7 +107,7 @@ export class AggregateReportTableDataService {
           });
         break;
 
-      case AggregateReportType.LongitudinalCohort:
+      case 'Longitudinal':
         valueProviders.push(
           this.defaultOrganizationProvider,
           this.defaultSubgroupProvider,
@@ -127,7 +127,7 @@ export class AggregateReportTableDataService {
           });
         break;
 
-      case AggregateReportType.Claim:
+      case 'Claim':
         valueProviders.push(
           this.defaultOrganizationProvider,
           this.defaultSubgroupProvider, {
@@ -167,7 +167,7 @@ export class AggregateReportTableDataService {
           });
         break;
 
-      case AggregateReportType.Target:
+      case 'Target':
         valueProviders.push(
           this.defaultSubgroupProvider, {
             getValues: (context) => [ {

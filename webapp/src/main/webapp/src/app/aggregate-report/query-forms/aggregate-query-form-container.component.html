@@ -62,14 +62,14 @@
       <ng-container *ngFor="let typeString of reportTypes">
         <ng-container [ngSwitch]="typeString">
           <general-population-form
-            *ngSwitchCase="'GeneralPopulation'"
+            *ngSwitchCase="'CustomAggregate'"
             #reportForm
             [hidden]="reportType !== typeString"
             [submitAction]="submitActionsByReportType[typeString]"
           ></general-population-form>
 
           <longitudinal-cohort-form
-            *ngSwitchCase="'LongitudinalCohort'"
+            *ngSwitchCase="'Longitudinal'"
             #reportForm
             [hidden]="reportType !== typeString"
             [submitAction]="submitActionsByReportType[typeString]"

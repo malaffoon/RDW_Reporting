@@ -1,4 +1,4 @@
-import { AggregateReportRequestMapper, ServerAggregateReportType } from './aggregate-report-request.mapper';
+import { AggregateReportRequestMapper } from './aggregate-report-request.mapper';
 import { TranslateService } from '@ngx-translate/core';
 import { AggregateReportOrganizationService } from './aggregate-report-organization.service';
 import {
@@ -9,11 +9,11 @@ import {
   School
 } from '../shared/organization/organization';
 import { AggregateReportOptions } from './aggregate-report-options';
-import { AggregateReportQuery, AggregateReportRequest, StudentFilters } from '../report/aggregate-report-request';
-import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
+import { StudentFilters } from '../report/aggregate-report-request';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { of } from 'rxjs';
-import { Claim } from './aggregate-report-options.service';
 import Spy = jasmine.Spy;
+import { CustomAggregateReportQuery } from '../report/report';
 
 describe('AggregateReportRequestMapper', () => {
 
@@ -61,7 +61,7 @@ describe('AggregateReportRequestMapper', () => {
       militaryConnectedCodes: [ 'NotMilitaryConnected', 'ActiveDuty' ]
     };
 
-    const query: AggregateReportQuery = {
+    const query: CustomAggregateReportQuery = {
       achievementLevelDisplayType: 'Separate',
       administrativeConditionCodes: [ 'Valid', 'SD' ],
       assessmentGradeCodes: [ '03', '04' ],
@@ -73,19 +73,15 @@ describe('AggregateReportRequestMapper', () => {
       includeAllDistrictsOfSchools: true,
       includeAllSchoolsOfDistricts: true,
       includeState: true,
-      reportType: ServerAggregateReportType.CustomAggregate,
+      type: 'CustomAggregate',
       schoolIds: [ 2 ],
       schoolYears: [ 2000 ],
       showEmpty: true,
       studentFilters: studentFilters,
       subjectCodes: [ 'Math' ],
       valueDisplayType: 'Number',
-      columnOrder: [ 'columnA', 'columnB' ]
-    };
-
-    const request: AggregateReportRequest = {
-      name: 'Report Name',
-      query: query
+      columnOrder: [ 'columnA', 'columnB' ],
+      name: 'Report Name'
     };
 
     const expected: AggregateReportFormSettings = {
@@ -101,7 +97,7 @@ describe('AggregateReportRequestMapper', () => {
       includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
       includeStateResults: query.includeState,
       queryType: 'Basic',
-      reportType: AggregateReportType.GeneralPopulation,
+      reportType: 'CustomAggregate',
       schools: schools,
       showEmpty: true,
       subjects: query.subjectCodes.map(code => ({
@@ -110,7 +106,7 @@ describe('AggregateReportRequestMapper', () => {
       })),
       subgroups: [],
       valueDisplayType: query.valueDisplayType,
-      name: request.name,
+      name: query.name,
       columnOrder: [ 'columnA', 'columnB' ],
       studentFilters: {
         economicDisadvantages: studentFilters.economicDisadvantageCodes,
@@ -144,7 +140,7 @@ describe('AggregateReportRequestMapper', () => {
       }
     };
 
-    fixture.toSettings(request, options)
+    fixture.toSettings(query, options)
       .subscribe(actual => {
         expect(actual).toEqual(expected);
       });
@@ -155,7 +151,7 @@ describe('AggregateReportRequestMapper', () => {
 
     const options = mockOptions();
 
-    const query: AggregateReportQuery = {
+    const query: CustomAggregateReportQuery = {
       achievementLevelDisplayType: 'Separate',
       assessmentGradeCodes: [ '03' ],
       assessmentTypeCode: 'iab',
@@ -163,17 +159,13 @@ describe('AggregateReportRequestMapper', () => {
       includeAllDistrictsOfSchools: true,
       includeAllSchoolsOfDistricts: true,
       includeState: true,
-      reportType: ServerAggregateReportType.CustomAggregate,
+      type: 'CustomAggregate',
       schoolYears: [ 2000 ],
       showEmpty: true,
       studentFilters: {},
       subjectCodes: [ 'Math' ],
-      valueDisplayType: 'Percent'
-    };
-
-    const request: AggregateReportRequest = {
-      name: 'Report Name',
-      query: query
+      valueDisplayType: 'Percent',
+      name: 'Report Name'
     };
 
     const expected: AggregateReportFormSettings = {
@@ -189,7 +181,7 @@ describe('AggregateReportRequestMapper', () => {
       includeAllSchoolsOfSelectedDistricts: query.includeAllSchoolsOfDistricts,
       includeStateResults: query.includeState,
       queryType: 'Basic',
-      reportType: AggregateReportType.GeneralPopulation,
+      reportType: 'CustomAggregate',
       schools: [],
       showEmpty: true,
       subjects: query.subjectCodes.map(code => ({
@@ -198,7 +190,7 @@ describe('AggregateReportRequestMapper', () => {
       })),
       subgroups: [],
       valueDisplayType: query.valueDisplayType,
-      name: request.name,
+      name: query.name,
       columnOrder: query.columnOrder,
       studentFilters: {
         economicDisadvantages: options.studentFilters.economicDisadvantages,
@@ -232,7 +224,7 @@ describe('AggregateReportRequestMapper', () => {
       }
     };
 
-    fixture.toSettings(request, options)
+    fixture.toSettings(query, options)
       .subscribe(actual => {
         expect(actual).toEqual(expected);
       });
@@ -250,10 +242,10 @@ describe('AggregateReportRequestMapper', () => {
       interimAdministrationConditions: [ 'SD', 'NS' ],
       queryTypes: [ 'Basic', 'FilteredSubgroup' ],
       reportTypes: [
-        AggregateReportType.GeneralPopulation,
-        AggregateReportType.LongitudinalCohort,
-        AggregateReportType.Claim,
-        AggregateReportType.Target
+        'CustomAggregate',
+        'Longitudinal',
+        'Claim',
+        'Target'
       ],
       schoolYears: [ 2000, 1999 ],
       claims: [

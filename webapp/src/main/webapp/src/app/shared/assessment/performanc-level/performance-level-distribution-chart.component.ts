@@ -3,7 +3,6 @@ import { Utils } from '../../support/support';
 import { PerformanceLevelDisplayTypes } from '../../display-options/performance-level-display-type';
 import { SubjectDefinition } from '../../../subject/subject';
 import { TranslateService } from '@ngx-translate/core';
-import { AggregateReportType } from '../../../aggregate-report/aggregate-report-form-settings';
 
 /**
  * Performance level distribution chart view

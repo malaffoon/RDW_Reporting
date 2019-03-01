@@ -4,9 +4,9 @@ import { CsvBuilder } from '../../csv-export/csv-builder.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
 import { ValueDisplayTypes } from '../../shared/display-options/value-display-type';
-import { AggregateReportType } from '../aggregate-report-form-settings';
 import { SubjectDefinition } from '../../subject/subject';
 import { TargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
+import { ReportQueryType } from '../../report/report';
 
 /**
  * Service responsible for exporting the currently-viewed aggregate report table
@@ -41,7 +41,7 @@ export class AggregateReportTableExportService {
         (item: AggregateReportItem) => item.studentsTested
       );
 
-    if (options.reportType === AggregateReportType.Target) {
+    if (options.reportType === 'Target') {
       const standardMetHeaderResolve: any = {
         name: this.translateService.instant(`subject.${options.subjectDefinition.subject}.asmt-type.${options.subjectDefinition.assessmentType}.level.${options.subjectDefinition.performanceLevelStandardCutoff}.name`),
         id: options.subjectDefinition.performanceLevelStandardCutoff
@@ -68,7 +68,7 @@ export class AggregateReportTableExportService {
           }
         );
 
-    } else if (options.reportType === AggregateReportType.Claim) {
+    } else if (options.reportType === 'Claim') {
       this.addPerformanceLevelColumns(builder, options);
 
     } else {
@@ -210,6 +210,6 @@ export interface ExportOptions {
   readonly performanceLevelDisplayType: string;
   readonly columnOrdering: string[];
   readonly subjectDefinition: SubjectDefinition;
-  readonly reportType: AggregateReportType;
+  readonly reportType: ReportQueryType;
   readonly name: string;
 }

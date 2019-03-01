@@ -9,6 +9,9 @@ import { Observable } from "rxjs";
 import { ApplicationSettingsService } from '../app-settings.service';
 import { School } from "../shared/organization/organization";
 import { SubjectService } from '../subject/subject.service';
+import { UserReportService } from './user-report.service';
+import { PrintableReportOrder, SchoolGradePrintableReportQuery, UserReport } from './report';
+import { ReportOrder } from './report-order.enum';
 
 /**
  * Component used for single-student exam report download
@@ -28,13 +31,25 @@ export class SchoolGradeDownloadComponent extends ReportDownloadComponent {
   constructor(notificationService: NotificationService,
               applicationSettingsService: ApplicationSettingsService,
               subjectService: SubjectService,
-              private service: ReportService,
+              private service: UserReportService,
               private translate: TranslateService) {
     super(notificationService, applicationSettingsService, subjectService);
   }
 
-  createReport(): Observable<Report> {
-    return this.service.createSchoolGradeExamReport(this.school, this.grade, this.options);
+  createReport(): Observable<UserReport> {
+    const { school, grade, options } = this;
+    return this.service.createReport(<SchoolGradePrintableReportQuery>{
+      schoolId: school.id,
+      gradeId: grade.id,
+      name: options.name,
+      assessmentTypeCode: options.assessmentType,
+      subjectCode: options.subject,
+      schoolYear: options.schoolYear,
+      language: options.language,
+      accommodationsVisible: options.accommodationsVisible,
+      order: options.order,
+      disableTransferAccess: options.disableTransferAccess
+    });
   }
 
   generateName(): string {

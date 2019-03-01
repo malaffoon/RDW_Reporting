@@ -17,6 +17,9 @@ import { Assessment } from '../assessment/assessment';
 import { ordering } from '@kourge/ordering';
 import { byNumber, join } from '@kourge/ordering/comparator';
 import { SubjectDefinition } from '../../subject/subject';
+import {
+  LongitudinalReportQuery
+} from '../../report/report';
 
 
 const rowYearAscending = ordering(byNumber).on<AggregateReportRow>(row => row.assessment.examSchoolYear).compare;
@@ -39,7 +42,7 @@ export class LongitudinalCohortChartMapper {
    * @param measuresGetter defines whether to get the measures or the cohortMeasures from the row
    * @returns {LongitudinalCohortChart} the resulting chart
    */
-  fromReport(query: AggregateReportQuery, report: LongitudinalReport, measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure, subjectDefinition: SubjectDefinition): LongitudinalCohortChart {
+  fromReport(query: LongitudinalReportQuery, report: LongitudinalReport, measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure, subjectDefinition: SubjectDefinition): LongitudinalCohortChart {
     if (report.rows.length === 0
       || report.assessments.length === 0) {
       return { performanceLevels: [], organizationPerformances: [] };
@@ -50,7 +53,7 @@ export class LongitudinalCohortChartMapper {
     };
   }
 
-  private createOrganizationPerformances(query: AggregateReportQuery,
+  private createOrganizationPerformances(query: LongitudinalReportQuery,
                                          assessments: Assessment[],
                                          rows: AggregateReportRow[],
                                          measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure): OrganizationPerformance[] {

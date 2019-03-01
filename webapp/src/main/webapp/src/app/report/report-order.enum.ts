@@ -1,6 +1,4 @@
 export enum ReportOrder {
-
-  STUDENT_NAME = 0,
-  STUDENT_SSID = 1
-
+  StudentName = 0,
+  StudentSSID = 1
 }

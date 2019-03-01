@@ -16,8 +16,8 @@ import { SubgroupMapper } from "../subgroup/subgroup.mapper";
 import { MultiOrganizationQueryFormComponent } from "./multi-organization-query-form.component";
 import { fileName, notEmpty } from "../../shared/form/validators";
 import { Utils } from "../../shared/support/support";
-import { AggregateReportType } from "../aggregate-report-form-settings";
 import { SubjectService } from '../../subject/subject.service';
+import { ReportQueryType } from '../../report/report';
 
 @Component({
   selector: 'general-population-form',
@@ -51,7 +51,7 @@ export class GeneralPopulationFormComponent extends MultiOrganizationQueryFormCo
               @Inject(FormBuilder) formBuilder: FormBuilder,
               protected assessmentDefinitionService: AssessmentDefinitionService) {
     super(columnOrderableItemProvider, notificationService, optionMapper, organizationService, reportService, subjectService, requestMapper, route, router, subgroupMapper, tableDataService);
-    this.settings.reportType = AggregateReportType.GeneralPopulation;
+    this.settings.reportType = 'CustomAggregate';
 
     this.assessmentDefinition = this.assessmentDefinitionService.get(this.settings.assessmentType, this.settings.reportType);
 
@@ -93,8 +93,8 @@ export class GeneralPopulationFormComponent extends MultiOrganizationQueryFormCo
     return this.assessmentDefinition;
   }
 
-  getReportType(): AggregateReportType {
-    return AggregateReportType.GeneralPopulation;
+  getReportType(): ReportQueryType {
+    return 'CustomAggregate';
   }
 
   getNavItems(): ScrollNavItem[] {

@@ -17,9 +17,9 @@ import { organizationOrdering, subgroupOrdering } from '../support';
 import { TranslateService } from '@ngx-translate/core';
 import { BaseColumn } from '../../shared/datatable/base-column.model';
 import { byNumericString, getOrganizationalClaimOrdering } from '../../shared/ordering/orderings';
-import { AggregateReportType } from '../aggregate-report-form-settings';
 import { byTargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
 import { SubjectDefinition } from '../../subject/subject';
+import { ReportQueryType } from '../../report/report';
 
 export const SupportedRowCount = 4000;
 
@@ -73,7 +73,7 @@ const assessmentGradeOrdering = grades =>
 function createOrderingByColumnField(
   options: AggregateReportOptions,
   subjectDefinition: SubjectDefinition,
-  reportType: AggregateReportType,
+  reportType: ReportQueryType,
   rows: AggregateReportItem[],
   preview: boolean,
   translate: TranslateService
@@ -87,7 +87,7 @@ function createOrderingByColumnField(
     'targetNaturalId': targetOrdering(translate),
     'studentRelativeResidualScoresLevel': RelativeResidualScoreLevelOrdering,
     'standardMetRelativeResidualLevel': MetRelativeResidualScoreLevelOrdering,
-    'claimCode': reportType === AggregateReportType.Target
+    'claimCode': reportType === 'Target'
       ? createOrganizationalClaimOrdering(subjectDefinition.subject, preview)
       : ordering(ranking(subjectDefinition.scorableClaims)).on(row => row.claimCode)
   };
@@ -96,7 +96,7 @@ function createOrderingByColumnField(
 function createColumns(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
-  reportType: AggregateReportType,
+  reportType: ReportQueryType,
   identityColumns: string[],
   valueDisplayType: string,
   performanceLevelDisplayType: string
@@ -114,8 +114,8 @@ function createColumns(
 
   const dataColumns: Column[] = [];
   switch (reportType) {
-    case AggregateReportType.GeneralPopulation:
-    case AggregateReportType.LongitudinalCohort:
+    case 'CustomAggregate':
+    case 'Longitudinal':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
         new Column({ id: 'achievementComparison', sortable: false, classes: 'wrapping' }),
@@ -129,7 +129,7 @@ function createColumns(
         )
       );
       break;
-    case AggregateReportType.Claim:
+    case 'Claim':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
         new Column({ id: 'achievementComparison', sortable: false, classes: 'wrapping' }),
@@ -142,7 +142,7 @@ function createColumns(
         )
       );
       break;
-    case AggregateReportType.Target:
+    case 'Target':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
         new Column({ id: 'studentRelativeResidualScoresLevel', valueColumn: true }),
@@ -162,13 +162,13 @@ function createColumns(
 function createPerformanceLevelColumns(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
-  reportType: AggregateReportType,
+  reportType: ReportQueryType,
   valueDisplayType: string,
   performanceLevelDisplayType: string
 ): Column[] {
 
   const performanceLevelsByDisplayType = {
-    Separate: reportType === AggregateReportType.Claim
+    Separate: reportType === 'Claim'
       ? subjectDefinition.scorableClaimPerformanceLevels
       : subjectDefinition.performanceLevels,
     Grouped: [
@@ -208,7 +208,7 @@ function createPerformanceLevelColumns(
 function createPerformanceLevelColumnDynamicFields(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
-  reportType: AggregateReportType,
+  reportType: ReportQueryType,
   column: Column | { displayType: string, level: number, index: number },
   performanceLevelDisplayType: string,
   valueDisplayType: string
@@ -232,14 +232,14 @@ function createPerformanceLevelColumnDynamicFields(
 function getPerformanceLevelColumnHeaderText(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
-  reportType: AggregateReportType,
+  reportType: ReportQueryType,
   displayType: string,
   level: number,
   index: number
 ): string {
   return translate.instant(
     displayType === 'Separate'
-      ? `subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === AggregateReportType.Claim ? 'claim-score.' : ''}level.${level}.short-name`
+      ? `subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.short-name`
       : `aggregate-report-table.columns.grouped-performance-level-prefix.${index}`
   );
 }
@@ -247,22 +247,22 @@ function getPerformanceLevelColumnHeaderText(
 function getPerformanceLevelColumnHeaderSuffix(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
-  reportType: AggregateReportType,
+  reportType: ReportQueryType,
   displayType: string,
   level: number
 ): string {
   return displayType === 'Separate'
-    ? translate.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === AggregateReportType.Claim ? 'claim-score.' : ''}level.${level}.suffix`)
+    ? translate.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.suffix`)
     : '';
 }
 
 function getPerformanceLevelColors(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
-  reportType: AggregateReportType,
+  reportType: ReportQueryType,
   level: number
 ): string {
-  return translate.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === AggregateReportType.Claim ? 'claim-score.' : ''}level.${level}.color`);
+  return translate.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.color`);
 }
 
 /**
@@ -380,7 +380,7 @@ export interface AggregateReportTable {
   readonly rows: AggregateReportItem[];
   readonly assessmentDefinition: AssessmentDefinition;
   readonly options: AggregateReportOptions;
-  readonly reportType: AggregateReportType;
+  readonly reportType: ReportQueryType;
 }
 
 class Column implements BaseColumn {
@@ -503,7 +503,7 @@ export class AggregateReportTableComponent implements OnInit {
   // internals directly exposed for rendering performance enhancement
   _initialized: boolean = false;
   _subjectDefinition: SubjectDefinition;
-  _reportType: AggregateReportType;
+  _reportType: ReportQueryType;
   _rows: AggregateReportItem[] = [];
   _virtualRows: AggregateReportItem[] = [];
   _identityColumns: string[];
@@ -524,8 +524,8 @@ export class AggregateReportTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.sortMode = this.preview ? false : 'single';
-    this.claimReport = this.reportType === AggregateReportType.Claim;
-    this.center = this.reportType !== AggregateReportType.Claim
+    this.claimReport = this.reportType === 'Claim';
+    this.center = this.reportType !== 'Claim'
       && this.subjectDefinition.performanceLevelStandardCutoff != null;
     this.buildAndRender();
     this._initialized = true;
@@ -540,23 +540,23 @@ export class AggregateReportTableComponent implements OnInit {
     const previousValue = this._subjectDefinition;
     this._subjectDefinition = value;
     if (this._initialized && previousValue !== value) {
-      this.center = this.reportType !== AggregateReportType.Claim
+      this.center = this.reportType !== 'Claim'
         && this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
   }
 
-  get reportType(): AggregateReportType {
+  get reportType(): ReportQueryType {
     return this._reportType;
   }
 
   @Input()
-  set reportType(value: AggregateReportType) {
+  set reportType(value: ReportQueryType) {
     const previousValue = this._reportType;
     this._reportType = value;
     if (this._initialized && previousValue !== value) {
-      this.claimReport = this.reportType === AggregateReportType.Claim;
-      this.center = this.reportType !== AggregateReportType.Claim
+      this.claimReport = this.reportType === 'Claim';
+      this.center = this.reportType !== 'Claim'
         && this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
