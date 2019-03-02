@@ -1,15 +1,15 @@
-import { ReportService } from "./report.service";
 import { inject, TestBed } from "@angular/core/testing";
 import { MockRouter } from "../../test/mock.router";
 import { NotificationService } from "../shared/notification/notification.service";
 import { Router } from "@angular/router";
-import { ActionType, AggregateReportType, ReportAction, ReportActionService } from "./report-action.service";
-import { Report } from "./report.model";
-import { empty } from 'rxjs';
+import { ActionType, ReportAction, ReportActionService } from "./report-action.service";
+import { EMPTY } from 'rxjs';
 import Spy = jasmine.Spy;
+import { UserReportService } from './user-report.service';
+import { UserReport } from './report';
 
 describe('ReportActionService', () => {
-  let reportService: ReportService;
+  let reportService: UserReportService;
   let router: MockRouter;
   let notificationService: NotificationService;
 
@@ -19,10 +19,10 @@ describe('ReportActionService', () => {
     router = new MockRouter;
 
     reportService = jasmine.createSpyObj(
-      "ReportService",
-      ["getReportContent", "downloadReportContent"]
+      "UserReportService",
+      ["getReportContent", "openReport"]
     );
-    (reportService.getReportContent as Spy).and.callFake(() => empty());
+    (reportService.getReportContent as Spy).and.callFake(() => EMPTY);
 
     notificationService = jasmine.createSpyObj(
       "NotificationService",
@@ -33,7 +33,7 @@ describe('ReportActionService', () => {
       providers: [
         ReportActionService,
         {
-          provide: ReportService,
+          provide: UserReportService,
           useValue: reportService
         }, {
           provide: Router,
@@ -55,13 +55,13 @@ describe('ReportActionService', () => {
   });
 
   it('should provide no actions for an incomplete report', () => {
-    const report: Report = createReport();
+    const report = createReport();
     report.status = "PENDING";
     expect(service.getActions(report).length).toBe(0);
   });
 
   it('should provide a download action for a completed report', () => {
-    const report: Report = createReport();
+    const report = createReport();
     report.status = "COMPLETED";
 
     const actions: ReportAction[] = service.getActions(report);
@@ -69,13 +69,13 @@ describe('ReportActionService', () => {
     expect(actions[0].type).toBe(ActionType.Download);
 
     service.performAction(actions[0]);
-    expect(reportService.downloadReportContent).toHaveBeenCalledWith(report.id);
+    expect(reportService.openReport).toHaveBeenCalledWith(report.id);
   });
 
   it('should provide multiple actions for a completed AggregateReportRequest', () => {
-    const report: Report = createReport();
+    const report = createReport();
     report.status = "COMPLETED";
-    report.reportType = AggregateReportType;
+    report.query.type = 'CustomAggregate';
     report.metadata = {'createdWhileDataEmbargoed' : 'false'};
 
     const actions: ReportAction[] = service.getActions(report);
@@ -93,14 +93,14 @@ describe('ReportActionService', () => {
     expect(downloadReportAction.popoverKey).toBeUndefined();
     expect(downloadReportAction.disabled).toBe(false);
     service.performAction(downloadReportAction);
-    expect(reportService.downloadReportContent).toHaveBeenCalledWith(report.id);
+    expect(reportService.openReport).toHaveBeenCalledWith(report.id);
 
   });
 
   it('should disable the download action for an embargoed AggregateReportRequest', () => {
-    const report: Report = createReport();
+    const report = createReport();
     report.status = "COMPLETED";
-    report.reportType = AggregateReportType;
+    report.query.type = 'CustomAggregate';
     report.metadata = {'createdWhileDataEmbargoed' : 'true'};
 
     const actions: ReportAction[] = service.getActions(report);
@@ -110,16 +110,19 @@ describe('ReportActionService', () => {
     expect(downloadReportAction.popoverKey.length).toBeGreaterThan(1);
     expect(downloadReportAction.disabled).toBe(true);
     service.performAction(downloadReportAction);
-    expect(reportService.downloadReportContent).not.toHaveBeenCalled();
+    expect(reportService.openReport).not.toHaveBeenCalled();
   });
 
-  function createReport(): Report {
-    const report: Report = new Report();
-    report.id = 123;
-    report.status = "COMPLETED";
-    report.label = "My Report";
-    report.reportType = "Student";
-    return report;
+  function createReport(): UserReport {
+    return {
+      id: 123,
+      status: 'COMPLETED',
+      created: null,
+      query: {
+        name: 'My Report',
+        type: 'Student'
+      }
+    };
   }
 
 });

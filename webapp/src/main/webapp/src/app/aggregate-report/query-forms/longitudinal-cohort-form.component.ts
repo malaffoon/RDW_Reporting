@@ -154,7 +154,7 @@ export class LongitudinalCohortFormComponent extends MultiOrganizationQueryFormC
     this.onSettingsChange();
   }
 
-  protected capableOfRowEstimation(): boolean {
+  capableOfRowEstimation(): boolean {
     return (
       (
         // include state results

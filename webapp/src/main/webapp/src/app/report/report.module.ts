@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/components/common/shared";
 import { ModalModule } from "ngx-bootstrap";
 import { Angulartics2Module } from "angulartics2";
-import { ReportService } from "./report.service";
 import { CommonModule } from "../shared/common.module";
 import { StudentReportDownloadComponent } from "./student-report-download.component";
 import { ReportsResolve } from "./reports.resolve";
@@ -47,7 +46,6 @@ import { UserReportService } from './user-report.service';
     SchoolGradeDownloadComponent
   ],
   providers: [
-    ReportService,
     ReportsResolve,
     ReportActionService,
     UserReportService

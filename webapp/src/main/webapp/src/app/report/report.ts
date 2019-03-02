@@ -2,15 +2,15 @@ export interface UserReport<T extends ReportQuery = ReportQuery> {
   id: number;
   query: T;
   status: ReportStatus;
-  createdOn: Date;
-  metadata: { [ key: string ]: string };
+  created: Date;
+  metadata?: { [ key: string ]: string };
 }
 
 export interface UserQuery<T extends ReportQuery = ReportQuery> {
   id: number;
   query: T;
-  updatedOn: Date;
-  createdOn: Date;
+  updated: Date;
+  created: Date;
 }
 
 export type ReportStatus =

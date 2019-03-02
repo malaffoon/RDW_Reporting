@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Report } from './report.model';
-import { ReportService } from './report.service';
 import { Router } from '@angular/router';
 import { UserReportService } from './user-report.service';
 import { UserReport } from './report';

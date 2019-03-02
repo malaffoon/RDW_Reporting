@@ -98,7 +98,7 @@ export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQ
     );
   }
 
-  protected abstract capableOfRowEstimation(): boolean;
+  abstract capableOfRowEstimation(): boolean;
 
   get estimatedRowCountIsLarge(): boolean {
     return this.estimatedRowCount > SupportedRowCount;

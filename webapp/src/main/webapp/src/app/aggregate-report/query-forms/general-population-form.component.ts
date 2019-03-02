@@ -129,7 +129,7 @@ export class GeneralPopulationFormComponent extends MultiOrganizationQueryFormCo
     this.onSettingsChange();
   }
 
-  protected capableOfRowEstimation(): boolean {
+  capableOfRowEstimation(): boolean {
     return (
       (
         // include state results

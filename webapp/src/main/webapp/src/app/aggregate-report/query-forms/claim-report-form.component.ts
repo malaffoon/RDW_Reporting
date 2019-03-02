@@ -149,7 +149,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
     this.onClaimChange();
   }
 
-  protected capableOfRowEstimation(): boolean {
+  capableOfRowEstimation(): boolean {
     return (
       (
         // include state results
