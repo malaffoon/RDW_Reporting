@@ -20,9 +20,8 @@ describe('ReportActionService', () => {
 
     reportService = jasmine.createSpyObj(
       "UserReportService",
-      ["getReportContent", "openReport"]
+      ["openReport"]
     );
-    (reportService.getReportContent as Spy).and.callFake(() => EMPTY);
 
     notificationService = jasmine.createSpyObj(
       "NotificationService",

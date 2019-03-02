@@ -66,17 +66,6 @@ export class UserReportService {
     );
   }
 
-  // getReportContentAsBlob(id: number): Observable<any> {
-  //   return this.dataService.get(`${ServiceRoute}/reports/${id}`, {
-  //     headers: new Headers({
-  //       'Accept': '*/*'
-  //     }),
-  //     responseType: ResponseContentType.Blob
-  //   }).pipe(
-  //     catchError(ResponseUtils.throwError)
-  //   );
-  // }
-
   createReport(query: ServerReportQuery): Observable<UserReport> {
     return this.dataService
       .post(
@@ -90,13 +79,6 @@ export class UserReportService {
         catchError(ResponseUtils.throwError)
       );
   }
-
-  // deleteReport(id: number): Observable<void> {
-  //   return this.dataService
-  //     .delete(`${ServiceRoute}/reports/${id}`).pipe(
-  //       catchError(ResponseUtils.throwError)
-  //     );
-  // }
 
   openReport(id: number): void {
     window.open(`${this.contextUrl}${ServiceRoute}/reports/${id}`, '_blank');

@@ -2,17 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserReportService } from './user-report.service';
 import { UserReport } from './report';
-
-const AggregateReportQueryTypes = [
-  'CustomAggregate',
-  'Longitudinal',
-  'Claim',
-  'Target'
-];
-
-function isAggregateQueryType(type: string) {
-  return AggregateReportQueryTypes.includes(type);
-}
+import { isAggregateReportQueryType } from './reports';
 
 /**
  * This service is responsible for providing the actions available for a given
@@ -127,7 +117,7 @@ class DefaultActionProvider implements ActionProvider {
 class AggregateReportActionProvider extends DefaultActionProvider {
 
   public supports(report: UserReport): boolean {
-    return isAggregateQueryType(report.query.type)
+    return isAggregateReportQueryType(report.query.type)
       && !(report.status === 'PENDING' || report.status === 'RUNNING');
   }
 
