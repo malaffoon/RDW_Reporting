@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { DataService } from '../shared/data/data.service';
 import { Observable } from 'rxjs';
 import { AggregateServiceRoute } from '../shared/service-route';
-import { Report } from '../report/report.model';
 import { AggregateReportRow } from '../report/aggregate-report';
 import { AssessmentService } from './assessment/assessment.service';
 import { map, flatMap } from 'rxjs/operators';
