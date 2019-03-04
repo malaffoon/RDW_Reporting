@@ -1,0 +1,79 @@
+{
+  "schoolYear": 0,
+  "name": "Custom Aggregate - Custom Subgroups",
+  "accommodationsVisible": false,
+  "disableTransferAccess": false,
+  "query": {
+    "assessmentTypeCode": "ica",
+    "assessmentGradeCodes": [
+      "03",
+      "04",
+      "05"
+    ],
+    "includeState": false,
+    "includeAllDistricts": false,
+    "includeAllSchoolsOfDistricts": true,
+    "includeAllDistrictsOfSchools": true,
+    "schoolIds": [
+      1,
+      7
+    ],
+    "completenessCodes": [
+      "Complete"
+    ],
+    "showEmpty": true,
+    "valueDisplayType": "Percent",
+    "achievementLevelDisplayType": "Separate",
+    "columnOrder": [
+      "organization",
+      "assessmentGrade",
+      "schoolYear",
+      "dimension"
+    ],
+    "subgroups": {
+      "1": {
+        "genderCodes": [
+          "Male",
+          "Female"
+        ]
+      },
+      "2": {
+        "ethnicityCodes": [
+          "HispanicOrLatinoEthnicity",
+          "AmericanIndianOrAlaskaNative",
+          "Asian"
+        ]
+      },
+      "3": {
+        "languageCodes": [
+          "eng",
+          "spa"
+        ]
+      }
+    },
+    "dimensionTypes": [
+      "Gender",
+      "Ethnicity",
+      "ELAS",
+      "Language",
+      "Section504",
+      "IEP",
+      "MigrantStatus",
+      "MilitaryConnectedCode",
+      "EconomicDisadvantage",
+      "StudentEnrolledGrade"
+    ],
+    "studentFilters": {},
+    "schoolYears": [
+      2019,
+      2018
+    ],
+    "subjectCodes": [
+      "Math",
+      "ELA"
+    ],
+    "reportType": "CustomAggregate",
+    "filteredSubgroupQuery": true
+  },
+  "reportType": "AggregateReportRequest"
+}

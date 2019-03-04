@@ -34,8 +34,7 @@ export class AggregateReportService {
   /**
    * Gets the estimated report row count for the provided report request
    *
-   * @param {AggregateReportQuery} query the report parameters
-   * @returns {Observable<number>} the row count
+   * @param query the report parameters
    */
   getEstimatedRowCount(query: AggregateReportQueryType): Observable<number> {
     return this.dataService.post(`${AggregateServiceRoute}/aggregate/estimatedRowCount`, query);

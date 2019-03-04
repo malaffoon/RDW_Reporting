@@ -12,7 +12,6 @@ import { LongitudinalReport } from '../aggregate-report.service';
 import { AggregateReportRow, AggregateReportRowMeasure } from '../../report/aggregate-report';
 import { OrganizationMapper } from '../../shared/organization/organization.mapper';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
-import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { Assessment } from '../assessment/assessment';
 import { ordering } from '@kourge/ordering';
 import { byNumber, join } from '@kourge/ordering/comparator';
@@ -38,10 +37,9 @@ export class LongitudinalCohortChartMapper {
   /**
    * Creates a chart from a longitudinal cohort report
    *
-   * @param {AggregateReportQuery} query the query used to create the report
-   * @param {LongitudinalReport} report the report data
+   * @param query the query used to create the report
+   * @param report the report data
    * @param measuresGetter defines whether to get the measures or the cohortMeasures from the row
-   * @returns {LongitudinalCohortChart} the resulting chart
    */
   fromReport(query: LongitudinalReportQuery, report: LongitudinalReport, measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure, subjectDefinition: SubjectDefinition): LongitudinalCohortChart {
     if (report.rows.length === 0

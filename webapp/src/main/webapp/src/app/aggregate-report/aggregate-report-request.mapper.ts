@@ -7,7 +7,7 @@ import { AssessmentDefinition } from './assessment/assessment-definition';
 import { AggregateReportOptions } from './aggregate-report-options';
 import { Observable, forkJoin, of } from 'rxjs';
 import { District, OrganizationType, School } from '../shared/organization/organization';
-import { Utils } from '../shared/support/support';
+import { isNullOrEmpty, Utils } from '../shared/support/support';
 import { AggregateReportOrganizationService } from './aggregate-report-organization.service';
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
@@ -138,7 +138,7 @@ export class AggregateReportRequestMapper {
 
   toSettings(query: AggregateReportQueryType, options: AggregateReportOptions): Observable<AggregateReportFormSettings> {
 
-    const queryType: string = query.subgroups ? 'FilteredSubgroup' : 'Basic';
+    const queryType: string = isNullOrEmpty(query.subgroups) ? 'Basic' : 'FilteredSubgroup';
     const filters: StudentFilters = query.studentFilters || {};
 
     const queryInterimAdministrationConditions = (query.administrativeConditionCodes || [])

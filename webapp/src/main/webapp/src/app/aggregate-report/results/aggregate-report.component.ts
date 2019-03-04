@@ -8,7 +8,6 @@ import { forkJoin, interval, Subscription } from 'rxjs';
 import { Utils } from '../../shared/support/support';
 import { Comparator, join, ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { DisplayOptionService } from '../../shared/display-options/display-option.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
@@ -31,7 +30,8 @@ import { PerformanceLevelDisplayTypes } from '../../shared/display-options/perfo
 import { AggregateTargetOverview } from './aggregate-target-overview';
 import { createTargetOverview } from './aggregate-target-overviews';
 import {
-  AggregateReportQueryType, LongitudinalReportQuery,
+  AggregateReportQueryType,
+  LongitudinalReportQuery,
   ReportQueryType,
   TargetReportQuery,
   UserReport
