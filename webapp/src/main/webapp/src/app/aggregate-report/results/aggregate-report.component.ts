@@ -8,7 +8,6 @@ import { forkJoin, interval, Subscription } from 'rxjs';
 import { Utils } from '../../shared/support/support';
 import { Comparator, join, ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { DisplayOptionService } from '../../shared/display-options/display-option.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
@@ -31,9 +30,9 @@ import { PerformanceLevelDisplayTypes } from '../../shared/display-options/perfo
 import { AggregateTargetOverview } from './aggregate-target-overview';
 import { createTargetOverview } from './aggregate-target-overviews';
 import {
-  AggregateReportQueryType, LongitudinalReportQuery,
+  AggregateReportQueryType,
+  LongitudinalReportQuery,
   ReportQueryType,
-  SubgroupableAggregateReportQuery,
   TargetReportQuery,
   UserReport
 } from '../../report/report';
@@ -340,8 +339,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         const columnOrderingItems = columnOrderableItemProvider.toOrderableItems(columnOrdering);
 
         const displayTypes = displayBySubject.get(subjectCode) || {
-          valueDisplayType: (<SubgroupableAggregateReportQuery> query).valueDisplayType || ValueDisplayTypes.Percent,
-          performanceLevelDisplayType: (<SubgroupableAggregateReportQuery> query).achievementLevelDisplayType || PerformanceLevelDisplayTypes.Separate,
+          valueDisplayType: query.valueDisplayType || ValueDisplayTypes.Percent,
+          performanceLevelDisplayType: query.achievementLevelDisplayType || PerformanceLevelDisplayTypes.Separate,
         };
 
         const showEmpty = typeof query.showEmpty !== 'undefined'

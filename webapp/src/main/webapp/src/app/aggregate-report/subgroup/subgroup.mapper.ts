@@ -6,7 +6,7 @@ import { DimensionGroup, DimensionValue, Subgroup } from './subgroup';
 import { SubgroupItem } from './subgroup-item';
 import { AggregateReportRow } from "../../report/aggregate-report";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
-import { AggregateReportQueryType, SubgroupableAggregateReportQuery } from '../../report/report';
+import { AggregateReportQueryType } from '../../report/report';
 
 @Injectable()
 export class SubgroupMapper {
@@ -66,10 +66,10 @@ export class SubgroupMapper {
   }
 
   fromAggregateReportRow(query: AggregateReportQueryType, row: AggregateReportRow, overallFlyweight?: Subgroup): Subgroup {
-    if (isNullOrEmpty((<SubgroupableAggregateReportQuery>query).subgroups)) {
+    if (isNullOrEmpty(query.subgroups)) {
       return this.fromTypeAndCode(row.dimension.type, row.dimension.code);
     }
-    const serverSubgroup = (<SubgroupableAggregateReportQuery>query).subgroups[ row.dimension.code ];
+    const serverSubgroup = query.subgroups[ row.dimension.code ];
     return serverSubgroup
       ? this.fromFilters(this.requestMapper.createSubgroupFilters(serverSubgroup))
       : (overallFlyweight || this.createOverall());
