@@ -33,7 +33,6 @@ import { createTargetOverview } from './aggregate-target-overviews';
 import {
   AggregateReportQueryType, LongitudinalReportQuery,
   ReportQueryType,
-  SubgroupableAggregateReportQuery,
   TargetReportQuery,
   UserReport
 } from '../../report/report';
@@ -340,8 +339,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         const columnOrderingItems = columnOrderableItemProvider.toOrderableItems(columnOrdering);
 
         const displayTypes = displayBySubject.get(subjectCode) || {
-          valueDisplayType: (<SubgroupableAggregateReportQuery> query).valueDisplayType || ValueDisplayTypes.Percent,
-          performanceLevelDisplayType: (<SubgroupableAggregateReportQuery> query).achievementLevelDisplayType || PerformanceLevelDisplayTypes.Separate,
+          valueDisplayType: query.valueDisplayType || ValueDisplayTypes.Percent,
+          performanceLevelDisplayType: query.achievementLevelDisplayType || PerformanceLevelDisplayTypes.Separate,
         };
 
         const showEmpty = typeof query.showEmpty !== 'undefined'

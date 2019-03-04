@@ -128,24 +128,23 @@ export interface AggregateReportQuery extends ReportQuery {
   studentFilters?: AggregateReportStudentFilters;
   schoolIds?: number[];
   districtIds?: number[];
-}
 
-export interface SubgroupableAggregateReportQuery extends AggregateReportQuery {
+  // not used by target reports
   subjectCodes?: string[];
   achievementLevelDisplayType: string;
   valueDisplayType: string;
   subgroups?: { [ key: string ]: AggregateReportStudentFilters };
 }
 
-export interface CustomAggregateReportQuery extends SubgroupableAggregateReportQuery {
+export interface CustomAggregateReportQuery extends AggregateReportQuery {
   schoolYears?: number[];
 }
 
-export interface LongitudinalReportQuery extends SubgroupableAggregateReportQuery {
+export interface LongitudinalReportQuery extends AggregateReportQuery {
   toSchoolYear?: number;
 }
 
-export interface ClaimReportQuery extends SubgroupableAggregateReportQuery {
+export interface ClaimReportQuery extends AggregateReportQuery {
   schoolYears?: number[];
   claimCodesBySubject?: any;
 }

@@ -19,7 +19,7 @@ import {
   AggregateReportQueryType,
   ClaimReportQuery,
   CustomAggregateReportQuery,
-  LongitudinalReportQuery, SubgroupableAggregateReportQuery,
+  LongitudinalReportQuery,
   TargetReportQuery
 } from '../report/report';
 
@@ -138,7 +138,7 @@ export class AggregateReportRequestMapper {
 
   toSettings(query: AggregateReportQueryType, options: AggregateReportOptions): Observable<AggregateReportFormSettings> {
 
-    const queryType: string = (<SubgroupableAggregateReportQuery> query).subgroups ? 'FilteredSubgroup' : 'Basic';
+    const queryType: string = query.subgroups ? 'FilteredSubgroup' : 'Basic';
     const filters: StudentFilters = query.studentFilters || {};
 
     const queryInterimAdministrationConditions = (query.administrativeConditionCodes || [])
@@ -203,7 +203,7 @@ export class AggregateReportRequestMapper {
       : SubgroupFilterSupport.copy(options.studentFilters);
 
     const subgroups = queryType === 'FilteredSubgroup'
-      ? this.createSubgroupFiltersFromSubgroups((<SubgroupableAggregateReportQuery> query).subgroups)
+      ? this.createSubgroupFiltersFromSubgroups(query.subgroups)
       : [];
 
     const defaultGeneralPopulation = {
@@ -271,8 +271,8 @@ export class AggregateReportRequestMapper {
     }
 
     const subjects = sort(
-      (<SubgroupableAggregateReportQuery> query).subjectCodes
-        ? (<SubgroupableAggregateReportQuery> query).subjectCodes.map(code =>
+      query.subjectCodes
+        ? query.subjectCodes.map(code =>
           options.subjects.find(subject =>
             subject.code === code
             && subject.assessmentType === query.assessmentTypeCode
@@ -304,7 +304,7 @@ export class AggregateReportRequestMapper {
               ? options.interimAdministrationConditions
               : queryInterimAdministrationConditions,
             name: query.name,
-            performanceLevelDisplayType: (<SubgroupableAggregateReportQuery>query).achievementLevelDisplayType,
+            performanceLevelDisplayType: query.achievementLevelDisplayType,
             queryType,
             reportType: query.type,
             schools,
@@ -315,7 +315,7 @@ export class AggregateReportRequestMapper {
             summativeAdministrationConditions: !querySummativeAdministrationConditions.length
               ? options.summativeAdministrationConditions
               : querySummativeAdministrationConditions,
-            valueDisplayType: (<SubgroupableAggregateReportQuery>query).valueDisplayType,
+            valueDisplayType: query.valueDisplayType,
             generalPopulation,
             longitudinalCohort,
             claimReport,
