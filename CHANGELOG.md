@@ -1,8 +1,12 @@
 ## Change Log
 
-#### 1.3.1
+#### 1.4.0
 
-
+* Change report related text configuration locations in en.json:
+    * common.aggregate-report-type.*
+    * report-download.orders.*
+    * reports.report-type.*
+    
 #### 1.3.0 - 2019-02-05
 
 * Change aggregate report table to scroll instead of paging.

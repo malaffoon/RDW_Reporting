@@ -12,11 +12,14 @@ import { LongitudinalReport } from '../aggregate-report.service';
 import { AggregateReportRow, AggregateReportRowMeasure } from '../../report/aggregate-report';
 import { OrganizationMapper } from '../../shared/organization/organization.mapper';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
-import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { Assessment } from '../assessment/assessment';
 import { ordering } from '@kourge/ordering';
 import { byNumber, join } from '@kourge/ordering/comparator';
 import { SubjectDefinition } from '../../subject/subject';
+import {
+  LongitudinalReportQuery
+} from '../../report/report';
+import { isNullOrEmpty } from '../../shared/support/support';
 
 
 const rowYearAscending = ordering(byNumber).on<AggregateReportRow>(row => row.assessment.examSchoolYear).compare;
@@ -34,12 +37,11 @@ export class LongitudinalCohortChartMapper {
   /**
    * Creates a chart from a longitudinal cohort report
    *
-   * @param {AggregateReportQuery} query the query used to create the report
-   * @param {LongitudinalReport} report the report data
+   * @param query the query used to create the report
+   * @param report the report data
    * @param measuresGetter defines whether to get the measures or the cohortMeasures from the row
-   * @returns {LongitudinalCohortChart} the resulting chart
    */
-  fromReport(query: AggregateReportQuery, report: LongitudinalReport, measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure, subjectDefinition: SubjectDefinition): LongitudinalCohortChart {
+  fromReport(query: LongitudinalReportQuery, report: LongitudinalReport, measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure, subjectDefinition: SubjectDefinition): LongitudinalCohortChart {
     if (report.rows.length === 0
       || report.assessments.length === 0) {
       return { performanceLevels: [], organizationPerformances: [] };
@@ -50,14 +52,14 @@ export class LongitudinalCohortChartMapper {
     };
   }
 
-  private createOrganizationPerformances(query: AggregateReportQuery,
+  private createOrganizationPerformances(query: LongitudinalReportQuery,
                                          assessments: Assessment[],
                                          rows: AggregateReportRow[],
                                          measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure): OrganizationPerformance[] {
 
     const performanceByOrganizationSubgroup: Map<string, OrganizationPerformance> = new Map();
     const overall = this.subgroupMapper.createOverall();
-    const keyGenerator = query.subgroups == null
+    const keyGenerator = isNullOrEmpty(query.subgroups)
       ? row => `${row.organization.id}:${row.organization.organizationType}:${row.dimension.type}:${row.dimension.code}`
       : row => `${row.organization.id}:${row.organization.organizationType}:${row.dimension.code}`;
 

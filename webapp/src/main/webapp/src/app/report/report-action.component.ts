@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ReportAction, ReportActionService } from "./report-action.service";
 import { PopupMenuAction } from "../shared/menu/popup-menu-action.model";
-import { Report } from "./report.model";
 import { TranslateService } from "@ngx-translate/core";
+import { UserReport } from './report';
 
 /**
  * Responsible for providing a UI displaying and performing an action
@@ -15,7 +15,7 @@ import { TranslateService } from "@ngx-translate/core";
 export class ReportActionComponent implements OnInit {
 
   @Input()
-  public report: Report;
+  public report: UserReport;
 
   public reportActions: ReportAction[] = [];
 

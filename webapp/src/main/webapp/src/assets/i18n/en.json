@@ -299,11 +299,11 @@
         "disabled": "Claim Reports are only available for ICA and summative assessments.",
         "label": "Claim Report"
       },
-      "GeneralPopulation": {
+      "CustomAggregate": {
         "description": "Compare performance by selected school years.",
         "label": "Yearly Report"
       },
-      "LongitudinalCohort": {
+      "Longitudinal": {
         "description": "Track performance on summative assessments over time.",
         "disabled": "Longitudinal Reports are only available for summative assessments.",
         "label": "Longitudinal Report"
@@ -1153,8 +1153,8 @@
       "submit": "Create"
     },
     "orders": {
-      "0": "Student Name",
-      "1": "Student SSID"
+      "StudentName": "Student Name",
+      "StudentSSID": "Student SSID"
     },
     "submitted-message": "Creating report. See <a href=\"/reports\">status</a>."
   },
@@ -1176,12 +1176,11 @@
     "no-reports-html": "<p>To create a report, first select a group or school from the <a href=\"/\">Home page</a>. Next click the \"Student Reports\" button to get started.",
     "reload": "Reload",
     "report-type": {
-      "AggregateReportRequest": "Aggregate Report",
-      "AggregateReportRequest CustomAggregate": "Aggregate Report: Yearly",
-      "AggregateReportRequest Claim": "Aggregate Report: Claims",
-      "AggregateReportRequest Longitudinal": "Aggregate Report: Longitudinal",
-      "AggregateReportRequest Target": "Aggregate Report: Target",
-      "ExamExport": "District / School Export",
+      "CustomAggregate": "Aggregate Report: Yearly",
+      "Claim": "Aggregate Report: Claims",
+      "DistrictSchoolExport": "District / School Export",
+      "Longitudinal": "Aggregate Report: Longitudinal",
+      "Target": "Aggregate Report: Target",
       "Group": "Group Report",
       "SchoolGrade": "School / Grade Report",
       "Student": "Student Report"

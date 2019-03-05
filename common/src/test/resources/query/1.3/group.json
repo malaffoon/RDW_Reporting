@@ -1,0 +1,15 @@
+{
+  "schoolYear": 2018,
+  "subjectCode": "Math",
+  "assessmentTypeCode": "sum",
+  "language": "en",
+  "name": "Grade 8 Students - UAT",
+  "accommodationsVisible": true,
+  "disableTransferAccess": false,
+  "order": "STUDENT_NAME",
+  "groupId": {
+    "id": 1423,
+    "type": "Admin"
+  },
+  "reportType": "Group"
+}

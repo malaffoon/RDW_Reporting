@@ -46,14 +46,14 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'school-year-header'">
-          <ng-container *ngFor="let schoolYear of view.report.schoolYears; let last = last">
+          <ng-container *ngFor="let schoolYear of view.schoolYears; let last = last">
             {{ schoolYear | schoolYear }}<ng-container *ngIf="!last">, </ng-container>
           </ng-container>
         </ng-container>
 
         <span *ngSwitchCase="'status-header'"
               class="label border-only"
-              [ngClass]="view.report.statusColor">
+              [ngClass]="view.statusColor">
             {{ 'reports.status.' + view.report.status | translate }}
           </span>
 

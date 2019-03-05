@@ -1,18 +1,15 @@
-import { Observable } from "rxjs";
-import { Injectable } from "@angular/core";
-import { Organization } from "./organization/organization";
-import { UserOrganizations } from "./organization/user-organizations";
-import { OrganizationExportOptions } from "./organization-export-options";
-import { OrganizationGroupingService } from "./organization-grouping.service";
-import { DataService } from "../shared/data/data.service";
-import { ReportProcessorServiceRoute } from '../shared/service-route';
-
-const ServiceRoute = ReportProcessorServiceRoute;
+import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Organization } from './organization/organization';
+import { UserOrganizations } from './organization/user-organizations';
+import { OrganizationGroupingService } from './organization-grouping.service';
+import { UserReportService } from '../report/user-report.service';
+import { UserReport } from '../report/report';
 
 @Injectable()
 export class OrganizationExportService {
 
-  constructor(private dataService: DataService,
+  constructor(private reportService: UserReportService,
               private groupingService: OrganizationGroupingService) {
   }
 
@@ -22,16 +19,14 @@ export class OrganizationExportService {
    * @param {OrganizationExport} orgExport The export request
    * @returns {Observable<void>}
    */
-  createExport(orgExport: OrganizationExport): Observable<void> {
-    return this.dataService.post(`${ServiceRoute}/exams/export`, this.createExportRequest(orgExport))
-  }
-
-  private createExportRequest(orgExport: OrganizationExport): OrganizationExportRequest {
-    return Object.assign( {
+  createExport(orgExport: OrganizationExport): Observable<UserReport> {
+    return this.reportService.createReport({
+      type: 'DistrictSchoolExport',
       name: orgExport.name,
       schoolYear: orgExport.schoolYear,
       disableTransferAccess: orgExport.disableTransferAccess,
-    }, this.groupingService.groupSelectedOrganizationIdsByType(orgExport.schools, orgExport.organizations));
+      ...this.groupingService.groupSelectedOrganizationIdsByType(orgExport.schools, orgExport.organizations)
+    });
   }
 
 }
@@ -44,14 +39,3 @@ export interface OrganizationExport {
   organizations: UserOrganizations;
 }
 
-/**
- * Represents an organization export request and holds different exam result filter options
- */
-interface OrganizationExportRequest extends OrganizationExportOptions {
-
-  /**
-   * The export file name
-   */
-  readonly name: string;
-
-}

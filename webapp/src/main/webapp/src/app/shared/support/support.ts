@@ -1,5 +1,14 @@
 import * as _ from 'lodash';
 
+/**
+ * Expands support from string and Array to type Object as well
+ *
+ * @param value The value to test
+ */
+export function isNullOrEmpty(value: any): boolean {
+  return value == null || _.isEmpty(value);
+}
+
 export class Utils {
 
   static equalSets(a: any[], b: any[]): boolean {
@@ -45,6 +54,8 @@ export class Utils {
 
   /**
    * Checks to see if the string or array is <code>null</code>, <code>undefined</code> or empty.
+   *
+   * @deprecated
    *
    * @param {string | any[]} value
    * @returns {boolean}

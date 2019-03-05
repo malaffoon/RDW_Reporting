@@ -3,12 +3,12 @@ import { AggregateReportService } from './aggregate-report.service';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
-import { AggregateReportRequest } from '../report/aggregate-report-request';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
 import { AggregateReportRequestMapper } from './aggregate-report-request.mapper';
 import { AggregateReportOptions } from './aggregate-report-options';
 import { Utils } from '../shared/support/support';
 import { map, flatMap } from 'rxjs/operators';
+import { AggregateReportQueryType } from '../report/report';
 
 /**
  * This resolver is responsible for fetching an aggregate report based upon
@@ -26,14 +26,13 @@ export class AggregateReportFormSettingsResolve implements Resolve<AggregateRepo
     const options: AggregateReportOptions = route.parent.data[ 'options' ];
     const reportId: string = route.queryParamMap.get('src');
     if (reportId) {
-      return this.service.getReportById(Number.parseInt(reportId))
-
-        .pipe(
-          flatMap(report => this.requestMapper.toSettings(<AggregateReportRequest>report.request, options)),
-          map(settings => Object.assign(settings, {
-            name: Utils.appendOrIncrementFileNameSuffix((<any>settings).name)
-          }))
-        );
+      return this.service.getReportById(Number.parseInt(reportId)).pipe(
+        flatMap(report => this.requestMapper.toSettings(<AggregateReportQueryType>report.query, options)),
+        map((settings: AggregateReportFormSettings) => ({
+          ...settings,
+          name: Utils.appendOrIncrementFileNameSuffix((<any>settings).name)
+        }))
+      );
     }
 
     return this.optionMapper.toDefaultSettings(options);

@@ -1,12 +1,12 @@
 import { SubgroupFilters } from './subgroup-filters';
-import { Utils } from '../../shared/support/support';
+import { isNullOrEmpty, Utils } from '../../shared/support/support';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DimensionGroup, DimensionValue, Subgroup } from './subgroup';
 import { SubgroupItem } from './subgroup-item';
 import { AggregateReportRow } from "../../report/aggregate-report";
-import { AggregateReportQuery } from "../../report/aggregate-report-request";
 import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
+import { AggregateReportQueryType } from '../../report/report';
 
 @Injectable()
 export class SubgroupMapper {
@@ -65,8 +65,8 @@ export class SubgroupMapper {
     return this.createSubgroupInternal(dimensionGroups);
   }
 
-  fromAggregateReportRow(query: AggregateReportQuery, row: AggregateReportRow, overallFlyweight?: Subgroup): Subgroup {
-    if (query.subgroups == null) {
+  fromAggregateReportRow(query: AggregateReportQueryType, row: AggregateReportRow, overallFlyweight?: Subgroup): Subgroup {
+    if (isNullOrEmpty(query.subgroups)) {
       return this.fromTypeAndCode(row.dimension.type, row.dimension.code);
     }
     const serverSubgroup = query.subgroups[ row.dimension.code ];

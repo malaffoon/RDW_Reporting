@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AggregateReportOptions } from '../aggregate-report-options';
-import { AggregateReportType } from '../aggregate-report-form-settings';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { AggregateReportOptionsMapper } from '../aggregate-report-options.mapper';
 import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
@@ -17,8 +16,6 @@ const CommonNavigationItems: ScrollNavItem[] = [{
   templateUrl: './aggregate-query-form-container.component.html'
 })
 export class AggregateQueryFormContainerComponent implements AfterViewInit {
-
-  readonly AggregateReportType = AggregateReportType;
 
   @ViewChildren('reportForm')
   reportForms: QueryList<BaseAggregateQueryFormComponent>;
@@ -40,17 +37,17 @@ export class AggregateQueryFormContainerComponent implements AfterViewInit {
     const { options, settings } = route.snapshot.data;
     this.aggregateReportOptions = options;
     this.reportType = settings.reportType;
-    this.reportTypes = options.reportTypes.map(value => AggregateReportType[value]);
+    this.reportTypes = options.reportTypes.slice();
     this.filteredOptions = optionMapper.map(this.aggregateReportOptions);
-    this.filteredOptions.reportTypes.forEach((reportType) => {
-      this.submitActionsByReportType[reportType.value] = new EventEmitter();
+    options.reportTypes.forEach(reportType => {
+      this.submitActionsByReportType[reportType] = new EventEmitter();
     });
     this.accessDenied = this.aggregateReportOptions.assessmentTypes.length === 0;
   }
 
   ngAfterViewInit(): void {
     this.formByReportType = this.reportForms.toArray().reduce((map, form) => {
-      map[AggregateReportType[form.getReportType()]] = form;
+      map[form.getReportType()] = form;
       return map;
     }, {});
     setTimeout(() => {

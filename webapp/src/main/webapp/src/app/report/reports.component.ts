@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Report } from './report.model';
 import { ActivatedRoute } from '@angular/router';
-import { ReportService } from './report.service';
 import { Resolution } from '../shared/resolution.model';
 import Timer = NodeJS.Timer;
+import { UserReportService } from './user-report.service';
+import { UserReport } from './report';
 
 /**
  * Responsible for controlling the behavior of the reports page
@@ -14,14 +14,14 @@ import Timer = NodeJS.Timer;
 })
 export class ReportsComponent implements OnInit, OnDestroy {
 
-  resolution: Resolution<Report[]>;
-  reports: Report[];
+  resolution: Resolution<UserReport[]>;
+  reports: UserReport[];
 
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
 
   constructor(private route: ActivatedRoute,
-              private service: ReportService) {
+              private service: UserReportService) {
   }
 
   ngOnInit(): void {
@@ -49,22 +49,22 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
       // get all report IDs for reports that are in progress
       const ids: number[] = this.reports
-        .filter(report => report.processing)
+        .filter(report => report.status === 'RUNNING' || report.status === 'PENDING')
         .map(report => report.id);
 
       // optimally only call API if there are reports that are in progress
       if (ids.length > 0) {
 
         // optimally only send IDs of reports that are in progress
-        this.service.getReportsById(ids).subscribe(
+        this.service.getReports(ids).subscribe(
           remoteReports => {
 
             // flag set when one or more reports are found to have a new status
             let updated: boolean = false;
 
             // creates a copy of the existing report collection and updates it with reports that have changed
-            const updatedReports: Report[] = this.reports.map(local => {
-              const remote: Report = remoteReports.find(remote => remote.id === local.id);
+            const updatedReports: UserReport[] = this.reports.map(local => {
+              const remote: UserReport = remoteReports.find(remote => remote.id === local.id);
               if (remote !== undefined && remote.status !== local.status) {
                 updated = true;
                 return remote;

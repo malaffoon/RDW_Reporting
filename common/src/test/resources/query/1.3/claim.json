@@ -1,0 +1,57 @@
+{
+  "schoolYear": 0,
+  "name": "PG Claim report over 3k rows",
+  "accommodationsVisible": false,
+  "disableTransferAccess": false,
+  "query": {
+    "assessmentTypeCode": "sum",
+    "assessmentGradeCodes": [
+      "06",
+      "07",
+      "08",
+      "11"
+    ],
+    "includeState": true,
+    "includeAllDistricts": false,
+    "includeAllSchoolsOfDistricts": false,
+    "includeAllDistrictsOfSchools": true,
+    "districtIds": [
+      1
+    ],
+    "valueDisplayType": "Percent",
+    "achievementLevelDisplayType": "Separate",
+    "columnOrder": [
+      "organization",
+      "assessmentGrade",
+      "schoolYear",
+      "claim",
+      "dimension"
+    ],
+    "dimensionTypes": [
+      "Ethnicity",
+      "Language"
+    ],
+    "studentFilters": {},
+    "schoolYears": [
+      2015,
+      2016,
+      2017,
+      2018
+    ],
+    "claimCodesBySubject": {
+      "Math": [],
+      "ELA": [],
+      "newsubject": [],
+      "minisub": []
+    },
+    "reportType": "Claim",
+    "subjectCodes": [
+      "Math",
+      "ELA",
+      "newsubject",
+      "minisub"
+    ],
+    "filteredSubgroupQuery": false
+  },
+  "reportType": "AggregateReportRequest"
+}

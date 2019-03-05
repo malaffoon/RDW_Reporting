@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Report } from './report.model';
-import { ReportService } from './report.service';
 import { Router } from '@angular/router';
-
-export const AggregateReportType: string = 'AggregateReportRequest';
+import { UserReportService } from './user-report.service';
+import { UserReport } from './report';
+import { isAggregateReportQueryType } from './reports';
 
 /**
  * This service is responsible for providing the actions available for a given
@@ -17,7 +16,7 @@ export class ReportActionService {
     new DefaultActionProvider()
   ];
 
-  constructor(private reportService: ReportService,
+  constructor(private reportService: UserReportService,
               private router: Router) {
   }
 
@@ -27,7 +26,7 @@ export class ReportActionService {
    * @param {Report} report     A report
    * @returns {ReportAction[]}  The actions available for the report
    */
-  public getActions(report: Report): ReportAction[] {
+  public getActions(report: UserReport): ReportAction[] {
     return this.actionProviders
       .find(provider => provider.supports(report))
       .getActions(report);
@@ -52,7 +51,7 @@ export class ReportActionService {
   }
 
   private performDownload(action: ReportAction): void {
-    this.reportService.downloadReportContent(action.value);
+    this.reportService.openReport(action.value);
   }
 
   private performNavigate(action: ReportAction): void {
@@ -90,12 +89,12 @@ export enum ActionType {
  */
 class DefaultActionProvider implements ActionProvider {
 
-  public supports(report: Report) {
+  public supports(report: UserReport) {
     return true;
   }
 
-  public getActions(report: Report): ReportAction[] {
-    if (!report.completed) {
+  public getActions(report: UserReport): ReportAction[] {
+    if (report.status !== 'COMPLETED') {
       return [];
     }
     return [
@@ -117,14 +116,13 @@ class DefaultActionProvider implements ActionProvider {
  */
 class AggregateReportActionProvider extends DefaultActionProvider {
 
-  public supports(report: Report): boolean {
-    return report.reportType != null
-      && report.reportType.startsWith(AggregateReportType)
-      && !report.processing;
+  public supports(report: UserReport): boolean {
+    return isAggregateReportQueryType(report.query.type)
+      && !(report.status === 'PENDING' || report.status === 'RUNNING');
   }
 
-  public getActions(report: Report): ReportAction[] {
-    const disableViewAndDownload: boolean = !report.completed && !report.processing;
+  public getActions(report: UserReport): ReportAction[] {
+    const disableViewAndDownload: boolean = report.status !== 'COMPLETED' && !(report.status === 'PENDING' || report.status === 'RUNNING');
     const embargoed: boolean = report.metadata.createdWhileDataEmbargoed === 'true';
     return [
       {
@@ -158,9 +156,9 @@ class AggregateReportActionProvider extends DefaultActionProvider {
  */
 interface ActionProvider {
 
-  supports(report: Report): boolean;
+  supports(report: UserReport): boolean;
 
-  getActions(report: Report): ReportAction[];
+  getActions(report: UserReport): ReportAction[];
 
 }
 

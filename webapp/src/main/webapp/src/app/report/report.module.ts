@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/components/common/shared";
 import { ModalModule } from "ngx-bootstrap";
 import { Angulartics2Module } from "angulartics2";
-import { ReportService } from "./report.service";
 import { CommonModule } from "../shared/common.module";
 import { StudentReportDownloadComponent } from "./student-report-download.component";
 import { ReportsResolve } from "./reports.resolve";
@@ -17,6 +16,7 @@ import { ReportActionComponent } from "./report-action.component";
 import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
 import { TableModule } from "primeng/table";
 import { ReportTableComponent } from './report-table.component';
+import { UserReportService } from './user-report.service';
 
 @NgModule({
   declarations: [
@@ -46,9 +46,9 @@ import { ReportTableComponent } from './report-table.component';
     SchoolGradeDownloadComponent
   ],
   providers: [
-    ReportService,
     ReportsResolve,
-    ReportActionService
+    ReportActionService,
+    UserReportService
   ]
 })
 export class ReportModule {

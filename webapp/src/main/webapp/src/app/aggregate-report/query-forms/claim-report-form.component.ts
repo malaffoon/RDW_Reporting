@@ -18,11 +18,11 @@ import { fileName, notEmpty } from '../../shared/form/validators';
 import { Utils } from '../../shared/support/support';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { Claim } from '../aggregate-report-options.service';
-import { AggregateReportType } from '../aggregate-report-form-settings';
 import { OrderingService } from '../../shared/ordering/ordering.service';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SubjectService } from '../../subject/subject.service';
+import { ReportQueryType } from '../../report/report';
 
 @Component({
   selector: 'claim-report-form',
@@ -63,7 +63,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
               protected assessmentDefinitionService: AssessmentDefinitionService,
               protected orderingService: OrderingService) {
     super(columnOrderableItemProvider, notificationService, optionMapper, organizationService, reportService, subjectService, requestMapper, route, router, subgroupMapper, tableDataService);
-    this.settings.reportType = AggregateReportType.Claim;
+    this.settings.reportType = 'Claim';
     this.options = optionMapper.map(this.aggregateReportOptions);
 
     this.assessmentDefinition = this.assessmentDefinitionService.get(this.settings.assessmentType, this.settings.reportType);
@@ -108,8 +108,8 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
     return this.assessmentDefinition;
   }
 
-  getReportType(): AggregateReportType {
-    return AggregateReportType.Claim;
+  getReportType(): ReportQueryType {
+    return 'Claim';
   }
 
   getNavItems(): ScrollNavItem[] {
@@ -149,7 +149,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
     this.onClaimChange();
   }
 
-  protected capableOfRowEstimation(): boolean {
+  capableOfRowEstimation(): boolean {
     return (
       (
         // include state results

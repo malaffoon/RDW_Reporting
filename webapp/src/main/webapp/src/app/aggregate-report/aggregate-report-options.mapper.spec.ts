@@ -2,7 +2,7 @@ import { AggregateReportOptions } from './aggregate-report-options';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
 import { ValueDisplayTypes } from '../shared/display-options/value-display-type';
 import { of ,  Observable } from 'rxjs';
-import { AggregateReportFormSettings, AggregateReportType } from './aggregate-report-form-settings';
+import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import Spy = jasmine.Spy;
 
@@ -53,7 +53,7 @@ describe('AggregateReportOptionsMapper', () => {
         performanceLevelGroupingCutPoint: 0,
         aggregateReportIdentityColumns: [ 'columnA' ],
         aggregateReportStateResultsEnabled: true,
-        aggregateReportTypes: [ AggregateReportType.LongitudinalCohort, AggregateReportType.Claim ]
+        aggregateReportTypes: [ 'Longitudinal', 'Claim' ]
       }
     );
 
@@ -90,7 +90,7 @@ describe('AggregateReportOptionsMapper', () => {
         languages: ['1', '2'],
         militaryConnectedCodes: ['1', '2']
       },
-      reportTypes: [ AggregateReportType.GeneralPopulation, AggregateReportType.LongitudinalCohort ],
+      reportTypes: [ 'CustomAggregate', 'Longitudinal' ],
       claims: []
     };
     fixture.toDefaultSettings(options).subscribe(settings => {

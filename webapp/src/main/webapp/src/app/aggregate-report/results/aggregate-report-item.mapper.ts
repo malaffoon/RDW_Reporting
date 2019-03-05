@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AggregateReportItem } from './aggregate-report-item';
 import { AggregateReportRow, AggregateReportRowMeasure } from '../../report/aggregate-report';
-import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { OrganizationMapper } from '../../shared/organization/organization.mapper';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
-import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { SubjectDefinition } from '../../subject/subject';
+import { AggregateReportQueryType } from '../../report/report';
 
 /**
  * Maps server modeled aggregate report rows into client friendly table rows
@@ -17,7 +16,7 @@ export class AggregateReportItemMapper {
               private subgroupMapper: SubgroupMapper) {
   }
 
-  createRow(query: AggregateReportQuery,
+  createRow(query: AggregateReportQueryType,
             subjectDefinition: SubjectDefinition,
             row: any,
             uuid: number,

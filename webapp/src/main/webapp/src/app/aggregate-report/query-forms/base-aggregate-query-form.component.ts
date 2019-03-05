@@ -1,4 +1,3 @@
-import { AggregateReportRequest } from '../../report/aggregate-report-request';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Forms } from '../../shared/form/forms';
 import { NotificationService } from '../../shared/notification/notification.service';
@@ -8,7 +7,7 @@ import { finalize } from 'rxjs/operators';
 import { AggregateReportService } from '../aggregate-report.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
-import { AggregateReportFormSettings, AggregateReportType } from '../aggregate-report-form-settings';
+import { AggregateReportFormSettings } from '../aggregate-report-form-settings';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { AggregateReportRequestSummary } from '../aggregate-report-summary.component';
@@ -22,6 +21,7 @@ import { SubjectDefinition } from '../../subject/subject';
 import { SubjectService } from '../../subject/subject.service';
 import { Option } from '../../shared/form/option';
 import { AggregateReportItem } from '../results/aggregate-report-item';
+import { AggregateReportQueryType, ReportQueryType } from '../../report/report';
 
 /**
  * Base query component implementation for all aggregate report types.
@@ -117,7 +117,7 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
       );
   }
 
-  abstract getReportType(): AggregateReportType;
+  abstract getReportType(): ReportQueryType;
 
   /**
    * Get the navigation items that can be scrolled to.
@@ -312,9 +312,9 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    * Creates an aggregate report request from the current
    * options, settings, and assessment definition.
    *
-   * @returns {AggregateReportRequest} the created request
+   * @returns {AggregateQueryType} the created request
    */
-  protected createReportRequest(): AggregateReportRequest {
+  protected createReportRequest(): AggregateReportQueryType {
     return this.requestMapper.map(this.filteredOptions, this.settings, this.getAssessmentDefinition());
   }
 

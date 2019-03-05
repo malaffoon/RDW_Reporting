@@ -20,9 +20,9 @@ import { SubgroupMapper } from '../../../../aggregate-report/subgroup/subgroup.m
 import { AggregateReportRequestMapper } from '../../../../aggregate-report/aggregate-report-request.mapper';
 import { AggregateReportOrganizationService } from '../../../../aggregate-report/aggregate-report-organization.service';
 import { AggregateReportService } from '../../../../aggregate-report/aggregate-report.service';
-import { ReportService } from '../../../../report/report.service';
 import { AssessmentService } from '../../../../aggregate-report/assessment/assessment.service';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
+import { UserReportService } from '../../../../report/user-report.service';
 
 describe('TargetReportComponent', () => {
   let component: TargetReportComponent;
@@ -57,9 +57,9 @@ describe('TargetReportComponent', () => {
         AggregateReportRequestMapper,
         AggregateReportOrganizationService,
         AggregateReportService,
-        ReportService,
         AssessmentService,
-        ApplicationSettingsService
+        ApplicationSettingsService,
+        UserReportService
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })

@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Report } from '../../report/report.model';
 import { SupportedRowCount } from './aggregate-report-table.component';
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { AggregateReportItemMapper } from './aggregate-report-item.mapper';
@@ -9,10 +8,9 @@ import { forkJoin, interval, Subscription } from 'rxjs';
 import { Utils } from '../../shared/support/support';
 import { Comparator, join, ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { AggregateReportQuery } from '../../report/aggregate-report-request';
 import { DisplayOptionService } from '../../shared/display-options/display-option.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AggregateReportRequestMapper, ServerAggregateReportType } from '../aggregate-report-request.mapper';
+import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
 import { SpinnerModal } from '../../shared/loading/spinner.modal';
 import { OrderableItem } from '../../shared/order-selector/order-selector.component';
 import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
@@ -25,13 +23,19 @@ import { AggregateReportItem } from './aggregate-report-item';
 import { organizationOrdering, subgroupOrdering } from '../support';
 import { LongitudinalDisplayType } from '../../shared/display-options/longitudinal-display-type';
 import { AssessmentDefinitionService } from '../assessment/assessment-definition.service';
-import { AggregateReportType } from '../aggregate-report-form-settings';
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
 import { ValueDisplayTypes } from '../../shared/display-options/value-display-type';
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
 import { AggregateTargetOverview } from './aggregate-target-overview';
 import { createTargetOverview } from './aggregate-target-overviews';
+import {
+  AggregateReportQueryType,
+  LongitudinalReportQuery,
+  ReportQueryType,
+  TargetReportQuery,
+  UserReport
+} from '../../report/report';
 
 const PollingInterval = 4000;
 
@@ -49,7 +53,7 @@ interface AggregateReportView {
   rows: AggregateReportItem[];
   subjectDefinition: SubjectDefinition;
   options: AggregateReportOptions;
-  reportType: AggregateReportType;
+  reportType: ReportQueryType;
 
   valueDisplayType: string;
   performanceLevelDisplayType: string;
@@ -68,42 +72,27 @@ enum ViewState {
   ReportView
 }
 
-function toReportType(type: ServerAggregateReportType): AggregateReportType {
-  if (type == ServerAggregateReportType.Longitudinal) {
-    return AggregateReportType.LongitudinalCohort
-  }
-  if (type == ServerAggregateReportType.CustomAggregate) {
-    return AggregateReportType.GeneralPopulation
-  }
-  if (type == ServerAggregateReportType.Claim) {
-    return AggregateReportType.Claim;
-  }
-  if (type == ServerAggregateReportType.Target) {
-    return AggregateReportType.Target;
-  }
-}
-
-function toViewState(report: Report, displayLargeReport: boolean): ViewState {
-  if (report.processing) {
+function toViewState(report: UserReport, displayLargeReport: boolean): ViewState {
+  if (report.status === 'PENDING' || report.status === 'RUNNING') {
     return ViewState.ReportProcessing;
   }
-  if (report.empty) {
+  if (report.status === 'NO_RESULTS') {
     return ViewState.ReportEmpty;
   }
-  if (!report.completed) {
+  if (report.status !== 'COMPLETED') {
     return ViewState.ReportNotLoadable;
   }
   if (!isSupportedSize(report) && !displayLargeReport) {
     return ViewState.ReportSizeNotSupported;
   }
-  if (report.completed) {
+  if (report.status === 'COMPLETED') {
     return ViewState.ReportView;
   }
   return ViewState.ReportProcessing;
 }
 
-function isSupportedSize(report: Report): boolean {
-  const rowCount: string = report.metadata.totalCount;
+function isSupportedSize(report: UserReport): boolean {
+  const rowCount: string = (report.metadata || {}).totalCount;
   return Utils.isUndefined(rowCount)
     || (Number.parseInt(rowCount) <= SupportedRowCount);
 }
@@ -126,15 +115,15 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   assessmentDefinition: AssessmentDefinition;
   options: AggregateReportOptions;
-  report: Report;
-  query: AggregateReportQuery;
+  report: UserReport;
+  query: AggregateReportQueryType;
   reportViews: AggregateReportView[];
   showRequest: boolean = false;
   summary: AggregateReportRequestSummary;
   longitudinalDisplayType = LongitudinalDisplayType.GeneralPopulation;
   viewState: ViewState;
   displayOptions: AggregateReportTableDisplayOptions;
-  effectiveReportType: AggregateReportType;
+  effectiveReportType: ReportQueryType;
   isEmbargoed: boolean;
   isLongitudinal: boolean;
   showTargetMathCautionMessage: boolean;
@@ -157,10 +146,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
               private subjectService: SubjectService,
               private chartMapper: LongitudinalCohortChartMapper) {
 
-    const { options, report, report: { request: { query } } } = route.snapshot.data;
+    const { options, report } = route.snapshot.data;
+    const query: AggregateReportQueryType = report.query;
 
-    const reportType = toReportType(query.reportType);
-    const assessmentDefinition = definitionService.get(query.assessmentTypeCode, reportType);
+    const assessmentDefinition = definitionService.get(query.assessmentTypeCode, query.type);
 
     this.options = options;
     this.report = report;
@@ -177,15 +166,15 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     };
 
     this.effectiveReportType = reportService
-      .getEffectiveReportType(reportType, assessmentDefinition);
+      .getEffectiveReportType(query.type, assessmentDefinition);
 
     this.isEmbargoed = report.metadata.createdWhileDataEmbargoed === 'true';
-    this.isLongitudinal = query.reportType === ServerAggregateReportType.Longitudinal;
-    this.showTargetMathCautionMessage = query.reportType == ServerAggregateReportType.Target && query.subjectCode == 'Math';
+    this.isLongitudinal = query.type ==='Longitudinal';
+    this.showTargetMathCautionMessage = query.type == 'Target' && (<TargetReportQuery> query).subjectCode == 'Math';
 
     forkJoin(
       this.subjectService.getSubjectDefinitions(),
-      this.requestMapper.toSettings(report.request, options)
+      this.requestMapper.toSettings(report.query, options)
     ).subscribe(([subjectDefinitions, settings]) => {
       this.summary = {
         assessmentDefinition,
@@ -225,7 +214,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   getExportName(view: AggregateReportView): string {
     const subjectLabel: string = this.translateService.instant(`subject.${view.subjectDefinition.subject}.name`);
     return this.translateService.instant('aggregate-report.export-name', {
-      label: this.report.label,
+      label: this.report.query.name,
       subject: subjectLabel
     });
   }
@@ -281,7 +270,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   private loadReport(): void {
     this.spinnerModal.loading = true;
 
-    const observable = this.effectiveReportType === AggregateReportType.LongitudinalCohort
+    const observable = this.effectiveReportType === 'Longitudinal'
       ? this.reportService.getLongitudinalReport(this.report.id)
       : this.reportService.getAggregateReport(this.report.id);
 
@@ -296,7 +285,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
 
   }
 
-  private createReportViews(query: AggregateReportQuery, report: any): AggregateReportView[] {
+  private createReportViews(query: AggregateReportQueryType, report: any): AggregateReportView[] {
 
     const {
       options,
@@ -369,7 +358,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         };
 
         if (hasLongitudinalData) {
-          view.chart = chartMapper.fromReport(query, <LongitudinalReport>{
+          view.chart = chartMapper.fromReport(<LongitudinalReportQuery>query, <LongitudinalReport>{
             rows: rows.filter(row => row.assessment.subjectCode === subjectCode),
             assessments: assessments.filter(assessment => assessment.subject === subjectCode)
           }, measuresGetter, subjectDefinition);
@@ -392,7 +381,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
         ...view,
         rows: view.originalRows.filter(row => view.showEmpty || row.studentsTested > 0),
         emptyRowCount: view.originalRows.reduce((count, row) => count + (row.studentsTested === 0 ? 1 : 0), 0),
-        targetOverview: reportType === AggregateReportType.Target
+        targetOverview: reportType === 'Target'
           ? createTargetOverview(view.originalRows.find(row => row.subgroup.dimensionGroups[0].type === 'Overall'))
           : undefined
       }))

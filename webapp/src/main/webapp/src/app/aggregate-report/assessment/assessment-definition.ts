@@ -1,4 +1,4 @@
-import { AggregateReportType } from "../aggregate-report-form-settings";
+import { ReportQueryType } from '../../report/report';
 
 export interface AssessmentDefinition {
 
@@ -54,5 +54,5 @@ export interface AssessmentDefinition {
   /**
    * An array of report types the definition supports
    */
-  readonly aggregateReportTypes: AggregateReportType[];
+  readonly aggregateReportTypes: ReportQueryType[];
 }
