@@ -66,12 +66,52 @@ sql:
   reportProcessor:
     snippet:
       selectFromUserReport: >-
-          select
-              r.id,
-              r.user_login,
-              r.status,
-              r.report_resource_uri,
-              r.label,
-              r.report_request,
-              r.created
-            from user_report r
+        select
+          r.id,
+          r.user_login,
+          r.status,
+          r.report_resource_uri,
+          r.label,
+          r.report_request,
+          r.created
+        from user_report r
+
+      selectFromUserQuery: >-
+        select
+          q.id,
+          q.user_login,
+          q.query,
+          q.created,
+          q.updated
+        from user_query q
+
+  user-query:
+    findAllByUser: >-
+      ${sql.reportProcessor.snippet.selectFromUserQuery}
+      where q.user_login = :user_login
+      order by q.id desc
+
+    findByUserAndId: >-
+      ${sql.reportProcessor.snippet.selectFromUserQuery}
+      where q.id = :id
+        and q.user_login = :user_login
+
+    create: >-
+      insert into user_query
+      (user_login, label, query, query_type)
+      values
+      (:user_login, :label, :query, :query_type)
+
+    update: >-
+      update user_query
+      set
+        label = :label,
+        query = :query,
+        query_type = :query_type
+      where id = :id
+        and user_login = :user_login
+
+    deleteByUserAndId: >-
+      delete from user_query
+      where id = :id
+        and user_login = :user_login
