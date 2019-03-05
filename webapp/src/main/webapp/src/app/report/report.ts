@@ -196,7 +196,6 @@ export interface AggregateReportQuery extends ReportQuery {
   studentFilters?: AggregateReportStudentFilters;
   schoolIds?: number[];
   districtIds?: number[];
-  schoolYears?: number[];
 
   // not used by target reports
   subjectCodes?: string[];
@@ -208,7 +207,9 @@ export interface AggregateReportQuery extends ReportQuery {
 /**
  * A basic aggregate report query
  */
-export interface CustomAggregateReportQuery extends AggregateReportQuery {}
+export interface CustomAggregateReportQuery extends AggregateReportQuery {
+  schoolYears?: number[];
+}
 
 /**
  * A longitudinal aggregate report query
@@ -221,6 +222,7 @@ export interface LongitudinalReportQuery extends AggregateReportQuery {
  * A claim aggregate report query
  */
 export interface ClaimReportQuery extends AggregateReportQuery {
+  schoolYears: number[];
   claimCodesBySubject?: any;
 }
 
