@@ -6,7 +6,7 @@ export interface UserReport<T extends ReportQuery = ReportQuery> {
   query: T;
   status: ReportStatus;
   created: Date;
-  metadata?: { [ key: string ]: string };
+  metadata?: { [key: string]: string };
 }
 
 /**
@@ -42,7 +42,6 @@ export type ReportQueryType =
   | 'Claim'
   | 'Target';
 
-
 /**
  * Base set of advanced filters found on single-student printable reports
  */
@@ -71,8 +70,8 @@ interface BaseStudentFilters {
  * Represents advanced filters found on multi-student printable reports
  */
 export interface MultiStudentPrintableReportFilters
-  extends SingleStudentPrintableReportFilters, BaseStudentFilters {
-}
+  extends SingleStudentPrintableReportFilters,
+    BaseStudentFilters {}
 
 /**
  * Represents advanced filters found on aggregate reports
@@ -85,7 +84,6 @@ export interface AggregateReportStudentFilters extends BaseStudentFilters {
  * Base class for all report queries
  */
 export interface ReportQuery {
-
   /**
    * The requested report name
    */
@@ -125,9 +123,7 @@ export interface BatchPrintableReportQuery extends PrintableReportQuery {
 /**
  * Declares all valid multi-student printable report student report orderings
  */
-export type PrintableReportOrder =
-  | 'StudentName'
-  | 'StudentSSID';
+export type PrintableReportOrder = 'StudentName' | 'StudentSSID';
 
 /**
  * Defines the parameters of a single student printable report
@@ -165,7 +161,8 @@ export interface GroupPrintableReportQuery extends BatchPrintableReportQuery {
 /**
  * Represents a school-grade-based multi-student printable report query
  */
-export interface SchoolGradePrintableReportQuery extends BatchPrintableReportQuery {
+export interface SchoolGradePrintableReportQuery
+  extends BatchPrintableReportQuery {
   schoolId: number;
   gradeId: number;
   // filters: MultiStudentPrintableReportFilters;
@@ -199,20 +196,19 @@ export interface AggregateReportQuery extends ReportQuery {
   studentFilters?: AggregateReportStudentFilters;
   schoolIds?: number[];
   districtIds?: number[];
+  schoolYears?: number[];
 
   // not used by target reports
   subjectCodes?: string[];
   achievementLevelDisplayType: string;
   valueDisplayType: string;
-  subgroups?: { [ key: string ]: AggregateReportStudentFilters };
+  subgroups?: { [key: string]: AggregateReportStudentFilters };
 }
 
 /**
  * A basic aggregate report query
  */
-export interface CustomAggregateReportQuery extends AggregateReportQuery {
-  schoolYears?: number[];
-}
+export interface CustomAggregateReportQuery extends AggregateReportQuery {}
 
 /**
  * A longitudinal aggregate report query
@@ -225,7 +221,6 @@ export interface LongitudinalReportQuery extends AggregateReportQuery {
  * A claim aggregate report query
  */
 export interface ClaimReportQuery extends AggregateReportQuery {
-  schoolYears?: number[];
   claimCodesBySubject?: any;
 }
 
@@ -240,5 +235,8 @@ export interface TargetReportQuery extends AggregateReportQuery {
 /**
  * A union of all aggregate report types
  */
-export type AggregateReportQueryType = CustomAggregateReportQuery | LongitudinalReportQuery | ClaimReportQuery | TargetReportQuery;
-
+export type AggregateReportQueryType =
+  | CustomAggregateReportQuery
+  | LongitudinalReportQuery
+  | ClaimReportQuery
+  | TargetReportQuery;
