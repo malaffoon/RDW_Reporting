@@ -2,6 +2,8 @@
 
 #### 1.4.0
 
+* Add saved queries
+* Add toggle for empty aggregate report rows
 * Change report related text configuration locations in en.json:
     * common.aggregate-report-type.*
     * report-download.orders.*
