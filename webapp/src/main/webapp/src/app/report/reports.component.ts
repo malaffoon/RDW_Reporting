@@ -1,11 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Resolution } from '../shared/resolution.model';
-import Timer = NodeJS.Timer;
 import { UserReportService } from './user-report.service';
 import { UserQuery, UserReport } from './report';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserQueryService } from './user-query.service';
+import { first, tap } from 'rxjs/operators';
+import { UserQueryStore } from './user-query.store';
+import { MenuOption } from '../shared/menu/menu.component';
+import { UserReportMenuOptionService } from './user-report-menu-option.service';
+import { UserQueryMenuOptionService } from './user-query-menu-option.service';
+import Timer = NodeJS.Timer;
 
 /**
  * Responsible for controlling the behavior of the reports page
@@ -21,18 +26,22 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
+  _optionsByUserReport: Map<UserReport, MenuOption[]> = new Map();
+  _optionsByUserQuery: Map<UserReport, MenuOption[]> = new Map();
 
   constructor(
     private route: ActivatedRoute,
-    private service: UserReportService,
-    private userQueryService: UserQueryService
+    private userReportService: UserReportService,
+    private userReportMenuOptionService: UserReportMenuOptionService,
+    private userQueryService: UserQueryService,
+    private userQueryStore: UserQueryStore,
+    private userQueryMenuOptionService: UserQueryMenuOptionService
   ) {}
 
   ngOnInit(): void {
     const { reports } = this.route.snapshot.data;
     this.resolution = reports;
-    this.reports = reports.data;
-    this.userQueries = this.userQueryService.getQueries();
+    this.updateReports(reports.data);
 
     /*
      Start report status polling
@@ -41,6 +50,27 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.resolution.isOk()) {
       this.startPollingStatus();
     }
+
+    // initialize store
+    this.userQueryService
+      .getQueries()
+      .pipe(first())
+      .subscribe(userQueries => {
+        this.userQueryStore.setState(userQueries);
+      });
+    this.userQueries = this.userQueryStore.getState().pipe(
+      tap(userQueries => {
+        this._optionsByUserQuery = new Map(
+          userQueries.reduce((entries, userQuery) => {
+            entries.push([
+              userQuery,
+              this.userQueryMenuOptionService.createMenuOptions(userQuery)
+            ]);
+            return entries;
+          }, [])
+        );
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -63,7 +93,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       // optimally only call API if there are reports that are in progress
       if (ids.length > 0) {
         // optimally only send IDs of reports that are in progress
-        this.service.getReports(ids).subscribe(
+        this.userReportService.getReports(ids).subscribe(
           remoteReports => {
             // flag set when one or more reports are found to have a new status
             let updated: boolean = false;
@@ -82,7 +112,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
             // optimally updates the local report collection only when a change is detected
             if (updated) {
-              this.reports = updatedReports;
+              this.updateReports(updatedReports);
             }
           },
           error => {
@@ -99,5 +129,18 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.statusPollingTimer != null) {
       clearInterval(this.statusPollingTimer);
     }
+  }
+
+  private updateReports(values: UserReport[]): void {
+    this.reports = values;
+    this._optionsByUserReport = new Map(
+      values.reduce((entries, userReport) => {
+        entries.push([
+          userReport,
+          this.userReportMenuOptionService.createMenuOptions(userReport)
+        ]);
+        return entries;
+      }, [])
+    );
   }
 }

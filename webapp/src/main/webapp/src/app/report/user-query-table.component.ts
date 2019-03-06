@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { ReportQuery, UserQuery } from './report';
+import { Component, Input, TemplateRef } from '@angular/core';
+import { UserQuery } from './report';
 import { getSchoolYears, getSubjectCodes } from './reports';
 
 class Column {
@@ -15,7 +15,7 @@ class Column {
 }
 
 interface UserQueryTableRow {
-  query: ReportQuery;
+  userQuery: UserQuery;
   subjectCodes: string[];
   schoolYears: number[];
 }
@@ -27,7 +27,7 @@ interface UserQueryTableRow {
 function toUserQueryTableRow(userQuery: UserQuery): UserQueryTableRow {
   const { query } = userQuery;
   return {
-    query,
+    userQuery,
     subjectCodes: getSubjectCodes(query),
     schoolYears: getSchoolYears(query)
   };
@@ -47,6 +47,9 @@ export class UserQueryTableComponent {
     new Column({ id: 'updated', field: 'query.updated' })
   ];
   rows: UserQueryTableRow[];
+
+  @Input()
+  nameTemplate: TemplateRef<any>;
 
   @Input()
   set userQueries(values: UserQuery[]) {

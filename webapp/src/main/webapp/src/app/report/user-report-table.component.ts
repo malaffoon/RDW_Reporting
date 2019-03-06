@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef } from '@angular/core';
 import { UserReport } from './report';
 import { getSchoolYears, getSubjectCodes } from './reports';
 
@@ -53,7 +53,10 @@ export class UserReportTableComponent {
   rows: UserReportTableRow[];
 
   @Input()
-  set reports(values: UserReport[]) {
+  nameTemplate: TemplateRef<any>;
+
+  @Input()
+  set userReports(values: UserReport[]) {
     this.rows = (values || []).map(toUserReportTableRow);
   }
 }

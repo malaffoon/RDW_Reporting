@@ -4,7 +4,10 @@
       <ng-container *ngIf="resolution.isOk(); else reportResolutionError">
         <ng-container *ngIf="reports.length; else noReports">
           <p>{{ 'reports.instructions' | translate }}</p>
-          <user-report-table [reports]="reports"></user-report-table>
+          <user-report-table
+            [userReports]="reports"
+            [nameTemplate]="userReportName"
+          ></user-report-table>
         </ng-container>
         <ng-template #noReports>
           <p [innerHtml]="'reports.no-reports-html' | translate"></p>
@@ -26,7 +29,10 @@
     >
       <ng-container *ngIf="queries.length; else noUserQueries">
         <p>{{ 'reports.tab.user-queries.instructions' | translate }}</p>
-        <user-query-table [userQueries]="queries"></user-query-table>
+        <user-query-table
+          [userQueries]="queries"
+          [nameTemplate]="userQueryName"
+        ></user-query-table>
       </ng-container>
       <ng-template #noUserQueries>
         <p
@@ -38,3 +44,35 @@
     </div>
   </tab>
 </tabset>
+
+<ng-template #userReportName let-userReport="report">
+  <ng-container
+    *ngIf="_optionsByUserReport.get(userReport).length; else noOptions"
+  >
+    <app-menu
+      label="{{ userReport.query.name }}"
+      [options]="_optionsByUserReport.get(userReport)"
+    ></app-menu>
+  </ng-container>
+  <ng-template #noOptions>
+    <div title="{{ userReport.query.name }}" class="label-max-width">
+      {{ userReport.query.name }}
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #userQueryName let-userQuery="userQuery">
+  <ng-container
+    *ngIf="_optionsByUserQuery.get(userQuery).length; else noOptions"
+  >
+    <app-menu
+      label="{{ userQuery.query.name }}"
+      [options]="_optionsByUserQuery.get(userQuery)"
+    ></app-menu>
+  </ng-container>
+  <ng-template #noOptions>
+    <div title="{{ userQuery.query.name }}" class="label-max-width">
+      {{ userQuery.query.name }}
+    </div>
+  </ng-template>
+</ng-template>
