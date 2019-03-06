@@ -1,10 +1,12 @@
-import { inject, TestBed } from "@angular/core/testing";
-import { MockRouter } from "../../test/mock.router";
-import { NotificationService } from "../shared/notification/notification.service";
-import { Router } from "@angular/router";
-import { ActionType, ReportAction, ReportActionService } from "./report-action.service";
-import { EMPTY } from 'rxjs';
-import Spy = jasmine.Spy;
+import { inject, TestBed } from '@angular/core/testing';
+import { MockRouter } from '../../test/mock.router';
+import { NotificationService } from '../shared/notification/notification.service';
+import { Router } from '@angular/router';
+import {
+  ActionType,
+  ReportAction,
+  ReportActionService
+} from './report-action.service';
 import { UserReportService } from './user-report.service';
 import { UserReport } from './report';
 
@@ -16,17 +18,11 @@ describe('ReportActionService', () => {
   let service: ReportActionService;
 
   beforeEach(() => {
-    router = new MockRouter;
+    router = new MockRouter();
 
-    reportService = jasmine.createSpyObj(
-      "UserReportService",
-      ["openReport"]
-    );
+    reportService = jasmine.createSpyObj('UserReportService', ['openReport']);
 
-    notificationService = jasmine.createSpyObj(
-      "NotificationService",
-      ["info"]
-    );
+    notificationService = jasmine.createSpyObj('NotificationService', ['info']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -34,10 +30,12 @@ describe('ReportActionService', () => {
         {
           provide: UserReportService,
           useValue: reportService
-        }, {
+        },
+        {
           provide: Router,
           useValue: router
-        }, {
+        },
+        {
           provide: NotificationService,
           useValue: notificationService
         }
@@ -45,9 +43,12 @@ describe('ReportActionService', () => {
     });
   });
 
-  beforeEach(inject([ ReportActionService ], (injectedSvc: ReportActionService) => {
-    service = injectedSvc;
-  }));
+  beforeEach(inject(
+    [ReportActionService],
+    (injectedSvc: ReportActionService) => {
+      service = injectedSvc;
+    }
+  ));
 
   it('should create', () => {
     expect(service).toBeTruthy();
@@ -55,13 +56,13 @@ describe('ReportActionService', () => {
 
   it('should provide no actions for an incomplete report', () => {
     const report = createReport();
-    report.status = "PENDING";
+    report.status = 'PENDING';
     expect(service.getActions(report).length).toBe(0);
   });
 
   it('should provide a download action for a completed report', () => {
     const report = createReport();
-    report.status = "COMPLETED";
+    report.status = 'COMPLETED';
 
     const actions: ReportAction[] = service.getActions(report);
     expect(actions.length).toBe(1);
@@ -73,34 +74,37 @@ describe('ReportActionService', () => {
 
   it('should provide multiple actions for a completed AggregateReportRequest', () => {
     const report = createReport();
-    report.status = "COMPLETED";
+    report.status = 'COMPLETED';
     report.query.type = 'CustomAggregate';
-    report.metadata = {'createdWhileDataEmbargoed' : 'false'};
+    report.metadata = { createdWhileDataEmbargoed: 'false' };
 
     const actions: ReportAction[] = service.getActions(report);
     expect(actions.length).toBe(3);
 
     const viewReportAction: ReportAction = actions[0];
     service.performAction(viewReportAction);
-    expect(router.navigateByUrl).toHaveBeenCalledWith(`/aggregate-reports/${report.id}`);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      `/aggregate-reports/${report.id}`
+    );
 
     const viewQueryAction: ReportAction = actions[1];
     service.performAction(viewQueryAction);
-    expect(router.navigateByUrl).toHaveBeenCalledWith(`/aggregate-reports?src=${report.id}`);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      `/aggregate-reports?src=${report.id}`
+    );
 
     const downloadReportAction: ReportAction = actions[2];
     expect(downloadReportAction.popoverKey).toBeUndefined();
     expect(downloadReportAction.disabled).toBe(false);
     service.performAction(downloadReportAction);
     expect(reportService.openReport).toHaveBeenCalledWith(report.id);
-
   });
 
   it('should disable the download action for an embargoed AggregateReportRequest', () => {
     const report = createReport();
-    report.status = "COMPLETED";
+    report.status = 'COMPLETED';
     report.query.type = 'CustomAggregate';
-    report.metadata = {'createdWhileDataEmbargoed' : 'true'};
+    report.metadata = { createdWhileDataEmbargoed: 'true' };
 
     const actions: ReportAction[] = service.getActions(report);
     expect(actions.length).toBe(3);
@@ -123,7 +127,4 @@ describe('ReportActionService', () => {
       }
     };
   }
-
 });
-
-

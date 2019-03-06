@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Resolution } from '../shared/resolution.model';
 import Timer = NodeJS.Timer;
 import { UserReportService } from './user-report.service';
-import { UserReport } from './report';
+import { UserQuery, UserReport } from './report';
+import { Observable, of } from 'rxjs';
+import { UserQueryService } from './user-query.service';
 
 /**
  * Responsible for controlling the behavior of the reports page
@@ -13,19 +15,24 @@ import { UserReport } from './report';
   templateUrl: './reports.component.html'
 })
 export class ReportsComponent implements OnInit, OnDestroy {
-
   resolution: Resolution<UserReport[]>;
   reports: UserReport[];
+  userQueries: Observable<UserQuery[]>;
 
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
 
-  constructor(private route: ActivatedRoute,
-              private service: UserReportService) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private service: UserReportService,
+    private userQueryService: UserQueryService
+  ) {}
 
   ngOnInit(): void {
-    this.reports = (this.resolution = this.route.snapshot.data[ 'reports' ]).data;
+    const { reports } = this.route.snapshot.data;
+    this.resolution = reports;
+    this.reports = reports.data;
+    this.userQueries = this.userQueryService.getQueries();
 
     /*
      Start report status polling
@@ -46,25 +53,26 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   private startPollingStatus(): void {
     this.statusPollingTimer = <Timer>setInterval(() => {
-
       // get all report IDs for reports that are in progress
       const ids: number[] = this.reports
-        .filter(report => report.status === 'RUNNING' || report.status === 'PENDING')
+        .filter(
+          report => report.status === 'RUNNING' || report.status === 'PENDING'
+        )
         .map(report => report.id);
 
       // optimally only call API if there are reports that are in progress
       if (ids.length > 0) {
-
         // optimally only send IDs of reports that are in progress
         this.service.getReports(ids).subscribe(
           remoteReports => {
-
             // flag set when one or more reports are found to have a new status
             let updated: boolean = false;
 
             // creates a copy of the existing report collection and updates it with reports that have changed
             const updatedReports: UserReport[] = this.reports.map(local => {
-              const remote: UserReport = remoteReports.find(remote => remote.id === local.id);
+              const remote: UserReport = remoteReports.find(
+                remote => remote.id === local.id
+              );
               if (remote !== undefined && remote.status !== local.status) {
                 updated = true;
                 return remote;
@@ -76,7 +84,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
             if (updated) {
               this.reports = updatedReports;
             }
-
           },
           error => {
             console.error('Error polling report status', error);
@@ -85,7 +92,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       } else {
         this.stopPollingStatus();
       }
-
     }, this.statusPollingInterval);
   }
 
@@ -94,5 +100,4 @@ export class ReportsComponent implements OnInit, OnDestroy {
       clearInterval(this.statusPollingTimer);
     }
   }
-
 }

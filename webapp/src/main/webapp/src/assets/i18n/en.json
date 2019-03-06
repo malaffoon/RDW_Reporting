@@ -1158,17 +1158,55 @@
     },
     "submitted-message": "Creating report. See <a href=\"/reports\">status</a>."
   },
+  "user-query-table": {
+    "column": {
+      "assessmentTypes": {
+        "heading": "Assessment Type"
+      },
+      "updated": {
+        "heading": "Last Updated"
+      },
+      "name": {
+        "heading": "Name"
+      },
+      "type": {
+        "heading": "Report Type"
+      },
+      "schoolYears": {
+        "heading": "School Year"
+      },
+      "subjects": {
+        "heading": "Subject"
+      }
+    }
+  },
+  "user-report-table": {
+    "column": {
+      "assessmentTypes": {
+        "heading": "Assessment Type"
+      },
+      "created": {
+        "heading": "Date"
+      },
+      "name": {
+        "heading": "Name"
+      },
+      "type": {
+        "heading": "Report Type"
+      },
+      "schoolYears": {
+        "heading": "School Year"
+      },
+      "status": {
+        "heading": "Status"
+      },
+      "subjects": {
+        "heading": "Subject"
+      }
+    }
+  },
   "reports": {
     "all": "All",
-    "column": {
-      "assessment-type-header": "Assessment Type",
-      "created-header": "Date",
-      "label-header": "Name",
-      "report-type-header": "Report Type",
-      "school-year-header": "School Year",
-      "status-header": "Status",
-      "subject-header": "Subject"
-    },
     "get-reports-error": "There was an unexpected error while getting your reports. Please click the button below to reload the page and try again.",
     "heading": "My Reports",
     "instructions": "When the status of the report is \"Completed,\" click on the report name to view the report or the report query, or to download the report data.",
@@ -1192,6 +1230,13 @@
       "NO_RESULTS": "No Results",
       "PENDING": "Pending",
       "RUNNING": "Running"
+    },
+    "tab": {
+      "user-queries": {
+        "heading": "Saved Queries",
+        "instructions": "TODO: add instructions",
+        "no-user-queries-instructions": "Click on a report and select \"Save Query\" to save a query"
+      }
     }
   },
   "results-by-student": {
