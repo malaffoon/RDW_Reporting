@@ -47,6 +47,9 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'subjects'">
+          <ng-container *ngIf="row.subjectCodes.length === 0">
+            {{ 'reports.all' | translate }}
+          </ng-container>
           <ng-container
             *ngFor="let subjectCode of row.subjectCodes; let last = last"
           >

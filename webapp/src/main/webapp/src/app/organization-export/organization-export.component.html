@@ -11,10 +11,10 @@
 
 <div class="well-group" *ngIf="initialized">
   <div class="well">
-    <form ngForm="form" (ngSubmit)="submit()">
+    <form [formGroup]="formGroup" (ngSubmit)="submit()">
       <div class="row">
         <div class="col-md-6">
-          <div class="form-group">
+          <div class="form-group" *ngIf="formGroup.get('name') as control">
             <label for="report-name">{{
               'organization-export.form.report-name' | translate
             }}</label>
@@ -23,15 +23,18 @@
               name="report-name"
               class="form-control"
               maxlength="255"
-              [(ngModel)]="organizationExport.name"
               placeholder="{{
                 'organization-export.form.default-report-name' | translate
               }}"
+              [formControl]="control"
             />
           </div>
         </div>
         <div class="col-md-3">
-          <div class="form-group">
+          <div
+            class="form-group"
+            *ngIf="formGroup.get('schoolYear') as control"
+          >
             <label for="select-year">{{
               'common.school-year-select-label' | translate
             }}</label>
@@ -39,7 +42,7 @@
               id="select-year"
               name="select-year"
               class="form-control"
-              [(ngModel)]="organizationExport.schoolYear"
+              [formControl]="control"
             >
               <option *ngFor="let year of schoolYearOptions" [ngValue]="year">{{
                 year | schoolYear
@@ -48,7 +51,10 @@
           </div>
         </div>
         <div class="col-md-3" *ngIf="transferAccess">
-          <div class="form-group">
+          <div
+            class="form-group"
+            *ngIf="formGroup.get('disableTransferAccess') as control"
+          >
             <fieldset>
               <div>
                 <label for="transfer-assessment-toggle">
@@ -66,12 +72,12 @@
               <sb-radio-button-group
                 id="transfer-assessment-toggle"
                 name="transfer-assessment-toggle"
-                [(ngModel)]="organizationExport.disableTransferAccess"
                 buttonGroupStyles=""
                 [options]="[
                   { value: false, text: 'common.action.show' | translate },
                   { value: true, text: 'common.action.hide' | translate }
                 ]"
+                [formControl]="control"
               >
               </sb-radio-button-group>
             </fieldset>
@@ -114,6 +120,10 @@
                 }}
               </a>
             </div>
+
+            <ng-container *ngIf="formGroup.get('schools') as control">
+              <input type="hidden" [formControl]="control" />
+            </ng-container>
           </div>
         </div>
         <div
@@ -122,25 +132,50 @@
             'col-md-12': editingDisabled
           }"
         >
-          <div class="text-right">
-            <button
-              *ngIf="showSaveQueryButton"
-              type="button"
-              class="btn btn-info aqua"
-              [disabled]="userQueryHasChanged"
-              (click)="onSaveQueryButtonClick()"
-            >
-              <i class="fa fa-cloud-download"></i>
-              {{ 'organization-export.form.submit.label' | translate }}
-            </button>
-            <button
-              type="submit"
-              class="btn btn-info aqua"
-              [disabled]="selectedSchools.length == 0"
-            >
-              <i class="fa fa-cloud-download"></i>
-              {{ 'organization-export.form.submit.label' | translate }}
-            </button>
+          <div class="controls">
+            <div *ngIf="!showSaveQueryButton">
+              <br />
+              <div class="form-group checkbox-form-group">
+                <input
+                  id="save-query-checkbox"
+                  type="checkbox"
+                  class="btn btn-info aqua"
+                  [disabled]="saveQueryCheckboxDisabled"
+                  [(ngModel)]="saveQueryOnSubmit"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <label for="save-query-checkbox">
+                  {{
+                    'organization-export.form.save-query-button-label'
+                      | translate
+                  }}
+                </label>
+              </div>
+            </div>
+            <div *ngIf="showSaveQueryButton">
+              <br />
+              <button
+                type="button"
+                class="btn btn-info aqua"
+                [disabled]="saveQueryButtonDisabled"
+                (click)="onSaveQueryButtonClick()"
+              >
+                {{
+                  'organization-export.form.save-query-button-label' | translate
+                }}
+              </button>
+            </div>
+            <div>
+              <br />
+              <button
+                type="submit"
+                class="btn btn-info aqua"
+                [disabled]="createReportButtonDisabled"
+              >
+                <i class="fa fa-cloud-download"></i>
+                {{ 'organization-export.form.submit.label' | translate }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -152,7 +187,7 @@
       [model]="organizationTree"
       (select)="remove($event)"
       [disabled]="editingDisabled"
-      [hasSelectedSchools]="selectedSchools.length != 0"
+      [hasSelectedSchools]="(formGroup.get('schools').value || []).length != 0"
     >
     </organization-tree>
   </div>

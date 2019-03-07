@@ -8,23 +8,41 @@ import { ExamFilterOptionsService } from '../assessments/filters/exam-filters/ex
 import { OrganizationExport } from './organization-export';
 import { NotificationService } from '../shared/notification/notification.service';
 import { Option } from '../shared/form/sb-typeahead.component';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { UserOrganizationService } from './organization/user-organization.service';
 import { UserReportService } from '../report/user-report.service';
 import { UserQueryService } from '../report/user-query.service';
 import { getQueryFromRouteQueryParameters } from '../report/reports';
-import { DistrictSchoolExportReportQuery } from '../report/report';
+import { DistrictSchoolExportReportQuery, UserQuery } from '../report/report';
 import { Utils } from '../shared/support/support';
-import { isEqual, cloneDeep } from 'lodash';
+import { isEqual } from 'lodash';
 import { UserOrganizations } from './organization/user-organization';
 import { createOptions } from './organization-exports';
 import { createOrganizationTreeWithPlaceholders } from './organization/organization-trees';
 import { createOrganizationExportQuery } from './organization-export-queries';
+import { byNumber, byString } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { fileName } from '../shared/form/validators';
+import { finalize } from 'rxjs/operators';
+
+const byId = ordering(byNumber).on(({ id }) => id).compare;
+const byName = ordering(byString).on(({ name }) => name).compare;
+
+function normalizeOrganizationExport(
+  value: OrganizationExport
+): OrganizationExport {
+  return {
+    ...value,
+    schools: value.schools.slice().sort(byId)
+  };
+}
 
 @Component({
   selector: 'organization-export',
-  templateUrl: './organization-export.component.html'
+  templateUrl: './organization-export.component.html',
+  styleUrls: ['./organization-export.component.less']
 })
 export class OrganizationExportComponent implements OnInit {
   /**
@@ -40,34 +58,32 @@ export class OrganizationExportComponent implements OnInit {
   /**
    * Organization option view models computed from schools
    */
-  private _organizationOptions: Option[];
+  organizationOptions: Option[];
 
   /**
    * Organization view model computed from schools
    */
-  private _organizationTree: Tree<Organization>;
+  organizationTree: Tree<Organization>;
 
   /**
    * Available school year options
    */
-  private _schoolYearOptions: number[];
+  schoolYearOptions: number[];
 
-  /**
-   * The sort order of the organizations
-   */
-  private _comparator = (a: Organization, b: Organization) =>
-    a.name && b.name ? a.name.localeCompare(b.name) : 0;
-
+  formGroup: FormGroup;
   transferAccess: boolean;
   showSaveQueryButton: boolean;
   userOrganizations: UserOrganizations;
-  organizationExport: OrganizationExport;
   initialOrganizationExport: OrganizationExport;
+  createReportSubscription: Subscription;
+  saveQuerySubscription: Subscription;
+  saveQueryOnSubmit: boolean;
   initialized: boolean;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
     private translate: TranslateService,
     private applicationSettingsService: ApplicationSettingsService,
     private userOrganizationService: UserOrganizationService,
@@ -90,16 +106,10 @@ export class OrganizationExportComponent implements OnInit {
     ).subscribe(([settings, options, userOrganizations, query]) => {
       const { userReportId, userQueryId } = this.route.snapshot.queryParams;
 
-      this.userOrganizations = userOrganizations;
-      this.transferAccess = true; //settings.transferAccess;
-
-      // initialize selected school year based on options
-      this._schoolYearOptions = options.schoolYears;
-
       const organizations = {
         ...userOrganizations,
         // pre-sorted so createOptions() results don't need to be sorted
-        schools: userOrganizations.schools.slice().sort(this._comparator)
+        schools: userOrganizations.schools.slice().sort(byName)
       };
 
       // init form state from query or set to defaults
@@ -111,7 +121,6 @@ export class OrganizationExportComponent implements OnInit {
                 userReportId != null
                   ? Utils.appendOrIncrementFileNameSuffix(query.name)
                   : query.name,
-              organizations,
               schools: organizations.schools.filter(
                 ({ id, schoolGroupId, districtId }) =>
                   query.schoolIds.includes(id) ||
@@ -122,13 +131,19 @@ export class OrganizationExportComponent implements OnInit {
             }
           : {
               disableTransferAccess: false,
-              organizations,
-              schools: [],
+              schools:
+                organizations.schools.length == 1
+                  ? [organizations.schools[0]]
+                  : [],
               schoolYear: options.schoolYears[0]
             };
 
+      this.userOrganizations = userOrganizations;
+      this.transferAccess = settings.transferAccess;
+      this.schoolYearOptions = options.schoolYears;
       this.initialOrganizationExport = organizationExport;
-      this.organizationExport = cloneDeep(organizationExport);
+      // this.organizationExport = cloneDeep(organizationExport);
+      this.showSaveQueryButton = userQueryId != null;
 
       // create all options and reuse them when calling createOptions()
       this._organizationOptionsByUuid = new Map<string, Option>(
@@ -149,68 +164,76 @@ export class OrganizationExportComponent implements OnInit {
         )
       );
 
+      this.formGroup = this.formBuilder.group({
+        name: [
+          organizationExport.name,
+          [
+            fileName({
+              messageId:
+                'aggregate-report-form.field.report-name-file-name-error'
+            })
+          ]
+        ],
+        disableTransferAccess: [
+          {
+            value: organizationExport.disableTransferAccess,
+            disabled: !settings.transferAccess
+          },
+          [Validators.required]
+        ],
+        schools: [organizationExport.schools, [Validators.required]],
+        schoolYear: [organizationExport.schoolYear, [Validators.required]]
+      });
+
       // initialize selected schools based on user organizations
       // if the user only has one school to select, select it for them.
-      this.selectedSchools =
-        query != null
-          ? this.organizationExport.schools.slice()
-          : organizations.schools.length == 1
-          ? [organizations.schools[0]]
-          : [];
+      this.selectedSchools = organizationExport.schools;
 
-      this.showSaveQueryButton = userQueryId != null;
       this.initialized = true;
     });
   }
 
-  get selectedSchools(): Organization[] {
-    return this.organizationExport.schools;
-  }
-
   set selectedSchools(value: Organization[]) {
-    if (this.organizationExport.schools !== value) {
-      this.organizationExport.schools = value;
+    const {
+      formGroup: {
+        value: { schools }
+      },
+      userOrganizations,
+      _organizationOptionsByUuid
+    } = this;
 
-      this._unselectedSchools = this.userOrganizations.schools.filter(
-        organization => !value.some(x => x.id === organization.id)
-      );
+    this.formGroup.patchValue({ schools: value });
 
-      // restrict allowed additions to one createDistrict maximum
-      let districtRestrictedUnselectedOrganizations =
-        this.organizationExport.schools.length == 0
-          ? this._unselectedSchools
-          : this._unselectedSchools.filter(
-              x =>
-                x.districtId === this.organizationExport.schools[0].districtId
-            );
+    this._unselectedSchools = userOrganizations.schools.filter(
+      organization => !value.some(x => x.id === organization.id)
+    );
 
-      // recompute the options available in the search select
-      this._organizationOptions = createOptions(
-        districtRestrictedUnselectedOrganizations,
-        this._organizationOptionsByUuid
-      );
+    // restrict allowed additions to one createDistrict maximum
+    const districtRestrictedUnselectedOrganizations =
+      schools.length == 0
+        ? this._unselectedSchools
+        : this._unselectedSchools.filter(
+            x => x.districtId === schools[0].districtId
+          );
 
-      // recompute the organizations in the tree
-      this._organizationTree = createOrganizationTreeWithPlaceholders(
-        value,
-        this.userOrganizations
-      ).sort(this._comparator);
-    }
+    // recompute the options available in the search select
+    this.organizationOptions = createOptions(
+      districtRestrictedUnselectedOrganizations,
+      _organizationOptionsByUuid
+    );
+
+    // recompute the organizations in the tree
+    this.organizationTree = createOrganizationTreeWithPlaceholders(
+      value,
+      userOrganizations
+    ).sort(byName);
   }
 
   get selectedAll(): boolean {
     return (
       this.userOrganizations.schools.length ===
-      this.organizationExport.schools.length
+      this.formGroup.value.schools.length
     );
-  }
-
-  get organizationOptions(): Option[] {
-    return this._organizationOptions;
-  }
-
-  get organizationTree(): Tree<Organization> {
-    return this._organizationTree;
   }
 
   get selectAllEnabled(): boolean {
@@ -221,17 +244,29 @@ export class OrganizationExportComponent implements OnInit {
     return this.userOrganizations.schools.length <= 1;
   }
 
-  get schoolYearOptions(): number[] {
-    return this._schoolYearOptions;
+  get saveQueryButtonDisabled(): boolean {
+    return (
+      this.formGroup.invalid ||
+      this.saveQuerySubscription != null ||
+      this.createReportSubscription != null ||
+      isEqual(
+        normalizeOrganizationExport(this.initialOrganizationExport),
+        normalizeOrganizationExport(this.formGroup.getRawValue())
+      )
+    );
   }
 
-  get userQueryHasChanged(): boolean {
-    return !isEqual(this.initialOrganizationExport, this.organizationExport);
+  get createReportButtonDisabled(): boolean {
+    return this.formGroup.invalid || this.createReportSubscription != null;
+  }
+
+  get saveQueryCheckboxDisabled(): boolean {
+    return this.createReportSubscription != null;
   }
 
   add(organization: Organization): void {
     this.selectedSchools = [
-      ...this.organizationExport.schools,
+      ...this.formGroup.value.schools,
       ...this._unselectedSchools.filter(unselected =>
         organization.isOrIsAncestorOf(unselected)
       )
@@ -243,7 +278,7 @@ export class OrganizationExportComponent implements OnInit {
   }
 
   remove(organization: Organization): void {
-    this.selectedSchools = this.selectedSchools.filter(
+    this.selectedSchools = this.formGroup.value.schools.filter(
       selected => !organization.isOrIsAncestorOf(selected)
     );
   }
@@ -257,32 +292,73 @@ export class OrganizationExportComponent implements OnInit {
   }
 
   submit(): void {
-    const query = createOrganizationExportQuery(
+    const query = this.createQuery();
+    const operation: Observable<any> = this.saveQueryOnSubmit
+      ? forkJoin(
+          this.userReportService.createReport(query),
+          this.userQueryService.createQuery(query)
+        )
+      : this.userReportService.createReport(query);
+
+    this.createReportSubscription = operation
+      .pipe(
+        finalize(() => {
+          this.createReportSubscription = null;
+        })
+      )
+      .subscribe(
+        () => {
+          this.notificationService.info({
+            id: 'organization-export.form.submit.success-html',
+            html: true
+          });
+          this.router.navigate(['/reports']);
+        },
+        () => {
+          this.notificationService.error({
+            id: 'organization-export.form.submit.failure'
+          });
+        }
+      );
+  }
+
+  onSaveQueryButtonClick(): void {
+    this.saveQuerySubscription = this.userQueryService
+      .updateQuery(this.createUserQuery())
+      .pipe(
+        finalize(() => {
+          this.saveQuerySubscription = null;
+        })
+      )
+      .subscribe(
+        () => {
+          this.initialOrganizationExport = this.formGroup.getRawValue();
+        },
+        () => {
+          this.notificationService.error({
+            id: 'user-query.action.save.error'
+          });
+        }
+      );
+  }
+
+  private createUserQuery(): UserQuery<DistrictSchoolExportReportQuery> {
+    return {
+      id: this.route.snapshot.queryParams.userQueryId,
+      query: this.createQuery()
+    };
+  }
+
+  private createQuery(): DistrictSchoolExportReportQuery {
+    const { value } = this.formGroup;
+    return createOrganizationExportQuery(
       {
-        ...this.organizationExport,
+        ...value,
         name:
-          this.organizationExport.name ||
+          value.name ||
           this.translate.instant('organization-export.form.default-report-name')
       },
       this.userOrganizations
     );
-
-    this.userReportService.createReport(query).subscribe(
-      () => {
-        this.notificationService.info({
-          id: 'organization-export.form.submit.success-html',
-          html: true
-        });
-        this.router.navigate(['/reports']);
-      },
-      () =>
-        this.notificationService.error({
-          id: 'organization-export.form.submit.failure'
-        })
-    );
-  }
-
-  onSaveQueryButtonClick(): void {
-    // this.userQueryService.updateQuery()
   }
 }

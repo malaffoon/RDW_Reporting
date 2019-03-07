@@ -13,10 +13,10 @@ export interface UserReport<T extends ReportQuery = ReportQuery> {
  * Represents a user's saved query
  */
 export interface UserQuery<T extends ReportQuery = ReportQuery> {
-  id: number;
+  id?: number;
   query: T;
-  updated: Date;
-  created: Date;
+  updated?: Date;
+  created?: Date;
 }
 
 /**

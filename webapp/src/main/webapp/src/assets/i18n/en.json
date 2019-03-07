@@ -1110,6 +1110,7 @@
         }
       },
       "report-name": "Export File Name",
+      "save-query-button-label": "Save Query",
       "submit": {
         "failure": "Error creating export. Please try again.",
         "label": "Export Results",
@@ -1373,6 +1374,13 @@
   },
   "writing-trait-scores": {
     "aggregate-header": "Points Distribution"
+  },
+  "user-query": {
+    "action": {
+      "save": {
+        "error": "Failed to save query"
+      }
+    }
   },
   "user-query-menu-option": {
     "view": "View Query",
