@@ -1,23 +1,50 @@
-import { Component, OnInit } from "@angular/core";
-import { OrganizationType } from "./organization/organization-type.enum";
-import { TranslateService } from "@ngx-translate/core";
-import { Tree } from "./organization/tree";
-import { Organization } from "./organization/organization";
-import { OrganizationMapper } from "./organization/organization.mapper";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ExamFilterOptionsService } from "../assessments/filters/exam-filters/exam-filter-options.service";
-import { OrganizationExport, OrganizationExportService } from "./organization-export.service";
-import { NotificationService } from "../shared/notification/notification.service";
-import { Option } from "../shared/form/sb-typeahead.component";
-import { forkJoin } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { OrganizationType } from './organization/organization-type.enum';
+import { TranslateService } from '@ngx-translate/core';
+import { Tree } from './organization/tree';
+import { Organization } from './organization/organization';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ExamFilterOptionsService } from '../assessments/filters/exam-filters/exam-filter-options.service';
+import { OrganizationExport } from './organization-export';
+import { NotificationService } from '../shared/notification/notification.service';
+import { Option } from '../shared/form/sb-typeahead.component';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
+import { UserOrganizationService } from './organization/user-organization.service';
+import { UserReportService } from '../report/user-report.service';
+import { UserQueryService } from '../report/user-query.service';
+import { getQueryFromRouteQueryParameters } from '../report/reports';
+import { DistrictSchoolExportReportQuery, UserQuery } from '../report/report';
+import { Utils } from '../shared/support/support';
+import { isEqual } from 'lodash';
+import { UserOrganizations } from './organization/user-organization';
+import { createOptions } from './organization-exports';
+import { createOrganizationTreeWithPlaceholders } from './organization/organization-trees';
+import { createOrganizationExportQuery } from './organization-export-queries';
+import { byNumber, byString } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { fileName } from '../shared/form/validators';
+import { finalize } from 'rxjs/operators';
+
+const byId = ordering(byNumber).on(({ id }) => id).compare;
+const byName = ordering(byString).on(({ name }) => name).compare;
+
+function normalizeOrganizationExport(
+  value: OrganizationExport
+): OrganizationExport {
+  return {
+    ...value,
+    schools: value.schools.slice().sort(byId)
+  };
+}
 
 @Component({
   selector: 'organization-export',
-  templateUrl: './organization-export.component.html'
+  templateUrl: './organization-export.component.html',
+  styleUrls: ['./organization-export.component.less']
 })
 export class OrganizationExportComponent implements OnInit {
-
   /**
    * All unselected organizations
    */
@@ -31,149 +58,229 @@ export class OrganizationExportComponent implements OnInit {
   /**
    * Organization option view models computed from schools
    */
-  private _organizationOptions: Option[];
+  organizationOptions: Option[];
 
   /**
    * Organization view model computed from schools
    */
-  private _organizationTree: Tree<Organization>;
+  organizationTree: Tree<Organization>;
 
   /**
    * Available school year options
    */
-  private _schoolYearOptions: number[];
+  schoolYearOptions: number[];
 
-  /**
-   * The sort order of the organizations
-   */
-  private _comparator = (a: Organization, b: Organization) => a.name && b.name ? a.name.localeCompare(b.name) : 0;
+  formGroup: FormGroup;
+  transferAccess: boolean;
+  showSaveQueryButton: boolean;
+  userOrganizations: UserOrganizations;
+  initialOrganizationExport: OrganizationExport;
+  createReportSubscription: Subscription;
+  saveQuerySubscription: Subscription;
+  saveQueryOnSubmit: boolean;
+  initialized: boolean;
 
-  public transferAccess: boolean;
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    private translate: TranslateService,
+    private applicationSettingsService: ApplicationSettingsService,
+    private userOrganizationService: UserOrganizationService,
+    private filterOptionService: ExamFilterOptionsService,
+    private notificationService: NotificationService,
+    private userReportService: UserReportService,
+    private userQueryService: UserQueryService
+  ) {}
 
-  public orgExport: OrganizationExport;
-
-  constructor(private router: Router,
-              private route: ActivatedRoute,
-              private translate: TranslateService,
-              private applicationSettingsService: ApplicationSettingsService,
-              private service: OrganizationExportService,
-              private mapper: OrganizationMapper,
-              private filterOptionService: ExamFilterOptionsService,
-              private notificationService: NotificationService) {
-    this.orgExport = {
-      schoolYear: undefined,
-      disableTransferAccess: false,
-      schools: [],
-      organizations: undefined
-    };
-  }
-
-  ngOnInit() {
-    this.orgExport.organizations = this.route.snapshot.data[ 'organizations' ];
-
-    // pre-sorted so mapper.option() results don't need to be sorted
-    this.orgExport.organizations.schools.sort(this._comparator);
-
-    // create all options and reuse them when calling mapper.option()
-    this._organizationOptionsByUuid = new Map<string, Option>(
-      this.orgExport.organizations.organizations.map(organization => <any>[
-          organization.uuid,
-          {
-            label: organization.name,
-            group: this.translate.instant(`organization-export.form.organization.type.${OrganizationType[ organization.type ]}`),
-            value: organization
-          }
-        ]
-      )
-    );
-
-    // initialize selected schools based on user organizations
-    // if the user only has one school to select, select it for them.
-    this.selectedSchools = this.orgExport.organizations.schools.length == 1
-      ? [ this.orgExport.organizations.schools[ 0 ] ]
-      : [];
-
+  ngOnInit(): void {
     forkJoin(
+      this.applicationSettingsService.getSettings(),
       this.filterOptionService.getExamFilterOptions(),
-      this.applicationSettingsService.getSettings()
-    ).subscribe(([options, settings]) => {
-      const { schoolYears } = options;
+      this.userOrganizationService.getUserOrganizations(),
+      getQueryFromRouteQueryParameters<DistrictSchoolExportReportQuery>(
+        this.route.snapshot.queryParams,
+        this.userReportService,
+        this.userQueryService
+      )
+    ).subscribe(([settings, options, userOrganizations, query]) => {
+      const { userReportId, userQueryId } = this.route.snapshot.queryParams;
 
-      // initialize selected school year based on options
-      this._schoolYearOptions = schoolYears;
-      if (schoolYears.length) {
-        this.orgExport.schoolYear = schoolYears[ 0 ];
-      }
+      const organizations = {
+        ...userOrganizations,
+        // pre-sorted so createOptions() results don't need to be sorted
+        schools: userOrganizations.schools.slice().sort(byName)
+      };
 
+      // init form state from query or set to defaults
+      const organizationExport =
+        query != null
+          ? {
+              disableTransferAccess: query.disableTransferAccess,
+              name:
+                userReportId != null
+                  ? Utils.appendOrIncrementFileNameSuffix(query.name)
+                  : query.name,
+              schools: organizations.schools.filter(
+                ({ id, schoolGroupId, districtId }) =>
+                  query.schoolIds.includes(id) ||
+                  query.schoolGroupIds.includes(schoolGroupId) ||
+                  query.districtIds.includes(districtId)
+              ),
+              schoolYear: query.schoolYear
+            }
+          : {
+              disableTransferAccess: false,
+              schools:
+                organizations.schools.length == 1
+                  ? [organizations.schools[0]]
+                  : [],
+              schoolYear: options.schoolYears[0]
+            };
+
+      this.userOrganizations = userOrganizations;
       this.transferAccess = settings.transferAccess;
+      this.schoolYearOptions = options.schoolYears;
+      this.initialOrganizationExport = organizationExport;
+      // this.organizationExport = cloneDeep(organizationExport);
+      this.showSaveQueryButton = userQueryId != null;
+
+      // create all options and reuse them when calling createOptions()
+      this._organizationOptionsByUuid = new Map<string, Option>(
+        organizations.organizations.map(
+          organization =>
+            <any>[
+              organization.uuid,
+              {
+                label: organization.name,
+                group: this.translate.instant(
+                  `organization-export.form.organization.type.${
+                    OrganizationType[organization.type]
+                  }`
+                ),
+                value: organization
+              }
+            ]
+        )
+      );
+
+      this.formGroup = this.formBuilder.group({
+        name: [
+          organizationExport.name,
+          [
+            fileName({
+              messageId:
+                'aggregate-report-form.field.report-name-file-name-error'
+            })
+          ]
+        ],
+        disableTransferAccess: [
+          {
+            value: organizationExport.disableTransferAccess,
+            disabled: !settings.transferAccess
+          },
+          [Validators.required]
+        ],
+        schools: [organizationExport.schools, [Validators.required]],
+        schoolYear: [organizationExport.schoolYear, [Validators.required]]
+      });
+
+      // initialize selected schools based on user organizations
+      // if the user only has one school to select, select it for them.
+      this.selectedSchools = organizationExport.schools;
+
+      this.initialized = true;
     });
   }
 
-  get selectedSchools(): Organization[] {
-    return this.orgExport.schools;
-  }
-
   set selectedSchools(value: Organization[]) {
-    if (this.orgExport.schools !== value) {
+    const {
+      formGroup: {
+        value: { schools }
+      },
+      userOrganizations,
+      _organizationOptionsByUuid
+    } = this;
 
-      this.orgExport.schools = value;
+    this.formGroup.patchValue({ schools: value });
 
-      this._unselectedSchools = this.orgExport.organizations.schools
-        .filter(organization => !value.some(x => x.id === organization.id));
+    this._unselectedSchools = userOrganizations.schools.filter(
+      organization => !value.some(x => x.id === organization.id)
+    );
 
-      // restrict allowed additions to one createDistrict maximum
-      let districtRestrictedUnselectedOrganizations = this.orgExport.schools.length == 0
+    // restrict allowed additions to one createDistrict maximum
+    const districtRestrictedUnselectedOrganizations =
+      schools.length == 0
         ? this._unselectedSchools
-        : this._unselectedSchools.filter(x => x.districtId === this.orgExport.schools[ 0 ].districtId);
+        : this._unselectedSchools.filter(
+            x => x.districtId === schools[0].districtId
+          );
 
-      // recompute the options available in the search select
-      this._organizationOptions = this.mapper
-        .createOptions(districtRestrictedUnselectedOrganizations, this._organizationOptionsByUuid);
+    // recompute the options available in the search select
+    this.organizationOptions = createOptions(
+      districtRestrictedUnselectedOrganizations,
+      _organizationOptionsByUuid
+    );
 
-      // recompute the organizations in the tree
-      this._organizationTree = this.mapper
-        .createOrganizationTreeWithPlaceholders(value, this.orgExport.organizations)
-        .sort(this._comparator);
-    }
+    // recompute the organizations in the tree
+    this.organizationTree = createOrganizationTreeWithPlaceholders(
+      value,
+      userOrganizations
+    ).sort(byName);
   }
 
   get selectedAll(): boolean {
-    return this.orgExport.organizations.schools.length === this.orgExport.schools.length;
-  }
-
-  get organizationOptions(): Option[] {
-    return this._organizationOptions;
-  }
-
-  get organizationTree(): Tree<Organization> {
-    return this._organizationTree;
+    return (
+      this.userOrganizations.schools.length ===
+      this.formGroup.value.schools.length
+    );
   }
 
   get selectAllEnabled(): boolean {
-    return this.orgExport.organizations.districts.length < 2;
+    return this.userOrganizations.districts.length < 2;
   }
 
   get editingDisabled(): boolean {
-    return this.orgExport.organizations.schools.length <= 1;
+    return this.userOrganizations.schools.length <= 1;
   }
 
-  get schoolYearOptions(): number[] {
-    return this._schoolYearOptions;
+  get saveQueryButtonDisabled(): boolean {
+    return (
+      this.formGroup.invalid ||
+      this.saveQuerySubscription != null ||
+      this.createReportSubscription != null ||
+      isEqual(
+        normalizeOrganizationExport(this.initialOrganizationExport),
+        normalizeOrganizationExport(this.formGroup.getRawValue())
+      )
+    );
+  }
+
+  get createReportButtonDisabled(): boolean {
+    return this.formGroup.invalid || this.createReportSubscription != null;
+  }
+
+  get saveQueryCheckboxDisabled(): boolean {
+    return this.createReportSubscription != null;
   }
 
   add(organization: Organization): void {
     this.selectedSchools = [
-      ...this.orgExport.schools,
-      ...this._unselectedSchools.filter(unselected => organization.isOrIsAncestorOf(unselected))
+      ...this.formGroup.value.schools,
+      ...this._unselectedSchools.filter(unselected =>
+        organization.isOrIsAncestorOf(unselected)
+      )
     ];
   }
 
   addAll(): void {
-    this.selectedSchools = this.orgExport.organizations.schools;
+    this.selectedSchools = this.userOrganizations.schools;
   }
 
   remove(organization: Organization): void {
-    this.selectedSchools = this.selectedSchools.filter(selected => !organization.isOrIsAncestorOf(selected));
+    this.selectedSchools = this.formGroup.value.schools.filter(
+      selected => !organization.isOrIsAncestorOf(selected)
+    );
   }
 
   removeAll(): void {
@@ -185,16 +292,73 @@ export class OrganizationExportComponent implements OnInit {
   }
 
   submit(): void {
-    this.orgExport.name = this.orgExport.name || this.translate.instant('organization-export.form.default-report-name');
+    const query = this.createQuery();
+    const operation: Observable<any> = this.saveQueryOnSubmit
+      ? forkJoin(
+          this.userReportService.createReport(query),
+          this.userQueryService.createQuery(query)
+        )
+      : this.userReportService.createReport(query);
 
-    this.service.createExport(this.orgExport)
+    this.createReportSubscription = operation
+      .pipe(
+        finalize(() => {
+          this.createReportSubscription = null;
+        })
+      )
       .subscribe(
         () => {
-          this.notificationService.info({ id: 'organization-export.form.submit.success-html', html: true });
-          this.router.navigate([ '/reports' ]);
+          this.notificationService.info({
+            id: 'organization-export.form.submit.success-html',
+            html: true
+          });
+          this.router.navigate(['/reports']);
         },
-        () => this.notificationService.error({ id: 'organization-export.form.submit.failure' })
+        () => {
+          this.notificationService.error({
+            id: 'organization-export.form.submit.failure'
+          });
+        }
       );
   }
 
+  onSaveQueryButtonClick(): void {
+    this.saveQuerySubscription = this.userQueryService
+      .updateQuery(this.createUserQuery())
+      .pipe(
+        finalize(() => {
+          this.saveQuerySubscription = null;
+        })
+      )
+      .subscribe(
+        () => {
+          this.initialOrganizationExport = this.formGroup.getRawValue();
+        },
+        () => {
+          this.notificationService.error({
+            id: 'user-query.action.save.error'
+          });
+        }
+      );
+  }
+
+  private createUserQuery(): UserQuery<DistrictSchoolExportReportQuery> {
+    return {
+      id: this.route.snapshot.queryParams.userQueryId,
+      query: this.createQuery()
+    };
+  }
+
+  private createQuery(): DistrictSchoolExportReportQuery {
+    const { value } = this.formGroup;
+    return createOrganizationExportQuery(
+      {
+        ...value,
+        name:
+          value.name ||
+          this.translate.instant('organization-export.form.default-report-name')
+      },
+      this.userOrganizations
+    );
+  }
 }

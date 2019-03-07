@@ -1,8 +1,0 @@
-<ng-container *ngIf="_options.length; else noOptions">
-  <app-menu label="{{ _report.query.name }}" [options]="_options"></app-menu>
-</ng-container>
-<ng-template #noOptions>
-  <div title="{{ _report.query.name }}" class="label-max-width">
-    {{ _report.query.name }}
-  </div>
-</ng-template>

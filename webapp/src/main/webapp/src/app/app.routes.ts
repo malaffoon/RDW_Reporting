@@ -18,7 +18,6 @@ import { ReportsComponent } from './report/reports.component';
 import { ErrorComponent } from './error/error.component';
 import { AccessDeniedComponent } from './error/access-denied/access-denied.component';
 import { OrganizationExportComponent } from './organization-export/organization-export.component';
-import { UserOrganizationsResolve } from './organization-export/organization/user-organizations.resolve';
 import { InstructionalResourceComponent } from './admin/instructional-resource/instructional-resource.component';
 import { EmbargoComponent } from './admin/embargo/embargo.component';
 import { EmbargoResolve } from './admin/embargo/embargo.resolve';
@@ -45,9 +44,13 @@ export const studentPipe = new StudentPipe();
 export const adminRoute = {
   path: '',
   data: {
-    permissions: [ 'GROUP_WRITE', 'INSTRUCTIONAL_RESOURCE_WRITE', 'EMBARGO_WRITE' ]
+    permissions: [
+      'GROUP_WRITE',
+      'INSTRUCTIONAL_RESOURCE_WRITE',
+      'EMBARGO_WRITE'
+    ]
   },
-  canActivate: [ AuthorizationCanActivate ],
+  canActivate: [AuthorizationCanActivate],
   children: [
     {
       path: 'admin-groups',
@@ -56,10 +59,10 @@ export const adminRoute = {
         breadcrumb: {
           translate: 'admin-groups.title'
         },
-        permissions: [ 'GROUP_WRITE' ],
+        permissions: ['GROUP_WRITE'],
         denyAccess: true
       },
-      canActivate: [ AuthorizationCanActivate ],
+      canActivate: [AuthorizationCanActivate],
       children: [
         {
           path: '',
@@ -76,7 +79,7 @@ export const adminRoute = {
               path: '',
               pathMatch: 'prefix',
               component: GroupImportComponent,
-              canDeactivate: [ GroupImportDeactivateGuard ]
+              canDeactivate: [GroupImportDeactivateGuard]
             },
             {
               path: 'fileformat',
@@ -114,10 +117,10 @@ export const adminRoute = {
       pathMatch: 'prefix',
       data: {
         breadcrumb: { translate: 'instructional-resource.title' },
-        permissions: [ 'INSTRUCTIONAL_RESOURCE_WRITE' ],
+        permissions: ['INSTRUCTIONAL_RESOURCE_WRITE'],
         denyAccess: true
       },
-      canActivate: [ AuthorizationCanActivate ],
+      canActivate: [AuthorizationCanActivate],
       children: [
         {
           path: '',
@@ -131,9 +134,9 @@ export const adminRoute = {
       pathMatch: 'prefix',
       data: {
         breadcrumb: { translate: 'embargo.title' },
-        permissions: [ 'EMBARGO_WRITE' ]
+        permissions: ['EMBARGO_WRITE']
       },
-      canActivate: [ AuthorizationCanActivate ],
+      canActivate: [AuthorizationCanActivate],
       children: [
         {
           path: '',
@@ -143,7 +146,6 @@ export const adminRoute = {
         }
       ]
     }
-
   ]
 };
 
@@ -164,7 +166,7 @@ export const studentTestExamHistoryChildRoute = {
   component: StudentResponsesComponent
 };
 
-export const studentTransform = (student) => studentPipe.transform(student);
+export const studentTransform = student => studentPipe.transform(student);
 
 export const studentTestHistoryChildRoute = {
   path: 'students/:studentId',
@@ -191,9 +193,9 @@ export const UserGroupRoutes = [
   {
     path: 'user-groups',
     data: {
-      permissions: [ 'GROUP_PII_READ' ]
+      permissions: ['GROUP_PII_READ']
     },
-    canActivate: [ AuthorizationCanActivate ],
+    canActivate: [AuthorizationCanActivate],
     children: [
       {
         path: '',
@@ -229,7 +231,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [ RoutingAuthorizationCanActivate ],
+    canActivate: [RoutingAuthorizationCanActivate],
     resolve: {
       translateComplete: TranslateResolve
     },
@@ -245,9 +247,9 @@ export const routes: Routes = [
         path: 'group-exams',
         data: {
           breadcrumb: { translate: 'groups.heading' },
-          permissions: [ 'GROUP_PII_READ' ]
+          permissions: ['GROUP_PII_READ']
         },
-        canActivate: [ AuthorizationCanActivate ],
+        canActivate: [AuthorizationCanActivate],
         children: [
           {
             path: '',
@@ -263,9 +265,9 @@ export const routes: Routes = [
         path: 'group-dashboard',
         data: {
           breadcrumb: { translate: 'group-dashboard.name' },
-          permissions: [ 'GROUP_PII_READ' ]
+          permissions: ['GROUP_PII_READ']
         },
-        canActivate: [ AuthorizationCanActivate ],
+        canActivate: [AuthorizationCanActivate],
         children: [
           {
             path: '',
@@ -279,10 +281,10 @@ export const routes: Routes = [
         path: 'schools/:schoolId',
         data: {
           breadcrumb: { resolve: 'school.name' },
-          permissions: [ 'INDIVIDUAL_PII_READ' ]
+          permissions: ['INDIVIDUAL_PII_READ']
         },
         resolve: { school: CurrentSchoolResolve },
-        canActivate: [ AuthorizationCanActivate ],
+        canActivate: [AuthorizationCanActivate],
         children: [
           {
             path: '',
@@ -303,9 +305,9 @@ export const routes: Routes = [
         pathMatch: 'full',
         data: {
           breadcrumb: { translate: 'reports.heading' },
-          permissions: [ 'GROUP_PII_READ' ]
+          permissions: ['GROUP_PII_READ']
         },
-        canActivate: [ AuthorizationCanActivate ],
+        canActivate: [AuthorizationCanActivate],
         resolve: { reports: ReportsResolve },
         component: ReportsComponent
       },
@@ -313,12 +315,12 @@ export const routes: Routes = [
         path: 'aggregate-reports',
         data: {
           breadcrumb: { translate: 'aggregate-reports.heading' },
-          permissions: [ 'CUSTOM_AGGREGATE_READ' ]
+          permissions: ['CUSTOM_AGGREGATE_READ']
         },
         resolve: {
           options: AggregateReportOptionsResolve
         },
-        canActivate: [ AuthorizationCanActivate ],
+        canActivate: [AuthorizationCanActivate],
         children: [
           {
             path: '',
@@ -344,10 +346,9 @@ export const routes: Routes = [
         pathMatch: 'full',
         data: {
           breadcrumb: { translate: 'organization-export.title' },
-          permissions: [ 'INDIVIDUAL_PII_READ' ]
+          permissions: ['INDIVIDUAL_PII_READ']
         },
-        canActivate: [ AuthorizationCanActivate ],
-        resolve: { organizations: UserOrganizationsResolve },
+        canActivate: [AuthorizationCanActivate],
         component: OrganizationExportComponent
       },
       {
