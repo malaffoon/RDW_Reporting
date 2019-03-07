@@ -20,7 +20,7 @@ export class UserQueryService {
     );
   }
 
-  getQuery(id: number): Observable<UserQuery[]> {
+  getQuery(id: number): Observable<UserQuery> {
     return this.dataService.get(`${ServiceRoute}/${id}`).pipe(
       map(toUserQuery),
       catchError(ResponseUtils.throwError)

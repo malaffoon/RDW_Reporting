@@ -58,7 +58,9 @@ function createOptions(
         },
         {
           click: () =>
-            router.navigateByUrl(`/aggregate-reports?src=${userReport.id}`),
+            router.navigateByUrl(
+              `/aggregate-reports?userReportId=${userReport.id}`
+            ),
           label: translateService.instant('report-action.view-query')
         },
         SaveOption,

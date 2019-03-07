@@ -17,7 +17,6 @@ import { UserReportTableComponent } from './user-report-table.component';
 import { UserQueryTableComponent } from './user-query-table.component';
 import { UserReportService } from './user-report.service';
 import { UserQueryService } from './user-query.service';
-import { UserReportMenuComponent } from './user-report-menu.component';
 import { UserQueryStore } from './user-query.store';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
 import { UserQueryMenuOptionService } from './user-query-menu-option.service';
@@ -29,8 +28,7 @@ import { UserQueryMenuOptionService } from './user-query-menu-option.service';
     UserQueryTableComponent,
     StudentReportDownloadComponent,
     GroupReportDownloadComponent,
-    SchoolGradeDownloadComponent,
-    UserReportMenuComponent
+    SchoolGradeDownloadComponent
   ],
   imports: [
     Angulartics2Module.forRoot(),

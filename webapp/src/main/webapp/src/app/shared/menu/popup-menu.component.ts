@@ -1,9 +1,10 @@
 import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
 import { PopupMenuAction } from './popup-menu-action.model';
+import { MenuComponent } from './menu.component';
 import { Utils } from '../support/support';
 
 /**
- * @deprecated use {@link PopupMenuComponent}
+ * @deprecated use {@link MenuComponent}
  *
  * This component is responsible for displaying a table-row menu button
  * with configurable actions.
