@@ -1,5 +1,5 @@
 sql:
-  report:
+  user-report:
     create: >-
       insert into user_report
         (user_login, status, report_resource_uri, label, report_request, report_type, created)
@@ -37,6 +37,11 @@ sql:
       ${sql.reportProcessor.snippet.selectFromUserReport}
       where r.created < date_sub(now(), interval :number_of_days day)
 
+    deleteByUserAndId: >-
+      delete from user_report
+      where id = :id
+        and user_login = :user_login
+
     deleteByIds: >-
       delete from `user_report` WHERE `id` in (:ids)
 
@@ -62,28 +67,6 @@ sql:
       select * from user_report_metadata
       where
         report_id IN (:report_ids)
-
-  reportProcessor:
-    snippet:
-      selectFromUserReport: >-
-        select
-          r.id,
-          r.user_login,
-          r.status,
-          r.report_resource_uri,
-          r.label,
-          r.report_request,
-          r.created
-        from user_report r
-
-      selectFromUserQuery: >-
-        select
-          q.id,
-          q.user_login,
-          q.query,
-          q.created,
-          q.updated
-        from user_query q
 
   user-query:
     findAllByUser: >-
@@ -115,3 +98,25 @@ sql:
       delete from user_query
       where id = :id
         and user_login = :user_login
+
+  reportProcessor:
+    snippet:
+      selectFromUserReport: >-
+        select
+          r.id,
+          r.user_login,
+          r.status,
+          r.report_resource_uri,
+          r.label,
+          r.report_request,
+          r.created
+        from user_report r
+
+      selectFromUserQuery: >-
+        select
+          q.id,
+          q.user_login,
+          q.query,
+          q.created,
+          q.updated
+        from user_query q
