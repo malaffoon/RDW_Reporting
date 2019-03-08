@@ -1,16 +1,25 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Resolution } from '../shared/resolution.model';
 import { UserReportService } from './user-report.service';
 import { UserQuery, UserReport } from './report';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { UserQueryService } from './user-query.service';
-import { first, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { UserQueryStore } from './user-query.store';
 import { MenuOption } from '../shared/menu/menu.component';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
 import { UserQueryMenuOptionService } from './user-query-menu-option.service';
+import { UserReportStore } from './user-report.store';
+import { TabsetComponent } from 'ngx-bootstrap';
 import Timer = NodeJS.Timer;
+
+interface MenuOptionHolder {
+  options: MenuOption[];
+}
+
+interface UserReportView extends UserReport, MenuOptionHolder {}
+interface UserQueryView extends UserReport, MenuOptionHolder {}
+type LoadingStatus = 'Loading' | 'Loaded' | 'Failed';
 
 /**
  * Responsible for controlling the behavior of the reports page
@@ -20,18 +29,20 @@ import Timer = NodeJS.Timer;
   templateUrl: './reports.component.html'
 })
 export class ReportsComponent implements OnInit, OnDestroy {
-  resolution: Resolution<UserReport[]>;
-  reports: UserReport[];
-  userQueries: Observable<UserQuery[]>;
+  userReports: Observable<UserReportView[]>;
+  userQueries: Observable<UserQueryView[]>;
+  loadingStatus: LoadingStatus = 'Loading';
+
+  @ViewChild('tabset')
+  tabset: TabsetComponent;
 
   private statusPollingInterval: number = 20000;
   private statusPollingTimer: Timer;
-  _optionsByUserReport: Map<UserReport, MenuOption[]> = new Map();
-  _optionsByUserQuery: Map<UserReport, MenuOption[]> = new Map();
 
   constructor(
     private route: ActivatedRoute,
     private userReportService: UserReportService,
+    private userReportStore: UserReportStore,
     private userReportMenuOptionService: UserReportMenuOptionService,
     private userQueryService: UserQueryService,
     private userQueryStore: UserQueryStore,
@@ -39,37 +50,49 @@ export class ReportsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const { reports } = this.route.snapshot.data;
-    this.resolution = reports;
-    this.updateReports(reports.data);
-
-    /*
-     Start report status polling
-     Since reports currently cannot be generated on this page we do not have to dynamically update the IDs to pull
-     */
-    if (this.resolution.isOk()) {
-      this.startPollingStatus();
-    }
-
-    // initialize store
-    this.userQueryService
-      .getQueries()
-      .pipe(first())
-      .subscribe(userQueries => {
-        this.userQueryStore.setState(userQueries);
-      });
-    this.userQueries = this.userQueryStore.getState().pipe(
-      tap(userQueries => {
-        this._optionsByUserQuery = new Map(
-          userQueries.reduce((entries, userQuery) => {
-            entries.push([
-              userQuery,
-              this.userQueryMenuOptionService.createMenuOptions(userQuery)
-            ]);
-            return entries;
-          }, [])
+    forkJoin(
+      this.userReportService.getReports(),
+      this.userQueryService.getQueries()
+    ).subscribe(
+      ([userReports, userQueries]) => {
+        // initialize stores
+        this.userReportStore.setState(userReports);
+        this.userReports = this.userReportStore.getState().pipe(
+          map(userReports =>
+            userReports.map(userReport => ({
+              ...userReport,
+              options: this.userReportMenuOptionService.createMenuOptions(
+                userReport,
+                userReport => this.onDeleteUserReport(userReport),
+                userReport => this.onSaveQuery(userReport)
+              )
+            }))
+          )
         );
-      })
+
+        this.userQueryStore.setState(userQueries);
+        this.userQueries = this.userQueryStore.getState().pipe(
+          map(userQueries =>
+            userQueries.map(
+              userQuery =>
+                <UserQueryView>{
+                  ...userQuery,
+                  options: this.userQueryMenuOptionService.createMenuOptions(
+                    userQuery,
+                    userQuery => this.onDeleteUserQuery(userQuery)
+                  )
+                }
+            )
+          )
+        );
+
+        // TODO use RxJS to setup polling more elegantly
+        this.startPollingStatus();
+        this.loadingStatus = 'Loaded';
+      },
+      () => {
+        this.loadingStatus = 'Failed';
+      }
     );
   }
 
@@ -81,10 +104,39 @@ export class ReportsComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
+  onDeleteUserQuery(userQuery: UserQuery): void {
+    // TODO launch modal
+    this.userQueryService.deleteQuery(userQuery.id).subscribe(() => {
+      this.userQueryStore.setState(
+        this.userQueryStore.state.filter(({ id }) => id !== userQuery.id)
+      );
+    });
+  }
+
+  onDeleteUserReport(userReport: UserReport): void {
+    // TODO launch modal
+    this.userReportService.deleteReport(userReport.id).subscribe(() => {
+      this.userReportStore.setState(
+        this.userReportStore.state.filter(({ id }) => id !== userReport.id)
+      );
+    });
+  }
+
+  onSaveQuery(userReport: UserReport): void {
+    this.userQueryService.createQuery(userReport.query).subscribe(userQuery => {
+      this.userQueryStore.setState([userQuery, ...this.userQueryStore.state]);
+      this.openQueryTab();
+    });
+  }
+
   private startPollingStatus(): void {
     this.statusPollingTimer = <Timer>setInterval(() => {
+      const {
+        userReportStore: { state: userReports }
+      } = this;
+
       // get all report IDs for reports that are in progress
-      const ids: number[] = this.reports
+      const ids: number[] = userReports
         .filter(
           report => report.status === 'RUNNING' || report.status === 'PENDING'
         )
@@ -99,7 +151,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
             let updated: boolean = false;
 
             // creates a copy of the existing report collection and updates it with reports that have changed
-            const updatedReports: UserReport[] = this.reports.map(local => {
+            const updatedReports: UserReport[] = userReports.map(local => {
               const remote: UserReport = remoteReports.find(
                 remote => remote.id === local.id
               );
@@ -112,7 +164,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
             // optimally updates the local report collection only when a change is detected
             if (updated) {
-              this.updateReports(updatedReports);
+              this.userReportStore.setState(updatedReports);
             }
           },
           error => {
@@ -131,16 +183,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateReports(values: UserReport[]): void {
-    this.reports = values;
-    this._optionsByUserReport = new Map(
-      values.reduce((entries, userReport) => {
-        entries.push([
-          userReport,
-          this.userReportMenuOptionService.createMenuOptions(userReport)
-        ]);
-        return entries;
-      }, [])
-    );
+  private openQueryTab(): void {
+    this.tabset.tabs[1].active = true;
   }
 }

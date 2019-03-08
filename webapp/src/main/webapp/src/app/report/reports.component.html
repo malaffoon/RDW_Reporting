@@ -1,57 +1,66 @@
-<tabset #tabset>
-  <tab heading="{{ 'reports.heading' | translate }}">
-    <div class="well wide-content-container">
-      <ng-container *ngIf="resolution.isOk(); else reportResolutionError">
-        <ng-container *ngIf="reports.length; else noReports">
-          <p>{{ 'reports.instructions' | translate }}</p>
-          <user-report-table
-            [userReports]="reports"
-            [nameTemplate]="userReportName"
-          ></user-report-table>
-        </ng-container>
-        <ng-template #noReports>
-          <p [innerHtml]="'reports.no-reports-html' | translate"></p>
-        </ng-template>
-      </ng-container>
-      <ng-template #reportResolutionError>
-        <p>{{ 'reports.get-reports-error' | translate }}</p>
-        <button class="btn btn-primary" (click)="reload()">
-          <i class="fa fa-refresh"></i>
-          {{ 'reports.reload' | translate }}
-        </button>
-      </ng-template>
+<ng-container [ngSwitch]="loadingStatus">
+  <ng-container *ngSwitchCase="'Loading'">
+    <spinner></spinner>
+  </ng-container>
+  <ng-container *ngSwitchCase="'Loaded'">
+    <tabset #tabset>
+      <tab heading="{{ 'reports.heading' | translate }}">
+        <div
+          class="well wide-content-container"
+          *ngIf="(userReports | async) as reports"
+        >
+          <ng-container *ngIf="reports.length; else noReports">
+            <p>{{ 'reports.instructions' | translate }}</p>
+            <user-report-table
+              [userReports]="reports"
+              [nameTemplate]="userReportName"
+            ></user-report-table>
+          </ng-container>
+          <ng-template #noReports>
+            <p [innerHtml]="'reports.no-reports-html' | translate"></p>
+          </ng-template>
+        </div>
+      </tab>
+      <tab heading="{{ 'reports.tab.user-queries.heading' | translate }}">
+        <div
+          class="well wide-content-container"
+          *ngIf="(userQueries | async) as queries"
+        >
+          <ng-container *ngIf="queries.length; else noUserQueries">
+            <p>{{ 'reports.tab.user-queries.instructions' | translate }}</p>
+            <user-query-table
+              [userQueries]="queries"
+              [nameTemplate]="userQueryName"
+            ></user-query-table>
+          </ng-container>
+          <ng-template #noUserQueries>
+            <p
+              [innerHtml]="
+                'reports.tab.user-queries.no-user-queries-instructions'
+                  | translate
+              "
+            ></p>
+          </ng-template>
+        </div>
+      </tab>
+    </tabset>
+  </ng-container>
+  <ng-container *ngSwitchCase="'Failed'">
+    <div class="well">
+      <p>{{ 'reports.get-reports-error' | translate }}</p>
+      <button class="btn btn-primary" (click)="reload()">
+        <i class="fa fa-refresh"></i>
+        {{ 'reports.reload' | translate }}
+      </button>
     </div>
-  </tab>
-  <tab heading="{{ 'reports.tab.user-queries.heading' | translate }}">
-    <div
-      class="well wide-content-container"
-      *ngIf="(userQueries | async) as queries"
-    >
-      <ng-container *ngIf="queries.length; else noUserQueries">
-        <p>{{ 'reports.tab.user-queries.instructions' | translate }}</p>
-        <user-query-table
-          [userQueries]="queries"
-          [nameTemplate]="userQueryName"
-        ></user-query-table>
-      </ng-container>
-      <ng-template #noUserQueries>
-        <p
-          [innerHtml]="
-            'reports.tab.user-queries.no-user-queries-instructions' | translate
-          "
-        ></p>
-      </ng-template>
-    </div>
-  </tab>
-</tabset>
+  </ng-container>
+</ng-container>
 
 <ng-template #userReportName let-userReport="report">
-  <ng-container
-    *ngIf="_optionsByUserReport.get(userReport).length; else noOptions"
-  >
+  <ng-container *ngIf="userReport.options.length; else noOptions">
     <app-menu
       label="{{ userReport.query.name }}"
-      [options]="_optionsByUserReport.get(userReport)"
+      [options]="userReport.options"
     ></app-menu>
   </ng-container>
   <ng-template #noOptions>
@@ -62,12 +71,10 @@
 </ng-template>
 
 <ng-template #userQueryName let-userQuery="userQuery">
-  <ng-container
-    *ngIf="_optionsByUserQuery.get(userQuery).length; else noOptions"
-  >
+  <ng-container *ngIf="userQuery.options.length; else noOptions">
     <app-menu
       label="{{ userQuery.query.name }}"
-      [options]="_optionsByUserQuery.get(userQuery)"
+      [options]="userQuery.options"
     ></app-menu>
   </ng-container>
   <ng-template #noOptions>

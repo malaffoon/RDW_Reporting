@@ -7,7 +7,6 @@ import { ModalModule, TabsModule } from 'ngx-bootstrap';
 import { Angulartics2Module } from 'angulartics2';
 import { CommonModule } from '../shared/common.module';
 import { StudentReportDownloadComponent } from './student-report-download.component';
-import { ReportsResolve } from './reports.resolve';
 import { ReportsComponent } from './reports.component';
 import { GroupReportDownloadComponent } from './group-report-download.component';
 import { SchoolGradeDownloadComponent } from './school-grade-report-download.component';
@@ -20,6 +19,7 @@ import { UserQueryService } from './user-query.service';
 import { UserQueryStore } from './user-query.store';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
 import { UserQueryMenuOptionService } from './user-query-menu-option.service';
+import { UserReportStore } from './user-report.store';
 
 @NgModule({
   declarations: [
@@ -50,8 +50,8 @@ import { UserQueryMenuOptionService } from './user-query-menu-option.service';
     SchoolGradeDownloadComponent
   ],
   providers: [
-    ReportsResolve,
     UserReportService,
+    UserReportStore,
     UserReportMenuOptionService,
     UserQueryService,
     UserQueryStore,
