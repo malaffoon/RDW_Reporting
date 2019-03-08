@@ -1137,7 +1137,8 @@
     "embargoed": "Reports with embargoed results may only be viewed online, they may not be downloaded.",
     "view-query": "View Report Query",
     "view-report": "View Report",
-    "save-query": "Save Report Query"
+    "save-query": "Save Report Query",
+    "delete": "Delete Report"
   },
   "report-download": {
     "form": {

@@ -13,7 +13,6 @@ import { TranslateResolve } from './translate.resolve';
 import { StudentHistoryResponsesExamResolve } from './student/responses/student-history-responses-exam.resolve';
 import { StudentHistoryResponsesAssessmentResolve } from './student/responses/student-history-responses-assessment.resolve';
 import { StudentHistoryResponsesStudentResolve } from './student/responses/student-history-responses-student.resolve';
-import { ReportsResolve } from './report/reports.resolve';
 import { ReportsComponent } from './report/reports.component';
 import { ErrorComponent } from './error/error.component';
 import { AccessDeniedComponent } from './error/access-denied/access-denied.component';
@@ -308,7 +307,6 @@ export const routes: Routes = [
           permissions: ['GROUP_PII_READ']
         },
         canActivate: [AuthorizationCanActivate],
-        resolve: { reports: ReportsResolve },
         component: ReportsComponent
       },
       {

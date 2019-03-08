@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { UserQueryService } from './user-query.service';
-import { UserQueryStore } from './user-query.store';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuOption } from '../shared/menu/menu.component';
@@ -9,9 +8,9 @@ import { UserQuery } from './report';
 function createOptions(
   userQuery: UserQuery,
   userQueryService: UserQueryService,
-  userQueryStore: UserQueryStore,
   translateService: TranslateService,
-  router: Router
+  router: Router,
+  onDeleteQuery: (userQuery: UserQuery) => void
 ): MenuOption[] {
   return [
     {
@@ -19,12 +18,7 @@ function createOptions(
       label: translateService.instant('user-query-menu-option.view')
     },
     {
-      click: () =>
-        userQueryService.deleteQuery(userQuery.id).subscribe(() => {
-          userQueryStore.setState(
-            userQueryStore.state.filter(({ id }) => id !== userQuery.id)
-          );
-        }),
+      click: () => onDeleteQuery(userQuery),
       label: translateService.instant('user-query-menu-option.delete')
     }
   ];
@@ -57,17 +51,19 @@ export class UserQueryMenuOptionService {
   constructor(
     private router: Router,
     private translateService: TranslateService,
-    private userQueryService: UserQueryService,
-    private userQueryStore: UserQueryStore
+    private userQueryService: UserQueryService
   ) {}
 
-  createMenuOptions(userQuery: UserQuery): MenuOption[] {
+  createMenuOptions(
+    userQuery: UserQuery,
+    onDeleteQuery: (userQuery: UserQuery) => void
+  ): MenuOption[] {
     return createOptions(
       userQuery,
       this.userQueryService,
-      this.userQueryStore,
       this.translateService,
-      this.router
+      this.router,
+      onDeleteQuery
     );
   }
 }
