@@ -29,21 +29,6 @@ import {
 import { UserQueryService } from '../../report/user-query.service';
 import { isEqualReportQuery } from '../../report/reports';
 import { Utils } from '../../shared/support/support';
-import { isEqual } from 'lodash';
-
-function getObjectDiff(obj1, obj2) {
-  const diff = Object.keys(obj1).reduce((result, key) => {
-    if (!obj2.hasOwnProperty(key)) {
-      result.push(key);
-    } else if (isEqual(obj1[key], obj2[key])) {
-      const resultKeyIndex = result.indexOf(key);
-      result.splice(resultKeyIndex, 1);
-    }
-    return result;
-  }, Object.keys(obj2));
-
-  return diff;
-}
 
 /**
  * Base query component implementation for all aggregate report types.
@@ -183,10 +168,6 @@ export abstract class BaseAggregateQueryFormComponent
         ...this.createReportRequest(),
         type: query.type
       };
-      console.log('init', this.settings.reportType, {
-        q: this.initialQuery,
-        d: getObjectDiff(this.initialQuery, this.createReportRequest())
-      });
     });
   }
 
