@@ -3,11 +3,11 @@ import { OrganizationType } from './organization/organization-type.enum';
 import { Option } from '../shared/form/sb-typeahead.component';
 
 /**
- * Creates a UUID by compounding the organization type and ID
+ * Creates a composite ID by compounding the organization type and ID
  *
  * @param {OrganizationType} type the organization type
  * @param {number} id the organization entity ID
- * @returns {string} the UUID
+ * @returns {string} the composite ID
  */
 function createCompositeId(type: OrganizationType, id: number): string {
   return `${type}-${id}`;
