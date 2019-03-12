@@ -14,7 +14,13 @@
     <form [formGroup]="formGroup" (ngSubmit)="submit()">
       <div class="row">
         <div class="col-md-6">
-          <div class="form-group" *ngIf="formGroup.get('name') as control">
+          <div
+            *ngIf="formGroup.get('name') as control"
+            class="form-group"
+            [ngClass]="{
+              'has-error': control.invalid && (control.dirty || control.touched)
+            }"
+          >
             <label for="report-name">{{
               'organization-export.form.report-name' | translate
             }}</label>
@@ -28,6 +34,15 @@
               }}"
               [formControl]="control"
             />
+            <div *ngIf="control.invalid && (control.dirty || control.touched)">
+              <p
+                *ngIf="control.errors.fileName"
+                aria-live="polite"
+                class="help-block small red"
+              >
+                {{ control.errors.fileName.messageId | translate }}
+              </p>
+            </div>
           </div>
         </div>
         <div class="col-md-3">
