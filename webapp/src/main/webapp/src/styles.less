@@ -840,6 +840,13 @@ aggregate-report-form,
     top: 15px;
   }
 
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-gap: 15px;
+    align-items: center;
+  }
+
   .well-group .well {
     box-shadow: none;
     padding-bottom: 20px;
@@ -2165,4 +2172,15 @@ body .ui-paginator .ui-paginator-pages .ui-paginator-page {
 .sticky-top {
   position: sticky;
   top: 0;
+}
+
+.inline-checkbox-form-group {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  align-items: center;
+  > label,
+  > input[type='checkbox'] {
+    margin: 0;
+  }
 }

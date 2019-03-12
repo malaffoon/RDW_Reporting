@@ -1,6 +1,8 @@
 import {
+  AggregateReportQuery,
   ClaimReportQuery,
   CustomAggregateReportQuery,
+  DistrictSchoolExportReportQuery,
   ExamReportQuery,
   LongitudinalReportQuery,
   PrintableReportQuery,
@@ -13,6 +15,7 @@ import { UserReportService } from './user-report.service';
 import { UserQueryService } from './user-query.service';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { isEqual } from 'lodash';
 
 export function toUserReport(serverReport: any): UserReport {
   return {
@@ -107,4 +110,116 @@ export function getQueryFromRouteQueryParameters<T extends ReportQuery>(
       : userQueryService.getQuery(Number.parseInt(userQueryId));
 
   return source.pipe(map(({ query }) => <T>query));
+}
+
+/**
+ * Creates a sorted copy of an array of primitive values.
+ * If the passed value is null or undefined it returns the passed value.
+ *
+ * @param array The array to sort
+ */
+function sortedCopy<T>(array: T[]): T[] {
+  if (array == null) {
+    return array;
+  }
+  return array.slice().sort();
+}
+
+/**
+ * Creates a copy of an object that holds only arrays.
+ * The assumption here is that all of the arrays the object holds are to be treated as Sets
+ *
+ * @param a The object carrying the arrays
+ */
+function normalizeArrayHolder<T>(a: { [key: string]: any[] }): T {
+  return <T>Object.entries(a).reduce((copy, [key, value]) => {
+    copy[key] = sortedCopy(<any[]>value);
+    return copy;
+  }, {});
+}
+
+function normalizeClaimReportQuery(query: ClaimReportQuery): ClaimReportQuery {
+  return {
+    ...query,
+    ...normalizeAggregateReportQuery(query),
+    claimCodesBySubject: normalizeArrayHolder(query.claimCodesBySubject)
+  };
+}
+
+function normalizeDistrictSchoolExport(
+  query: DistrictSchoolExportReportQuery
+): DistrictSchoolExportReportQuery {
+  return {
+    ...query,
+    schoolIds: sortedCopy(query.schoolIds),
+    schoolGroupIds: sortedCopy(query.schoolGroupIds),
+    districtIds: sortedCopy(query.districtIds),
+    districtGroupIds: sortedCopy(query.districtGroupIds)
+  };
+}
+
+function normalizeAggregateReportQuery(
+  query: AggregateReportQuery
+): AggregateReportQuery {
+  return {
+    ...query,
+    administrativeConditionCodes: sortedCopy(
+      query.administrativeConditionCodes
+    ),
+    assessmentGradeCodes: sortedCopy(query.assessmentGradeCodes),
+    completenessCodes: sortedCopy(query.completenessCodes),
+    dimensionTypes: sortedCopy(query.dimensionTypes),
+    districtIds: sortedCopy(query.districtIds),
+    schoolIds: sortedCopy(query.schoolIds),
+    subgroups:
+      query.subgroups != null
+        ? Object.entries(query.subgroups).reduce((copy, [key, value]) => {
+            copy[key] = normalizeArrayHolder(<any>value);
+            return copy;
+          }, {})
+        : query.subgroups,
+    subjectCodes: sortedCopy(query.subjectCodes),
+    studentFilters:
+      query.studentFilters != null
+        ? normalizeArrayHolder(<any>query.studentFilters)
+        : query.studentFilters
+  };
+}
+
+/**
+ * Checks recursively for report query equality
+ *
+ * @param a The first query to compare
+ * @param b The second query to compare
+ */
+export function isEqualReportQuery(a: ReportQuery, b: ReportQuery): boolean {
+  if (a.type !== b.type || a.name !== b.name) {
+    return false;
+  }
+  const l: any = a,
+    r: any = b;
+  switch (a.type) {
+    case 'Student':
+    case 'SchoolGrade':
+    case 'Group':
+      return isEqual(l, r);
+    case 'DistrictSchoolExport':
+      return isEqual(
+        normalizeDistrictSchoolExport(l),
+        normalizeDistrictSchoolExport(r)
+      );
+    case 'CustomAggregate':
+    case 'Longitudinal':
+    case 'Target':
+      return isEqual(
+        normalizeAggregateReportQuery(l),
+        normalizeAggregateReportQuery(r)
+      );
+    case 'Claim':
+      return isEqual(
+        normalizeClaimReportQuery(l),
+        normalizeClaimReportQuery(r)
+      );
+  }
+  return false;
 }

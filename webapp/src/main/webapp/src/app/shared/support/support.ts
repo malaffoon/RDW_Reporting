@@ -9,16 +9,26 @@ export function isNullOrEmpty(value: any): boolean {
   return value == null || _.isEmpty(value);
 }
 
-export class Utils {
+export function isEqualSet(a: any[], b: any[]): boolean {
+  return (
+    a === b ||
+    (a == null && b == null) ||
+    (a != null &&
+      b != null &&
+      a.length === b.length &&
+      _.isEqual(a.slice().sort(), b.slice().sort()))
+  );
+}
 
+export class Utils {
   static equalSets(a: any[], b: any[]): boolean {
-    return a === b
-      || (
-        a != null
-        && b != null
-        && a.length === b.length
-        && _.isEqual(a.concat().sort(), b.concat().sort())
-      );
+    return (
+      a === b ||
+      (a != null &&
+        b != null &&
+        a.length === b.length &&
+        _.isEqual(a.concat().sort(), b.concat().sort()))
+    );
   }
 
   static getPropertyValue(propertyPath: string, object: any): any {
@@ -26,14 +36,15 @@ export class Utils {
     let property = object || this;
 
     for (let i = 0; i < parts.length; i++) {
-      property = property[ parts[ i ] ];
+      property = property[parts[i]];
     }
     return property;
   }
 
   static newGuid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      const r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   }
@@ -94,7 +105,7 @@ export class Utils {
     const classes = {};
     if (!Utils.isNullOrEmpty(objectsOrStrings)) {
       objectsOrStrings.forEach(objectOrString => {
-        Object.assign(classes, Utils.toNgClassObject(objectOrString))
+        Object.assign(classes, Utils.toNgClassObject(objectOrString));
       });
     }
     return classes;
@@ -111,7 +122,7 @@ export class Utils {
     switch (typeof value) {
       case 'string':
         return value.split(/\s+/g).reduce((object, key) => {
-          object[ key ] = true;
+          object[key] = true;
           return object;
         }, {});
       case 'object':
@@ -152,7 +163,8 @@ export class Utils {
    * @returns {{x: number, y: number}} the element's absolute page offset
    */
   static getAbsoluteOffset(element: any): any {
-    let x = 0, y = 0;
+    let x = 0,
+      y = 0;
     do {
       x += element.offsetLeft || 0;
       y += element.offsetTop || 0;
@@ -184,10 +196,13 @@ export class Utils {
       return false;
     }
     const bounds = element.getBoundingClientRect();
-    return bounds.bottom > 0
-      && bounds.right > 0
-      && bounds.left < (window.innerWidth || document.documentElement.clientWidth)
-      && bounds.top < (window.innerHeight || document.documentElement.clientHeight);
+    return (
+      bounds.bottom > 0 &&
+      bounds.right > 0 &&
+      bounds.left <
+        (window.innerWidth || document.documentElement.clientWidth) &&
+      bounds.top < (window.innerHeight || document.documentElement.clientHeight)
+    );
   }
 
   /**
@@ -230,9 +245,7 @@ export class Utils {
    * @returns {boolean} true if the provided arrays are both defined and of equal length
    */
   static hasEqualLength(a: any[], b: any[]) {
-    return a != null
-      && b != null
-      && a.length === b.length;
+    return a != null && b != null && a.length === b.length;
   }
 
   /**
@@ -260,7 +273,6 @@ export class Utils {
   static camelCaseToDash(str: string): string {
     return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
   }
-
 }
 
 /**
@@ -273,8 +285,8 @@ export class Utils {
  */
 export function serializeURLParameters(parameters: any): string {
   return Object.entries(parameters)
-    .sort(([ a ], [ b ]) => a.localeCompare(b))
-    .map(([ key, value ]) => key + '=' + value) // TODO add explicit support for array values
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => key + '=' + value) // TODO add explicit support for array values
     .join('&');
 }
 

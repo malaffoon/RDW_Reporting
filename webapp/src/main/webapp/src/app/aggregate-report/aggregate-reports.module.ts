@@ -6,7 +6,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AggregateReportOptionsService } from './aggregate-report-options.service';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
 import { AggregateReportOrganizationService } from './aggregate-report-organization.service';
-import { ModalModule, PopoverModule, TabsModule, TypeaheadModule } from 'ngx-bootstrap';
+import {
+  ModalModule,
+  PopoverModule,
+  TabsModule,
+  TypeaheadModule
+} from 'ngx-bootstrap';
 import { AggregateReportService } from './aggregate-report.service';
 import { ReportModule } from '../report/report.module';
 import { AggregateReportComponent } from './results/aggregate-report.component';
@@ -17,7 +22,7 @@ import { AggregateReportTableComponent } from './results/aggregate-report-table.
 import { AssessmentModule } from './assessment/assessment.module';
 import { AggregateReportTableDataService } from './aggregate-report-table-data.service';
 import { AggregateReportRequestMapper } from './aggregate-report-request.mapper';
-import { AggregateReportFormSettingsResolve } from './aggregate-report-form-settings.resolve';
+import { ReportQueryResolve } from './report-query.resolve';
 import { CsvModule } from '../csv-export/csv-export.module';
 import { AggregateReportTableExportService } from './results/aggregate-report-table-export.service';
 import { AggregateReportSummary } from './aggregate-report-summary.component';
@@ -28,11 +33,11 @@ import { SubgroupModule } from './subgroup/subgroup.module';
 import { LongitudinalCohortChartMapper } from './results/longitudinal-cohort-chart.mapper';
 import { WideRadioGroupComponent } from './wide-radio-group.component';
 import { TargetReportFormComponent } from './query-forms/target-report-form.component';
-import { AggregateQueryFormContainerComponent } from "./query-forms/aggregate-query-form-container.component";
-import { GeneralPopulationFormComponent } from "./query-forms/general-population-form.component";
-import { LongitudinalCohortFormComponent } from "./query-forms/longitudinal-cohort-form.component";
-import { ClaimReportFormComponent } from "./query-forms/claim-report-form.component";
-import { AggregateTargetOverviewComponent } from "./results/aggregate-target-overview.component";
+import { AggregateQueryFormContainerComponent } from './query-forms/aggregate-query-form-container.component';
+import { GeneralPopulationFormComponent } from './query-forms/general-population-form.component';
+import { LongitudinalCohortFormComponent } from './query-forms/longitudinal-cohort-form.component';
+import { ClaimReportFormComponent } from './query-forms/claim-report-form.component';
+import { AggregateTargetOverviewComponent } from './results/aggregate-target-overview.component';
 
 @NgModule({
   declarations: [
@@ -81,10 +86,9 @@ import { AggregateTargetOverviewComponent } from "./results/aggregate-target-ove
     AggregateReportOptionsMapper,
     AggregateReportOrganizationService,
     AggregateReportItemMapper,
-    AggregateReportFormSettingsResolve,
+    ReportQueryResolve,
     AggregateReportColumnOrderItemProvider,
     LongitudinalCohortChartMapper
   ]
 })
-export class AggregateReportsModule {
-}
+export class AggregateReportsModule {}
