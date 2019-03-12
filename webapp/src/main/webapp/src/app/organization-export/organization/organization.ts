@@ -1,5 +1,5 @@
 import { OrganizationType } from './organization-type.enum';
-import { createUuid } from './organization-support';
+import { createCompositeId } from './organization-support';
 
 /**
  * Represents an organization in the organizational hierarchy
@@ -59,7 +59,7 @@ abstract class AbstractOrganization implements Organization {
   name: string;
 
   get uuid(): string {
-    return createUuid(this.type, this.id);
+    return createCompositeId(this.type, this.id);
   }
 
   abstract get type(): OrganizationType;

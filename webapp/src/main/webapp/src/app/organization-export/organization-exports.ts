@@ -9,7 +9,7 @@ import { Option } from '../shared/form/sb-typeahead.component';
  * @param {number} id the organization entity ID
  * @returns {string} the UUID
  */
-function createUuid(type: OrganizationType, id: number): string {
+function createCompositeId(type: OrganizationType, id: number): string {
   return `${type}-${id}`;
 }
 
@@ -51,11 +51,11 @@ export function createOptions(
     schoolGroups = new Grouping<string, Option>(options);
 
   schools.forEach(school => {
-    const districtUuid = createUuid(
+    const districtUuid = createCompositeId(
         OrganizationType.District,
         school.districtId
       ),
-      schoolGroupUuid = createUuid(
+      schoolGroupUuid = createCompositeId(
         OrganizationType.SchoolGroup,
         school.schoolGroupId
       ),
