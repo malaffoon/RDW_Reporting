@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { OrganizationType } from './organization/organization-type.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { Tree } from './organization/tree';
-import { Organization } from './organization/organization';
+import { Organization, School } from './organization/organization';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamFilterOptionsService } from '../assessments/filters/exam-filters/exam-filter-options.service';
 import { OrganizationExport } from './organization-export';
@@ -193,19 +193,13 @@ export class OrganizationExportComponent implements OnInit {
     });
   }
 
-  set selectedSchools(value: Organization[]) {
-    const {
-      formGroup: {
-        value: { schools }
-      },
-      userOrganizations,
-      _organizationOptionsByUuid
-    } = this;
+  set selectedSchools(schools: School[]) {
+    const { userOrganizations, _organizationOptionsByUuid } = this;
 
-    this.formGroup.patchValue({ schools: value });
+    this.formGroup.patchValue({ schools });
 
     this._unselectedSchools = userOrganizations.schools.filter(
-      organization => !value.some(x => x.id === organization.id)
+      organization => !schools.some(x => x.id === organization.id)
     );
 
     // restrict allowed additions to one createDistrict maximum
@@ -224,7 +218,7 @@ export class OrganizationExportComponent implements OnInit {
 
     // recompute the organizations in the tree
     this.organizationTree = createOrganizationTreeWithPlaceholders(
-      value,
+      schools,
       userOrganizations
     ).sort(byName);
   }
