@@ -2,8 +2,8 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { Forms } from '../../shared/form/forms';
 import { NotificationService } from '../../shared/notification/notification.service';
 import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
-import { Observable, Observer, Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { forkJoin, Observable, Observer, of, Subscription } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
 import { AggregateReportService } from '../aggregate-report.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
@@ -13,7 +13,7 @@ import { AggregateReportOptions } from '../aggregate-report-options';
 import { AggregateReportRequestSummary } from '../aggregate-report-summary.component';
 import { AggregateReportTableDataService } from '../aggregate-report-table-data.service';
 import { AggregateReportOptionsMapper } from '../aggregate-report-options.mapper';
-import { EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import { OnDestroy, OnInit } from '@angular/core';
 import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
 import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
 import { OrderableItem } from '../../shared/order-selector/order-selector.component';
@@ -21,16 +21,20 @@ import { SubjectDefinition } from '../../subject/subject';
 import { SubjectService } from '../../subject/subject.service';
 import { Option } from '../../shared/form/option';
 import { AggregateReportItem } from '../results/aggregate-report-item';
-import { AggregateReportQueryType, ReportQueryType } from '../../report/report';
+import {
+  AggregateReportQueryType,
+  ReportQueryType,
+  UserQuery
+} from '../../report/report';
+import { UserQueryService } from '../../report/user-query.service';
+import { isEqualReportQuery } from '../../report/reports';
+import { Utils } from '../../shared/support/support';
 
 /**
  * Base query component implementation for all aggregate report types.
  */
-export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestroy {
-
-  @Input()
-  submitAction: EventEmitter<Event>;
-
+export abstract class BaseAggregateQueryFormComponent
+  implements OnInit, OnDestroy {
   /**
    * Holds the server report options
    */
@@ -60,6 +64,9 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    * Handle on the request submission
    */
   submissionSubscription: Subscription;
+  saveQuerySubscription: Subscription;
+  saveQueryOnSubmit: boolean;
+  showSaveQueryButton: boolean;
 
   /**
    * The report request summary view
@@ -70,30 +77,36 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    * Controls for view invalidation
    */
   reviewSectionInvalid: Observer<void>;
-  reviewSectionViewInvalidator: Observable<void> = Observable.create(observer => this.reviewSectionInvalid = observer);
+  reviewSectionViewInvalidator: Observable<void> = Observable.create(
+    observer => (this.reviewSectionInvalid = observer)
+  );
 
   previewSectionInvalid: Observer<void>;
-  previewSectionViewInvalidator: Observable<void> = Observable.create(observer => this.previewSectionInvalid = observer);
+  previewSectionViewInvalidator: Observable<void> = Observable.create(
+    observer => (this.previewSectionInvalid = observer)
+  );
 
-  private _submitSubscription: Subscription;
   protected subjectDefinitions: SubjectDefinition[] = [];
+  private initialQuery: AggregateReportQueryType;
 
-  constructor(protected columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
-              protected notificationService: NotificationService,
-              protected optionMapper: AggregateReportOptionsMapper,
-              protected reportService: AggregateReportService,
-              protected subjectService: SubjectService,
-              protected requestMapper: AggregateReportRequestMapper,
-              protected route: ActivatedRoute,
-              protected router: Router,
-              protected tableDataService: AggregateReportTableDataService) {
-
-    const { options, settings } = route.snapshot.data;
+  protected constructor(
+    protected columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
+    protected notificationService: NotificationService,
+    protected optionMapper: AggregateReportOptionsMapper,
+    protected reportService: AggregateReportService,
+    protected userQueryService: UserQueryService,
+    protected subjectService: SubjectService,
+    protected requestMapper: AggregateReportRequestMapper,
+    protected route: ActivatedRoute,
+    protected router: Router,
+    protected tableDataService: AggregateReportTableDataService
+  ) {
+    const { options } = route.snapshot.data;
     this.aggregateReportOptions = options;
-    this.settings = { ...settings };
     this.filteredOptions = optionMapper.map(this.aggregateReportOptions);
-    this.setDefaultAssessmentType();
   }
+
+  abstract initialize(): void;
 
   /**
    * Responsible for tracking form validity
@@ -110,11 +123,11 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    */
   get subjectDefinition(): SubjectDefinition {
     const { settings } = this;
-    return this.subjectDefinitions
-      .find(x =>
-        x.subject == settings.subjects[0].code
-        && x.assessmentType == settings.assessmentType
-      );
+    return this.subjectDefinitions.find(
+      x =>
+        x.subject == settings.subjects[0].code &&
+        x.assessmentType == settings.assessmentType
+    );
   }
 
   abstract getReportType(): ReportQueryType;
@@ -130,27 +143,85 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   abstract getSupportedAssessmentTypes(): string[];
 
   ngOnInit(): void {
-    this.subjectService.getSubjectDefinitions().subscribe(subjectDefinitions => {
+    const { query, options } = this.route.snapshot.data;
+    const { userQueryId, userReportId } = this.route.snapshot.queryParams;
+    this.showSaveQueryButton = userQueryId != null;
+    forkJoin(
+      this.subjectService.getSubjectDefinitions(),
+      query != null
+        ? this.requestMapper.toSettings(query, options)
+        : this.optionMapper.toDefaultSettings(options)
+    ).subscribe(([subjectDefinitions, settings]) => {
       this.subjectDefinitions = subjectDefinitions;
+      this.settings =
+        userReportId != null
+          ? {
+              ...settings,
+              name: Utils.appendOrIncrementFileNameSuffix(query.name)
+            }
+          : settings;
 
       this.updateSubjectsEnabled();
-    });
-
-    this._submitSubscription = this.submitAction.subscribe(() => {
-      this.onGenerateButtonClick();
+      this.setDefaultAssessmentType();
+      this.initialize();
+      this.initialQuery = {
+        ...this.createReportRequest(),
+        type: query.type
+      };
     });
   }
 
   ngOnDestroy(): void {
-    this._submitSubscription.unsubscribe();
+    if (this.saveQuerySubscription != null) {
+      this.saveQuerySubscription.unsubscribe();
+    }
+    if (this.submissionSubscription != null) {
+      this.submissionSubscription.unsubscribe();
+    }
+  }
+
+  get saveQueryButtonDisabled(): boolean {
+    return (
+      this.getFormGroup().invalid ||
+      this.submissionSubscription != null ||
+      this.saveQuerySubscription != null ||
+      isEqualReportQuery(this.initialQuery, this.createReportRequest())
+    );
+  }
+
+  get saveQueryCheckboxDisabled(): boolean {
+    return this.submissionSubscription != null;
   }
 
   getControl(name: string): AbstractControl {
-    return this.getFormGroup().contains(name) ? this.getFormGroup().get(name) : this.getFormGroup();
+    return this.getFormGroup().contains(name)
+      ? this.getFormGroup().get(name)
+      : this.getFormGroup();
   }
 
   onColumnOrderChange(items: OrderableItem[]): void {
     this.settings.columnOrder = items.map(item => item.value);
+  }
+
+  onSaveQueryButtonClick(): void {
+    const userQuery = this.createUserQuery();
+    this.saveQuerySubscription = this.userQueryService
+      .updateQuery(userQuery)
+      .pipe(
+        finalize(() => {
+          this.saveQuerySubscription = null;
+        })
+      )
+      .subscribe(
+        () => {
+          this.initialQuery = <AggregateReportQueryType>userQuery.query;
+        },
+        () => {
+          this.notificationService.error({
+            id: 'user-query.action.save.error'
+          });
+        }
+      );
   }
 
   /**
@@ -158,7 +229,15 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    */
   onGenerateButtonClick(): void {
     this.validate(this.getFormGroup(), () => {
-      this.submissionSubscription = this.reportService.createReport(this.createReportRequest())
+      const query = this.createReportRequest();
+      const operation: Observable<any> = forkJoin(
+        this.reportService.createReport(query),
+        this.saveQueryOnSubmit
+          ? this.userQueryService.createQuery(query)
+          : of(undefined)
+      );
+
+      this.submissionSubscription = operation
         .pipe(
           finalize(() => {
             this.submissionSubscription.unsubscribe();
@@ -166,46 +245,66 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
           })
         )
         .subscribe(
-          resource => {
-            this.router.navigate([ resource.id ], { relativeTo: this.route });
+          ([userReport, userQuery]) => {
+            this.router.navigate([userReport.id], { relativeTo: this.route });
           },
-          error => {
-            this.notificationService.error({ id: 'common.messages.submission-failed', html: true });
+          () => {
+            this.notificationService.error({
+              id: 'common.messages.submission-failed',
+              html: true
+            });
           }
         );
     });
   }
 
   updateSubjectsEnabled(): void {
-    const validSubjectDefinitions = this.subjectDefinitions.filter(x => x.assessmentType == this.settings.assessmentType);
-    const enabledSubjects = this.settings.reportType === 'Target'
-      ? this.filteredOptions.subjects
-          .filter(subject => subject.value.targetReport && subject.value.assessmentType === this.settings.assessmentType)
-          .map(subject => subject.value.code)
-      : this.filteredOptions.subjects
-          .filter(subject => subject.value.assessmentType === this.settings.assessmentType)
-          .map(subject => subject.value.code);
+    const { settings } = this;
+    const validSubjectDefinitions = this.subjectDefinitions.filter(
+      x => x.assessmentType == settings.assessmentType
+    );
+    const enabledSubjects =
+      settings.reportType === 'Target'
+        ? this.filteredOptions.subjects
+            .filter(
+              ({ value }) =>
+                value.targetReport &&
+                value.assessmentType === settings.assessmentType
+            )
+            .map(({ value }) => value.code)
+        : this.filteredOptions.subjects
+            .filter(
+              ({ value }) => value.assessmentType === settings.assessmentType
+            )
+            .map(({ value }) => value.code);
 
     // disable subjects that don't have a definition for the assessment type
     // for target report, hide subjects that have the target_report flag set to false
-    let updatedOptions: Option[] = [];
+    const updatedOptions: Option[] = [];
 
     this.filteredOptions.subjects
-      .filter(x => x.value.assessmentType === this.settings.assessmentType)
+      .filter(({ value }) => value.assessmentType === settings.assessmentType)
       .forEach(option => {
-      updatedOptions.push(
-        Object.assign(option, {
-          disabled: !validSubjectDefinitions.some(x => x.subject == option.value.code),
-          hidden: !enabledSubjects.some(x => x === option.value.code)
-        })
-      );
-    });
+        updatedOptions.push({
+          ...option,
+          ...{
+            disabled: !validSubjectDefinitions.some(
+              x => x.subject == option.value.code
+            ),
+            hidden: !enabledSubjects.some(x => x === option.value.code)
+          }
+        });
+      });
 
     this.filteredOptions.subjects = updatedOptions;
 
     // remove any disabled ones from the subject selection
-    const disabledOptions = updatedOptions.filter(x => x.disabled || x.hidden).map(x => x.value.code);
-    this.settings.subjects = this.settings.subjects.filter(subject => !disabledOptions.includes(subject));
+    const disabledOptions = updatedOptions
+      .filter(x => x.disabled || x.hidden)
+      .map(x => x.value.code);
+    this.settings.subjects = this.settings.subjects.filter(
+      subject => !disabledOptions.includes(subject)
+    );
   }
 
   /**
@@ -253,7 +352,8 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    * @returns {string[]} The new column order
    */
   protected getColumnOrderForAssessmentDefinition(): string[] {
-    const targetColumns: string[] = this.getAssessmentDefinition().aggregateReportIdentityColumns;
+    const targetColumns: string[] = this.getAssessmentDefinition()
+      .aggregateReportIdentityColumns;
     if (this.settings.columnOrder.length != targetColumns.length) {
       return targetColumns;
     }
@@ -270,13 +370,17 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   protected setDefaultAssessmentType(): void {
     const supportedTypes: string[] = this.getSupportedAssessmentTypes();
 
-    this.filteredOptions.assessmentTypes = this.filteredOptions.assessmentTypes
-      .filter((type) => supportedTypes.includes(type.value));
+    this.filteredOptions.assessmentTypes = this.filteredOptions.assessmentTypes.filter(
+      type => supportedTypes.includes(type.value)
+    );
 
-    const allowedTypes: string[] = this.filteredOptions.assessmentTypes
-      .map(option => option.value);
+    const allowedTypes: string[] = this.filteredOptions.assessmentTypes.map(
+      option => option.value
+    );
 
-    this.settings.assessmentType = allowedTypes.includes(this.settings.assessmentType)
+    this.settings.assessmentType = allowedTypes.includes(
+      this.settings.assessmentType
+    )
       ? this.settings.assessmentType
       : allowedTypes[0];
   }
@@ -290,10 +394,10 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
    * @param {Function} onValid
    */
   protected validate(formGroup: FormGroup, onValid: () => void): void {
-
     // Mark form as dirty
-    Forms.controls(this.getFormGroup())
-      .forEach(control => control.markAsDirty());
+    Forms.controls(this.getFormGroup()).forEach(control =>
+      control.markAsDirty()
+    );
 
     this.getFormGroup().updateValueAndValidity();
 
@@ -303,7 +407,10 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
     } else {
       // Notify user of all form errors to correct
       Forms.errors(this.getFormGroup()).forEach(error => {
-        this.notificationService.error({ id: error.properties.messageId, args: error.properties.args });
+        this.notificationService.error({
+          id: error.properties.messageId,
+          args: error.properties.args
+        });
       });
     }
   }
@@ -311,15 +418,26 @@ export abstract class BaseAggregateQueryFormComponent implements OnInit, OnDestr
   /**
    * Creates an aggregate report request from the current
    * options, settings, and assessment definition.
-   *
-   * @returns {AggregateQueryType} the created request
    */
   protected createReportRequest(): AggregateReportQueryType {
-    return this.requestMapper.map(this.filteredOptions, this.settings, this.getAssessmentDefinition());
+    return this.requestMapper.map(
+      this.filteredOptions,
+      this.settings,
+      this.getAssessmentDefinition()
+    );
+  }
+
+  private createUserQuery(): UserQuery {
+    return {
+      id: this.route.snapshot.queryParams.userQueryId,
+      query: this.createReportRequest()
+    };
   }
 
   protected updateColumnOrder(): void {
     this.settings.columnOrder = this.getColumnOrderForAssessmentDefinition();
-    this.columnItems = this.columnOrderableItemProvider.toOrderableItems(this.settings.columnOrder);
+    this.columnItems = this.columnOrderableItemProvider.toOrderableItems(
+      this.settings.columnOrder
+    );
   }
 }

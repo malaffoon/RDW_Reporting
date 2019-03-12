@@ -10,12 +10,17 @@ function createOptions(
   userQueryService: UserQueryService,
   translateService: TranslateService,
   router: Router,
+  onCopyQuery: (userQuery: UserQuery) => void,
   onDeleteQuery: (userQuery: UserQuery) => void
 ): MenuOption[] {
   return [
     {
       click: createViewQueryOptionHandler(userQuery, router),
       label: translateService.instant('user-query-menu-option.view')
+    },
+    {
+      click: () => onCopyQuery(userQuery),
+      label: translateService.instant('user-query-menu-option.copy')
     },
     {
       click: () => onDeleteQuery(userQuery),
@@ -56,6 +61,7 @@ export class UserQueryMenuOptionService {
 
   createMenuOptions(
     userQuery: UserQuery,
+    onCopyQuery: (userQuery: UserQuery) => void,
     onDeleteQuery: (userQuery: UserQuery) => void
   ): MenuOption[] {
     return createOptions(
@@ -63,6 +69,7 @@ export class UserQueryMenuOptionService {
       this.userQueryService,
       this.translateService,
       this.router,
+      onCopyQuery,
       onDeleteQuery
     );
   }

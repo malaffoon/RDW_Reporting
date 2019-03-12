@@ -12,6 +12,7 @@ import { UserQueryMenuOptionService } from './user-query-menu-option.service';
 import { UserReportStore } from './user-report.store';
 import { TabsetComponent } from 'ngx-bootstrap';
 import Timer = NodeJS.Timer;
+import { Utils } from '../shared/support/support';
 
 interface MenuOptionHolder {
   options: MenuOption[];
@@ -79,6 +80,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
                   ...userQuery,
                   options: this.userQueryMenuOptionService.createMenuOptions(
                     userQuery,
+                    userQuery => this.onCopyUserQuery(userQuery),
                     userQuery => this.onDeleteUserQuery(userQuery)
                   )
                 }
@@ -102,6 +104,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   reload(): void {
     window.location.reload();
+  }
+
+  onCopyUserQuery(userQuery: UserQuery): void {
+    this.userQueryService
+      .createQuery({
+        ...userQuery.query,
+        name: Utils.appendOrIncrementFileNameSuffix(userQuery.query.name)
+      })
+      .subscribe(userQuery => {
+        this.userQueryStore.setState([userQuery, ...this.userQueryStore.state]);
+      });
   }
 
   onDeleteUserQuery(userQuery: UserQuery): void {

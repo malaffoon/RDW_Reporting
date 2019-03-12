@@ -148,36 +148,32 @@
           }"
         >
           <div class="controls">
-            <div *ngIf="!showSaveQueryButton">
+            <div>
               <br />
-              <div class="form-group checkbox-form-group">
+              <div
+                *ngIf="!showSaveQueryButton"
+                class="form-group inline-checkbox-form-group"
+              >
                 <input
                   id="save-query-checkbox"
                   type="checkbox"
-                  class="btn btn-info aqua"
+                  [ngClass]="{ 'text-muted': saveQueryCheckboxDisabled }"
                   [disabled]="saveQueryCheckboxDisabled"
                   [(ngModel)]="saveQueryOnSubmit"
                   [ngModelOptions]="{ standalone: true }"
                 />
                 <label for="save-query-checkbox">
-                  {{
-                    'organization-export.form.save-query-button-label'
-                      | translate
-                  }}
+                  {{ 'user-query.action.save.label' | translate }}
                 </label>
               </div>
-            </div>
-            <div *ngIf="showSaveQueryButton">
-              <br />
               <button
+                *ngIf="showSaveQueryButton"
                 type="button"
                 class="btn btn-info aqua"
                 [disabled]="saveQueryButtonDisabled"
                 (click)="onSaveQueryButtonClick()"
               >
-                {{
-                  'organization-export.form.save-query-button-label' | translate
-                }}
+                {{ 'user-query.action.save.label' | translate }}
               </button>
             </div>
             <div>

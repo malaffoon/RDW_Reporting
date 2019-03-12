@@ -8,36 +8,28 @@ import { ExamFilterOptionsService } from '../assessments/filters/exam-filters/ex
 import { OrganizationExport } from './organization-export';
 import { NotificationService } from '../shared/notification/notification.service';
 import { Option } from '../shared/form/sb-typeahead.component';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { UserOrganizationService } from './organization/user-organization.service';
 import { UserReportService } from '../report/user-report.service';
 import { UserQueryService } from '../report/user-query.service';
-import { getQueryFromRouteQueryParameters } from '../report/reports';
+import {
+  getQueryFromRouteQueryParameters,
+  isEqualReportQuery
+} from '../report/reports';
 import { DistrictSchoolExportReportQuery, UserQuery } from '../report/report';
 import { Utils } from '../shared/support/support';
-import { isEqual } from 'lodash';
 import { UserOrganizations } from './organization/user-organization';
 import { createOptions } from './organization-exports';
 import { createOrganizationTreeWithPlaceholders } from './organization/organization-trees';
 import { createOrganizationExportQuery } from './organization-export-queries';
-import { byNumber, byString } from '@kourge/ordering/comparator';
+import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fileName } from '../shared/form/validators';
 import { finalize } from 'rxjs/operators';
 
-const byId = ordering(byNumber).on(({ id }) => id).compare;
 const byName = ordering(byString).on(({ name }) => name).compare;
-
-function normalizeOrganizationExport(
-  value: OrganizationExport
-): OrganizationExport {
-  return {
-    ...value,
-    schools: value.schools.slice().sort(byId)
-  };
-}
 
 @Component({
   selector: 'organization-export',
@@ -74,7 +66,7 @@ export class OrganizationExportComponent implements OnInit {
   transferAccess: boolean;
   showSaveQueryButton: boolean;
   userOrganizations: UserOrganizations;
-  initialOrganizationExport: OrganizationExport;
+  initialQuery: DistrictSchoolExportReportQuery;
   createReportSubscription: Subscription;
   saveQuerySubscription: Subscription;
   saveQueryOnSubmit: boolean;
@@ -141,8 +133,6 @@ export class OrganizationExportComponent implements OnInit {
       this.userOrganizations = userOrganizations;
       this.transferAccess = settings.transferAccess;
       this.schoolYearOptions = options.schoolYears;
-      this.initialOrganizationExport = organizationExport;
-      // this.organizationExport = cloneDeep(organizationExport);
       this.showSaveQueryButton = userQueryId != null;
 
       // create all options and reuse them when calling createOptions()
@@ -188,7 +178,7 @@ export class OrganizationExportComponent implements OnInit {
       // initialize selected schools based on user organizations
       // if the user only has one school to select, select it for them.
       this.selectedSchools = organizationExport.schools;
-
+      this.initialQuery = this.createQuery();
       this.initialized = true;
     });
   }
@@ -243,10 +233,7 @@ export class OrganizationExportComponent implements OnInit {
       this.formGroup.invalid ||
       this.saveQuerySubscription != null ||
       this.createReportSubscription != null ||
-      isEqual(
-        normalizeOrganizationExport(this.initialOrganizationExport),
-        normalizeOrganizationExport(this.formGroup.getRawValue())
-      )
+      isEqualReportQuery(this.initialQuery, this.createQuery())
     );
   }
 
@@ -317,8 +304,9 @@ export class OrganizationExportComponent implements OnInit {
   }
 
   onSaveQueryButtonClick(): void {
+    const userQuery = this.createUserQuery();
     this.saveQuerySubscription = this.userQueryService
-      .updateQuery(this.createUserQuery())
+      .updateQuery(userQuery)
       .pipe(
         finalize(() => {
           this.saveQuerySubscription = null;
@@ -326,7 +314,7 @@ export class OrganizationExportComponent implements OnInit {
       )
       .subscribe(
         () => {
-          this.initialOrganizationExport = this.formGroup.getRawValue();
+          this.initialQuery = userQuery.query;
         },
         () => {
           this.notificationService.error({

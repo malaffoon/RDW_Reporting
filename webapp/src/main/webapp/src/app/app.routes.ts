@@ -32,7 +32,7 @@ import { RoutingAuthorizationCanActivate } from './shared/security/routing-autho
 import { AggregateReportComponent } from './aggregate-report/results/aggregate-report.component';
 import { AggregateReportResolve } from './aggregate-report/results/aggregate-report.resolve';
 import { AggregateReportOptionsResolve } from './aggregate-report/aggregate-report-options.resolve';
-import { AggregateReportFormSettingsResolve } from './aggregate-report/aggregate-report-form-settings.resolve';
+import { ReportQueryResolve } from './aggregate-report/report-query.resolve';
 import { GroupDashboardComponent } from './dashboard/group-dashboard/group-dashboard.component';
 import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
@@ -324,7 +324,7 @@ export const routes: Routes = [
             path: '',
             pathMatch: 'full',
             resolve: {
-              settings: AggregateReportFormSettingsResolve
+              query: ReportQueryResolve
             },
             component: AggregateQueryFormContainerComponent
           },

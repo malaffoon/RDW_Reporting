@@ -1379,12 +1379,14 @@
   "user-query": {
     "action": {
       "save": {
+        "label": "Save Query",
         "error": "Failed to save query"
       }
     }
   },
   "user-query-menu-option": {
     "view": "View Query",
+    "copy": "Copy Query",
     "delete": "Delete Query"
   }
 }
