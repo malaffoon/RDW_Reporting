@@ -1,10 +1,17 @@
-import { Component, EventEmitter, Input, Output, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { Forms } from './forms';
 import { AbstractControlValueAccessor } from './abstract-control-value-accessor';
-import * as _ from 'lodash';
+import { isEqual } from 'lodash';
 import { Utils } from '../support/support';
 import { Option } from './option';
-import {AutoComplete} from "primeng/primeng";
+import { AutoComplete } from 'primeng/primeng';
 
 /**
  * Holds the internal button selection state
@@ -34,66 +41,86 @@ const DefaultButtonStyles = 'btn-primary';
   selector: 'sb-typeahead-group',
   template: `
     <ng-template #button let-option let-isAllOption="isAllOption">
-      <label class="btn"
-             [ngClass]="computeStylesInternal(buttonStyles, { 
-                 active: isAllOption ? stateInternal.selectedAllOption : stateInternal.selectedOptions.has(option), 
-                 disabled: option.disabled 
-             })"> 
-        <input type="checkbox"
-               [attr.checked]="isAllOption ? stateInternal.selectedAllOption : stateInternal.selectedOptions.has(option)"
-               [name]="name"
-               [disabled]="option.disabled"
-               (click)="onAllOptionClickInternal()">
-        {{option.text}}
+      <label
+        class="btn"
+        [ngClass]="
+          computeStylesInternal(buttonStyles, {
+            active: isAllOption
+              ? stateInternal.selectedAllOption
+              : stateInternal.selectedOptions.has(option),
+            disabled: option.disabled
+          })
+        "
+      >
+        <input
+          type="checkbox"
+          [attr.checked]="
+            isAllOption
+              ? stateInternal.selectedAllOption
+              : stateInternal.selectedOptions.has(option)
+          "
+          [name]="name"
+          [disabled]="option.disabled"
+          (click)="onAllOptionClickInternal()"
+        />
+        {{ option.text }}
       </label>
     </ng-template>
 
-    <div *ngIf="initializedInternal"
-         data-toggle="buttons"
-         class="typeahead-group all-option btn-group-sm vertical nested-btn-group">
+    <div
+      *ngIf="initializedInternal"
+      data-toggle="buttons"
+      class="typeahead-group all-option btn-group-sm vertical nested-btn-group"
+    >
+      <ng-container
+        *ngTemplateOutlet="
+          button;
+          context: {
+            $implicit: { text: 'common.buttons.all' | translate },
+            isAllOption: true
+          }
+        "
+      ></ng-container>
 
-      <ng-container *ngTemplateOutlet="button; context:{
-        $implicit: { text: ('common.buttons.all' | translate) },
-        isAllOption: true
-      }"></ng-container>
-
-      <div class="btn-group chips"
-           [ngClass]="buttonGroupStyles">
-
-        <p-autoComplete #autoComplete
-                        [(ngModel)]="options"
-                        [autoHighlight]="true"
-                        [suggestions]="filteredOptions"
-                        [multiple]="true"
-                        dataKey="value"
-                        (completeMethod)="search($event)"
-                        (onSelect)="optionSelected($event)"
-                        (keydown)="onKeydown($event)"
-                        styleClass="wid100"
-                        [minLength]="0" 
-                        [dropdown]="true"
-                        [placeholder]="placeholder"
-                        [scrollHeight]="'158px'"
-                        field="text" >
-        </p-autoComplete> 
+      <div class="btn-group chips" [ngClass]="buttonGroupStyles">
+        <p-autoComplete
+          #autoComplete
+          [(ngModel)]="options"
+          [autoHighlight]="true"
+          [suggestions]="filteredOptions"
+          [multiple]="true"
+          dataKey="value"
+          (completeMethod)="search($event)"
+          (onSelect)="optionSelected($event)"
+          (keydown)="onKeydown($event)"
+          styleClass="wid100"
+          [minLength]="0"
+          [dropdown]="true"
+          [placeholder]="placeholder"
+          [scrollHeight]="'158px'"
+          field="text"
+        >
+        </p-autoComplete>
         <div class="languages-container btn-group-sm">
           <ng-container *ngFor="let option of options">
-            <label class="btn btn-primary active">{{option.text}}
-              <i class="fa fa-times fa-lg pull-right"
-                 tabindex="0"
-                 (click)="removeOption(option)"
-                 (keyup.enter)="removeOption(option)"></i>
+            <label class="btn btn-primary active"
+              >{{ option.text }}
+              <i
+                class="fa fa-times fa-lg pull-right"
+                tabindex="0"
+                (click)="removeOption(option)"
+                (keyup.enter)="removeOption(option)"
+              ></i>
             </label>
           </ng-container>
         </div>
       </div>
     </div>
   `,
-  providers: [
-    Forms.valueAccessor(SBTypeaheadGroup)
-  ]
+  providers: [Forms.valueAccessor(SBTypeaheadGroup)]
 })
-export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
+export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]>
+  implements OnInit {
   private _options: Option[];
   private _initialOptions: Option[] = [];
   private _initialValues: any[];
@@ -124,14 +151,17 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   public property: string;
 
   @Output()
-  optionsEvent = new EventEmitter <Option[]>();
+  optionsEvent = new EventEmitter<Option[]>();
 
   constructor() {
     super();
   }
 
   ngOnInit(): void {
-    this._initialOptions = (this.initialOptions != null && this.initialOptions.length > 0) ? this.initialOptions : [];
+    this._initialOptions =
+      this.initialOptions != null && this.initialOptions.length > 0
+        ? this.initialOptions
+        : [];
     this._options = this.parseInputOptions(this._initialOptions);
     this._value = this.parseInputValues(this._initialValues);
     this._state = this.computeState(this._options, this._value);
@@ -168,7 +198,7 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   }
 
   onKeydown($event) {
-    if ($event.key === "ArrowDown" && !this.autoComplete.overlayVisible) {
+    if ($event.key === 'ArrowDown' && !this.autoComplete.overlayVisible) {
       this.autoComplete.handleDropdownClick(0);
     }
   }
@@ -220,9 +250,10 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   search(event) {
     let query = event.query;
     this.filteredOptions = this.suggestions.filter(
-      option => option.text.toUpperCase().indexOf(query.toUpperCase()) > -1
-        && !this._options.find(o => o.value === option.value)
-    )
+      option =>
+        option.text.toUpperCase().indexOf(query.toUpperCase()) > -1 &&
+        !this._options.find(o => o.value === option.value)
+    );
   }
 
   private optionSelected(event) {
@@ -251,7 +282,7 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
    */
   private parseInputValues(values: any): any[] {
     if (values == null) {
-        return [];
+      return [];
     }
     // Make a copy of the value to avoid side effects
     return values.concat();
@@ -269,12 +300,15 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
       this.throwError('options must not be null or undefined');
     }
 
-    return options.map(option => <Option>{
-      value: option.value,
-      text: option.text ? option.text : option.value,
-      analyticsProperties: option.analyticsProperties,
-      disabled: option.disabled
-    });
+    return options.map(
+      option =>
+        <Option>{
+          value: option.value,
+          text: option.text ? option.text : option.value,
+          analyticsProperties: option.analyticsProperties,
+          disabled: option.disabled
+        }
+    );
   }
 
   /**
@@ -287,8 +321,12 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
     const values = state.selectedAllOption
       ? undefined
       : options
-        .filter(option => !option.disabled && (state.selectedAllOption || state.selectedOptions.has(option)))
-        .map(option => option.value);
+          .filter(
+            option =>
+              !option.disabled &&
+              (state.selectedAllOption || state.selectedOptions.has(option))
+          )
+          .map(option => option.value);
 
     this.setValueAndNotifyChanges(values);
   }
@@ -303,8 +341,12 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
    */
   private computeState(options: Option[], values: any[]): State {
     let enabledOptions = options.filter(x => !x.disabled);
-    const effectiveOptions = enabledOptions.filter(option => values.includes(option.value));
-    const effectivelySelectedAllOption = this.suggestions.length === enabledOptions.length || (enabledOptions.length == 0);
+    const effectiveOptions = enabledOptions.filter(option =>
+      values.includes(option.value)
+    );
+    const effectivelySelectedAllOption =
+      this.suggestions.length === enabledOptions.length ||
+      enabledOptions.length == 0;
     return {
       selectedAllOption: effectivelySelectedAllOption,
       selectedOptions: effectivelySelectedAllOption
@@ -332,7 +374,7 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   }
 
   private setValueAndNotifyChanges(value: any) {
-    if (!_.isEqual(this._value, value)) {
+    if (!isEqual(this._value, value)) {
       this._value = value;
       this._onChangeCallback(value);
     }
@@ -341,5 +383,4 @@ export class SBTypeaheadGroup extends AbstractControlValueAccessor<any[]> implem
   private throwError(message: string): void {
     throw new Error(`${this.constructor.name} ${message}`);
   }
-
 }

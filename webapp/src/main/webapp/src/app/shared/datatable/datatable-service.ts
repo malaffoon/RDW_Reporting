@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AggregateReportItem } from '../../aggregate-report/results/aggregate-report-item';
 import { Table } from 'primeng/table';
-import * as _ from 'lodash';
+import { get } from 'lodash';
 import { BaseColumn } from './base-column.model';
 
 @Injectable()
@@ -10,13 +10,25 @@ export class DataTableService {
    * Calculate the index for each row at which it differs from the data in the previous row.
    * This is used to display a tree-like structure which hides repetitive data in the left-most columns.
    */
-  calculateTreeColumns(rows: any[], dataTable: Table, allColumns: BaseColumn[], identityColumns: string[]): number[] {
+  calculateTreeColumns(
+    rows: any[],
+    dataTable: Table,
+    allColumns: BaseColumn[],
+    identityColumns: string[]
+  ): number[] {
     const treeColumns = [];
     const pageSize: number = dataTable.rows;
     let previousItem: AggregateReportItem;
     rows.forEach((currentItem: AggregateReportItem, index: number) => {
-      treeColumns.push(!previousItem || (index % pageSize == 0)
-        ? 0 : this.indexOfFirstUniqueColumnValue(allColumns, identityColumns, previousItem, currentItem)
+      treeColumns.push(
+        !previousItem || index % pageSize == 0
+          ? 0
+          : this.indexOfFirstUniqueColumnValue(
+              allColumns,
+              identityColumns,
+              previousItem,
+              currentItem
+            )
       );
       previousItem = currentItem;
     });
@@ -32,10 +44,15 @@ export class DataTableService {
    * @param currentItem   The current row
    * @returns {number}  The differentiating column of the currentItem
    */
-  private indexOfFirstUniqueColumnValue(allColumns: BaseColumn[], identityColumns: string[], previousItem: any, currentItem: any): number {
+  private indexOfFirstUniqueColumnValue(
+    allColumns: BaseColumn[],
+    identityColumns: string[],
+    previousItem: any,
+    currentItem: any
+  ): number {
     let index: number;
     for (index = 0; index < identityColumns.length - 1; index++) {
-      const column: BaseColumn = allColumns[ index ];
+      const column: BaseColumn = allColumns[index];
       if (column.id === 'organization') {
         const previousOrg = previousItem.organization;
         const currentOrg = currentItem.organization;
@@ -43,8 +60,8 @@ export class DataTableService {
           break;
         }
       } else {
-        const previousValue = _.get(previousItem, column.field); // TODO would be nice if this was based on "sortField" as opposed to field
-        const currentValue = _.get(currentItem, column.field);
+        const previousValue = get(previousItem, column.field); // TODO would be nice if this was based on "sortField" as opposed to field
+        const currentValue = get(currentItem, column.field);
         if (previousValue !== currentValue) {
           break;
         }
