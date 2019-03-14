@@ -10,12 +10,13 @@ function createOptions(
   userQueryService: UserQueryService,
   translateService: TranslateService,
   router: Router,
+  onViewQuery: (userQuery: UserQuery) => void,
   onCopyQuery: (userQuery: UserQuery) => void,
   onDeleteQuery: (userQuery: UserQuery) => void
 ): MenuOption[] {
   return [
     {
-      click: createViewQueryOptionHandler(userQuery, router),
+      click: createViewQueryOptionHandler(userQuery, onViewQuery, router),
       label: translateService.instant('user-query-menu-option.view')
     },
     {
@@ -31,13 +32,14 @@ function createOptions(
 
 function createViewQueryOptionHandler(
   userQuery: UserQuery,
+  onViewQuery: (userQuery: UserQuery) => void,
   router: Router
 ): (event: MouseEvent) => void {
   switch (userQuery.query.type) {
     case 'Student':
     case 'SchoolGrade':
     case 'Group':
-      return () => console.log('TODO: view query', userQuery.query.type);
+      return () => onViewQuery(userQuery);
     case 'DistrictSchoolExport':
       return () =>
         router.navigateByUrl(`/custom-export?userQueryId=${userQuery.id}`);
@@ -61,6 +63,7 @@ export class UserQueryMenuOptionService {
 
   createMenuOptions(
     userQuery: UserQuery,
+    onViewQuery: (userQuery: UserQuery) => void,
     onCopyQuery: (userQuery: UserQuery) => void,
     onDeleteQuery: (userQuery: UserQuery) => void
   ): MenuOption[] {
@@ -69,6 +72,7 @@ export class UserQueryMenuOptionService {
       this.userQueryService,
       this.translateService,
       this.router,
+      onViewQuery,
       onCopyQuery,
       onDeleteQuery
     );

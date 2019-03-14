@@ -20,6 +20,15 @@ export function isEqualSet(a: any[], b: any[]): boolean {
   );
 }
 
+/**
+ * Safely creates a copy of an array
+ *
+ * @param values The values to copy
+ */
+export function safeCopy(values: any[]): any[] {
+  return values != null ? values.slice() : values;
+}
+
 export class Utils {
   static equalSets(a: any[], b: any[]): boolean {
     return (

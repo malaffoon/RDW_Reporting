@@ -107,8 +107,8 @@ export interface ExamReportQuery extends ReportQuery {
  * Base for all printable reports
  */
 export interface PrintableReportQuery extends ExamReportQuery {
-  subjectCode: string;
-  assessmentTypeCode: string;
+  subjectCode?: string;
+  assessmentTypeCode?: string;
   language: string;
   accommodationsVisible: boolean;
 }
