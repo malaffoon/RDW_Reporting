@@ -12,6 +12,7 @@ function createOptions(
   userQueryService: UserQueryService,
   translateService: TranslateService,
   router: Router,
+  onViewQuery: (userReport: UserReport) => void,
   onDeleteReport: (userReport: UserReport) => void,
   onSaveQuery: (userReport: UserReport) => void
 ): MenuOption[] {
@@ -31,16 +32,21 @@ function createOptions(
     disabled: userReport.status !== 'COMPLETED'
   };
 
-  switch (userReport.query.type) {
+  const queryType = userReport.query.type;
+  switch (queryType) {
     case 'Student':
     case 'SchoolGrade':
     case 'Group':
-      return [OpenOption, SaveQueryOption, DeleteOption];
     case 'DistrictSchoolExport':
       const ViewQueryOption = {
         label: translateService.instant('report-action.view-query'),
-        click: () =>
-          router.navigateByUrl(`/custom-export?userReportId=${userReport.id}`)
+        click:
+          queryType !== 'DistrictSchoolExport'
+            ? () => onViewQuery(userReport)
+            : () =>
+                router.navigateByUrl(
+                  `/custom-export?userReportId=${userReport.id}`
+                )
       };
       return [OpenOption, ViewQueryOption, SaveQueryOption, DeleteOption];
     case 'CustomAggregate':
@@ -97,6 +103,7 @@ export class UserReportMenuOptionService {
 
   createMenuOptions(
     userReport: UserReport,
+    onViewQuery: (userReport: UserReport) => void,
     onDeleteReport: (userReport: UserReport) => void,
     onSaveQuery: (userReport: UserReport) => void
   ): MenuOption[] {
@@ -106,6 +113,7 @@ export class UserReportMenuOptionService {
       this.userQueryService,
       this.translateService,
       this.router,
+      onViewQuery,
       onDeleteReport,
       onSaveQuery
     );

@@ -4,22 +4,25 @@ import { UserReportService } from './user-report.service';
 import { UserQuery, UserReport } from './report';
 import { forkJoin, Observable } from 'rxjs';
 import { UserQueryService } from './user-query.service';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { UserQueryStore } from './user-query.store';
 import { MenuOption } from '../shared/menu/menu.component';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
 import { UserQueryMenuOptionService } from './user-query-menu-option.service';
 import { UserReportStore } from './user-report.store';
-import { TabsetComponent } from 'ngx-bootstrap';
-import Timer = NodeJS.Timer;
+import { BsModalService, TabsetComponent } from 'ngx-bootstrap';
 import { Utils } from '../shared/support/support';
+import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
+import Timer = NodeJS.Timer;
 
 interface MenuOptionHolder {
   options: MenuOption[];
 }
 
 interface UserReportView extends UserReport, MenuOptionHolder {}
+
 interface UserQueryView extends UserReport, MenuOptionHolder {}
+
 type LoadingStatus = 'Loading' | 'Loaded' | 'Failed';
 
 /**
@@ -47,7 +50,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private userReportMenuOptionService: UserReportMenuOptionService,
     private userQueryService: UserQueryService,
     private userQueryStore: UserQueryStore,
-    private userQueryMenuOptionService: UserQueryMenuOptionService
+    private userQueryMenuOptionService: UserQueryMenuOptionService,
+    private modalService: BsModalService
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +68,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
               ...userReport,
               options: this.userReportMenuOptionService.createMenuOptions(
                 userReport,
+                userReport => this.onViewUserReportQuery(userReport),
                 userReport => this.onDeleteUserReport(userReport),
                 userReport => this.onSaveQuery(userReport)
               )
@@ -80,6 +85,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
                   ...userQuery,
                   options: this.userQueryMenuOptionService.createMenuOptions(
                     userQuery,
+                    userQuery => this.onViewUserQuery(userQuery),
                     userQuery => this.onCopyUserQuery(userQuery),
                     userQuery => this.onDeleteUserQuery(userQuery)
                   )
@@ -106,6 +112,25 @@ export class ReportsComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
+  onViewUserQuery(userQuery: UserQuery): void {
+    const modalReference = this.modalService.show(
+      PrintableReportFormModalComponent
+    );
+    const modal: PrintableReportFormModalComponent = modalReference.content;
+    modal.title = userQuery.query.name;
+    modal.form = {
+      query: userQuery.query,
+      userQueryId: userQuery.id
+    };
+    modal.userQueryUpdated.pipe(first()).subscribe(updated => {
+      this.userQueryStore.setState(
+        this.userQueryStore.state.map(existing =>
+          existing.id === updated.id ? updated : existing
+        )
+      );
+    });
+  }
+
   onCopyUserQuery(userQuery: UserQuery): void {
     this.userQueryService
       .createQuery({
@@ -123,6 +148,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.userQueryStore.setState(
         this.userQueryStore.state.filter(({ id }) => id !== userQuery.id)
       );
+    });
+  }
+
+  onViewUserReportQuery(userReport: UserReport): void {
+    const modalReference = this.modalService.show(
+      PrintableReportFormModalComponent
+    );
+    const modal: PrintableReportFormModalComponent = modalReference.content;
+    modal.title = userReport.query.name;
+    modal.form = {
+      query: userReport.query
+    };
+    modal.userReportCreated.pipe(first()).subscribe(created => {
+      this.userReportStore.setState([created, ...this.userReportStore.state]);
+    });
+    modal.userQueryCreated.pipe(first()).subscribe(created => {
+      this.userQueryStore.setState([created, ...this.userQueryStore.state]);
     });
   }
 

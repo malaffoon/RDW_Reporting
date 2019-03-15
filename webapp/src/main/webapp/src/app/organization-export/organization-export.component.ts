@@ -5,7 +5,6 @@ import { Tree } from './organization/tree';
 import { Organization, School } from './organization/organization';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamFilterOptionsService } from '../assessments/filters/exam-filters/exam-filter-options.service';
-import { OrganizationExport } from './organization-export';
 import { NotificationService } from '../shared/notification/notification.service';
 import { Option } from '../shared/form/sb-typeahead.component';
 import { forkJoin, Observable, Subscription } from 'rxjs';

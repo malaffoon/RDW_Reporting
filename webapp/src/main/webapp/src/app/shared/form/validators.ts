@@ -18,9 +18,14 @@ export function notEmpty(properties: any): ValidatorFn {
  * @param properties the properties to propagate when the control value is invalid
  * @return {ValidatorFn}
  */
-export function notIncluded(valueProvider: () => any[], properties: any): ValidatorFn {
+export function notIncluded(
+  valueProvider: () => any[],
+  properties: any
+): ValidatorFn {
   return control => {
-    return valueProvider().includes(control.value) ? { notIncluded: properties } : null;
+    return valueProvider().includes(control.value)
+      ? { notIncluded: properties }
+      : null;
   };
 }
 
@@ -31,9 +36,14 @@ export function notIncluded(valueProvider: () => any[], properties: any): Valida
  * @param properties the properties to propagate when the control value is invalid
  * @return {ValidatorFn}
  */
-export function isGreaterThan(greaterThanNumber: number, properties: any): ValidatorFn {
+export function isGreaterThan(
+  greaterThanNumber: number,
+  properties: any
+): ValidatorFn {
   return control => {
-    return control.value.length > greaterThanNumber ? null : { isGreaterThan: properties };
+    return control.value.length > greaterThanNumber
+      ? null
+      : { isGreaterThan: properties };
   };
 }
 
@@ -43,8 +53,14 @@ export function isGreaterThan(greaterThanNumber: number, properties: any): Valid
  * @param properties the properties to propagate when the control value is invalid
  * @return {ValidatorFn}
  */
-export function fileName(properties: any): ValidatorFn {
+export function fileName(
+  properties: any = {
+    messageId: 'aggregate-report-form.field.report-name-file-name-error'
+  }
+): ValidatorFn {
   return control => {
-    return /^[^\\<>:;,?"*|/]*$/.test((control.value || '').trim()) ? null : { fileName: properties };
+    return /^[^\\<>:;,?"*|/]*$/.test((control.value || '').trim())
+      ? null
+      : { fileName: properties };
   };
 }

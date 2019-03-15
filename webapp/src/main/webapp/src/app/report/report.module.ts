@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { FactoryProvider, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,16 +20,29 @@ import { UserQueryStore } from './user-query.store';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
 import { UserQueryMenuOptionService } from './user-query-menu-option.service';
 import { UserReportStore } from './user-report.store';
+import { NameFieldProvider } from './provider/name-field.provider';
+import { AccommodationsFieldProvider } from './provider/accommodations-field-provider';
+import { AssessmentTypeFieldProvider } from './provider/assessment-type-field.provider';
+import { LanguageFieldProvider } from './provider/language-field.provider';
+import { OrderFieldProvider } from './provider/order-field.provider';
+import { SchoolYearFieldProvider } from './provider/school-year-field.provider';
+import { SubjectFieldProvider } from './provider/subject-field.provider';
+import { TransferAccessFieldProvider } from './provider/transfer-access-field.provider';
+import { PrintableReportFormComponent } from './component/printable-report-form/printable-report-form.component';
+import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
+
+export const FieldProviders: FactoryProvider[] = [
+  AccommodationsFieldProvider,
+  AssessmentTypeFieldProvider,
+  LanguageFieldProvider,
+  NameFieldProvider,
+  OrderFieldProvider,
+  SchoolYearFieldProvider,
+  SubjectFieldProvider,
+  TransferAccessFieldProvider
+];
 
 @NgModule({
-  declarations: [
-    ReportsComponent,
-    UserReportTableComponent,
-    UserQueryTableComponent,
-    StudentReportDownloadComponent,
-    GroupReportDownloadComponent,
-    SchoolGradeDownloadComponent
-  ],
   imports: [
     Angulartics2Module.forRoot(),
     BrowserAnimationsModule,
@@ -43,19 +56,31 @@ import { UserReportStore } from './user-report.store';
     TableModule,
     TabsModule
   ],
-  exports: [
-    ReportsComponent,
-    StudentReportDownloadComponent,
-    GroupReportDownloadComponent,
-    SchoolGradeDownloadComponent
-  ],
   providers: [
     UserReportService,
     UserReportStore,
     UserReportMenuOptionService,
     UserQueryService,
     UserQueryStore,
-    UserQueryMenuOptionService
+    UserQueryMenuOptionService,
+    ...FieldProviders
+  ],
+  declarations: [
+    ReportsComponent,
+    UserReportTableComponent,
+    UserQueryTableComponent,
+    StudentReportDownloadComponent,
+    GroupReportDownloadComponent,
+    SchoolGradeDownloadComponent,
+    PrintableReportFormComponent,
+    PrintableReportFormModalComponent
+  ],
+  entryComponents: [PrintableReportFormModalComponent],
+  exports: [
+    ReportsComponent,
+    StudentReportDownloadComponent,
+    GroupReportDownloadComponent,
+    SchoolGradeDownloadComponent
   ]
 })
 export class ReportModule {}
