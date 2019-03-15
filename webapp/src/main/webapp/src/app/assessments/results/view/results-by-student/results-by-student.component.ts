@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Exam } from '../../../model/exam.model';
-import { StudentReportDownloadComponent } from '../../../../report/student-report-download.component';
 import { ReportOptions } from '../../../../report/report-options.model';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
@@ -10,15 +9,17 @@ import { InstructionalResource } from '../../../model/instructional-resources.mo
 import { Observable } from 'rxjs';
 import { PopupMenuAction } from '../../../../shared/menu/popup-menu-action.model';
 import { Ordering } from '@kourge/ordering';
-import { OrderingService } from "../../../../shared/ordering/ordering.service";
-import {map} from "rxjs/internal/operators";
+import { OrderingService } from '../../../../shared/ordering/ordering.service';
+import { first, map } from 'rxjs/internal/operators';
+import { ReportFormService } from '../../../../report/service/report-form.service';
+import { createDefaultStudentPrintableReportName } from '../../../../report/model/report-forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'results-by-student',
   templateUrl: './results-by-student.component.html'
 })
 export class ResultsByStudentComponent implements OnInit {
-
   /**
    * The exams to display
    */
@@ -41,41 +42,47 @@ export class ResultsByStudentComponent implements OnInit {
   @Input()
   showClaimScores: boolean;
 
-  @ViewChild('menuReportDownloader')
-  reportDownloader: StudentReportDownloadComponent;
-
   columns: Column[];
   actions: PopupMenuAction[];
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
   hasTransferStudent: boolean = false;
 
-  constructor(private actionBuilder: MenuActionBuilder,
-              private translate: TranslateService,
-              private instructionalResourcesService: InstructionalResourcesService,
-              private orderingService: OrderingService) {
-  }
+  constructor(
+    private actionBuilder: MenuActionBuilder,
+    private translate: TranslateService,
+    private router: Router,
+    private instructionalResourcesService: InstructionalResourcesService,
+    private orderingService: OrderingService,
+    private reportFormService: ReportFormService
+  ) {}
 
   ngOnInit() {
-    this.orderingService.getScorableClaimOrdering(this.assessment.subject, this.assessment.type).subscribe(ordering => {
-      this.columns = [
-        new Column({ id: 'name', field: 'student.lastName' }),
-        new Column({ id: 'date' }),
-        new Column({ id: 'session' }),
-        new Column({ id: 'grade', field: 'enrolledGrade', overall: true }),
-        new Column({ id: 'school', field: 'school.name' }),
-        new Column({ id: 'status', headerInfo: true, overall: true }),
-        new Column({ id: 'level', overall: true }),
-        new Column({ id: 'score', headerInfo: true, overall: true }),
-        ...this.createClaimColumns(ordering)
-      ];
-      this.actions = this.createActions();
-      this.hasTransferStudent = this.exams.some(x => x.transfer);
-    });
+    this.orderingService
+      .getScorableClaimOrdering(this.assessment.subject, this.assessment.type)
+      .subscribe(ordering => {
+        this.columns = [
+          new Column({ id: 'name', field: 'student.lastName' }),
+          new Column({ id: 'date' }),
+          new Column({ id: 'session' }),
+          new Column({ id: 'grade', field: 'enrolledGrade', overall: true }),
+          new Column({ id: 'school', field: 'school.name' }),
+          new Column({ id: 'status', headerInfo: true, overall: true }),
+          new Column({ id: 'level', overall: true }),
+          new Column({ id: 'score', headerInfo: true, overall: true }),
+          ...this.createClaimColumns(ordering)
+        ];
+        this.actions = this.createActions();
+        this.hasTransferStudent = this.exams.some(x => x.transfer);
+      });
   }
 
   loadInstructionalResources(exam: Exam): void {
-    this.instructionalResourcesProvider = () => this.instructionalResourcesService.getInstructionalResources(this.assessment.id, exam.school.id)
-      .pipe(map(resources => resources.getResourcesByPerformance(exam.level)));
+    this.instructionalResourcesProvider = () =>
+      this.instructionalResourcesService
+        .getInstructionalResources(this.assessment.id, exam.school.id)
+        .pipe(
+          map(resources => resources.getResourcesByPerformance(exam.level))
+        );
   }
 
   private createClaimColumns(ordering: Ordering<string>): Column[] {
@@ -84,24 +91,27 @@ export class ResultsByStudentComponent implements OnInit {
     }
 
     return this.assessment.claimCodes
-      .map((code, index) =>
-        new Column({
-          id: 'claim',
-          field: `claimScores.${index}.level`,
-          index: index,
-          claim: code
-        })
+      .map(
+        (code, index) =>
+          new Column({
+            id: 'claim',
+            field: `claimScores.${index}.level`,
+            index: index,
+            claim: code
+          })
       )
-      .sort(ordering
-        .on((column: Column) => column.claim)
-        .compare);
+      .sort(ordering.on((column: Column) => column.claim).compare);
   }
 
   private createActions(): PopupMenuAction[] {
     const builder = this.actionBuilder.newActions();
 
     if (this.assessment.isInterim) {
-      builder.withResponses(exam => exam.id, exam => exam.student, exam => exam.schoolYear > this.minimumItemDataYear);
+      builder.withResponses(
+        exam => exam.id,
+        exam => exam.student,
+        exam => exam.schoolYear > this.minimumItemDataYear
+      );
     }
 
     return builder
@@ -110,25 +120,42 @@ export class ResultsByStudentComponent implements OnInit {
         () => this.assessment.type,
         exam => exam.student,
         exam => {
+          const {
+            type: assessmentTypeCode,
+            subject: subjectCode
+          } = this.assessment;
+          const { student, schoolYear } = exam;
 
-          const downloader: StudentReportDownloadComponent = this.reportDownloader;
-          const options: ReportOptions = downloader.options;
-          const subject = this.assessment.subject;
-          const assessmentType = this.assessment.type;
-
-          options.assessmentType = assessmentType;
-          options.subject = subject;
-          options.schoolYear = exam.schoolYear;
-
-          downloader.student = exam.student;
-          downloader.title = this.translate.instant('results-by-student.create-single-prepopulated-report', {
-            name: exam.student.firstName || exam.student.ssid,
-            schoolYear: exam.schoolYear,
-            subject: this.translate.instant(`subject.${subject}.name`),
-            assessmentType: this.translate.instant(`common.assessment-type.${assessmentType}.short-name`)
+          const modal = this.reportFormService.openReportForm({
+            title: this.translate.instant(
+              'results-by-student.create-single-prepopulated-report',
+              {
+                name: student.firstName || student.ssid,
+                schoolYear: schoolYear,
+                subject: this.translate.instant(`subject.${subjectCode}.name`),
+                assessmentType: this.translate.instant(
+                  `common.assessment-type.${assessmentTypeCode}.short-name`
+                )
+              }
+            ),
+            form: {
+              query: <any>{
+                type: 'Student',
+                name: createDefaultStudentPrintableReportName(
+                  this.translate,
+                  student
+                ),
+                studentId: student.id,
+                assessmentTypeCode,
+                subjectCode,
+                schoolYear
+              },
+              readonlyFields: ['assessmentType', 'subject', 'schoolYear']
+            }
           });
-
-          downloader.modal.show();
+          modal.userReportCreated.pipe(first()).subscribe(() => {
+            this.router.navigateByUrl('/reports');
+          });
         }
       )
       .build();
@@ -146,13 +173,13 @@ class Column {
   claim?: string;
 
   constructor({
-                id,
-                field = '',
-                headerInfo = false,
-                overall = false,
-                index = -1,
-                claim = ''
-              }) {
+    id,
+    field = '',
+    headerInfo = false,
+    overall = false,
+    index = -1,
+    claim = ''
+  }) {
     this.id = id;
     this.field = field ? field : id;
     this.headerInfo = headerInfo;

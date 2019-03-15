@@ -11,6 +11,11 @@ import { TransferAccessField } from '../provider/transfer-access-field.provider'
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ReportQueryType } from '../report';
+import { TranslateService } from '@ngx-translate/core';
+import { Student } from '../../student/model/student.model';
+import { School } from '../../shared/organization/organization';
+import { Grade } from '../../school-grade/grade.model';
+import { Group } from '../../groups/group';
 
 export interface ReportQueryMetadata {
   fields: InjectionToken<Observable<FormField>>[];
@@ -108,4 +113,33 @@ export function createFormGroup(
     return controls;
   }, {});
   return new FormGroup(controls);
+}
+
+export function createDefaultStudentPrintableReportName(
+  translate: TranslateService,
+  student: Student
+): string {
+  const studentLabel =
+    student.firstName != null || student.lastName != null
+      ? translate.instant('common.person-name', student)
+      : student.ssid;
+  return studentLabel;
+}
+
+export function createDefaultSchoolGradePrintableReportName(
+  translate: TranslateService,
+  school: School,
+  grade: Grade
+): string {
+  const gradeLabel = translate.instant(
+    `common.assessment-grade-short-label.${grade.code}`
+  );
+  return `${school.name} ${gradeLabel}`;
+}
+
+export function createDefaultGroupSchoolGradePrintableReportName(
+  translate: TranslateService,
+  group: Group
+): string {
+  return group.name;
 }

@@ -4,7 +4,7 @@ import { AssessmentExam } from '../model/assessment-exam.model';
 import { Exam } from '../model/exam.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { FilterBy } from '../model/filter-by.model';
-import { Subscription ,  Observable ,  forkJoin } from 'rxjs';
+import { Subscription, Observable, forkJoin } from 'rxjs';
 import { ExamFilterService } from '../filters/exam-filters/exam-filter.service';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
@@ -12,7 +12,6 @@ import { GradeCode } from '../../shared/enum/grade-code.enum';
 import { ColorService } from '../../shared/color.service';
 import { MenuActionBuilder } from '../menu/menu-action.builder';
 import { ExamStatistics } from '../model/exam-statistics.model';
-import { StudentReportDownloadComponent } from '../../report/student-report-download.component';
 import { AssessmentProvider } from '../assessment-provider.interface';
 import { ResultsByItemComponent } from './view/results-by-item/results-by-item.component';
 import { DistractorAnalysisComponent } from './view/distractor-analysis/distractor-analysis.component';
@@ -21,7 +20,10 @@ import { InstructionalResource } from '../model/instructional-resources.model';
 import { Assessment } from '../model/assessment.model';
 import { WritingTraitScoresComponent } from './view/writing-trait-scores/writing-trait-scores.component';
 import { AssessmentExporter } from '../assessment-exporter.interface';
-import { AssessmentPercentileRequest, AssessmentPercentileService } from '../percentile/assessment-percentile.service';
+import {
+  AssessmentPercentileRequest,
+  AssessmentPercentileService
+} from '../percentile/assessment-percentile.service';
 import { PercentileGroup } from '../percentile/assessment-percentile';
 import { Utils } from '../../shared/support/support';
 import { ApplicationSettingsService } from '../../app-settings.service';
@@ -29,7 +31,7 @@ import { Angulartics2 } from 'angulartics2';
 import { TargetReportComponent } from './view/target-report/target-report.component';
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
-import {map} from "rxjs/internal/operators";
+import { map } from 'rxjs/internal/operators';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -42,26 +44,19 @@ enum ResultsViewState {
 @Component({
   selector: 'assessment-results',
   templateUrl: './assessment-results.component.html',
-  providers: [ MenuActionBuilder ],
+  providers: [MenuActionBuilder],
   animations: [
-    trigger(
-      'fadeAnimation',
-      [
-        transition(
-          ':enter', [
-            style({ opacity: 0 }),
-            animate('500ms ease-in', style({ opacity: 1 }))
-          ]
-        ),
-        transition(
-          ':leave', [
-            style({ opacity: 1 }),
-            animate('500ms ease-out', style({ opacity: 0 }))
-          ]
-        )
-      ]
-    )
-  ],
+    trigger('fadeAnimation', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('500ms ease-in', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('500ms ease-out', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class AssessmentResultsComponent implements OnInit {
   /**
@@ -76,7 +71,7 @@ export class AssessmentResultsComponent implements OnInit {
       this.sessions = this.getDistinctExamSessions(assessment.exams);
 
       if (this.sessions.length > 0) {
-        this.toggleSession(this.sessions[ 0 ]);
+        this.toggleSession(this.sessions[0]);
       }
     }
     this.updateViews();
@@ -176,11 +171,17 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayItemLevelData(): boolean {
-    return !this._assessmentExam.assessment.isSummative && this.hasExamsAfterMinimumItemYear;
+    return (
+      !this._assessmentExam.assessment.isSummative &&
+      this.hasExamsAfterMinimumItemYear
+    );
   }
 
   get displayWritingTraitScores(): boolean {
-    return this._assessmentExam.assessment.hasWerItem && this._assessmentExam.assessment.subject === 'ELA';
+    return (
+      this._assessmentExam.assessment.hasWerItem &&
+      this._assessmentExam.assessment.subject === 'ELA'
+    );
   }
 
   get enableWritingTraitScores(): boolean {
@@ -196,8 +197,10 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayTargetReport(): boolean {
-    return this.allowTargetReport
-      && this._assessmentExam.assessment.targetReportEnabled;
+    return (
+      this.allowTargetReport &&
+      this._assessmentExam.assessment.targetReportEnabled
+    );
   }
 
   get showStudentResults(): boolean {
@@ -221,7 +224,10 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   private isCurrentView(viewState: ResultsViewState): boolean {
-    return this.currentResultsView != null && this.currentResultsView.value === viewState;
+    return (
+      this.currentResultsView != null &&
+      this.currentResultsView.value === viewState
+    );
   }
 
   get currentExportResults(): ExportResults {
@@ -245,11 +251,10 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   private get hasExamsAfterMinimumItemYear(): boolean {
-    return this._assessmentExam.exams.some(x => x.schoolYear > this.minimumItemDataYear);
+    return this._assessmentExam.exams.some(
+      x => x.schoolYear > this.minimumItemDataYear
+    );
   }
-
-  @ViewChild('menuReportDownloader')
-  reportDownloader: StudentReportDownloadComponent;
 
   @ViewChild('resultsByItem')
   resultsByItem: ResultsByItemComponent;
@@ -284,23 +289,26 @@ export class AssessmentResultsComponent implements OnInit {
   private _filterBySubscription: Subscription;
   private _minimumItemDataYear: number;
 
-  constructor(private applicationSettingsService: ApplicationSettingsService,
-              public colorService: ColorService,
-              private examCalculator: ExamStatisticsCalculator,
-              private examFilterService: ExamFilterService,
-              private instructionalResourcesService: InstructionalResourcesService,
-              private percentileService: AssessmentPercentileService,
-              private subjectService: SubjectService,
-              private angulartics2: Angulartics2) {
-  }
+  constructor(
+    private applicationSettingsService: ApplicationSettingsService,
+    public colorService: ColorService,
+    private examCalculator: ExamStatisticsCalculator,
+    private examFilterService: ExamFilterService,
+    private instructionalResourcesService: InstructionalResourcesService,
+    private percentileService: AssessmentPercentileService,
+    private subjectService: SubjectService,
+    private angulartics2: Angulartics2
+  ) {}
 
   ngOnInit(): void {
     this._assessmentExam.collapsed = this.isDefaultCollapsed;
 
     forkJoin(
       this.applicationSettingsService.getSettings(),
-      this.subjectService.getSubjectDefinitionForAssessment(this.assessmentExam.assessment)
-    ).subscribe(([ settings, subjectDefinition ]) => {
+      this.subjectService.getSubjectDefinitionForAssessment(
+        this.assessmentExam.assessment
+      )
+    ).subscribe(([settings, subjectDefinition]) => {
       this.percentileDisplayEnabled = settings.percentileDisplayEnabled;
       this.subjectDefinition = subjectDefinition;
       this.setCurrentView(this.resultsByStudentView);
@@ -314,11 +322,36 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   updateViews(): void {
-    this.resultsByStudentView = this.createResultViewState(ResultsViewState.ByStudent, true, false, true);
-    this.resultsByItemView = this.createResultViewState(ResultsViewState.ByItem, this.displayItemLevelData, true, this.displayResultsByItem);
-    this.distractorAnalysisView = this.createResultViewState(ResultsViewState.DistractorAnalysis, this.displayItemLevelData, true, this.displayDistractorAnalysis);
-    this.writingTraitScoresView = this.createResultViewState(ResultsViewState.WritingTraitScores, this.enableWritingTraitScores, true, this.displayWritingTraitScores);
-    this.targetReportView = this.createResultViewState(ResultsViewState.TargetReport, true, true, this.displayTargetReport);
+    this.resultsByStudentView = this.createResultViewState(
+      ResultsViewState.ByStudent,
+      true,
+      false,
+      true
+    );
+    this.resultsByItemView = this.createResultViewState(
+      ResultsViewState.ByItem,
+      this.displayItemLevelData,
+      true,
+      this.displayResultsByItem
+    );
+    this.distractorAnalysisView = this.createResultViewState(
+      ResultsViewState.DistractorAnalysis,
+      this.displayItemLevelData,
+      true,
+      this.displayDistractorAnalysis
+    );
+    this.writingTraitScoresView = this.createResultViewState(
+      ResultsViewState.WritingTraitScores,
+      this.enableWritingTraitScores,
+      true,
+      this.displayWritingTraitScores
+    );
+    this.targetReportView = this.createResultViewState(
+      ResultsViewState.TargetReport,
+      true,
+      true,
+      this.displayTargetReport
+    );
   }
 
   setCurrentView(view: ResultsView): void {
@@ -328,7 +361,7 @@ export class AssessmentResultsComponent implements OnInit {
       action: 'Assessment View Change',
       properties: {
         category: 'AssessmentResults',
-        label: ResultsViewState[ view.value ]
+        label: ResultsViewState[view.value]
       }
     });
   }
@@ -346,10 +379,21 @@ export class AssessmentResultsComponent implements OnInit {
     window.open(this.assessmentExam.assessment.resourceUrl);
   }
 
-  loadInstructionalResources(assessment: Assessment, performanceLevel: number): void {
-    this.instructionalResourceProvider = () => this.instructionalResourcesService
-      .getInstructionalResources(assessment.id, this.assessmentProvider.getSchoolId())
-      .pipe(map((resources) => resources.getResourcesByPerformance(performanceLevel)));
+  loadInstructionalResources(
+    assessment: Assessment,
+    performanceLevel: number
+  ): void {
+    this.instructionalResourceProvider = () =>
+      this.instructionalResourcesService
+        .getInstructionalResources(
+          assessment.id,
+          this.assessmentProvider.getSchoolId()
+        )
+        .pipe(
+          map(resources =>
+            resources.getResourcesByPerformance(performanceLevel)
+          )
+        );
   }
 
   onPercentileButtonClickInternal(): void {
@@ -359,17 +403,25 @@ export class AssessmentResultsComponent implements OnInit {
       const dates = results.exams.map(exam => new Date(exam.date)).sort();
       const request = <AssessmentPercentileRequest>{
         assessmentId: results.assessment.id,
-        from: dates[ 0 ],
-        to: dates[ dates.length - 1 ]
+        from: dates[0],
+        to: dates[dates.length - 1]
       };
-      this.percentileService.getPercentilesGroupedByRank(request)
-        .subscribe(percentileGroups => this.percentileGroups = percentileGroups);
+      this.percentileService
+        .getPercentilesGroupedByRank(request)
+        .subscribe(
+          percentileGroups => (this.percentileGroups = percentileGroups)
+        );
     }
   }
 
-  private createResultViewState(viewState: ResultsViewState, enabled: boolean, canExport: boolean, display: boolean): ResultsView {
+  private createResultViewState(
+    viewState: ResultsViewState,
+    enabled: boolean,
+    canExport: boolean,
+    display: boolean
+  ): ResultsView {
     return {
-      label: 'assessment-results.view.' + ResultsViewState[ viewState ],
+      label: 'assessment-results.view.' + ResultsViewState[viewState],
       value: viewState,
       disabled: !enabled,
       display: display,
@@ -389,32 +441,40 @@ export class AssessmentResultsComponent implements OnInit {
       if (!sessions.some(x => x.id === exam.session)) {
         sessions.push({
           id: exam.session,
-          date: exams.filter(x => x.session === exam.session)
-            .reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b).date,
+          date: exams
+            .filter(x => x.session === exam.session)
+            .reduce((a, b) => (new Date(a.date) > new Date(b.date) ? a : b))
+            .date,
           filter: false
         });
       }
     }
 
-    return sessions
-      .sort(ordering(byString)
+    return sessions.sort(
+      ordering(byString)
         .on<any>(session => session.date)
-        .reverse()
-        .compare);
+        .reverse().compare
+    );
   }
 
   private updateExamSessions(): void {
     this.exams = this.filterExams();
-    this.statistics = this.subjectDefinition != null ? this.calculateStats() : null;
+    this.statistics =
+      this.subjectDefinition != null ? this.calculateStats() : null;
   }
 
   private filterExams(): Exam[] {
-    const exams: Exam[] = this.examFilterService
-      .filterExams(this._assessmentExam.exams, this._assessmentExam.assessment, this._filterBy);
+    const exams: Exam[] = this.examFilterService.filterExams(
+      this._assessmentExam.exams,
+      this._assessmentExam.assessment,
+      this._filterBy
+    );
 
     // only filter by sessions if this is my groups, otherwise return all regardless of session
     if (this.allowFilterBySessions) {
-      return exams.filter(x => this.sessions.some(y => y.filter && y.id === x.session));
+      return exams.filter(x =>
+        this.sessions.some(y => y.filter && y.id === x.session)
+      );
     }
 
     return exams;
@@ -423,15 +483,25 @@ export class AssessmentResultsComponent implements OnInit {
   private calculateStats(): ExamStatistics {
     const stats = new ExamStatistics();
 
-    let scores = this.examCalculator.getOnlyScoredExams(this.exams).map(x => x.score);
+    let scores = this.examCalculator
+      .getOnlyScoredExams(this.exams)
+      .map(x => x.score);
 
     stats.total = this.exams.length;
     stats.average = this.examCalculator.calculateAverage(scores);
-    stats.standardError = this.examCalculator.calculateStandardErrorOfTheMean(scores);
+    stats.standardError = this.examCalculator.calculateStandardErrorOfTheMean(
+      scores
+    );
 
-    stats.levels = this.examCalculator.groupLevels(this.exams, this.subjectDefinition.performanceLevelCount);
+    stats.levels = this.examCalculator.groupLevels(
+      this.exams,
+      this.subjectDefinition.performanceLevelCount
+    );
     stats.percents = this.examCalculator.mapGroupLevelsToPercents(stats.levels);
-    stats.claims = this.examCalculator.calculateClaimStatistics(this.exams, this.subjectDefinition.scorableClaimPerformanceLevelCount);
+    stats.claims = this.examCalculator.calculateClaimStatistics(
+      this.exams,
+      this.subjectDefinition.scorableClaimPerformanceLevelCount
+    );
 
     return stats;
   }

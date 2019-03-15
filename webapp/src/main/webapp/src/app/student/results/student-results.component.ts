@@ -8,7 +8,6 @@ import { ColorService } from '../../shared/color.service';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
 import { CsvExportService } from '../../csv-export/csv-export.service';
 import { Angulartics2 } from 'angulartics2';
-import { StudentReportDownloadComponent } from '../../report/student-report-download.component';
 import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { AssessmentTypeOrdering } from '../../shared/ordering/orderings';
@@ -17,15 +16,16 @@ import * as _ from 'lodash';
 import { StudentResultsFilterService } from './student-results-filter.service';
 import { Student } from '../model/student.model';
 import { StudentPipe } from '../../shared/format/student.pipe';
-import { OrderingService } from "../../shared/ordering/ordering.service";
-import { Ordering } from "@kourge/ordering";
+import { OrderingService } from '../../shared/ordering/ordering.service';
+import { Ordering } from '@kourge/ordering';
+import { first } from 'rxjs/operators';
+import { ReportFormService } from '../../report/service/report-form.service';
 
 @Component({
   selector: 'student-results',
   templateUrl: './student-results.component.html'
 })
 export class StudentResultsComponent implements OnInit {
-
   examHistory: StudentExamHistory;
   sections: Section[] = [];
   filterState: StudentResultsFilterState;
@@ -37,46 +37,52 @@ export class StudentResultsComponent implements OnInit {
 
   private _subjectOrdering: Ordering<string>;
 
-  constructor(private colorService: ColorService,
-              private csvExportService: CsvExportService,
-              private route: ActivatedRoute,
-              private router: Router,
-              private angulartics2: Angulartics2,
-              private applicationSettingsService: ApplicationSettingsService,
-              private examFilterService: ExamFilterService,
-              private embargoService: ReportingEmbargoService,
-              private studentResultsFilterService: StudentResultsFilterService,
-              private studentPipe: StudentPipe,
-              private orderingService: OrderingService) {
-  }
+  constructor(
+    private colorService: ColorService,
+    private csvExportService: CsvExportService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private angulartics2: Angulartics2,
+    private applicationSettingsService: ApplicationSettingsService,
+    private examFilterService: ExamFilterService,
+    private embargoService: ReportingEmbargoService,
+    private studentResultsFilterService: StudentResultsFilterService,
+    private studentPipe: StudentPipe,
+    private orderingService: OrderingService,
+    private reportFormService: ReportFormService
+  ) {}
 
   ngOnInit(): void {
-
     const { examHistory } = this.route.snapshot.data;
     if (examHistory) {
-      this.orderingService.getSubjectOrdering()
-        .subscribe(subjectOrdering => {
-          this.examHistory = examHistory;
-          this._subjectOrdering = subjectOrdering;
+      this.orderingService.getSubjectOrdering().subscribe(subjectOrdering => {
+        this.examHistory = examHistory;
+        this._subjectOrdering = subjectOrdering;
 
-          const { exams } = examHistory;
-          this.filterState = this.createFilterState(exams);
-          this.filterOptions.hasSummative = exams.some(wrapper => wrapper.assessment.isSummative);
-          this.filterOptions.hasInterim = exams.some(wrapper => wrapper.assessment.isInterim);
-          this.advancedFilters.onChanges.subscribe(property => this.onAdvancedFilterChange());
-          this.sections = this.createSections(exams);
+        const { exams } = examHistory;
+        this.filterState = this.createFilterState(exams);
+        this.filterOptions.hasSummative = exams.some(
+          wrapper => wrapper.assessment.isSummative
+        );
+        this.filterOptions.hasInterim = exams.some(
+          wrapper => wrapper.assessment.isInterim
+        );
+        this.advancedFilters.onChanges.subscribe(property =>
+          this.onAdvancedFilterChange()
+        );
+        this.sections = this.createSections(exams);
 
-          this.subscribeToRouteChanges();
-          this.updateRouteWithDefaultFilters();
+        this.subscribeToRouteChanges();
+        this.updateRouteWithDefaultFilters();
 
-          this.applicationSettingsService.getSettings().subscribe(settings => {
-            this.minimumItemDataYear = settings.minItemDataYear;
-          });
-
-          this.embargoService.isEmbargoed().subscribe(embargoed => {
-            this.exportDisabled = embargoed;
-          });
+        this.applicationSettingsService.getSettings().subscribe(settings => {
+          this.minimumItemDataYear = settings.minItemDataYear;
         });
+
+        this.embargoService.isEmbargoed().subscribe(embargoed => {
+          this.exportDisabled = embargoed;
+        });
+      });
     }
   }
 
@@ -94,7 +100,7 @@ export class StudentResultsComponent implements OnInit {
   private updateRouteWithDefaultFilters(): void {
     const { historySchoolYear } = this.route.snapshot.params;
     if (historySchoolYear == null) {
-      this.filterState.schoolYear = this.filterState.schoolYears[ 0 ];
+      this.filterState.schoolYear = this.filterState.schoolYears[0];
       this.updateRoute(true);
     }
   }
@@ -110,8 +116,7 @@ export class StudentResultsComponent implements OnInit {
     this.applyFilter();
   }
 
-  exportCsv(): void {
-
+  onExportButtonClick(): void {
     this.angulartics2.eventTrack.next({
       action: 'Export Student Exam History',
       properties: {
@@ -126,12 +131,29 @@ export class StudentResultsComponent implements OnInit {
         return exams;
       }, []),
       () => this.examHistory.student,
-      `${student.lastName ? student.lastName + '-' : ''}${student.firstName ? student.firstName + '-' : ''}${student.ssid}-${new Date().toDateString()}`
+      `${student.lastName ? student.lastName + '-' : ''}${
+        student.firstName ? student.firstName + '-' : ''
+      }${student.ssid}-${new Date().toDateString()}`
     );
   }
 
+  onPrintableReportButtonClick(): void {
+    const modal = this.reportFormService.openStudentPrintableReportForm(
+      this.examHistory.student,
+      this.filterState.schoolYear != null
+        ? this.filterState.schoolYear
+        : this.filterState.schoolYears[0],
+      this.filterState.subject,
+      this.filterState.assessmentType,
+      this.filterState.schoolYears
+    );
+    modal.userReportCreated.pipe(first()).subscribe(() => {
+      this.router.navigateByUrl('/reports');
+    });
+  }
+
   getAssessmentTypeColor(assessmentType: string): string {
-    const index = [ 'ica', 'iab', 'sum' ].indexOf(assessmentType);
+    const index = ['ica', 'iab', 'sum'].indexOf(assessmentType);
     const totalAssessmentTypes = 3;
     const colorIndex = index >= 0 ? index + 1 : totalAssessmentTypes;
     return this.colorService.getColor(colorIndex);
@@ -142,13 +164,16 @@ export class StudentResultsComponent implements OnInit {
    */
   private applyFilter(): void {
     this.studentResultsFilterService.filterChanged();
-    const examsFilteredByYearAndSubject = this.examHistory.exams
-      .filter(wrapper => {
+    const examsFilteredByYearAndSubject = this.examHistory.exams.filter(
+      wrapper => {
         const { schoolYear, subject, assessmentType } = this.filterState;
-        return (schoolYear == null || schoolYear === wrapper.exam.schoolYear)
-          && (subject == null || subject === wrapper.assessment.subject)
-          && (assessmentType == null || assessmentType === wrapper.assessment.type);
-      });
+        return (
+          (schoolYear == null || schoolYear === wrapper.exam.schoolYear) &&
+          (subject == null || subject === wrapper.assessment.subject) &&
+          (assessmentType == null || assessmentType === wrapper.assessment.type)
+        );
+      }
+    );
 
     const filteredExams = this.examFilterService.filterItems(
       wrapper => wrapper.assessment,
@@ -159,7 +184,9 @@ export class StudentResultsComponent implements OnInit {
 
     this.hasResults = filteredExams.length !== 0;
     this.sections.forEach(section => {
-      section.filteredExams = section.exams.filter(exam => filteredExams.find(x => x.exam.id === exam.exam.id));
+      section.filteredExams = section.exams.filter(exam =>
+        filteredExams.find(x => x.exam.id === exam.exam.id)
+      );
     });
   }
 
@@ -179,35 +206,42 @@ export class StudentResultsComponent implements OnInit {
     }
 
     // this is needed since the route can be for a group (/groups/1/students/2 or directly to the student (/students/2)
-    const navigationExtras = this.route.parent && this.route.parent.parent.snapshot.url.length > 0
-      ? { relativeTo: this.route.parent.parent, replaceUrl }
-      : { replaceUrl };
+    const navigationExtras =
+      this.route.parent && this.route.parent.parent.snapshot.url.length > 0
+        ? { relativeTo: this.route.parent.parent, replaceUrl }
+        : { replaceUrl };
 
-    this.router.navigate([
-      'students',
-      this.examHistory.student.id,
-      parameters
-    ], navigationExtras);
+    this.router.navigate(
+      ['students', this.examHistory.student.id, parameters],
+      navigationExtras
+    );
   }
 
   private createSections(exams: StudentHistoryExamWrapper[]): Section[] {
-    return exams.reduce((sections, wrapper) => {
-      const { type, subject } = wrapper.assessment;
-      const section = sections.find(section => section.subjectCode === subject);
-      if (section) {
-        section.exams.push(wrapper);
-      } else {
-        sections.push({
-          assessmentTypeCode: type,
-          assessmentTypeColor: this.getAssessmentTypeColor(type),
-          subjectCode: subject,
-          exams: [ wrapper ],
-          filteredExams: [],
-          collapsed: false
-        });
-      }
-      return sections;
-    }, []).sort(this._subjectOrdering.on<Section>(section => section.subjectCode).compare);
+    return exams
+      .reduce((sections, wrapper) => {
+        const { type, subject } = wrapper.assessment;
+        const section = sections.find(
+          section => section.subjectCode === subject
+        );
+        if (section) {
+          section.exams.push(wrapper);
+        } else {
+          sections.push({
+            assessmentTypeCode: type,
+            assessmentTypeColor: this.getAssessmentTypeColor(type),
+            subjectCode: subject,
+            exams: [wrapper],
+            filteredExams: [],
+            collapsed: false
+          });
+        }
+        return sections;
+      }, [])
+      .sort(
+        this._subjectOrdering.on<Section>(section => section.subjectCode)
+          .compare
+      );
   }
 
   /**
@@ -216,14 +250,20 @@ export class StudentResultsComponent implements OnInit {
    * @param exams       The available exams
    * @param params      The route params
    */
-  private createFilterState(exams: StudentHistoryExamWrapper[]): StudentResultsFilterState {
-
-    const filterState: StudentResultsFilterState = exams.reduce((filterState, wrapper: StudentHistoryExamWrapper) => {
+  private createFilterState(
+    exams: StudentHistoryExamWrapper[]
+  ): StudentResultsFilterState {
+    const filterState: StudentResultsFilterState = exams.reduce(
+      (filterState, wrapper: StudentHistoryExamWrapper) => {
         const { schoolYear } = wrapper.exam;
-        filterState.schoolYears = _.union(filterState.schoolYears, [ schoolYear ]);
+        filterState.schoolYears = _.union(filterState.schoolYears, [
+          schoolYear
+        ]);
         const { subject, type } = wrapper.assessment;
-        filterState.subjects = _.union(filterState.subjects, [ subject ]);
-        filterState.assessmentTypes = _.union(filterState.assessmentTypes, [ type ]);
+        filterState.subjects = _.union(filterState.subjects, [subject]);
+        filterState.assessmentTypes = _.union(filterState.assessmentTypes, [
+          type
+        ]);
         return filterState;
       },
       {
@@ -243,24 +283,13 @@ export class StudentResultsComponent implements OnInit {
   private updateFilterState(parameters: any): void {
     const { historySchoolYear, subject, assessmentType } = parameters;
     const filterState = this.filterState;
-    filterState.schoolYear = historySchoolYear != null ? Number.parseInt(historySchoolYear) : undefined;
+    filterState.schoolYear =
+      historySchoolYear != null
+        ? Number.parseInt(historySchoolYear)
+        : undefined;
     filterState.subject = subject;
     filterState.assessmentType = assessmentType;
   }
-
-  /**
-   * Initializes StudentReportDownloadComponent options with the currently selected filters
-   *
-   * @param downloader
-   */
-  initializeDownloader(downloader: StudentReportDownloadComponent): void {
-    downloader.options.schoolYear = this.filterState.schoolYear
-      ? this.filterState.schoolYear
-      : this.filterState.schoolYears[ 0 ];
-    downloader.options.subject = this.filterState.subject;
-    downloader.options.assessmentType = this.filterState.assessmentType;
-  }
-
 }
 
 /**

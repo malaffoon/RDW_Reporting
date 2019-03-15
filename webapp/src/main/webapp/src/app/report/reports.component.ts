@@ -10,9 +10,9 @@ import { MenuOption } from '../shared/menu/menu.component';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
 import { UserQueryMenuOptionService } from './user-query-menu-option.service';
 import { UserReportStore } from './user-report.store';
-import { BsModalService, TabsetComponent } from 'ngx-bootstrap';
+import { TabsetComponent } from 'ngx-bootstrap';
 import { Utils } from '../shared/support/support';
-import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
+import { ReportFormService } from './service/report-form.service';
 import Timer = NodeJS.Timer;
 
 interface MenuOptionHolder {
@@ -51,7 +51,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private userQueryService: UserQueryService,
     private userQueryStore: UserQueryStore,
     private userQueryMenuOptionService: UserQueryMenuOptionService,
-    private modalService: BsModalService
+    private reportFormService: ReportFormService
   ) {}
 
   ngOnInit(): void {
@@ -113,15 +113,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onViewUserQuery(userQuery: UserQuery): void {
-    const modalReference = this.modalService.show(
-      PrintableReportFormModalComponent
-    );
-    const modal: PrintableReportFormModalComponent = modalReference.content;
-    modal.title = userQuery.query.name;
-    modal.form = {
-      query: userQuery.query,
-      userQueryId: userQuery.id
-    };
+    const modal = this.reportFormService.openReportForm({
+      title: userQuery.query.name,
+      form: {
+        query: userQuery.query,
+        userQueryId: userQuery.id
+      }
+    });
     modal.userQueryUpdated.pipe(first()).subscribe(updated => {
       this.userQueryStore.setState(
         this.userQueryStore.state.map(existing =>
@@ -152,14 +150,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onViewUserReportQuery(userReport: UserReport): void {
-    const modalReference = this.modalService.show(
-      PrintableReportFormModalComponent
-    );
-    const modal: PrintableReportFormModalComponent = modalReference.content;
-    modal.title = userReport.query.name;
-    modal.form = {
-      query: userReport.query
-    };
+    const modal = this.reportFormService.openReportForm({
+      title: userReport.query.name,
+      form: {
+        query: userReport.query
+      }
+    });
     modal.userReportCreated.pipe(first()).subscribe(created => {
       this.userReportStore.setState([created, ...this.userReportStore.state]);
     });

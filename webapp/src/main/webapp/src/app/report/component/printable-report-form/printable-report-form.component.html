@@ -1,12 +1,11 @@
-<form *ngIf="_form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+<form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <div class="fields">
     <ng-container *ngFor="let field of fields">
       <div
         *ngIf="formGroup.get(field.name) as control"
-        class="form-group"
+        class="form-group {{ field.name }}"
         [ngClass]="{
-          'has-error': control.invalid && (control.dirty || control.touched),
-          hidden: field.excluded
+          'has-error': control.invalid && (control.dirty || control.touched)
         }"
       >
         <label for="{{ field.name }}">
@@ -23,7 +22,7 @@
         </label>
 
         <ng-container *ngIf="isReadonly(field); else writable">
-          {{ getReadonlyValue(field) }}
+          <div>{{ getReadonlyValue(field) }}</div>
         </ng-container>
         <ng-template #writable>
           <ng-container [ngSwitch]="field.type">

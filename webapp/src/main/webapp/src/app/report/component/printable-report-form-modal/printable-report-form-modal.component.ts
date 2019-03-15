@@ -4,6 +4,14 @@ import { ReportForm } from '../printable-report-form/printable-report-form.compo
 import { UserQuery, UserReport } from '../../report';
 
 /**
+ * Input options
+ */
+export interface ReportFormModalOptions {
+  title: string;
+  form: ReportForm;
+}
+
+/**
  * Simple modal wrapper around the printable report form
  */
 @Component({
@@ -12,10 +20,7 @@ import { UserQuery, UserReport } from '../../report';
 })
 export class PrintableReportFormModalComponent {
   @Input()
-  title: string;
-
-  @Input()
-  form: ReportForm;
+  options: ReportFormModalOptions;
 
   @Output()
   cancelled: EventEmitter<void> = new EventEmitter();

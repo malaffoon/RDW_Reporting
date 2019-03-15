@@ -10,9 +10,12 @@ import { FormGroup } from '@angular/forms';
 import { FormField, FormMapper } from '../../model/form';
 import {
   distinctUntilChanged,
+  filter,
   finalize,
+  map,
   startWith,
-  takeUntil
+  takeUntil,
+  tap
 } from 'rxjs/operators';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import { ReportQuery, UserQuery, UserReport } from '../../report';
@@ -27,6 +30,7 @@ import {
   createFormGroup,
   ReportQueryMetadataByType
 } from '../../model/report-forms';
+import { Option } from '../../../shared/form/option';
 
 /**
  * Represents all data needed to render the form
@@ -46,6 +50,11 @@ export interface ReportForm {
    * All fields that should be rendered as unmodifiable values
    */
   readonlyFields?: string[];
+
+  /**
+   * Option overrides useful for making the form context-aware
+   */
+  options?: { [fieldName: string]: Option[] };
 }
 
 /**
@@ -237,10 +246,26 @@ export class PrintableReportFormComponent implements OnDestroy {
   }
 
   private updateForm(): void {
-    const { query } = this._form;
+    const { query, options = {} } = this._form;
     const { fields, mapper } = ReportQueryMetadataByType.get(query.type);
-    forkJoin(fields.map(token => this.injector.get(token))).subscribe(
-      fields => {
+    forkJoin(fields.map(token => this.injector.get(token)))
+      .pipe(
+        map(fields =>
+          fields
+            // filter out conditionally excluded fields
+            .filter(field => !field.excluded)
+            // apply option overrides
+            .map(field => ({
+              ...field,
+              options:
+                options[field.name] != null
+                  ? options[field.name]
+                  : field.options
+            }))
+        ),
+        tap(fields => console.log(fields, options, options.schoolYear))
+      )
+      .subscribe(fields => {
         this.fields = fields;
         this._mapper = mapper;
         this.formGroup = createFormGroup(fields, mapper.toState(query));
@@ -254,8 +279,7 @@ export class PrintableReportFormComponent implements OnDestroy {
             this.updateControls();
           });
         this.initialQuery = this.createQuery();
-      }
-    );
+      });
   }
 
   private updateControls(): void {

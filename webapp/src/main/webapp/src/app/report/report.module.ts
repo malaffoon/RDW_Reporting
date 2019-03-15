@@ -6,10 +6,7 @@ import { SharedModule } from 'primeng/components/common/shared';
 import { ModalModule, TabsModule } from 'ngx-bootstrap';
 import { Angulartics2Module } from 'angulartics2';
 import { CommonModule } from '../shared/common.module';
-import { StudentReportDownloadComponent } from './student-report-download.component';
 import { ReportsComponent } from './reports.component';
-import { GroupReportDownloadComponent } from './group-report-download.component';
-import { SchoolGradeDownloadComponent } from './school-grade-report-download.component';
 import { RdwMenuModule } from '../shared/menu/rdw-menu.module';
 import { TableModule } from 'primeng/table';
 import { UserReportTableComponent } from './user-report-table.component';
@@ -30,6 +27,7 @@ import { SubjectFieldProvider } from './provider/subject-field.provider';
 import { TransferAccessFieldProvider } from './provider/transfer-access-field.provider';
 import { PrintableReportFormComponent } from './component/printable-report-form/printable-report-form.component';
 import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
+import { ReportFormService } from './service/report-form.service';
 
 export const FieldProviders: FactoryProvider[] = [
   AccommodationsFieldProvider,
@@ -57,6 +55,7 @@ export const FieldProviders: FactoryProvider[] = [
     TabsModule
   ],
   providers: [
+    ReportFormService,
     UserReportService,
     UserReportStore,
     UserReportMenuOptionService,
@@ -66,21 +65,13 @@ export const FieldProviders: FactoryProvider[] = [
     ...FieldProviders
   ],
   declarations: [
+    PrintableReportFormComponent,
+    PrintableReportFormModalComponent,
     ReportsComponent,
     UserReportTableComponent,
-    UserQueryTableComponent,
-    StudentReportDownloadComponent,
-    GroupReportDownloadComponent,
-    SchoolGradeDownloadComponent,
-    PrintableReportFormComponent,
-    PrintableReportFormModalComponent
+    UserQueryTableComponent
   ],
   entryComponents: [PrintableReportFormModalComponent],
-  exports: [
-    ReportsComponent,
-    StudentReportDownloadComponent,
-    GroupReportDownloadComponent,
-    SchoolGradeDownloadComponent
-  ]
+  exports: [PrintableReportFormModalComponent, ReportsComponent]
 })
 export class ReportModule {}
