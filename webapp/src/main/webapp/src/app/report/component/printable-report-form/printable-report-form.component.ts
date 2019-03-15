@@ -8,15 +8,7 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormField, FormMapper } from '../../model/form';
-import {
-  distinctUntilChanged,
-  filter,
-  finalize,
-  map,
-  startWith,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import { ReportQuery, UserQuery, UserReport } from '../../report';
 import { isEqualReportQuery } from '../../reports';
@@ -31,6 +23,7 @@ import {
   ReportQueryMetadataByType
 } from '../../model/report-forms';
 import { Option } from '../../../shared/form/option';
+import { isArray } from 'lodash';
 
 /**
  * Represents all data needed to render the form
@@ -47,14 +40,23 @@ export interface ReportForm {
   userQueryId?: number;
 
   /**
-   * All fields that should be rendered as unmodifiable values
+   * If set to true all fields will be readonly
+   * If set to an array of strings only the specified field names will be readonly
    */
-  readonlyFields?: string[];
+  readonly?: boolean | string[];
 
   /**
    * Option overrides useful for making the form context-aware
    */
   options?: { [fieldName: string]: Option[] };
+}
+
+/**
+ * Form field view model
+ */
+interface FormFieldView extends FormField {
+  readonly: boolean;
+  readonlyValue?: any;
 }
 
 /**
@@ -96,7 +98,7 @@ export class PrintableReportFormComponent implements OnDestroy {
   /**
    * The form fields computed from the query
    */
-  fields: FormField[];
+  fields: FormFieldView[];
 
   /**
    * The form group computed from the query
@@ -139,19 +141,6 @@ export class PrintableReportFormComponent implements OnDestroy {
   set form(value: ReportForm) {
     this._form = value;
     this.updateForm();
-  }
-
-  isReadonly(field: FormField): boolean {
-    const { readonlyFields } = this._form;
-    return readonlyFields != null && readonlyFields.includes(field.name);
-  }
-
-  getReadonlyValue(field: FormField): any {
-    return field.options != null
-      ? field.options.find(
-          ({ value }) => value === this.formGroup.value[field.name]
-        ).text
-      : this.formGroup.value;
   }
 
   get saveQueryCheckboxDisabled(): boolean {
@@ -246,52 +235,55 @@ export class PrintableReportFormComponent implements OnDestroy {
   }
 
   private updateForm(): void {
-    const { query, options = {} } = this._form;
+    const {
+      query,
+      options: optionSettings = {},
+      readonly: readonlySettings
+    } = this._form;
     const { fields, mapper } = ReportQueryMetadataByType.get(query.type);
+    const state = mapper.toState(query);
     forkJoin(fields.map(token => this.injector.get(token)))
       .pipe(
         map(fields =>
           fields
             // filter out conditionally excluded fields
             .filter(field => !field.excluded)
-            // apply option overrides
-            .map(field => ({
-              ...field,
-              options:
-                options[field.name] != null
-                  ? options[field.name]
-                  : field.options
-            }))
-        ),
-        tap(fields => console.log(fields, options, options.schoolYear))
+            .map(field => {
+              // apply option overrides
+              const options =
+                optionSettings[field.name] != null
+                  ? optionSettings[field.name]
+                  : field.options;
+
+              // compute readonly field
+              const readonly =
+                readonlySettings === true ||
+                (readonlySettings != null &&
+                  isArray(readonlySettings) &&
+                  readonlySettings.includes(field.name));
+
+              // compute readonly value
+              // TODO need to apply field defaults already
+              const fieldValue = state[field.name];
+              const readonlyValue =
+                field.options != null
+                  ? field.options.find(({ value }) => value === fieldValue).text
+                  : fieldValue;
+
+              return {
+                ...field,
+                options,
+                readonly,
+                readonlyValue
+              };
+            })
+        )
       )
       .subscribe(fields => {
         this.fields = fields;
         this._mapper = mapper;
-        this.formGroup = createFormGroup(fields, mapper.toState(query));
-        this.formGroup.valueChanges
-          .pipe(
-            takeUntil(this._destroyed),
-            distinctUntilChanged(),
-            startWith(this.formGroup.value)
-          )
-          .subscribe(() => {
-            this.updateControls();
-          });
+        this.formGroup = createFormGroup(fields, state, this._destroyed);
         this.initialQuery = this.createQuery();
       });
-  }
-
-  private updateControls(): void {
-    const { formGroup, fields } = this;
-    Object.entries(formGroup.controls).forEach(([controlName, control]) => {
-      const field = fields.find(({ name }) => name === controlName);
-      const disabled = field.disabled != null && field.disabled(formGroup);
-      if (disabled && !control.disabled) {
-        control.disable();
-      } else if (!disabled && control.disabled) {
-        control.enable();
-      }
-    });
   }
 }

@@ -99,7 +99,14 @@ export interface ReportQuery {
  * Base for all exam centric reports (This includes printable reports and district/school exports)
  */
 export interface ExamReportQuery extends ReportQuery {
+  /**
+   * The school year to filter results on
+   */
   schoolYear: number;
+
+  /**
+   * If true, students with transfer results will not be included in the report
+   */
   disableTransferAccess: boolean;
 }
 
@@ -107,9 +114,26 @@ export interface ExamReportQuery extends ReportQuery {
  * Base for all printable reports
  */
 export interface PrintableReportQuery extends ExamReportQuery {
+  /**
+   * An undefined subject code indicates to search on "all subjects"
+   * Or in other words, to "apply no subject search filter"
+   */
   subjectCode?: string;
+
+  /**
+   * An undefined assessment type indicates to search on "all assessment types"
+   * Or in other words, to "apply no assessment type search filter"
+   */
   assessmentTypeCode?: string;
+
+  /**
+   * The language code used to indicate which language to create the report in
+   */
   language: string;
+
+  /**
+   * If true, accommodation information will appear in the report
+   */
   accommodationsVisible: boolean;
 }
 
@@ -117,6 +141,9 @@ export interface PrintableReportQuery extends ExamReportQuery {
  * Base for all multi-student printable reports
  */
 export interface BatchPrintableReportQuery extends PrintableReportQuery {
+  /**
+   * The order by which to sort the student reports
+   */
   order: PrintableReportOrder;
 }
 
@@ -130,7 +157,6 @@ export type PrintableReportOrder = 'StudentName' | 'StudentSSID';
  */
 export interface StudentPrintableReportQuery extends PrintableReportQuery {
   studentId: number;
-  // filters: SingleStudentPrintableReportFilters;
 }
 
 /**
@@ -155,7 +181,6 @@ export interface UserGroupId {
  */
 export interface GroupPrintableReportQuery extends BatchPrintableReportQuery {
   groupId: UserGroupId;
-  // filters: MultiStudentPrintableReportFilters;
 }
 
 /**
@@ -165,7 +190,6 @@ export interface SchoolGradePrintableReportQuery
   extends BatchPrintableReportQuery {
   schoolId: number;
   gradeId: number;
-  // filters: MultiStudentPrintableReportFilters;
 }
 
 /**

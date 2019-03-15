@@ -150,7 +150,7 @@ export class ResultsByStudentComponent implements OnInit {
                 subjectCode,
                 schoolYear
               },
-              readonlyFields: ['assessmentType', 'subject', 'schoolYear']
+              readonly: ['assessmentType', 'subject', 'schoolYear']
             }
           });
           modal.userReportCreated.pipe(first()).subscribe(() => {

@@ -75,12 +75,6 @@ export interface FormField {
   excluded?: boolean;
 
   /**
-   * This is for backward compatibility,
-   * Set this when providing the values and disabling user-input
-   */
-  fixed?: boolean;
-
-  /**
    * The default value
    */
   defaultValue?: any;

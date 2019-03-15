@@ -29,6 +29,15 @@ import { PrintableReportFormComponent } from './component/printable-report-form/
 import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
 import { ReportFormService } from './service/report-form.service';
 
+/**
+ * Each of these field providers configure how the form field
+ * 1. Will be constructed (declares dependencies)
+ * 2. How the form field should be configured (what label it should have etc.)
+ *
+ * The reason these various fields are split up is because they all have different dependencies
+ * and it felt weird resolving all of their dependencies and then passing the dependency blob
+ * to each of them whether they needed all the info or not
+ */
 export const FieldProviders: FactoryProvider[] = [
   AccommodationsFieldProvider,
   AssessmentTypeFieldProvider,

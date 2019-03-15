@@ -21,8 +21,8 @@
           </ng-template>
         </label>
 
-        <ng-container *ngIf="isReadonly(field); else writable">
-          <div>{{ getReadonlyValue(field) }}</div>
+        <ng-container *ngIf="field.readonly; else writable">
+          <div>{{ field.readonlyValue }}</div>
         </ng-container>
         <ng-template #writable>
           <ng-container [ngSwitch]="field.type">
