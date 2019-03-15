@@ -263,8 +263,10 @@ export class PrintableReportFormComponent implements OnDestroy {
                   readonlySettings.includes(field.name));
 
               // compute readonly value
-              // TODO need to apply field defaults already
-              const fieldValue = state[field.name];
+              const fieldValue =
+                typeof state[field.name] !== 'undefined'
+                  ? state[field.name]
+                  : field.defaultValue;
               const readonlyValue =
                 field.options != null
                   ? field.options.find(({ value }) => value === fieldValue).text
