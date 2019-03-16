@@ -8,7 +8,6 @@ import { ColorService } from '../../shared/color.service';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
 import { CsvExportService } from '../../csv-export/csv-export.service';
 import { Angulartics2 } from 'angulartics2';
-import { StudentReportDownloadComponent } from '../../report/student-report-download.component';
 import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { AssessmentTypeOrdering } from '../../shared/ordering/orderings';
@@ -19,6 +18,20 @@ import { Student } from '../model/student.model';
 import { StudentPipe } from '../../shared/format/student.pipe';
 import { OrderingService } from '../../shared/ordering/ordering.service';
 import { Ordering } from '@kourge/ordering';
+import { first } from 'rxjs/operators';
+import { ReportFormService } from '../../report/service/report-form.service';
+
+/**
+ * Represents a page section where exams of a specific type and subject are displayed
+ */
+interface Section {
+  assessmentTypeCode: string;
+  assessmentTypeColor: string;
+  subjectCode: string;
+  exams: StudentHistoryExamWrapper[];
+  filteredExams: StudentHistoryExamWrapper[];
+  collapsed: boolean;
+}
 
 @Component({
   selector: 'student-results',
@@ -47,7 +60,8 @@ export class StudentResultsComponent implements OnInit {
     private embargoService: ReportingEmbargoService,
     private studentResultsFilterService: StudentResultsFilterService,
     private studentPipe: StudentPipe,
-    private orderingService: OrderingService
+    private orderingService: OrderingService,
+    private reportFormService: ReportFormService
   ) {}
 
   ngOnInit(): void {
@@ -114,7 +128,7 @@ export class StudentResultsComponent implements OnInit {
     this.applyFilter();
   }
 
-  exportCsv(): void {
+  onExportButtonClick(): void {
     this.angulartics2.eventTrack.next({
       action: 'Export Student Exam History',
       properties: {
@@ -133,6 +147,21 @@ export class StudentResultsComponent implements OnInit {
         student.firstName ? student.firstName + '-' : ''
       }${student.ssid}-${new Date().toDateString()}`
     );
+  }
+
+  onPrintableReportButtonClick(): void {
+    const modal = this.reportFormService.openStudentPrintableReportForm(
+      this.examHistory.student,
+      this.filterState.schoolYear != null
+        ? this.filterState.schoolYear
+        : this.filterState.schoolYears[0],
+      this.filterState.subject,
+      this.filterState.assessmentType,
+      this.filterState.schoolYears
+    );
+    modal.userReportCreated.pipe(first()).subscribe(() => {
+      this.router.navigateByUrl('/reports');
+    });
   }
 
   getAssessmentTypeColor(assessmentType: string): string {
@@ -239,6 +268,7 @@ export class StudentResultsComponent implements OnInit {
     const filterState: StudentResultsFilterState = exams.reduce(
       (filterState, wrapper: StudentHistoryExamWrapper) => {
         const { schoolYear } = wrapper.exam;
+
         filterState.schoolYears = union(filterState.schoolYears, [schoolYear]);
         const { subject, type } = wrapper.assessment;
         filterState.subjects = union(filterState.subjects, [subject]);
@@ -271,29 +301,4 @@ export class StudentResultsComponent implements OnInit {
     filterState.subject = subject;
     filterState.assessmentType = assessmentType;
   }
-
-  /**
-   * Initializes StudentReportDownloadComponent options with the currently selected filters
-   *
-   * @param downloader
-   */
-  initializeDownloader(downloader: StudentReportDownloadComponent): void {
-    downloader.options.schoolYear = this.filterState.schoolYear
-      ? this.filterState.schoolYear
-      : this.filterState.schoolYears[0];
-    downloader.options.subject = this.filterState.subject;
-    downloader.options.assessmentType = this.filterState.assessmentType;
-  }
-}
-
-/**
- * Represents a page section where exams of a specific type and subject are displayed
- */
-interface Section {
-  assessmentTypeCode: string;
-  assessmentTypeColor: string;
-  subjectCode: string;
-  exams: StudentHistoryExamWrapper[];
-  filteredExams: StudentHistoryExamWrapper[];
-  collapsed: boolean;
 }

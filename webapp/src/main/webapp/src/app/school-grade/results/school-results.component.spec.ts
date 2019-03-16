@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable ,  of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { SchoolResultsComponent } from './school-results.component';
@@ -24,6 +24,7 @@ import { DefaultSchool, School } from '../../shared/organization/organization';
 import { SchoolAssessmentExportService } from './school-assessment-export.service';
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
+import { ReportFormService } from '../../report/service/report-form.service';
 
 let availableGrades = [];
 let schools = [];
@@ -39,7 +40,6 @@ describe('SchoolResultsComponent', () => {
   let schoolYear: number = 2017;
 
   beforeEach(async(() => {
-
     const school = new DefaultSchool();
     school.id = 2;
     school.name = 'Ogden';
@@ -61,46 +61,65 @@ describe('SchoolResultsComponent', () => {
     route = new MockActivatedRoute();
     route.snapshotResult.and.returnValue(mockRouteSnapshot);
 
-    const mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
-    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
+    const mockAngulartics2 = jasmine.createSpyObj<Angulartics2>(
+      'angulartics2',
+      ['eventTrack']
+    );
+    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [
+      'next'
+    ]);
 
     const mockTranslate = new MockTranslateService();
 
-    const mockAssessmentService = jasmine.createSpyObj('SchoolAssessmentService', [ 'findGradesWithAssessmentsForSchool' ]);
+    const mockAssessmentService = jasmine.createSpyObj(
+      'SchoolAssessmentService',
+      ['findGradesWithAssessmentsForSchool']
+    );
 
-    const mockAssessmentExportService = jasmine.createSpyObj('SchoolAssessmentExportService', [ 'exportItemsToCsv', 'exportWritingTraitScoresToCsv' ]);
+    const mockAssessmentExportService = jasmine.createSpyObj(
+      'SchoolAssessmentExportService',
+      ['exportItemsToCsv', 'exportWritingTraitScoresToCsv']
+    );
 
-    const mockOrganizationService = jasmine.createSpyObj('OrganizationService', [ 'getSchoolsWithDistricts' ]);
+    const mockOrganizationService = jasmine.createSpyObj(
+      'OrganizationService',
+      ['getSchoolsWithDistricts']
+    );
 
     availableGrades = [];
     exportService = {};
 
     TestBed.configureTestingModule({
-      imports: [
-        CommonModule
-      ],
-      declarations: [
-        SchoolResultsComponent,
-        MockAuthorizeDirective
-      ],
+      imports: [CommonModule],
+      declarations: [SchoolResultsComponent, MockAuthorizeDirective],
       providers: [
         { provide: OrganizationService, useValue: mockOrganizationService },
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: SchoolAssessmentService, useValue: mockAssessmentService },
-        { provide: SchoolAssessmentExportService, useValue: mockAssessmentExportService },
+        {
+          provide: SchoolAssessmentExportService,
+          useValue: mockAssessmentExportService
+        },
         { provide: DataService, useClass: MockDataService },
-        { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionService },
+        {
+          provide: ExamFilterOptionsService,
+          useClass: MockExamFilterOptionService
+        },
         { provide: SchoolService, useClass: MockSchoolService },
         { provide: CommonSchoolService, useClass: MockCommonSchoolService },
-        { provide: OrganizationService, useValue: new MockOrganizationService() },
+        {
+          provide: OrganizationService,
+          useValue: new MockOrganizationService()
+        },
         { provide: ActivatedRoute, useValue: route },
         { provide: Angulartics2, useValue: mockAngulartics2 },
         { provide: CsvExportService, useValue: exportService },
         { provide: UserService, useClass: MockUserService },
         { provide: Router, useValue: mockRouter },
-        { provide: TranslateService, useValue: mockTranslate }
+        { provide: TranslateService, useValue: mockTranslate },
+        { provide: ReportFormService, useValue: {} }
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   }));
 
@@ -115,7 +134,7 @@ describe('SchoolResultsComponent', () => {
   });
 
   it('should init if school is null', () => {
-    route.snapshot.params[ 'schoolId' ] = 212122;
+    route.snapshot.params['schoolId'] = 212122;
 
     component.ngOnInit();
     fixture.detectChanges();
@@ -124,27 +143,35 @@ describe('SchoolResultsComponent', () => {
   });
 
   it('should try to keep grade if it is available on school change', () => {
-    availableGrades = [ { code: '03', id: 3 }, { code: '04', id: 4 }, { code: '05', id: 5 } ];
+    availableGrades = [
+      { code: '03', id: 3 },
+      { code: '04', id: 4 },
+      { code: '05', id: 5 }
+    ];
 
     component.currentGrade = { code: '04', id: 4 };
     component.onSchoolChange(school);
 
     expect(component.currentGrade.id).toBe(4);
     expect(mockRouter.navigate).toHaveBeenCalledWith(
-      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: 4 } ],
+      ['schools', school.id, { schoolYear: schoolYear, gradeId: 4 }],
       { replaceUrl: false }
     );
   });
 
   it('should default to the first available grade if it is not available on school change', () => {
-    availableGrades = [ { code: '03', id: 3 }, { code: '04', id: 4 }, { code: '05', id: 5 } ];
+    availableGrades = [
+      { code: '03', id: 3 },
+      { code: '04', id: 4 },
+      { code: '05', id: 5 }
+    ];
 
     component.currentGrade = { code: '11', id: 11 };
     component.onSchoolChange(school);
 
     expect(component.currentGrade.id).toBe(3);
     expect(mockRouter.navigate).toHaveBeenCalledWith(
-      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: 3 } ],
+      ['schools', school.id, { schoolYear: schoolYear, gradeId: 3 }],
       { replaceUrl: false }
     );
   });
@@ -159,7 +186,7 @@ describe('SchoolResultsComponent', () => {
     expect(component.assessmentExams).toEqual([]);
     expect(component.gradesAreUnavailable).toEqual(true);
     expect(mockRouter.navigate).toHaveBeenCalledWith(
-      [ 'schools', school.id, { schoolYear: schoolYear, gradeId: undefined } ],
+      ['schools', school.id, { schoolYear: schoolYear, gradeId: undefined }],
       { replaceUrl: false }
     );
   });

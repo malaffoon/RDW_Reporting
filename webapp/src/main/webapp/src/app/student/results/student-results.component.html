@@ -1,4 +1,6 @@
-<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
+<reporting-embargo-alert
+  *hasPermission="'EMBARGO_READ'"
+></reporting-embargo-alert>
 
 <ng-container *ngIf="!examHistory; else hasExamHistory">
   <div *ngIf="!examHistory" class="alert alert-danger">
@@ -8,67 +10,99 @@
 
 <!-- Assessments Grouped by Type and Subject -->
 <ng-template #hasExamHistory>
-
   <page-heading>
     <ng-template #heading>
-      <h2>{{examHistory.student | studentName}}</h2> <div class="student-ssid-label">{{examHistory.student.ssid}}</div>
+      <h2>{{ examHistory.student | studentName }}</h2>
+      <div class="student-ssid-label">{{ examHistory.student.ssid }}</div>
     </ng-template>
     <ng-template #content>
       <ul class="list-unstyled list-inline">
         <li>
           <!-- Note: we have 'ml-md' as a class here to avoid an issue with flickering popovers -->
-          <button *ngIf="!exportDisabled" class="btn btn-default btn-sm ml-md"
-                  (click)="exportCsv()"><i class="fa fa-bold fa-table"></i> {{'common.export-csv' | translate}}</button>
-          <button *ngIf="exportDisabled" class="btn btn-default btn-sm ml-md disabled"
-                  popover="{{'common.embargo-export-disabled' | translate}}"
-                  triggers="mouseenter:mouseleave"
-                  placement="left"><i class="fa fa-bold fa-table"></i> {{'common.export-csv' | translate}}</button>
+          <button
+            *ngIf="!exportDisabled"
+            class="btn btn-default btn-sm ml-md"
+            (click)="onExportButtonClick()"
+          >
+            <i class="fa fa-bold fa-table"></i>
+            {{ 'common.export-csv' | translate }}
+          </button>
+          <button
+            *ngIf="exportDisabled"
+            class="btn btn-default btn-sm ml-md disabled"
+            popover="{{ 'common.embargo-export-disabled' | translate }}"
+            triggers="mouseenter:mouseleave"
+            placement="left"
+          >
+            <i class="fa fa-bold fa-table"></i>
+            {{ 'common.export-csv' | translate }}
+          </button>
         </li>
         <li>
-          <button class="btn btn-default btn-sm"
-                  (click)="reportDownloader.modal.show()">
-            <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'common.buttons.printable-student-reports' | translate}}
+          <button
+            class="btn btn-default btn-sm"
+            (click)="onPrintableReportButtonClick()"
+          >
+            <i class="fa fa-cloud-download" aria-hidden="true"></i>
+            {{ 'common.buttons.printable-student-reports' | translate }}
           </button>
         </li>
       </ul>
-
     </ng-template>
   </page-heading>
 
   <!-- Results Filter -->
-  <student-results-filter [filterState]="filterState"
-                          [filterOptions]="filterOptions"
-                          (filterChange)="onFilterChange()"
-                          [advancedFilters]="advancedFilters"></student-results-filter>
+  <student-results-filter
+    [filterState]="filterState"
+    [filterOptions]="filterOptions"
+    (filterChange)="onFilterChange()"
+    [advancedFilters]="advancedFilters"
+  ></student-results-filter>
 
   <page-heading>
     <ng-template #heading>
-      <h3>{{'student-results.title' | translate}}</h3>
+      <h3>{{ 'student-results.title' | translate }}</h3>
     </ng-template>
   </page-heading>
 
   <ng-container *ngFor="let section of sections">
-    <div class="well wide-content-container"
-         [hidden]="!section.filteredExams.length">
+    <div
+      class="well wide-content-container"
+      [hidden]="!section.filteredExams.length"
+    >
       <span class="h3 label-group orange">
-        <span class="label">{{'subject.' + section.subjectCode + '.name' | translate}}</span>
+        <span class="label">{{
+          'subject.' + section.subjectCode + '.name' | translate
+        }}</span>
       </span>
-      <button class="btn btn-default pull-right"
-              (click)="section.collapsed = !section.collapsed"
-              angulartics2On="click"
-              angularticsAction="ToggleCollapseResults"
-              angularticsCategory="StudentHistory">
-        {{'common.action.' + (section.collapsed ? 'expand' : 'collapse') | translate}}
+      <button
+        class="btn btn-default pull-right"
+        (click)="section.collapsed = !section.collapsed"
+        angulartics2On="click"
+        angularticsAction="ToggleCollapseResults"
+        angularticsCategory="StudentHistory"
+      >
+        {{
+          'common.action.' + (section.collapsed ? 'expand' : 'collapse')
+            | translate
+        }}
         <span class="sr-only">{{ 'common.action.collapse' | translate }}</span>
-        <i class="fa fa-bold {{ section.collapsed ? 'fa-caret-square-o-down' : 'fa-caret-square-o-up' }}"></i>
+        <i
+          class="fa fa-bold {{
+            section.collapsed
+              ? 'fa-caret-square-o-down'
+              : 'fa-caret-square-o-up'
+          }}"
+        ></i>
       </button>
 
-      <div class="mt-md"
-           [hidden]="section.collapsed">
-        <student-history-table [student]="examHistory.student"
-                               [subject]="section.subjectCode"
-                               [minimumItemDataYear]="minimumItemDataYear"
-                               [exams]="section.filteredExams">
+      <div class="mt-md" [hidden]="section.collapsed">
+        <student-history-table
+          [student]="examHistory.student"
+          [subject]="section.subjectCode"
+          [minimumItemDataYear]="minimumItemDataYear"
+          [exams]="section.filteredExams"
+        >
         </student-history-table>
       </div>
     </div>
@@ -76,16 +110,7 @@
 
   <div *ngIf="!hasResults">
     <div class="alert alert-info">
-      {{'student-results.empty-filtered-results-message' | translate}}
+      {{ 'student-results.empty-filtered-results-message' | translate }}
     </div>
   </div>
-
-  <span student-report-download #reportDownloader
-        [title]="'student-results.create-report' | translate: {value: getStudent(examHistory.student)}"
-        [student]="examHistory.student"
-        [schoolYears]="filterState.schoolYears"
-        (onShow)="initializeDownloader(reportDownloader)"></span>
-
 </ng-template>
-
-

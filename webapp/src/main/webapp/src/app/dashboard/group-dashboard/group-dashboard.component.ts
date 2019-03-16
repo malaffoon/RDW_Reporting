@@ -11,14 +11,15 @@ import {
   AssessmentCardEvent,
   GroupCard
 } from './group-assessment-card.component';
-import { GroupReportDownloadComponent } from '../../report/group-report-download.component';
+import { first, map, mergeMap } from 'rxjs/operators';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { chunk } from 'lodash';
-import { map, mergeMap } from 'rxjs/operators';
+
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
+import { ReportFormService } from '../../report/service/report-form.service';
 
 @Component({
   selector: 'group-dashboard',
@@ -47,7 +48,8 @@ export class GroupDashboardComponent implements OnInit {
     private userGroupService: UserGroupService,
     private groupDashboardService: GroupDashboardService,
     private filterOptionsService: ExamFilterOptionsService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private reportFormService: ReportFormService
   ) {}
 
   ngOnInit() {
@@ -262,12 +264,13 @@ export class GroupDashboardComponent implements OnInit {
         );
   }
 
-  /**
-   * Initializes GroupReportDownloadComponent options with the currently selected filters
-   *
-   * @param downloader
-   */
-  initializeDownloader(downloader: GroupReportDownloadComponent): void {
-    downloader.options.schoolYear = this.schoolYear;
+  onPrintableReportButtonClick(): void {
+    const modal = this.reportFormService.openGroupPrintableReportForm(
+      this.group,
+      this.schoolYear
+    );
+    modal.userReportCreated.pipe(first()).subscribe(() => {
+      this.router.navigateByUrl('/reports');
+    });
   }
 }

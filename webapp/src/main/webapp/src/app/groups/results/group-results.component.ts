@@ -7,7 +7,10 @@ import { CsvExportService } from '../../csv-export/csv-export.service';
 import { Group } from '../group';
 import { GroupAssessmentExportService } from './group-assessment-export.service';
 import { GroupService } from '../group.service';
-import { GroupAssessmentProvider, StateProvider } from './group-assessment.provider';
+import {
+  GroupAssessmentProvider,
+  StateProvider
+} from './group-assessment.provider';
 import { DefaultAssessmentExporter } from './default-assessment-exporter';
 import { TranslateService } from '@ngx-translate/core';
 import { UserGroupService } from '../../user-group/user-group.service';
@@ -17,17 +20,20 @@ import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
 import { AssessmentExporter } from '../../assessments/assessment-exporter.interface';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
 import { AssessmentProvider } from '../../assessments/assessment-provider.interface';
-import { GroupReportDownloadComponent } from '../../report/group-report-download.component';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
+import { PrintableReportFormModalComponent } from '../../report/component/printable-report-form-modal/printable-report-form-modal.component';
+import { first } from 'rxjs/operators';
+import { BsModalService } from 'ngx-bootstrap';
+import { GroupPrintableReportQuery } from '../../report/report';
+import { createDefaultGroupSchoolGradePrintableReportName } from '../../report/model/report-forms';
+import { ReportFormService } from '../../report/service/report-form.service';
 
 @Component({
   selector: 'group-results',
   templateUrl: './group-results.component.html'
 })
 export class GroupResultsComponent implements OnInit, StateProvider {
-
-
   @ViewChild(AssessmentsComponent)
   assessmentsComponent: AssessmentsComponent;
 
@@ -70,20 +76,31 @@ export class GroupResultsComponent implements OnInit, StateProvider {
     return parameters;
   }
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private filterOptionService: ExamFilterOptionsService,
-              private angulartics2: Angulartics2,
-              private csvExportService: CsvExportService,
-              private groupService: GroupService,
-              private userGroupService: UserGroupService,
-              assessmentService: GroupAssessmentService,
-              assessmentExportService: GroupAssessmentExportService,
-              translateService: TranslateService) {
-
-    this.assessmentProvider = new GroupAssessmentProvider(assessmentService, this);
-    this.assessmentExporter = new DefaultAssessmentExporter(assessmentExportService, request =>
-      `${this.group.name}-${request.assessment.label}-${translateService.instant(request.type.toString())}-${new Date().toDateString()}`
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private filterOptionService: ExamFilterOptionsService,
+    private angulartics2: Angulartics2,
+    private csvExportService: CsvExportService,
+    private groupService: GroupService,
+    private userGroupService: UserGroupService,
+    assessmentService: GroupAssessmentService,
+    assessmentExportService: GroupAssessmentExportService,
+    translateService: TranslateService,
+    private reportFormService: ReportFormService
+  ) {
+    this.assessmentProvider = new GroupAssessmentProvider(
+      assessmentService,
+      this
+    );
+    this.assessmentExporter = new DefaultAssessmentExporter(
+      assessmentExportService,
+      request =>
+        `${this.group.name}-${
+          request.assessment.label
+        }-${translateService.instant(
+          request.type.toString()
+        )}-${new Date().toDateString()}`
     );
   }
 
@@ -92,8 +109,9 @@ export class GroupResultsComponent implements OnInit, StateProvider {
       this.groupService.getGroups(),
       this.userGroupService.safelyGetUserGroupsAsGroups(),
       this.filterOptionService.getExamFilterOptions()
-    ).subscribe(([ groups, userGroups, filterOptions ]) => {
-      this.groups = groups.concat(userGroups)
+    ).subscribe(([groups, userGroups, filterOptions]) => {
+      this.groups = groups
+        .concat(userGroups)
         .sort(ordering(byString).on<Group>(({ name }) => name).compare);
       this.filterOptions = filterOptions;
 
@@ -106,10 +124,10 @@ export class GroupResultsComponent implements OnInit, StateProvider {
     // update state when route changes
     this.route.params.subscribe(parameters => {
       const { groupId, userGroupId, schoolYear } = parameters;
-      this.schoolYear = schoolYear != null ? Number.parseInt(schoolYear) : undefined;
-      this.group = this.groups.find(group => group.userCreated
-        ? group.id == userGroupId
-        : group.id == groupId
+      this.schoolYear =
+        schoolYear != null ? Number.parseInt(schoolYear) : undefined;
+      this.group = this.groups.find(group =>
+        group.userCreated ? group.id == userGroupId : group.id == groupId
       );
     });
 
@@ -123,7 +141,7 @@ export class GroupResultsComponent implements OnInit, StateProvider {
   private updateRouteWithDefaultFilters(): void {
     const { schoolYear } = this.route.snapshot.params;
     if (schoolYear == null) {
-      this.schoolYear = this.filterOptions.schoolYears[ 0 ];
+      this.schoolYear = this.filterOptions.schoolYears[0];
       this.updateRoute(true);
     }
   }
@@ -139,17 +157,17 @@ export class GroupResultsComponent implements OnInit, StateProvider {
   }
 
   viewDashboard() {
-    this.router.navigate([ 'group-dashboard', this.stateAsNavigationParameters ]);
+    this.router.navigate(['group-dashboard', this.stateAsNavigationParameters]);
   }
 
   updateAssessment(latestAssessment: AssessmentExam): void {
     this.assessmentExams = [];
     if (latestAssessment) {
-      this.assessmentExams = [ latestAssessment ];
+      this.assessmentExams = [latestAssessment];
     }
   }
 
-  exportCsv(): void {
+  onExportButtonClick(): void {
     this.angulartics2.eventTrack.next({
       action: 'Export Group Results',
       properties: {
@@ -164,20 +182,18 @@ export class GroupResultsComponent implements OnInit, StateProvider {
     );
   }
 
-  /**
-   * Initializes GroupReportDownloadComponent options with the currently selected filters
-   *
-   * @param downloader
-   */
-  initializeDownloader(downloader: GroupReportDownloadComponent): void {
-    downloader.options.schoolYear = this.schoolYear;
+  onPrintableReportButtonClick(): void {
+    const modal = this.reportFormService.openGroupPrintableReportForm(
+      this.group,
+      this.schoolYear
+    );
+    modal.userReportCreated.pipe(first()).subscribe(() => {
+      this.router.navigateByUrl('/reports');
+    });
   }
 
   private updateRoute(replaceUrl: boolean = false): void {
-    this.router.navigate(
-      [ this.stateAsNavigationParameters ],
-      { replaceUrl }
-    );
+    this.router.navigate([this.stateAsNavigationParameters], { replaceUrl });
   }
 
   private trackAnalyticsEvent(source: string, label: any): void {
@@ -189,5 +205,4 @@ export class GroupResultsComponent implements OnInit, StateProvider {
       }
     });
   }
-
 }

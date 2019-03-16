@@ -32,14 +32,13 @@ export interface FormField {
 
   /**
    * The control type
-   * TODO: use ControlType - this is currently causing a compilation issue...
    */
   type: ControlType;
 
   /**
    * The validation methods
    */
-  validators: ValidatorFn | ValidatorFn[];
+  validators?: ValidatorFn | ValidatorFn[];
 
   /**
    * The form control label
@@ -73,12 +72,6 @@ export interface FormField {
    * Without this, the layout would not reserve the form field slot as blank
    */
   excluded?: boolean;
-
-  /**
-   * This is for backward compatibility,
-   * Set this when providing the values and disabling user-input
-   */
-  fixed?: boolean;
 
   /**
    * The default value

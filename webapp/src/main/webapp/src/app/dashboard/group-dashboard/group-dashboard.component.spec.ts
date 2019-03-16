@@ -9,60 +9,57 @@ import { GroupDashboardComponent } from './group-dashboard.component';
 import { MockRouter } from '../../shared/test/mock.router';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { SubjectService } from '../../subject/subject.service';
+import { ReportFormService } from '../../report/service/report-form.service';
 
 describe('GroupDashboardComponent', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TestModule
-      ],
+      imports: [TestModule],
       providers: [
         GroupDashboardComponent,
+        { provide: ReportFormService, useValue: {} },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: Router, useClass: MockRouter },
         { provide: UserGroupService, useClass: MockUserGroupService },
         { provide: GroupService, useClass: MockGroupService },
         { provide: GroupDashboardService, useClass: MockGroupDashboardService },
-        { provide: ExamFilterOptionsService, useClass: MockExamFilterOptionsService },
+        {
+          provide: ExamFilterOptionsService,
+          useClass: MockExamFilterOptionsService
+        },
         { provide: SubjectService, useClass: MockSubjectService }
       ]
     });
   });
 
-  it('should create',
-    inject([ GroupDashboardComponent ], (builder: GroupDashboardComponent) => {
+  it('should create', inject(
+    [GroupDashboardComponent],
+    (builder: GroupDashboardComponent) => {
       expect(builder).toBeTruthy();
-    }));
+    }
+  ));
 
-  it('should return undefined subject by default',
-    inject([ GroupDashboardComponent ], (builder: GroupDashboardComponent) => {
+  it('should return undefined subject by default', inject(
+    [GroupDashboardComponent],
+    (builder: GroupDashboardComponent) => {
       expect(builder.subject).toBeUndefined();
-    }));
+    }
+  ));
 
-  it('should respect card view enabled property',
-    inject([ GroupDashboardComponent ], (builder: GroupDashboardComponent) => {
+  it('should respect card view enabled property', inject(
+    [GroupDashboardComponent],
+    (builder: GroupDashboardComponent) => {
       expect(builder.viewAssessmentsButtonEnabled).toBeFalsy();
-    }));
+    }
+  ));
 });
 
-class MockGroupService {
+class MockGroupService {}
 
-}
+class MockGroupDashboardService {}
 
-class MockGroupDashboardService {
+class MockExamFilterOptionsService {}
 
-}
+class MockUserGroupService {}
 
-class MockExamFilterOptionsService {
-
-}
-
-class MockUserGroupService {
-
-}
-
-class MockSubjectService {
-
-}
-
+class MockSubjectService {}

@@ -20,9 +20,10 @@ import { TestModule } from '../../../test/test.module';
 import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { StudentResultsFilterService } from './student-results-filter.service';
-import { OrderingService } from "../../shared/ordering/ordering.service";
-import { ranking } from "@kourge/ordering/comparator";
-import { ordering } from "@kourge/ordering";
+import { OrderingService } from '../../shared/ordering/ordering.service';
+import { ranking } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
+import { ReportFormService } from '../../report/service/report-form.service';
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -34,7 +35,9 @@ describe('StudentResultsComponent', () => {
 
   beforeEach(() => {
     exportService = {};
-    embargoService = jasmine.createSpyObj('ReportingEmbargoService', [ 'isEmbargoed' ]);
+    embargoService = jasmine.createSpyObj('ReportingEmbargoService', [
+      'isEmbargoed'
+    ]);
     embargoService.isEmbargoed.and.returnValue(of(false));
 
     const mockRouteSnapshot = {
@@ -46,38 +49,51 @@ describe('StudentResultsComponent', () => {
 
     const mockRoute = new MockActivatedRoute();
 
-    const mockAngulartics2 = jasmine.createSpyObj<Angulartics2>('angulartics2', [ 'eventTrack' ]);
-    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [ 'next' ]);
+    const mockAngulartics2 = jasmine.createSpyObj<Angulartics2>(
+      'angulartics2',
+      ['eventTrack']
+    );
+    mockAngulartics2.eventTrack = jasmine.createSpyObj('angulartics2', [
+      'next'
+    ]);
 
-    const mockApplicationSettingsService = jasmine.createSpyObj('ApplicationSettingsService', [ 'getSettings' ]);
-    mockApplicationSettingsService.getSettings.and.callFake(() => of({ minItemDataYear: 2016 }));
+    const mockApplicationSettingsService = jasmine.createSpyObj(
+      'ApplicationSettingsService',
+      ['getSettings']
+    );
+    mockApplicationSettingsService.getSettings.and.callFake(() =>
+      of({ minItemDataYear: 2016 })
+    );
 
     const mockUserService = new MockUserService();
 
     router = new MockRouter();
 
-    const mockOrderingService = jasmine.createSpyObj('OrderingService', [ 'getSubjectOrdering' ]);
-    mockOrderingService.getSubjectOrdering.and.returnValue(of(ordering(ranking(["Math", "ELA"]))));
+    const mockOrderingService = jasmine.createSpyObj('OrderingService', [
+      'getSubjectOrdering'
+    ]);
+    mockOrderingService.getSubjectOrdering.and.returnValue(
+      of(ordering(ranking(['Math', 'ELA'])))
+    );
 
     TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        TestModule
-      ],
-      declarations: [
-        StudentResultsComponent
-      ],
+      imports: [CommonModule, TestModule],
+      declarations: [StudentResultsComponent],
       providers: [
         { provide: CsvExportService, useValue: exportService },
         { provide: Angulartics2, useValue: mockAngulartics2 },
-        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
+        {
+          provide: ApplicationSettingsService,
+          useValue: mockApplicationSettingsService
+        },
         { provide: ReportingEmbargoService, useValue: embargoService },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: OrderingService, useValue: mockOrderingService },
         StudentResultsFilterService,
-        ExamFilterService
+        ExamFilterService,
+        { provide: ReportFormService, useValue: {} }
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(StudentResultsComponent);
@@ -94,47 +110,54 @@ describe('StudentResultsComponent', () => {
 
   it('should create without error when history is null', () => {
     const snapshot = route.snapshot;
-    snapshot.data[ 'examHistory' ] = null;
+    snapshot.data['examHistory'] = null;
     route.params.emit({ schoolYear: 2017 });
 
     expect(component).toBeTruthy();
   });
 
   /* Temporary Ignore */
-  it('should filter by year on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
-    // Filter to the single 2017 exam
-    route.params.emit({ historySchoolYear: 2017 });
+  it('should filter by year on initialization', inject(
+    [ActivatedRoute],
+    (route: MockActivatedRoute) => {
+      // Filter to the single 2017 exam
+      route.params.emit({ historySchoolYear: 2017 });
 
-    const filteredExams = component.sections.reduce((exams, section) => {
-      exams.push(...section.filteredExams);
-      return exams;
-    }, []);
+      const filteredExams = component.sections.reduce((exams, section) => {
+        exams.push(...section.filteredExams);
+        return exams;
+      }, []);
 
-    const totalAssessmentTypes = filteredExams.reduce(
-      (collection, exam) => collection.add(exam.assessment.type), new Set()).size;
+      const totalAssessmentTypes = filteredExams.reduce(
+        (collection, exam) => collection.add(exam.assessment.type),
+        new Set()
+      ).size;
 
-    const totalSubjects = filteredExams.reduce(
-      (collection, exam) => collection.add(exam.assessment.subject), new Set()).size;
+      const totalSubjects = filteredExams.reduce(
+        (collection, exam) => collection.add(exam.assessment.subject),
+        new Set()
+      ).size;
 
-    expect(totalAssessmentTypes).toBe(1);
-    expect(totalSubjects).toBe(1);
+      expect(totalAssessmentTypes).toBe(1);
+      expect(totalSubjects).toBe(1);
+    }
+  ));
 
-  }));
+  it('should filter by subject on initialization', inject(
+    [ActivatedRoute],
+    (route: MockActivatedRoute) => {
+      route.params.emit({ subject: 'MATH' });
 
+      const filteredExams = component.sections.reduce((exams, section) => {
+        exams.push(...section.filteredExams);
+        return exams;
+      }, []);
 
-  it('should filter by subject on initialization', inject([ ActivatedRoute ], (route: MockActivatedRoute) => {
-    route.params.emit({ subject: 'MATH' });
-
-    const filteredExams = component.sections.reduce((exams, section) => {
-      exams.push(...section.filteredExams);
-      return exams;
-    }, []);
-
-    filteredExams.forEach(exam => {
-      expect(exam.assessment.subject).toBe('MATH');
-    });
-  }));
-
+      filteredExams.forEach(exam => {
+        expect(exam.assessment.subject).toBe('MATH');
+      });
+    }
+  ));
 });
 
 class MockBuilder {
@@ -165,7 +188,10 @@ class MockBuilder {
     return history;
   }
 
-  private static examWrapper(assessmentType: string, subject: string): StudentHistoryExamWrapper {
+  private static examWrapper(
+    assessmentType: string,
+    subject: string
+  ): StudentHistoryExamWrapper {
     const wrapper: StudentHistoryExamWrapper = new StudentHistoryExamWrapper();
     wrapper.exam = MockBuilder.exam(assessmentType);
     wrapper.assessment = MockBuilder.assessment(assessmentType, subject);
@@ -232,4 +258,3 @@ class MockBuilder {
     return score;
   }
 }
-
