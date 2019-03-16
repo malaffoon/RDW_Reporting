@@ -1,7 +1,19 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { Ordering, ordering } from '@kourge/ordering';
 import { AggregateReportItem } from './aggregate-report-item';
-import { byNumber, byString, Comparator, join, ranking } from '@kourge/ordering/comparator';
+import {
+  byNumber,
+  byString,
+  Comparator,
+  join,
+  ranking
+} from '@kourge/ordering/comparator';
 import { ColorService } from '../../shared/color.service';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { OrganizationType } from '../../shared/organization/organization';
@@ -9,14 +21,20 @@ import { Utils } from '../../shared/support/support';
 import { AggregateReportOptions } from '../aggregate-report-options';
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
 import { ValueDisplayTypes } from '../../shared/display-options/value-display-type';
-import { AggregateReportTableExportService, ExportOptions } from './aggregate-report-table-export.service';
+import {
+  AggregateReportTableExportService,
+  ExportOptions
+} from './aggregate-report-table-export.service';
 import { Table } from 'primeng/table';
 import { SortEvent } from 'primeng/api';
-import * as _ from 'lodash';
+import { get, isEqual } from 'lodash';
 import { organizationOrdering, subgroupOrdering } from '../support';
 import { TranslateService } from '@ngx-translate/core';
 import { BaseColumn } from '../../shared/datatable/base-column.model';
-import { byNumericString, getOrganizationalClaimOrdering } from '../../shared/ordering/orderings';
+import {
+  byNumericString,
+  getOrganizationalClaimOrdering
+} from '../../shared/ordering/orderings';
 import { byTargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
 import { SubjectDefinition } from '../../subject/subject';
 import { ReportQueryType } from '../../report/report';
@@ -27,48 +45,70 @@ function safeCopy<T>(array: T[]): T[] {
   return array != null ? array.slice() : [];
 }
 
-function toRow(row: AggregateReportItem, colorService): AggregateReportItem & { organizationColor: string } {
+function toRow(
+  row: AggregateReportItem,
+  colorService
+): AggregateReportItem & { organizationColor: string } {
   const { organization = <any>{} } = row;
-  const colorIndex = Object.keys(OrganizationType).findIndex(value => value === organization.type);
-  const organizationColor = colorService.getColor(colorIndex < 0 ? 0 : colorIndex);
+  const colorIndex = Object.keys(OrganizationType).findIndex(
+    value => value === organization.type
+  );
+  const organizationColor = colorService.getColor(
+    colorIndex < 0 ? 0 : colorIndex
+  );
   return {
     ...row,
     organizationColor
-  }
+  };
 }
 
-const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber)
-  .on(item => item.schoolYear);
+const SchoolYearOrdering: Ordering<AggregateReportItem> = ordering(byNumber).on(
+  item => item.schoolYear
+);
 
-const AssessmentLabelOrdering: Ordering<AggregateReportItem> = ordering(byString)
-  .on(item => item.assessmentLabel);
+const AssessmentLabelOrdering: Ordering<AggregateReportItem> = ordering(
+  byString
+).on(item => item.assessmentLabel);
 
-const RelativeResidualScoreLevelOrdering: Ordering<AggregateReportItem> = ordering(byTargetReportingLevel)
-  .on(item => item.studentRelativeResidualScoresLevel);
+const RelativeResidualScoreLevelOrdering: Ordering<
+  AggregateReportItem
+> = ordering(byTargetReportingLevel).on(
+  item => item.studentRelativeResidualScoresLevel
+);
 
-const MetRelativeResidualScoreLevelOrdering: Ordering<AggregateReportItem> = ordering(byTargetReportingLevel)
-  .on(item => item.standardMetRelativeResidualLevel);
+const MetRelativeResidualScoreLevelOrdering: Ordering<
+  AggregateReportItem
+> = ordering(byTargetReportingLevel).on(
+  item => item.standardMetRelativeResidualLevel
+);
 
-const NoResultsComparator: Ordering<AggregateReportItem> = ordering(byNumber)
-  .on(item => item.studentsTested === 0 ? 1 : 0);
+const NoResultsComparator: Ordering<AggregateReportItem> = ordering(
+  byNumber
+).on(item => (item.studentsTested === 0 ? 1 : 0));
 
-const createOrganizationalClaimOrdering: (subjectCode: string, preview: boolean) => Ordering<AggregateReportItem> =
-  (subjectCode, preview) => {
-    const currentOrdering: Ordering<string> = !preview
-      ? getOrganizationalClaimOrdering(subjectCode)
-      : ordering(byString);
-    return currentOrdering.on(item => item.claimCode);
-  };
+const createOrganizationalClaimOrdering: (
+  subjectCode: string,
+  preview: boolean
+) => Ordering<AggregateReportItem> = (subjectCode, preview) => {
+  const currentOrdering: Ordering<string> = !preview
+    ? getOrganizationalClaimOrdering(subjectCode)
+    : ordering(byString);
+  return currentOrdering.on(item => item.claimCode);
+};
 
 const targetOrdering = translate =>
-  ordering(byNumericString)
-    .on((item: AggregateReportItem) => translate.instant(
-      `subject.${item.subjectCode}.claim.${item.claimCode}.target.${item.targetNaturalId}.name`
-    ));
+  ordering(byNumericString).on((item: AggregateReportItem) =>
+    translate.instant(
+      `subject.${item.subjectCode}.claim.${item.claimCode}.target.${
+        item.targetNaturalId
+      }.name`
+    )
+  );
 
 const assessmentGradeOrdering = grades =>
-  ordering(ranking(grades))
-    .on((item: AggregateReportItem) => item.assessmentGradeCode);
+  ordering(ranking(grades)).on(
+    (item: AggregateReportItem) => item.assessmentGradeCode
+  );
 
 function createOrderingByColumnField(
   options: AggregateReportOptions,
@@ -77,19 +117,22 @@ function createOrderingByColumnField(
   rows: AggregateReportItem[],
   preview: boolean,
   translate: TranslateService
-): {[fieldId: string]: Ordering<AggregateReportItem>} {
+): { [fieldId: string]: Ordering<AggregateReportItem> } {
   return {
-    'assessmentLabel': AssessmentLabelOrdering,
+    assessmentLabel: AssessmentLabelOrdering,
     'organization.name': organizationOrdering(item => item.organization, rows),
-    'assessmentGradeCode': assessmentGradeOrdering(options.assessmentGrades),
-    'schoolYear': SchoolYearOrdering,
+    assessmentGradeCode: assessmentGradeOrdering(options.assessmentGrades),
+    schoolYear: SchoolYearOrdering,
     'subgroup.id': subgroupOrdering(item => item.subgroup, options),
-    'targetNaturalId': targetOrdering(translate),
-    'studentRelativeResidualScoresLevel': RelativeResidualScoreLevelOrdering,
-    'standardMetRelativeResidualLevel': MetRelativeResidualScoreLevelOrdering,
-    'claimCode': reportType === 'Target'
-      ? createOrganizationalClaimOrdering(subjectDefinition.subject, preview)
-      : ordering(ranking(subjectDefinition.scorableClaims)).on(row => row.claimCode)
+    targetNaturalId: targetOrdering(translate),
+    studentRelativeResidualScoresLevel: RelativeResidualScoreLevelOrdering,
+    standardMetRelativeResidualLevel: MetRelativeResidualScoreLevelOrdering,
+    claimCode:
+      reportType === 'Target'
+        ? createOrganizationalClaimOrdering(subjectDefinition.subject, preview)
+        : ordering(ranking(subjectDefinition.scorableClaims)).on(
+            row => row.claimCode
+          )
   };
 }
 
@@ -101,9 +144,12 @@ function createColumns(
   valueDisplayType: string,
   performanceLevelDisplayType: string
 ): Column[] {
-
   const IdentityColumns: Column[] = [
-    new Column({ id: 'organization', field: 'organization.name', classes: 'wrapping' }),
+    new Column({
+      id: 'organization',
+      field: 'organization.name',
+      classes: 'wrapping'
+    }),
     new Column({ id: 'assessmentGrade', field: 'assessmentGradeCode' }),
     new Column({ id: 'assessmentLabel' }),
     new Column({ id: 'schoolYear' }),
@@ -118,7 +164,11 @@ function createColumns(
     case 'Longitudinal':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
-        new Column({ id: 'achievementComparison', sortable: false, classes: 'wrapping' }),
+        new Column({
+          id: 'achievementComparison',
+          sortable: false,
+          classes: 'wrapping'
+        }),
         new Column({ id: 'avgScaleScore', valueColumn: true }),
         ...createPerformanceLevelColumns(
           translate,
@@ -132,7 +182,11 @@ function createColumns(
     case 'Claim':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
-        new Column({ id: 'achievementComparison', sortable: false, classes: 'wrapping' }),
+        new Column({
+          id: 'achievementComparison',
+          sortable: false,
+          classes: 'wrapping'
+        }),
         ...createPerformanceLevelColumns(
           translate,
           subjectDefinition,
@@ -145,19 +199,25 @@ function createColumns(
     case 'Target':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
-        new Column({ id: 'studentRelativeResidualScoresLevel', valueColumn: true }),
-        new Column({ id: 'standardMetRelativeResidualLevel', valueColumn: true })
+        new Column({
+          id: 'studentRelativeResidualScoresLevel',
+          valueColumn: true
+        }),
+        new Column({
+          id: 'standardMetRelativeResidualLevel',
+          valueColumn: true
+        })
       );
       break;
   }
 
   return [
-    ...identityColumns
-      .map(columnId => IdentityColumns.find(column => column.id === columnId)),
+    ...identityColumns.map(columnId =>
+      IdentityColumns.find(column => column.id === columnId)
+    ),
     ...dataColumns
   ];
 }
-
 
 function createPerformanceLevelColumns(
   translate: TranslateService,
@@ -166,11 +226,11 @@ function createPerformanceLevelColumns(
   valueDisplayType: string,
   performanceLevelDisplayType: string
 ): Column[] {
-
   const performanceLevelsByDisplayType = {
-    Separate: reportType === 'Claim'
-      ? subjectDefinition.scorableClaimPerformanceLevels
-      : subjectDefinition.performanceLevels,
+    Separate:
+      reportType === 'Claim'
+        ? subjectDefinition.scorableClaimPerformanceLevels
+        : subjectDefinition.performanceLevels,
     Grouped: [
       subjectDefinition.performanceLevelStandardCutoff - 1,
       subjectDefinition.performanceLevelStandardCutoff
@@ -178,17 +238,17 @@ function createPerformanceLevelColumns(
   };
 
   const performanceColumns: Column[] = [];
-  Object.keys(performanceLevelsByDisplayType)
-    .forEach(displayType => {
-      performanceLevelsByDisplayType[ displayType ].forEach((level, index) => {
-        const columnOptions = {
-          id: 'performanceLevel',
-          displayType: displayType,
-          level: level,
-          index: index,
-          valueColumn: true
-        };
-        performanceColumns.push(new Column({
+  Object.keys(performanceLevelsByDisplayType).forEach(displayType => {
+    performanceLevelsByDisplayType[displayType].forEach((level, index) => {
+      const columnOptions = {
+        id: 'performanceLevel',
+        displayType: displayType,
+        level: level,
+        index: index,
+        valueColumn: true
+      };
+      performanceColumns.push(
+        new Column({
           ...columnOptions,
           ...createPerformanceLevelColumnDynamicFields(
             translate,
@@ -198,9 +258,10 @@ function createPerformanceLevelColumns(
             performanceLevelDisplayType,
             valueDisplayType
           )
-        }));
-      });
+        })
+      );
     });
+  });
 
   return performanceColumns;
 }
@@ -209,25 +270,38 @@ function createPerformanceLevelColumnDynamicFields(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
   reportType: ReportQueryType,
-  column: Column | { displayType: string, level: number, index: number },
+  column: Column | { displayType: string; level: number; index: number },
   performanceLevelDisplayType: string,
   valueDisplayType: string
 ) {
   return {
     visible: column.displayType === performanceLevelDisplayType,
-    field: `performanceLevelByDisplayTypes.${column.displayType}.${valueDisplayType}.${column.index}`,
+    field: `performanceLevelByDisplayTypes.${
+      column.displayType
+    }.${valueDisplayType}.${column.index}`,
     headerText: getPerformanceLevelColumnHeaderText(
-      translate, subjectDefinition, reportType, column.displayType, column.level, column.index
+      translate,
+      subjectDefinition,
+      reportType,
+      column.displayType,
+      column.level,
+      column.index
     ),
     headerSuffix: getPerformanceLevelColumnHeaderSuffix(
-      translate, subjectDefinition, reportType, column.displayType, column.level
+      translate,
+      subjectDefinition,
+      reportType,
+      column.displayType,
+      column.level
     ),
     headerColor: getPerformanceLevelColors(
-      translate, subjectDefinition, reportType, column.level
+      translate,
+      subjectDefinition,
+      reportType,
+      column.level
     )
   };
 }
-
 
 function getPerformanceLevelColumnHeaderText(
   translate: TranslateService,
@@ -239,7 +313,11 @@ function getPerformanceLevelColumnHeaderText(
 ): string {
   return translate.instant(
     displayType === 'Separate'
-      ? `subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.short-name`
+      ? `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.${
+          reportType === 'Claim' ? 'claim-score.' : ''
+        }level.${level}.short-name`
       : `aggregate-report-table.columns.grouped-performance-level-prefix.${index}`
   );
 }
@@ -252,7 +330,11 @@ function getPerformanceLevelColumnHeaderSuffix(
   level: number
 ): string {
   return displayType === 'Separate'
-    ? translate.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.suffix`)
+    ? translate.instant(
+        `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.suffix`
+      )
     : '';
 }
 
@@ -262,7 +344,11 @@ function getPerformanceLevelColors(
   reportType: ReportQueryType,
   level: number
 ): string {
-  return translate.instant(`subject.${subjectDefinition.subject}.asmt-type.${subjectDefinition.assessmentType}.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.color`);
+  return translate.instant(
+    `subject.${subjectDefinition.subject}.asmt-type.${
+      subjectDefinition.assessmentType
+    }.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.color`
+  );
 }
 
 /**
@@ -273,11 +359,11 @@ function getPerformanceLevelColors(
  */
 function identityColumnComparators(
   columns: Column[],
-  orderingByColumnField: { [ key: string ]: Ordering<AggregateReportItem> }
+  orderingByColumnField: { [key: string]: Ordering<AggregateReportItem> }
 ): Comparator<AggregateReportItem>[] {
   return columns
     .map((column: Column) => {
-      const ordering = orderingByColumnField[ column.field ];
+      const ordering = orderingByColumnField[column.field];
       return ordering ? ordering.compare : null;
     })
     .filter(value => value != null);
@@ -301,9 +387,9 @@ function getComparator(
   order: number
 ): Comparator<AggregateReportItem> {
   const ascending: boolean = order >= 0;
-  let rowOrdering: Ordering<AggregateReportItem> = orderingByColumnField[ field ]
-    ? orderingByColumnField[ field ]
-    : ordering(byNumber).on(item => _.get(item, field));
+  let rowOrdering: Ordering<AggregateReportItem> = orderingByColumnField[field]
+    ? orderingByColumnField[field]
+    : ordering(byNumber).on(item => get(item, field));
   if (!ascending) {
     rowOrdering = rowOrdering.reverse();
   }
@@ -329,7 +415,7 @@ function indexOfFirstUniqueColumnValue(
 ): number {
   let index: number;
   for (index = 0; index < identityColumns.length - 1; index++) {
-    const column: Column = columns[ index ];
+    const column: Column = columns[index];
     if (column.id === 'organization') {
       const previousOrg = previousItem.organization;
       const currentOrg = currentItem.organization;
@@ -337,8 +423,8 @@ function indexOfFirstUniqueColumnValue(
         break;
       }
     } else {
-      const previousValue = _.get(previousItem, column.field); // TODO would be nice if this was based on "sortField" as opposed to field
-      const currentValue = _.get(currentItem, column.field);
+      const previousValue = get(previousItem, column.field); // TODO would be nice if this was based on "sortField" as opposed to field
+      const currentValue = get(currentItem, column.field);
       if (previousValue !== currentValue) {
         break;
       }
@@ -351,14 +437,25 @@ function indexOfFirstUniqueColumnValue(
  * Calculate the index for each row at which it differs from the data in the previous row.
  * This is used to display a tree-like structure which hides repetitive data in the left-most columns.
  */
-function createTreeColumns(columns: Column[], identityColumns: string[], rows: AggregateReportItem[]): number[] {
+function createTreeColumns(
+  columns: Column[],
+  identityColumns: string[],
+  rows: AggregateReportItem[]
+): number[] {
   const treeColumns = [];
   // no longer using paging
   //const pageSize: number = this.dataTable.rows;
   let previousItem: AggregateReportItem;
   rows.forEach((currentItem: AggregateReportItem, index: number) => {
-    treeColumns.push(!previousItem // || (index % pageSize == 0)
-      ? 0 : indexOfFirstUniqueColumnValue(columns, identityColumns, previousItem, currentItem)
+    treeColumns.push(
+      !previousItem // || (index % pageSize == 0)
+        ? 0
+        : indexOfFirstUniqueColumnValue(
+            columns,
+            identityColumns,
+            previousItem,
+            currentItem
+          )
     );
     previousItem = currentItem;
   });
@@ -367,8 +464,9 @@ function createTreeColumns(columns: Column[], identityColumns: string[], rows: A
 
 function sortColumns(columns: Column[], identityColumns: string[]): Column[] {
   // Assumes the ordered columns always start from the first column and extend the length of identity columns
-  const comparator = ordering(ranking(identityColumns))
-    .on((column: Column) => column.id).compare;
+  const comparator = ordering(ranking(identityColumns)).on(
+    (column: Column) => column.id
+  ).compare;
   return [
     ...columns.slice(0, identityColumns.length).sort(comparator),
     ...columns.slice(identityColumns.length)
@@ -384,7 +482,6 @@ export interface AggregateReportTable {
 }
 
 class Column implements BaseColumn {
-
   /** @deprecated use {@link #id} and change translation keys **/
   translationId: string;
 
@@ -416,20 +513,19 @@ class Column implements BaseColumn {
   headerColor?: string;
 
   constructor({
-                id,
-                field = '',
-                sortable = true,
-                visible = true,
-                displayType = '',
-                level = -1,
-                index = -1,
-                headerText = '',
-                headerSuffix = '',
-                headerColor = '',
-                valueColumn = false,
-                classes = undefined
-              }) {
-
+    id,
+    field = '',
+    sortable = true,
+    visible = true,
+    displayType = '',
+    level = -1,
+    index = -1,
+    headerText = '',
+    headerSuffix = '',
+    headerColor = '',
+    valueColumn = false,
+    classes = undefined
+  }) {
     this.translationId = Utils.camelCaseToDash(id);
 
     this.id = id;
@@ -485,7 +581,6 @@ const RowBuffer = 50;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AggregateReportTableComponent implements OnInit {
-
   // these properties cannot be updated after initialization
   @Input()
   public preview: boolean = false;
@@ -497,7 +592,9 @@ export class AggregateReportTableComponent implements OnInit {
   private dataTable: Table;
 
   private _previousSortEvent: any;
-  private _orderingByColumnField: { [ key: string ]: Ordering<AggregateReportItem> } = {};
+  private _orderingByColumnField: {
+    [key: string]: Ordering<AggregateReportItem>;
+  } = {};
   private _identityColumnComparators: Comparator<AggregateReportItem>[];
 
   // internals directly exposed for rendering performance enhancement
@@ -517,16 +614,18 @@ export class AggregateReportTableComponent implements OnInit {
   claimReport: boolean;
   center: boolean;
 
-  constructor(public colorService: ColorService,
-              private translate: TranslateService,
-              private exportService: AggregateReportTableExportService) {
-  }
+  constructor(
+    public colorService: ColorService,
+    private translate: TranslateService,
+    private exportService: AggregateReportTableExportService
+  ) {}
 
   ngOnInit(): void {
     this.sortMode = this.preview ? false : 'single';
     this.claimReport = this.reportType === 'Claim';
-    this.center = this.reportType !== 'Claim'
-      && this.subjectDefinition.performanceLevelStandardCutoff != null;
+    this.center =
+      this.reportType !== 'Claim' &&
+      this.subjectDefinition.performanceLevelStandardCutoff != null;
     this.buildAndRender();
     this._initialized = true;
   }
@@ -540,8 +639,9 @@ export class AggregateReportTableComponent implements OnInit {
     const previousValue = this._subjectDefinition;
     this._subjectDefinition = value;
     if (this._initialized && previousValue !== value) {
-      this.center = this.reportType !== 'Claim'
-        && this.subjectDefinition.performanceLevelStandardCutoff != null;
+      this.center =
+        this.reportType !== 'Claim' &&
+        this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
   }
@@ -556,8 +656,9 @@ export class AggregateReportTableComponent implements OnInit {
     this._reportType = value;
     if (this._initialized && previousValue !== value) {
       this.claimReport = this.reportType === 'Claim';
-      this.center = this.reportType !== 'Claim'
-        && this.subjectDefinition.performanceLevelStandardCutoff != null;
+      this.center =
+        this.reportType !== 'Claim' &&
+        this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
   }
@@ -593,13 +694,10 @@ export class AggregateReportTableComponent implements OnInit {
 
     const newColumns = safeCopy(value);
     this._identityColumns = newColumns;
-    if (this._initialized && !_.isEqual(previousColumns, newColumns)) {
+    if (this._initialized && !isEqual(previousColumns, newColumns)) {
       // did just the order change?
-      if (_.isEqual(previousColumns.slice().sort(), newColumns.slice().sort())) {
-        const sortedColumns = sortColumns(
-          columns,
-          newColumns
-        );
+      if (isEqual(previousColumns.slice().sort(), newColumns.slice().sort())) {
+        const sortedColumns = sortColumns(columns, newColumns);
         this.columns = sortedColumns;
         this._identityColumnComparators = identityColumnComparators(
           sortedColumns,
@@ -619,9 +717,10 @@ export class AggregateReportTableComponent implements OnInit {
 
   @Input()
   set valueDisplayType(value: string) {
-    value = value != null
-      ? ValueDisplayTypes.valueOf(value)
-      : ValueDisplayTypes.Percent;
+    value =
+      value != null
+        ? ValueDisplayTypes.valueOf(value)
+        : ValueDisplayTypes.Percent;
     const previousValue = this._valueDisplayType;
     this._valueDisplayType = value;
     if (this._initialized && previousValue !== value) {
@@ -635,9 +734,10 @@ export class AggregateReportTableComponent implements OnInit {
 
   @Input()
   set performanceLevelDisplayType(value: string) {
-    value = value != null
-      ? PerformanceLevelDisplayTypes.valueOf(value)
-      : PerformanceLevelDisplayTypes.Separate;
+    value =
+      value != null
+        ? PerformanceLevelDisplayTypes.valueOf(value)
+        : PerformanceLevelDisplayTypes.Separate;
     const previousValue = this._performanceLevelDisplayType;
     this._performanceLevelDisplayType = value;
     if (this._initialized && previousValue !== value) {
@@ -647,11 +747,10 @@ export class AggregateReportTableComponent implements OnInit {
 
   // TODO find a way to avoid this as this is less performant than direct field reads
   readField(item: AggregateReportItem, field: string) {
-    return _.get(item, field, '');
+    return get(item, field, '');
   }
 
   onLazyLoad(event: any): void {
-
     setTimeout(() => {
       const rows = this._rows.slice();
 
@@ -700,12 +799,19 @@ export class AggregateReportTableComponent implements OnInit {
       return;
     }
 
-    if (!this._previousSortEvent ||
+    if (
+      !this._previousSortEvent ||
       event === this._previousSortEvent ||
       order !== 1 ||
-      field !== this._previousSortEvent.field) {
+      field !== this._previousSortEvent.field
+    ) {
       // Standard column sort.  Sort on the selected column first, then default sorting.
-      const comparator = getComparator(columns, _orderingByColumnField, field, order);
+      const comparator = getComparator(
+        columns,
+        _orderingByColumnField,
+        field,
+        order
+      );
       comparators.unshift(comparator);
       this._previousSortEvent = event;
     } else {
@@ -736,7 +842,6 @@ export class AggregateReportTableComponent implements OnInit {
   }
 
   private buildAndRender(): void {
-
     const {
       options,
       preview,
@@ -806,15 +911,17 @@ export class AggregateReportTableComponent implements OnInit {
     (columns || [])
       .filter(column => column.id === 'performanceLevel')
       .forEach(column => {
-        Object.assign(column, createPerformanceLevelColumnDynamicFields(
-          translate,
-          subjectDefinition,
-          reportType,
+        Object.assign(
           column,
-          performanceLevelDisplayType,
-          valueDisplayType
-        ));
+          createPerformanceLevelColumnDynamicFields(
+            translate,
+            subjectDefinition,
+            reportType,
+            column,
+            performanceLevelDisplayType,
+            valueDisplayType
+          )
+        );
       });
   }
-
 }
