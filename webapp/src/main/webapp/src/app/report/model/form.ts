@@ -32,14 +32,13 @@ export interface FormField {
 
   /**
    * The control type
-   * TODO: use ControlType - this is currently causing a compilation issue...
    */
   type: ControlType;
 
   /**
    * The validation methods
    */
-  validators: ValidatorFn | ValidatorFn[];
+  validators?: ValidatorFn | ValidatorFn[];
 
   /**
    * The form control label
