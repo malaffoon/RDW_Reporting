@@ -80,6 +80,6 @@ describe('createFormGroup', () => {
     ];
     const formGroup = createFormGroup(fields, {}, new Subject());
     expect(formGroup.controls.a.errors).toEqual({ required: true });
-    expect(formGroup.controls.b.errors).toEqual({});
+    expect(formGroup.controls.b.errors).toBe(null);
   });
 });
