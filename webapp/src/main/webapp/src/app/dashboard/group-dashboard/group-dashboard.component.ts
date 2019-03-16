@@ -11,11 +11,12 @@ import {
   AssessmentCardEvent,
   GroupCard
 } from './group-assessment-card.component';
+import { first, map, mergeMap } from 'rxjs/operators';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupService } from '../../user-group/user-group.service';
-import * as _ from 'lodash';
-import { first, map, mergeMap } from 'rxjs/operators';
+import { chunk } from 'lodash';
+
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
 import { ReportFormService } from '../../report/service/report-form.service';
@@ -195,7 +196,7 @@ export class GroupDashboardComponent implements OnInit {
             ).performanceLevels
           }
       );
-    this.rows = _.chunk(filteredCards, this.itemsPerRow);
+    this.rows = chunk(filteredCards, this.itemsPerRow);
   }
 
   get viewAssessmentsButtonEnabled(): boolean {

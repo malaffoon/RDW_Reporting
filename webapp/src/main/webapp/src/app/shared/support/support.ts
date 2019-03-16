@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEqual, isEmpty } from 'lodash';
 
 /**
  * Expands support from string and Array to type Object as well
@@ -6,7 +6,7 @@ import * as _ from 'lodash';
  * @param value The value to test
  */
 export function isNullOrEmpty(value: any): boolean {
-  return value == null || _.isEmpty(value);
+  return value == null || isEmpty(value);
 }
 
 export function isEqualSet(a: any[], b: any[]): boolean {
@@ -16,7 +16,7 @@ export function isEqualSet(a: any[], b: any[]): boolean {
     (a != null &&
       b != null &&
       a.length === b.length &&
-      _.isEqual(a.slice().sort(), b.slice().sort()))
+      isEqual(a.slice().sort(), b.slice().sort()))
   );
 }
 
@@ -27,7 +27,7 @@ export class Utils {
       (a != null &&
         b != null &&
         a.length === b.length &&
-        _.isEqual(a.concat().sort(), b.concat().sort()))
+        isEqual(a.concat().sort(), b.concat().sort()))
     );
   }
 

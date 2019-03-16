@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Forms } from './forms';
 import { AbstractControlValueAccessor } from './abstract-control-value-accessor';
-import * as _ from 'lodash';
+import { isEqual } from 'lodash';
 import { Utils } from '../support/support';
 import { Option } from './option';
 
@@ -20,7 +20,6 @@ const DefaultButtonStyles = 'btn-primary';
  * Holds the internal button selection state
  */
 interface State {
-
   /**
    * True when the all option is selected
    */
@@ -71,7 +70,6 @@ class Radio implements InputController {
  * Makes the button group behave as a range selector
  */
 class Range implements InputController {
-
   onButtonClick(context: SBButtonGroup, state: State, option: Option): void {
     const { selectedOptions } = state;
     if (selectedOptions.has(option)) {
@@ -101,7 +99,7 @@ class Range implements InputController {
     });
     if (firstIndex != null && lastIndex != null && firstIndex !== lastIndex) {
       for (let i = firstIndex + 1; i < lastIndex; i++) {
-        selectedOptions.add(options[ i ]);
+        selectedOptions.add(options[i]);
       }
     }
   }
@@ -114,10 +112,18 @@ class Range implements InputController {
    * @param {Option[]} options
    * @param {Option} option
    */
-  private unfill(selectedOptions: Set<Option>, options: Option[], option: Option): void {
+  private unfill(
+    selectedOptions: Set<Option>,
+    options: Option[],
+    option: Option
+  ): void {
     const index = options.indexOf(option);
-    const leftOptionSelected = options.slice(0, index).find(option => selectedOptions.has(option));
-    const rightOptionSelected = options.slice(index + 1).find(option => selectedOptions.has(option));
+    const leftOptionSelected = options
+      .slice(0, index)
+      .find(option => selectedOptions.has(option));
+    const rightOptionSelected = options
+      .slice(index + 1)
+      .find(option => selectedOptions.has(option));
     if (leftOptionSelected != null && rightOptionSelected != null) {
       selectedOptions.clear();
       selectedOptions.add(option);
@@ -125,7 +131,7 @@ class Range implements InputController {
   }
 }
 
-const ControllerByInputType: { [ inputType: string ]: InputController } = {
+const ControllerByInputType: { [inputType: string]: InputController } = {
   checkbox: new Checkbox(),
   radio: new Radio(),
   range: new Range()
@@ -138,56 +144,81 @@ const ControllerByInputType: { [ inputType: string ]: InputController } = {
   selector: 'sb-button-group',
   template: `
     <ng-template #button let-option let-isAllOption="isAllOption">
-      <label class="btn"
-             [ngClass]="computeStylesInternal(buttonStyles, { 
-                 active: isAllOption ? stateInternal.selectedAllOption : stateInternal.selectedOptions.has(option), 
-                 disabled: option.disabled 
-             })">
-        <input type="checkbox"
-               [attr.checked]="isAllOption ? stateInternal.selectedAllOption : stateInternal.selectedOptions.has(option)"
-               [name]="name"
-               [disabled]="option.disabled"
-               (click)="isAllOption ? onAllOptionClickInternal() : onOptionClickInternal(option)"
-               angulartics2On="click"
-               angularticsAction="{{analyticsEvent}}"
-               angularticsCategory="{{analyticsCategory}}"
-               [angularticsProperties]="isAllOption ? allOptionAnalyticsProperties : option.analyticsProperties">
-        {{option.text}}
+      <label
+        class="btn"
+        [ngClass]="
+          computeStylesInternal(buttonStyles, {
+            active: isAllOption
+              ? stateInternal.selectedAllOption
+              : stateInternal.selectedOptions.has(option),
+            disabled: option.disabled
+          })
+        "
+      >
+        <input
+          type="checkbox"
+          [attr.checked]="
+            isAllOption
+              ? stateInternal.selectedAllOption
+              : stateInternal.selectedOptions.has(option)
+          "
+          [name]="name"
+          [disabled]="option.disabled"
+          (click)="
+            isAllOption
+              ? onAllOptionClickInternal()
+              : onOptionClickInternal(option)
+          "
+          angulartics2On="click"
+          angularticsAction="{{ analyticsEvent }}"
+          angularticsCategory="{{ analyticsCategory }}"
+          [angularticsProperties]="
+            isAllOption
+              ? allOptionAnalyticsProperties
+              : option.analyticsProperties
+          "
+        />
+        {{ option.text }}
       </label>
     </ng-template>
 
-    <div *ngIf="initializedInternal"
-         data-toggle="buttons"
-         class="toggle-group"
-         [ngClass]="computeStylesInternal(buttonGroupStyles, {
-           'vertical': vertical,
-           'all-option': allOptionEnabled,
-           'nested-btn-group': allOptionEnabled || vertical
-         })">
-
+    <div
+      *ngIf="initializedInternal"
+      data-toggle="buttons"
+      class="toggle-group"
+      [ngClass]="
+        computeStylesInternal(buttonGroupStyles, {
+          vertical: vertical,
+          'all-option': allOptionEnabled,
+          'nested-btn-group': allOptionEnabled || vertical
+        })
+      "
+    >
       <ng-container *ngIf="allOptionEnabled">
-        <ng-container *ngTemplateOutlet="button; context:{
-          $implicit: { text: ('common.buttons.all' | translate) },
-          isAllOption: true
-        }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            button;
+            context: {
+              $implicit: { text: 'common.buttons.all' | translate },
+              isAllOption: true
+            }
+          "
+        ></ng-container>
       </ng-container>
 
-      <div class="btn-group"
-           [ngClass]="buttonGroupStyles">
-
+      <div class="btn-group" [ngClass]="buttonGroupStyles">
         <ng-container *ngFor="let option of options">
-          <ng-container *ngTemplateOutlet="button; context:{$implicit:option}"></ng-container>
+          <ng-container
+            *ngTemplateOutlet="button; context: { $implicit: option }"
+          ></ng-container>
         </ng-container>
-
       </div>
     </div>
   `,
-  providers: [
-    Forms.valueAccessor(SBButtonGroup)
-  ]
+  providers: [Forms.valueAccessor(SBButtonGroup)]
 })
-export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
-
+export class SBButtonGroup extends AbstractControlValueAccessor<any[]>
+  implements OnInit {
   @Input()
   public vertical: boolean = false;
 
@@ -235,7 +266,7 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
 
   @Input()
   set type(value: InputType) {
-    const controller = ControllerByInputType[ value ];
+    const controller = ControllerByInputType[value];
     if (controller == null) {
       this.throwError(`Unknown input type: "${value}"`);
     }
@@ -263,7 +294,10 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
         }
 
         //Optionally allow no selection
-        if (!this.effectiveNoneStateEnabled && (!updatedValues || updatedValues.length === 0)) {
+        if (
+          !this.effectiveNoneStateEnabled &&
+          (!updatedValues || updatedValues.length === 0)
+        ) {
           updatedValues = this.parseInputValues(this._initialValues);
         }
 
@@ -336,7 +370,6 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
    * All button click handler
    */
   onAllOptionClickInternal(): void {
-
     const state = this._state,
       options = this._options;
 
@@ -365,7 +398,6 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
    * @param {Option} option
    */
   onOptionClickInternal(option: Option): void {
-
     const state = this._state,
       options = this._options;
 
@@ -396,11 +428,16 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
    * @param {Option[]} options
    */
   private updateValue(state, options: Option[]): void {
-    const values = state.selectedAllOption && this._allOptionReturnsUndefined
-      ? undefined
-      : options
-        .filter(option => !option.disabled && (state.selectedAllOption || state.selectedOptions.has(option)))
-        .map(option => option.value);
+    const values =
+      state.selectedAllOption && this._allOptionReturnsUndefined
+        ? undefined
+        : options
+            .filter(
+              option =>
+                !option.disabled &&
+                (state.selectedAllOption || state.selectedOptions.has(option))
+            )
+            .map(option => option.value);
 
     this.setValueAndNotifyChanges(values);
   }
@@ -419,12 +456,15 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     if (options.length < 2) {
       this.throwError('at least two options are required');
     }
-    return options.map(option => <Option>{
-      value: option.value,
-      text: option.text ? option.text : option.value,
-      analyticsProperties: option.analyticsProperties,
-      disabled: option.disabled
-    });
+    return options.map(
+      option =>
+        <Option>{
+          value: option.value,
+          text: option.text ? option.text : option.value,
+          analyticsProperties: option.analyticsProperties,
+          disabled: option.disabled
+        }
+    );
   }
 
   /**
@@ -460,8 +500,12 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
   private computeState(options: Option[], values: any[]): State {
     if (this.allOptionEnabled) {
       let enabledOptions = options.filter(x => !x.disabled);
-      const effectiveOptions = enabledOptions.filter(option => values.includes(option.value));
-      const effectivelySelectedAllOption = values.length === enabledOptions.length || enabledOptions.length === effectiveOptions.length;
+      const effectiveOptions = enabledOptions.filter(option =>
+        values.includes(option.value)
+      );
+      const effectivelySelectedAllOption =
+        values.length === enabledOptions.length ||
+        enabledOptions.length === effectiveOptions.length;
       return {
         selectedAllOption: effectivelySelectedAllOption,
         selectedOptions: effectivelySelectedAllOption
@@ -471,12 +515,14 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
     }
     return {
       selectedAllOption: false,
-      selectedOptions: new Set(options.filter(option => values.includes(option.value)))
+      selectedOptions: new Set(
+        options.filter(option => values.includes(option.value))
+      )
     };
   }
 
   private setValueAndNotifyChanges(value: any) {
-    if (!_.isEqual(this._value, value)) {
+    if (!isEqual(this._value, value)) {
       this._value = value;
       this._onChangeCallback(value);
     }
@@ -485,5 +531,4 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]> implement
   private throwError(message: string): void {
     throw new Error(`${this.constructor.name} ${message}`);
   }
-
 }

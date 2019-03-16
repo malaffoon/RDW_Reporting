@@ -12,7 +12,7 @@ import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { AssessmentTypeOrdering } from '../../shared/ordering/orderings';
 import { FilterBy } from '../../assessments/model/filter-by.model';
-import * as _ from 'lodash';
+import { union } from 'lodash';
 import { StudentResultsFilterService } from './student-results-filter.service';
 import { Student } from '../model/student.model';
 import { StudentPipe } from '../../shared/format/student.pipe';
@@ -20,6 +20,18 @@ import { OrderingService } from '../../shared/ordering/ordering.service';
 import { Ordering } from '@kourge/ordering';
 import { first } from 'rxjs/operators';
 import { ReportFormService } from '../../report/service/report-form.service';
+
+/**
+ * Represents a page section where exams of a specific type and subject are displayed
+ */
+interface Section {
+  assessmentTypeCode: string;
+  assessmentTypeColor: string;
+  subjectCode: string;
+  exams: StudentHistoryExamWrapper[];
+  filteredExams: StudentHistoryExamWrapper[];
+  collapsed: boolean;
+}
 
 @Component({
   selector: 'student-results',
@@ -256,12 +268,11 @@ export class StudentResultsComponent implements OnInit {
     const filterState: StudentResultsFilterState = exams.reduce(
       (filterState, wrapper: StudentHistoryExamWrapper) => {
         const { schoolYear } = wrapper.exam;
-        filterState.schoolYears = _.union(filterState.schoolYears, [
-          schoolYear
-        ]);
+
+        filterState.schoolYears = union(filterState.schoolYears, [schoolYear]);
         const { subject, type } = wrapper.assessment;
-        filterState.subjects = _.union(filterState.subjects, [subject]);
-        filterState.assessmentTypes = _.union(filterState.assessmentTypes, [
+        filterState.subjects = union(filterState.subjects, [subject]);
+        filterState.assessmentTypes = union(filterState.assessmentTypes, [
           type
         ]);
         return filterState;
@@ -290,16 +301,4 @@ export class StudentResultsComponent implements OnInit {
     filterState.subject = subject;
     filterState.assessmentType = assessmentType;
   }
-}
-
-/**
- * Represents a page section where exams of a specific type and subject are displayed
- */
-interface Section {
-  assessmentTypeCode: string;
-  assessmentTypeColor: string;
-  subjectCode: string;
-  exams: StudentHistoryExamWrapper[];
-  filteredExams: StudentHistoryExamWrapper[];
-  collapsed: boolean;
 }
