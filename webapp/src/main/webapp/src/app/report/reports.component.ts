@@ -143,6 +143,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onDeleteUserQuery(userQuery: UserQuery): void {
     const modalReference = this.modalService.show(DeleteModalComponent);
     const modal: DeleteModalComponent = modalReference.content;
+    modal.messageId = 'user-query.action.delete.warning';
     modal.name = userQuery.query.name;
     modal.deleted.pipe(first()).subscribe(() => {
       this.userQueryService.deleteQuery(userQuery.id).subscribe(() => {
@@ -169,6 +170,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onDeleteUserReport(userReport: UserReport): void {
     const modalReference = this.modalService.show(DeleteModalComponent);
     const modal: DeleteModalComponent = modalReference.content;
+    modal.messageId = 'report-action.delete-warning';
     modal.name = userReport.query.name;
     modal.deleted.pipe(first()).subscribe(() => {
       this.userReportService.deleteReport(userReport.id).subscribe(() => {

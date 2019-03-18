@@ -6,12 +6,14 @@ import { BsModalRef } from 'ngx-bootstrap';
  */
 @Component({
   selector: 'delete-modal',
-  templateUrl: './delete-modal.component.html',
-  styleUrls: ['./delete-modal.component.less']
+  templateUrl: './delete-modal.component.html'
 })
 export class DeleteModalComponent {
   @Input()
   name: string;
+
+  @Input()
+  messageId: string = 'delete-modal.body';
 
   @Output()
   deleted: EventEmitter<void> = new EventEmitter();

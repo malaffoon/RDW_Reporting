@@ -1142,7 +1142,8 @@
     "view-query": "View Report Query",
     "view-report": "View Report",
     "save-query": "Save Report Query",
-    "delete": "Delete Report"
+    "delete": "Delete Report",
+    "delete-warning": "Are you sure you want to delete report \"{{name}}\""
   },
   "report-download": {
     "form": {
@@ -1385,6 +1386,9 @@
       "save": {
         "label": "Save Query",
         "error": "Failed to save query"
+      },
+      "delete": {
+        "warning": "Are you sure you want to delete query \"{{name}}\""
       }
     }
   },

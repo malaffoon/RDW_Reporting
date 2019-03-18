@@ -6,8 +6,7 @@ import { Component, Input } from '@angular/core';
  */
 @Component({
   selector: 'form-fields',
-  templateUrl: './form-fields.component.html',
-  styleUrls: ['./form-fields.component.less']
+  templateUrl: './form-fields.component.html'
 })
 export class FormFieldsComponent {
   /**
