@@ -812,6 +812,10 @@
     "submit-date-time": "SubmitDateTime",
     "target": "Target"
   },
+  "delete-modal": {
+    "title": "Delete \"{{value}}\"",
+    "body": "Are you sure you want to delete \"{{value}}\"?"
+  },
   "delete-group-modal": {
     "button-cancel": "No, keep this group.",
     "button-save": "Yes, delete this group",

@@ -42,10 +42,10 @@ export class ReportFormService {
       title: this.translate.instant('student-results.create-report', {
         value: student.firstName != null ? student.firstName : student.ssid
       }),
-      form: <any>{
-        query,
-        options: {
-          schoolYear: schoolYearOptions.map(value => ({
+      query: <any>query,
+      fields: {
+        schoolYear: {
+          options: schoolYearOptions.map(value => ({
             value,
             text: this.schoolYearPipe.transform(value)
           }))
@@ -73,9 +73,7 @@ export class ReportFormService {
         'common.reports.form.title.multiple',
         query
       ),
-      form: <any>{
-        query
-      }
+      query: <any>query
     });
   }
 
@@ -96,9 +94,7 @@ export class ReportFormService {
         'common.reports.form.title.multiple',
         query
       ),
-      form: <any>{
-        query
-      }
+      query: <any>query
     });
   }
 

@@ -1,0 +1,29 @@
+::ng-deep {
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 15px;
+
+    // this is for backward display compatibility
+    .form-group {
+      &.language,
+      &.order,
+      &.transferAccess {
+        grid-column: 1;
+      }
+      &.accommodations {
+        grid-column: 2;
+      }
+    }
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  > :not(:first-child) {
+    margin-left: 15px;
+  }
+  padding-top: 30px;
+}

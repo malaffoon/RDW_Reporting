@@ -1,7 +1,7 @@
-<ng-container *ngIf="options">
+<ng-container *ngIf="initialized">
   <div class="modal-header">
     <h4 class="modal-title pull-left">
-      {{ options.title }}
+      {{ _options.title }}
     </h4>
     <button
       type="button"
@@ -13,12 +13,53 @@
     </button>
   </div>
   <div class="modal-body">
-    <printable-report-form
-      [form]="options.form"
-      (cancelled)="onCancelButtonClick()"
-      (userReportCreated)="onUserReportCreated($event)"
-      (userQueryCreated)="onUserQueryCreated($event)"
-      (userQueryUpdated)="onUserQueryUpdated($event)"
-    ></printable-report-form>
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <form-fields [fields]="fields"></form-fields>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="controls">
+      <ng-container *ngIf="_options.userQueryId == null; else userQuery">
+        <div class="form-group inline-checkbox-form-group">
+          <input
+            id="save-query-checkbox"
+            type="checkbox"
+            [ngClass]="{
+              'text-muted': saveQueryCheckboxDisabled
+            }"
+            [disabled]="saveQueryCheckboxDisabled"
+            [(ngModel)]="saveQueryOnSubmit"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <label for="save-query-checkbox">
+            {{ 'user-query.action.save.label' | translate }}
+          </label>
+        </div>
+      </ng-container>
+      <ng-template #userQuery>
+        <button
+          type="button"
+          class="btn btn-info aqua"
+          [disabled]="saveQueryButtonDisabled"
+          (click)="onSaveQueryButtonClick()"
+        >
+          {{ 'user-query.action.save.label' | translate }}
+        </button>
+      </ng-template>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="createReportButtonDisabled"
+      >
+        {{ 'report-download.form.submit' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-default"
+        (click)="onCancelButtonClick()"
+      >
+        {{ 'report-download.form.cancel' | translate }}
+      </button>
+    </div>
   </div>
 </ng-container>
