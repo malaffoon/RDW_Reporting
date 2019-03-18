@@ -25,9 +25,10 @@ import { OrderFieldProvider } from './provider/order-field.provider';
 import { SchoolYearFieldProvider } from './provider/school-year-field.provider';
 import { SubjectFieldProvider } from './provider/subject-field.provider';
 import { TransferAccessFieldProvider } from './provider/transfer-access-field.provider';
-import { PrintableReportFormComponent } from './component/printable-report-form/printable-report-form.component';
-import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
 import { ReportFormService } from './service/report-form.service';
+import { RdwFormModule } from '../shared/form/rdw-form.module';
+import { DeleteModalComponent } from './component/delete-modal/delete-modal.component';
+import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
 
 /**
  * Each of these field providers configure how the form field
@@ -58,6 +59,7 @@ export const FieldProviders: FactoryProvider[] = [
     FormsModule,
     ModalModule.forRoot(),
     RdwMenuModule,
+    RdwFormModule,
     ReactiveFormsModule,
     SharedModule,
     TableModule,
@@ -74,13 +76,13 @@ export const FieldProviders: FactoryProvider[] = [
     ...FieldProviders
   ],
   declarations: [
-    PrintableReportFormComponent,
+    DeleteModalComponent,
     PrintableReportFormModalComponent,
     ReportsComponent,
     UserReportTableComponent,
     UserQueryTableComponent
   ],
-  entryComponents: [PrintableReportFormModalComponent],
+  entryComponents: [DeleteModalComponent, PrintableReportFormModalComponent],
   exports: [PrintableReportFormModalComponent, ReportsComponent]
 })
 export class ReportModule {}

@@ -10,10 +10,11 @@ import { MenuOption } from '../shared/menu/menu.component';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
 import { UserQueryMenuOptionService } from './user-query-menu-option.service';
 import { UserReportStore } from './user-report.store';
-import { TabsetComponent } from 'ngx-bootstrap';
+import { BsModalService, TabsetComponent } from 'ngx-bootstrap';
 import { Utils } from '../shared/support/support';
 import { ReportFormService } from './service/report-form.service';
 import Timer = NodeJS.Timer;
+import { DeleteModalComponent } from './component/delete-modal/delete-modal.component';
 
 interface MenuOptionHolder {
   options: MenuOption[];
@@ -51,7 +52,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private userQueryService: UserQueryService,
     private userQueryStore: UserQueryStore,
     private userQueryMenuOptionService: UserQueryMenuOptionService,
-    private reportFormService: ReportFormService
+    private reportFormService: ReportFormService,
+    private modalService: BsModalService
   ) {}
 
   ngOnInit(): void {
@@ -115,10 +117,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onViewUserQuery(userQuery: UserQuery): void {
     const modal = this.reportFormService.openReportForm({
       title: userQuery.query.name,
-      form: {
-        query: userQuery.query,
-        userQueryId: userQuery.id
-      }
+      query: userQuery.query,
+      userQueryId: userQuery.id
     });
     modal.userQueryUpdated.pipe(first()).subscribe(updated => {
       this.userQueryStore.setState(
@@ -141,20 +141,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteUserQuery(userQuery: UserQuery): void {
-    // TODO launch modal
-    this.userQueryService.deleteQuery(userQuery.id).subscribe(() => {
-      this.userQueryStore.setState(
-        this.userQueryStore.state.filter(({ id }) => id !== userQuery.id)
-      );
+    const modalReference = this.modalService.show(DeleteModalComponent);
+    const modal: DeleteModalComponent = modalReference.content;
+    modal.messageId = 'user-query.action.delete.warning';
+    modal.name = userQuery.query.name;
+    modal.deleted.pipe(first()).subscribe(() => {
+      this.userQueryService.deleteQuery(userQuery.id).subscribe(() => {
+        this.userQueryStore.setState(
+          this.userQueryStore.state.filter(({ id }) => id !== userQuery.id)
+        );
+      });
     });
   }
 
   onViewUserReportQuery(userReport: UserReport): void {
     const modal = this.reportFormService.openReportForm({
       title: userReport.query.name,
-      form: {
-        query: userReport.query
-      }
+      query: userReport.query
     });
     modal.userReportCreated.pipe(first()).subscribe(created => {
       this.userReportStore.setState([created, ...this.userReportStore.state]);
@@ -165,11 +168,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteUserReport(userReport: UserReport): void {
-    // TODO launch modal
-    this.userReportService.deleteReport(userReport.id).subscribe(() => {
-      this.userReportStore.setState(
-        this.userReportStore.state.filter(({ id }) => id !== userReport.id)
-      );
+    const modalReference = this.modalService.show(DeleteModalComponent);
+    const modal: DeleteModalComponent = modalReference.content;
+    modal.messageId = 'report-action.delete-warning';
+    modal.name = userReport.query.name;
+    modal.deleted.pipe(first()).subscribe(() => {
+      this.userReportService.deleteReport(userReport.id).subscribe(() => {
+        this.userReportStore.setState(
+          this.userReportStore.state.filter(({ id }) => id !== userReport.id)
+        );
+      });
     });
   }
 

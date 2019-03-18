@@ -1,5 +1,6 @@
-import { FormGroup, ValidatorFn } from '@angular/forms';
+import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Option } from '../../shared/form/option';
+import { ReportQuery } from '../../report/report';
 
 /**
  * Defines the different possible form control types
@@ -96,4 +97,56 @@ export interface FormMapper<T = any> {
    * @param state The form state to map from
    */
   fromState(state: any): T;
+}
+
+/**
+ * Represents all form display options and form field overrides
+ */
+export interface FormOptions {
+  /**
+   * If set to true all fields will be readonly
+   * If set to an array of strings only the specified field names will be readonly
+   */
+  readonly?: boolean | string[];
+
+  /**
+   * Option overrides useful for making the form context-aware
+   */
+  fields?: { [fieldName: string]: Partial<FormField> };
+}
+
+/**
+ * Form field view model
+ */
+export interface FormFieldView extends FormField {
+  /**
+   * The field's form control
+   */
+  control: FormControl;
+
+  /**
+   * If true, the field will be rendered as readonly
+   */
+  readonly: boolean;
+
+  /**
+   * The value to render when readonly
+   */
+  readonlyValue?: any;
+}
+
+/**
+ * An entity that requires explicit resource cleanup
+ * This is mainly used to clean up resources with event subscriptions
+ */
+export interface Destroyable<T> {
+  /**
+   * The resource
+   */
+  value: T;
+
+  /**
+   * Releases the resource from bindings
+   */
+  destroy(): void;
 }

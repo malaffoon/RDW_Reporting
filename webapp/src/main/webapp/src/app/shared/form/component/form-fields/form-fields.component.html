@@ -1,8 +1,8 @@
-<form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+<fieldset>
   <div class="fields">
     <ng-container *ngFor="let field of fields">
       <div
-        *ngIf="formGroup.get(field.name) as control"
+        *ngIf="field.control as control"
         class="form-group {{ field.name }}"
         [ngClass]="{
           'has-error': control.invalid && (control.dirty || control.touched)
@@ -35,13 +35,13 @@
               [formControl]="control"
             />
 
-            <sb-radio-button-group
+            <sb-radio-group
               *ngSwitchCase="'toggle'"
               id="{{ field.name }}"
               name="{{ field.name }}"
               [options]="field.options"
               [formControl]="control"
-            ></sb-radio-button-group>
+            ></sb-radio-group>
 
             <select
               *ngSwitchCase="'select'"
@@ -75,47 +75,4 @@
       </div>
     </ng-container>
   </div>
-  <div class="controls">
-    <ng-container *ngIf="_form.userQueryId == null; else userQuery">
-      <div class="form-group inline-checkbox-form-group">
-        <input
-          id="save-query-checkbox"
-          type="checkbox"
-          [ngClass]="{
-            'text-muted': saveQueryCheckboxDisabled
-          }"
-          [disabled]="saveQueryCheckboxDisabled"
-          [(ngModel)]="saveQueryOnSubmit"
-          [ngModelOptions]="{ standalone: true }"
-        />
-        <label for="save-query-checkbox">
-          {{ 'user-query.action.save.label' | translate }}
-        </label>
-      </div>
-    </ng-container>
-    <ng-template #userQuery>
-      <button
-        type="button"
-        class="btn btn-info aqua"
-        [disabled]="saveQueryButtonDisabled"
-        (click)="onSaveQueryButtonClick()"
-      >
-        {{ 'user-query.action.save.label' | translate }}
-      </button>
-    </ng-template>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="createReportButtonDisabled"
-    >
-      {{ 'report-download.form.submit' | translate }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-default"
-      (click)="onCancelButtonClick()"
-    >
-      {{ 'report-download.form.cancel' | translate }}
-    </button>
-  </div>
-</form>
+</fieldset>

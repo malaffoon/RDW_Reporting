@@ -1,6 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Exam } from '../../../model/exam.model';
-import { ReportOptions } from '../../../../report/report-options.model';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { Assessment } from '../../../model/assessment.model';
@@ -138,20 +137,18 @@ export class ResultsByStudentComponent implements OnInit {
                 )
               }
             ),
-            form: {
-              query: <any>{
-                type: 'Student',
-                name: createDefaultStudentPrintableReportName(
-                  this.translate,
-                  student
-                ),
-                studentId: student.id,
-                assessmentTypeCode,
-                subjectCode,
-                schoolYear
-              },
-              readonly: ['assessmentType', 'subject', 'schoolYear']
-            }
+            query: <any>{
+              type: 'Student',
+              name: createDefaultStudentPrintableReportName(
+                this.translate,
+                student
+              ),
+              studentId: student.id,
+              assessmentTypeCode,
+              subjectCode,
+              schoolYear
+            },
+            readonly: ['assessmentType', 'subject', 'schoolYear']
           });
           modal.userReportCreated.pipe(first()).subscribe(() => {
             this.router.navigateByUrl('/reports');
