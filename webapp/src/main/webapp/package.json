@@ -4,7 +4,7 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "build": "node --max_old_space_size=2048 node_modules/@angular/cli/bin/ng build",
+    "build": "node --max_old_space_size=2048 node_modules/@angular/cli/bin/ng build --outputHashing=all",
     "build-prod": "node --max_old_space_size=2048 node_modules/@angular/cli/bin/ng build --prod",
     "start": "ng serve --proxy-config proxy.conf.json",
     "lint": "tslint \"src/**/*.ts\"",
