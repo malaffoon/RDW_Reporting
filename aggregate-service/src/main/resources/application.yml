@@ -40,16 +40,10 @@ jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
 
 reporting:
-  # english-learners should be lep or elas
-  english-learners:
-    - elas
   school-year: 2018
   state:
     code: CA
     name: California
-  target-report:
-    insufficient-data-cutoff: 0.2
-    min-number-of-students: 0
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
