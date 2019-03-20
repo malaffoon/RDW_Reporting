@@ -1,4 +1,4 @@
-<ng-container *ngIf="initialized">
+<form *ngIf="initialized" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <div class="modal-header">
     <h4 class="modal-title pull-left">
       {{ _options.title }}
@@ -13,9 +13,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-      <form-fields [fields]="fields"></form-fields>
-    </form>
+    <form-fields [fields]="fields"></form-fields>
   </div>
   <div class="modal-footer">
     <div class="controls">
@@ -62,4 +60,4 @@
       </button>
     </div>
   </div>
-</ng-container>
+</form>
