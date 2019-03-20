@@ -4,6 +4,8 @@
 
 * Add saved queries
 * Add toggle for empty aggregate report rows
+* Add ability to hide student filters for teachers or for all users
+    * The reporting.english-learners configuration is now replaced by reporting.student-filters
 * Change report related text configuration locations in en.json:
     * common.aggregate-report-type.*
     * report-download.orders.*
