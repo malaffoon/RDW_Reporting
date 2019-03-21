@@ -1,9 +1,8 @@
-import { FactoryProvider } from '@angular/core/src/di/provider';
 import { TranslateService } from '@ngx-translate/core';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { map } from 'rxjs/operators';
 import { Validators } from '@angular/forms';
-import { InjectionToken } from '@angular/core';
+import { FactoryProvider, InjectionToken } from '@angular/core';
 
 export const LanguageField = new InjectionToken('LanguageField');
 

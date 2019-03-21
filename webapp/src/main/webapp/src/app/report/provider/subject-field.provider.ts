@@ -1,8 +1,7 @@
-import { FactoryProvider } from '@angular/core/src/di/provider';
 import { TranslateService } from '@ngx-translate/core';
 import { SubjectService } from '../../subject/subject.service';
 import { map } from 'rxjs/operators';
-import { InjectionToken } from '@angular/core';
+import { FactoryProvider, InjectionToken } from '@angular/core';
 
 export const SubjectField = new InjectionToken('SubjectField');
 

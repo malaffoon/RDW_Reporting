@@ -1,10 +1,9 @@
-import { FactoryProvider } from '@angular/core/src/di/provider';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
 import { map } from 'rxjs/operators';
 import { Validators } from '@angular/forms';
-import { InjectionToken } from '@angular/core';
+import { FactoryProvider, InjectionToken } from '@angular/core';
 
 export const SchoolYearField = new InjectionToken('SchoolYearField');
 
