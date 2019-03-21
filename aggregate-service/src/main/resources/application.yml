@@ -44,6 +44,9 @@ reporting:
   state:
     code: CA
     name: California
+  target-report:
+    insufficient-data-cutoff: 0.2
+    min-number-of-students: 0
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
