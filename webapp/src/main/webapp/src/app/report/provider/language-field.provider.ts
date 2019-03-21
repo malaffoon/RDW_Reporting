@@ -24,7 +24,7 @@ export const useFactory = (
         )
       })),
       defaultValue: reportLanguages[0],
-      excluded: reportLanguages == null || reportLanguages.length < 2
+      hidden: reportLanguages == null || reportLanguages.length < 2
     }))
   );
 

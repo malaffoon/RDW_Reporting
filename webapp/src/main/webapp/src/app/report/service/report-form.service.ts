@@ -36,7 +36,8 @@ export class ReportFormService {
       name: createDefaultStudentPrintableReportName(this.translate, student),
       schoolYear,
       subjectCode,
-      assessmentTypeCode
+      assessmentTypeCode,
+      studentId: student.id
     };
     return this.openReportForm({
       title: this.translate.instant('student-results.create-report', {
@@ -66,7 +67,9 @@ export class ReportFormService {
         school,
         grade
       ),
-      schoolYear
+      schoolYear,
+      schoolId: school.id,
+      gradeId: grade.id
     };
     return this.openReportForm({
       title: this.translate.instant(
@@ -87,7 +90,11 @@ export class ReportFormService {
         this.translate,
         group
       ),
-      schoolYear
+      schoolYear,
+      groupId: {
+        id: group.id,
+        type: group.userCreated ? 'Teacher' : 'Admin'
+      }
     };
     return this.openReportForm({
       title: this.translate.instant(

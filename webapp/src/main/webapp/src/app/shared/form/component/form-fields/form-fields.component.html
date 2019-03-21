@@ -4,6 +4,7 @@
       <div
         *ngIf="field.control as control"
         class="form-group {{ field.name }}"
+        [hidden]="field.hidden"
         [ngClass]="{
           'has-error': control.invalid && (control.dirty || control.touched)
         }"

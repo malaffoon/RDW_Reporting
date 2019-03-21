@@ -75,6 +75,11 @@ export interface FormField {
   excluded?: boolean;
 
   /**
+   * Set this when you want the control to be part of the form but hidden from the user experience for simplicity
+   */
+  hidden?: boolean;
+
+  /**
    * The default value
    */
   defaultValue?: any;
