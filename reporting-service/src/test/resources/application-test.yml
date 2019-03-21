@@ -8,6 +8,10 @@ reporting:
   state:
     code: CA
     name: California
+  student-filters:
+    economicDisadvantage: disabled
+    ethnicity: admin
+    gender: enabled
 
 app:
   test-mode: true
