@@ -1,7 +1,6 @@
-import { FactoryProvider } from '@angular/core/src/di/provider';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
-import { InjectionToken } from '@angular/core';
+import { FactoryProvider, InjectionToken } from '@angular/core';
 
 const AssessmentTypeCodes = ['ica', 'iab', 'sum'];
 

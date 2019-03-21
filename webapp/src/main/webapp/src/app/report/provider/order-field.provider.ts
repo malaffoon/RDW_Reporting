@@ -1,8 +1,7 @@
-import { FactoryProvider } from '@angular/core/src/di/provider';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Validators } from '@angular/forms';
-import { InjectionToken } from '@angular/core';
+import { FactoryProvider, InjectionToken } from '@angular/core';
 
 const Orders = ['StudentName', 'StudentSSID'];
 
