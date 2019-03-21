@@ -158,6 +158,3 @@ reporting:
   state:
     code: CA
     name: California
-  # english-learners should be lep or elas
-  english-learners:
-    - elas
