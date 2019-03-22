@@ -12,4 +12,5 @@ reporting:
     MilitaryStudentIdentifier: admin
     PrimaryLanguage: admin
     Section504: admin
-
+  report-languages:
+    - es
