@@ -150,37 +150,32 @@
           <div class="controls">
             <div>
               <br />
-              <div
-                *ngIf="!showSaveQueryButton"
-                class="form-group inline-checkbox-form-group"
-              >
-                <input
-                  id="save-query-checkbox"
-                  type="checkbox"
-                  [ngClass]="{ 'text-muted': saveQueryCheckboxDisabled }"
-                  [disabled]="saveQueryCheckboxDisabled"
-                  [(ngModel)]="saveQueryOnSubmit"
-                  [ngModelOptions]="{ standalone: true }"
-                />
-                <label for="save-query-checkbox">
-                  {{ 'user-query.action.save.label' | translate }}
-                </label>
-              </div>
-              <button
-                *ngIf="showSaveQueryButton"
-                type="button"
-                class="btn btn-info aqua"
-                [disabled]="saveQueryButtonDisabled"
-                (click)="onSaveQueryButtonClick()"
-              >
-                {{ 'user-query.action.save.label' | translate }}
-              </button>
+              <ng-container *ngIf="initialQuery == null; else hasSavedQuery">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [disabled]="createQueryButtonDisabled"
+                  (click)="onCreateQueryButtonClick()"
+                >
+                  {{ 'user-query.action.create.label' | translate }}
+                </button>
+              </ng-container>
+              <ng-template #hasSavedQuery>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [disabled]="updateQueryButtonDisabled"
+                  (click)="onUpdateQueryButtonClick()"
+                >
+                  {{ 'user-query.action.update.label' | translate }}
+                </button>
+              </ng-template>
             </div>
             <div>
               <br />
               <button
                 type="submit"
-                class="btn btn-info aqua"
+                class="btn btn-primary"
                 [disabled]="createReportButtonDisabled"
               >
                 <i class="fa fa-cloud-download"></i>

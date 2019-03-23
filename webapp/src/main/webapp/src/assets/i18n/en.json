@@ -1158,7 +1158,7 @@
         "vi": "Vietnamese"
       },
       "order": "Sort Order",
-      "submit": "Create"
+      "submit": "Create Report"
     },
     "orders": {
       "StudentName": "Student Name",
@@ -1383,9 +1383,15 @@
   },
   "user-query": {
     "action": {
-      "save": {
+      "create": {
         "label": "Save Query",
+        "success": "Query saved",
         "error": "Failed to save query"
+      },
+      "update": {
+        "label": "Update Query",
+        "success": "Query updated",
+        "error": "Failed to update query"
       },
       "delete": {
         "warning": "Are you sure you want to delete query \"{{name}}\"?"

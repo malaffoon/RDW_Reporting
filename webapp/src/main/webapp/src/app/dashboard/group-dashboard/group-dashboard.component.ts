@@ -269,7 +269,7 @@ export class GroupDashboardComponent implements OnInit {
       this.group,
       this.schoolYear
     );
-    modal.userReportCreated.pipe(first()).subscribe(() => {
+    modal.userReportCreated.subscribe(() => {
       this.router.navigateByUrl('/reports');
     });
   }

@@ -1,7 +1,6 @@
-import { Utils } from './support';
+import { isEqualIgnoringNullAndFalseProperties, Utils } from './support';
 
 describe('Utils', () => {
-
   it('should pass isNullOrUndefined', () => {
     expect(Utils.isNullOrUndefined(null)).toEqual(true);
     expect(Utils.isNullOrUndefined(undefined)).toEqual(true);
@@ -23,8 +22,31 @@ describe('Utils', () => {
   });
 
   it('should create correct filename appendOrIncrementFileNameSuffix', () => {
-    expect(Utils.appendOrIncrementFileNameSuffix('an aggregateReport')).toEqual('an aggregateReport (1)');
-    expect(Utils.appendOrIncrementFileNameSuffix('an aggregateReport (1)')).toEqual('an aggregateReport (2)');
+    expect(Utils.appendOrIncrementFileNameSuffix('an aggregateReport')).toEqual(
+      'an aggregateReport (1)'
+    );
+    expect(
+      Utils.appendOrIncrementFileNameSuffix('an aggregateReport (1)')
+    ).toEqual('an aggregateReport (2)');
   });
+});
 
+describe('isEqualIgnoringNullAndFalseProperties', () => {
+  it('should ignore null and false properties', () => {
+    expect(
+      isEqualIgnoringNullAndFalseProperties(
+        {
+          a: undefined,
+          b: null,
+          c: false,
+          d: 0,
+          e: ''
+        },
+        {
+          d: 0,
+          e: ''
+        }
+      )
+    ).toBe(true);
+  });
 });

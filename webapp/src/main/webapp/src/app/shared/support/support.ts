@@ -1,4 +1,4 @@
-import { isEqual, isEmpty } from 'lodash';
+import { isEmpty, isEqual, omitBy } from 'lodash';
 
 /**
  * Expands support from string and Array to type Object as well
@@ -9,14 +9,31 @@ export function isNullOrEmpty(value: any): boolean {
   return value == null || isEmpty(value);
 }
 
-export function isEqualSet(a: any[], b: any[]): boolean {
-  return (
-    a === b ||
-    (a == null && b == null) ||
-    (a != null &&
-      b != null &&
-      a.length === b.length &&
-      isEqual(a.slice().sort(), b.slice().sort()))
+/**
+ * Removes all fields with null values from the containing object.
+ * Example {a: undefined, b: null, c: false, d: 0, e: ''} -> {d: 0, e: ''}
+ *
+ * @param object The object to prune
+ */
+function removeNullAndFalseProperties(object: Object): Partial<Object> {
+  return omitBy(object, (value, key) => value == null || <any>value === false);
+}
+
+/**
+ * Tests for field by field equality recursively.
+ * This method treats undefined, null and false the same as a field being absent.
+ * This means that isEqual({a: undefined, b: null, c: false, d: 0, e: ''}, {d: 0, e: ''}) is true
+ *
+ * @param a
+ * @param b
+ */
+export function isEqualIgnoringNullAndFalseProperties(
+  a: Object,
+  b: Object
+): boolean {
+  return isEqual(
+    removeNullAndFalseProperties(a),
+    removeNullAndFalseProperties(b)
   );
 }
 
