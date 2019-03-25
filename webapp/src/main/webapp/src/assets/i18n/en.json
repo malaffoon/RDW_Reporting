@@ -626,7 +626,9 @@
     "military-connected-code": {
       "ActiveDuty": "Active Duty",
       "NotMilitaryConnected": "Not Military Connected",
-      "NationalGuardOrReserve": "National Guard Or Reserve"
+      "NationalGuardOrReserve": "National Guard Or Reserve",
+      "Yes": "Yes",
+      "No": "No"
     },
     "missing": "-",
     "navigation": {
