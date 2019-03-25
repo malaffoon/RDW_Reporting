@@ -5,7 +5,7 @@
 <ng-template #submitButtonTemplate>
   <button
     class="btn btn-success btn-sm green"
-    [disabled]="formByReportType[queryType].submissionSubscription"
+    [disabled]="formByReportType[queryType].userReportSubscription"
     (click)="onGenerateButtonClick()"
   >
     {{ 'aggregate-report-form.submit' | translate }}
@@ -70,33 +70,32 @@
         </div>
       </div>
 
-      <ng-container *ngFor="let typeString of queryTypes">
+      <div
+        *ngFor="let typeString of queryTypes"
+        [hidden]="queryType !== typeString"
+      >
         <ng-container [ngSwitch]="typeString">
           <general-population-form
             *ngSwitchCase="'CustomAggregate'"
             #reportForm
-            [hidden]="queryType !== typeString"
           ></general-population-form>
 
           <longitudinal-cohort-form
             *ngSwitchCase="'Longitudinal'"
             #reportForm
-            [hidden]="queryType !== typeString"
           ></longitudinal-cohort-form>
 
           <claim-report-form
             *ngSwitchCase="'Claim'"
             #reportForm
-            [hidden]="queryType !== typeString"
           ></claim-report-form>
 
           <target-report-form
             *ngSwitchCase="'Target'"
             #reportForm
-            [hidden]="queryType !== typeString"
           ></target-report-form>
         </ng-container>
-      </ng-container>
+      </div>
     </div>
   </div>
 </ng-template>

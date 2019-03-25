@@ -684,11 +684,16 @@
                 </p>
               </div>
             </div>
-            <div>
+            <div *ngIf="initialQuery != null">
               <br />
-              <ng-container
-                [ngTemplateOutlet]="saveQueryTemplate"
-              ></ng-container>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                [disabled]="saveQueryButtonDisabled"
+                (click)="onSaveQueryButtonClick()"
+              >
+                {{ 'user-query.action.update.label' | translate }}
+              </button>
             </div>
             <div>
               <br />
@@ -825,38 +830,10 @@
   </div>
 </ng-container>
 
-<ng-template #saveQueryTemplate>
-  <div
-    *ngIf="!showSaveQueryButton"
-    class="form-group inline-checkbox-form-group"
-  >
-    <input
-      id="save-query-checkbox"
-      type="checkbox"
-      [ngClass]="{ 'text-muted': saveQueryCheckboxDisabled }"
-      [disabled]="saveQueryCheckboxDisabled"
-      [(ngModel)]="saveQueryOnSubmit"
-      [ngModelOptions]="{ standalone: true }"
-    />
-    <label for="save-query-checkbox">
-      {{ 'user-query.action.save.label' | translate }}
-    </label>
-  </div>
-  <button
-    *ngIf="showSaveQueryButton"
-    type="button"
-    class="btn btn-sm btn-info aqua"
-    [disabled]="saveQueryButtonDisabled"
-    (click)="onSaveQueryButtonClick()"
-  >
-    {{ 'user-query.action.save.label' | translate }}
-  </button>
-</ng-template>
-
 <ng-template #submitButtonTemplate>
   <button
-    class="btn btn-success btn-sm green"
-    [disabled]="submissionSubscription"
+    class="btn btn-success btn-sm"
+    [disabled]="userReportSubscription"
     (click)="onGenerateButtonClick()"
   >
     {{ 'aggregate-report-form.submit' | translate }}
