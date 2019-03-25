@@ -15,7 +15,7 @@ import { UserReportService } from './user-report.service';
 import { UserQueryService } from './user-query.service';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { isEqualIgnoringNullAndFalseProperties } from '../shared/support/support';
+import { deepEqualsIgnoringNullAndFalse } from '../shared/support/support';
 
 export function toUserReport(serverReport: any): UserReport {
   return {
@@ -202,21 +202,21 @@ export function isEqualReportQuery(a: ReportQuery, b: ReportQuery): boolean {
     case 'Student':
     case 'SchoolGrade':
     case 'Group':
-      return isEqualIgnoringNullAndFalseProperties(l, r);
+      return deepEqualsIgnoringNullAndFalse(l, r);
     case 'DistrictSchoolExport':
-      return isEqualIgnoringNullAndFalseProperties(
+      return deepEqualsIgnoringNullAndFalse(
         normalizeDistrictSchoolExport(l),
         normalizeDistrictSchoolExport(r)
       );
     case 'CustomAggregate':
     case 'Longitudinal':
     case 'Target':
-      return isEqualIgnoringNullAndFalseProperties(
+      return deepEqualsIgnoringNullAndFalse(
         normalizeAggregateReportQuery(l),
         normalizeAggregateReportQuery(r)
       );
     case 'Claim':
-      return isEqualIgnoringNullAndFalseProperties(
+      return deepEqualsIgnoringNullAndFalse(
         normalizeClaimReportQuery(l),
         normalizeClaimReportQuery(r)
       );

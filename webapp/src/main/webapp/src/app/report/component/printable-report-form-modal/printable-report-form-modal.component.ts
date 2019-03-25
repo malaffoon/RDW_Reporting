@@ -176,7 +176,8 @@ export class PrintableReportFormModalComponent implements OnDestroy {
           this.initialQuery = userQuery.query;
           this.userQueryCreated.emit(userQuery);
           this.notificationService.info({
-            id: 'user-query.action.create.success'
+            id: 'user-query.action.create.success',
+            html: true
           });
         },
         () => {
@@ -201,7 +202,8 @@ export class PrintableReportFormModalComponent implements OnDestroy {
           this.initialQuery = userQuery.query;
           this.userQueryUpdated.emit(userQuery);
           this.notificationService.info({
-            id: 'user-query.action.update.success'
+            id: 'user-query.action.update.success',
+            html: true
           });
         },
         () => {

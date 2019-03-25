@@ -288,14 +288,15 @@ export class OrganizationExportComponent implements OnInit {
       .subscribe(
         () => {
           this.notificationService.info({
-            id: 'organization-export.form.submit.success-html',
+            id: 'report-download.submitted-message',
             html: true
           });
           this.router.navigate(['/reports']);
         },
         () => {
           this.notificationService.error({
-            id: 'organization-export.form.submit.failure'
+            id: 'common.messages.submission-failed',
+            html: true
           });
         }
       );
@@ -321,6 +322,10 @@ export class OrganizationExportComponent implements OnInit {
             queryParamsHandling: 'merge'
           });
           this.initialQuery = userQuery.query;
+          this.notificationService.info({
+            id: 'user-query.action.create.success',
+            html: true
+          });
         },
         () => {
           this.notificationService.error({
@@ -342,6 +347,10 @@ export class OrganizationExportComponent implements OnInit {
       .subscribe(
         () => {
           this.initialQuery = userQuery.query;
+          this.notificationService.info({
+            id: 'user-query.action.update.success',
+            html: true
+          });
         },
         () => {
           this.notificationService.error({

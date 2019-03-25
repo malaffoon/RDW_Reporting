@@ -620,7 +620,7 @@
       "no-responses-for-exam": "There are no responses available for this exam.",
       "no-responses-for-summative-exams": "Summative assessment responses are not made available by this system.",
       "null-student": "This student is unavailable.  Contact your building administrator if you think you should have access to this student.",
-      "submission-failed": "Error creating report. See <a href=\"/reports\">status</a>.",
+      "submission-failed": "Error creating report. Visit <a href=\"/reports\">My Reports</a> for details.",
       "unknown-error": "An unknown error has occurred. You can try the same action again or click the button below to go to the home page.  If this problem persists, please contact your building administrator."
     },
     "military-connected-code": {
@@ -1164,7 +1164,7 @@
       "StudentName": "Student Name",
       "StudentSSID": "Student SSID"
     },
-    "submitted-message": "Creating report. See <a href=\"/reports\">status</a>."
+    "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
   },
   "user-query-table": {
     "column": {
@@ -1389,9 +1389,9 @@
         "error": "Failed to save query"
       },
       "update": {
-        "label": "Update Query",
-        "success": "Query updated",
-        "error": "Failed to update query"
+        "label": "Save Query",
+        "success": "Query saved. Visit <a href=\"/reports\">My Reports</a> to view, update or run the query.",
+        "error": "Failed to save query"
       },
       "delete": {
         "warning": "Are you sure you want to delete query \"{{name}}\"?"

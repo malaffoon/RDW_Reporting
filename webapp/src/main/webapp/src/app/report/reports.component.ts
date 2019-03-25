@@ -141,17 +141,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteUserQuery(userQuery: UserQuery): void {
-    // const modalReference = this.modalService.show(DeleteModalComponent);
-    // const modal: DeleteModalComponent = modalReference.content;
-    // modal.messageId = 'user-query.action.delete.warning';
-    // modal.name = userQuery.query.name;
-    // modal.deleted.subscribe(() => {
-    this.userQueryService.deleteQuery(userQuery.id).subscribe(() => {
-      this.userQueryStore.setState(
-        this.userQueryStore.state.filter(({ id }) => id !== userQuery.id)
-      );
+    const modalReference = this.modalService.show(DeleteModalComponent);
+    const modal: DeleteModalComponent = modalReference.content;
+    modal.messageId = 'user-query.action.delete.warning';
+    modal.name = userQuery.query.name;
+    modal.deleted.subscribe(() => {
+      this.userQueryService.deleteQuery(userQuery.id).subscribe(() => {
+        this.userQueryStore.setState(
+          this.userQueryStore.state.filter(({ id }) => id !== userQuery.id)
+        );
+      });
     });
-    // });
   }
 
   onViewUserReportQuery(userReport: UserReport): void {
@@ -168,17 +168,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteUserReport(userReport: UserReport): void {
-    // const modalReference = this.modalService.show(DeleteModalComponent);
-    // const modal: DeleteModalComponent = modalReference.content;
-    // modal.messageId = 'report-action.delete-warning';
-    // modal.name = userReport.query.name;
-    // modal.deleted.subscribe(() => {
-    this.userReportService.deleteReport(userReport.id).subscribe(() => {
-      this.userReportStore.setState(
-        this.userReportStore.state.filter(({ id }) => id !== userReport.id)
-      );
+    const modalReference = this.modalService.show(DeleteModalComponent);
+    const modal: DeleteModalComponent = modalReference.content;
+    modal.messageId = 'report-action.delete-warning';
+    modal.name = userReport.query.name;
+    modal.deleted.subscribe(() => {
+      this.userReportService.deleteReport(userReport.id).subscribe(() => {
+        this.userReportStore.setState(
+          this.userReportStore.state.filter(({ id }) => id !== userReport.id)
+        );
+      });
     });
-    // });
   }
 
   onSaveQuery(userReport: UserReport): void {

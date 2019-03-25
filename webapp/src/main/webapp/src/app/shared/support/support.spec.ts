@@ -1,4 +1,4 @@
-import { isEqualIgnoringNullAndFalseProperties, Utils } from './support';
+import { deepEqualsIgnoringNullAndFalse, Utils } from './support';
 
 describe('Utils', () => {
   it('should pass isNullOrUndefined', () => {
@@ -31,10 +31,10 @@ describe('Utils', () => {
   });
 });
 
-describe('isEqualIgnoringNullAndFalseProperties', () => {
+describe('deepEqualsIgnoringNullAndFalse', () => {
   it('should ignore null and false properties', () => {
     expect(
-      isEqualIgnoringNullAndFalseProperties(
+      deepEqualsIgnoringNullAndFalse(
         {
           a: undefined,
           b: null,

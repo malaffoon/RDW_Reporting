@@ -27,10 +27,7 @@ function removeNullAndFalseProperties(object: Object): Partial<Object> {
  * @param a
  * @param b
  */
-export function isEqualIgnoringNullAndFalseProperties(
-  a: Object,
-  b: Object
-): boolean {
+export function deepEqualsIgnoringNullAndFalse(a: Object, b: Object): boolean {
   return isEqual(
     removeNullAndFalseProperties(a),
     removeNullAndFalseProperties(b)

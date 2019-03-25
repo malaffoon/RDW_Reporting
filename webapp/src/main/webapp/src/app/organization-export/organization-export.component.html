@@ -151,6 +151,7 @@
             <div>
               <br />
               <ng-container *ngIf="initialQuery == null; else hasSavedQuery">
+                <!-- Intentionally disabled because this is not an anticipated use case yet
                 <button
                   type="button"
                   class="btn btn-primary"
@@ -159,6 +160,7 @@
                 >
                   {{ 'user-query.action.create.label' | translate }}
                 </button>
+                -->
               </ng-container>
               <ng-template #hasSavedQuery>
                 <button
