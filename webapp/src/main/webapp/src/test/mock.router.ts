@@ -1,7 +1,6 @@
 import Spy = jasmine.Spy;
 import { UrlTree } from "@angular/router";
-import { of } from 'rxjs/observable/of';
-import { empty } from 'rxjs/observable/empty';
+import { of, empty } from 'rxjs';
 
 export class MockRouter {
 

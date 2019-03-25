@@ -1,10 +1,12 @@
-import { Injectable } from "@angular/core";
-import { AggregateReportItem } from "./aggregate-report-item";
-import { CsvBuilder } from "../../csv-export/csv-builder.service";
-import { TranslateService } from "@ngx-translate/core";
-import { AssessmentDefinition } from "../assessment/assessment-definition";
-import { PerformanceLevelDisplayTypes } from "../../shared/display-options/performance-level-display-type";
-import { ValueDisplayTypes } from "../../shared/display-options/value-display-type";
+import { Injectable } from '@angular/core';
+import { AggregateReportItem } from './aggregate-report-item';
+import { CsvBuilder } from '../../csv-export/csv-builder.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
+import { ValueDisplayTypes } from '../../shared/display-options/value-display-type';
+import { SubjectDefinition } from '../../subject/subject';
+import { TargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
+import { ReportQueryType } from '../../report/report';
 
 /**
  * Service responsible for exporting the currently-viewed aggregate report table
@@ -30,26 +32,61 @@ export class AggregateReportTableExportService {
       .withFilename(options.name);
 
     options.columnOrdering.forEach((column) => {
-      builder = this.appendUserOrderedColumn(column, builder)
+      builder = this.appendUserOrderedColumn(column, options, builder);
     });
 
     builder
       .withColumn(
         this.translateService.instant('aggregate-report-table.columns.students-tested'),
         (item: AggregateReportItem) => item.studentsTested
-      )
-      .withColumn(
-        this.translateService.instant('aggregate-report-table.columns.avg-scale-score'),
-        (item: AggregateReportItem) => item.studentsTested
-            ? `${item.avgScaleScore} ± ${item.avgStdErr}`
-            : ''
       );
 
-    this.addPerformanceLevelColumns(builder, options);
+    if (options.reportType === 'Target') {
+      const standardMetHeaderResolve: any = {
+        name: this.translateService.instant(`subject.${options.subjectDefinition.subject}.asmt-type.${options.subjectDefinition.assessmentType}.level.${options.subjectDefinition.performanceLevelStandardCutoff}.name`),
+        id: options.subjectDefinition.performanceLevelStandardCutoff
+      };
+      builder
+        .withColumn(
+          this.translateService.instant('target-report.columns.student-relative-residual-scores-level'),
+          (item: AggregateReportItem) => {
+            if (!item.studentsTested || item.studentRelativeResidualScoresLevel === TargetReportingLevel.NoResults) {
+              return '';
+            }
+
+            return this.translateService.instant(`aggregate-report-table.target.overall.${item.studentRelativeResidualScoresLevel}`);
+          }
+        )
+        .withColumn(
+          this.translateService.instant('target-report.columns.standard-met-relative-residual-level', standardMetHeaderResolve),
+          (item: AggregateReportItem) => {
+            if (!item.studentsTested || item.standardMetRelativeResidualLevel === TargetReportingLevel.NoResults) {
+              return '';
+            }
+
+            return this.translateService.instant(`aggregate-report-table.target.standard.${item.standardMetRelativeResidualLevel}`);
+          }
+        );
+
+    } else if (options.reportType === 'Claim') {
+      this.addPerformanceLevelColumns(builder, options);
+
+    } else {
+      builder
+        .withColumn(
+          this.translateService.instant('aggregate-report-table.columns.avg-scale-score'),
+          (item: AggregateReportItem) => item.studentsTested
+            ? `${item.avgScaleScore} ± ${item.avgStdErr}`
+            : ''
+        );
+
+      this.addPerformanceLevelColumns(builder, options);
+    }
+
     builder.build(rows);
   }
 
-  private appendUserOrderedColumn(column: string, builder: CsvBuilder): CsvBuilder {
+  private appendUserOrderedColumn(column: string, options: ExportOptions, builder: CsvBuilder): CsvBuilder {
     if ('organization' === column) {
       return builder
         .withColumn(
@@ -96,7 +133,27 @@ export class AggregateReportTableExportService {
       return builder
         .withColumn(
           this.translateService.instant('aggregate-report-table.columns.dimension'),
-          (item: AggregateReportItem) => item.dimension.name);
+          (item: AggregateReportItem) => item.subgroup.name);
+    }
+
+    if ('claim' === column) {
+      return builder
+        .withColumn(
+          this.translateService.instant('aggregate-report-table.columns.claim'),
+          (item: AggregateReportItem) => {
+            return this.translateService.instant(`subject.${item.subjectCode}.claim.${item.claimCode}.name`);
+          }
+        )
+    }
+
+    if ('target' === column) {
+      return builder
+        .withColumn(
+          this.translateService.instant('aggregate-report-table.columns.target'),
+          (item: AggregateReportItem) => {
+            return this.translateService.instant(`subject.${item.subjectCode}.claim.${item.claimCode}.target.${item.targetNaturalId}.name`);
+          }
+        )
     }
   }
 
@@ -108,32 +165,38 @@ export class AggregateReportTableExportService {
         }
 
         const value: number = item.performanceLevelByDisplayTypes
-          [options.performanceLevelDisplayType]
-          [options.valueDisplayType]
-          [levelIndex];
+          [ options.performanceLevelDisplayType ]
+          [ options.valueDisplayType ]
+          [ levelIndex ];
         return options.valueDisplayType === ValueDisplayTypes.Percent
           ? value + '%'
           : value;
       };
 
     const headerForPerformanceLevel = (level: number) => {
+      if (options.subjectDefinition == null) return '';
+
       let header: string;
       if (options.performanceLevelDisplayType === PerformanceLevelDisplayTypes.Grouped) {
         header = this.translateService.instant(`aggregate-report-table.columns.grouped-performance-level-prefix.${level}`);
       } else {
-        header = this.translateService.instant(`common.assessment-type.${options.assessmentDefinition.typeCode}.performance-level.${level}.name-prefix`);
+        header = this.translateService.instant(`subject.${options.subjectDefinition.subject}.asmt-type.${options.subjectDefinition.assessmentType}.level.${level}.short-name`);
+
+        const suffix = this.translateService.instant(`subject.${options.subjectDefinition.subject}.asmt-type.${options.subjectDefinition.assessmentType}.level.${level}.suffix`);
+        header += (suffix ? ' ' + suffix : '');
       }
-      return header + ' ' + this.translateService.instant('aggregate-report-table.columns.performance-level-suffix');
+
+      return header;
     };
 
     const levels: number[] = options.performanceLevelDisplayType === PerformanceLevelDisplayTypes.Grouped
-      ? [0, 1]
-      : options.assessmentDefinition.performanceLevels;
+      ? [ 0, 1 ]
+      : options.subjectDefinition.performanceLevels;
 
     for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
       builder = builder
         .withColumn(
-          headerForPerformanceLevel(levels[levelIndex]),
+          headerForPerformanceLevel(levels[ levelIndex ]),
           dataProviderForPerformanceLevel(levelIndex)
         );
     }
@@ -146,6 +209,7 @@ export interface ExportOptions {
   readonly valueDisplayType: string;
   readonly performanceLevelDisplayType: string;
   readonly columnOrdering: string[];
-  readonly assessmentDefinition: AssessmentDefinition;
+  readonly subjectDefinition: SubjectDefinition;
+  readonly reportType: ReportQueryType;
   readonly name: string;
 }

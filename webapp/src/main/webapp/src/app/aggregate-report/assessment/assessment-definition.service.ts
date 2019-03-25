@@ -1,67 +1,157 @@
-import { Injectable } from "@angular/core";
-import { AssessmentDefinition } from "./assessment-definition";
-import { Observable } from "rxjs/Observable";
-import { of } from 'rxjs/observable/of';
-import { IdentityColumnOptions } from '../results/aggregate-report-table.component';
+import { Injectable } from '@angular/core';
+import { AssessmentDefinition } from './assessment-definition';
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
+import { ReportQueryType } from '../../report/report';
+
+export const IdentityColumnOptions: string[] = [
+  'organization',
+  'assessmentGrade',
+  'assessmentLabel',
+  'schoolYear',
+  'dimension'
+];
+
+export const ClaimIdentityColumnOptions: string[] = [
+  'organization',
+  'assessmentGrade',
+  'schoolYear',
+  'claim',
+  'dimension'
+];
 
 const Iab: AssessmentDefinition = {
   typeCode: 'iab',
   interim: true,
-  performanceLevels: [1, 2, 3],
+  performanceLevels: [ 1, 2, 3 ],
   performanceLevelCount: 3,
   performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
   aggregateReportIdentityColumns: IdentityColumnOptions.concat(),
   aggregateReportStateResultsEnabled: false,
-  aggregateReportLongitudinalCohortEnabled: false
+  aggregateReportTypes: [ 'CustomAggregate' ]
 };
 
 const Ica: AssessmentDefinition = {
   typeCode: 'ica',
   interim: true,
-  performanceLevels: [1, 2, 3, 4],
+  performanceLevels: [ 1, 2, 3, 4 ],
   performanceLevelCount: 4,
   performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
   performanceLevelGroupingCutPoint: 3,
   aggregateReportIdentityColumns: IdentityColumnOptions
     .filter(option => option !== 'assessmentLabel'),
   aggregateReportStateResultsEnabled: false,
-  aggregateReportLongitudinalCohortEnabled: false
+  aggregateReportTypes: [ 'Claim' ]
 };
 
 const Summative: AssessmentDefinition = {
   typeCode: 'sum',
   interim: false,
-  performanceLevels: [1, 2, 3, 4],
+  performanceLevels: [ 1, 2, 3, 4 ],
   performanceLevelCount: 4,
   performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
   performanceLevelGroupingCutPoint: 3,
   aggregateReportIdentityColumns: IdentityColumnOptions
     .filter(option => option !== 'assessmentLabel'),
   aggregateReportStateResultsEnabled: true,
-  aggregateReportLongitudinalCohortEnabled: true
+  aggregateReportTypes: [ 'Claim', 'Longitudinal' ]
 };
 
+const ClaimIca: AssessmentDefinition = {
+  typeCode: 'ica',
+  interim: true,
+  performanceLevels: [ 1, 2, 3 ],
+  performanceLevelCount: 3,
+  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  aggregateReportIdentityColumns: ClaimIdentityColumnOptions.concat(),
+  aggregateReportStateResultsEnabled: false,
+  aggregateReportTypes: [ 'Claim' ]
+};
+
+const ClaimSummative: AssessmentDefinition = {
+  typeCode: 'sum',
+  interim: false,
+  performanceLevels: [ 1, 2, 3 ],
+  performanceLevelCount: 3,
+  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  aggregateReportIdentityColumns: ClaimIdentityColumnOptions.concat(),
+  aggregateReportStateResultsEnabled: true,
+  aggregateReportTypes: [ 'Claim', 'Longitudinal' ]
+};
+
+const TargetSummative: AssessmentDefinition = {
+  typeCode: 'sum',
+  interim: false,
+  performanceLevels: [1, 2, 3],
+  performanceLevelCount: 3,
+  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  aggregateReportIdentityColumns: ['claim', 'target', 'dimension'],
+  aggregateReportStateResultsEnabled: false,
+  aggregateReportTypes: [ 'Target' ]
+};
+
+export const GeneralPopulationIabKey: DefinitionKey = <DefinitionKey>{
+  assessmentType: 'iab',
+  reportType: 'CustomAggregate'
+};
+
+export const GeneralPopulationIcaKey: DefinitionKey = <DefinitionKey>{
+  assessmentType: 'ica',
+  reportType: 'CustomAggregate'
+};
+
+export const ClaimIcaKey: DefinitionKey = <DefinitionKey>{
+  assessmentType: 'ica',
+  reportType: 'Claim'
+};
+
+export const GeneralPopulationSumKey: DefinitionKey = <DefinitionKey>{
+  assessmentType: 'sum',
+  reportType: 'CustomAggregate'
+};
+export const LongitudinalCohortSumKey: DefinitionKey = <DefinitionKey>{
+  assessmentType: 'sum',
+  reportType: 'Longitudinal'
+};
+
+export const ClaimSumKey: DefinitionKey = <DefinitionKey>{
+  assessmentType: 'sum',
+  reportType: 'Claim'
+};
+
+export const TargetSummativeKey: DefinitionKey = <DefinitionKey>{
+  assessmentType: 'sum',
+  reportType: 'Target'
+};
+
+export const definitions = [
+  { key: GeneralPopulationIabKey, value: Iab },
+  { key: GeneralPopulationIcaKey, value: Ica },
+  { key: ClaimIcaKey, value: ClaimIca },
+  { key: GeneralPopulationSumKey, value: Summative },
+  { key: LongitudinalCohortSumKey, value: Summative },
+  { key: ClaimSumKey, value: ClaimSummative },
+  { key: TargetSummativeKey, value: TargetSummative }
+  ];
+
 /**
- * Responsible for providing assessment type related properties
+ * Responsible for providing definition key related properties
  */
 @Injectable()
 export class AssessmentDefinitionService {
 
   /**
-   * TODO make this hit backend and cache results.
-   * TODO expand to consider subject type possibly.
-   *
-   * Gets all assessment type related data.
-   *
-   * @returns {Observable<Map<string, AssessmentDefinition>>}
+   * Gets the assessment definition by assessment type and report type
+   * @param {string} assessmentType
+   * @param {string} reportType
+   * @returns {AssessmentDefinition}
    */
-  public getDefinitionsByAssessmentTypeCode(): Observable<Map<string, AssessmentDefinition>> {
-    return of(new Map([
-      [ 'ica', Ica ],
-      [ 'iab', Iab ],
-      [ 'sum', Summative ]
-    ]));
+  // TODO:ConfigurableSubjects this needs to accept subject as a param
+  get(assessmentType: string, reportType: ReportQueryType): AssessmentDefinition {
+    return definitions.find(value => assessmentType === value.key.assessmentType && reportType === value.key.reportType).value;
   }
+}
 
+export interface DefinitionKey {
+  readonly assessmentType: string;
+  readonly reportType: ReportQueryType;
 }

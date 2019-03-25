@@ -15,7 +15,6 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
-    optional 'org.springframework.boot:spring-boot-configuration-processor'
     runtime 'org.springframework.boot:spring-boot-devtools'
     compile 'org.springframework.boot:spring-boot-starter-aop'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
@@ -65,7 +64,9 @@ task buildFe(type: NpmTask) {
     workingDir = file("src/main/webapp")
     outputs.dir('build/resources/static')
     dependsOn npm_install
-    args = ['run', 'build']
+    args = project.hasProperty('prod')
+            ? ['run', 'build-prod']
+            : ['run', 'build']
     // move build from dist to static resources
     doLast {
         copy { from "src/main/webapp/dist" into "src/main/resources/static" }

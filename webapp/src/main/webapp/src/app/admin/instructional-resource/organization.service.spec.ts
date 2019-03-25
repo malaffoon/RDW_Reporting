@@ -1,9 +1,8 @@
 import { OrganizationService } from "./organization.service";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  of } from "rxjs";
 import { OrganizationQuery } from "./model/organization-query.model";
 import { Organization } from "./model/organization.model";
 import { MockDataService } from "../../../test/mock.data.service";
-import { of } from 'rxjs/observable/of';
 
 describe("Organization Service", () => {
   let dataService: MockDataService;

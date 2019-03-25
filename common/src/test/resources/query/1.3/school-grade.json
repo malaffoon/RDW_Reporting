@@ -1,0 +1,13 @@
+{
+  "assessmentTypeCode": "ica",
+  "subjectCode": "ELA",
+  "schoolYear": 2018,
+  "language": "en",
+  "name": "Rabbit Tanager High Sch HS",
+  "accommodationsVisible": false,
+  "disableTransferAccess": false,
+  "order": "STUDENT_NAME",
+  "schoolId": 11,
+  "gradeId": 11,
+  "reportType": "SchoolGrade"
+}

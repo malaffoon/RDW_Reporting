@@ -11,15 +11,15 @@ import { Utils } from "./support/support";
       <label class="btn btn-primary" [ngClass]="{'active': modelValue[0] }">
         <input type="checkbox" [(ngModel)]="modelValue[0]" (ngModelChange)="allChange($event)" autocomplete="off"
                checked=""
-               angulartics2On="click" [angularticsEvent]="analyticsEvent"
+               angulartics2On="click" [angularticsAction]="analyticsEvent"
                [angularticsCategory]="analyticsCategory" [angularticsProperties]="{label: label + ': All'}">
         {{ 'common.buttons.all' | translate }}
       </label>
       <div class="btn-group">
         <label *ngFor="let value of values" class="btn btn-primary" [ngClass]="{'active': modelValue[value] }">
           <input type="checkbox" [(ngModel)]="modelValue[value]" (ngModelChange)="valueChange($event)"
-                 autocomplete="off" [attr.selected]="value === selectedValue ? 'true' : 'false'"
-                 angulartics2On="click" [angularticsEvent]="analyticsEvent"
+                 autocomplete="off" 
+                 angulartics2On="click" [angularticsAction]="analyticsEvent"
                  [angularticsCategory]="analyticsCategory"
                  [angularticsProperties]="{label: enum === undefined ? value : label + ': ' + enum + '.' + value}">
           {{ enum === undefined ? value : enum + '.' + value | translate }}

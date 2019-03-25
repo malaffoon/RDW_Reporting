@@ -1,20 +1,23 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ordering } from "@kourge/ordering";
-import { FilterBy } from "./model/filter-by.model";
-import { AssessmentExam } from "./model/assessment-exam.model";
-import { ExamFilterOptions } from "./model/exam-filter-options.model";
-import { Assessment } from "./model/assessment.model";
-import { ExamFilterOptionsService } from "./filters/exam-filters/exam-filter-options.service";
-import { byGradeThenByName } from "./assessment.comparator";
-import { AssessmentProvider } from "./assessment-provider.interface";
-import { GradeCode } from "../shared/enum/grade-code.enum";
-import { ColorService } from "../shared/color.service";
-import { AssessmentExporter } from "./assessment-exporter.interface";
-import { ReportingEmbargoService } from "../shared/embargo/reporting-embargo.service";
-import { share } from 'rxjs/operators';
+import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ordering } from '@kourge/ordering';
+import { FilterBy } from './model/filter-by.model';
+import { AssessmentExam } from './model/assessment-exam.model';
+import { ExamFilterOptions } from './model/exam-filter-options.model';
+import { Assessment } from './model/assessment.model';
+import { ExamFilterOptionsService } from './filters/exam-filters/exam-filter-options.service';
+import { byGradeThenByName } from './assessment.comparator';
+import { AssessmentProvider } from './assessment-provider.interface';
+import { GradeCode } from '../shared/enum/grade-code.enum';
+import { ColorService } from '../shared/color.service';
+import { AssessmentExporter } from './assessment-exporter.interface';
+import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.service';
+import { share, tap } from 'rxjs/operators';
 import { ApplicationSettingsService } from '../app-settings.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin, Observable, of, empty } from 'rxjs';
+import { serializeURLParameters, Utils } from '../shared/support/support';
+import { Exam } from './model/exam.model';
+import { AdvFiltersComponent } from './filters/adv-filters/adv-filters.component';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -26,7 +29,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
   selector: 'assessments',
   templateUrl: './assessments.component.html'
 })
-export class AssessmentsComponent {
+export class AssessmentsComponent implements OnChanges {
 
   /**
    * The array of asssessment exams to show.
@@ -35,8 +38,11 @@ export class AssessmentsComponent {
   @Input()
   set assessmentExams(value: AssessmentExam[]) {
     this._assessmentExams = value;
-    this.showOnlyMostRecent = true;
-    this._hasInitialAssessment = (value != null && value.length != 0);
+    const { assessmentIds } = this.route.snapshot.params;
+    if (!assessmentIds) {
+      this.showOnlyMostRecent = true;
+    }
+    this._hasInitialAssessment = !Utils.isNullOrEmpty(this._assessmentExams);
   }
 
   /**
@@ -61,12 +67,32 @@ export class AssessmentsComponent {
    * by default.  Otherwise, they won't be displayed and all results will be shown.
    */
   @Input()
-  allowFilterBySessions: boolean = true;
+  allowFilterBySessions = true;
+
+  /**
+   * If true, the target report view will be displayed for Summative assessments. This is a Group only feature,
+   * so it will be disabled for the school/grade display.
+   */
+  @Input()
+  allowTargetReport = false;
+
+  /**
+   * If true, the results are collapsed by default, otherwise they are expanded
+   * with the results shown.
+   */
+  @Input()
+  isDefaultCollapsed = false;
+
+  @Input()
+  displayedFor: string;
 
   @Output()
   export: EventEmitter<any> = new EventEmitter<any>();
 
-  showValuesAsPercent: boolean = true;
+  @ViewChild(AdvFiltersComponent)
+  private advFiltersComponent: AdvFiltersComponent;
+
+  showValuesAsPercent = true;
   filterDisplayOptions: any = {
     expanded: true
   };
@@ -74,9 +100,10 @@ export class AssessmentsComponent {
 
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   availableAssessments: Assessment[] = [];
-  assessmentsLoading: any[] = [];
+  assessmentsLoading: Map<number, Assessment> = new Map<number, Assessment>();
   minimumItemDataYear: number;
-  exportDisabled: boolean = true;
+  exportDisabled = true;
+  loadingInitialResults = true;
 
   get assessmentExams(): AssessmentExam[] {
     return this._assessmentExams;
@@ -101,10 +128,18 @@ export class AssessmentsComponent {
 
   set expandAssessments(value: boolean) {
     this._expandAssessments = value;
-    this.getAvailableAssessments();
+    this.getAvailableAssessments().subscribe(result => {
+      // TODO fix this so that we don't need an Array.map callback with side-effects
+      this.availableAssessments = result.map(available => {
+        available.selected = this._assessmentExams
+          .some(assessmentExam => assessmentExam.assessment.id === available.id);
+        return available;
+      });
+    });
 
-    if (value)
+    if (value) {
       this._showOnlyMostRecent = false;
+    }
   }
 
   get showOnlyMostRecent(): boolean {
@@ -117,18 +152,16 @@ export class AssessmentsComponent {
 
     if (value) {
       this.availableAssessments = [];
-      this.updateAssessment(this.route.snapshot.data[ "assessment" ]);
+      this.updateAssessment(this.route.snapshot.data[ 'assessment' ]);
     }
   }
 
-  get selectedAssessments() {
+  get selectedAssessments(): Assessment[] {
     if (this.showOnlyMostRecent && this._assessmentExams) {
       return this._assessmentExams.map(x => x.assessment);
-    }
-    else if (this.availableAssessments) {
+    } else if (this.availableAssessments) {
       return this.availableAssessments.filter(x => x.selected);
     }
-
     return [];
   }
 
@@ -138,7 +171,7 @@ export class AssessmentsComponent {
    * @param allCollapsed True if all assessment exams should be collapsed
    */
   set allCollapsed(allCollapsed: boolean) {
-    for (let assessmentExam of this._assessmentExams) {
+    for (const assessmentExam of this._assessmentExams) {
       assessmentExam.collapsed = allCollapsed;
     }
   }
@@ -154,12 +187,13 @@ export class AssessmentsComponent {
     return this._isAllSelected;
   }
 
-  private _showAdvancedFilters: boolean = false;
-  private _expandAssessments: boolean = false;
-  private _hasInitialAssessment: boolean = false;
-  private _showOnlyMostRecent: boolean = true;
+  private _showAdvancedFilters = false;
+  private _expandAssessments = false;
+  private _hasInitialAssessment = false;
+  private _showOnlyMostRecent = true;
   private _assessmentExams: AssessmentExam[];
-  private _isAllSelected: boolean = false;
+  private _isAllSelected = false;
+  private _assessmentsByRouteParameters: Map<string, Assessment[]> = new Map();
 
   constructor(public colorService: ColorService,
               private route: ActivatedRoute,
@@ -173,12 +207,42 @@ export class AssessmentsComponent {
       applicationSettingsService.getSettings(),
       filterOptionService.getExamFilterOptions(),
       embargoService.isEmbargoed()
-    ).subscribe(([settings, filterOptions, embargoed]) => {
+    ).subscribe(([ settings, filterOptions, embargoed ]) => {
       this.minimumItemDataYear = settings.minItemDataYear;
       this.filterOptions = filterOptions;
-      this.updateFilterOptions();
       this.exportDisabled = embargoed;
     });
+  }
+
+  ngOnChanges() {
+    const { assessmentIds } = this.route.snapshot.params;
+    if (!assessmentIds) {
+      this.showOnlyMostRecent = true;
+      this.loadingInitialResults = false;
+    } else {
+      this.assessmentProvider.getAvailableAssessments().subscribe(availableAssessments => {
+        const loadingObservables: Observable<Exam[]>[] = [];
+
+        const preselectedAssessments = availableAssessments.filter(assessment => assessmentIds.split(',').indexOf(assessment.id.toString()) >= 0);
+        preselectedAssessments.forEach(assessment => {
+          assessment.selected = true;
+          loadingObservables.push(this.loadAssessmentExam(assessment));
+        });
+
+        forkJoin(loadingObservables).subscribe(args => {
+          // since this is loading the preselected assessments, make sure the latest assessment is not loaded
+          this._assessmentExams = [];
+          args.forEach((exams, index) => this.processLoadAssessmentExam(preselectedAssessments[ index ].id, exams));
+
+          this._hasInitialAssessment = true;
+          this.updateFilterOptions();
+          this.showOnlyMostRecent = false;
+          this.expandAssessments = false;
+          this.loadingInitialResults = false;
+        });
+
+      });
+    }
   }
 
   getGradeIdx(gradeCode: string): number {
@@ -212,29 +276,48 @@ export class AssessmentsComponent {
     this.clientFilterBy.elasCodes = Object.assign({}, this.clientFilterBy.elasCodes);
   }
 
+  removeLanguageCode(languageCode) {
+    this.clientFilterBy.languageCodes= this.clientFilterBy.languageCodes.filter( val => {
+      return Object.keys(val)[0] != languageCode;
+    })
+  }
+
+  removeMilitaryConnectedCode(militaryConnectedCode) {
+    this.clientFilterBy.militaryConnectedCodes[ militaryConnectedCode ] = false;
+    if (this.clientFilterBy.filteredMilitaryConnectedCodes.length == 0) {
+      this.clientFilterBy.militaryConnectedCodes[ 0 ] = true; // None are selected, set all to true.
+    }
+
+    this.clientFilterBy.militaryConnectedCodes = Object.assign({}, this.clientFilterBy.militaryConnectedCodes);
+  }
+
   removeFilter(property) {
-    if (property == 'offGradeAssessment') {
+    if (property === 'offGradeAssessment') {
       this.clientFilterBy[ property ] = false;
-    }
-    else if (property == 'transferAssessment') {
+    } else if (property === 'transferAssessment') {
       this.clientFilterBy[ property ] = false;
-    }
-    else if (property.indexOf('ethnicities') > -1) {
+    } else if (property.indexOf('ethnicities') > -1) {
       this.removeEthnicity(property.substring(property.indexOf('.') + 1));
     } else if (property.indexOf('genders') > -1) {
       this.removeGender(property.substring(property.indexOf('.') + 1));
     } else if (property.indexOf('elasCodes') > -1) {
       this.removeElasCode(property.substring(property.indexOf('.') + 1));
-    }
-    else {
+    } else if (property.indexOf('languageCodes') > -1) {
+      let code = property.substring(property.indexOf('.') + 1);
+      this.removeLanguageCode(code);
+      this.advFiltersComponent.removeLanguageFilter(code);
+    } else if (property.indexOf('militaryConnectedCodes') > -1) {
+      let code = property.substring(property.indexOf('.') + 1);
+      this.removeMilitaryConnectedCode(code);
+    } else {
       this.clientFilterBy[ property ] = -1;
     }
   }
 
-  updateAssessment(latestAssessment) {
+  updateAssessment(latestAssessment: AssessmentExam) {
     this._assessmentExams = [];
     if (latestAssessment) {
-      this._assessmentExams.push(latestAssessment);
+      this._assessmentExams = [ latestAssessment ];
     }
 
     this.updateFilterOptions();
@@ -249,16 +332,16 @@ export class AssessmentsComponent {
 
   selectedAssessmentsChanged(assessment: Assessment) {
     if (assessment.selected) {
-      this.loadAssessmentExam(assessment);
-    }
-    else {
+      this.loadAssessmentExam(assessment)
+        .subscribe(exams => this.processLoadAssessmentExam(assessment.id, exams));
+    } else {
       this.removeUnselectedAssessmentExams();
     }
 
     this.updateFilterOptions();
 
     // have all the assessments been selected
-    this._isAllSelected = (this.selectedAssessments.length == this.availableAssessments.length);
+    this._isAllSelected = (this.selectedAssessments.length === this.availableAssessments.length);
   }
 
   openAndScrollToAdvancedFilters() {
@@ -277,49 +360,42 @@ export class AssessmentsComponent {
     this.filterOptions.hasSummative = this.selectedAssessments.some(a => a.isSummative);
   }
 
-  private loadAssessmentExam(assessment: Assessment) {
-    let subscription = this.assessmentProvider.getExams(assessment.id)
-      .subscribe(exams => {
-        let assessmentLoaded = this.assessmentsLoading.splice(this.assessmentsLoading.findIndex(al => al.assessment.id == assessment.id), 1);
-        let assessmentExam = new AssessmentExam();
-        assessmentExam.assessment = assessmentLoaded[ 0 ].assessment;
-        assessmentExam.exams = exams;
+  private loadAssessmentExam(assessment: Assessment): Observable<Exam[]> {
+    this.assessmentsLoading.set(assessment.id, assessment);
 
-        this._assessmentExams.push(assessmentExam);
-        this._assessmentExams.sort(ordering(byGradeThenByName).on<AssessmentExam>(assessmentExam => assessmentExam.assessment).compare);
-      });
-
-    // Keeping track of this array allows us to unsubscribe from api calls in flight
-    // should the user decide to remove an assessment before it's finished loading.
-    this.assessmentsLoading.push({ assessment: assessment, subscription: subscription });
+    return this.assessmentProvider.getExams(assessment.id);
   }
 
-  private removeUnselectedAssessmentExams() {
+  private processLoadAssessmentExam(assessmentId: number, exams: Exam[]) {
+    if (!this.assessmentsLoading.has(assessmentId)) return;
+
+    const assessmentExam = new AssessmentExam();
+    assessmentExam.assessment = this.assessmentsLoading.get(assessmentId);
+    assessmentExam.exams = exams;
+
+    this._assessmentExams.push(assessmentExam);
+    this._assessmentExams.sort(ordering(byGradeThenByName).on<AssessmentExam>(assessmentExam => assessmentExam.assessment).compare);
+
+    this.assessmentsLoading.delete(assessmentId);
+  }
+
+  private removeUnselectedAssessmentExams(): void {
     this._assessmentExams = this._assessmentExams.filter(loaded => this.selectedAssessments.some(selected => loaded.assessment.id == selected.id));
-
-    let assessmentsLoading = this.assessmentsLoading.filter(loading => !this.selectedAssessments.some(selected => loading.assessment.id == selected.id));
-
-    // cancel api calls in flight.
-    for (let loading of assessmentsLoading) {
-      loading.subscription.unsubscribe();
-    }
-
-    this.assessmentsLoading = this.assessmentsLoading.filter(loading => this.selectedAssessments.some(selected => loading.assessment.id == selected.id));
   }
 
-  private getAvailableAssessments() {
+  private getAvailableAssessments(): Observable<Assessment[]> {
     if (this._expandAssessments) {
-      const observable = this.assessmentProvider.getAvailableAssessments().pipe(share());
-
-      observable.subscribe(result => {
-        // TODO fix this so that we don't need an Array.map callback with side-effects
-        this.availableAssessments = result.map(available => {
-          available.selected = this._assessmentExams.some(assessmentExam => assessmentExam.assessment.id == available.id);
-          return available;
-        });
-      });
-
-      return observable;
+      const key = serializeURLParameters(this.route.snapshot.params);
+      const assessments = this._assessmentsByRouteParameters.get(key);
+      if (assessments) {
+        return of(assessments);
+      }
+      return this.assessmentProvider.getAvailableAssessments().pipe(
+        tap(assessments => this._assessmentsByRouteParameters.set(key, assessments)),
+        share()
+      );
     }
+    return empty();
   }
+
 }

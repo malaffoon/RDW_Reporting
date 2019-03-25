@@ -5,6 +5,7 @@ export class GroupQuery {
   schoolYear: number;
   subject: string;
 
+  // a nicity might even be that the backend fills this in when nothing is sent
   get availableSubjects() {
     return this._availableSubjects;
   }

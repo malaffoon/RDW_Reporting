@@ -1,0 +1,102 @@
+<aggregate-embargo-alert
+  *hasPermission="'EMBARGO_READ'"
+></aggregate-embargo-alert>
+
+<ng-template #submitButtonTemplate>
+  <button
+    class="btn btn-success btn-sm green"
+    [disabled]="formByReportType[queryType].submissionSubscription"
+    (click)="onGenerateButtonClick()"
+  >
+    {{ 'aggregate-report-form.submit' | translate }}
+  </button>
+</ng-template>
+
+<ng-container *ngIf="accessDenied; else accessAllowed">
+  <page-heading>
+    <ng-template #heading>
+      <h2>{{ 'aggregate-report-form.heading' | translate }}</h2>
+    </ng-template>
+  </page-heading>
+  <div class="well">
+    <p>{{ 'aggregate-report-form.access-denied-error' | translate }}</p>
+  </div>
+</ng-container>
+
+<ng-template #accessAllowed>
+  <div class="aggregate-report-form">
+    <div>
+      <div *ngIf="navItems" class="nav-container">
+        <scroll-nav [items]="navItems">
+          <div class="ml-sm mt-xs">
+            <ng-container
+              *ngTemplateOutlet="submitButtonTemplate"
+            ></ng-container>
+          </div>
+        </scroll-nav>
+      </div>
+    </div>
+
+    <div>
+      <page-heading>
+        <ng-template #heading>
+          <h2>{{ 'aggregate-report-form.heading' | translate }}</h2>
+          <p class="small gray-darkest mt-sm">
+            {{ 'aggregate-report-form.subheading' | translate }}
+          </p>
+        </ng-template>
+      </page-heading>
+
+      <!-- Report Type -->
+      <div id="reportTypeSection">
+        <div class="well-group">
+          <div class="well">
+            <h3>
+              {{
+                'aggregate-report-form.section.report-type-heading' | translate
+              }}
+            </h3>
+          </div>
+          <div class="well pb-0">
+            <wide-radio-group
+              name="queryType"
+              [options]="filteredOptions.reportTypes"
+              [(ngModel)]="queryType"
+              [ngModelOptions]="{ standalone: true }"
+              rowCount="2"
+              (change)="onReportTypeChange()"
+            ></wide-radio-group>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngFor="let typeString of queryTypes">
+        <ng-container [ngSwitch]="typeString">
+          <general-population-form
+            *ngSwitchCase="'CustomAggregate'"
+            #reportForm
+            [hidden]="queryType !== typeString"
+          ></general-population-form>
+
+          <longitudinal-cohort-form
+            *ngSwitchCase="'Longitudinal'"
+            #reportForm
+            [hidden]="queryType !== typeString"
+          ></longitudinal-cohort-form>
+
+          <claim-report-form
+            *ngSwitchCase="'Claim'"
+            #reportForm
+            [hidden]="queryType !== typeString"
+          ></claim-report-form>
+
+          <target-report-form
+            *ngSwitchCase="'Target'"
+            #reportForm
+            [hidden]="queryType !== typeString"
+          ></target-report-form>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

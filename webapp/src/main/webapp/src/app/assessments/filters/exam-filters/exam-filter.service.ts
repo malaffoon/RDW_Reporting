@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { ExamFilter } from "../../model/exam-filter.model";
-import { AssessmentExam } from "../../model/assessment-exam.model";
 import { FilterBy } from "../../model/filter-by.model";
 import { Exam } from "../../model/exam.model";
 import { Assessment } from "../../model/assessment.model";
@@ -21,7 +20,9 @@ export class ExamFilterService {
     new ExamFilter('iep', 'common.filters.student.iep', 'common.polar', this.filterByIep),
     new ExamFilter('limitedEnglishProficiency', 'common.filters.student.limited-english-proficiency', 'common.polar', this.filterByLimitedEnglishProficiency),
     new ExamFilter('elasCodes', 'common.filters.student.elas', 'common.elas', this.filterByElasCode),
-    new ExamFilter('ethnicities', 'common.filters.student.ethnicity', 'common.ethnicity', this.filterByEthnicity)
+    new ExamFilter('ethnicities', 'common.filters.student.ethnicity', 'common.ethnicity', this.filterByEthnicity),
+    new ExamFilter('languageCodes', 'common.filters.student.language','common.languages', this.filterByLanguageCode),
+    new ExamFilter('militaryConnectedCodes', 'common.filters.student.military-connected', 'common.military-connected-code', this.filterByMilitaryConnectedCode)
   ];
 
   getFilterDefinitions(): ExamFilter[] {
@@ -33,15 +34,14 @@ export class ExamFilterService {
   }
 
   /**
-   * Filter exams within an AssessmentExam.
+   * Filter exams
    *
-   * @param assessmentExam  An assessment exam
-   * @param filterBy        The currently-applied filters
+   * @param exams  The exams
+   * @param assessment The assessment
+   * @param filterBy   The currently-applied filters
    * @returns {Exam[]} The filtered exams
    */
-  filterExams(assessmentExam: AssessmentExam, filterBy: FilterBy): Exam[] {
-    let exams = assessmentExam.exams;
-
+  filterExams(exams: Exam[], assessment: Assessment, filterBy: FilterBy): Exam[] {
     if (filterBy == null)
       return exams;
 
@@ -49,17 +49,22 @@ export class ExamFilterService {
     for (let filter of filters) {
       let filterDefinition = this.getFilterDefinitionFor(filter);
 
-      if (filterDefinition.precondition(assessmentExam.assessment)) {
+      if (filterDefinition.precondition(assessment)) {
+
         let filterValue = filterBy[ filter ];
 
         if (filter == 'offGradeAssessment')
-          filterValue = assessmentExam.assessment.grade;
+          filterValue = assessment.grade;
         else if (filter == 'ethnicities')
           filterValue = filterBy.filteredEthnicities;
         else if (filter == 'genders')
           filterValue = filterBy.filteredGenders;
         else if (filter == 'elasCodes')
           filterValue = filterBy.filteredElasCodes;
+        else if (filter == 'languageCodes')
+          filterValue = filterBy.filteredLanguages;
+        else if (filter == 'militaryConnectedCodes')
+          filterValue = filterBy.filteredMilitaryConnectedCodes;
 
         exams = exams.filter(exam => filterDefinition.apply(exam, filterValue));
       }
@@ -109,6 +114,10 @@ export class ExamFilterService {
             filterValue = filterBy.filteredGenders;
           } else if (filter == 'elasCodes') {
             filterValue = filterBy.filteredElasCodes;
+          } else if (filter == 'langageCodes') {
+            filterValue = filterBy.filteredLanguages;
+          } else if (filter == 'militaryConnectedCodes') {
+            filterValue = filterBy.filteredMilitaryConnectedCodes;
           }
 
           return filterDefinition.apply(exam, filterValue);
@@ -118,25 +127,29 @@ export class ExamFilterService {
     return results;
   }
 
+  // remove individual '*.code' (i.e. 'gender.code') and add just one gender/ethnicity/elas/language/...
+  // as they need to be evaluated all at once.
   private getFilters(filterBy: FilterBy): string[] {
     let filters = filterBy.all;
     if (filters.some(x => x.indexOf('ethnicities') > -1)) {
-      // remove individual 'ethnicity.code' and add just one ethnicity
-      // as ethnicities need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('ethnicities') == -1);
       filters.push('ethnicities');
     }
     if (filters.some(x => x.indexOf('genders') > -1)) {
-      // remove individual 'gender.code' and add just one gender
-      // as genders need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('genders') == -1);
       filters.push('genders');
     }
     if (filters.some(x => x.indexOf('elasCodes') > -1)) {
-      // remove individual 'elas.code' and add just one elas
-      // as elas need to be evaluated all at once.
       filters = filters.filter(x => x.indexOf('elasCodes') == -1);
       filters.push('elasCodes');
+    }
+    if (filters.some(x => x.indexOf('languageCodes') > -1 )) {
+      filters = filters.filter(x => x.indexOf('languageCodes') == -1);
+      filters.push('languageCodes');
+    }
+    if (filters.some(x => x.indexOf('militaryConnectedCodes') > -1 )) {
+      filters = filters.filter(x => x.indexOf('militaryConnectedCodes') == -1);
+      filters.push('militaryConnectedCodes');
     }
 
     return filters;
@@ -182,7 +195,15 @@ export class ExamFilterService {
     return exam.student && exam.student.ethnicityCodes.some(ethnicity => filterValue.some(code => code == ethnicity));
   }
 
+  private filterByLanguageCode(exam: Exam, filterValue: any): boolean {
+    return (exam.student && !filterValue.length) || filterValue.some(languageCode => languageCode == exam.languageCode);
+  }
+
   private filterByTransferAssessment(exam: Exam, filterValue: any): boolean {
     return !filterValue || !exam.transfer;
+  }
+
+  private filterByMilitaryConnectedCode(exam: Exam, filterValue: any): boolean {
+    return (exam.student && !filterValue.length) || filterValue.some(militaryConnectedCode => militaryConnectedCode == exam.militaryConnectedCode);
   }
 }

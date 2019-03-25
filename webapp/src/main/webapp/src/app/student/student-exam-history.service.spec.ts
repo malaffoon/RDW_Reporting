@@ -1,7 +1,7 @@
 import { inject, TestBed } from "@angular/core/testing";
 import { StudentExamHistoryService } from "./student-exam-history.service";
 import { MockDataService } from "../../test/mock.data.service";
-import { Observable } from "rxjs/Observable";
+import { throwError,  of } from "rxjs";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Assessment } from "../assessments/model/assessment.model";
@@ -10,8 +10,6 @@ import { Student } from "./model/student.model";
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 import { DataService } from "../shared/data/data.service";
-import { _throw } from 'rxjs/observable/throw';
-import { of } from 'rxjs/observable/of';
 
 describe('StudentExamHistoryService', () => {
   let dataService: MockDataService;
@@ -43,7 +41,7 @@ describe('StudentExamHistoryService', () => {
   it('should return null for a 404 response when finding student by ssid',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(_throw({status: 404}));
+      dataService.get.and.returnValue(throwError({status: 404}));
 
       service.existsBySsid("ssid").subscribe((exists) => {
         expect(exists).toBeNull();
@@ -79,7 +77,7 @@ describe('StudentExamHistoryService', () => {
   it('should throw for a 404 response when retrieving history for a student',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
-      dataService.get.and.returnValue(_throw("4xx/5xx response"));
+      dataService.get.and.returnValue(throwError("4xx/5xx response"));
 
       service.findOneById(123).subscribe(() => {
         fail("Error expected");
@@ -88,7 +86,7 @@ describe('StudentExamHistoryService', () => {
       });
   }));
 
-  it('should return a student\'s exam history',
+  it('should return a student\'s exam history ordered most recent exam date',
     inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
 
       dataService.get.and.returnValue(of({
@@ -97,7 +95,17 @@ describe('StudentExamHistoryService', () => {
         },
         exams: [ {
           exam: {
-            id: 1
+            id: 1,
+            dateTime: '2017-03-15T09:24:22.561Z'
+          },
+          assessment: {
+            id: 2
+          }
+        },
+        {
+          exam: {
+            id: 2,
+            dateTime: '2017-09-15T09:24:22.561Z'
           },
           assessment: {
             id: 2
@@ -107,9 +115,11 @@ describe('StudentExamHistoryService', () => {
 
       service.findOneById(123).subscribe((history: StudentExamHistory) => {
         expect(history.student.id).toBe(123);
-        expect(history.exams.length).toBe(1);
-        expect(history.exams[0].exam.id).toBe(1);
+        expect(history.exams.length).toBe(2);
+        expect(history.exams[0].exam.id).toBe(2);
         expect(history.exams[0].assessment.id).toBe(2);
+        expect(history.exams[1].exam.id).toBe(1);
+        expect(history.exams[1].assessment.id).toBe(2);
       });
     }));
 });

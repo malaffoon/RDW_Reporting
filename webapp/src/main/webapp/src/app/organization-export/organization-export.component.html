@@ -1,79 +1,189 @@
-<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
+<reporting-embargo-alert
+  *hasPermission="'EMBARGO_READ'"
+></reporting-embargo-alert>
 
 <page-heading>
   <ng-template #heading>
-    <h2>{{'organization-export.title' | translate}}</h2>
+    <h2>{{ 'organization-export.title' | translate }}</h2>
+    <div>{{ 'organization-export.instructions' | translate }}</div>
   </ng-template>
 </page-heading>
 
-<div class="well-group">
-
+<div class="well-group" *ngIf="initialized">
   <div class="well">
-    <form ngForm="form" (submit)="submit()">
+    <form [formGroup]="formGroup" (ngSubmit)="submit()">
       <div class="row">
         <div class="col-md-6">
-          <div class="form-group">
-            <label for="report-name">{{'common.reports.form.report-name' | translate}}</label>
-            <input id="report-name"
-                   name="report-name"
-                   class="form-control"
-                   maxlength="255"
-                   [(ngModel)]="orgExport.name"
-                   placeholder="{{'organization-export.form.default-report-name' | translate}}">
+          <div
+            *ngIf="formGroup.get('name') as control"
+            class="form-group"
+            [ngClass]="{
+              'has-error': control.invalid && (control.dirty || control.touched)
+            }"
+          >
+            <label for="report-name">{{
+              'organization-export.form.report-name' | translate
+            }}</label>
+            <input
+              id="report-name"
+              name="report-name"
+              class="form-control"
+              maxlength="255"
+              placeholder="{{
+                'organization-export.form.default-report-name' | translate
+              }}"
+              [formControl]="control"
+            />
+            <div *ngIf="control.invalid && (control.dirty || control.touched)">
+              <p
+                *ngIf="control.errors.fileName"
+                aria-live="polite"
+                class="help-block small red"
+              >
+                {{ control.errors.fileName.messageId | translate }}
+              </p>
+            </div>
           </div>
         </div>
         <div class="col-md-3">
-          <div class="form-group">
-            <label for="select-year">{{'common.school-year-select-label' | translate}}</label>
-            <select id="select-year" name="select-year" class="form-control" [(ngModel)]="orgExport.schoolYear">
-              <option *ngFor="let year of schoolYearOptions" [ngValue]="year">{{year | schoolYear}}</option>
+          <div
+            class="form-group"
+            *ngIf="formGroup.get('schoolYear') as control"
+          >
+            <label for="select-year">{{
+              'common.school-year-select-label' | translate
+            }}</label>
+            <select
+              id="select-year"
+              name="select-year"
+              class="form-control"
+              [formControl]="control"
+            >
+              <option *ngFor="let year of schoolYearOptions" [ngValue]="year">{{
+                year | schoolYear
+              }}</option>
             </select>
           </div>
         </div>
         <div class="col-md-3" *ngIf="transferAccess">
-          <div class="form-group">
-            <div>
-              <label>
-                <span info-button
-                      title="{{'common.filters.test.transfer-assessment' | translate}}"
-                      content="{{'common.filters.test.transfer-assessment-info' | translate}}"></span>
-              </label>
-            </div>
-            <sb-radio-button-group name="transfer-assessment-toggle"
-                                   [(ngModel)]="orgExport.disableTransferAccess"
-                                   buttonGroupStyles=""
-                                   [options]="[
-                           {value: false, text: 'common.action.show' | translate},
-                           {value: true, text: 'common.action.hide' | translate}
-                         ]">
-            </sb-radio-button-group>
+          <div
+            class="form-group"
+            *ngIf="formGroup.get('disableTransferAccess') as control"
+          >
+            <fieldset>
+              <div>
+                <label for="transfer-assessment-toggle">
+                  <span
+                    info-button
+                    title="{{
+                      'common.filters.test.transfer-assessment' | translate
+                    }}"
+                    content="{{
+                      'common.filters.test.transfer-assessment-info' | translate
+                    }}"
+                  ></span>
+                </label>
+              </div>
+              <sb-radio-button-group
+                id="transfer-assessment-toggle"
+                name="transfer-assessment-toggle"
+                buttonGroupStyles=""
+                [options]="[
+                  { value: false, text: 'common.action.show' | translate },
+                  { value: true, text: 'common.action.hide' | translate }
+                ]"
+                [formControl]="control"
+              >
+              </sb-radio-button-group>
+            </fieldset>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group" *ngIf="!editingDisabled">
-            <label for="search">{{'organization-export.form.organization.label' | translate}}</label>
-            <span sb-button-typeahead
-                  inputId="search"
-                  [options]="organizationOptions"
-                  (buttonClick)="add($event)"
-                  placeholder="{{'common.action.select' | translate}}"
-                  buttonLabel="{{'organization-export.form.organization.add' | translate}}">
+            <label for="search">{{
+              'organization-export.form.organization.label' | translate
+            }}</label>
+            <span
+              sb-button-typeahead
+              inputId="search"
+              [options]="organizationOptions"
+              (buttonClick)="add($event)"
+              placeholder="{{ 'common.action.select' | translate }}"
+              buttonLabel="{{
+                'organization-export.form.organization.add' | translate
+              }}"
+            >
             </span>
             <div class="ml-xs mt-xs">
-              <a *ngIf="selectAllEnabled"
-                 class="link-button aqua"
-                 href="javascript:void(0)"
-                 (click)="toggleSelectAll()"><i class="fa" [ngClass]="{'fa-check-square': selectedAll, 'fa-square-o': !selectedAll}"></i>
-                {{'organization-export.form.organization.select-all' | translate}}
+              <a
+                *ngIf="selectAllEnabled"
+                class="link-button aqua"
+                href="javascript:void(0)"
+                (click)="toggleSelectAll()"
+              >
+                <i
+                  class="fa"
+                  [ngClass]="{
+                    'fa-check-square': selectedAll,
+                    'fa-square-o': !selectedAll
+                  }"
+                ></i>
+                {{
+                  'organization-export.form.organization.select-all' | translate
+                }}
               </a>
             </div>
+
+            <ng-container *ngIf="formGroup.get('schools') as control">
+              <input type="hidden" [formControl]="control" />
+            </ng-container>
           </div>
         </div>
-        <div [ngClass]="{'col-md-6': !editingDisabled, 'col-md-12': editingDisabled}">
-          <div class="text-right">
-            <button type="submit" class="btn btn-info aqua" [disabled]="selectedSchools.length == 0"><i class="fa fa-cloud-download"></i> {{'organization-export.form.submit.label' | translate}}</button>
+        <div
+          [ngClass]="{
+            'col-md-6': !editingDisabled,
+            'col-md-12': editingDisabled
+          }"
+        >
+          <div class="controls">
+            <div>
+              <br />
+              <ng-container *ngIf="initialQuery == null; else hasSavedQuery">
+                <!-- Intentionally disabled because this is not an anticipated use case yet
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [disabled]="createQueryButtonDisabled"
+                  (click)="onCreateQueryButtonClick()"
+                >
+                  {{ 'user-query.action.create.label' | translate }}
+                </button>
+                -->
+              </ng-container>
+              <ng-template #hasSavedQuery>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [disabled]="updateQueryButtonDisabled"
+                  (click)="onUpdateQueryButtonClick()"
+                >
+                  {{ 'user-query.action.update.label' | translate }}
+                </button>
+              </ng-template>
+            </div>
+            <div>
+              <br />
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="createReportButtonDisabled"
+              >
+                <i class="fa fa-cloud-download"></i>
+                {{ 'organization-export.form.submit.label' | translate }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -81,8 +191,12 @@
   </div>
 
   <div class="well gray-lightest">
-    <organization-tree [model]="organizationTree" (select)="remove($event)" [disabled]="editingDisabled" [hasSelectedSchools]="selectedSchools.length != 0"></organization-tree>
+    <organization-tree
+      [model]="organizationTree"
+      (select)="remove($event)"
+      [disabled]="editingDisabled"
+      [hasSelectedSchools]="(formGroup.get('schools').value || []).length != 0"
+    >
+    </organization-tree>
   </div>
-
 </div>
-

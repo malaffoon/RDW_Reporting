@@ -3,82 +3,41 @@
 </ng-container>
 
 <ng-template #loaded>
-  <div class="flex-child grow">
-    <label>{{'groups.search-label' | translate }}</label>
+  <div class="flex-children">
+    <div class="flex-child grow">
+      <label *ngIf="groups.length">{{'groups.search-label' | translate}}</label>
+      <p *ngIf="!groups.length"
+         class="text-muted">{{'groups.no-groups' | translate}}</p>
+    </div>
+    <div class="flex-child">
+      <ul class="list-unstyled list-inline">
+        <li *ngIf="defaultGroup">
+          <a [routerLink]="['/', 'group-dashboard', {groupId: defaultGroup.id}]"
+             title="{{'groups.view-dashboard' | translate}}"
+             class="btn btn-xs btn-default">
+            <i class="fa fa-bars"></i> {{'groups.view-dashboard' | translate}}
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 
-  <!-- My Groups Search Input -->
-  <div *ngIf="groups.length > 2"
-       class="table-search-form-container">
-    <label for="search" class="sr-only">{{'groups.filter' | translate}}</label>
-    <input [(ngModel)]="searchTerm"
-           class="search form-control"
-           id="search"
-           type="text"
-           placeholder="{{'groups.filter' | translate}}"
-           autocomplete="off"
-           (ngModelChange)="onSearchChange($event)">
-  </div>
+  <ng-container *ngIf="groups.length">
+    <div *ngIf="groups.length > searchThreshold"
+         class="table-search-form-container">
+      <label for="search" class="sr-only">{{'groups.filter' | translate}}</label>
+      <input [(ngModel)]="search"
+             class="search form-control"
+             id="search"
+             type="text"
+             placeholder="{{'groups.filter' | translate}}"
+             autocomplete="off"
+             (ngModelChange)="onSearchChange($event)">
+    </div>
 
-  <!-- My Groups Search Results List -->
-  <div class="table-list-container">
-    <p-table [columns]="columns"
-             [value]="filteredGroups"
-             [autoLayout]="true"
-             sortField="name"
-             dataKey="id"
-             styleClass="table table-striped table-hover">
+    <div class="table-list-container">
+      <group-table [groups]="filteredGroups"></group-table>
+    </div>
+  </ng-container>
 
-      <ng-template pTemplate="header"
-                   let-columns>
-        <tr>
-          <th *ngFor="let column of columns"
-              [pSortableColumn]="column.field"
-              [ngSwitch]="column.id">
-
-            <div *ngSwitchDefault>
-              {{ ('groups.columns.' + column.id) | translate }}
-            </div>
-
-            <p-sortIcon [field]="column.field"></p-sortIcon>
-          </th>
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="body"
-                   let-group
-                   let-columns="columns">
-        <tr>
-          <td *ngFor="let column of columns"
-              [ngSwitch]="column.id">
-
-            <div *ngSwitchCase="'group'"
-                 class="label-max-width">
-              <a routerLink="/groups/{{group.id}}"
-                 title="{{group.name}}">
-                {{group.name}}
-              </a>
-            </div>
-
-            <ng-container *ngSwitchCase="'school'">
-              {{group.schoolName}}
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'subject'">
-              {{ 'common.subject.' + group.subjectCode + '.name' | translate }}
-            </ng-container>
-          </td>
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="emptymessage" let-columns>
-        <tr>
-          <td [attr.colspan]="columns.length">
-            {{emptyMessageTranslateKey | translate}}
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-
-  </div>
 </ng-template>

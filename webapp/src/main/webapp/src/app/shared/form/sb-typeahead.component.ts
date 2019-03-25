@@ -19,6 +19,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
            (ngModelChange)="onChangeInternal()"
            [(ngModel)]="search"
            placeholder="{{placeholder}}"
+           [typeaheadOptionsLimit]="100"
+           [typeaheadOptionsInScrollableView]="20"
+           [typeaheadScrollable]="true"
            autocomplete="off">
   `
 })
@@ -61,7 +64,7 @@ export class SBTypeahead implements OnInit {
   @Input()
   set options(options: Option[]) {
     if (this._options !== options) {
-      this._options = options
+      this._options = options;
     }
   }
 
@@ -73,12 +76,15 @@ export class SBTypeahead implements OnInit {
   set value(value: any) {
     if (this._value !== value) {
       this._value = value;
+      if (this._options) {
+        this.search = this.getSearchFromValue(value);
+      }
       this.change.emit(value);
     }
   }
 
   get disabledInternal(): boolean {
-    return this.disabled || this.options.length == 0;
+    return this.disabled || this.options.length === 0;
   }
 
   onSelectInternal(option: Option): void {
@@ -95,8 +101,8 @@ export class SBTypeahead implements OnInit {
 
   private getSearchFromValue(value: any): string {
     if (value) {
-      let option = this.options.find(option => option.value === value);
-      if (option) {
+      const option = this.options.find(option => option.value === value);
+      if (option != null) {
         return option.label;
       }
     }

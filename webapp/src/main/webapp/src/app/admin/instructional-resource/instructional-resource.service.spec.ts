@@ -1,8 +1,7 @@
 import { InstructionalResourceService } from './instructional-resource.service';
 import { InstructionalResource } from './model/instructional-resource.model';
 import { MockDataService } from '../../../test/mock.data.service';
-import { of } from 'rxjs/observable/of';
-import { empty } from 'rxjs/observable/empty';
+import { of, empty } from 'rxjs';
 
 describe('Instructional Resource Service', () => {
   let dataService: MockDataService;
@@ -94,6 +93,7 @@ describe('Instructional Resource Service', () => {
       assessmentLabel: `asmt label ${id}`,
       assessmentName: `asmt name ${id}`,
       assessmentTypeCode: `asmt type ${id}`,
+      assessmentSubjectCode: `asmt subject ${id}`,
       performanceLevel: id,
       resource: `resource ${id}`
     };
@@ -107,6 +107,7 @@ describe('Instructional Resource Service', () => {
     resource.assessmentLabel = `asmt label ${id}`;
     resource.assessmentName = `asmt name ${id}`;
     resource.assessmentType = `asmt type ${id}`;
+    resource.assessmentSubjectCode = `asmt subject ${id}`;
     resource.performanceLevel = id;
     resource.resource = `resource ${id}`;
     return resource;

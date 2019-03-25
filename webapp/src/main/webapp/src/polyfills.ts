@@ -45,6 +45,11 @@ import 'core-js/es6/reflect';
 // Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
 import 'core-js/es7/reflect';
 
+/** IE11 Object.values() support */
+import 'core-js/es7/object';
+
+/** IE11 Array.includes() support */
+import 'core-js/es7/array';
 
 /**
  * Required to support Web Animations `@angular/platform-browser/animations`.
@@ -60,10 +65,14 @@ import 'core-js/es7/reflect';
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
 
-
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+/**
+  Required for auth0 compatibility
+  See: https://github.com/angular/angular-cli/issues/8160
+ **/
+(window as any).global = window;
 
 /**
  * Date, currency, decimal and percent pipes.
@@ -78,6 +87,3 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * RDW Custom additions
  */
-
-/** IE11 Object.values() support */
-import 'core-js/es7/object';

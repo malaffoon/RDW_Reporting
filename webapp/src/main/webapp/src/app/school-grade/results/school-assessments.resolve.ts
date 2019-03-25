@@ -1,10 +1,9 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
-import { SchoolAssessmentService } from "./school-assessment.service";
-import { AssessmentExam } from "../../assessments/model/assessment-exam.model";
-import { Utils } from "../../shared/support/support";
-import { empty } from 'rxjs/observable/empty';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable, empty } from 'rxjs';
+import { SchoolAssessmentService } from './school-assessment.service';
+import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
+import { Utils } from '../../shared/support/support';
 
 @Injectable()
 export class SchoolAssessmentResolve implements Resolve<AssessmentExam> {
@@ -14,7 +13,8 @@ export class SchoolAssessmentResolve implements Resolve<AssessmentExam> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<AssessmentExam> {
     const { schoolId, gradeId, schoolYear } = route.params;
-    if (Utils.isNullOrUndefined(schoolId)
+    if (Utils.isNullOrUndefined(schoolYear)
+      || Utils.isNullOrUndefined(schoolId)
       || Utils.isNullOrUndefined(gradeId)) {
       return empty();
     }

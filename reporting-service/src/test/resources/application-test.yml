@@ -8,10 +8,17 @@ reporting:
   state:
     code: CA
     name: California
+  student-fields:
+    economicDisadvantage: disabled
+    ethnicity: admin
+    gender: enabled
 
 app:
   test-mode: true
 
 spring:
   datasource:
+    url-schema: reporting_test
+
+  writable_datasource:
     url-schema: reporting_test

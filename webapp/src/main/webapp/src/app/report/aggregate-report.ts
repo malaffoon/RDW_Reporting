@@ -1,17 +1,33 @@
 /**
  * Represents server aggregate report model interface
  */
+import { TargetReportingLevel } from "../assessments/model/aggregate-target-score-row.model";
+
 export interface AggregateReportRow {
 
-  // Present on Basic query
-  readonly dimension?: AggregateReportRowDimension;
-
-  // Present on FilteredSubgroup query
-  readonly subgroupKey?: string;
-
-  readonly organization: any;
+  readonly dimension: AggregateReportRowDimension;
+  readonly organization: ServerOrganization;
   readonly assessment: AggregateReportRowAssessment;
   readonly measures: AggregateReportRowMeasure;
+
+  /**
+   * These measures are present on longitudinal reports only
+   */
+  readonly cohortMeasures?: AggregateReportRowMeasure;
+
+  /**
+   * These properties are present on target reports only
+   */
+  readonly targetNaturalId?: string;
+  readonly studentRelativeResidualScoresLevel?: TargetReportingLevel;
+  readonly standardMetRelativeResidualLevel?: TargetReportingLevel;
+}
+
+export interface ServerOrganization {
+  readonly id: number;
+  readonly naturalId: string;
+  readonly name: string;
+  readonly organizationType: string;
 }
 
 export interface AggregateReportRowDimension {
@@ -34,4 +50,5 @@ export interface AggregateReportRowMeasure {
   readonly level2Count: number;
   readonly level3Count: number;
   readonly level4Count: number;
+  readonly studentCount: number;
 }

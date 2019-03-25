@@ -1,0 +1,79 @@
+<fieldset>
+  <div class="fields">
+    <ng-container *ngFor="let field of fields">
+      <div
+        *ngIf="field.control as control"
+        class="form-group {{ field.name }}"
+        [hidden]="field.hidden"
+        [ngClass]="{
+          'has-error': control.invalid && (control.dirty || control.touched)
+        }"
+      >
+        <label for="{{ field.name }}">
+          <ng-container *ngIf="field.info; else label">
+            <span
+              info-button
+              title="{{ field.info.title }}"
+              content="{{ field.info.content }}"
+            ></span>
+          </ng-container>
+          <ng-template #label>
+            {{ field.label }}
+          </ng-template>
+        </label>
+
+        <ng-container *ngIf="field.readonly; else writable">
+          <div>{{ field.readonlyValue }}</div>
+        </ng-container>
+        <ng-template #writable>
+          <ng-container [ngSwitch]="field.type">
+            <input
+              *ngSwitchCase="'input'"
+              class="form-control input-sm"
+              id="{{ field.name }}"
+              name="{{ field.name }}"
+              placeholder="{{ field.placeholder }}"
+              [formControl]="control"
+            />
+
+            <sb-radio-group
+              *ngSwitchCase="'toggle'"
+              id="{{ field.name }}"
+              name="{{ field.name }}"
+              [options]="field.options"
+              [formControl]="control"
+            ></sb-radio-group>
+
+            <select
+              *ngSwitchCase="'select'"
+              class="form-control input-sm"
+              id="{{ field.name }}"
+              name="{{ field.name }}"
+              [formControl]="control"
+            >
+              <option
+                *ngFor="let option of field.options"
+                [ngValue]="option.value"
+              >
+                {{ option.text }}
+              </option>
+            </select>
+          </ng-container>
+
+          <ng-container
+            *ngIf="control.invalid && (control.dirty || control.touched)"
+          >
+            <p aria-live="polite" class="help-block small red">
+              <ng-container *ngIf="control.errors.required">
+                {{ 'common.form-field-message.required' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.errors.fileName">
+                {{ control.errors.fileName.messageId | translate }}
+              </ng-container>
+            </p>
+          </ng-container>
+        </ng-template>
+      </div>
+    </ng-container>
+  </div>
+</fieldset>

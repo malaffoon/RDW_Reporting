@@ -4,12 +4,12 @@ dependencies {
     compile project(':rdw-reporting-common')
     compile project(':rdw-reporting-common-web')
     compile 'org.opentestsystem.rdw.common:rdw-common-archive'
+    compile 'org.opentestsystem.rdw.common:rdw-common-group'
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
     compile 'org.opentestsystem.rdw.common:rdw-common-messaging'
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
-    optional 'org.springframework.boot:spring-boot-configuration-processor'
     runtime 'org.springframework.boot:spring-boot-devtools'
     compile 'org.springframework.boot:spring-boot-starter-aop'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'

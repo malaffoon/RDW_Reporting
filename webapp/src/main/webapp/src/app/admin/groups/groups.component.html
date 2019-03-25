@@ -30,7 +30,7 @@
       <div class="row">
         <!-- School Select -->
         <div class="col-md-6">
-          <label>{{'common.school-typeahead-label' | translate}}</label>
+          <label for="select-school">{{'common.school-typeahead-label' | translate}}</label>
           <p-dropdown id="select-school"
                       [options]="schoolDropdownOptions"
                       [(ngModel)]="query.school"
@@ -69,7 +69,7 @@
                   class="form-control"
                   (change)="updateRoute()">
             <option *ngFor="let subject of filterOptions.subjects"
-                    [ngValue]="subject">{{'common.subject.' + subject + '.short-name' | translate}}
+                    [ngValue]="subject">{{(subject != null ? 'subject.' + subject + '.name' : 'common.collection-selection.all') | translate}}
             </option>
           </select>
         </div>
@@ -132,11 +132,12 @@
                 </div>
 
                 <div *ngSwitchCase="'subjects'">
-                  {{ 'common.subject.' + (group.subject || 'ALL') + '.name' | translate }}
+                  {{ (group.subject ? 'subject.' + group.subject + '.name' : 'common.collection-selection.all') | translate }}
                 </div>
 
                 <div *ngSwitchCase="'deleted'">
-                  <a href="javascript:void(0)" (click)="openDeleteGroupModal(group)">
+                  <a href="javascript:void(0)" (click)="openDeleteGroupModal(group)"
+                     title="{{ 'admin-groups.columns.delete-title' | translate: { groupName: group.name } }}">
                     <i class="fa fa-minus-square-o"></i> {{ 'admin-groups.columns.delete' | translate }}
                   </a>
                 </div>

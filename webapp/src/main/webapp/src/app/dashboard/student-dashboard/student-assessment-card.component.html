@@ -1,0 +1,43 @@
+<a class="card assessment-aggregate"
+   href="javascript:void(0)"
+   [ngClass]="{selected: latestExam.selected}"
+   (click)="selectCard()">
+
+  <div class="check">
+    <i class="fa fa-check"></i>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-4"
+         [hidden]="!hasIcon">
+      <div class="icon-wrapper">
+        <assessment-icon [assessment]="latestExam.assessment"
+                         (missingIcon)="hasIcon = !$event"></assessment-icon>
+      </div>
+    </div>
+    <div [ngClass]="hasIcon ? 'col-xs-8' : 'col-xs-12'">
+      <div class="label"
+           [ngClass]="getGradeColor()">
+        {{'common.assessment-grade-short-label.' + latestExam.assessment.grade | translate}}
+      </div>
+      <div class="title">
+        {{latestExam.assessment.label}}
+      </div>
+    </div>
+  </div>
+  <div class="date mt-sm">
+    {{latestExam.exam.date | date}}
+  </div>
+  <div *ngIf="level > 0"
+       class="distribution mt-sm"
+       [ngClass]="'subject.' + latestExam.assessment.subject + '.asmt-type.' + latestExam.assessment.type + '.level.' + level + '.color' | translate">
+    {{'subject.' + latestExam.assessment.subject + '.asmt-type.'+ latestExam.assessment.type + '.level.' + level + '.name' | translate}}
+  </div>
+  <div *ngIf="!level"
+       class="distribution mt-sm gray-light">
+    {{'common.unscored' | translate}}
+  </div>
+  <div class="result-count center-block mt-sm">
+    {{(resultCount == 1 ? 'student-assessment-card.result' : 'student-assessment-card.results') | translate:{resultCount: resultCount} }}
+  </div>
+</a>

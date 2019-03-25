@@ -9,7 +9,7 @@ import { CachingDataService } from "../../../shared/data/caching-data.service";
 import { DataService } from "../../../shared/data/data.service";
 import { AssessmentItem } from "../../model/assessment-item.model";
 import { Component } from "@angular/core";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('ItemExemplarComponent', () => {
   let component: ItemExemplarComponent;
@@ -47,6 +47,7 @@ describe('ItemExemplarComponent', () => {
   });
 
   it('should display not found when item scoring guide is empty', () => {
+    mockItemScoringGuide.itemScoringGuide.answerKeyValue = undefined;
     component.ngOnInit();
     expect(component.notFound).toBeTruthy();
     expect(component.errorLoading).toBeFalsy();

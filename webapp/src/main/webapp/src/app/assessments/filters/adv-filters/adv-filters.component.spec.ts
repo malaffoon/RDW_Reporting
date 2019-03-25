@@ -9,7 +9,7 @@ import { CommonModule } from "../../../shared/common.module";
 import { ExamFilterOptions } from "../../model/exam-filter-options.model";
 import { Angulartics2, Angulartics2Module } from "angulartics2";
 import { PopoverModule } from "ngx-bootstrap";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 
 describe('AdvFiltersComponent', () => {
@@ -33,7 +33,7 @@ describe('AdvFiltersComponent', () => {
         HttpModule,
         FormsModule,
         CommonModule,
-        Angulartics2Module,
+        Angulartics2Module.forRoot(),
         PopoverModule.forRoot()
       ],
       providers: [
@@ -53,6 +53,16 @@ describe('AdvFiltersComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component.showTransferAccess).toBe(true);
+  });
+
+  it('getLanguagesMap() should return an empty array', () => {
+    expect(component.getLanguagesMap().length).toBe(0);
+  });
+
+  it('should map added languages',() => {
+    component.filterOptions.languages = ['eng', 'ben'];
+    expect(component.getLanguagesMap()).toEqual([{text: 'common.languages.eng', value: 'eng'},
+      {text: 'common.languages.ben', value: 'ben'}]);
   });
 
 });

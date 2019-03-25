@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { DataService } from "../shared/data/data.service";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Organization, OrganizationType } from "../shared/organization/organization";
 import { OrganizationMapper } from "../shared/organization/organization.mapper";
 import { map } from 'rxjs/operators';

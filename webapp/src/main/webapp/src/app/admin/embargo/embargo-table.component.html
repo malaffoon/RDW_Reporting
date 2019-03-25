@@ -12,7 +12,7 @@
 
         <div *ngSwitchCase="'subject'"
               class="text-right">
-          {{'common.subject.' + column.code + '.short-name' | translate}}
+          {{'subject.' + column.code + '.name' | translate}}
         </div>
 
         <div *ngSwitchDefault
@@ -36,7 +36,7 @@
 
         <div *ngSwitchCase="'subject'"
              class="text-right">
-          {{embargo.examCountsBySubject[column.code] | number}}
+          {{getExamCount(embargo, column.code) | number}}
         </div>
 
         <div *ngSwitchCase="'individualEnabled'"

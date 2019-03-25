@@ -17,7 +17,6 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
-    optional 'org.springframework.boot:spring-boot-configuration-processor'
     compile 'org.springframework.boot:spring-boot-starter-aop'
     compile 'org.springframework.boot:spring-boot-starter-cache'
     compile 'org.springframework.boot:spring-boot-starter-security'
@@ -37,4 +36,14 @@ dependencies {
     testCompile 'org.springframework.cloud:spring-cloud-stream-test-support'
     testCompile 'org.springframework.security:spring-security-test'
     testCompile 'com.opencsv:opencsv:4.0'
+}
+
+//This will allow for running of the multithreaded test application
+task runMTTest(type: JavaExec) {
+    group = 'Verification'
+    description = 'Runs MultiThreadedApplicationTest'
+    outputs.upToDateWhen { false }
+    doFirst { println "Running multithreaded tests..." }
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'org.opentestsystem.rdw.reporting.processor.multithreaded.MultiThreadedApplicationTest'
 }

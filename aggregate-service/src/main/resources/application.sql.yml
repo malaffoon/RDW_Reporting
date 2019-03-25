@@ -4,11 +4,34 @@ sql:
     findAll: >-
       SELECT id, code FROM administration_condition ORDER BY id
 
+  assessment:
+    findAll: >-
+      SELECT a.id,
+        a.name,
+        a.label,
+        at.code as type_code,
+        s.code as subject_code,
+        g.code as grade_code,
+        g.sequence as grade_sequence,
+        a.school_year,
+        a.min_score,
+        a.cut_point_1,
+        a.cut_point_2,
+        a.cut_point_3,
+        a.cut_point_4,
+        a.cut_point_5,
+        a.max_score
+      FROM asmt a
+        JOIN asmt_type at on at.id = a.type_id
+        JOIN subject s on s.id = a.subject_id
+        JOIN grade g on g.id =  a.grade_id
+
   assessmentGrade:
     findAll: >-
       SELECT DISTINCT
         g.id,
-        g.code
+        g.code,
+        g.sequence
       FROM asmt a
         JOIN grade g ON g.id = a.grade_id
       ORDER BY id
@@ -17,6 +40,21 @@ sql:
     findAll: >-
       SELECT id, code FROM asmt_type ORDER BY id
 
+  claim:
+    aggregate:
+      findAll: >-
+        SELECT ss.id, ss.code, s.code as subject_code, at.code as asmt_type_code
+          FROM subject_score ss
+            JOIN subject s ON ss.subject_id = s.id
+            JOIN asmt_type at ON at.id = ss.asmt_type_id
+          WHERE ss.score_type_id = 3
+
+  target:
+    findAll: >-
+      SELECT t.id, t.natural_id, t.claim_code, at.asmt_id, at.include_in_report
+        FROM asmt_target at
+          JOIN target t ON at.target_id =  t.id
+
   completeness:
     findAll: >-
       SELECT id, code FROM completeness ORDER BY id
@@ -24,6 +62,14 @@ sql:
   elas:
     findAll: >-
       SELECT id, code FROM elas ORDER BY id
+
+  language:
+    findAll: >-
+      SELECT id, code FROM language ORDER BY id
+
+  militaryConnectedCode:
+    findAll: >-
+      SELECT id, code FROM military_connected ORDER BY id
 
   gender:
     findAll: >-
@@ -76,10 +122,15 @@ sql:
 
   subject:
     findAll: >-
-      SELECT id,
-        code
-      FROM subject
-      ORDER BY id
+      SELECT
+        s.id,
+        s.code,
+        sat.target_report,
+        at.code as asmt_type_code
+      FROM subject s
+        JOIN subject_asmt_type sat ON s.id = sat.subject_id
+        JOIN asmt_type at ON at.id = sat.asmt_type_id
+      ORDER BY s.id
 
   activeAsmt:
     findAllByType: >-

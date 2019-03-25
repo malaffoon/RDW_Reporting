@@ -6,11 +6,12 @@ import { AggregateReportItem } from './aggregate-report-item';
 import { DefaultSchool } from '../../shared/organization/organization';
 import { ValueDisplayTypes } from '../../shared/display-options/value-display-type';
 import { PerformanceLevelDisplayTypes } from '../../shared/display-options/performance-level-display-type';
+import { Subgroup } from '../subgroup/subgroup';
 import Spy = jasmine.Spy;
 import CallInfo = jasmine.CallInfo;
 
 describe('AggregateReportTableExportService', () => {
-  let itemIdx: number = 1;
+  let itemIdx = 1;
   let service: AggregateReportTableExportService;
   let csvBuilder: CsvBuilder;
   let translateService: TranslateService;
@@ -21,18 +22,18 @@ describe('AggregateReportTableExportService', () => {
       valueDisplayType: ValueDisplayTypes.Percent,
       performanceLevelDisplayType: PerformanceLevelDisplayTypes.Separate,
       columnOrdering: [ 'organization', 'assessmentGrade', 'schoolYear', 'dimension' ],
-      assessmentDefinition: {
-        typeCode: 'ica',
-        interim: true,
+      subjectDefinition: {
+        assessmentType: 'ica',
         performanceLevels: [ 1, 2, 3, 4 ],
         performanceLevelCount: 4,
-        performanceLevelDisplayTypes: [],
-        performanceLevelGroupingCutPoint: 3,
-        aggregateReportIdentityColumns: [ 'columnA' ],
-        aggregateReportStateResultsEnabled: false,
-        aggregateReportLongitudinalCohortEnabled: false
+        performanceLevelStandardCutoff: 3,
+        subject: 'Math',
+        scorableClaims: ['claim1', 'claim2', 'claim3'],
+        scorableClaimPerformanceLevelCount: 3,
+        scorableClaimPerformanceLevels: [1, 2, 3]
       },
-      name: 'my_export'
+      name: 'my_export',
+      reportType: 'CustomAggregate'
     };
 
     csvBuilder = jasmine.createSpyObj(
@@ -124,10 +125,10 @@ describe('AggregateReportTableExportService', () => {
       'aggregate-report-table.columns.dimension',
       'aggregate-report-table.columns.students-tested',
       'aggregate-report-table.columns.avg-scale-score',
-      'common.assessment-type.ica.performance-level.1.name-prefix aggregate-report-table.columns.performance-level-suffix',
-      'common.assessment-type.ica.performance-level.2.name-prefix aggregate-report-table.columns.performance-level-suffix',
-      'common.assessment-type.ica.performance-level.3.name-prefix aggregate-report-table.columns.performance-level-suffix',
-      'common.assessment-type.ica.performance-level.4.name-prefix aggregate-report-table.columns.performance-level-suffix'
+      'subject.Math.asmt-type.ica.level.1.short-name subject.Math.asmt-type.ica.level.1.suffix',
+      'subject.Math.asmt-type.ica.level.2.short-name subject.Math.asmt-type.ica.level.2.suffix',
+      'subject.Math.asmt-type.ica.level.3.short-name subject.Math.asmt-type.ica.level.3.suffix',
+      'subject.Math.asmt-type.ica.level.4.short-name subject.Math.asmt-type.ica.level.4.suffix'
     ]);
   });
 
@@ -146,8 +147,8 @@ describe('AggregateReportTableExportService', () => {
       'aggregate-report-table.columns.dimension',
       'aggregate-report-table.columns.students-tested',
       'aggregate-report-table.columns.avg-scale-score',
-      'aggregate-report-table.columns.grouped-performance-level-prefix.0 aggregate-report-table.columns.performance-level-suffix',
-      'aggregate-report-table.columns.grouped-performance-level-prefix.1 aggregate-report-table.columns.performance-level-suffix'
+      'aggregate-report-table.columns.grouped-performance-level-prefix.0',
+      'aggregate-report-table.columns.grouped-performance-level-prefix.1'
     ]);
 
   });
@@ -179,11 +180,20 @@ describe('AggregateReportTableExportService', () => {
     org.naturalId = 'school_a';
     item.organization = org;
 
-    item.dimension = <any>{
+    item.subgroup = <Subgroup>{
       id: 'Gender:Male',
-      type: 'Gender',
-      code: 'Male',
-      name: 'Gender: Male'
+      name: 'Gender: Male',
+      dimensionGroups: [
+        {
+          type: 'Gender',
+          values: [
+            {
+              code: 'Male',
+              translationCode: ''
+            }
+          ]
+        }
+      ]
     };
 
     return item;

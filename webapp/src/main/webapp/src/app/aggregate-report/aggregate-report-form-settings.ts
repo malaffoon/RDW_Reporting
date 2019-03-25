@@ -1,7 +1,7 @@
-import { District, School } from "../shared/organization/organization";
-import {SubgroupFilters} from "./subgroup-filters";
-import { AggregateReportType } from './aggregate-report-type';
-import { AggregateReportQueryType } from './aggregate-report-query-type';
+import { District, School } from '../shared/organization/organization';
+import { SubgroupFilters } from './subgroup/subgroup-filters';
+import {Claim, Subject} from './aggregate-report-options.service';
+import { ReportQueryType } from '../report/report';
 
 /**
  * Client side representation of a report request.
@@ -35,9 +35,14 @@ export interface AggregateReportFormSettings {
   performanceLevelDisplayType: string;
 
   /**
+   * Whether or not to show empty results or not
+   */
+  showEmpty: boolean;
+
+  /**
    * Subject result filter
    */
-  subjects: string[];
+  subjects: Subject[];
 
   /**
    * Summative administration conditions result filter
@@ -97,7 +102,7 @@ export interface AggregateReportFormSettings {
   /**
    * Defines the report type (standard or longitudinal)
    */
-  reportType: 'GeneralPopulation' | 'LongitudinalCohort';
+  reportType: ReportQueryType;
 
   /**
    * The advanced filters applied to basic reports
@@ -127,6 +132,28 @@ export interface AggregateReportFormSettings {
   };
 
   /**
+   * Claim report assessment settings
+   */
+  claimReport: {
+
+    /**
+     * Assessment grades to be covered on the report
+     */
+    assessmentGrades: string[];
+
+    /**
+     * The school years to be covered on the report
+     */
+    schoolYears: number[];
+
+    /**
+     * The claim codes
+     */
+    claimCodesBySubject: Claim[];
+
+  };
+
+  /**
    * Longitudinal report settings
    */
   longitudinalCohort: {
@@ -143,4 +170,25 @@ export interface AggregateReportFormSettings {
 
   };
 
+  /**
+   * Target report settings
+   */
+  targetReport: {
+
+    /**
+     * The school year for the report's assessment
+     */
+    schoolYear: number;
+
+    /**
+     * The subject code for the report's assessment
+     */
+    subjectCode: string;
+
+    /**
+     * The assessment grade for the report's assessment
+     */
+    assessmentGrade: string;
+  }
 }
+

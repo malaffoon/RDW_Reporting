@@ -5,7 +5,7 @@ import { User } from "../../user/user";
 import { inject, TestBed } from "@angular/core/testing";
 import { CachingDataService } from "../data/caching-data.service";
 import { UserService } from "../../user/user.service";
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('ReportingEmbargoService', () => {
   let service: ReportingEmbargoService;

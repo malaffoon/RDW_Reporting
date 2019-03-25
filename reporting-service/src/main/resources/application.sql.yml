@@ -8,13 +8,63 @@ sql:
           AND ${sql.snippet.basicPermission}
         LIMIT 1) AS embargo_enabled
 
+  student:
+    # It finds all students with one of the following: school id, or groups id or student ids, and uses a student's latest exam to complete
+    # the students' demographic data. Note: there is no embargo or transfer student logic here because it is about students, not exams.
+    findAll:
+      SELECT
+        st.id,
+        st.ssid,
+        st.first_name,
+        st.last_or_surname,
+        st.gender_code,
+        e.iep,
+        e.lep,
+        e.language_code,
+        e.military_connected_code,
+        e.elas_code,
+        e.section504,
+        e.migrant_status
+      FROM student st
+        JOIN school sc ON st.inferred_school_id = sc.id
+        JOIN exam e ON st.id = e.student_id
+        LEFT OUTER JOIN exam e2 ON e.student_id = e2.student_id AND (e.completed_at < e2.completed_at OR (e.completed_at = e2.completed_at AND e.id < e2.id))
+      WHERE
+        e2.student_id IS NULL
+        AND
+        ( :group_id IS NULL
+          OR EXISTS(
+              SELECT 1
+              FROM student_group_membership sgm
+                JOIN student_group sg ON sg.id = sgm.student_group_id
+              WHERE sgm.student_id = st.id AND sg.id = :group_id
+          )
+        )
+        AND (:school_id IS NULL OR sc.id = :school_id)
+        AND (:search_student_ids IS FALSE OR st.id IN (:student_ids))
+        AND
+        (
+         (1 = :individual_statewide OR sc.district_group_id IN (:individual_district_group_ids) OR sc.district_id IN (:individual_district_ids) OR sc.school_group_id IN (:individual_school_group_ids) OR sc.id IN (:individual_school_ids))
+         OR
+         (
+           EXISTS(
+               SELECT 1
+               FROM student_group_membership gm
+                 JOIN student_group sg ON sg.id = gm.student_group_id
+                 JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
+               WHERE gm.student_id = st.id AND usg.user_login = :user_login
+           )
+           AND
+           (
+             (1 = :group_statewide OR sc.district_group_id IN (:group_district_group_ids) OR sc.district_id IN (:group_district_ids) OR sc.school_group_id IN (:group_school_group_ids) OR sc.id IN (:group_school_ids))
+           )
+         )
+        )
+      ORDER BY st.last_or_surname, st.first_name, st.ssid;
+
   exam:
     findAllByStudentId: >-
       SELECT
-        e.iep,
-        e.lep,
-        e.section504,
-        e.migrant_status,
         ${sql.snippet.claimColumns},
         ${sql.snippet.exam}
       WHERE e.student_id = :student_id
@@ -49,62 +99,77 @@ sql:
             ${sql.reporting.snippet.assessmentColumns}
           FROM asmt a
             JOIN exam e ON e.asmt_id = a.id
-            JOIN student_group_membership sgm ON e.student_id = sgm.student_id
-            JOIN student_group sg ON sg.id = sgm.student_group_id
-            JOIN user_student_group usg ON usg.student_group_id = sg.id
             JOIN school s ON e.school_id = s.id
+            JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
+            $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
             AND a.id = e.asmt_id
-            AND sg.id = :group_id
-            AND usg.user_login = :user_login
-            AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+            AND $[groupFilterPlaceholder]
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
+      # NOTE that we're grouping by a.id and selecting the max(e.completed_at) timestamp
+      # to improve final ordering performance
       findLatestExam: >-
           SELECT
-           ${sql.reporting.snippet.assessmentColumns}
+            ${sql.reporting.snippet.assessmentColumns},
+            max(e.completed_at) as max_completed
           FROM exam e
             JOIN asmt a ON e.asmt_id=a.id
-            JOIN student_group_membership sgm ON e.student_id=sgm.student_id
-            JOIN student_group sg ON sg.id = sgm.student_group_id
-            JOIN user_student_group usg ON usg.student_group_id = sg.id
             JOIN school s ON e.school_id=s.id
+            JOIN subject su ON a.subject_id = su.id
             JOIN student st ON e.student_id = st.id
             JOIN school isch ON st.inferred_school_id = isch.id
+            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
+            $[groupJoinPlaceholder]
           WHERE e.school_year = :school_year
-            AND sgm.student_group_id = :group_id
-            AND usg.user_login = :user_login
-            AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+            AND $[groupFilterPlaceholder]
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
-          ORDER BY e.completed_at desc
+          GROUP BY a.id
+          ORDER BY max_completed desc
           LIMIT 1
+
     exam:
       findAllForAssessment: >-
         SELECT
-          e.iep,
-          e.lep,
-          e.section504,
-          e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
-        JOIN student_group_membership sgm ON e.student_id=sgm.student_id
-        JOIN student_group sg ON sg.id = sgm.student_group_id
-        JOIN user_student_group usg ON usg.student_group_id = sg.id
+          $[groupJoinPlaceholder]
         WHERE a.id = :assessment_id
           AND e.school_year = :school_year
-          AND sg.id = :group_id
-          AND usg.user_login = :user_login
-          AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+          AND $[groupFilterPlaceholder]
           AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+
+    examWithTargetScore:
+      findAllForAssessment: >-
+        SELECT
+         ${sql.snippet.examColumns},
+          st.gender_code as student_gender_code,
+          ets.target_id,
+          ets.standard_met_relative_residual_score,
+          ets.student_relative_residual_score
+        FROM exam e
+          JOIN student st on st.id = e.student_id
+          JOIN asmt a on e.asmt_id = a.id
+          JOIN school s on e.school_id = s.id
+          JOIN school isch on st.inferred_school_id = isch.id
+          JOIN exam_target_score ets on ets.exam_id = e.id
+          JOIN target t on t.id = ets.target_id
+          $[groupJoinPlaceholder]
+         WHERE a.id = :assessment_id
+            AND e.school_year = :school_year
+            AND $[groupFilterPlaceholder]
+            AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
     measuredAssessment:
       findAll: >-
         SELECT
           count(*) as tested,
+          a.name as asmt_name,
           a.label as asmt_label,
-          a.subject_id as asmt_subject_id,
+          su.code as asmt_subject_code,
           a.type_id as asmt_type_id,
           a.school_year as asmt_school_year,
           g.code as asmt_grade_code,
@@ -119,6 +184,7 @@ sql:
           JOIN asmt a ON a.id = e.asmt_id
           JOIN grade g ON g.id = a.grade_id
           JOIN school s ON e.school_id=s.id
+          JOIN subject su ON a.subject_id=su.id
           JOIN student st ON st.id=e.student_id
           JOIN school isch ON st.inferred_school_id = isch.id
         WHERE e.id in (
@@ -126,53 +192,54 @@ sql:
           SELECT
             e1.id
           FROM (
-                 SELECT ex1.id, ex1.student_id, ex1.asmt_id, ex1.school_year, ex1.completed_at from exam ex1
-                   JOIN student_group_membership gm on gm.student_id = ex1.student_id
-                   JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
-                 WHERE ex1.type_id = 2
-                       AND ex1.school_year = :school_year
-                       AND ex1.scale_score IS NOT NULL
-                       AND ex1.scale_score_std_err IS NOT NULL
-                       AND ex1.performance_level IS NOT NULL
-                       AND gm.student_group_id = :group_id
-                       AND usg.user_login = :user_login
+                 SELECT e.id, e.student_id, e.asmt_id, e.school_year, e.completed_at
+                 FROM exam e
+                   JOIN asmt a ON a.id = e.asmt_id
+                   JOIN student st ON st.id = e.student_id
+                   $[groupJoinPlaceholder]
+                 WHERE e.type_id = 2
+                       AND e.school_year = :school_year
+                       AND e.scale_score IS NOT NULL
+                       AND e.scale_score_std_err IS NOT NULL
+                       AND e.performance_level IS NOT NULL
+                       AND $[groupFilterPlaceholder]
                ) AS e1 LEFT OUTER JOIN
-            ( SELECT ex2.id, ex2.student_id, ex2.asmt_id, ex2.school_year, ex2.completed_at from exam ex2
-              JOIN student_group_membership gm on gm.student_id = ex2.student_id
-              JOIN user_student_group usg ON usg.student_group_id = gm.student_group_id
-            WHERE ex2.type_id = 2
-                  AND ex2.school_year = :school_year
-                  AND ex2.scale_score IS NOT NULL
-                  AND ex2.scale_score_std_err IS NOT NULL
-                  AND ex2.performance_level IS NOT NULL
-                  AND gm.student_group_id = :group_id
-                  AND usg.user_login = :user_login
+            ( SELECT e.id, e.student_id, e.asmt_id, e.school_year, e.completed_at
+              FROM exam e
+                JOIN asmt a ON a.id = e.asmt_id
+                JOIN student st ON st.id = e.student_id
+                $[groupJoinPlaceholder]
+            WHERE e.type_id = 2
+                  AND e.school_year = :school_year
+                  AND e.scale_score IS NOT NULL
+                  AND e.scale_score_std_err IS NOT NULL
+                  AND e.performance_level IS NOT NULL
+                  AND $[groupFilterPlaceholder]
             ) AS e2
               ON e1.student_id = e2.student_id  AND e1.asmt_id = e2.asmt_id AND e1.school_year = e2.school_year
                  AND ( e1.completed_at < e2.completed_at OR (e1.completed_at = e2.completed_at AND e1.id < e2.id))
           WHERE e2.student_id IS NULL
         )
         AND ${sql.snippet.studentExamPermissionWithoutEmbargo}
-        GROUP BY asmt_id;
+        GROUP BY e.asmt_id;
 
     examItem:
         findAllExamItemScoresForAssessment:
           ${sql.reporting.snippet.selectFromExamItem}
-            JOIN student_group_membership sgm ON e.student_id=sgm.student_id
-            JOIN student_group sg ON sg.id = sgm.student_group_id
-            JOIN user_student_group usg ON usg.student_group_id = sg.id
+          $[groupJoinPlaceholder]
           WHERE e.asmt_id = :assessment_id
             AND e.school_year = :school_year
-            AND sg.id = :group_id
-            AND usg.user_login = :user_login
-            AND (sg.subject_id is null OR a.subject_id = sg.subject_id)
+            AND $[groupFilterPlaceholder]
             AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   schoolgrade:
     assessment:
       findAll: >-
-        SELECT ${sql.reporting.snippet.assessmentColumns}
+        SELECT distinct
+          ${sql.reporting.snippet.assessmentColumns}
         FROM asmt a
+        JOIN subject su ON a.subject_id = su.id
+        JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
         WHERE EXISTS (
             SELECT e.asmt_id
             FROM exam e
@@ -186,28 +253,30 @@ sql:
         )
         AND a.grade_id = :grade_id
 
+      # NOTE that we're grouping by a.id and selecting the max(e.completed_at) timestamp
+      # to improve final ordering performance
       findLatestExam: >-
-        SELECT 
-          ${sql.reporting.snippet.assessmentColumns}
+        SELECT
+          ${sql.reporting.snippet.assessmentColumns},
+          max(e.completed_at) as max_completed
         FROM exam e
           JOIN asmt a ON e.asmt_id=a.id
           JOIN school s ON e.school_id=s.id
+          JOIN subject su ON a.subject_id = su.id
           JOIN student st ON e.student_id = st.id
           JOIN school isch ON st.inferred_school_id = isch.id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
         WHERE e.school_year = :school_year
         AND e.school_id = :school_id
         AND a.grade_id = :grade_id
         AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
-        ORDER BY e.completed_at desc
+        GROUP BY a.id
+        ORDER BY max_completed desc
         LIMIT 1
 
     exam:
       findAllForAssessment: >-
         SELECT
-          e.iep,
-          e.lep,
-          e.section504,
-          e.migrant_status,
           ${sql.snippet.claimColumns},
           ${sql.snippet.exam}
         WHERE a.id = :assessment_id
@@ -217,18 +286,18 @@ sql:
         AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
     examItem:
-        findAllExamItemScoresForAssessment:
-          ${sql.reporting.snippet.selectFromExamItem}
-          WHERE e.asmt_id = :assessment_id
-          AND e.school_year = :school_year
-          AND a.grade_id = :grade_id
-          AND (s.id = :school_id OR (1 = :allow_transfer_access AND isch.id = :school_id))
-          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+      findAllExamItemScoresForAssessment:
+        ${sql.reporting.snippet.selectFromExamItem}
+        WHERE e.asmt_id = :assessment_id
+        AND e.school_year = :school_year
+        AND a.grade_id = :grade_id
+        AND (s.id = :school_id OR (1 = :allow_transfer_access AND isch.id = :school_id))
+        AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   assessment:
     grade:
       findAllForSchool: >-
-        SELECT id, code
+        SELECT id, code, sequence
         FROM grade g WHERE EXISTS (
             SELECT a.grade_id
             FROM exam e
@@ -244,47 +313,55 @@ sql:
   reporting:
     snippet:
       assessmentColumns: >-
-          a.id,
-          a.label,
-          a.grade_code,
-          a.type_id,
-          a.subject_id,
-          a.school_year,
-          a.claim1_score_code,
-          a.claim2_score_code,
-          a.claim3_score_code,
-          a.claim4_score_code,
-          a.min_score,
-          a.max_score,
-          a.cut_point_1,
-          a.cut_point_2,
-          a.cut_point_3
+        a.id,
+        a.name,
+        a.label,
+        a.grade_code,
+        a.type_id,
+        a.school_year,
+        a.claim1_score_code,
+        a.claim2_score_code,
+        a.claim3_score_code,
+        a.claim4_score_code,
+        a.claim5_score_code,
+        a.claim6_score_code,
+        a.min_score,
+        a.max_score,
+        a.cut_point_1,
+        a.cut_point_2,
+        a.cut_point_3,
+        a.cut_point_4,
+        a.cut_point_5,
+        EXISTS(SELECT 1 FROM item i WHERE i.asmt_id = a.id AND i.type = 'WER') as has_wer_item,
+        su.code as subject_code,
+        sat.target_report
+
 
       selectFromExamItem: >-
-           SELECT
-              ei.id,
-              ei.exam_id,
-              ei.item_id,
-              ei.score,
-              ei.position,
-              ei.response,
-              ei.trait_evidence_elaboration_score,
-              ei.trait_organization_purpose_score,
-              ei.trait_conventions_score
-            FROM exam_item ei
-            JOIN exam e ON ei.exam_id=e.id
-            JOIN asmt a ON e.asmt_id=a.id
-            JOIN school s ON e.school_id=s.id
-            JOIN student st ON st.id=e.student_id
-            JOIN school isch ON st.inferred_school_id = isch.id
+       SELECT
+          ei.id,
+          ei.exam_id,
+          ei.item_id,
+          ei.score,
+          ei.position,
+          ei.response,
+          ei.trait_evidence_elaboration_score,
+          ei.trait_organization_purpose_score,
+          ei.trait_conventions_score
+        FROM exam_item ei
+        JOIN exam e ON ei.exam_id=e.id
+        JOIN asmt a ON e.asmt_id=a.id
+        JOIN school s ON e.school_id=s.id
+        JOIN student st ON st.id=e.student_id
+        JOIN school isch ON st.inferred_school_id = isch.id
             
       studentExamPermissionWithEmbargo: >-
-          ${sql.snippet.studentExamPermissionWithoutEmbargo}
-          AND
-          (
-             e.school_year < ${reporting.school-year}
-             OR e.type_id <> 3
-             OR s.embargo_enabled = 0
-             OR 1 = :state_embargo_admin
-             OR s.district_id IN (:district_embargo_admin_ids)
-          )
+        ${sql.snippet.studentExamPermissionWithoutEmbargo}
+        AND
+        (
+           e.school_year < ${reporting.school-year}
+           OR e.type_id <> 3
+           OR s.embargo_enabled = 0
+           OR 1 = :state_embargo_admin
+           OR s.district_id IN (:district_embargo_admin_ids)
+        )

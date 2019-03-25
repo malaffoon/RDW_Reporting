@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { StudentExamHistory } from "./model/student-exam-history.model";
 import { Student } from "./model/student.model";
 import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
@@ -59,7 +59,9 @@ export class StudentExamHistoryService {
   }
 
   private mapExamWrappers(serverExamWrappers: any): StudentHistoryExamWrapper[] {
-    return (serverExamWrappers || []).map(serverExamWrapper => this.mapExamWrapper(serverExamWrapper));
+    return (serverExamWrappers || [])
+      .sort((a, b) => new Date(a.exam.dateTime) > new Date(b.exam.dateTime) ? -1 : 1)
+      .map(serverExamWrapper => this.mapExamWrapper(serverExamWrapper));
   }
 
   private mapExamWrapper(serverExamWrapper: any): StudentHistoryExamWrapper {

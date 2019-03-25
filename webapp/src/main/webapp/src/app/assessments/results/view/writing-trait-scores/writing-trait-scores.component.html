@@ -2,6 +2,7 @@
 
 <ng-container *ngIf="!loading">
   <p-table #writingTraitTable
+           *ngIf="!assessment.isSummative"
            [columns]="writingTraitColumns"
            [value]="filteredItems"
            rowExpandMode="single"
@@ -51,7 +52,8 @@
                               [text]="item.position"></table-row-expander>
 
           <claim-target *ngSwitchCase="'claim'"
-                        [item]="item"></claim-target>
+                        [item]="item"
+                        [subject]="assessment.subject"></claim-target>
 
           <span *ngSwitchCase="'purpose'">
             {{ writingTraitType }}
@@ -85,7 +87,8 @@
                     [showResponse]="false"
                     [exams]="exams"
                     [includeWritingTraitScores]="true"
-                    [showItemDetails]="assessment.isInterim">
+                    [showItemDetails]="assessment.isInterim"
+                    [subject]="assessment.subject">
           </item-tab>
         </td>
       </tr>
@@ -102,7 +105,7 @@
   </p-table>
 
   <div *ngFor="let traitScoreSummary of traitScoreSummaries">
-    <h4 *ngIf="isWritingTraitItem" class="pt-md">{{'writing-trait-scores.aggregate-header' | translate }}</h4>
+    <h4 *ngIf="isWritingTraitItem && !isSummative" class="pt-md">{{'writing-trait-scores.aggregate-header' | translate }}</h4>
 
     <p-table *ngIf="isWritingTraitItem"
              [columns]="getColumnsForSummary(traitScoreSummary)"
@@ -137,13 +140,13 @@
                    let-item
                    let-i="rowIndex"
                    let-columns="columns">
-        <tr>
+        <tr *ngIf="!(isSummative && (item.trait.type == totalType))">
           <td *ngFor="let column of columns"
               [ngSwitch]="column.id">
 
             <div *ngSwitchCase="'category'">
               <span *ngIf="item.trait.type != totalType">{{'common.writing-trait.' + item.trait.type | translate}}</span>
-              <span *ngIf="item.trait.type == totalType"
+              <span *ngIf="(item.trait.type == totalType) && (!isSummative)"
                     info-button
                     title="{{'common.writing-trait.total' | translate}}"
                     content="{{'common.writing-trait.total-info' | translate}}"></span>

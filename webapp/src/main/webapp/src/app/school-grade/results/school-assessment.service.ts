@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { URLSearchParams } from "@angular/http";
 import { AssessmentExamMapper } from "../../assessments/assessment-exam.mapper";
 import { ExamFilterOptionsService } from "../../assessments/filters/exam-filters/exam-filter-options.service";
 import { AssessmentProvider } from "../../assessments/assessment-provider.interface";
@@ -9,11 +8,12 @@ import { DataService } from "../../shared/data/data.service";
 import { Utils } from "../../shared/support/support";
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { Assessment } from '../../assessments/model/assessment.model';
 import { Exam } from '../../assessments/model/exam.model';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
 import { ReportingServiceRoute } from '../../shared/service-route';
+import { TargetScoreExam } from '../../assessments/model/target-score-exam.model';
 
 const ServiceRoute = ReportingServiceRoute;
 
@@ -21,7 +21,6 @@ const ServiceRoute = ReportingServiceRoute;
 export class SchoolAssessmentService implements AssessmentProvider {
 
   schoolId: number;
-  schoolName: string;
   grade: Grade;
   schoolYear: number;
 
@@ -32,10 +31,9 @@ export class SchoolAssessmentService implements AssessmentProvider {
 
   getMostRecentAssessment(schoolId: number, gradeId: number, schoolYear?: number): Observable<AssessmentExam> {
     if (Utils.isNullOrUndefined(schoolYear)) {
-      return this.filterOptionService.getExamFilterOptions()
-        .pipe(
-          mergeMap(options => this.getRecentAssessmentBySchoolYear(schoolId, gradeId, options.schoolYears[ 0 ]))
-        );
+      return this.filterOptionService.getExamFilterOptions().pipe(
+        mergeMap(options => this.getRecentAssessmentBySchoolYear(schoolId, gradeId, options.schoolYears[ 0 ]))
+      );
     }
     return this.getRecentAssessmentBySchoolYear(schoolId, gradeId, schoolYear);
   }
@@ -74,6 +72,10 @@ export class SchoolAssessmentService implements AssessmentProvider {
     );
   }
 
+  getTargetScoreExams(assessmentId: number): Observable<TargetScoreExam[]> {
+    return of([]);
+  }
+
   private getRecentAssessmentBySchoolYear(schoolId: number, gradeId: number, schoolYear: number): Observable<AssessmentExam> {
     return this.dataService.get(`${ServiceRoute}/schools/${schoolId}/assessmentGrades/${gradeId}/latestassessment`, {
       search: this.getSchoolYearParams(schoolYear)
@@ -88,10 +90,10 @@ export class SchoolAssessmentService implements AssessmentProvider {
     );
   }
 
-  private getSchoolYearParams(schoolYear: number): URLSearchParams {
-    const params: URLSearchParams = new URLSearchParams();
-    params.set('schoolYear', schoolYear.toString());
-    return params;
+  private getSchoolYearParams(schoolYear: number): any {
+    return {
+      schoolYear: schoolYear
+    };
   }
 
 }

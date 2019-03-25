@@ -1,10 +1,10 @@
 import { AggregateReportOptions } from './aggregate-report-options';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
 import { ValueDisplayTypes } from '../shared/display-options/value-display-type';
-import { of } from 'rxjs/observable/of';
+import { of ,  Observable } from 'rxjs';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
+import { AssessmentDefinition } from './assessment/assessment-definition';
 import Spy = jasmine.Spy;
-import { Observable } from 'rxjs/Observable';
 
 describe('AggregateReportOptionsMapper', () => {
 
@@ -28,7 +28,7 @@ describe('AggregateReportOptionsMapper', () => {
       'createOptionMapper'
     ]);
     assessmentDefinitionService = jasmine.createSpyObj('AssessmentDefinitionService', [
-      'getDefinitionsByAssessmentTypeCode'
+      'get'
     ]);
     applicationSettingService = new MockApplicationSettingsService();
     fixture = new AggregateReportOptionsMapper(
@@ -44,17 +44,18 @@ describe('AggregateReportOptionsMapper', () => {
 
     const reportName = 'Report Name';
     (translateService.instant as Spy).and.callFake(() => reportName);
-    (assessmentDefinitionService.getDefinitionsByAssessmentTypeCode as Spy).and.callFake(() => of(
-      new Map([ [ '1', {
-        typeCode: '1',
+    (assessmentDefinitionService.get as Spy).and.callFake(() => <AssessmentDefinition>{
+        typeCode: 'iab',
         interim: true,
         performanceLevels: [],
         performanceLevelCount: 0,
         performanceLevelDisplayTypes: [ 'displayTypeA' ],
         performanceLevelGroupingCutPoint: 0,
-        aggregateReportIdentityColumns: [ 'columnA' ]
-      } ] ])
-    ));
+        aggregateReportIdentityColumns: [ 'columnA' ],
+        aggregateReportStateResultsEnabled: true,
+        aggregateReportTypes: [ 'Longitudinal', 'Claim' ]
+      }
+    );
 
     const options: AggregateReportOptions = {
       assessmentGrades: [ '1', '2' ],
@@ -65,7 +66,17 @@ describe('AggregateReportOptionsMapper', () => {
       queryTypes: [ 'queryTypeA', 'queryTypeB' ],
       schoolYears: [ 1, 2 ],
       statewideReporter: false,
-      subjects: [ '1', '2' ],
+      subjects: [
+        {
+          code: '1',
+          assessmentType: '1',
+          targetReport: true
+        }, {
+          code: '2',
+          assessmentType: '2',
+          targetReport: true
+        }
+      ],
       summativeAdministrationConditions: [ '1', '2' ],
       studentFilters: {
         economicDisadvantages: [ '1', '2' ],
@@ -75,9 +86,12 @@ describe('AggregateReportOptionsMapper', () => {
         individualEducationPlans: [ '1', '2' ],
         limitedEnglishProficiencies: [ '1', '2' ],
         migrantStatuses: [ '1', '2' ],
-        section504s: [ '1', '2' ]
+        section504s: [ '1', '2' ],
+        languages: ['1', '2'],
+        militaryConnectedCodes: ['1', '2']
       },
-      reportTypes: [ '1', '2' ]
+      reportTypes: [ 'CustomAggregate', 'Longitudinal' ],
+      claims: []
     };
     fixture.toDefaultSettings(options).subscribe(settings => {
       expect(settings).toEqual(<AggregateReportFormSettings>{
@@ -95,6 +109,7 @@ describe('AggregateReportOptionsMapper', () => {
         queryType: options.queryTypes[ 0 ],
         reportType: options.reportTypes[ 0 ],
         schools: [],
+        showEmpty: true,
         subjects: options.subjects,
         subgroups: [],
         valueDisplayType: ValueDisplayTypes.Percent,
@@ -107,16 +122,28 @@ describe('AggregateReportOptionsMapper', () => {
           individualEducationPlans: options.studentFilters.individualEducationPlans,
           limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies,
           migrantStatuses: options.studentFilters.migrantStatuses,
-          section504s: options.studentFilters.section504s
+          section504s: options.studentFilters.section504s,
+          languages: options.studentFilters.languages,
+          militaryConnectedCodes: options.studentFilters.militaryConnectedCodes
         },
         generalPopulation: {
           assessmentGrades: [],
           schoolYears: [ options.schoolYears[ 0 ] ]
         },
+        claimReport: {
+          assessmentGrades: [],
+          schoolYears: [ options.schoolYears[ 0 ] ],
+          claimCodesBySubject: []
+        },
         longitudinalCohort: {
           assessmentGrades: [],
           toSchoolYear: options.schoolYears[ 0 ]
-        }
+        },
+        targetReport: {
+          assessmentGrade: options.assessmentGrades[ 0 ],
+          schoolYear: options.schoolYears[ 0 ],
+          subjectCode: options.subjects[ 0 ].code
+        },
       });
     });
 

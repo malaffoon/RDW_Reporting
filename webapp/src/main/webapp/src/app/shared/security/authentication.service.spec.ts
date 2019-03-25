@@ -13,19 +13,19 @@ import { Location } from "@angular/common";
 import { WindowRefService } from "../core/window-ref.service";
 import { SBStorage, StorageService, StorageType } from "../core/storage.service";
 
-let mockWindow = {
-  location: {
-    href: 'https://awsqa/groups',
-    pathname: '/groups'
-  }
-};
-
-
 describe('AuthenticationService', () => {
   let storageService: MockStorageService;
+  let mockWindow: any;
 
   beforeEach(() => {
     storageService = new MockStorageService();
+
+    mockWindow = {
+      location: {
+        href: 'https://awsqa/groups',
+        pathname: '/groups'
+      }
+    };
 
     TestBed.configureTestingModule({
       providers: [

@@ -1,10 +1,24 @@
-import { Injectable } from "@angular/core";
-import { DataService } from "../shared/data/data.service";
-import { Observable } from "rxjs/Observable";
-import { AggregateServiceRoute } from "../shared/service-route";
-import { ReportService } from "../report/report.service";
-import { Report } from "../report/report.model";
-import { AggregateReportQuery, AggregateReportRequest } from "../report/aggregate-report-request";
+import { Injectable } from '@angular/core';
+import { DataService } from '../shared/data/data.service';
+import { Observable } from 'rxjs';
+import { AggregateServiceRoute } from '../shared/service-route';
+import { AggregateReportRow } from '../report/aggregate-report';
+import { AssessmentService } from './assessment/assessment.service';
+import { map, flatMap } from 'rxjs/operators';
+import { Assessment } from './assessment/assessment';
+import { AssessmentDefinition } from './assessment/assessment-definition';
+import { UserReportService } from '../report/user-report.service';
+import { AggregateReportQueryType, ReportQueryType, UserReport } from '../report/report';
+
+export interface BasicReport {
+  readonly rows: AggregateReportRow[];
+}
+
+export interface LongitudinalReport extends BasicReport {
+  readonly assessments: Assessment[];
+}
+
+const DefaultReportType: ReportQueryType = 'CustomAggregate';
 
 /**
  * Responsible for interfacing with aggregate report server
@@ -13,27 +27,40 @@ import { AggregateReportQuery, AggregateReportRequest } from "../report/aggregat
 export class AggregateReportService {
 
   constructor(private dataService: DataService,
-              private reportService: ReportService) {
+              private reportService: UserReportService,
+              private assessmentService: AssessmentService) {
   }
 
   /**
    * Gets the estimated report row count for the provided report request
    *
-   * @param {AggregateReportQuery} query the report parameters
-   * @returns {Observable<number>} the row count
+   * @param query the report parameters
    */
-  getEstimatedRowCount(query: AggregateReportQuery): Observable<number> {
+  getEstimatedRowCount(query: AggregateReportQueryType): Observable<number> {
     return this.dataService.post(`${AggregateServiceRoute}/aggregate/estimatedRowCount`, query);
+  }
+
+  /**
+   * Gets the effective report type
+   *
+   * @param {ReportQueryType} reportType the report type
+   * @param {AssessmentDefinition} definition the assessment definition
+   * @returns {ReportQueryType}
+   */
+  getEffectiveReportType(reportType: ReportQueryType, definition: AssessmentDefinition): ReportQueryType {
+    return definition.aggregateReportTypes.includes(reportType)
+      ? reportType
+      : DefaultReportType;
   }
 
   /**
    * Creates an aggregate report
    *
-   * @param {AggregateReportRequest} request the report parameters
+   * @param {AggregateReportQueryType} request the report parameters
    * @returns {Observable<Report>} the report resource handle
    */
-  createReport(request: AggregateReportRequest): Observable<Report> {
-    return this.reportService.createAggregateReport(request);
+  createReport(request: AggregateReportQueryType): Observable<UserReport> {
+    return this.reportService.createReport(request);
   }
 
   /**
@@ -42,8 +69,34 @@ export class AggregateReportService {
    * @param {number} id the report ID
    * @returns {Observable<Report>} the report resource handle
    */
-  getReportById(id: number): Observable<Report> {
-    return this.reportService.getReportById(id);
+  getReportById(id: number): Observable<UserReport> {
+    return this.reportService.getReport(id);
   }
 
+  getAggregateReport(id: number): Observable<BasicReport> {
+    return this.reportService.getReportContent(id).pipe(
+      map(rows => <BasicReport>{ rows })
+    );
+  }
+
+  downloadReportContent(id: number): void {
+    return this.reportService.openReport(id);
+  }
+
+  // TODO move mapping layer
+  getLongitudinalReport(id: number): Observable<LongitudinalReport> {
+    return this.getAggregateReport(id)
+      .pipe(flatMap(({ rows }) => {
+        return this.assessmentService.getAssessments({
+          ids: rows.reduce((ids, row: AggregateReportRow) => {
+            if (ids.indexOf(row.assessment.id) === -1) {
+              ids.push(row.assessment.id);
+            }
+            return ids;
+          }, [])
+        }).pipe(
+          map(assessments => <LongitudinalReport>{ rows, assessments })
+        )
+      }));
+  }
 }

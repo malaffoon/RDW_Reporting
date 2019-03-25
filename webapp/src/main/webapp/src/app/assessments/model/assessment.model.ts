@@ -1,11 +1,14 @@
 export class Assessment {
   id: number;
+  name: string;
   label: string;
   grade: string;
   type: string;
   subject: string;
   claimCodes: string[];
   cutPoints: number[];
+  hasWerItem: boolean;
+  targetReportEnabled: boolean;
 
   /** @deprecated TODO this does not belong here but in a UI wrapper */
   resourceUrl: string;
@@ -29,6 +32,7 @@ export class Assessment {
     return this.type === 'sum';
   }
 
+  // TODO:ConfigurableSubjects we need to change from using Assessment.isELA to AssessmentAndSubject.isXYZSupported
   get isEla(): boolean {
     return this.subject === 'ELA';
   }

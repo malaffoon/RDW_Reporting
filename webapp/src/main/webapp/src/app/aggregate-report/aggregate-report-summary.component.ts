@@ -1,12 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolYearPipe } from '../shared/format/school-year.pipe';
 import { AggregateReportOptions } from './aggregate-report-options';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import { Utils } from '../shared/support/support';
-import { SubgroupMapper } from './subgroup.mapper';
+import { SubgroupMapper } from './subgroup/subgroup.mapper';
 import { computeEffectiveYears } from './support';
+import { Claim } from './aggregate-report-options.service';
+import { AggregateReportService } from './aggregate-report.service';
 
 
 const createColumnProvider = (columnCount: number = Number.MAX_VALUE): ColumnProvider => {
@@ -23,6 +25,8 @@ const createColumnProvider = (columnCount: number = Number.MAX_VALUE): ColumnPro
   };
 };
 
+const equalSize = Utils.hasEqualLength;
+const inline = values => [ values.join(', ') ];
 const NarrowColumnProvider: ColumnProvider = createColumnProvider(2);
 const WideColumnProvider: ColumnProvider = createColumnProvider();
 
@@ -31,7 +35,8 @@ const WideColumnProvider: ColumnProvider = createColumnProvider();
   templateUrl: 'aggregate-report-summary.component.html',
   host: {
     'class': 'aggregate-report-summary'
-  }
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AggregateReportSummary {
 
@@ -42,7 +47,8 @@ export class AggregateReportSummary {
 
   constructor(private translate: TranslateService,
               private schoolYearPipe: SchoolYearPipe,
-              private subgroupMapper: SubgroupMapper) {
+              private subgroupMapper: SubgroupMapper,
+              private reportService: AggregateReportService) {
   }
 
   get narrow(): any {
@@ -62,6 +68,18 @@ export class AggregateReportSummary {
     return this._summary;
   }
 
+  get settings(): AggregateReportFormSettings {
+    return this._summary.settings;
+  }
+
+  get options(): AggregateReportOptions {
+    return this._summary.options;
+  }
+
+  get assessmentDefinition(): AssessmentDefinition {
+    return this._summary.assessmentDefinition;
+  }
+
   @Input()
   set summary(value: AggregateReportRequestSummary) {
     if (this._summary !== value) {
@@ -78,7 +96,6 @@ export class AggregateReportSummary {
 
     const { assessmentDefinition, options, settings } = this.summary;
 
-    const equalSize = Utils.hasEqualLength;
     const translate = code => this.translate.instant(code);
 
     const All = translate('common.collection-selection.all');
@@ -88,7 +105,7 @@ export class AggregateReportSummary {
       ? (equalSize(options, values) ? [ All ] : values.map(codeProvider))
       : [ None ];
 
-    const inline = values => [ values.join(', ') ];
+    const defaultAllOrAll = (options, values, codeProvider) => values.length === 0 ? [ All ] : orAll(options, values, codeProvider);
 
     const organizations = settings.districts.concat(settings.schools);
 
@@ -126,53 +143,108 @@ export class AggregateReportSummary {
       });
     }
 
+    let assessmentAttributes = [];
+    if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'CustomAggregate') {
+      assessmentAttributes = [
+        {
+          label: translate('aggregate-report-form.field.subjects-label'),
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
+        },
+        {
+          label: translate('aggregate-report-form.field.assessment-grades-label'),
+          values: inline(orAll(this.options.assessmentGrades, this.settings.generalPopulation.assessmentGrades,
+            code => translate(`common.assessment-grade.${code}`)))
+        },
+        {
+          label: translate('aggregate-report-form.field.school-years-label'),
+          values: this.settings.generalPopulation.schoolYears.map(value => this.schoolYearPipe.transform(value))
+        }
+      ];
+    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Claim') {
+      assessmentAttributes = [
+        {
+          label: translate('aggregate-report-form.field.subjects-label'),
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
+        },
+        {
+          label: translate('aggregate-report-form.field.assessment-grades-label'),
+          values: inline(orAll(this.options.assessmentGrades, this.settings.claimReport.assessmentGrades,
+            code => translate(`common.assessment-grade.${code}`)))
+        },
+        {
+          label: translate('aggregate-report-form.field.school-years-label'),
+          values: this.settings.claimReport.schoolYears.map(value => this.schoolYearPipe.transform(value))
+        }
+      ];
+    } else if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Target') {
+      assessmentAttributes = [
+        {
+          label: translate('aggregate-report-form.field.subject-label'),
+          values: [ translate(`subject.${settings.targetReport.subjectCode}.name`) ]
+        },
+        {
+          label: translate('aggregate-report-form.field.assessment-grade-label'),
+          values: [ translate(`common.assessment-grade.${settings.targetReport.assessmentGrade}`) ]
+        },
+        {
+          label: translate('aggregate-report-form.field.school-year-label'),
+          values: [ this.schoolYearPipe.transform(settings.targetReport.schoolYear) ]
+        }
+      ];
+    } else {
+      assessmentAttributes = [
+        {
+          label: translate('aggregate-report-form.field.subjects-label'),
+          values: orAll(options.subjects, settings.subjects, subject => translate(`subject.${subject.code}.name`))
+        },
+        {
+          label: translate('aggregate-report-form.field.assessment-grades-label'),
+          values: inline(orAll(this.options.assessmentGrades, this.settings.longitudinalCohort.assessmentGrades,
+            code => translate(`common.assessment-grade.${code}`)))
+        },
+        {
+          label: translate('aggregate-report-form.field.school-years-label'),
+          values: computeEffectiveYears(this.settings.longitudinalCohort.toSchoolYear, this.settings.longitudinalCohort.assessmentGrades)
+            .map(value => this.schoolYearPipe.transform(value))
+        }
+      ];
+    }
+
     const assessmentRows = [
       {
         label: translate('aggregate-report-form.field.assessment-type-label'),
         values: [ translate(`common.assessment-type.${settings.assessmentType}.short-name`) ]
       },
-      {
-        label: translate('aggregate-report-form.field.subjects-label'),
-        values: orAll(options.subjects, settings.subjects, code => translate(`common.subject.${code}.short-name`))
-      },
-
-      ...(settings.reportType === 'GeneralPopulation' || !assessmentDefinition.aggregateReportLongitudinalCohortEnabled
-        ? [
-            {
-              label: translate('aggregate-report-form.field.assessment-grades-label'),
-              values: inline(orAll(options.assessmentGrades, settings.generalPopulation.assessmentGrades, code => translate(`common.assessment-grade.${code}`)))
-            },
-            {
-              label: translate('aggregate-report-form.field.school-year-label'),
-              values: settings.generalPopulation.schoolYears.map(value => this.schoolYearPipe.transform(value))
-            }
-          ]
-        : [
-            {
-              label: translate('aggregate-report-form.field.assessment-grades-label'),
-              values: inline(orAll(options.assessmentGrades, settings.longitudinalCohort.assessmentGrades, code => translate(`common.assessment-grade.${code}`)))
-            },
-            {
-              label: translate('aggregate-report-form.field.school-year-label'),
-              values: computeEffectiveYears(settings.longitudinalCohort.toSchoolYear, settings.longitudinalCohort.assessmentGrades).map(value => this.schoolYearPipe.transform(value))
-            }
-        ]),
+      ...assessmentAttributes,
       ...[
         assessmentDefinition.interim
           ? {
             label: translate('aggregate-report-form.field.interim-administration-condition-label'),
-            values: settings.interimAdministrationConditions.map(code => translate(`common.administration-condition.${code}`))
+            values: orAll(this.options.interimAdministrationConditions,
+              settings.interimAdministrationConditions, code => translate(`common.administration-condition.${code}`))
           }
           : {
             label: translate('aggregate-report-form.field.summative-administration-condition-label'),
-            values: settings.summativeAdministrationConditions.map(code => translate(`common.administration-condition.${code}`))
+            values: orAll(this.options.summativeAdministrationConditions,
+              settings.summativeAdministrationConditions, code => translate(`common.administration-condition.${code}`))
           }
       ],
       {
         label: translate('common.completeness-form-control.label'),
-        values: settings.completenesses.map(code => translate(`common.completeness.${code}`))
+        values: orAll(this.options.completenesses, settings.completenesses, code => translate(`common.completeness.${code}`))
       }
     ];
+
+    const claimRows = [];
+    if (this.reportService.getEffectiveReportType(settings.reportType, assessmentDefinition) === 'Claim') {
+      if (!equalSize(options.claims, settings.claimReport.claimCodesBySubject)) {
+        claimRows.push({
+          label: translate('aggregate-report-form.field.claim-codes-label'),
+          values: defaultAllOrAll(this.options.claims, this.settings.claimReport.claimCodesBySubject,
+            (claim: Claim) => translate(`subject.${claim.subject}.claim.${claim.code}.name`))
+        });
+      }
+    }
 
     let variableSections: Section[];
 
@@ -238,6 +310,17 @@ export class AggregateReportSummary {
           ))
         });
       }
+      if ((!equalSize(optionFilters.languages, settingFilters.languages)) &&
+        (settingFilters.languages.length > 0)) {
+        filterRows.push({
+          label: translate('aggregate-report-form.field.language-label'),
+          values: inline(orAll(
+            optionFilters.languages.map(o => o),
+            settingFilters.languages,
+            code => translate(`common.languages.${code}`)
+          ))
+        });
+      }
       if (!equalSize(optionFilters.individualEducationPlans, settingFilters.individualEducationPlans)) {
         filterRows.push({
           label: translate('aggregate-report-form.field.iep-label'),
@@ -268,6 +351,16 @@ export class AggregateReportSummary {
           ))
         });
       }
+      if (!equalSize(optionFilters.militaryConnectedCodes, settingFilters.militaryConnectedCodes)) {
+        filterRows.push({
+          label: translate('aggregate-report-form.field.military-connected-label'),
+          values: inline(orAll(
+            optionFilters.militaryConnectedCodes,
+            settingFilters.militaryConnectedCodes,
+            code => translate(`common.military-connected-code.${code}`)
+          ))
+        });
+      }
 
       variableSections = [
         {
@@ -282,13 +375,20 @@ export class AggregateReportSummary {
 
     } else if (settings.queryType === 'FilteredSubgroup') {
 
+      const subgroups = settings.subgroups;
       variableSections = [
         {
           label: translate('aggregate-report-form.section.comparative-subgroups-heading'),
           rows: [
             {
               label: translate('aggregate-report-form.section.comparative-subgroups-heading'),
-              values: settings.subgroups.map(subgroup => this.subgroupMapper.createSubgroupFiltersListItem(subgroup).name)
+              values: [
+                subgroups.length === 0
+                  ? None
+                  : subgroups.length === 1
+                  ? this.subgroupMapper.fromFilters(subgroups[ 0 ], options.dimensionTypes).name
+                  : subgroups.length
+              ]
             }
           ]
         }
@@ -298,6 +398,13 @@ export class AggregateReportSummary {
 
     this.columns = this._columnProvider(
       {
+        label: translate('aggregate-report-form.section.report-type-heading'),
+        rows: [ <Row>{
+          label: translate('aggregate-report-form.section.report-type-heading'),
+          values: [ translate(`common.aggregate-report-type.${settings.reportType}.label`) ]
+        } ]
+      },
+      {
         label: translate('aggregate-report-form.section.organization.heading'),
         rows: organizationRows
       },
@@ -305,12 +412,15 @@ export class AggregateReportSummary {
         label: translate('aggregate-report-form.section.assessment-heading'),
         rows: assessmentRows
       },
+      {
+        label: translate('aggregate-report-form.section.claim-heading'),
+        rows: claimRows
+      },
       ...variableSections
     )
     // removes empty columns
       .filter(holder => holder.reduce((totalRows, column) => totalRows + column.rows.length, 0) > 0);
   }
-
 }
 
 interface Section {

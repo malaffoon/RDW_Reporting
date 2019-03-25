@@ -5,14 +5,14 @@ import { AssessmentItem } from "../../model/assessment-item.model";
 import { Component } from "@angular/core";
 import { ItemInfoService } from "./item-info.service";
 import { ApplicationSettingsService } from '../../../app-settings.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 
 describe('ItemInfoComponent', () => {
   let component: ItemInfoComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
   const mockApplicationSettingsService = {
     getSettings: () => of({})
-  }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -44,7 +44,7 @@ describe('ItemInfoComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: '<item-info [item]="item" ></item-info>'
+  template: '<item-info [item]="item" subject="Math"></item-info>'
 })
 class TestComponentWrapper {
   item = new AssessmentItem();

@@ -22,7 +22,11 @@ import { Utils } from "../support/support";
              (typeaheadOnSelect)="onSelectInternal($event.item)"
              (ngModelChange)="onChangeInternal()"
              typeaheadWaitMs="300"
+             [typeaheadOptionsLimit]="100"
+             [typeaheadOptionsInScrollableView]="20"
+             [typeaheadScrollable]="true"
              [(ngModel)]="search"
+             autocomplete="off"
              [placeholder]="placeholder">
       
       <span class="input-group-btn">

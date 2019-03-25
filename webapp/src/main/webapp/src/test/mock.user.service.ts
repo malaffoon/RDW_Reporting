@@ -1,4 +1,4 @@
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import Spy = jasmine.Spy;
 
 export class MockUserService {

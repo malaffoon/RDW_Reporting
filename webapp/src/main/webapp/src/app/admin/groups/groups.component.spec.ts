@@ -4,14 +4,14 @@ import { ActivatedRoute } from "@angular/router";
 import { GroupFilterOptions } from "./model/group-filter-options.model";
 import { School } from "./model/school.model";
 import { GroupService } from "./groups.service";
-import { Observable } from "rxjs/Observable";
+import { Observable ,  of } from "rxjs";
 import { Group } from "./model/group.model";
 import { CommonModule } from "../../shared/common.module";
-import { of } from 'rxjs/observable/of';
 import { EventEmitter, NO_ERRORS_SCHEMA } from "@angular/core";
-import { MockActivatedRoute } from "../../../test/mock.activated-route";
 import { BsModalService } from "ngx-bootstrap";
 import { TestModule } from "../../../test/test.module";
+import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
+import { SubjectService } from '../../subject/subject.service';
 
 let mockFilterOptionsProvider = { options: new GroupFilterOptions() };
 
@@ -30,6 +30,9 @@ describe('GroupsComponent', () => {
   let mockActivatedRoute: MockActivatedRoute;
   let mockModalService: any;
 
+  const mockSubjectService = jasmine.createSpyObj('SubjectService', [ 'getSubjectCodes' ]);
+  mockSubjectService.getSubjectCodes.and.callFake(() => of(['Math']));
+
   beforeEach(async(() => {
     mockModalService = jasmine.createSpyObj("BsModalService", ["show"]);
     mockModalService.onHidden = new EventEmitter();
@@ -38,7 +41,6 @@ describe('GroupsComponent', () => {
 
     filterOptions.schoolYears = [ 2017 ];
     filterOptions.schools = [ new School() ];
-    filterOptions.subjects = [ "ALL", "MATH" ];
 
     mockFilterOptionsProvider.options = filterOptions;
 
@@ -52,7 +54,8 @@ describe('GroupsComponent', () => {
       ],
       providers: [
         { provide: BsModalService, useValue: mockModalService },
-        { provide: GroupService, useValue: mockGroupService }
+        { provide: GroupService, useValue: mockGroupService },
+        { provide: SubjectService, useValue: mockSubjectService }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
@@ -82,13 +85,13 @@ describe('GroupsComponent', () => {
 
     mockActivatedRoute.params.emit({
       schoolId: 1,
-      subject: "MATH",
+      subject: "Math",
       schoolYear: 2017
     });
 
     fixture.detectChanges();
     expect(component.query.school).toBe(school);
-    expect(component.query.subject).toBe("MATH");
+    expect(component.query.subject).toBe("Math");
     expect(component.query.schoolYear).toBe(2017);
   });
 

@@ -7,6 +7,31 @@ management:
     redis:
       enabled: false
 
+jwt:
+  secret: ${rdw.reporting.jwt.secret:secret}
+  producer: true
+  routePaths: ${zuul.routes.admin-service.path},${zuul.routes.aggregate-service.path},${zuul.routes.report-processor.path},${zuul.routes.reporting-service.path}
+
+permissionservice:
+  component: Reporting
+  endpoint: ${rdw.permission.service}
+
+reporting:
+  analytics-tracking-id: ${rdw.reporting.analytics.trackingId:}
+  access-denied-url: forward:/assets/public/access-denied.html
+  interpretive-guide-url: https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf
+  iris-vendor-id: ${rdw.reporting.iris.vendorId}
+  landing-page-url: forward:/landing.html
+  min-item-data-year: 2016
+  school-year: 2018
+  state:
+    code: CA
+    name: California
+  user-guide-url: https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf
+  target-report:
+    insufficient-data-cutoff: 0.2
+    min-number-of-students: 0
+
 saml:
   # SAML keystore path: file:/some/path/saml.jks
   key-store-file: ${rdw.reporting.keystore.path}
@@ -23,6 +48,9 @@ saml:
     context-path: /
     port: 8080
     include-server-port: false
+
+security:
+  filter-dispatcher-types: FORWARD, INCLUDE, REQUEST, ASYNC, ERROR
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
@@ -42,15 +70,21 @@ spring:
       &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
       &characterEncoding=${spring.datasource.character-encoding:utf8}\
       &useCompression=${spring.datasource.use-compression:true}\
+      &connectTimeout=${spring.datasource.connect-timeout:10000}\
+      &socketTimeout=${spring.datasource.socket-timeout:40000}\
       "
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.datasource.query-timeout:30})"
     username: root
     password:
     testWhileIdle: true
     validationQuery: SELECT 1
+    validationQueryTimeout: 10000
     driverClassName: com.mysql.jdbc.Driver
     initialize: false
     initialSize: 4
     maxActive: 10
+    minIdle: ${spring.datasource.initialSize}
+    maxIdle: ${spring.datasource.maxActive}
 
   resources:
     chain:
@@ -73,20 +107,14 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: permissionsByRole, internalTranslationsByCode, mergeTranslations
-
-security:
-  filter-dispatcher-types: FORWARD, INCLUDE, REQUEST, ASYNC, ERROR
-
-permissionservice:
-  component: Reporting
-  endpoint: ${rdw.permission.service}
+    cache-names: permissionsByRole, translations, translation_properties
 
 # Netflix zuul configuration.
 zuul:
   set-content-length: true
   FormBodyWrapperFilter:
-    pre: disable
+    pre:
+      disable: true
   host:
     socket-timeout-millis: 100000
   routes:
@@ -110,22 +138,3 @@ zuul:
       path: /api/reporting-service/**
       url: http://localhost:8180
       stripPrefix: true
-
-jwt:
-  secret: ${rdw.reporting.jwt.secret:secret}
-  producer: true
-  routePaths: ${zuul.routes.admin-service.path},${zuul.routes.aggregate-service.path},${zuul.routes.report-processor.path},${zuul.routes.reporting-service.path}
-
-reporting:
-  analytics-tracking-id: ${rdw.reporting.analytics.trackingId:}
-  interpretive-guide-url: https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf
-  iris-vendor-id: ${rdw.reporting.iris.vendorId}
-  min-item-data-year: 2016
-  school-year: 2018
-  state:
-    code: CA
-    name: California
-  user-guide-url: https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf
-  # english-learners should be lep or elas
-  english-learners:
-    - elas

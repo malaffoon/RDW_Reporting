@@ -1,0 +1,394 @@
+{
+  "report": {
+    "accommodations": {
+      "label": "The following accommodations were made available:"
+    },
+    "aggregate": {
+      "export": {
+        "header": {
+          "assessment": "AssessmentName",
+          "assessment-type": "AssessmentType",
+          "attributes": "Attributes",
+          "cohort": {
+            "score": "CohortScaleScore",
+            "standard-deviation": "CohortScaleScoreStandardDeviation",
+            "student-count": "CohortStudentsTested"
+          },
+          "dimension": "Subgroup",
+          "dimension-code": "SubgroupValue",
+          "grade": "TestGrade",
+          "natural-id": "OrganizationId",
+          "organization": "OrganizationName",
+          "score": "ScaleScore",
+          "standard-deviation": "ScaleScoreStandardDeviation",
+          "student-count": "StudentsTested",
+          "student-relative-residual-scores-level": "StudentRelativeResidualScoresLevel",
+          "standard-met-relative-residual-level": "StandardMetRelativeResidualLevel",
+          "subject": "Subject",
+          "year": "SchoolYear",
+          "claim": "Claim",
+          "target": "Target"
+        }
+      }
+    },
+    "copyright": "&copy; 2018 The Regents of the University of California",
+    "date": {
+      "label": "Date Taken:"
+    },
+    "enrollment-grade": {
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+      "11": "11",
+      "12": "12",
+      "13": "13",
+      "IT": "IT",
+      "KG": "KG",
+      "PK": "PK",
+      "PR": "PR",
+      "PS": "PS",
+      "TK": "TK",
+      "UG": "UG"
+    },
+    "faq": {
+      "header": "Frequently Asked Questions",
+      "p1": {
+        "html": "Where can I find more information about the Smarter Balanced Assessment System? Information about Smarter Balanced Assessment System is available at <a target=\"_blank\" href=\"http://www.smarterbalanced.org\">www.smarterbalanced.org</a>"
+      },
+      "p2": {
+        "header": "Take the Test:",
+        "html": "Gain familiarity with the types of questions and tools for students by taking a practice test: <a target=\"_blank\" href=\"http://www.smarterbalanced.org/assessments/practice-and-training-tests\">http://www.smarterbalanced.org/assessments/practice-and-training-tests</a>"
+      },
+      "p3": {
+        "header": "Note:",
+        "html": "These results represent only one indicator of a student''s performance. These results should be used along with other information, such as classwork and other tests when making educational decisions. Specific questions about individual student results should be directed to the student''s teacher."
+      }
+    },
+    "grade": {
+      "03": {
+        "color": "blue-dark",
+        "label": "G3",
+        "title": "Grade 3 {0} {1}-{2}"
+      },
+      "04": {
+        "color": "maroon",
+        "label": "G4",
+        "title": "Grade 4 {0} {1}-{2}"
+      },
+      "05": {
+        "color": "green-dark",
+        "label": "G5",
+        "title": "Grade 5 {0} {1}-{2}"
+      },
+      "06": {
+        "color": "blue-dark",
+        "label": "G6",
+        "title": "Grade 6 {0} {1}-{2}"
+      },
+      "07": {
+        "color": "teal",
+        "label": "G7",
+        "title": "Grade 7 {0} {1}-{2}"
+      },
+      "08": {
+        "color": "green",
+        "label": "G8",
+        "title": "Grade 8 {0} {1}-{2}"
+      },
+      "11": {
+        "color": "maroon",
+        "label": "HS",
+        "title": "High School {0} {1}-{2}"
+      }
+    },
+    "generic": {
+      "performance-level": {
+        "1": {
+          "label": "Level1"
+        },
+        "2": {
+          "label": "Level2"
+        },
+        "3": {
+          "label": "Level3"
+        },
+        "4": {
+          "label": "Level4"
+        },
+        "5": {
+          "label": "Level5"
+        },
+        "6": {
+          "label": "Level6"
+        },
+        "cohort": {
+          "1": {
+            "label": "CohortLevel1"
+          },
+          "2": {
+            "label": "CohortLevel2"
+          },
+          "3": {
+            "label": "CohortLevel3"
+          },
+          "4": {
+            "label": "CohortLevel4"
+          },
+          "5": {
+            "label": "CohortLevel5"
+          },
+          "6": {
+            "label": "CohortLevel6"
+          }
+        }
+      },
+      "claim": {
+        "performance-level": {
+          "1": {
+            "label": "Level1"
+          },
+          "2": {
+            "label": "Level2"
+          },
+          "3": {
+            "label": "Level3"
+          },
+          "4": {
+            "label": "Level4"
+          },
+          "5": {
+            "label": "Level5"
+          },
+          "6": {
+            "label": "Level6"
+          }
+        }
+      }
+    },
+    "iab": {
+      "result-category": {
+        "current": "Current Results",
+        "previous": "Previous Results"
+      }
+    },
+    "ica": {
+      "date": {
+        "label": "Date Taken:"
+      },
+      "section": {
+        "claim": {
+          "header": "Student Achievement by Claim"
+        },
+        "scale-score": {
+          "header": "Overall Achievement"
+        }
+      },
+      "score-range": " ({0}-{1})*"
+    },
+    "important-information": {
+      "header": "Important Information About Interim Assessments",
+      "item1": "Interim assessments may be scored by local teachers. This scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.",
+      "item2": "Exposure to, and familiarity with test questions may affect student performance and the accuracy of interim results."
+    },
+    "not-scored": "Not Scored",
+    "percentile": {
+      "mean": "The average student score was {0}.",
+      "rank": "Score is higher than {0}% of students."
+    },
+    "scale-score": {
+      "description": "A student''s test score can vary if the test is taken several times. If this student was tested again, it is likely that the scale score would fall within this range.",
+      "error-band": "Error Band"
+    },
+    "student": {
+      "district": {
+        "label": "District:"
+      },
+      "grade": {
+        "label": "Grade:"
+      },
+      "name": "{1}, {0}",
+      "school": {
+        "label": "School:"
+      },
+      "state": {
+        "label": "State:"
+      }
+    },
+    "sum": {
+      "date": {
+        "label": "Date Taken:"
+      },
+      "section": {
+        "claim": {
+          "header": "Student Achievement by Claim"
+        },
+        "scale-score": {
+          "header": "Overall Achievement"
+        }
+      },
+      "score-range": " ({0}-{1})*"
+    },
+    "target": {
+      "overall": {
+        "Above": "Better",
+        "Below": "Worse",
+        "Excluded": "Excluded",
+        "InsufficientData": "Insufficient Data",
+        "Near": "Similar",
+        "NoResults": "-"
+      },
+      "standard": {
+        "Above": "Above",
+        "Below": "Below",
+        "Excluded": "Excluded",
+        "InsufficientData": "Insufficient Data",
+        "Near": "Near",
+        "NoResults": "-"
+      }
+    },
+    "title": "{0} Report",
+    "writing": {
+      "description": "Students write an extended response (i.e., essay) with one of the following purposes: narrative, opinion, informational, explanatory, or argumentative. {0} received the following scores on the essay:",
+      "trait": {
+        "Argumentative": {
+          "Conventions": {
+            "0": "The response demonstrates little or no command of conventions.",
+            "1": "The response demonstrates a partial command of conventions.",
+            "2": "The response demonstrates an adequate command of conventions."
+          },
+          "Evidence": {
+            "0": "The evidence in the response is insufficient.",
+            "1": "The response provides minimal elaboration of the support/evidence for the claim and argument(s) that includes little or no use of source material. The response is vague, lacks clarity, or is confusing.",
+            "2": "The response provides uneven, cursory elaboration of the support/evidence for the claim and argument(s) that includes some reasoned analysis and partial or uneven use of source material. The response  develops ideas unevenly, using simplistic language.",
+            "3": "The response provides adequate elaboration of the support/evidence for the claim and argument(s) that includes reasoned analysis and the use of source material. The response adequately develops ideas,  employing a mix of precise with more general language.",
+            "4": "The response provides thorough and convincing elaboration of the support/evidence for the claim and argument(s) including reasoned, in depth analysis and the effective use of source material. The response clearly and effectively develops ideas, using precise language."
+          },
+          "Organization": {
+            "0": "The organization of the response is insufficient.",
+            "1": "The response has little or no discernible organizational structure. The response may be related to the claim but may provide little or no focus.",
+            "2": "The response has an inconsistent organizational structure. Some flaws are evident, and some ideas may be loosely connected. The organization is somewhat sustained between and within paragraphs. The response may have a minor drift in focus.",
+            "3": "The response has an evident organizational structure and a sense of completeness. Though there may be minor flaws, they do not interfere with the overall coherence. The organization is adequately  sustained between and within paragraphs. The response is generally focused.",
+            "4": "The response has a clear and effective organizational structure, creating a sense of unity and completeness. The organization is fully sustained between and within paragraphs. The response is consistently and purposefully focused."
+          }
+        },
+        "Conventions": "Conventions",
+        "Evidence": "Evidence / Elaboration",
+        "Explanatory": {
+          "Conventions": {
+            "0": "The response demonstrates little or no command of conventions.",
+            "1": "The response demonstrates a partial command of conventions.",
+            "2": "The response demonstrates an adequate command of conventions."
+          },
+          "Evidence": {
+            "0": "The evidence in the response is insufficient.",
+            "1": "The response provides minimal elaboration of the support/evidence for the thesis/controlling idea that includes little or no use of source material. The response is vague, lacks clarity, or is confusing.",
+            "2": "The response provides uneven, cursory elaboration of the support/evidence for the thesis/controlling idea that includes uneven or limited use of source material. The response develops ideas unevenly, using simplistic language.",
+            "3": "The response provides adequate elaboration of the support/evidence for the thesis/controlling idea that includes the use of source material. The response adequately develops ideas, employing a mix of precise and more general language.",
+            "4": "The response provides thorough elaboration of the support/evidence for the thesis/controlling idea that includes the effective use of source material. The response clearly and effectively develops ideas, using precise language."
+          },
+          "Organization": {
+            "0": "The organization of the response is insufficient.",
+            "1": "The response has little or no discernible organizational structure. The response may be related to the topic but may provide little or no focus.",
+            "2": "The response has an inconsistent organizational structure. Some flaws are evident, and some ideas may be loosely connected. The organization is somewhat sustained between and within paragraphs. The response may have a minor drift in focus.",
+            "3": "The response has an evident organizational structure and a sense of completeness. Though there may be minor flaws, they do not interfere with the overall coherence. The organization is adequately sustained between and within paragraphs. The response is generally focused.",
+            "4": "The response has a clear and effective organizational structure, creating a sense of unity and completeness. The organization is fully sustained between and within paragraphs. The response is consistently and purposefully focused."
+          }
+        },
+        "Informational": {
+          "Conventions": {
+            "0": "The response demonstrates little or no command of conventions.",
+            "1": "The response demonstrates a partial command of conventions.",
+            "2": "The response demonstrates an adequate command of conventions."
+          },
+          "Evidence": {
+            "0": "The evidence in the response is insufficient.",
+            "1": "The response provides minimal elaboration of the support/evidence for the controlling/main idea that includes little or no use of source material. The response is vague, lacks clarity, or is confusing.",
+            "2": "The response provides uneven, cursory elaboration of the support/evidence for the controlling/main idea that includes uneven or limited use of source material. The response develops ideas unevenly, using simplistic language.",
+            "3": "The response provides adequate elaboration of the support/evidence for the controlling/main idea that includes the use of source material. The response adequately develops ideas, employing a mix of precise and more general language.",
+            "4": "The response provides thorough elaboration of the support/evidence for the controlling/main idea that includes the effective use of source material. The response clearly and effectively develops ideas, using precise language."
+          },
+          "Organization": {
+            "0": "The organization of the response is insufficient.",
+            "1": "The response has little or no discernible organizational structure. The response may be related to the topic but may provide little or no focus.",
+            "2": "The response has an inconsistent organizational structure. Some flaws are evident, and some ideas may be loosely connected. The organization is somewhat sustained between and within paragraphs. The response may have a minor drift in focus.",
+            "3": "The response has an evident organizational structure and a sense of completeness. Though there may be minor flaws, they do not interfere with the overall coherence. The organization is adequately sustained between and within paragraphs. The response is generally focused.",
+            "4": "The response has a clear and effective organizational structure, creating a sense of unity and completeness. The organization is sustained between and within paragraphs. The response is consistently and purposefully focused."
+          }
+        },
+        "Narrative": {
+          "Conventions": {
+            "0": "The response demonstrates little or no command of conventions.",
+            "1": "The response demonstrates a partial command of conventions.",
+            "2": "The response demonstrates an adequate command of conventions."
+          },
+          "Evidence": {
+            "0": "The evidence in the narrative is insufficient.",
+            "1": "The narrative, real or imagined, provides minimal elaboration using few or no details, dialogue, and/or description.",
+            "2": "The narrative, real or imagined, provides uneven, cursory elaboration using partial and uneven details, dialogue, and/or description.",
+            "3": "The narrative, real or imagined, provides adequate elaboration using details, dialogue, and/or description.",
+            "4": "The narrative, real or imagined, provides thorough, effective elaboration using relevant details, dialogue, and/or description."
+          },
+          "Organization": {
+            "0": "The organization of the narrative is insufficient.",
+            "1": "The organization of the narrative, real or imagined, may be maintained but may provide little or no focus.",
+            "2": "The organization of the narrative, real or imagined, is somewhat sustained and may have an uneven focus.",
+            "3": "The organization of the narrative, real or imagined, is adequately sustained, and the focus is adequate and generally maintained.",
+            "4": "The organization of the narrative, real or imagined, is fully sustained and the focus is clear and maintained throughout."
+          }
+        },
+        "Opinion": {
+          "Conventions": {
+            "0": "The response demonstrates little or no command of conventions.",
+            "1": "The response demonstrates a partial command of conventions.",
+            "2": "The response demonstrates an adequate command of conventions."
+          },
+          "Evidence": {
+            "0": "The evidence in the response is insufficient.",
+            "1": "The response provides minimal elaboration of the support/evidence for the opinion and supporting idea(s) that includes little or no use of source material. The response is vague, lacks clarity, or is confusing.",
+            "2": "The response provides uneven, cursory elaboration of the support/evidence for the opinion and supporting idea(s) that includes partial or uneven use of source material. The response develops ideas unevenly, using simplistic language.",
+            "3": "The response provides adequate elaboration of the support/evidence for the opinion and supporting idea(s) that includes the use of source material. The response adequately develops ideas, employing a mix of precise with more general language.",
+            "4": "The response provides thorough and convincing elaboration of the support/evidence for the opinion and supporting idea(s) that includes the effective use of source material. The response clearly and effectively develops ideas, using precise language."
+          },
+          "Organization": {
+            "0": "The organization of the response is insufficient.",
+            "1": "The response has little or no discernible organizational structure. The response may be related to the opinion but may provide little or no focus.",
+            "2": "The response has an inconsistent organizational structure. Some flaws are evident, and some ideas may be loosely connected. The organization is somewhat sustained between and within paragraphs. The response may have a minor drift in focus.",
+            "3": "The response has an evident organizational structure and a sense of completeness. Though there may be minor flaws, they do not interfere with the overall coherence. The organization is adequately sustained between and within paragraphs. The response is generally focused.",
+            "4": "The response has a clear and effective organizational structure, creating a sense of unity and completeness. The organization is sustained between and within paragraphs. The response is consistently and purposefully focused."
+          }
+        },
+        "Organization": "Organization / Purpose",
+        "Unknown": {
+          "Conventions": {
+            "0": "Unknown.Conventions.0",
+            "1": "Unknown.Conventions.1",
+            "2": "Unknown.Conventions.2"
+          },
+          "Evidence": {
+            "0": "The evidence in the response is insufficient.",
+            "1": "Unknown.Evidence/Elaboration.1",
+            "2": "Unknown.Evidence/Elaboration.2",
+            "3": "Unknown.Evidence/Elaboration.3",
+            "4": "Unknown.Evidence/Elaboration.4"
+          },
+          "Organization": {
+            "0": "The organization of the response is insufficient.",
+            "1": "Unknown.Organization/Purpose.1",
+            "2": "Unknown.Organization/Purpose.2",
+            "3": "Unknown.Organization/Purpose.3",
+            "4": "Unknown.Organization/Purpose.4"
+          }
+        },
+        "outof": "of {0}",
+        "purpose": "Writing Purpose: {0}"
+      }
+    }
+  }
+}

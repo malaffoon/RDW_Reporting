@@ -2,8 +2,13 @@ import { RdwTranslateLoader } from "./rdw-translate-loader";
 import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { inject, TestBed } from "@angular/core/testing";
+import { SubjectService } from "../../subject/subject.service";
+import { of } from "rxjs";
 
 describe('RdwTranslateLoader', () => {
+
+  const mockSubjectService = jasmine.createSpyObj("SubjectService", ["getSubjectCodes"]);
+  mockSubjectService.getSubjectCodes.and.returnValue(of(['Math', 'ELA']));
 
   let mockHttp: HttpTestingController;
   let mockClientData = {
@@ -20,6 +25,34 @@ describe('RdwTranslateLoader', () => {
     'welcome': {
       'title': 'Hello from API',
       'message': 'The API welcomes you!'
+    },
+    'subject': {
+      'Math': {
+        'asmt-type': {
+          'ica': {
+            'name': 'ICA'
+          },
+          'iab': {
+            'name': 'IAB'
+          },
+          'sum': {
+            'name': 'SUM'
+          }
+        }
+      },
+      'ELA': {
+        'asmt-type': {
+          'ica': {
+            'name': 'ICA-2'
+          },
+          'iab': {
+            'name': 'IAB-2'
+          },
+          'sum': {
+            'name': 'SUM-2'
+          }
+        }
+      }
     }
   };
 
@@ -27,7 +60,8 @@ describe('RdwTranslateLoader', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
-      ]
+      ],
+      providers: [{ provide: SubjectService, useValue: mockSubjectService }]
     });
     mockHttp = TestBed.get(HttpTestingController);
   });
@@ -36,14 +70,15 @@ describe('RdwTranslateLoader', () => {
     mockHttp.verify();
   });
 
-  it('should merge api and ui translations', inject([HttpClient], (http: HttpClient) => {
+  it('should merge api and ui translations', inject([HttpClient, SubjectService], (http: HttpClient, subjectService: SubjectService) => {
 
-    let loader = new RdwTranslateLoader(http);
+    let loader = new RdwTranslateLoader(http, subjectService);
     loader.getTranslation('en').subscribe((actual: any) => {
       expect(actual.welcome.title).toBe('Hello from API');
       expect(actual.welcome.message).toBe('The API welcomes you!');
       expect(actual.welcome.prompt).toBe('You have been prompted from the UI!');
       expect(actual.labels[ 'combo-box' ]).toBe('Select');
+      expect(actual.common['assessment-type'].ica['short-name']).toBe("ICA/ICA-2");
     });
 
     let clientResponse = mockHttp.expectOne('/assets/i18n/en.json');

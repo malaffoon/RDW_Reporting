@@ -1,10 +1,12 @@
-import { Injectable } from "@angular/core";
-import { AssessmentItem } from "../model/assessment-item.model";
-import { ExamStatisticsLevel } from "../model/exam-statistics.model";
-import { Exam } from "../model/exam.model";
-import { DynamicItemField } from "../model/item-point-field.model";
-import * as math from "mathjs";
-import {WritingTraitScoreSummary} from "../model/writing-trait-score-summary.model";
+import { Injectable } from '@angular/core';
+import { AssessmentItem } from '../model/assessment-item.model';
+import { ExamStatisticsLevel } from '../model/exam-statistics.model';
+import { Exam } from '../model/exam.model';
+import { DynamicItemField } from '../model/item-point-field.model';
+import * as math from 'mathjs';
+import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
+import { ClaimStatistics } from '../model/claim-score.model';
+import { ExamItemScore } from "../model/exam-item-score.model";
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -13,10 +15,10 @@ export class ExamStatisticsCalculator {
 
   private readonly potentialResponses = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  calculateAverage(exams: Exam[]) {
-    let scoredExams = this.getOnlyScoredExams(exams);
-    return scoredExams.reduce((x, y) => x + y.score, 0)
-      / scoredExams.length;
+  calculateAverage(scores: number[]): number {
+    let scored = scores.filter(x => x != null);
+    return scored.reduce((x, y) => x + y, 0)
+      / scored.length;
   }
 
   /**
@@ -26,22 +28,39 @@ export class ExamStatisticsCalculator {
    * @param exams
    * @returns {number}
    */
-  calculateStandardErrorOfTheMean(exams: Exam[]) {
-    let scoredExams = this.getOnlyScoredExams(exams);
-    let scores = scoredExams.map(x => x.score);
+  calculateStandardErrorOfTheMean(scores: number[]): number {
+    let scored = scores.filter(x => x != null);
 
-    if (scores.length == 0) {
+    if (scored.length == 0) {
       return 0;
     }
 
-    return math.std(scores) / math.sqrt(scores.length);
+    return math.std(scored) / math.sqrt(scored.length);
+  }
+
+  calculateClaimStatistics(exams: Exam[], numberOfLevels: number): ClaimStatistics[] {
+    let stats = [];
+
+    if (exams == null || exams.length == 0 || exams[0].claimScores == null) return stats;
+
+    for (let i = 0; i < exams[0].claimScores.length; i++) {
+      let claimStats = <ClaimStatistics>{
+        id: i,
+        levels: this.groupLevels(exams.map(ex => ex.claimScores[i]), numberOfLevels)
+      };
+
+      claimStats.percents = this.mapGroupLevelsToPercents(claimStats.levels);
+      stats.push(claimStats);
+    }
+
+    return stats;
   }
 
   getOnlyScoredExams(exams: Exam[]): Exam[] {
     return exams.filter(x => x && x.score);
   }
 
-  groupLevels(exams, numberOfLevels): ExamStatisticsLevel[] {
+  groupLevels(exams, numberOfLevels: number): ExamStatisticsLevel[] {
     let levels = [];
 
     for (let i = 0; i < numberOfLevels; i++) {
@@ -65,11 +84,14 @@ export class ExamStatisticsCalculator {
 
   aggregateItemsByPoints(assessmentItems: AssessmentItem[]) {
     for (let item of assessmentItems) {
+      const scoreCount: number = item.scores.reduce((count, score) =>
+        score.points >= 0 ? count + 1 : count
+      , 0);
       for (let i = 0; i <= item.maxPoints; i++) {
         if (item.scores.length > 0) {
           let count = item.scores.filter(x => x.points == i).length;
           item[ this.NumberFieldPrefix + i ] = count;
-          item[ this.PercentFieldPrefix + i ] = count / item.scores.length * 100;
+          item[ this.PercentFieldPrefix + i ] = scoreCount > 0 ? count / scoreCount * 100 : 0;
         }
         else {
           item[ this.NumberFieldPrefix + i ] = 0;
@@ -94,19 +116,19 @@ export class ExamStatisticsCalculator {
     return pointFields;
   }
 
-  aggregateWritingTraitScores(assessmentItems: AssessmentItem[]) : WritingTraitScoreSummary[] {
+  aggregateWritingTraitScores(assessmentItems: AssessmentItem[]): WritingTraitScoreSummary[] {
     let summaries: WritingTraitScoreSummary[] = [];
 
     assessmentItems.forEach(assessmentItem => {
       let summary = new WritingTraitScoreSummary();
-      let itemsWithTraitScores = assessmentItem.scores.filter(x => x.writingTraitScores != null);
+      let itemsWithTraitScores = assessmentItem.scores.filter(x => x.points >= 0 && x.writingTraitScores != null);
       let totalAnswers = itemsWithTraitScores.length;
 
       itemsWithTraitScores.forEach((score, index) => {
-        summary.evidence.numbers[score.writingTraitScores.evidence]++;
-        summary.organization.numbers[score.writingTraitScores.organization]++;
-        summary.conventions.numbers[score.writingTraitScores.conventions]++;
-        summary.total.numbers[score.points]++;
+        summary.evidence.numbers[ score.writingTraitScores.evidence ]++;
+        summary.organization.numbers[ score.writingTraitScores.organization ]++;
+        summary.conventions.numbers[ score.writingTraitScores.conventions ]++;
+        summary.total.numbers[ score.points ]++;
       });
 
       // calculate the averages and the percents based on the raw numbers
@@ -118,7 +140,7 @@ export class ExamStatisticsCalculator {
           total += num * index;
           count += num;
 
-          aggregate.percents[index] = totalAnswers == 0 ? 0 : num / totalAnswers * 100;
+          aggregate.percents[ index ] = totalAnswers == 0 ? 0 : num / totalAnswers * 100;
         });
 
         aggregate.average = count == 0 ? 0 : total / count;
@@ -134,17 +156,21 @@ export class ExamStatisticsCalculator {
     for (let item of assessmentItems) {
       this.assertNumberOfChoicesIsValid(item.numberOfChoices);
 
-      for (let i = 0; i < item.numberOfChoices; i++) {
-        let response = this.potentialResponses[ i ];
+      //Only include "scored" item scores
+      const itemScores: ExamItemScore[] = item.scores.filter(score => score.points >= 0);
 
-        if (item.scores.length > 0) {
-          let compareFunction = item.type == 'MS'
+      for (let i = 0; i < item.numberOfChoices; i++) {
+        const response = this.potentialResponses[ i ];
+
+        if (itemScores.length > 0) {
+          const compareFunction = item.type == 'MS'
             ? (x => x.response != null && x.response.indexOf(response) !== -1)
             : (x => x.response == response);
 
-          let count = item.scores.filter(compareFunction).length;
+          let count = itemScores.filter(compareFunction).length;
+
           item[ this.NumberFieldPrefix + response ] = count;
-          item[ this.PercentFieldPrefix + response ] = count / item.scores.length * 100;
+          item[ this.PercentFieldPrefix + response ] = count / itemScores.length * 100;
         }
         else {
           item[ this.NumberFieldPrefix + response ] = 0;
@@ -172,10 +198,38 @@ export class ExamStatisticsCalculator {
     return pointFields;
   }
 
-  assertNumberOfChoicesIsValid(numberOfChoices) {
+  assertNumberOfChoicesIsValid(numberOfChoices: number) {
     // Assert we have a defined potential response for the given number of choices.
     if (numberOfChoices >= this.potentialResponses.length) {
       throw Error("Undefined potential response for given number of choices.");
     }
+  }
+
+  /**
+   * Takes an array of percents and makes them integers that sum to 100 exactly
+   * Used for data widths where it needs to be exact and not 99 or 101 due to rounding
+   * @param {number[]} percents
+   * @returns {number[]}
+   */
+  getDataWidths(percents: number[]): number[] {
+    // make sure the percents are whole numbers
+    let dataWidths = percents.map((x, index) => {
+      return { index: index, percent: Math.round(x), diff: Math.round(x) - x };
+    });
+    let total = dataWidths.map(x => x.percent).reduce((x, y) => x + y);
+
+    if (total == 100) return dataWidths.map(x => x.percent);
+
+    let diff = total > 100 ? -1 : 1;
+
+    // to get the total to equal 100, this adds or subtracts 1 from items prioritized by how much rounding was done
+    dataWidths.concat().sort((a, b) => (a.diff - b.diff) * diff ).forEach((x, index) => {
+      if (total != 100) {
+        dataWidths[x.index].percent += diff;
+        total += diff;
+      }
+    });
+
+    return dataWidths.map(x => x.percent);
   }
 }

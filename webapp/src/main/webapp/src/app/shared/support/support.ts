@@ -1,18 +1,64 @@
+import { isEmpty, isEqual, omitBy } from 'lodash';
+
+/**
+ * Expands support from string and Array to type Object as well
+ *
+ * @param value The value to test
+ */
+export function isNullOrEmpty(value: any): boolean {
+  return value == null || isEmpty(value);
+}
+
+/**
+ * Removes all fields with null values from the containing object.
+ * Example {a: undefined, b: null, c: false, d: 0, e: ''} -> {d: 0, e: ''}
+ *
+ * @param object The object to prune
+ */
+function removeNullAndFalseProperties(object: Object): Partial<Object> {
+  return omitBy(object, (value, key) => value == null || <any>value === false);
+}
+
+/**
+ * Tests for field by field equality recursively.
+ * This method treats undefined, null and false the same as a field being absent.
+ * This means that isEqual({a: undefined, b: null, c: false, d: 0, e: ''}, {d: 0, e: ''}) is true
+ *
+ * @param a
+ * @param b
+ */
+export function deepEqualsIgnoringNullAndFalse(a: Object, b: Object): boolean {
+  return isEqual(
+    removeNullAndFalseProperties(a),
+    removeNullAndFalseProperties(b)
+  );
+}
+
 export class Utils {
+  static equalSets(a: any[], b: any[]): boolean {
+    return (
+      a === b ||
+      (a != null &&
+        b != null &&
+        a.length === b.length &&
+        isEqual(a.concat().sort(), b.concat().sort()))
+    );
+  }
 
   static getPropertyValue(propertyPath: string, object: any): any {
-    let parts = propertyPath.split('.'),
-      property = object || this;
+    const parts = propertyPath.split('.');
+    let property = object || this;
 
     for (let i = 0; i < parts.length; i++) {
-      property = property[ parts[ i ] ];
+      property = property[parts[i]];
     }
     return property;
   }
 
   static newGuid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      const r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   }
@@ -33,6 +79,8 @@ export class Utils {
 
   /**
    * Checks to see if the string or array is <code>null</code>, <code>undefined</code> or empty.
+   *
+   * @deprecated
    *
    * @param {string | any[]} value
    * @returns {boolean}
@@ -71,7 +119,7 @@ export class Utils {
     const classes = {};
     if (!Utils.isNullOrEmpty(objectsOrStrings)) {
       objectsOrStrings.forEach(objectOrString => {
-        Object.assign(classes, Utils.toNgClassObject(objectOrString))
+        Object.assign(classes, Utils.toNgClassObject(objectOrString));
       });
     }
     return classes;
@@ -88,7 +136,7 @@ export class Utils {
     switch (typeof value) {
       case 'string':
         return value.split(/\s+/g).reduce((object, key) => {
-          object[ key ] = true;
+          object[key] = true;
           return object;
         }, {});
       case 'object':
@@ -129,7 +177,8 @@ export class Utils {
    * @returns {{x: number, y: number}} the element's absolute page offset
    */
   static getAbsoluteOffset(element: any): any {
-    let x = 0, y = 0;
+    let x = 0,
+      y = 0;
     do {
       x += element.offsetLeft || 0;
       y += element.offsetTop || 0;
@@ -161,10 +210,13 @@ export class Utils {
       return false;
     }
     const bounds = element.getBoundingClientRect();
-    return bounds.bottom > 0
-      && bounds.right > 0
-      && bounds.left < (window.innerWidth || document.documentElement.clientWidth)
-      && bounds.top < (window.innerHeight || document.documentElement.clientHeight);
+    return (
+      bounds.bottom > 0 &&
+      bounds.right > 0 &&
+      bounds.left <
+        (window.innerWidth || document.documentElement.clientWidth) &&
+      bounds.top < (window.innerHeight || document.documentElement.clientHeight)
+    );
   }
 
   /**
@@ -207,9 +259,7 @@ export class Utils {
    * @returns {boolean} true if the provided arrays are both defined and of equal length
    */
   static hasEqualLength(a: any[], b: any[]) {
-    return a != null
-      && b != null
-      && a.length === b.length;
+    return a != null && b != null && a.length === b.length;
   }
 
   /**
@@ -220,8 +270,8 @@ export class Utils {
    * @returns {string} the given name suffixed with "(N + 1)" or " (1)" if no "(N)" is provided
    */
   static appendOrIncrementFileNameSuffix(name: string): string {
-    return name.replace(/((\((\d+)\)(\s)?)?$)/, (a) => {
-      if (a == '') {
+    return name.replace(/((\((\d+)\)(\s)?)?$)/, (a: string) => {
+      if (a === '') {
         return ` (1)`;
       }
       return `(${Number(a.replace(/[()]/g, '')) + 1})`;
@@ -237,4 +287,27 @@ export class Utils {
   static camelCaseToDash(str: string): string {
     return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
   }
+}
+
+/**
+ * Creates a string based on the provided parameters
+ * This method assumes the parameters is a basic javascript object and contains only primitive types
+ * This is useful when caching results based on request or route parameters
+ *
+ * @param parameters the object to create the key from
+ * @returns {string} the key
+ */
+export function serializeURLParameters(parameters: any): string {
+  return Object.entries(parameters)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => key + '=' + value) // TODO add explicit support for array values
+    .join('&');
+}
+
+export function range(start: number, end: number): number[] {
+  const values = [];
+  for (let i = start; i <= end; i++) {
+    values.push(i);
+  }
+  return values;
 }

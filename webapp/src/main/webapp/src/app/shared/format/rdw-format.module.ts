@@ -3,11 +3,18 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
 import { SchoolYearPipe } from "./school-year.pipe";
 import { SchoolYearsPipe } from "./school-years.pipe";
+import { SessionPipe } from './session.pipe';
+import { StudentNamePipe } from './student-name.pipe';
+import { StudentNameService } from './student-name.service';
+import { StudentPipe } from './student.pipe';
 
 @NgModule({
   declarations: [
     SchoolYearPipe,
-    SchoolYearsPipe
+    SchoolYearsPipe,
+    SessionPipe,
+    StudentNamePipe,
+    StudentPipe
   ],
   imports: [
     BrowserModule,
@@ -15,11 +22,18 @@ import { SchoolYearsPipe } from "./school-years.pipe";
   ],
   exports: [
     SchoolYearPipe,
-    SchoolYearsPipe
+    SchoolYearsPipe,
+    SessionPipe,
+    StudentNamePipe,
+    StudentPipe
   ],
   providers: [
     SchoolYearPipe,
-    SchoolYearsPipe
+    SchoolYearsPipe,
+    SessionPipe,
+    StudentNamePipe,
+    StudentNameService,
+    StudentPipe
   ]
 })
 export class RdwFormatModule {

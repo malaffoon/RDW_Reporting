@@ -1,6 +1,5 @@
 import { async, TestBed } from "@angular/core/testing";
-import { Observable } from "rxjs/Observable";
-import { Observer } from "rxjs/Observer";
+import { Observable ,  Observer ,  of } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { APP_BASE_HREF } from "@angular/common";
 import { AssessmentsComponent } from "./assessments.component";
@@ -15,7 +14,6 @@ import { CommonModule } from "../shared/common.module";
 import { Angulartics2 } from 'angulartics2';
 import { UserService } from "../user/user.service";
 import { MockUserService } from "../../test/mock.user.service";
-import { of } from 'rxjs/observable/of';
 import { ApplicationSettingsService } from '../app-settings.service';
 
 let examObserver: Observer<Exam[]>;
@@ -106,35 +104,6 @@ describe('AssessmentsComponent', () => {
     let actual = component.assessmentExams;
 
     expect(actual.length).toBe(0);
-  });
-
-  it('should cancel assessments in flight', () => {
-    let assessment = new Assessment();
-    assessment.id = 54;
-    assessment.selected = true;
-
-    component.showOnlyMostRecent = false;
-    component.availableAssessments = [ assessment ];
-
-    component.selectedAssessmentsChanged(assessment);
-
-    let actual = component.assessmentsLoading;
-    expect(actual.length).toBe(1);
-    expect(actual[ 0 ].assessment.id).toBe(assessment.id);
-    expect(component.assessmentExams.length).toBe(0);
-
-    assessment.selected = false;
-    component.selectedAssessmentsChanged(assessment);
-
-    actual = component.assessmentsLoading;
-    expect(actual.length).toBe(0);
-    expect(component.assessmentExams.length).toBe(0);
-
-    // Return mock api result, no one should be listening.
-    examObserver.next([ new Exam(), new Exam(), new Exam() ]);
-
-    expect(actual.length).toBe(0);
-    expect(component.assessmentExams.length).toBe(0);
   });
 });
 

@@ -20,7 +20,8 @@ import { DataService } from "../../shared/data/data.service";
 import { AssessmentPercentileService } from "../percentile/assessment-percentile.service";
 import { MockUserService } from "../../../test/mock.user.service";
 import { ApplicationSettingsService } from '../../app-settings.service';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
+import { SubjectService } from '../../subject/subject.service';
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -37,6 +38,9 @@ describe('AssessmentResultsComponent', () => {
 
   const mockApplicationSettingsService = jasmine.createSpyObj('ApplicationSettingsService', [ 'getSettings' ]);
   mockApplicationSettingsService.getSettings.and.callFake(() => of(settings));
+
+  const mockSubjectService = jasmine.createSpyObj('SubjectService', [ 'getSubjectDefinitionForAssessment' ]);
+  mockSubjectService.getSubjectDefinitionForAssessment.and.callFake(() => of(null));
 
   beforeEach(async(() => {
     dataService = new MockDataService();
@@ -63,7 +67,8 @@ describe('AssessmentResultsComponent', () => {
         CachingDataService,
         DataService,
         AssessmentPercentileService,
-        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService }
+        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
+        { provide: SubjectService, useValue: mockSubjectService }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
@@ -98,6 +103,18 @@ describe('AssessmentResultsComponent', () => {
     expect(component.sessions[ 1 ].id).toBe("ma-02");
   });
 
+  it('should take most recent date for each session', () => {
+    let assessmentExam = new AssessmentExam();
+    assessmentExam.exams.push(buildExam("Benoit", "ma-02", "2017-01-01T17:05:26Z"));
+    assessmentExam.exams.push(buildExam("Wood", "ma-01", "2017-03-01T17:05:26Z"));
+    assessmentExam.exams.push(buildExam("Joe", "ma-02", "2017-01-03T17:05:26Z"));
+    assessmentExam.exams.push(buildExam("Jane", "ma-01", "2017-03-02T17:05:26Z"));
+
+    component.assessmentExam = assessmentExam;
+    expect(component.sessions[ 0 ].date).toBe("2017-03-02T17:05:26Z");
+    expect(component.sessions[ 1 ].date).toBe("2017-01-03T17:05:26Z");
+  });
+
   it('should toggle sessions filtered to true and false', () => {
     let session = { id: "ma-02", filter: undefined, exams: [] };
 
@@ -124,12 +141,34 @@ describe('AssessmentResultsComponent', () => {
     expect(component.exams.length).toBe(0);
   });
 
+  it('should handle all null sessions', () => {
+    let assessmentExam = new AssessmentExam();
+    assessmentExam.exams.push(buildExam("Benoit", null, "2017-03-01T17:05:26Z"));
+    assessmentExam.exams.push(buildExam("Wood", null, "2017-03-01T17:05:26Z"));
+
+    component.assessmentExam = assessmentExam;
+    expect(component.sessions[ 0 ].filter).toBeTruthy();
+  });
+
+  it('should handle some null sessions', () => {
+    let assessmentExam = new AssessmentExam();
+    assessmentExam.exams.push(buildExam("Benoit", null, "2017-03-01T17:05:26Z"));
+    assessmentExam.exams.push(buildExam("Wood", "ma-12", "2017-03-01T17:05:26Z"));
+
+    component.assessmentExam = assessmentExam;
+    expect(component.sessions[ 0 ].filter).toBeTruthy();
+    expect(component.sessions[ 0 ].id).toBeNull();
+    expect(component.sessions[ 1 ].filter).toBeFalsy();
+    expect(component.sessions[ 1 ].id).toEqual("ma-12");
+  });
+
   function buildExam(studentName: string, session: string, date: any) {
     let exam = new Exam();
     exam.student = new Student();
     exam.student.lastName = studentName;
     exam.session = session;
     exam.date = date;
+    exam.claimScores = [];
 
     return exam;
   }

@@ -1,8 +1,9 @@
-import { Organization } from "../../shared/organization/organization";
+import { Organization } from '../../shared/organization/organization';
+import { Subgroup } from '../subgroup/subgroup';
+import { TargetReportingLevel } from "../../assessments/model/aggregate-target-score-row.model";
 
 /**
  * This model represents an aggregate report data table row result.
- * TODO rename to row?
  */
 export class AggregateReportItem {
   itemId: number;
@@ -15,8 +16,8 @@ export class AggregateReportItem {
   avgStdErr: number;
   studentsTested: any;
   performanceLevelByDisplayTypes: {
-    [performanceLevelDisplayType: string]: {
-      [valueDisplayType: string]: number[]
+    [ performanceLevelDisplayType: string ]: {
+      [ valueDisplayType: string ]: number[]
     }
   } = {
     Separate: {
@@ -29,6 +30,13 @@ export class AggregateReportItem {
     }
   };
   organization: Organization;
-  dimension: {id: string, name: string};
+  subgroup: Subgroup;
+  studentRelativeResidualScoresLevel?: TargetReportingLevel;
+  standardMetRelativeResidualLevel?: TargetReportingLevel;
+  targetNaturalId?: string;
+
+  // NOTE That for Claim reports, this represents a Scorable claim code (e.g. SOCK_R)
+  // For Target reports, this represents an Organizational claim code (e.g. 1-LT)
+  claimCode?: string;
 }
 

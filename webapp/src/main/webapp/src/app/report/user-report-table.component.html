@@ -1,0 +1,104 @@
+<p-table
+  [columns]="columns"
+  [value]="rows"
+  [autoLayout]="true"
+  sortField="report.created"
+  [sortOrder]="-1"
+  dataKey="id"
+  styleClass="table table-striped table-hover"
+>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th
+        *ngFor="let column of columns"
+        [pSortableColumn]="column.sortField"
+        [ngSwitch]="column.id"
+      >
+        <div *ngSwitchDefault>
+          {{ 'user-report-table.column.' + column.id + '.heading' | translate }}
+        </div>
+
+        <p-sortIcon [field]="column.sortField"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row let-columns="columns">
+    <tr>
+      <td *ngFor="let column of columns" [ngSwitch]="column.id">
+        <ng-template
+          *ngSwitchCase="'name'"
+          [ngTemplateOutlet]="nameTemplate || defaultNameTemplate"
+          [ngTemplateOutletContext]="row"
+        ></ng-template>
+
+        <ng-container *ngSwitchCase="'type'">
+          {{ 'reports.report-type.' + row.report.query.type | translate }}
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'assessmentTypes'">
+          {{
+            (row.report.query.assessmentTypeCode
+              ? 'common.assessment-type.' +
+                row.report.query.assessmentTypeCode +
+                '.short-name'
+              : 'reports.all') | translate
+          }}
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'subjects'">
+          <ng-container *ngIf="row.subjectCodes.length === 0">
+            {{ 'reports.all' | translate }}
+          </ng-container>
+          <ng-container
+            *ngFor="let subjectCode of row.subjectCodes; let last = last"
+          >
+            {{ 'subject.' + subjectCode + '.name' | translate
+            }}<ng-container *ngIf="!last">, </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'schoolYears'">
+          <ng-container
+            *ngFor="let schoolYear of row.schoolYears; let last = last"
+          >
+            {{ schoolYear | schoolYear
+            }}<ng-container *ngIf="!last">, </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <span
+          *ngSwitchCase="'status'"
+          class="label border-only"
+          [ngClass]="{
+            'blue-dark': row.report.status === 'COMPLETED',
+            aqua:
+              row.report.status === 'PENDING' ||
+              row.report.status === 'RUNNING',
+            maroon:
+              row.report.status === 'FAILED' ||
+              row.report.status === 'NO_RESULTS'
+          }"
+        >
+          {{ 'reports.status.' + row.report.status | translate }}
+        </span>
+
+        <ng-container *ngSwitchCase="'created'">
+          {{ row.report.created | date: 'medium' }}
+        </ng-container>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length">
+        {{ 'common.no-results' | translate }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<ng-template #defaultNameTemplate let-userReport="report">
+  {{ userReport.label }}
+</ng-template>

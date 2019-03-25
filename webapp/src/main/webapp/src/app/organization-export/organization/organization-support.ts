@@ -1,4 +1,4 @@
-import { OrganizationType } from "./organization-type.enum";
+import { OrganizationType } from './organization-type.enum';
 
 /**
  * Creates a UUID by compounding the organization type and ID
@@ -7,6 +7,9 @@ import { OrganizationType } from "./organization-type.enum";
  * @param {number} id the organization entity ID
  * @returns {string} the UUID
  */
-export const createUuid = (type: OrganizationType, id: number): string => {
+export const createCompositeId = (
+  type: OrganizationType,
+  id: number
+): string => {
   return `${type}-${id}`;
 };

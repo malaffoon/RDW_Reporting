@@ -14,9 +14,18 @@ the config-repo file. These are properties that vary depending on the environmen
 names for external services.
 * Secrets should be specified only in the config-repo file, and they should be encrypted using the config server.
 
+#### PII Data
+This system is designed to ingest student test results which includes sensitive Personally Identifiable Information.
+Although the system will be run in a secure environment, separation of duties dictates that system admins, devops, etc.
+should never see PII. For developers this means that no PII or secrets (e.g. credentials) should ever be logged or
+made available through unsecured interfaces. Put simply: do not log student information or client/user credentials, nor
+include that information in any system status/monitoring end-points.
+
+
 ### Version Control Conventions
 Repo: https://github.com/SmarterApp/RDW_Reporting
-Config Repo: https://gitlab.com/fairwaytech/sbac-config-repo
+Deploy Repo: https://gitlab.com/fairwaytech/RDW_Deployment
+Config Repo: https://gitlab.com/fairwaytech/RDW_Config
 
 This project follows the common convention of having two main branches with infinite lifetime: `master` is the main
 branch where HEAD contains the production-ready state, while `develop` is the main branch where HEAD contains the 
@@ -97,6 +106,19 @@ should be able to (you can also change the port if desired):
 java -jar build/libs/rdw-reporting*.jar --server.port=8088
 open http://localhost:8088
 ```
+
+It would be great if somebody could provide instructions for running the micro-services without the fronting webapp.
+One big issue is security and getting a proper test user in context. For now, here are some crude instructions for
+running admin-service well enough to test one controller end-point:
+1. Create a Spring Boot configuration (i'm using IntelliJ)
+    * Set main class to `org.opentestsystem.rdw.admin.Application`
+    * Set program arguments to `--app.test-mode=true --security.user.name=user --security.user.password=pass`
+1. Run it and set your breakpoint
+1. Hit the endpoint
+```bash
+curl -u user:pass -X POST  http://localhost:8080/studentGroups -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' --data-binary $'------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name="file"; filename="demo 演示.csv"\r\nContent-Type: text/csv\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--\r\n'
+```
+1. Note: there isn't a User for the security context so stuff will probably fail quickly.
 
 ### Posterity
 This project was created on Mac OS with the below instructions:

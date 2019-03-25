@@ -1,23 +1,16 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SharedModule } from "primeng/components/common/shared";
-import { Angulartics2Module } from "angulartics2";
-import { CommonModule } from "../shared/common.module";
-import { OrganizationExportComponent } from "./organization-export.component";
-import { UserModule } from "../user/user.module";
-import { OrganizationService } from "./organization/organization.service";
-import { OrganizationMapper } from "./organization/organization.mapper";
-import { OrganizationTreeComponent } from "./organization/organization-tree.component";
-import { UserOrganizationsResolve } from "./organization/user-organizations.resolve";
-import { OrganizationExportService } from "./organization-export.service";
-import { OrganizationGroupingService } from "./organization-grouping.service";
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'primeng/components/common/shared';
+import { Angulartics2Module } from 'angulartics2';
+import { CommonModule } from '../shared/common.module';
+import { OrganizationExportComponent } from './organization-export.component';
+import { UserModule } from '../user/user.module';
+import { UserOrganizationService } from './organization/user-organization.service';
+import { OrganizationTreeComponent } from './organization/organization-tree.component';
 
 @NgModule({
-  declarations: [
-    OrganizationExportComponent,
-    OrganizationTreeComponent
-  ],
+  declarations: [OrganizationExportComponent, OrganizationTreeComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -25,19 +18,9 @@ import { OrganizationGroupingService } from "./organization-grouping.service";
     CommonModule,
     SharedModule,
     UserModule,
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot()
   ],
-  exports: [
-    OrganizationExportComponent,
-    OrganizationTreeComponent
-  ],
-  providers: [
-    OrganizationExportService,
-    OrganizationService,
-    OrganizationMapper,
-    OrganizationGroupingService,
-    UserOrganizationsResolve
-  ]
+  exports: [OrganizationExportComponent],
+  providers: [UserOrganizationService]
 })
-export class OrganizationExportModule {
-}
+export class OrganizationExportModule {}

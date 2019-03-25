@@ -34,13 +34,86 @@ sql:
         and sg.id=:group_id
       group by sg.id
 
+  teacherGroup:
+    findAllByUsername: >-
+      SELECT
+        tsg.id,
+        tsg.name,
+        s.code as subject_code
+      FROM teacher_student_group tsg
+        LEFT JOIN subject s ON s.id = tsg.subject_id
+      WHERE tsg.user_login = :user_login
+        AND tsg.school_year = :school_year
+      GROUP BY tsg.id
+
+    findOneByUsernameAndId: >-
+      SELECT
+        tsg.id,
+        tsg.name,
+        s.code as subject_code,
+        GROUP_CONCAT(tsgm.student_id SEPARATOR '|') AS student_ids
+      FROM teacher_student_group tsg
+        LEFT JOIN subject s ON s.id = tsg.subject_id
+        LEFT JOIN teacher_student_group_membership tsgm ON tsgm.teacher_student_group_id = tsg.id
+      WHERE tsg.id = :id
+        AND tsg.user_login = :user_login
+        AND tsg.school_year = :school_year
+      GROUP BY tsg.id
+
+    create: >-
+      INSERT INTO teacher_student_group (name, subject_id, school_year, user_login)
+      SELECT
+        :name,
+        CASE WHEN (:subject_code IS NULL)
+          THEN NULL
+          ELSE (SELECT id from subject where code = :subject_code) END,
+        :school_year,
+        :user_login
+
+    update: >-
+      UPDATE teacher_student_group tsg
+      LEFT JOIN subject s ON s.code = :subject_code
+      SET
+        name = :name,
+        subject_id = s.id
+      WHERE tsg.id = :id
+        AND tsg.school_year = :school_year
+
+    delete: >-
+      DELETE FROM teacher_student_group
+      WHERE id = :id
+        AND school_year = :school_year
+
+  teacherGroupMembership:
+    findAllStudentIdsByGroupId: >-
+      SELECT student_id
+      FROM teacher_student_group_membership
+      WHERE teacher_student_group_id = :group_id
+
+    create: >-
+      INSERT INTO teacher_student_group_membership (teacher_student_group_id, student_id)
+      VALUES (:group_id, :student_id)
+
+    delete: >-
+      DELETE FROM teacher_student_group_membership
+      WHERE teacher_student_group_id = :group_id
+        AND student_id = :student_id
+
+    deleteAllByGroupId: >-
+      DELETE FROM teacher_student_group_membership
+      WHERE teacher_student_group_id = :group_id
+
   assessment:
+    findTargetReportEnabled: >-
+      SELECT sat.target_report
+        FROM asmt a JOIN subject_asmt_type sat ON sat.subject_id = a.subject_id AND sat.asmt_type_id = a.type_id
+        WHERE a.id = :asmt_id
+
     item:
       findAllForAssessment: >-
         ${sql.reporting.snippet.selectFromItem}
           join asmt a on i.asmt_id=a.id
-        where a.type_id in (:assessmentTypes)
-        and i.asmt_id=:assessment_id
+        where i.asmt_id=:assessment_id
         and (1=:includeAllItemTypes or i.type in (:types))
 
       findAllForExam: >-
@@ -62,6 +135,14 @@ sql:
         where p.asmt_id = :assessmentId AND :endDate >= start_date AND end_date >= :startDate
         ORDER BY start_date, percentile_rank
 
+    target:
+      findAllForAssessment: >-
+        SELECT t.id, t.natural_id, c.code as claim_code, at.asmt_id, at.include_in_report
+          FROM asmt_target at
+            JOIN target t ON at.target_id =  t.id
+            JOIN claim c ON c.id = t.claim_id
+          WHERE at.asmt_id = :asmt_id
+
   student:
     findOneById: >-
       select id,
@@ -75,16 +156,14 @@ sql:
   elas:
     findAll: >-
       select code
-      from elas order by id;
+      from elas
+      order by id
 
   ethnicity:
-    findAll: >-
-      select id, code
-      from ethnicity
-
     findAllCodes: >-
       select code
       from ethnicity
+      order by id
 
     findEthnicityCodesByStudentIds: >-
       select student_id, ethnicity_code
@@ -100,26 +179,48 @@ sql:
   gender:
     findAll: >-
       select code
-      from gender order by id;
+      from gender
+      order by id
+
+  language:
+    findAll: >-
+      select code
+      from language
+      order by display_order
+
+  militaryCode:
+    findAll: >-
+      select code
+      from military_connected
+      order by id
+
+  subject:
+    findAll: >-
+      select code
+      from subject
+      order by id
 
   status:
     readTest: >-
       SELECT code FROM asmt_type
 
-  target:
-    findOneById: >-
-      SELECT id, description FROM target where id=:target_id
-
-  commonCoreStandard:
-    findAllByItemId: >-
-      select ccs.id, ccs.natural_id, ccs.description
-      from common_core_standard ccs
-        join item_common_core_standard iccs on iccs.common_core_standard_id = ccs.id
-      where iccs.item_id = :item_id
-
   instructionalResource:
-    findAllByAssessmentId: >-
+    findAllByAssessmentIdAndSchoolId: >-
       SELECT
+        ir.performance_level,
+        ir.resource,
+        ir.org_level,
+        NULL AS org_name
+      FROM instructional_resource ir
+        JOIN asmt
+          ON asmt.name = ir.asmt_name
+      WHERE asmt.id = :asmt_id
+        AND
+        (
+          ir.org_level = 'System'
+          OR ir.org_level = 'State'
+        )
+      UNION SELECT
         ir.performance_level,
         ir.resource,
         ir.org_level,
@@ -144,9 +245,7 @@ sql:
         AND school.id = :school_id
         AND
         (
-          ir.org_level = 'System'
-          OR ir.org_level = 'State'
-          OR (ir.org_level = 'DistrictGroup' AND district_group.id IS NOT NULL)
+          (ir.org_level = 'DistrictGroup' AND district_group.id IS NOT NULL)
           OR (ir.org_level = 'District' AND district.id IS NOT NULL)
           OR (ir.org_level = 'SchoolGroup' AND school_group.id IS NOT NULL)
         )
@@ -154,21 +253,24 @@ sql:
   reporting:
     snippet:
         selectFromItem: >-
-           select
+           SELECT
               i.id,
               i.natural_id,
               i.position,
               i.difficulty_code,
               i.max_points,
               i.claim_code,
-              i.target_code,
               i.target_id,
-              i.dok_level_subject_id,
+              t.natural_id as target_natural_id,
               i.math_practice_code,
               i.allow_calc,
               i.common_core_standard_ids,
               i.answer_key,
               i.options_count,
               i.type,
-              i.performance_task_writing_type
-            from item i
+              i.performance_task_writing_type,
+              dok.level as dok_level,
+              dok.reference as dok_reference
+            FROM item i
+              JOIN depth_of_knowledge dok ON dok.id = i.dok_id
+              JOIN target t ON t.id = i.target_id

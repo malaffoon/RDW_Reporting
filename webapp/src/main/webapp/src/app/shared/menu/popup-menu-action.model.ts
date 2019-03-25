@@ -1,8 +1,7 @@
 /**
  * This model represents a menu action.
  */
-import { Observable } from "rxjs/Observable";
-import { of } from 'rxjs/observable/of';
+import { Observable ,  of } from "rxjs";
 
 export class PopupMenuAction {
   public isDisabled: (rowItem: any) => boolean = () => false;

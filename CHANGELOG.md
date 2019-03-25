@@ -1,11 +1,56 @@
 ## Change Log
 
-#### 1.2.X
+#### 1.4.0
 
+* Add saved queries
+* Add toggle for empty aggregate report rows
+* Add ability to hide student filters for teachers or for all users
+    * The reporting.english-learners configuration is now replaced by reporting.student-filters
+* Change report related text configuration locations in en.json:
+    * common.aggregate-report-type.*
+    * report-download.orders.*
+    * reports.report-type.*
+    
+#### 1.3.0 - 2019-02-05
+
+* Change aggregate report table to scroll instead of paging.
+* Fix issue with responsive menu in app header.
+* Honor school-year discriminator for accommodation text.
+* Add language as a filter and subgroup for reports.
+* Honor target report flag for subject summative assessments.
+* Change aesthetics of writing trait score breakdown.
+* Change administrator tools aesthetics in landing page.
+    * home.admin-tools.titles.{analyze,manage} replaced with home.admin-tools.titles.administrator-tools.
+* Upgraded node modules (Angular 5 to Angular 7, RxJs 5 to 6)
+
+#### 1.2.4 - 2018-11-19
+
+* Tweak organization selector in District/School Export screen to support more schools.
+
+#### 1.2.3 - 2018-10-01
+
+* Fix order of claims on ICA/Summative reports.
+
+#### 1.2.2 - 2018-08-01
+
+* Address bug with schools not appearing in District/School Export screen.
+
+#### 1.2.1 - 2018-07-06
+
+* Configurable Subjects.
+* Improve handling of optional fields.
+
+#### 1.2.0 - 2018-06-23
+
+* Extend Custom Aggregate Reports to include IABs.
+* Longitudinal Reports.
+* Student Response Reports.
+* Teacher-Created Groups
+* English Language Acquisition Status
 * Improved architecture:
     * Web application no longer requires reporting service to be running for basic functionality
     * Organizes system level configuration more logically
-    * NOTE: this requires updating configuration files for each module
+    * NOTE: this requires updating configuration and container spec files for each module
 
 #### 1.1.4 - 2018-04-06
 

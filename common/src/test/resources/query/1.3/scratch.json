@@ -1,0 +1,163 @@
+{
+  "id": 62,
+  "status": "PENDING",
+  "label": "Custom Aggregate Report (1) - retry 2",
+  "created": "2019-03-04T23:05:39.493Z",
+  "query": {
+    "name": "Custom Aggregate Report (1) - retry 2",
+    "subjectCodes": [
+      "newsubject",
+      "minisub",
+      "ELA",
+      "Math"
+    ],
+    "assessmentTypeCode": "sum",
+    "assessmentGradeCodes": [
+      "03",
+      "04",
+      "05"
+    ],
+    "includeState": true,
+    "includeAllDistricts": false,
+    "includeAllSchoolsOfDistricts": true,
+    "includeAllDistrictsOfSchools": true,
+    "districtIds": [],
+    "schoolIds": [
+      7
+    ],
+    "completenessCodes": [
+      "Complete"
+    ],
+    "administrativeConditionCodes": [
+      "Valid"
+    ],
+    "showEmpty": true,
+    "valueDisplayType": "Percent",
+    "achievementLevelDisplayType": "Separate",
+    "columnOrder": [
+      "organization",
+      "assessmentGrade",
+      "schoolYear",
+      "dimension"
+    ],
+    "dimensionTypes": [
+      "Gender",
+      "MigrantStatus"
+    ],
+    "studentFilters": {
+      "genderCodes": [
+        "Male",
+        "Female"
+      ],
+      "ethnicityCodes": [
+        "HispanicOrLatinoEthnicity",
+        "AmericanIndianOrAlaskaNative",
+        "Asian",
+        "BlackOrAfricanAmerican",
+        "White"
+      ],
+      "elasCodes": [
+        "EO",
+        "EL",
+        "IFEP"
+      ],
+      "migrantStatusCodes": [
+        "yes"
+      ],
+      "section504Codes": [
+        "yes"
+      ]
+    },
+    "subgroups": {},
+    "schoolYears": [
+      2019,
+      2018,
+      2017
+    ],
+    "type": "CustomAggregate",
+    "filteredSubgroupQuery": false
+  },
+  "metadata": {}
+}
+
+{
+  "id": 63,
+  "status": "PENDING",
+  "label": "Custom Aggregate Report (1) - retry 3",
+  "created": "2019-03-04T23:06:02.545Z",
+  "query": {
+    "name": "Custom Aggregate Report (1) - retry 3",
+    "subjectCodes": [
+      "newsubject",
+      "minisub",
+      "ELA",
+      "Math"
+    ],
+    "assessmentTypeCode": "sum",
+    "assessmentGradeCodes": [
+      "03",
+      "04",
+      "05"
+    ],
+    "includeState": true,
+    "includeAllDistricts": false,
+    "includeAllSchoolsOfDistricts": true,
+    "includeAllDistrictsOfSchools": true,
+    "districtIds": [],
+    "schoolIds": [
+      7
+    ],
+    "completenessCodes": [
+      "Complete"
+    ],
+    "administrativeConditionCodes": [
+      "Valid"
+    ],
+    "showEmpty": true,
+    "valueDisplayType": "Percent",
+    "achievementLevelDisplayType": "Separate",
+    "columnOrder": [
+      "organization",
+      "assessmentGrade",
+      "schoolYear",
+      "dimension"
+    ],
+    "dimensionTypes": [
+      "Gender",
+      "MigrantStatus"
+    ],
+    "studentFilters": {
+      "genderCodes": [
+        "Male",
+        "Female"
+      ],
+      "ethnicityCodes": [
+        "HispanicOrLatinoEthnicity",
+        "AmericanIndianOrAlaskaNative",
+        "Asian",
+        "BlackOrAfricanAmerican",
+        "White"
+      ],
+      "elasCodes": [
+        "EO",
+        "EL",
+        "IFEP"
+      ],
+      "migrantStatusCodes": [
+        "yes"
+      ],
+      "section504Codes": [
+        "yes"
+      ]
+    },
+    "subgroups": {},
+    "schoolYears": [
+      2019,
+      2018,
+      2017
+    ],
+    "type": "CustomAggregate",
+    "filteredSubgroupQuery": false
+  },
+  "metadata": {}
+}

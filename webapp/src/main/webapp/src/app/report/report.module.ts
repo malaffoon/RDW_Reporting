@@ -1,53 +1,88 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SharedModule } from "primeng/components/common/shared";
-import { ModalModule } from "ngx-bootstrap";
-import { Angulartics2Module } from "angulartics2";
-import { ReportService } from "./report.service";
-import { CommonModule } from "../shared/common.module";
-import { StudentReportDownloadComponent } from "./student-report-download.component";
-import { ReportsResolve } from "./reports.resolve";
-import { ReportsComponent } from "./reports.component";
-import { GroupReportDownloadComponent } from "./group-report-download.component";
-import { SchoolGradeDownloadComponent } from "./school-grade-report-download.component";
-import { ReportActionService } from "./report-action.service";
-import { ReportActionComponent } from "./report-action.component";
-import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
-import { TableModule } from "primeng/table";
+import { FactoryProvider, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'primeng/components/common/shared';
+import { ModalModule, TabsModule } from 'ngx-bootstrap';
+import { Angulartics2Module } from 'angulartics2';
+import { CommonModule } from '../shared/common.module';
+import { ReportsComponent } from './reports.component';
+import { RdwMenuModule } from '../shared/menu/rdw-menu.module';
+import { TableModule } from 'primeng/table';
+import { UserReportTableComponent } from './user-report-table.component';
+import { UserQueryTableComponent } from './user-query-table.component';
+import { UserReportService } from './user-report.service';
+import { UserQueryService } from './user-query.service';
+import { UserQueryStore } from './user-query.store';
+import { UserReportMenuOptionService } from './user-report-menu-option.service';
+import { UserQueryMenuOptionService } from './user-query-menu-option.service';
+import { UserReportStore } from './user-report.store';
+import { NameFieldProvider } from './provider/name-field.provider';
+import { AccommodationsFieldProvider } from './provider/accommodations-field-provider';
+import { AssessmentTypeFieldProvider } from './provider/assessment-type-field.provider';
+import { LanguageFieldProvider } from './provider/language-field.provider';
+import { OrderFieldProvider } from './provider/order-field.provider';
+import { SchoolYearFieldProvider } from './provider/school-year-field.provider';
+import { SubjectFieldProvider } from './provider/subject-field.provider';
+import { TransferAccessFieldProvider } from './provider/transfer-access-field.provider';
+import { ReportFormService } from './service/report-form.service';
+import { RdwFormModule } from '../shared/form/rdw-form.module';
+import { DeleteModalComponent } from './component/delete-modal/delete-modal.component';
+import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
+
+/**
+ * Each of these field providers configure how the form field
+ * 1. Will be constructed (declares dependencies)
+ * 2. How the form field should be configured (what label it should have etc.)
+ *
+ * The reason these various fields are split up is because they all have different dependencies
+ * and it felt weird resolving all of their dependencies and then passing the dependency blob
+ * to each of them whether they needed all the info or not
+ */
+export const FieldProviders: FactoryProvider[] = [
+  AccommodationsFieldProvider,
+  AssessmentTypeFieldProvider,
+  LanguageFieldProvider,
+  NameFieldProvider,
+  OrderFieldProvider,
+  SchoolYearFieldProvider,
+  SubjectFieldProvider,
+  TransferAccessFieldProvider
+];
 
 @NgModule({
-  declarations: [
-    ReportsComponent,
-    StudentReportDownloadComponent,
-    GroupReportDownloadComponent,
-    SchoolGradeDownloadComponent,
-    ReportActionComponent
-  ],
   imports: [
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,
     FormsModule,
     ModalModule.forRoot(),
     RdwMenuModule,
+    RdwFormModule,
     ReactiveFormsModule,
     SharedModule,
-    TableModule
-  ],
-  exports: [
-    ReportsComponent,
-    StudentReportDownloadComponent,
-    GroupReportDownloadComponent,
-    SchoolGradeDownloadComponent
+    TableModule,
+    TabsModule
   ],
   providers: [
-    ReportService,
-    ReportsResolve,
-    ReportActionService
-  ]
+    ReportFormService,
+    UserReportService,
+    UserReportStore,
+    UserReportMenuOptionService,
+    UserQueryService,
+    UserQueryStore,
+    UserQueryMenuOptionService,
+    ...FieldProviders
+  ],
+  declarations: [
+    DeleteModalComponent,
+    PrintableReportFormModalComponent,
+    ReportsComponent,
+    UserReportTableComponent,
+    UserQueryTableComponent
+  ],
+  entryComponents: [DeleteModalComponent, PrintableReportFormModalComponent],
+  exports: [PrintableReportFormModalComponent, ReportsComponent]
 })
-export class ReportModule {
-}
+export class ReportModule {}

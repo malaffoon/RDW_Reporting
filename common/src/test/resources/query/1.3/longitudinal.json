@@ -1,0 +1,50 @@
+{
+  "schoolYear": 0,
+  "name": "Longitudinal",
+  "accommodationsVisible": false,
+  "disableTransferAccess": false,
+  "query": {
+    "assessmentTypeCode": "sum",
+    "assessmentGradeCodes": [
+      "03",
+      "04",
+      "05"
+    ],
+    "includeState": true,
+    "includeAllDistricts": false,
+    "includeAllSchoolsOfDistricts": true,
+    "includeAllDistrictsOfSchools": true,
+    "schoolIds": [
+      7
+    ],
+    "completenessCodes": [
+      "Complete"
+    ],
+    "administrativeConditionCodes": [
+      "Valid"
+    ],
+    "showEmpty": true,
+    "valueDisplayType": "Percent",
+    "achievementLevelDisplayType": "Separate",
+    "columnOrder": [
+      "organization",
+      "assessmentGrade",
+      "schoolYear",
+      "dimension"
+    ],
+    "dimensionTypes": [
+      "Gender"
+    ],
+    "studentFilters": {},
+    "toSchoolYear": 2019,
+    "subjectCodes": [
+      "Math",
+      "ELA",
+      "minisub",
+      "newsubject"
+    ],
+    "reportType": "Longitudinal",
+    "filteredSubgroupQuery": false
+  },
+  "reportType": "AggregateReportRequest"
+}

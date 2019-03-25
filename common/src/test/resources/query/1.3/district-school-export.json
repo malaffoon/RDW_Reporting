@@ -1,0 +1,12 @@
+{
+  "schoolYear": 2018,
+  "name": "Rabbit Tanager ELA",
+  "accommodationsVisible": false,
+  "disableTransferAccess": false,
+  "schoolIds": [
+    11
+  ],
+  "schoolGroupIds": [],
+  "districtIds": [],
+  "reportType": "ExamExport"
+}

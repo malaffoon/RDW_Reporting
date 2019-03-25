@@ -74,6 +74,30 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
+  it('should detect changes to languageCodes', () =>{
+    let fixture = new FilterBy();
+    let actual = false;
+    fixture.onChanges.subscribe(property => {
+      expect(property).toBe('languageCodes');
+      actual = true;
+    });
+
+    fixture.languageCodes = [ true ];
+    expect(actual).toBeTruthy();
+  });
+
+  it('should detect changes to militaryConnectedCodes', () =>{
+    let fixture = new FilterBy();
+    let actual = false;
+    fixture.onChanges.subscribe(property => {
+      expect(property).toBe('militaryConnectedCodes');
+      actual = true;
+    });
+
+    fixture.militaryConnectedCodes = [ true ];
+    expect(actual).toBeTruthy();
+  });
+
   it('should detect changes to plan504', () =>{
     let fixture = new FilterBy();
     let actual = false;
@@ -134,8 +158,9 @@ describe('FilterBy model', () =>{
     fixture.iep = 1;
     fixture.limitedEnglishProficiency = 2;
     fixture.ethnicities[3] = true;
+    fixture.militaryConnectedCodes[2] = true;
 
-    expect(fixture.all.length).toBe(10);
+    expect(fixture.all.length).toBe(11);
     expect(fixture.all).toContain('offGradeAssessment');
     expect(fixture.all).toContain('administration');
     expect(fixture.all).toContain('summativeStatus');
@@ -146,6 +171,7 @@ describe('FilterBy model', () =>{
     expect(fixture.all).toContain('iep');
     expect(fixture.all).toContain('limitedEnglishProficiency');
     expect(fixture.all).toContain('ethnicities.3');
+    expect(fixture.all).toContain('militaryConnectedCodes.2');
   });
 
   it('should return only selected ethnicities', () =>{
@@ -168,5 +194,16 @@ describe('FilterBy model', () =>{
     expect(fixture.filteredGenders.length).toBe(2);
     expect(fixture.filteredGenders).toContain('Female');
     expect(fixture.filteredGenders).toContain('Nonbinary');
+  });
+
+  it('should return only selected militaryConnectedCodes', () => {
+    let fixture = new FilterBy();
+    fixture.militaryConnectedCodes['ActiveDuty'] = true;
+    fixture.militaryConnectedCodes["NotMilitaryConnected"] = true;
+    fixture.militaryConnectedCodes["NationalGuardOrReserve"] = false;
+
+    expect(fixture.filteredMilitaryConnectedCodes.length).toBe(2);
+    expect(fixture.filteredMilitaryConnectedCodes).toContain('ActiveDuty');
+    expect(fixture.filteredMilitaryConnectedCodes).toContain('NotMilitaryConnected');
   });
 });

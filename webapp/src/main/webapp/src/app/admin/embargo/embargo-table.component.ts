@@ -3,6 +3,7 @@ import { Embargo } from "./embargo";
 import { Toggle } from "./toggle.component";
 import { EmbargoToggleEvent } from "./embargo-toggle-event";
 import { EmbargoScope } from "./embargo-scope.enum";
+import { SubjectService } from '../../subject/subject.service';
 
 @Component({
   selector: 'embargo-table',
@@ -22,8 +23,7 @@ export class EmbargoTable implements OnInit {
   @Output()
   toggle: EventEmitter<EmbargoToggleEvent> = new EventEmitter<EmbargoToggleEvent>();
 
-  // TODO later this will be provided by a service and will be the actual subject codes: ELA, Math
-  subjectCodes: string[] = [ 'ELA', 'Math' ];
+  subjectCodes: string[] = [];
   columns: Column[];
 
   get hasMultipleEmbargoes(): boolean {
@@ -31,20 +31,27 @@ export class EmbargoTable implements OnInit {
   }
 
   get overridingEmbargoReleasedIndividual(): boolean {
-    return this.overridingEmbargo && !this.overridingEmbargo.individualEnabled
+    return this.overridingEmbargo && !this.overridingEmbargo.individualEnabled;
   }
 
   get overridingEmbargoReleasedAggregate(): boolean {
     return this.overridingEmbargo && !this.overridingEmbargo.aggregateEnabled;
   }
 
+  constructor(private subjectService: SubjectService) {
+  }
+
   ngOnInit(): void {
-    this.columns = [
-      new Column({id: 'name'}),
-      ...this.getSubjectColumns(),
-      new Column({id: 'individualEnabled'}),
-      new Column({id: 'aggregateEnabled'})
-    ];
+    this.subjectService.getSubjectCodes().subscribe(subjectCodes => {
+      this.subjectCodes = subjectCodes;
+
+      this.columns = [
+        new Column({id: 'name'}),
+        ...this.getSubjectColumns(),
+        new Column({id: 'individualEnabled'}),
+        new Column({id: 'aggregateEnabled'})
+      ];
+    });
   }
 
   toggleIndividual(toggle: Toggle, embargo: Embargo): void {
@@ -55,6 +62,10 @@ export class EmbargoTable implements OnInit {
   toggleAggregate(toggle: Toggle, embargo: Embargo): void {
     this.toggleInternal(toggle, embargo, EmbargoScope.Aggregate, embargo.aggregateEnabled,
       this.overridingEmbargo ? this.overridingEmbargo.aggregateEnabled : undefined);
+  }
+
+  getExamCount(embargo: Embargo, subjectCode) {
+    return embargo.examCountsBySubject[subjectCode] || 0;
   }
 
   private getSubjectColumns(): Column[] {

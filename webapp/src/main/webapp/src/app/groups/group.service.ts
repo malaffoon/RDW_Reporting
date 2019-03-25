@@ -1,29 +1,45 @@
 import { Injectable } from '@angular/core';
-import { CachingDataService } from '../shared/data/caching-data.service';
 import { ReportingServiceRoute } from '../shared/service-route';
 import { map } from 'rxjs/operators';
-import { Group } from '../groups/group';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { byString } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
+import { Group } from './group';
+import { DataService } from '../shared/data/data.service';
+import { CachingDataService } from '../shared/data/caching-data.service';
 
 @Injectable()
 export class GroupService {
 
-  constructor(private dataService: CachingDataService) {
+  constructor(private dataService: DataService,
+              private cachingDataService: CachingDataService) {
   }
 
   getGroups(): Observable<Group[]> {
-    return this.dataService.get(`${ReportingServiceRoute}/groups`).pipe(
-      map(serverGroups => serverGroups.map(serverGroup => {
-        // TODO make Group an interface
-        const group: Group = new Group();
-        group.id = serverGroup.id;
-        group.name = serverGroup.name;
-        group.schoolName = serverGroup.schoolName;
-        group.schoolId = serverGroup.schoolId;
-        group.subjectCode = serverGroup.subjectCode || 'ALL';
-        return group;
-      }))
-    )
+    return this.cachingDataService.get(`${ReportingServiceRoute}/groups`).pipe(
+      map(serverGroups => serverGroups
+        .map(serverGroup => this.toGroup(serverGroup))
+        .sort(ordering(byString).on<Group>(group => group.name).compare)
+      )
+    );
+  }
+
+  getGroup(groupId: number): Observable<Group> {
+    return this.dataService.get(`${ReportingServiceRoute}/groups/${groupId}`).pipe(
+      map(serverGroup => this.toGroup(serverGroup))
+    );
+  }
+
+  private toGroup(serverGroup: any): Group {
+    return {
+      id: serverGroup.id,
+      name: serverGroup.name,
+      schoolName: serverGroup.schoolName,
+      schoolId: serverGroup.schoolId,
+      subjectCode: serverGroup.subjectCode,
+      userCreated: serverGroup.userCreated,
+      totalStudents: serverGroup.studentCount
+    };
   }
 
 }

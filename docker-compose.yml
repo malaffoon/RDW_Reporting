@@ -1,14 +1,8 @@
 # docker-compose specs for rdw reporting service with the configuration server
 # running in a container and MySQL running natively (outside the containers).
 #
-# The following environment variables MUST be set before running this spec:
-#
-# DATAWAREHOUSE_HOST - host running mysql with rdw reporting schema initialized
-# For mac developers running mysql natively, something like:
-#   $ export DATAWAREHOUSE_HOST=$(ipconfig getifaddr en0)
-# This value may have to be reset when you change networks.
-#
-# CONFIG_SERVICE_REPO - git repo url, e.g. https://gitlab.com/fairwaytech/sbac-config-repo.git
+# The following environment variables MUST be set before running this spec, for config server:
+# CONFIG_SERVICE_REPO - git repo url, e.g. https://gitlab.com/fairwaytech/rdw_config.git
 # GIT_USER - user with rights to access CONFIG_SERVICE_REPO
 # GIT_PASSWORD - password for GIT_USER
 #
@@ -16,7 +10,7 @@
 # server local-docker profile points to that folder so developers should be able to reuse the saml.jks file
 # (NOTE: developers may have to explicitly share the /opt folder in Docker, Preferences, File Sharing)
 
-version: '2'
+version: '2.1'
 services:
   rabbitmq:
     image: rabbitmq:3-management
@@ -40,6 +34,10 @@ services:
       - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 10s
+      timeout: 2s
 
   webapp:
     image: smarterbalanced/rdw-reporting-webapp
@@ -53,13 +51,13 @@ services:
 #      - aggregate-service
       - report-processor-service
       - reporting-service
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
 
   admin-service:
     image: smarterbalanced/rdw-reporting-admin-service
@@ -71,12 +69,13 @@ services:
     links:
       - config-server
       - rabbitmq
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
 
 # uncomment to enable aggregate service
 #  aggregate-service:
@@ -88,12 +87,13 @@ services:
 #      - /tmp:/tmp
 #    links:
 #      - config-server
+#    depends_on:
+#      config-server:
+#        condition: service_healthy
 #    environment:
 #      - spring.profiles.active=local-docker
 #      - CONFIG_SERVICE_ENABLED=true
 #      - CONFIG_SERVICE_URL=http://config-server:8888
-#    extra_hosts:
-#      - "dwhost:$DATAWAREHOUSE_HOST"
 
   reporting-service:
     image: smarterbalanced/rdw-reporting-service
@@ -102,12 +102,13 @@ services:
       - 8108:8008
     links:
       - config-server
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
 
   report-processor-service:
     image: smarterbalanced/rdw-reporting-report-processor
@@ -120,14 +121,15 @@ services:
       - config-server
       - rabbitmq
       - wkhtmltopdf
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-    extra_hosts:
-      - "dwhost:$DATAWAREHOUSE_HOST"
 
   wkhtmltopdf:
-    image: smarterbalanced/wkhtmltopdf-image:latest
+    image: smarterbalanced/wkhtmltopdf-image:3.1.0
     ports:
       - 8082:80

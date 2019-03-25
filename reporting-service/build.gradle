@@ -7,7 +7,6 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
-    optional 'org.springframework.boot:spring-boot-configuration-processor'
     runtime 'org.springframework.boot:spring-boot-devtools'
     compile 'org.springframework.cloud:spring-cloud-starter-aws'
     compile 'org.springframework.cloud:spring-cloud-starter-config'
@@ -15,6 +14,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.retry:spring-retry'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     compile 'com.google.guava:guava'
     compile 'mysql:mysql-connector-java'
@@ -26,4 +26,14 @@ dependencies {
         exclude(module: 'commons-logging')
     }
     testCompile 'org.springframework.security:spring-security-test'
+}
+
+//This will allow for running of the multithreaded test application
+task runMTTest(type: JavaExec) {
+    group = 'Verification'
+    description = 'Runs MultiThreadedApplicationTest'
+    outputs.upToDateWhen { false }
+    doFirst { println "Running multithreaded tests..." }
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'org.opentestsystem.rdw.reporting.multithreaded.MultiThreadedApplicationTest'
 }

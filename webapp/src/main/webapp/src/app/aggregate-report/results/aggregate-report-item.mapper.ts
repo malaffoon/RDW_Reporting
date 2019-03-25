@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AggregateReportItem } from './aggregate-report-item';
-import { AggregateReportRow } from '../../report/aggregate-report';
-import { AssessmentDefinition } from '../assessment/assessment-definition';
+import { AggregateReportRow, AggregateReportRowMeasure } from '../../report/aggregate-report';
 import { OrganizationMapper } from '../../shared/organization/organization.mapper';
-import { SubgroupMapper } from '../subgroup.mapper';
-import {
-  AggregateReportQuery, StudentFilters
-} from '../../report/aggregate-report-request';
-import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
-import { SubgroupFiltersListItem } from '../subgroup-filters-list-item';
+import { SubgroupMapper } from '../subgroup/subgroup.mapper';
+import { SubjectDefinition } from '../../subject/subject';
+import { AggregateReportQueryType } from '../../report/report';
 
 /**
  * Maps server modeled aggregate report rows into client friendly table rows
@@ -17,49 +13,15 @@ import { SubgroupFiltersListItem } from '../subgroup-filters-list-item';
 export class AggregateReportItemMapper {
 
   constructor(private organizationMapper: OrganizationMapper,
-              private subgroupMapper: SubgroupMapper,
-              private requestMapper: AggregateReportRequestMapper) {
+              private subgroupMapper: SubgroupMapper) {
   }
 
-  createRow(query: AggregateReportQuery,
-            assessmentDefinition: AssessmentDefinition,
-            row: AggregateReportRow,
-            uuid: number): AggregateReportItem {
+  createRow(query: AggregateReportQueryType,
+            subjectDefinition: SubjectDefinition,
+            row: any,
+            uuid: number,
+            measuresGetter: (row: AggregateReportRow) => AggregateReportRowMeasure): AggregateReportItem {
 
-    if (query.queryType === 'Basic') {
-      return this.createBasicRow(assessmentDefinition, row, uuid);
-    }
-    if (query.queryType === 'FilteredSubgroup') {
-      const overall = this.subgroupMapper.createOverallSubgroupFiltersListItem();
-      return this.createFilteredSubgroupRow(assessmentDefinition, row, uuid, query.subgroups, overall);
-    }
-    throw new Error(`Unsupported query type "${query.queryType}"`);
-  }
-
-  createBasicRow(assessmentDefinition: AssessmentDefinition,
-                 row: AggregateReportRow,
-                 uuid: number): AggregateReportItem {
-
-    const item = this.createRowInternal(assessmentDefinition, row, uuid);
-    item.dimension = this.subgroupMapper.createDimension(row.dimension.type, row.dimension.code);
-    return item;
-  }
-
-  createFilteredSubgroupRow(assessmentDefinition: AssessmentDefinition,
-                            row: AggregateReportRow,
-                            uuid: number,
-                            subgroups: { [ key: string ]: StudentFilters },
-                            overall: SubgroupFiltersListItem): AggregateReportItem {
-
-    const item = this.createRowInternal(assessmentDefinition, row, uuid);
-    const serverSubgroup = subgroups[ row.subgroupKey ];
-    item.dimension = serverSubgroup
-      ? this.subgroupMapper.createSubgroupFiltersListItem(this.requestMapper.createSubgroupFilters(serverSubgroup))
-      : overall;
-    return item;
-  }
-
-  private createRowInternal(assessmentDefinition: AssessmentDefinition, row: AggregateReportRow, uuid: number): AggregateReportItem {
     const item = new AggregateReportItem();
     const itemPerformanceLevelCounts = item.performanceLevelByDisplayTypes.Separate.Number;
     const itemPerformanceLevelPercents = item.performanceLevelByDisplayTypes.Separate.Percent;
@@ -73,31 +35,34 @@ export class AggregateReportItemMapper {
     item.subjectCode = row.assessment.subjectCode;
     item.schoolYear = row.assessment.examSchoolYear;
     item.organization = this.organizationMapper.map(row.organization);
+    item.claimCode = row.claimCode;
+    item.targetNaturalId = row.targetNaturalId;
+    item.studentRelativeResidualScoresLevel = row.studentRelativeResidualScoresLevel;
+    item.standardMetRelativeResidualLevel = row.standardMetRelativeResidualLevel;
 
-    const measures: any = row.measures || {};
+    item.subgroup = this.subgroupMapper.fromAggregateReportRow(query, row);
+
+    const measures: any = measuresGetter(row) || {};
     item.avgScaleScore = measures.avgScaleScore || 0;
     item.avgStdErr = measures.avgStdErr || 0;
+    item.studentsTested = measures.studentCount;
 
-    let totalTested = 0;
-
-    for (let level = 1; level <= assessmentDefinition.performanceLevelCount; level++) {
+    for (let level = 1; level <= subjectDefinition.performanceLevelCount; level++) {
       const count = measures[ `level${level}Count` ] || 0;
-      totalTested += count;
       itemPerformanceLevelCounts.push(count);
     }
-    item.studentsTested = totalTested;
 
     for (let level = 0; level < itemPerformanceLevelCounts.length; level++) {
-      const percent = totalTested === 0 ? 0 : Math.floor((itemPerformanceLevelCounts[ level ] / totalTested) * 100);
+      const percent = item.studentsTested === 0 ? 0 : Math.floor((itemPerformanceLevelCounts[ level ] / item.studentsTested) * 100);
       itemPerformanceLevelPercents.push(percent);
     }
 
     // If there is a rollup level, calculate the grouped values
-    if (assessmentDefinition.performanceLevelGroupingCutPoint > 0) {
+    if (subjectDefinition.performanceLevelStandardCutoff > 0) {
       let belowCount = 0;
       let aboveCount = 0;
       for (let level = 0; level < itemPerformanceLevelCounts.length; level++) {
-        if (level < assessmentDefinition.performanceLevelGroupingCutPoint - 1) {
+        if (level < subjectDefinition.performanceLevelStandardCutoff - 1) {
           belowCount += itemPerformanceLevelCounts[ level ];
         } else {
           aboveCount += itemPerformanceLevelCounts[ level ];
@@ -107,8 +72,8 @@ export class AggregateReportItemMapper {
       itemGroupedPerformanceLevelCounts.push(belowCount);
       itemGroupedPerformanceLevelCounts.push(aboveCount);
 
-      itemGroupedPerformanceLevelPercents.push(totalTested === 0 ? 0 : Math.floor((belowCount / totalTested) * 100));
-      itemGroupedPerformanceLevelPercents.push(totalTested === 0 ? 0 : Math.floor((aboveCount / totalTested) * 100));
+      itemGroupedPerformanceLevelPercents.push(item.studentsTested === 0 ? 0 : Math.floor((belowCount / item.studentsTested) * 100));
+      itemGroupedPerformanceLevelPercents.push(item.studentsTested === 0 ? 0 : Math.floor((aboveCount / item.studentsTested) * 100));
     }
 
     return item;

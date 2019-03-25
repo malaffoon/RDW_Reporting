@@ -24,6 +24,9 @@ import { UserModule } from "../user/user.module";
 import { RdwMenuModule } from "../shared/menu/rdw-menu.module";
 import { StudentHistoryTableComponent } from "./results/tables/student-history-table.component";
 import { TableModule } from "primeng/table";
+import { GroupAssessmentCardComponent } from '../dashboard/group-dashboard/group-assessment-card.component';
+import { DashboardModule } from '../dashboard/dashboard.module';
+import { StudentResultsFilterService } from './results/student-results-filter.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,7 @@ import { TableModule } from "primeng/table";
     StudentHistoryTableComponent
   ],
   imports: [
-    Angulartics2Module.forChild(),
+    Angulartics2Module.forRoot(),
     AssessmentsModule,
     BrowserAnimationsModule,
     BrowserModule,
@@ -47,7 +50,8 @@ import { TableModule } from "primeng/table";
     ReportModule,
     SharedModule,
     TableModule,
-    UserModule
+    UserModule,
+    DashboardModule
   ],
   exports: [
     StudentComponent,
@@ -59,6 +63,7 @@ import { TableModule } from "primeng/table";
     StudentHistoryResponsesAssessmentResolve,
     StudentHistoryResponsesExamResolve,
     StudentHistoryResponsesStudentResolve,
+    StudentResultsFilterService,
     StudentResponsesResolve,
     StudentResponsesService
   ]

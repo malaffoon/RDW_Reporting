@@ -3,25 +3,21 @@
     <head>
         <div th:replace="fragments::meta"></div>
         <title th:text="${request.name}"></title>
-        <div th:replace="fragments::styles"></div>
+        <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css'>
+        <div th:replace="fragments::styles-libraries"></div>
+        <div th:replace="fragments::styles-general"></div>
     </head>
     <body class="pdf">
-        <div th:each="studentCompositeReport : ${studentCompositeReports}">
-            <div th:if="${studentCompositeReport.iabMath != null}"
-                 th:with="report=${studentCompositeReport.iabMath}">
-                <div th:replace="iab-body::body"></div>
-            </div>
-            <div th:if="${studentCompositeReport.iabEla != null}"
-                 th:with="report=${studentCompositeReport.iabEla}">
-                <div th:replace="iab-body::body"></div>
-            </div>
-            <div th:if="${studentCompositeReport.icaMath != null}"
-                 th:with="report=${studentCompositeReport.icaMath}">
-                <div th:replace="ica-body::body"></div>
-            </div>
-            <div th:if="${studentCompositeReport.icaEla != null}"
-                 th:with="report=${studentCompositeReport.icaEla}">
-                <div th:replace="ica-body::body"></div>
+        <div th:each="studentCompositeReport, studentStat : ${studentCompositeReports}"
+             th:class="${studentStat.last}? '' : 'break-page'">
+            <div th:each="report, reportStat : ${studentCompositeReport.reports}"
+                 th:class="${reportStat.last}? '' : 'break-page'">
+                <div th:if="${report.assessmentType == 'iab'}"
+                     th:include="iab-body::body"></div>
+                <div th:if="${report.assessmentType == 'ica'}"
+                     th:include="ica-body::body"></div>
+                <div th:if="${report.assessmentType == 'sum'}"
+                     th:include="sum-body::body"></div>
             </div>
         </div>
     </body>

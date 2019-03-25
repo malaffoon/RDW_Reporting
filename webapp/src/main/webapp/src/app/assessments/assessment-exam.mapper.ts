@@ -1,16 +1,18 @@
-import { Injectable } from "@angular/core";
-import { AssessmentExam } from "./model/assessment-exam.model";
-import { Assessment } from "./model/assessment.model";
-import { Exam } from "./model/exam.model";
-import { AssessmentItem } from "./model/assessment-item.model";
-import { ExamItemScore } from "./model/exam-item-score.model";
-import { byGradeThenByName } from "./assessment.comparator";
-import { ordering } from "@kourge/ordering";
-import { byNumber } from "@kourge/ordering/comparator";
-import { ClaimScore } from "./model/claim-score.model";
-import { Student } from "../student/model/student.model";
-import { Utils } from "../shared/support/support";
+import { Injectable } from '@angular/core';
+import { AssessmentExam } from './model/assessment-exam.model';
+import { Assessment } from './model/assessment.model';
+import { Exam } from './model/exam.model';
+import { AssessmentItem } from './model/assessment-item.model';
+import { ExamItemScore } from './model/exam-item-score.model';
+import { byGradeThenByName } from './assessment.comparator';
+import { ordering } from '@kourge/ordering';
+import { byNumber } from '@kourge/ordering/comparator';
+import { ClaimScore } from './model/claim-score.model';
+import { Student } from '../student/model/student.model';
+import { Utils } from '../shared/support/support';
 import { DefaultSchool, School } from '../shared/organization/organization';
+import { TargetScoreExam } from './model/target-score-exam.model';
+import { Target } from './model/target.model';
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -44,9 +46,34 @@ export class AssessmentExamMapper {
       .sort(ordering(byNumber).on<AssessmentItem>(ai => ai.position).compare);
   }
 
+  mapTargetScoreExamsFromApi(serverTargetScoreExams: any): TargetScoreExam[] {
+    return serverTargetScoreExams.map((serverTargetScoreExam: any) => {
+      const targetScoreExam = <TargetScoreExam>this.mapExamFromApi(serverTargetScoreExam);
+      targetScoreExam.targetId = serverTargetScoreExam.targetId;
+      targetScoreExam.standardMetRelativeResidualScore = serverTargetScoreExam.standardMetRelativeResidualScore;
+      targetScoreExam.studentRelativeResidualScore = serverTargetScoreExam.studentRelativeResidualScore;
+      return targetScoreExam;
+    });
+  }
+
+  mapTargetsFromApi(serverTargets: any): Target[] {
+    if (serverTargets == null) return [];
+
+    return serverTargets.map((serverTarget: any) => {
+      return <Target>{
+        id: serverTarget.id,
+        assessmentId: serverTarget.assessmentId,
+        claimCode: serverTarget.claimCode,
+        naturalId: serverTarget.naturalId,
+        includeInReport: serverTarget.includeInReport,
+      };
+    });
+  }
+
   mapAssessmentFromApi(serverAssessment: any): Assessment {
     const assessment = new Assessment();
     assessment.id = serverAssessment.id;
+    assessment.name = serverAssessment.name;
     assessment.label = serverAssessment.label;
     assessment.grade = serverAssessment.gradeCode;
     assessment.type = serverAssessment.typeCode;
@@ -54,6 +81,8 @@ export class AssessmentExamMapper {
     assessment.claimCodes = serverAssessment.claimCodes || [];
     assessment.cutPoints = serverAssessment.cutPoints || [];
     assessment.resourceUrl = serverAssessment.resourceUrl;
+    assessment.hasWerItem = serverAssessment.werItem;
+    assessment.targetReportEnabled = serverAssessment.targetReportEnabled;
     return assessment;
   }
 
@@ -72,12 +101,14 @@ export class AssessmentExamMapper {
       .map(serverScaleScore => this.mapClaimScaleScoreFromApi(serverScaleScore));
 
     if (serverExam.studentContext) {
-      const { migrantStatus, section504, iep, lep, elasCode } = serverExam.studentContext;
+      const { migrantStatus, section504, iep, lep, elasCode, languageCode, militaryConnectedCode } = serverExam.studentContext;
       exam.migrantStatus = migrantStatus;
       exam.plan504 = section504;
       exam.iep = iep;
       exam.limitedEnglishProficiency = lep;
       exam.elasCode = elasCode;
+      exam.languageCode = languageCode;
+      exam.militaryConnectedCode = militaryConnectedCode;
     }
 
     if (serverExam.student) {
@@ -104,6 +135,7 @@ export class AssessmentExamMapper {
     student.lastName = serverStudent.lastName;
     student.genderCode = serverStudent.genderCode;
     student.ethnicityCodes = serverStudent.ethnicityCodes;
+    student.militaryConnectedCode = serverStudent.militaryConnectedCodes;
     return student;
   }
 
@@ -117,41 +149,36 @@ export class AssessmentExamMapper {
     return examItem;
   }
 
-  private mapAssessmentItemFromApi(apiModel): AssessmentItem {
-    let uiModel: AssessmentItem = new AssessmentItem();
+  private mapAssessmentItemFromApi(serverItem: any): AssessmentItem {
+    const item: AssessmentItem = new AssessmentItem();
 
-    uiModel.id = apiModel.id;
-    uiModel.bankItemKey = apiModel.bankItemKey;
-    uiModel.position = apiModel.position;
-    uiModel.claim = apiModel.claimCode;
-    uiModel.target = this.formatTarget(apiModel.targetCode);
-    uiModel.targetId = apiModel.targetId;
-    uiModel.depthOfKnowledge = apiModel.depthOfKnowledgeCode;
-    uiModel.mathPractice = apiModel.mathPracticeCode;
-    uiModel.allowCalculator = Utils.booleanToPolarEnum(apiModel.allowCalculator);
-    uiModel.difficulty = apiModel.difficultyCode;
-    uiModel.maxPoints = apiModel.maximumPoints;
-    uiModel.commonCoreStandardIds = apiModel.commonCoreStandardIds || [];
-    uiModel.type = apiModel.type;
-    uiModel.numberOfChoices = apiModel.optionsCount;
-    uiModel.performanceTaskWritingType = apiModel.performanceTaskWritingType;
+    item.id = serverItem.id;
+    item.bankItemKey = serverItem.bankItemKey;
+    item.position = serverItem.position;
+    item.claim = serverItem.claimCode;
+    item.targetId = serverItem.targetId;
+    item.targetNaturalId = serverItem.targetNaturalId;
+    item.depthOfKnowledge = {
+      level: serverItem.depthOfKnowledge.level,
+      referenceUrl: serverItem.depthOfKnowledge.referenceUrl
+    };
+    item.mathPractice = serverItem.mathPracticeCode;
+    item.allowCalculator = Utils.booleanToPolarEnum(serverItem.allowCalculator);
+    item.difficulty = serverItem.difficultyCode;
+    item.maxPoints = serverItem.maximumPoints;
+    item.commonCoreStandardIds = serverItem.commonCoreStandardIds || [];
+    item.type = serverItem.type;
+    item.numberOfChoices = serverItem.optionsCount;
+    item.performanceTaskWritingType = serverItem.performanceTaskWritingType;
 
     // only multiple choice and multiple select have valid answer keys, so ignore the others
-    uiModel.answerKey = (apiModel.type === 'MC' || apiModel.type === 'MS') ? apiModel.answerKey : undefined;
+    item.answerKey = (serverItem.type === 'MC' || serverItem.type === 'MS') ? serverItem.answerKey : undefined;
 
-    return uiModel;
-  }
-
-  formatTarget(target) {
-    let dashIndex = target.indexOf("-");
-
-    return dashIndex === -1
-      ? target
-      : target.substring(0, dashIndex);
+    return item;
   }
 
   private mapClaimScaleScoreFromApi(apiScaleScore: any): ClaimScore {
-    let uiModel: ClaimScore = new ClaimScore();
+    const uiModel: ClaimScore = new ClaimScore();
 
     if (apiScaleScore) {
       uiModel.level = apiScaleScore.level;
