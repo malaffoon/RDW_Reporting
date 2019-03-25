@@ -15,7 +15,7 @@ import {
   FormOptions
 } from '../../../shared/form/form';
 import { FormGroup } from '@angular/forms';
-import { forkJoin, of, Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { isEqualReportQuery } from '../../reports';
 import { finalize, map } from 'rxjs/operators';
 import {
@@ -82,11 +82,6 @@ export class PrintableReportFormModalComponent implements OnDestroy {
   initialQuery: ReportQuery;
 
   /**
-   * If true, the query will be saved when the create report button is clicked
-   */
-  saveQueryOnSubmit: boolean;
-
-  /**
    * The form fields computed from the query
    */
   fields: FormFieldView[];
@@ -107,14 +102,14 @@ export class PrintableReportFormModalComponent implements OnDestroy {
   private _mapper: FormMapper;
 
   /**
-   * Handle on async save query operation to disable inputs
+   * Handle on async create/update query operation to disable inputs
    */
-  private _saveQuerySubscription: Subscription;
+  private _userQuerySubscription: Subscription;
 
   /**
    * Handle on async create report operation used to disable inputs
    */
-  private _createReportSubscription: Subscription;
+  private _userReportSubscription: Subscription;
 
   constructor(
     private injector: Injector,
@@ -138,50 +133,82 @@ export class PrintableReportFormModalComponent implements OnDestroy {
     return this.reactiveFormGroup.value;
   }
 
-  get saveQueryCheckboxDisabled(): boolean {
-    return this._createReportSubscription != null;
-  }
-
-  get saveQueryButtonDisabled(): boolean {
+  get createQueryButtonDisabled(): boolean {
     return (
       this.formGroup.invalid ||
-      this._saveQuerySubscription != null ||
-      this._createReportSubscription != null ||
+      this._userQuerySubscription != null ||
+      this._userReportSubscription != null
+    );
+  }
+
+  get updateQueryButtonDisabled(): boolean {
+    return (
+      this.createQueryButtonDisabled ||
       isEqualReportQuery(this.initialQuery, this.createQuery())
     );
   }
 
   get createReportButtonDisabled(): boolean {
-    return this.formGroup.invalid || this._createReportSubscription != null;
+    return this.formGroup.invalid || this._userReportSubscription != null;
   }
 
   onCloseButtonClick(): void {
-    this.modalReference.hide();
+    this.close();
   }
 
   onCancelButtonClick(): void {
-    this.modalReference.hide();
+    this.close();
     this.cancelled.emit();
   }
 
-  onSaveQueryButtonClick(): void {
-    const userQuery = this.createUserQuery();
-    this._saveQuerySubscription = this.userQueryService
-      .updateQuery(userQuery)
+  onCreateQueryButtonClick(): void {
+    const query = this.createQuery();
+    this._userQuerySubscription = this.userQueryService
+      .createQuery(query)
       .pipe(
         finalize(() => {
-          this._saveQuerySubscription = null;
+          this._userQuerySubscription = null;
         })
       )
       .subscribe(
         userQuery => {
-          this.modalReference.hide();
+          this._options.userQueryId = userQuery.id;
           this.initialQuery = userQuery.query;
-          this.userQueryUpdated.emit(userQuery);
+          this.userQueryCreated.emit(userQuery);
+          this.notificationService.info({
+            id: 'user-query.action.create.success',
+            html: true
+          });
         },
         () => {
           this.notificationService.error({
-            id: 'user-query.action.save.error'
+            id: 'user-query.action.create.error'
+          });
+        }
+      );
+  }
+
+  onUpdateQueryButtonClick(): void {
+    const userQuery = this.createUserQuery();
+    this._userQuerySubscription = this.userQueryService
+      .updateQuery(userQuery)
+      .pipe(
+        finalize(() => {
+          this._userQuerySubscription = null;
+        })
+      )
+      .subscribe(
+        userQuery => {
+          this.initialQuery = userQuery.query;
+          this.userQueryUpdated.emit(userQuery);
+          this.notificationService.info({
+            id: 'user-query.action.update.success',
+            html: true
+          });
+        },
+        () => {
+          this.notificationService.error({
+            id: 'user-query.action.update.error'
           });
         }
       );
@@ -189,28 +216,21 @@ export class PrintableReportFormModalComponent implements OnDestroy {
 
   onSubmit(): void {
     const query = this.createQuery();
-    this._createReportSubscription = forkJoin(
-      this.userReportService.createReport(<ServerReportQuery>query),
-      this.saveQueryOnSubmit
-        ? this.userQueryService.createQuery(query)
-        : of(undefined)
-    )
+    this._userReportSubscription = this.userReportService
+      .createReport(<ServerReportQuery>query)
       .pipe(
         finalize(() => {
-          this._createReportSubscription = null;
+          this._userReportSubscription = null;
         })
       )
       .subscribe(
-        ([userReport, userQuery]) => {
+        userReport => {
           this.notificationService.info({
             id: 'report-download.submitted-message',
             html: true
           });
-          this.modalReference.hide();
+          this.close();
           this.userReportCreated.emit(userReport);
-          if (userQuery != null) {
-            this.userQueryCreated.emit(userQuery);
-          }
         },
         () => {
           this.notificationService.error({
@@ -252,8 +272,19 @@ export class PrintableReportFormModalComponent implements OnDestroy {
         }, {});
 
         this.reactiveFormGroup = createReactiveFormGroup(fields, controls);
-        this.initialQuery = this.createQuery();
+        if (this._options.userQueryId != null) {
+          this.initialQuery = this.createQuery();
+        }
         this.initialized = true;
       });
+  }
+
+  private close(): void {
+    // end streams so subscribers are released
+    this.cancelled.complete();
+    this.userReportCreated.complete();
+    this.userQueryCreated.complete();
+    this.userQueryUpdated.complete();
+    this.modalReference.hide();
   }
 }

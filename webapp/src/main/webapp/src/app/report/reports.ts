@@ -15,7 +15,7 @@ import { UserReportService } from './user-report.service';
 import { UserQueryService } from './user-query.service';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { isEqual } from 'lodash';
+import { deepEqualsIgnoringNullAndFalse } from '../shared/support/support';
 
 export function toUserReport(serverReport: any): UserReport {
   return {
@@ -202,21 +202,21 @@ export function isEqualReportQuery(a: ReportQuery, b: ReportQuery): boolean {
     case 'Student':
     case 'SchoolGrade':
     case 'Group':
-      return isEqual(l, r);
+      return deepEqualsIgnoringNullAndFalse(l, r);
     case 'DistrictSchoolExport':
-      return isEqual(
+      return deepEqualsIgnoringNullAndFalse(
         normalizeDistrictSchoolExport(l),
         normalizeDistrictSchoolExport(r)
       );
     case 'CustomAggregate':
     case 'Longitudinal':
     case 'Target':
-      return isEqual(
+      return deepEqualsIgnoringNullAndFalse(
         normalizeAggregateReportQuery(l),
         normalizeAggregateReportQuery(r)
       );
     case 'Claim':
-      return isEqual(
+      return deepEqualsIgnoringNullAndFalse(
         normalizeClaimReportQuery(l),
         normalizeClaimReportQuery(r)
       );

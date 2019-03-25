@@ -150,7 +150,7 @@ export class ResultsByStudentComponent implements OnInit {
             },
             readonly: ['assessmentType', 'subject', 'schoolYear']
           });
-          modal.userReportCreated.pipe(first()).subscribe(() => {
+          modal.userReportCreated.subscribe(() => {
             this.router.navigateByUrl('/reports');
           });
         }

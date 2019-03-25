@@ -313,7 +313,7 @@ export class SchoolResultsComponent implements OnInit {
       this.currentGrade,
       this.currentSchoolYear
     );
-    modal.userReportCreated.pipe(first()).subscribe(() => {
+    modal.userReportCreated.subscribe(() => {
       this.router.navigateByUrl('/reports');
     });
   }

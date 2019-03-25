@@ -159,7 +159,7 @@ export class StudentResultsComponent implements OnInit {
       this.filterState.assessmentType,
       this.filterState.schoolYears
     );
-    modal.userReportCreated.pipe(first()).subscribe(() => {
+    modal.userReportCreated.subscribe(() => {
       this.router.navigateByUrl('/reports');
     });
   }

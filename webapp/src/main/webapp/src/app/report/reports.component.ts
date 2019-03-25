@@ -4,7 +4,7 @@ import { UserReportService } from './user-report.service';
 import { UserQuery, UserReport } from './report';
 import { forkJoin, Observable } from 'rxjs';
 import { UserQueryService } from './user-query.service';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { UserQueryStore } from './user-query.store';
 import { MenuOption } from '../shared/menu/menu.component';
 import { UserReportMenuOptionService } from './user-report-menu-option.service';
@@ -120,7 +120,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       query: userQuery.query,
       userQueryId: userQuery.id
     });
-    modal.userQueryUpdated.pipe(first()).subscribe(updated => {
+    modal.userQueryUpdated.subscribe(updated => {
       this.userQueryStore.setState(
         this.userQueryStore.state.map(existing =>
           existing.id === updated.id ? updated : existing
@@ -145,7 +145,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const modal: DeleteModalComponent = modalReference.content;
     modal.messageId = 'user-query.action.delete.warning';
     modal.name = userQuery.query.name;
-    modal.deleted.pipe(first()).subscribe(() => {
+    modal.deleted.subscribe(() => {
       this.userQueryService.deleteQuery(userQuery.id).subscribe(() => {
         this.userQueryStore.setState(
           this.userQueryStore.state.filter(({ id }) => id !== userQuery.id)
@@ -159,10 +159,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
       title: userReport.query.name,
       query: userReport.query
     });
-    modal.userReportCreated.pipe(first()).subscribe(created => {
+    modal.userReportCreated.subscribe(created => {
       this.userReportStore.setState([created, ...this.userReportStore.state]);
     });
-    modal.userQueryCreated.pipe(first()).subscribe(created => {
+    modal.userQueryCreated.subscribe(created => {
       this.userQueryStore.setState([created, ...this.userQueryStore.state]);
     });
   }
@@ -172,7 +172,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const modal: DeleteModalComponent = modalReference.content;
     modal.messageId = 'report-action.delete-warning';
     modal.name = userReport.query.name;
-    modal.deleted.pipe(first()).subscribe(() => {
+    modal.deleted.subscribe(() => {
       this.userReportService.deleteReport(userReport.id).subscribe(() => {
         this.userReportStore.setState(
           this.userReportStore.state.filter(({ id }) => id !== userReport.id)

@@ -21,15 +21,20 @@ export class DeleteModalComponent {
   constructor(private modalReference: BsModalRef) {}
 
   onCloseButtonClick(): void {
-    this.modalReference.hide();
+    this.close();
   }
 
   onCancelButtonClick(): void {
-    this.modalReference.hide();
+    this.close();
   }
 
   onDeleteButtonClick(): void {
-    this.modalReference.hide();
+    this.close();
     this.deleted.emit();
+  }
+
+  private close(): void {
+    this.deleted.complete();
+    this.modalReference.hide();
   }
 }

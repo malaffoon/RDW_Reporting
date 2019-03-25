@@ -14,6 +14,7 @@ export class NotificationComponent {
   public notifications: Notification[] = [];
 
   constructor(private notificationService: NotificationService) {
+    // TODO should be a "Store"
     notificationService.onNotification.subscribe(
       this.onNotification.bind(this)
     );

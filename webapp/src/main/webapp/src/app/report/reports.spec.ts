@@ -254,4 +254,26 @@ describe('isEqualReportQuery', () => {
       });
     });
   });
+
+  it('should treat undefined, null and false equal to absence', () => {
+    const a: StudentPrintableReportQuery = {
+      name: 'student',
+      type: 'Student',
+      schoolYear: 1,
+      disableTransferAccess: false,
+      subjectCode: undefined,
+      assessmentTypeCode: null,
+      language: 'language1',
+      accommodationsVisible: false,
+      studentId: 1
+    };
+    const b: StudentPrintableReportQuery = {
+      name: 'student',
+      type: 'Student',
+      schoolYear: 1,
+      language: 'language1',
+      studentId: 1
+    };
+    expect(isEqualReportQuery(a, b)).toBe(true);
+  });
 });

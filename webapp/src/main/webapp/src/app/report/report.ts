@@ -107,7 +107,7 @@ export interface ExamReportQuery extends ReportQuery {
   /**
    * If true, students with transfer results will not be included in the report
    */
-  disableTransferAccess: boolean;
+  disableTransferAccess?: boolean;
 }
 
 /**
@@ -134,7 +134,7 @@ export interface PrintableReportQuery extends ExamReportQuery {
   /**
    * If true, accommodation information will appear in the report
    */
-  accommodationsVisible: boolean;
+  accommodationsVisible?: boolean;
 }
 
 /**

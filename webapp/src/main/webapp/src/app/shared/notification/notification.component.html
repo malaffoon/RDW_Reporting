@@ -1,13 +1,20 @@
 <div class="notifications mt-md mr-lg">
   <div class="notification clearfix" *ngFor="let notification of notifications">
-    <alert class="pull-right"
-           [type]="notification.type"
-           [dismissible]="notification.dismissible"
-           [dismissOnTimeout]="notification.dismissOnTimeout"
-           (onClose)="onDismissed(notification)">
-      <span *ngIf="!notification.html">{{notification.id | translate: notification.args}}</span>
-      <span *ngIf="notification.html" [innerHtml]="notification.id | translate: notification.args"></span>
+    <!-- TODO should be its own component -->
+    <alert
+      class="pull-right"
+      [type]="notification.type"
+      [dismissible]="notification.dismissible"
+      [dismissOnTimeout]="notification.dismissOnTimeout"
+      (onClose)="onDismissed(notification)"
+    >
+      <span *ngIf="!notification.html">{{
+        notification.id | translate: notification.args
+      }}</span>
+      <span
+        *ngIf="notification.html"
+        [innerHtml]="notification.id | translate: notification.args"
+      ></span>
     </alert>
   </div>
 </div>
-

@@ -1,16 +1,14 @@
-import { Injectable, EventEmitter } from "@angular/core";
-import { Notification } from "./notification.model";
+import { Injectable, EventEmitter } from '@angular/core';
+import { Notification } from './notification.model';
 
 /**
  * This service is responsible for displaying notification alerts to the user.
  */
 @Injectable()
 export class NotificationService {
-
   private _onNotification: EventEmitter<Notification> = new EventEmitter();
 
-  constructor() {
-  }
+  constructor() {}
 
   get onNotification(): EventEmitter<Notification> {
     return this._onNotification;
@@ -42,7 +40,6 @@ export class NotificationService {
   }
 
   private createNotification(type: string, options: any): Notification {
-    return new Notification(Object.assign(options, {type: type}));
+    return new Notification({ ...options, type });
   }
-
 }

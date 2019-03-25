@@ -16,7 +16,11 @@ import {
   getQueryFromRouteQueryParameters,
   isEqualReportQuery
 } from '../report/reports';
-import { DistrictSchoolExportReportQuery, UserQuery } from '../report/report';
+import {
+  DistrictSchoolExportReportQuery,
+  ReportQuery,
+  UserQuery
+} from '../report/report';
 import { Utils } from '../shared/support/support';
 import { UserOrganizations } from './organization/user-organization';
 import { createOptions } from './organization-exports';
@@ -63,12 +67,10 @@ export class OrganizationExportComponent implements OnInit {
 
   formGroup: FormGroup;
   transferAccess: boolean;
-  showSaveQueryButton: boolean;
   userOrganizations: UserOrganizations;
-  initialQuery: DistrictSchoolExportReportQuery;
-  createReportSubscription: Subscription;
-  saveQuerySubscription: Subscription;
-  saveQueryOnSubmit: boolean;
+  initialQuery: ReportQuery;
+  private _userReportSubscription: Subscription;
+  private _userQuerySubscription: Subscription;
   initialized: boolean;
 
   constructor(
@@ -132,7 +134,6 @@ export class OrganizationExportComponent implements OnInit {
       this.userOrganizations = userOrganizations;
       this.transferAccess = settings.transferAccess;
       this.schoolYearOptions = options.schoolYears;
-      this.showSaveQueryButton = userQueryId != null;
 
       // create all options and reuse them when calling createOptions()
       this._organizationOptionsByUuid = new Map<string, Option>(
@@ -177,7 +178,9 @@ export class OrganizationExportComponent implements OnInit {
       // initialize selected schools based on user organizations
       // if the user only has one school to select, select it for them.
       this.selectedSchools = organizationExport.schools;
-      this.initialQuery = this.createQuery();
+      if (userQueryId != null) {
+        this.initialQuery = this.createQuery();
+      }
       this.initialized = true;
     });
   }
@@ -227,21 +230,23 @@ export class OrganizationExportComponent implements OnInit {
     return this.userOrganizations.schools.length <= 1;
   }
 
-  get saveQueryButtonDisabled(): boolean {
+  get createQueryButtonDisabled(): boolean {
     return (
       this.formGroup.invalid ||
-      this.saveQuerySubscription != null ||
-      this.createReportSubscription != null ||
+      this._userQuerySubscription != null ||
+      this._userReportSubscription != null
+    );
+  }
+
+  get updateQueryButtonDisabled(): boolean {
+    return (
+      this.createQueryButtonDisabled ||
       isEqualReportQuery(this.initialQuery, this.createQuery())
     );
   }
 
   get createReportButtonDisabled(): boolean {
-    return this.formGroup.invalid || this.createReportSubscription != null;
-  }
-
-  get saveQueryCheckboxDisabled(): boolean {
-    return this.createReportSubscription != null;
+    return this.formGroup.invalid || this._userReportSubscription != null;
   }
 
   add(organization: Organization): void {
@@ -273,51 +278,83 @@ export class OrganizationExportComponent implements OnInit {
 
   submit(): void {
     const query = this.createQuery();
-    const operation: Observable<any> = this.saveQueryOnSubmit
-      ? forkJoin(
-          this.userReportService.createReport(query),
-          this.userQueryService.createQuery(query)
-        )
-      : this.userReportService.createReport(query);
-
-    this.createReportSubscription = operation
+    this._userReportSubscription = this.userReportService
+      .createReport(query)
       .pipe(
         finalize(() => {
-          this.createReportSubscription = null;
+          this._userReportSubscription = null;
         })
       )
       .subscribe(
         () => {
           this.notificationService.info({
-            id: 'organization-export.form.submit.success-html',
+            id: 'report-download.submitted-message',
             html: true
           });
           this.router.navigate(['/reports']);
         },
         () => {
           this.notificationService.error({
-            id: 'organization-export.form.submit.failure'
+            id: 'common.messages.submission-failed',
+            html: true
           });
         }
       );
   }
 
-  onSaveQueryButtonClick(): void {
+  onCreateQueryButtonClick(): void {
+    const query = this.createQuery();
+    this._userQuerySubscription = this.userQueryService
+      .createQuery(query)
+      .pipe(
+        finalize(() => {
+          this._userQuerySubscription = null;
+        })
+      )
+      .subscribe(
+        userQuery => {
+          this.router.navigate([], {
+            relativeTo: this.route,
+            replaceUrl: true,
+            queryParams: {
+              userQueryId: userQuery.id
+            },
+            queryParamsHandling: 'merge'
+          });
+          this.initialQuery = userQuery.query;
+          this.notificationService.info({
+            id: 'user-query.action.create.success',
+            html: true
+          });
+        },
+        () => {
+          this.notificationService.error({
+            id: 'user-query.action.create.error'
+          });
+        }
+      );
+  }
+
+  onUpdateQueryButtonClick(): void {
     const userQuery = this.createUserQuery();
-    this.saveQuerySubscription = this.userQueryService
+    this._userQuerySubscription = this.userQueryService
       .updateQuery(userQuery)
       .pipe(
         finalize(() => {
-          this.saveQuerySubscription = null;
+          this._userQuerySubscription = null;
         })
       )
       .subscribe(
         () => {
           this.initialQuery = userQuery.query;
+          this.notificationService.info({
+            id: 'user-query.action.update.success',
+            html: true
+          });
         },
         () => {
           this.notificationService.error({
-            id: 'user-query.action.save.error'
+            id: 'user-query.action.update.error'
           });
         }
       );
