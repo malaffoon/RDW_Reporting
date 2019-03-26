@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Notification, NotificationType } from './notification';
+import { Notification } from './notification';
 import { NotificationsStore } from './notifications.store';
 
 const NotificationDefaults: Partial<Notification> = {
@@ -8,23 +8,6 @@ const NotificationDefaults: Partial<Notification> = {
   dismissOnTimeout: 10000,
   dismissible: true
 };
-
-/**
- * Creates a notification with defaults applied
- *
- * @param type The type of notification
- * @param value The rest of the notifications properties
- */
-function toNotification(
-  type: NotificationType,
-  value: Notification
-): Notification {
-  return {
-    ...NotificationDefaults,
-    ...value,
-    type
-  };
-}
 
 /**
  * This service is responsible for displaying notification alerts to the user.
@@ -42,31 +25,48 @@ export class NotificationService {
    */
   showNotification(notification: Notification): void {
     const { state: notifications } = this.store;
+
+    const notificationWithDefaults = {
+      ...NotificationDefaults,
+      ...notification
+    };
+
     const lastNotification: Notification =
       notifications[notifications.length - 1];
 
-    // TODO this should hash the args too before comparing
     const nextState =
       lastNotification == null || lastNotification.id !== notification.id
-        ? [...notifications, notification]
-        : [...notifications.slice(0, -1), notification];
+        ? [...notifications, notificationWithDefaults]
+        : [...notifications.slice(0, -1), notificationWithDefaults];
 
     this.store.setState(nextState);
   }
 
   success(notification: Notification): void {
-    this.showNotification(toNotification('success', notification));
+    this.showNotification({
+      ...notification,
+      type: 'success'
+    });
   }
 
   info(notification: Notification): void {
-    this.showNotification(toNotification('info', notification));
+    this.showNotification({
+      ...notification,
+      type: 'info'
+    });
   }
 
   warn(notification: Notification): void {
-    this.showNotification(toNotification('warning', notification));
+    this.showNotification({
+      ...notification,
+      type: 'warning'
+    });
   }
 
   error(notification: Notification): void {
-    this.showNotification(toNotification('danger', notification));
+    this.showNotification({
+      ...notification,
+      type: 'danger'
+    });
   }
 }
