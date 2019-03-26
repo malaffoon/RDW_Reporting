@@ -28,6 +28,9 @@
 // Extensions
 @import 'primeng-overrides.less';
 
+// Outlined Buttons
+@import 'btn-outlined.less';
+
 // Local variables
 @zindex-fab: 1040;
 
@@ -2183,4 +2186,30 @@ body .ui-paginator .ui-paginator-pages .ui-paginator-page {
   > input[type='checkbox'] {
     margin: 0;
   }
+}
+
+
+
+// Outlined buttons
+.btn-default.btn-outlined {
+  .button-outlined(@btn-default-color; @btn-default-bg; @btn-default-border);
+}
+.btn-primary.btn-outlined {
+  .button-outlined(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+}
+// Success appears as green
+.btn-success.btn-outlined {
+  .button-outlined(@btn-success-color; @btn-success-bg; @btn-success-border);
+}
+// Info appears as blue-green
+.btn-info.btn-outlined {
+  .button-outlined(@btn-info-color; @btn-info-bg; @btn-info-border);
+}
+// Warning appears as orange
+.btn-warning.btn-outlined {
+  .button-outlined(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
+}
+// Danger and error appear as red
+.btn-danger.btn-outlined {
+  .button-outlined(@btn-danger-color; @btn-danger-bg; @btn-danger-border);
 }
