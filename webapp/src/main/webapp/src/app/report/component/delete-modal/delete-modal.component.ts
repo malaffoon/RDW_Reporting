@@ -29,8 +29,8 @@ export class DeleteModalComponent {
   }
 
   onDeleteButtonClick(): void {
-    this.close();
     this.deleted.emit();
+    this.close();
   }
 
   private close(): void {

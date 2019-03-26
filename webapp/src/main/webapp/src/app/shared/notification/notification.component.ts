@@ -10,7 +10,6 @@ import { AlertComponent } from 'ngx-bootstrap';
 @Component({
   selector: 'app-notification',
   templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationComponent {
