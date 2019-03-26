@@ -17,6 +17,13 @@
   </div>
   <div class="modal-footer">
     <div class="controls">
+      <button
+        type="button"
+        class="btn btn-default btn"
+        (click)="onCancelButtonClick()"
+      >
+        {{ 'report-download.form.cancel' | translate }}
+      </button>
       <ng-container *ngIf="initialQuery == null; else hasSavedQuery">
         <!-- Intentionally disabled because this is not an anticipated use case yet
         <button
@@ -32,7 +39,7 @@
       <ng-template #hasSavedQuery>
         <button
           type="button"
-          class="btn btn-primary"
+          class="btn btn-primary btn-outlined"
           [disabled]="updateQueryButtonDisabled"
           (click)="onUpdateQueryButtonClick()"
         >
@@ -45,13 +52,6 @@
         [disabled]="createReportButtonDisabled"
       >
         {{ 'report-download.form.submit' | translate }}
-      </button>
-      <button
-        type="button"
-        class="btn btn-default"
-        (click)="onCancelButtonClick()"
-      >
-        {{ 'report-download.form.cancel' | translate }}
       </button>
     </div>
   </div>
