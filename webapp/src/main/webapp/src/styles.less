@@ -273,13 +273,6 @@ footer {
   white-space: normal;
 }
 
-.notifications {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 1030;
-}
-
 .district-tree > .tag {
   margin-left: @grid-gutter-width / 2;
   margin-top: 1px;
@@ -844,10 +837,14 @@ aggregate-report-form,
   }
 
   .controls {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    grid-gap: 15px;
+    display: flex;
     align-items: center;
+    > :first-child {
+      flex: 1;
+    }
+    > :not(:first-child) {
+      margin-left: 15px;
+    }
   }
 
   .well-group .well {

@@ -2,8 +2,8 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { Forms } from '../../shared/form/forms';
 import { NotificationService } from '../../shared/notification/notification.service';
 import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
-import { forkJoin, Observable, Observer, of, Subscription } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import { forkJoin, Observable, Observer, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { AggregateReportService } from '../aggregate-report.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
@@ -63,10 +63,8 @@ export abstract class BaseAggregateQueryFormComponent
   /**
    * Handle on the request submission
    */
-  submissionSubscription: Subscription;
-  saveQuerySubscription: Subscription;
-  saveQueryOnSubmit: boolean;
-  showSaveQueryButton: boolean;
+  userReportSubscription: Subscription;
+  userQuerySubscription: Subscription;
 
   /**
    * The report request summary view
@@ -87,7 +85,8 @@ export abstract class BaseAggregateQueryFormComponent
   );
 
   protected subjectDefinitions: SubjectDefinition[] = [];
-  private initialQuery: AggregateReportQueryType;
+
+  initialQuery: AggregateReportQueryType;
 
   protected constructor(
     protected columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
@@ -145,7 +144,6 @@ export abstract class BaseAggregateQueryFormComponent
   ngOnInit(): void {
     const { query, options } = this.route.snapshot.data;
     const { userQueryId, userReportId } = this.route.snapshot.queryParams;
-    this.showSaveQueryButton = userQueryId != null;
     forkJoin(
       this.subjectService.getSubjectDefinitions(),
       query != null
@@ -164,33 +162,35 @@ export abstract class BaseAggregateQueryFormComponent
       this.updateSubjectsEnabled();
       this.setDefaultAssessmentType();
       this.initialize();
-      this.initialQuery = {
-        ...this.createReportRequest(),
-        type: query.type
-      };
+      if (userQueryId != null) {
+        this.initialQuery = {
+          ...this.createReportRequest(),
+          type: query.type
+        };
+      }
     });
   }
 
   ngOnDestroy(): void {
-    if (this.saveQuerySubscription != null) {
-      this.saveQuerySubscription.unsubscribe();
+    if (this.userQuerySubscription != null) {
+      this.userQuerySubscription.unsubscribe();
     }
-    if (this.submissionSubscription != null) {
-      this.submissionSubscription.unsubscribe();
+    if (this.userReportSubscription != null) {
+      this.userReportSubscription.unsubscribe();
     }
   }
 
   get saveQueryButtonDisabled(): boolean {
     return (
       this.getFormGroup().invalid ||
-      this.submissionSubscription != null ||
-      this.saveQuerySubscription != null ||
+      this.userReportSubscription != null ||
+      this.userQuerySubscription != null ||
       isEqualReportQuery(this.initialQuery, this.createReportRequest())
     );
   }
 
   get saveQueryCheckboxDisabled(): boolean {
-    return this.submissionSubscription != null;
+    return this.userReportSubscription != null;
   }
 
   getControl(name: string): AbstractControl {
@@ -205,20 +205,24 @@ export abstract class BaseAggregateQueryFormComponent
 
   onSaveQueryButtonClick(): void {
     const userQuery = this.createUserQuery();
-    this.saveQuerySubscription = this.userQueryService
+    this.userQuerySubscription = this.userQueryService
       .updateQuery(userQuery)
       .pipe(
         finalize(() => {
-          this.saveQuerySubscription = null;
+          this.userQuerySubscription = null;
         })
       )
       .subscribe(
         () => {
           this.initialQuery = <AggregateReportQueryType>userQuery.query;
+          this.notificationService.info({
+            id: 'user-query.action.update.success',
+            html: true
+          });
         },
         () => {
           this.notificationService.error({
-            id: 'user-query.action.save.error'
+            id: 'user-query.action.update.error'
           });
         }
       );
@@ -230,22 +234,16 @@ export abstract class BaseAggregateQueryFormComponent
   onGenerateButtonClick(): void {
     this.validate(this.getFormGroup(), () => {
       const query = this.createReportRequest();
-      const operation: Observable<any> = forkJoin(
-        this.reportService.createReport(query),
-        this.saveQueryOnSubmit
-          ? this.userQueryService.createQuery(query)
-          : of(undefined)
-      );
-
-      this.submissionSubscription = operation
+      this.userReportSubscription = this.reportService
+        .createReport(query)
         .pipe(
           finalize(() => {
-            this.submissionSubscription.unsubscribe();
-            this.submissionSubscription = undefined;
+            this.userReportSubscription.unsubscribe();
+            this.userReportSubscription = undefined;
           })
         )
         .subscribe(
-          ([userReport, userQuery]) => {
+          userReport => {
             this.router.navigate([userReport.id], { relativeTo: this.route });
           },
           () => {
