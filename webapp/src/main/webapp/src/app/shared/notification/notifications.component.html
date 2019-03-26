@@ -1,0 +1,7 @@
+<div class="notifications mt-md mr-lg">
+  <app-notification
+    *ngFor="let notification of (notifications | async)"
+    [notification]="notification"
+    (onClose)="onNotificationCloseButtonClick(notification)"
+  ></app-notification>
+</div>

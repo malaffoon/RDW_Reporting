@@ -8,8 +8,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { SBCheckboxList } from './sb-checkbox-list.component';
 import { ColorService } from './color.service';
 import { Angulartics2Module } from 'angulartics2';
-import { NotificationComponent } from './notification/notification.component';
-import { NotificationService } from './notification/notification.service';
 import { AlertModule, PopoverModule } from 'ngx-bootstrap';
 import { RdwLoadingModule } from './loading/rdw-loading.module';
 import { SBToggleComponent } from './sb-toggle.component';
@@ -41,19 +39,18 @@ import { SchoolModule } from './school/school.module';
 import { InViewDirective } from './nav/in-view.directive';
 import { RdwListModule } from './list/rdw-list.module';
 import { RdwFilterModule } from './filter/rdw-filter.module';
-import { RdwIconModule } from "./icon/rdw-icon.module";
+import { RdwIconModule } from './icon/rdw-icon.module';
 import { TargetService } from './target/target.service';
 import { DataTableService } from './datatable/datatable-service';
 import { SubjectModule } from '../subject/subject.module';
-import { OrderingService } from "./ordering/ordering.service";
-
+import { OrderingService } from './ordering/ordering.service';
+import { RdwNotificationsModule } from './notification/notifications.module';
 
 @NgModule({
   declarations: [
     OptionalPipe,
     OrderSelectorComponent,
     ScrollNavComponent,
-    NotificationComponent,
     SBCheckboxList,
     SBRadioButtonComponent,
     SBToggleComponent,
@@ -85,6 +82,7 @@ import { OrderingService } from "./ordering/ordering.service";
     RdwListModule,
     RdwLoadingModule,
     RdwMenuModule,
+    RdwNotificationsModule,
     RdwPreferenceModule,
     RdwSecurityModule,
     TranslateModule.forRoot({
@@ -99,7 +97,6 @@ import { OrderingService } from "./ordering/ordering.service";
     CommonEmbargoModule,
     OptionalPipe,
     OrderSelectorComponent,
-    NotificationComponent,
     ScrollNavComponent,
     OrganizationModule,
     SchoolModule,
@@ -116,6 +113,7 @@ import { OrderingService } from "./ordering/ordering.service";
     RdwLayoutModule,
     RdwListModule,
     RdwLoadingModule,
+    RdwNotificationsModule,
     RdwPreferenceModule,
     RdwSecurityModule,
     SBCheckboxList,
@@ -127,14 +125,18 @@ import { OrderingService } from "./ordering/ordering.service";
     SubjectModule
   ],
   providers: [
-    { provide: AuthenticationServiceAuthenticationExpiredRoute, useValue: 'session-expired' },
-    { provide: AuthenticationServiceDefaultAuthenticationRoute, useValue: 'home' },
+    {
+      provide: AuthenticationServiceAuthenticationExpiredRoute,
+      useValue: 'session-expired'
+    },
+    {
+      provide: AuthenticationServiceDefaultAuthenticationRoute,
+      useValue: 'home'
+    },
     ColorService,
     DataTableService,
-    NotificationService,
     OrderingService,
     TargetService
   ]
 })
-export class CommonModule {
-}
+export class CommonModule {}
