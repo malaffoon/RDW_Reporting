@@ -22,7 +22,6 @@ import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-colu
 import { SubgroupFilterSupport } from '../subgroup/subgroup-filters';
 import { OrganizationTypeahead } from '../../shared/organization/organization-typeahead';
 import { mergeMap } from 'rxjs/operators';
-import { fileName } from '../../shared/form/validators';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { BaseAggregateQueryFormComponent } from './base-aggregate-query-form.component';
 import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
@@ -162,12 +161,7 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
               };
         }
       ],
-      reportName: [
-        this.settings.name,
-        fileName({
-          messageId: 'aggregate-report-form.field.report-name-file-name-error'
-        })
-      ],
+      reportName: [this.settings.name],
       assessmentGrade: [this.settings.targetReport.assessmentGrade],
       schoolYear: [this.settings.targetReport.schoolYear],
       subject: [

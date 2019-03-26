@@ -14,7 +14,7 @@ import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
 import { SubgroupFilterSupport } from '../subgroup/subgroup-filters';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { MultiOrganizationQueryFormComponent } from './multi-organization-query-form.component';
-import { fileName, notEmpty } from '../../shared/form/validators';
+import { notEmpty } from '../../shared/form/validators';
 import { SubjectService } from '../../subject/subject.service';
 import { ReportQueryType } from '../../report/report';
 import { UserQueryService } from '../../report/user-query.service';
@@ -98,12 +98,7 @@ export class GeneralPopulationFormComponent extends MultiOrganizationQueryFormCo
               };
         }
       ],
-      reportName: [
-        this.settings.name,
-        fileName({
-          messageId: 'aggregate-report-form.field.report-name-file-name-error'
-        })
-      ],
+      reportName: [this.settings.name],
       assessmentGrades: [
         this.settings.generalPopulation.assessmentGrades,
         notEmpty({

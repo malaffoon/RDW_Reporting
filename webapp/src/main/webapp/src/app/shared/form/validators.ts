@@ -46,21 +46,3 @@ export function isGreaterThan(
       : { isGreaterThan: properties };
   };
 }
-
-/**
- * Form control validator that makes sure the control value is a valid filename
- *
- * @param properties the properties to propagate when the control value is invalid
- * @return {ValidatorFn}
- */
-export function fileName(
-  properties: any = {
-    messageId: 'aggregate-report-form.field.report-name-file-name-error'
-  }
-): ValidatorFn {
-  return control => {
-    return /^[^\\<>:;,?"*|/]*$/.test((control.value || '').trim())
-      ? null
-      : { fileName: properties };
-  };
-}

@@ -157,8 +157,8 @@ export class PrintableReportFormModalComponent implements OnDestroy {
   }
 
   onCancelButtonClick(): void {
-    this.close();
     this.cancelled.emit();
+    this.close();
   }
 
   onCreateQueryButtonClick(): void {
@@ -229,8 +229,8 @@ export class PrintableReportFormModalComponent implements OnDestroy {
             id: 'report-download.submitted-message',
             html: true
           });
-          this.close();
           this.userReportCreated.emit(userReport);
+          this.close();
         },
         () => {
           this.notificationService.error({

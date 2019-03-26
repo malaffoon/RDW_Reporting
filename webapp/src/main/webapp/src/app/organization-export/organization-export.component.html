@@ -34,15 +34,6 @@
               }}"
               [formControl]="control"
             />
-            <div *ngIf="control.invalid && (control.dirty || control.touched)">
-              <p
-                *ngIf="control.errors.fileName"
-                aria-live="polite"
-                class="help-block small red"
-              >
-                {{ control.errors.fileName.messageId | translate }}
-              </p>
-            </div>
           </div>
         </div>
         <div class="col-md-3">

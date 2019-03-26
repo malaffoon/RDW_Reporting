@@ -67,9 +67,6 @@
               <ng-container *ngIf="control.errors.required">
                 {{ 'common.form-field-message.required' | translate }}
               </ng-container>
-              <ng-container *ngIf="control.errors.fileName">
-                {{ control.errors.fileName.messageId | translate }}
-              </ng-container>
             </p>
           </ng-container>
         </ng-template>

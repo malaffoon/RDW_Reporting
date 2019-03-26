@@ -29,7 +29,6 @@ import { createOrganizationExportQuery } from './organization-export-queries';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { fileName } from '../shared/form/validators';
 import { finalize } from 'rxjs/operators';
 
 const byName = ordering(byString).on(({ name }) => name).compare;
@@ -155,15 +154,7 @@ export class OrganizationExportComponent implements OnInit {
       );
 
       this.formGroup = this.formBuilder.group({
-        name: [
-          organizationExport.name,
-          [
-            fileName({
-              messageId:
-                'aggregate-report-form.field.report-name-file-name-error'
-            })
-          ]
-        ],
+        name: [organizationExport.name],
         disableTransferAccess: [
           {
             value: organizationExport.disableTransferAccess,

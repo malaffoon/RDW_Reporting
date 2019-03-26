@@ -14,7 +14,7 @@ import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
 import { SubgroupFilterSupport } from '../subgroup/subgroup-filters';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { MultiOrganizationQueryFormComponent } from './multi-organization-query-form.component';
-import { fileName, isGreaterThan } from '../../shared/form/validators';
+import { isGreaterThan } from '../../shared/form/validators';
 import { SubjectService } from '../../subject/subject.service';
 import { canGetEstimatedRowCount, computeEffectiveYears } from '../support';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
@@ -125,12 +125,7 @@ export class LongitudinalCohortFormComponent extends MultiOrganizationQueryFormC
                 };
           }
         ],
-        reportName: [
-          this.settings.name,
-          fileName({
-            messageId: 'aggregate-report-form.field.report-name-file-name-error'
-          })
-        ],
+        reportName: [this.settings.name],
         assessmentGradeRange: [
           this.settings.longitudinalCohort.assessmentGrades,
           [
