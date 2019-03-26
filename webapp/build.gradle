@@ -97,4 +97,4 @@ task gzipBundles(dependsOn: buildFe) {
 // The processResources task takes care of gathering all of the resources in the project to the target directory.
 // In order to get the front end resources in to the final jar, the front end needs to be built
 // before all of the other resources are processed in order to get the static resouces in the right place
-// processResources.dependsOn gzipBundles
+processResources.dependsOn gzipBundles
