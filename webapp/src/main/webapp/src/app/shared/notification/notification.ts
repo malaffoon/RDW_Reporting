@@ -1,40 +1,42 @@
 /**
+ * Declares all notification types
+ */
+export type NotificationType = 'success' | 'info' | 'warning' | 'danger';
+
+/**
  * This model represents a notification message.
  */
-export class Notification {
-
+export interface Notification {
   /**
    * The type of the notification (success, info, warning, danger)
    */
-  public type: string = 'info';
+  type?: NotificationType;
 
   /**
    * Key for the translated message to display
    */
-  public id: string;
+  id: string;
 
   /**
    * Arguments used to format the message
    */
-  public args: any = {};
+  args?: any;
 
   /**
    * Set this flag when the message contains HTML to render
+   * Defaults to false
    */
-  public html: boolean = false;
+  html?: boolean;
 
   /**
    * Duration the notification will display before automatically dismissing itself
+   * Defaults to 10,000
    */
-  public dismissOnTimeout: number = 10000;
+  dismissOnTimeout?: number;
 
   /**
    * Set this flag if the notification can be dismissed
+   * Defaults to true
    */
-  public dismissible: boolean = true;
-
-  constructor(options: any) {
-    Object.assign(this, options || {});
-  }
-
+  dismissible?: boolean;
 }
