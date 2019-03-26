@@ -39,7 +39,7 @@ function toUserQueryTableRow(userQuery: UserQuery): UserQueryTableRow {
 })
 export class UserQueryTableComponent {
   columns: Column[] = [
-    new Column({ id: 'name', field: 'userQuery.name' }),
+    new Column({ id: 'name', field: 'userQuery.query.name' }),
     new Column({ id: 'type', field: 'userQuery.query.type' }),
     new Column({
       id: 'assessmentTypes',
