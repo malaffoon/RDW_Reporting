@@ -14,7 +14,7 @@ import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
 import { SubgroupFilterSupport } from '../subgroup/subgroup-filters';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { MultiOrganizationQueryFormComponent } from './multi-organization-query-form.component';
-import { fileName, notEmpty } from '../../shared/form/validators';
+import { notEmpty } from '../../shared/form/validators';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
 import { Claim } from '../aggregate-report-options.service';
 import { OrderingService } from '../../shared/ordering/ordering.service';
@@ -111,12 +111,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
               };
         }
       ],
-      reportName: [
-        this.settings.name,
-        fileName({
-          messageId: 'aggregate-report-form.field.report-name-file-name-error'
-        })
-      ],
+      reportName: [this.settings.name],
       assessmentGrades: [
         this.settings.claimReport.assessmentGrades,
         notEmpty({

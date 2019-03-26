@@ -26,6 +26,9 @@ interface UserQueryView extends UserReport, MenuOptionHolder {}
 
 type LoadingStatus = 'Loading' | 'Loaded' | 'Failed';
 
+const UserReportsTabIndex = 0;
+const UserQueriesTabIndex = 1;
+
 /**
  * Responsible for controlling the behavior of the reports page
  */
@@ -126,6 +129,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
           existing.id === updated.id ? updated : existing
         )
       );
+    });
+    modal.userReportCreated.subscribe(created => {
+      this.userReportStore.setState([created, ...this.userReportStore.state]);
+      this.openReportTab();
     });
   }
 
@@ -242,7 +249,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
+  private openReportTab(): void {
+    this.tabset.tabs[UserReportsTabIndex].active = true;
+  }
+
   private openQueryTab(): void {
-    this.tabset.tabs[1].active = true;
+    this.tabset.tabs[UserQueriesTabIndex].active = true;
   }
 }
