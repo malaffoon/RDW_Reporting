@@ -6,6 +6,7 @@ import {
   Output
 } from '@angular/core';
 import { AlertComponent } from 'ngx-bootstrap';
+import { Notification } from './notification';
 
 @Component({
   selector: 'app-notification',
