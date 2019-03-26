@@ -131,7 +131,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       );
     });
     modal.userReportCreated.subscribe(created => {
-      console.log({ created });
       this.userReportStore.setState([created, ...this.userReportStore.state]);
       this.openReportTab();
     });
