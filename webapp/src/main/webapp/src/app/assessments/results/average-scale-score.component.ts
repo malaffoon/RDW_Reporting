@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AssessmentExam } from '../model/assessment-exam.model';
-import { ExamStatistics, ExamStatisticsLevel } from '../model/exam-statistics.model';
+import {
+  ExamStatistics,
+  ExamStatisticsLevel
+} from '../model/exam-statistics.model';
 import { InstructionalResource } from '../model/instructional-resources.model';
 import { InstructionalResourcesService } from './instructional-resources.service';
 import { ColorService } from '../../shared/color.service';
@@ -10,7 +13,8 @@ import { ClaimStatistics } from '../model/claim-score.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { Assessment } from '../model/assessment.model';
 import { OrderingService } from '../../shared/ordering/ordering.service';
-import {map} from "rxjs/internal/operators";
+import { map } from 'rxjs/internal/operators';
+import { SubjectDefinition } from '../../subject/subject';
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -25,6 +29,8 @@ enum ScoreViewState {
   templateUrl: './average-scale-score.component.html'
 })
 export class AverageScaleScoreComponent {
+  @Input()
+  subjectDefinition: SubjectDefinition; // passed along to alternative-scores-table
 
   @Input()
   showValuesAsPercent: boolean = true;
@@ -48,8 +54,9 @@ export class AverageScaleScoreComponent {
     value.levels = value.levels.reverse();
     this._statistics = value;
 
-
-    this.averageScore = !isNaN(value.average) ? Math.round(value.average) : value.average;
+    this.averageScore = !isNaN(value.average)
+      ? Math.round(value.average)
+      : value.average;
 
     if (value.levels) {
       this._totalCount = value.levels
@@ -61,7 +68,9 @@ export class AverageScaleScoreComponent {
 
     // pre-calculates the data widths for the graph representation for all of the claims
     this._claimDataWidths = value.claims.map(claimStatistics =>
-      this.examCalculator.getDataWidths(claimStatistics.percents.map(percent => percent.value))
+      this.examCalculator.getDataWidths(
+        claimStatistics.percents.map(percent => percent.value)
+      )
     );
 
     this.setScorableClaims();
@@ -81,19 +90,19 @@ export class AverageScaleScoreComponent {
   };
 
   claimReferences: ClaimReference[][] = [];
-  claimReferenceRows = [ 0 ];
+  claimReferenceRows = [0];
 
   private _statistics: ExamStatistics;
   private _totalCount: number;
   private _claimDataWidths: Array<number[]>;
   private _assessmentExam: AssessmentExam;
 
-  constructor(public colorService: ColorService,
-              private instructionalResourcesService: InstructionalResourcesService,
-              private examCalculator: ExamStatisticsCalculator,
-              private orderingService: OrderingService) {
-  }
-
+  constructor(
+    public colorService: ColorService,
+    private instructionalResourcesService: InstructionalResourcesService,
+    private examCalculator: ExamStatisticsCalculator,
+    private orderingService: OrderingService
+  ) {}
 
   get statistics(): ExamStatistics {
     return this._statistics;
@@ -104,21 +113,25 @@ export class AverageScaleScoreComponent {
   }
 
   getClaimDataWidth(claimIndex: number, levelIndex: number): number {
-    if(!this._claimDataWidths || !this._claimDataWidths[claimIndex]) {
+    if (!this._claimDataWidths || !this._claimDataWidths[claimIndex]) {
       return 0;
     }
-    return this._claimDataWidths[ claimIndex ][ levelIndex ];
+    return this._claimDataWidths[claimIndex][levelIndex];
   }
 
   getClaimValue(claimStats: ClaimStatistics, index: number): number {
-    if(!this._claimDataWidths || !this._claimDataWidths[0]) {
+    if (!this._claimDataWidths || !this._claimDataWidths[0]) {
       return 0;
     }
-    return this.showValuesAsPercent ? Math.round(claimStats.percents[ index ].value) : claimStats.levels[ index ].value;
+    return this.showValuesAsPercent
+      ? Math.round(claimStats.percents[index].value)
+      : claimStats.levels[index].value;
   }
 
   getClaimSuffix(claimStats: ClaimStatistics, index: number): string {
-    return this.showValuesAsPercent ? claimStats.percents[ index ].suffix : claimStats.levels[ index ].suffix;
+    return this.showValuesAsPercent
+      ? claimStats.percents[index].suffix
+      : claimStats.levels[index].suffix;
   }
 
   get isClaimScoreSelected(): boolean {
@@ -148,12 +161,14 @@ export class AverageScaleScoreComponent {
       return [];
     }
 
-    return this.showValuesAsPercent ? this.statistics.percents : this.statistics.levels;
+    return this.showValuesAsPercent
+      ? this.statistics.percents
+      : this.statistics.levels;
   }
 
   getLatestClaimReferences(): ClaimReference[] {
-    if(this.claimReferences) {
-      return this.claimReferences[this.claimReferences.length -1];
+    if (this.claimReferences) {
+      return this.claimReferences[this.claimReferences.length - 1];
     }
   }
 
@@ -163,7 +178,9 @@ export class AverageScaleScoreComponent {
    * @returns {number} the amount filled by the examStatisticsLevel (0-100)
    */
   filledLevel(examStatisticsLevel: ExamStatisticsLevel): number {
-    return this.showValuesAsPercent ? Math.floor(examStatisticsLevel.value) : this.levelCountPercent(examStatisticsLevel.value);
+    return this.showValuesAsPercent
+      ? Math.floor(examStatisticsLevel.value)
+      : this.levelCountPercent(examStatisticsLevel.value);
   }
 
   /**
@@ -176,19 +193,26 @@ export class AverageScaleScoreComponent {
   }
 
   private levelCountPercent(levelCount: number): number {
-    return this._totalCount !== 0 ? Math.floor(levelCount / this._totalCount * 100) : 0;
+    return this._totalCount !== 0
+      ? Math.floor((levelCount / this._totalCount) * 100)
+      : 0;
   }
 
   loadInstructionalResources(level: number): void {
     this.instructionalResourcesProvider = () =>
-      this.instructionalResourcesService.getInstructionalResources(this._assessmentExam.assessment.id, this.assessmentProvider.getSchoolId())
+      this.instructionalResourcesService
+        .getInstructionalResources(
+          this._assessmentExam.assessment.id,
+          this.assessmentProvider.getSchoolId()
+        )
         .pipe(map(resources => resources.getResourcesByPerformance(level)));
   }
 
   get claimLevelRows(): any[] {
     // get array from 0 to levels-1
-    const indexes = Array.apply(null, { length: this.claimReferences[ 0 ][ 0 ].stats.levels.length })
-      .map(Function.call, Number);
+    const indexes = Array.apply(null, {
+      length: this.claimReferences[0][0].stats.levels.length
+    }).map(Function.call, Number);
 
     // now split into rows with up to 3 per row
     return this.chunkArray(indexes, 3);
@@ -211,7 +235,9 @@ export class AverageScaleScoreComponent {
   }
 
   getClaimColumnCountClass(index): string {
-    return index > 0 ? `limit-width column-count-${this.claimReferences[ index ].length}` : '';
+    return index > 0
+      ? `limit-width column-count-${this.claimReferences[index].length}`
+      : '';
   }
 
   private setScorableClaims() {
@@ -219,17 +245,27 @@ export class AverageScaleScoreComponent {
       return;
     }
 
-    this.orderingService.getScorableClaimOrdering(this.assessment.subject, this.assessment.type)
+    this.orderingService
+      .getScorableClaimOrdering(this.assessment.subject, this.assessment.type)
       .subscribe(ordering => {
-        const claimReferenceSingleArray = this.assessment.claimCodes.map((code, idx) => <ClaimReference>{
-          code: code,
-          dataIndex: idx,
-          stats: this.statistics.claims[ idx ]
-        }).sort(ordering.on((reference: ClaimReference) => reference.code).compare);
+        const claimReferenceSingleArray = this.assessment.claimCodes
+          .map(
+            (code, idx) =>
+              <ClaimReference>{
+                code: code,
+                dataIndex: idx,
+                stats: this.statistics.claims[idx]
+              }
+          )
+          .sort(
+            ordering.on((reference: ClaimReference) => reference.code).compare
+          );
 
         // create an array [0, ...n] where n is the largest number where claimReferenceSingleArray.length % 4 === 0.
         // This used to determine how many chunks (of size <= 4) there are
-        this.claimReferenceRows = claimReferenceSingleArray.filter((value, index) => index % 4 === 0).map((value, index) => index);
+        this.claimReferenceRows = claimReferenceSingleArray
+          .filter((value, index) => index % 4 === 0)
+          .map((value, index) => index);
         while (claimReferenceSingleArray.length) {
           this.claimReferences.push(claimReferenceSingleArray.splice(0, 4));
         }

@@ -1,0 +1,39 @@
+::ng-deep {
+  .ui-table table tbody.ui-table-tbody > tr > td {
+    border-bottom: none;
+    &:first-child {
+      width: 1%;
+      white-space: nowrap;
+    }
+    &:not(:first-child):not(:last-child) {
+      //border-right: none;
+    }
+    &:not(.performanceLevel) {
+      padding: 0;
+    }
+  }
+  p-table table > tbody > tr {
+    &:nth-of-type(odd),
+    &:nth-of-type(even),
+    &:first-child,
+    &:last-child {
+      background-color: transparent;
+    }
+  }
+}
+.percentage-graph {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+
+  @padding: 8px;
+
+  .percentage-container {
+    padding: @padding;
+    text-align: right;
+  }
+
+  .percentage-bar-container {
+    padding: @padding;
+    //box-shadow:
+  }
+}

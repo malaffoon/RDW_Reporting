@@ -44,11 +44,13 @@ import { TargetReportComponent } from './results/view/target-report/target-repor
 import { TargetStatisticsCalculator } from './results/target-statistics-calculator';
 import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
 import { AssessmentIconComponent } from './assessment-icon.component';
+import { AlternateScoresTableComponent } from './component/alternate-scores-table/alternate-scores-table.component';
 
 @NgModule({
   declarations: [
     AdvFiltersComponent,
     AdvFiltersToggleComponent,
+    AlternateScoresTableComponent,
     AssessmentsComponent,
     AssessmentIconComponent,
     AssessmentResultsComponent,
@@ -109,5 +111,4 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     TargetStatisticsCalculator
   ]
 })
-export class AssessmentsModule {
-}
+export class AssessmentsModule {}
