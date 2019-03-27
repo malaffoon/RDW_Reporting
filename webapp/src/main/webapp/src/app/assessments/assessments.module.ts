@@ -10,7 +10,6 @@ import { ExamStatisticsCalculator } from './results/exam-statistics-calculator';
 import { AdvFiltersComponent } from './filters/adv-filters/adv-filters.component';
 import { ExamFilterService } from './filters/exam-filters/exam-filter.service';
 import { ExamFilterOptionsService } from './filters/exam-filters/exam-filter-options.service';
-import { ExamFilterOptionsMapper } from './filters/exam-filters/exam-filter-options.mapper';
 import { SelectAssessmentsComponent } from './filters/select-assessments/select-assessments.component';
 import { AssessmentsComponent } from './assessments.component';
 import { AdvFiltersToggleComponent } from './filters/adv-filters/adv-filters-toggle.component';
@@ -99,7 +98,6 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     ExamStatisticsCalculator,
     ExamFilterService,
     ExamFilterOptionsService,
-    ExamFilterOptionsMapper,
     InstructionalResourcesService,
     ItemScoringService,
     ItemScoringGuideMapper,
@@ -109,5 +107,4 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     TargetStatisticsCalculator
   ]
 })
-export class AssessmentsModule {
-}
+export class AssessmentsModule {}
