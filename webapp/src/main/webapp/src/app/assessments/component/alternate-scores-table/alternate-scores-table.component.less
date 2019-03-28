@@ -1,39 +1,60 @@
-::ng-deep {
-  .ui-table table tbody.ui-table-tbody > tr > td {
-    border-bottom: none;
-    &:first-child {
-      width: 1%;
-      white-space: nowrap;
+:host {
+  ::ng-deep {
+    p-table .ui-table {
+      table {
+        > thead {
+          > tr {
+            > th {
+              border-right: none;
+              &:not(.performanceLevel) {
+                text-align: right;
+              }
+            }
+          }
+        }
+        > tbody.ui-table-tbody {
+          > tr {
+            &:nth-of-type(odd),
+            &:nth-of-type(even),
+            &:first-child,
+            &:last-child {
+              background-color: transparent;
+            }
+            &:not(:last-child) > td {
+              border-bottom: none;
+            }
+            > td {
+              &:first-child {
+                width: 1%;
+                white-space: nowrap;
+                border-right: none;
+              }
+              &:not(.performanceLevel) {
+                padding: 0;
+              }
+            }
+          }
+        }
+      }
     }
-    &:not(:first-child):not(:last-child) {
-      //border-right: none;
-    }
-    &:not(.performanceLevel) {
-      padding: 0;
+
+    .scale-score {
+      font-size: 18px;
+      text-align: right;
     }
   }
-  p-table table > tbody > tr {
-    &:nth-of-type(odd),
-    &:nth-of-type(even),
-    &:first-child,
-    &:last-child {
-      background-color: transparent;
+
+  .percentage-graph {
+    @padding: 8px;
+
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    .percentage-container {
+      padding: @padding;
+      text-align: right;
     }
-  }
-}
-.percentage-graph {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-
-  @padding: 8px;
-
-  .percentage-container {
-    padding: @padding;
-    text-align: right;
-  }
-
-  .percentage-bar-container {
-    padding: @padding;
-    //box-shadow:
+    .percentage-bar-container {
+      padding: @padding;
+    }
   }
 }

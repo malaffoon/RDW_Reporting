@@ -14,10 +14,28 @@
           }}
         </div>
         <div *ngSwitchDefault>
-          {{
-            'alternate-scores-table.column.score.heading'
-              | translate: { value: column.scoreNumber }
+          <!--{{-->
+          <!--'alternate-scores-table.column.score.heading'-->
+          <!--| translate: {value: column.scoreNumber}-->
+          <!--}}-->
+          <i
+            class="fa {{
+              'subject.' +
+                _subjectDefinition.subject +
+                '.alt.' +
+                column.scoreCode +
+                '.icon' | translate
+            }}"
+          ></i
+          >{{
+            'subject.' +
+              _subjectDefinition.subject +
+              '.alt.' +
+              column.scoreCode +
+              '.name' | translate
           }}
+          <br />
+          <scale-score [score]="2200" [standardError]="15"></scale-score>
         </div>
       </th>
     </tr>
@@ -44,7 +62,7 @@
         <ng-container *ngSwitchDefault>
           <div class="percentage-graph">
             <div class="percentage-container">
-              {{ row[column.field].percent }}%
+              {{ row[column.field].percent | number: '1.0-0' }}%
             </div>
             <div
               class="percentage-bar-container level-down scale-score-graph rounded blend-middle gray-lightest grid-item"

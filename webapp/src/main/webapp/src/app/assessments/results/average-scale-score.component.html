@@ -1,6 +1,7 @@
 <div class="key-value-display">
   <alternate-scores-table
     [subjectDefinition]="subjectDefinition"
+    [assessmentExam]="assessmentExam"
   ></alternate-scores-table>
 
   <div class="row" *ngIf="!isClaimScoreSelected">
@@ -21,6 +22,15 @@
                 ></div>
               </td>
               <td>
+                <!-- TODO use shared component
+                <scale-score
+                  *ngIf="hasAverageScore"
+                  class="font-large text-left"
+                  [score]="averageScore"
+                  [standardError]="statistics.standardError"
+                  [background]="true"
+                ></scale-score>
+                -->
                 <div
                   *ngIf="hasAverageScore"
                   class="scale-score font-large text-left"

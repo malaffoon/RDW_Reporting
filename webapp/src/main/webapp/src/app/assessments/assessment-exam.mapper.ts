@@ -16,11 +16,14 @@ import { Target } from './model/target.model';
 
 @Injectable()
 export class AssessmentExamMapper {
-
   mapFromApi(serverAssessmentExam: any): AssessmentExam {
     const assessmentExam = new AssessmentExam();
-    assessmentExam.assessment = this.mapAssessmentFromApi(serverAssessmentExam.assessment);
-    assessmentExam.exams = serverAssessmentExam.exams.map(serverExam => this.mapExamFromApi(serverExam));
+    assessmentExam.assessment = this.mapAssessmentFromApi(
+      serverAssessmentExam.assessment
+    );
+    assessmentExam.exams = serverAssessmentExam.exams.map(serverExam =>
+      this.mapExamFromApi(serverExam)
+    );
     return assessmentExam;
   }
 
@@ -39,7 +42,9 @@ export class AssessmentExamMapper {
       .map(serverAssessmentItem => {
         const item = this.mapAssessmentItemFromApi(serverAssessmentItem);
         item.scores = serverAssessmentExamItems.examItems
-          .filter(serverExamItem => serverExamItem.itemId === serverAssessmentItem.id)
+          .filter(
+            serverExamItem => serverExamItem.itemId === serverAssessmentItem.id
+          )
           .map(serverExamItem => this.mapExamItemFromApi(serverExamItem));
         return item;
       })
@@ -48,10 +53,14 @@ export class AssessmentExamMapper {
 
   mapTargetScoreExamsFromApi(serverTargetScoreExams: any): TargetScoreExam[] {
     return serverTargetScoreExams.map((serverTargetScoreExam: any) => {
-      const targetScoreExam = <TargetScoreExam>this.mapExamFromApi(serverTargetScoreExam);
+      const targetScoreExam = <TargetScoreExam>(
+        this.mapExamFromApi(serverTargetScoreExam)
+      );
       targetScoreExam.targetId = serverTargetScoreExam.targetId;
-      targetScoreExam.standardMetRelativeResidualScore = serverTargetScoreExam.standardMetRelativeResidualScore;
-      targetScoreExam.studentRelativeResidualScore = serverTargetScoreExam.studentRelativeResidualScore;
+      targetScoreExam.standardMetRelativeResidualScore =
+        serverTargetScoreExam.standardMetRelativeResidualScore;
+      targetScoreExam.studentRelativeResidualScore =
+        serverTargetScoreExam.studentRelativeResidualScore;
       return targetScoreExam;
     });
   }
@@ -65,7 +74,7 @@ export class AssessmentExamMapper {
         assessmentId: serverTarget.assessmentId,
         claimCode: serverTarget.claimCode,
         naturalId: serverTarget.naturalId,
-        includeInReport: serverTarget.includeInReport,
+        includeInReport: serverTarget.includeInReport
       };
     });
   }
@@ -78,6 +87,7 @@ export class AssessmentExamMapper {
     assessment.grade = serverAssessment.gradeCode;
     assessment.type = serverAssessment.typeCode;
     assessment.subject = serverAssessment.subjectCode;
+    assessment.alternateScoreCodes = serverAssessment.altScoreCodes || [];
     assessment.claimCodes = serverAssessment.claimCodes || [];
     assessment.cutPoints = serverAssessment.cutPoints || [];
     assessment.resourceUrl = serverAssessment.resourceUrl;
@@ -97,11 +107,20 @@ export class AssessmentExamMapper {
     exam.schoolYear = serverExam.schoolYear;
     exam.transfer = serverExam.transfer;
     exam.school = this.createSchool(serverExam.school);
-    exam.claimScores = (serverExam.claimScaleScores || [])
-      .map(serverScaleScore => this.mapClaimScaleScoreFromApi(serverScaleScore));
+    exam.claimScores = (serverExam.claimScaleScores || []).map(
+      serverScaleScore => this.mapClaimScaleScoreFromApi(serverScaleScore)
+    );
 
     if (serverExam.studentContext) {
-      const { migrantStatus, section504, iep, lep, elasCode, languageCode, militaryConnectedCode } = serverExam.studentContext;
+      const {
+        migrantStatus,
+        section504,
+        iep,
+        lep,
+        elasCode,
+        languageCode,
+        militaryConnectedCode
+      } = serverExam.studentContext;
       exam.migrantStatus = migrantStatus;
       exam.plan504 = section504;
       exam.iep = iep;
@@ -172,7 +191,10 @@ export class AssessmentExamMapper {
     item.performanceTaskWritingType = serverItem.performanceTaskWritingType;
 
     // only multiple choice and multiple select have valid answer keys, so ignore the others
-    item.answerKey = (serverItem.type === 'MC' || serverItem.type === 'MS') ? serverItem.answerKey : undefined;
+    item.answerKey =
+      serverItem.type === 'MC' || serverItem.type === 'MS'
+        ? serverItem.answerKey
+        : undefined;
 
     return item;
   }
@@ -195,7 +217,4 @@ export class AssessmentExamMapper {
     school.id = serverExamSchool.id;
     return school;
   }
-
-
 }
-

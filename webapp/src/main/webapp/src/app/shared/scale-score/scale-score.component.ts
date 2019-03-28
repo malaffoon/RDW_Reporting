@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 /**
  * This component is responsible for displaying a scale score
@@ -7,13 +7,15 @@ import { Component, Input } from "@angular/core";
 @Component({
   selector: 'scale-score',
   templateUrl: './scale-score.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScaleScoreComponent {
+  @Input()
+  score: number;
 
   @Input()
-  public score: number;
+  standardError: number;
 
   @Input()
-  public standardError: number;
-
+  background: boolean;
 }

@@ -112,6 +112,10 @@ export class AverageScaleScoreComponent {
     return this._assessmentExam.assessment;
   }
 
+  get assessmentExam(): AssessmentExam {
+    return this._assessmentExam;
+  }
+
   getClaimDataWidth(claimIndex: number, levelIndex: number): number {
     if (!this._claimDataWidths || !this._claimDataWidths[claimIndex]) {
       return 0;
