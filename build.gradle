@@ -62,6 +62,8 @@ subprojects {
             dependency "org.opentestsystem.rdw.common:rdw-common-security:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-status:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-archive:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-multi-tenant:${rdwCommonVersion}"
+
 
             // commonly used libraries
             dependency 'com.google.guava:guava:27.0.1-jre'

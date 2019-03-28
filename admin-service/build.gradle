@@ -10,6 +10,7 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
+    compile 'org.opentestsystem.rdw.common:rdw-common-multi-tenant'
     runtime 'org.springframework.boot:spring-boot-devtools'
     compile 'org.springframework.boot:spring-boot-starter-aop'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
