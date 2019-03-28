@@ -1,4 +1,4 @@
-import { ObservableObject } from "../../shared/observable-object.model";
+import { ObservableObject } from '../../shared/observable-object.model';
 
 export class FilterBy extends ObservableObject {
   // Test
@@ -11,18 +11,32 @@ export class FilterBy extends ObservableObject {
   private _completion: any = -1;
 
   //Student
-  private _genders: boolean[] = [ true ];
+  private _genders: boolean[] = [true];
   private _migrantStatus: number = -1;
   private _plan504: number = -1;
   private _iep: number = -1;
   private _limitedEnglishProficiency: number = -1;
-  private _ethnicities: boolean[] = [ true ];
-  private _elasCodes: boolean[] = [ true ];
-  private _languageCodes: boolean[] = [ true ];
-  private _militaryConnectedCodes: boolean[] = [ true ];
+  private _ethnicities: boolean[] = [true];
+  private _elasCodes: boolean[] = [true];
+  private _languageCodes: { [code: string]: boolean }[] = [];
+  private _militaryConnectedCodes: boolean[] = [true];
 
-  private _filters = ['offGradeAssessment', 'transferAssessment', 'administration', 'summativeStatus', 'completion', 'genders', 'migrantStatus',
-                      'plan504', 'iep', 'limitedEnglishProficiency', 'elasCodes', 'ethnicities', 'languageCodes', 'militaryConnectedCodes'];
+  private _filters = [
+    'offGradeAssessment',
+    'transferAssessment',
+    'administration',
+    'summativeStatus',
+    'completion',
+    'genders',
+    'migrantStatus',
+    'plan504',
+    'iep',
+    'limitedEnglishProficiency',
+    'elasCodes',
+    'ethnicities',
+    'languageCodes',
+    'militaryConnectedCodes'
+  ];
 
   get filteredEthnicities(): any[] {
     return this.filterArray(this._ethnicities);
@@ -37,7 +51,7 @@ export class FilterBy extends ObservableObject {
   }
 
   get filteredLanguages(): any[] {
-    return this.filterArray(Object.assign({}, ...this._languageCodes));
+    return this.filterArray(this._languageCodes);
   }
 
   get filteredMilitaryConnectedCodes(): any[] {
@@ -47,11 +61,10 @@ export class FilterBy extends ObservableObject {
   private filterArray(array: any[]): any[] {
     const returnArray: any[] = [];
     for (const i in array) {
-      if (array.hasOwnProperty(i) && i != "0" && array[ i ]) {
+      if (array.hasOwnProperty(i) && i != '0' && array[i]) {
         returnArray.push(i);
       }
     }
-
     return returnArray;
   }
 
@@ -59,30 +72,31 @@ export class FilterBy extends ObservableObject {
     const all = [];
 
     for (const property of this._filters) {
-      if (property == "ethnicities") {
+      if (property == 'ethnicities') {
         const filteredEthnicities = this.filteredEthnicities;
         for (const filteredEthnicity of filteredEthnicities) {
-          all.push(property + "." + filteredEthnicity);
+          all.push(property + '.' + filteredEthnicity);
         }
-      } else if (property == "genders") {
+      } else if (property == 'genders') {
         const filteredGenders = this.filteredGenders;
         for (const filteredGender of filteredGenders) {
-          all.push(property + "." + filteredGender);
+          all.push(property + '.' + filteredGender);
         }
-      } else if (property == "elasCodes") {
+      } else if (property == 'elasCodes') {
         const filteredElasCodes = this.filteredElasCodes;
         for (const filteredElasCode of filteredElasCodes) {
-          all.push(property + "." + filteredElasCode);
+          all.push(property + '.' + filteredElasCode);
         }
-      } else if (property == "languageCodes") {
+      } else if (property == 'languageCodes') {
         const filteredLanguages = this.filteredLanguages;
         for (const filteredLanguage of filteredLanguages) {
-          all.push(property + "." + filteredLanguage);
+          all.push(property + '.' + filteredLanguage);
         }
-      } else if (property == "militaryConnectedCodes") {
-        const filteredMilitaryConnectedCodes = this.filteredMilitaryConnectedCodes;
+      } else if (property == 'militaryConnectedCodes') {
+        const filteredMilitaryConnectedCodes = this
+          .filteredMilitaryConnectedCodes;
         for (const filteredMilitaryConnectedCode of filteredMilitaryConnectedCodes) {
-          all.push(property + "." + filteredMilitaryConnectedCode);
+          all.push(property + '.' + filteredMilitaryConnectedCode);
         }
       } else if (this.isFilterEnabled(property)) {
         all.push(property);
@@ -164,11 +178,11 @@ export class FilterBy extends ObservableObject {
     this.notifyChange('genders');
   }
 
-  get languageCodes(): boolean[] {
+  get languageCodes(): { [x: string]: boolean }[] {
     return this._languageCodes;
   }
 
-  set languageCodes(value: boolean[]) {
+  set languageCodes(value: { [x: string]: boolean }[]) {
     this._languageCodes = value;
     this.notifyChange('languageCodes');
   }
@@ -219,11 +233,10 @@ export class FilterBy extends ObservableObject {
   }
 
   private isFilterEnabled(property) {
-    if (property == "offGradeAssessment" && this[ property ] === false)
+    if (property == 'offGradeAssessment' && this[property] === false)
       return false;
-    else if (property == "transferAssessment" && this[ property ] === false)
+    else if (property == 'transferAssessment' && this[property] === false)
       return false;
-    else
-      return this[ property ] != -1;
+    else return this[property] != -1;
   }
 }

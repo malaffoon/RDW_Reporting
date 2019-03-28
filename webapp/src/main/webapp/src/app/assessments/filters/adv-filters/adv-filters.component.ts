@@ -1,10 +1,17 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FilterBy } from '../../model/filter-by.model';
 import { ExamFilterOptions } from '../../model/exam-filter-options.model';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SBTypeaheadGroup} from '../../../shared/form/sb-typeahead-group';
+import { SBTypeaheadGroup } from '../../../shared/form/sb-typeahead-group';
 import { Option } from '../../../shared/form/option';
+import { Filter } from '../../../exam/model/filter';
 
 /*
   This component contains all of the selectable advanced filters
@@ -15,7 +22,6 @@ import { Option } from '../../../shared/form/option';
   templateUrl: './adv-filters.component.html'
 })
 export class AdvFiltersComponent {
-
   @Input()
   filterOptions: ExamFilterOptions;
 
@@ -32,18 +38,14 @@ export class AdvFiltersComponent {
   private sbTypeAheadGroup: SBTypeaheadGroup;
 
   showTransferAccess = false;
-  showElas = false;
-  showLep = false;
 
-  constructor(private applicationSettingsService: ApplicationSettingsService,
-              private translateService: TranslateService,
-              ) {
+  constructor(
+    private applicationSettingsService: ApplicationSettingsService,
+    private translateService: TranslateService
+  ) {
     applicationSettingsService.getSettings().subscribe(settings => {
       this.showTransferAccess = settings.transferAccess;
-      this.showElas = settings.elasEnabled;
-      this.showLep = settings.lepEnabled;
     });
-
   }
 
   get filters(): FilterBy {
@@ -54,33 +56,35 @@ export class AdvFiltersComponent {
     return this.filterOptions;
   }
 
-  removeLanguageFilter(code) {
-    this.sbTypeAheadGroup.removeOption(this.sbTypeAheadGroup.options.find(option => {
-      return option.value === code;
+  isEnabled(studentFilterType: string): boolean {
+    return (
+      this.filterOptions.studentFilters.find(
+        ({ id }) => id === studentFilterType
+      ) != null
+    );
+  }
+
+  removeLanguageFilter(code: any): void {
+    this.sbTypeAheadGroup.removeOption(
+      this.sbTypeAheadGroup.options.find(option => option.value === code)
+    );
+  }
+
+  optionsChanged(values: { value: any }[]): void {
+    this.filterBy.languageCodes = values.map(({ value }) => ({
+      [value]: true
     }));
   }
 
-  optionsChanged(event) {
-    let newLanguages = [];
-    this.filterBy.languageCodes = newLanguages.concat(event.map(lang => {
-      let langCodeObj = {};
-      langCodeObj[lang.value] = true;
-      return langCodeObj;
-    }));
-  }
-
-  onSettingChangeInternal(event): void {
+  onSettingChangeInternal(event: any): void {
     this.changed.emit();
   }
 
   public getLanguagesMap(): any[] {
-    const translate = code => this.translateService.instant(code);
-    if(this.filterOptions && this.filterOptions.languages) {
-      return this.filterOptions.languages.map( val => {
-        return { text: translate(`common.languages.${val}`), value: val };
-      });
-    } else {
-      return [];
-    }
+    const { filterOptions: { languages = [] } = {} } = this;
+    return languages.map(value => ({
+      value,
+      text: this.translateService.instant(`common.languages.${value}`)
+    }));
   }
 }
