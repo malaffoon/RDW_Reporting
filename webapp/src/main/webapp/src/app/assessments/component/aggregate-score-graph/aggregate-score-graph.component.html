@@ -1,0 +1,20 @@
+<div class="percentage-container">
+  {{ displayCount ? count : (percent | number: '1.0-0') + '%' }}
+</div>
+<div
+  class="percentage-bar-container level-down scale-score-graph rounded blend-middle gray-lightest"
+>
+  <div class="bar-container">
+    <div
+      *ngIf="count != 0"
+      class="bar"
+      [ngClass]="color"
+      [attr.data-width]="percent"
+    ></div>
+    <div
+      *ngIf="percent < 100"
+      class="bar gray"
+      [attr.data-width]="100 - percent"
+    ></div>
+  </div>
+</div>

@@ -14,26 +14,10 @@
           }}
         </div>
         <div *ngSwitchDefault>
-          <!--{{-->
-          <!--'alternate-scores-table.column.score.heading'-->
-          <!--| translate: {value: column.scoreNumber}-->
-          <!--}}-->
-          <i
-            class="fa {{
-              'subject.' +
-                _subjectDefinition.subject +
-                '.alt.' +
-                column.scoreCode +
-                '.icon' | translate
-            }}"
-          ></i
-          >{{
-            'subject.' +
-              _subjectDefinition.subject +
-              '.alt.' +
-              column.scoreCode +
-              '.name' | translate
-          }}
+          <score-label
+            [subjectCode]="_subjectDefinition.subject"
+            [scoreCode]="column.scoreCode"
+          ></score-label>
           <br />
           <scale-score [score]="2200" [standardError]="15"></scale-score>
         </div>
@@ -60,36 +44,20 @@
           }}
         </ng-container>
         <ng-container *ngSwitchDefault>
-          <div class="percentage-graph">
-            <div class="percentage-container">
-              {{ row[column.field].percent | number: '1.0-0' }}%
-            </div>
-            <div
-              class="percentage-bar-container level-down scale-score-graph rounded blend-middle gray-lightest grid-item"
-            >
-              <div class="bar-container">
-                <div
-                  *ngIf="row[column.field].value != 0"
-                  class="bar"
-                  [ngClass]="
-                    'subject.' +
-                      _subjectDefinition.subject +
-                      '.asmt-type.' +
-                      _subjectDefinition.assessmentType +
-                      '.level.' +
-                      row.performanceLevel +
-                      '.color' | translate
-                  "
-                  [attr.data-width]="row[column.field].percent"
-                ></div>
-                <div
-                  *ngIf="row[column.field].percent < 100"
-                  class="bar gray"
-                  [attr.data-width]="100 - row[column.field].percent"
-                ></div>
-              </div>
-            </div>
-          </div>
+          <aggregate-score-graph
+            [percent]="row[column.field].percent"
+            [count]="row[column.field].count"
+            [color]="
+              'subject.' +
+                _subjectDefinition.subject +
+                '.asmt-type.' +
+                _subjectDefinition.assessmentType +
+                '.level.' +
+                row.performanceLevel +
+                '.color' | translate
+            "
+            [displayCount]="displayCount"
+          ></aggregate-score-graph>
         </ng-container>
       </td>
     </tr>

@@ -44,6 +44,8 @@ import { TargetStatisticsCalculator } from './results/target-statistics-calculat
 import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
 import { AssessmentIconComponent } from './assessment-icon.component';
 import { AlternateScoresTableComponent } from './component/alternate-scores-table/alternate-scores-table.component';
+import { ScoreLabelComponent } from './component/score-label/score-label.component';
+import { AggregateScoreGraphComponent } from './component/aggregate-score-graph/aggregate-score-graph.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,9 @@ import { AlternateScoresTableComponent } from './component/alternate-scores-tabl
     DistractorAnalysisComponent,
     WritingTraitScoresComponent,
     TargetReportComponent,
-    InstructionalResourcePopoverComponent
+    InstructionalResourcePopoverComponent,
+    ScoreLabelComponent,
+    AggregateScoreGraphComponent
   ],
   imports: [
     Angulartics2Module.forRoot(),

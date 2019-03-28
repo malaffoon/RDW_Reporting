@@ -55,6 +55,9 @@ export class AlternateScoresTableComponent {
   _assessmentExam: AssessmentExam;
 
   @Input()
+  displayCount: boolean;
+
+  @Input()
   set subjectDefinition(value: SubjectDefinition) {
     this._subjectDefinition = value;
     this.initialize();
@@ -112,7 +115,7 @@ export class AlternateScoresTableComponent {
       performanceLevel,
       ...scoreCodes.reduce((scores, score, scoreIndex) => {
         scores[`aggregateScore${score}`] = {
-          value: 2,
+          count: 2,
           percent: 100 - (scoreIndex + performanceLevelIndex) * 10
         };
         return scores;
