@@ -12,7 +12,6 @@ import { AssessmentExamMapper } from '../../../assessment-exam.mapper';
 import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.service';
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
 import { ExamFilterOptionsService } from '../../../filters/exam-filters/exam-filter-options.service';
-import { ExamFilterOptionsMapper } from '../../../filters/exam-filters/exam-filter-options.mapper';
 import { of } from 'rxjs';
 import { DataTableService } from '../../../../shared/datatable/datatable-service';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
@@ -34,21 +33,16 @@ describe('TargetReportComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        TranslateModule.forRoot(),
-        TestModule
-      ],
-      declarations: [
-        TargetReportComponent,
-        TestComponentWrapper
-      ],
+      imports: [CommonModule, TranslateModule.forRoot(), TestModule],
+      declarations: [TargetReportComponent, TestComponentWrapper],
       providers: [
         MenuActionBuilder,
-        { provide: GroupAssessmentService, useValue: mockGroupAssessmentService },
+        {
+          provide: GroupAssessmentService,
+          useValue: mockGroupAssessmentService
+        },
         ExamFilterService,
         ExamFilterOptionsService,
-        ExamFilterOptionsMapper,
         DataTableService,
         AssessmentExamMapper,
         ExamStatisticsCalculator,
@@ -61,14 +55,13 @@ describe('TargetReportComponent', () => {
         ApplicationSettingsService,
         UserReportService
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
-    })
-      .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TestComponentWrapper);
-    component = fixture.debugElement.children[ 0 ].componentInstance;
+    component = fixture.debugElement.children[0].componentInstance;
     fixture.detectChanges();
   });
 
@@ -79,9 +72,13 @@ describe('TargetReportComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: `<target-report [assessmentProvider]="{}"
-                            [assessment]="assessment"
-                            [subjectDefinition]="subjectDefinition"></target-report>`
+  template: `
+    <target-report
+      [assessmentProvider]="{}"
+      [assessment]="assessment"
+      [subjectDefinition]="subjectDefinition"
+    ></target-report>
+  `
 })
 class TestComponentWrapper {
   assessment = new Assessment();
