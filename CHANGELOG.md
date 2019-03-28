@@ -11,8 +11,13 @@
     * report-download.orders.*
     * reports.report-type.*
     
+#### 1.3.1 - 2019-03-28
+
+* Extract both answer key parts for EBSR items (reporting-service).
+
 #### 1.3.0 - 2019-02-05
 
+* Fix issue with claim levels in the ISR (PDF report).
 * Change aggregate report table to scroll instead of paging.
 * Fix issue with responsive menu in app header.
 * Honor school-year discriminator for accommodation text.
