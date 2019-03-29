@@ -1,14 +1,10 @@
+@spacing-unit: 8px;
 :host {
-  @padding: 8px;
-
   display: grid;
   grid-template-columns: 48px 1fr;
-
+  align-items: center;
+  gap: @spacing-unit;
   .percentage-container {
-    padding: @padding;
     text-align: right;
-  }
-  .percentage-bar-container {
-    padding: @padding;
   }
 }

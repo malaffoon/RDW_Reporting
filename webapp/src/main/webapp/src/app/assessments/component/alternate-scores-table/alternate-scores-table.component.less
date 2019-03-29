@@ -1,60 +1,52 @@
+// compilation error: .colorElement is undefined
+//@import '../../../../../node_modules/@sbac/sbac-ui-kit/src/less/colors.less';
+@gray-light: #d5d5d5;
+@spacing-unit: 4px;
+
 :host {
   ::ng-deep {
-    p-table .ui-table {
-      table {
-        > thead {
-          > tr {
-            > th {
-              border-right: none;
-              &:not(.performanceLevel) {
-                text-align: center;
-              }
-            }
-          }
-        }
-        > tbody.ui-table-tbody {
-          > tr {
-            &:nth-of-type(odd),
-            &:nth-of-type(even),
-            &:first-child,
-            &:last-child {
-              background-color: transparent;
-            }
-            &:not(:last-child) > td {
-              border-bottom: none;
-            }
-            > td {
-              &:first-child {
-                width: 1%;
-                white-space: nowrap;
-                border-right: none;
-              }
-              &:not(.performanceLevel) {
-                padding: 0;
-              }
-            }
-          }
-        }
-      }
-    }
-
     .scale-score {
       font-size: 18px;
-      text-align: center;
+      text-align: left;
+      .error-band {
+        font-weight: normal;
+        opacity: 0.75;
+      }
     }
   }
-  //
-  //.percentage-graph {
-  //  @padding: 8px;
-  //
-  //  display: grid;
-  //  grid-template-columns: 48px 1fr;
-  //  .percentage-container {
-  //    padding: @padding;
-  //    text-align: right;
-  //  }
-  //  .percentage-bar-container {
-  //    padding: @padding;
-  //  }
-  //}
+}
+
+table {
+  width: 100%;
+  > thead > tr > th,
+  > tbody > tr > td {
+    &:first-child {
+      width: 1%;
+      white-space: nowrap;
+      text-align: right;
+    }
+    &:not(:first-child) {
+      border-left: 1px solid @gray-light;
+    }
+  }
+  > thead > tr > th {
+    padding: 0 (@spacing-unit * 4) @spacing-unit (@spacing-unit * 4);
+    vertical-align: bottom;
+  }
+  > tbody > tr > td {
+    padding: @spacing-unit (@spacing-unit * 4) @spacing-unit 0;
+  }
+  > tbody > tr:last-child > td {
+    padding-bottom: 0;
+  }
+}
+
+.result-count {
+  // vertical-align: bottom; didn't do the trick
+  margin-bottom: -5px;
+}
+
+.heading {
+  font-size: 18px;
+  margin-bottom: 12px;
 }

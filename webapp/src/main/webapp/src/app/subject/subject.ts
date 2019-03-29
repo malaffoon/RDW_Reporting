@@ -8,4 +8,7 @@ export interface SubjectDefinition {
   readonly scorableClaims: string[];
   readonly scorableClaimPerformanceLevels: number[];
   readonly scorableClaimPerformanceLevelCount: number;
+  readonly alternateScoreCodes: string[];
+  readonly alternateScorePerformanceLevels: number[];
+  readonly alternateScorePerformanceLevelCount: number;
 }

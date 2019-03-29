@@ -1,14 +1,4 @@
 {
-  "alternate-scores-table": {
-    "column": {
-      "performanceLevel": {
-        "heading": "Achievement Level"
-      },
-      "score": {
-        "heading": "Alt Score {{value}}"
-      }
-    }
-  },
   "access-denied": {
     "logout": "Logout",
     "message": "Your user account is not permitted to access this reporting system. If you believe you have reached this page in error, please contact your building administrator.",
