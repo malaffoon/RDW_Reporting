@@ -46,6 +46,7 @@ import { AssessmentIconComponent } from './assessment-icon.component';
 import { AlternateScoresTableComponent } from './component/alternate-scores-table/alternate-scores-table.component';
 import { ScoreLabelComponent } from './component/score-label/score-label.component';
 import { AggregateScoreGraphComponent } from './component/aggregate-score-graph/aggregate-score-graph.component';
+import { ProgressBarComponent } from './component/progress-bar/progress-bar.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { AggregateScoreGraphComponent } from './component/aggregate-score-graph/
     TargetReportComponent,
     InstructionalResourcePopoverComponent,
     ScoreLabelComponent,
-    AggregateScoreGraphComponent
+    AggregateScoreGraphComponent,
+    ProgressBarComponent
   ],
   imports: [
     Angulartics2Module.forRoot(),

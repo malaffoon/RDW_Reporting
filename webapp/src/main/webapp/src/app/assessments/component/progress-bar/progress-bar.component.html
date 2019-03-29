@@ -1,0 +1,15 @@
+<div class="percentage-bar-container scale-score-graph rounded blend-middle">
+  <div class="bar-container">
+    <div
+      *ngIf="percent >= 1"
+      class="bar"
+      [ngClass]="color"
+      [attr.data-width]="percent"
+    ></div>
+    <div
+      *ngIf="percent < 100"
+      class="bar gray"
+      [attr.data-width]="100 - percent"
+    ></div>
+  </div>
+</div>
