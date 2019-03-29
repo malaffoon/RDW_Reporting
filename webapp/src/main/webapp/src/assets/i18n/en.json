@@ -433,7 +433,7 @@
       "ELAS": "English Language Acquisition Status",
       "Language": "Primary Language",
       "MigrantStatus": "Migrant Status",
-      "MilitaryConnectedCode": "Military Connected",
+      "MilitaryConnectedCode": "Military Student Identifier",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Student Enrolled Grade"
@@ -447,7 +447,7 @@
       "ELAS": "ELAS",
       "Language": "Language",
       "MigrantStatus": "Migrant Status",
-      "MilitaryConnectedCode": "Military Connected",
+      "MilitaryConnectedCode": "Military",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Enrolled Grade"
