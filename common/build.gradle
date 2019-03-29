@@ -9,6 +9,7 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
+    compile 'org.opentestsystem.rdw.common:rdw-common-multi-tenant'
     compile 'javax.validation:validation-api'
     compile 'commons-io:commons-io'
     compile 'com.google.guava:guava'
