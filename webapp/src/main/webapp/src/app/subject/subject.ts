@@ -21,11 +21,11 @@ export interface SubjectDefinition {
   readonly scorableClaimPerformanceLevelCount: number;
 
   /** @deprecated use claimScores */
-  readonly alternateScoreCodes: string[];
+  readonly alternateScoreCodes?: string[];
   /** @deprecated use claimScores */
-  readonly alternateScorePerformanceLevels: number[];
+  readonly alternateScorePerformanceLevels?: number[];
   /** @deprecated use claimScores */
-  readonly alternateScorePerformanceLevelCount: number;
+  readonly alternateScorePerformanceLevelCount?: number;
 
   readonly overallScore: OverallScore;
   readonly alternateScores?: SubScores;
