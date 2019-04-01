@@ -17,6 +17,54 @@ const OrganizationalClaimsBySubject: Map<string, string[]> = new Map([
   ['ELA', ELAOrganizationalClaims]
 ]);
 
+function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
+  const definition: any = {
+    subject: serverDefinition.subjectCode,
+    assessmentType: serverDefinition.asmtTypeCode,
+    performanceLevels: range(1, serverDefinition.performanceLevelCount),
+    performanceLevelCount: serverDefinition.performanceLevelCount,
+    performanceLevelStandardCutoff:
+      serverDefinition.performanceLevelStandardCutoff,
+    scorableClaims: serverDefinition.scorableClaims,
+    scorableClaimPerformanceLevels: range(
+      1,
+      serverDefinition.claimScorePerformanceLevelCount
+    ),
+    scorableClaimPerformanceLevelCount:
+      serverDefinition.claimScorePerformanceLevelCount,
+    alternateScoreCodes: serverDefinition.altScores,
+    alternateScorePerformanceLevels: range(
+      1,
+      serverDefinition.altScorePerformanceLevelCount
+    ),
+    alternateScorePerformanceLevelCount:
+      serverDefinition.altScorePerformanceLevelCount,
+    overallScore: {
+      levels: range(1, serverDefinition.performanceLevelCount),
+      levelCount: serverDefinition.performanceLevelCount,
+      standardCutoff: serverDefinition.performanceLevelStandardCutoff
+    }
+  };
+
+  if (serverDefinition.claimScorePerformanceLevelCount != null) {
+    definition.claimScores = {
+      codes: serverDefinition.scorableClaims,
+      levels: range(1, serverDefinition.claimScorePerformanceLevelCount),
+      levelCount: serverDefinition.claimScorePerformanceLevelCount
+    };
+  }
+
+  if (serverDefinition.altScorePerformanceLevelCount != null) {
+    definition.alternateScores = {
+      codes: serverDefinition.altScores,
+      levels: range(1, serverDefinition.altScorePerformanceLevelCount),
+      levelCount: serverDefinition.altScorePerformanceLevelCount
+    };
+  }
+
+  return definition;
+}
+
 @Injectable()
 export class SubjectService {
   constructor(private dataService: CachingDataService) {}
@@ -73,37 +121,8 @@ export class SubjectService {
    */
   getSubjectDefinitions(): Observable<SubjectDefinition[]> {
     return this.dataService.get(`${ServiceRoute}/subjects/definitions`).pipe(
-      map(definitions => definitions.map(this.mapDefinition)),
+      map(serverDefinitions => serverDefinitions.map(toSubjectDefinition)),
       catchError(ResponseUtils.throwError)
     );
-  }
-
-  private mapDefinition(serverDefinition: any): SubjectDefinition {
-    return <SubjectDefinition>{
-      subject: serverDefinition.subjectCode,
-      assessmentType: serverDefinition.asmtTypeCode,
-      performanceLevels: range(1, serverDefinition.performanceLevelCount),
-      performanceLevelCount: serverDefinition.performanceLevelCount,
-      performanceLevelStandardCutoff:
-        serverDefinition.performanceLevelStandardCutoff,
-      scorableClaims: serverDefinition.scorableClaims,
-      scorableClaimPerformanceLevels: range(
-        1,
-        serverDefinition.claimScorePerformanceLevelCount
-      ),
-      scorableClaimPerformanceLevelCount:
-        serverDefinition.claimScorePerformanceLevelCount,
-      alternateScoreCodes: serverDefinition.altScores,
-      alternateScorePerformanceLevels: range(
-        1,
-        serverDefinition.altScorePerformanceLevelCount
-      ),
-      alternateScorePerformanceLevelCount:
-        serverDefinition.altScorePerformanceLevelCount
-    };
-  }
-
-  getOrganizationalClaimsBySubject(): Observable<Map<string, string[]>> {
-    return of(OrganizationalClaimsBySubject);
   }
 }
