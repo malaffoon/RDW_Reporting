@@ -1,6 +1,11 @@
 import { SubjectDefinition } from '../../subject/subject';
 
 /**
+ * Declares all the different score types
+ */
+export type ScoreType = 'Overall' | 'Claim' | 'Alternate';
+
+/**
  * High level set of statistics computed from a set of exams for a specific assessment
  */
 export interface ScoreStatistics {

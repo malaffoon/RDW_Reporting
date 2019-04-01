@@ -403,6 +403,7 @@
     },
     "buttons": {
       "all": "All",
+      "display-alternate": "Alt Scores",
       "display-claim": "Claim Scores",
       "display-overall": "Overall Scores",
       "printable-student-reports": "Printable Reports"
