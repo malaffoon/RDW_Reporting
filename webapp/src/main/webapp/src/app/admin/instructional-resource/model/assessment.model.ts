@@ -10,4 +10,5 @@ export class Assessment {
   selected: boolean;
   subject: string;
   claimCodes: string[];
+  alternateScoreCodes: string[];
 }

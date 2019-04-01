@@ -1,4 +1,13 @@
 <span class="scale-score">
-  <span class="score">{{ score ? score : '-' }}</span>
-  <span *ngIf="score" class="error-band pl-xs">{{'common.error-band-value' | translate: {errorBand: standardError | number:'1.0-0' } }}</span>
+  <span
+    class="score"
+    [ngClass]="{
+      'label label-primary': background
+    }"
+    >{{ score ? score : '-' }}</span
+  >
+  <span *ngIf="score" class="error-band pl-xs">{{
+    'common.error-band-value'
+      | translate: { errorBand: standardError | number: '1.0-0' }
+  }}</span>
 </span>

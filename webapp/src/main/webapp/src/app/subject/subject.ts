@@ -8,4 +8,9 @@ export interface SubjectDefinition {
   readonly scorableClaims: string[];
   readonly scorableClaimPerformanceLevels: number[];
   readonly scorableClaimPerformanceLevelCount: number;
+
+  // TODO place this under alternateScores.codes|levels|levelCount
+  readonly alternateScoreCodes?: string[];
+  readonly alternateScorePerformanceLevels?: number[];
+  readonly alternateScorePerformanceLevelCount?: number;
 }
