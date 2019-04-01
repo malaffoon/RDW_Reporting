@@ -15,6 +15,7 @@ import { Assessment } from '../model/assessment.model';
 import { OrderingService } from '../../shared/ordering/ordering.service';
 import { map } from 'rxjs/internal/operators';
 import { SubjectDefinition } from '../../subject/subject';
+import { ScoreType } from '../model/score-statistics';
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -31,6 +32,11 @@ enum ScoreViewState {
 export class AverageScaleScoreComponent {
   @Input()
   subjectDefinition: SubjectDefinition; // passed along to alternative-scores-table
+
+  /**
+   * The active score type in the display
+   */
+  scoreType: ScoreType = 'Overall';
 
   @Input()
   showValuesAsPercent: boolean = true;
@@ -138,22 +144,19 @@ export class AverageScaleScoreComponent {
       : claimStats.levels[index].suffix;
   }
 
-  get isClaimScoreSelected(): boolean {
-    return this.displayState.table == ScoreViewState.CLAIM;
-  }
-
-  public setClaimScoreSelected(): void {
-    this.displayState.table = ScoreViewState.CLAIM;
-    this.onScoreViewToggle.emit(true);
-  }
-
-  public setOverallScoreSelected(): void {
-    this.displayState.table = ScoreViewState.OVERALL;
-    this.onScoreViewToggle.emit(false);
-  }
-
-  get showClaimToggle(): boolean {
-    return !this._assessmentExam.assessment.isIab;
+  onScoreTypeChange(value: ScoreType): void {
+    // TODO rework so that the score type is propagated
+    switch (value) {
+      case 'Overall':
+        this.displayState.table = ScoreViewState.OVERALL;
+        this.onScoreViewToggle.emit(false);
+        break;
+      case 'Claim':
+        this.displayState.table = ScoreViewState.CLAIM;
+        this.onScoreViewToggle.emit(true);
+        break;
+    }
+    this.scoreType = value;
   }
 
   get hasAverageScore(): boolean {
