@@ -1,0 +1,70 @@
+<table *ngIf="scoreStatistics.subjectDefinition as subjectDefinition">
+  <thead>
+    <tr>
+      <th>
+        <div class="result-count">
+          <span class="score font-large">{{
+            scoreStatistics.resultCount
+          }}</span>
+          <span class="ml-xs">{{
+            (scoreStatistics.resultCount === 1
+              ? 'average-scale-score.result'
+              : 'average-scale-score.results') | translate
+          }}</span>
+        </div>
+      </th>
+      <th *ngFor="let group of scoreStatistics.groups">
+        <div class="heading">
+          <score-label
+            [subjectCode]="subjectDefinition.subject"
+            [scoreCode]="group.code"
+          ></score-label>
+        </div>
+        <scale-score
+          [score]="group.averageScaleScore"
+          [standardError]="group.standardError"
+        ></scale-score>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="
+        let performanceLevel of _orderedPerformanceLevels;
+        let performanceLevelIndex = index
+      "
+    >
+      <td>
+        {{
+          'subject.' +
+            scoreStatistics.subjectDefinition.subject +
+            '.asmt-type.' +
+            scoreStatistics.subjectDefinition.assessmentType +
+            '.alt-score.level.' +
+            performanceLevel +
+            '.name' | translate
+        }}
+      </td>
+      <td *ngFor="let group of scoreStatistics.groups; let groupIndex = index">
+        <ng-container
+          *ngIf="group.performanceLevelScores[performanceLevelIndex] as score"
+        >
+          <aggregate-score-graph
+            [percent]="score.percent"
+            [count]="score.count"
+            [color]="
+              'subject.' +
+                subjectDefinition.subject +
+                '.asmt-type.' +
+                subjectDefinition.assessmentType +
+                '.alt-score.level.' +
+                performanceLevel +
+                '.color' | translate
+            "
+            [displayCount]="displayCount"
+          ></aggregate-score-graph>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>

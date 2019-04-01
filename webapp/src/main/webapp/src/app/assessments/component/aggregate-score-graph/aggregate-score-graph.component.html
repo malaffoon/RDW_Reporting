@@ -1,0 +1,4 @@
+<div class="percentage-container">
+  {{ displayCount ? count : (percent | number: '1.0-0') + '%' }}
+</div>
+<progress-bar [percent]="percent" [color]="color"></progress-bar>

@@ -43,11 +43,16 @@ import { TargetReportComponent } from './results/view/target-report/target-repor
 import { TargetStatisticsCalculator } from './results/target-statistics-calculator';
 import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
 import { AssessmentIconComponent } from './assessment-icon.component';
+import { AlternateScoresTableComponent } from './component/alternate-scores-table/alternate-scores-table.component';
+import { ScoreLabelComponent } from './component/score-label/score-label.component';
+import { AggregateScoreGraphComponent } from './component/aggregate-score-graph/aggregate-score-graph.component';
+import { ProgressBarComponent } from './component/progress-bar/progress-bar.component';
 
 @NgModule({
   declarations: [
     AdvFiltersComponent,
     AdvFiltersToggleComponent,
+    AlternateScoresTableComponent,
     AssessmentsComponent,
     AssessmentIconComponent,
     AssessmentResultsComponent,
@@ -65,7 +70,10 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     DistractorAnalysisComponent,
     WritingTraitScoresComponent,
     TargetReportComponent,
-    InstructionalResourcePopoverComponent
+    InstructionalResourcePopoverComponent,
+    ScoreLabelComponent,
+    AggregateScoreGraphComponent,
+    ProgressBarComponent
   ],
   imports: [
     Angulartics2Module.forRoot(),

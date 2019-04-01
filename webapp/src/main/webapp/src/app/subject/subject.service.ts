@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable ,  of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { SubjectDefinition } from './subject';
 import { CachingDataService } from '../shared/data/caching-data.service';
 import { ReportingServiceRoute } from '../shared/service-route';
@@ -10,19 +10,16 @@ import { range } from '../shared/support/support';
 
 const ServiceRoute = ReportingServiceRoute;
 
-
-const MathOrganizationalClaims = [ '1', '2', '3', '4' ];
-const ELAOrganizationalClaims = [ '1-LT', '1-IT', '2-W', '3-L', '3-S', '4-CR' ];
+const MathOrganizationalClaims = ['1', '2', '3', '4'];
+const ELAOrganizationalClaims = ['1-LT', '1-IT', '2-W', '3-L', '3-S', '4-CR'];
 const OrganizationalClaimsBySubject: Map<string, string[]> = new Map([
-  [ 'Math', MathOrganizationalClaims ],
-  [ 'ELA', ELAOrganizationalClaims ]
+  ['Math', MathOrganizationalClaims],
+  ['ELA', ELAOrganizationalClaims]
 ]);
 
 @Injectable()
 export class SubjectService {
-
-  constructor(private dataService: CachingDataService) {
-  }
+  constructor(private dataService: CachingDataService) {}
 
   /**
    * Retrieve all subjects available in the system.
@@ -32,9 +29,7 @@ export class SubjectService {
   getSubjectCodes(): Observable<string[]> {
     return this.dataService
       .get(`${ServiceRoute}/subjects`)
-      .pipe(
-        catchError(ResponseUtils.throwError)
-      );
+      .pipe(catchError(ResponseUtils.throwError));
   }
 
   /**
@@ -44,13 +39,19 @@ export class SubjectService {
    * @param {string} assessmentType An assessment type code
    * @returns {Observable<SubjectDefinition>} The definition
    */
-  getSubjectDefinition(subject: string, assessmentType: string): Observable<SubjectDefinition> {
-    return this.getSubjectDefinitions()
-      .pipe(
-        map(definitions => definitions.find(definition =>
-          definition.subject === subject &&
-          definition.assessmentType === assessmentType))
-      );
+  getSubjectDefinition(
+    subject: string,
+    assessmentType: string
+  ): Observable<SubjectDefinition> {
+    return this.getSubjectDefinitions().pipe(
+      map(definitions =>
+        definitions.find(
+          definition =>
+            definition.subject === subject &&
+            definition.assessmentType === assessmentType
+        )
+      )
+    );
   }
 
   /**
@@ -59,7 +60,9 @@ export class SubjectService {
    * @param {string} assessment The assessment to get the definition for
    * @returns {Observable<SubjectDefinition>} The definition
    */
-  getSubjectDefinitionForAssessment(assessment: Assessment): Observable<SubjectDefinition> {
+  getSubjectDefinitionForAssessment(
+    assessment: Assessment
+  ): Observable<SubjectDefinition> {
     return this.getSubjectDefinition(assessment.subject, assessment.type);
   }
 
@@ -69,12 +72,10 @@ export class SubjectService {
    * @returns {Observable<SubjectDefinition[]>} All definitions
    */
   getSubjectDefinitions(): Observable<SubjectDefinition[]> {
-    return this.dataService
-      .get(`${ServiceRoute}/subjects/definitions`)
-      .pipe(
-        map(definitions => definitions.map(this.mapDefinition)),
-        catchError(ResponseUtils.throwError)
-      );
+    return this.dataService.get(`${ServiceRoute}/subjects/definitions`).pipe(
+      map(definitions => definitions.map(this.mapDefinition)),
+      catchError(ResponseUtils.throwError)
+    );
   }
 
   private mapDefinition(serverDefinition: any): SubjectDefinition {
@@ -83,15 +84,26 @@ export class SubjectService {
       assessmentType: serverDefinition.asmtTypeCode,
       performanceLevels: range(1, serverDefinition.performanceLevelCount),
       performanceLevelCount: serverDefinition.performanceLevelCount,
-      performanceLevelStandardCutoff: serverDefinition.performanceLevelStandardCutoff,
+      performanceLevelStandardCutoff:
+        serverDefinition.performanceLevelStandardCutoff,
       scorableClaims: serverDefinition.scorableClaims,
-      scorableClaimPerformanceLevels: range(1, serverDefinition.claimScorePerformanceLevelCount),
-      scorableClaimPerformanceLevelCount: serverDefinition.claimScorePerformanceLevelCount
+      scorableClaimPerformanceLevels: range(
+        1,
+        serverDefinition.claimScorePerformanceLevelCount
+      ),
+      scorableClaimPerformanceLevelCount:
+        serverDefinition.claimScorePerformanceLevelCount,
+      alternateScoreCodes: serverDefinition.altScores,
+      alternateScorePerformanceLevels: range(
+        1,
+        serverDefinition.altScorePerformanceLevelCount
+      ),
+      alternateScorePerformanceLevelCount:
+        serverDefinition.altScorePerformanceLevelCount
     };
   }
 
   getOrganizationalClaimsBySubject(): Observable<Map<string, string[]>> {
     return of(OrganizationalClaimsBySubject);
   }
-
 }

@@ -5,6 +5,7 @@ export class Assessment {
   grade: string;
   type: string;
   subject: string;
+  alternateScoreCodes: string[];
   claimCodes: string[];
   cutPoints: number[];
   hasWerItem: boolean;
@@ -36,5 +37,4 @@ export class Assessment {
   get isEla(): boolean {
     return this.subject === 'ELA';
   }
-
 }
