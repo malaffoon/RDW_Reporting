@@ -20,14 +20,11 @@
     <tr>
       <th
         *ngFor="let column of columns"
-        [hidden]="
-          (showClaimScores && column.overall) ||
-          (!showClaimScores && column.claim)
-        "
+        [hidden]="column.scoreType != null && column.scoreType !== scoreType"
         [pSortableColumn]="column.field"
         [ngSwitch]="column.id"
         [ngClass]="{
-          'wrapping wrapping-max-width-sm': column.claim
+          'wrapping wrapping-max-width-sm': column.code
         }"
       >
         <span
@@ -50,11 +47,8 @@
 
         <span *ngSwitchCase="'claim'">
           {{
-            'subject.' +
-              assessment.subject +
-              '.claim.' +
-              column.claim +
-              '.name' | translate
+            'subject.' + assessment.subject + '.claim.' + column.code + '.name'
+              | translate
           }}
         </span>
 
@@ -88,10 +82,7 @@
       <td
         *ngFor="let column of columns"
         [ngSwitch]="column.id"
-        [hidden]="
-          (showClaimScores && column.overall) ||
-          (!showClaimScores && column.claim)
-        "
+        [hidden]="column.scoreType != null && column.scoreType !== scoreType"
       >
         <div *ngSwitchCase="'name'">
           <popup-menu

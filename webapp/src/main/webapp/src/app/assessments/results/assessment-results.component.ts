@@ -32,6 +32,9 @@ import { TargetReportComponent } from './view/target-report/target-report.compon
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
 import { map } from 'rxjs/internal/operators';
+import { Option } from '../../shared/form/option';
+import { TranslateService } from '@ngx-translate/core';
+import { ScoreType } from '../model/score-statistics';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -39,6 +42,48 @@ enum ResultsViewState {
   DistractorAnalysis = 3,
   WritingTraitScores = 4,
   TargetReport = 5
+}
+
+function createScoreTypeOptions(
+  subjectDefinition: SubjectDefinition,
+  translateService: TranslateService
+): Option[] {
+  const options = [
+    {
+      value: 'Overall',
+      text: translateService.instant('common.buttons.display-overall'),
+      analyticsProperties: {
+        label: 'Score Type: Overall'
+      }
+    }
+  ];
+  if (subjectDefinition.alternateScores != null) {
+    options.push({
+      value: 'Alternate',
+      text: translateService.instant(
+        `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.alt-score.name`
+      ),
+      analyticsProperties: {
+        label: 'Score Type: Alternate'
+      }
+    });
+  }
+  if (subjectDefinition.claimScores != null) {
+    options.push({
+      value: 'Claim',
+      text: translateService.instant(
+        `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.claim-score.name`
+      ),
+      analyticsProperties: {
+        label: 'Score Type: Claim'
+      }
+    });
+  }
+  return options;
 }
 
 @Component({
@@ -281,8 +326,13 @@ export class AssessmentResultsComponent implements OnInit {
   percentileDisplayEnabled = false;
   showPercentileHistory = false;
   percentileGroups: PercentileGroup[];
-  showClaimScores = false;
   subjectDefinition: SubjectDefinition;
+  scoreTypeOptions: Option[];
+
+  /**
+   * The active score type in the display
+   */
+  scoreType: ScoreType = 'Overall';
 
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExam;
@@ -297,7 +347,8 @@ export class AssessmentResultsComponent implements OnInit {
     private instructionalResourcesService: InstructionalResourcesService,
     private percentileService: AssessmentPercentileService,
     private subjectService: SubjectService,
-    private angulartics2: Angulartics2
+    private angulartics2: Angulartics2,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -311,14 +362,16 @@ export class AssessmentResultsComponent implements OnInit {
     ).subscribe(([settings, subjectDefinition]) => {
       this.percentileDisplayEnabled = settings.percentileDisplayEnabled;
       this.subjectDefinition = subjectDefinition;
+
+      this.scoreTypeOptions = createScoreTypeOptions(
+        subjectDefinition,
+        this.translateService
+      );
+
       this.setCurrentView(this.resultsByStudentView);
 
       this.updateExamSessions();
     });
-  }
-
-  setShowClaimScores(value: boolean) {
-    this.showClaimScores = value;
   }
 
   updateViews(): void {

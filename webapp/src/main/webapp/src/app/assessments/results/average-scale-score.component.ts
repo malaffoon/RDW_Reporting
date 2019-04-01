@@ -16,6 +16,8 @@ import { OrderingService } from '../../shared/ordering/ordering.service';
 import { map } from 'rxjs/internal/operators';
 import { SubjectDefinition } from '../../subject/subject';
 import { ScoreType } from '../model/score-statistics';
+import { TranslateService } from '@ngx-translate/core';
+import { Option } from '../../shared/form/option';
 
 enum ScoreViewState {
   OVERALL = 1,
@@ -31,20 +33,8 @@ enum ScoreViewState {
 })
 export class AverageScaleScoreComponent {
   @Input()
-  subjectDefinition: SubjectDefinition; // passed along to alternative-scores-table
-
-  /**
-   * The active score type in the display
-   */
-  scoreType: ScoreType = 'Overall';
-
-  @Input()
-  showValuesAsPercent: boolean = true;
-
-  @Input()
   set assessmentExam(value: AssessmentExam) {
     this._assessmentExam = value;
-
     this.setScorableClaims();
   }
 
@@ -83,18 +73,19 @@ export class AverageScaleScoreComponent {
   }
 
   @Input()
+  subjectDefinition: SubjectDefinition;
+
+  @Input()
   assessmentProvider: AssessmentProvider;
 
-  @Output()
-  onScoreViewToggle: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input()
+  scoreType: ScoreType;
+
+  @Input()
+  showValuesAsPercent: boolean;
 
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
-
   averageScore: number;
-  displayState: any = {
-    showClaim: ScoreViewState.OVERALL
-  };
-
   claimReferences: ClaimReference[][] = [];
   claimReferenceRows = [0];
 
@@ -142,21 +133,6 @@ export class AverageScaleScoreComponent {
     return this.showValuesAsPercent
       ? claimStats.percents[index].suffix
       : claimStats.levels[index].suffix;
-  }
-
-  onScoreTypeChange(value: ScoreType): void {
-    // TODO rework so that the score type is propagated
-    switch (value) {
-      case 'Overall':
-        this.displayState.table = ScoreViewState.OVERALL;
-        this.onScoreViewToggle.emit(false);
-        break;
-      case 'Claim':
-        this.displayState.table = ScoreViewState.CLAIM;
-        this.onScoreViewToggle.emit(true);
-        break;
-    }
-    this.scoreType = value;
   }
 
   get hasAverageScore(): boolean {

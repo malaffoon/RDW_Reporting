@@ -297,56 +297,6 @@
       ></alternate-scores-table>
     </ng-container>
   </ng-container>
-  <div
-    *ngIf="subjectDefinition.claimScores || subjectDefinition.alternateScores"
-    class="btn-group btn-group-xs z-index-over-data-table mt-sm pull-right"
-    role="group"
-  >
-    <button
-      (click)="onScoreTypeChange('Overall')"
-      class="btn btn-default"
-      angulartics2On="click"
-      angularticsAction="ViewOverallScores"
-      angularticsCategory="AssessmentResults"
-      [ngClass]="{ active: scoreType === 'Overall' }"
-    >
-      {{ 'common.buttons.display-overall' | translate }}
-    </button>
-    <button
-      *ngIf="subjectDefinition.alternateScores"
-      (click)="onScoreTypeChange('Alternate')"
-      class="btn btn-default z-index-over-data-table"
-      angulartics2On="click"
-      angularticsAction="ViewClaimScores"
-      angularticsCategory="AssessmentResults"
-      [ngClass]="{ active: scoreType === 'Alternate' }"
-    >
-      {{
-        'subject.' +
-          subjectDefinition.subject +
-          '.asmt-type.' +
-          subjectDefinition.assessmentType +
-          '.alt-score.name' | translate
-      }}
-    </button>
-    <button
-      *ngIf="subjectDefinition.claimScores"
-      (click)="onScoreTypeChange('Claim')"
-      class="btn btn-default z-index-over-data-table"
-      angulartics2On="click"
-      angularticsAction="ViewClaimScores"
-      angularticsCategory="AssessmentResults"
-      [ngClass]="{ active: scoreType === 'Claim' }"
-    >
-      {{
-        'subject.' +
-          subjectDefinition.subject +
-          '.asmt-type.' +
-          subjectDefinition.assessmentType +
-          '.claim-score.name' | translate
-      }}
-    </button>
-  </div>
 </div>
 <ng-template #buttonPopover>
   <instructional-resource-popover

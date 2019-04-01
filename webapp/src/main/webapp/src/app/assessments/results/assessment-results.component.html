@@ -75,8 +75,20 @@
         [showValuesAsPercent]="showValuesAsPercent"
         [assessmentProvider]="assessmentProvider"
         [subjectDefinition]="subjectDefinition"
-        (onScoreViewToggle)="setShowClaimScores($event)"
+        [scoreType]="scoreType"
       ></average-scale-score>
+      <div class="z-index-over-data-table mt-sm pull-right">
+        <sb-radio-group
+          *ngIf="scoreTypeOptions.length > 1"
+          [options]="scoreTypeOptions"
+          [(ngModel)]="scoreType"
+          id="score-type"
+          buttonGroupStyles="btn-group-xs"
+          buttonStyles="btn-default"
+          analyticsCategory="AssessmentResults"
+          analyticsEvent="ChangeScoreView"
+        ></sb-radio-group>
+      </div>
     </div>
   </div>
 
@@ -312,8 +324,8 @@
           <results-by-student
             [exams]="exams"
             [assessment]="assessmentExam.assessment"
-            [showClaimScores]="showClaimScores"
             [minimumItemDataYear]="minimumItemDataYear"
+            [scoreType]="scoreType"
           ></results-by-student>
         </ng-container>
         <ng-container *ngIf="showItemsByPointsEarned">
