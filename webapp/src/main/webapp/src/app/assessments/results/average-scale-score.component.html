@@ -313,17 +313,6 @@
       {{ 'common.buttons.display-overall' | translate }}
     </button>
     <button
-      *ngIf="subjectDefinition.claimScores"
-      (click)="onScoreTypeChange('Claim')"
-      class="btn btn-default z-index-over-data-table"
-      angulartics2On="click"
-      angularticsAction="ViewClaimScores"
-      angularticsCategory="AssessmentResults"
-      [ngClass]="{ active: scoreType === 'Claim' }"
-    >
-      {{ 'common.buttons.display-claim' | translate }}
-    </button>
-    <button
       *ngIf="subjectDefinition.alternateScores"
       (click)="onScoreTypeChange('Alternate')"
       class="btn btn-default z-index-over-data-table"
@@ -332,7 +321,30 @@
       angularticsCategory="AssessmentResults"
       [ngClass]="{ active: scoreType === 'Alternate' }"
     >
-      {{ 'common.buttons.display-alternate' | translate }}
+      {{
+        'subject.' +
+          subjectDefinition.subject +
+          '.asmt-type.' +
+          subjectDefinition.assessmentType +
+          '.alt-score.name' | translate
+      }}
+    </button>
+    <button
+      *ngIf="subjectDefinition.claimScores"
+      (click)="onScoreTypeChange('Claim')"
+      class="btn btn-default z-index-over-data-table"
+      angulartics2On="click"
+      angularticsAction="ViewClaimScores"
+      angularticsCategory="AssessmentResults"
+      [ngClass]="{ active: scoreType === 'Claim' }"
+    >
+      {{
+        'subject.' +
+          subjectDefinition.subject +
+          '.asmt-type.' +
+          subjectDefinition.assessmentType +
+          '.claim-score.name' | translate
+      }}
     </button>
   </div>
 </div>
