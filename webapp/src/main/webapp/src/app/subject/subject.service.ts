@@ -121,16 +121,8 @@ export class SubjectService {
    */
   getSubjectDefinitions(): Observable<SubjectDefinition[]> {
     return this.dataService.get(`${ServiceRoute}/subjects/definitions`).pipe(
-      map(serverDefinitions => {
-        const definitions = serverDefinitions.map(toSubjectDefinition);
-        console.log({ definitions });
-        return definitions;
-      })
-      // catchError(ResponseUtils.throwError)
+      map(serverDefinitions => serverDefinitions.map(toSubjectDefinition)),
+      catchError(ResponseUtils.throwError)
     );
-  }
-
-  getOrganizationalClaimsBySubject(): Observable<Map<string, string[]>> {
-    return of(OrganizationalClaimsBySubject);
   }
 }
