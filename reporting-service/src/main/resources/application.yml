@@ -47,16 +47,20 @@ spring:
     maxIdle: ${spring.datasource.maxActive}
 
   writable_datasource:
-    url: "\
-      jdbc:mysql://${spring.writable_datasource.url-server:localhost:3306}/${spring.writable_datasource.url-schema:reporting}\
-      ?useSSL=${spring.writable_datasource.use-ssl:false}\
-      &useLegacyDatetimeCode=${spring.writable_datasource.use-legacy-datetime-code:false}\
-      &characterEncoding=${spring.writable_datasource.character-encoding:utf8}\
-      &rewriteBatchedStatements=${spring.writable_datasource.rewrite-batched-statements:true}\
-      &useCompression=${spring.writable_datasource.use-compression:true}\
-      &connectTimeout=${spring.writable_datasource.connect-timeout:10000}\
-      &socketTimeout=${spring.writable_datasource.socket-timeout:40000}\
-      "
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${spring.writable_datasource.url-server:localhost:3306}"
+      database: "${spring.writable_datasource.url-schema:reporting}"
+      properties: "useSSL=${spring.writable_datasource.use-ssl:false}\
+                   &useLegacyDatetimeCode=${spring.writable_datasource.use-legacy-datetime-code:false}\
+                   &characterEncoding=${spring.writable_datasource.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${spring.writable_datasource.rewrite-batched-statements:true}\
+                   &useCompression=${spring.writable_datasource.use-compression:true}\
+                   &connectTimeout=${spring.writable_datasource.connect-timeout:10000}\
+                   &socketTimeout=${spring.writable_datasource.socket-timeout:40000}\
+                   "
+    url: "${spring.writable_datasource.url-parts.protocol}//${spring.writable_datasource.url-parts.hosts}/${spring.writable_datasource.url-parts.database}?${spring.writable_datasource.url-parts.properties}"
     jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.writable_datasource.query-timeout:30})"
     username: root
     password:
