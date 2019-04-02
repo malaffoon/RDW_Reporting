@@ -17,14 +17,12 @@ import { Target } from './model/target.model';
 @Injectable()
 export class AssessmentExamMapper {
   mapFromApi(serverAssessmentExam: any): AssessmentExam {
-    const assessmentExam = new AssessmentExam();
-    assessmentExam.assessment = this.mapAssessmentFromApi(
-      serverAssessmentExam.assessment
-    );
-    assessmentExam.exams = serverAssessmentExam.exams.map(serverExam =>
-      this.mapExamFromApi(serverExam)
-    );
-    return assessmentExam;
+    return {
+      assessment: this.mapAssessmentFromApi(serverAssessmentExam.assessment),
+      exams: serverAssessmentExam.exams.map(serverExam =>
+        this.mapExamFromApi(serverExam)
+      )
+    };
   }
 
   mapAssessmentsFromApi(serverAssessments: any[]): Assessment[] {

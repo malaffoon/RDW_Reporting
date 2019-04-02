@@ -10,6 +10,10 @@ export type ScoreType = 'Overall' | 'Alternate' | 'Claim';
  */
 export interface ScoreStatistics {
   /**
+   * The type of scores
+   */
+  scoreType: ScoreType;
+  /**
    * The assessment and subject metadata
    */
   subjectDefinition: SubjectDefinition;
@@ -49,6 +53,11 @@ export interface ScoreGroup {
  * Performance level data
  */
 export interface PerformanceLevelScore {
+  /**
+   * The level the score is at
+   */
+  level: number;
+
   /**
    * The count of exams with scores of this performance level
    */

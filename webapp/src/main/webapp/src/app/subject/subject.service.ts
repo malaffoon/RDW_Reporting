@@ -21,6 +21,7 @@ function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
   const definition: any = {
     subject: serverDefinition.subjectCode,
     assessmentType: serverDefinition.asmtTypeCode,
+    percentiles: serverDefinition.asmtTypeCode === 'iab',
     performanceLevels: range(1, serverDefinition.performanceLevelCount),
     performanceLevelCount: serverDefinition.performanceLevelCount,
     performanceLevelStandardCutoff:
@@ -47,7 +48,7 @@ function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
   };
 
   if (serverDefinition.claimScorePerformanceLevelCount != null) {
-    definition.claimScores = {
+    definition.claimScore = {
       codes: serverDefinition.scorableClaims,
       levels: range(1, serverDefinition.claimScorePerformanceLevelCount),
       levelCount: serverDefinition.claimScorePerformanceLevelCount
@@ -55,7 +56,7 @@ function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
   }
 
   if (serverDefinition.altScorePerformanceLevelCount != null) {
-    definition.alternateScores = {
+    definition.alternateScore = {
       codes: serverDefinition.altScores,
       levels: range(1, serverDefinition.altScorePerformanceLevelCount),
       levelCount: serverDefinition.altScorePerformanceLevelCount

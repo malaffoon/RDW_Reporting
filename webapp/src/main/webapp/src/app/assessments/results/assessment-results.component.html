@@ -2,11 +2,7 @@
 <div class="assessment-result well wide-content-container">
   <div class="flex-children">
     <div class="flex-child grow">
-      <span
-        class="tag tag-lg {{
-          colorService.getColor(getGradeIdx(assessmentExam.assessment.grade))
-        }}"
-      >
+      <span class="tag tag-lg {{ color }}">
         <span class="label">{{
           'common.assessment-grade-short-label.' +
             assessmentExam.assessment.grade | translate
@@ -67,17 +63,44 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <average-scale-score
-        [assessmentExam]="assessmentExam"
-        [statistics]="statistics"
-        [showValuesAsPercent]="showValuesAsPercent"
-        [assessmentProvider]="assessmentProvider"
-        [subjectDefinition]="subjectDefinition"
-        (onScoreViewToggle)="setShowClaimScores($event)"
-      ></average-scale-score>
-    </div>
+  <div *ngIf="subjectDefinition">
+    <ng-container [ngSwitch]="scoreType">
+      <ng-container *ngSwitchCase="'Overall'">
+        <overall-score-summary
+          [assessmentId]="assessmentExam.assessment.id"
+          [assessmentProvider]="assessmentProvider"
+          [statistics]="statistics"
+          [subjectDefinition]="subjectDefinition"
+          [showCount]="!showValuesAsPercent"
+        ></overall-score-summary>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Claim'">
+        <claim-score-summary
+          [statistics]="statistics"
+          [subjectDefinition]="subjectDefinition"
+          [showCount]="!showValuesAsPercent"
+        ></claim-score-summary>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Alternate'">
+        <score-table
+          [subjectDefinition]="subjectDefinition"
+          [displayCount]="!showValuesAsPercent"
+        ></score-table>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="z-index-over-data-table mt-sm pull-right">
+    <sb-radio-group
+      *ngIf="scoreTypeOptions != null && scoreTypeOptions.length > 1"
+      [options]="scoreTypeOptions"
+      [(ngModel)]="scoreType"
+      id="score-type"
+      buttonGroupStyles="btn-group-xs"
+      buttonStyles="btn-default"
+      analyticsCategory="AssessmentResults"
+      analyticsEvent="ChangeScoreView"
+    ></sb-radio-group>
   </div>
 
   <div class="row mt-md" [hidden]="!showPercentileHistory">
@@ -267,7 +290,7 @@
                 }}"
                 container="body"
                 (click)="
-                  loadInstructionalResources(assessmentExam.assessment, 0)
+                  loadInstructionalResources(assessmentExam.assessment.id, 0)
                 "
                 [outsideClick]="true"
               >
@@ -276,9 +299,7 @@
               </button>
             </li>
             <li
-              *ngIf="
-                percentileDisplayEnabled && assessmentExam.assessment.isIab
-              "
+              *ngIf="percentileDisplayEnabled && subjectDefinition.percentiles"
             >
               <button
                 class="btn btn-default btn-sm"
@@ -312,8 +333,8 @@
           <results-by-student
             [exams]="exams"
             [assessment]="assessmentExam.assessment"
-            [showClaimScores]="showClaimScores"
             [minimumItemDataYear]="minimumItemDataYear"
+            [scoreType]="scoreType"
           ></results-by-student>
         </ng-container>
         <ng-container *ngIf="showItemsByPointsEarned">

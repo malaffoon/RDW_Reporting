@@ -1,0 +1,28 @@
+<ng-container *ngIf="loading; else loaded">
+  <i class="fa fa-spinner fa-pulse"></i>
+</ng-container>
+
+<ng-template #loaded>
+  <ng-container *ngIf="resources && resources.length; else noResources">
+    <ul class="list-unstyled mb-0">
+      <li
+        *ngFor="let resource of resources; first as first; last as last"
+        [ngClass]="{
+          'border-bottom':
+            resource.organizationLevel === 'System' && resources.length > 1,
+          'pt-sm': !first,
+          'pb-xs': last
+        }"
+      >
+        <a href="{{ resource.url }}" target="_blank">{{
+          'common.instructional-resources.link.' + resource.organizationLevel
+            | translate: resource
+        }}</a>
+      </li>
+    </ul>
+  </ng-container>
+</ng-template>
+
+<ng-template #noResources>
+  {{ 'common.results.assessment.no-instruct-found' | translate }}
+</ng-template>

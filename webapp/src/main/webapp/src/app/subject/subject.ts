@@ -3,7 +3,14 @@
  * This is a subject and assessment specific configuration
  */
 export interface SubjectDefinition {
+  /**
+   * The subject code
+   */
   readonly subject: string;
+
+  /**
+   * The assessment type code
+   */
   readonly assessmentType: string;
 
   /** @deprecated use overallScores */
@@ -20,26 +27,64 @@ export interface SubjectDefinition {
   /** @deprecated use claimScores */
   readonly scorableClaimPerformanceLevelCount: number;
 
-  /** @deprecated use claimScores */
+  /** @deprecated use alternateScores */
   readonly alternateScoreCodes?: string[];
-  /** @deprecated use claimScores */
+  /** @deprecated use alternateScores */
   readonly alternateScorePerformanceLevels?: number[];
-  /** @deprecated use claimScores */
+  /** @deprecated use alternateScores */
   readonly alternateScorePerformanceLevelCount?: number;
 
-  readonly overallScore: OverallScore;
-  readonly alternateScores?: SubScores;
-  readonly claimScores?: SubScores;
+  /**
+   * Overall score information
+   */
+  readonly overallScore: OverallScoreDefinition;
+
+  /**
+   * Alt score information
+   */
+  readonly alternateScore?: ScoreDefinition;
+
+  /**
+   * Claim score informatino
+   */
+  readonly claimScore?: ScoreDefinition;
+
+  /**
+   * True if the assessment has percentile data
+   */
+  readonly percentiles?: boolean;
 }
 
-export interface OverallScore {
+export interface OverallScoreDefinition {
+  /**
+   * The performance levels
+   */
   readonly levels: number[];
+
+  /**
+   * The total number of performance levels
+   */
   readonly levelCount: number;
+
+  /**
+   * The standard cutoff point within the levels
+   */
   readonly standardCutoff: number;
 }
 
-export interface SubScores {
+export interface ScoreDefinition {
+  /**
+   * The sub score codes or identifiers
+   */
   readonly codes: string[];
+
+  /**
+   * The performance levels
+   */
   readonly levels: number[];
+
+  /**
+   * The total number of performance levels
+   */
   readonly levelCount: number;
 }

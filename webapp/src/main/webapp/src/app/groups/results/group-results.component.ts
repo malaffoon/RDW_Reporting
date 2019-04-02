@@ -22,11 +22,6 @@ import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.m
 import { AssessmentProvider } from '../../assessments/assessment-provider.interface';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { PrintableReportFormModalComponent } from '../../report/component/printable-report-form-modal/printable-report-form-modal.component';
-import { first } from 'rxjs/operators';
-import { BsModalService } from 'ngx-bootstrap';
-import { GroupPrintableReportQuery } from '../../report/report';
-import { createDefaultGroupSchoolGradePrintableReportName } from '../../report/model/report-forms';
 import { ReportFormService } from '../../report/service/report-form.service';
 
 @Component({

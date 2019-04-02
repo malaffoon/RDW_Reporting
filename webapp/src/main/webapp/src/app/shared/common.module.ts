@@ -45,6 +45,7 @@ import { DataTableService } from './datatable/datatable-service';
 import { SubjectModule } from '../subject/subject.module';
 import { OrderingService } from './ordering/ordering.service';
 import { RdwNotificationsModule } from './notification/notifications.module';
+import { InstructionalResourcePopoverComponent } from './component/instructional-resource-popover/instructional-resource-popover.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { RdwNotificationsModule } from './notification/notifications.module';
     SBRadioButtonComponent,
     SBToggleComponent,
     ScaleScoreComponent,
-    InViewDirective
+    InViewDirective,
+    InstructionalResourcePopoverComponent
   ],
   imports: [
     AlertModule,
@@ -122,6 +124,7 @@ import { RdwNotificationsModule } from './notification/notifications.module';
     ScaleScoreComponent,
     TranslateModule,
     InViewDirective,
+    InstructionalResourcePopoverComponent,
     SubjectModule
   ],
   providers: [
