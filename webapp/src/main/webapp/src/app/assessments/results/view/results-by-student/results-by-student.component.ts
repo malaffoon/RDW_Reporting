@@ -3,8 +3,8 @@ import { Exam } from '../../../model/exam.model';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { Assessment } from '../../../model/assessment.model';
-import { InstructionalResourcesService } from '../../instructional-resources.service';
-import { InstructionalResource } from '../../../model/instructional-resources.model';
+import { InstructionalResourcesService } from '../../../../shared/service/instructional-resources.service';
+import { InstructionalResource } from '../../../../shared/model/instructional-resource';
 import { Observable } from 'rxjs';
 import { PopupMenuAction } from '../../../../shared/menu/popup-menu-action.model';
 import { ordering, Ordering } from '@kourge/ordering';
@@ -13,7 +13,7 @@ import { map } from 'rxjs/internal/operators';
 import { ReportFormService } from '../../../../report/service/report-form.service';
 import { createDefaultStudentPrintableReportName } from '../../../../report/model/report-forms';
 import { Router } from '@angular/router';
-import { ScoreType } from '../../../model/score-statistics';
+import { ScoreType } from '../../../../exam/model/score-statistics';
 
 @Component({
   selector: 'results-by-student',

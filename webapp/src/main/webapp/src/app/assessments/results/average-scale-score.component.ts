@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AssessmentExam } from '../model/assessment-exam.model';
 import {
   ExamStatistics,
   ExamStatisticsLevel
 } from '../model/exam-statistics.model';
-import { InstructionalResource } from '../model/instructional-resources.model';
-import { InstructionalResourcesService } from './instructional-resources.service';
+import { InstructionalResource } from '../../shared/model/instructional-resource';
+import { InstructionalResourcesService } from '../../shared/service/instructional-resources.service';
 import { ColorService } from '../../shared/color.service';
 import { AssessmentProvider } from '../assessment-provider.interface';
 import { Observable } from 'rxjs';
@@ -15,14 +15,7 @@ import { Assessment } from '../model/assessment.model';
 import { OrderingService } from '../../shared/ordering/ordering.service';
 import { map } from 'rxjs/internal/operators';
 import { SubjectDefinition } from '../../subject/subject';
-import { ScoreType } from '../model/score-statistics';
-import { TranslateService } from '@ngx-translate/core';
-import { Option } from '../../shared/form/option';
-
-enum ScoreViewState {
-  OVERALL = 1,
-  CLAIM = 2
-}
+import { ScoreType } from '../../exam/model/score-statistics';
 
 /**
  * This component is responsible for displaying the average scale score visualization
@@ -72,6 +65,8 @@ export class AverageScaleScoreComponent {
     this.setScorableClaims();
   }
 
+  averageScore: number;
+
   @Input()
   subjectDefinition: SubjectDefinition;
 
@@ -85,7 +80,6 @@ export class AverageScaleScoreComponent {
   showValuesAsPercent: boolean;
 
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
-  averageScore: number;
   claimReferences: ClaimReference[][] = [];
   claimReferenceRows = [0];
 
@@ -135,10 +129,6 @@ export class AverageScaleScoreComponent {
       : claimStats.levels[index].suffix;
   }
 
-  get hasAverageScore(): boolean {
-    return !isNaN(this.averageScore);
-  }
-
   get performanceLevels(): ExamStatisticsLevel[] {
     if (this.statistics == null) {
       return [];
@@ -153,32 +143,6 @@ export class AverageScaleScoreComponent {
     if (this.claimReferences) {
       return this.claimReferences[this.claimReferences.length - 1];
     }
-  }
-
-  /**
-   * Calculates the amount of the bar filled by the ExamStatisticsLevel
-   * @param {ExamStatisticsLevel} examStatisticsLevel
-   * @returns {number} the amount filled by the examStatisticsLevel (0-100)
-   */
-  filledLevel(examStatisticsLevel: ExamStatisticsLevel): number {
-    return this.showValuesAsPercent
-      ? Math.floor(examStatisticsLevel.value)
-      : this.levelCountPercent(examStatisticsLevel.value);
-  }
-
-  /**
-   * Calculates the amount of the bar unfilled by the ExamStatisticsLevel
-   * @param {ExamStatisticsLevel} examStatisticsLevel
-   * @returns {number} the amount unfilled by the examStatisticsLevel (0-100)
-   */
-  unfilledLevel(examStatisticsLevel: ExamStatisticsLevel): number {
-    return 100 - this.filledLevel(examStatisticsLevel);
-  }
-
-  private levelCountPercent(levelCount: number): number {
-    return this._totalCount !== 0
-      ? Math.floor((levelCount / this._totalCount) * 100)
-      : 0;
   }
 
   loadInstructionalResources(level: number): void {

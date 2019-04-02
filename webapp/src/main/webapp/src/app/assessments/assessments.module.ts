@@ -34,8 +34,7 @@ import { DistractorAnalysisComponent } from './results/view/distractor-analysis/
 import { WritingTraitScoresComponent } from './results/view/writing-trait-scores/writing-trait-scores.component';
 import { ResultsByItemComponent } from './results/view/results-by-item/results-by-item.component';
 import { ScaleScoreService } from './results/scale-score.service';
-import { InstructionalResourcesService } from './results/instructional-resources.service';
-import { InstructionalResourcePopoverComponent } from './popover/instructional-resource-popover.component';
+import { InstructionalResourcesService } from '../shared/service/instructional-resources.service';
 import { RdwMenuModule } from '../shared/menu/rdw-menu.module';
 import { AssessmentPercentileModule } from './percentile/assessment-percentile.module';
 import { TableModule } from 'primeng/table';
@@ -43,16 +42,12 @@ import { TargetReportComponent } from './results/view/target-report/target-repor
 import { TargetStatisticsCalculator } from './results/target-statistics-calculator';
 import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
 import { AssessmentIconComponent } from './assessment-icon.component';
-import { AlternateScoresTableComponent } from './component/alternate-scores-table/alternate-scores-table.component';
-import { ScoreLabelComponent } from './component/score-label/score-label.component';
-import { AggregateScoreGraphComponent } from './component/aggregate-score-graph/aggregate-score-graph.component';
-import { ProgressBarComponent } from './component/progress-bar/progress-bar.component';
+import { ExamModule } from '../exam/exam.module';
 
 @NgModule({
   declarations: [
     AdvFiltersComponent,
     AdvFiltersToggleComponent,
-    AlternateScoresTableComponent,
     AssessmentsComponent,
     AssessmentIconComponent,
     AssessmentResultsComponent,
@@ -69,11 +64,7 @@ import { ProgressBarComponent } from './component/progress-bar/progress-bar.comp
     ResultsByStudentComponent,
     DistractorAnalysisComponent,
     WritingTraitScoresComponent,
-    TargetReportComponent,
-    InstructionalResourcePopoverComponent,
-    ScoreLabelComponent,
-    AggregateScoreGraphComponent,
-    ProgressBarComponent
+    TargetReportComponent
   ],
   imports: [
     Angulartics2Module.forRoot(),
@@ -83,6 +74,7 @@ import { ProgressBarComponent } from './component/progress-bar/progress-bar.comp
     BsDropdownModule.forRoot(),
     CommonModule,
     DataTableModule,
+    ExamModule,
     FormsModule,
     PopoverModule.forRoot(),
     RdwMenuModule,
@@ -98,8 +90,7 @@ import { ProgressBarComponent } from './component/progress-bar/progress-bar.comp
     AssessmentsComponent,
     AssessmentIconComponent,
     ItemTabComponent,
-    ClaimTargetComponent,
-    InstructionalResourcePopoverComponent
+    ClaimTargetComponent
   ],
   providers: [
     AssessmentExamMapper,

@@ -1,165 +1,13 @@
 <div class="key-value-display" *ngIf="subjectDefinition">
   <ng-container [ngSwitch]="scoreType">
     <ng-container *ngSwitchCase="'Overall'">
-      <div class="row">
-        <div class="col-md-5 mb-md">
-          <strong>{{ 'average-scale-score.title' | translate }}</strong>
-          <div class="well">
-            <div class="key-value-table">
-              <table class="table table-borderless">
-                <tr>
-                  <td class="pl-sm">
-                    <div
-                      info-button
-                      title="{{
-                        'average-scale-score.scale-score' | translate
-                      }}"
-                      content="{{
-                        'average-scale-score.scale-score-info' | translate
-                      }}"
-                      class="average-scale-score-label"
-                    ></div>
-                  </td>
-                  <td>
-                    <!-- TODO use shared component
-                    <scale-score
-                      *ngIf="hasAverageScore"
-                      class="font-large text-left"
-                      [score]="averageScore"
-                      [standardError]="statistics.standardError"
-                      [background]="true"
-                    ></scale-score>
-                    -->
-                    <div
-                      *ngIf="hasAverageScore"
-                      class="scale-score font-large text-left"
-                    >
-                      <span class="score label label-primary">{{
-                        averageScore
-                      }}</span>
-                      <span class="error-band black">
-                        {{
-                          'common.error-band-value'
-                            | translate
-                              : {
-                                  errorBand:
-                                    statistics.standardError | number: '1.0-0'
-                                }
-                        }}</span
-                      >
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="result-count-label">
-                      {{ 'average-scale-score.results-label' | translate }}
-                    </div>
-                  </td>
-                  <td class="">
-                    <span *ngIf="statistics" class="text-left gray-darkest">
-                      <span class="score font-large">{{
-                        statistics.total
-                      }}</span>
-                      <span class="ml-xs">{{
-                        (statistics.total == 1
-                          ? 'average-scale-score.result'
-                          : 'average-scale-score.results') | translate
-                      }}</span>
-                    </span>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <strong>{{
-            'average-scale-score.student-score-distribution' | translate
-          }}</strong>
-          <div class="well">
-            <div
-              *ngFor="let level of performanceLevels; let i = index"
-              class="score-distribution-container"
-            >
-              <div class="text-right gray-lighter grid-item">
-                {{
-                  level.id
-                    | optional
-                      : ('subject.' +
-                          assessment.subject +
-                          '.asmt-type.' +
-                          assessment.type +
-                          '.level.' +
-                          level.id +
-                          '.name'
-                          | translate)
-                }}
-                <button
-                  *ngIf="assessment.isIab"
-                  class="btn btn-borderless btn-xs icon-only pull-right"
-                  angulartics2On="click"
-                  angularticsAction="InstructionalResource"
-                  angularticsCategory="AssessmentResults"
-                  [popover]="buttonPopover"
-                  popoverTitle="{{
-                    'common.results.assessment.instruct-button'
-                      | translate
-                        : {
-                            level:
-                              level.id
-                              | optional
-                                : ('subject.' +
-                                    assessment.subject +
-                                    '.asmt-type.' +
-                                    assessment.type +
-                                    '.level.' +
-                                    level.id +
-                                    '.name'
-                                    | translate)
-                          }
-                  }}"
-                  container="body"
-                  (click)="loadInstructionalResources(level.id)"
-                  [outsideClick]="true"
-                >
-                  <i class="fa fa-book"></i>
-                </button>
-              </div>
-              <div class="level-down text-right gray-lightest grid-item">
-                <strong
-                  >{{ level.value | number: '1.0-0' }}{{ level.suffix }}</strong
-                >
-              </div>
-              <div
-                class="level-down scale-score-graph rounded blend-middle gray-lightest grid-item"
-              >
-                <div class="bar-container">
-                  <div
-                    *ngIf="level.value != 0"
-                    class="bar"
-                    [ngClass]="
-                      'subject.' +
-                        assessment.subject +
-                        '.asmt-type.' +
-                        assessment.type +
-                        '.level.' +
-                        level.id +
-                        '.color' | translate
-                    "
-                    [attr.data-width]="filledLevel(level)"
-                  ></div>
-                  <div
-                    *ngIf="filledLevel(level) < 100"
-                    class="bar gray"
-                    [attr.data-width]="unfilledLevel(level)"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <overall-score-summary
+        [assessmentId]="assessmentExam.assessment.id"
+        [assessmentProvider]="assessmentProvider"
+        [subjectDefinition]="subjectDefinition"
+        [statistics]="statistics"
+        [showCount]="!showValuesAsPercent"
+      ></overall-score-summary>
     </ng-container>
     <ng-container *ngSwitchCase="'Claim'">
       <div class="row">
@@ -291,15 +139,10 @@
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="'Alternate'">
-      <alternate-scores-table
+      <score-table
         [subjectDefinition]="subjectDefinition"
         [displayCount]="!showValuesAsPercent"
-      ></alternate-scores-table>
+      ></score-table>
     </ng-container>
   </ng-container>
 </div>
-<ng-template #buttonPopover>
-  <instructional-resource-popover
-    [provider]="instructionalResourcesProvider"
-  ></instructional-resource-popover>
-</ng-template>

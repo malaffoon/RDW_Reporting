@@ -47,7 +47,7 @@ function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
   };
 
   if (serverDefinition.claimScorePerformanceLevelCount != null) {
-    definition.claimScores = {
+    definition.claimScore = {
       codes: serverDefinition.scorableClaims,
       levels: range(1, serverDefinition.claimScorePerformanceLevelCount),
       levelCount: serverDefinition.claimScorePerformanceLevelCount
@@ -55,7 +55,7 @@ function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
   }
 
   if (serverDefinition.altScorePerformanceLevelCount != null) {
-    definition.alternateScores = {
+    definition.alternateScore = {
       codes: serverDefinition.altScores,
       levels: range(1, serverDefinition.altScorePerformanceLevelCount),
       levelCount: serverDefinition.altScorePerformanceLevelCount

@@ -4,8 +4,8 @@ import { StudentHistoryExamWrapper } from '../../model/student-history-exam-wrap
 import { Student } from '../../model/student.model';
 import { PopupMenuAction } from '../../../shared/menu/popup-menu-action.model';
 import { Observable, of } from 'rxjs';
-import { InstructionalResourcesService } from '../../../assessments/results/instructional-resources.service';
-import { InstructionalResource } from '../../../assessments/model/instructional-resources.model';
+import { InstructionalResourcesService } from '../../../shared/service/instructional-resources.service';
+import { InstructionalResource } from '../../../shared/model/instructional-resource';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { chunk } from 'lodash';

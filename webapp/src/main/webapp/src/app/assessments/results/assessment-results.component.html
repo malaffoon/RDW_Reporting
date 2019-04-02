@@ -79,7 +79,7 @@
       ></average-scale-score>
       <div class="z-index-over-data-table mt-sm pull-right">
         <sb-radio-group
-          *ngIf="scoreTypeOptions.length > 1"
+          *ngIf="scoreTypeOptions != null && scoreTypeOptions.length > 1"
           [options]="scoreTypeOptions"
           [(ngModel)]="scoreType"
           id="score-type"

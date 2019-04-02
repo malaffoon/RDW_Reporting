@@ -15,8 +15,8 @@ import { ExamStatistics } from '../model/exam-statistics.model';
 import { AssessmentProvider } from '../assessment-provider.interface';
 import { ResultsByItemComponent } from './view/results-by-item/results-by-item.component';
 import { DistractorAnalysisComponent } from './view/distractor-analysis/distractor-analysis.component';
-import { InstructionalResourcesService } from './instructional-resources.service';
-import { InstructionalResource } from '../model/instructional-resources.model';
+import { InstructionalResourcesService } from '../../shared/service/instructional-resources.service';
+import { InstructionalResource } from '../../shared/model/instructional-resource';
 import { Assessment } from '../model/assessment.model';
 import { WritingTraitScoresComponent } from './view/writing-trait-scores/writing-trait-scores.component';
 import { AssessmentExporter } from '../assessment-exporter.interface';
@@ -34,7 +34,7 @@ import { SubjectDefinition } from '../../subject/subject';
 import { map } from 'rxjs/internal/operators';
 import { Option } from '../../shared/form/option';
 import { TranslateService } from '@ngx-translate/core';
-import { ScoreType } from '../model/score-statistics';
+import { ScoreType } from '../../exam/model/score-statistics';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -57,7 +57,7 @@ function createScoreTypeOptions(
       }
     }
   ];
-  if (subjectDefinition.alternateScores != null) {
+  if (subjectDefinition.alternateScore != null) {
     options.push({
       value: 'Alternate',
       text: translateService.instant(
@@ -70,7 +70,7 @@ function createScoreTypeOptions(
       }
     });
   }
-  if (subjectDefinition.claimScores != null) {
+  if (subjectDefinition.claimScore != null) {
     options.push({
       value: 'Claim',
       text: translateService.instant(
@@ -327,7 +327,7 @@ export class AssessmentResultsComponent implements OnInit {
   showPercentileHistory = false;
   percentileGroups: PercentileGroup[];
   subjectDefinition: SubjectDefinition;
-  scoreTypeOptions: Option[];
+  scoreTypeOptions: Option[] = [];
 
   /**
    * The active score type in the display
@@ -367,6 +367,8 @@ export class AssessmentResultsComponent implements OnInit {
         subjectDefinition,
         this.translateService
       );
+
+      console.log({ scoreTypeOptions: this.scoreTypeOptions });
 
       this.setCurrentView(this.resultsByStudentView);
 

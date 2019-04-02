@@ -40,7 +40,8 @@
             scoreStatistics.subjectDefinition.subject +
             '.asmt-type.' +
             scoreStatistics.subjectDefinition.assessmentType +
-            '.alt-score.level.' +
+            _scoreTypeQualifier +
+            '.level.' +
             performanceLevel +
             '.name' | translate
         }}
@@ -57,7 +58,8 @@
                 subjectDefinition.subject +
                 '.asmt-type.' +
                 subjectDefinition.assessmentType +
-                '.alt-score.level.' +
+                _scoreTypeQualifier +
+                '.level.' +
                 performanceLevel +
                 '.color' | translate
             "
