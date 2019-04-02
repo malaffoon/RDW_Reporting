@@ -4,7 +4,6 @@ import { APP_BASE_HREF } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { AssessmentExam } from '../model/assessment-exam.model';
 import { Exam } from '../model/exam.model';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { ExamFilterService } from '../filters/exam-filters/exam-filter.service';
@@ -22,6 +21,7 @@ import { MockUserService } from '../../../test/mock.user.service';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { of } from 'rxjs';
 import { SubjectService } from '../../subject/subject.service';
+import { Assessment } from '../model/assessment.model';
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -48,7 +48,21 @@ describe('AssessmentResultsComponent', () => {
     'getSubjectDefinitionForAssessment'
   ]);
   mockSubjectService.getSubjectDefinitionForAssessment.and.callFake(() =>
-    of(null)
+    of({
+      subject: 'subject1',
+      assessmentType: 'sum',
+      performanceLevels: [1, 2, 3, 4],
+      performanceLevelCount: 4,
+      performanceLevelStandardCutoff: 3,
+      scorableClaims: [],
+      scorableClaimPerformanceLevelCount: null,
+      scorableClaimPerformanceLevels: null,
+      overallScore: {
+        levels: [1, 2, 3, 4],
+        levelCount: 4,
+        standardCutoff: 3
+      }
+    })
   );
 
   beforeEach(async(() => {
@@ -93,49 +107,39 @@ describe('AssessmentResultsComponent', () => {
   });
 
   it('should default to the first session', () => {
-    let assessmentExam = new AssessmentExam();
-    assessmentExam.exams.push(
-      buildExam('Benoit', 'ma-02', '2017-03-01T17:05:26Z')
-    );
-    assessmentExam.exams.push(
-      buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
-    );
-
-    component.assessmentExam = assessmentExam;
+    component.assessmentExam = {
+      assessment: new Assessment(),
+      exams: [
+        buildExam('Benoit', 'ma-02', '2017-03-01T17:05:26Z'),
+        buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
+      ]
+    };
     expect(component.sessions[0].filter).toBeTruthy();
     expect(component.sessions[1].filter).toBeFalsy();
   });
 
   it('should order by most recent', () => {
-    let assessmentExam = new AssessmentExam();
-    assessmentExam.exams.push(
-      buildExam('Benoit', 'ma-02', '2017-01-01T17:05:26Z')
-    );
-    assessmentExam.exams.push(
-      buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
-    );
-
-    component.assessmentExam = assessmentExam;
+    component.assessmentExam = {
+      assessment: new Assessment(),
+      exams: [
+        buildExam('Benoit', 'ma-02', '2017-01-01T17:05:26Z'),
+        buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
+      ]
+    };
     expect(component.sessions[0].id).toBe('ma-01');
     expect(component.sessions[1].id).toBe('ma-02');
   });
 
   it('should take most recent date for each session', () => {
-    let assessmentExam = new AssessmentExam();
-    assessmentExam.exams.push(
-      buildExam('Benoit', 'ma-02', '2017-01-01T17:05:26Z')
-    );
-    assessmentExam.exams.push(
-      buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
-    );
-    assessmentExam.exams.push(
-      buildExam('Joe', 'ma-02', '2017-01-03T17:05:26Z')
-    );
-    assessmentExam.exams.push(
-      buildExam('Jane', 'ma-01', '2017-03-02T17:05:26Z')
-    );
-
-    component.assessmentExam = assessmentExam;
+    component.assessmentExam = {
+      assessment: new Assessment(),
+      exams: [
+        buildExam('Benoit', 'ma-02', '2017-01-01T17:05:26Z'),
+        buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z'),
+        buildExam('Joe', 'ma-02', '2017-01-03T17:05:26Z'),
+        buildExam('Jane', 'ma-01', '2017-03-02T17:05:26Z')
+      ]
+    };
     expect(component.sessions[0].date).toBe('2017-03-02T17:05:26Z');
     expect(component.sessions[1].date).toBe('2017-01-03T17:05:26Z');
   });
@@ -151,15 +155,13 @@ describe('AssessmentResultsComponent', () => {
   });
 
   it('should add/remove filtered sessions', () => {
-    let assessmentExam = new AssessmentExam();
-    assessmentExam.exams.push(
-      buildExam('Benoit', 'ma-02', '2017-03-01T17:05:26Z')
-    );
-    assessmentExam.exams.push(
-      buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
-    );
-
-    component.assessmentExam = assessmentExam;
+    component.assessmentExam = {
+      assessment: new Assessment(),
+      exams: [
+        buildExam('Benoit', 'ma-02', '2017-03-01T17:05:26Z'),
+        buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
+      ]
+    };
     component.toggleSession(component.sessions[1]);
     expect(component.exams.length).toBe(2);
 
@@ -171,26 +173,24 @@ describe('AssessmentResultsComponent', () => {
   });
 
   it('should handle all null sessions', () => {
-    let assessmentExam = new AssessmentExam();
-    assessmentExam.exams.push(
-      buildExam('Benoit', null, '2017-03-01T17:05:26Z')
-    );
-    assessmentExam.exams.push(buildExam('Wood', null, '2017-03-01T17:05:26Z'));
-
-    component.assessmentExam = assessmentExam;
+    component.assessmentExam = {
+      assessment: new Assessment(),
+      exams: [
+        buildExam('Benoit', null, '2017-03-01T17:05:26Z'),
+        buildExam('Wood', null, '2017-03-01T17:05:26Z')
+      ]
+    };
     expect(component.sessions[0].filter).toBeTruthy();
   });
 
   it('should handle some null sessions', () => {
-    let assessmentExam = new AssessmentExam();
-    assessmentExam.exams.push(
-      buildExam('Benoit', null, '2017-03-01T17:05:26Z')
-    );
-    assessmentExam.exams.push(
-      buildExam('Wood', 'ma-12', '2017-03-01T17:05:26Z')
-    );
-
-    component.assessmentExam = assessmentExam;
+    component.assessmentExam = {
+      assessment: new Assessment(),
+      exams: [
+        buildExam('Benoit', null, '2017-03-01T17:05:26Z'),
+        buildExam('Wood', 'ma-12', '2017-03-01T17:05:26Z')
+      ]
+    };
     expect(component.sessions[0].filter).toBeTruthy();
     expect(component.sessions[0].id).toBeNull();
     expect(component.sessions[1].filter).toBeFalsy();
@@ -198,13 +198,12 @@ describe('AssessmentResultsComponent', () => {
   });
 
   function buildExam(studentName: string, session: string, date: any) {
-    let exam = new Exam();
+    const exam = new Exam();
     exam.student = new Student();
     exam.student.lastName = studentName;
     exam.session = session;
     exam.date = date;
     exam.claimScores = [];
-
     return exam;
   }
 });
@@ -215,5 +214,8 @@ describe('AssessmentResultsComponent', () => {
     '<assessment-results [assessmentExam]="assessment"></assessment-results>'
 })
 class TestComponentWrapper {
-  assessment = new AssessmentExam();
+  assessment = {
+    assessment: new Assessment(),
+    exams: []
+  };
 }

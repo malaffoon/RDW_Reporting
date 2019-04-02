@@ -21,6 +21,7 @@ function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
   const definition: any = {
     subject: serverDefinition.subjectCode,
     assessmentType: serverDefinition.asmtTypeCode,
+    percentiles: serverDefinition.asmtTypeCode === 'iab',
     performanceLevels: range(1, serverDefinition.performanceLevelCount),
     performanceLevelCount: serverDefinition.performanceLevelCount,
     performanceLevelStandardCutoff:

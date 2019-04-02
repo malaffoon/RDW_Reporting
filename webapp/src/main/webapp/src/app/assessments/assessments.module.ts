@@ -13,7 +13,6 @@ import { ExamFilterOptionsService } from './filters/exam-filters/exam-filter-opt
 import { SelectAssessmentsComponent } from './filters/select-assessments/select-assessments.component';
 import { AssessmentsComponent } from './assessments.component';
 import { AdvFiltersToggleComponent } from './filters/adv-filters/adv-filters-toggle.component';
-import { AverageScaleScoreComponent } from './results/average-scale-score.component';
 import { ItemViewerComponent } from './items/item-viewer/item-viewer.component';
 import { ItemTabComponent } from './items/item-tab.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -53,7 +52,6 @@ import { ExamModule } from '../exam/exam.module';
     AssessmentResultsComponent,
     ItemTabComponent,
     ItemViewerComponent,
-    AverageScaleScoreComponent,
     SelectAssessmentsComponent,
     ItemExemplarComponent,
     ItemScoresComponent,

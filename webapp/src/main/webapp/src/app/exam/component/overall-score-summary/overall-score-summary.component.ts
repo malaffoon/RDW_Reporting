@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import {
-  ExamStatistics,
-  ExamStatisticsLevel
-} from '../../../assessments/model/exam-statistics.model';
+import { ExamStatistics } from '../../../assessments/model/exam-statistics.model';
 import { SubjectDefinition } from '../../../subject/subject';
 import { Observable } from 'rxjs';
 import { InstructionalResource } from '../../../shared/model/instructional-resource';

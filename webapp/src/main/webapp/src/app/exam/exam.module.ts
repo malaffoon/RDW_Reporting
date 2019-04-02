@@ -20,6 +20,10 @@ import { PopoverModule } from 'ngx-bootstrap';
     ScoreLabelComponent,
     ScoreTableComponent
   ],
-  exports: [ScoreTableComponent, OverallScoreSummaryComponent]
+  exports: [
+    ScoreTableComponent,
+    OverallScoreSummaryComponent,
+    ClaimScoreSummaryComponent
+  ]
 })
 export class ExamModule {}

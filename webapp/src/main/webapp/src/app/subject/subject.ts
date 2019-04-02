@@ -48,6 +48,11 @@ export interface SubjectDefinition {
    * Claim score informatino
    */
   readonly claimScore?: ScoreDefinition;
+
+  /**
+   * True if the assessment has percentile data
+   */
+  readonly percentiles?: boolean;
 }
 
 export interface OverallScoreDefinition {

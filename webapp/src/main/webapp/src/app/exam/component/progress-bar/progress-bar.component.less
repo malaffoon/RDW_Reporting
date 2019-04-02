@@ -1,1 +1,13 @@
-// TODO make styles component-local
+// TODO all make styles component-local
+.bar-container {
+  padding: 0;
+  font-size: 14px;
+  .bar {
+    height: 1em;
+  }
+  &.small {
+    .bar {
+      height: 8px;
+    }
+  }
+}
