@@ -1,24 +1,53 @@
 import { ScoreDefinition, SubjectDefinition } from '../../../subject/subject';
 import {
-  statistics,
-  ScoreType,
-  roundPercentages
+  roundPercentages,
+  scoreStatistics,
+  ScoreType
 } from '../../model/score-statistics';
 import { Exam } from '../../../assessments/model/exam.model';
 import { ScaleScore } from '../../model/scale-score';
 import { ScoreTable } from './score-table';
+import { isNullOrEmpty } from '../../../shared/support/support';
 
+/**
+ * Metadata associated with score types used to assemble data from exams around certain score types
+ */
 interface ScoreTypeMetadata {
+  /**
+   * Gets the score definition for the score type from the subject definition
+   * TODO should we just store in the score definitions in a map already?
+   *
+   * @param subjectDefinition The subject/assessment configuration to get the score configuration from
+   */
   scoreDefinition(subjectDefinition: SubjectDefinition): ScoreDefinition;
 
+  /**
+   * Gets the scale scores from an exam corresponding to the score type
+   *
+   * @param exam The exam to get the scale scores from
+   */
   scaleScores(exam: Exam): ScaleScore[];
 
+  /**
+   * Composes a name translation code for the given performance level, subject and assessment type code
+   *
+   * @param level The performance level
+   * @param subjectCode The subject identifier
+   * @param assessmentTypeCode The assessment type identifier
+   */
   performanceLevelName(
     level: number,
     subjectCode: string,
     assessmentTypeCode: string
   ): string;
 
+  /**
+   * Composes a color translation code for the given performance level, subject and assessment type code
+   *
+   * @param level The performance level
+   * @param subjectCode The subject identifier
+   * @param assessmentTypeCode The assessment type identifier
+   */
   performanceLevelColor(
     level: number,
     subjectCode: string,
@@ -31,11 +60,12 @@ const ScoreTypeMetadataByType: Map<string, ScoreTypeMetadata> = new Map<
   ScoreTypeMetadata
 >([
   [
+    // TODO cut over to use this to aggregate overall score data
+    // TODO fill in when cutting over
     'Overall',
     {
       scoreDefinition: ({ overallScore }) => <any>overallScore,
       scaleScores: exam => [exam],
-      // TODO fill in when in use
       performanceLevelName: (level, subject, assessmentType) => ``,
       performanceLevelColor: (level, subject, assessmentType) => ``
     }
@@ -52,6 +82,7 @@ const ScoreTypeMetadataByType: Map<string, ScoreTypeMetadata> = new Map<
     }
   ],
   [
+    // TODO cut over to use this for claim score aggregation
     'Claim',
     {
       scoreDefinition: ({ claimScore }) => claimScore,
@@ -64,6 +95,13 @@ const ScoreTypeMetadataByType: Map<string, ScoreTypeMetadata> = new Map<
   ]
 ]);
 
+/**
+ * Creates a score table model for the given exams, subject/assessment configuration and score type
+ *
+ * @param exams The exams to get the scores from
+ * @param subjectDefinition The subject/assessment configuration of the exams
+ * @param scoreType The score type to create the table for
+ */
 export function toScoreTable(
   exams: Exam[],
   subjectDefinition: SubjectDefinition,
@@ -75,8 +113,22 @@ export function toScoreTable(
   } = subjectDefinition;
   const metadata = ScoreTypeMetadataByType.get(scoreType);
 
-  const scoreStatistics = statistics(
-    exams.map(exam => metadata.scaleScores(exam)),
+  const examScaleScores = exams
+    .map(exam => metadata.scaleScores(exam))
+    .filter(
+      scaleScores =>
+        !isNullOrEmpty(scaleScores) &&
+        scaleScores.every(
+          scaleScore =>
+            scaleScore != null &&
+            scaleScore.level != null &&
+            scaleScore.score != null &&
+            scaleScore.standardError != null
+        )
+    );
+
+  const statistics = scoreStatistics(
+    examScaleScores,
     metadata.scoreDefinition(subjectDefinition)
   ).map(value => {
     const roundedPercentages = roundPercentages(
@@ -104,15 +156,10 @@ export function toScoreTable(
     };
   });
 
-  const resultCount = scoreStatistics.reduce(
-    (total, value) => total + value.resultCount,
-    0
-  );
-
   return {
     subjectCode,
     assessmentTypeCode,
-    resultCount,
-    scoreStatistics
+    resultCount: examScaleScores.length,
+    scoreStatistics: statistics
   };
 }
