@@ -3,7 +3,7 @@ import { Group } from '../../groups/group';
 import { MeasuredAssessment } from '../measured-assessment';
 import { ColorService } from '../../shared/color.service';
 import { GradeCode } from '../../shared/enum/grade-code.enum';
-import { roundPercentages } from '../../assessments/results/exam-statistics-calculator';
+import { roundPercentages } from 'app/exam/model/score-statistics';
 
 export interface GroupCard {
   readonly group: Group;

@@ -3,8 +3,8 @@ import { SubjectDefinition } from '../../../subject/subject';
 import { ClaimStatistics } from '../../../assessments/model/claim-score.model';
 import { OrderingService } from '../../../shared/ordering/ordering.service';
 import { ExamStatistics } from '../../../assessments/model/exam-statistics.model';
-import { roundPercentages } from '../../../assessments/results/exam-statistics-calculator';
 import { chunk } from 'lodash';
+import { roundPercentages } from '../../model/score-statistics';
 
 /**
  * This class provides an orderable reference to claim score statistics.

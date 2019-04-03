@@ -6,15 +6,15 @@ import {
 } from '../model/aggregate-target-score-row.model';
 import { TargetScoreExam } from '../model/target-score-exam.model';
 import { Exam } from '../model/exam.model';
-import {
-  average,
-  ExamStatisticsCalculator,
-  standardErrorOfMean
-} from './exam-statistics-calculator';
+import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { Target } from '../model/target.model';
 import * as deepEqual from 'fast-deep-equal';
 import { ExamFilterOptions } from '../model/exam-filter-options.model';
 import { Subgroup } from '../../aggregate-report/subgroup/subgroup';
+import {
+  average,
+  standardErrorOfMean
+} from '../../exam/model/score-statistics';
 
 @Injectable()
 export class TargetStatisticsCalculator {
