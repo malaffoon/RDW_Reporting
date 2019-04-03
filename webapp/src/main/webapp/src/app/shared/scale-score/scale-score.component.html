@@ -4,10 +4,9 @@
     [ngClass]="{
       'label label-primary': background
     }"
-    >{{ score ? score : '-' }}</span
+    >{{ _score ? _roundedScaleScore : '-' }}</span
   >
-  <span *ngIf="score && standardError" class="error-band pl-xs">{{
-    'common.error-band-value'
-      | translate: { errorBand: standardError | number: '1.0-0' }
+  <span *ngIf="_score && _standardError" class="error-band pl-xs">{{
+    'common.error-band-value' | translate: { errorBand: _roundedStandardError }
   }}</span>
 </span>

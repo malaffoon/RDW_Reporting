@@ -61,6 +61,11 @@ describe('AssessmentResultsComponent', () => {
         levels: [1, 2, 3, 4],
         levelCount: 4,
         standardCutoff: 3
+      },
+      alternateScore: {
+        codes: ['a'],
+        levels: [1],
+        levelCount: 1
       }
     })
   );

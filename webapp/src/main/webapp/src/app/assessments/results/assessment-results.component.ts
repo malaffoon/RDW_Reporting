@@ -33,7 +33,13 @@ import { SubjectDefinition } from '../../subject/subject';
 import { map } from 'rxjs/internal/operators';
 import { Option } from '../../shared/form/option';
 import { TranslateService } from '@ngx-translate/core';
-import { ScoreType } from '../../exam/model/score-statistics';
+import {
+  average,
+  ScoreType,
+  standardErrorOfMean
+} from '../../exam/model/score-statistics';
+import { toScoreTable } from '../../exam/component/score-table/score-tables';
+import { ScoreTable } from '../../exam/component/score-table/score-table';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -345,6 +351,8 @@ export class AssessmentResultsComponent implements OnInit {
    */
   scoreType: ScoreType = 'Overall';
 
+  _alternateScoreTable: ScoreTable;
+
   private _filterBy: FilterBy;
   private _assessmentExam: AssessmentExamView;
   private _filterBySubscription: Subscription;
@@ -363,8 +371,6 @@ export class AssessmentResultsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this._assessmentExam.collapsed = this.isDefaultCollapsed;
-
     forkJoin(
       this.applicationSettingsService.getSettings(),
       this.subjectService.getSubjectDefinitionForAssessment(
@@ -521,6 +527,15 @@ export class AssessmentResultsComponent implements OnInit {
     this.exams = this.filterExams();
     this.statistics =
       this.subjectDefinition != null ? this.calculateStats() : null;
+
+    // compute table when ready
+    if (this.subjectDefinition != null && this.exams != null) {
+      this._alternateScoreTable = toScoreTable(
+        this.exams,
+        this.subjectDefinition,
+        'Alternate'
+      );
+    }
   }
 
   private filterExams(): Exam[] {
@@ -540,29 +555,31 @@ export class AssessmentResultsComponent implements OnInit {
     return exams;
   }
 
+  // todo use scoreStatistics
   private calculateStats(): ExamStatistics {
     const stats = new ExamStatistics();
 
-    let scores = this.examCalculator
-      .getOnlyScoredExams(this.exams)
+    const scores = this.exams
+      .filter(exam => exam && exam.score) // should be score != null but original examCalculator has it this way
       .map(x => x.score);
 
-    stats.total = this.exams.length;
-    stats.average = this.examCalculator.calculateAverage(scores);
-    stats.standardError = this.examCalculator.calculateStandardErrorOfTheMean(
-      scores
-    );
+    const scored = scores.filter(value => value != null);
 
+    stats.total = this.exams.length;
+    stats.average = average(scored);
+    stats.standardError = standardErrorOfMean(scored);
     stats.levels = this.examCalculator.groupLevels(
       this.exams,
-      this.subjectDefinition.performanceLevelCount
+      this.subjectDefinition.overallScore.levelCount
     );
     stats.percents = this.examCalculator.mapGroupLevelsToPercents(stats.levels);
-    stats.claims = this.examCalculator.calculateClaimStatistics(
-      this.exams,
-      this.subjectDefinition.scorableClaimPerformanceLevelCount
-    );
 
+    if (this.subjectDefinition.claimScore != null) {
+      stats.claims = this.examCalculator.calculateClaimStatistics(
+        this.exams,
+        this.subjectDefinition.claimScore.levelCount
+      );
+    }
     return stats;
   }
 }

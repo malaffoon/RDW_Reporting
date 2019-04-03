@@ -3,8 +3,8 @@ import { SubjectDefinition } from '../../../subject/subject';
 import { ClaimStatistics } from '../../../assessments/model/claim-score.model';
 import { OrderingService } from '../../../shared/ordering/ordering.service';
 import { ExamStatistics } from '../../../assessments/model/exam-statistics.model';
-import { ExamStatisticsCalculator } from '../../../assessments/results/exam-statistics-calculator';
 import { chunk } from 'lodash';
+import { roundPercentages } from '../../model/score-statistics';
 
 /**
  * This class provides an orderable reference to claim score statistics.
@@ -30,10 +30,7 @@ export class ClaimScoreSummaryComponent {
   private _claimDataWidths: Array<number[]>;
   _initialized: boolean;
 
-  constructor(
-    private examCalculator: ExamStatisticsCalculator,
-    private orderingService: OrderingService
-  ) {}
+  constructor(private orderingService: OrderingService) {}
 
   @Input()
   set statistics(value: ExamStatistics) {
@@ -113,7 +110,7 @@ export class ClaimScoreSummaryComponent {
       )
       .subscribe(ordering => {
         this._claimDataWidths = this._statistics.claims.map(claimStatistics =>
-          this.examCalculator.getDataWidths(
+          roundPercentages(
             claimStatistics.percents.map(percent => percent.value)
           )
         );
