@@ -6,7 +6,7 @@ import {
   DetailsByPerformanceLevel,
   MeasuredAssessment
 } from '../measured-assessment';
-import { Assessment } from '../../assessments/model/assessment.model';
+import { Assessment } from '../../assessments/model/assessment';
 import { Group } from '../../groups/group';
 import { ExamStatisticsCalculator } from '../../assessments/results/exam-statistics-calculator';
 
@@ -136,10 +136,10 @@ describe('GroupAssessmentCardComponent', () => {
 });
 
 function getAssessment(): Assessment {
-  const assessment = new Assessment();
-  assessment.grade = '03';
-  assessment.type = 'iab';
-  return assessment;
+  return <Assessment>{
+    grade: '03',
+    type: 'iab'
+  };
 }
 
 function getMeasuredAssessment(

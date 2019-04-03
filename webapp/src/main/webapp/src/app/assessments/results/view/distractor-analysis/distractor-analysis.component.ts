@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AssessmentItem } from '../../../model/assessment-item.model';
-import { Exam } from '../../../model/exam.model';
+import { Exam } from '../../../model/exam';
 import { DynamicItemField } from '../../../model/item-point-field.model';
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
 import { ExportItemsRequest } from '../../../model/export-items-request.model';
-import { Assessment } from '../../../model/assessment.model';
+import { Assessment } from '../../../model/assessment';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
 import { ExportResults } from '../../assessment-results.component';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
@@ -47,8 +47,12 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
     this._exams = value;
 
     if (!this.loading) {
-      this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(this._multipleChoiceItems);
-      this.examCalculator.aggregateItemsByResponse(this.filteredMultipleChoiceItems);
+      this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(
+        this._multipleChoiceItems
+      );
+      this.examCalculator.aggregateItemsByResponse(
+        this.filteredMultipleChoiceItems
+      );
     }
   }
 
@@ -64,37 +68,62 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
   private _exams: Exam[];
   private _choiceColumns: DynamicItemField[] = [];
 
-  constructor(private examCalculator: ExamStatisticsCalculator) {
-  }
+  constructor(private examCalculator: ExamStatisticsCalculator) {}
 
   ngOnInit() {
-    this.assessmentProvider.getAssessmentItems(this.assessment.id, [ 'MC', 'MS' ]).subscribe(assessmentItems => {
+    this.assessmentProvider
+      .getAssessmentItems(this.assessment.id, ['MC', 'MS'])
+      .subscribe(assessmentItems => {
+        const numOfScores = assessmentItems.reduce(
+          (x, y) => x + y.scores.length,
+          0
+        );
 
-      const numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
+        if (numOfScores !== 0) {
+          this._multipleChoiceItems = assessmentItems;
+          this._choiceColumns = this.examCalculator.getChoiceFields(
+            assessmentItems
+          );
 
-      if (numOfScores !== 0) {
-        this._multipleChoiceItems = assessmentItems;
-        this._choiceColumns = this.examCalculator.getChoiceFields(assessmentItems);
+          this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(
+            assessmentItems
+          );
+          this.examCalculator.aggregateItemsByResponse(
+            this.filteredMultipleChoiceItems
+          );
+        }
 
-        this.filteredMultipleChoiceItems = this.filterMultipleChoiceItems(assessmentItems);
-        this.examCalculator.aggregateItemsByResponse(this.filteredMultipleChoiceItems);
-      }
+        this.columns = [
+          new Column({ id: 'number', field: 'position' }),
+          new Column({ id: 'claim', field: 'claimTarget', headerInfo: true }),
+          new Column({
+            id: 'difficulty',
+            sortField: 'difficultySortOrder',
+            headerInfo: true
+          }),
+          new Column({
+            id: 'standard',
+            field: 'commonCoreStandardIds',
+            headerInfo: true
+          }),
+          new Column({
+            id: 'full-credit',
+            field: 'fullCredit',
+            styleClass: 'level-up',
+            headerInfo: true
+          }),
+          ...this._choiceColumns.map(this.toColumn)
+        ];
 
-      this.columns = [
-        new Column({ id: 'number', field: 'position' }),
-        new Column({ id: 'claim', field: 'claimTarget', headerInfo: true }),
-        new Column({ id: 'difficulty', sortField: 'difficultySortOrder', headerInfo: true }),
-        new Column({ id: 'standard', field: 'commonCoreStandardIds', headerInfo: true }),
-        new Column({ id: 'full-credit', field: 'fullCredit', styleClass: 'level-up', headerInfo: true }),
-        ...this._choiceColumns.map(this.toColumn)
-      ];
-
-      this.loading = false;
-    });
+        this.loading = false;
+      });
   }
 
   hasDataToExport(): boolean {
-    return this.filteredMultipleChoiceItems && this.filteredMultipleChoiceItems.length > 0;
+    return (
+      this.filteredMultipleChoiceItems &&
+      this.filteredMultipleChoiceItems.length > 0
+    );
   }
 
   exportToCsv(): void {
@@ -117,7 +146,9 @@ export class DistractorAnalysisComponent implements OnInit, ExportResults {
 
     for (const item of items) {
       const filteredItem = Object.assign(new AssessmentItem(), item);
-      filteredItem.scores = item.scores.filter(score => this._exams.some(exam => exam.id == score.examId));
+      filteredItem.scores = item.scores.filter(score =>
+        this._exams.some(exam => exam.id == score.examId)
+      );
       filtered.push(filteredItem);
     }
 
@@ -149,15 +180,15 @@ class Column {
   percentField?: string;
 
   constructor({
-                id,
-                field = '',
-                sortField = '',
-                headerInfo = false,
-                styleClass = '',
-                label = '',
-                numberField = '',
-                percentField = ''
-              }) {
+    id,
+    field = '',
+    sortField = '',
+    headerInfo = false,
+    styleClass = '',
+    label = '',
+    numberField = '',
+    percentField = ''
+  }) {
     this.id = id;
     this.field = field ? field : id;
     this.sortField = sortField ? sortField : this.field;

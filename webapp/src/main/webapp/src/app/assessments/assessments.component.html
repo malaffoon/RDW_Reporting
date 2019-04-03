@@ -275,7 +275,7 @@
       [displayedFor]="displayedFor"
       [filterBy]="clientFilterBy"
       [allowFilterBySessions]="
-        allowFilterBySessions && !assessmentExam.assessment.isSummative
+        allowFilterBySessions && assessmentExam.assessment.type !== 'sum'
       "
       [allowTargetReport]="allowTargetReport"
       [assessmentProvider]="assessmentProvider"

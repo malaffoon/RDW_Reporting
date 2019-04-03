@@ -1,15 +1,13 @@
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
-import { Exam } from '../model/exam.model';
+import { Exam } from '../model/exam';
 import { AssessmentItem } from '../model/assessment-item.model';
 import { ExamItemScore } from '../model/exam-item-score.model';
 import { ClaimStatistics } from '../model/claim-score.model';
 
 describe('Exam Calculator', () => {
   it('should return only scored exams', () => {
-    let exams = [1, null, 2, undefined, 0].map(x => {
-      let exam = new Exam();
-      exam.score = x;
-      return exam;
+    let exams: Exam[] = [1, null, 2, undefined, 0].map(score => {
+      return <Exam>{ score };
     });
 
     let fixture = new ExamStatisticsCalculator();
@@ -33,10 +31,8 @@ describe('Exam Calculator', () => {
   });
 
   it('should count and group levels.', () => {
-    let exams = [3, 3, 2, 3, 2, 1, 2, 3].map(x => {
-      let exam = new Exam();
-      exam.level = x;
-      return exam;
+    let exams: Exam[] = [3, 3, 2, 3, 2, 1, 2, 3].map(level => {
+      return <Exam>{ level };
     });
 
     let fixture = new ExamStatisticsCalculator();
@@ -48,10 +44,8 @@ describe('Exam Calculator', () => {
   });
 
   it('should include levels not present in the exams', () => {
-    let exams = [3, 3, 1, 3, 1, 1, 1, 3].map(x => {
-      let exam = new Exam();
-      exam.level = x;
-      return exam;
+    let exams: Exam[] = [3, 3, 1, 3, 1, 1, 1, 3].map(level => {
+      return <Exam>{ level };
     });
 
     let fixture = new ExamStatisticsCalculator();
@@ -74,10 +68,8 @@ describe('Exam Calculator', () => {
   });
 
   it('should include percent levels not present in the exams', () => {
-    let exams = [3, 3, 1, 3, 1, 1, 1, 3].map(x => {
-      let exam = new Exam();
-      exam.level = x;
-      return exam;
+    let exams: Exam[] = [3, 3, 1, 3, 1, 1, 1, 3].map(level => {
+      return <Exam>{ level };
     });
 
     let fixture = new ExamStatisticsCalculator();
@@ -302,10 +294,20 @@ describe('Exam Calculator', () => {
   it('should aggregate by claims and levels', () => {
     let exams = <Exam[]>[
       {
-        claimScores: [{ level: 1 }, { level: 2 }, { level: 3 }, { level: 1 }]
+        claimScaleScores: [
+          { level: 1 },
+          { level: 2 },
+          { level: 3 },
+          { level: 1 }
+        ]
       },
       {
-        claimScores: [{ level: 1 }, { level: 2 }, { level: 1 }, { level: 2 }]
+        claimScaleScores: [
+          { level: 1 },
+          { level: 2 },
+          { level: 1 },
+          { level: 2 }
+        ]
       }
     ];
 
@@ -362,10 +364,10 @@ describe('Exam Calculator', () => {
   it('should ignore bad claim levels when aggregating', () => {
     let exams = <Exam[]>[
       {
-        claimScores: [{ level: 1 }, { level: 1 }, { level: 1 }]
+        claimScaleScores: [{ level: 1 }, { level: 1 }, { level: 1 }]
       },
       {
-        claimScores: [{ level: 2 }, { level: 6 }, { level: -2 }]
+        claimScaleScores: [{ level: 2 }, { level: 6 }, { level: -2 }]
       }
     ];
 

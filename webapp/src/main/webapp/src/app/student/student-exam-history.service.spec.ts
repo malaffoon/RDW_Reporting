@@ -1,15 +1,15 @@
-import { inject, TestBed } from "@angular/core/testing";
-import { StudentExamHistoryService } from "./student-exam-history.service";
-import { MockDataService } from "../../test/mock.data.service";
-import { throwError,  of } from "rxjs";
-import { AssessmentExamMapper } from "../assessments/assessment-exam.mapper";
-import { StudentExamHistory } from "./model/student-exam-history.model";
-import { Assessment } from "../assessments/model/assessment.model";
-import { Exam } from "../assessments/model/exam.model";
-import { Student } from "./model/student.model";
+import { inject, TestBed } from '@angular/core/testing';
+import { StudentExamHistoryService } from './student-exam-history.service';
+import { MockDataService } from '../../test/mock.data.service';
+import { throwError, of } from 'rxjs';
+import { AssessmentExamMapper } from '../assessments/assessment-exam.mapper';
+import { StudentExamHistory } from './model/student-exam-history.model';
+import { Assessment } from '../assessments/model/assessment';
+import { Exam } from '../assessments/model/exam';
+import { Student } from './model/student.model';
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
-import { DataService } from "../shared/data/data.service";
+import { DataService } from '../shared/data/data.service';
 
 describe('StudentExamHistoryService', () => {
   let dataService: MockDataService;
@@ -21,10 +21,12 @@ describe('StudentExamHistoryService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        StudentExamHistoryService, {
+        StudentExamHistoryService,
+        {
           provide: DataService,
           useValue: dataService
-        }, {
+        },
+        {
           provide: AssessmentExamMapper,
           useValue: mapper
         }
@@ -32,86 +34,102 @@ describe('StudentExamHistoryService', () => {
     });
   });
 
-  it('should create',
-    inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
-
+  it('should create', inject(
+    [StudentExamHistoryService],
+    (service: StudentExamHistoryService) => {
       expect(service).toBeTruthy();
-  }));
+    }
+  ));
 
-  it('should return null for a 404 response when finding student by ssid',
-    inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
+  it('should return null for a 404 response when finding student by ssid', inject(
+    [StudentExamHistoryService],
+    (service: StudentExamHistoryService) => {
+      dataService.get.and.returnValue(throwError({ status: 404 }));
 
-      dataService.get.and.returnValue(throwError({status: 404}));
-
-      service.existsBySsid("ssid").subscribe((exists) => {
+      service.existsBySsid('ssid').subscribe(exists => {
         expect(exists).toBeNull();
       });
-  }));
+    }
+  ));
 
-  it('should return the student if it exists',
-    inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
-
-      dataService.get.and.returnValue(of({
-        id: 123
-      }));
-
-      service.existsBySsid("ssid").subscribe((exists) => {
-        expect(exists.id).toEqual(123);
-      });
-  }));
-
-  it('should trim the ssid value before checking if student exists',
-    inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
-
-      dataService.get.and.returnValue(of({
-        id: 123
-      }));
-
-      service.existsBySsid(" ssid ").subscribe((exists) => {
-        expect(exists.id).toEqual(123);
-      });
-
-      expect(dataService.get.calls.first().args[0]).toMatch("/ssid$");
-    }));
-
-  it('should throw for a 404 response when retrieving history for a student',
-    inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
-
-      dataService.get.and.returnValue(throwError("4xx/5xx response"));
-
-      service.findOneById(123).subscribe(() => {
-        fail("Error expected");
-      }, (failure) => {
-        expect(failure).toBe("4xx/5xx response");
-      });
-  }));
-
-  it('should return a student\'s exam history ordered most recent exam date',
-    inject([StudentExamHistoryService], (service: StudentExamHistoryService) => {
-
-      dataService.get.and.returnValue(of({
-        student: {
+  it('should return the student if it exists', inject(
+    [StudentExamHistoryService],
+    (service: StudentExamHistoryService) => {
+      dataService.get.and.returnValue(
+        of({
           id: 123
+        })
+      );
+
+      service.existsBySsid('ssid').subscribe(exists => {
+        expect(exists.id).toEqual(123);
+      });
+    }
+  ));
+
+  it('should trim the ssid value before checking if student exists', inject(
+    [StudentExamHistoryService],
+    (service: StudentExamHistoryService) => {
+      dataService.get.and.returnValue(
+        of({
+          id: 123
+        })
+      );
+
+      service.existsBySsid(' ssid ').subscribe(exists => {
+        expect(exists.id).toEqual(123);
+      });
+
+      expect(dataService.get.calls.first().args[0]).toMatch('/ssid$');
+    }
+  ));
+
+  it('should throw for a 404 response when retrieving history for a student', inject(
+    [StudentExamHistoryService],
+    (service: StudentExamHistoryService) => {
+      dataService.get.and.returnValue(throwError('4xx/5xx response'));
+
+      service.findOneById(123).subscribe(
+        () => {
+          fail('Error expected');
         },
-        exams: [ {
-          exam: {
-            id: 1,
-            dateTime: '2017-03-15T09:24:22.561Z'
+        failure => {
+          expect(failure).toBe('4xx/5xx response');
+        }
+      );
+    }
+  ));
+
+  it("should return a student's exam history ordered most recent exam date", inject(
+    [StudentExamHistoryService],
+    (service: StudentExamHistoryService) => {
+      dataService.get.and.returnValue(
+        of({
+          student: {
+            id: 123
           },
-          assessment: {
-            id: 2
-          }
-        },
-        {
-          exam: {
-            id: 2,
-            dateTime: '2017-09-15T09:24:22.561Z'
-          },
-          assessment: {
-            id: 2
-          }
-        }]
-      }));
+          exams: [
+            {
+              exam: {
+                id: 1,
+                dateTime: '2017-03-15T09:24:22.561Z'
+              },
+              assessment: {
+                id: 2
+              }
+            },
+            {
+              exam: {
+                id: 2,
+                dateTime: '2017-09-15T09:24:22.561Z'
+              },
+              assessment: {
+                id: 2
+              }
+            }
+          ]
+        })
+      );
 
       service.findOneById(123).subscribe((history: StudentExamHistory) => {
         expect(history.student.id).toBe(123);
@@ -121,29 +139,22 @@ describe('StudentExamHistoryService', () => {
         expect(history.exams[1].exam.id).toBe(1);
         expect(history.exams[1].assessment.id).toBe(2);
       });
-    }));
+    }
+  ));
 });
 
 class MockAssessmentExamMapper {
-  mapAssessmentFromApi: Spy = createSpy("mapAssessmentFromApi");
-  mapExamFromApi: Spy = createSpy("mapExamFromApi");
-  mapStudentFromApi: Spy = createSpy("mapStudentFromApi");
+  mapAssessmentFromApi: Spy = createSpy('mapAssessmentFromApi');
+  mapExamFromApi: Spy = createSpy('mapExamFromApi');
+  mapStudentFromApi: Spy = createSpy('mapStudentFromApi');
 
   constructor() {
-    this.mapAssessmentFromApi.and.callFake((apiAssessment) => {
-      let assessment: Assessment = new Assessment();
-      assessment.id = apiAssessment.id;
-      return assessment;
-    });
+    this.mapAssessmentFromApi.and.callFake(({ id }) => ({ id }));
 
-    this.mapExamFromApi.and.callFake((apiExam) => {
-      let exam: Exam = new Exam();
-      exam.id = apiExam.id;
-      return exam;
-    });
+    this.mapExamFromApi.and.callFake(({ id }) => ({ id }));
 
-    this.mapStudentFromApi.and.callFake((apiStudent) => {
-      let student: Student = new Student();
+    this.mapStudentFromApi.and.callFake(apiStudent => {
+      const student: Student = new Student();
       student.id = apiStudent.id;
       return student;
     });

@@ -4,7 +4,7 @@ import {
   scoreStatistics,
   ScoreType
 } from '../../model/score-statistics';
-import { Exam } from '../../../assessments/model/exam.model';
+import { Exam } from '../../../assessments/model/exam';
 import { ScaleScore } from '../../model/scale-score';
 import { ScoreTable } from './score-table';
 import { isNullOrEmpty } from '../../../shared/support/support';
@@ -86,7 +86,7 @@ const ScoreTypeMetadataByType: Map<string, ScoreTypeMetadata> = new Map<
     'Claim',
     {
       scoreDefinition: ({ claimScore }) => claimScore,
-      scaleScores: ({ claimScores }) => claimScores,
+      scaleScores: ({ claimScaleScores }) => claimScaleScores,
       performanceLevelName: (level, subject, assessmentType) =>
         `subject.${subject}.asmt-type.${assessmentType}.claim-score.level.${level}.name`,
       performanceLevelColor: (level, subject, assessmentType) =>

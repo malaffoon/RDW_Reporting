@@ -3,10 +3,10 @@ import { Observable, Observer, of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { AssessmentsComponent } from './assessments.component';
-import { Exam } from './model/exam.model';
+import { Exam } from './model/exam';
 import { ExamFilterOptionsService } from './filters/exam-filters/exam-filter-options.service';
 import { GroupAssessmentService } from '../groups/results/group-assessment.service';
-import { Assessment } from './model/assessment.model';
+import { Assessment } from './model/assessment';
 import { AssessmentExam } from './model/assessment-exam.model';
 import { ExamFilterOptions } from './model/exam-filter-options.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -18,7 +18,7 @@ import { ApplicationSettingsService } from '../app-settings.service';
 
 function assessmentExam(): AssessmentExam {
   return {
-    assessment: new Assessment(),
+    assessment: <Assessment>{},
     exams: []
   };
 }
@@ -82,16 +82,17 @@ describe('AssessmentsComponent', () => {
   });
 
   it('should load assessment exams when selected assessments changed', () => {
-    let assessment = new Assessment();
-    assessment.id = 54;
-    assessment.selected = true;
+    let assessment = <Assessment>{
+      id: 54,
+      selected: true
+    };
 
     component.showOnlyMostRecent = false;
     component.availableAssessments = [assessment];
     component.selectedAssessmentsChanged(assessment);
 
     // Return mock api result.
-    examObserver.next([new Exam(), new Exam(), new Exam()]);
+    examObserver.next(<Exam[]>[{}, {}, {}]);
 
     let actual = component.assessmentExams;
     expect(actual.length).toBe(1);
@@ -100,13 +101,13 @@ describe('AssessmentsComponent', () => {
   });
 
   it('should remove assessment exams when selected assessments changed', () => {
-    const assessment = new Assessment();
-    assessment.id = 54;
-    assessment.selected = false;
+    const assessment = <Assessment>{
+      id: 54
+    };
 
     const assessmentExam = {
       assessment,
-      exams: [new Exam(), new Exam()]
+      exams: <Exam[]>[{}, {}]
     };
 
     component.showOnlyMostRecent = false;

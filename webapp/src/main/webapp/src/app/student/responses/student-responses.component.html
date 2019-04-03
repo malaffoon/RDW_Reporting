@@ -1,14 +1,17 @@
-<reporting-embargo-alert *hasPermission="'EMBARGO_READ'"></reporting-embargo-alert>
+<reporting-embargo-alert
+  *hasPermission="'EMBARGO_READ'"
+></reporting-embargo-alert>
 
 <page-heading>
   <ng-template #heading>
-    <h2>{{student | studentName}}</h2> <div class="student-ssid-label">{{student.ssid}}</div>
+    <h2>{{ student | studentName }}</h2>
+    <div class="student-ssid-label">{{ student.ssid }}</div>
   </ng-template>
 </page-heading>
 
 <page-heading>
   <ng-template #heading>
-    <h3>{{'student-responses.title' | translate}}</h3>
+    <h3>{{ 'student-responses.title' | translate }}</h3>
   </ng-template>
 </page-heading>
 
@@ -17,52 +20,83 @@
 </div>
 <div *ngIf="student && assessment" class="well">
   <div class="mb-md">
-    <span class="tag tag-md {{colorService.getColor(getGradeIndex(assessment.grade))}}">
-      <span class="label">{{'common.assessment-grade-short-label.' + assessment.grade | translate }}</span>
-          <span>{{assessment.label}}</span>
+    <span
+      class="tag tag-md {{
+        colorService.getColor(getGradeIndex(assessment.grade))
+      }}"
+    >
+      <span class="label">{{
+        'common.assessment-grade-short-label.' + assessment.grade | translate
+      }}</span>
+      <span>{{ assessment.label }}</span>
     </span>
     <span class="pull-right pt-sm">
       <i class="fa fa-calendar"></i>
-      {{exam.date | date}}
+      {{ exam.date | date }}
     </span>
   </div>
 
-  <p-table #responsesTable
-           [columns]="columns"
-           [value]="assessmentItems"
-           sortField="assessmentItem.position"
-           rowExpandMode="single"
-           dataKey="assessmentItem.id"
-           styleClass="table table-striped table-hover">
-
-    <ng-template pTemplate="header"
-                 let-columns>
+  <p-table
+    #responsesTable
+    [columns]="columns"
+    [value]="assessmentItems"
+    sortField="assessmentItem.position"
+    rowExpandMode="single"
+    dataKey="assessmentItem.id"
+    styleClass="table table-striped table-hover"
+  >
+    <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let column of columns"
-            [pSortableColumn]="column.field"
-            [ngSwitch]="column.id">
-
-          <info-button *ngSwitchCase="'standard'"
-                       title="{{'common.results.assessment-item-columns.standard' | translate}}"
-                       content="{{'common.results.assessment-item-columns.standard-info.' + assessment.subject | translate}}">
+        <th
+          *ngFor="let column of columns"
+          [pSortableColumn]="column.field"
+          [ngSwitch]="column.id"
+        >
+          <info-button
+            *ngSwitchCase="'standard'"
+            title="{{
+              'common.results.assessment-item-columns.standard' | translate
+            }}"
+            content="{{
+              'common.results.assessment-item-columns.standard-info.' +
+                assessment.subject | translate
+            }}"
+          >
           </info-button>
 
           <div *ngSwitchCase="'student-points'">
-            {{'common.student-response-columns.student-points' | translate}}
+            {{ 'common.student-response-columns.student-points' | translate }}
           </div>
 
-          <info-button *ngSwitchCase="'correctness'"
-                       title="{{'common.student-response-columns.correctness' | translate}}"
-                       content="{{'common.student-response-columns.correctness-info' | translate}}">
+          <info-button
+            *ngSwitchCase="'correctness'"
+            title="{{
+              'common.student-response-columns.correctness' | translate
+            }}"
+            content="{{
+              'common.student-response-columns.correctness-info' | translate
+            }}"
+          >
           </info-button>
 
           <div *ngSwitchDefault>
             <ng-container *ngIf="!column.headerInfo">
-              {{ ('common.results.assessment-item-columns.' + column.id) | translate }}
+              {{
+                'common.results.assessment-item-columns.' + column.id
+                  | translate
+              }}
             </ng-container>
-            <info-button *ngIf="column.headerInfo"
-                         title="{{ ('common.results.assessment-item-columns.' + column.id) | translate }}"
-                         content="{{ ('common.results.assessment-item-columns.' + column.id + '-info') | translate }}">
+            <info-button
+              *ngIf="column.headerInfo"
+              title="{{
+                'common.results.assessment-item-columns.' + column.id
+                  | translate
+              }}"
+              content="{{
+                'common.results.assessment-item-columns.' + column.id + '-info'
+                  | translate
+              }}"
+            >
             </info-button>
           </div>
 
@@ -71,31 +105,35 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body"
-                 let-item
-                 let-columns="columns">
+    <ng-template pTemplate="body" let-item let-columns="columns">
       <tr>
-        <td *ngFor="let column of columns"
-            [ngSwitch]="column.id">
-
-          <table-row-expander *ngSwitchCase="'number'"
-                              [table]="responsesTable"
-                              [row]="item"
-                              [text]="item.assessmentItem.position">
+        <td *ngFor="let column of columns" [ngSwitch]="column.id">
+          <table-row-expander
+            *ngSwitchCase="'number'"
+            [table]="responsesTable"
+            [row]="item"
+            [text]="item.assessmentItem.position"
+          >
           </table-row-expander>
 
-          <claim-target *ngSwitchCase="'claim'"
-                        [item]="item.assessmentItem"
-                        [subject]="assessment.subject"></claim-target>
+          <claim-target
+            *ngSwitchCase="'claim'"
+            [item]="item.assessmentItem"
+            [subject]="assessment.subject"
+          ></claim-target>
 
           <ng-container *ngSwitchCase="'difficulty'">
-            {{ 'common.difficulty.' + item.assessmentItem.difficulty | translate }}
+            {{
+              'common.difficulty.' + item.assessmentItem.difficulty | translate
+            }}
           </ng-container>
 
           <ng-container *ngSwitchCase="'standard'">
-            <span *ngFor="let standard of item.assessmentItem.commonCoreStandardIds"
-                  class="label border-only blue mr-xs">
-              {{standard}}
+            <span
+              *ngFor="let standard of item.assessmentItem.commonCoreStandardIds"
+              class="label border-only blue mr-xs"
+            >
+              {{ standard }}
             </span>
           </ng-container>
 
@@ -108,24 +146,26 @@
           </ng-container>
 
           <ng-container *ngSwitchCase="'correctness'">
-            {{ item.correctness | optional:(item.correctness | number:'1.2-2') }}
+            {{
+              item.correctness | optional: (item.correctness | number: '1.2-2')
+            }}
           </ng-container>
         </td>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="rowexpansion"
-                 let-item
-                 let-columns="columns">
+    <ng-template pTemplate="rowexpansion" let-item let-columns="columns">
       <tr>
         <td [attr.colspan]="columns.length">
-          <item-tab [item]="item.assessmentItem"
-                    [responsesAssessmentItem]="item"
-                    [response]="item.response"
-                    [position]="item.assessmentItem.position"
-                    [showItemDetails]="assessment.isInterim"
-                    [showStudentScores]="false"
-                    [subject]="assessment.subject"></item-tab>
+          <item-tab
+            [item]="item.assessmentItem"
+            [responsesAssessmentItem]="item"
+            [response]="item.response"
+            [position]="item.assessmentItem.position"
+            [showItemDetails]="assessment.type !== 'sum'"
+            [showStudentScores]="false"
+            [subject]="assessment.subject"
+          ></item-tab>
         </td>
       </tr>
     </ng-template>
@@ -133,10 +173,9 @@
     <ng-template pTemplate="emptymessage" let-columns>
       <tr>
         <td [attr.colspan]="columns.length">
-          {{'common.messages.no-responses-for-exam' | translate}}
+          {{ 'common.messages.no-responses-for-exam' | translate }}
         </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
-

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { AssessmentItem } from '../model/assessment-item.model';
 import { TabsetComponent, TabDirective } from 'ngx-bootstrap';
-import { Exam } from '../model/exam.model';
+import { Exam } from '../model/exam';
 import { Angulartics2 } from 'angulartics2';
 import { StudentResponsesAssessmentItem } from '../../student/responses/student-responses-item.model';
 

@@ -3,8 +3,8 @@ import { AdministrativeCondition } from '../../../shared/enum/administrative-con
 import { Completeness } from '../../../shared/enum/completeness.enum';
 import { AssessmentExam } from '../../model/assessment-exam.model';
 import { FilterBy } from '../../model/filter-by.model';
-import { Assessment } from '../../model/assessment.model';
-import { Exam } from '../../model/exam.model';
+import { Assessment } from '../../model/assessment';
+import { Exam } from '../../model/exam';
 import { Student } from '../../../student/model/student.model';
 
 describe('ExamFilterService', () => {
@@ -16,7 +16,7 @@ describe('ExamFilterService', () => {
     filterBy = new FilterBy();
 
     assessmentExam = {
-      assessment: new Assessment(),
+      assessment: <Assessment>{},
       exams: [buildExam(0), buildExam(1), buildExam(2), buildExam(3)]
     };
 
@@ -444,9 +444,9 @@ describe('ExamFilterService', () => {
   });
 
   function buildExam(id: number): Exam {
-    let exam: Exam = new Exam();
-    exam.id = id;
-    exam.student = new Student();
-    return exam;
+    return <Exam>{
+      id,
+      student: new Student()
+    };
   }
 });

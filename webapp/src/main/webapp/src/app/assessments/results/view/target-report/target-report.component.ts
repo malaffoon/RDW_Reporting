@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Assessment } from '../../../model/assessment.model';
+import { Assessment } from '../../../model/assessment';
 import { TargetScoreExam } from '../../../model/target-score-exam.model';
 import {
   AggregateTargetScoreRow,
@@ -36,7 +36,7 @@ import { ExportResults } from '../../assessment-results.component';
 import { ExportTargetReportRequest } from '../../../model/export-target-report-request.model';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { ExamStatistics } from '../../../model/exam-statistics.model';
-import { Exam } from '../../../model/exam.model';
+import { Exam } from '../../../model/exam';
 import { SortEvent } from 'primeng/api';
 import { AggregateReportItem } from '../../../../aggregate-report/results/aggregate-report-item';
 import { Utils } from '../../../../shared/support/support';

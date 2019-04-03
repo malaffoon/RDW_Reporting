@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Exam } from '../../../model/exam.model';
+import { Exam } from '../../../model/exam';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
-import { Assessment } from '../../../model/assessment.model';
+import { Assessment } from '../../../model/assessment';
 import { InstructionalResourcesService } from '../../../../shared/service/instructional-resources.service';
 import { InstructionalResource } from '../../../../shared/model/instructional-resource';
 import { Observable } from 'rxjs';
@@ -111,7 +111,7 @@ export class ResultsByStudentComponent implements OnInit {
   private createActions(): PopupMenuAction[] {
     const builder = this.actionBuilder.newActions();
 
-    if (this.assessment.isInterim) {
+    if (this.assessment.type !== 'sum') {
       builder.withResponses(
         exam => exam.id,
         exam => exam.student,

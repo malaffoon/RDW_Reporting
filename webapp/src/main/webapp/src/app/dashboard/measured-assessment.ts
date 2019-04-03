@@ -1,4 +1,4 @@
-import { Assessment } from '../assessments/model/assessment.model';
+import { Assessment } from '../assessments/model/assessment';
 
 export interface MeasuredAssessment {
   readonly assessment: Assessment;

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Assessment } from '../../model/assessment.model';
+import { Assessment } from '../../model/assessment';
 import { uniq } from 'lodash';
 import { ColorService } from '../../../shared/color.service';
 import { GradeCode } from '../../../shared/enum/grade-code.enum';
