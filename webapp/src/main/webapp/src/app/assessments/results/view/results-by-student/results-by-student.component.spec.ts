@@ -5,8 +5,8 @@ import { CommonModule } from '../../../../shared/common.module';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { TestModule } from '../../../../../test/test.module';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { Assessment } from '../../../model/assessment.model';
-import { InstructionalResourcesService } from '../../instructional-resources.service';
+import { Assessment } from '../../../model/assessment';
+import { InstructionalResourcesService } from '../../../../shared/service/instructional-resources.service';
 import { CachingDataService } from '../../../../shared/data/caching-data.service';
 import { of } from 'rxjs';
 import { ordering } from '@kourge/ordering';
@@ -57,5 +57,5 @@ describe('ResultsByStudentComponent', () => {
     '<results-by-student [assessment]="assessment" [exams]="[]" [minimumItemDataYear]="2017"></results-by-student>'
 })
 class TestComponentWrapper {
-  assessment = new Assessment();
+  assessment = {};
 }

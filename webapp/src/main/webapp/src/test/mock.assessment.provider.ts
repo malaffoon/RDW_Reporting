@@ -1,7 +1,7 @@
-import { Observable ,  of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AssessmentItem } from '../app/assessments/model/assessment-item.model';
-import { Exam } from '../app/assessments/model/exam.model';
-import { Assessment } from '../app/assessments/model/assessment.model';
+import { Exam } from '../app/assessments/model/exam';
+import { Assessment } from '../app/assessments/model/assessment';
 import { AssessmentProvider } from '../app/assessments/assessment-provider.interface';
 import { TargetScoreExam } from '../app/assessments/model/target-score-exam.model';
 

@@ -13,7 +13,6 @@ import { ExamFilterOptionsService } from './filters/exam-filters/exam-filter-opt
 import { SelectAssessmentsComponent } from './filters/select-assessments/select-assessments.component';
 import { AssessmentsComponent } from './assessments.component';
 import { AdvFiltersToggleComponent } from './filters/adv-filters/adv-filters-toggle.component';
-import { AverageScaleScoreComponent } from './results/average-scale-score.component';
 import { ItemViewerComponent } from './items/item-viewer/item-viewer.component';
 import { ItemTabComponent } from './items/item-tab.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -33,9 +32,7 @@ import { ResultsByStudentComponent } from './results/view/results-by-student/res
 import { DistractorAnalysisComponent } from './results/view/distractor-analysis/distractor-analysis.component';
 import { WritingTraitScoresComponent } from './results/view/writing-trait-scores/writing-trait-scores.component';
 import { ResultsByItemComponent } from './results/view/results-by-item/results-by-item.component';
-import { ScaleScoreService } from './results/scale-score.service';
-import { InstructionalResourcesService } from './results/instructional-resources.service';
-import { InstructionalResourcePopoverComponent } from './popover/instructional-resource-popover.component';
+import { InstructionalResourcesService } from '../shared/service/instructional-resources.service';
 import { RdwMenuModule } from '../shared/menu/rdw-menu.module';
 import { AssessmentPercentileModule } from './percentile/assessment-percentile.module';
 import { TableModule } from 'primeng/table';
@@ -43,6 +40,7 @@ import { TargetReportComponent } from './results/view/target-report/target-repor
 import { TargetStatisticsCalculator } from './results/target-statistics-calculator';
 import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
 import { AssessmentIconComponent } from './assessment-icon.component';
+import { ExamModule } from '../exam/exam.module';
 
 @NgModule({
   declarations: [
@@ -53,7 +51,6 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     AssessmentResultsComponent,
     ItemTabComponent,
     ItemViewerComponent,
-    AverageScaleScoreComponent,
     SelectAssessmentsComponent,
     ItemExemplarComponent,
     ItemScoresComponent,
@@ -64,8 +61,7 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     ResultsByStudentComponent,
     DistractorAnalysisComponent,
     WritingTraitScoresComponent,
-    TargetReportComponent,
-    InstructionalResourcePopoverComponent
+    TargetReportComponent
   ],
   imports: [
     Angulartics2Module.forRoot(),
@@ -75,6 +71,7 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     BsDropdownModule.forRoot(),
     CommonModule,
     DataTableModule,
+    ExamModule,
     FormsModule,
     PopoverModule.forRoot(),
     RdwMenuModule,
@@ -90,8 +87,7 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     AssessmentsComponent,
     AssessmentIconComponent,
     ItemTabComponent,
-    ClaimTargetComponent,
-    InstructionalResourcePopoverComponent
+    ClaimTargetComponent
   ],
   providers: [
     AssessmentExamMapper,
@@ -103,7 +99,6 @@ import { AssessmentIconComponent } from './assessment-icon.component';
     ItemScoringGuideMapper,
     ItemInfoService,
     StudentScoreService,
-    ScaleScoreService,
     TargetStatisticsCalculator
   ]
 })

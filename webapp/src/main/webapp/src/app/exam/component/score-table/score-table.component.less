@@ -1,0 +1,54 @@
+// compilation error: .colorElement is undefined
+//@import '../../../../../node_modules/@sbac/sbac-ui-kit/src/less/colors.less';
+@gray-light: #d5d5d5;
+@spacing-unit: 4px;
+
+:host {
+  ::ng-deep {
+    .scale-score {
+      font-size: 18px;
+      text-align: left;
+      .error-band {
+        font-weight: normal;
+        opacity: 0.75;
+      }
+    }
+  }
+}
+
+table {
+  width: 100%;
+  > thead > tr > th,
+  > tbody > tr > td {
+    &:first-child {
+      width: 1%;
+      white-space: nowrap;
+      text-align: right;
+    }
+    &:not(:first-child) {
+      border-left: 1px solid @gray-light;
+    }
+  }
+  > thead > tr > th {
+    padding: 0 (@spacing-unit * 4) @spacing-unit (@spacing-unit * 4);
+    vertical-align: bottom;
+  }
+  > tbody > tr > td {
+    padding: @spacing-unit (@spacing-unit * 4) @spacing-unit 0;
+  }
+  > tbody > tr:last-child > td {
+    padding-bottom: 0;
+  }
+}
+
+.sample-size {
+  margin-bottom: -5px;
+  > .value {
+    font-size: 2em;
+  }
+}
+
+.heading {
+  font-size: 18px;
+  margin-bottom: 12px;
+}

@@ -4,15 +4,15 @@ import { StudentHistoryExamWrapper } from '../../model/student-history-exam-wrap
 import { Student } from '../../model/student.model';
 import { PopupMenuAction } from '../../../shared/menu/popup-menu-action.model';
 import { Observable, of } from 'rxjs';
-import { InstructionalResourcesService } from '../../../assessments/results/instructional-resources.service';
-import { InstructionalResource } from '../../../assessments/model/instructional-resources.model';
+import { InstructionalResourcesService } from '../../../shared/service/instructional-resources.service';
+import { InstructionalResource } from '../../../shared/model/instructional-resource';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { chunk } from 'lodash';
 import { StudentResultsFilterService } from '../student-results-filter.service';
 import { StudentPipe } from '../../../shared/format/student.pipe';
 import { OrderingService } from '../../../shared/ordering/ordering.service';
-import { Assessment } from '../../../assessments/model/assessment.model';
+import { Assessment } from '../../../assessments/model/assessment';
 
 @Component({
   selector: 'student-history-table',
@@ -262,7 +262,7 @@ export class StudentHistoryTableComponent implements OnInit {
       (claim: string, index: number) => {
         return new Column({
           id: 'claim',
-          field: `exam.claimScores.${index}.level`,
+          field: `exam.claimScaleScores.${index}.level`,
           claim: claim,
           index: index
         });

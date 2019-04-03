@@ -1,10 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { AssessmentExam } from '../model/assessment-exam.model';
-import { Exam } from '../model/exam.model';
+import { Exam } from '../model/exam';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { FilterBy } from '../model/filter-by.model';
-import { Subscription, Observable, forkJoin } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { ExamFilterService } from '../filters/exam-filters/exam-filter.service';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
@@ -15,9 +15,8 @@ import { ExamStatistics } from '../model/exam-statistics.model';
 import { AssessmentProvider } from '../assessment-provider.interface';
 import { ResultsByItemComponent } from './view/results-by-item/results-by-item.component';
 import { DistractorAnalysisComponent } from './view/distractor-analysis/distractor-analysis.component';
-import { InstructionalResourcesService } from './instructional-resources.service';
-import { InstructionalResource } from '../model/instructional-resources.model';
-import { Assessment } from '../model/assessment.model';
+import { InstructionalResourcesService } from '../../shared/service/instructional-resources.service';
+import { InstructionalResource } from '../../shared/model/instructional-resource';
 import { WritingTraitScoresComponent } from './view/writing-trait-scores/writing-trait-scores.component';
 import { AssessmentExporter } from '../assessment-exporter.interface';
 import {
@@ -32,6 +31,15 @@ import { TargetReportComponent } from './view/target-report/target-report.compon
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
 import { map } from 'rxjs/internal/operators';
+import { Option } from '../../shared/form/option';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  average,
+  ScoreType,
+  standardErrorOfMean
+} from '../../exam/model/score-statistics';
+import { toScoreTable } from '../../exam/component/score-table/score-tables';
+import { ScoreTable } from '../../exam/component/score-table/score-table';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -39,6 +47,52 @@ enum ResultsViewState {
   DistractorAnalysis = 3,
   WritingTraitScores = 4,
   TargetReport = 5
+}
+
+export interface AssessmentExamView extends AssessmentExam {
+  collapsed?: boolean;
+}
+
+function createScoreTypeOptions(
+  subjectDefinition: SubjectDefinition,
+  translateService: TranslateService
+): Option[] {
+  const options = [
+    {
+      value: 'Overall',
+      text: translateService.instant('common.buttons.display-overall'),
+      analyticsProperties: {
+        label: 'Score Type: Overall'
+      }
+    }
+  ];
+  if (subjectDefinition.alternateScore != null) {
+    options.push({
+      value: 'Alternate',
+      text: translateService.instant(
+        `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.alt-score.name`
+      ),
+      analyticsProperties: {
+        label: 'Score Type: Alternate'
+      }
+    });
+  }
+  if (subjectDefinition.claimScore != null) {
+    options.push({
+      value: 'Claim',
+      text: translateService.instant(
+        `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.claim-score.name`
+      ),
+      analyticsProperties: {
+        label: 'Score Type: Claim'
+      }
+    });
+  }
+  return options;
 }
 
 @Component({
@@ -63,12 +117,15 @@ export class AssessmentResultsComponent implements OnInit {
    * The assessment exam in which to display results for.
    */
   @Input()
-  set assessmentExam(assessment: AssessmentExam) {
-    this._assessmentExam = assessment;
+  set assessmentExam(value: AssessmentExamView) {
+    this._assessmentExam = value;
+    this.color = this.colorService.getColor(
+      GradeCode.getIndex(value.assessment.grade)
+    );
 
     // if we aren't going to display the sessions, don't waste resources computing them
     if (this.allowFilterBySessions) {
-      this.sessions = this.getDistinctExamSessions(assessment.exams);
+      this.sessions = this.getDistinctExamSessions(value.exams);
 
       if (this.sessions.length > 0) {
         this.toggleSession(this.sessions[0]);
@@ -121,6 +178,11 @@ export class AssessmentResultsComponent implements OnInit {
   displayedFor: string;
 
   /**
+   * Derived from assessment grade
+   */
+  color: string;
+
+  /**
    * Represents the cutoff year for when there is no item level response data available.
    * If there are no exams that are after this school year, then disable the ability to go there and show proper message
    */
@@ -166,13 +228,13 @@ export class AssessmentResultsComponent implements OnInit {
     return this.assessmentExam.collapsed;
   }
 
-  get assessmentExam(): AssessmentExam {
+  get assessmentExam(): AssessmentExamView {
     return this._assessmentExam;
   }
 
   get displayItemLevelData(): boolean {
     return (
-      !this._assessmentExam.assessment.isSummative &&
+      this._assessmentExam.assessment.type !== 'sum' &&
       this.hasExamsAfterMinimumItemYear
     );
   }
@@ -189,11 +251,11 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayDistractorAnalysis(): boolean {
-    return !this._assessmentExam.assessment.isSummative;
+    return this._assessmentExam.assessment.type !== 'sum';
   }
 
   get displayResultsByItem(): boolean {
-    return !this._assessmentExam.assessment.isSummative;
+    return this._assessmentExam.assessment.type !== 'sum';
   }
 
   get displayTargetReport(): boolean {
@@ -281,11 +343,18 @@ export class AssessmentResultsComponent implements OnInit {
   percentileDisplayEnabled = false;
   showPercentileHistory = false;
   percentileGroups: PercentileGroup[];
-  showClaimScores = false;
   subjectDefinition: SubjectDefinition;
+  scoreTypeOptions: Option[] = [];
+
+  /**
+   * The active score type in the display
+   */
+  scoreType: ScoreType = 'Overall';
+
+  _alternateScoreTable: ScoreTable;
 
   private _filterBy: FilterBy;
-  private _assessmentExam: AssessmentExam;
+  private _assessmentExam: AssessmentExamView;
   private _filterBySubscription: Subscription;
   private _minimumItemDataYear: number;
 
@@ -297,12 +366,11 @@ export class AssessmentResultsComponent implements OnInit {
     private instructionalResourcesService: InstructionalResourcesService,
     private percentileService: AssessmentPercentileService,
     private subjectService: SubjectService,
-    private angulartics2: Angulartics2
+    private angulartics2: Angulartics2,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this._assessmentExam.collapsed = this.isDefaultCollapsed;
-
     forkJoin(
       this.applicationSettingsService.getSettings(),
       this.subjectService.getSubjectDefinitionForAssessment(
@@ -311,14 +379,16 @@ export class AssessmentResultsComponent implements OnInit {
     ).subscribe(([settings, subjectDefinition]) => {
       this.percentileDisplayEnabled = settings.percentileDisplayEnabled;
       this.subjectDefinition = subjectDefinition;
+
+      this.scoreTypeOptions = createScoreTypeOptions(
+        subjectDefinition,
+        this.translateService
+      );
+
       this.setCurrentView(this.resultsByStudentView);
 
       this.updateExamSessions();
     });
-  }
-
-  setShowClaimScores(value: boolean) {
-    this.showClaimScores = value;
   }
 
   updateViews(): void {
@@ -366,10 +436,6 @@ export class AssessmentResultsComponent implements OnInit {
     });
   }
 
-  getGradeIdx(gradeCode: string): number {
-    return GradeCode.getIndex(gradeCode);
-  }
-
   toggleSession(session): void {
     session.filter = !session.filter;
     this.updateExamSessions();
@@ -380,13 +446,13 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   loadInstructionalResources(
-    assessment: Assessment,
+    assessmentId: number,
     performanceLevel: number
   ): void {
     this.instructionalResourceProvider = () =>
       this.instructionalResourcesService
         .getInstructionalResources(
-          assessment.id,
+          assessmentId,
           this.assessmentProvider.getSchoolId()
         )
         .pipe(
@@ -461,6 +527,15 @@ export class AssessmentResultsComponent implements OnInit {
     this.exams = this.filterExams();
     this.statistics =
       this.subjectDefinition != null ? this.calculateStats() : null;
+
+    // compute table when ready
+    if (this.subjectDefinition != null && this.exams != null) {
+      this._alternateScoreTable = toScoreTable(
+        this.exams,
+        this.subjectDefinition,
+        'Alternate'
+      );
+    }
   }
 
   private filterExams(): Exam[] {
@@ -480,29 +555,31 @@ export class AssessmentResultsComponent implements OnInit {
     return exams;
   }
 
+  // todo use scoreStatistics
   private calculateStats(): ExamStatistics {
     const stats = new ExamStatistics();
 
-    let scores = this.examCalculator
-      .getOnlyScoredExams(this.exams)
+    const scores = this.exams
+      .filter(exam => exam && exam.score) // should be score != null but original examCalculator has it this way
       .map(x => x.score);
 
-    stats.total = this.exams.length;
-    stats.average = this.examCalculator.calculateAverage(scores);
-    stats.standardError = this.examCalculator.calculateStandardErrorOfTheMean(
-      scores
-    );
+    const scored = scores.filter(value => value != null);
 
+    stats.total = this.exams.length;
+    stats.average = average(scored);
+    stats.standardError = standardErrorOfMean(scored);
     stats.levels = this.examCalculator.groupLevels(
       this.exams,
-      this.subjectDefinition.performanceLevelCount
+      this.subjectDefinition.overallScore.levelCount
     );
     stats.percents = this.examCalculator.mapGroupLevelsToPercents(stats.levels);
-    stats.claims = this.examCalculator.calculateClaimStatistics(
-      this.exams,
-      this.subjectDefinition.scorableClaimPerformanceLevelCount
-    );
 
+    if (this.subjectDefinition.claimScore != null) {
+      stats.claims = this.examCalculator.calculateClaimStatistics(
+        this.exams,
+        this.subjectDefinition.claimScore.levelCount
+      );
+    }
     return stats;
   }
 }

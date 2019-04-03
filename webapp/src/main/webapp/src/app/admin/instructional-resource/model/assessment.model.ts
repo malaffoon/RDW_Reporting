@@ -1,7 +1,4 @@
-/**
- * TODO could just be an interface
- */
-export class Assessment {
+export interface Assessment {
   id: number;
   label: string;
   name: string;
@@ -10,4 +7,5 @@ export class Assessment {
   selected: boolean;
   subject: string;
   claimCodes: string[];
+  alternateScoreCodes: string[];
 }

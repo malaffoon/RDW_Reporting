@@ -1,18 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Exam } from '../../../model/exam.model';
+import { Exam } from '../../../model/exam';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
-import { Assessment } from '../../../model/assessment.model';
-import { InstructionalResourcesService } from '../../instructional-resources.service';
-import { InstructionalResource } from '../../../model/instructional-resources.model';
+import { Assessment } from '../../../model/assessment';
+import { InstructionalResourcesService } from '../../../../shared/service/instructional-resources.service';
+import { InstructionalResource } from '../../../../shared/model/instructional-resource';
 import { Observable } from 'rxjs';
 import { PopupMenuAction } from '../../../../shared/menu/popup-menu-action.model';
-import { Ordering } from '@kourge/ordering';
+import { ordering, Ordering } from '@kourge/ordering';
 import { OrderingService } from '../../../../shared/ordering/ordering.service';
-import { first, map } from 'rxjs/internal/operators';
+import { map } from 'rxjs/internal/operators';
 import { ReportFormService } from '../../../../report/service/report-form.service';
 import { createDefaultStudentPrintableReportName } from '../../../../report/model/report-forms';
 import { Router } from '@angular/router';
+import { ScoreType } from '../../../../exam/model/score-statistics';
 
 @Component({
   selector: 'results-by-student',
@@ -39,7 +40,7 @@ export class ResultsByStudentComponent implements OnInit {
   minimumItemDataYear: number;
 
   @Input()
-  showClaimScores: boolean;
+  scoreType: ScoreType;
 
   columns: Column[];
   actions: PopupMenuAction[];
@@ -63,11 +64,15 @@ export class ResultsByStudentComponent implements OnInit {
           new Column({ id: 'name', field: 'student.lastName' }),
           new Column({ id: 'date' }),
           new Column({ id: 'session' }),
-          new Column({ id: 'grade', field: 'enrolledGrade', overall: true }),
+          new Column({
+            id: 'grade',
+            scoreType: 'Overall',
+            field: 'enrolledGrade'
+          }),
           new Column({ id: 'school', field: 'school.name' }),
-          new Column({ id: 'status', headerInfo: true, overall: true }),
-          new Column({ id: 'level', overall: true }),
-          new Column({ id: 'score', headerInfo: true, overall: true }),
+          new Column({ id: 'status', scoreType: 'Overall', headerInfo: true }),
+          new Column({ id: 'level', scoreType: 'Overall' }),
+          new Column({ id: 'score', scoreType: 'Overall', headerInfo: true }),
           ...this.createClaimColumns(ordering)
         ];
         this.actions = this.createActions();
@@ -95,17 +100,18 @@ export class ResultsByStudentComponent implements OnInit {
           new Column({
             id: 'claim',
             field: `claimScores.${index}.level`,
-            index: index,
-            claim: code
+            scoreType: 'Claim',
+            index,
+            code
           })
       )
-      .sort(ordering.on((column: Column) => column.claim).compare);
+      .sort(ordering.on(({ code }) => code).compare);
   }
 
   private createActions(): PopupMenuAction[] {
     const builder = this.actionBuilder.newActions();
 
-    if (this.assessment.isInterim) {
+    if (this.assessment.type !== 'sum') {
       builder.withResponses(
         exam => exam.id,
         exam => exam.student,
@@ -163,29 +169,30 @@ class Column {
   id: string;
   field: string;
   headerInfo: boolean;
-  overall: boolean;
+  scoreType: ScoreType;
 
   // Claim properties
   index?: number;
-  claim?: string;
+  // The claim or alt score code
+  code?: string;
 
   constructor({
     id,
     field = '',
     headerInfo = false,
-    overall = false,
     index = -1,
-    claim = ''
+    scoreType = undefined,
+    code = ''
   }) {
     this.id = id;
     this.field = field ? field : id;
     this.headerInfo = headerInfo;
-    this.overall = overall;
     if (index >= 0) {
       this.index = index;
     }
-    if (claim) {
-      this.claim = claim;
+    this.scoreType = scoreType;
+    if (code) {
+      this.code = code;
     }
   }
 }

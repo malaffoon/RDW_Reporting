@@ -1,5 +1,4 @@
 <div class="well-group">
-
   <!-- Filter Options -->
   <div id="group-results-basic-filters" class="well">
     <div class="well-body">
@@ -8,17 +7,27 @@
         <div class="col-md-2">
           <!-- Advanced Filters Toggle -->
           <div class="pull-right text-right">
-            <label for="advanced">{{'adv-filters.label' | translate}}</label>
-            <button id="advanced"
-                    class="form-control btn btn-default pull-right"
-                    (click)="showAdvancedFilters = !showAdvancedFilters"
-                    angulartics2On="click"
-                    angularticsAction="ToggleAdvancedFilters"
-                    angularticsCategory="AssessmentResults">
-              {{'common.action.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
-              <i class="fa ml-xs"
-                 [ngClass]="{'fa-caret-square-o-up': showAdvancedFilters, 'fa-caret-square-o-down': !showAdvancedFilters}"
-                 aria-hidden="true"></i>
+            <label for="advanced">{{ 'adv-filters.label' | translate }}</label>
+            <button
+              id="advanced"
+              class="form-control btn btn-default pull-right"
+              (click)="showAdvancedFilters = !showAdvancedFilters"
+              angulartics2On="click"
+              angularticsAction="ToggleAdvancedFilters"
+              angularticsCategory="AssessmentResults"
+            >
+              {{
+                'common.action.' + (showAdvancedFilters ? 'hide' : 'show')
+                  | translate
+              }}
+              <i
+                class="fa ml-xs"
+                [ngClass]="{
+                  'fa-caret-square-o-up': showAdvancedFilters,
+                  'fa-caret-square-o-down': !showAdvancedFilters
+                }"
+                aria-hidden="true"
+              ></i>
             </button>
           </div>
         </div>
@@ -27,45 +36,70 @@
   </div>
 
   <!-- Selected Advanced Filters -->
-  <div id="results-adv-filters" [hidden]="!showAdvancedFilters" class="well gray-lightest">
-    <adv-filters-toggle [displayOptions]="filterDisplayOptions"
-                        [filterBy]="clientFilterBy"
-                        (removed)="removeFilter($event)"></adv-filters-toggle>
+  <div
+    id="results-adv-filters"
+    [hidden]="!showAdvancedFilters"
+    class="well gray-lightest"
+  >
+    <adv-filters-toggle
+      [displayOptions]="filterDisplayOptions"
+      [filterBy]="clientFilterBy"
+      (removed)="removeFilter($event)"
+    ></adv-filters-toggle>
   </div>
 
   <!-- Advanced Filters -->
-  <div id="group-results-adv-filter-options"
-       class="well gray-lighter"
-       [hidden]="!showAdvancedFilters || !filterDisplayOptions.expanded">
-    <adv-filters [filterBy]="clientFilterBy" [filterOptions]="filterOptions"></adv-filters>
+  <div
+    id="group-results-adv-filter-options"
+    class="well gray-lighter"
+    [hidden]="!showAdvancedFilters || !filterDisplayOptions.expanded"
+  >
+    <adv-filters
+      [filterBy]="clientFilterBy"
+      [filterOptions]="filterOptions"
+    ></adv-filters>
   </div>
 
   <!-- Selected Assessments -->
-  <div *ngIf="hasInitialAssessment" id="group-results-selected-assessments" class="well gray-lightest">
-
+  <div
+    *ngIf="hasInitialAssessment"
+    id="group-results-selected-assessments"
+    class="well gray-lightest"
+  >
     <div class="row">
       <div class="col-md-6">
         <h2 class="h3 gray-darkest">
-          <i class="fa fa-list-alt"></i> {{'assessments.results.selected-assessments-title' | translate}}
+          <i class="fa fa-list-alt"></i>
+          {{ 'assessments.results.selected-assessments-title' | translate }}
         </h2>
-        <p [hidden]="showOnlyMostRecent">{{'assessments.results.selected-assessments-instruct' | translate }}</p>
+        <p [hidden]="showOnlyMostRecent">
+          {{ 'assessments.results.selected-assessments-instruct' | translate }}
+        </p>
       </div>
       <div class="col-md-6">
         <div class="btn-group btn-group-xs pull-right mb-sm" role="group">
-          <button type="radio"
-                  (click)="showOnlyMostRecent = true"
-                  class="btn btn-default"
-                  [ngClass]="{'active': showOnlyMostRecent}"
-                  angulartics2On="click"
-                  angularticsAction="ShowOnlyMostRecent"
-                  angularticsCategory="AssessmentResults">{{'assessments.results.filter-type-recent' | translate}}</button>
-          <button type="radio"
-                  (click)="showOnlyMostRecent = false"
-                  class="btn btn-default"
-                  [ngClass]="{'active': !showOnlyMostRecent}"
-                  angulartics2On="click"
-                  angularticsAction="ShowCustomAssessmentSelection"
-                  angularticsCategory="AssessmentResults">{{'assessments.results.filter-type-custom' | translate}}</button>
+          <button
+            type="radio"
+            (click)="showOnlyMostRecent = true"
+            class="btn btn-default"
+            [ngClass]="{ active: showOnlyMostRecent }"
+            angulartics2On="click"
+            angularticsAction="ShowOnlyMostRecent"
+            angularticsCategory="AssessmentResults"
+          >
+            {{ 'assessments.results.filter-type-recent' | translate }}
+          </button>
+          <button
+            type="radio"
+            (click)="showOnlyMostRecent = false"
+            class="btn btn-default"
+            [ngClass]="{ active: !showOnlyMostRecent }"
+            angulartics2On="click"
+            angularticsAction="ShowCustomAssessmentSelection"
+            angularticsCategory="AssessmentResults"
+          >
+            {{ 'assessments.results.filter-type-custom' | translate }}
+          </button>
         </div>
       </div>
     </div>
@@ -73,102 +107,157 @@
     <div class="row">
       <div class="col-md-12">
         <div class="flex-children">
-          <a *ngFor="let assessment of selectedAssessments"
-             href="javascript:void(0)"
-             (click)="removeAssessment(assessment)"
-             angulartics2On="click"
-             angularticsAction="RemoveAssessment"
-             angularticsCategory="AssessmentResults"
-             [angularticsProperties]="{label: assessment.label}"
-             class="tag tag-xs {{ colorService.getColor(getGradeIdx(assessment.grade)) }}">
-            <span class="label">{{'common.assessment-grade-short-label.' + assessment.grade | translate}}</span>
-            {{assessment.label}}
-            <span class="icon" [hidden]="showOnlyMostRecent"><i class="fa fa-close"></i></span>
+          <a
+            *ngFor="let assessment of selectedAssessments"
+            href="javascript:void(0)"
+            (click)="removeAssessment(assessment)"
+            angulartics2On="click"
+            angularticsAction="RemoveAssessment"
+            angularticsCategory="AssessmentResults"
+            [angularticsProperties]="{ label: assessment.label }"
+            class="tag tag-xs {{
+              colorService.getColor(getGradeIdx(assessment.grade))
+            }}"
+          >
+            <span class="label">{{
+              'common.assessment-grade-short-label.' + assessment.grade
+                | translate
+            }}</span>
+            {{ assessment.label }}
+            <span class="icon" [hidden]="showOnlyMostRecent"
+              ><i class="fa fa-close"></i
+            ></span>
           </a>
           <div>
-            <button *ngIf ="!expandAssessments"
-                    class="btn btn-default btn-sm img-circle icon-only"
-                    (click)="expandAssessments=true"
-                    angulartics2On="click"
-                    angularticsAction="ClickAssessmentPlus"
-                    angularticsCategory="AssessmentResults">
+            <button
+              *ngIf="!expandAssessments"
+              class="btn btn-default btn-sm img-circle icon-only"
+              (click)="expandAssessments = true"
+              angulartics2On="click"
+              angularticsAction="ClickAssessmentPlus"
+              angularticsCategory="AssessmentResults"
+            >
               <i class="fa fa-plus"></i>
-              <span class="sr-only">{{'assessments.results.add-assessment-filters' | translate }}</span>
+              <span class="sr-only">{{
+                'assessments.results.add-assessment-filters' | translate
+              }}</span>
             </button>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
-  <div id="group-results-edit-assessments"
-       class="well gray-lighter clearfix"
-       [hidden]="!expandAssessments || hideAssessments">
-    <div id="adv-filters-edit-assessments-collapse"
-         class="pull-right">
-      <button class="form-control btn btn-sm"
-              (click)="expandAssessments = false"
-              angulartics2On="click"
-              angularticsAction="HideCustomSelectionView"
-              angularticsCategory="AssessmentResults">
+  <div
+    id="group-results-edit-assessments"
+    class="well gray-lighter clearfix"
+    [hidden]="!expandAssessments || hideAssessments"
+  >
+    <div id="adv-filters-edit-assessments-collapse" class="pull-right">
+      <button
+        class="form-control btn btn-sm"
+        (click)="expandAssessments = false"
+        angulartics2On="click"
+        angularticsAction="HideCustomSelectionView"
+        angularticsCategory="AssessmentResults"
+      >
         <i class="fa fa-close" aria-hidden="true"></i>
       </button>
     </div>
-    <ng-container *ngIf="availableAssessments && availableAssessments.length; else loadingAssessments">
-      <select-assessments [assessments]="availableAssessments"
-                          (selectedAssessmentsChanged)="selectedAssessmentsChanged($event)"></select-assessments>
+    <ng-container
+      *ngIf="
+        availableAssessments && availableAssessments.length;
+        else loadingAssessments
+      "
+    >
+      <select-assessments
+        [assessments]="availableAssessments"
+        (selectedAssessmentsChanged)="selectedAssessmentsChanged($event)"
+      ></select-assessments>
     </ng-container>
     <ng-template #loadingAssessments>
       <i class="fa fa-spinner fa-pulse fa-2x"></i>
     </ng-template>
-
   </div>
-
 </div>
 
 <!-- Results -->
 <page-heading>
   <ng-template #heading>
-    <h3>{{'assessments.results.title' | translate}}</h3>
+    <h3>{{ 'assessments.results.title' | translate }}</h3>
   </ng-template>
   <ng-template #content>
     <ul class="list-unstyled list-inline">
       <li>
-        <label for="value-format">{{'common.value-display-type-input-label' | translate }}</label>
-        <div id="value-format" class="btn-group btn-group-primary btn-group-xs ml-xs" role="group">
-          <button type="radio"
-                  (click)="showValuesAsPercent = true"
-                  [ngClass]="{'active': showValuesAsPercent}"
-                  angulartics2On="click"
-                  angularticsAction="ShowAsPercent"
-                  angularticsCategory="AssessmentResults"
-                  class="btn btn-default">{{'common.value-display-type.Percent' | translate}}
+        <label for="value-format">{{
+          'common.value-display-type-input-label' | translate
+        }}</label>
+        <div
+          id="value-format"
+          class="btn-group btn-group-primary btn-group-xs ml-xs"
+          role="group"
+        >
+          <button
+            type="radio"
+            (click)="showValuesAsPercent = true"
+            [ngClass]="{ active: showValuesAsPercent }"
+            angulartics2On="click"
+            angularticsAction="ShowAsPercent"
+            angularticsCategory="AssessmentResults"
+            class="btn btn-default"
+          >
+            {{ 'common.value-display-type.Percent' | translate }}
           </button>
-          <button type="radio"
-                  (click)="showValuesAsPercent = false"
-                  [ngClass]="{'active': !showValuesAsPercent}"
-                  angulartics2On="click"
-                  angularticsAction="ShowAsNumber"
-                  angularticsCategory="AssessmentResults"
-                  class="btn btn-default">{{'common.value-display-type.Number' | translate}}
+          <button
+            type="radio"
+            (click)="showValuesAsPercent = false"
+            [ngClass]="{ active: !showValuesAsPercent }"
+            angulartics2On="click"
+            angularticsAction="ShowAsNumber"
+            angularticsCategory="AssessmentResults"
+            class="btn btn-default"
+          >
+            {{ 'common.value-display-type.Number' | translate }}
           </button>
         </div>
       </li>
       <li>
-        <button class="btn btn-default btn-xs"
-                (click)="allCollapsed = !allCollapsed">
-          {{('assessments.results.' + (allCollapsed ? 'expand-all' : 'collapse-all')) | translate }}
-          <i class="fa" [ngClass]="{'fa-caret-square-o-down': allCollapsed, 'fa-caret-square-o-up': !allCollapsed}"></i>
+        <button
+          class="btn btn-default btn-xs"
+          (click)="allCollapsed = !allCollapsed"
+        >
+          {{
+            'assessments.results.' +
+              (allCollapsed ? 'expand-all' : 'collapse-all') | translate
+          }}
+          <i
+            class="fa"
+            [ngClass]="{
+              'fa-caret-square-o-down': allCollapsed,
+              'fa-caret-square-o-up': !allCollapsed
+            }"
+          ></i>
         </button>
       </li>
       <li>
-        <button *ngIf="!exportDisabled" class="btn btn-default btn-xs"
-                (click)="callExport()"><i class="fa fa-bold fa-table"></i> {{'common.export-csv' | translate}}</button>
-        <button *ngIf="exportDisabled" class="btn btn-default btn-xs disabled"
-                popover="{{'common.embargo-export-disabled' | translate}}"
-                triggers="mouseenter:mouseleave"
-                placement="left"><i class="fa fa-bold fa-table"></i> {{'common.export-csv' | translate}}</button>
+        <button
+          *ngIf="!exportDisabled"
+          class="btn btn-default btn-xs"
+          (click)="callExport()"
+        >
+          <i class="fa fa-bold fa-table"></i>
+          {{ 'common.export-csv' | translate }}
+        </button>
+        <button
+          *ngIf="exportDisabled"
+          class="btn btn-default btn-xs disabled"
+          popover="{{ 'common.embargo-export-disabled' | translate }}"
+          triggers="mouseenter:mouseleave"
+          placement="left"
+        >
+          <i class="fa fa-bold fa-table"></i>
+          {{ 'common.export-csv' | translate }}
+        </button>
       </li>
     </ul>
   </ng-template>
@@ -176,31 +265,50 @@
 
 <!-- Results Container -->
 <ng-container *ngIf="!hideAssessments">
-  <div *ngFor="let assessmentExam of assessmentExams"
-       class="groups-results-wrapper">
-    <assessment-results [assessmentExam]="assessmentExam"
-                        [showValuesAsPercent]="showValuesAsPercent"
-                        [isDefaultCollapsed]="isDefaultCollapsed"
-                        [displayedFor]="displayedFor"
-                        [filterBy]="clientFilterBy"
-                        [allowFilterBySessions]="allowFilterBySessions && !assessmentExam.assessment.isSummative"
-                        [allowTargetReport]="allowTargetReport"
-                        [assessmentProvider]="assessmentProvider"
-                        [assessmentExporter]="assessmentExporter"
-                        [minimumItemDataYear]="minimumItemDataYear"></assessment-results>
+  <div
+    *ngFor="let assessmentExam of assessmentExams"
+    class="groups-results-wrapper"
+  >
+    <assessment-results
+      [assessmentExam]="assessmentExam"
+      [showValuesAsPercent]="showValuesAsPercent"
+      [displayedFor]="displayedFor"
+      [filterBy]="clientFilterBy"
+      [allowFilterBySessions]="
+        allowFilterBySessions && assessmentExam.assessment.type !== 'sum'
+      "
+      [allowTargetReport]="allowTargetReport"
+      [assessmentProvider]="assessmentProvider"
+      [assessmentExporter]="assessmentExporter"
+      [minimumItemDataYear]="minimumItemDataYear"
+    ></assessment-results>
   </div>
 </ng-container>
 
 <!-- No Results Error -->
-<div class="alert alert-info" *ngIf="(!loadingInitialResults && assessmentExams.length == 0) || hideAssessments">
-  {{'common.assessments.no-results-found' | translate}}
+<div
+  class="alert alert-info"
+  *ngIf="
+    (!loadingInitialResults && assessmentExams.length == 0) || hideAssessments
+  "
+>
+  {{ 'common.assessments.no-results-found' | translate }}
 </div>
 
-<div class="alert alert-info" *ngIf="loadingInitialResults && assessmentExams.length == 0">
-  <i class="fa fa-spinner fa-pulse fa-2x"></i> {{'common.messages.loading' | translate}}
+<div
+  class="alert alert-info"
+  *ngIf="loadingInitialResults && assessmentExams.length == 0"
+>
+  <i class="fa fa-spinner fa-pulse fa-2x"></i>
+  {{ 'common.messages.loading' | translate }}
 </div>
 
 <div class="fab">
-  <button class="btn btn-primary btn-sm"
-          (click)="openAndScrollToAdvancedFilters()"><i class="fa fa-filter"></i> {{'adv-filters.floating-action-button' | translate}}</button>
+  <button
+    class="btn btn-primary btn-sm"
+    (click)="openAndScrollToAdvancedFilters()"
+  >
+    <i class="fa fa-filter"></i>
+    {{ 'adv-filters.floating-action-button' | translate }}
+  </button>
 </div>

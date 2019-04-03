@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
-import { Assessment } from '../../assessments/model/assessment.model';
+import { Assessment } from '../../assessments/model/assessment';
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
 import { SchoolAssessmentService } from './school-assessment.service';
 import { SchoolService } from '../school.service';
@@ -19,9 +19,10 @@ import { School } from '../../shared/organization/organization';
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { SchoolService as CommonSchoolService } from '../../shared/school/school.service';
 import { SchoolTypeahead } from '../../shared/school/school-typeahead';
-import { first, map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { limit } from '../limit';
 import { ReportFormService } from '../../report/service/report-form.service';
+import { AssessmentExamView } from '../../assessments/results/assessment-results.component';
 
 @Component({
   selector: 'school-results',
@@ -35,7 +36,7 @@ export class SchoolResultsComponent implements OnInit {
   @ViewChild(AssessmentsComponent)
   assessmentsComponent: AssessmentsComponent;
 
-  assessmentExams: AssessmentExam[] = [];
+  assessmentExams: AssessmentExamView[] = [];
   availableAssessments: Assessment[] = [];
   schoolOptions: Option[] | Observable<School[]>;
   aboveLimit: boolean = false;
@@ -243,7 +244,9 @@ export class SchoolResultsComponent implements OnInit {
   }
 
   updateAssessment(latestAssessment: AssessmentExam): void {
-    this.assessmentExams = latestAssessment ? [latestAssessment] : [];
+    this.assessmentExams = latestAssessment
+      ? [{ ...latestAssessment, collapsed: true }]
+      : [];
   }
 
   onSchoolChange(school: School): void {

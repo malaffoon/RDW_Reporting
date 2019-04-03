@@ -1,3 +1,10 @@
+export interface InstructionalResource {
+  organizationLevel: string;
+  organizationName: string;
+  performanceLevel: string;
+  url: string;
+}
+
 export class InstructionalResources {
   resourcesByPerformanceLevel: Map<number, InstructionalResource[]>;
 
@@ -5,14 +12,9 @@ export class InstructionalResources {
     return this.resourcesByPerformanceLevel.get(performanceLevel) || [];
   }
 
-  constructor(instructionalResourcesMap: Map<number, InstructionalResource[]> = new Map()) {
+  constructor(
+    instructionalResourcesMap: Map<number, InstructionalResource[]> = new Map()
+  ) {
     this.resourcesByPerformanceLevel = instructionalResourcesMap;
   }
-}
-
-export class InstructionalResource {
-  organizationLevel: string;
-  organizationName: string;
-  performanceLevel: string;
-  url: string;
 }

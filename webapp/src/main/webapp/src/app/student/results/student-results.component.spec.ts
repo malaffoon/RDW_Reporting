@@ -6,9 +6,8 @@ import { StudentExamHistory } from '../model/student-exam-history.model';
 import { Student } from '../model/student.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { StudentHistoryExamWrapper } from '../model/student-history-exam-wrapper.model';
-import { Exam } from '../../assessments/model/exam.model';
-import { Assessment } from '../../assessments/model/assessment.model';
-import { ClaimScore } from '../../assessments/model/claim-score.model';
+import { Exam } from '../../assessments/model/exam';
+import { Assessment } from '../../assessments/model/assessment';
 import { MockRouter } from '../../../test/mock.router';
 import { CsvExportService } from '../../csv-export/csv-export.service';
 import { Angulartics2 } from 'angulartics2';
@@ -24,6 +23,7 @@ import { OrderingService } from '../../shared/ordering/ordering.service';
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { ReportFormService } from '../../report/service/report-form.service';
+import { ScaleScore } from '../../exam/model/scale-score';
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -199,7 +199,7 @@ class MockBuilder {
   }
 
   private static exam(type: string): Exam {
-    const exam: Exam = new Exam();
+    const exam: any = {};
     exam.date = new Date();
     exam.id = MockBuilder.examIdx++;
     exam.iep = false;
@@ -222,10 +222,10 @@ class MockBuilder {
 
     MockBuilder.oddExam = !MockBuilder.oddExam;
 
-    exam.claimScores = [];
+    exam.claimScaleScores = [];
     if (type !== 'iab') {
-      exam.claimScores.push(MockBuilder.claimScore(1));
-      exam.claimScores.push(MockBuilder.claimScore(2));
+      exam.claimScaleScores.push(MockBuilder.claimScore(1));
+      exam.claimScaleScores.push(MockBuilder.claimScore(2));
     }
 
     exam.administrativeCondition = type === 'sum' ? 'Valid' : 'NS';
@@ -234,7 +234,7 @@ class MockBuilder {
   }
 
   private static assessment(type: string, subject: string): Assessment {
-    const assessment: Assessment = new Assessment();
+    const assessment: any = {};
     assessment.grade = '05';
     assessment.id = MockBuilder.assessmentIdx++;
     assessment.label = 'Grade 5 ELA';
@@ -250,11 +250,11 @@ class MockBuilder {
     return assessment;
   }
 
-  private static claimScore(level: number): ClaimScore {
-    const score: ClaimScore = new ClaimScore();
-    score.level = level;
-    score.score = 1234;
-    score.standardError = 25;
-    return score;
+  private static claimScore(level: number): ScaleScore {
+    return {
+      level,
+      score: 1234,
+      standardError: 25
+    };
   }
 }

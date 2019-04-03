@@ -5,7 +5,7 @@ import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { TestModule } from '../../../../../test/test.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { Assessment } from '../../../model/assessment.model';
+import { Assessment } from '../../../model/assessment';
 import { TargetReportComponent } from './target-report.component';
 import { GroupAssessmentService } from '../../../../groups/results/group-assessment.service';
 import { AssessmentExamMapper } from '../../../assessment-exam.mapper';
@@ -81,6 +81,6 @@ describe('TargetReportComponent', () => {
   `
 })
 class TestComponentWrapper {
-  assessment = new Assessment();
+  assessment = {};
   subjectDefinition = { performanceLevelStandardCutoff: 3 };
 }

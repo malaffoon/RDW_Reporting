@@ -403,7 +403,6 @@
     },
     "buttons": {
       "all": "All",
-      "display-claim": "Claim Scores",
       "display-overall": "Overall Scores",
       "printable-student-reports": "Printable Reports"
     },
@@ -433,7 +432,7 @@
       "ELAS": "English Language Acquisition Status",
       "Language": "Primary Language",
       "MigrantStatus": "Migrant Status",
-      "MilitaryConnectedCode": "Military Connected",
+      "MilitaryConnectedCode": "Military Student Identifier",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Student Enrolled Grade"
@@ -447,7 +446,7 @@
       "ELAS": "ELAS",
       "Language": "Language",
       "MigrantStatus": "Migrant Status",
-      "MilitaryConnectedCode": "Military Connected",
+      "MilitaryConnectedCode": "Military",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Enrolled Grade"
@@ -973,7 +972,7 @@
       },
       "instructional-resources": {
         "button": "Instructional Resources",
-        "description": "Upload instructional resources in the system."
+        "description": "Upload links to instructional resources in the system."
       },
       "organizational-export": {
         "button": "District / School Exports",

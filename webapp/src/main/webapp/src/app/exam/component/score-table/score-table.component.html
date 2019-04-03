@@ -1,0 +1,56 @@
+<table>
+  <thead>
+    <tr>
+      <th>
+        <div class="sample-size">
+          <span class="value">{{ _table.resultCount }}</span>
+          <span class="ml-xs">{{
+            (_table.resultCount === 1
+              ? 'average-scale-score.result'
+              : 'average-scale-score.results') | translate
+          }}</span>
+        </div>
+      </th>
+      <th *ngFor="let statistic of _table.scoreStatistics">
+        <div class="heading">
+          <score-label
+            [subjectCode]="_table.subjectCode"
+            [scoreCode]="statistic.code"
+          ></score-label>
+        </div>
+        <scale-score
+          [score]="statistic.averageScaleScore"
+          [standardError]="statistic.standardErrorOfMean"
+        ></scale-score>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="
+        let performanceLevelScore of _orderedPerformanceLevelScores;
+        let performanceLevelIndex = index
+      "
+    >
+      <td>
+        {{ performanceLevelScore.nameCode | translate }}
+      </td>
+      <td
+        *ngFor="let statistic of _table.scoreStatistics; let groupIndex = index"
+      >
+        <ng-container
+          *ngIf="
+            statistic.performanceLevelScores[performanceLevelIndex] as score
+          "
+        >
+          <aggregate-score-graph
+            [percent]="score.percent"
+            [count]="score.count"
+            [color]="performanceLevelScore.colorCode | translate"
+            [displayCount]="displayCount"
+          ></aggregate-score-graph>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>
