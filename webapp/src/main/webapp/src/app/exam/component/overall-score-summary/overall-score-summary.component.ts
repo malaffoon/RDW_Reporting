@@ -38,7 +38,6 @@ export class OverallScoreSummaryComponent {
   _performanceLevelScores: PerformanceLevelScore[];
   _hasAverageScore: boolean;
   _averageScore: number;
-  _totalCount: number;
   _instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
   _initialized: boolean;
 

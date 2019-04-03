@@ -10,12 +10,21 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScaleScoreComponent {
-  @Input()
-  score: number;
-
-  @Input()
-  standardError: number;
+  _hasScore: boolean;
+  _roundedScaleScore: number;
+  _roundedStandardError: number;
 
   @Input()
   background: boolean;
+
+  @Input()
+  set score(value: number) {
+    this._hasScore = value != null;
+    this._roundedScaleScore = Math.round(value);
+  }
+
+  @Input()
+  set standardError(value: number) {
+    this._roundedStandardError = Math.round(value);
+  }
 }

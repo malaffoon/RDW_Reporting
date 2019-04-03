@@ -1,5 +1,5 @@
 <!-- Individual Assessment Result Container -->
-<div class="assessment-result well wide-content-container">
+<div class="assessment-result well wide-content-container clearfix">
   <div class="flex-children">
     <div class="flex-child grow">
       <span class="tag tag-lg {{ color }}">
@@ -83,7 +83,7 @@
       </ng-container>
       <ng-container *ngSwitchCase="'Alternate'">
         <score-table
-          [subjectDefinition]="subjectDefinition"
+          [table]="_alternateScoreTable"
           [displayCount]="!showValuesAsPercent"
         ></score-table>
       </ng-container>

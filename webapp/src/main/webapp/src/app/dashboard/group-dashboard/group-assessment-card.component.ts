@@ -3,7 +3,7 @@ import { Group } from '../../groups/group';
 import { MeasuredAssessment } from '../measured-assessment';
 import { ColorService } from '../../shared/color.service';
 import { GradeCode } from '../../shared/enum/grade-code.enum';
-import { ExamStatisticsCalculator } from '../../assessments/results/exam-statistics-calculator';
+import { roundPercentages } from '../../assessments/results/exam-statistics-calculator';
 
 export interface GroupCard {
   readonly group: Group;
@@ -21,7 +21,6 @@ export interface AssessmentCardEvent {
   templateUrl: './group-assessment-card.component.html'
 })
 export class GroupAssessmentCardComponent implements OnInit {
-
   @Input()
   card: GroupCard;
 
@@ -33,8 +32,7 @@ export class GroupAssessmentCardComponent implements OnInit {
   selected = false;
   hasIcon: boolean = true;
 
-  constructor(public colorService: ColorService, private examCalculator: ExamStatisticsCalculator) {
-  }
+  constructor(public colorService: ColorService) {}
 
   get measuredAssessment(): MeasuredAssessment {
     return this.card.measuredAssessment;
@@ -49,8 +47,10 @@ export class GroupAssessmentCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.percents = this.measuredAssessment.studentCountByPerformanceLevel.map(x => Math.round(x.percent));
-    this.dataWidths = this.examCalculator.getDataWidths(
+    this.percents = this.measuredAssessment.studentCountByPerformanceLevel.map(
+      x => Math.round(x.percent)
+    );
+    this.dataWidths = roundPercentages(
       this.measuredAssessment.studentCountByPerformanceLevel.map(x => x.percent)
     );
   }
@@ -60,7 +60,13 @@ export class GroupAssessmentCardComponent implements OnInit {
   }
 
   get studentCountFill(): number {
-    return Math.min(Math.round((this.measuredAssessment.studentsTested / this.group.totalStudents) * 100), 100);
+    return Math.min(
+      Math.round(
+        (this.measuredAssessment.studentsTested / this.group.totalStudents) *
+          100
+      ),
+      100
+    );
   }
 
   selectCard(): void {
@@ -72,7 +78,8 @@ export class GroupAssessmentCardComponent implements OnInit {
   }
 
   getGradeColor(): string {
-    return this.colorService.getColor(GradeCode.getIndex(this.measuredAssessment.assessment.grade));
+    return this.colorService.getColor(
+      GradeCode.getIndex(this.measuredAssessment.assessment.grade)
+    );
   }
-
 }

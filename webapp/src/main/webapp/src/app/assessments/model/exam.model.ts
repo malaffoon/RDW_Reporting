@@ -1,8 +1,9 @@
-import { ClaimScore } from "./claim-score.model";
-import { Student } from "../../student/model/student.model";
-import { School } from "../../shared/organization/organization";
+import { Student } from '../../student/model/student.model';
+import { School } from '../../shared/organization/organization';
+import { ScaleScore } from '../../exam/model/scale-score';
 
-export class Exam {
+// TODO should contain scaleScore instead of implementing it
+export class Exam implements ScaleScore {
   id: number;
   student: Student;
   date: Date;
@@ -18,7 +19,8 @@ export class Exam {
   iep: boolean;
   limitedEnglishProficiency: boolean;
   schoolYear: number;
-  claimScores: ClaimScore[];
+  alternateScaleScores: ScaleScore[];
+  claimScores: ScaleScore[];
   accommodationCodes: string[];
   school: School;
   transfer: boolean;

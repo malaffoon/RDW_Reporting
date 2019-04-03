@@ -7,12 +7,20 @@ import { ExamItemScore } from './model/exam-item-score.model';
 import { byGradeThenByName } from './assessment.comparator';
 import { ordering } from '@kourge/ordering';
 import { byNumber } from '@kourge/ordering/comparator';
-import { ClaimScore } from './model/claim-score.model';
 import { Student } from '../student/model/student.model';
 import { Utils } from '../shared/support/support';
 import { DefaultSchool, School } from '../shared/organization/organization';
 import { TargetScoreExam } from './model/target-score-exam.model';
 import { Target } from './model/target.model';
+import { ScaleScore } from '../exam/model/scale-score';
+
+function toScaleScore(serverScaleScore: any): ScaleScore {
+  return {
+    level: serverScaleScore.level,
+    score: serverScaleScore.value,
+    standardError: serverScaleScore.standardError
+  };
+}
 
 @Injectable()
 export class AssessmentExamMapper {
@@ -105,8 +113,11 @@ export class AssessmentExamMapper {
     exam.schoolYear = serverExam.schoolYear;
     exam.transfer = serverExam.transfer;
     exam.school = this.createSchool(serverExam.school);
+    exam.alternateScaleScores = (serverExam.altScaleScores || []).map(
+      serverScaleScore => toScaleScore(serverScaleScore)
+    );
     exam.claimScores = (serverExam.claimScaleScores || []).map(
-      serverScaleScore => this.mapClaimScaleScoreFromApi(serverScaleScore)
+      serverScaleScore => toScaleScore(serverScaleScore)
     );
 
     if (serverExam.studentContext) {
@@ -195,18 +206,6 @@ export class AssessmentExamMapper {
         : undefined;
 
     return item;
-  }
-
-  private mapClaimScaleScoreFromApi(apiScaleScore: any): ClaimScore {
-    const uiModel: ClaimScore = new ClaimScore();
-
-    if (apiScaleScore) {
-      uiModel.level = apiScaleScore.level;
-      uiModel.score = apiScaleScore.value;
-      uiModel.standardError = apiScaleScore.standardError;
-    }
-
-    return uiModel;
   }
 
   private createSchool(serverExamSchool: any): School {

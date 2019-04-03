@@ -32,7 +32,6 @@ import { ResultsByStudentComponent } from './results/view/results-by-student/res
 import { DistractorAnalysisComponent } from './results/view/distractor-analysis/distractor-analysis.component';
 import { WritingTraitScoresComponent } from './results/view/writing-trait-scores/writing-trait-scores.component';
 import { ResultsByItemComponent } from './results/view/results-by-item/results-by-item.component';
-import { ScaleScoreService } from './results/scale-score.service';
 import { InstructionalResourcesService } from '../shared/service/instructional-resources.service';
 import { RdwMenuModule } from '../shared/menu/rdw-menu.module';
 import { AssessmentPercentileModule } from './percentile/assessment-percentile.module';
@@ -100,7 +99,6 @@ import { ExamModule } from '../exam/exam.module';
     ItemScoringGuideMapper,
     ItemInfoService,
     StudentScoreService,
-    ScaleScoreService,
     TargetStatisticsCalculator
   ]
 })
