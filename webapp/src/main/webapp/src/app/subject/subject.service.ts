@@ -5,7 +5,7 @@ import { CachingDataService } from '../shared/data/caching-data.service';
 import { ReportingServiceRoute } from '../shared/service-route';
 import { ResponseUtils } from '../shared/response-utils';
 import { catchError, map } from 'rxjs/operators';
-import { Assessment } from '../assessments/model/assessment.model';
+import { Assessment } from '../assessments/model/assessment';
 import { range } from '../shared/support/support';
 
 const ServiceRoute = ReportingServiceRoute;

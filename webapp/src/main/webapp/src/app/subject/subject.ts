@@ -20,11 +20,11 @@ export interface SubjectDefinition {
   /** @deprecated use overallScores */
   readonly performanceLevelStandardCutoff: number;
 
-  /** @deprecated use claimScores */
+  /** @deprecated use claimScaleScores */
   readonly scorableClaims: string[];
-  /** @deprecated use claimScores */
+  /** @deprecated use claimScaleScores */
   readonly scorableClaimPerformanceLevels: number[];
-  /** @deprecated use claimScores */
+  /** @deprecated use claimScaleScores */
   readonly scorableClaimPerformanceLevelCount: number;
 
   /** @deprecated use alternateScores */

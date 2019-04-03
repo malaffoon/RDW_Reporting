@@ -274,7 +274,7 @@
         <!-- Buttons right of view select -->
         <div class="pull-right mt-sm">
           <ul class="list-unstyled list-inline">
-            <li *ngIf="assessmentExam.assessment.isIab">
+            <li *ngIf="assessmentExam.assessment.type === 'iab'">
               <button
                 class="btn btn-primary btn-sm"
                 angulartics2On="click"

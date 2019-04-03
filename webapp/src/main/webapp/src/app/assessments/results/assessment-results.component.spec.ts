@@ -4,7 +4,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Exam } from '../model/exam.model';
+import { Exam } from '../model/exam';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { ExamFilterService } from '../filters/exam-filters/exam-filter.service';
 import { Student } from '../../student/model/student.model';
@@ -21,7 +21,7 @@ import { MockUserService } from '../../../test/mock.user.service';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { of } from 'rxjs';
 import { SubjectService } from '../../subject/subject.service';
-import { Assessment } from '../model/assessment.model';
+import { Assessment } from '../model/assessment';
 
 describe('AssessmentResultsComponent', () => {
   let component: AssessmentResultsComponent;
@@ -113,7 +113,7 @@ describe('AssessmentResultsComponent', () => {
 
   it('should default to the first session', () => {
     component.assessmentExam = {
-      assessment: new Assessment(),
+      assessment: <Assessment>{},
       exams: [
         buildExam('Benoit', 'ma-02', '2017-03-01T17:05:26Z'),
         buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
@@ -125,7 +125,7 @@ describe('AssessmentResultsComponent', () => {
 
   it('should order by most recent', () => {
     component.assessmentExam = {
-      assessment: new Assessment(),
+      assessment: <Assessment>{},
       exams: [
         buildExam('Benoit', 'ma-02', '2017-01-01T17:05:26Z'),
         buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
@@ -137,7 +137,7 @@ describe('AssessmentResultsComponent', () => {
 
   it('should take most recent date for each session', () => {
     component.assessmentExam = {
-      assessment: new Assessment(),
+      assessment: <Assessment>{},
       exams: [
         buildExam('Benoit', 'ma-02', '2017-01-01T17:05:26Z'),
         buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z'),
@@ -161,7 +161,7 @@ describe('AssessmentResultsComponent', () => {
 
   it('should add/remove filtered sessions', () => {
     component.assessmentExam = {
-      assessment: new Assessment(),
+      assessment: <Assessment>{},
       exams: [
         buildExam('Benoit', 'ma-02', '2017-03-01T17:05:26Z'),
         buildExam('Wood', 'ma-01', '2017-03-01T17:05:26Z')
@@ -179,7 +179,7 @@ describe('AssessmentResultsComponent', () => {
 
   it('should handle all null sessions', () => {
     component.assessmentExam = {
-      assessment: new Assessment(),
+      assessment: <Assessment>{},
       exams: [
         buildExam('Benoit', null, '2017-03-01T17:05:26Z'),
         buildExam('Wood', null, '2017-03-01T17:05:26Z')
@@ -190,7 +190,7 @@ describe('AssessmentResultsComponent', () => {
 
   it('should handle some null sessions', () => {
     component.assessmentExam = {
-      assessment: new Assessment(),
+      assessment: <Assessment>{},
       exams: [
         buildExam('Benoit', null, '2017-03-01T17:05:26Z'),
         buildExam('Wood', 'ma-12', '2017-03-01T17:05:26Z')
@@ -202,14 +202,15 @@ describe('AssessmentResultsComponent', () => {
     expect(component.sessions[1].id).toEqual('ma-12');
   });
 
-  function buildExam(studentName: string, session: string, date: any) {
-    const exam = new Exam();
-    exam.student = new Student();
-    exam.student.lastName = studentName;
-    exam.session = session;
-    exam.date = date;
-    exam.claimScores = [];
-    return exam;
+  function buildExam(studentName: string, session: string, date: any): Exam {
+    const student = new Student();
+    student.lastName = studentName;
+    return <Exam>{
+      student,
+      session,
+      date,
+      claimScaleScores: []
+    };
   }
 });
 
@@ -220,7 +221,7 @@ describe('AssessmentResultsComponent', () => {
 })
 class TestComponentWrapper {
   assessment = {
-    assessment: new Assessment(),
+    assessment: <Assessment>{},
     exams: []
   };
 }

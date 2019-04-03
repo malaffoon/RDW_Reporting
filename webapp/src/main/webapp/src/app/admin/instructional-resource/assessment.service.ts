@@ -20,19 +20,16 @@ export class AssessmentService {
       .get(`${ResourceContext}`, { params: <any>query })
       .pipe(
         map(serverAssessments =>
-          serverAssessments.map(serverAssessment => {
-            const assessment = new Assessment();
-            assessment.id = serverAssessment.id;
-            assessment.label = serverAssessment.label;
-            assessment.name = serverAssessment.name;
-            assessment.grade = serverAssessment.gradeCode;
-            assessment.type = serverAssessment.typeCode;
-            assessment.subject = serverAssessment.subjectCode;
-            assessment.claimCodes = serverAssessment.claimCodes || [];
-            assessment.alternateScoreCodes =
-              serverAssessment.altScoreCodes || [];
-            return assessment;
-          })
+          serverAssessments.map(serverAssessment => ({
+            id: serverAssessment.id,
+            label: serverAssessment.label,
+            name: serverAssessment.name,
+            grade: serverAssessment.gradeCode,
+            type: serverAssessment.typeCode,
+            subject: serverAssessment.subjectCode,
+            claimCodes: serverAssessment.claimCodes || [],
+            alternateScoreCodes: serverAssessment.altScoreCodes || []
+          }))
         )
       );
   }

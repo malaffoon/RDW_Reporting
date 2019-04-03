@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { AssessmentExam } from '../model/assessment-exam.model';
-import { Exam } from '../model/exam.model';
+import { Exam } from '../model/exam';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { FilterBy } from '../model/filter-by.model';
 import { forkJoin, Observable, Subscription } from 'rxjs';
@@ -234,7 +234,7 @@ export class AssessmentResultsComponent implements OnInit {
 
   get displayItemLevelData(): boolean {
     return (
-      !this._assessmentExam.assessment.isSummative &&
+      this._assessmentExam.assessment.type !== 'sum' &&
       this.hasExamsAfterMinimumItemYear
     );
   }
@@ -251,11 +251,11 @@ export class AssessmentResultsComponent implements OnInit {
   }
 
   get displayDistractorAnalysis(): boolean {
-    return !this._assessmentExam.assessment.isSummative;
+    return this._assessmentExam.assessment.type !== 'sum';
   }
 
   get displayResultsByItem(): boolean {
-    return !this._assessmentExam.assessment.isSummative;
+    return this._assessmentExam.assessment.type !== 'sum';
   }
 
   get displayTargetReport(): boolean {

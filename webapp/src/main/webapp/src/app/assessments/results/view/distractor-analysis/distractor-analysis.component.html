@@ -1,31 +1,47 @@
-<spinner *ngIf="loading" text="{{'common.messages.loading' | translate}}"></spinner>
+<spinner
+  *ngIf="loading"
+  text="{{ 'common.messages.loading' | translate }}"
+></spinner>
 <div class="row" *ngIf="!loading">
   <div class="col-md-12">
-    <span class="pull-right"><em>{{'assessment-results.distractor-analysis-instructions' | translate}}</em></span>
+    <span class="pull-right"
+      ><em>{{
+        'assessment-results.distractor-analysis-instructions' | translate
+      }}</em></span
+    >
   </div>
 </div>
 
-<p-table *ngIf="!loading"
-         #distractorTable
-         [columns]="columns"
-         [value]="filteredMultipleChoiceItems"
-         [autoLayout]="true"
-         rowExpandMode="single"
-         dataKey="position"
-         sortField="position"
-         styleClass="table table-striped table-hover">
-  <ng-template pTemplate="header"
-               let-columns>
+<p-table
+  *ngIf="!loading"
+  #distractorTable
+  [columns]="columns"
+  [value]="filteredMultipleChoiceItems"
+  [autoLayout]="true"
+  rowExpandMode="single"
+  dataKey="position"
+  sortField="position"
+  styleClass="table table-striped table-hover"
+>
+  <ng-template pTemplate="header" let-columns>
     <tr>
-      <th *ngFor="let column of columns"
-          [pSortableColumn]="column.sortField"
-          [ngSwitch]="column.id"
-          [ngClass]="column.styleClass">
-
-        <span *ngSwitchCase="'standard'"
-              info-button
-              title="{{'common.results.assessment-item-columns.standard' | translate}}"
-              content="{{'common.results.assessment-item-columns.standard-info.' + assessment.subject | translate}}">
+      <th
+        *ngFor="let column of columns"
+        [pSortableColumn]="column.sortField"
+        [ngSwitch]="column.id"
+        [ngClass]="column.styleClass"
+      >
+        <span
+          *ngSwitchCase="'standard'"
+          info-button
+          title="{{
+            'common.results.assessment-item-columns.standard' | translate
+          }}"
+          content="{{
+            'common.results.assessment-item-columns.standard-info.' +
+              assessment.subject | translate
+          }}"
+        >
         </span>
 
         <span *ngSwitchCase="'choice'">
@@ -34,12 +50,21 @@
 
         <span *ngSwitchDefault>
           <span *ngIf="!column.headerInfo">
-            {{('common.results.assessment-item-columns.' + column.id) | translate}}
+            {{
+              'common.results.assessment-item-columns.' + column.id | translate
+            }}
           </span>
-          <span *ngIf="column.headerInfo"
-                info-button
-                title="{{('common.results.assessment-item-columns.' + column.id) | translate}}"
-                content="{{('common.results.assessment-item-columns.' + column.id + '-info') | translate}}">
+          <span
+            *ngIf="column.headerInfo"
+            info-button
+            title="{{
+              'common.results.assessment-item-columns.' + column.id | translate
+            }}"
+            content="{{
+              'common.results.assessment-item-columns.' + column.id + '-info'
+                | translate
+            }}"
+          >
           </span>
         </span>
 
@@ -48,59 +73,72 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body"
-               let-item
-               let-i="rowIndex"
-               let-columns="columns">
+  <ng-template pTemplate="body" let-item let-i="rowIndex" let-columns="columns">
     <tr>
-      <td *ngFor="let column of columns"
-          [ngSwitch]="column.id"
-          [ngClass]="{'green': column.id === 'choice' && isCorrect(item, column.label)}">
+      <td
+        *ngFor="let column of columns"
+        [ngSwitch]="column.id"
+        [ngClass]="{
+          green: column.id === 'choice' && isCorrect(item, column.label)
+        }"
+      >
+        <table-row-expander
+          *ngSwitchCase="'number'"
+          [table]="distractorTable"
+          [row]="item"
+          [text]="item.position"
+        ></table-row-expander>
 
-        <table-row-expander *ngSwitchCase="'number'"
-                            [table]="distractorTable"
-                            [row]="item"
-                            [text]="item.position"></table-row-expander>
-
-        <claim-target *ngSwitchCase="'claim'"
-                      [item]="item"
-                      [subject]="assessment.subject"></claim-target>
+        <claim-target
+          *ngSwitchCase="'claim'"
+          [item]="item"
+          [subject]="assessment.subject"
+        ></claim-target>
 
         <span *ngSwitchCase="'difficulty'">
           {{ 'common.difficulty.' + item.difficulty | translate }}
         </span>
 
         <div *ngSwitchCase="'standard'">
-          <span *ngFor="let standard of item.commonCoreStandardIds"
-                class="label border-only blue mr-xs">
-            {{standard}}
+          <span
+            *ngFor="let standard of item.commonCoreStandardIds"
+            class="label border-only blue mr-xs"
+          >
+            {{ standard }}
           </span>
         </div>
 
         <div *ngSwitchCase="'full-credit'">
           <span [hidden]="showValuesAsPercent">{{ item.fullCredit }}</span>
-          <span [hidden]="!showValuesAsPercent">{{ item.fullCreditAsPercent | number:'1.0-0' }}%</span>
+          <span [hidden]="!showValuesAsPercent"
+            >{{ item.fullCreditAsPercent | number: '1.0-0' }}%</span
+          >
         </div>
 
         <div *ngSwitchCase="'choice'">
-          <span [hidden]="showValuesAsPercent" >{{ item[column.numberField] }}</span>
-          <span [hidden]="!showValuesAsPercent || item[column.percentField] == null">{{ item[column.percentField] | number:'1.0-0' }}%</span>
+          <span [hidden]="showValuesAsPercent">{{
+            item[column.numberField]
+          }}</span>
+          <span
+            [hidden]="!showValuesAsPercent || item[column.percentField] == null"
+            >{{ item[column.percentField] | number: '1.0-0' }}%</span
+          >
         </div>
       </td>
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="rowexpansion"
-               let-item
-               let-columns="columns">
+  <ng-template pTemplate="rowexpansion" let-item let-columns="columns">
     <tr>
       <td [attr.colspan]="columns.length">
-        <item-tab [item]="item"
-                  [showResponse]="false"
-                  [exams]="exams"
-                  [includeResponseInStudentScores]="true"
-                  [showItemDetails]="assessment.isInterim"
-                  [subject]="assessment.subject">
+        <item-tab
+          [item]="item"
+          [showResponse]="false"
+          [exams]="exams"
+          [includeResponseInStudentScores]="true"
+          [showItemDetails]="assessment.type !== 'sum'"
+          [subject]="assessment.subject"
+        >
         </item-tab>
       </td>
     </tr>
@@ -109,7 +147,7 @@
   <ng-template pTemplate="emptymessage" let-columns>
     <tr>
       <td [attr.colspan]="columns.length">
-        {{'common.no-results' | translate}}
+        {{ 'common.no-results' | translate }}
       </td>
     </tr>
   </ng-template>

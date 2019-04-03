@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from "../../../../shared/common.module";
-import { TranslateModule } from "@ngx-translate/core";
-import { TestModule } from "../../../../../test/test.module";
-import { ExamStatisticsCalculator } from "../../exam-statistics-calculator";
-import { Component, NO_ERRORS_SCHEMA } from "@angular/core";
-import { Assessment } from "../../../model/assessment.model";
-import { DistractorAnalysisComponent } from "./distractor-analysis.component";
-import { MockAssessmentProvider } from "../../../../../test/mock.assessment.provider";
-import { MockAssessmentExporter } from "../../../../../test/mock.assessment.exporter";
+import { CommonModule } from '../../../../shared/common.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { TestModule } from '../../../../../test/test.module';
+import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
+import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Assessment } from '../../../model/assessment';
+import { DistractorAnalysisComponent } from './distractor-analysis.component';
+import { MockAssessmentProvider } from '../../../../../test/mock.assessment.provider';
+import { MockAssessmentExporter } from '../../../../../test/mock.assessment.exporter';
 
 describe('DistractorAnalysisComponent', () => {
   let component: DistractorAnalysisComponent;
@@ -15,26 +15,16 @@ describe('DistractorAnalysisComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        TranslateModule.forRoot(),
-        TestModule
-      ],
-      declarations: [
-        DistractorAnalysisComponent,
-        TestComponentWrapper
-      ],
-      providers: [
-        ExamStatisticsCalculator
-      ],
-      schemas: [ NO_ERRORS_SCHEMA ]
-    })
-      .compileComponents();
+      imports: [CommonModule, TranslateModule.forRoot(), TestModule],
+      declarations: [DistractorAnalysisComponent, TestComponentWrapper],
+      providers: [ExamStatisticsCalculator],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TestComponentWrapper);
-    component = fixture.debugElement.children[ 0 ].componentInstance;
+    component = fixture.debugElement.children[0].componentInstance;
     fixture.detectChanges();
   });
 
@@ -45,12 +35,11 @@ describe('DistractorAnalysisComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template: '<distractor-analysis [assessmentProvider]="assessmentProvider" [assessmentExporter]="assessmentExporter" [assessment]="assessment" [exams]="[]"></distractor-analysis>'
+  template:
+    '<distractor-analysis [assessmentProvider]="assessmentProvider" [assessmentExporter]="assessmentExporter" [assessment]="assessment" [exams]="[]"></distractor-analysis>'
 })
 class TestComponentWrapper {
   assessmentProvider = new MockAssessmentProvider();
   assessmentExporter = new MockAssessmentExporter();
-  assessment = new Assessment();
+  assessment = {};
 }
-
-

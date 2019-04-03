@@ -74,10 +74,10 @@ export class StudentResultsComponent implements OnInit {
         const { exams } = examHistory;
         this.filterState = this.createFilterState(exams);
         this.filterOptions.hasSummative = exams.some(
-          wrapper => wrapper.assessment.isSummative
+          wrapper => wrapper.assessment.type === 'sum'
         );
         this.filterOptions.hasInterim = exams.some(
-          wrapper => wrapper.assessment.isInterim
+          wrapper => wrapper.assessment.type !== 'sum'
         );
         this.advancedFilters.onChanges.subscribe(property =>
           this.onAdvancedFilterChange()

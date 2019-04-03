@@ -142,7 +142,7 @@
                       | translate)
             }}
           </span>
-          <span class="pull-right" *ngIf="assessment.isIab">
+          <span class="pull-right" *ngIf="assessment.type === 'iab'">
             <button
               class="btn btn-borderless btn-xs icon-only"
               angulartics2On="click"
@@ -184,14 +184,14 @@
 
         <div *ngSwitchCase="'claim'">
           {{
-            exam.claimScores[column.index].level
+            exam.claimScaleScores[column.index].level
               | optional
                 : ('subject.' +
                     assessment.subject +
                     '.asmt-type.' +
                     assessment.type +
                     '.claim-score.level.' +
-                    exam.claimScores[column.index].level +
+                    exam.claimScaleScores[column.index].level +
                     '.name'
                     | translate)
           }}

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AssessmentExam } from '../../assessments/model/assessment-exam.model';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
-import { Assessment } from '../../assessments/model/assessment.model';
+import { Assessment } from '../../assessments/model/assessment';
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
 import { SchoolAssessmentService } from './school-assessment.service';
 import { SchoolService } from '../school.service';

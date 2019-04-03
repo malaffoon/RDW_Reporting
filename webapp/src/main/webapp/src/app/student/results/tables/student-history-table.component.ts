@@ -12,7 +12,7 @@ import { chunk } from 'lodash';
 import { StudentResultsFilterService } from '../student-results-filter.service';
 import { StudentPipe } from '../../../shared/format/student.pipe';
 import { OrderingService } from '../../../shared/ordering/ordering.service';
-import { Assessment } from '../../../assessments/model/assessment.model';
+import { Assessment } from '../../../assessments/model/assessment';
 
 @Component({
   selector: 'student-history-table',
@@ -262,7 +262,7 @@ export class StudentHistoryTableComponent implements OnInit {
       (claim: string, index: number) => {
         return new Column({
           id: 'claim',
-          field: `exam.claimScores.${index}.level`,
+          field: `exam.claimScaleScores.${index}.level`,
           claim: claim,
           index: index
         });

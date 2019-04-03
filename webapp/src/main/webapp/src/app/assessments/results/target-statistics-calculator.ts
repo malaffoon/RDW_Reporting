@@ -5,7 +5,7 @@ import {
   TargetReportingLevel
 } from '../model/aggregate-target-score-row.model';
 import { TargetScoreExam } from '../model/target-score-exam.model';
-import { Exam } from '../model/exam.model';
+import { Exam } from '../model/exam';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { Target } from '../model/target.model';
 import * as deepEqual from 'fast-deep-equal';

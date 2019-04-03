@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CsvColumn } from './csv-column.model';
 import { Student } from '../student/model/student.model';
-import { Exam } from '../assessments/model/exam.model';
-import { Assessment } from '../assessments/model/assessment.model';
+import { Exam } from '../assessments/model/exam';
+import { Assessment } from '../assessments/model/assessment';
 import { Angular2CsvProvider } from './angular-csv.provider';
 import { AssessmentItem } from '../assessments/model/assessment-item.model';
 import { DynamicItemField } from '../assessments/model/item-point-field.model';
@@ -319,11 +319,11 @@ export class CsvBuilder {
         )}`,
         item => {
           const exam: Exam = getExam(item);
-          if (!exam || !exam.claimScores[index].level) {
+          if (!exam || !exam.claimScaleScores[index].level) {
             return '';
           }
           const assessment = getAssessment(item);
-          const level = exam.claimScores[index].level;
+          const level = exam.claimScaleScores[index].level;
           return this.translateService.instant(
             level
               ? `subject.${assessment.subject}.asmt-type.${

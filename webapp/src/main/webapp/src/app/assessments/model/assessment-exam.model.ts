@@ -1,5 +1,5 @@
-import { Assessment } from './assessment.model';
-import { Exam } from './exam.model';
+import { Assessment } from './assessment';
+import { Exam } from './exam';
 
 /**
  * This class represents a collection of Exams for a given Assessment.

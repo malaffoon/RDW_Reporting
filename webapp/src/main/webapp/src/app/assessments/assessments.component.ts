@@ -11,7 +11,7 @@ import { ordering } from '@kourge/ordering';
 import { FilterBy } from './model/filter-by.model';
 import { AssessmentExam } from './model/assessment-exam.model';
 import { ExamFilterOptions } from './model/exam-filter-options.model';
-import { Assessment } from './model/assessment.model';
+import { Assessment } from './model/assessment';
 import { ExamFilterOptionsService } from './filters/exam-filters/exam-filter-options.service';
 import { byGradeThenByName } from './assessment.comparator';
 import { AssessmentProvider } from './assessment-provider.interface';
@@ -26,7 +26,7 @@ import {
   isNullOrEmpty,
   serializeURLParameters
 } from '../shared/support/support';
-import { Exam } from './model/exam.model';
+import { Exam } from './model/exam';
 import { AdvFiltersComponent } from './filters/adv-filters/adv-filters.component';
 import { AssessmentExamView } from './results/assessment-results.component';
 
@@ -404,10 +404,10 @@ export class AssessmentsComponent implements OnChanges {
 
   private updateFilterOptions() {
     this.filterOptions.hasInterim = this.selectedAssessments.some(
-      a => a.isInterim
+      a => a.type !== 'sum'
     );
     this.filterOptions.hasSummative = this.selectedAssessments.some(
-      a => a.isSummative
+      a => a.type === 'sum'
     );
   }
 

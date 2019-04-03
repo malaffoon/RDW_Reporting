@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AssessmentItem } from '../model/assessment-item.model';
 import { ExamStatisticsLevel } from '../model/exam-statistics.model';
-import { Exam } from '../model/exam.model';
+import { Exam } from '../model/exam';
 import { DynamicItemField } from '../model/item-point-field.model';
 import * as math from 'mathjs';
 import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
@@ -21,14 +21,14 @@ export class ExamStatisticsCalculator {
   ): ClaimStatistics[] {
     let stats = [];
 
-    if (exams == null || exams.length == 0 || exams[0].claimScores == null)
+    if (exams == null || exams.length == 0 || exams[0].claimScaleScores == null)
       return stats;
 
-    for (let i = 0; i < exams[0].claimScores.length; i++) {
+    for (let i = 0; i < exams[0].claimScaleScores.length; i++) {
       let claimStats = <ClaimStatistics>{
         id: i,
         levels: this.groupLevels(
-          exams.map(ex => ex.claimScores[i]),
+          exams.map(ex => ex.claimScaleScores[i]),
           numberOfLevels
         )
       };

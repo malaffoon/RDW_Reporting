@@ -1,5 +1,5 @@
 import { toScoreTable } from './score-tables';
-import { Exam } from '../../../assessments/model/exam.model';
+import { Exam } from '../../../assessments/model/exam';
 import { SubjectDefinition } from '../../../subject/subject';
 import { ScoreTable } from './score-table';
 
