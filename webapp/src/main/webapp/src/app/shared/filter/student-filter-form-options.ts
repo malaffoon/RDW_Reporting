@@ -1,7 +1,6 @@
 import { Option } from '../form/option';
 
 export interface StudentFilterFormOptions {
-
   readonly genders: Option[];
   readonly ethnicities: Option[];
   readonly englishLanguageAcquisitionStatuses: Option[];
@@ -11,5 +10,4 @@ export interface StudentFilterFormOptions {
   readonly migrantStatuses: Option[];
   readonly languages: Option[];
   readonly militaryConnectedCodes: Option[];
-
 }

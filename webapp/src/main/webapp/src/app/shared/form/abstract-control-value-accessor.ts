@@ -1,14 +1,14 @@
-import { ControlValueAccessor } from "@angular/forms";
-import { Input } from "@angular/core";
-import { Utils } from "../support/support";
+import { ControlValueAccessor } from '@angular/forms';
+import { Input } from '@angular/core';
+import { Utils } from '../support/support';
 
 const NoOperation: () => void = () => {};
 
 /**
  * Abstract class made to hide away the complexity of integrating with angular form control interface
  */
-export abstract class AbstractControlValueAccessor<T> implements ControlValueAccessor {
-
+export abstract class AbstractControlValueAccessor<T>
+  implements ControlValueAccessor {
   protected _name: string = Utils.newGuid();
   protected _disabled: boolean = false;
   protected _onTouchedCallback: () => void = NoOperation;
@@ -46,7 +46,9 @@ export abstract class AbstractControlValueAccessor<T> implements ControlValueAcc
    * @inheritDoc
    */
   registerOnChange(callback: any): void {
-    this._onChangeCallback = (Utils.isUndefined(callback) ? NoOperation : callback);
+    this._onChangeCallback = Utils.isUndefined(callback)
+      ? NoOperation
+      : callback;
   }
 
   /**
@@ -54,7 +56,9 @@ export abstract class AbstractControlValueAccessor<T> implements ControlValueAcc
    * @inheritDoc
    */
   registerOnTouched(callback: any): void {
-    this._onTouchedCallback = (Utils.isUndefined(callback) ? NoOperation : callback);
+    this._onTouchedCallback = Utils.isUndefined(callback)
+      ? NoOperation
+      : callback;
   }
 
   /**
@@ -83,5 +87,4 @@ export abstract class AbstractControlValueAccessor<T> implements ControlValueAcc
       this._onChangeCallback(value);
     }
   }
-
 }

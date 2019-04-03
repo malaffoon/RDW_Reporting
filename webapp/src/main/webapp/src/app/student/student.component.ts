@@ -1,20 +1,25 @@
-import { Component, OnInit } from "@angular/core";
-import { StudentExamHistoryService } from "./student-exam-history.service";
-import { FormGroup, AbstractControl, FormControl, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { StudentExamHistoryService } from './student-exam-history.service';
+import {
+  FormGroup,
+  AbstractControl,
+  FormControl,
+  Validators
+} from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'student-search',
   templateUrl: './student.component.html'
 })
 export class StudentComponent implements OnInit {
-
   searchForm: FormGroup;
   studentNotFound: boolean;
 
   constructor(
     private studentExamHistoryService: StudentExamHistoryService,
-    private router: Router) { }
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.searchForm = new FormGroup({
@@ -27,7 +32,7 @@ export class StudentComponent implements OnInit {
   }
 
   private get ssidControl(): AbstractControl {
-    return this.searchForm.controls["ssid"];
+    return this.searchForm.controls['ssid'];
   }
 
   /**
@@ -38,13 +43,11 @@ export class StudentComponent implements OnInit {
     let ssid: string = this.ssidControl.value;
     this.studentNotFound = false;
 
-    this.studentExamHistoryService.existsBySsid(ssid)
-      .subscribe((student) => {
-        if (student) {
-          this.router.navigateByUrl(`/students/${student.id}`);
-        }
-        this.studentNotFound = !student;
-      });
+    this.studentExamHistoryService.existsBySsid(ssid).subscribe(student => {
+      if (student) {
+        this.router.navigateByUrl(`/students/${student.id}`);
+      }
+      this.studentNotFound = !student;
+    });
   }
-
 }

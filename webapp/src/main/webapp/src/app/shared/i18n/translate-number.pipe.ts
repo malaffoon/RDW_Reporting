@@ -1,9 +1,9 @@
-import { OnDestroy, Pipe, PipeTransform } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { DecimalPipe } from "@angular/common";
-import { EmbeddedLanguage } from "./language-settings";
-import { Subscription } from "rxjs";
-import { Utils } from "../support/support";
+import { OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { DecimalPipe } from '@angular/common';
+import { EmbeddedLanguage } from './language-settings';
+import { Subscription } from 'rxjs';
+import { Utils } from '../support/support';
 
 /**
  * This number pipe proxies requests to the Angular DecimalPipe
@@ -14,15 +14,13 @@ import { Utils } from "../support/support";
   pure: false
 })
 export class TranslateNumberPipe implements PipeTransform, OnDestroy {
-
   private numberDisplay: string = '';
   private currentNumber: any;
   private currentFormat: string;
 
   private onLangChange: Subscription;
 
-  constructor(private translate: TranslateService) {
-  }
+  constructor(private translate: TranslateService) {}
 
   public transform(value: any, format: string): any {
     if (Utils.isNullOrUndefined(value)) {
@@ -61,12 +59,15 @@ export class TranslateNumberPipe implements PipeTransform, OnDestroy {
     this.currentFormat = format;
 
     try {
-      this.numberDisplay = new DecimalPipe(this.translate.currentLang)
-        .transform(value, format);
+      this.numberDisplay = new DecimalPipe(
+        this.translate.currentLang
+      ).transform(value, format);
     } catch (error) {
       //Locale not available, fall back to the embedded locale
-      this.numberDisplay = new DecimalPipe(EmbeddedLanguage)
-        .transform(value, format);
+      this.numberDisplay = new DecimalPipe(EmbeddedLanguage).transform(
+        value,
+        format
+      );
     }
   }
 

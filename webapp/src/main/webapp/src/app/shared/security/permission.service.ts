@@ -1,5 +1,5 @@
-import { Observable ,  of } from "rxjs";
-import { Injectable } from "@angular/core";
+import { Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 /**
  * Null permission service placeholder.
@@ -7,7 +7,6 @@ import { Injectable } from "@angular/core";
  */
 @Injectable()
 export class PermissionService {
-
   /**
    * Gets the user permissions
    *
@@ -15,6 +14,5 @@ export class PermissionService {
    */
   getPermissions(): Observable<string[]> {
     return of([]);
-  };
-
+  }
 }

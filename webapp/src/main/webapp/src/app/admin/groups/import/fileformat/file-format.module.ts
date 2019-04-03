@@ -1,16 +1,14 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule } from "@angular/forms";
-import { FileFormatComponent } from "./file-format.component";
-import { SharedModule } from "primeng/components/common/shared";
-import { FileFormatService } from "./file-format.service";
-import { CommonModule } from "../../../../shared/common.module";
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { FileFormatComponent } from './file-format.component';
+import { SharedModule } from 'primeng/components/common/shared';
+import { FileFormatService } from './file-format.service';
+import { CommonModule } from '../../../../shared/common.module';
 
 @NgModule({
-  declarations: [
-    FileFormatComponent
-  ],
+  declarations: [FileFormatComponent],
   imports: [
     CommonModule,
     BrowserModule,
@@ -18,12 +16,7 @@ import { CommonModule } from "../../../../shared/common.module";
     FormsModule,
     SharedModule
   ],
-  exports: [
-    FileFormatComponent
-  ],
-  providers: [
-    FileFormatService
-  ]
+  exports: [FileFormatComponent],
+  providers: [FileFormatService]
 })
-export class FileFormatModule {
-}
+export class FileFormatModule {}

@@ -1,8 +1,7 @@
-import { NotFoundError } from "./not-found.error";
-import { Observable ,  of } from "rxjs";
+import { NotFoundError } from './not-found.error';
+import { Observable, of } from 'rxjs';
 
 export class Resolution<T> {
-
   static ok<T>(data: T): Resolution<T> {
     return new Resolution<T>(data);
   }
@@ -33,8 +32,6 @@ export class Resolution<T> {
   }
 
   public isNotFound(): boolean {
-    return this.error != null
-      && this.error.name === 'NotFoundError';
+    return this.error != null && this.error.name === 'NotFoundError';
   }
-
 }

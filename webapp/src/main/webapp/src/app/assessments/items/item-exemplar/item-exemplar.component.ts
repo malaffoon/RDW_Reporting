@@ -1,15 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ItemScoringService } from "./item-scoring.service";
-import { ItemScoringGuide } from "./model/item-scoring-guide.model";
-import { Utils } from "../../../shared/support/support";
-import {AssessmentItem} from "../../model/assessment-item.model";
+import { ItemScoringService } from './item-scoring.service';
+import { ItemScoringGuide } from './model/item-scoring-guide.model';
+import { Utils } from '../../../shared/support/support';
+import { AssessmentItem } from '../../model/assessment-item.model';
 
 @Component({
   selector: 'item-exemplar',
   templateUrl: './item-exemplar.component.html'
 })
 export class ItemExemplarComponent implements OnInit {
-
   /**
    * The item which we want to display the exemplar for.
    */
@@ -21,31 +20,29 @@ export class ItemExemplarComponent implements OnInit {
   public errorLoading: boolean = false;
   public loading: boolean = true;
 
-  constructor(private service: ItemScoringService) {
-  }
+  constructor(private service: ItemScoringService) {}
 
   ngOnInit() {
     if (Utils.isNullOrUndefined(this.item.answerKey)) {
-      this.service.getGuide(this.item.bankItemKey)
-        .subscribe(guide => {
-            this.model = guide;
-            this.loading = false;
+      this.service.getGuide(this.item.bankItemKey).subscribe(
+        guide => {
+          this.model = guide;
+          this.loading = false;
 
-            // TODO re-look at this logic
-            this.notFound = guide.rubrics.length === 0
-              && guide.exemplars.length === 0
-              && Utils.isNullOrEmpty(guide.answerKeyValue);
-          },
-          (response) => {
+          // TODO re-look at this logic
+          this.notFound =
+            guide.rubrics.length === 0 &&
+            guide.exemplars.length === 0 &&
+            Utils.isNullOrEmpty(guide.answerKeyValue);
+        },
+        response => {
+          // TODO fix this?
+          if ((response.status = 404)) this.notFound = true;
+          else this.errorLoading = true;
 
-            // TODO fix this?
-            if (response.status = 404)
-              this.notFound = true;
-            else
-              this.errorLoading = true;
-
-            this.loading = false;
-          });
+          this.loading = false;
+        }
+      );
     }
   }
 }

@@ -6,26 +6,26 @@ import { DataService } from '../../shared/data/data.service';
 import { MeasuredAssessmentMapper } from '../measured-assessment.mapper';
 
 describe('GroupDashboardService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TestModule
-      ],
+      imports: [TestModule],
       providers: [
         GroupDashboardService,
         { provide: DataService, useClass: MockDataService },
-        { provide: MeasuredAssessmentMapper, useClass: MockMeasuredAssessmentMapper },
+        {
+          provide: MeasuredAssessmentMapper,
+          useClass: MockMeasuredAssessmentMapper
+        }
       ]
     });
   });
 
-  it('should create',
-    inject([ GroupDashboardService ], (builder: GroupDashboardService) => {
+  it('should create', inject(
+    [GroupDashboardService],
+    (builder: GroupDashboardService) => {
       expect(builder).toBeTruthy();
-    }));
+    }
+  ));
 });
 
-class MockMeasuredAssessmentMapper {
-
-}
+class MockMeasuredAssessmentMapper {}

@@ -7,12 +7,11 @@ import { Option } from './school-and-group-typeahead.component';
 @Component({
   selector: 'student-search-form',
   templateUrl: './student-search-form.component.html',
-  providers: [
-    Forms.valueAccessor(StudentSearchFormComponent)
-  ]
+  providers: [Forms.valueAccessor(StudentSearchFormComponent)]
 })
-export class StudentSearchFormComponent extends AbstractControlValueAccessor<StudentSearchForm> {
-
+export class StudentSearchFormComponent extends AbstractControlValueAccessor<
+  StudentSearchForm
+> {
   @Input()
   schoolAndGroupTypeaheadOptions: Option[];
 
@@ -26,7 +25,9 @@ export class StudentSearchFormComponent extends AbstractControlValueAccessor<Stu
   nameOrSsidChange: EventEmitter<string> = new EventEmitter<string>();
 
   @Output()
-  showAdvancedFiltersChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  showAdvancedFiltersChange: EventEmitter<boolean> = new EventEmitter<
+    boolean
+  >();
 
   showAdvancedFilters: boolean;
 
@@ -50,5 +51,4 @@ export class StudentSearchFormComponent extends AbstractControlValueAccessor<Stu
     this.showAdvancedFilters = !this.showAdvancedFilters;
     this.showAdvancedFiltersChange.emit(this.showAdvancedFilters);
   }
-
 }

@@ -1,11 +1,16 @@
 <div class="row">
-  <div *ngFor="let sections of columns" [ngClass]="narrow ? 'col-md-6' : 'col-md-3'">
+  <div
+    *ngFor="let sections of columns"
+    [ngClass]="narrow ? 'col-md-6' : 'col-md-3'"
+  >
     <div *ngFor="let section of sections">
       <div class="h5 column-heading" *ngIf="section.rows.length">
-        {{section.label}}
+        {{ section.label }}
       </div>
       <div class="row" *ngFor="let row of section.rows">
-        <ng-container *ngTemplateOutlet="rowTemplate; context: {$implicit: row}"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="rowTemplate; context: { $implicit: row }"
+        ></ng-container>
       </div>
     </div>
   </div>
@@ -13,12 +18,12 @@
 
 <ng-template #rowTemplate let-row>
   <div class="col-xs-6">
-    <strong>{{row.label}}</strong>
+    <strong>{{ row.label }}</strong>
   </div>
   <div class="col-xs-6">
     <ul class="list-unstyled">
       <li *ngFor="let value of row.values">
-        {{value}}
+        {{ value }}
       </li>
     </ul>
   </div>

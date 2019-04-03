@@ -8,9 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StudentFilterFormOptionsMapper } from './student-filter-form-options.mapper';
 
 @NgModule({
-  declarations: [
-    StudentFiltersComponent
-  ],
+  declarations: [StudentFiltersComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -18,14 +16,7 @@ import { StudentFilterFormOptionsMapper } from './student-filter-form-options.ma
     RdwFormModule,
     TranslateModule.forRoot()
   ],
-  exports: [
-    StudentFiltersComponent
-  ],
-  providers: [
-    FilterOptionsService,
-    StudentFilterFormOptionsMapper
-  ]
+  exports: [StudentFiltersComponent],
+  providers: [FilterOptionsService, StudentFilterFormOptionsMapper]
 })
-export class RdwFilterModule {
-
-}
+export class RdwFilterModule {}

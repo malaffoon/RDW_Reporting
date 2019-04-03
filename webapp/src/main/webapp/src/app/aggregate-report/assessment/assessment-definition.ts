@@ -1,7 +1,6 @@
 import { ReportQueryType } from '../../report/report';
 
 export interface AssessmentDefinition {
-
   /**
    * @deprecated use {@link SubjectDefinition#assessmentType}
    * Reflective reference to the type code of the assessment

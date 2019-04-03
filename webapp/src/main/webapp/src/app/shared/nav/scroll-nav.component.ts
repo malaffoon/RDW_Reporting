@@ -2,22 +2,23 @@ import { Component, HostListener, Inject, Input } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { WindowRefService } from '../core/window-ref.service';
 import { Utils } from '../support/support';
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'scroll-nav',
   templateUrl: 'scroll-nav.component.html'
 })
 export class ScrollNavComponent {
-
   private _items: ScrollNavItem[] = [];
   private _activeItem: ScrollNavItem;
   private _window: Window;
   private _enabled = true;
 
-  constructor(private translateService: TranslateService,
-              private windowRef: WindowRefService,
-              @Inject(DOCUMENT) private _document: Document) {
+  constructor(
+    private translateService: TranslateService,
+    private windowRef: WindowRefService,
+    @Inject(DOCUMENT) private _document: Document
+  ) {
     this._window = windowRef.nativeWindow;
   }
 
@@ -30,32 +31,35 @@ export class ScrollNavComponent {
     if (this._items !== items) {
       this._items = Utils.isNullOrEmpty(items)
         ? []
-        : items.map((item) => {
+        : items.map(item => {
+            //Saturate element reference from id
+            if (
+              Utils.isNullOrUndefined(item.scrollTo) &&
+              !Utils.isNullOrUndefined(item.id)
+            ) {
+              item = Object.assign({}, item, {
+                scrollTo: document.getElementById(item.id)
+              });
+            }
 
-          //Saturate element reference from id
-          if (Utils.isNullOrUndefined(item.scrollTo)
-            && !Utils.isNullOrUndefined(item.id)) {
-            item = Object.assign({}, item, {
-              scrollTo: document.getElementById(item.id)
-            });
-          }
+            //Saturate text from translation key
+            if (
+              Utils.isNullOrUndefined(item.text) &&
+              !Utils.isNullOrUndefined(item.translationKey)
+            ) {
+              item = Object.assign({}, item, {
+                text: this.translateService.instant(item.translationKey)
+              });
+            }
 
-          //Saturate text from translation key
-          if (Utils.isNullOrUndefined(item.text)
-            && !Utils.isNullOrUndefined(item.translationKey)) {
-            item = Object.assign({}, item, {
-              text: this.translateService.instant(item.translationKey)
-            });
-          }
-
-          return item;
-        });
+            return item;
+          });
     }
   }
 
   ngOnInit(): void {
     if (!this.activeItem && this.items.length) {
-      this._activeItem = this.items[ 0 ];
+      this._activeItem = this.items[0];
     }
   }
 
@@ -84,15 +88,17 @@ export class ScrollNavComponent {
   }
 
   private updateActiveLink(): void {
-
     // Sets the first item to active if the window scroll is zero
     if (this._window.scrollY <= 0) {
-      this._activeItem = this.items[ 0 ];
+      this._activeItem = this.items[0];
     }
 
     // Sets the last item to active if the user scrolls to the very bottom of the page
-    if ((this._window.innerHeight + this._window.scrollY) >= this._document.body.offsetHeight) {
-      this._activeItem = this.items[ this.items.length - 1 ];
+    if (
+      this._window.innerHeight + this._window.scrollY >=
+      this._document.body.offsetHeight
+    ) {
+      this._activeItem = this.items[this.items.length - 1];
       return;
     }
 
@@ -102,7 +108,9 @@ export class ScrollNavComponent {
     // ngOnDestroy is not called in this component because it belongs to a "reusable" view
     // Angular does not currently support removal of global host listeners
     this.items
-      .filter(item => item.scrollTo && document.getElementById(item.scrollTo.id))
+      .filter(
+        item => item.scrollTo && document.getElementById(item.scrollTo.id)
+      )
       .forEach(item => {
         const itemOffsetTop = Utils.getAbsoluteOffsetTop(item.scrollTo);
         if (itemOffsetTop <= scrollTop) {
@@ -119,12 +127,13 @@ export class ScrollNavComponent {
    * @returns {number} the windows page y offset
    */
   private getWindowPageYOffset(): number {
-    return this._window.pageYOffset
-      || this._document.documentElement.scrollTop
-      || this._document.body.scrollTop
-      || 0;
+    return (
+      this._window.pageYOffset ||
+      this._document.documentElement.scrollTop ||
+      this._document.body.scrollTop ||
+      0
+    );
   }
-
 }
 
 export interface ScrollNavItem {

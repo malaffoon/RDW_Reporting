@@ -22,7 +22,7 @@ let mockGroups = [
   { name: 'g8' },
   { name: 'g9' },
   { name: 'g10' },
-  { name: 'g11' },
+  { name: 'g11' }
 ];
 
 describe('GroupComponents', () => {
@@ -41,21 +41,20 @@ describe('GroupComponents', () => {
         RouterModule.forRoot([]),
         HttpModule
       ],
-      declarations: [ GroupsComponent, TestComponentWrapper ],
+      declarations: [GroupsComponent, TestComponentWrapper],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: GroupService, useValue: mockGroupService }
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [NO_ERRORS_SCHEMA]
     });
 
     fixture = TestBed.createComponent(TestComponentWrapper);
-    component = fixture.debugElement.children[ 0 ].componentInstance;
+    component = fixture.debugElement.children[0].componentInstance;
     fixture.detectChanges();
   });
 
   describe('Search Groups', () => {
-
     it('should search groups that starts with', async(() => {
       setSearchValue('adv');
       expect(component.filteredGroups.length).toBe(2);

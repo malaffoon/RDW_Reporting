@@ -16,12 +16,11 @@ export interface Option {
 @Component({
   selector: 'school-and-group-typeahead',
   templateUrl: './school-and-group-typeahead.component.html',
-  providers: [
-    Forms.valueAccessor(SchoolAndGroupTypeaheadComponent)
-  ]
+  providers: [Forms.valueAccessor(SchoolAndGroupTypeaheadComponent)]
 })
-export class SchoolAndGroupTypeaheadComponent extends AbstractControlValueAccessor<Option> {
-
+export class SchoolAndGroupTypeaheadComponent extends AbstractControlValueAccessor<
+  Option
+> {
   @Input()
   options: Option[] = [];
 
@@ -53,5 +52,4 @@ export class SchoolAndGroupTypeaheadComponent extends AbstractControlValueAccess
   onSelectInternal(match: TypeaheadMatch): void {
     this.value = match.item;
   }
-
 }

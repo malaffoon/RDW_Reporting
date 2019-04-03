@@ -1,8 +1,8 @@
-import { NgModule } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { MockRouter } from "./mock.router";
-import { MockActivatedRoute } from "./mock.activated-route";
-import { Location } from "@angular/common";
+import { NgModule } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MockRouter } from './mock.router';
+import { MockActivatedRoute } from './mock.activated-route';
+import { Location } from '@angular/common';
 
 @NgModule({
   providers: [
@@ -11,5 +11,4 @@ import { Location } from "@angular/common";
     { provide: Router, useClass: MockRouter }
   ]
 })
-export class TestModule {
-}
+export class TestModule {}

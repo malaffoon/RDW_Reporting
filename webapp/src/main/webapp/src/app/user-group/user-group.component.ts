@@ -6,11 +6,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserGroupOptionsService } from './user-group-options.service';
 import { UserGroupFormOptions } from './user-group-form-options';
 import { NotificationService } from '../shared/notification/notification.service';
-import { Subscription ,  forkJoin } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { StudentSearchFormOptionsService } from '../student/search/student-search-form-options.service';
 import { Student } from '../student/search/student';
 import { StudentSearchForm } from '../student/search/student-search-form';
-import { StudentSearch, StudentService } from '../student/search/student.service';
+import {
+  StudentSearch,
+  StudentService
+} from '../student/search/student.service';
 import { byString, join } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupFormComponent } from './user-group-form.component';
@@ -28,7 +31,7 @@ import { Forms } from '../shared/form/forms';
 import { SchoolAndGroupTypeaheadOptionMapper } from '../student/search/school-and-group-typeahead-option.mapper';
 import { Option as SchoolAndGroupTypeaheadOption } from '../student/search/school-and-group-typeahead.component';
 import { Option } from '../shared/form/option';
-import * as deepEqual from "fast-deep-equal";
+import * as deepEqual from 'fast-deep-equal';
 
 const StudentComparator = join(
   ordering(byString).on<Student>(student => student.lastName).compare,
@@ -40,7 +43,6 @@ const StudentComparator = join(
   templateUrl: './user-group.component.html'
 })
 export class UserGroupComponent implements OnInit, OnDestroy {
-
   // group form
   formOptions: UserGroupFormOptions;
   originalGroup: UserGroup;
@@ -67,18 +69,20 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   @ViewChild('groupForm')
   groupForm: UserGroupFormComponent;
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private optionService: UserGroupOptionsService,
-              private service: UserGroupService,
-              private studentFormOptionService: StudentSearchFormOptionsService,
-              private schoolAndGroupTypeaheadOptionMapper: SchoolAndGroupTypeaheadOptionMapper,
-              private filterOptionService: FilterOptionsService,
-              private studentService: StudentService,
-              private applicationSettingsService: ApplicationSettingsService,
-              private translate: TranslateService,
-              private notificationService: NotificationService) {
-    this.originalGroup = this.route.snapshot.data[ 'group' ];
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private optionService: UserGroupOptionsService,
+    private service: UserGroupService,
+    private studentFormOptionService: StudentSearchFormOptionsService,
+    private schoolAndGroupTypeaheadOptionMapper: SchoolAndGroupTypeaheadOptionMapper,
+    private filterOptionService: FilterOptionsService,
+    private studentService: StudentService,
+    private applicationSettingsService: ApplicationSettingsService,
+    private translate: TranslateService,
+    private notificationService: NotificationService
+  ) {
+    this.originalGroup = this.route.snapshot.data['group'];
   }
 
   get saveButtonDisabled(): boolean {
@@ -95,55 +99,63 @@ export class UserGroupComponent implements OnInit, OnDestroy {
       this.optionService.getOptions(),
       this.studentFormOptionService.getOptions(),
       this.filterOptionService.getFilterOptions()
-    ).subscribe(([ applicationSettings, options, studentFormOptions, filterOptions ]) => {
+    ).subscribe(
+      ([applicationSettings, options, studentFormOptions, filterOptions]) => {
+        this.applicationSettings = applicationSettings;
 
-      this.applicationSettings = applicationSettings;
-
-      // setup group form
-      this.formOptions = <UserGroupFormOptions>{
-        subjects: options.subjects.map(code => <Option>{
-          value: code,
-          text: this.translate.instant('subject.' + code + '.name'),
-          analyticsProperties: {
-            label: `Subject: ${code}`
-          }
-        })
-      };
-
-      if (this.originalGroup == null) {
-        this.group = <UserGroup>{
-          name: '',
-          subjects: options.subjects.concat(),
-          students: []
+        // setup group form
+        this.formOptions = <UserGroupFormOptions>{
+          subjects: options.subjects.map(
+            code =>
+              <Option>{
+                value: code,
+                text: this.translate.instant('subject.' + code + '.name'),
+                analyticsProperties: {
+                  label: `Subject: ${code}`
+                }
+              }
+          )
         };
-      } else {
-        if (this.originalGroup.subjects == null) {
-          this.originalGroup.subjects = options.subjects.concat();
+
+        if (this.originalGroup == null) {
+          this.group = <UserGroup>{
+            name: '',
+            subjects: options.subjects.concat(),
+            students: []
+          };
+        } else {
+          if (this.originalGroup.subjects == null) {
+            this.originalGroup.subjects = options.subjects.concat();
+          }
+          this.group = copy(this.originalGroup);
         }
-        this.group = copy(this.originalGroup);
-      }
 
-      // setup student form
-      this.schoolAndGroupTypeaheadOptions = this.schoolAndGroupTypeaheadOptionMapper
-        .createOptions({
+        // setup student form
+        this.schoolAndGroupTypeaheadOptions = this.schoolAndGroupTypeaheadOptionMapper.createOptions(
+          {
             schools: studentFormOptions.schools,
-            groups: this.originalGroup == null
-              ? studentFormOptions.groups
-              : studentFormOptions.groups
-                .filter(group => !(group.userCreated && group.id === this.originalGroup.id))
-          });
+            groups:
+              this.originalGroup == null
+                ? studentFormOptions.groups
+                : studentFormOptions.groups.filter(
+                    group =>
+                      !(group.userCreated && group.id === this.originalGroup.id)
+                  )
+          }
+        );
 
-      this.studentForm = {
-        schoolOrGroup: this.schoolAndGroupTypeaheadOptions[0],
-        nameOrSsid: ''
-      };
+        this.studentForm = {
+          schoolOrGroup: this.schoolAndGroupTypeaheadOptions[0],
+          nameOrSsid: ''
+        };
 
-      this.studentFilterOptions = filterOptions;
+        this.studentFilterOptions = filterOptions;
 
-      this.initialized = true;
+        this.initialized = true;
 
-      this.searchStudents();
-    });
+        this.searchStudents();
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -157,32 +169,37 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   }
 
   onSaveButtonClick(): void {
-    Forms.submit(
-      this.groupForm.formGroup,
-      () => {
-        this.processingSubscription = this.service.saveGroup(this.group)
-          .subscribe(() => {
-              this.navigateHome();
-            },
-            () => {
-              this.notificationService.error({ id: 'user-group.save-error' });
-            }, () => {
-              this.unsubscribe();
-            });
-      }
-    );
+    Forms.submit(this.groupForm.formGroup, () => {
+      this.processingSubscription = this.service
+        .saveGroup(this.group)
+        .subscribe(
+          () => {
+            this.navigateHome();
+          },
+          () => {
+            this.notificationService.error({ id: 'user-group.save-error' });
+          },
+          () => {
+            this.unsubscribe();
+          }
+        );
+    });
   }
 
   onDeleteButtonClick(): void {
-    this.processingSubscription = this.service.deleteGroup(this.group)
-      .subscribe(() => {
+    this.processingSubscription = this.service
+      .deleteGroup(this.group)
+      .subscribe(
+        () => {
           this.navigateHome();
         },
         () => {
           this.notificationService.error({ id: 'user-group.delete-error' });
-        }, () => {
+        },
+        () => {
           this.unsubscribe();
-        });
+        }
+      );
   }
 
   onStudentFormSearchChange(): void {
@@ -239,7 +256,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   }
 
   private navigateHome(): void {
-    this.router.navigate([ '' ]);
+    this.router.navigate(['']);
   }
 
   private unsubscribe(): void {
@@ -257,16 +274,17 @@ export class UserGroupComponent implements OnInit, OnDestroy {
     this._previousSearch = search;
     if (Object.keys(search).length) {
       this.loadingStudents = true;
-      this.studentService.getStudents(search)
-        .subscribe(students => {
-            this.loadingStudents = false;
-            this.students = students.sort(StudentComparator);
-            this.updateFormStudents();
-          },
-          () => {
-            this.loadingStudents = false;
-            this.students = [];
-          });
+      this.studentService.getStudents(search).subscribe(
+        students => {
+          this.loadingStudents = false;
+          this.students = students.sort(StudentComparator);
+          this.updateFormStudents();
+        },
+        () => {
+          this.loadingStudents = false;
+          this.students = [];
+        }
+      );
     } else {
       this.students = [];
       this.updateFormStudents();
@@ -302,23 +320,24 @@ export class UserGroupComponent implements OnInit, OnDestroy {
 
     this.filteredStudents = this.students
       .filter((student, index, students) => {
-        return this.group.students.find(x => x.id === student.id) == null
-          && (
-            student.ssid.startsWith(this.studentForm.nameOrSsid)
-            || `${(student.lastName.trim() + student.firstName.trim()).toLowerCase()}`.startsWith(nameSearch)
-            || `${(student.firstName.trim() + student.lastName.trim()).toLowerCase()}`.startsWith(nameSearch)
-          ) && (
-            this.studentArrayFilter == null
-            || this.studentArrayFilter(student, index, students)
-          );
+        return (
+          this.group.students.find(x => x.id === student.id) == null &&
+          (student.ssid.startsWith(this.studentForm.nameOrSsid) ||
+            `${(
+              student.lastName.trim() + student.firstName.trim()
+            ).toLowerCase()}`.startsWith(nameSearch) ||
+            `${(
+              student.firstName.trim() + student.lastName.trim()
+            ).toLowerCase()}`.startsWith(nameSearch)) &&
+          (this.studentArrayFilter == null ||
+            this.studentArrayFilter(student, index, students))
+        );
       })
       .sort(StudentComparator);
   }
 
   private updateSaveButtonDisabled(): void {
-    this._saveButtonDisabled = !this.initialized
-      || equals(this.originalGroup, this.group);
+    this._saveButtonDisabled =
+      !this.initialized || equals(this.originalGroup, this.group);
   }
-
 }
-

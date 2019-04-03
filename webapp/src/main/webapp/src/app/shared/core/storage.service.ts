@@ -1,11 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 /**
  * This service is responsible for providing Storage implementations.
  */
 @Injectable()
 export class StorageService {
-
   /**
    * Retrieve the specified Storage.
    *
@@ -28,8 +27,8 @@ export class StorageService {
  * Storage types.  Local persists indefinitely, Session persists for the length of the browser.
  */
 export enum StorageType {
-  Session,  //Persists for the lifetime of the browser tab
-  Local     //Persists indefinitely
+  Session, //Persists for the lifetime of the browser tab
+  Local //Persists indefinitely
 }
 
 /**

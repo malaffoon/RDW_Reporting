@@ -2,20 +2,28 @@
   <div class="form-group">
     <div class="flex-children">
       <div class="flex-child grow">
-        <label for="student-id-input">{{'student.title' | translate}}</label>
-        <input formControlName="ssid"
-               type="text"
-               class="form-control"
-               id="student-id-input"
-               required
-               placeholder="{{'student.prompt' | translate}}">
+        <label for="student-id-input">{{ 'student.title' | translate }}</label>
+        <input
+          formControlName="ssid"
+          type="text"
+          class="form-control"
+          id="student-id-input"
+          required
+          placeholder="{{ 'student.prompt' | translate }}"
+        />
       </div>
       <div class="flex-child">
-        <button type="submit" class="btn btn-primary" [disabled]="searchForm.invalid">{{'common.action.search' | translate}}</button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="searchForm.invalid"
+        >
+          {{ 'common.action.search' | translate }}
+        </button>
       </div>
     </div>
   </div>
 </form>
 <div *ngIf="studentNotFound" class="alert alert-danger">
-  {{'student.no-results-message' | translate}}
+  {{ 'student.no-results-message' | translate }}
 </div>

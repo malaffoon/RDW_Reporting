@@ -1,6 +1,6 @@
 import { Organization } from '../../shared/organization/organization';
 import { Subgroup } from '../subgroup/subgroup';
-import { TargetReportingLevel } from "../../assessments/model/aggregate-target-score-row.model";
+import { TargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
 
 /**
  * This model represents an aggregate report data table row result.
@@ -16,9 +16,9 @@ export class AggregateReportItem {
   avgStdErr: number;
   studentsTested: any;
   performanceLevelByDisplayTypes: {
-    [ performanceLevelDisplayType: string ]: {
-      [ valueDisplayType: string ]: number[]
-    }
+    [performanceLevelDisplayType: string]: {
+      [valueDisplayType: string]: number[];
+    };
   } = {
     Separate: {
       Number: [],
@@ -39,4 +39,3 @@ export class AggregateReportItem {
   // For Target reports, this represents an Organizational claim code (e.g. 1-LT)
   claimCode?: string;
 }
-

@@ -1,11 +1,7 @@
-import { NgModule } from "@angular/core";
-import { DisplayOptionService } from "./display-option.service";
+import { NgModule } from '@angular/core';
+import { DisplayOptionService } from './display-option.service';
 
 @NgModule({
-  providers: [
-    DisplayOptionService
-  ]
+  providers: [DisplayOptionService]
 })
-export class RdwDisplayOptionsModule {
-
-}
+export class RdwDisplayOptionsModule {}

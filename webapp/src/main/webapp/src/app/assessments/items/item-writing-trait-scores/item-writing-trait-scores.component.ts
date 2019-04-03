@@ -1,12 +1,12 @@
-import { Component, Input } from "@angular/core";
-import { StudentResponsesAssessmentItem } from "../../../student/responses/student-responses-item.model";
-import { WritingTrait } from "../../model/writing-trait.model";
+import { Component, Input } from '@angular/core';
+import { StudentResponsesAssessmentItem } from '../../../student/responses/student-responses-item.model';
+import { WritingTrait } from '../../model/writing-trait.model';
 
 @Component({
   selector: 'item-writing-trait-scores',
-  templateUrl: './item-writing-trait-scores.component.html'})
+  templateUrl: './item-writing-trait-scores.component.html'
+})
 export class ItemWritingTraitScoresComponent {
-
   /**
    * The student responses assessment item results for this item.
    */
@@ -18,7 +18,11 @@ export class ItemWritingTraitScoresComponent {
    * @returns {number}
    */
   get evidence(): number {
-    if (this.responsesAssessmentItem == null || this.responsesAssessmentItem.writingTraitScores == null) return null;
+    if (
+      this.responsesAssessmentItem == null ||
+      this.responsesAssessmentItem.writingTraitScores == null
+    )
+      return null;
 
     return this.responsesAssessmentItem.writingTraitScores.evidence;
   }
@@ -44,7 +48,11 @@ export class ItemWritingTraitScoresComponent {
    * @returns {number}
    */
   get organization(): number {
-    if (this.responsesAssessmentItem == null || this.responsesAssessmentItem.writingTraitScores == null) return null;
+    if (
+      this.responsesAssessmentItem == null ||
+      this.responsesAssessmentItem.writingTraitScores == null
+    )
+      return null;
 
     return this.responsesAssessmentItem.writingTraitScores.organization;
   }
@@ -62,7 +70,9 @@ export class ItemWritingTraitScoresComponent {
    * @returns {number}
    */
   get organizationCorrectness(): number {
-    return this.organization == null ? 0 : this.organization / this.organizationMaxPoints;
+    return this.organization == null
+      ? 0
+      : this.organization / this.organizationMaxPoints;
   }
 
   /**
@@ -70,7 +80,11 @@ export class ItemWritingTraitScoresComponent {
    * @returns {number}
    */
   get conventions(): number {
-    if (this.responsesAssessmentItem == null || this.responsesAssessmentItem.writingTraitScores == null) return null;
+    if (
+      this.responsesAssessmentItem == null ||
+      this.responsesAssessmentItem.writingTraitScores == null
+    )
+      return null;
 
     return this.responsesAssessmentItem.writingTraitScores.conventions;
   }
@@ -88,7 +102,9 @@ export class ItemWritingTraitScoresComponent {
    * @returns {number}
    */
   get conventionsCorrectness(): number {
-    return this.conventions == null ? 0 : this.conventions / this.conventionsMaxPoints;
+    return this.conventions == null
+      ? 0
+      : this.conventions / this.conventionsMaxPoints;
   }
 
   /**
@@ -96,6 +112,9 @@ export class ItemWritingTraitScoresComponent {
    * @returns {number}
    */
   get totalCorrectness(): number {
-    return this.responsesAssessmentItem.score / this.responsesAssessmentItem.assessmentItem.maxPoints;
+    return (
+      this.responsesAssessmentItem.score /
+      this.responsesAssessmentItem.assessmentItem.maxPoints
+    );
   }
 }

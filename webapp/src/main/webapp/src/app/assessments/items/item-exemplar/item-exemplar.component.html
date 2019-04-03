@@ -6,64 +6,70 @@
 <div *ngIf="!item.answerKey">
   <div *ngIf="loading" class="loader">
     <div class="inner">
-      <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="text">{{ 'common.messages.loading' | translate }}</span>
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i
+      ><span class="text">{{ 'common.messages.loading' | translate }}</span>
     </div>
   </div>
   <!-- TODO: Remove custom style of white-space: normal once @asleeper's latest update
        TODO: updates the white-space:nowrap style implementation-->
   <div *ngIf="model" style="white-space: normal">
     <div *ngIf="model.answerKeyValue" class="pad-bottom-10">
-      <strong>{{ 'item-exemplar.answer-key' | translate }}</strong> {{model.answerKeyValue}}
+      <strong>{{ 'item-exemplar.answer-key' | translate }}</strong>
+      {{ model.answerKeyValue }}
     </div>
 
     <!-- rubrics -->
-    <div *ngIf="model.rubrics.length ==1" [innerHtml]="model.rubrics[0].templateHtml"></div>
+    <div
+      *ngIf="model.rubrics.length == 1"
+      [innerHtml]="model.rubrics[0].templateHtml"
+    ></div>
 
     <div *ngIf="model.rubrics.length > 1">
       <h4>{{ 'item-exemplar.rubric' | translate }}</h4>
       <table class="table table-striped">
         <thead>
-        <tr>
-          <th>{{ 'item-exemplar.points' | translate }}</th>
-          <th>{{ 'item-exemplar.description' | translate }}</th>
-        </tr>
+          <tr>
+            <th>{{ 'item-exemplar.points' | translate }}</th>
+            <th>{{ 'item-exemplar.description' | translate }}</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let rubric of model.rubrics">
-          <td>{{rubric.scorepoint}}</td>
-          <td [innerHTML]="rubric.templateHtml"></td>
-        </tr>
+          <tr *ngFor="let rubric of model.rubrics">
+            <td>{{ rubric.scorepoint }}</td>
+            <td [innerHTML]="rubric.templateHtml"></td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     <!-- exemplars -->
-    <div *ngIf="model.exemplars.length ==1" [innerHtml]="model.exemplars[0].templateHtml"></div>
+    <div
+      *ngIf="model.exemplars.length == 1"
+      [innerHtml]="model.exemplars[0].templateHtml"
+    ></div>
 
     <div *ngIf="model.exemplars.length > 1">
       <h4>{{ 'item-exemplar.exemplar' | translate }}</h4>
       <table class="table table-striped">
         <thead>
-        <tr>
-          <th>{{ 'item-exemplar.points' | translate }}</th>
-          <th>{{ 'item-exemplar.description' | translate }}</th>
-        </tr>
+          <tr>
+            <th>{{ 'item-exemplar.points' | translate }}</th>
+            <th>{{ 'item-exemplar.description' | translate }}</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let exemplar of model.exemplars">
-          <td>{{exemplar.scorepoint}}</td>
-          <td [innerHTML]="exemplar.templateHtml"></td>
-        </tr>
+          <tr *ngFor="let exemplar of model.exemplars">
+            <td>{{ exemplar.scorepoint }}</td>
+            <td [innerHTML]="exemplar.templateHtml"></td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
   <div *ngIf="notFound" class="alert alert-danger">
-    {{ 'item-exemplar.not-found-error' | translate}}
+    {{ 'item-exemplar.not-found-error' | translate }}
   </div>
   <div *ngIf="errorLoading" class="alert alert-danger">
-    {{ 'item-exemplar.unknown-error' | translate}}
+    {{ 'item-exemplar.unknown-error' | translate }}
   </div>
 </div>
-
-

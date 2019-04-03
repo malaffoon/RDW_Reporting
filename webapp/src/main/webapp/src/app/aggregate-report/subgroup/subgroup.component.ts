@@ -6,8 +6,6 @@ import { Subgroup } from './subgroup';
   templateUrl: './subgroup.component.html'
 })
 export class SubgroupComponent {
-
   @Input()
   subgroup: Subgroup;
-
 }

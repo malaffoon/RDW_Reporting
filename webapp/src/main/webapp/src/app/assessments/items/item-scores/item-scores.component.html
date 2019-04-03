@@ -1,38 +1,45 @@
-<p *ngIf="subject === 'Math' || subject === 'ELA'">{{ 'item-scores.student-scores-intro-text' | translate }}</p>
-<p-table #itemScores
-         [columns]="columns"
-         [value]="scores"
-         [autoLayout]="true"
-         sortField="student.lastName"
-         dataKey="examId"
-         rowExpandMode="single"
-         styleClass="table table-striped table-hover">
-
-  <ng-template pTemplate="header"
-               let-columns>
+<p *ngIf="subject === 'Math' || subject === 'ELA'">
+  {{ 'item-scores.student-scores-intro-text' | translate }}
+</p>
+<p-table
+  #itemScores
+  [columns]="columns"
+  [value]="scores"
+  [autoLayout]="true"
+  sortField="student.lastName"
+  dataKey="examId"
+  rowExpandMode="single"
+  styleClass="table table-striped table-hover"
+>
+  <ng-template pTemplate="header" let-columns>
     <tr>
-      <th *ngFor="let column of columns"
-          [pSortableColumn]="column.field"
-          [hidden]="!column.visible"
-          [ngSwitch]="column.id">
-
+      <th
+        *ngFor="let column of columns"
+        [pSortableColumn]="column.field"
+        [hidden]="!column.visible"
+        [ngSwitch]="column.id"
+      >
         <div *ngSwitchCase="'trait'">
-          <span *ngIf="column.score === 'total'"
-                info-button
-                title="{{ 'common.writing-trait.total' | translate }}"
-                content="{{ 'common.writing-trait.total-info' | translate }}">
+          <span
+            *ngIf="column.score === 'total'"
+            info-button
+            title="{{ 'common.writing-trait.total' | translate }}"
+            content="{{ 'common.writing-trait.total-info' | translate }}"
+          >
           </span>
           <ng-container *ngIf="column.score !== 'total'">
-            {{ ('common.writing-trait.' + column.score) | translate }}
+            {{ 'common.writing-trait.' + column.score | translate }}
           </ng-container>
         </div>
 
         <div *ngSwitchCase="'item-score'">
-          {{ ('item-scores.' + column.score) | translate }}
+          {{ 'item-scores.' + column.score | translate }}
         </div>
 
         <div *ngSwitchDefault>
-          {{ ('common.results.assessment-exam-columns.' + column.id) | translate }}
+          {{
+            'common.results.assessment-exam-columns.' + column.id | translate
+          }}
         </div>
 
         <p-sortIcon [field]="column.field"></p-sortIcon>
@@ -40,24 +47,31 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body"
-               let-score
-               let-i="rowIndex"
-               let-columns="columns">
+  <ng-template
+    pTemplate="body"
+    let-score
+    let-i="rowIndex"
+    let-columns="columns"
+  >
     <tr>
-      <td *ngFor="let column of columns"
-          [ngSwitch]="column.id"
-          [hidden]="!column.visible">
-
+      <td
+        *ngFor="let column of columns"
+        [ngSwitch]="column.id"
+        [hidden]="!column.visible"
+      >
         <ng-container *ngSwitchCase="'name'">
-          <ng-container *ngIf="subject === 'Math' || subject === 'ELA'; else textOnly">
-            <table-row-expander *ngSwitchCase="'name'"
-                                [table]="itemScores"
-                                [row]="score"
-                                [text]="score.student | studentName"></table-row-expander>
+          <ng-container
+            *ngIf="subject === 'Math' || subject === 'ELA'; else textOnly"
+          >
+            <table-row-expander
+              *ngSwitchCase="'name'"
+              [table]="itemScores"
+              [row]="score"
+              [text]="score.student | studentName"
+            ></table-row-expander>
           </ng-container>
           <ng-template #textOnly>
-            {{score.student | studentName}}
+            {{ score.student | studentName }}
           </ng-template>
         </ng-container>
 
@@ -77,42 +91,54 @@
           {{ score.school.name }}
         </div>
 
-        <div *ngSwitchCase="'item-score'"
-             [ngSwitch]="column.score">
+        <div *ngSwitchCase="'item-score'" [ngSwitch]="column.score">
           <div *ngSwitchCase="'response'">
             {{ score.response | optional }}
           </div>
-          <div *ngSwitchCase="'score'"
-               class="text-center">
+          <div *ngSwitchCase="'score'" class="text-center">
             {{ score.score | optional }}
           </div>
-          <div *ngSwitchCase="'max'"
-               class="text-center">
+          <div *ngSwitchCase="'max'" class="text-center">
             {{ score.maxScore }}
           </div>
-          <div *ngSwitchCase="'correctness'"
-               class="text-center">
-            {{ score.correctness | optional:( score.correctness | number:'1.2-2') }}
+          <div *ngSwitchCase="'correctness'" class="text-center">
+            {{
+              score.correctness
+                | optional: (score.correctness | number: '1.2-2')
+            }}
           </div>
         </div>
 
-        <div *ngSwitchCase="'trait'"
-             [ngSwitch]="column.score"
-             class="text-center">
+        <div
+          *ngSwitchCase="'trait'"
+          [ngSwitch]="column.score"
+          class="text-center"
+        >
           <div *ngSwitchCase="'evidence'">
-            {{ (score.score >= 0 && score.writingTraitScores ? score.writingTraitScores.evidence : null) | optional }}
+            {{
+              (score.score >= 0 && score.writingTraitScores
+                ? score.writingTraitScores.evidence
+                : null) | optional
+            }}
           </div>
           <div *ngSwitchCase="'organization'">
-            {{ (score.score >= 0 && score.writingTraitScores ? score.writingTraitScores.organization : null) | optional }}
+            {{
+              (score.score >= 0 && score.writingTraitScores
+                ? score.writingTraitScores.organization
+                : null) | optional
+            }}
           </div>
           <div *ngSwitchCase="'conventions'">
-            {{ (score.score >= 0 && score.writingTraitScores ? score.writingTraitScores.conventions : null) | optional }}
+            {{
+              (score.score >= 0 && score.writingTraitScores
+                ? score.writingTraitScores.conventions
+                : null) | optional
+            }}
           </div>
           <div *ngSwitchCase="'total'">
             {{ score.score | optional }}
           </div>
         </div>
-
       </td>
     </tr>
   </ng-template>
@@ -121,9 +147,11 @@
     <tr>
       <td [attr.colspan]="columns.length">
         <div class="tab-content well">
-          <item-viewer [item]="item"
-                       [response]="score.response"
-                       [position]="item.position"></item-viewer>
+          <item-viewer
+            [item]="item"
+            [response]="score.response"
+            [position]="item.position"
+          ></item-viewer>
         </div>
       </td>
     </tr>
@@ -132,7 +160,7 @@
   <ng-template pTemplate="emptymessage" let-columns>
     <tr>
       <td [attr.colspan]="columns.length">
-        {{'common.no-results' | translate}}
+        {{ 'common.no-results' | translate }}
       </td>
     </tr>
   </ng-template>

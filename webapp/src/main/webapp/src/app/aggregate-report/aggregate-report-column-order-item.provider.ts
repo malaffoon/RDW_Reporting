@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { OrderableItem } from "../shared/order-selector/order-selector.component";
+import { Injectable } from '@angular/core';
+import { OrderableItem } from '../shared/order-selector/order-selector.component';
 
-const ColumnToLabel: {[key: string]: string} = {
+const ColumnToLabel: { [key: string]: string } = {
   organization: 'aggregate-report-table.columns.organization',
   assessmentLabel: 'aggregate-report-table.columns.assessment-label',
   assessmentGrade: 'aggregate-report-table.columns.assessment-grade',
@@ -17,7 +17,6 @@ const ColumnToLabel: {[key: string]: string} = {
  */
 @Injectable()
 export class AggregateReportColumnOrderItemProvider {
-
   /**
    * Map the given column ids to OrderableItems.
    *

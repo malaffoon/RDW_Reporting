@@ -10,12 +10,10 @@ const DefaultButtonStyles = 'btn-primary';
 @Component({
   selector: 'wide-radio-group',
   templateUrl: './wide-radio-group.component.html',
-  providers: [
-    Forms.valueAccessor(WideRadioGroupComponent)
-  ]
+  providers: [Forms.valueAccessor(WideRadioGroupComponent)]
 })
-export class WideRadioGroupComponent extends AbstractControlValueAccessor<any[]> implements OnInit {
-
+export class WideRadioGroupComponent extends AbstractControlValueAccessor<any[]>
+  implements OnInit {
   @Input()
   public analyticsEvent: string;
 
@@ -95,25 +93,23 @@ export class WideRadioGroupComponent extends AbstractControlValueAccessor<any[]>
       this.throwError('at least two options are required');
     }
     return options.map(option => {
-        if (option.description) {
-          return <Option>{
-            value: option.value,
-            text: option.text ? option.text : option.value,
-            description: option.description,
-            disabled: option.disabled,
-            disabledText: option.disabledText,
-            analyticsProperties: option.analyticsProperties
-          };
-        }
+      if (option.description) {
         return <Option>{
           value: option.value,
           text: option.text ? option.text : option.value,
+          description: option.description,
+          disabled: option.disabled,
+          disabledText: option.disabledText,
           analyticsProperties: option.analyticsProperties
         };
       }
-    );
+      return <Option>{
+        value: option.value,
+        text: option.text ? option.text : option.value,
+        analyticsProperties: option.analyticsProperties
+      };
+    });
   }
-
 
   private throwError(message: string): void {
     throw new Error(this.constructor.name + ' ' + message);

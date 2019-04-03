@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { Embargo } from "./embargo";
-import { Toggle } from "./toggle.component";
-import { EmbargoToggleEvent } from "./embargo-toggle-event";
-import { EmbargoScope } from "./embargo-scope.enum";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Embargo } from './embargo';
+import { Toggle } from './toggle.component';
+import { EmbargoToggleEvent } from './embargo-toggle-event';
+import { EmbargoScope } from './embargo-scope.enum';
 import { SubjectService } from '../../subject/subject.service';
 
 @Component({
@@ -10,7 +10,6 @@ import { SubjectService } from '../../subject/subject.service';
   templateUrl: './embargo-table.component.html'
 })
 export class EmbargoTable implements OnInit {
-
   @Input()
   translateContext: string = '';
 
@@ -21,7 +20,9 @@ export class EmbargoTable implements OnInit {
   overridingEmbargo: Embargo;
 
   @Output()
-  toggle: EventEmitter<EmbargoToggleEvent> = new EventEmitter<EmbargoToggleEvent>();
+  toggle: EventEmitter<EmbargoToggleEvent> = new EventEmitter<
+    EmbargoToggleEvent
+  >();
 
   subjectCodes: string[] = [];
   columns: Column[];
@@ -38,30 +39,43 @@ export class EmbargoTable implements OnInit {
     return this.overridingEmbargo && !this.overridingEmbargo.aggregateEnabled;
   }
 
-  constructor(private subjectService: SubjectService) {
-  }
+  constructor(private subjectService: SubjectService) {}
 
   ngOnInit(): void {
     this.subjectService.getSubjectCodes().subscribe(subjectCodes => {
       this.subjectCodes = subjectCodes;
 
       this.columns = [
-        new Column({id: 'name'}),
+        new Column({ id: 'name' }),
         ...this.getSubjectColumns(),
-        new Column({id: 'individualEnabled'}),
-        new Column({id: 'aggregateEnabled'})
+        new Column({ id: 'individualEnabled' }),
+        new Column({ id: 'aggregateEnabled' })
       ];
     });
   }
 
   toggleIndividual(toggle: Toggle, embargo: Embargo): void {
-    this.toggleInternal(toggle, embargo, EmbargoScope.Individual, embargo.individualEnabled,
-      this.overridingEmbargo ? this.overridingEmbargo.individualEnabled : undefined);
+    this.toggleInternal(
+      toggle,
+      embargo,
+      EmbargoScope.Individual,
+      embargo.individualEnabled,
+      this.overridingEmbargo
+        ? this.overridingEmbargo.individualEnabled
+        : undefined
+    );
   }
 
   toggleAggregate(toggle: Toggle, embargo: Embargo): void {
-    this.toggleInternal(toggle, embargo, EmbargoScope.Aggregate, embargo.aggregateEnabled,
-      this.overridingEmbargo ? this.overridingEmbargo.aggregateEnabled : undefined);
+    this.toggleInternal(
+      toggle,
+      embargo,
+      EmbargoScope.Aggregate,
+      embargo.aggregateEnabled,
+      this.overridingEmbargo
+        ? this.overridingEmbargo.aggregateEnabled
+        : undefined
+    );
   }
 
   getExamCount(embargo: Embargo, subjectCode) {
@@ -77,11 +91,16 @@ export class EmbargoTable implements OnInit {
     });
   }
 
-  private toggleInternal(toggle: Toggle, embargo: Embargo, scope: EmbargoScope, embargoEnabled: boolean, overridingEmbargoEnabled: boolean): void {
+  private toggleInternal(
+    toggle: Toggle,
+    embargo: Embargo,
+    scope: EmbargoScope,
+    embargoEnabled: boolean,
+    overridingEmbargoEnabled: boolean
+  ): void {
     const value = toggle.value;
 
     if (value !== embargoEnabled) {
-
       // Fixes display by undoing visual state change to toggle when clicked.
       // It was not sufficient to prevent event propagation
       // The new state will be programmatically applied when the confirmation is issued through the toggle event listener
@@ -98,17 +117,13 @@ export class EmbargoTable implements OnInit {
       });
     }
   }
-
 }
 
 class Column {
   id: string;
   code?: string;
 
-  constructor({
-                id,
-                code = ''
-              }) {
+  constructor({ id, code = '' }) {
     this.id = id;
     if (code) {
       this.code = code;

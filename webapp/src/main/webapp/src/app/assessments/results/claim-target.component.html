@@ -1,19 +1,54 @@
-<a href="javascript:void(0)"
-   [popover]="'subject.' + subject + '.claim.' + item.claim + '.description' | translate"
-   popoverTitle="{{'subject.' + subject + '.claim.' + item.claim + '.name' | translate}}"
-   outsideClick="true">{{'subject.' + subject + '.claim.' + item.claim + '.name' | translate}}</a>
+<a
+  href="javascript:void(0)"
+  [popover]="
+    'subject.' + subject + '.claim.' + item.claim + '.description' | translate
+  "
+  popoverTitle="{{
+    'subject.' + subject + '.claim.' + item.claim + '.name' | translate
+  }}"
+  outsideClick="true"
+  >{{ 'subject.' + subject + '.claim.' + item.claim + '.name' | translate }}</a
+>
 /
-<a href="javascript:void(0)"
-   [popover]="'subject.' + subject + '.claim.' + item.claim + '.target.' + item.targetNaturalId + '.description' | translate"
-   popoverTitle="{{
-    'common.results.assessment-item-target' | translate:{
-      target: 'subject.' + subject + '.claim.' + item.claim + '.target.' + item.targetNaturalId + '.name' | translate
-     }
-   }}"
-   outsideClick="true">
-    {{
-        'common.results.assessment-item-target' | translate:{
-            target: 'subject.' + subject + '.claim.' + item.claim + '.target.' + item.targetNaturalId + '.name' | translate
-        }
-    }}
+<a
+  href="javascript:void(0)"
+  [popover]="
+    'subject.' +
+      subject +
+      '.claim.' +
+      item.claim +
+      '.target.' +
+      item.targetNaturalId +
+      '.description' | translate
+  "
+  popoverTitle="{{
+    'common.results.assessment-item-target'
+      | translate
+        : {
+            target:
+              'subject.' +
+                subject +
+                '.claim.' +
+                item.claim +
+                '.target.' +
+                item.targetNaturalId +
+                '.name' | translate
+          }
+  }}"
+  outsideClick="true"
+>
+  {{
+    'common.results.assessment-item-target'
+      | translate
+        : {
+            target:
+              'subject.' +
+                subject +
+                '.claim.' +
+                item.claim +
+                '.target.' +
+                item.targetNaturalId +
+                '.name' | translate
+          }
+  }}
 </a>

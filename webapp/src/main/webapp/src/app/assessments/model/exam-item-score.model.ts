@@ -1,4 +1,4 @@
-import { WritingTraitScores } from "./writing-trait-scores.model";
+import { WritingTraitScores } from './writing-trait-scores.model';
 
 export class ExamItemScore {
   examId: number;

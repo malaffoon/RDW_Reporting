@@ -20,7 +20,7 @@ import { StudentAssessmentCardComponent } from './student-dashboard/student-asse
   declarations: [
     GroupDashboardComponent,
     GroupAssessmentCardComponent,
-    StudentAssessmentCardComponent,
+    StudentAssessmentCardComponent
   ],
   imports: [
     Angulartics2Module.forRoot(),
@@ -35,14 +35,7 @@ import { StudentAssessmentCardComponent } from './student-dashboard/student-asse
     TableModule,
     UserModule
   ],
-  exports: [
-    GroupAssessmentCardComponent,
-    StudentAssessmentCardComponent
-  ],
-  providers: [
-    GroupDashboardService,
-    MeasuredAssessmentMapper
-  ]
+  exports: [GroupAssessmentCardComponent, StudentAssessmentCardComponent],
+  providers: [GroupDashboardService, MeasuredAssessmentMapper]
 })
-export class DashboardModule {
-}
+export class DashboardModule {}

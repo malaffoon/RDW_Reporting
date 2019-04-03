@@ -1,8 +1,8 @@
-import { MockDataService } from "../../../test/mock.data.service";
-import { inject, TestBed } from "@angular/core/testing";
-import { CachingDataService } from "../data/caching-data.service";
+import { MockDataService } from '../../../test/mock.data.service';
+import { inject, TestBed } from '@angular/core/testing';
+import { CachingDataService } from '../data/caching-data.service';
 import { of } from 'rxjs';
-import { DataService } from "./data.service";
+import { DataService } from './data.service';
 
 describe('CachingDataService', () => {
   let dataService: MockDataService;
@@ -20,39 +20,37 @@ describe('CachingDataService', () => {
         }
       ]
     });
-
   });
 
-  beforeEach(inject([ CachingDataService ], (injectedSvc: CachingDataService) => {
+  beforeEach(inject([CachingDataService], (injectedSvc: CachingDataService) => {
     service = injectedSvc;
   }));
 
   it('should create', () => {
-
     expect(service).toBeTruthy();
   });
 
   it('should handle null options', () => {
-    let url = "/user";
+    let url = '/user';
     dataService.get.and.callFake((url, options) => {
       return of({ url });
     });
 
-    service.get(url, null).subscribe((value) => {
+    service.get(url, null).subscribe(value => {
       expect(dataService.get).toHaveBeenCalledWith(url, null);
       expect(value).toEqual({ url: url });
     });
-    service.get(url, null).subscribe((value) => {
+    service.get(url, null).subscribe(value => {
       expect(dataService.get).toHaveBeenCalledTimes(1);
       expect(value).toEqual({ url: url });
     });
   });
 
   it('should handle options', () => {
-    let passedUrl: string = "/something";
+    let passedUrl: string = '/something';
     let options = {
       params: {
-        oneParam: "oneValue"
+        oneParam: 'oneValue'
       }
     };
     dataService.get.and.callFake((url, options) => {
@@ -62,27 +60,27 @@ describe('CachingDataService', () => {
       });
     });
 
-    service.get(passedUrl, options).subscribe((value) => {
+    service.get(passedUrl, options).subscribe(value => {
       expect(dataService.get).toHaveBeenCalledWith(passedUrl, options);
       expect(value).toEqual({ url: passedUrl, params: options.params });
     });
-    service.get(passedUrl, options).subscribe((value) => {
+    service.get(passedUrl, options).subscribe(value => {
       expect(dataService.get).toHaveBeenCalledTimes(1);
       expect(value).toEqual({ url: passedUrl, params: options.params });
     });
   });
 
   it('should handle different options', () => {
-    let passedUrl: string = "/something";
+    let passedUrl: string = '/something';
     let options1 = {
       params: {
-        oneParam: "oneValue"
+        oneParam: 'oneValue'
       }
     };
 
     let options2 = {
       params: {
-        twoParam: "twoValue"
+        twoParam: 'twoValue'
       }
     };
     dataService.get.and.callFake((url, options) => {
@@ -92,14 +90,13 @@ describe('CachingDataService', () => {
       });
     });
 
-    service.get(passedUrl, options1).subscribe((value) => {
+    service.get(passedUrl, options1).subscribe(value => {
       expect(dataService.get).toHaveBeenCalledWith(passedUrl, options1);
       expect(value).toEqual({ url: passedUrl, params: options1.params });
     });
-    service.get(passedUrl, options2).subscribe((value) => {
+    service.get(passedUrl, options2).subscribe(value => {
       expect(dataService.get).toHaveBeenCalledWith(passedUrl, options2);
       expect(value).toEqual({ url: passedUrl, params: options2.params });
     });
   });
-
 });

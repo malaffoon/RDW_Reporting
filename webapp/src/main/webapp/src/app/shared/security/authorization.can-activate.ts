@@ -1,8 +1,13 @@
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { Inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { AuthorizationService } from "./authorization.service";
-import { AccessDeniedRoute } from "./routing-authorization.can-activate";
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot
+} from '@angular/router';
+import { Inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthorizationService } from './authorization.service';
+import { AccessDeniedRoute } from './routing-authorization.can-activate';
 import { map } from 'rxjs/operators';
 
 /**
@@ -11,26 +16,25 @@ import { map } from 'rxjs/operators';
  */
 @Injectable()
 export class AuthorizationCanActivate implements CanActivate {
+  constructor(
+    @Inject(AccessDeniedRoute)
+    private accessDeniedRoute: string,
+    private authorizationService: AuthorizationService,
+    private router: Router
+  ) {}
 
-  constructor(@Inject(AccessDeniedRoute)
-              private accessDeniedRoute: string,
-              private authorizationService: AuthorizationService,
-              private router: Router) {
-  }
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> {
     const { permissions, denyAccess } = route.data;
-    return this.authorizationService.hasAnyPermission(permissions)
-      .pipe(
-        map(permission => {
-          if (!permission && denyAccess) {
-            this.router.navigate([ this.accessDeniedRoute ]);
-          }
-          return permission;
-        })
-      );
+    return this.authorizationService.hasAnyPermission(permissions).pipe(
+      map(permission => {
+        if (!permission && denyAccess) {
+          this.router.navigate([this.accessDeniedRoute]);
+        }
+        return permission;
+      })
+    );
   }
-
 }
-
-

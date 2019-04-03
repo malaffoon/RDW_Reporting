@@ -1,28 +1,26 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { GroupFilterOptions } from "./model/group-filter-options.model";
-import { ActivatedRoute, Router } from "@angular/router";
-import { GroupService } from "./groups.service";
-import { GroupQuery } from "./model/group-query.model";
-import { Group } from "./model/group.model";
-import { DeleteGroupModalComponent } from "./delete-group.modal";
-import { BsModalRef, BsModalService } from "ngx-bootstrap";
-import { Subscription ,  forkJoin } from "rxjs";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { GroupFilterOptions } from './model/group-filter-options.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GroupService } from './groups.service';
+import { GroupQuery } from './model/group-query.model';
+import { Group } from './model/group.model';
+import { DeleteGroupModalComponent } from './delete-group.modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { Subscription, forkJoin } from 'rxjs';
 import { SubjectService } from '../../subject/subject.service';
-
 
 @Component({
   selector: 'admin-groups',
   templateUrl: './groups.component.html'
 })
 export class GroupsComponent implements OnInit, OnDestroy {
-
   columns: Column[] = [
-    new Column({id: 'name'}),
-    new Column({id: 'school', field: 'schoolName'}),
-    new Column({id: 'school-year', field: 'schoolYear'}),
-    new Column({id: 'subjects', field: 'subject'}),
-    new Column({id: 'student-count', field: 'studentCount'}),
-    new Column({id: 'deleted', field: 'isDeleted', sortable: false})
+    new Column({ id: 'name' }),
+    new Column({ id: 'school', field: 'schoolName' }),
+    new Column({ id: 'school-year', field: 'schoolYear' }),
+    new Column({ id: 'subjects', field: 'subject' }),
+    new Column({ id: 'student-count', field: 'studentCount' }),
+    new Column({ id: 'deleted', field: 'isDeleted', sortable: false })
   ];
   filterOptions: GroupFilterOptions;
   query: GroupQuery;
@@ -32,12 +30,13 @@ export class GroupsComponent implements OnInit, OnDestroy {
   private _groups: Group[];
   private _modalSubscriptions: Subscription[] = [];
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private service: GroupService,
-              private subjectService: SubjectService,
-              private modalService: BsModalService) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private service: GroupService,
+    private subjectService: SubjectService,
+    private modalService: BsModalService
+  ) {}
 
   get groups(): Group[] {
     return this._groups;
@@ -52,9 +51,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     forkJoin(
       this.subjectService.getSubjectCodes(),
       this.service.getFilterOptions()
-    )
-    .subscribe(([subjectCodes, filterOptions]) => {
-
+    ).subscribe(([subjectCodes, filterOptions]) => {
       this.filterOptions = filterOptions;
       this.filterOptions.subjects = [undefined, ...subjectCodes];
 
@@ -64,17 +61,29 @@ export class GroupsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.schoolDropdownOptions = this.filterOptions.schools.map(school => <any>{
-        label: `${school.name} (${school.naturalId})`,
-        value: school,
-        name: school.name,
-        naturalId: school.naturalId
-      });
+      this.schoolDropdownOptions = this.filterOptions.schools.map(
+        school =>
+          <any>{
+            label: `${school.name} (${school.naturalId})`,
+            value: school,
+            name: school.name,
+            naturalId: school.naturalId
+          }
+      );
 
       this.route.params.subscribe((params: any) => {
-        this.query.school = this.filterOptions.schools.find(school => school.id == params.schoolId) || this.filterOptions.schools[ 0 ];
-        this.query.schoolYear = this.filterOptions.schoolYears.find(year => year === +params.schoolYear) || this.filterOptions.schoolYears[ 0 ];
-        this.query.subject = this.filterOptions.subjects.find(subject => subject === params.subject) || this.filterOptions.subjects[ 0 ];
+        this.query.school =
+          this.filterOptions.schools.find(
+            school => school.id == params.schoolId
+          ) || this.filterOptions.schools[0];
+        this.query.schoolYear =
+          this.filterOptions.schoolYears.find(
+            year => year === +params.schoolYear
+          ) || this.filterOptions.schoolYears[0];
+        this.query.subject =
+          this.filterOptions.subjects.find(
+            subject => subject === params.subject
+          ) || this.filterOptions.subjects[0];
         this.updateResults();
       });
     });
@@ -85,7 +94,9 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   unsubscribe() {
-    this._modalSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this._modalSubscriptions.forEach(subscription =>
+      subscription.unsubscribe()
+    );
     this._modalSubscriptions = [];
   }
 
@@ -100,7 +111,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
       delete params.subject;
     }
 
-    this.router.navigate([ '/admin-groups', params ]);
+    this.router.navigate(['/admin-groups', params]);
   }
 
   onSearchChange() {
@@ -108,30 +119,34 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   updateResults() {
-    this.service
-      .getGroups(this.query)
-      .subscribe(groups => {
-        this.groups = groups;
-      });
+    this.service.getGroups(this.query).subscribe(groups => {
+      this.groups = groups;
+    });
   }
 
   updateFilteredGroups() {
-    this.filteredGroups = this.groups
-      .filter(x => x.name.toUpperCase().indexOf(this.searchTerm.toUpperCase()) >= 0);
+    this.filteredGroups = this.groups.filter(
+      x => x.name.toUpperCase().indexOf(this.searchTerm.toUpperCase()) >= 0
+    );
   }
 
   openDeleteGroupModal(group: Group) {
-    let modalReference: BsModalRef = this.modalService.show(DeleteGroupModalComponent);
+    let modalReference: BsModalRef = this.modalService.show(
+      DeleteGroupModalComponent
+    );
     let modal: DeleteGroupModalComponent = modalReference.content;
     modal.group = group;
-    this._modalSubscriptions.push(modal.deleted.subscribe(group => {
-      this.groups = this.groups.filter(g => g.id != group.id);
-    }));
-    this._modalSubscriptions.push(this.modalService.onHidden.subscribe(() => {
-      this.unsubscribe();
-    }));
+    this._modalSubscriptions.push(
+      modal.deleted.subscribe(group => {
+        this.groups = this.groups.filter(g => g.id != group.id);
+      })
+    );
+    this._modalSubscriptions.push(
+      this.modalService.onHidden.subscribe(() => {
+        this.unsubscribe();
+      })
+    );
   }
-
 }
 
 class Column {
@@ -139,11 +154,7 @@ class Column {
   field: string;
   sortable: boolean;
 
-  constructor({
-                id,
-                field = '',
-                sortable = true
-  }) {
+  constructor({ id, field = '', sortable = true }) {
     this.id = id;
     this.field = field ? field : id;
     this.sortable = sortable;

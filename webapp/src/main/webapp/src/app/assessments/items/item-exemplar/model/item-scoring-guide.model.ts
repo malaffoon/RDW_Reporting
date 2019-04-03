@@ -1,4 +1,4 @@
-import { ScoringCriterion } from "./scoring-criterion.model";
+import { ScoringCriterion } from './scoring-criterion.model';
 
 export class ItemScoringGuide {
   answerKeyValue: string;

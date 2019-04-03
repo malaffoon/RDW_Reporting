@@ -3,11 +3,6 @@ import { AssessmentDefinitionService } from './assessment-definition.service';
 import { AssessmentService } from './assessment.service';
 
 @NgModule({
-  providers: [
-    AssessmentDefinitionService,
-    AssessmentService
-  ]
+  providers: [AssessmentDefinitionService, AssessmentService]
 })
-export class AssessmentModule {
-
-}
+export class AssessmentModule {}

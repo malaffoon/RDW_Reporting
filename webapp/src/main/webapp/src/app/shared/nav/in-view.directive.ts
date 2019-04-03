@@ -9,13 +9,12 @@ import {
 } from '@angular/core';
 import { WindowRefService } from '../core/window-ref.service';
 import { Utils } from '../support/support';
-import { Observable ,  Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Directive({
   selector: '[inView]'
 })
 export class InViewDirective implements OnDestroy {
-
   @Output()
   inView: EventEmitter<InViewDirective> = new EventEmitter();
 
@@ -23,8 +22,10 @@ export class InViewDirective implements OnDestroy {
   private _valid: boolean = false;
   private _invalidatorSubscription: Subscription;
 
-  constructor(private elementReference: ElementRef,
-              windowReferenceService: WindowRefService) {
+  constructor(
+    private elementReference: ElementRef,
+    windowReferenceService: WindowRefService
+  ) {
     this._window = windowReferenceService.nativeWindow;
   }
 
@@ -62,10 +63,12 @@ export class InViewDirective implements OnDestroy {
   }
 
   private dispatchEventIfInvalidAndInView(): void {
-    if (!this._valid && Utils.inView(this.elementReference.nativeElement, this._window)) {
+    if (
+      !this._valid &&
+      Utils.inView(this.elementReference.nativeElement, this._window)
+    ) {
       this.inView.emit(this);
       this._valid = true;
     }
   }
-
 }

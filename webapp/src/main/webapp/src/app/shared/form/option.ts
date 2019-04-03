@@ -2,7 +2,6 @@
  * Represents a generic UI component option available for selection
  */
 export interface Option {
-
   /**
    * The value of the option
    */

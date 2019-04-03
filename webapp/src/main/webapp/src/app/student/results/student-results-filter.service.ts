@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 
 @Injectable()
 export class StudentResultsFilterService {
-
   filterChange = new Subject();
 
   filterChanged(): void {

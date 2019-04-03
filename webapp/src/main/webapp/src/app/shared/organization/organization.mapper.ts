@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   DefaultDistrict,
   DefaultDistrictGroup,
@@ -6,13 +6,11 @@ import {
   DefaultSchoolGroup,
   DefaultState,
   Organization
-} from "./organization";
+} from './organization';
 
 @Injectable()
 export class OrganizationMapper {
-
   public map(organization: any): Organization {
-
     // TODO fix models to avoid this bridge
     const type = organization.type || organization.organizationType;
 
@@ -55,5 +53,4 @@ export class OrganizationMapper {
         throw new Error('invalid organization type: ' + type);
     }
   }
-
 }

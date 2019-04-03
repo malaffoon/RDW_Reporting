@@ -1,7 +1,11 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { Observable } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  Resolve,
+  RouterStateSnapshot
+} from '@angular/router';
+import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * TODO repackage
@@ -10,12 +14,12 @@ import { TranslateService } from "@ngx-translate/core";
  */
 @Injectable()
 export class TranslateResolve implements Resolve<string> {
+  constructor(private service: TranslateService) {}
 
-  constructor(private service: TranslateService) {
-  }
-
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<string> {
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<string> {
     return this.service.get('welcome');
   }
-
 }

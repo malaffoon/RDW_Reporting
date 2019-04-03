@@ -1,15 +1,21 @@
-import { Component, ViewChild } from "@angular/core";
-import { UserService } from "./user/user.service";
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
-import { Location, PopStateEvent, registerLocaleData } from "@angular/common";
-import { User } from "./user/user";
-import { LanguageStore } from "./shared/i18n/language.store";
-import { SpinnerModal } from "./shared/loading/spinner.modal";
+import { Component, ViewChild } from '@angular/core';
+import { UserService } from './user/user.service';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router
+} from '@angular/router';
+import { Location, PopStateEvent, registerLocaleData } from '@angular/common';
+import { User } from './user/user';
+import { LanguageStore } from './shared/i18n/language.store';
+import { SpinnerModal } from './shared/loading/spinner.modal';
 import { ApplicationSettings } from './app-settings';
 import { ApplicationSettingsService } from './app-settings.service';
-import { forkJoin ,  throwError as _throw } from 'rxjs';
+import { forkJoin, throwError as _throw } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Angulartics2GoogleAnalytics } from "angulartics2/ga";
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import localeEs from '@angular/common/locales/es';
 
 @Component({
@@ -17,7 +23,6 @@ import localeEs from '@angular/common/locales/es';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-
   @ViewChild('spinnerModal')
   spinnerModal: SpinnerModal;
 
@@ -28,12 +33,14 @@ export class AppComponent {
   applicationSettings: ApplicationSettings;
   navbarOpen: boolean = false;
 
-  constructor(public languageStore: LanguageStore,
-              private router: Router,
-              private location: Location,
-              private userService: UserService,
-              private applicationSettingsService: ApplicationSettingsService,
-              angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
+  constructor(
+    public languageStore: LanguageStore,
+    private router: Router,
+    private location: Location,
+    private userService: UserService,
+    private applicationSettingsService: ApplicationSettingsService,
+    angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
+  ) {
     /*
       Even though the angulartics2GoogleAnalytics variable is not explicitly used,
       without it analytics data is not sent to the service.  This private variable prevents
@@ -46,23 +53,23 @@ export class AppComponent {
   }
 
   ngOnInit() {
-
     forkJoin(
       this.userService.getUser(),
       this.applicationSettingsService.getSettings()
-    ).pipe(
-      catchError((error, values) => {
-        this.router.navigate([ 'error' ]);
-        return _throw(error);
-      })
-    ).subscribe(([ user, settings ]) => {
+    )
+      .pipe(
+        catchError((error, values) => {
+          this.router.navigate(['error']);
+          return _throw(error);
+        })
+      )
+      .subscribe(([user, settings]) => {
+        this.user = user;
+        this.applicationSettings = settings;
 
-      this.user = user;
-      this.applicationSettings = settings;
-
-      this.languageStore.configuredLanguages = settings.uiLanguages;
-      this.initializeAnalytics(settings.analyticsTrackingId);
-    });
+        this.languageStore.configuredLanguages = settings.uiLanguages;
+        this.initializeAnalytics(settings.analyticsTrackingId);
+      });
 
     this.initializeNavigationScrollReset();
     this.initializeNavigationLoadingSpinner();
@@ -79,20 +86,19 @@ export class AppComponent {
   }
 
   private initializeAnalytics(trackingId: string): void {
-    const googleAnalyticsProvider: Function = window[ 'ga' ];
+    const googleAnalyticsProvider: Function = window['ga'];
     if (googleAnalyticsProvider && trackingId) {
       googleAnalyticsProvider('create', trackingId, 'auto');
     }
   }
 
   private initializeNavigationScrollReset(): void {
-
     // by listening to the PopStateEvent we can track the back button
     this.location.subscribe((event: PopStateEvent) => {
       this._lastPoppedUrl = event.url;
     });
 
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(event => {
       if (!(event instanceof NavigationEnd)) {
         return;
       }
@@ -111,12 +117,14 @@ export class AppComponent {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.spinnerModal.loading = true;
-      } else if (event instanceof NavigationEnd
-        || event instanceof NavigationCancel
-        || event instanceof NavigationError) {
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
         this.spinnerModal.loading = false;
       }
-    })
+    });
   }
 
   /**
@@ -127,5 +135,4 @@ export class AppComponent {
   private registerLocales(): void {
     registerLocaleData(localeEs);
   }
-
 }
