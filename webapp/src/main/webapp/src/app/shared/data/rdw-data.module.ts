@@ -1,19 +1,14 @@
-import { ModuleWithProviders, NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule } from "@angular/forms";
-import { DATA_CONTEXT_URL, DataService } from "./data.service";
-import { CachingDataService } from "./caching-data.service";
-import { HttpModule } from "@angular/http";
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { DATA_CONTEXT_URL, DataService } from './data.service';
+import { CachingDataService } from './caching-data.service';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpModule
-  ]
+  imports: [BrowserModule, FormsModule, HttpModule]
 })
 export class RdwDataModule {
-
   /**
    * Call this to customize the data service providers.
    *
@@ -23,7 +18,6 @@ export class RdwDataModule {
    * @returns {ModuleWithProviders}
    */
   static forRoot(): ModuleWithProviders {
-
     // Unable to pass options into the forRoot() function.
     // Providers that are dynamic in value are not supported by the AoT (ngc) compiler
     // We may want to consider moving to use tsc/nsc compiler instead.
@@ -41,5 +35,4 @@ export class RdwDataModule {
       ]
     };
   }
-
 }

@@ -4,16 +4,16 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DimensionGroup, DimensionValue, Subgroup } from './subgroup';
 import { SubgroupItem } from './subgroup-item';
-import { AggregateReportRow } from "../../report/aggregate-report";
-import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
+import { AggregateReportRow } from '../../report/aggregate-report';
+import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
 import { AggregateReportQueryType } from '../../report/report';
 
 @Injectable()
 export class SubgroupMapper {
-
-  constructor(private translate: TranslateService,
-              private requestMapper: AggregateReportRequestMapper) {
-  }
+  constructor(
+    private translate: TranslateService,
+    private requestMapper: AggregateReportRequestMapper
+  ) {}
 
   createOverall(): Subgroup {
     return this.createSubgroupInternal([
@@ -25,16 +25,16 @@ export class SubgroupMapper {
   }
 
   fromTypeAndCode(type: string, code: string): Subgroup {
-
-    const configuration = DimensionConfigurationByType[ type ];
-    const values = configuration != null
-      ? [
-        {
-          code: code,
-          translationCode: configuration.getTranslationCode(code)
-        }
-      ]
-      : [];
+    const configuration = DimensionConfigurationByType[type];
+    const values =
+      configuration != null
+        ? [
+            {
+              code: code,
+              translationCode: configuration.getTranslationCode(code)
+            }
+          ]
+        : [];
 
     return this.createSubgroupInternal([
       {
@@ -45,43 +45,61 @@ export class SubgroupMapper {
   }
 
   fromFilters(input: SubgroupFilters, dimensionTypes?: string[]): Subgroup {
-    const dimensionGroups: DimensionGroup[] = (dimensionTypes || DimensionConfigurations.map(({ type }) => type))
-      .reduce((groups, type) => {
-        const configuration = DimensionConfigurationByType[ type ];
-        const values = (configuration.getDimensionValueCodes(input) || [])
-          .map(code => <DimensionValue>{
+    const dimensionGroups: DimensionGroup[] = (
+      dimensionTypes || DimensionConfigurations.map(({ type }) => type)
+    ).reduce((groups, type) => {
+      const configuration = DimensionConfigurationByType[type];
+      const values = (configuration.getDimensionValueCodes(input) || []).map(
+        code =>
+          <DimensionValue>{
             code: code,
             translationCode: configuration.getTranslationCode(code)
-          });
-        if (values.length) {
-          groups.push({
-            type: type,
-            values: values
-          });
-        }
-        return groups;
-      }, []);
+          }
+      );
+      if (values.length) {
+        groups.push({
+          type: type,
+          values: values
+        });
+      }
+      return groups;
+    }, []);
 
     return this.createSubgroupInternal(dimensionGroups);
   }
 
-  fromAggregateReportRow(query: AggregateReportQueryType, row: AggregateReportRow, overallFlyweight?: Subgroup): Subgroup {
+  fromAggregateReportRow(
+    query: AggregateReportQueryType,
+    row: AggregateReportRow,
+    overallFlyweight?: Subgroup
+  ): Subgroup {
     if (isNullOrEmpty(query.subgroups)) {
       return this.fromTypeAndCode(row.dimension.type, row.dimension.code);
     }
-    const serverSubgroup = query.subgroups[ row.dimension.code ];
+    const serverSubgroup = query.subgroups[row.dimension.code];
     return serverSubgroup
-      ? this.fromFilters(this.requestMapper.createSubgroupFilters(serverSubgroup))
-      : (overallFlyweight || this.createOverall());
+      ? this.fromFilters(
+          this.requestMapper.createSubgroupFilters(serverSubgroup)
+        )
+      : overallFlyweight || this.createOverall();
   }
 
-  createPermutationsFromFilters(input: SubgroupFilters, dimensionTypes: string[]): Subgroup[] {
+  createPermutationsFromFilters(
+    input: SubgroupFilters,
+    dimensionTypes: string[]
+  ): Subgroup[] {
     return dimensionTypes
-      .map(type => DimensionConfigurationByType[ type ])
+      .map(type => DimensionConfigurationByType[type])
       .reduce((subgroups, configuration) => {
         subgroups.push(
-          ...(this.reduceLanguageDimensionCodes(configuration.getDimensionValueCodes(input), configuration.type, 4) || []).map(
-            code => this.createSubgroupInternal([
+          ...(
+            this.reduceLanguageDimensionCodes(
+              configuration.getDimensionValueCodes(input),
+              configuration.type,
+              4
+            ) || []
+          ).map(code =>
+            this.createSubgroupInternal([
               {
                 type: configuration.type,
                 values: [
@@ -102,16 +120,25 @@ export class SubgroupMapper {
    * Reduces the number of languageCodes returned. Grabs a random 'numLangs'-1 languages from the array and
    * adds the first language (should be 'eng' for English) to the front of the returned array
    */
-  reduceLanguageDimensionCodes(codes: string[], configurationType: string, numLangs: number): string[] {
-    if((configurationType === "Language") && (codes.length > numLangs)) {
-      let shuffled = codes.slice(1,codes.length -1).sort(() => 0.5 - Math.random());
+  reduceLanguageDimensionCodes(
+    codes: string[],
+    configurationType: string,
+    numLangs: number
+  ): string[] {
+    if (configurationType === 'Language' && codes.length > numLangs) {
+      let shuffled = codes
+        .slice(1, codes.length - 1)
+        .sort(() => 0.5 - Math.random());
       shuffled.unshift(codes[0]); //add first element to the beginning (should be 'eng')
-      return shuffled.slice(0,numLangs);
+      return shuffled.slice(0, numLangs);
     }
     return codes;
   }
 
-  createItemsFromFilters(input: SubgroupFilters, dimensionTypes: string[]): SubgroupItem {
+  createItemsFromFilters(
+    input: SubgroupFilters,
+    dimensionTypes: string[]
+  ): SubgroupItem {
     return {
       source: input,
       subgroup: this.fromFilters(input, dimensionTypes)
@@ -122,20 +149,27 @@ export class SubgroupMapper {
     const translate = code => this.translate.instant(code);
     return {
       id: dimensionGroups
-        .map(dimensionGroup => `${dimensionGroup.type}:${dimensionGroup.values.map(value => value.code).join(',')}`)
+        .map(
+          dimensionGroup =>
+            `${dimensionGroup.type}:${dimensionGroup.values
+              .map(value => value.code)
+              .join(',')}`
+        )
         .join(';'),
       name: dimensionGroups
         .map(dimensionGroup => {
-          const typeName = translate(`common.dimension-short-name.${dimensionGroup.type}`);
+          const typeName = translate(
+            `common.dimension-short-name.${dimensionGroup.type}`
+          );
           const valueNames = dimensionGroup.values
             .map(value => translate(value.translationCode))
             .join(', ');
           return typeName + (valueNames.length ? ': ' : '') + valueNames;
-        }).join(', '),
+        })
+        .join(', '),
       dimensionGroups: dimensionGroups.concat()
     };
   }
-
 }
 
 interface DimensionConfiguration {
@@ -162,7 +196,8 @@ const DimensionConfigurations: DimensionConfiguration[] = [
   },
   {
     type: 'ELAS',
-    getDimensionValueCodes: settings => settings.englishLanguageAcquisitionStatuses,
+    getDimensionValueCodes: settings =>
+      settings.englishLanguageAcquisitionStatuses,
     getTranslationCode: value => `common.elas.${value}`
   },
   {
@@ -192,7 +227,10 @@ const DimensionConfigurations: DimensionConfiguration[] = [
   },
   {
     type: 'StudentEnrolledGrade',
-    getDimensionValueCodes: settings => Utils.isNullOrEmpty(settings.assessmentGrades) ? [] : [ settings.assessmentGrades[ 0 ] ],
+    getDimensionValueCodes: settings =>
+      Utils.isNullOrEmpty(settings.assessmentGrades)
+        ? []
+        : [settings.assessmentGrades[0]],
     getTranslationCode: value => `common.enrolled-grade.${value}`
   },
   {
@@ -202,14 +240,13 @@ const DimensionConfigurations: DimensionConfiguration[] = [
   }
 ];
 
-
 /**
  * Dimension type code to configuration mappings.
  * These configurations help mapping backend-provided and form-provided dimension data into {Dimension}s
  */
-const DimensionConfigurationByType: { [ dimensionType: string ]: DimensionConfiguration } = DimensionConfigurations
-  .reduce((byType, dimension) => {
-    byType[ dimension.type ] = dimension;
-    return byType;
-  }, {});
-
+const DimensionConfigurationByType: {
+  [dimensionType: string]: DimensionConfiguration;
+} = DimensionConfigurations.reduce((byType, dimension) => {
+  byType[dimension.type] = dimension;
+  return byType;
+}, {});

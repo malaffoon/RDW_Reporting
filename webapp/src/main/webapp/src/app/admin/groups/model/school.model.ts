@@ -1,5 +1,5 @@
 export class School {
   id: number = 0;
-  name: string = "";
+  name: string = '';
   naturalId: string;
 }

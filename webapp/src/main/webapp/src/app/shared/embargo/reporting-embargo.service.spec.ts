@@ -1,10 +1,10 @@
-import { ReportingEmbargoService } from "./reporting-embargo.service";
-import { MockDataService } from "../../../test/mock.data.service";
-import { MockUserService } from "../../../test/mock.user.service";
-import { User } from "../../user/user";
-import { inject, TestBed } from "@angular/core/testing";
-import { CachingDataService } from "../data/caching-data.service";
-import { UserService } from "../../user/user.service";
+import { ReportingEmbargoService } from './reporting-embargo.service';
+import { MockDataService } from '../../../test/mock.data.service';
+import { MockUserService } from '../../../test/mock.user.service';
+import { User } from '../../user/user';
+import { inject, TestBed } from '@angular/core/testing';
+import { CachingDataService } from '../data/caching-data.service';
+import { UserService } from '../../user/user.service';
 import { of } from 'rxjs';
 
 describe('ReportingEmbargoService', () => {
@@ -17,7 +17,7 @@ describe('ReportingEmbargoService', () => {
     dataService = new MockDataService();
     dataService.get.and.returnValue(of(true));
 
-    user = {firstName: "first", lastName: "last", permissions: []};
+    user = { firstName: 'first', lastName: 'last', permissions: [] };
     userService = new MockUserService();
     userService.getUser.and.callFake(() => of(user));
 
@@ -30,45 +30,42 @@ describe('ReportingEmbargoService', () => {
     });
   });
 
-  beforeEach(inject([ ReportingEmbargoService ], (injectedSvc: ReportingEmbargoService) => {
-    service = injectedSvc;
-  }));
+  beforeEach(inject(
+    [ReportingEmbargoService],
+    (injectedSvc: ReportingEmbargoService) => {
+      service = injectedSvc;
+    }
+  ));
 
   it('should create', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return embargoed if user has read permissions and embargo is enabled', (done) => {
-    user.permissions.push("EMBARGO_READ");
+  it('should return embargoed if user has read permissions and embargo is enabled', done => {
+    user.permissions.push('EMBARGO_READ');
 
-    service.isEmbargoed().subscribe(
-      embargoed => {
-        expect(embargoed).toBe(true);
-        done();
-      }
-    )
+    service.isEmbargoed().subscribe(embargoed => {
+      expect(embargoed).toBe(true);
+      done();
+    });
   });
 
-  it('should not return embargoed if user does not have read permissions', (done) => {
-    service.isEmbargoed().subscribe(
-      embargoed => {
-        expect(embargoed).toBe(false);
-        expect(dataService.get).not.toHaveBeenCalled();
-        done();
-      }
-    )
+  it('should not return embargoed if user does not have read permissions', done => {
+    service.isEmbargoed().subscribe(embargoed => {
+      expect(embargoed).toBe(false);
+      expect(dataService.get).not.toHaveBeenCalled();
+      done();
+    });
   });
 
-  it('should not return embargoed if embargo is disabled', (done) => {
-    user.permissions.push("EMBARGO_READ");
+  it('should not return embargoed if embargo is disabled', done => {
+    user.permissions.push('EMBARGO_READ');
     dataService.get.and.returnValue(of(false));
 
-    service.isEmbargoed().subscribe(
-      embargoed => {
-        expect(embargoed).toBe(false);
-        expect(dataService.get).toHaveBeenCalled();
-        done();
-      }
-    )
+    service.isEmbargoed().subscribe(embargoed => {
+      expect(embargoed).toBe(false);
+      expect(dataService.get).toHaveBeenCalled();
+      done();
+    });
   });
 });

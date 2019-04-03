@@ -1,4 +1,4 @@
-import { WritingTraitType } from "./writing-trait-type.model";
+import { WritingTraitType } from './writing-trait-type.model';
 
 /**
  * This class represents one of the writing traits (Evidence, Organization, Conventions)

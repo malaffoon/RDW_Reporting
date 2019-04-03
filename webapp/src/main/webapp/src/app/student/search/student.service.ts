@@ -14,30 +14,40 @@ export interface StudentSearch {
 
 @Injectable()
 export class StudentService {
-
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   getStudents(search: StudentSearch): Observable<Student[]> {
-    return this.dataService.get(`${ReportingServiceRoute}/students`, {
-      params: <any>search
-    }).pipe(
-      map(serverStudents => serverStudents.map(serverStudent => <Student>{
-        id: serverStudent.id,
-        ssid: serverStudent.ssid,
-        firstName: serverStudent.firstName,
-        lastName: serverStudent.lastName,
-        gender: serverStudent.genderCode,
-        ethnicities: serverStudent.ethnicityCodes,
-        englishLanguageAcquisitionStatus: serverStudent.englishLanguageAcquisitionStatusCode,
-        individualEducationPlan: this.toBooleanCode(serverStudent.individualEducationPlan),
-        limitedEnglishProficiency: this.toBooleanCode(serverStudent.limitedEnglishProficiency),
-        section504: this.toBooleanCode(serverStudent.section504),
-        migrantStatus: this.toBooleanCode(serverStudent.migrantStatus),
-        languages: serverStudent.languageCode,
-        militaryConnectedCodes: serverStudent.militaryConnectedCode
-      }))
-    );
+    return this.dataService
+      .get(`${ReportingServiceRoute}/students`, {
+        params: <any>search
+      })
+      .pipe(
+        map(serverStudents =>
+          serverStudents.map(
+            serverStudent =>
+              <Student>{
+                id: serverStudent.id,
+                ssid: serverStudent.ssid,
+                firstName: serverStudent.firstName,
+                lastName: serverStudent.lastName,
+                gender: serverStudent.genderCode,
+                ethnicities: serverStudent.ethnicityCodes,
+                englishLanguageAcquisitionStatus:
+                  serverStudent.englishLanguageAcquisitionStatusCode,
+                individualEducationPlan: this.toBooleanCode(
+                  serverStudent.individualEducationPlan
+                ),
+                limitedEnglishProficiency: this.toBooleanCode(
+                  serverStudent.limitedEnglishProficiency
+                ),
+                section504: this.toBooleanCode(serverStudent.section504),
+                migrantStatus: this.toBooleanCode(serverStudent.migrantStatus),
+                languages: serverStudent.languageCode,
+                militaryConnectedCodes: serverStudent.militaryConnectedCode
+              }
+          )
+        )
+      );
   }
 
   /**
@@ -54,5 +64,4 @@ export class StudentService {
     }
     return value ? 'yes' : 'no';
   }
-
 }

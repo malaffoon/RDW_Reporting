@@ -3,9 +3,9 @@ import { Ordering, ordering } from '@kourge/ordering';
 
 export const AssessmentTypeOrdering = ordering(ranking(['sum', 'ica', 'iab']));
 
-export const BooleanOrdering = ordering(ranking([ 'yes', 'no', 'undefined' ]));
+export const BooleanOrdering = ordering(ranking(['yes', 'no', 'undefined']));
 
-export const CompletenessOrdering = ordering(ranking([ 'Complete', 'Partial' ]));
+export const CompletenessOrdering = ordering(ranking(['Complete', 'Partial']));
 
 const SubjectClaimOrder: Map<string, string[]> = new Map([
   ['Math', ['1', '2', '3', '4']],
@@ -24,7 +24,9 @@ const SubjectClaimOrderings: Map<string, Ordering<string>> = new Map([
  * @param {string} subject      A subject code
  * @returns {Ordering<string>}  The ordering for the subject's organizational claim codes
  */
-export function getOrganizationalClaimOrdering(subject: string): Ordering<string> {
+export function getOrganizationalClaimOrdering(
+  subject: string
+): Ordering<string> {
   return SubjectClaimOrderings.has(subject)
     ? SubjectClaimOrderings.get(subject)
     : ordering(byString);

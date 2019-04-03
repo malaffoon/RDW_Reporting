@@ -6,42 +6,49 @@ import { LongitudinalDisplayType } from './longitudinal-display-type';
 
 @Injectable()
 export class DisplayOptionService {
-
-  constructor(private translateService: TranslateService) {
-  }
+  constructor(private translateService: TranslateService) {}
 
   /**
    * @returns {any[]} the common value type display options
    */
   getValueDisplayTypeOptions(): any[] {
-    return ValueDisplayTypes.values()
-      .map(this.createOptionMapper(
-        value => this.translateService.instant(`common.value-display-type.${value}`),
+    return ValueDisplayTypes.values().map(
+      this.createOptionMapper(
+        value =>
+          this.translateService.instant(`common.value-display-type.${value}`),
         value => `Value Display Type: ${value}`
-      ));
-    ;
+      )
+    );
   }
 
   /**
    * @returns {any[]} the common performance level display type options
    */
   getPerformanceLevelDisplayTypeOptions(): any[] {
-    return PerformanceLevelDisplayTypes.values()
-      .map(this.createOptionMapper(
-        value => this.translateService.instant(`common.performance-level-display-type.${value}`),
+    return PerformanceLevelDisplayTypes.values().map(
+      this.createOptionMapper(
+        value =>
+          this.translateService.instant(
+            `common.performance-level-display-type.${value}`
+          ),
         value => `Achievement Level Display Type: ${value}`
-      ));
+      )
+    );
   }
 
   /**
    * @returns {any[]} the longitudinal display type options
    */
   getLongitudinalDisplayTypeOptions(): any[] {
-    return LongitudinalDisplayType.values()
-      .map(this.createOptionMapper(
-        value => this.translateService.instant(`longitudinal-cohort-chart.display-type.${value}`),
+    return LongitudinalDisplayType.values().map(
+      this.createOptionMapper(
+        value =>
+          this.translateService.instant(
+            `longitudinal-cohort-chart.display-type.${value}`
+          ),
         value => `Longitudinal Report Display Type: ${value}`
-      ));
+      )
+    );
   }
 
   /**
@@ -53,21 +60,27 @@ export class DisplayOptionService {
    * @param {(value: any) => string} disabledTextProvider optional disabledTextProvider
    * @returns {any}
    */
-  createOptionMapper(translationProvider: (value: any) => string, analyticsLabelProvider: (value: any) => string, descriptionProvider?: (value: any) => string, disabledTextProvider?: (value: any) => string): any {
+  createOptionMapper(
+    translationProvider: (value: any) => string,
+    analyticsLabelProvider: (value: any) => string,
+    descriptionProvider?: (value: any) => string,
+    disabledTextProvider?: (value: any) => string
+  ): any {
     if (descriptionProvider) {
-      return (value: any) => <any>{
+      return (value: any) =>
+        <any>{
+          value: value,
+          text: translationProvider(value),
+          label: analyticsLabelProvider(value),
+          description: descriptionProvider(value),
+          disabledText: disabledTextProvider(value)
+        };
+    }
+    return (value: any) =>
+      <any>{
         value: value,
         text: translationProvider(value),
-        label: analyticsLabelProvider(value),
-        description: descriptionProvider(value),
-        disabledText: disabledTextProvider(value)
+        label: analyticsLabelProvider(value)
       };
-    }
-    return (value: any) => <any>{
-      value: value,
-      text: translationProvider(value),
-      label: analyticsLabelProvider(value)
-    };
   }
-
 }

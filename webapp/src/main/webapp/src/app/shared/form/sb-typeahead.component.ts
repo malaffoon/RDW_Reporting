@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 /**
  * This typeahead decorates the ngx-bootstrap typeahead directive
@@ -8,25 +8,26 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 @Component({
   selector: 'sb-typeahead,[sb-typeahead]',
   template: `
-    <input class="form-control"
-           id="{{inputId}}"
-           [disabled]="disabledInternal"
-           [typeahead]="options"
-           [typeaheadMinLength]="0"
-           typeaheadOptionField="label"
-           typeaheadGroupField="group"
-           (typeaheadOnSelect)="onSelectInternal($event.item)"
-           (ngModelChange)="onChangeInternal()"
-           [(ngModel)]="search"
-           placeholder="{{placeholder}}"
-           [typeaheadOptionsLimit]="100"
-           [typeaheadOptionsInScrollableView]="20"
-           [typeaheadScrollable]="true"
-           autocomplete="off">
+    <input
+      class="form-control"
+      id="{{ inputId }}"
+      [disabled]="disabledInternal"
+      [typeahead]="options"
+      [typeaheadMinLength]="0"
+      typeaheadOptionField="label"
+      typeaheadGroupField="group"
+      (typeaheadOnSelect)="onSelectInternal($event.item)"
+      (ngModelChange)="onChangeInternal()"
+      [(ngModel)]="search"
+      placeholder="{{ placeholder }}"
+      [typeaheadOptionsLimit]="100"
+      [typeaheadOptionsInScrollableView]="20"
+      [typeaheadScrollable]="true"
+      autocomplete="off"
+    />
   `
 })
 export class SBTypeahead implements OnInit {
-
   /**
    * Emits the value when the value changes.
    * This is different than select in that it will emit when the value changes programmatically.
@@ -108,7 +109,6 @@ export class SBTypeahead implements OnInit {
     }
     return '';
   }
-
 }
 
 export interface Option {

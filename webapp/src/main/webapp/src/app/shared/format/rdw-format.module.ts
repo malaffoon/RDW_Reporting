@@ -1,8 +1,8 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule } from "@angular/forms";
-import { SchoolYearPipe } from "./school-year.pipe";
-import { SchoolYearsPipe } from "./school-years.pipe";
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { SchoolYearPipe } from './school-year.pipe';
+import { SchoolYearsPipe } from './school-years.pipe';
 import { SessionPipe } from './session.pipe';
 import { StudentNamePipe } from './student-name.pipe';
 import { StudentNameService } from './student-name.service';
@@ -16,10 +16,7 @@ import { StudentPipe } from './student.pipe';
     StudentNamePipe,
     StudentPipe
   ],
-  imports: [
-    BrowserModule,
-    FormsModule
-  ],
+  imports: [BrowserModule, FormsModule],
   exports: [
     SchoolYearPipe,
     SchoolYearsPipe,
@@ -36,5 +33,4 @@ import { StudentPipe } from './student.pipe';
     StudentPipe
   ]
 })
-export class RdwFormatModule {
-}
+export class RdwFormatModule {}

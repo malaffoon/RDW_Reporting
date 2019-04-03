@@ -1,45 +1,81 @@
-<a class="card assessment-aggregate"
-   href="javascript:void(0)"
-   [ngClass]="{selected: selected}"
-   (click)="selectCard()">
-
+<a
+  class="card assessment-aggregate"
+  href="javascript:void(0)"
+  [ngClass]="{ selected: selected }"
+  (click)="selectCard()"
+>
   <div class="check">
     <i class="fa fa-check"></i>
   </div>
 
   <div class="row">
-    <div class="col-xs-4"
-         [hidden]="!hasIcon">
+    <div class="col-xs-4" [hidden]="!hasIcon">
       <div class="icon-wrapper">
-        <assessment-icon [assessment]="measuredAssessment.assessment"
-                         (missingIcon)="hasIcon = !$event"></assessment-icon>
+        <assessment-icon
+          [assessment]="measuredAssessment.assessment"
+          (missingIcon)="hasIcon = !$event"
+        ></assessment-icon>
       </div>
     </div>
     <div [ngClass]="hasIcon ? 'col-xs-8' : 'col-xs-12'">
-      <div class="label"
-           [ngClass]="getGradeColor()">
-        {{'common.assessment-grade-short-label.' + measuredAssessment.assessment.grade | translate}}
+      <div class="label" [ngClass]="getGradeColor()">
+        {{
+          'common.assessment-grade-short-label.' +
+            measuredAssessment.assessment.grade | translate
+        }}
       </div>
       <div class="title">
-        {{measuredAssessment.assessment.label}}
+        {{ measuredAssessment.assessment.label }}
       </div>
     </div>
   </div>
 
   <div class="students mt-sm">
-      <span class="caption"
-            [innerHTML]="'assessment-card.student-count' | translate: {studentsTested: measuredAssessment.studentsTested, groupCount: group.totalStudents }"></span>
+    <span
+      class="caption"
+      [innerHTML]="
+        'assessment-card.student-count'
+          | translate
+            : {
+                studentsTested: measuredAssessment.studentsTested,
+                groupCount: group.totalStudents
+              }
+      "
+    ></span>
   </div>
   <div class="aggregate-graph row">
-    <div class="perc-container col-xs-4"
-         *ngFor="let level of performanceLevels; let i = index">
+    <div
+      class="perc-container col-xs-4"
+      *ngFor="let level of performanceLevels; let i = index"
+    >
       <div class="bar">
-        <span class="square"
-              [ngClass]="'subject.' + measuredAssessment.assessment.subject + '.asmt-type.' + measuredAssessment.assessment.type + '.level.' + level + '.color' | translate"></span>
-        <strong>{{ 'common.value-display-type-format.Percent' | translate: { value: percents[i] } }}</strong>
+        <span
+          class="square"
+          [ngClass]="
+            'subject.' +
+              measuredAssessment.assessment.subject +
+              '.asmt-type.' +
+              measuredAssessment.assessment.type +
+              '.level.' +
+              level +
+              '.color' | translate
+          "
+        ></span>
+        <strong>{{
+          'common.value-display-type-format.Percent'
+            | translate: { value: percents[i] }
+        }}</strong>
       </div>
       <div class="bar description">
-        <span>{{ 'subject.' + measuredAssessment.assessment.subject + '.asmt-type.' + measuredAssessment.assessment.type + '.level.' + level + '.name' | translate }}</span>
+        <span>{{
+          'subject.' +
+            measuredAssessment.assessment.subject +
+            '.asmt-type.' +
+            measuredAssessment.assessment.type +
+            '.level.' +
+            level +
+            '.name' | translate
+        }}</span>
       </div>
     </div>
   </div>

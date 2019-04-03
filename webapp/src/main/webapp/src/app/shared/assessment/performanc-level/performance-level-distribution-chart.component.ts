@@ -10,10 +10,9 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'performance-level-distribution-chart',
   templateUrl: 'performance-level-distribution-chart.component.html',
-  host: { 'class': 'performance-level-distribution-chart' }
+  host: { class: 'performance-level-distribution-chart' }
 })
 export class PerformanceLevelDistributionChart implements OnInit {
-
   private _percentages: number[] = [];
   private _subjectDefinition: SubjectDefinition;
   private _cutPoint: number;
@@ -21,11 +20,13 @@ export class PerformanceLevelDistributionChart implements OnInit {
   private _displayType: string = PerformanceLevelDisplayTypes.Separate;
   private _loaded: boolean = false;
   private _visible: boolean = true;
-  private _performanceLevelBarsByDisplayType: Map<string, Map<boolean, PerformanceLevelBars>> = new Map();
+  private _performanceLevelBarsByDisplayType: Map<
+    string,
+    Map<boolean, PerformanceLevelBars>
+  > = new Map();
   private _useClaimColors: boolean = false;
 
-  constructor(private translateService: TranslateService) {
-  }
+  constructor(private translateService: TranslateService) {}
 
   /**
    * The performance level percentages
@@ -136,7 +137,9 @@ export class PerformanceLevelDistributionChart implements OnInit {
    * @returns {PerformanceLevelBars}
    */
   get performanceLevelBars(): PerformanceLevelBars {
-    return this._performanceLevelBarsByDisplayType.get(this.displayType).get(this.center);
+    return this._performanceLevelBarsByDisplayType
+      .get(this.displayType)
+      .get(this.center);
   }
 
   ngOnInit(): void {
@@ -169,7 +172,11 @@ export class PerformanceLevelDistributionChart implements OnInit {
       throw new Error('display type undefined');
     }
     if (this.cutPoint < 0 && this.cutPoint >= this.percentages.length) {
-      throw new Error('Cut point must be a positive integer between 0 and the number of values (' + this.percentages.length + ')');
+      throw new Error(
+        'Cut point must be a positive integer between 0 and the number of values (' +
+          this.percentages.length +
+          ')'
+      );
     }
   }
 
@@ -177,22 +184,23 @@ export class PerformanceLevelDistributionChart implements OnInit {
    * Computes all bar view configurations for quick switching of display type and centered properties
    */
   private computeBars(): void {
-
     const cutPoint: number = this.effectiveCutPoint;
     const cutPointIndex: number = cutPoint - 1;
     const sum = (total, value) => total + value;
 
     // create bars to switch to when performance level display type is switched
-    const separateBars: PerformanceLevelBar[] = this.percentages
-      .map((value, index) => <PerformanceLevelBar>{
-        width: value,
-        classes: this.getPerformanceLevelColor(index+1)
-      });
+    const separateBars: PerformanceLevelBar[] = this.percentages.map(
+      (value, index) =>
+        <PerformanceLevelBar>{
+          width: value,
+          classes: this.getPerformanceLevelColor(index + 1)
+        }
+    );
 
     const groupedBars: PerformanceLevelBar[] = [
       {
         width: this.percentages.slice(0, cutPointIndex).reduce(sum),
-        classes: this.getPerformanceLevelColor(cutPoint-1)
+        classes: this.getPerformanceLevelColor(cutPoint - 1)
       },
       {
         width: this.percentages.slice(cutPointIndex).reduce(sum),
@@ -203,22 +211,36 @@ export class PerformanceLevelDistributionChart implements OnInit {
     this._visible = this.percentages.reduce(sum) > 0;
 
     // create bars to switch to when centered flag is switched
-    this._performanceLevelBarsByDisplayType
-      .set(PerformanceLevelDisplayTypes.Separate, new Map<boolean, PerformanceLevelBars>([
-        [ true, { left: separateBars.slice(0, cutPointIndex), right: separateBars.slice(cutPointIndex) } ],
-        [ false, { left: separateBars, right: [] } ]
-      ]));
+    this._performanceLevelBarsByDisplayType.set(
+      PerformanceLevelDisplayTypes.Separate,
+      new Map<boolean, PerformanceLevelBars>([
+        [
+          true,
+          {
+            left: separateBars.slice(0, cutPointIndex),
+            right: separateBars.slice(cutPointIndex)
+          }
+        ],
+        [false, { left: separateBars, right: [] }]
+      ])
+    );
 
-    this._performanceLevelBarsByDisplayType
-      .set(PerformanceLevelDisplayTypes.Grouped, new Map<boolean, PerformanceLevelBars>([
-        [ true, { left: [ groupedBars[ 0 ] ], right: [ groupedBars[ 1 ] ] } ],
-        [ false, { left: groupedBars, right: [] } ]
-      ]));
+    this._performanceLevelBarsByDisplayType.set(
+      PerformanceLevelDisplayTypes.Grouped,
+      new Map<boolean, PerformanceLevelBars>([
+        [true, { left: [groupedBars[0]], right: [groupedBars[1]] }],
+        [false, { left: groupedBars, right: [] }]
+      ])
+    );
   }
 
   private getPerformanceLevelColor(level: number) {
     const claimPlaceholder = this.useClaimColors ? 'claim-score.' : '';
-    return this.translateService.instant(`subject.${this.subjectDefinition.subject}.asmt-type.${this.subjectDefinition.assessmentType}.${claimPlaceholder}level.${level}.color`);
+    return this.translateService.instant(
+      `subject.${this.subjectDefinition.subject}.asmt-type.${
+        this.subjectDefinition.assessmentType
+      }.${claimPlaceholder}level.${level}.color`
+    );
   }
 
   /**
@@ -229,14 +251,12 @@ export class PerformanceLevelDistributionChart implements OnInit {
       ? Math.ceil(this.percentages.length * 0.5)
       : this._cutPoint;
   }
-
 }
 
 /**
  * Performance level views categorized by display location
  */
 interface PerformanceLevelBars {
-
   /**
    * Bars left of center when center is true
    * All bars when center is false
@@ -247,14 +267,12 @@ interface PerformanceLevelBars {
    * Bars right of center when center is true
    */
   readonly right: PerformanceLevelBar[];
-
 }
 
 /**
  * A performance level view
  */
 interface PerformanceLevelBar {
-
   /**
    * The bar's width [0 - 100]
    */
@@ -264,5 +282,4 @@ interface PerformanceLevelBar {
    * The bar's css classes
    */
   readonly classes: string;
-
 }

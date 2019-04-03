@@ -1,46 +1,77 @@
 <div class="white-space-normal">
   <p>
-    <strong>{{ 'item-info.claim' | translate}}</strong>
-    {{ 'subject.' + subject + '.claim.' + item.claim + '.description' | translate }}
+    <strong>{{ 'item-info.claim' | translate }}</strong>
+    {{
+      'subject.' + subject + '.claim.' + item.claim + '.description' | translate
+    }}
   </p>
   <p>
     <strong>
       {{
-        'common.results.assessment-item-target' | translate:{
-            target: 'subject.' + subject + '.claim.' + item.claim + '.target.' + item.targetNaturalId + '.name' | translate
-        }
+        'common.results.assessment-item-target'
+          | translate
+            : {
+                target:
+                  'subject.' +
+                    subject +
+                    '.claim.' +
+                    item.claim +
+                    '.target.' +
+                    item.targetNaturalId +
+                    '.name' | translate
+              }
       }}:
     </strong>
-    {{ 'subject.' + subject + '.claim.' + item.claim + '.target.' + item.targetNaturalId + '.description' | translate }}
+    {{
+      'subject.' +
+        subject +
+        '.claim.' +
+        item.claim +
+        '.target.' +
+        item.targetNaturalId +
+        '.description' | translate
+    }}
   </p>
   <p *ngIf="item.depthOfKnowledge">
-    <strong>{{ 'item-info.dok-label' | translate}}</strong>
-    {{ 'subject.' + subject + '.dok.' + item.depthOfKnowledge.level + '.name' | translate }}
-    <a href="{{item.depthOfKnowledge.referenceUrl}}" target="_blank">{{ 'item-info.view-ref' | translate}}</a>
+    <strong>{{ 'item-info.dok-label' | translate }}</strong>
+    {{
+      'subject.' + subject + '.dok.' + item.depthOfKnowledge.level + '.name'
+        | translate
+    }}
+    <a href="{{ item.depthOfKnowledge.referenceUrl }}" target="_blank">{{
+      'item-info.view-ref' | translate
+    }}</a>
   </p>
   <p>
-    <strong>{{ 'item-info.difficulty' | translate}}</strong>
+    <strong>{{ 'item-info.difficulty' | translate }}</strong>
     {{ 'common.difficulty.' + item.difficulty | translate }}
   </p>
   <span *ngIf="item.commonCoreStandardIds">
-    <p><strong>{{ 'item-info.ccs' | translate}}</strong></p>
+    <p>
+      <strong>{{ 'item-info.ccs' | translate }}</strong>
+    </p>
     <p *ngFor="let standard of item.commonCoreStandardIds">
       <span class="label border-only blue mr-xs">
         {{ standard }}
       </span>
-      {{ 'subject.' + subject + '.standard.' + standard + '.description' | translate }}
+      {{
+        'subject.' + subject + '.standard.' + standard + '.description'
+          | translate
+      }}
     </p>
   </span>
   <p *ngIf="item.mathPractice">
-    <strong>{{ 'item-info.math' | translate}}</strong>
+    <strong>{{ 'item-info.math' | translate }}</strong>
     {{ 'item-info.math-practice.description.' + item.mathPractice | translate }}
   </p>
   <p *ngIf="item.allowCalculator">
-    <strong>{{ 'item-info.calculator' | translate}}</strong>
+    <strong>{{ 'item-info.calculator' | translate }}</strong>
     {{ 'common.polar.' + item.allowCalculator | translate }}
   </p>
   <p>
-    <strong>{{ 'item-info.docs' | translate}}</strong>
-    <a href="{{interpretiveGuideUrl}}" target="_blank">{{ 'item-info.guide' | translate}}</a>
+    <strong>{{ 'item-info.docs' | translate }}</strong>
+    <a href="{{ interpretiveGuideUrl }}" target="_blank">{{
+      'item-info.guide' | translate
+    }}</a>
   </p>
 </div>

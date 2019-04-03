@@ -10,24 +10,27 @@ import { CachingDataService } from '../shared/data/caching-data.service';
 
 @Injectable()
 export class GroupService {
-
-  constructor(private dataService: DataService,
-              private cachingDataService: CachingDataService) {
-  }
+  constructor(
+    private dataService: DataService,
+    private cachingDataService: CachingDataService
+  ) {}
 
   getGroups(): Observable<Group[]> {
-    return this.cachingDataService.get(`${ReportingServiceRoute}/groups`).pipe(
-      map(serverGroups => serverGroups
-        .map(serverGroup => this.toGroup(serverGroup))
-        .sort(ordering(byString).on<Group>(group => group.name).compare)
-      )
-    );
+    return this.cachingDataService
+      .get(`${ReportingServiceRoute}/groups`)
+      .pipe(
+        map(serverGroups =>
+          serverGroups
+            .map(serverGroup => this.toGroup(serverGroup))
+            .sort(ordering(byString).on<Group>(group => group.name).compare)
+        )
+      );
   }
 
   getGroup(groupId: number): Observable<Group> {
-    return this.dataService.get(`${ReportingServiceRoute}/groups/${groupId}`).pipe(
-      map(serverGroup => this.toGroup(serverGroup))
-    );
+    return this.dataService
+      .get(`${ReportingServiceRoute}/groups/${groupId}`)
+      .pipe(map(serverGroup => this.toGroup(serverGroup)));
   }
 
   private toGroup(serverGroup: any): Group {
@@ -41,5 +44,4 @@ export class GroupService {
       totalStudents: serverGroup.studentCount
     };
   }
-
 }

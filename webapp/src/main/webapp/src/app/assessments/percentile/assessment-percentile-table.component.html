@@ -1,31 +1,46 @@
-<p-table [columns]="columns"
-         [value]="percentiles">
+<p-table [columns]="columns" [value]="percentiles">
   <ng-template pTemplate="header" let-columns let-rowIndex>
     <tr>
-      <th *ngFor="let column of columns"
-          [ngClass]="{'level-down': column === columns[4]}">
-        {{column.headerTranslationCode ? (column.headerTranslationCode | translate) : column.header}}
+      <th
+        *ngFor="let column of columns"
+        [ngClass]="{ 'level-down': column === columns[4] }"
+      >
+        {{
+          column.headerTranslationCode
+            ? (column.headerTranslationCode | translate)
+            : column.header
+        }}
       </th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-percentile>
     <tr>
-      <td>{{'assessment-percentile-table.column.effective-date.value-format' | translate:({
-        from: (percentile.startDate | date),
-        to: (percentile.endDate | date)
-      })}}</td>
-      <td>{{percentile.count | number}}</td>
-      <td>{{percentile.mean}}</td>
-      <td>{{percentile.standardDeviation}}</td>
-      <td *ngFor="let score of percentile.scores"
-          [ngClass]="{'level-down': score === percentile.scores[0]}">{{score.score}}</td>
+      <td>
+        {{
+          'assessment-percentile-table.column.effective-date.value-format'
+            | translate
+              : {
+                  from: percentile.startDate | date,
+                  to: percentile.endDate | date
+                }
+        }}
+      </td>
+      <td>{{ percentile.count | number }}</td>
+      <td>{{ percentile.mean }}</td>
+      <td>{{ percentile.standardDeviation }}</td>
+      <td
+        *ngFor="let score of percentile.scores"
+        [ngClass]="{ 'level-down': score === percentile.scores[0] }"
+      >
+        {{ score.score }}
+      </td>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="emptymessage" let-columns>
     <tr>
       <td [attr.colspan]="columns.length">
-        {{'common.no-results' | translate}}
+        {{ 'common.no-results' | translate }}
       </td>
     </tr>
   </ng-template>

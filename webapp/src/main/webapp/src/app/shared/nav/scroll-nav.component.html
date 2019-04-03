@@ -1,11 +1,16 @@
 <nav class="sidebar">
   <ul class="nav nav-pills nav-stacked">
     <li *ngFor="let item of items">
-      <a class="navbar-link small"
-         href="javascript:void(0)"
-         [ngClass]="{active: item === activeItem}"
-         [class]="item.classes"
-         (click)="onItemClickInternal(item)"><ng-container *ngIf="item.iconClasses"><i [class]="item.iconClasses"></i> </ng-container>{{item.text}}</a>
+      <a
+        class="navbar-link small"
+        href="javascript:void(0)"
+        [ngClass]="{ active: item === activeItem }"
+        [class]="item.classes"
+        (click)="onItemClickInternal(item)"
+        ><ng-container *ngIf="item.iconClasses"
+          ><i [class]="item.iconClasses"></i> </ng-container
+        >{{ item.text }}</a
+      >
     </li>
   </ul>
   <ng-content></ng-content>

@@ -1,14 +1,22 @@
 import Spy = jasmine.Spy;
-import { DefaultLangChangeEvent, LangChangeEvent, TranslationChangeEvent } from "@ngx-translate/core";
-import { EventEmitter } from "@angular/core";
+import {
+  DefaultLangChangeEvent,
+  LangChangeEvent,
+  TranslationChangeEvent
+} from '@ngx-translate/core';
+import { EventEmitter } from '@angular/core';
 import { of } from 'rxjs';
 
 export class MockTranslateService {
-  instant: Spy = jasmine.createSpy("instant");
-  get: Spy = jasmine.createSpy("get");
-  onTranslationChange: EventEmitter<TranslationChangeEvent> = new EventEmitter();
+  instant: Spy = jasmine.createSpy('instant');
+  get: Spy = jasmine.createSpy('get');
+  onTranslationChange: EventEmitter<
+    TranslationChangeEvent
+  > = new EventEmitter();
   onLangChange: EventEmitter<LangChangeEvent> = new EventEmitter();
-  onDefaultLangChange: EventEmitter<DefaultLangChangeEvent> = new EventEmitter();
+  onDefaultLangChange: EventEmitter<
+    DefaultLangChangeEvent
+  > = new EventEmitter();
 
   constructor() {
     this.instant.and.callFake((key: string | Array<string>) => key);

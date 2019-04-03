@@ -6,7 +6,6 @@ import { Group } from './group';
   templateUrl: 'group-table.component.html'
 })
 export class GroupTableComponent {
-
   @Input()
   groups: Group[];
 
@@ -15,7 +14,6 @@ export class GroupTableComponent {
     new Column({ id: 'school', field: 'schoolName' }),
     new Column({ id: 'subject', field: 'subjectCode' })
   ];
-
 }
 
 class Column {

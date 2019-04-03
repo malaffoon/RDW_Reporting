@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { RequestOptionsArgs } from "@angular/http";
-import { Observable ,  of } from "rxjs";
-import { DataService } from "./data.service";
+import { Injectable } from '@angular/core';
+import { RequestOptionsArgs } from '@angular/http';
+import { Observable, of } from 'rxjs';
+import { DataService } from './data.service';
 import { share, tap } from 'rxjs/operators';
 import { serializeURLParameters } from '../support/support';
 
@@ -11,7 +11,6 @@ import { serializeURLParameters } from '../support/support';
  */
 @Injectable()
 export class CachingDataService {
-
   /**
    * The in-progress http requests indexed by URL
    *
@@ -26,11 +25,9 @@ export class CachingDataService {
    */
   private responsesByUrl: Map<string, any> = new Map();
 
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   public get(url: string, options?: RequestOptionsArgs): Observable<any> {
-
     const cacheKey = this.createKey(url, options);
 
     const response = this.responsesByUrl.get(cacheKey);
@@ -62,6 +59,4 @@ export class CachingDataService {
     const parameters = options.params || options.search || {};
     return url + '?' + serializeURLParameters(parameters);
   }
-
 }
-

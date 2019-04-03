@@ -3,7 +3,7 @@ import createSpy = jasmine.createSpy;
 import { EventEmitter } from '@angular/core';
 
 export class MockActivatedRoute {
-  snapshotResult: Spy = createSpy("snapshot");
+  snapshotResult: Spy = createSpy('snapshot');
   params: EventEmitter<any> = new EventEmitter();
   data: EventEmitter<any> = new EventEmitter();
 
@@ -11,4 +11,3 @@ export class MockActivatedRoute {
     return this.snapshotResult();
   }
 }
-

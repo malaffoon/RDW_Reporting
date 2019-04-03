@@ -42,9 +42,7 @@ import { GroupTabsComponent } from './group-tabs.component';
     UserModule,
     UserGroupModule
   ],
-  exports: [
-    GroupTabsComponent
-  ],
+  exports: [GroupTabsComponent],
   providers: [
     GroupService,
     GroupAssessmentResolve,
@@ -52,5 +50,4 @@ import { GroupTabsComponent } from './group-tabs.component';
     GroupAssessmentExportService
   ]
 })
-export class GroupsModule {
-}
+export class GroupsModule {}

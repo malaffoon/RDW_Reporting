@@ -30,13 +30,13 @@ export function copy(group: UserGroup): UserGroup {
 
 export function equals(a: UserGroup, b: UserGroup): boolean {
   const idsOf = (students: Student[]) => students.map(student => student.id);
-  return a === b
-    || (
-      a != null
-      && b != null
-      && a.id === b.id
-      && a.name === b.name
-      && Utils.equalSets(a.subjects, b.subjects)
-      && Utils.equalSets(idsOf(a.students), idsOf(b.students))
-    );
+  return (
+    a === b ||
+    (a != null &&
+      b != null &&
+      a.id === b.id &&
+      a.name === b.name &&
+      Utils.equalSets(a.subjects, b.subjects) &&
+      Utils.equalSets(idsOf(a.students), idsOf(b.students)))
+  );
 }

@@ -1,4 +1,4 @@
-import { Observable ,  Observer } from "rxjs";
+import { Observable, Observer } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 export class ObservableObject {
@@ -11,7 +11,9 @@ export class ObservableObject {
   private oldObject: any = {};
 
   constructor() {
-    this._onChanges = new Observable<any>(observer => this.onChangesObserver = observer).pipe(share());
+    this._onChanges = new Observable<any>(
+      observer => (this.onChangesObserver = observer)
+    ).pipe(share());
     Object.assign(this.oldObject, this);
   }
 
@@ -22,9 +24,9 @@ export class ObservableObject {
       return;
     }
 
-    if (this[ property ] !== this.oldObject[ property ]) {
+    if (this[property] !== this.oldObject[property]) {
       this.onChangesObserver.next(property);
-      this.oldObject[ property ] = this[ property ];
+      this.oldObject[property] = this[property];
     }
   }
 }

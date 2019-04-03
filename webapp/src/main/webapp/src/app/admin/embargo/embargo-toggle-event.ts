@@ -1,12 +1,11 @@
-import { Embargo } from "./embargo";
-import { Toggle } from "./toggle.component";
-import { EmbargoScope } from "./embargo-scope.enum";
+import { Embargo } from './embargo';
+import { Toggle } from './toggle.component';
+import { EmbargoScope } from './embargo-scope.enum';
 
 /**
  * Holds all information necessary to present the user with a confirmation modal regarding their toggle selection
  */
 export interface EmbargoToggleEvent {
-
   /**
    * The toggle clicked to initiate the event
    */
@@ -41,5 +40,4 @@ export interface EmbargoToggleEvent {
    * True if there is an overriding embargo and its embargo for the given scope is enabled
    */
   readonly overridingEmbargoEnabled: boolean;
-
 }

@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Utils } from "./support/support";
-import { AbstractControlValueAccessor } from "./form/abstract-control-value-accessor";
-import { Forms } from "./form/forms";
+import { Component, Input, OnInit } from '@angular/core';
+import { Utils } from './support/support';
+import { AbstractControlValueAccessor } from './form/abstract-control-value-accessor';
+import { Forms } from './form/forms';
 
 const DefaultButtonGroupStyles = 'btn-group-sm';
 const DefaultButtonStyles = 'btn-primary';
@@ -15,34 +15,42 @@ const DefaultButtonStyles = 'btn-primary';
 @Component({
   selector: 'sb-toggle,sb-radio-button-group',
   template: `
-    <div class="btn-group toggle-group"
-         [ngClass]="buttonGroupStyles"
-         data-toggle="buttons">
-      <label *ngFor="let option of options"
-             class="btn"
-             [ngClass]="computeStylesInternal(buttonStyles, {
-                 active: option.value === value, 
-                 disabled: disabled
-             })">
-        <input type="radio"
-               id="{{name}}"
-               name="{{name}}"
-               [disabled]="disabled"
-               [value]="option.value"
-               [(ngModel)]="value"
-               angulartics2On="click"
-               angularticsAction="{{analyticsEvent}}"
-               angularticsCategory="{{analyticsCategory}}"
-               [angularticsProperties]="option.analyticsProperties || {label: option.text}">{{option.text}}
+    <div
+      class="btn-group toggle-group"
+      [ngClass]="buttonGroupStyles"
+      data-toggle="buttons"
+    >
+      <label
+        *ngFor="let option of options"
+        class="btn"
+        [ngClass]="
+          computeStylesInternal(buttonStyles, {
+            active: option.value === value,
+            disabled: disabled
+          })
+        "
+      >
+        <input
+          type="radio"
+          id="{{ name }}"
+          name="{{ name }}"
+          [disabled]="disabled"
+          [value]="option.value"
+          [(ngModel)]="value"
+          angulartics2On="click"
+          angularticsAction="{{ analyticsEvent }}"
+          angularticsCategory="{{ analyticsCategory }}"
+          [angularticsProperties]="
+            option.analyticsProperties || { label: option.text }
+          "
+        />{{ option.text }}
       </label>
     </div>
   `,
-  providers: [
-    Forms.valueAccessor(SBToggleComponent)
-  ]
+  providers: [Forms.valueAccessor(SBToggleComponent)]
 })
-export class SBToggleComponent extends AbstractControlValueAccessor<any> implements OnInit {
-
+export class SBToggleComponent extends AbstractControlValueAccessor<any>
+  implements OnInit {
   @Input()
   disabled: boolean = false;
 
@@ -92,10 +100,13 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
     if (options == null || typeof options === 'undefined') {
       this.throwError('options must not be null or undefined');
     }
-    this._options = options.map(option => <Option>{
-      value: option.value,
-      text: option.text ? option.text : option.value
-    });
+    this._options = options.map(
+      option =>
+        <Option>{
+          value: option.value,
+          text: option.text ? option.text : option.value
+        }
+    );
   }
 
   ngOnInit() {
@@ -111,7 +122,6 @@ export class SBToggleComponent extends AbstractControlValueAccessor<any> impleme
   private throwError(message: string): void {
     throw new Error(this.constructor.name + ' ' + message);
   }
-
 }
 
 /**

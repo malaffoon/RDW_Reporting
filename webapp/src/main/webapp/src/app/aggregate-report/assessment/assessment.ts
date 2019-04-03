@@ -1,5 +1,4 @@
 export interface Assessment {
-
   readonly id: number;
   readonly name: string;
   readonly label: string;
@@ -9,5 +8,4 @@ export interface Assessment {
   readonly gradeSequence: number;
   readonly schoolYear: number;
   readonly cutPoints: number[];
-
 }

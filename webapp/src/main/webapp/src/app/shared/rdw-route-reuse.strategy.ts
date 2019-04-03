@@ -1,9 +1,12 @@
-import { RouteReuseStrategy, DetachedRouteHandle, ActivatedRouteSnapshot } from "@angular/router";
-import { HomeComponent } from "../home/home.component";
+import {
+  RouteReuseStrategy,
+  DetachedRouteHandle,
+  ActivatedRouteSnapshot
+} from '@angular/router';
+import { HomeComponent } from '../home/home.component';
 
 export class RdwRouteReuseStrategy implements RouteReuseStrategy {
-
-  handlers: { [key: string]: DetachedRouteHandle|any } = {};
+  handlers: { [key: string]: DetachedRouteHandle | any } = {};
 
   /**
    * Determines if this route (and its subtree) should be detached to be reused later
@@ -11,7 +14,7 @@ export class RdwRouteReuseStrategy implements RouteReuseStrategy {
    * @returns returns true if the route's data.canReuse evaluates as truthy
    */
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return route.data[ "canReuse" ];
+    return route.data['canReuse'];
   }
 
   /**
@@ -19,19 +22,25 @@ export class RdwRouteReuseStrategy implements RouteReuseStrategy {
    * @param route The current route
    * @param handle The handle to save.
    */
-  store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle|any): void {
+  store(
+    route: ActivatedRouteSnapshot,
+    handle: DetachedRouteHandle | any
+  ): void {
     // Only allow one handler per component type to minimize memory usage
     for (let key in this.handlers) {
-      if (this.handlers[ key ]
-        && this.handlers[ key ].componentRef
-        && handle
-        && handle.componentRef
-        && this.handlers[ key ].componentRef.componentType == handle.componentRef.componentType) {
-        this.handlers[ key ] = null;
+      if (
+        this.handlers[key] &&
+        this.handlers[key].componentRef &&
+        handle &&
+        handle.componentRef &&
+        this.handlers[key].componentRef.componentType ==
+          handle.componentRef.componentType
+      ) {
+        this.handlers[key] = null;
       }
     }
 
-    this.handlers[ this.getKey(route) ] = handle;
+    this.handlers[this.getKey(route)] = handle;
   }
 
   /**
@@ -45,7 +54,11 @@ export class RdwRouteReuseStrategy implements RouteReuseStrategy {
       return false;
     }
 
-    return route.data[ "canReuse" ] && !!route.routeConfig && !!this.handlers[ this.getKey(route) ];
+    return (
+      route.data['canReuse'] &&
+      !!route.routeConfig &&
+      !!this.handlers[this.getKey(route)]
+    );
   }
 
   /**
@@ -54,10 +67,9 @@ export class RdwRouteReuseStrategy implements RouteReuseStrategy {
    * @returns the previously stored route or null
    */
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
-    if (!route.data[ "canReuse" ] || !route.routeConfig)
-      return null;
+    if (!route.data['canReuse'] || !route.routeConfig) return null;
 
-    return this.handlers[ this.getKey(route) ];
+    return this.handlers[this.getKey(route)];
   }
 
   /**
@@ -66,11 +78,14 @@ export class RdwRouteReuseStrategy implements RouteReuseStrategy {
    * @param curr The route being navigated from
    * @returns true if the route should be reused.
    */
-  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+  shouldReuseRoute(
+    future: ActivatedRouteSnapshot,
+    curr: ActivatedRouteSnapshot
+  ): boolean {
     return future.routeConfig === curr.routeConfig;
   }
 
   private getKey(route: ActivatedRouteSnapshot) {
-    return route.parent.url.join("/");
+    return route.parent.url.join('/');
   }
 }

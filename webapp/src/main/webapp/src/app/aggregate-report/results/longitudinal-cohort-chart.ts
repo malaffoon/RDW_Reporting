@@ -5,7 +5,6 @@ import { Subgroup } from '../subgroup/subgroup';
  * Logical modal for the longitudinal cohort chart
  */
 export interface LongitudinalCohortChart {
-
   /**
    * Assessment performance levels over a span of year/grades
    */
@@ -15,7 +14,6 @@ export interface LongitudinalCohortChart {
    * Organization performance over a span of year/Grades
    */
   readonly organizationPerformances: OrganizationPerformance[];
-
 }
 
 /**

@@ -10,13 +10,13 @@ import { AuthorizationService } from './authorization.service';
  */
 @Directive({ selector: '[hasPermission],[hasAnyPermission]' })
 export class AuthorizationDirective {
-
   private displayed: boolean;
 
-  constructor(private authorizationService: AuthorizationService,
-              private templateRef: TemplateRef<any>,
-              private viewContainer: ViewContainerRef) {
-  }
+  constructor(
+    private authorizationService: AuthorizationService,
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef
+  ) {}
 
   /**
    * Will display the view if the user has the provided permission
@@ -26,9 +26,11 @@ export class AuthorizationDirective {
   @Input()
   set hasPermission(permission: string) {
     if (!permission) {
-      throw new Error('Directive "hasPermission" permission argument must not be null or undefined');
+      throw new Error(
+        'Directive "hasPermission" permission argument must not be null or undefined'
+      );
     }
-    this.update([ permission ]);
+    this.update([permission]);
   }
 
   /**
@@ -39,7 +41,9 @@ export class AuthorizationDirective {
   @Input()
   set hasAnyPermission(permissions: string[]) {
     if (!permissions || permissions.length === 0) {
-      throw new Error('Directive "hasAnyPermission" argument must not be null, undefined or empty');
+      throw new Error(
+        'Directive "hasAnyPermission" argument must not be null, undefined or empty'
+      );
     }
     this.update(permissions);
   }
@@ -52,7 +56,8 @@ export class AuthorizationDirective {
   }
 
   private update(permissions: string[]): void {
-    this.authorizationService.hasAnyPermission(permissions)
+    this.authorizationService
+      .hasAnyPermission(permissions)
       .subscribe(hasPermission => {
         if (hasPermission && !this.displayed) {
           this.viewContainer.createEmbeddedView(this.templateRef);

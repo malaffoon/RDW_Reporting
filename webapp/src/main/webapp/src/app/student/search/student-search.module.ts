@@ -10,25 +10,18 @@ import { SchoolAndGroupTypeaheadOptionMapper } from './school-and-group-typeahea
 import { TypeaheadModule } from 'ngx-bootstrap';
 
 @NgModule({
-  declarations: [
-    StudentSearchFormComponent,
-    SchoolAndGroupTypeaheadComponent
-  ],
+  declarations: [StudentSearchFormComponent, SchoolAndGroupTypeaheadComponent],
   imports: [
     BrowserModule,
     FormsModule,
     CommonModule,
     TypeaheadModule.forRoot()
   ],
-  exports: [
-    StudentSearchFormComponent
-  ],
+  exports: [StudentSearchFormComponent],
   providers: [
     StudentService,
     StudentSearchFormOptionsService,
     SchoolAndGroupTypeaheadOptionMapper
   ]
 })
-export class StudentSearchModule {
-
-}
+export class StudentSearchModule {}

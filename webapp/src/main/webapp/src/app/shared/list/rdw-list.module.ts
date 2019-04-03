@@ -10,15 +10,11 @@ import { ActionableListGroupComponent } from './actionable-list-group.component'
     EditableListGroupComponent,
     ListGroupComponent
   ],
-  imports: [
-    BrowserModule
-  ],
+  imports: [BrowserModule],
   exports: [
     ActionableListGroupComponent,
     EditableListGroupComponent,
     ListGroupComponent
   ]
 })
-export class RdwListModule {
-
-}
+export class RdwListModule {}

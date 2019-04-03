@@ -11,7 +11,8 @@
     "test": "ng test",
     "test-ci": "ng test --watch=false",
     "pree2e": "webdriver-manager update",
-    "e2e": "protractor"
+    "e2e": "protractor",
+    "p": "prettier --write src/{app,test}/**/**/**/**/**/**/*.{ts,js,json,less,html,md}"
   },
   "private": true,
   "dependencies": {

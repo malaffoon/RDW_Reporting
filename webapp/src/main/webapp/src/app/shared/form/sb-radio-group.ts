@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { AbstractControlValueAccessor } from "./abstract-control-value-accessor";
-import { Forms } from "./forms";
+import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControlValueAccessor } from './abstract-control-value-accessor';
+import { Forms } from './forms';
 import { Option } from './option';
 import { Utils } from '../support/support';
 
@@ -13,43 +13,50 @@ const DefaultButtonStyles = 'btn-primary';
 @Component({
   selector: 'sb-radio-group',
   template: `
-    <div class="btn-group toggle-group"
-         [ngClass]="buttonGroupStyles"
-         data-toggle="buttons">
+    <div
+      class="btn-group toggle-group"
+      [ngClass]="buttonGroupStyles"
+      data-toggle="buttons"
+    >
       <ng-container *ngFor="let option of options">
         <label
           class="btn"
           *ngIf="!option.hidden"
-          [ngClass]="computeStylesInternal(buttonStyles, {
-                 active: property 
-                            ? option.value[property] === value 
-                            : option.value === value, 
-                 disabled: option.disabled
-             })">
-          <input type="radio"
-                 id="{{name}}"
-                 name="{{name}}"
-                 [attr.selected]="property 
-                            ? option.value[property] === value 
-                            : option.value === value"
-                 [disabled]="option.disabled"
-                 [value]="option.value"
-                 [(ngModel)]="value"
-                 angulartics2On="click"
-                 angularticsAction="{{analyticsEvent}}"
-                 angularticsCategory="{{analyticsCategory}}"
-                 [angularticsProperties]="option.analyticsProperties">
-          {{option.text}}
-        </label> 
+          [ngClass]="
+            computeStylesInternal(buttonStyles, {
+              active: property
+                ? option.value[property] === value
+                : option.value === value,
+              disabled: option.disabled
+            })
+          "
+        >
+          <input
+            type="radio"
+            id="{{ name }}"
+            name="{{ name }}"
+            [attr.selected]="
+              property
+                ? option.value[property] === value
+                : option.value === value
+            "
+            [disabled]="option.disabled"
+            [value]="option.value"
+            [(ngModel)]="value"
+            angulartics2On="click"
+            angularticsAction="{{ analyticsEvent }}"
+            angularticsCategory="{{ analyticsCategory }}"
+            [angularticsProperties]="option.analyticsProperties"
+          />
+          {{ option.text }}
+        </label>
       </ng-container>
     </div>
   `,
-  providers: [
-    Forms.valueAccessor(SBRadioGroup)
-  ]
+  providers: [Forms.valueAccessor(SBRadioGroup)]
 })
-export class SBRadioGroup extends AbstractControlValueAccessor<any> implements OnInit {
-
+export class SBRadioGroup extends AbstractControlValueAccessor<any>
+  implements OnInit {
   @Input()
   public analyticsEvent: string;
 
@@ -103,12 +110,12 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
   @Input()
   set value(value: any) {
     if (this._initialized) {
-      if (this.property && this._value !== value && typeof value == "object" ) {
-          this._value = value ? value[this.property] : null;
-          this._onChangeCallback(value ? value[this.property] : null);
+      if (this.property && this._value !== value && typeof value == 'object') {
+        this._value = value ? value[this.property] : null;
+        this._onChangeCallback(value ? value[this.property] : null);
       } else if (this._value !== value) {
-          this._value = value;
-          this._onChangeCallback(value);
+        this._value = value;
+        this._onChangeCallback(value);
       }
     } else {
       this._value = value;
@@ -131,17 +138,19 @@ export class SBRadioGroup extends AbstractControlValueAccessor<any> implements O
     if (options.length < 2) {
       this.throwError('at least two options are required');
     }
-    return options.map(option => <Option>{
-      value: option.value,
-      text: option.text ? option.text : option.value,
-      analyticsProperties: option.analyticsProperties,
-      disabled: option.disabled,
-      hidden: option.hidden
-    });
+    return options.map(
+      option =>
+        <Option>{
+          value: option.value,
+          text: option.text ? option.text : option.value,
+          analyticsProperties: option.analyticsProperties,
+          disabled: option.disabled,
+          hidden: option.hidden
+        }
+    );
   }
 
   private throwError(message: string): void {
     throw new Error(this.constructor.name + ' ' + message);
   }
-
 }

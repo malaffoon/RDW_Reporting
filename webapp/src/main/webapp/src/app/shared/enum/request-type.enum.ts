@@ -1,6 +1,6 @@
 export enum RequestType {
-  ResultsByItems = "ResultsByItems",
-  DistractorAnalysis = "DistractorAnalysis",
-  WritingTraitScores = "WritingTraitScores",
-  TargetReport = "TargetReport"
+  ResultsByItems = 'ResultsByItems',
+  DistractorAnalysis = 'DistractorAnalysis',
+  WritingTraitScores = 'WritingTraitScores',
+  TargetReport = 'TargetReport'
 }

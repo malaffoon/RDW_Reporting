@@ -11,4 +11,3 @@ export class ImportResult {
     return this.status === 'ACCEPTED' || this.status === 'PROCESSED';
   }
 }
-

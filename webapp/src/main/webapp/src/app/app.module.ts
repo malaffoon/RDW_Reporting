@@ -1,12 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {ANALYZE_FOR_ENTRY_COMPONENTS, NgModule} from '@angular/core';
+import { ANALYZE_FOR_ENTRY_COMPONENTS, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
-import { AlertModule, BsDropdownModule, PopoverModule, TabsModule } from 'ngx-bootstrap';
+import {
+  AlertModule,
+  BsDropdownModule,
+  PopoverModule,
+  TabsModule
+} from 'ngx-bootstrap';
 import { CommonModule } from './shared/common.module';
 import { UserModule } from './user/user.module';
 import { routes } from './app.routes';
-import {RouteReuseStrategy, RouterModule, ROUTES} from '@angular/router';
+import { RouteReuseStrategy, RouterModule, ROUTES } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
@@ -23,11 +28,7 @@ import { HomeModule } from './home/home.module';
 import { HttpModule } from '@angular/http';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ErrorComponent,
-    AccessDeniedComponent
-  ],
+  declarations: [AppComponent, ErrorComponent, AccessDeniedComponent],
   imports: [
     AdminModule,
     AggregateReportsModule,
@@ -62,7 +63,6 @@ import { HttpModule } from '@angular/http';
       useValue: routes
     }
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -1,20 +1,20 @@
-import { EventEmitter, Injectable, Output } from "@angular/core";
-import { UserPreferenceService } from "../preference/user-preference.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EmbeddedLanguage, EmbeddedLanguages } from "./language-settings";
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { UserPreferenceService } from '../preference/user-preference.service';
+import { TranslateService } from '@ngx-translate/core';
+import { EmbeddedLanguage, EmbeddedLanguages } from './language-settings';
 
 /**
  * This repository stores the language setting for the user
  */
 @Injectable()
 export class LanguageStore {
-
   @Output()
   languageChange: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(private translateService: TranslateService,
-              private userPreferenceService: UserPreferenceService) {
-
+  constructor(
+    private translateService: TranslateService,
+    private userPreferenceService: UserPreferenceService
+  ) {
     this.translateService.addLangs(EmbeddedLanguages);
     this.translateService.setDefaultLang(EmbeddedLanguage);
     this.translateService.use(EmbeddedLanguage);
@@ -68,7 +68,8 @@ export class LanguageStore {
    */
   private getLanguagePreference(): string {
     const languagePreference = this.userPreferenceService.getLanguage();
-    return languagePreference ? languagePreference : this.translateService.getBrowserLang();
+    return languagePreference
+      ? languagePreference
+      : this.translateService.getBrowserLang();
   }
-
 }

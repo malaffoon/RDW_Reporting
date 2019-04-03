@@ -1,73 +1,93 @@
 <form [formGroup]="formGroup">
-
-  <div class="form-group"
-       [ngClass]="{'has-error': showErrors(nameControl)}">
-    <label for="name">{{'user-group-form.field.name.label' | translate}}</label>
-    <input type="text"
-           class="form-control"
-           id="name"
-           name="name"
-           formControlName="name"
-           placeholder="{{'user-group.default-name' | translate}}"
-           [(ngModel)]="group.name"
-           (ngModelChange)="onNameChange()"
-           autocomplete="off"
-           required
-           [attr.aria-invalid]="showErrors(nameControl)"
-           minlength="1"
-           maxlength="255">
-    <p *ngIf="showErrors(nameControl)"
-       aria-live="polite"
-       class="help-block small red">{{'user-group-form.field.name.required-error' | translate}}</p>
+  <div class="form-group" [ngClass]="{ 'has-error': showErrors(nameControl) }">
+    <label for="name">{{
+      'user-group-form.field.name.label' | translate
+    }}</label>
+    <input
+      type="text"
+      class="form-control"
+      id="name"
+      name="name"
+      formControlName="name"
+      placeholder="{{ 'user-group.default-name' | translate }}"
+      [(ngModel)]="group.name"
+      (ngModelChange)="onNameChange()"
+      autocomplete="off"
+      required
+      [attr.aria-invalid]="showErrors(nameControl)"
+      minlength="1"
+      maxlength="255"
+    />
+    <p
+      *ngIf="showErrors(nameControl)"
+      aria-live="polite"
+      class="help-block small red"
+    >
+      {{ 'user-group-form.field.name.required-error' | translate }}
+    </p>
   </div>
   <div class="form-group">
-    <label for="subjects">{{'user-group-form.field.subjects.label' | translate}}</label>
-    <sb-button-group id="subjects"
-                     name="subjects"
-                     type="radio"
-                     [vertical]="options.subjects.length > 2"
-                     [options]="options.subjects"
-                     [(ngModel)]="group.subjects"
-                     [ngModelOptions]="{standalone: true}"
-                     (ngModelChange)="onSubjectsChange()"></sb-button-group>
-
+    <label for="subjects">{{
+      'user-group-form.field.subjects.label' | translate
+    }}</label>
+    <sb-button-group
+      id="subjects"
+      name="subjects"
+      type="radio"
+      [vertical]="options.subjects.length > 2"
+      [options]="options.subjects"
+      [(ngModel)]="group.subjects"
+      [ngModelOptions]="{ standalone: true }"
+      (ngModelChange)="onSubjectsChange()"
+    ></sb-button-group>
   </div>
-  <div class="form-group"
-       [ngClass]="{'has-error': showErrors(studentsControl)}">
+  <div
+    class="form-group"
+    [ngClass]="{ 'has-error': showErrors(studentsControl) }"
+  >
     <div class="flex-children">
       <div class="flex-child grow">
-        <label>{{'user-group-form.field.students.label' | translate}}</label>
-        <input type="hidden"
-               name="students"
-               formControlName="students"
-               [(ngModel)]="group.students">
+        <label>{{ 'user-group-form.field.students.label' | translate }}</label>
+        <input
+          type="hidden"
+          name="students"
+          formControlName="students"
+          [(ngModel)]="group.students"
+        />
       </div>
       <div class="mb-sm">
         <div *ngIf="group.students.length" class="flex-child">
-          <a class="small link-button"
-             href="javascript:void(0)"
-             (click)="removeAllStudentsButtonClick()">
-            <i class="fa fa-close mr-xs"></i> {{'user-group-form.field.students.remove-all' | translate}}
+          <a
+            class="small link-button"
+            href="javascript:void(0)"
+            (click)="removeAllStudentsButtonClick()"
+          >
+            <i class="fa fa-close mr-xs"></i>
+            {{ 'user-group-form.field.students.remove-all' | translate }}
           </a>
         </div>
       </div>
     </div>
 
     <ng-container *ngIf="showErrors(studentsControl); else hideStudentsErrors">
-      <p class="help-block small red">{{'user-group-form.field.students.required-error' | translate}}</p>
+      <p class="help-block small red">
+        {{ 'user-group-form.field.students.required-error' | translate }}
+      </p>
     </ng-container>
     <ng-template #hideStudentsErrors>
-      <p *ngIf="!group.students.length"
-         class="small text-muted">{{'user-group-form.field.students.none-selected' | translate}}</p>
+      <p *ngIf="!group.students.length" class="small text-muted">
+        {{ 'user-group-form.field.students.none-selected' | translate }}
+      </p>
     </ng-template>
 
-    <actionable-list-group [items]="group.students"
-                           [itemTemplate]="studentTemplate"
-                           (itemClick)="onStudentClick($event)"></actionable-list-group>
+    <actionable-list-group
+      [items]="group.students"
+      [itemTemplate]="studentTemplate"
+      (itemClick)="onStudentClick($event)"
+    ></actionable-list-group>
   </div>
 </form>
 
-
 <ng-template #studentTemplate let-student>
-  <i class="fa fa-close mr-xs"></i> {{student | studentName}}
+  <i class="fa fa-close mr-xs"></i> {{ student | studentName }}
 </ng-template>

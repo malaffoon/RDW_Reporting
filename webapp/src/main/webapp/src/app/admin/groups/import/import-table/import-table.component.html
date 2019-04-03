@@ -1,26 +1,27 @@
-<p-table #resultTable
-         [columns]="columns"
-         [value]="imports"
-         [rows]="200"
-         [paginator]="true"
-         [alwaysShowPaginator]="false"
-         [pageLinks]="3"
-         [sortOrder]="-1"
-         sortField="id"
-         [autoLayout]="true"
-         rowExpandMode="single"
-         dataKey="id"
-         styleClass="table table-striped table-hover">
-
-  <ng-template pTemplate="header"
-               let-columns>
+<p-table
+  #resultTable
+  [columns]="columns"
+  [value]="imports"
+  [rows]="200"
+  [paginator]="true"
+  [alwaysShowPaginator]="false"
+  [pageLinks]="3"
+  [sortOrder]="-1"
+  sortField="id"
+  [autoLayout]="true"
+  rowExpandMode="single"
+  dataKey="id"
+  styleClass="table table-striped table-hover"
+>
+  <ng-template pTemplate="header" let-columns>
     <tr>
-      <th *ngFor="let column of columns"
-          [pSortableColumn]="column.field"
-          [ngSwitch]="column.id">
-
+      <th
+        *ngFor="let column of columns"
+        [pSortableColumn]="column.field"
+        [ngSwitch]="column.id"
+      >
         <span *ngSwitchDefault>
-          {{('group-import.columns.' + column.id) | translate}}
+          {{ 'group-import.columns.' + column.id | translate }}
         </span>
 
         <p-sortIcon [field]="column.field"></p-sortIcon>
@@ -28,30 +29,32 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body"
-               let-rowData
-               let-columns="columns">
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
     <tr>
-      <td *ngFor="let column of columns"
-          [ngSwitch]="column.id">
-
-        <table-row-expander *ngSwitchCase="'file-name'"
-                            [table]="resultTable"
-                            [row]="rowData"
-                            [text]="rowData.fileName"></table-row-expander>
+      <td *ngFor="let column of columns" [ngSwitch]="column.id">
+        <table-row-expander
+          *ngSwitchCase="'file-name'"
+          [table]="resultTable"
+          [row]="rowData"
+          [text]="rowData.fileName"
+        ></table-row-expander>
 
         <div *ngSwitchCase="'created'">
-          {{ rowData.created | date:'medium' }}
+          {{ rowData.created | date: 'medium' }}
         </div>
 
-        <div *ngSwitchCase="'status'"
-             class="label border-only"
-             [ngClass]="{ 'green': rowData.isOk, 'red': !rowData.isOk }">
-          <i class="fa "
-             [ngClass]="{
-               'fa-check-circle': rowData.isOk,
-               'fa-exclamation-circle': !rowData.isOk
-             }"></i>
+        <div
+          *ngSwitchCase="'status'"
+          class="label border-only"
+          [ngClass]="{ green: rowData.isOk, red: !rowData.isOk }"
+        >
+          <i
+            class="fa "
+            [ngClass]="{
+              'fa-check-circle': rowData.isOk,
+              'fa-exclamation-circle': !rowData.isOk
+            }"
+          ></i>
           {{ 'import-table.status.' + rowData.status | translate }}
         </div>
 
@@ -62,24 +65,27 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="rowexpansion"
-               let-rowData
-               let-columns="columns">
+  <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
     <tr>
       <td [attr.colspan]="columns.length">
-        <div class="panel"
-             [ngClass]="{
-               'panel-success': rowData.isOk,
-               'panel-danger': !rowData.isOk
-             }">
+        <div
+          class="panel"
+          [ngClass]="{
+            'panel-success': rowData.isOk,
+            'panel-danger': !rowData.isOk
+          }"
+        >
           <div class="panel-heading">
             <h3 class="panel-title">
-              <i class="fa"
-                 [ngClass]="{
-                   'fa-check-circle': rowData.isOk,
-                   'fa-exclamation-circle': !rowData.isOk
-                 }"></i>
-              {{ 'import-table.status.' + rowData.status | translate }}</h3>
+              <i
+                class="fa"
+                [ngClass]="{
+                  'fa-check-circle': rowData.isOk,
+                  'fa-exclamation-circle': !rowData.isOk
+                }"
+              ></i>
+              {{ 'import-table.status.' + rowData.status | translate }}
+            </h3>
           </div>
           <div class="panel-body">
             <p class="white-space-preline">{{ rowData.message }}</p>
@@ -92,7 +98,7 @@
   <ng-template pTemplate="emptymessage" let-columns>
     <tr>
       <td [attr.colspan]="columns.length">
-        {{'import-table.empty-message' | translate}}
+        {{ 'import-table.empty-message' | translate }}
       </td>
     </tr>
   </ng-template>

@@ -1,45 +1,58 @@
-<form class="form"
-      *ngIf="initialized">
-
+<form class="form" *ngIf="initialized">
   <div class="flex-children">
-
     <div class="flex-child">
       <div class="form-group">
-        <label>{{'student-search-form.school-or-group-label' | translate}}</label>
-        <school-and-group-typeahead name="school-or-group"
-                                    [options]="schoolAndGroupTypeaheadOptions"
-                                    [(ngModel)]="value.schoolOrGroup"
-                                    (ngModelChange)="onSchoolOrGroupChange()"></school-and-group-typeahead>
+        <label>{{
+          'student-search-form.school-or-group-label' | translate
+        }}</label>
+        <school-and-group-typeahead
+          name="school-or-group"
+          [options]="schoolAndGroupTypeaheadOptions"
+          [(ngModel)]="value.schoolOrGroup"
+          (ngModelChange)="onSchoolOrGroupChange()"
+        ></school-and-group-typeahead>
       </div>
     </div>
 
     <div class="flex-child grow">
       <div class="form-group">
-        <label>{{'student-search-form.name-ssid-label' | translate}}</label>
-        <input type="text"
-               name="name"
-               class="form-control"
-               [(ngModel)]="value.nameOrSsid"
-               (ngModelChange)="onNameOrSsidChange()"
-               autocomplete="off">
+        <label>{{ 'student-search-form.name-ssid-label' | translate }}</label>
+        <input
+          type="text"
+          name="name"
+          class="form-control"
+          [(ngModel)]="value.nameOrSsid"
+          (ngModelChange)="onNameOrSsidChange()"
+          autocomplete="off"
+        />
       </div>
     </div>
 
     <div class="flex-child text-right">
-      <label>{{'advanced-filters.label' | translate}} </label>
-      <button id="advanced"
-              class="form-control btn btn-sm btn-default"
-              (click)="onAdvancedFiltersToggleClick()">
-        {{(showAdvancedFilters ? 'common.action.hide' : 'common.action.show') | translate}}
-        <i *ngIf="advancedFilterCount === 0"
-           aria-hidden="true"
-           class="fa ml-xs"
-           [ngClass]="showAdvancedFilters ? 'fa-caret-square-o-up' : 'fa-caret-square-o-down'"></i>
-        <div *ngIf="advancedFilterCount > 0"
-             class="badge aqua ml-xs">{{advancedFilterCount}}</div>
+      <label>{{ 'advanced-filters.label' | translate }} </label>
+      <button
+        id="advanced"
+        class="form-control btn btn-sm btn-default"
+        (click)="onAdvancedFiltersToggleClick()"
+      >
+        {{
+          (showAdvancedFilters ? 'common.action.hide' : 'common.action.show')
+            | translate
+        }}
+        <i
+          *ngIf="advancedFilterCount === 0"
+          aria-hidden="true"
+          class="fa ml-xs"
+          [ngClass]="
+            showAdvancedFilters
+              ? 'fa-caret-square-o-up'
+              : 'fa-caret-square-o-down'
+          "
+        ></i>
+        <div *ngIf="advancedFilterCount > 0" class="badge aqua ml-xs">
+          {{ advancedFilterCount }}
+        </div>
       </button>
     </div>
-
   </div>
-
 </form>

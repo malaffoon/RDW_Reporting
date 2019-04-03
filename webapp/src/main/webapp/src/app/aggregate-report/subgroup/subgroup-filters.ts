@@ -1,7 +1,6 @@
 import { Utils } from '../../shared/support/support';
 
 export interface SubgroupFilters {
-
   /**
    * Economic disadvantage result filter
    */
@@ -53,17 +52,19 @@ export interface SubgroupFilters {
   militaryConnectedCodes: string[];
 }
 
-const leftDifference = (a: { [ key: string ]: any }, b: { [ key: string ]: any }): { [ key: string ]: any } => {
-  return Object.entries(a).reduce((difference, [ key, value ]) => {
-    if (!Utils.equalSets(value, b[ key ])) {
-      difference[ key ] = value;
+const leftDifference = (
+  a: { [key: string]: any },
+  b: { [key: string]: any }
+): { [key: string]: any } => {
+  return Object.entries(a).reduce((difference, [key, value]) => {
+    if (!Utils.equalSets(value, b[key])) {
+      difference[key] = value;
     }
     return difference;
   }, {});
 };
 
 export class SubgroupFilterSupport {
-
   static empty(): SubgroupFilters {
     return {
       economicDisadvantages: [],
@@ -80,9 +81,9 @@ export class SubgroupFilterSupport {
   }
 
   static prune(input: SubgroupFilters): SubgroupFilters {
-    return Object.entries(input).reduce((pruned, [ key, value ]) => {
+    return Object.entries(input).reduce((pruned, [key, value]) => {
       if (value.length !== 0) {
-        pruned[ key ] = value;
+        pruned[key] = value;
       }
       return pruned;
     }, {}) as SubgroupFilters;
@@ -94,16 +95,24 @@ export class SubgroupFilterSupport {
    * @returns {boolean} True if the provided filters are equal
    */
   static equals(a: SubgroupFilters, b: SubgroupFilters): boolean {
-    return Utils.equalSets(a.genders, b.genders)
-      && Utils.equalSets(a.ethnicities, b.ethnicities)
-      && Utils.equalSets(a.migrantStatuses, b.migrantStatuses)
-      && Utils.equalSets(a.individualEducationPlans, b.individualEducationPlans)
-      && Utils.equalSets(a.section504s, b.section504s)
-      && Utils.equalSets(a.languages, b.languages)
-      && Utils.equalSets(a.limitedEnglishProficiencies, b.limitedEnglishProficiencies)
-      && Utils.equalSets(a.militaryConnectedCodes, b.militaryConnectedCodes)
-      && Utils.equalSets(a.englishLanguageAcquisitionStatuses, b.englishLanguageAcquisitionStatuses)
-      && Utils.equalSets(a.economicDisadvantages, b.economicDisadvantages);
+    return (
+      Utils.equalSets(a.genders, b.genders) &&
+      Utils.equalSets(a.ethnicities, b.ethnicities) &&
+      Utils.equalSets(a.migrantStatuses, b.migrantStatuses) &&
+      Utils.equalSets(a.individualEducationPlans, b.individualEducationPlans) &&
+      Utils.equalSets(a.section504s, b.section504s) &&
+      Utils.equalSets(a.languages, b.languages) &&
+      Utils.equalSets(
+        a.limitedEnglishProficiencies,
+        b.limitedEnglishProficiencies
+      ) &&
+      Utils.equalSets(a.militaryConnectedCodes, b.militaryConnectedCodes) &&
+      Utils.equalSets(
+        a.englishLanguageAcquisitionStatuses,
+        b.englishLanguageAcquisitionStatuses
+      ) &&
+      Utils.equalSets(a.economicDisadvantages, b.economicDisadvantages)
+    );
   }
 
   static copy(input: SubgroupFilters): SubgroupFilters {
@@ -121,14 +130,10 @@ export class SubgroupFilterSupport {
     };
   }
 
-  static leftDifference(a: SubgroupFilters, b: SubgroupFilters): SubgroupFilters {
+  static leftDifference(
+    a: SubgroupFilters,
+    b: SubgroupFilters
+  ): SubgroupFilters {
     return leftDifference(a, b) as SubgroupFilters;
   }
-
 }
-
-
-
-
-
-

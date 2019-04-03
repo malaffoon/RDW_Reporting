@@ -4,7 +4,7 @@ import { UserGroup } from '../user-group/user-group';
 import { UserService } from '../user/user.service';
 import { UserGroupService } from '../user-group/user-group.service';
 import { GroupService } from './group.service';
-import { forkJoin ,  of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Component({
@@ -12,15 +12,15 @@ import { catchError } from 'rxjs/operators';
   templateUrl: './group-tabs.component.html'
 })
 export class GroupTabsComponent implements OnInit {
-
   groups: Group[];
   userGroups: UserGroup[];
   initialized: boolean;
 
-  constructor(private userService: UserService,
-              private groupService: GroupService,
-              private userGroupService: UserGroupService) {
-  }
+  constructor(
+    private userService: UserService,
+    private groupService: GroupService,
+    private userGroupService: UserGroupService
+  ) {}
 
   ngOnInit(): void {
     forkJoin(
@@ -35,5 +35,4 @@ export class GroupTabsComponent implements OnInit {
       this.initialized = true;
     });
   }
-
 }

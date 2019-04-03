@@ -1,15 +1,20 @@
-import { Component, ContentChild, ElementRef, Input, TemplateRef } from "@angular/core";
-import { Utils } from "../support/support";
+import {
+  Component,
+  ContentChild,
+  ElementRef,
+  Input,
+  TemplateRef
+} from '@angular/core';
+import { Utils } from '../support/support';
 
 @Component({
   selector: 'page-heading',
   templateUrl: 'page-heading.component.html',
   host: {
-    'class': 'page-heading'
+    class: 'page-heading'
   }
 })
 export class PageHeading {
-
   @ContentChild('heading')
   heading: TemplateRef<ElementRef>;
 
@@ -21,5 +26,4 @@ export class PageHeading {
       throw new Error('heading template must not be null or undefined');
     }
   }
-
 }

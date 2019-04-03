@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { WindowRefService } from "../core/window-ref.service";
-import { CookieService } from "angular2-cookie/services/cookies.service";
+import { Injectable } from '@angular/core';
+import { WindowRefService } from '../core/window-ref.service';
+import { CookieService } from 'angular2-cookie/services/cookies.service';
 
 const languageCookieKey: string = 'rdw.user-language';
 const languageCookieYearsToExpire: number = 10;
@@ -10,11 +10,12 @@ const languageCookieYearsToExpire: number = 10;
  */
 @Injectable()
 export class UserPreferenceService {
-
   private window: any;
 
-  constructor(private windowReferenceService: WindowRefService,
-              private cookieService: CookieService) {
+  constructor(
+    private windowReferenceService: WindowRefService,
+    private cookieService: CookieService
+  ) {
     this.window = windowReferenceService.nativeWindow;
   }
 
@@ -23,7 +24,6 @@ export class UserPreferenceService {
   }
 
   setLanguage(languageCode: string): void {
-
     // Sets cookie to expire in the far future
     const date: Date = new Date();
     date.setFullYear(date.getFullYear() + languageCookieYearsToExpire);
@@ -47,7 +47,8 @@ export class UserPreferenceService {
    */
   private getParentDomain(): string {
     const domainParts: string[] = this.window.location.hostname.split('.');
-    return (domainParts.length < 3 ? domainParts : domainParts.slice(1)).join('.');
+    return (domainParts.length < 3 ? domainParts : domainParts.slice(1)).join(
+      '.'
+    );
   }
-
 }

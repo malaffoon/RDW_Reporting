@@ -1,23 +1,19 @@
-import { HttpModule } from "@angular/http";
-import { NgModule } from "@angular/core";
-import { RdwTranslateLoader } from "./rdw-translate-loader";
-import { LanguageStore } from "./language.store";
-import { LanguageSelect } from "./language-select.component";
-import { RdwPreferenceModule } from "../preference/rdw-preference.module";
-import { RouterModule } from "@angular/router";
-import { TranslateModule } from "@ngx-translate/core";
-import { FormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { HttpClientModule } from "@angular/common/http";
-import { TranslateDatePipe } from "./translate-date.pipe";
-import { TranslateNumberPipe } from "./translate-number.pipe";
+import { HttpModule } from '@angular/http';
+import { NgModule } from '@angular/core';
+import { RdwTranslateLoader } from './rdw-translate-loader';
+import { LanguageStore } from './language.store';
+import { LanguageSelect } from './language-select.component';
+import { RdwPreferenceModule } from '../preference/rdw-preference.module';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslateDatePipe } from './translate-date.pipe';
+import { TranslateNumberPipe } from './translate-number.pipe';
 
 @NgModule({
-  declarations: [
-    LanguageSelect,
-    TranslateDatePipe,
-    TranslateNumberPipe
-  ],
+  declarations: [LanguageSelect, TranslateDatePipe, TranslateNumberPipe],
   imports: [
     BrowserModule,
     HttpModule,
@@ -41,5 +37,4 @@ import { TranslateNumberPipe } from "./translate-number.pipe";
     TranslateNumberPipe
   ]
 })
-export class RdwI18nModule {
-}
+export class RdwI18nModule {}

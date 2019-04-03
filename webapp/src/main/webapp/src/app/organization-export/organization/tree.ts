@@ -2,11 +2,10 @@
  * Custom tree implementation
  */
 export class Tree<T> {
-
   private _value: any;
   private _children: Tree<T>[] = [];
 
-  constructor(value?: any){
+  constructor(value?: any) {
     this._value = value;
   }
 
@@ -36,7 +35,7 @@ export class Tree<T> {
    * @param {T} value
    * @returns {Tree<T>} the existing or new child
    */
-  getOrCreate(matcher: (x:T) => boolean, value: T): Tree<T> {
+  getOrCreate(matcher: (x: T) => boolean, value: T): Tree<T> {
     let existing = this.find(matcher);
     if (existing) {
       return existing;
@@ -74,8 +73,8 @@ export class Tree<T> {
    * @param {(x: T) => boolean} matcher the method used to find the desired child node
    * @returns {Tree<T>} the child node if found or undefined if not.
    */
-  find(matcher: (child:T) => boolean): Tree<T> {
-    return this._children.find((child) => matcher(child.value))
+  find(matcher: (child: T) => boolean): Tree<T> {
+    return this._children.find(child => matcher(child.value));
   }
 
   /**
@@ -86,5 +85,4 @@ export class Tree<T> {
   add(tree: Tree<T>): void {
     this._children.push(tree);
   }
-
 }

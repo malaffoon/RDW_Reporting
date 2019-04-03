@@ -5,13 +5,11 @@ import { ApplicationSettingsService } from '../../app-settings.service';
 import { Option } from '../../shared/form/option';
 import { TranslateService } from '@ngx-translate/core';
 
-
 @Component({
   selector: 'subgroup-filters',
   templateUrl: './subgroup-filters.component.html'
 })
 export class SubgroupFiltersComponent {
-
   @Input()
   options: SubgroupFilterFormOptions;
 
@@ -21,11 +19,15 @@ export class SubgroupFiltersComponent {
   @Output()
   changed: EventEmitter<any> = new EventEmitter();
 
-  appSettings: {elasEnabled: boolean, lepEnabled: boolean};
+  appSettings: { elasEnabled: boolean; lepEnabled: boolean };
 
-  constructor(private applicationSettingsService: ApplicationSettingsService,
-              private translateService: TranslateService,) {
-    applicationSettingsService.getSettings().subscribe(settings => this.appSettings = settings);
+  constructor(
+    private applicationSettingsService: ApplicationSettingsService,
+    private translateService: TranslateService
+  ) {
+    applicationSettingsService
+      .getSettings()
+      .subscribe(settings => (this.appSettings = settings));
   }
 
   onSettingChangeInternal(event): void {
@@ -34,11 +36,13 @@ export class SubgroupFiltersComponent {
 
   optionsChanged(event) {
     let newLanguages = [];
-    this.settings.languages = newLanguages.concat(event.map(lang => {
-      return lang.value;
-    }));
-    if(this.settings.languages.length == 0) {
-      this.settings.languages = this.options.languages.map( option => {
+    this.settings.languages = newLanguages.concat(
+      event.map(lang => {
+        return lang.value;
+      })
+    );
+    if (this.settings.languages.length == 0) {
+      this.settings.languages = this.options.languages.map(option => {
         return option.value;
       });
     }
@@ -46,15 +50,20 @@ export class SubgroupFiltersComponent {
   }
 
   getOptions(): Option[] {
-    if((this.settings.languages.length == 0) || (this.settings.languages.length == this.options.languages.length)) {
+    if (
+      this.settings.languages.length == 0 ||
+      this.settings.languages.length == this.options.languages.length
+    ) {
       return [];
     }
     const translate = code => this.translateService.instant(code);
-    return this.settings.languages.map( lang => <Option>{
-      value: lang,
-      text: translate(`common.languages.${lang}`),
-      disabled: false
-    });
+    return this.settings.languages.map(
+      lang =>
+        <Option>{
+          value: lang,
+          text: translate(`common.languages.${lang}`),
+          disabled: false
+        }
+    );
   }
-
 }
