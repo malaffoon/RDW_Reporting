@@ -53,6 +53,19 @@ export interface AssessmentExamView extends AssessmentExam {
   collapsed?: boolean;
 }
 
+interface ResultsView {
+  label: string;
+  value: ResultsViewState;
+  disabled: boolean;
+  canExport: boolean;
+  display: boolean;
+}
+
+export interface ExportResults {
+  exportToCsv(): void;
+  hasDataToExport(): boolean;
+}
+
 function createScoreTypeOptions(
   subjectDefinition: SubjectDefinition,
   translateService: TranslateService
@@ -582,18 +595,4 @@ export class AssessmentResultsComponent implements OnInit {
     }
     return stats;
   }
-}
-
-interface ResultsView {
-  label: string;
-  value: ResultsViewState;
-  disabled: boolean;
-  canExport: boolean;
-  display: boolean;
-}
-
-export interface ExportResults {
-  exportToCsv(): void;
-
-  hasDataToExport(): boolean;
 }
