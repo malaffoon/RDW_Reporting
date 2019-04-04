@@ -13,6 +13,7 @@ import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 import { OrderingService } from '../../../../shared/ordering/ordering.service';
 import { ReportFormService } from '../../../../report/service/report-form.service';
+import { SubjectDefinition } from '../../../../subject/subject';
 
 describe('ResultsByStudentComponent', () => {
   let component: ResultsByStudentComponent;
@@ -53,9 +54,25 @@ describe('ResultsByStudentComponent', () => {
 
 @Component({
   selector: 'test-component-wrapper',
-  template:
-    '<results-by-student [assessment]="assessment" [exams]="[]" [minimumItemDataYear]="2017"></results-by-student>'
+  template: `
+    <results-by-student
+      [assessment]="assessment"
+      [exams]="[]"
+      [minimumItemDataYear]="2017"
+      [scoreType]="'Overall'"
+      [subjectDefinition]="subjectDefinition"
+    ></results-by-student>
+  `
 })
 class TestComponentWrapper {
   assessment = {};
+  subjectDefinition = <SubjectDefinition>{
+    overallScore: {},
+    claimScore: {
+      codes: ['c']
+    },
+    alternateScore: {
+      codes: ['a']
+    }
+  };
 }

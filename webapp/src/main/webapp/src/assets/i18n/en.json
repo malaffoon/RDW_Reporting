@@ -669,6 +669,8 @@
         "no-instruct-found": "Resources not yet available"
       },
       "assessment-exam-columns": {
+        "alternateScaleScore": "{{name}} Scale Score",
+        "alternateScaleScoreLevel": "{{name}} Level",
         "date": "Date",
         "grade": "Enrolled Grade",
         "iab": {

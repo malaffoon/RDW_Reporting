@@ -7,13 +7,96 @@ import { InstructionalResourcesService } from '../../../../shared/service/instru
 import { InstructionalResource } from '../../../../shared/model/instructional-resource';
 import { Observable } from 'rxjs';
 import { PopupMenuAction } from '../../../../shared/menu/popup-menu-action.model';
-import { ordering, Ordering } from '@kourge/ordering';
-import { OrderingService } from '../../../../shared/ordering/ordering.service';
+import { ordering } from '@kourge/ordering';
 import { map } from 'rxjs/internal/operators';
 import { ReportFormService } from '../../../../report/service/report-form.service';
 import { createDefaultStudentPrintableReportName } from '../../../../report/model/report-forms';
 import { Router } from '@angular/router';
 import { ScoreType } from '../../../../exam/model/score-statistics';
+import { SubjectDefinition } from '../../../../subject/subject';
+import { SubjectService } from '../../../../subject/subject.service';
+import { ranking } from '@kourge/ordering/comparator';
+
+class Column {
+  id: string;
+  field: string;
+  headerInfo: boolean;
+  scoreType: ScoreType;
+
+  // Claim properties
+  index?: number;
+  // The claim or alt score code
+  code?: string;
+
+  constructor({
+    id,
+    field = '',
+    headerInfo = false,
+    index = -1,
+    scoreType = undefined,
+    code = ''
+  }) {
+    this.id = id;
+    this.field = field ? field : id;
+    this.headerInfo = headerInfo;
+    if (index >= 0) {
+      this.index = index;
+    }
+    this.scoreType = scoreType;
+    if (code) {
+      this.code = code;
+    }
+  }
+}
+
+function createAlternateScoreColumns(
+  assessmentCodes: string[],
+  subjectDefinitionCodes: string[]
+): Column[] {
+  const columns = [];
+  const scoreType = 'Alternate';
+  (assessmentCodes || []).forEach((code, index) => {
+    columns.push(
+      new Column({
+        id: `alternateScaleScoreLevel`,
+        field: `alternateScaleScores.${index}.level`,
+        scoreType,
+        index,
+        code
+      }),
+      new Column({
+        id: `alternateScaleScore`,
+        field: `alternateScaleScores.${index}.score`,
+        scoreType,
+        index,
+        code
+      })
+    );
+  });
+  return columns.sort(
+    ordering(ranking(subjectDefinitionCodes)).on(({ code }) => code).compare
+  );
+}
+
+function createClaimColumns(
+  assessmentCodes: string[],
+  subjectDefinitionCodes: string[]
+): Column[] {
+  return (assessmentCodes || [])
+    .map(
+      (code, index) =>
+        new Column({
+          id: `claim`,
+          field: `claimScaleScores.${index}.level`,
+          scoreType: 'Claim',
+          index,
+          code
+        })
+    )
+    .sort(
+      ordering(ranking(subjectDefinitionCodes)).on(({ code }) => code).compare
+    );
+}
 
 @Component({
   selector: 'results-by-student',
@@ -42,6 +125,9 @@ export class ResultsByStudentComponent implements OnInit {
   @Input()
   scoreType: ScoreType;
 
+  @Input()
+  subjectDefinition: SubjectDefinition;
+
   columns: Column[];
   actions: PopupMenuAction[];
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
@@ -52,32 +138,35 @@ export class ResultsByStudentComponent implements OnInit {
     private translate: TranslateService,
     private router: Router,
     private instructionalResourcesService: InstructionalResourcesService,
-    private orderingService: OrderingService,
+    private subjectService: SubjectService,
     private reportFormService: ReportFormService
   ) {}
 
-  ngOnInit() {
-    this.orderingService
-      .getScorableClaimOrdering(this.assessment.subject, this.assessment.type)
-      .subscribe(ordering => {
-        this.columns = [
-          new Column({ id: 'name', field: 'student.lastName' }),
-          new Column({ id: 'date' }),
-          new Column({ id: 'session' }),
-          new Column({
-            id: 'grade',
-            scoreType: 'Overall',
-            field: 'enrolledGrade'
-          }),
-          new Column({ id: 'school', field: 'school.name' }),
-          new Column({ id: 'status', scoreType: 'Overall', headerInfo: true }),
-          new Column({ id: 'level', scoreType: 'Overall' }),
-          new Column({ id: 'score', scoreType: 'Overall', headerInfo: true }),
-          ...this.createClaimColumns(ordering)
-        ];
-        this.actions = this.createActions();
-        this.hasTransferStudent = this.exams.some(x => x.transfer);
-      });
+  ngOnInit(): void {
+    this.columns = [
+      new Column({ id: 'name', field: 'student.lastName' }),
+      new Column({ id: 'date' }),
+      new Column({ id: 'session' }),
+      new Column({
+        id: 'grade',
+        scoreType: 'Overall',
+        field: 'enrolledGrade'
+      }),
+      new Column({ id: 'school', field: 'school.name' }),
+      ...createAlternateScoreColumns(
+        this.assessment.alternateScoreCodes,
+        this.subjectDefinition.alternateScore.codes
+      ),
+      ...createClaimColumns(
+        this.assessment.claimCodes,
+        this.subjectDefinition.claimScore.codes
+      ),
+      new Column({ id: 'status', scoreType: 'Overall', headerInfo: true }),
+      new Column({ id: 'level', scoreType: 'Overall' }),
+      new Column({ id: 'score', scoreType: 'Overall', headerInfo: true })
+    ];
+    this.actions = this.createActions();
+    this.hasTransferStudent = this.exams.some(x => x.transfer);
   }
 
   loadInstructionalResources(exam: Exam): void {
@@ -87,25 +176,6 @@ export class ResultsByStudentComponent implements OnInit {
         .pipe(
           map(resources => resources.getResourcesByPerformance(exam.level))
         );
-  }
-
-  private createClaimColumns(ordering: Ordering<string>): Column[] {
-    if (!this.assessment.claimCodes) {
-      return [];
-    }
-
-    return this.assessment.claimCodes
-      .map(
-        (code, index) =>
-          new Column({
-            id: 'claim',
-            field: `claimScores.${index}.level`,
-            scoreType: 'Claim',
-            index,
-            code
-          })
-      )
-      .sort(ordering.on(({ code }) => code).compare);
   }
 
   private createActions(): PopupMenuAction[] {
@@ -162,37 +232,5 @@ export class ResultsByStudentComponent implements OnInit {
         }
       )
       .build();
-  }
-}
-
-class Column {
-  id: string;
-  field: string;
-  headerInfo: boolean;
-  scoreType: ScoreType;
-
-  // Claim properties
-  index?: number;
-  // The claim or alt score code
-  code?: string;
-
-  constructor({
-    id,
-    field = '',
-    headerInfo = false,
-    index = -1,
-    scoreType = undefined,
-    code = ''
-  }) {
-    this.id = id;
-    this.field = field ? field : id;
-    this.headerInfo = headerInfo;
-    if (index >= 0) {
-      this.index = index;
-    }
-    this.scoreType = scoreType;
-    if (code) {
-      this.code = code;
-    }
   }
 }
