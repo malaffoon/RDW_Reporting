@@ -77,15 +77,15 @@ export class CsvBuilder {
   /**
    * General method for adding a column to the output CSV.
    *
-   * @param labelKey        The column header label
+   * @param label           The column header label
    * @param dataProvider    The column data provider
    * @returns {CsvBuilder}  This builder
    */
-  withColumn(labelKey: string, dataProvider: (item: any) => any) {
-    const column = new CsvColumn();
-    column.label = labelKey;
-    column.dataProvider = dataProvider;
-    this.columns.push(column);
+  withColumn(label: string, dataProvider: (item: any) => any) {
+    this.columns.push({
+      label,
+      dataProvider
+    });
     return this;
   }
 
@@ -304,20 +304,91 @@ export class CsvBuilder {
     );
   }
 
-  withClaimScores(
+  withAlternateScores(
     subject: string,
-    claims: string[],
+    scoreCodes: string[],
     getAssessment: (item: any) => Assessment,
     getExam: (item: any) => Exam
   ) {
-    claims.forEach((claim, index) => {
+    const subjectName = this.translateService.instant(
+      `subject.${subject}.name`
+    );
+
+    scoreCodes.forEach((scoreCode, index) => {
+      const name = this.translateService.instant(
+        `subject.${subject}.alt.${scoreCode}.name`
+      );
+
+      this.withColumn(
+        `${subjectName}: ${this.translateService.instant(
+          'common.results.assessment-exam-columns.alternateScaleScoreLevel',
+          { name }
+        )}`,
+        item => {
+          const exam: Exam = getExam(item);
+          if (!exam || !exam.alternateScaleScores[index].level) {
+            return '';
+          }
+          const assessment = getAssessment(item);
+          const level = exam.alternateScaleScores[index].level;
+          return this.translateService.instant(
+            level
+              ? `subject.${assessment.subject}.asmt-type.${
+                  assessment.type
+                }.alt-score.level.${level}.name`
+              : 'common.missing'
+          );
+        }
+      )
+        .withColumn(
+          `${subjectName}: ${this.translateService.instant(
+            'common.results.assessment-exam-columns.alternateScaleScore',
+            { name }
+          )}`,
+          item => {
+            const exam: Exam = getExam(item);
+            if (!exam || !exam.alternateScaleScores[index].score) {
+              return '';
+            }
+            return exam.alternateScaleScores[index].score;
+          }
+        )
+        .withColumn(
+          `${subjectName}: ${this.translateService.instant(
+            'common.results.assessment-exam-columns.alternateScaleScoreStandardError',
+            { name }
+          )}`,
+          item => {
+            const exam: Exam = getExam(item);
+            if (!exam || !exam.alternateScaleScores[index].score) {
+              return '';
+            }
+            return exam.alternateScaleScores[index].standardError;
+          }
+        );
+    });
+    return this;
+  }
+
+  withClaimScores(
+    subject: string,
+    scoreCodes: string[],
+    getAssessment: (item: any) => Assessment,
+    getExam: (item: any) => Exam
+  ) {
+    console.log('claimScoreCodes', { scoreCodes });
+    scoreCodes.forEach((scoreCode, index) => {
       this.withColumn(
         `${this.translateService.instant(
           `subject.${subject}.name`
         )}: ${this.translateService.instant(
-          `subject.${subject}.claim.${claim}.name`
+          `subject.${subject}.claim.${scoreCode}.name`
         )}`,
         item => {
+          console.log('claimScore', {
+            exam: getExam(item),
+            score: ((getExam(item) || <any>{}).claimScaleScores || [])[index]
+          });
           const exam: Exam = getExam(item);
           if (!exam || !exam.claimScaleScores[index].level) {
             return '';
