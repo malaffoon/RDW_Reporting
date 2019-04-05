@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { ItemViewerComponent } from "./item-viewer.component";
-import { CommonModule } from "../../../shared/common.module";
-import { ItemScoringService } from "../item-exemplar/item-scoring.service";
-import { ItemScoringGuide } from "../item-exemplar/model/item-scoring-guide.model";
-import { ItemScoringGuideMapper } from "../item-exemplar/item-scoring-guide.mapper";
-import { Component } from "@angular/core";
-import { AssessmentItem } from "../../model/assessment-item.model";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ItemViewerComponent } from './item-viewer.component';
+import { CommonModule } from '../../../shared/common.module';
+import { ItemScoringService } from '../item-exemplar/item-scoring.service';
+import { ItemScoringGuide } from '../item-exemplar/model/item-scoring-guide.model';
+import { ItemScoringGuideMapper } from '../item-exemplar/item-scoring-guide.mapper';
+import { Component } from '@angular/core';
+import { AssessmentItem } from '../../model/assessment-item.model';
 import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 
@@ -19,11 +19,14 @@ describe('ItemViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ CommonModule ],
-      declarations: [ ItemViewerComponent, TestComponentWrapper ],
+      imports: [CommonModule],
+      declarations: [ItemViewerComponent, TestComponentWrapper],
       providers: [
         ItemScoringGuideMapper,
-        { provide: ApplicationSettingsService, useValue: mockApplicationSettingsService },
+        {
+          provide: ApplicationSettingsService,
+          useValue: mockApplicationSettingsService
+        },
         { provide: ItemScoringService, useClass: MockItemScoringService }
       ]
     }).compileComponents();
@@ -31,7 +34,7 @@ describe('ItemViewerComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TestComponentWrapper);
-    component = fixture.debugElement.children[ 0 ].componentInstance;
+    component = fixture.debugElement.children[0].componentInstance;
     fixture.detectChanges();
   });
 
@@ -53,4 +56,3 @@ class MockItemScoringService extends ItemScoringService {
 class TestComponentWrapper {
   item = new AssessmentItem();
 }
-

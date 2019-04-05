@@ -5,17 +5,26 @@
 <ng-template #loaded>
   <div class="flex-children">
     <div class="flex-child grow">
-      <label *ngIf="groups.length">{{'groups.search-label' | translate}}</label>
-      <p *ngIf="!groups.length"
-         class="text-muted">{{'groups.no-groups' | translate}}</p>
+      <label *ngIf="groups.length">{{
+        'groups.search-label' | translate
+      }}</label>
+      <p *ngIf="!groups.length" class="text-muted">
+        {{ 'groups.no-groups' | translate }}
+      </p>
     </div>
     <div class="flex-child">
       <ul class="list-unstyled list-inline">
         <li *ngIf="defaultGroup">
-          <a [routerLink]="['/', 'group-dashboard', {groupId: defaultGroup.id}]"
-             title="{{'groups.view-dashboard' | translate}}"
-             class="btn btn-xs btn-default">
-            <i class="fa fa-bars"></i> {{'groups.view-dashboard' | translate}}
+          <a
+            [routerLink]="[
+              '/',
+              'group-dashboard',
+              { groupId: defaultGroup.id }
+            ]"
+            title="{{ 'groups.view-dashboard' | translate }}"
+            class="btn btn-xs btn-default"
+          >
+            <i class="fa fa-bars"></i> {{ 'groups.view-dashboard' | translate }}
           </a>
         </li>
       </ul>
@@ -23,21 +32,26 @@
   </div>
 
   <ng-container *ngIf="groups.length">
-    <div *ngIf="groups.length > searchThreshold"
-         class="table-search-form-container">
-      <label for="search" class="sr-only">{{'groups.filter' | translate}}</label>
-      <input [(ngModel)]="search"
-             class="search form-control"
-             id="search"
-             type="text"
-             placeholder="{{'groups.filter' | translate}}"
-             autocomplete="off"
-             (ngModelChange)="onSearchChange($event)">
+    <div
+      *ngIf="groups.length > searchThreshold"
+      class="table-search-form-container"
+    >
+      <label for="search" class="sr-only">{{
+        'groups.filter' | translate
+      }}</label>
+      <input
+        [(ngModel)]="search"
+        class="search form-control"
+        id="search"
+        type="text"
+        placeholder="{{ 'groups.filter' | translate }}"
+        autocomplete="off"
+        (ngModelChange)="onSearchChange($event)"
+      />
     </div>
 
     <div class="table-list-container">
       <group-table [groups]="filteredGroups"></group-table>
     </div>
   </ng-container>
-
 </ng-template>

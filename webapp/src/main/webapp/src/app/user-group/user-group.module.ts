@@ -30,16 +30,7 @@ import { UserGroupTableComponent } from './user-group-table.component';
     StudentSearchModule,
     TableModule
   ],
-  exports: [
-    UserGroupComponent,
-    UserGroupsComponent
-  ],
-  providers: [
-    UserGroupService,
-    UserGroupOptionsService,
-    UserGroupResolve
-  ]
+  exports: [UserGroupComponent, UserGroupsComponent],
+  providers: [UserGroupService, UserGroupOptionsService, UserGroupResolve]
 })
-export class UserGroupModule {
-
-}
+export class UserGroupModule {}

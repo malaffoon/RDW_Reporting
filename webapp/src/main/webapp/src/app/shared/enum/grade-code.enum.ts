@@ -3,7 +3,6 @@
  * grade code values.
  */
 export class GradeCode {
-
   private static codes: string[] = [
     'KG',
     '01',

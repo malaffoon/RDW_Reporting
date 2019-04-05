@@ -7,24 +7,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '../../shared/common.module';
 
 @NgModule({
-  declarations: [
-    SubgroupComponent,
-    SubgroupFiltersComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule
-  ],
-  exports: [
-    SubgroupComponent,
-    SubgroupFiltersComponent
-  ],
-  providers: [
-    SubgroupMapper
-  ]
+  declarations: [SubgroupComponent, SubgroupFiltersComponent],
+  imports: [BrowserModule, FormsModule, ReactiveFormsModule, CommonModule],
+  exports: [SubgroupComponent, SubgroupFiltersComponent],
+  providers: [SubgroupMapper]
 })
-export class SubgroupModule {
-
-}
+export class SubgroupModule {}

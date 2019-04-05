@@ -1,8 +1,7 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'schoolYear' })
 export class SchoolYearPipe implements PipeTransform {
-
   transform(value: number): string {
     let valueAsString = value.toString();
 
@@ -12,5 +11,4 @@ export class SchoolYearPipe implements PipeTransform {
 
     return `${value - 1}-${valueAsString.substring(2)}`;
   }
-
 }

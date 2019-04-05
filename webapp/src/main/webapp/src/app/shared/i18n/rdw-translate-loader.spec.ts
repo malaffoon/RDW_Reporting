@@ -1,55 +1,59 @@
-import { RdwTranslateLoader } from "./rdw-translate-loader";
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { inject, TestBed } from "@angular/core/testing";
-import { SubjectService } from "../../subject/subject.service";
-import { of } from "rxjs";
+import { RdwTranslateLoader } from './rdw-translate-loader';
+import { HttpClient } from '@angular/common/http';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { SubjectService } from '../../subject/subject.service';
+import { of } from 'rxjs';
 
 describe('RdwTranslateLoader', () => {
-
-  const mockSubjectService = jasmine.createSpyObj("SubjectService", ["getSubjectCodes"]);
+  const mockSubjectService = jasmine.createSpyObj('SubjectService', [
+    'getSubjectCodes'
+  ]);
   mockSubjectService.getSubjectCodes.and.returnValue(of(['Math', 'ELA']));
 
   let mockHttp: HttpTestingController;
   let mockClientData = {
-    'welcome': {
-      'title': 'Hello from UI',
-      'message': 'The UI welcomes you!',
-      'prompt': 'You have been prompted from the UI!'
+    welcome: {
+      title: 'Hello from UI',
+      message: 'The UI welcomes you!',
+      prompt: 'You have been prompted from the UI!'
     },
-    'labels': {
+    labels: {
       'combo-box': 'Select'
     }
   };
   let mockServerData = {
-    'welcome': {
-      'title': 'Hello from API',
-      'message': 'The API welcomes you!'
+    welcome: {
+      title: 'Hello from API',
+      message: 'The API welcomes you!'
     },
-    'subject': {
-      'Math': {
+    subject: {
+      Math: {
         'asmt-type': {
-          'ica': {
-            'name': 'ICA'
+          ica: {
+            name: 'ICA'
           },
-          'iab': {
-            'name': 'IAB'
+          iab: {
+            name: 'IAB'
           },
-          'sum': {
-            'name': 'SUM'
+          sum: {
+            name: 'SUM'
           }
         }
       },
-      'ELA': {
+      ELA: {
         'asmt-type': {
-          'ica': {
-            'name': 'ICA-2'
+          ica: {
+            name: 'ICA-2'
           },
-          'iab': {
-            'name': 'IAB-2'
+          iab: {
+            name: 'IAB-2'
           },
-          'sum': {
-            'name': 'SUM-2'
+          sum: {
+            name: 'SUM-2'
           }
         }
       }
@@ -58,9 +62,7 @@ describe('RdwTranslateLoader', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
+      imports: [HttpClientTestingModule],
       providers: [{ provide: SubjectService, useValue: mockSubjectService }]
     });
     mockHttp = TestBed.get(HttpTestingController);
@@ -70,24 +72,29 @@ describe('RdwTranslateLoader', () => {
     mockHttp.verify();
   });
 
-  it('should merge api and ui translations', inject([HttpClient, SubjectService], (http: HttpClient, subjectService: SubjectService) => {
+  it('should merge api and ui translations', inject(
+    [HttpClient, SubjectService],
+    (http: HttpClient, subjectService: SubjectService) => {
+      let loader = new RdwTranslateLoader(http, subjectService);
+      loader.getTranslation('en').subscribe((actual: any) => {
+        expect(actual.welcome.title).toBe('Hello from API');
+        expect(actual.welcome.message).toBe('The API welcomes you!');
+        expect(actual.welcome.prompt).toBe(
+          'You have been prompted from the UI!'
+        );
+        expect(actual.labels['combo-box']).toBe('Select');
+        expect(actual.common['assessment-type'].ica['short-name']).toBe(
+          'ICA/ICA-2'
+        );
+      });
 
-    let loader = new RdwTranslateLoader(http, subjectService);
-    loader.getTranslation('en').subscribe((actual: any) => {
-      expect(actual.welcome.title).toBe('Hello from API');
-      expect(actual.welcome.message).toBe('The API welcomes you!');
-      expect(actual.welcome.prompt).toBe('You have been prompted from the UI!');
-      expect(actual.labels[ 'combo-box' ]).toBe('Select');
-      expect(actual.common['assessment-type'].ica['short-name']).toBe("ICA/ICA-2");
-    });
+      let clientResponse = mockHttp.expectOne('/assets/i18n/en.json');
+      clientResponse.flush(mockClientData);
 
-    let clientResponse = mockHttp.expectOne('/assets/i18n/en.json');
-    clientResponse.flush(mockClientData);
-
-    let serverResponse = mockHttp.expectOne('/api/translations/en');
-    serverResponse.flush(mockServerData);
-
-  }));
+      let serverResponse = mockHttp.expectOne('/api/translations/en');
+      serverResponse.flush(mockServerData);
+    }
+  ));
 
   /** ignore until caching is figured out
   it('should fall back to ui translations when no api translations are available', inject([HttpClient], (http: HttpClient) => {
@@ -109,4 +116,3 @@ describe('RdwTranslateLoader', () => {
   }));
    **/
 });
-

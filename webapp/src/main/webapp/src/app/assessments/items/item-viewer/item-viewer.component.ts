@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
-import { AssessmentItem } from "../../model/assessment-item.model";
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AssessmentItem } from '../../model/assessment-item.model';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 
 /**
@@ -46,8 +46,7 @@ export class ItemViewerComponent implements OnInit {
     }
   }
 
-  constructor(private applicationSettingsService: ApplicationSettingsService) {
-  }
+  constructor(private applicationSettingsService: ApplicationSettingsService) {}
 
   ngOnInit() {
     this.applicationSettingsService.getSettings().subscribe(settings => {
@@ -69,17 +68,21 @@ export class ItemViewerComponent implements OnInit {
   loadToken() {
     let token = this.getToken(this.item.bankItemKey);
     IRiS.loadToken(this.vendorId, token)
-      .done((function () {
-        this.loadResponse();
-      }).bind(this))
-      .fail((function (err) {
-        if (this._currentAttempt-- > 0) {
-          console.log("Failed to load token, attempting again", err);
-          setTimeout(this.loadToken.bind(this), 2000);
-        } else {
-          console.log("Max failures attempted, aborting.");
-        }
-      }).bind(this));
+      .done(
+        function() {
+          this.loadResponse();
+        }.bind(this)
+      )
+      .fail(
+        function(err) {
+          if (this._currentAttempt-- > 0) {
+            console.log('Failed to load token, attempting again', err);
+            setTimeout(this.loadToken.bind(this), 2000);
+          } else {
+            console.log('Max failures attempted, aborting.');
+          }
+        }.bind(this)
+      );
   }
 
   /**
@@ -113,7 +116,6 @@ export class ItemViewerComponent implements OnInit {
       payload.label = position.toString();
     }
 
-    return [ payload ];
+    return [payload];
   }
-
 }

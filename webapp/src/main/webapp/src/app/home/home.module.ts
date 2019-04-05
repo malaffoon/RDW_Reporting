@@ -9,10 +9,7 @@ import { BsDropdownModule } from 'ngx-bootstrap';
 import { AdminToolsComponent } from './admin-tools.component';
 
 @NgModule({
-  declarations: [
-    HomeComponent,
-    AdminToolsComponent
-  ],
+  declarations: [HomeComponent, AdminToolsComponent],
   imports: [
     BrowserModule,
     CommonModule,
@@ -21,10 +18,6 @@ import { AdminToolsComponent } from './admin-tools.component';
     GroupsModule,
     BsDropdownModule.forRoot()
   ],
-  exports: [
-    HomeComponent
-  ]
+  exports: [HomeComponent]
 })
-export class HomeModule {
-
-}
+export class HomeModule {}

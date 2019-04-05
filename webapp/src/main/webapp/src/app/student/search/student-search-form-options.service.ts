@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable ,  forkJoin ,  of } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { StudentSearchFormOptions } from './student-search-form-options';
 import { GroupService } from '../../groups/group.service';
 import { OrganizationService } from '../../shared/organization/organization.service';
@@ -8,11 +8,11 @@ import { UserGroupService } from '../../user-group/user-group.service';
 
 @Injectable()
 export class StudentSearchFormOptionsService {
-
-  constructor(private organizationService: OrganizationService,
-              private groupService: GroupService,
-              private userGroupService: UserGroupService) {
-  }
+  constructor(
+    private organizationService: OrganizationService,
+    private groupService: GroupService,
+    private userGroupService: UserGroupService
+  ) {}
 
   getOptions(): Observable<StudentSearchFormOptions> {
     return forkJoin(
@@ -20,12 +20,14 @@ export class StudentSearchFormOptionsService {
       this.groupService.getGroups(),
       this.userGroupService.safelyGetGroups()
     ).pipe(
-      map(([schools, groups, userGroups]) => <StudentSearchFormOptions>{
-        schools: schools,
-        groups: groups,
-        userGroups: userGroups
-      })
+      map(
+        ([schools, groups, userGroups]) =>
+          <StudentSearchFormOptions>{
+            schools: schools,
+            groups: groups,
+            userGroups: userGroups
+          }
+      )
     );
   }
-
 }

@@ -12,7 +12,6 @@ import { SubjectService } from '../subject/subject.service';
   templateUrl: './user-groups.component.html'
 })
 export class UserGroupsComponent implements OnInit {
-
   /**
    * The assigned groups
    */
@@ -35,37 +34,39 @@ export class UserGroupsComponent implements OnInit {
 
   initialized: boolean = false;
 
-  constructor(private service: UserGroupService,
-              private subjectService: SubjectService,
-              private permissionService: PermissionService,
-              private router: Router) {
-  }
+  constructor(
+    private service: UserGroupService,
+    private subjectService: SubjectService,
+    private permissionService: PermissionService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     forkJoin(
       this.subjectService.getSubjectCodes(),
       this.permissionService.getPermissions()
-    ).subscribe(([ subjects, permissions ]) => {
+    ).subscribe(([subjects, permissions]) => {
       this.filteredGroups = this.groups.concat();
       if (this.groups.length !== 0) {
-        this.defaultGroup = this.groups[ 0 ];
+        this.defaultGroup = this.groups[0];
       }
       this.subjects = subjects;
-      this.createButtonDisabled = this.assignedGroups.length === 0
-        && permissions.indexOf('INDIVIDUAL_PII_READ') === -1;
+      this.createButtonDisabled =
+        this.assignedGroups.length === 0 &&
+        permissions.indexOf('INDIVIDUAL_PII_READ') === -1;
       this.initialized = true;
     });
   }
 
   onSearchChange(): void {
-    this.filteredGroups = this.groups
-      .filter(group => group.name.toLowerCase().includes(this.search.toLowerCase()));
+    this.filteredGroups = this.groups.filter(group =>
+      group.name.toLowerCase().includes(this.search.toLowerCase())
+    );
   }
 
   onCreateButtonClick(): void {
     if (!this.createButtonDisabled) {
-      this.router.navigate([ '/user-groups' ]);
+      this.router.navigate(['/user-groups']);
     }
   }
-
 }

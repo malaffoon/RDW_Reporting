@@ -21,8 +21,10 @@ abstract class AbstractIdentifiableOrganization extends AbstractOrganization {
   id: number;
   naturalId: string;
   equals(other: Organization): boolean {
-    return this.type === other.type
-      && this.id === (<IdentifiableOrganization>other).id;
+    return (
+      this.type === other.type &&
+      this.id === (<IdentifiableOrganization>other).id
+    );
   }
 }
 
@@ -34,11 +36,9 @@ export enum OrganizationType {
   School = 'School'
 }
 
-export interface State extends Organization {
-}
+export interface State extends Organization {}
 
-export interface DistrictGroup extends IdentifiableOrganization {
-}
+export interface DistrictGroup extends IdentifiableOrganization {}
 
 export interface District extends IdentifiableOrganization {
   readonly districtGroupId?: number;
@@ -62,20 +62,23 @@ export class DefaultState extends AbstractOrganization implements State {
   }
 }
 
-export class DefaultDistrictGroup extends AbstractIdentifiableOrganization implements DistrictGroup {
+export class DefaultDistrictGroup extends AbstractIdentifiableOrganization
+  implements DistrictGroup {
   get type(): OrganizationType {
     return OrganizationType.DistrictGroup;
   }
 }
 
-export class DefaultDistrict extends AbstractIdentifiableOrganization implements District {
+export class DefaultDistrict extends AbstractIdentifiableOrganization
+  implements District {
   districtGroupId: number;
   get type(): OrganizationType {
     return OrganizationType.District;
   }
 }
 
-export class DefaultSchoolGroup extends AbstractIdentifiableOrganization implements SchoolGroup {
+export class DefaultSchoolGroup extends AbstractIdentifiableOrganization
+  implements SchoolGroup {
   districtId: number;
   districtGroupId: number;
   get type(): OrganizationType {
@@ -83,7 +86,8 @@ export class DefaultSchoolGroup extends AbstractIdentifiableOrganization impleme
   }
 }
 
-export class DefaultSchool extends AbstractIdentifiableOrganization implements School {
+export class DefaultSchool extends AbstractIdentifiableOrganization
+  implements School {
   schoolGroupId: number;
   districtId: number;
   districtGroupId: number;

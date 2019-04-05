@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { SBTypeahead } from "./sb-typeahead.component";
-import { Utils } from "../support/support";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { SBTypeahead } from './sb-typeahead.component';
+import { Utils } from '../support/support';
 
 /**
  * This component adds a button on the right hand side of the sb-typeahead.
@@ -12,35 +12,41 @@ import { Utils } from "../support/support";
   selector: 'sb-button-typeahead,[sb-button-typeahead]',
   template: `
     <span class="input-group">
-      <input class="form-control"
-             [id]="inputId"
-             [disabled]="disabledInternal"
-             [typeahead]="options"
-             [typeaheadMinLength]="0"
-             typeaheadOptionField="label"
-             typeaheadGroupField="group"
-             (typeaheadOnSelect)="onSelectInternal($event.item)"
-             (ngModelChange)="onChangeInternal()"
-             typeaheadWaitMs="300"
-             [typeaheadOptionsLimit]="100"
-             [typeaheadOptionsInScrollableView]="20"
-             [typeaheadScrollable]="true"
-             [(ngModel)]="search"
-             autocomplete="off"
-             [placeholder]="placeholder">
-      
+      <input
+        class="form-control"
+        [id]="inputId"
+        [disabled]="disabledInternal"
+        [typeahead]="options"
+        [typeaheadMinLength]="0"
+        typeaheadOptionField="label"
+        typeaheadGroupField="group"
+        (typeaheadOnSelect)="onSelectInternal($event.item)"
+        (ngModelChange)="onChangeInternal()"
+        typeaheadWaitMs="300"
+        [typeaheadOptionsLimit]="100"
+        [typeaheadOptionsInScrollableView]="20"
+        [typeaheadScrollable]="true"
+        [(ngModel)]="search"
+        autocomplete="off"
+        [placeholder]="placeholder"
+      />
+
       <span class="input-group-btn">
-        <button type="button"
-                class="btn btn-default"
-                (click)="onButtonClickInternal()"
-                [disabled]="buttonDisabledInternal"><span [ngClass]="{'gray': buttonDisabledInternal}"><i class="fa fa-plus"></i> {{buttonLabel}}</span>
+        <button
+          type="button"
+          class="btn btn-default"
+          (click)="onButtonClickInternal()"
+          [disabled]="buttonDisabledInternal"
+        >
+          <span [ngClass]="{ gray: buttonDisabledInternal }"
+            ><i class="fa fa-plus"></i> {{ buttonLabel }}</span
+          >
         </button>
       </span>
     </span>
   `
 })
 export class SBButtonTypeahead extends SBTypeahead {
-
   @Output()
   buttonClick: EventEmitter<any> = new EventEmitter();
 
@@ -57,5 +63,4 @@ export class SBButtonTypeahead extends SBTypeahead {
       this.search = '';
     }
   }
-
 }

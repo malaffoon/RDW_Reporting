@@ -1,13 +1,12 @@
-import { Organization } from "../shared/organization/organization";
-import { SubgroupFilterOptions } from "./subgroup/subgroup-filter-options";
-import {Claim, Subject} from './aggregate-report-options.service';
+import { Organization } from '../shared/organization/organization';
+import { SubgroupFilterOptions } from './subgroup/subgroup-filter-options';
+import { Claim, Subject } from './aggregate-report-options.service';
 import { ReportQueryType } from '../report/report';
 
 /**
  * Represents the aggregate report options as provided by the API
  */
 export interface AggregateReportOptions {
-
   readonly assessmentGrades: string[];
   readonly assessmentTypes: string[];
   readonly claims: Claim[];
@@ -22,5 +21,4 @@ export interface AggregateReportOptions {
   readonly subjects: Subject[];
   readonly summativeAdministrationConditions: string[];
   readonly studentFilters: SubgroupFilterOptions;
-
 }

@@ -1,5 +1,4 @@
 export interface Student {
-
   readonly id: number;
   readonly ssid: string;
   readonly firstName: string;

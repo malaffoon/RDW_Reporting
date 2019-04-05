@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Utils } from "./support/support";
+import { Component, Input, OnInit } from '@angular/core';
+import { Utils } from './support/support';
 
 /**
  * @deprecated use <sb-button-group type="checkbox">
@@ -7,22 +7,45 @@ import { Utils } from "./support/support";
 @Component({
   selector: 'sb-checkbox-list',
   template: `
-    <div [ngClass]="{'vertical':!horizontal}" class="nested-btn-group btn-group-sm toggle-group all-option" data-toggle="buttons">
-      <label class="btn btn-primary" [ngClass]="{'active': modelValue[0] }">
-        <input type="checkbox" [(ngModel)]="modelValue[0]" (ngModelChange)="allChange($event)" autocomplete="off"
-               checked=""
-               angulartics2On="click" [angularticsAction]="analyticsEvent"
-               [angularticsCategory]="analyticsCategory" [angularticsProperties]="{label: label + ': All'}">
+    <div
+      [ngClass]="{ vertical: !horizontal }"
+      class="nested-btn-group btn-group-sm toggle-group all-option"
+      data-toggle="buttons"
+    >
+      <label class="btn btn-primary" [ngClass]="{ active: modelValue[0] }">
+        <input
+          type="checkbox"
+          [(ngModel)]="modelValue[0]"
+          (ngModelChange)="allChange($event)"
+          autocomplete="off"
+          checked=""
+          angulartics2On="click"
+          [angularticsAction]="analyticsEvent"
+          [angularticsCategory]="analyticsCategory"
+          [angularticsProperties]="{ label: label + ': All' }"
+        />
         {{ 'common.buttons.all' | translate }}
       </label>
       <div class="btn-group">
-        <label *ngFor="let value of values" class="btn btn-primary" [ngClass]="{'active': modelValue[value] }">
-          <input type="checkbox" [(ngModel)]="modelValue[value]" (ngModelChange)="valueChange($event)"
-                 autocomplete="off" 
-                 angulartics2On="click" [angularticsAction]="analyticsEvent"
-                 [angularticsCategory]="analyticsCategory"
-                 [angularticsProperties]="{label: enum === undefined ? value : label + ': ' + enum + '.' + value}">
-          {{ enum === undefined ? value : enum + '.' + value | translate }}
+        <label
+          *ngFor="let value of values"
+          class="btn btn-primary"
+          [ngClass]="{ active: modelValue[value] }"
+        >
+          <input
+            type="checkbox"
+            [(ngModel)]="modelValue[value]"
+            (ngModelChange)="valueChange($event)"
+            autocomplete="off"
+            angulartics2On="click"
+            [angularticsAction]="analyticsEvent"
+            [angularticsCategory]="analyticsCategory"
+            [angularticsProperties]="{
+              label:
+                enum === undefined ? value : label + ': ' + enum + '.' + value
+            }"
+          />
+          {{ enum === undefined ? value : (enum + '.' + value | translate) }}
         </label>
       </div>
     </div>
@@ -31,7 +54,7 @@ import { Utils } from "./support/support";
 export class SBCheckboxList implements OnInit {
   // An array of values which must map to the given enum.
   @Input()
-  public values: any[]
+  public values: any[];
 
   // An enum defined in the translations which has a value.
   @Input()
@@ -67,11 +90,11 @@ export class SBCheckboxList implements OnInit {
   }
 
   get modelValue() {
-    return this.model[ this.property ];
+    return this.model[this.property];
   }
 
   set modelValue(value) {
-    this.model[ this.property ] = value;
+    this.model[this.property] = value;
   }
 
   constructor() {
@@ -86,24 +109,22 @@ export class SBCheckboxList implements OnInit {
   allChange(newValue): void {
     if (newValue) {
       this.setValuesToFalse();
-    }
-    else {
+    } else {
       // Don't allow All to be to set to false by clicking.
-      this.modelValue[ 0 ] = true;
+      this.modelValue[0] = true;
     }
     this.modelValue = Object.assign({}, this.modelValue);
   }
 
   valueChange(value): void {
     // Set all to true if all options are false.
-    this.modelValue[ 0 ] = this.areAllValuesFalse();
+    this.modelValue[0] = this.areAllValuesFalse();
     this.modelValue = Object.assign({}, this.modelValue);
   }
 
   private areAllValuesFalse(): boolean {
     for (let i = 0; i < this.values.length; i++) {
-      if (this.modelValue[ this.values[ i ] ])
-        return false;
+      if (this.modelValue[this.values[i]]) return false;
     }
 
     return true;
@@ -111,7 +132,7 @@ export class SBCheckboxList implements OnInit {
 
   private setValuesToFalse(): void {
     for (let i = 0; i < this.values.length; i++) {
-      this.modelValue[ this.values[ i ] ] = false
+      this.modelValue[this.values[i]] = false;
     }
   }
 }

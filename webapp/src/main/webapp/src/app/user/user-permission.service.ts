@@ -1,18 +1,13 @@
-import { UserService } from "./user.service";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { UserService } from './user.service';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UserPermissionService {
-
-  constructor(private userService: UserService) {
-  }
+  constructor(private userService: UserService) {}
 
   getPermissions(): Observable<string[]> {
-    return this.userService.getUser().pipe(
-      map(user => user.permissions)
-    );
+    return this.userService.getUser().pipe(map(user => user.permissions));
   }
-
 }

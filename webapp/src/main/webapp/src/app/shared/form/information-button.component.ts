@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { Utils } from "../support/support";
+import { Component, Input } from '@angular/core';
+import { Utils } from '../support/support';
 
 /**
  * This component is responsible for displaying a label with
@@ -10,7 +10,6 @@ import { Utils } from "../support/support";
   templateUrl: './information-button.component.html'
 })
 export class InformationButtonComponent {
-
   @Input()
   public title: string;
 
@@ -21,7 +20,7 @@ export class InformationButtonComponent {
   public icon: string;
 
   @Input()
-  public placement: string = "top";
+  public placement: string = 'top';
 
   /**
    * Stop propagation of the info button click and dispatch a new click event
@@ -44,5 +43,4 @@ export class InformationButtonComponent {
       window.document.dispatchEvent(clickEvent);
     });
   }
-
 }

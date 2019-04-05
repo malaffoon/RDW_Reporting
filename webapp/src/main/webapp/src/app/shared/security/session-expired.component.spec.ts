@@ -1,9 +1,9 @@
-import { SessionExpiredComponent } from "./session-expired.component";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AuthenticationService } from "./authentication.service";
-import { TranslateModule } from "@ngx-translate/core";
-import { Location } from "@angular/common";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { SessionExpiredComponent } from './session-expired.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AuthenticationService } from './authentication.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { Location } from '@angular/common';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
 
@@ -13,11 +13,9 @@ describe('SessionExpiredComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
-      declarations: [ SessionExpiredComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      imports: [TranslateModule.forRoot()],
+      declarations: [SessionExpiredComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: AuthenticationService, useClass: MockAuthenticationService },
         { provide: Location, useClass: MockLocation }
@@ -27,20 +25,19 @@ describe('SessionExpiredComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SessionExpiredComponent);
-    component = fixture.debugElement.children[ 0 ].componentInstance;
+    component = fixture.debugElement.children[0].componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });
 
 class MockAuthenticationService {
-  authenticate: Spy = createSpy("authenticate");
+  authenticate: Spy = createSpy('authenticate');
 }
 
 class MockLocation {
-  prepareExternalUrl: Spy = createSpy("prepareExternalUrl");
+  prepareExternalUrl: Spy = createSpy('prepareExternalUrl');
 }

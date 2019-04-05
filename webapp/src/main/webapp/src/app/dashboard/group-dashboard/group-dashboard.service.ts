@@ -12,18 +12,25 @@ const ServiceRoute = ReportingServiceRoute;
 
 @Injectable()
 export class GroupDashboardService {
+  constructor(
+    private dataService: DataService,
+    private measuredAssessmentMapper: MeasuredAssessmentMapper
+  ) {}
 
-  constructor(private dataService: DataService,
-              private measuredAssessmentMapper: MeasuredAssessmentMapper) {
+  getAvailableMeasuredAssessments(
+    search: Search
+  ): Observable<MeasuredAssessment[]> {
+    return this.dataService
+      .get(`${ServiceRoute}/measuredassessments`, {
+        params: <any>search
+      })
+      .pipe(
+        catchError(ResponseUtils.badResponseToNull),
+        map(serverAssessments =>
+          this.measuredAssessmentMapper.mapMeasuredAssessmentsFromApi(
+            serverAssessments
+          )
+        )
+      );
   }
-
-  getAvailableMeasuredAssessments(search: Search): Observable<MeasuredAssessment[]> {
-    return this.dataService.get(`${ServiceRoute}/measuredassessments`, {
-      params: <any>search
-    }).pipe(
-      catchError(ResponseUtils.badResponseToNull),
-      map(serverAssessments => this.measuredAssessmentMapper.mapMeasuredAssessmentsFromApi(serverAssessments))
-    );
-  }
-
 }

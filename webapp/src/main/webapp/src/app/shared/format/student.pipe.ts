@@ -3,9 +3,7 @@ import { Student } from '../../student/model/student.model';
 
 @Pipe({ name: 'student' })
 export class StudentPipe implements PipeTransform {
-
-  constructor() {
-  }
+  constructor() {}
 
   transform(value: Student, omitLastName?: boolean): string {
     if (value == null) {
@@ -23,4 +21,3 @@ export class StudentPipe implements PipeTransform {
     return `${value.lastName}, ${value.firstName}`;
   }
 }
-

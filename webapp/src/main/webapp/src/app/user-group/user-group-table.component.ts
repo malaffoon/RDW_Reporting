@@ -6,7 +6,6 @@ import { UserGroup } from './user-group';
   templateUrl: './user-group-table.component.html'
 })
 export class UserGroupTableComponent {
-
   @Input()
   groups: UserGroup[];
 
@@ -24,14 +23,13 @@ export class UserGroupTableComponent {
   ngOnInit(): void {
     this.initialized = true;
   }
-
 }
 
 class Column {
   id: string;
   field: string;
 
-  constructor({ id, field = ''}) {
+  constructor({ id, field = '' }) {
     this.id = id;
     this.field = field;
   }

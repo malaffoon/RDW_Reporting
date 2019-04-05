@@ -1,14 +1,15 @@
-import { Directive, Input, TemplateRef, ViewContainerRef } from "@angular/core";
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import Spy = jasmine.Spy;
 
 @Directive({ selector: '[sbAuthorize]' })
 export class MockAuthorizeDirective {
+  public doAuthorize: Spy = jasmine.createSpy('sbAuthorize');
 
-  public doAuthorize: Spy = jasmine.createSpy("sbAuthorize");
-
-  constructor(private _templateRef: TemplateRef<any>,
-              private _viewContainer: ViewContainerRef) {
-    this.doAuthorize.and.returnValue(true)
+  constructor(
+    private _templateRef: TemplateRef<any>,
+    private _viewContainer: ViewContainerRef
+  ) {
+    this.doAuthorize.and.returnValue(true);
   }
 
   @Input()
@@ -19,5 +20,4 @@ export class MockAuthorizeDirective {
       this._viewContainer.clear();
     }
   }
-
 }

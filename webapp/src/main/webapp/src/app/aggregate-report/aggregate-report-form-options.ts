@@ -6,7 +6,6 @@ import { SubgroupFilterFormOptions } from './subgroup/subgroup-filter-form-optio
  * Represents the options available in the aggregate report form
  */
 export interface AggregateReportFormOptions {
-
   assessmentGrades: SbCheckboxGroupOption[];
   assessmentTypes: SbToggleOption[];
   claimCodes: SbCheckboxGroupOption[];
@@ -21,6 +20,4 @@ export interface AggregateReportFormOptions {
   summativeAdministrationConditions: SbCheckboxGroupOption[];
   valueDisplayTypes: SbToggleOption[];
   studentFilters: SubgroupFilterFormOptions;
-
 }
-

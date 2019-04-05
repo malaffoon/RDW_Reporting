@@ -5,21 +5,31 @@ import { ExportWritingTraitsRequest } from '../../assessments/model/export-writi
 import { ExportTargetReportRequest } from '../../assessments/model/export-target-report-request.model';
 
 export class DefaultAssessmentExporter implements AssessmentExporter {
-
-  constructor(private service: GroupAssessmentExportService,
-              private filenameProvider: (request: ExportItemsRequest | ExportWritingTraitsRequest | ExportTargetReportRequest) => string) {
-  }
+  constructor(
+    private service: GroupAssessmentExportService,
+    private filenameProvider: (
+      request:
+        | ExportItemsRequest
+        | ExportWritingTraitsRequest
+        | ExportTargetReportRequest
+    ) => string
+  ) {}
 
   exportItemsToCsv(request: ExportItemsRequest) {
     this.service.exportItemsToCsv(request, this.filenameProvider(request));
   }
 
   exportWritingTraitScoresToCsv(request: ExportWritingTraitsRequest) {
-    this.service.exportWritingTraitScoresToCsv(request, this.filenameProvider(request));
+    this.service.exportWritingTraitScoresToCsv(
+      request,
+      this.filenameProvider(request)
+    );
   }
 
   exportTargetScoresToCsv(request: ExportTargetReportRequest) {
-    this.service.exportTargetScoresToCsv(request, this.filenameProvider(request));
+    this.service.exportTargetScoresToCsv(
+      request,
+      this.filenameProvider(request)
+    );
   }
-
 }

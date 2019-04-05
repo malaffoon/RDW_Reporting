@@ -22,60 +22,62 @@ export const ClaimIdentityColumnOptions: string[] = [
 const Iab: AssessmentDefinition = {
   typeCode: 'iab',
   interim: true,
-  performanceLevels: [ 1, 2, 3 ],
+  performanceLevels: [1, 2, 3],
   performanceLevelCount: 3,
-  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  performanceLevelDisplayTypes: [PerformanceLevelDisplayTypes.Separate],
   aggregateReportIdentityColumns: IdentityColumnOptions.concat(),
   aggregateReportStateResultsEnabled: false,
-  aggregateReportTypes: [ 'CustomAggregate' ]
+  aggregateReportTypes: ['CustomAggregate']
 };
 
 const Ica: AssessmentDefinition = {
   typeCode: 'ica',
   interim: true,
-  performanceLevels: [ 1, 2, 3, 4 ],
+  performanceLevels: [1, 2, 3, 4],
   performanceLevelCount: 4,
   performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
   performanceLevelGroupingCutPoint: 3,
-  aggregateReportIdentityColumns: IdentityColumnOptions
-    .filter(option => option !== 'assessmentLabel'),
+  aggregateReportIdentityColumns: IdentityColumnOptions.filter(
+    option => option !== 'assessmentLabel'
+  ),
   aggregateReportStateResultsEnabled: false,
-  aggregateReportTypes: [ 'Claim' ]
+  aggregateReportTypes: ['Claim']
 };
 
 const Summative: AssessmentDefinition = {
   typeCode: 'sum',
   interim: false,
-  performanceLevels: [ 1, 2, 3, 4 ],
+  performanceLevels: [1, 2, 3, 4],
   performanceLevelCount: 4,
   performanceLevelDisplayTypes: PerformanceLevelDisplayTypes.values(),
   performanceLevelGroupingCutPoint: 3,
-  aggregateReportIdentityColumns: IdentityColumnOptions
-    .filter(option => option !== 'assessmentLabel'),
+  aggregateReportIdentityColumns: IdentityColumnOptions.filter(
+    option => option !== 'assessmentLabel'
+  ),
   aggregateReportStateResultsEnabled: true,
-  aggregateReportTypes: [ 'Claim', 'Longitudinal' ]
+  aggregateReportTypes: ['Claim', 'Longitudinal']
 };
 
 const ClaimIca: AssessmentDefinition = {
   typeCode: 'ica',
   interim: true,
-  performanceLevels: [ 1, 2, 3 ],
+  performanceLevels: [1, 2, 3],
   performanceLevelCount: 3,
-  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  performanceLevelDisplayTypes: [PerformanceLevelDisplayTypes.Separate],
   aggregateReportIdentityColumns: ClaimIdentityColumnOptions.concat(),
   aggregateReportStateResultsEnabled: false,
-  aggregateReportTypes: [ 'Claim' ]
+  aggregateReportTypes: ['Claim']
 };
 
 const ClaimSummative: AssessmentDefinition = {
   typeCode: 'sum',
   interim: false,
-  performanceLevels: [ 1, 2, 3 ],
+  performanceLevels: [1, 2, 3],
   performanceLevelCount: 3,
-  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  performanceLevelDisplayTypes: [PerformanceLevelDisplayTypes.Separate],
   aggregateReportIdentityColumns: ClaimIdentityColumnOptions.concat(),
   aggregateReportStateResultsEnabled: true,
-  aggregateReportTypes: [ 'Claim', 'Longitudinal' ]
+  aggregateReportTypes: ['Claim', 'Longitudinal']
 };
 
 const TargetSummative: AssessmentDefinition = {
@@ -83,10 +85,10 @@ const TargetSummative: AssessmentDefinition = {
   interim: false,
   performanceLevels: [1, 2, 3],
   performanceLevelCount: 3,
-  performanceLevelDisplayTypes: [ PerformanceLevelDisplayTypes.Separate ],
+  performanceLevelDisplayTypes: [PerformanceLevelDisplayTypes.Separate],
   aggregateReportIdentityColumns: ['claim', 'target', 'dimension'],
   aggregateReportStateResultsEnabled: false,
-  aggregateReportTypes: [ 'Target' ]
+  aggregateReportTypes: ['Target']
 };
 
 export const GeneralPopulationIabKey: DefinitionKey = <DefinitionKey>{
@@ -131,14 +133,13 @@ export const definitions = [
   { key: LongitudinalCohortSumKey, value: Summative },
   { key: ClaimSumKey, value: ClaimSummative },
   { key: TargetSummativeKey, value: TargetSummative }
-  ];
+];
 
 /**
  * Responsible for providing definition key related properties
  */
 @Injectable()
 export class AssessmentDefinitionService {
-
   /**
    * Gets the assessment definition by assessment type and report type
    * @param {string} assessmentType
@@ -146,8 +147,15 @@ export class AssessmentDefinitionService {
    * @returns {AssessmentDefinition}
    */
   // TODO:ConfigurableSubjects this needs to accept subject as a param
-  get(assessmentType: string, reportType: ReportQueryType): AssessmentDefinition {
-    return definitions.find(value => assessmentType === value.key.assessmentType && reportType === value.key.reportType).value;
+  get(
+    assessmentType: string,
+    reportType: ReportQueryType
+  ): AssessmentDefinition {
+    return definitions.find(
+      value =>
+        assessmentType === value.key.assessmentType &&
+        reportType === value.key.reportType
+    ).value;
   }
 }
 

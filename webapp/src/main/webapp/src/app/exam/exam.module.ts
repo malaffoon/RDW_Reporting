@@ -9,19 +9,25 @@ import { ScoreLabelComponent } from './component/score-label/score-label.compone
 import { ScoreTableComponent } from './component/score-table/score-table.component';
 import { CommonModule } from '../shared/common.module';
 import { PopoverModule } from 'ngx-bootstrap';
+import { AssessmentLabelComponent } from './component/assessment-label/assessment-label.component';
+import { ShowMoreDividerComponent } from './component/show-more-divider/show-more-divider.component';
 
 @NgModule({
   imports: [BrowserModule, CommonModule, PopoverModule, TranslateModule],
   declarations: [
     AggregateScoreGraphComponent,
+    AssessmentLabelComponent,
     ClaimScoreSummaryComponent,
     OverallScoreSummaryComponent,
     ProgressBarComponent,
     ScoreLabelComponent,
-    ScoreTableComponent
+    ScoreTableComponent,
+    ShowMoreDividerComponent
   ],
   exports: [
+    AssessmentLabelComponent,
     ScoreTableComponent,
+    ShowMoreDividerComponent,
     OverallScoreSummaryComponent,
     ClaimScoreSummaryComponent
   ]

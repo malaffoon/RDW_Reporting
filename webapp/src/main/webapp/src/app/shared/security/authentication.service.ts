@@ -1,27 +1,36 @@
-import { Inject, Injectable, InjectionToken, Optional } from "@angular/core";
-import { Location } from "@angular/common";
-import { Router } from "@angular/router";
-import { StorageService, StorageType } from "../core/storage.service";
-import { WindowRefService } from "../core/window-ref.service";
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
+import { StorageService, StorageType } from '../core/storage.service';
+import { WindowRefService } from '../core/window-ref.service';
 
-export const AuthenticationServiceDefaultAuthenticationRoute = new InjectionToken<string>('AuthenticationServiceDefaultAuthenticationRoute');
-export const AuthenticationServiceAuthenticationExpiredRoute = new InjectionToken<string>('AuthenticationServiceAuthenticationExpiredRoute');
+export const AuthenticationServiceDefaultAuthenticationRoute = new InjectionToken<
+  string
+>('AuthenticationServiceDefaultAuthenticationRoute');
+export const AuthenticationServiceAuthenticationExpiredRoute = new InjectionToken<
+  string
+>('AuthenticationServiceAuthenticationExpiredRoute');
 
 /**
  * This service is responsible for handling authentication
  */
 @Injectable()
 export class AuthenticationService {
-
   private urlWhenSessionExpiredKey: string = 'urlWhenSessionExpired';
   private window: any;
 
-  constructor(private router: Router,
-              private location: Location,
-              private storageService: StorageService,
-              windowRefService: WindowRefService,
-              @Optional() @Inject(AuthenticationServiceAuthenticationExpiredRoute) private authenticationExpiredRoute: string,
-              @Optional() @Inject(AuthenticationServiceDefaultAuthenticationRoute) private defaultAuthenticationRoute: string) {
+  constructor(
+    private router: Router,
+    private location: Location,
+    private storageService: StorageService,
+    windowRefService: WindowRefService,
+    @Optional()
+    @Inject(AuthenticationServiceAuthenticationExpiredRoute)
+    private authenticationExpiredRoute: string,
+    @Optional()
+    @Inject(AuthenticationServiceDefaultAuthenticationRoute)
+    private defaultAuthenticationRoute: string
+  ) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -34,7 +43,10 @@ export class AuthenticationService {
 
     // In the case the the root URL is reserved for public pages.
     // Store the prefered default authentication route instead of the root URL.
-    if (this.defaultAuthenticationRoute && this.window.location.pathname === '/') {
+    if (
+      this.defaultAuthenticationRoute &&
+      this.window.location.pathname === '/'
+    ) {
       url += this.defaultAuthenticationRoute;
     }
 
@@ -43,7 +55,7 @@ export class AuthenticationService {
       this.urlWhenSessionExpired = url;
     }
 
-    this.router.navigate([ this.authenticationExpiredRoute ]);
+    this.router.navigate([this.authenticationExpiredRoute]);
   }
 
   /**
@@ -62,7 +74,9 @@ export class AuthenticationService {
   private get authenticationUrl(): string {
     let url = this.urlWhenSessionExpired;
     if (!url) {
-      return this.location.prepareExternalUrl('/' + (this.defaultAuthenticationRoute || ''));
+      return this.location.prepareExternalUrl(
+        '/' + (this.defaultAuthenticationRoute || '')
+      );
     }
     return url;
   }
@@ -73,11 +87,14 @@ export class AuthenticationService {
    * @returns {string|null} A url
    */
   get urlWhenSessionExpired(): string {
-    return this.storageService.getStorage(StorageType.Session).getItem(this.urlWhenSessionExpiredKey);
+    return this.storageService
+      .getStorage(StorageType.Session)
+      .getItem(this.urlWhenSessionExpiredKey);
   }
 
   set urlWhenSessionExpired(value: string) {
-    this.storageService.getStorage(StorageType.Session).setItem(this.urlWhenSessionExpiredKey, value);
+    this.storageService
+      .getStorage(StorageType.Session)
+      .setItem(this.urlWhenSessionExpiredKey, value);
   }
-
 }

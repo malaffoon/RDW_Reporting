@@ -281,6 +281,8 @@
       "search": "Search",
       "select": "Select",
       "show": "Show",
+      "show-more": "Show more",
+      "show-less": "Show less",
       "update": "Update"
     },
     "administration-condition": {
@@ -403,7 +405,7 @@
     },
     "buttons": {
       "all": "All",
-      "display-overall": "Overall Scores",
+      "display-overall": "Overall",
       "printable-student-reports": "Printable Reports"
     },
     "collection-selection": {
@@ -669,6 +671,8 @@
         "no-instruct-found": "Resources not yet available"
       },
       "assessment-exam-columns": {
+        "alternateScaleScore": "{{name}} Scale Score",
+        "alternateScaleScoreLevel": "{{name}} Level",
         "date": "Date",
         "grade": "Enrolled Grade",
         "iab": {

@@ -8,7 +8,6 @@ import { GradeCode } from '../../shared/enum/grade-code.enum';
   templateUrl: './student-assessment-card.component.html'
 })
 export class StudentAssessmentCardComponent implements OnInit {
-
   @Input()
   latestExam: StudentHistoryExamWrapper;
   @Input()
@@ -20,21 +19,22 @@ export class StudentAssessmentCardComponent implements OnInit {
   resultCount: number;
   hasIcon: boolean = true;
 
-  constructor(public colorService: ColorService) {
-  }
+  constructor(public colorService: ColorService) {}
 
   ngOnInit() {
     this.level = this.latestExam.exam.level;
-    this.resultCount = this.exams.filter(exam =>
-      exam.assessment.label === this.latestExam.assessment.label).length;
+    this.resultCount = this.exams.filter(
+      exam => exam.assessment.label === this.latestExam.assessment.label
+    ).length;
   }
 
   getGradeColor(): string {
-    return this.colorService.getColor(GradeCode.getIndex(this.latestExam.assessment.grade));
+    return this.colorService.getColor(
+      GradeCode.getIndex(this.latestExam.assessment.grade)
+    );
   }
 
   selectCard(): void {
     this.selectedAssessment.emit(this.latestExam);
   }
-
 }

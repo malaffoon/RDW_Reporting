@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 const DefaultIconStyles = 'fa-3x';
 
@@ -7,7 +7,6 @@ const DefaultIconStyles = 'fa-3x';
   templateUrl: 'spinner.component.html'
 })
 export class SpinnerComponent {
-
   @Input()
   text: string;
 
@@ -21,5 +20,4 @@ export class SpinnerComponent {
   set iconStyles(value: any) {
     this._iconStyles = value ? value : DefaultIconStyles;
   }
-
 }

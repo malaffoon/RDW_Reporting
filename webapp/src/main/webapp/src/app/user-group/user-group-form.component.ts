@@ -11,7 +11,6 @@ import { Forms } from '../shared/form/forms';
   templateUrl: './user-group-form.component.html'
 })
 export class UserGroupFormComponent implements OnInit {
-
   @Input()
   options: UserGroupFormOptions;
 
@@ -32,8 +31,7 @@ export class UserGroupFormComponent implements OnInit {
 
   private _formGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
-  }
+  constructor(private formBuilder: FormBuilder) {}
 
   get formGroup(): FormGroup {
     return this._formGroup;
@@ -49,8 +47,11 @@ export class UserGroupFormComponent implements OnInit {
 
   ngOnInit(): void {
     this._formGroup = this.formBuilder.group({
-      name: [ this.group.name ],
-      students: [ this.group.students, notEmpty({ messageId: 'user-group.field.students-empty-error' }) ]
+      name: [this.group.name],
+      students: [
+        this.group.students,
+        notEmpty({ messageId: 'user-group.field.students-empty-error' })
+      ]
     });
   }
 
@@ -63,8 +64,7 @@ export class UserGroupFormComponent implements OnInit {
   }
 
   onStudentClick(student: Student): void {
-    this.group.students = this.group.students
-      .filter(x => x.id !== student.id);
+    this.group.students = this.group.students.filter(x => x.id !== student.id);
 
     this.setStudentControl(this.group.students);
   }
@@ -83,5 +83,4 @@ export class UserGroupFormComponent implements OnInit {
   showErrors(control: AbstractControl): boolean {
     return Forms.showErrors(control);
   }
-
 }

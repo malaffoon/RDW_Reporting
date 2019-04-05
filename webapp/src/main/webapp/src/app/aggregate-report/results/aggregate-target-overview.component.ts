@@ -7,8 +7,6 @@ import { AggregateTargetOverview } from './aggregate-target-overview';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AggregateTargetOverviewComponent {
-
   @Input()
   overview: AggregateTargetOverview;
-
 }

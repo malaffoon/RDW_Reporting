@@ -5,13 +5,11 @@ import { StudentFilterFormOptions } from './student-filter-form-options';
 import { StudentFilterFormOptionsMapper } from './student-filter-form-options.mapper';
 import { TranslateService } from '@ngx-translate/core';
 
-
 @Component({
   selector: 'student-filters',
   templateUrl: './student-filters.component.html'
 })
 export class StudentFiltersComponent {
-
   @Input()
   showLimitedEnglishProficiencyFilter: boolean;
 
@@ -25,8 +23,10 @@ export class StudentFiltersComponent {
   private _formOptions: StudentFilterFormOptions;
   private _value: StudentFilter;
 
-  constructor(private mapper: StudentFilterFormOptionsMapper, private translateService: TranslateService) {
-  }
+  constructor(
+    private mapper: StudentFilterFormOptionsMapper,
+    private translateService: TranslateService
+  ) {}
 
   get value(): StudentFilter {
     return this._value;
@@ -53,20 +53,21 @@ export class StudentFiltersComponent {
 
   optionsChanged(event) {
     let newLanguages = [];
-    this._value.languages = newLanguages.concat(event.map(lang => {
-      return lang.value;
-    }));
+    this._value.languages = newLanguages.concat(
+      event.map(lang => {
+        return lang.value;
+      })
+    );
   }
 
   public getLanguagesMap(): any[] {
     const translate = code => this.translateService.instant(code);
-    if(this._options && this._options.languages) {
-      return this._options.languages.map( val => {
+    if (this._options && this._options.languages) {
+      return this._options.languages.map(val => {
         return { text: translate(`common.languages.${val}`), value: val };
       });
     } else {
       return [];
     }
   }
-
 }

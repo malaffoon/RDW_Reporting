@@ -1,16 +1,16 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { EmbargoService } from "./embargo.service";
-import { EmbargoComponent } from "./embargo.component";
-import { ButtonsModule, ModalModule } from "ngx-bootstrap";
-import { Toggle } from "./toggle.component";
-import { EmbargoTable } from "./embargo-table.component";
-import { EmbargoConfirmationModal } from "./embargo-confirmation-modal.component";
-import { HttpClientModule } from "@angular/common/http";
-import { EmbargoResolve } from "./embargo.resolve";
-import { CommonModule } from "../../shared/common.module";
-import { TableModule } from "primeng/table";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { EmbargoService } from './embargo.service';
+import { EmbargoComponent } from './embargo.component';
+import { ButtonsModule, ModalModule } from 'ngx-bootstrap';
+import { Toggle } from './toggle.component';
+import { EmbargoTable } from './embargo-table.component';
+import { EmbargoConfirmationModal } from './embargo-confirmation-modal.component';
+import { HttpClientModule } from '@angular/common/http';
+import { EmbargoResolve } from './embargo.resolve';
+import { CommonModule } from '../../shared/common.module';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
@@ -28,16 +28,8 @@ import { TableModule } from "primeng/table";
     ModalModule.forRoot(),
     TableModule
   ],
-  exports: [
-    EmbargoComponent
-  ],
-  providers: [
-    EmbargoService,
-    EmbargoResolve
-  ],
-  entryComponents: [
-    EmbargoConfirmationModal
-  ]
+  exports: [EmbargoComponent],
+  providers: [EmbargoService, EmbargoResolve],
+  entryComponents: [EmbargoConfirmationModal]
 })
-export class EmbargoModule {
-}
+export class EmbargoModule {}

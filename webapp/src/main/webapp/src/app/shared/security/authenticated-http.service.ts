@@ -1,15 +1,23 @@
-import { Http, Request, RequestOptions, RequestOptionsArgs, Response, XHRBackend } from "@angular/http";
-import { Injectable } from "@angular/core";
-import { Observable, of, throwError as _throw } from "rxjs";
-import { AuthenticationService } from "./authentication.service";
+import {
+  Http,
+  Request,
+  RequestOptions,
+  RequestOptionsArgs,
+  Response,
+  XHRBackend
+} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Observable, of, throwError as _throw } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
 import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AuthenticatedHttpService extends Http {
-
-  constructor(backend: XHRBackend,
-              defaultOptions: RequestOptions,
-              private service: AuthenticationService) {
+  constructor(
+    backend: XHRBackend,
+    defaultOptions: RequestOptions,
+    private service: AuthenticationService
+  ) {
     super(backend, defaultOptions);
   }
 
@@ -23,17 +31,18 @@ export class AuthenticatedHttpService extends Http {
    * @param {RequestOptionsArgs} options  The request options
    * @returns {Observable<Response>}  The response
    */
-  request(url: string | Request, options?: RequestOptionsArgs): Observable<any> {
-    return super.request(url, options)
-      .pipe(
-        catchError(error => {
-          if (error.status === 401) {
-            this.service.navigateToAuthenticationExpiredRoute();
-            return of();
-          }
-          return _throw(error);
-        })
-      );
+  request(
+    url: string | Request,
+    options?: RequestOptionsArgs
+  ): Observable<any> {
+    return super.request(url, options).pipe(
+      catchError(error => {
+        if (error.status === 401) {
+          this.service.navigateToAuthenticationExpiredRoute();
+          return of();
+        }
+        return _throw(error);
+      })
+    );
   }
-
 }

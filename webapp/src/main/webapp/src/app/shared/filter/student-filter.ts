@@ -13,39 +13,45 @@ export interface StudentFilter {
   militaryConnectedCodes?: string[];
 }
 
-export type ArrayFilter<T> = (student: T, index: number, students: T[]) => boolean;
+export type ArrayFilter<T> = (
+  student: T,
+  index: number,
+  students: T[]
+) => boolean;
 export type StudentArrayFilter = ArrayFilter<Student>;
 
-export function createStudentArrayFilter(filter: StudentFilter): StudentArrayFilter {
+export function createStudentArrayFilter(
+  filter: StudentFilter
+): StudentArrayFilter {
   const { isNullOrEmpty } = Utils;
   return student => {
     return (
-      isNullOrEmpty(filter.genders)
-      || filter.genders.includes(student.gender)
-    ) && (
-      isNullOrEmpty(filter.ethnicities)
-      || student.ethnicities.some(ethnicity => filter.ethnicities.includes(ethnicity))
-    ) && (
-      isNullOrEmpty(filter.englishLanguageAcquisitionStatuses)
-      || filter.englishLanguageAcquisitionStatuses.includes(student.englishLanguageAcquisitionStatus)
-    ) && (
-      isNullOrEmpty(filter.individualEducationPlans)
-      || filter.individualEducationPlans.includes(student.individualEducationPlan)
-    ) && (
-      isNullOrEmpty(filter.limitedEnglishProficiencies)
-      || filter.limitedEnglishProficiencies.includes(student.limitedEnglishProficiency)
-    ) && (
-      isNullOrEmpty(filter.section504s)
-      || filter.section504s.includes(student.section504)
-    ) && (
-      isNullOrEmpty(filter.migrantStatuses)
-      || filter.migrantStatuses.includes(student.migrantStatus)
-    ) && (
-      isNullOrEmpty(filter.languages)
-      || filter.languages.includes(student.languages)
-    )&& (
-      isNullOrEmpty(filter.militaryConnectedCodes)
-      || filter.militaryConnectedCodes.includes(student.militaryConnectedCodes)
+      (isNullOrEmpty(filter.genders) ||
+        filter.genders.includes(student.gender)) &&
+      (isNullOrEmpty(filter.ethnicities) ||
+        student.ethnicities.some(ethnicity =>
+          filter.ethnicities.includes(ethnicity)
+        )) &&
+      (isNullOrEmpty(filter.englishLanguageAcquisitionStatuses) ||
+        filter.englishLanguageAcquisitionStatuses.includes(
+          student.englishLanguageAcquisitionStatus
+        )) &&
+      (isNullOrEmpty(filter.individualEducationPlans) ||
+        filter.individualEducationPlans.includes(
+          student.individualEducationPlan
+        )) &&
+      (isNullOrEmpty(filter.limitedEnglishProficiencies) ||
+        filter.limitedEnglishProficiencies.includes(
+          student.limitedEnglishProficiency
+        )) &&
+      (isNullOrEmpty(filter.section504s) ||
+        filter.section504s.includes(student.section504)) &&
+      (isNullOrEmpty(filter.migrantStatuses) ||
+        filter.migrantStatuses.includes(student.migrantStatus)) &&
+      (isNullOrEmpty(filter.languages) ||
+        filter.languages.includes(student.languages)) &&
+      (isNullOrEmpty(filter.militaryConnectedCodes) ||
+        filter.militaryConnectedCodes.includes(student.militaryConnectedCodes))
     );
   };
 }

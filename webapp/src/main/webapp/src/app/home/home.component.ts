@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 import { ApplicationSettings } from '../app-settings';
 import { ApplicationSettingsService } from '../app-settings.service';
 
@@ -6,20 +6,17 @@ import { ApplicationSettingsService } from '../app-settings.service';
   selector: 'home',
   templateUrl: 'home.component.html',
   host: {
-    'class': 'home-view'
+    class: 'home-view'
   }
 })
 export class HomeComponent {
-
   applicationSettings: ApplicationSettings;
 
-  constructor(private applicationSettingsService: ApplicationSettingsService) {
-  }
+  constructor(private applicationSettingsService: ApplicationSettingsService) {}
 
   ngOnInit(): void {
     this.applicationSettingsService.getSettings().subscribe(settings => {
       this.applicationSettings = settings;
     });
   }
-
 }

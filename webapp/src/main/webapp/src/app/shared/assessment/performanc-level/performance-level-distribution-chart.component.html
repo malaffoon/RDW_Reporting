@@ -1,22 +1,32 @@
 <ng-container *ngIf="visible">
-  <div [attr.data-width]="performanceLevelBars.right.length ? 50 : 100"
-       class="bar-container scale-score-graph blend-middle">
+  <div
+    [attr.data-width]="performanceLevelBars.right.length ? 50 : 100"
+    class="bar-container scale-score-graph blend-middle"
+  >
     <ng-container *ngFor="let bar of performanceLevelBars.left">
-      <ng-container *ngTemplateOutlet="barTemplate; context:{ $implicit: bar }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="barTemplate; context: { $implicit: bar }"
+      ></ng-container>
     </ng-container>
   </div>
-  <div *ngIf="center"
-       [attr.data-width]="50"
-       class="bar-container scale-score-graph blend-middle">
+  <div
+    *ngIf="center"
+    [attr.data-width]="50"
+    class="bar-container scale-score-graph blend-middle"
+  >
     <ng-container *ngFor="let bar of performanceLevelBars.right">
-      <ng-container *ngTemplateOutlet="barTemplate; context:{ $implicit: bar }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="barTemplate; context: { $implicit: bar }"
+      ></ng-container>
     </ng-container>
   </div>
 </ng-container>
 
 <ng-template #barTemplate let-bar>
-  <div *ngIf="bar.width > 0"
-       class="bar"
-       [ngClass]="bar.classes"
-       [attr.data-width]="bar.width"></div>
+  <div
+    *ngIf="bar.width > 0"
+    class="bar"
+    [ngClass]="bar.classes"
+    [attr.data-width]="bar.width"
+  ></div>
 </ng-template>
