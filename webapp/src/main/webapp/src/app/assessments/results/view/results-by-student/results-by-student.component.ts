@@ -50,12 +50,12 @@ class Column {
 }
 
 function createAlternateScoreColumns(
-  assessmentCodes: string[],
+  scoreCodes: string[],
   subjectDefinitionCodes: string[]
 ): Column[] {
   const columns = [];
   const scoreType = 'Alternate';
-  (assessmentCodes || []).forEach((code, index) => {
+  scoreCodes.forEach((code, index) => {
     columns.push(
       new Column({
         id: `alternateScaleScoreLevel`,
@@ -79,10 +79,10 @@ function createAlternateScoreColumns(
 }
 
 function createClaimColumns(
-  assessmentCodes: string[],
+  scoreCodes: string[],
   subjectDefinitionCodes: string[]
 ): Column[] {
-  return (assessmentCodes || [])
+  return scoreCodes
     .map(
       (code, index) =>
         new Column({
@@ -153,14 +153,18 @@ export class ResultsByStudentComponent implements OnInit {
         field: 'enrolledGrade'
       }),
       new Column({ id: 'school', field: 'school.name' }),
-      ...createAlternateScoreColumns(
-        this.assessment.alternateScoreCodes,
-        this.subjectDefinition.alternateScore.codes
-      ),
-      ...createClaimColumns(
-        this.assessment.claimCodes,
-        this.subjectDefinition.claimScore.codes
-      ),
+      ...(this.subjectDefinition.alternateScore != null
+        ? createAlternateScoreColumns(
+            this.assessment.alternateScoreCodes,
+            this.subjectDefinition.alternateScore.codes
+          )
+        : []),
+      ...(this.subjectDefinition.claimScore != null
+        ? createClaimColumns(
+            this.assessment.claimCodes,
+            this.subjectDefinition.claimScore.codes
+          )
+        : []),
       new Column({ id: 'status', scoreType: 'Overall', headerInfo: true }),
       new Column({ id: 'level', scoreType: 'Overall' }),
       new Column({ id: 'score', scoreType: 'Overall', headerInfo: true })
