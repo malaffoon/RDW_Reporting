@@ -1,8 +1,9 @@
 ## Change Log
 
-#### 1.3.1 - 2019-03-
+#### 1.3.1 - 2019-04-05
 
 * Extract both answer key parts for EBSR items (reporting-service).
+* Increase timeout for district export from 2m to 10m (report-processor).
 
 #### 1.3.0
 
