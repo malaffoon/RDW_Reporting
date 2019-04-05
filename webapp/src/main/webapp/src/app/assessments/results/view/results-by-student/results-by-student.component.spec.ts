@@ -65,14 +65,17 @@ describe('ResultsByStudentComponent', () => {
   `
 })
 class TestComponentWrapper {
-  assessment = {};
+  assessment = {
+    alternateScoreCodes: ['a'],
+    claimCodes: ['b']
+  };
   subjectDefinition = <SubjectDefinition>{
     overallScore: {},
-    claimScore: {
-      codes: ['c']
-    },
     alternateScore: {
       codes: ['a']
+    },
+    claimScore: {
+      codes: ['c']
     }
   };
 }
