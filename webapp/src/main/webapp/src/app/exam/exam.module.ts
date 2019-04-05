@@ -10,6 +10,7 @@ import { ScoreTableComponent } from './component/score-table/score-table.compone
 import { CommonModule } from '../shared/common.module';
 import { PopoverModule } from 'ngx-bootstrap';
 import { AssessmentLabelComponent } from './component/assessment-label/assessment-label.component';
+import { ShowMoreDividerComponent } from './component/show-more-divider/show-more-divider.component';
 
 @NgModule({
   imports: [BrowserModule, CommonModule, PopoverModule, TranslateModule],
@@ -20,11 +21,13 @@ import { AssessmentLabelComponent } from './component/assessment-label/assessmen
     OverallScoreSummaryComponent,
     ProgressBarComponent,
     ScoreLabelComponent,
-    ScoreTableComponent
+    ScoreTableComponent,
+    ShowMoreDividerComponent
   ],
   exports: [
     AssessmentLabelComponent,
     ScoreTableComponent,
+    ShowMoreDividerComponent,
     OverallScoreSummaryComponent,
     ClaimScoreSummaryComponent
   ]

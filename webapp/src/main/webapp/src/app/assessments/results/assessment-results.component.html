@@ -73,31 +73,10 @@
     </ng-container>
   </div>
 
-  <div class="show-more-divider">
-    <hr />
-    <a
-      (click)="collapsed = !collapsed"
-      angulartics2On="click"
-      angularticsAction="ToggleCollapseResults"
-      angularticsCategory="AssessmentResults"
-    >
-      {{
-        'common.action.' + (collapsed ? 'show-more' : 'show-less') | translate
-      }}
-      <i
-        aria-hidden="true"
-        class="fa"
-        [ngClass]="{
-          'fa-chevron-up': !collapsed,
-          'fa-chevron-down': collapsed
-        }"
-      ></i>
-      <span class="sr-only">{{
-        'common.action.' + (collapsed ? 'show-more' : 'show-less') | translate
-      }}</span>
-    </a>
-    <hr />
-  </div>
+  <show-more-divider
+    [collapsed]="collapsed"
+    (collapsedChanged)="collapsed = $event"
+  ></show-more-divider>
 
   <div class="row mt-md" [hidden]="!showPercentileHistory">
     <div class="col-md-12">
