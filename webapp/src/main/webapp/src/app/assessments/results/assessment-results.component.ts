@@ -8,8 +8,6 @@ import { forkJoin, Observable, Subscription } from 'rxjs';
 import { ExamFilterService } from '../filters/exam-filters/exam-filter.service';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
-import { GradeCode } from '../../shared/enum/grade-code.enum';
-import { ColorService } from '../../shared/color.service';
 import { MenuActionBuilder } from '../menu/menu-action.builder';
 import { ExamStatistics } from '../model/exam-statistics.model';
 import { AssessmentProvider } from '../assessment-provider.interface';
@@ -111,6 +109,7 @@ function createScoreTypeOptions(
 @Component({
   selector: 'assessment-results',
   templateUrl: './assessment-results.component.html',
+  styleUrls: ['./assessment-results.component.less'],
   providers: [MenuActionBuilder],
   animations: [
     trigger('fadeAnimation', [
@@ -132,9 +131,6 @@ export class AssessmentResultsComponent implements OnInit {
   @Input()
   set assessmentExam(value: AssessmentExamView) {
     this._assessmentExam = value;
-    this.color = this.colorService.getColor(
-      GradeCode.getIndex(value.assessment.grade)
-    );
 
     // if we aren't going to display the sessions, don't waste resources computing them
     if (this.allowFilterBySessions) {
@@ -373,7 +369,6 @@ export class AssessmentResultsComponent implements OnInit {
 
   constructor(
     private applicationSettingsService: ApplicationSettingsService,
-    public colorService: ColorService,
     private examCalculator: ExamStatisticsCalculator,
     private examFilterService: ExamFilterService,
     private instructionalResourcesService: InstructionalResourcesService,
@@ -542,7 +537,11 @@ export class AssessmentResultsComponent implements OnInit {
       this.subjectDefinition != null ? this.calculateStats() : null;
 
     // compute table when ready
-    if (this.subjectDefinition != null && this.exams != null) {
+    if (
+      this.exams != null &&
+      this.subjectDefinition != null &&
+      this.subjectDefinition.alternateScore != null
+    ) {
       this._alternateScoreTable = toScoreTable(
         this.exams,
         this.subjectDefinition,

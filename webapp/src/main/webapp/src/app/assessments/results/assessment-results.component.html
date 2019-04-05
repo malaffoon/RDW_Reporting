@@ -1,41 +1,24 @@
 <!-- Individual Assessment Result Container -->
-<div class="assessment-result well wide-content-container clearfix">
-  <div class="flex-children">
-    <div class="flex-child grow">
-      <span class="tag tag-lg {{ color }}">
-        <span class="label">{{
-          'common.assessment-grade-short-label.' +
-            assessmentExam.assessment.grade | translate
-        }}</span>
-        {{ assessmentExam.assessment.label }}
-      </span>
-    </div>
-    <div class="flex-child">
-      <button
-        class="form-control btn btn-default pull-right"
-        (click)="collapsed = !collapsed"
-        angulartics2On="click"
-        angularticsAction="ToggleCollapseResults"
-        angularticsCategory="AssessmentResults"
-      >
-        {{
-          'common.action.' +
-            (collapsed ? 'expand-results' : 'collapse-results') | translate
-        }}
-        <i
-          class="fa"
-          [ngClass]="{
-            'fa-caret-square-o-up': !collapsed,
-            'fa-caret-square-o-down': collapsed
-          }"
-          aria-hidden="true"
-        ></i>
-        <span class="sr-only">{{
-          'common.action.' +
-            (collapsed ? 'expand-results' : 'collapse-results') | translate
-        }}</span>
-      </button>
-    </div>
+<div
+  class="assessment-result well wide-content-container clearfix"
+  [ngClass]="{ collapsed: collapsed }"
+>
+  <div class="header-container">
+    <assessment-label
+      [label]="assessmentExam.assessment.label"
+      [gradeCode]="assessmentExam.assessment.grade"
+    ></assessment-label>
+
+    <sb-radio-group
+      *ngIf="scoreTypeOptions != null && scoreTypeOptions.length > 1"
+      [options]="scoreTypeOptions"
+      [(ngModel)]="scoreType"
+      id="score-type"
+      buttonGroupStyles="btn-group-sm"
+      buttonStyles="btn-default"
+      analyticsCategory="AssessmentResults"
+      analyticsEvent="ChangeScoreView"
+    ></sb-radio-group>
   </div>
 
   <div *ngIf="allowFilterBySessions" class="row mb-sm">
@@ -90,18 +73,10 @@
     </ng-container>
   </div>
 
-  <div class="z-index-over-data-table mt-sm pull-right">
-    <sb-radio-group
-      *ngIf="scoreTypeOptions != null && scoreTypeOptions.length > 1"
-      [options]="scoreTypeOptions"
-      [(ngModel)]="scoreType"
-      id="score-type"
-      buttonGroupStyles="btn-group-xs"
-      buttonStyles="btn-default"
-      analyticsCategory="AssessmentResults"
-      analyticsEvent="ChangeScoreView"
-    ></sb-radio-group>
-  </div>
+  <show-more-divider
+    [collapsed]="collapsed"
+    (collapsedChanged)="collapsed = $event"
+  ></show-more-divider>
 
   <div class="row mt-md" [hidden]="!showPercentileHistory">
     <div class="col-md-12">

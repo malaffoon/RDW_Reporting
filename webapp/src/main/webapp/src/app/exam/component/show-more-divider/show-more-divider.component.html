@@ -1,0 +1,21 @@
+<hr />
+<a
+  (click)="collapsedChanged.emit(!collapsed)"
+  angulartics2On="click"
+  angularticsAction="ToggleCollapseResults"
+  angularticsCategory="AssessmentResults"
+>
+  {{ 'common.action.' + (collapsed ? 'show-more' : 'show-less') | translate }}
+  <i
+    aria-hidden="true"
+    class="fa"
+    [ngClass]="{
+      'fa-chevron-up': !collapsed,
+      'fa-chevron-down': collapsed
+    }"
+  ></i>
+  <span class="sr-only">{{
+    'common.action.' + (collapsed ? 'show-more' : 'show-less') | translate
+  }}</span>
+</a>
+<hr />

@@ -1,0 +1,31 @@
+// from sbac ui kit
+@gray-darkest: #2a2b2d;
+@gray-darker: #84888d;
+@gray-dark: #a7a7a7;
+@gray: #b8b8b8;
+@gray-light: #d5d5d5;
+@gray-lighter: #e6e6e6;
+@gray-lightest: #f8f8f8;
+
+:host {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  > hr {
+    width: 100%;
+    border-color: @gray-light;
+    margin: 0;
+  }
+  > a {
+    color: @gray-dark;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    &:hover {
+      color: @gray-darker;
+    }
+    &:active {
+      color: @gray-darkest;
+    }
+  }
+}
