@@ -2,7 +2,7 @@
   class="card assessment-aggregate"
   href="javascript:void(0)"
   [ngClass]="{ selected: selected }"
-  (click)="selectCard()"
+  (click)="onClick()"
 >
   <div class="check">
     <i class="fa fa-check"></i>
@@ -12,20 +12,20 @@
     <div class="col-xs-4" [hidden]="!hasIcon">
       <div class="icon-wrapper">
         <assessment-icon
-          [assessment]="measuredAssessment.assessment"
+          [assessment]="_card.measuredAssessment.assessment"
           (missingIcon)="hasIcon = !$event"
         ></assessment-icon>
       </div>
     </div>
     <div [ngClass]="hasIcon ? 'col-xs-8' : 'col-xs-12'">
-      <div class="label" [ngClass]="getGradeColor()">
+      <div class="label" [ngClass]="_color">
         {{
           'common.assessment-grade-short-label.' +
-            measuredAssessment.assessment.grade | translate
+            _card.measuredAssessment.assessment.grade | translate
         }}
       </div>
       <div class="title">
-        {{ measuredAssessment.assessment.label }}
+        {{ _card.measuredAssessment.assessment.label }}
       </div>
     </div>
   </div>
@@ -37,8 +37,8 @@
         'assessment-card.student-count'
           | translate
             : {
-                studentsTested: measuredAssessment.studentsTested,
-                groupCount: group.totalStudents
+                studentsTested: _card.measuredAssessment.studentsTested,
+                groupCount: _card.group.totalStudents
               }
       "
     ></span>
@@ -46,16 +46,16 @@
   <div class="aggregate-graph row">
     <div
       class="perc-container col-xs-4"
-      *ngFor="let level of performanceLevels; let i = index"
+      *ngFor="let level of _card.performanceLevels; let i = index"
     >
       <div class="bar">
         <span
           class="square"
           [ngClass]="
             'subject.' +
-              measuredAssessment.assessment.subject +
+              _card.measuredAssessment.assessment.subject +
               '.asmt-type.' +
-              measuredAssessment.assessment.type +
+              _card.measuredAssessment.assessment.type +
               '.level.' +
               level +
               '.color' | translate
@@ -63,15 +63,15 @@
         ></span>
         <strong>{{
           'common.value-display-type-format.Percent'
-            | translate: { value: percents[i] }
+            | translate: { value: _percents[i] }
         }}</strong>
       </div>
       <div class="bar description">
         <span>{{
           'subject.' +
-            measuredAssessment.assessment.subject +
+            _card.measuredAssessment.assessment.subject +
             '.asmt-type.' +
-            measuredAssessment.assessment.type +
+            _card.measuredAssessment.assessment.type +
             '.level.' +
             level +
             '.name' | translate

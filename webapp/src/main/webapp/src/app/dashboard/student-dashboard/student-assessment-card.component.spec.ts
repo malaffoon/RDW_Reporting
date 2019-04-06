@@ -25,47 +25,47 @@ describe('StudentAssessmentCardComponent', () => {
 
   it('should be able to find a match', () => {
     createComponent();
-    const latestExam = getStudentHistoryExamWrapper(
+    const latestExam = studentHistoryExamWrapper(
       'iab',
       'find this',
       2,
       new Date(10)
     );
     const exams = [
-      getStudentHistoryExamWrapper('iab', 'something else', 3, new Date(15)),
-      getStudentHistoryExamWrapper('iab', 'find this', 1, new Date(10))
+      studentHistoryExamWrapper('iab', 'something else', 3, new Date(15)),
+      studentHistoryExamWrapper('iab', 'find this', 1, new Date(10))
     ];
     component.latestExam = latestExam;
     component.exams = exams;
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(component.latestExam).toEqual(latestExam);
-    expect(component.resultCount).toEqual(1);
+    expect(component._latestExam).toEqual(latestExam);
+    expect(component._resultCount).toEqual(1);
   });
 
   it('should be able to find 2 matches', () => {
     createComponent();
-    const latestExam = getStudentHistoryExamWrapper(
+    const latestExam = studentHistoryExamWrapper(
       'iab',
       'find this',
       2,
       new Date(10)
     );
     const exams = [
-      getStudentHistoryExamWrapper('iab', 'find this', 2, new Date(10)),
-      getStudentHistoryExamWrapper('ica', 'something else', 2, new Date(15)),
-      getStudentHistoryExamWrapper('iab', 'find this', 3, new Date(2))
+      studentHistoryExamWrapper('iab', 'find this', 2, new Date(10)),
+      studentHistoryExamWrapper('ica', 'something else', 2, new Date(15)),
+      studentHistoryExamWrapper('iab', 'find this', 3, new Date(2))
     ];
     component.latestExam = latestExam;
     component.exams = exams;
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(component.latestExam).toEqual(latestExam);
-    expect(component.resultCount).toEqual(2);
+    expect(component._latestExam).toEqual(latestExam);
+    expect(component._resultCount).toEqual(2);
   });
 });
 
-function getAssessment(type: string, label: string): Assessment {
+function assessment(type: string, label: string): Assessment {
   return <Assessment>{
     grade: '03',
     type,
@@ -73,29 +73,23 @@ function getAssessment(type: string, label: string): Assessment {
   };
 }
 
-function getExam(level: number, date: Date): Exam {
+function exam(level: number, date: Date): Exam {
   return <Exam>{
     date,
     level
   };
 }
 
-function getStudentHistoryExamWrapper(
+function studentHistoryExamWrapper(
   type: string,
   label: string,
   level: number,
   date: Date
 ): StudentHistoryExamWrapper {
   return {
-    assessment: getAssessment(type, label),
-    exam: getExam(level, date),
+    assessment: assessment(type, label),
+    exam: exam(level, date),
     school: null,
     selected: false
   };
-}
-
-class MockColorService {
-  getColor(index: number): string {
-    return 'test-color';
-  }
 }

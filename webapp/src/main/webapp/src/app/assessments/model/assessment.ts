@@ -1,4 +1,4 @@
-import { AssessmentType } from './assessment-type';
+import { AssessmentType } from '../../shared/model/assessment-type';
 
 export interface Assessment {
   id: number;

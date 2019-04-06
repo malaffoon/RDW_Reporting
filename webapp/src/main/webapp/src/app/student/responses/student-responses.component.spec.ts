@@ -3,9 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ColorService } from '../../shared/color.service';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
-import { Exam } from '../../assessments/model/exam';
 import { Assessment } from '../../assessments/model/assessment';
 import { ExamItemScore } from '../../assessments/model/exam-item-score.model';
 import { Student } from '../model/student.model';
@@ -16,7 +14,6 @@ import { PermissionService } from '../../shared/security/permission.service';
 import { WritingTraitScores } from '../../assessments/model/writing-trait-scores.model';
 import createSpy = jasmine.createSpy;
 import Spy = jasmine.Spy;
-import { CommonModule } from '../../shared/common.module';
 import { RdwFormatModule } from '../../shared/format/rdw-format.module';
 
 describe('StudentResponsesComponent', () => {
@@ -46,7 +43,6 @@ describe('StudentResponsesComponent', () => {
       ],
       providers: [
         AuthorizationService,
-        ColorService,
         PermissionService,
         { provide: ActivatedRoute, useValue: route }
       ],

@@ -1,40 +1,54 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { StudentHistoryExamWrapper } from '../../student/model/student-history-exam-wrapper.model';
-import { ColorService } from '../../shared/color.service';
-import { GradeCode } from '../../shared/enum/grade-code.enum';
+import { gradeColor } from '../../shared/colors';
 
 @Component({
   selector: 'student-assessment-card',
-  templateUrl: './student-assessment-card.component.html'
+  templateUrl: './student-assessment-card.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StudentAssessmentCardComponent implements OnInit {
-  @Input()
-  latestExam: StudentHistoryExamWrapper;
-  @Input()
-  exams: StudentHistoryExamWrapper[];
+export class StudentAssessmentCardComponent {
   @Output()
   selectedAssessment: EventEmitter<any> = new EventEmitter();
 
-  level: number;
-  resultCount: number;
+  _latestExam: StudentHistoryExamWrapper;
+  _exams: StudentHistoryExamWrapper[];
+  _color: string;
+  _level: number;
+  _resultCount: number;
+
+  // TODO remove need for this with styling
   hasIcon: boolean = true;
 
-  constructor(public colorService: ColorService) {}
-
-  ngOnInit() {
-    this.level = this.latestExam.exam.level;
-    this.resultCount = this.exams.filter(
-      exam => exam.assessment.label === this.latestExam.assessment.label
-    ).length;
+  @Input()
+  set latestExam(value: StudentHistoryExamWrapper) {
+    this._latestExam = value;
+    this._level = value.exam.level;
+    this._color = gradeColor(value.assessment.grade);
+    this.initialize();
   }
 
-  getGradeColor(): string {
-    return this.colorService.getColor(
-      GradeCode.getIndex(this.latestExam.assessment.grade)
-    );
+  @Input()
+  set exams(values: StudentHistoryExamWrapper[]) {
+    this._exams = values;
+    this.initialize();
   }
 
-  selectCard(): void {
-    this.selectedAssessment.emit(this.latestExam);
+  private initialize(): void {
+    if (this._latestExam != null && this._exams != null) {
+      this._resultCount = this._exams.filter(
+        exam => exam.assessment.label === this._latestExam.assessment.label
+      ).length;
+    }
+  }
+
+  onClick(): void {
+    this.selectedAssessment.emit(this._latestExam);
   }
 }

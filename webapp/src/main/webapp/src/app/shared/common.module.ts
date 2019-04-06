@@ -6,7 +6,6 @@ import { SBRadioButtonComponent } from './sb-radio-button-list.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { SBCheckboxList } from './sb-checkbox-list.component';
-import { ColorService } from './color.service';
 import { Angulartics2Module } from 'angulartics2';
 import { AlertModule, PopoverModule } from 'ngx-bootstrap';
 import { RdwLoadingModule } from './loading/rdw-loading.module';
@@ -136,7 +135,6 @@ import { InstructionalResourcePopoverComponent } from './component/instructional
       provide: AuthenticationServiceDefaultAuthenticationRoute,
       useValue: 'home'
     },
-    ColorService,
     DataTableService,
     OrderingService,
     TargetService

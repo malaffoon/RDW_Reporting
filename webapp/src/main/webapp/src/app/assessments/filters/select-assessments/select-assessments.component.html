@@ -5,7 +5,7 @@
   <div class="panel-grid">
     <div
       *ngFor="let byGrade of assessmentsByGrade"
-      class="panel {{ colorService.getColor(getGradeIdx(byGrade.grade)) }}"
+      class="panel {{ gradeColor(byGrade.grade) }}"
     >
       <div class="panel-heading">
         <span class="panel-title">{{
@@ -18,9 +18,7 @@
             *ngFor="let assessment of byGrade.assessments"
             href="javascript:void(0)"
             (click)="toggleSelectedAssessment(assessment)"
-            class="tag tag-xs {{
-              colorService.getColor(getGradeIdx(byGrade.grade))
-            }}"
+            class="tag tag-xs {{ gradeColor(byGrade.grade) }}"
             angulartics2On="click"
             angularticsAction="AddAssessment"
             angularticsCategory="AssessmentResults"
