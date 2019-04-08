@@ -13,18 +13,64 @@ import { ExportTargetReportRequest } from '../assessments/model/export-target-re
 import { Assessment } from '../assessments/model/assessment';
 import { ordering } from '@kourge/ordering';
 import { ranking } from '@kourge/ordering/comparator';
-import { Observable } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { SubjectService } from '../subject/subject.service';
-import { OrderingService } from '../shared/ordering/ordering.service';
-import { map } from 'rxjs/operators';
+import { isNullOrEmpty } from '../shared/support/support';
+
+/**
+ * Represents a specific type of score for an assessment (e.g. claim, alternate)
+ * This is used when collecting information about what score codes exist and what columns to add to the CSV
+ */
+interface AssessmentScoreType {
+  subjectCode: string;
+  assessmentTypeCode: string;
+  codes: string[];
+}
+
+/**
+ * Gets the score codes for the given assessment holding values
+ *
+ * @param values The assessment holders
+ * @param subjectCodes All system subject codes used for sorting
+ * @param getAssessment Method to get the assessment from the value
+ * @param getScoreCodes Method to get the score codes from the assessment
+ */
+function getScoreCodes<T>(
+  values: T[],
+  subjectCodes: string[],
+  getAssessment: (value: T) => Assessment,
+  getScoreCodes: (assessment: Assessment) => string[]
+): AssessmentScoreType[] {
+  return (values || [])
+    .reduce((scoreCodes: AssessmentScoreType[], value: T) => {
+      const assessment = getAssessment(value);
+      if (assessment != null && !isNullOrEmpty(getScoreCodes(assessment))) {
+        const { subject: subjectCode, type: assessmentTypeCode } = assessment;
+        const score = scoreCodes.find(
+          score => score.subjectCode === subjectCode
+        );
+        if (score == null) {
+          scoreCodes.push({
+            subjectCode,
+            assessmentTypeCode,
+            codes: getScoreCodes(assessment).slice()
+          });
+        }
+      }
+      return scoreCodes;
+    }, [])
+    .sort(
+      ordering(ranking(subjectCodes)).on(({ subjectCode }) => subjectCode)
+        .compare
+    );
+}
 
 @Injectable()
 export class CsvExportService {
   constructor(
     private examFilterService: ExamFilterService,
     private csvBuilder: CsvBuilder,
-    private subjectService: SubjectService,
-    private orderingService: OrderingService
+    private subjectService: SubjectService
   ) {}
 
   /**
@@ -68,47 +114,87 @@ export class CsvExportService {
     const getNonIABExam = item =>
       item.assessment.type === 'iab' ? null : item.exam;
 
-    this.getSubjectScorableClaims(sourceData, getNonIABAssessment).subscribe(
-      subjectClaims => {
-        const builder = this.csvBuilder
-          .newBuilder()
-          .withFilename(filename)
-          .withStudent(getStudent)
-          .withExamDateAndSession(getExam)
-          .withSchool(getExam)
-          .withSchoolYear(getExam)
-          .withAssessmentTypeNameAndSubject(getAssessment)
-          .withExamGradeAndStatus(getExam)
-          .withAchievementLevel(getNonIABAssessment, getNonIABExam)
-          .withReportingCategory(getAssessment, getIABExam)
-          .withScoreAndErrorBand(getExam);
+    forkJoin(
+      this.subjectService.getSubjectCodes(),
+      this.subjectService.getSubjectDefinitions()
+    ).subscribe(([subjectCodes, subjectDefinitions]) => {
+      const builder = this.csvBuilder
+        .newBuilder()
+        .withFilename(filename)
+        .withStudent(getStudent)
+        .withExamDateAndSession(getExam)
+        .withSchool(getExam)
+        .withSchoolYear(getExam)
+        .withAssessmentTypeNameAndSubject(getAssessment)
+        .withExamGradeAndStatus(getExam)
+        .withAchievementLevel(getNonIABAssessment, getNonIABExam)
+        .withReportingCategory(getAssessment, getIABExam)
+        .withScoreAndErrorBand(getExam);
 
-        subjectClaims.forEach(entry => {
-          this.orderingService
-            .getScorableClaimOrdering(entry.subject, entry.type)
-            .subscribe(ordering => {
-              entry.claims.sort(ordering.on(claim => claim).compare);
-            });
+      // alternate score codes
+      getScoreCodes(
+        sourceData,
+        subjectCodes,
+        getAssessment,
+        ({ alternateScoreCodes }) => alternateScoreCodes
+      ).forEach(score => {
+        const { alternateScore } = subjectDefinitions.find(
+          ({ subject, assessmentType }) =>
+            subject === score.subjectCode &&
+            assessmentType === score.assessmentTypeCode
+        );
 
-          builder.withClaimScores(
-            entry.subject,
-            entry.claims,
+        if (alternateScore != null) {
+          builder.withAlternateScores(
+            score.subjectCode,
+            score.codes
+              .slice()
+              .sort(ordering(ranking(alternateScore.codes)).compare),
             getAssessment,
             item =>
-              item.assessment.type !== 'iab' &&
-              item.assessment.subject === entry.subject
+              item.assessment.subject === score.subjectCode &&
+              item.assessment.type === score.assessmentTypeCode
                 ? item.exam
                 : null
           );
-        });
+        }
+      });
 
-        builder
-          .withGender(getStudent)
-          .withStudentContext(getExam, ethnicities)
-          .withAccommodationCodes(getExam)
-          .build(sourceData);
-      }
-    );
+      // claim scores
+      getScoreCodes(
+        sourceData,
+        subjectCodes,
+        getAssessment,
+        ({ claimCodes }) => claimCodes
+      ).forEach(score => {
+        const { claimScore } = subjectDefinitions.find(
+          ({ subject, assessmentType }) =>
+            subject === score.subjectCode &&
+            assessmentType === score.assessmentTypeCode
+        );
+
+        if (claimScore != null) {
+          builder.withClaimScores(
+            score.subjectCode,
+            score.codes
+              .slice()
+              .sort(ordering(ranking(claimScore.codes)).compare),
+            getAssessment,
+            item =>
+              item.assessment.subject === score.subjectCode &&
+              item.assessment.type === score.assessmentTypeCode
+                ? item.exam
+                : null
+          );
+        }
+      });
+
+      builder
+        .withGender(getStudent)
+        .withStudentContext(getExam, ethnicities)
+        .withAccommodationCodes(getExam)
+        .build(sourceData);
+    });
   }
 
   /**
@@ -133,37 +219,83 @@ export class CsvExportService {
     const getNonIABExam = (wrapper: StudentHistoryExamWrapper) =>
       wrapper.assessment.type === 'iab' ? null : wrapper.exam;
 
-    this.getSubjectScorableClaims(wrappers, getNonIABAssessment).subscribe(
-      subjectClaims => {
-        const builder = this.csvBuilder
-          .newBuilder()
-          .withFilename(filename)
-          .withStudent(getStudent)
-          .withExamDateAndSession(getExam)
-          .withSchool(getExam)
-          .withSchoolYear(getExam)
-          .withAssessmentTypeNameAndSubject(getAssessment)
-          .withExamGradeAndStatus(getExam)
-          .withAchievementLevel(getNonIABAssessment, getNonIABExam)
-          .withReportingCategory(getAssessment, getIABExam)
-          .withScoreAndErrorBand(getExam);
+    forkJoin(
+      this.subjectService.getSubjectCodes(),
+      this.subjectService.getSubjectDefinitions()
+    ).subscribe(([subjectCodes, subjectDefinitions]) => {
+      const builder = this.csvBuilder
+        .newBuilder()
+        .withFilename(filename)
+        .withStudent(getStudent)
+        .withExamDateAndSession(getExam)
+        .withSchool(getExam)
+        .withSchoolYear(getExam)
+        .withAssessmentTypeNameAndSubject(getAssessment)
+        .withExamGradeAndStatus(getExam)
+        .withAchievementLevel(getNonIABAssessment, getNonIABExam)
+        .withReportingCategory(getAssessment, getIABExam)
+        .withScoreAndErrorBand(getExam);
 
-        subjectClaims.forEach(entry => {
-          builder.withClaimScores(
-            entry.subject,
-            entry.claims,
+      // alternate score codes
+      getScoreCodes(
+        wrappers,
+        subjectCodes,
+        getAssessment,
+        ({ alternateScoreCodes }) => alternateScoreCodes
+      ).forEach(score => {
+        const { alternateScore } = subjectDefinitions.find(
+          ({ subject, assessmentType }) =>
+            subject === score.subjectCode &&
+            assessmentType === score.assessmentTypeCode
+        );
+
+        if (alternateScore != null) {
+          builder.withAlternateScores(
+            score.subjectCode,
+            score.codes
+              .slice()
+              .sort(ordering(ranking(alternateScore.codes)).compare),
             getAssessment,
             item =>
-              item.assessment.type !== 'iab' &&
-              item.assessment.subject === entry.subject
+              item.assessment.subject === score.subjectCode &&
+              item.assessment.type === score.assessmentTypeCode
                 ? item.exam
                 : null
           );
-        });
+        }
+      });
 
-        builder.withAccommodationCodes(getExam).build(wrappers);
-      }
-    );
+      // claim scores
+      getScoreCodes(
+        wrappers,
+        subjectCodes,
+        getAssessment,
+        ({ claimCodes }) => claimCodes
+      ).forEach(score => {
+        const { claimScore } = subjectDefinitions.find(
+          ({ subject, assessmentType }) =>
+            subject === score.subjectCode &&
+            assessmentType === score.assessmentTypeCode
+        );
+
+        if (claimScore != null) {
+          builder.withClaimScores(
+            score.subjectCode,
+            score.codes
+              .slice()
+              .sort(ordering(ranking(claimScore.codes)).compare),
+            getAssessment,
+            item =>
+              item.assessment.subject === score.subjectCode &&
+              item.assessment.type === score.assessmentTypeCode
+                ? item.exam
+                : null
+          );
+        }
+      });
+
+      builder.withAccommodationCodes(getExam).build(wrappers);
+    });
   }
 
   exportResultItems(exportRequest: ExportItemsRequest, filename: string) {
@@ -259,49 +391,4 @@ export class CsvExportService {
       )
       .build(exportRequest.targetScoreRows);
   }
-
-  /**
-   * Scans the provided data for what scorable claims are present and returns a collection of
-   * subject - scorable claim collection pairs to iterate over when generating export columns
-   *
-   * @param {any[]} data the data to scan
-   * @param {(datum) => Assessment} getAssessment used to get the assessment from a data entry
-   * @returns {Observable<SubjectScorableClaims[]>} subject - scorable claim collection pairs present in the given data set
-   */
-  private getSubjectScorableClaims(
-    data: any[],
-    getAssessment: (datum) => Assessment
-  ): Observable<SubjectScorableClaims[]> {
-    return this.subjectService.getSubjectCodes().pipe(
-      map(subjects => {
-        return (data || [])
-          .reduce((subjectClaims, datum) => {
-            const assessment = getAssessment(datum);
-            if (assessment != null) {
-              const { subject, claimCodes, type } = assessment;
-              const entry = subjectClaims.find(
-                subjectClaim => subjectClaim.subject === subject
-              );
-              if (entry == null) {
-                subjectClaims.push({
-                  subject: subject,
-                  claims: claimCodes.concat(),
-                  type: type
-                });
-              }
-            }
-            return subjectClaims;
-          }, [])
-          .sort(
-            ordering(ranking(subjects)).on(({ subject }) => subject).compare
-          );
-      })
-    );
-  }
-}
-
-interface SubjectScorableClaims {
-  subject: string;
-  claims: string[];
-  type: string;
 }
