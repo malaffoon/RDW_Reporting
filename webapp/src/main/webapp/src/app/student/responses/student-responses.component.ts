@@ -3,11 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
 import { Exam } from '../../assessments/model/exam';
 import { Assessment } from '../../assessments/model/assessment';
-import { GradeCode } from '../../shared/enum/grade-code.enum';
-import { ColorService } from '../../shared/color.service';
 import { StudentResponsesAssessmentItem } from './student-responses-item.model';
 import { Student } from '../model/student.model';
 import { ExamItemScore } from '../../assessments/model/exam-item-score.model';
+import { gradeColor } from '../../shared/colors';
 
 /**
  * This component is responsible for displaying a student's responses to a
@@ -18,6 +17,8 @@ import { ExamItemScore } from '../../assessments/model/exam-item-score.model';
   templateUrl: './student-responses.component.html'
 })
 export class StudentResponsesComponent implements OnInit {
+  readonly gradeColor = gradeColor;
+
   assessment: Assessment;
   assessmentItems: StudentResponsesAssessmentItem[];
   exam: Exam;
@@ -43,13 +44,10 @@ export class StudentResponsesComponent implements OnInit {
     new Column({ id: 'correctness', headerInfo: true })
   ];
 
-  constructor(
-    public colorService: ColorService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    let routeItems: AssessmentItem[] = this.route.snapshot.data[
+    const routeItems: AssessmentItem[] = this.route.snapshot.data[
       'assessmentItems'
     ];
     if (routeItems) {
@@ -58,13 +56,10 @@ export class StudentResponsesComponent implements OnInit {
       );
     }
 
-    this.exam = this.route.snapshot.data['exam'];
-    this.assessment = this.route.snapshot.data['assessment'];
-    this.student = this.route.snapshot.data['student'];
-  }
-
-  getGradeIndex(grade: string): number {
-    return GradeCode.getIndex(grade);
+    const { exam, assessment, student } = this.route.snapshot.data;
+    this.exam = exam;
+    this.assessment = assessment;
+    this.student = student;
   }
 
   private mapAssessmentItem(

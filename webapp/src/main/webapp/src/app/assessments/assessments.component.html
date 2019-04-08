@@ -115,9 +115,7 @@
             angularticsAction="RemoveAssessment"
             angularticsCategory="AssessmentResults"
             [angularticsProperties]="{ label: assessment.label }"
-            class="tag tag-xs {{
-              colorService.getColor(getGradeIdx(assessment.grade))
-            }}"
+            class="tag tag-xs {{ gradeColor(assessment.grade) }}"
           >
             <span class="label">{{
               'common.assessment-grade-short-label.' + assessment.grade

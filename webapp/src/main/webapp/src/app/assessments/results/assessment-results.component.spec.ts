@@ -8,7 +8,6 @@ import { Exam } from '../model/exam';
 import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { ExamFilterService } from '../filters/exam-filters/exam-filter.service';
 import { Student } from '../../student/model/student.model';
-import { ColorService } from '../../shared/color.service';
 import { Angulartics2 } from 'angulartics2';
 import { TestModule } from '../../../test/test.module';
 import { MockDataService } from '../../../test/mock.data.service';
@@ -87,7 +86,6 @@ describe('AssessmentResultsComponent', () => {
         { provide: Angulartics2, useValue: mockAngulartics2 },
         ExamStatisticsCalculator,
         ExamFilterService,
-        ColorService,
         InstructionalResourcesService,
         CachingDataService,
         DataService,
