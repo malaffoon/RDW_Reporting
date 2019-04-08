@@ -673,6 +673,7 @@
       "assessment-exam-columns": {
         "alternateScaleScore": "{{name}} Scale Score",
         "alternateScaleScoreLevel": "{{name}} Level",
+        "alternateScaleScoreStandardError": "{{name}} Standard Error",
         "date": "Date",
         "grade": "Enrolled Grade",
         "iab": {
