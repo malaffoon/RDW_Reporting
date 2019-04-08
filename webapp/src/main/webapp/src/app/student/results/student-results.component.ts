@@ -17,9 +17,12 @@ import { StudentResultsFilterService } from './student-results-filter.service';
 import { Student } from '../model/student.model';
 import { StudentPipe } from '../../shared/format/student.pipe';
 import { OrderingService } from '../../shared/ordering/ordering.service';
-import { Ordering } from '@kourge/ordering';
-import { first } from 'rxjs/operators';
+import { ordering, Ordering } from '@kourge/ordering';
 import { ReportFormService } from '../../report/service/report-form.service';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { SubjectService } from '../../subject/subject.service';
+import { ranking } from '@kourge/ordering/comparator';
+import { SubjectDefinition } from '../../subject/subject';
 
 /**
  * Represents a page section where exams of a specific type and subject are displayed
@@ -46,6 +49,7 @@ export class StudentResultsComponent implements OnInit {
   minimumItemDataYear: number;
   hasResults: boolean;
   exportDisabled: boolean = true;
+  subjectDefinitions: SubjectDefinition[];
 
   private _subjectOrdering: Ordering<string>;
 
@@ -60,16 +64,20 @@ export class StudentResultsComponent implements OnInit {
     private embargoService: ReportingEmbargoService,
     private studentResultsFilterService: StudentResultsFilterService,
     private studentPipe: StudentPipe,
-    private orderingService: OrderingService,
+    private subjectService: SubjectService,
     private reportFormService: ReportFormService
   ) {}
 
   ngOnInit(): void {
     const { examHistory } = this.route.snapshot.data;
     if (examHistory) {
-      this.orderingService.getSubjectOrdering().subscribe(subjectOrdering => {
+      forkJoin(
+        this.subjectService.getSubjectCodes(),
+        this.subjectService.getSubjectDefinitions()
+      ).subscribe(([subjectCodes, subjectDefinitions]) => {
         this.examHistory = examHistory;
-        this._subjectOrdering = subjectOrdering;
+        this.subjectDefinitions = subjectDefinitions;
+        this._subjectOrdering = ordering(ranking(subjectCodes));
 
         const { exams } = examHistory;
         this.filterState = this.createFilterState(exams);
