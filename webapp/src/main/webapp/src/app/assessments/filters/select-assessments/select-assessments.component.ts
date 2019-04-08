@@ -1,14 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Assessment } from '../../model/assessment';
 import { uniq } from 'lodash';
-import { ColorService } from '../../../shared/color.service';
-import { GradeCode } from '../../../shared/enum/grade-code.enum';
+import { gradeColor } from '../../../shared/colors';
 
 @Component({
   selector: 'select-assessments',
   templateUrl: './select-assessments.component.html'
 })
 export class SelectAssessmentsComponent {
+  readonly gradeColor = gradeColor;
+
   assessmentsByGrade: any[] = [];
 
   @Input()
@@ -25,12 +26,6 @@ export class SelectAssessmentsComponent {
   selectedAssessmentsChanged: EventEmitter<Assessment> = new EventEmitter();
 
   private _assessments: Assessment[];
-
-  constructor(public colorService: ColorService) {}
-
-  getGradeIdx(gradeCode: string): number {
-    return GradeCode.getIndex(gradeCode);
-  }
 
   toggleSelectedAssessment(assessment: Assessment) {
     if (assessment.selected) {

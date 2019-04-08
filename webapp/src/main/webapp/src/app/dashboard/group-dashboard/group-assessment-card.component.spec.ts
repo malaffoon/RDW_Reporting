@@ -60,8 +60,8 @@ describe('GroupAssessmentCardComponent', () => {
       performanceLevels: []
     };
     fixture.detectChanges();
-    expect(component.dataWidths).toBeTruthy();
-    expect(component.dataWidths).toEqual([20, 30, 50]);
+    expect(component._dataWidths).toBeTruthy();
+    expect(component._dataWidths).toEqual([20, 30, 50]);
   });
 
   it('should have percents of 33.33 have a data width sum to 100', () => {
@@ -96,8 +96,8 @@ describe('GroupAssessmentCardComponent', () => {
       performanceLevels: []
     };
     fixture.detectChanges();
-    expect(component.percents).toEqual([33, 33, 33]);
-    expect(component.dataWidths).toEqual([34, 33, 33]);
+    expect(component._percents).toEqual([33, 33, 33]);
+    expect(component._dataWidths).toEqual([34, 33, 33]);
   });
 
   it('should have rounded percents sum of 101 and a data width sum to 100', () => {
@@ -130,8 +130,8 @@ describe('GroupAssessmentCardComponent', () => {
       performanceLevels: []
     };
     fixture.detectChanges();
-    expect(component.percents).toEqual([29, 43, 29]);
-    expect(component.dataWidths).toEqual([28, 43, 29]);
+    expect(component._percents).toEqual([29, 43, 29]);
+    expect(component._dataWidths).toEqual([28, 43, 29]);
   });
 });
 
@@ -153,10 +153,4 @@ function getMeasuredAssessment(
     averageStandardError: 0,
     averageScaleScore: 0
   };
-}
-
-class MockColorService {
-  getColor(index: number): string {
-    return 'test-color';
-  }
 }

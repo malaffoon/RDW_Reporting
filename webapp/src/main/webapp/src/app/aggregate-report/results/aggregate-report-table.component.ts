@@ -14,7 +14,6 @@ import {
   join,
   ranking
 } from '@kourge/ordering/comparator';
-import { ColorService } from '../../shared/color.service';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { OrganizationType } from '../../shared/organization/organization';
 import { Utils } from '../../shared/support/support';
@@ -38,6 +37,7 @@ import {
 import { byTargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
 import { SubjectDefinition } from '../../subject/subject';
 import { ReportQueryType } from '../../report/report';
+import { color } from '../../shared/colors';
 
 export const SupportedRowCount = 4000;
 
@@ -46,16 +46,13 @@ function safeCopy<T>(array: T[]): T[] {
 }
 
 function toRow(
-  row: AggregateReportItem,
-  colorService
+  row: AggregateReportItem
 ): AggregateReportItem & { organizationColor: string } {
   const { organization = <any>{} } = row;
   const colorIndex = Object.keys(OrganizationType).findIndex(
     value => value === organization.type
   );
-  const organizationColor = colorService.getColor(
-    colorIndex < 0 ? 0 : colorIndex
-  );
+  const organizationColor = color(colorIndex < 0 ? 0 : colorIndex);
   return {
     ...row,
     organizationColor
@@ -615,7 +612,6 @@ export class AggregateReportTableComponent implements OnInit {
   center: boolean;
 
   constructor(
-    public colorService: ColorService,
     private translate: TranslateService,
     private exportService: AggregateReportTableExportService
   ) {}
@@ -658,7 +654,7 @@ export class AggregateReportTableComponent implements OnInit {
       this.claimReport = this.reportType === 'Claim';
       this.center =
         this.reportType !== 'Claim' &&
-        this.subjectDefinition.performanceLevelStandardCutoff != null;
+        this.subjectDefinition.overallScore.standardCutoff != null;
       this.buildAndRender();
     }
   }
@@ -669,7 +665,7 @@ export class AggregateReportTableComponent implements OnInit {
 
   @Input()
   set rows(value: AggregateReportItem[]) {
-    this._rows = value.map(value => toRow(value, this.colorService));
+    this._rows = value.map(toRow);
     if (this._initialized) {
       this.buildAndRender();
     }

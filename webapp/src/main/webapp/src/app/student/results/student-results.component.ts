@@ -4,7 +4,6 @@ import { StudentExamHistory } from '../model/student-exam-history.model';
 import { StudentResultsFilterState } from './model/student-results-filter-state.model';
 import { StudentHistoryExamWrapper } from '../model/student-history-exam-wrapper.model';
 import { ExamFilterService } from '../../assessments/filters/exam-filters/exam-filter.service';
-import { ColorService } from '../../shared/color.service';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
 import { CsvExportService } from '../../csv-export/csv-export.service';
 import { Angulartics2 } from 'angulartics2';
@@ -16,13 +15,13 @@ import { union } from 'lodash';
 import { StudentResultsFilterService } from './student-results-filter.service';
 import { Student } from '../model/student.model';
 import { StudentPipe } from '../../shared/format/student.pipe';
-import { OrderingService } from '../../shared/ordering/ordering.service';
 import { ordering, Ordering } from '@kourge/ordering';
 import { ReportFormService } from '../../report/service/report-form.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { SubjectService } from '../../subject/subject.service';
 import { ranking } from '@kourge/ordering/comparator';
 import { SubjectDefinition } from '../../subject/subject';
+import { assessmentTypeColor } from '../../shared/colors';
 
 /**
  * Represents a page section where exams of a specific type and subject are displayed
@@ -54,7 +53,6 @@ export class StudentResultsComponent implements OnInit {
   private _subjectOrdering: Ordering<string>;
 
   constructor(
-    private colorService: ColorService,
     private csvExportService: CsvExportService,
     private route: ActivatedRoute,
     private router: Router,
@@ -172,13 +170,6 @@ export class StudentResultsComponent implements OnInit {
     });
   }
 
-  getAssessmentTypeColor(assessmentType: string): string {
-    const index = ['ica', 'iab', 'sum'].indexOf(assessmentType);
-    const totalAssessmentTypes = 3;
-    const colorIndex = index >= 0 ? index + 1 : totalAssessmentTypes;
-    return this.colorService.getColor(colorIndex);
-  }
-
   /**
    * Apply the current filter state to the exams.
    */
@@ -249,7 +240,7 @@ export class StudentResultsComponent implements OnInit {
         } else {
           sections.push({
             assessmentTypeCode: type,
-            assessmentTypeColor: this.getAssessmentTypeColor(type),
+            assessmentTypeColor: assessmentTypeColor(type),
             subjectCode: subject,
             exams: [wrapper],
             filteredExams: [],
