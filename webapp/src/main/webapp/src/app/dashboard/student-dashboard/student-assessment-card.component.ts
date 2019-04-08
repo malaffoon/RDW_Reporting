@@ -42,9 +42,13 @@ export class StudentAssessmentCardComponent {
 
   private initialize(): void {
     if (this._latestExam != null && this._exams != null) {
-      this._resultCount = this._exams.filter(
-        exam => exam.assessment.label === this._latestExam.assessment.label
-      ).length;
+      // seems to be an odd behavior where the exams of the card change when selected
+      // so here we only compute this once
+      if (this._resultCount == null) {
+        this._resultCount = this._exams.filter(
+          exam => exam.assessment.label === this._latestExam.assessment.label
+        ).length;
+      }
     }
   }
 
