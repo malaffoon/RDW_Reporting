@@ -16,6 +16,7 @@ import { ranking } from '@kourge/ordering/comparator';
 import { forkJoin } from 'rxjs';
 import { SubjectService } from '../subject/subject.service';
 import { isNullOrEmpty } from '../shared/support/support';
+import { ExamSearchFilterService } from '../exam/service/exam-search-filter.service';
 
 /**
  * Represents a specific type of score for an assessment (e.g. claim, alternate)
@@ -70,7 +71,8 @@ export class CsvExportService {
   constructor(
     private examFilterService: ExamFilterService,
     private csvBuilder: CsvBuilder,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private examSearchFilterService: ExamSearchFilterService
   ) {}
 
   /**
@@ -83,7 +85,6 @@ export class CsvExportService {
   exportAssessmentExams(
     assessmentExams: AssessmentExam[],
     filterBy: FilterBy,
-    ethnicities: string[],
     filename: string
   ) {
     const sourceData: any[] = [];
@@ -116,8 +117,9 @@ export class CsvExportService {
 
     forkJoin(
       this.subjectService.getSubjectCodes(),
-      this.subjectService.getSubjectDefinitions()
-    ).subscribe(([subjectCodes, subjectDefinitions]) => {
+      this.subjectService.getSubjectDefinitions(),
+      this.examSearchFilterService.getExamSearchFilters()
+    ).subscribe(([subjectCodes, subjectDefinitions, examSearchFilters]) => {
       const builder = this.csvBuilder
         .newBuilder()
         .withFilename(filename)
@@ -190,8 +192,11 @@ export class CsvExportService {
       });
 
       builder
-        .withGender(getStudent)
-        .withStudentContext(getExam, ethnicities)
+        .withStudentContext(
+          getExam,
+          getStudent,
+          examSearchFilters.studentFilters
+        )
         .withAccommodationCodes(getExam)
         .build(sourceData);
     });
