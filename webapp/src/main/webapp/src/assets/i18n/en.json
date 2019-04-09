@@ -671,8 +671,9 @@
         "no-instruct-found": "Resources not yet available"
       },
       "assessment-exam-columns": {
-        "alternateScaleScore": "{{name}}<br/> Scale Score / Error Band",
+        "alternateScaleScoreAndStandardError": "{{name}}<br/> Scale Score / Error Band",
         "alternateScaleScoreLevel": "{{name}}<br/> Level",
+        "alternateScaleScore": "{{name}} Scale Score",
         "alternateScaleScoreStandardError": "{{name}} Standard Error",
         "date": "Date",
         "grade": "Enrolled Grade",

@@ -343,11 +343,9 @@ export class CsvBuilder {
         }
       )
         .withColumn(
-          `${subjectName}: ${removeHtml(
-            this.translateService.instant(
-              'common.results.assessment-exam-columns.alternateScaleScore',
-              { name }
-            )
+          `${subjectName}: ${this.translateService.instant(
+            'common.results.assessment-exam-columns.alternateScaleScore',
+            { name }
           )}`,
           item => {
             const exam: Exam = getExam(item);

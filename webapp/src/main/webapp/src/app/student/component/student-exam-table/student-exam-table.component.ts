@@ -68,7 +68,7 @@ function createAlternateScoreColumns(scoreCodes: string[]): Column[] {
       }),
       new Column({
         ...commonFields,
-        id: `alternateScaleScore`,
+        id: `alternateScaleScoreAndStandardError`,
         field: `exam.alternateScaleScores.${index}.score`
       })
     );

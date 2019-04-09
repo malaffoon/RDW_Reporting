@@ -62,7 +62,7 @@
         ></div>
 
         <div
-          *ngSwitchCase="'alternateScaleScore'"
+          *ngSwitchCase="'alternateScaleScoreAndStandardError'"
           innerHtml="{{
             'common.results.assessment-exam-columns.' + column.id
               | translate
@@ -174,7 +174,7 @@
           }}
         </div>
 
-        <div *ngSwitchCase="'alternateScaleScore'">
+        <div *ngSwitchCase="'alternateScaleScoreAndStandardError'">
           <scale-score
             [score]="exam.alternateScaleScores[column.index].score"
             [standardError]="
