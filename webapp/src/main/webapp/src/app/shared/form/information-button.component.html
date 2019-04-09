@@ -1,16 +1,16 @@
-{{ title }}
+<span innerHTML="{{ _title }}"></span>
 <button
   class="btn btn-borderless btn-xs icon-only"
   type="button"
   [popover]="buttonPopover"
-  popoverTitle="{{ title }}"
+  popoverTitle="{{ _sanitizedTitle }}"
   [placement]="placement"
   container="body"
   outsideClick="true"
   (click)="propagateClick($event)"
 >
-  <span class="sr-only">{{ 'info-button.more-info' | translate }}</span>
-  <i class="fa fa-info-circle"></i>
+  <span class="sr-only">{{ 'info-button.more-info' | translate }}</span
+  >&nbsp;<i class="fa fa-info-circle"></i>
 </button>
 
 <ng-template #buttonPopover>

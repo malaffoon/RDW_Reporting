@@ -65,7 +65,7 @@ function createAlternateScoreColumns(
         code
       }),
       new Column({
-        id: `alternateScaleScore`,
+        id: `alternateScaleScoreAndStandardError`,
         field: `alternateScaleScores.${index}.score`,
         scoreType,
         index,
