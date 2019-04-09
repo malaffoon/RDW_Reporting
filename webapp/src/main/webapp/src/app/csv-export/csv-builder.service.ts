@@ -8,7 +8,7 @@ import { Angular2CsvProvider } from './angular-csv.provider';
 import { AssessmentItem } from '../assessments/model/assessment-item.model';
 import { DynamicItemField } from '../assessments/model/item-point-field.model';
 import { SchoolYearPipe } from '../shared/format/school-year.pipe';
-import { Utils } from '../shared/support/support';
+import { removeHtml, Utils } from '../shared/support/support';
 import { WritingTraitAggregate } from '../assessments/model/writing-trait-aggregate.model';
 import { TranslateDatePipe } from '../shared/i18n/translate-date.pipe';
 import { TranslateNumberPipe } from '../shared/i18n/translate-number.pipe';
@@ -320,9 +320,11 @@ export class CsvBuilder {
       );
 
       this.withColumn(
-        `${subjectName}: ${this.translateService.instant(
-          'common.results.assessment-exam-columns.alternateScaleScoreLevel',
-          { name }
+        `${subjectName}: ${removeHtml(
+          this.translateService.instant(
+            'common.results.assessment-exam-columns.alternateScaleScoreLevel',
+            { name }
+          )
         )}`,
         item => {
           const exam: Exam = getExam(item);
@@ -341,9 +343,11 @@ export class CsvBuilder {
         }
       )
         .withColumn(
-          `${subjectName}: ${this.translateService.instant(
-            'common.results.assessment-exam-columns.alternateScaleScore',
-            { name }
+          `${subjectName}: ${removeHtml(
+            this.translateService.instant(
+              'common.results.assessment-exam-columns.alternateScaleScore',
+              { name }
+            )
           )}`,
           item => {
             const exam: Exam = getExam(item);

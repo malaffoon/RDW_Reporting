@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Utils } from '../support/support';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { removeHtml } from '../support/support';
 
 /**
  * This component is responsible for displaying a label with
@@ -7,20 +7,27 @@ import { Utils } from '../support/support';
  */
 @Component({
   selector: 'info-button,[info-button]',
-  templateUrl: './information-button.component.html'
+  templateUrl: './information-button.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InformationButtonComponent {
   @Input()
-  public title: string;
+  content: string;
 
   @Input()
-  public content: string;
+  icon: string;
 
   @Input()
-  public icon: string;
+  placement: string = 'top';
+
+  _title: string;
+  _sanitizedTitle: string;
 
   @Input()
-  public placement: string = 'top';
+  set title(value: string) {
+    this._title = value;
+    this._sanitizedTitle = removeHtml(value);
+  }
 
   /**
    * Stop propagation of the info button click and dispatch a new click event
@@ -31,10 +38,10 @@ export class InformationButtonComponent {
    *
    * @param {Event} event The information button click event
    */
-  public propagateClick(event: Event): void {
+  propagateClick(event: Event): void {
     event.stopPropagation();
 
-    Utils.setImmediate(() => {
+    setTimeout(() => {
       const clickEvent: MouseEvent = new MouseEvent('click', {
         view: window,
         bubbles: true,

@@ -1,16 +1,7 @@
 <table>
   <thead>
     <tr>
-      <th>
-        <div class="sample-size">
-          <span class="value">{{ _table.resultCount }}</span>
-          <span class="ml-xs">{{
-            (_table.resultCount === 1
-              ? 'average-scale-score.result'
-              : 'average-scale-score.results') | translate
-          }}</span>
-        </div>
-      </th>
+      <th></th>
       <th *ngFor="let statistic of _table.scoreStatistics">
         <div class="heading">
           <score-label
@@ -18,6 +9,19 @@
             [scoreCode]="statistic.code"
           ></score-label>
         </div>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <span
+          class="average-scale-score-label"
+          info-button
+          title="{{ 'average-scale-score.scale-score' | translate }}"
+          content="{{ 'average-scale-score.scale-score-info' | translate }}"
+          class="average-scale-score-label"
+        ></span>
+      </th>
+      <th *ngFor="let statistic of _table.scoreStatistics">
         <scale-score
           [score]="statistic.averageScaleScore"
           [standardError]="statistic.standardErrorOfMean"

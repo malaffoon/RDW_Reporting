@@ -34,6 +34,15 @@ export function deepEqualsIgnoringNullAndFalse(a: Object, b: Object): boolean {
   );
 }
 
+/**
+ * Strips out HTML tags from the given string
+ *
+ * @param value The string to remove the HTML from
+ */
+export function removeHtml(value: string): string {
+  return value.replace(/<[^>]*>/g, '');
+}
+
 export class Utils {
   static equalSets(a: any[], b: any[]): boolean {
     return (
