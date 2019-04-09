@@ -19,11 +19,9 @@ import { TestModule } from '../../../test/test.module';
 import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { StudentResultsFilterService } from './student-results-filter.service';
-import { OrderingService } from '../../shared/ordering/ordering.service';
-import { ranking } from '@kourge/ordering/comparator';
-import { ordering } from '@kourge/ordering';
 import { ReportFormService } from '../../report/service/report-form.service';
 import { ScaleScore } from '../../exam/model/scale-score';
+import { SubjectService } from '../../subject/subject.service';
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -69,11 +67,34 @@ describe('StudentResultsComponent', () => {
 
     router = new MockRouter();
 
-    const mockOrderingService = jasmine.createSpyObj('OrderingService', [
-      'getSubjectOrdering'
+    const mockSubjectService = jasmine.createSpyObj('SubjectService', [
+      'getSubjectCodes',
+      'getSubjectDefinitions'
     ]);
-    mockOrderingService.getSubjectOrdering.and.returnValue(
-      of(ordering(ranking(['Math', 'ELA'])))
+    mockSubjectService.getSubjectCodes.and.returnValue(of(['Math', 'ELA']));
+    mockSubjectService.getSubjectDefinitions.and.returnValue(
+      of([
+        {
+          subject: 'subject1',
+          assessmentType: 'sum',
+          performanceLevels: [1, 2, 3, 4],
+          performanceLevelCount: 4,
+          performanceLevelStandardCutoff: 3,
+          scorableClaims: [],
+          scorableClaimPerformanceLevelCount: null,
+          scorableClaimPerformanceLevels: null,
+          overallScore: {
+            levels: [1, 2, 3, 4],
+            levelCount: 4,
+            standardCutoff: 3
+          },
+          alternateScore: {
+            codes: ['a'],
+            levels: [1],
+            levelCount: 1
+          }
+        }
+      ])
     );
 
     TestBed.configureTestingModule({
@@ -88,7 +109,7 @@ describe('StudentResultsComponent', () => {
         },
         { provide: ReportingEmbargoService, useValue: embargoService },
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: OrderingService, useValue: mockOrderingService },
+        { provide: SubjectService, useValue: mockSubjectService },
         StudentResultsFilterService,
         ExamFilterService,
         { provide: ReportFormService, useValue: {} }
