@@ -1,18 +1,16 @@
-// TODO make enum
-const Separate = 'Separate';
-const Grouped = 'Grouped';
+export type PerformanceLevelDisplayType = 'Separate' | 'Grouped';
 
 export abstract class PerformanceLevelDisplayTypes {
-  static get Separate(): string {
-    return Separate;
+  static get Separate(): PerformanceLevelDisplayType {
+    return 'Separate';
   }
 
-  static get Grouped(): string {
-    return Grouped;
+  static get Grouped(): PerformanceLevelDisplayType {
+    return 'Grouped';
   }
 
   static values(): string[] {
-    return [Separate, Grouped];
+    return ['Separate', 'Grouped'];
   }
 
   static valueOf(input: string): string {

@@ -425,6 +425,7 @@ export abstract class BaseAggregateQueryFormComponent
     return this.requestMapper.map(
       this.filteredOptions,
       this.settings,
+      this.subjectDefinition,
       this.getAssessmentDefinition()
     );
   }

@@ -822,11 +822,7 @@
                 analyticsEvent="Change"
               ></sb-radio-button-group>
             </span>
-            <span
-              *ngIf="
-                assessmentDefinition.performanceLevelDisplayTypes.length > 1
-              "
-            >
+            <span *ngIf="subjectDefinition.overallScore.standardCutoff != null">
               <label for="performance-level-display-type">
                 {{
                   'common.performance-level-display-type-input-label'

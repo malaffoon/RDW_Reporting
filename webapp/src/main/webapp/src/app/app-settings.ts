@@ -16,9 +16,24 @@ export interface ApplicationSettings {
   readonly uiLanguages: string[];
   readonly userGuideUrl: string;
   readonly state: StateSettings;
+  readonly studentFields: Map<StudentFieldType, StudentFieldPermissionLevel>;
   readonly targetReport: TargetReportSettings;
   readonly transferAccess: boolean;
 }
+
+export type StudentFieldType =
+  | 'EconomicDisadvantage'
+  | 'EnglishLanguageAcquisitionStatus'
+  | 'Ethnicity'
+  | 'Gender'
+  | 'IndividualEducationPlan'
+  | 'LimitedEnglishProficiency'
+  | 'MigrantStatus'
+  | 'MilitaryStudentIdentifier'
+  | 'PrimaryLanguage'
+  | 'Section504';
+
+export type StudentFieldPermissionLevel = 'Disabled' | 'Admin' | 'Enabled';
 
 export interface StateSettings {
   readonly code: string;
@@ -55,6 +70,7 @@ export function toApplicationSettings(
       code: serverSettings.state.code,
       name: serverSettings.state.name
     },
+    studentFields: <any>new Map(Object.entries(serverSettings.studentFields)),
     targetReport: {
       insufficientDataCutoff:
         serverSettings.targetReport.insufficientDataCutoff,

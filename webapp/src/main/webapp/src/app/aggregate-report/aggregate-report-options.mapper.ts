@@ -11,6 +11,7 @@ import { Observable, of } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { Claim } from './aggregate-report-options.service';
 import { ReportQueryType } from '../report/report';
+import { StudentFieldType } from '../app-settings';
 
 /**
  * Responsible for mapping server provided report options into option
@@ -18,8 +19,7 @@ import { ReportQueryType } from '../report/report';
  */
 @Injectable()
 export class AggregateReportOptionsMapper {
-  private showElas = false;
-  private showLep = false;
+  private disabledStudentFields: StudentFieldType[];
 
   constructor(
     private translateService: TranslateService,
@@ -29,8 +29,9 @@ export class AggregateReportOptionsMapper {
     private applicationSettingsService: ApplicationSettingsService
   ) {
     applicationSettingsService.getSettings().subscribe(settings => {
-      this.showElas = settings.elasEnabled;
-      this.showLep = settings.lepEnabled;
+      this.disabledStudentFields = Array.from(settings.studentFields.entries())
+        .filter(([, value]) => value === 'Disabled')
+        .map(([key]) => key);
     });
   }
 
@@ -99,7 +100,17 @@ export class AggregateReportOptionsMapper {
       performanceLevelDisplayTypes: this.displayOptionService.getPerformanceLevelDisplayTypeOptions(),
       valueDisplayTypes: this.displayOptionService.getValueDisplayTypeOptions(),
       dimensionTypes: options.dimensionTypes
-        .filter(dimensionType => this.filterElasOrLep(dimensionType))
+        .filter(
+          dimensionType =>
+            (dimensionType !== 'LEP' ||
+              !this.disabledStudentFields.includes(
+                'LimitedEnglishProficiency'
+              )) &&
+            (dimensionType !== 'ELAS' ||
+              !this.disabledStudentFields.includes(
+                'EnglishLanguageAcquisitionStatus'
+              ))
+        )
         .map(
           optionMapper(
             value => translate(`common.dimension.${value}`),
@@ -179,13 +190,6 @@ export class AggregateReportOptionsMapper {
         )
       }
     };
-  }
-
-  private filterElasOrLep(dimensionType: string): boolean {
-    return (
-      (dimensionType !== 'LEP' || this.showLep) &&
-      (dimensionType !== 'ELAS' || this.showElas)
-    );
   }
 
   /**
