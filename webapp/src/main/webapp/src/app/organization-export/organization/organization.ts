@@ -56,7 +56,7 @@ export interface Organization {
 
 abstract class AbstractOrganization implements Organization {
   id: number;
-  name: string;
+  name: string = '';
 
   get uuid(): string {
     return createCompositeId(this.type, this.id);
