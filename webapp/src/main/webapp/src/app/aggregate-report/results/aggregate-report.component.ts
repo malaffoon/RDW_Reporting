@@ -42,6 +42,7 @@ import {
   TargetReportQuery,
   UserReport
 } from '../../report/report';
+import { NULL_EXPR } from '@angular/compiler/src/output/output_ast';
 
 const PollingInterval = 4000;
 
@@ -136,6 +137,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   isLongitudinal: boolean;
   showTargetMathCautionMessage: boolean;
 
+  userQueryId: string;
+
   private _viewComparator: Comparator<AggregateReportView>;
   private _pollingSubscription: Subscription;
   private _displayLargeReport: boolean = false;
@@ -156,6 +159,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
     private chartMapper: LongitudinalCohortChartMapper
   ) {
     const { options, report } = route.snapshot.data;
+    const { userQueryId } = route.snapshot.queryParams;
     const query: AggregateReportQueryType = report.query;
 
     const assessmentDefinition = definitionService.get(
@@ -163,6 +167,7 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
       query.type
     );
 
+    this.userQueryId = userQueryId;
     this.options = options;
     this.report = report;
     this.query = query;
@@ -213,9 +218,12 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   }
 
   onUpdateRequestButtonClick(): void {
+    const { userQueryId } = this.route.snapshot.queryParams;
+    const queryParams =
+      userQueryId != null ? { userQueryId } : { userReportId: this.report.id };
     this.router.navigate(['..'], {
       relativeTo: this.route,
-      queryParams: { userReportId: this.report.id }
+      queryParams
     });
   }
 

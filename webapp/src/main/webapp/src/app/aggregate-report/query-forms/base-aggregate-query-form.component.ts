@@ -232,6 +232,7 @@ export abstract class BaseAggregateQueryFormComponent
    * Creates a report if the form is valid
    */
   onGenerateButtonClick(): void {
+    const { userQueryId } = this.route.snapshot.queryParams;
     this.validate(this.getFormGroup(), () => {
       const query = this.createReportRequest();
       this.userReportSubscription = this.reportService
@@ -244,7 +245,10 @@ export abstract class BaseAggregateQueryFormComponent
         )
         .subscribe(
           userReport => {
-            this.router.navigate([userReport.id], { relativeTo: this.route });
+            this.router.navigate([userReport.id], {
+              relativeTo: this.route,
+              preserveQueryParams: true
+            });
           },
           () => {
             this.notificationService.error({
