@@ -51,6 +51,11 @@ export abstract class BaseAggregateQueryFormComponent
   filteredOptions: AggregateReportFormOptions;
 
   /**
+   * Holds the form's original options
+   */
+  originalOptions: AggregateReportFormOptions;
+
+  /**
    * The preview table data
    */
   previewTableRows: AggregateReportItem[];
@@ -102,7 +107,8 @@ export abstract class BaseAggregateQueryFormComponent
   ) {
     const { options } = route.snapshot.data;
     this.aggregateReportOptions = options;
-    this.filteredOptions = optionMapper.map(this.aggregateReportOptions);
+    this.originalOptions = optionMapper.map(this.aggregateReportOptions);
+    this.filteredOptions = { ...this.originalOptions };
   }
 
   abstract initialize(): void;
@@ -261,51 +267,23 @@ export abstract class BaseAggregateQueryFormComponent
   }
 
   updateSubjectsEnabled(): void {
-    const { settings } = this;
-    const validSubjectDefinitions = this.subjectDefinitions.filter(
-      x => x.assessmentType == settings.assessmentType
-    );
-    const enabledSubjects =
-      settings.reportType === 'Target'
-        ? this.filteredOptions.subjects
-            .filter(
-              ({ value }) =>
-                value.targetReport &&
-                value.assessmentType === settings.assessmentType
-            )
-            .map(({ value }) => value.code)
-        : this.filteredOptions.subjects
-            .filter(
-              ({ value }) => value.assessmentType === settings.assessmentType
-            )
-            .map(({ value }) => value.code);
+    const { settings, filteredOptions, originalOptions } = this;
 
     // disable subjects that don't have a definition for the assessment type
     // for target report, hide subjects that have the target_report flag set to false
-    const updatedOptions: Option[] = [];
+    const options: Option[] = originalOptions.subjects.filter(
+      option =>
+        option.value.assessmentType === settings.assessmentType &&
+        (settings.reportType !== 'Target' || option.value.targetReport)
+    );
 
-    this.filteredOptions.subjects
-      .filter(({ value }) => value.assessmentType === settings.assessmentType)
-      .forEach(option => {
-        updatedOptions.push({
-          ...option,
-          ...{
-            disabled: !validSubjectDefinitions.some(
-              x => x.subject == option.value.code
-            ),
-            hidden: !enabledSubjects.some(x => x === option.value.code)
-          }
-        });
-      });
-
-    this.filteredOptions.subjects = updatedOptions;
+    filteredOptions.subjects = options;
 
     // remove any disabled ones from the subject selection
-    const disabledOptions = updatedOptions
-      .filter(x => x.disabled || x.hidden)
-      .map(x => x.value.code);
-    this.settings.subjects = this.settings.subjects.filter(
-      subject => !disabledOptions.includes(subject)
+    // TODO this assigns the correct value but still it is not reflected after changing to and from assessment types
+    const enabledOptions = options.map(x => x.value);
+    settings.subjects = enabledOptions.filter(value =>
+      settings.subjects.find(({ code }) => code === value.code)
     );
   }
 
