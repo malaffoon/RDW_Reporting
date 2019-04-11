@@ -42,7 +42,6 @@ import {
   TargetReportQuery,
   UserReport
 } from '../../report/report';
-import { NULL_EXPR } from '@angular/compiler/src/output/output_ast';
 
 const PollingInterval = 4000;
 
@@ -136,7 +135,6 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   isEmbargoed: boolean;
   isLongitudinal: boolean;
   showTargetMathCautionMessage: boolean;
-
   userQueryId: string;
 
   private _viewComparator: Comparator<AggregateReportView>;
