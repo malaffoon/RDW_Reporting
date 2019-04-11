@@ -29,6 +29,8 @@ import {
   LongitudinalReportQuery,
   TargetReportQuery
 } from '../report/report';
+import { PerformanceLevelDisplayTypes } from '../shared/display-options/performance-level-display-type';
+import { SubjectDefinition } from '../subject/subject';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);
@@ -57,21 +59,24 @@ export class AggregateReportRequestMapper {
   /**
    * Creates an aggregate report request form the given options and settings tailored to optimize backend performance
    *
-   * @param {AggregateReportFormOptions} options the available report options
-   * @param {AggregateReportFormSettings} settings the aggregate report form state
-   * @param {AssessmentDefinition} assessmentDefinition
+   * @param options The available report options
+   * @param settings The aggregate report form state
+   * @param subjectDefinition Dynamic subject/assessment configuration
+   * @param assessmentDefinition Static subject/assessment metadata
    * @returns {AggregateReportRequest}
    */
   map(
     options: AggregateReportFormOptions,
     settings: AggregateReportFormSettings,
+    subjectDefinition: SubjectDefinition,
     assessmentDefinition: AssessmentDefinition
   ): AggregateReportQueryType {
-    const performanceLevelDisplayType = assessmentDefinition.performanceLevelDisplayTypes.includes(
-      settings.performanceLevelDisplayType
-    )
-      ? settings.performanceLevelDisplayType
-      : assessmentDefinition.performanceLevelDisplayTypes[0];
+    // correct performance level display type
+    const performanceLevelDisplayType =
+      settings.performanceLevelDisplayType === 'Grouped' &&
+      subjectDefinition.overallScore.standardCutoff == null
+        ? 'Separate'
+        : settings.performanceLevelDisplayType;
 
     const query: any = {
       achievementLevelDisplayType: performanceLevelDisplayType,

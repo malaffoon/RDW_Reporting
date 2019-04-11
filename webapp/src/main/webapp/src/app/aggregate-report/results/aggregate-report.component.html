@@ -47,7 +47,11 @@
         (click)="onUpdateRequestButtonClick()"
       >
         <i class="fa fa-chevron-left mr-xs"></i
-        >{{ 'aggregate-report.form-link' | translate }}
+        >{{
+          (userQueryId != null
+            ? 'user-query-menu-option.view'
+            : 'aggregate-report.form-link') | translate
+        }}
       </button>
     </div>
 
