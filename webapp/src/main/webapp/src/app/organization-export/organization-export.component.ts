@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ExamFilterOptionsService } from '../assessments/filters/exam-filters/exam-filter-options.service';
 import { NotificationService } from '../shared/notification/notification.service';
 import { Option } from '../shared/form/sb-typeahead.component';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { UserOrganizationService } from './organization/user-organization.service';
 import { UserReportService } from '../report/user-report.service';
