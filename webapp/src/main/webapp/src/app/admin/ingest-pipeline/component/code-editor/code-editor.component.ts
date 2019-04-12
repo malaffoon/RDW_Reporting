@@ -1,9 +1,8 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { appendAsyncScriptToHeadIfAbsent } from '../../ingest-pipeline.support';
-import * as ace from 'ace-builds/src-noconflict/ace';
-import 'ace-builds/src-noconflict/mode-groovy';
-import 'ace-builds/src-noconflict/theme-dracula';
 import { Script } from '../../model/script';
+
+declare var ace: any;
 
 /**
  * Loads lazily loaded dependencies of the component
@@ -21,7 +20,7 @@ export class CodeEditorComponent {
   editorElementReference: ElementRef;
 
   _script: Script;
-  _editor: ace.Ace.Editor;
+  _editor: any;
 
   constructor() {}
 
