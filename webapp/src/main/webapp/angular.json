@@ -40,7 +40,12 @@
             "scripts": [
               "src/scripts/iris/jquery.js",
               "src/scripts/iris/util_xdm.js",
-              "src/scripts/iris/client.js"
+              "src/scripts/iris/client.js",
+              {
+                "input": "node_modules/ace-builds/src-min/ace.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              }
             ]
           },
           "configurations": {
@@ -118,13 +123,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -144,12 +144,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }

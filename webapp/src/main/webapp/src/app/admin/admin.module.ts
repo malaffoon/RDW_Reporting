@@ -6,6 +6,7 @@ import { InstructionalResourceModule } from './instructional-resource/instructio
 import { EmbargoModule } from './embargo/embargo.module';
 import { CommonModule } from '../shared/common.module';
 import { BrowserModule } from '@angular/platform-browser';
+import { IngestPipelineModule } from './ingest-pipeline/ingest-pipeline.module';
 
 @NgModule({
   declarations: [],
@@ -14,6 +15,7 @@ import { BrowserModule } from '@angular/platform-browser';
     CommonModule,
     GroupImportModule,
     GroupsModule,
+    IngestPipelineModule,
     InstructionalResourceModule,
     EmbargoModule,
     FileFormatModule
@@ -21,6 +23,7 @@ import { BrowserModule } from '@angular/platform-browser';
   exports: [
     GroupImportModule,
     GroupsModule,
+    IngestPipelineModule,
     InstructionalResourceModule,
     EmbargoModule,
     FileFormatModule

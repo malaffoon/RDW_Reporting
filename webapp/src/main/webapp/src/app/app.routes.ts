@@ -38,13 +38,16 @@ import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
+import { IngestPipelineComponent } from './admin/ingest-pipeline/page/ingest-pipeline/ingest-pipeline.component';
 
 export const studentPipe = new StudentPipe();
 export const adminRoute = {
   path: '',
   data: {
     permissions: [
+      'CUSTOM_AGGREGATE_READ',
       'GROUP_WRITE',
+      'INDIVIDUAL_PII_READ',
       'INSTRUCTIONAL_RESOURCE_WRITE',
       'EMBARGO_WRITE'
     ]
@@ -108,6 +111,40 @@ export const adminRoute = {
               data: { breadcrumb: { translate: 'import-history.title' } }
             }
           ]
+        }
+      ]
+    },
+    // {
+    //   path: 'ingest-pipeline',
+    //   pathMatch: 'prefix',
+    //   data: {
+    //     breadcrumb: { translate: 'home.admin-tools.ingest-pipeline.button' },
+    //     permissions: ['INDIVIDUAL_PII_READ'], // TODO update this
+    //     denyAccess: true
+    //   },
+    //   canActivate: [AuthorizationCanActivate],
+    //   children: [
+    //     {
+    //       path: '',
+    //       pathMatch: 'prefix',
+    //       component: IngestPipelineComponent
+    //     }
+    //   ]
+    // },
+    {
+      path: 'ingest-pipeline',
+      pathMatch: 'prefix',
+      data: {
+        breadcrumb: { translate: 'home.admin-tools.ingest-pipeline.button' },
+        permissions: ['INDIVIDUAL_PII_READ'], // TODO update this
+        denyAccess: true
+      },
+      canActivate: [AuthorizationCanActivate],
+      children: [
+        {
+          path: '',
+          pathMatch: 'prefix',
+          component: IngestPipelineComponent
         }
       ]
     },
