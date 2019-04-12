@@ -114,23 +114,6 @@ export const adminRoute = {
         }
       ]
     },
-    // {
-    //   path: 'ingest-pipeline',
-    //   pathMatch: 'prefix',
-    //   data: {
-    //     breadcrumb: { translate: 'home.admin-tools.ingest-pipeline.button' },
-    //     permissions: ['INDIVIDUAL_PII_READ'], // TODO update this
-    //     denyAccess: true
-    //   },
-    //   canActivate: [AuthorizationCanActivate],
-    //   children: [
-    //     {
-    //       path: '',
-    //       pathMatch: 'prefix',
-    //       component: IngestPipelineComponent
-    //     }
-    //   ]
-    // },
     {
       path: 'ingest-pipeline',
       pathMatch: 'prefix',
