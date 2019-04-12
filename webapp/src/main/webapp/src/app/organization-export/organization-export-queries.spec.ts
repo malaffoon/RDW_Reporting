@@ -73,12 +73,12 @@ describe('OrganizationGroupingService', () => {
       []
     );
 
-    expect(
-      groupSelectedOrganizationIdsByType(
-        [organizations.schoolsById.get(1), organizations.schoolsById.get(2)],
-        organizations
-      )
-    ).toEqual({
+    const actual = groupSelectedOrganizationIdsByType(
+      [organizations.schoolsById.get(1), organizations.schoolsById.get(2)],
+      organizations
+    );
+
+    expect(actual).toEqual({
       districtIds: [],
       schoolGroupIds: [],
       schoolIds: [1, 2]

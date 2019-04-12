@@ -6,6 +6,7 @@ import { Tree } from './organization/tree';
 import { createOrganizationTree } from './organization/organization-trees';
 import { OrganizationExport } from './organization-export';
 import { DistrictSchoolExportReportQuery } from '../report/report';
+import { isNullOrBlank } from '../shared/support/support';
 
 /**
  * Converts an organization export and user entitled organizations into an export report query
@@ -139,5 +140,5 @@ function groupIfAllDescendantsSelected(
  * @returns {boolean} True if the node is a valid grouping node
  */
 function validGroupingNode(node: Tree<Organization>) {
-  return node.value.name != null;
+  return !isNullOrBlank(node.value.name);
 }

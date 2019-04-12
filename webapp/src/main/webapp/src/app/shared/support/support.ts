@@ -1,5 +1,13 @@
 import { isEmpty, isEqual, omitBy } from 'lodash';
 
+export function isBlank(value: string): boolean {
+  return value.trim().length === 0;
+}
+
+export function isNullOrBlank(value: string): boolean {
+  return value == null || isBlank(value);
+}
+
 /**
  * Expands support from string and Array to type Object as well
  *
