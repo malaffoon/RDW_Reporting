@@ -38,7 +38,8 @@ import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
-import { IngestPipelineComponent } from './admin/ingest-pipeline/page/ingest-pipeline/ingest-pipeline.component';
+import { ScriptsPageComponent } from './admin/ingest-pipeline/page/scripts/scripts-page.component';
+import { ingestPipelineRoutes } from './admin/ingest-pipeline/ingest-pipeline.routes';
 
 export const studentPipe = new StudentPipe();
 export const adminRoute = {
@@ -114,23 +115,7 @@ export const adminRoute = {
         }
       ]
     },
-    {
-      path: 'ingest-pipeline',
-      pathMatch: 'prefix',
-      data: {
-        breadcrumb: { translate: 'home.admin-tools.ingest-pipeline.button' },
-        permissions: ['INDIVIDUAL_PII_READ'], // TODO update this
-        denyAccess: true
-      },
-      canActivate: [AuthorizationCanActivate],
-      children: [
-        {
-          path: '',
-          pathMatch: 'prefix',
-          component: IngestPipelineComponent
-        }
-      ]
-    },
+    ...ingestPipelineRoutes,
     {
       path: 'instructional-resource',
       pathMatch: 'prefix',

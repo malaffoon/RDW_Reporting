@@ -5,7 +5,7 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors
 } from '@angular/forms';
-import { forwardRef } from '@angular/core';
+import { forwardRef, Provider } from '@angular/core';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, startWith, takeUntil } from 'rxjs/operators';
 import { Destroyable, FormField, FormFieldView, FormOptions } from './form';
@@ -21,18 +21,26 @@ export interface ValidationErrorHolder {
 }
 
 /**
+ * Provides the value accessor provider necessary for hooking {ControlValueAccessor}s into Angular forms
+ * @param reference
+ */
+export function controlValueAccessorProvider(reference: any): Provider {
+  return {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: reference,
+    multi: true
+  };
+}
+
+/**
  * Holds common methods for dealing with angular form components
  */
 export class Forms {
   /**
-   * Provides the value accessor provider necessary for hooking {ControlValueAccessor}s into Angular rorms
+   * @deprecated use {@link controlValueAccessorProvider}
    */
   public static valueAccessor(reference: any) {
-    return {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => reference),
-      multi: true
-    };
+    return controlValueAccessorProvider(forwardRef(() => reference));
   }
 
   /**
