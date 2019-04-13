@@ -1,3 +1,5 @@
+@highlight-color: #282a36;
+
 :host {
   ::ng-deep {
     .ui-tree {
@@ -5,6 +7,9 @@
       border: none;
       .ui-treenode-droppoint {
         height: 6px;
+        &.ui-state-highlight {
+          background-color: @highlight-color;
+        }
       }
       .ui-tree-container > p-treenode > .ui-treenode-droppoint {
         display: none;
@@ -13,8 +18,9 @@
         outline: none;
         > .ui-treenode-label {
           padding: 3px 15px;
+          width: 90%;
           &.ui-state-highlight {
-            background-color: #282a36;
+            background-color: @highlight-color;
           }
         }
       }

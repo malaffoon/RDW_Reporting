@@ -81,12 +81,6 @@ export class ScriptTreeComponent {
   }
 
   onNodeDrop(event: any): void {
-    console.log('drop', event);
-    // if (event.dropNode.parent != null || event.dropNode.droppable) {
-    //   event.accept();
-    //
-    // } else {
-    //   event.originalEvent.stomImm
-    // }
+    // TODO anything?
   }
 }

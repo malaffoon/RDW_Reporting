@@ -11,9 +11,7 @@ import {
 import { getOrAppendAsyncScript } from '../../ingest-pipeline.support';
 import { controlValueAccessorProvider } from '../../../../shared/form/forms';
 import { ControlValueAccessor } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, share } from 'rxjs/operators';
-import { tap } from 'rxjs/internal/operators/tap';
+import { map } from 'rxjs/operators';
 
 declare var ace: any;
 
@@ -30,26 +28,7 @@ export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
   @Output()
   errors: EventEmitter<any> = new EventEmitter();
 
-  editor: Observable<any> = getOrAppendAsyncScript('ace-editor.js').pipe(
-    map(() =>
-      ace.edit(this.editorElementReference.nativeElement, {
-        highlightActiveLine: true,
-        highlightSelectedWord: true,
-        minLines: 30,
-        maxLines: Infinity,
-        tabSize: 2,
-        theme: 'ace/theme/dracula'
-      })
-    ),
-    tap(editor => {
-      editor.getSession().on('changeAnnotation', change => {
-        if (change != null && change.type === 'error') {
-          this.errors.next(change);
-        }
-      });
-    }),
-    share()
-  );
+  _editor: any;
 
   ngOnDestroy(): void {
     this.errors.complete();
@@ -57,13 +36,13 @@ export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
 
   @Input()
   set language(value: string) {
-    this.editor.subscribe(editor => {
+    this.withEditor(editor => {
       editor.getSession().setMode('ace/mode/' + value);
     });
   }
 
   registerOnChange(fn: any): void {
-    this.editor.subscribe(editor => {
+    this.withEditor(editor => {
       editor.on('change', () => {
         fn(editor.getValue());
       });
@@ -71,21 +50,52 @@ export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
   }
 
   registerOnTouched(fn: any): void {
-    this.editor.subscribe(editor => {
+    this.withEditor(editor => {
       editor.on('blur', fn);
     });
   }
 
   setDisabledState(disabled: boolean): void {
-    this.editor.subscribe(editor => {
+    this.withEditor(editor => {
       editor.setReadOnly(disabled);
+      editor.setHighlightActiveLine(!disabled);
+      editor.setHighlightSelectedWord(!disabled);
     });
   }
 
   writeValue(value: any): void {
-    this.editor.subscribe(editor => {
+    this.withEditor(editor => {
       editor.setValue(value);
       editor.clearSelection();
     });
+  }
+
+  private withEditor(callback: (editor: any) => void): void {
+    if (this._editor != null) {
+      callback(this._editor);
+    } else {
+      getOrAppendAsyncScript('ace-editor.js')
+        .pipe(
+          map(() =>
+            ace.edit(this.editorElementReference.nativeElement, {
+              highlightActiveLine: true,
+              highlightSelectedWord: true,
+              minLines: 30,
+              maxLines: Infinity,
+              tabSize: 2,
+              theme: 'ace/theme/dracula'
+            })
+          )
+        )
+        .subscribe(editor => {
+          editor.getSession().on('changeAnnotation', change => {
+            if (change != null && change.type === 'error') {
+              this.errors.next(change);
+            }
+          });
+          this._editor = editor;
+          callback(editor);
+        });
+    }
   }
 }

@@ -7,12 +7,12 @@ import {
 } from '@angular/core';
 import { IngestPipelineScript } from '../../model/script';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { isEqual } from 'lodash';
 
 @Component({
   selector: 'script-form',
   templateUrl: './script-form.component.html',
-  styleUrls: ['./script-form.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./script-form.component.less']
 })
 export class ScriptFormComponent {
   formGroup: FormGroup = new FormGroup({
@@ -28,7 +28,9 @@ export class ScriptFormComponent {
 
   @Input()
   set script(value: IngestPipelineScript) {
-    this.formGroup.patchValue(value);
+    if (!isEqual(value, this.formGroup.value)) {
+      this.formGroup.patchValue(value);
+    }
   }
 
   @Input()

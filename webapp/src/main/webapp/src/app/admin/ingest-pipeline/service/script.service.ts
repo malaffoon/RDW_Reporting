@@ -12,25 +12,13 @@ function toIngestPipelineScript(serverScript: any): IngestPipelineScript {
   return serverScript;
 }
 
-const StubScripts: IngestPipelineScript[] = [
-  {
-    id: 1,
-    name: 'Script 1',
-    language: 'groovy',
-    body: `
-def scriptName = 'Script 1'
-`,
-    index: 0
-  },
-  {
-    id: 2,
-    name: 'Script 2',
-    language: 'groovy',
-    body: `
-def scriptName = 'Script 2'
-`
-  }
-];
+const StubScripts: IngestPipelineScript[] = [1, 2, 3, 4, 5].map(id => ({
+  id,
+  name: `Script ${id}`,
+  body: `def scriptId = ${id}\n`,
+  language: 'groovy',
+  index: id < 3 ? id : undefined
+}));
 
 @Injectable({
   providedIn: 'root'
