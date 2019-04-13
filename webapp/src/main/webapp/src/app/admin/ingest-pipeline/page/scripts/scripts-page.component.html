@@ -1,0 +1,13 @@
+<h3>Ingest Pipeline</h3>
+<h4>Active Scripts</h4>
+<ul>
+  <li *ngFor="let script of (activeScripts | async)">
+    <a [routerLink]="[script.id]">{{ script.name }}</a>
+  </li>
+</ul>
+<h4>Inactive Scripts</h4>
+<ul>
+  <li *ngFor="let script of (inactiveScripts | async)">
+    <a [routerLink]="[script.id]">{{ script.name }}</a>
+  </li>
+</ul>

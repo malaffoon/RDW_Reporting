@@ -1,0 +1,21 @@
+@spacing-unit: 15px;
+
+.controls {
+  margin-bottom: @spacing-unit;
+  display: flex;
+  align-items: flex-end;
+  > :first-child {
+    flex: 1;
+  }
+  > :not(:first-child) {
+    margin-left: @spacing-unit;
+  }
+}
+
+:host {
+  ::ng-deep {
+    .ace_editor {
+      border-radius: 4px;
+    }
+  }
+}
