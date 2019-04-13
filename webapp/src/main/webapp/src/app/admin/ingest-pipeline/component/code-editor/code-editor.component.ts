@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
   ViewChild
 } from '@angular/core';
@@ -22,7 +23,7 @@ declare var ace: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [controlValueAccessorProvider(CodeEditorComponent)]
 })
-export class CodeEditorComponent implements ControlValueAccessor {
+export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
   @ViewChild('editor')
   editorElementReference: ElementRef;
 

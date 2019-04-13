@@ -14,6 +14,8 @@ import { ScriptsStore } from '../../store/scripts.store';
 export class ScriptsPageComponent implements OnInit {
   activeScripts: Observable<IngestPipelineScript[]>;
   inactiveScripts: Observable<IngestPipelineScript[]>;
+  scripts: Observable<IngestPipelineScript[]>;
+  selectedScript: IngestPipelineScript;
 
   constructor(
     private ingestPipelineService: ScriptService,
@@ -21,28 +23,34 @@ export class ScriptsPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activeScripts = this.ingestPipelineScriptStore
-      .getState()
-      .pipe(
-        map(scripts =>
-          scripts
-            .filter(({ index }) => index != null)
-            .sort(ordering(byNumber).on(({ index }) => index).compare)
-        )
-      );
+    // this.activeScripts = this.ingestPipelineScriptStore
+    //   .getState()
+    //   .pipe(
+    //     map(scripts =>
+    //       scripts
+    //         .filter(({ index }) => index != null)
+    //         .sort(ordering(byNumber).on(({ index }) => index).compare)
+    //     )
+    //   );
+    //
+    // this.inactiveScripts = this.ingestPipelineScriptStore
+    //   .getState()
+    //   .pipe(
+    //     map(scripts =>
+    //       scripts
+    //         .filter(({ index }) => index == null)
+    //         .sort(ordering(byNumber).on(({ id }) => id).compare)
+    //     )
+    //   );
 
-    this.inactiveScripts = this.ingestPipelineScriptStore
-      .getState()
-      .pipe(
-        map(scripts =>
-          scripts
-            .filter(({ index }) => index == null)
-            .sort(ordering(byNumber).on(({ id }) => id).compare)
-        )
-      );
+    this.scripts = this.ingestPipelineScriptStore.getState();
 
     this.ingestPipelineService.getScripts().subscribe(scripts => {
       this.ingestPipelineScriptStore.setState(scripts);
     });
+  }
+
+  onScriptSelected(script: IngestPipelineScript): void {
+    this.selectedScript = script;
   }
 }

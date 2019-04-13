@@ -1,19 +1,25 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <div class="controls">
-    <div class="form-group" *ngIf="formGroup.get('name') as control">
-      <label for="name">Name</label>
-      <input
-        id="name"
-        type="text"
-        class="form-control"
-        [formControl]="control"
-      />
-    </div>
-    <div class="form-group">
-      <button type="submit" class="btn btn-primary">
-        Save
-      </button>
-    </div>
+    <ng-container *ngIf="formGroup.disabled; else writable">
+      <h4>{{ formGroup.get('name').value }}</h4>
+    </ng-container>
+    <ng-template #writable>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          [formControl]="formGroup.get('name')"
+        />
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">
+          Save
+        </button>
+      </div>
+    </ng-template>
   </div>
 
   <code-editor
@@ -22,6 +28,3 @@
     [formControl]="formGroup.get('body')"
   ></code-editor>
 </form>
-
-events:
-{{ editor.errors | async | json }}

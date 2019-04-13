@@ -1,0 +1,23 @@
+:host {
+  ::ng-deep {
+    .ui-tree {
+      background-color: transparent;
+      border: none;
+      .ui-treenode-droppoint {
+        height: 6px;
+      }
+      .ui-tree-container > p-treenode > .ui-treenode-droppoint {
+        display: none;
+      }
+      .ui-treenode > .ui-treenode-content {
+        outline: none;
+        > .ui-treenode-label {
+          padding: 3px 15px;
+          &.ui-state-highlight {
+            background-color: #282a36;
+          }
+        }
+      }
+    }
+  }
+}
