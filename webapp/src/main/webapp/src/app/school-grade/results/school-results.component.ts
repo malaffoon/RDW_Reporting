@@ -305,7 +305,6 @@ export class SchoolResultsComponent implements OnInit {
     this.csvExportService.exportAssessmentExams(
       this.assessmentsComponent.assessmentExams,
       this.assessmentsComponent.clientFilterBy,
-      this.filterOptions.ethnicities,
       `${this._currentSchool.name}-${gradeLabel}-${new Date().toDateString()}`
     );
   }

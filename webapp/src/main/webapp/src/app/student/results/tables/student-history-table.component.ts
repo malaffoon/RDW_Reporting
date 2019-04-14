@@ -2,17 +2,57 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MenuActionBuilder } from '../../../assessments/menu/menu-action.builder';
 import { StudentHistoryExamWrapper } from '../../model/student-history-exam-wrapper.model';
 import { Student } from '../../model/student.model';
-import { PopupMenuAction } from '../../../shared/menu/popup-menu-action.model';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { InstructionalResourcesService } from '../../../shared/service/instructional-resources.service';
 import { InstructionalResource } from '../../../shared/model/instructional-resource';
-import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { chunk } from 'lodash';
 import { StudentResultsFilterService } from '../student-results-filter.service';
-import { StudentPipe } from '../../../shared/format/student.pipe';
-import { OrderingService } from '../../../shared/ordering/ordering.service';
-import { Assessment } from '../../../assessments/model/assessment';
+import { ScoreType } from '../../../exam/model/score-statistics';
+import { Option } from '../../../shared/form/option';
+import { SubjectDefinition } from '../../../subject/subject';
+
+function createScoreTypeOptions(
+  subjectDefinition: SubjectDefinition,
+  translateService: TranslateService
+): Option[] {
+  const options = [
+    {
+      value: 'Overall',
+      text: translateService.instant('common.buttons.display-overall'),
+      analyticsProperties: {
+        label: 'Score Type: Overall'
+      }
+    }
+  ];
+  if (subjectDefinition.alternateScore != null) {
+    options.push({
+      value: 'Alternate',
+      text: translateService.instant(
+        `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.alt-score.name`
+      ),
+      analyticsProperties: {
+        label: 'Score Type: Alternate'
+      }
+    });
+  }
+  if (subjectDefinition.claimScore != null) {
+    options.push({
+      value: 'Claim',
+      text: translateService.instant(
+        `subject.${subjectDefinition.subject}.asmt-type.${
+          subjectDefinition.assessmentType
+        }.claim-score.name`
+      ),
+      analyticsProperties: {
+        label: 'Score Type: Claim'
+      }
+    });
+  }
+  return options;
+}
 
 @Component({
   selector: 'student-history-table',
@@ -28,11 +68,9 @@ export class StudentHistoryTableComponent implements OnInit {
   @Input()
   subject: string;
 
-  assessmentType: string;
+  @Input()
+  subjectDefinitions: SubjectDefinition[];
 
-  studentHistoryCards: StudentHistoryExamWrapper[] = [];
-
-  columns: Column[] = [];
   /**
    * Represents the cutoff year for when there is no item level response data available.
    * If there are no exams that are after this school year, then disable the ability to go there and show proper message
@@ -41,48 +79,30 @@ export class StudentHistoryTableComponent implements OnInit {
   minimumItemDataYear: number;
 
   private originalExams: StudentHistoryExamWrapper[] = [];
-  viewState: 'overall' | 'claim' = 'overall';
+  scoreType: ScoreType = 'Overall';
   instructionalResourcesProvider: () => Observable<InstructionalResource[]>;
   selectedCardRowIndex: number;
   itemsPerRow: number = 3;
   rows: StudentHistoryExamWrapper[][] = [];
+  scoreTypeOptions: Option[] = [];
+  studentHistoryCards: StudentHistoryExamWrapper[] = [];
+
+  /**
+   * The selected card's subject definition
+   */
+  subjectDefinition: SubjectDefinition;
 
   constructor(
     private actionBuilder: MenuActionBuilder,
     private instructionalResourcesService: InstructionalResourcesService,
     private translateService: TranslateService,
-    private studentResultsFilterService: StudentResultsFilterService,
-    private studentPipe: StudentPipe,
-    private orderingService: OrderingService
+    private studentResultsFilterService: StudentResultsFilterService
   ) {}
 
   ngOnInit(): void {
+    // TODO this should be passed in
     this.studentResultsFilterService.filterChange.subscribe(() => {
       delete this.selectedCardRowIndex;
-    });
-
-    this.getClaimColumns(this.exams[0].assessment).subscribe(claimColumns => {
-      this.columns = [
-        new Column({ id: 'date', field: 'exam.date' }),
-        new Column({ id: 'assessment', field: 'assessment.label' }),
-        new Column({ id: 'school-year', field: 'exam.schoolYear' }),
-        new Column({ id: 'school', field: 'exam.school.name' }),
-        new Column({ id: 'enrolled-grade', field: 'exam.enrolledGrade' }),
-        new Column({
-          id: 'status',
-          commonHeader: true,
-          field: 'exam.administrativeCondition',
-          overall: true
-        }),
-        new Column({ id: 'performance', field: 'exam.level', overall: true }),
-        new Column({
-          id: 'score',
-          commonHeader: true,
-          field: 'exam.score',
-          overall: true
-        }),
-        ...claimColumns
-      ];
     });
   }
 
@@ -96,45 +116,6 @@ export class StudentHistoryTableComponent implements OnInit {
     this.originalExams = Array.from(exams);
     this.studentHistoryCards = this.getLatestStudentHistoryCards();
     this.rows = chunk(this.studentHistoryCards, this.itemsPerRow);
-  }
-
-  /**
-   * Get table row menu actions.
-   *
-   * @returns {PopupMenuAction[]} The table row menu actions
-   */
-  get actions(): PopupMenuAction[] {
-    if (this.assessmentType === 'sum') {
-      const menuAction: PopupMenuAction = new PopupMenuAction();
-      menuAction.displayName = () => {
-        return this.translateService.instant('common.menus.responses', {
-          name: this.studentPipe.transform(this.student, true)
-        });
-      };
-      menuAction.tooltip = () => {
-        return this.translateService.instant(
-          'common.messages.no-responses-for-summative-exams'
-        );
-      };
-      menuAction.isDisabled = () => {
-        return true;
-      };
-      return [menuAction];
-    }
-
-    let builder: MenuActionBuilder = this.actionBuilder
-      .newActions()
-      .withResponses(
-        x => x.exam.id,
-        () => this.student,
-        x => x.exam.schoolYear > this.minimumItemDataYear
-      );
-    if (this.assessmentType === 'iab') {
-      builder = builder.withShowResources(
-        this.loadAssessmentInstructionalResources.bind(this)
-      );
-    }
-    return builder.build();
   }
 
   private updateSelectedCardRowIndex(): void {
@@ -152,14 +133,24 @@ export class StudentHistoryTableComponent implements OnInit {
     );
   }
 
+  // TODO why is this here and not in the "parent" component???
   onCardSelection(event: StudentHistoryExamWrapper) {
     const prevSelected = event.selected;
-    this.assessmentType = event.assessment.type;
+    this.subjectDefinition = this.subjectDefinitions.find(
+      ({ subject, assessmentType }) =>
+        subject === event.assessment.subject &&
+        assessmentType === event.assessment.type
+    );
+    this.scoreTypeOptions = createScoreTypeOptions(
+      this.subjectDefinition,
+      this.translateService
+    );
+
     this.studentHistoryCards.forEach(
       studentHistoryCard => (studentHistoryCard.selected = false)
     );
     event.selected = !prevSelected;
-    this.viewState = 'overall';
+    this.scoreType = 'Overall';
 
     this._exams = Array.from(this.originalExams);
     this._exams = this.exams.filter(
@@ -167,58 +158,6 @@ export class StudentHistoryTableComponent implements OnInit {
     );
 
     this.updateSelectedCardRowIndex();
-
-    this.getClaimColumns(event.assessment).subscribe(claimColumns => {
-      // build the columns based off the selected assessment since it impacts the claim columns used
-      this.columns = [
-        new Column({ id: 'date', field: 'exam.date' }),
-        new Column({ id: 'assessment', field: 'assessment.label' }),
-        new Column({ id: 'school-year', field: 'exam.schoolYear' }),
-        new Column({ id: 'school', field: 'exam.school.name' }),
-        new Column({ id: 'enrolled-grade', field: 'exam.enrolledGrade' }),
-        new Column({
-          id: 'status',
-          commonHeader: true,
-          field: 'exam.administrativeCondition',
-          overall: true
-        }),
-        new Column({ id: 'performance', field: 'exam.level', overall: true }),
-        new Column({
-          id: 'score',
-          commonHeader: true,
-          field: 'exam.score',
-          overall: true
-        }),
-        ...claimColumns
-      ];
-    });
-  }
-
-  loadInstructionalResources(
-    studentHistoryExam: StudentHistoryExamWrapper
-  ): void {
-    const exam = studentHistoryExam.exam;
-    this.instructionalResourcesProvider = () =>
-      this.instructionalResourcesService
-        .getInstructionalResources(
-          studentHistoryExam.assessment.id,
-          exam.school.id
-        )
-        .pipe(
-          map(resources => resources.getResourcesByPerformance(exam.level))
-        );
-  }
-
-  loadAssessmentInstructionalResources(
-    studentHistoryExam: StudentHistoryExamWrapper
-  ): Observable<InstructionalResource[]> {
-    const exam = studentHistoryExam.exam;
-    return this.instructionalResourcesService
-      .getInstructionalResources(
-        studentHistoryExam.assessment.id,
-        exam.school.id
-      )
-      .pipe(map(resources => resources.getResourcesByPerformance(0)));
   }
 
   getLatestStudentHistoryCards(): StudentHistoryExamWrapper[] {
@@ -236,74 +175,12 @@ export class StudentHistoryTableComponent implements OnInit {
     });
 
     // deselect all cards
-    // TODO consider maintaining selected state accross filter application
+    // TODO consider maintaining selected state across filter application
     returnExams.forEach(
       (exam: StudentHistoryExamWrapper) => (exam.selected = false)
     );
     delete this.selectedCardRowIndex;
 
     return returnExams;
-  }
-
-  private hasClaimColumns(): boolean {
-    return (
-      this.exams !== undefined &&
-      this.exams.length &&
-      this.exams[0].assessment.claimCodes !== undefined
-    );
-  }
-
-  private getClaimColumns(assessment: Assessment): Observable<Column[]> {
-    if (!this.hasClaimColumns()) {
-      return of([]);
-    }
-
-    const columns: Column[] = assessment.claimCodes.map(
-      (claim: string, index: number) => {
-        return new Column({
-          id: 'claim',
-          field: `exam.claimScaleScores.${index}.level`,
-          claim: claim,
-          index: index
-        });
-      }
-    );
-
-    return this.orderingService
-      .getScorableClaimOrdering(assessment.subject, assessment.type)
-      .pipe(
-        map(ordering =>
-          columns.sort(ordering.on((column: Column) => column.claim).compare)
-        )
-      );
-  }
-}
-
-class Column {
-  id: string;
-  commonHeader: boolean;
-  field: string;
-  overall: boolean;
-  claim?: string;
-  index?: number;
-
-  constructor({
-    id,
-    field,
-    commonHeader = false,
-    overall = false,
-    claim = '',
-    index = -1
-  }) {
-    this.id = id;
-    this.commonHeader = commonHeader;
-    this.field = field;
-    this.overall = overall;
-    if (claim) {
-      this.claim = claim;
-    }
-    if (index >= 0) {
-      this.index = index;
-    }
   }
 }

@@ -10,18 +10,13 @@ import { range } from '../shared/support/support';
 
 const ServiceRoute = ReportingServiceRoute;
 
-const MathOrganizationalClaims = ['1', '2', '3', '4'];
-const ELAOrganizationalClaims = ['1-LT', '1-IT', '2-W', '3-L', '3-S', '4-CR'];
-const OrganizationalClaimsBySubject: Map<string, string[]> = new Map([
-  ['Math', MathOrganizationalClaims],
-  ['ELA', ELAOrganizationalClaims]
-]);
-
 function toSubjectDefinition(serverDefinition: any): SubjectDefinition {
   const definition: any = {
     subject: serverDefinition.subjectCode,
     assessmentType: serverDefinition.asmtTypeCode,
     percentiles: serverDefinition.asmtTypeCode === 'iab',
+    targetReportsEnabled: serverDefinition.targetReport,
+    printedReportsEnabled: serverDefinition.printedReport,
     performanceLevels: range(1, serverDefinition.performanceLevelCount),
     performanceLevelCount: serverDefinition.performanceLevelCount,
     performanceLevelStandardCutoff:

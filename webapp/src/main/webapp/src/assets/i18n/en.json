@@ -53,7 +53,7 @@
     },
     "heading": "Custom Aggregate Report",
     "preview": "This table does not contain actual data and is for preview purposes only.",
-    "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\"",
+    "subheading": "Select the attributes to include in the report. Then click \"Create Report.\"",
     "field": {
       "report-type-label": "Report Type",
       "report-type-info": "TODO",
@@ -132,7 +132,7 @@
       "report-type-heading": "Report Type",
       "review-heading": "Report Review",
       "preview-heading": "Report Preview",
-      "preview-heading-subtext": "Select the Generate Report button to view the actual report.",
+      "preview-heading-subtext": "Select the Create Report button to view the actual report.",
       "custom-subgroup": {
         "heading": "Custom Subgroups",
         "description": "Create multiple custom subgroups by selecting a combination of attributes below and clicking \"Create Subgroup.\" Each custom subgroup will represent a row in your report. The Report Preview section below shows how it will look.",
@@ -140,7 +140,7 @@
         "list-label": "Custom Subgroups"
       }
     },
-    "submit": "Generate Report",
+    "submit": "Create Report",
     "tab": {
       "subgroup-and-filter": "Subgroups and Advanced Filters",
       "custom-subgroup": "Customize Subgroups"
@@ -227,6 +227,7 @@
   },
   "assessment-results": {
     "distractor-analysis-instructions": "The shaded responses below indicate the correct answer for each item.",
+    "hide-results": "Hide Results",
     "no-distractor-analysis": "Key / Distractor Analysis is not available for assessments administered prior to 2017-18 school year.",
     "no-results-by-item": "Results By Item is not available for assessments administered prior to 2017-18 school year.",
     "no-writing-trait-scores": "Writing trait scores are not available for assessments administered prior to 2017-18 school year.",
@@ -234,6 +235,7 @@
     "select-view": "Select View",
     "session-unknown": "Not provided",
     "sessions-title": "Sessions",
+    "show-results": "Show Results",
     "transfer-student-instructions": "The highlighted row(s) indicate test results from a previous school.",
     "view": {
       "ByItem": "Results By Item",
@@ -259,10 +261,10 @@
     "result": "Result",
     "results": "Results",
     "results-label": "Number of Test Results",
-    "scale-score": "Average Scale Score and Error Band",
+    "scale-score": "Average Scale Score<br/> and Error Band",
     "scale-score-info": "Average scale score for the selected group of students and an error band based on the Standard Error of the Mean (SEM) associated with that score. Test scores are estimates of student achievement and come with a certain amount of measurement error. See the Interpretive Guide for additional information about scale scores and measurement error.",
-    "student-score-distribution": "Student Score Distribution",
-    "student-claim-distribution": "Student Claim Score Distribution",
+    "overall-score-distribution": "Student Score Distribution",
+    "other-score-distribution": "Student {{scoreName}} Score Distribution",
     "title": "Results Summary"
   },
   "common": {
@@ -281,8 +283,6 @@
       "search": "Search",
       "select": "Select",
       "show": "Show",
-      "show-more": "Show more",
-      "show-less": "Show less",
       "update": "Update"
     },
     "administration-condition": {
@@ -671,8 +671,10 @@
         "no-instruct-found": "Resources not yet available"
       },
       "assessment-exam-columns": {
+        "alternateScaleScoreAndStandardError": "{{name}}<br/> Scale Score / Error Band",
+        "alternateScaleScoreLevel": "{{name}}<br/> Level",
         "alternateScaleScore": "{{name}} Scale Score",
-        "alternateScaleScoreLevel": "{{name}} Level",
+        "alternateScaleScoreStandardError": "{{name}} Standard Error",
         "date": "Date",
         "grade": "Enrolled Grade",
         "iab": {
@@ -974,6 +976,10 @@
         "button": "Embargo",
         "description": "Manage embargoes of summative results."
       },
+      "ingest-pipeline": {
+        "button": "Ingest Pipeline",
+        "description": "Manage ingest pipeline transformation scripts"
+      },
       "instructional-resources": {
         "button": "Instructional Resources",
         "description": "Upload links to instructional resources in the system."
@@ -1122,7 +1128,7 @@
       "save-query-button-label": "Save Query",
       "submit": {
         "failure": "Error creating export. Please try again.",
-        "label": "Export Results",
+        "label": "Create Report",
         "success-html": "Creating export."
       }
     },

@@ -8,38 +8,29 @@ import { Angular2CsvProvider } from './angular-csv.provider';
 import { AssessmentItem } from '../assessments/model/assessment-item.model';
 import { DynamicItemField } from '../assessments/model/item-point-field.model';
 import { SchoolYearPipe } from '../shared/format/school-year.pipe';
-import { Utils } from '../shared/support/support';
+import { removeHtml, Utils } from '../shared/support/support';
 import { WritingTraitAggregate } from '../assessments/model/writing-trait-aggregate.model';
 import { TranslateDatePipe } from '../shared/i18n/translate-date.pipe';
 import { TranslateNumberPipe } from '../shared/i18n/translate-number.pipe';
-import { ApplicationSettingsService } from '../app-settings.service';
 import {
   AggregateTargetScoreRow,
   TargetReportingLevel
 } from '../assessments/model/aggregate-target-score-row.model';
 import { SubjectDefinition } from '../subject/subject';
+import { Filter } from '../exam/model/filter';
 
 @Injectable()
 export class CsvBuilder {
   private columns: CsvColumn[] = [];
   private filename = 'export';
-  private showElas: boolean = false;
-  private showLep: boolean = false;
 
   constructor(
     private angular2csv: Angular2CsvProvider,
     private translateService: TranslateService,
     private datePipe: TranslateDatePipe,
     private schoolYearPipe: SchoolYearPipe,
-    private numberPipe: TranslateNumberPipe,
-    private applicationSettingsService: ApplicationSettingsService
-  ) {
-    // TODO technically there can be a race condition here.
-    applicationSettingsService.getSettings().subscribe(settings => {
-      this.showElas = settings.elasEnabled;
-      this.showLep = settings.lepEnabled;
-    });
-  }
+    private numberPipe: TranslateNumberPipe
+  ) {}
 
   /**
    * Create a new builder instance with empty state.
@@ -52,8 +43,7 @@ export class CsvBuilder {
       this.translateService,
       this.datePipe,
       this.schoolYearPipe,
-      this.numberPipe,
-      this.applicationSettingsService
+      this.numberPipe
     );
   }
 
@@ -77,15 +67,15 @@ export class CsvBuilder {
   /**
    * General method for adding a column to the output CSV.
    *
-   * @param labelKey        The column header label
+   * @param label           The column header label
    * @param dataProvider    The column data provider
    * @returns {CsvBuilder}  This builder
    */
-  withColumn(labelKey: string, dataProvider: (item: any) => any) {
-    const column = new CsvColumn();
-    column.label = labelKey;
-    column.dataProvider = dataProvider;
-    this.columns.push(column);
+  withColumn(label: string, dataProvider: (item: any) => any) {
+    this.columns.push({
+      label,
+      dataProvider
+    });
     return this;
   }
 
@@ -304,18 +294,86 @@ export class CsvBuilder {
     );
   }
 
-  withClaimScores(
+  withAlternateScores(
     subject: string,
-    claims: string[],
+    scoreCodes: string[],
     getAssessment: (item: any) => Assessment,
     getExam: (item: any) => Exam
   ) {
-    claims.forEach((claim, index) => {
+    const subjectName = this.translateService.instant(
+      `subject.${subject}.name`
+    );
+
+    scoreCodes.forEach((scoreCode, index) => {
+      const name = this.translateService.instant(
+        `subject.${subject}.alt.${scoreCode}.name`
+      );
+
+      this.withColumn(
+        `${subjectName}: ${removeHtml(
+          this.translateService.instant(
+            'common.results.assessment-exam-columns.alternateScaleScoreLevel',
+            { name }
+          )
+        )}`,
+        item => {
+          const exam: Exam = getExam(item);
+          if (!exam || !exam.alternateScaleScores[index].level) {
+            return '';
+          }
+          const assessment = getAssessment(item);
+          const level = exam.alternateScaleScores[index].level;
+          return this.translateService.instant(
+            level
+              ? `subject.${assessment.subject}.asmt-type.${
+                  assessment.type
+                }.alt-score.level.${level}.name`
+              : 'common.missing'
+          );
+        }
+      )
+        .withColumn(
+          `${subjectName}: ${this.translateService.instant(
+            'common.results.assessment-exam-columns.alternateScaleScore',
+            { name }
+          )}`,
+          item => {
+            const exam: Exam = getExam(item);
+            if (!exam || !exam.alternateScaleScores[index].score) {
+              return '';
+            }
+            return exam.alternateScaleScores[index].score;
+          }
+        )
+        .withColumn(
+          `${subjectName}: ${this.translateService.instant(
+            'common.results.assessment-exam-columns.alternateScaleScoreStandardError',
+            { name }
+          )}`,
+          item => {
+            const exam: Exam = getExam(item);
+            if (!exam || !exam.alternateScaleScores[index].score) {
+              return '';
+            }
+            return exam.alternateScaleScores[index].standardError;
+          }
+        );
+    });
+    return this;
+  }
+
+  withClaimScores(
+    subject: string,
+    scoreCodes: string[],
+    getAssessment: (item: any) => Assessment,
+    getExam: (item: any) => Exam
+  ) {
+    scoreCodes.forEach((scoreCode, index) => {
       this.withColumn(
         `${this.translateService.instant(
           `subject.${subject}.name`
         )}: ${this.translateService.instant(
-          `subject.${subject}.claim.${claim}.name`
+          `subject.${subject}.claim.${scoreCode}.name`
         )}`,
         item => {
           const exam: Exam = getExam(item);
@@ -363,7 +421,7 @@ export class CsvBuilder {
     );
   }
 
-  with504Plan(getExam: (item: any) => Exam) {
+  withSection504(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.504-plan'),
       item => {
@@ -377,7 +435,7 @@ export class CsvBuilder {
     );
   }
 
-  withIep(getExam: (item: any) => Exam) {
+  withIndividualEducationPlan(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.iep'),
       item => {
@@ -391,7 +449,7 @@ export class CsvBuilder {
     );
   }
 
-  withLimitedEnglish(getExam: (item: any) => Exam) {
+  withLimitedEnglishProficiency(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.limited-english'),
       item => {
@@ -406,7 +464,7 @@ export class CsvBuilder {
     );
   }
 
-  withElas(getExam: (item: any) => Exam) {
+  withEnglishLanguageAcquisitionStatus(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.elas'),
       item => {
@@ -420,7 +478,7 @@ export class CsvBuilder {
     );
   }
 
-  withLanguage(getExam: (item: any) => Exam) {
+  withPrimaryLanguage(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.language'),
       item => {
@@ -434,7 +492,7 @@ export class CsvBuilder {
     );
   }
 
-  withLanguageCode(getExam: (item: any) => Exam) {
+  withPrimaryLanguageCode(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.language-code'),
       item => {
@@ -444,7 +502,7 @@ export class CsvBuilder {
     );
   }
 
-  withMilitaryConnectedCode(getExam: (item: any) => Exam) {
+  withMilitaryStudentIdentifier(getExam: (item: any) => Exam) {
     return this.withColumn(
       this.translateService.instant('csv-builder.military-connected-code'),
       item => {
@@ -467,9 +525,8 @@ export class CsvBuilder {
           getExam(item).student.ethnicityCodes.some(code => code == ethnicity)
         ) {
           return this.getPolarTranslation(1);
-        } else {
-          return '';
         }
+        return '';
       });
     }
     return this;
@@ -735,9 +792,7 @@ export class CsvBuilder {
           const value = showAsPercent
             ? getWritingTraitAggregate(item).percents[i]
             : getWritingTraitAggregate(item).numbers[i];
-          return Utils.isNullOrUndefined(value)
-            ? ''
-            : this.numberAsString(value, showAsPercent);
+          return value == null ? '' : this.numberAsString(value, showAsPercent);
         }
       );
     }
@@ -771,23 +826,71 @@ export class CsvBuilder {
     return this.withExamDate(getExam).withExamSession(getExam);
   }
 
-  withStudentContext(getExam: (item: any) => Exam, ethnicities) {
-    let studentContext = this.withMigrantStatus(getExam)
-      .with504Plan(getExam)
-      .withIep(getExam);
-
-    if (this.showLep) {
-      studentContext = studentContext.withLimitedEnglish(getExam);
-    }
-    if (this.showElas) {
-      studentContext = studentContext.withElas(getExam);
+  withStudentContext(
+    getExam: (item: any) => Exam,
+    getStudent: (item: any) => Student,
+    studentFilters: Filter[]
+  ) {
+    const genderFilter = studentFilters.find(({ id }) => id === 'Gender');
+    if (genderFilter != null) {
+      this.withGender(getStudent);
     }
 
-    studentContext = studentContext
-      .withLanguage(getExam)
-      .withMilitaryConnectedCode(getExam)
-      .withEthnicity(getExam, ethnicities);
-    return studentContext;
+    const migrantStatusFilter = studentFilters.find(
+      ({ id }) => id === 'MigrantStatus'
+    );
+    if (migrantStatusFilter != null) {
+      this.withMigrantStatus(getExam);
+    }
+
+    const section504Filter = studentFilters.find(
+      ({ id }) => id === 'Section504'
+    );
+    if (section504Filter != null) {
+      this.withSection504(getExam);
+    }
+
+    const iepFilter = studentFilters.find(
+      ({ id }) => id === 'IndividualEducationPlan'
+    );
+    if (iepFilter != null) {
+      this.withIndividualEducationPlan(getExam);
+    }
+
+    const limitedEnglishFilter = studentFilters.find(
+      ({ id }) => id === 'LimitedEnglishProficiency'
+    );
+    if (limitedEnglishFilter != null) {
+      this.withLimitedEnglishProficiency(getExam);
+    }
+
+    const englishLearnersFilter = studentFilters.find(
+      ({ id }) => id === 'EnglishLanguageAcquisitionStatus'
+    );
+    if (englishLearnersFilter != null) {
+      this.withEnglishLanguageAcquisitionStatus(getExam);
+    }
+
+    const primaryLanguageFilter = studentFilters.find(
+      ({ id }) => id === 'PrimaryLanguage'
+    );
+    if (primaryLanguageFilter != null) {
+      this.withPrimaryLanguage(getExam);
+    }
+
+    const militaryStudentIdentifierFilter = studentFilters.find(
+      ({ id }) => id === 'MilitaryStudentIdentifier'
+    );
+    if (militaryStudentIdentifierFilter != null) {
+      this.withMilitaryStudentIdentifier(getExam);
+    }
+
+    const ethnicityFilter = studentFilters.find(({ id }) => id === 'Ethnicity');
+    if (ethnicityFilter != null) {
+      this.withEthnicity(getExam, ethnicityFilter.values);
+    }
+
+    return this;
   }
 
   private numberAsString(value: Number, showAsPercent: boolean) {

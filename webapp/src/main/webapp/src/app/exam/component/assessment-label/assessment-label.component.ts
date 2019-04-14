@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { GradeCode } from '../../../shared/enum/grade-code.enum';
-import { ColorService } from '../../../shared/color.service';
+import { gradeColor } from '../../../shared/colors';
 
 @Component({
   selector: 'assessment-label',
@@ -14,11 +13,9 @@ export class AssessmentLabelComponent {
   _gradeCode: string;
   _color: string;
 
-  constructor(private colorService: ColorService) {}
-
   @Input()
   set gradeCode(value: string) {
     this._gradeCode = value;
-    this._color = this.colorService.getColor(GradeCode.getIndex(value));
+    this._color = gradeColor(value);
   }
 }

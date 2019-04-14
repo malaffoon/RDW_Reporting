@@ -15,8 +15,6 @@ import { Assessment } from './model/assessment';
 import { ExamFilterOptionsService } from './filters/exam-filters/exam-filter-options.service';
 import { byGradeThenByName } from './assessment.comparator';
 import { AssessmentProvider } from './assessment-provider.interface';
-import { GradeCode } from '../shared/enum/grade-code.enum';
-import { ColorService } from '../shared/color.service';
 import { AssessmentExporter } from './assessment-exporter.interface';
 import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.service';
 import { share, tap } from 'rxjs/operators';
@@ -29,6 +27,7 @@ import {
 import { Exam } from './model/exam';
 import { AdvFiltersComponent } from './filters/adv-filters/adv-filters.component';
 import { AssessmentExamView } from './results/assessment-results.component';
+import { gradeColor } from '../shared/colors';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -41,6 +40,8 @@ import { AssessmentExamView } from './results/assessment-results.component';
   templateUrl: './assessments.component.html'
 })
 export class AssessmentsComponent implements OnChanges {
+  readonly gradeColor = gradeColor;
+
   /**
    * The array of asssessment exams to show.
    * @param value
@@ -212,7 +213,6 @@ export class AssessmentsComponent implements OnChanges {
   private _assessmentsByRouteParameters: Map<string, Assessment[]> = new Map();
 
   constructor(
-    public colorService: ColorService,
     private route: ActivatedRoute,
     applicationSettingsService: ApplicationSettingsService,
     filterOptionService: ExamFilterOptionsService,
@@ -269,10 +269,6 @@ export class AssessmentsComponent implements OnChanges {
           });
         });
     }
-  }
-
-  getGradeIdx(gradeCode: string): number {
-    return GradeCode.getIndex(gradeCode);
   }
 
   removeEthnicity(ethnicity) {

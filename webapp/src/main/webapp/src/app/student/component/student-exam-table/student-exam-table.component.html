@@ -1,0 +1,287 @@
+<p-table
+  [columns]="columns"
+  [value]="exams"
+  [autoLayout]="true"
+  dataKey="exam.id"
+  sortField="exam.date"
+  [sortOrder]="-1"
+  styleClass="table table-striped table-hover"
+>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th
+        *ngFor="let column of columns"
+        [pSortableColumn]="column.field"
+        [hidden]="column.scoreType != null && column.scoreType !== scoreType"
+        [ngSwitch]="column.id"
+        [ngClass]="{
+          'wrapping wrapping-max-width-sm': column.code
+        }"
+      >
+        <span
+          *ngSwitchCase="'performance'"
+          info-button
+          title="{{
+            'common.results.assessment-exam-columns.' +
+              subjectDefinition.assessmentType +
+              '.performance' | translate
+          }}"
+          content="{{
+            'subject.' +
+              subjectDefinition.subject +
+              '.' +
+              subjectDefinition.assessmentType +
+              '.performance-info' | translate
+          }}"
+        >
+        </span>
+
+        <div
+          *ngSwitchCase="'alternateScaleScoreLevel'"
+          innerHtml="{{
+            'common.results.assessment-exam-columns.' + column.id
+              | translate
+                : {
+                    name:
+                      'subject.' +
+                        subjectDefinition.subject +
+                        '.alt.' +
+                        column.code +
+                        '.name' | translate
+                  }
+          }}"
+        ></div>
+
+        <div
+          *ngSwitchCase="'alternateScaleScoreAndStandardError'"
+          innerHtml="{{
+            'common.results.assessment-exam-columns.' + column.id
+              | translate
+                : {
+                    name:
+                      'subject.' +
+                        subjectDefinition.subject +
+                        '.alt.' +
+                        column.code +
+                        '.name' | translate
+                  }
+          }}"
+        ></div>
+
+        <span *ngSwitchCase="'claim'">
+          {{
+            'subject.' +
+              subjectDefinition.subject +
+              '.claim.' +
+              column.code +
+              '.name' | translate
+          }}
+        </span>
+
+        <span
+          *ngSwitchCase="'score'"
+          info-button
+          title="{{
+            'common.results.assessment-exam-columns.' + column.id | translate
+          }}"
+          content="{{
+            'common.results.assessment-exam-columns.' + column.id + '-info'
+              | translate
+          }}"
+          placement="left"
+        >
+        </span>
+
+        <span *ngSwitchDefault>
+          <span *ngIf="!column.commonHeader">
+            {{ 'student-exam-history-table.columns.' + column.id | translate }}
+          </span>
+          <span
+            *ngIf="column.commonHeader"
+            info-button
+            title="{{
+              'common.results.assessment-exam-columns.' + column.id | translate
+            }}"
+            content="{{
+              'common.results.assessment-exam-columns.' + column.id + '-info'
+                | translate
+            }}"
+          >
+          </span>
+        </span>
+
+        <p-sortIcon [field]="column.field"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template
+    pTemplate="body"
+    let-rowData
+    let-i="rowIndex"
+    let-columns="columns"
+  >
+    <tr>
+      <td
+        *ngFor="let column of columns"
+        [hidden]="column.scoreType != null && column.scoreType !== scoreType"
+        [ngSwitch]="column.id"
+      >
+        <popup-menu
+          *ngSwitchCase="'date'"
+          [item]="rowData"
+          [actions]="actions"
+          [text]="rowData.exam.date | date"
+        ></popup-menu>
+
+        <div *ngSwitchCase="'assessment'">
+          {{ rowData.assessment.label }}
+        </div>
+
+        <div *ngSwitchCase="'school-year'">
+          {{ rowData.exam.schoolYear | schoolYear }}
+        </div>
+
+        <div *ngSwitchCase="'school'">
+          {{ rowData.exam.school.name }}
+        </div>
+
+        <div *ngSwitchCase="'enrolled-grade'">
+          {{
+            'common.enrolled-grade-label.' + rowData.exam.enrolledGrade
+              | translate
+          }}
+        </div>
+
+        <div *ngSwitchCase="'status'">
+          <span
+            *ngIf="rowData.exam.administrativeCondition"
+            class="label border-only maroon"
+            >{{
+              'common.administration-condition.' +
+                rowData.exam.administrativeCondition | translate
+            }}</span
+          >
+          <span
+            *ngIf="rowData.exam.completeness == 'Partial'"
+            class="label border-only maroon"
+            >{{ 'common.completeness.Partial' | translate }}</span
+          >
+        </div>
+
+        <div *ngSwitchCase="'performance'" class="text-center">
+          {{
+            rowData.exam.level
+              | optional
+                : ('subject.' +
+                    subjectDefinition.subject +
+                    '.asmt-type.' +
+                    subjectDefinition.assessmentType +
+                    '.level.' +
+                    rowData.exam.level +
+                    '.name'
+                    | translate)
+          }}
+
+          <button
+            *ngIf="subjectDefinition.assessmentType === 'iab'"
+            class="btn btn-borderless btn-xs icon-only pull-right"
+            angulartics2On="click"
+            angularticsAction="InstructionalResource"
+            angularticsCategory="AssessmentResults"
+            [disabled]="false"
+            [popover]="buttonPopover"
+            popoverTitle="{{
+              'common.results.assessment.instruct-button'
+                | translate
+                  : {
+                      level:
+                        (rowData.exam.level
+                          ? 'subject.' +
+                            subjectDefinition.subject +
+                            '.asmt-type.' +
+                            subjectDefinition.assessmentType +
+                            '.level.' +
+                            rowData.exam.level +
+                            '.name'
+                          : 'common.missing') | translate
+                    }
+            }}"
+            container="body"
+            (click)="loadInstructionalResources(rowData)"
+            [outsideClick]="true"
+          >
+            <i class="fa fa-book"></i>
+          </button>
+        </div>
+
+        <scale-score
+          *ngSwitchCase="'score'"
+          [score]="rowData.exam.score"
+          [standardError]="rowData.exam.standardError"
+        ></scale-score>
+
+        <div *ngSwitchCase="'alternateScaleScoreLevel'" class="text-center">
+          {{
+            rowData.exam.alternateScaleScores[column.index].level
+              | optional
+                : ('subject.' +
+                    subjectDefinition.subject +
+                    '.asmt-type.' +
+                    subjectDefinition.assessmentType +
+                    '.alt-score.level.' +
+                    rowData.exam.alternateScaleScores[column.index].level +
+                    '.name'
+                    | translate)
+          }}
+        </div>
+
+        <div *ngSwitchCase="'alternateScaleScoreAndStandardError'">
+          <scale-score
+            [score]="rowData.exam.alternateScaleScores[column.index].score"
+            [standardError]="
+              rowData.exam.alternateScaleScores[column.index].standardError
+            "
+          ></scale-score>
+        </div>
+
+        <div *ngSwitchCase="'claim'" class="text-center">
+          <ng-container
+            *ngIf="rowData.exam.claimScaleScores[column.index] as scaleScore"
+          >
+            <ng-container
+              *ngIf="scaleScore && scaleScore.level; else noClaimScaleScore"
+            >
+              {{
+                'subject.' +
+                  subjectDefinition.subject +
+                  '.asmt-type.' +
+                  subjectDefinition.assessmentType +
+                  '.claim-score.level.' +
+                  scaleScore.level +
+                  '.name' | translate
+              }}
+            </ng-container>
+            <ng-template #noClaimScaleScore>
+              {{ 'common.missing' | translate }}
+            </ng-template>
+          </ng-container>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length">
+        {{ 'common.messages.no-exams-matching-criteria' | translate }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<ng-template #buttonPopover>
+  <instructional-resource-popover
+    [provider]="instructionalResourcesProvider"
+  ></instructional-resource-popover>
+</ng-template>

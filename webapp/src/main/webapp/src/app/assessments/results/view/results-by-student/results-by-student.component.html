@@ -45,8 +45,9 @@
         >
         </span>
 
-        <div *ngSwitchCase="'alternateScaleScoreLevel'" class="text-left">
-          {{
+        <div
+          *ngSwitchCase="'alternateScaleScoreLevel'"
+          innerHtml="{{
             'common.results.assessment-exam-columns.' + column.id
               | translate
                 : {
@@ -54,14 +55,15 @@
                       'subject.' +
                         assessment.subject +
                         '.alt.' +
-                        assessment.alternateScoreCodes[column.index] +
+                        column.code +
                         '.name' | translate
                   }
-          }}
-        </div>
+          }}"
+        ></div>
 
-        <div *ngSwitchCase="'alternateScaleScore'">
-          {{
+        <div
+          *ngSwitchCase="'alternateScaleScoreAndStandardError'"
+          innerHtml="{{
             'common.results.assessment-exam-columns.' + column.id
               | translate
                 : {
@@ -69,11 +71,11 @@
                       'subject.' +
                         assessment.subject +
                         '.alt.' +
-                        assessment.alternateScoreCodes[column.index] +
+                        column.code +
                         '.name' | translate
                   }
-          }}
-        </div>
+          }}"
+        ></div>
 
         <span *ngSwitchCase="'claim'">
           {{
@@ -157,24 +159,22 @@
           >
         </div>
 
-        <div *ngSwitchCase="'alternateScaleScoreLevel'">
-          <span class="pull-left">
-            {{
-              exam.alternateScaleScores[column.index].level
-                | optional
-                  : ('subject.' +
-                      assessment.subject +
-                      '.asmt-type.' +
-                      assessment.type +
-                      '.alt-score.level.' +
-                      exam.alternateScaleScores[column.index].level +
-                      '.name'
-                      | translate)
-            }}
-          </span>
+        <div *ngSwitchCase="'alternateScaleScoreLevel'" class="text-center">
+          {{
+            exam.alternateScaleScores[column.index].level
+              | optional
+                : ('subject.' +
+                    assessment.subject +
+                    '.asmt-type.' +
+                    assessment.type +
+                    '.alt-score.level.' +
+                    exam.alternateScaleScores[column.index].level +
+                    '.name'
+                    | translate)
+          }}
         </div>
 
-        <div *ngSwitchCase="'alternateScaleScore'">
+        <div *ngSwitchCase="'alternateScaleScoreAndStandardError'">
           <scale-score
             [score]="exam.alternateScaleScores[column.index].score"
             [standardError]="

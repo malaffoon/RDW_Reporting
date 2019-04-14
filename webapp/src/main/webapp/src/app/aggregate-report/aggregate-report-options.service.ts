@@ -16,6 +16,18 @@ const assessmentTypeComparator = AssessmentTypeOrdering.compare;
 const booleanComparator = BooleanOrdering.compare;
 const completenessComparator = CompletenessOrdering.compare;
 
+function toSubject(serverSubject: any): Subject {
+  return serverSubject;
+}
+
+function toClaim(serverClaim: any): Claim {
+  return {
+    assessmentType: serverClaim.assessmentTypeCode,
+    subject: serverClaim.subjectCode,
+    code: serverClaim.code
+  };
+}
+
 /**
  * Service responsible for gathering aggregate report options from the server
  */
@@ -35,7 +47,7 @@ export class AggregateReportOptionsService {
             assessmentTypes: serverOptions.assessmentTypes
               .concat()
               .sort(assessmentTypeComparator),
-            claims: this.mapClaims(serverOptions.claims.concat()),
+            claims: serverOptions.claims.map(toClaim),
             completenesses: serverOptions.completenesses
               .concat()
               .sort(completenessComparator),
@@ -50,7 +62,7 @@ export class AggregateReportOptionsService {
               : ['CustomAggregate', 'Claim'],
             schoolYears: serverOptions.schoolYears.concat(),
             statewideReporter: serverOptions.statewideReporter,
-            subjects: this.mapSubjects(serverOptions.subjects.concat()),
+            subjects: serverOptions.subjects.map(toSubject),
             summativeAdministrationConditions: serverOptions.summativeAdministrationConditions.concat(),
             studentFilters: {
               economicDisadvantages: serverOptions.economicDisadvantages
@@ -76,28 +88,6 @@ export class AggregateReportOptionsService {
             }
           }
       )
-    );
-  }
-
-  mapClaims(claims: any[]): Claim[] {
-    return claims.map(
-      claim =>
-        <Claim>{
-          assessmentType: claim.assessmentTypeCode,
-          subject: claim.subjectCode,
-          code: claim.code
-        }
-    );
-  }
-
-  mapSubjects(subjects: any[]): Subject[] {
-    return subjects.map(
-      subject =>
-        <Subject>{
-          assessmentType: subject.assessmentType,
-          code: subject.code,
-          targetReport: subject.targetReport
-        }
     );
   }
 }

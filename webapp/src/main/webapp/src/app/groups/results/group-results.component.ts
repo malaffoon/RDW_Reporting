@@ -172,7 +172,6 @@ export class GroupResultsComponent implements OnInit, StateProvider {
     this.csvExportService.exportAssessmentExams(
       this.assessmentsComponent.assessmentExams,
       this.assessmentsComponent.clientFilterBy,
-      this.filterOptions.ethnicities,
       `${this.group.name}-${Date.now().toString()}`
     );
   }

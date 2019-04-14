@@ -1,5 +1,13 @@
 import { isEmpty, isEqual, omitBy } from 'lodash';
 
+export function isBlank(value: string): boolean {
+  return value.trim().length === 0;
+}
+
+export function isNullOrBlank(value: string): boolean {
+  return value == null || isBlank(value);
+}
+
 /**
  * Expands support from string and Array to type Object as well
  *
@@ -32,6 +40,18 @@ export function deepEqualsIgnoringNullAndFalse(a: Object, b: Object): boolean {
     removeNullAndFalseProperties(a),
     removeNullAndFalseProperties(b)
   );
+}
+
+/**
+ * Strips out HTML tags from the given string
+ *
+ * This is used to clean up message text that is normally displayed as HTML on the page
+ * but needs to also be displayed in a CSV report or something that doesn't support HTML
+ *
+ * @param value The string to remove the HTML from
+ */
+export function removeHtml(value: string): string {
+  return value.replace(/<[^>]*>/g, '');
 }
 
 export class Utils {

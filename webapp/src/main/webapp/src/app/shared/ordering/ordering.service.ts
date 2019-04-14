@@ -15,6 +15,12 @@ export class OrderingService {
       .pipe(map(codes => ordering(ranking(codes))));
   }
 
+  /**
+   * @deprecated use getSubjectDefinitions() directly
+   *
+   * @param subject
+   * @param assessmentType
+   */
   public getScorableClaimOrdering(
     subject: string,
     assessmentType: string

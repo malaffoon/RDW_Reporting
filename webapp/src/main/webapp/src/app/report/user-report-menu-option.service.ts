@@ -83,9 +83,9 @@ function createOptions(
 
       return [
         ViewAggregateOption,
+        OpenAggregateOption,
         ViewAggregateQueryOption,
         SaveQueryOption,
-        OpenAggregateOption,
         DeleteOption
       ];
   }

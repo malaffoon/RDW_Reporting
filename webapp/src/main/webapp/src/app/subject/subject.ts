@@ -50,9 +50,19 @@ export interface SubjectDefinition {
   readonly claimScore?: ScoreDefinition;
 
   /**
-   * True if the assessment has percentile data
+   * If true, the percentiles view is enabled for this subject/assessment combination
    */
   readonly percentiles?: boolean;
+
+  /**
+   * If true, target reports can be viewed for this subject/assessment combination
+   */
+  readonly targetReportsEnabled?: boolean;
+
+  /**
+   * If true, printable reports can be created for this subject/assessment combination
+   */
+  readonly printedReportsEnabled?: boolean;
 }
 
 export interface OverallScoreDefinition {

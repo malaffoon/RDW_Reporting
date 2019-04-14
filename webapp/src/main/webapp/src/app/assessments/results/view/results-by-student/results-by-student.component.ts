@@ -65,7 +65,7 @@ function createAlternateScoreColumns(
         code
       }),
       new Column({
-        id: `alternateScaleScore`,
+        id: `alternateScaleScoreAndStandardError`,
         field: `alternateScaleScores.${index}.score`,
         scoreType,
         index,
@@ -185,6 +185,7 @@ export class ResultsByStudentComponent implements OnInit {
   private createActions(): PopupMenuAction[] {
     const builder = this.actionBuilder.newActions();
 
+    // TODO should be this.subjectDefinition.studentResponsesEnabled
     if (this.assessment.type !== 'sum') {
       builder.withResponses(
         exam => exam.id,
@@ -193,9 +194,10 @@ export class ResultsByStudentComponent implements OnInit {
       );
     }
 
-    return builder
-      .withStudentHistory(exam => exam.student)
-      .withStudentReport(
+    builder.withStudentHistory(exam => exam.student);
+
+    if (this.subjectDefinition.printedReportsEnabled) {
+      builder.withStudentReport(
         () => this.assessment.type,
         exam => exam.student,
         exam => {
@@ -234,7 +236,9 @@ export class ResultsByStudentComponent implements OnInit {
             this.router.navigateByUrl('/reports');
           });
         }
-      )
-      .build();
+      );
+    }
+
+    return builder.build();
   }
 }
