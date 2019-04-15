@@ -1,15 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { ordering } from '@kourge/ordering';
 import { map } from 'rxjs/internal/operators';
 import { Router } from '@angular/router';
-import { ranking } from '@kourge/ordering/comparator';
 import { StudentPipe } from '../../../shared/format/student.pipe';
 import { StudentHistoryExamWrapper } from '../../model/student-history-exam-wrapper.model';
 import { Student } from '../../model/student.model';
 import { ScoreType } from '../../../exam/model/score-statistics';
-import { Assessment } from '../../../assessments/model/assessment';
 import { Exam } from '../../../assessments/model/exam';
 import { SubjectDefinition } from '../../../subject/subject';
 import { PopupMenuAction } from '../../../shared/menu/popup-menu-action.model';
@@ -93,28 +90,19 @@ function createClaimColumns(scoreCodes: string[]): Column[] {
   selector: 'student-exam-table',
   templateUrl: './student-exam-table.component.html'
 })
-export class StudentExamTableComponent implements OnInit {
-  @Input()
-  student: Student;
-
+export class StudentExamTableComponent {
   /**
    * The exams to display
    */
   @Input()
   exams: Exam[];
 
-  /**
-   * Represents the cutoff year for when there is no item level response data available.
-   * If there are no exams that are after this school year, then disable the ability to go there and show proper message
-   */
-  @Input()
-  minimumItemDataYear: number;
-
   @Input()
   scoreType: ScoreType;
 
-  @Input()
-  subjectDefinition: SubjectDefinition;
+  _minimumItemDataYear: number;
+  _student: Student;
+  _subjectDefinition: SubjectDefinition;
 
   columns: Column[];
   actions: PopupMenuAction[];
@@ -128,8 +116,45 @@ export class StudentExamTableComponent implements OnInit {
     private instructionalResourcesService: InstructionalResourcesService
   ) {}
 
-  ngOnInit(): void {
-    const { subjectDefinition } = this;
+  get student(): Student {
+    return this._student;
+  }
+
+  @Input()
+  set student(value: Student) {
+    this._student = value;
+    this.initialize();
+  }
+
+  get subjectDefinition(): SubjectDefinition {
+    return this._subjectDefinition;
+  }
+
+  @Input()
+  set subjectDefinition(value: SubjectDefinition) {
+    this._subjectDefinition = value;
+    this.initialize();
+  }
+
+  get minimumItemDataYear(): number {
+    return this._minimumItemDataYear;
+  }
+
+  @Input()
+  set minimumItemDataYear(value: number) {
+    this._minimumItemDataYear = value;
+    this.initialize();
+  }
+
+  initialize(): void {
+    const { student, subjectDefinition, minimumItemDataYear } = this;
+    if (
+      student == null ||
+      subjectDefinition == null ||
+      minimumItemDataYear == null
+    ) {
+      return;
+    }
     this.columns = [
       new Column({ id: 'date', field: 'exam.date' }),
       new Column({ id: 'assessment', field: 'assessment.label' }),
