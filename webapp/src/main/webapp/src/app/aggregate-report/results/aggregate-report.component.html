@@ -258,7 +258,7 @@
             <span
               *ngIf="
                 effectiveReportType !== 'Claim' &&
-                assessmentDefinition.performanceLevelDisplayTypes.length > 1
+                view.subjectDefinition.overallScore.standardCutoff != null
               "
             >
               <label for="performance-level-display-type">
