@@ -8,10 +8,10 @@ import { map } from 'rxjs/operators';
 import { ScriptsStore } from '../../store/scripts.store';
 
 @Component({
-  selector: 'scripts-page',
-  templateUrl: './scripts-page.component.html'
+  selector: 'scripts',
+  templateUrl: './scripts.component.html'
 })
-export class ScriptsPageComponent implements OnInit {
+export class ScriptsComponent implements OnInit {
   activeScripts: Observable<IngestPipelineScript[]>;
   inactiveScripts: Observable<IngestPipelineScript[]>;
   scripts: Observable<IngestPipelineScript[]>;

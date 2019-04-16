@@ -7,10 +7,10 @@ import { ScriptService } from '../../service/script.service';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
-  selector: 'script-page',
-  templateUrl: './script-page.component.html'
+  selector: 'script',
+  templateUrl: './script.component.html'
 })
-export class ScriptPageComponent implements OnInit {
+export class ScriptComponent implements OnInit {
   script: Observable<IngestPipelineScript>;
 
   constructor(

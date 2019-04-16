@@ -976,8 +976,8 @@
         "button": "Embargo",
         "description": "Manage embargoes of summative results."
       },
-      "ingest-pipeline": {
-        "button": "Ingest Pipeline",
+      "ingest-pipelines": {
+        "button": "Ingest Pipelines",
         "description": "Manage ingest pipeline transformation scripts"
       },
       "instructional-resources": {

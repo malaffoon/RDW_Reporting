@@ -16,11 +16,9 @@ import { isEqual } from 'lodash';
 })
 export class ScriptFormComponent {
   formGroup: FormGroup = new FormGroup({
-    name: new FormControl({ value: '', disabled: true }, [Validators.required]),
-    language: new FormControl({ value: 'groovy', disabled: true }, [
-      Validators.required
-    ]),
-    body: new FormControl({ value: '', disabled: true })
+    name: new FormControl('', [Validators.required]),
+    language: new FormControl('groovy', [Validators.required]),
+    body: new FormControl('')
   });
 
   @Output()

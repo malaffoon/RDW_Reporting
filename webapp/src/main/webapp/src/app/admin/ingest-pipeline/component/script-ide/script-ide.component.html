@@ -14,6 +14,7 @@
   <div class="pane">
     <script-form
       *ngIf="selectedScript"
+      [readonly]="true"
       [script]="selectedScript"
       (scriptUpdated)="scriptUpdated.emit($event)"
     ></script-form>
