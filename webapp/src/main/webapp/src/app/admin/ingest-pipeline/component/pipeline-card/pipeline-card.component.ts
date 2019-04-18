@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IngestPipeline } from '../../model/ingest-pipeline';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'pipeline-card',

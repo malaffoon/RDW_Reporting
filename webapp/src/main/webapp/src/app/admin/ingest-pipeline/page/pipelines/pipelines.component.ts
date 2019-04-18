@@ -5,7 +5,8 @@ import { PipelineService } from '../../service/pipeline.service';
 
 @Component({
   selector: 'pipelines',
-  templateUrl: './pipelines.component.html'
+  templateUrl: './pipelines.component.html',
+  styleUrls: ['./pipelines.component.less']
 })
 export class PipelinesComponent {
   pipelines: Observable<IngestPipeline[]>;

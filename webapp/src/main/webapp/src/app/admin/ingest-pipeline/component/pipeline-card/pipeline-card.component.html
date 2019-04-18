@@ -1,19 +1,5 @@
-<a
-  class="card"
-  href="javascript:void(0)"
-  [ngClass]="{ selected: false }"
-  (click)="onClick()"
->
-  <!--  <div class="check">-->
-  <!--    <i class="fa fa-check"></i>-->
-  <!--  </div>-->
-  <div class="card-content">
-    <h4>{{ pipeline.name }}</h4>
-    <div>
-      <i class="fa fa-calendar"></i>
-      {{ pipeline.updatedOn | date: 'MM/dd/yyyy' }}
-      <i class="fa fa-clock-o"></i> {{ pipeline.updatedOn | date: 'HH:mm' }}
-    </div>
-    <p>{{ pipeline.description }}</p>
-  </div>
+<a class="card" href="javascript:void(0)">
+  <h3>{{ pipeline.name }}</h3>
+  <i class="fa fa-arrow-right fa-2x pull-right text-muted"></i>
+  <p>{{ pipeline.description }}</p>
 </a>

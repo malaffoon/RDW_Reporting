@@ -1,0 +1,62 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="controls">
+    <div class="messages">
+      <ng-container *ngIf="(compiling | async); else notCompiling">
+        <i class="fa fa-spinner fa-pulse"></i> Compiling
+      </ng-container>
+      <ng-template #notCompiling>
+        <!-- TODO make generic messages observable? -->
+        <ng-container *ngIf="(compileErrors | async) as errors">
+          <ng-container *ngIf="errors.length > 0">
+            <div class="text-warning">
+              <i class="fa fa-warning"></i> Compilation Error
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </div>
+    <div class="form-group">
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-success btn-outlined"
+          [disabled]="testButtonDisabled | async"
+        >
+          <i class="fa fa-gear"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-success btn-outlined"
+          [disabled]="testButtonDisabled | async"
+        >
+          Test
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button
+        type="submit"
+        class="btn btn-primary btn-outlined"
+        [disabled]="saveButtonDisabled | async"
+      >
+        Save
+      </button>
+    </div>
+
+    <div class="form-group">
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="publishButtonDisabled | async"
+      >
+        Publish
+      </button>
+    </div>
+  </div>
+
+  <code-editor
+    [language]="formGroup.get('language').value"
+    [formControl]="formGroup.get('body')"
+  ></code-editor>
+</form>

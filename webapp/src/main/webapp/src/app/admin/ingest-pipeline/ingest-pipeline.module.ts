@@ -12,10 +12,16 @@ import { ScriptTreeComponent } from './component/script-tree/script-tree.compone
 import { ScriptIdeComponent } from './component/script-ide/script-ide.component';
 import { PipelinesComponent } from './page/pipelines/pipelines.component';
 import { PipelineCardComponent } from './component/pipeline-card/pipeline-card.component';
+import { PipelineComponent } from './page/pipeline/pipeline.component';
+import { PipelineFormComponent } from './component/pipeline-form/pipeline-form.component';
+import { CommonModule } from '../../shared/common.module';
+import { BsDropdownModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
     BrowserModule,
+    CommonModule,
+    BsDropdownModule,
     RouterModule,
     TranslateModule,
     ReactiveFormsModule,
@@ -24,6 +30,8 @@ import { PipelineCardComponent } from './component/pipeline-card/pipeline-card.c
   declarations: [
     CodeEditorComponent,
     PipelineCardComponent,
+    PipelineComponent,
+    PipelineFormComponent,
     PipelinesComponent,
     ScriptFormComponent,
     ScriptComponent,

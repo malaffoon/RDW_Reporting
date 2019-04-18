@@ -1,8 +1,30 @@
 .card {
   padding: 15px;
+
+  color: black;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+
   .card-content {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr max-content;
+    grid-template-areas:
+      'a b'
+      'c c';
     gap: 15px;
+    align-items: baseline;
   }
+}
+.pipeline-updated-on {
+  opacity: 0.66;
+  font-size: 16px;
+  justify-self: right;
+}
+.pipeline-description {
+  grid-area: c;
 }

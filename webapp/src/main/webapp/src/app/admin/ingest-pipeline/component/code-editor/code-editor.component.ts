@@ -18,6 +18,7 @@ declare var ace: any;
 @Component({
   selector: 'code-editor',
   templateUrl: './code-editor.component.html',
+  styleUrls: ['./code-editor.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [controlValueAccessorProvider(CodeEditorComponent)]
 })
@@ -83,7 +84,8 @@ export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
               minLines: 30,
               maxLines: Infinity,
               tabSize: 2,
-              theme: 'ace/theme/dracula'
+              theme: 'ace/theme/dracula',
+              enableBasicAutocompletion: true
             })
           )
         )
