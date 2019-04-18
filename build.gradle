@@ -76,7 +76,11 @@ subprojects {
 
             // spring extensions aren't included in the the bom
             dependency 'org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE'
-
+            
+            //add security for messaging
+            dependency 'org.springframework.security:spring-security-core:4.2.10.RELEASE'
+            dependency 'org.springframework.integration:spring-integration-security:4.3.18.RELEASE'
+            
             // commonly used test libraries
             dependency 'junit:junit:4.12'
             dependency 'org.assertj:assertj-core:3.11.1'

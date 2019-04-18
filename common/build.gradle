@@ -19,6 +19,7 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'com.healthmarketscience.sqlbuilder:sqlbuilder:2.1.7'
+    compile 'org.springframework.security:spring-security-core'
 
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
