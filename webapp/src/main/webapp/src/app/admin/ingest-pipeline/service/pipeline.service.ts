@@ -13,19 +13,45 @@ import {
   stubIngestPipelines,
   stubPipelineScript
 } from './pipeline.service.stubs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PipelineService {
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private translateService: TranslateService
+  ) {}
 
   getPipelines(): Observable<Pipeline[]> {
-    return of(stubIngestPipelines);
+    return of(
+      stubIngestPipelines.map(pipeline => ({
+        ...pipeline,
+        name: this.translateService.instant(
+          `ingest-pipeline.${pipeline.id}.name`
+        ),
+        description: this.translateService.instant(
+          `ingest-pipeline.${pipeline.id}.description`
+        )
+      }))
+    );
   }
 
   getPipeline(id: string): Observable<Pipeline> {
-    return of(stubIngestPipelines.find(pipeline => pipeline.id === id));
+    return of(
+      stubIngestPipelines
+        .map(pipeline => ({
+          ...pipeline,
+          name: this.translateService.instant(
+            `ingest-pipeline.${pipeline.id}.name`
+          ),
+          description: this.translateService.instant(
+            `ingest-pipeline.${pipeline.id}.description`
+          )
+        }))
+        .find(pipeline => pipeline.id === id)
+    );
   }
 
   getPipelineScript(

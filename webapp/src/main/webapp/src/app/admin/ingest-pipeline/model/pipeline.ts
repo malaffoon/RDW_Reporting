@@ -12,6 +12,16 @@ export interface Pipeline {
   id: string;
 
   /**
+   * The pipeline name
+   */
+  name: string;
+
+  /**
+   * The pipeline description
+   */
+  description: string;
+
+  /**
    * The pipeline input format
    * This can be XML, CSV etc.
    */
