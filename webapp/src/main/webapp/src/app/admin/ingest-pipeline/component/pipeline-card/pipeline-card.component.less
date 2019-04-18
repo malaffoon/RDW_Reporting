@@ -1,0 +1,27 @@
+@aqua: #0f6bad;
+
+.card {
+  padding: 15px;
+
+  color: black;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+
+  &:active {
+    border-color: @aqua;
+  }
+
+  .card-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .card-body {
+    opacity: 0.66;
+  }
+}
