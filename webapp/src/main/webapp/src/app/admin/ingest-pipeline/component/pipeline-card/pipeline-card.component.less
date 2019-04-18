@@ -1,3 +1,5 @@
+@aqua: #0f6bad;
+
 .card {
   padding: 15px;
 
@@ -10,21 +12,16 @@
     text-decoration: none;
   }
 
-  .card-content {
-    display: grid;
-    grid-template-columns: 1fr max-content;
-    grid-template-areas:
-      'a b'
-      'c c';
-    gap: 15px;
-    align-items: baseline;
+  &:active {
+    border-color: @aqua;
   }
-}
-.pipeline-updated-on {
-  opacity: 0.66;
-  font-size: 16px;
-  justify-self: right;
-}
-.pipeline-description {
-  grid-area: c;
+
+  .card-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .card-body {
+    opacity: 0.66;
+  }
 }

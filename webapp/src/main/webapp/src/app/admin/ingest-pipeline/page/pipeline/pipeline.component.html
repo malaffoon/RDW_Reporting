@@ -1,4 +1,4 @@
-<ng-container *ngIf="(pipeline | async) as ingestPipeline">
-  <h3>{{ ingestPipeline.name }}</h3>
-  <pipeline-form [pipeline]="ingestPipeline"></pipeline-form>
+<ng-container *ngIf="(pipeline | async) as pipe">
+  <h3>{{ 'ingest-pipeline.' + pipe.id + '.name' | translate }}</h3>
+  <pipeline-form [script]="pipelineScript | async"></pipeline-form>
 </ng-container>

@@ -1,9 +1,0 @@
-<p-tree
-  [value]="_nodes"
-  [selection]="_selectedNode"
-  (onNodeSelect)="scriptSelected.emit($event.node.data)"
-  (onNodeDrop)="onNodeDrop($event)"
-  selectionMode="single"
-  draggableNodes="true"
-  droppableNodes="true"
-></p-tree>

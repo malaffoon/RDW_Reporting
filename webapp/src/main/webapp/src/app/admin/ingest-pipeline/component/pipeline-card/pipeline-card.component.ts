@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { IngestPipeline } from '../../model/ingest-pipeline';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Pipeline } from '../../model/pipeline';
 
 @Component({
   selector: 'pipeline-card',
@@ -10,5 +9,5 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class PipelineCardComponent {
   @Input()
-  pipeline: IngestPipeline;
+  pipeline: Pipeline;
 }

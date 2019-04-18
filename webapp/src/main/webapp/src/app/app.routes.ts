@@ -38,7 +38,6 @@ import { UserGroupComponent } from './user-group/user-group.component';
 import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
-import { ScriptsComponent } from './admin/ingest-pipeline/page/scripts/scripts.component';
 import { ingestPipelineRoutes } from './admin/ingest-pipeline/ingest-pipeline.routes';
 
 export const studentPipe = new StudentPipe();

@@ -5,20 +5,20 @@ import {
   RouterStateSnapshot
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { IngestPipeline } from '../model/ingest-pipeline';
+import { Pipeline } from '../model/pipeline';
 import { PipelineService } from '../service/pipeline.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PipelineResolve implements Resolve<IngestPipeline> {
+export class PipelineResolve implements Resolve<Pipeline> {
   constructor(private service: PipelineService) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<IngestPipeline> {
+  ): Observable<Pipeline> {
     const { id } = route.params;
-    return this.service.getIngestPipeline(Number(id));
+    return this.service.getPipeline(id);
   }
 }

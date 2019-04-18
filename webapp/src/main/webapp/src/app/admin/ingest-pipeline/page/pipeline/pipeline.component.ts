@@ -3,14 +3,15 @@ import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { mergeMap } from 'rxjs/operators';
 import { PipelineService } from '../../service/pipeline.service';
-import { IngestPipeline } from '../../model/ingest-pipeline';
+import { Pipeline, PipelineScript, PipelineTest } from '../../model/pipeline';
 
 @Component({
   selector: 'pipeline',
   templateUrl: './pipeline.component.html'
 })
 export class PipelineComponent {
-  pipeline: Observable<IngestPipeline>;
+  pipeline: Observable<Pipeline>;
+  pipelineScript: Observable<PipelineScript>;
 
   constructor(
     private route: ActivatedRoute,
@@ -19,7 +20,10 @@ export class PipelineComponent {
 
   ngOnInit(): void {
     this.pipeline = this.route.params.pipe(
-      mergeMap(({ id }) => this.pipelineService.getIngestPipeline(Number(id)))
+      mergeMap(({ id }) => this.pipelineService.getPipeline(id))
+    );
+    this.pipelineScript = this.route.params.pipe(
+      mergeMap(({ id }) => this.pipelineService.getPipelineScript(id, 1))
     );
   }
 }

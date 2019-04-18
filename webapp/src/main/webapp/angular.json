@@ -47,6 +47,16 @@
                 "lazy": true
               },
               {
+                "input": "node_modules/ace-builds/src-min/ext-error_marker.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/ext-language_tools.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              },
+              {
                 "input": "node_modules/ace-builds/src-min/mode-groovy.js",
                 "bundleName": "mode-groovy",
                 "lazy": true

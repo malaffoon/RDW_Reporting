@@ -2,10 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
-  OnDestroy,
-  Output,
   ViewChild
 } from '@angular/core';
 import { getOrAppendAsyncScript } from '../../ingest-pipeline.support';
@@ -15,6 +12,16 @@ import { map } from 'rxjs/operators';
 
 declare var ace: any;
 
+export type MessageType = 'error' | 'information' | 'warning';
+
+export interface Message {
+  type: MessageType;
+  row: number;
+  column: number;
+  text: string;
+  raw?: any;
+}
+
 @Component({
   selector: 'code-editor',
   templateUrl: './code-editor.component.html',
@@ -22,23 +29,23 @@ declare var ace: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [controlValueAccessorProvider(CodeEditorComponent)]
 })
-export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
+export class CodeEditorComponent implements ControlValueAccessor {
   @ViewChild('editor')
   editorElementReference: ElementRef;
 
-  @Output()
-  errors: EventEmitter<any> = new EventEmitter();
-
   _editor: any;
-
-  ngOnDestroy(): void {
-    this.errors.complete();
-  }
 
   @Input()
   set language(value: string) {
     this.withEditor(editor => {
       editor.getSession().setMode('ace/mode/' + value);
+    });
+  }
+
+  @Input()
+  set messages(values: Message[]) {
+    this.withEditor(editor => {
+      editor.getSession().setAnnotations(values);
     });
   }
 
@@ -82,19 +89,17 @@ export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
               highlightActiveLine: true,
               highlightSelectedWord: true,
               minLines: 30,
-              maxLines: Infinity,
+              maxLines: 30,
               tabSize: 2,
               theme: 'ace/theme/dracula',
-              enableBasicAutocompletion: true
+              // ext-language_tools
+              enableBasicAutocompletion: true,
+              enableLiveAutocompletion: true,
+              enableSnippets: false
             })
           )
         )
         .subscribe(editor => {
-          editor.getSession().on('changeAnnotation', change => {
-            if (change != null && change.type === 'error') {
-              this.errors.next(change);
-            }
-          });
           this._editor = editor;
           callback(editor);
         });

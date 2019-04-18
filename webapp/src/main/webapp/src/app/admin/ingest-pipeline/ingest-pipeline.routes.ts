@@ -1,7 +1,4 @@
 import { AuthorizationCanActivate } from '../../shared/security/authorization.can-activate';
-import { ScriptsComponent } from './page/scripts/scripts.component';
-import { ScriptComponent } from './page/script/script.component';
-import { ScriptResolve } from './resolve/script.resolve';
 import { PipelinesComponent } from './page/pipelines/pipelines.component';
 import { PipelineComponent } from './page/pipeline/pipeline.component';
 import { PipelineResolve } from './resolve/pipeline.resolve';
@@ -32,21 +29,6 @@ export const ingestPipelineRoutes = [
           pipeline: PipelineResolve
         }
       }
-      // {
-      //   path: '',
-      //   pathMatch: 'full',
-      //   component: ScriptsComponent
-      // },
-      // {
-      //   path: ':id',
-      //   component: PipelineComponent,
-      //   data: {
-      //     breadcrumb: { resolve: 'script.name' }
-      //   },
-      //   resolve: {
-      //     script: ScriptResolve
-      //   }
-      // }
     ]
   }
 ];

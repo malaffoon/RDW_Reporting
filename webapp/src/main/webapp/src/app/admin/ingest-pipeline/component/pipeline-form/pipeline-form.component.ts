@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { IngestPipeline } from '../../model/ingest-pipeline';
+import { PipelineScript } from '../../model/pipeline';
 import {
   AbstractControl,
   FormControl,
@@ -14,7 +14,6 @@ import {
 } from '@angular/forms';
 import {
   debounceTime,
-  flatMap,
   map,
   share,
   startWith,
@@ -24,13 +23,11 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { PipelineService } from '../../service/pipeline.service';
+import { of } from 'rxjs/internal/observable/of';
+import { Message, MessageType } from '../code-editor/code-editor.component';
 
-const defaultLanguage = 'groovy';
-const defaultCompileDebounceTime = 1000;
-
-function toForm(value: IngestPipeline): any {
-  return value.script;
-}
+const defaultLanguage = 'text';
+const defaultCompileDebounceTime = 2000;
 
 @Component({
   selector: 'pipeline-form',
@@ -49,6 +46,7 @@ export class PipelineFormComponent implements OnInit, OnDestroy {
 
   compiling: BehaviorSubject<boolean>;
   compileErrors: Observable<any[]>;
+  messages: Observable<Message[]>;
   testButtonDisabled: Observable<boolean>;
   saveButtonDisabled: Observable<boolean>;
   publishButtonDisabled: Observable<boolean>;
@@ -68,15 +66,26 @@ export class PipelineFormComponent implements OnInit, OnDestroy {
       tap(() => {
         this.compiling.next(true);
       }),
-      switchMap(value => this.pipelineService.compileScript(value)),
+      switchMap(value => this.pipelineService.compilePipelineScript(value)),
       tap(() => {
         this.compiling.next(false);
       }),
       share()
     );
 
-    this.testButtonDisabled = this.compiling;
-    this.saveButtonDisabled = this.compiling;
+    this.messages = this.compileErrors.pipe(
+      map(errors =>
+        errors.map(error => ({
+          type: <MessageType>'error',
+          row: error.row,
+          column: error.column,
+          text: error.message.code
+        }))
+      )
+    );
+
+    this.testButtonDisabled = of(false);
+    this.saveButtonDisabled = of(false);
     this.publishButtonDisabled = combineLatest(
       this.compiling,
       this.compileErrors
@@ -94,8 +103,8 @@ export class PipelineFormComponent implements OnInit, OnDestroy {
   }
 
   @Input()
-  set pipeline(value: IngestPipeline) {
-    this.formGroup.patchValue(toForm(value));
+  set script(value: PipelineScript) {
+    this.formGroup.patchValue(value);
   }
 
   onSubmit(): void {

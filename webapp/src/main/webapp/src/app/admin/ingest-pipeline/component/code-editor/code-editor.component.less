@@ -2,6 +2,21 @@
   ::ng-deep {
     .ace_editor {
       border-radius: 4px;
+
+      .ace_scrollbar-v {
+        overflow-y: auto;
+      }
+      .ace_scrollbar-h {
+        overflow-x: auto;
+      }
+      .ace_scrollbar {
+        display: none;
+      }
+      &:hover {
+        .ace_scrollbar {
+          display: block;
+        }
+      }
     }
   }
 }
