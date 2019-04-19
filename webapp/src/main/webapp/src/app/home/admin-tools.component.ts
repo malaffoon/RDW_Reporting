@@ -39,8 +39,8 @@ const links: Link[] = [
     permission: 'EMBARGO_WRITE'
   },
   {
-    id: 'ingest-pipeline',
-    path: '/ingest-pipeline',
+    id: 'ingest-pipelines',
+    path: '/ingest-pipelines',
     icon: 'fa-filter',
     permission: 'INDIVIDUAL_PII_READ'
   }

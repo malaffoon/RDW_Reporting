@@ -1,6 +1,8 @@
 ## Change Log
 
-#### 1.4.0
+#### 1.4.0-UAT 2019-04-12
+
+This is a special pre-release build for Smarter Balanced ELPAC UAT.
 
 * Add saved queries
 * Add toggle for empty aggregate report rows

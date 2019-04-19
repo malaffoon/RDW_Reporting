@@ -1,0 +1,4 @@
+<ng-container *ngIf="(pipeline | async) as pipe">
+  <h3>{{ pipe.name }}</h3>
+  <pipeline-form [script]="pipelineScript | async"></pipeline-form>
+</ng-container>

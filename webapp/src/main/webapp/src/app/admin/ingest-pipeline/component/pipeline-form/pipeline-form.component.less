@@ -1,0 +1,20 @@
+@space-unit: 15px;
+
+.controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: @space-unit;
+  > :not(:first-child) {
+    margin-left: @space-unit;
+  }
+  > :first-child {
+    flex: 1;
+  }
+}
+
+button {
+  > i {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+}

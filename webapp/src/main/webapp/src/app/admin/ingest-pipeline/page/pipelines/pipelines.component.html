@@ -1,0 +1,9 @@
+<h3>Ingest Pipelines</h3>
+<div class="pipelines-container">
+  <ng-container *ngFor="let pipeline of (pipelines | async)">
+    <pipeline-card
+      [pipeline]="pipeline"
+      [routerLink]="[pipeline.id]"
+    ></pipeline-card>
+  </ng-container>
+</div>

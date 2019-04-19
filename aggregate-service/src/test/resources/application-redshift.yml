@@ -11,3 +11,7 @@ spring:
 app:
   aggregate-reports:
     query-pool-size: 2
+
+# the RSTs explicitly check school-year, so set it
+reporting:
+  school-year: 2018
