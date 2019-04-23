@@ -65,6 +65,16 @@
                 "input": "node_modules/ace-builds/src-min/theme-dracula.js",
                 "bundleName": "theme-dracula",
                 "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/theme-chrome.js",
+                "bundleName": "theme-dracula",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/theme-xcode.js",
+                "bundleName": "theme-dracula",
+                "lazy": true
               }
             ]
           },

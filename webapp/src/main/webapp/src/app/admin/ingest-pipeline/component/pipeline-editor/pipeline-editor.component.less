@@ -1,0 +1,55 @@
+@space-unit: 15px;
+@tab-outline-color: #ddd;
+
+:host {
+  display: grid;
+  > * {
+    grid-row: 1/1;
+    grid-column: 1/1;
+  }
+}
+
+.toolbar {
+  align-self: start;
+  justify-self: right;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: @space-unit;
+  > :not(:first-child) {
+    margin-left: @space-unit;
+  }
+}
+
+.compilation-status {
+  opacity: 0.5;
+  font-size: 14px;
+}
+
+.tests {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 15px;
+}
+
+button {
+  > i {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  a {
+    text-decoration: none;
+  }
+}
+
+tab {
+  border-top: 1px solid @tab-outline-color;
+  padding-top: @space-unit;
+}

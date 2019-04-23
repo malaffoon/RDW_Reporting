@@ -2,6 +2,7 @@ import { AuthorizationCanActivate } from '../../shared/security/authorization.ca
 import { PipelinesComponent } from './page/pipelines/pipelines.component';
 import { PipelineComponent } from './page/pipeline/pipeline.component';
 import { PipelineResolve } from './resolve/pipeline.resolve';
+import { PipelineTestsComponent } from './page/pipeline-tests/pipeline-tests.component';
 
 export const ingestPipelineRoutes = [
   {
@@ -21,13 +22,26 @@ export const ingestPipelineRoutes = [
       },
       {
         path: ':id',
-        component: PipelineComponent,
         data: {
           breadcrumb: { resolve: 'pipeline.name' }
         },
         resolve: {
           pipeline: PipelineResolve
-        }
+        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: PipelineComponent
+          },
+          {
+            path: 'tests',
+            component: PipelineTestsComponent,
+            data: {
+              breadcrumb: { translate: 'pipeline-tests.heading' }
+            }
+          }
+        ]
       }
     ]
   }

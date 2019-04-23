@@ -88,10 +88,11 @@ export class CodeEditorComponent implements ControlValueAccessor {
             ace.edit(this.editorElementReference.nativeElement, {
               highlightActiveLine: true,
               highlightSelectedWord: true,
-              minLines: 30,
-              maxLines: 30,
+              minLines: 40,
+              maxLines: 40,
               tabSize: 2,
-              theme: 'ace/theme/dracula',
+              theme: 'ace/theme/chrome',
+              // theme: 'ace/theme/dracula',
               // ext-language_tools
               enableBasicAutocompletion: true,
               enableLiveAutocompletion: true,

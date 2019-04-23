@@ -1,4 +1,162 @@
-<ng-container *ngIf="(pipeline | async) as pipe">
-  <h3>{{ pipe.name }}</h3>
-  <pipeline-form [script]="pipelineScript | async"></pipeline-form>
-</ng-container>
+<!--<pipeline-editor-->
+<!--  [pipeline]="pipeline"-->
+<!--  [selectedTab]="tab | async"-->
+<!--  [compiling]="compiling"-->
+<!--  [compilationErrors]="compilationErrors | async"-->
+<!--  [saving]="saving"-->
+<!--  [saveButtonDisabled]="saveButtonDisabled"-->
+<!--  [testing]="testing"-->
+<!--  [testButtonDisabled]="testButtonDisabled"-->
+<!--  [publishing]="publishing"-->
+<!--  [publishButtonDisabled]="publishButtonDisabled"-->
+<!--  (tabClick)="onTabClick($event)"-->
+<!--  (scriptChange)="onScriptChange($event)"-->
+<!--  (scriptSave)="onScriptSave($event)"-->
+<!--  (scriptTest)="onScriptTest($event)"-->
+<!--  (scriptPublish)="onScriptPublish($event)"-->
+<!--&gt;</pipeline-editor>-->
+
+<div class="toolbar">
+  <div>
+    <h3>Assessments Pipeline</h3>
+  </div>
+
+  <!--  <div class="left">-->
+
+  <!--    <div-->
+  <!--      dropdown-->
+  <!--      class="btn-group"-->
+  <!--    >-->
+  <!--      <button-->
+  <!--        dropdownToggle-->
+  <!--        class="btn btn-default dropdown-toggle"-->
+  <!--        aria-haspopup="true"-->
+  <!--        aria-expanded="false"-->
+  <!--      >-->
+  <!--        Assessments Script <i class="fa fa-angle-down"></i>-->
+  <!--      </button>-->
+
+  <!--      <ul *dropdownMenu class="dropdown-menu" role="menu">-->
+  <!--        <li role="menuitem">-->
+  <!--          <a class="dropdown-item">-->
+  <!--            <strong>Assessment Script</strong>-->
+  <!--          </a>-->
+  <!--        </li>-->
+  <!--        <li role="menuitem">-->
+  <!--          <a class="dropdown-item">-->
+  <!--            <strong>Test 1</strong>-->
+  <!--            <div>1/14/2019</div>-->
+  <!--            <p>-->
+  <!--              Messenger bag ramps kinfolk keytar williamsburg celiac authentic, affogato poutine blue bottle bushwick blog VHS pitchfork offal. Polaroid fashion axe pour-over shoreditch. Literally green juice sustainable biodiesel. Cardigan chia marfa lomo tilde, listicle trust fund mlkshk.</p>-->
+  <!--          </a>-->
+  <!--        </li>-->
+  <!--        <li role="menuitem">-->
+  <!--          <a class="dropdown-item">-->
+  <!--            <strong>Test 1</strong>-->
+  <!--            <div>1/14/2019</div>-->
+  <!--            <p>-->
+  <!--              Messenger bag ramps kinfolk keytar williamsburg celiac authentic, affogato poutine blue bottle bushwick blog VHS pitchfork offal. Polaroid fashion axe pour-over shoreditch. Literally green juice sustainable biodiesel. Cardigan chia marfa lomo tilde, listicle trust fund mlkshk.</p>-->
+  <!--          </a>-->
+  <!--        </li>-->
+  <!--        <li role="menuitem">-->
+  <!--          <a class="dropdown-item">-->
+  <!--            <strong>Test 1</strong>-->
+  <!--            <div>1/14/2019</div>-->
+  <!--            <p>-->
+  <!--              Messenger bag ramps kinfolk keytar williamsburg celiac authentic, affogato poutine blue bottle bushwick blog VHS pitchfork offal. Polaroid fashion axe pour-over shoreditch. Literally green juice sustainable biodiesel. Cardigan chia marfa lomo tilde, listicle trust fund mlkshk.</p>-->
+  <!--          </a>-->
+  <!--        </li>-->
+  <!--        <li role="menuitem">-->
+  <!--          <a class="dropdown-item">-->
+  <!--            <strong>Test 1</strong>-->
+  <!--            <div>1/14/2019</div>-->
+  <!--            <p>-->
+  <!--              Messenger bag ramps kinfolk keytar williamsburg celiac authentic, affogato poutine blue bottle bushwick blog VHS pitchfork offal. Polaroid fashion axe pour-over shoreditch. Literally green juice sustainable biodiesel. Cardigan chia marfa lomo tilde, listicle trust fund mlkshk.</p>-->
+  <!--          </a>-->
+  <!--        </li>-->
+  <!--      </ul>-->
+  <!--    </div>-->
+
+  <!--    <button-->
+  <!--      class="btn btn-success btn-outlined ml-sm"-->
+  <!--    >-->
+  <!--      <i class="fa fa-plus"></i> Create Test-->
+  <!--    </button>-->
+  <!--  </div>-->
+
+  <!--  <div>-->
+  <button class="btn btn-primary btn-outlined">
+    Save Draft
+  </button>
+
+  <button class="btn btn-success btn-outlined">
+    Run Tests
+  </button>
+
+  <button class="btn btn-primary btn-publish">
+    <i class="fa fa-globe"></i> Publish
+  </button>
+
+  <!--  </div>-->
+</div>
+
+<div class="editor-container">
+  <div class="file-menu">
+    <a [ngClass]="{ active: activeTest == null }" (click)="activeTest = null">
+      Pipeline Script
+      <p class="small text-muted">
+        Short description of the pipeline script including what it ingests and
+        the input format
+      </p>
+    </a>
+    <div class="tests-container">
+      <div class="tests-heading">
+        <strong>Tests</strong>
+        <button class="btn btn-success btn-outlined btn-xs">New Test</button>
+        <!--        <a class="text-success small">-->
+        <!--          <i class="fa fa-plus"></i> New Test-->
+        <!--        </a>-->
+      </div>
+      <ul class="tests">
+        <li *ngFor="let test of tests; let index = index">
+          <a
+            [ngClass]="{ active: activeTest === index }"
+            (click)="activeTest = index"
+          >
+            {{ test.createdOn | date }}
+            <!--            <div *ngIf="test.name">{{test.name}}</div>-->
+            <p class="small text-muted" *ngIf="test.description">
+              {{ test.description }}
+            </p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <code-editor
+    [language]="pipeline.script.language"
+    [(ngModel)]="pipeline.script.body"
+  ></code-editor>
+
+  <!--  <div class="toolbar">-->
+  <!--    <button-->
+  <!--      class="btn btn-primary btn-outlined"-->
+  <!--    >-->
+  <!--      Save-->
+  <!--    </button>-->
+
+  <!--    <button-->
+  <!--      class="btn btn-success btn-outlined"-->
+  <!--    >-->
+  <!--      Test-->
+  <!--    </button>-->
+
+  <!--    <button-->
+  <!--      class="btn btn-primary btn-publish"-->
+  <!--    >-->
+  <!--      <i class="fa fa-globe"></i> Publish-->
+  <!--    </button>-->
+
+  <!--  </div>-->
+</div>

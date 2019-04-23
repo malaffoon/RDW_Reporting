@@ -1,0 +1,13 @@
+<h3>{{ 'pipeline-tests.heading' | translate }}</h3>
+<ng-container *ngIf="(pipeline | async) as pipe">
+  <pipeline-test-list
+    [tests]="pipe.tests"
+    (testClick)="onTestClick($event)"
+  ></pipeline-test-list>
+  <ng-container *ngIf="(selectedTest | async) as test">
+    <pipeline-test-form
+      [test]="test"
+      [inputType]="pipe.inputType"
+    ></pipeline-test-form>
+  </ng-container>
+</ng-container>

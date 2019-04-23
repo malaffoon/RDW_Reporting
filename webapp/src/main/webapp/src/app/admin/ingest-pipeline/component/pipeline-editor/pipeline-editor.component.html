@@ -1,0 +1,109 @@
+<div class="toolbar">
+  <ng-container [ngSwitch]="selectedTab">
+    <ng-container *ngSwitchCase="'Script'">
+      <div class="compilation-status">
+        <ng-container *ngIf="compiling">
+          <i class="fa fa-spinner fa-pulse"></i> Compiling
+        </ng-container>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary btn-outlined btn-sm"
+        [disabled]="saveButtonDisabled"
+        (click)="scriptSave.emit(pipeline)"
+      >
+        <ng-container *ngIf="saving; else notSaving">
+          <i class="fa fa-spinner fa-pulse"></i> Saving
+        </ng-container>
+        <ng-template #notSaving>
+          Save
+        </ng-template>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-success btn-outlined btn-sm"
+        [disabled]="testButtonDisabled"
+        (click)="scriptTest.emit(pipeline)"
+      >
+        <ng-container *ngIf="testing; else notTesting">
+          <i class="fa fa-spinner fa-pulse"></i> Testing
+        </ng-container>
+        <ng-template #notTesting>
+          Test
+        </ng-template>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        [disabled]="publishButtonDisabled"
+        (click)="scriptPublish.emit(pipeline)"
+      >
+        <ng-container *ngIf="publishing; else notPublished">
+          <i class="fa fa-spinner fa-pulse"></i> Publishing
+        </ng-container>
+        <ng-template #notPublished>
+          Publish
+        </ng-template>
+      </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'Tests'"> </ng-container>
+    <ng-container *ngSwitchCase="'TestResults'"> </ng-container>
+  </ng-container>
+</div>
+<tabset>
+  <tab
+    heading="{{ pipeline.name }} Script"
+    (select)="tabClick.emit('Script')"
+    [active]="selectedTab === 'Script'"
+  >
+    <code-editor
+      [(ngModel)]="pipeline.script.body"
+      (ngModelChange)="scriptChange.emit($event)"
+      [language]="pipeline.script.language"
+      [messages]="messages"
+    ></code-editor>
+  </tab>
+  <tab
+    heading="Tests"
+    (select)="tabClick.emit('Tests')"
+    [active]="selectedTab === 'Tests'"
+  >
+    <!--    <div class="tests">-->
+    <!--      <ul>-->
+    <!--        <li>-->
+    <!--          <a>Test 1</a>-->
+    <!--        </li>-->
+    <!--        <li>-->
+    <!--          <a>Test 2</a>-->
+    <!--        </li>-->
+    <!--      </ul>-->
+    <!--      <pipeline-test-form-->
+    <!--        [test]="pipeline.tests[0]"-->
+    <!--        [inputType]="pipeline.inputType"-->
+    <!--      ></pipeline-test-form>-->
+    <!--    </div>-->
+  </tab>
+  <tab
+    heading="Test Results"
+    (select)="tabClick.emit('TestResults')"
+    [active]="selectedTab === 'TestResults'"
+  >
+    <!--    <div class="tests">-->
+    <!--      <ul>-->
+    <!--        <li>-->
+    <!--          <a>Test 1</a>-->
+    <!--        </li>-->
+    <!--        <li>-->
+    <!--          <a>Test 2</a>-->
+    <!--        </li>-->
+    <!--      </ul>-->
+    <!--      <pipeline-test-form-->
+    <!--        [test]="pipeline.tests[0]"-->
+    <!--        [inputType]="pipeline.inputType"-->
+    <!--      ></pipeline-test-form>-->
+    <!--    </div>-->
+  </tab>
+</tabset>

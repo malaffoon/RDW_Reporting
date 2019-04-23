@@ -1427,5 +1427,8 @@
       "name": "Groups",
       "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko helvetica, fashion axe pork belly vexillologist. Bicycle rights meh shoreditch try-hard, hammock typewriter fixie four loko shabby chic. Pour-over kitsch pinterest."
     }
+  },
+  "pipeline-tests": {
+    "heading": "Tests"
   }
 }

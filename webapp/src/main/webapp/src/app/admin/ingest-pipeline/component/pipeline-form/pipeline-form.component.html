@@ -1,58 +1,67 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <div class="controls">
-    <div class="messages">
-      <ng-container *ngIf="(compiling | async); else notCompiling">
+<form [formGroup]="formGroup">
+  <div class="toolbar">
+    <div>
+      <!--      <ng-content select="[heading]"></ng-content>-->
+      <ng-container *ngIf="(compiling | async)">
         <i class="fa fa-spinner fa-pulse"></i> Compiling
       </ng-container>
-      <ng-template #notCompiling>
-        <!-- TODO make generic messages observable? -->
-        <ng-container *ngIf="(compileErrors | async) as errors">
-          <ng-container *ngIf="errors.length > 0">
-            <div class="text-warning">
-              <i class="fa fa-warning"></i> Compilation Error
-            </div>
-          </ng-container>
-        </ng-container>
-      </ng-template>
-    </div>
-    <div class="form-group">
-      <div class="btn-group">
-        <button
-          type="button"
-          class="btn btn-success btn-outlined"
-          [disabled]="testButtonDisabled | async"
-        >
-          <i class="fa fa-gear"></i>
-        </button>
-        <button
-          type="button"
-          class="btn btn-success btn-outlined"
-          [disabled]="testButtonDisabled | async"
-        >
-          Test
-        </button>
-      </div>
     </div>
 
-    <div class="form-group">
-      <button
-        type="submit"
-        class="btn btn-primary btn-outlined"
-        [disabled]="saveButtonDisabled | async"
-      >
+    <button
+      type="button"
+      class="btn btn-primary btn-outlined"
+      [disabled]="saveButtonDisabled | async"
+      (click)="onSaveButtonClick()"
+    >
+      <ng-container *ngIf="(saving | async); else notSaving">
+        <i class="fa fa-spinner fa-pulse"></i> Saving
+      </ng-container>
+      <ng-template #notSaving>
         Save
-      </button>
-    </div>
+      </ng-template>
+    </button>
 
-    <div class="form-group">
+    <!--      <ng-container *ngIf="_pipeline.tests.length === 0; else hasTests">-->
+
+    <!--        <button-->
+    <!--          type="button"-->
+    <!--          class="btn btn-success btn-outlined"-->
+    <!--          [routerLink]="['tests', 'new']"-->
+    <!--        >-->
+    <!--          <i class="fa fa-plus"></i> Create Test-->
+    <!--        </button>-->
+
+    <!--      </ng-container>-->
+    <!--      <ng-template #hasTests>-->
+    <ng-container *ngIf="(testing | async); else notTesting">
       <button
         type="button"
-        class="btn btn-primary"
-        [disabled]="publishButtonDisabled | async"
+        class="btn btn-success btn-outlined"
+        [disabled]="true"
       >
-        Publish
+        <i class="fa fa-spinner fa-pulse"></i> Testing
       </button>
-    </div>
+    </ng-container>
+    <ng-template #notTesting>
+      <button
+        type="button"
+        class="btn btn-success btn-outlined"
+        [disabled]="testButtonDisabled | async"
+        (click)="onTestButtonClick()"
+      >
+        Test
+      </button>
+    </ng-template>
+    <!--      </ng-template>-->
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="publishButtonDisabled | async"
+      (click)="onPublishButtonClick()"
+    >
+      Publish
+    </button>
   </div>
 
   <code-editor

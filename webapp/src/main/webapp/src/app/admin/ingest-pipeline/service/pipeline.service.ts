@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
 import { Observable } from 'rxjs';
 import {
+  CompilationError,
   Pipeline,
   PipelineScript,
   PipelineTest,
-  ScriptError
+  TestResult
 } from '../model/pipeline';
 import { of } from 'rxjs/internal/observable/of';
 import { delay } from 'rxjs/operators';
@@ -62,7 +63,14 @@ export class PipelineService {
   }
 
   getPipelineTests(pipelineId: string): Observable<PipelineTest[]> {
-    return of([]);
+    return of([
+      {
+        id: 1,
+        name: 'It should transform something',
+        input: 'a',
+        output: 'b'
+      }
+    ]);
   }
 
   getPipelineTest(
@@ -72,33 +80,59 @@ export class PipelineService {
     return of(<any>{});
   }
 
-  compilePipelineScript(script: string): Observable<ScriptError[]> {
+  createPipelineTest(
+    pipelineId: string,
+    test: PipelineTest
+  ): Observable<PipelineTest> {
+    return of(test);
+  }
+
+  updatePipelineTest(
+    pipelineId: string,
+    test: PipelineTest
+  ): Observable<PipelineTest> {
+    return of(test);
+  }
+
+  deletePipelineTest(pipelineId: string, testId: number): Observable<void> {
+    return of();
+  }
+
+  runPipelineTest(
+    pipelineId: string,
+    testId: number,
+    scriptBody: string
+  ): Observable<TestResult[]> {
+    return of([]);
+  }
+
+  runPipelineTests(
+    pipelineId: string,
+    scriptBody: string
+  ): Observable<TestResult[]> {
+    return of([]).pipe(delay(2000));
+  }
+
+  compilePipelineScript(scriptBody: string): Observable<CompilationError[]> {
     return of(
-      script.includes('error')
+      scriptBody.includes('error')
         ? [{ row: 2, column: 0, message: { code: 'Error message' } }]
         : []
     ).pipe(delay(1000));
   }
 
-  testPipelineScript(
+  updatePipelineScript(
     pipelineId: string,
-    script: string
-  ): Observable<ScriptError[]> {
-    return of([]);
-  }
-
-  savePipelineScript(
-    pipelineId: string,
-    script: string
+    script: PipelineScript
   ): Observable<PipelineScript> {
-    return of(null);
+    return of(script).pipe(delay(1000));
   }
 
   publishPipelineScript(
     pipelineId: string,
-    script: string
+    script: PipelineScript
   ): Observable<PipelineScript> {
     // should require test and save on the backend
-    return of(null);
+    return of(script).pipe(delay(1000));
   }
 }
