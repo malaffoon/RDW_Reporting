@@ -28,6 +28,7 @@ dependencies {
     // IT test complained about not having this
     testCompile 'org.hibernate:hibernate-validator:5.4.1.Final'
     testCompile 'mysql:mysql-connector-java'
+    testCompile 'org.springframework.security:spring-security-test'
 }
 
 // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)
