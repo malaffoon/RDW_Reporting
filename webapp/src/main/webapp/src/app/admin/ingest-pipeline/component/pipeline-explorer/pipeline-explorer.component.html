@@ -20,12 +20,12 @@
   </ul>
 </div>
 
-<div class="test-items-container">
+<div class="test-items-container" #tests>
   <div class="test-items-heading">
     <h4>Tests</h4>
     <button
       class="btn btn-success btn-outlined btn-xs"
-      (click)="createTestButtonClick.emit($event)"
+      (click)="createTestButtonClick.emit(tests)"
     >
       New Test
     </button>
@@ -44,7 +44,10 @@
           <div class="item-name">
             {{ item.value.createdOn | date }}
           </div>
-          <a class="delete-control">
+          <a
+            class="delete-control"
+            (click)="deleteTestButtonClick.emit(item.value)"
+          >
             <i class="fa fa-trash-o"></i>
           </a>
         </div>

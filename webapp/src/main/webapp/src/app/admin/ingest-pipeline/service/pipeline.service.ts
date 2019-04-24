@@ -17,6 +17,8 @@ import {
 } from './pipeline.service.stubs';
 import { TranslateService } from '@ngx-translate/core';
 
+let testId: number = stubPipelineTests.length + 1;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -78,18 +80,24 @@ export class PipelineService {
     pipelineId: string,
     test: PipelineTest
   ): Observable<PipelineTest> {
-    return of(test);
+    return of({
+      id: testId++,
+      createdOn: new Date(),
+      name: '',
+      input: '',
+      output: ''
+    }).pipe(delay(500));
   }
 
   updatePipelineTest(
     pipelineId: string,
     test: PipelineTest
   ): Observable<PipelineTest> {
-    return of(test);
+    return of(test).pipe(delay(500));
   }
 
   deletePipelineTest(pipelineId: string, testId: number): Observable<void> {
-    return of();
+    return of(null);
   }
 
   runPipelineTest(

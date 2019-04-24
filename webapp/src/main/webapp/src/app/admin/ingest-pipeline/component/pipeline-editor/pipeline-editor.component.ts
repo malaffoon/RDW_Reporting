@@ -28,7 +28,7 @@ export class PipelineEditorComponent {
   scriptChange: EventEmitter<string> = new EventEmitter();
 
   @Output()
-  scriptSave: EventEmitter<Pipeline> = new EventEmitter();
+  scriptUpdate: EventEmitter<Pipeline> = new EventEmitter();
 
   @Output()
   scriptTest: EventEmitter<Pipeline> = new EventEmitter();
@@ -78,6 +78,9 @@ export class PipelineEditorComponent {
   @Output()
   testUpdate: EventEmitter<PipelineTest> = new EventEmitter();
 
+  @Input()
+  testUpdating: boolean;
+
   // pipeline-explorer
 
   @Input()
@@ -90,10 +93,10 @@ export class PipelineEditorComponent {
   itemSelected: EventEmitter<Item> = new EventEmitter();
 
   @Output()
-  createTestButtonClick: EventEmitter<void> = new EventEmitter();
+  testCreate: EventEmitter<HTMLElement> = new EventEmitter();
 
   @Output()
-  deleteTestButtonClick: EventEmitter<void> = new EventEmitter();
+  testDelete: EventEmitter<PipelineTest> = new EventEmitter();
 
   // extras
 

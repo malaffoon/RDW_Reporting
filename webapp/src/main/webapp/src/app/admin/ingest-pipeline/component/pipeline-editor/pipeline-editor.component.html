@@ -15,7 +15,7 @@
         type="button"
         class="btn btn-primary btn-outlined"
         [disabled]="saveButtonDisabled"
-        (click)="scriptSave.emit(selectedItem.value)"
+        (click)="scriptUpdate.emit(selectedItem.value)"
       >
         <ng-container *ngIf="saving; else notSaving">
           <i class="fa fa-spinner fa-pulse"></i> Saving
@@ -58,14 +58,24 @@
         class="btn btn-primary btn-outlined"
         (click)="testUpdate.emit(selectedItem.value)"
       >
-        Save
+        <ng-container *ngIf="testUpdating; else testNotUpdating">
+          <i class="fa fa-spinner fa-pulse"></i> Saving
+        </ng-container>
+        <ng-template #testNotUpdating>
+          Save
+        </ng-template>
       </button>
 
       <button
         class="btn btn-success btn-outlined"
         (click)="testRun.emit(selectedItem.value)"
       >
-        Run Test
+        <ng-container *ngIf="testing; else testNotRunning">
+          <i class="fa fa-spinner fa-pulse"></i> Testing
+        </ng-container>
+        <ng-template #testNotRunning>
+          Run Test
+        </ng-template>
       </button>
     </ng-container>
   </ng-container>
@@ -76,8 +86,8 @@
     [items]="items"
     [selectedItem]="selectedItem"
     (itemSelected)="itemSelected.emit($event)"
-    (createTestButtonClick)="createTestButtonClick.emit()"
-    (deleteTestButtonClick)="deleteTestButtonClick.emit($event)"
+    (createTestButtonClick)="testCreate.emit($event)"
+    (deleteTestButtonClick)="testDelete.emit($event)"
   ></pipeline-explorer>
 
   <div>

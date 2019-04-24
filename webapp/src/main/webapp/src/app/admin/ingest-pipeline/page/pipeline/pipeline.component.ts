@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -81,6 +81,8 @@ export class PipelineComponent {
   published: boolean;
   publishButtonDisabled: boolean = true;
 
+  testUpdating: boolean;
+
   items: Item[];
   selectedItem: Item;
 
@@ -150,7 +152,7 @@ export class PipelineComponent {
     this.saveButtonDisabled = this._lastSavedScriptBody === value;
   }
 
-  onScriptSave(pipeline: Pipeline): void {
+  onScriptUpdate(pipeline: Pipeline): void {
     this.saving = true;
     this.pipelineService
       .updatePipelineScript(pipeline.id, pipeline.script)
@@ -177,6 +179,7 @@ export class PipelineComponent {
               this.testResults = results;
               this.testing = false;
               this.tested = true;
+              // TODO launch test result modal
             });
         } else {
           this.testing = false;
@@ -216,44 +219,79 @@ export class PipelineComponent {
       });
   }
 
-  onTestCreated(test: PipelineTest): void {
+  onTestRun(test: PipelineTest): void {
+    // fail fast when compilation doesn't work
+    const { pipeline } = this;
+    this.testing = true;
+    this.pipelineService
+      .compilePipelineScript(pipeline.script.body)
+      .subscribe(errors => {
+        this.compilationErrors.next(errors);
+
+        if (errors.length === 0) {
+          this.pipelineService
+            .runPipelineTest(pipeline.id, test.id, pipeline.script.body)
+            .subscribe(results => {
+              this.testResults = results;
+              this.testing = false;
+              // TODO launch test result modal
+            });
+        } else {
+          this.testing = false;
+        }
+      });
+  }
+
+  onTestCreate(element: HTMLElement): void {
+    const test = {
+      input: '',
+      output: ''
+    };
     this.pipelineService
       .createPipelineTest(this.pipeline.id, test)
       .subscribe(test => {
-        this.setPipelineTests([...this.pipeline.tests, test]);
-      });
-  }
-
-  onTestUpdated(test: PipelineTest): void {
-    this.pipelineService
-      .updatePipelineTest(this.pipeline.id, test)
-      .subscribe(test => {
-        this.setPipelineTests(
-          this.pipeline.tests.map(x => (x.id === test.id ? test : x))
+        this.setPipelineTests([test, ...this.pipeline.tests]);
+        // select added test
+        this.selectedItem = this.items.find(
+          ({ type, value: { id } }) => type === 'Test' && id === test.id
         );
       });
   }
 
-  onTestDeleted(test: PipelineTest): void {
+  onTestUpdate(test: PipelineTest): void {
+    this.testUpdating = true;
+    this.pipelineService
+      .updatePipelineTest(this.pipeline.id, test)
+      .subscribe(() => {
+        // update updated on?
+        this.testUpdating = false;
+      });
+  }
+
+  onTestDelete(test: PipelineTest): void {
     this.pipelineService
       .deletePipelineTest(this.pipeline.id, test.id)
       .subscribe(() => {
+        // find and select next item
+        const deletedTestIndex = this.items.findIndex(
+          ({ type, value: { id } }) => type === 'Test' && id === test.id
+        );
+
         this.setPipelineTests(
           this.pipeline.tests.filter(({ id }) => id !== test.id)
         );
+
+        const nextTestItem = this.items.find(
+          ({ type, value: { id } }, index) =>
+            type === 'Test' && id !== test.id && index >= deletedTestIndex
+        );
+
+        this.selectedItem = nextTestItem != null ? nextTestItem : this.items[0];
       });
   }
 
   onItemSelected(item: Item): void {
     this.selectedItem = item;
-  }
-
-  onCreateTestButtonClick(): void {
-    // launch modal? or just place test in place?
-  }
-
-  onDeleteTestButtonClick(test: PipelineTest): void {
-    // TODO run test
   }
 
   private setPipelineTests(tests: PipelineTest[]): void {
