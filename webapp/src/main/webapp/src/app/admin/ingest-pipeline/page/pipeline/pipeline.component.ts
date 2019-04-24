@@ -298,6 +298,5 @@ export class PipelineComponent {
     this.testButtonDisabled = this.testing || tests.length === 0;
     this.pipeline.tests = tests;
     this.items = createItems(this.pipeline);
-    // TODO if new script we should select it
   }
 }
