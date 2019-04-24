@@ -100,19 +100,24 @@ export interface PipelineTest {
   id?: number;
 
   /**
+   * The creation datetime
+   */
+  createdOn?: Date;
+
+  /**
    * The user defined test name
    */
-  name: string;
+  name?: string;
 
   /**
    * The test input
    */
-  input: string;
+  input?: string;
 
   /**
    * The expected test output
    */
-  output: string;
+  output?: string;
 }
 
 export interface Message {

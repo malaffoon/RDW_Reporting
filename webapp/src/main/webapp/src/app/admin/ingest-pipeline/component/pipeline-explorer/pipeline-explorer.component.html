@@ -1,0 +1,59 @@
+<div class="script-items-container">
+  <ul>
+    <li *ngFor="let item of _scriptItems">
+      <a
+        #itemElement
+        class="item"
+        [ngClass]="{
+          active: selectedItem === item
+        }"
+        (click)="onItemClick(item, itemElement)"
+      >
+        <div class="item-name">
+          {{ 'pipeline-explorer.script' | translate }}
+        </div>
+        <p class="item-description">
+          <!--        Short description of the pipeline script including what it ingests and-->
+          <!--        the input format-->
+          {{ item.value.description }}
+        </p>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="test-items-container">
+  <div class="test-items-heading">
+    <h4>Tests</h4>
+    <button
+      class="btn btn-success btn-outlined btn-xs"
+      (click)="createTestButtonClick.emit($event)"
+    >
+      New Test
+    </button>
+  </div>
+  <ul class="test-items">
+    <li *ngFor="let item of _testItems; let index = index">
+      <a
+        #itemElement
+        class="item"
+        [ngClass]="{
+          active: selectedItem === item
+        }"
+        (click)="onItemClick(item, itemElement)"
+      >
+        <div class="item-heading">
+          <div class="item-name">
+            {{ item.value.createdOn | date }}
+          </div>
+          <a class="delete-control">
+            <i class="fa fa-trash-o"></i>
+          </a>
+        </div>
+        <p class="item-description" *ngIf="item.value.name">
+          {{ item.value.name }}
+        </p>
+      </a>
+    </li>
+  </ul>
+</div>

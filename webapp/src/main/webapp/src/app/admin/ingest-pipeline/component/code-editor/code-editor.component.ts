@@ -22,6 +22,13 @@ export interface Message {
   raw?: any;
 }
 
+export type ThemeType = 'light' | 'dark';
+
+const aceThemeByThemeType = {
+  light: 'xcode',
+  dark: 'dracula'
+};
+
 @Component({
   selector: 'code-editor',
   templateUrl: './code-editor.component.html',
@@ -49,6 +56,13 @@ export class CodeEditorComponent implements ControlValueAccessor {
     });
   }
 
+  @Input()
+  set theme(value: ThemeType) {
+    this.withEditor(editor => {
+      editor.setTheme(`ace/theme/${aceThemeByThemeType[value]}`);
+    });
+  }
+
   registerOnChange(fn: any): void {
     this.withEditor(editor => {
       editor.on('change', () => {
@@ -73,7 +87,7 @@ export class CodeEditorComponent implements ControlValueAccessor {
 
   writeValue(value: any): void {
     this.withEditor(editor => {
-      editor.setValue(value);
+      editor.setValue(value || '');
       editor.clearSelection();
     });
   }
@@ -86,12 +100,14 @@ export class CodeEditorComponent implements ControlValueAccessor {
         .pipe(
           map(() =>
             ace.edit(this.editorElementReference.nativeElement, {
-              highlightActiveLine: true,
+              highlightActiveLine: false,
               highlightSelectedWord: true,
-              minLines: 40,
-              maxLines: 40,
+              minLines: 35,
+              maxLines: 35,
               tabSize: 2,
-              theme: 'ace/theme/chrome',
+              showLineNumbers: false,
+              showFoldWidgets: false,
+              theme: aceThemeByThemeType.light,
               // theme: 'ace/theme/dracula',
               // ext-language_tools
               enableBasicAutocompletion: true,

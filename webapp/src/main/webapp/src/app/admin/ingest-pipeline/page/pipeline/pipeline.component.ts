@@ -1,11 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  Observable,
-  pipe,
-  Subject
-} from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
@@ -23,27 +17,17 @@ import {
   TestResult
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import { PipelineEditorTab } from '../../component/pipeline-editor/pipeline-editor.component';
 import { tap } from 'rxjs/internal/operators/tap';
 import {
   Message,
   MessageType
 } from '../../component/code-editor/code-editor.component';
+import {
+  Item,
+  ItemType
+} from '../../component/pipeline-explorer/pipeline-explorer.component';
 
-const ViewParameterName = 'view';
-const defaultLanguage = 'text';
 const defaultCompileDebounceTime = 2000;
-
-const tests = [1, 2, 3, 4, 5].map((id, index) => ({
-  createdOn: new Date(),
-  name: `Test ${id}`,
-  description: `
-  Mumblecore tousled roof party godard helvetica
-  palo santo brunch meggings hoodie direct trade
-  cray food truck. You probably haven't heard of
-  tofu shaman synth hell of locavore.
-  `
-}));
 
 function compilationErrorToMessage(value: CompilationError): Message {
   return {
@@ -54,20 +38,28 @@ function compilationErrorToMessage(value: CompilationError): Message {
   };
 }
 
+function createItems(pipeline: Pipeline): Item[] {
+  return [
+    {
+      type: 'Script',
+      value: pipeline
+    },
+    ...pipeline.tests.map(value => ({
+      type: <ItemType>'Test',
+      value
+    }))
+  ];
+}
+
 @Component({
   selector: 'pipeline',
   templateUrl: './pipeline.component.html',
   styleUrls: ['./pipeline.component.less']
 })
 export class PipelineComponent {
-  readonly tests = tests;
-  activeTest: number;
-
   pipeline: Pipeline;
 
   pipelineScriptBody: BehaviorSubject<string> = new BehaviorSubject('');
-
-  tab: Observable<PipelineEditorTab>;
 
   messages: Observable<Message[]>;
 
@@ -88,6 +80,9 @@ export class PipelineComponent {
   publishing: boolean;
   published: boolean;
   publishButtonDisabled: boolean = true;
+
+  items: Item[];
+  selectedItem: Item;
 
   private _lastSavedScriptBody: string;
   private _destroyed: Subject<void> = new Subject();
@@ -115,14 +110,12 @@ export class PipelineComponent {
       .subscribe(pipeline => {
         this._lastSavedScriptBody = pipeline.script.body;
         this.pipeline = pipeline;
+        this.items = createItems(pipeline);
+        this.selectedItem = this.items[0];
         this.testButtonDisabled = pipeline.tests.length === 0;
         this.published = false; // TODO
         this.publishButtonDisabled = this.published;
       });
-
-    this.tab = this.route.queryParams.pipe(
-      map(({ [ViewParameterName]: view }) => view || 'Script')
-    );
 
     this.pipelineScriptBody
       .pipe(
@@ -149,16 +142,6 @@ export class PipelineComponent {
     this.compilationErrors.complete();
     this._destroyed.next();
     this._destroyed.complete();
-  }
-
-  onTabClick(view: PipelineEditorTab): void {
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      queryParams: {
-        [ViewParameterName]: view
-      },
-      replaceUrl: true
-    });
   }
 
   onScriptChange(value: string): void {
@@ -261,8 +244,22 @@ export class PipelineComponent {
       });
   }
 
+  onItemSelected(item: Item): void {
+    this.selectedItem = item;
+  }
+
+  onCreateTestButtonClick(): void {
+    // launch modal? or just place test in place?
+  }
+
+  onDeleteTestButtonClick(test: PipelineTest): void {
+    // TODO run test
+  }
+
   private setPipelineTests(tests: PipelineTest[]): void {
-    this.pipeline.tests = tests;
     this.testButtonDisabled = this.testing || tests.length === 0;
+    this.pipeline.tests = tests;
+    this.items = createItems(this.pipeline);
+    // TODO if new script we should select it
   }
 }

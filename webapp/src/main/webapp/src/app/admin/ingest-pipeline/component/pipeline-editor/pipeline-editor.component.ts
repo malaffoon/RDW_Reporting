@@ -5,10 +5,14 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { CompilationError, Pipeline, TestResult } from '../../model/pipeline';
-import { Message } from '../code-editor/code-editor.component';
-
-export type PipelineEditorTab = 'Script' | 'Tests' | 'TestResults';
+import {
+  CompilationError,
+  Pipeline,
+  PipelineTest,
+  TestResult
+} from '../../model/pipeline';
+import { Message, ThemeType } from '../code-editor/code-editor.component';
+import { Item } from '../pipeline-explorer/pipeline-explorer.component';
 
 @Component({
   selector: 'pipeline-editor',
@@ -18,10 +22,7 @@ export type PipelineEditorTab = 'Script' | 'Tests' | 'TestResults';
 })
 export class PipelineEditorComponent {
   @Input()
-  selectedTab: PipelineEditorTab = 'Script';
-
-  @Output()
-  tabClick: EventEmitter<PipelineEditorTab> = new EventEmitter();
+  pipeline: Pipeline;
 
   @Output()
   scriptChange: EventEmitter<string> = new EventEmitter();
@@ -71,6 +72,31 @@ export class PipelineEditorComponent {
   @Input()
   publishButtonDisabled: boolean;
 
+  @Output()
+  testRun: EventEmitter<PipelineTest> = new EventEmitter();
+
+  @Output()
+  testUpdate: EventEmitter<PipelineTest> = new EventEmitter();
+
+  // pipeline-explorer
+
   @Input()
-  pipeline: Pipeline;
+  items: Item[] = [];
+
+  @Input()
+  selectedItem: Item;
+
+  @Output()
+  itemSelected: EventEmitter<Item> = new EventEmitter();
+
+  @Output()
+  createTestButtonClick: EventEmitter<void> = new EventEmitter();
+
+  @Output()
+  deleteTestButtonClick: EventEmitter<void> = new EventEmitter();
+
+  // extras
+
+  @Input()
+  codeEditorTheme: ThemeType = 'light';
 }

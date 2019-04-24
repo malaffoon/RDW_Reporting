@@ -62,17 +62,27 @@
                 "lazy": true
               },
               {
-                "input": "node_modules/ace-builds/src-min/theme-dracula.js",
-                "bundleName": "theme-dracula",
+                "input": "node_modules/ace-builds/src-min/mode-xml.js",
+                "bundleName": "mode-xml",
                 "lazy": true
               },
               {
-                "input": "node_modules/ace-builds/src-min/theme-chrome.js",
-                "bundleName": "theme-dracula",
+                "input": "node_modules/ace-builds/src-min/worker-xml.js",
+                "bundleName": "worker-xml",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/mode-text.js",
+                "bundleName": "mode-text",
                 "lazy": true
               },
               {
                 "input": "node_modules/ace-builds/src-min/theme-xcode.js",
+                "bundleName": "theme-xcode",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/theme-dracula.js",
                 "bundleName": "theme-dracula",
                 "lazy": true
               }

@@ -12,7 +12,8 @@ import { of } from 'rxjs/internal/observable/of';
 import { delay } from 'rxjs/operators';
 import {
   stubIngestPipelines,
-  stubPipelineScript
+  stubPipelineScript,
+  stubPipelineTests
 } from './pipeline.service.stubs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -63,14 +64,7 @@ export class PipelineService {
   }
 
   getPipelineTests(pipelineId: string): Observable<PipelineTest[]> {
-    return of([
-      {
-        id: 1,
-        name: 'It should transform something',
-        input: 'a',
-        output: 'b'
-      }
-    ]);
+    return of(stubPipelineTests);
   }
 
   getPipelineTest(

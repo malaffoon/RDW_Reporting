@@ -1417,18 +1417,21 @@
   "ingest-pipeline": {
     "assessment": {
       "name": "Assessments",
-      "description": "Shaman raw denim umami deep v wayfarers mumblecore, try-hard williamsburg la croix affogato fam narwhal selfies. Tote bag organic narwhal health goth hella activated charcoal. Raclette post-ironic 8-bit echo park wolf celiac.."
+      "description": "Shaman raw denim umami deep v wayfarers mumblecore, try-hard williamsburg la croix affogato fam narwhal selfies."
     },
     "exam": {
       "name": "Exams",
-      "description": "Readymade air plant direct trade flexitarian tousled, shabby chic hot chicken raclette pitchfork vinyl. Gentrify banjo live-edge, air plant vexillologist green juice readymade asymmetrical locavore fingerstache master cleanse roof party enamel pin tote bag pinterest."
+      "description": "Readymade air plant direct trade flexitarian tousled, shabby chic hot chicken raclette pitchfork vinyl."
     },
     "group": {
       "name": "Groups",
-      "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko helvetica, fashion axe pork belly vexillologist. Bicycle rights meh shoreditch try-hard, hammock typewriter fixie four loko shabby chic. Pour-over kitsch pinterest."
+      "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko."
     }
   },
   "pipeline-tests": {
     "heading": "Tests"
+  },
+  "pipeline-explorer": {
+    "script": "Pipeline Script"
   }
 }
