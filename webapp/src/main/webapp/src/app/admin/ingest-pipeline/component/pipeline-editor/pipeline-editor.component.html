@@ -54,20 +54,6 @@
       </button>
     </ng-container>
     <ng-container *ngSwitchCase="'Test'">
-      <!--      <sb-button-group-->
-      <!--        [(ngModel)]="testField"-->
-      <!--        [options]="[-->
-      <!--          {-->
-      <!--            text: 'Input',-->
-      <!--            value: 'input'-->
-      <!--          },-->
-      <!--          {-->
-      <!--            text: 'Output',-->
-      <!--            value: 'output'-->
-      <!--          }-->
-      <!--        ]"-->
-      <!--      ></sb-button-group>-->
-
       <button
         class="btn btn-primary btn-outlined"
         (click)="testUpdate.emit(selectedItem.value)"
@@ -142,60 +128,6 @@
             </div>
           </div>
         </div>
-
-        <!--        <div class="form-group">-->
-        <!--          <div-->
-        <!--            class="btn-group"-->
-        <!--            btnRadioGroup-->
-        <!--            [(ngModel)]="testField"-->
-        <!--          >-->
-        <!--            <label-->
-        <!--              class="btn btn-info btn-outlined btn-xs"-->
-        <!--              btnRadio="Input"-->
-        <!--              tabindex="0"-->
-        <!--              role="button"-->
-        <!--            >-->
-        <!--              Input-->
-        <!--            </label>-->
-        <!--            <label-->
-        <!--              class="btn btn-info btn-outlined btn-xs"-->
-        <!--              btnRadio="Output"-->
-        <!--              tabindex="0"-->
-        <!--              role="button"-->
-        <!--            >-->
-        <!--              Output-->
-        <!--            </label>-->
-        <!--          </div>-->
-
-        <!--          <label><a>Input</a> | <a>Output</a></label>-->
-
-        <!--        <ng-container *ngIf="testField === 'Input'; else output">-->
-        <!--&lt;!&ndash;          <label for="input">&ndash;&gt;-->
-        <!--&lt;!&ndash;            Input&ndash;&gt;-->
-        <!--&lt;!&ndash;          </label>&ndash;&gt;-->
-        <!--          <code-editor-->
-        <!--            id="input"-->
-        <!--            [messages]="messages"-->
-        <!--            [language]="pipeline.inputType"-->
-        <!--            [(ngModel)]="selectedItem.value.input"-->
-        <!--            (ngModelChange)="scriptChange.emit($event)"-->
-        <!--          ></code-editor>-->
-
-        <!--        </ng-container>-->
-        <!--        <ng-template #output>-->
-        <!--&lt;!&ndash;          <label for="output">&ndash;&gt;-->
-        <!--&lt;!&ndash;            Output&ndash;&gt;-->
-        <!--&lt;!&ndash;          </label>&ndash;&gt;-->
-        <!--          <code-editor-->
-        <!--            id="output"-->
-        <!--            [messages]="messages"-->
-        <!--            [language]="pipeline.inputType"-->
-        <!--            [(ngModel)]="selectedItem.value.output"-->
-        <!--            (ngModelChange)="scriptChange.emit($event)"-->
-        <!--          ></code-editor>-->
-
-        <!--        </ng-template>-->
-        <!--        </div>-->
       </ng-container>
     </ng-container>
   </div>
