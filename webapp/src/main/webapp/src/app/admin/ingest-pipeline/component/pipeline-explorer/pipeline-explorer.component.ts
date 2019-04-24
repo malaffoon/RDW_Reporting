@@ -28,7 +28,10 @@ export class PipelineExplorerComponent {
   itemSelected: EventEmitter<Item> = new EventEmitter();
 
   @Output()
-  createTestButtonClick: EventEmitter<MouseEvent> = new EventEmitter();
+  createTestButtonClick: EventEmitter<void> = new EventEmitter();
+
+  @Output()
+  deleteTestButtonClick: EventEmitter<PipelineTest> = new EventEmitter();
 
   _scriptItems: Item<Pipeline>[] = [];
   _testItems: Item<PipelineTest>[] = [];
