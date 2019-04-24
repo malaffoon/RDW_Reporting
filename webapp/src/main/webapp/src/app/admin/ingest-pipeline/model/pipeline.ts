@@ -97,31 +97,42 @@ export interface PipelineTest {
   /**
    * The test entity ID
    */
-  id: number;
+  id?: number;
+
+  /**
+   * The creation datetime
+   */
+  createdOn?: Date;
 
   /**
    * The user defined test name
    */
-  name: string;
+  name?: string;
 
   /**
    * The test input
    */
-  input: string;
+  input?: string;
 
   /**
    * The expected test output
    */
-  expectedOutput: string;
+  output?: string;
 }
 
-export interface ScriptError {
-  row: number;
-  column: number;
-  message: ScriptErrorMessage;
-}
-
-export interface ScriptErrorMessage {
+export interface Message {
   code: string;
   parameters?: { [key: string]: any };
+}
+
+export interface CompilationError {
+  row: number;
+  column: number;
+  message: Message | string;
+}
+
+export interface TestResult {
+  testId: number;
+  passed: boolean;
+  message: Message | string;
 }

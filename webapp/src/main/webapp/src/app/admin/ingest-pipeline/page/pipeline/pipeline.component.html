@@ -1,4 +1,20 @@
-<ng-container *ngIf="(pipeline | async) as pipe">
-  <h3>{{ pipe.name }}</h3>
-  <pipeline-form [script]="pipelineScript | async"></pipeline-form>
-</ng-container>
+<pipeline-editor
+  [pipeline]="pipeline"
+  [compiling]="compiling"
+  [compilationErrors]="compilationErrors | async"
+  [saving]="saving"
+  [saveButtonDisabled]="saveButtonDisabled"
+  [testing]="testing"
+  [testButtonDisabled]="testButtonDisabled"
+  [publishing]="publishing"
+  [publishButtonDisabled]="publishButtonDisabled"
+  (scriptChange)="onScriptChange($event)"
+  (scriptSave)="onScriptSave($event)"
+  (scriptTest)="onScriptTest($event)"
+  (scriptPublish)="onScriptPublish($event)"
+  [items]="items"
+  [selectedItem]="selectedItem"
+  (itemSelected)="onItemSelected($event)"
+  (createTestButtonClick)="onCreateTestButtonClick()"
+  (deleteTestButtonClick)="onDeleteTestButtonClick()"
+></pipeline-editor>

@@ -21,13 +21,19 @@ export const ingestPipelineRoutes = [
       },
       {
         path: ':id',
-        component: PipelineComponent,
         data: {
           breadcrumb: { resolve: 'pipeline.name' }
         },
         resolve: {
           pipeline: PipelineResolve
-        }
+        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: PipelineComponent
+          }
+        ]
       }
     ]
   }

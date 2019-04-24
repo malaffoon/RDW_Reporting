@@ -1,0 +1,134 @@
+<div class="toolbar">
+  <div>
+    <h3>Assessments Pipeline</h3>
+  </div>
+
+  <ng-container [ngSwitch]="selectedItem.type">
+    <ng-container *ngSwitchCase="'Script'">
+      <div class="compilation-status">
+        <ng-container *ngIf="compiling">
+          <i class="fa fa-spinner fa-pulse"></i> Compiling
+        </ng-container>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary btn-outlined"
+        [disabled]="saveButtonDisabled"
+        (click)="scriptSave.emit(selectedItem.value)"
+      >
+        <ng-container *ngIf="saving; else notSaving">
+          <i class="fa fa-spinner fa-pulse"></i> Saving
+        </ng-container>
+        <ng-template #notSaving>
+          Save Draft
+        </ng-template>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-success btn-outlined"
+        [disabled]="testButtonDisabled"
+        (click)="scriptTest.emit(selectedItem.value)"
+      >
+        <ng-container *ngIf="testing; else notTesting">
+          <i class="fa fa-spinner fa-pulse"></i> Testing
+        </ng-container>
+        <ng-template #notTesting>
+          Run Tests
+        </ng-template>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="publishButtonDisabled"
+        (click)="scriptPublish.emit(selectedItem.value)"
+      >
+        <ng-container *ngIf="publishing; else notPublished">
+          <i class="fa fa-spinner fa-pulse"></i> Publishing
+        </ng-container>
+        <ng-template #notPublished>
+          Publish
+        </ng-template>
+      </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'Test'">
+      <button
+        class="btn btn-primary btn-outlined"
+        (click)="testUpdate.emit(selectedItem.value)"
+      >
+        Save
+      </button>
+
+      <button
+        class="btn btn-success btn-outlined"
+        (click)="testRun.emit(selectedItem.value)"
+      >
+        Run Test
+      </button>
+    </ng-container>
+  </ng-container>
+</div>
+
+<div class="editor-container">
+  <pipeline-explorer
+    [items]="items"
+    [selectedItem]="selectedItem"
+    (itemSelected)="itemSelected.emit($event)"
+    (createTestButtonClick)="createTestButtonClick.emit()"
+    (deleteTestButtonClick)="deleteTestButtonClick.emit($event)"
+  ></pipeline-explorer>
+
+  <div>
+    <ng-container [ngSwitch]="selectedItem.type">
+      <ng-container *ngSwitchCase="'Script'">
+        <code-editor
+          [theme]="codeEditorTheme"
+          [messages]="messages"
+          [language]="selectedItem.value.script.language"
+          [(ngModel)]="selectedItem.value.script.body"
+          (ngModelChange)="scriptChange.emit($event)"
+        ></code-editor>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Test'">
+        <div class="test-form">
+          <div class="form-group">
+            <label for="name">
+              Test Description
+            </label>
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              [(ngModel)]="selectedItem.value.name"
+            />
+          </div>
+
+          <div class="test-grid">
+            <div class="form-group">
+              <label>Input</label>
+              <code-editor
+                [theme]="codeEditorTheme"
+                [messages]="messages"
+                [language]="pipeline.inputType"
+                [(ngModel)]="selectedItem.value.input"
+                (ngModelChange)="scriptChange.emit($event)"
+              ></code-editor>
+            </div>
+            <div class="form-group">
+              <label>Output</label>
+              <code-editor
+                [theme]="codeEditorTheme"
+                [messages]="messages"
+                [language]="pipeline.inputType"
+                [(ngModel)]="selectedItem.value.output"
+                (ngModelChange)="scriptChange.emit($event)"
+              ></code-editor>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
