@@ -93,7 +93,7 @@ export class PipelineEditorComponent {
   itemSelected: EventEmitter<Item> = new EventEmitter();
 
   @Output()
-  testCreate: EventEmitter<HTMLElement> = new EventEmitter();
+  testCreate: EventEmitter<void> = new EventEmitter();
 
   @Output()
   testDelete: EventEmitter<PipelineTest> = new EventEmitter();

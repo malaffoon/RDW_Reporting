@@ -242,7 +242,7 @@ export class PipelineComponent {
       });
   }
 
-  onTestCreate(element: HTMLElement): void {
+  onTestCreate(): void {
     const test = {
       input: '',
       output: ''

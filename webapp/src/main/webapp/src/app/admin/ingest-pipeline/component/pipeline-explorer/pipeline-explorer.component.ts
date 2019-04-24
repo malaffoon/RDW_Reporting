@@ -28,7 +28,7 @@ export class PipelineExplorerComponent {
   itemSelected: EventEmitter<Item> = new EventEmitter();
 
   @Output()
-  createTestButtonClick: EventEmitter<HTMLElement> = new EventEmitter();
+  createTestButtonClick: EventEmitter<void> = new EventEmitter();
 
   @Output()
   deleteTestButtonClick: EventEmitter<PipelineTest> = new EventEmitter();
