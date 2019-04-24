@@ -108,7 +108,6 @@ export class CodeEditorComponent implements ControlValueAccessor {
               showLineNumbers: false,
               showFoldWidgets: false,
               theme: aceThemeByThemeType.light,
-              // theme: 'ace/theme/dracula',
               // ext-language_tools
               enableBasicAutocompletion: true,
               enableLiveAutocompletion: true,
