@@ -8,6 +8,7 @@ import {
 import {
   CompilationError,
   Pipeline,
+  PipelineScript,
   PipelineTest,
   TestResult
 } from '../../model/pipeline';
@@ -28,13 +29,13 @@ export class PipelineEditorComponent {
   scriptChange: EventEmitter<string> = new EventEmitter();
 
   @Output()
-  scriptUpdate: EventEmitter<Pipeline> = new EventEmitter();
+  scriptUpdate: EventEmitter<PipelineScript> = new EventEmitter();
 
   @Output()
-  scriptTest: EventEmitter<Pipeline> = new EventEmitter();
+  scriptTest: EventEmitter<PipelineScript> = new EventEmitter();
 
   @Output()
-  scriptPublish: EventEmitter<Pipeline> = new EventEmitter();
+  scriptPublish: EventEmitter<PipelineScript> = new EventEmitter();
 
   @Input()
   compiling: boolean;
@@ -61,9 +62,6 @@ export class PipelineEditorComponent {
   saved: boolean;
 
   @Input()
-  saveButtonDisabled: boolean;
-
-  @Input()
   messages: Message[];
 
   @Input()
@@ -71,6 +69,9 @@ export class PipelineEditorComponent {
 
   @Input()
   publishButtonDisabled: boolean;
+
+  @Output()
+  testChange: EventEmitter<Item<PipelineTest>> = new EventEmitter();
 
   @Output()
   testRun: EventEmitter<PipelineTest> = new EventEmitter();
@@ -88,6 +89,9 @@ export class PipelineEditorComponent {
 
   @Input()
   selectedItem: Item;
+
+  @Input()
+  selectedItemLoading: boolean = true;
 
   @Output()
   itemSelected: EventEmitter<Item> = new EventEmitter();

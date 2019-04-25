@@ -14,7 +14,7 @@
       <button
         type="button"
         class="btn btn-primary btn-outlined"
-        [disabled]="saveButtonDisabled"
+        [disabled]="!selectedItem.changed"
         (click)="scriptUpdate.emit(selectedItem.value)"
       >
         <ng-container *ngIf="saving; else notSaving">
@@ -56,6 +56,7 @@
     <ng-container *ngSwitchCase="'Test'">
       <button
         class="btn btn-primary btn-outlined"
+        [disabled]="!selectedItem.changed"
         (click)="testUpdate.emit(selectedItem.value)"
       >
         <ng-container *ngIf="testUpdating; else testNotUpdating">
@@ -91,54 +92,65 @@
   ></pipeline-explorer>
 
   <div>
-    <ng-container [ngSwitch]="selectedItem.type">
-      <ng-container *ngSwitchCase="'Script'">
-        <code-editor
-          [theme]="codeEditorTheme"
-          [messages]="messages"
-          [language]="selectedItem.value.script.language"
-          [(ngModel)]="selectedItem.value.script.body"
-          (ngModelChange)="scriptChange.emit($event)"
-        ></code-editor>
-      </ng-container>
-      <ng-container *ngSwitchCase="'Test'">
-        <div class="test-form">
-          <div class="form-group">
-            <label for="name">
-              Test Description
-            </label>
-            <input
-              id="name"
-              type="text"
-              class="form-control"
-              [(ngModel)]="selectedItem.value.name"
-            />
-          </div>
-
-          <div class="test-grid">
-            <div class="form-group">
-              <label>Input</label>
-              <code-editor
-                [theme]="codeEditorTheme"
-                [messages]="messages"
-                [language]="pipeline.inputType"
-                [(ngModel)]="selectedItem.value.input"
-                (ngModelChange)="scriptChange.emit($event)"
-              ></code-editor>
-            </div>
-            <div class="form-group">
-              <label>Output</label>
-              <code-editor
-                [theme]="codeEditorTheme"
-                [messages]="messages"
-                [language]="pipeline.inputType"
-                [(ngModel)]="selectedItem.value.output"
-                (ngModelChange)="scriptChange.emit($event)"
-              ></code-editor>
-            </div>
-          </div>
-        </div>
-      </ng-container>
+    <ng-container *ngIf="selectedItemLoading; else itemLoaded">
+      <spinner></spinner>
     </ng-container>
+    <ng-template #itemLoaded>
+      <ng-container [ngSwitch]="selectedItem.type">
+        <ng-container *ngSwitchCase="'Script'">
+          <code-editor
+            [theme]="codeEditorTheme"
+            [lines]="35"
+            [messages]="messages"
+            [language]="selectedItem.value.language"
+            [(ngModel)]="selectedItem.value.body"
+            (ngModelChange)="scriptChange.emit($event)"
+          ></code-editor>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Test'">
+          <div class="test-form">
+            <div class="form-group">
+              <label for="name">
+                Test Description
+              </label>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                [(ngModel)]="selectedItem.value.name"
+                (ngModelChange)="testChange.emit(selectedItem)"
+              />
+            </div>
+
+            <div class="test-grid">
+              <div class="form-group">
+                <label>Input</label>
+                <code-editor
+                  [theme]="codeEditorTheme"
+                  [lines]="31"
+                  [gutter]="false"
+                  [messages]="messages"
+                  [language]="pipeline.inputType"
+                  [(ngModel)]="selectedItem.value.input"
+                  (ngModelChange)="testChange.emit(selectedItem)"
+                ></code-editor>
+              </div>
+              <div class="form-group">
+                <label>Output</label>
+                <code-editor
+                  [theme]="codeEditorTheme"
+                  [lines]="31"
+                  [gutter]="false"
+                  [messages]="messages"
+                  [language]="pipeline.inputType"
+                  [(ngModel)]="selectedItem.value.output"
+                  (ngModelChange)="testChange.emit(selectedItem)"
+                ></code-editor>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-template>
   </div>
 </div>

@@ -63,6 +63,25 @@ export class CodeEditorComponent implements ControlValueAccessor {
     });
   }
 
+  @Input()
+  set lines(value: number) {
+    this.withEditor(editor => {
+      editor.setOptions({
+        minLines: value,
+        maxLines: value
+      });
+    });
+  }
+
+  @Input()
+  set gutter(value: boolean) {
+    this.withEditor(editor => {
+      editor.setOptions({
+        showGutter: value
+      });
+    });
+  }
+
   registerOnChange(fn: any): void {
     this.withEditor(editor => {
       editor.on('change', () => {

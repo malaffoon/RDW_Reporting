@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -13,6 +13,7 @@ import { PipelineService } from '../../service/pipeline.service';
 import {
   CompilationError,
   Pipeline,
+  PipelineScript,
   PipelineTest,
   TestResult
 } from '../../model/pipeline';
@@ -26,6 +27,8 @@ import {
   Item,
   ItemType
 } from '../../component/pipeline-explorer/pipeline-explorer.component';
+import { cloneDeep, isEqual } from 'lodash';
+import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -40,15 +43,21 @@ function compilationErrorToMessage(value: CompilationError): Message {
 
 function createItems(pipeline: Pipeline): Item[] {
   return [
-    {
-      type: 'Script',
-      value: pipeline
-    },
-    ...pipeline.tests.map(value => ({
-      type: <ItemType>'Test',
-      value
-    }))
+    createItem('Script', pipeline.script, pipeline.description),
+    ...pipeline.tests.map(value => createItem('Test', value))
   ];
+}
+
+function createItem<T>(type: ItemType, value: T, label?: string): Item<T> {
+  if (label == null) {
+    label = type === 'Test' ? (<PipelineTest>value).name : '';
+  }
+  return {
+    type,
+    label,
+    value,
+    lastSavedValue: cloneDeep(value)
+  };
 }
 
 @Component({
@@ -56,7 +65,7 @@ function createItems(pipeline: Pipeline): Item[] {
   templateUrl: './pipeline.component.html',
   styleUrls: ['./pipeline.component.less']
 })
-export class PipelineComponent {
+export class PipelineComponent implements ComponentCanDeactivate {
   pipeline: Pipeline;
 
   pipelineScriptBody: BehaviorSubject<string> = new BehaviorSubject('');
@@ -70,7 +79,6 @@ export class PipelineComponent {
 
   saving: boolean;
   saved: boolean = true;
-  saveButtonDisabled: boolean = true;
 
   testing: boolean;
   tested: boolean;
@@ -85,8 +93,8 @@ export class PipelineComponent {
 
   items: Item[];
   selectedItem: Item;
+  selectedItemLoading: boolean;
 
-  private _lastSavedScriptBody: string;
   private _destroyed: Subject<void> = new Subject();
 
   constructor(
@@ -110,10 +118,9 @@ export class PipelineComponent {
         }))
       )
       .subscribe(pipeline => {
-        this._lastSavedScriptBody = pipeline.script.body;
         this.pipeline = pipeline;
         this.items = createItems(pipeline);
-        this.selectedItem = this.items[0];
+        this.setSelectedItem(this.items[0]);
         this.testButtonDisabled = pipeline.tests.length === 0;
         this.published = false; // TODO
         this.publishButtonDisabled = this.published;
@@ -146,35 +153,44 @@ export class PipelineComponent {
     this._destroyed.complete();
   }
 
+  @HostListener('window:beforeunload')
+  canDeactivate(): boolean {
+    return this.items.every(({ changed }) => !changed);
+  }
+
   onScriptChange(value: string): void {
     this.pipelineScriptBody.next(value);
     this.saved = false;
-    this.saveButtonDisabled = this._lastSavedScriptBody === value;
+    this.selectedItem.changed = !isEqual(
+      this.selectedItem.value,
+      this.selectedItem.lastSavedValue
+    );
   }
 
-  onScriptUpdate(pipeline: Pipeline): void {
+  onScriptUpdate(script: PipelineScript): void {
     this.saving = true;
+    const item = this.selectedItem;
     this.pipelineService
-      .updatePipelineScript(pipeline.id, pipeline.script)
+      .updatePipelineScript(this.pipeline.id, script)
       .subscribe(script => {
-        this._lastSavedScriptBody = script.body; // because this doesn't use next() we dont get "saved"
         this.saving = false;
         this.saved = true;
-        this.saveButtonDisabled = true;
+        item.lastSavedValue = cloneDeep(script);
+        item.changed = false;
       });
   }
 
-  onScriptTest(pipeline: Pipeline): void {
+  onScriptTest(script: PipelineScript): void {
     // fail fast when compilation doesn't work
     this.testing = true;
     this.pipelineService
-      .compilePipelineScript(pipeline.script.body)
+      .compilePipelineScript(script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
         if (errors.length === 0) {
           this.pipelineService
-            .runPipelineTests(pipeline.id, pipeline.script.body)
+            .runPipelineTests(this.pipeline.id, script.body)
             .subscribe(results => {
               this.testResults = results;
               this.testing = false;
@@ -187,22 +203,22 @@ export class PipelineComponent {
       });
   }
 
-  onScriptPublish(pipeline: Pipeline): void {
+  onScriptPublish(script: PipelineScript): void {
     this.publishing = true;
     this.pipelineService
-      .compilePipelineScript(pipeline.script.body)
+      .compilePipelineScript(script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
         if (errors.length === 0) {
           this.pipelineService
-            .runPipelineTests(pipeline.id, pipeline.script.body)
+            .runPipelineTests(this.pipeline.id, script.body)
             .subscribe(results => {
               this.testResults = results;
 
               if (results.every(({ passed }) => passed)) {
                 this.pipelineService
-                  .publishPipelineScript(pipeline.id, pipeline.script)
+                  .publishPipelineScript(this.pipeline.id, script)
                   .subscribe(script => {
                     this.pipeline.script = script;
                     this.publishing = false;
@@ -217,6 +233,13 @@ export class PipelineComponent {
           this.publishing = false;
         }
       });
+  }
+
+  onTestChange(item: Item<PipelineTest>): void {
+    this.selectedItem.changed = !isEqual(
+      this.selectedItem.value,
+      this.selectedItem.lastSavedValue
+    );
   }
 
   onTestRun(test: PipelineTest): void {
@@ -243,15 +266,15 @@ export class PipelineComponent {
   }
 
   onTestCreate(): void {
-    const test = {
-      input: '',
-      output: ''
-    };
     this.pipelineService
-      .createPipelineTest(this.pipeline.id, test)
+      .createPipelineTest(this.pipeline.id, {
+        input: '',
+        output: ''
+      })
       .subscribe(test => {
         this.setPipelineTests([test, ...this.pipeline.tests]);
-        // select added test
+        this.items = [createItem('Test', test), ...this.items];
+        // select added item
         this.selectedItem = this.items.find(
           ({ type, value: { id } }) => type === 'Test' && id === test.id
         );
@@ -260,10 +283,13 @@ export class PipelineComponent {
 
   onTestUpdate(test: PipelineTest): void {
     this.testUpdating = true;
+    const item = this.selectedItem;
     this.pipelineService
       .updatePipelineTest(this.pipeline.id, test)
       .subscribe(() => {
         // update updated on?
+        item.lastSavedValue = cloneDeep(test);
+        item.changed = false;
         this.testUpdating = false;
       });
   }
@@ -281,22 +307,58 @@ export class PipelineComponent {
           this.pipeline.tests.filter(({ id }) => id !== test.id)
         );
 
+        this.items = this.items.filter(
+          ({ type, value: { id } }) => type !== 'Test' || id !== test.id
+        );
+
         const nextTestItem = this.items.find(
           ({ type, value: { id } }, index) =>
             type === 'Test' && id !== test.id && index >= deletedTestIndex
         );
 
-        this.selectedItem = nextTestItem != null ? nextTestItem : this.items[0];
+        this.setSelectedItem(
+          nextTestItem != null ? nextTestItem : this.items[0]
+        );
       });
   }
 
   onItemSelected(item: Item): void {
     this.selectedItem = item;
+    // lazy load item content
+    if (item.type === 'Script' && item.value == null) {
+      this.selectedItemLoading = true;
+      this.pipelineService
+        .getPipelineScript(this.pipeline.id, 1)
+        .subscribe(script => {
+          item.value = script;
+          item.lastSavedValue = cloneDeep(script);
+          item.changed = false;
+          this.selectedItemLoading = false;
+        });
+    } else if (item.type === 'Test' && item.value.input == null) {
+      this.selectedItemLoading = true;
+      this.pipelineService
+        .getPipelineTest(this.pipeline.id, item.value.id)
+        .subscribe(test => {
+          // merge here is only needed because of stubbing
+          const value = {
+            ...test,
+            ...item.value
+          };
+          item.value = value;
+          item.lastSavedValue = cloneDeep(value);
+          item.changed = false;
+          this.selectedItemLoading = false;
+        });
+    }
+  }
+
+  private setSelectedItem(item: Item): void {
+    this.onItemSelected(item);
   }
 
   private setPipelineTests(tests: PipelineTest[]): void {
     this.testButtonDisabled = this.testing || tests.length === 0;
     this.pipeline.tests = tests;
-    this.items = createItems(this.pipeline);
   }
 }
