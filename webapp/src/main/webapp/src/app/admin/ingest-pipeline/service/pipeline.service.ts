@@ -13,6 +13,7 @@ import { delay } from 'rxjs/operators';
 import {
   stubIngestPipelines,
   stubPipelineScript,
+  stubPipelineTest,
   stubPipelineTests
 } from './pipeline.service.stubs';
 import { TranslateService } from '@ngx-translate/core';
@@ -55,25 +56,25 @@ export class PipelineService {
           )
         }))
         .find(pipeline => pipeline.id === id)
-    );
+    ).pipe(delay(500));
   }
 
   getPipelineScript(
     pipelineId: string,
     scriptId: number
   ): Observable<PipelineScript> {
-    return of(stubPipelineScript);
+    return of(stubPipelineScript).pipe(delay(500));
   }
 
   getPipelineTests(pipelineId: string): Observable<PipelineTest[]> {
-    return of(stubPipelineTests);
+    return of(stubPipelineTests).pipe(delay(500));
   }
 
   getPipelineTest(
     pipelineId: string,
     testId: number
   ): Observable<PipelineTest> {
-    return of(<any>{});
+    return of(stubPipelineTest).pipe(delay(500));
   }
 
   createPipelineTest(

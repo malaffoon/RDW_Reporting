@@ -9,11 +9,16 @@
         }"
         (click)="onItemClick(item, itemElement)"
       >
-        <div class="item-name">
-          {{ 'pipeline-explorer.script' | translate }}
+        <div *ngIf="item.changed" class="item-modified">
+          <i class="fa fa-circle"></i>
         </div>
-        <p class="item-description">
-          {{ item.value.description }}
+        <div class="item-heading">
+          <div class="item-name">
+            {{ 'pipeline-explorer.script' | translate }}
+          </div>
+        </div>
+        <p *ngIf="item.label" class="item-description">
+          {{ item.label }}
         </p>
       </a>
     </li>
@@ -40,6 +45,10 @@
         }"
         (click)="onItemClick(item, itemElement)"
       >
+        <div *ngIf="item.changed" class="item-modified">
+          <i class="fa fa-circle"></i>
+        </div>
+
         <div class="item-heading">
           <div class="item-name">
             {{ item.value.createdOn | date }}
@@ -51,8 +60,8 @@
             <i class="fa fa-trash-o"></i>
           </a>
         </div>
-        <p class="item-description" *ngIf="item.value.name">
-          {{ item.value.name }}
+        <p *ngIf="item.label" class="item-description">
+          {{ item.label }}
         </p>
       </a>
     </li>

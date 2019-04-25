@@ -2,6 +2,7 @@ import { AuthorizationCanActivate } from '../../shared/security/authorization.ca
 import { PipelinesComponent } from './page/pipelines/pipelines.component';
 import { PipelineComponent } from './page/pipeline/pipeline.component';
 import { PipelineResolve } from './resolve/pipeline.resolve';
+import { UnsavedChangesGuard } from './guard/unsaved-changes.guard';
 
 export const ingestPipelineRoutes = [
   {
@@ -31,7 +32,8 @@ export const ingestPipelineRoutes = [
           {
             path: '',
             pathMatch: 'full',
-            component: PipelineComponent
+            component: PipelineComponent,
+            canDeactivate: [UnsavedChangesGuard]
           }
         ]
       }

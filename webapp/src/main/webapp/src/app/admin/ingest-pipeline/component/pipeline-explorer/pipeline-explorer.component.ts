@@ -11,7 +11,10 @@ export type ItemType = 'Script' | 'Test';
 
 export interface Item<T = any> {
   type: ItemType;
+  label: string;
   value: T;
+  lastSavedValue: T;
+  changed?: boolean;
 }
 
 @Component({
