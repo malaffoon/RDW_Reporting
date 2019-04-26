@@ -68,8 +68,11 @@ export class NewSandboxConfigurationComponent {
   }
 
   onSubmit(): void {
+    //TODO: This key should be generated in the database. Remove this once the backend is in place
+    let randomKey = Math.floor(Math.random() * 9999999) + 1000000;
     let newSandbox = {
       ...this.sandboxForm.value,
+      key: randomKey,
       localizationOverrides: this.modifiedLocalizationOverrides
     };
     this.service.create(newSandbox);

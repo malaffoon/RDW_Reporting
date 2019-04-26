@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { SandboxConfiguration } from './sandbox-configuration';
 import { SandboxConfigurationProperty } from './sandbox-configuration-property';
 import { RdwTranslateLoader } from '../../shared/i18n/rdw-translate-loader';
@@ -26,10 +19,6 @@ import { SandboxService } from './sandbox.service';
 export class SandboxConfigurationDetailsComponent implements OnInit {
   @Input()
   sandbox: SandboxConfiguration;
-  @Output()
-  delete: EventEmitter<SandboxConfiguration> = new EventEmitter<
-    SandboxConfiguration
-  >();
   @ViewChild('resetModal')
   resetModal;
   @ViewChild('archiveModal')
@@ -113,7 +102,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
 
   onDeleteButtonClick() {
     //TODO: Call DELETE API and emit delete event
-    this.delete.emit(this.sandbox);
+    this.service.delete(this.sandbox.key);
   }
 
   onResetButtonClick() {
@@ -121,7 +110,6 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.sandbox);
     let newSandbox = {
       key: this.sandbox.key,
       template: this.sandbox.template,

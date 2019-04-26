@@ -12,17 +12,7 @@ export class SandboxService {
 
   constructor(private dataService: DataService) {
     // TODO: Remove mock object, make call to backend API to fetch sandboxes
-
     if (!this.mockData) {
-      // configProperties.set('reporting.analytics-tracking-id', '123456789');
-      // configProperties.set(
-      //   'reporting.interpretive-guide-url',
-      //   'https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf'
-      // );
-      // configProperties.set('reporting.landing-page-url', 'forward:/landing.html');
-      // configProperties.set('reporting.state.code', 'CA');
-      // configProperties.set('reporting.state.name', 'California');
-
       this.mockData = [
         {
           key: '79d05c3d',
@@ -63,6 +53,13 @@ export class SandboxService {
   update(sandbox: SandboxConfiguration): void {
     let index = this.mockData.findIndex(s => s.key === sandbox.key);
     this.mockData[index] = sandbox;
+  }
+
+  delete(sandboxKey: string): void {
+    let index = this.mockData.findIndex(s => s.key === sandboxKey);
+    if (index !== -1) {
+      this.mockData.splice(index, 1);
+    }
   }
 
   getAvailableDataTemplates(): Observable<DataTemplate[]> {
