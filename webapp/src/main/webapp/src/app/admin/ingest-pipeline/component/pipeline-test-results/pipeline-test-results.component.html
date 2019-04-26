@@ -1,8 +1,17 @@
 <div class="head">
   <h3>Assessments Pipeline Test Results</h3>
-  <a (click)="closeButtonClick.emit($event)">
-    <i class="fa fa-close fa-2x"></i>
-  </a>
+  <!--  <a (click)="closeButtonClick.emit($event)">-->
+  <!--    <i class="fa fa-close fa-2x"></i>-->
+  <!--    <span aria-hidden="true">&times;</span>-->
+  <button
+    type="button"
+    class="close fa-3x"
+    title="{{ 'common.action.close' | translate }}"
+    (click)="closeButtonClick.emit($event)"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <!--  </a>-->
 </div>
 
 <div class="body">
