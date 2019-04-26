@@ -767,7 +767,7 @@ aggregate-report-table {
   }
 
   .property-input {
-    width: 98%;
+    width: 100%;
   }
 
   .sandbox-container {
@@ -835,13 +835,34 @@ aggregate-report-table {
       background-color: #d1e8f0;
     }
 
-    i {
-      cursor: pointer;
-      color: @aqua;
+    td {
+      i {
+        cursor: pointer;
+        color: @aqua;
+        margin-left: -10px;
 
-      &:hover {
-        color: @teal;
+        &:hover {
+          color: @teal;
+        }
       }
+    }
+
+    .ui-paginator-pages {
+      .ui-state-active {
+        background-color: @aqua;
+
+        &:hover {
+          background-color: @teal;
+        }
+      }
+
+      .ui-paginator-page:not(.ui-state-active) {
+        color: @aqua;
+      }
+    }
+
+    .ui-paginator-icon {
+      color: @aqua;
     }
   }
 
