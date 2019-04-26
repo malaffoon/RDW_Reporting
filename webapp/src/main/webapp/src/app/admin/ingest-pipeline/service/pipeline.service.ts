@@ -6,11 +6,13 @@ import {
   Pipeline,
   PipelineScript,
   PipelineTest,
-  TestResult
+  PipelineTestResult
 } from '../model/pipeline';
 import { of } from 'rxjs/internal/observable/of';
 import { delay } from 'rxjs/operators';
 import {
+  createFailingTest,
+  createPassingTest,
   stubIngestPipelines,
   stubPipelineScript,
   stubPipelineTest,
@@ -19,6 +21,10 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 
 let testId: number = stubPipelineTests.length + 1;
+
+function toTest(test: PipelineTest, index: number): PipelineTest {
+  return index < 1 ? createPassingTest(test) : createFailingTest(test);
+}
 
 @Injectable({
   providedIn: 'root'
@@ -105,15 +111,17 @@ export class PipelineService {
     pipelineId: string,
     testId: number,
     scriptBody: string
-  ): Observable<TestResult[]> {
-    return of([]);
+  ): Observable<PipelineTest[]> {
+    return of(
+      stubPipelineTests.map(toTest).filter(({ id }) => id === testId)
+    ).pipe(delay(1000));
   }
 
   runPipelineTests(
     pipelineId: string,
     scriptBody: string
-  ): Observable<TestResult[]> {
-    return of([]).pipe(delay(2000));
+  ): Observable<PipelineTest[]> {
+    return of(stubPipelineTests.map(toTest)).pipe(delay(1000));
   }
 
   compilePipelineScript(scriptBody: string): Observable<CompilationError[]> {

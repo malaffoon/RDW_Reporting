@@ -1,17 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pipeline, PipelineTest } from '../../model/pipeline';
 
 export type ItemType = 'Script' | 'Test';
 
 export interface Item<T = any> {
   type: ItemType;
-  label: string;
   value: T;
   lastSavedValue: T;
   changed?: boolean;
@@ -21,7 +14,6 @@ export interface Item<T = any> {
   selector: 'pipeline-explorer',
   templateUrl: './pipeline-explorer.component.html',
   styleUrls: ['./pipeline-explorer.component.less']
-  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PipelineExplorerComponent {
   @Input()
@@ -48,7 +40,6 @@ export class PipelineExplorerComponent {
   onItemClick(item: Item, element: HTMLElement): void {
     this.itemSelected.emit(item);
     element.scrollIntoView({
-      behavior: 'auto',
       block: 'nearest'
     });
   }

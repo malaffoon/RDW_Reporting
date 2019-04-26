@@ -66,9 +66,7 @@ export const stubPipelineTests: PipelineTest[] = [1, 2, 3, 4, 5].map(
   (id, index) => ({
     id,
     createdOn: new Date(),
-    name: `
-  It should do the thing I want it to do when it runs
-  `
+    name: 'It should do the thing I want it to do when it runs'
   })
 );
 
@@ -230,3 +228,31 @@ export const stubPipelineTest: PipelineTest = {
   </Opportunity>
 </TDSReport>`
 };
+
+export function createPassingTest(test: PipelineTest): PipelineTest {
+  test = {
+    ...test,
+    ...stubPipelineTest
+  };
+  return {
+    ...test,
+    result: {
+      passed: true,
+      actualOutput: test.output
+    }
+  };
+}
+
+export function createFailingTest(test: PipelineTest): PipelineTest {
+  test = {
+    ...test,
+    ...stubPipelineTest
+  };
+  return {
+    ...test,
+    result: {
+      passed: false,
+      actualOutput: test.output.replace(/FINAL/g, 'FINL')
+    }
+  };
+}

@@ -1,0 +1,53 @@
+<div class="head">
+  <h3>Assessments Pipeline Test Results</h3>
+  <a (click)="closeButtonClick.emit($event)">
+    <i class="fa fa-close fa-2x"></i>
+  </a>
+</div>
+
+<div class="body">
+  <div class="body-container">
+    <h4>Tests</h4>
+    <ul>
+      <li *ngFor="let test of _tests">
+        <div #scrollElementReference>
+          <pipeline-item
+            name="{{ test.createdOn | date }}"
+            description="{{ test.name }}"
+            [active]="_selectedTest === test"
+            (click)="onTestClick(test, scrollElementReference)"
+          >
+            <i
+              *ngIf="test.result.passed"
+              icon
+              class="passed-icon fa fa-check"
+            ></i>
+
+            <i
+              *ngIf="!test.result.passed"
+              icon
+              class="failed-icon fa fa-close"
+            ></i>
+          </pipeline-item>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="body-container" *ngIf="_selectedTest && pipeline">
+    <ng-container *ngIf="_selectedTest.result.passed; else failed">
+    </ng-container>
+    <ng-template #failed>
+      <div class="difference-header">
+        <label>Expected Output</label>
+        <label>Actual Output</label>
+      </div>
+      <div class="difference-container">
+        <code-difference
+          [language]="pipeline.inputType"
+          [left]="_selectedTest.output"
+          [right]="_selectedTest.result.actualOutput"
+        ></code-difference>
+      </div>
+    </ng-template>
+  </div>
+</div>
