@@ -46,6 +46,24 @@ export class RdwTranslateLoader implements TranslateLoader {
     );
   }
 
+  getFlattenedTranslations(languageCode: string): Observable<any> {
+    return forkJoin(
+      this.getClientTranslations(languageCode),
+      this.getServerTranslations(languageCode),
+      this.subjectService.getSubjectCodes()
+    ).pipe(
+      map(([clientTranslations, serverTranslations, subjects]) => {
+        const asmtTranslations = this.createSubjectTranslations(
+          subjects,
+          serverTranslations
+        );
+        return this.flattenJsonObject(
+          merge(clientTranslations, asmtTranslations, serverTranslations)
+        );
+      })
+    );
+  }
+
   private getClientTranslations(languageCode: string): Observable<any> {
     return EmbeddedLanguages.indexOf(languageCode) != -1
       ? this.clientTranslationsLoader.getTranslation(languageCode)
@@ -56,6 +74,26 @@ export class RdwTranslateLoader implements TranslateLoader {
     return this.serverTranslationsLoader
       .getTranslation(languageCode)
       .pipe(catchError(() => EmptyObservable));
+  }
+
+  private flattenJsonObject(ob): any {
+    let toReturn = {};
+
+    for (let i in ob) {
+      if (!ob.hasOwnProperty(i)) continue;
+
+      if (typeof ob[i] == 'object') {
+        let flatObject = this.flattenJsonObject(ob[i]);
+        for (let x in flatObject) {
+          if (!flatObject.hasOwnProperty(x)) continue;
+
+          toReturn[i + '.' + x] = flatObject[x];
+        }
+      } else {
+        toReturn[i] = ob[i];
+      }
+    }
+    return toReturn;
   }
 
   /**

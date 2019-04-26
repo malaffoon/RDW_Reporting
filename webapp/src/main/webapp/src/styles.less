@@ -760,6 +760,124 @@ aggregate-report-table {
   }
 }
 
+.sandbox-config {
+  .action-buttons {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .property-input {
+    width: 98%;
+  }
+
+  .sandbox-container {
+    border-bottom: 1px solid @gray-light;
+    margin-top: 5px;
+
+    .sandbox-header {
+      .sandbox-key {
+        color: @gray;
+        font-size: 20px;
+      }
+
+      i {
+        cursor: pointer;
+
+        &:hover {
+          color: @teal;
+        }
+      }
+
+      h2 {
+        display: inline;
+      }
+
+      h4,
+      h5 {
+        color: @gray-darker;
+      }
+
+      button {
+        cursor: pointer;
+      }
+    }
+
+    a.ui-menuitem-link {
+      margin-left: 10px;
+
+      .ui-menuitem-icon {
+        margin-right: 10px;
+      }
+    }
+
+    .form-group {
+      margin-top: 35px;
+    }
+  }
+
+  .ui-table-caption {
+    i {
+      margin: 4px 8px 0 4px;
+    }
+
+    div {
+      text-align: left;
+
+      input {
+        width: calc(100% - 30px);
+        display: inline;
+      }
+    }
+  }
+
+  .ui-table {
+    tr.modified td {
+      background-color: #d1e8f0;
+    }
+
+    i {
+      cursor: pointer;
+      color: @aqua;
+
+      &:hover {
+        color: @teal;
+      }
+    }
+  }
+
+  .ui-accordion {
+    .ui-accordion-header {
+      a {
+        text-decoration: none;
+      }
+    }
+
+    .ui-accordion-header-text,
+    .ui-accordion-toggle-icon {
+      color: @aqua;
+    }
+
+    .ui-accordion-header.ui-state-active {
+      background-color: @aqua;
+
+      .ui-accordion-header-text,
+      .ui-accordion-toggle-icon {
+        color: @white;
+      }
+    }
+  }
+
+  td {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  textarea {
+    resize: none;
+  }
+}
+
 .disabled-table-container {
   .disabled-table {
     cursor: not-allowed;

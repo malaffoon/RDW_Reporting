@@ -857,6 +857,35 @@
     },
     "title": "Manage Embargo"
   },
+  "sandbox-config": {
+    "title": "Sandbox Configuration",
+    "new-sandbox": {
+      "header": "Create New Sandbox"
+    },
+    "delete-modal": {
+      "header": "Delete <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?"
+    },
+    "archive-modal": {
+      "header": "Archive <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?",
+      "archive": "Archive"
+    },
+    "reset-modal": {
+      "header": "Reset data for <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
+      "reset": "Reset Data"
+    },
+    "fields": {
+      "label": "Sandbox Name / Label:",
+      "description": "Description:",
+      "data-template": "Data Template:",
+      "select-template": "-- Select Template --",
+      "configuration-properties": "Configuration Properties",
+      "localization-overrides": "Localization Overrides",
+      "search": "Search by key or value"
+    }
+  },
   "embargo-alert": {
     "message": "Summative test results in your region of administration are not yet released. These results may be viewed online but not downloaded."
   },
@@ -991,6 +1020,10 @@
       "student-groups": {
         "button": "Student Groups",
         "description": "Create and manage student groups for teachers."
+      },
+      "sandbox-config": {
+        "button": "Sandbox Configuration",
+        "description": "Manage Reporting System Sandboxes"
       },
       "titles": {
         "administrator-tools": "Administrator Tools"
