@@ -30,8 +30,6 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
   editMode = false;
   configurationProperties: SandboxConfigurationProperty[] = [];
   localizationOverrides: SandboxConfigurationProperty[] = [];
-  modifiedConfigurationProperties: SandboxConfigurationProperty[] = [];
-  modifiedLocalizationOverrides: SandboxConfigurationProperty[] = [];
   menuItems: MenuItem[];
   sandboxForm: FormGroup;
 
@@ -102,7 +100,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
 
   onDeleteButtonClick() {
     //TODO: Call DELETE API and emit delete event
-    this.service.delete(this.sandbox.key);
+    this.service.delete(this.sandbox.code);
   }
 
   onResetButtonClick() {
@@ -110,11 +108,14 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
   }
 
   onSubmit() {
+    const modifiedLocalizationOverrides = this.localizationOverrides.filter(
+      override => override.originalValue !== override.value
+    );
     let newSandbox = {
-      key: this.sandbox.key,
+      code: this.sandbox.code,
       template: this.sandbox.template,
       ...this.sandboxForm.value,
-      localizationOverrides: this.modifiedLocalizationOverrides
+      localizationOverrides: modifiedLocalizationOverrides
     };
     this.service.update(newSandbox);
     this.editMode = false;
@@ -126,15 +127,10 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     );
     const newVal = overrides.controls[index].value;
 
-    if (this.modifiedLocalizationOverrides.indexOf(override) > -1) {
-      let existingOverride = this.modifiedLocalizationOverrides[
-        this.modifiedLocalizationOverrides.indexOf(override)
-      ];
-      existingOverride.value = newVal;
-    } else {
-      override.value = newVal;
-      this.modifiedLocalizationOverrides.push(override);
-    }
+    let existingOverride = this.localizationOverrides[
+      this.localizationOverrides.indexOf(override)
+    ];
+    existingOverride.value = newVal;
   }
 
   private configureMenuItems(): void {

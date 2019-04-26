@@ -1,7 +1,7 @@
 <div class="sandbox-container pt-md pb-md" *ngIf="!editMode">
   <div class="sandbox-header">
     <h2>
-      {{ sandbox.label }} <span class="sandbox-key">({{ sandbox.key }})</span>
+      {{ sandbox.label }} <span class="sandbox-key">({{ sandbox.code }})</span>
     </h2>
     <i class="fa fa-edit fa-2x pull-right" (click)="editMode = !editMode"></i>
     <h4>{{ sandbox.description }}</h4>
@@ -12,7 +12,7 @@
 <div class="sandbox-container pt-md pb-md" *ngIf="editMode">
   <div class="sandbox-header">
     <h2>
-      {{ sandbox.label }} <span class="sandbox-key">({{ sandbox.key }})</span>
+      {{ sandbox.label }} <span class="sandbox-key">({{ sandbox.code }})</span>
     </h2>
     <!-- Actions -->
     <div class="mb-sm pull-right">

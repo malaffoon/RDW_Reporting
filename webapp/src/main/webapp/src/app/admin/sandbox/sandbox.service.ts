@@ -6,7 +6,9 @@ import { DataTemplate, SandboxConfiguration } from './sandbox-configuration';
 /**
  * Service responsible for managing organization embargo settings
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SandboxService {
   mockData: SandboxConfiguration[];
 
@@ -15,7 +17,7 @@ export class SandboxService {
     if (!this.mockData) {
       this.mockData = [
         {
-          key: '79d05c3d',
+          code: '79d05c3d',
           label: 'A Middle School Sandbox',
           description:
             'A test sandbox for middle school students with both ELA and MATH assessments',
@@ -25,7 +27,7 @@ export class SandboxService {
           }
         },
         {
-          key: '130c9ab1',
+          code: '130c9ab1',
           label: 'A High School Sandbox',
           description:
             'A sandbox for high school students with both ELA and MATH assessments',
@@ -51,12 +53,12 @@ export class SandboxService {
   }
 
   update(sandbox: SandboxConfiguration): void {
-    let index = this.mockData.findIndex(s => s.key === sandbox.key);
+    let index = this.mockData.findIndex(s => s.code === sandbox.code);
     this.mockData[index] = sandbox;
   }
 
-  delete(sandboxKey: string): void {
-    let index = this.mockData.findIndex(s => s.key === sandboxKey);
+  delete(sandboxCode: string): void {
+    let index = this.mockData.findIndex(s => s.code === sandboxCode);
     if (index !== -1) {
       this.mockData.splice(index, 1);
     }

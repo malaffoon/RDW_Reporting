@@ -152,7 +152,7 @@ export const adminRoute = {
       ]
     },
     {
-      path: 'sandbox',
+      path: 'sandboxes',
       pathMatch: 'prefix',
       data: {
         breadcrumb: { translate: 'sandbox-config.title' }

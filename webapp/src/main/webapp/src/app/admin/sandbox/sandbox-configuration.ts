@@ -7,7 +7,7 @@ export interface SandboxConfiguration {
   /**
    * The unique (generated) key for the sandbox
    */
-  key: string;
+  code: string;
 
   /**
    * A human readable label, name, or description of the sandbox

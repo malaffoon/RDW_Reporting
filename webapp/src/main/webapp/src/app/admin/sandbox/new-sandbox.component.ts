@@ -23,10 +23,6 @@ export class NewSandboxConfigurationComponent {
   localizationOverrides: SandboxConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
   configurationProperties: SandboxConfigurationProperty[] = [];
-  // An array containing localization overrides that have been modified
-  modifiedLocalizationOverrides: SandboxConfigurationProperty[] = [];
-  // An array containing configuration properties that have been modified
-  modifiedConfigurationProperties: SandboxConfigurationProperty[] = [];
 
   constructor(
     private service: SandboxService,
@@ -69,14 +65,17 @@ export class NewSandboxConfigurationComponent {
 
   onSubmit(): void {
     //TODO: This key should be generated in the database. Remove this once the backend is in place
-    let randomKey = Math.floor(Math.random() * 9999999) + 1000000;
-    let newSandbox = {
+    const randomCode = Math.floor(Math.random() * 9999999) + 1000000;
+    const modifiedLocalizationOverrides = this.localizationOverrides.filter(
+      override => override.originalValue !== override.value
+    );
+    const newSandbox = {
       ...this.sandboxForm.value,
-      key: randomKey,
-      localizationOverrides: this.modifiedLocalizationOverrides
+      code: randomCode,
+      localizationOverrides: modifiedLocalizationOverrides
     };
     this.service.create(newSandbox);
-    this.router.navigate(['sandbox']);
+    this.router.navigate(['sandboxes']);
   }
 
   updateOverride(override: SandboxConfigurationProperty, index: number): void {
@@ -85,14 +84,14 @@ export class NewSandboxConfigurationComponent {
     );
     const newVal = overrides.controls[index].value;
 
-    if (this.modifiedLocalizationOverrides.indexOf(override) > -1) {
-      let existingOverride = this.modifiedLocalizationOverrides[
-        this.modifiedLocalizationOverrides.indexOf(override)
+    if (this.localizationOverrides.indexOf(override) > -1) {
+      let existingOverride = this.localizationOverrides[
+        this.localizationOverrides.indexOf(override)
       ];
       existingOverride.value = newVal;
     } else {
       override.value = newVal;
-      this.modifiedLocalizationOverrides.push(override);
+      this.localizationOverrides.push(override);
     }
   }
 }
