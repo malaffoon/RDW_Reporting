@@ -857,6 +857,35 @@
     },
     "title": "Manage Embargo"
   },
+  "sandbox-config": {
+    "title": "Sandbox Configuration",
+    "new-sandbox": {
+      "header": "Create New Sandbox"
+    },
+    "delete-modal": {
+      "header": "Delete <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?"
+    },
+    "archive-modal": {
+      "header": "Archive <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?",
+      "archive": "Archive"
+    },
+    "reset-modal": {
+      "header": "Reset data for <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
+      "reset": "Reset Data"
+    },
+    "fields": {
+      "label": "Sandbox Name / Label:",
+      "description": "Description:",
+      "data-template": "Data Template:",
+      "select-template": "-- Select Template --",
+      "configuration-properties": "Configuration Properties",
+      "localization-overrides": "Localization Overrides",
+      "search": "Search by key or value"
+    }
+  },
   "embargo-alert": {
     "message": "Summative test results in your region of administration are not yet released. These results may be viewed online but not downloaded."
   },
@@ -991,6 +1020,10 @@
       "student-groups": {
         "button": "Student Groups",
         "description": "Create and manage student groups for teachers."
+      },
+      "sandbox-config": {
+        "button": "Sandbox Configuration",
+        "description": "Manage Reporting System Sandboxes"
       },
       "titles": {
         "administrator-tools": "Administrator Tools"
@@ -1417,15 +1450,21 @@
   "ingest-pipeline": {
     "assessment": {
       "name": "Assessments",
-      "description": "Shaman raw denim umami deep v wayfarers mumblecore, try-hard williamsburg la croix affogato fam narwhal selfies. Tote bag organic narwhal health goth hella activated charcoal. Raclette post-ironic 8-bit echo park wolf celiac.."
+      "description": "Shaman raw denim umami deep v wayfarers mumblecore, try-hard williamsburg la croix affogato fam narwhal selfies."
     },
     "exam": {
       "name": "Exams",
-      "description": "Readymade air plant direct trade flexitarian tousled, shabby chic hot chicken raclette pitchfork vinyl. Gentrify banjo live-edge, air plant vexillologist green juice readymade asymmetrical locavore fingerstache master cleanse roof party enamel pin tote bag pinterest."
+      "description": "Readymade air plant direct trade flexitarian tousled, shabby chic hot chicken raclette pitchfork vinyl."
     },
     "group": {
       "name": "Groups",
-      "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko helvetica, fashion axe pork belly vexillologist. Bicycle rights meh shoreditch try-hard, hammock typewriter fixie four loko shabby chic. Pour-over kitsch pinterest."
+      "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko."
     }
+  },
+  "pipeline-tests": {
+    "heading": "Tests"
+  },
+  "pipeline-explorer": {
+    "script": "Pipeline Script"
   }
 }

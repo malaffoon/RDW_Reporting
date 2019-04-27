@@ -1,0 +1,69 @@
+<div class="script-items-container">
+  <ul>
+    <li *ngFor="let item of _scriptItems">
+      <a
+        #itemElement
+        class="item"
+        [ngClass]="{
+          active: selectedItem === item
+        }"
+        (click)="onItemClick(item, itemElement)"
+      >
+        <div *ngIf="item.changed" class="item-modified">
+          <i class="fa fa-circle"></i>
+        </div>
+        <div class="item-heading">
+          <div class="item-name">
+            {{ 'pipeline-explorer.script' | translate }}
+          </div>
+        </div>
+        <p *ngIf="item.label" class="item-description">
+          {{ item.label }}
+        </p>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="test-items-container">
+  <div class="test-items-heading">
+    <h4>Tests</h4>
+    <button
+      class="btn btn-success btn-outlined btn-xs"
+      (click)="createTestButtonClick.emit()"
+    >
+      New Test
+    </button>
+  </div>
+  <ul class="test-items">
+    <li *ngFor="let item of _testItems; let index = index">
+      <a
+        #itemElement
+        class="item"
+        [ngClass]="{
+          active: selectedItem === item
+        }"
+        (click)="onItemClick(item, itemElement)"
+      >
+        <div *ngIf="item.changed" class="item-modified">
+          <i class="fa fa-circle"></i>
+        </div>
+
+        <div class="item-heading">
+          <div class="item-name">
+            {{ item.value.createdOn | date }}
+          </div>
+          <a
+            class="delete-control"
+            (click)="deleteTestButtonClick.emit(item.value)"
+          >
+            <i class="fa fa-trash-o"></i>
+          </a>
+        </div>
+        <p *ngIf="item.label" class="item-description">
+          {{ item.label }}
+        </p>
+      </a>
+    </li>
+  </ul>
+</div>

@@ -2,18 +2,23 @@ import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
 import { Observable } from 'rxjs';
 import {
+  CompilationError,
   Pipeline,
   PipelineScript,
   PipelineTest,
-  ScriptError
+  TestResult
 } from '../model/pipeline';
 import { of } from 'rxjs/internal/observable/of';
 import { delay } from 'rxjs/operators';
 import {
   stubIngestPipelines,
-  stubPipelineScript
+  stubPipelineScript,
+  stubPipelineTest,
+  stubPipelineTests
 } from './pipeline.service.stubs';
 import { TranslateService } from '@ngx-translate/core';
+
+let testId: number = stubPipelineTests.length + 1;
 
 @Injectable({
   providedIn: 'root'
@@ -51,54 +56,86 @@ export class PipelineService {
           )
         }))
         .find(pipeline => pipeline.id === id)
-    );
+    ).pipe(delay(500));
   }
 
   getPipelineScript(
     pipelineId: string,
     scriptId: number
   ): Observable<PipelineScript> {
-    return of(stubPipelineScript);
+    return of(stubPipelineScript).pipe(delay(500));
   }
 
   getPipelineTests(pipelineId: string): Observable<PipelineTest[]> {
-    return of([]);
+    return of(stubPipelineTests).pipe(delay(500));
   }
 
   getPipelineTest(
     pipelineId: string,
     testId: number
   ): Observable<PipelineTest> {
-    return of(<any>{});
+    return of(stubPipelineTest).pipe(delay(500));
   }
 
-  compilePipelineScript(script: string): Observable<ScriptError[]> {
+  createPipelineTest(
+    pipelineId: string,
+    test: PipelineTest
+  ): Observable<PipelineTest> {
+    return of({
+      id: testId++,
+      createdOn: new Date(),
+      name: '',
+      input: '',
+      output: ''
+    }).pipe(delay(500));
+  }
+
+  updatePipelineTest(
+    pipelineId: string,
+    test: PipelineTest
+  ): Observable<PipelineTest> {
+    return of(test).pipe(delay(500));
+  }
+
+  deletePipelineTest(pipelineId: string, testId: number): Observable<void> {
+    return of(null);
+  }
+
+  runPipelineTest(
+    pipelineId: string,
+    testId: number,
+    scriptBody: string
+  ): Observable<TestResult[]> {
+    return of([]);
+  }
+
+  runPipelineTests(
+    pipelineId: string,
+    scriptBody: string
+  ): Observable<TestResult[]> {
+    return of([]).pipe(delay(2000));
+  }
+
+  compilePipelineScript(scriptBody: string): Observable<CompilationError[]> {
     return of(
-      script.includes('error')
+      scriptBody.includes('error')
         ? [{ row: 2, column: 0, message: { code: 'Error message' } }]
         : []
     ).pipe(delay(1000));
   }
 
-  testPipelineScript(
+  updatePipelineScript(
     pipelineId: string,
-    script: string
-  ): Observable<ScriptError[]> {
-    return of([]);
-  }
-
-  savePipelineScript(
-    pipelineId: string,
-    script: string
+    script: PipelineScript
   ): Observable<PipelineScript> {
-    return of(null);
+    return of(script).pipe(delay(1000));
   }
 
   publishPipelineScript(
     pipelineId: string,
-    script: string
+    script: PipelineScript
   ): Observable<PipelineScript> {
     // should require test and save on the backend
-    return of(null);
+    return of(script).pipe(delay(1000));
   }
 }

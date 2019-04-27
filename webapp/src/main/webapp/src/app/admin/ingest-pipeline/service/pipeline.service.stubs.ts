@@ -1,4 +1,4 @@
-import { Pipeline, PipelineScript } from '../model/pipeline';
+import { Pipeline, PipelineScript, PipelineTest } from '../model/pipeline';
 
 export const stubIngestPipelines: Pipeline[] = <Pipeline[]>[
   {
@@ -18,155 +18,215 @@ export const stubIngestPipelines: Pipeline[] = <Pipeline[]>[
 export const stubPipelineScript: PipelineScript = {
   id: 1,
   language: 'groovy',
-  body: `// XML support can be added to a Script class by calling:
-// \`script.addXmlExtensions()\`. We assume that an XML document
-// will be converted into another XML document, and all elements, including
-// comments not specifically altered, should appear in the converted
-// document exactly as they appear in the original. 
-//
-// This will automatically parse the input into a JDOM 2 Document, 
-// which is made available to the scripts in the inherent variable \`document\`.
-// However, it will also enable some helper functions that act implicitly
-// on the document, and may ease writing XML transformation scripts and
-// make it unnecessary for the script writer to ever reference the
-// document object explicitly. 
-//
-// Some examples follow:
-// transform '//Movie' by { movie -> 
-//     if (movie.title == 'Jaws') {
-//         movie.title = movie.title.toUpperCase()
-//     }
-// }
-//
-// Here \`//Movie\` is an XPath expression that returns all Movie elements
-// in the document. The code within the braces will be applied to each
-// matched elements, and follows general Groovy syntax rules. The \`movie ->\`
-// syntax just
-// assigns a name for the element that the code within the braces can use.
-// It can be any string that makes sense for the script, or it can also be omitted. In this case,
-// the element is automatically assigned the name \`it\`. 
-//
-// For example, this script works exactly the same as the first one:
-//
-// transform '//Movie' by {  
-//     if (it.title == 'Jaws') {
-//         it.title = it.title.toUpperCase()
-//     }
-// }
-//
-// The syntax \`movie.title\` (or \`it.title\`) refers to the title
-// attribute of the movie element. It is shorthand for \`movie.getAttributeValue('title')\`,
-// and \`movie.title = 'some text'\` is shorthand for \`movie.setAttribute('title', 'some text')\`.
-// An exception to this rule is \`movie.text\`, which is shorthand for
-// \`movie.getText()\`, and returns the text content of the movie element
-// instead of an attribute value.
-//
-// For the transformation rule, any legal Groovy (or Java) syntax is allowed.
-// This includes if-then-else blocks, regular expressions, calls to external
-// services, etc.
-//
-// It is also possible to delete an element in a transformation rule. 
-// For example:
-//
-// transform '//Movie' by { movie -> 
-//     if (movie.actor == 'Keanu Reeves') {
-//         delete movie
-//     }
-// }
-//
-// #### Filter
-// Although deleting elements as part of a transform rule is possible, 
-// it is also possible to filter elements based on an in-or-out rule:
-//
-// delete '//Movie' when { movie -> 
-//     movie.actor == 'Keanu Reeves'
-// }
-//
-// It is also possible to reverse this logic to delete all elements
-// (matching the XPath expression) that don't match the rule:
-//
-// delete '//Movie' unless { movie -> 
-//     movie.actor == 'Richard Basehart'
-// }
-//
-// #### XSL transformations
-// Although the script pipeline is meant to replace XSL transformations,
-// it might happen that performing some work in XSL is preferable to 
-// writing Groovy rules. Therefore, a helper function for XSL has been provided:
-//
-// applyXsl xsl
-//
-// The \`xsl\` variable here is defined in the configuration for the script,
-// and can be a string containing XSL rules, a file represented as a
-// \`java.io.File\` object, or a \`java.io.InputStream\` object.
-//
-// It is also possible to combine XSL transformations with additional
-// Groovy rules:
-//
-// applyXsl preprocessing
-//
-// transform '//Movie' {movie ->
-//     if (movie.rating > 2) {
-//         movie.recommend = true
-//     } else {
-//         movie.recommend = false
-//     }
-// }
-//
-// applyXsl postprocessing
-//
-// #### Getting the results
-// Once all transformations have been applied to the XML document, it is
-// necessary to convert it back to a string and return it. The helper 
-// function outputXml does this, and should be the last statement
-// in the script:
-//
-// transform '//Movie' by {  
-//     if (it.title == 'Jaws') {
-//         it.title = it.title.toUpperCase()
-//     }
-// }
-
-transform '//Item' by { item ->
-    if (item.bankKey.startsWith('10')) {
-        item.bankKey = item.bankKey.substring(2)
-    }
+  body: `transform '//Item' by { item ->
+  if (item.bankKey.startsWith('10')) {
+    item.bankKey = item.bankKey.substring(2)
+  }
 }
 
 transform '//Response' by { response ->
-    def text = response.text
+  def text = response.text
 
-    if (text.contains('choiceInteraction_1') && text.contains('choiceInteraction_2')) {
-        response.text = text
-                .replaceAll(~/choiceInteraction_(\\d).RESPONSE/, 'EBSR$1')
-                .replaceAll(~/choiceInteraction_\\d-choice-(\\w)/, '$1')
+  if (text.contains('choiceInteraction_1') && text.contains('choiceInteraction_2')) {
+    response.text = text
+            .replaceAll(~/choiceInteraction_(\\d).RESPONSE/, 'EBSR$1')
+            .replaceAll(~/choiceInteraction_\\d-choice-(\\w)/, '$1')
 
-    } else if (text.contains('choiceInteraction_1')) {
-        def matches = text =~ /choiceInteraction_1-choice-(\\w)/
-        if (matches.count > 0) {
-            response.text = matches.collect { it[1] }.join(',')
-        }
+  } else if (text.contains('choiceInteraction_1')) {
+      def matches = text =~ /choiceInteraction_1-choice-(\\w)/
+      if (matches.count > 0) {
+          response.text = matches.collect { it[1] }.join(',')
+      }
 
-    } else if (text.contains('matchInteraction')) {
-        response.text = text
-                .replaceAll(~/matchInteraction_\\d.RESPONSE/, 'RESPONSE')
-                .replaceAll(~/matchInteraction_\\d-(\\d)\\W*matchInteraction_\\d-(\\w)/, '$1 $2')
+  } else if (text.contains('matchInteraction')) {
+    response.text = text
+            .replaceAll(~/matchInteraction_\\d.RESPONSE/, 'RESPONSE')
+            .replaceAll(~/matchInteraction_\\d-(\\d)\\W*matchInteraction_\\d-(\\w)/, '$1 $2')
 
-    } else if (text.contains('hotTextInteraction_')) {
-        response.text = text
-                .replaceAll(~/hotTextInteraction_(\\d).RESPONSE/, '$1')
-                .replaceAll(~/hotTextInteraction_\\d-hottext-(\\d)/, '$1')
+  } else if (text.contains('hotTextInteraction_')) {
+      response.text = text
+              .replaceAll(~/hotTextInteraction_(\\d).RESPONSE/, '$1')
+              .replaceAll(~/hotTextInteraction_\\d-hottext-(\\d)/, '$1')
 
-    } else if ( text.contains('equationInteraction_') ||
-                text.contains('tableInteraction_') ||
-                text.contains('gridInteraction_') ||
-                text.contains('textEntryInteraction_')) {
-        response.text = text
-                .replaceAll(~/(?s).+<value>(.+)<\\/value>.+/, '$1')
-                .unescapeHtmlTags()
-    }
+  } else if (text.contains('equationInteraction_') ||
+             text.contains('tableInteraction_') ||
+             text.contains('gridInteraction_') ||
+             text.contains('textEntryInteraction_')) {
+    response.text = text
+            .replaceAll(~/(?s).+<value>(.+)<\\/value>.+/, '$1')
+            .unescapeHtmlTags()
+  }
 }
 
 outputXml
 `
+};
+
+export const stubPipelineTests: PipelineTest[] = [1, 2, 3, 4, 5].map(
+  (id, index) => ({
+    id,
+    createdOn: new Date(),
+    name: `
+  It should do the thing I want it to do when it runs
+  `
+  })
+);
+
+export const stubPipelineTest: PipelineTest = {
+  input: `<TDSReport>
+  <Test academicYear="2018" assessmentType="Interim" assessmentVersion="11111" bankKey="777" contract="MOCK" grade="11"
+        mode="online" name="(naturalId)MOCK-IAB-G11M-2017-2018" subject="Math"
+        testId="MOCK-IAB-G11M-2017-2018"/>
+  <Examinee key="100000000333">
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StudentIdentifier"
+                       value="SSID001"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="AlternateSSID"
+                       value="ASSID001"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Birthdate" value="2001-06-23"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="FirstName" value="Gladys"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="LastOrSurname" value="Durrant"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Sex" value="Female"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="GradeLevelWhenAssessed" value="11"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="HispanicOrLatinoEthnicity" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="AmericanIndianOrAlaskaNative" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Asian" value="Yes"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="BlackOrAfricanAmerican" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="White" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="NativeHawaiianOrOtherPacificIslander"
+                       value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Filipino" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="DemographicRaceTwoOrMoreRaces" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="IDEAIndicator" value="Yes"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="LEPStatus" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Section504Status" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="EconomicDisadvantageStatus" value="Yes"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StudentGroupName" value="G11-17500"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StudentGroupName" value="G11-17600"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StateAbbreviation" value="CA"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StateName" value="California"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="DistrictId"
+                          value="TD000001"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="DistrictName"
+                          value="Test District TD000001"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="SchoolId"
+                          value="TS000001"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="SchoolName" value="Test School TS000001"/>
+  </Examinee>
+  <Opportunity abnormalStarts="0" administrationCondition="SD" assessmentParticipantSessionPlatformUserAgent="" clientName="SBAC"
+               completeStatus="Complete" completeness="Complete" database="session" dateCompleted="2018-05-01T08:50:00.000000"
+               effectiveDate="2018-05-01" ftCount="0" gracePeriodRestarts="0" itemCount="15"
+               key="096c4896-dc65-4e7b-a626-9f5257195a9d" oppId="100000000010" opportunity="5" pauseCount="0"
+               server="ip-10-113-148-45" sessionId="WEL-bd74" startDate="2018-05-01T08:05:00.000000" status="scored"
+               statusDate="2018-05-01T08:50:00.000000" windowId="WINDOW_ID">
+    <Segment algorithm="Fixed" algorithmVersion="0" id="5a703740-3a00-46bf-a065-91dfc9ee93e0" position="1"/>
+    <Accommodation code="NEA_Calc" segment="0" type="type001" value="value001"/>
+    <Score measureLabel="ScaleScore" measureOf="Overall" standardError="42.0" value="2821.3333333333335"/>
+    <Score measureLabel="PerformanceLevel" measureOf="Overall" standardError="" value="3"/>
+    <Score measureLabel="ScaleScore" measureOf="1" standardError="42.0" value="2821.3333333333335"/>
+    <Score measureLabel="PerformanceLevel" measureOf="1" standardError="" value="3"/>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MC" isSelected="1" key="50001" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="10502" pageVisits="1" position="3" responseDuration="10.502"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">A</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MC" isSelected="1" key="50002" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="1894" pageVisits="1" position="11" responseDuration="1.894"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">C</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MI" isSelected="1" key="50003" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="26450" pageVisits="1" position="15" responseDuration="26.45"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">MI response</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MI" isSelected="1" key="50004" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="16629" pageVisits="1" position="9" responseDuration="16.629"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">MI response</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MC" isSelected="1" key="50005" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="13563" pageVisits="1" position="12" responseDuration="13.563"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">D</Response>
+    </Item>
+  </Opportunity>
+</TDSReport>`,
+  output: `<TDSReport>
+  <Test academicYear="2018" assessmentType="Interim" assessmentVersion="11111" bankKey="777" contract="MOCK" grade="11"
+        mode="online" name="(naturalId)MOCK-IAB-G11M-2017-2018" subject="Math"
+        testId="MOCK-IAB-G11M-2017-2018"/>
+  <Examinee key="100000000333">
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StudentIdentifier"
+                       value="SSID001"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="AlternateSSID"
+                       value="ASSID001"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Birthdate" value="2001-06-23"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="FirstName" value="Gladys"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="LastOrSurname" value="Durrant"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Sex" value="Female"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="GradeLevelWhenAssessed" value="11"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="HispanicOrLatinoEthnicity" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="AmericanIndianOrAlaskaNative" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Asian" value="Yes"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="BlackOrAfricanAmerican" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="White" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="NativeHawaiianOrOtherPacificIslander"
+                       value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Filipino" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="DemographicRaceTwoOrMoreRaces" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="IDEAIndicator" value="Yes"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="LEPStatus" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="Section504Status" value="No"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="EconomicDisadvantageStatus" value="Yes"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StudentGroupName" value="G11-17500"/>
+    <ExamineeAttribute context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StudentGroupName" value="G11-17600"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StateAbbreviation" value="CA"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="StateName" value="California"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="DistrictId"
+                          value="TD000001"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="DistrictName"
+                          value="Test District TD000001"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="SchoolId"
+                          value="TS000001"/>
+    <ExamineeRelationship context="FINAL" contextDate="2018-05-01T08:05:00.000000" name="SchoolName" value="Test School TS000001"/>
+  </Examinee>
+  <Opportunity abnormalStarts="0" administrationCondition="SD" assessmentParticipantSessionPlatformUserAgent="" clientName="SBAC"
+               completeStatus="Complete" completeness="Complete" database="session" dateCompleted="2018-05-01T08:50:00.000000"
+               effectiveDate="2018-05-01" ftCount="0" gracePeriodRestarts="0" itemCount="15"
+               key="096c4896-dc65-4e7b-a626-9f5257195a9d" oppId="100000000010" opportunity="5" pauseCount="0"
+               server="ip-10-113-148-45" sessionId="WEL-bd74" startDate="2018-05-01T08:05:00.000000" status="scored"
+               statusDate="2018-05-01T08:50:00.000000" windowId="WINDOW_ID">
+    <Segment algorithm="Fixed" algorithmVersion="0" id="5a703740-3a00-46bf-a065-91dfc9ee93e0" position="1"/>
+    <Accommodation code="NEA_Calc" segment="0" type="type001" value="value001"/>
+    <Score measureLabel="ScaleScore" measureOf="Overall" standardError="42.0" value="2821.3333333333335"/>
+    <Score measureLabel="PerformanceLevel" measureOf="Overall" standardError="" value="3"/>
+    <Score measureLabel="ScaleScore" measureOf="1" standardError="42.0" value="2821.3333333333335"/>
+    <Score measureLabel="PerformanceLevel" measureOf="1" standardError="" value="3"/>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MC" isSelected="1" key="50001" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="10502" pageVisits="1" position="3" responseDuration="10.502"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">A</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MC" isSelected="1" key="50002" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="1894" pageVisits="1" position="11" responseDuration="1.894"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">C</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MI" isSelected="1" key="50003" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="26450" pageVisits="1" position="15" responseDuration="26.45"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">MI response</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MI" isSelected="1" key="50004" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="16629" pageVisits="1" position="9" responseDuration="16.629"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">MI response</Response>
+    </Item>
+    <Item adminDate="2018-05-01T08:20:00.000000" bankKey="777" dropped="0" format="MC" isSelected="1" key="50005" mimeType="text/plain"
+          numberVisits="1" operational="1" pageNumber="1" pageTime="13563" pageVisits="1" position="12" responseDuration="13.563"
+          score="1" scoreStatus="SCORED" segmentId="5a703740-3a00-46bf-a065-91dfc9ee93e0">
+      <Response date="2018-05-01T08:25:00.000000" type="value">D</Response>
+    </Item>
+  </Opportunity>
+</TDSReport>`
 };

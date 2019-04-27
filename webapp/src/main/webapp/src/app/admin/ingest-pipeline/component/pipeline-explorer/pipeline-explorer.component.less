@@ -1,0 +1,102 @@
+@gray1: #f0f0f0;
+@gray2: #e6e6e6;
+@gray3: #dcdcdc;
+
+@hover-color: @gray1;
+@active-color: @gray3;
+@selected-color: @gray2;
+
+// bootstrap @state-danger-text
+@danger-hover-color: red;
+@danger-active-color: #a94442;
+
+.item {
+  border-top: 1px solid @selected-color;
+  position: relative;
+
+  display: block;
+  text-decoration: none;
+  color: black;
+  padding: 15px 30px;
+
+  .item-heading {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .item-name {
+    margin-bottom: 5px;
+  }
+
+  .item-description {
+    color: #333;
+    font-size: 14px;
+  }
+
+  .item-modified {
+    color: @danger-hover-color;
+    position: absolute;
+    font-size: 9px;
+    top: 21px;
+    left: 12px;
+  }
+
+  .delete-control {
+    visibility: hidden;
+    font-size: 20px;
+    color: #666;
+    margin: -8px -15px 0 0;
+    &:hover {
+      color: @danger-hover-color;
+    }
+    &:active {
+      color: @danger-active-color;
+    }
+  }
+
+  &:hover {
+    background-color: @hover-color;
+    .delete-control {
+      visibility: visible;
+    }
+  }
+  &:active {
+    background-color: @active-color;
+  }
+  &.active {
+    background-color: @selected-color;
+  }
+}
+
+.script-items-container {
+  li:first-child > .item {
+    border: none;
+  }
+}
+
+.test-items-container {
+  border-top: 1px solid @selected-color;
+
+  .test-items-heading {
+    display: flex;
+    align-items: center;
+    padding: 15px 15px 15px 30px;
+
+    > :first-child {
+      flex: 1;
+    }
+    a {
+      border-top: none;
+    }
+  }
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  a {
+    text-decoration: none;
+  }
+}

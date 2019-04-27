@@ -1,0 +1,50 @@
+@space-unit: 15px;
+
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 15px;
+}
+
+h3 {
+  margin: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  > :not(:first-child) {
+    margin-left: @space-unit;
+  }
+  > :first-child {
+    flex: 1;
+  }
+}
+
+.compilation-status {
+  opacity: 0.5;
+  font-size: 14px;
+}
+
+.editor-container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+
+  pipeline-explorer {
+    display: block;
+    max-height: 560px;
+    overflow: scroll;
+  }
+}
+
+.test-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  // dark theme specific
+  //gap: 10px;
+}
+
+.test-form {
+  margin-top: -30px;
+}
