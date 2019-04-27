@@ -11,8 +11,6 @@ import {
   Validators
 } from '@angular/forms';
 import { SandboxService } from './sandbox.service';
-import { ApplicationSettingsService } from '../../app-settings.service';
-import { Utils } from '../../shared/support/support';
 
 @Component({
   selector: 'sandbox-details-config',
@@ -38,8 +36,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
   constructor(
     private translationLoader: RdwTranslateLoader,
     private service: SandboxService,
-    private formBuilder: FormBuilder,
-    private settingsService: ApplicationSettingsService
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -49,12 +46,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
       configurationProperties: this.formBuilder.array([]),
       localizationOverrides: this.formBuilder.array([])
     });
-    this.mapLocalizationOverrides();
-    this.mapConfigurationProperties();
-    this.configureMenuItems();
-  }
 
-  private mapLocalizationOverrides() {
     this.translationLoader
       //TODO: Get the correct language code from somewhere, do not hardcode
       .getFlattenedTranslations('en')
@@ -90,39 +82,16 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
           }
         }
       });
-  }
 
-  private mapConfigurationProperties() {
-    this.settingsService.getSettings().subscribe(configProperties => {
-      const configPropertiesFormArray = <FormArray>(
-        this.sandboxForm.controls['configurationProperties']
+    if (this.sandbox.configurationProperties) {
+      this.sandbox.configurationProperties.forEach((value, key) =>
+        this.configurationProperties.push(
+          new SandboxConfigurationProperty(key, value)
+        )
       );
-      let flattenedConfigProperties = Utils.flattenJsonObject(configProperties);
-      Object.keys(flattenedConfigProperties).forEach(key => {
-        const propertyOverrides = this.sandbox.configurationProperties || [];
-        const override = propertyOverrides.find(
-          property => property.key === key
-        );
-        if (override) {
-          this.configurationProperties.push(
-            new SandboxConfigurationProperty(
-              key,
-              override.value,
-              override.originalValue
-            )
-          );
-          configPropertiesFormArray.controls.push(
-            new FormControl(override.value)
-          );
-        } else {
-          const val = flattenedConfigProperties[key] || '';
-          this.configurationProperties.push(
-            new SandboxConfigurationProperty(key, val)
-          );
-          configPropertiesFormArray.push(new FormControl(val));
-        }
-      });
-    });
+    }
+
+    this.configureMenuItems();
   }
 
   onArchiveButtonClick() {
@@ -142,15 +111,11 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    const modifiedConfigurationProperties = this.configurationProperties.filter(
-      property => property.originalValue !== property.value
-    );
     let newSandbox = {
       code: this.sandbox.code,
       template: this.sandbox.template,
       ...this.sandboxForm.value,
-      localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: modifiedConfigurationProperties
+      localizationOverrides: modifiedLocalizationOverrides
     };
     this.service.update(newSandbox);
     this.editMode = false;
@@ -166,21 +131,6 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
       this.localizationOverrides.indexOf(override)
     ];
     existingOverride.value = newVal;
-  }
-
-  updateConfigurationProperty(
-    property: SandboxConfigurationProperty,
-    index: number
-  ): void {
-    const properties = <FormArray>(
-      this.sandboxForm.controls['configurationProperties']
-    );
-    const newVal = properties.controls[index].value;
-
-    let existingProperty = this.configurationProperties[
-      this.configurationProperties.indexOf(property)
-    ];
-    existingProperty.value = newVal;
   }
 
   private configureMenuItems(): void {

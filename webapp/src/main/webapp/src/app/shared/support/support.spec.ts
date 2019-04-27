@@ -29,25 +29,6 @@ describe('Utils', () => {
       Utils.appendOrIncrementFileNameSuffix('an aggregateReport (1)')
     ).toEqual('an aggregateReport (2)');
   });
-
-  it('should flatten JSON object', () => {
-    let mockJSON = {
-      foo: 'bar',
-      state: {
-        code: 'CA',
-        label: 'California'
-      }
-    };
-    expect(Utils.flattenJsonObject(mockJSON)).toEqual({
-      foo: 'bar',
-      'state.code': 'CA',
-      'state.label': 'California'
-    });
-  });
-
-  it('should return empty object for an undefined input', () => {
-    expect(Utils.flattenJsonObject(undefined)).toEqual({});
-  });
 });
 
 describe('deepEqualsIgnoringNullAndFalse', () => {

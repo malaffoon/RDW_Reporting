@@ -57,7 +57,7 @@ export class RdwTranslateLoader implements TranslateLoader {
           subjects,
           serverTranslations
         );
-        return Utils.flattenJsonObject(
+        return this.flattenJsonObject(
           merge(clientTranslations, asmtTranslations, serverTranslations)
         );
       })
@@ -74,6 +74,26 @@ export class RdwTranslateLoader implements TranslateLoader {
     return this.serverTranslationsLoader
       .getTranslation(languageCode)
       .pipe(catchError(() => EmptyObservable));
+  }
+
+  private flattenJsonObject(ob): any {
+    let toReturn = {};
+
+    for (let i in ob) {
+      if (!ob.hasOwnProperty(i)) continue;
+
+      if (typeof ob[i] == 'object') {
+        let flatObject = this.flattenJsonObject(ob[i]);
+        for (let x in flatObject) {
+          if (!flatObject.hasOwnProperty(x)) continue;
+
+          toReturn[i + '.' + x] = flatObject[x];
+        }
+      } else {
+        toReturn[i] = ob[i];
+      }
+    }
+    return toReturn;
   }
 
   /**
