@@ -39,6 +39,8 @@ import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
 import { ingestPipelineRoutes } from './admin/ingest-pipeline/ingest-pipeline.routes';
+import { SandboxConfigurationComponent } from './admin/sandbox/sandbox.component';
+import { NewSandboxConfigurationComponent } from './admin/sandbox/new-sandbox.component';
 
 export const studentPipe = new StudentPipe();
 export const adminRoute = {
@@ -146,6 +148,37 @@ export const adminRoute = {
           pathMatch: 'prefix',
           component: EmbargoComponent,
           resolve: { embargoesByOrganizationType: EmbargoResolve }
+        }
+      ]
+    },
+    {
+      path: 'sandboxes',
+      pathMatch: 'prefix',
+      data: {
+        breadcrumb: { translate: 'sandbox-config.title' }
+        //TODO: Uncomment the line below once the roles/permissions have been configured
+        // permissions: ['TENANT_ADMIN']
+      },
+      canActivate: [AuthorizationCanActivate],
+      children: [
+        {
+          path: '',
+          pathMatch: 'prefix',
+          component: SandboxConfigurationComponent
+        },
+        {
+          path: 'new',
+          pathMatch: 'prefix',
+          data: {
+            breadcrumb: { translate: 'sandbox-config.new-sandbox.header' }
+          },
+          children: [
+            {
+              path: '',
+              pathMatch: 'prefix',
+              component: NewSandboxConfigurationComponent
+            }
+          ]
         }
       ]
     }

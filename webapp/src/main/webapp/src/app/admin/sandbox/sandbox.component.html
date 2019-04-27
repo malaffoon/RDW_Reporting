@@ -1,0 +1,20 @@
+<page-heading>
+  <ng-template #heading>
+    <h2>{{ 'sandbox-config.title' | translate }}</h2>
+    <a
+      class="btn btn-primary pull-right"
+      style="margin-top: -8px;"
+      routerLink="/sandboxes/new"
+    >
+      Create New Sandbox
+    </a>
+  </ng-template>
+</page-heading>
+
+<div class="well sandbox-config">
+  <div class="well-body mt-sm">
+    <div *ngFor="let sandbox of sandboxes">
+      <sandbox-details-config [sandbox]="sandbox"></sandbox-details-config>
+    </div>
+  </div>
+</div>
