@@ -55,14 +55,14 @@ subprojects {
     dependencyManagement {
 
         dependencies {
-            dependency "org.opentestsystem.rdw.common:rdw-common-messaging:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-archive:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-group:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-messaging:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-model:${rdwCommonVersion}"
-            dependency "org.opentestsystem.rdw.common:rdw-common-utils:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-multi-tenant:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-security:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-status:${rdwCommonVersion}"
-            dependency "org.opentestsystem.rdw.common:rdw-common-archive:${rdwCommonVersion}"
-            dependency "org.opentestsystem.rdw.common:rdw-common-multi-tenant:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-utils:${rdwCommonVersion}"
 
 
             // commonly used libraries
