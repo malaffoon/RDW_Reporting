@@ -64,15 +64,19 @@ server:
 
 spring:
   datasource:
-    url: "\
-      jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting}\
-      ?useSSL=${spring.datasource.use-ssl:false}\
-      &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
-      &characterEncoding=${spring.datasource.character-encoding:utf8}\
-      &useCompression=${spring.datasource.use-compression:true}\
-      &connectTimeout=${spring.datasource.connect-timeout:10000}\
-      &socketTimeout=${spring.datasource.socket-timeout:40000}\
-      "
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${spring.datasource.url-server:localhost:3306}"
+      database: "${spring.datasource.url-schema:reporting}"
+      properties: "useSSL=${spring.datasource.use-ssl:false}\
+                   &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
+                   &characterEncoding=${spring.datasource.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${spring.datasource.rewrite-batched-statements:true}\
+                   &connectTimeout=${spring.datasource.connect-timeout:10000}\
+                   &socketTimeout=${spring.datasource.socket-timeout:40000}\
+                   "
+    url: "${spring.datasource.url-parts.protocol}//${spring.datasource.url-parts.hosts}/${spring.datasource.url-parts.database}?${spring.datasource.url-parts.properties}"
     jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.datasource.query-timeout:30})"
     username: root
     password:

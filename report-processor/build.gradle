@@ -27,6 +27,7 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-config'
     compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
     compile 'org.springframework.retry:spring-retry'
+    compile 'org.springframework.integration:spring-integration-security'
 
     testCompile project(path: ':rdw-reporting-common', configuration: 'tests')
     testCompile 'org.assertj:assertj-core'

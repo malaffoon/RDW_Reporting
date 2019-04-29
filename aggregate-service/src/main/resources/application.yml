@@ -81,12 +81,15 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
 
   olap_datasource:
-    url: "\
-      jdbc:redshift://${spring.olap_datasource.url-server:localhost:5432}/${spring.olap_datasource.url-db:dev}\
-      ?ApplicationName=rdw-reporting-aggregate-service\
-      &loginTimeout=${spring.olap_datasource.connect-timeout:10}\
-      &socketTimeout=${spring.olap_datasource.socket-timeout:0}\
-      "
+    url-parts:
+      protocol: "jdbc:redshift:"
+      hosts: "${spring.olap_datasource.url-server:localhost:5432}"
+      database: "${spring.olap_datasource.url-db:dev}"
+      properties: "ApplicationName=rdw-reporting-aggregate-service\
+                   &loginTimeout=${spring.olap_datasource.connect-timeout:10}\
+                   &socketTimeout=${spring.olap_datasource.socket-timeout:0}\
+                   "
+    url: "${spring.olap_datasource.url-parts.protocol}//${spring.olap_datasource.url-parts.hosts}/${spring.olap_datasource.url-parts.database}?${spring.olap_datasource.url-parts.properties}"
     username: root
     password:
     testWhileIdle: true
