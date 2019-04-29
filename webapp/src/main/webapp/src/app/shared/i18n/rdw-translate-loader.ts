@@ -7,7 +7,7 @@ import { EmbeddedLanguages } from './language-settings';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { SubjectService } from '../../subject/subject.service';
-import { Utils } from '../support/support';
+import { flattenJsonObject, Utils } from '../support/support';
 
 const EmptyObservable = of({});
 const AssessmentTypes: string[] = ['iab', 'ica', 'sum'];
@@ -57,7 +57,7 @@ export class RdwTranslateLoader implements TranslateLoader {
           subjects,
           serverTranslations
         );
-        return this.flattenJsonObject(
+        return flattenJsonObject(
           merge(clientTranslations, asmtTranslations, serverTranslations)
         );
       })
@@ -74,26 +74,6 @@ export class RdwTranslateLoader implements TranslateLoader {
     return this.serverTranslationsLoader
       .getTranslation(languageCode)
       .pipe(catchError(() => EmptyObservable));
-  }
-
-  private flattenJsonObject(ob): any {
-    let toReturn = {};
-
-    for (let i in ob) {
-      if (!ob.hasOwnProperty(i)) continue;
-
-      if (typeof ob[i] == 'object') {
-        let flatObject = this.flattenJsonObject(ob[i]);
-        for (let x in flatObject) {
-          if (!flatObject.hasOwnProperty(x)) continue;
-
-          toReturn[i + '.' + x] = flatObject[x];
-        }
-      } else {
-        toReturn[i] = ob[i];
-      }
-    }
-    return toReturn;
   }
 
   /**

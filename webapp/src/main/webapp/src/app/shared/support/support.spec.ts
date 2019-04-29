@@ -1,4 +1,8 @@
-import { deepEqualsIgnoringNullAndFalse, Utils } from './support';
+import {
+  deepEqualsIgnoringNullAndFalse,
+  flattenJsonObject,
+  Utils
+} from './support';
 
 describe('Utils', () => {
   it('should pass isNullOrUndefined', () => {
@@ -28,6 +32,25 @@ describe('Utils', () => {
     expect(
       Utils.appendOrIncrementFileNameSuffix('an aggregateReport (1)')
     ).toEqual('an aggregateReport (2)');
+  });
+
+  it('should flatten JSON object', () => {
+    let mockJSON = {
+      foo: 'bar',
+      state: {
+        code: 'CA',
+        label: 'California'
+      }
+    };
+    expect(flattenJsonObject(mockJSON)).toEqual({
+      foo: 'bar',
+      'state.code': 'CA',
+      'state.label': 'California'
+    });
+  });
+
+  it('should return empty object for an undefined input', () => {
+    expect(flattenJsonObject(undefined)).toEqual({});
   });
 });
 
