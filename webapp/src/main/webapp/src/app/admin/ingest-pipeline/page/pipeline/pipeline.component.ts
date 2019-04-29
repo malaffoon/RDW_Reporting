@@ -76,16 +76,16 @@ export class PipelineComponent implements ComponentCanDeactivate {
   );
 
   saving: boolean;
-  saved: boolean = true;
+  saveButtonDisabledTooltipCode: string;
 
   testing: boolean;
-  tested: boolean;
   testResults: PipelineTest[];
-  testButtonDisabled: boolean = true;
+  testButtonDisabled: boolean;
+  testButtonDisabledTooltipCode: string;
 
   publishing: boolean;
-  published: boolean;
-  publishButtonDisabled: boolean = true;
+  publishButtonDisabled: boolean;
+  publishButtonDisabledTooltipCode: string;
 
   testUpdating: boolean;
 
@@ -119,9 +119,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
         this.pipeline = pipeline;
         this.items = createItems(pipeline);
         this.setSelectedItem(this.items[0]);
-        this.testButtonDisabled = pipeline.tests.length === 0;
-        this.published = false; // TODO
-        this.publishButtonDisabled = this.published;
+        this.updateButtonStates();
       });
 
     this.pipelineScriptBody
@@ -158,11 +156,11 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
   onScriptChange(value: string): void {
     this.pipelineScriptBody.next(value);
-    this.saved = false;
     this.selectedItem.changed = !isEqual(
       this.selectedItem.value,
       this.selectedItem.lastSavedValue
     );
+    this.updateButtonStates();
   }
 
   onScriptUpdate(script: PipelineScript): void {
@@ -172,9 +170,9 @@ export class PipelineComponent implements ComponentCanDeactivate {
       .updatePipelineScript(this.pipeline.id, script)
       .subscribe(script => {
         this.saving = false;
-        this.saved = true;
         item.lastSavedValue = cloneDeep(script);
         item.changed = false;
+        this.updateButtonStates();
       });
   }
 
@@ -192,7 +190,6 @@ export class PipelineComponent implements ComponentCanDeactivate {
             .subscribe(results => {
               this.testResults = results;
               this.testing = false;
-              this.tested = true;
               // TODO launch test result modal
             });
         } else {
@@ -220,8 +217,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
                   .subscribe(script => {
                     this.pipeline.script = script;
                     this.publishing = false;
-                    this.published = true;
-                    this.publishButtonDisabled = this.published;
+                    this.publishButtonDisabled = true;
                   });
               } else {
                 this.publishing = false;
@@ -238,6 +234,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
       this.selectedItem.value,
       this.selectedItem.lastSavedValue
     );
+    this.updateButtonStates();
   }
 
   onTestRun(test: PipelineTest): void {
@@ -289,6 +286,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
         item.lastSavedValue = cloneDeep(test);
         item.changed = false;
         this.testUpdating = false;
+        this.updateButtonStates();
       });
   }
 
@@ -332,6 +330,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
           item.lastSavedValue = cloneDeep(script);
           item.changed = false;
           this.selectedItemLoading = false;
+          this.updateButtonStates();
         });
     } else if (item.type === 'Test' && item.value.input == null) {
       this.selectedItemLoading = true;
@@ -347,7 +346,10 @@ export class PipelineComponent implements ComponentCanDeactivate {
           item.lastSavedValue = cloneDeep(value);
           item.changed = false;
           this.selectedItemLoading = false;
+          this.updateButtonStates();
         });
+    } else {
+      this.updateButtonStates();
     }
   }
 
@@ -360,7 +362,45 @@ export class PipelineComponent implements ComponentCanDeactivate {
   }
 
   private setPipelineTests(tests: PipelineTest[]): void {
-    this.testButtonDisabled = this.testing || tests.length === 0;
     this.pipeline.tests = tests;
+    this.updateButtonStates();
+  }
+
+  private updateButtonStates(): void {
+    // TODO need to move back to reactive approach with observables to make this simpler
+
+    this.saveButtonDisabledTooltipCode = this.selectedItem.changed
+      ? ''
+      : 'All changes are saved';
+
+    // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
+    // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
+    const hasUnsavedChanges =
+      this.items.some(({ type, changed }) => type === 'Script' && changed) ||
+      (this.selectedItem.type === 'Script'
+        ? this.items.some(({ type, changed }) => type === 'Test' && changed)
+        : this.selectedItem.changed);
+
+    this.testButtonDisabled =
+      this.testing || this.pipeline.tests.length === 0 || hasUnsavedChanges;
+
+    this.testButtonDisabledTooltipCode = !this.testButtonDisabled
+      ? ''
+      : this.pipeline.tests.length === 0
+      ? 'Please create a test'
+      : hasUnsavedChanges
+      ? 'Please save all changes before running tests'
+      : '';
+
+    this.publishButtonDisabled =
+      this.publishing ||
+      this.pipeline.tests.length === 0 ||
+      this.items.some(({ changed }) => changed);
+
+    this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
+      ? ''
+      : this.pipeline.tests.length === 0
+      ? 'Please create a test'
+      : 'Please save all changes before publishing';
   }
 }

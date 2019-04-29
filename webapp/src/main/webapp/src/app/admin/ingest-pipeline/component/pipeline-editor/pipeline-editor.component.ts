@@ -43,6 +43,18 @@ export class PipelineEditorComponent {
   compilationErrors: CompilationError[] = [];
 
   @Input()
+  messages: Message[];
+
+  @Input()
+  saving: boolean;
+
+  @Input()
+  saved: boolean;
+
+  @Input()
+  saveButtonDisabledTooltip: string;
+
+  @Input()
   testing: boolean;
 
   @Input()
@@ -55,19 +67,16 @@ export class PipelineEditorComponent {
   testButtonDisabled: boolean;
 
   @Input()
-  saving: boolean;
-
-  @Input()
-  saved: boolean;
-
-  @Input()
-  messages: Message[];
+  testButtonDisabledTooltip: string;
 
   @Input()
   publishing: boolean;
 
   @Input()
   publishButtonDisabled: boolean;
+
+  @Input()
+  publishButtonDisabledTooltip: string;
 
   @Output()
   testChange: EventEmitter<Item<PipelineTest>> = new EventEmitter();
