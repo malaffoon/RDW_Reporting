@@ -1,26 +1,16 @@
 <div class="script-items-container">
   <ul>
     <li *ngFor="let item of _scriptItems">
-      <a
-        #itemElement
-        class="item"
-        [ngClass]="{
-          active: selectedItem === item
-        }"
-        (click)="onItemClick(item, itemElement)"
-      >
-        <div *ngIf="item.changed" class="item-modified">
-          <i class="fa fa-circle"></i>
-        </div>
-        <div class="item-heading">
-          <div class="item-name">
-            {{ 'pipeline-explorer.script' | translate }}
-          </div>
-        </div>
-        <p *ngIf="item.label" class="item-description">
-          {{ item.label }}
-        </p>
-      </a>
+      <div #itemElement>
+        <pipeline-item
+          name="{{ 'pipeline-explorer.script' | translate }}"
+          description="{{ item.value.name }}"
+          [active]="selectedItem === item"
+          (click)="onItemClick(item, itemElement)"
+        >
+          <i *ngIf="item.changed" icon class="fa fa-circle changed-icon"></i>
+        </pipeline-item>
+      </div>
     </li>
   </ul>
 </div>
@@ -37,33 +27,27 @@
   </div>
   <ul class="test-items">
     <li *ngFor="let item of _testItems; let index = index">
-      <a
-        #itemElement
-        class="item"
-        [ngClass]="{
-          active: selectedItem === item
-        }"
-        (click)="onItemClick(item, itemElement)"
-      >
-        <div *ngIf="item.changed" class="item-modified">
-          <i class="fa fa-circle"></i>
-        </div>
+      <div #itemElement>
+        <pipeline-item
+          [name]="item.value.createdOn | date"
+          [description]="item.value.name"
+          [active]="selectedItem === item"
+          (click)="onItemClick(item, itemElement)"
+        >
+          <i *ngIf="item.changed" icon class="fa fa-circle changed-icon"></i>
 
-        <div class="item-heading">
-          <div class="item-name">
-            {{ item.value.createdOn | date }}
-          </div>
           <a
+            controls
             class="delete-control"
-            (click)="deleteTestButtonClick.emit(item.value)"
+            (click)="
+              deleteTestButtonClick.emit(item.value);
+              $event.stopImmediatePropagation()
+            "
           >
             <i class="fa fa-trash-o"></i>
           </a>
-        </div>
-        <p *ngIf="item.label" class="item-description">
-          {{ item.label }}
-        </p>
-      </a>
+        </pipeline-item>
+      </div>
     </li>
   </ul>
 </div>

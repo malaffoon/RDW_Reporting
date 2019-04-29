@@ -30,6 +30,7 @@
               }
             ],
             "styles": [
+              "node_modules/ace-diff/dist/ace-diff.min.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/primeng.min.css",
@@ -53,6 +54,11 @@
               },
               {
                 "input": "node_modules/ace-builds/src-min/ext-language_tools.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-diff/dist/ace-diff.min.js",
                 "bundleName": "ace-editor",
                 "lazy": true
               },
