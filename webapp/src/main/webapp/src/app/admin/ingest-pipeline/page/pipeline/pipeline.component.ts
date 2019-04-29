@@ -393,10 +393,14 @@ export class PipelineComponent implements ComponentCanDeactivate {
       : '';
 
     this.publishButtonDisabled =
-      this.publishing || this.items.some(({ changed }) => changed);
+      this.publishing ||
+      this.pipeline.tests.length === 0 ||
+      this.items.some(({ changed }) => changed);
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
+      : this.pipeline.tests.length === 0
+      ? 'Please create a test'
       : 'Please save all changes before publishing';
   }
 }
