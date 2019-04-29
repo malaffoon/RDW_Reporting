@@ -12,7 +12,7 @@ import {
 import { RdwTranslateLoader } from '../../shared/i18n/rdw-translate-loader';
 import { SandboxConfigurationProperty } from './sandbox-configuration-property';
 import { ApplicationSettingsService } from '../../app-settings.service';
-import { Utils } from '../../shared/support/support';
+import { flattenJsonObject } from '../../shared/support/support';
 
 @Component({
   selector: 'new-sandbox',
@@ -52,7 +52,7 @@ export class NewSandboxConfigurationComponent {
       const configPropertiesFormArray = <FormArray>(
         this.sandboxForm.controls['configurationProperties']
       );
-      let flattenedConfigProperties = Utils.flattenJsonObject(configProperties);
+      let flattenedConfigProperties = flattenJsonObject(configProperties);
       Object.keys(flattenedConfigProperties).forEach(key => {
         const val = flattenedConfigProperties[key] || '';
         this.configurationProperties.push(

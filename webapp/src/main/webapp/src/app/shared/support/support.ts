@@ -307,32 +307,6 @@ export class Utils {
   static camelCaseToDash(str: string): string {
     return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
   }
-
-  /**
-   * Flattens a (potentially deeply nested) JSON object to a single-level shallow JSON object
-   *
-   * @param {any} A potentially deeply nested JSON object
-   * @returns {any} A flattened JSON object containing key/value pairings
-   */
-  static flattenJsonObject(ob: any): any {
-    let toReturn = {};
-
-    for (let i in ob) {
-      if (!ob.hasOwnProperty(i)) continue;
-
-      if (typeof ob[i] == 'object') {
-        let flatObject = this.flattenJsonObject(ob[i]);
-        for (let x in flatObject) {
-          if (!flatObject.hasOwnProperty(x)) continue;
-
-          toReturn[i + '.' + x] = flatObject[x];
-        }
-      } else {
-        toReturn[i] = ob[i];
-      }
-    }
-    return toReturn;
-  }
 }
 
 /**
@@ -356,4 +330,32 @@ export function range(start: number, end: number): number[] {
     values.push(i);
   }
   return values;
+}
+
+/**
+ * Flattens a (potentially deeply nested) JSON object to a single-level shallow JSON object
+ *
+ * @param {any} A potentially deeply nested JSON object
+ * @returns {any} A flattened JSON object containing key/value pairings
+ */
+export function flattenJsonObject(ob: any): any {
+  const toReturn = {};
+
+  for (let i in ob) {
+    if (!ob.hasOwnProperty(i)) continue;
+
+    if (typeof ob[i] == 'object') {
+      const flatObject = this.flattenJsonObject(ob[i]);
+      for (let x in flatObject) {
+        if (!flatObject.hasOwnProperty(x)) {
+          continue;
+        }
+
+        toReturn[i + '.' + x] = flatObject[x];
+      }
+    } else {
+      toReturn[i] = ob[i];
+    }
+  }
+  return toReturn;
 }

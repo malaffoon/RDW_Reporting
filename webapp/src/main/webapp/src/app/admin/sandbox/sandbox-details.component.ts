@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { SandboxService } from './sandbox.service';
 import { ApplicationSettingsService } from '../../app-settings.service';
-import { Utils } from '../../shared/support/support';
+import { flattenJsonObject } from '../../shared/support/support';
 
 @Component({
   selector: 'sandbox-details-config',
@@ -97,7 +97,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
       const configPropertiesFormArray = <FormArray>(
         this.sandboxForm.controls['configurationProperties']
       );
-      let flattenedConfigProperties = Utils.flattenJsonObject(configProperties);
+      let flattenedConfigProperties = flattenJsonObject(configProperties);
       Object.keys(flattenedConfigProperties).forEach(key => {
         const propertyOverrides = this.sandbox.configurationProperties || [];
         const override = propertyOverrides.find(

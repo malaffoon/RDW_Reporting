@@ -1,4 +1,8 @@
-import { deepEqualsIgnoringNullAndFalse, Utils } from './support';
+import {
+  deepEqualsIgnoringNullAndFalse,
+  flattenJsonObject,
+  Utils
+} from './support';
 
 describe('Utils', () => {
   it('should pass isNullOrUndefined', () => {
@@ -38,7 +42,7 @@ describe('Utils', () => {
         label: 'California'
       }
     };
-    expect(Utils.flattenJsonObject(mockJSON)).toEqual({
+    expect(flattenJsonObject(mockJSON)).toEqual({
       foo: 'bar',
       'state.code': 'CA',
       'state.label': 'California'
@@ -46,7 +50,7 @@ describe('Utils', () => {
   });
 
   it('should return empty object for an undefined input', () => {
-    expect(Utils.flattenJsonObject(undefined)).toEqual({});
+    expect(flattenJsonObject(undefined)).toEqual({});
   });
 });
 
