@@ -48,20 +48,35 @@ export class SandboxService {
   }
 
   create(sandbox: SandboxConfiguration): void {
-    // TODO: Call SAVE API
+    // TODO: Call the create API
     this.mockData.push(sandbox);
   }
 
   update(sandbox: SandboxConfiguration): void {
+    // TODO: Call the update API
     let index = this.mockData.findIndex(s => s.code === sandbox.code);
     this.mockData[index] = sandbox;
   }
 
-  delete(sandboxCode: string): void {
+  delete(sandboxCode: string): Observable<boolean> {
+    //TODO: Call the delete API
     let index = this.mockData.findIndex(s => s.code === sandboxCode);
     if (index !== -1) {
       this.mockData.splice(index, 1);
+      return Observable.create(true);
+    } else {
+      return Observable.create(false);
     }
+  }
+
+  archive(sandboxCode: string): Observable<boolean> {
+    //TODO: Call the archive API
+    return Observable.create(true);
+  }
+
+  resetData(sandboxCode: string): Observable<boolean> {
+    //TODO: Call the reset data API
+    return Observable.create(true);
   }
 
   getAvailableDataTemplates(): Observable<DataTemplate[]> {

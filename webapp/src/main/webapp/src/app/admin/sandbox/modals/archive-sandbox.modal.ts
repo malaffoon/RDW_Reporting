@@ -1,5 +1,5 @@
 import { BsModalRef } from 'ngx-bootstrap';
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnDestroy } from '@angular/core';
 import { SandboxService } from '../sandbox.service';
 import { SandboxConfiguration } from '../sandbox-configuration';
 
@@ -7,7 +7,7 @@ import { SandboxConfiguration } from '../sandbox-configuration';
   selector: 'archive-sandbox-modal',
   templateUrl: './archive-sandbox.modal.html'
 })
-export class ArchiveSandboxConfigurationModalComponent {
+export class ArchiveSandboxConfigurationModalComponent implements OnDestroy {
   sandbox: SandboxConfiguration;
   archived: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
@@ -18,8 +18,13 @@ export class ArchiveSandboxConfigurationModalComponent {
   }
 
   archive() {
+    //TODO: Implement this once backend A
     // this.service.archive(this.sandbox.code);
     this.modal.hide();
     this.archived.emit(this.sandbox);
+  }
+
+  ngOnDestroy(): void {
+    this.archived.complete();
   }
 }

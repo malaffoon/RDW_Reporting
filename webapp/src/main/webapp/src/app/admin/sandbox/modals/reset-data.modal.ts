@@ -1,5 +1,5 @@
 import { BsModalRef } from 'ngx-bootstrap';
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnDestroy } from '@angular/core';
 import { SandboxService } from '../sandbox.service';
 import { SandboxConfiguration } from '../sandbox-configuration';
 
@@ -7,7 +7,7 @@ import { SandboxConfiguration } from '../sandbox-configuration';
   selector: 'reset-data-modal',
   templateUrl: './reset-data.modal.html'
 })
-export class ResetDataModalComponent {
+export class ResetDataModalComponent implements OnDestroy {
   sandbox: SandboxConfiguration;
   resetData: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
@@ -18,8 +18,12 @@ export class ResetDataModalComponent {
   }
 
   reset() {
-    // this.service.archive(this.sandbox.code);
+    this.service.resetData(this.sandbox.code);
     this.modal.hide();
     this.resetData.emit(this.sandbox);
+  }
+
+  ngOnDestroy(): void {
+    this.resetData.complete();
   }
 }

@@ -39,11 +39,6 @@ export class SandboxConfigurationComponent {
         console.log(sandbox);
       })
     );
-    this._modalSubscriptions.push(
-      this.modalService.onHidden.subscribe(() => {
-        this.unsubscribe();
-      })
-    );
   }
 
   openArchiveSandboxModal(sandbox: SandboxConfiguration) {
@@ -58,11 +53,6 @@ export class SandboxConfigurationComponent {
         console.log(sandbox);
       })
     );
-    this._modalSubscriptions.push(
-      this.modalService.onHidden.subscribe(() => {
-        this.unsubscribe();
-      })
-    );
   }
 
   openResetDataModal(sandbox: SandboxConfiguration) {
@@ -74,11 +64,6 @@ export class SandboxConfigurationComponent {
     this._modalSubscriptions.push(
       modal.resetData.subscribe(sandbox => {
         console.log(sandbox);
-      })
-    );
-    this._modalSubscriptions.push(
-      this.modalService.onHidden.subscribe(() => {
-        this.unsubscribe();
       })
     );
   }
