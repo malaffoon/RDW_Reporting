@@ -118,6 +118,11 @@ export interface PipelineTest {
    * The expected test output
    */
   output?: string;
+
+  /**
+   * The test results
+   */
+  result?: PipelineTestResult;
 }
 
 export interface Message {
@@ -131,8 +136,8 @@ export interface CompilationError {
   message: Message | string;
 }
 
-export interface TestResult {
-  testId: number;
+export interface PipelineTestResult {
   passed: boolean;
-  message: Message | string;
+  message?: Message | string;
+  actualOutput: string;
 }

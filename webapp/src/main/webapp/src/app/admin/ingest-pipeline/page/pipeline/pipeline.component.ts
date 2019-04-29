@@ -14,8 +14,7 @@ import {
   CompilationError,
   Pipeline,
   PipelineScript,
-  PipelineTest,
-  TestResult
+  PipelineTest
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { tap } from 'rxjs/internal/operators/tap';
@@ -43,18 +42,17 @@ function compilationErrorToMessage(value: CompilationError): Message {
 
 function createItems(pipeline: Pipeline): Item[] {
   return [
-    createItem('Script', pipeline.script, pipeline.description),
+    createItem('Script', {
+      ...pipeline.script,
+      name: pipeline.description
+    }),
     ...pipeline.tests.map(value => createItem('Test', value))
   ];
 }
 
-function createItem<T>(type: ItemType, value: T, label?: string): Item<T> {
-  if (label == null) {
-    label = type === 'Test' ? (<PipelineTest>value).name : '';
-  }
+function createItem<T>(type: ItemType, value: T): Item<T> {
   return {
     type,
-    label,
     value,
     lastSavedValue: cloneDeep(value)
   };
@@ -82,7 +80,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
   testing: boolean;
   tested: boolean;
-  testResults: TestResult[];
+  testResults: PipelineTest[];
   testButtonDisabled: boolean = true;
 
   publishing: boolean;
@@ -216,7 +214,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
             .subscribe(results => {
               this.testResults = results;
 
-              if (results.every(({ passed }) => passed)) {
+              if (results.every(({ result }) => result.passed)) {
                 this.pipelineService
                   .publishPipelineScript(this.pipeline.id, script)
                   .subscribe(script => {
@@ -351,6 +349,10 @@ export class PipelineComponent implements ComponentCanDeactivate {
           this.selectedItemLoading = false;
         });
     }
+  }
+
+  onCloseTestResultsButtonClick(): void {
+    this.testResults = undefined;
   }
 
   private setSelectedItem(item: Item): void {

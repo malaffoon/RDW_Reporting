@@ -74,6 +74,7 @@
         header="{{
           'sandbox-config.fields.configuration-properties' | translate
         }}"
+        formArrayName="configurationProperties"
       >
         <p-table
           #configurationPropertiesDataTable
@@ -84,6 +85,7 @@
           [globalFilterFields]="['key', 'value']"
           styleClass="table table-striped table-hover overflow rdw-scrollable-table"
           [paginator]="true"
+          [alwaysShowPaginator]="false"
           [rows]="20"
         >
           <ng-template pTemplate="caption">
@@ -154,6 +156,7 @@
           [globalFilterFields]="['key', 'value']"
           styleClass="table table-striped table-hover overflow rdw-scrollable-table"
           [paginator]="true"
+          [alwaysShowPaginator]="false"
           [rows]="20"
         >
           <ng-template pTemplate="caption">

@@ -9,8 +9,7 @@ import {
   CompilationError,
   Pipeline,
   PipelineScript,
-  PipelineTest,
-  TestResult
+  PipelineTest
 } from '../../model/pipeline';
 import { Message, ThemeType } from '../code-editor/code-editor.component';
 import { Item } from '../pipeline-explorer/pipeline-explorer.component';
@@ -18,8 +17,8 @@ import { Item } from '../pipeline-explorer/pipeline-explorer.component';
 @Component({
   selector: 'pipeline-editor',
   templateUrl: './pipeline-editor.component.html',
-  styleUrls: ['./pipeline-editor.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./pipeline-editor.component.less']
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PipelineEditorComponent {
   @Input()
@@ -47,7 +46,7 @@ export class PipelineEditorComponent {
   testing: boolean;
 
   @Input()
-  testResults: TestResult[] = [];
+  testResults: PipelineTest[] = [];
 
   @Input()
   tested: boolean;

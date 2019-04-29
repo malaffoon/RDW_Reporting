@@ -2,28 +2,38 @@
   <spinner></spinner>
 </ng-container>
 <ng-template #loaded>
-  <pipeline-editor
-    [pipeline]="pipeline"
-    [compiling]="compiling"
-    [compilationErrors]="compilationErrors | async"
-    [saving]="saving"
-    [testing]="testing"
-    [testButtonDisabled]="testButtonDisabled"
-    [publishing]="publishing"
-    [publishButtonDisabled]="publishButtonDisabled"
-    (scriptChange)="onScriptChange($event)"
-    (scriptUpdate)="onScriptUpdate($event)"
-    (scriptTest)="onScriptTest($event)"
-    (scriptPublish)="onScriptPublish($event)"
-    [testUpdating]="testUpdating"
-    (testChange)="onTestChange($event)"
-    (testRun)="onTestRun($event)"
-    (testUpdate)="onTestUpdate($event)"
-    (testCreate)="onTestCreate()"
-    (testDelete)="onTestDelete($event)"
-    [items]="items"
-    [selectedItem]="selectedItem"
-    [selectedItemLoading]="selectedItemLoading"
-    (itemSelected)="onItemSelected($event)"
-  ></pipeline-editor>
+  <ng-container *ngIf="testResults; else noTestResults">
+    <!-- Test results -->
+    <pipeline-test-results
+      [pipeline]="pipeline"
+      [tests]="testResults"
+      (closeButtonClick)="onCloseTestResultsButtonClick()"
+    ></pipeline-test-results>
+  </ng-container>
+  <ng-template #noTestResults>
+    <pipeline-editor
+      [pipeline]="pipeline"
+      [compiling]="compiling"
+      [compilationErrors]="compilationErrors | async"
+      [saving]="saving"
+      [testing]="testing"
+      [testButtonDisabled]="testButtonDisabled"
+      [publishing]="publishing"
+      [publishButtonDisabled]="publishButtonDisabled"
+      (scriptChange)="onScriptChange($event)"
+      (scriptUpdate)="onScriptUpdate($event)"
+      (scriptTest)="onScriptTest($event)"
+      (scriptPublish)="onScriptPublish($event)"
+      [testUpdating]="testUpdating"
+      (testChange)="onTestChange($event)"
+      (testRun)="onTestRun($event)"
+      (testUpdate)="onTestUpdate($event)"
+      (testCreate)="onTestCreate()"
+      (testDelete)="onTestDelete($event)"
+      [items]="items"
+      [selectedItem]="selectedItem"
+      [selectedItemLoading]="selectedItemLoading"
+      (itemSelected)="onItemSelected($event)"
+    ></pipeline-editor>
+  </ng-template>
 </ng-template>

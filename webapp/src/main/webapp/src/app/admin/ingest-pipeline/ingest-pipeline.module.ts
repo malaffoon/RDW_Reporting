@@ -11,6 +11,9 @@ import { CommonModule } from '../../shared/common.module';
 import { PipelineEditorComponent } from './component/pipeline-editor/pipeline-editor.component';
 import { BsDropdownModule, ButtonsModule } from 'ngx-bootstrap';
 import { PipelineExplorerComponent } from './component/pipeline-explorer/pipeline-explorer.component';
+import { PipelineTestResultsComponent } from './component/pipeline-test-results/pipeline-test-results.component';
+import { PipelineItemComponent } from './component/pipeline-item/pipeline-item.component';
+import { CodeDifferenceComponent } from './component/code-difference/code-difference.component';
 
 @NgModule({
   imports: [
@@ -24,12 +27,15 @@ import { PipelineExplorerComponent } from './component/pipeline-explorer/pipelin
     BsDropdownModule.forRoot()
   ],
   declarations: [
+    CodeDifferenceComponent,
     CodeEditorComponent,
     PipelineCardComponent,
     PipelineComponent,
     PipelinesComponent,
     PipelineEditorComponent,
-    PipelineExplorerComponent
+    PipelineExplorerComponent,
+    PipelineItemComponent,
+    PipelineTestResultsComponent
   ],
   exports: []
 })
