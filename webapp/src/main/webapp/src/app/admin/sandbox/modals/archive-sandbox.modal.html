@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h4
+    id="dialog-static-name"
+    class="modal-title pull-left label-max-width"
+    [innerHTML]="
+            'sandbox-config.archive-modal.header' | translate: sandbox
+          "
+  ></h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="modal.hide()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div
+  class="modal-body"
+  [innerHTML]="'sandbox-config.archive-modal.body' | translate: sandbox"
+></div>
+<div class="modal-footer">
+  <ul class="pull-right list-unstyled list-inline">
+    <li>
+      <button type="button" class="btn btn-primary btn-sm" (click)="archive">
+        <i class="fa fa-archive"></i>
+        {{ 'sandbox-config.archive-modal.archive' | translate }}
+      </button>
+    </li>
+    <li>
+      <button
+        type="button"
+        class="btn btn-default btn-sm"
+        (click)="modal.hide()"
+      >
+        {{ 'common.action.cancel' | translate }}
+      </button>
+    </li>
+  </ul>
+</div>
