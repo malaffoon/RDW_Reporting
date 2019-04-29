@@ -11,12 +11,23 @@ import { NewSandboxConfigurationComponent } from './new-sandbox.component';
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { AccordionModule } from 'primeng/primeng';
+import { DeleteSandboxConfigurationModalComponent } from './modals/delete-sandbox.modal';
+import { ArchiveSandboxConfigurationModalComponent } from './modals/archive-sandbox.modal';
+import { ResetDataModalComponent } from './modals/reset-data.modal';
 
 @NgModule({
   declarations: [
     SandboxConfigurationComponent,
     SandboxConfigurationDetailsComponent,
-    NewSandboxConfigurationComponent
+    NewSandboxConfigurationComponent,
+    DeleteSandboxConfigurationModalComponent,
+    ArchiveSandboxConfigurationModalComponent,
+    ResetDataModalComponent
+  ],
+  entryComponents: [
+    DeleteSandboxConfigurationModalComponent,
+    ArchiveSandboxConfigurationModalComponent,
+    ResetDataModalComponent
   ],
   imports: [
     BrowserModule,

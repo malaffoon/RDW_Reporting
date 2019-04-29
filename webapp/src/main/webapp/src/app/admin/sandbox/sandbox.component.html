@@ -14,7 +14,12 @@
 <div class="well sandbox-config">
   <div class="well-body mt-sm">
     <div *ngFor="let sandbox of sandboxes">
-      <sandbox-details-config [sandbox]="sandbox"></sandbox-details-config>
+      <sandbox-details-config
+        [sandbox]="sandbox"
+        (deleteClicked)="openDeleteSandboxModal(sandbox)"
+        (archiveClicked)="openArchiveSandboxModal(sandbox)"
+        (resetDataClicked)="openResetDataModal(sandbox)"
+      ></sandbox-details-config>
     </div>
   </div>
 </div>

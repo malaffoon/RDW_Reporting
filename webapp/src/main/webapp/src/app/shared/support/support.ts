@@ -345,7 +345,7 @@ export function flattenJsonObject(ob: any): any {
     if (!ob.hasOwnProperty(i)) continue;
 
     if (typeof ob[i] == 'object') {
-      const flatObject = this.flattenJsonObject(ob[i]);
+      const flatObject = flattenJsonObject(ob[i]);
       for (let x in flatObject) {
         if (!flatObject.hasOwnProperty(x)) {
           continue;

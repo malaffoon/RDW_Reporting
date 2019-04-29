@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { SandboxConfiguration } from './sandbox-configuration';
 import { SandboxConfigurationProperty } from './sandbox-configuration-property';
 import { RdwTranslateLoader } from '../../shared/i18n/rdw-translate-loader';
@@ -21,12 +28,12 @@ import { flattenJsonObject } from '../../shared/support/support';
 export class SandboxConfigurationDetailsComponent implements OnInit {
   @Input()
   sandbox: SandboxConfiguration;
-  @ViewChild('resetModal')
-  resetModal;
-  @ViewChild('archiveModal')
-  archiveModal;
-  @ViewChild('deleteModal')
-  deleteModal;
+  @Output()
+  deleteClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  @Output()
+  archiveClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  @Output()
+  resetDataClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
   expanded = false;
   editMode = false;
@@ -125,19 +132,6 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     });
   }
 
-  onArchiveButtonClick() {
-    //TODO: Call ARCHIVE API - update UI accordingly
-  }
-
-  onDeleteButtonClick() {
-    //TODO: Call DELETE API and emit delete event
-    this.service.delete(this.sandbox.code);
-  }
-
-  onResetButtonClick() {
-    //TODO: Call DATA RESET API
-  }
-
   onSubmit() {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
@@ -188,17 +182,17 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
       {
         label: 'Reset Data',
         icon: 'fa fa-refresh',
-        command: () => this.resetModal.show()
+        command: () => this.resetDataClicked.emit(this.sandbox)
       },
       {
         label: 'Archive',
         icon: 'fa fa-archive',
-        command: () => this.archiveModal.show()
+        command: () => this.archiveClicked.emit(this.sandbox)
       },
       {
         label: 'Delete',
         icon: 'fa fa-close',
-        command: () => this.deleteModal.show()
+        command: () => this.deleteClicked.emit(this.sandbox)
       }
     ];
   }
