@@ -369,15 +369,17 @@ export class PipelineComponent implements ComponentCanDeactivate {
   private updateButtonStates(): void {
     // TODO need to move back to reactive approach with observables to make this simpler
 
+    this.saveButtonDisabledTooltipCode = this.selectedItem.changed
+      ? ''
+      : 'All changes are saved';
+
+    // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
+    // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
     const hasUnsavedChanges =
       this.items.some(({ type, changed }) => type === 'Script' && changed) ||
       (this.selectedItem.type === 'Script'
         ? this.items.some(({ type, changed }) => type === 'Test' && changed)
         : this.selectedItem.changed);
-
-    this.saveButtonDisabledTooltipCode = hasUnsavedChanges
-      ? ''
-      : 'All changes are saved';
 
     this.testButtonDisabled =
       this.testing || this.pipeline.tests.length === 0 || hasUnsavedChanges;
@@ -390,7 +392,8 @@ export class PipelineComponent implements ComponentCanDeactivate {
       ? 'Please save all changes before running tests'
       : '';
 
-    this.publishButtonDisabled = this.publishing || hasUnsavedChanges;
+    this.publishButtonDisabled =
+      this.publishing || this.items.some(({ changed }) => changed);
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
