@@ -2,7 +2,7 @@
   <!-- 1st Column -->
   <div class="flex-child">
     <!-- Gender -->
-    <div>
+    <div *ngIf="studentFields.includes('Gender')">
       <label>
         <span
           info-button
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Migrant Status -->
-    <div>
+    <div *ngIf="studentFields.includes('MigrantStatus')">
       <label>
         <span
           info-button
@@ -44,7 +44,7 @@
     </div>
 
     <!-- 504 -->
-    <div>
+    <div *ngIf="studentFields.includes('Section504')">
       <label>
         <span
           info-button
@@ -64,7 +64,7 @@
     </div>
 
     <!-- IEP -->
-    <div>
+    <div *ngIf="studentFields.includes('IndividualEducationPlan')">
       <label>
         <span
           info-button
@@ -84,7 +84,7 @@
     </div>
 
     <!-- English Proficiency -->
-    <div *ngIf="showLimitedEnglishProficiencyFilter">
+    <div *ngIf="studentFields.includes('LimitedEnglishProficiency')">
       <label>
         <span
           info-button
@@ -110,7 +110,7 @@
 
   <div class="flex-child">
     <!-- Military Connected -->
-    <div>
+    <div *ngIf="studentFields.includes('MilitaryStudentIdentifier')">
       <fieldset>
         <label>
           <span
@@ -136,7 +136,7 @@
     </div>
 
     <!-- ELAS -->
-    <div *ngIf="showEnglishLanguageAcquisitionStatusFilter">
+    <div *ngIf="studentFields.includes('EnglishLanguageAcquisitionStatus')">
       <label>
         <span
           info-button
@@ -155,7 +155,7 @@
       ></sb-button-group>
     </div>
 
-    <div>
+    <div *ngIf="studentFields.includes('PrimaryLanguage')">
       <fieldset>
         <label for="language-filter">
           <span
@@ -191,7 +191,7 @@
 
   <!-- Ethnicity  -->
   <div class="flex-child">
-    <div>
+    <div *ngIf="studentFields.includes('Ethnicity')">
       <label>
         <span
           info-button
