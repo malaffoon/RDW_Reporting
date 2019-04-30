@@ -1,7 +1,10 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DataService } from '../../shared/data/data.service';
-import { DataTemplate, SandboxConfiguration } from './sandbox-configuration';
+import { DataService } from '../../../shared/data/data.service';
+import {
+  DataTemplate,
+  SandboxConfiguration
+} from '../model/sandbox-configuration';
 
 /**
  * Service responsible for managing organization embargo settings

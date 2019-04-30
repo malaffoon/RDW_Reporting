@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataTemplate } from './sandbox-configuration';
-import { SandboxService } from './sandbox.service';
+import { DataTemplate } from '../model/sandbox-configuration';
+import { SandboxService } from '../service/sandbox.service';
 import {
   FormBuilder,
   FormGroup,
@@ -9,10 +9,10 @@ import {
   Validators,
   FormControl
 } from '@angular/forms';
-import { RdwTranslateLoader } from '../../shared/i18n/rdw-translate-loader';
-import { SandboxConfigurationProperty } from './sandbox-configuration-property';
-import { ApplicationSettingsService } from '../../app-settings.service';
-import { flattenJsonObject } from '../../shared/support/support';
+import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
+import { SandboxConfigurationProperty } from '../model/sandbox-configuration-property';
+import { ApplicationSettingsService } from '../../../app-settings.service';
+import { flattenJsonObject } from '../../../shared/support/support';
 
 @Component({
   selector: 'new-sandbox',

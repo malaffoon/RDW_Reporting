@@ -39,8 +39,8 @@ import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
 import { ingestPipelineRoutes } from './admin/ingest-pipeline/ingest-pipeline.routes';
-import { SandboxConfigurationComponent } from './admin/sandbox/sandbox.component';
-import { NewSandboxConfigurationComponent } from './admin/sandbox/new-sandbox.component';
+import { SandboxConfigurationComponent } from './admin/sandbox/pages/sandbox.component';
+import { NewSandboxConfigurationComponent } from './admin/sandbox/pages/new-sandbox.component';
 
 export const studentPipe = new StudentPipe();
 export const adminRoute = {

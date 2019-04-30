@@ -6,9 +6,9 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { SandboxConfiguration } from './sandbox-configuration';
-import { SandboxConfigurationProperty } from './sandbox-configuration-property';
-import { RdwTranslateLoader } from '../../shared/i18n/rdw-translate-loader';
+import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { SandboxConfigurationProperty } from '../model/sandbox-configuration-property';
+import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { MenuItem } from 'primeng/api';
 import {
   FormArray,
@@ -17,9 +17,9 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
-import { SandboxService } from './sandbox.service';
-import { ApplicationSettingsService } from '../../app-settings.service';
-import { flattenJsonObject } from '../../shared/support/support';
+import { SandboxService } from '../service/sandbox.service';
+import { ApplicationSettingsService } from '../../../app-settings.service';
+import { flattenJsonObject } from '../../../shared/support/support';
 
 @Component({
   selector: 'sandbox-details-config',
