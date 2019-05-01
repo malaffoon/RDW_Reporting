@@ -47,6 +47,9 @@ reporting:
   target-report:
     insufficient-data-cutoff: 0.2
     min-number-of-students: 0
+  studentFields:
+    Gender: disabled
+    Ethnicity: disabled
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
