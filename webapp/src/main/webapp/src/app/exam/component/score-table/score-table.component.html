@@ -2,10 +2,10 @@
   <thead>
     <tr>
       <th></th>
-      <th *ngFor="let statistic of _table.scoreStatistics">
+      <th *ngFor="let statistic of table.scoreStatistics">
         <div class="heading">
           <score-label
-            [subjectCode]="_table.subjectCode"
+            [subjectCode]="table.subjectCode"
             [scoreCode]="statistic.code"
           ></score-label>
         </div>
@@ -21,7 +21,7 @@
           class="average-scale-score-label"
         ></span>
       </th>
-      <th *ngFor="let statistic of _table.scoreStatistics">
+      <th *ngFor="let statistic of table.scoreStatistics">
         <scale-score
           [score]="statistic.averageScaleScore"
           [standardError]="statistic.standardErrorOfMean"
@@ -29,22 +29,29 @@
       </th>
     </tr>
   </thead>
-  <tbody>
+  <tbody
+    *ngIf="
+      table.scoreStatistics[0].performanceLevelScores
+        .slice()
+        .reverse() as scores
+    "
+  >
     <tr
       *ngFor="
-        let performanceLevelScore of _orderedPerformanceLevelScores;
+        let performanceLevelScore of scores;
         let performanceLevelIndex = index
       "
     >
       <td>
         {{ performanceLevelScore.nameCode | translate }}
       </td>
-      <td
-        *ngFor="let statistic of _table.scoreStatistics; let groupIndex = index"
-      >
+      <td *ngFor="let statistic of table.scoreStatistics">
         <ng-container
           *ngIf="
-            statistic.performanceLevelScores[performanceLevelIndex] as score
+            statistic.performanceLevelScores[
+              statistic.performanceLevelScores.length -
+                (performanceLevelIndex + 1)
+            ] as score
           "
         >
           <aggregate-score-graph

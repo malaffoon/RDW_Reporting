@@ -11,14 +11,6 @@ export class ScoreTableComponent {
   @Input()
   displayCount: boolean;
 
-  _table: ScoreTable;
-  _orderedPerformanceLevelScores: ScoreTablePerformanceLevelScores[];
-
   @Input()
-  set table(value: ScoreTable) {
-    this._table = value;
-    this._orderedPerformanceLevelScores = value.scoreStatistics[0].performanceLevelScores
-      .slice()
-      .reverse();
-  }
+  table: ScoreTable;
 }
