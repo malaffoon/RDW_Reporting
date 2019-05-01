@@ -1,7 +1,7 @@
 import { Organization } from '../shared/organization/organization';
-import { SubgroupFilterOptions } from './subgroup/subgroup-filter-options';
 import { Claim, Subject } from './aggregate-report-options.service';
 import { ReportQueryType } from '../report/report';
+import { SubgroupFilterOptions } from './subgroup/subgroup-filter-options';
 
 /**
  * Represents the aggregate report options as provided by the API

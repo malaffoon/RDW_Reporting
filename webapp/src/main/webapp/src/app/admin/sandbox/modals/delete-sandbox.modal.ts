@@ -11,7 +11,7 @@ export class DeleteSandboxConfigurationModalComponent implements OnDestroy {
   sandbox: SandboxConfiguration;
   deleted: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
-  constructor(private modal: BsModalRef, private service: SandboxService) {}
+  constructor(public modal: BsModalRef, private service: SandboxService) {}
 
   cancel() {
     this.modal.hide();
