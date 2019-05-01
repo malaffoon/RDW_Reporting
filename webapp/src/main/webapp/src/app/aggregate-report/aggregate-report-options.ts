@@ -1,7 +1,7 @@
 import { Organization } from '../shared/organization/organization';
 import { Claim, Subject } from './aggregate-report-options.service';
 import { ReportQueryType } from '../report/report';
-import { SubgroupFilters } from './subgroup/subgroup-filters';
+import { SubgroupFilterOptions } from './subgroup/subgroup-filter-options';
 
 /**
  * Represents the aggregate report options as provided by the API
@@ -20,5 +20,5 @@ export interface AggregateReportOptions {
   readonly statewideReporter: boolean;
   readonly subjects: Subject[];
   readonly summativeAdministrationConditions: string[];
-  readonly studentFilters: SubgroupFilters;
+  readonly studentFilters: SubgroupFilterOptions;
 }
