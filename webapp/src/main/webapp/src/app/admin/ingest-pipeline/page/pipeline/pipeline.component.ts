@@ -30,6 +30,7 @@ import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
 import { CompilationState, PipelineState } from '../../model/pipeline-state';
 import { isValidPipelineTest } from '../../model/pipelines';
+import { UserService } from '../../../../user/user.service';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -52,11 +53,12 @@ function createItems(pipeline: Pipeline): Item[] {
   ];
 }
 
-function createItem<T>(type: ItemType, value: T): Item<T> {
+function createItem<T>(type: ItemType, value: T, changed = false): Item<T> {
   return {
     type,
     value,
-    lastSavedValue: cloneDeep(value)
+    lastSavedValue: cloneDeep(value),
+    changed
   };
 }
 
@@ -100,7 +102,8 @@ export class PipelineComponent implements ComponentCanDeactivate {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private pipelineService: PipelineService
+    private pipelineService: PipelineService,
+    private userService: UserService
   ) {
     this.route.params
       .pipe(
@@ -275,34 +278,40 @@ export class PipelineComponent implements ComponentCanDeactivate {
   }
 
   onTestCreate(): void {
-    this.pipelineService
-      .createPipelineTest(this.pipeline.id, {
+    this.userService.getUser().subscribe(user => {
+      const updatedBy = `${user.firstName} ${user.lastName}`;
+      const test: PipelineTest = {
+        createdOn: new Date(),
+        updatedBy,
         input: '',
         output: ''
-      })
-      .subscribe(test => {
-        this.setPipelineTests([test, ...this.pipeline.tests]);
-        this.items = [createItem('Test', test), ...this.items];
-        // select added item
-        this.selectedItem = this.items.find(
-          ({ type, value: { id } }) => type === 'Test' && id === test.id
-        );
-        this.updateButtonStates();
-      });
+      };
+      this.setPipelineTests([test, ...this.pipeline.tests]);
+      this.items = [createItem('Test', test, true), ...this.items];
+      // select added item
+      this.selectedItem = this.items.find(
+        ({ type, value: { id } }) => type === 'Test' && id === test.id
+      );
+      this.updateButtonStates();
+    });
   }
 
   onTestUpdate(test: PipelineTest): void {
     this.testUpdating = true;
     const item = this.selectedItem;
-    this.pipelineService
-      .updatePipelineTest(this.pipeline.id, test)
-      .subscribe(() => {
-        // update updated on?
-        item.lastSavedValue = cloneDeep(test);
-        item.changed = false;
-        this.testUpdating = false;
-        this.updateButtonStates();
-      });
+
+    const observable =
+      test.id == null
+        ? this.pipelineService.createPipelineTest(this.pipeline.id, test)
+        : this.pipelineService.updatePipelineTest(this.pipeline.id, test);
+
+    observable.subscribe(value => {
+      // update updated on?
+      item.lastSavedValue = cloneDeep(value);
+      item.changed = false;
+      this.testUpdating = false;
+      this.updateButtonStates();
+    });
   }
 
   onTestDelete(test: PipelineTest): void {
