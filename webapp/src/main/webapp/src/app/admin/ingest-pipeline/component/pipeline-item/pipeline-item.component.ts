@@ -17,6 +17,9 @@ export class PipelineItemComponent {
   name: string;
 
   @Input()
+  caption: string;
+
+  @Input()
   description: string;
 
   @Input()

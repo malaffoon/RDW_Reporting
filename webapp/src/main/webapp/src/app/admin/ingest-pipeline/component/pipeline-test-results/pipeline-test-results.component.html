@@ -21,7 +21,6 @@
       <li *ngFor="let test of _tests">
         <div #scrollElementReference>
           <pipeline-item
-            name="{{ test.createdOn | date }}"
             description="{{ test.name }}"
             [active]="_selectedTest === test"
             (click)="onTestClick(test, scrollElementReference)"
@@ -37,6 +36,14 @@
               icon
               class="failed-icon fa fa-close"
             ></i>
+
+            <div name>
+              {{ test.createdOn | date }}
+              <span class="ml-sm" *ngIf="showTime(test)">
+                <i class="fa fa-clock-o small"></i>
+                {{ test.createdOn | date: 'mediumTime' }}
+              </span>
+            </div>
           </pipeline-item>
         </div>
       </li>
@@ -44,6 +51,7 @@
   </div>
   <div class="body-container" *ngIf="_selectedTest && pipeline">
     <ng-container *ngIf="_selectedTest.result.passed; else failed">
+      <div class="passed"><i class="fa fa-check fa-2x"></i> Test passed</div>
     </ng-container>
     <ng-template #failed>
       <div class="difference-header">

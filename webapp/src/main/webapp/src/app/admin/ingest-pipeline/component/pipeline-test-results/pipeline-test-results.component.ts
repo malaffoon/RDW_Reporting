@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { Pipeline, PipelineTest } from '../../model/pipeline';
 import { first } from 'rxjs/operators';
+import { Item } from '../pipeline-explorer/pipeline-explorer.component';
+import { equalDate } from '../../../../shared/support/support';
 
 function findFirstFailedOrFirst(tests: PipelineTest[]): PipelineTest {
   const firstFailed = tests.find(({ result: { passed } }) => !passed);
@@ -42,5 +44,14 @@ export class PipelineTestResultsComponent {
     scrollElement.scrollIntoView({
       block: 'nearest'
     });
+  }
+
+  showTime(test: PipelineTest): boolean {
+    return (
+      this._tests.find(
+        otherTest =>
+          test !== otherTest && equalDate(test.createdOn, otherTest.createdOn)
+      ) != null
+    );
   }
 }

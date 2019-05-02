@@ -124,47 +124,11 @@
           ></code-editor>
         </ng-container>
         <ng-container *ngSwitchCase="'Test'">
-          <div class="test-form">
-            <div class="form-group">
-              <label for="name">
-                Test Description
-              </label>
-              <input
-                id="name"
-                type="text"
-                class="form-control"
-                [(ngModel)]="selectedItem.value.name"
-                (ngModelChange)="testChange.emit(selectedItem)"
-              />
-            </div>
-
-            <div class="test-grid">
-              <div class="form-group">
-                <label>Test Input</label>
-                <code-editor
-                  [theme]="codeEditorTheme"
-                  [lines]="31"
-                  [gutter]="false"
-                  [messages]="messages"
-                  [language]="pipeline.inputType"
-                  [(ngModel)]="selectedItem.value.input"
-                  (ngModelChange)="testChange.emit(selectedItem)"
-                ></code-editor>
-              </div>
-              <div class="form-group">
-                <label>Expected Output</label>
-                <code-editor
-                  [theme]="codeEditorTheme"
-                  [lines]="31"
-                  [gutter]="false"
-                  [messages]="messages"
-                  [language]="pipeline.inputType"
-                  [(ngModel)]="selectedItem.value.output"
-                  (ngModelChange)="testChange.emit(selectedItem)"
-                ></code-editor>
-              </div>
-            </div>
-          </div>
+          <pipeline-test-form
+            [inputType]="pipeline.inputType"
+            [test]="selectedItem.value"
+            (testChange)="testChange.emit(selectedItem)"
+          ></pipeline-test-form>
         </ng-container>
       </ng-container>
     </ng-template>
