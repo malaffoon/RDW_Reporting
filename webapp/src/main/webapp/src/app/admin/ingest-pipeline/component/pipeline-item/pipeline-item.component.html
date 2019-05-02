@@ -12,6 +12,7 @@
   <div class="item-heading">
     <div class="item-name">
       {{ name }}
+      <ng-content select="[name]"></ng-content>
     </div>
     <div class="item-controls">
       <ng-content select="[controls]"></ng-content>
@@ -20,4 +21,5 @@
   <p *ngIf="description" class="item-description">
     {{ description }}
   </p>
+  <div *ngIf="caption" class="item-caption">Last update by {{ caption }}</div>
 </a>

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pipeline, PipelineTest } from '../../model/pipeline';
+import { equalDate } from '../../../../shared/support/support';
 
 export type ItemType = 'Script' | 'Test';
 
@@ -42,5 +43,15 @@ export class PipelineExplorerComponent {
     element.scrollIntoView({
       block: 'nearest'
     });
+  }
+
+  showTime(item: Item<PipelineTest>): boolean {
+    return (
+      this._testItems.find(
+        otherItem =>
+          item !== otherItem &&
+          equalDate(item.value.createdOn, otherItem.value.createdOn)
+      ) != null
+    );
   }
 }

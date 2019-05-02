@@ -14,7 +14,7 @@
 
 .body {
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr 3fr;
 
   ul {
     padding: 0;
@@ -45,15 +45,10 @@
   color: red;
 }
 
-.difference-header {
-  margin-top: 12px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.difference-container {
-  position: relative;
-  width: 100%;
-  height: 522px; // fixed
-  border: 1px solid #e8e8e8;
+.passed {
+  margin-top: 80px;
+  text-align: center;
+  > i {
+    color: green;
+  }
 }

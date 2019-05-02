@@ -28,6 +28,7 @@ import {
 } from '../../component/pipeline-explorer/pipeline-explorer.component';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
+import { PipelineState } from '../../model/pipeline-state';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -78,12 +79,12 @@ export class PipelineComponent implements ComponentCanDeactivate {
   saving: boolean;
   saveButtonDisabledTooltipCode: string;
 
-  testing: boolean;
+  testState: PipelineState;
   testResults: PipelineTest[];
   testButtonDisabled: boolean;
   testButtonDisabledTooltipCode: string;
 
-  publishing: boolean;
+  publishState: PipelineState;
   publishButtonDisabled: boolean;
   publishButtonDisabledTooltipCode: string;
 
@@ -178,53 +179,58 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
   onScriptTest(script: PipelineScript): void {
     // fail fast when compilation doesn't work
-    this.testing = true;
+    this.testState = 'Compiling';
     this.pipelineService
       .compilePipelineScript(script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
         if (errors.length === 0) {
+          this.testState = 'Testing';
           this.pipelineService
             .runPipelineTests(this.pipeline.id, script.body)
             .subscribe(results => {
               this.testResults = results;
-              this.testing = false;
+              this.testState = null;
               // TODO launch test result modal
             });
         } else {
-          this.testing = false;
+          this.testState = null;
         }
       });
   }
 
   onScriptPublish(script: PipelineScript): void {
-    this.publishing = true;
+    this.publishState = 'Compiling';
     this.pipelineService
       .compilePipelineScript(script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
         if (errors.length === 0) {
+          this.publishState = 'Testing';
           this.pipelineService
             .runPipelineTests(this.pipeline.id, script.body)
             .subscribe(results => {
               this.testResults = results;
 
+              // TODO add validation step
+
               if (results.every(({ result }) => result.passed)) {
+                this.publishState = 'Publishing';
                 this.pipelineService
                   .publishPipelineScript(this.pipeline.id, script)
                   .subscribe(script => {
                     this.pipeline.script = script;
-                    this.publishing = false;
                     this.publishButtonDisabled = true;
+                    this.publishState = null;
                   });
               } else {
-                this.publishing = false;
+                this.publishState = null;
               }
             });
         } else {
-          this.publishing = false;
+          this.publishState = null;
         }
       });
   }
@@ -240,22 +246,22 @@ export class PipelineComponent implements ComponentCanDeactivate {
   onTestRun(test: PipelineTest): void {
     // fail fast when compilation doesn't work
     const { pipeline } = this;
-    this.testing = true;
+    this.testState = 'Compiling';
     this.pipelineService
       .compilePipelineScript(pipeline.script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
         if (errors.length === 0) {
+          this.testState = 'Testing';
           this.pipelineService
             .runPipelineTest(pipeline.id, test.id, pipeline.script.body)
             .subscribe(results => {
               this.testResults = results;
-              this.testing = false;
-              // TODO launch test result modal
+              this.testState = null;
             });
         } else {
-          this.testing = false;
+          this.testState = null;
         }
       });
   }
@@ -382,7 +388,9 @@ export class PipelineComponent implements ComponentCanDeactivate {
         : this.selectedItem.changed);
 
     this.testButtonDisabled =
-      this.testing || this.pipeline.tests.length === 0 || hasUnsavedChanges;
+      this.testState != null ||
+      this.pipeline.tests.length === 0 ||
+      hasUnsavedChanges;
 
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
@@ -393,7 +401,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
       : '';
 
     this.publishButtonDisabled =
-      this.publishing ||
+      this.publishState != null ||
       this.pipeline.tests.length === 0 ||
       this.items.some(({ changed }) => changed);
 

@@ -54,6 +54,19 @@ export function removeHtml(value: string): string {
   return value.replace(/<[^>]*>/g, '');
 }
 
+/**
+ * True if both dates have the same year, month and day
+ * @param a The first date
+ * @param b The second date
+ */
+export function equalDate(a: Date, b: Date): boolean {
+  return (
+    a.getDay() === b.getDay() &&
+    a.getMonth() === b.getMonth() &&
+    a.getFullYear() === b.getFullYear()
+  );
+}
+
 export class Utils {
   static equalSets(a: any[], b: any[]): boolean {
     return (

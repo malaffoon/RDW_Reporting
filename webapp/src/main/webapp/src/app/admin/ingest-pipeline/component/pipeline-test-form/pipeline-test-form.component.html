@@ -1,0 +1,35 @@
+<div class="form-group">
+  <label for="name">
+    Test Description
+  </label>
+  <input
+    id="name"
+    type="text"
+    class="form-control"
+    [(ngModel)]="test.name"
+    (ngModelChange)="testChange.emit(test)"
+  />
+</div>
+
+<div class="test-grid">
+  <div class="form-group">
+    <label>Test Input</label>
+    <code-editor
+      #input
+      [lines]="31"
+      [language]="inputType"
+      [(ngModel)]="test.input"
+      (ngModelChange)="testChange.emit(test)"
+    ></code-editor>
+  </div>
+  <div class="form-group">
+    <label>Expected Output</label>
+    <code-editor
+      #output
+      [lines]="31"
+      [language]="inputType"
+      [(ngModel)]="test.output"
+      (ngModelChange)="testChange.emit(test)"
+    ></code-editor>
+  </div>
+</div>

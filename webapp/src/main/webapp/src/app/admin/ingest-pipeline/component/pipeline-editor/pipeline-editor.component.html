@@ -36,12 +36,17 @@
           [ngClass]="{ disabled: testButtonDisabled }"
           (click)="scriptTest.emit(selectedItem.value)"
         >
-          <ng-container *ngIf="testing; else notTesting">
-            <i class="fa fa-spinner fa-pulse"></i> Testing
+          <ng-container [ngSwitch]="testState">
+            <ng-container *ngSwitchCase="'Compiling'">
+              <i class="fa fa-spinner fa-pulse"></i> Compiling
+            </ng-container>
+            <ng-container *ngSwitchCase="'Testing'">
+              <i class="fa fa-spinner fa-pulse"></i> Testing
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              Run Tests
+            </ng-container>
           </ng-container>
-          <ng-template #notTesting>
-            Run Tests
-          </ng-template>
         </button>
       </div>
       <div [tooltip]="publishButtonDisabledTooltip">
@@ -51,12 +56,23 @@
           [ngClass]="{ disabled: publishButtonDisabled }"
           (click)="scriptPublish.emit(selectedItem.value)"
         >
-          <ng-container *ngIf="publishing; else notPublished">
-            <i class="fa fa-spinner fa-pulse"></i> Publishing
+          <ng-container [ngSwitch]="publishState">
+            <ng-container *ngSwitchCase="'Compiling'">
+              <i class="fa fa-spinner fa-pulse"></i> Compiling
+            </ng-container>
+            <ng-container *ngSwitchCase="'Testing'">
+              <i class="fa fa-spinner fa-pulse"></i> Testing
+            </ng-container>
+            <ng-container *ngSwitchCase="'Validating'">
+              <i class="fa fa-spinner fa-pulse"></i> Validating
+            </ng-container>
+            <ng-container *ngSwitchCase="'Publishing'">
+              <i class="fa fa-spinner fa-pulse"></i> Publishing
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              Publish
+            </ng-container>
           </ng-container>
-          <ng-template #notPublished>
-            Publish
-          </ng-template>
         </button>
       </div>
     </ng-container>
@@ -124,47 +140,11 @@
           ></code-editor>
         </ng-container>
         <ng-container *ngSwitchCase="'Test'">
-          <div class="test-form">
-            <div class="form-group">
-              <label for="name">
-                Test Description
-              </label>
-              <input
-                id="name"
-                type="text"
-                class="form-control"
-                [(ngModel)]="selectedItem.value.name"
-                (ngModelChange)="testChange.emit(selectedItem)"
-              />
-            </div>
-
-            <div class="test-grid">
-              <div class="form-group">
-                <label>Test Input</label>
-                <code-editor
-                  [theme]="codeEditorTheme"
-                  [lines]="31"
-                  [gutter]="false"
-                  [messages]="messages"
-                  [language]="pipeline.inputType"
-                  [(ngModel)]="selectedItem.value.input"
-                  (ngModelChange)="testChange.emit(selectedItem)"
-                ></code-editor>
-              </div>
-              <div class="form-group">
-                <label>Expected Output</label>
-                <code-editor
-                  [theme]="codeEditorTheme"
-                  [lines]="31"
-                  [gutter]="false"
-                  [messages]="messages"
-                  [language]="pipeline.inputType"
-                  [(ngModel)]="selectedItem.value.output"
-                  (ngModelChange)="testChange.emit(selectedItem)"
-                ></code-editor>
-              </div>
-            </div>
-          </div>
+          <pipeline-test-form
+            [inputType]="pipeline.inputType"
+            [test]="selectedItem.value"
+            (testChange)="testChange.emit(selectedItem)"
+          ></pipeline-test-form>
         </ng-container>
       </ng-container>
     </ng-template>
