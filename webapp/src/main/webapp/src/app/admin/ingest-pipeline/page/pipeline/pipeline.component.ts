@@ -28,7 +28,7 @@ import {
 } from '../../component/pipeline-explorer/pipeline-explorer.component';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
-import { PipelineState } from '../../model/pipeline-state';
+import { CompilationState, PipelineState } from '../../model/pipeline-state';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -71,7 +71,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
   messages: Observable<Message[]>;
 
-  compiling: boolean;
+  compilationState: CompilationState;
   compilationErrors: BehaviorSubject<CompilationError[]> = new BehaviorSubject(
     []
   );
@@ -126,15 +126,18 @@ export class PipelineComponent implements ComponentCanDeactivate {
     this.pipelineScriptBody
       .pipe(
         takeUntil(this._destroyed),
+        tap(() => {
+          this.compilationState = null;
+        }),
         debounceTime(defaultCompileDebounceTime),
         tap(() => {
-          this.compiling = true;
+          this.compilationState = 'Compiling';
         }),
         switchMap(value => this.pipelineService.compilePipelineScript(value)),
         share()
       )
       .subscribe(errors => {
-        this.compiling = false;
+        this.compilationState = errors.length === 0 ? null : 'Failed';
         this.compilationErrors.next(errors);
       });
 
@@ -180,11 +183,11 @@ export class PipelineComponent implements ComponentCanDeactivate {
   onScriptTest(script: PipelineScript): void {
     // fail fast when compilation doesn't work
     this.testState = 'Compiling';
+    this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
-
         if (errors.length === 0) {
           this.testState = 'Testing';
           this.pipelineService
@@ -196,12 +199,14 @@ export class PipelineComponent implements ComponentCanDeactivate {
             });
         } else {
           this.testState = null;
+          this.compilationState = 'Failed';
         }
       });
   }
 
   onScriptPublish(script: PipelineScript): void {
     this.publishState = 'Compiling';
+    this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(script.body)
       .subscribe(errors => {
@@ -231,6 +236,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
             });
         } else {
           this.publishState = null;
+          this.compilationState = 'Failed';
         }
       });
   }
@@ -247,11 +253,11 @@ export class PipelineComponent implements ComponentCanDeactivate {
     // fail fast when compilation doesn't work
     const { pipeline } = this;
     this.testState = 'Compiling';
+    this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(pipeline.script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
-
         if (errors.length === 0) {
           this.testState = 'Testing';
           this.pipelineService
@@ -262,6 +268,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
             });
         } else {
           this.testState = null;
+          this.compilationState = 'Failed';
         }
       });
   }

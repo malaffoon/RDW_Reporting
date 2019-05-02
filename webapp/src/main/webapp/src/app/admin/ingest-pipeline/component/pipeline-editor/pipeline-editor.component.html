@@ -3,9 +3,20 @@
 
   <ng-container [ngSwitch]="selectedItem.type">
     <ng-container *ngSwitchCase="'Script'">
-      <div class="compilation-status">
-        <ng-container *ngIf="compiling">
-          <i class="fa fa-spinner fa-pulse"></i> Compiling
+      <div
+        class="compilation-status"
+        [ngClass]="{
+          compiling: compilationState === 'Compiling',
+          failed: compilationState === 'Failed'
+        }"
+      >
+        <ng-container [ngSwitch]="compilationState">
+          <ng-container *ngSwitchCase="'Compiling'">
+            <i class="fa fa-spinner fa-pulse"></i> Compiling
+          </ng-container>
+          <ng-container *ngSwitchCase="'Failed'">
+            <i class="fa fa-warning"></i> Compilation Failed
+          </ng-container>
         </ng-container>
       </div>
 
