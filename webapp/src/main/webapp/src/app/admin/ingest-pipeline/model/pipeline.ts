@@ -107,7 +107,7 @@ export interface PipelineTest {
   /**
    * The last user to update the test
    */
-  updatedBy: string;
+  updatedBy?: string;
 
   /**
    * The user defined test name

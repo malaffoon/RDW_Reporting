@@ -246,22 +246,22 @@ export class PipelineComponent implements ComponentCanDeactivate {
   onTestRun(test: PipelineTest): void {
     // fail fast when compilation doesn't work
     const { pipeline } = this;
-    this.testing = true;
+    this.testState = 'Compiling';
     this.pipelineService
       .compilePipelineScript(pipeline.script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
         if (errors.length === 0) {
+          this.testState = 'Testing';
           this.pipelineService
             .runPipelineTest(pipeline.id, test.id, pipeline.script.body)
             .subscribe(results => {
               this.testResults = results;
-              this.testing = false;
-              // TODO launch test result modal
+              this.testState = null;
             });
         } else {
-          this.testing = false;
+          this.testState = null;
         }
       });
   }
@@ -388,7 +388,9 @@ export class PipelineComponent implements ComponentCanDeactivate {
         : this.selectedItem.changed);
 
     this.testButtonDisabled =
-      this.testing || this.pipeline.tests.length === 0 || hasUnsavedChanges;
+      this.testState != null ||
+      this.pipeline.tests.length === 0 ||
+      hasUnsavedChanges;
 
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
@@ -399,7 +401,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
       : '';
 
     this.publishButtonDisabled =
-      this.publishing ||
+      this.publishState != null ||
       this.pipeline.tests.length === 0 ||
       this.items.some(({ changed }) => changed);
 
