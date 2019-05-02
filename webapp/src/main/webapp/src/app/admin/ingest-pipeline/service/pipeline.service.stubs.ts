@@ -145,7 +145,11 @@ outputXml
 export const stubPipelineTests: PipelineTest[] = [1, 2, 3, 4, 5].map(
   (id, index) => ({
     id,
-    createdOn: new Date(),
+    createdOn: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDay() - index
+    ),
     updatedBy: 'John Smith',
     name: 'It should do the thing I want it to do when it runs'
   })
