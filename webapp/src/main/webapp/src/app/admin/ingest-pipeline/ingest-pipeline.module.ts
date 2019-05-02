@@ -15,6 +15,7 @@ import { PipelineTestResultsComponent } from './component/pipeline-test-results/
 import { PipelineItemComponent } from './component/pipeline-item/pipeline-item.component';
 import { CodeDifferenceComponent } from './component/code-difference/code-difference.component';
 import { PipelineTestFormComponent } from './component/pipeline-test-form/pipeline-test-form.component';
+import { PipelineTestResultComponent } from './component/pipeline-test-result/pipeline-test-result.component';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { PipelineTestFormComponent } from './component/pipeline-test-form/pipeli
     PipelineExplorerComponent,
     PipelineItemComponent,
     PipelineTestFormComponent,
+    PipelineTestResultComponent,
     PipelineTestResultsComponent
   ],
   exports: []

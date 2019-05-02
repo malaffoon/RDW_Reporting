@@ -18,10 +18,8 @@
       <ng-content select="[controls]"></ng-content>
     </div>
   </div>
-  <div *ngIf="caption" class="item-caption">
-    {{ caption }}
-  </div>
   <p *ngIf="description" class="item-description">
     {{ description }}
   </p>
+  <div *ngIf="caption" class="item-caption">Last update by {{ caption }}</div>
 </a>

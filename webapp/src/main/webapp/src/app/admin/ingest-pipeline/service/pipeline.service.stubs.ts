@@ -146,14 +146,14 @@ export const stubPipelineTests: PipelineTest[] = [1, 2, 3, 4, 5].map(
   (id, index) => ({
     id,
     createdOn: new Date(),
-    updatedBy: 'Scripter, Swifty',
+    updatedBy: 'John Smith',
     name: 'It should do the thing I want it to do when it runs'
   })
 );
 
 export const stubPipelineTest: Partial<PipelineTest> = {
   input: trt,
-  output: trt.substring(0, trt.length - 500)
+  output: trt
 };
 
 export function createPassingTest(test: PipelineTest): PipelineTest {
@@ -179,7 +179,9 @@ export function createFailingTest(test: PipelineTest): PipelineTest {
     ...test,
     result: {
       passed: false,
-      actualOutput: test.output.replace(/FINAL/g, 'FINL')
+      actualOutput: test.output
+        .replace(/FINAL/g, 'INTERIM')
+        .substring(0, test.output.length - 2000)
     }
   };
 }

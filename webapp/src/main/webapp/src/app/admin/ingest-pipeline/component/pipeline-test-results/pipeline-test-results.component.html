@@ -1,8 +1,5 @@
 <div class="head">
   <h3>Assessments Pipeline Test Results</h3>
-  <!--  <a (click)="closeButtonClick.emit($event)">-->
-  <!--    <i class="fa fa-close fa-2x"></i>-->
-  <!--    <span aria-hidden="true">&times;</span>-->
   <button
     type="button"
     class="close fa-3x"
@@ -11,7 +8,6 @@
   >
     <span aria-hidden="true">&times;</span>
   </button>
-  <!--  </a>-->
 </div>
 
 <div class="body">
@@ -41,7 +37,7 @@
               {{ test.createdOn | date }}
               <span class="ml-sm" *ngIf="showTime(test)">
                 <i class="fa fa-clock-o small"></i>
-                {{ test.createdOn | date: 'mediumTime' }}
+                {{ test.createdOn | date: 'shortTime' }}
               </span>
             </div>
           </pipeline-item>
@@ -54,17 +50,10 @@
       <div class="passed"><i class="fa fa-check fa-2x"></i> Test passed</div>
     </ng-container>
     <ng-template #failed>
-      <div class="difference-header">
-        <label>Expected Output</label>
-        <label>Actual Output</label>
-      </div>
-      <div class="difference-container">
-        <code-difference
-          [language]="pipeline.inputType"
-          [left]="_selectedTest.output"
-          [right]="_selectedTest.result.actualOutput"
-        ></code-difference>
-      </div>
+      <pipeline-test-result
+        [inputType]="pipeline.inputType"
+        [test]="_selectedTest"
+      ></pipeline-test-result>
     </ng-template>
   </div>
 </div>

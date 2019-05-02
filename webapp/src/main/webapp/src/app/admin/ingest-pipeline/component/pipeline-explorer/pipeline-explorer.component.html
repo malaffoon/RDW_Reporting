@@ -41,7 +41,7 @@
             {{ item.value.createdOn | date }}
             <span class="ml-sm" *ngIf="showTime(item)">
               <i class="fa fa-clock-o small"></i>
-              {{ item.value.createdOn | date: 'mediumTime' }}
+              {{ item.value.createdOn | date: 'shortTime' }}
             </span>
           </div>
 
