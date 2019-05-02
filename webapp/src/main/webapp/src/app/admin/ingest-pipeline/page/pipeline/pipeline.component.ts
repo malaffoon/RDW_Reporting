@@ -29,6 +29,7 @@ import {
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
 import { CompilationState, PipelineState } from '../../model/pipeline-state';
+import { isValidPipelineTest } from '../../model/pipelines';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -286,6 +287,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
         this.selectedItem = this.items.find(
           ({ type, value: { id } }) => type === 'Test' && id === test.id
         );
+        this.updateButtonStates();
       });
   }
 
@@ -382,9 +384,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
   private updateButtonStates(): void {
     // TODO need to move back to reactive approach with observables to make this simpler
 
-    this.saveButtonDisabledTooltipCode = this.selectedItem.changed
-      ? ''
-      : 'All changes are saved';
+    this.saveButtonDisabledTooltipCode = '';
 
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
     // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
@@ -394,15 +394,26 @@ export class PipelineComponent implements ComponentCanDeactivate {
         ? this.items.some(({ type, changed }) => type === 'Test' && changed)
         : this.selectedItem.changed);
 
+    // dont run
+    const hasInvalidTests =
+      this.selectedItem.type === 'Test'
+        ? !isValidPipelineTest(this.selectedItem.value)
+        : this.items.some(
+            ({ type, value }) => type === 'Test' && !isValidPipelineTest(value)
+          );
+
     this.testButtonDisabled =
       this.testState != null ||
       this.pipeline.tests.length === 0 ||
+      hasInvalidTests ||
       hasUnsavedChanges;
 
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
       : this.pipeline.tests.length === 0
       ? 'Please create a test'
+      : hasInvalidTests
+      ? 'One or more tests are invalid. Please enter all required test fields.'
       : hasUnsavedChanges
       ? 'Please save all changes before running tests'
       : '';

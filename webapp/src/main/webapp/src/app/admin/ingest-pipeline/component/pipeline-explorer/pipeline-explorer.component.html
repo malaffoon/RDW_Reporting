@@ -34,6 +34,9 @@
           [description]="item.value.name"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
+          [ngClass]="{
+            'has-error': !isValidPipelineTest(item.value)
+          }"
         >
           <i *ngIf="item.changed" icon class="fa fa-circle changed-icon"></i>
 

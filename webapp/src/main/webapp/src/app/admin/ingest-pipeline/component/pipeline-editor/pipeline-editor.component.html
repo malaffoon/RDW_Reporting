@@ -134,27 +134,27 @@
     (deleteTestButtonClick)="testDelete.emit($event)"
   ></pipeline-explorer>
 
-  <div>
+  <div *ngFor="let item of items" [hidden]="item !== selectedItem">
     <ng-container *ngIf="selectedItemLoading; else itemLoaded">
       <spinner></spinner>
     </ng-container>
     <ng-template #itemLoaded>
-      <ng-container [ngSwitch]="selectedItem.type">
+      <ng-container [ngSwitch]="item.type">
         <ng-container *ngSwitchCase="'Script'">
           <code-editor
             [theme]="codeEditorTheme"
             [lines]="35"
             [messages]="messages"
-            [language]="selectedItem.value.language"
-            [(ngModel)]="selectedItem.value.body"
+            [language]="item.value.language"
+            [(ngModel)]="item.value.body"
             (ngModelChange)="scriptChange.emit($event)"
           ></code-editor>
         </ng-container>
         <ng-container *ngSwitchCase="'Test'">
           <pipeline-test-form
             [inputType]="pipeline.inputType"
-            [test]="selectedItem.value"
-            (testChange)="testChange.emit(selectedItem)"
+            [test]="item.value"
+            (testChange)="testChange.emit(item)"
           ></pipeline-test-form>
         </ng-container>
       </ng-container>

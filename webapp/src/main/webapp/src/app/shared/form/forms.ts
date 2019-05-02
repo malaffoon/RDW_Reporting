@@ -32,6 +32,14 @@ export function controlValueAccessorProvider(reference: any): Provider {
   };
 }
 
+export function validate(formGroup: FormGroup): void {
+  // TODO this step should be recursive but there is currently no use case
+  Object.values(formGroup.controls).forEach(control => {
+    control.markAsDirty();
+  });
+  formGroup.updateValueAndValidity();
+}
+
 /**
  * Holds common methods for dealing with angular form components
  */
@@ -46,8 +54,7 @@ export class Forms {
   /**
    * Gets all controls of the given form group
    *
-   * @param {FormGroup} formGroup the form group to get the controls of
-   * @returns {AbstractControl[]}
+   * @param formGroup the form group to get the controls of
    */
   public static controls(formGroup: FormGroup): AbstractControl[] {
     return Object.values(formGroup.controls);
@@ -56,8 +63,7 @@ export class Forms {
   /**
    * Gets all of the validation errors from all form controls and wraps them in a {ValidationErrorHolder}
    *
-   * @param {FormGroup} formGroup the form group to get the errors of
-   * @returns {ValidationErrorHolder[]}
+   * @param formGroup the form group to get the errors of
    */
   public static errors(formGroup: FormGroup): ValidationErrorHolder[] {
     const holders = [];
@@ -81,8 +87,7 @@ export class Forms {
   /**
    * True if the control has errors and has been touched or dirtied
    *
-   * @param {AbstractControl} formControl the form control to test
-   * @returns {boolean}
+   * @param control the form control to test
    */
   public static showErrors(control: AbstractControl): boolean {
     return control.invalid && (control.dirty || control.touched);
@@ -96,8 +101,7 @@ export class Forms {
     if (form.valid) {
       onValid();
     } else {
-      Forms.controls(form).forEach(control => control.markAsDirty());
-      form.updateValueAndValidity();
+      validate(form);
 
       if (typeof onInvalid === 'function') {
         onInvalid();

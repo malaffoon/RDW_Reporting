@@ -1,7 +1,8 @@
 <a
+  #element
   class="item"
   [ngClass]="{
-    active: active
+    active: _active
   }"
   (click)="itemClick.emit($event)"
 >
