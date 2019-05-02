@@ -4,7 +4,7 @@
       <div #itemElement>
         <pipeline-item
           name="{{ 'pipeline-explorer.script' | translate }}"
-          caption="{{ item.value.updatedBy }}"
+          [caption]="item.value.script ? item.value.script.updatedBy : ''"
           description="{{ item.value.name }}"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
