@@ -4,6 +4,7 @@
       <div #itemElement>
         <pipeline-item
           name="{{ 'pipeline-explorer.script' | translate }}"
+          [caption]="item.value.script ? item.value.script.updatedBy : ''"
           description="{{ item.value.name }}"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
@@ -29,12 +30,23 @@
     <li *ngFor="let item of _testItems; let index = index">
       <div #itemElement>
         <pipeline-item
-          [name]="item.value.createdOn | date"
+          [caption]="item.value.updatedBy"
           [description]="item.value.name"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
+          [ngClass]="{
+            'has-error': !isValidPipelineTest(item.value)
+          }"
         >
           <i *ngIf="item.changed" icon class="fa fa-circle changed-icon"></i>
+
+          <div name>
+            {{ item.value.createdOn | date }}
+            <span class="ml-sm" *ngIf="showTime(item)">
+              <i class="fa fa-clock-o small"></i>
+              {{ item.value.createdOn | date: 'shortTime' }}
+            </span>
+          </div>
 
           <a
             controls

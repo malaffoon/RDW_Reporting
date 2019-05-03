@@ -1,0 +1,53 @@
+<form [formGroup]="_formGroup">
+  <div *ngIf="_formGroup.get('name') as control" class="form-group">
+    <label for="name">
+      Test Description
+    </label>
+    <input id="name" type="text" class="form-control" [formControl]="control" />
+  </div>
+
+  <div class="test-grid">
+    <div
+      *ngIf="_formGroup.get('input') as control"
+      class="form-group"
+      [ngClass]="{
+        'has-error': control.errors && (control.touched || control.dirty)
+      }"
+    >
+      <label
+        >Test Input<span
+          *ngIf="control.errors && (control.touched || control.dirty)"
+        >
+          *</span
+        ></label
+      >
+      <code-editor
+        #input
+        [lines]="31"
+        [language]="inputType"
+        [formControl]="control"
+      ></code-editor>
+    </div>
+    <div
+      *ngIf="_formGroup.get('output') as control"
+      class="form-group"
+      [ngClass]="{
+        'has-error': control.errors && (control.touched || control.dirty)
+      }"
+    >
+      <label
+        >Expected Output<span
+          *ngIf="control.errors && (control.touched || control.dirty)"
+        >
+          *</span
+        ></label
+      >
+      <code-editor
+        #output
+        [lines]="31"
+        [language]="inputType"
+        [formControl]="control"
+      ></code-editor>
+    </div>
+  </div>
+</form>

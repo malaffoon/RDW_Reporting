@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserGroupOptionsService } from './user-group-options.service';
 import { UserGroupFormOptions } from './user-group-form-options';
 import { NotificationService } from '../shared/notification/notification.service';
-import { Subscription, forkJoin } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { StudentSearchFormOptionsService } from '../student/search/student-search-form-options.service';
 import { Student } from '../student/search/student';
 import { StudentSearchForm } from '../student/search/student-search-form';
@@ -25,13 +25,13 @@ import {
 } from '../shared/filter/student-filter';
 import { StudentFilterOptions } from '../shared/filter/student-filter-options';
 import { FilterOptionsService } from '../shared/filter/filter-options.service';
-import { ApplicationSettingsService } from '../app-settings.service';
-import { ApplicationSettings } from '../app-settings';
 import { Forms } from '../shared/form/forms';
 import { SchoolAndGroupTypeaheadOptionMapper } from '../student/search/school-and-group-typeahead-option.mapper';
 import { Option as SchoolAndGroupTypeaheadOption } from '../student/search/school-and-group-typeahead.component';
 import { Option } from '../shared/form/option';
 import * as deepEqual from 'fast-deep-equal';
+import { ExamSearchFilterService } from '../exam/service/exam-search-filter.service';
+import { map } from 'rxjs/operators';
 
 const StudentComparator = join(
   ordering(byString).on<Student>(student => student.lastName).compare,
@@ -55,7 +55,6 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   studentArrayFilter: StudentArrayFilter;
   students: Student[] = [];
   filteredStudents: Student[] = [];
-  applicationSettings: ApplicationSettings;
   showAdvancedFilters: boolean = false;
   loadingStudents: boolean = true;
   advancedFilterCount: number = 0;
@@ -69,6 +68,8 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   @ViewChild('groupForm')
   groupForm: UserGroupFormComponent;
 
+  studentFields: Observable<string[]>;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -78,9 +79,9 @@ export class UserGroupComponent implements OnInit, OnDestroy {
     private schoolAndGroupTypeaheadOptionMapper: SchoolAndGroupTypeaheadOptionMapper,
     private filterOptionService: FilterOptionsService,
     private studentService: StudentService,
-    private applicationSettingsService: ApplicationSettingsService,
     private translate: TranslateService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private examSearchFilterService: ExamSearchFilterService
   ) {
     this.originalGroup = this.route.snapshot.data['group'];
   }
@@ -95,67 +96,67 @@ export class UserGroupComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     forkJoin(
-      this.applicationSettingsService.getSettings(),
       this.optionService.getOptions(),
       this.studentFormOptionService.getOptions(),
       this.filterOptionService.getFilterOptions()
-    ).subscribe(
-      ([applicationSettings, options, studentFormOptions, filterOptions]) => {
-        this.applicationSettings = applicationSettings;
+    ).subscribe(([options, studentFormOptions, filterOptions]) => {
+      // TODO get options etc from this
+      this.studentFields = this.examSearchFilterService
+        .getExamSearchFilters()
+        .pipe(map(({ studentFilters }) => studentFilters.map(({ id }) => id)));
 
-        // setup group form
-        this.formOptions = <UserGroupFormOptions>{
-          subjects: options.subjects.map(
-            code =>
-              <Option>{
-                value: code,
-                text: this.translate.instant('subject.' + code + '.name'),
-                analyticsProperties: {
-                  label: `Subject: ${code}`
-                }
+      // setup group form
+      this.formOptions = <UserGroupFormOptions>{
+        subjects: options.subjects.map(
+          code =>
+            <Option>{
+              value: code,
+              text: this.translate.instant('subject.' + code + '.name'),
+              analyticsProperties: {
+                label: `Subject: ${code}`
               }
-          )
-        };
+            }
+        )
+      };
 
-        if (this.originalGroup == null) {
-          this.group = <UserGroup>{
-            name: '',
-            subjects: options.subjects.concat(),
-            students: []
-          };
-        } else {
-          if (this.originalGroup.subjects == null) {
-            this.originalGroup.subjects = options.subjects.concat();
-          }
-          this.group = copy(this.originalGroup);
+      if (this.originalGroup == null) {
+        this.group = <UserGroup>{
+          name: '',
+          subjects: options.subjects.concat(),
+          students: []
+        };
+      } else {
+        if (this.originalGroup.subjects == null) {
+          this.originalGroup.subjects = options.subjects.concat();
         }
-
-        // setup student form
-        this.schoolAndGroupTypeaheadOptions = this.schoolAndGroupTypeaheadOptionMapper.createOptions(
-          {
-            schools: studentFormOptions.schools,
-            groups:
-              this.originalGroup == null
-                ? studentFormOptions.groups
-                : studentFormOptions.groups.filter(
-                    group =>
-                      !(group.userCreated && group.id === this.originalGroup.id)
-                  )
-          }
-        );
-
-        this.studentForm = {
-          schoolOrGroup: this.schoolAndGroupTypeaheadOptions[0],
-          nameOrSsid: ''
-        };
-
-        this.studentFilterOptions = filterOptions;
-
-        this.initialized = true;
-
-        this.searchStudents();
+        this.group = copy(this.originalGroup);
       }
-    );
+
+      // setup student form
+      this.schoolAndGroupTypeaheadOptions = this.schoolAndGroupTypeaheadOptionMapper.createOptions(
+        {
+          schools: studentFormOptions.schools,
+          groups:
+            this.originalGroup == null
+              ? studentFormOptions.groups
+              : studentFormOptions.groups.filter(
+                  group =>
+                    !(group.userCreated && group.id === this.originalGroup.id)
+                )
+        }
+      );
+
+      this.studentForm = {
+        schoolOrGroup: this.schoolAndGroupTypeaheadOptions[0],
+        nameOrSsid: ''
+      };
+
+      this.studentFilterOptions = filterOptions;
+
+      this.initialized = true;
+
+      this.searchStudents();
+    });
   }
 
   ngOnDestroy(): void {

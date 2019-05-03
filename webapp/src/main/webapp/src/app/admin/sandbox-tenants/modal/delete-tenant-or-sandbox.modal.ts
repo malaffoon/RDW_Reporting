@@ -12,7 +12,7 @@ export class DeleteTenantOrSandboxConfigurationModalComponent
   sandboxOrTenant: any;
   deleted: EventEmitter<any> = new EventEmitter();
 
-  constructor(private modal: BsModalRef, private service: SandboxService) {}
+  constructor(public modal: BsModalRef, private service: SandboxService) {}
 
   cancel() {
     this.modal.hide();

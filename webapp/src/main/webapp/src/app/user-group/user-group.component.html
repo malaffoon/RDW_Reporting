@@ -64,13 +64,9 @@
 
         <div [hidden]="!showAdvancedFilters" class="well gray-lighter">
           <student-filters
+            *ngIf="(studentFields | async) as fields"
             [options]="studentFilterOptions"
-            [showEnglishLanguageAcquisitionStatusFilter]="
-              applicationSettings.elasEnabled
-            "
-            [showLimitedEnglishProficiencyFilter]="
-              applicationSettings.lepEnabled
-            "
+            [studentFields]="fields"
             (changed)="onAdvancedFilterChange($event)"
           ></student-filters>
         </div>

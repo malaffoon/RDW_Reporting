@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
+  Output,
   ViewChild
 } from '@angular/core';
 import { getOrAppendAsyncScript } from '../../ingest-pipeline.support';
@@ -11,6 +13,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { map } from 'rxjs/operators';
 
 declare var ace: any;
+declare var UndoManager: any;
 
 export type MessageType = 'error' | 'information' | 'warning';
 
@@ -37,6 +40,9 @@ const aceThemeByThemeType = {
   providers: [controlValueAccessorProvider(CodeEditorComponent)]
 })
 export class CodeEditorComponent implements ControlValueAccessor {
+  @Output()
+  scrollTopChange: EventEmitter<number> = new EventEmitter();
+
   @ViewChild('editor')
   editorElementReference: ElementRef;
 
@@ -82,6 +88,13 @@ export class CodeEditorComponent implements ControlValueAccessor {
     });
   }
 
+  @Input()
+  set scrollTop(value: any) {
+    this.withEditor(editor => {
+      editor.getSession().setScrollTop(parseInt(value) || 0);
+    });
+  }
+
   registerOnChange(fn: any): void {
     this.withEditor(editor => {
       editor.on('change', () => {
@@ -108,6 +121,8 @@ export class CodeEditorComponent implements ControlValueAccessor {
     this.withEditor(editor => {
       editor.setValue(value || '');
       editor.clearSelection();
+      // start change history after initialization
+      editor.getSession().setUndoManager(new ace.UndoManager());
     });
   }
 
@@ -124,9 +139,9 @@ export class CodeEditorComponent implements ControlValueAccessor {
               minLines: 35,
               maxLines: 35,
               tabSize: 2,
-              showLineNumbers: false,
+              showLineNumbers: true,
               showFoldWidgets: false,
-              theme: aceThemeByThemeType.light,
+              theme: `ace/theme/${aceThemeByThemeType.light}`,
               // ext-language_tools
               enableBasicAutocompletion: true,
               enableLiveAutocompletion: true,
@@ -136,6 +151,11 @@ export class CodeEditorComponent implements ControlValueAccessor {
         )
         .subscribe(editor => {
           this._editor = editor;
+          editor
+            .getSession()
+            .on('changeScrollTop', scrollTop =>
+              this.scrollTopChange.emit(scrollTop)
+            );
           callback(editor);
         });
     }

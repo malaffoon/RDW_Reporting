@@ -82,7 +82,7 @@ export interface PipelineScript extends Script {
   /**
    * The user who updated the script last
    */
-  updatedBy?: string;
+  updatedBy: string;
 
   /**
    * The position of the script in the pipeline or undefined if not in the pipeline
@@ -103,6 +103,11 @@ export interface PipelineTest {
    * The creation datetime
    */
   createdOn?: Date;
+
+  /**
+   * The last user to update the test
+   */
+  updatedBy?: string;
 
   /**
    * The user defined test name

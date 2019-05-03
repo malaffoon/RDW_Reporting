@@ -11,10 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class StudentFiltersComponent {
   @Input()
-  showLimitedEnglishProficiencyFilter: boolean;
-
-  @Input()
-  showEnglishLanguageAcquisitionStatusFilter: boolean;
+  studentFields: string[] = [];
 
   @Output()
   changed: EventEmitter<StudentFilter> = new EventEmitter<StudentFilter>();
@@ -52,22 +49,16 @@ export class StudentFiltersComponent {
   }
 
   optionsChanged(event) {
-    let newLanguages = [];
-    this._value.languages = newLanguages.concat(
-      event.map(lang => {
-        return lang.value;
-      })
-    );
+    this._value.languages = event.map(({ value }) => value);
   }
 
   public getLanguagesMap(): any[] {
-    const translate = code => this.translateService.instant(code);
     if (this._options && this._options.languages) {
-      return this._options.languages.map(val => {
-        return { text: translate(`common.languages.${val}`), value: val };
-      });
-    } else {
-      return [];
+      return this._options.languages.map(value => ({
+        text: this.translateService.instant(`common.languages.${value}`),
+        value
+      }));
     }
+    return [];
   }
 }

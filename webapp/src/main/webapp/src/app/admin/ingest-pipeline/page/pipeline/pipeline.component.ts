@@ -28,6 +28,9 @@ import {
 } from '../../component/pipeline-explorer/pipeline-explorer.component';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
+import { CompilationState, PipelineState } from '../../model/pipeline-state';
+import { isValidPipelineTest } from '../../model/pipelines';
+import { UserService } from '../../../../user/user.service';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -50,11 +53,12 @@ function createItems(pipeline: Pipeline): Item[] {
   ];
 }
 
-function createItem<T>(type: ItemType, value: T): Item<T> {
+function createItem<T>(type: ItemType, value: T, changed = false): Item<T> {
   return {
     type,
     value,
-    lastSavedValue: cloneDeep(value)
+    lastSavedValue: cloneDeep(value),
+    changed
   };
 }
 
@@ -70,7 +74,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
   messages: Observable<Message[]>;
 
-  compiling: boolean;
+  compilationState: CompilationState;
   compilationErrors: BehaviorSubject<CompilationError[]> = new BehaviorSubject(
     []
   );
@@ -78,12 +82,12 @@ export class PipelineComponent implements ComponentCanDeactivate {
   saving: boolean;
   saveButtonDisabledTooltipCode: string;
 
-  testing: boolean;
+  testState: PipelineState;
   testResults: PipelineTest[];
   testButtonDisabled: boolean;
   testButtonDisabledTooltipCode: string;
 
-  publishing: boolean;
+  publishState: PipelineState;
   publishButtonDisabled: boolean;
   publishButtonDisabledTooltipCode: string;
 
@@ -98,7 +102,8 @@ export class PipelineComponent implements ComponentCanDeactivate {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private pipelineService: PipelineService
+    private pipelineService: PipelineService,
+    private userService: UserService
   ) {
     this.route.params
       .pipe(
@@ -125,15 +130,18 @@ export class PipelineComponent implements ComponentCanDeactivate {
     this.pipelineScriptBody
       .pipe(
         takeUntil(this._destroyed),
+        tap(() => {
+          this.compilationState = null;
+        }),
         debounceTime(defaultCompileDebounceTime),
         tap(() => {
-          this.compiling = true;
+          this.compilationState = 'Compiling';
         }),
         switchMap(value => this.pipelineService.compilePipelineScript(value)),
         share()
       )
       .subscribe(errors => {
-        this.compiling = false;
+        this.compilationState = errors.length === 0 ? null : 'Failed';
         this.compilationErrors.next(errors);
       });
 
@@ -178,53 +186,61 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
   onScriptTest(script: PipelineScript): void {
     // fail fast when compilation doesn't work
-    this.testing = true;
+    this.testState = 'Compiling';
+    this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
-
         if (errors.length === 0) {
+          this.testState = 'Testing';
           this.pipelineService
             .runPipelineTests(this.pipeline.id, script.body)
             .subscribe(results => {
               this.testResults = results;
-              this.testing = false;
+              this.testState = null;
               // TODO launch test result modal
             });
         } else {
-          this.testing = false;
+          this.testState = null;
+          this.compilationState = 'Failed';
         }
       });
   }
 
   onScriptPublish(script: PipelineScript): void {
-    this.publishing = true;
+    this.publishState = 'Compiling';
+    this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
         if (errors.length === 0) {
+          this.publishState = 'Testing';
           this.pipelineService
             .runPipelineTests(this.pipeline.id, script.body)
             .subscribe(results => {
               this.testResults = results;
 
+              // TODO add validation step
+
               if (results.every(({ result }) => result.passed)) {
+                this.publishState = 'Publishing';
                 this.pipelineService
                   .publishPipelineScript(this.pipeline.id, script)
                   .subscribe(script => {
                     this.pipeline.script = script;
-                    this.publishing = false;
                     this.publishButtonDisabled = true;
+                    this.publishState = null;
                   });
               } else {
-                this.publishing = false;
+                this.publishState = null;
               }
             });
         } else {
-          this.publishing = false;
+          this.publishState = null;
+          this.compilationState = 'Failed';
         }
       });
   }
@@ -240,54 +256,62 @@ export class PipelineComponent implements ComponentCanDeactivate {
   onTestRun(test: PipelineTest): void {
     // fail fast when compilation doesn't work
     const { pipeline } = this;
-    this.testing = true;
+    this.testState = 'Compiling';
+    this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(pipeline.script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
-
         if (errors.length === 0) {
+          this.testState = 'Testing';
           this.pipelineService
             .runPipelineTest(pipeline.id, test.id, pipeline.script.body)
             .subscribe(results => {
               this.testResults = results;
-              this.testing = false;
-              // TODO launch test result modal
+              this.testState = null;
             });
         } else {
-          this.testing = false;
+          this.testState = null;
+          this.compilationState = 'Failed';
         }
       });
   }
 
   onTestCreate(): void {
-    this.pipelineService
-      .createPipelineTest(this.pipeline.id, {
+    this.userService.getUser().subscribe(user => {
+      const updatedBy = `${user.firstName} ${user.lastName}`;
+      const test: PipelineTest = {
+        createdOn: new Date(),
+        updatedBy,
         input: '',
         output: ''
-      })
-      .subscribe(test => {
-        this.setPipelineTests([test, ...this.pipeline.tests]);
-        this.items = [createItem('Test', test), ...this.items];
-        // select added item
-        this.selectedItem = this.items.find(
-          ({ type, value: { id } }) => type === 'Test' && id === test.id
-        );
-      });
+      };
+      this.setPipelineTests([test, ...this.pipeline.tests]);
+      this.items = [createItem('Test', test, true), ...this.items];
+      // select added item
+      this.selectedItem = this.items.find(
+        ({ type, value: { id } }) => type === 'Test' && id === test.id
+      );
+      this.updateButtonStates();
+    });
   }
 
   onTestUpdate(test: PipelineTest): void {
     this.testUpdating = true;
     const item = this.selectedItem;
-    this.pipelineService
-      .updatePipelineTest(this.pipeline.id, test)
-      .subscribe(() => {
-        // update updated on?
-        item.lastSavedValue = cloneDeep(test);
-        item.changed = false;
-        this.testUpdating = false;
-        this.updateButtonStates();
-      });
+
+    const observable =
+      test.id == null
+        ? this.pipelineService.createPipelineTest(this.pipeline.id, test)
+        : this.pipelineService.updatePipelineTest(this.pipeline.id, test);
+
+    observable.subscribe(value => {
+      // update updated on?
+      item.lastSavedValue = cloneDeep(value);
+      item.changed = false;
+      this.testUpdating = false;
+      this.updateButtonStates();
+    });
   }
 
   onTestDelete(test: PipelineTest): void {
@@ -369,9 +393,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
   private updateButtonStates(): void {
     // TODO need to move back to reactive approach with observables to make this simpler
 
-    this.saveButtonDisabledTooltipCode = this.selectedItem.changed
-      ? ''
-      : 'All changes are saved';
+    this.saveButtonDisabledTooltipCode = '';
 
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
     // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
@@ -381,19 +403,32 @@ export class PipelineComponent implements ComponentCanDeactivate {
         ? this.items.some(({ type, changed }) => type === 'Test' && changed)
         : this.selectedItem.changed);
 
+    // dont run
+    const hasInvalidTests =
+      this.selectedItem.type === 'Test'
+        ? !isValidPipelineTest(this.selectedItem.value)
+        : this.items.some(
+            ({ type, value }) => type === 'Test' && !isValidPipelineTest(value)
+          );
+
     this.testButtonDisabled =
-      this.testing || this.pipeline.tests.length === 0 || hasUnsavedChanges;
+      this.testState != null ||
+      this.pipeline.tests.length === 0 ||
+      hasInvalidTests ||
+      hasUnsavedChanges;
 
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
       : this.pipeline.tests.length === 0
       ? 'Please create a test'
+      : hasInvalidTests
+      ? 'One or more tests are invalid. Please enter all required test fields.'
       : hasUnsavedChanges
       ? 'Please save all changes before running tests'
       : '';
 
     this.publishButtonDisabled =
-      this.publishing ||
+      this.publishState != null ||
       this.pipeline.tests.length === 0 ||
       this.items.some(({ changed }) => changed);
 

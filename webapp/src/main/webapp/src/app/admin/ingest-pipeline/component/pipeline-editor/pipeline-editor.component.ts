@@ -13,12 +13,13 @@ import {
 } from '../../model/pipeline';
 import { Message, ThemeType } from '../code-editor/code-editor.component';
 import { Item } from '../pipeline-explorer/pipeline-explorer.component';
+import { CompilationState, PipelineState } from '../../model/pipeline-state';
 
 @Component({
   selector: 'pipeline-editor',
   templateUrl: './pipeline-editor.component.html',
-  styleUrls: ['./pipeline-editor.component.less']
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./pipeline-editor.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PipelineEditorComponent {
   @Input()
@@ -37,7 +38,7 @@ export class PipelineEditorComponent {
   scriptPublish: EventEmitter<PipelineScript> = new EventEmitter();
 
   @Input()
-  compiling: boolean;
+  compilationState: CompilationState;
 
   @Input()
   compilationErrors: CompilationError[] = [];
@@ -61,7 +62,7 @@ export class PipelineEditorComponent {
   testResults: PipelineTest[] = [];
 
   @Input()
-  tested: boolean;
+  testState: PipelineState;
 
   @Input()
   testButtonDisabled: boolean;
@@ -70,7 +71,7 @@ export class PipelineEditorComponent {
   testButtonDisabledTooltip: string;
 
   @Input()
-  publishing: boolean;
+  publishState: PipelineState;
 
   @Input()
   publishButtonDisabled: boolean;

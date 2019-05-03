@@ -3,9 +3,20 @@
 
   <ng-container [ngSwitch]="selectedItem.type">
     <ng-container *ngSwitchCase="'Script'">
-      <div class="compilation-status">
-        <ng-container *ngIf="compiling">
-          <i class="fa fa-spinner fa-pulse"></i> Compiling
+      <div
+        class="compilation-status"
+        [ngClass]="{
+          compiling: compilationState === 'Compiling',
+          failed: compilationState === 'Failed'
+        }"
+      >
+        <ng-container [ngSwitch]="compilationState">
+          <ng-container *ngSwitchCase="'Compiling'">
+            <i class="fa fa-spinner fa-pulse"></i> Compiling
+          </ng-container>
+          <ng-container *ngSwitchCase="'Failed'">
+            <i class="fa fa-warning"></i> Compilation Failed
+          </ng-container>
         </ng-container>
       </div>
 
@@ -36,12 +47,17 @@
           [ngClass]="{ disabled: testButtonDisabled }"
           (click)="scriptTest.emit(selectedItem.value)"
         >
-          <ng-container *ngIf="testing; else notTesting">
-            <i class="fa fa-spinner fa-pulse"></i> Testing
+          <ng-container [ngSwitch]="testState">
+            <ng-container *ngSwitchCase="'Compiling'">
+              <i class="fa fa-spinner fa-pulse"></i> Compiling
+            </ng-container>
+            <ng-container *ngSwitchCase="'Testing'">
+              <i class="fa fa-spinner fa-pulse"></i> Testing
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              Run Tests
+            </ng-container>
           </ng-container>
-          <ng-template #notTesting>
-            Run Tests
-          </ng-template>
         </button>
       </div>
       <div [tooltip]="publishButtonDisabledTooltip">
@@ -51,12 +67,23 @@
           [ngClass]="{ disabled: publishButtonDisabled }"
           (click)="scriptPublish.emit(selectedItem.value)"
         >
-          <ng-container *ngIf="publishing; else notPublished">
-            <i class="fa fa-spinner fa-pulse"></i> Publishing
+          <ng-container [ngSwitch]="publishState">
+            <ng-container *ngSwitchCase="'Compiling'">
+              <i class="fa fa-spinner fa-pulse"></i> Compiling
+            </ng-container>
+            <ng-container *ngSwitchCase="'Testing'">
+              <i class="fa fa-spinner fa-pulse"></i> Testing
+            </ng-container>
+            <ng-container *ngSwitchCase="'Validating'">
+              <i class="fa fa-spinner fa-pulse"></i> Validating
+            </ng-container>
+            <ng-container *ngSwitchCase="'Publishing'">
+              <i class="fa fa-spinner fa-pulse"></i> Publishing
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              Publish
+            </ng-container>
           </ng-container>
-          <ng-template #notPublished>
-            Publish
-          </ng-template>
         </button>
       </div>
     </ng-container>
@@ -107,64 +134,28 @@
     (deleteTestButtonClick)="testDelete.emit($event)"
   ></pipeline-explorer>
 
-  <div>
+  <div *ngFor="let item of items" [hidden]="item !== selectedItem">
     <ng-container *ngIf="selectedItemLoading; else itemLoaded">
       <spinner></spinner>
     </ng-container>
     <ng-template #itemLoaded>
-      <ng-container [ngSwitch]="selectedItem.type">
+      <ng-container [ngSwitch]="item.type">
         <ng-container *ngSwitchCase="'Script'">
           <code-editor
             [theme]="codeEditorTheme"
             [lines]="35"
             [messages]="messages"
-            [language]="selectedItem.value.language"
-            [(ngModel)]="selectedItem.value.body"
+            [language]="item.value.language"
+            [(ngModel)]="item.value.body"
             (ngModelChange)="scriptChange.emit($event)"
           ></code-editor>
         </ng-container>
         <ng-container *ngSwitchCase="'Test'">
-          <div class="test-form">
-            <div class="form-group">
-              <label for="name">
-                Test Description
-              </label>
-              <input
-                id="name"
-                type="text"
-                class="form-control"
-                [(ngModel)]="selectedItem.value.name"
-                (ngModelChange)="testChange.emit(selectedItem)"
-              />
-            </div>
-
-            <div class="test-grid">
-              <div class="form-group">
-                <label>Test Input</label>
-                <code-editor
-                  [theme]="codeEditorTheme"
-                  [lines]="31"
-                  [gutter]="false"
-                  [messages]="messages"
-                  [language]="pipeline.inputType"
-                  [(ngModel)]="selectedItem.value.input"
-                  (ngModelChange)="testChange.emit(selectedItem)"
-                ></code-editor>
-              </div>
-              <div class="form-group">
-                <label>Expected Output</label>
-                <code-editor
-                  [theme]="codeEditorTheme"
-                  [lines]="31"
-                  [gutter]="false"
-                  [messages]="messages"
-                  [language]="pipeline.inputType"
-                  [(ngModel)]="selectedItem.value.output"
-                  (ngModelChange)="testChange.emit(selectedItem)"
-                ></code-editor>
-              </div>
-            </div>
-          </div>
+          <pipeline-test-form
+            [inputType]="pipeline.inputType"
+            [test]="item.value"
+            (testChange)="testChange.emit(item)"
+          ></pipeline-test-form>
         </ng-container>
       </ng-container>
     </ng-template>

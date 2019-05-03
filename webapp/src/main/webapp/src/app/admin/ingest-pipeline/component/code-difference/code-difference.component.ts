@@ -9,6 +9,35 @@ import {
 
 declare var AceDiff;
 
+function lineCount(value: string): number {
+  return value.split(/\r\n|\r|\n/).length;
+}
+
+function padLines(value: string, count: number): string {
+  return value + '\n'.repeat(count);
+}
+
+function maxScrollTop(editor: any): number {
+  const { renderer } = editor;
+  return (
+    renderer.layerConfig.maxHeight -
+    renderer.$size.scrollerHeight +
+    renderer.scrollMargin.bottom
+  );
+}
+
+function bindScrollTop(editorA: any, editorB: any): void {
+  editorA.getSession().on('changeScrollTop', scrollTop => {
+    if (
+      scrollTop >= 0 &&
+      scrollTop <= maxScrollTop(editorB) &&
+      editorB.getSession().getScrollTop() !== scrollTop
+    ) {
+      editorB.getSession().setScrollTop(scrollTop);
+    }
+  });
+}
+
 @Component({
   selector: 'code-difference',
   templateUrl: './code-difference.component.html',
@@ -49,30 +78,51 @@ export class CodeDifferenceComponent implements OnInit {
   }
 
   initialize(): void {
-    if (
-      this._left == null ||
-      this._right == null ||
-      this._language == null ||
-      !this._initialized
-    ) {
+    const {
+      _left: left,
+      _right: right,
+      _language: language,
+      _initialized: initialized,
+      elementReference
+    } = this;
+
+    if (left == null || right == null || language == null || !initialized) {
       return;
     }
-    this._view = new AceDiff({
-      element: this.elementReference.nativeElement,
+
+    const leftLineCount = lineCount(left);
+    const rightLineCount = lineCount(right);
+    let paddedLeft = left;
+    let paddedRight = right;
+
+    if (leftLineCount < rightLineCount) {
+      paddedLeft = padLines(left, rightLineCount - leftLineCount);
+    } else {
+      paddedRight = padLines(right, leftLineCount - rightLineCount);
+    }
+
+    const aceDiff = new AceDiff({
+      element: elementReference.nativeElement,
       theme: 'ace/theme/xcode',
-      mode: `ace/mode/${this._language}`,
+      mode: `ace/mode/${language}`,
       showConnectors: false,
-      // diffGranularity: 'specific',
       left: {
-        content: this._left,
+        content: paddedLeft,
         editable: false,
         copyLinkEnabled: false
       },
       right: {
-        content: this._right,
+        content: paddedRight,
         editable: false,
         copyLinkEnabled: false
       }
     });
+
+    const leftEditor = aceDiff.getEditors().left;
+    const rightEditor = aceDiff.getEditors().right;
+    bindScrollTop(leftEditor, rightEditor);
+    bindScrollTop(rightEditor, leftEditor);
+
+    this._view = aceDiff;
   }
 }

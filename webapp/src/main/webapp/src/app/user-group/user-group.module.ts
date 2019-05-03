@@ -12,6 +12,7 @@ import { StudentSearchModule } from '../student/search/student-search.module';
 import { UserGroupFormComponent } from './user-group-form.component';
 import { UserGroupsComponent } from './user-groups.component';
 import { UserGroupTableComponent } from './user-group-table.component';
+import { ExamModule } from '../exam/exam.module';
 
 @NgModule({
   declarations: [
