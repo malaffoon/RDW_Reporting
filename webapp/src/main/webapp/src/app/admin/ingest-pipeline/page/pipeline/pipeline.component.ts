@@ -421,22 +421,25 @@ export class PipelineComponent implements ComponentCanDeactivate {
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
       : this.pipeline.tests.length === 0
-      ? 'Please create a test'
+      ? 'pipeline.no-tests'
       : hasInvalidTests
-      ? 'One or more tests are invalid. Please enter all required test fields.'
+      ? 'pipeline.invalid-tests'
       : hasUnsavedChanges
-      ? 'Please save all changes before running tests'
+      ? 'pipeline.unsaved-changes'
       : '';
 
     this.publishButtonDisabled =
       this.publishState != null ||
       this.pipeline.tests.length === 0 ||
+      hasInvalidTests ||
       this.items.some(({ changed }) => changed);
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
       : this.pipeline.tests.length === 0
-      ? 'Please create a test'
-      : 'Please save all changes before publishing';
+      ? 'pipeline.no-tests'
+      : hasInvalidTests
+      ? 'pipeline.invalid-tests'
+      : 'pipeline.publish-unsaved-changes';
   }
 }

@@ -1461,6 +1461,12 @@
       "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko."
     }
   },
+  "pipeline": {
+    "no-tests": "Please create a test",
+    "invalid-tests": "One or more tests are invalid. Please enter all required test fields.",
+    "unsaved-changes": "Please save all changes before running tests",
+    "publish-unsaved-changes": "Please save all changes before publishing"
+  },
   "pipelines": {
     "heading": "Ingest Pipelines"
   },
