@@ -1,6 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pipeline, PipelineTest } from '../../model/pipeline';
-import { equalDate } from '../../../../shared/support/support';
+import {
+  equalDate,
+  isBlank,
+  isNullOrBlank
+} from '../../../../shared/support/support';
+import { isValidPipelineTest } from '../../model/pipelines';
 
 export type ItemType = 'Script' | 'Test';
 
@@ -17,6 +22,8 @@ export interface Item<T = any> {
   styleUrls: ['./pipeline-explorer.component.less']
 })
 export class PipelineExplorerComponent {
+  readonly isValidPipelineTest = isValidPipelineTest;
+
   @Input()
   selectedItem: Item;
 

@@ -54,8 +54,6 @@ export class CodeDifferenceComponent implements OnInit {
   _language: string;
   _initialized: boolean;
 
-  scrollTop: number;
-
   @Input()
   set left(value: string) {
     this._left = value;

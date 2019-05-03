@@ -13,6 +13,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { map } from 'rxjs/operators';
 
 declare var ace: any;
+declare var UndoManager: any;
 
 export type MessageType = 'error' | 'information' | 'warning';
 
@@ -120,6 +121,8 @@ export class CodeEditorComponent implements ControlValueAccessor {
     this.withEditor(editor => {
       editor.setValue(value || '');
       editor.clearSelection();
+      // start change history after initialization
+      editor.getSession().setUndoManager(new ace.UndoManager());
     });
   }
 
