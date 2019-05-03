@@ -13,7 +13,7 @@
   <ng-template #noTestResults>
     <pipeline-editor
       [pipeline]="pipeline"
-      [compiling]="compiling"
+      [compilationState]="compilationState"
       [compilationErrors]="compilationErrors | async"
       [saving]="saving"
       [saveButtonDisabledTooltip]="saveButtonDisabledTooltipCode | translate"

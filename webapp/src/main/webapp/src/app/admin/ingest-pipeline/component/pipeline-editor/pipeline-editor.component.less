@@ -18,8 +18,13 @@
 }
 
 .compilation-status {
-  opacity: 0.5;
   font-size: 14px;
+  &.compiling {
+    opacity: 0.5;
+  }
+  &.failed {
+    color: #8a6d3b;
+  }
 }
 
 .editor-container {
@@ -34,6 +39,7 @@
 }
 
 pipeline-test-form {
+  display: block;
   margin-top: -30px;
 }
 
