@@ -6,10 +6,6 @@ management:
   health:
     redis:
       enabled: false
-#  endpoints:
-#    web:
-#      exposure:
-#        include: *
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
