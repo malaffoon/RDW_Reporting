@@ -1461,10 +1461,68 @@
       "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko."
     }
   },
-  "pipeline-tests": {
-    "heading": "Tests"
+  "pipelines": {
+    "heading": "Ingest Pipelines"
+  },
+  "pipeline-compilation-state": {
+    "Compiling": "Compiling",
+    "Failed": "Compilation Failed"
+  },
+  "pipeline-editor": {
+    "save-script": "Save Draft",
+    "run-tests": "Run Tests",
+    "save-test": "Save",
+    "run-test": "Run Test",
+    "publish-script": "Publish",
+    "publishing-history": "Publishing History"
   },
   "pipeline-explorer": {
-    "script": "Pipeline Script"
+    "script": "Pipeline Script",
+    "new-test": "New Test"
+  },
+  "pipeline-item": {
+    "updated-by": "Last update by {{updatedBy}}",
+    "published-by": "Published by {{publishedBy}}"
+  },
+  "pipeline-save-state": {
+    "Saving": "Saving",
+    "Saved": "Saved"
+  },
+  "pipeline-test-form": {
+    "field": {
+      "name": {
+        "label": "Test Description"
+      },
+      "input": {
+        "label": "Test Input",
+        "error": {
+          "required": "*"
+        }
+      },
+      "output": {
+        "label": "Expected Output",
+        "error": {
+          "required": "*"
+        }
+      }
+    }
+  },
+  "pipeline-test-result": {
+    "expected-output": "Expected Output",
+    "actual-output": "Actual Output"
+  },
+  "pipeline-test-results": {
+    "heading": "{{pipelineName}} Test Results"
+  },
+  "pipeline-test-state": {
+    "Compiling": "Compiling",
+    "Testing": "Testing",
+    "Validating": "Validating"
+  },
+  "pipeline-publish-state": {
+    "Compiling": "Compiling",
+    "Testing": "Testing",
+    "Validating": "Validating",
+    "Publishing": "Publishing"
   }
 }

@@ -1,5 +1,5 @@
 <div class="toolbar">
-  <h3>Assessments Pipeline</h3>
+  <h3>{{ 'ingest-pipeline.' + pipeline.id + '.name' | translate }}</h3>
 
   <ng-container [ngSwitch]="selectedItem.type">
     <ng-container *ngSwitchCase="'Script'">
@@ -12,10 +12,12 @@
       >
         <ng-container [ngSwitch]="compilationState">
           <ng-container *ngSwitchCase="'Compiling'">
-            <i class="fa fa-spinner fa-pulse"></i> Compiling
+            <i class="fa fa-spinner fa-pulse"></i>
+            {{ 'pipeline-compilation-state.' + compilationState | translate }}
           </ng-container>
           <ng-container *ngSwitchCase="'Failed'">
-            <i class="fa fa-warning"></i> Compilation Failed
+            <i class="fa fa-warning"></i>
+            {{ 'pipeline-compilation-state.' + compilationState | translate }}
           </ng-container>
         </ng-container>
       </div>
@@ -28,14 +30,15 @@
           (click)="scriptUpdate.emit(selectedItem.value)"
         >
           <ng-container *ngIf="saving; else notSaving">
-            <i class="fa fa-spinner fa-pulse"></i> Saving
+            <i class="fa fa-spinner fa-pulse"></i>
+            {{ 'pipeline-save-state.Saving' | translate }}
           </ng-container>
           <ng-template #notSaving>
             <ng-container *ngIf="selectedItem.changed; else saved">
-              Save Draft
+              {{ 'pipeline-editor.save-script' | translate }}
             </ng-container>
             <ng-template #saved>
-              Saved
+              {{ 'pipeline-save-state.Saved' | translate }}
             </ng-template>
           </ng-template>
         </button>
@@ -47,44 +50,55 @@
           [ngClass]="{ disabled: testButtonDisabled }"
           (click)="scriptTest.emit(selectedItem.value)"
         >
-          <ng-container [ngSwitch]="testState">
-            <ng-container *ngSwitchCase="'Compiling'">
-              <i class="fa fa-spinner fa-pulse"></i> Compiling
-            </ng-container>
-            <ng-container *ngSwitchCase="'Testing'">
-              <i class="fa fa-spinner fa-pulse"></i> Testing
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              Run Tests
-            </ng-container>
+          <ng-container *ngIf="testState == null; else hasTestState">
+            {{ 'pipeline-editor.run-tests' | translate }}
           </ng-container>
+          <ng-template #hasTestState>
+            <i class="fa fa-spinner fa-pulse"></i>
+            {{ 'pipeline-test-state.' + testState | translate }}
+          </ng-template>
         </button>
       </div>
-      <div [tooltip]="publishButtonDisabledTooltip">
-        <button
-          type="button"
-          class="btn btn-primary"
-          [ngClass]="{ disabled: publishButtonDisabled }"
-          (click)="scriptPublish.emit(selectedItem.value)"
-        >
-          <ng-container [ngSwitch]="publishState">
-            <ng-container *ngSwitchCase="'Compiling'">
-              <i class="fa fa-spinner fa-pulse"></i> Compiling
+      <div class="btn-group">
+        <div class="btn-group" [tooltip]="publishButtonDisabledTooltip">
+          <button
+            type="button"
+            class="btn btn-primary"
+            [ngClass]="{ disabled: publishButtonDisabled }"
+            (click)="scriptPublish.emit(selectedItem.value)"
+          >
+            <ng-container *ngIf="publishState == null; else hasPublishState">
+              {{ 'pipeline-editor.publish-script' | translate }}
             </ng-container>
-            <ng-container *ngSwitchCase="'Testing'">
-              <i class="fa fa-spinner fa-pulse"></i> Testing
-            </ng-container>
-            <ng-container *ngSwitchCase="'Validating'">
-              <i class="fa fa-spinner fa-pulse"></i> Validating
-            </ng-container>
-            <ng-container *ngSwitchCase="'Publishing'">
-              <i class="fa fa-spinner fa-pulse"></i> Publishing
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              Publish
-            </ng-container>
-          </ng-container>
-        </button>
+            <ng-template #hasPublishState>
+              <i class="fa fa-spinner fa-pulse"></i>
+              {{ 'pipeline-publish-state.' + publishState | translate }}
+            </ng-template>
+          </button>
+        </div>
+        <div class="btn-group" dropdown>
+          <button
+            type="button"
+            class="btn btn-primary dropdown-toggle"
+            dropdownToggle
+            aria-controls="publish-dropdown"
+          >
+            <i class="fa fa-ellipsis-v"></i>
+          </button>
+          <ul
+            *dropdownMenu
+            id="publish-dropdown"
+            class="dropdown-menu"
+            role="menu"
+            aria-labelledby="button-basic"
+          >
+            <li role="menuitem">
+              <a class="dropdown-item" [routerLink]="['publishing-history']">
+                {{ 'pipeline-editor.publishing-history' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="'Test'">
@@ -95,14 +109,15 @@
           (click)="testUpdate.emit(selectedItem.value)"
         >
           <ng-container *ngIf="testUpdating; else testNotUpdating">
-            <i class="fa fa-spinner fa-pulse"></i> Saving
+            <i class="fa fa-spinner fa-pulse"></i>
+            {{ 'pipeline-save-state.Saving' | translate }}
           </ng-container>
           <ng-template #testNotUpdating>
             <ng-container *ngIf="selectedItem.changed; else saved">
-              Save
+              {{ 'pipeline-editor.save-test' | translate }}
             </ng-container>
             <ng-template #saved>
-              Saved
+              {{ 'pipeline-save-state.Saved' | translate }}
             </ng-template>
           </ng-template>
         </button>
@@ -113,11 +128,12 @@
           [ngClass]="{ disabled: testButtonDisabled }"
           (click)="testRun.emit(selectedItem.value)"
         >
-          <ng-container *ngIf="testing; else testNotRunning">
-            <i class="fa fa-spinner fa-pulse"></i> Testing
+          <ng-container *ngIf="testState == null; else hasSingleTestState">
+            {{ 'pipeline-editor.run-test' | translate }}
           </ng-container>
-          <ng-template #testNotRunning>
-            Run Test
+          <ng-template #hasSingleTestState>
+            <i class="fa fa-spinner fa-pulse"></i>
+            {{ 'pipeline-test-state.' + testState | translate }}
           </ng-template>
         </button>
       </div>

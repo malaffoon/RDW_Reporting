@@ -9,7 +9,7 @@ export const ingestPipelineRoutes = [
     path: 'ingest-pipelines',
     pathMatch: 'prefix',
     data: {
-      breadcrumb: { translate: 'home.admin-tools.ingest-pipelines.button' },
+      breadcrumb: { translate: 'pipelines.heading' },
       permissions: ['INDIVIDUAL_PII_READ'], // TODO update this
       denyAccess: true
     },
