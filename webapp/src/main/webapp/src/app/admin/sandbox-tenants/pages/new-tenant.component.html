@@ -1,0 +1,78 @@
+<page-heading>
+  <ng-template #heading>
+    <h2>{{ 'tenant-config.new-tenant.header' | translate }}</h2>
+  </ng-template>
+</page-heading>
+
+<div class="well sandbox-config">
+  <div class="well-body mt-sm">
+    <form class="form-group" [formGroup]="tenantForm">
+      <div class="row mb-xs">
+        <div class="col-md-4">
+          <label>{{ 'tenant-config.fields.label' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="text"
+            class="form-control"
+            name="label"
+            formControlName="label"
+          />
+        </div>
+      </div>
+      <div class="row mb-xs">
+        <div class="col-md-4">
+          <label>{{ 'tenant-config.fields.description' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <textarea
+            class="form-control"
+            name="description"
+            formControlName="description"
+          >
+          </textarea>
+        </div>
+      </div>
+      <p-accordion [multiple]="true">
+        <p-accordionTab
+          header="{{
+            'tenant-config.fields.configuration-properties' | translate
+          }}"
+        >
+          <property-override-table
+            [form]="tenantForm"
+            [configurationProperties]="configurationProperties"
+            propertiesArrayName="configurationProperties"
+          >
+          </property-override-table>
+        </p-accordionTab>
+        <p-accordionTab
+          header="{{
+            'tenant-config.fields.localization-overrides' | translate
+          }}"
+          formArrayName="localizationOverrides"
+        >
+          <property-override-table
+            [form]="tenantForm"
+            [configurationProperties]="localizationOverrides"
+            propertiesArrayName="localizationOverrides"
+          >
+          </property-override-table>
+        </p-accordionTab>
+      </p-accordion>
+    </form>
+  </div>
+  <div class="mt-md" style="height: 40px">
+    <a class="btn btn-default pull-right mr-xs" routerLink="/tenants">{{
+      'common.action.cancel' | translate
+    }}</a>
+    <button
+      type="button"
+      class="btn btn-primary pull-right mr-xs"
+      (click)="onSubmit()"
+      [disabled]="tenantForm.invalid"
+    >
+      {{ 'common.action.save' | translate }}
+    </button>
+  </div>
+</div>

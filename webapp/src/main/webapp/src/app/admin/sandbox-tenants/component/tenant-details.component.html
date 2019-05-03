@@ -1,0 +1,92 @@
+<div class="sandbox-container pt-md pb-md" *ngIf="!editMode">
+  <div class="sandbox-header">
+    <h2>
+      {{ tenant.label }} <span class="sandbox-key">({{ tenant.code }})</span>
+    </h2>
+    <i class="fa fa-edit fa-2x pull-right" (click)="editMode = !editMode"></i>
+    <h4>{{ tenant.description }}</h4>
+  </div>
+</div>
+
+<div class="sandbox-container pt-md pb-md" *ngIf="editMode">
+  <div class="sandbox-header">
+    <h2>
+      {{ tenant.label }} <span class="sandbox-key">({{ tenant.code }})</span>
+    </h2>
+    <!-- Actions -->
+    <div class="mb-sm pull-right">
+      <button class="btn btn-primary mr-xs" (click)="onSubmit()">
+        {{ 'common.action.save' | translate }}
+      </button>
+      <button class="btn btn-default mr-xs" (click)="editMode = false">
+        {{ 'common.action.cancel' | translate }}
+      </button>
+      <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+      <button
+        type="button"
+        pButton
+        class="btn btn-primary btn-outlined"
+        label="Show"
+        (click)="menu.toggle($event)"
+      >
+        <i class="fa fa-list fa-xl"></i>
+      </button>
+    </div>
+  </div>
+  <!-- Edit -->
+  <form class="form-group" [formGroup]="tenantForm">
+    <div class="row mb-xs">
+      <div class="col-md-4">
+        <label>{{ 'sandbox-config.fields.label' | translate }}</label>
+      </div>
+      <div class="col-md-8">
+        <input
+          type="text"
+          class="form-control"
+          name="label"
+          formControlName="label"
+        />
+      </div>
+    </div>
+    <div class="row mb-xs">
+      <div class="col-md-4">
+        <label>{{ 'sandbox-config.fields.description' | translate }}</label>
+      </div>
+      <div class="col-md-8">
+        <textarea
+          class="form-control"
+          name="description"
+          formControlName="description"
+        >
+        </textarea>
+      </div>
+    </div>
+
+    <p-accordion [multiple]="true">
+      <p-accordionTab
+        header="{{
+          'sandbox-config.fields.configuration-properties' | translate
+        }}"
+      >
+        <property-override-table
+          [form]="tenantForm"
+          [configurationProperties]="configurationProperties"
+          propertiesArrayName="configurationProperties"
+        >
+        </property-override-table>
+      </p-accordionTab>
+      <p-accordionTab
+        header="{{
+          'sandbox-config.fields.localization-overrides' | translate
+        }}"
+      >
+        <property-override-table
+          [form]="tenantForm"
+          [configurationProperties]="localizationOverrides"
+          propertiesArrayName="localizationOverrides"
+        >
+        </property-override-table>
+      </p-accordionTab>
+    </p-accordion>
+  </form>
+</div>

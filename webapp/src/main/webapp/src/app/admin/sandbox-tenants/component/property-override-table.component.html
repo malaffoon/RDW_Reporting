@@ -1,0 +1,82 @@
+<div [formGroup]="form">
+  <div [formArrayName]="propertiesArrayName">
+    <p-table
+      #dt
+      [value]="filteredConfigurationProperties"
+      dataKey="key"
+      [scrollable]="true"
+      scrollHeight="400px"
+      [globalFilterFields]="['key', 'value']"
+      styleClass="table table-striped table-hover overflow rdw-scrollable-table"
+      [paginator]="true"
+      [alwaysShowPaginator]="false"
+      [rows]="20"
+      (onPage)="paginate($event)"
+    >
+      <ng-template pTemplate="caption">
+        <div class="row">
+          <div class="col-md-9">
+            <i class="fa fa-search"></i>
+            <input
+              type="text"
+              class="form-control"
+              pInputText
+              size="50"
+              placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+              (input)="dt.filterGlobal($event.target.value, 'contains')"
+            />
+          </div>
+          <div class="col-md-3 modified-properties-container">
+            <label class="inline-label">
+              <input
+                type="checkbox"
+                (change)="updatePropertiesFilter()"
+                [(ngModel)]="showModifiedPropertiesOnly"
+                [ngModelOptions]="{ standalone: true }"
+              />
+              {{ 'sandbox-config.config-properties.modified' | translate }}
+            </label>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-overrides let-i="rowIndex">
+        <tr
+          [ngClass]="{
+            modified: overrides.value !== overrides.originalValue
+          }"
+          (click)="overrideInput.focus()"
+        >
+          <td [title]="overrides.key">{{ overrides.key }}</td>
+          <td>
+            <input
+              #overrideInput
+              type="text"
+              [value]="overrides.value"
+              [formControlName]="i"
+              class="property-input"
+              (change)="updateOverride(overrides, i)"
+            />
+            <i
+              class="fa fa-undo fa-md"
+              *ngIf="overrides.value !== overrides.originalValue"
+              (click)="resetClicked(overrides)"
+            ></i>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="2">
+            {{ 'sandbox-config.config-properties.empty' | translate }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

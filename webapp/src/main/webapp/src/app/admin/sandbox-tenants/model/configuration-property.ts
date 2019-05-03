@@ -1,4 +1,4 @@
-export class SandboxConfigurationProperty {
+export class ConfigurationProperty {
   key: string;
   originalValue: string;
   value: string;

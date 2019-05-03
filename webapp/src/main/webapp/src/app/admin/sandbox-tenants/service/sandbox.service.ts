@@ -1,10 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
-import {
-  DataTemplate,
-  SandboxConfiguration
-} from '../model/sandbox-configuration';
+import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 
 /**
  * Service responsible for managing organization embargo settings
@@ -24,7 +21,7 @@ export class SandboxService {
           label: 'A Middle School Sandbox',
           description:
             'A test sandbox for middle school students with both ELA and MATH assessments',
-          template: {
+          dataSet: {
             key: 'template1',
             label: 'Middle School Template'
           }
@@ -34,7 +31,7 @@ export class SandboxService {
           label: 'A High School Sandbox',
           description:
             'A sandbox for high school students with both ELA and MATH assessments',
-          template: {
+          dataSet: {
             key: 'template2',
             label: 'High School Template'
           }
@@ -82,7 +79,7 @@ export class SandboxService {
     return Observable.create(true);
   }
 
-  getAvailableDataTemplates(): Observable<DataTemplate[]> {
+  getAvailableDataSets(): Observable<DataSet[]> {
     //TODO: Pull these from database or other repository
     let mockDataTemplates = [
       {

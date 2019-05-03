@@ -4,12 +4,13 @@ import { SandboxService } from '../service/sandbox.service';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
 
 @Component({
-  selector: 'delete-sandbox-modal',
-  templateUrl: './delete-sandbox.modal.html'
+  selector: 'delete-tenan-or-sandbox-modal',
+  templateUrl: './delete-tenant-or-sandbox.modal.html'
 })
-export class DeleteSandboxConfigurationModalComponent implements OnDestroy {
-  sandbox: SandboxConfiguration;
-  deleted: EventEmitter<SandboxConfiguration> = new EventEmitter();
+export class DeleteTenantOrSandboxConfigurationModalComponent
+  implements OnDestroy {
+  sandboxOrTenant: any;
+  deleted: EventEmitter<any> = new EventEmitter();
 
   constructor(private modal: BsModalRef, private service: SandboxService) {}
 
@@ -18,9 +19,9 @@ export class DeleteSandboxConfigurationModalComponent implements OnDestroy {
   }
 
   delete() {
-    this.service.delete(this.sandbox.code);
+    this.service.delete(this.sandboxOrTenant.code);
     this.modal.hide();
-    this.deleted.emit(this.sandbox);
+    this.deleted.emit(this.sandboxOrTenant);
   }
 
   ngOnDestroy(): void {

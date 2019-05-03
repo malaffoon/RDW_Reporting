@@ -1,9 +1,9 @@
-<div class="modal-header" *ngIf="sandbox">
+<div class="modal-header">
   <h4
     id="dialog-static-name"
     class="modal-title pull-left label-max-width"
     [innerHTML]="
-      'sandbox-config.delete-modal.header' | translate: sandbox
+      'sandbox-config.delete-modal.header' | translate: sandboxOrTenant
     "
   ></h4>
   <button
@@ -17,7 +17,7 @@
 </div>
 <div
   class="modal-body"
-  [innerHTML]="'sandbox-config.delete-modal.body' | translate: sandbox"
+  [innerHTML]="'sandbox-config.delete-modal.body' | translate: sandboxOrTenant"
 ></div>
 <div class="modal-footer">
   <ul class="pull-right list-unstyled list-inline">

@@ -768,6 +768,8 @@ aggregate-report-table {
 
   .property-input {
     width: 100%;
+    padding: 5px;
+    margin: -5px 0;
   }
 
   .sandbox-container {
@@ -823,7 +825,7 @@ aggregate-report-table {
     div {
       text-align: left;
 
-      input {
+      input[type='text'] {
         width: calc(100% - 30px);
         display: inline;
       }
@@ -836,10 +838,15 @@ aggregate-report-table {
     }
 
     td {
+      cursor: pointer;
+
       i {
         cursor: pointer;
         color: @aqua;
-        margin-left: -10px;
+        position: absolute;
+        line-height: 22px;
+        font-size: 18px;
+        right: 15px;
 
         &:hover {
           color: @teal;
@@ -884,6 +891,15 @@ aggregate-report-table {
       .ui-accordion-header-text,
       .ui-accordion-toggle-icon {
         color: @white;
+      }
+    }
+
+    .modified-properties-container {
+      line-height: 32px;
+      padding-left: 0px;
+
+      input {
+        margin-right: 10px;
       }
     }
   }

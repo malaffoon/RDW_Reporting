@@ -868,19 +868,43 @@
     },
     "archive-modal": {
       "header": "Archive <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?",
-      "archive": "Archive"
+      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?"
     },
     "reset-modal": {
       "header": "Reset data for <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
-      "reset": "Reset Data"
+      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?"
     },
     "fields": {
       "label": "Sandbox Name / Label:",
       "description": "Description:",
-      "data-template": "Data Template:",
-      "select-template": "-- Select Template --",
+      "data-set": "Data Set:",
+      "select-data-set": "-- Select Data Set --",
+      "configuration-properties": "Configuration Properties",
+      "localization-overrides": "Localization Overrides",
+      "search": "Search by key or value"
+    },
+    "actions": {
+      "reset": "Reset Data",
+      "archive": "Archive",
+      "delete": "Delete"
+    },
+    "config-properties": {
+      "modified": "Show modified properties only",
+      "empty": "No configuration properties found"
+    }
+  },
+  "tenant-config": {
+    "title": "Tenant Configuration",
+    "new-tenant": {
+      "header": "Create New Tenant"
+    },
+    "delete-modal": {
+      "header": "Delete <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?"
+    },
+    "fields": {
+      "label": "Tenant Name / Label:",
+      "description": "Description:",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
@@ -1024,6 +1048,10 @@
       "sandbox-config": {
         "button": "Sandbox Configuration",
         "description": "Manage Reporting System Sandboxes"
+      },
+      "tenant-config": {
+        "button": "Tenant Configuration",
+        "description": "Manage Reporting System Tenants"
       },
       "titles": {
         "administrator-tools": "Administrator Tools"

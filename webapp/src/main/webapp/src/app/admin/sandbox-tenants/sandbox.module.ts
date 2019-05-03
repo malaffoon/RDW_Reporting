@@ -11,21 +11,30 @@ import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component'
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { AccordionModule } from 'primeng/primeng';
-import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
+import { DeleteTenantOrSandboxConfigurationModalComponent } from './modal/delete-tenant-or-sandbox.modal';
 import { ArchiveSandboxConfigurationModalComponent } from './modal/archive-sandbox.modal';
 import { ResetDataModalComponent } from './modal/reset-data.modal';
+import { PropertyOverrideTableComponent } from './component/property-override-table.component';
+import { TenantService } from './service/tenant.service';
+import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
+import { TenantConfigurationComponent } from './pages/tenant.component';
+import { TenantConfigurationDetailsComponent } from './component/tenant-details.component';
 
 @NgModule({
   declarations: [
     SandboxConfigurationComponent,
     SandboxConfigurationDetailsComponent,
     NewSandboxConfigurationComponent,
-    DeleteSandboxConfigurationModalComponent,
+    NewTenantConfigurationComponent,
+    TenantConfigurationComponent,
+    TenantConfigurationDetailsComponent,
+    DeleteTenantOrSandboxConfigurationModalComponent,
     ArchiveSandboxConfigurationModalComponent,
+    PropertyOverrideTableComponent,
     ResetDataModalComponent
   ],
   entryComponents: [
-    DeleteSandboxConfigurationModalComponent,
+    DeleteTenantOrSandboxConfigurationModalComponent,
     ArchiveSandboxConfigurationModalComponent,
     ResetDataModalComponent
   ],
@@ -41,7 +50,12 @@ import { ResetDataModalComponent } from './modal/reset-data.modal';
     TableModule,
     ModalModule.forRoot()
   ],
-  exports: [SandboxConfigurationComponent, NewSandboxConfigurationComponent],
-  providers: [SandboxService]
+  exports: [
+    SandboxConfigurationComponent,
+    NewSandboxConfigurationComponent,
+    TenantConfigurationComponent,
+    NewTenantConfigurationComponent
+  ],
+  providers: [SandboxService, TenantService]
 })
 export class SandboxModule {}

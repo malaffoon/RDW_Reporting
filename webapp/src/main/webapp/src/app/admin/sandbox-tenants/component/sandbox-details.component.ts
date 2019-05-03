@@ -7,7 +7,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
-import { SandboxConfigurationProperty } from '../model/sandbox-configuration-property';
+import { ConfigurationProperty } from '../model/configuration-property';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { MenuItem } from 'primeng/api';
 import {
@@ -20,6 +20,7 @@ import {
 import { SandboxService } from '../service/sandbox.service';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { flattenJsonObject } from '../../../shared/support/support';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'sandbox-details-config',
@@ -37,13 +38,14 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
 
   expanded = false;
   editMode = false;
-  configurationProperties: SandboxConfigurationProperty[] = [];
-  localizationOverrides: SandboxConfigurationProperty[] = [];
+  configurationProperties: ConfigurationProperty[] = [];
+  localizationOverrides: ConfigurationProperty[] = [];
   menuItems: MenuItem[];
   sandboxForm: FormGroup;
 
   constructor(
     private translationLoader: RdwTranslateLoader,
+    private translateService: TranslateService,
     private service: SandboxService,
     private formBuilder: FormBuilder,
     private settingsService: ApplicationSettingsService
@@ -79,7 +81,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
             );
             if (override) {
               this.localizationOverrides.push(
-                new SandboxConfigurationProperty(
+                new ConfigurationProperty(
                   key,
                   override.value,
                   override.originalValue
@@ -90,7 +92,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
               );
             } else {
               this.localizationOverrides.push(
-                new SandboxConfigurationProperty(key, value)
+                new ConfigurationProperty(key, value)
               );
               locationOverrideFormArray.controls.push(new FormControl(value));
             }
@@ -112,7 +114,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
         );
         if (override) {
           this.configurationProperties.push(
-            new SandboxConfigurationProperty(
+            new ConfigurationProperty(
               key,
               override.value,
               override.originalValue
@@ -124,7 +126,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
         } else {
           const val = flattenedConfigProperties[key] || '';
           this.configurationProperties.push(
-            new SandboxConfigurationProperty(key, val)
+            new ConfigurationProperty(key, val)
           );
           configPropertiesFormArray.push(new FormControl(val));
         }
@@ -141,7 +143,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     );
     let newSandbox = {
       code: this.sandbox.code,
-      template: this.sandbox.template,
+      dataSet: this.sandbox.dataSet,
       ...this.sandboxForm.value,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: modifiedConfigurationProperties
@@ -150,47 +152,20 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     this.editMode = false;
   }
 
-  updateOverride(override: SandboxConfigurationProperty, index: number): void {
-    const overrides = <FormArray>(
-      this.sandboxForm.controls['localizationOverrides']
-    );
-    const newVal = overrides.controls[index].value;
-
-    let existingOverride = this.localizationOverrides[
-      this.localizationOverrides.indexOf(override)
-    ];
-    existingOverride.value = newVal;
-  }
-
-  updateConfigurationProperty(
-    property: SandboxConfigurationProperty,
-    index: number
-  ): void {
-    const properties = <FormArray>(
-      this.sandboxForm.controls['configurationProperties']
-    );
-    const newVal = properties.controls[index].value;
-
-    let existingProperty = this.configurationProperties[
-      this.configurationProperties.indexOf(property)
-    ];
-    existingProperty.value = newVal;
-  }
-
   private configureMenuItems(): void {
     this.menuItems = [
       {
-        label: 'Reset Data',
+        label: this.translateService.instant('sandbox-config.actions.reset'),
         icon: 'fa fa-refresh',
         command: () => this.resetDataClicked.emit(this.sandbox)
       },
       {
-        label: 'Archive',
+        label: this.translateService.instant('sandbox-config.actions.archive'),
         icon: 'fa fa-archive',
         command: () => this.archiveClicked.emit(this.sandbox)
       },
       {
-        label: 'Delete',
+        label: this.translateService.instant('sandbox-config.actions.delete'),
         icon: 'fa fa-close',
         command: () => this.deleteClicked.emit(this.sandbox)
       }
