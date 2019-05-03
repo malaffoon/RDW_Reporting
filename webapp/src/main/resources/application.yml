@@ -93,6 +93,9 @@ spring:
     maxActive: 10
     minIdle: ${spring.datasource.initialSize}
     maxIdle: ${spring.datasource.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
 
   resources:
     chain:

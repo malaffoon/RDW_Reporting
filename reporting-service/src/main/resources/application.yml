@@ -45,6 +45,9 @@ spring:
     maxActive: 10
     minIdle: ${spring.datasource.initialSize}
     maxIdle: ${spring.datasource.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
 
   writable_datasource:
     url-parts:
@@ -73,6 +76,9 @@ spring:
     maxActive: 10
     minIdle: ${spring.writable_datasource.initialSize}
     maxIdle: ${spring.writable_datasource.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
 
   jackson:
     default-property-inclusion: non_null
