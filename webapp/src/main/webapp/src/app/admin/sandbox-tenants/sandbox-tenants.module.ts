@@ -58,4 +58,4 @@ import { TenantConfigurationDetailsComponent } from './component/tenant-details.
   ],
   providers: [SandboxService, TenantService]
 })
-export class SandboxModule {}
+export class SandboxTenantsModule {}
