@@ -1,11 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  QueryList,
-  ViewChildren
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { FormArray, FormGroup } from '@angular/forms';
 
@@ -20,9 +13,6 @@ export class PropertyOverrideTableComponent implements OnInit {
   propertiesArrayName: string;
   @Input()
   form: FormGroup;
-
-  @ViewChildren('overrideInput')
-  overrideInput: QueryList<ElementRef>;
 
   showModifiedPropertiesOnly = false;
   filteredConfigurationProperties: ConfigurationProperty[] = [];
