@@ -1465,7 +1465,8 @@
     "no-tests": "Please create a test",
     "invalid-tests": "One or more tests are invalid. Please enter all required test fields.",
     "unsaved-changes": "Please save all changes before running tests",
-    "publish-unsaved-changes": "Please save all changes before publishing"
+    "publish-unsaved-changes": "Please save all changes before publishing",
+    "published": "This script is the same as the published script"
   },
   "pipelines": {
     "heading": "Ingest Pipelines"
@@ -1529,6 +1530,15 @@
     "Compiling": "Compiling",
     "Testing": "Testing",
     "Validating": "Validating",
-    "Publishing": "Publishing"
+    "Publishing": "Publishing",
+    "Published": "Published"
+  },
+  "pipeline-publishing-history": {
+    "breadcrumb": "Publishing History",
+    "heading": "{{pipelineName}} Publishing History"
+  },
+  "pipeline-published-scripts": {
+    "open": "Open",
+    "republish": "Republish"
   }
 }

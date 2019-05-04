@@ -1,0 +1,55 @@
+<div class="head">
+  <h3>
+    {{
+      'pipeline-publishing-history.heading'
+        | translate
+          : {
+              pipelineName:
+                'ingest-pipeline.' + pipeline.id + '.name' | translate
+            }
+    }}
+  </h3>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="scriptPublish.emit(selectedScript)"
+    [disabled]="selectedScript.published"
+  >
+    <ng-container *ngIf="selectedScript.published; else notPublished">
+      {{ 'pipeline-publish-state.Published' | translate }}
+    </ng-container>
+    <ng-template #notPublished>
+      {{ 'pipeline-published-scripts.republish' | translate }}
+    </ng-template>
+  </button>
+</div>
+<div class="body">
+  <div class="scripts-container">
+    <ul>
+      <li *ngFor="let script of scripts">
+        <pipeline-item
+          [active]="selectedScript === script"
+          (click)="scriptSelect.emit(script)"
+        >
+          <div name>
+            {{ script.publishedOn | date }}
+            <i class="fa fa-clock-o ml-sm">{{
+              script.publishedOn | date: 'shortTime'
+            }}</i>
+            <span *ngIf="script.published" class="label border-only blue">
+              {{ 'pipeline-publish-state.Published' | translate }}
+            </span>
+          </div>
+          <div caption>
+            {{ 'pipeline-item.published-by' | translate: script }}
+          </div>
+        </pipeline-item>
+      </li>
+    </ul>
+  </div>
+  <code-editor
+    [language]="selectedScript.language"
+    [ngModel]="selectedScript.body"
+    [readonly]="true"
+  ></code-editor>
+</div>
