@@ -1,7 +1,7 @@
 /**
  * Holds information regarding an RDW sandbox configuration
  */
-import { SandboxConfigurationProperty } from './sandbox-configuration-property';
+import { ConfigurationProperty } from './configuration-property';
 
 export interface SandboxConfiguration {
   /**
@@ -22,20 +22,20 @@ export interface SandboxConfiguration {
   /**
    * The data template initially used to create the sandbox
    */
-  template: DataTemplate;
+  dataSet: DataSet;
 
   /**
    * The map containing text/i18n overrides
    */
-  localizationOverrides?: SandboxConfigurationProperty[];
+  localizationOverrides?: ConfigurationProperty[];
 
   /**
    * The map containing key/value pairings of configuration properties
    */
-  configurationProperties?: SandboxConfigurationProperty[];
+  configurationProperties?: ConfigurationProperty[];
 }
 
-export interface DataTemplate {
+export interface DataSet {
   /**
    * The unique key for a given data template
    */

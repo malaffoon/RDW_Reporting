@@ -1,14 +1,6 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
-import { SandboxConfiguration } from './sandbox-configuration';
-import { SandboxConfigurationProperty } from './sandbox-configuration-property';
-import { RdwTranslateLoader } from '../../shared/i18n/rdw-translate-loader';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ConfigurationProperty } from '../model/configuration-property';
+import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { MenuItem } from 'primeng/api';
 import {
   FormArray,
@@ -17,42 +9,43 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
-import { SandboxService } from './sandbox.service';
-import { ApplicationSettingsService } from '../../app-settings.service';
-import { flattenJsonObject } from '../../shared/support/support';
+import { cloneDeep } from 'lodash';
+import { ApplicationSettingsService } from '../../../app-settings.service';
+import { flattenJsonObject } from '../../../shared/support/support';
+import { TranslateService } from '@ngx-translate/core';
+import { TenantConfiguration } from '../model/tenant-configuration';
+import { TenantService } from '../service/tenant.service';
 
 @Component({
-  selector: 'sandbox-details-config',
-  templateUrl: './sandbox-details.component.html'
+  selector: 'tenant-details-config',
+  templateUrl: './tenant-details.component.html'
 })
-export class SandboxConfigurationDetailsComponent implements OnInit {
+export class TenantConfigurationDetailsComponent implements OnInit {
   @Input()
-  sandbox: SandboxConfiguration;
+  tenant: TenantConfiguration;
   @Output()
-  deleteClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
-  @Output()
-  archiveClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
-  @Output()
-  resetDataClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  deleteClicked: EventEmitter<TenantConfiguration> = new EventEmitter();
 
   expanded = false;
   editMode = false;
-  configurationProperties: SandboxConfigurationProperty[] = [];
-  localizationOverrides: SandboxConfigurationProperty[] = [];
+  configurationProperties: ConfigurationProperty[] = [];
+  localizationOverrides: ConfigurationProperty[] = [];
   menuItems: MenuItem[];
-  sandboxForm: FormGroup;
+  tenantForm: FormGroup;
+  tempForm: FormGroup;
 
   constructor(
     private translationLoader: RdwTranslateLoader,
-    private service: SandboxService,
+    private translateService: TranslateService,
+    private service: TenantService,
     private formBuilder: FormBuilder,
     private settingsService: ApplicationSettingsService
   ) {}
 
   ngOnInit(): void {
-    this.sandboxForm = this.formBuilder.group({
-      label: [this.sandbox.label, Validators.required],
-      description: [this.sandbox.description],
+    this.tenantForm = this.formBuilder.group({
+      label: [this.tenant.label, Validators.required],
+      description: [this.tenant.description],
       configurationProperties: this.formBuilder.array([]),
       localizationOverrides: this.formBuilder.array([])
     });
@@ -68,18 +61,18 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
       .subscribe(translations => {
         for (let key in translations) {
           let locationOverrideFormArray = <FormArray>(
-            this.sandboxForm.controls['localizationOverrides']
+            this.tenantForm.controls['localizationOverrides']
           );
           if (translations.hasOwnProperty(key)) {
             const value = translations[key];
             const localizationOverrides =
-              this.sandbox.localizationOverrides || [];
+              this.tenant.localizationOverrides || [];
             const override = localizationOverrides.find(
               override => override.key === key
             );
             if (override) {
               this.localizationOverrides.push(
-                new SandboxConfigurationProperty(
+                new ConfigurationProperty(
                   key,
                   override.value,
                   override.originalValue
@@ -90,7 +83,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
               );
             } else {
               this.localizationOverrides.push(
-                new SandboxConfigurationProperty(key, value)
+                new ConfigurationProperty(key, value)
               );
               locationOverrideFormArray.controls.push(new FormControl(value));
             }
@@ -102,17 +95,17 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
   private mapConfigurationProperties() {
     this.settingsService.getSettings().subscribe(configProperties => {
       const configPropertiesFormArray = <FormArray>(
-        this.sandboxForm.controls['configurationProperties']
+        this.tenantForm.controls['configurationProperties']
       );
       let flattenedConfigProperties = flattenJsonObject(configProperties);
       Object.keys(flattenedConfigProperties).forEach(key => {
-        const propertyOverrides = this.sandbox.configurationProperties || [];
+        const propertyOverrides = this.tenant.configurationProperties || [];
         const override = propertyOverrides.find(
           property => property.key === key
         );
         if (override) {
           this.configurationProperties.push(
-            new SandboxConfigurationProperty(
+            new ConfigurationProperty(
               key,
               override.value,
               override.originalValue
@@ -124,7 +117,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
         } else {
           const val = flattenedConfigProperties[key] || '';
           this.configurationProperties.push(
-            new SandboxConfigurationProperty(key, val)
+            new ConfigurationProperty(key, val)
           );
           configPropertiesFormArray.push(new FormControl(val));
         }
@@ -132,67 +125,39 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  editClicked(): void {
+    this.tempForm = cloneDeep(this.tenantForm);
+    this.editMode = true;
+  }
+
+  cancelClicked(): void {
+    this.tenantForm = cloneDeep(this.tempForm);
+    this.editMode = false;
+  }
+
+  onSubmit(): void {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
     const modifiedConfigurationProperties = this.configurationProperties.filter(
       property => property.originalValue !== property.value
     );
-    let newSandbox = {
-      code: this.sandbox.code,
-      template: this.sandbox.template,
-      ...this.sandboxForm.value,
+    let updatedTenant = {
+      code: this.tenant.code,
+      ...this.tenantForm.value,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: modifiedConfigurationProperties
     };
-    this.service.update(newSandbox);
+    this.service.update(updatedTenant);
     this.editMode = false;
-  }
-
-  updateOverride(override: SandboxConfigurationProperty, index: number): void {
-    const overrides = <FormArray>(
-      this.sandboxForm.controls['localizationOverrides']
-    );
-    const newVal = overrides.controls[index].value;
-
-    let existingOverride = this.localizationOverrides[
-      this.localizationOverrides.indexOf(override)
-    ];
-    existingOverride.value = newVal;
-  }
-
-  updateConfigurationProperty(
-    property: SandboxConfigurationProperty,
-    index: number
-  ): void {
-    const properties = <FormArray>(
-      this.sandboxForm.controls['configurationProperties']
-    );
-    const newVal = properties.controls[index].value;
-
-    let existingProperty = this.configurationProperties[
-      this.configurationProperties.indexOf(property)
-    ];
-    existingProperty.value = newVal;
   }
 
   private configureMenuItems(): void {
     this.menuItems = [
       {
-        label: 'Reset Data',
-        icon: 'fa fa-refresh',
-        command: () => this.resetDataClicked.emit(this.sandbox)
-      },
-      {
-        label: 'Archive',
-        icon: 'fa fa-archive',
-        command: () => this.archiveClicked.emit(this.sandbox)
-      },
-      {
-        label: 'Delete',
+        label: this.translateService.instant('sandbox-config.actions.delete'),
         icon: 'fa fa-close',
-        command: () => this.deleteClicked.emit(this.sandbox)
+        command: () => this.deleteClicked.emit(this.tenant)
       }
     ];
   }

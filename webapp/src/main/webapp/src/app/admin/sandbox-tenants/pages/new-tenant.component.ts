@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataTemplate } from './sandbox-configuration';
-import { SandboxService } from './sandbox.service';
+import { TenantService } from '../service/tenant.service';
 import {
   FormBuilder,
   FormGroup,
@@ -9,25 +8,24 @@ import {
   Validators,
   FormControl
 } from '@angular/forms';
-import { RdwTranslateLoader } from '../../shared/i18n/rdw-translate-loader';
-import { SandboxConfigurationProperty } from './sandbox-configuration-property';
-import { ApplicationSettingsService } from '../../app-settings.service';
-import { flattenJsonObject } from '../../shared/support/support';
+import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
+import { ConfigurationProperty } from '../model/configuration-property';
+import { ApplicationSettingsService } from '../../../app-settings.service';
+import { flattenJsonObject } from '../../../shared/support/support';
 
 @Component({
-  selector: 'new-sandbox',
-  templateUrl: './new-sandbox.component.html'
+  selector: 'new-tenant',
+  templateUrl: './new-tenant.component.html'
 })
-export class NewSandboxConfigurationComponent {
-  dataTemplates: DataTemplate[];
-  sandboxForm: FormGroup;
+export class NewTenantConfigurationComponent {
+  tenantForm: FormGroup;
   // Contains the full list of localization overrides, with default values
-  localizationOverrides: SandboxConfigurationProperty[] = [];
+  localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
-  configurationProperties: SandboxConfigurationProperty[] = [];
+  configurationProperties: ConfigurationProperty[] = [];
 
   constructor(
-    private service: SandboxService,
+    private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
     private router: Router,
@@ -35,7 +33,7 @@ export class NewSandboxConfigurationComponent {
   ) {}
 
   ngOnInit(): void {
-    this.sandboxForm = this.formBuilder.group({
+    this.tenantForm = this.formBuilder.group({
       label: [null, Validators.required],
       description: [null],
       template: [null, Validators.required],
@@ -43,21 +41,16 @@ export class NewSandboxConfigurationComponent {
       localizationOverrides: this.formBuilder.array([])
     });
 
-    this.service
-      .getAvailableDataTemplates()
-      .subscribe(templates => (this.dataTemplates = templates));
     this.mapLocalizationOverrides();
 
     this.settingsService.getSettings().subscribe(configProperties => {
       const configPropertiesFormArray = <FormArray>(
-        this.sandboxForm.controls['configurationProperties']
+        this.tenantForm.controls['configurationProperties']
       );
       let flattenedConfigProperties = flattenJsonObject(configProperties);
       Object.keys(flattenedConfigProperties).forEach(key => {
         const val = flattenedConfigProperties[key] || '';
-        this.configurationProperties.push(
-          new SandboxConfigurationProperty(key, val)
-        );
+        this.configurationProperties.push(new ConfigurationProperty(key, val));
         configPropertiesFormArray.push(new FormControl(val));
       });
     });
@@ -65,17 +58,18 @@ export class NewSandboxConfigurationComponent {
 
   private mapLocalizationOverrides() {
     this.translationLoader
+      // TODO: Use the proper configured language code, do not hardcode english
       .getFlattenedTranslations('en')
       .subscribe(translations => {
         let locationOverrideFormArray = <FormArray>(
-          this.sandboxForm.controls['localizationOverrides']
+          this.tenantForm.controls['localizationOverrides']
         );
         for (let key in translations) {
           // check also if property is not inherited from prototype
           if (translations.hasOwnProperty(key)) {
             let value = translations[key];
             this.localizationOverrides.push(
-              new SandboxConfigurationProperty(key, value)
+              new ConfigurationProperty(key, value)
             );
             locationOverrideFormArray.controls.push(new FormControl(value));
           }
@@ -92,19 +86,19 @@ export class NewSandboxConfigurationComponent {
     const modifiedConfigurationProperties = this.configurationProperties.filter(
       property => property.originalValue !== property.value
     );
-    const newSandbox = {
-      ...this.sandboxForm.value,
+    const newTenant = {
+      ...this.tenantForm.value,
       code: randomCode,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: modifiedConfigurationProperties
     };
-    this.service.create(newSandbox);
-    this.router.navigate(['sandboxes']);
+    this.service.create(newTenant);
+    this.router.navigate(['tenants']);
   }
 
-  updateOverride(override: SandboxConfigurationProperty, index: number): void {
+  updateOverride(override: ConfigurationProperty, index: number): void {
     const overrides = <FormArray>(
-      this.sandboxForm.controls['localizationOverrides']
+      this.tenantForm.controls['localizationOverrides']
     );
     const newVal = overrides.controls[index].value;
 
@@ -120,11 +114,11 @@ export class NewSandboxConfigurationComponent {
   }
 
   updateConfigurationProperty(
-    property: SandboxConfigurationProperty,
+    property: ConfigurationProperty,
     index: number
   ): void {
     const properties = <FormArray>(
-      this.sandboxForm.controls['configurationProperties']
+      this.tenantForm.controls['configurationProperties']
     );
     const newVal = properties.controls[index].value;
 

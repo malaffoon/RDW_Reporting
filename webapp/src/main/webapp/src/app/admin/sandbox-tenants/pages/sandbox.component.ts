@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SandboxConfiguration } from './sandbox-configuration';
-import { SandboxService } from './sandbox.service';
+import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { SandboxService } from '../service/sandbox.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
-import { DeleteSandboxConfigurationModalComponent } from './modals/delete-sandbox.modal';
-import { ArchiveSandboxConfigurationModalComponent } from './modals/archive-sandbox.modal';
-import { ResetDataModalComponent } from './modals/reset-data.modal';
+import { DeleteSandboxConfigurationModalComponent } from '../modal/delete-sandbox.modal';
+import { ArchiveSandboxConfigurationModalComponent } from '../modal/archive-sandbox.modal';
+import { ResetDataModalComponent } from '../modal/reset-data.modal';
 
 @Component({
   selector: 'sandbox-config',
