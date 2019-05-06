@@ -3,7 +3,7 @@
     <h2>
       {{ sandbox.label }} <span class="sandbox-key">({{ sandbox.code }})</span>
     </h2>
-    <i class="fa fa-edit fa-2x pull-right" (click)="editMode = !editMode"></i>
+    <i class="fa fa-edit fa-2x pull-right" (click)="editClicked()"></i>
     <h4>{{ sandbox.description }}</h4>
     <h5>{{ sandbox.dataSet.label }}</h5>
   </div>
@@ -16,10 +16,14 @@
     </h2>
     <!-- Actions -->
     <div class="mb-sm pull-right">
-      <button class="btn btn-primary mr-xs" (click)="onSubmit()">
+      <button
+        class="btn btn-primary mr-xs"
+        (click)="onSubmit()"
+        [disabled]="sandboxForm.invalid"
+      >
         {{ 'common.action.save' | translate }}
       </button>
-      <button class="btn btn-default mr-xs" (click)="editMode = false">
+      <button class="btn btn-default mr-xs" (click)="cancelClicked()">
         {{ 'common.action.cancel' | translate }}
       </button>
       <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>

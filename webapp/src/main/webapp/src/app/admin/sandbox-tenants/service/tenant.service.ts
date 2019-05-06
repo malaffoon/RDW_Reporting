@@ -22,9 +22,9 @@ export class TenantService {
           description: 'A tenant or the state of California'
         },
         {
-          code: 'AK',
-          label: 'Alaska',
-          description: 'A tenant for the state of Alaska'
+          code: 'MI',
+          label: 'Michigan',
+          description: 'A tenant for the state of Michigan'
         },
         {
           code: 'SBAC',

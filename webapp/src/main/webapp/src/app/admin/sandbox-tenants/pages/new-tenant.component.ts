@@ -58,6 +58,7 @@ export class NewTenantConfigurationComponent {
 
   private mapLocalizationOverrides() {
     this.translationLoader
+      // TODO: Use the proper configured language code, do not hardcode english
       .getFlattenedTranslations('en')
       .subscribe(translations => {
         let locationOverrideFormArray = <FormArray>(

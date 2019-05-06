@@ -18,22 +18,20 @@ export class SandboxService {
       this.mockData = [
         {
           code: '79d05c3d',
-          label: 'A Middle School Sandbox',
-          description:
-            'A test sandbox for middle school students with both ELA and MATH assessments',
+          label: 'Michigan Summative Sandbox',
+          description: 'A test sandbox with both ELA and MATH assessments',
           dataSet: {
-            key: 'template1',
-            label: 'Middle School Template'
+            key: 'dataSet1',
+            label: 'Michigan Summative Data Set'
           }
         },
         {
           code: '130c9ab1',
-          label: 'A High School Sandbox',
-          description:
-            'A sandbox for high school students with both ELA and MATH assessments',
+          label: 'SBAC Sandbox',
+          description: 'Another sandbox with both ELA and MATH assessments',
           dataSet: {
-            key: 'template2',
-            label: 'High School Template'
+            key: 'dataSet2',
+            label: 'SBAC Interim Data Set'
           }
         }
       ];
@@ -81,20 +79,20 @@ export class SandboxService {
 
   getAvailableDataSets(): Observable<DataSet[]> {
     //TODO: Pull these from database or other repository
-    let mockDataTemplates = [
+    let mockDataSets = [
       {
-        key: 'template0',
-        label: 'Elementary School Template'
+        key: 'dataSet0',
+        label: 'California Interim Data Set'
       },
       {
-        key: 'template1',
-        label: 'Middle School Template'
+        key: 'dataSet1',
+        label: 'Michigan Summative Data Set'
       },
       {
-        key: 'template2',
-        label: 'High School Template'
+        key: 'dataSet2',
+        label: 'SBAC Interim Data Set'
       }
     ];
-    return new Observable(observer => observer.next(mockDataTemplates));
+    return new Observable(observer => observer.next(mockDataSets));
   }
 }

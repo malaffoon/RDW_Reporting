@@ -2,15 +2,15 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { Component, EventEmitter, OnDestroy } from '@angular/core';
 import { SandboxService } from '../service/sandbox.service';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { TenantService } from '../service/tenant.service';
 
 @Component({
-  selector: 'delete-tenan-or-sandbox-modal',
-  templateUrl: './delete-tenant-or-sandbox.modal.html'
+  selector: 'delete-sandbox-modal',
+  templateUrl: './delete-sandbox.modal.html'
 })
-export class DeleteTenantOrSandboxConfigurationModalComponent
-  implements OnDestroy {
-  sandboxOrTenant: any;
-  deleted: EventEmitter<any> = new EventEmitter();
+export class DeleteSandboxConfigurationModalComponent implements OnDestroy {
+  sandbox: SandboxConfiguration;
+  deleted: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
   constructor(public modal: BsModalRef, private service: SandboxService) {}
 
@@ -19,9 +19,9 @@ export class DeleteTenantOrSandboxConfigurationModalComponent
   }
 
   delete() {
-    this.service.delete(this.sandboxOrTenant.code);
+    this.service.delete(this.sandbox.code);
     this.modal.hide();
-    this.deleted.emit(this.sandboxOrTenant);
+    this.deleted.emit(this.sandbox);
   }
 
   ngOnDestroy(): void {

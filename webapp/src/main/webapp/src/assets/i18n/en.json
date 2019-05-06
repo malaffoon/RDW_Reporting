@@ -878,7 +878,6 @@
       "label": "Sandbox Name / Label:",
       "description": "Description:",
       "data-set": "Data Set:",
-      "select-data-set": "-- Select Data Set --",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"

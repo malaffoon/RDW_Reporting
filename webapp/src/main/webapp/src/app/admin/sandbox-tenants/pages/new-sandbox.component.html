@@ -39,9 +39,7 @@
         </div>
         <div class="col-md-8">
           <select class="form-control" formControlName="dataSet">
-            <option [value]="null">{{
-              'sandbox-config.fields.select-data-set' | translate
-            }}</option>
+            <option [value]="null"></option>
             <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
               {{ dataSet.label }}
             </option>

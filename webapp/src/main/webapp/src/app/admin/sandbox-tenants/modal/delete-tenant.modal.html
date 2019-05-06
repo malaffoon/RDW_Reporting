@@ -3,7 +3,7 @@
     id="dialog-static-name"
     class="modal-title pull-left label-max-width"
     [innerHTML]="
-      'sandbox-config.delete-modal.header' | translate: sandboxOrTenant
+      'tenant-config.delete-modal.header' | translate: tenant
     "
   ></h4>
   <button
@@ -17,7 +17,7 @@
 </div>
 <div
   class="modal-body"
-  [innerHTML]="'sandbox-config.delete-modal.body' | translate: sandboxOrTenant"
+  [innerHTML]="'tenant-config.delete-modal.body' | translate: tenant"
 ></div>
 <div class="modal-footer">
   <ul class="pull-right list-unstyled list-inline">

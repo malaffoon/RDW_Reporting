@@ -6,6 +6,7 @@ import { FormArray, FormGroup } from '@angular/forms';
   selector: 'property-override-table',
   templateUrl: './property-override-table.component.html'
 })
+//TODO: Implement ControlValueAccessor
 export class PropertyOverrideTableComponent implements OnInit {
   @Input()
   configurationProperties: ConfigurationProperty[] = [];

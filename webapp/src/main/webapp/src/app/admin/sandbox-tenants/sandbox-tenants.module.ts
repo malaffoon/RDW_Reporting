@@ -11,7 +11,8 @@ import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component'
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { AccordionModule } from 'primeng/primeng';
-import { DeleteTenantOrSandboxConfigurationModalComponent } from './modal/delete-tenant-or-sandbox.modal';
+import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
+import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
 import { ArchiveSandboxConfigurationModalComponent } from './modal/archive-sandbox.modal';
 import { ResetDataModalComponent } from './modal/reset-data.modal';
 import { PropertyOverrideTableComponent } from './component/property-override-table.component';
@@ -28,13 +29,15 @@ import { TenantConfigurationDetailsComponent } from './component/tenant-details.
     NewTenantConfigurationComponent,
     TenantConfigurationComponent,
     TenantConfigurationDetailsComponent,
-    DeleteTenantOrSandboxConfigurationModalComponent,
+    DeleteSandboxConfigurationModalComponent,
+    DeleteTenantConfigurationModalComponent,
     ArchiveSandboxConfigurationModalComponent,
     PropertyOverrideTableComponent,
     ResetDataModalComponent
   ],
   entryComponents: [
-    DeleteTenantOrSandboxConfigurationModalComponent,
+    DeleteSandboxConfigurationModalComponent,
+    DeleteTenantConfigurationModalComponent,
     ArchiveSandboxConfigurationModalComponent,
     ResetDataModalComponent
   ],

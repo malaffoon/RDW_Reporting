@@ -4,7 +4,7 @@ import { SandboxConfiguration } from '../model/sandbox-configuration';
 import { SandboxService } from '../service/sandbox.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
-import { DeleteTenantOrSandboxConfigurationModalComponent } from '../modal/delete-tenant-or-sandbox.modal';
+import { DeleteSandboxConfigurationModalComponent } from '../modal/delete-sandbox.modal';
 import { ArchiveSandboxConfigurationModalComponent } from '../modal/archive-sandbox.modal';
 import { ResetDataModalComponent } from '../modal/reset-data.modal';
 
@@ -29,11 +29,11 @@ export class SandboxConfigurationComponent {
 
   openDeleteSandboxModal(sandbox: SandboxConfiguration) {
     let modalReference: BsModalRef = this.modalService.show(
-      DeleteTenantOrSandboxConfigurationModalComponent
+      DeleteSandboxConfigurationModalComponent
     );
-    let modal: DeleteTenantOrSandboxConfigurationModalComponent =
+    let modal: DeleteSandboxConfigurationModalComponent =
       modalReference.content;
-    modal.sandboxOrTenant = sandbox;
+    modal.sandbox = sandbox;
     this._modalSubscriptions.push(
       modal.deleted.subscribe(sandbox => {
         console.log(sandbox);

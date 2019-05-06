@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
-import { DeleteTenantOrSandboxConfigurationModalComponent } from '../modal/delete-tenant-or-sandbox.modal';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
+import { DeleteTenantConfigurationModalComponent } from '../modal/delete-tenant.modal';
 
 @Component({
   selector: 'tenant-config',
@@ -27,11 +27,10 @@ export class TenantConfigurationComponent {
 
   openDeleteTenantModal(tenant: TenantConfiguration) {
     let modalReference: BsModalRef = this.modalService.show(
-      DeleteTenantOrSandboxConfigurationModalComponent
+      DeleteTenantConfigurationModalComponent
     );
-    let modal: DeleteTenantOrSandboxConfigurationModalComponent =
-      modalReference.content;
-    modal.sandboxOrTenant = tenant;
+    let modal: DeleteTenantConfigurationModalComponent = modalReference.content;
+    modal.tenant = tenant;
     this._modalSubscriptions.push(
       modal.deleted.subscribe(sandbox => {
         console.log(sandbox);

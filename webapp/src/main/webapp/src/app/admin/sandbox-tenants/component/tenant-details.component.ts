@@ -9,6 +9,7 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+import { cloneDeep } from 'lodash';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { flattenJsonObject } from '../../../shared/support/support';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,6 +32,7 @@ export class TenantConfigurationDetailsComponent implements OnInit {
   localizationOverrides: ConfigurationProperty[] = [];
   menuItems: MenuItem[];
   tenantForm: FormGroup;
+  tempForm: FormGroup;
 
   constructor(
     private translationLoader: RdwTranslateLoader,
@@ -123,7 +125,17 @@ export class TenantConfigurationDetailsComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  editClicked(): void {
+    this.tempForm = cloneDeep(this.tenantForm);
+    this.editMode = true;
+  }
+
+  cancelClicked(): void {
+    this.tenantForm = cloneDeep(this.tempForm);
+    this.editMode = false;
+  }
+
+  onSubmit(): void {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );

@@ -43,9 +43,9 @@ export class NewSandboxConfigurationComponent {
       localizationOverrides: this.formBuilder.array([])
     });
 
-    this.service
-      .getAvailableDataSets()
-      .subscribe(dataSets => (this.dataSets = dataSets));
+    this.service.getAvailableDataSets().subscribe(dataSets => {
+      this.dataSets = dataSets;
+    });
     this.mapLocalizationOverrides();
 
     this.settingsService.getSettings().subscribe(configProperties => {

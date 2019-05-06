@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
@@ -17,6 +10,7 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+import { cloneDeep } from 'lodash';
 import { SandboxService } from '../service/sandbox.service';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { flattenJsonObject } from '../../../shared/support/support';
@@ -42,6 +36,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
   localizationOverrides: ConfigurationProperty[] = [];
   menuItems: MenuItem[];
   sandboxForm: FormGroup;
+  tempForm: FormGroup;
 
   constructor(
     private translationLoader: RdwTranslateLoader,
@@ -134,7 +129,17 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  editClicked(): void {
+    this.tempForm = cloneDeep(this.sandboxForm);
+    this.editMode = true;
+  }
+
+  cancelClicked(): void {
+    this.sandboxForm = cloneDeep(this.tempForm);
+    this.editMode = false;
+  }
+
+  onSubmit(): void {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );

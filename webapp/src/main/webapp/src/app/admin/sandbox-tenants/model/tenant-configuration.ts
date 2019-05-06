@@ -1,21 +1,21 @@
 /**
- * Holds information regarding an RDW sandbox configuration
+ * Holds information regarding an RDW tenant configuration
  */
 import { ConfigurationProperty } from './configuration-property';
 
 export interface TenantConfiguration {
   /**
-   * The unique (generated) key for the sandbox
+   * The unique (generated) key for the tenant
    */
   code: string;
 
   /**
-   * A human readable label, name, or description of the sandbox
+   * A human readable label, name, or description of the tenant
    */
   label: string;
 
   /**
-   * Optional additional description of the sandbox configuration
+   * Optional additional description of the tenant configuration
    */
   description?: string;
 
