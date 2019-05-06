@@ -314,32 +314,33 @@ export class PipelineComponent implements ComponentCanDeactivate {
     });
   }
 
-  onTestDelete(test: PipelineTest): void {
-    this.pipelineService
-      .deletePipelineTest(this.pipeline.id, test.id)
-      .subscribe(() => {
-        // find and select next item
-        const deletedTestIndex = this.items.findIndex(
-          ({ type, value: { id } }) => type === 'Test' && id === test.id
-        );
+  onTestDelete(item: Item<PipelineTest>): void {
+    // used to select the next available item
+    const deletedTestIndex = this.items.findIndex(x => x === item);
 
-        this.setPipelineTests(
-          this.pipeline.tests.filter(({ id }) => id !== test.id)
-        );
+    const onDelete = () => {
+      // remove the item and test
+      this.setPipelineTests(this.pipeline.tests.filter(x => x !== item.value));
+      this.items = this.items.filter(x => x !== item);
 
-        this.items = this.items.filter(
-          ({ type, value: { id } }) => type !== 'Test' || id !== test.id
-        );
+      // select the next available item
+      const nextTestItem = this.items.find(
+        (x, index) =>
+          x !== item && x.type === 'Test' && index >= deletedTestIndex
+      );
+      this.setSelectedItem(nextTestItem != null ? nextTestItem : this.items[0]);
+    };
 
-        const nextTestItem = this.items.find(
-          ({ type, value: { id } }, index) =>
-            type === 'Test' && id !== test.id && index >= deletedTestIndex
-        );
-
-        this.setSelectedItem(
-          nextTestItem != null ? nextTestItem : this.items[0]
-        );
-      });
+    if (item.value.id != null) {
+      // TODO launch modal
+      this.pipelineService
+        .deletePipelineTest(this.pipeline.id, item.value.id)
+        .subscribe(() => {
+          onDelete();
+        });
+    } else {
+      onDelete();
+    }
   }
 
   onItemSelected(item: Item): void {
@@ -420,22 +421,25 @@ export class PipelineComponent implements ComponentCanDeactivate {
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
       : this.pipeline.tests.length === 0
-      ? 'Please create a test'
+      ? 'pipeline.no-tests'
       : hasInvalidTests
-      ? 'One or more tests are invalid. Please enter all required test fields.'
+      ? 'pipeline.invalid-tests'
       : hasUnsavedChanges
-      ? 'Please save all changes before running tests'
+      ? 'pipeline.unsaved-changes'
       : '';
 
     this.publishButtonDisabled =
       this.publishState != null ||
       this.pipeline.tests.length === 0 ||
+      hasInvalidTests ||
       this.items.some(({ changed }) => changed);
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
       : this.pipeline.tests.length === 0
-      ? 'Please create a test'
-      : 'Please save all changes before publishing';
+      ? 'pipeline.no-tests'
+      : hasInvalidTests
+      ? 'pipeline.invalid-tests'
+      : 'pipeline.publish-unsaved-changes';
   }
 }

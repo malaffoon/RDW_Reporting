@@ -1,7 +1,7 @@
 <form [formGroup]="_formGroup">
   <div *ngIf="_formGroup.get('name') as control" class="form-group">
     <label for="name">
-      Test Description
+      {{ 'pipeline-test-form.field.name.label' | translate }}
     </label>
     <input id="name" type="text" class="form-control" [formControl]="control" />
   </div>
@@ -14,13 +14,12 @@
         'has-error': control.errors && (control.touched || control.dirty)
       }"
     >
-      <label
-        >Test Input<span
-          *ngIf="control.errors && (control.touched || control.dirty)"
-        >
-          *</span
-        ></label
-      >
+      <label>
+        {{ 'pipeline-test-form.field.input.label' | translate }}
+        <span *ngIf="control.errors && (control.touched || control.dirty)">{{
+          'pipeline-test-form.field.input.error.required' | translate
+        }}</span>
+      </label>
       <code-editor
         #input
         [lines]="31"
@@ -36,11 +35,10 @@
       }"
     >
       <label
-        >Expected Output<span
-          *ngIf="control.errors && (control.touched || control.dirty)"
-        >
-          *</span
-        ></label
+        >{{ 'pipeline-test-form.field.output.label' | translate }}
+        <span *ngIf="control.errors && (control.touched || control.dirty)">{{
+          'pipeline-test-form.field.output.error.required' | translate
+        }}</span></label
       >
       <code-editor
         #output

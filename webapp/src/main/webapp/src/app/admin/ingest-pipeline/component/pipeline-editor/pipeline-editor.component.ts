@@ -56,9 +56,6 @@ export class PipelineEditorComponent {
   saveButtonDisabledTooltip: string;
 
   @Input()
-  testing: boolean;
-
-  @Input()
   testResults: PipelineTest[] = [];
 
   @Input()
@@ -109,7 +106,7 @@ export class PipelineEditorComponent {
   testCreate: EventEmitter<void> = new EventEmitter();
 
   @Output()
-  testDelete: EventEmitter<PipelineTest> = new EventEmitter();
+  testDelete: EventEmitter<Item<PipelineTest>> = new EventEmitter();
 
   // extras
 

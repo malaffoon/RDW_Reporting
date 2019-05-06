@@ -34,7 +34,7 @@ export class PipelineExplorerComponent {
   createTestButtonClick: EventEmitter<void> = new EventEmitter();
 
   @Output()
-  deleteTestButtonClick: EventEmitter<PipelineTest> = new EventEmitter();
+  deleteTestButtonClick: EventEmitter<Item<PipelineTest>> = new EventEmitter();
 
   _scriptItems: Item<Pipeline>[] = [];
   _testItems: Item<PipelineTest>[] = [];
