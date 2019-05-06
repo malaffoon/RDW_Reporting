@@ -35,18 +35,4 @@ export class PipelinePublishingHistoryComponent {
   onScriptSelect(script: PipelineScript): void {
     this.selectedScript = script;
   }
-
-  onScriptOpen(script: PipelineScript): void {
-    this.router.navigate(['..'], {
-      relativeTo: this.route,
-      queryParams: {
-        scriptId: script.id
-      }
-    });
-  }
-
-  onScriptPublish(script: PipelineScript): void {
-    // TODO launch modal
-    this.pipelineService.republishPipelineScript(this.pipeline.id, script.id);
-  }
 }

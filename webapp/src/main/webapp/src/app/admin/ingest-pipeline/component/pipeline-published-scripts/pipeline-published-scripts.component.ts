@@ -25,10 +25,4 @@ export class PipelinePublishedScriptsComponent {
 
   @Output()
   scriptSelect: EventEmitter<PipelineScript> = new EventEmitter();
-
-  @Output()
-  scriptOpen: EventEmitter<PipelineScript> = new EventEmitter();
-
-  @Output()
-  scriptPublish: EventEmitter<PipelineScript> = new EventEmitter();
 }
