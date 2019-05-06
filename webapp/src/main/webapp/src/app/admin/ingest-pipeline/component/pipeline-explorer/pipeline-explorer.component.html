@@ -4,12 +4,14 @@
       <div #itemElement>
         <pipeline-item
           name="{{ 'pipeline-explorer.script' | translate }}"
-          [caption]="item.value.script ? item.value.script.updatedBy : ''"
           description="{{ item.value.name }}"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
         >
-          <i *ngIf="item.changed" icon class="fa fa-circle changed-icon"></i>
+          <i icon *ngIf="item.changed" class="fa fa-circle changed-icon"></i>
+          <div caption *ngIf="item.value.script">
+            {{ 'pipeline-item.updated-by' | translate: item.value.script }}
+          </div>
         </pipeline-item>
       </div>
     </li>
@@ -23,14 +25,13 @@
       class="btn btn-success btn-outlined btn-xs"
       (click)="createTestButtonClick.emit()"
     >
-      New Test
+      {{ 'pipeline-explorer.new-test' | translate }}
     </button>
   </div>
   <ul class="test-items">
     <li *ngFor="let item of _testItems; let index = index">
       <div #itemElement>
         <pipeline-item
-          [caption]="item.value.updatedBy"
           [description]="item.value.name"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
@@ -48,11 +49,15 @@
             </span>
           </div>
 
+          <div caption>
+            {{ 'pipeline-item.updated-by' | translate: item.value }}
+          </div>
+
           <a
             controls
             class="delete-control"
             (click)="
-              deleteTestButtonClick.emit(item.value);
+              deleteTestButtonClick.emit(item);
               $event.stopImmediatePropagation()
             "
           >

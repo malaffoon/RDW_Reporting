@@ -4,7 +4,7 @@ import { GroupsModule } from './groups/groups.module';
 import { FileFormatModule } from './groups/import/fileformat/file-format.module';
 import { InstructionalResourceModule } from './instructional-resource/instructional-resource.module';
 import { EmbargoModule } from './embargo/embargo.module';
-import { SandboxModule } from './sandbox/sandbox.module';
+import { SandboxTenantsModule } from './sandbox-tenants/sandbox-tenants.module';
 import { CommonModule } from '../shared/common.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { IngestPipelineModule } from './ingest-pipeline/ingest-pipeline.module';
@@ -20,7 +20,7 @@ import { IngestPipelineModule } from './ingest-pipeline/ingest-pipeline.module';
     InstructionalResourceModule,
     EmbargoModule,
     FileFormatModule,
-    SandboxModule
+    SandboxTenantsModule
   ],
   exports: [
     GroupImportModule,
