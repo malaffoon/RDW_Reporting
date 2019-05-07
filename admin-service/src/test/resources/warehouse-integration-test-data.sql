@@ -40,3 +40,9 @@ insert into student_group (id, name, school_id, school_year, subject_id, import_
 
 insert into student_group_membership (student_group_id, student_id) values
   (-10, -1);
+
+insert into pipeline_script (id, pipeline_id, body, updated_by) values
+  (-1, 1, 'script1', 'user1');
+
+insert into pipeline_test (id, pipeline_id, example_input, expected_output, updated_by) values
+  (-1, 1, 'in', 'out', 'user1');
