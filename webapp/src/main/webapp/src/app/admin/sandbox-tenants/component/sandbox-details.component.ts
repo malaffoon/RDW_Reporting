@@ -15,6 +15,7 @@ import { SandboxService } from '../service/sandbox.service';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { flattenJsonObject } from '../../../shared/support/support';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from '../../../shared/validator/custom-validators';
 
 @Component({
   selector: 'sandbox-details-config',
@@ -48,7 +49,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.sandboxForm = this.formBuilder.group({
-      label: [this.sandbox.label, Validators.required],
+      label: [this.sandbox.label, CustomValidators.required],
       description: [this.sandbox.description],
       configurationProperties: this.formBuilder.array([]),
       localizationOverrides: this.formBuilder.array([])

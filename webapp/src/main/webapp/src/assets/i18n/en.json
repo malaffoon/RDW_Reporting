@@ -890,7 +890,8 @@
     "config-properties": {
       "modified": "Show modified properties only",
       "empty": "No configuration properties found"
-    }
+    },
+    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button"
   },
   "tenant-config": {
     "title": "Tenant Configuration",
@@ -907,7 +908,8 @@
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
-    }
+    },
+    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button"
   },
   "embargo-alert": {
     "message": "Summative test results in your region of administration are not yet released. These results may be viewed online but not downloaded."

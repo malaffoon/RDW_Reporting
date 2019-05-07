@@ -32,8 +32,8 @@ export class TenantConfigurationComponent {
     let modal: DeleteTenantConfigurationModalComponent = modalReference.content;
     modal.tenant = tenant;
     this._modalSubscriptions.push(
-      modal.deleted.subscribe(sandbox => {
-        console.log(sandbox);
+      modal.deleted.subscribe(tenant => {
+        console.log(tenant);
       })
     );
   }
