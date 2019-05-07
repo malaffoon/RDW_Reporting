@@ -339,7 +339,7 @@ sql:
         updated_by
       FROM pipeline_script
       WHERE pipeline_id = :pipeline_id
-      ORDER BY created DESC
+      ORDER BY id DESC
 
     findById: >-
       SELECT
