@@ -1,10 +1,10 @@
-<div class="modal-header" *ngIf="sandbox">
+<div class="modal-header">
   <h4
     id="dialog-static-name"
     class="modal-title pull-left label-max-width"
     [innerHTML]="
-            'sandbox-config.archive-modal.header' | translate: sandbox
-          "
+      'sandbox-config.delete-modal.header' | translate: sandbox
+    "
   ></h4>
   <button
     type="button"
@@ -17,14 +17,14 @@
 </div>
 <div
   class="modal-body"
-  [innerHTML]="'sandbox-config.archive-modal.body' | translate: sandbox"
+  [innerHTML]="'sandbox-config.delete-modal.body' | translate: sandbox"
 ></div>
 <div class="modal-footer">
   <ul class="pull-right list-unstyled list-inline">
     <li>
-      <button type="button" class="btn btn-primary btn-sm" (click)="archive">
-        <i class="fa fa-archive"></i>
-        {{ 'sandbox-config.archive-modal.archive' | translate }}
+      <button type="button" class="btn btn-danger btn-sm" (click)="delete()">
+        <i class="fa fa-trash"></i>
+        {{ 'common.action.delete' | translate }}
       </button>
     </li>
     <li>

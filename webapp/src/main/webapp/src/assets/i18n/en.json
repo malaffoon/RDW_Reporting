@@ -868,19 +868,42 @@
     },
     "archive-modal": {
       "header": "Archive <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?",
-      "archive": "Archive"
+      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?"
     },
     "reset-modal": {
       "header": "Reset data for <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
-      "reset": "Reset Data"
+      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?"
     },
     "fields": {
       "label": "Sandbox Name / Label:",
       "description": "Description:",
-      "data-template": "Data Template:",
-      "select-template": "-- Select Template --",
+      "data-set": "Data Set:",
+      "configuration-properties": "Configuration Properties",
+      "localization-overrides": "Localization Overrides",
+      "search": "Search by key or value"
+    },
+    "actions": {
+      "reset": "Reset Data",
+      "archive": "Archive",
+      "delete": "Delete"
+    },
+    "config-properties": {
+      "modified": "Show modified properties only",
+      "empty": "No configuration properties found"
+    }
+  },
+  "tenant-config": {
+    "title": "Tenant Configuration",
+    "new-tenant": {
+      "header": "Create New Tenant"
+    },
+    "delete-modal": {
+      "header": "Delete <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?"
+    },
+    "fields": {
+      "label": "Tenant Name / Label:",
+      "description": "Description:",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
@@ -1024,6 +1047,10 @@
       "sandbox-config": {
         "button": "Sandbox Configuration",
         "description": "Manage Reporting System Sandboxes"
+      },
+      "tenant-config": {
+        "button": "Tenant Configuration",
+        "description": "Manage Reporting System Tenants"
       },
       "titles": {
         "administrator-tools": "Administrator Tools"
@@ -1461,10 +1488,74 @@
       "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko."
     }
   },
-  "pipeline-tests": {
-    "heading": "Tests"
+  "pipeline": {
+    "no-tests": "Please create a test",
+    "invalid-tests": "One or more tests are invalid. Please enter all required test fields.",
+    "unsaved-changes": "Please save all changes before running tests",
+    "publish-unsaved-changes": "Please save all changes before publishing"
+  },
+  "pipelines": {
+    "heading": "Ingest Pipelines"
+  },
+  "pipeline-compilation-state": {
+    "Compiling": "Compiling",
+    "Failed": "Compilation Failed"
+  },
+  "pipeline-editor": {
+    "save-script": "Save Draft",
+    "run-tests": "Run Tests",
+    "save-test": "Save",
+    "run-test": "Run Test",
+    "publish-script": "Publish",
+    "publishing-history": "Publishing History"
   },
   "pipeline-explorer": {
-    "script": "Pipeline Script"
+    "script": "Pipeline Script",
+    "new-test": "New Test"
+  },
+  "pipeline-item": {
+    "updated-by": "Last update by {{updatedBy}}",
+    "published-by": "Published by {{publishedBy}}"
+  },
+  "pipeline-save-state": {
+    "Saving": "Saving",
+    "Saved": "Saved"
+  },
+  "pipeline-test-form": {
+    "field": {
+      "name": {
+        "label": "Test Description"
+      },
+      "input": {
+        "label": "Test Input",
+        "error": {
+          "required": "*"
+        }
+      },
+      "output": {
+        "label": "Expected Output",
+        "error": {
+          "required": "*"
+        }
+      }
+    }
+  },
+  "pipeline-test-result": {
+    "expected-output": "Expected Output",
+    "actual-output": "Actual Output"
+  },
+  "pipeline-test-results": {
+    "heading": "{{pipelineName}} Test Results"
+  },
+  "pipeline-test-state": {
+    "Compiling": "Compiling",
+    "Testing": "Testing",
+    "Validating": "Validating"
+  },
+  "pipeline-publish-state": {
+    "Compiling": "Compiling",
+    "Testing": "Testing",
+    "Validating": "Validating",
+    "Publishing": "Publishing"
   }
 }

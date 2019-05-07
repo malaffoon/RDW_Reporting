@@ -39,8 +39,10 @@ import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
 import { ingestPipelineRoutes } from './admin/ingest-pipeline/ingest-pipeline.routes';
-import { SandboxConfigurationComponent } from './admin/sandbox/sandbox.component';
-import { NewSandboxConfigurationComponent } from './admin/sandbox/new-sandbox.component';
+import { SandboxConfigurationComponent } from './admin/sandbox-tenants/pages/sandbox.component';
+import { NewSandboxConfigurationComponent } from './admin/sandbox-tenants/pages/new-sandbox.component';
+import { TenantConfigurationComponent } from './admin/sandbox-tenants/pages/tenant.component';
+import { NewTenantConfigurationComponent } from './admin/sandbox-tenants/pages/new-tenant.component';
 
 export const studentPipe = new StudentPipe();
 export const adminRoute = {
@@ -177,6 +179,37 @@ export const adminRoute = {
               path: '',
               pathMatch: 'prefix',
               component: NewSandboxConfigurationComponent
+            }
+          ]
+        }
+      ]
+    },
+    {
+      path: 'tenants',
+      pathMatch: 'prefix',
+      data: {
+        breadcrumb: { translate: 'tenant-config.title' }
+        //TODO: Uncomment the line below once the roles/permissions have been configured
+        // permissions: ['TENANT_ADMIN']
+      },
+      canActivate: [AuthorizationCanActivate],
+      children: [
+        {
+          path: '',
+          pathMatch: 'prefix',
+          component: TenantConfigurationComponent
+        },
+        {
+          path: 'new',
+          pathMatch: 'prefix',
+          data: {
+            breadcrumb: { translate: 'tenant-config.new-tenant.header' }
+          },
+          children: [
+            {
+              path: '',
+              pathMatch: 'prefix',
+              component: NewTenantConfigurationComponent
             }
           ]
         }

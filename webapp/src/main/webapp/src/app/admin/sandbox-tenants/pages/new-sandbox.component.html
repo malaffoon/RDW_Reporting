@@ -1,0 +1,91 @@
+<page-heading>
+  <ng-template #heading>
+    <h2>{{ 'sandbox-config.new-sandbox.header' | translate }}</h2>
+  </ng-template>
+</page-heading>
+
+<div class="well sandbox-config">
+  <div class="well-body mt-sm">
+    <form class="form-group" [formGroup]="sandboxForm">
+      <div class="row mb-xs">
+        <div class="col-md-4">
+          <label>{{ 'sandbox-config.fields.label' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="text"
+            class="form-control"
+            name="label"
+            formControlName="label"
+          />
+        </div>
+      </div>
+      <div class="row mb-xs">
+        <div class="col-md-4">
+          <label>{{ 'sandbox-config.fields.description' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <textarea
+            class="form-control"
+            name="description"
+            formControlName="description"
+          >
+          </textarea>
+        </div>
+      </div>
+      <div class="row mb-sm">
+        <div class="col-md-4">
+          <label>{{ 'sandbox-config.fields.data-set' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <select class="form-control" formControlName="dataSet">
+            <option [value]="null"></option>
+            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
+              {{ dataSet.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <p-accordion [multiple]="true">
+        <p-accordionTab
+          header="{{
+            'sandbox-config.fields.configuration-properties' | translate
+          }}"
+        >
+          <property-override-table
+            [form]="sandboxForm"
+            [configurationProperties]="configurationProperties"
+            propertiesArrayName="configurationProperties"
+          >
+          </property-override-table>
+        </p-accordionTab>
+        <p-accordionTab
+          header="{{
+            'sandbox-config.fields.localization-overrides' | translate
+          }}"
+          formArrayName="localizationOverrides"
+        >
+          <property-override-table
+            [form]="sandboxForm"
+            [configurationProperties]="localizationOverrides"
+            propertiesArrayName="localizationOverrides"
+          >
+          </property-override-table>
+        </p-accordionTab>
+      </p-accordion>
+    </form>
+  </div>
+  <div class="mt-md" style="height: 40px">
+    <a class="btn btn-default pull-right mr-xs" routerLink="/sandboxes">{{
+      'common.action.cancel' | translate
+    }}</a>
+    <button
+      type="button"
+      class="btn btn-primary pull-right mr-xs"
+      (click)="onSubmit()"
+      [disabled]="sandboxForm.invalid"
+    >
+      {{ 'common.action.save' | translate }}
+    </button>
+  </div>
+</div>

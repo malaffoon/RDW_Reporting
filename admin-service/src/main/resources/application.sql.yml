@@ -322,3 +322,86 @@ sql:
         AND asmt_name = :asmt_name
         AND performance_level = :performance_level
         AND org_id <=> :org_id
+
+  pipeline:
+    findAll: >-
+      SELECT id, code
+      FROM pipeline
+      ORDER BY id ASC
+
+  pipeline-script:
+    findAllByPipeline: >-
+      SELECT
+        id,
+        pipeline_id,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_script
+      WHERE pipeline_id = :pipeline_id
+      ORDER BY id DESC
+
+    findById: >-
+      SELECT
+        id,
+        pipeline_id,
+        body,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_script
+      WHERE id = :id
+
+    create: >-
+      INSERT INTO pipeline_script (pipeline_id, body, updated_by)
+      VALUES (:pipeline_id, :body, :updated_by)
+
+    update: >-
+      UPDATE pipeline_script
+      SET
+        body = :body,
+        updated_by = :updated_by
+      WHERE id = :id
+
+  pipeline-test:
+    findAllByPipeline: >-
+      SELECT
+        id,
+        pipeline_id,
+        name,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_test
+      WHERE pipeline_id = :pipeline_id
+      ORDER BY created DESC
+
+    findById: >-
+      SELECT
+        id,
+        pipeline_id,
+        name,
+        example_input,
+        expected_output,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_test
+      WHERE id = :id
+
+    create: >-
+      INSERT INTO pipeline_test (pipeline_id, name, example_input, expected_output, updated_by)
+      VALUES (:pipeline_id, :name, :example_input, :expected_output, :updated_by)
+
+    update: >-
+      UPDATE pipeline_test
+      SET
+        name = :name,
+        example_input = :example_input,
+        expected_output = :expected_output,
+        updated_by = :updated_by
+      WHERE id = :id
+
+    deleteById: >-
+      DELETE FROM pipeline_test
+      WHERE id = :id

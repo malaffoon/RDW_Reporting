@@ -1,5 +1,14 @@
 <div class="head">
-  <h3>Assessments Pipeline Test Results</h3>
+  <h3>
+    {{
+      'pipeline-test-results.heading'
+        | translate
+          : {
+              pipelineName:
+                'ingest-pipeline.' + pipeline.id + '.name' | translate
+            }
+    }}
+  </h3>
   <button
     type="button"
     class="close fa-3x"
@@ -39,6 +48,10 @@
                 <i class="fa fa-clock-o small"></i>
                 {{ test.createdOn | date: 'shortTime' }}
               </span>
+            </div>
+
+            <div caption>
+              {{ 'pipeline-item.updated-by' | translate: test }}
             </div>
           </pipeline-item>
         </div>
