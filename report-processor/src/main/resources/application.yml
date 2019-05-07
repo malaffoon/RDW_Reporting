@@ -116,6 +116,9 @@ spring:
     minIdle: ${spring.datasource.initialSize}
     maxIdle: ${spring.datasource.maxActive}
     maxWait: 10000
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
 
   jackson:
       default-property-inclusion: non_null

@@ -20,6 +20,8 @@ services:
       - 15672:15672
 
   config-server:
+    #TODO: bump this after https://github.com/SmarterApp/SS_ConfigurationService/pull/16 integrated
+    #image: smarterbalanced/configuration-service:3.1.2.RELEASE
     image: smarterbalanced/configuration-service:3.1.0.RELEASE
     container_name: config-server
     ports:
@@ -29,6 +31,7 @@ services:
     environment:
       - CONFIG_SERVICE_REPO
       - ENCRYPT_KEY
+      - CONFIG_SERVICE_SEARCH_PATH=tenant*
       - GIT_USER
       - GIT_PASSWORD
       - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
@@ -66,6 +69,9 @@ services:
       - zuul.routes.reporting-service.url=http://reporting-service:8080
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
 
   admin-service:
     image: smarterbalanced/rdw-reporting-admin-service
@@ -84,6 +90,9 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
 
 # uncomment to enable aggregate service
 #  aggregate-service:
@@ -102,6 +111,10 @@ services:
 #      - spring.profiles.active=local-docker
 #      - CONFIG_SERVICE_ENABLED=true
 #      - CONFIG_SERVICE_URL=http://config-server:8888
+#      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+#      - SPRING_RABBITMQ_USERNAME=guest
+#      - SPRING_RABBITMQ_PASSWORD=guest
+
 
   reporting-service:
     image: smarterbalanced/rdw-reporting-service
@@ -117,6 +130,9 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
 
   report-processor-service:
     image: smarterbalanced/rdw-reporting-report-processor
@@ -136,6 +152,9 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
 
   wkhtmltopdf:
     image: smarterbalanced/wkhtmltopdf-image:3.1.0
