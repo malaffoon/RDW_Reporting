@@ -17,6 +17,7 @@ reporting:
     economicDisadvantage: disabled
     ethnicity: admin
     gender: enabled
+  transfer-access-enabled: false
 
 app:
   test-mode: true
