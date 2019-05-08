@@ -87,9 +87,7 @@ export interface Breadcrumb {
             <a *ngIf="!last" [routerLink]="crumb.routerLinkParameters">{{
               crumb.text
             }}</a>
-            <span *ngIf="last" [routerLink]="crumb.routerLinkParameters">{{
-              crumb.text
-            }}</span>
+            <span *ngIf="last">{{ crumb.text }}</span>
           </li>
         </ul>
       </div>
