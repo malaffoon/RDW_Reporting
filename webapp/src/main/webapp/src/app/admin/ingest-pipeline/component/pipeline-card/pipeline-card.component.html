@@ -1,9 +1,9 @@
 <a class="card" href="javascript:void(0)">
   <div class="card-head">
-    <h3>{{ pipeline.name }}</h3>
+    <h3>{{ 'ingest-pipeline.' + pipeline.code + '.name' | translate }}</h3>
     <span class="h3"><i class="fa fa-edit"></i></span>
   </div>
   <div class="card-body">
-    <p>{{ pipeline.description }}</p>
+    <p>{{ 'ingest-pipeline.' + pipeline.code + '.description' | translate }}</p>
   </div>
 </a>

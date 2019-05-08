@@ -2,11 +2,11 @@
   <spinner></spinner>
 </ng-container>
 <ng-template #loaded>
-  <ng-container *ngIf="testResults; else noTestResults">
+  <ng-container *ngIf="testRuns; else noTestResults">
     <!-- Test results -->
     <pipeline-test-results
       [pipeline]="pipeline"
-      [tests]="testResults"
+      [testRuns]="testRuns"
       (closeButtonClick)="onCloseTestResultsButtonClick()"
     ></pipeline-test-results>
   </ng-container>

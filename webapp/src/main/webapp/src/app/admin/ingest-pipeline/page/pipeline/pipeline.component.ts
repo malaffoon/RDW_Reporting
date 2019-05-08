@@ -14,7 +14,8 @@ import {
   CompilationError,
   Pipeline,
   PipelineScript,
-  PipelineTest
+  PipelineTest,
+  PipelineTestRun
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { tap } from 'rxjs/internal/operators/tap';
@@ -24,7 +25,8 @@ import {
 } from '../../component/code-editor/code-editor.component';
 import {
   Item,
-  ItemType
+  ItemType,
+  PipelineScriptView
 } from '../../component/pipeline-explorer/pipeline-explorer.component';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
@@ -39,15 +41,17 @@ function compilationErrorToMessage(value: CompilationError): Message {
     type: <MessageType>'error',
     row: value.row,
     column: value.column,
-    text: typeof value.message === 'string' ? value.message : value.message.code
+    text: value.message
   };
 }
 
-function createItems(pipeline: Pipeline): Item[] {
+function createItems(
+  pipeline: Pipeline
+): Item<PipelineScriptView | PipelineTest>[] {
   return [
     createItem('Script', {
-      ...pipeline.script,
-      name: pipeline.description
+      pipelineCode: pipeline.code,
+      ...pipeline.script
     }),
     ...pipeline.tests.map(value => createItem('Test', value))
   ];
@@ -83,7 +87,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
   saveButtonDisabledTooltipCode: string;
 
   testState: PipelineState;
-  testResults: PipelineTest[];
+  testRuns: PipelineTestRun[];
   testButtonDisabled: boolean;
   testButtonDisabledTooltipCode: string;
 
@@ -107,16 +111,17 @@ export class PipelineComponent implements ComponentCanDeactivate {
   ) {
     this.route.params
       .pipe(
-        mergeMap(({ id }) =>
-          forkJoin(
-            this.pipelineService.getPipeline(id),
-            this.pipelineService.getPipelineScript(id, 1),
-            this.pipelineService.getPipelineTests(id)
-          )
-        ),
-        map(([pipeline, script, tests]) => ({
+        mergeMap(({ id }) => {
+          const pipelineId = Number(id);
+          return forkJoin(
+            this.pipelineService.getPipeline(pipelineId),
+            this.pipelineService.getPipelineScripts(pipelineId),
+            this.pipelineService.getPipelineTests(pipelineId)
+          );
+        }),
+        map(([pipeline, scripts, tests]) => ({
           ...pipeline,
-          script,
+          script: scripts[0],
           tests
         }))
       )
@@ -174,14 +179,12 @@ export class PipelineComponent implements ComponentCanDeactivate {
   onScriptUpdate(script: PipelineScript): void {
     this.saving = true;
     const item = this.selectedItem;
-    this.pipelineService
-      .updatePipelineScript(this.pipeline.id, script)
-      .subscribe(script => {
-        this.saving = false;
-        item.lastSavedValue = cloneDeep(script);
-        item.changed = false;
-        this.updateButtonStates();
-      });
+    this.pipelineService.updatePipelineScript(script).subscribe(script => {
+      this.saving = false;
+      item.lastSavedValue = cloneDeep(script);
+      item.changed = false;
+      this.updateButtonStates();
+    });
   }
 
   onScriptTest(script: PipelineScript): void {
@@ -195,11 +198,10 @@ export class PipelineComponent implements ComponentCanDeactivate {
         if (errors.length === 0) {
           this.testState = 'Testing';
           this.pipelineService
-            .runPipelineTests(this.pipeline.id, script.body)
-            .subscribe(results => {
-              this.testResults = results;
+            .runPipelineTests(this.pipeline.id)
+            .subscribe(runs => {
+              this.testRuns = runs;
               this.testState = null;
-              // TODO launch test result modal
             });
         } else {
           this.testState = null;
@@ -219,18 +221,17 @@ export class PipelineComponent implements ComponentCanDeactivate {
         if (errors.length === 0) {
           this.publishState = 'Testing';
           this.pipelineService
-            .runPipelineTests(this.pipeline.id, script.body)
-            .subscribe(results => {
-              this.testResults = results;
+            .runPipelineTests(this.pipeline.id)
+            .subscribe(runs => {
+              this.testRuns = runs;
 
               // TODO add validation step
 
-              if (results.every(({ result }) => result.passed)) {
+              if (runs.every(({ result }) => result.passed)) {
                 this.publishState = 'Publishing';
                 this.pipelineService
-                  .publishPipelineScript(this.pipeline.id, script)
-                  .subscribe(script => {
-                    this.pipeline.script = script;
+                  .publishPipelineScript(this.pipeline.id)
+                  .subscribe(() => {
                     this.publishButtonDisabled = true;
                     this.publishState = null;
                   });
@@ -265,9 +266,9 @@ export class PipelineComponent implements ComponentCanDeactivate {
         if (errors.length === 0) {
           this.testState = 'Testing';
           this.pipelineService
-            .runPipelineTest(pipeline.id, test.id, pipeline.script.body)
-            .subscribe(results => {
-              this.testResults = results;
+            .runPipelineTest(pipeline.id, test.id)
+            .subscribe(run => {
+              this.testRuns = [run];
               this.testState = null;
             });
         } else {
@@ -281,6 +282,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
     this.userService.getUser().subscribe(user => {
       const updatedBy = `${user.firstName} ${user.lastName}`;
       const test: PipelineTest = {
+        pipelineId: this.pipeline.id,
         createdOn: new Date(),
         updatedBy,
         input: '',
@@ -302,8 +304,8 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
     const observable =
       test.id == null
-        ? this.pipelineService.createPipelineTest(this.pipeline.id, test)
-        : this.pipelineService.updatePipelineTest(this.pipeline.id, test);
+        ? this.pipelineService.createPipelineTest(test)
+        : this.pipelineService.updatePipelineTest(test);
 
     observable.subscribe(value => {
       // update updated on?
@@ -333,11 +335,9 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
     if (item.value.id != null) {
       // TODO launch modal
-      this.pipelineService
-        .deletePipelineTest(this.pipeline.id, item.value.id)
-        .subscribe(() => {
-          onDelete();
-        });
+      this.pipelineService.deletePipelineTest(item.value).subscribe(() => {
+        onDelete();
+      });
     } else {
       onDelete();
     }
@@ -349,7 +349,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
     if (item.type === 'Script' && item.value == null) {
       this.selectedItemLoading = true;
       this.pipelineService
-        .getPipelineScript(this.pipeline.id, 1)
+        .getPipelineScript(this.pipeline.id, item.value.id)
         .subscribe(script => {
           item.value = script;
           item.lastSavedValue = cloneDeep(script);
@@ -379,7 +379,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
   }
 
   onCloseTestResultsButtonClick(): void {
-    this.testResults = undefined;
+    this.testRuns = undefined;
   }
 
   private setSelectedItem(item: Item): void {
