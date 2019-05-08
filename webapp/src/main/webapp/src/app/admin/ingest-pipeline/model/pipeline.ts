@@ -85,6 +85,25 @@ export interface PipelineScript extends Script {
   updatedBy: string;
 
   /**
+   * True if this script is published
+   */
+  published?: boolean;
+
+  /**
+   * The version tag of the published script
+   */
+  publishedVersion?: string;
+  /**
+   * The script publish time
+   */
+  publishedOn?: Date;
+
+  /**
+   * The user who published the script
+   */
+  publishedBy?: string;
+
+  /**
    * The position of the script in the pipeline or undefined if not in the pipeline
    */
   index?: number;

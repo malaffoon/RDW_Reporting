@@ -1,0 +1,38 @@
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 15px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  > :first-child {
+    flex: 1;
+  }
+  > :not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+
+  .scripts-container {
+    max-height: 560px;
+    overflow-y: scroll;
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+  }
+}
+
+.published-tag {
+  display: inline-block;
+  font-size: 100%;
+  margin-top: 5px;
+}

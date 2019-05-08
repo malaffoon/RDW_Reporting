@@ -1,10 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pipeline, PipelineTest } from '../../model/pipeline';
-import {
-  equalDate,
-  isBlank,
-  isNullOrBlank
-} from '../../../../shared/support/support';
+import { equalDate } from '../../../../shared/support/support';
 import { isValidPipelineTest } from '../../model/pipelines';
 
 export type ItemType = 'Script' | 'Test';

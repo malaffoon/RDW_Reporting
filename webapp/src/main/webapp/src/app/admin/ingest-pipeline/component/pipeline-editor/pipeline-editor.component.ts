@@ -25,6 +25,9 @@ export class PipelineEditorComponent {
   @Input()
   pipeline: Pipeline;
 
+  @Input()
+  hasPublishedScript: boolean;
+
   @Output()
   scriptChange: EventEmitter<string> = new EventEmitter();
 
