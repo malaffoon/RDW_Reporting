@@ -89,6 +89,13 @@ export class CodeEditorComponent implements ControlValueAccessor {
   }
 
   @Input()
+  set readonly(value: any) {
+    this.withEditor(editor => {
+      editor.setReadOnly(value);
+    });
+  }
+
+  @Input()
   set scrollTop(value: any) {
     this.withEditor(editor => {
       editor.getSession().setScrollTop(parseInt(value) || 0);

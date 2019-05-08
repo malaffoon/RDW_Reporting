@@ -6,6 +6,7 @@ export type PipelineState =
   | 'Testing'
   | 'Validating'
   | 'Publishing'
+  | 'Published'
   | 'Failed';
 
 export type CompilationState = 'Compiling' | 'Failed';

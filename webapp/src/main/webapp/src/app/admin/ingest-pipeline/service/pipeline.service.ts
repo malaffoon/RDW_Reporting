@@ -16,7 +16,8 @@ import {
   stubIngestPipelines,
   stubPipelineScript,
   stubPipelineTest,
-  stubPipelineTests
+  stubPipelineTests,
+  stubPublishedScripts
 } from './pipeline.service.stubs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -145,5 +146,26 @@ export class PipelineService {
   ): Observable<PipelineScript> {
     // should require test and save on the backend
     return of(script).pipe(delay(1000));
+  }
+
+  getPublishedScript(): Observable<PipelineScript> {
+    return of(stubPublishedScripts.find(({ published }) => published)).pipe(
+      delay(200)
+    );
+  }
+
+  getPublishedScriptById(id: number): Observable<PipelineScript> {
+    return of(stubPublishedScripts.find(x => x.id === id)).pipe(delay(200));
+  }
+
+  getPublishedScripts(): Observable<PipelineScript[]> {
+    return of(stubPublishedScripts).pipe(delay(1000));
+  }
+
+  republishPipelineScript(
+    pipelineId: string,
+    scriptId: number
+  ): Observable<void> {
+    return of(null).pipe(delay(1000));
   }
 }

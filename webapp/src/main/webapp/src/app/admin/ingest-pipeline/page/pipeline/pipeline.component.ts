@@ -1,5 +1,5 @@
-import { Component, HostListener } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Component, HostListener, OnDestroy } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
@@ -67,7 +67,7 @@ function createItem<T>(type: ItemType, value: T, changed = false): Item<T> {
   templateUrl: './pipeline.component.html',
   styleUrls: ['./pipeline.component.less']
 })
-export class PipelineComponent implements ComponentCanDeactivate {
+export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   pipeline: Pipeline;
 
   pipelineScriptBody: BehaviorSubject<string> = new BehaviorSubject('');
@@ -90,6 +90,8 @@ export class PipelineComponent implements ComponentCanDeactivate {
   publishState: PipelineState;
   publishButtonDisabled: boolean;
   publishButtonDisabledTooltipCode: string;
+  publishedScript: PipelineScript;
+  published: boolean;
 
   testUpdating: boolean;
 
@@ -105,23 +107,28 @@ export class PipelineComponent implements ComponentCanDeactivate {
     private pipelineService: PipelineService,
     private userService: UserService
   ) {
-    this.route.params
-      .pipe(
+    combineLatest(
+      this.route.params.pipe(
         mergeMap(({ id }) =>
           forkJoin(
             this.pipelineService.getPipeline(id),
             this.pipelineService.getPipelineScript(id, 1),
             this.pipelineService.getPipelineTests(id)
           )
-        ),
-        map(([pipeline, script, tests]) => ({
-          ...pipeline,
+        )
+      ),
+      this.pipelineService.getPublishedScript()
+    )
+      .pipe(takeUntil(this._destroyed))
+      .subscribe(([[basePipeline, script, tests], publishedScript]) => {
+        const pipeline = {
+          ...basePipeline,
           script,
           tests
-        }))
-      )
-      .subscribe(pipeline => {
+        };
+        this.publishedScript = publishedScript;
         this.pipeline = pipeline;
+        this.published = publishedScript.body === pipeline.script.body;
         this.items = createItems(pipeline);
         this.setSelectedItem(this.items[0]);
         this.updateButtonStates();
@@ -163,6 +170,7 @@ export class PipelineComponent implements ComponentCanDeactivate {
   }
 
   onScriptChange(value: string): void {
+    this.published = this.publishedScript.body === value;
     this.pipelineScriptBody.next(value);
     this.selectedItem.changed = !isEqual(
       this.selectedItem.value,
@@ -430,12 +438,15 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
     this.publishButtonDisabled =
       this.publishState != null ||
+      this.published ||
       this.pipeline.tests.length === 0 ||
       hasInvalidTests ||
       this.items.some(({ changed }) => changed);
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
+      : this.published
+      ? 'pipeline.published'
       : this.pipeline.tests.length === 0
       ? 'pipeline.no-tests'
       : hasInvalidTests
