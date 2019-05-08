@@ -21,5 +21,8 @@
         (resetDataClicked)="openResetDataModal(sandbox)"
       ></sandbox-details-config>
     </div>
+    <div *ngIf="sandboxes.length === 0">
+      <h3>{{ 'sandbox-config.empty' | translate }}</h3>
+    </div>
   </div>
 </div>

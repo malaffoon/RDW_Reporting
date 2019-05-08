@@ -15,6 +15,7 @@ import { flattenJsonObject } from '../../../shared/support/support';
 import { TranslateService } from '@ngx-translate/core';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
+import { CustomValidators } from '../../../shared/validator/custom-validators';
 
 @Component({
   selector: 'tenant-details-config',
@@ -44,7 +45,7 @@ export class TenantConfigurationDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.tenantForm = this.formBuilder.group({
-      label: [this.tenant.label, Validators.required],
+      label: [this.tenant.label, CustomValidators.required],
       description: [this.tenant.description],
       configurationProperties: this.formBuilder.array([]),
       localizationOverrides: this.formBuilder.array([])

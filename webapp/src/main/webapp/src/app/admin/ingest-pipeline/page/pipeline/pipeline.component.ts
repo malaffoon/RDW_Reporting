@@ -1,5 +1,5 @@
-import { Component, HostListener } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Component, HostListener, OnDestroy } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
@@ -71,7 +71,7 @@ function createItem<T>(type: ItemType, value: T, changed = false): Item<T> {
   templateUrl: './pipeline.component.html',
   styleUrls: ['./pipeline.component.less']
 })
-export class PipelineComponent implements ComponentCanDeactivate {
+export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   pipeline: Pipeline;
 
   pipelineScriptBody: BehaviorSubject<string> = new BehaviorSubject('');
@@ -94,6 +94,8 @@ export class PipelineComponent implements ComponentCanDeactivate {
   publishState: PipelineState;
   publishButtonDisabled: boolean;
   publishButtonDisabledTooltipCode: string;
+  publishedScript: PipelineScript;
+  published: boolean;
 
   testUpdating: boolean;
 
@@ -115,18 +117,26 @@ export class PipelineComponent implements ComponentCanDeactivate {
           const pipelineId = Number(id);
           return forkJoin(
             this.pipelineService.getPipeline(pipelineId),
-            this.pipelineService.getPipelineScripts(pipelineId),
-            this.pipelineService.getPipelineTests(pipelineId)
+            this.pipelineService
+              .getPipelineScripts(pipelineId)
+              .pipe(map(scripts => scripts[0])),
+            this.pipelineService.getPipelineTests(pipelineId),
+            this.pipelineService
+              .getPublishedPipelineScripts(pipelineId)
+              .pipe(map(scripts => scripts[0]))
           );
-        }),
-        map(([pipeline, scripts, tests]) => ({
-          ...pipeline,
-          script: scripts[0],
-          tests
-        }))
+        })
       )
-      .subscribe(pipeline => {
+      .pipe(takeUntil(this._destroyed))
+      .subscribe(([basePipeline, script, tests, publishedScript]) => {
+        const pipeline = {
+          ...basePipeline,
+          script,
+          tests
+        };
+        this.publishedScript = publishedScript;
         this.pipeline = pipeline;
+        this.published = publishedScript.body === pipeline.script.body;
         this.items = createItems(pipeline);
         this.setSelectedItem(this.items[0]);
         this.updateButtonStates();
@@ -164,10 +174,11 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
   @HostListener('window:beforeunload')
   canDeactivate(): boolean {
-    return this.items.every(({ changed }) => !changed);
+    return (this.items || []).every(({ changed }) => !changed);
   }
 
   onScriptChange(value: string): void {
+    this.published = this.publishedScript.body === value;
     this.pipelineScriptBody.next(value);
     this.selectedItem.changed = !isEqual(
       this.selectedItem.value,
@@ -430,12 +441,15 @@ export class PipelineComponent implements ComponentCanDeactivate {
 
     this.publishButtonDisabled =
       this.publishState != null ||
+      this.published ||
       this.pipeline.tests.length === 0 ||
       hasInvalidTests ||
       this.items.some(({ changed }) => changed);
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
+      : this.published
+      ? 'pipeline.published'
       : this.pipeline.tests.length === 0
       ? 'pipeline.no-tests'
       : hasInvalidTests

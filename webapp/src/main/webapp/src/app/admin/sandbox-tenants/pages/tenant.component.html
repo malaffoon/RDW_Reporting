@@ -19,5 +19,8 @@
         (deleteClicked)="openDeleteTenantModal(tenant)"
       ></tenant-details-config>
     </div>
+    <div *ngIf="tenants.length === 0">
+      <h3>{{ 'tenant-config.empty' | translate }}</h3>
+    </div>
   </div>
 </div>

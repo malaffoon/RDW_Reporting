@@ -16,7 +16,8 @@ import {
   stubIngestPipelines,
   stubPipelineScript,
   stubPipelineTest,
-  stubPipelineTests
+  stubPipelineTests,
+  stubPublishedScripts
 } from './pipeline.service.stubs';
 
 let testId: number = stubPipelineTests.length + 1;
@@ -129,5 +130,31 @@ export class PipelineService {
   publishPipelineScript(pipelineId: number): Observable<void> {
     // should require test and save on the backend
     return of(null).pipe(delay(1000));
+  }
+
+  getPublishedPipelineScripts(
+    pipelineId: number
+  ): Observable<PipelineScript[]> {
+    return of(
+      stubPublishedScripts.map(
+        script => <PipelineScript>{ ...script, pipelineId }
+      )
+    ).pipe(delay(200));
+  }
+
+  getPublishedPipelineScript(
+    script: PipelineScript
+  ): Observable<PipelineScript> {
+    return of(
+      stubPublishedScripts
+        .map(
+          script =>
+            <PipelineScript>{
+              ...script,
+              pipelineId: script.pipelineId
+            }
+        )
+        .find(x => x.id === script.id)
+    ).pipe(delay(200));
   }
 }

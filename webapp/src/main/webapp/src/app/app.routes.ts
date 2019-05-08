@@ -235,7 +235,9 @@ export const studentTestExamHistoryChildRoute = {
   component: StudentResponsesComponent
 };
 
-export const studentTransform = student => studentPipe.transform(student);
+export const studentTranslateParameters = student => ({
+  value: studentPipe.transform(student)
+});
 
 export const studentTestHistoryChildRoute = {
   path: 'students/:studentId',
@@ -244,7 +246,7 @@ export const studentTestHistoryChildRoute = {
     breadcrumb: {
       translate: 'student-results.crumb',
       translateResolve: 'examHistory.student',
-      transform: studentTransform
+      translateParameters: studentTranslateParameters
     }
   },
   children: [

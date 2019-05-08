@@ -20,7 +20,8 @@
       [testState]="testState"
       [testButtonDisabled]="testButtonDisabled"
       [testButtonDisabledTooltip]="testButtonDisabledTooltipCode | translate"
-      [publishState]="publishState"
+      [hasPublishedScript]="publishedScript != null"
+      [publishState]="publishState || (published ? 'Published' : null)"
       [publishButtonDisabled]="publishButtonDisabled"
       [publishButtonDisabledTooltip]="
         publishButtonDisabledTooltipCode | translate

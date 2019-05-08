@@ -197,3 +197,27 @@ export function createFailingTest(test: PipelineTest): PipelineTestRun {
     }
   };
 }
+
+export const stubPublishedScripts: Partial<PipelineScript>[] = [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10
+].map((id, index) => ({
+  ...stubPipelineScript,
+  id,
+  body: index === 0 ? stubPipelineScript.body : `script body ${id}`,
+  published: index === 0,
+  publishedOn: new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDay() - index
+  ),
+  publishedBy: 'John Smith'
+}));
