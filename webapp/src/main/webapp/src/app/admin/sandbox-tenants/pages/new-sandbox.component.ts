@@ -13,6 +13,7 @@ import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { flattenJsonObject } from '../../../shared/support/support';
+import { CustomValidators } from '../../../shared/validator/custom-validators';
 
 @Component({
   selector: 'new-sandbox',
@@ -36,7 +37,7 @@ export class NewSandboxConfigurationComponent {
 
   ngOnInit(): void {
     this.sandboxForm = this.formBuilder.group({
-      label: [null, Validators.required],
+      label: [null, CustomValidators.required],
       description: [null],
       dataSet: [null, Validators.required],
       configurationProperties: this.formBuilder.array([]),
