@@ -7,3 +7,4 @@ reporting:
   state:
     code: CA
     name: California
+  transfer-access-enabled: false

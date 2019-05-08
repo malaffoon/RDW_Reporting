@@ -1,6 +1,7 @@
 reporting:
   state:
     code: CA
+  transfer-access-enabled: false
 
 spring:
   datasource:
