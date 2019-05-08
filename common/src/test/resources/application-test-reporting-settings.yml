@@ -14,3 +14,4 @@ reporting:
     Section504: admin
   report-languages:
     - es
+  transfer-access-enabled: true
