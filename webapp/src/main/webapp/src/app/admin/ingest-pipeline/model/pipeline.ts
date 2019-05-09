@@ -1,7 +1,5 @@
 export type InputType = 'xml' | 'json' | 'csv';
 
-export const inputTypes = ['xml', 'json', 'csv'];
-
 /**
  * Represents an ingest pipeline
  */
@@ -9,17 +7,12 @@ export interface Pipeline {
   /**
    * The pipeline identifier
    */
-  id: string;
+  id: number;
 
   /**
-   * The pipeline name
+   * The pipeline code
    */
-  name: string;
-
-  /**
-   * The pipeline description
-   */
-  description: string;
+  code: string;
 
   /**
    * The pipeline input format
@@ -60,14 +53,14 @@ export interface PipelineScript extends Script {
   id?: number;
 
   /**
+   * The pipeline ID
+   */
+  pipelineId: number;
+
+  /**
    * The user given script name
    */
   name?: string;
-
-  /**
-   * The semantic version of the script
-   */
-  version?: string;
 
   /**
    * The script creation datetime
@@ -82,17 +75,13 @@ export interface PipelineScript extends Script {
   /**
    * The user who updated the script last
    */
-  updatedBy: string;
+  updatedBy?: string;
 
   /**
    * True if this script is published
    */
   published?: boolean;
 
-  /**
-   * The version tag of the published script
-   */
-  publishedVersion?: string;
   /**
    * The script publish time
    */
@@ -102,11 +91,6 @@ export interface PipelineScript extends Script {
    * The user who published the script
    */
   publishedBy?: string;
-
-  /**
-   * The position of the script in the pipeline or undefined if not in the pipeline
-   */
-  index?: number;
 }
 
 /**
@@ -117,6 +101,11 @@ export interface PipelineTest {
    * The test entity ID
    */
   id?: number;
+
+  /**
+   * The pipeline ID
+   */
+  pipelineId: number;
 
   /**
    * The creation datetime
@@ -142,26 +131,20 @@ export interface PipelineTest {
    * The expected test output
    */
   output?: string;
-
-  /**
-   * The test results
-   */
-  result?: PipelineTestResult;
-}
-
-export interface Message {
-  code: string;
-  parameters?: { [key: string]: any };
 }
 
 export interface CompilationError {
   row: number;
   column: number;
-  message: Message | string;
+  message: string;
 }
 
 export interface PipelineTestResult {
   passed: boolean;
-  message?: Message | string;
-  actualOutput: string;
+  output: string;
+}
+
+export interface PipelineTestRun {
+  test: PipelineTest;
+  result: PipelineTestResult;
 }

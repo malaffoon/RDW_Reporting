@@ -4,6 +4,13 @@ import { PipelineComponent } from './page/pipeline/pipeline.component';
 import { PipelineResolve } from './resolve/pipeline.resolve';
 import { UnsavedChangesGuard } from './guard/unsaved-changes.guard';
 import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-history/pipeline-publishing-history.component';
+import { BreadcrumbContext } from '../../shared/layout/sb-breadcrumbs.component';
+
+export const pipelineBreadcrumb = ({
+  data: { pipeline },
+  translateService
+}: BreadcrumbContext) =>
+  translateService.instant(`ingest-pipeline.${pipeline.code}.name`);
 
 export const ingestPipelineRoutes = [
   {
@@ -24,7 +31,7 @@ export const ingestPipelineRoutes = [
       {
         path: ':id',
         data: {
-          breadcrumb: { resolve: 'pipeline.name' }
+          breadcrumb: pipelineBreadcrumb
         },
         resolve: {
           pipeline: PipelineResolve

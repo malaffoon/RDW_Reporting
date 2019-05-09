@@ -1,5 +1,5 @@
 <div class="toolbar">
-  <h3>{{ 'ingest-pipeline.' + pipeline.id + '.name' | translate }}</h3>
+  <h3>{{ 'ingest-pipeline.' + pipeline.code + '.name' | translate }}</h3>
 
   <ng-container [ngSwitch]="selectedItem.type">
     <ng-container *ngSwitchCase="'Script'">

@@ -3,14 +3,15 @@ import { Observable } from 'rxjs';
 import { Pipeline, PipelineScript } from '../../model/pipeline';
 import { PipelineService } from '../../service/pipeline.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { tap } from 'rxjs/internal/operators/tap';
+import { mergeMap } from 'rxjs/internal/operators/mergeMap';
+import { map, share } from 'rxjs/operators';
 
 @Component({
   selector: 'pipeline-publishing-history',
   templateUrl: './pipeline-publishing-history.component.html'
 })
 export class PipelinePublishingHistoryComponent {
-  pipeline: Pipeline;
+  pipeline: Observable<Pipeline>;
   scripts: Observable<PipelineScript[]>;
   selectedScript: PipelineScript;
 
@@ -21,14 +22,15 @@ export class PipelinePublishingHistoryComponent {
   ) {}
 
   ngOnInit(): void {
-    const { pipeline } = this.route.snapshot.data;
-    this.pipeline = pipeline;
-    this.scripts = this.pipelineService.getPublishedScripts().pipe(
-      tap(scripts => {
-        if (scripts.length > 0) {
-          this.selectedScript = scripts[0];
-        }
-      })
+    const pipelineId = this.route.params.pipe(
+      map(({ id }) => Number(id)),
+      share()
+    );
+    this.pipeline = pipelineId.pipe(
+      mergeMap(id => this.pipelineService.getPipeline(id))
+    );
+    this.scripts = pipelineId.pipe(
+      mergeMap(id => this.pipelineService.getPublishedPipelineScripts(id))
     );
   }
 

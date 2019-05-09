@@ -1,4 +1,9 @@
-import { Pipeline, PipelineScript, PipelineTest } from '../model/pipeline';
+import {
+  Pipeline,
+  PipelineScript,
+  PipelineTest,
+  PipelineTestRun
+} from '../model/pipeline';
 
 const trt = `<TDSReport>
   <Test academicYear="2018" assessmentType="Interim" assessmentVersion="11111" bankKey="777" contract="MOCK" grade="11"
@@ -81,20 +86,23 @@ const trt = `<TDSReport>
 
 export const stubIngestPipelines: Pipeline[] = <Pipeline[]>[
   {
-    id: 'assessment',
+    id: 1,
+    code: 'exam',
     inputType: 'xml'
   },
   {
-    id: 'exam',
-    inputType: 'xml'
-  },
-  {
-    id: 'group',
+    id: 2,
+    code: 'group',
     inputType: 'csv'
+  },
+  {
+    id: 3,
+    code: 'assessment',
+    inputType: 'xml'
   }
 ];
 
-export const stubPipelineScript: PipelineScript = {
+export const stubPipelineScript: Partial<PipelineScript> = {
   id: 1,
   language: 'groovy',
   updatedBy: 'System',
@@ -142,7 +150,7 @@ outputXml
 `
 };
 
-export const stubPipelineTests: PipelineTest[] = [1, 2, 3, 4, 5].map(
+export const stubPipelineTests: Partial<PipelineTest>[] = [1, 2, 3, 4, 5].map(
   (id, index) => ({
     id,
     createdOn: new Date(
@@ -160,37 +168,37 @@ export const stubPipelineTest: Partial<PipelineTest> = {
   output: trt
 };
 
-export function createPassingTest(test: PipelineTest): PipelineTest {
+export function createPassingTest(test: PipelineTest): PipelineTestRun {
   test = {
     ...test,
     ...stubPipelineTest
   };
   return {
-    ...test,
+    test,
     result: {
       passed: true,
-      actualOutput: test.output
+      output: test.output
     }
   };
 }
 
-export function createFailingTest(test: PipelineTest): PipelineTest {
+export function createFailingTest(test: PipelineTest): PipelineTestRun {
   test = {
     ...test,
     ...stubPipelineTest
   };
   return {
-    ...test,
+    test,
     result: {
       passed: false,
-      actualOutput: test.output
+      output: test.output
         .replace(/FINAL/g, 'INTERIM')
         .substring(0, test.output.length - 2000)
     }
   };
 }
 
-export const stubPublishedScripts: PipelineScript[] = [
+export const stubPublishedScripts: Partial<PipelineScript>[] = [
   1,
   2,
   3,
@@ -211,10 +219,5 @@ export const stubPublishedScripts: PipelineScript[] = [
     new Date().getMonth(),
     new Date().getDay() - index
   ),
-  publishedBy: 'John Smith',
-  publishedVersion: 'xxxxxxx'.replace(/x/g, () => {
-    const characters = 'abcdefghijklmnopqrstuvwxyz'.split('');
-    const character = characters[Math.floor(Math.random() * characters.length)];
-    return Math.random() < 0.5 ? character : character.toUpperCase();
-  })
+  publishedBy: 'John Smith'
 }));

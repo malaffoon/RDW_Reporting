@@ -3,15 +3,12 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output,
-  Pipe
+  Output
 } from '@angular/core';
-import { Pipeline, PipelineTest } from '../../model/pipeline';
-import { first } from 'rxjs/operators';
-import { Item } from '../pipeline-explorer/pipeline-explorer.component';
+import { Pipeline, PipelineTestRun } from '../../model/pipeline';
 import { equalDate } from '../../../../shared/support/support';
 
-function findFirstFailedOrFirst(tests: PipelineTest[]): PipelineTest {
+function findFirstFailedOrFirst(tests: PipelineTestRun[]): PipelineTestRun {
   const firstFailed = tests.find(({ result: { passed } }) => !passed);
   return firstFailed != null ? firstFailed : tests[0];
 }
@@ -29,28 +26,29 @@ export class PipelineTestResultsComponent {
   @Output()
   closeButtonClick: EventEmitter<MouseEvent> = new EventEmitter();
 
-  _tests: PipelineTest[];
-  _selectedTest: PipelineTest;
+  _testRuns: PipelineTestRun[];
+  _selectedTestRun: PipelineTestRun;
 
   @Input()
-  set tests(values: PipelineTest[]) {
-    this._tests = values.slice();
+  set testRuns(values: PipelineTestRun[]) {
+    this._testRuns = values.slice();
     // TODO scroll to test at initialization
-    this._selectedTest = findFirstFailedOrFirst(values);
+    this._selectedTestRun = findFirstFailedOrFirst(values);
   }
 
-  onTestClick(test: PipelineTest, scrollElement: HTMLElement): void {
-    this._selectedTest = test;
+  onTestRunClick(run: PipelineTestRun, scrollElement: HTMLElement): void {
+    this._selectedTestRun = run;
     scrollElement.scrollIntoView({
       block: 'nearest'
     });
   }
 
-  showTime(test: PipelineTest): boolean {
+  showTime(test: PipelineTestRun): boolean {
     return (
-      this._tests.find(
+      this._testRuns.find(
         otherTest =>
-          test !== otherTest && equalDate(test.createdOn, otherTest.createdOn)
+          test !== otherTest &&
+          equalDate(test.test.createdOn, otherTest.test.createdOn)
       ) != null
     );
   }

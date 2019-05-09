@@ -4,7 +4,7 @@ import {
   Input,
   ViewChild
 } from '@angular/core';
-import { InputType, PipelineTest } from '../../model/pipeline';
+import { InputType, PipelineTestRun } from '../../model/pipeline';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 
 @Component({
@@ -18,7 +18,7 @@ export class PipelineTestResultComponent {
   inputType: InputType;
 
   @Input()
-  test: PipelineTest;
+  testRun: PipelineTestRun;
 
   @ViewChild('input')
   input: CodeEditorComponent;
