@@ -1,7 +1,6 @@
 <table>
   <thead>
     <tr>
-      <!--    <tr *ngIf="table.scoreType !== 'Overall'">-->
       <th></th>
       <th *ngFor="let statistic of table.scoreStatistics">
         <div class="heading">
@@ -53,41 +52,14 @@
     >
       <td>
         <div class="row-heading level-heading">
-          <span>
-            {{ performanceLevelScore.nameCode | translate }}
-          </span>
-          <button
-            *ngIf="showInstructionalResources"
-            class="btn btn-borderless btn-xs icon-only instructional-resource-link"
-            angulartics2On="click"
-            angularticsAction="InstructionalResource"
-            angularticsCategory="AssessmentResults"
-            [popover]="instructionalResourcePopover"
-            popoverTitle="{{
-              'common.results.assessment.instruct-button'
-                | translate
-                  : {
-                      level:
-                        performanceLevelScore.level
-                        | optional
-                          : ('subject.' +
-                              table.subjectCode +
-                              '.asmt-type.' +
-                              table.assessmentTypeCode +
-                              '.level.' +
-                              performanceLevelScore.level +
-                              '.name'
-                              | translate)
-                    }
-            }}"
-            container="body"
-            (click)="
-              instructionalResourceClick.emit(performanceLevelScore.level)
+          <ng-container
+            [ngTemplateOutlet]="
+              levelHeadingTemplate || defaultLevelHeadingTemplate
             "
-            [outsideClick]="true"
-          >
-            <i class="fa fa-book"></i>
-          </button>
+            [ngTemplateOutletContext]="{
+              performanceLevelScore: performanceLevelScore
+            }"
+          ></ng-container>
         </div>
       </td>
       <td *ngFor="let statistic of table.scoreStatistics">
@@ -103,6 +75,7 @@
             [percent]="score.percent"
             [count]="score.count"
             [color]="performanceLevelScore.colorCode | translate"
+            [backgroundColor]="'gray-lighter'"
             [displayCount]="displayCount"
           ></aggregate-score-graph>
         </ng-container>
@@ -110,3 +83,10 @@
     </tr>
   </tbody>
 </table>
+
+<ng-template
+  #defaultLevelHeadingTemplate
+  let-performanceLevelScore="performanceLevelScore"
+>
+  {{ performanceLevelScore.nameCode | translate }}
+</ng-template>

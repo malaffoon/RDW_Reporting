@@ -52,10 +52,10 @@
         <score-table
           [table]="_overallScoreTable"
           [displayCount]="!showValuesAsPercent"
-          [showInstructionalResources]="showInstructionalResources"
-          [instructionalResourcePopover]="instructionalResourcePopover"
-          (instructionalResourceClick)="
-            onInstructionalResourceLinkClick($event)
+          [levelHeadingTemplate]="
+            showInstructionalResources
+              ? instructionalResourcesLevelHeading
+              : defaultScoreTableLevelHeading
           "
         ></score-table>
       </ng-container>
@@ -366,4 +366,50 @@
   <instructional-resource-popover
     [provider]="instructionalResourceProvider"
   ></instructional-resource-popover>
+</ng-template>
+
+<ng-template
+  #defaultScoreTableLevelHeading
+  let-performanceLevelScore="performanceLevelScore"
+>
+  {{ performanceLevelScore.nameCode | translate }}
+</ng-template>
+
+<ng-template
+  #instructionalResourcesLevelHeading
+  let-performanceLevelScore="performanceLevelScore"
+>
+  <span>
+    {{ performanceLevelScore.nameCode | translate }}
+  </span>
+  <button
+    *ngIf="showInstructionalResources"
+    class="btn btn-borderless btn-xs icon-only instructional-resource-link"
+    angulartics2On="click"
+    angularticsAction="InstructionalResource"
+    angularticsCategory="AssessmentResults"
+    [popover]="instructionalResourcePopover"
+    popoverTitle="{{
+      'common.results.assessment.instruct-button'
+        | translate
+          : {
+              level:
+                performanceLevelScore.level
+                | optional
+                  : ('subject.' +
+                      subjectDefinition.subject +
+                      '.asmt-type.' +
+                      subjectDefinition.assessmentType +
+                      '.level.' +
+                      performanceLevelScore.level +
+                      '.name'
+                      | translate)
+            }
+    }}"
+    container="body"
+    (click)="onInstructionalResourceLinkClick(performanceLevelScore.level)"
+    [outsideClick]="true"
+  >
+    <i class="fa fa-book"></i>
+  </button>
 </ng-template>

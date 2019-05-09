@@ -8,7 +8,8 @@
     ></div>
     <div
       *ngIf="percent < 100"
-      class="bar gray"
+      class="bar"
+      [ngClass]="backgroundColor"
       [attr.data-width]="100 - percent"
     ></div>
   </div>

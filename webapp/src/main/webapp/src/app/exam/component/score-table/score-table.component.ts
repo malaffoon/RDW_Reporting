@@ -3,7 +3,8 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output
+  Output,
+  TemplateRef
 } from '@angular/core';
 import { ScoreTable } from './score-table';
 
@@ -21,11 +22,14 @@ export class ScoreTableComponent {
   table: ScoreTable;
 
   @Input()
-  showInstructionalResources: boolean;
-
-  @Input()
-  instructionalResourcePopover: any;
-
-  @Output()
-  instructionalResourceClick: EventEmitter<number> = new EventEmitter();
+  levelHeadingTemplate: TemplateRef<any>;
+  //
+  // @Input()
+  // showInstructionalResources: boolean;
+  //
+  // @Input()
+  // instructionalResourcePopover: any;
+  //
+  // @Output()
+  // instructionalResourceClick: EventEmitter<number> = new EventEmitter();
 }
