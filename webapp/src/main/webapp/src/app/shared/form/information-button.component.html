@@ -1,4 +1,7 @@
-<span innerHTML="{{ _title }}"></span>
+<ng-container *ngIf="_title">
+  <span innerHTML="{{ _title }}"></span>
+  &nbsp;
+</ng-container>
 <button
   class="btn btn-borderless btn-xs icon-only"
   type="button"
@@ -10,7 +13,7 @@
   (click)="propagateClick($event)"
 >
   <span class="sr-only">{{ 'info-button.more-info' | translate }}</span
-  >&nbsp;<i class="fa fa-info-circle"></i>
+  ><i class="fa fa-info-circle"></i>
 </button>
 
 <ng-template #buttonPopover>

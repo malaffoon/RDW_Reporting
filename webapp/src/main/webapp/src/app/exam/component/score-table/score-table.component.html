@@ -7,25 +7,33 @@
           <score-label
             [subjectCode]="table.subjectCode"
             [scoreCode]="statistic.code"
+            [scoreType]="table.scoreType"
           ></score-label>
         </div>
       </th>
     </tr>
     <tr>
       <th>
-        <span
-          class="average-scale-score-label"
-          info-button
-          title="{{ 'average-scale-score.scale-score' | translate }}"
-          content="{{ 'average-scale-score.scale-score-info' | translate }}"
-          class="average-scale-score-label"
-        ></span>
+        <div class="row-heading">
+          <div>
+            {{ 'score-table.average-scale-score' | translate }}
+          </div>
+          <div
+            innerHtml="{{
+              'score-table.result-count'
+                | translate: { resultCount: table.resultCount }
+            }}"
+          ></div>
+        </div>
       </th>
       <th *ngFor="let statistic of table.scoreStatistics">
-        <scale-score
-          [score]="statistic.averageScaleScore"
-          [standardError]="statistic.standardErrorOfMean"
-        ></scale-score>
+        <div class="average-scale-score-container">
+          <scale-score
+            [score]="statistic.averageScaleScore"
+            [standardError]="statistic.standardErrorOfMean"
+            [infoEnabled]="true"
+          ></scale-score>
+        </div>
       </th>
     </tr>
   </thead>
@@ -43,7 +51,16 @@
       "
     >
       <td>
-        {{ performanceLevelScore.nameCode | translate }}
+        <div class="row-heading level-heading">
+          <ng-container
+            [ngTemplateOutlet]="
+              levelHeadingTemplate || defaultLevelHeadingTemplate
+            "
+            [ngTemplateOutletContext]="{
+              performanceLevelScore: performanceLevelScore
+            }"
+          ></ng-container>
+        </div>
       </td>
       <td *ngFor="let statistic of table.scoreStatistics">
         <ng-container
@@ -58,6 +75,7 @@
             [percent]="score.percent"
             [count]="score.count"
             [color]="performanceLevelScore.colorCode | translate"
+            [backgroundColor]="'gray-lighter'"
             [displayCount]="displayCount"
           ></aggregate-score-graph>
         </ng-container>
@@ -65,3 +83,10 @@
     </tr>
   </tbody>
 </table>
+
+<ng-template
+  #defaultLevelHeadingTemplate
+  let-performanceLevelScore="performanceLevelScore"
+>
+  {{ performanceLevelScore.nameCode | translate }}
+</ng-template>

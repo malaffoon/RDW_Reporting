@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ScoreTable, ScoreTablePerformanceLevelScores } from './score-table';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef
+} from '@angular/core';
+import { ScoreTable } from './score-table';
 
 @Component({
   selector: 'score-table',
@@ -13,4 +20,16 @@ export class ScoreTableComponent {
 
   @Input()
   table: ScoreTable;
+
+  @Input()
+  levelHeadingTemplate: TemplateRef<any>;
+  //
+  // @Input()
+  // showInstructionalResources: boolean;
+  //
+  // @Input()
+  // instructionalResourcePopover: any;
+  //
+  // @Output()
+  // instructionalResourceClick: EventEmitter<number> = new EventEmitter();
 }

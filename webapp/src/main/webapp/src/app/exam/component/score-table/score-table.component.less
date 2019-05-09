@@ -3,7 +3,12 @@
 @gray-light: #d5d5d5;
 @spacing-unit: 4px;
 
+// TODO consolidate styles - now in two places
 :host {
+  // compensate for table padding
+  display: block;
+  margin-right: @spacing-unit * -4;
+
   ::ng-deep {
     .scale-score {
       text-align: left;
@@ -11,10 +16,9 @@
       grid-template-columns: max-content max-content;
       align-items: center;
       .score {
-        font-size: 40px;
+        font-size: 32px;
       }
       .error-band {
-        font-size: 30px;
         font-weight: normal;
         opacity: 0.75;
       }
@@ -60,6 +64,20 @@ table {
   font-size: 18px;
 }
 
-.average-scale-score-label {
+.row-heading {
   font-weight: normal;
+
+  ::ng-deep {
+    strong {
+      font-size: 22px;
+    }
+  }
+}
+
+.level-heading {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 5px;
+  align-items: center;
+  justify-content: right;
 }

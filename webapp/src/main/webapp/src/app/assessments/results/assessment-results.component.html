@@ -49,13 +49,15 @@
   <div *ngIf="subjectDefinition">
     <ng-container [ngSwitch]="scoreType">
       <ng-container *ngSwitchCase="'Overall'">
-        <overall-score-summary
-          [assessmentId]="assessmentExam.assessment.id"
-          [assessmentProvider]="assessmentProvider"
-          [statistics]="statistics"
-          [subjectDefinition]="subjectDefinition"
-          [showCount]="!showValuesAsPercent"
-        ></overall-score-summary>
+        <score-table
+          [table]="_overallScoreTable"
+          [displayCount]="!showValuesAsPercent"
+          [levelHeadingTemplate]="
+            showInstructionalResources
+              ? instructionalResourcesLevelHeading
+              : defaultScoreTableLevelHeading
+          "
+        ></score-table>
       </ng-container>
       <ng-container *ngSwitchCase="'Claim'">
         <claim-score-summary
@@ -249,7 +251,7 @@
         <!-- Buttons right of view select -->
         <div class="pull-right mt-sm">
           <ul class="list-unstyled list-inline">
-            <li *ngIf="assessmentExam.assessment.type === 'iab'">
+            <li *ngIf="showInstructionalResources">
               <button
                 class="btn btn-primary btn-sm"
                 angulartics2On="click"
@@ -258,15 +260,13 @@
                 [angularticsProperties]="{
                   label: assessmentExam.assessment.label
                 }"
-                [popover]="buttonPopover"
+                [popover]="instructionalResourcePopover"
                 popoverTitle="{{
                   'common.results.assessment.instruct-button'
                     | translate: { level: assessmentExam.assessment.label }
                 }}"
                 container="body"
-                (click)="
-                  loadInstructionalResources(assessmentExam.assessment.id, 0)
-                "
+                (click)="onInstructionalResourceLinkClick(0)"
                 [outsideClick]="true"
               >
                 <i class="fa fa-book"></i>
@@ -362,8 +362,54 @@
   </ng-container>
 </div>
 
-<ng-template #buttonPopover>
+<ng-template #instructionalResourcePopover>
   <instructional-resource-popover
     [provider]="instructionalResourceProvider"
   ></instructional-resource-popover>
+</ng-template>
+
+<ng-template
+  #defaultScoreTableLevelHeading
+  let-performanceLevelScore="performanceLevelScore"
+>
+  {{ performanceLevelScore.nameCode | translate }}
+</ng-template>
+
+<ng-template
+  #instructionalResourcesLevelHeading
+  let-performanceLevelScore="performanceLevelScore"
+>
+  <span>
+    {{ performanceLevelScore.nameCode | translate }}
+  </span>
+  <button
+    *ngIf="showInstructionalResources"
+    class="btn btn-borderless btn-xs icon-only instructional-resource-link"
+    angulartics2On="click"
+    angularticsAction="InstructionalResource"
+    angularticsCategory="AssessmentResults"
+    [popover]="instructionalResourcePopover"
+    popoverTitle="{{
+      'common.results.assessment.instruct-button'
+        | translate
+          : {
+              level:
+                performanceLevelScore.level
+                | optional
+                  : ('subject.' +
+                      subjectDefinition.subject +
+                      '.asmt-type.' +
+                      subjectDefinition.assessmentType +
+                      '.level.' +
+                      performanceLevelScore.level +
+                      '.name'
+                      | translate)
+            }
+    }}"
+    container="body"
+    (click)="onInstructionalResourceLinkClick(performanceLevelScore.level)"
+    [outsideClick]="true"
+  >
+    <i class="fa fa-book"></i>
+  </button>
 </ng-template>

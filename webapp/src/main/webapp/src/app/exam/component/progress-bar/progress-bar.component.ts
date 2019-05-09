@@ -13,4 +13,7 @@ export class ProgressBarComponent {
 
   @Input()
   color: string;
+
+  @Input()
+  backgroundColor: string = 'gray';
 }
