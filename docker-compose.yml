@@ -67,9 +67,6 @@ services:
       - zuul.routes.reporting-service.url=http://reporting-service:8080
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
 
   admin-service:
     image: smarterbalanced/rdw-reporting-admin-service
@@ -88,9 +85,6 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
 
 # uncomment to enable aggregate service
 #  aggregate-service:
@@ -109,9 +103,6 @@ services:
 #      - spring.profiles.active=local-docker
 #      - CONFIG_SERVICE_ENABLED=true
 #      - CONFIG_SERVICE_URL=http://config-server:8888
-#      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
-#      - SPRING_RABBITMQ_USERNAME=guest
-#      - SPRING_RABBITMQ_PASSWORD=guest
 
 
   reporting-service:
@@ -128,9 +119,6 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
 
   report-processor-service:
     image: smarterbalanced/rdw-reporting-report-processor
@@ -150,9 +138,6 @@ services:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
 
   wkhtmltopdf:
     image: smarterbalanced/wkhtmltopdf-image:3.1.0
