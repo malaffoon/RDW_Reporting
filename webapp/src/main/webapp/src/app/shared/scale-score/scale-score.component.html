@@ -9,4 +9,10 @@
   <span *ngIf="_score && _standardError" class="error-band pl-xs">{{
     'common.error-band-value' | translate: { errorBand: _roundedStandardError }
   }}</span>
+  <span
+    *ngIf="_score && _standardError && infoEnabled"
+    class="info-button"
+    info-button
+    content="{{ 'average-scale-score.scale-score-info' | translate }}"
+  ></span>
 </span>

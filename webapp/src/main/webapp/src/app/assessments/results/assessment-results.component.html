@@ -49,13 +49,15 @@
   <div *ngIf="subjectDefinition">
     <ng-container [ngSwitch]="scoreType">
       <ng-container *ngSwitchCase="'Overall'">
-        <overall-score-summary
-          [assessmentId]="assessmentExam.assessment.id"
-          [assessmentProvider]="assessmentProvider"
-          [statistics]="statistics"
-          [subjectDefinition]="subjectDefinition"
-          [showCount]="!showValuesAsPercent"
-        ></overall-score-summary>
+        <score-table
+          [table]="_overallScoreTable"
+          [displayCount]="!showValuesAsPercent"
+          [showInstructionalResources]="showInstructionalResources"
+          [instructionalResourcePopover]="instructionalResourcePopover"
+          (instructionalResourceClick)="
+            onInstructionalResourceLinkClick($event)
+          "
+        ></score-table>
       </ng-container>
       <ng-container *ngSwitchCase="'Claim'">
         <claim-score-summary
@@ -249,7 +251,7 @@
         <!-- Buttons right of view select -->
         <div class="pull-right mt-sm">
           <ul class="list-unstyled list-inline">
-            <li *ngIf="assessmentExam.assessment.type === 'iab'">
+            <li *ngIf="showInstructionalResources">
               <button
                 class="btn btn-primary btn-sm"
                 angulartics2On="click"
@@ -258,15 +260,13 @@
                 [angularticsProperties]="{
                   label: assessmentExam.assessment.label
                 }"
-                [popover]="buttonPopover"
+                [popover]="instructionalResourcePopover"
                 popoverTitle="{{
                   'common.results.assessment.instruct-button'
                     | translate: { level: assessmentExam.assessment.label }
                 }}"
                 container="body"
-                (click)="
-                  loadInstructionalResources(assessmentExam.assessment.id, 0)
-                "
+                (click)="onInstructionalResourceLinkClick(0)"
                 [outsideClick]="true"
               >
                 <i class="fa fa-book"></i>
@@ -362,7 +362,7 @@
   </ng-container>
 </div>
 
-<ng-template #buttonPopover>
+<ng-template #instructionalResourcePopover>
   <instructional-resource-popover
     [provider]="instructionalResourceProvider"
   ></instructional-resource-popover>

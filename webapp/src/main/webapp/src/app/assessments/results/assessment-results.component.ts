@@ -354,12 +354,14 @@ export class AssessmentResultsComponent implements OnInit {
   percentileGroups: PercentileGroup[];
   subjectDefinition: SubjectDefinition;
   scoreTypeOptions: Option[] = [];
+  showInstructionalResources: boolean;
 
   /**
    * The active score type in the display
    */
   scoreType: ScoreType = 'Overall';
 
+  _overallScoreTable: ScoreTable;
   _alternateScoreTable: ScoreTable;
 
   private _filterBy: FilterBy;
@@ -379,6 +381,9 @@ export class AssessmentResultsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.showInstructionalResources =
+      this.assessmentExam.assessment.type === 'iab';
+
     forkJoin(
       this.applicationSettingsService.getSettings(),
       this.subjectService.getSubjectDefinitionForAssessment(
@@ -453,14 +458,11 @@ export class AssessmentResultsComponent implements OnInit {
     window.open(this.assessmentExam.assessment.resourceUrl);
   }
 
-  loadInstructionalResources(
-    assessmentId: number,
-    performanceLevel: number
-  ): void {
+  onInstructionalResourceLinkClick(performanceLevel: number): void {
     this.instructionalResourceProvider = () =>
       this.instructionalResourcesService
         .getInstructionalResources(
-          assessmentId,
+          this.assessmentExam.assessment.id,
           this.assessmentProvider.getSchoolId()
         )
         .pipe(
@@ -537,16 +539,20 @@ export class AssessmentResultsComponent implements OnInit {
       this.subjectDefinition != null ? this.calculateStats() : null;
 
     // compute table when ready
-    if (
-      this.exams != null &&
-      this.subjectDefinition != null &&
-      this.subjectDefinition.alternateScore != null
-    ) {
-      this._alternateScoreTable = toScoreTable(
+    if (this.exams != null && this.subjectDefinition != null) {
+      this._overallScoreTable = toScoreTable(
         this.exams,
         this.subjectDefinition,
-        'Alternate'
+        'Overall'
       );
+
+      if (this.subjectDefinition.alternateScore != null) {
+        this._alternateScoreTable = toScoreTable(
+          this.exams,
+          this.subjectDefinition,
+          'Alternate'
+        );
+      }
     }
   }
 

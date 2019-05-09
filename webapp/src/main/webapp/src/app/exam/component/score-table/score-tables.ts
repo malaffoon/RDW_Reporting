@@ -66,8 +66,10 @@ const ScoreTypeMetadataByType: Map<string, ScoreTypeMetadata> = new Map<
     {
       scoreDefinition: ({ overallScore }) => <any>overallScore,
       scaleScores: exam => [exam],
-      performanceLevelName: (level, subject, assessmentType) => ``,
-      performanceLevelColor: (level, subject, assessmentType) => ``
+      performanceLevelName: (level, subject, assessmentType) =>
+        `subject.${subject}.asmt-type.${assessmentType}.level.${level}.name`,
+      performanceLevelColor: (level, subject, assessmentType) =>
+        `subject.${subject}.asmt-type.${assessmentType}.level.${level}.color`
     }
   ],
   [
@@ -122,8 +124,7 @@ export function toScoreTable(
           scaleScore =>
             scaleScore != null &&
             scaleScore.level != null &&
-            scaleScore.score != null &&
-            scaleScore.standardError != null
+            scaleScore.score != null
         )
     );
 
@@ -157,6 +158,7 @@ export function toScoreTable(
   });
 
   return {
+    scoreType,
     subjectCode,
     assessmentTypeCode,
     resultCount: examScaleScores.length,
