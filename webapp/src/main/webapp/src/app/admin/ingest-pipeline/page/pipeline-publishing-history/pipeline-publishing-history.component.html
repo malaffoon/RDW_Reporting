@@ -1,4 +1,9 @@
-<ng-container *ngIf="(pipeline | async) && (scripts | async); else loading">
+<ng-container
+  *ngIf="
+    (pipeline | async) && (scripts | async) && selectedScript;
+    else loading
+  "
+>
   <pipeline-published-scripts
     [pipeline]="pipeline | async"
     [scripts]="scripts | async"
