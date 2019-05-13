@@ -1,5 +1,5 @@
 spring:
-  reporting_datasource:
+  reporting_ro_datasource:
     url-schema: reporting_test
   warehouse_datasource:
     url-schema: warehouse_test
