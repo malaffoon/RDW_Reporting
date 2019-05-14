@@ -35,7 +35,7 @@ export class NewTenantConfigurationComponent {
 
   ngOnInit(): void {
     this.tenantForm = this.formBuilder.group({
-      label: [null, CustomValidators.required],
+      label: [null, CustomValidators.notBlank],
       description: [null],
       configurationProperties: this.formBuilder.array([]),
       localizationOverrides: this.formBuilder.array([])
