@@ -45,20 +45,20 @@ spring:
     removeAbandonedTimeout: 60
     logAbandoned: false
 
-  warehouse_datasource:
+  warehouse_rw_datasource:
     url-parts:
       #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
       protocol: "jdbc:mysql:"
-      hosts: "${spring.warehouse_datasource.url-server:localhost:3306}"
-      database: "${spring.warehouse_datasource.url-schema:warehouse}"
-      properties: "useSSL=${spring.warehouse_datasource.use-ssl:false}\
-                   &useLegacyDatetimeCode=${spring.warehouse_datasource.use-legacy-datetime-code:false}\
-                   &characterEncoding=${spring.warehouse_datasource.character-encoding:utf8}\
-                   &connectTimeout=${spring.warehouse_datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.warehouse_datasource.socket-timeout:70000}\
+      hosts: "${spring.warehouse_rw_datasource.url-server:localhost:3306}"
+      database: "${spring.warehouse_rw_datasource.url-schema:warehouse}"
+      properties: "useSSL=${spring.warehouse_rw_datasource.use-ssl:false}\
+                   &useLegacyDatetimeCode=${spring.warehouse_rw_datasource.use-legacy-datetime-code:false}\
+                   &characterEncoding=${spring.warehouse_rw_datasource.character-encoding:utf8}\
+                   &connectTimeout=${spring.warehouse_rw_datasource.connect-timeout:10000}\
+                   &socketTimeout=${spring.warehouse_rw_datasource.socket-timeout:70000}\
                    "
-    url: "${spring.warehouse_datasource.url-parts.protocol}//${spring.warehouse_datasource.url-parts.hosts}/${spring.warehouse_datasource.url-parts.database}?${spring.warehouse_datasource.url-parts.properties}"
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.warehouse_datasource.query-timeout:60})"
+    url: "${spring.warehouse_rw_datasource.url-parts.protocol}//${spring.warehouse_rw_datasource.url-parts.hosts}/${spring.warehouse_rw_datasource.url-parts.database}?${spring.warehouse_rw_datasource.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.warehouse_rw_datasource.query-timeout:60})"
     username: root
     password:
     testWhileIdle: true
@@ -68,8 +68,8 @@ spring:
     initialize: false
     initialSize: 4
     maxActive: 10
-    minIdle: ${spring.warehouse_datasource.initialSize}
-    maxIdle: ${spring.warehouse_datasource.maxActive}
+    minIdle: ${spring.warehouse_rw_datasource.initialSize}
+    maxIdle: ${spring.warehouse_rw_datasource.maxActive}
     removeAbandoned: false
     removeAbandonedTimeout: 60
     logAbandoned: false

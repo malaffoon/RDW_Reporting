@@ -1,7 +1,7 @@
 spring:
   reporting_ro_datasource:
     url-schema: reporting_test
-  warehouse_datasource:
+  warehouse_rw_datasource:
     url-schema: warehouse_test
 
 artifacts:
