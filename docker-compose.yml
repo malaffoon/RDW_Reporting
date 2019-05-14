@@ -60,7 +60,7 @@ services:
 #        - zuul.routes.report-processor.url=http://host.docker.internal:8085
     environment:
       - spring.profiles.active=local-docker
-      - spring.datasource.url-server=host.docker.internal:3306
+      - datasources.reporting_ro.url-server=host.docker.internal:3306
       - zuul.routes.admin-service.url=http://admin-service:8080
       - zuul.routes.aggregate-service.url=http://aggregate-service:8080
       - zuul.routes.report-processor.url=http://report-processor-service:8080
