@@ -1,12 +1,14 @@
 import {
   PerformanceLevelScore,
-  ScoreStatistics
+  ScoreStatistics,
+  ScoreType
 } from '../../model/score-statistics';
 
 /**
  * Score table view model
  */
 export interface ScoreTable {
+  scoreType: ScoreType;
   subjectCode: string;
   assessmentTypeCode: string;
   resultCount: number;

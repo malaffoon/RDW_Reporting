@@ -1,10 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Pipeline, PipelineTest } from '../../model/pipeline';
-import {
-  equalDate,
-  isBlank,
-  isNullOrBlank
-} from '../../../../shared/support/support';
+import { PipelineScript, PipelineTest } from '../../model/pipeline';
+import { equalDate } from '../../../../shared/support/support';
 import { isValidPipelineTest } from '../../model/pipelines';
 
 export type ItemType = 'Script' | 'Test';
@@ -14,6 +10,10 @@ export interface Item<T = any> {
   value: T;
   lastSavedValue: T;
   changed?: boolean;
+}
+
+export interface PipelineScriptView extends PipelineScript {
+  pipelineCode: string;
 }
 
 @Component({
@@ -36,7 +36,7 @@ export class PipelineExplorerComponent {
   @Output()
   deleteTestButtonClick: EventEmitter<Item<PipelineTest>> = new EventEmitter();
 
-  _scriptItems: Item<Pipeline>[] = [];
+  _scriptItems: Item<PipelineScriptView>[] = [];
   _testItems: Item<PipelineTest>[] = [];
 
   @Input()

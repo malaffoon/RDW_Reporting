@@ -1,0 +1,19 @@
+reporting:
+  tenants:
+    NV:
+      state:
+        code: NV
+      iris-vendor-id: joe
+      student-fields:
+        EconomicDisadvantage: enabled
+        EnglishLanguageAcquisitionStatus: enabled
+        Ethnicity: admin
+        IndividualEducationPlan: enabled
+        LimitedEnglishProficiency: admin
+        MigrantStatus: disabled
+        MilitaryStudentIdentifier: enabled
+        PrimaryLanguage: disabled
+        Section504: enabled
+      report-languages:
+        - it
+      transfer-access-enabled: false

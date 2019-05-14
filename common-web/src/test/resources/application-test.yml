@@ -2,9 +2,9 @@ reporting:
   state:
     code: CA
 
-spring:
-  datasource:
-    url: jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting_test}?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
+datasources:
+  reporting_ro:
+    url: jdbc:mysql://${datasources.reporting_ro.url-server:localhost:3306}/${datasources.reporting_ro.url-schema:reporting_test}?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8
     username: root
     password:
     driverClassName: com.mysql.jdbc.Driver

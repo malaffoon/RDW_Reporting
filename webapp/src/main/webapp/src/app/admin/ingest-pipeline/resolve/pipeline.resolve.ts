@@ -19,6 +19,6 @@ export class PipelineResolve implements Resolve<Pipeline> {
     state: RouterStateSnapshot
   ): Observable<Pipeline> {
     const { id } = route.params;
-    return this.service.getPipeline(id);
+    return this.service.getPipeline(Number(id));
   }
 }

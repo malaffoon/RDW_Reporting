@@ -17,5 +17,8 @@ export class AggregateScoreGraphComponent {
   color: string;
 
   @Input()
+  backgroundColor: string = 'gray';
+
+  @Input()
   displayCount: boolean;
 }

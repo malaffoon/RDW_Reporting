@@ -1,0 +1,16 @@
+<ng-container
+  *ngIf="
+    (pipeline | async) && (scripts | async) && selectedScript;
+    else loading
+  "
+>
+  <pipeline-published-scripts
+    [pipeline]="pipeline | async"
+    [scripts]="scripts | async"
+    [selectedScript]="selectedScript"
+    (scriptSelect)="onScriptSelect($event)"
+  ></pipeline-published-scripts>
+</ng-container>
+<ng-template #loading>
+  <spinner></spinner>
+</ng-template>

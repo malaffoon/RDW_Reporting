@@ -21,6 +21,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.security:spring-security-core'
     compile 'org.springframework.cloud:spring-cloud-starter-config'
+    compile 'org.springframework:spring-messaging'
 
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')

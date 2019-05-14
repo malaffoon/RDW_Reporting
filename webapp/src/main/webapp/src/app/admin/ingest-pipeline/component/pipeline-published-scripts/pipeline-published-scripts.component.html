@@ -1,0 +1,50 @@
+<div class="head">
+  <h3>
+    {{
+      'pipeline-publishing-history.heading'
+        | translate
+          : {
+              pipelineName:
+                'ingest-pipeline.' + pipeline.code + '.name' | translate
+            }
+    }}
+  </h3>
+  <button
+    type="button"
+    class="close fa-3x"
+    title="{{ 'common.action.close' | translate }}"
+    [routerLink]="['..']"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="body">
+  <div class="scripts-container">
+    <ul>
+      <li *ngFor="let script of scripts">
+        <pipeline-item
+          [active]="selectedScript === script"
+          (click)="scriptSelect.emit(script)"
+        >
+          <div name>
+            {{ script.publishedOn | date: 'medium' }}
+          </div>
+          <div caption>
+            <div>{{ 'pipeline-item.published-by' | translate: script }}</div>
+            <div
+              *ngIf="script.published"
+              class="label border-only blue published-tag"
+            >
+              {{ 'pipeline-publish-state.Published' | translate }}
+            </div>
+          </div>
+        </pipeline-item>
+      </li>
+    </ul>
+  </div>
+  <code-editor
+    [language]="selectedScript.language"
+    [ngModel]="selectedScript.body"
+    [readonly]="true"
+  ></code-editor>
+</div>

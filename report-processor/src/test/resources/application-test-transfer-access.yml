@@ -1,0 +1,10 @@
+datasources:
+  reporting_ro:
+    url-schema: reporting_test
+
+reporting:
+  school-year: 2018
+  state:
+    code: CA
+    name: California
+  transfer-access-enabled: true

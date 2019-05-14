@@ -183,11 +183,7 @@ export function scoreStatistics(
     scaleScores =>
       !isNullOrEmpty(scaleScores) &&
       scaleScores.every(
-        score =>
-          score != null &&
-          score.level != null &&
-          score.score != null &&
-          score.standardError != null
+        score => score != null && score.level != null && score.score != null
       )
   );
 
@@ -204,7 +200,7 @@ export function scoreStatistics(
     });
   });
 
-  return scoreDefinition.codes.map((code, index) => {
+  return (scoreDefinition.codes || [null]).map((code, index) => {
     const scaleScores = scaleScoresByCodeIndex[index] || [];
     const scores = scaleScores.map(({ score }) => score);
     return {

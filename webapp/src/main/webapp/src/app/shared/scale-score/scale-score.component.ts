@@ -7,11 +7,15 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 @Component({
   selector: 'scale-score',
   templateUrl: './scale-score.component.html',
+  styleUrls: ['./scale-score.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScaleScoreComponent {
   @Input()
   background: boolean;
+
+  @Input()
+  infoEnabled: boolean;
 
   _score: number;
   _roundedScaleScore: number;

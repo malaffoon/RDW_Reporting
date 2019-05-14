@@ -5,7 +5,7 @@
         | translate
           : {
               pipelineName:
-                'ingest-pipeline.' + pipeline.id + '.name' | translate
+                'ingest-pipeline.' + pipeline.code + '.name' | translate
             }
     }}
   </h3>
@@ -23,49 +23,49 @@
   <div class="body-container">
     <h4>Tests</h4>
     <ul>
-      <li *ngFor="let test of _tests">
+      <li *ngFor="let run of _testRuns">
         <div #scrollElementReference>
           <pipeline-item
-            description="{{ test.name }}"
-            [active]="_selectedTest === test"
-            (click)="onTestClick(test, scrollElementReference)"
+            description="{{ run.test.name }}"
+            [active]="_selectedTestRun === run"
+            (click)="onTestRunClick(run, scrollElementReference)"
           >
             <i
-              *ngIf="test.result.passed"
+              *ngIf="run.result.passed"
               icon
               class="passed-icon fa fa-check"
             ></i>
 
             <i
-              *ngIf="!test.result.passed"
+              *ngIf="!run.result.passed"
               icon
               class="failed-icon fa fa-close"
             ></i>
 
             <div name>
-              {{ test.createdOn | date }}
-              <span class="ml-sm" *ngIf="showTime(test)">
+              {{ run.test.createdOn | date }}
+              <span class="ml-sm" *ngIf="showTime(run)">
                 <i class="fa fa-clock-o small"></i>
-                {{ test.createdOn | date: 'shortTime' }}
+                {{ run.test.createdOn | date: 'shortTime' }}
               </span>
             </div>
 
             <div caption>
-              {{ 'pipeline-item.updated-by' | translate: test }}
+              {{ 'pipeline-item.updated-by' | translate: run.test }}
             </div>
           </pipeline-item>
         </div>
       </li>
     </ul>
   </div>
-  <div class="body-container" *ngIf="_selectedTest && pipeline">
-    <ng-container *ngIf="_selectedTest.result.passed; else failed">
+  <div class="body-container" *ngIf="_selectedTestRun && pipeline">
+    <ng-container *ngIf="_selectedTestRun.result.passed; else failed">
       <div class="passed"><i class="fa fa-check fa-2x"></i> Test passed</div>
     </ng-container>
     <ng-template #failed>
       <pipeline-test-result
         [inputType]="pipeline.inputType"
-        [test]="_selectedTest"
+        [testRun]="_selectedTestRun"
       ></pipeline-test-result>
     </ng-template>
   </div>

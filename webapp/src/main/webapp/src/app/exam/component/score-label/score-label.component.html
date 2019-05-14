@@ -1,7 +1,2 @@
-<i
-  class="fa mr-xs {{
-    'subject.' + subjectCode + '.alt.' + scoreCode + '.icon' | translate
-  }}"
->
-</i
->{{ 'subject.' + subjectCode + '.alt.' + scoreCode + '.name' | translate }}
+<i *ngIf="_icon" class="fa mr-xs {{ _icon | translate }}"></i>
+{{ _name | translate }}

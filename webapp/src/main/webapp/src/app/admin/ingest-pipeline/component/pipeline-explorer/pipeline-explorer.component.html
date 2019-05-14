@@ -4,13 +4,16 @@
       <div #itemElement>
         <pipeline-item
           name="{{ 'pipeline-explorer.script' | translate }}"
-          description="{{ item.value.name }}"
+          description="{{
+            'ingest-pipeline.' + item.value.pipelineCode + '.description'
+              | translate
+          }}"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
         >
           <i icon *ngIf="item.changed" class="fa fa-circle changed-icon"></i>
-          <div caption *ngIf="item.value.script">
-            {{ 'pipeline-item.updated-by' | translate: item.value.script }}
+          <div caption *ngIf="item.value">
+            {{ 'pipeline-item.updated-by' | translate: item.value }}
           </div>
         </pipeline-item>
       </div>

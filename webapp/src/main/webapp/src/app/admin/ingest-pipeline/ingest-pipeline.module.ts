@@ -16,6 +16,8 @@ import { PipelineItemComponent } from './component/pipeline-item/pipeline-item.c
 import { CodeDifferenceComponent } from './component/code-difference/code-difference.component';
 import { PipelineTestFormComponent } from './component/pipeline-test-form/pipeline-test-form.component';
 import { PipelineTestResultComponent } from './component/pipeline-test-result/pipeline-test-result.component';
+import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-history/pipeline-publishing-history.component';
+import { PipelinePublishedScriptsComponent } from './component/pipeline-published-scripts/pipeline-published-scripts.component';
 
 @NgModule({
   imports: [
@@ -38,6 +40,8 @@ import { PipelineTestResultComponent } from './component/pipeline-test-result/pi
     PipelineEditorComponent,
     PipelineExplorerComponent,
     PipelineItemComponent,
+    PipelinePublishedScriptsComponent,
+    PipelinePublishingHistoryComponent,
     PipelineTestFormComponent,
     PipelineTestResultComponent,
     PipelineTestResultsComponent

@@ -2,11 +2,11 @@
   <spinner></spinner>
 </ng-container>
 <ng-template #loaded>
-  <ng-container *ngIf="testResults; else noTestResults">
+  <ng-container *ngIf="testRuns; else noTestResults">
     <!-- Test results -->
     <pipeline-test-results
       [pipeline]="pipeline"
-      [tests]="testResults"
+      [testRuns]="testRuns"
       (closeButtonClick)="onCloseTestResultsButtonClick()"
     ></pipeline-test-results>
   </ng-container>
@@ -20,7 +20,8 @@
       [testState]="testState"
       [testButtonDisabled]="testButtonDisabled"
       [testButtonDisabledTooltip]="testButtonDisabledTooltipCode | translate"
-      [publishState]="publishState"
+      [hasPublishedScript]="publishedScript != null"
+      [publishState]="publishState || (published ? 'Published' : null)"
       [publishButtonDisabled]="publishButtonDisabled"
       [publishButtonDisabledTooltip]="
         publishButtonDisabledTooltipCode | translate

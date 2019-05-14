@@ -109,14 +109,12 @@ by the Spring Boot ITs. And the temporary variables are just to avoid some dupli
 (SERVER=rdw-aurora-ci.cugsexobhx8t.us-west-2.rds.amazonaws.com:3306; USER=sbac; PSWD=password; \
  export ORG_GRADLE_PROJECT_database_url=jdbc:mysql://$SERVER/; \
  export ORG_GRADLE_PROJECT_database_user=$USER; export ORG_GRADLE_PROJECT_database_password=$PSWD; \
- export SPRING_DATASOURCE_URL_SERVER=$SERVER; \
- export SPRING_DATASOURCE_USERNAME=$USER; export SPRING_DATASOURCE_PASSWORD=$PSWD; \
- export SPRING_REPORTING_DATASOURCE_URL_SERVER=$SERVER; \
- export SPRING_REPORTING_DATASOURCE_USERNAME=$USER; export SPRING_REPORTING_DATASOURCE_PASSWORD=$PSWD; \
- export SPRING_WAREHOUSE_DATASOURCE_URL_SERVER=$SERVER; \
- export SPRING_WAREHOUSE_DATASOURCE_USERNAME=$USER; export SPRING_WAREHOUSE_DATASOURCE_PASSWORD=$PSWD; \
- export SPRING_WRITABLE_DATASOURCE_URL_SERVER=$SERVER; \
- export SPRING_WRITABLE_DATASOURCE_USERNAME=$USER; export SPRING_WRITABLE_DATASOURCE_PASSWORD=$PSWD; \
+ export DATASOURCES_REPORTING_RO_URL_SERVER=$SERVER; \
+ export DATASOURCES_REPORTING_RO_USERNAME=$USER; export DATASOURCES_REPORTING_RO_PASSWORD=$PSWD; \
+ export DATASOURCES_WAREHOUSE_RW_URL_SERVER=$SERVER; \
+ export DATASOURCES_WAREHOUSE_RW_USERNAME=$USER; export DATASOURCES_WAREHOUSE_RW_PASSWORD=$PSWD; \
+ export DATASOURCES_REPORTING_RW_URL_SERVER=$SERVER; \
+ export DATASOURCES_REPORTING_RW_USERNAME=$USER; export DATASOURCES_REPORTING_RW_PASSWORD=$PSWD; \
  export TEST_AURORA=true
  ./gradlew it)
 ```
@@ -125,7 +123,7 @@ The integration tests dealing with Redshift have been separated out because they
 and they take a while to run. To run these tests you must set credentials -- please see the comment in 
 aggregate-service/build.gradle. By default it uses the CI database instances:
 ```bash
-(export SPRING_OLAP_DATASOURCE_PASSWORD=password; \
+(export DATASOURCES_OLAP_RO_PASSWORD=password; \
  ./gradlew rst)
 ```
 
