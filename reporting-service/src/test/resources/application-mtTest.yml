@@ -2,5 +2,5 @@ reporting:
   school-year: 1999
 
 spring:
-  writable_datasource:
+  reporting_rw_datasource:
     url-schema: reporting_test
