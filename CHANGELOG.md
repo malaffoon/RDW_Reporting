@@ -3,7 +3,7 @@
 #### 1.4.0 - 2019-
 
 * Make all application multi-tenant aware. Please refer to detailed upgrade instructions for more details
-    * Changes the datasource configuration properties.
+    * Changes the datasource configuration properties ... a lot.
 
 #### 1.4.0-UAT 2019-04-12
 
