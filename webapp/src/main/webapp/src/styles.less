@@ -818,7 +818,8 @@ aggregate-report-table {
     }
   }
 
-  .ui-table-caption {
+  .ui-table-caption,
+  .ui-treetable-caption {
     i {
       margin: 4px 8px 0 4px;
     }
@@ -833,7 +834,8 @@ aggregate-report-table {
     }
   }
 
-  .ui-table {
+  .ui-table,
+  .ui-treetable {
     tr.modified td {
       background-color: #d1e8f0;
     }
@@ -841,7 +843,22 @@ aggregate-report-table {
     td {
       cursor: pointer;
 
-      i {
+      &.group-node {
+        line-height: 30px;
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #e8f3f7;
+        border-bottom: 2px solid #5eb1ca;
+        color: #02799e;
+      }
+
+      i.pi-chevron-right,
+      i.pi-chevron-down {
+        margin-right: 2px;
+        color: #02799e;
+      }
+
+      i.fa-undo {
         cursor: pointer;
         color: @aqua;
         position: absolute;

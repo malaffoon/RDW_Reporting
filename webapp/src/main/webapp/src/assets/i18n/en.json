@@ -909,7 +909,13 @@
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
     },
-    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button"
+    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button",
+    "properties": {
+      "reporting": "Reporting",
+      "datasources": "Data Sources",
+      "task": "Task",
+      "archive": "Archive"
+    }
   },
   "embargo-alert": {
     "message": "Summative test results in your region of administration are not yet released. These results may be viewed online but not downloaded."
