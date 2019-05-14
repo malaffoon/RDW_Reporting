@@ -89,21 +89,29 @@ spring:
           producer:
             requiredGroups: default
 
-  reporting_ro_datasource:
+  jackson:
+      default-property-inclusion: non_null
+      serialization:
+        WRITE_DATES_AS_TIMESTAMPS: false
+  thymeleaf:
+    mode: HTML
+
+datasources:
+  reporting_ro:
     url-parts:
       #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
       protocol: "jdbc:mysql:"
-      hosts: "${spring.reporting_ro_datasource.url-server:localhost:3306}"
-      database: "${spring.reporting_ro_datasource.url-schema:reporting}"
-      properties: "useSSL=${spring.reporting_ro_datasource.use-ssl:false}\
-                   &useLegacyDatetimeCode=${spring.reporting_ro_datasource.use-legacy-datetime-code:false}\
-                   &characterEncoding=${spring.reporting_ro_datasource.character-encoding:utf8}\
-                   &rewriteBatchedStatements=${spring.reporting_ro_datasource.rewrite-batched-statements:true}\
-                   &connectTimeout=${spring.reporting_ro_datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.reporting_ro_datasource.socket-timeout:600000}\
+      hosts: "${datasources.reporting_ro.url-server:localhost:3306}"
+      database: "${datasources.reporting_ro.url-schema:reporting}"
+      properties: "useSSL=${datasources.reporting_ro.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.reporting_ro.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.reporting_ro.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${datasources.reporting_ro.rewrite-batched-statements:true}\
+                   &connectTimeout=${datasources.reporting_ro.connect-timeout:10000}\
+                   &socketTimeout=${datasources.reporting_ro.socket-timeout:600000}\
                    "
-    url: "${spring.reporting_ro_datasource.url-parts.protocol}//${spring.reporting_ro_datasource.url-parts.hosts}/${spring.reporting_ro_datasource.url-parts.database}?${spring.reporting_ro_datasource.url-parts.properties}"
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.reporting_ro_datasource.query-timeout:120})"
+    url: "${datasources.reporting_ro.url-parts.protocol}//${datasources.reporting_ro.url-parts.hosts}/${datasources.reporting_ro.url-parts.database}?${datasources.reporting_ro.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${datasources.reporting_ro.query-timeout:120})"
     username: root
     password:
     testWhileIdle: true
@@ -113,19 +121,12 @@ spring:
     initialize: false
     initialSize: 4
     maxActive: 20
-    minIdle: ${spring.reporting_ro_datasource.initialSize}
-    maxIdle: ${spring.reporting_ro_datasource.maxActive}
+    minIdle: ${datasources.reporting_ro.initialSize}
+    maxIdle: ${datasources.reporting_ro.maxActive}
     maxWait: 10000
     removeAbandoned: false
     removeAbandonedTimeout: 60
     logAbandoned: false
-
-  jackson:
-      default-property-inclusion: non_null
-      serialization:
-        WRITE_DATES_AS_TIMESTAMPS: false
-  thymeleaf:
-    mode: HTML
 
 cloud:
   aws:

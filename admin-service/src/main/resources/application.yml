@@ -14,66 +14,67 @@ server:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
 
+datasources:
+  reporting_ro:
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${datasources.reporting_ro.url-server:localhost:3306}"
+      database: "${datasources.reporting_ro.url-schema:reporting}"
+      properties: "useSSL=${datasources.reporting_ro.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.reporting_ro.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.reporting_ro.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${datasources.reporting_ro.rewrite-batched-statements:true}\
+                   &connectTimeout=${datasources.reporting_ro.connect-timeout:10000}\
+                   &socketTimeout=${datasources.reporting_ro.socket-timeout:40000}\
+                   "
+    url: "${datasources.reporting_ro.url-parts.protocol}//${datasources.reporting_ro.url-parts.hosts}/${datasources.reporting_ro.url-parts.database}?${datasources.reporting_ro.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${datasources.reporting_ro.query-timeout:30})"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationQueryTimeout: 10000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+    minIdle: ${datasources.reporting_ro.initialSize}
+    maxIdle: ${datasources.reporting_ro.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
+
+  warehouse_rw:
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${datasources.warehouse_rw.url-server:localhost:3306}"
+      database: "${datasources.warehouse_rw.url-schema:warehouse}"
+      properties: "useSSL=${datasources.warehouse_rw.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.warehouse_rw.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.warehouse_rw.character-encoding:utf8}\
+                   &connectTimeout=${datasources.warehouse_rw.connect-timeout:10000}\
+                   &socketTimeout=${datasources.warehouse_rw.socket-timeout:70000}\
+                   "
+    url: "${datasources.warehouse_rw.url-parts.protocol}//${datasources.warehouse_rw.url-parts.hosts}/${datasources.warehouse_rw.url-parts.database}?${datasources.warehouse_rw.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${datasources.warehouse_rw.query-timeout:60})"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationQueryTimeout: 10000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+    minIdle: ${datasources.warehouse_rw.initialSize}
+    maxIdle: ${datasources.warehouse_rw.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
+
 spring:
-  reporting_ro_datasource:
-    url-parts:
-      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
-      protocol: "jdbc:mysql:"
-      hosts: "${spring.reporting_ro_datasource.url-server:localhost:3306}"
-      database: "${spring.reporting_ro_datasource.url-schema:reporting}"
-      properties: "useSSL=${spring.reporting_ro_datasource.use-ssl:false}\
-                   &useLegacyDatetimeCode=${spring.reporting_ro_datasource.use-legacy-datetime-code:false}\
-                   &characterEncoding=${spring.reporting_ro_datasource.character-encoding:utf8}\
-                   &rewriteBatchedStatements=${spring.reporting_ro_datasource.rewrite-batched-statements:true}\
-                   &connectTimeout=${spring.reporting_ro_datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.reporting_ro_datasource.socket-timeout:40000}\
-                   "
-    url: "${spring.reporting_ro_datasource.url-parts.protocol}//${spring.reporting_ro_datasource.url-parts.hosts}/${spring.reporting_ro_datasource.url-parts.database}?${spring.reporting_ro_datasource.url-parts.properties}"
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.reporting_ro_datasource.query-timeout:30})"
-    username: root
-    password:
-    testWhileIdle: true
-    validationQuery: SELECT 1
-    validationQueryTimeout: 10000
-    driverClassName: com.mysql.jdbc.Driver
-    initialize: false
-    initialSize: 4
-    maxActive: 10
-    minIdle: ${spring.reporting_ro_datasource.initialSize}
-    maxIdle: ${spring.reporting_ro_datasource.maxActive}
-    removeAbandoned: false
-    removeAbandonedTimeout: 60
-    logAbandoned: false
-
-  warehouse_rw_datasource:
-    url-parts:
-      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
-      protocol: "jdbc:mysql:"
-      hosts: "${spring.warehouse_rw_datasource.url-server:localhost:3306}"
-      database: "${spring.warehouse_rw_datasource.url-schema:warehouse}"
-      properties: "useSSL=${spring.warehouse_rw_datasource.use-ssl:false}\
-                   &useLegacyDatetimeCode=${spring.warehouse_rw_datasource.use-legacy-datetime-code:false}\
-                   &characterEncoding=${spring.warehouse_rw_datasource.character-encoding:utf8}\
-                   &connectTimeout=${spring.warehouse_rw_datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.warehouse_rw_datasource.socket-timeout:70000}\
-                   "
-    url: "${spring.warehouse_rw_datasource.url-parts.protocol}//${spring.warehouse_rw_datasource.url-parts.hosts}/${spring.warehouse_rw_datasource.url-parts.database}?${spring.warehouse_rw_datasource.url-parts.properties}"
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.warehouse_rw_datasource.query-timeout:60})"
-    username: root
-    password:
-    testWhileIdle: true
-    validationQuery: SELECT 1
-    validationQueryTimeout: 10000
-    driverClassName: com.mysql.jdbc.Driver
-    initialize: false
-    initialSize: 4
-    maxActive: 10
-    minIdle: ${spring.warehouse_rw_datasource.initialSize}
-    maxIdle: ${spring.warehouse_rw_datasource.maxActive}
-    removeAbandoned: false
-    removeAbandonedTimeout: 60
-    logAbandoned: false
-
   http:
     multipart:
       max-file-size: 500MB
