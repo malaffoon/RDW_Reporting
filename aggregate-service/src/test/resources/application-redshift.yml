@@ -2,7 +2,7 @@
 # All the properties should be set to default to the CI environment settings; developers may
 # override them locally but the CI system assumes the defaults are for CI resources.
 spring:
-  olap_datasource:
+  olap_ro_datasource:
     url-server: rdw-qa.cibkulpjrgtr.us-west-2.redshift.amazonaws.com:5439
     url-db: ci
     username: ci

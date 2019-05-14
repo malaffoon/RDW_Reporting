@@ -10,7 +10,7 @@ permissionservice:
   endpoint:
 
 spring:
-  datasource:
+  reporting_ro_datasource:
     url-schema: reporting_test
     maxWait: 10000
 

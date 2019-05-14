@@ -80,16 +80,16 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
-  olap_datasource:
+  olap_ro_datasource:
     url-parts:
       protocol: "jdbc:redshift:"
-      hosts: "${spring.olap_datasource.url-server:localhost:5432}"
-      database: "${spring.olap_datasource.url-db:dev}"
+      hosts: "${spring.olap_ro_datasource.url-server:localhost:5432}"
+      database: "${spring.olap_ro_datasource.url-db:dev}"
       properties: "ApplicationName=rdw-reporting-aggregate-service\
-                   &loginTimeout=${spring.olap_datasource.connect-timeout:10}\
-                   &socketTimeout=${spring.olap_datasource.socket-timeout:0}\
+                   &loginTimeout=${spring.olap_ro_datasource.connect-timeout:10}\
+                   &socketTimeout=${spring.olap_ro_datasource.socket-timeout:0}\
                    "
-    url: "${spring.olap_datasource.url-parts.protocol}//${spring.olap_datasource.url-parts.hosts}/${spring.olap_datasource.url-parts.database}?${spring.olap_datasource.url-parts.properties}"
+    url: "${spring.olap_ro_datasource.url-parts.protocol}//${spring.olap_ro_datasource.url-parts.hosts}/${spring.olap_ro_datasource.url-parts.database}?${spring.olap_ro_datasource.url-parts.properties}"
     username: root
     password:
     testWhileIdle: true
