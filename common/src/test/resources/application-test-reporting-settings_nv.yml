@@ -1,6 +1,6 @@
 reporting:
   tenants:
-    nv:
+    NV:
       state:
         code: NV
       iris-vendor-id: joe
