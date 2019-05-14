@@ -1,5 +1,5 @@
 spring:
-  datasource:
+  reporting_ro_datasource:
     url-schema: reporting_test
 
 mtTest:

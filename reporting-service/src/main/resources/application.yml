@@ -19,21 +19,21 @@ spring:
     type: SIMPLE
     cache-names: subjects, subjectdefinitions
 
-  datasource:
+  reporting_ro_datasource:
     url-parts:
       #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
       protocol: "jdbc:mysql:"
-      hosts: "${spring.datasource.url-server:localhost:3306}"
-      database: "${spring.datasource.url-schema:reporting}"
-      properties: "useSSL=${spring.datasource.use-ssl:false}\
-                   &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
-                   &characterEncoding=${spring.datasource.character-encoding:utf8}\
-                   &rewriteBatchedStatements=${spring.datasource.rewrite-batched-statements:true}\
-                   &connectTimeout=${spring.datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.datasource.socket-timeout:40000}\
+      hosts: "${spring.reporting_ro_datasource.url-server:localhost:3306}"
+      database: "${spring.reporting_ro_datasource.url-schema:reporting}"
+      properties: "useSSL=${spring.reporting_ro_datasource.use-ssl:false}\
+                   &useLegacyDatetimeCode=${spring.reporting_ro_datasource.use-legacy-datetime-code:false}\
+                   &characterEncoding=${spring.reporting_ro_datasource.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${spring.reporting_ro_datasource.rewrite-batched-statements:true}\
+                   &connectTimeout=${spring.reporting_ro_datasource.connect-timeout:10000}\
+                   &socketTimeout=${spring.reporting_ro_datasource.socket-timeout:40000}\
                    "
-    url: "${spring.datasource.url-parts.protocol}//${spring.datasource.url-parts.hosts}/${spring.datasource.url-parts.database}?${spring.datasource.url-parts.properties}"
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.datasource.query-timeout:30})"
+    url: "${spring.reporting_ro_datasource.url-parts.protocol}//${spring.reporting_ro_datasource.url-parts.hosts}/${spring.reporting_ro_datasource.url-parts.database}?${spring.reporting_ro_datasource.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.reporting_ro_datasource.query-timeout:30})"
     username: root
     password:
     testWhileIdle: true
@@ -43,8 +43,8 @@ spring:
     initialize: false
     initialSize: 4
     maxActive: 10
-    minIdle: ${spring.datasource.initialSize}
-    maxIdle: ${spring.datasource.maxActive}
+    minIdle: ${spring.reporting_ro_datasource.initialSize}
+    maxIdle: ${spring.reporting_ro_datasource.maxActive}
     removeAbandoned: false
     removeAbandonedTimeout: 60
     logAbandoned: false

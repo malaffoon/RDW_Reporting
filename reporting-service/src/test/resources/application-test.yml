@@ -23,7 +23,7 @@ app:
   test-mode: true
 
 spring:
-  datasource:
+  reporting_ro_datasource:
     url-schema: reporting_test
 
   writable_datasource:
