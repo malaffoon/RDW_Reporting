@@ -1,7 +1,7 @@
-spring:
-  reporting_ro_datasource:
+datasources:
+  reporting_ro:
     url-schema: reporting_test
-  warehouse_rw_datasource:
+  warehouse_rw:
     url-schema: warehouse_test
 
 artifacts:

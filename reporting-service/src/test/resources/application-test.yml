@@ -22,9 +22,9 @@ reporting:
 app:
   test-mode: true
 
-spring:
-  reporting_ro_datasource:
+datasources:
+  reporting_ro:
     url-schema: reporting_test
 
-  reporting_rw_datasource:
+  reporting_rw:
     url-schema: reporting_test
