@@ -92,7 +92,11 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     );
   }
 
-  private mapLeafNodes(configGroup, groupKey, childrenNodes: TreeNode[]): void {
+  private mapLeafNodes(
+    configGroup: ConfigurationProperty[],
+    groupKey: string,
+    childrenNodes: TreeNode[]
+  ): void {
     const configPropertiesFormGroup = <FormGroup>(
       this.form.controls[this.propertiesArrayName]
     );
