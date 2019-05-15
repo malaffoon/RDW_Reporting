@@ -45,7 +45,7 @@ export class TenantConfigurationDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.tenantForm = this.formBuilder.group({
-      label: [this.tenant.label, CustomValidators.required],
+      label: [this.tenant.label, CustomValidators.notBlank],
       description: [this.tenant.description],
       configurationProperties: this.formBuilder.array([]),
       localizationOverrides: this.formBuilder.array([])
