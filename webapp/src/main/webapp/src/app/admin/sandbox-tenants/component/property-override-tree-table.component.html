@@ -6,14 +6,11 @@
       dataKey="key"
       [scrollable]="true"
       scrollHeight="400px"
+      [globalFilterFields]="['key', 'value']"
       styleClass="table table-striped table-hover overflow rdw-scrollable-table"
       [paginator]="true"
       [alwaysShowPaginator]="false"
       [rows]="20"
-      [columns]="[
-        { field: 'key', header: 'Key' },
-        { field: 'value', header: 'Value' }
-      ]"
     >
       <ng-template pTemplate="caption">
         <div class="row">
