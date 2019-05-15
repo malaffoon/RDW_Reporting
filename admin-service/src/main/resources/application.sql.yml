@@ -332,6 +332,14 @@ sql:
       FROM pipeline
       ORDER BY id ASC
 
+    findById: >-
+      SELECT
+        id,
+        code,
+        input_type
+      FROM pipeline
+      WHERE id = :id
+
   pipeline-script:
     findAllByPipeline: >-
       SELECT

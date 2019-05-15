@@ -3,6 +3,8 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
+  delay,
+  filter,
   map,
   mergeMap,
   share,
@@ -33,6 +35,7 @@ import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
 import { CompilationState, PipelineState } from '../../model/pipeline-state';
 import { isValidPipelineTest } from '../../model/pipelines';
 import { UserService } from '../../../../user/user.service';
+import { isNullOrBlank } from '../../../../shared/support/support';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -161,15 +164,15 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.pipelineScriptBody
       .pipe(
         takeUntil(this._destroyed),
-        tap(() => {
+        filter(value => !isNullOrBlank(value)),
+        tap(value => {
           this.compilationState = null;
         }),
         debounceTime(defaultCompileDebounceTime),
         tap(() => {
           this.compilationState = 'Compiling';
         }),
-        switchMap(value => this.pipelineService.compilePipelineScript(value)),
-        share()
+        switchMap(value => this.pipelineService.compilePipelineScript(value))
       )
       .subscribe(errors => {
         this.compilationState = errors.length === 0 ? null : 'Failed';
