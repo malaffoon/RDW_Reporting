@@ -54,11 +54,13 @@ export class PipelineExplorerComponent {
 
   showTime(item: Item<PipelineTest>): boolean {
     return (
-      this._testItems.find(
-        otherItem =>
-          item !== otherItem &&
-          equalDate(item.value.createdOn, otherItem.value.createdOn)
-      ) != null
+      this._testItems
+        .filter(({ value: { createdOn } }) => createdOn != null)
+        .find(
+          otherItem =>
+            item !== otherItem &&
+            equalDate(item.value.createdOn, otherItem.value.createdOn)
+        ) != null
     );
   }
 }

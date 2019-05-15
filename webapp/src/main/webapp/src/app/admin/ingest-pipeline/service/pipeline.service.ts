@@ -2,28 +2,61 @@ import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
 import { Observable } from 'rxjs';
 import {
-  CompilationError,
   Pipeline,
   PipelineScript,
   PipelineTest,
-  PipelineTestRun
+  PipelineTestRun,
+  ScriptError
 } from '../model/pipeline';
+import { catchError, map } from 'rxjs/operators';
+import { AdminServiceRoute } from '../../../shared/service-route';
 import { of } from 'rxjs/internal/observable/of';
-import { delay } from 'rxjs/operators';
-import {
-  createFailingTest,
-  createPassingTest,
-  stubIngestPipelines,
-  stubPipelineScript,
-  stubPipelineTest,
-  stubPipelineTests,
-  stubPublishedScripts
-} from './pipeline.service.stubs';
 
-let testId: number = stubPipelineTests.length + 1;
+const ResourceRoute = `${AdminServiceRoute}/pipelines`;
 
-function toTestRun(test: PipelineTest, index: number): PipelineTestRun {
-  return index < 1 ? createPassingTest(test) : createFailingTest(test);
+const emptyPipelineScript = {
+  body: '',
+  language: 'groovy'
+};
+
+function toPipelineScript(serverScript: any): PipelineScript {
+  return {
+    id: serverScript.id,
+    pipelineId: serverScript.pipelineId,
+    body: serverScript.body,
+    language: 'groovy',
+    createdOn: new Date(serverScript.created),
+    updatedOn: new Date(serverScript.updated),
+    updatedBy: serverScript.updatedBy
+  };
+}
+
+function toPublishedPipelineScript(serverScript: any): PipelineScript {
+  return {
+    id: serverScript.id,
+    pipelineId: serverScript.pipelineId,
+    body: serverScript.body,
+    language: 'groovy',
+    createdOn: new Date(serverScript.created),
+    updatedOn: new Date(serverScript.updated),
+    updatedBy: serverScript.updatedBy,
+    published: true,
+    publishedOn: new Date(serverScript.published),
+    publishedBy: serverScript.publishedBy
+  };
+}
+
+function toPipelineTest(serverTest: any): PipelineTest {
+  return {
+    id: serverTest.id,
+    pipelineId: serverTest.pipelineId,
+    name: serverTest.name,
+    input: serverTest.input,
+    output: serverTest.output,
+    createdOn: new Date(serverTest.created),
+    updatedOn: new Date(serverTest.updated),
+    updatedBy: serverTest.updatedBy
+  };
 }
 
 @Injectable({
@@ -33,128 +66,135 @@ export class PipelineService {
   constructor(private dataService: DataService) {}
 
   getPipelines(): Observable<Pipeline[]> {
-    return of(stubIngestPipelines);
+    return this.dataService.get(ResourceRoute);
   }
 
-  getPipeline(id: number): Observable<Pipeline> {
-    return of(stubIngestPipelines.find(pipeline => pipeline.id === id)).pipe(
-      delay(500)
+  getPipeline(pipelineId: number): Observable<Pipeline> {
+    return this.getPipelines().pipe(
+      map(pipelines => pipelines.find(({ id }) => id === pipelineId))
     );
   }
 
   getPipelineScripts(pipelineId: number): Observable<PipelineScript[]> {
-    return of(<PipelineScript[]>[
-      {
-        ...stubPipelineScript,
-        id: 1,
-        pipelineId
-      }
-    ]).pipe(delay(500));
+    return this.dataService.get(`${ResourceRoute}/${pipelineId}/scripts`).pipe(
+      map(serverScripts =>
+        serverScripts.length > 0
+          ? serverScripts.map(toPipelineScript)
+          : [
+              {
+                ...emptyPipelineScript,
+                pipelineId
+              }
+            ]
+      )
+    );
   }
 
   getPipelineScript(
     pipelineId: number,
     scriptId: number
   ): Observable<PipelineScript> {
-    return of(<PipelineScript>{
-      ...stubPipelineScript,
-      id: scriptId,
-      pipelineId
-    }).pipe(delay(500));
+    return this.dataService
+      .get(`${ResourceRoute}/${pipelineId}/scripts/${scriptId}`)
+      .pipe(
+        map(toPipelineScript),
+        catchError(() =>
+          of({
+            ...emptyPipelineScript,
+            pipelineId
+          })
+        )
+      );
+  }
+
+  createPipelineScript(script: PipelineScript): Observable<PipelineScript> {
+    return this.dataService
+      .post(`${ResourceRoute}/${script.pipelineId}/scripts`, script)
+      .pipe(map(toPipelineScript));
+  }
+
+  updatePipelineScript(script: PipelineScript): Observable<PipelineScript> {
+    return this.dataService
+      .put(`${ResourceRoute}/${script.pipelineId}/scripts`, script)
+      .pipe(map(toPipelineScript));
   }
 
   getPipelineTests(pipelineId: number): Observable<PipelineTest[]> {
-    return of(
-      stubPipelineTests.map(test => ({
-        ...test,
-        pipelineId
-      }))
-    ).pipe(delay(500));
+    return this.dataService
+      .get(`${ResourceRoute}/${pipelineId}/tests`)
+      .pipe(map(serverScripts => serverScripts.map(toPipelineTest)));
   }
 
   getPipelineTest(
     pipelineId: number,
     testId: number
   ): Observable<PipelineTest> {
-    return of({
-      ...stubPipelineTest,
-      id: testId,
-      pipelineId
-    }).pipe(delay(500));
+    return this.dataService
+      .get(`${ResourceRoute}/${pipelineId}/tests/${testId}`)
+      .pipe(map(toPipelineTest));
   }
 
   createPipelineTest(test: PipelineTest): Observable<PipelineTest> {
-    return of({
-      id: testId++,
-      pipelineId: test.pipelineId,
-      createdOn: new Date(),
-      name: '',
-      input: '',
-      output: ''
-    }).pipe(delay(500));
+    return this.dataService
+      .post(`${ResourceRoute}/${test.pipelineId}/tests`, test)
+      .pipe(map(toPipelineTest));
   }
 
   updatePipelineTest(test: PipelineTest): Observable<PipelineTest> {
-    return of(test).pipe(delay(500));
+    return this.dataService
+      .put(`${ResourceRoute}/${test.pipelineId}/tests`, test)
+      .pipe(map(toPipelineTest));
   }
 
   deletePipelineTest(test: PipelineTest): Observable<void> {
-    return of(null);
+    return this.dataService.delete(
+      `${ResourceRoute}/${test.pipelineId}/tests/${test.id}`
+    );
   }
 
   runPipelineTests(pipelineId: number): Observable<PipelineTestRun[]> {
-    return of(stubPipelineTests.map(toTestRun)).pipe(delay(1000));
+    return this.dataService.post(`${ResourceRoute}/${pipelineId}/test`, null);
   }
 
   runPipelineTest(
     pipelineId: number,
     testId: number
   ): Observable<PipelineTestRun> {
-    return of(
-      stubPipelineTests.map(toTestRun).find(({ test: { id } }) => id === testId)
-    ).pipe(delay(1000));
+    return this.dataService.post(`${ResourceRoute}/${pipelineId}/test`, null, {
+      params: {
+        testId
+      }
+    });
   }
 
-  compilePipelineScript(scriptBody: string): Observable<CompilationError[]> {
-    return of(
-      scriptBody.includes('error')
-        ? [{ row: 2, column: 0, message: 'Error message' }]
-        : []
-    ).pipe(delay(1000));
+  compilePipelineScript(scriptBody: string): Observable<ScriptError[]> {
+    return this.dataService
+      .post(`${ResourceRoute}/compile`, scriptBody)
+      .pipe(catchError(() => of([])));
   }
 
-  updatePipelineScript(script: PipelineScript): Observable<PipelineScript> {
-    return of(script).pipe(delay(1000));
-  }
-
-  publishPipelineScript(pipelineId: number): Observable<void> {
-    // should require test and save on the backend
-    return of(null).pipe(delay(1000));
+  publishPipelineScript(pipelineId: number): Observable<String> {
+    return this.dataService.post(
+      `${ResourceRoute}/${pipelineId}/publish`,
+      null
+    );
   }
 
   getPublishedPipelineScripts(
     pipelineId: number
   ): Observable<PipelineScript[]> {
-    return of(
-      stubPublishedScripts.map(
-        script => <PipelineScript>{ ...script, pipelineId }
-      )
-    ).pipe(delay(200));
+    return this.dataService
+      .get(`${ResourceRoute}/${pipelineId}/publishedScripts`)
+      .pipe(map(serverScripts => serverScripts.map(toPublishedPipelineScript)));
   }
 
   getPublishedPipelineScript(
     script: PipelineScript
   ): Observable<PipelineScript> {
-    return of(
-      stubPublishedScripts
-        .map(
-          script =>
-            <PipelineScript>{
-              ...script,
-              pipelineId: script.pipelineId
-            }
-        )
-        .find(x => x.id === script.id)
-    ).pipe(delay(200));
+    return this.dataService
+      .get(
+        `${ResourceRoute}/${script.pipelineId}/publishedScripts/${script.id}`
+      )
+      .pipe(map(toPublishedPipelineScript));
   }
 }

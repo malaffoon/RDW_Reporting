@@ -325,7 +325,10 @@ sql:
 
   pipeline:
     findAll: >-
-      SELECT id, code
+      SELECT
+        id,
+        code,
+        input_type
       FROM pipeline
       ORDER BY id ASC
 

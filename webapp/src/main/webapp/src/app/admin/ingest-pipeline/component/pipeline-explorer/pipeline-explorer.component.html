@@ -12,7 +12,7 @@
           (click)="onItemClick(item, itemElement)"
         >
           <i icon *ngIf="item.changed" class="fa fa-circle changed-icon"></i>
-          <div caption *ngIf="item.value">
+          <div caption *ngIf="item.value.updatedBy">
             {{ 'pipeline-item.updated-by' | translate: item.value }}
           </div>
         </pipeline-item>
@@ -52,7 +52,7 @@
             </span>
           </div>
 
-          <div caption>
+          <div caption *ngIf="item.value.updatedBy">
             {{ 'pipeline-item.updated-by' | translate: item.value }}
           </div>
 

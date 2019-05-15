@@ -11,7 +11,7 @@ import {
 } from 'rxjs/operators';
 import { PipelineService } from '../../service/pipeline.service';
 import {
-  CompilationError,
+  ScriptError,
   Pipeline,
   PipelineScript,
   PipelineTest,
@@ -36,7 +36,7 @@ import { UserService } from '../../../../user/user.service';
 
 const defaultCompileDebounceTime = 2000;
 
-function compilationErrorToMessage(value: CompilationError): Message {
+function compilationErrorToMessage(value: ScriptError): Message {
   return {
     type: <MessageType>'error',
     row: value.row,
@@ -79,9 +79,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   messages: Observable<Message[]>;
 
   compilationState: CompilationState;
-  compilationErrors: BehaviorSubject<CompilationError[]> = new BehaviorSubject(
-    []
-  );
+  compilationErrors: BehaviorSubject<ScriptError[]> = new BehaviorSubject([]);
 
   saving: boolean;
   saveButtonDisabledTooltipCode: string;
@@ -103,6 +101,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   selectedItem: Item;
   selectedItemLoading: boolean;
 
+  readonly: boolean;
+
   private _destroyed: Subject<void> = new Subject();
 
   constructor(
@@ -111,8 +111,15 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     private pipelineService: PipelineService,
     private userService: UserService
   ) {
-    this.route.params
-      .pipe(
+    combineLatest(
+      <Observable<boolean>>(
+        this.userService
+          .getUser()
+          .pipe(
+            map(({ permissions }) => permissions.includes('PIPELINE_WRITE'))
+          )
+      ),
+      this.route.params.pipe(
         mergeMap(({ id }) => {
           const pipelineId = Number(id);
           return forkJoin(
@@ -127,20 +134,29 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           );
         })
       )
+    )
       .pipe(takeUntil(this._destroyed))
-      .subscribe(([basePipeline, script, tests, publishedScript]) => {
-        const pipeline = {
-          ...basePipeline,
-          script,
-          tests
-        };
-        this.publishedScript = publishedScript;
-        this.pipeline = pipeline;
-        this.published = publishedScript.body === pipeline.script.body;
-        this.items = createItems(pipeline);
-        this.setSelectedItem(this.items[0]);
-        this.updateButtonStates();
-      });
+      .subscribe(
+        ([
+          hasWritePermission,
+          [basePipeline, script, tests, publishedScript]
+        ]) => {
+          const pipeline = {
+            ...basePipeline,
+            script,
+            tests
+          };
+          this.readonly = !hasWritePermission;
+          this.publishedScript = publishedScript;
+          this.pipeline = pipeline;
+          this.published =
+            publishedScript != null &&
+            publishedScript.body === pipeline.script.body;
+          this.items = createItems(pipeline);
+          this.setSelectedItem(this.items[0]);
+          this.updateButtonStates();
+        }
+      );
 
     this.pipelineScriptBody
       .pipe(
@@ -178,7 +194,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   }
 
   onScriptChange(value: string): void {
-    this.published = this.publishedScript.body === value;
+    this.published =
+      this.publishedScript != null && this.publishedScript.body === value;
     this.pipelineScriptBody.next(value);
     this.selectedItem.changed = !isEqual(
       this.selectedItem.value,
@@ -190,8 +207,18 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   onScriptUpdate(script: PipelineScript): void {
     this.saving = true;
     const item = this.selectedItem;
-    this.pipelineService.updatePipelineScript(script).subscribe(script => {
+
+    const observable =
+      script.id == null
+        ? this.pipelineService.createPipelineScript({
+            pipelineId: this.pipeline.id,
+            body: script.body
+          })
+        : this.pipelineService.updatePipelineScript(script);
+
+    observable.subscribe(script => {
       this.saving = false;
+      item.value = script;
       item.lastSavedValue = cloneDeep(script);
       item.changed = false;
       this.updateButtonStates();
@@ -320,6 +347,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     observable.subscribe(value => {
       // update updated on?
+      item.value = value;
       item.lastSavedValue = cloneDeep(value);
       item.changed = false;
       this.testUpdating = false;
@@ -372,12 +400,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       this.selectedItemLoading = true;
       this.pipelineService
         .getPipelineTest(this.pipeline.id, item.value.id)
-        .subscribe(test => {
-          // merge here is only needed because of stubbing
-          const value = {
-            ...test,
-            ...item.value
-          };
+        .subscribe(value => {
           item.value = value;
           item.lastSavedValue = cloneDeep(value);
           item.changed = false;

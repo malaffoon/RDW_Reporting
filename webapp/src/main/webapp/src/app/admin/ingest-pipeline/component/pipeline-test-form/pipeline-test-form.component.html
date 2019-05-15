@@ -3,7 +3,17 @@
     <label for="name">
       {{ 'pipeline-test-form.field.name.label' | translate }}
     </label>
-    <input id="name" type="text" class="form-control" [formControl]="control" />
+    <ng-container *ngIf="readonly; else nameInput">
+      {{ control.value }}
+    </ng-container>
+    <ng-template #nameInput>
+      <input
+        id="name"
+        type="text"
+        class="form-control"
+        [formControl]="control"
+      />
+    </ng-template>
   </div>
 
   <div class="test-grid">
@@ -22,6 +32,7 @@
       </label>
       <code-editor
         #input
+        [readonly]="readonly"
         [lines]="31"
         [language]="inputType"
         [formControl]="control"
@@ -42,6 +53,7 @@
       >
       <code-editor
         #output
+        [readonly]="readonly"
         [lines]="31"
         [language]="inputType"
         [formControl]="control"

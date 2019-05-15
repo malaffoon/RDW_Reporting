@@ -12,6 +12,7 @@
   </ng-container>
   <ng-template #noTestResults>
     <pipeline-editor
+      [readonly]="readonly"
       [pipeline]="pipeline"
       [compilationState]="compilationState"
       [compilationErrors]="compilationErrors | async"

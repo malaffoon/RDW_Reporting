@@ -1,6 +1,6 @@
 <ng-container
   *ngIf="
-    (pipeline | async) && (scripts | async) && selectedScript;
+    (pipeline | async) != null && (scripts | async) != null && selectedScript;
     else loading
   "
 >
