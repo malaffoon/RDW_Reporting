@@ -3,15 +3,16 @@ reporting:
     code: CA
   transfer-access-enabled: false
 
-spring:
-  datasource:
+datasources:
+  reporting_ro:
     url-parts:
       #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      #TODO - make sure this is right, what exactly is it overriding
       protocol: "jdbc:mysql:"
-      hosts: "${spring.reporting_datasource.url-server:localhost:3306}"
-      database: "${spring.reporting_datasource.url-schema:reporting_test}"
+      hosts: "${datasources.reporting_ro.url-server:localhost:3306}"
+      database: "${datasources.reporting_ro.url-schema:reporting_test}"
       properties: "useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8"
-    url: "${spring.datasource.url-parts.protocol}//${spring.datasource.url-parts.hosts}/${spring.datasource.url-parts.database}?${spring.datasource.url-parts.properties}"
+    url: "${datasources.reporting_ro.url-parts.protocol}//${datasources.reporting_ro.url-parts.hosts}/${datasources.reporting_ro.url-parts.database}?${datasources.reporting_ro.url-parts.properties}"
     username: root
     password:
     driverClassName: com.mysql.jdbc.Driver

@@ -1,6 +1,6 @@
 <table>
   <thead>
-    <tr>
+    <tr *ngIf="table.scoreType !== 'Overall'">
       <th></th>
       <th *ngFor="let statistic of table.scoreStatistics">
         <div class="heading">
@@ -34,6 +34,14 @@
             [infoEnabled]="true"
           ></scale-score>
         </div>
+      </th>
+    </tr>
+    <tr *ngIf="table.scoreType === 'Overall'">
+      <th></th>
+      <th *ngFor="let statistic of table.scoreStatistics">
+        <span class="row-heading distribution-heading">
+          {{ 'average-scale-score.overall-score-distribution' | translate }}
+        </span>
       </th>
     </tr>
   </thead>

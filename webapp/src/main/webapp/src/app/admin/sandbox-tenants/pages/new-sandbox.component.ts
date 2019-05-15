@@ -37,7 +37,7 @@ export class NewSandboxConfigurationComponent {
 
   ngOnInit(): void {
     this.sandboxForm = this.formBuilder.group({
-      label: [null, CustomValidators.required],
+      label: [null, CustomValidators.notBlank],
       description: [null],
       dataSet: [null, Validators.required],
       configurationProperties: this.formBuilder.array([]),

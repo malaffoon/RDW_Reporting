@@ -49,7 +49,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.sandboxForm = this.formBuilder.group({
-      label: [this.sandbox.label, CustomValidators.required],
+      label: [this.sandbox.label, CustomValidators.notBlank],
       description: [this.sandbox.description],
       configurationProperties: this.formBuilder.array([]),
       localizationOverrides: this.formBuilder.array([])

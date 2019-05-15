@@ -23,13 +23,4 @@ export class ScoreTableComponent {
 
   @Input()
   levelHeadingTemplate: TemplateRef<any>;
-  //
-  // @Input()
-  // showInstructionalResources: boolean;
-  //
-  // @Input()
-  // instructionalResourcePopover: any;
-  //
-  // @Output()
-  // instructionalResourceClick: EventEmitter<number> = new EventEmitter();
 }
