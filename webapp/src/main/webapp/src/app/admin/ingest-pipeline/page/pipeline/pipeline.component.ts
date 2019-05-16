@@ -184,10 +184,15 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         }),
         switchMap(value => this.pipelineService.compilePipelineScript(value))
       )
-      .subscribe(errors => {
-        this.compilationState = errors.length === 0 ? null : 'Failed';
-        this.compilationErrors.next(errors);
-      });
+      .subscribe(
+        errors => {
+          this.compilationState = errors.length === 0 ? null : 'Failed';
+          this.compilationErrors.next(errors);
+        },
+        () => {
+          this.compilationState = 'Failed';
+        }
+      );
 
     this.messages = this.compilationErrors.pipe(
       takeUntil(this._destroyed),

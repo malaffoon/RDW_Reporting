@@ -16,11 +16,6 @@ import { of } from 'rxjs/internal/observable/of';
 const ResourceRoute = `${AdminServiceRoute}/pipelines`;
 const PublishedPipelinesRoute = `${AdminServiceRoute}/publishedPipelines`;
 
-const emptyPipelineScript = {
-  body: '',
-  language: 'groovy'
-};
-
 function toPipelineScript(serverScript: any): PipelineScript {
   return {
     id: serverScript.id,
@@ -73,18 +68,9 @@ export class PipelineService {
   }
 
   getPipelineScripts(pipelineId: number): Observable<PipelineScript[]> {
-    return this.dataService.get(`${ResourceRoute}/${pipelineId}/scripts`).pipe(
-      map(serverScripts =>
-        serverScripts.length > 0
-          ? serverScripts.map(toPipelineScript)
-          : [
-              {
-                ...emptyPipelineScript,
-                pipelineId
-              }
-            ]
-      )
-    );
+    return this.dataService
+      .get(`${ResourceRoute}/${pipelineId}/scripts`)
+      .pipe(map(serverScripts => serverScripts.map(toPipelineScript)));
   }
 
   getPipelineScript(
@@ -93,15 +79,7 @@ export class PipelineService {
   ): Observable<PipelineScript> {
     return this.dataService
       .get(`${ResourceRoute}/${pipelineId}/scripts/${scriptId}`)
-      .pipe(
-        map(toPipelineScript),
-        catchError(() =>
-          of({
-            ...emptyPipelineScript,
-            pipelineId
-          })
-        )
-      );
+      .pipe(map(toPipelineScript));
   }
 
   createPipelineScript(script: PipelineScript): Observable<PipelineScript> {
@@ -165,9 +143,7 @@ export class PipelineService {
   }
 
   compilePipelineScript(scriptBody: string): Observable<ScriptError[]> {
-    return this.dataService
-      .post(`${ResourceRoute}/compile`, scriptBody)
-      .pipe(catchError(() => of([])));
+    return this.dataService.post(`${ResourceRoute}/compile`, scriptBody);
   }
 
   publishPipeline(pipelineId: number): Observable<String> {
