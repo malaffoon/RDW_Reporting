@@ -14,6 +14,7 @@
     <pipeline-editor
       [readonly]="readonly"
       [pipeline]="pipeline"
+      [messages]="messages | async"
       [compilationState]="compilationState"
       [compilationErrors]="compilationErrors | async"
       [saving]="saving"

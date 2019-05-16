@@ -128,14 +128,14 @@ export class PipelineService {
   }
 
   runPipelineTests(pipelineId: number): Observable<PipelineTestRun[]> {
-    return this.dataService.post(`${ResourceRoute}/${pipelineId}/test`, null);
+    return this.dataService.post(`${ResourceRoute}/${pipelineId}/test`, '');
   }
 
   runPipelineTest(
     pipelineId: number,
     testId: number
   ): Observable<PipelineTestRun> {
-    return this.dataService.post(`${ResourceRoute}/${pipelineId}/test`, null, {
+    return this.dataService.post(`${ResourceRoute}/${pipelineId}/test`, '', {
       params: {
         testId
       }

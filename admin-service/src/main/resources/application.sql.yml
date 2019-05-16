@@ -345,6 +345,7 @@ sql:
       SELECT
         id,
         pipeline_id,
+        body,
         created,
         updated,
         updated_by
@@ -380,6 +381,8 @@ sql:
         id,
         pipeline_id,
         name,
+        example_input,
+        expected_output,
         created,
         updated,
         updated_by

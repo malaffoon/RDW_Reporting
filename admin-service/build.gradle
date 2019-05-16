@@ -1,6 +1,10 @@
 apply plugin: 'org.springframework.boot'
 
+ext['groovy.version'] = '2.5.6'
+
 dependencies {
+//    compile 'org.jdom:jdom2:2.0.5'
+
     compile project(':rdw-reporting-common')
     compile project(':rdw-reporting-common-web')
     compile 'org.opentestsystem.rdw.common:rdw-common-archive'
@@ -8,6 +12,7 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
     compile 'org.opentestsystem.rdw.common:rdw-common-messaging'
     compile 'org.opentestsystem.rdw.common:rdw-common-multi-tenant'
+    compile 'org.opentestsystem.rdw.common:rdw-common-script'
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-status'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'

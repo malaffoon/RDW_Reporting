@@ -44,8 +44,8 @@ const defaultCompileDebounceTime = 2000;
 function compilationErrorToMessage(value: ScriptError): Message {
   return {
     type: <MessageType>'error',
-    row: value.row,
-    column: value.column,
+    row: value.row != null ? value.row - 1 : undefined,
+    column: value.column != null ? value.column - 1 : undefined,
     text: value.message
   };
 }
@@ -403,7 +403,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   onItemSelected(item: Item): void {
     this.selectedItem = item;
     // lazy load item content
-    if (item.type === 'Script' && item.value == null) {
+    if (
+      item.type === 'Script' &&
+      (item.value == null || item.value.body == null)
+    ) {
       this.selectedItemLoading = true;
       this.pipelineService
         .getPipelineScript(this.pipeline.id, item.value.id)
@@ -414,7 +417,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.selectedItemLoading = false;
           this.updateButtonStates();
         });
-    } else if (item.type === 'Test' && item.value.input == null) {
+    } else if (
+      item.type === 'Test' &&
+      (item.value != null || item.value.input == null)
+    ) {
       this.selectedItemLoading = true;
       this.pipelineService
         .getPipelineTest(this.pipeline.id, item.value.id)
