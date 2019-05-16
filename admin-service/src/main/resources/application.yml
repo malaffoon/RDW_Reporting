@@ -97,7 +97,7 @@ spring:
           destination: GROUPS
           group: default
 
-# spring auto-configured aws defense
+#TODO: This cloud.aws section is probably no longer needed
 cloud:
   aws:
     # there must be a default region when running locally
@@ -110,11 +110,13 @@ cloud:
     credentials:
       instance-profile: false
 
-# Needed for access to S3
-
-# Location of import archive.
 archive:
-  root: file:///tmp/
+  uri-root: "file:///tmp/"
+  #path-prefix:
+  #s3-access-key:
+  #s3-secret-key:
+  s3-region-static: us-west-2
+  #s3-sse:
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
