@@ -4,19 +4,28 @@ import { forOwn, get } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
 
-export function mapTenant(tenant: any): TenantConfiguration {
+export function mapTenant(
+  tenant: any,
+  defaultApplicationTenantConfiguration: any
+): TenantConfiguration {
   return <TenantConfiguration>{
     code: tenant.tenant['key'],
     label: tenant.tenant['name'],
     description: tenant.tenant['description'],
     configurationProperties: mapConfigurationProperties(
-      tenant.configurationProperties,
-      tenant.tenantOverrides.configurationProperties
-    )
+      defaultApplicationTenantConfiguration,
+      tenant.applicationTenantConfiguration
+    ),
+    localizationOverrides: [
+      //TODO: Map localization overrides
+    ]
   };
 }
 
-export function mapSandbox(sandbox: any): SandboxConfiguration {
+export function mapSandbox(
+  sandbox: any,
+  defaultApplicationTenantConfiguration: any
+): SandboxConfiguration {
   return <SandboxConfiguration>{
     code: sandbox.tenant['key'],
     label: sandbox.tenant['name'],
@@ -27,15 +36,69 @@ export function mapSandbox(sandbox: any): SandboxConfiguration {
       label: 'SBAC Interim Data Set'
     },
     configurationProperties: mapConfigurationProperties(
-      sandbox.configurationProperties,
-      sandbox.tenantOverrides.configurationProperties
-    )
+      defaultApplicationTenantConfiguration,
+      sandbox.applicationTenantConfiguration
+    ),
+    localizationOverrides: [
+      //TODO: Map localization overrides
+    ]
   };
 }
 
-function mapConfigurationProperties(
+export function mapFromSandbox(sandbox: SandboxConfiguration): any {
+  return {
+    tenantConfiguration: {
+      tenant: {
+        key: sandbox.code,
+        id: sandbox.code,
+        description: sandbox.description,
+        name: sandbox.label
+      },
+      applicationTenantConfiguration: mapFromConfigurationProperties(
+        sandbox.configurationProperties
+      ),
+      localizationOverrides: {
+        //TODO: Map localization overrides
+      }
+    }
+  };
+}
+
+function mapFromConfigurationProperties(configProperties: any): any {
+  let mappedGroup = {};
+
+  forOwn(configProperties, (group, groupKey) => {
+    if (groupKey === 'datasources') {
+      let datasourceGroup = {};
+
+      forOwn(group, (configurationProperties, datasourceKey) => {
+        let configGroup = {};
+        configurationProperties.forEach(
+          configurationProperty =>
+            (configGroup[configurationProperty.key] =
+              configurationProperty.value)
+        );
+        datasourceGroup[datasourceKey] = configGroup;
+      });
+
+      mappedGroup[groupKey] = datasourceGroup;
+    } else {
+      let configGroup = {};
+      // group is the list of configuration properties
+      group.forEach(
+        configurationProperty =>
+          (configGroup[configurationProperty.key] = configurationProperty.value)
+      );
+      mappedGroup[groupKey] = configGroup;
+    }
+  });
+
+  return mappedGroup;
+}
+
+export function mapConfigurationProperties(
   configProperties: any,
-  overrides: any
+  overrides: any = {}
 ): any {
   let groupedProperties = {};
 
@@ -44,12 +107,16 @@ function mapConfigurationProperties(
       let configProps: ConfigurationProperty[] = [];
 
       forOwn(flattenJsonObject(configGroup), (value, key) => {
-        let groupOverrides = overrides[groupKey] || {};
-        let override = get(groupOverrides, key);
-        if (override) {
-          configProps.push(new ConfigurationProperty(key, override, value));
-        } else {
+        if (!overrides) {
           configProps.push(new ConfigurationProperty(key, value));
+        } else {
+          const groupOverrides = overrides[groupKey] || {};
+          const override = get(groupOverrides, key);
+          if (override) {
+            configProps.push(new ConfigurationProperty(key, override, value));
+          } else {
+            configProps.push(new ConfigurationProperty(key, value));
+          }
         }
       });
 
@@ -66,12 +133,16 @@ function mapConfigurationProperties(
         let configProps: ConfigurationProperty[] = [];
 
         forOwn(flattenJsonObject(databaseProperties), (value, key) => {
-          let groupOverrides = overrides[groupKey] || {};
-          let override = get(groupOverrides, `${databaseName}.${key}`);
-          if (override) {
-            configProps.push(new ConfigurationProperty(key, override, value));
-          } else {
+          if (!overrides) {
             configProps.push(new ConfigurationProperty(key, value));
+          } else {
+            const groupOverrides = overrides[groupKey] || {};
+            const override = get(groupOverrides, `${databaseName}.${key}`);
+            if (override) {
+              configProps.push(new ConfigurationProperty(key, override, value));
+            } else {
+              configProps.push(new ConfigurationProperty(key, value));
+            }
           }
         });
 

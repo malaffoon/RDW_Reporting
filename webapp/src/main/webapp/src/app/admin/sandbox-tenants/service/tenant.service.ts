@@ -16,14 +16,8 @@ export class TenantService {
   constructor(private dataService: DataService) {
     // TODO: Remove mock object, make call to backend API to fetch tenants
     if (!this.mockData) {
-      let mockTenant1 = {
-        tenant: {
-          id: 'CA',
-          key: 'CA',
-          name: 'California',
-          description: 'This is a description'
-        },
-        configurationProperties: {
+      let mockResponse = {
+        applicationTenantConfiguration: {
           datasources: {
             reporting_ro_datasource: {
               'url-server': 'rdw-aurora-',
@@ -82,67 +76,152 @@ export class TenantService {
               'max-report-lifetime-days': '30',
               'max-random-minutes': '20'
             }
+          },
+          archive: {
+            'uri-root': 's3://ca-archive',
+            'path-prefix': 'ca',
+            's3-access-key': 'ca_access_key',
+            's3-secret-key': 'ca_secret_key',
+            's3-sse': 'ca'
+          },
+          aggregator: {
+            'statewide-user-assessment-types': 'iab',
+            'state-aggregate-assessment-types': 'sum'
           }
         },
-        tenantOverrides: {
-          tenant: {
-            id: 'CA',
-            key: 'CA',
-            name: 'California',
-            description: 'This is a description'
-          },
-          configurationProperties: {
-            datasources: {
-              reporting_ro_datasource: {
-                initialSize: '1',
-                maxActive: '2',
-                password: 'password123'
-              },
-              warehouse_rw_datasource: {
-                initialSize: '1',
-                maxActive: '2'
-              },
-              olap_ro_datasource: {
-                initialSize: '1',
-                maxActive: '2'
-              },
-              reporting_rw_datasource: {
-                initialSize: '1',
-                maxActive: '2'
-              }
+        tenants: [
+          {
+            tenant: {
+              id: 'CA',
+              key: 'CA',
+              name: 'California',
+              description: 'This is a description'
             },
-            reporting: {
-              'percentile-display-enabled': 'false',
-              'student-fields': {
-                EconomicDisadvantage: 'enabled'
+            applicationTenantConfiguration: {
+              datasources: {
+                reporting_ro_datasource: {
+                  initialSize: '1',
+                  maxActive: '2',
+                  password: 'password123'
+                },
+                warehouse_rw_datasource: {
+                  initialSize: '1',
+                  maxActive: '2'
+                },
+                olap_ro_datasource: {
+                  initialSize: '1',
+                  maxActive: '2'
+                },
+                reporting_rw_datasource: {
+                  initialSize: '1',
+                  maxActive: '2'
+                }
               },
-              state: {
-                code: 'SBAC',
-                name: 'Smarter Balanced'
+              reporting: {
+                'percentile-display-enabled': 'false',
+                'student-fields': {
+                  EconomicDisadvantage: 'enabled'
+                },
+                state: {
+                  code: 'SBAC',
+                  name: 'Smarter Balanced'
+                }
               }
             }
+          },
+          {
+            tenant: {
+              id: 'MI',
+              key: 'MI',
+              name: 'Michigan',
+              description: 'A tenant for the state of Michigan'
+            }
+          },
+          {
+            tenant: {
+              id: 'SBAC',
+              key: 'SBAC',
+              name: 'Smarter Balanced',
+              description:
+                'A tenant for the Smarter Balanced Assessment Consortium'
+            }
           }
-        }
+        ]
       };
-      this.mockData = [
-        mapTenant(mockTenant1),
-        {
-          code: 'MI',
-          label: 'Michigan',
-          description: 'A tenant for the state of Michigan'
-        },
-        {
-          code: 'SBAC',
-          label: 'Smarter Balanced',
-          description: 'A tenant for the Smarter Balanced Assessment Consortium'
-        },
-        {
-          code: 'SBAC_PT',
-          label: 'Smarter Balanced Practice Tests',
-          description: 'A tenant for practice tests'
-        }
-      ];
+
+      this.mockData = mockResponse.tenants.map(tenant =>
+        mapTenant(tenant, mockResponse.applicationTenantConfiguration)
+      );
     }
+  }
+
+  /**
+   * Gets default configuration properties for a tenant
+   */
+  getDefaultConfigurationProperties(): Observable<any> {
+    //TODO: Actually call getAll() and read applicationTenantConfiguration
+    const mockProperties = {
+      datasources: {
+        reporting_ro_datasource: {
+          'url-server': 'rdw-aurora-',
+          username: 'sbac',
+          password: '****'
+        },
+        warehouse_rw_datasource: {
+          'url-server': 'rdw-aurora-',
+          username: 'sbac',
+          password: '****'
+        },
+        olap_ro_datasource: {
+          'url-server': 'rdw-aurora-',
+          username: 'sbac',
+          password: '****'
+        },
+        reporting_rw_datasource: {
+          'url-server': 'rdw-aurora-',
+          username: 'sbac',
+          password: '****'
+        }
+      },
+      reporting: {
+        'school-year': '2018',
+        'transfer-access-enabled': 'true',
+        'translation-location': 'binary-',
+        'analytics-tracking-id': 'UA-102446884-4',
+        'interpretive-guide-url':
+          'https://portal.smarterbalanced.org/library/en/reporting-system-interpretive-guide.pdf',
+        'user-guide-url':
+          'https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf',
+        'access-denied-url': 'forward:/assets/public/access-denied.html',
+        'landing-page-url': 'forward:/landing.html',
+        'percentile-display-enabled': 'true',
+        'report-languages': 'es',
+        'ui-languages': 'es',
+        'student-fields': {
+          EconomicDisadvantage: 'disabled',
+          LimitedEnglishProficiency: 'disabled',
+          MigrantStatus: 'enabled',
+          EnglishLanguageAcquisitionStatus: 'enabled',
+          PrimaryLanguage: 'enabled',
+          Ethnicity: 'enabled',
+          Gender: 'admin',
+          IndividualEducationPlan: 'admin',
+          Section504: 'admin'
+        },
+        state: {
+          code: 'CA',
+          name: 'California'
+        }
+      },
+      task: {
+        'remove-stale-reports': {
+          cron: '0 0 8 * * *',
+          'max-report-lifetime-days': '30',
+          'max-random-minutes': '20'
+        }
+      }
+    };
+    return new Observable(observer => observer.next(mockProperties));
   }
 
   /**

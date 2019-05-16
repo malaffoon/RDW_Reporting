@@ -39,12 +39,12 @@
             'tenant-config.fields.configuration-properties' | translate
           }}"
         >
-          <property-override-table
+          <property-override-tree-table
             [form]="tenantForm"
             [configurationProperties]="configurationProperties"
             propertiesArrayName="configurationProperties"
           >
-          </property-override-table>
+          </property-override-tree-table>
         </p-accordionTab>
         <p-accordionTab
           header="{{

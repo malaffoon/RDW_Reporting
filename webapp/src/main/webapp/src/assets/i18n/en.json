@@ -914,7 +914,8 @@
       "reporting": "Reporting",
       "datasources": "Data Sources",
       "task": "Task",
-      "archive": "Archive"
+      "archive": "Archive",
+      "aggregator": "Aggregator"
     }
   },
   "embargo-alert": {

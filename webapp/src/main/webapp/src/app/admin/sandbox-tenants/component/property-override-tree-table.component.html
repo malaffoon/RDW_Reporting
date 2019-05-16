@@ -29,7 +29,6 @@
             <label class="inline-label">
               <input
                 type="checkbox"
-                (change)="updatePropertiesFilter()"
                 [(ngModel)]="showModifiedPropertiesOnly"
                 [ngModelOptions]="{ standalone: true }"
               />
@@ -46,7 +45,15 @@
       </ng-template>
       <ng-template pTemplate="body" let-rowNode let-i="rowIndex">
         <!-- Parent Row -->
-        <tr *ngIf="!rowNode.node.leaf" [ttRow]="rowNode">
+        <tr
+          *ngIf="
+            !rowNode.node.leaf &&
+            ((showModifiedPropertiesOnly &&
+              childrenHaveOverrides(rowNode.node)) ||
+              !showModifiedPropertiesOnly)
+          "
+          [ttRow]="rowNode"
+        >
           <td
             [title]="rowNode.node.data.key"
             colspan="2"
@@ -64,7 +71,12 @@
         </tr>
         <!-- Leaf Row -->
         <tr
-          *ngIf="rowNode.node.leaf"
+          *ngIf="
+            rowNode.node.leaf &&
+            ((showModifiedPropertiesOnly &&
+              rowNode.node.data.originalValue !== rowNode.node.data.value) ||
+              !showModifiedPropertiesOnly)
+          "
           [ttRow]="rowNode"
           [ngClass]="{
             modified:
