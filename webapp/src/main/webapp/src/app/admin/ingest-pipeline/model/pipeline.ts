@@ -21,6 +21,11 @@ export interface Pipeline {
   inputType: InputType;
 
   /**
+   * Version of the active pipeline
+   */
+  activeVersion?: number;
+
+  /**
    * The pipeline script
    */
   script?: PipelineScript;
@@ -29,6 +34,16 @@ export interface Pipeline {
    * The pipeline tests
    */
   tests?: PipelineTest[];
+}
+
+export interface PublishedPipeline {
+  id: number;
+  code: string;
+  inputType: InputType;
+  version: number;
+  userScripts: PipelineScript[];
+  publishedOn: Date;
+  publishedBy: string;
 }
 
 /**

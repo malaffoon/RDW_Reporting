@@ -17,7 +17,8 @@ import {
   Pipeline,
   PipelineScript,
   PipelineTest,
-  PipelineTestRun
+  PipelineTestRun,
+  PublishedPipeline
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { tap } from 'rxjs/internal/operators/tap';
@@ -36,6 +37,7 @@ import { CompilationState, PipelineState } from '../../model/pipeline-state';
 import { isValidPipelineTest } from '../../model/pipelines';
 import { UserService } from '../../../../user/user.service';
 import { isNullOrBlank } from '../../../../shared/support/support';
+import { of } from 'rxjs/internal/observable/of';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -114,6 +116,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     private pipelineService: PipelineService,
     private userService: UserService
   ) {
+    const pipeline = this.route.params.pipe(
+      mergeMap(({ id }) => this.pipelineService.getPipeline(Number(id)))
+    );
+
     combineLatest(
       <Observable<boolean>>(
         this.userService
@@ -122,20 +128,24 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
             map(({ permissions }) => permissions.includes('PIPELINE_WRITE'))
           )
       ),
-      this.route.params.pipe(
-        mergeMap(({ id }) => {
-          const pipelineId = Number(id);
-          return forkJoin(
-            this.pipelineService.getPipeline(pipelineId),
+      <Observable<any>>pipeline.pipe(
+        mergeMap(pipeline =>
+          forkJoin(
+            of(pipeline),
             this.pipelineService
-              .getPipelineScripts(pipelineId)
+              .getPipelineScripts(pipeline.id)
               .pipe(map(scripts => scripts[0])),
-            this.pipelineService.getPipelineTests(pipelineId),
-            this.pipelineService
-              .getPublishedPipelineScripts(pipelineId)
-              .pipe(map(scripts => scripts[0]))
-          );
-        })
+            this.pipelineService.getPipelineTests(pipeline.id),
+            pipeline.activeVersion != null
+              ? this.pipelineService
+                  .getPublishedPipeline(<PublishedPipeline>{
+                    code: pipeline.code,
+                    version: pipeline.activeVersion
+                  })
+                  .pipe(map(pipelines => pipelines[0].userScripts[0]))
+              : of(null)
+          )
+        )
       )
     )
       .pipe(takeUntil(this._destroyed))
@@ -271,7 +281,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
               if (runs.every(({ result }) => result.passed)) {
                 this.publishState = 'Publishing';
                 this.pipelineService
-                  .publishPipelineScript(this.pipeline.id)
+                  .publishPipeline(this.pipeline.id)
                   .subscribe(() => {
                     this.publishButtonDisabled = true;
                     this.publishState = null;

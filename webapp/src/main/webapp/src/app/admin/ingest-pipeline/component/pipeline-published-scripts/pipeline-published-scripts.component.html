@@ -18,22 +18,24 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<ng-container *ngIf="scripts.length > 0; else noScripts">
+<ng-container *ngIf="pipelines.length > 0; else noScripts">
   <div class="body">
     <div class="scripts-container">
       <ul>
-        <li *ngFor="let script of scripts">
+        <li *ngFor="let pipeline of pipelines">
           <pipeline-item
-            [active]="selectedScript === script"
-            (click)="scriptSelect.emit(script)"
+            [active]="selectedPipeline === pipeline"
+            (click)="pipelineSelect.emit(pipeline)"
           >
             <div name>
-              {{ script.publishedOn | date: 'medium' }}
+              {{ pipeline.publishedOn | date: 'medium' }}
             </div>
             <div caption>
-              <div>{{ 'pipeline-item.published-by' | translate: script }}</div>
+              <div>
+                {{ 'pipeline-item.published-by' | translate: pipeline }}
+              </div>
               <div
-                *ngIf="script.published"
+                *ngIf="pipeline.active"
                 class="label border-only blue published-tag"
               >
                 {{ 'pipeline-publish-state.Published' | translate }}
@@ -44,8 +46,8 @@
       </ul>
     </div>
     <code-editor
-      [language]="selectedScript.language"
-      [ngModel]="selectedScript.body"
+      [language]="pipeline.userScripts[0].language"
+      [ngModel]="pipeline.userScripts[0].body"
       [readonly]="true"
     ></code-editor>
   </div>

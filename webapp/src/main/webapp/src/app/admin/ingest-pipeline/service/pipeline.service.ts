@@ -6,6 +6,7 @@ import {
   PipelineScript,
   PipelineTest,
   PipelineTestRun,
+  PublishedPipeline,
   ScriptError
 } from '../model/pipeline';
 import { catchError, map } from 'rxjs/operators';
@@ -13,6 +14,7 @@ import { AdminServiceRoute } from '../../../shared/service-route';
 import { of } from 'rxjs/internal/observable/of';
 
 const ResourceRoute = `${AdminServiceRoute}/pipelines`;
+const PublishedPipelinesRoute = `${AdminServiceRoute}/publishedPipelines`;
 
 const emptyPipelineScript = {
   body: '',
@@ -31,18 +33,15 @@ function toPipelineScript(serverScript: any): PipelineScript {
   };
 }
 
-function toPublishedPipelineScript(serverScript: any): PipelineScript {
+function toPublishedPipeline(serverPipeline: any): PublishedPipeline {
   return {
-    id: serverScript.id,
-    pipelineId: serverScript.pipelineId,
-    body: serverScript.body,
-    language: 'groovy',
-    createdOn: new Date(serverScript.created),
-    updatedOn: new Date(serverScript.updated),
-    updatedBy: serverScript.updatedBy,
-    published: true,
-    publishedOn: new Date(serverScript.published),
-    publishedBy: serverScript.publishedBy
+    id: serverPipeline.id,
+    code: serverPipeline.code,
+    inputType: serverPipeline.inputType,
+    version: serverPipeline.version,
+    userScripts: (serverPipeline.userScripts || []).map(toPipelineScript),
+    publishedOn: new Date(serverPipeline.published),
+    publishedBy: serverPipeline.publishedBy
   };
 }
 
@@ -70,9 +69,7 @@ export class PipelineService {
   }
 
   getPipeline(pipelineId: number): Observable<Pipeline> {
-    return this.getPipelines().pipe(
-      map(pipelines => pipelines.find(({ id }) => id === pipelineId))
-    );
+    return this.dataService.get(`${ResourceRoute}/${pipelineId}`);
   }
 
   getPipelineScripts(pipelineId: number): Observable<PipelineScript[]> {
@@ -173,28 +170,35 @@ export class PipelineService {
       .pipe(catchError(() => of([])));
   }
 
-  publishPipelineScript(pipelineId: number): Observable<String> {
+  publishPipeline(pipelineId: number): Observable<String> {
     return this.dataService.post(
       `${ResourceRoute}/${pipelineId}/publish`,
       null
     );
   }
 
-  getPublishedPipelineScripts(
-    pipelineId: number
-  ): Observable<PipelineScript[]> {
+  getPublishedPipelines(pipelineCode: string): Observable<PublishedPipeline[]> {
     return this.dataService
-      .get(`${ResourceRoute}/${pipelineId}/publishedScripts`)
-      .pipe(map(serverScripts => serverScripts.map(toPublishedPipelineScript)));
+      .get(PublishedPipelinesRoute, {
+        params: {
+          pipelineCode
+        }
+      })
+      .pipe(map(serverPipelines => serverPipelines.map(toPublishedPipeline)));
   }
 
-  getPublishedPipelineScript(
-    script: PipelineScript
-  ): Observable<PipelineScript> {
+  getPublishedPipeline(
+    pipeline: PublishedPipeline
+  ): Observable<PublishedPipeline> {
     return this.dataService
-      .get(
-        `${ResourceRoute}/${script.pipelineId}/publishedScripts/${script.id}`
-      )
-      .pipe(map(toPublishedPipelineScript));
+      .get(PublishedPipelinesRoute, {
+        params: {
+          pipelineCode: pipeline.code,
+          version: pipeline.version
+        }
+      })
+      .pipe(
+        map(serverPipelines => serverPipelines.map(toPublishedPipeline)[0])
+      );
   }
 }
