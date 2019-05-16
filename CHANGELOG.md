@@ -4,6 +4,7 @@
 
 * Make all application multi-tenant aware. Please refer to detailed upgrade instructions for more details
     * Changes the datasource configuration properties ... a lot.
+* Remove stale report cleanup task.
 
 #### 1.4.0-UAT 2019-04-12
 
