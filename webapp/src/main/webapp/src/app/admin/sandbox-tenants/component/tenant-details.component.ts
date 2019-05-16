@@ -97,16 +97,14 @@ export class TenantConfigurationDetailsComponent implements OnInit {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    //TODO: filter out configuration properties that have not been modified
-    // const modifiedConfigurationProperties = this.configurationProperties.filter(
-    //   property => property.originalValue !== property.value
-    // );
-    let updatedTenant = {
+
+    const updatedTenant = {
       code: this.tenant.code,
       ...this.tenantForm.value,
-      localizationOverrides: modifiedLocalizationOverrides
-      // configurationProperties: modifiedConfigurationProperties
+      localizationOverrides: modifiedLocalizationOverrides,
+      configurationProperties: this.tenant.configurationProperties
     };
+    console.log(updatedTenant);
     this.service.update(updatedTenant);
     this.editMode = false;
   }

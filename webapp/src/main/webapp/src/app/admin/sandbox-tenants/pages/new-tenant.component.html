@@ -9,6 +9,19 @@
     <form class="form-group" [formGroup]="tenantForm">
       <div class="row mb-xs">
         <div class="col-md-4">
+          <label>{{ 'tenant-config.fields.key' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="text"
+            class="form-control"
+            name="key"
+            formControlName="key"
+          />
+        </div>
+      </div>
+      <div class="row mb-xs">
+        <div class="col-md-4">
           <label>{{ 'tenant-config.fields.label' | translate }}</label>
         </div>
         <div class="col-md-8">

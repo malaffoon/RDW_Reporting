@@ -48,7 +48,7 @@ export function mapSandbox(
 export function mapFromSandbox(sandbox: SandboxConfiguration): any {
   return {
     tenantConfiguration: {
-      tenant: {
+      sandbox: {
         key: sandbox.code,
         id: sandbox.code,
         description: sandbox.description,
@@ -60,6 +60,23 @@ export function mapFromSandbox(sandbox: SandboxConfiguration): any {
       localizationOverrides: {
         //TODO: Map localization overrides
       }
+    }
+  };
+}
+
+export function mapFromTenant(tenant: TenantConfiguration): any {
+  return {
+    tenant: {
+      key: tenant.code,
+      id: tenant.code,
+      description: tenant.description,
+      name: tenant.label
+    },
+    applicationTenantConfiguration: mapFromConfigurationProperties(
+      tenant.configurationProperties
+    ),
+    localizationOverrides: {
+      //TODO: Map localization overrides
     }
   };
 }

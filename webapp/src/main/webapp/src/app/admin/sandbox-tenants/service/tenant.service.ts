@@ -2,7 +2,11 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
 import { TenantConfiguration } from '../model/tenant-configuration';
-import { mapTenant } from '../mapper/tenant.mapper';
+import {
+  mapFromSandbox,
+  mapFromTenant,
+  mapTenant
+} from '../mapper/tenant.mapper';
 
 /**
  * Service responsible for managing organization embargo settings
@@ -237,6 +241,7 @@ export class TenantService {
   }
 
   update(tenant: TenantConfiguration): void {
+    let mappedTenant = mapFromTenant(tenant);
     // TODO: Call the update API
     let index = this.mockData.findIndex(s => s.code === tenant.code);
     this.mockData[index] = tenant;

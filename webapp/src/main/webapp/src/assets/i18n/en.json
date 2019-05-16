@@ -903,6 +903,7 @@
       "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?"
     },
     "fields": {
+      "key": "Tenant Key",
       "label": "Tenant Name / Label:",
       "description": "Description:",
       "configuration-properties": "Configuration Properties",

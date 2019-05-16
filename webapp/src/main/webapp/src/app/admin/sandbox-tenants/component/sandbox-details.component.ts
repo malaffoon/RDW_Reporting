@@ -101,13 +101,8 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    console.log(this.sandbox.configurationProperties);
-    //TODO: filter out configuration properties that have not been modified
 
-    // const modifiedConfigurationProperties = this.configurationProperties.filter(
-    //   property => property.originalValue !== property.value
-    // );
-    let updatedSandbox = {
+    const updatedSandbox = {
       code: this.sandbox.code,
       dataSet: this.sandbox.dataSet,
       ...this.sandboxForm.value,

@@ -35,6 +35,15 @@ export class NewTenantConfigurationComponent {
 
   ngOnInit(): void {
     this.tenantForm = this.formBuilder.group({
+      key: [
+        null,
+        [
+          Validators.required,
+          CustomValidators.tenantKey,
+          Validators.minLength(1),
+          Validators.maxLength(20)
+        ]
+      ],
       label: [null, CustomValidators.notBlank],
       description: [null],
       configurationProperties: this.formBuilder.group({}),
@@ -54,19 +63,14 @@ export class NewTenantConfigurationComponent {
   }
 
   onSubmit(): void {
-    //TODO: This key should be generated in the database. Remove this once the backend is in place
-    const randomCode = Math.floor(Math.random() * 9999999) + 1000000;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    const modifiedConfigurationProperties = this.configurationProperties.filter(
-      property => property.originalValue !== property.value
-    );
     const newTenant = {
       ...this.tenantForm.value,
-      code: randomCode,
+      code: this.tenantForm.get('key').value,
       localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: modifiedConfigurationProperties
+      configurationProperties: this.configurationProperties
     };
     this.service.create(newTenant);
     this.router.navigate(['tenants']);
