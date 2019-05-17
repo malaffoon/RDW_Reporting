@@ -3,22 +3,20 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
-  delay,
   filter,
   map,
   mergeMap,
-  share,
   switchMap,
   takeUntil
 } from 'rxjs/operators';
 import { PipelineService } from '../../service/pipeline.service';
 import {
-  ScriptError,
   Pipeline,
   PipelineScript,
   PipelineTest,
   PipelineTestRun,
-  PublishedPipeline
+  PublishedPipeline,
+  ScriptError
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { tap } from 'rxjs/internal/operators/tap';
@@ -413,12 +411,16 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     // lazy load item content
     if (
       item.type === 'Script' &&
-      (item.value == null || item.value.body == null)
+      (item.value.id != null || item.value.body == null)
     ) {
       this.selectedItemLoading = true;
       this.pipelineService
         .getPipelineScript(this.pipeline.id, item.value.id)
         .subscribe(script => {
+          script = {
+            ...script,
+            name: item.value.name // keep the computed name
+          };
           item.value = script;
           item.lastSavedValue = cloneDeep(script);
           item.changed = false;
@@ -427,7 +429,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         });
     } else if (
       item.type === 'Test' &&
-      (item.value != null || item.value.input == null)
+      (item.value.id != null || item.value.input == null)
     ) {
       this.selectedItemLoading = true;
       this.pipelineService
