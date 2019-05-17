@@ -20,7 +20,8 @@ body {
   overflow: visible;
 }
 
-body .ui-table {
+body .ui-table,
+body .ui-treetable {
   font-family: @font-family-serif;
   font-size: @font-size-small;
   table {
@@ -32,6 +33,8 @@ body .ui-table {
     // head, foot, and data
     .ui-table-thead,
     .ui-table-tfoot,
+    .ui-treetable-thead,
+    .ui-treetable-tbody,
     .ui-table-tbody,
     .ui-table-data {
       > tr {
@@ -60,10 +63,10 @@ body .ui-table {
               height: auto;
               .small;
               .chevron-circle-right:before {
-                content: "\f054";
+                content: '\f054';
               }
               .chevron-circle-down:before {
-                content: "\f078";
+                content: '\f078';
               }
             }
           }
@@ -90,6 +93,7 @@ body .ui-table {
     }
     // head, and foot
     .ui-table-thead,
+    .ui-treetable-thead,
     .ui-table-tfoot {
       > tr {
         > th,
@@ -106,7 +110,8 @@ body .ui-table {
       }
     }
     // head
-    .ui-table-thead {
+    .ui-table-thead,
+    .ui-treetable-thead {
       > tr {
         > th {
           border-right: 1px solid rgba(100, 102, 106, 0.17);
@@ -127,6 +132,7 @@ body .ui-table {
     }
     // body
     .ui-table-tbody,
+    .ui-treetable-tbody,
     .ui-table-data {
       > tr {
         > td {
@@ -223,7 +229,8 @@ body .ui-table {
   }
 }
 
-p-table {
+p-table,
+p-treeTable {
   table {
     .table;
     .table-striped;

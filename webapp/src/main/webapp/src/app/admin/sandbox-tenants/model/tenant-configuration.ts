@@ -25,7 +25,7 @@ export interface TenantConfiguration {
   localizationOverrides?: ConfigurationProperty[];
 
   /**
-   * The map containing key/value pairings of configuration properties
+   * The JSON containing configuration properties
    */
-  configurationProperties?: ConfigurationProperty[];
+  configurationProperties?: any;
 }

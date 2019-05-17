@@ -11,9 +11,8 @@ import {
 } from '@angular/forms';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { ApplicationSettingsService } from '../../../app-settings.service';
-import { flattenJsonObject } from '../../../shared/support/support';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
+import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 
 @Component({
   selector: 'new-sandbox',
@@ -25,14 +24,13 @@ export class NewSandboxConfigurationComponent {
   // Contains the full list of localization overrides, with default values
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
-  configurationProperties: ConfigurationProperty[] = [];
+  configurationProperties: any;
 
   constructor(
     private service: SandboxService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
-    private router: Router,
-    private settingsService: ApplicationSettingsService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +38,7 @@ export class NewSandboxConfigurationComponent {
       label: [null, CustomValidators.notBlank],
       description: [null],
       dataSet: [null, Validators.required],
-      configurationProperties: this.formBuilder.array([]),
+      configurationProperties: this.formBuilder.group({}),
       localizationOverrides: this.formBuilder.array([])
     });
 
@@ -48,18 +46,14 @@ export class NewSandboxConfigurationComponent {
       this.dataSets = dataSets;
     });
     this.mapLocalizationOverrides();
-
-    this.settingsService.getSettings().subscribe(configProperties => {
-      const configPropertiesFormArray = <FormArray>(
-        this.sandboxForm.controls['configurationProperties']
+    this.service
+      .getDefaultConfigurationProperties()
+      .subscribe(
+        configProperties =>
+          (this.configurationProperties = mapConfigurationProperties(
+            configProperties
+          ))
       );
-      let flattenedConfigProperties = flattenJsonObject(configProperties);
-      Object.keys(flattenedConfigProperties).forEach(key => {
-        const val = flattenedConfigProperties[key] || '';
-        this.configurationProperties.push(new ConfigurationProperty(key, val));
-        configPropertiesFormArray.push(new FormControl(val));
-      });
-    });
   }
 
   private mapLocalizationOverrides() {

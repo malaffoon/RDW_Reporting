@@ -903,13 +903,21 @@
       "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?"
     },
     "fields": {
+      "key": "Tenant Key",
       "label": "Tenant Name / Label:",
       "description": "Description:",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
     },
-    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button"
+    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button",
+    "properties": {
+      "reporting": "Reporting",
+      "datasources": "Data Sources",
+      "task": "Task",
+      "archive": "Archive",
+      "aggregator": "Aggregator"
+    }
   },
   "embargo-alert": {
     "message": "Summative test results in your region of administration are not yet released. These results may be viewed online but not downloaded."
