@@ -78,7 +78,7 @@ export class PipelineService {
     scriptId: number
   ): Observable<PipelineScript> {
     return this.dataService
-      .get(`${ResourceRoute}/${pipelineId}/scripts/${scriptId}`)
+      .get(`${ResourceRoute}/${pipelineId}/scripts/${scriptId || -1}`)
       .pipe(map(toPipelineScript));
   }
 
