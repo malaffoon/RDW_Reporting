@@ -22,20 +22,20 @@
   <div class="body">
     <div class="scripts-container">
       <ul>
-        <li *ngFor="let pipeline of pipelines">
+        <li *ngFor="let published of pipelines">
           <pipeline-item
-            [active]="selectedPipeline === pipeline"
-            (click)="pipelineSelect.emit(pipeline)"
+            [active]="published === selectedPipeline"
+            (click)="pipelineSelect.emit(published)"
           >
             <div name>
-              {{ pipeline.publishedOn | date: 'medium' }}
+              {{ published.publishedOn | date: 'medium' }}
             </div>
             <div caption>
               <div>
                 {{ 'pipeline-item.published-by' | translate: pipeline }}
               </div>
               <div
-                *ngIf="pipeline.active"
+                *ngIf="published.active"
                 class="label border-only blue published-tag"
               >
                 {{ 'pipeline-publish-state.Published' | translate }}
@@ -45,11 +45,14 @@
         </li>
       </ul>
     </div>
-    <code-editor
-      [language]="pipeline.userScripts[0].language"
-      [ngModel]="pipeline.userScripts[0].body"
-      [readonly]="true"
-    ></code-editor>
+    <ng-container *ngFor="let published of pipelines">
+      <code-editor
+        [hidden]="published !== selectedPipeline"
+        [language]="published.userScripts[0].language"
+        [ngModel]="published.userScripts[0].body"
+        [readonly]="true"
+      ></code-editor>
+    </ng-container>
   </div>
 </ng-container>
 <ng-template #noScripts>

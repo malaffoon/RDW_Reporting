@@ -130,22 +130,21 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
             map(({ permissions }) => permissions.includes('PIPELINE_WRITE'))
           )
       ),
-      <Observable<any>>pipeline.pipe(
-        mergeMap(pipeline =>
-          forkJoin(
-            of(pipeline),
-            this.pipelineService
-              .getPipelineScripts(pipeline.id)
-              .pipe(map(scripts => scripts[0])),
-            this.pipelineService.getPipelineTests(pipeline.id),
-            pipeline.activeVersion != null
-              ? this.pipelineService
-                  .getPublishedPipeline(<PublishedPipeline>{
-                    code: pipeline.code,
-                    version: pipeline.activeVersion
-                  })
-                  .pipe(map(pipelines => pipelines[0].userScripts[0]))
-              : of(null)
+      <Observable<any>>(
+        pipeline.pipe(
+          mergeMap(pipeline =>
+            forkJoin(
+              of(pipeline),
+              this.pipelineService
+                .getPipelineScripts(pipeline.id)
+                .pipe(map(scripts => scripts[0])),
+              this.pipelineService.getPipelineTests(pipeline.id),
+              pipeline.activeVersion != null
+                ? this.pipelineService
+                    .getPublishedPipeline(pipeline.code, pipeline.activeVersion)
+                    .pipe(map(pipelines => pipelines[0].userScripts[0]))
+                : of(null)
+            )
           )
         )
       )

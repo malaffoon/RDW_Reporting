@@ -37,9 +37,7 @@ export interface Pipeline {
 }
 
 export interface PublishedPipeline {
-  id: number;
-  code: string;
-  inputType: InputType;
+  pipelineId: number;
   version: number;
   userScripts: PipelineScript[];
   publishedOn: Date;

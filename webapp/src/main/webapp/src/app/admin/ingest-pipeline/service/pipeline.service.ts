@@ -9,9 +9,8 @@ import {
   PublishedPipeline,
   ScriptError
 } from '../model/pipeline';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../../shared/service-route';
-import { of } from 'rxjs/internal/observable/of';
 
 const ResourceRoute = `${AdminServiceRoute}/pipelines`;
 const PublishedPipelinesRoute = `${AdminServiceRoute}/publishedPipelines`;
@@ -30,9 +29,7 @@ function toPipelineScript(serverScript: any): PipelineScript {
 
 function toPublishedPipeline(serverPipeline: any): PublishedPipeline {
   return {
-    id: serverPipeline.id,
-    code: serverPipeline.code,
-    inputType: serverPipeline.inputType,
+    pipelineId: serverPipeline.pipelineId,
     version: serverPipeline.version,
     userScripts: (serverPipeline.userScripts || []).map(toPipelineScript),
     publishedOn: new Date(serverPipeline.published),
@@ -164,13 +161,14 @@ export class PipelineService {
   }
 
   getPublishedPipeline(
-    pipeline: PublishedPipeline
+    pipelineCode: string,
+    version: number
   ): Observable<PublishedPipeline> {
     return this.dataService
       .get(PublishedPipelinesRoute, {
         params: {
-          pipelineCode: pipeline.code,
-          version: pipeline.version
+          pipelineCode,
+          version
         }
       })
       .pipe(

@@ -21,11 +21,7 @@ export class UserService {
           <User>{
             firstName: serverUser.firstName,
             lastName: serverUser.lastName,
-            permissions: [
-              ...serverUser.permissions,
-              'PIPELINE_READ',
-              'PIPELINE_WRITE'
-            ]
+            permissions: serverUser.permissions
           }
       ),
       catchError(() => UnauthenticatedUser)

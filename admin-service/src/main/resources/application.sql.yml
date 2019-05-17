@@ -328,7 +328,8 @@ sql:
       SELECT
         id,
         code,
-        input_type
+        input_type,
+        active_version
       FROM pipeline
       ORDER BY id ASC
 
@@ -336,8 +337,14 @@ sql:
       SELECT
         id,
         code,
-        input_type
+        input_type,
+        active_version
       FROM pipeline
+      WHERE id = :id
+
+    update:
+      UPDATE pipeline
+        SET active_version = :active_version
       WHERE id = :id
 
   pipeline-script:
