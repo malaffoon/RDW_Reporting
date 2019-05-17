@@ -16,14 +16,12 @@ app:
     query-pool-size: 6
     api-enabled: false
 
-  archive:
-      root: file:///tmp/
-
   cache:
     repository:
       # every day at 2:00 am (GMT)
       refresh-cron: "0 0 2 * * *"
 
+#TODO: This cloud.aws section is probably no longer needed
 cloud:
   aws:
     # there must be a default region when running locally
@@ -35,6 +33,14 @@ cloud:
       auto: false
     credentials:
       instance-profile: false
+
+archive:
+  uri-root: "file:///tmp/"
+  #path-prefix:
+  #s3-access-key:
+  #s3-secret-key:
+  s3-region-static: us-west-2
+  #s3-sse:
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}

@@ -128,6 +128,7 @@ datasources:
     removeAbandonedTimeout: 60
     logAbandoned: false
 
+#TODO: This cloud.aws section is probably no longer needed
 cloud:
   aws:
     region:
@@ -139,24 +140,20 @@ cloud:
     credentials:
       instance-profile: false
 
-app:
-  archive:
-    root: file:///tmp/
+archive:
+  uri-root: "file:///tmp/"
+  #path-prefix:
+  #s3-access-key:
+  #s3-secret-key:
+  s3-region-static: us-west-2
+  #s3-sse:
 
+app:
   wkhtmltopdf:
     url: http://localhost:8082
     options:
       page-size: Letter
       zoom: 0.75
-
-task:
-# by default, all tasks are disabled for local dev environment; uncomment and set secrets/hosts to test.
-#  remove-stale-reports:
-##### at seconds: (0), minutes: (0), hour: (8), every day of month (*), every month (*), every day of week (*).
-##### This runs at 8am GMT, regardless of the server's timezone setting
-#    cron: 0 0 8 * * *
-#    max-report-lifetime-days: 30
-#    max-random-minutes: 20
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
