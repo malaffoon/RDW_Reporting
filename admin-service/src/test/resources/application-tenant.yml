@@ -1,0 +1,11 @@
+#simulating core tenant file
+tenant-properties:
+  tenants:
+    - id: CA
+      key: CA
+      name: California
+      description: Some Descriptive Text For CA
+    - id: AZ  # a different tenant
+      key: AZ
+      name: Nevada
+      description: Some Descriptive Text For AZ

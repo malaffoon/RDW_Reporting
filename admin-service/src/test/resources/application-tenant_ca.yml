@@ -1,0 +1,15 @@
+#simulating the spring cloud config search path feature with "tenant_ca" profile for testing purposes
+spring:
+  datasource:
+    tenants:
+      CA:
+        url-parts:
+          database: "tenant_ca"
+        username: "tenant_ca_user"
+        password: "tenant_ca_password"
+        validationQueryTimeout: 50
+archive:
+  tenants:
+    CA:
+      uri-root: "s3://ca-archive"
+      path-prefix: "/ca"
