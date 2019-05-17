@@ -5,7 +5,15 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { Pipeline, PipelineScript } from '../../model/pipeline';
+import {
+  Pipeline,
+  PipelineScript,
+  PublishedPipeline
+} from '../../model/pipeline';
+
+export interface PublishedPipelineView extends PublishedPipeline {
+  active: boolean;
+}
 
 @Component({
   selector: 'pipeline-published-scripts',
@@ -18,11 +26,11 @@ export class PipelinePublishedScriptsComponent {
   pipeline: Pipeline;
 
   @Input()
-  scripts: PipelineScript[];
+  pipelines: PublishedPipelineView[];
 
   @Input()
-  selectedScript: PipelineScript;
+  selectedPipeline: PublishedPipelineView;
 
   @Output()
-  scriptSelect: EventEmitter<PipelineScript> = new EventEmitter();
+  pipelineSelect: EventEmitter<PublishedPipelineView> = new EventEmitter();
 }

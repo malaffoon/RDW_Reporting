@@ -24,7 +24,7 @@ export class UserService {
             permissions: serverUser.permissions
           }
       ),
-      catchError(error => UnauthenticatedUser)
+      catchError(() => UnauthenticatedUser)
     );
   }
 }

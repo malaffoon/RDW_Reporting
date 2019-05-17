@@ -21,6 +21,11 @@ export interface Pipeline {
   inputType: InputType;
 
   /**
+   * Version of the active pipeline
+   */
+  activeVersion?: number;
+
+  /**
    * The pipeline script
    */
   script?: PipelineScript;
@@ -31,6 +36,14 @@ export interface Pipeline {
   tests?: PipelineTest[];
 }
 
+export interface PublishedPipeline {
+  pipelineId: number;
+  version: number;
+  userScripts: PipelineScript[];
+  publishedOn: Date;
+  publishedBy: string;
+}
+
 /**
  * Represents a script
  */
@@ -38,7 +51,7 @@ export interface Script {
   /**
    * The language the script is written in
    */
-  language: string;
+  language?: string;
 
   /**
    * The script code
@@ -113,6 +126,11 @@ export interface PipelineTest {
   createdOn?: Date;
 
   /**
+   * The datetime of the last update
+   */
+  updatedOn?: Date;
+
+  /**
    * The last user to update the test
    */
   updatedBy?: string;
@@ -133,18 +151,40 @@ export interface PipelineTest {
   output?: string;
 }
 
-export interface CompilationError {
+/**
+ * This can be a compilation error or a runtime script execution error
+ */
+export interface ScriptError {
   row: number;
   column: number;
   message: string;
 }
 
 export interface PipelineTestResult {
+  /**
+   * Indicates whether the test passed or not
+   */
   passed: boolean;
-  output: string;
+
+  /**
+   * The fatal runtime execution error if any
+   */
+  scriptError?: ScriptError;
+
+  /**
+   * The actual test output if different than the expected output
+   */
+  output?: string;
 }
 
 export interface PipelineTestRun {
+  /**
+   * The test that was run
+   */
   test: PipelineTest;
+
+  /**
+   * The results of the run test
+   */
   result: PipelineTestResult;
 }

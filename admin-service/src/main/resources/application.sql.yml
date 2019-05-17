@@ -325,15 +325,34 @@ sql:
 
   pipeline:
     findAll: >-
-      SELECT id, code
+      SELECT
+        id,
+        code,
+        input_type,
+        active_version
       FROM pipeline
       ORDER BY id ASC
+
+    findById: >-
+      SELECT
+        id,
+        code,
+        input_type,
+        active_version
+      FROM pipeline
+      WHERE id = :id
+
+    update:
+      UPDATE pipeline
+        SET active_version = :active_version
+      WHERE id = :id
 
   pipeline-script:
     findAllByPipeline: >-
       SELECT
         id,
         pipeline_id,
+        body,
         created,
         updated,
         updated_by
@@ -369,6 +388,8 @@ sql:
         id,
         pipeline_id,
         name,
+        example_input,
+        expected_output,
         created,
         updated,
         updated_by

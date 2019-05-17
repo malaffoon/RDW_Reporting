@@ -3,19 +3,19 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
+  filter,
   map,
   mergeMap,
-  share,
   switchMap,
   takeUntil
 } from 'rxjs/operators';
 import { PipelineService } from '../../service/pipeline.service';
 import {
-  CompilationError,
   Pipeline,
   PipelineScript,
   PipelineTest,
-  PipelineTestRun
+  PipelineTestRun,
+  ScriptError
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { tap } from 'rxjs/internal/operators/tap';
@@ -25,33 +25,38 @@ import {
 } from '../../component/code-editor/code-editor.component';
 import {
   Item,
-  ItemType,
-  PipelineScriptView
+  ItemType
 } from '../../component/pipeline-explorer/pipeline-explorer.component';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
 import { CompilationState, PipelineState } from '../../model/pipeline-state';
 import { isValidPipelineTest } from '../../model/pipelines';
 import { UserService } from '../../../../user/user.service';
+import { isNullOrBlank } from '../../../../shared/support/support';
+import { of } from 'rxjs/internal/observable/of';
+import { TranslateService } from '@ngx-translate/core';
 
 const defaultCompileDebounceTime = 2000;
 
-function compilationErrorToMessage(value: CompilationError): Message {
+function compilationErrorToMessage(value: ScriptError): Message {
   return {
     type: <MessageType>'error',
-    row: value.row,
-    column: value.column,
+    row: value.row != null ? value.row - 1 : undefined,
+    column: value.column != null ? value.column - 1 : undefined,
     text: value.message
   };
 }
 
 function createItems(
-  pipeline: Pipeline
-): Item<PipelineScriptView | PipelineTest>[] {
+  pipeline: Pipeline,
+  translateService: TranslateService
+): Item<PipelineScript | PipelineTest>[] {
   return [
     createItem('Script', {
-      pipelineCode: pipeline.code,
-      ...pipeline.script
+      ...pipeline.script,
+      name: translateService.instant(
+        `ingest-pipeline.${pipeline.code}.description`
+      )
     }),
     ...pipeline.tests.map(value => createItem('Test', value))
   ];
@@ -79,9 +84,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   messages: Observable<Message[]>;
 
   compilationState: CompilationState;
-  compilationErrors: BehaviorSubject<CompilationError[]> = new BehaviorSubject(
-    []
-  );
+  compilationErrors: BehaviorSubject<ScriptError[]> = new BehaviorSubject([]);
 
   saving: boolean;
   saveButtonDisabledTooltipCode: string;
@@ -103,62 +106,93 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   selectedItem: Item;
   selectedItemLoading: boolean;
 
+  readonly: boolean;
+
   private _destroyed: Subject<void> = new Subject();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private pipelineService: PipelineService,
-    private userService: UserService
+    private userService: UserService,
+    private translateService: TranslateService
   ) {
-    this.route.params
-      .pipe(
-        mergeMap(({ id }) => {
-          const pipelineId = Number(id);
-          return forkJoin(
-            this.pipelineService.getPipeline(pipelineId),
-            this.pipelineService
-              .getPipelineScripts(pipelineId)
-              .pipe(map(scripts => scripts[0])),
-            this.pipelineService.getPipelineTests(pipelineId),
-            this.pipelineService
-              .getPublishedPipelineScripts(pipelineId)
-              .pipe(map(scripts => scripts[0]))
-          );
-        })
+    const pipeline = this.route.params.pipe(
+      mergeMap(({ id }) => this.pipelineService.getPipeline(Number(id)))
+    );
+
+    combineLatest(
+      <Observable<boolean>>(
+        this.userService
+          .getUser()
+          .pipe(
+            map(({ permissions }) => permissions.includes('PIPELINE_WRITE'))
+          )
+      ),
+      <Observable<any>>(
+        pipeline.pipe(
+          mergeMap(pipeline =>
+            forkJoin(
+              of(pipeline),
+              this.pipelineService
+                .getPipelineScripts(pipeline.id)
+                .pipe(map(scripts => scripts[0])),
+              this.pipelineService.getPipelineTests(pipeline.id),
+              pipeline.activeVersion != null
+                ? this.pipelineService
+                    .getPublishedPipeline(pipeline.code, pipeline.activeVersion)
+                    .pipe(map(pipelines => pipelines[0].userScripts[0]))
+                : of(null)
+            )
+          )
+        )
       )
+    )
       .pipe(takeUntil(this._destroyed))
-      .subscribe(([basePipeline, script, tests, publishedScript]) => {
-        const pipeline = {
-          ...basePipeline,
-          script,
-          tests
-        };
-        this.publishedScript = publishedScript;
-        this.pipeline = pipeline;
-        this.published = publishedScript.body === pipeline.script.body;
-        this.items = createItems(pipeline);
-        this.setSelectedItem(this.items[0]);
-        this.updateButtonStates();
-      });
+      .subscribe(
+        ([
+          hasWritePermission,
+          [basePipeline, script, tests, publishedScript]
+        ]) => {
+          const pipeline = {
+            ...basePipeline,
+            script,
+            tests
+          };
+          this.readonly = !hasWritePermission;
+          this.publishedScript = publishedScript;
+          this.pipeline = pipeline;
+          this.published =
+            publishedScript != null &&
+            publishedScript.body === pipeline.script.body;
+          this.items = createItems(pipeline, this.translateService);
+          this.setSelectedItem(this.items[0]);
+          this.updateButtonStates();
+        }
+      );
 
     this.pipelineScriptBody
       .pipe(
         takeUntil(this._destroyed),
-        tap(() => {
+        filter(value => !isNullOrBlank(value)),
+        tap(value => {
           this.compilationState = null;
         }),
         debounceTime(defaultCompileDebounceTime),
         tap(() => {
           this.compilationState = 'Compiling';
         }),
-        switchMap(value => this.pipelineService.compilePipelineScript(value)),
-        share()
+        switchMap(value => this.pipelineService.compilePipelineScript(value))
       )
-      .subscribe(errors => {
-        this.compilationState = errors.length === 0 ? null : 'Failed';
-        this.compilationErrors.next(errors);
-      });
+      .subscribe(
+        errors => {
+          this.compilationState = errors.length === 0 ? null : 'Failed';
+          this.compilationErrors.next(errors);
+        },
+        () => {
+          this.compilationState = 'Failed';
+        }
+      );
 
     this.messages = this.compilationErrors.pipe(
       takeUntil(this._destroyed),
@@ -178,7 +212,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   }
 
   onScriptChange(value: string): void {
-    this.published = this.publishedScript.body === value;
+    this.published =
+      this.publishedScript != null && this.publishedScript.body === value;
     this.pipelineScriptBody.next(value);
     this.selectedItem.changed = !isEqual(
       this.selectedItem.value,
@@ -190,8 +225,18 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   onScriptUpdate(script: PipelineScript): void {
     this.saving = true;
     const item = this.selectedItem;
-    this.pipelineService.updatePipelineScript(script).subscribe(script => {
+
+    const observable =
+      script.id == null
+        ? this.pipelineService.createPipelineScript({
+            pipelineId: this.pipeline.id,
+            body: script.body
+          })
+        : this.pipelineService.updatePipelineScript(script);
+
+    observable.subscribe(script => {
       this.saving = false;
+      item.value = script;
       item.lastSavedValue = cloneDeep(script);
       item.changed = false;
       this.updateButtonStates();
@@ -241,7 +286,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
               if (runs.every(({ result }) => result.passed)) {
                 this.publishState = 'Publishing';
                 this.pipelineService
-                  .publishPipelineScript(this.pipeline.id)
+                  .publishPipeline(this.pipeline.id)
                   .subscribe(() => {
                     this.publishButtonDisabled = true;
                     this.publishState = null;
@@ -271,7 +316,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.testState = 'Compiling';
     this.compilationState = null;
     this.pipelineService
-      .compilePipelineScript(pipeline.script.body)
+      .compilePipelineScript(
+        this.items.find(({ type }) => type === 'Script').value.body
+      )
       .subscribe(errors => {
         this.compilationErrors.next(errors);
         if (errors.length === 0) {
@@ -300,7 +347,11 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         output: ''
       };
       this.setPipelineTests([test, ...this.pipeline.tests]);
-      this.items = [createItem('Test', test, true), ...this.items];
+      this.items = [
+        ...this.items.filter(({ type }) => type === 'Script'),
+        createItem('Test', test, true),
+        ...this.items.filter(({ type }) => type === 'Test')
+      ];
       // select added item
       this.selectedItem = this.items.find(
         ({ type, value: { id } }) => type === 'Test' && id === test.id
@@ -320,6 +371,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     observable.subscribe(value => {
       // update updated on?
+      item.value = value;
       item.lastSavedValue = cloneDeep(value);
       item.changed = false;
       this.testUpdating = false;
@@ -357,27 +409,32 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   onItemSelected(item: Item): void {
     this.selectedItem = item;
     // lazy load item content
-    if (item.type === 'Script' && item.value == null) {
+    if (
+      item.type === 'Script' &&
+      (item.value.id != null || item.value.body == null)
+    ) {
       this.selectedItemLoading = true;
       this.pipelineService
         .getPipelineScript(this.pipeline.id, item.value.id)
         .subscribe(script => {
+          script = {
+            ...script,
+            name: item.value.name // keep the computed name
+          };
           item.value = script;
           item.lastSavedValue = cloneDeep(script);
           item.changed = false;
           this.selectedItemLoading = false;
           this.updateButtonStates();
         });
-    } else if (item.type === 'Test' && item.value.input == null) {
+    } else if (
+      item.type === 'Test' &&
+      (item.value.id != null || item.value.input == null)
+    ) {
       this.selectedItemLoading = true;
       this.pipelineService
         .getPipelineTest(this.pipeline.id, item.value.id)
-        .subscribe(test => {
-          // merge here is only needed because of stubbing
-          const value = {
-            ...test,
-            ...item.value
-          };
+        .subscribe(value => {
           item.value = value;
           item.lastSavedValue = cloneDeep(value);
           item.changed = false;

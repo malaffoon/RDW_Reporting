@@ -12,10 +12,6 @@ export interface Item<T = any> {
   changed?: boolean;
 }
 
-export interface PipelineScriptView extends PipelineScript {
-  pipelineCode: string;
-}
-
 @Component({
   selector: 'pipeline-explorer',
   templateUrl: './pipeline-explorer.component.html',
@@ -36,7 +32,7 @@ export class PipelineExplorerComponent {
   @Output()
   deleteTestButtonClick: EventEmitter<Item<PipelineTest>> = new EventEmitter();
 
-  _scriptItems: Item<PipelineScriptView>[] = [];
+  _scriptItems: Item<PipelineScript>[] = [];
   _testItems: Item<PipelineTest>[] = [];
 
   @Input()
@@ -54,11 +50,13 @@ export class PipelineExplorerComponent {
 
   showTime(item: Item<PipelineTest>): boolean {
     return (
-      this._testItems.find(
-        otherItem =>
-          item !== otherItem &&
-          equalDate(item.value.createdOn, otherItem.value.createdOn)
-      ) != null
+      this._testItems
+        .filter(({ value: { createdOn } }) => createdOn != null)
+        .find(
+          otherItem =>
+            item !== otherItem &&
+            equalDate(item.value.createdOn, otherItem.value.createdOn)
+        ) != null
     );
   }
 }

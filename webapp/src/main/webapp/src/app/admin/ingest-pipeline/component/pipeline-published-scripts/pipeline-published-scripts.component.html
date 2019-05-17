@@ -18,33 +18,45 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="body">
-  <div class="scripts-container">
-    <ul>
-      <li *ngFor="let script of scripts">
-        <pipeline-item
-          [active]="selectedScript === script"
-          (click)="scriptSelect.emit(script)"
-        >
-          <div name>
-            {{ script.publishedOn | date: 'medium' }}
-          </div>
-          <div caption>
-            <div>{{ 'pipeline-item.published-by' | translate: script }}</div>
-            <div
-              *ngIf="script.published"
-              class="label border-only blue published-tag"
-            >
-              {{ 'pipeline-publish-state.Published' | translate }}
+<ng-container *ngIf="pipelines.length > 0; else noScripts">
+  <div class="body">
+    <div class="scripts-container">
+      <ul>
+        <li *ngFor="let published of pipelines">
+          <pipeline-item
+            [active]="published === selectedPipeline"
+            (click)="pipelineSelect.emit(published)"
+          >
+            <div name>
+              {{ published.publishedOn | date: 'medium' }}
             </div>
-          </div>
-        </pipeline-item>
-      </li>
-    </ul>
+            <div caption>
+              <div>
+                {{ 'pipeline-item.published-by' | translate: pipeline }}
+              </div>
+              <div
+                *ngIf="published.active"
+                class="label border-only blue published-tag"
+              >
+                {{ 'pipeline-publish-state.Published' | translate }}
+              </div>
+            </div>
+          </pipeline-item>
+        </li>
+      </ul>
+    </div>
+    <ng-container *ngFor="let published of pipelines">
+      <code-editor
+        [hidden]="published !== selectedPipeline"
+        [language]="published.userScripts[0].language"
+        [ngModel]="published.userScripts[0].body"
+        [readonly]="true"
+      ></code-editor>
+    </ng-container>
   </div>
-  <code-editor
-    [language]="selectedScript.language"
-    [ngModel]="selectedScript.body"
-    [readonly]="true"
-  ></code-editor>
-</div>
+</ng-container>
+<ng-template #noScripts>
+  <div class="text-center">
+    {{ 'pipeline-published-scripts.no-scripts' | translate }}
+  </div>
+</ng-template>

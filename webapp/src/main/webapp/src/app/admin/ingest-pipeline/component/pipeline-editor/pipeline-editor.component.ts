@@ -6,7 +6,7 @@ import {
   Output
 } from '@angular/core';
 import {
-  CompilationError,
+  ScriptError,
   Pipeline,
   PipelineScript,
   PipelineTest
@@ -22,6 +22,9 @@ import { CompilationState, PipelineState } from '../../model/pipeline-state';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PipelineEditorComponent {
+  @Input()
+  readonly: boolean;
+
   @Input()
   pipeline: Pipeline;
 
@@ -44,7 +47,7 @@ export class PipelineEditorComponent {
   compilationState: CompilationState;
 
   @Input()
-  compilationErrors: CompilationError[] = [];
+  compilationErrors: ScriptError[] = [];
 
   @Input()
   messages: Message[];

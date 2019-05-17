@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Pipeline, PipelineScript } from '../../model/pipeline';
+import { Pipeline } from '../../model/pipeline';
 import { PipelineService } from '../../service/pipeline.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { map } from 'rxjs/operators';
 import { tap } from 'rxjs/internal/operators/tap';
+import { PublishedPipelineView } from '../../component/pipeline-published-scripts/pipeline-published-scripts.component';
 
 @Component({
   selector: 'pipeline-publishing-history',
@@ -13,8 +14,8 @@ import { tap } from 'rxjs/internal/operators/tap';
 })
 export class PipelinePublishingHistoryComponent {
   pipeline: Observable<Pipeline>;
-  scripts: Observable<PipelineScript[]>;
-  selectedScript: PipelineScript;
+  pipelines: Observable<PublishedPipelineView[]>;
+  selectedPipeline: PublishedPipelineView;
 
   constructor(
     private pipelineService: PipelineService,
@@ -27,15 +28,24 @@ export class PipelinePublishingHistoryComponent {
     this.pipeline = pipelineId.pipe(
       mergeMap(id => this.pipelineService.getPipeline(id))
     );
-    this.scripts = pipelineId.pipe(
-      mergeMap(id => this.pipelineService.getPublishedPipelineScripts(id)),
-      tap(scripts => {
-        this.selectedScript = scripts[0];
+    this.pipelines = this.pipeline.pipe(
+      mergeMap(pipeline =>
+        this.pipelineService.getPublishedPipelines(pipeline.code).pipe(
+          map(serverPipelines =>
+            serverPipelines.map(serverPipeline => ({
+              ...serverPipeline,
+              active: pipeline.activeVersion === serverPipeline.version
+            }))
+          )
+        )
+      ),
+      tap(([first]) => {
+        this.selectedPipeline = first;
       })
     );
   }
 
-  onScriptSelect(script: PipelineScript): void {
-    this.selectedScript = script;
+  onPipelineSelect(pipeline: PublishedPipelineView): void {
+    this.selectedPipeline = pipeline;
   }
 }

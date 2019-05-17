@@ -1,14 +1,14 @@
 <ng-container
   *ngIf="
-    (pipeline | async) && (scripts | async) && selectedScript;
+    (pipeline | async) != null && (scripts | async) != null && selectedScript;
     else loading
   "
 >
   <pipeline-published-scripts
     [pipeline]="pipeline | async"
-    [scripts]="scripts | async"
-    [selectedScript]="selectedScript"
-    (scriptSelect)="onScriptSelect($event)"
+    [pipelines]="scripts | async"
+    [selectedPipeline]="selectedScript"
+    (pipelineSelect)="onPipelineSelect($event)"
   ></pipeline-published-scripts>
 </ng-container>
 <ng-template #loading>

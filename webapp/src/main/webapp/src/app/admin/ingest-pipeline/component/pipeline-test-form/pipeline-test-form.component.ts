@@ -28,6 +28,9 @@ export class PipelineTestFormComponent implements OnDestroy {
   }
 
   @Input()
+  readonly: boolean;
+
+  @Input()
   inputType: InputType;
 
   @Output()

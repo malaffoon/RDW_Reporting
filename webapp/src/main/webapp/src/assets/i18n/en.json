@@ -1575,8 +1575,7 @@
     "heading": "{{pipelineName}} Publishing History"
   },
   "pipeline-published-scripts": {
-    "open": "Open",
-    "republish": "Republish"
+    "no-scripts": "No user scripts have been published"
   },
   "score-table": {
     "average-scale-score": "Average Scale Score",

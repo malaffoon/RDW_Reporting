@@ -18,7 +18,7 @@ export const ingestPipelineRoutes = [
     pathMatch: 'prefix',
     data: {
       breadcrumb: { translate: 'pipelines.heading' },
-      permissions: ['INDIVIDUAL_PII_READ'], // TODO update this
+      permissions: ['PIPELINE_READ'],
       denyAccess: true
     },
     canActivate: [AuthorizationCanActivate],
