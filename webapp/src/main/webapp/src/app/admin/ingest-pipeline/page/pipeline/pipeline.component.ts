@@ -15,7 +15,6 @@ import {
   PipelineScript,
   PipelineTest,
   PipelineTestRun,
-  PublishedPipeline,
   ScriptError
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
@@ -317,7 +316,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.testState = 'Compiling';
     this.compilationState = null;
     this.pipelineService
-      .compilePipelineScript(pipeline.script.body)
+      .compilePipelineScript(
+        this.items.find(({ type }) => type === 'Script').value.body
+      )
       .subscribe(errors => {
         this.compilationErrors.next(errors);
         if (errors.length === 0) {
