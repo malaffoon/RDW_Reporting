@@ -3,8 +3,6 @@ apply plugin: 'org.springframework.boot'
 ext['groovy.version'] = '2.5.6'
 
 dependencies {
-//    compile 'org.jdom:jdom2:2.0.5'
-
     compile project(':rdw-reporting-common')
     compile project(':rdw-reporting-common-web')
     compile 'org.opentestsystem.rdw.common:rdw-common-archive'
