@@ -4,10 +4,7 @@
       <div #itemElement>
         <pipeline-item
           name="{{ 'pipeline-explorer.script' | translate }}"
-          description="{{
-            'ingest-pipeline.' + item.value.pipelineCode + '.description'
-              | translate
-          }}"
+          [description]="item.value.name"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
         >

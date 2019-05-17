@@ -28,8 +28,7 @@ import {
 } from '../../component/code-editor/code-editor.component';
 import {
   Item,
-  ItemType,
-  PipelineScriptView
+  ItemType
 } from '../../component/pipeline-explorer/pipeline-explorer.component';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
@@ -38,6 +37,7 @@ import { isValidPipelineTest } from '../../model/pipelines';
 import { UserService } from '../../../../user/user.service';
 import { isNullOrBlank } from '../../../../shared/support/support';
 import { of } from 'rxjs/internal/observable/of';
+import { TranslateService } from '@ngx-translate/core';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -51,12 +51,15 @@ function compilationErrorToMessage(value: ScriptError): Message {
 }
 
 function createItems(
-  pipeline: Pipeline
-): Item<PipelineScriptView | PipelineTest>[] {
+  pipeline: Pipeline,
+  translateService: TranslateService
+): Item<PipelineScript | PipelineTest>[] {
   return [
     createItem('Script', {
-      pipelineCode: pipeline.code,
-      ...pipeline.script
+      ...pipeline.script,
+      name: translateService.instant(
+        `ingest-pipeline.${pipeline.code}.description`
+      )
     }),
     ...pipeline.tests.map(value => createItem('Test', value))
   ];
@@ -114,7 +117,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private pipelineService: PipelineService,
-    private userService: UserService
+    private userService: UserService,
+    private translateService: TranslateService
   ) {
     const pipeline = this.route.params.pipe(
       mergeMap(({ id }) => this.pipelineService.getPipeline(Number(id)))
@@ -165,7 +169,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.published =
             publishedScript != null &&
             publishedScript.body === pipeline.script.body;
-          this.items = createItems(pipeline);
+          this.items = createItems(pipeline, this.translateService);
           this.setSelectedItem(this.items[0]);
           this.updateButtonStates();
         }
@@ -345,7 +349,11 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         output: ''
       };
       this.setPipelineTests([test, ...this.pipeline.tests]);
-      this.items = [createItem('Test', test, true), ...this.items];
+      this.items = [
+        ...this.items.filter(({ type }) => type === 'Script'),
+        createItem('Test', test, true),
+        ...this.items.filter(({ type }) => type === 'Test')
+      ];
       // select added item
       this.selectedItem = this.items.find(
         ({ type, value: { id } }) => type === 'Test' && id === test.id
