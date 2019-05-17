@@ -13,6 +13,7 @@ import { ConfigurationProperty } from '../model/configuration-property';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { flattenJsonObject } from '../../../shared/support/support';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
+import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 
 @Component({
   selector: 'new-tenant',
@@ -23,74 +24,53 @@ export class NewTenantConfigurationComponent {
   // Contains the full list of localization overrides, with default values
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
-  configurationProperties: ConfigurationProperty[] = [];
+  configurationProperties: any;
 
   constructor(
     private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
-    private router: Router,
-    private settingsService: ApplicationSettingsService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.tenantForm = this.formBuilder.group({
+      key: [
+        null,
+        [
+          Validators.required,
+          CustomValidators.tenantKey,
+          Validators.minLength(1),
+          Validators.maxLength(20)
+        ]
+      ],
       label: [null, CustomValidators.notBlank],
       description: [null],
-      configurationProperties: this.formBuilder.array([]),
+      configurationProperties: this.formBuilder.group({}),
       localizationOverrides: this.formBuilder.array([])
     });
 
     this.mapLocalizationOverrides();
 
-    this.settingsService.getSettings().subscribe(configProperties => {
-      const configPropertiesFormArray = <FormArray>(
-        this.tenantForm.controls['configurationProperties']
+    this.service
+      .getDefaultConfigurationProperties()
+      .subscribe(
+        configProperties =>
+          (this.configurationProperties = mapConfigurationProperties(
+            configProperties
+          ))
       );
-      let flattenedConfigProperties = flattenJsonObject(configProperties);
-      Object.keys(flattenedConfigProperties).forEach(key => {
-        const val = flattenedConfigProperties[key] || '';
-        this.configurationProperties.push(new ConfigurationProperty(key, val));
-        configPropertiesFormArray.push(new FormControl(val));
-      });
-    });
-  }
-
-  private mapLocalizationOverrides() {
-    this.translationLoader
-      // TODO: Use the proper configured language code, do not hardcode english
-      .getFlattenedTranslations('en')
-      .subscribe(translations => {
-        let locationOverrideFormArray = <FormArray>(
-          this.tenantForm.controls['localizationOverrides']
-        );
-        for (let key in translations) {
-          // check also if property is not inherited from prototype
-          if (translations.hasOwnProperty(key)) {
-            let value = translations[key];
-            this.localizationOverrides.push(
-              new ConfigurationProperty(key, value)
-            );
-            locationOverrideFormArray.controls.push(new FormControl(value));
-          }
-        }
-      });
   }
 
   onSubmit(): void {
-    //TODO: This key should be generated in the database. Remove this once the backend is in place
-    const randomCode = Math.floor(Math.random() * 9999999) + 1000000;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    const modifiedConfigurationProperties = this.configurationProperties.filter(
-      property => property.originalValue !== property.value
-    );
     const newTenant = {
       ...this.tenantForm.value,
-      code: randomCode,
+      code: this.tenantForm.get('key').value,
       localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: modifiedConfigurationProperties
+      configurationProperties: this.configurationProperties
     };
     this.service.create(newTenant);
     this.router.navigate(['tenants']);
@@ -126,5 +106,26 @@ export class NewTenantConfigurationComponent {
       this.configurationProperties.indexOf(property)
     ];
     existingProperty.value = newVal;
+  }
+
+  private mapLocalizationOverrides() {
+    this.translationLoader
+      // TODO: Use the proper configured language code, do not hardcode english
+      .getFlattenedTranslations('en')
+      .subscribe(translations => {
+        let locationOverrideFormArray = <FormArray>(
+          this.tenantForm.controls['localizationOverrides']
+        );
+        for (let key in translations) {
+          // check also if property is not inherited from prototype
+          if (translations.hasOwnProperty(key)) {
+            let value = translations[key];
+            this.localizationOverrides.push(
+              new ConfigurationProperty(key, value)
+            );
+            locationOverrideFormArray.controls.push(new FormControl(value));
+          }
+        }
+      });
   }
 }

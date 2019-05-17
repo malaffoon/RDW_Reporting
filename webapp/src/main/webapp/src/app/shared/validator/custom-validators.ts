@@ -15,6 +15,31 @@ export class CustomValidators {
       : null;
   }
 
+  /**
+   * A static validator that checks for a valid tenant key. A tenant key has the following requirements:
+   *
+   * 1. Cannot start with an underscore or dash
+   * 2. Can only contain alpha and numeric characters, along with underscores and dashes. No spaces.
+   *
+   * @param control
+   * @returns an error if the control value is null or contains invalid characters
+   */
+  static tenantKey(control: FormControl): { tenantKeyInvalid: boolean } | null {
+    const regex = /^[a-zA-Z0-9_\-]*$/;
+
+    if (control.value == null) {
+      return { tenantKeyInvalid: true };
+    } else if (
+      regex.test(control.value) &&
+      !control.value.startsWith('-') &&
+      !control.value.startsWith('_')
+    ) {
+      return null;
+    }
+
+    return { tenantKeyInvalid: true };
+  }
+
   private static isBlank(value: string): boolean {
     return value == null || value.trim().length === 0;
   }

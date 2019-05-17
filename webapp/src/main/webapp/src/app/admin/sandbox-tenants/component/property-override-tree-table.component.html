@@ -1,0 +1,119 @@
+<div [formGroup]="form">
+  <div [formArrayName]="propertiesArrayName">
+    <p-treeTable
+      #tt
+      [value]="configurationPropertiesTreeNodes"
+      dataKey="key"
+      [scrollable]="true"
+      scrollHeight="400px"
+      [globalFilterFields]="['key', 'value']"
+      styleClass="table table-striped table-hover overflow rdw-scrollable-table"
+      [paginator]="true"
+      [alwaysShowPaginator]="false"
+      [rows]="20"
+    >
+      <ng-template pTemplate="caption">
+        <div class="row">
+          <div class="col-md-9">
+            <i class="fa fa-search"></i>
+            <input
+              type="text"
+              class="form-control"
+              pInputText
+              size="50"
+              placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+              (input)="tt.filterGlobal($event.target.value, 'contains')"
+            />
+          </div>
+          <div class="col-md-3 modified-properties-container">
+            <label class="inline-label">
+              <input
+                type="checkbox"
+                [(ngModel)]="showModifiedPropertiesOnly"
+                [ngModelOptions]="{ standalone: true }"
+              />
+              {{ 'sandbox-config.config-properties.modified' | translate }}
+            </label>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-i="rowIndex">
+        <!-- Parent Row -->
+        <tr
+          *ngIf="
+            !rowNode.node.leaf &&
+            ((showModifiedPropertiesOnly &&
+              childrenHaveOverrides(rowNode.node)) ||
+              !showModifiedPropertiesOnly)
+          "
+          [ttRow]="rowNode"
+        >
+          <td
+            [title]="rowNode.node.data.key"
+            colspan="2"
+            [ngClass]="{ 'group-node': rowNode.node.data.groupNode }"
+            (click)="expandOrCollapse(rowNode.node)"
+          >
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            <ng-container *ngIf="!rowNode.node.data.groupNode">{{
+              rowNode.node.data.key
+            }}</ng-container>
+            <ng-container *ngIf="rowNode.node.data.groupNode">{{
+              'tenant-config.properties.' + rowNode.node.data.key | translate
+            }}</ng-container>
+          </td>
+        </tr>
+        <!-- Leaf Row -->
+        <tr
+          *ngIf="
+            rowNode.node.leaf &&
+            ((showModifiedPropertiesOnly &&
+              rowNode.node.data.originalValue !== rowNode.node.data.value) ||
+              !showModifiedPropertiesOnly)
+          "
+          [ttRow]="rowNode"
+          [ngClass]="{
+            modified:
+              rowNode.node.data.value !== rowNode.node.data.originalValue
+          }"
+          (click)="overrideInput.focus()"
+        >
+          <td [title]="rowNode.node.data.key">
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            {{ rowNode.node.data.key }}
+          </td>
+          <td>
+            <input
+              #overrideInput
+              type="text"
+              [value]="rowNode.node.data.value"
+              [formControlName]="rowNode.node.data.formControlName"
+              (change)="updateOverride(rowNode.node.data)"
+              class="property-input"
+            />
+            <i
+              class="fa fa-undo fa-md"
+              *ngIf="
+                rowNode.node.data.value !== rowNode.node.data.originalValue
+              "
+              (click)="resetClicked(rowNode.node.data)"
+            ></i>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="2">
+            {{ 'sandbox-config.config-properties.empty' | translate }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</div>

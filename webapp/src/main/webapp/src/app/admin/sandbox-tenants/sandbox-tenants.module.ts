@@ -10,7 +10,7 @@ import { SandboxService } from './service/sandbox.service';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
-import { AccordionModule } from 'primeng/primeng';
+import { AccordionModule, TreeTableModule } from 'primeng/primeng';
 import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
 import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
 import { ArchiveSandboxConfigurationModalComponent } from './modal/archive-sandbox.modal';
@@ -20,6 +20,7 @@ import { TenantService } from './service/tenant.service';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 import { TenantConfigurationComponent } from './pages/tenant.component';
 import { TenantConfigurationDetailsComponent } from './component/tenant-details.component';
+import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { TenantConfigurationDetailsComponent } from './component/tenant-details.
     DeleteTenantConfigurationModalComponent,
     ArchiveSandboxConfigurationModalComponent,
     PropertyOverrideTableComponent,
+    PropertyOverrideTreeTableComponent,
     ResetDataModalComponent
   ],
   entryComponents: [
@@ -51,6 +53,7 @@ import { TenantConfigurationDetailsComponent } from './component/tenant-details.
     ReactiveFormsModule,
     HttpClientModule,
     TableModule,
+    TreeTableModule,
     ModalModule.forRoot()
   ],
   exports: [
