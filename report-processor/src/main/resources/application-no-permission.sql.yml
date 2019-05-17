@@ -33,17 +33,10 @@ sql:
       ${sql.reportProcessor.snippet.selectFromUserReport}
       where r.id = :report_id
 
-    findAllOlderThanNumberOfDays: >-
-      ${sql.reportProcessor.snippet.selectFromUserReport}
-      where r.created < date_sub(now(), interval :number_of_days day)
-
     deleteByUserAndId: >-
       delete from user_report
       where id = :id
         and user_login = :user_login
-
-    deleteByIds: >-
-      delete from `user_report` WHERE `id` in (:ids)
 
     completeChunk: >-
       update user_report_metadata
