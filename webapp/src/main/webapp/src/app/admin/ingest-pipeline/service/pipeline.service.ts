@@ -64,6 +64,10 @@ export class PipelineService {
     return this.dataService.get(`${ResourceRoute}/${pipelineId}`);
   }
 
+  updatePipeline(pipeline: Pipeline): Observable<Pipeline> {
+    return this.dataService.put(`${ResourceRoute}`, pipeline);
+  }
+
   getPipelineScripts(pipelineId: number): Observable<PipelineScript[]> {
     return this.dataService
       .get(`${ResourceRoute}/${pipelineId}/scripts`)

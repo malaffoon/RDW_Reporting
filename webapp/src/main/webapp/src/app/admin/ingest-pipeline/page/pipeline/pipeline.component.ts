@@ -35,6 +35,9 @@ import { UserService } from '../../../../user/user.service';
 import { isNullOrBlank } from '../../../../shared/support/support';
 import { of } from 'rxjs/internal/observable/of';
 import { TranslateService } from '@ngx-translate/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { DeleteModalComponent } from '../../../../report/component/delete-modal/delete-modal.component';
+import { DatePipe } from '@angular/common';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -74,7 +77,8 @@ function createItem<T>(type: ItemType, value: T, changed = false): Item<T> {
 @Component({
   selector: 'pipeline',
   templateUrl: './pipeline.component.html',
-  styleUrls: ['./pipeline.component.less']
+  styleUrls: ['./pipeline.component.less'],
+  providers: [DatePipe]
 })
 export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   pipeline: Pipeline;
@@ -115,7 +119,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     private router: Router,
     private pipelineService: PipelineService,
     private userService: UserService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private datePipe: DatePipe,
+    private modalService: BsModalService
   ) {
     const pipeline = this.route.params.pipe(
       mergeMap(({ id }) => this.pipelineService.getPipeline(Number(id)))
@@ -388,30 +394,44 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   }
 
   onTestDelete(item: Item<PipelineTest>): void {
-    // used to select the next available item
-    const deletedTestIndex = this.items.findIndex(x => x === item);
+    const modalReference: BsModalRef = this.modalService.show(
+      DeleteModalComponent
+    );
+    const modal: DeleteModalComponent = modalReference.content;
+    modal.messageId = 'delete-modal.body-generic';
+    modal.name = isNullOrBlank(item.value.name)
+      ? this.datePipe.transform(item.value.createdOn, 'medium')
+      : item.value.name;
+    modal.deleted.subscribe(() => {
+      // used to select the next available item
+      const deletedTestIndex = this.items.findIndex(x => x === item);
 
-    const onDelete = () => {
-      // remove the item and test
-      this.setPipelineTests(this.pipeline.tests.filter(x => x !== item.value));
-      this.items = this.items.filter(x => x !== item);
+      const onDelete = () => {
+        // remove the item and test
+        this.setPipelineTests(
+          this.pipeline.tests.filter(x => x !== item.value)
+        );
+        this.items = this.items.filter(x => x !== item);
 
-      // select the next available item
-      const nextTestItem = this.items.find(
-        (x, index) =>
-          x !== item && x.type === 'Test' && index >= deletedTestIndex
-      );
-      this.setSelectedItem(nextTestItem != null ? nextTestItem : this.items[0]);
-    };
+        // select the next available item
+        const nextTestItem = this.items.find(
+          (x, index) =>
+            x !== item && x.type === 'Test' && index >= deletedTestIndex
+        );
+        this.setSelectedItem(
+          nextTestItem != null ? nextTestItem : this.items[0]
+        );
+      };
 
-    if (item.value.id != null) {
-      // TODO launch modal
-      this.pipelineService.deletePipelineTest(item.value).subscribe(() => {
+      if (item.value.id != null) {
+        // TODO launch modal
+        this.pipelineService.deletePipelineTest(item.value).subscribe(() => {
+          onDelete();
+        });
+      } else {
         onDelete();
-      });
-    } else {
-      onDelete();
-    }
+      }
+    });
   }
 
   onItemSelected(item: Item): void {
@@ -419,7 +439,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     // lazy load item content
     if (
       item.type === 'Script' &&
-      (item.value.id != null || item.value.body == null)
+      (item.value.id != null && item.value.body == null)
     ) {
       this.selectedItemLoading = true;
       this.pipelineService
@@ -437,7 +457,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         });
     } else if (
       item.type === 'Test' &&
-      (item.value.id != null || item.value.input == null)
+      (item.value.id != null && item.value.input == null)
     ) {
       this.selectedItemLoading = true;
       this.pipelineService
