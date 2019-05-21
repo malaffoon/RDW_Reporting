@@ -394,44 +394,39 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   }
 
   onTestDelete(item: Item<PipelineTest>): void {
-    const modalReference: BsModalRef = this.modalService.show(
-      DeleteModalComponent
-    );
-    const modal: DeleteModalComponent = modalReference.content;
-    modal.messageId = 'delete-modal.body-generic';
-    modal.name = isNullOrBlank(item.value.name)
-      ? this.datePipe.transform(item.value.createdOn, 'medium')
-      : item.value.name;
-    modal.deleted.subscribe(() => {
-      // used to select the next available item
-      const deletedTestIndex = this.items.findIndex(x => x === item);
+    // used to select the next available item
+    const deletedTestIndex = this.items.findIndex(x => x === item);
 
-      const onDelete = () => {
-        // remove the item and test
-        this.setPipelineTests(
-          this.pipeline.tests.filter(x => x !== item.value)
-        );
-        this.items = this.items.filter(x => x !== item);
+    const onDelete = () => {
+      // remove the item and test
+      this.setPipelineTests(this.pipeline.tests.filter(x => x !== item.value));
+      this.items = this.items.filter(x => x !== item);
 
-        // select the next available item
-        const nextTestItem = this.items.find(
-          (x, index) =>
-            x !== item && x.type === 'Test' && index >= deletedTestIndex
-        );
-        this.setSelectedItem(
-          nextTestItem != null ? nextTestItem : this.items[0]
-        );
-      };
+      // select the next available item
+      const nextTestItem = this.items.find(
+        (x, index) =>
+          x !== item && x.type === 'Test' && index >= deletedTestIndex
+      );
+      this.setSelectedItem(nextTestItem != null ? nextTestItem : this.items[0]);
+    };
 
-      if (item.value.id != null) {
-        // TODO launch modal
+    if (item.value.id != null) {
+      const modalReference: BsModalRef = this.modalService.show(
+        DeleteModalComponent
+      );
+      const modal: DeleteModalComponent = modalReference.content;
+      modal.messageId = 'delete-modal.body-generic';
+      modal.name = isNullOrBlank(item.value.name)
+        ? this.datePipe.transform(item.value.createdOn, 'medium')
+        : item.value.name;
+      modal.deleted.subscribe(() => {
         this.pipelineService.deletePipelineTest(item.value).subscribe(() => {
           onDelete();
         });
-      } else {
-        onDelete();
-      }
-    });
+      });
+    } else {
+      onDelete();
+    }
   }
 
   onItemSelected(item: Item): void {
