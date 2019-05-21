@@ -240,7 +240,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     observable.subscribe(script => {
       this.saving = false;
-      item.value = script;
+      item.value = {
+        ...script,
+        name: item.value.name
+      };
       item.lastSavedValue = cloneDeep(script);
       item.changed = false;
       this.updateButtonStates();
