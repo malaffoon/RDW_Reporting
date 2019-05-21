@@ -246,10 +246,11 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     observable.subscribe(script => {
       this.saving = false;
-      item.value = {
+      script = {
         ...script,
         name: item.value.name
       };
+      item.value = script;
       item.lastSavedValue = cloneDeep(script);
       item.changed = false;
       this.updateButtonStates();
@@ -339,8 +340,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.testState = 'Testing';
           this.pipelineService
             .runPipelineTest(pipeline.id, test.id)
-            .subscribe(run => {
-              this.testRuns = [run];
+            .subscribe(runs => {
+              this.testRuns = runs;
               this.testState = null;
             });
         } else {
