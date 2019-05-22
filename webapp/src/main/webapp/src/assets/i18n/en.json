@@ -74,7 +74,7 @@
       "elas-info": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
       "language-placeholder": "Enter language",
       "interim-administration-condition-label": "Manner of Administration",
-      "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
+      "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Nonstandardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
       "school-year-label": "Academic Year",
       "school-years-label": "Academic Years",
       "school-year-empty-error": "Please select a school year.",
@@ -522,7 +522,7 @@
     "filters": {
       "status": {
         "administration": "Manner of Administration (Interim)",
-        "administration-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
+        "administration-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Nonstandardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
         "label": "Status",
         "summative": "Valid/Invalid (Summative)",
         "summative-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.  "
@@ -551,7 +551,7 @@
       "test": {
         "label": "Test",
         "off-grade-assessment": "Off-Grade Assessments",
-        "off-grade-assessment-info": "Schools may administer interim assessments for any grade.  This filter indicates that a student took an assessment for a grade other than their assigned grade.",
+        "off-grade-assessment-info": "Schools may administer interim assessments for any grade.  This filter indicates that a student took an assessment for a grade other than the student's assigned grade.",
         "transfer-assessment": "New Students",
         "transfer-assessment-info": "Indicates whether to show or hide assessments administered outside of the User's standard institutions."
       }
