@@ -125,7 +125,6 @@ export function toScoreTable(
     subjectDefinition
   );
 
-  console.log('LANDON 1', scoreType, subjectDefinition);
   // correct code order to data order so data is not mis-assigned
   const scoreDefinition =
     dataOrderedScoreCodes != null
@@ -136,8 +135,6 @@ export function toScoreTable(
             .sort(ordering(ranking(dataOrderedScoreCodes)).compare)
         }
       : scoreDefinitionWithDisplayOrderedCodes;
-
-  console.log('LANDON 2', scoreDefinition);
 
   const statistics = scoreStatistics(examScaleScores, scoreDefinition).map(
     value => {
