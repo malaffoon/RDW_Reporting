@@ -1,0 +1,7 @@
+tenant-configuration-git-client:
+  local-repository-path: /tmp/rdw_config
+  #remote-repository-uri:
+  #git-username:
+  #git-password:
+  author: "Zaphod Beeblebrox"
+  author-email: "zaphodb@example.com"
