@@ -1,4 +1,4 @@
-tenant-configuration-git-client:
+tenant-configuration-persistence:
   local-repository-path: /tmp/rdw_config
   #remote-repository-uri:
   #git-username:
