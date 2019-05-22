@@ -35,6 +35,9 @@ import { UserService } from '../../../../user/user.service';
 import { isNullOrBlank } from '../../../../shared/support/support';
 import { of } from 'rxjs/internal/observable/of';
 import { TranslateService } from '@ngx-translate/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { DeleteModalComponent } from '../../../../report/component/delete-modal/delete-modal.component';
+import { DatePipe } from '@angular/common';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -74,7 +77,8 @@ function createItem<T>(type: ItemType, value: T, changed = false): Item<T> {
 @Component({
   selector: 'pipeline',
   templateUrl: './pipeline.component.html',
-  styleUrls: ['./pipeline.component.less']
+  styleUrls: ['./pipeline.component.less'],
+  providers: [DatePipe]
 })
 export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   pipeline: Pipeline;
@@ -115,7 +119,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     private router: Router,
     private pipelineService: PipelineService,
     private userService: UserService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private datePipe: DatePipe,
+    private modalService: BsModalService
   ) {
     const pipeline = this.route.params.pipe(
       mergeMap(({ id }) => this.pipelineService.getPipeline(Number(id)))
@@ -240,6 +246,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     observable.subscribe(script => {
       this.saving = false;
+      script = {
+        ...script,
+        name: item.value.name
+      };
       item.value = script;
       item.lastSavedValue = cloneDeep(script);
       item.changed = false;
@@ -330,8 +340,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.testState = 'Testing';
           this.pipelineService
             .runPipelineTest(pipeline.id, test.id)
-            .subscribe(run => {
-              this.testRuns = [run];
+            .subscribe(runs => {
+              this.testRuns = runs;
               this.testState = null;
             });
         } else {
@@ -402,9 +412,18 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     };
 
     if (item.value.id != null) {
-      // TODO launch modal
-      this.pipelineService.deletePipelineTest(item.value).subscribe(() => {
-        onDelete();
+      const modalReference: BsModalRef = this.modalService.show(
+        DeleteModalComponent
+      );
+      const modal: DeleteModalComponent = modalReference.content;
+      modal.messageId = 'delete-modal.body-generic';
+      modal.name = isNullOrBlank(item.value.name)
+        ? this.datePipe.transform(item.value.createdOn, 'medium')
+        : item.value.name;
+      modal.deleted.subscribe(() => {
+        this.pipelineService.deletePipelineTest(item.value).subscribe(() => {
+          onDelete();
+        });
       });
     } else {
       onDelete();
@@ -416,7 +435,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     // lazy load item content
     if (
       item.type === 'Script' &&
-      (item.value.id != null || item.value.body == null)
+      (item.value.id != null && item.value.body == null)
     ) {
       this.selectedItemLoading = true;
       this.pipelineService
@@ -434,7 +453,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         });
     } else if (
       item.type === 'Test' &&
-      (item.value.id != null || item.value.input == null)
+      (item.value.id != null && item.value.input == null)
     ) {
       this.selectedItemLoading = true;
       this.pipelineService
