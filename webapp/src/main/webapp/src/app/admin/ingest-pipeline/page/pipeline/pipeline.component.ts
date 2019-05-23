@@ -399,9 +399,15 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     const deletedTestIndex = this.items.findIndex(x => x === item);
 
     const onDelete = () => {
-      // remove the item and test
-      this.setPipelineTests(this.pipeline.tests.filter(x => x !== item.value));
+      // remove the item
       this.items = this.items.filter(x => x !== item);
+
+      // remove test from pipeline (TODO not sure this is needed anymore)
+      this.setPipelineTests(
+        this.pipeline.tests.filter(
+          x => x !== item.value && x.id !== item.value.id
+        )
+      );
 
       // select the next available item
       const nextTestItem = this.items.find(
@@ -488,31 +494,32 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     this.saveButtonDisabledTooltipCode = '';
 
+    const scripts = this.items.filter(({ type }) => type === 'Script');
+    const tests = this.items.filter(({ type }) => type === 'Test');
+
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
     // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
     const hasUnsavedChanges =
-      this.items.some(({ type, changed }) => type === 'Script' && changed) ||
+      scripts.some(({ changed }) => changed) ||
       (this.selectedItem.type === 'Script'
-        ? this.items.some(({ type, changed }) => type === 'Test' && changed)
+        ? tests.some(({ changed }) => changed)
         : this.selectedItem.changed);
 
     // dont run
     const hasInvalidTests =
       this.selectedItem.type === 'Test'
         ? !isValidPipelineTest(this.selectedItem.value)
-        : this.items.some(
-            ({ type, value }) => type === 'Test' && !isValidPipelineTest(value)
-          );
+        : tests.some(({ value }) => !isValidPipelineTest(value));
 
     this.testButtonDisabled =
       this.testState != null ||
-      this.pipeline.tests.length === 0 ||
+      tests.length === 0 ||
       hasInvalidTests ||
       hasUnsavedChanges;
 
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
-      : this.pipeline.tests.length === 0
+      : tests.length === 0
       ? 'pipeline.no-tests'
       : hasInvalidTests
       ? 'pipeline.invalid-tests'
@@ -523,7 +530,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.publishButtonDisabled =
       this.publishState != null ||
       this.published ||
-      this.pipeline.tests.length === 0 ||
+      tests.length === 0 ||
       hasInvalidTests ||
       this.items.some(({ changed }) => changed);
 
