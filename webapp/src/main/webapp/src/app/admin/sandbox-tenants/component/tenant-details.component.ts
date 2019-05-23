@@ -16,6 +16,7 @@ import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { NotificationService } from '../../../shared/notification/notification.service';
+import { TenantStore } from '../store/tenant.store';
 
 @Component({
   selector: 'tenant-details-config',
@@ -28,8 +29,8 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
   tenant: TenantConfiguration;
   @Output()
   deleteClicked: EventEmitter<TenantConfiguration> = new EventEmitter();
-  @Output()
-  tenantUpdated: EventEmitter<TenantConfiguration> = new EventEmitter();
+  // @Output()
+  // tenantUpdated: EventEmitter<TenantConfiguration> = new EventEmitter();
 
   expanded = false;
   editMode = false;
@@ -42,6 +43,7 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
   constructor(
     private translateService: TranslateService,
     private service: TenantService,
+    private store: TenantStore,
     private formBuilder: FormBuilder,
     private notificationService: NotificationService
   ) {}
@@ -88,13 +90,18 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
       configurationProperties: this.tenant.configurationProperties
     };
 
-    this.service
-      .update(updatedTenant)
-      .subscribe(
-        () => this.tenantUpdated.emit(),
-        error =>
-          this.notificationService.error({ id: 'tenant-config.errors.update' })
-      );
+    this.service.update(updatedTenant).subscribe(
+      () => {
+        // this.store.state.find()
+        this.store.setState(
+          this.store.state.map(existing =>
+            existing.code === updatedTenant.code ? updatedTenant : existing
+          )
+        );
+      },
+      error =>
+        this.notificationService.error({ id: 'tenant-config.errors.update' })
+    );
     this.editMode = false;
   }
 
@@ -109,12 +116,14 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
   }
 
   private initializeForm(): void {
-    this.tenantForm = this.formBuilder.group({
-      label: [this.tenant.label, CustomValidators.notBlank],
-      description: [this.tenant.description],
-      configurationProperties: this.formBuilder.group({}),
-      localizationOverrides: this.formBuilder.array([])
-    });
+    if (!this.tenantForm) {
+      this.tenantForm = this.formBuilder.group({
+        label: [this.tenant.label, CustomValidators.notBlank],
+        description: [this.tenant.description],
+        configurationProperties: this.formBuilder.group({}),
+        localizationOverrides: this.formBuilder.array([])
+      });
+    }
   }
 
   private mapLocalizationOverrides(localizationDefaults: any): void {

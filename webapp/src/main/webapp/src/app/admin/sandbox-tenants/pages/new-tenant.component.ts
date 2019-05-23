@@ -14,6 +14,7 @@ import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 import { PropertyOverrideTreeTableComponent } from '../component/property-override-tree-table.component';
 import { NotificationService } from '../../../shared/notification/notification.service';
+import { TenantStore } from '../store/tenant.store';
 
 @Component({
   selector: 'new-tenant',
@@ -34,6 +35,7 @@ export class NewTenantConfigurationComponent {
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
     private router: Router,
+    private store: TenantStore,
     private notificationService: NotificationService
   ) {}
 
@@ -76,13 +78,14 @@ export class NewTenantConfigurationComponent {
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };
-    this.service
-      .create(newTenant)
-      .subscribe(
-        () => this.router.navigate(['tenants']),
-        error =>
-          this.notificationService.error({ id: 'tenant-config.errors.create' })
-      );
+    this.service.create(newTenant).subscribe(
+      createdTenant => {
+        this.store.setState([createdTenant, ...this.store.state]);
+        this.router.navigate(['tenants']);
+      },
+      error =>
+        this.notificationService.error({ id: 'tenant-config.errors.create' })
+    );
   }
 
   updateOverride(override: ConfigurationProperty, index: number): void {

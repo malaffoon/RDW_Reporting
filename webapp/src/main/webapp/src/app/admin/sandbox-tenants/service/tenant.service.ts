@@ -7,7 +7,7 @@ import { catchError, map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import { ResponseUtils } from '../../../shared/response-utils';
 
-const ServiceRoute = `${AdminServiceRoute}/tenants`;
+const ResourceRoute = `${AdminServiceRoute}/tenants`;
 
 /**
  * Service responsible for managing organization embargo settings
@@ -25,7 +25,7 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(): Observable<any> {
     return this.dataService
-      .get(`${ServiceRoute}/`)
+      .get(`${ResourceRoute}`)
       .pipe(map(apiTenants => apiTenants['applicationTenantConfiguration']));
   }
 
@@ -33,34 +33,39 @@ export class TenantService {
    * Gets all sandbox configurations for the system
    */
   getAll(): Observable<TenantConfiguration[]> {
-    return this.dataService.get(`${ServiceRoute}/`).pipe(
-      map(
-        apiTenants =>
+    return this.dataService
+      .get(`${ResourceRoute}`)
+      .pipe(
+        map(apiTenants =>
           apiTenants.tenants.map(apiTenant =>
             mapTenant(apiTenant, apiTenants['applicationTenantConfiguration'])
-          ) //applicationTenantConfiguration))
-      )
-    );
+          )
+        )
+      );
   }
 
   /**
    * Creates a new tenant
    * @param tenant - The tenant to create
    */
-  create(tenant: TenantConfiguration): Observable<void> {
+  create(tenant: TenantConfiguration): Observable<TenantConfiguration> {
     return this.dataService
-      .post(`${ServiceRoute}`, mapFromTenant(tenant))
-      .pipe(catchError(ResponseUtils.throwError));
+      .post(`${ResourceRoute}`, mapFromTenant(tenant))
+      .pipe(
+        map(() => tenant),
+        catchError(ResponseUtils.throwError)
+      );
   }
 
   /**
    * Updates an existing tenant
    * @param tenant - The tenant to update
    */
-  update(tenant: TenantConfiguration): Observable<void> {
-    return this.dataService
-      .put(`${ServiceRoute}`, mapFromTenant(tenant))
-      .pipe(catchError(ResponseUtils.throwError));
+  update(tenant: TenantConfiguration): Observable<TenantConfiguration> {
+    return this.dataService.put(`${ResourceRoute}`, mapFromTenant(tenant)).pipe(
+      map(() => tenant),
+      catchError(ResponseUtils.throwError)
+    );
   }
 
   /**
@@ -69,7 +74,7 @@ export class TenantService {
    */
   delete(tenantCode: string): Observable<void> {
     return this.dataService
-      .delete(`${ServiceRoute}/${tenantCode}`)
+      .delete(`${ResourceRoute}/${tenantCode}`)
       .pipe(catchError(ResponseUtils.throwError));
   }
 }

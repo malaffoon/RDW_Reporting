@@ -182,9 +182,10 @@ function mapLocalizationOverrides(overrides: any): ConfigurationProperty[] {
 }
 
 function mapFromLocalizationOverrides(overrides: ConfigurationProperty[]): any {
-  let localizationOverrides = {};
-  overrides.forEach(override => {
-    localizationOverrides[override.key] = override.value;
-  });
-  return localizationOverrides;
+  return overrides
+    ? overrides.reduce((localizationOverrides, { key, value }) => {
+        localizationOverrides[key] = value;
+        return localizationOverrides;
+      }, {})
+    : [];
 }

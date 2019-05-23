@@ -6,6 +6,7 @@ import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
 import { DeleteTenantConfigurationModalComponent } from '../modal/delete-tenant.modal';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
+import { TenantStore } from '../store/tenant.store';
 
 @Component({
   selector: 'tenant-config',
@@ -20,6 +21,7 @@ export class TenantConfigurationComponent {
     private translationLoader: RdwTranslateLoader,
     private route: ActivatedRoute,
     private service: TenantService,
+    private store: TenantStore,
     private modalService: BsModalService
   ) {}
 
@@ -36,7 +38,12 @@ export class TenantConfigurationComponent {
   }
 
   getTenants(): void {
-    this.service.getAll().subscribe(tenants => (this.tenants = tenants));
+    this.service.getAll().subscribe(tenants => {
+      this.store.setState(tenants);
+      // this.tenants = tenants
+    });
+
+    this.store.getState().subscribe(tenants => (this.tenants = tenants));
   }
 
   openDeleteTenantModal(tenant: TenantConfiguration) {
@@ -47,7 +54,9 @@ export class TenantConfigurationComponent {
     modal.tenant = tenant;
     this._modalSubscriptions.push(
       modal.deleted.subscribe(() => {
-        this.getTenants();
+        this.store.setState(
+          this.store.state.filter(({ code }) => code !== tenant.code)
+        );
       })
     );
   }
