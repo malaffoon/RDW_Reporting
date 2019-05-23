@@ -65,6 +65,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   expandOrCollapse(node: TreeNode): void {
     node.expanded = !node.expanded;
     // Change detection is not triggered unless the TreeNode array is replaced
+    // TODO: See if we can avoid this hack
     this.configurationPropertiesTreeNodes = cloneDeep(
       this.configurationPropertiesTreeNodes
     );
