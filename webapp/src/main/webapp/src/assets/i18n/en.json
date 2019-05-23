@@ -892,7 +892,13 @@
       "modified": "Show modified properties only",
       "empty": "No configuration properties found"
     },
-    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button"
+    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button",
+    "errors": {
+      "reset": "An unknown error occurred when attempting to reset the sandbox data",
+      "update": "An unknown error occurred when attempting to update the sandbox",
+      "create": "An unknown error occurred when attempting to create the sandbox",
+      "delete": "An unknown error occurred when attempting to delete the sandbox"
+    }
   },
   "tenant-config": {
     "title": "Tenant Configuration",

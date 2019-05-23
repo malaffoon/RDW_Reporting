@@ -10,14 +10,12 @@ import { ResponseUtils } from '../../../shared/response-utils';
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 
 /**
- * Service responsible for managing organization embargo settings
+ * Service responsible for managing tenants
  */
 @Injectable({
   providedIn: 'root'
 })
 export class TenantService {
-  mockData: TenantConfiguration[];
-
   constructor(private dataService: DataService) {}
 
   /**

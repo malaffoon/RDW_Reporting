@@ -13,6 +13,8 @@ import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
+import { SandboxStore } from '../store/sandbox.store';
+import { NotificationService } from '../../../shared/notification/notification.service';
 
 @Component({
   selector: 'new-sandbox',
@@ -28,6 +30,8 @@ export class NewSandboxConfigurationComponent {
 
   constructor(
     private service: SandboxService,
+    private store: SandboxStore,
+    private notificationService: NotificationService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
     private router: Router
@@ -45,7 +49,9 @@ export class NewSandboxConfigurationComponent {
     this.service.getAvailableDataSets().subscribe(dataSets => {
       this.dataSets = dataSets;
     });
+
     this.mapLocalizationOverrides();
+
     this.service
       .getDefaultConfigurationProperties()
       .subscribe(
@@ -56,40 +62,24 @@ export class NewSandboxConfigurationComponent {
       );
   }
 
-  private mapLocalizationOverrides() {
-    this.translationLoader
-      .getFlattenedTranslations('en')
-      .subscribe(translations => {
-        let locationOverrideFormArray = <FormArray>(
-          this.sandboxForm.controls['localizationOverrides']
-        );
-        for (let key in translations) {
-          // check also if property is not inherited from prototype
-          if (translations.hasOwnProperty(key)) {
-            let value = translations[key];
-            this.localizationOverrides.push(
-              new ConfigurationProperty(key, value)
-            );
-            locationOverrideFormArray.controls.push(new FormControl(value));
-          }
-        }
-      });
-  }
-
   onSubmit(): void {
-    //TODO: This key should be generated in the database. Remove this once the backend is in place
-    const randomCode = Math.floor(Math.random() * 9999999) + 1000000;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
     const newSandbox = {
       ...this.sandboxForm.value,
-      code: randomCode,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };
-    this.service.create(newSandbox);
-    this.router.navigate(['sandboxes']);
+
+    this.service.create(newSandbox).subscribe(
+      createdTenant => {
+        this.store.setState([createdTenant, ...this.store.state]);
+        this.router.navigate(['sandboxes']);
+      },
+      error =>
+        this.notificationService.error({ id: 'sandbox-config.errors.create' })
+    );
   }
 
   updateOverride(override: ConfigurationProperty, index: number): void {
@@ -122,5 +112,25 @@ export class NewSandboxConfigurationComponent {
       this.configurationProperties.indexOf(property)
     ];
     existingProperty.value = newVal;
+  }
+
+  private mapLocalizationOverrides() {
+    this.translationLoader
+      .getFlattenedTranslations('en')
+      .subscribe(translations => {
+        let locationOverrideFormArray = <FormArray>(
+          this.sandboxForm.controls['localizationOverrides']
+        );
+        for (let key in translations) {
+          // check also if property is not inherited from prototype
+          if (translations.hasOwnProperty(key)) {
+            let value = translations[key];
+            this.localizationOverrides.push(
+              new ConfigurationProperty(key, value)
+            );
+            locationOverrideFormArray.controls.push(new FormControl(value));
+          }
+        }
+      });
   }
 }

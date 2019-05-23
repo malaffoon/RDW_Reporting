@@ -12,7 +12,6 @@ import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
-import { PropertyOverrideTreeTableComponent } from '../component/property-override-tree-table.component';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { TenantStore } from '../store/tenant.store';
 
@@ -26,9 +25,6 @@ export class NewTenantConfigurationComponent {
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
-
-  @ViewChild('configurationPropertiesTable')
-  configurationPropertiesTable: PropertyOverrideTreeTableComponent;
 
   constructor(
     private service: TenantService,
