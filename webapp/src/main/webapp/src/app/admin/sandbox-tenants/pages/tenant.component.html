@@ -12,11 +12,13 @@
 </page-heading>
 
 <div class="well sandbox-config">
-  <div class="well-body mt-sm">
+  <div class="well-body mt-sm" *ngIf="tenants">
     <div *ngFor="let tenant of tenants">
       <tenant-details-config
         [tenant]="tenant"
+        [localizationDefaults]="localizationDefaults"
         (deleteClicked)="openDeleteTenantModal(tenant)"
+        (tenantUpdated)="getTenants()"
       ></tenant-details-config>
     </div>
     <div *ngIf="tenants.length === 0">

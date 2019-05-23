@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
 import { DeleteTenantConfigurationModalComponent } from '../modal/delete-tenant.modal';
+import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 
 @Component({
   selector: 'tenant-config',
@@ -12,16 +13,29 @@ import { DeleteTenantConfigurationModalComponent } from '../modal/delete-tenant.
 })
 export class TenantConfigurationComponent {
   tenants: TenantConfiguration[];
-
+  localizationDefaults: any;
   private _modalSubscriptions: Subscription[] = [];
 
   constructor(
+    private translationLoader: RdwTranslateLoader,
     private route: ActivatedRoute,
     private service: TenantService,
     private modalService: BsModalService
   ) {}
 
   ngOnInit(): void {
+    this.getTenants();
+    this.getTranslations();
+  }
+
+  getTranslations() {
+    this.translationLoader
+      //TODO: Get the correct language code from somewhere, do not hardcode
+      .getFlattenedTranslations('en')
+      .subscribe(translations => (this.localizationDefaults = translations));
+  }
+
+  getTenants(): void {
     this.service.getAll().subscribe(tenants => (this.tenants = tenants));
   }
 
@@ -32,8 +46,8 @@ export class TenantConfigurationComponent {
     let modal: DeleteTenantConfigurationModalComponent = modalReference.content;
     modal.tenant = tenant;
     this._modalSubscriptions.push(
-      modal.deleted.subscribe(tenant => {
-        console.log(tenant);
+      modal.deleted.subscribe(() => {
+        this.getTenants();
       })
     );
   }

@@ -918,6 +918,12 @@
       "task": "Task",
       "archive": "Archive",
       "aggregator": "Aggregator"
+    },
+    "errors": {
+      "duplicate-key": "A tenant with the same tenant key or ID already exists",
+      "update": "An unknown error occurred when attempting to update the tenant",
+      "create": "An unknown error occurred when attempting to create the tenant",
+      "delete": "An unknown error occurred when attempting to delete the tenant"
     }
   },
   "embargo-alert": {

@@ -82,14 +82,11 @@ export class NewSandboxConfigurationComponent {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    const modifiedConfigurationProperties = this.configurationProperties.filter(
-      property => property.originalValue !== property.value
-    );
     const newSandbox = {
       ...this.sandboxForm.value,
       code: randomCode,
       localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: modifiedConfigurationProperties
+      configurationProperties: this.configurationProperties
     };
     this.service.create(newSandbox);
     this.router.navigate(['sandboxes']);
