@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TenantService } from '../service/tenant.service';
 import {
@@ -10,10 +10,11 @@ import {
 } from '@angular/forms';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { ApplicationSettingsService } from '../../../app-settings.service';
-import { flattenJsonObject } from '../../../shared/support/support';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
+import { PropertyOverrideTreeTableComponent } from '../component/property-override-tree-table.component';
+import { NotificationService } from '../../../shared/notification/notification.service';
+import { TenantStore } from '../store/tenant.store';
 
 @Component({
   selector: 'new-tenant',
@@ -26,11 +27,16 @@ export class NewTenantConfigurationComponent {
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
 
+  @ViewChild('configurationPropertiesTable')
+  configurationPropertiesTable: PropertyOverrideTreeTableComponent;
+
   constructor(
     private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
-    private router: Router
+    private router: Router,
+    private store: TenantStore,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -72,8 +78,14 @@ export class NewTenantConfigurationComponent {
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };
-    this.service.create(newTenant);
-    this.router.navigate(['tenants']);
+    this.service.create(newTenant).subscribe(
+      createdTenant => {
+        this.store.setState([createdTenant, ...this.store.state]);
+        this.router.navigate(['tenants']);
+      },
+      error =>
+        this.notificationService.error({ id: 'tenant-config.errors.create' })
+    );
   }
 
   updateOverride(override: ConfigurationProperty, index: number): void {

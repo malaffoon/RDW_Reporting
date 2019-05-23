@@ -11,11 +11,12 @@
   </ng-template>
 </page-heading>
 
-<div class="well sandbox-config">
-  <div class="well-body mt-sm">
-    <div *ngFor="let tenant of tenants">
+<div class="sandbox-config">
+  <div class="well-group mt-sm" *ngIf="tenants">
+    <div *ngFor="let tenant of tenants" class="well">
       <tenant-details-config
         [tenant]="tenant"
+        [localizationDefaults]="localizationDefaults"
         (deleteClicked)="openDeleteTenantModal(tenant)"
       ></tenant-details-config>
     </div>

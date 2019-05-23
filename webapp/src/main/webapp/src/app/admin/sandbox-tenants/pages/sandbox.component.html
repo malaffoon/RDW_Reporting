@@ -11,9 +11,9 @@
   </ng-template>
 </page-heading>
 
-<div class="well sandbox-config">
-  <div class="well-body mt-sm">
-    <div *ngFor="let sandbox of sandboxes">
+<div class="sandbox-config">
+  <div class="well-group mt-sm">
+    <div *ngFor="let sandbox of sandboxes" class="well">
       <sandbox-details-config
         [sandbox]="sandbox"
         (deleteClicked)="openDeleteSandboxModal(sandbox)"

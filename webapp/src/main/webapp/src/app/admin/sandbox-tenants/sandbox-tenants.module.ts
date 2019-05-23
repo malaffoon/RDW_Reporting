@@ -21,6 +21,7 @@ import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 import { TenantConfigurationComponent } from './pages/tenant.component';
 import { TenantConfigurationDetailsComponent } from './component/tenant-details.component';
 import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table.component';
+import { TenantStore } from './store/tenant.store';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,6 @@ import { PropertyOverrideTreeTableComponent } from './component/property-overrid
     TenantConfigurationComponent,
     NewTenantConfigurationComponent
   ],
-  providers: [SandboxService, TenantService]
+  providers: [SandboxService, TenantService, TenantStore]
 })
 export class SandboxTenantsModule {}
