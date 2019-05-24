@@ -10,7 +10,6 @@ import { TenantService } from '../service/tenant.service';
 import {
   FormBuilder,
   FormGroup,
-  FormArray,
   Validators,
   FormControl
 } from '@angular/forms';
@@ -103,7 +102,6 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
 
   private mapLocalizationOverrides() {
     this.translationLoader
-      // TODO: Use the proper configured language code, do not hardcode english
       .getFlattenedTranslations('en')
       .subscribe(translations => {
         let locationOverrideFormGroup = <FormGroup>(
@@ -113,9 +111,10 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
           // check also if property is not inherited from prototype
           if (translations.hasOwnProperty(key)) {
             let value = translations[key];
-            this.localizationOverrides.push(
+            this.localizationOverrides = [
+              ...this.localizationOverrides,
               new ConfigurationProperty(key, value)
-            );
+            ];
             locationOverrideFormGroup.controls[key] = new FormControl(value);
           }
         }

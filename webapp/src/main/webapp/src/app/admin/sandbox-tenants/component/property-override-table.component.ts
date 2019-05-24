@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { FormGroup } from '@angular/forms';
 import { DataTable } from 'primeng/primeng';
@@ -8,9 +8,27 @@ import { DataTable } from 'primeng/primeng';
   templateUrl: './property-override-table.component.html'
 })
 //TODO: Implement ControlValueAccessor
-export class PropertyOverrideTableComponent implements OnInit {
+export class PropertyOverrideTableComponent {
+  private _configurationProperties: ConfigurationProperty[] = [];
+
+  get configurationProperties(): ConfigurationProperty[] {
+    return this._configurationProperties;
+  }
+
   @Input()
-  configurationProperties: ConfigurationProperty[] = [];
+  set configurationProperties(
+    configurationProperties: ConfigurationProperty[]
+  ) {
+    this._configurationProperties = configurationProperties;
+
+    if (
+      !this.filteredConfigurationProperties &&
+      configurationProperties.length > 0
+    ) {
+      this.filteredConfigurationProperties = configurationProperties;
+    }
+  }
+
   @Input()
   propertiesArrayName: string;
   @Input()
@@ -18,14 +36,10 @@ export class PropertyOverrideTableComponent implements OnInit {
   @ViewChild('dt') dataTable: DataTable;
 
   showModifiedPropertiesOnly = false;
-  filteredConfigurationProperties: ConfigurationProperty[] = [];
+  filteredConfigurationProperties: ConfigurationProperty[];
   first = 0;
 
   constructor() {}
-
-  ngOnInit(): void {
-    this.filteredConfigurationProperties = this.configurationProperties;
-  }
 
   updateOverride(override: ConfigurationProperty): void {
     const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
