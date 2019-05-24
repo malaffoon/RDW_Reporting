@@ -12,6 +12,7 @@ export function mapTenant(
 ): TenantConfiguration {
   return <TenantConfiguration>{
     code: tenant.tenant['key'],
+    id: tenant.tenant['id'],
     label: tenant.tenant['name'],
     description: tenant.tenant['description'],
     configurationProperties: mapConfigurationProperties(
@@ -64,7 +65,7 @@ export function mapFromTenant(tenant: TenantConfiguration): any {
   return {
     tenant: {
       key: tenant.code,
-      id: tenant.code,
+      id: tenant.id,
       description: tenant.description,
       name: tenant.label
     },

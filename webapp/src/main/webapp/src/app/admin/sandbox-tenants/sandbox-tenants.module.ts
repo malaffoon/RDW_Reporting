@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SandboxConfigurationComponent } from './pages/sandbox.component';
 import { SandboxConfigurationDetailsComponent } from './component/sandbox-details.component';
-import { ButtonsModule, ModalModule } from 'ngx-bootstrap';
+import { ButtonsModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '../../shared/common.module';
 import { SandboxService } from './service/sandbox.service';
@@ -55,7 +55,8 @@ import { TenantStore } from './store/tenant.store';
     HttpClientModule,
     TableModule,
     TreeTableModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    PopoverModule.forRoot()
   ],
   exports: [
     SandboxConfigurationComponent,
