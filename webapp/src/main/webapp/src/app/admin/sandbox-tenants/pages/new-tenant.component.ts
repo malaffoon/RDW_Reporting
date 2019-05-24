@@ -46,10 +46,10 @@ export class NewTenantConfigurationComponent {
         [
           Validators.required,
           CustomValidators.tenantKey,
-          Validators.minLength(1),
           Validators.maxLength(20)
         ]
       ],
+      id: [null, [Validators.required, CustomValidators.tenantKey]],
       label: [null, CustomValidators.notBlank],
       description: [null],
       configurationProperties: this.formBuilder.group({}),
