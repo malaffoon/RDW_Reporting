@@ -43,7 +43,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit {
       label: [this.sandbox.label, CustomValidators.notBlank],
       description: [this.sandbox.description],
       configurationProperties: this.formBuilder.group({}),
-      localizationOverrides: this.formBuilder.array([])
+      localizationOverrides: this.formBuilder.group({})
     });
     this.mapLocalizationOverrides();
     this.configureMenuItems();
