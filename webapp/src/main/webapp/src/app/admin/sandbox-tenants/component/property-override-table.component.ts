@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { FormArray, FormGroup } from '@angular/forms';
-import { cloneDeep } from 'lodash';
+import { FormGroup } from '@angular/forms';
 import { DataTable } from 'primeng/primeng';
 
 @Component({

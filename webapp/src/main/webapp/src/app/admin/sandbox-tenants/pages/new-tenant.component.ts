@@ -62,7 +62,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       label: [null, CustomValidators.notBlank],
       description: [null],
       configurationProperties: this.formBuilder.group({}),
-      localizationOverrides: this.formBuilder.array([])
+      localizationOverrides: this.formBuilder.group({})
     });
 
     this.mapLocalizationOverrides();
@@ -101,44 +101,12 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     );
   }
 
-  updateOverride(override: ConfigurationProperty, index: number): void {
-    const overrides = <FormArray>(
-      this.tenantForm.controls['localizationOverrides']
-    );
-    const newVal = overrides.controls[index].value;
-
-    if (this.localizationOverrides.indexOf(override) > -1) {
-      let existingOverride = this.localizationOverrides[
-        this.localizationOverrides.indexOf(override)
-      ];
-      existingOverride.value = newVal;
-    } else {
-      override.value = newVal;
-      this.localizationOverrides.push(override);
-    }
-  }
-
-  updateConfigurationProperty(
-    property: ConfigurationProperty,
-    index: number
-  ): void {
-    const properties = <FormArray>(
-      this.tenantForm.controls['configurationProperties']
-    );
-    const newVal = properties.controls[index].value;
-
-    let existingProperty = this.configurationProperties[
-      this.configurationProperties.indexOf(property)
-    ];
-    existingProperty.value = newVal;
-  }
-
   private mapLocalizationOverrides() {
     this.translationLoader
       // TODO: Use the proper configured language code, do not hardcode english
       .getFlattenedTranslations('en')
       .subscribe(translations => {
-        let locationOverrideFormArray = <FormArray>(
+        let locationOverrideFormGroup = <FormGroup>(
           this.tenantForm.controls['localizationOverrides']
         );
         for (let key in translations) {
@@ -148,7 +116,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
             this.localizationOverrides.push(
               new ConfigurationProperty(key, value)
             );
-            locationOverrideFormArray.controls.push(new FormControl(value));
+            locationOverrideFormGroup.controls[key] = new FormControl(value);
           }
         }
       });

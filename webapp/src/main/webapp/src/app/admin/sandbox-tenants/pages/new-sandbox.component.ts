@@ -48,7 +48,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
       description: [null],
       dataSet: [null, Validators.required],
       configurationProperties: this.formBuilder.group({}),
-      localizationOverrides: this.formBuilder.array([])
+      localizationOverrides: this.formBuilder.group({})
     });
 
     this.service.getAvailableDataSets().subscribe(dataSets => {
@@ -73,7 +73,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.translationLoader
       .getFlattenedTranslations('en')
       .subscribe(translations => {
-        let locationOverrideFormArray = <FormArray>(
+        let locationOverrideFormGroup = <FormGroup>(
           this.sandboxForm.controls['localizationOverrides']
         );
         for (let key in translations) {
@@ -83,7 +83,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
             this.localizationOverrides.push(
               new ConfigurationProperty(key, value)
             );
-            locationOverrideFormArray.controls.push(new FormControl(value));
+            locationOverrideFormGroup.controls[key] = new FormControl(value);
           }
         }
       });
@@ -103,37 +103,5 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     };
     this.service.create(newSandbox);
     this.router.navigate(['sandboxes']);
-  }
-
-  updateOverride(override: ConfigurationProperty, index: number): void {
-    const overrides = <FormArray>(
-      this.sandboxForm.controls['localizationOverrides']
-    );
-    const newVal = overrides.controls[index].value;
-
-    if (this.localizationOverrides.indexOf(override) > -1) {
-      let existingOverride = this.localizationOverrides[
-        this.localizationOverrides.indexOf(override)
-      ];
-      existingOverride.value = newVal;
-    } else {
-      override.value = newVal;
-      this.localizationOverrides.push(override);
-    }
-  }
-
-  updateConfigurationProperty(
-    property: ConfigurationProperty,
-    index: number
-  ): void {
-    const properties = <FormArray>(
-      this.sandboxForm.controls['configurationProperties']
-    );
-    const newVal = properties.controls[index].value;
-
-    let existingProperty = this.configurationProperties[
-      this.configurationProperties.indexOf(property)
-    ];
-    existingProperty.value = newVal;
   }
 }
