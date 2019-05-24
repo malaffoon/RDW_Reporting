@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { DataSet } from '../model/sandbox-configuration';
 import { SandboxService } from '../service/sandbox.service';
@@ -18,13 +24,16 @@ import { mapConfigurationProperties } from '../mapper/tenant.mapper';
   selector: 'new-sandbox',
   templateUrl: './new-sandbox.component.html'
 })
-export class NewSandboxConfigurationComponent {
+export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
   dataSets: DataSet[];
   sandboxForm: FormGroup;
   // Contains the full list of localization overrides, with default values
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
+
+  @ViewChild('sandboxLabelInput')
+  sandboxLabelInput: ElementRef;
 
   constructor(
     private service: SandboxService,
@@ -54,6 +63,10 @@ export class NewSandboxConfigurationComponent {
             configProperties
           ))
       );
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => this.sandboxLabelInput.nativeElement.focus());
   }
 
   private mapLocalizationOverrides() {
