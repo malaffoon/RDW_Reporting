@@ -1,4 +1,12 @@
 #simulating the spring cloud config search path feature with "tenant_az" profile for testing purposes
+tenantProperties:
+  tenants:
+    NVX:
+      id: AZ
+      key: AZ #To verify id and key need not match
+      name: Arizona
+      description: Some Descriptive Text For AZ
+
 spring:
   datasource:
     tenants:
