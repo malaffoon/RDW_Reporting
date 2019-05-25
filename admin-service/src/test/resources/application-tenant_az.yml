@@ -3,7 +3,7 @@ tenantProperties:
   tenants:
     NVX:
       id: AZ
-      key: AZ #To verify id and key need not match
+      key: NVX
       name: Arizona
       description: Some Descriptive Text For AZ
 
