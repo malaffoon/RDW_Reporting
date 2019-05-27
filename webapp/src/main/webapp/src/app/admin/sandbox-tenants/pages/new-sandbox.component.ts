@@ -11,7 +11,6 @@ import { SandboxService } from '../service/sandbox.service';
 import {
   FormBuilder,
   FormGroup,
-  FormArray,
   Validators,
   FormControl
 } from '@angular/forms';
@@ -54,7 +53,9 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.service.getAvailableDataSets().subscribe(dataSets => {
       this.dataSets = dataSets;
     });
+
     this.mapLocalizationOverrides();
+
     this.service
       .getDefaultConfigurationProperties()
       .subscribe(
@@ -80,9 +81,10 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
           // check also if property is not inherited from prototype
           if (translations.hasOwnProperty(key)) {
             let value = translations[key];
-            this.localizationOverrides.push(
+            this.localizationOverrides = [
+              ...this.localizationOverrides,
               new ConfigurationProperty(key, value)
-            );
+            ];
             locationOverrideFormGroup.controls[key] = new FormControl(value);
           }
         }
