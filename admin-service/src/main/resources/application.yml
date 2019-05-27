@@ -1,11 +1,10 @@
 # actuator end-points should be served from a different port than the API/web content
 management:
-  port: 8208
+  port: 8008
   security:
     enabled: false
 
 server:
-  port: 8280
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
   tomcat:
     max-connections: 0
