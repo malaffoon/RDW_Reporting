@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { DataSet } from '../model/sandbox-configuration';
 import { SandboxService } from '../service/sandbox.service';
 import {
   FormBuilder,
   FormGroup,
-  FormArray,
   Validators,
   FormControl
 } from '@angular/forms';
@@ -20,13 +25,16 @@ import { NotificationService } from '../../../shared/notification/notification.s
   selector: 'new-sandbox',
   templateUrl: './new-sandbox.component.html'
 })
-export class NewSandboxConfigurationComponent {
+export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
   dataSets: DataSet[];
   sandboxForm: FormGroup;
   // Contains the full list of localization overrides, with default values
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
+
+  @ViewChild('sandboxLabelInput')
+  sandboxLabelInput: ElementRef;
 
   constructor(
     private service: SandboxService,
@@ -43,7 +51,7 @@ export class NewSandboxConfigurationComponent {
       description: [null],
       dataSet: [null, Validators.required],
       configurationProperties: this.formBuilder.group({}),
-      localizationOverrides: this.formBuilder.array([])
+      localizationOverrides: this.formBuilder.group({})
     });
 
     this.service.getAvailableDataSets().subscribe(dataSets => {
@@ -60,6 +68,31 @@ export class NewSandboxConfigurationComponent {
             configProperties
           ))
       );
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => this.sandboxLabelInput.nativeElement.focus());
+  }
+
+  private mapLocalizationOverrides() {
+    this.translationLoader
+      .getFlattenedTranslations('en')
+      .subscribe(translations => {
+        let locationOverrideFormGroup = <FormGroup>(
+          this.sandboxForm.controls['localizationOverrides']
+        );
+        for (let key in translations) {
+          // check also if property is not inherited from prototype
+          if (translations.hasOwnProperty(key)) {
+            let value = translations[key];
+            this.localizationOverrides = [
+              ...this.localizationOverrides,
+              new ConfigurationProperty(key, value)
+            ];
+            locationOverrideFormGroup.controls[key] = new FormControl(value);
+          }
+        }
+      });
   }
 
   onSubmit(): void {
@@ -80,57 +113,5 @@ export class NewSandboxConfigurationComponent {
       error =>
         this.notificationService.error({ id: 'sandbox-config.errors.create' })
     );
-  }
-
-  updateOverride(override: ConfigurationProperty, index: number): void {
-    const overrides = <FormArray>(
-      this.sandboxForm.controls['localizationOverrides']
-    );
-    const newVal = overrides.controls[index].value;
-
-    if (this.localizationOverrides.indexOf(override) > -1) {
-      let existingOverride = this.localizationOverrides[
-        this.localizationOverrides.indexOf(override)
-      ];
-      existingOverride.value = newVal;
-    } else {
-      override.value = newVal;
-      this.localizationOverrides.push(override);
-    }
-  }
-
-  updateConfigurationProperty(
-    property: ConfigurationProperty,
-    index: number
-  ): void {
-    const properties = <FormArray>(
-      this.sandboxForm.controls['configurationProperties']
-    );
-    const newVal = properties.controls[index].value;
-
-    let existingProperty = this.configurationProperties[
-      this.configurationProperties.indexOf(property)
-    ];
-    existingProperty.value = newVal;
-  }
-
-  private mapLocalizationOverrides() {
-    this.translationLoader
-      .getFlattenedTranslations('en')
-      .subscribe(translations => {
-        let locationOverrideFormArray = <FormArray>(
-          this.sandboxForm.controls['localizationOverrides']
-        );
-        for (let key in translations) {
-          // check also if property is not inherited from prototype
-          if (translations.hasOwnProperty(key)) {
-            let value = translations[key];
-            this.localizationOverrides.push(
-              new ConfigurationProperty(key, value)
-            );
-            locationOverrideFormArray.controls.push(new FormControl(value));
-          }
-        }
-      });
   }
 }
