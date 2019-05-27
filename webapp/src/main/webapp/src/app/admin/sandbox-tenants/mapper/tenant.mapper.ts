@@ -1,10 +1,8 @@
 import { ConfigurationProperty } from '../model/configuration-property';
 import { flattenJsonObject } from '../../../shared/support/support';
-import { forOwn, get } from 'lodash';
+import { forOwn, get, isString } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
-import { TreeNode } from 'primeng/api';
-import { FormControl, FormGroup } from '@angular/forms';
 
 export function mapTenant(
   tenant: any,
@@ -25,22 +23,18 @@ export function mapTenant(
 
 export function mapSandbox(
   sandbox: any,
-  defaultApplicationTenantConfiguration: any
+  defaultApplicationSandboxConfiguration: any
 ): SandboxConfiguration {
   return <SandboxConfiguration>{
-    code: sandbox.tenant['key'],
-    label: sandbox.tenant['name'],
-    description: sandbox.tenant['description'],
-    dataSet: {
-      //TODO: Do not hardcode this
-      key: 'dataSet2',
-      label: 'SBAC Interim Data Set'
-    },
+    code: sandbox.sandbox['key'],
+    label: sandbox.sandbox['name'],
+    description: sandbox.sandbox['description'],
+    dataSetId: sandbox.sandbox['dataSetId'],
     configurationProperties: mapConfigurationProperties(
-      defaultApplicationTenantConfiguration,
-      sandbox.applicationTenantConfiguration
+      defaultApplicationSandboxConfiguration,
+      sandbox.applicationSandboxConfiguration
     ),
-    localizationOverrides: mapFromLocalizationOverrides(sandbox.localization)
+    localizationOverrides: mapLocalizationOverrides(sandbox.localization)
   };
 }
 
@@ -53,7 +47,7 @@ export function mapFromSandbox(sandbox: SandboxConfiguration): any {
         description: sandbox.description,
         name: sandbox.label
       },
-      applicationTenantConfiguration: mapFromConfigurationProperties(
+      applicationSandboxConfiguration: mapFromConfigurationProperties(
         sandbox.configurationProperties
       ),
       localization: sandbox.localizationOverrides
@@ -97,10 +91,18 @@ function mapFromConfigurationProperties(configProperties: any): any {
     } else {
       let configGroup = {};
       // group is the list of configuration properties
-      group.forEach(
-        configurationProperty =>
-          (configGroup[configurationProperty.key] = configurationProperty.value)
-      );
+      group.forEach(configurationProperty => {
+        if (
+          isString(configurationProperty.value) &&
+          configurationProperty.value.indexOf(',') > -1
+        ) {
+          configGroup[
+            configurationProperty.key
+          ] = configurationProperty.value.split(',');
+        } else {
+          configGroup[configurationProperty.key] = configurationProperty.value;
+        }
+      });
       mappedGroup[groupKey] = configGroup;
     }
   });

@@ -354,17 +354,22 @@ export function range(start: number, end: number): number[] {
 export function flattenJsonObject(ob: any): any {
   const toReturn = {};
 
-  for (let i in ob) {
-    if (!ob.hasOwnProperty(i)) continue;
+  for (const i in ob) {
+    if (!ob.hasOwnProperty(i)) {
+      continue;
+    }
 
     if (typeof ob[i] == 'object') {
-      const flatObject = flattenJsonObject(ob[i]);
-      for (let x in flatObject) {
-        if (!flatObject.hasOwnProperty(x)) {
-          continue;
+      if (Array.isArray(ob[i])) {
+        toReturn[i] = ob[i].join();
+      } else {
+        const flatObject = flattenJsonObject(ob[i]);
+        for (const x in flatObject) {
+          if (!flatObject.hasOwnProperty(x)) {
+            continue;
+          }
+          toReturn[i + '.' + x] = flatObject[x];
         }
-
-        toReturn[i + '.' + x] = flatObject[x];
       }
     } else {
       toReturn[i] = ob[i];

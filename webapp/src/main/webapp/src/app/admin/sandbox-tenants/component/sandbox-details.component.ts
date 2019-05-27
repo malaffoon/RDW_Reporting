@@ -89,9 +89,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
       if (localizationDefaults.hasOwnProperty(key)) {
         const value = localizationDefaults[key];
         const localizationOverrides = this.sandbox.localizationOverrides || [];
-        const override = localizationOverrides.find(
-          override => override.key === key
-        );
+        const override = localizationOverrides.find(o => o.key === key);
         if (override) {
           this.localizationOverrides.push(
             new ConfigurationProperty(key, override.value, value)
@@ -126,7 +124,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
 
     const updatedSandbox = {
       code: this.sandbox.code,
-      dataSet: this.sandbox.dataSet,
+      dataSetId: this.sandbox.dataSetId,
       ...this.sandboxForm.value,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.sandbox.configurationProperties
