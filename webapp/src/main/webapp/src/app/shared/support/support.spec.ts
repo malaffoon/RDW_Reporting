@@ -1,5 +1,6 @@
 import {
   deepEqualsIgnoringNullAndFalse,
+  equalDate,
   flattenJsonObject,
   Utils
 } from './support';
@@ -71,5 +72,37 @@ describe('deepEqualsIgnoringNullAndFalse', () => {
         }
       )
     ).toBe(true);
+  });
+});
+
+describe('equalDate', () => {
+  it('should be true when instances identical', () => {
+    const date = new Date();
+    expect(equalDate(date, date)).toBe(true);
+  });
+
+  it('should be true when the same date', () => {
+    const a = new Date(1, 2, 3);
+    const b = new Date(1, 2, 3);
+    expect(equalDate(a, b)).toBe(true);
+  });
+
+  it('should be false when one is null', () => {
+    const date = new Date();
+    expect(equalDate(date, null)).toBe(false);
+    expect(equalDate(null, date)).toBe(false);
+  });
+
+  it('should be false when has a different value for any field', () => {
+    const date = new Date(1, 2, 3);
+    expect(equalDate(date, new Date(1, 2, 100))).toBe(false);
+    expect(equalDate(date, new Date(1, 100, 3))).toBe(false);
+    expect(equalDate(date, new Date(100, 2, 3))).toBe(false);
+  });
+
+  it('should ignore time', () => {
+    const a = new Date(1, 2, 3, 4, 5, 6);
+    const b = new Date(1, 2, 3, 5, 6, 7);
+    expect(equalDate(a, b)).toBe(true);
   });
 });
