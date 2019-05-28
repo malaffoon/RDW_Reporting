@@ -3,6 +3,7 @@ import { flattenJsonObject } from '../../../shared/support/support';
 import { forOwn, get, isString } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { object as expand } from 'dot-object';
 
 export function mapTenant(
   tenant: any,
@@ -121,14 +122,22 @@ export function mapConfigurationProperties(
 
       forOwn(flattenJsonObject(configGroup), (value, key) => {
         if (!overrides) {
-          configProps.push(new ConfigurationProperty(key, value));
+          configProps.push(new ConfigurationProperty(key, joinIfArray(value)));
         } else {
           const groupOverrides = overrides[groupKey] || {};
           const override = get(groupOverrides, key);
           if (override) {
-            configProps.push(new ConfigurationProperty(key, override, value));
+            configProps.push(
+              new ConfigurationProperty(
+                key,
+                joinIfArray(override),
+                joinIfArray(value)
+              )
+            );
           } else {
-            configProps.push(new ConfigurationProperty(key, value));
+            configProps.push(
+              new ConfigurationProperty(key, joinIfArray(value))
+            );
           }
         }
       });
@@ -176,18 +185,25 @@ export function mapConfigurationProperties(
 }
 
 function mapLocalizationOverrides(overrides: any): ConfigurationProperty[] {
+  const flattenedOverrides = flattenJsonObject(overrides);
   const configProperties: ConfigurationProperty[] = [];
-  forOwn(overrides, (value, key) =>
+  forOwn(flattenedOverrides, (value, key) =>
     configProperties.push(new ConfigurationProperty(key, value))
   );
   return configProperties;
 }
 
 function mapFromLocalizationOverrides(overrides: ConfigurationProperty[]): any {
-  return overrides
+  const flattenedOverrides = overrides
     ? overrides.reduce((localizationOverrides, { key, value }) => {
         localizationOverrides[key] = value;
         return localizationOverrides;
       }, {})
     : [];
+
+  return expand(flattenedOverrides);
+}
+
+function joinIfArray(value: any): string {
+  return Array.isArray(value) ? value.join(',') : value;
 }
