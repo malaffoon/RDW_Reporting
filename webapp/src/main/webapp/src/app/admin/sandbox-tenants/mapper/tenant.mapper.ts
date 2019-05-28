@@ -49,7 +49,7 @@ export function toSandboxApiModel(sandbox: SandboxConfiguration): any {
       id: sandbox.code,
       description: sandbox.description,
       name: sandbox.label,
-      dataSetId: sandbox.dataSetId
+      dataSetId: sandbox.dataSet.id
     },
     applicationSandboxConfiguration: toConfigurationPropertiesApiModel(
       sandbox.configurationProperties
