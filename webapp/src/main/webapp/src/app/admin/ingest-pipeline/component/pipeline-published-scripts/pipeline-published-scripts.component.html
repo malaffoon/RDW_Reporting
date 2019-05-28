@@ -56,12 +56,17 @@
       </ul>
     </div>
     <ng-container *ngFor="let published of pipelines">
-      <code-editor
-        [hidden]="published !== selectedPipeline"
-        [language]="published.userScripts[0].language"
-        [ngModel]="published.userScripts[0].body"
-        [readonly]="true"
-      ></code-editor>
+      <ng-container *ngIf="published.scripts.length > 0; else noUserScripts">
+        <code-editor
+          [hidden]="published !== selectedPipeline"
+          language="groovy"
+          [ngModel]="published.scripts[0].body"
+          [readonly]="true"
+        ></code-editor>
+      </ng-container>
+      <ng-template #noUserScripts>
+        <!-- TODO -->
+      </ng-template>
     </ng-container>
   </div>
 </ng-container>

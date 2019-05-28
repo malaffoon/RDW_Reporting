@@ -15,6 +15,7 @@ import {
   PipelineScript,
   PipelineTest,
   PipelineTestRun,
+  PublishedScript,
   ScriptError
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
@@ -101,7 +102,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   publishState: PipelineState;
   publishButtonDisabled: boolean;
   publishButtonDisabledTooltipCode: string;
-  publishedScript: PipelineScript;
+  publishedScript: PublishedScript;
   published: boolean;
 
   testUpdating: boolean;
@@ -149,7 +150,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                     .getPublishedPipeline(pipeline.code, pipeline.activeVersion)
                     .pipe(
                       map(published =>
-                        published != null ? published.userScripts[0] : null
+                        published != null ? published.scripts[0] : null
                       )
                     )
                 : of(null)
@@ -298,7 +299,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                 this.pipelineService
                   .publishPipeline(this.pipeline.id)
                   .subscribe(published => {
-                    this.publishedScript = published.userScripts[0];
+                    this.publishedScript = published.scripts[0];
                     this.publishButtonDisabled = true;
                     this.publishState = null;
                     this.router.navigate(['history'], {
