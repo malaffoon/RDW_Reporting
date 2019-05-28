@@ -49,7 +49,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.sandboxForm = this.formBuilder.group({
       label: [null, CustomValidators.notBlank],
       description: [null],
-      dataSet: [null, Validators.required],
+      dataSetId: [null, Validators.required],
       configurationProperties: this.formBuilder.group({}),
       localizationOverrides: this.formBuilder.group({})
     });

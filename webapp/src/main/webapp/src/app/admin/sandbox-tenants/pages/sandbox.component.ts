@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { SandboxService } from '../service/sandbox.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
@@ -14,7 +14,8 @@ import { SandboxStore } from '../store/sandbox.store';
   selector: 'sandbox-config',
   templateUrl: './sandbox.component.html'
 })
-export class SandboxConfigurationComponent {
+export class SandboxConfigurationComponent implements OnInit {
+  dataSets: DataSet[];
   sandboxes: SandboxConfiguration[];
   localizationDefaults: any;
 
@@ -29,6 +30,9 @@ export class SandboxConfigurationComponent {
   ) {}
 
   ngOnInit(): void {
+    this.service
+      .getAvailableDataSets()
+      .subscribe(dataSets => (this.dataSets = dataSets));
     this.getSandboxes();
     this.getTranslations();
   }

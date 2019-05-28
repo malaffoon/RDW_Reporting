@@ -25,7 +25,7 @@ export class SandboxService {
     return this.dataService.get(`${ResourceRoute}`).pipe(
       map(
         apiSandboxes =>
-          apiSandboxes.sandboxBaseConfiguration[
+          apiSandboxes.sandboxConfigurationPackage[
             'applicationSandboxConfiguration'
           ]
       ),
@@ -35,7 +35,7 @@ export class SandboxService {
 
   getAvailableDataSets(): Observable<DataSet[]> {
     return this.dataService.get(`${ResourceRoute}`).pipe(
-      map(apiSandboxes => apiSandboxes.sandboxBaseConfiguration['dataSets']),
+      map(apiSandboxes => apiSandboxes.sandboxConfigurationPackage['dataSets']),
       catchError(ResponseUtils.throwError)
     );
   }
@@ -51,7 +51,7 @@ export class SandboxService {
           apiSandboxes.sandboxes.map(apiSandbox =>
             mapSandbox(
               apiSandbox,
-              apiSandboxes.sandboxBaseConfiguration[
+              apiSandboxes.sandboxConfigurationPackage[
                 'applicationSandboxConfiguration'
               ]
             )

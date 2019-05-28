@@ -7,7 +7,7 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { MenuItem } from 'primeng/api';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -27,6 +27,8 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
   localizationDefaults: any;
   @Input()
   sandbox: SandboxConfiguration;
+  @Input()
+  dataSets: DataSet[];
   @Output()
   deleteClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
   @Output()
@@ -161,5 +163,12 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
         command: () => this.deleteClicked.emit(this.sandbox)
       }
     ];
+  }
+
+  getLabel(id: string): string {
+    if (!this.dataSets) {
+      return '';
+    }
+    return this.dataSets.find(ds => ds.id === id).label;
   }
 }

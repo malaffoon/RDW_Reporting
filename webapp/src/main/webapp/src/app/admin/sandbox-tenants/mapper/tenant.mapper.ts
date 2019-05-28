@@ -40,18 +40,17 @@ export function mapSandbox(
 
 export function mapFromSandbox(sandbox: SandboxConfiguration): any {
   return {
-    tenantConfiguration: {
-      sandbox: {
-        key: sandbox.code,
-        id: sandbox.code,
-        description: sandbox.description,
-        name: sandbox.label
-      },
-      applicationSandboxConfiguration: mapFromConfigurationProperties(
-        sandbox.configurationProperties
-      ),
-      localization: sandbox.localizationOverrides
-    }
+    sandbox: {
+      key: sandbox.code,
+      id: sandbox.code,
+      description: sandbox.description,
+      name: sandbox.label,
+      dataSetId: sandbox.dataSetId
+    },
+    applicationSandboxConfiguration: mapFromConfigurationProperties(
+      sandbox.configurationProperties
+    ),
+    localization: mapFromLocalizationOverrides(sandbox.localizationOverrides)
   };
 }
 
