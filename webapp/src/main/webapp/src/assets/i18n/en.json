@@ -932,6 +932,8 @@
     },
     "errors": {
       "duplicate-key": "A tenant with the same tenant key or ID already exists",
+      "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
+      "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
       "update": "An unknown error occurred when attempting to update the tenant",
       "create": "An unknown error occurred when attempting to create the tenant",
       "delete": "An unknown error occurred when attempting to delete the tenant"
