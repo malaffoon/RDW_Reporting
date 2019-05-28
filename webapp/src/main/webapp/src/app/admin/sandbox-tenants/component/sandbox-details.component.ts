@@ -124,7 +124,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
 
     const updatedSandbox = {
       code: this.sandbox.code,
-      dataSetId: this.sandbox.dataSetId,
+      dataSet: this.sandbox.dataSet,
       ...this.sandboxForm.value,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.sandbox.configurationProperties
@@ -161,13 +161,5 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
         command: () => this.deleteClicked.emit(this.sandbox)
       }
     ];
-  }
-
-  getLabel(id: string): string {
-    if (!this.dataSets || !id) {
-      return '';
-    }
-    const dataSet = this.dataSets.find(ds => ds.id === id);
-    return dataSet ? dataSet.label : '';
   }
 }
