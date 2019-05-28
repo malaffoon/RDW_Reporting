@@ -1,8 +1,8 @@
-<div class="difference-header">
-  <label>{{ 'pipeline-test-result.expected-output' | translate }}</label>
-  <label>{{ 'pipeline-test-result.actual-output' | translate }}</label>
-</div>
 <div class="difference-container">
+  <div class="difference-header">
+    <label>{{ 'pipeline-test-result.expected-output' | translate }}</label>
+    <label>{{ 'pipeline-test-result.actual-output' | translate }}</label>
+  </div>
   <code-difference
     [language]="inputType"
     [left]="testRun.test.output"

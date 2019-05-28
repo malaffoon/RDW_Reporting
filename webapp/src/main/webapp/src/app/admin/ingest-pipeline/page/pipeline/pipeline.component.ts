@@ -270,7 +270,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.pipelineService
             .runPipelineTests(this.pipeline.id)
             .subscribe(runs => {
-              this.testRuns = runs;
+              this.onTestFailure(runs);
               this.testState = null;
             });
         } else {
@@ -306,7 +306,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                     });
                   });
               } else {
-                this.testRuns = runs;
+                this.onTestFailure(runs);
                 this.publishState = null;
               }
             });
@@ -341,7 +341,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.pipelineService
             .runPipelineTest(pipeline.id, test.id)
             .subscribe(runs => {
-              this.testRuns = runs;
+              this.onTestFailure(runs);
               this.testState = null;
             });
         } else {
@@ -543,5 +543,17 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       : hasInvalidTests
       ? 'pipeline.invalid-tests'
       : 'pipeline.publish-unsaved-changes';
+  }
+
+  private onTestFailure(runs: PipelineTestRun[]): void {
+    const runWithErrors = runs.find(
+      ({ result: { scriptErrors } }) =>
+        scriptErrors != null && scriptErrors.length > 0
+    );
+    if (runWithErrors != null) {
+      this.compilationErrors.next(runWithErrors.result.scriptErrors);
+    } else {
+      this.testRuns = runs;
+    }
   }
 }
