@@ -56,14 +56,18 @@ export function removeHtml(value: string): string {
 
 /**
  * True if both dates have the same year, month and day
+ *
  * @param a The first date
  * @param b The second date
  */
 export function equalDate(a: Date, b: Date): boolean {
   return (
-    a.getDay() === b.getDay() &&
-    a.getMonth() === b.getMonth() &&
-    a.getFullYear() === b.getFullYear()
+    a === b ||
+    (a != null &&
+      b != null &&
+      a.getDay() === b.getDay() &&
+      a.getMonth() === b.getMonth() &&
+      a.getFullYear() === b.getFullYear())
   );
 }
 
