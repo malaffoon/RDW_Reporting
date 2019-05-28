@@ -26,6 +26,9 @@ export class ResetDataModalComponent implements OnDestroy {
     this.service.resetData(this.sandbox.code).subscribe(
       () => {
         this.resetData.emit(this.sandbox);
+        this.notificationService.success({
+          id: 'sandbox-config.reset-modal.success'
+        });
         this.modal.hide();
       },
       error => {

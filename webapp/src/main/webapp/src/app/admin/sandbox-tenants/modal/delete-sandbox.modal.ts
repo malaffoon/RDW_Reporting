@@ -26,6 +26,9 @@ export class DeleteSandboxConfigurationModalComponent implements OnDestroy {
     this.service.delete(this.sandbox.code).subscribe(
       () => {
         this.deleted.emit(this.sandbox);
+        this.notificationService.success({
+          id: 'sandbox-config.delete-modal.success'
+        });
         this.modal.hide();
       },
       error => {

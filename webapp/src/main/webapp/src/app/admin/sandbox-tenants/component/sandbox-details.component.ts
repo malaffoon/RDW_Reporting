@@ -166,9 +166,10 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
   }
 
   getLabel(id: string): string {
-    if (!this.dataSets) {
+    if (!this.dataSets || !id) {
       return '';
     }
-    return this.dataSets.find(ds => ds.id === id).label;
+    const dataSet = this.dataSets.find(ds => ds.id === id);
+    return dataSet ? dataSet.label : '';
   }
 }

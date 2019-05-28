@@ -865,7 +865,8 @@
     },
     "delete-modal": {
       "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?"
+      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?",
+      "success": "Sandbox was successfully deleted"
     },
     "archive-modal": {
       "header": "Archive <strong>{{label}}</strong>?",
@@ -873,7 +874,8 @@
     },
     "reset-modal": {
       "header": "Reset data for <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?"
+      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
+      "success": "Sandbox data was successfully reset"
     },
     "fields": {
       "label": "Sandbox Name / Label:",
@@ -907,7 +909,8 @@
     },
     "delete-modal": {
       "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?"
+      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?",
+      "success": "Tenant was successfully deleted"
     },
     "fields": {
       "id": "Tenant ID",
