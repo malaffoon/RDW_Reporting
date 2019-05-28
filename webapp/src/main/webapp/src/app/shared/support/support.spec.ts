@@ -49,6 +49,23 @@ describe('Utils', () => {
     });
   });
 
+  it('should flatten JSON object with an array of values', () => {
+    let mockJSON = {
+      foo: 'bar',
+      state: {
+        code: 'CA',
+        label: 'California'
+      },
+      languages: ['en', 'es']
+    };
+    expect(flattenJsonObject(mockJSON)).toEqual({
+      foo: 'bar',
+      'state.code': 'CA',
+      'state.label': 'California',
+      languages: 'en,es'
+    });
+  });
+
   it('should return empty object for an undefined input', () => {
     expect(flattenJsonObject(undefined)).toEqual({});
   });

@@ -114,8 +114,6 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
             locationOverrideFormGroup.controls[key] = new FormControl(value);
           }
         }
-
-        console.log(this.localizationOverrides);
       });
   }
 }
