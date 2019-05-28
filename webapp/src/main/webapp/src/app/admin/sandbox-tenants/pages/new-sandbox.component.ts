@@ -105,7 +105,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
       configurationProperties: this.configurationProperties
     };
 
-    this.service.create(newSandbox).subscribe(
+    this.service.create(newSandbox, this.dataSets).subscribe(
       createdTenant => {
         this.store.setState([createdTenant, ...this.store.state]);
         this.router.navigate(['sandboxes']);

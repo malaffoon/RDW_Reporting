@@ -15,7 +15,6 @@ import { SandboxStore } from '../store/sandbox.store';
   templateUrl: './sandbox.component.html'
 })
 export class SandboxConfigurationComponent implements OnInit {
-  dataSets: DataSet[];
   sandboxes: SandboxConfiguration[];
   localizationDefaults: any;
 
@@ -30,9 +29,6 @@ export class SandboxConfigurationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.service
-      .getAvailableDataSets()
-      .subscribe(dataSets => (this.dataSets = dataSets));
     this.getSandboxes();
     this.getTranslations();
   }

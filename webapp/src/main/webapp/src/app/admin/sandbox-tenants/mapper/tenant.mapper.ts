@@ -2,7 +2,7 @@ import { ConfigurationProperty } from '../model/configuration-property';
 import { flattenJsonObject } from '../../../shared/support/support';
 import { forOwn, get, isString } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
-import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
 
 export function mapTenant(
@@ -24,13 +24,16 @@ export function mapTenant(
 
 export function mapSandbox(
   sandbox: any,
-  defaultApplicationSandboxConfiguration: any
+  defaultApplicationSandboxConfiguration: any,
+  dataSets: DataSet[]
 ): SandboxConfiguration {
   return <SandboxConfiguration>{
     code: sandbox.sandbox['key'],
     label: sandbox.sandbox['name'],
     description: sandbox.sandbox['description'],
-    dataSetId: sandbox.sandbox['dataSetId'],
+    dataSet: dataSets.find(
+      dataSet => sandbox.sandbox['dataSetId'] === dataSet.id
+    ),
     configurationProperties: mapConfigurationProperties(
       defaultApplicationSandboxConfiguration,
       sandbox.applicationSandboxConfiguration
@@ -39,7 +42,7 @@ export function mapSandbox(
   };
 }
 
-export function mapFromSandbox(sandbox: SandboxConfiguration): any {
+export function toSandboxApiModel(sandbox: SandboxConfiguration): any {
   return {
     sandbox: {
       key: sandbox.code,
@@ -48,14 +51,14 @@ export function mapFromSandbox(sandbox: SandboxConfiguration): any {
       name: sandbox.label,
       dataSetId: sandbox.dataSetId
     },
-    applicationSandboxConfiguration: mapFromConfigurationProperties(
+    applicationSandboxConfiguration: toConfigurationPropertiesApiModel(
       sandbox.configurationProperties
     ),
-    localization: mapFromLocalizationOverrides(sandbox.localizationOverrides)
+    localization: toLocalizationOverridesApiModel(sandbox.localizationOverrides)
   };
 }
 
-export function mapFromTenant(tenant: TenantConfiguration): any {
+export function toTenantApiModel(tenant: TenantConfiguration): any {
   return {
     tenant: {
       key: tenant.code,
@@ -63,14 +66,14 @@ export function mapFromTenant(tenant: TenantConfiguration): any {
       description: tenant.description,
       name: tenant.label
     },
-    applicationTenantConfiguration: mapFromConfigurationProperties(
+    applicationTenantConfiguration: toConfigurationPropertiesApiModel(
       tenant.configurationProperties
     ),
-    localization: mapFromLocalizationOverrides(tenant.localizationOverrides)
+    localization: toLocalizationOverridesApiModel(tenant.localizationOverrides)
   };
 }
 
-function mapFromConfigurationProperties(configProperties: any): any {
+function toConfigurationPropertiesApiModel(configProperties: any): any {
   let mappedGroup = {};
 
   forOwn(configProperties, (group, groupKey) => {
@@ -193,7 +196,9 @@ function mapLocalizationOverrides(overrides: any): ConfigurationProperty[] {
   return configProperties;
 }
 
-function mapFromLocalizationOverrides(overrides: ConfigurationProperty[]): any {
+function toLocalizationOverridesApiModel(
+  overrides: ConfigurationProperty[]
+): any {
   const flattenedOverrides = overrides
     ? overrides.reduce((localizationOverrides, { key, value }) => {
         localizationOverrides[key] = value;

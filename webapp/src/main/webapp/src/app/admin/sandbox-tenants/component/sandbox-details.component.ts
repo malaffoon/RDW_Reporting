@@ -27,8 +27,6 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
   localizationDefaults: any;
   @Input()
   sandbox: SandboxConfiguration;
-  @Input()
-  dataSets: DataSet[];
   @Output()
   deleteClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
   @Output()

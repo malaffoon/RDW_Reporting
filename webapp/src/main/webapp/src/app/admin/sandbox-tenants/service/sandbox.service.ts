@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
-import { mapFromSandbox, mapSandbox } from '../mapper/tenant.mapper';
+import { toSandboxApiModel, mapSandbox } from '../mapper/tenant.mapper';
 import { catchError, map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import { ResponseUtils } from '../../../shared/response-utils';
@@ -53,7 +53,8 @@ export class SandboxService {
               apiSandbox,
               apiSandboxes.sandboxConfigurationPackage[
                 'applicationSandboxConfiguration'
-              ]
+              ],
+              apiSandboxes.sandboxConfigurationPackage.dataSets
             )
           )
         )
@@ -64,11 +65,14 @@ export class SandboxService {
    * Creates a new sandbox
    * @param sandbox - The sandbox to create
    */
-  create(sandbox: SandboxConfiguration): Observable<SandboxConfiguration> {
+  create(
+    sandbox: SandboxConfiguration,
+    dataSets = []
+  ): Observable<SandboxConfiguration> {
     return this.dataService
-      .post(`${ResourceRoute}`, mapFromSandbox(sandbox))
+      .post(`${ResourceRoute}`, toSandboxApiModel(sandbox))
       .pipe(
-        map(createdSandbox => mapSandbox(createdSandbox, {})),
+        map(createdSandbox => mapSandbox(createdSandbox, {}, dataSets)),
         catchError(ResponseUtils.throwError)
       );
   }
@@ -79,7 +83,7 @@ export class SandboxService {
    */
   update(sandbox: SandboxConfiguration): Observable<SandboxConfiguration> {
     return this.dataService
-      .put(`${ResourceRoute}`, mapFromSandbox(sandbox))
+      .put(`${ResourceRoute}`, toSandboxApiModel(sandbox))
       .pipe(
         map(() => sandbox),
         catchError(ResponseUtils.throwError)

@@ -22,7 +22,7 @@ export interface SandboxConfiguration {
   /**
    * The data template initially used to create the sandbox
    */
-  dataSetId: string;
+  dataSet: DataSet;
 
   /**
    * The map containing text/i18n overrides
