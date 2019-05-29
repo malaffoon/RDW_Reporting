@@ -74,14 +74,14 @@ export function toTenantApiModel(tenant: TenantConfiguration): any {
 }
 
 function toConfigurationPropertiesApiModel(configProperties: any): any {
-  let mappedGroup = {};
+  const mappedGroup = {};
 
   forOwn(configProperties, (group, groupKey) => {
     if (groupKey === 'datasources') {
-      let datasourceGroup = {};
+      const datasourceGroup = {};
 
       forOwn(group, (configurationProperties, datasourceKey) => {
-        let configGroup = {};
+        const configGroup = {};
         configurationProperties.forEach(
           configurationProperty =>
             (configGroup[configurationProperty.key] =
@@ -92,7 +92,7 @@ function toConfigurationPropertiesApiModel(configProperties: any): any {
 
       mappedGroup[groupKey] = datasourceGroup;
     } else {
-      let configGroup = {};
+      const configGroup = {};
       // group is the list of configuration properties
       group.forEach(configurationProperty => {
         if (
@@ -121,11 +121,13 @@ export function mapConfigurationProperties(
 
   forOwn(configProperties, (configGroup, groupKey) => {
     if (groupKey !== 'datasources') {
-      let configProps: ConfigurationProperty[] = [];
+      const configProps: ConfigurationProperty[] = [];
 
       forOwn(flattenJsonObject(configGroup), (value, key) => {
         if (!overrides) {
-          configProps.push(new ConfigurationProperty(key, joinIfArray(value)));
+          configProps.push(
+            new ConfigurationProperty(key, joinIfArray(value), groupKey)
+          );
         } else {
           const groupOverrides = overrides[groupKey] || {};
           const override = get(groupOverrides, key);
@@ -134,12 +136,13 @@ export function mapConfigurationProperties(
               new ConfigurationProperty(
                 key,
                 joinIfArray(override),
+                groupKey,
                 joinIfArray(value)
               )
             );
           } else {
             configProps.push(
-              new ConfigurationProperty(key, joinIfArray(value))
+              new ConfigurationProperty(key, joinIfArray(value), groupKey)
             );
           }
         }
@@ -155,18 +158,29 @@ export function mapConfigurationProperties(
 
       // Iterate over the group of databases
       forOwn(configGroup, (databaseProperties, databaseName) => {
-        let configProps: ConfigurationProperty[] = [];
+        const configProps: ConfigurationProperty[] = [];
 
         forOwn(flattenJsonObject(databaseProperties), (value, key) => {
           if (!overrides) {
-            configProps.push(new ConfigurationProperty(key, value));
+            configProps.push(
+              new ConfigurationProperty(key, joinIfArray(value), databaseName)
+            );
           } else {
             const groupOverrides = overrides[groupKey] || {};
             const override = get(groupOverrides, `${databaseName}.${key}`);
             if (override) {
-              configProps.push(new ConfigurationProperty(key, override, value));
+              configProps.push(
+                new ConfigurationProperty(
+                  key,
+                  joinIfArray(override),
+                  databaseName,
+                  joinIfArray(value)
+                )
+              );
             } else {
-              configProps.push(new ConfigurationProperty(key, value));
+              configProps.push(
+                new ConfigurationProperty(key, joinIfArray(value), databaseName)
+              );
             }
           }
         });

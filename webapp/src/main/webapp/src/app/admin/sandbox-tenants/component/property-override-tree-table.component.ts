@@ -72,21 +72,20 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   }
 
   private setPropertyValue(override: ConfigurationProperty, newVal: string) {
-    const group = override.formControlName.split(/\.(.+)/)[0];
-    const key = override.formControlName.split(/\.(.+)/)[1];
-
     let configurationProperties = <ConfigurationProperty[]>(
-      this._configurationProperties[group]
+      this._configurationProperties[override.group]
     );
 
     if (!configurationProperties) {
       // If we couldn't find the group within the top-level property groups, lets peek at datasources...
       const datasources = this._configurationProperties['datasources'];
-      configurationProperties = <ConfigurationProperty[]>datasources[group];
+      configurationProperties = <ConfigurationProperty[]>(
+        datasources[override.group]
+      );
     }
 
     const configurationProperty = configurationProperties.find(
-      property => property.key === key
+      property => property.key === override.key
     );
     configurationProperty.value = newVal;
     override.value = newVal;
@@ -102,11 +101,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
       if (groupKey === 'datasources') {
         forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
           const dataSourcePropertyNodes: TreeNode[] = [];
-          this.mapLeafNodes(
-            dataSourceProperties,
-            dataSourceKey,
-            dataSourcePropertyNodes
-          );
+          this.mapLeafNodes(dataSourceProperties, dataSourcePropertyNodes);
 
           childrenNodes.push({
             data: {
@@ -116,7 +111,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
           });
         });
       } else {
-        this.mapLeafNodes(configGroup, groupKey, childrenNodes);
+        this.mapLeafNodes(configGroup, childrenNodes);
       }
 
       const groupNode = <TreeNode>{
@@ -136,7 +131,6 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
   private mapLeafNodes(
     configGroup: ConfigurationProperty[],
-    groupKey: string,
     childrenNodes: TreeNode[]
   ): void {
     const configPropertiesFormGroup = <FormGroup>(
@@ -144,20 +138,20 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     );
 
     configGroup.forEach(group => {
-      const formControlKey = `${groupKey}.${group.key}`;
       childrenNodes.push({
         data: {
           key: group.key,
           value: group.value,
           originalValue: group.originalValue,
-          formControlName: formControlKey
+          group: group.group,
+          formControlName: group.formControlName
         },
         expanded: false,
         leaf: true
       });
 
       configPropertiesFormGroup.addControl(
-        formControlKey,
+        group.formControlName,
         new FormControl(group.value)
       );
     });
