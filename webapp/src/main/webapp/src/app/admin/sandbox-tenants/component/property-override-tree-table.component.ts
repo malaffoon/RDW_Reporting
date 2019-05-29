@@ -38,28 +38,10 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   }
 
   updateOverride(override: ConfigurationProperty): void {
-    let configurationProperties: ConfigurationProperty[];
     const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
     const formControl = formGroup.controls[override.formControlName];
     const newVal = formControl.value;
-    const group = override.formControlName.split(/\.(.+)/)[0];
-    const key = override.formControlName.split(/\.(.+)/)[1];
-
-    configurationProperties = <ConfigurationProperty[]>(
-      this._configurationProperties[group]
-    );
-
-    if (!configurationProperties) {
-      // If we couldn't find the group within the top-level property groups, lets peek at datasources...
-      const datasources = this._configurationProperties['datasources'];
-      configurationProperties = <ConfigurationProperty[]>datasources[group];
-    }
-
-    const configurationProperty = configurationProperties.find(
-      property => property.key === key
-    );
-    configurationProperty.value = newVal;
-    override.value = newVal;
+    this.setPropertyValue(override, newVal);
   }
 
   expandOrCollapse(node: TreeNode): void {
@@ -71,7 +53,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   }
 
   resetClicked(override: ConfigurationProperty): void {
-    override.value = override.originalValue;
+    this.setPropertyValue(override, override.originalValue);
   }
 
   childrenHaveOverrides(node: TreeNode): boolean {
@@ -89,6 +71,27 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     return false;
   }
 
+  private setPropertyValue(override: ConfigurationProperty, newVal: string) {
+    const group = override.formControlName.split(/\.(.+)/)[0];
+    const key = override.formControlName.split(/\.(.+)/)[1];
+
+    let configurationProperties = <ConfigurationProperty[]>(
+      this._configurationProperties[group]
+    );
+
+    if (!configurationProperties) {
+      // If we couldn't find the group within the top-level property groups, lets peek at datasources...
+      const datasources = this._configurationProperties['datasources'];
+      configurationProperties = <ConfigurationProperty[]>datasources[group];
+    }
+
+    const configurationProperty = configurationProperties.find(
+      property => property.key === key
+    );
+    configurationProperty.value = newVal;
+    override.value = newVal;
+  }
+
   private createConfigurationPropertyTree(): void {
     const groupNodes: TreeNode[] = [];
 
@@ -98,7 +101,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
       if (groupKey === 'datasources') {
         forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
-          let dataSourcePropertyNodes: TreeNode[] = [];
+          const dataSourcePropertyNodes: TreeNode[] = [];
           this.mapLeafNodes(
             dataSourceProperties,
             dataSourceKey,
