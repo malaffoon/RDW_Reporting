@@ -551,6 +551,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         scriptErrors != null && scriptErrors.length > 0
     );
     if (runWithErrors != null) {
+      this.selectedItem = this.items.find(({ type }) => type === 'Script');
       this.compilationErrors.next(runWithErrors.result.scriptErrors);
     } else {
       this.testRuns = runs;
