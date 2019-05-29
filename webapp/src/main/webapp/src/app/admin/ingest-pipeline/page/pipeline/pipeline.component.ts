@@ -133,10 +133,6 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       mergeMap(({ id }) => this.pipelineService.getPipeline(Number(id)))
     );
 
-    const pipelineScripts = pipeline.pipe(
-      mergeMap(({ id }) => this.pipelineService.getPipelineScripts(id))
-    );
-
     combineLatest(
       <Observable<boolean>>(
         this.userService
