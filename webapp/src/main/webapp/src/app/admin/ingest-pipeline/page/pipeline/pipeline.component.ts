@@ -172,6 +172,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         ]) => {
           const pipeline = {
             ...basePipeline,
+            // defensively assigns placeholder script so that the
+            // sample script is looked up when the script item is selected
             script: script || {
               id: -1,
               pipelineId: basePipeline.id
