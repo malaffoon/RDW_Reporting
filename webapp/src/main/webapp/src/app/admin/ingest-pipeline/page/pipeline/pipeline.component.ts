@@ -1,5 +1,11 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  pipe,
+  Subject
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
@@ -127,6 +133,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       mergeMap(({ id }) => this.pipelineService.getPipeline(Number(id)))
     );
 
+    const pipelineScripts = pipeline.pipe(
+      mergeMap(({ id }) => this.pipelineService.getPipelineScripts(id))
+    );
+
     combineLatest(
       <Observable<boolean>>(
         this.userService
@@ -166,7 +176,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         ]) => {
           const pipeline = {
             ...basePipeline,
-            script,
+            script: script || {
+              id: -1,
+              pipelineId: basePipeline.id
+            },
             tests
           };
           this.readonly = !hasWritePermission;
