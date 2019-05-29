@@ -497,6 +497,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     const scripts = this.items.filter(({ type }) => type === 'Script');
     const tests = this.items.filter(({ type }) => type === 'Test');
 
+    const scriptIsBlank = scripts.some(({ value: { body } }) =>
+      isNullOrBlank(body)
+    );
+
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
     // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
     const hasUnsavedChanges =
@@ -512,6 +516,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         : tests.some(({ value }) => !isValidPipelineTest(value));
 
     this.testButtonDisabled =
+      scriptIsBlank ||
       this.testState != null ||
       tests.length === 0 ||
       hasInvalidTests ||
@@ -519,6 +524,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
+      : scriptIsBlank
+      ? 'pipeline.no-script'
       : tests.length === 0
       ? 'pipeline.no-tests'
       : hasInvalidTests
@@ -528,6 +535,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       : '';
 
     this.publishButtonDisabled =
+      scriptIsBlank ||
       this.publishState != null ||
       this.published ||
       tests.length === 0 ||
@@ -536,6 +544,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
+      : scriptIsBlank
+      ? 'pipeline.no-script'
       : this.published
       ? 'pipeline.published'
       : this.pipeline.tests.length === 0
