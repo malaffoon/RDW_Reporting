@@ -1,5 +1,11 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  pipe,
+  Subject
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
@@ -166,7 +172,12 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         ]) => {
           const pipeline = {
             ...basePipeline,
-            script,
+            // defensively assigns placeholder script so that the
+            // sample script is looked up when the script item is selected
+            script: script || {
+              id: -1,
+              pipelineId: basePipeline.id
+            },
             tests
           };
           this.readonly = !hasWritePermission;
