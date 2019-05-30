@@ -1507,15 +1507,15 @@
   "ingest-pipeline": {
     "assessment": {
       "name": "Test Packages",
-      "description": "Shaman raw denim umami deep v wayfarers mumblecore, try-hard williamsburg la croix affogato fam narwhal selfies."
+      "description": "Test packages define the details for assessments. They are CSV files in Tabulator format. They are submitted by Smarter Balanced administrators, typically at the beginning of a new school year."
     },
     "exam": {
       "name": "Exams",
-      "description": "Readymade air plant direct trade flexitarian tousled, shabby chic hot chicken raclette pitchfork vinyl."
+      "description": "Exams are the test results for students. They are XML documents in <a target=\"_blank\" href=\"http://www.smarterapp.org/documents/TestResultsTransmissionFormat.pdf\">TRT format</a>. They are typically submitted by a testing service."
     },
     "group": {
       "name": "Groups",
-      "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko."
+      "description": "Groups define teacher rosters. They are <a href=\"/admin-groups/import/fileformat\">CSV documents</a>. They are typically submitted by schools or districts. Unlike other imports group files may also be uploaded from the web UI."
     }
   },
   "pipeline": {
@@ -1551,7 +1551,7 @@
   },
   "pipeline-save-state": {
     "Saving": "Saving",
-    "Saved": "Saved"
+    "Saved": "Save"
   },
   "pipeline-test-form": {
     "field": {

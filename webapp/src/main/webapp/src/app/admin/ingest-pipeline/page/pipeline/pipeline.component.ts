@@ -21,6 +21,7 @@ import {
   PipelineScript,
   PipelineTest,
   PipelineTestRun,
+  PublishedScript,
   ScriptError
 } from '../../model/pipeline';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
@@ -107,7 +108,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   publishState: PipelineState;
   publishButtonDisabled: boolean;
   publishButtonDisabledTooltipCode: string;
-  publishedScript: PipelineScript;
+  publishedScript: PublishedScript;
   published: boolean;
 
   testUpdating: boolean;
@@ -155,7 +156,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                     .getPublishedPipeline(pipeline.code, pipeline.activeVersion)
                     .pipe(
                       map(published =>
-                        published != null ? published.userScripts[0] : null
+                        published != null ? published.scripts[0] : null
                       )
                     )
                 : of(null)
@@ -203,7 +204,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         tap(() => {
           this.compilationState = 'Compiling';
         }),
-        switchMap(value => this.pipelineService.compilePipelineScript(value))
+        switchMap(value =>
+          this.pipelineService.compilePipelineScript(this.pipeline.id, value)
+        )
       )
       .subscribe(
         errors => {
@@ -273,7 +276,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.testState = 'Compiling';
     this.compilationState = null;
     this.pipelineService
-      .compilePipelineScript(script.body)
+      .compilePipelineScript(this.pipeline.id, script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
         if (errors.length === 0) {
@@ -295,7 +298,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.publishState = 'Compiling';
     this.compilationState = null;
     this.pipelineService
-      .compilePipelineScript(script.body)
+      .compilePipelineScript(this.pipeline.id, script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
@@ -309,7 +312,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                 this.pipelineService
                   .publishPipeline(this.pipeline.id)
                   .subscribe(published => {
-                    this.publishedScript = published.userScripts[0];
+                    this.publishedScript = published.scripts[0];
                     this.publishButtonDisabled = true;
                     this.publishState = null;
                     this.router.navigate(['history'], {
@@ -343,6 +346,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(
+        this.pipeline.id,
         this.items.find(({ type }) => type === 'Script').value.body
       )
       .subscribe(errors => {
@@ -508,8 +512,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     const scripts = this.items.filter(({ type }) => type === 'Script');
     const tests = this.items.filter(({ type }) => type === 'Test');
 
-    const scriptIsBlank = scripts.some(({ value: { body } }) =>
-      isNullOrBlank(body)
+    // need to catch placeholder script and loaded sample script - they have invalid IDs
+    const scriptIsBlank = scripts.some(
+      ({ value: { id, body } }) => id == null || id < 0 || isNullOrBlank(body)
     );
 
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"

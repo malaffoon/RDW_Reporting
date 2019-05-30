@@ -23,7 +23,7 @@ export interface Pipeline {
   /**
    * Version of the active pipeline
    */
-  activeVersion?: number;
+  activeVersion?: string;
 
   /**
    * The pipeline script
@@ -37,11 +37,16 @@ export interface Pipeline {
 }
 
 export interface PublishedPipeline {
-  pipelineId: number;
-  version: number;
-  userScripts: PipelineScript[];
+  pipelineCode: string;
+  version: string;
+  scripts: PublishedScript[];
   publishedOn: Date;
   publishedBy: string;
+}
+
+export interface PublishedScript {
+  version: string;
+  body: string;
 }
 
 /**

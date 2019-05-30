@@ -29,9 +29,9 @@ function toPipelineScript(serverScript: any): PipelineScript {
 
 function toPublishedPipeline(serverPipeline: any): PublishedPipeline {
   return {
-    pipelineId: serverPipeline.pipelineId,
+    pipelineCode: serverPipeline.pipelineCode,
     version: serverPipeline.version,
-    userScripts: (serverPipeline.userScripts || []).map(toPipelineScript),
+    scripts: serverPipeline.scripts || [],
     publishedOn: new Date(serverPipeline.published),
     publishedBy: serverPipeline.publishedBy
   };
@@ -143,8 +143,14 @@ export class PipelineService {
     });
   }
 
-  compilePipelineScript(scriptBody: string): Observable<ScriptError[]> {
-    return this.dataService.post(`${ResourceRoute}/compile`, scriptBody);
+  compilePipelineScript(
+    pipelineId: number,
+    scriptBody: string
+  ): Observable<ScriptError[]> {
+    return this.dataService.post(
+      `${ResourceRoute}/${pipelineId}/compile`,
+      scriptBody
+    );
   }
 
   publishPipeline(pipelineId: number): Observable<PublishedPipeline> {
@@ -167,7 +173,7 @@ export class PipelineService {
 
   getPublishedPipeline(
     pipelineCode: string,
-    version: number
+    version: string
   ): Observable<PublishedPipeline> {
     return this.dataService
       .get(PublishedPipelinesRoute, {
