@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Pipeline } from '../../model/pipeline';
+import { Pipeline, PublishedPipeline } from '../../model/pipeline';
 import { PipelineService } from '../../service/pipeline.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { map } from 'rxjs/operators';
 import { tap } from 'rxjs/internal/operators/tap';
-import { PublishedPipelineView } from '../../component/pipeline-published-scripts/pipeline-published-scripts.component';
 
 @Component({
   selector: 'pipeline-publishing-history',
@@ -14,8 +13,8 @@ import { PublishedPipelineView } from '../../component/pipeline-published-script
 })
 export class PipelinePublishingHistoryComponent {
   pipeline: BehaviorSubject<Pipeline> = new BehaviorSubject(undefined);
-  pipelines: Observable<PublishedPipelineView[]>;
-  selectedPipeline: PublishedPipelineView;
+  pipelines: Observable<PublishedPipeline[]>;
+  selectedPipeline: PublishedPipeline;
 
   constructor(
     private pipelineService: PipelineService,
@@ -27,17 +26,10 @@ export class PipelinePublishingHistoryComponent {
     const pipelineId = this.route.params.pipe(map(({ id }) => Number(id)));
     this.pipelines = this.pipeline.pipe(
       mergeMap(pipeline =>
-        this.pipelineService.getPublishedPipelines(pipeline.code).pipe(
-          map(serverPipelines =>
-            serverPipelines.map(serverPipeline => ({
-              ...serverPipeline,
-              active: pipeline.activeVersion === serverPipeline.version
-            }))
-          )
-        )
+        this.pipelineService.getPublishedPipelines(pipeline.code)
       ),
       tap(([first]) => {
-        this.selectedPipeline = first;
+        this.onPipelineSelect(first);
       })
     );
 
@@ -46,8 +38,12 @@ export class PipelinePublishingHistoryComponent {
       .subscribe(value => this.pipeline.next(value));
   }
 
-  onPipelineSelect(pipeline: PublishedPipelineView): void {
-    this.selectedPipeline = pipeline;
+  onPipelineSelect(pipeline: PublishedPipeline): void {
+    this.pipelineService
+      .getPublishedPipeline(pipeline.pipelineCode, pipeline.version)
+      .subscribe(published => {
+        this.selectedPipeline = published;
+      });
   }
 
   onPipelineActivate(pipeline: Pipeline): void {

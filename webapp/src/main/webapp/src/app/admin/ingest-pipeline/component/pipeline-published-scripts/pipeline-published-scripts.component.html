@@ -12,12 +12,14 @@
   <button
     type="button"
     class="btn btn-primary btn-outlined"
-    [disabled]="selectedPipeline.active"
+    [disabled]="selectedPipeline.version === pipeline.activeVersion"
     (click)="onPipelineActivate(selectedPipeline)"
   >
     {{
       'pipeline-published-scripts.activation-button-state.' +
-        (selectedPipeline.active ? 'active' : 'inactive') | translate
+        (selectedPipeline.version === pipeline.activeVersion
+          ? 'active'
+          : 'inactive') | translate
     }}
   </button>
   <button
@@ -29,24 +31,26 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<ng-container *ngIf="pipelines != null && pipelines.length > 0; else noScripts">
+<ng-container
+  *ngIf="_pipelines != null && _pipelines.length > 0; else noScripts"
+>
   <div class="body">
     <div class="scripts-container">
       <ul>
-        <li *ngFor="let published of pipelines">
+        <li *ngFor="let published of _pipelines">
           <pipeline-item
             name="{{
               'pipeline-published-scripts.version' | translate: published
             }}"
             description="{{ published.publishedOn | date: 'medium' }}"
-            [active]="published === selectedPipeline"
+            [active]="published.version === selectedPipeline.version"
             (click)="pipelineSelect.emit(published)"
           >
             <div caption>
               {{ 'pipeline-item.published-by' | translate: published }}
             </div>
             <div
-              *ngIf="published.active"
+              *ngIf="pipeline.activeVersion == published.version"
               class="label border-only blue published-tag"
             >
               {{ 'pipeline-published-scripts.active-pipeline' | translate }}
@@ -55,19 +59,12 @@
         </li>
       </ul>
     </div>
-    <ng-container *ngFor="let published of pipelines">
-      <ng-container *ngIf="published.scripts.length > 0; else noUserScripts">
-        <code-editor
-          [hidden]="published !== selectedPipeline"
-          language="groovy"
-          [ngModel]="published.scripts[0].body"
-          [readonly]="true"
-        ></code-editor>
-      </ng-container>
-      <ng-template #noUserScripts>
-        <!-- TODO -->
-      </ng-template>
-    </ng-container>
+    <code-editor
+      *ngIf="selectedPipeline"
+      language="groovy"
+      [ngModel]="selectedPipeline.scripts[0].body"
+      [readonly]="true"
+    ></code-editor>
   </div>
 </ng-container>
 <ng-template #noScripts>

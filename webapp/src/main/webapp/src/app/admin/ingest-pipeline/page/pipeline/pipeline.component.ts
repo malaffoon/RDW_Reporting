@@ -512,8 +512,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     const scripts = this.items.filter(({ type }) => type === 'Script');
     const tests = this.items.filter(({ type }) => type === 'Test');
 
-    const scriptIsBlank = scripts.some(({ value: { body } }) =>
-      isNullOrBlank(body)
+    // need to catch placeholder script and loaded sample script - they have invalid IDs
+    const scriptIsBlank = scripts.some(
+      ({ value: { id, body } }) => id == null || id < 0 || isNullOrBlank(body)
     );
 
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"

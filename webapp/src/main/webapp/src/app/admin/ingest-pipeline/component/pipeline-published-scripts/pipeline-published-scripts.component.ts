@@ -6,10 +6,8 @@ import {
   Output
 } from '@angular/core';
 import { Pipeline, PublishedPipeline } from '../../model/pipeline';
-
-export interface PublishedPipelineView extends PublishedPipeline {
-  active: boolean;
-}
+import { byDate } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
 
 @Component({
   selector: 'pipeline-published-scripts',
@@ -22,18 +20,26 @@ export class PipelinePublishedScriptsComponent {
   pipeline: Pipeline;
 
   @Input()
-  pipelines: PublishedPipelineView[];
-
-  @Input()
-  selectedPipeline: PublishedPipelineView;
+  selectedPipeline: PublishedPipeline;
 
   @Output()
-  pipelineSelect: EventEmitter<PublishedPipelineView> = new EventEmitter();
+  pipelineSelect: EventEmitter<PublishedPipeline> = new EventEmitter();
 
   @Output()
   pipelineActivate: EventEmitter<Pipeline> = new EventEmitter();
 
-  onPipelineActivate(publishedPipeline: PublishedPipelineView): void {
+  _pipelines: PublishedPipeline[];
+
+  @Input()
+  set pipelines(values: PublishedPipeline[]) {
+    this._pipelines = (values || []).slice().sort(
+      ordering(byDate)
+        .on(({ publishedOn }) => publishedOn)
+        .reverse().compare
+    );
+  }
+
+  onPipelineActivate(publishedPipeline: PublishedPipeline): void {
     this.pipelineActivate.emit({
       ...this.pipeline,
       activeVersion: publishedPipeline.version
