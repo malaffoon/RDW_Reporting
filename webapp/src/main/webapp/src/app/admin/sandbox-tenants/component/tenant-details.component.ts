@@ -125,7 +125,7 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
 
   private mapLocalizationOverrides(localizationDefaults: any): void {
     for (let key in localizationDefaults) {
-      let locationOverrideFormGroup = <FormGroup>(
+      const locationOverrideFormGroup = <FormGroup>(
         this.tenantForm.controls['localizationOverrides']
       );
       if (localizationDefaults.hasOwnProperty(key)) {
@@ -136,7 +136,7 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
         );
         if (override) {
           this.localizationOverrides.push(
-            new ConfigurationProperty(key, override.value, value)
+            new ConfigurationProperty(key, override.value, undefined, value)
           );
           locationOverrideFormGroup.controls[key] = new FormControl(
             override.value

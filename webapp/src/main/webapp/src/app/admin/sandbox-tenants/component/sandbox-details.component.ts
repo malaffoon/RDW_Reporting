@@ -92,7 +92,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
         const override = localizationOverrides.find(o => o.key === key);
         if (override) {
           this.localizationOverrides.push(
-            new ConfigurationProperty(key, override.value, value)
+            new ConfigurationProperty(key, override.value, undefined, value)
           );
           locationOverrideFormGroup.controls[key] = new FormControl(
             override.value
