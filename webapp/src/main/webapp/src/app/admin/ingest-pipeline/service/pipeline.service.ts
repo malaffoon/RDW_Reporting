@@ -143,8 +143,14 @@ export class PipelineService {
     });
   }
 
-  compilePipelineScript(scriptBody: string): Observable<ScriptError[]> {
-    return this.dataService.post(`${ResourceRoute}/compile`, scriptBody);
+  compilePipelineScript(
+    pipelineId: number,
+    scriptBody: string
+  ): Observable<ScriptError[]> {
+    return this.dataService.post(
+      `${ResourceRoute}/${pipelineId}/compile`,
+      scriptBody
+    );
   }
 
   publishPipeline(pipelineId: number): Observable<PublishedPipeline> {

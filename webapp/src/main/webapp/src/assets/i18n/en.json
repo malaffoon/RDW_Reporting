@@ -865,7 +865,8 @@
     },
     "delete-modal": {
       "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?"
+      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?",
+      "success": "Sandbox was successfully deleted"
     },
     "archive-modal": {
       "header": "Archive <strong>{{label}}</strong>?",
@@ -873,7 +874,8 @@
     },
     "reset-modal": {
       "header": "Reset data for <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?"
+      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
+      "success": "Sandbox data was successfully reset"
     },
     "fields": {
       "label": "Sandbox Name / Label:",
@@ -892,7 +894,13 @@
       "modified": "Show modified properties only",
       "empty": "No configuration properties found"
     },
-    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button"
+    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button",
+    "errors": {
+      "reset": "An unknown error occurred when attempting to reset the sandbox data",
+      "update": "An unknown error occurred when attempting to update the sandbox",
+      "create": "An unknown error occurred when attempting to create the sandbox",
+      "delete": "An unknown error occurred when attempting to delete the sandbox"
+    }
   },
   "tenant-config": {
     "title": "Tenant Configuration",
@@ -901,7 +909,8 @@
     },
     "delete-modal": {
       "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?"
+      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?",
+      "success": "Tenant was successfully deleted"
     },
     "fields": {
       "id": "Tenant ID",
@@ -923,6 +932,8 @@
     },
     "errors": {
       "duplicate-key": "A tenant with the same tenant key or ID already exists",
+      "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
+      "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
       "update": "An unknown error occurred when attempting to update the tenant",
       "create": "An unknown error occurred when attempting to create the tenant",
       "delete": "An unknown error occurred when attempting to delete the tenant"
@@ -1496,19 +1507,20 @@
   "ingest-pipeline": {
     "assessment": {
       "name": "Test Packages",
-      "description": "Shaman raw denim umami deep v wayfarers mumblecore, try-hard williamsburg la croix affogato fam narwhal selfies."
+      "description": "Test packages define the details for assessments. They are CSV files in Tabulator format. They are submitted by Smarter Balanced administrators, typically at the beginning of a new school year."
     },
     "exam": {
       "name": "Exams",
-      "description": "Readymade air plant direct trade flexitarian tousled, shabby chic hot chicken raclette pitchfork vinyl."
+      "description": "Exams are the test results for students. They are XML documents in <a target=\"_blank\" href=\"http://www.smarterapp.org/documents/TestResultsTransmissionFormat.pdf\">TRT format</a>. They are typically submitted by a testing service."
     },
     "group": {
       "name": "Groups",
-      "description": "Hexagon blue bottle whatever plaid asymmetrical forage deep v disrupt 8-bit. Small batch deep v four loko."
+      "description": "Groups define teacher rosters. They are <a href=\"/admin-groups/import/fileformat\">CSV documents</a>. They are typically submitted by schools or districts. Unlike other imports group files may also be uploaded from the web UI."
     }
   },
   "pipeline": {
-    "no-tests": "Please create a test",
+    "no-script": "A script is required to test and publish a pipeline",
+    "no-tests": "One or more tests are required to test and publish a pipeline",
     "invalid-tests": "One or more tests are invalid. Please enter all required test fields.",
     "unsaved-changes": "Please save all changes before running tests",
     "publish-unsaved-changes": "Please save all changes before publishing",

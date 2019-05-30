@@ -4,7 +4,6 @@
       <div #itemElement>
         <pipeline-item
           name="{{ 'pipeline-explorer.script' | translate }}"
-          [description]="item.value.name"
           [active]="selectedItem === item"
           (click)="onItemClick(item, itemElement)"
         >
@@ -41,7 +40,7 @@
         >
           <i *ngIf="item.changed" icon class="fa fa-circle changed-icon"></i>
 
-          <div name>
+          <div name *ngIf="item.value.createdOn">
             {{ item.value.createdOn | date }}
             <span class="ml-sm" *ngIf="showTime(item)">
               <i class="fa fa-clock-o small"></i>

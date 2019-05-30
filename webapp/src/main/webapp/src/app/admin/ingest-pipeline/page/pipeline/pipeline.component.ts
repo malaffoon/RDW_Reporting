@@ -1,5 +1,11 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  pipe,
+  Subject
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
@@ -167,7 +173,12 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         ]) => {
           const pipeline = {
             ...basePipeline,
-            script,
+            // defensively assigns placeholder script so that the
+            // sample script is looked up when the script item is selected
+            script: script || {
+              id: -1,
+              pipelineId: basePipeline.id
+            },
             tests
           };
           this.readonly = !hasWritePermission;
@@ -193,7 +204,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         tap(() => {
           this.compilationState = 'Compiling';
         }),
-        switchMap(value => this.pipelineService.compilePipelineScript(value))
+        switchMap(value =>
+          this.pipelineService.compilePipelineScript(this.pipeline.id, value)
+        )
       )
       .subscribe(
         errors => {
@@ -263,7 +276,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.testState = 'Compiling';
     this.compilationState = null;
     this.pipelineService
-      .compilePipelineScript(script.body)
+      .compilePipelineScript(this.pipeline.id, script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
         if (errors.length === 0) {
@@ -271,7 +284,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.pipelineService
             .runPipelineTests(this.pipeline.id)
             .subscribe(runs => {
-              this.testRuns = runs;
+              this.showTestResults(runs);
               this.testState = null;
             });
         } else {
@@ -285,7 +298,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.publishState = 'Compiling';
     this.compilationState = null;
     this.pipelineService
-      .compilePipelineScript(script.body)
+      .compilePipelineScript(this.pipeline.id, script.body)
       .subscribe(errors => {
         this.compilationErrors.next(errors);
 
@@ -307,7 +320,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                     });
                   });
               } else {
-                this.testRuns = runs;
+                this.showTestResults(runs);
                 this.publishState = null;
               }
             });
@@ -333,6 +346,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     this.compilationState = null;
     this.pipelineService
       .compilePipelineScript(
+        this.pipeline.id,
         this.items.find(({ type }) => type === 'Script').value.body
       )
       .subscribe(errors => {
@@ -342,7 +356,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
           this.pipelineService
             .runPipelineTest(pipeline.id, test.id)
             .subscribe(runs => {
-              this.testRuns = runs;
+              this.showTestResults(runs);
               this.testState = null;
             });
         } else {
@@ -498,6 +512,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     const scripts = this.items.filter(({ type }) => type === 'Script');
     const tests = this.items.filter(({ type }) => type === 'Test');
 
+    const scriptIsBlank = scripts.some(({ value: { body } }) =>
+      isNullOrBlank(body)
+    );
+
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
     // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
     const hasUnsavedChanges =
@@ -513,6 +531,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         : tests.some(({ value }) => !isValidPipelineTest(value));
 
     this.testButtonDisabled =
+      scriptIsBlank ||
       this.testState != null ||
       tests.length === 0 ||
       hasInvalidTests ||
@@ -520,6 +539,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     this.testButtonDisabledTooltipCode = !this.testButtonDisabled
       ? ''
+      : scriptIsBlank
+      ? 'pipeline.no-script'
       : tests.length === 0
       ? 'pipeline.no-tests'
       : hasInvalidTests
@@ -529,6 +550,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       : '';
 
     this.publishButtonDisabled =
+      scriptIsBlank ||
       this.publishState != null ||
       this.published ||
       tests.length === 0 ||
@@ -537,6 +559,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     this.publishButtonDisabledTooltipCode = !this.publishButtonDisabled
       ? ''
+      : scriptIsBlank
+      ? 'pipeline.no-script'
       : this.published
       ? 'pipeline.published'
       : this.pipeline.tests.length === 0
@@ -544,5 +568,18 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       : hasInvalidTests
       ? 'pipeline.invalid-tests'
       : 'pipeline.publish-unsaved-changes';
+  }
+
+  private showTestResults(runs: PipelineTestRun[]): void {
+    const runWithErrors = runs.find(
+      ({ result: { scriptErrors } }) =>
+        scriptErrors != null && scriptErrors.length > 0
+    );
+    if (runWithErrors != null) {
+      this.selectedItem = this.items.find(({ type }) => type === 'Script');
+      this.compilationErrors.next(runWithErrors.result.scriptErrors);
+    } else {
+      this.testRuns = runs;
+    }
   }
 }

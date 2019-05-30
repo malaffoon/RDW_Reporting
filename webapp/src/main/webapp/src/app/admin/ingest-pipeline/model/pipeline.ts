@@ -159,7 +159,7 @@ export interface PipelineTestResult {
   /**
    * The fatal runtime execution error if any
    */
-  scriptError?: ScriptError;
+  scriptErrors?: ScriptError[];
 
   /**
    * The actual test output if different than the expected output

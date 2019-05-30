@@ -4,6 +4,10 @@
     <span class="h3"><i class="fa fa-edit"></i></span>
   </div>
   <div class="card-body">
-    <p>{{ 'ingest-pipeline.' + pipeline.code + '.description' | translate }}</p>
+    <p
+      innerHtml="{{
+        'ingest-pipeline.' + pipeline.code + '.description' | translate
+      }}"
+    ></p>
   </div>
 </a>
