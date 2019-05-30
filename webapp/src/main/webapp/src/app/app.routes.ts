@@ -302,6 +302,10 @@ export const routes: Routes = [
   },
   {
     path: '',
+    canActivate: [RoutingAuthorizationCanActivate],
+    resolve: {
+      translateComplete: TranslateResolve
+    },
     children: [
       {
         path: '',
@@ -427,13 +431,7 @@ export const routes: Routes = [
         pathMatch: 'full',
         component: ErrorComponent
       }
-    ].map(x => ({
-      ...x,
-      canActivate: [RoutingAuthorizationCanActivate],
-      resolve: {
-        translateComplete: TranslateResolve
-      }
-    }))
+    ]
   },
   {
     path: 'access-denied',
