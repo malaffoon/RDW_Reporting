@@ -165,9 +165,14 @@ Running the application locally depends on the local database being configured p
 ./gradlew -Pschema=SNAPSHOT cleanallprod migriateallprod
 ```
 
-The apps are wrapped in docker containers and should be built and run that way. There is a docker-compose spec for each webapp
-to make it easier: it runs the configuration server, webapps and other service dependencies service with the correct profile. Please 
-read the comments in the docker-compose script for setting required environment variables. 
+There is also a dev mysql dump file available with preloaded data. Ask for the latest version and then load, e.g.:
+```
+mysql -u root < mysql.20170707.68.dmp
+```
+
+The apps are wrapped in docker containers and should be built and run that way. There is a docker-compose spec for
+each webapp to make it easier: it runs the configuration server, webapps and other service dependencies service with
+the correct profile. Please read the comments in the docker-compose script for setting required environment variables.
 
 To use docker-compose to run the reporting or admin webapp. Go to the module directory and run:
 ```bash
@@ -181,3 +186,22 @@ To shut down:
 ```bash
 docker-compose down
 ```
+
+If you want to run a particular service in your IDE, you'll need to tweak a couple things:
+1. Modify the `docker-compose.yml` file and comment out the service you'll be running, and look at the comments
+in the webapp configuration section about changing the zuul routes
+1. Modify the `application.yml` for the service to have tenant information. For example, for the data in the dev
+mysql dump, we want CA and TS to be defined:
+```
+tenantProperties:
+  tenants:
+    CA:
+      id: CA
+      key: CA
+      name: California
+    TS:
+      id: TS
+      key: TS
+      name: Test Tenant
+```
+NOTE: do NOT check in this change to the file!
