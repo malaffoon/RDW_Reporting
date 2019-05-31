@@ -82,7 +82,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     );
     const newTenant = {
       ...this.tenantForm.value,
-      code: this.tenantForm.get('key').value,
+      code: this.tenantForm.get('key').value.toUpperCase(),
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };
