@@ -101,6 +101,9 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     );
     const newSandbox = {
       ...this.sandboxForm.value,
+      dataSet: this.dataSets.find(
+        dataSet => dataSet.id === this.sandboxForm.value.dataSetId
+      ),
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };

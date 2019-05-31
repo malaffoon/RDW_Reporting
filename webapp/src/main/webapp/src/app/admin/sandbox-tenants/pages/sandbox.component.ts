@@ -92,7 +92,9 @@ export class SandboxConfigurationComponent implements OnInit {
 
   private getSandboxes(): void {
     this.service.getAll().subscribe(sandboxes => {
-      this.store.setState(sandboxes);
+      this.store.setState(
+        sandboxes.sort((a, b) => a.label.localeCompare(b.label))
+      );
     });
 
     this.store.getState().subscribe(sandboxes => (this.sandboxes = sandboxes));

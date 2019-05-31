@@ -39,8 +39,9 @@ export class TenantConfigurationComponent implements OnInit {
 
   getTenants(): void {
     this.service.getAll().subscribe(tenants => {
-      this.store.setState(tenants);
-      // this.tenants = tenants
+      this.store.setState(
+        tenants.sort((a, b) => a.label.localeCompare(b.label))
+      );
     });
 
     this.store.getState().subscribe(tenants => (this.tenants = tenants));
