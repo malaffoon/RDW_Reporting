@@ -126,3 +126,14 @@ reporting:
   state:
     code: CA
     name: California
+
+tenant-configuration-lookup:
+  services:
+    admin-service:
+      url: http://localhost:8208
+    aggregate-service:
+      url: http://localhost:8308
+    report-processor:
+      url: http://localhost:8086
+    reporting-service:
+      url: http://localhost:8108
