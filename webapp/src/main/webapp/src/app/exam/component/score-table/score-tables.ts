@@ -138,9 +138,13 @@ export function toScoreTable(
 
   const statistics = scoreStatistics(examScaleScores, scoreDefinition).map(
     value => {
-      const roundedPercentages = roundPercentages(
-        value.performanceLevelScores.map(({ percent }) => percent)
-      );
+      // don't round when all the percentages are zero due to zero count
+      const roundedPercentages =
+        exams.length > 0
+          ? roundPercentages(
+              value.performanceLevelScores.map(({ percent }) => percent)
+            )
+          : value.performanceLevelScores.map(() => 0);
 
       return {
         ...value,
