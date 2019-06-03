@@ -444,7 +444,7 @@ export const routes: Routes = [
     component: AccessDeniedComponent
   },
   {
-    path: 'sandbox-login',
+    path: 'sandbox',
     pathMatch: 'full',
     component: SandboxLoginComponent
   }

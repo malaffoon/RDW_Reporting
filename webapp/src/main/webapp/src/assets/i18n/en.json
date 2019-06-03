@@ -1237,7 +1237,8 @@
       "username": "User Name",
       "role": "User Role"
     },
-    "login": "Login"
+    "login": "Login",
+    "error": "An error occurred while attempting to log into the reporting sandbox"
   },
   "tenant-config": {
     "title": "Tenant Configuration",

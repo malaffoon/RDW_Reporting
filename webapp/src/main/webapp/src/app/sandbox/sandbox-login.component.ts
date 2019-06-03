@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SandboxLoginService } from './sandbox-login.service';
 import { Role, Sandbox } from './sandbox';
+import { ActivatedRoute } from '@angular/router';
+import { NotificationService } from '../shared/notification/notification.service';
 
 @Component({
   selector: 'sandbox-login',
@@ -14,10 +16,14 @@ export class SandboxLoginComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private service: SandboxLoginService
+    private service: SandboxLoginService,
+    private route: ActivatedRoute,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(queryParams => this.redirect(queryParams));
+
     this.form = this.formBuilder.group({
       sandbox: [null, Validators.required],
       username: [null, Validators.required],
@@ -43,7 +49,25 @@ export class SandboxLoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    // TODO: Integrate with backend APIs/login
     console.log(this.form.value);
+    this.login(
+      this.form.value.key,
+      this.form.value.username,
+      this.form.value.role
+    );
+  }
+
+  private redirect(queryParams: any): void {
+    // We only want to redirect if all three required params are defined, otherwise stay on the login page
+    if (queryParams.key && queryParams.username && queryParams.role) {
+      this.login(queryParams.key, queryParams.username, queryParams.role);
+    }
+  }
+
+  private login(key: string, username: string, role: string) {
+    this.service.login(key, username, role).subscribe(
+      () => console.log('Login successful'), // TODO: Do the redirect here into the actual sandbox homepage if necessary
+      error => this.notificationService.error({ id: 'sandbox-login.error' })
+    );
   }
 }
