@@ -29,7 +29,7 @@ export class SandboxLoginComponent implements OnInit {
 
   sandboxSelected(selectedSandboxKey: string): void {
     const roleControl = this.form.get('role');
-    if (!selectedSandboxKey || selectedSandboxKey === 'null') {
+    if (!selectedSandboxKey) {
       roleControl.disable();
       roleControl.setValue(null);
     } else {
