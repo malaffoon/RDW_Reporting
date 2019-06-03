@@ -44,10 +44,7 @@
             [ngClass]="{ show: navbarOpen }"
           >
             <ul class="nav navbar-nav navbar-right">
-              <li
-                class="navbar-link nav-item"
-                *ngIf="user && user.firstName && user.lastName"
-              >
+              <li class="navbar-link nav-item" *ngIf="!isAnonymousUser()">
                 <a
                   href="{{
                     applicationSettings ? applicationSettings.userGuideUrl : '#'
@@ -56,10 +53,7 @@
                   >{{ 'common.navigation.user-guide' | translate }}</a
                 >
               </li>
-              <li
-                class="navbar-link nav-item"
-                *ngIf="user && user.firstName && user.lastName"
-              >
+              <li class="navbar-link nav-item" *ngIf="!isAnonymousUser()">
                 <a
                   href="{{
                     applicationSettings
@@ -88,11 +82,7 @@
               </li>
 
               <li class="navbar-link  nav-item">
-                <div
-                  class="btn-group"
-                  dropdown
-                  *ngIf="user && user.firstName && user.lastName"
-                >
+                <div class="btn-group" dropdown *ngIf="!isAnonymousUser()">
                   <button
                     type="button"
                     dropdownToggle
