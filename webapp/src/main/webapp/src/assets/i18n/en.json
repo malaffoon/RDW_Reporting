@@ -858,87 +858,6 @@
     },
     "title": "Manage Embargo"
   },
-  "sandbox-config": {
-    "title": "Sandbox Configuration",
-    "new-sandbox": {
-      "header": "Create New Sandbox"
-    },
-    "delete-modal": {
-      "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?",
-      "success": "Sandbox was successfully deleted"
-    },
-    "archive-modal": {
-      "header": "Archive <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?"
-    },
-    "reset-modal": {
-      "header": "Reset data for <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
-      "success": "Sandbox data was successfully reset"
-    },
-    "fields": {
-      "label": "Sandbox Name / Label:",
-      "description": "Description:",
-      "data-set": "Data Set:",
-      "configuration-properties": "Configuration Properties",
-      "localization-overrides": "Localization Overrides",
-      "search": "Search by key or value"
-    },
-    "actions": {
-      "reset": "Reset Data",
-      "archive": "Archive",
-      "delete": "Delete"
-    },
-    "config-properties": {
-      "modified": "Show modified properties only",
-      "empty": "No configuration properties found"
-    },
-    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button",
-    "errors": {
-      "reset": "An unknown error occurred when attempting to reset the sandbox data",
-      "update": "An unknown error occurred when attempting to update the sandbox",
-      "create": "An unknown error occurred when attempting to create the sandbox",
-      "delete": "An unknown error occurred when attempting to delete the sandbox"
-    }
-  },
-  "tenant-config": {
-    "title": "Tenant Configuration",
-    "new-tenant": {
-      "header": "Create New Tenant"
-    },
-    "delete-modal": {
-      "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?",
-      "success": "Tenant was successfully deleted"
-    },
-    "fields": {
-      "id": "Tenant ID",
-      "key": "Tenant Key",
-      "label": "Tenant Name / Label:",
-      "description": "Description:",
-      "configuration-properties": "Configuration Properties",
-      "localization-overrides": "Localization Overrides",
-      "search": "Search by key or value"
-    },
-    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button",
-    "reset-info": "Click this button to reset the value back to its original default value",
-    "properties": {
-      "reporting": "Reporting",
-      "datasources": "Data Sources",
-      "task": "Task",
-      "archive": "Archive",
-      "aggregator": "Aggregator"
-    },
-    "errors": {
-      "duplicate-key": "A tenant with the same tenant key or ID already exists",
-      "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
-      "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
-      "update": "An unknown error occurred when attempting to update the tenant",
-      "create": "An unknown error occurred when attempting to create the tenant",
-      "delete": "An unknown error occurred when attempting to delete the tenant"
-    }
-  },
   "embargo-alert": {
     "message": "Summative test results in your region of administration are not yet released. These results may be viewed online but not downloaded."
   },
@@ -1266,6 +1185,96 @@
       "StudentSSID": "Student SSID"
     },
     "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
+  },
+  "sandbox-config": {
+    "title": "Sandbox Configuration",
+    "new-sandbox": {
+      "header": "Create New Sandbox"
+    },
+    "delete-modal": {
+      "header": "Delete <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?",
+      "success": "Sandbox was successfully deleted"
+    },
+    "archive-modal": {
+      "header": "Archive <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?"
+    },
+    "reset-modal": {
+      "header": "Reset data for <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
+      "success": "Sandbox data was successfully reset"
+    },
+    "fields": {
+      "label": "Sandbox Name / Label:",
+      "description": "Description:",
+      "data-set": "Data Set:",
+      "configuration-properties": "Configuration Properties",
+      "localization-overrides": "Localization Overrides",
+      "search": "Search by key or value"
+    },
+    "actions": {
+      "reset": "Reset Data",
+      "archive": "Archive",
+      "delete": "Delete"
+    },
+    "config-properties": {
+      "modified": "Show modified properties only",
+      "empty": "No configuration properties found"
+    },
+    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button",
+    "errors": {
+      "reset": "An unknown error occurred when attempting to reset the sandbox data",
+      "update": "An unknown error occurred when attempting to update the sandbox",
+      "create": "An unknown error occurred when attempting to create the sandbox",
+      "delete": "An unknown error occurred when attempting to delete the sandbox"
+    }
+  },
+  "sandbox-login": {
+    "title": "Reporting System Sandbox Login",
+    "labels": {
+      "sandbox": "Sandbox",
+      "username": "User Name",
+      "role": "User Role"
+    },
+    "login": "Login"
+  },
+  "tenant-config": {
+    "title": "Tenant Configuration",
+    "new-tenant": {
+      "header": "Create New Tenant"
+    },
+    "delete-modal": {
+      "header": "Delete <strong>{{label}}</strong>?",
+      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?",
+      "success": "Tenant was successfully deleted"
+    },
+    "fields": {
+      "id": "Tenant ID",
+      "key": "Tenant Key",
+      "label": "Tenant Name / Label:",
+      "description": "Description:",
+      "configuration-properties": "Configuration Properties",
+      "localization-overrides": "Localization Overrides",
+      "search": "Search by key or value"
+    },
+    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button",
+    "reset-info": "Click this button to reset the value back to its original default value",
+    "properties": {
+      "reporting": "Reporting",
+      "datasources": "Data Sources",
+      "task": "Task",
+      "archive": "Archive",
+      "aggregator": "Aggregator"
+    },
+    "errors": {
+      "duplicate-key": "A tenant with the same tenant key or ID already exists",
+      "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
+      "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
+      "update": "An unknown error occurred when attempting to update the tenant",
+      "create": "An unknown error occurred when attempting to create the tenant",
+      "delete": "An unknown error occurred when attempting to delete the tenant"
+    }
   },
   "user-query-table": {
     "column": {

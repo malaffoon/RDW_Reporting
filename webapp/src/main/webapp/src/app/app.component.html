@@ -44,7 +44,10 @@
             [ngClass]="{ show: navbarOpen }"
           >
             <ul class="nav navbar-nav navbar-right">
-              <li class="navbar-link nav-item">
+              <li
+                class="navbar-link nav-item"
+                *ngIf="user && user.firstName && user.lastName"
+              >
                 <a
                   href="{{
                     applicationSettings ? applicationSettings.userGuideUrl : '#'
@@ -53,7 +56,10 @@
                   >{{ 'common.navigation.user-guide' | translate }}</a
                 >
               </li>
-              <li class="navbar-link nav-item">
+              <li
+                class="navbar-link nav-item"
+                *ngIf="user && user.firstName && user.lastName"
+              >
                 <a
                   href="{{
                     applicationSettings
@@ -82,7 +88,11 @@
               </li>
 
               <li class="navbar-link  nav-item">
-                <div class="btn-group" dropdown>
+                <div
+                  class="btn-group"
+                  dropdown
+                  *ngIf="user && user.firstName && user.lastName"
+                >
                   <button
                     type="button"
                     dropdownToggle
