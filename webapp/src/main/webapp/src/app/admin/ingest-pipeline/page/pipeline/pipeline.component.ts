@@ -51,7 +51,7 @@ const defaultCompileDebounceTime = 2000;
 function compilationErrorToMessage(value: ScriptError): Message {
   return {
     type: <MessageType>'error',
-    row: value.row != null ? value.row - 1 : undefined,
+    row: value.row != null ? value.row - 1 : 0,
     column: value.column != null ? value.column - 1 : undefined,
     text: value.message
   };
