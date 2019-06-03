@@ -85,6 +85,12 @@ export class AppComponent {
     this.navbarOpen = !this.navbarOpen;
   }
 
+  isAnonymousUser(): boolean {
+    return (
+      !this.user || (this.user.firstName == null && this.user.lastName == null)
+    );
+  }
+
   private initializeAnalytics(trackingId: string): void {
     const googleAnalyticsProvider: Function = window['ga'];
     if (googleAnalyticsProvider && trackingId) {

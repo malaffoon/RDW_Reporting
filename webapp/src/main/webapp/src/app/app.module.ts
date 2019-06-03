@@ -26,6 +26,7 @@ import { ApplicationSettingsResolve } from './app-settings.resolve';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HomeModule } from './home/home.module';
 import { HttpModule } from '@angular/http';
+import { SandboxLoginModule } from './sandbox/sandbox-login.module';
 
 @NgModule({
   declarations: [AppComponent, ErrorComponent, AccessDeniedComponent],
@@ -42,6 +43,7 @@ import { HttpModule } from '@angular/http';
     RouterModule.forRoot([]),
     UserModule,
     FormsModule,
+    SandboxLoginModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     PopoverModule.forRoot(),
