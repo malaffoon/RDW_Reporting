@@ -66,7 +66,7 @@ export class SandboxLoginComponent implements OnInit {
     }
   }
 
-  private login() {
+  login() {
     const sandboxUser = { ...this.form.value };
     this.service.login(sandboxUser).subscribe(
       () => console.log('Login successful'), // TODO: Do the redirect here into the actual sandbox homepage if necessary
