@@ -24,7 +24,7 @@ import { ApplicationSettingsService } from '../../../../app-settings.service';
 import { UserReportService } from '../../../../report/user-report.service';
 import { TargetService } from '../../../../shared/target/target.service';
 
-describe('TargetReportComponent', () => {
+xdescribe('TargetReportComponent', () => {
   let component: TargetReportComponent;
   let fixture: ComponentFixture<TestComponentWrapper>;
 
