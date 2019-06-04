@@ -104,11 +104,7 @@ export class SandboxLoginService {
    * Creates a new sandbox
    * @param sandbox - The sandbox to create
    */
-  login(
-    sandboxKey: string,
-    username: string,
-    roleKey: string
-  ): Observable<void> {
+  login(user: SandboxUser): Observable<void> {
     // TODO: Integrate API
     return new Observable(observer => observer.next());
   }

@@ -22,12 +22,28 @@ export class SandboxLoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(queryParams => this.redirect(queryParams));
-
     this.form = this.formBuilder.group({
-      sandbox: [null, Validators.required],
+      sandboxKey: [null, Validators.required],
       username: [null, Validators.required],
       role: [{ value: null, disabled: true }, Validators.required]
+    });
+
+    this.route.queryParams.subscribe(queryParams => {
+      if (queryParams.key) {
+        this.form.get('sandboxKey').setValue(queryParams.key);
+      }
+      if (queryParams.username) {
+        this.form.get('username').setValue(queryParams.username);
+      }
+      if (queryParams.role) {
+        const roleControl = this.form.get('role');
+        roleControl.enable();
+        roleControl.setValue(queryParams.role);
+      }
+
+      if (queryParams.key && queryParams.username && queryParams.role) {
+        this.login();
+      }
     });
 
     this.service.getAll().subscribe(sandboxes => (this.sandboxes = sandboxes));
@@ -48,24 +64,9 @@ export class SandboxLoginComponent implements OnInit {
     }
   }
 
-  onSubmit(): void {
-    console.log(this.form.value);
-    this.login(
-      this.form.value.key,
-      this.form.value.username,
-      this.form.value.role
-    );
-  }
-
-  private redirect(queryParams: any): void {
-    // We only want to redirect if all three required params are defined, otherwise stay on the login page
-    if (queryParams.key && queryParams.username && queryParams.role) {
-      this.login(queryParams.key, queryParams.username, queryParams.role);
-    }
-  }
-
-  private login(key: string, username: string, role: string) {
-    this.service.login(key, username, role).subscribe(
+  private login() {
+    const sandboxUser = { ...this.form.value };
+    this.service.login(sandboxUser).subscribe(
       () => console.log('Login successful'), // TODO: Do the redirect here into the actual sandbox homepage if necessary
       error => this.notificationService.error({ id: 'sandbox-login.error' })
     );
