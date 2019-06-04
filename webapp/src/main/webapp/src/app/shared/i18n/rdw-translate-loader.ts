@@ -2,12 +2,13 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { merge, set, get } from 'lodash';
 import { Injectable } from '@angular/core';
 import { TranslateLoader } from '@ngx-translate/core';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, iif } from 'rxjs';
 import { EmbeddedLanguages } from './language-settings';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { SubjectService } from '../../subject/subject.service';
 import { flattenJsonObject, Utils } from '../support/support';
+import { UserService } from '../../user/user.service';
 
 const EmptyObservable = of({});
 const AssessmentTypes: string[] = ['iab', 'ica', 'sum'];
@@ -17,7 +18,11 @@ export class RdwTranslateLoader implements TranslateLoader {
   private clientTranslationsLoader;
   private serverTranslationsLoader;
 
-  constructor(http: HttpClient, private subjectService: SubjectService) {
+  constructor(
+    http: HttpClient,
+    private subjectService: SubjectService,
+    private userService: UserService
+  ) {
     this.clientTranslationsLoader = new TranslateHttpLoader(
       http,
       '/assets/i18n/',
@@ -31,19 +36,15 @@ export class RdwTranslateLoader implements TranslateLoader {
   }
 
   getTranslation(languageCode: string): Observable<any> {
-    return forkJoin(
-      this.getClientTranslations(languageCode),
-      this.getServerTranslations(languageCode),
-      this.subjectService.getSubjectCodes()
-    ).pipe(
-      map(([clientTranslations, serverTranslations, subjects]) => {
-        const asmtTranslations = this.createSubjectTranslations(
-          subjects,
-          serverTranslations
-        );
-        return merge(clientTranslations, asmtTranslations, serverTranslations);
-      })
-    );
+    return this.userService
+      .getUser()
+      .pipe(
+        mergeMap(user =>
+          user.anonymous
+            ? this.getClientTranslations(languageCode)
+            : this.getUserTranslations(languageCode)
+        )
+      );
   }
 
   getFlattenedTranslations(languageCode: string): Observable<any> {
@@ -112,5 +113,21 @@ export class RdwTranslateLoader implements TranslateLoader {
     }
 
     return subjectTranslations;
+  }
+
+  private getUserTranslations(languageCode: string) {
+    return forkJoin(
+      this.getClientTranslations(languageCode),
+      this.getServerTranslations(languageCode),
+      this.subjectService.getSubjectCodes()
+    ).pipe(
+      map(([clientTranslations, serverTranslations, subjects]) => {
+        const asmtTranslations = this.createSubjectTranslations(
+          subjects,
+          serverTranslations
+        );
+        return merge(clientTranslations, asmtTranslations, serverTranslations);
+      })
+    );
   }
 }
