@@ -25,28 +25,30 @@ export class SandboxLoginComponent implements OnInit {
     this.form = this.formBuilder.group({
       sandboxKey: [null, Validators.required],
       username: [null, Validators.required],
-      role: [{ value: null, disabled: true }, Validators.required]
+      role: [null, Validators.required]
+      // role: [{value: null, disabled: true}, Validators.required]
     });
 
-    this.route.queryParams.subscribe(queryParams => {
-      if (queryParams.key) {
-        this.form.get('sandboxKey').setValue(queryParams.key);
-      }
-      if (queryParams.username) {
-        this.form.get('username').setValue(queryParams.username);
-      }
-      if (queryParams.role) {
-        const roleControl = this.form.get('role');
-        roleControl.enable();
-        roleControl.setValue(queryParams.role);
-      }
+    this.service.getAll().subscribe(sandboxes => {
+      this.sandboxes = sandboxes;
 
-      if (queryParams.key && queryParams.username && queryParams.role) {
-        this.login();
-      }
+      this.route.queryParams.subscribe(queryParams => {
+        this.form.patchValue(queryParams);
+
+        if (queryParams.sandboxKey) {
+          const selectedSandbox = this.sandboxes.find(
+            sandbox => queryParams.sandboxKey === sandbox.key
+          );
+          this.roles = selectedSandbox.roles;
+        } else {
+          this.form.get('role').disable();
+        }
+
+        if (this.form.valid) {
+          this.login();
+        }
+      });
     });
-
-    this.service.getAll().subscribe(sandboxes => (this.sandboxes = sandboxes));
   }
 
   sandboxSelected(selectedSandboxKey: string): void {
