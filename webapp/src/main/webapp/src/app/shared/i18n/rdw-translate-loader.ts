@@ -1,6 +1,6 @@
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { merge, set, get } from 'lodash';
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { TranslateLoader } from '@ngx-translate/core';
 import { Observable, forkJoin, of, iif } from 'rxjs';
 import { EmbeddedLanguages } from './language-settings';
@@ -12,6 +12,9 @@ import { UserService } from '../../user/user.service';
 
 const EmptyObservable = of({});
 const AssessmentTypes: string[] = ['iab', 'ica', 'sum'];
+const defaultUserService = <UserService>{
+  getUser: () => of({ anonymous: true })
+};
 
 @Injectable()
 export class RdwTranslateLoader implements TranslateLoader {
@@ -21,7 +24,8 @@ export class RdwTranslateLoader implements TranslateLoader {
   constructor(
     http: HttpClient,
     private subjectService: SubjectService,
-    private userService: UserService
+    @Optional()
+    private userService: UserService = defaultUserService
   ) {
     this.clientTranslationsLoader = new TranslateHttpLoader(
       http,

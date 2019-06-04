@@ -7,12 +7,23 @@ import {
 import { inject, TestBed } from '@angular/core/testing';
 import { SubjectService } from '../../subject/subject.service';
 import { of } from 'rxjs';
+import { UserService } from '../../user/user.service';
 
 describe('RdwTranslateLoader', () => {
   const mockSubjectService = jasmine.createSpyObj('SubjectService', [
     'getSubjectCodes'
   ]);
   mockSubjectService.getSubjectCodes.and.returnValue(of(['Math', 'ELA']));
+
+  const mockUserService = jasmine.createSpyObj('UserService', ['getUser']);
+  mockUserService.getUser.and.returnValue(
+    of({
+      firstName: 'test',
+      lastNane: 'test',
+      permissions: [],
+      anonymous: false
+    })
+  );
 
   let mockHttp: HttpTestingController;
   let mockClientData = {
@@ -63,7 +74,10 @@ describe('RdwTranslateLoader', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [{ provide: SubjectService, useValue: mockSubjectService }]
+      providers: [
+        { provide: SubjectService, useValue: mockSubjectService },
+        { provide: UserService, useValue: mockUserService }
+      ]
     });
     mockHttp = TestBed.get(HttpTestingController);
   });
@@ -73,9 +87,13 @@ describe('RdwTranslateLoader', () => {
   });
 
   it('should merge api and ui translations', inject(
-    [HttpClient, SubjectService],
-    (http: HttpClient, subjectService: SubjectService) => {
-      let loader = new RdwTranslateLoader(http, subjectService);
+    [HttpClient, SubjectService, UserService],
+    (
+      http: HttpClient,
+      subjectService: SubjectService,
+      userService: UserService
+    ) => {
+      let loader = new RdwTranslateLoader(http, subjectService, userService);
       loader.getTranslation('en').subscribe((actual: any) => {
         expect(actual.welcome.title).toBe('Hello from API');
         expect(actual.welcome.message).toBe('The API welcomes you!');
