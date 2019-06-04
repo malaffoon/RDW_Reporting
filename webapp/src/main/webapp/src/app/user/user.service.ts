@@ -17,15 +17,12 @@ export class UserService {
 
   getUser(): Observable<User> {
     return this.dataService.get('/user').pipe(
-      map(
-        serverUser =>
-          <User>{
-            firstName: serverUser.firstName,
-            lastName: serverUser.lastName,
-            permissions: serverUser.permissions,
-            anonymous: serverUser.anonymous
-          }
-      ),
+      map(serverUser => ({
+        firstName: serverUser.firstName,
+        lastName: serverUser.lastName,
+        permissions: serverUser.permissions,
+        anonymous: serverUser.anonymous
+      })),
       catchError(() => UnauthenticatedUser)
     );
   }
