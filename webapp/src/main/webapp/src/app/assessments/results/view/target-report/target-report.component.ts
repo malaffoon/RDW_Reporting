@@ -127,6 +127,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   targetScoreExams: TargetScoreExam[];
 
   allSubgroups: any[] = [];
+  showResults: boolean = false;
 
   private _filterBy: FilterBy;
   private _filterBySubscription: Subscription;
@@ -180,11 +181,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
       })
     ];
 
-    if (!this.showResults) {
-      this.loading = false;
-      return;
-    }
-
     forkJoin(
       this.targetService.getTargetsForAssessment(this.assessment.id),
       this.assessmentProvider.getTargetScoreExams(this.assessment.id),
@@ -198,16 +194,23 @@ export class TargetReportComponent implements OnInit, ExportResults {
         applicationSettings
       ]) => {
         this.allSubgroups = this.createAllSubgroups(applicationSettings);
-        this.originalTargetScoreExams = this.targetScoreExams = targetScoreExams;
+        this.originalTargetScoreExams = (targetScoreExams || []).slice();
+        this.targetScoreExams = (targetScoreExams || []).slice();
         this.subgroupOptions = subgroupOptions;
-        this.allTargets = allTargets;
+        this.allTargets = (allTargets || []).slice();
 
         this.identityColumns.forEach(column => {
           this._orderingByIdentityField[column] = this.createOrdering(column);
         });
 
         this.minimumStudentCount =
-          applicationSettings.targetReport.minimumStudentCount;
+          typeof applicationSettings.targetReport.minimumStudentCount !==
+          'undefined'
+            ? applicationSettings.targetReport.minimumStudentCount
+            : 0;
+
+        this.showResults = this.studentsTested > this.minimumStudentCount;
+
         this.targetStatisticsCalculator.insufficientDataCutoff =
           applicationSettings.targetReport.insufficientDataCutoff;
 
@@ -342,10 +345,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
     exportRequest.subjectDefinition = this.subjectDefinition;
 
     this.assessmentExporter.exportTargetScoresToCsv(exportRequest);
-  }
-
-  get showResults(): boolean {
-    return this.studentsTested > this.minimumStudentCount;
   }
 
   calculateTreeColumns() {
