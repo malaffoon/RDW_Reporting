@@ -7,7 +7,8 @@ import { catchError, map } from 'rxjs/operators';
 const UnauthenticatedUser = of({
   firstName: '',
   lastName: '',
-  permissions: []
+  permissions: [],
+  anonymous: true
 });
 
 @Injectable()
@@ -16,14 +17,12 @@ export class UserService {
 
   getUser(): Observable<User> {
     return this.dataService.get('/user').pipe(
-      map(
-        serverUser =>
-          <User>{
-            firstName: serverUser.firstName,
-            lastName: serverUser.lastName,
-            permissions: serverUser.permissions
-          }
-      ),
+      map(serverUser => ({
+        firstName: serverUser.firstName,
+        lastName: serverUser.lastName,
+        permissions: serverUser.permissions,
+        anonymous: serverUser.anonymous
+      })),
       catchError(() => UnauthenticatedUser)
     );
   }
