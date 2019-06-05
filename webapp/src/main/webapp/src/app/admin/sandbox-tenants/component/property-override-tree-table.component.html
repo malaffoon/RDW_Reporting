@@ -90,6 +90,7 @@
           </td>
           <td>
             <input
+              *ngIf="!readonly"
               #overrideInput
               type="text"
               [value]="rowNode.node.data.value"
@@ -97,10 +98,14 @@
               (change)="updateOverride(rowNode.node.data)"
               class="property-input"
             />
+            <span *ngIf="readonly">
+              {{ rowNode.node.data.value }}
+            </span>
             <i
               class="fa fa-undo fa-md"
               *ngIf="
-                rowNode.node.data.value !== rowNode.node.data.originalValue
+                rowNode.node.data.value !== rowNode.node.data.originalValue &&
+                !readonly
               "
               (click)="resetClicked(rowNode.node.data)"
               popover="{{ 'tenant-config.reset-info' | translate }}"

@@ -55,6 +55,7 @@
           <td [title]="overrides.key">{{ overrides.key }}</td>
           <td>
             <input
+              *ngIf="!readonly"
               #overrideInput
               type="text"
               [value]="overrides.value"
@@ -62,9 +63,12 @@
               class="property-input"
               (change)="updateOverride(overrides)"
             />
+            <span *ngIf="readonly">
+              {{ overrides.value }}
+            </span>
             <i
               class="fa fa-undo fa-md"
-              *ngIf="overrides.value !== overrides.originalValue"
+              *ngIf="overrides.value !== overrides.originalValue && !readonly"
               (click)="resetClicked(overrides)"
               popover="{{ 'tenant-config.reset-info' | translate }}"
               placement="left"

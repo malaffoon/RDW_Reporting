@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { MenuItem } from 'primeng/api';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { TenantConfiguration } from '../model/tenant-configuration';
@@ -17,6 +17,7 @@ import { TenantService } from '../service/tenant.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { TenantStore } from '../store/tenant.store';
+import { UserService } from '../../../user/user.service';
 
 @Component({
   selector: 'tenant-details-config',
@@ -32,6 +33,7 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
 
   expanded = false;
   editMode = false;
+  readonly = true;
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
   menuItems: MenuItem[];
@@ -43,12 +45,16 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
     private service: TenantService,
     private store: TenantStore,
     private formBuilder: FormBuilder,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
     this.configureMenuItems();
+    this.userService.getUser().subscribe(user => {
+      this.readonly = !user.permissions.some(perm => perm === 'TENANT_WRITE');
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
