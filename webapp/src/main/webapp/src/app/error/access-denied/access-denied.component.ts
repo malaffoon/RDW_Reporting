@@ -6,18 +6,18 @@ import { ApplicationSettingsService } from '../../app-settings.service';
   templateUrl: './access-denied.component.html'
 })
 export class AccessDeniedComponent implements OnInit {
-  loading: boolean = true;
+  loading: boolean = false;
 
   constructor(private service: ApplicationSettingsService) {}
 
   ngOnInit() {
-    this.loading = true;
-    this.service.getSettings().subscribe(settings => {
-      if (settings.accessDeniedUrl != null) {
-        window.location.href = settings.accessDeniedUrl;
-      } else {
-        this.loading = false;
-      }
-    });
+    // this.loading = true;
+    // this.service.getSettings().subscribe(settings => {
+    //   if (settings.accessDeniedUrl != null) {
+    //     window.location.href = settings.accessDeniedUrl;
+    //   } else {
+    //     this.loading = false;
+    //   }
+    // });
   }
 }
