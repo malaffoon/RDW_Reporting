@@ -212,9 +212,11 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         errors => {
           this.compilationState = errors.length === 0 ? null : 'Failed';
           this.compilationErrors.next(errors);
+          this.updateButtonStates();
         },
         () => {
           this.compilationState = 'Failed';
+          this.updateButtonStates();
         }
       );
 
@@ -290,6 +292,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         } else {
           this.testState = null;
           this.compilationState = 'Failed';
+          this.updateButtonStates();
         }
       });
   }
@@ -327,6 +330,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         } else {
           this.publishState = null;
           this.compilationState = 'Failed';
+          this.updateButtonStates();
         }
       });
   }
@@ -362,6 +366,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
         } else {
           this.testState = null;
           this.compilationState = 'Failed';
+          this.updateButtonStates();
         }
       });
   }
@@ -517,6 +522,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       ({ value: { id, body } }) => id == null || id < 0 || isNullOrBlank(body)
     );
 
+    const compilationFailed = this.compilationState === 'Failed';
+
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
     // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
     const hasUnsavedChanges =
@@ -533,6 +540,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     this.testButtonDisabled =
       scriptIsBlank ||
+      compilationFailed ||
       this.testState != null ||
       tests.length === 0 ||
       hasInvalidTests ||
@@ -542,6 +550,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       ? ''
       : scriptIsBlank
       ? 'pipeline.no-script'
+      : compilationFailed
+      ? 'pipeline.compilation-failed'
       : tests.length === 0
       ? 'pipeline.no-tests'
       : hasInvalidTests
@@ -552,6 +562,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
 
     this.publishButtonDisabled =
       scriptIsBlank ||
+      compilationFailed ||
       this.publishState != null ||
       this.published ||
       tests.length === 0 ||
@@ -562,6 +573,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       ? ''
       : scriptIsBlank
       ? 'pipeline.no-script'
+      : compilationFailed
+      ? 'pipeline.compilation-failed'
       : this.published
       ? 'pipeline.published'
       : this.pipeline.tests.length === 0

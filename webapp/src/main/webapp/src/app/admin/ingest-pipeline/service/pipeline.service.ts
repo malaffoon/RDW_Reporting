@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import {
   Pipeline,
   PipelineScript,
@@ -9,7 +9,7 @@ import {
   PublishedPipeline,
   ScriptError
 } from '../model/pipeline';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../../shared/service-route';
 
 const ResourceRoute = `${AdminServiceRoute}/pipelines`;
@@ -147,10 +147,19 @@ export class PipelineService {
     pipelineId: number,
     scriptBody: string
   ): Observable<ScriptError[]> {
-    return this.dataService.post(
-      `${ResourceRoute}/${pipelineId}/compile`,
-      scriptBody
-    );
+    return this.dataService
+      .post(`${ResourceRoute}/${pipelineId}/compile`, scriptBody)
+      .pipe(
+        // failsafe
+        catchError(() =>
+          of([
+            {
+              message: 'Compilation failed. See application logs for details',
+              row: 1
+            }
+          ])
+        )
+      );
   }
 
   publishPipeline(pipelineId: number): Observable<PublishedPipeline> {
