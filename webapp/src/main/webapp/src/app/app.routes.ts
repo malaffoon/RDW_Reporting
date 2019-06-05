@@ -158,9 +158,8 @@ export const adminRoute = {
       path: 'sandboxes',
       pathMatch: 'prefix',
       data: {
-        breadcrumb: { translate: 'sandbox-config.title' }
-        //TODO: Uncomment the line below once the roles/permissions have been configured
-        // permissions: ['TENANT_ADMIN']
+        breadcrumb: { translate: 'sandbox-config.title' },
+        permissions: ['TENANT_READ']
       },
       canActivate: [AuthorizationCanActivate],
       children: [
@@ -173,7 +172,8 @@ export const adminRoute = {
           path: 'new',
           pathMatch: 'prefix',
           data: {
-            breadcrumb: { translate: 'sandbox-config.new-sandbox.header' }
+            breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
+            permissions: ['TENANT_WRITE']
           },
           children: [
             {
@@ -189,9 +189,8 @@ export const adminRoute = {
       path: 'tenants',
       pathMatch: 'prefix',
       data: {
-        breadcrumb: { translate: 'tenant-config.title' }
-        //TODO: Uncomment the line below once the roles/permissions have been configured
-        // permissions: ['TENANT_ADMIN']
+        breadcrumb: { translate: 'tenant-config.title' },
+        permissions: ['TENANT_READ']
       },
       canActivate: [AuthorizationCanActivate],
       children: [
@@ -204,7 +203,8 @@ export const adminRoute = {
           path: 'new',
           pathMatch: 'prefix',
           data: {
-            breadcrumb: { translate: 'tenant-config.new-tenant.header' }
+            breadcrumb: { translate: 'tenant-config.new-tenant.header' },
+            permissions: ['TENANT_WRITE']
           },
           children: [
             {

@@ -47,6 +47,7 @@
       </ng-template>
       <ng-template pTemplate="body" let-overrides>
         <tr
+          *ngIf="!readonly"
           [ngClass]="{
             modified: overrides.value !== overrides.originalValue
           }"
@@ -64,13 +65,26 @@
             />
             <i
               class="fa fa-undo fa-md"
-              *ngIf="overrides.value !== overrides.originalValue"
+              *ngIf="overrides.value !== overrides.originalValue && !readonly"
               (click)="resetClicked(overrides)"
               popover="{{ 'tenant-config.reset-info' | translate }}"
               placement="left"
               container="body"
               triggers="mouseenter:mouseleave"
             ></i>
+          </td>
+        </tr>
+        <tr
+          *ngIf="readonly"
+          [ngClass]="{
+            modified: overrides.value !== overrides.originalValue
+          }"
+        >
+          <td [title]="overrides.key">{{ overrides.key }}</td>
+          <td>
+            <span>
+              {{ overrides.value }}
+            </span>
           </td>
         </tr>
       </ng-template>

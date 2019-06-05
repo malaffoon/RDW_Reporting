@@ -16,6 +16,7 @@
     <!-- Actions -->
     <div class="mb-sm pull-right">
       <button
+        *hasPermission="'TENANT_WRITE'"
         class="btn btn-primary mr-xs"
         (click)="onSubmit()"
         [disabled]="tenantForm.invalid"
@@ -27,6 +28,7 @@
       </button>
       <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
       <button
+        *hasPermission="'TENANT_WRITE'"
         type="button"
         pButton
         class="btn btn-primary btn-outlined"
@@ -45,11 +47,15 @@
       </div>
       <div class="col-md-8">
         <input
+          *ngIf="!readonly"
           type="text"
           class="form-control"
           name="label"
           formControlName="label"
         />
+        <span *ngIf="readonly">
+          {{ tenant.label }}
+        </span>
       </div>
     </div>
     <div class="row mb-xs">
@@ -58,11 +64,15 @@
       </div>
       <div class="col-md-8">
         <textarea
+          *ngIf="!readonly"
           class="form-control"
           name="description"
           formControlName="description"
         >
         </textarea>
+        <span *ngIf="readonly">
+          {{ tenant.description }}
+        </span>
       </div>
     </div>
 
@@ -75,6 +85,7 @@
         <property-override-tree-table
           [form]="tenantForm"
           [configurationProperties]="tenant.configurationProperties"
+          [readonly]="readonly"
           propertiesArrayName="configurationProperties"
         >
         </property-override-tree-table>
@@ -87,6 +98,7 @@
         <property-override-table
           [form]="tenantForm"
           [configurationProperties]="localizationOverrides"
+          [readonly]="readonly"
           propertiesArrayName="localizationOverrides"
         >
         </property-override-table>

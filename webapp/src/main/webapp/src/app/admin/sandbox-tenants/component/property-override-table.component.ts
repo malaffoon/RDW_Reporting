@@ -33,6 +33,8 @@ export class PropertyOverrideTableComponent {
   propertiesArrayName: string;
   @Input()
   form: FormGroup;
+  @Input()
+  readonly = true;
   @ViewChild('dt') dataTable: DataTable;
 
   showModifiedPropertiesOnly = false;

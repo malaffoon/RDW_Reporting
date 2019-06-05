@@ -72,6 +72,7 @@
         <!-- Leaf Row -->
         <tr
           *ngIf="
+            !readonly &&
             rowNode.node.leaf &&
             ((showModifiedPropertiesOnly &&
               rowNode.node.data.originalValue !== rowNode.node.data.value) ||
@@ -108,6 +109,30 @@
               container="body"
               triggers="mouseenter:mouseleave"
             ></i>
+          </td>
+        </tr>
+        <tr
+          *ngIf="
+            readonly &&
+            rowNode.node.leaf &&
+            ((showModifiedPropertiesOnly &&
+              rowNode.node.data.originalValue !== rowNode.node.data.value) ||
+              !showModifiedPropertiesOnly)
+          "
+          [ttRow]="rowNode"
+          [ngClass]="{
+            modified:
+              rowNode.node.data.value !== rowNode.node.data.originalValue
+          }"
+        >
+          <td [title]="rowNode.node.data.key">
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            {{ rowNode.node.data.key }}
+          </td>
+          <td>
+            <span *ngIf="readonly">
+              {{ rowNode.node.data.value }}
+            </span>
           </td>
         </tr>
       </ng-template>

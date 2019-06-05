@@ -2,6 +2,7 @@
   <ng-template #heading>
     <h2>{{ 'tenant-config.title' | translate }}</h2>
     <a
+      *hasPermission="'TENANT_WRITE'"
       class="btn btn-primary pull-right"
       style="margin-top: -8px;"
       routerLink="/tenants/new"
