@@ -11,13 +11,13 @@ export class AccessDeniedComponent implements OnInit {
   constructor(private service: ApplicationSettingsService) {}
 
   ngOnInit() {
-    // this.loading = true;
-    // this.service.getSettings().subscribe(settings => {
-    //   if (settings.accessDeniedUrl != null) {
-    //     window.location.href = settings.accessDeniedUrl;
-    //   } else {
-    //     this.loading = false;
-    //   }
-    // });
+    this.loading = true;
+    this.service.getSettings().subscribe(settings => {
+      if (settings.accessDeniedUrl != null) {
+        window.location.href = settings.accessDeniedUrl;
+      } else {
+        this.loading = false;
+      }
+    });
   }
 }
