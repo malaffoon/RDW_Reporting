@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SandboxLoginService } from './sandbox-login.service';
 import { Role, Sandbox } from './sandbox';
@@ -14,24 +14,28 @@ export class SandboxLoginComponent implements OnInit {
   sandboxes: Sandbox[];
   roles: Role[] = [];
 
+  @ViewChild('loginForm')
+  private loginForm: ElementRef<HTMLFormElement>;
+
   constructor(
     private formBuilder: FormBuilder,
     private service: SandboxLoginService,
     private route: ActivatedRoute,
     private notificationService: NotificationService
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.form = this.formBuilder.group({
       sandboxKey: [null, Validators.required],
       username: [null, Validators.required],
       role: [null, Validators.required]
       // role: [{value: null, disabled: true}, Validators.required]
     });
+  }
 
+  ngOnInit(): void {
     this.service.getAll().subscribe(sandboxes => {
       this.sandboxes = sandboxes;
 
+      // TODO close sub
       this.route.queryParams.subscribe(queryParams => {
         this.form.patchValue(queryParams);
 
@@ -72,5 +76,9 @@ export class SandboxLoginComponent implements OnInit {
       () => console.log('Login successful'), // TODO: Do the redirect here into the actual sandbox homepage if necessary
       error => this.notificationService.error({ id: 'sandbox-login.error' })
     );
+  }
+
+  onSubmit(): void {
+    this.loginForm.nativeElement.submit();
   }
 }

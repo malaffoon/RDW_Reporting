@@ -1,13 +1,20 @@
 <div class="row" class="sandbox-login">
   <div class="col-xs-5 center-block well">
     <h2 class="text-center">{{ 'sandbox-login.title' | translate }}</h2>
-    <form [formGroup]="form">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      #loginForm
+      method="post"
+      action="/sandbox/login"
+    >
       <div>
         <label for="sandbox" class="control-label">
           {{ 'sandbox-login.labels.sandbox' | translate }}</label
         >
         <select
           id="sandbox"
+          name="sandboxKey"
           formControlName="sandboxKey"
           (ngModelChange)="sandboxSelected($event)"
           class="form-control"
@@ -24,6 +31,7 @@
         >
         <input
           id="username"
+          name="username"
           type="text"
           formControlName="username"
           class="form-control"
@@ -33,7 +41,12 @@
         <label for="role" class="control-label">
           {{ 'sandbox-login.labels.role' | translate }}</label
         >
-        <select id="role" formControlName="role" class="form-control">
+        <select
+          id="role"
+          name="role"
+          formControlName="role"
+          class="form-control"
+        >
           <option [ngValue]="null"></option>
           <option *ngFor="let role of roles" [ngValue]="role.id">
             {{ role.label }}
@@ -44,7 +57,6 @@
         type="submit"
         class="btn btn-primary mt-md text-center col-md-12"
         [disabled]="form.invalid"
-        (click)="login()"
       >
         {{ 'sandbox-login.login' | translate }}
       </button>
