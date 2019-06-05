@@ -43,6 +43,7 @@ import { SandboxConfigurationComponent } from './admin/sandbox-tenants/pages/san
 import { NewSandboxConfigurationComponent } from './admin/sandbox-tenants/pages/new-sandbox.component';
 import { TenantConfigurationComponent } from './admin/sandbox-tenants/pages/tenant.component';
 import { NewTenantConfigurationComponent } from './admin/sandbox-tenants/pages/new-tenant.component';
+import { SandboxLoginComponent } from './sandbox/sandbox-login.component';
 
 export const studentPipe = new StudentPipe();
 export const adminRoute = {
@@ -302,10 +303,10 @@ export const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [RoutingAuthorizationCanActivate],
     resolve: {
       translateComplete: TranslateResolve
     },
+    canActivate: [RoutingAuthorizationCanActivate],
     children: [
       {
         path: '',
@@ -437,5 +438,10 @@ export const routes: Routes = [
     path: 'access-denied',
     pathMatch: 'full',
     component: AccessDeniedComponent
+  },
+  {
+    path: 'sandbox-login',
+    pathMatch: 'full',
+    component: SandboxLoginComponent
   }
 ];

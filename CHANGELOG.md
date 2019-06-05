@@ -1,9 +1,10 @@
 ## Change Log
 
-#### 1.4.0 - 2019-
+#### 1.4.0 - 2019-06
 
 * Make all application multi-tenant aware. Please refer to detailed upgrade instructions for more details
-    * Changes the datasource configuration properties ... a lot.
+    * Changes the configuration properties ... a lot.
+* Ingest pipeline administration.
 * Remove stale report cleanup task.
 
 #### 1.4.0-UAT 2019-04-12

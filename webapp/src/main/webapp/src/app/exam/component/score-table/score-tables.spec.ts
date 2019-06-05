@@ -183,4 +183,56 @@ describe('toScoreTable', () => {
 
     expect(actual).toEqual(expected);
   });
+
+  it('should not round percentages when the exam count is 0 and they are invalid', () => {
+    const scoreType = 'Overall';
+
+    const exams = [];
+
+    const subjectDefinition = <SubjectDefinition>{
+      subject: 'subject',
+      assessmentType: 'assessmentType',
+      overallScore: {
+        levels: [1, 2],
+        levelCount: 2,
+        standardCutoff: 1
+      }
+    };
+
+    const actual = toScoreTable(exams, subjectDefinition, scoreType);
+
+    const expected: ScoreTable = {
+      scoreType,
+      subjectCode: subjectDefinition.subject,
+      assessmentTypeCode: subjectDefinition.assessmentType,
+      resultCount: exams.length,
+      scoreStatistics: [
+        {
+          code: null,
+          averageScaleScore: NaN,
+          standardErrorOfMean: 0,
+          performanceLevelScores: [
+            {
+              level: 1,
+              count: 0,
+              percent: 0,
+              nameCode: 'subject.subject.asmt-type.assessmentType.level.1.name',
+              colorCode:
+                'subject.subject.asmt-type.assessmentType.level.1.color'
+            },
+            {
+              level: 2,
+              count: 0,
+              percent: 0,
+              nameCode: 'subject.subject.asmt-type.assessmentType.level.2.name',
+              colorCode:
+                'subject.subject.asmt-type.assessmentType.level.2.color'
+            }
+          ]
+        }
+      ]
+    };
+
+    expect(actual).toEqual(expected);
+  });
 });

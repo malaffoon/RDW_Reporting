@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserService } from './user/user.service';
 import {
   NavigationCancel,
@@ -14,7 +14,7 @@ import { SpinnerModal } from './shared/loading/spinner.modal';
 import { ApplicationSettings } from './app-settings';
 import { ApplicationSettingsService } from './app-settings.service';
 import { forkJoin, throwError as _throw } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, mergeMap } from 'rxjs/operators';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import localeEs from '@angular/common/locales/es';
 
@@ -22,7 +22,7 @@ import localeEs from '@angular/common/locales/es';
   selector: 'app-component',
   templateUrl: './app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild('spinnerModal')
   spinnerModal: SpinnerModal;
 
@@ -53,23 +53,25 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    forkJoin(
-      this.userService.getUser(),
-      this.applicationSettingsService.getSettings()
-    )
-      .pipe(
-        catchError((error, values) => {
-          this.router.navigate(['error']);
-          return _throw(error);
-        })
-      )
-      .subscribe(([user, settings]) => {
-        this.user = user;
-        this.applicationSettings = settings;
+    this.userService.getUser().subscribe(user => {
+      if (user.permissions.length > 0) {
+        this.applicationSettingsService
+          .getSettings()
+          .pipe(
+            catchError((error, values) => {
+              this.router.navigate(['error']);
+              return _throw(error);
+            })
+          )
+          .subscribe(settings => {
+            this.user = user;
+            this.applicationSettings = settings;
 
-        this.languageStore.configuredLanguages = settings.uiLanguages;
-        this.initializeAnalytics(settings.analyticsTrackingId);
-      });
+            this.languageStore.configuredLanguages = settings.uiLanguages;
+            this.initializeAnalytics(settings.analyticsTrackingId);
+          });
+      }
+    });
 
     this.initializeNavigationScrollReset();
     this.initializeNavigationLoadingSpinner();
@@ -83,6 +85,12 @@ export class AppComponent {
 
   toggleNavCollapse(): void {
     this.navbarOpen = !this.navbarOpen;
+  }
+
+  isAnonymousUser(): boolean {
+    return (
+      !this.user || (this.user.firstName == null && this.user.lastName == null)
+    );
   }
 
   private initializeAnalytics(trackingId: string): void {
