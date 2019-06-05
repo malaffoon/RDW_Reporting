@@ -27,6 +27,8 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   propertiesArrayName: string;
   @Input()
   form: FormGroup;
+  @Input()
+  readonly = true;
 
   showModifiedPropertiesOnly = false;
   configurationPropertiesTreeNodes: TreeNode[] = [];

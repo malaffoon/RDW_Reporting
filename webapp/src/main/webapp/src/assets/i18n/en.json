@@ -1266,7 +1266,7 @@
       "datasources": "Data Sources",
       "task": "Task",
       "archive": "Archive",
-      "aggregator": "Aggregator"
+      "aggregate": "Aggregate"
     },
     "errors": {
       "duplicate-key": "A tenant with the same tenant key or ID already exists",

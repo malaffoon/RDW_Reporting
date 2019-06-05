@@ -17,6 +17,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { SandboxStore } from '../store/sandbox.store';
 import { NotificationService } from '../../../shared/notification/notification.service';
+import { UserService } from '../../../user/user.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'sandbox-details-config',
@@ -36,6 +38,7 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
 
   expanded = false;
   editMode = false;
+  readonly = true;
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
   menuItems: MenuItem[];
@@ -47,7 +50,8 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
     private notificationService: NotificationService,
     private translateService: TranslateService,
     private service: SandboxService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private userService: UserService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -68,6 +72,10 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.initializeForm();
     this.configureMenuItems();
+
+    this.userService.getUser().subscribe(user => {
+      this.readonly = !user.permissions.some(perm => perm === 'TENANT_WRITE');
+    });
   }
 
   private initializeForm() {
