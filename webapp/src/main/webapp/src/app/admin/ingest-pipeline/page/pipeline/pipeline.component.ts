@@ -523,10 +523,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     );
 
     const compilationFailed = this.compilationState === 'Failed';
-    console.log('updateing', {
-      compilationFailed,
-      state: this.compilationState
-    });
+
     // The complication here is that when editing the script we should enforce everything be saved before allowing "run tests"
     // however, in the case that you are editing a single test you would want to allow the test to be run if the script and that test are saved
     const hasUnsavedChanges =
