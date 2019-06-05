@@ -6,7 +6,7 @@ logging:
 tenant-configuration-persistence:
   local-repository-path: /tmp/rdw_config
   #remote-repository-uri:
-  git-username: fairwaytech_rdw
-  git-password: ALIteGingeOG
+  #git-username:
+  #git-password:
   author: "Zaphod Beeblebrox"
   author-email: "zaphodb@example.com"
