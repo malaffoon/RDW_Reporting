@@ -29,6 +29,7 @@ import {
 import { UserQueryService } from '../../report/user-query.service';
 import { isEqualReportQuery } from '../../report/reports';
 import { Utils } from '../../shared/support/support';
+import { cloneDeep } from 'lodash';
 
 /**
  * Base query component implementation for all aggregate report types.
@@ -108,7 +109,7 @@ export abstract class BaseAggregateQueryFormComponent
     const { options } = route.snapshot.data;
     this.aggregateReportOptions = options;
     this.originalOptions = optionMapper.map(this.aggregateReportOptions);
-    this.filteredOptions = { ...this.originalOptions };
+    this.filteredOptions = cloneDeep(this.originalOptions);
   }
 
   abstract initialize(): void;
@@ -238,7 +239,6 @@ export abstract class BaseAggregateQueryFormComponent
    * Creates a report if the form is valid
    */
   onGenerateButtonClick(): void {
-    const { userQueryId } = this.route.snapshot.queryParams;
     this.validate(this.getFormGroup(), () => {
       const query = this.createReportRequest();
       this.userReportSubscription = this.reportService
