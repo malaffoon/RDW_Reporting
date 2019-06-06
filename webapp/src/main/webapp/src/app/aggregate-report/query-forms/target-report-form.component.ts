@@ -104,7 +104,7 @@ export class TargetReportFormComponent extends BaseAggregateQueryFormComponent {
 
   initialize(): void {
     this.settings.reportType = 'Target';
-    this.hasTargetEnabledSubjects = this.filteredOptions.subjects.some(
+    this.hasTargetEnabledSubjects = this.originalOptions.subjects.some(
       subject =>
         subject.value.targetReport && subject.value.assessmentType === 'sum'
     );
