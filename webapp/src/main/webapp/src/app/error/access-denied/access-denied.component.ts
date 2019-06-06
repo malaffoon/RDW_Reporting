@@ -6,7 +6,7 @@ import { ApplicationSettingsService } from '../../app-settings.service';
   templateUrl: './access-denied.component.html'
 })
 export class AccessDeniedComponent implements OnInit {
-  loading: boolean = true;
+  loading: boolean = false;
 
   constructor(private service: ApplicationSettingsService) {}
 
