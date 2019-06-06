@@ -76,7 +76,9 @@ function createOptions(
 
       const OpenAggregateOption = {
         label: translateService.instant('report-action.download-report'),
-        tooltip: embargoed ? 'report-action.embargoed' : undefined,
+        tooltip: embargoed
+          ? translateService.instant('report-action.embargoed')
+          : undefined,
         disabled: viewAndDownloadDisabled || embargoed,
         click: () => userReportService.openReport(userReport.id)
       };
