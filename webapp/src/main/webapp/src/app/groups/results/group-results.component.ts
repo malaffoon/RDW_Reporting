@@ -162,7 +162,7 @@ export class GroupResultsComponent implements OnInit, StateProvider {
     }
   }
 
-  onExportButtonClick(): void {
+  onExportButtonClick(assessmentExams: AssessmentExam[]): void {
     this.angulartics2.eventTrack.next({
       action: 'Export Group Results',
       properties: {
@@ -170,8 +170,7 @@ export class GroupResultsComponent implements OnInit, StateProvider {
       }
     });
     this.csvExportService.exportAssessmentExams(
-      this.assessmentsComponent.assessmentExams,
-      this.assessmentsComponent.clientFilterBy,
+      assessmentExams,
       `${this.group.name}-${Date.now().toString()}`
     );
   }

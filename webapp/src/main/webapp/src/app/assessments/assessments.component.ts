@@ -101,7 +101,7 @@ export class AssessmentsComponent implements OnChanges {
   displayedFor: string;
 
   @Output()
-  export: EventEmitter<any> = new EventEmitter<any>();
+  export: EventEmitter<AssessmentExam[]> = new EventEmitter();
 
   @ViewChild(AdvFiltersComponent)
   private advFiltersComponent: AdvFiltersComponent;
@@ -395,7 +395,7 @@ export class AssessmentsComponent implements OnChanges {
   }
 
   callExport() {
-    this.export.emit();
+    this.export.emit(this.assessmentExams);
   }
 
   private updateFilterOptions() {

@@ -291,7 +291,7 @@ export class SchoolResultsComponent implements OnInit {
     this.updateRoute();
   }
 
-  onExportButtonClick(): void {
+  onExportButtonClick(assessmentExams: AssessmentExam[]): void {
     this.angulartics2.eventTrack.next({
       action: 'Export School/Grade Results',
       properties: {
@@ -303,8 +303,7 @@ export class SchoolResultsComponent implements OnInit {
       `common.assessment-grade-short-label.${this._currentGrade.code}`
     );
     this.csvExportService.exportAssessmentExams(
-      this.assessmentsComponent.assessmentExams,
-      this.assessmentsComponent.clientFilterBy,
+      assessmentExams,
       `${this._currentSchool.name}-${gradeLabel}-${new Date().toDateString()}`
     );
   }

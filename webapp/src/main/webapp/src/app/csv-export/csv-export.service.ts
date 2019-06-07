@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AssessmentExam } from '../assessments/model/assessment-exam.model';
-import { FilterBy } from '../assessments/model/filter-by.model';
 import { Exam } from '../assessments/model/exam';
-import { ExamFilterService } from '../assessments/filters/exam-filters/exam-filter.service';
 import { CsvBuilder } from './csv-builder.service';
 import { StudentHistoryExamWrapper } from '../student/model/student-history-exam-wrapper.model';
 import { Student } from '../student/model/student.model';
@@ -70,7 +68,6 @@ function getScoreCodes<T>(
 @Injectable()
 export class CsvExportService {
   constructor(
-    private examFilterService: ExamFilterService,
     private csvBuilder: CsvBuilder,
     private subjectService: SubjectService,
     private examSearchFilterService: ExamSearchFilterService,
@@ -84,25 +81,15 @@ export class CsvExportService {
    * @param filterBy        The filter criteria
    * @param filename        The export file name
    */
-  exportAssessmentExams(
-    assessmentExams: AssessmentExam[],
-    filterBy: FilterBy,
-    filename: string
-  ) {
+  exportAssessmentExams(assessmentExams: AssessmentExam[], filename: string) {
     let sourceData: any[] = [];
 
-    // TODO: Is this filter needed?  I think we pass in the filtered exam collection we wouldn't need to
-    // TODO: apply the filter yet again here.
+    // flatten the data
     assessmentExams.forEach((assessmentExam: AssessmentExam) => {
-      const filteredExams = this.examFilterService.filterExams(
-        assessmentExam.exams,
-        assessmentExam.assessment,
-        filterBy
-      );
-      filteredExams.forEach(exam => {
+      assessmentExam.exams.forEach(exam => {
         sourceData.push({
           assessment: assessmentExam.assessment,
-          exam: exam
+          exam
         });
       });
     });

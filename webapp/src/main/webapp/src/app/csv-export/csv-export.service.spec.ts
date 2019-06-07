@@ -40,7 +40,6 @@ function spyOnBuilderMethods<T extends any>(
 }
 
 describe('CsvExportService', () => {
-  let examFilterService: ExamFilterService = new ExamFilterService();
   let csvBuilder: CsvBuilder = new CsvBuilder(null, null, null, null, null);
   let subjectService: SubjectService = new SubjectService(null);
   let examSearchFilterService: ExamSearchFilterService = new ExamSearchFilterService(
@@ -50,13 +49,7 @@ describe('CsvExportService', () => {
     null,
     null
   );
-  let service: CsvExportService = new CsvExportService(
-    null,
-    null,
-    null,
-    null,
-    null
-  );
+  let service: CsvExportService;
 
   const assessmentExams: AssessmentExam[] = [
     {
@@ -85,7 +78,6 @@ describe('CsvExportService', () => {
     spyOn(csvBuilder, 'build');
 
     service = new CsvExportService(
-      examFilterService,
       csvBuilder,
       subjectService,
       examSearchFilterService,
@@ -94,10 +86,9 @@ describe('CsvExportService', () => {
   });
 
   it('exportAssessmentExams should not out embargoed results when flag is not set', () => {
-    spyOn(examFilterService, 'filterExams').and.returnValue([{}]); // equates to not filtering
     spyOn(embargoService, 'isEmbargoed').and.returnValue(of(false));
 
-    service.exportAssessmentExams(assessmentExams, <FilterBy>{}, 'name');
+    service.exportAssessmentExams(assessmentExams, 'name');
 
     expect(csvBuilder.build).toHaveBeenCalledWith([
       {
@@ -112,10 +103,9 @@ describe('CsvExportService', () => {
   });
 
   it('exportAssessmentExams should filter out embargoed results when flag is set', () => {
-    spyOn(examFilterService, 'filterExams').and.returnValue([{}]); // equates to not filtering
     spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
 
-    service.exportAssessmentExams(assessmentExams, <FilterBy>{}, 'name');
+    service.exportAssessmentExams(assessmentExams, 'name');
 
     expect(csvBuilder.build).toHaveBeenCalledWith([
       {
