@@ -17,6 +17,7 @@ import { forkJoin } from 'rxjs';
 import { SubjectService } from '../subject/subject.service';
 import { isNullOrEmpty } from '../shared/support/support';
 import { ExamSearchFilterService } from '../exam/service/exam-search-filter.service';
+import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.service';
 
 /**
  * Represents a specific type of score for an assessment (e.g. claim, alternate)
@@ -72,7 +73,8 @@ export class CsvExportService {
     private examFilterService: ExamFilterService,
     private csvBuilder: CsvBuilder,
     private subjectService: SubjectService,
-    private examSearchFilterService: ExamSearchFilterService
+    private examSearchFilterService: ExamSearchFilterService,
+    private embargoService: ReportingEmbargoService
   ) {}
 
   /**
@@ -87,7 +89,7 @@ export class CsvExportService {
     filterBy: FilterBy,
     filename: string
   ) {
-    const sourceData: any[] = [];
+    let sourceData: any[] = [];
 
     // TODO: Is this filter needed?  I think we pass in the filtered exam collection we wouldn't need to
     // TODO: apply the filter yet again here.
@@ -118,88 +120,98 @@ export class CsvExportService {
     forkJoin(
       this.subjectService.getSubjectCodes(),
       this.subjectService.getSubjectDefinitions(),
-      this.examSearchFilterService.getExamSearchFilters()
-    ).subscribe(([subjectCodes, subjectDefinitions, examSearchFilters]) => {
-      const builder = this.csvBuilder
-        .newBuilder()
-        .withFilename(filename)
-        .withStudent(getStudent)
-        .withExamDateAndSession(getExam)
-        .withSchool(getExam)
-        .withSchoolYear(getExam)
-        .withAssessmentTypeNameAndSubject(getAssessment)
-        .withExamGradeAndStatus(getExam)
-        .withAchievementLevel(getNonIABAssessment, getNonIABExam)
-        .withReportingCategory(getAssessment, getIABExam)
-        .withScoreAndErrorBand(getExam);
-
-      // alternate score codes
-      getScoreCodes(
-        sourceData,
-        subjectCodes,
-        getAssessment,
-        ({ alternateScoreCodes }) => alternateScoreCodes
-      ).forEach(score => {
-        const { alternateScore } = subjectDefinitions.find(
-          ({ subject, assessmentType }) =>
-            subject === score.subjectCode &&
-            assessmentType === score.assessmentTypeCode
-        );
-
-        if (alternateScore != null) {
-          builder.withAlternateScores(
-            score.subjectCode,
-            score.codes
-              .slice()
-              .sort(ordering(ranking(alternateScore.codes)).compare),
-            getAssessment,
-            item =>
-              item.assessment.subject === score.subjectCode &&
-              item.assessment.type === score.assessmentTypeCode
-                ? item.exam
-                : null
+      this.examSearchFilterService.getExamSearchFilters(),
+      this.embargoService.isEmbargoed()
+    ).subscribe(
+      ([subjectCodes, subjectDefinitions, examSearchFilters, embargoed]) => {
+        // filter out embargoed exams
+        if (embargoed) {
+          sourceData = sourceData.filter(
+            ({ assessment }) => assessment.type !== 'sum'
           );
         }
-      });
 
-      // claim scores
-      getScoreCodes(
-        sourceData,
-        subjectCodes,
-        getAssessment,
-        ({ claimCodes }) => claimCodes
-      ).forEach(score => {
-        const { claimScore } = subjectDefinitions.find(
-          ({ subject, assessmentType }) =>
-            subject === score.subjectCode &&
-            assessmentType === score.assessmentTypeCode
-        );
+        const builder = this.csvBuilder
+          .newBuilder()
+          .withFilename(filename)
+          .withStudent(getStudent)
+          .withExamDateAndSession(getExam)
+          .withSchool(getExam)
+          .withSchoolYear(getExam)
+          .withAssessmentTypeNameAndSubject(getAssessment)
+          .withExamGradeAndStatus(getExam)
+          .withAchievementLevel(getNonIABAssessment, getNonIABExam)
+          .withReportingCategory(getAssessment, getIABExam)
+          .withScoreAndErrorBand(getExam);
 
-        if (claimScore != null) {
-          builder.withClaimScores(
-            score.subjectCode,
-            score.codes
-              .slice()
-              .sort(ordering(ranking(claimScore.codes)).compare),
-            getAssessment,
-            item =>
-              item.assessment.subject === score.subjectCode &&
-              item.assessment.type === score.assessmentTypeCode
-                ? item.exam
-                : null
+        // alternate score codes
+        getScoreCodes(
+          sourceData,
+          subjectCodes,
+          getAssessment,
+          ({ alternateScoreCodes }) => alternateScoreCodes
+        ).forEach(score => {
+          const { alternateScore } = subjectDefinitions.find(
+            ({ subject, assessmentType }) =>
+              subject === score.subjectCode &&
+              assessmentType === score.assessmentTypeCode
           );
-        }
-      });
 
-      builder
-        .withStudentContext(
-          getExam,
-          getStudent,
-          examSearchFilters.studentFilters
-        )
-        .withAccommodationCodes(getExam)
-        .build(sourceData);
-    });
+          if (alternateScore != null) {
+            builder.withAlternateScores(
+              score.subjectCode,
+              score.codes
+                .slice()
+                .sort(ordering(ranking(alternateScore.codes)).compare),
+              getAssessment,
+              item =>
+                item.assessment.subject === score.subjectCode &&
+                item.assessment.type === score.assessmentTypeCode
+                  ? item.exam
+                  : null
+            );
+          }
+        });
+
+        // claim scores
+        getScoreCodes(
+          sourceData,
+          subjectCodes,
+          getAssessment,
+          ({ claimCodes }) => claimCodes
+        ).forEach(score => {
+          const { claimScore } = subjectDefinitions.find(
+            ({ subject, assessmentType }) =>
+              subject === score.subjectCode &&
+              assessmentType === score.assessmentTypeCode
+          );
+
+          if (claimScore != null) {
+            builder.withClaimScores(
+              score.subjectCode,
+              score.codes
+                .slice()
+                .sort(ordering(ranking(claimScore.codes)).compare),
+              getAssessment,
+              item =>
+                item.assessment.subject === score.subjectCode &&
+                item.assessment.type === score.assessmentTypeCode
+                  ? item.exam
+                  : null
+            );
+          }
+        });
+
+        builder
+          .withStudentContext(
+            getExam,
+            getStudent,
+            examSearchFilters.studentFilters
+          )
+          .withAccommodationCodes(getExam)
+          .build(sourceData);
+      }
+    );
   }
 
   /**
@@ -226,8 +238,16 @@ export class CsvExportService {
 
     forkJoin(
       this.subjectService.getSubjectCodes(),
-      this.subjectService.getSubjectDefinitions()
-    ).subscribe(([subjectCodes, subjectDefinitions]) => {
+      this.subjectService.getSubjectDefinitions(),
+      this.embargoService.isEmbargoed()
+    ).subscribe(([subjectCodes, subjectDefinitions, embargoed]) => {
+      // filter out embargoed results
+      if (embargoed) {
+        wrappers = (wrappers || []).filter(
+          ({ assessment }) => assessment.type !== 'sum'
+        );
+      }
+
       const builder = this.csvBuilder
         .newBuilder()
         .withFilename(filename)
@@ -322,13 +342,20 @@ export class CsvExportService {
       builder.withItemAnswerKey(getAssessmentItem);
     }
 
-    builder
-      .withPoints(
-        getAssessmentItem,
-        exportRequest.pointColumns,
-        exportRequest.showAsPercent
-      )
-      .build(exportRequest.assessmentItems);
+    this.embargoService.isEmbargoed().subscribe(embargoed => {
+      // filter out embargoed results
+      if (embargoed && exportRequest.assessment.type === 'sum') {
+        return;
+      }
+
+      builder
+        .withPoints(
+          getAssessmentItem,
+          exportRequest.pointColumns,
+          exportRequest.showAsPercent
+        )
+        .build(exportRequest.assessmentItems);
+    });
   }
 
   exportWritingTraitScores(
@@ -353,22 +380,29 @@ export class CsvExportService {
     const getAssessment = () => exportRequest.assessment;
     const getAssessmentItem = item => item.assessmentItem;
 
-    this.csvBuilder
-      .newBuilder()
-      .withFilename(filename)
-      .withAssessmentTypeNameAndSubject(getAssessment)
-      .withClaim(getAssessment, getAssessmentItem)
-      .withTarget(getAssessment, getAssessmentItem)
-      .withItemDifficulty(getAssessmentItem)
-      .withStandards(getAssessmentItem)
-      .withFullCredit(getAssessmentItem, exportRequest.showAsPercent)
-      .withPerformanceTaskWritingType(getAssessmentItem)
-      .withWritingTraitAggregate(
-        item => item.writingTraitAggregate,
-        maxPoints,
-        exportRequest.showAsPercent
-      )
-      .build(compositeRows);
+    this.embargoService.isEmbargoed().subscribe(embargoed => {
+      // filter out embargoed results
+      if (embargoed && exportRequest.assessment.type === 'sum') {
+        return;
+      }
+
+      this.csvBuilder
+        .newBuilder()
+        .withFilename(filename)
+        .withAssessmentTypeNameAndSubject(getAssessment)
+        .withClaim(getAssessment, getAssessmentItem)
+        .withTarget(getAssessment, getAssessmentItem)
+        .withItemDifficulty(getAssessmentItem)
+        .withStandards(getAssessmentItem)
+        .withFullCredit(getAssessmentItem, exportRequest.showAsPercent)
+        .withPerformanceTaskWritingType(getAssessmentItem)
+        .withWritingTraitAggregate(
+          item => item.writingTraitAggregate,
+          maxPoints,
+          exportRequest.showAsPercent
+        )
+        .build(compositeRows);
+    });
   }
 
   exportTargetScoresToCsv(
@@ -376,24 +410,32 @@ export class CsvExportService {
     filename: string
   ) {
     const getAssessment = () => exportRequest.assessment;
-    this.csvBuilder
-      .newBuilder()
-      .withFilename(filename)
-      .withGroupName(() => exportRequest.group)
-      .withSchoolYear(() => <Exam>{ schoolYear: exportRequest.schoolYear })
-      .withAssessmentTypeNameAndSubject(getAssessment)
-      .withScoreAndErrorBand(
-        () =>
-          <Exam>{
-            score: exportRequest.averageScaleScore,
-            standardError: exportRequest.standardError
-          }
-      )
-      .withTargetReportAggregate(
-        exportRequest.subjectDefinition,
-        getAssessment,
-        item => item
-      )
-      .build(exportRequest.targetScoreRows);
+
+    this.embargoService.isEmbargoed().subscribe(embargoed => {
+      // filter out embargoed results
+      if (embargoed && exportRequest.assessment.type === 'sum') {
+        return;
+      }
+
+      this.csvBuilder
+        .newBuilder()
+        .withFilename(filename)
+        .withGroupName(() => exportRequest.group)
+        .withSchoolYear(() => <Exam>{ schoolYear: exportRequest.schoolYear })
+        .withAssessmentTypeNameAndSubject(getAssessment)
+        .withScoreAndErrorBand(
+          () =>
+            <Exam>{
+              score: exportRequest.averageScaleScore,
+              standardError: exportRequest.standardError
+            }
+        )
+        .withTargetReportAggregate(
+          exportRequest.subjectDefinition,
+          getAssessment,
+          item => item
+        )
+        .build(exportRequest.targetScoreRows);
+    });
   }
 }
