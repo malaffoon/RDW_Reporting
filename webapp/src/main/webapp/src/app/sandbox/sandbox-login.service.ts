@@ -1,12 +1,11 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DataService } from '../shared/data/data.service';
-import { catchError, map } from 'rxjs/operators';
-import { AdminServiceRoute } from '../shared/service-route';
+import { catchError } from 'rxjs/operators';
 import { ResponseUtils } from '../shared/response-utils';
 import { Sandbox } from './sandbox';
 
-const ResourceRoute = `${AdminServiceRoute}/sandboxes/login`;
+const ResourceRoute = '/sandboxes';
 
 /**
  * Service responsible for sandboxes
@@ -94,10 +93,10 @@ export class SandboxLoginService {
       }
     ];
 
-    return new Observable(observer => observer.next(mockData));
-    // TODO: Integrate API
-    // return this.dataService
-    //   .get(`${ResourceRoute}`);
+    // return new Observable(observer => observer.next(mockData));
+    return this.dataService
+      .get(`${ResourceRoute}`)
+      .pipe(catchError(ResponseUtils.throwError));
   }
 
   /**

@@ -23,7 +23,6 @@ export class SandboxLoginComponent implements OnInit {
       sandboxKey: [null, Validators.required],
       username: [null, Validators.required],
       role: [null, Validators.required]
-      // role: [{value: null, disabled: true}, Validators.required]
     });
   }
 

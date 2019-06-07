@@ -2,3 +2,32 @@ sql:
   status:
     readTest: >-
       SELECT code FROM asmt_type
+  sandboxRoles:
+    findAll: >-
+      SELECT
+      	CONCAT('district_', natural_id) AS id,
+      	CONCAT('District Administrator (', name, ')') AS label
+      FROM
+      	district
+      UNION ALL
+      SELECT
+      	CONCAT('school_', natural_id) AS id,
+      	CONCAT('School Administrator (', name, ')') AS label
+      FROM
+      	school
+      UNION ALL
+      SELECT
+      	CONCAT('teacher_', s.natural_id, '_', g.code) AS id,
+      	CONCAT('Teacher (', s.name, ' - {', g.code ,'})') AS label
+      FROM school s
+      JOIN (
+      	SELECT DISTINCT
+      		school_id,
+      		grade_id
+      	FROM
+      		exam
+      ) e
+      ON e.school_id = s.id
+      JOIN
+      	grade g
+      ON e.grade_id = g.id;
