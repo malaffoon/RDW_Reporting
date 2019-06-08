@@ -101,7 +101,7 @@ export class AssessmentsComponent implements OnChanges {
   displayedFor: string;
 
   @Output()
-  export: EventEmitter<any> = new EventEmitter<any>();
+  export: EventEmitter<AssessmentExam[]> = new EventEmitter();
 
   @ViewChild(AdvFiltersComponent)
   private advFiltersComponent: AdvFiltersComponent;
@@ -110,12 +110,14 @@ export class AssessmentsComponent implements OnChanges {
   filterDisplayOptions: any = {
     expanded: true
   };
-  clientFilterBy: FilterBy;
+  clientFilterBy: FilterBy = new FilterBy();
 
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
   availableAssessments: Assessment[] = [];
   assessmentsLoading: Map<number, Assessment> = new Map<number, Assessment>();
   minimumItemDataYear: number;
+  currentSchoolYear: number;
+  embargoed = true;
   exportDisabled = true;
   loadingInitialResults = true;
 
@@ -214,20 +216,22 @@ export class AssessmentsComponent implements OnChanges {
 
   constructor(
     private route: ActivatedRoute,
-    applicationSettingsService: ApplicationSettingsService,
-    filterOptionService: ExamFilterOptionsService,
-    embargoService: ReportingEmbargoService
-  ) {
-    this.clientFilterBy = new FilterBy();
+    private applicationSettingsService: ApplicationSettingsService,
+    private filterOptionService: ExamFilterOptionsService,
+    private embargoService: ReportingEmbargoService
+  ) {}
 
+  ngOnInit(): void {
     forkJoin(
-      applicationSettingsService.getSettings(),
-      filterOptionService.getExamFilterOptions(),
-      embargoService.isEmbargoed()
+      this.applicationSettingsService.getSettings(),
+      this.filterOptionService.getExamFilterOptions(),
+      this.embargoService.isEmbargoed()
     ).subscribe(([settings, filterOptions, embargoed]) => {
       this.minimumItemDataYear = settings.minItemDataYear;
+      this.currentSchoolYear = settings.schoolYear;
       this.filterOptions = filterOptions;
-      this.exportDisabled = embargoed;
+      this.embargoed = embargoed;
+      this.updateFilterOptions();
     });
   }
 
@@ -309,9 +313,7 @@ export class AssessmentsComponent implements OnChanges {
 
   removeLanguageCode(languageCode) {
     this.clientFilterBy.languageCodes = this.clientFilterBy.languageCodes.filter(
-      val => {
-        return Object.keys(val)[0] != languageCode;
-      }
+      value => Object.keys(value)[0] != languageCode
     );
   }
 
@@ -395,15 +397,21 @@ export class AssessmentsComponent implements OnChanges {
   }
 
   callExport() {
-    this.export.emit();
+    this.export.emit(this.assessmentExams);
   }
 
   private updateFilterOptions() {
+    this.exportDisabled =
+      this.embargoed &&
+      this.selectedAssessments.every(
+        ({ type, schoolYear }) =>
+          type === 'sum' && schoolYear === this.currentSchoolYear
+      );
     this.filterOptions.hasInterim = this.selectedAssessments.some(
-      a => a.type !== 'sum'
+      ({ type }) => type !== 'sum'
     );
     this.filterOptions.hasSummative = this.selectedAssessments.some(
-      a => a.type === 'sum'
+      ({ type }) => type === 'sum'
     );
   }
 

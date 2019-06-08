@@ -32,7 +32,9 @@ export class RoutingAuthorizationCanActivate implements CanActivate {
       map(permissions => {
         const hasPermission: boolean = (permissions || []).length > 0;
         if (!hasPermission) {
-          this.router.navigate([this.accessDeniedRoute]);
+          this.router.navigate([this.accessDeniedRoute], {
+            skipLocationChange: true
+          });
         }
         return hasPermission;
       })
