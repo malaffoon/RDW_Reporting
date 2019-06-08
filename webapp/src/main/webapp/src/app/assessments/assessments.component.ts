@@ -116,6 +116,7 @@ export class AssessmentsComponent implements OnChanges {
   availableAssessments: Assessment[] = [];
   assessmentsLoading: Map<number, Assessment> = new Map<number, Assessment>();
   minimumItemDataYear: number;
+  currentSchoolYear: number;
   embargoed = true;
   exportDisabled = true;
   loadingInitialResults = true;
@@ -227,6 +228,7 @@ export class AssessmentsComponent implements OnChanges {
       this.embargoService.isEmbargoed()
     ).subscribe(([settings, filterOptions, embargoed]) => {
       this.minimumItemDataYear = settings.minItemDataYear;
+      this.currentSchoolYear = settings.schoolYear;
       this.filterOptions = filterOptions;
       this.embargoed = embargoed;
       this.updateFilterOptions();
@@ -401,7 +403,10 @@ export class AssessmentsComponent implements OnChanges {
   private updateFilterOptions() {
     this.exportDisabled =
       this.embargoed &&
-      this.selectedAssessments.every(({ type }) => type === 'sum');
+      this.selectedAssessments.every(
+        ({ type, schoolYear }) =>
+          type === 'sum' && schoolYear === this.currentSchoolYear
+      );
     this.filterOptions.hasInterim = this.selectedAssessments.some(
       ({ type }) => type !== 'sum'
     );

@@ -1,5 +1,4 @@
 import { CsvExportService } from './csv-export.service';
-import { ExamFilterService } from '../assessments/filters/exam-filters/exam-filter.service';
 import { CsvBuilder } from './csv-builder.service';
 import { SubjectService } from '../subject/subject.service';
 import { ExamSearchFilterService } from '../exam/service/exam-search-filter.service';
@@ -7,7 +6,6 @@ import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.ser
 import { of } from 'rxjs/internal/observable/of';
 import { Assessment } from '../assessments/model/assessment';
 import { Exam } from '../assessments/model/exam';
-import { FilterBy } from '../assessments/model/filter-by.model';
 import { AssessmentExam } from '../assessments/model/assessment-exam.model';
 import { StudentHistoryExamWrapper } from '../student/model/student-history-exam-wrapper.model';
 import { Student } from '../student/model/student.model';
@@ -39,6 +37,7 @@ function spyOnBuilderMethods<T extends any>(
     });
 }
 
+// TODO refactor csv export service and separate out filtering logic so it can be tested independently
 describe('CsvExportService', () => {
   let csvBuilder: CsvBuilder = new CsvBuilder(null, null, null, null, null);
   let subjectService: SubjectService = new SubjectService(null);
@@ -47,6 +46,7 @@ describe('CsvExportService', () => {
   );
   let embargoService: ReportingEmbargoService = new ReportingEmbargoService(
     null,
+    null,
     null
   );
   let service: CsvExportService;
@@ -54,13 +54,15 @@ describe('CsvExportService', () => {
   const assessmentExams: AssessmentExam[] = [
     {
       assessment: <Assessment>{
-        type: 'sum'
+        type: 'sum',
+        schoolYear: 1000
       },
       exams: <Exam[]>[{}]
     },
     {
       assessment: <Assessment>{
-        type: 'ica'
+        type: 'ica',
+        schoolYear: 1000
       },
       exams: <Exam[]>[{}]
     }
@@ -85,31 +87,41 @@ describe('CsvExportService', () => {
     );
   });
 
-  it('exportAssessmentExams should not out embargoed results when flag is not set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(false));
+  it('exportAssessmentExams should not filter out embargoed results when flag is not set', () => {
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: false,
+        schoolYear: 1000
+      })
+    );
 
     service.exportAssessmentExams(assessmentExams, 'name');
 
     expect(csvBuilder.build).toHaveBeenCalledWith([
       {
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         exam: <Exam>{}
       },
       {
-        assessment: <Assessment>{ type: 'ica' },
+        assessment: <Assessment>{ type: 'ica', schoolYear: 1000 },
         exam: <Exam>{}
       }
     ]);
   });
 
   it('exportAssessmentExams should filter out embargoed results when flag is set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportAssessmentExams(assessmentExams, 'name');
 
     expect(csvBuilder.build).toHaveBeenCalledWith([
       {
-        assessment: <Assessment>{ type: 'ica' },
+        assessment: <Assessment>{ type: 'ica', schoolYear: 1000 },
         exam: <Exam>{}
       }
     ]);
@@ -118,16 +130,21 @@ describe('CsvExportService', () => {
   it('exportStudentHistory should not filter out embargoed results when flag is not set', () => {
     const history = <StudentHistoryExamWrapper[]>[
       {
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         exam: <Exam>{}
       },
       {
-        assessment: <Assessment>{ type: 'ica' },
+        assessment: <Assessment>{ type: 'ica', schoolYear: 1000 },
         exam: <Exam>{}
       }
     ];
 
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(false));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: false,
+        schoolYear: 1000
+      })
+    );
 
     service.exportStudentHistory(history, () => <Student>{}, 'name');
 
@@ -137,16 +154,21 @@ describe('CsvExportService', () => {
   it('exportStudentHistory should filter out embargoed results when flag is set', () => {
     const history = <StudentHistoryExamWrapper[]>[
       {
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         exam: <Exam>{}
       },
       {
-        assessment: <Assessment>{ type: 'ica' },
+        assessment: <Assessment>{ type: 'ica', schoolYear: 1000 },
         exam: <Exam>{}
       }
     ];
 
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportStudentHistory(history, () => <Student>{}, 'name');
 
@@ -154,11 +176,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportResultItems should not filter out embargoed results when flag is not set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(false));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: false,
+        schoolYear: 1000
+      })
+    );
 
     service.exportResultItems(
       <ExportItemsRequest>{
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         assessmentItems: [{ id: 1 }]
       },
       'name'
@@ -168,11 +195,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportResultItems should filter out embargoed results when flag is set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportResultItems(
       <ExportItemsRequest>{
-        assessment: <Assessment>{ type: 'sum' }
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 }
       },
       'name'
     );
@@ -181,11 +213,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportResultItems should not consider embargo for non-summative requests', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportResultItems(
       <ExportItemsRequest>{
-        assessment: <Assessment>{ type: 'ica' },
+        assessment: <Assessment>{ type: 'ica', schoolYear: 1000 },
         assessmentItems: [{ id: 1 }]
       },
       'name'
@@ -195,11 +232,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportWritingTraitScores should not filter out embargoed results when flag is not set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(false));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: false,
+        schoolYear: 1000
+      })
+    );
 
     service.exportWritingTraitScores(
       <ExportWritingTraitsRequest>{
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         assessmentItems: [{ id: 1 }],
         summaries: [
           {
@@ -229,11 +271,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportWritingTraitScores should filter out embargoed results when flag is set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportWritingTraitScores(
       <ExportWritingTraitsRequest>{
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         assessmentItems: [{ id: 1 }],
         summaries: [
           {
@@ -254,11 +301,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportWritingTraitScores should not consider embargo for non-summative requests', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportWritingTraitScores(
       <ExportWritingTraitsRequest>{
-        assessment: <Assessment>{ type: 'ica' },
+        assessment: <Assessment>{ type: 'ica', schoolYear: 1000 },
         assessmentItems: [{ id: 1 }],
         summaries: [
           {
@@ -288,11 +340,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportTargetScoresToCsv should not filter out embargoed results when flag is not set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(false));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: false,
+        schoolYear: 1000
+      })
+    );
 
     service.exportTargetScoresToCsv(
       <ExportTargetReportRequest>{
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         targetScoreRows: [{}]
       },
       'name'
@@ -302,11 +359,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportTargetScoresToCsv should filter out embargoed results when flag is set', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportTargetScoresToCsv(
       <ExportTargetReportRequest>{
-        assessment: <Assessment>{ type: 'sum' },
+        assessment: <Assessment>{ type: 'sum', schoolYear: 1000 },
         targetScoreRows: [{}]
       },
       'name'
@@ -316,11 +378,16 @@ describe('CsvExportService', () => {
   });
 
   it('exportTargetScoresToCsv should not consider embargo for non-summative requests', () => {
-    spyOn(embargoService, 'isEmbargoed').and.returnValue(of(true));
+    spyOn(embargoService, 'getEmbargo').and.returnValue(
+      of({
+        enabled: true,
+        schoolYear: 1000
+      })
+    );
 
     service.exportTargetScoresToCsv(
       <ExportTargetReportRequest>{
-        assessment: <Assessment>{ type: 'ica' },
+        assessment: <Assessment>{ type: 'ica', schoolYear: 1000 },
         targetScoreRows: [{}]
       },
       'name'

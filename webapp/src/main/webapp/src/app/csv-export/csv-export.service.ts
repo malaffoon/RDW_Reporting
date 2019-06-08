@@ -16,6 +16,8 @@ import { SubjectService } from '../subject/subject.service';
 import { isNullOrEmpty } from '../shared/support/support';
 import { ExamSearchFilterService } from '../exam/service/exam-search-filter.service';
 import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.service';
+import { map } from 'rxjs/operators';
+import { createFilter } from '../shared/embargo/embargoes';
 
 /**
  * Represents a specific type of score for an assessment (e.g. claim, alternate)
@@ -108,15 +110,17 @@ export class CsvExportService {
       this.subjectService.getSubjectCodes(),
       this.subjectService.getSubjectDefinitions(),
       this.examSearchFilterService.getExamSearchFilters(),
-      this.embargoService.isEmbargoed()
+      this.embargoService.getEmbargo()
     ).subscribe(
-      ([subjectCodes, subjectDefinitions, examSearchFilters, embargoed]) => {
+      ([subjectCodes, subjectDefinitions, examSearchFilters, embargo]) => {
         // filter out embargoed exams
-        if (embargoed) {
-          sourceData = sourceData.filter(
-            ({ assessment }) => assessment.type !== 'sum'
-          );
-        }
+        sourceData = sourceData.filter(
+          createFilter(
+            embargo,
+            ({ assessment }) => assessment.type,
+            ({ assessment }) => assessment.schoolYear
+          )
+        );
 
         const builder = this.csvBuilder
           .newBuilder()
@@ -226,14 +230,16 @@ export class CsvExportService {
     forkJoin(
       this.subjectService.getSubjectCodes(),
       this.subjectService.getSubjectDefinitions(),
-      this.embargoService.isEmbargoed()
-    ).subscribe(([subjectCodes, subjectDefinitions, embargoed]) => {
+      this.embargoService.getEmbargo()
+    ).subscribe(([subjectCodes, subjectDefinitions, embargo]) => {
       // filter out embargoed results
-      if (embargoed) {
-        wrappers = (wrappers || []).filter(
-          ({ assessment }) => assessment.type !== 'sum'
-        );
-      }
+      wrappers = wrappers.filter(
+        createFilter(
+          embargo,
+          ({ assessment }) => assessment.type,
+          ({ assessment }) => assessment.schoolYear
+        )
+      );
 
       const builder = this.csvBuilder
         .newBuilder()
@@ -329,9 +335,16 @@ export class CsvExportService {
       builder.withItemAnswerKey(getAssessmentItem);
     }
 
-    this.embargoService.isEmbargoed().subscribe(embargoed => {
+    this.embargoService.getEmbargo().subscribe(embargo => {
       // filter out embargoed results
-      if (embargoed && exportRequest.assessment.type === 'sum') {
+      const embargoed = value =>
+        !createFilter(
+          embargo,
+          ({ assessment }) => assessment.type,
+          ({ assessment }) => assessment.schoolYear
+        )(value);
+
+      if (embargoed(exportRequest)) {
         return;
       }
 
@@ -367,9 +380,16 @@ export class CsvExportService {
     const getAssessment = () => exportRequest.assessment;
     const getAssessmentItem = item => item.assessmentItem;
 
-    this.embargoService.isEmbargoed().subscribe(embargoed => {
+    this.embargoService.getEmbargo().subscribe(embargo => {
       // filter out embargoed results
-      if (embargoed && exportRequest.assessment.type === 'sum') {
+      const embargoed = value =>
+        !createFilter(
+          embargo,
+          ({ assessment }) => assessment.type,
+          ({ assessment }) => assessment.schoolYear
+        )(value);
+
+      if (embargoed(exportRequest)) {
         return;
       }
 
@@ -398,9 +418,16 @@ export class CsvExportService {
   ) {
     const getAssessment = () => exportRequest.assessment;
 
-    this.embargoService.isEmbargoed().subscribe(embargoed => {
+    this.embargoService.getEmbargo().subscribe(embargo => {
       // filter out embargoed results
-      if (embargoed && exportRequest.assessment.type === 'sum') {
+      const embargoed = value =>
+        !createFilter(
+          embargo,
+          ({ assessment }) => assessment.type,
+          ({ assessment }) => assessment.schoolYear
+        )(value);
+
+      if (embargoed(exportRequest)) {
         return;
       }
 
