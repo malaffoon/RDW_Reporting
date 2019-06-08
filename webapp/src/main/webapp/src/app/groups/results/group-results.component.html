@@ -48,7 +48,7 @@
       [assessmentExporter]="assessmentExporter"
       [isDefaultCollapsed]="false"
       [displayedFor]="group.name"
-      (export)="onExportButtonClick()"
+      (export)="onExportButtonClick($event)"
       [allowFilterBySessions]="true"
       [allowTargetReport]="true"
     >

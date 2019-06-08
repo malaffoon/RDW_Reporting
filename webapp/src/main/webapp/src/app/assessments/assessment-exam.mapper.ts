@@ -29,6 +29,7 @@ export function toAssessment(serverAssessment: any): Assessment {
     label: serverAssessment.label,
     grade: serverAssessment.gradeCode,
     type: serverAssessment.typeCode,
+    schoolYear: serverAssessment.schoolYear,
     subject: serverAssessment.subjectCode,
     alternateScoreCodes: serverAssessment.altScoreCodes || [],
     claimCodes: serverAssessment.claimCodes || [],

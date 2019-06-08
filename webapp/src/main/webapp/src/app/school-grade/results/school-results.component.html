@@ -42,7 +42,7 @@
     [assessmentProvider]="assessmentProvider"
     [assessmentExporter]="assessmentExporter"
     [isDefaultCollapsed]="true"
-    (export)="onExportButtonClick()"
+    (export)="onExportButtonClick($event)"
     [allowFilterBySessions]="false"
     [allowTargetReport]="false"
   >
