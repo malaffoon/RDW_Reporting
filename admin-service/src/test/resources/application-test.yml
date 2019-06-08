@@ -1,3 +1,8 @@
+logging:
+  level:
+    # emit statistics for the underlying context cache
+    org.opentestsystem.rdw.admin: debug
+
 datasources:
   reporting_ro:
     url-schema: reporting_test
