@@ -8,6 +8,10 @@ management:
     db:
       enabled: false
 
+#needed to disable auto-configurations for flyway
+flyway:
+  enabled: false
+
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
   tomcat:
