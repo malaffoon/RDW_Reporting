@@ -133,6 +133,25 @@ spring:
     removeAbandonedTimeout: 60
     logAbandoned: false
 
+  admin_olap_datasource:
+    olap_ro:
+      url-parts:
+        protocol: "jdbc:redshift:"
+        hosts: "${spring.admin_olap_datasource.url-server:localhost:5432}"
+#        database: "${spring.admin_olap_datasource.url-db:dev}"
+        properties: "ApplicationName=rdw-reporting-aggregate-service\
+                     &loginTimeout=${spring.admin_datasource.connect-timeout:10}\
+                     &socketTimeout=${spring.admin_datasource.socket-timeout:0}\
+                     "
+      #url: "${spring.admin_olap_datasource.url-parts.protocol}//${spring.admin_olap_datasource.url-parts.hosts}/${spring.admin_olap_datasource.url-parts.database}?${spring.admin_olap_datasource.url-parts.properties}"
+      url: "${spring.admin_olap_datasource.url-parts.protocol}//${spring.admin_olap_datasource.url-parts.hosts}?${spring.admin_olap_datasource.url-parts.properties}"
+      username: root
+      password:
+      testWhileIdle: true
+      validationQuery: SELECT 1
+      validationQueryTimeout: 30000
+      driverClassName: com.amazon.redshift.jdbc42.Driver
+
 archive:
   uri-root: "file:///tmp/"
   #path-prefix:

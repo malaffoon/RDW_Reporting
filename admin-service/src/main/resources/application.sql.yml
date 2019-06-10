@@ -427,7 +427,7 @@ sql:
       DELETE FROM pipeline_test
       WHERE id = :id
 
-  datasetImport:
+  multitenantDatabaseAdmin:
       auroraS3LoadData: >-
         LOAD DATA FROM S3 :s3_uri
         INTO TABLE $[databaseName].$[tableName]
@@ -444,3 +444,8 @@ sql:
       tableEmptyProbe: >-
         SELECT COUNT(*)
         FROM $[databaseName].$[tableName]
+
+      databaseExists: >-
+        SELECT SCHEMA_NAME
+        FROM INFORMATION_SCHEMA.SCHEMATA
+        WHERE SCHEMA_NAME = :targetDatabase
