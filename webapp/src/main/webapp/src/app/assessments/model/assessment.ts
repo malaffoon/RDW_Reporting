@@ -6,6 +6,7 @@ export interface Assessment {
   label: string;
   grade: string;
   type: AssessmentType;
+  schoolYear: number;
   subject: string;
   alternateScoreCodes: string[];
   claimCodes: string[];

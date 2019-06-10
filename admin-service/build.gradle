@@ -40,6 +40,8 @@ dependencies {
     }
     testCompile 'org.springframework.security:spring-security-test'
     testCompile 'org.springframework.cloud:spring-cloud-stream-test-support'
+    testCompile 'org.opentestsystem.rdw.schema:rdw-schema'
+    testCompile 'org.flywaydb:flyway-core'
 }
 
 IT {

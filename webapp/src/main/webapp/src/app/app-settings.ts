@@ -19,6 +19,7 @@ export interface ApplicationSettings {
   readonly studentFields: Map<StudentFieldType, StudentFieldPermissionLevel>;
   readonly targetReport: TargetReportSettings;
   readonly transferAccess: boolean;
+  readonly schoolYear: number;
 }
 
 export type StudentFieldType =
@@ -66,6 +67,7 @@ export function toApplicationSettings(
     minItemDataYear: serverSettings.minItemDataYear,
     percentileDisplayEnabled: serverSettings.percentileDisplayEnabled,
     reportLanguages: serverSettings.effectiveReportLanguages,
+    schoolYear: serverSettings.schoolYear,
     state: {
       code: serverSettings.state.code,
       name: serverSettings.state.name

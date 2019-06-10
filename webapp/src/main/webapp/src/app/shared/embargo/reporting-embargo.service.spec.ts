@@ -6,14 +6,20 @@ import { inject, TestBed } from '@angular/core/testing';
 import { CachingDataService } from '../data/caching-data.service';
 import { UserService } from '../../user/user.service';
 import { of } from 'rxjs';
+import { ApplicationSettingsService } from '../../app-settings.service';
 
 describe('ReportingEmbargoService', () => {
   let service: ReportingEmbargoService;
   let dataService: MockDataService;
   let userService: MockUserService;
   let user: User;
+  let mockSettingsService: ApplicationSettingsService;
 
   beforeEach(() => {
+    mockSettingsService = jasmine.createSpyObj('ApplicationSettingsService', {
+      getSettings: of({ schoolYear: 100 })
+    });
+
     dataService = new MockDataService();
     dataService.get.and.returnValue(of(true));
 
@@ -24,6 +30,7 @@ describe('ReportingEmbargoService', () => {
     TestBed.configureTestingModule({
       providers: [
         ReportingEmbargoService,
+        { provide: ApplicationSettingsService, useValue: mockSettingsService },
         { provide: CachingDataService, useValue: dataService },
         { provide: UserService, useValue: userService }
       ]

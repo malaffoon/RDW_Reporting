@@ -21,8 +21,8 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.1.0-SNAPSHOT`
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.4.0-157"
-String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.4.0-423"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.4.0-160"
+String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.4.0-427"
 String dockerPrefix = "smarterbalanced"
 
 allprojects {
@@ -64,6 +64,7 @@ subprojects {
             dependency "org.opentestsystem.rdw.common:rdw-common-security:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-status:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-utils:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.schema:rdw-schema:${rdwSchemaVersion}"
 
 
             // commonly used libraries
@@ -74,6 +75,7 @@ subprojects {
             dependency 'org.apache.pdfbox:pdfbox:2.0.7'
             dependency 'org.slf4j:slf4j-api:1.7.25'
             dependency 'org.thymeleaf:thymeleaf:3.0.6.RELEASE'
+            dependency "org.flywaydb:flyway-core:5.2.4"
 
             // spring extensions aren't included in the the bom
             dependency 'org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE'

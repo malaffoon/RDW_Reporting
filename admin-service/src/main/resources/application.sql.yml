@@ -426,3 +426,21 @@ sql:
     deleteById: >-
       DELETE FROM pipeline_test
       WHERE id = :id
+
+  datasetImport:
+      auroraS3LoadData: >-
+        LOAD DATA FROM S3 :s3_uri
+        INTO TABLE $[databaseName].$[tableName]
+
+      useDatabase: >-
+        USE $[databaseName]
+
+      disableForeignKeyChecks: >-
+        SET FOREIGN_KEY_CHECKS=0
+
+      enableForeignKeyChecks: >-
+        SET FOREIGN_KEY_CHECKS=1
+
+      tableEmptyProbe: >-
+        SELECT COUNT(*)
+        FROM $[databaseName].$[tableName]
