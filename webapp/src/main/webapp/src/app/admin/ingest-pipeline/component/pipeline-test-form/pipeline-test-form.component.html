@@ -31,7 +31,14 @@
             {{ 'pipeline-test-form.field.input.error.required' | translate }}
           </ng-container>
           <ng-container *ngIf="control.errors.maxlength">
-            {{ 'pipeline-test-form.field.input.error.maxLength' | translate }}
+            {{
+              'pipeline-test-form.field.input.error.maxLength'
+                | translate
+                  : {
+                      requiredLength:
+                        control.errors.maxlength.requiredLength | number
+                    }
+            }}
           </ng-container>
         </span>
       </label>
@@ -57,7 +64,14 @@
             {{ 'pipeline-test-form.field.output.error.required' | translate }}
           </ng-container>
           <ng-container *ngIf="control.errors.maxlength">
-            {{ 'pipeline-test-form.field.output.error.maxLength' | translate }}
+            {{
+              'pipeline-test-form.field.output.error.maxLength'
+                | translate
+                  : {
+                      requiredLength:
+                        control.errors.maxlength.requiredLength | number
+                    }
+            }}
           </ng-container>
         </span>
       </label>
