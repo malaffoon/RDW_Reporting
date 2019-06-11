@@ -446,11 +446,16 @@ sql:
       FROM $[tableName].$[tableName]
 
     databaseExists: >-
-      SELECT SCHEMA_NAME
+      SELECT EXISTS(SELECT SCHEMA_NAME
       FROM INFORMATION_SCHEMA.SCHEMATA
-      WHERE SCHEMA_NAME = :targetDatabase
+      WHERE SCHEMA_NAME = :targetDatabase)
 
     createDatabase: >-
       CREATE DATABASE $[databaseName]
       DEFAULT CHARACTER SET 'utf8'
       COLLATE 'utf8_unicode_ci'
+
+    userExists: >-
+      SELECT EXISTS(SELECT 1
+                    FROM mysql.user
+                    WHERE user = :username)
