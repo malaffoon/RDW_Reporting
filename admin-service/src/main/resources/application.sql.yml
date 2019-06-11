@@ -459,3 +459,7 @@ sql:
       SELECT EXISTS(SELECT 1
                     FROM mysql.user
                     WHERE user = :username)
+
+    createDatabaseUser: >-
+      CREATE USER :username @'%' IDENTIFIED BY :password
+
