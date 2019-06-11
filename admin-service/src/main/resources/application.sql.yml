@@ -463,3 +463,15 @@ sql:
     createDatabaseUser: >-
       CREATE USER :username @'%' IDENTIFIED BY :password
 
+    grantUserToDatabase: >-
+      GRANT ALL PRIVILEGES ON $[databaseName].* TO :username @'%'
+
+    grantUserOnSelectProc: >-
+      GRANT SELECT ON mysql.proc TO :username @'%'
+
+    grantUserLoadFromS3: >-
+      GRANT LOAD FROM S3 ON *.* TO :username @'%'
+
+    grantUserSelectIntoS3: >-
+      GRANT SELECT INTO S3 ON *.* to :username @'%'
+
