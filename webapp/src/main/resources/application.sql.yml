@@ -4,45 +4,51 @@ sql:
       SELECT code FROM asmt_type
   sandboxRoles:
     findAll: >-
-      SELECT
-        'DistrictAdministrator' as type,
-        1 as type_order,
-        CONCAT('district_', natural_id) AS id,
-        'District' as organization_type,
-        natural_id as organization_natural_id,
-        id as organization_id,
-        name as organization_name,
-        null as grade_code
-      FROM district
+      (
+        SELECT
+          'DistrictAdministrator' as type,
+          1 as type_order,
+          CONCAT('district_', natural_id) AS id,
+          'District' as organization_type,
+          natural_id as organization_natural_id,
+          id as organization_id,
+          name as organization_name,
+          null as grade_code
+        FROM district
+      )
       UNION ALL
-      SELECT
-        'SchoolAdministrator' as type,
-        2 as type_order,
-        CONCAT('school_', natural_id) AS id,
-        'School' as organization_type,
-        natural_id as organization_natural_id,
-        id as organization_id,
-        name as organization_name,
-        null as grade_code
-      FROM school
+      (
+        SELECT
+          'SchoolAdministrator' as type,
+          2 as type_order,
+          CONCAT('school_', natural_id) AS id,
+          'School' as organization_type,
+          natural_id as organization_natural_id,
+          id as organization_id,
+          name as organization_name,
+          null as grade_code
+        FROM school
+      )
       UNION ALL
-      SELECT
-        'Teacher' as type,
-        3 as type_order,
-        CONCAT('teacher_', s.natural_id, '_', g.code) AS id,
-        'School' as organization_type,
-        s.natural_id as organization_natural_id,
-        s.id as organization_id,
-        s.name as organization_name,
-        g.code as grade_code
-      FROM school s
-        JOIN (
-          SELECT DISTINCT
-            school_id,
-            grade_id
-          FROM exam
-        ) e ON e.school_id = s.id
-        JOIN grade g ON e.grade_id = g.id
+      (
+        SELECT
+          'Teacher' as type,
+          3 as type_order,
+          CONCAT('teacher_', s.natural_id, '_', g.code) AS id,
+          'School' as organization_type,
+          s.natural_id as organization_natural_id,
+          s.id as organization_id,
+          s.name as organization_name,
+          g.code as grade_code
+        FROM school s
+          JOIN (
+            SELECT DISTINCT
+              school_id,
+              grade_id
+            FROM exam
+          ) e ON e.school_id = s.id
+          JOIN grade g ON e.grade_id = g.id
+      )
       ORDER BY
         type_order,
         organization_name,
