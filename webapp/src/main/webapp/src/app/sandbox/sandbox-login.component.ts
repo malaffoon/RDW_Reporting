@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SandboxLoginService } from './sandbox-login.service';
-import { Role, Sandbox } from './sandbox';
+import { Sandbox, SandboxRole } from './sandbox';
 
 @Component({
   selector: 'sandbox-login',
@@ -10,10 +10,7 @@ import { Role, Sandbox } from './sandbox';
 export class SandboxLoginComponent implements OnInit {
   form: FormGroup;
   sandboxes: Sandbox[];
-  roles: Role[] = [];
-
-  @ViewChild('loginForm')
-  private loginForm: ElementRef<HTMLFormElement>;
+  roles: SandboxRole[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,6 +45,10 @@ export class SandboxLoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.loginForm.nativeElement.submit();
+    const { sandboxKey, username, role } = this.form.value;
+    const encode = encodeURIComponent;
+    window.location.href = `/sandbox/login?sandboxKey=${encode(
+      sandboxKey
+    )}&username=${encode(username)}&role=${encode(role)}`;
   }
 }

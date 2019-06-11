@@ -24,13 +24,4 @@ export class SandboxLoginService {
       .get(`${ResourceRoute}`)
       .pipe(catchError(ResponseUtils.throwError));
   }
-
-  /**
-   * Creates a new sandbox
-   * @param sandbox - The sandbox to create
-   */
-  login(user: SandboxUser): Observable<void> {
-    // TODO: Integrate API
-    return new Observable(observer => observer.next());
-  }
 }

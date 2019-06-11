@@ -1,11 +1,19 @@
+import { Organization } from '../shared/organization/organization';
+
 export interface Sandbox {
-  label: string;
   key: string;
-  baseUrl: string;
-  roles: Role[];
+  label: string;
+  roles: SandboxRole[];
 }
 
-export interface Role {
+export type SandboxRoleType =
+  | 'DistrictAdministrator'
+  | 'SchoolAdministrator'
+  | 'Teacher';
+
+export interface SandboxRole {
   id: string;
-  label: string;
+  type: SandboxRoleType;
+  organization?: Organization;
+  gradeCode?: string;
 }
