@@ -14,6 +14,7 @@ import {
 import { Message, ThemeType } from '../code-editor/code-editor.component';
 import { Item } from '../pipeline-explorer/pipeline-explorer.component';
 import { CompilationState, PipelineState } from '../../model/pipeline-state';
+import { isValidPipelineTest } from '../../model/pipelines';
 
 @Component({
   selector: 'pipeline-editor',
@@ -22,6 +23,8 @@ import { CompilationState, PipelineState } from '../../model/pipeline-state';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PipelineEditorComponent {
+  readonly isValidPipelineTest = isValidPipelineTest;
+
   @Input()
   readonly: boolean;
 
