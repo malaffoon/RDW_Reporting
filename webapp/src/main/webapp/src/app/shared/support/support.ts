@@ -366,6 +366,8 @@ export function flattenJsonObject(ob: any): any {
     if (typeof ob[i] == 'object') {
       if (Array.isArray(ob[i])) {
         toReturn[i] = ob[i].join();
+      } else if (ob[i] == null) {
+        toReturn[i] = null;
       } else {
         const flatObject = flattenJsonObject(ob[i]);
         for (const x in flatObject) {
