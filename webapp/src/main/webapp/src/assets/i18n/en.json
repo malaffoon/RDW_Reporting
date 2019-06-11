@@ -1578,13 +1578,15 @@
       "input": {
         "label": "Test Input",
         "error": {
-          "required": "*"
+          "required": "*",
+          "maxLength": "(Please reduce length to {{requiredLength}} characters or less)"
         }
       },
       "output": {
         "label": "Expected Output",
         "error": {
-          "required": "*"
+          "required": "*",
+          "maxLength": "(Please reduce length to {{requiredLength}} characters or less)"
         }
       }
     }
