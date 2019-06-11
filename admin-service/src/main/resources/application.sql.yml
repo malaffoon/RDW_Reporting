@@ -481,3 +481,10 @@ sql:
     createOlapDatabaseUser: >-
       CREATE USER $[username] PASSWORD '$[password]'
 
+    olapSchemaExists: >-
+      SELECT COUNT(schema_name)
+      FROM information_schema.schemata
+      WHERE schema_name = :schema
+
+    createOlapSchema: >-
+      CREATE SCHEMA $[schema]
