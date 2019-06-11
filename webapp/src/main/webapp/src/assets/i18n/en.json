@@ -1578,13 +1578,15 @@
       "input": {
         "label": "Test Input",
         "error": {
-          "required": "*"
+          "required": "*",
+          "maxLength": "(Please use a smaller test input)"
         }
       },
       "output": {
         "label": "Expected Output",
         "error": {
-          "required": "*"
+          "required": "*",
+          "maxLength": "(Please use a smaller test output)"
         }
       }
     }
