@@ -1,13 +1,7 @@
-<div class="row" class="sandbox-login">
+<div class="row sandbox-login">
   <div class="col-xs-5 center-block well">
     <h2 class="text-center">{{ 'sandbox-login.title' | translate }}</h2>
-    <form
-      [formGroup]="form"
-      (ngSubmit)="onSubmit()"
-      #loginForm
-      method="post"
-      action="/sandbox/login"
-    >
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div>
         <label for="sandbox" class="control-label">
           {{ 'sandbox-login.labels.sandbox' | translate }}</label
@@ -19,9 +13,9 @@
           (ngModelChange)="sandboxSelected($event)"
           class="form-control"
         >
-          <option [ngValue]="null"></option>
+          <option [ngValue]="undefined"></option>
           <option *ngFor="let sandbox of sandboxes" [ngValue]="sandbox.key">
-            {{ sandbox.label }} ({{ sandbox.key }})
+            {{ 'sandbox-login.sandbox-label' | translate: sandbox }})
           </option>
         </select>
       </div>
@@ -47,15 +41,24 @@
           formControlName="role"
           class="form-control"
         >
-          <option [ngValue]="null"></option>
+          <option [ngValue]="undefined"></option>
           <option *ngFor="let role of roles" [ngValue]="role.id">
-            {{ role.label }}
+            {{
+              'sandbox-login.sandbox-role-label.' + role.type
+                | translate
+                  : {
+                      organizationName: role.organization.name,
+                      grade:
+                        'common.assessment-grade-label.' + role.gradeCode
+                        | translate
+                    }
+            }}
           </option>
         </select>
       </div>
       <button
         type="submit"
-        class="btn btn-primary mt-md text-center col-md-12"
+        class="btn btn-primary mt-md text-center btn-block"
         [disabled]="form.invalid"
       >
         {{ 'sandbox-login.login' | translate }}
