@@ -31,7 +31,7 @@ dependencies {
     compile 'commons-io:commons-io'
     compile 'org.eclipse.jgit:org.eclipse.jgit'
     compile 'org.apache.commons:commons-csv:+'
-
+    compile 'com.amazon.redshift:redshift-jdbc42-no-awssdk:1.2.8.1005'
     compile 'com.google.code.gson:gson'
 
     testCompile project(path: ':rdw-reporting-common', configuration: 'tests')

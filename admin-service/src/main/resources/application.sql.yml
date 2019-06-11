@@ -475,3 +475,5 @@ sql:
     grantUserSelectIntoS3: >-
       GRANT SELECT INTO S3 ON *.* to :username @'%'
 
+    olapDatabaseUserExists: >-
+      SELECT COUNT(usename) FROM pg_user where usename = :username;
