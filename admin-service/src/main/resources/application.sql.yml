@@ -344,7 +344,7 @@ sql:
 
     update:
       UPDATE pipeline
-        SET active_version = :active_version
+      SET active_version = :active_version
       WHERE id = :id
 
   pipeline-script:
@@ -428,24 +428,29 @@ sql:
       WHERE id = :id
 
   multitenantDatabaseAdmin:
-      auroraS3LoadData: >-
-        LOAD DATA FROM S3 :s3_uri
-        INTO TABLE $[databaseName].$[tableName]
+    auroraS3LoadData: >-
+      LOAD DATA FROM S3 :s3_uri
+      INTO TABLE $[databaseName].$[tableName]
 
-      useDatabase: >-
-        USE $[databaseName]
+    useDatabase: >-
+      USE $[databaseName]
 
-      disableForeignKeyChecks: >-
-        SET FOREIGN_KEY_CHECKS=0
+    disableForeignKeyChecks: >-
+      SET FOREIGN_KEY_CHECKS=0
 
-      enableForeignKeyChecks: >-
-        SET FOREIGN_KEY_CHECKS=1
+    enableForeignKeyChecks: >-
+      SET FOREIGN_KEY_CHECKS=1
 
-      tableEmptyProbe: >-
-        SELECT COUNT(*)
-        FROM $[databaseName].$[tableName]
+    tableEmptyProbe: >-
+      SELECT COUNT(*)
+      FROM $[tableName].$[tableName]
 
-      databaseExists: >-
-        SELECT SCHEMA_NAME
-        FROM INFORMATION_SCHEMA.SCHEMATA
-        WHERE SCHEMA_NAME = :targetDatabase
+    databaseExists: >-
+      SELECT SCHEMA_NAME
+      FROM INFORMATION_SCHEMA.SCHEMATA
+      WHERE SCHEMA_NAME = :targetDatabase
+
+    createDatabase: >-
+      CREATE DATABASE $[databaseName]
+      DEFAULT CHARACTER SET 'utf8'
+      COLLATE 'utf8_unicode_ci'
