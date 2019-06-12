@@ -93,21 +93,21 @@ spring:
     cache-names: permissionsByRole, translations, translation_properties
 
 datasources:
-  reporting_ro:
+  reporting_rw:
     url-parts:
       #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
       protocol: "jdbc:mysql:"
-      hosts: "${datasources.reporting_ro.url-server:localhost:3306}"
-      database: "${datasources.reporting_ro.url-schema:reporting}"
-      properties: "useSSL=${datasources.reporting_ro.use-ssl:false}\
-                   &useLegacyDatetimeCode=${datasources.reporting_ro.use-legacy-datetime-code:false}\
-                   &characterEncoding=${datasources.reporting_ro.character-encoding:utf8}\
-                   &rewriteBatchedStatements=${datasources.reporting_ro.rewrite-batched-statements:true}\
-                   &connectTimeout=${datasources.reporting_ro.connect-timeout:10000}\
-                   &socketTimeout=${datasources.reporting_ro.socket-timeout:40000}\
+      hosts: "${datasources.reporting_rw.url-server:localhost:3306}"
+      database: "${datasources.reporting_rw.url-schema:reporting}"
+      properties: "useSSL=${datasources.reporting_rw.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.reporting_rw.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.reporting_rw.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${datasources.reporting_rw.rewrite-batched-statements:true}\
+                   &connectTimeout=${datasources.reporting_rw.connect-timeout:10000}\
+                   &socketTimeout=${datasources.reporting_rw.socket-timeout:40000}\
                    "
-    url: "${datasources.reporting_ro.url-parts.protocol}//${datasources.reporting_ro.url-parts.hosts}/${datasources.reporting_ro.url-parts.database}?${datasources.reporting_ro.url-parts.properties}"
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${datasources.reporting_ro.query-timeout:30})"
+    url: "${datasources.reporting_rw.url-parts.protocol}//${datasources.reporting_rw.url-parts.hosts}/${datasources.reporting_rw.url-parts.database}?${datasources.reporting_rw.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${datasources.reporting_rw.query-timeout:30})"
     username: root
     password:
     testWhileIdle: true
@@ -117,8 +117,8 @@ datasources:
     initialize: false
     initialSize: 4
     maxActive: 10
-    minIdle: ${datasources.reporting_ro.initialSize}
-    maxIdle: ${datasources.reporting_ro.maxActive}
+    minIdle: ${datasources.reporting_rw.initialSize}
+    maxIdle: ${datasources.reporting_rw.maxActive}
     removeAbandoned: false
     removeAbandonedTimeout: 60
     logAbandoned: false
