@@ -4,9 +4,8 @@ import { DataService } from '../shared/data/data.service';
 import { catchError } from 'rxjs/operators';
 import { ResponseUtils } from '../shared/response-utils';
 import { Sandbox } from './sandbox';
-import { ReportingServiceRoute } from '../shared/service-route';
 
-const ResourceRoute = `${ReportingServiceRoute}/sandboxes`;
+const ResourceRoute = `/sandboxes`;
 
 /**
  * Service responsible for sandboxes

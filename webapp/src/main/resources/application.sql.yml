@@ -2,6 +2,23 @@ sql:
   status:
     readTest: >-
       SELECT code FROM asmt_type
+
+  user-student-group:
+    create:
+      INSERT IGNORE INTO user_student_group
+      (
+        user_login,
+        student_group_id
+      )
+      VALUES (
+        :user_login,
+        (
+          SELECT id
+          FROM student_group
+          WHERE name = :group_name
+        )
+      )
+
   sandboxRoles:
     findAll: >-
       (
@@ -53,19 +70,3 @@ sql:
         type_order,
         organization_name,
         grade_code
-
-  user-student-group:
-    create:
-      INSERT IGNORE INTO user_student_group
-      (
-        user_login,
-        student_group_id
-      )
-      VALUES (
-        :user_login,
-        (
-          SELECT id
-          FROM student_group
-          WHERE name = :group_name
-        )
-      )
