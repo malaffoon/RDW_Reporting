@@ -443,7 +443,7 @@ sql:
 
     tableEmptyProbe: >-
       SELECT COUNT(*)
-      FROM $[tableName].$[tableName]
+      FROM $[databaseName].$[tableName]
 
     databaseExists: >-
       SELECT EXISTS(SELECT SCHEMA_NAME
@@ -488,3 +488,12 @@ sql:
 
     createOlapSchema: >-
       CREATE SCHEMA $[schema]
+
+    grantAllOlapUserToSchema: >-
+      GRANT ALL ON SCHEMA $[schema] to $[username]
+
+    grantAllOlapUserToSchemaTables: >-
+      GRANT ALL ON ALL TABLES IN SCHEMA $[schema] to $[username]
+
+    searchPathOlapUserToSchema: >-
+      ALTER USER $[username] SET SEARCH_PATH TO  $[schema];
