@@ -26,9 +26,21 @@
     >
       <label>
         {{ 'pipeline-test-form.field.input.label' | translate }}
-        <span *ngIf="control.errors && (control.touched || control.dirty)">{{
-          'pipeline-test-form.field.input.error.required' | translate
-        }}</span>
+        <span *ngIf="control.errors && (control.touched || control.dirty)">
+          <ng-container *ngIf="control.errors.required">
+            {{ 'pipeline-test-form.field.input.error.required' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.errors.maxlength">
+            {{
+              'pipeline-test-form.field.input.error.maxLength'
+                | translate
+                  : {
+                      requiredLength:
+                        control.errors.maxlength.requiredLength | number
+                    }
+            }}
+          </ng-container>
+        </span>
       </label>
       <code-editor
         #input
@@ -45,12 +57,24 @@
         'has-error': control.errors && (control.touched || control.dirty)
       }"
     >
-      <label
-        >{{ 'pipeline-test-form.field.output.label' | translate }}
-        <span *ngIf="control.errors && (control.touched || control.dirty)">{{
-          'pipeline-test-form.field.output.error.required' | translate
-        }}</span></label
-      >
+      <label>
+        {{ 'pipeline-test-form.field.output.label' | translate }}
+        <span *ngIf="control.errors && (control.touched || control.dirty)">
+          <ng-container *ngIf="control.errors.required">
+            {{ 'pipeline-test-form.field.output.error.required' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.errors.maxlength">
+            {{
+              'pipeline-test-form.field.output.error.maxLength'
+                | translate
+                  : {
+                      requiredLength:
+                        control.errors.maxlength.requiredLength | number
+                    }
+            }}
+          </ng-container>
+        </span>
+      </label>
       <code-editor
         #output
         [readonly]="readonly"

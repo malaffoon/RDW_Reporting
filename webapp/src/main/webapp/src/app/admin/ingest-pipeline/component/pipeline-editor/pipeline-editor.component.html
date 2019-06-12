@@ -109,7 +109,11 @@
         <div [tooltip]="saveButtonDisabledTooltip">
           <button
             class="btn btn-primary btn-outlined"
-            [ngClass]="{ disabled: !selectedItem.changed }"
+            [ngClass]="{
+              disabled:
+                !selectedItem.changed ||
+                !isValidPipelineTest(selectedItem.value)
+            }"
             (click)="testUpdate.emit(selectedItem.value)"
           >
             <ng-container *ngIf="testUpdating; else testNotUpdating">

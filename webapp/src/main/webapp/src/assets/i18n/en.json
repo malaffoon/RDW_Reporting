@@ -1238,7 +1238,13 @@
       "role": "User Role"
     },
     "login": "Login",
-    "error": "An error occurred while attempting to log into the reporting sandbox"
+    "error": "An error occurred while attempting to log into the reporting sandbox",
+    "sandbox-label": "{{label}} ({{key}})",
+    "sandbox-role-label": {
+      "DistrictAdministrator": "District Admin: {{organizationName}}",
+      "SchoolAdministrator": "School Admin: {{organizationName}}",
+      "Teacher": "Teacher: {{organizationName}} {{grade}}"
+    }
   },
   "tenant-config": {
     "title": "Tenant Configuration",
@@ -1572,13 +1578,15 @@
       "input": {
         "label": "Test Input",
         "error": {
-          "required": "*"
+          "required": "*",
+          "maxLength": "(Please reduce length to {{requiredLength}} characters or less)"
         }
       },
       "output": {
         "label": "Expected Output",
         "error": {
-          "required": "*"
+          "required": "*",
+          "maxLength": "(Please reduce length to {{requiredLength}} characters or less)"
         }
       }
     }

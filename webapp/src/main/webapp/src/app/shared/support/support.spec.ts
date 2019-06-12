@@ -55,7 +55,8 @@ describe('Utils', () => {
       foo: 'bar',
       state: {
         code: 'CA',
-        label: 'California'
+        label: 'California',
+        description: null
       },
       languages: ['en', 'es']
     };
@@ -63,6 +64,7 @@ describe('Utils', () => {
       foo: 'bar',
       'state.code': 'CA',
       'state.label': 'California',
+      'state.description': null,
       languages: 'en,es'
     });
   });

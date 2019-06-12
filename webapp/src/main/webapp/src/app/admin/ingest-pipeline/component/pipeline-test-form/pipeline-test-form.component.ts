@@ -11,6 +11,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { validate } from '../../../../shared/form/forms';
+import { maxTextLength } from '../../model/pipelines';
 
 @Component({
   selector: 'pipeline-test-form',
@@ -22,8 +23,8 @@ export class PipelineTestFormComponent implements OnDestroy {
   static formGroup(): FormGroup {
     return new FormGroup({
       name: new FormControl(''),
-      input: new FormControl('', [Validators.required]),
-      output: new FormControl('', [Validators.required])
+      input: new FormControl('', [Validators.required, maxTextLength]),
+      output: new FormControl('', [Validators.required, maxTextLength])
     });
   }
 
