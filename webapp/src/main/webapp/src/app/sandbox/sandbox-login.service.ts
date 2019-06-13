@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { ResponseUtils } from '../shared/response-utils';
 import { Sandbox } from './sandbox';
 
-const ResourceRoute = '/sandboxes';
+const ResourceRoute = `/sandboxes`;
 
 /**
  * Service responsible for sandboxes
