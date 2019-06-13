@@ -97,18 +97,30 @@
               [formControlName]="rowNode.node.data.formControlName"
               (change)="updateOverride(rowNode.node.data)"
               class="property-input"
+              [style.padding-right]="calculatePadding(rowNode.node.data)"
             />
-            <i
-              class="fa fa-undo fa-md"
-              *ngIf="
-                rowNode.node.data.value !== rowNode.node.data.originalValue
-              "
-              (click)="resetClicked(rowNode.node.data)"
-              popover="{{ 'tenant-config.reset-info' | translate }}"
-              placement="left"
-              container="body"
-              triggers="mouseenter:mouseleave"
-            ></i>
+            <div class="icon-container">
+              <i
+                class="fa fa-undo fa-md"
+                *ngIf="
+                  rowNode.node.data.value !== rowNode.node.data.originalValue
+                "
+                (click)="resetClicked(rowNode.node.data)"
+                popover="{{ 'tenant-config.reset-info' | translate }}"
+                placement="left"
+                container="body"
+                triggers="mouseenter:mouseleave"
+              ></i>
+              <i
+                class="fa fa-unlock fa-md"
+                *ngIf="rowNode.node.data.encrypted"
+                (click)="decryptClicked(rowNode.node.data)"
+                popover="{{ 'tenant-config.decrypt-info' | translate }}"
+                placement="left"
+                container="body"
+                triggers="mouseenter:mouseleave"
+              ></i>
+            </div>
           </td>
         </tr>
         <tr

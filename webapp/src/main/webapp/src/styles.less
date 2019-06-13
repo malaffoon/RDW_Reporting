@@ -862,6 +862,7 @@ aggregate-report-table {
 
     td {
       cursor: pointer;
+      position: relative;
 
       &.group-node {
         line-height: 30px;
@@ -878,16 +879,22 @@ aggregate-report-table {
         color: #02799e;
       }
 
-      i.fa-undo {
-        cursor: pointer;
-        color: @aqua;
+      .icon-container {
         position: absolute;
-        line-height: 22px;
-        font-size: 18px;
         right: 15px;
+        top: 9px;
 
-        &:hover {
-          color: @teal;
+        i.fa-undo,
+        i.fa-unlock {
+          cursor: pointer;
+          color: @aqua;
+          line-height: 22px;
+          font-size: 18px;
+          margin-left: 5px;
+
+          &:hover {
+            color: @teal;
+          }
         }
       }
     }

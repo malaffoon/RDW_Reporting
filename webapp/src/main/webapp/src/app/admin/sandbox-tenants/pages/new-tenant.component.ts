@@ -19,6 +19,7 @@ import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { TenantStore } from '../store/tenant.store';
+import { generateRandomPassword } from '../../../shared/support/support';
 
 @Component({
   selector: 'new-tenant',
@@ -64,12 +65,12 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
 
     this.service
       .getDefaultConfigurationProperties()
-      .subscribe(
-        configProperties =>
-          (this.configurationProperties = mapConfigurationProperties(
-            configProperties
-          ))
-      );
+      .subscribe(configProperties => {
+        this.configurationProperties = mapConfigurationProperties(
+          configProperties
+        );
+        this.setDefaultPasswords();
+      });
   }
 
   ngAfterViewInit() {
@@ -121,6 +122,23 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     this.configurationProperties = updatedProperties;
   }
 
+  setDefaultPasswords(): void {
+    const updatedProperties = { ...this.configurationProperties };
+    const randomDefaultPassword = generateRandomPassword();
+    Object.keys(this.configurationProperties.datasources).forEach(
+      dataSourceKey => {
+        const dbProperty = <ConfigurationProperty>(
+          updatedProperties.datasources[dataSourceKey].find(
+            property => property.key === 'password'
+          )
+        );
+        dbProperty.value = randomDefaultPassword;
+        dbProperty.originalValue = randomDefaultPassword;
+      }
+    );
+    this.configurationProperties = updatedProperties;
+  }
+
   private mapLocalizationOverrides() {
     this.translationLoader
       .getFlattenedTranslations('en')
@@ -128,10 +146,10 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
         const locationOverrideFormGroup = <FormGroup>(
           this.tenantForm.controls['localizationOverrides']
         );
-        for (let key in translations) {
+        for (const key in translations) {
           // check also if property is not inherited from prototype
           if (translations.hasOwnProperty(key)) {
-            let value = translations[key];
+            const value = translations[key];
             this.localizationOverrides = [
               ...this.localizationOverrides,
               new ConfigurationProperty(key, value)
