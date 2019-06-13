@@ -18,7 +18,7 @@ export class FilterBy extends ObservableObject {
   private _limitedEnglishProficiency: number = -1;
   private _ethnicities: boolean[] = [true];
   private _elasCodes: boolean[] = [true];
-  private _languageCodes: { [code: string]: boolean }[] = [];
+  private _languageCodes: string[] = [];
   private _militaryConnectedCodes: boolean[] = [true];
 
   private _filters = [
@@ -51,7 +51,7 @@ export class FilterBy extends ObservableObject {
   }
 
   get filteredLanguages(): any[] {
-    return this.filterArray(this._languageCodes);
+    return this._languageCodes || [];
   }
 
   get filteredMilitaryConnectedCodes(): any[] {
@@ -178,11 +178,11 @@ export class FilterBy extends ObservableObject {
     this.notifyChange('genders');
   }
 
-  get languageCodes(): { [x: string]: boolean }[] {
+  get languageCodes(): string[] {
     return this._languageCodes;
   }
 
-  set languageCodes(value: { [x: string]: boolean }[]) {
+  set languageCodes(value: string[]) {
     this._languageCodes = value;
     this.notifyChange('languageCodes');
   }
