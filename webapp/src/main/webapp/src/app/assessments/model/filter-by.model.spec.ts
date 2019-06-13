@@ -81,7 +81,7 @@ describe('FilterBy model', () => {
       actual = true;
     });
 
-    fixture.languageCodes = [{ eng: true }];
+    fixture.languageCodes = ['eng'];
     expect(actual).toBeTruthy();
   });
 
