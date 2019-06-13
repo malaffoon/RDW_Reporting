@@ -10,8 +10,6 @@ import { ExamFilterOptions } from '../../model/exam-filter-options.model';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SBTypeaheadGroup } from '../../../shared/form/sb-typeahead-group';
-import { Option } from '../../../shared/form/option';
-import { Filter } from '../../../exam/model/filter';
 
 /*
   This component contains all of the selectable advanced filters
@@ -70,14 +68,8 @@ export class AdvFiltersComponent {
     );
   }
 
-  optionsChanged(values: { value: any }[]): void {
-    this.filterBy.languageCodes = values.map(({ value }) => ({
-      [value]: true
-    }));
-  }
-
-  onSettingChangeInternal(event: any): void {
-    this.changed.emit();
+  onLanguageCodesChange(values: { value: string }[]): void {
+    this.filterBy.languageCodes = values.map(({ value }) => value);
   }
 
   public getLanguagesMap(): any[] {

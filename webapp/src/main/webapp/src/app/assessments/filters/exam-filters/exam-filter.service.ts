@@ -188,7 +188,6 @@ export class ExamFilterService {
         } else if (filter == 'militaryConnectedCodes') {
           filterValue = filterBy.filteredMilitaryConnectedCodes;
         }
-
         return filterDefinition.apply(exam, filterValue);
       });
     }
@@ -284,10 +283,7 @@ export class ExamFilterService {
   }
 
   private filterByLanguageCode(exam: Exam, filterValue: any): boolean {
-    return (
-      (exam.student && !filterValue.length) ||
-      filterValue.some(languageCode => languageCode == exam.languageCode)
-    );
+    return filterValue.some(languageCode => languageCode === exam.languageCode);
   }
 
   private filterByTransferAssessment(exam: Exam, filterValue: any): boolean {
