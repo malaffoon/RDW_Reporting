@@ -12,8 +12,3 @@ tenant-configuration-lookup-test:
       url: http://localhost:8086
     reporting-service:
       url: http://localhost:8108
-
-spring:
-  cloud:
-    config:
-      uri: ${CONFIG_SERVICE_URL:http://localhost:8888}
