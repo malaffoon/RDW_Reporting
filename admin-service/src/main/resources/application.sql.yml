@@ -344,7 +344,7 @@ sql:
 
     update:
       UPDATE pipeline
-        SET active_version = :active_version
+      SET active_version = :active_version
       WHERE id = :id
 
   pipeline-script:
@@ -427,20 +427,73 @@ sql:
       DELETE FROM pipeline_test
       WHERE id = :id
 
-  datasetImport:
-      auroraS3LoadData: >-
-        LOAD DATA FROM S3 :s3_uri
-        INTO TABLE $[databaseName].$[tableName]
+  multitenantDatabaseAdmin:
+    auroraS3LoadData: >-
+      LOAD DATA FROM S3 :s3_uri
+      INTO TABLE $[databaseName].$[tableName]
 
-      useDatabase: >-
-        USE $[databaseName]
+    useDatabase: >-
+      USE $[databaseName]
 
-      disableForeignKeyChecks: >-
-        SET FOREIGN_KEY_CHECKS=0
+    disableForeignKeyChecks: >-
+      SET FOREIGN_KEY_CHECKS=0
 
-      enableForeignKeyChecks: >-
-        SET FOREIGN_KEY_CHECKS=1
+    enableForeignKeyChecks: >-
+      SET FOREIGN_KEY_CHECKS=1
 
-      tableEmptyProbe: >-
-        SELECT COUNT(*)
-        FROM $[databaseName].$[tableName]
+    tableEmptyProbe: >-
+      SELECT COUNT(*)
+      FROM $[databaseName].$[tableName]
+
+    databaseExists: >-
+      SELECT EXISTS(SELECT SCHEMA_NAME
+      FROM INFORMATION_SCHEMA.SCHEMATA
+      WHERE SCHEMA_NAME = :targetDatabase)
+
+    createDatabase: >-
+      CREATE DATABASE $[databaseName]
+      DEFAULT CHARACTER SET 'utf8'
+      COLLATE 'utf8_unicode_ci'
+
+    userExists: >-
+      SELECT EXISTS(SELECT 1
+                    FROM mysql.user
+                    WHERE user = :username)
+
+    createDatabaseUser: >-
+      CREATE USER :username @'%' IDENTIFIED BY :password
+
+    grantUserToDatabase: >-
+      GRANT ALL PRIVILEGES ON $[databaseName].* TO :username @'%'
+
+    grantUserOnSelectProc: >-
+      GRANT SELECT ON mysql.proc TO :username @'%'
+
+    grantUserLoadFromS3: >-
+      GRANT LOAD FROM S3 ON *.* TO :username @'%'
+
+    grantUserSelectIntoS3: >-
+      GRANT SELECT INTO S3 ON *.* to :username @'%'
+
+    olapDatabaseUserExists: >-
+      SELECT COUNT(usename) FROM pg_user where usename = :username;
+
+    createOlapDatabaseUser: >-
+      CREATE USER $[username] PASSWORD '$[password]'
+
+    olapSchemaExists: >-
+      SELECT COUNT(schema_name)
+      FROM information_schema.schemata
+      WHERE schema_name = :schema
+
+    createOlapSchema: >-
+      CREATE SCHEMA $[schema]
+
+    grantAllOlapUserToSchema: >-
+      GRANT ALL ON SCHEMA $[schema] to $[username]
+
+    grantAllOlapUserToSchemaTables: >-
+      GRANT ALL ON ALL TABLES IN SCHEMA $[schema] to $[username]
+
+    searchPathOlapUserToSchema: >-
+      ALTER USER $[username] SET SEARCH_PATH TO  $[schema];
