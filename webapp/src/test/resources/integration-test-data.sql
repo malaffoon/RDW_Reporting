@@ -155,3 +155,12 @@ insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, oppo
   (-19, 3, -2, 'g2', -2, -10, 0, null, 0, 0, 0, 0, 'spa', null, 1997, -8, 'v1', 'Complete', 'Valid', 'session12', 2000, 20, 1, '1997-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, null, null, null, null, 'EO', null, -1, '1997-07-18 20:14:34.000000', -1),
   (-20, 3, -2, 'g2', -2, -10, 0, null, 0, 0, 0, 0, 'spa', null, 1997, -9, 'v1', 'Complete', 'Valid', 'session12', 2000, 20, 1, '1997-01-01 00:00:00.000000', 1, 100, 10, 2, 200, 20, 3, 300, 30, 4, 400, 40, null, null, null, null, 'EO', null, -1, '1997-07-18 20:14:34.000000', -1);
   -- transfer student test data
+
+  -- groups
+insert into student_group (id, name, school_id, school_year, subject_id, update_import_id, updated, migrate_id) values
+  (-10, 'school1 g1', -10, 1997, 1, -1, '1997-07-18 20:14:34.000000', -1),
+  (-20, 'school2 g2', -10, 1997, 2, -1, '1997-07-18 20:14:34.000000', -1);
+
+insert into student_group_membership (student_group_id, student_id) values
+  (-10, -1),
+  (-20, -2);

@@ -48,16 +48,6 @@ import { SandboxLoginComponent } from './sandbox/sandbox-login.component';
 export const studentPipe = new StudentPipe();
 export const adminRoute = {
   path: '',
-  data: {
-    permissions: [
-      'CUSTOM_AGGREGATE_READ',
-      'GROUP_WRITE',
-      'INDIVIDUAL_PII_READ',
-      'INSTRUCTIONAL_RESOURCE_WRITE',
-      'EMBARGO_WRITE'
-    ]
-  },
-  canActivate: [AuthorizationCanActivate],
   children: [
     {
       path: 'admin-groups',
@@ -175,6 +165,7 @@ export const adminRoute = {
             breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
             permissions: ['TENANT_WRITE']
           },
+          canActivate: [AuthorizationCanActivate],
           children: [
             {
               path: '',
