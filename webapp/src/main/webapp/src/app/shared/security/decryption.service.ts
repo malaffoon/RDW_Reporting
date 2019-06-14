@@ -4,7 +4,6 @@ import { catchError, map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../service-route';
 import { ResponseUtils } from '../response-utils';
 import { DataService } from '../data/data.service';
-import { HttpHeaders } from '@angular/common/http';
 import { ResponseContentType } from '@angular/http';
 
 const ResourceRoute = `${AdminServiceRoute}/config/decrypt`;

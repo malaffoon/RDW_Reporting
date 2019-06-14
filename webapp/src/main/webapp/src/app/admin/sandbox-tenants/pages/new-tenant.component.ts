@@ -19,7 +19,6 @@ import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { TenantStore } from '../store/tenant.store';
-import { generateRandomPassword } from '../../../shared/support/support';
 
 @Component({
   selector: 'new-tenant',
@@ -69,7 +68,6 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
         this.configurationProperties = mapConfigurationProperties(
           configProperties
         );
-        this.setDefaultPasswords();
       });
   }
 
@@ -119,23 +117,6 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       }
     );
 
-    this.configurationProperties = updatedProperties;
-  }
-
-  setDefaultPasswords(): void {
-    const updatedProperties = { ...this.configurationProperties };
-    const randomDefaultPassword = generateRandomPassword();
-    Object.keys(this.configurationProperties.datasources).forEach(
-      dataSourceKey => {
-        const dbProperty = <ConfigurationProperty>(
-          updatedProperties.datasources[dataSourceKey].find(
-            property => property.key === 'password'
-          )
-        );
-        dbProperty.value = randomDefaultPassword;
-        dbProperty.originalValue = randomDefaultPassword;
-      }
-    );
     this.configurationProperties = updatedProperties;
   }
 

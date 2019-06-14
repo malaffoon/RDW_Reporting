@@ -5,6 +5,7 @@ export class ConfigurationProperty {
   group?: string;
   formControlName: string;
   encrypted?: boolean;
+  required?: boolean;
 
   constructor(key, value, group = null, originalVal = value) {
     this.key = key;

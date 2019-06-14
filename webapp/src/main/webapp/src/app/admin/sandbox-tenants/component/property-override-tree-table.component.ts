@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { forOwn, cloneDeep, get } from 'lodash';
 import { DecryptionService } from '../../../shared/security/decryption.service';
@@ -174,6 +174,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
         typeof group.value === 'string' &&
         group.value.startsWith('{cipher}') &&
         group.key === 'password';
+
       childrenNodes.push({
         data: {
           key: group.key,
@@ -181,16 +182,22 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
           originalValue: group.originalValue,
           group: group.group,
           formControlName: group.formControlName,
-          encrypted: encrypted
+          encrypted: encrypted,
+          required: group.key === 'password'
         },
         expanded: false,
         leaf: true
       });
 
-      configPropertiesFormGroup.addControl(
-        group.formControlName,
-        new FormControl(group.value)
-      );
+      group.key.indexOf('password') > -1
+        ? configPropertiesFormGroup.addControl(
+            group.formControlName,
+            new FormControl(group.value, Validators.required)
+          )
+        : configPropertiesFormGroup.addControl(
+            group.formControlName,
+            new FormControl(group.value)
+          );
     });
   }
 }
