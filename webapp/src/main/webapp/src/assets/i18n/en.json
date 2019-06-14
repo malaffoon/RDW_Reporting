@@ -1276,7 +1276,7 @@
     "popover": {
       "reset": "Click this button to reset the value back to its original default value",
       "decrypt": "Click this button to decrypt the encrypted password",
-      "required": "This field is required"
+      "password": "The password field must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
     },
     "errors": {
       "duplicate-key": "A tenant with the same tenant key or ID already exists",
