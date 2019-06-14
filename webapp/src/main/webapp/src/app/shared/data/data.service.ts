@@ -90,6 +90,11 @@ export class DataService {
           this.safelyFormatFileName(this.getFileNameFromResponse(response)),
           new Blob([response.blob()], { type: this.getContentType(response) })
         );
+    } else if (
+      options != null &&
+      options.responseType == ResponseContentType.Text
+    ) {
+      return (response: Response) => response.text();
     }
     return response => {
       const contentLength = response.headers.get('content-length');

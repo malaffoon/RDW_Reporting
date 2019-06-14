@@ -81,7 +81,10 @@
           [ttRow]="rowNode"
           [ngClass]="{
             modified:
-              rowNode.node.data.value !== rowNode.node.data.originalValue
+              rowNode.node.data.value !== rowNode.node.data.originalValue,
+            required:
+              rowNode.node.data.required &&
+              (!rowNode.node.data.value || rowNode.node.data.value === '')
           }"
           (click)="overrideInput.focus()"
         >
@@ -97,18 +100,38 @@
               [formControlName]="rowNode.node.data.formControlName"
               (change)="updateOverride(rowNode.node.data)"
               class="property-input"
+              [style.padding-right]="calculatePadding(rowNode.node.data)"
             />
-            <i
-              class="fa fa-undo fa-md"
-              *ngIf="
-                rowNode.node.data.value !== rowNode.node.data.originalValue
-              "
-              (click)="resetClicked(rowNode.node.data)"
-              popover="{{ 'tenant-config.reset-info' | translate }}"
-              placement="left"
-              container="body"
-              triggers="mouseenter:mouseleave"
-            ></i>
+            <div class="icon-container">
+              <i
+                class="fa fa-undo fa-md"
+                *ngIf="
+                  rowNode.node.data.value !== rowNode.node.data.originalValue
+                "
+                (click)="resetClicked(rowNode.node.data)"
+                popover="{{ 'tenant-config.popover.reset' | translate }}"
+                placement="left"
+                container="body"
+                triggers="mouseenter:mouseleave"
+              ></i>
+              <i
+                class="fa fa-unlock fa-md"
+                *ngIf="rowNode.node.data.encrypted"
+                (click)="decryptClicked(rowNode.node.data)"
+                popover="{{ 'tenant-config.popover.decrypt' | translate }}"
+                placement="left"
+                container="body"
+                triggers="mouseenter:mouseleave"
+              ></i>
+              <i
+                class="fa fa-asterisk fa-md"
+                *ngIf="rowNode.node.data.required"
+                popover="{{ 'tenant-config.popover.password' | translate }}"
+                placement="left"
+                container="body"
+                triggers="mouseenter:mouseleave"
+              ></i>
+            </div>
           </td>
         </tr>
         <tr

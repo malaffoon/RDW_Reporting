@@ -16,6 +16,7 @@ import {
   RoutingAuthorizationCanActivate
 } from './routing-authorization.can-activate';
 import { AuthorizationCanActivate } from './authorization.can-activate';
+import { DecryptionService } from './decryption.service';
 
 /**
  * Common security module.
@@ -40,6 +41,7 @@ import { AuthorizationCanActivate } from './authorization.can-activate';
     { provide: Http, useClass: AuthenticatedHttpService },
     { provide: APP_BASE_HREF, useValue: '/' },
     { provide: AccessDeniedRoute, useValue: 'access-denied' },
+    DecryptionService,
     AuthenticationService,
     AuthorizationService,
     AuthorizationCanActivate,
