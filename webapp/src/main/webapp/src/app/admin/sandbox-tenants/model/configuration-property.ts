@@ -10,10 +10,6 @@ export class ConfigurationProperty {
     this.value = value;
     this.originalValue = originalVal;
     this.group = group;
-
-    if (group) {
-      this.formControlName = `${group}.${key}`;
-    }
-    this.formControlName = key;
+    this.formControlName = group ? `${group}.${key}` : key;
   }
 }

@@ -49,20 +49,6 @@ export class SandboxConfigurationComponent implements OnInit {
     );
   }
 
-  openArchiveSandboxModal(sandbox: SandboxConfiguration) {
-    let modalReference: BsModalRef = this.modalService.show(
-      ArchiveSandboxConfigurationModalComponent
-    );
-    let modal: ArchiveSandboxConfigurationModalComponent =
-      modalReference.content;
-    modal.sandbox = sandbox;
-    this._modalSubscriptions.push(
-      modal.archived.subscribe(sandbox => {
-        console.log(sandbox);
-      })
-    );
-  }
-
   openResetDataModal(sandbox: SandboxConfiguration) {
     let modalReference: BsModalRef = this.modalService.show(
       ResetDataModalComponent
