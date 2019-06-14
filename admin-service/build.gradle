@@ -33,6 +33,7 @@ dependencies {
     compile 'org.apache.commons:commons-csv:+'
     compile 'com.amazon.redshift:redshift-jdbc42-no-awssdk:1.2.8.1005'
     compile 'com.google.code.gson:gson'
+    compile 'org.flywaydb:flyway-core'
 
     testCompile project(path: ':rdw-reporting-common', configuration: 'tests')
     testCompile('org.springframework.boot:spring-boot-starter-test') {
@@ -41,7 +42,7 @@ dependencies {
     testCompile 'org.springframework.security:spring-security-test'
     testCompile 'org.springframework.cloud:spring-cloud-stream-test-support'
     testCompile 'org.opentestsystem.rdw.schema:rdw-schema'
-    testCompile 'org.flywaydb:flyway-core'
+
 }
 
 IT {
