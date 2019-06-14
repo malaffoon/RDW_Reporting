@@ -64,12 +64,11 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
 
     this.service
       .getDefaultConfigurationProperties()
-      .subscribe(
-        configProperties =>
-          (this.configurationProperties = mapConfigurationProperties(
-            configProperties
-          ))
-      );
+      .subscribe(configProperties => {
+        this.configurationProperties = mapConfigurationProperties(
+          configProperties
+        );
+      });
   }
 
   ngAfterViewInit() {
@@ -128,10 +127,10 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
         const locationOverrideFormGroup = <FormGroup>(
           this.tenantForm.controls['localizationOverrides']
         );
-        for (let key in translations) {
+        for (const key in translations) {
           // check also if property is not inherited from prototype
           if (translations.hasOwnProperty(key)) {
-            let value = translations[key];
+            const value = translations[key];
             this.localizationOverrides = [
               ...this.localizationOverrides,
               new ConfigurationProperty(key, value)
