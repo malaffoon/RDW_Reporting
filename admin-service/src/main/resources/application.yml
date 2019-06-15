@@ -114,7 +114,7 @@ spring:
                    &useLegacyDatetimeCode=${spring.admin_warehouse_datasource.use-legacy-datetime-code:false}\
                    &characterEncoding=${spring.admin_warehouse_datasource.character-encoding:utf8}\
                    &connectTimeout=${spring.admin_warehouse_datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.admin_warehouse_datasource.socket-timeout:70000}\
+                   &socketTimeout=${spring.admin_warehouse_datasource.socket-timeout:100000}\
                    "
     #not connecting to a specific schema for admin requires scoping for each query
     url: "${spring.admin_warehouse_datasource.url-parts.protocol}//${spring.admin_warehouse_datasource.url-parts.hosts}?${spring.admin_warehouse_datasource.url-parts.properties}"
@@ -143,7 +143,7 @@ spring:
                    &useLegacyDatetimeCode=${spring.admin_reporting_datasource.use-legacy-datetime-code:false}\
                    &characterEncoding=${spring.admin_reporting_datasource.character-encoding:utf8}\
                    &connectTimeout=${spring.admin_reporting_datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.admin_reporting_datasource.socket-timeout:70000}\
+                   &socketTimeout=${spring.admin_reporting_datasource.socket-timeout:100000}\
                    "
     #not connecting to a specific schema for admin requires scoping for each query
     url: "${spring.admin_reporting_datasource.url-parts.protocol}//${spring.admin_reporting_datasource.url-parts.hosts}?${spring.admin_reporting_datasource.url-parts.properties}"
