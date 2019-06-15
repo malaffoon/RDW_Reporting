@@ -105,20 +105,20 @@ spring:
           destination: GROUPS
           group: default
 
-  admin_datasource:
+  admin_warehouse_datasource:
     url-parts:
       #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
       protocol: "jdbc:mysql:"
       hosts: "${spring.admin_datasource.url-server:localhost:3306}"
-      properties: "useSSL=${spring.admin_datasource.use-ssl:false}\
-                   &useLegacyDatetimeCode=${spring.admin_datasource.use-legacy-datetime-code:false}\
-                   &characterEncoding=${spring.admin_datasource.character-encoding:utf8}\
-                   &connectTimeout=${spring.admin_datasource.connect-timeout:10000}\
-                   &socketTimeout=${spring.admin_datasource.socket-timeout:70000}\
+      properties: "useSSL=${spring.admin_warehouse_datasource.use-ssl:false}\
+                   &useLegacyDatetimeCode=${spring.admin_warehouse_datasource.use-legacy-datetime-code:false}\
+                   &characterEncoding=${spring.admin_warehouse_datasource.character-encoding:utf8}\
+                   &connectTimeout=${spring.admin_warehouse_datasource.connect-timeout:10000}\
+                   &socketTimeout=${spring.admin_warehouse_datasource.socket-timeout:100000}\
                    "
     #not connecting to a specific schema for admin requires scoping for each query
-    url: "${spring.admin_datasource.url-parts.protocol}//${spring.admin_datasource.url-parts.hosts}?${spring.admin_datasource.url-parts.properties}"
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.admin_datasource.query-timeout:240})"
+    url: "${spring.admin_warehouse_datasource.url-parts.protocol}//${spring.admin_warehouse_datasource.url-parts.hosts}?${spring.admin_warehouse_datasource.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.admin_warehouse_datasource.query-timeout:240})"
     username: root
     password:
     testWhileIdle: true
@@ -128,8 +128,37 @@ spring:
     initialize: false
     initialSize: 4
     maxActive: 10
-    minIdle: ${spring.admin_datasource.initialSize}
-    maxIdle: ${spring.admin_datasource.maxActive}
+    minIdle: ${spring.admin_warehouse_datasource.initialSize}
+    maxIdle: ${spring.admin_warehouse_datasource.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
+
+  admin_reporting_datasource:
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${spring.admin_reporting_datasource.url-server:localhost:3306}"
+      properties: "useSSL=${spring.admin_reporting_datasource.use-ssl:false}\
+                   &useLegacyDatetimeCode=${spring.admin_reporting_datasource.use-legacy-datetime-code:false}\
+                   &characterEncoding=${spring.admin_reporting_datasource.character-encoding:utf8}\
+                   &connectTimeout=${spring.admin_reporting_datasource.connect-timeout:10000}\
+                   &socketTimeout=${spring.admin_reporting_datasource.socket-timeout:100000}\
+                   "
+    #not connecting to a specific schema for admin requires scoping for each query
+    url: "${spring.admin_reporting_datasource.url-parts.protocol}//${spring.admin_reporting_datasource.url-parts.hosts}?${spring.admin_reporting_datasource.url-parts.properties}"
+    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.admin_reporting_datasource.query-timeout:240})"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationQueryTimeout: 10000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+    minIdle: ${spring.admin_reporting_datasource.initialSize}
+    maxIdle: ${spring.admin_reporting_datasource.maxActive}
     removeAbandoned: false
     removeAbandonedTimeout: 60
     logAbandoned: false
