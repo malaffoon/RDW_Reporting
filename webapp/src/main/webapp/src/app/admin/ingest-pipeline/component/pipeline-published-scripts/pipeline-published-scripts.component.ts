@@ -9,6 +9,13 @@ import { Pipeline, PublishedPipeline } from '../../model/pipeline';
 import { byDate } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 
+function toPipeline(
+  pipeline: Pipeline,
+  published: PublishedPipeline
+): Pipeline {
+  return;
+}
+
 @Component({
   selector: 'pipeline-published-scripts',
   templateUrl: './pipeline-published-scripts.component.html',
@@ -28,21 +35,25 @@ export class PipelinePublishedScriptsComponent {
   @Output()
   pipelineActivate: EventEmitter<Pipeline> = new EventEmitter();
 
+  @Output()
+  pipelineDeactivate: EventEmitter<Pipeline> = new EventEmitter();
+
   _pipelines: PublishedPipeline[];
 
   @Input()
-  set pipelines(values: PublishedPipeline[]) {
-    this._pipelines = (values || []).slice().sort(
-      ordering(byDate)
-        .on(({ publishedOn }) => publishedOn)
-        .reverse().compare
-    );
-  }
+  pipelines: PublishedPipeline[];
 
-  onPipelineActivate(publishedPipeline: PublishedPipeline): void {
+  onActivateButtonClick(value: PublishedPipeline): void {
     this.pipelineActivate.emit({
       ...this.pipeline,
-      activeVersion: publishedPipeline.version
+      activeVersion: value.version
+    });
+  }
+
+  onDeactivateButtonClick(value: PublishedPipeline): void {
+    this.pipelineDeactivate.emit({
+      ...this.pipeline,
+      activeVersion: null
     });
   }
 }

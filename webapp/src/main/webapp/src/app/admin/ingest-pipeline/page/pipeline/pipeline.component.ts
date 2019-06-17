@@ -45,6 +45,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { DeleteModalComponent } from '../../../../report/component/delete-modal/delete-modal.component';
 import { DatePipe } from '@angular/common';
+import { ConfirmationModalComponent } from '../../../../shared/component/confirmation-modal/confirmation-modal.component';
 
 const defaultCompileDebounceTime = 2000;
 
@@ -111,6 +112,8 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
   publishedScript: PublishedScript;
   published: boolean;
 
+  hasPublishedPipelines: boolean;
+
   testUpdating: boolean;
 
   items: Item[];
@@ -151,6 +154,9 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                 .getPipelineScripts(pipeline.id)
                 .pipe(map(scripts => scripts[0])),
               this.pipelineService.getPipelineTests(pipeline.id),
+              this.pipelineService
+                .getPublishedPipelines(pipeline.code)
+                .pipe(map(pipelines => pipelines.length > 0)),
               pipeline.activeVersion != null
                 ? this.pipelineService
                     .getPublishedPipeline(pipeline.code, pipeline.activeVersion)
@@ -169,7 +175,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       .subscribe(
         ([
           hasWritePermission,
-          [basePipeline, script, tests, publishedScript]
+          [basePipeline, script, tests, hasPublishedPipelines, publishedScript]
         ]) => {
           const pipeline = {
             ...basePipeline,
@@ -182,6 +188,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
             tests
           };
           this.readonly = !hasWritePermission;
+          this.hasPublishedPipelines = hasPublishedPipelines;
           this.publishedScript = publishedScript;
           this.pipeline = pipeline;
           this.published =
@@ -197,7 +204,7 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
       .pipe(
         takeUntil(this._destroyed),
         filter(value => !isNullOrBlank(value)),
-        tap(value => {
+        tap(() => {
           this.compilationState = null;
         }),
         debounceTime(defaultCompileDebounceTime),
@@ -315,12 +322,32 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                 this.pipelineService
                   .publishPipeline(this.pipeline.id)
                   .subscribe(published => {
+                    // const modalReference: BsModalRef = this.modalService.show(ConfirmationModalComponent);
+                    // this.modalService.onHidden.subscribe(() => {
                     this.publishedScript = published.scripts[0];
                     this.publishButtonDisabled = true;
                     this.publishState = null;
                     this.router.navigate(['history'], {
                       relativeTo: this.route
                     });
+                    // });
+
+                    // const modal: ConfirmationModalComponent = modalReference.content;
+                    // modal.head = this.translateService.instant('pipeline.activate-modal.head');
+                    // modal.body = this.translateService.instant('pipeline.activate-modal.body');
+                    // modal.acceptButton = this.translateService.instant('pipeline.activate-modal.accept');
+                    // modal.accept.subscribe(() => {
+                    //
+                    //   console.log('activating', {
+                    //     ...this.pipeline,
+                    //     activeVersion: published.version
+                    //   })
+                    //
+                    //   this.pipelineService.updatePipeline({
+                    //     ...this.pipeline,
+                    //     activeVersion: published.version
+                    //   });
+                    // });
                   });
               } else {
                 this.showTestResults(runs);

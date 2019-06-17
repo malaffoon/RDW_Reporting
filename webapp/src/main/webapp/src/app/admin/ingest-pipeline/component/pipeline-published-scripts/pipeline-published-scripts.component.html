@@ -9,18 +9,23 @@
             }
     }}
   </h3>
+
   <button
+    *ngIf="selectedPipeline.version === pipeline.activeVersion"
     type="button"
     class="btn btn-primary btn-outlined"
-    [disabled]="selectedPipeline.version === pipeline.activeVersion"
-    (click)="onPipelineActivate(selectedPipeline)"
+    (click)="onDeactivateButtonClick(selectedPipeline)"
   >
-    {{
-      'pipeline-published-scripts.activation-button-state.' +
-        (selectedPipeline.version === pipeline.activeVersion
-          ? 'active'
-          : 'inactive') | translate
-    }}
+    {{ 'pipeline-published-scripts.deactivate' | translate }}
+  </button>
+
+  <button
+    *ngIf="selectedPipeline.version !== pipeline.activeVersion"
+    type="button"
+    class="btn btn-primary btn-outlined"
+    (click)="onActivateButtonClick(selectedPipeline)"
+  >
+    {{ 'pipeline-published-scripts.activate' | translate }}
   </button>
   <button
     type="button"
@@ -31,13 +36,11 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<ng-container
-  *ngIf="_pipelines != null && _pipelines.length > 0; else noScripts"
->
+<ng-container *ngIf="pipelines != null && pipelines.length > 0; else noScripts">
   <div class="body">
     <div class="scripts-container">
       <ul>
-        <li *ngFor="let published of _pipelines">
+        <li *ngFor="let published of pipelines">
           <pipeline-item
             name="{{
               'pipeline-published-scripts.version' | translate: published

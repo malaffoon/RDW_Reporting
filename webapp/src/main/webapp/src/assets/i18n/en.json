@@ -269,6 +269,7 @@
   },
   "common": {
     "action": {
+      "accept": "OK",
       "cancel": "Cancel",
       "close": "Close",
       "collapse": "Collapse",
@@ -1546,7 +1547,12 @@
     "invalid-tests": "One or more tests are invalid. Please enter all required test fields.",
     "unsaved-changes": "Please save all changes before running tests",
     "publish-unsaved-changes": "Please save all changes before publishing",
-    "published": "This script is the same as the published script"
+    "published": "This script is the same as the published script",
+    "activate-modal": {
+      "head": "Activate Pipeline Script",
+      "body": "Would you like to activate the pipeline script you just published?",
+      "accept": "Activate"
+    }
   },
   "pipelines": {
     "heading": "Ingest Pipelines"
@@ -1623,13 +1629,21 @@
     "no-scripts": "No user scripts have been published",
     "active-pipeline": "Active",
     "version": "Version {{version}}",
-    "activation-button-state": {
-      "active": "Active",
-      "inactive": "Activate"
-    }
+    "activate": "Activate",
+    "deactivate": "Deactivate"
   },
   "score-table": {
     "average-scale-score": "Average Scale Score",
     "result-count": "for <strong>{{resultCount}}</strong> results"
+  },
+  "activate-pipeline-modal": {
+    "head": "Activate {{pipelineName}} pipeline version {{pipelineVersion}}",
+    "body": "Are you sure you want to activate {{pipelineName}} pipeline version {{pipelineVersion}}?",
+    "accept": "Activate"
+  },
+  "deactivate-pipeline-modal": {
+    "head": "Deactivate pipeline",
+    "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
+    "accept": "Deactivate"
   }
 }
