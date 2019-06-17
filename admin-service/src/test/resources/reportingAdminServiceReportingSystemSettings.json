@@ -1,59 +1,124 @@
 {
-  "scopedTarget.reportingSystemSettings": {
-    "prefix": "reporting",
-    "properties": {
-      "irisVendorId": null,
-      "tenants": {
-        "CA": {
-          "analyticsTrackingId": null,
-          "interpretiveGuideUrl": null,
-          "accessDeniedUrl": null,
-          "irisVendorId": null,
-          "minItemDataYear": null,
-          "percentileDisplayEnabled": null,
-          "reportLanguages": [],
-          "schoolYear": 2019,
-          "state": {
-            "name": "California",
-            "code": "CA"
+  "scopedTarget.reportingSystemSettings":{
+    "prefix":"reporting",
+    "properties":{
+      "irisVendorId":null,
+      "tenants":{
+        "CA":{
+          "analyticsTrackingId":null,
+          "interpretiveGuideUrl":null,
+          "accessDeniedUrl":null,
+          "landingPageUrl":null,
+          "irisVendorId":null,
+          "minItemDataYear":null,
+          "percentileDisplayEnabled":null,
+          "reportLanguages":[
+
+          ],
+          "schoolYear":null,
+          "state":{
+            "name":"California",
+            "code":"CA"
           },
-          "transferAccessEnabled": null,
-          "translationLocation": null,
-          "uiLanguages": [],
-          "userGuideUrl": null,
-          "targetReport": {
-            "insufficientDataCutoff": null,
-            "minNumberOfStudents": null
+          "transferAccessEnabled":null,
+          "translationLocation":null,
+          "uiLanguages":[
+
+          ],
+          "userGuideUrl":null,
+          "targetReport":{
+            "insufficientDataCutoff":null,
+            "minNumberOfStudents":null
           },
-          "studentFields": {},
-          "effectiveReportLanguages": [
+          "studentFields":{
+            "MigrantStatus":"Enabled",
+            "Gender":"Disabled",
+            "Ethnicity":"Enabled",
+            "MilitaryStudentIdentifier":"Disabled",
+            "IndividualEducationPlan":"Disabled",
+            "Section504":"Disabled",
+            "EconomicDisadvantage":"Disabled",
+            "LimitedEnglishProficiency":"Disabled",
+            "PrimaryLanguage":"Enabled",
+            "EnglishLanguageAcquisitionStatus":"Enabled"
+          },
+          "effectiveReportLanguages":[
+            "en"
+          ]
+        },
+        "TS":{
+          "analyticsTrackingId":null,
+          "interpretiveGuideUrl":null,
+          "accessDeniedUrl":null,
+          "landingPageUrl":null,
+          "irisVendorId":null,
+          "minItemDataYear":null,
+          "percentileDisplayEnabled":null,
+          "reportLanguages":[
+
+          ],
+          "schoolYear":null,
+          "state":{
+            "name":"Test State",
+            "code":"TS"
+          },
+          "transferAccessEnabled":null,
+          "translationLocation":null,
+          "uiLanguages":[
+
+          ],
+          "userGuideUrl":null,
+          "targetReport":{
+            "insufficientDataCutoff":null,
+            "minNumberOfStudents":null
+          },
+          "studentFields":{
+            "MigrantStatus":"Enabled",
+            "Gender":"Enabled",
+            "Ethnicity":"Enabled",
+            "MilitaryStudentIdentifier":"Enabled",
+            "IndividualEducationPlan":"Admin",
+            "Section504":"Admin",
+            "EconomicDisadvantage":"Admin",
+            "LimitedEnglishProficiency":"Enabled",
+            "PrimaryLanguage":"Enabled",
+            "EnglishLanguageAcquisitionStatus":"Disabled"
+          },
+          "effectiveReportLanguages":[
             "en"
           ]
         }
       },
-      "transferAccessEnabled": null,
-      "reportLanguages": [],
-      "effectiveReportLanguages": [
+      "transferAccessEnabled":true,
+      "reportLanguages":[
+
+      ],
+      "effectiveReportLanguages":[
         "en"
       ],
-      "interpretiveGuideUrl": null,
-      "accessDeniedUrl": null,
-      "uiLanguages": [],
-      "translationLocation": null,
-      "userGuideUrl": null,
-      "schoolYear": 2019,
-      "minItemDataYear": null,
-      "percentileDisplayEnabled": null,
-      "state": {
-        "name": "California",
-        "code": "CA"
+      "interpretiveGuideUrl":null,
+      "accessDeniedUrl":null,
+      "uiLanguages":[
+
+      ],
+      "translationLocation":"binary-http://localhost:8888/*/*/master/i18n/",
+      "userGuideUrl":null,
+      "schoolYear":2019,
+      "minItemDataYear":null,
+      "percentileDisplayEnabled":null,
+      "state":{
+        "name":"California",
+        "code":"CA"
       },
-      "targetReport": {
-        "insufficientDataCutoff": null,
-        "minNumberOfStudents": null
+      "targetReport":{
+        "insufficientDataCutoff":null,
+        "minNumberOfStudents":null
       },
-      "studentFields": {},
-      "analyticsTrackingId": null
+      "studentFields":{
+
+      },
+      "analyticsTrackingId":null,
+      "landingPageUrl":null
     }
   }
 }
