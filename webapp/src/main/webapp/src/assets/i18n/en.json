@@ -269,6 +269,7 @@
   },
   "common": {
     "action": {
+      "accept": "OK",
       "cancel": "Cancel",
       "close": "Close",
       "collapse": "Collapse",
@@ -1623,13 +1624,21 @@
     "no-scripts": "No user scripts have been published",
     "active-pipeline": "Active",
     "version": "Version {{version}}",
-    "activation-button-state": {
-      "active": "Active",
-      "inactive": "Activate"
-    }
+    "activate": "Activate",
+    "deactivate": "Deactivate"
   },
   "score-table": {
     "average-scale-score": "Average Scale Score",
     "result-count": "for <strong>{{resultCount}}</strong> results"
+  },
+  "activate-pipeline-modal": {
+    "head": "Activate {{pipelineName}} pipeline version {{pipelineVersion}}",
+    "body": "Are you sure you want to activate {{pipelineName}} pipeline version {{pipelineVersion}}?",
+    "accept": "Activate"
+  },
+  "deactivate-pipeline-modal": {
+    "head": "Deactivate pipeline",
+    "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
+    "accept": "Deactivate"
   }
 }
