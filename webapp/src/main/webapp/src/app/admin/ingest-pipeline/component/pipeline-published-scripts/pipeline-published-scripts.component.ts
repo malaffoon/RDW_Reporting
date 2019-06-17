@@ -6,15 +6,6 @@ import {
   Output
 } from '@angular/core';
 import { Pipeline, PublishedPipeline } from '../../model/pipeline';
-import { byDate } from '@kourge/ordering/comparator';
-import { ordering } from '@kourge/ordering';
-
-function toPipeline(
-  pipeline: Pipeline,
-  published: PublishedPipeline
-): Pipeline {
-  return;
-}
 
 @Component({
   selector: 'pipeline-published-scripts',
