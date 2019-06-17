@@ -15,7 +15,7 @@
         >
           <option [ngValue]="undefined"></option>
           <option *ngFor="let sandbox of sandboxes" [ngValue]="sandbox.key">
-            {{ 'sandbox-login.sandbox-label' | translate: sandbox }})
+            {{ 'sandbox-login.sandbox-label' | translate: sandbox }}
           </option>
         </select>
       </div>
