@@ -181,84 +181,80 @@
 
 <!-- Results -->
 <page-heading>
-  <ng-template #heading>
-    <h3>{{ 'assessments.results.title' | translate }}</h3>
-  </ng-template>
-  <ng-template #content>
-    <ul class="list-unstyled list-inline">
-      <li>
-        <label for="value-format">{{
-          'common.value-display-type-input-label' | translate
-        }}</label>
-        <div
-          id="value-format"
-          class="btn-group btn-group-primary btn-group-xs ml-xs"
-          role="group"
-        >
-          <button
-            type="radio"
-            (click)="showValuesAsPercent = true"
-            [ngClass]="{ active: showValuesAsPercent }"
-            angulartics2On="click"
-            angularticsAction="ShowAsPercent"
-            angularticsCategory="AssessmentResults"
-            class="btn btn-default"
-          >
-            {{ 'common.value-display-type.Percent' | translate }}
-          </button>
-          <button
-            type="radio"
-            (click)="showValuesAsPercent = false"
-            [ngClass]="{ active: !showValuesAsPercent }"
-            angulartics2On="click"
-            angularticsAction="ShowAsNumber"
-            angularticsCategory="AssessmentResults"
-            class="btn btn-default"
-          >
-            {{ 'common.value-display-type.Number' | translate }}
-          </button>
-        </div>
-      </li>
-      <li>
+  <h2 class="h3" heading>{{ 'assessments.results.title' | translate }}</h2>
+  <ul controls class="list-unstyled list-inline">
+    <li>
+      <label for="value-format">{{
+        'common.value-display-type-input-label' | translate
+      }}</label>
+      <div
+        id="value-format"
+        class="btn-group btn-group-primary btn-group-xs ml-xs"
+        role="group"
+      >
         <button
-          class="btn btn-default btn-xs"
-          (click)="allCollapsed = !allCollapsed"
+          type="radio"
+          (click)="showValuesAsPercent = true"
+          [ngClass]="{ active: showValuesAsPercent }"
+          angulartics2On="click"
+          angularticsAction="ShowAsPercent"
+          angularticsCategory="AssessmentResults"
+          class="btn btn-default"
         >
-          {{
-            'assessments.results.' +
-              (allCollapsed ? 'expand-all' : 'collapse-all') | translate
-          }}
-          <i
-            class="fa"
-            [ngClass]="{
-              'fa-caret-square-o-down': allCollapsed,
-              'fa-caret-square-o-up': !allCollapsed
-            }"
-          ></i>
-        </button>
-      </li>
-      <li>
-        <button
-          *ngIf="!exportDisabled"
-          class="btn btn-default btn-xs"
-          (click)="callExport()"
-        >
-          <i class="fa fa-bold fa-table"></i>
-          {{ 'common.export-csv' | translate }}
+          {{ 'common.value-display-type.Percent' | translate }}
         </button>
         <button
-          *ngIf="exportDisabled"
-          class="btn btn-default btn-xs disabled"
-          popover="{{ 'common.embargo-export-disabled' | translate }}"
-          triggers="mouseenter:mouseleave"
-          placement="left"
+          type="radio"
+          (click)="showValuesAsPercent = false"
+          [ngClass]="{ active: !showValuesAsPercent }"
+          angulartics2On="click"
+          angularticsAction="ShowAsNumber"
+          angularticsCategory="AssessmentResults"
+          class="btn btn-default"
         >
-          <i class="fa fa-bold fa-table"></i>
-          {{ 'common.export-csv' | translate }}
+          {{ 'common.value-display-type.Number' | translate }}
         </button>
-      </li>
-    </ul>
-  </ng-template>
+      </div>
+    </li>
+    <li>
+      <button
+        class="btn btn-default btn-xs"
+        (click)="allCollapsed = !allCollapsed"
+      >
+        {{
+          'assessments.results.' +
+            (allCollapsed ? 'expand-all' : 'collapse-all') | translate
+        }}
+        <i
+          class="fa"
+          [ngClass]="{
+            'fa-caret-square-o-down': allCollapsed,
+            'fa-caret-square-o-up': !allCollapsed
+          }"
+        ></i>
+      </button>
+    </li>
+    <li>
+      <button
+        *ngIf="!exportDisabled"
+        class="btn btn-default btn-xs"
+        (click)="callExport()"
+      >
+        <i class="fa fa-bold fa-table"></i>
+        {{ 'common.export-csv' | translate }}
+      </button>
+      <button
+        *ngIf="exportDisabled"
+        class="btn btn-default btn-xs disabled"
+        popover="{{ 'common.embargo-export-disabled' | translate }}"
+        triggers="mouseenter:mouseleave"
+        placement="left"
+      >
+        <i class="fa fa-bold fa-table"></i>
+        {{ 'common.export-csv' | translate }}
+      </button>
+    </li>
+  </ul>
 </page-heading>
 
 <!-- Results Container -->

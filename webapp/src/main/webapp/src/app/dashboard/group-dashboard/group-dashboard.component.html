@@ -1,26 +1,22 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{ 'group-dashboard.heading' | translate }}</h2>
-  </ng-template>
-  <ng-template #content>
-    <ul class="list-unstyled list-inline" *ngIf="group">
-      <li *hasPermission="'INDIVIDUAL_PII_READ'">
-        <a routerLink="/custom-export" class="btn btn-sm btn-default"
-          ><i class="fa fa-table"></i>
-          {{ 'organization-export.title' | translate }}</a
-        >
-      </li>
-      <li>
-        <button
-          class="btn btn-default btn-sm"
-          (click)="onPrintableReportButtonClick()"
-        >
-          <i class="fa fa-cloud-download" aria-hidden="true"></i>
-          {{ 'common.buttons.printable-student-reports' | translate }}
-        </button>
-      </li>
-    </ul>
-  </ng-template>
+  <h1 class="h2" heading>{{ 'group-dashboard.heading' | translate }}</h1>
+  <ul controls class="list-unstyled list-inline" *ngIf="group">
+    <li *hasPermission="'INDIVIDUAL_PII_READ'">
+      <a routerLink="/custom-export" class="btn btn-sm btn-default"
+        ><i class="fa fa-table"></i>
+        {{ 'organization-export.title' | translate }}</a
+      >
+    </li>
+    <li>
+      <button
+        class="btn btn-default btn-sm"
+        (click)="onPrintableReportButtonClick()"
+      >
+        <i class="fa fa-cloud-download" aria-hidden="true"></i>
+        {{ 'common.buttons.printable-student-reports' | translate }}
+      </button>
+    </li>
+  </ul>
 </page-heading>
 
 <ng-container *ngIf="!groups; else loaded">

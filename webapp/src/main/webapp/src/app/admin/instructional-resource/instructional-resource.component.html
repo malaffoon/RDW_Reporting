@@ -1,13 +1,14 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{ 'instructional-resource.title' | translate }}</h2>
-  </ng-template>
-  <ng-template #content>
-    <span class="btn btn-primary btn-sm" (click)="openCreateResourceModal()"
-      ><i class="fa fa-plus fa-sm"></i>
-      {{ 'common.action.create' | translate }}</span
-    >
-  </ng-template>
+  <h1 class="h2" heading>{{ 'instructional-resource.title' | translate }}</h1>
+  <button
+    controls
+    type="button"
+    class="btn btn-primary btn-sm"
+    (click)="openCreateResourceModal()"
+  >
+    <i class="fa fa-plus fa-sm"></i>
+    {{ 'common.action.create' | translate }}
+  </button>
 </page-heading>
 
 <spinner

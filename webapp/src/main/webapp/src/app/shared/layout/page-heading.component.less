@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+  > :first-child {
+    flex: 1;
+  }
+  ::ng-deep {
+    // TODO just use > * ? will that select?
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6 {
+      display: inline;
+      margin: 0;
+    }
+    ul.list-inline {
+      margin-bottom: 0;
+    }
+  }
+}

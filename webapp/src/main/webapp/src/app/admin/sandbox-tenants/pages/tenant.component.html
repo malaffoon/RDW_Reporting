@@ -1,15 +1,14 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{ 'tenant-config.title' | translate }}</h2>
-    <a
-      *hasPermission="'TENANT_WRITE'"
-      class="btn btn-primary pull-right"
-      style="margin-top: -8px;"
-      routerLink="/tenants/new"
-    >
-      {{ 'tenant-config.new-tenant.header' | translate }}
-    </a>
-  </ng-template>
+  <h1 class="h2" heading>{{ 'tenant-config.title' | translate }}</h1>
+  <button
+    controls
+    *hasPermission="'TENANT_WRITE'"
+    class="btn btn-primary pull-right"
+    style="margin-top: -8px;"
+    routerLink="/tenants/new"
+  >
+    {{ 'tenant-config.new-tenant.header' | translate }}
+  </button>
 </page-heading>
 
 <div class="sandbox-config">

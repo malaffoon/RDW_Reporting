@@ -1,5 +1,5 @@
-<div class="head">
-  <h3>
+<page-heading>
+  <h1 heading class="h2">
     {{
       'pipeline-test-results.heading'
         | translate
@@ -8,8 +8,9 @@
                 'ingest-pipeline.' + pipeline.code + '.name' | translate
             }
     }}
-  </h3>
+  </h1>
   <button
+    controls
     type="button"
     class="close fa-3x"
     title="{{ 'common.action.close' | translate }}"
@@ -17,7 +18,7 @@
   >
     <span aria-hidden="true">&times;</span>
   </button>
-</div>
+</page-heading>
 
 <div class="body">
   <div class="body-container">

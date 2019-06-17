@@ -1,5 +1,7 @@
 <div *hasAnyPermission="permissions" class="well admin-tools-well">
-  <h3>{{ 'home.admin-tools.titles.administrator-tools' | translate }}</h3>
+  <h2 class="mt-xs">
+    {{ 'home.admin-tools.titles.administrator-tools' | translate }}
+  </h2>
   <div class="row">
     <ng-container *ngFor="let link of links">
       <ng-container *hasPermission="link.permission">

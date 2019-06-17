@@ -1,12 +1,8 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{ 'group-import.title' | translate }}</h2>
-  </ng-template>
-  <ng-template #content>
-    <button [routerLink]="['fileformat']" class="btn btn-default btn-sm">
-      <i class="fa fa-file-text"></i> {{ 'file-format.header' | translate }}
-    </button>
-  </ng-template>
+  <h1 class="h2" heading>{{ 'group-import.title' | translate }}</h1>
+  <button controls [routerLink]="['fileformat']" class="btn btn-default btn-sm">
+    <i class="fa fa-file-text"></i> {{ 'file-format.header' | translate }}
+  </button>
 </page-heading>
 
 <div class="well">

@@ -3,16 +3,14 @@
 ></reporting-embargo-alert>
 
 <page-heading>
-  <ng-template #heading>
-    <h2>{{ student | studentName }}</h2>
+  <div heading>
+    <h1 class="h2">{{ student | studentName }}</h1>
     <div class="student-ssid-label">{{ student.ssid }}</div>
-  </ng-template>
+  </div>
 </page-heading>
 
 <page-heading>
-  <ng-template #heading>
-    <h3>{{ 'student-responses.title' | translate }}</h3>
-  </ng-template>
+  <h2 heading class="h3">{{ 'student-responses.title' | translate }}</h2>
 </page-heading>
 
 <div *ngIf="!student || !assessment" class="alert alert-danger">
