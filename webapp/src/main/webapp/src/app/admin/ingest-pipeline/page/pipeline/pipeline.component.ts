@@ -322,32 +322,12 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                 this.pipelineService
                   .publishPipeline(this.pipeline.id)
                   .subscribe(published => {
-                    // const modalReference: BsModalRef = this.modalService.show(ConfirmationModalComponent);
-                    // this.modalService.onHidden.subscribe(() => {
                     this.publishedScript = published.scripts[0];
                     this.publishButtonDisabled = true;
                     this.publishState = null;
                     this.router.navigate(['history'], {
                       relativeTo: this.route
                     });
-                    // });
-
-                    // const modal: ConfirmationModalComponent = modalReference.content;
-                    // modal.head = this.translateService.instant('pipeline.activate-modal.head');
-                    // modal.body = this.translateService.instant('pipeline.activate-modal.body');
-                    // modal.acceptButton = this.translateService.instant('pipeline.activate-modal.accept');
-                    // modal.accept.subscribe(() => {
-                    //
-                    //   console.log('activating', {
-                    //     ...this.pipeline,
-                    //     activeVersion: published.version
-                    //   })
-                    //
-                    //   this.pipelineService.updatePipeline({
-                    //     ...this.pipeline,
-                    //     activeVersion: published.version
-                    //   });
-                    // });
                   });
               } else {
                 this.showTestResults(runs);
