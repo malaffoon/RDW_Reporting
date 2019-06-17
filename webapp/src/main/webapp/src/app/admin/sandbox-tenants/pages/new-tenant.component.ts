@@ -91,7 +91,11 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
         this.router.navigate(['tenants']);
       },
       error =>
-        this.notificationService.error({ id: 'tenant-config.errors.create' })
+        error.json().message
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'tenant-config.errors.create'
+            })
     );
   }
 

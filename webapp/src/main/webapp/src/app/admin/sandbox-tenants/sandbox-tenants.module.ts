@@ -13,8 +13,6 @@ import { MenuModule } from 'primeng/menu';
 import { AccordionModule, TreeTableModule } from 'primeng/primeng';
 import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
 import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
-import { ArchiveSandboxConfigurationModalComponent } from './modal/archive-sandbox.modal';
-import { ResetDataModalComponent } from './modal/reset-data.modal';
 import { PropertyOverrideTableComponent } from './component/property-override-table.component';
 import { TenantService } from './service/tenant.service';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
@@ -35,16 +33,12 @@ import { DecryptionService } from '../../shared/security/decryption.service';
     TenantConfigurationDetailsComponent,
     DeleteSandboxConfigurationModalComponent,
     DeleteTenantConfigurationModalComponent,
-    ArchiveSandboxConfigurationModalComponent,
     PropertyOverrideTableComponent,
-    PropertyOverrideTreeTableComponent,
-    ResetDataModalComponent
+    PropertyOverrideTreeTableComponent
   ],
   entryComponents: [
     DeleteSandboxConfigurationModalComponent,
-    DeleteTenantConfigurationModalComponent,
-    ArchiveSandboxConfigurationModalComponent,
-    ResetDataModalComponent
+    DeleteTenantConfigurationModalComponent
   ],
   imports: [
     BrowserModule,

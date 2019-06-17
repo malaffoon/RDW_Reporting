@@ -19,7 +19,6 @@
         [sandbox]="sandbox"
         [localizationDefaults]="localizationDefaults"
         (deleteClicked)="openDeleteSandboxModal(sandbox)"
-        (resetDataClicked)="openResetDataModal(sandbox)"
       ></sandbox-details-config>
     </div>
     <div *ngIf="sandboxes.length === 0" class="well">
