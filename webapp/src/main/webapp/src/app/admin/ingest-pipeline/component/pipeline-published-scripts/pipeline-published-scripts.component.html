@@ -1,5 +1,5 @@
-<div class="head">
-  <h3>
+<page-heading>
+  <h1 heading class="h2">
     {{
       'pipeline-publishing-history.heading'
         | translate
@@ -8,34 +8,41 @@
                 'ingest-pipeline.' + pipeline.code + '.name' | translate
             }
     }}
-  </h3>
+  </h1>
+  <ul controls class="list-inline list-unstyled">
+    <li>
+      <button
+        *ngIf="selectedPipeline.version === pipeline.activeVersion"
+        type="button"
+        class="btn btn-primary btn-outlined"
+        (click)="onDeactivateButtonClick(selectedPipeline)"
+      >
+        {{ 'pipeline-published-scripts.deactivate' | translate }}
+      </button>
+    </li>
+    <li>
+      <button
+        *ngIf="selectedPipeline.version !== pipeline.activeVersion"
+        type="button"
+        class="btn btn-primary btn-outlined"
+        (click)="onActivateButtonClick(selectedPipeline)"
+      >
+        {{ 'pipeline-published-scripts.activate' | translate }}
+      </button>
+    </li>
+    <li>
+      <button
+        type="button"
+        class="close fa-3x"
+        title="{{ 'common.action.close' | translate }}"
+        [routerLink]="['..']"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+  </ul>
+</page-heading>
 
-  <button
-    *ngIf="selectedPipeline.version === pipeline.activeVersion"
-    type="button"
-    class="btn btn-primary btn-outlined"
-    (click)="onDeactivateButtonClick(selectedPipeline)"
-  >
-    {{ 'pipeline-published-scripts.deactivate' | translate }}
-  </button>
-
-  <button
-    *ngIf="selectedPipeline.version !== pipeline.activeVersion"
-    type="button"
-    class="btn btn-primary btn-outlined"
-    (click)="onActivateButtonClick(selectedPipeline)"
-  >
-    {{ 'pipeline-published-scripts.activate' | translate }}
-  </button>
-  <button
-    type="button"
-    class="close fa-3x"
-    title="{{ 'common.action.close' | translate }}"
-    [routerLink]="['..']"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
 <ng-container *ngIf="pipelines != null && pipelines.length > 0; else noScripts">
   <div class="body">
     <div class="scripts-container">

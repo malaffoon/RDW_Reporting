@@ -1,7 +1,5 @@
 <page-heading>
-  <ng-template #heading>
-    <h1>{{ 'home.title' | translate }}</h1>
-  </ng-template>
+  <h1 heading>{{ 'home.title' | translate }}</h1>
 </page-heading>
 
 <div class="row">
@@ -26,7 +24,7 @@
   <div class="col-md-3">
     <!-- Welcome Content -->
     <div *ngIf="applicationSettings" class="welcome-container well">
-      <p class="lead">{{ 'home.welcome.title' | translate }}</p>
+      <h2 class="mt-xs">{{ 'home.welcome.title' | translate }}</h2>
       <div class="mb-md">
         <p
           [innerHTML]="

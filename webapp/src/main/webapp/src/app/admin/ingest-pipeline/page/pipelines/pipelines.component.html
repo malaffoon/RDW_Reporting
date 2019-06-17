@@ -1,4 +1,6 @@
-<h3>{{ 'pipelines.heading' | translate }}</h3>
+<page-heading>
+  <h1 heading class="h2">{{ 'pipelines.heading' | translate }}</h1>
+</page-heading>
 <ng-container *ngIf="(pipelines | async) as _pipelines; else loading">
   <div class="pipelines-container">
     <ng-container *ngFor="let pipeline of _pipelines">

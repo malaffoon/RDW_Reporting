@@ -3,10 +3,10 @@
 ></reporting-embargo-alert>
 
 <page-heading>
-  <ng-template #heading>
-    <h2>{{ 'organization-export.title' | translate }}</h2>
+  <div heading>
+    <h1 class="h2">{{ 'organization-export.title' | translate }}</h1>
     <div>{{ 'organization-export.instructions' | translate }}</div>
-  </ng-template>
+  </div>
 </page-heading>
 
 <div class="well-group" *ngIf="initialized">
