@@ -1223,7 +1223,7 @@
       "modified": "Show modified properties only",
       "empty": "No configuration properties found"
     },
-    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button",
+    "empty": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create New Sandbox\" button",
     "errors": {
       "reset": "An unknown error occurred when attempting to reset the sandbox data",
       "update": "An unknown error occurred when attempting to update the sandbox",
@@ -1266,7 +1266,7 @@
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
     },
-    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button",
+    "empty": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create New Tenant\" button",
     "properties": {
       "reporting": "Reporting",
       "datasources": "Data Sources",
