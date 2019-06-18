@@ -3,7 +3,7 @@
 ></reporting-embargo-alert>
 
 <page-heading>
-  <div heading>
+  <div heading *ngIf="student">
     <h1 class="h2">{{ student | studentName }}</h1>
     <div class="student-ssid-label">{{ student.ssid }}</div>
   </div>
