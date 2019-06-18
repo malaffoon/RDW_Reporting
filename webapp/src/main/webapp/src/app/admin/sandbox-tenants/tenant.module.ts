@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
-import { SandboxConfigurationDetailsComponent } from './component/sandbox-details.component';
 import {
   BsDropdownModule,
   ButtonsModule,
@@ -20,24 +19,21 @@ import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.m
 import { PropertyOverrideTableComponent } from './component/property-override-table.component';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
-import { TenantConfigurationDetailsComponent } from './component/tenant-details.component';
 import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table.component';
 import { WellGroupListComponent } from './component/well-group-list/well-group-list.component';
 import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbox.component';
 
 @NgModule({
   declarations: [
-    TenantSandboxComponent,
-    SandboxesComponent,
-    SandboxConfigurationDetailsComponent,
-    NewSandboxConfigurationComponent,
-    NewTenantConfigurationComponent,
-    TenantsComponent,
-    TenantConfigurationDetailsComponent,
     DeleteSandboxConfigurationModalComponent,
     DeleteTenantConfigurationModalComponent,
+    NewSandboxConfigurationComponent,
+    NewTenantConfigurationComponent,
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
+    SandboxesComponent,
+    TenantsComponent,
+    TenantSandboxComponent,
     WellGroupListComponent
   ],
   entryComponents: [
@@ -45,25 +41,19 @@ import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbo
     DeleteTenantConfigurationModalComponent
   ],
   imports: [
+    AccordionModule,
     BrowserModule,
+    BsDropdownModule.forRoot(),
     ButtonsModule.forRoot(),
     CommonModule,
     FormsModule,
-    MenuModule,
-    AccordionModule,
-    ReactiveFormsModule,
     HttpClientModule,
-    TableModule,
-    TreeTableModule,
-    BsDropdownModule.forRoot(),
+    MenuModule,
     ModalModule.forRoot(),
-    PopoverModule.forRoot()
-  ],
-  exports: [
-    SandboxesComponent,
-    NewSandboxConfigurationComponent,
-    TenantsComponent,
-    NewTenantConfigurationComponent
+    PopoverModule.forRoot(),
+    ReactiveFormsModule,
+    TableModule,
+    TreeTableModule
   ]
 })
 export class TenantModule {}
