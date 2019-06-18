@@ -1,0 +1,33 @@
+<page-heading>
+  <h1 class="h2" heading>{{ 'sandbox-config.title' | translate }}</h1>
+  <button
+    controls
+    *hasPermission="'TENANT_WRITE'"
+    class="btn btn-primary"
+    [routerLink]="['new']"
+  >
+    {{ 'sandbox-config.new-sandbox.header' | translate }}
+  </button>
+</page-heading>
+
+<ng-container *ngIf="(sandboxes$ | async) as sandboxes; else loading">
+  <ng-container *ngIf="sandboxes.length > 0; else empty">
+    <app-well-group-list [items]="sandboxes">
+      <ng-template #itemTemplate let-sandbox="item">
+        <sandbox-details-config
+          class="sandbox-config"
+          [sandbox]="sandbox"
+          [localizationDefaults]="localizationDefaults$ | async"
+          (deleteClicked)="openDeleteSandboxModal(sandbox)"
+          (resetDataClicked)="openResetDataModal(sandbox)"
+        ></sandbox-details-config>
+      </ng-template>
+    </app-well-group-list>
+  </ng-container>
+  <ng-template #empty>
+    <p>{{ 'sandbox-config.empty' | translate }}</p>
+  </ng-template>
+</ng-container>
+<ng-template #loading>
+  <spinner></spinner>
+</ng-template>

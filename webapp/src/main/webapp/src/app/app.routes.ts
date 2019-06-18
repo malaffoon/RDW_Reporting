@@ -39,11 +39,8 @@ import { UserGroupResolve } from './user-group/user-group.resolve';
 import { AggregateQueryFormContainerComponent } from './aggregate-report/query-forms/aggregate-query-form-container.component';
 import { StudentPipe } from './shared/format/student.pipe';
 import { ingestPipelineRoutes } from './admin/ingest-pipeline/ingest-pipeline.routes';
-import { SandboxConfigurationComponent } from './admin/sandbox-tenants/pages/sandbox.component';
-import { NewSandboxConfigurationComponent } from './admin/sandbox-tenants/pages/new-sandbox.component';
-import { TenantConfigurationComponent } from './admin/sandbox-tenants/pages/tenant.component';
-import { NewTenantConfigurationComponent } from './admin/sandbox-tenants/pages/new-tenant.component';
 import { SandboxLoginComponent } from './sandbox/sandbox-login.component';
+import { tenantRoutes } from './admin/sandbox-tenants/tenant.routes';
 
 export const studentPipe = new StudentPipe();
 export const adminRoute = {
@@ -110,6 +107,7 @@ export const adminRoute = {
       ]
     },
     ...ingestPipelineRoutes,
+    ...tenantRoutes,
     {
       path: 'instructional-resource',
       pathMatch: 'prefix',
@@ -141,69 +139,6 @@ export const adminRoute = {
           pathMatch: 'prefix',
           component: EmbargoComponent,
           resolve: { embargoesByOrganizationType: EmbargoResolve }
-        }
-      ]
-    },
-    {
-      path: 'sandboxes',
-      pathMatch: 'prefix',
-      data: {
-        breadcrumb: { translate: 'sandbox-config.title' },
-        permissions: ['TENANT_READ']
-      },
-      canActivate: [AuthorizationCanActivate],
-      children: [
-        {
-          path: '',
-          pathMatch: 'prefix',
-          component: SandboxConfigurationComponent
-        },
-        {
-          path: 'new',
-          pathMatch: 'prefix',
-          data: {
-            breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
-            permissions: ['TENANT_WRITE']
-          },
-          canActivate: [AuthorizationCanActivate],
-          children: [
-            {
-              path: '',
-              pathMatch: 'prefix',
-              component: NewSandboxConfigurationComponent
-            }
-          ]
-        }
-      ]
-    },
-    {
-      path: 'tenants',
-      pathMatch: 'prefix',
-      data: {
-        breadcrumb: { translate: 'tenant-config.title' },
-        permissions: ['TENANT_READ']
-      },
-      canActivate: [AuthorizationCanActivate],
-      children: [
-        {
-          path: '',
-          pathMatch: 'prefix',
-          component: TenantConfigurationComponent
-        },
-        {
-          path: 'new',
-          pathMatch: 'prefix',
-          data: {
-            breadcrumb: { translate: 'tenant-config.new-tenant.header' },
-            permissions: ['TENANT_WRITE']
-          },
-          children: [
-            {
-              path: '',
-              pathMatch: 'prefix',
-              component: NewTenantConfigurationComponent
-            }
-          ]
         }
       ]
     }

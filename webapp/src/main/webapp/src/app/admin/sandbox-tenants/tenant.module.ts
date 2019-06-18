@@ -1,12 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SandboxConfigurationComponent } from './pages/sandbox.component';
+import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
 import { SandboxConfigurationDetailsComponent } from './component/sandbox-details.component';
 import { ButtonsModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '../../shared/common.module';
-import { SandboxService } from './service/sandbox.service';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
@@ -16,29 +15,27 @@ import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.m
 import { ArchiveSandboxConfigurationModalComponent } from './modal/archive-sandbox.modal';
 import { ResetDataModalComponent } from './modal/reset-data.modal';
 import { PropertyOverrideTableComponent } from './component/property-override-table.component';
-import { TenantService } from './service/tenant.service';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
-import { TenantConfigurationComponent } from './pages/tenant.component';
+import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantConfigurationDetailsComponent } from './component/tenant-details.component';
 import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table.component';
-import { TenantStore } from './store/tenant.store';
-import { SandboxStore } from './store/sandbox.store';
-import { DecryptionService } from '../../shared/security/decryption.service';
+import { WellGroupListComponent } from './component/well-group-list/well-group-list.component';
 
 @NgModule({
   declarations: [
-    SandboxConfigurationComponent,
+    SandboxesComponent,
     SandboxConfigurationDetailsComponent,
     NewSandboxConfigurationComponent,
     NewTenantConfigurationComponent,
-    TenantConfigurationComponent,
+    TenantsComponent,
     TenantConfigurationDetailsComponent,
     DeleteSandboxConfigurationModalComponent,
     DeleteTenantConfigurationModalComponent,
     ArchiveSandboxConfigurationModalComponent,
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
-    ResetDataModalComponent
+    ResetDataModalComponent,
+    WellGroupListComponent
   ],
   entryComponents: [
     DeleteSandboxConfigurationModalComponent,
@@ -61,17 +58,10 @@ import { DecryptionService } from '../../shared/security/decryption.service';
     PopoverModule.forRoot()
   ],
   exports: [
-    SandboxConfigurationComponent,
+    SandboxesComponent,
     NewSandboxConfigurationComponent,
-    TenantConfigurationComponent,
+    TenantsComponent,
     NewTenantConfigurationComponent
-  ],
-  providers: [
-    SandboxService,
-    TenantService,
-    DecryptionService,
-    TenantStore,
-    SandboxStore
   ]
 })
-export class SandboxTenantsModule {}
+export class TenantModule {}

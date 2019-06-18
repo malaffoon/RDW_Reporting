@@ -765,22 +765,6 @@ aggregate-report-table {
 }
 
 .sandbox-config {
-  .well-group .well {
-    box-shadow: none;
-    padding-bottom: 20px;
-    &:not(:first-child) {
-      box-shadow: none;
-    }
-    &:first-child {
-      padding: 15px 20px;
-      > *:last-child,
-      > .row > [class^='col-']:first-child > *:last-child,
-      > .flex-children > .flex-child:first-child > *:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
   .action-buttons {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -793,36 +777,24 @@ aggregate-report-table {
   }
 
   .sandbox-container {
-    //border-bottom: 1px solid @gray-light;
-    margin-top: 5px;
-
     .sandbox-header {
+      display: flex;
+      align-items: center;
+      > :first-child {
+        flex: 1;
+      }
+      .heading {
+        display: flex;
+      }
       .sandbox-key {
-        color: @gray;
-        font-size: 20px;
-      }
-
-      i {
-        cursor: pointer;
-
-        &:hover {
-          color: @teal;
-        }
-      }
-
-      h2 {
-        display: inline;
-      }
-
-      h4,
-      h5 {
         color: @gray-darker;
-        white-space: pre-wrap;
       }
+    }
 
-      button {
-        cursor: pointer;
-      }
+    .description,
+    .data-set {
+      color: @gray-darker;
+      white-space: pre-wrap;
     }
 
     a.ui-menuitem-link {
