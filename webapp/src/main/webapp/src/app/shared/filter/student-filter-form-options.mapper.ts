@@ -43,7 +43,7 @@ export class StudentFilterFormOptionsMapper {
       limitedEnglishProficiencies: options.limitedEnglishProficiencies.map(
         optionMapper(
           value => translate(`common.boolean.${value}`),
-          value => `Limited English Proficiency: ${value}`
+          value => `English Learner: ${value}`
         )
       ),
       section504s: options.section504s.map(
