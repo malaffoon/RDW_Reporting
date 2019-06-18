@@ -31,17 +31,12 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
   sandbox: SandboxConfiguration;
   @Output()
   deleteClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
-  @Output()
-  archiveClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
-  @Output()
-  resetDataClicked: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
   expanded = false;
   editMode = false;
   readonly = true;
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
-  menuItems: MenuItem[];
   sandboxForm: FormGroup;
   tempForm: FormGroup;
 
@@ -71,7 +66,6 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.configureMenuItems();
 
     this.userService.getUser().subscribe(user => {
       this.readonly = !user.permissions.some(perm => perm === 'TENANT_WRITE');
@@ -144,30 +138,14 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
             existing.code === updatedSandbox.code ? updatedSandbox : existing
           )
         );
+        this.editMode = false;
       },
       error =>
-        this.notificationService.error({ id: 'sandbox-config.errors.update' })
+        error.json().message
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'sandbox-config.errors.update'
+            })
     );
-    this.editMode = false;
-  }
-
-  private configureMenuItems(): void {
-    this.menuItems = [
-      {
-        label: this.translateService.instant('sandbox-config.actions.reset'),
-        icon: 'fa fa-refresh',
-        command: () => this.resetDataClicked.emit(this.sandbox)
-      },
-      {
-        label: this.translateService.instant('sandbox-config.actions.archive'),
-        icon: 'fa fa-archive',
-        command: () => this.archiveClicked.emit(this.sandbox)
-      },
-      {
-        label: this.translateService.instant('sandbox-config.actions.delete'),
-        icon: 'fa fa-close',
-        command: () => this.deleteClicked.emit(this.sandbox)
-      }
-    ];
   }
 }

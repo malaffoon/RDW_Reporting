@@ -97,10 +97,4 @@ export class SandboxService {
       .delete(`${ResourceRoute}/${sandboxCode}`)
       .pipe(catchError(ResponseUtils.throwError));
   }
-
-  resetData(sandboxCode: string): Observable<void> {
-    return this.dataService
-      .put(`${ResourceRoute}/${sandboxCode}/reset`, {})
-      .pipe(catchError(ResponseUtils.throwError));
-  }
 }

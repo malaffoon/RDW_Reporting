@@ -1207,7 +1207,7 @@
       "success": "Sandbox data was successfully reset"
     },
     "fields": {
-      "label": "Sandbox Name / Label:",
+      "label": "Name:",
       "description": "Description:",
       "data-set": "Data Set:",
       "configuration-properties": "Configuration Properties",
@@ -1258,9 +1258,9 @@
       "success": "Tenant was successfully deleted"
     },
     "fields": {
-      "id": "Tenant ID",
-      "key": "Tenant Key",
-      "label": "Tenant Name / Label:",
+      "id": "ID:",
+      "key": "Key:",
+      "label": "Name:",
       "description": "Description:",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",

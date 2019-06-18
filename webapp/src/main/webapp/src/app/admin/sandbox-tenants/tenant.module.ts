@@ -17,17 +17,17 @@ import { MenuModule } from 'primeng/menu';
 import { AccordionModule, TreeTableModule } from 'primeng/primeng';
 import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
 import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
-import { ArchiveSandboxConfigurationModalComponent } from './modal/archive-sandbox.modal';
-import { ResetDataModalComponent } from './modal/reset-data.modal';
 import { PropertyOverrideTableComponent } from './component/property-override-table.component';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantConfigurationDetailsComponent } from './component/tenant-details.component';
 import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table.component';
 import { WellGroupListComponent } from './component/well-group-list/well-group-list.component';
+import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbox.component';
 
 @NgModule({
   declarations: [
+    TenantSandboxComponent,
     SandboxesComponent,
     SandboxConfigurationDetailsComponent,
     NewSandboxConfigurationComponent,
@@ -36,17 +36,13 @@ import { WellGroupListComponent } from './component/well-group-list/well-group-l
     TenantConfigurationDetailsComponent,
     DeleteSandboxConfigurationModalComponent,
     DeleteTenantConfigurationModalComponent,
-    ArchiveSandboxConfigurationModalComponent,
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
-    ResetDataModalComponent,
     WellGroupListComponent
   ],
   entryComponents: [
     DeleteSandboxConfigurationModalComponent,
-    DeleteTenantConfigurationModalComponent,
-    ArchiveSandboxConfigurationModalComponent,
-    ResetDataModalComponent
+    DeleteTenantConfigurationModalComponent
   ],
   imports: [
     BrowserModule,

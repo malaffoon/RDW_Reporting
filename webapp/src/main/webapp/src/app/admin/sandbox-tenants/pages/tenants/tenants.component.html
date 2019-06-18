@@ -14,12 +14,14 @@
   <ng-container *ngIf="tenants.length > 0; else empty">
     <app-well-group-list [items]="tenants">
       <ng-template #itemTemplate let-tenant="item">
-        <tenant-details-config
+        <tenant-sandbox
           class="sandbox-config"
-          [tenant]="tenant"
+          [value]="tenant"
           [localizationDefaults]="localizationDefaults$ | async"
-          (deleteClicked)="openDeleteTenantModal(tenant)"
-        ></tenant-details-config>
+          [writable]="writable$ | async"
+          (delete)="onDelete($event)"
+          (save)="onSave($event)"
+        ></tenant-sandbox>
       </ng-template>
     </app-well-group-list>
   </ng-container>

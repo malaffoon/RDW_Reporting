@@ -36,7 +36,6 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
   readonly = true;
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
-  menuItems: MenuItem[];
   tenantForm: FormGroup;
   tempForm: FormGroup;
 
@@ -51,7 +50,6 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.configureMenuItems();
     this.userService.getUser().subscribe(user => {
       this.readonly = !user.permissions.some(perm => perm === 'TENANT_WRITE');
     });
@@ -101,21 +99,15 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
             existing.code === updatedTenant.code ? updatedTenant : existing
           )
         );
+        this.editMode = false;
       },
       error =>
-        this.notificationService.error({ id: 'tenant-config.errors.update' })
+        error.json().message
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'tenant-config.errors.update'
+            })
     );
-    this.editMode = false;
-  }
-
-  private configureMenuItems(): void {
-    this.menuItems = [
-      {
-        label: this.translateService.instant('sandbox-config.actions.delete'),
-        icon: 'fa fa-close',
-        command: () => this.deleteClicked.emit(this.tenant)
-      }
-    ];
   }
 
   private initializeForm(): void {

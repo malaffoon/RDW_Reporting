@@ -3,11 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
 import { SandboxService } from '../../service/sandbox.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DeleteSandboxConfigurationModalComponent } from '../../modal/delete-sandbox.modal';
-import { ResetDataModalComponent } from '../../modal/reset-data.modal';
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
 import { SandboxStore } from '../../store/sandbox.store';
+import { UserService } from '../../../../user/user.service';
+import { map } from 'rxjs/operators';
+import { LanguageStore } from '../../../../shared/i18n/language.store';
+import { NotificationService } from '../../../../shared/notification/notification.service';
 
 @Component({
   selector: 'sandboxes',
@@ -16,15 +19,17 @@ import { SandboxStore } from '../../store/sandbox.store';
 export class SandboxesComponent implements OnInit {
   sandboxes$: Observable<SandboxConfiguration[]>;
   localizationDefaults$: Observable<any>;
-
-  private _modalSubscriptions: Subscription[] = [];
+  writable$: Observable<boolean>;
 
   constructor(
     private route: ActivatedRoute,
     private service: SandboxService,
     private store: SandboxStore,
+    private userService: UserService,
+    private languageStore: LanguageStore,
     private translationLoader: RdwTranslateLoader,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -33,45 +38,45 @@ export class SandboxesComponent implements OnInit {
       this.store.setState(sandboxes);
     });
 
-    //TODO: Get the correct language code from somewhere, do not hardcode
     this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
-      'en'
+      this.languageStore.currentLanguage
     );
+
+    this.writable$ = this.userService
+      .getUser()
+      .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
   }
 
-  openDeleteSandboxModal(sandbox: SandboxConfiguration) {
+  onDelete(value: SandboxConfiguration): void {
     const modalReference: BsModalRef = this.modalService.show(
       DeleteSandboxConfigurationModalComponent
     );
     const modal: DeleteSandboxConfigurationModalComponent =
       modalReference.content;
-    modal.sandbox = sandbox;
-    this._modalSubscriptions.push(
-      modal.deleted.subscribe(() => {
+    modal.sandbox = value;
+    modal.deleted.subscribe(() => {
+      this.store.setState(
+        this.store.state.filter(({ code }) => code !== value.code)
+      );
+    });
+  }
+
+  onSave(value: SandboxConfiguration): void {
+    this.service.update(value).subscribe(
+      () => {
         this.store.setState(
-          this.store.state.filter(({ code }) => code !== sandbox.code)
+          this.store.state.map(existing =>
+            existing.code === value.code ? value : existing
+          )
         );
-      })
+      },
+      error => {
+        error.json().message != null
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'sandbox-config.errors.update'
+            });
+      }
     );
-  }
-
-  openResetDataModal(sandbox: SandboxConfiguration) {
-    const modalReference: BsModalRef = this.modalService.show(
-      ResetDataModalComponent
-    );
-    const modal: ResetDataModalComponent = modalReference.content;
-    modal.sandbox = sandbox;
-    this._modalSubscriptions.push(
-      modal.resetData.subscribe(sandbox => {
-        console.log(sandbox);
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this._modalSubscriptions.forEach(subscription =>
-      subscription.unsubscribe()
-    );
-    this._modalSubscriptions = [];
   }
 }

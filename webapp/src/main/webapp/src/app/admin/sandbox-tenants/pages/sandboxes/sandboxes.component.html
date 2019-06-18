@@ -14,13 +14,20 @@
   <ng-container *ngIf="sandboxes.length > 0; else empty">
     <app-well-group-list [items]="sandboxes">
       <ng-template #itemTemplate let-sandbox="item">
-        <sandbox-details-config
+        <!--        <sandbox-details-config-->
+        <!--          class="sandbox-config"-->
+        <!--          [sandbox]="sandbox"-->
+        <!--          [localizationDefaults]="localizationDefaults$ | async"-->
+        <!--          (deleteClicked)="openDeleteSandboxModal(sandbox)"-->
+        <!--        ></sandbox-details-config>-->
+        <tenant-sandbox
           class="sandbox-config"
-          [sandbox]="sandbox"
+          [value]="sandbox"
           [localizationDefaults]="localizationDefaults$ | async"
-          (deleteClicked)="openDeleteSandboxModal(sandbox)"
-          (resetDataClicked)="openResetDataModal(sandbox)"
-        ></sandbox-details-config>
+          [writable]="writable$ | async"
+          (save)="onSave($event)"
+          (delete)="onDelete($event)"
+        ></tenant-sandbox>
       </ng-template>
     </app-well-group-list>
   </ng-container>

@@ -1,0 +1,155 @@
+<form
+  class="form-group"
+  [formGroup]="formGroup"
+  (ngSubmit)="onSaveButtonClick()"
+>
+  <div class="sandbox-container">
+    <div class="sandbox-header">
+      <div class="heading">
+        <h2>
+          {{ value.label }}
+          <span class="sandbox-key">({{ value.code }})</span>
+        </h2>
+      </div>
+
+      <div class="controls">
+        <ng-container *ngIf="!open; else openControls">
+          <a href="javascript:void(0)" (click)="onOpenButtonClick()">
+            <i class="fa fa-edit fa-2x"></i>
+          </a>
+        </ng-container>
+
+        <ng-template #openControls>
+          <ul class="list-unstyled list-inline">
+            <li>
+              <div class="btn-group">
+                <div class="btn-group">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="formGroup.invalid"
+                  >
+                    {{ 'common.action.save' | translate }}
+                  </button>
+                </div>
+
+                <div class="btn-group" dropdown>
+                  <button
+                    id="dropdown-button"
+                    type="button"
+                    class="btn btn-primary dropdown-toggle"
+                    dropdownToggle
+                    aria-controls="tenant-dropdown"
+                  >
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <ul
+                    *dropdownMenu
+                    id="tenant-dropdown"
+                    class="dropdown-menu dropdown-menu-right"
+                    role="menu"
+                    aria-labelledby="dropdown-button"
+                  >
+                    <li role="menuitem">
+                      <a
+                        class="dropdown-item"
+                        href="javascript:void(0)"
+                        (click)="delete.emit(value)"
+                      >
+                        <i class="fa fa-trash"></i>
+                        {{ 'sandbox-config.actions.delete' | translate }}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li>
+              <button class="btn btn-default" (click)="onCloseButtonClick()">
+                {{ 'common.action.cancel' | translate }}
+              </button>
+            </li>
+          </ul>
+        </ng-template>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!open; else openBody">
+      <p class="description">{{ value.description }}</p>
+      <strong class="data-set" *ngIf="value.dataSet != null">{{
+        value.dataSet.label
+      }}</strong>
+    </ng-container>
+    <ng-template #openBody>
+      <div class="row mb-xs">
+        <div class="col-md-4">
+          <label>{{ 'sandbox-config.fields.label' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            *ngIf="writable"
+            type="text"
+            class="form-control"
+            name="label"
+            formControlName="label"
+          />
+          <span *ngIf="!writable">
+            {{ value.label }}
+          </span>
+        </div>
+      </div>
+      <div class="row mb-xs">
+        <div class="col-md-4">
+          <label>{{ 'sandbox-config.fields.description' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <textarea
+            *ngIf="writable"
+            class="form-control"
+            name="description"
+            formControlName="description"
+          >
+          </textarea>
+          <span *ngIf="!writable">
+            {{ value.description }}
+          </span>
+        </div>
+      </div>
+      <div class="row mb-sm" *ngIf="value.dataSet != null">
+        <div class="col-md-4">
+          <label>{{ 'sandbox-config.fields.data-set' | translate }}</label>
+        </div>
+        <div class="col-md-8">{{ value.dataSet.label }}</div>
+      </div>
+
+      <p-accordion [multiple]="true">
+        <p-accordionTab
+          header="{{
+            'sandbox-config.fields.configuration-properties' | translate
+          }}"
+        >
+          <property-override-tree-table
+            [form]="formGroup"
+            [configurationProperties]="value.configurationProperties"
+            [readonly]="!writable"
+            propertiesArrayName="configurationProperties"
+          >
+          </property-override-tree-table>
+        </p-accordionTab>
+        <p-accordionTab
+          header="{{
+            'sandbox-config.fields.localization-overrides' | translate
+          }}"
+        >
+          <property-override-table
+            [form]="formGroup"
+            [configurationProperties]="localizationOverrides"
+            [readonly]="!writable"
+            propertiesArrayName="localizationOverrides"
+          >
+          </property-override-table>
+        </p-accordionTab>
+      </p-accordion>
+    </ng-template>
+  </div>
+</form>

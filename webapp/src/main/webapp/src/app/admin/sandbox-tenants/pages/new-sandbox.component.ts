@@ -114,7 +114,11 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
         this.router.navigate(['sandboxes']);
       },
       error =>
-        this.notificationService.error({ id: 'sandbox-config.errors.create' })
+        error.json().message
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'sandbox-config.errors.create'
+            })
     );
   }
 }

@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TenantConfiguration } from '../../model/tenant-configuration';
 import { TenantService } from '../../service/tenant.service';
 import { DeleteTenantConfigurationModalComponent } from '../../modal/delete-tenant.modal';
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
 import { TenantStore } from '../../store/tenant.store';
+import { UserService } from '../../../../user/user.service';
+import { LanguageStore } from '../../../../shared/i18n/language.store';
+import { map } from 'rxjs/operators';
+import { NotificationService } from '../../../../shared/notification/notification.service';
 
 @Component({
   selector: 'tenants',
@@ -15,14 +19,17 @@ import { TenantStore } from '../../store/tenant.store';
 export class TenantsComponent implements OnInit {
   tenants$: Observable<TenantConfiguration[]>;
   localizationDefaults$: Observable<any>;
-  private _modalSubscriptions: Subscription[] = [];
+  writable$: Observable<boolean>;
 
   constructor(
     private translationLoader: RdwTranslateLoader,
     private route: ActivatedRoute,
     private service: TenantService,
     private store: TenantStore,
-    private modalService: BsModalService
+    private userService: UserService,
+    private languageStore: LanguageStore,
+    private modalService: BsModalService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -34,31 +41,44 @@ export class TenantsComponent implements OnInit {
       );
     });
 
-    // TODO: Get the correct language code from somewhere, do not hardcode
     this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
-      'en'
+      this.languageStore.currentLanguage
     );
+
+    this.writable$ = this.userService
+      .getUser()
+      .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
   }
 
-  openDeleteTenantModal(tenant: TenantConfiguration) {
-    let modalReference: BsModalRef = this.modalService.show(
+  onDelete(tenant: TenantConfiguration): void {
+    const modalReference: BsModalRef = this.modalService.show(
       DeleteTenantConfigurationModalComponent
     );
-    let modal: DeleteTenantConfigurationModalComponent = modalReference.content;
+    const modal: DeleteTenantConfigurationModalComponent =
+      modalReference.content;
     modal.tenant = tenant;
-    this._modalSubscriptions.push(
-      modal.deleted.subscribe(() => {
-        this.store.setState(
-          this.store.state.filter(({ code }) => code !== tenant.code)
-        );
-      })
-    );
+    modal.deleted.subscribe(() => {
+      this.store.setState(
+        this.store.state.filter(({ code }) => code !== tenant.code)
+      );
+    });
   }
 
-  ngOnDestroy(): void {
-    this._modalSubscriptions.forEach(subscription =>
-      subscription.unsubscribe()
+  onSave(value: TenantConfiguration): void {
+    this.service.update(value).subscribe(
+      () => {
+        this.store.setState(
+          this.store.state.map(existing =>
+            existing.code === value.code ? value : existing
+          )
+        );
+      },
+      error =>
+        error.json().message
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'tenant-config.errors.update'
+            })
     );
-    this._modalSubscriptions = [];
   }
 }
