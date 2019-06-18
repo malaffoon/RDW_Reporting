@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Observable, Subscription } from 'rxjs';
-import { TenantConfiguration } from '../model/tenant-configuration';
-import { TenantService } from '../service/tenant.service';
-import { DeleteTenantConfigurationModalComponent } from '../modal/delete-tenant.modal';
-import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
-import { TenantStore } from '../store/tenant.store';
+import { TenantConfiguration } from '../../model/tenant-configuration';
+import { TenantService } from '../../service/tenant.service';
+import { DeleteTenantConfigurationModalComponent } from '../../modal/delete-tenant.modal';
+import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
+import { TenantStore } from '../../store/tenant.store';
 
 @Component({
   selector: 'tenants',

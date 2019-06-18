@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SandboxConfiguration } from '../model/sandbox-configuration';
-import { SandboxService } from '../service/sandbox.service';
+import { SandboxConfiguration } from '../../model/sandbox-configuration';
+import { SandboxService } from '../../service/sandbox.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Observable, Subscription } from 'rxjs';
-import { DeleteSandboxConfigurationModalComponent } from '../modal/delete-sandbox.modal';
-import { ResetDataModalComponent } from '../modal/reset-data.modal';
-import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
-import { SandboxStore } from '../store/sandbox.store';
+import { DeleteSandboxConfigurationModalComponent } from '../../modal/delete-sandbox.modal';
+import { ResetDataModalComponent } from '../../modal/reset-data.modal';
+import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
+import { SandboxStore } from '../../store/sandbox.store';
 
 @Component({
   selector: 'sandboxes',
-  templateUrl: './sandbox.component.html'
+  templateUrl: './sandboxes.component.html'
 })
 export class SandboxesComponent implements OnInit {
   sandboxes$: Observable<SandboxConfiguration[]>;

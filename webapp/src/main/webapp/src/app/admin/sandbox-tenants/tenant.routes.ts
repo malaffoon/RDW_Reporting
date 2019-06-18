@@ -1,8 +1,8 @@
 import { Route } from '@angular/router';
 import { AuthorizationCanActivate } from '../../shared/security/authorization.can-activate';
-import { SandboxConfigurationComponent } from './pages/sandbox.component';
+import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
-import { TenantsComponent } from './pages/tenant.component';
+import { TenantsComponent } from './pages/tenants/tenants.component';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 
 export const tenantRoutes: Route[] = [
@@ -18,7 +18,7 @@ export const tenantRoutes: Route[] = [
       {
         path: '',
         pathMatch: 'prefix',
-        component: SandboxConfigurationComponent
+        component: SandboxesComponent
       },
       {
         path: 'new',

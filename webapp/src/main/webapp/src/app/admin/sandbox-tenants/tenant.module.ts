@@ -3,7 +3,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
 import { SandboxConfigurationDetailsComponent } from './component/sandbox-details.component';
-import { ButtonsModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
+import {
+  BsDropdownModule,
+  ButtonsModule,
+  ModalModule,
+  PopoverModule
+} from 'ngx-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '../../shared/common.module';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
@@ -54,6 +59,7 @@ import { WellGroupListComponent } from './component/well-group-list/well-group-l
     HttpClientModule,
     TableModule,
     TreeTableModule,
+    BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
     PopoverModule.forRoot()
   ],

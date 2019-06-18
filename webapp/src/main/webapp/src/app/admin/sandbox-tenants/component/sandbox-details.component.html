@@ -15,28 +15,88 @@
       </ng-container>
 
       <ng-template #openControls>
-        <button
-          *hasPermission="'TENANT_WRITE'"
-          class="btn btn-primary mr-xs"
-          (click)="onSubmit()"
-          [disabled]="sandboxForm.invalid"
-        >
-          {{ 'common.action.save' | translate }}
-        </button>
-        <button class="btn btn-default mr-xs" (click)="cancelClicked()">
-          {{ 'common.action.cancel' | translate }}
-        </button>
-        <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
-        <button
-          *hasPermission="'TENANT_WRITE'"
-          type="button"
-          pButton
-          class="btn btn-primary btn-outlined"
-          label="Show"
-          (click)="menu.toggle($event)"
-        >
-          <i class="fa fa-list fa-xl"></i>
-        </button>
+        <ul class="list-unstyled list-inline">
+          <li>
+            <div class="btn-group">
+              <div class="btn-group">
+                <button
+                  class="btn btn-primary"
+                  (click)="onSubmit()"
+                  [disabled]="sandboxForm.invalid"
+                >
+                  {{ 'common.action.save' | translate }}
+                </button>
+              </div>
+
+              <div class="btn-group" dropdown>
+                <button
+                  id="dropdown-button"
+                  type="button"
+                  class="btn btn-primary dropdown-toggle"
+                  dropdownToggle
+                  aria-controls="tenant-dropdown"
+                >
+                  <i class="fa fa-ellipsis-v"></i>
+                </button>
+                <ul
+                  *dropdownMenu
+                  id="tenant-dropdown"
+                  class="dropdown-menu dropdown-menu-right"
+                  role="menu"
+                  aria-labelledby="dropdown-button"
+                >
+                  <li role="menuitem">
+                    <a
+                      class="dropdown-item"
+                      href="javascript:void(0)"
+                      (click)="resetDataClicked.emit(sandbox)"
+                    >
+                      <i class="fa fa-refresh"></i>
+                      {{ 'sandbox-config.actions.reset' | translate }}
+                    </a>
+                  </li>
+                  <li role="menuitem">
+                    <a
+                      class="dropdown-item"
+                      href="javascript:void(0)"
+                      (click)="archiveClicked.emit(sandbox)"
+                    >
+                      <i class="fa fa-archive"></i>
+                      {{ 'sandbox-config.actions.archive' | translate }}
+                    </a>
+                  </li>
+                  <li role="menuitem">
+                    <a
+                      class="dropdown-item"
+                      href="javascript:void(0)"
+                      (click)="deleteClicked.emit(sandbox)"
+                    >
+                      <i class="fa fa-close"></i>
+                      {{ 'sandbox-config.actions.delete' | translate }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li>
+            <!--            <button class="btn btn-default mr-xs" (click)="cancelClicked()">-->
+            <!--              {{ 'common.action.cancel' | translate }}-->
+            <!--            </button>-->
+          </li>
+        </ul>
+
+        <!--        <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>-->
+        <!--        <button-->
+        <!--          *hasPermission="'TENANT_WRITE'"-->
+        <!--          type="button"-->
+        <!--          pButton-->
+        <!--          class="btn btn-primary btn-outlined"-->
+        <!--          label="Show"-->
+        <!--          (click)="menu.toggle($event)"-->
+        <!--        >-->
+        <!--          <i class="fa fa-list fa-xl"></i>-->
+        <!--        </button>-->
       </ng-template>
     </div>
   </div>
