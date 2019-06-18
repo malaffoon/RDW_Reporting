@@ -3,7 +3,9 @@
     <h2>
       {{ tenant.label }} <span class="sandbox-key">({{ tenant.code }})</span>
     </h2>
-    <i class="fa fa-edit fa-2x pull-right" (click)="editClicked()"></i>
+    <a href="javascript:void(0)" (click)="editClicked()" class="pull-right">
+      <i class="fa fa-edit fa-2x"></i>
+    </a>
     <h4>{{ tenant.description }}</h4>
   </div>
 </div>

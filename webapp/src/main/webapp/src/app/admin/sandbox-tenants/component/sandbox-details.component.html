@@ -3,7 +3,9 @@
     <h2>
       {{ sandbox.label }} <span class="sandbox-key">({{ sandbox.code }})</span>
     </h2>
-    <i class="fa fa-edit fa-2x pull-right" (click)="editClicked()"></i>
+    <a href="javascript:void(0)" (click)="editClicked()" class="pull-right">
+      <i class="fa fa-edit fa-2x"></i>
+    </a>
     <h4>{{ sandbox.description }}</h4>
     <h5>{{ sandbox.dataSet.label }}</h5>
   </div>
