@@ -155,7 +155,7 @@ export class AggregateReportOptionsMapper {
         limitedEnglishProficiencies: options.studentFilters.limitedEnglishProficiencies.map(
           optionMapper(
             value => translate(`common.strict-boolean.${value}`),
-            value => `English Learner: ${value}`
+            value => `Limited English Proficiency: ${value}`
           )
         ),
         englishLanguageAcquisitionStatuses: options.studentFilters.englishLanguageAcquisitionStatuses.map(
