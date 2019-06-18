@@ -101,11 +101,15 @@ export class TenantConfigurationDetailsComponent implements OnInit, OnChanges {
             existing.code === updatedTenant.code ? updatedTenant : existing
           )
         );
+        this.editMode = false;
       },
       error =>
-        this.notificationService.error({ id: 'tenant-config.errors.update' })
+        error.json().message
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'tenant-config.errors.update'
+            })
     );
-    this.editMode = false;
   }
 
   private configureMenuItems(): void {

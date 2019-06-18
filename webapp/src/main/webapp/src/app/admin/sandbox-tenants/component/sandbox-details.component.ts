@@ -144,25 +144,19 @@ export class SandboxConfigurationDetailsComponent implements OnInit, OnChanges {
             existing.code === updatedSandbox.code ? updatedSandbox : existing
           )
         );
+        this.editMode = false;
       },
       error =>
-        this.notificationService.error({ id: 'sandbox-config.errors.update' })
+        error.json().message
+          ? this.notificationService.error({ id: error.json().message })
+          : this.notificationService.error({
+              id: 'sandbox-config.errors.update'
+            })
     );
-    this.editMode = false;
   }
 
   private configureMenuItems(): void {
     this.menuItems = [
-      {
-        label: this.translateService.instant('sandbox-config.actions.reset'),
-        icon: 'fa fa-refresh',
-        command: () => this.resetDataClicked.emit(this.sandbox)
-      },
-      {
-        label: this.translateService.instant('sandbox-config.actions.archive'),
-        icon: 'fa fa-archive',
-        command: () => this.archiveClicked.emit(this.sandbox)
-      },
       {
         label: this.translateService.instant('sandbox-config.actions.delete'),
         icon: 'fa fa-close',
