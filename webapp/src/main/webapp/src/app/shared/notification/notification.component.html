@@ -1,7 +1,8 @@
 <alert
   aria-live="polite"
   [type]="notification.type"
-  [dismissible]="false"
+  [dismissible]="notification.dismissible"
+  [dismissOnTimeout]="notification.dismissOnTimeout"
   (onClose)="onClose.emit($event)"
 >
   <ng-container *ngIf="notification.html; else noHtml">
