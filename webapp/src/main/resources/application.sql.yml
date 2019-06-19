@@ -10,14 +10,11 @@ sql:
         user_login,
         student_group_id
       )
-      VALUES (
+      SELECT
         :user_login,
-        (
-          SELECT id
-          FROM student_group
-          WHERE name = :group_name
-        )
-      )
+        id
+      FROM student_group
+      WHERE name LIKE CONCAT(:organization_name, ' (%,', :grade_code, ')');
 
   sandboxRoles:
     findAll: >-
