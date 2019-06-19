@@ -10,9 +10,8 @@
     }}
   </h1>
   <ul controls class="list-inline list-unstyled">
-    <li>
+    <li *ngIf="selectedPipeline.version === pipeline.activeVersion">
       <button
-        *ngIf="selectedPipeline.version === pipeline.activeVersion"
         type="button"
         class="btn btn-primary btn-outlined"
         (click)="onDeactivateButtonClick(selectedPipeline)"
@@ -20,9 +19,8 @@
         {{ 'pipeline-published-scripts.deactivate' | translate }}
       </button>
     </li>
-    <li>
+    <li *ngIf="selectedPipeline.version !== pipeline.activeVersion">
       <button
-        *ngIf="selectedPipeline.version !== pipeline.activeVersion"
         type="button"
         class="btn btn-primary btn-outlined"
         (click)="onActivateButtonClick(selectedPipeline)"

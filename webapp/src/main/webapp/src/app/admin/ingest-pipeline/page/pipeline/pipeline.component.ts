@@ -1,11 +1,5 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  Observable,
-  pipe,
-  Subject
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   debounceTime,
@@ -322,12 +316,46 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
                 this.pipelineService
                   .publishPipeline(this.pipeline.id)
                   .subscribe(published => {
-                    this.publishedScript = published.scripts[0];
-                    this.publishButtonDisabled = true;
-                    this.publishState = null;
-                    this.router.navigate(['history'], {
-                      relativeTo: this.route
-                    });
+                    const onDone = () => {
+                      this.publishedScript = published.scripts[0];
+                      this.publishButtonDisabled = true;
+                      this.publishState = null;
+                      this.router.navigate(['history'], {
+                        relativeTo: this.route
+                      });
+                    };
+
+                    const modalReference: BsModalRef = this.modalService.show(
+                      ConfirmationModalComponent
+                    );
+                    const hiddenSubscription = this.modalService.onHidden.subscribe(
+                      onDone
+                    );
+
+                    const onAccept = () => {
+                      hiddenSubscription.unsubscribe();
+                      this.pipelineService
+                        .updatePipeline({
+                          ...this.pipeline,
+                          activeVersion: published.version
+                        })
+                        .subscribe(() => {
+                          onDone();
+                        });
+                    };
+
+                    const modal: ConfirmationModalComponent =
+                      modalReference.content;
+                    modal.head = this.translateService.instant(
+                      'pipeline.activate-modal.head'
+                    );
+                    modal.body = this.translateService.instant(
+                      'pipeline.activate-modal.body'
+                    );
+                    modal.acceptButton = this.translateService.instant(
+                      'pipeline.activate-modal.accept'
+                    );
+                    modal.accept.subscribe(onAccept);
                   });
               } else {
                 this.showTestResults(runs);
