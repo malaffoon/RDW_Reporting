@@ -14,7 +14,7 @@ sql:
         :user_login,
         id
       FROM student_group
-      WHERE name LIKE CONCAT(:organization_name, ' (%,', :grade_code, ')');
+      WHERE name LIKE CONCAT(:organization_name, ' (%,', :grade_code, ')')
 
   sandboxRoles:
     findAll: >-
