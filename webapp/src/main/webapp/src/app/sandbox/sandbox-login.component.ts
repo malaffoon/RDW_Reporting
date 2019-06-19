@@ -1,54 +1,84 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SandboxLoginService } from './sandbox-login.service';
-import { Sandbox, SandboxRole } from './sandbox';
+import { Sandbox } from './sandbox';
+import { ActivatedRoute } from '@angular/router';
+import { combineLatest, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'sandbox-login',
   templateUrl: './sandbox-login.component.html'
 })
-export class SandboxLoginComponent implements OnInit {
-  form: FormGroup;
+export class SandboxLoginComponent implements OnInit, OnDestroy {
+  formGroup: FormGroup = new FormGroup({
+    sandbox: new FormControl(null, [Validators.required]),
+    role: new FormControl(null, [Validators.required])
+  });
+
   sandboxes: Sandbox[];
-  roles: SandboxRole[] = [];
+  private _destroyed: Subject<void> = new Subject();
 
   constructor(
-    private formBuilder: FormBuilder,
-    private service: SandboxLoginService
-  ) {
-    this.form = this.formBuilder.group({
-      sandboxKey: [null, Validators.required],
-      username: [null, Validators.required],
-      role: [null, Validators.required]
-    });
-  }
+    private route: ActivatedRoute,
+    private service: SandboxLoginService,
+    private translateService: TranslateService
+  ) {}
 
   ngOnInit(): void {
-    this.service.getAll().subscribe(sandboxes => {
-      this.sandboxes = sandboxes;
-    });
+    combineLatest(this.route.params, this.service.getAll())
+      .pipe(takeUntil(this._destroyed))
+      .subscribe(([params, sandboxes]) => {
+        this.sandboxes = sandboxes;
+
+        const sandbox = sandboxes.find(({ key }) => key === params.sandbox);
+        const role =
+          sandbox != null
+            ? sandbox.roles.find(({ id }) => id === params.role)
+            : undefined;
+
+        this.formGroup.patchValue({
+          sandbox,
+          role
+        });
+
+        if (sandbox != null) {
+          this.formGroup.controls.sandbox.disable();
+        }
+      });
+
+    this.formGroup.controls.sandbox.valueChanges
+      .pipe(takeUntil(this._destroyed))
+      .subscribe(() => {
+        this.onSandboxChange();
+      });
   }
 
-  sandboxSelected(selectedSandboxKey: string): void {
-    const roleControl = this.form.get('role');
-    if (!selectedSandboxKey) {
-      roleControl.disable();
-      roleControl.setValue(null);
+  ngOnDestroy(): void {
+    this._destroyed.next();
+    this._destroyed.complete();
+  }
+
+  onSandboxChange(): void {
+    const { sandbox, role } = this.formGroup.controls;
+    if (sandbox.value == null) {
+      role.disable();
+      role.setValue(null);
     } else {
-      roleControl.enable();
-      roleControl.setValue(null);
-      const selectedSandbox = this.sandboxes.find(
-        sandbox => selectedSandboxKey === sandbox.key
-      );
-      this.roles = selectedSandbox.roles;
+      role.enable();
+      role.setValue(sandbox.value.roles[0]);
     }
   }
 
   onSubmit(): void {
-    const { sandboxKey, username, role } = this.form.value;
+    const { sandbox, role } = this.formGroup.value;
+    const username = this.translateService.instant(
+      `sandbox-login.sandbox-role-label.${role.id}`
+    );
     const encode = encodeURIComponent;
-    window.location.href = `/sandbox/login?sandboxKey=${encode(
-      sandboxKey
-    )}&username=${encode(username)}&role=${encode(role)}`;
+    window.location.href = `/sandbox/login?sandbox=${encode(
+      sandbox.key
+    )}&username=${encode(username)}&role=${encode(role.id)}`;
   }
 }
