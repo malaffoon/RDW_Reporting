@@ -428,9 +428,12 @@ sql:
       WHERE id = :id
 
   multitenantDatabaseAdmin:
+    truncateAuroraTable: >-
+      TRUNCATE TABLE `$[databaseName]`.`$[tableName]`
+
     auroraS3LoadData: >-
-      LOAD DATA FROM S3 :s3_uri
-      INTO TABLE $[databaseName].$[tableName]
+      LOAD DATA FROM S3 '$[s3Uri]'
+      INTO TABLE `$[databaseName]`.`$[tableName]`
 
     useDatabase: >-
       USE $[databaseName]
@@ -443,7 +446,7 @@ sql:
 
     tableEmptyProbe: >-
       SELECT COUNT(*)
-      FROM $[databaseName].$[tableName]
+      FROM `$[databaseName]`.`$[tableName]`
 
     databaseExists: >-
       SELECT EXISTS(SELECT SCHEMA_NAME
