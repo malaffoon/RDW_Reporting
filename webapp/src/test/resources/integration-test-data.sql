@@ -159,8 +159,12 @@ insert into exam (id, type_id, grade_id, grade_code, student_id, school_id, oppo
   -- groups
 insert into student_group (id, name, school_id, school_year, subject_id, update_import_id, updated, migrate_id) values
   (-10, 'school1 g1', -10, 1997, 1, -1, '1997-07-18 20:14:34.000000', -1),
-  (-20, 'school2 g2', -10, 1997, 2, -1, '1997-07-18 20:14:34.000000', -1);
+  (-20, 'school2 g2', -10, 1997, 2, -1, '1997-07-18 20:14:34.000000', -1),
+  (-30, 'SandboxSchool (subject1,grade1)', -10, 1997, 2, -1, '1997-07-18 20:14:34.000000', -1),
+  (-40, 'SandboxSchool (subject2,grade1)', -10, 1997, 2, -1, '1997-07-18 20:14:34.000000', -1);
 
 insert into student_group_membership (student_group_id, student_id) values
   (-10, -1),
-  (-20, -2);
+  (-20, -2),
+  (-30, -1),
+  (-40, -2);
