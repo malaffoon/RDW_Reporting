@@ -1014,7 +1014,7 @@
     "skip-link": "Skip to main content",
     "title": "Access Assessment Results",
     "welcome": {
-      "interpretive-guide-html": "<a href=\"{{interpretiveGuideUrl}}\" target=\"_blank\">The Interim Assessments Interpretive Guide</a> is designed to help educators, parents, and other stakeholders interpret interim assessments reports for the Smarter Balanced Reporting System.",
+      "interpretive-guide-html": "<a href=\"{{interpretiveGuideUrl}}\" target=\"_blank\">The Interpretive Guide</a> is designed to help educators, parents, and other stakeholders interpret interim assessments reports for the Smarter Balanced Reporting System.",
       "interpretive-guide-subtitle": "Interim Assessments",
       "title": "Welcome!",
       "user-guide-html": "<a href=\"{{userGuideUrl}}\" target=\"_blank\">The User Guide</a> describes features of the Smarter Balanced Reporting System and instructions for using each feature."
@@ -1065,7 +1065,7 @@
     "difficulty": "Item Difficulty: ",
     "docs": "Supporting Documentation: ",
     "dok-label": "Depth of Knowledge: ",
-    "guide": "Interim Assessments Interpretive Guide",
+    "guide": "Interpretive Guide",
     "math": "Mathematical Practice Standard: ",
     "math-practice": {
       "description": {
