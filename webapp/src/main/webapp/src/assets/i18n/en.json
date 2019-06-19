@@ -1232,20 +1232,27 @@
     }
   },
   "sandbox-login": {
-    "title": "Reporting System Sandbox Login",
+    "title": "Reporting System Sandbox",
     "labels": {
       "sandbox": "Sandbox",
-      "username": "User Name",
-      "role": "User Role"
+      "role": "Enter as"
     },
-    "login": "Login",
+    "login": "Enter Sandbox",
     "error": "An error occurred while attempting to log into the reporting sandbox",
+    "sandbox": "{{label}}",
     "sandbox-label": "{{label}} ({{key}})",
     "sandbox-role-label": {
       "DistrictAdministrator": "District Admin: {{organizationName}}",
       "SchoolAdministrator": "School Admin: {{organizationName}}",
       "Teacher": "Teacher: {{organizationName}} {{grade}}"
-    }
+    },
+    "sandbox-role-username": {
+      "DistrictAdministrator": "District Admin",
+      "SchoolAdministrator": "School Admin",
+      "Teacher": "Teacher"
+    },
+    "sandbox-info": "TODO",
+    "sandbox-role-info": "TODO"
   },
   "tenant-config": {
     "title": "Tenant Configuration",

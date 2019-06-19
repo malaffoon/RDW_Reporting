@@ -9,7 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'sandbox-login',
-  templateUrl: './sandbox-login.component.html'
+  templateUrl: './sandbox-login.component.html',
+  styleUrls: ['./sandbox-login.component.less']
 })
 export class SandboxLoginComponent implements OnInit, OnDestroy {
   formGroup: FormGroup = new FormGroup({
@@ -17,6 +18,7 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
     role: new FormControl(null, [Validators.required])
   });
 
+  initialized: boolean;
   sandboxes: Sandbox[];
   private _destroyed: Subject<void> = new Subject();
 
@@ -27,7 +29,7 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    combineLatest(this.route.params, this.service.getAll())
+    combineLatest(this.route.queryParams, this.service.getAll())
       .pipe(takeUntil(this._destroyed))
       .subscribe(([params, sandboxes]) => {
         this.sandboxes = sandboxes;
@@ -46,6 +48,8 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
         if (sandbox != null) {
           this.formGroup.controls.sandbox.disable();
         }
+
+        this.initialized = true;
       });
 
     this.formGroup.controls.sandbox.valueChanges
@@ -72,9 +76,9 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    const { sandbox, role } = this.formGroup.value;
+    const { sandbox, role } = this.formGroup.getRawValue();
     const username = this.translateService.instant(
-      `sandbox-login.sandbox-role-label.${role.id}`
+      `sandbox-login.sandbox-role-username.${role.type}`
     );
     const encode = encodeURIComponent;
     window.location.href = `/sandbox/login?sandbox=${encode(
