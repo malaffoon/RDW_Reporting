@@ -208,9 +208,3 @@ tenant-configuration-lookup:
     reporting-service:
       url: http://localhost:8108
 
-sandbox-datasets:
-  sandbox-datasets:
-    - label: Demo Dataset
-      id: demo-dataset
-    - label: SBAC Dataset
-      id: sbac-dataset
