@@ -10,43 +10,14 @@ sql:
         user_login,
         student_group_id
       )
-      VALUES (
+      SELECT
         :user_login,
-        (
-          SELECT id
-          FROM student_group
-          WHERE name = :group_name
-        )
-      )
+        id
+      FROM student_group
+      WHERE name LIKE CONCAT(:organization_name, ' (%,', :grade_code, ')')
 
   sandboxRoles:
     findAll: >-
-      (
-        SELECT
-          'DistrictAdministrator' as type,
-          1 as type_order,
-          CONCAT('district_', natural_id) AS id,
-          'District' as organization_type,
-          natural_id as organization_natural_id,
-          id as organization_id,
-          name as organization_name,
-          null as grade_code
-        FROM district
-      )
-      UNION ALL
-      (
-        SELECT
-          'SchoolAdministrator' as type,
-          2 as type_order,
-          CONCAT('school_', natural_id) AS id,
-          'School' as organization_type,
-          natural_id as organization_natural_id,
-          id as organization_id,
-          name as organization_name,
-          null as grade_code
-        FROM school
-      )
-      UNION ALL
       (
         SELECT
           'Teacher' as type,
@@ -65,6 +36,32 @@ sql:
             FROM exam
           ) e ON e.school_id = s.id
           JOIN grade g ON e.grade_id = g.id
+      )
+      UNION ALL
+      (
+        SELECT
+          'SchoolAdministrator' as type,
+          2 as type_order,
+          CONCAT('school_', natural_id) AS id,
+          'School' as organization_type,
+          natural_id as organization_natural_id,
+          id as organization_id,
+          name as organization_name,
+          null as grade_code
+        FROM school
+      )
+      UNION ALL
+      (
+        SELECT
+          'DistrictAdministrator' as type,
+          1 as type_order,
+          CONCAT('district_', natural_id) AS id,
+          'District' as organization_type,
+          natural_id as organization_natural_id,
+          id as organization_id,
+          name as organization_name,
+          null as grade_code
+        FROM district
       )
       ORDER BY
         type_order,
