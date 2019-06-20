@@ -366,15 +366,21 @@ export class CsvExportService {
     let maxPoints: number = 0;
 
     exportRequest.assessmentItems.forEach((item, i) => {
-      exportRequest.summaries[i].rows.forEach(summary => {
-        compositeRows.push({
-          assessmentItem: item,
-          writingTraitAggregate: summary
-        });
+      exportRequest.summaries[i].rows
+        .filter(
+          row =>
+            exportRequest.assessment.type !== 'sum' ||
+            row.trait.type !== 'total'
+        )
+        .forEach(summary => {
+          compositeRows.push({
+            assessmentItem: item,
+            writingTraitAggregate: summary
+          });
 
-        if (summary.trait.maxPoints > maxPoints)
-          maxPoints = summary.trait.maxPoints;
-      });
+          if (summary.trait.maxPoints > maxPoints)
+            maxPoints = summary.trait.maxPoints;
+        });
     });
 
     const getAssessment = () => exportRequest.assessment;
