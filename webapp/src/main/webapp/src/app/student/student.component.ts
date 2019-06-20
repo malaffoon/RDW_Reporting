@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StudentExamHistoryService } from './student-exam-history.service';
-import {
-  FormGroup,
-  AbstractControl,
-  FormControl,
-  Validators
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,41 +8,37 @@ import { Router } from '@angular/router';
   templateUrl: './student.component.html'
 })
 export class StudentComponent implements OnInit {
-  searchForm: FormGroup;
+  formGroup: FormGroup = new FormGroup({
+    ssid: new FormControl('', [Validators.required])
+  });
   studentNotFound: boolean;
 
   constructor(
-    private studentExamHistoryService: StudentExamHistoryService,
+    private service: StudentExamHistoryService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.searchForm = new FormGroup({
-      ssid: new FormControl(null, Validators.required)
-    });
-
-    this.ssidControl.valueChanges.subscribe(value => {
+    this.formGroup.controls.ssid.valueChanges.subscribe(value => {
       this.studentNotFound = false;
     });
-  }
-
-  private get ssidControl(): AbstractControl {
-    return this.searchForm.controls['ssid'];
   }
 
   /**
    * Search for the entered student SSID.  If a student exists with exams,
    * navigate to the results page.  Otherwise, display a not found message.
    */
-  performSearch(): void {
-    let ssid: string = this.ssidControl.value;
+  onSubmit(): void {
+    const { ssid } = this.formGroup.value;
     this.studentNotFound = false;
 
-    this.studentExamHistoryService.existsBySsid(ssid).subscribe(student => {
-      if (student) {
+    // TODO should use async validator
+    this.service.existsBySsid(ssid).subscribe(student => {
+      if (student != null) {
         this.router.navigateByUrl(`/students/${student.id}`);
+      } else {
+        this.studentNotFound = true;
       }
-      this.studentNotFound = !student;
     });
   }
 }
