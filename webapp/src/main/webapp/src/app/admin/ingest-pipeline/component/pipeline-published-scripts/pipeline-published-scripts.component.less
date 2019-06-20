@@ -6,17 +6,6 @@
   gap: @space-unit;
 }
 
-.head {
-  display: flex;
-  align-items: center;
-  > :first-child {
-    flex: 1;
-  }
-  > :not(:first-child) {
-    margin-left: @space-unit;
-  }
-}
-
 .body {
   display: grid;
   grid-template-columns: 1fr 3fr;
@@ -38,4 +27,8 @@
   position: absolute;
   top: @space-unit;
   right: @space-unit;
+}
+
+.close {
+  line-height: 1rem;
 }

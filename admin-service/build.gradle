@@ -20,7 +20,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.cloud:spring-cloud-starter-aws'
-    compile 'org.springframework.cloud:spring-cloud-starter-bus-amqp'    
+    compile 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
     compile 'org.springframework.cloud:spring-cloud-starter-config'
     compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
     compile 'org.springframework.cloud:spring-cloud-stream'
@@ -31,8 +31,10 @@ dependencies {
     compile 'commons-io:commons-io'
     compile 'org.eclipse.jgit:org.eclipse.jgit'
     compile 'org.apache.commons:commons-csv:+'
-
+    compile 'com.amazon.redshift:redshift-jdbc42-no-awssdk:1.2.8.1005'
     compile 'com.google.code.gson:gson'
+    compile 'org.flywaydb:flyway-core'
+    compile 'org.opentestsystem.rdw.schema:rdw-schema'
 
     testCompile project(path: ':rdw-reporting-common', configuration: 'tests')
     testCompile('org.springframework.boot:spring-boot-starter-test') {
@@ -40,8 +42,6 @@ dependencies {
     }
     testCompile 'org.springframework.security:spring-security-test'
     testCompile 'org.springframework.cloud:spring-cloud-stream-test-support'
-    testCompile 'org.opentestsystem.rdw.schema:rdw-schema'
-    testCompile 'org.flywaydb:flyway-core'
 }
 
 IT {

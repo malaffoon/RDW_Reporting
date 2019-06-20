@@ -11,44 +11,42 @@
 <!-- Assessments Grouped by Type and Subject -->
 <ng-template #hasExamHistory>
   <page-heading>
-    <ng-template #heading>
-      <h2>{{ examHistory.student | studentName }}</h2>
+    <div heading>
+      <h1 class="h2">{{ examHistory.student | studentName }}</h1>
       <div class="student-ssid-label">{{ examHistory.student.ssid }}</div>
-    </ng-template>
-    <ng-template #content>
-      <ul class="list-unstyled list-inline">
-        <li>
-          <!-- Note: we have 'ml-md' as a class here to avoid an issue with flickering popovers -->
-          <button
-            *ngIf="!exportDisabled"
-            class="btn btn-default btn-sm ml-md"
-            (click)="onExportButtonClick()"
-          >
-            <i class="fa fa-bold fa-table"></i>
-            {{ 'common.export-csv' | translate }}
-          </button>
-          <button
-            *ngIf="exportDisabled"
-            class="btn btn-default btn-sm ml-md disabled"
-            popover="{{ 'common.embargo-export-disabled' | translate }}"
-            triggers="mouseenter:mouseleave"
-            placement="left"
-          >
-            <i class="fa fa-bold fa-table"></i>
-            {{ 'common.export-csv' | translate }}
-          </button>
-        </li>
-        <li>
-          <button
-            class="btn btn-default btn-sm"
-            (click)="onPrintableReportButtonClick()"
-          >
-            <i class="fa fa-cloud-download" aria-hidden="true"></i>
-            {{ 'common.buttons.printable-student-reports' | translate }}
-          </button>
-        </li>
-      </ul>
-    </ng-template>
+    </div>
+    <ul controls class="list-unstyled list-inline">
+      <li>
+        <!-- Note: we have 'ml-md' as a class here to avoid an issue with flickering popovers -->
+        <button
+          *ngIf="!exportDisabled"
+          class="btn btn-default btn-sm ml-md"
+          (click)="onExportButtonClick()"
+        >
+          <i class="fa fa-bold fa-table"></i>
+          {{ 'common.export-csv' | translate }}
+        </button>
+        <button
+          *ngIf="exportDisabled"
+          class="btn btn-default btn-sm ml-md disabled"
+          popover="{{ 'common.embargo-export-disabled' | translate }}"
+          triggers="mouseenter:mouseleave"
+          placement="left"
+        >
+          <i class="fa fa-bold fa-table"></i>
+          {{ 'common.export-csv' | translate }}
+        </button>
+      </li>
+      <li>
+        <button
+          class="btn btn-default btn-sm"
+          (click)="onPrintableReportButtonClick()"
+        >
+          <i class="fa fa-cloud-download" aria-hidden="true"></i>
+          {{ 'common.buttons.printable-student-reports' | translate }}
+        </button>
+      </li>
+    </ul>
   </page-heading>
 
   <!-- Results Filter -->
@@ -60,9 +58,7 @@
   ></student-results-filter>
 
   <page-heading>
-    <ng-template #heading>
-      <h3>{{ 'student-results.title' | translate }}</h3>
-    </ng-template>
+    <h2 heading class="h3">{{ 'student-results.title' | translate }}</h2>
   </page-heading>
 
   <ng-container *ngFor="let section of sections">

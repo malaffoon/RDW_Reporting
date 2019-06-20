@@ -49,8 +49,7 @@ services:
     links:
       - config-server
       - admin-service
-# uncomment to enable aggregate service
-#      - aggregate-service
+      - aggregate-service
       - report-processor-service
       - reporting-service
     depends_on:
@@ -79,32 +78,41 @@ services:
     links:
       - config-server
       - rabbitmq
+      - aggregate-service
+      - report-processor-service
+      - reporting-service
     depends_on:
       config-server:
         condition: service_healthy
+# if running other services from IntelliJ, comment out the links entry (above) and
+# change the service route to use the mac docker bridge; for example:
+#        - tenant-configuration-lookup.services.report-processor.url=http://host.docker.internal:8086
+    environment:
+      - spring.profiles.active=local-docker
+      - tenant-configuration-lookup.services.admin-service.url=http://localhost:8008
+      - tenant-configuration-lookup.services.aggregate-service.url=http://aggregate-service:8008
+      - tenant-configuration-lookup.services.report-processor.url=http://report-processor-service:8008
+      - tenant-configuration-lookup.services.reporting-service.url=http://reporting-service:8008
+      - CONFIG_SERVICE_ENABLED=true
+      - CONFIG_SERVICE_URL=http://config-server:8888
+
+  aggregate-service:
+    image: smarterbalanced/rdw-reporting-aggregate-service
+    ports:
+      - 8380:8080
+      - 8308:8008
+    volumes:
+      - /tmp:/tmp
+    links:
+      - config-server
+    depends_on:
+      config-server:
+        condition: service_healthy
+    # to run this you'll probably need to set olap_ro credentials
     environment:
       - spring.profiles.active=local-docker
       - CONFIG_SERVICE_ENABLED=true
       - CONFIG_SERVICE_URL=http://config-server:8888
-
-# uncomment to enable aggregate service
-#  aggregate-service:
-#    image: smarterbalanced/rdw-reporting-aggregate-service
-#    ports:
-#      - 8380:8080
-#      - 8308:8008
-#    volumes:
-#      - /tmp:/tmp
-#    links:
-#      - config-server
-#    depends_on:
-#      config-server:
-#        condition: service_healthy
-#    environment:
-#      - spring.profiles.active=local-docker
-#      - CONFIG_SERVICE_ENABLED=true
-#      - CONFIG_SERVICE_URL=http://config-server:8888
-
 
   reporting-service:
     image: smarterbalanced/rdw-reporting-service

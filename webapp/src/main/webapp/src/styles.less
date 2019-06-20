@@ -760,27 +760,7 @@ aggregate-report-table {
   }
 }
 
-.sandbox-login {
-  display: flex;
-}
-
 .sandbox-config {
-  .well-group .well {
-    box-shadow: none;
-    padding-bottom: 20px;
-    &:not(:first-child) {
-      box-shadow: none;
-    }
-    &:first-child {
-      padding: 15px 20px;
-      > *:last-child,
-      > .row > [class^='col-']:first-child > *:last-child,
-      > .flex-children > .flex-child:first-child > *:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
   .action-buttons {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -793,36 +773,24 @@ aggregate-report-table {
   }
 
   .sandbox-container {
-    //border-bottom: 1px solid @gray-light;
-    margin-top: 5px;
-
     .sandbox-header {
+      display: flex;
+      align-items: center;
+      > :first-child {
+        flex: 1;
+      }
+      .heading {
+        display: flex;
+      }
       .sandbox-key {
-        color: @gray;
-        font-size: 20px;
-      }
-
-      i {
-        cursor: pointer;
-
-        &:hover {
-          color: @teal;
-        }
-      }
-
-      h2 {
-        display: inline;
-      }
-
-      h4,
-      h5 {
         color: @gray-darker;
-        white-space: pre-wrap;
       }
+    }
 
-      button {
-        cursor: pointer;
-      }
+    .description,
+    .data-set {
+      color: @gray-darker;
+      white-space: pre-wrap;
     }
 
     a.ui-menuitem-link {
@@ -860,8 +828,13 @@ aggregate-report-table {
       background-color: #d1e8f0;
     }
 
+    tr.required td {
+      background-color: #ffbaba;
+    }
+
     td {
       cursor: pointer;
+      position: relative;
 
       &.group-node {
         line-height: 30px;
@@ -878,16 +851,21 @@ aggregate-report-table {
         color: #02799e;
       }
 
-      i.fa-undo {
-        cursor: pointer;
-        color: @aqua;
+      .icon-container {
         position: absolute;
-        line-height: 22px;
-        font-size: 18px;
         right: 15px;
+        top: 9px;
 
-        &:hover {
-          color: @teal;
+        i {
+          cursor: pointer;
+          color: @aqua;
+          line-height: 22px;
+          font-size: 18px;
+          margin-left: 5px;
+
+          &:hover {
+            color: @teal;
+          }
         }
       }
     }
@@ -1172,26 +1150,6 @@ h6 {
 
 .well.well-compact {
   padding: @padding-small-horizontal @padding-base-horizontal;
-}
-
-.page-heading {
-  display: block;
-  margin-bottom: @padding-base-horizontal;
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  .h1,
-  .h2,
-  .h3,
-  .h4,
-  .h5,
-  .h6 {
-    display: inline;
-    margin: 0;
-  }
 }
 
 .list-inline {
@@ -2041,28 +1999,6 @@ distractor-analysis .ui-widget.ui-table table .ui-table-tbody td.green {
 
 .label.label-lg {
   font-size: 100%;
-}
-wide-radio-group {
-  .btn-toolbar-grid {
-    .btn > input {
-      display: none;
-    }
-  }
-
-  .toggle-group .btn.disabled {
-    pointer-events: auto;
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: @white;
-      border-color: @gray-light;
-      color: @gray-mid;
-    }
-  }
-
-  p.disabled {
-    opacity: 0.65;
-  }
 }
 
 .icon.sbac {

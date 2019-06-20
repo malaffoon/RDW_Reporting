@@ -87,7 +87,7 @@ function toConfigurationPropertiesApiModel(configProperties: any): any {
             (configGroup[configurationProperty.key] =
               configurationProperty.value)
         );
-        datasourceGroup[datasourceKey] = configGroup;
+        datasourceGroup[datasourceKey] = expand(configGroup);
       });
 
       mappedGroup[groupKey] = datasourceGroup;

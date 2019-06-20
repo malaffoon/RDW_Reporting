@@ -1,23 +1,19 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{ 'admin-groups.title' | translate }}</h2>
-  </ng-template>
-  <ng-template #content>
-    <ul class="list-unstyled list-inline">
-      <li>
-        <a class="btn btn-primary btn-sm" [routerLink]="['import']"
-          ><i class="fa fa-cloud-upload"></i>
-          {{ 'group-import.link' | translate }}</a
-        >
-      </li>
-      <li>
-        <a class="btn btn-default btn-sm" [routerLink]="['history']"
-          ><i class="fa fa-history"></i>
-          {{ 'import-history.title' | translate }}</a
-        >
-      </li>
-    </ul>
-  </ng-template>
+  <h1 class="h2" heading>{{ 'admin-groups.title' | translate }}</h1>
+  <ul class="list-unstyled list-inline" controls>
+    <li>
+      <a class="btn btn-primary btn-sm" [routerLink]="['import']"
+        ><i class="fa fa-cloud-upload"></i>
+        {{ 'group-import.link' | translate }}</a
+      >
+    </li>
+    <li>
+      <a class="btn btn-default btn-sm" [routerLink]="['history']"
+        ><i class="fa fa-history"></i>
+        {{ 'import-history.title' | translate }}</a
+      >
+    </li>
+  </ul>
 </page-heading>
 
 <ng-container *ngIf="filterOptions">

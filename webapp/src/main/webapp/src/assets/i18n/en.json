@@ -97,7 +97,7 @@
       "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP). These plans are for students with disabilities who require specialized instruction.",
       "504-label": "504",
       "504-info": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction.",
-      "limited-english-proficiency-label": "Limited English Proficiency",
+      "limited-english-proficiency-label": "English Learner",
       "limited-english-proficiency-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
       "economic-disadvantage-label": "Economic Disadvantage",
       "economic-disadvantage-info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage.",
@@ -269,6 +269,7 @@
   },
   "common": {
     "action": {
+      "accept": "OK",
       "cancel": "Cancel",
       "close": "Close",
       "collapse": "Collapse",
@@ -430,7 +431,7 @@
       "Ethnicity": "Race / Ethnicity",
       "Gender": "Gender",
       "IEP": "IEP",
-      "LEP": "Limited English Proficiency",
+      "LEP": "English Learner",
       "ELAS": "English Language Acquisition Status",
       "Language": "Primary Language",
       "MigrantStatus": "Migrant Status",
@@ -444,7 +445,7 @@
       "Ethnicity": "Ethnicity",
       "Gender": "Gender",
       "IEP": "IEP",
-      "LEP": "LEP",
+      "LEP": "English Learner",
       "ELAS": "ELAS",
       "Language": "Language",
       "MigrantStatus": "Migrant Status",
@@ -543,7 +544,7 @@
         "iep": "IEP",
         "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
         "label": "Student",
-        "limited-english-proficiency": "Limited English Proficiency",
+        "limited-english-proficiency": "English Learner",
         "limited-english-proficiency-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
         "migrant-status": "Migrant Status",
         "migrant-status-info": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons."
@@ -1013,8 +1014,7 @@
     "skip-link": "Skip to main content",
     "title": "Access Assessment Results",
     "welcome": {
-      "interpretive-guide-html": "<a href=\"{{interpretiveGuideUrl}}\" target=\"_blank\">The Interim Assessments Interpretive Guide</a> is designed to help educators, parents, and other stakeholders interpret interim assessments reports for the Smarter Balanced Reporting System.",
-      "interpretive-guide-subtitle": "Interim Assessments",
+      "interpretive-guide-html": "<a href=\"{{interpretiveGuideUrl}}\" target=\"_blank\">The Interpretive Guide</a> is designed to help educators, parents, and other stakeholders interpret interim assessments reports for the Smarter Balanced Reporting System.",
       "title": "Welcome!",
       "user-guide-html": "<a href=\"{{userGuideUrl}}\" target=\"_blank\">The User Guide</a> describes features of the Smarter Balanced Reporting System and instructions for using each feature."
     }
@@ -1064,7 +1064,7 @@
     "difficulty": "Item Difficulty: ",
     "docs": "Supporting Documentation: ",
     "dok-label": "Depth of Knowledge: ",
-    "guide": "Interim Assessments Interpretive Guide",
+    "guide": "Interpretive Guide",
     "math": "Mathematical Practice Standard: ",
     "math-practice": {
       "description": {
@@ -1206,7 +1206,7 @@
       "success": "Sandbox data was successfully reset"
     },
     "fields": {
-      "label": "Sandbox Name / Label:",
+      "label": "Name:",
       "description": "Description:",
       "data-set": "Data Set:",
       "configuration-properties": "Configuration Properties",
@@ -1222,7 +1222,7 @@
       "modified": "Show modified properties only",
       "empty": "No configuration properties found"
     },
-    "empty": "No sandbox configurations found. Create a new tenant by clicking the \"Create New Sandbox\" button",
+    "empty": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create New Sandbox\" button",
     "errors": {
       "reset": "An unknown error occurred when attempting to reset the sandbox data",
       "update": "An unknown error occurred when attempting to update the sandbox",
@@ -1231,20 +1231,27 @@
     }
   },
   "sandbox-login": {
-    "title": "Reporting System Sandbox Login",
+    "title": "Reporting System Sandbox",
     "labels": {
       "sandbox": "Sandbox",
-      "username": "User Name",
-      "role": "User Role"
+      "role": "Enter as"
     },
-    "login": "Login",
+    "login": "Enter Sandbox",
     "error": "An error occurred while attempting to log into the reporting sandbox",
+    "sandbox": "{{label}}",
     "sandbox-label": "{{label}} ({{key}})",
     "sandbox-role-label": {
       "DistrictAdministrator": "District Admin: {{organizationName}}",
       "SchoolAdministrator": "School Admin: {{organizationName}}",
       "Teacher": "Teacher: {{organizationName}} {{grade}}"
-    }
+    },
+    "sandbox-role-username": {
+      "DistrictAdministrator": "District Admin",
+      "SchoolAdministrator": "School Admin",
+      "Teacher": "Teacher"
+    },
+    "sandbox-info": "TODO",
+    "sandbox-role-info": "TODO"
   },
   "tenant-config": {
     "title": "Tenant Configuration",
@@ -1257,16 +1264,15 @@
       "success": "Tenant was successfully deleted"
     },
     "fields": {
-      "id": "Tenant ID",
-      "key": "Tenant Key",
-      "label": "Tenant Name / Label:",
+      "id": "ID:",
+      "key": "Key:",
+      "label": "Name:",
       "description": "Description:",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
     },
-    "empty": "No tenant configurations found. Create a new tenant by clicking the \"Create New Tenant\" button",
-    "reset-info": "Click this button to reset the value back to its original default value",
+    "empty": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create New Tenant\" button",
     "properties": {
       "reporting": "Reporting",
       "datasources": "Data Sources",
@@ -1274,13 +1280,19 @@
       "archive": "Archive",
       "aggregate": "Aggregate"
     },
+    "popover": {
+      "reset": "Click this button to reset the value back to its original default value",
+      "decrypt": "Click this button to decrypt the encrypted password",
+      "password": "The password field must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
+    },
     "errors": {
       "duplicate-key": "A tenant with the same tenant key or ID already exists",
       "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
       "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
       "update": "An unknown error occurred when attempting to update the tenant",
       "create": "An unknown error occurred when attempting to create the tenant",
-      "delete": "An unknown error occurred when attempting to delete the tenant"
+      "delete": "An unknown error occurred when attempting to delete the tenant",
+      "decrypt": "An error occurred while attempting to decrypt an encrypted password"
     }
   },
   "user-query-table": {
@@ -1541,7 +1553,12 @@
     "invalid-tests": "One or more tests are invalid. Please enter all required test fields.",
     "unsaved-changes": "Please save all changes before running tests",
     "publish-unsaved-changes": "Please save all changes before publishing",
-    "published": "This script is the same as the published script"
+    "published": "This script is the same as the published script",
+    "activate-modal": {
+      "head": "Activate Published Pipeline",
+      "body": "Would you like to activate the pipeline you just published?",
+      "accept": "Activate"
+    }
   },
   "pipelines": {
     "heading": "Ingest Pipelines"
@@ -1618,13 +1635,21 @@
     "no-scripts": "No user scripts have been published",
     "active-pipeline": "Active",
     "version": "Version {{version}}",
-    "activation-button-state": {
-      "active": "Active",
-      "inactive": "Activate"
-    }
+    "activate": "Activate",
+    "deactivate": "Deactivate"
   },
   "score-table": {
     "average-scale-score": "Average Scale Score",
     "result-count": "for <strong>{{resultCount}}</strong> results"
+  },
+  "activate-pipeline-modal": {
+    "head": "Activate {{pipelineName}} pipeline version {{pipelineVersion}}",
+    "body": "Are you sure you want to activate {{pipelineName}} pipeline version {{pipelineVersion}}?",
+    "accept": "Activate"
+  },
+  "deactivate-pipeline-modal": {
+    "head": "Deactivate pipeline",
+    "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
+    "accept": "Deactivate"
   }
 }

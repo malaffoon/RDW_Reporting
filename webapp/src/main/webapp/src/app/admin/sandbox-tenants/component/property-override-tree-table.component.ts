@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { forOwn, cloneDeep, get } from 'lodash';
+import { DecryptionService } from '../../../shared/security/decryption.service';
+import { NotificationService } from '../../../shared/notification/notification.service';
 
 @Component({
   selector: 'property-override-tree-table',
@@ -33,7 +35,10 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   showModifiedPropertiesOnly = false;
   configurationPropertiesTreeNodes: TreeNode[] = [];
 
-  constructor() {}
+  constructor(
+    private decryptionService: DecryptionService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.createConfigurationPropertyTree();
@@ -58,6 +63,17 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     this.setPropertyValue(override, override.originalValue);
   }
 
+  decryptClicked(override: ConfigurationProperty): void {
+    this.decryptionService.decrypt(override.value).subscribe(
+      password => {
+        override.value = password;
+        override.encrypted = false;
+      },
+      error =>
+        this.notificationService.error({ id: 'tenant-config.errors.decrypt' })
+    );
+  }
+
   childrenHaveOverrides(node: TreeNode): boolean {
     if (node.children && node.children.length > 0) {
       const hasOverride = node.children.some(
@@ -71,6 +87,19 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     }
 
     return false;
+  }
+
+  calculatePadding(override: ConfigurationProperty): string {
+    if (!override.encrypted && override.value === override.originalValue) {
+      return '0px';
+    } else if (
+      override.encrypted &&
+      override.value !== override.originalValue
+    ) {
+      return '50px';
+    } else {
+      return '25px';
+    }
   }
 
   private setPropertyValue(override: ConfigurationProperty, newVal: string) {
@@ -140,22 +169,35 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     );
 
     configGroup.forEach(group => {
+      const encrypted =
+        group.value &&
+        typeof group.value === 'string' &&
+        group.value.startsWith('{cipher}') &&
+        group.key === 'password';
+
       childrenNodes.push({
         data: {
           key: group.key,
           value: group.value,
           originalValue: group.originalValue,
           group: group.group,
-          formControlName: group.formControlName
+          formControlName: group.formControlName,
+          encrypted: encrypted,
+          required: group.key === 'password'
         },
         expanded: false,
         leaf: true
       });
 
-      configPropertiesFormGroup.addControl(
-        group.formControlName,
-        new FormControl(group.value)
-      );
+      group.key.indexOf('password') > -1
+        ? configPropertiesFormGroup.addControl(
+            group.formControlName,
+            new FormControl(group.value, Validators.required)
+          )
+        : configPropertiesFormGroup.addControl(
+            group.formControlName,
+            new FormControl(group.value)
+          );
     });
   }
 }

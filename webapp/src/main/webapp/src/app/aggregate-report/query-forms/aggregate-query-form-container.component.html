@@ -14,9 +14,9 @@
 
 <ng-container *ngIf="accessDenied; else accessAllowed">
   <page-heading>
-    <ng-template #heading>
-      <h2>{{ 'aggregate-report-form.heading' | translate }}</h2>
-    </ng-template>
+    <h1 class="h2" heading>
+      {{ 'aggregate-report-form.heading' | translate }}
+    </h1>
   </page-heading>
   <div class="well">
     <p>{{ 'aggregate-report-form.access-denied-error' | translate }}</p>
@@ -39,12 +39,12 @@
 
     <div>
       <page-heading>
-        <ng-template #heading>
-          <h2>{{ 'aggregate-report-form.heading' | translate }}</h2>
+        <div #heading>
+          <h1 class="h2">{{ 'aggregate-report-form.heading' | translate }}</h1>
           <p class="small gray-darkest mt-sm">
             {{ 'aggregate-report-form.subheading' | translate }}
           </p>
-        </ng-template>
+        </div>
       </page-heading>
 
       <!-- Report Type -->

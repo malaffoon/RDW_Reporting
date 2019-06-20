@@ -1,68 +1,101 @@
-<div class="row sandbox-login">
-  <div class="col-xs-5 center-block well">
-    <h2 class="text-center">{{ 'sandbox-login.title' | translate }}</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div>
-        <label for="sandbox" class="control-label">
-          {{ 'sandbox-login.labels.sandbox' | translate }}</label
+<ng-container *ngIf="!initialized; else loaded">
+  <spinner></spinner>
+</ng-container>
+<ng-template #loaded>
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="well">
+      <ng-container *ngIf="formGroup.controls.sandbox as sandboxControl">
+        <h1>
+          {{ 'sandbox-login.title' | translate }}
+        </h1>
+        <div class="form-group">
+          <label for="sandbox">
+            {{ 'sandbox-login.labels.sandbox' | translate }}</label
+          >
+          <button
+            class="btn btn-borderless btn-xs icon-only"
+            type="button"
+            [popover]="sandboxPopover"
+            placement="top"
+            container="body"
+            outsideClick="true"
+          >
+            <span class="sr-only">{{
+              'info-button.more-info' | translate
+            }}</span
+            ><i class="fa fa-info-circle"></i>
+          </button>
+          <ng-template #sandboxPopover>
+            {{ 'sandbox-login.sandbox-info' | translate }}
+          </ng-template>
+          <ng-container
+            *ngIf="sandboxControl.enabled; else sandboxControlDisabled"
+          >
+            <select
+              id="sandbox"
+              name="sandbox"
+              formControlName="sandbox"
+              class="form-control"
+            >
+              <option *ngFor="let sandbox of sandboxes" [ngValue]="sandbox">
+                {{ 'sandbox-login.sandbox-label' | translate: sandbox }}
+              </option>
+            </select>
+          </ng-container>
+          <ng-template #sandboxControlDisabled>
+            <div class="mt-xs mb-sm">
+              {{ 'sandbox-login.sandbox' | translate: sandboxControl.value }}
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
+      <div class="form-group">
+        <label for="role"> {{ 'sandbox-login.labels.role' | translate }}</label>
+        <button
+          class="btn btn-borderless btn-xs icon-only"
+          type="button"
+          [popover]="rolePopover"
+          placement="top"
+          container="body"
+          outsideClick="true"
         >
-        <select
-          id="sandbox"
-          name="sandboxKey"
-          formControlName="sandboxKey"
-          (ngModelChange)="sandboxSelected($event)"
-          class="form-control"
-        >
-          <option [ngValue]="undefined"></option>
-          <option *ngFor="let sandbox of sandboxes" [ngValue]="sandbox.key">
-            {{ 'sandbox-login.sandbox-label' | translate: sandbox }})
-          </option>
-        </select>
-      </div>
-      <div>
-        <label for="username" class="control-label">
-          {{ 'sandbox-login.labels.username' | translate }}</label
-        >
-        <input
-          id="username"
-          name="username"
-          type="text"
-          formControlName="username"
-          class="form-control"
-        />
-      </div>
-      <div>
-        <label for="role" class="control-label">
-          {{ 'sandbox-login.labels.role' | translate }}</label
-        >
+          <span class="sr-only">{{ 'info-button.more-info' | translate }}</span
+          ><i class="fa fa-info-circle"></i>
+        </button>
+        <ng-template #rolePopover>
+          {{ 'sandbox-login.sandbox-role-info' | translate }}
+        </ng-template>
         <select
           id="role"
           name="role"
           formControlName="role"
           class="form-control"
         >
-          <option [ngValue]="undefined"></option>
-          <option *ngFor="let role of roles" [ngValue]="role.id">
-            {{
-              'sandbox-login.sandbox-role-label.' + role.type
-                | translate
-                  : {
-                      organizationName: role.organization.name,
-                      grade:
-                        'common.assessment-grade-label.' + role.gradeCode
-                        | translate
-                    }
-            }}
-          </option>
+          <ng-container
+            *ngIf="formGroup.controls.sandbox.value as selectedSandbox"
+          >
+            <option *ngFor="let role of selectedSandbox.roles" [ngValue]="role">
+              {{
+                'sandbox-login.sandbox-role-label.' + role.type
+                  | translate
+                    : {
+                        organizationName: role.organization.name,
+                        grade:
+                          'common.assessment-grade-label.' + role.gradeCode
+                          | translate
+                      }
+              }}
+            </option>
+          </ng-container>
         </select>
       </div>
       <button
         type="submit"
-        class="btn btn-primary mt-md text-center btn-block"
-        [disabled]="form.invalid"
+        class="btn btn-primary btn-block"
+        [disabled]="formGroup.invalid"
       >
         {{ 'sandbox-login.login' | translate }}
       </button>
-    </form>
-  </div>
-</div>
+    </div>
+  </form>
+</ng-template>

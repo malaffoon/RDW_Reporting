@@ -1,0 +1,9 @@
+<div class="well-group">
+  <div *ngFor="let item of items" class="well">
+    <ng-template
+      [ngTemplateOutlet]="itemTemplate"
+      [ngTemplateOutletContext]="{ item: item }"
+    >
+    </ng-template>
+  </div>
+</div>

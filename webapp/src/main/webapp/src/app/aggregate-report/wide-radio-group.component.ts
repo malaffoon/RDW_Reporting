@@ -10,6 +10,7 @@ const DefaultButtonStyles = 'btn-primary';
 @Component({
   selector: 'wide-radio-group',
   templateUrl: './wide-radio-group.component.html',
+  styleUrls: ['./wide-radio-group.component.less'],
   providers: [Forms.valueAccessor(WideRadioGroupComponent)]
 })
 export class WideRadioGroupComponent extends AbstractControlValueAccessor<any[]>

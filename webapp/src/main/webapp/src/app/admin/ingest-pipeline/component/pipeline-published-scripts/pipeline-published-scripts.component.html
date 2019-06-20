@@ -1,5 +1,5 @@
-<div class="head">
-  <h3>
+<page-heading>
+  <h1 heading class="h2">
     {{
       'pipeline-publishing-history.heading'
         | translate
@@ -8,36 +8,44 @@
                 'ingest-pipeline.' + pipeline.code + '.name' | translate
             }
     }}
-  </h3>
-  <button
-    type="button"
-    class="btn btn-primary btn-outlined"
-    [disabled]="selectedPipeline.version === pipeline.activeVersion"
-    (click)="onPipelineActivate(selectedPipeline)"
-  >
-    {{
-      'pipeline-published-scripts.activation-button-state.' +
-        (selectedPipeline.version === pipeline.activeVersion
-          ? 'active'
-          : 'inactive') | translate
-    }}
-  </button>
-  <button
-    type="button"
-    class="close fa-3x"
-    title="{{ 'common.action.close' | translate }}"
-    [routerLink]="['..']"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<ng-container
-  *ngIf="_pipelines != null && _pipelines.length > 0; else noScripts"
->
+  </h1>
+  <ul controls class="list-inline list-unstyled">
+    <li *ngIf="selectedPipeline.version === pipeline.activeVersion">
+      <button
+        type="button"
+        class="btn btn-primary btn-outlined"
+        (click)="onDeactivateButtonClick(selectedPipeline)"
+      >
+        {{ 'pipeline-published-scripts.deactivate' | translate }}
+      </button>
+    </li>
+    <li *ngIf="selectedPipeline.version !== pipeline.activeVersion">
+      <button
+        type="button"
+        class="btn btn-primary btn-outlined"
+        (click)="onActivateButtonClick(selectedPipeline)"
+      >
+        {{ 'pipeline-published-scripts.activate' | translate }}
+      </button>
+    </li>
+    <li>
+      <button
+        type="button"
+        class="close fa-3x"
+        title="{{ 'common.action.close' | translate }}"
+        [routerLink]="['..']"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+  </ul>
+</page-heading>
+
+<ng-container *ngIf="pipelines != null && pipelines.length > 0; else noScripts">
   <div class="body">
     <div class="scripts-container">
       <ul>
-        <li *ngFor="let published of _pipelines">
+        <li *ngFor="let published of pipelines">
           <pipeline-item
             name="{{
               'pipeline-published-scripts.version' | translate: published

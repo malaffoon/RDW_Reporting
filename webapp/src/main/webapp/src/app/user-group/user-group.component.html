@@ -4,47 +4,43 @@
 
 <ng-template #loaded>
   <page-heading>
-    <ng-template #heading>
-      <h5>
-        <i class="fa fa-search"></i>
-        {{ 'user-group.student-search.find-students-prompt' | translate }}
-      </h5>
-    </ng-template>
-    <ng-template #content>
-      <ul class="list-unstyled list-inline">
-        <li *ngIf="group.id != null">
-          <button
-            type="button"
-            class="btn btn-danger btn-sm"
-            [disabled]="deleteButtonDisabled"
-            (click)="deleteModal.show()"
-          >
-            <i class="fa fa-trash"></i>
-            {{ 'common.action.delete' | translate }}
-          </button>
-        </li>
-        <li>
-          <button
-            type="submit"
-            class="btn btn-primary btn-sm"
-            [disabled]="saveButtonDisabled"
-            (click)="onSaveButtonClick()"
-          >
-            <i class="fa fa-save"></i>
-            {{ 'common.action.save' | translate }}
-          </button>
-        </li>
-        <li>
-          <button
-            type="button"
-            class="btn btn-default btn-sm"
-            (click)="onCancelButtonClick()"
-          >
-            {{ 'common.action.cancel' | translate }}
-          </button>
-        </li>
-      </ul>
-    </ng-template>
+    <h1 heading class="h5">
+      <i class="fa fa-search"></i>
+      {{ 'user-group.student-search.find-students-prompt' | translate }}
+    </h1>
+    <ul controls class="list-unstyled list-inline">
+      <li *ngIf="group.id != null">
+        <button
+          type="button"
+          class="btn btn-danger btn-sm"
+          [disabled]="deleteButtonDisabled"
+          (click)="deleteModal.show()"
+        >
+          <i class="fa fa-trash"></i>
+          {{ 'common.action.delete' | translate }}
+        </button>
+      </li>
+      <li>
+        <button
+          type="submit"
+          class="btn btn-primary btn-sm"
+          [disabled]="saveButtonDisabled"
+          (click)="onSaveButtonClick()"
+        >
+          <i class="fa fa-save"></i>
+          {{ 'common.action.save' | translate }}
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="btn btn-default btn-sm"
+          (click)="onCancelButtonClick()"
+        >
+          {{ 'common.action.cancel' | translate }}
+        </button>
+      </li>
+    </ul>
   </page-heading>
 
   <div class="row">

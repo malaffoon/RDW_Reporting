@@ -1,18 +1,18 @@
+import { ConfigurationProperty } from './configuration-property';
+
 /**
  * Holds information regarding an RDW tenant configuration
  */
-import { ConfigurationProperty } from './configuration-property';
-
 export interface TenantConfiguration {
+  /**
+   * The unique external id for the tenant
+   */
+  id?: string;
+
   /**
    * The unique internal key for the tenant
    */
   code: string;
-
-  /**
-   * The unique external id for the tenant
-   */
-  id: string;
 
   /**
    * A human readable label, name, or description of the tenant

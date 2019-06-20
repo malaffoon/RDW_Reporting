@@ -9,7 +9,7 @@
               'aggregate-report-form.section.organization.heading' | translate
             }}
           </h3>
-          <p class="text-muted small">
+          <p class="small">
             {{
               'aggregate-report-form.section.organization.subtext' | translate
             }}
@@ -27,7 +27,7 @@
               ></span>
               <organization-typeahead
                 #organizationTypeahead
-                id="organization-selector"
+                name="organization-selector"
                 [options]="organizationTypeaheadOptions"
                 (selected)="onOrganizationTypeaheadSelect($event)"
               ></organization-typeahead>
@@ -273,7 +273,7 @@
           <h3>
             {{ 'aggregate-report-form.tab.subgroup-and-filter' | translate }}
           </h3>
-          <p class="text-muted small">
+          <p class="small">
             {{
               'aggregate-report-form.section.comparative-subgroups-subtext'
                 | translate
@@ -312,7 +312,7 @@
                     | translate
                 }}
               </h3>
-              <p class="text-muted small">
+              <p class="small">
                 {{
                   'aggregate-report-form.section.subgroup-filters-subtext'
                     | translate
@@ -417,7 +417,7 @@
         <h3>
           {{ 'aggregate-report-form.section.preview-heading' | translate }}
         </h3>
-        <p class="text-muted small">
+        <p class="small">
           {{
             'aggregate-report-form.section.preview-heading-subtext' | translate
           }}

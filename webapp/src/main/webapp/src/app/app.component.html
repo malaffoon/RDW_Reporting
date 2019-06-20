@@ -50,8 +50,9 @@
                     applicationSettings ? applicationSettings.userGuideUrl : '#'
                   }}"
                   target="_blank"
-                  >{{ 'common.navigation.user-guide' | translate }}</a
                 >
+                  {{ 'common.navigation.user-guide' | translate }}
+                </a>
               </li>
               <li class="navbar-link nav-item" *ngIf="!isAnonymousUser()">
                 <a
@@ -63,14 +64,6 @@
                   target="_blank"
                   style="margin-top:-24px"
                 >
-                  <small class="hidden-xs">{{
-                    'home.welcome.interpretive-guide-subtitle' | translate
-                  }}</small
-                  ><br /><span class="visible-xs-inline"
-                    >{{
-                      'home.welcome.interpretive-guide-subtitle' | translate
-                    }}
-                  </span>
                   {{ 'common.navigation.interpretive-guide' | translate }}
                 </a>
               </li>

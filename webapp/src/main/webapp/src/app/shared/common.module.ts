@@ -45,19 +45,9 @@ import { SubjectModule } from '../subject/subject.module';
 import { OrderingService } from './ordering/ordering.service';
 import { RdwNotificationsModule } from './notification/notifications.module';
 import { InstructionalResourcePopoverComponent } from './component/instructional-resource-popover/instructional-resource-popover.component';
+import { ConfirmationModalComponent } from './component/confirmation-modal/confirmation-modal.component';
 
 @NgModule({
-  declarations: [
-    OptionalPipe,
-    OrderSelectorComponent,
-    ScrollNavComponent,
-    SBCheckboxList,
-    SBRadioButtonComponent,
-    SBToggleComponent,
-    ScaleScoreComponent,
-    InViewDirective,
-    InstructionalResourcePopoverComponent
-  ],
   imports: [
     AlertModule,
     Angulartics2Module.forRoot(),
@@ -94,8 +84,22 @@ import { InstructionalResourcePopoverComponent } from './component/instructional
     }),
     SubjectModule
   ],
+  declarations: [
+    ConfirmationModalComponent,
+    OptionalPipe,
+    OrderSelectorComponent,
+    ScrollNavComponent,
+    SBCheckboxList,
+    SBRadioButtonComponent,
+    SBToggleComponent,
+    ScaleScoreComponent,
+    InViewDirective,
+    InstructionalResourcePopoverComponent
+  ],
+  entryComponents: [ConfirmationModalComponent],
   exports: [
     CommonEmbargoModule,
+    ConfirmationModalComponent,
     OptionalPipe,
     OrderSelectorComponent,
     ScrollNavComponent,
