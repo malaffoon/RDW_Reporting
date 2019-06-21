@@ -3,4 +3,5 @@ export interface User {
   readonly lastName: string;
   readonly permissions: string[];
   readonly anonymous?: boolean;
+  readonly sessionRefreshUrl?: string;
 }
