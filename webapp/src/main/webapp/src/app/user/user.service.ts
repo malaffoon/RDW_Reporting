@@ -21,7 +21,8 @@ export class UserService {
         firstName: serverUser.firstName,
         lastName: serverUser.lastName,
         permissions: serverUser.permissions,
-        anonymous: serverUser.anonymous
+        anonymous: serverUser.anonymous,
+        sessionRefreshUrl: serverUser.sessionRefreshUrl
       })),
       catchError(() => UnauthenticatedUser)
     );
