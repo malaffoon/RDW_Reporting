@@ -16,17 +16,4 @@ describe('computeEffectiveYears', () => {
       98
     ]);
   });
-
-  it('should support grade code gaps', () => {
-    expect(computeEffectiveYears(100, ['05', '03', '01'])).toEqual([
-      100,
-      98,
-      96
-    ]);
-    expect(computeEffectiveYears(100, ['10', '04', '01'])).toEqual([
-      100,
-      94,
-      91
-    ]);
-  });
 });

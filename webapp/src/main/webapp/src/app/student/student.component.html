@@ -1,8 +1,16 @@
-<form [formGroup]="searchForm" (ngSubmit)="performSearch()" class="form-group">
-  <div class="form-group">
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div
+    *ngIf="formGroup.controls.ssid as control"
+    class="form-group"
+    [ngClass]="{
+      'has-error': studentNotFound
+    }"
+  >
     <div class="flex-children">
       <div class="flex-child grow">
-        <label for="student-id-input">{{ 'student.title' | translate }}</label>
+        <label for="student-id-input">
+          {{ 'student.title' | translate }}
+        </label>
         <input
           formControlName="ssid"
           type="text"
@@ -16,14 +24,16 @@
         <button
           type="submit"
           class="btn btn-primary"
-          [disabled]="searchForm.invalid"
+          [disabled]="formGroup.invalid"
         >
           {{ 'common.action.search' | translate }}
         </button>
       </div>
     </div>
+    <span class="help-block" role="alert">
+      <ng-container *ngIf="studentNotFound">
+        {{ 'student.no-results-message' | translate }}
+      </ng-container>
+    </span>
   </div>
 </form>
-<div *ngIf="studentNotFound" class="alert alert-danger">
-  {{ 'student.no-results-message' | translate }}
-</div>
