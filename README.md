@@ -204,4 +204,13 @@ tenantProperties:
       key: TS
       name: Test Tenant
 ```
-NOTE: do NOT check in this change to the file!
+2. And if for SandboxCreation, a list of datasets is required. Locally they won't exist.
+so if you add the following to your application.yml to list 'available' datasets.
+# Only here for local Dev for Sandbox creation, not real dataSets
+sandbox-properties:
+  sandboxDatasets:
+    - label: Demo Dataset
+      id: demo-dataset
+    - label: SBAC Dataset
+      id: sbac-dataset
+**NOTE: do NOT check in this change to the file!**

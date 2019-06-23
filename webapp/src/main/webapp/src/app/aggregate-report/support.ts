@@ -13,19 +13,31 @@ import { isNullOrEmpty } from '../shared/support/support';
 const OverallDimensionType: string = 'Overall';
 
 /**
- * @param {number} endYear The year to start the list with
- * @param {string[]} gradeCodes The consecutive grade codes covered by the report
- * @returns {number[]} an array of years starting with the end year followed by the expected years corresponding to the grades
+ * Computes a range of integers
+ *
+ * @param start The integer to start with
+ * @param length The total number of integers to produce
+ */
+function integerRange(start: number, length: number): number[] {
+  const range = [start];
+  for (let i = 1; i < length; i++) {
+    range.push(start + i);
+  }
+  return range;
+}
+
+/**
+ * @param endYear The year to start the list with
+ * @param gradeCodes The consecutive grade codes covered by the report (there cannot be gaps)
  */
 export function computeEffectiveYears(
   endYear: number,
   gradeCodes: string[]
 ): number[] {
-  // This is not foolproof and assumes each grade code can be parsed into a numeric value
-  return gradeCodes
-    .map(code => Number.parseInt(code))
-    .sort((a, b) => b - a)
-    .map((grade, index, grades) => endYear - (grades[0] - grade));
+  return integerRange(
+    endYear - (gradeCodes.length - 1),
+    gradeCodes.length
+  ).reverse();
 }
 
 /**

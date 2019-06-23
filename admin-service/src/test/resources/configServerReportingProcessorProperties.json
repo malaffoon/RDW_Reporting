@@ -1,0 +1,96 @@
+{
+  "name": "rdw-reporting-report-processor",
+  "profiles": [
+    "*"
+  ],
+  "label": null,
+  "version": null,
+  "state": null,
+  "propertySources": [
+    {
+      "name": "https://gitlab.com/fairwaytech/rdw_config.git/tenant-TS/application.yml",
+      "source": {
+        "tenantProperties.tenants.TS.id": "TS",
+        "tenantProperties.tenants.TS.key": "TS",
+        "tenantProperties.tenants.TS.name": "Test Tenant",
+        "archive.tenants.TS.path-prefix": "TS",
+        "datasources.reporting_ro.tenants.TS.password":"tsReportingRoPassword",
+        "datasources.reporting_ro.tenants.TS.urlParts.database":"ts_reporting",
+        "datasources.reporting_rw.tenants.TS.password":"tsReportingRwPassword",
+        "datasources.reporting_rw.tenants.TS.urlParts.database":"ts_reporting",
+        "datasources.warehouse_rw.tenants.TS.password":"tsWarehouseRwPassword",
+        "datasources.warehouse_rw.tenants.TS.urlParts.database":"ts_warehouse",
+        "datasources.olap_ro.tenants.TS.schemaSearchPath":"tsOlapSchemaPath",
+        "datasources.olap_ro.tenants.TS.password":"tsOlapRoPassword",
+        "reporting.tenants.TS.state.code": "TS",
+        "reporting.tenants.TS.state.name": "Test State",
+        "reporting.tenants.TS.student-fields.EconomicDisadvantage": "admin",
+        "reporting.tenants.TS.student-fields.LimitedEnglishProficiency": "enabled",
+        "reporting.tenants.TS.student-fields.MigrantStatus": "enabled",
+        "reporting.tenants.TS.student-fields.EnglishLanguageAcquisitionStatus": "disabled",
+        "reporting.tenants.TS.student-fields.PrimaryLanguage": "enabled",
+        "reporting.tenants.TS.student-fields.Ethnicity": "enabled",
+        "reporting.tenants.TS.student-fields.Gender": "enabled",
+        "reporting.tenants.TS.student-fields.IndividualEducationPlan": "admin",
+        "reporting.tenants.TS.student-fields.MilitaryStudentIdentifier": "enabled",
+        "reporting.tenants.TS.student-fields.Section504": "admin"
+      }
+    },
+    {
+      "name": "https://gitlab.com/fairwaytech/rdw_config.git/tenant-CA/application.yml",
+      "source": {
+        "tenantProperties.tenants.CA.id": "CA",
+        "tenantProperties.tenants.CA.key": "CA",
+        "tenantProperties.tenants.CA.name": "California",
+        "datasources.reporting_ro.tenants.CA.password":"caReportingRoPassword",
+        "datasources.reporting_ro.tenants.CA.urlParts.database":"reporting",
+        "datasources.reporting_rw.tenants.CA.urlParts.database":"reporting",
+        "datasources.reporting_rw.tenants.CA.password":"caReportingRwPassword",
+        "datasources.warehouse_rw.tenants.CA.urlParts.database":"warehouse",
+        "datasources.warehouse_rw.tenants.CA.password":"caWarehouseRwPassword",
+        "datasources.olap_ro.tenants.CA.schemaSearchPath":"caOlapSchemaPath",
+        "datasources.olap_ro.tenants.CA.password":"caOlapRoPassword",
+        "reporting.tenants.CA.state.code": "CA",
+        "reporting.tenants.CA.state.name": "California",
+        "reporting.tenants.CA.student-fields.EconomicDisadvantage": "disabled",
+        "reporting.tenants.CA.student-fields.LimitedEnglishProficiency": "disabled",
+        "reporting.tenants.CA.student-fields.MigrantStatus": "enabled",
+        "reporting.tenants.CA.student-fields.EnglishLanguageAcquisitionStatus": "enabled",
+        "reporting.tenants.CA.student-fields.PrimaryLanguage": "enabled",
+        "reporting.tenants.CA.student-fields.Ethnicity": "enabled",
+        "reporting.tenants.CA.student-fields.Gender": "disabled",
+        "reporting.tenants.CA.student-fields.IndividualEducationPlan": "disabled",
+        "reporting.tenants.CA.student-fields.MilitaryStudentIdentifier": "disabled",
+        "reporting.tenants.CA.student-fields.Section504": "disabled"
+      }
+    },
+    {
+      "name": "https://gitlab.com/fairwaytech/rdw_config.git/rdw-reporting-report-processor.yml",
+      "source": {
+        "app.wkhtmltopdf.url": "http://wkhtmltopdf"
+      }
+    },
+    {
+      "name": "https://gitlab.com/fairwaytech/rdw_config.git/application.yml",
+      "source": {
+        "logging.level.org.springframework.cloud.config.client.ConfigServicePropertySourceLocator": "warn",
+        "server.max-http-header-size": 131072,
+        "spring.rabbitmq.host": "rabbitmq",
+        "datasources.migrate_rw.url-server": "host.docker.internal:3306",
+        "datasources.migrate_rw.url-schema": "not_a_schema",
+        "datasources.olap_ro": "",
+        "datasources.olap_rw": "",
+        "datasources.reporting_ro.url-server": "host.docker.internal:3306",
+        "datasources.reporting_ro.url-schema": "not_a_schema",
+        "datasources.reporting_rw.url-server": "host.docker.internal:3306",
+        "datasources.reporting_rw.url-schema": "not_a_schema",
+        "datasources.warehouse_rw.url-server": "host.docker.internal:3306",
+        "datasources.warehouse_rw.url-schema": "not_a_schema",
+        "reporting.client": 98765,
+        "reporting.school-year": 2019,
+        "reporting.transfer-access-enabled": true,
+        "reporting.translation-location": "binary-${spring.cloud.config.uri}/*/*/master/i18n/"
+      }
+    }
+  ]
+}
