@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { Utils, uuid } from '../shared/support/support';
 
 @Component({
   selector: 'sandbox-login',
@@ -83,6 +84,10 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
     const encode = encodeURIComponent;
     window.location.href = `/sandbox/login?sandbox=${encode(
       sandbox.key
-    )}&username=${encode(username)}&role=${encode(role.id)}`;
+    )}&username=${encode(username)}&role=${encode(role.id)}&userId=${encode(
+      uuid()
+    )}&sandboxLocked=${encode(
+      this.formGroup.controls.sandbox.disabled.toString()
+    )}`;
   }
 }
