@@ -1,48 +1,79 @@
 {
-  "scopedTarget.reportingDataSourceElementsProperties": {
-    "prefix": "datasources.reporting_ro",
-    "properties": {
-      "urlParts": {
-        "protocol": "jdbc:mysql:",
-        "hosts": "host.docker.internal:3306",
-        "database": "reporting",
-        "properties": "useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&connectTimeout=10000&socketTimeout=40000"
+  "scopedTarget.dataSourceElementsProperties":{
+    "prefix":"datasources.reporting_ro",
+    "properties":{
+      "schemaSearchPath":null,
+      "urlParts":{
+        "protocol":"jdbc:mysql:",
+        "hosts":"host.docker.internal:3306",
+        "database":"not_a_schema",
+        "properties":"useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&connectTimeout=10000&socketTimeout=40000"
       },
-      "tenants": {
-        "CA": {
-          "url": null,
-          "urlParts": null,
-          "jdbcInterceptors": null,
-          "username": null,
-          "password": null,
-          "testWhileIdle": null,
-          "validationQuery": null,
-          "validationQueryTimeout": null,
-          "driverClassName": null,
-          "initialSize": 1,
-          "maxActive": 2,
-          "minIdle": null,
-          "maxIdle": null,
-          "removeAbandoned": null,
-          "removeAbandonedTimeout": null,
-          "logAbandoned": null
+      "tenants":{
+        "CA":{
+          "url":null,
+          "urlParts":{
+            "protocol":null,
+            "hosts":null,
+            "database":"reporting",
+            "properties":null
+          },
+          "jdbcInterceptors":null,
+          "username":null,
+          "password":null,
+          "schemaSearchPath":null,
+          "testWhileIdle":null,
+          "validationQuery":null,
+          "validationQueryTimeout":null,
+          "driverClassName":null,
+          "initialSize":null,
+          "maxActive":null,
+          "minIdle":null,
+          "maxIdle":null,
+          "removeAbandoned":null,
+          "removeAbandonedTimeout":null,
+          "logAbandoned":null
+        },
+        "TS":{
+          "url":null,
+          "urlParts":{
+            "protocol":null,
+            "hosts":null,
+            "database":"ts_reporting",
+            "properties":null
+          },
+          "jdbcInterceptors":null,
+          "username":null,
+          "password":null,
+          "schemaSearchPath":null,
+          "testWhileIdle":null,
+          "validationQuery":null,
+          "validationQueryTimeout":null,
+          "driverClassName":null,
+          "initialSize":null,
+          "maxActive":null,
+          "minIdle":null,
+          "maxIdle":null,
+          "removeAbandoned":null,
+          "removeAbandonedTimeout":null,
+          "logAbandoned":null
         }
       },
-      "jdbcInterceptors": "QueryTimeoutInterceptor(queryTimeout=30)",
-      "minIdle": 4,
-      "validationQuery": "SELECT 1",
-      "initialSize": 4,
-      "url": "jdbc:mysql://host.docker.internal:3306/reporting?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&connectTimeout=10000&socketTimeout=40000",
-      "logAbandoned": false,
-      "password": "******",
-      "testWhileIdle": true,
-      "maxIdle": 10,
-      "removeAbandoned": false,
-      "driverClassName": "com.mysql.jdbc.Driver",
-      "removeAbandonedTimeout": 60,
-      "username": "root",
-      "validationQueryTimeout": 10000,
-      "maxActive": 10
+      "jdbcInterceptors":"QueryTimeoutInterceptor(queryTimeout=30)",
+      "minIdle":4,
+      "validationQuery":"SELECT 1",
+      "initialSize":4,
+      "url":"jdbc:mysql://host.docker.internal:3306/not_a_schema?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&connectTimeout=10000&socketTimeout=40000",
+      "logAbandoned":false,
+      "password":"******",
+      "testWhileIdle":true,
+      "maxIdle":10,
+      "removeAbandoned":false,
+      "driverClassName":"com.mysql.jdbc.Driver",
+      "removeAbandonedTimeout":60,
+      "username":"root",
+      "validationQueryTimeout":10000,
+      "maxActive":10
     }
   }
 }
