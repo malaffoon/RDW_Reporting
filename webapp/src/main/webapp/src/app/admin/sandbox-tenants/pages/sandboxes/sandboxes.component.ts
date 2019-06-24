@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
 import { DeleteSandboxConfigurationModalComponent } from '../../modal/delete-sandbox.modal';
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
 import { SandboxStore } from '../../store/sandbox.store';
-import { UserService } from '../../../../user/user.service';
 import { map } from 'rxjs/operators';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
+import { UserService } from '../../../../shared/security/user.service';
 
 @Component({
   selector: 'sandboxes',

@@ -7,10 +7,10 @@ import { TenantService } from '../../service/tenant.service';
 import { DeleteTenantConfigurationModalComponent } from '../../modal/delete-tenant.modal';
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
 import { TenantStore } from '../../store/tenant.store';
-import { UserService } from '../../../../user/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { map } from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/notification/notification.service';
+import { UserService } from '../../../../shared/security/user.service';
 
 @Component({
   selector: 'tenants',

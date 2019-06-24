@@ -13,7 +13,6 @@ import { CurrentSchoolResolve } from './results/current-school.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { ReportModule } from '../report/report.module';
 import { TypeaheadModule } from 'ngx-bootstrap';
-import { UserModule } from '../user/user.module';
 import { SchoolAssessmentExportService } from './results/school-assessment-export.service';
 import { OrganizationService } from '../shared/organization/organization.service';
 import { SchoolService as CommonSchoolService } from '../shared/school/school.service';
@@ -26,7 +25,6 @@ import { SchoolService as CommonSchoolService } from '../shared/school/school.se
   declarations: [SchoolGradeComponent, SchoolResultsComponent],
   imports: [
     CommonModule,
-    UserModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,

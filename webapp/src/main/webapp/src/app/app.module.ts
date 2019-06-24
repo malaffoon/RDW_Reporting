@@ -9,12 +9,10 @@ import {
   TabsModule
 } from 'ngx-bootstrap';
 import { CommonModule } from './shared/common.module';
-import { UserModule } from './user/user.module';
 import { routes } from './app.routes';
 import { RouteReuseStrategy, RouterModule, ROUTES } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { RdwRouteReuseStrategy } from './shared/rdw-route-reuse.strategy';
 import { ErrorComponent } from './error/error.component';
 import { AccessDeniedComponent } from './error/access-denied/access-denied.component';
@@ -41,7 +39,6 @@ import { SandboxLoginModule } from './sandbox/sandbox-login.module';
     HttpModule,
     OrganizationExportModule,
     RouterModule.forRoot([]),
-    UserModule,
     FormsModule,
     SandboxLoginModule,
     BsDropdownModule.forRoot(),

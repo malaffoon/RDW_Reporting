@@ -1,14 +1,11 @@
-<page-heading>
-  <h1 heading class="h2">{{ 'access-denied.title' | translate }}</h1>
-</page-heading>
-
+<h1 class="h2">
+  {{ 'access-denied.title' | translate }}
+</h1>
 <div class="well">
   <p>{{ 'access-denied.message' | translate }}</p>
-  <a
-    class="btn btn-primary"
-    href="javascript:void(0)"
-    onclick="window.document.logout.submit()"
-    >{{ 'access-denied.logout' | translate }}</a
-  >
-  <form name="logout" method="post" action="/saml/logout" class="hidden"></form>
+  <form name="logout" method="post" action="{{ logoutUrl$ | async }}">
+    <button type="submit" class="btn btn-primary" href="javascript:void(0)">
+      {{ 'access-denied.logout' | translate }}
+    </button>
+  </form>
 </div>
