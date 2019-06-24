@@ -82,7 +82,6 @@ export const FieldProviders: FactoryProvider[] = [
     UserReportTableComponent,
     UserQueryTableComponent
   ],
-  entryComponents: [DeleteModalComponent, PrintableReportFormModalComponent],
-  exports: [PrintableReportFormModalComponent, ReportsComponent]
+  entryComponents: [DeleteModalComponent, PrintableReportFormModalComponent]
 })
 export class ReportModule {}

@@ -34,7 +34,6 @@ import { TableModule } from 'primeng/table';
     TableModule,
     TypeaheadModule.forRoot()
   ],
-  exports: [InstructionalResourceComponent],
   providers: [
     AssessmentService,
     InstructionalResourceService,

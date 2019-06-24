@@ -4,7 +4,9 @@ import { UserGroupOptions } from './user-group-options';
 import { map } from 'rxjs/operators';
 import { SubjectService } from '../subject/subject.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserGroupOptionsService {
   constructor(private subjectService: SubjectService) {}
 

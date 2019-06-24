@@ -20,7 +20,6 @@ import { TableModule } from 'primeng/table';
     ModalModule.forRoot(),
     TableModule
   ],
-  exports: [GroupsComponent],
   providers: [GroupService]
 })
 export class GroupsModule {}
