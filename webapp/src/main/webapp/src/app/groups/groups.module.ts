@@ -12,7 +12,6 @@ import { GroupAssessmentResolve } from './results/group-assessment.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { ReportModule } from '../report/report.module';
 import { PopoverModule, TabsModule } from 'ngx-bootstrap';
-import { UserModule } from '../user/user.module';
 import { GroupAssessmentExportService } from './results/group-assessment-export.service';
 import { GroupService } from './group.service';
 import { TableModule } from 'primeng/table';
@@ -39,7 +38,6 @@ import { GroupTabsComponent } from './group-tabs.component';
     SharedModule,
     TableModule,
     TabsModule.forRoot(),
-    UserModule,
     UserGroupModule
   ],
   exports: [GroupTabsComponent],

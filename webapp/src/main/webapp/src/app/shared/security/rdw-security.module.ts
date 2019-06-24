@@ -17,6 +17,7 @@ import {
 } from './routing-authorization.can-activate';
 import { AuthorizationCanActivate } from './authorization.can-activate';
 import { DecryptionService } from './decryption.service';
+import { UserPermissionService } from './user-permission.service';
 
 /**
  * Common security module.
@@ -33,8 +34,8 @@ import { DecryptionService } from './decryption.service';
     BrowserModule,
     RdwCoreModule,
     // These can be overridden in the consuming apps
-    RouterModule.forRoot([]),
-    TranslateModule.forRoot()
+    RouterModule,
+    TranslateModule
   ],
   exports: [SessionExpiredComponent, AuthorizationDirective],
   providers: [
@@ -46,7 +47,7 @@ import { DecryptionService } from './decryption.service';
     AuthorizationService,
     AuthorizationCanActivate,
     RoutingAuthorizationCanActivate,
-    PermissionService
+    { provide: PermissionService, useClass: UserPermissionService }
   ]
 })
 export class RdwSecurityModule {}

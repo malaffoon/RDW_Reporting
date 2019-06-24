@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AssessmentsModule } from '../assessments/assessments.module';
 import { FormsModule } from '@angular/forms';
 import { PopoverModule } from 'ngx-bootstrap';
-import { UserModule } from '../user/user.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '../shared/common.module';
 import { TableModule } from 'primeng/table';
@@ -32,8 +31,7 @@ import { StudentAssessmentCardComponent } from './student-dashboard/student-asse
     PopoverModule.forRoot(),
     ReportModule,
     SharedModule,
-    TableModule,
-    UserModule
+    TableModule
   ],
   exports: [GroupAssessmentCardComponent, StudentAssessmentCardComponent],
   providers: [GroupDashboardService, MeasuredAssessmentMapper]

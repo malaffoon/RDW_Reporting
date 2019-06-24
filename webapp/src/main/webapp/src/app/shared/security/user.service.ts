@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { User } from './user';
-import { CachingDataService } from '../shared/data/caching-data.service';
 import { catchError, map } from 'rxjs/operators';
+import { CachingDataService } from '../data/caching-data.service';
 
 const UnauthenticatedUser = of({
   firstName: '',
@@ -12,7 +12,9 @@ const UnauthenticatedUser = of({
   anonymous: true
 });
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserService {
   constructor(private dataService: CachingDataService) {}
 

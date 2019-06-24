@@ -6,13 +6,11 @@ import { Injectable } from '@angular/core';
  * This should be overridden with a permission service that provides the user permissions
  */
 @Injectable()
-export class PermissionService {
+export abstract class PermissionService {
   /**
    * Gets the user permissions
    *
    * @returns {Observable<string[]>} array of permission identifiers
    */
-  getPermissions(): Observable<string[]> {
-    return of([]);
-  }
+  abstract getPermissions(): Observable<string[]>;
 }

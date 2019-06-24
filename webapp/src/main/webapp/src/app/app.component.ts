@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserService } from './user/user.service';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -8,15 +7,16 @@ import {
   Router
 } from '@angular/router';
 import { Location, PopStateEvent, registerLocaleData } from '@angular/common';
-import { User } from './user/user';
 import { LanguageStore } from './shared/i18n/language.store';
 import { SpinnerModal } from './shared/loading/spinner.modal';
 import { ApplicationSettings } from './app-settings';
 import { ApplicationSettingsService } from './app-settings.service';
-import { forkJoin, throwError as _throw } from 'rxjs';
-import { catchError, mergeMap } from 'rxjs/operators';
+import { throwError as _throw } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import localeEs from '@angular/common/locales/es';
+import { UserService } from './shared/security/user.service';
+import { User } from './shared/security/user';
 
 @Component({
   selector: 'app-component',
