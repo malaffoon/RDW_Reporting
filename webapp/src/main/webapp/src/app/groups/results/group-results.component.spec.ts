@@ -18,7 +18,7 @@ import { MockUserService } from '../../../test/mock.user.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { ReportFormService } from '../../report/service/report-form.service';
-import { UserService } from '../../shared/security/user.service';
+import { UserService } from '../../shared/security/service/user.service';
 
 let availableGrades = [];
 

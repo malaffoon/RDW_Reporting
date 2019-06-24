@@ -1,4 +1,4 @@
-import { SecuritySettings } from './security-settings';
+import { SecuritySettings } from '../state/security-settings';
 import { Observable } from 'rxjs';
 
 /**

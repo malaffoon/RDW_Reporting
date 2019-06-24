@@ -1,6 +1,6 @@
-import { AuthorizationCanActivate } from '../shared/security/authorization.can-activate';
 import { ReportsComponent } from './reports.component';
 import { Route } from '@angular/router';
+import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has-any-permission.can-activate';
 
 export const reportRoutes: Route[] = [
   {
@@ -10,7 +10,7 @@ export const reportRoutes: Route[] = [
       breadcrumb: { translate: 'reports.heading' },
       permissions: ['GROUP_PII_READ']
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     component: ReportsComponent
   }
 ];

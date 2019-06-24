@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
-import { AuthorizationCanActivate } from '../shared/security/authorization.can-activate';
 import { GroupAssessmentResolve } from './results/group-assessment.resolve';
 import { GroupResultsComponent } from './results/group-results.component';
 import { studentRoutes } from '../student/student.routes';
 import { GroupDashboardComponent } from '../dashboard/group-dashboard/group-dashboard.component';
+import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has-any-permission.can-activate';
 
 export const groupRoutes: Route[] = [
   {
@@ -12,7 +12,7 @@ export const groupRoutes: Route[] = [
       breadcrumb: { translate: 'groups.heading' },
       permissions: ['GROUP_PII_READ']
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',
@@ -30,7 +30,7 @@ export const groupRoutes: Route[] = [
       breadcrumb: { translate: 'group-dashboard.name' },
       permissions: ['GROUP_PII_READ']
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',

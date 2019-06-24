@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { UserService } from '../../shared/security/user.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserService } from '../../service/user.service';
 
 @Component({
   selector: 'access-denied',

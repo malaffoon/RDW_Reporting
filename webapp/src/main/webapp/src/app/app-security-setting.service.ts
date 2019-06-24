@@ -1,14 +1,15 @@
-import { SecuritySettingService } from './shared/security/security-settings.service';
 import { Injectable } from '@angular/core';
-import {
-  Resource,
-  SecuritySettings
-} from './shared/security/security-settings';
 import { Observable } from 'rxjs';
-import { UserService } from './shared/security/user.service';
 import { ApplicationSettingsService } from './app-settings.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { map } from 'rxjs/operators';
+import {
+  Resource,
+  SecuritySettings
+} from './shared/security/state/security-settings';
+import { SecuritySettingService } from './shared/security/service/security-settings.service';
+import { UserService } from './shared/security/service/user.service';
+import { tap } from 'rxjs/internal/operators/tap';
 
 const defaultAccessDenied: Resource = {
   internal: true,
@@ -46,11 +47,14 @@ export class ApplicationSecuritySettingService extends SecuritySettingService {
             : null;
 
         return {
-          logoutUrl: user.logoutUrl,
+          permissions: user.permissions,
           sessionRefresh,
           accessDenied,
           sessionExpired: defaultSessionExpired
         };
+      }),
+      tap(securitySettings => {
+        console.log({ securitySettings });
       })
     );
   }

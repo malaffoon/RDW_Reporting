@@ -1,6 +1,6 @@
-import { AuthorizationCanActivate } from '../shared/security/authorization.can-activate';
 import { OrganizationExportComponent } from './organization-export.component';
 import { Route } from '@angular/router';
+import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has-any-permission.can-activate';
 
 export const organizationExportRoutes: Route[] = [
   {
@@ -10,7 +10,7 @@ export const organizationExportRoutes: Route[] = [
       breadcrumb: { translate: 'organization-export.title' },
       permissions: ['INDIVIDUAL_PII_READ']
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     component: OrganizationExportComponent
   }
 ];

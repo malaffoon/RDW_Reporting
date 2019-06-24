@@ -22,10 +22,6 @@ import { RdwMenuModule } from './menu/rdw-menu.module';
 import { RdwPreferenceModule } from './preference/rdw-preference.module';
 import { RdwSecurityModule } from './security/rdw-security.module';
 import { RdwTranslateLoader } from './i18n/rdw-translate-loader';
-import {
-  AuthenticationServiceAuthenticationExpiredRoute,
-  AuthenticationServiceDefaultAuthenticationRoute
-} from './security/authentication.service';
 import { OrganizationModule } from './organization/organization.module';
 import { ScrollNavComponent } from './nav/scroll-nav.component';
 import { OptionalPipe } from './optional.pipe';
@@ -46,6 +42,7 @@ import { OrderingService } from './ordering/ordering.service';
 import { RdwNotificationsModule } from './notification/notifications.module';
 import { InstructionalResourcePopoverComponent } from './component/instructional-resource-popover/instructional-resource-popover.component';
 import { ConfirmationModalComponent } from './component/confirmation-modal/confirmation-modal.component';
+import { ErrorComponent } from './component/error/error.component';
 
 @NgModule({
   imports: [
@@ -86,6 +83,7 @@ import { ConfirmationModalComponent } from './component/confirmation-modal/confi
   ],
   declarations: [
     ConfirmationModalComponent,
+    ErrorComponent,
     OptionalPipe,
     OrderSelectorComponent,
     ScrollNavComponent,
@@ -100,6 +98,7 @@ import { ConfirmationModalComponent } from './component/confirmation-modal/confi
   exports: [
     CommonEmbargoModule,
     ConfirmationModalComponent,
+    ErrorComponent,
     OptionalPipe,
     OrderSelectorComponent,
     ScrollNavComponent,
@@ -130,18 +129,6 @@ import { ConfirmationModalComponent } from './component/confirmation-modal/confi
     InstructionalResourcePopoverComponent,
     SubjectModule
   ],
-  providers: [
-    {
-      provide: AuthenticationServiceAuthenticationExpiredRoute,
-      useValue: 'session-expired'
-    },
-    {
-      provide: AuthenticationServiceDefaultAuthenticationRoute,
-      useValue: 'home'
-    },
-    DataTableService,
-    OrderingService,
-    TargetService
-  ]
+  providers: [DataTableService, OrderingService, TargetService]
 })
 export class CommonModule {}

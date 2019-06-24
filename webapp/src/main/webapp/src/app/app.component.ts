@@ -15,8 +15,8 @@ import { throwError as _throw } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import localeEs from '@angular/common/locales/es';
-import { UserService } from './shared/security/user.service';
-import { User } from './shared/security/user';
+import { User } from './shared/security/state/user';
+import { UserService } from './shared/security/service/user.service';
 
 @Component({
   selector: 'app-component',

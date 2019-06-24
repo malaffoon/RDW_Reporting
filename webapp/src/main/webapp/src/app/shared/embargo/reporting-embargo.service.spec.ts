@@ -5,8 +5,8 @@ import { inject, TestBed } from '@angular/core/testing';
 import { CachingDataService } from '../data/caching-data.service';
 import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../app-settings.service';
-import { UserService } from '../security/user.service';
-import { User } from '../security/user';
+import { UserService } from '../security/service/user.service';
+import { User } from '../security/state/user';
 
 describe('ReportingEmbargoService', () => {
   let service: ReportingEmbargoService;

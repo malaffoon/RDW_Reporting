@@ -8,9 +8,6 @@ import { Assessment } from '../../assessments/model/assessment';
 import { ExamItemScore } from '../../assessments/model/exam-item-score.model';
 import { Student } from '../model/student.model';
 import { OptionalPipe } from '../../shared/optional.pipe';
-import { AuthorizationDirective } from '../../shared/security/authorization.directive';
-import { AuthorizationService } from '../../shared/security/authorization.service';
-import { PermissionService } from '../../shared/security/permission.service';
 import { WritingTraitScores } from '../../assessments/model/writing-trait-scores.model';
 import createSpy = jasmine.createSpy;
 import Spy = jasmine.Spy;
@@ -37,19 +34,8 @@ describe('StudentResponsesComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot(), RdwFormatModule],
-      declarations: [
-        AuthorizationDirective,
-        OptionalPipe,
-        StudentResponsesComponent
-      ],
-      providers: [
-        AuthorizationService,
-        {
-          provide: PermissionService,
-          useValue: { getPermissions: () => of([]) }
-        },
-        { provide: ActivatedRoute, useValue: route }
-      ],
+      declarations: [OptionalPipe, StudentResponsesComponent],
+      providers: [{ provide: ActivatedRoute, useValue: route }],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 

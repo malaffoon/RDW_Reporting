@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { SubjectService } from '../../subject/subject.service';
 import { flattenJsonObject, Utils } from '../support/support';
-import { UserService } from '../security/user.service';
+import { UserService } from '../security/service/user.service';
 
 const EmptyObservable = of({});
 const AssessmentTypes: string[] = ['iab', 'ica', 'sum'];

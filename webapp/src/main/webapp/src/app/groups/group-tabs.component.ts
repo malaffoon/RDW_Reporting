@@ -5,7 +5,7 @@ import { UserGroupService } from '../user-group/user-group.service';
 import { GroupService } from './group.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { UserService } from '../shared/security/user.service';
+import { UserService } from '../shared/security/service/user.service';
 
 @Component({
   selector: 'group-tabs',

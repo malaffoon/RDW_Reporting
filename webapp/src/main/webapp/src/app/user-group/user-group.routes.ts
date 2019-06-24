@@ -1,6 +1,6 @@
-import { AuthorizationCanActivate } from '../shared/security/authorization.can-activate';
 import { UserGroupComponent } from './user-group.component';
 import { UserGroupResolve } from './user-group.resolve';
+import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has-any-permission.can-activate';
 
 export const userGroupRoutes = [
   {
@@ -8,7 +8,7 @@ export const userGroupRoutes = [
     data: {
       permissions: ['GROUP_PII_READ']
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',

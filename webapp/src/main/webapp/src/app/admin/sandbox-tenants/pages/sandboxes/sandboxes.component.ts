@@ -10,7 +10,7 @@ import { SandboxStore } from '../../store/sandbox.store';
 import { map } from 'rxjs/operators';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
-import { UserService } from '../../../../shared/security/user.service';
+import { UserService } from '../../../../shared/security/service/user.service';
 
 @Component({
   selector: 'sandboxes',

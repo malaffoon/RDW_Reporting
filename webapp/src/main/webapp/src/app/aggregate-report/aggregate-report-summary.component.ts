@@ -391,6 +391,9 @@ export class AggregateReportSummary {
           )
         });
       }
+
+      console.log({ optionFilters, settingFilters });
+
       if (
         !equalSize(
           optionFilters.limitedEnglishProficiencies,

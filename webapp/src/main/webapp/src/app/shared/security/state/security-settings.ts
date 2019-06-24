@@ -3,15 +3,15 @@
  */
 export interface SecuritySettings {
   /**
-   * The URL for logging the authenticated user out
+   * The authenticated user permissions
    */
-  logoutUrl: string;
+  permissions: string[];
 
   /**
    * The URL used to refresh the authenticated user's session.
    * If absent. the page will be reloaded with the current route
    */
-  sessionRefresh: Resource;
+  sessionRefresh?: Resource;
 
   /**
    * Where to send the authenticated user when access is denied

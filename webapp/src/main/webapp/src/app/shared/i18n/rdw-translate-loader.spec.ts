@@ -7,7 +7,7 @@ import {
 import { inject, TestBed } from '@angular/core/testing';
 import { SubjectService } from '../../subject/subject.service';
 import { of } from 'rxjs';
-import { UserService } from '../security/user.service';
+import { UserService } from '../security/service/user.service';
 
 describe('RdwTranslateLoader', () => {
   const mockSubjectService = jasmine.createSpyObj('SubjectService', [

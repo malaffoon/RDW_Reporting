@@ -14,8 +14,6 @@ import { RouteReuseStrategy, RouterModule, ROUTES } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { RdwRouteReuseStrategy } from './shared/rdw-route-reuse.strategy';
-import { ErrorComponent } from './error/error.component';
-import { AccessDeniedComponent } from './error/access-denied/access-denied.component';
 import { OrganizationExportModule } from './organization-export/organization-export.module';
 import { AggregateReportsModule } from './aggregate-report/aggregate-reports.module';
 import { AdminModule } from './admin/admin.module';
@@ -25,11 +23,11 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { HomeModule } from './home/home.module';
 import { HttpModule } from '@angular/http';
 import { SandboxLoginModule } from './sandbox/sandbox-login.module';
-import { SecuritySettingService } from './shared/security/security-settings.service';
 import { ApplicationSecuritySettingService } from './app-security-setting.service';
+import { SecuritySettingService } from './shared/security/service/security-settings.service';
 
 @NgModule({
-  declarations: [AppComponent, ErrorComponent, AccessDeniedComponent],
+  declarations: [AppComponent],
   imports: [
     AdminModule,
     AggregateReportsModule,

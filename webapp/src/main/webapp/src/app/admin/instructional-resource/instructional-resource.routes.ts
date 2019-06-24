@@ -1,6 +1,6 @@
-import { AuthorizationCanActivate } from '../../shared/security/authorization.can-activate';
 import { Route } from '@angular/router';
 import { InstructionalResourceComponent } from './instructional-resource.component';
+import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/has-any-permission.can-activate';
 
 export const instructionalResourceRoutes: Route[] = [
   {
@@ -11,7 +11,7 @@ export const instructionalResourceRoutes: Route[] = [
       permissions: ['INSTRUCTIONAL_RESOURCE_WRITE'],
       denyAccess: true
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',

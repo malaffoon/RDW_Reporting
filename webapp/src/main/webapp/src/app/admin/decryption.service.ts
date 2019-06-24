@@ -1,10 +1,10 @@
-import { Observable, pipe } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { catchError, map } from 'rxjs/operators';
-import { AdminServiceRoute } from '../service-route';
-import { ResponseUtils } from '../response-utils';
-import { DataService } from '../data/data.service';
+import { catchError } from 'rxjs/operators';
 import { ResponseContentType } from '@angular/http';
+import { AdminServiceRoute } from '../shared/service-route';
+import { DataService } from '../shared/data/data.service';
+import { ResponseUtils } from '../shared/response-utils';
 
 const ResourceRoute = `${AdminServiceRoute}/config/decrypt`;
 
@@ -22,9 +22,6 @@ export class DecryptionService {
    * @param sandbox - The sandbox to create
    */
   decrypt(encryptedPassword: string): Observable<string> {
-    const httpOptions = {
-      responseType: 'text' as 'text'
-    };
     return this.dataService
       .post(`${ResourceRoute}`, encryptedPassword, {
         responseType: ResponseContentType.Text
