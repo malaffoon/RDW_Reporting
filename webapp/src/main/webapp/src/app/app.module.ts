@@ -25,6 +25,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { HomeModule } from './home/home.module';
 import { HttpModule } from '@angular/http';
 import { SandboxLoginModule } from './sandbox/sandbox-login.module';
+import { SecuritySettingService } from './shared/security/security-settings.service';
+import { ApplicationSecuritySettingService } from './app-security-setting.service';
 
 @NgModule({
   declarations: [AppComponent, ErrorComponent, AccessDeniedComponent],
@@ -60,6 +62,10 @@ import { SandboxLoginModule } from './sandbox/sandbox-login.module';
       provide: ANALYZE_FOR_ENTRY_COMPONENTS,
       multi: true,
       useValue: routes
+    },
+    {
+      provide: SecuritySettingService,
+      useClass: ApplicationSecuritySettingService
     }
   ],
   bootstrap: [AppComponent]

@@ -8,6 +8,7 @@ import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PermissionService } from './permission.service';
 import { map } from 'rxjs/operators';
+import { SecurityService } from './security.service';
 
 export const AccessDeniedRoute = new InjectionToken<string>(
   'AccessDeniedRoute'
@@ -21,7 +22,8 @@ export class RoutingAuthorizationCanActivate implements CanActivate {
   constructor(
     @Inject(AccessDeniedRoute) private accessDeniedRoute: string,
     private permissionService: PermissionService,
-    private router: Router
+    private router: Router,
+    private securityService: SecurityService
   ) {}
 
   canActivate(
@@ -32,9 +34,7 @@ export class RoutingAuthorizationCanActivate implements CanActivate {
       map(permissions => {
         const hasPermission: boolean = (permissions || []).length > 0;
         if (!hasPermission) {
-          this.router.navigate([this.accessDeniedRoute], {
-            skipLocationChange: true
-          });
+          this.securityService.handleAccessDenied();
         }
         return hasPermission;
       })
