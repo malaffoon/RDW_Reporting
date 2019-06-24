@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { WindowRefService } from '../../core/window-ref.service';
 import { map } from 'rxjs/operators';
 import { Resource } from '../state/security-settings';
-import { tap } from 'rxjs/internal/operators/tap';
 
 @Injectable({
   providedIn: 'root'
@@ -34,17 +33,9 @@ export class SecurityService {
   }
 
   refreshSession(): void {
-    this.settingService
-      .getSettings()
-      .pipe(
-        tap(refreshSessionSecuritySettings => {
-          console.log({ refreshSessionSecuritySettings });
-        })
-      )
-
-      .subscribe(({ sessionRefresh }) => {
-        this.resolveResource(sessionRefresh);
-      });
+    this.settingService.getSettings().subscribe(({ sessionRefresh }) => {
+      this.resolveResource(sessionRefresh);
+    });
   }
 
   checkHasOneOrMorePermission(): Observable<boolean> {

@@ -9,7 +9,6 @@ import {
 } from './shared/security/state/security-settings';
 import { SecuritySettingService } from './shared/security/service/security-settings.service';
 import { UserService } from './shared/security/service/user.service';
-import { tap } from 'rxjs/internal/operators/tap';
 
 const defaultAccessDenied: Resource = {
   internal: true,
@@ -52,9 +51,6 @@ export class ApplicationSecuritySettingService extends SecuritySettingService {
           accessDenied,
           sessionExpired: defaultSessionExpired
         };
-      }),
-      tap(securitySettings => {
-        console.log({ securitySettings });
       })
     );
   }
