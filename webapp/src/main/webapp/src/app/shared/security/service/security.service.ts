@@ -88,13 +88,12 @@ export class SecurityService {
   private resolveResource(value: Resource): void {
     if (value == null || value.url == null) {
       this.window.location.reload();
-      return;
-    }
-    if (value.internal) {
+    } else if (value.internal) {
       this.router.navigateByUrl(value.url, {
         skipLocationChange: true
       });
+    } else {
+      this.window.location.href = value.url;
     }
-    this.window.location.href = value.url;
   }
 }

@@ -17,7 +17,7 @@ describe('SessionExpiredComponent', () => {
       declarations: [SessionExpiredComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: SecurityService, useClass: {} },
+        { provide: SecurityService, useValue: {} },
         { provide: Location, useClass: MockLocation }
       ]
     }).compileComponents();
@@ -33,10 +33,6 @@ describe('SessionExpiredComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-class MockAuthenticationService {
-  authenticate: Spy = createSpy('authenticate');
-}
 
 class MockLocation {
   prepareExternalUrl: Spy = createSpy('prepareExternalUrl');

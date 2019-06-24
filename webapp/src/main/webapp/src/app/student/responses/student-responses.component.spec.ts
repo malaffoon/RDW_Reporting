@@ -1,6 +1,6 @@
 import { StudentResponsesComponent } from './student-responses.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
@@ -12,7 +12,7 @@ import { WritingTraitScores } from '../../assessments/model/writing-trait-scores
 import createSpy = jasmine.createSpy;
 import Spy = jasmine.Spy;
 import { RdwFormatModule } from '../../shared/format/rdw-format.module';
-import { of } from 'rxjs/internal/observable/of';
+import { RdwSecurityModule } from '../../shared/security/rdw-security.module';
 
 describe('StudentResponsesComponent', () => {
   let component: StudentResponsesComponent;
@@ -33,7 +33,12 @@ describe('StudentResponsesComponent', () => {
     route.snapshotResult.and.returnValue(mockRouteSnapshot);
 
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), RdwFormatModule],
+      imports: [
+        RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
+        RdwFormatModule,
+        RdwSecurityModule
+      ],
       declarations: [OptionalPipe, StudentResponsesComponent],
       providers: [{ provide: ActivatedRoute, useValue: route }],
       schemas: [NO_ERRORS_SCHEMA]
