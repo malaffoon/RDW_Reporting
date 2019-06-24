@@ -69,11 +69,6 @@ import { AggregateTargetOverviewComponent } from './results/aggregate-target-ove
     TabsModule.forRoot(),
     TypeaheadModule
   ],
-  exports: [
-    AggregateReportComponent,
-    AggregateQueryFormContainerComponent,
-    TargetReportFormComponent
-  ],
   providers: [
     AggregateReportRequestMapper,
     AggregateReportTableDataService,

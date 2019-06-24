@@ -4,9 +4,9 @@ import { MockUserService } from '../../../test/mock.user.service';
 import { User } from '../../user/user';
 import { inject, TestBed } from '@angular/core/testing';
 import { CachingDataService } from '../data/caching-data.service';
-import { UserService } from '../../user/user.service';
 import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../app-settings.service';
+import { UserService } from '../security/user.service';
 
 describe('ReportingEmbargoService', () => {
   let service: ReportingEmbargoService;

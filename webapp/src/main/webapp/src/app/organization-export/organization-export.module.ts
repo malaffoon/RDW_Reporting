@@ -17,8 +17,6 @@ import { OrganizationTreeComponent } from './organization/organization-tree.comp
     CommonModule,
     SharedModule,
     Angulartics2Module.forRoot()
-  ],
-  exports: [OrganizationExportComponent],
-  providers: [UserOrganizationService]
+  ]
 })
 export class OrganizationExportModule {}

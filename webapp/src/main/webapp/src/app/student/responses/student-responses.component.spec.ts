@@ -15,6 +15,7 @@ import { WritingTraitScores } from '../../assessments/model/writing-trait-scores
 import createSpy = jasmine.createSpy;
 import Spy = jasmine.Spy;
 import { RdwFormatModule } from '../../shared/format/rdw-format.module';
+import { of } from 'rxjs/internal/observable/of';
 
 describe('StudentResponsesComponent', () => {
   let component: StudentResponsesComponent;
@@ -43,7 +44,10 @@ describe('StudentResponsesComponent', () => {
       ],
       providers: [
         AuthorizationService,
-        PermissionService,
+        {
+          provide: PermissionService,
+          useValue: { getPermissions: () => of([]) }
+        },
         { provide: ActivatedRoute, useValue: route }
       ],
       schemas: [NO_ERRORS_SCHEMA]
