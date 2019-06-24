@@ -3,5 +3,6 @@ export interface User {
   readonly lastName: string;
   readonly permissions: string[];
   readonly anonymous?: boolean;
+  readonly logoutUrl?: string;
   readonly sessionRefreshUrl?: string;
 }

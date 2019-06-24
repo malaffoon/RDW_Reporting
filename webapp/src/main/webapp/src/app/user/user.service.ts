@@ -8,6 +8,7 @@ const UnauthenticatedUser = of({
   firstName: '',
   lastName: '',
   permissions: [],
+  logoutUrl: '/logout',
   anonymous: true
 });
 
@@ -22,6 +23,7 @@ export class UserService {
         lastName: serverUser.lastName,
         permissions: serverUser.permissions,
         anonymous: serverUser.anonymous,
+        logoutUrl: serverUser.logoutUrl,
         sessionRefreshUrl: serverUser.sessionRefreshUrl
       })),
       catchError(() => UnauthenticatedUser)
