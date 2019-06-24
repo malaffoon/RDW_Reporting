@@ -1,12 +1,12 @@
 import { ReportingEmbargoService } from './reporting-embargo.service';
 import { MockDataService } from '../../../test/mock.data.service';
 import { MockUserService } from '../../../test/mock.user.service';
-import { User } from '../../user/user';
 import { inject, TestBed } from '@angular/core/testing';
 import { CachingDataService } from '../data/caching-data.service';
 import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { UserService } from '../security/user.service';
+import { User } from '../security/user';
 
 describe('ReportingEmbargoService', () => {
   let service: ReportingEmbargoService;
