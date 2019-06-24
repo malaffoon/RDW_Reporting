@@ -8,7 +8,6 @@ import { Angulartics2 } from 'angulartics2';
 import { CsvExportService } from '../../csv-export/csv-export.service';
 import { GroupResultsComponent } from './group-results.component';
 import { GroupAssessmentService } from './group-assessment.service';
-import { UserModule } from '../../user/user.module';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MockRouter } from '../../../test/mock.router';
 import { MockAuthorizeDirective } from '../../../test/mock.authorize.directive';
@@ -16,10 +15,10 @@ import { GroupAssessmentExportService } from './group-assessment-export.service'
 import { of } from 'rxjs';
 import { GroupService } from '../group.service';
 import { MockUserService } from '../../../test/mock.user.service';
-import { UserService } from '../../user/user.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { ReportFormService } from '../../report/service/report-form.service';
+import { UserService } from '../../shared/security/user.service';
 
 let availableGrades = [];
 
@@ -75,7 +74,7 @@ describe('GroupResultsComponent', () => {
     const mockRouter = new MockRouter();
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, UserModule],
+      imports: [CommonModule],
       declarations: [GroupResultsComponent, MockAuthorizeDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

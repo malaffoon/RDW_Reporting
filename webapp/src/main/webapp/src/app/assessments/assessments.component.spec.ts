@@ -12,9 +12,9 @@ import { ExamFilterOptions } from './model/exam-filter-options.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '../shared/common.module';
 import { Angulartics2 } from 'angulartics2';
-import { UserService } from '../user/user.service';
 import { MockUserService } from '../../test/mock.user.service';
 import { ApplicationSettingsService } from '../app-settings.service';
+import { UserService } from '../shared/security/user.service';
 
 function assessmentExam(): AssessmentExam {
   return {
