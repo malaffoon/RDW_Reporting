@@ -1,22 +1,28 @@
-<page-heading>
-  <h1 heading>{{ 'home.title' | translate }}</h1>
-</page-heading>
-
 <div class="row">
   <!-- Left Column Content Area -->
   <div class="col-md-9">
     <admin-tools></admin-tools>
 
-    <div *hasPermission="'GROUP_PII_READ'" class="well">
-      <student-search></student-search>
-    </div>
+    <ng-container
+      *hasAnyPermission="[
+        'GROUP_PII_READ',
+        'INDIVIDUAL_PII_READ',
+        'GROUP_PII_READ'
+      ]"
+    >
+      <h1 class="h2">{{ 'home.title' | translate }}</h1>
 
-    <div *hasPermission="'INDIVIDUAL_PII_READ'" class="well">
-      <school-grade></school-grade>
-    </div>
+      <div *hasPermission="'GROUP_PII_READ'" class="well">
+        <student-search></student-search>
+      </div>
 
-    <ng-container *hasPermission="'GROUP_PII_READ'">
-      <group-tabs></group-tabs>
+      <div *hasPermission="'INDIVIDUAL_PII_READ'" class="well">
+        <school-grade></school-grade>
+      </div>
+
+      <ng-container *hasPermission="'GROUP_PII_READ'">
+        <group-tabs></group-tabs>
+      </ng-container>
     </ng-container>
   </div>
 
