@@ -1250,8 +1250,8 @@
       "SchoolAdministrator": "School Admin",
       "Teacher": "Teacher"
     },
-    "sandbox-info": "TODO",
-    "sandbox-role-info": "TODO"
+    "sandbox-info": "A Sandbox is an environment that allows users to explore the features of the reporting system using generated data",
+    "sandbox-role-info": "Select a user role based on the reporting system functionality you would like to explore."
   },
   "tenant-config": {
     "title": "Tenant Configuration",
