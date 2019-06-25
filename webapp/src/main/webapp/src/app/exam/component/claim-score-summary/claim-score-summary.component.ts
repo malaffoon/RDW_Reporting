@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ScoreTable } from '../score-table/score-table';
+import { scoresReported } from '../../model/score-statistics';
 
 @Component({
   selector: 'claim-score-summary',
@@ -8,6 +9,8 @@ import { ScoreTable } from '../score-table/score-table';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimScoreSummaryComponent {
+  readonly scoresReported = scoresReported;
+
   @Input()
   table: ScoreTable;
 

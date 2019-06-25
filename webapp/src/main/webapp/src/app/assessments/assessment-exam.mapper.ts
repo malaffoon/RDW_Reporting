@@ -15,6 +15,8 @@ import { Target } from './model/target.model';
 import { ScaleScore } from '../exam/model/scale-score';
 
 export function toScaleScore(serverScaleScore: any): ScaleScore {
+  // server scale scores are nullable
+  serverScaleScore = serverScaleScore || {};
   return {
     level: serverScaleScore.level,
     score: serverScaleScore.value,

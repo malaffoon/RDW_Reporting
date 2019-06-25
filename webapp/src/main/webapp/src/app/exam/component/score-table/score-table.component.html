@@ -28,11 +28,18 @@
       </th>
       <th *ngFor="let statistic of table.scoreStatistics">
         <div class="average-scale-score-container">
-          <scale-score
-            [score]="statistic.averageScaleScore"
-            [standardError]="statistic.standardErrorOfMean"
-            [infoEnabled]="true"
-          ></scale-score>
+          <ng-container
+            *ngIf="scoresReported(statistic); else noScoresReported"
+          >
+            <scale-score
+              [score]="statistic.averageScaleScore"
+              [standardError]="statistic.standardErrorOfMean"
+              [infoEnabled]="true"
+            ></scale-score>
+          </ng-container>
+          <ng-template #noScoresReported>
+            {{ 'common.no-scores-reported' | translate }}
+          </ng-template>
         </div>
       </th>
     </tr>
@@ -79,13 +86,26 @@
             ] as score
           "
         >
-          <aggregate-score-graph
-            [percent]="score.percent"
-            [count]="score.count"
-            [color]="performanceLevelScore.colorCode | translate"
-            [backgroundColor]="'gray-lighter'"
-            [displayCount]="displayCount"
-          ></aggregate-score-graph>
+          <ng-container
+            *ngIf="scoresReported(statistic); else noScoresReportedGraph"
+          >
+            <aggregate-score-graph
+              [percent]="score.percent"
+              [count]="score.count"
+              [color]="performanceLevelScore.colorCode | translate"
+              [backgroundColor]="'gray-lighter'"
+              [displayCount]="displayCount"
+            ></aggregate-score-graph>
+          </ng-container>
+          <ng-template #noScoresReportedGraph>
+            <aggregate-score-graph
+              [percent]="0"
+              [count]="0"
+              [color]="performanceLevelScore.colorCode | translate"
+              [backgroundColor]="'gray-lighter'"
+              [displayCount]="displayCount"
+            ></aggregate-score-graph>
+          </ng-template>
         </ng-container>
       </td>
     </tr>
