@@ -19,7 +19,7 @@ describe('SessionExpiredComponent', () => {
       declarations: [SessionExpiredComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: UserService, userValue: { getUser: () => of({}) } },
+        { provide: UserService, useValue: { getUser: () => of({}) } },
         { provide: SecurityService, useValue: {} },
         { provide: Location, useClass: MockLocation }
       ]
