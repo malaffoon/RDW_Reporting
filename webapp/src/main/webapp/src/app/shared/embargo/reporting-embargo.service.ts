@@ -3,10 +3,10 @@ import { CachingDataService } from '../data/caching-data.service';
 import { Observable, of } from 'rxjs';
 import { catchError, flatMap, map } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../service-route';
-import { UserService } from '../../user/user.service';
 import { Embargo } from './embargo';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { UserService } from '../security/service/user.service';
 
 @Injectable()
 export class ReportingEmbargoService {

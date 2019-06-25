@@ -46,19 +46,11 @@ export interface TargetReportSettings {
   readonly minimumStudentCount: number;
 }
 
-const RedirectPrefix = 'redirect:';
-
-function parseAccessDeniedUrl(value: string = ''): string {
-  return value.startsWith(RedirectPrefix)
-    ? value.substring(RedirectPrefix.length)
-    : undefined;
-}
-
 export function toApplicationSettings(
   serverSettings: any
 ): ApplicationSettings {
   return {
-    accessDeniedUrl: parseAccessDeniedUrl(serverSettings.accessDeniedUrl),
+    accessDeniedUrl: serverSettings.accessDeniedUrl,
     analyticsTrackingId: serverSettings.analyticsTrackingId,
     elasEnabled: serverSettings.englishLanguageAcquisitionStatusEnabled,
     interpretiveGuideUrl: serverSettings.interpretiveGuideUrl,

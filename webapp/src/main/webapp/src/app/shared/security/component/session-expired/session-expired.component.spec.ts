@@ -1,11 +1,13 @@
 import { SessionExpiredComponent } from './session-expired.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AuthenticationService } from './authentication.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import Spy = jasmine.Spy;
 import createSpy = jasmine.createSpy;
+import { SecurityService } from '../../service/security.service';
+import { UserService } from '../../service/user.service';
+import { of } from 'rxjs/internal/observable/of';
 
 describe('SessionExpiredComponent', () => {
   let component: SessionExpiredComponent;
@@ -17,7 +19,8 @@ describe('SessionExpiredComponent', () => {
       declarations: [SessionExpiredComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: AuthenticationService, useClass: MockAuthenticationService },
+        { provide: UserService, useValue: { getUser: () => of({}) } },
+        { provide: SecurityService, useValue: {} },
         { provide: Location, useClass: MockLocation }
       ]
     }).compileComponents();
@@ -33,10 +36,6 @@ describe('SessionExpiredComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-class MockAuthenticationService {
-  authenticate: Spy = createSpy('authenticate');
-}
 
 class MockLocation {
   prepareExternalUrl: Spy = createSpy('prepareExternalUrl');

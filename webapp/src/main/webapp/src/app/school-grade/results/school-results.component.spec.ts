@@ -11,7 +11,6 @@ import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.m
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
 import { Angulartics2 } from 'angulartics2';
 import { CsvExportService } from '../../csv-export/csv-export.service';
-import { UserService } from '../../user/user.service';
 import { MockUserService } from '../../../test/mock.user.service';
 import { MockDataService } from '../../../test/mock.data.service';
 import { MockRouter } from '../../../test/mock.router';
@@ -25,6 +24,7 @@ import { SchoolAssessmentExportService } from './school-assessment-export.servic
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { ReportFormService } from '../../report/service/report-form.service';
+import { UserService } from '../../shared/security/service/user.service';
 
 let availableGrades = [];
 let schools = [];

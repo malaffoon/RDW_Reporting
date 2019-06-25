@@ -213,3 +213,12 @@ export function scoreStatistics(
     };
   });
 }
+
+/**
+ * Returns true if scores are reported
+ *
+ * @param statistic The statistic to test
+ */
+export function scoresReported(statistic: ScoreStatistics) {
+  return statistic.performanceLevelScores.some(({ count }) => count > 0);
+}

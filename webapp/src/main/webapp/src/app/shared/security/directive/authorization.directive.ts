@@ -1,5 +1,5 @@
 import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
-import { AuthorizationService } from './authorization.service';
+import { SecurityService } from '../service/security.service';
 
 /**
  * Structural directive that conditionally renders an element if the user has permission to view it.
@@ -13,7 +13,7 @@ export class AuthorizationDirective {
   private displayed: boolean;
 
   constructor(
-    private authorizationService: AuthorizationService,
+    private service: SecurityService,
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef
   ) {}
@@ -56,16 +56,14 @@ export class AuthorizationDirective {
   }
 
   private update(permissions: string[]): void {
-    this.authorizationService
-      .hasAnyPermission(permissions)
-      .subscribe(hasPermission => {
-        if (hasPermission && !this.displayed) {
-          this.viewContainer.createEmbeddedView(this.templateRef);
-          this.displayed = true;
-        } else if (!hasPermission && this.displayed) {
-          this.viewContainer.clear();
-          this.displayed = false;
-        }
-      });
+    this.service.hasAnyPermission(permissions).subscribe(hasPermission => {
+      if (hasPermission && !this.displayed) {
+        this.viewContainer.createEmbeddedView(this.templateRef);
+        this.displayed = true;
+      } else if (!hasPermission && this.displayed) {
+        this.viewContainer.clear();
+        this.displayed = false;
+      }
+    });
   }
 }

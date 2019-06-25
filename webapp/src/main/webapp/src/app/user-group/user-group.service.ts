@@ -7,7 +7,9 @@ import { DataService } from '../shared/data/data.service';
 import { Student } from '../student/search/student';
 import { Group } from '../groups/group';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserGroupService {
   constructor(private dataService: DataService) {}
 

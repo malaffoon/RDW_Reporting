@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Input,
-  Output,
   TemplateRef
 } from '@angular/core';
 import { ScoreTable } from './score-table';
+import { scoresReported } from '../../model/score-statistics';
 
 @Component({
   selector: 'score-table',
@@ -15,6 +14,8 @@ import { ScoreTable } from './score-table';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScoreTableComponent {
+  readonly scoresReported = scoresReported;
+
   @Input()
   displayCount: boolean;
 

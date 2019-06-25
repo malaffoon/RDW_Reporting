@@ -5,7 +5,6 @@ import { SharedModule } from 'primeng/components/common/shared';
 import { Angulartics2Module } from 'angulartics2';
 import { CommonModule } from '../shared/common.module';
 import { OrganizationExportComponent } from './organization-export.component';
-import { UserModule } from '../user/user.module';
 import { UserOrganizationService } from './organization/user-organization.service';
 import { OrganizationTreeComponent } from './organization/organization-tree.component';
 
@@ -17,10 +16,7 @@ import { OrganizationTreeComponent } from './organization/organization-tree.comp
     ReactiveFormsModule,
     CommonModule,
     SharedModule,
-    UserModule,
     Angulartics2Module.forRoot()
-  ],
-  exports: [OrganizationExportComponent],
-  providers: [UserOrganizationService]
+  ]
 })
 export class OrganizationExportModule {}

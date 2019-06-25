@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UserGroupService } from './user-group.service';
 import { UserGroup } from './user-group';
-import { PermissionService } from '../shared/security/permission.service';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { Group } from '../groups/group';
 import { SubjectService } from '../subject/subject.service';
+import { UserService } from '../shared/security/service/user.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'user-groups',
@@ -37,14 +38,14 @@ export class UserGroupsComponent implements OnInit {
   constructor(
     private service: UserGroupService,
     private subjectService: SubjectService,
-    private permissionService: PermissionService,
+    private userService: UserService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     forkJoin(
       this.subjectService.getSubjectCodes(),
-      this.permissionService.getPermissions()
+      this.userService.getUser().pipe(map(({ permissions }) => permissions))
     ).subscribe(([subjects, permissions]) => {
       this.filteredGroups = this.groups.concat();
       if (this.groups.length !== 0) {
@@ -53,7 +54,7 @@ export class UserGroupsComponent implements OnInit {
       this.subjects = subjects;
       this.createButtonDisabled =
         this.assignedGroups.length === 0 &&
-        permissions.indexOf('INDIVIDUAL_PII_READ') === -1;
+        !permissions.includes('INDIVIDUAL_PII_READ');
       this.initialized = true;
     });
   }

@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-sm-offset-4 col-sm-4">
+    <ng-container *ngIf="(context$ | async) as context">
+      <h1 class="h2 text-center">
+        {{ 'common-ngx.session-expired.title' | translate }}
+      </h1>
+      <div class="well">
+        <p>{{ 'common-ngx.session-expired.message.' + context | translate }}</p>
+        <button class="btn btn-primary btn-block" (click)="onOk()">
+          {{ 'common-ngx.session-expired.accept' | translate }}
+        </button>
+      </div>
+    </ng-container>
+  </div>
+</div>

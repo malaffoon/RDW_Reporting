@@ -1,14 +1,14 @@
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { merge, set, get } from 'lodash';
+import { get, merge, set } from 'lodash';
 import { Injectable, Optional } from '@angular/core';
 import { TranslateLoader } from '@ngx-translate/core';
-import { Observable, forkJoin, of, iif } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { EmbeddedLanguages } from './language-settings';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { SubjectService } from '../../subject/subject.service';
 import { flattenJsonObject, Utils } from '../support/support';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../security/service/user.service';
 
 const EmptyObservable = of({});
 const AssessmentTypes: string[] = ['iab', 'ica', 'sum'];
