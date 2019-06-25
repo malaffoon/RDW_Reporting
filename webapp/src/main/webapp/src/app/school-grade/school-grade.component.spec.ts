@@ -10,7 +10,6 @@ import { AssessmentsModule } from '../assessments/assessments.module';
 import { RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { TypeaheadModule } from 'ngx-bootstrap';
-import { UserModule } from '../user/user.module';
 import { MockDataService } from '../../test/mock.data.service';
 import { DataService } from '../shared/data/data.service';
 import { CachingDataService } from '../shared/data/caching-data.service';
@@ -38,8 +37,7 @@ describe('SchoolGradeComponent', () => {
         RouterModule.forRoot([]),
         DropdownModule,
         TypeaheadModule,
-        SharedModule,
-        UserModule
+        SharedModule
       ],
       declarations: [SchoolGradeComponent],
       providers: [

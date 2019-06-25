@@ -46,43 +46,52 @@
             *ngFor="let statistic of table.scoreStatistics"
             class="claim-distribution"
           >
-            <div class="assessment-aggregate">
-              <div class="scale-score-graph rounded blend-middle mb-sm">
-                <div class="bar-container">
-                  <ng-container
+            <ng-container
+              *ngIf="scoresReported(statistic); else noScoresReported"
+            >
+              <div class="assessment-aggregate">
+                <div class="scale-score-graph rounded blend-middle mb-sm">
+                  <div class="bar-container">
+                    <ng-container
+                      *ngFor="let score of statistic.performanceLevelScores"
+                    >
+                      <div
+                        *ngIf="score.percent != 0"
+                        class="bar"
+                        [ngClass]="score.colorCode | translate"
+                        [attr.data-width]="score.percent"
+                      ></div>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <div class="perc-container row">
+                  <div
+                    class="col-xs-4"
                     *ngFor="let score of statistic.performanceLevelScores"
                   >
-                    <div
-                      *ngIf="score.percent != 0"
-                      class="bar"
-                      [ngClass]="score.colorCode | translate"
-                      [attr.data-width]="score.percent"
-                    ></div>
-                  </ng-container>
-                </div>
-              </div>
-
-              <div class="perc-container row">
-                <div
-                  class="col-xs-4"
-                  *ngFor="let score of statistic.performanceLevelScores"
-                >
-                  <div class="bar">
-                    <span
-                      class="square"
-                      [ngClass]="score.colorCode | translate"
-                    ></span>
-                    <span [hidden]="displayCount"> {{ score.percent }}% </span>
-                    <span [hidden]="!displayCount">
-                      {{ score.count }}
-                    </span>
-                    <span class="sr-only">
-                      {{ score.nameCode | translate }}
-                    </span>
+                    <div class="bar">
+                      <span
+                        class="square"
+                        [ngClass]="score.colorCode | translate"
+                      ></span>
+                      <span [hidden]="displayCount">
+                        {{ score.percent }}%
+                      </span>
+                      <span [hidden]="!displayCount">
+                        {{ score.count }}
+                      </span>
+                      <span class="sr-only">
+                        {{ score.nameCode | translate }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </ng-container>
+            <ng-template #noScoresReported>
+              {{ 'common.no-scores-reported' | translate }}
+            </ng-template>
           </td>
         </tr>
       </tbody>

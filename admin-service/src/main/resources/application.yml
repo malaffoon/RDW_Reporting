@@ -197,7 +197,13 @@ reporting:
     code: CA
     name: California
 
-
+# Needed when running the admin-service locallly
+tenant-configuration-lookup:
+  services:
+    admin-service: http://localhost:8208
+    aggregate-service: http://localhost:8308
+    report-processor: http://localhost:8086
+    reporting-service: http://localhost:8108
 
 
 

@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-sm-offset-4 col-sm-4">
+    <h1 class="h2 text-center">
+      {{ 'access-denied.title' | translate }}
+    </h1>
+    <div class="well">
+      <p>{{ 'access-denied.message' | translate }}</p>
+      <form name="logout" method="post" action="{{ logoutUrl$ | async }}">
+        <button
+          type="submit"
+          class="btn btn-primary btn-block"
+          href="javascript:void(0)"
+        >
+          {{ 'access-denied.logout' | translate }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

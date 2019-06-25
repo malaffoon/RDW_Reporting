@@ -8,15 +8,15 @@ import {
 } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError as _throw } from 'rxjs';
-import { AuthenticationService } from './authentication.service';
 import { catchError } from 'rxjs/operators';
+import { SecurityService } from './security.service';
 
 @Injectable()
 export class AuthenticatedHttpService extends Http {
   constructor(
     backend: XHRBackend,
     defaultOptions: RequestOptions,
-    private service: AuthenticationService
+    private service: SecurityService
   ) {
     super(backend, defaultOptions);
   }
@@ -38,7 +38,7 @@ export class AuthenticatedHttpService extends Http {
     return super.request(url, options).pipe(
       catchError(error => {
         if (error.status === 401) {
-          this.service.navigateToAuthenticationExpiredRoute();
+          this.service.expireSession();
           return of();
         }
         return _throw(error);

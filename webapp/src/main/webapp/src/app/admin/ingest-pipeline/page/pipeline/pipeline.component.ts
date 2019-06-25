@@ -32,7 +32,6 @@ import { cloneDeep, isEqual } from 'lodash';
 import { ComponentCanDeactivate } from '../../guard/unsaved-changes.guard';
 import { CompilationState, PipelineState } from '../../model/pipeline-state';
 import { isValidPipelineTest } from '../../model/pipelines';
-import { UserService } from '../../../../user/user.service';
 import { isNullOrBlank } from '../../../../shared/support/support';
 import { of } from 'rxjs/internal/observable/of';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,6 +39,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { DeleteModalComponent } from '../../../../report/component/delete-modal/delete-modal.component';
 import { DatePipe } from '@angular/common';
 import { ConfirmationModalComponent } from '../../../../shared/component/confirmation-modal/confirmation-modal.component';
+import { UserService } from '../../../../shared/security/service/user.service';
 
 const defaultCompileDebounceTime = 2000;
 

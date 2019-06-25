@@ -13,7 +13,9 @@ const ResourceContext = `${AdminServiceRoute}/embargoes`;
 /**
  * Service responsible for managing organization embargo settings
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class EmbargoService {
   constructor(private dataService: DataService) {}
 

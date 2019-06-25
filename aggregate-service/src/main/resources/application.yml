@@ -11,9 +11,6 @@ management:
 
 app:
   aggregate-reports:
-    #    assessment-types: ica,sum,iab
-    #    statewide-user-assessment-types: sum
-    #    state-aggregate-assessment-types: sum
     custom-aggregate-report-repository:
       organization-partition-size: 10
       jdbc-fetch-size: -1

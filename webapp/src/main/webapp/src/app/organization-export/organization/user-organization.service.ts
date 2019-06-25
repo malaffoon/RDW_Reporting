@@ -6,7 +6,9 @@ import { map } from 'rxjs/operators';
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { UserOrganizations } from './user-organization';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserOrganizationService extends OrganizationService {
   constructor(protected dataService: CachingDataService) {
     super(dataService);

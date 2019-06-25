@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
-import { forOwn, cloneDeep, get } from 'lodash';
-import { DecryptionService } from '../../../shared/security/decryption.service';
+import { cloneDeep, forOwn } from 'lodash';
 import { NotificationService } from '../../../shared/notification/notification.service';
+import { DecryptionService } from '../../decryption.service';
 
 @Component({
   selector: 'property-override-tree-table',

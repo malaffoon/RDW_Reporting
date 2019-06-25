@@ -1,22 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { RdwCoreModule } from '../core/rdw-core.module';
 import { NgModule } from '@angular/core';
-import { AuthenticationService } from './authentication.service';
 import { Http } from '@angular/http';
 import { RouterModule } from '@angular/router';
-import { AuthenticatedHttpService } from './authenticated-http.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { SessionExpiredComponent } from './session-expired.component';
 import { APP_BASE_HREF } from '@angular/common';
-import { AuthorizationService } from './authorization.service';
-import { AuthorizationDirective } from './authorization.directive';
-import { PermissionService } from './permission.service';
-import {
-  AccessDeniedRoute,
-  RoutingAuthorizationCanActivate
-} from './routing-authorization.can-activate';
-import { AuthorizationCanActivate } from './authorization.can-activate';
-import { DecryptionService } from './decryption.service';
+import { AccessDeniedComponent } from './component/access-denied/access-denied.component';
+import { SessionExpiredComponent } from './component/session-expired/session-expired.component';
+import { AuthorizationDirective } from './directive/authorization.directive';
+import { AuthenticatedHttpService } from './service/authenticated-http.service';
+import { SecuritySettingService } from './service/security-settings.service';
+import { DefaultSecuritySettingsService } from './service/default-security-settings.service';
 
 /**
  * Common security module.
@@ -28,25 +22,30 @@ import { DecryptionService } from './decryption.service';
  * Example: { provide: AccessDeniedRoute, useValue: 'my-access-denied-route' }
  */
 @NgModule({
-  declarations: [SessionExpiredComponent, AuthorizationDirective],
   imports: [
     BrowserModule,
     RdwCoreModule,
     // These can be overridden in the consuming apps
-    RouterModule.forRoot([]),
-    TranslateModule.forRoot()
+    RouterModule,
+    TranslateModule
   ],
-  exports: [SessionExpiredComponent, AuthorizationDirective],
+  declarations: [
+    AccessDeniedComponent,
+    SessionExpiredComponent,
+    AuthorizationDirective
+  ],
+  exports: [
+    AccessDeniedComponent,
+    SessionExpiredComponent,
+    AuthorizationDirective
+  ],
   providers: [
-    { provide: Http, useClass: AuthenticatedHttpService },
     { provide: APP_BASE_HREF, useValue: '/' },
-    { provide: AccessDeniedRoute, useValue: 'access-denied' },
-    DecryptionService,
-    AuthenticationService,
-    AuthorizationService,
-    AuthorizationCanActivate,
-    RoutingAuthorizationCanActivate,
-    PermissionService
+    { provide: Http, useClass: AuthenticatedHttpService },
+    {
+      provide: SecuritySettingService,
+      useClass: DefaultSecuritySettingsService
+    }
   ]
 })
 export class RdwSecurityModule {}

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Group } from './group';
 import { UserGroup } from '../user-group/user-group';
-import { UserService } from '../user/user.service';
 import { UserGroupService } from '../user-group/user-group.service';
 import { GroupService } from './group.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { UserService } from '../shared/security/service/user.service';
 
 @Component({
   selector: 'group-tabs',

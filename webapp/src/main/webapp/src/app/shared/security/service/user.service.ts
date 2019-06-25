@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { User } from './user';
-import { CachingDataService } from '../shared/data/caching-data.service';
 import { catchError, map } from 'rxjs/operators';
+import { User } from '../state/user';
+import { CachingDataService } from '../../data/caching-data.service';
 
 const UnauthenticatedUser = of({
   firstName: '',
   lastName: '',
   permissions: [],
+  logoutUrl: '/logout',
   anonymous: true
 });
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserService {
   constructor(private dataService: CachingDataService) {}
 
@@ -22,6 +25,7 @@ export class UserService {
         lastName: serverUser.lastName,
         permissions: serverUser.permissions,
         anonymous: serverUser.anonymous,
+        logoutUrl: serverUser.logoutUrl,
         sessionRefreshUrl: serverUser.sessionRefreshUrl
       })),
       catchError(() => UnauthenticatedUser)
