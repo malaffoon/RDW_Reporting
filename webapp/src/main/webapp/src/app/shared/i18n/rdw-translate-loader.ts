@@ -52,20 +52,8 @@ export class RdwTranslateLoader implements TranslateLoader {
   }
 
   getFlattenedTranslations(languageCode: string): Observable<any> {
-    return forkJoin(
-      this.getClientTranslations(languageCode),
-      this.getServerTranslations(languageCode),
-      this.subjectService.getSubjectCodes()
-    ).pipe(
-      map(([clientTranslations, serverTranslations, subjects]) => {
-        const asmtTranslations = this.createSubjectTranslations(
-          subjects,
-          serverTranslations
-        );
-        return flattenJsonObject(
-          merge(clientTranslations, asmtTranslations, serverTranslations)
-        );
-      })
+    return this.getUserTranslations(languageCode).pipe(
+      map(translations => flattenJsonObject(translations))
     );
   }
 
@@ -82,6 +70,10 @@ export class RdwTranslateLoader implements TranslateLoader {
   }
 
   /**
+   * TODO write this such that there are no side-effects
+   * This method takes the server translations and creates a
+   * short-name entry for the given subjects and existing subject assessment labels
+   *
    * Create combined assessment type labels based upon the subject-scoped
    * assessment type labels for all subjects.  These labels should be used when referencing
    * an assessment type outside the scope of a subject.
@@ -122,16 +114,16 @@ export class RdwTranslateLoader implements TranslateLoader {
   private getUserTranslations(languageCode: string) {
     return forkJoin(
       this.getClientTranslations(languageCode),
-      this.getServerTranslations(languageCode),
-      this.subjectService.getSubjectCodes()
+      this.getServerTranslations(languageCode).pipe(catchError(() => of({}))),
+      this.subjectService.getSubjectCodes().pipe(catchError(() => of([])))
     ).pipe(
-      map(([clientTranslations, serverTranslations, subjects]) => {
-        const asmtTranslations = this.createSubjectTranslations(
-          subjects,
+      map(([clientTranslations, serverTranslations, subjects]) =>
+        merge(
+          clientTranslations,
+          this.createSubjectTranslations(subjects, serverTranslations),
           serverTranslations
-        );
-        return merge(clientTranslations, asmtTranslations, serverTranslations);
-      })
+        )
+      )
     );
   }
 }
