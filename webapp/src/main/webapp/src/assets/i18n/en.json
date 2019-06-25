@@ -773,9 +773,12 @@
       "user-dropdown": "Welcome {{firstName}} {{lastName}}"
     },
     "session-expired": {
-      "message": "Your session has expired. Please click OK to log in again.",
-      "ok": "OK",
-      "title": "Session Expired"
+      "title": "Session Expired",
+      "message": {
+        "reload": "Your session has timed out. Please click OK to login again",
+        "refresh": "Your session has timed out. Please click OK to continue working."
+      },
+      "accept": "OK"
     }
   },
   "create-instructional-resource-modal": {
