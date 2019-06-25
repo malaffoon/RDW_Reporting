@@ -6,7 +6,7 @@ import { ReportingServiceRoute } from '../service-route';
 import { Embargo } from './embargo';
 import { ApplicationSettingsService } from '../../app-settings.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import { UserService } from '../security/user.service';
+import { UserService } from '../security/service/user.service';
 
 @Injectable()
 export class ReportingEmbargoService {

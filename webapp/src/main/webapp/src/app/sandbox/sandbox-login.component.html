@@ -3,11 +3,11 @@
 </ng-container>
 <ng-template #loaded>
   <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <h1>
+      {{ 'sandbox-login.title' | translate }}
+    </h1>
     <div class="well">
       <ng-container *ngIf="formGroup.controls.sandbox as sandboxControl">
-        <h1>
-          {{ 'sandbox-login.title' | translate }}
-        </h1>
         <div class="form-group">
           <label for="sandbox">
             {{ 'sandbox-login.labels.sandbox' | translate }}</label

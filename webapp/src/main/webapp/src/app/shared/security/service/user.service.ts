@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { User } from './user';
 import { catchError, map } from 'rxjs/operators';
-import { CachingDataService } from '../data/caching-data.service';
+import { User } from '../state/user';
+import { CachingDataService } from '../../data/caching-data.service';
 
 const UnauthenticatedUser = of({
   firstName: '',

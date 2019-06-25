@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
-import { AuthorizationCanActivate } from '../../shared/security/authorization.can-activate';
 import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
+import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/has-any-permission.can-activate';
 
 export const tenantRoutes: Route[] = [
   {
@@ -13,7 +13,7 @@ export const tenantRoutes: Route[] = [
       breadcrumb: { translate: 'sandbox-config.title' },
       permissions: ['TENANT_READ']
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',
@@ -27,7 +27,7 @@ export const tenantRoutes: Route[] = [
           breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
           permissions: ['TENANT_WRITE']
         },
-        canActivate: [AuthorizationCanActivate],
+        canActivate: [HasAnyPermissionCanActivate],
         children: [
           {
             path: '',
@@ -45,7 +45,7 @@ export const tenantRoutes: Route[] = [
       breadcrumb: { translate: 'tenant-config.title' },
       permissions: ['TENANT_READ']
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',

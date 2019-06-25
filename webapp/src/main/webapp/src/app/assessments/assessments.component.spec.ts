@@ -14,7 +14,7 @@ import { CommonModule } from '../shared/common.module';
 import { Angulartics2 } from 'angulartics2';
 import { MockUserService } from '../../test/mock.user.service';
 import { ApplicationSettingsService } from '../app-settings.service';
-import { UserService } from '../shared/security/user.service';
+import { UserService } from '../shared/security/service/user.service';
 
 function assessmentExam(): AssessmentExam {
   return {

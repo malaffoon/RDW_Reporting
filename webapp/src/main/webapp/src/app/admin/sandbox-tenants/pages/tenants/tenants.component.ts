@@ -10,7 +10,7 @@ import { TenantStore } from '../../store/tenant.store';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { map } from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/notification/notification.service';
-import { UserService } from '../../../../shared/security/user.service';
+import { UserService } from '../../../../shared/security/service/user.service';
 
 @Component({
   selector: 'tenants',

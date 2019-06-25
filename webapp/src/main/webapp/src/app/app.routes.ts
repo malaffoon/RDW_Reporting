@@ -1,9 +1,5 @@
 import { Route, Routes } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
-import { ErrorComponent } from './error/error.component';
-import { AccessDeniedComponent } from './error/access-denied/access-denied.component';
-import { SessionExpiredComponent } from './shared/security/session-expired.component';
-import { RoutingAuthorizationCanActivate } from './shared/security/routing-authorization.can-activate';
 import { SandboxLoginComponent } from './sandbox/sandbox-login.component';
 import { userGroupRoutes } from './user-group/user-group.routes';
 import { reportRoutes } from './report/report.routes';
@@ -12,6 +8,10 @@ import { studentRoutes } from './student/student.routes';
 import { groupRoutes } from './groups/group.routes';
 import { schoolGradeRoutes } from './school-grade/school-grade.routes';
 import { homeRoutes } from './home/home.routes';
+import { HasOneOrMorePermissionCanActivate } from './shared/security/can-activate/has-one-or-more-permission.can-activate';
+import { ErrorComponent } from './shared/component/error/error.component';
+import { AccessDeniedComponent } from './shared/security/component/access-denied/access-denied.component';
+import { SessionExpiredComponent } from './shared/security/component/session-expired/session-expired.component';
 
 /**
  * Routes accessible without permissions
@@ -61,7 +61,7 @@ export const protectedRoutes: Route[] = [
     resolve: {
       translateComplete: TranslateResolve
     },
-    canActivate: [RoutingAuthorizationCanActivate],
+    canActivate: [HasOneOrMorePermissionCanActivate],
     children: [
       ...homeRoutes,
       ...adminRoutes,

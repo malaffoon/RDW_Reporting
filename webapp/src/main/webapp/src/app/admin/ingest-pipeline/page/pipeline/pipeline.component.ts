@@ -39,7 +39,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { DeleteModalComponent } from '../../../../report/component/delete-modal/delete-modal.component';
 import { DatePipe } from '@angular/common';
 import { ConfirmationModalComponent } from '../../../../shared/component/confirmation-modal/confirmation-modal.component';
-import { UserService } from '../../../../shared/security/user.service';
+import { UserService } from '../../../../shared/security/service/user.service';
 
 const defaultCompileDebounceTime = 2000;
 

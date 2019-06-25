@@ -24,7 +24,7 @@ import { SchoolAssessmentExportService } from './school-assessment-export.servic
 import { OrganizationService } from '../../shared/organization/organization.service';
 import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { ReportFormService } from '../../report/service/report-form.service';
-import { UserService } from '../../shared/security/user.service';
+import { UserService } from '../../shared/security/service/user.service';
 
 let availableGrades = [];
 let schools = [];

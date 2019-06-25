@@ -1,4 +1,3 @@
-import { AuthorizationCanActivate } from '../../shared/security/authorization.can-activate';
 import { GroupsComponent } from './groups.component';
 import { GroupImportComponent } from './import/group-import.component';
 import { GroupImportDeactivateGuard } from './import/group-import.deactivate';
@@ -6,6 +5,7 @@ import { FileFormatComponent } from './import/fileformat/file-format.component';
 import { ImportHistoryComponent } from './import/history/import-history.component';
 import { ImportHistoryResolve } from './import/history/import-history.resolve';
 import { Route } from '@angular/router';
+import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/has-any-permission.can-activate';
 
 export const groupRoutes: Route[] = [
   {
@@ -18,7 +18,7 @@ export const groupRoutes: Route[] = [
       permissions: ['GROUP_WRITE'],
       denyAccess: true
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',

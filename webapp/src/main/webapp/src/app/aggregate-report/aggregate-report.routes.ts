@@ -1,10 +1,10 @@
 import { Route } from '@angular/router';
 import { AggregateReportOptionsResolve } from './aggregate-report-options.resolve';
-import { AuthorizationCanActivate } from '../shared/security/authorization.can-activate';
 import { ReportQueryResolve } from './report-query.resolve';
 import { AggregateQueryFormContainerComponent } from './query-forms/aggregate-query-form-container.component';
 import { AggregateReportResolve } from './results/aggregate-report.resolve';
 import { AggregateReportComponent } from './results/aggregate-report.component';
+import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has-any-permission.can-activate';
 
 export const aggregateReportRoutes: Route[] = [
   {
@@ -16,7 +16,7 @@ export const aggregateReportRoutes: Route[] = [
     resolve: {
       options: AggregateReportOptionsResolve
     },
-    canActivate: [AuthorizationCanActivate],
+    canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',

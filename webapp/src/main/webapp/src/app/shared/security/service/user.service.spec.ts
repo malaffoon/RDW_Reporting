@@ -1,7 +1,7 @@
 import { UserService } from './user.service';
 import { TestBed, inject } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { CachingDataService } from '../data/caching-data.service';
+import { CachingDataService } from '../../data/caching-data.service';
 
 let userStub: any = {
   firstName: 'Bob',
