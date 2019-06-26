@@ -88,10 +88,6 @@ export class AppComponent implements OnInit {
     this.navbarOpen = !this.navbarOpen;
   }
 
-  isAnonymousUser(): boolean {
-    return this.user === null || this.user.anonymous;
-  }
-
   private initializeAnalytics(trackingId: string): void {
     const googleAnalyticsProvider: Function = window['ga'];
     if (googleAnalyticsProvider && trackingId) {
