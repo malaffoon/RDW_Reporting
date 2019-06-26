@@ -52,8 +52,8 @@
             [schoolAndGroupTypeaheadOptions]="schoolAndGroupTypeaheadOptions"
             [(ngModel)]="studentForm"
             [advancedFilterCount]="advancedFilterCount"
-            (schoolOrGroupChange)="onStudentFormSearchChange($event)"
-            (nameOrSsidChange)="onStudentFormFilterChange($event)"
+            (schoolOrGroupChange)="onStudentFormSearchChange()"
+            (nameOrSsidChange)="onStudentFormFilterChange()"
             (showAdvancedFiltersChange)="onShowAdvancedFiltersChange($event)"
           ></student-search-form>
         </div>

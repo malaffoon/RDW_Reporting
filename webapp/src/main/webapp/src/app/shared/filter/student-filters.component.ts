@@ -7,7 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'student-filters',
-  templateUrl: './student-filters.component.html'
+  templateUrl: './student-filters.component.html',
+  styleUrls: ['./student-filters.component.less']
 })
 export class StudentFiltersComponent {
   @Input()
