@@ -11,12 +11,14 @@ import { LanguageStore } from './shared/i18n/language.store';
 import { SpinnerModal } from './shared/loading/spinner.modal';
 import { ApplicationSettings } from './app-settings';
 import { ApplicationSettingsService } from './app-settings.service';
-import { throwError as _throw } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError as _throw } from 'rxjs';
+import { catchError, flatMap } from 'rxjs/operators';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import localeEs from '@angular/common/locales/es';
 import { User } from './shared/security/state/user';
 import { UserService } from './shared/security/service/user.service';
+import { of } from 'rxjs/internal/observable/of';
+import { tap } from 'rxjs/internal/operators/tap';
 
 @Component({
   selector: 'app-component',
@@ -29,8 +31,8 @@ export class AppComponent implements OnInit {
   private _lastPoppedUrl: string;
   private _doNotDeleteThisAnalytics: Angulartics2GoogleAnalytics;
 
-  user: User;
-  applicationSettings: ApplicationSettings;
+  user$: Observable<User>;
+  applicationSettings$: Observable<ApplicationSettings>;
   navbarOpen: boolean = false;
 
   constructor(
@@ -53,25 +55,24 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.getUser().subscribe(user => {
-      if (user.permissions.length > 0) {
-        this.applicationSettingsService
-          .getSettings()
-          .pipe(
-            catchError((error, values) => {
-              this.router.navigate(['error']);
-              return _throw(error);
-            })
-          )
-          .subscribe(settings => {
-            this.user = user;
-            this.applicationSettings = settings;
+    this.user$ = this.userService.getUser();
 
-            this.languageStore.configuredLanguages = settings.uiLanguages;
-            this.initializeAnalytics(settings.analyticsTrackingId);
-          });
-      }
-    });
+    this.applicationSettings$ = this.user$.pipe(
+      flatMap(user =>
+        user.permissions.length > 0
+          ? this.applicationSettingsService.getSettings().pipe(
+              catchError(error => {
+                this.router.navigateByUrl('/error');
+                return _throw(error);
+              }),
+              tap(settings => {
+                this.languageStore.configuredLanguages = settings.uiLanguages;
+                this.initializeAnalytics(settings.analyticsTrackingId);
+              })
+            )
+          : of(<ApplicationSettings>{})
+      )
+    );
 
     this.initializeNavigationScrollReset();
     this.initializeNavigationLoadingSpinner();
@@ -88,9 +89,7 @@ export class AppComponent implements OnInit {
   }
 
   isAnonymousUser(): boolean {
-    return (
-      !this.user || (this.user.firstName == null && this.user.lastName == null)
-    );
+    return this.user === null || this.user.anonymous;
   }
 
   private initializeAnalytics(trackingId: string): void {
