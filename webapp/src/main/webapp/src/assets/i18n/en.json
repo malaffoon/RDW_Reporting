@@ -812,7 +812,7 @@
     "language-code": "LanguageCode",
     "military-connected-code": "MilitaryConnectedStudentIndicator",
     "iep": "IDEAIndicator",
-    "limited-english": "LEPStatus",
+    "limited-english": "EnglishLearner",
     "migrant-status": "MigrantStatus",
     "scale-score": "ScaleScore",
     "school": "SchoolName",
