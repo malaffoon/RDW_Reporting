@@ -33,7 +33,7 @@ export class ItemScoresComponent implements OnInit {
   includeResponse: boolean;
 
   @Input()
-  includeWritingTraitScores: boolean = false;
+  writingTraits: string[] = [];
 
   scores: StudentScore[];
   columns: Column[];
@@ -42,6 +42,8 @@ export class ItemScoresComponent implements OnInit {
 
   ngOnInit() {
     this.scores = this.service.getScores(this.item, this.exams);
+
+    const writingTraitsEnabled = this.writingTraits.length > 0;
 
     this.columns = [
       new Column({ id: 'name', field: 'student.lastName' }),
@@ -59,43 +61,43 @@ export class ItemScoresComponent implements OnInit {
         id: 'item-score',
         score: 'score',
         field: 'score',
-        visible: !this.includeWritingTraitScores
+        visible: !writingTraitsEnabled
       }),
       new Column({
         id: 'item-score',
         score: 'max',
         field: 'maxScore',
-        visible: !this.includeWritingTraitScores
+        visible: !writingTraitsEnabled
       }),
       new Column({
         id: 'item-score',
         score: 'correctness',
         field: 'correctness',
-        visible: !this.includeWritingTraitScores
+        visible: !writingTraitsEnabled
       }),
       new Column({
         id: 'trait',
         score: 'evidence',
         field: 'writingTraitScores.evidence',
-        visible: this.includeWritingTraitScores
+        visible: this.writingTraits.includes('evidence')
       }),
       new Column({
         id: 'trait',
         score: 'organization',
         field: 'writingTraitScores.organization',
-        visible: this.includeWritingTraitScores
+        visible: this.writingTraits.includes('organization')
       }),
       new Column({
         id: 'trait',
         score: 'conventions',
         field: 'writingTraitScores.conventions',
-        visible: this.includeWritingTraitScores
+        visible: this.writingTraits.includes('conventions')
       }),
       new Column({
         id: 'trait',
         score: 'total',
         field: 'score',
-        visible: this.includeWritingTraitScores
+        visible: this.writingTraits.includes('total')
       })
     ];
   }
