@@ -6,9 +6,9 @@ import { AssessmentProvider } from '../../../assessment-provider.interface';
 import { Assessment } from '../../../model/assessment';
 import { ExportResults } from '../../assessment-results.component';
 import { WritingTraitScoreSummary } from '../../../model/writing-trait-score-summary.model';
-import { ExportWritingTraitsRequest } from '../../../model/export-writing-trait-request.model';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { WritingTrait } from '../../../model/writing-trait.model';
+import { RequestType } from '../../../../shared/enum/request-type.enum';
 
 @Component({
   selector: 'writing-trait-scores',
@@ -62,6 +62,7 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
   traitScoreSummaries: WritingTraitScoreSummary[];
   writingTraitType: string;
   filteredItems: AssessmentItem[];
+  writingTraits: string[];
 
   private _writingTraitScoredItems: AssessmentItem[];
   private _exams: Exam[];
@@ -74,6 +75,12 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
 
   ngOnInit() {
     this.loading = true;
+
+    this.writingTraits =
+      this.assessment.type === 'sum'
+        ? ['evidence', 'organization', 'conventions']
+        : ['evidence', 'organization', 'conventions', 'total'];
+
     if (this.assessment.type === 'sum') {
       this.isSummative = true;
     }
@@ -125,20 +132,19 @@ export class WritingTraitScoresComponent implements OnInit, ExportResults {
   }
 
   exportToCsv(): void {
-    let exportRequest = new ExportWritingTraitsRequest();
-    exportRequest.assessment = this.assessment;
-    exportRequest.showAsPercent = this.showValuesAsPercent;
-    exportRequest.assessmentItems = this.filteredItems;
-    exportRequest.summaries = this.traitScoreSummaries;
-
-    this.assessmentExporter.exportWritingTraitScoresToCsv(exportRequest);
+    this.assessmentExporter.exportWritingTraitScoresToCsv({
+      assessment: this.assessment,
+      showAsPercent: this.showValuesAsPercent,
+      assessmentItems: this.filteredItems,
+      summaries: this.traitScoreSummaries,
+      type: RequestType.WritingTraitScores
+    });
   }
 
   getColumnsForSummary(summary: WritingTraitScoreSummary) {
-    if (this.isSummative) {
-      return this._columnsByTraitSummary.get(summary).slice(0, -2) || [];
-    }
-    return this._columnsByTraitSummary.get(summary) || [];
+    const columns = this._columnsByTraitSummary.get(summary) || [];
+    // remove last two point columns for summatives
+    return this.isSummative ? columns.slice(0, -2) : columns;
   }
 
   get totalType(): string {
