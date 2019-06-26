@@ -5,7 +5,7 @@
     (click)="scrollToMainContent()"
     >{{ 'home.skip-link' | translate }}</a
   >
-  <div class="container">
+  <div *ngIf="(user$ | async) as user" class="container">
     <div class="well">
       <div class="well-body">
         <nav class="navbar navbar-default">
@@ -26,25 +26,37 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a
-              class="navbar-brand hidden-xs"
-              routerLink="/"
-              title="{{ 'common-ngx.navigation-bar.logo.title' | translate }}"
-              ><img
-                src="assets/image/SmarterBalanced-Logo.png"
-                alt="{{ 'common-ngx.navigation-bar.logo.alt' | translate }}"
-            /></a>
+            <ng-container *ngIf="user.anonymous; else authenticatedLogo">
+              <span class="navbar-brand hidden-xs">
+                <img
+                  src="assets/image/SmarterBalanced-Logo.png"
+                  alt="{{ 'common-ngx.navigation-bar.logo.alt' | translate }}"
+                />
+              </span>
+            </ng-container>
+            <ng-template #authenticatedLogo>
+              <a
+                class="navbar-brand hidden-xs"
+                routerLink="/"
+                title="{{ 'common-ngx.navigation-bar.logo.title' | translate }}"
+                ><img
+                  src="assets/image/SmarterBalanced-Logo.png"
+                  alt="{{ 'common-ngx.navigation-bar.logo.alt' | translate }}"
+              /></a>
+            </ng-template>
+
             <span class="application-title">{{
               'common-ngx.navigation-bar.title' | translate
             }}</span>
           </div>
           <div
+            *ngIf="(applicationSettings$ | async) as applicationSettings"
             class="collapse navbar-collapse"
             id="navigation-bar-collapse"
             [ngClass]="{ show: navbarOpen }"
           >
-            <ul class="nav navbar-nav navbar-right">
-              <li class="navbar-link nav-item" *ngIf="!isAnonymousUser()">
+            <ul *ngIf="!user.anonymous" class="nav navbar-nav navbar-right">
+              <li class="navbar-link nav-item">
                 <a
                   href="{{
                     applicationSettings ? applicationSettings.userGuideUrl : '#'
@@ -54,7 +66,7 @@
                   {{ 'common.navigation.user-guide' | translate }}
                 </a>
               </li>
-              <li class="navbar-link nav-item" *ngIf="!isAnonymousUser()">
+              <li class="navbar-link nav-item">
                 <a
                   href="{{
                     applicationSettings
@@ -74,7 +86,7 @@
               </li>
 
               <li class="navbar-link  nav-item">
-                <div class="btn-group" dropdown *ngIf="!isAnonymousUser()">
+                <div class="btn-group" dropdown>
                   <button
                     type="button"
                     dropdownToggle
