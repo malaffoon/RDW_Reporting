@@ -36,9 +36,10 @@
         >
         </span>
 
-        <div
+        <span
           *ngSwitchCase="'alternateScaleScoreLevel'"
-          innerHtml="{{
+          info-button
+          title="{{
             'common.results.assessment-exam-columns.' + column.id
               | translate
                 : {
@@ -50,11 +51,19 @@
                         '.name' | translate
                   }
           }}"
-        ></div>
+          content="{{
+            'subject.' +
+              subjectDefinition.subject +
+              '.' +
+              subjectDefinition.assessmentType +
+              '.performance-info' | translate
+          }}"
+        ></span>
 
-        <div
+        <span
           *ngSwitchCase="'alternateScaleScoreAndStandardError'"
-          innerHtml="{{
+          info-button
+          title="{{
             'common.results.assessment-exam-columns.' + column.id
               | translate
                 : {
@@ -66,7 +75,10 @@
                         '.name' | translate
                   }
           }}"
-        ></div>
+          content="{{
+            'common.results.assessment-exam-columns.score-info' | translate
+          }}"
+        ></span>
 
         <span *ngSwitchCase="'claim'">
           {{
