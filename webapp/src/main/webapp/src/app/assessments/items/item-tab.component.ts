@@ -63,7 +63,7 @@ export class ItemTabComponent implements AfterViewInit {
   includeResponseInStudentScores: boolean = false;
 
   @Input()
-  includeWritingTraitScores: boolean = false;
+  writingTraits: string[] = [];
 
   @Input()
   set position(value: number) {

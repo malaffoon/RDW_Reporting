@@ -3,7 +3,7 @@ import {
   DetachedRouteHandle,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import { HomeComponent } from '../home/home.component';
+import { HomeComponent } from '../home/page/home/home.component';
 
 export class RdwRouteReuseStrategy implements RouteReuseStrategy {
   handlers: { [key: string]: DetachedRouteHandle | any } = {};
