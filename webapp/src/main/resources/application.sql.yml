@@ -21,7 +21,7 @@ sql:
       (
         SELECT
           'Teacher' as type,
-          3 as type_order,
+          1 as type_order,
           CONCAT('teacher_', s.natural_id, '_', g.code) AS id,
           'School' as organization_type,
           s.natural_id as organization_natural_id,
@@ -54,7 +54,7 @@ sql:
       (
         SELECT
           'DistrictAdministrator' as type,
-          1 as type_order,
+          3 as type_order,
           CONCAT('district_', natural_id) AS id,
           'District' as organization_type,
           natural_id as organization_natural_id,
