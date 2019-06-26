@@ -1,7 +1,6 @@
 <ng-container *ngIf="!initialized; else loaded">
-  <span class="gray-darker"><i class="fa fa-spinner fa-pulse fa-2x"></i></span>
+  <spinner></spinner>
 </ng-container>
-
 <ng-template #loaded>
   <div class="flex-children">
     <div class="flex-child grow">
@@ -68,7 +67,7 @@
         type="text"
         placeholder="{{ 'groups.filter' | translate }}"
         autocomplete="off"
-        (ngModelChange)="onSearchChange($event)"
+        (ngModelChange)="onSearchChange()"
       />
     </div>
     <div class="table-list-container">
