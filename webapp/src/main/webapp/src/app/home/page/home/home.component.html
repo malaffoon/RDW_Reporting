@@ -28,8 +28,14 @@
 
   <!-- Right Column Content Area -->
   <div class="col-md-3">
+    <!-- header offset -->
+    <h1 class="h2">&nbsp;</h1>
+
     <!-- Welcome Content -->
-    <div *ngIf="applicationSettings" class="welcome-container well">
+    <div
+      *ngIf="(applicationSettings$ | async) as applicationSettings"
+      class="welcome-container well"
+    >
       <h2 class="mt-xs">{{ 'home.welcome.title' | translate }}</h2>
       <div class="mb-md">
         <p
