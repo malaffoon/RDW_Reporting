@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 interface Link {
   id: string;
@@ -60,7 +60,9 @@ const links: Link[] = [
 
 @Component({
   selector: 'admin-tools',
-  templateUrl: './admin-tools.component.html'
+  templateUrl: './admin-tools.component.html',
+  styleUrls: ['./admin-tools.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminToolsComponent {
   readonly links: Link[] = links;

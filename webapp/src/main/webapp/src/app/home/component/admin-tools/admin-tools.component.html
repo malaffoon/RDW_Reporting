@@ -1,12 +1,15 @@
-<div *hasAnyPermission="permissions" class="well admin-tools-well">
-  <h2 class="mt-xs">
+<ng-container *hasAnyPermission="permissions">
+  <h1 class="h2">
     {{ 'home.admin-tools.titles.administrator-tools' | translate }}
-  </h2>
-  <div class="row">
+  </h1>
+  <div class="grid well">
     <ng-container *ngFor="let link of links">
       <ng-container *hasPermission="link.permission">
-        <div class="col-xs-4 mb-sm admin-tool">
-          <a routerLink="{{ link.path }}" class="btn btn-primary btn-xs mb-xs">
+        <div class="admin-tool">
+          <a
+            routerLink="{{ link.path }}"
+            class="btn btn-primary btn-xs btn-block"
+          >
             <i class="fa {{ link.icon }}"></i>
             {{ 'home.admin-tools.' + link.id + '.button' | translate }}
           </a>
@@ -17,4 +20,4 @@
       </ng-container>
     </ng-container>
   </div>
-</div>
+</ng-container>
