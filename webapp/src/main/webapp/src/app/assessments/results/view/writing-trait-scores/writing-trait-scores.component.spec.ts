@@ -4,7 +4,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TestModule } from '../../../../../test/test.module';
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { Assessment } from '../../../model/assessment';
 import { WritingTraitScoresComponent } from './writing-trait-scores.component';
 import { MockAssessmentProvider } from '../../../../../test/mock.assessment.provider';
 import { MockAssessmentExporter } from '../../../../../test/mock.assessment.exporter';
@@ -31,16 +30,18 @@ describe('WritingTraitScoresComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should not be summative', () => {
-    expect(component.isSummative).toBe(false);
-  });
 });
 
 @Component({
   selector: 'test-component-wrapper',
-  template:
-    '<writing-trait-scores [assessmentProvider]="assessmentProvider" [assessmentExporter]="assessmentExporter" [assessment]="assessment" [exams]="[]"></writing-trait-scores>'
+  template: `
+    <writing-trait-scores
+      [assessmentProvider]="assessmentProvider"
+      [assessmentExporter]="assessmentExporter"
+      [assessment]="assessment"
+      [exams]="[]"
+    ></writing-trait-scores>
+  `
 })
 class TestComponentWrapper {
   assessmentProvider = new MockAssessmentProvider();
