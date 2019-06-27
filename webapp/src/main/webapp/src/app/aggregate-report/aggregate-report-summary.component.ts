@@ -4,7 +4,7 @@ import { SchoolYearPipe } from '../shared/format/school-year.pipe';
 import { AggregateReportOptions } from './aggregate-report-options';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AssessmentDefinition } from './assessment/assessment-definition';
-import { Utils } from '../shared/support/support';
+import { isNullOrEmpty, Utils } from '../shared/support/support';
 import { SubgroupMapper } from './subgroup/subgroup.mapper';
 import { computeEffectiveYears } from './support';
 import { Claim } from './aggregate-report-options.service';
@@ -37,6 +37,17 @@ const equalSize = Utils.hasEqualLength;
 const inline = values => [values.join(', ')];
 const NarrowColumnProvider: ColumnProvider = createColumnProvider(2);
 const WideColumnProvider: ColumnProvider = createColumnProvider();
+
+/**
+ * True if the provided options corresponding to a student field aren't null or empty
+ * and the query values are not the same as the options
+ *
+ * @param options The student field filter options
+ * @param values The query filter values
+ */
+function explicitlySet(options: any[], values: any[]): boolean {
+  return !isNullOrEmpty(options) && !equalSize(options, values);
+}
 
 @Component({
   selector: 'aggregate-report-summary',
@@ -371,7 +382,7 @@ export class AggregateReportSummary {
       const filterRows = [];
       const settingFilters = settings.studentFilters;
       const optionFilters = options.studentFilters;
-      if (!equalSize(optionFilters.genders, settingFilters.genders)) {
+      if (explicitlySet(optionFilters.genders, settingFilters.genders)) {
         filterRows.push({
           label: translate('aggregate-report-form.field.gender-label'),
           values: inline(
@@ -381,7 +392,9 @@ export class AggregateReportSummary {
           )
         });
       }
-      if (!equalSize(optionFilters.ethnicities, settingFilters.ethnicities)) {
+      if (
+        explicitlySet(optionFilters.ethnicities, settingFilters.ethnicities)
+      ) {
         filterRows.push({
           label: translate('aggregate-report-form.field.ethnicity-label'),
           values: orAll(
@@ -392,8 +405,7 @@ export class AggregateReportSummary {
         });
       }
       if (
-        options.dimensionTypes.includes('LEP') &&
-        !equalSize(
+        explicitlySet(
           optionFilters.limitedEnglishProficiencies,
           settingFilters.limitedEnglishProficiencies
         )
@@ -412,7 +424,7 @@ export class AggregateReportSummary {
         });
       }
       if (
-        !equalSize(
+        explicitlySet(
           optionFilters.englishLanguageAcquisitionStatuses,
           settingFilters.englishLanguageAcquisitionStatuses
         )
@@ -426,7 +438,9 @@ export class AggregateReportSummary {
           )
         });
       }
-      if (!equalSize(optionFilters.section504s, settingFilters.section504s)) {
+      if (
+        explicitlySet(optionFilters.section504s, settingFilters.section504s)
+      ) {
         filterRows.push({
           label: translate('aggregate-report-form.field.504-label'),
           values: inline(
@@ -437,7 +451,7 @@ export class AggregateReportSummary {
         });
       }
       if (
-        !equalSize(optionFilters.languages, settingFilters.languages) &&
+        explicitlySet(optionFilters.languages, settingFilters.languages) &&
         settingFilters.languages.length > 0
       ) {
         filterRows.push({
@@ -452,7 +466,7 @@ export class AggregateReportSummary {
         });
       }
       if (
-        !equalSize(
+        explicitlySet(
           optionFilters.individualEducationPlans,
           settingFilters.individualEducationPlans
         )
@@ -469,7 +483,7 @@ export class AggregateReportSummary {
         });
       }
       if (
-        !equalSize(
+        explicitlySet(
           optionFilters.migrantStatuses,
           settingFilters.migrantStatuses
         )
@@ -486,7 +500,7 @@ export class AggregateReportSummary {
         });
       }
       if (
-        !equalSize(
+        explicitlySet(
           optionFilters.economicDisadvantages,
           settingFilters.economicDisadvantages
         )
@@ -505,7 +519,7 @@ export class AggregateReportSummary {
         });
       }
       if (
-        !equalSize(
+        explicitlySet(
           optionFilters.militaryConnectedCodes,
           settingFilters.militaryConnectedCodes
         )

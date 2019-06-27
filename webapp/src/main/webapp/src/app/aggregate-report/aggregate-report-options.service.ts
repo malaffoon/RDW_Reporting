@@ -31,6 +31,7 @@ function toClaim(serverClaim: any): Claim {
   };
 }
 
+// NOTE: Disabled student fields result in an empty array being returned
 function select(filters: Filter[], studentField: StudentFieldType): string[] {
   const filter = filters.find(({ id }) => id === studentField);
   return filter != null ? filter.values.slice() : [];
