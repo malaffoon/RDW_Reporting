@@ -1,5 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AssessmentItem } from '../../../model/assessment-item.model';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AssessmentItem,
+  fullCreditItemCount,
+  fullCreditItemPercent
+} from '../../../model/assessment-item.model';
 import { Exam } from '../../../model/exam';
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
@@ -9,192 +13,21 @@ import { WritingTraitScoreSummary } from '../../../model/writing-trait-score-sum
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { WritingTrait } from '../../../model/writing-trait.model';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
+import { BehaviorSubject, forkJoin, Observable, Subject } from 'rxjs';
+import { flatMap, map, share, shareReplay, takeUntil } from 'rxjs/operators';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
+import { filter } from 'rxjs/internal/operators/filter';
+import { first } from 'rxjs/internal/operators/first';
+import { tap } from 'rxjs/internal/operators/tap';
+import { sum } from '../../../../exam/model/score-statistics';
+import { of } from 'rxjs/internal/observable/of';
+import { ExportRequest } from '../../../model/export-request.interface';
+import { ExportWritingTraitsRequest } from '../../../model/export-writing-trait-request.model';
 
-@Component({
-  selector: 'writing-trait-scores',
-  templateUrl: './writing-trait-scores.component.html'
-})
-export class WritingTraitScoresComponent implements OnInit, ExportResults {
-  /**
-   * If true, values will be shown as percentages
-   */
-  @Input()
-  showValuesAsPercent: boolean;
-
-  /**
-   * Service class which provides assessment data for this assessment and exam.
-   */
-  @Input()
-  assessmentProvider: AssessmentProvider;
-
-  /**
-   * Service class which provides export capabilities=for this assessment and exam.
-   */
-  @Input()
-  assessmentExporter: AssessmentExporter;
-
-  /**
-   * The assessment
-   */
-  @Input()
-  assessment: Assessment;
-
-  /**
-   * The exams to show items for.
-   */
-  @Input()
-  set exams(value: Exam[]) {
-    this._exams = value;
-
-    if (this.filteredItems) {
-      this.updateResults(this._writingTraitScoredItems);
-    }
-  }
-
-  get exams(): Exam[] {
-    return this._exams;
-  }
-
-  writingTraitColumns: Column[];
-  loading: boolean = false;
-  isWritingTraitItem: boolean = false;
-  isSummative: boolean = false;
-  traitScoreSummaries: WritingTraitScoreSummary[];
-  writingTraitType: string;
-  filteredItems: AssessmentItem[];
-  writingTraits: string[];
-
-  private _writingTraitScoredItems: AssessmentItem[];
-  private _exams: Exam[];
-  private _columnsByTraitSummary: Map<
-    WritingTraitScoreSummary,
-    Column[]
-  > = new Map();
-
-  constructor(private examCalculator: ExamStatisticsCalculator) {}
-
-  ngOnInit() {
-    this.loading = true;
-
-    this.writingTraits =
-      this.assessment.type === 'sum'
-        ? ['evidence', 'organization', 'conventions']
-        : ['evidence', 'organization', 'conventions', 'total'];
-
-    if (this.assessment.type === 'sum') {
-      this.isSummative = true;
-    }
-
-    this.assessmentProvider
-      .getAssessmentItems(this.assessment.id, ['WER'])
-      .subscribe(assessmentItems => {
-        if (assessmentItems.some(x => x.scores.length > 0)) {
-          this._writingTraitScoredItems = assessmentItems;
-          this.updateResults(assessmentItems);
-        }
-
-        if (assessmentItems.length != 0) {
-          this.isWritingTraitItem = true;
-          this.writingTraitType = assessmentItems[0].performanceTaskWritingType;
-        }
-
-        this.writingTraitColumns = [
-          new Column({ id: 'number', field: 'position' }),
-          new Column({ id: 'claim', field: 'claimTarget', headerInfo: true }),
-          new Column({
-            id: 'purpose',
-            field: 'writingTraitType',
-            headerInfo: true
-          }),
-          new Column({
-            id: 'difficulty',
-            sortField: 'difficultySortOrder',
-            headerInfo: true
-          }),
-          new Column({
-            id: 'standard',
-            field: 'commonCoreStandardIds',
-            headerInfo: true
-          }),
-          new Column({
-            id: 'full-credit',
-            field: 'fullCredit',
-            headerInfo: true
-          })
-        ];
-
-        this.loading = false;
-      });
-  }
-
-  hasDataToExport(): boolean {
-    return this.filteredItems && this.filteredItems.length > 0;
-  }
-
-  exportToCsv(): void {
-    this.assessmentExporter.exportWritingTraitScoresToCsv({
-      assessment: this.assessment,
-      showAsPercent: this.showValuesAsPercent,
-      assessmentItems: this.filteredItems,
-      summaries: this.traitScoreSummaries,
-      type: RequestType.WritingTraitScores
-    });
-  }
-
-  getColumnsForSummary(summary: WritingTraitScoreSummary) {
-    const columns = this._columnsByTraitSummary.get(summary) || [];
-    // remove last two point columns for summatives
-    return this.isSummative ? columns.slice(0, -2) : columns;
-  }
-
-  get totalType(): string {
-    return WritingTrait.total().type;
-  }
-
-  private toTraitSummaryColumns(summary: WritingTraitScoreSummary): Column[] {
-    return summary.total.numbers.map((points, index) => {
-      return new Column({
-        id: 'item-point',
-        points: points,
-        index: index,
-        styleClass: index == 0 ? 'level-down' : '',
-        sortable: false
-      });
-    });
-  }
-
-  private filterItems(items: AssessmentItem[]) {
-    let filtered = [];
-
-    for (let item of items) {
-      let filteredItem = Object.assign(new AssessmentItem(), item);
-      filteredItem.scores = item.scores.filter(score =>
-        this._exams.some(exam => exam.id == score.examId)
-      );
-      filtered.push(filteredItem);
-    }
-    return filtered;
-  }
-
-  private updateResults(items: AssessmentItem[]) {
-    this.filteredItems = this.filterItems(items);
-    this.traitScoreSummaries = this.examCalculator.aggregateWritingTraitScores(
-      this.filteredItems
-    );
-
-    this.traitScoreSummaries.forEach(summary => {
-      const columns = [
-        new Column({ id: 'category', sortable: false }),
-        new Column({
-          id: 'average-max',
-          sortable: false,
-          styleClass: 'level-up'
-        }),
-        ...this.toTraitSummaryColumns(summary)
-      ];
-      this._columnsByTraitSummary.set(summary, columns);
-    });
-  }
+interface ItemView {
+  item: AssessmentItem;
+  fullCreditCount: number;
+  fullCreditPercent: number;
 }
 
 class Column {
@@ -231,5 +64,242 @@ class Column {
     if (points >= 0) {
       this.points = points;
     }
+  }
+}
+
+function toTraitSummaryColumns(
+  summary: WritingTraitScoreSummary,
+  summative: boolean
+): Column[] {
+  return (
+    summary.total.numbers
+      // remove the last two points for summative
+      .filter((points, index) => !summative || index <= 4)
+      .map(
+        (points, index) =>
+          new Column({
+            id: 'item-point',
+            points: points,
+            index: index,
+            styleClass: index == 0 ? 'level-down' : '',
+            sortable: false
+          })
+      )
+  );
+}
+
+@Component({
+  selector: 'writing-trait-scores',
+  templateUrl: './writing-trait-scores.component.html'
+})
+export class WritingTraitScoresComponent
+  implements OnInit, OnDestroy, ExportResults {
+  readonly totalType: string = WritingTrait.total().type;
+
+  readonly writingTraitColumns: Column[] = [
+    new Column({ id: 'number', field: 'position' }),
+    new Column({ id: 'claim', field: 'claimTarget', headerInfo: true }),
+    new Column({
+      id: 'purpose',
+      field: 'writingTraitType',
+      headerInfo: true
+    }),
+    new Column({
+      id: 'difficulty',
+      sortField: 'difficultySortOrder',
+      headerInfo: true
+    }),
+    new Column({
+      id: 'standard',
+      field: 'commonCoreStandardIds',
+      headerInfo: true
+    }),
+    new Column({
+      id: 'full-credit',
+      field: 'fullCredit',
+      headerInfo: true
+    })
+  ];
+
+  /**
+   * If true, values will be shown as percentages
+   */
+  @Input()
+  showValuesAsPercent: boolean;
+
+  /**
+   * Service class which provides export capabilities=for this assessment and exam.
+   */
+  @Input()
+  assessmentExporter: AssessmentExporter;
+
+  /**
+   * The assessment
+   */
+  @Input()
+  set assessment(value: Assessment) {
+    this.assessment$.next(value);
+  }
+
+  /**
+   * Service class which provides assessment data for this assessment and exam.
+   */
+  @Input()
+  set assessmentProvider(value: AssessmentProvider) {
+    this.assessmentProvider$.next(value);
+  }
+
+  /**
+   * The exams to show items for.
+   */
+  @Input()
+  set exams(value: Exam[]) {
+    this.exams$.next(value);
+  }
+
+  items$: Observable<AssessmentItem[]>;
+  itemViews$: Observable<ItemView[]>;
+  hasWritingTraitItems$: Observable<boolean>;
+  traitScoreSummaries$: Observable<WritingTraitScoreSummary[]>;
+  writingTraits$: Observable<string[]>;
+  writingTraitType$: Observable<string>;
+  summaryColumnsBySummary$: Observable<Map<WritingTraitScoreSummary, Column[]>>;
+  exportRequest$: Observable<ExportWritingTraitsRequest>;
+  initialized$: Observable<boolean>;
+
+  private assessment$: Subject<Assessment> = new BehaviorSubject(undefined);
+  private exams$: Subject<Exam[]> = new BehaviorSubject(undefined);
+  private assessmentProvider$: Subject<
+    AssessmentProvider
+  > = new BehaviorSubject(undefined);
+  private destroyed$: Subject<void> = new Subject();
+  private _hasDataToExport: boolean;
+
+  constructor(private examCalculator: ExamStatisticsCalculator) {}
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  ngOnInit() {
+    this.writingTraits$ = this.assessment$.pipe(
+      map(({ type }) =>
+        type === 'sum'
+          ? ['evidence', 'organization', 'conventions']
+          : ['evidence', 'organization', 'conventions', 'total']
+      )
+    );
+
+    this.items$ = combineLatest(
+      this.assessment$,
+      this.assessmentProvider$
+    ).pipe(
+      takeUntil(this.destroyed$),
+      flatMap(([assessment, provider]) =>
+        provider.getAssessmentItems(assessment.id, ['WER'])
+      ),
+      // TODO should this really not update things when none have scores?
+      filter(items => items.some(x => x.scores.length > 0)),
+      share()
+    );
+
+    this.hasWritingTraitItems$ = this.items$.pipe(
+      map(items => items.length > 0)
+    );
+
+    this.writingTraitType$ = this.items$.pipe(
+      map(items =>
+        items.length > 0 ? items[0].performanceTaskWritingType : undefined
+      )
+    );
+
+    this.itemViews$ = combineLatest(this.items$, this.exams$).pipe(
+      takeUntil(this.destroyed$),
+      map(([items, exams]) =>
+        items.map(item => ({
+          item: Object.assign(item, {
+            scores: item.scores.filter(score =>
+              exams.some(exam => exam.id == score.examId)
+            )
+          }),
+          fullCreditCount: fullCreditItemCount(item.scores, item.maxPoints),
+          fullCreditPercent: fullCreditItemPercent(item.scores, item.maxPoints)
+        }))
+      ),
+      tap(items => {
+        this._hasDataToExport = items.length > 0;
+      }),
+      shareReplay(1)
+    );
+
+    this.traitScoreSummaries$ = this.itemViews$.pipe(
+      map(items =>
+        this.examCalculator.aggregateWritingTraitScores(
+          items.map(({ item }) => item)
+        )
+      ),
+      shareReplay(1)
+    );
+
+    this.summaryColumnsBySummary$ = combineLatest(
+      this.assessment$,
+      this.traitScoreSummaries$
+    ).pipe(
+      takeUntil(this.destroyed$),
+      map(
+        ([assessment, summaries]) => <any>new Map(
+            summaries.map(
+              summary =>
+                <any>[
+                  summary,
+                  [
+                    new Column({ id: 'category', sortable: false }),
+                    new Column({
+                      id: 'average-max',
+                      sortable: false,
+                      styleClass: 'level-up'
+                    }),
+                    ...toTraitSummaryColumns(summary, assessment.type === 'sum')
+                  ]
+                ]
+            )
+          )
+      )
+    );
+
+    this.exportRequest$ = combineLatest(
+      this.assessment$,
+      this.itemViews$.pipe(map(items => items.map(({ item }) => item))),
+      this.traitScoreSummaries$
+    ).pipe(
+      takeUntil(this.destroyed$),
+      map(([assessment, assessmentItems, summaries]) => ({
+        assessment,
+        assessmentItems,
+        summaries,
+        showAsPercent: this.showValuesAsPercent,
+        type: RequestType.WritingTraitScores
+      }))
+    );
+
+    this.initialized$ = combineLatest(
+      this.assessment$,
+      this.exams$,
+      this.assessmentProvider$
+    ).pipe(
+      takeUntil(this.destroyed$),
+      map(values => values.every(value => value != null))
+    );
+  }
+
+  hasDataToExport(): boolean {
+    return this._hasDataToExport;
+  }
+
+  exportToCsv(): void {
+    this.exportRequest$.pipe(first()).subscribe(request => {
+      this.assessmentExporter.exportWritingTraitScoresToCsv(request);
+    });
   }
 }
