@@ -392,6 +392,7 @@ export class AggregateReportSummary {
         });
       }
       if (
+        options.dimensionTypes.includes('LEP') &&
         !equalSize(
           optionFilters.limitedEnglishProficiencies,
           settingFilters.limitedEnglishProficiencies
