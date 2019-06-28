@@ -395,6 +395,16 @@ export class CsvBuilder {
     return this;
   }
 
+  withEconomicDisadvantage(getExam: (item: any) => Exam) {
+    return this.withColumn(
+      this.translateService.instant('csv-builder.EconomicDisadvantage'),
+      item => {
+        const polarEnum = getExam(item).economicDisadvantage ? 1 : 2;
+        return this.getPolarTranslation(polarEnum);
+      }
+    );
+  }
+
   withGender(getStudent: (item: any) => Student) {
     return this.withColumn(
       this.translateService.instant('csv-builder.gender'),
@@ -855,6 +865,13 @@ export class CsvBuilder {
     );
     if (iepFilter != null) {
       this.withIndividualEducationPlan(getExam);
+    }
+
+    const economicDisadvantageFilter = studentFilters.find(
+      ({ id }) => id === 'EconomicDisadvantage'
+    );
+    if (economicDisadvantageFilter != null) {
+      this.withEconomicDisadvantage(getExam);
     }
 
     const limitedEnglishFilter = studentFilters.find(

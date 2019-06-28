@@ -4,12 +4,8 @@
 export interface ApplicationSettings {
   readonly accessDeniedUrl: string;
   readonly analyticsTrackingId: string;
-  /** @deprecated use {@link ExamSearchFilterService} */
-  readonly elasEnabled: boolean;
   readonly interpretiveGuideUrl: string;
   readonly irisVendorId: string;
-  /** @deprecated use {@link ExamSearchFilterService} */
-  readonly lepEnabled: boolean;
   readonly minItemDataYear: number;
   readonly percentileDisplayEnabled: boolean;
   readonly reportLanguages: string[];
@@ -52,10 +48,8 @@ export function toApplicationSettings(
   return {
     accessDeniedUrl: serverSettings.accessDeniedUrl,
     analyticsTrackingId: serverSettings.analyticsTrackingId,
-    elasEnabled: serverSettings.englishLanguageAcquisitionStatusEnabled,
     interpretiveGuideUrl: serverSettings.interpretiveGuideUrl,
     irisVendorId: serverSettings.irisVendorId,
-    lepEnabled: serverSettings.limitedEnglishProficienciesEnabled,
     minItemDataYear: serverSettings.minItemDataYear,
     percentileDisplayEnabled: serverSettings.percentileDisplayEnabled,
     reportLanguages: serverSettings.effectiveReportLanguages,

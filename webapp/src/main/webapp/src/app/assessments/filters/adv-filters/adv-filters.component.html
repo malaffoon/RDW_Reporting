@@ -163,11 +163,13 @@
       <div class="block-children" *ngIf="isEnabled('Gender')">
         <fieldset>
           <label for="gender-filter">
-            <span
-              info-button
-              title="{{ 'common.filters.student.gender' | translate }}"
-              content="{{ 'common.filters.student.gender-info' | translate }}"
-            ></span>
+            {{ 'common.student-field.Gender' | translate }}
+            <app-info
+              popoverTitle="{{ 'common.student-field.Gender' | translate }}"
+              popoverContent="{{
+                'common.student-field-info.Gender' | translate
+              }}"
+            ></app-info>
           </label>
           <sb-checkbox-list
             id="gender-filter"
@@ -176,7 +178,7 @@
             [values]="filterOptions.genders"
             property="genders"
             enum="common.gender"
-            label="{{ 'common.filters.student.gender' | translate }}"
+            label="{{ 'common.student-field.Gender' | translate }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
           ></sb-checkbox-list>
@@ -190,15 +192,16 @@
       >
         <fieldset>
           <label for="military-connected-filter">
-            <span
-              info-button
-              title="{{
-                'common.filters.student.military-connected' | translate
+            {{ 'common.student-field.MilitaryStudentIdentifier' | translate }}
+            <app-info
+              popoverTitle="{{
+                'common.student-field.MilitaryStudentIdentifier' | translate
               }}"
-              content="{{
-                'common.filters.student.military-connected-info' | translate
+              popoverContent="{{
+                'common.student-field-info.MilitaryStudentIdentifier'
+                  | translate
               }}"
-            ></span>
+            ></app-info>
           </label>
           <sb-checkbox-list
             id="military-connected-filter"
@@ -208,7 +211,7 @@
             property="militaryConnectedCodes"
             enum="common.military-connected-code"
             label="{{
-              'common.filters.student.military-connected' | translate
+              'common.student-field.MilitaryStudentIdentifier' | translate
             }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
@@ -223,13 +226,15 @@
       <div class="block-children" *ngIf="isEnabled('MigrantStatus')">
         <fieldset>
           <label for="migrant-status-filter">
-            <span
-              info-button
-              title="{{ 'common.filters.student.migrant-status' | translate }}"
-              content="{{
-                'common.filters.student.migrant-status-info' | translate
+            {{ 'common.student-field.MigrantStatus' | translate }}
+            <app-info
+              popoverTitle="{{
+                'common.student-field.MigrantStatus' | translate
               }}"
-            ></span>
+              popoverContent="{{
+                'common.student-field-info.MigrantStatus' | translate
+              }}"
+            ></app-info>
           </label>
           <sb-radio-button-list
             id="migrant-status-filter"
@@ -238,7 +243,7 @@
             [values]="[1, 2]"
             property="migrantStatus"
             enum="common.polar"
-            label="{{ 'common.filters.student.migrant-status' | translate }}"
+            label="{{ 'common.student-field.MigrantStatus' | translate }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
           ></sb-radio-button-list>
@@ -248,11 +253,13 @@
       <div class="block-children" *ngIf="isEnabled('Section504')">
         <fieldset>
           <label for="504-plan-filter">
-            <span
-              info-button
-              title="{{ 'common.filters.student.504-plan' | translate }}"
-              content="{{ 'common.filters.student.504-plan-info' | translate }}"
-            ></span>
+            {{ 'common.student-field.Section504' | translate }}
+            <app-info
+              popoverTitle="{{ 'common.student-field.Section504' | translate }}"
+              popoverContent="{{
+                'common.student-field-info.Section504' | translate
+              }}"
+            ></app-info>
           </label>
           <sb-radio-button-list
             id="504-plan-filter"
@@ -261,7 +268,7 @@
             [values]="[1, 2]"
             property="plan504"
             enum="common.polar"
-            label="{{ 'common.filters.student.504-plan' | translate }}"
+            label="{{ 'common.student-field.Section504' | translate }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
           ></sb-radio-button-list>
@@ -271,11 +278,15 @@
       <div class="block-children" *ngIf="isEnabled('IndividualEducationPlan')">
         <fieldset>
           <label for="iep-filter">
-            <span
-              info-button
-              title="{{ 'common.filters.student.iep' | translate }}"
-              content="{{ 'common.filters.student.iep-info' | translate }}"
-            ></span>
+            {{ 'common.student-field.IndividualEducationPlan' | translate }}
+            <app-info
+              popoverTitle="{{
+                'common.student-field.IndividualEducationPlan' | translate
+              }}"
+              popoverContent="{{
+                'common.student-field-info.IndividualEducationPlan' | translate
+              }}"
+            ></app-info>
           </label>
           <sb-radio-button-list
             id="iep-filter"
@@ -284,11 +295,35 @@
             [values]="[1, 2]"
             property="iep"
             enum="common.polar"
-            label="{{ 'common.filters.student.iep' | translate }}"
+            label="{{ 'common.student-field.iep' | translate }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
           ></sb-radio-button-list>
         </fieldset>
+      </div>
+
+      <!-- Economic Disadvantage -->
+      <div class="block-children" *ngIf="isEnabled('EconomicDisadvantage')">
+        <label>
+          {{ 'common.student-field.EconomicDisadvantage' | translate }}
+          <app-info
+            popoverTitle="{{
+              'common.student-field.EconomicDisadvantage' | translate
+            }}"
+            popoverContent="{{
+              'common.student-field-info.EconomicDisadvantage' | translate
+            }}"
+          ></app-info>
+        </label>
+        <sb-radio-button-list
+          [model]="filterBy"
+          [values]="[1, 2]"
+          property="economicDisadvantage"
+          enum="common.polar"
+          label="{{ 'common.student-field.EconomicDisadvantage' | translate }}"
+          analyticsEvent="FilterClick"
+          analyticsCategory="AdvancedFilters"
+        ></sb-radio-button-list>
       </div>
 
       <!-- Limited English Proficiency -->
@@ -298,16 +333,16 @@
       >
         <fieldset>
           <label for="lep-filter">
-            <span
-              info-button
-              title="{{
-                'common.filters.student.limited-english-proficiency' | translate
+            {{ 'common.student-field.LimitedEnglishProficiency' | translate }}
+            <app-info
+              popoverTitle="{{
+                'common.student-field.LimitedEnglishProficiency' | translate
               }}"
-              content="{{
-                'common.filters.student.limited-english-proficiency-info'
+              popoverContent="{{
+                'common.student-field-info.LimitedEnglishProficiency'
                   | translate
               }}"
-            ></span>
+            ></app-info>
           </label>
           <sb-radio-button-list
             id="lep-filter"
@@ -317,7 +352,7 @@
             property="limitedEnglishProficiency"
             enum="common.polar"
             label="{{
-              'common.filters.student.limited-english-proficiency' | translate
+              'common.student-field.LimitedEnglishProficiency' | translate
             }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
@@ -335,11 +370,20 @@
       >
         <fieldset>
           <label for="elas-filter">
-            <span
-              info-button
-              title="{{ 'common.filters.student.elas' | translate }}"
-              content="{{ 'common.filters.student.elas-info' | translate }}"
-            ></span>
+            {{
+              'common.student-field.EnglishLanguageAcquisitionStatus'
+                | translate
+            }}
+            <app-info
+              popoverTitle="{{
+                'common.student-field.EnglishLanguageAcquisitionStatus'
+                  | translate
+              }}"
+              popoverContent="{{
+                'common.student-field-info.EnglishLanguageAcquisitionStatus'
+                  | translate
+              }}"
+            ></app-info>
           </label>
           <sb-checkbox-list
             id="elas-filter"
@@ -348,7 +392,10 @@
             [values]="filterOptions.elasCodes"
             property="elasCodes"
             enum="common.elas"
-            label="{{ 'common.filters.student.elas' | translate }}"
+            label="{{
+              'common.student-field.EnglishLanguageAcquisitionStatus'
+                | translate
+            }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
           ></sb-checkbox-list>
@@ -358,11 +405,15 @@
       <div class="block-children" *ngIf="isEnabled('PrimaryLanguage')">
         <fieldset>
           <label for="language-filter">
-            <span
-              info-button
-              title="{{ 'common.filters.student.language' | translate }}"
-              content="{{ 'common.filters.student.language-info' | translate }}"
-            ></span>
+            {{ 'common.student-field.PrimaryLanguage' | translate }}
+            <app-info
+              popoverTitle="{{
+                'common.student-field.PrimaryLanguage' | translate
+              }}"
+              popoverContent="{{
+                'common.student-field-info.PrimaryLanguage' | translate
+              }}"
+            ></app-info>
           </label>
           <div
             class="toggle-group btn-group-sm vertical all-option nested-btn-group"
@@ -393,13 +444,13 @@
       <div class="block-children" *ngIf="isEnabled('Ethnicity')">
         <fieldset>
           <label for="ethnicity-filter">
-            <span
-              info-button
-              title="{{ 'common.filters.student.ethnicity' | translate }}"
-              content="{{
-                'common.filters.student.ethnicity-info' | translate
+            {{ 'common.student-field.Ethnicity' | translate }}
+            <app-info
+              popoverTitle="{{ 'common.student-field.Ethnicity' | translate }}"
+              popoverContent="{{
+                'common.student-field-info.Ethnicity' | translate
               }}"
-            ></span>
+            ></app-info>
           </label>
           <sb-checkbox-list
             id="ethnicity-filter"
@@ -408,7 +459,7 @@
             [values]="filterOptions.ethnicities"
             property="ethnicities"
             enum="common.ethnicity"
-            label="{{ 'common.filters.student.ethnicity' | translate }}"
+            label="{{ 'common.student-field.Ethnicity' | translate }}"
             analyticsEvent="FilterClick"
             analyticsCategory="AdvancedFilters"
           ></sb-checkbox-list>

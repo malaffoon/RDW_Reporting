@@ -93,6 +93,7 @@ export function toExam(serverExam: any): Exam {
 
   if (serverExam.studentContext) {
     const {
+      economicDisadvantage,
       migrantStatus,
       section504,
       iep,
@@ -104,6 +105,7 @@ export function toExam(serverExam: any): Exam {
     exam.migrantStatus = migrantStatus;
     exam.plan504 = section504;
     exam.iep = iep;
+    exam.economicDisadvantage = economicDisadvantage;
     exam.limitedEnglishProficiency = lep;
     exam.elasCode = elasCode;
     exam.languageCode = languageCode;

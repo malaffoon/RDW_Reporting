@@ -13,11 +13,13 @@ import { InformationButtonComponent } from './information-button.component';
 import { SBTypeaheadGroup } from './sb-typeahead-group';
 import { AutoCompleteModule } from 'primeng/primeng';
 import { FormFieldsComponent } from './component/form-fields/form-fields.component';
+import { InformationIconComponent } from './component/information-icon/information-icon.component';
 
 @NgModule({
   declarations: [
     FormFieldsComponent,
     InformationButtonComponent,
+    InformationIconComponent,
     SBTypeahead,
     SBButtonTypeahead,
     SBTypeaheadGroup,
@@ -38,6 +40,7 @@ import { FormFieldsComponent } from './component/form-fields/form-fields.compone
   exports: [
     FormFieldsComponent,
     InformationButtonComponent,
+    InformationIconComponent,
     SBTypeahead,
     SBButtonTypeahead,
     SBCheckboxGroup,

@@ -11,6 +11,7 @@ export class FilterBy extends ObservableObject {
   private _completion: any = -1;
 
   //Student
+  private _economicDisadvantage: number = -1;
   private _genders: boolean[] = [true];
   private _migrantStatus: number = -1;
   private _plan504: number = -1;
@@ -31,6 +32,7 @@ export class FilterBy extends ObservableObject {
     'migrantStatus',
     'plan504',
     'iep',
+    'economicDisadvantage',
     'limitedEnglishProficiency',
     'elasCodes',
     'ethnicities',
@@ -104,6 +106,15 @@ export class FilterBy extends ObservableObject {
     }
 
     return all;
+  }
+
+  get economicDisadvantage(): number {
+    return this._economicDisadvantage;
+  }
+
+  set economicDisadvantage(value: number) {
+    this._economicDisadvantage = value;
+    this.notifyChange('economicDisadvantage');
   }
 
   get ethnicities(): boolean[] {
