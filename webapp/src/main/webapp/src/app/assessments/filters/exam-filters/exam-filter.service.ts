@@ -42,61 +42,61 @@ export class ExamFilterService {
     ),
     new ExamFilter(
       'genders',
-      'common.filters.student.gender',
+      'common.student-field.Gender',
       'common.gender',
       this.filterByGender
     ),
     new ExamFilter(
       'migrantStatus',
-      'common.filters.student.migrant-status',
+      'common.student-field.MigrantStatus',
       'common.polar',
       this.filterByMigrantStatus
     ),
     new ExamFilter(
       'plan504',
-      'common.filters.student.504-plan',
+      'common.student-field.Section504',
       'common.polar',
       this.filterByplan504
     ),
     new ExamFilter(
       'iep',
-      'common.filters.student.iep',
+      'common.student-field.IndividualEducationPlan',
       'common.polar',
       this.filterByIep
     ),
     new ExamFilter(
       'economicDisadvantage',
-      'common.filters.student.economic-disadvantage',
+      'common.student-field.EconomicDisadvantage',
       'enum.polar',
       this.filterByEconomicDisadvantage
     ),
     new ExamFilter(
       'limitedEnglishProficiency',
-      'common.filters.student.limited-english-proficiency',
+      'common.student-field.LimitedEnglishProficiency',
       'common.polar',
       this.filterByLimitedEnglishProficiency
     ),
     new ExamFilter(
       'elasCodes',
-      'common.filters.student.elas',
+      'common.student-field.EnglishLanguageAcquisitionStatus',
       'common.elas',
       this.filterByElasCode
     ),
     new ExamFilter(
       'ethnicities',
-      'common.filters.student.ethnicity',
+      'common.student-field.Ethnicity',
       'common.ethnicity',
       this.filterByEthnicity
     ),
     new ExamFilter(
       'languageCodes',
-      'common.filters.student.language',
+      'common.student-field.PrimaryLanguage',
       'common.languages',
       this.filterByLanguageCode
     ),
     new ExamFilter(
       'militaryConnectedCodes',
-      'common.filters.student.military-connected',
+      'common.student-field.MilitaryStudentIdentifier',
       'common.military-connected-code',
       this.filterByMilitaryConnectedCode
     )

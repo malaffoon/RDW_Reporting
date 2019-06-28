@@ -528,6 +528,9 @@
         "summative": "Valid/Invalid (Summative)",
         "summative-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.  "
       },
+      "student": {
+        "label": "Student"
+      },
       "test": {
         "label": "Test",
         "off-grade-assessment": "Off-Grade Assessments",
