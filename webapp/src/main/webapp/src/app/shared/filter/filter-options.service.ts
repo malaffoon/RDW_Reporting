@@ -27,6 +27,7 @@ export class FilterOptionsService {
 
               // student related
               genders: serverOptions.genders,
+              economicDisadvantages: Booleans,
               ethnicities: serverOptions.ethnicities,
               englishLanguageAcquisitionStatuses: serverOptions.elasCodes,
               individualEducationPlans: Booleans,

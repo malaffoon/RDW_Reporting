@@ -1,16 +1,17 @@
-import { Utils } from '../support/support';
+import { isNullOrEmpty, Utils } from '../support/support';
 import { Student } from '../../student/search/student';
 
 export interface StudentFilter {
-  genders?: string[];
-  ethnicities?: string[];
+  economicDisadvantages?: string[];
   englishLanguageAcquisitionStatuses?: string[];
+  ethnicities?: string[];
+  genders?: string[];
   individualEducationPlans?: string[];
-  limitedEnglishProficiencies?: string[];
-  section504s?: string[];
-  migrantStatuses?: string[];
   languages?: string[];
+  limitedEnglishProficiencies?: string[];
   militaryConnectedCodes?: string[];
+  migrantStatuses?: string[];
+  section504s?: string[];
 }
 
 export type ArrayFilter<T> = (
@@ -20,44 +21,49 @@ export type ArrayFilter<T> = (
 ) => boolean;
 export type StudentArrayFilter = ArrayFilter<Student>;
 
+function includes<T>(filterValues: T[], value: T): boolean {
+  return isNullOrEmpty(filterValues) || filterValues.includes(value);
+}
+
+function includesAny<T>(filterValues: T[], values: T[]): boolean {
+  return (
+    isNullOrEmpty(filterValues) ||
+    values.some(ethnicity => filterValues.includes(ethnicity))
+  );
+}
+
+function filterStudent(student: Student, filter: StudentFilter): boolean {
+  return (
+    includes(filter.genders, student.gender) &&
+    includesAny(filter.ethnicities, student.ethnicities) &&
+    includes(
+      filter.englishLanguageAcquisitionStatuses,
+      student.englishLanguageAcquisitionStatus
+    ) &&
+    includes(
+      filter.individualEducationPlans,
+      student.individualEducationPlan
+    ) &&
+    includes(
+      filter.limitedEnglishProficiencies,
+      student.limitedEnglishProficiency
+    ) &&
+    includes(filter.economicDisadvantages, student.economicDisadvantage) &&
+    includes(filter.section504s, student.section504) &&
+    includes(filter.migrantStatuses, student.migrantStatus) &&
+    includes(filter.languages, student.languages) &&
+    includes(filter.militaryConnectedCodes, student.militaryConnectedCodes)
+  );
+}
+
 export function createStudentArrayFilter(
   filter: StudentFilter
 ): StudentArrayFilter {
-  const { isNullOrEmpty } = Utils;
-  return student => {
-    return (
-      (isNullOrEmpty(filter.genders) ||
-        filter.genders.includes(student.gender)) &&
-      (isNullOrEmpty(filter.ethnicities) ||
-        student.ethnicities.some(ethnicity =>
-          filter.ethnicities.includes(ethnicity)
-        )) &&
-      (isNullOrEmpty(filter.englishLanguageAcquisitionStatuses) ||
-        filter.englishLanguageAcquisitionStatuses.includes(
-          student.englishLanguageAcquisitionStatus
-        )) &&
-      (isNullOrEmpty(filter.individualEducationPlans) ||
-        filter.individualEducationPlans.includes(
-          student.individualEducationPlan
-        )) &&
-      (isNullOrEmpty(filter.limitedEnglishProficiencies) ||
-        filter.limitedEnglishProficiencies.includes(
-          student.limitedEnglishProficiency
-        )) &&
-      (isNullOrEmpty(filter.section504s) ||
-        filter.section504s.includes(student.section504)) &&
-      (isNullOrEmpty(filter.migrantStatuses) ||
-        filter.migrantStatuses.includes(student.migrantStatus)) &&
-      (isNullOrEmpty(filter.languages) ||
-        filter.languages.includes(student.languages)) &&
-      (isNullOrEmpty(filter.militaryConnectedCodes) ||
-        filter.militaryConnectedCodes.includes(student.militaryConnectedCodes))
-    );
-  };
+  return student => filterStudent(student, filter);
 }
 
 export function countFilters(filter: StudentFilter): number {
-  return Object.entries(filter).reduce((count, [key, value]) => {
+  return Object.entries(filter).reduce((count, [, value]) => {
     return count + (value != null ? value.length : 0);
   }, 0);
 }

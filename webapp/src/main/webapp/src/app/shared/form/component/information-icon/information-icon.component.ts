@@ -1,35 +1,23 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { removeHtml } from '../support/support';
 
 /**
- * @deprecated use {@link InformationIconComponent}
- *
  * This component is responsible for displaying a label with
  * an information popover icon.
  */
 @Component({
-  selector: 'info-button,[info-button]',
-  templateUrl: './information-button.component.html',
+  selector: 'app-info,[app-info]',
+  templateUrl: './information-icon.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InformationButtonComponent {
+export class InformationIconComponent {
   @Input()
-  content: string;
+  popoverTitle: string;
 
   @Input()
-  icon: string;
+  popoverContent: string;
 
   @Input()
-  placement: string = 'top';
-
-  _title: string;
-  _sanitizedTitle: string;
-
-  @Input()
-  set title(value: string) {
-    this._title = value;
-    this._sanitizedTitle = removeHtml(value);
-  }
+  popoverPlacement: string = 'top';
 
   /**
    * Stop propagation of the info button click and dispatch a new click event
@@ -40,7 +28,7 @@ export class InformationButtonComponent {
    *
    * @param {Event} event The information button click event
    */
-  propagateClick(event: Event): void {
+  onClick(event: Event): void {
     event.stopPropagation();
 
     setTimeout(() => {

@@ -18,6 +18,7 @@ sql:
         st.first_name,
         st.last_or_surname,
         st.gender_code,
+        e.economic_disadvantage,
         e.iep,
         e.lep,
         e.language_code,

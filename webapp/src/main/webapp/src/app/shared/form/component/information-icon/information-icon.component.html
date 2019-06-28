@@ -1,0 +1,21 @@
+<button
+  class="btn btn-borderless btn-xs icon-only"
+  type="button"
+  [popover]="informationPopover"
+  [popoverTitle]="popoverTitle"
+  [placement]="popoverPlacement"
+  container="body"
+  outsideClick="true"
+  (click)="onClick($event)"
+>
+  <span class="sr-only">{{ 'info-button.more-info' | translate }}</span
+  ><i class="fa fa-info-circle"></i>
+</button>
+<ng-template #informationPopover>
+  <ng-container *ngIf="popoverContent; else transposedContent">{{
+    popoverContent
+  }}</ng-container>
+  <ng-template #transposedContent>
+    <ng-content select="[popoverContent]"></ng-content>
+  </ng-template>
+</ng-template>
