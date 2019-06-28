@@ -95,7 +95,11 @@
           <td>
             <input
               #overrideInput
-              type="text"
+              [type]="
+                rowNode.node.data.secure && !rowNode.node.data.showSecure
+                  ? 'password'
+                  : 'text'
+              "
               [value]="rowNode.node.data.value"
               [formControlName]="rowNode.node.data.formControlName"
               (change)="updateOverride(rowNode.node.data)"
@@ -110,6 +114,20 @@
                 "
                 (click)="resetClicked(rowNode.node.data)"
                 popover="{{ 'tenant-config.popover.reset' | translate }}"
+                placement="left"
+                container="body"
+                triggers="mouseenter:mouseleave"
+              ></i>
+              <i
+                class="fa fa-md"
+                [ngClass]="{
+                  'fa-eye-slash': rowNode.node.data.showSecure,
+                  'fa-eye': !rowNode.node.data.showSecure
+                }"
+                *ngIf="rowNode.node.data.secure"
+                (click)="
+                  rowNode.node.data.showSecure = !rowNode.node.data.showSecure
+                "
                 placement="left"
                 container="body"
                 triggers="mouseenter:mouseleave"
