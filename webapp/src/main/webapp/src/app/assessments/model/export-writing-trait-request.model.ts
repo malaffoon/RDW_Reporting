@@ -8,9 +8,7 @@ import { ExportRequest } from './export-request.interface';
  * This model represents a Writing Trait Score aggregate table export request.
  */
 export interface ExportWritingTraitsRequest extends ExportRequest {
-  assessment: Assessment;
   assessmentItems: AssessmentItem[];
   summaries: WritingTraitScoreSummary[];
   showAsPercent: boolean;
-  type: RequestType;
 }
