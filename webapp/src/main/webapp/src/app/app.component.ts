@@ -58,20 +58,21 @@ export class AppComponent implements OnInit {
     this.user$ = this.userService.getUser();
 
     this.applicationSettings$ = this.user$.pipe(
-      flatMap(user =>
-        user.permissions.length > 0
+      flatMap(user => {
+        console.log({ user });
+        return user.permissions.length > 0
           ? this.applicationSettingsService.getSettings().pipe(
-              catchError(error => {
-                this.router.navigateByUrl('/error');
-                return _throw(error);
-              }),
               tap(settings => {
                 this.languageStore.configuredLanguages = settings.uiLanguages;
                 this.initializeAnalytics(settings.analyticsTrackingId);
+              }),
+              catchError(error => {
+                this.router.navigateByUrl('/error');
+                return _throw(error);
               })
             )
-          : of(<ApplicationSettings>{})
-      )
+          : of(<ApplicationSettings>{});
+      })
     );
 
     this.initializeNavigationScrollReset();

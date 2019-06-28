@@ -11,6 +11,7 @@ export class ApplicationSettingsService {
   constructor(private dataService: CachingDataService) {}
 
   getSettings(): Observable<ApplicationSettings> {
+    console.log('call');
     return this.dataService.get('/settings').pipe(
       map(serverSettings => toApplicationSettings(serverSettings)),
       catchError(() => EmptySettings)
