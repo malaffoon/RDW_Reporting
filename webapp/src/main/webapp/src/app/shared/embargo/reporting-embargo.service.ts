@@ -36,8 +36,8 @@ export class ReportingEmbargoService {
         .pipe(map(({ schoolYear }) => schoolYear))
     ).pipe(
       map(([enabled, schoolYear]) => ({
-        enabled: true,
-        schoolYear: 2019
+        enabled,
+        schoolYear
       }))
     );
   }
