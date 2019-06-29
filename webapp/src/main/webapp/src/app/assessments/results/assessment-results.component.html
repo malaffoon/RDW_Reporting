@@ -288,17 +288,27 @@
               </button>
             </li>
             <li *ngIf="currentResultsView.canExport">
-              <button
-                class="btn btn-default btn-sm"
-                [disabled]="
-                  !currentExportResults ||
-                  !currentExportResults.hasDataToExport()
-                "
-                (click)="currentExportResults.exportToCsv()"
-              >
-                <i class="fa fa-cloud-download"></i>
-                {{ 'common.export' | translate }}
-              </button>
+              <ng-container *ngIf="exportButtonDisabled; else exportEnabled">
+                <button
+                  *ngIf="exportButtonDisabled"
+                  class="btn btn-default btn-xs disabled"
+                  popover="{{ 'common.embargo-export-disabled' | translate }}"
+                  triggers="mouseenter:mouseleave"
+                  placement="left"
+                >
+                  <i class="fa fa-cloud-download"></i>
+                  {{ 'common.export' | translate }}
+                </button>
+              </ng-container>
+              <ng-template #exportEnabled>
+                <button
+                  class="btn btn-default btn-xs"
+                  (click)="currentExportResults.exportToCsv()"
+                >
+                  <i class="fa fa-cloud-download"></i>
+                  {{ 'common.export' | translate }}
+                </button>
+              </ng-template>
             </li>
           </ul>
         </div>
