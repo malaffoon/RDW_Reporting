@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CachingDataService } from '../data/caching-data.service';
 import { Observable, of } from 'rxjs';
-import { catchError, flatMap, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../service-route';
 import { Embargo } from './embargo';
 import { ApplicationSettingsService } from '../../app-settings.service';
@@ -17,40 +17,18 @@ export class ReportingEmbargoService {
   ) {}
 
   /**
+   * @deprecated use {@link #getEmbargo}
+   *
    * Gets user organization exam embargo status
    */
   isEmbargoed(): Observable<boolean> {
-    return this.userHasEmbargoReadAccess().pipe(
-      flatMap(hasEmbargoRead =>
-        hasEmbargoRead ? this.getEmbargoEnabled() : of(false)
-      )
-    );
+    return this.getEmbargo().pipe(map(({ enabled }) => enabled));
   }
 
   /**
    * Gets the current embargo settings
    */
   getEmbargo(): Observable<Embargo> {
-    return this.userHasEmbargoReadAccess().pipe(
-      flatMap(hasEmbargoRead =>
-        hasEmbargoRead ? this.getEmbargoInternal() : of({})
-      )
-    );
-  }
-
-  private userHasEmbargoReadAccess(): Observable<boolean> {
-    return this.userService
-      .getUser()
-      .pipe(map(({ permissions }) => permissions.includes('EMBARGO_READ')));
-  }
-
-  private getEmbargoEnabled(): Observable<boolean> {
-    return this.dataService
-      .get(`${ReportingServiceRoute}/organizations/embargoed`)
-      .pipe(catchError(() => of(false)));
-  }
-
-  private getEmbargoInternal(): Observable<Embargo> {
     return forkJoin(
       this.getEmbargoEnabled(),
       this.settingsService
@@ -58,9 +36,15 @@ export class ReportingEmbargoService {
         .pipe(map(({ schoolYear }) => schoolYear))
     ).pipe(
       map(([enabled, schoolYear]) => ({
-        enabled,
-        schoolYear
+        enabled: true,
+        schoolYear: 2019
       }))
     );
+  }
+
+  private getEmbargoEnabled(): Observable<boolean> {
+    return this.dataService
+      .get(`${ReportingServiceRoute}/organizations/embargoed`)
+      .pipe(catchError(() => of(false)));
   }
 }

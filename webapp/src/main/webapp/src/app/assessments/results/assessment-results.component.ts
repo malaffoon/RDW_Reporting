@@ -38,6 +38,9 @@ import {
 } from '../../exam/model/score-statistics';
 import { toScoreTable } from '../../exam/component/score-table/score-tables';
 import { ScoreTable } from '../../exam/component/score-table/score-table';
+import { EmbargoService } from '../../admin/embargo/embargo.service';
+import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
+import { Embargo } from '../../shared/embargo/embargo';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -61,6 +64,7 @@ interface ResultsView {
 
 export interface ExportResults {
   exportToCsv(): void;
+
   hasDataToExport(): boolean;
 }
 
@@ -321,6 +325,15 @@ export class AssessmentResultsComponent implements OnInit {
     return undefined;
   }
 
+  get exportButtonDisabled(): boolean {
+    return (
+      this.currentExportResults == null ||
+      !this.currentExportResults.hasDataToExport() ||
+      (this.embargo.enabled &&
+        this.embargo.schoolYear === this.assessmentExam.assessment.schoolYear)
+    );
+  }
+
   private get hasExamsAfterMinimumItemYear(): boolean {
     return this._assessmentExam.exams.some(
       x => x.schoolYear > this.minimumItemDataYear
@@ -355,6 +368,7 @@ export class AssessmentResultsComponent implements OnInit {
   subjectDefinition: SubjectDefinition;
   scoreTypeOptions: Option[] = [];
   showInstructionalResources: boolean;
+  embargo: Embargo;
 
   /**
    * The active score type in the display
@@ -378,7 +392,8 @@ export class AssessmentResultsComponent implements OnInit {
     private percentileService: AssessmentPercentileService,
     private subjectService: SubjectService,
     private angulartics2: Angulartics2,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private embargoService: ReportingEmbargoService
   ) {}
 
   ngOnInit(): void {
@@ -389,10 +404,12 @@ export class AssessmentResultsComponent implements OnInit {
       this.applicationSettingsService.getSettings(),
       this.subjectService.getSubjectDefinitionForAssessment(
         this.assessmentExam.assessment
-      )
-    ).subscribe(([settings, subjectDefinition]) => {
+      ),
+      this.embargoService.getEmbargo()
+    ).subscribe(([settings, subjectDefinition, embargo]) => {
       this.percentileDisplayEnabled = settings.percentileDisplayEnabled;
       this.subjectDefinition = subjectDefinition;
+      this.embargo = embargo;
 
       this.scoreTypeOptions = createScoreTypeOptions(
         subjectDefinition,
