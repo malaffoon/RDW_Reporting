@@ -251,6 +251,7 @@ sql:
         e.school_year,
         e.grade_code,
         e.available_accommodation_codes,
+        e.economic_disadvantage,
         e.iep,
         e.lep,
         e.language_code,

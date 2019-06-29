@@ -16,6 +16,12 @@ export class StudentFilterFormOptionsMapper {
     const translate = code => this.translateService.instant(code);
 
     return <StudentFilterFormOptions>{
+      economicDisadvantages: options.economicDisadvantages.map(
+        optionMapper(
+          value => translate(`common.boolean.${value}`),
+          value => `Economic Disadvantage: ${value}`
+        )
+      ),
       genders: options.genders.map(
         optionMapper(
           value => translate(`common.gender.${value}`),

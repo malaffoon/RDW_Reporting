@@ -19,6 +19,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px 45px;
+  padding-top: 20px;
 }
 
 @media (max-width: @screen-xs-max) {
@@ -31,4 +32,8 @@ h1 {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 10px;
+
+  p {
+    margin: 0;
+  }
 }

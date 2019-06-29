@@ -9,7 +9,7 @@ import {
 } from '../../../model/aggregate-target-score-row.model';
 import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.service';
 import { FilterBy } from '../../../model/filter-by.model';
-import { Subscription, forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
 import {
@@ -33,7 +33,6 @@ import {
 } from '../../../../shared/ordering/orderings';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
 import { ExportResults } from '../../assessment-results.component';
-import { ExportTargetReportRequest } from '../../../model/export-target-report-request.model';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { ExamStatistics } from '../../../model/exam-statistics.model';
 import { Exam } from '../../../model/exam';
@@ -41,6 +40,7 @@ import { SortEvent } from 'primeng/api';
 import { AggregateReportItem } from '../../../../aggregate-report/results/aggregate-report-item';
 import { Utils } from '../../../../shared/support/support';
 import { SubjectDefinition } from '../../../../subject/subject';
+import { RequestType } from '../../../../shared/enum/request-type.enum';
 
 @Component({
   selector: 'target-report',
@@ -85,6 +85,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
    */
   @Input()
   set filterBy(value: FilterBy) {
+    // TODO values should be filtered before getting here...
     this._filterBy = value;
 
     if (this._filterBySubscription) {
@@ -172,11 +173,9 @@ export class TargetReportComponent implements OnInit, ExportResults {
           name: this.translate.instant(
             `subject.${this.assessment.subject}.asmt-type.${
               this.assessment.type
-            }.level.${
-              this.subjectDefinition.performanceLevelStandardCutoff
-            }.name`
+            }.level.${this.subjectDefinition.overallScore.standardCutoff}.name`
           ),
-          id: this.subjectDefinition.performanceLevelStandardCutoff
+          id: this.subjectDefinition.overallScore.standardCutoff
         }
       })
     ];
@@ -193,10 +192,12 @@ export class TargetReportComponent implements OnInit, ExportResults {
         subgroupOptions,
         applicationSettings
       ]) => {
-        this.allSubgroups = this.createAllSubgroups(applicationSettings);
+        this.allSubgroups = subgroupOptions.studentFilters.map(
+          ({ id: code }) => ({ code })
+        );
         this.originalTargetScoreExams = (targetScoreExams || []).slice();
         this.targetScoreExams = (targetScoreExams || []).slice();
-        this.subgroupOptions = subgroupOptions;
+        this.subgroupOptions = subgroupOptions; // TODO use studentFilters
         this.allTargets = (allTargets || []).slice();
 
         this.identityColumns.forEach(column => {
@@ -335,16 +336,16 @@ export class TargetReportComponent implements OnInit, ExportResults {
   }
 
   exportToCsv(): void {
-    const exportRequest = new ExportTargetReportRequest();
-    exportRequest.assessment = this.assessment;
-    exportRequest.targetScoreRows = this.aggregateTargetScoreRows;
-    exportRequest.group = this.displayedFor;
-    exportRequest.schoolYear = this.schoolYear;
-    exportRequest.averageScaleScore = Math.round(this.statistics.average);
-    exportRequest.standardError = Math.round(this.statistics.standardError);
-    exportRequest.subjectDefinition = this.subjectDefinition;
-
-    this.assessmentExporter.exportTargetScoresToCsv(exportRequest);
+    this.assessmentExporter.exportTargetScoresToCsv({
+      type: RequestType.TargetReport,
+      assessment: this.assessment,
+      targetScoreRows: this.aggregateTargetScoreRows,
+      group: this.displayedFor,
+      schoolYear: this.schoolYear,
+      averageScaleScore: Math.round(this.statistics.average),
+      standardError: Math.round(this.statistics.standardError),
+      subjectDefinition: this.subjectDefinition
+    });
   }
 
   calculateTreeColumns() {
@@ -437,19 +438,21 @@ export class TargetReportComponent implements OnInit, ExportResults {
     ).on((subgroup: Subgroup) => toDimension(subgroup).type).compare;
 
     const booleanOptions: any[] = [true, false, undefined];
-    const dimensionValuesByType: Map<string, any[]> = new Map();
-    dimensionValuesByType.set('Gender', this.subgroupOptions.genders);
-    dimensionValuesByType.set('Ethnicity', this.subgroupOptions.ethnicities);
-    dimensionValuesByType.set('ELAS', this.subgroupOptions.elasCodes);
-    dimensionValuesByType.set('Language', this.subgroupOptions.languages);
-    dimensionValuesByType.set(
-      'MilitaryConnectedCode',
-      this.subgroupOptions.militaryConnectedCodes
-    );
-    dimensionValuesByType.set('LEP', booleanOptions);
-    dimensionValuesByType.set('Section504', booleanOptions);
-    dimensionValuesByType.set('IEP', booleanOptions);
-    dimensionValuesByType.set('MigrantStatus', booleanOptions);
+    const dimensionValuesByType: Map<string, any[]> = new Map([
+      ['EconomicDisadvantage', []],
+      ['Gender', this.subgroupOptions.genders],
+      ['Ethnicity', this.subgroupOptions.ethnicities],
+      ['EnglishLanguageAcquisitionStatus', this.subgroupOptions.elasCodes],
+      ['PrimaryLanguage', this.subgroupOptions.languages],
+      [
+        'MilitaryStudentIdentifier',
+        this.subgroupOptions.militaryConnectedCodes
+      ],
+      ['LimitedEnglishProficiency', booleanOptions],
+      ['Section504', booleanOptions],
+      ['IndividualEducationPlan', booleanOptions],
+      ['MigrantStatus', booleanOptions]
+    ]);
 
     const valueComparator: Comparator<Subgroup> = (
       a: Subgroup,
@@ -491,47 +494,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
         this._filterBy
       )
     );
-  }
-
-  private createAllSubgroups(settings: any): any[] {
-    const subgroups = [
-      { code: 'Gender', translatecode: 'gender-label', selected: false },
-      { code: 'Ethnicity', translatecode: 'ethnicity-label', selected: false }
-    ];
-    if (settings.elasEnabled) {
-      subgroups.push({
-        code: 'ELAS',
-        translatecode: 'elas-label',
-        selected: false
-      });
-    }
-    subgroups.push({
-      code: 'Language',
-      translatecode: 'language-label',
-      selected: false
-    });
-    if (settings.lepEnabled) {
-      subgroups.push({
-        code: 'LEP',
-        translatecode: 'limited-english-proficiency-label',
-        selected: false
-      });
-    }
-    subgroups.push(
-      { code: 'Section504', translatecode: '504-label', selected: false },
-      { code: 'IEP', translatecode: 'iep-label', selected: false },
-      {
-        code: 'MigrantStatus',
-        translatecode: 'migrant-status-label',
-        selected: false
-      },
-      {
-        code: 'MilitaryConnectedCode',
-        translatecode: 'military-connected-label',
-        selected: false
-      }
-    );
-    return subgroups;
   }
 
   getTargetReportingLevelString(level: TargetReportingLevel): string {

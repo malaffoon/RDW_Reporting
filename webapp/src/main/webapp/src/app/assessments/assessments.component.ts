@@ -28,6 +28,7 @@ import { Exam } from './model/exam';
 import { AdvFiltersComponent } from './filters/adv-filters/adv-filters.component';
 import { AssessmentExamView } from './results/assessment-results.component';
 import { gradeColor } from '../shared/colors';
+import { Embargo } from '../shared/embargo/embargo';
 
 /**
  * This component encompasses all the functionality for displaying and filtering
@@ -117,7 +118,7 @@ export class AssessmentsComponent implements OnChanges {
   assessmentsLoading: Map<number, Assessment> = new Map<number, Assessment>();
   minimumItemDataYear: number;
   currentSchoolYear: number;
-  embargoed = true;
+  embargo: Embargo;
   exportDisabled = true;
   loadingInitialResults = true;
 
@@ -225,12 +226,12 @@ export class AssessmentsComponent implements OnChanges {
     forkJoin(
       this.applicationSettingsService.getSettings(),
       this.filterOptionService.getExamFilterOptions(),
-      this.embargoService.isEmbargoed()
-    ).subscribe(([settings, filterOptions, embargoed]) => {
+      this.embargoService.getEmbargo()
+    ).subscribe(([settings, filterOptions, embargo]) => {
       this.minimumItemDataYear = settings.minItemDataYear;
       this.currentSchoolYear = settings.schoolYear;
       this.filterOptions = filterOptions;
-      this.embargoed = embargoed;
+      this.embargo = embargo;
       this.updateFilterOptions();
     });
   }
@@ -402,10 +403,11 @@ export class AssessmentsComponent implements OnChanges {
 
   private updateFilterOptions() {
     this.exportDisabled =
-      this.embargoed &&
+      this.embargo != null &&
+      this.embargo.enabled &&
       this.selectedAssessments.every(
         ({ type, schoolYear }) =>
-          type === 'sum' && schoolYear === this.currentSchoolYear
+          type === 'sum' && schoolYear === this.embargo.schoolYear
       );
     this.filterOptions.hasInterim = this.selectedAssessments.some(
       ({ type }) => type !== 'sum'
