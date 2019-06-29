@@ -1234,7 +1234,7 @@
     "sandbox-role-label": {
       "DistrictAdministrator": "District Admin: {{organizationName}}",
       "SchoolAdministrator": "School Admin: {{organizationName}}",
-      "Teacher": "Teacher: {{organizationName}} {{grade}}"
+      "Teacher": "Teacher: {{organizationName}}"
     },
     "sandbox-role-username": {
       "DistrictAdministrator": "District Admin",
