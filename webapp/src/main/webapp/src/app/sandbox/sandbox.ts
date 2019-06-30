@@ -15,5 +15,4 @@ export interface SandboxRole {
   id: string;
   type: SandboxRoleType;
   organization?: Organization;
-  gradeCode?: string;
 }
