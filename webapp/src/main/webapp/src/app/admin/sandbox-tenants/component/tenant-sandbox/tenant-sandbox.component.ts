@@ -5,7 +5,8 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectorRef
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
@@ -34,6 +35,7 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   delete: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
   open: boolean;
+  valid: boolean;
   formGroupOriginalValues: any;
   formGroup: FormGroup = new FormGroup({
     label: new FormControl('', [CustomValidators.notBlank]),
@@ -43,6 +45,8 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   });
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
+
+  constructor(private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.formGroup.patchValue({
@@ -70,6 +74,7 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   onOpenButtonClick(): void {
     this.formGroupOriginalValues = cloneDeep(this.formGroup.value);
     this.open = true;
+    this.cdRef.detectChanges();
   }
 
   onCloseButtonClick(): void {

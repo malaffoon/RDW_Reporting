@@ -142,27 +142,6 @@
               "src/scripts/iris/jquery.js",
               "src/scripts/iris/util_xdm.js",
               "src/scripts/iris/client.js"
-            ],
-            "styles": [
-              "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeng/resources/themes/bootstrap/theme.css",
-              "node_modules/@sbac/sbac-ui-kit/dist/css/sbac-ui-kit.min.css",
-              "src/styles.less"
-            ],
-            "assets": [
-              "src/assets",
-              {
-                "glob": "*",
-                "input": "node_modules/@sbac/sbac-ui-kit/dist/images",
-                "output": "/assets/image"
-              },
-              {
-                "glob": "*",
-                "input": "node_modules/@sbac/sbac-ui-kit/dist/images/icon",
-                "output": "/"
-              }
             ]
           }
         },
