@@ -103,25 +103,22 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     const updatedProperties = { ...this.configurationProperties };
     const key = this.tenantForm.get('key').value.toUpperCase();
     const defaultDataBaseName = `reporting_${key}`;
-    const archivePathPrefixProperty = <ConfigurationProperty>(
-      updatedProperties.archive.find(property => property.key === 'pathPrefix')
-    );
-    archivePathPrefixProperty.value = key;
-    archivePathPrefixProperty.originalValue = key;
 
-    Object.keys(this.configurationProperties.datasources).forEach(
-      dataSourceKey => {
-        const dbProperty = <ConfigurationProperty>(
-          updatedProperties.datasources[dataSourceKey].find(
-            property => property.key === 'urlParts.database'
-          )
-        );
-        dbProperty.value = defaultDataBaseName;
-        dbProperty.originalValue = defaultDataBaseName;
-      }
-    );
+    if (this.configurationProperties) {
+      Object.keys(this.configurationProperties.datasources).forEach(
+        dataSourceKey => {
+          const dbProperty = <ConfigurationProperty>(
+            updatedProperties.datasources[dataSourceKey].find(
+              property => property.key === 'urlParts.database'
+            )
+          );
+          dbProperty.value = defaultDataBaseName;
+          dbProperty.originalValue = defaultDataBaseName;
+        }
+      );
 
-    this.configurationProperties = updatedProperties;
+      this.configurationProperties = updatedProperties;
+    }
   }
 
   private mapLocalizationOverrides() {

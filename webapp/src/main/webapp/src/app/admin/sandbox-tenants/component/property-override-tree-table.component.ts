@@ -32,6 +32,13 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   @Input()
   readonly = true;
 
+  // Should these be data driven?
+  readonly secureFields = ['password', 's3SecretKey'];
+
+  readonly requiredFields = ['password'];
+
+  readonly encryptedFields = ['password'];
+
   showModifiedPropertiesOnly = false;
   configurationPropertiesTreeNodes: TreeNode[] = [];
 
@@ -173,17 +180,18 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
         group.value &&
         typeof group.value === 'string' &&
         group.value.startsWith('{cipher}') &&
-        group.key === 'password';
+        this.encryptedFields.some(x => x === group.key);
 
       childrenNodes.push({
-        data: {
+        data: <ConfigurationProperty>{
           key: group.key,
           value: group.value,
           originalValue: group.originalValue,
           group: group.group,
           formControlName: group.formControlName,
           encrypted: encrypted,
-          required: group.key === 'password'
+          secure: this.secureFields.some(x => x === group.key),
+          required: this.requiredFields.some(x => x === group.key)
         },
         expanded: false,
         leaf: true
