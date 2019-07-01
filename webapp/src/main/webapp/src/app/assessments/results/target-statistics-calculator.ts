@@ -42,22 +42,16 @@ export class TargetStatisticsCalculator {
   aggregateOverallScores(
     subjectCode: string,
     allTargets: Target[],
-    targetScoreExams: TargetScoreExam[]
+    targetScoreExams: TargetScoreExam[] = []
   ): AggregateTargetScoreRow[] {
     // setup the placeholders to aggregate into
-    let groupedScores = this.generateOverallTargets(subjectCode, allTargets);
-
-    if (targetScoreExams == null) targetScoreExams = [];
+    const groupedScores = this.generateOverallTargets(subjectCode, allTargets);
 
     targetScoreExams.forEach(exam => {
-      let index = groupedScores.findIndex(x => x.targetId == exam.targetId);
-      if (index !== -1) {
-        groupedScores[index].standardMetScores.push(
-          exam.standardMetRelativeResidualScore
-        );
-        groupedScores[index].studentScores.push(
-          exam.studentRelativeResidualScore
-        );
+      const scores = groupedScores.find(x => x.targetId == exam.targetId);
+      if (scores != null) {
+        scores.standardMetScores.push(exam.standardMetRelativeResidualScore);
+        scores.studentScores.push(exam.studentRelativeResidualScore);
       }
     });
 
@@ -97,25 +91,23 @@ export class TargetStatisticsCalculator {
 
     subgroupCodes.forEach(subgroupCode => {
       targetScoreExams.forEach(exam => {
-        let value = this.getExamSubgroupValue(exam, subgroupCode);
-        let subgroupValues = Array.isArray(value) ? value : [value];
+        const value = this.getExamSubgroupValue(exam, subgroupCode);
+        const subgroupValues = Array.isArray(value) ? value : [value];
 
         // always treat results as array since race/ethnicity will come back as array and we need to handle multiple as separate entries
         subgroupValues.forEach(examSubgroupValue => {
-          let subgroup = this.subgroupMapper.fromTypeAndCode(
+          const subgroup = this.subgroupMapper.fromTypeAndCode(
             subgroupCode,
             examSubgroupValue
           );
-          let index = groupedScores.findIndex(
+          const scores = groupedScores.find(
             x => x.targetId == exam.targetId && deepEqual(x.subgroup, subgroup)
           );
-          if (index !== -1) {
-            groupedScores[index].standardMetScores.push(
+          if (scores != null) {
+            scores.standardMetScores.push(
               exam.standardMetRelativeResidualScore
             );
-            groupedScores[index].studentScores.push(
-              exam.studentRelativeResidualScore
-            );
+            scores.studentScores.push(exam.studentRelativeResidualScore);
           }
         });
       });
@@ -182,7 +174,7 @@ export class TargetStatisticsCalculator {
     subgroupOptions: ExamFilterOptions,
     activeLanguageCodes: string[]
   ): GroupedTargetScore[] {
-    let groupedScores: GroupedTargetScore[] = [];
+    const groupedScores: GroupedTargetScore[] = [];
 
     subgroupCodes.forEach(subgroupCode => {
       let subgroupValues = [];
@@ -193,27 +185,29 @@ export class TargetStatisticsCalculator {
         case 'Ethnicity':
           subgroupValues = subgroupOptions.ethnicities;
           break;
-        case 'ELAS':
-          subgroupValues = [...subgroupOptions.elasCodes, null]; // adding NULL since we have Not Stated data but not a filter option for it
+        case 'EnglishLanguageAcquisitionStatus':
+          // adding NULL since we have Not Stated data but not a filter option for it
+          subgroupValues = [...subgroupOptions.elasCodes, null];
           break;
-        case 'LEP':
+        case 'EconomicDisadvantage':
+        case 'LimitedEnglishProficiency':
         case 'Section504':
-        case 'IEP':
+        case 'IndividualEducationPlan':
           subgroupValues = [true, false];
           break;
         case 'MigrantStatus':
           subgroupValues = [true, false, undefined];
           break;
-        case 'Language':
+        case 'PrimaryLanguage':
           subgroupValues = activeLanguageCodes;
           break;
-        case 'MilitaryConnectedCode':
+        case 'MilitaryStudentIdentifier':
           subgroupValues = subgroupOptions.militaryConnectedCodes;
           break;
       }
 
       subgroupValues.forEach(subgroupValue => {
-        let subgroup = this.subgroupMapper.fromTypeAndCode(
+        const subgroup = this.subgroupMapper.fromTypeAndCode(
           subgroupCode,
           subgroupValue
         );
@@ -226,7 +220,7 @@ export class TargetStatisticsCalculator {
                 targetId: target.id,
                 targetNaturalId: target.naturalId,
                 claim: target.claimCode,
-                subgroup: subgroup,
+                subgroup,
                 standardMetScores: [],
                 studentScores: [],
                 includeInReport: target.includeInReport
@@ -254,27 +248,29 @@ export class TargetStatisticsCalculator {
 
   private getExamSubgroupValue(exam: Exam, subgroupCode: string): any {
     switch (subgroupCode) {
+      case 'EconomicDisadvantage':
+        return exam.economicDisadvantage;
       case 'Gender':
         return exam.student.genderCode;
       case 'Ethnicity':
         return exam.student.ethnicityCodes;
       case 'Section504':
         return exam.plan504;
-      case 'LEP':
+      case 'LimitedEnglishProficiency':
         return exam.limitedEnglishProficiency;
-      case 'IEP':
+      case 'IndividualEducationPlan':
         return exam.iep;
       case 'MigrantStatus':
         return exam.migrantStatus;
       case 'StudentEnrolledGrade':
         return exam.enrolledGrade;
-      case 'Language':
+      case 'PrimaryLanguage':
         return exam.languageCode;
-      case 'MilitaryConnectedCode':
+      case 'MilitaryStudentIdentifier':
         return exam.militaryConnectedCode;
 
       // this is returned as undefined, but for subgrouping it needs to be null to match
-      case 'ELAS':
+      case 'EnglishLanguageAcquisitionStatus':
         return exam.elasCode! + null ? exam.elasCode : null;
     }
 
@@ -285,7 +281,6 @@ export class TargetStatisticsCalculator {
    * Calculate the reporting level based on the value and the standard error
    * @param {number} delta
    * @param {number} standardError
-   * @param {number} insufficientCutpoint
    * @returns {TargetReportingLevel}
    */
   mapTargetScoreDeltaToReportingLevel(
