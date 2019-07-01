@@ -1,6 +1,18 @@
 import { FilterBy } from './filter-by.model';
 
 describe('FilterBy model', () => {
+  it('should detect changes to economicDisadvantage', () => {
+    let fixture = new FilterBy();
+    let actual = false;
+    fixture.onChanges.subscribe(property => {
+      expect(property).toBe('economicDisadvantage');
+      actual = true;
+    });
+
+    fixture.economicDisadvantage = 1;
+    expect(actual).toBeTruthy();
+  });
+
   it('should detect changes to offGradeAssessment', () => {
     let fixture = new FilterBy();
     let actual = false;
@@ -147,6 +159,7 @@ describe('FilterBy model', () => {
 
   it('should return all selected filters', () => {
     let fixture = new FilterBy();
+    fixture.economicDisadvantage = 1;
     fixture.offGradeAssessment = true;
     fixture.administration = 1;
     fixture.summativeStatus = 1;
@@ -159,7 +172,7 @@ describe('FilterBy model', () => {
     fixture.ethnicities[3] = true;
     fixture.militaryConnectedCodes[2] = true;
 
-    expect(fixture.all.length).toBe(11);
+    expect(fixture.all.length).toBe(12);
     expect(fixture.all).toContain('offGradeAssessment');
     expect(fixture.all).toContain('administration');
     expect(fixture.all).toContain('summativeStatus');

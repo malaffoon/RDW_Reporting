@@ -1,16 +1,15 @@
 <div *ngIf="studentFields.includes('Gender')">
   <label>
-    <span
-      info-button
-      title="{{ 'common.filters.student.gender' | translate }}"
-      content="{{ 'common.filters.student.gender-info' | translate }}"
-    ></span>
+    {{ 'common.student-field.Gender' | translate }}
+    <app-info
+      popoverTitle="{{ 'common.student-field.Gender' | translate }}"
+      popoverContent="{{ 'common.student-field-info.Gender' | translate }}"
+    ></app-info>
   </label>
   <sb-button-group
     [options]="optionsInternal.genders"
     [(ngModel)]="value.genders"
     (ngModelChange)="onChange()"
-    [vertical]="true"
     allOptionReturnsUndefined="true"
     analyticsEvent="FilterClick"
     analyticsCategory="AdvancedFilters"
@@ -20,17 +19,18 @@
 <!-- Migrant Status -->
 <div *ngIf="studentFields.includes('MigrantStatus')">
   <label>
-    <span
-      info-button
-      title="{{ 'common.filters.student.migrant-status' | translate }}"
-      content="{{ 'common.filters.student.migrant-status-info' | translate }}"
-    ></span>
+    {{ 'common.student-field.MigrantStatus' | translate }}
+    <app-info
+      popoverTitle="{{ 'common.student-field.MigrantStatus' | translate }}"
+      popoverContent="{{
+        'common.student-field-info.MigrantStatus' | translate
+      }}"
+    ></app-info>
   </label>
   <sb-button-group
     [options]="optionsInternal.migrantStatuses"
     [(ngModel)]="value.migrantStatuses"
     (ngModelChange)="onChange()"
-    [vertical]="true"
     allOptionReturnsUndefined="true"
     analyticsEvent="FilterClick"
     analyticsCategory="AdvancedFilters"
@@ -40,17 +40,16 @@
 <!-- 504 -->
 <div *ngIf="studentFields.includes('Section504')">
   <label>
-    <span
-      info-button
-      title="{{ 'common.filters.student.504-plan' | translate }}"
-      content="{{ 'common.filters.student.504-plan-info' | translate }}"
-    ></span>
+    {{ 'common.student-field.Section504' | translate }}
+    <app-info
+      popoverTitle="{{ 'common.student-field.Section504' | translate }}"
+      popoverContent="{{ 'common.student-field-info.Section504' | translate }}"
+    ></app-info>
   </label>
   <sb-button-group
     [options]="optionsInternal.section504s"
     [(ngModel)]="value.section504s"
     (ngModelChange)="onChange()"
-    [vertical]="true"
     allOptionReturnsUndefined="true"
     analyticsEvent="FilterClick"
     analyticsCategory="AdvancedFilters"
@@ -60,17 +59,43 @@
 <!-- IEP -->
 <div *ngIf="studentFields.includes('IndividualEducationPlan')">
   <label>
-    <span
-      info-button
-      title="{{ 'common.filters.student.iep' | translate }}"
-      content="{{ 'common.filters.student.iep-info' | translate }}"
-    ></span>
+    {{ 'common.student-field.IndividualEducationPlan' | translate }}
+    <app-info
+      popoverTitle="{{
+        'common.student-field.IndividualEducationPlan' | translate
+      }}"
+      popoverContent="{{
+        'common.student-field-info.IndividualEducationPlan' | translate
+      }}"
+    ></app-info>
   </label>
   <sb-button-group
     [options]="optionsInternal.individualEducationPlans"
     [(ngModel)]="value.individualEducationPlans"
     (ngModelChange)="onChange()"
-    [vertical]="true"
+    allOptionReturnsUndefined="true"
+    analyticsEvent="FilterClick"
+    analyticsCategory="AdvancedFilters"
+  ></sb-button-group>
+</div>
+
+<!-- Economic Disadvantage -->
+<div *ngIf="studentFields.includes('EconomicDisadvantage')">
+  <label>
+    {{ 'common.student-field.EconomicDisadvantage' | translate }}
+    <app-info
+      popoverTitle="{{
+        'common.student-field.EconomicDisadvantage' | translate
+      }}"
+      popoverContent="{{
+        'common.student-field-info.EconomicDisadvantage' | translate
+      }}"
+    ></app-info>
+  </label>
+  <sb-button-group
+    [options]="optionsInternal.economicDisadvantages"
+    [(ngModel)]="value.economicDisadvantages"
+    (ngModelChange)="onChange()"
     allOptionReturnsUndefined="true"
     analyticsEvent="FilterClick"
     analyticsCategory="AdvancedFilters"
@@ -80,15 +105,15 @@
 <!-- English Proficiency -->
 <div *ngIf="studentFields.includes('LimitedEnglishProficiency')">
   <label>
-    <span
-      info-button
-      title="{{
-        'common.filters.student.limited-english-proficiency' | translate
+    {{ 'common.student-field.LimitedEnglishProficiency' | translate }}
+    <app-info
+      popoverTitle="{{
+        'common.student-field.LimitedEnglishProficiency' | translate
       }}"
-      content="{{
-        'common.filters.student.limited-english-proficiency-info' | translate
+      popoverContent="{{
+        'common.student-field-info.LimitedEnglishProficiency' | translate
       }}"
-    ></span>
+    ></app-info>
   </label>
   <sb-button-group
     [options]="optionsInternal.limitedEnglishProficiencies"
@@ -103,13 +128,15 @@
 <div *ngIf="studentFields.includes('MilitaryStudentIdentifier')">
   <fieldset>
     <label>
-      <span
-        info-button
-        title="{{ 'common.filters.student.military-connected' | translate }}"
-        content="{{
-          'common.filters.student.military-connected-info' | translate
+      {{ 'common.student-field.MilitaryStudentIdentifier' | translate }}
+      <app-info
+        popoverTitle="{{
+          'common.student-field.MilitaryStudentIdentifier' | translate
         }}"
-      ></span>
+        popoverContent="{{
+          'common.student-field-info.MilitaryStudentIdentifier' | translate
+        }}"
+      ></app-info>
     </label>
     <sb-button-group
       [options]="optionsInternal.militaryConnectedCodes"
@@ -125,11 +152,15 @@
 
 <div *ngIf="studentFields.includes('EnglishLanguageAcquisitionStatus')">
   <label>
-    <span
-      info-button
-      title="{{ 'common.filters.student.elas' | translate }}"
-      content="{{ 'common.filters.student.elas-info' | translate }}"
-    ></span>
+    {{ 'common.student-field.EnglishLanguageAcquisitionStatus' | translate }}
+    <app-info
+      popoverTitle="{{
+        'common.student-field.EnglishLanguageAcquisitionStatus' | translate
+      }}"
+      popoverContent="{{
+        'common.student-field-info.EnglishLanguageAcquisitionStatus' | translate
+      }}"
+    ></app-info>
   </label>
   <sb-button-group
     [options]="optionsInternal.englishLanguageAcquisitionStatuses"
@@ -145,11 +176,13 @@
 <div *ngIf="studentFields.includes('PrimaryLanguage')">
   <fieldset>
     <label for="language-filter">
-      <span
-        info-button
-        title="{{ 'common.filters.student.language' | translate }}"
-        content="{{ 'common.filters.student.language-info' | translate }}"
-      ></span>
+      {{ 'common.student-field.PrimaryLanguage' | translate }}
+      <app-info
+        popoverTitle="{{ 'common.student-field.PrimaryLanguage' | translate }}"
+        popoverContent="{{
+          'common.student-field-info.PrimaryLanguage' | translate
+        }}"
+      ></app-info>
     </label>
     <div class="toggle-group btn-group-sm vertical all-option nested-btn-group">
       <sb-typeahead-group
@@ -175,11 +208,11 @@
 
 <div *ngIf="studentFields.includes('Ethnicity')">
   <label>
-    <span
-      info-button
-      title="{{ 'common.filters.student.ethnicity' | translate }}"
-      content="{{ 'common.filters.student.ethnicity-info' | translate }}"
-    ></span>
+    {{ 'common.student-field.Ethnicity' | translate }}
+    <app-info
+      popoverTitle="{{ 'common.student-field.Ethnicity' | translate }}"
+      popoverContent="{{ 'common.student-field-info.Ethnicity' | translate }}"
+    ></app-info>
   </label>
   <sb-button-group
     [options]="optionsInternal.ethnicities"

@@ -17,7 +17,8 @@ import { SBTypeaheadGroup } from '../../../shared/form/sb-typeahead-group';
  */
 @Component({
   selector: 'adv-filters',
-  templateUrl: './adv-filters.component.html'
+  templateUrl: './adv-filters.component.html',
+  styleUrls: ['./adv-filters.component.less']
 })
 export class AdvFiltersComponent {
   @Input()

@@ -61,13 +61,13 @@ export class AppComponent implements OnInit {
       flatMap(user =>
         user.permissions.length > 0
           ? this.applicationSettingsService.getSettings().pipe(
-              catchError(error => {
-                this.router.navigateByUrl('/error');
-                return _throw(error);
-              }),
               tap(settings => {
                 this.languageStore.configuredLanguages = settings.uiLanguages;
                 this.initializeAnalytics(settings.analyticsTrackingId);
+              }),
+              catchError(error => {
+                this.router.navigateByUrl('/error');
+                return _throw(error);
               })
             )
           : of(<ApplicationSettings>{})

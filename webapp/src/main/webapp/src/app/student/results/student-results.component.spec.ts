@@ -33,10 +33,9 @@ describe('StudentResultsComponent', () => {
 
   beforeEach(() => {
     exportService = {};
-    embargoService = jasmine.createSpyObj('ReportingEmbargoService', [
-      'isEmbargoed'
-    ]);
-    embargoService.isEmbargoed.and.returnValue(of(false));
+    embargoService = jasmine.createSpyObj('ReportingEmbargoService', {
+      getEmbargo: of({})
+    });
 
     const mockRouteSnapshot = {
       params: {},

@@ -77,13 +77,7 @@
             <option *ngFor="let role of selectedSandbox.roles" [ngValue]="role">
               {{
                 'sandbox-login.sandbox-role-label.' + role.type
-                  | translate
-                    : {
-                        organizationName: role.organization.name,
-                        grade:
-                          'common.assessment-grade-label.' + role.gradeCode
-                          | translate
-                      }
+                  | translate: { organizationName: role.organization.name }
               }}
             </option>
           </ng-container>

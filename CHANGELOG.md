@@ -6,6 +6,9 @@
     * Changes the configuration properties ... a lot.
 * Ingest pipeline administration.
 * Remove stale report cleanup task.
+* Changes student field and filter related text configuration locations in en.json:
+    * aggregate-report-form.field.* -> common.student-field.*
+    * common.filters.student.* -> common.student-field.*
 
 #### 1.4.0-UAT 2019-04-12
 

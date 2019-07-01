@@ -51,27 +51,11 @@ describe('ReportingEmbargoService', () => {
   it('should return embargoed if user has read permissions and embargo is enabled', done => {
     user.permissions.push('EMBARGO_READ');
 
-    service.isEmbargoed().subscribe(embargoed => {
-      expect(embargoed).toBe(true);
-      done();
-    });
-  });
-
-  it('should not return embargoed if user does not have read permissions', done => {
-    service.isEmbargoed().subscribe(embargoed => {
-      expect(embargoed).toBe(false);
-      expect(dataService.get).not.toHaveBeenCalled();
-      done();
-    });
-  });
-
-  it('should not return embargoed if embargo is disabled', done => {
-    user.permissions.push('EMBARGO_READ');
-    dataService.get.and.returnValue(of(false));
-
-    service.isEmbargoed().subscribe(embargoed => {
-      expect(embargoed).toBe(false);
-      expect(dataService.get).toHaveBeenCalled();
+    service.getEmbargo().subscribe(embargo => {
+      expect(embargo).toEqual({
+        enabled: true,
+        schoolYear: 100
+      });
       done();
     });
   });

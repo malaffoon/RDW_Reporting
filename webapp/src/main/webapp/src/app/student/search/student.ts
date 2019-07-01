@@ -4,6 +4,7 @@ export interface Student {
   readonly firstName: string;
   readonly lastName: string;
   readonly gender: string;
+  readonly economicDisadvantage: string;
   readonly ethnicities: string[];
   readonly englishLanguageAcquisitionStatus: string;
   readonly individualEducationPlan: string;

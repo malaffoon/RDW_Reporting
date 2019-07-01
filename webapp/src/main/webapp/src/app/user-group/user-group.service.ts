@@ -130,6 +130,7 @@ export class UserGroupService {
       ssid: serverStudent.ssid,
       firstName: serverStudent.firstName,
       lastName: serverStudent.lastName,
+      economicDisadvantage: serverStudent.economicDisadvantage,
       gender: serverStudent.genderCode,
       ethnicities: serverStudent.ethnicityCodes,
       englishLanguageAcquisitionStatus:

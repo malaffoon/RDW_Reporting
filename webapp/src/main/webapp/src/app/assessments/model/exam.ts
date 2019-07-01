@@ -21,6 +21,7 @@ export interface Exam extends ScaleScore {
   completeness: string;
   migrantStatus: boolean;
   plan504: boolean;
+  economicDisadvantage: boolean;
   iep: boolean;
   limitedEnglishProficiency: boolean;
   elasCode: string;

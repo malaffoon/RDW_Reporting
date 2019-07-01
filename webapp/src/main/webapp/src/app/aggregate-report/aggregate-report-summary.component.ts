@@ -384,7 +384,7 @@ export class AggregateReportSummary {
       const optionFilters = options.studentFilters;
       if (explicitlySet(optionFilters.genders, settingFilters.genders)) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.gender-label'),
+          label: translate('common.student-field.Gender'),
           values: inline(
             orAll(optionFilters.genders, settingFilters.genders, code =>
               translate(`common.gender.${code}`)
@@ -396,7 +396,7 @@ export class AggregateReportSummary {
         explicitlySet(optionFilters.ethnicities, settingFilters.ethnicities)
       ) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.ethnicity-label'),
+          label: translate('common.student-field.Ethnicity'),
           values: orAll(
             optionFilters.ethnicities,
             settingFilters.ethnicities,
@@ -411,9 +411,7 @@ export class AggregateReportSummary {
         )
       ) {
         filterRows.push({
-          label: translate(
-            'aggregate-report-form.field.limited-english-proficiency-label'
-          ),
+          label: translate('common.student-field.LimitedEnglishProficiency'),
           values: inline(
             orAll(
               optionFilters.limitedEnglishProficiencies,
@@ -430,7 +428,9 @@ export class AggregateReportSummary {
         )
       ) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.elas-label'),
+          label: translate(
+            'common.student-field.EnglishLanguageAcquisitionStatus'
+          ),
           values: orAll(
             optionFilters.englishLanguageAcquisitionStatuses,
             settingFilters.englishLanguageAcquisitionStatuses,
@@ -442,7 +442,7 @@ export class AggregateReportSummary {
         explicitlySet(optionFilters.section504s, settingFilters.section504s)
       ) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.504-label'),
+          label: translate('common.student-field.Section504'),
           values: inline(
             orAll(optionFilters.section504s, settingFilters.section504s, code =>
               translate(`common.boolean.${code}`)
@@ -455,7 +455,7 @@ export class AggregateReportSummary {
         settingFilters.languages.length > 0
       ) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.language-label'),
+          label: translate('common.student-field.PrimaryLanguage'),
           values: inline(
             orAll(
               optionFilters.languages.map(o => o),
@@ -472,7 +472,7 @@ export class AggregateReportSummary {
         )
       ) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.iep-label'),
+          label: translate('common.student-field.IndividualEdcuationPlan'),
           values: inline(
             orAll(
               optionFilters.individualEducationPlans,
@@ -489,7 +489,7 @@ export class AggregateReportSummary {
         )
       ) {
         filterRows.push({
-          label: translate('aggregate-report-form.field.migrant-status-label'),
+          label: translate('common.student-field.MigrantStatus'),
           values: inline(
             orAll(
               optionFilters.migrantStatuses,
@@ -506,9 +506,7 @@ export class AggregateReportSummary {
         )
       ) {
         filterRows.push({
-          label: translate(
-            'aggregate-report-form.field.economic-disadvantage-label'
-          ),
+          label: translate('common.student-field.EconomicDisadvantage'),
           values: inline(
             orAll(
               optionFilters.economicDisadvantages,
@@ -525,9 +523,7 @@ export class AggregateReportSummary {
         )
       ) {
         filterRows.push({
-          label: translate(
-            'aggregate-report-form.field.military-connected-label'
-          ),
+          label: translate('common.student-field.MilitaryStudentIdentifier'),
           values: inline(
             orAll(
               optionFilters.militaryConnectedCodes,

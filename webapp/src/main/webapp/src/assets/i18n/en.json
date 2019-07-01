@@ -70,8 +70,6 @@
       "assessment-grades-exceed-available-school-years-error": "Your selected grades exceeds the available school years. There are no results prior to {{lowestAvailableSchoolYear}}. Adjust the school year or reduce the number of grades. The most recent academic year is the last year of the longitudinal report.",
       "assessment-grades-less-than-minimum-error": "Please select more than one assessment grade.",
       "assessment-type-label": "Assessment Type",
-      "elas-label": "English Language Acquisition Status",
-      "elas-info": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
       "language-placeholder": "Enter language",
       "interim-administration-condition-label": "Manner of Administration",
       "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Nonstandardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
@@ -83,24 +81,6 @@
       "subjects-none": "No subjects available",
       "summative-administration-condition-label": "Validity",
       "summative-administration-condition-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
-      "gender-label": "Gender",
-      "gender-info": "Student's reported gender",
-      "language-label": "Primary Language",
-      "language-info": "The primary language is determined from information submitted on the Home Language Survey.",
-      "military-connected-label": "Military Student Identifier",
-      "military-connected-info": "An indication that the student's parent or guardian is U.S. active duty military, in the National Guard, or in the Reserves.",
-      "ethnicity-label": "Race / Ethnicity",
-      "ethnicity-info": "Student race and ethnicity",
-      "migrant-status-label": "Migrant Status",
-      "migrant-status-info": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons.",
-      "iep-label": "IEP",
-      "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP). These plans are for students with disabilities who require specialized instruction.",
-      "504-label": "504",
-      "504-info": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction.",
-      "limited-english-proficiency-label": "English Learner",
-      "limited-english-proficiency-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
-      "economic-disadvantage-label": "Economic Disadvantage",
-      "economic-disadvantage-info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage.",
       "comparative-subgroup-label": "Subgroups",
       "report-name-label": "Report Name",
       "report-name-file-name-error": "The name cannot contain these special characters: <>:;,?\"*|\\/",
@@ -529,25 +509,7 @@
         "summative-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.  "
       },
       "student": {
-        "504-plan": "504 Plan",
-        "504-plan-info": "Indicates that a student has an approved 504 plan.  These plans are for students with disabilities who may need accommodations but do not require specialized instruction.",
-        "elas": "English Language Acquisition Status",
-        "elas-info": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
-        "ethnicity": "Race/Ethnicity",
-        "ethnicity-info": "Student race and ethnicity",
-        "gender": "Gender",
-        "gender-info": "Student's reported gender",
-        "language": "Primary Language",
-        "language-info": "The primary language is determined from information submitted on the Home Language Survey.",
-        "military-connected": "Military Student Identifier",
-        "military-connected-info": "An indication that the student's parent or guardian is U.S. active duty military, in the National Guard, or in the Reserves.",
-        "iep": "IEP",
-        "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
-        "label": "Student",
-        "limited-english-proficiency": "English Learner",
-        "limited-english-proficiency-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
-        "migrant-status": "Migrant Status",
-        "migrant-status-info": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons."
+        "label": "Student"
       },
       "test": {
         "label": "Test",
@@ -726,6 +688,30 @@
       "true": "Yes",
       "yes": "Yes"
     },
+    "student-field": {
+      "EconomicDisadvantage": "Economic Disadvantage",
+      "EnglishLanguageAcquisitionStatus": "English Language Acquisition Status",
+      "Ethnicity": "Race / Ethnicity",
+      "Gender": "Gender",
+      "IndividualEducationPlan": "IEP",
+      "LimitedEnglishProficiency": "English Learner",
+      "MigrantStatus": "Migrant Status",
+      "MilitaryStudentIdentifier": "Military Student Identifier",
+      "PrimaryLanguage": "Primary Language",
+      "Section504": "504 Plan"
+    },
+    "student-field-info": {
+      "EconomicDisadvantage": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage.",
+      "EnglishLanguageAcquisitionStatus": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
+      "Ethnicity": "Student race and ethnicity",
+      "Gender": "Student's reported gender",
+      "IndividualEducationPlan": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
+      "LimitedEnglishProficiency": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
+      "MigrantStatus": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons.",
+      "MilitaryStudentIdentifier": "An indication that the student's parent or guardian is U.S. active duty military, in the National Guard, or in the Reserves.",
+      "PrimaryLanguage": "The primary language is determined from information submitted on the Home Language Survey.",
+      "Section504": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction."
+    },
     "student-response-columns": {
       "correctness": "Correctness",
       "correctness-info": "A value for the degree of correctness in a student's response to a test question. The correctness value is calculated by dividing the student's score on a particular question by the maximum score for that question.",
@@ -803,6 +789,7 @@
     "assessment-session-id": "TestSessionId",
     "assessment-type": "AssessmentType",
     "claim": "Claim",
+    "EconomicDisadvantage": "EconomicDisadvantage",
     "elas": "EnglishLanguageAcquisitionStatus",
     "enrolled-grade": "GradeLevelWhenAssessed",
     "error-band-max": "Error Band Max",
@@ -1247,7 +1234,7 @@
     "sandbox-role-label": {
       "DistrictAdministrator": "District Admin: {{organizationName}}",
       "SchoolAdministrator": "School Admin: {{organizationName}}",
-      "Teacher": "Teacher: {{organizationName}} {{grade}}"
+      "Teacher": "Teacher: {{organizationName}}"
     },
     "sandbox-role-username": {
       "DistrictAdministrator": "District Admin",

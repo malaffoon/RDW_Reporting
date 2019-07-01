@@ -97,8 +97,14 @@ export class StudentResultsComponent implements OnInit {
           this.minimumItemDataYear = settings.minItemDataYear;
         });
 
-        this.embargoService.isEmbargoed().subscribe(embargoed => {
-          this.exportDisabled = embargoed;
+        this.embargoService.getEmbargo().subscribe(embargo => {
+          this.exportDisabled =
+            embargo.enabled &&
+            examHistory.exams.every(
+              ({ assessment }) =>
+                assessment.type === 'sum' &&
+                assessment.schoolYear === embargo.schoolYear
+            );
         });
       });
     }
