@@ -439,7 +439,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
 
     const booleanOptions: any[] = [true, false, undefined];
     const dimensionValuesByType: Map<string, any[]> = new Map([
-      ['EconomicDisadvantage', []],
+      ['EconomicDisadvantage', booleanOptions],
       ['Gender', this.subgroupOptions.genders],
       ['Ethnicity', this.subgroupOptions.ethnicities],
       ['EnglishLanguageAcquisitionStatus', this.subgroupOptions.elasCodes],
