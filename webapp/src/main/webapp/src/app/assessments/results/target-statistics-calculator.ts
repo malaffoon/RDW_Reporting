@@ -42,8 +42,10 @@ export class TargetStatisticsCalculator {
   aggregateOverallScores(
     subjectCode: string,
     allTargets: Target[],
-    targetScoreExams: TargetScoreExam[] = []
+    targetScoreExams: TargetScoreExam[]
   ): AggregateTargetScoreRow[] {
+    targetScoreExams = targetScoreExams || [];
+
     // setup the placeholders to aggregate into
     const groupedScores = this.generateOverallTargets(subjectCode, allTargets);
 
@@ -73,21 +75,21 @@ export class TargetStatisticsCalculator {
     subgroupCodes: string[],
     subgroupOptions: ExamFilterOptions
   ): AggregateTargetScoreRow[] {
+    targetScoreExams = targetScoreExams || [];
+
     // Special case for Languages, pull out just the used languageCodes for generatingSubgroupTargets
     const activeLanguageCodes = Array.from(
       new Set(targetScoreExams.map(e => e.languageCode))
     );
 
     // setup the placeholders to aggregate into
-    let groupedScores = this.generateSubgroupTargets(
+    const groupedScores = this.generateSubgroupTargets(
       subjectCode,
       allTargets,
       subgroupCodes,
       subgroupOptions,
       activeLanguageCodes
     );
-
-    if (targetScoreExams == null) targetScoreExams = [];
 
     subgroupCodes.forEach(subgroupCode => {
       targetScoreExams.forEach(exam => {
@@ -141,18 +143,17 @@ export class TargetStatisticsCalculator {
    * @returns {GroupedTargetScore[]} that is used in the other aggregate methods
    */
   private generateOverallTargets(
-    subjectCode: string,
+    subject: string,
     allTargets: Target[]
   ): GroupedTargetScore[] {
-    const overallSubgroup = this.subgroupMapper.createOverall();
     return allTargets.map(
       target =>
         <GroupedTargetScore>{
-          subject: subjectCode,
+          subject,
           targetId: target.id,
           targetNaturalId: target.naturalId,
           claim: target.claimCode,
-          subgroup: overallSubgroup,
+          subgroup: this.subgroupMapper.createOverall(),
           standardMetScores: [],
           studentScores: [],
           includeInReport: target.includeInReport
