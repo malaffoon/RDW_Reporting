@@ -3,6 +3,7 @@
 
 const puppeteer = require("puppeteer");
 process.env.CHROME_BIN = puppeteer.executablePath();
+process.env.CHROMIUM_BIN = puppeteer.executablePath();
 
 module.exports = function(config) {
   config.set({
@@ -32,7 +33,7 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["ChromeHeadless"],
+    browsers: ["ChromiumHeadless"],
     singleRun: false,
     //Quick fix for PhantomJS OOM issues
     browserNoActivityTimeout: 60000,
