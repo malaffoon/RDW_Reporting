@@ -21,6 +21,9 @@ export class PipelineExplorerComponent {
   readonly isValidPipelineTest = isValidPipelineTest;
 
   @Input()
+  inputType: string;
+
+  @Input()
   selectedItem: Item;
 
   @Output()

@@ -127,7 +127,7 @@
               [ngClass]="{
                 disabled:
                   !selectedItem.changed ||
-                  !isValidPipelineTest(selectedItem.value)
+                  !isValidPipelineTest(selectedItem.value, pipeline.inputType)
               }"
               (click)="testUpdate.emit(selectedItem.value)"
             >
@@ -170,6 +170,7 @@
 
 <div class="editor-container">
   <pipeline-explorer
+    [inputType]="pipeline.inputType"
     [items]="items"
     [selectedItem]="selectedItem"
     (itemSelected)="itemSelected.emit($event)"

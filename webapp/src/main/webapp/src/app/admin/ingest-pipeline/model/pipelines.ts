@@ -1,18 +1,47 @@
 import { PipelineTest } from './pipeline';
-import { isBlank } from '../../../shared/support/support';
-import { Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import { xml } from '../ingest-pipeline.support';
 
 const maximumTextLength = 65535;
 
 export const maxTextLength = Validators.maxLength(maximumTextLength);
 
-function isValidPipelineTextText(value: string): boolean {
-  return !isBlank(value) && value.length <= maximumTextLength;
+function getInputTypeValidators(inputType: string): ValidatorFn[] {
+  if (inputType === 'xml') {
+    return [xml];
+  }
+  return [];
 }
 
-export function isValidPipelineTest(value: PipelineTest): boolean {
-  return (
-    (value.input == null || isValidPipelineTextText(value.input)) &&
-    (value.output == null || isValidPipelineTextText(value.output))
+function getInputOutputValidators(inputType: string): ValidatorFn[] {
+  return [
+    Validators.required,
+    maxTextLength,
+    ...getInputTypeValidators(inputType)
+  ];
+}
+
+export function pipelineTestFormGroup(inputType: string): FormGroup {
+  const inputOutputValidators: ValidatorFn[] = getInputOutputValidators(
+    inputType
   );
+  return new FormGroup({
+    name: new FormControl(''),
+    input: new FormControl('', inputOutputValidators),
+    output: new FormControl('', inputOutputValidators)
+  });
+}
+
+export function isValidPipelineTest(
+  value: PipelineTest,
+  inputType: string
+): boolean {
+  const formGroup = pipelineTestFormGroup(inputType);
+  formGroup.patchValue(value);
+  return formGroup.valid;
 }

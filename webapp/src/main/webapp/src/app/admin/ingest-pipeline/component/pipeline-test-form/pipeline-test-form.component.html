@@ -1,5 +1,5 @@
-<form [formGroup]="_formGroup">
-  <div *ngIf="_formGroup.get('name') as control" class="form-group">
+<form *ngIf="(_formGroup | async) as formGroup" [formGroup]="formGroup">
+  <div *ngIf="formGroup.get('name') as control" class="form-group">
     <label for="name">
       {{ 'pipeline-test-form.field.name.label' | translate }}
     </label>
@@ -18,7 +18,7 @@
 
   <div class="test-grid">
     <div
-      *ngIf="_formGroup.get('input') as control"
+      *ngIf="formGroup.get('input') as control"
       class="form-group"
       [ngClass]="{
         'has-error': control.errors && (control.touched || control.dirty)
@@ -46,12 +46,12 @@
         #input
         [readonly]="readonly"
         [lines]="31"
-        [language]="inputType"
+        [language]="_inputType | async"
         [formControl]="control"
       ></code-editor>
     </div>
     <div
-      *ngIf="_formGroup.get('output') as control"
+      *ngIf="formGroup.get('output') as control"
       class="form-group"
       [ngClass]="{
         'has-error': control.errors && (control.touched || control.dirty)
@@ -79,7 +79,7 @@
         #output
         [readonly]="readonly"
         [lines]="31"
-        [language]="inputType"
+        [language]="_inputType | async"
         [formControl]="control"
       ></code-editor>
     </div>

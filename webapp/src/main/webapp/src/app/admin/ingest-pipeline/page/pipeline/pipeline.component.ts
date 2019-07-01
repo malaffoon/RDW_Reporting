@@ -570,8 +570,10 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     // dont run
     const hasInvalidTests =
       this.selectedItem.type === 'Test'
-        ? !isValidPipelineTest(this.selectedItem.value)
-        : tests.some(({ value }) => !isValidPipelineTest(value));
+        ? !isValidPipelineTest(this.selectedItem.value, this.pipeline.inputType)
+        : tests.some(
+            ({ value }) => !isValidPipelineTest(value, this.pipeline.inputType)
+          );
 
     this.testButtonDisabled =
       scriptIsBlank ||
