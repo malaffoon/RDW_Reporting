@@ -4,14 +4,21 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
+  OnInit,
   Output
 } from '@angular/core';
-import { InputType, PipelineTest } from '../../model/pipeline';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { PipelineTest } from '../../model/pipeline';
+import {
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { validate } from '../../../../shared/form/forms';
-import { maxTextLength } from '../../model/pipelines';
+import { maxTextLength, pipelineTestFormGroup } from '../../model/pipelines';
+import { xml } from '../../ingest-pipeline.support';
 
 @Component({
   selector: 'pipeline-test-form',
@@ -19,48 +26,59 @@ import { maxTextLength } from '../../model/pipelines';
   styleUrls: ['./pipeline-test-form.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PipelineTestFormComponent implements OnDestroy {
-  static formGroup(): FormGroup {
-    return new FormGroup({
-      name: new FormControl(''),
-      input: new FormControl('', [Validators.required, maxTextLength]),
-      output: new FormControl('', [Validators.required, maxTextLength])
-    });
-  }
-
+export class PipelineTestFormComponent implements OnInit, OnDestroy {
   @Input()
   readonly: boolean;
-
-  @Input()
-  inputType: InputType;
 
   @Output()
   testChange: EventEmitter<PipelineTest> = new EventEmitter();
 
-  _formGroup: FormGroup = PipelineTestFormComponent.formGroup();
+  _inputType: Subject<string> = new BehaviorSubject(undefined);
+  _test: Subject<PipelineTest> = new BehaviorSubject(undefined);
+  _formGroup: Observable<FormGroup>;
   _destroyed: Subject<void> = new Subject();
 
   @Input()
   set test(value: PipelineTest) {
-    this._formGroup.patchValue(value);
+    this._test.next(value);
+  }
 
-    // enable two-way binding
-    Object.entries(this._formGroup.controls).forEach(
-      ([controlName, control]) => {
-        control.valueChanges
-          .pipe(
-            takeUntil(this._destroyed),
-            distinctUntilChanged()
-          )
-          .subscribe(change => {
-            value[controlName] = change;
-            this.testChange.emit(value);
-          });
-      }
+  @Input()
+  set inputType(value: string) {
+    this._inputType.next(value);
+  }
+
+  ngOnInit(): void {
+    this._formGroup = combineLatest(
+      this._test,
+      this._inputType.pipe(
+        distinctUntilChanged(),
+        map(inputType => pipelineTestFormGroup(inputType))
+      )
+    ).pipe(
+      takeUntil(this._destroyed),
+      map(([test, formGroup]) => {
+        formGroup.patchValue(test);
+
+        // enable two-way binding
+        Object.entries(formGroup.controls).forEach(([controlName, control]) => {
+          control.valueChanges
+            .pipe(
+              takeUntil(this._destroyed),
+              distinctUntilChanged()
+            )
+            .subscribe(change => {
+              test[controlName] = change;
+              this.testChange.emit(test);
+            });
+        });
+
+        // start with validation
+        validate(formGroup);
+
+        return formGroup;
+      })
     );
-
-    // start with validation
-    validate(this._formGroup);
   }
 
   ngOnDestroy(): void {
