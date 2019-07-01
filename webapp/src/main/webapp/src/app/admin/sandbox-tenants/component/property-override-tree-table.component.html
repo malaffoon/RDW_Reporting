@@ -105,6 +105,7 @@
               [formControlName]="rowNode.node.data.formControlName"
               (change)="updateOverride(rowNode.node.data)"
               class="property-input"
+              [style.padding-right]="calculatePadding(rowNode.node.data)"
             />
             <div class="icon-container">
               <i
