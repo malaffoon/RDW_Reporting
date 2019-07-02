@@ -1,12 +1,19 @@
-import { Component, HostListener, Inject, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  Inject,
+  Input
+} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { WindowRefService } from '../core/window-ref.service';
-import { Utils } from '../support/support';
+import { isNullOrEmpty, Utils } from '../support/support';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'scroll-nav',
-  templateUrl: 'scroll-nav.component.html'
+  templateUrl: 'scroll-nav.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScrollNavComponent {
   private _items: ScrollNavItem[] = [];
@@ -27,31 +34,18 @@ export class ScrollNavComponent {
   }
 
   @Input()
-  set items(items: ScrollNavItem[]) {
-    if (this._items !== items) {
-      this._items = Utils.isNullOrEmpty(items)
+  set items(values: ScrollNavItem[]) {
+    if (this._items !== values) {
+      this._items = isNullOrEmpty(values)
         ? []
-        : items.map(item => {
-            //Saturate element reference from id
-            if (
-              Utils.isNullOrUndefined(item.scrollTo) &&
-              !Utils.isNullOrUndefined(item.id)
-            ) {
-              item = Object.assign({}, item, {
-                scrollTo: document.getElementById(item.id)
-              });
-            }
-
+        : values.map(item => {
             //Saturate text from translation key
-            if (
-              Utils.isNullOrUndefined(item.text) &&
-              !Utils.isNullOrUndefined(item.translationKey)
-            ) {
-              item = Object.assign({}, item, {
+            if (item.text == null && item.translationKey != null) {
+              item = {
+                ...item,
                 text: this.translateService.instant(item.translationKey)
-              });
+              };
             }
-
             return item;
           });
     }
@@ -70,35 +64,36 @@ export class ScrollNavComponent {
   @Input()
   set activeItem(item: ScrollNavItem) {
     this._activeItem = item;
-    if (item.scrollTo) {
-      item.scrollTo.scrollIntoView();
+    const scrollTo = document.getElementById(item.id);
+    if (scrollTo != null) {
+      scrollTo.scrollIntoView();
     }
   }
 
   onItemClickInternal(item: ScrollNavItem): void {
     this.activeItem = item;
-    if (item.click) {
+    if (item.click != null) {
       item.click();
     }
   }
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
-    this._enabled && this.updateActiveLink();
+    // Disabled because the item highlighting logic is very inaccurate and may cause more confusion than aid
+    // this._enabled && this.updateActiveLink();
   }
 
   private updateActiveLink(): void {
+    const { items, _window: window, _document: document } = this;
+
     // Sets the first item to active if the window scroll is zero
-    if (this._window.scrollY <= 0) {
-      this._activeItem = this.items[0];
+    if (window.scrollY <= 0) {
+      this._activeItem = items[0];
     }
 
     // Sets the last item to active if the user scrolls to the very bottom of the page
-    if (
-      this._window.innerHeight + this._window.scrollY >=
-      this._document.body.offsetHeight
-    ) {
-      this._activeItem = this.items[this.items.length - 1];
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      this._activeItem = items[items.length - 1];
       return;
     }
 
@@ -107,12 +102,12 @@ export class ScrollNavComponent {
     // document.getElementById(item.scrollTo.id) is a HOTFIX for offsetTop javascript error
     // ngOnDestroy is not called in this component because it belongs to a "reusable" view
     // Angular does not currently support removal of global host listeners
-    this.items
-      .filter(
-        item => item.scrollTo && document.getElementById(item.scrollTo.id)
-      )
+    items
+      .filter(item => document.getElementById(item.id))
       .forEach(item => {
-        const itemOffsetTop = Utils.getAbsoluteOffsetTop(item.scrollTo);
+        const itemOffsetTop = Utils.getAbsoluteOffsetTop(
+          document.getElementById(item.id)
+        );
         if (itemOffsetTop <= scrollTop) {
           this._activeItem = item;
         } else {
@@ -138,7 +133,6 @@ export class ScrollNavComponent {
 
 export interface ScrollNavItem {
   readonly click?: any;
-  readonly scrollTo?: Element;
   readonly id?: string;
   readonly text?: string;
   readonly translationKey?: string;
