@@ -301,7 +301,7 @@ sql:
       ${sql.reportProcessor.snippet.selectFromStudent}
       WHERE (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_code is null or sub.code = :subject_code)
+        AND (:subject_code is null or sub.code = :subject_code) AND sat.printed_report=1
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -314,7 +314,7 @@ sql:
       WHERE $[groupFilterPlaceholder]
         AND (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_code is null or sub.code = :subject_code)
+        AND (:subject_code is null or sub.code = :subject_code) AND sat.printed_report=1
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -367,6 +367,7 @@ sql:
             JOIN school s ON e.school_id = s.id
             JOIN school isch ON st.inferred_school_id = isch.id
             JOIN subject sub ON sub.id=a.subject_id
+            JOIN subject_asmt_type sat on a.subject_id=sat.subject_id and a.type_id=sat.asmt_type_id
 
       exportExamsFilter: >-
         e.school_year = :school_year
