@@ -39,10 +39,10 @@
           </ng-template>
 
           <span class="application-name">
-            <div class="tenant-name">
+            <div class="title" *ngIf="title">
               {{ title }}
             </div>
-            <div class="system-name">
+            <div class="subtitle">
               {{ 'common-ngx.navigation-bar.title' | translate }}
             </div>
           </span>

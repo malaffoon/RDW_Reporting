@@ -9,7 +9,6 @@
     <ng-container *ngIf="(applicationSettings$ | async) as settings">
       <!-- TODO pass in tenant name -->
       <app-navigation
-        title="California"
         userGuideUrl="{{ settings.userGuideUrl }}"
         interpretiveGuideUrl="{{ settings.interpretiveGuideUrl }}"
         [user]="user"
