@@ -67,7 +67,7 @@ export class ExamFilterService {
     new ExamFilter(
       'economicDisadvantage',
       'common.student-field.EconomicDisadvantage',
-      'enum.polar',
+      'common.polar',
       this.filterByEconomicDisadvantage
     ),
     new ExamFilter(

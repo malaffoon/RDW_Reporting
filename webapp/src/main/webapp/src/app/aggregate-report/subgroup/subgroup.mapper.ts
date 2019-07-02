@@ -190,11 +190,24 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     getTranslationCode: value => `common.ethnicity.${value}`
   },
   {
+    type: 'LimitedEnglishProficiency',
+    getDimensionValueCodes: settings => settings.limitedEnglishProficiencies,
+    getTranslationCode: value => `common.boolean.${value}`
+  },
+  {
+    /** @deprecated */
     type: 'LEP',
     getDimensionValueCodes: settings => settings.limitedEnglishProficiencies,
     getTranslationCode: value => `common.boolean.${value}`
   },
   {
+    type: 'EnglishLanguageAcquisitionStatus',
+    getDimensionValueCodes: settings =>
+      settings.englishLanguageAcquisitionStatuses,
+    getTranslationCode: value => `common.elas.${value}`
+  },
+  {
+    /** @deprecated */
     type: 'ELAS',
     getDimensionValueCodes: settings =>
       settings.englishLanguageAcquisitionStatuses,
@@ -211,11 +224,23 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     getTranslationCode: value => `common.boolean.${value}`
   },
   {
+    type: 'PrimaryLanguage',
+    getDimensionValueCodes: settings => settings.languages,
+    getTranslationCode: value => `common.languages.${value}`
+  },
+  {
+    /** @deprecated */
     type: 'Language',
     getDimensionValueCodes: settings => settings.languages,
     getTranslationCode: value => `common.languages.${value}`
   },
   {
+    type: 'IndividualEducationPlan',
+    getDimensionValueCodes: settings => settings.individualEducationPlans,
+    getTranslationCode: value => `common.boolean.${value}`
+  },
+  {
+    /** @deprecated */
     type: 'IEP',
     getDimensionValueCodes: settings => settings.individualEducationPlans,
     getTranslationCode: value => `common.boolean.${value}`
@@ -234,6 +259,12 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     getTranslationCode: value => `common.enrolled-grade.${value}`
   },
   {
+    type: 'MilitaryStudentIdentifier',
+    getDimensionValueCodes: settings => settings.militaryConnectedCodes,
+    getTranslationCode: value => `common.military-connected-code.${value}`
+  },
+  {
+    /** @deprecated */
     type: 'MilitaryConnectedCode',
     getDimensionValueCodes: settings => settings.militaryConnectedCodes,
     getTranslationCode: value => `common.military-connected-code.${value}`
