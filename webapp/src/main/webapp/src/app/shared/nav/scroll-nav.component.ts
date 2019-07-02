@@ -77,10 +77,10 @@ export class ScrollNavComponent {
     }
   }
 
-  @HostListener('window:scroll', [])
+  // Disabled because the item highlighting logic is very inaccurate and may cause more confusion than aid
+  //@HostListener('window:scroll', [])
   onWindowScroll(): void {
-    // Disabled because the item highlighting logic is very inaccurate and may cause more confusion than aid
-    // this._enabled && this.updateActiveLink();
+    this._enabled && this.updateActiveLink();
   }
 
   private updateActiveLink(): void {
