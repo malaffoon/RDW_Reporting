@@ -4,8 +4,7 @@
       <a
         class="navbar-link small"
         href="javascript:void(0)"
-        [ngClass]="{ active: item === activeItem }"
-        [class]="item.classes"
+        [ngClass]="item.classes"
         (click)="onItemClickInternal(item)"
         ><ng-container *ngIf="item.iconClasses"
           ><i [class]="item.iconClasses"></i> </ng-container
