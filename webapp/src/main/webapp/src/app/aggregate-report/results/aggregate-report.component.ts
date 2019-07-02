@@ -400,8 +400,10 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
             valueDisplayType:
               query.valueDisplayType || ValueDisplayTypes.Percent,
             performanceLevelDisplayType:
-              query.achievementLevelDisplayType ||
-              PerformanceLevelDisplayTypes.Separate
+              subjectDefinition.overallScore.standardCutoff != null
+                ? query.achievementLevelDisplayType ||
+                  PerformanceLevelDisplayTypes.Separate
+                : undefined
           };
 
           const showEmpty =
