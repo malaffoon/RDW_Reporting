@@ -9,16 +9,26 @@ export function mapTenant(
   tenant: any,
   defaultApplicationTenantConfiguration: any
 ): TenantConfiguration {
-  return <TenantConfiguration>{
-    code: tenant.tenant['key'],
-    id: tenant.tenant['id'],
-    label: tenant.tenant['name'],
-    description: tenant.tenant['description'],
+  return {
+    code: tenant.key,
+    id: tenant.id,
+    label: tenant.name,
+    description: tenant.description,
     configurationProperties: mapConfigurationProperties(
-      defaultApplicationTenantConfiguration,
-      tenant.applicationTenantConfiguration
+      toConfigProperties(defaultApplicationTenantConfiguration),
+      toConfigProperties(tenant)
     ),
     localizationOverrides: mapLocalizationOverrides(tenant.localization)
+  };
+}
+
+// helper to return only the config props of an api model.
+function toConfigProperties(apiModel: any): any {
+  return {
+    aggregate: apiModel.aggregate,
+    archive: apiModel.archive,
+    reporting: apiModel.reporting,
+    datasources: apiModel.datasources
   };
 }
 
