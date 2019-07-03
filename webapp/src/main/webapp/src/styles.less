@@ -58,8 +58,22 @@
 @aqua: #0f6bad;
 
 /**
- * Bootstrap addition
+ * Bootstrap additions
  */
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background-color: #f0f0f0; /* was #f8f8f8 */
+}
+
+button:focus,
+.btn:focus,
+a.dropdown-toggle:focus,
+.btn-group.open .dropdown-toggle:focus {
+  outline: auto 2px Highlight;
+  outline: auto 5px -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
 .list-group.list-group-md > .list-group-item {
   padding: 10px 15px;
 }
@@ -1081,7 +1095,7 @@ aggregate-report-organization-list {
   color: #5b5e62;
   padding: @padding-large-vertical @padding-large-horizontal;
   &:hover {
-    color: #5b5e62;
+    color: #2a2b2d; /* was #5b5e62 */
   }
   &.disabled {
     cursor: not-allowed;
