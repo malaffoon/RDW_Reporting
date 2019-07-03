@@ -448,6 +448,19 @@ body .select-menu-group {
   display: inline-block;
 }
 
+button:focus,
+.btn:focus,
+a.dropdown-toggle:focus,
+.btn-group.open .dropdown-toggle:focus
+//
+//.btn-group .dropdown-toggle:active,
+//.btn-group.open .dropdown-toggle
+ {
+  outline: auto 2px Highlight;
+  outline: auto 5px -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
 /**
  * TODO move to UI Kit
  */
