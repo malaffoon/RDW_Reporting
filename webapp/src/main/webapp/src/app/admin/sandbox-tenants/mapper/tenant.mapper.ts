@@ -6,9 +6,10 @@ import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
 
 export function mapTenant(
-  tenant: any,
+  tenantConfiguration: any,
   defaultApplicationTenantConfiguration: any
 ): TenantConfiguration {
+  const tenant = tenantConfiguration.tenant;
   return {
     code: tenant.key,
     id: tenant.id,
@@ -16,7 +17,7 @@ export function mapTenant(
     description: tenant.description,
     configurationProperties: mapConfigurationProperties(
       toConfigProperties(defaultApplicationTenantConfiguration),
-      toConfigProperties(tenant)
+      toConfigProperties(tenantConfiguration)
     ),
     localizationOverrides: mapLocalizationOverrides(tenant.localization)
   };
@@ -33,39 +34,22 @@ function toConfigProperties(apiModel: any): any {
 }
 
 export function mapSandbox(
-  sandbox: any,
+  tenantConfiguration: any,
   defaultApplicationSandboxConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
   return <SandboxConfiguration>{
-    code: sandbox.sandbox['key'],
-    label: sandbox.sandbox['name'],
-    description: sandbox.sandbox['description'],
+    ...mapTenant(tenantConfiguration, defaultApplicationSandboxConfiguration),
     dataSet: dataSets.find(
-      dataSet => sandbox.sandbox['dataSetId'] === dataSet.id
-    ),
-    configurationProperties: mapConfigurationProperties(
-      defaultApplicationSandboxConfiguration,
-      sandbox.applicationSandboxConfiguration
-    ),
-    localizationOverrides: mapLocalizationOverrides(sandbox.localization)
+      dataSet => tenantConfiguration.tenant.sandboxDataset === dataSet.id
+    )
   };
 }
 
 export function toSandboxApiModel(sandbox: SandboxConfiguration): any {
-  return {
-    sandbox: {
-      key: sandbox.code,
-      id: sandbox.code,
-      description: sandbox.description,
-      name: sandbox.label,
-      dataSetId: sandbox.dataSet.id
-    },
-    applicationSandboxConfiguration: toConfigurationPropertiesApiModel(
-      sandbox.configurationProperties
-    ),
-    localization: toLocalizationOverridesApiModel(sandbox.localizationOverrides)
-  };
+  const apiModel = toTenantApiModel(sandbox);
+  apiModel.tenant.sandboxDataset = sandbox.dataSet.id;
+  return apiModel;
 }
 
 export function toTenantApiModel(tenant: TenantConfiguration): any {

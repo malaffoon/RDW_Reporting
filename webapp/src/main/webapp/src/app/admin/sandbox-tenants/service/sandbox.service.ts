@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
 import { toSandboxApiModel, mapSandbox } from '../mapper/tenant.mapper';
@@ -8,6 +8,8 @@ import { ResponseUtils } from '../../../shared/response-utils';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 
 const ResourceRoute = `${AdminServiceRoute}/sandboxes`;
+const DefaultsRoute = `${AdminServiceRoute}/tenants/defaults`;
+const DataSetsRoute = `${ResourceRoute}/datasets`;
 
 /**
  * Service responsible for sandboxes
@@ -43,20 +45,21 @@ export class SandboxService {
    * Gets all sandbox configurations for the system
    */
   getAll(): Observable<SandboxConfiguration[]> {
-    return this.dataService
-      .get(`${ResourceRoute}`)
-      .pipe(
-        map(apiSandboxes =>
-          apiSandboxes.sandboxes.map(apiSandbox =>
-            mapSandbox(
-              apiSandbox,
-              apiSandboxes.sandboxConfigurationPackage
-                .applicationSandboxConfiguration,
-              apiSandboxes.sandboxConfigurationPackage.dataSets
-            )
-          )
-        )
-      );
+    return forkJoin([
+      this.dataService.get(`${ResourceRoute}`),
+      this.dataService.get(`${DefaultsRoute}`),
+      this.dataService.get(`${DataSetsRoute}`)
+    ]).pipe(
+      map(results => {
+        const sandboxConfigurations = results[0];
+        const defaultConfiguration = results[1];
+        const datasets = results[2];
+
+        return sandboxConfigurations.map(sandboxConfiguration =>
+          mapSandbox(sandboxConfiguration, defaultConfiguration, datasets)
+        );
+      })
+    );
   }
 
   /**

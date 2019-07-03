@@ -38,11 +38,11 @@ export class TenantService {
       this.dataService.get(`${DefaultsRoute}`)
     ]).pipe(
       map(results => {
-        const apiTenants = results[0];
+        const tenantConfigurations = results[0];
         const defaultConfig = results[1];
 
-        return apiTenants.map(apiTenant =>
-          mapTenant(apiTenant.tenant, defaultConfig)
+        return tenantConfigurations.map(tenantConfiguration =>
+          mapTenant(tenantConfiguration, defaultConfig)
         );
       })
     );
