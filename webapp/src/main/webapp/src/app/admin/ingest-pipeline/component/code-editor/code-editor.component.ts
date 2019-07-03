@@ -32,6 +32,11 @@ const aceThemeByThemeType = {
   dark: 'dracula'
 };
 
+const modesByInputType = {
+  groovy: 'ace/mode/groovy',
+  xml: 'ace/mode/xml'
+};
+
 @Component({
   selector: 'code-editor',
   templateUrl: './code-editor.component.html',
@@ -50,9 +55,12 @@ export class CodeEditorComponent implements ControlValueAccessor {
 
   @Input()
   set language(value: string) {
-    this.withEditor(editor => {
-      editor.getSession().setMode('ace/mode/' + value);
-    });
+    const mode = modesByInputType[value];
+    if (mode != null) {
+      this.withEditor(editor => {
+        editor.getSession().setMode(mode);
+      });
+    }
   }
 
   @Input()
