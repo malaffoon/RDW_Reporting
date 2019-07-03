@@ -76,9 +76,7 @@ export function toTenantApiModel(tenant: TenantConfiguration): any {
       description: tenant.description,
       name: tenant.label
     },
-    applicationTenantConfiguration: toConfigurationPropertiesApiModel(
-      tenant.configurationProperties
-    ),
+    ...toConfigurationPropertiesApiModel(tenant.configurationProperties),
     localization: toLocalizationOverridesApiModel(tenant.localizationOverrides)
   };
 }
