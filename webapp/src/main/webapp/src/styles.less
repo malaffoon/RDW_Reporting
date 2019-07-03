@@ -58,11 +58,20 @@
 @aqua: #0f6bad;
 
 /**
- * Bootstrap addition
+ * Bootstrap additions
  */
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background-color: #f0f0f0; /* was #f8f8f8 */
+}
+
+button:focus,
+.btn:focus,
+a.dropdown-toggle:focus,
+.btn-group.open .dropdown-toggle:focus {
+  outline: auto 2px Highlight;
+  outline: auto 5px -webkit-focus-ring-color;
+  outline-offset: -2px;
 }
 
 .list-group.list-group-md > .list-group-item {
@@ -446,19 +455,6 @@ body .select-menu-group,
 
 body .select-menu-group {
   display: inline-block;
-}
-
-button:focus,
-.btn:focus,
-a.dropdown-toggle:focus,
-.btn-group.open .dropdown-toggle:focus
-//
-//.btn-group .dropdown-toggle:active,
-//.btn-group.open .dropdown-toggle
- {
-  outline: auto 2px Highlight;
-  outline: auto 5px -webkit-focus-ring-color;
-  outline-offset: -2px;
 }
 
 /**
