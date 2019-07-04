@@ -760,7 +760,7 @@
       "logout": "Logout",
       "title": "Reporting System",
       "toggle-sr": "Toggle navigation",
-      "user-dropdown": "Welcome {{firstName}} {{lastName}}"
+      "user-dropdown": "{{firstName}} {{lastName}}"
     },
     "session-expired": {
       "title": "Session Expired",

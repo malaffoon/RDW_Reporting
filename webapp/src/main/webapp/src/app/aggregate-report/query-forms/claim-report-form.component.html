@@ -822,23 +822,6 @@
                 analyticsEvent="Change"
               ></sb-radio-button-group>
             </span>
-            <span *ngIf="subjectDefinition.overallScore.standardCutoff != null">
-              <label for="performance-level-display-type">
-                {{
-                  'common.performance-level-display-type-input-label'
-                    | translate
-                }}
-              </label>
-              <sb-radio-button-group
-                id="performance-level-display-type"
-                [options]="filteredOptions.performanceLevelDisplayTypes"
-                [(ngModel)]="settings.performanceLevelDisplayType"
-                buttonGroupStyles="btn-group-xs"
-                buttonStyles="btn-default"
-                analyticsCategory="AggregateQueryBuilder"
-                analyticsEvent="Change"
-              ></sb-radio-button-group>
-            </span>
           </span>
         </div>
         <div class="mt-sm">
