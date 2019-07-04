@@ -5,21 +5,20 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { DataSet } from '../model/sandbox-configuration';
-import { SandboxService } from '../service/sandbox.service';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
-  Validators,
-  FormControl
+  Validators
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
-import { ConfigurationProperty } from '../model/configuration-property';
-import { CustomValidators } from '../../../shared/validator/custom-validators';
-import { mapConfigurationProperties } from '../mapper/tenant.mapper';
-import { SandboxStore } from '../store/sandbox.store';
 import { NotificationService } from '../../../shared/notification/notification.service';
+import { CustomValidators } from '../../../shared/validator/custom-validators';
+import { ConfigurationProperty } from '../model/configuration-property';
+import { DataSet } from '../model/sandbox-configuration';
+import { SandboxService } from '../service/sandbox.service';
+import { SandboxStore } from '../store/sandbox.store';
 
 @Component({
   selector: 'new-sandbox',
@@ -63,10 +62,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.service
       .getDefaultConfigurationProperties()
       .subscribe(
-        configProperties =>
-          (this.configurationProperties = mapConfigurationProperties(
-            configProperties
-          ))
+        configProperties => (this.configurationProperties = configProperties)
       );
   }
 

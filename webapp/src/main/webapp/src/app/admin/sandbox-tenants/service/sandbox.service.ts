@@ -1,7 +1,11 @@
 import { Observable, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
-import { toSandboxApiModel, mapSandbox } from '../mapper/tenant.mapper';
+import {
+  toSandboxApiModel,
+  mapSandbox,
+  mapConfigurationProperties
+} from '../mapper/tenant.mapper';
 import { catchError, map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import { ResponseUtils } from '../../../shared/response-utils';
@@ -24,21 +28,16 @@ export class SandboxService {
    * Gets default configuration properties for a sandbox
    */
   getDefaultConfigurationProperties(): Observable<any> {
-    return this.dataService.get(`${ResourceRoute}`).pipe(
-      map(
-        apiSandboxes =>
-          apiSandboxes.sandboxConfigurationPackage
-            .applicationSandboxConfiguration
-      ),
+    return this.dataService.get(`${DefaultsRoute}`).pipe(
+      map(apiModel => mapConfigurationProperties(apiModel)),
       catchError(ResponseUtils.throwError)
     );
   }
 
   getAvailableDataSets(): Observable<DataSet[]> {
-    return this.dataService.get(`${ResourceRoute}`).pipe(
-      map(apiSandboxes => apiSandboxes.sandboxConfigurationPackage.dataSets),
-      catchError(ResponseUtils.throwError)
-    );
+    return this.dataService
+      .get(`${DataSetsRoute}`)
+      .pipe(catchError(ResponseUtils.throwError));
   }
 
   /**
