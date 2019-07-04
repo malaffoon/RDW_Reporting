@@ -1,12 +1,11 @@
-import { Observable, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DataService } from '../../../shared/data/data.service';
-import { TenantConfiguration } from '../model/tenant-configuration';
-import { toTenantApiModel, mapTenant } from '../mapper/tenant.mapper';
+import { forkJoin, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { AdminServiceRoute } from '../../../shared/service-route';
+import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
-import { join } from 'path';
+import { AdminServiceRoute } from '../../../shared/service-route';
+import { mapTenant, toTenantApiModel } from '../mapper/tenant.mapper';
+import { TenantConfiguration } from '../model/tenant-configuration';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${ResourceRoute}/defaults`;
@@ -25,7 +24,7 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(): Observable<any> {
     return this.dataService
-      .get(`${ResourceRoute}`)
+      .get(ResourceRoute)
       .pipe(map(apiTenants => apiTenants['applicationTenantConfiguration']));
   }
 
@@ -34,8 +33,8 @@ export class TenantService {
    */
   getAll(): Observable<TenantConfiguration[]> {
     return forkJoin([
-      this.dataService.get(`${ResourceRoute}`),
-      this.dataService.get(`${DefaultsRoute}`)
+      this.dataService.get(ResourceRoute),
+      this.dataService.get(DefaultsRoute)
     ]).pipe(
       map(results => {
         const tenantConfigurations = results[0];

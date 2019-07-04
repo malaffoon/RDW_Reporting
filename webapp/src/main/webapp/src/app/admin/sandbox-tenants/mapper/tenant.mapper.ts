@@ -7,7 +7,8 @@ import { object as expand } from 'dot-object';
 
 export function mapTenant(
   tenantConfiguration: any,
-  defaultApplicationTenantConfiguration: any
+  defaultApplicationTenantConfiguration: any,
+  skipMappingConfigProperties?: boolean
 ): TenantConfiguration {
   const tenant = tenantConfiguration.tenant;
   return {
@@ -15,16 +16,18 @@ export function mapTenant(
     id: tenant.id,
     label: tenant.name,
     description: tenant.description,
-    configurationProperties: mapConfigurationProperties(
-      toConfigProperties(defaultApplicationTenantConfiguration),
-      toConfigProperties(tenantConfiguration)
-    ),
+    configurationProperties: skipMappingConfigProperties
+      ? toConfigProperties(tenantConfiguration)
+      : mapConfigurationProperties(
+          toConfigProperties(defaultApplicationTenantConfiguration),
+          toConfigProperties(tenantConfiguration)
+        ),
     localizationOverrides: mapLocalizationOverrides(tenant.localization)
   };
 }
 
 // helper to return only the config props of an api model.
-function toConfigProperties(apiModel: any): any {
+export function toConfigProperties(apiModel: any): any {
   return {
     aggregate: apiModel.aggregate,
     archive: apiModel.archive,
