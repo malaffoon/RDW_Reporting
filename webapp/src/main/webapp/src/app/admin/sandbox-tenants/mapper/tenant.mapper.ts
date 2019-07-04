@@ -6,56 +6,50 @@ import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
 
 export function mapTenant(
-  tenant: any,
+  tenantConfiguration: any,
   defaultApplicationTenantConfiguration: any
 ): TenantConfiguration {
-  return <TenantConfiguration>{
-    code: tenant.tenant['key'],
-    id: tenant.tenant['id'],
-    label: tenant.tenant['name'],
-    description: tenant.tenant['description'],
+  const tenant = tenantConfiguration.tenant;
+  return {
+    code: tenant.key,
+    id: tenant.id,
+    label: tenant.name,
+    description: tenant.description,
     configurationProperties: mapConfigurationProperties(
-      defaultApplicationTenantConfiguration,
-      tenant.applicationTenantConfiguration
+      toConfigProperties(defaultApplicationTenantConfiguration),
+      toConfigProperties(tenantConfiguration)
     ),
     localizationOverrides: mapLocalizationOverrides(tenant.localization)
   };
 }
 
+// helper to return only the config props of an api model.
+function toConfigProperties(apiModel: any): any {
+  return {
+    aggregate: apiModel.aggregate,
+    archive: apiModel.archive,
+    reporting: apiModel.reporting,
+    datasources: apiModel.datasources
+  };
+}
+
 export function mapSandbox(
-  sandbox: any,
+  tenantConfiguration: any,
   defaultApplicationSandboxConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
   return <SandboxConfiguration>{
-    code: sandbox.sandbox['key'],
-    label: sandbox.sandbox['name'],
-    description: sandbox.sandbox['description'],
+    ...mapTenant(tenantConfiguration, defaultApplicationSandboxConfiguration),
     dataSet: dataSets.find(
-      dataSet => sandbox.sandbox['dataSetId'] === dataSet.id
-    ),
-    configurationProperties: mapConfigurationProperties(
-      defaultApplicationSandboxConfiguration,
-      sandbox.applicationSandboxConfiguration
-    ),
-    localizationOverrides: mapLocalizationOverrides(sandbox.localization)
+      dataSet => tenantConfiguration.tenant.sandboxDataset === dataSet.id
+    )
   };
 }
 
 export function toSandboxApiModel(sandbox: SandboxConfiguration): any {
-  return {
-    sandbox: {
-      key: sandbox.code,
-      id: sandbox.code,
-      description: sandbox.description,
-      name: sandbox.label,
-      dataSetId: sandbox.dataSet.id
-    },
-    applicationSandboxConfiguration: toConfigurationPropertiesApiModel(
-      sandbox.configurationProperties
-    ),
-    localization: toLocalizationOverridesApiModel(sandbox.localizationOverrides)
-  };
+  const apiModel = toTenantApiModel(sandbox);
+  apiModel.tenant.sandboxDataset = sandbox.dataSet.id;
+  return apiModel;
 }
 
 export function toTenantApiModel(tenant: TenantConfiguration): any {
@@ -66,9 +60,7 @@ export function toTenantApiModel(tenant: TenantConfiguration): any {
       description: tenant.description,
       name: tenant.label
     },
-    applicationTenantConfiguration: toConfigurationPropertiesApiModel(
-      tenant.configurationProperties
-    ),
+    ...toConfigurationPropertiesApiModel(tenant.configurationProperties),
     localization: toLocalizationOverridesApiModel(tenant.localizationOverrides)
   };
 }

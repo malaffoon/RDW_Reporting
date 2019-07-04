@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DataService } from '../../../shared/data/data.service';
 import { TenantConfiguration } from '../model/tenant-configuration';
@@ -6,8 +6,10 @@ import { toTenantApiModel, mapTenant } from '../mapper/tenant.mapper';
 import { catchError, map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import { ResponseUtils } from '../../../shared/response-utils';
+import { join } from 'path';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
+const DefaultsRoute = `${ResourceRoute}/defaults`;
 
 /**
  * Service responsible for managing tenants
@@ -31,15 +33,19 @@ export class TenantService {
    * Gets all sandbox configurations for the system
    */
   getAll(): Observable<TenantConfiguration[]> {
-    return this.dataService
-      .get(`${ResourceRoute}`)
-      .pipe(
-        map(apiTenants =>
-          apiTenants.tenants.map(apiTenant =>
-            mapTenant(apiTenant, apiTenants['applicationTenantConfiguration'])
-          )
-        )
-      );
+    return forkJoin([
+      this.dataService.get(`${ResourceRoute}`),
+      this.dataService.get(`${DefaultsRoute}`)
+    ]).pipe(
+      map(results => {
+        const tenantConfigurations = results[0];
+        const defaultConfig = results[1];
+
+        return tenantConfigurations.map(tenantConfiguration =>
+          mapTenant(tenantConfiguration, defaultConfig)
+        );
+      })
+    );
   }
 
   /**
