@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { ReportQuery } from '../report/report';
 import { UserQueryService } from '../report/user-query.service';
-import { getQueryFromRouteQueryParameters } from '../report/reports';
+import { getQueryFromRouteQueryParameters } from '../report/report-services';
 import { UserReportService } from '../report/user-report.service';
 
 /**
