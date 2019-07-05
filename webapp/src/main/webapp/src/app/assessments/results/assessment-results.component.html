@@ -8,17 +8,17 @@
       [label]="assessmentExam.assessment.label"
       [gradeCode]="assessmentExam.assessment.grade"
     ></assessment-label>
-
-    <sb-radio-group
+    <sb-radio-button-group
       *ngIf="scoreTypeOptions != null && scoreTypeOptions.length > 1"
+      id="score-type"
+      name="score-type"
       [options]="scoreTypeOptions"
       [(ngModel)]="scoreType"
-      id="score-type"
-      buttonGroupStyles="btn-group-sm"
-      buttonStyles="btn-default"
       analyticsCategory="AssessmentResults"
       analyticsEvent="ChangeScoreView"
-    ></sb-radio-group>
+      buttonGroupStyles="btn-group-sm"
+      buttonStyles="btn-default"
+    ></sb-radio-button-group>
   </div>
 
   <div *ngIf="allowFilterBySessions" class="row mb-sm">

@@ -84,10 +84,6 @@ export class AppComponent implements OnInit {
     }, 0);
   }
 
-  toggleNavCollapse(): void {
-    this.navbarOpen = !this.navbarOpen;
-  }
-
   private initializeAnalytics(trackingId: string): void {
     const googleAnalyticsProvider: Function = window['ga'];
     if (googleAnalyticsProvider && trackingId) {

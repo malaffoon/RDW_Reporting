@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule as AngularCommonModule } from '@angular/common';
 import { SBCheckboxList } from './sb-checkbox-list.component';
 import { Angulartics2Module } from 'angulartics2';
-import { AlertModule, PopoverModule } from 'ngx-bootstrap';
+import { AlertModule, BsDropdownModule, PopoverModule } from 'ngx-bootstrap';
 import { RdwLoadingModule } from './loading/rdw-loading.module';
 import { SBToggleComponent } from './sb-toggle.component';
 import { ScaleScoreComponent } from './scale-score/scale-score.component';
@@ -42,6 +42,7 @@ import { RdwNotificationsModule } from './notification/notifications.module';
 import { InstructionalResourcePopoverComponent } from './component/instructional-resource-popover/instructional-resource-popover.component';
 import { ConfirmationModalComponent } from './component/confirmation-modal/confirmation-modal.component';
 import { ErrorComponent } from './component/error/error.component';
+import { NavigationComponent } from './component/navigation/navigation.component';
 
 @NgModule({
   imports: [
@@ -52,6 +53,8 @@ import { ErrorComponent } from './component/error/error.component';
     FormsModule,
     HttpModule,
     NgxDnDModule,
+    BsDropdownModule,
+    RouterModule,
     OrganizationModule,
     SchoolModule,
     PopoverModule,
@@ -86,7 +89,8 @@ import { ErrorComponent } from './component/error/error.component';
     SBToggleComponent,
     ScaleScoreComponent,
     InViewDirective,
-    InstructionalResourcePopoverComponent
+    InstructionalResourcePopoverComponent,
+    NavigationComponent
   ],
   entryComponents: [ConfirmationModalComponent],
   exports: [
@@ -121,6 +125,7 @@ import { ErrorComponent } from './component/error/error.component';
     InViewDirective,
     InstructionalResourcePopoverComponent,
     SubjectModule,
+    NavigationComponent,
     TranslateModule
   ],
   providers: [DataTableService, OrderingService, TargetService]

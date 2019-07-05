@@ -11,8 +11,8 @@ import {
   AssessmentCardEvent,
   GroupCard
 } from './group-assessment-card.component';
-import { first, map, mergeMap } from 'rxjs/operators';
-import { byString } from '@kourge/ordering/comparator';
+import { map, mergeMap } from 'rxjs/operators';
+import { byString, Comparator, join } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { chunk } from 'lodash';
@@ -20,6 +20,11 @@ import { chunk } from 'lodash';
 import { SubjectService } from '../../subject/subject.service';
 import { SubjectDefinition } from '../../subject/subject';
 import { ReportFormService } from '../../report/service/report-form.service';
+
+const measuredAssessmentComparator: Comparator<MeasuredAssessment> = join(
+  ordering(byString).on<MeasuredAssessment>(x => x.assessment.grade).compare,
+  ordering(byString).on<MeasuredAssessment>(x => x.assessment.label).compare
+);
 
 @Component({
   selector: 'group-dashboard',
@@ -184,18 +189,15 @@ export class GroupDashboardComponent implements OnInit {
           this.subject == null ||
           measuredAssessment.assessment.subject === this.subject
       )
-      .map(
-        measuredAssessment =>
-          <GroupCard>{
-            group: this.group,
-            measuredAssessment: measuredAssessment,
-            performanceLevels: this._subjectDefinitions.find(
-              definition =>
-                definition.subject === measuredAssessment.assessment.subject &&
-                definition.assessmentType === measuredAssessment.assessment.type
-            ).performanceLevels
-          }
-      );
+      .map(measuredAssessment => ({
+        group: this.group,
+        measuredAssessment: measuredAssessment,
+        performanceLevels: this._subjectDefinitions.find(
+          definition =>
+            definition.subject === measuredAssessment.assessment.subject &&
+            definition.assessmentType === measuredAssessment.assessment.type
+        ).overallScore.levels
+      }));
     this.rows = chunk(filteredCards, this.itemsPerRow);
   }
 
@@ -232,9 +234,9 @@ export class GroupDashboardComponent implements OnInit {
   }
 
   updateMeasuredAssessments(assessments: MeasuredAssessment[]): void {
-    this.measuredAssessments = assessments.sort(
-      ordering(byString).on<MeasuredAssessment>(x => x.assessment.label).compare
-    );
+    this.measuredAssessments = assessments
+      .slice()
+      .sort(measuredAssessmentComparator);
 
     const assessmentSubjects = new Set(
       assessments.map(x => x.assessment.subject)
