@@ -22,7 +22,6 @@ export class SandboxesComponent implements OnInit {
   writable$: Observable<boolean>;
 
   constructor(
-    private route: ActivatedRoute,
     private service: SandboxService,
     private store: SandboxStore,
     private userService: UserService,
@@ -34,9 +33,7 @@ export class SandboxesComponent implements OnInit {
 
   ngOnInit(): void {
     this.sandboxes$ = this.store.getState();
-    this.service.getAll().subscribe(sandboxes => {
-      this.store.setState(sandboxes);
-    });
+    this.loadSandboxes();
 
     this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
       this.languageStore.currentLanguage
@@ -63,13 +60,7 @@ export class SandboxesComponent implements OnInit {
 
   onSave(value: SandboxConfiguration): void {
     this.service.update(value).subscribe(
-      () => {
-        this.store.setState(
-          this.store.state.map(existing =>
-            existing.code === value.code ? value : existing
-          )
-        );
-      },
+      () => this.loadSandboxes(),
       error => {
         error.json().message != null
           ? this.notificationService.error({ id: error.json().message })
@@ -78,5 +69,11 @@ export class SandboxesComponent implements OnInit {
             });
       }
     );
+  }
+
+  private loadSandboxes() {
+    this.service.getAll().subscribe(sandboxes => {
+      this.store.setState(sandboxes);
+    });
   }
 }

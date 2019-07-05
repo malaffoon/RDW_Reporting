@@ -4,7 +4,11 @@ import { catchError, map } from 'rxjs/operators';
 import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
 import { AdminServiceRoute } from '../../../shared/service-route';
-import { mapTenant, toTenantApiModel } from '../mapper/tenant.mapper';
+import {
+  mapTenant,
+  toTenantApiModel,
+  mapConfigurationProperties
+} from '../mapper/tenant.mapper';
 import { TenantConfiguration } from '../model/tenant-configuration';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
@@ -24,8 +28,10 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(): Observable<any> {
     return this.dataService
-      .get(ResourceRoute)
-      .pipe(map(apiTenants => apiTenants['applicationTenantConfiguration']));
+      .get(DefaultsRoute)
+      .pipe(
+        map(configProperties => mapConfigurationProperties(configProperties))
+      );
   }
 
   /**

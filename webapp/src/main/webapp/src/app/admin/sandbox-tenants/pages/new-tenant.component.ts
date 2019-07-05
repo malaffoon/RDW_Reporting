@@ -19,6 +19,7 @@ import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantService } from '../service/tenant.service';
 import { TenantStore } from '../store/tenant.store';
+import { TenantConfiguration } from '../model/tenant-configuration';
 
 @Component({
   selector: 'new-tenant',
@@ -64,11 +65,9 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
 
     this.service
       .getDefaultConfigurationProperties()
-      .subscribe(configProperties => {
-        this.configurationProperties = mapConfigurationProperties(
-          configProperties
-        );
-      });
+      .subscribe(
+        configProperties => (this.configurationProperties = configProperties)
+      );
   }
 
   ngAfterViewInit() {
@@ -79,7 +78,8 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    const newTenant = {
+
+    const newTenant: TenantConfiguration = {
       ...this.tenantForm.value,
       code: this.tenantForm.get('key').value.toUpperCase(),
       localizationOverrides: modifiedLocalizationOverrides,
