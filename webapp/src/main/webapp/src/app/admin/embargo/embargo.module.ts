@@ -1,4 +1,3 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EmbargoComponent } from './embargo.component';
@@ -8,14 +7,15 @@ import { EmbargoTable } from './embargo-table.component';
 import { EmbargoConfirmationModal } from './embargo-confirmation-modal.component';
 import { HttpClientModule } from '@angular/common/http';
 import { EmbargoResolve } from './embargo.resolve';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { TableModule } from 'primeng/table';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [
-    BrowserModule,
-    ButtonsModule,
     CommonModule,
+    ButtonsModule,
+    ReportingCommonModule,
     FormsModule,
     HttpClientModule,
     ModalModule,

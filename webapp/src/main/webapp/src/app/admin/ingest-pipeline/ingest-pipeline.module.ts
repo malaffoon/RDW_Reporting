@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PipelinesComponent } from './page/pipelines/pipelines.component';
 import { PipelineCardComponent } from './component/pipeline-card/pipeline-card.component';
 import { PipelineComponent } from './page/pipeline/pipeline.component';
-import { CommonModule as ReportingCommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { PipelineEditorComponent } from './component/pipeline-editor/pipeline-editor.component';
 import {
   BsDropdownModule,
@@ -24,13 +24,14 @@ import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-h
 import { PipelinePublishedScriptsComponent } from './component/pipeline-published-scripts/pipeline-published-scripts.component';
 import { IngestPipelineRoutingModule } from './ingest-pipeline-routing.module';
 import { CommonModule } from '@angular/common';
+import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
 
 @NgModule({
   imports: [
     CommonModule,
     ReportingCommonModule,
     RouterModule,
-    TranslateModule,
+    TranslateModule.forChild(translateModuleConfiguration),
     FormsModule,
     ReactiveFormsModule,
     ButtonsModule,

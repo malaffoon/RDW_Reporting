@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchoolGradeComponent } from './school-grade.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { SchoolService } from './school.service';
 import { DropdownModule } from 'primeng/components/dropdown/dropdown';
 import { SharedModule } from 'primeng/components/common/shared';
@@ -29,7 +29,7 @@ describe('SchoolGradeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        CommonModule,
+        ReportingCommonModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,

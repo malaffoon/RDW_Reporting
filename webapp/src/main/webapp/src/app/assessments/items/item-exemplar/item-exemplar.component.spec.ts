@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemExemplarComponent } from './item-exemplar.component';
 import { ItemScoringService } from './item-scoring.service';
 import { ItemScoringGuideMapper } from './item-scoring-guide.mapper';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { ItemScoringGuide } from './model/item-scoring-guide.model';
 import { MockDataService } from '../../../../test/mock.data.service';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
@@ -26,7 +26,7 @@ describe('ItemExemplarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ItemExemplarComponent, TestComponentWrapper],
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       providers: [
         ItemScoringService,
         ItemScoringGuideMapper,

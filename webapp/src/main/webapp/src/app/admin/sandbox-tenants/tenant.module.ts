@@ -1,4 +1,3 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
@@ -9,7 +8,7 @@ import {
   PopoverModule
 } from 'ngx-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
@@ -22,6 +21,7 @@ import { TenantsComponent } from './pages/tenants/tenants.component';
 import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table.component';
 import { WellGroupListComponent } from './component/well-group-list/well-group-list.component';
 import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbox.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -42,10 +42,10 @@ import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbo
   ],
   imports: [
     AccordionModule,
-    BrowserModule,
+    CommonModule,
     BsDropdownModule,
     ButtonsModule,
-    CommonModule,
+    ReportingCommonModule,
     FormsModule,
     HttpClientModule,
     MenuModule,

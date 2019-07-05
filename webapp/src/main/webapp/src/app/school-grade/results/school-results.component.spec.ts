@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { SchoolResultsComponent } from './school-results.component';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { SchoolService } from '../school.service';
 import { SchoolService as CommonSchoolService } from '../../shared/school/school.service';
 import { SchoolAssessmentService } from './school-assessment.service';
@@ -90,7 +90,7 @@ describe('SchoolResultsComponent', () => {
     exportService = {};
 
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       declarations: [SchoolResultsComponent, MockAuthorizeDirective],
       providers: [
         { provide: OrganizationService, useValue: mockOrganizationService },

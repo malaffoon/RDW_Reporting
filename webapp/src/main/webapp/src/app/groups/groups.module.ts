@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { GroupsComponent } from './groups.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'primeng/primeng';
 import { GroupResultsComponent } from './results/group-results.component';
@@ -18,6 +16,7 @@ import { TableModule } from 'primeng/table';
 import { UserGroupModule } from '../user-group/user-group.module';
 import { GroupTableComponent } from './group-table.component';
 import { GroupTabsComponent } from './group-tabs.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -29,9 +28,8 @@ import { GroupTabsComponent } from './group-tabs.component';
   imports: [
     Angulartics2Module,
     AssessmentsModule,
-    BrowserModule,
-    BrowserAnimationsModule,
     CommonModule,
+    ReportingCommonModule,
     FormsModule,
     PopoverModule,
     ReportModule,

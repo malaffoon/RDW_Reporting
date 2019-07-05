@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StudentComponent } from './student.component';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { StudentExamHistoryService } from './student-exam-history.service';
 import { Router } from '@angular/router';
 import { MockRouter } from '../../test/mock.router';
@@ -18,7 +18,7 @@ describe('StudentComponent', () => {
   beforeEach(async(() => {
     service = new MockStudentExamHistoryService();
     TestBed.configureTestingModule({
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TestModule],
       declarations: [StudentComponent],
       providers: [{ provide: StudentExamHistoryService, useValue: service }],
       schemas: [NO_ERRORS_SCHEMA]

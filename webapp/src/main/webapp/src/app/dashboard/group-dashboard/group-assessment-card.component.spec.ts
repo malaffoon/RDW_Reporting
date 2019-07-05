@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GroupAssessmentCardComponent } from './group-assessment-card.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import {
   DetailsByPerformanceLevel,
   MeasuredAssessment
@@ -16,7 +16,7 @@ describe('GroupAssessmentCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       declarations: [GroupAssessmentCardComponent],
       providers: [ExamStatisticsCalculator],
       schemas: [NO_ERRORS_SCHEMA]

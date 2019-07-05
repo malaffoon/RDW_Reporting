@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemWritingTraitScoresComponent } from './item-writing-trait-scores.component';
 
 import { Component } from '@angular/core';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { TestModule } from '../../../../test/test.module';
 import { StudentResponsesAssessmentItem } from '../../../student/responses/student-responses-item.model';
 import { AssessmentItem } from '../../model/assessment-item.model';
@@ -13,7 +13,7 @@ describe('ItemWritingTraitScoresComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TestModule],
       declarations: [TestComponentWrapper, ItemWritingTraitScoresComponent]
     }).compileComponents();
   }));

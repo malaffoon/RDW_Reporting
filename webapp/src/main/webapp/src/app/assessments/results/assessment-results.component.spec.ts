@@ -11,7 +11,7 @@ import { Student } from '../../student/model/student.model';
 import { Angulartics2 } from 'angulartics2';
 import { TestModule } from '../../../test/test.module';
 import { MockDataService } from '../../../test/mock.data.service';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { InstructionalResourcesService } from '../../shared/service/instructional-resources.service';
 import { CachingDataService } from '../../shared/data/caching-data.service';
 import { DataService } from '../../shared/data/data.service';
@@ -76,7 +76,7 @@ describe('AssessmentResultsComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
-        CommonModule,
+        ReportingCommonModule,
         TranslateModule.forRoot(),
         TestModule
       ],

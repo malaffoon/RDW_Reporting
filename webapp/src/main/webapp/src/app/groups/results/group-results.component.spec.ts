@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { ExamFilterOptions } from '../../assessments/model/exam-filter-options.model';
 import { ExamFilterOptionsService } from '../../assessments/filters/exam-filters/exam-filter-options.service';
 import { Angulartics2 } from 'angulartics2';
@@ -74,7 +74,7 @@ describe('GroupResultsComponent', () => {
     const mockRouter = new MockRouter();
 
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       declarations: [GroupResultsComponent, MockAuthorizeDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

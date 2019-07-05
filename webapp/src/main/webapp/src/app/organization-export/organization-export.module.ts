@@ -1,20 +1,19 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'primeng/components/common/shared';
 import { Angulartics2Module } from 'angulartics2';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { OrganizationExportComponent } from './organization-export.component';
-import { UserOrganizationService } from './organization/user-organization.service';
 import { OrganizationTreeComponent } from './organization/organization-tree.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [OrganizationExportComponent, OrganizationTreeComponent],
   imports: [
-    BrowserModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule,
+    ReportingCommonModule,
     SharedModule,
     Angulartics2Module
   ]

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { SBRadioButtonComponent } from './sb-radio-button-list.component';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +21,6 @@ import { RdwLayoutModule } from './layout/rdw-layout.module';
 import { RdwMenuModule } from './menu/rdw-menu.module';
 import { RdwPreferenceModule } from './preference/rdw-preference.module';
 import { RdwSecurityModule } from './security/rdw-security.module';
-import { RdwTranslateLoader } from './i18n/rdw-translate-loader';
 import { OrganizationModule } from './organization/organization.module';
 import { ScrollNavComponent } from './nav/scroll-nav.component';
 import { OptionalPipe } from './optional.pipe';
@@ -73,13 +72,8 @@ import { ErrorComponent } from './component/error/error.component';
     RdwNotificationsModule,
     RdwPreferenceModule,
     RdwSecurityModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useClass: RdwTranslateLoader
-      }
-    }),
-    SubjectModule
+    SubjectModule,
+    TranslateModule
   ],
   declarations: [
     ConfirmationModalComponent,
@@ -124,11 +118,11 @@ import { ErrorComponent } from './component/error/error.component';
     SBRadioButtonComponent,
     SBToggleComponent,
     ScaleScoreComponent,
-    TranslateModule,
     InViewDirective,
     InstructionalResourcePopoverComponent,
-    SubjectModule
+    SubjectModule,
+    TranslateModule
   ],
   providers: [DataTableService, OrderingService, TargetService]
 })
-export class CommonModule {}
+export class ReportingCommonModule {}

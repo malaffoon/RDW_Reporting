@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultsByStudentComponent } from './results-by-student.component';
-import { CommonModule } from '../../../../shared/common.module';
+import { ReportingCommonModule } from '../../../../shared/reporting-common.module';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { TestModule } from '../../../../../test/test.module';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -28,7 +28,7 @@ describe('ResultsByStudentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TestModule],
       declarations: [ResultsByStudentComponent, TestComponentWrapper],
       providers: [
         MenuActionBuilder,

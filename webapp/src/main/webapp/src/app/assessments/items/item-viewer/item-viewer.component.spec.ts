@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemViewerComponent } from './item-viewer.component';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { ItemScoringService } from '../item-exemplar/item-scoring.service';
 import { ItemScoringGuide } from '../item-exemplar/model/item-scoring-guide.model';
 import { ItemScoringGuideMapper } from '../item-exemplar/item-scoring-guide.mapper';
@@ -19,7 +19,7 @@ describe('ItemViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       declarations: [ItemViewerComponent, TestComponentWrapper],
       providers: [
         ItemScoringGuideMapper,

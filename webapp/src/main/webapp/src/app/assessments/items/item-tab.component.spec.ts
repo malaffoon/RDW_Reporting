@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemTabComponent } from './item-tab.component';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { TabsetConfig } from 'ngx-bootstrap';
 import { MockDataService } from '../../../test/mock.data.service';
 import { StudentScoreService } from './item-scores/student-score.service';
@@ -24,7 +24,7 @@ describe('ItemTabComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [TestComponentWrapper, ItemTabComponent],
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TestModule],
       providers: [
         TabsetConfig,
         { provide: CachingDataService, useClass: MockDataService },

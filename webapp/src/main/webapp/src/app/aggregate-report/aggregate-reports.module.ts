@@ -1,7 +1,6 @@
 import { Angulartics2Module } from 'angulartics2';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '../shared/common.module';
-import { BrowserModule } from '@angular/platform-browser';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AggregateReportOptionsService } from './aggregate-report-options.service';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
@@ -38,6 +37,7 @@ import { GeneralPopulationFormComponent } from './query-forms/general-population
 import { LongitudinalCohortFormComponent } from './query-forms/longitudinal-cohort-form.component';
 import { ClaimReportFormComponent } from './query-forms/claim-report-form.component';
 import { AggregateTargetOverviewComponent } from './results/aggregate-target-overview.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -56,8 +56,8 @@ import { AggregateTargetOverviewComponent } from './results/aggregate-target-ove
   imports: [
     AssessmentModule,
     Angulartics2Module,
-    BrowserModule,
     CommonModule,
+    ReportingCommonModule,
     CsvModule,
     FormsModule,
     ModalModule,

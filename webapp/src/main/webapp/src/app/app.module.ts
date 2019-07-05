@@ -11,8 +11,8 @@ import {
   TabsModule,
   TypeaheadModule
 } from 'ngx-bootstrap';
-import { CommonModule } from './shared/common.module';
-import { RouteReuseStrategy } from '@angular/router';
+import { ReportingCommonModule } from './shared/reporting-common.module';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { RdwRouteReuseStrategy } from './shared/rdw-route-reuse.strategy';
@@ -27,8 +27,11 @@ import { HttpModule } from '@angular/http';
 import { SandboxLoginModule } from './sandbox/sandbox-login.module';
 import { ApplicationSecuritySettingService } from './app-security-setting.service';
 import { SecuritySettingService } from './shared/security/service/security-settings.service';
-import { AppRoutingModule } from './app-routing.module';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from './shared/translate-module-configuration';
+import { routes } from './app.routes';
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,7 +39,8 @@ import { InlineSVGModule } from 'ng-inline-svg';
     AdminModule,
     AggregateReportsModule,
     BrowserModule,
-    CommonModule,
+    NoopAnimationsModule,
+    ReportingCommonModule,
     DashboardModule,
     HomeModule,
     HttpModule,
@@ -53,7 +57,8 @@ import { InlineSVGModule } from 'ng-inline-svg';
     PopoverModule.forRoot(),
     TypeaheadModule.forRoot(),
     TabsModule.forRoot(),
-    AppRoutingModule
+    TranslateModule.forRoot(translateModuleConfiguration),
+    RouterModule.forRoot(routes)
   ],
   providers: [
     ApplicationSettingsService,

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { Component } from '@angular/core';
 import { FilterBy } from '../../model/filter-by.model';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { ExamFilterOptions } from '../../model/exam-filter-options.model';
 import { Angulartics2, Angulartics2Module } from 'angulartics2';
 import { PopoverModule } from 'ngx-bootstrap';
@@ -34,7 +34,7 @@ describe('AdvFiltersComponent', () => {
       imports: [
         HttpModule,
         FormsModule,
-        CommonModule,
+        ReportingCommonModule,
         Angulartics2Module.forRoot(),
         PopoverModule.forRoot()
       ],

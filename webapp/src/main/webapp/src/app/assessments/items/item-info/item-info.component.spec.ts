@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemInfoComponent } from './item-info.component';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { AssessmentItem } from '../../model/assessment-item.model';
 import { Component } from '@angular/core';
 import { ItemInfoService } from './item-info.service';
@@ -16,7 +16,7 @@ describe('ItemInfoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       declarations: [ItemInfoComponent, TestComponentWrapper],
       providers: [
         {

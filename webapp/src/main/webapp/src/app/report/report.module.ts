@@ -1,11 +1,9 @@
 import { FactoryProvider, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'primeng/components/common/shared';
 import { ModalModule, TabsModule } from 'ngx-bootstrap';
 import { Angulartics2Module } from 'angulartics2';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { ReportsComponent } from './reports.component';
 import { RdwMenuModule } from '../shared/menu/rdw-menu.module';
 import { TableModule } from 'primeng/table';
@@ -29,6 +27,7 @@ import { ReportFormService } from './service/report-form.service';
 import { RdwFormModule } from '../shared/form/rdw-form.module';
 import { DeleteModalComponent } from './component/delete-modal/delete-modal.component';
 import { PrintableReportFormModalComponent } from './component/printable-report-form-modal/printable-report-form-modal.component';
+import { CommonModule } from '@angular/common';
 
 /**
  * Each of these field providers configure how the form field
@@ -53,9 +52,8 @@ export const FieldProviders: FactoryProvider[] = [
 @NgModule({
   imports: [
     Angulartics2Module,
-    BrowserAnimationsModule,
-    BrowserModule,
     CommonModule,
+    ReportingCommonModule,
     FormsModule,
     ModalModule,
     RdwMenuModule,

@@ -6,6 +6,11 @@ import { organizationExportRoutes } from '../organization-export/organization-ex
 import { tenantRoutes } from './sandbox-tenants/tenant.routes';
 import { Route } from '@angular/router';
 
+export const pipelinesLoadChildren = () =>
+  import('app/admin/ingest-pipeline/ingest-pipeline.module').then(
+    module => module.IngestPipelineModule
+  );
+
 export const adminRoutes: Route[] = [
   {
     path: '',
@@ -13,10 +18,13 @@ export const adminRoutes: Route[] = [
       ...aggregateReportRoutes,
       ...embargoRoutes,
       ...groupAdminRoutes,
-      // ...ingestPipelineRoutes,
       ...instructionalResourceRoutes,
       ...organizationExportRoutes,
-      ...tenantRoutes
+      ...tenantRoutes,
+      {
+        path: 'ingest-pipelines',
+        loadChildren: pipelinesLoadChildren
+      }
     ]
   }
 ];

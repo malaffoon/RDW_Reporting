@@ -10,7 +10,7 @@ import { Assessment } from './model/assessment';
 import { AssessmentExam } from './model/assessment-exam.model';
 import { ExamFilterOptions } from './model/exam-filter-options.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { Angulartics2 } from 'angulartics2';
 import { MockUserService } from '../../test/mock.user.service';
 import { ApplicationSettingsService } from '../app-settings.service';
@@ -44,7 +44,7 @@ describe('AssessmentsComponent', () => {
   beforeEach(async(() => {
     mockRouteSnapshot = getRouteSnapshot();
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       declarations: [AssessmentsComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

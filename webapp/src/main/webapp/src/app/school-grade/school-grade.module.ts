@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '../shared/common.module';
-import { BrowserModule } from '@angular/platform-browser';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SharedModule, DropdownModule } from 'primeng/primeng';
 import { SchoolGradeComponent } from './school-grade.component';
@@ -16,6 +15,7 @@ import { TypeaheadModule } from 'ngx-bootstrap';
 import { SchoolAssessmentExportService } from './results/school-assessment-export.service';
 import { OrganizationService } from '../shared/organization/organization.service';
 import { SchoolService as CommonSchoolService } from '../shared/school/school.service';
+import { CommonModule } from '@angular/common';
 
 /**
  * This module contains a search component for finding assessments
@@ -24,8 +24,8 @@ import { SchoolService as CommonSchoolService } from '../shared/school/school.se
 @NgModule({
   declarations: [SchoolGradeComponent, SchoolResultsComponent],
   imports: [
+    ReportingCommonModule,
     CommonModule,
-    BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     AssessmentsModule,

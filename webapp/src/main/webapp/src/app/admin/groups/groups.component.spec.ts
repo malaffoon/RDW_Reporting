@@ -6,7 +6,7 @@ import { School } from './model/school.model';
 import { GroupService } from './groups.service';
 import { Observable, of } from 'rxjs';
 import { Group } from './model/group.model';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap';
 import { TestModule } from '../../../test/test.module';
@@ -48,7 +48,7 @@ describe('GroupsComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [GroupsComponent],
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TestModule],
       providers: [
         { provide: BsModalService, useValue: mockModalService },
         { provide: GroupService, useValue: mockGroupService },

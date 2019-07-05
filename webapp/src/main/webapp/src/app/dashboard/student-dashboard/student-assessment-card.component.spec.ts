@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StudentAssessmentCardComponent } from './student-assessment-card.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { Assessment } from '../../assessments/model/assessment';
 import { StudentHistoryExamWrapper } from '../../student/model/student-history-exam-wrapper.model';
 import { Exam } from '../../assessments/model/exam';
@@ -12,7 +12,7 @@ describe('StudentAssessmentCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule],
       declarations: [StudentAssessmentCardComponent],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();

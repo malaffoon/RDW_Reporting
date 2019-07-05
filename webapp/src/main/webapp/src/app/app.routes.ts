@@ -12,12 +12,6 @@ import { HasOneOrMorePermissionCanActivate } from './shared/security/can-activat
 import { ErrorComponent } from './shared/component/error/error.component';
 import { AccessDeniedComponent } from './shared/security/component/access-denied/access-denied.component';
 import { SessionExpiredComponent } from './shared/security/component/session-expired/session-expired.component';
-import { HomeComponent } from './home/page/home/home.component';
-
-export const pipelinesLoadChildren = () =>
-  import('app/admin/ingest-pipeline/ingest-pipeline.module').then(
-    x => x.IngestPipelineModule
-  );
 
 /**
  * Routes accessible without permissions
@@ -69,7 +63,7 @@ export const protectedRoutes: Route[] = [
     },
     canActivate: [HasOneOrMorePermissionCanActivate],
     children: [
-      // ...homeRoutes,
+      ...homeRoutes,
       ...adminRoutes,
       ...groupRoutes,
       ...reportRoutes,
@@ -80,24 +74,4 @@ export const protectedRoutes: Route[] = [
   }
 ];
 
-// export const routes: Routes = [...publicRoutes, ...protectedRoutes];
-export const routes: Routes = [
-  {
-    path: '',
-    resolve: {
-      translateComplete: TranslateResolve
-    },
-    canActivate: [HasOneOrMorePermissionCanActivate],
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        component: HomeComponent
-      },
-      {
-        path: 'ingest-pipelines',
-        loadChildren: pipelinesLoadChildren
-      }
-    ]
-  }
-];
+export const routes: Routes = [...publicRoutes, ...protectedRoutes];
