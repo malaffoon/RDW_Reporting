@@ -204,16 +204,3 @@ tenant-configuration-lookup:
     aggregate-service: http://localhost:8308
     report-processor: http://localhost:8086
     reporting-service: http://localhost:8108
-
-
-tenantProperties:
-  tenants:
-    CA:
-      id: CA
-      key: CA
-      name: California
-    SA:
-      id: SA
-      key: SA
-      name: Sandbox
-      sandbox: true

@@ -183,15 +183,3 @@ zuul:
       path: /api/reporting-service/**
       url: http://localhost:8180
       stripPrefix: true
-
-tenantProperties:
-  tenants:
-    CA:
-      id: CA
-      key: CA
-      name: California
-    SA:
-      id: SA
-      key: SA
-      name: Sandbox
-      sandbox: true
