@@ -47,7 +47,7 @@ import { ErrorComponent } from './component/error/error.component';
 @NgModule({
   imports: [
     AlertModule,
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     AngularCommonModule,
     CommonEmbargoModule,
     FormsModule,
@@ -55,7 +55,7 @@ import { ErrorComponent } from './component/error/error.component';
     NgxDnDModule,
     OrganizationModule,
     SchoolModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     RdwAssessmentModule,
     RdwCoreModule,
     RdwDataModule.forRoot(),

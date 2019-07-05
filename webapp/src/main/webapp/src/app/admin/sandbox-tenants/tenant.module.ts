@@ -43,14 +43,14 @@ import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbo
   imports: [
     AccordionModule,
     BrowserModule,
-    BsDropdownModule.forRoot(),
-    ButtonsModule.forRoot(),
+    BsDropdownModule,
+    ButtonsModule,
     CommonModule,
     FormsModule,
     HttpClientModule,
     MenuModule,
-    ModalModule.forRoot(),
-    PopoverModule.forRoot(),
+    ModalModule,
+    PopoverModule,
     ReactiveFormsModule,
     TableModule,
     TreeTableModule

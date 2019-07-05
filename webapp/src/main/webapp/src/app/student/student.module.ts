@@ -37,14 +37,14 @@ import { StudentExamTableComponent } from './component/student-exam-table/studen
     StudentHistoryTableComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     AssessmentsModule,
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,
     CsvModule,
     FormsModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     ReactiveFormsModule,
     RdwMenuModule,
     ReportModule,

@@ -16,7 +16,7 @@ import { OrganizationTreeComponent } from './organization/organization-tree.comp
     ReactiveFormsModule,
     CommonModule,
     SharedModule,
-    Angulartics2Module.forRoot()
+    Angulartics2Module
   ]
 })
 export class OrganizationExportModule {}

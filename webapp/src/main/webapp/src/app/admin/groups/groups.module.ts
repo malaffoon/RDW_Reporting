@@ -17,7 +17,7 @@ import { TableModule } from 'primeng/table';
     CommonModule,
     DropdownModule,
     FormsModule,
-    ModalModule.forRoot(),
+    ModalModule,
     TableModule
   ],
   providers: [GroupService]

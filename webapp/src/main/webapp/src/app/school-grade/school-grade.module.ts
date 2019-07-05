@@ -33,7 +33,7 @@ import { SchoolService as CommonSchoolService } from '../shared/school/school.se
     SharedModule,
     ReportModule,
     TypeaheadModule,
-    Angulartics2Module.forRoot()
+    Angulartics2Module
   ],
   exports: [SchoolGradeComponent, SchoolResultsComponent],
   providers: [

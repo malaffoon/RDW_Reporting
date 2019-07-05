@@ -1,4 +1,4 @@
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CodeEditorComponent } from './component/code-editor/code-editor.component';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -54,7 +54,6 @@ import { CommonModule } from '@angular/common';
     PipelineTestResultComponent,
     PipelineTestResultsComponent
   ],
-  exports: [],
-  schemas: [NO_ERRORS_SCHEMA]
+  exports: []
 })
 export class IngestPipelineModule {}

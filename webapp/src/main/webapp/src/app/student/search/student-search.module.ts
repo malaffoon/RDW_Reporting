@@ -11,12 +11,7 @@ import { TypeaheadModule } from 'ngx-bootstrap';
 
 @NgModule({
   declarations: [StudentSearchFormComponent, SchoolAndGroupTypeaheadComponent],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    CommonModule,
-    TypeaheadModule.forRoot()
-  ],
+  imports: [BrowserModule, FormsModule, CommonModule, TypeaheadModule],
   exports: [StudentSearchFormComponent],
   providers: [
     StudentService,

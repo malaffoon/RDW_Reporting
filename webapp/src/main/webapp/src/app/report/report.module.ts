@@ -52,12 +52,12 @@ export const FieldProviders: FactoryProvider[] = [
 
 @NgModule({
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,
     FormsModule,
-    ModalModule.forRoot(),
+    ModalModule,
     RdwMenuModule,
     RdwFormModule,
     ReactiveFormsModule,

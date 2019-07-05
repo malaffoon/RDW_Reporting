@@ -55,18 +55,18 @@ import { AggregateTargetOverviewComponent } from './results/aggregate-target-ove
   ],
   imports: [
     AssessmentModule,
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     BrowserModule,
     CommonModule,
     CsvModule,
     FormsModule,
     ModalModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     ReactiveFormsModule,
     ReportModule,
     SubgroupModule,
     TableModule,
-    TabsModule.forRoot(),
+    TabsModule,
     TypeaheadModule
   ],
   providers: [

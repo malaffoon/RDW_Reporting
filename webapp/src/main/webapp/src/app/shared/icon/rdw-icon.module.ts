@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [SBIconComponent],
-  imports: [CommonModule, InlineSVGModule.forRoot()],
+  imports: [CommonModule, InlineSVGModule],
   exports: [SBIconComponent]
 })
 export class RdwIconModule {}

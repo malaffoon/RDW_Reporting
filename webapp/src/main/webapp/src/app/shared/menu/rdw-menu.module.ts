@@ -8,12 +8,7 @@ import { MenuComponent } from './menu.component';
 
 @NgModule({
   declarations: [MenuComponent, PopupMenuComponent],
-  imports: [
-    BrowserModule,
-    PopoverModule.forRoot(),
-    RdwI18nModule,
-    TranslateModule.forRoot()
-  ],
+  imports: [BrowserModule, PopoverModule, RdwI18nModule, TranslateModule],
   exports: [MenuComponent, PopupMenuComponent]
 })
 export class RdwMenuModule {}

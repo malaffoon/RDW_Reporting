@@ -8,12 +8,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [OrganizationTypeahead],
-  imports: [
-    CommonModule,
-    FormsModule,
-    TranslateModule.forRoot(),
-    TypeaheadModule
-  ],
+  imports: [CommonModule, FormsModule, TranslateModule, TypeaheadModule],
   exports: [OrganizationTypeahead],
   providers: [OrganizationMapper]
 })

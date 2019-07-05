@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [PerformanceLevelDistributionChart],
-  imports: [CommonModule, FormsModule, TranslateModule.forRoot()],
+  imports: [CommonModule, FormsModule, TranslateModule],
   exports: [PerformanceLevelDistributionChart]
 })
 export class RdwAssessmentModule {}

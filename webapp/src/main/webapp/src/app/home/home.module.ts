@@ -15,7 +15,7 @@ import { HomeComponent } from './page/home/home.component';
     StudentModule,
     SchoolGradeModule,
     GroupsModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule
   ],
   declarations: [AdminToolsComponent, HomeComponent]
 })

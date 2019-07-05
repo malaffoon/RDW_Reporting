@@ -27,17 +27,17 @@ import { GroupTabsComponent } from './group-tabs.component';
     GroupResultsComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     AssessmentsModule,
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
     FormsModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     ReportModule,
     SharedModule,
     TableModule,
-    TabsModule.forRoot(),
+    TabsModule,
     UserGroupModule
   ],
   exports: [GroupTabsComponent],

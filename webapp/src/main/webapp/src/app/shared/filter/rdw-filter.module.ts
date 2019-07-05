@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     RdwFormModule,
-    TranslateModule.forRoot()
+    TranslateModule
   ],
   exports: [StudentFiltersComponent],
   providers: [FilterOptionsService, StudentFilterFormOptionsMapper]

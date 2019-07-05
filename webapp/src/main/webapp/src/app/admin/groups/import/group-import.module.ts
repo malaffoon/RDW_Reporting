@@ -22,7 +22,7 @@ import { TableModule } from 'primeng/table';
     ImportTableComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,

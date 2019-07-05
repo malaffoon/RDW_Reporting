@@ -23,8 +23,8 @@ import { UserGroupTableComponent } from './user-group-table.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ModalModule.forRoot(),
-    PopoverModule.forRoot(),
+    ModalModule,
+    PopoverModule,
     StudentSearchModule,
     TableModule
   ],

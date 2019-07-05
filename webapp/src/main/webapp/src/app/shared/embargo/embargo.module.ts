@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AggregateEmbargoAlert, ReportingEmbargoAlert],
-  imports: [CommonModule, TranslateModule.forRoot()],
+  imports: [CommonModule, TranslateModule],
   providers: [AggregateEmbargoService, ReportingEmbargoService],
   exports: [AggregateEmbargoAlert, ReportingEmbargoAlert]
 })

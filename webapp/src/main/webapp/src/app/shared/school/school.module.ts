@@ -7,12 +7,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [SchoolTypeahead],
-  imports: [
-    CommonModule,
-    FormsModule,
-    TranslateModule.forRoot(),
-    TypeaheadModule
-  ],
+  imports: [CommonModule, FormsModule, TranslateModule, TypeaheadModule],
   exports: [SchoolTypeahead]
 })
 export class SchoolModule {}

@@ -29,10 +29,10 @@ import { TableModule } from 'primeng/table';
     BrowserModule,
     CommonModule,
     FormsModule,
-    ModalModule.forRoot(),
+    ModalModule,
     RdwMenuModule,
     TableModule,
-    TypeaheadModule.forRoot()
+    TypeaheadModule
   ],
   providers: [
     AssessmentService,

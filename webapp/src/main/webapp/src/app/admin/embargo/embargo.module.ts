@@ -14,11 +14,11 @@ import { TableModule } from 'primeng/table';
 @NgModule({
   imports: [
     BrowserModule,
-    ButtonsModule.forRoot(),
+    ButtonsModule,
     CommonModule,
     FormsModule,
     HttpClientModule,
-    ModalModule.forRoot(),
+    ModalModule,
     TableModule
   ],
   declarations: [

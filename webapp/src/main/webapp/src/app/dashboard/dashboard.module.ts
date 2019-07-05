@@ -22,13 +22,13 @@ import { StudentAssessmentCardComponent } from './student-dashboard/student-asse
     StudentAssessmentCardComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     AssessmentsModule,
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
     FormsModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     ReportModule,
     SharedModule,
     TableModule

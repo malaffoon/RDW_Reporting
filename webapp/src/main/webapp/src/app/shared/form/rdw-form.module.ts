@@ -32,10 +32,10 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     AutoCompleteModule,
-    PopoverModule.forRoot(),
-    TypeaheadModule.forRoot(),
-    TranslateModule.forRoot(),
-    Angulartics2Module.forRoot()
+    PopoverModule,
+    TypeaheadModule,
+    TranslateModule,
+    Angulartics2Module
   ],
   exports: [
     FormFieldsComponent,
