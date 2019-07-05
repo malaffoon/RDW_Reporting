@@ -22,23 +22,22 @@ import { PipelineTestFormComponent } from './component/pipeline-test-form/pipeli
 import { PipelineTestResultComponent } from './component/pipeline-test-result/pipeline-test-result.component';
 import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-history/pipeline-publishing-history.component';
 import { PipelinePublishedScriptsComponent } from './component/pipeline-published-scripts/pipeline-published-scripts.component';
-import { IngestPipelineRoutingModule } from './ingest-pipeline-routing.module';
 import { CommonModule } from '@angular/common';
 import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
+import { ingestPipelineRoutes } from './ingest-pipeline.routes';
 
 @NgModule({
   imports: [
     CommonModule,
     ReportingCommonModule,
-    RouterModule,
-    TranslateModule.forChild(translateModuleConfiguration),
     FormsModule,
     ReactiveFormsModule,
     ButtonsModule,
     BsDropdownModule,
     ModalModule,
     TooltipModule,
-    IngestPipelineRoutingModule
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(ingestPipelineRoutes)
   ],
   declarations: [
     CodeDifferenceComponent,
