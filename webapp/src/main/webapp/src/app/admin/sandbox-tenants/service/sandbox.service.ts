@@ -1,14 +1,21 @@
-import { Observable, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DataService } from '../../../shared/data/data.service';
-import { toSandboxApiModel, mapSandbox } from '../mapper/tenant.mapper';
+import { forkJoin, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { AdminServiceRoute } from '../../../shared/service-route';
+import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
+import { AdminServiceRoute } from '../../../shared/service-route';
+import {
+  mapConfigurationProperties,
+  mapSandbox,
+  toSandboxApiModel,
+  mapTenant
+} from '../mapper/tenant.mapper';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
+import { TenantConfiguration } from '../model/tenant-configuration';
 
 const ResourceRoute = `${AdminServiceRoute}/sandboxes`;
-const DefaultsRoute = `${AdminServiceRoute}/tenants/defaults`;
+const TenantsRoute = `${AdminServiceRoute}/tenants`;
+const DefaultsRoute = `${TenantsRoute}/defaults`;
 const DataSetsRoute = `${ResourceRoute}/datasets`;
 
 /**
@@ -24,21 +31,26 @@ export class SandboxService {
    * Gets default configuration properties for a sandbox
    */
   getDefaultConfigurationProperties(): Observable<any> {
-    return this.dataService.get(`${ResourceRoute}`).pipe(
-      map(
-        apiSandboxes =>
-          apiSandboxes.sandboxConfigurationPackage
-            .applicationSandboxConfiguration
-      ),
-      catchError(ResponseUtils.throwError)
-    );
+    return this.dataService
+      .get(DefaultsRoute)
+      .pipe(catchError(ResponseUtils.throwError));
   }
 
   getAvailableDataSets(): Observable<DataSet[]> {
-    return this.dataService.get(`${ResourceRoute}`).pipe(
-      map(apiSandboxes => apiSandboxes.sandboxConfigurationPackage.dataSets),
-      catchError(ResponseUtils.throwError)
-    );
+    return this.dataService
+      .get(DataSetsRoute)
+      .pipe(catchError(ResponseUtils.throwError));
+  }
+
+  getTenants(): Observable<TenantConfiguration[]> {
+    return this.dataService
+      .get(TenantsRoute)
+      .pipe(
+        map(
+          apiModels => apiModels.map(apiModel => mapTenant(apiModel, {}, true)),
+          catchError(ResponseUtils.throwError)
+        )
+      );
   }
 
   /**
@@ -46,9 +58,9 @@ export class SandboxService {
    */
   getAll(): Observable<SandboxConfiguration[]> {
     return forkJoin([
-      this.dataService.get(`${ResourceRoute}`),
-      this.dataService.get(`${DefaultsRoute}`),
-      this.dataService.get(`${DataSetsRoute}`)
+      this.dataService.get(ResourceRoute),
+      this.dataService.get(DefaultsRoute),
+      this.dataService.get(DataSetsRoute)
     ]).pipe(
       map(results => {
         const sandboxConfigurations = results[0];
@@ -71,9 +83,9 @@ export class SandboxService {
     dataSets = []
   ): Observable<SandboxConfiguration> {
     return this.dataService
-      .post(`${ResourceRoute}`, toSandboxApiModel(sandbox))
+      .post(ResourceRoute, toSandboxApiModel(sandbox))
       .pipe(
-        map(createdSandbox => mapSandbox(createdSandbox, {}, dataSets)),
+        // map(createdSandbox => mapSandbox(createdSandbox, {}, dataSets)),
         catchError(ResponseUtils.throwError)
       );
   }
@@ -83,12 +95,10 @@ export class SandboxService {
    * @param sandbox - The sandbox to update
    */
   update(sandbox: SandboxConfiguration): Observable<SandboxConfiguration> {
-    return this.dataService
-      .put(`${ResourceRoute}`, toSandboxApiModel(sandbox))
-      .pipe(
-        map(() => sandbox),
-        catchError(ResponseUtils.throwError)
-      );
+    return this.dataService.put(ResourceRoute, toSandboxApiModel(sandbox)).pipe(
+      map(() => sandbox),
+      catchError(ResponseUtils.throwError)
+    );
   }
 
   /**

@@ -36,12 +36,25 @@
       </div>
       <div class="row mb-sm">
         <div class="col-md-4">
+          <label>{{ 'sandbox-config.fields.tenant' | translate }}</label>
+        </div>
+        <div class="col-md-8">
+          <select class="form-control" formControlName="tenant">
+            <option [value]="null"></option>
+            <option *ngFor="let tenant of tenants" [ngValue]="tenant">
+              {{ tenant.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="row mb-sm">
+        <div class="col-md-4">
           <label>{{ 'sandbox-config.fields.data-set' | translate }}</label>
         </div>
         <div class="col-md-8">
-          <select class="form-control" formControlName="dataSetId">
+          <select class="form-control" formControlName="dataset">
             <option [value]="null"></option>
-            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id">
+            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
               {{ dataSet.label }}
             </option>
           </select>

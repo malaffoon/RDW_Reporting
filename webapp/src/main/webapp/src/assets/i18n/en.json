@@ -760,7 +760,7 @@
       "logout": "Logout",
       "title": "Reporting System",
       "toggle-sr": "Toggle navigation",
-      "user-dropdown": "Welcome {{firstName}} {{lastName}}"
+      "user-dropdown": "{{firstName}} {{lastName}}"
     },
     "session-expired": {
       "title": "Session Expired",
@@ -1203,6 +1203,7 @@
       "label": "Name:",
       "description": "Description:",
       "data-set": "Data Set:",
+      "tenant": "Tenant: ",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"

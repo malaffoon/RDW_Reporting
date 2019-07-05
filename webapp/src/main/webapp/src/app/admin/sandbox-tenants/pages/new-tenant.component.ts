@@ -5,19 +5,19 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { TenantService } from '../service/tenant.service';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
-  Validators,
-  FormControl
+  Validators
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
-import { ConfigurationProperty } from '../model/configuration-property';
+import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
-import { NotificationService } from '../../../shared/notification/notification.service';
+import { ConfigurationProperty } from '../model/configuration-property';
+import { TenantService } from '../service/tenant.service';
 import { TenantStore } from '../store/tenant.store';
 
 @Component({

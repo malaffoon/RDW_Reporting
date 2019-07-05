@@ -5,21 +5,23 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { DataSet } from '../model/sandbox-configuration';
-import { SandboxService } from '../service/sandbox.service';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
-  Validators,
-  FormControl
+  Validators
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { cloneDeep } from 'lodash';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
-import { ConfigurationProperty } from '../model/configuration-property';
+import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
+import { ConfigurationProperty } from '../model/configuration-property';
+import { DataSet } from '../model/sandbox-configuration';
+import { TenantConfiguration } from '../model/tenant-configuration';
+import { SandboxService } from '../service/sandbox.service';
 import { SandboxStore } from '../store/sandbox.store';
-import { NotificationService } from '../../../shared/notification/notification.service';
 
 @Component({
   selector: 'new-sandbox',
@@ -27,11 +29,13 @@ import { NotificationService } from '../../../shared/notification/notification.s
 })
 export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
   dataSets: DataSet[];
+  tenants: TenantConfiguration[] = [];
   sandboxForm: FormGroup;
   // Contains the full list of localization overrides, with default values
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
+  defaultConfigurationProperties: any;
 
   @ViewChild('sandboxLabelInput')
   sandboxLabelInput: ElementRef;
@@ -49,29 +53,43 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.sandboxForm = this.formBuilder.group({
       label: [null, CustomValidators.notBlank],
       description: [null],
-      dataSetId: [null, Validators.required],
+      dataset: [null, Validators.required],
+      tenant: [null, Validators.required],
       configurationProperties: this.formBuilder.group({}),
       localizationOverrides: this.formBuilder.group({})
     });
 
-    this.service.getAvailableDataSets().subscribe(dataSets => {
-      this.dataSets = dataSets;
-    });
+    this.sandboxForm.controls.tenant.valueChanges.subscribe(newVal =>
+      this.overridePropsFromTenenat(newVal)
+    );
+
+    this.service
+      .getAvailableDataSets()
+      .subscribe(dataSets => (this.dataSets = dataSets));
+
+    this.service.getTenants().subscribe(tenants => (this.tenants = tenants));
 
     this.mapLocalizationOverrides();
 
     this.service
       .getDefaultConfigurationProperties()
-      .subscribe(
-        configProperties =>
-          (this.configurationProperties = mapConfigurationProperties(
-            configProperties
-          ))
-      );
+      .subscribe(configProperties => {
+        this.defaultConfigurationProperties = configProperties;
+        this.configurationProperties = mapConfigurationProperties(
+          configProperties
+        );
+      });
   }
 
   ngAfterViewInit() {
     setTimeout(() => this.sandboxLabelInput.nativeElement.focus());
+  }
+
+  private overridePropsFromTenenat(tenant: TenantConfiguration) {
+    this.configurationProperties = mapConfigurationProperties(
+      this.defaultConfigurationProperties,
+      tenant.configurationProperties
+    );
   }
 
   private mapLocalizationOverrides() {
@@ -101,16 +119,14 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     );
     const newSandbox = {
       ...this.sandboxForm.value,
-      dataSet: this.dataSets.find(
-        dataSet => dataSet.id === this.sandboxForm.value.dataSetId
-      ),
+      dataSet: this.sandboxForm.value.dataset.id,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };
 
     this.service.create(newSandbox, this.dataSets).subscribe(
       createdTenant => {
-        this.store.setState([createdTenant, ...this.store.state]);
+        // this.store.setState([createdTenant, ...this.store.state]);
         this.router.navigate(['sandboxes']);
       },
       error =>
