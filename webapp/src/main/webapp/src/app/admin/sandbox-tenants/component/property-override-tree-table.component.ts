@@ -31,12 +31,12 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   form: FormGroup;
   @Input()
   readonly = true;
+  @Input()
+  readonlyGroups: string[] = [];
 
   // Should these be data driven?
   readonly secureFields = ['password', 's3SecretKey'];
-
   readonly requiredFields = ['password'];
-
   readonly encryptedFields = ['password'];
 
   showModifiedPropertiesOnly = false;
@@ -134,12 +134,17 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
     forOwn(this._configurationProperties, (configGroup, groupKey) => {
       const childrenNodes: TreeNode[] = [];
+      const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
       // For each configuration group, create a root-level node
 
       if (groupKey === 'datasources') {
         forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
           const dataSourcePropertyNodes: TreeNode[] = [];
-          this.mapLeafNodes(dataSourceProperties, dataSourcePropertyNodes);
+          this.mapLeafNodes(
+            dataSourceProperties,
+            dataSourcePropertyNodes,
+            groupReadonly
+          );
 
           childrenNodes.push({
             data: {
@@ -149,7 +154,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
           });
         });
       } else {
-        this.mapLeafNodes(configGroup, childrenNodes);
+        this.mapLeafNodes(configGroup, childrenNodes, groupReadonly);
       }
 
       const groupNode = <TreeNode>{
@@ -169,7 +174,8 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
   private mapLeafNodes(
     configGroup: ConfigurationProperty[],
-    childrenNodes: TreeNode[]
+    childrenNodes: TreeNode[],
+    readonly: boolean
   ): void {
     const configPropertiesFormGroup = <FormGroup>(
       this.form.controls[this.propertiesArrayName]
@@ -190,6 +196,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
           group: group.group,
           formControlName: group.formControlName,
           encrypted: encrypted,
+          readonly: readonly || this.readonly,
           secure: this.secureFields.some(x => x === group.key),
           required: this.requiredFields.some(x => x === group.key)
         },

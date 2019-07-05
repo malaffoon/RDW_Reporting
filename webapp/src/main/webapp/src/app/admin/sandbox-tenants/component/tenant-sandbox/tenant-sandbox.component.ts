@@ -1,18 +1,18 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
-  ChangeDetectorRef
+  SimpleChanges
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SandboxConfiguration } from '../../model/sandbox-configuration';
 import { cloneDeep } from 'lodash';
-import { ConfigurationProperty } from '../../model/configuration-property';
 import { CustomValidators } from '../../../../shared/validator/custom-validators';
+import { ConfigurationProperty } from '../../model/configuration-property';
+import { SandboxConfiguration } from '../../model/sandbox-configuration';
 
 @Component({
   selector: 'tenant-sandbox',
@@ -45,6 +45,8 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   });
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
+
+  readonly readonlyGroups = ['datasources', 'archive'];
 
   constructor(private cdRef: ChangeDetectorRef) {}
 

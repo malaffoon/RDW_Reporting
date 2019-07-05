@@ -8,6 +8,7 @@ export class ConfigurationProperty {
   secure?: boolean;
   showSecure?: boolean;
   required?: boolean;
+  readonly: boolean;
 
   constructor(key, value, group = null, originalVal = value) {
     this.key = key;
