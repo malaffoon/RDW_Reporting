@@ -15,8 +15,8 @@ import { PageHeading } from './page-heading.component';
     BrowserModule,
     FormsModule,
     RdwI18nModule,
-    RouterModule.forRoot([]),
-    TranslateModule.forRoot(),
+    RouterModule,
+    TranslateModule,
     BsDropdownModule
   ],
   exports: [SbBreadcrumbs, SbFooter, PageHeading]

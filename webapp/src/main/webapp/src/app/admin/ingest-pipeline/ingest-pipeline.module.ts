@@ -23,6 +23,7 @@ import { PipelineTestFormComponent } from './component/pipeline-test-form/pipeli
 import { PipelineTestResultComponent } from './component/pipeline-test-result/pipeline-test-result.component';
 import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-history/pipeline-publishing-history.component';
 import { PipelinePublishedScriptsComponent } from './component/pipeline-published-scripts/pipeline-published-scripts.component';
+import { IngestPipelineRoutingModule } from './ingest-pipeline-routing.module';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { PipelinePublishedScriptsComponent } from './component/pipeline-publishe
     ButtonsModule,
     BsDropdownModule.forRoot(),
     ModalModule,
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    IngestPipelineRoutingModule
   ],
   declarations: [
     CodeDifferenceComponent,

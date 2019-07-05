@@ -14,7 +14,8 @@ export const pipelineBreadcrumb = ({
 
 export const ingestPipelineRoutes = [
   {
-    path: 'ingest-pipelines',
+    path: '',
+    // path: 'ingest-pipelines',
     pathMatch: 'prefix',
     data: {
       breadcrumb: { translate: 'pipelines.heading' },

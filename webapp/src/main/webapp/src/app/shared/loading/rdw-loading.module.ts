@@ -7,7 +7,7 @@ import { SpinnerModal } from './spinner.modal';
 
 @NgModule({
   declarations: [SpinnerComponent, SpinnerModal],
-  imports: [BrowserModule, RouterModule.forRoot([]), TranslateModule.forRoot()],
+  imports: [BrowserModule, RouterModule, TranslateModule],
   exports: [SpinnerComponent, SpinnerModal]
 })
 export class RdwLoadingModule {}

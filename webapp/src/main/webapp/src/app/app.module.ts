@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ANALYZE_FOR_ENTRY_COMPONENTS, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import {
@@ -9,8 +9,7 @@ import {
   TabsModule
 } from 'ngx-bootstrap';
 import { CommonModule } from './shared/common.module';
-import { routes } from './app.routes';
-import { RouteReuseStrategy, RouterModule, ROUTES } from '@angular/router';
+import { RouteReuseStrategy } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { RdwRouteReuseStrategy } from './shared/rdw-route-reuse.strategy';
@@ -25,6 +24,7 @@ import { HttpModule } from '@angular/http';
 import { SandboxLoginModule } from './sandbox/sandbox-login.module';
 import { ApplicationSecuritySettingService } from './app-security-setting.service';
 import { SecuritySettingService } from './shared/security/service/security-settings.service';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,29 +38,19 @@ import { SecuritySettingService } from './shared/security/service/security-setti
     HomeModule,
     HttpModule,
     OrganizationExportModule,
-    RouterModule.forRoot([]),
     FormsModule,
     SandboxLoginModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     PopoverModule.forRoot(),
-    Angulartics2Module.forRoot()
+    Angulartics2Module.forRoot(),
+    AppRoutingModule
   ],
   providers: [
     ApplicationSettingsService,
     ApplicationSettingsResolve,
     TranslateResolve,
     { provide: RouteReuseStrategy, useClass: RdwRouteReuseStrategy },
-    {
-      provide: ROUTES,
-      multi: true,
-      useValue: routes
-    },
-    {
-      provide: ANALYZE_FOR_ENTRY_COMPONENTS,
-      multi: true,
-      useValue: routes
-    },
     {
       provide: SecuritySettingService,
       useClass: ApplicationSecuritySettingService

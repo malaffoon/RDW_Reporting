@@ -21,8 +21,8 @@ import { TranslateNumberPipe } from './translate-number.pipe';
     FormsModule,
     RdwPreferenceModule,
     // These can be overridden in the consuming apps
-    RouterModule.forRoot([]),
-    TranslateModule.forRoot()
+    RouterModule,
+    TranslateModule
   ],
   exports: [
     BrowserModule,
