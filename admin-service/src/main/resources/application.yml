@@ -205,13 +205,14 @@ tenant-configuration-lookup:
     aggregate-service: http://localhost:8308
     report-processor: http://localhost:8086
     reporting-service: http://localhost:8108
-# ingest services to query for /configprops
-#    rdw-ingest-import-service : http://localhost:8089
+# The ingest services to query for /configprops
+#    rdw-ingest-import-service: http://localhost:8089
 #    rdw-ingest-exam-processor: http://localhost:8090
 #    rdw-ingest-group-processor: http://localhost:8087
 #    rdw-ingest-package-processor: http://localhost:8083
 #    rdw-ingest-task-service: http://localhost:8084
 #    rdw-ingest-migrate-reporting: http://localhost:8088
+#    rdw-ingest-migrate-olap: http://localhost:8091
 
 
 

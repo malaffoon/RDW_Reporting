@@ -1,0 +1,1033 @@
+{
+  "endpoints-org.springframework.boot.actuate.endpoint.EndpointProperties": {
+    "prefix": "endpoints",
+    "properties": {
+      "enabled": true,
+      "sensitive": null
+    }
+  },
+  "parent": {
+    "spring.cloud.config.retry-org.springframework.cloud.config.client.RetryProperties": {
+      "prefix": "spring.cloud.config.retry",
+      "properties": {
+        "maxAttempts": 6,
+        "initialInterval": 2000,
+        "maxInterval": 3000,
+        "multiplier": 1.1
+      }
+    },
+    "configClientProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "headers": {},
+        "profile": "awsqa",
+        "label": "develop,master",
+        "uri": "http://configuration-service",
+        "enabled": true,
+        "failFast": true,
+        "token": null,
+        "authorization": null,
+        "password": null,
+        "discovery": {
+          "enabled": false,
+          "serviceId": "configserver"
+        },
+        "name": "rdw-ingest-exam-processor",
+        "username": "user"
+      }
+    },
+    "spring.cloud.config-org.springframework.cloud.bootstrap.config.PropertySourceBootstrapProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "overrideSystemProperties": true,
+        "overrideNone": false,
+        "allowOverride": true
+      }
+    },
+    "encrypt-org.springframework.cloud.bootstrap.encrypt.KeyProperties": {
+      "prefix": "encrypt",
+      "properties": {
+        "failOnError": true,
+        "key": null,
+        "keyStore": {
+          "location": null,
+          "password": null,
+          "alias": null,
+          "secret": null
+        }
+      }
+    }
+  },
+  "management.info-org.springframework.boot.actuate.autoconfigure.InfoContributorProperties": {
+    "prefix": "management.info",
+    "properties": {
+      "git": {
+        "mode": "SIMPLE"
+      }
+    }
+  },
+  "metricsEndpoint": {
+    "prefix": "endpoints.metrics",
+    "properties": {
+      "id": "metrics",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "inetUtilsProperties": {
+    "prefix": "spring.cloud.inetutils",
+    "properties": {
+      "ignoredInterfaces": [],
+      "preferredNetworks": [],
+      "defaultIpAddress": "127.0.0.1",
+      "timeoutSeconds": 1,
+      "defaultHostname": "localhost",
+      "useOnlySiteLocalInterfaces": false
+    }
+  },
+  "spring.cache-org.springframework.boot.autoconfigure.cache.CacheProperties": {
+    "prefix": "spring.cache",
+    "properties": {
+      "ehcache": {
+        "config": null
+      },
+      "caffeine": {
+        "spec": null
+      },
+      "infinispan": {
+        "config": null
+      },
+      "cacheNames": [
+        "accCode",
+        "adminCondition",
+        "assessmentType",
+        "completeness",
+        "elas",
+        "ethnicity",
+        "ethnicityCodes",
+        "gender",
+        "grade",
+        "itemTraits",
+        "language",
+        "militaryConnected",
+        "subject"
+      ],
+      "couchbase": {
+        "expiration": 0
+      },
+      "hazelcast": {
+        "config": null
+      },
+      "jcache": {
+        "config": null,
+        "provider": null
+      },
+      "type": "SIMPLE",
+      "guava": {
+        "spec": null
+      }
+    }
+  },
+  "featuresEndpoint": {
+    "prefix": "endpoints.features",
+    "properties": {
+      "id": "features",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "spring.cloud.codec.kryo-org.springframework.cloud.stream.config.codec.kryo.KryoCodecProperties": {
+    "prefix": "spring.cloud.codec.kryo",
+    "properties": {}
+  },
+  "spring.rabbitmq-org.springframework.boot.autoconfigure.amqp.RabbitProperties": {
+    "prefix": "spring.rabbitmq",
+    "properties": {
+      "template": {
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "initialInterval": 1000,
+          "multiplier": 1,
+          "maxInterval": 10000
+        },
+        "mandatory": null,
+        "receiveTimeout": null,
+        "replyTimeout": null
+      },
+      "addresses": null,
+      "cache": {
+        "channel": {
+          "size": null,
+          "checkoutTimeout": null
+        },
+        "connection": {
+          "mode": "CHANNEL",
+          "size": null
+        }
+      },
+      "listener": {
+        "simple": {
+          "autoStartup": true,
+          "acknowledgeMode": null,
+          "concurrency": null,
+          "maxConcurrency": null,
+          "prefetch": null,
+          "transactionSize": null,
+          "defaultRequeueRejected": null,
+          "idleEventInterval": null,
+          "retry": {
+            "enabled": false,
+            "maxAttempts": 3,
+            "initialInterval": 1000,
+            "multiplier": 1,
+            "maxInterval": 10000,
+            "stateless": true
+          }
+        },
+        "acknowledgeMode": null,
+        "maxConcurrency": null,
+        "concurrency": null,
+        "prefetch": null,
+        "transactionSize": null,
+        "defaultRequeueRejected": null,
+        "idleEventInterval": null,
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "initialInterval": 1000,
+          "multiplier": 1,
+          "maxInterval": 10000,
+          "stateless": true
+        },
+        "autoStartup": true
+      },
+      "publisherReturns": false,
+      "virtualHost": null,
+      "ssl": {
+        "enabled": false,
+        "keyStore": null,
+        "keyStorePassword": null,
+        "trustStore": null,
+        "trustStorePassword": null,
+        "algorithm": null,
+        "validateServerCertificate": true,
+        "verifyHostname": null
+      },
+      "password": null,
+      "port": 5672,
+      "publisherConfirms": false,
+      "host": "rabbit-service",
+      "requestedHeartbeat": null,
+      "connectionTimeout": null,
+      "username": null
+    }
+  },
+  "environmentEndpoint": {
+    "prefix": "endpoints.env",
+    "properties": {
+      "id": "env",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "sbacScoreConfiguration": {
+    "prefix": "validation",
+    "properties": {
+      "itemScore": {
+        "min": -1,
+        "max": 20
+      }
+    }
+  },
+  "configClientHealthProperties": {
+    "prefix": "health.config",
+    "properties": {
+      "timeToLive": 300000,
+      "enabled": false
+    }
+  },
+  "spring.cloud.service-registry.auto-registration-org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties": {
+    "prefix": "spring.cloud.service-registry.auto-registration",
+    "properties": {
+      "enabled": true,
+      "registerManagement": true,
+      "failFast": false
+    }
+  },
+  "spring.cloud.stream-org.springframework.cloud.stream.config.BindingServiceProperties": {
+    "prefix": "spring.cloud.stream",
+    "properties": {
+      "bindings": {
+        "input": {
+          "destination": "EXAM",
+          "group": "default"
+        }
+      }
+    }
+  },
+  "healthMvcEndpoint": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "path": "/health"
+    }
+  },
+  "serverProperties": {
+    "prefix": "server",
+    "properties": {
+      "contextParameters": {},
+      "address": null,
+      "maxHttpPostSize": 0,
+      "undertow": {
+        "maxHttpPostSize": -1,
+        "bufferSize": null,
+        "buffersPerRegion": null,
+        "ioThreads": null,
+        "workerThreads": null,
+        "directBuffers": null,
+        "accesslog": {
+          "enabled": null,
+          "pattern": "common",
+          "prefix": "access_log.",
+          "suffix": "log",
+          "dir": "/logs",
+          "rotate": true
+        }
+      },
+      "tomcat": {
+        "accesslog": {
+          "enabled": false,
+          "pattern": "common",
+          "directory": "logs",
+          "prefix": "access_log",
+          "suffix": ".log",
+          "rotate": true,
+          "renameOnRotate": false,
+          "fileDateFormat": ".yyyy-MM-dd",
+          "requestAttributesEnabled": false,
+          "buffered": true
+        },
+        "internalProxies": "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1",
+        "protocolHeader": null,
+        "protocolHeaderHttpsValue": "https",
+        "portHeader": "X-Forwarded-Port",
+        "remoteIpHeader": null,
+        "basedir": null,
+        "backgroundProcessorDelay": 10,
+        "maxThreads": 2,
+        "minSpareThreads": 10,
+        "maxHttpPostSize": 2097152,
+        "redirectContextRoot": true,
+        "uriEncoding": "UTF-8",
+        "maxConnections": 2,
+        "acceptCount": 100,
+        "additionalTldSkipPatterns": []
+      },
+      "displayName": "application",
+      "session": {
+        "timeout": null,
+        "trackingModes": null,
+        "persistent": false,
+        "storeDir": null,
+        "cookie": {
+          "name": null,
+          "domain": null,
+          "path": null,
+          "comment": null,
+          "httpOnly": null,
+          "secure": null,
+          "maxAge": null
+        }
+      },
+      "contextPath": null,
+      "error": {
+        "path": "/error",
+        "includeStacktrace": "NEVER"
+      },
+      "ssl": null,
+      "serverHeader": null,
+      "useForwardHeaders": null,
+      "port": 8008,
+      "maxHttpHeaderSize": 131072,
+      "servletPath": "/",
+      "jspServlet": null,
+      "jetty": {
+        "maxHttpPostSize": 200000,
+        "acceptors": -1,
+        "selectors": -1
+      },
+      "connectionTimeout": null
+    }
+  },
+  "spring.metrics.export-org.springframework.boot.actuate.metrics.export.MetricExportProperties": {
+    "prefix": "spring.metrics.export",
+    "properties": {
+      "excludes": null,
+      "statsd": {
+        "host": null,
+        "port": 8125,
+        "prefix": null
+      },
+      "includes": null,
+      "triggers": {},
+      "enabled": true,
+      "redis": {
+        "prefix": "spring.metrics.rdw-ingest-exam-processor.d9a74b5740975c6a29a90702c62f636f",
+        "key": "******"
+      },
+      "aggregate": {
+        "prefix": "rdw-ingest-exam-processor.d9a74b5740975c6a29a90702c62f636f",
+        "keyPattern": "k.d"
+      }
+    }
+  },
+  "spring.integration.poller-org.springframework.cloud.stream.config.DefaultPollerProperties": {
+    "prefix": "spring.integration.poller",
+    "properties": {
+      "fixedDelay": 1000,
+      "maxMessagesPerPoll": 1
+    }
+  },
+  "configurationPropertiesReportEndpoint": {
+    "prefix": "endpoints.configprops",
+    "properties": {
+      "id": "configprops",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "loggersMvcEndpoint": {
+    "prefix": "endpoints.loggers",
+    "properties": {
+      "path": "/loggers"
+    }
+  },
+  "loggersEndpoint": {
+    "prefix": "endpoints.loggers",
+    "properties": {
+      "id": "loggers",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "endpoints.jmx-org.springframework.boot.actuate.autoconfigure.EndpointMBeanExportProperties": {
+    "prefix": "endpoints.jmx",
+    "properties": {
+      "uniqueNames": false,
+      "staticNames": {},
+      "enabled": true,
+      "domain": ""
+    }
+  },
+  "spring.http.encoding-org.springframework.boot.autoconfigure.web.HttpEncodingProperties": {
+    "prefix": "spring.http.encoding",
+    "properties": {
+      "charset": "UTF-8",
+      "force": false,
+      "mapping": null,
+      "forceRequest": false,
+      "forceResponse": false
+    }
+  },
+  "shutdownEndpoint": {
+    "prefix": "endpoints.shutdown",
+    "properties": {
+      "id": "shutdown",
+      "sensitive": true,
+      "enabled": false
+    }
+  },
+  "beansEndpoint": {
+    "prefix": "endpoints.beans",
+    "properties": {
+      "id": "beans",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "dataElementsConfiguration": {
+    "prefix": "validation",
+    "properties": {
+      "requiredDataElements": [
+        "FirstName",
+        "LastOrSurname",
+        "Birthdate",
+        "Sex",
+        "EconomicDisadvantageStatus",
+        "IDEAIndicator",
+        "Completeness",
+        "AdministrationCondition"
+      ],
+      "optionalDataElements": [
+        "LEPExitDate",
+        "EnglishLanguageAcquisitionStatus",
+        "Ethnicity",
+        "Section504Status",
+        "AliasName",
+        "ExamItems",
+        "LanguageCode",
+        "FirstEntryDateIntoUSSchool",
+        "MiddleName",
+        "SessionId",
+        "TitleIIILanguageInstructionProgramType",
+        "MilitaryConnectedStudentIndicator",
+        "LEPStatus",
+        "LimitedEnglishProficiencyEntryDate",
+        "EnglishLanguageAcquisitionStatusStartDate",
+        "MigrantStatus",
+        "EnglishLanguageProficiencyLevel",
+        "PrimaryDisabilityType"
+      ]
+    }
+  },
+  "requestMappingEndpoint": {
+    "prefix": "endpoints.mappings",
+    "properties": {
+      "id": "mappings",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.archivePropertiesRoot": {
+    "prefix": "archive",
+    "properties": {
+      "tenants": {
+        "CA_S001": {
+          "uriRoot": null,
+          "pathPrefix": "ca_s001",
+          "s3AccessKey": null,
+          "s3SecretKey": null,
+          "s3RegionStatic": null,
+          "s3Sse": null
+        },
+        "CA_S002": {
+          "uriRoot": null,
+          "pathPrefix": "CA_S002",
+          "s3AccessKey": null,
+          "s3SecretKey": null,
+          "s3RegionStatic": null,
+          "s3Sse": null
+        },
+        "TS": {
+          "uriRoot": null,
+          "pathPrefix": "TS",
+          "s3AccessKey": null,
+          "s3SecretKey": null,
+          "s3RegionStatic": null,
+          "s3Sse": null
+        }
+      },
+      "s3SecretKey": "******",
+      "s3AccessKey": "******",
+      "s3Sse": null,
+      "s3RegionStatic": "us-west-2",
+      "uriRoot": "s3://rdw-qa-archive",
+      "pathPrefix": null
+    }
+  },
+  "refreshEndpoint": {
+    "prefix": "endpoints.refresh",
+    "properties": {
+      "id": "refresh",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.dataSourceElementsProperties": {
+    "prefix": "datasources.warehouse_rw",
+    "properties": {
+      "schemaSearchPath": null,
+      "urlParts": {
+        "protocol": "jdbc:mysql:",
+        "hosts": "rdw-aurora-qa-cluster.cluster-cugsexobhx8t.us-west-2.rds.amazonaws.com:3306",
+        "database": "warehouse",
+        "properties": "useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&noAccessToProcedureBodies=true&connectTimeout=10000&socketTimeout=40000"
+      },
+      "tenants": {
+        "CA_S001": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "warehouse_ca_s001",
+            "properties": null
+          },
+          "jdbcInterceptors": null,
+          "username": "cas001",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationQueryTimeout": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "CA_S002": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "warehouse_ca_s002",
+            "properties": null
+          },
+          "jdbcInterceptors": null,
+          "username": "cas002",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationQueryTimeout": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "CA": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "warehouse",
+            "properties": null
+          },
+          "jdbcInterceptors": null,
+          "username": "sbac",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationQueryTimeout": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "TS": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "ts_warehouse",
+            "properties": null
+          },
+          "jdbcInterceptors": null,
+          "username": "sbac",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationQueryTimeout": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        }
+      },
+      "jdbcInterceptors": "QueryTimeoutInterceptor(queryTimeout=30)",
+      "minIdle": 6,
+      "validationQuery": "SELECT 1",
+      "initialSize": 6,
+      "url": "jdbc:mysql://rdw-aurora-qa-cluster.cluster-cugsexobhx8t.us-west-2.rds.amazonaws.com:3306/warehouse?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&noAccessToProcedureBodies=true&connectTimeout=10000&socketTimeout=40000",
+      "logAbandoned": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 12,
+      "removeAbandoned": false,
+      "driverClassName": "com.mysql.jdbc.Driver",
+      "removeAbandonedTimeout": 60,
+      "username": "root",
+      "validationQueryTimeout": 10000,
+      "maxActive": 12
+    }
+  },
+  "spring.transaction-org.springframework.boot.autoconfigure.transaction.TransactionProperties": {
+    "prefix": "spring.transaction",
+    "properties": {
+      "rollbackOnCommitFailure": null,
+      "defaultTimeout": null
+    }
+  },
+  "statusEndpoint": {
+    "prefix": "endpoints.status",
+    "properties": {
+      "id": "status",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.jackson-org.springframework.boot.autoconfigure.jackson.JacksonProperties": {
+    "prefix": "spring.jackson",
+    "properties": {
+      "serialization": {
+        "WRITE_DATES_AS_TIMESTAMPS": false
+      },
+      "propertyNamingStrategy": null,
+      "defaultPropertyInclusion": "NON_NULL",
+      "parser": {},
+      "dateFormat": null,
+      "deserialization": {},
+      "generator": {},
+      "timeZone": null,
+      "mapper": {},
+      "locale": null,
+      "jodaDateTimeFormat": null
+    }
+  },
+  "heapdumpMvcEndpoint": {
+    "prefix": "endpoints.heapdump",
+    "properties": {
+      "path": "/heapdump",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "endpoints.cors-org.springframework.boot.actuate.autoconfigure.EndpointCorsProperties": {
+    "prefix": "endpoints.cors",
+    "properties": {
+      "allowedOrigins": [],
+      "maxAge": 1800,
+      "exposedHeaders": [],
+      "allowedHeaders": [],
+      "allowedMethods": [],
+      "allowCredentials": null
+    }
+  },
+  "environmentMvcEndpoint": {
+    "prefix": "endpoints.env",
+    "properties": {
+      "path": "/env"
+    }
+  },
+  "spring.http.multipart-org.springframework.boot.autoconfigure.web.MultipartProperties": {
+    "prefix": "spring.http.multipart",
+    "properties": {
+      "maxRequestSize": "10MB",
+      "fileSizeThreshold": "0",
+      "location": null,
+      "maxFileSize": "1MB",
+      "enabled": true,
+      "resolveLazily": false
+    }
+  },
+  "spring.info-org.springframework.boot.autoconfigure.info.ProjectInfoProperties": {
+    "prefix": "spring.info",
+    "properties": {
+      "build": {
+        "location": {}
+      },
+      "git": {
+        "location": {}
+      }
+    }
+  },
+  "spring.datasource-org.springframework.boot.autoconfigure.jdbc.DataSourceProperties": {
+    "prefix": "spring.datasource",
+    "properties": {
+      "schema": null,
+      "dataPassword": null,
+      "data": null,
+      "dataUsername": null,
+      "generateUniqueName": false,
+      "xa": {
+        "dataSourceClassName": null,
+        "properties": {}
+      },
+      "type": null,
+      "separator": ";",
+      "url": null,
+      "platform": "all",
+      "continueOnError": false,
+      "jndiName": null,
+      "sqlScriptEncoding": null,
+      "password": null,
+      "schemaPassword": null,
+      "name": "testdb",
+      "driverClassName": null,
+      "initialize": true,
+      "schemaUsername": null,
+      "username": null
+    }
+  },
+  "traceEndpoint": {
+    "prefix": "endpoints.trace",
+    "properties": {
+      "id": "trace",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "metricsMvcEndpoint": {
+    "prefix": "endpoints.metrics",
+    "properties": {
+      "path": "/metrics"
+    }
+  },
+  "infoEndpoint": {
+    "prefix": "endpoints.info",
+    "properties": {
+      "id": "info",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "auditEventMvcEndpoint": {
+    "prefix": "endpoints.auditevents",
+    "properties": {
+      "path": "/auditevents",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "management.trace-org.springframework.boot.actuate.trace.TraceProperties": {
+    "prefix": "management.trace",
+    "properties": {
+      "include": [
+        "RESPONSE_HEADERS",
+        "COOKIES",
+        "TIME_TAKEN",
+        "ERRORS",
+        "REQUEST_HEADERS"
+      ]
+    }
+  },
+  "spring.resources-org.springframework.boot.autoconfigure.web.ResourceProperties": {
+    "prefix": "spring.resources",
+    "properties": {
+      "cachePeriod": null,
+      "addMappings": true,
+      "chain": {
+        "cache": true,
+        "htmlApplicationCache": false,
+        "gzipped": false,
+        "strategy": {
+          "fixed": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ],
+            "version": null
+          },
+          "content": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ]
+          }
+        }
+      },
+      "staticLocations": [
+        "/",
+        "classpath:/META-INF/resources/",
+        "classpath:/resources/",
+        "classpath:/static/",
+        "classpath:/public/"
+      ]
+    }
+  },
+  "management.health.status-org.springframework.boot.actuate.autoconfigure.HealthIndicatorProperties": {
+    "prefix": "management.health.status",
+    "properties": {
+      "order": null
+    }
+  },
+  "healthEndpoint": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "timeToLive": 1000,
+      "id": "health",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "scopedTarget.tenantProperties": {
+    "prefix": "tenantProperties",
+    "properties": {
+      "tenants": {
+        "CA_S001": {
+          "id": "CA_S001",
+          "key": "******",
+          "name": "California Sandbox 001",
+          "description": null,
+          "sandbox": true,
+          "sandboxDataset": "demo-dataset",
+          "created": {}
+        },
+        "CA_S002": {
+          "id": "CA_S002",
+          "key": "******",
+          "name": "California Sandbox 002",
+          "description": null,
+          "sandbox": true,
+          "sandboxDataset": "sbac-dataset",
+          "created": {}
+        },
+        "CA": {
+          "id": "CA",
+          "key": "******",
+          "name": "California",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        },
+        "TS": {
+          "id": "TS",
+          "key": "******",
+          "name": "Test State Tenant",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        }
+      },
+      "status": {
+        "tenantKeys": [
+          "CA_S001",
+          "CA_S002",
+          "CA",
+          "TS"
+        ]
+      }
+    }
+  },
+  "spring.cloud.stream.integration-org.springframework.cloud.stream.config.SpringIntegrationProperties": {
+    "prefix": "spring.cloud.stream.integration",
+    "properties": {
+      "messageHandlerNotPropagatedHeaders": [
+        "contentType"
+      ]
+    }
+  },
+  "configClientProperties": {
+    "prefix": "spring.cloud.config",
+    "properties": {
+      "headers": {},
+      "profile": "awsqa",
+      "label": "develop,master",
+      "uri": "http://configuration-service",
+      "enabled": true,
+      "failFast": true,
+      "token": null,
+      "authorization": null,
+      "password": null,
+      "discovery": {
+        "enabled": false,
+        "serviceId": "configserver"
+      },
+      "name": "rdw-ingest-exam-processor",
+      "username": "user"
+    }
+  },
+  "endpoints.metrics.filter-org.springframework.boot.actuate.autoconfigure.MetricFilterProperties": {
+    "prefix": "endpoints.metrics.filter",
+    "properties": {
+      "counterSubmissions": [
+        "MERGED"
+      ],
+      "gaugeSubmissions": [
+        "MERGED"
+      ]
+    }
+  },
+  "dumpEndpoint": {
+    "prefix": "endpoints.dump",
+    "properties": {
+      "id": "dump",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "autoConfigurationReportEndpoint": {
+    "prefix": "endpoints.autoconfig",
+    "properties": {
+      "id": "autoconfig",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "managementServerProperties": {
+    "prefix": "management",
+    "properties": {
+      "security": {
+        "enabled": false,
+        "roles": [
+          "ACTUATOR"
+        ],
+        "sessions": "STATELESS"
+      },
+      "address": null,
+      "port": null,
+      "addApplicationContextHeader": true,
+      "contextPath": "",
+      "ssl": null
+    }
+  },
+  "endpoints.health-org.springframework.boot.actuate.autoconfigure.HealthMvcEndpointProperties": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "mapping": {}
+    }
+  },
+  "simpleDiscoveryProperties": {
+    "prefix": "spring.cloud.discovery.client.simple",
+    "properties": {
+      "instances": {},
+      "local": {
+        "uri": "http://exam-processor-deployment-5cf944cd98-2mllg:0",
+        "metadata": {},
+        "serviceId": "rdw-ingest-exam-processor"
+      }
+    }
+  },
+  "spring.mvc-org.springframework.boot.autoconfigure.web.WebMvcProperties": {
+    "prefix": "spring.mvc",
+    "properties": {
+      "dateFormat": null,
+      "servlet": {
+        "loadOnStartup": -1
+      },
+      "staticPathPattern": "/**",
+      "dispatchOptionsRequest": true,
+      "dispatchTraceRequest": false,
+      "locale": null,
+      "ignoreDefaultModelOnRedirect": true,
+      "logResolvedException": false,
+      "async": {
+        "requestTimeout": null
+      },
+      "messageCodesResolverFormat": null,
+      "mediaTypes": {},
+      "view": {
+        "prefix": null,
+        "suffix": null
+      },
+      "localeResolver": "ACCEPT_HEADER",
+      "throwExceptionIfNoHandlerFound": false
+    }
+  },
+  "diskSpaceHealthIndicatorProperties": {
+    "prefix": "management.health.diskspace",
+    "properties": {
+      "path": "/.",
+      "threshold": 10485760
+    }
+  }
+}
