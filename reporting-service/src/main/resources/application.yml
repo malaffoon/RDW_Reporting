@@ -131,3 +131,14 @@ reporting:
     code: CA
     name: California
 
+tenantProperties:
+  tenants:
+    CA:
+      id: CA
+      key: CA
+      name: California
+    SA:
+      id: SA
+      key: SA
+      name: Sandbox
+      sandbox: true

@@ -206,4 +206,14 @@ tenant-configuration-lookup:
     reporting-service: http://localhost:8108
 
 
-
+tenantProperties:
+  tenants:
+    CA:
+      id: CA
+      key: CA
+      name: California
+    SA:
+      id: SA
+      key: SA
+      name: Sandbox
+      sandbox: true

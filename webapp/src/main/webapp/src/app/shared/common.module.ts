@@ -4,7 +4,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { SBRadioButtonComponent } from './sb-radio-button-list.component';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule as AngularCommonModule } from '@angular/common';
 import { SBCheckboxList } from './sb-checkbox-list.component';
 import { Angulartics2Module } from 'angulartics2';
 import { AlertModule, PopoverModule } from 'ngx-bootstrap';
@@ -48,7 +48,7 @@ import { ErrorComponent } from './component/error/error.component';
   imports: [
     AlertModule,
     Angulartics2Module.forRoot(),
-    BrowserModule,
+    AngularCommonModule,
     CommonEmbargoModule,
     FormsModule,
     HttpModule,

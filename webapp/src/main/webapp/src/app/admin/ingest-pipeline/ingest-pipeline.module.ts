@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CodeEditorComponent } from './component/code-editor/code-editor.component';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -7,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PipelinesComponent } from './page/pipelines/pipelines.component';
 import { PipelineCardComponent } from './component/pipeline-card/pipeline-card.component';
 import { PipelineComponent } from './page/pipeline/pipeline.component';
-import { CommonModule } from '../../shared/common.module';
+import { CommonModule as ReportingCommonModule } from '../../shared/common.module';
 import { PipelineEditorComponent } from './component/pipeline-editor/pipeline-editor.component';
 import {
   BsDropdownModule,
@@ -24,19 +23,20 @@ import { PipelineTestResultComponent } from './component/pipeline-test-result/pi
 import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-history/pipeline-publishing-history.component';
 import { PipelinePublishedScriptsComponent } from './component/pipeline-published-scripts/pipeline-published-scripts.component';
 import { IngestPipelineRoutingModule } from './ingest-pipeline-routing.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [
-    BrowserModule,
     CommonModule,
+    ReportingCommonModule,
     RouterModule,
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
     ButtonsModule,
-    BsDropdownModule.forRoot(),
+    BsDropdownModule,
     ModalModule,
-    TooltipModule.forRoot(),
+    TooltipModule,
     IngestPipelineRoutingModule
   ],
   declarations: [
@@ -54,6 +54,7 @@ import { IngestPipelineRoutingModule } from './ingest-pipeline-routing.module';
     PipelineTestResultComponent,
     PipelineTestResultsComponent
   ],
-  exports: []
+  exports: [],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class IngestPipelineModule {}

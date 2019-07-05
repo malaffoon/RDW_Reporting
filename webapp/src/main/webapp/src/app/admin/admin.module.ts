@@ -7,7 +7,7 @@ import { EmbargoModule } from './embargo/embargo.module';
 import { TenantModule } from './sandbox-tenants/tenant.module';
 import { CommonModule } from '../shared/common.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { IngestPipelineModule } from './ingest-pipeline/ingest-pipeline.module';
+// import { IngestPipelineModule } from './ingest-pipeline/ingest-pipeline.module';
 
 @NgModule({
   declarations: [],
@@ -16,7 +16,7 @@ import { IngestPipelineModule } from './ingest-pipeline/ingest-pipeline.module';
     CommonModule,
     GroupImportModule,
     GroupsModule,
-    IngestPipelineModule,
+    // IngestPipelineModule,
     InstructionalResourceModule,
     EmbargoModule,
     FileFormatModule,
@@ -25,7 +25,7 @@ import { IngestPipelineModule } from './ingest-pipeline/ingest-pipeline.module';
   exports: [
     GroupImportModule,
     GroupsModule,
-    IngestPipelineModule,
+    // IngestPipelineModule,
     InstructionalResourceModule,
     EmbargoModule,
     FileFormatModule

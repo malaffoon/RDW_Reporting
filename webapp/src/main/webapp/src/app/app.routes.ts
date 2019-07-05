@@ -93,12 +93,11 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: HomeComponent
+      },
+      {
+        path: 'ingest-pipelines',
+        loadChildren: pipelinesLoadChildren
       }
-      // ,
-      // {
-      //   path: 'ingest-pipelines',
-      //   loadChildren: pipelinesLoadChildren
-      // }
     ]
   }
 ];
