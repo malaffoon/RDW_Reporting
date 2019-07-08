@@ -14,6 +14,7 @@ import { byString } from '@kourge/ordering/comparator';
 import { OrderingService } from '../../../../shared/ordering/ordering.service';
 import { ReportFormService } from '../../../../report/service/report-form.service';
 import { SubjectDefinition } from '../../../../subject/subject';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ResultsByStudentComponent', () => {
   let component: ResultsByStudentComponent;
@@ -28,7 +29,7 @@ describe('ResultsByStudentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule, TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       declarations: [ResultsByStudentComponent, TestComponentWrapper],
       providers: [
         MenuActionBuilder,

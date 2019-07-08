@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { TestModule } from '../../test/test.module';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import Spy = jasmine.Spy;
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('StudentComponent', () => {
   let component: StudentComponent;
@@ -18,7 +19,7 @@ describe('StudentComponent', () => {
   beforeEach(async(() => {
     service = new MockStudentExamHistoryService();
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule, TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       declarations: [StudentComponent],
       providers: [{ provide: StudentExamHistoryService, useValue: service }],
       schemas: [NO_ERRORS_SCHEMA]

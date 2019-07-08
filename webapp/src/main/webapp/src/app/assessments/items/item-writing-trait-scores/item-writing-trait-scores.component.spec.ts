@@ -6,6 +6,8 @@ import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { TestModule } from '../../../../test/test.module';
 import { StudentResponsesAssessmentItem } from '../../../student/responses/student-responses-item.model';
 import { AssessmentItem } from '../../model/assessment-item.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { PopoverModule } from 'ngx-bootstrap';
 
 describe('ItemWritingTraitScoresComponent', () => {
   let component: ItemWritingTraitScoresComponent;
@@ -13,7 +15,12 @@ describe('ItemWritingTraitScoresComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule, TestModule],
+      imports: [
+        ReportingCommonModule,
+        TranslateModule.forRoot(),
+        PopoverModule.forRoot(),
+        TestModule
+      ],
       declarations: [TestComponentWrapper, ItemWritingTraitScoresComponent]
     }).compileComponents();
   }));

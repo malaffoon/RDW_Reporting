@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 import { AssessmentItem } from '../../model/assessment-item.model';
 import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../../app-settings.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ItemViewerComponent', () => {
   let component: ItemViewerComponent;
@@ -19,7 +20,7 @@ describe('ItemViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       declarations: [ItemViewerComponent, TestComponentWrapper],
       providers: [
         ItemScoringGuideMapper,

@@ -11,6 +11,7 @@ import { Angulartics2, Angulartics2Module } from 'angulartics2';
 import { PopoverModule } from 'ngx-bootstrap';
 import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../../app-settings.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AdvFiltersComponent', () => {
   let component: AdvFiltersComponent;
@@ -35,6 +36,7 @@ describe('AdvFiltersComponent', () => {
         HttpModule,
         FormsModule,
         ReportingCommonModule,
+        TranslateModule.forRoot(),
         Angulartics2Module.forRoot(),
         PopoverModule.forRoot()
       ],

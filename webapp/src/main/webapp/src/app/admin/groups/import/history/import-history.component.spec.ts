@@ -4,6 +4,7 @@ import { ImportHistoryComponent } from './import-history.component';
 import { ActivatedRoute } from '@angular/router';
 import { ReportingCommonModule } from '../../../../shared/reporting-common.module';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ImportHistoryComponent', () => {
   let component: ImportHistoryComponent;
@@ -12,7 +13,7 @@ describe('ImportHistoryComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ImportHistoryComponent],
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       providers: [
         {
           provide: ActivatedRoute,

@@ -10,6 +10,7 @@ import { DataService } from '../../../shared/data/data.service';
 import { AssessmentItem } from '../../model/assessment-item.model';
 import { Component } from '@angular/core';
 import { of } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ItemExemplarComponent', () => {
   let component: ItemExemplarComponent;
@@ -26,7 +27,7 @@ describe('ItemExemplarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ItemExemplarComponent, TestComponentWrapper],
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       providers: [
         ItemScoringService,
         ItemScoringGuideMapper,

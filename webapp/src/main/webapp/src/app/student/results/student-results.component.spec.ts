@@ -22,6 +22,7 @@ import { StudentResultsFilterService } from './student-results-filter.service';
 import { ReportFormService } from '../../report/service/report-form.service';
 import { ScaleScore } from '../../exam/model/scale-score';
 import { SubjectService } from '../../subject/subject.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -97,7 +98,7 @@ describe('StudentResultsComponent', () => {
     );
 
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule, TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       declarations: [StudentResultsComponent],
       providers: [
         { provide: CsvExportService, useValue: exportService },

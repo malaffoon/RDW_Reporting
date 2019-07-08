@@ -9,6 +9,7 @@ import {
 import { Assessment } from '../../assessments/model/assessment';
 import { Group } from '../../groups/group';
 import { ExamStatisticsCalculator } from '../../assessments/results/exam-statistics-calculator';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('GroupAssessmentCardComponent', () => {
   let component: GroupAssessmentCardComponent;
@@ -16,7 +17,7 @@ describe('GroupAssessmentCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       declarations: [GroupAssessmentCardComponent],
       providers: [ExamStatisticsCalculator],
       schemas: [NO_ERRORS_SCHEMA]

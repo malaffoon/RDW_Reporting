@@ -1,6 +1,6 @@
 import { async, TestBed } from '@angular/core/testing';
 import { Observable, Observer, of } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { AssessmentsComponent } from './assessments.component';
 import { Exam } from './model/exam';
@@ -15,6 +15,7 @@ import { Angulartics2 } from 'angulartics2';
 import { MockUserService } from '../../test/mock.user.service';
 import { ApplicationSettingsService } from '../app-settings.service';
 import { UserService } from '../shared/security/service/user.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 function assessmentExam(): AssessmentExam {
   return {
@@ -44,7 +45,11 @@ describe('AssessmentsComponent', () => {
   beforeEach(async(() => {
     mockRouteSnapshot = getRouteSnapshot();
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule],
+      imports: [
+        ReportingCommonModule,
+        TranslateModule.forRoot(),
+        RouterModule.forRoot([])
+      ],
       declarations: [AssessmentsComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

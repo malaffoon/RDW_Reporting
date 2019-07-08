@@ -1,17 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GroupsComponent } from './groups.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { GroupFilterOptions } from './model/group-filter-options.model';
 import { School } from './model/school.model';
 import { GroupService } from './groups.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { Group } from './model/group.model';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
-import { TestModule } from '../../../test/test.module';
-import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
+import { BsModalService, ModalModule } from 'ngx-bootstrap';
 import { SubjectService } from '../../subject/subject.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 let mockFilterOptionsProvider = { options: new GroupFilterOptions() };
 
@@ -27,7 +26,7 @@ describe('GroupsComponent', () => {
     }
   };
   let filterOptions: GroupFilterOptions;
-  let mockActivatedRoute: MockActivatedRoute;
+  let mockActivatedRoute: any;
   let mockModalService: any;
 
   const mockSubjectService = jasmine.createSpyObj('SubjectService', [
@@ -46,13 +45,24 @@ describe('GroupsComponent', () => {
 
     mockFilterOptionsProvider.options = filterOptions;
 
+    mockActivatedRoute = {
+      snapshot: {},
+      params: new EventEmitter()
+    };
+
     TestBed.configureTestingModule({
       declarations: [GroupsComponent],
-      imports: [ReportingCommonModule, TestModule],
+      imports: [
+        ReportingCommonModule,
+        TranslateModule.forRoot(),
+        RouterModule.forRoot([]),
+        ModalModule.forRoot()
+      ],
       providers: [
         { provide: BsModalService, useValue: mockModalService },
         { provide: GroupService, useValue: mockGroupService },
-        { provide: SubjectService, useValue: mockSubjectService }
+        { provide: SubjectService, useValue: mockSubjectService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -60,7 +70,6 @@ describe('GroupsComponent', () => {
 
   function createComponent() {
     fixture = TestBed.createComponent(GroupsComponent);
-    mockActivatedRoute = TestBed.get(ActivatedRoute);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }
@@ -134,11 +143,3 @@ describe('GroupsComponent', () => {
     expect(component.filteredGroups.length).toBe(3);
   });
 });
-
-class MockUserService {
-  doesCurrentUserHaveAtLeastOnePermission(
-    permissions: string[]
-  ): Observable<boolean> {
-    return of(true);
-  }
-}

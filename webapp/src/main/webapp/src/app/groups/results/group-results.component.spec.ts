@@ -19,6 +19,7 @@ import { MockActivatedRoute } from '../../shared/test/mock.activated-route';
 import { UserGroupService } from '../../user-group/user-group.service';
 import { ReportFormService } from '../../report/service/report-form.service';
 import { UserService } from '../../shared/security/service/user.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 let availableGrades = [];
 
@@ -74,7 +75,7 @@ describe('GroupResultsComponent', () => {
     const mockRouter = new MockRouter();
 
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       declarations: [GroupResultsComponent, MockAuthorizeDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 import { ItemInfoService } from './item-info.service';
 import { ApplicationSettingsService } from '../../../app-settings.service';
 import { of } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ItemInfoComponent', () => {
   let component: ItemInfoComponent;
@@ -16,7 +17,7 @@ describe('ItemInfoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       declarations: [ItemInfoComponent, TestComponentWrapper],
       providers: [
         {

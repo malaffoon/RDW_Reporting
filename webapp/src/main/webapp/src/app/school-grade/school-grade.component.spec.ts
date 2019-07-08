@@ -16,6 +16,7 @@ import { CachingDataService } from '../shared/data/caching-data.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { OrganizationService } from '../shared/organization/organization.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SchoolGradeComponent', () => {
   let component: SchoolGradeComponent;
@@ -30,6 +31,8 @@ describe('SchoolGradeComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReportingCommonModule,
+        TranslateModule.forRoot(),
+        TypeaheadModule.forRoot(),
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,

@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { Assessment } from '../../model/assessment';
 import { Angulartics2Module } from 'angulartics2';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SelectAssessmentsComponent', () => {
   let component: SelectAssessmentsComponent;
@@ -18,6 +19,7 @@ describe('SelectAssessmentsComponent', () => {
         HttpModule,
         FormsModule,
         ReportingCommonModule,
+        TranslateModule.forRoot(),
         Angulartics2Module.forRoot()
       ]
     }).compileComponents();

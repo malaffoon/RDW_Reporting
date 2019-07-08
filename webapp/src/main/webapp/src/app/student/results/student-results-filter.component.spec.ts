@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { Angulartics2 } from 'angulartics2';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('StudentResultsFilterComponent', () => {
   let component: StudentResultsFilterComponent;
@@ -15,7 +16,7 @@ describe('StudentResultsFilterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       declarations: [StudentResultsFilterComponent],
       providers: [{ provide: Angulartics2, useValue: mockAngulartics2 }],
       schemas: [NO_ERRORS_SCHEMA]

@@ -17,7 +17,7 @@ import { MockRouter } from '../../../test/mock.router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MockAuthorizeDirective } from '../../../test/mock.authorize.directive';
 import { MockTranslateService } from '../../../test/mock.translate.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../shared/data/data.service';
 import { DefaultSchool, School } from '../../shared/organization/organization';
 import { SchoolAssessmentExportService } from './school-assessment-export.service';
@@ -90,7 +90,7 @@ describe('SchoolResultsComponent', () => {
     exportService = {};
 
     TestBed.configureTestingModule({
-      imports: [ReportingCommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       declarations: [SchoolResultsComponent, MockAuthorizeDirective],
       providers: [
         { provide: OrganizationService, useValue: mockOrganizationService },
