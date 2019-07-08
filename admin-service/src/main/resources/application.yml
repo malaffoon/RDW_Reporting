@@ -232,4 +232,10 @@ tenant-configuration-lookup:
 
 
 
-
+tenant-configuration-persistence:
+  local-repository-uri: file:///tmp/rdw_config_local
+  remote-repository-uri: file:///tmp/rdw_config_remote
+  git-username: test
+  git-password: test
+  author: "Zaphod Beeblebrox"
+  author-email: "zaphodb@example.com"

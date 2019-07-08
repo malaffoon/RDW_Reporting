@@ -27,6 +27,7 @@ export class PropertyOverrideTableComponent {
     ) {
       this.filteredConfigurationProperties = configurationProperties;
     }
+    this.updatePropertiesFilter();
   }
 
   @Input()

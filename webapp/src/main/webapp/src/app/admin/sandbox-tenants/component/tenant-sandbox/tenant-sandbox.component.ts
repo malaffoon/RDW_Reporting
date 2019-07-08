@@ -1,18 +1,18 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
-  ChangeDetectorRef
+  SimpleChanges
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SandboxConfiguration } from '../../model/sandbox-configuration';
-import { cloneDeep } from 'lodash';
-import { ConfigurationProperty } from '../../model/configuration-property';
+import { cloneDeep, forOwn } from 'lodash';
 import { CustomValidators } from '../../../../shared/validator/custom-validators';
+import { ConfigurationProperty } from '../../model/configuration-property';
+import { SandboxConfiguration } from '../../model/sandbox-configuration';
 
 @Component({
   selector: 'tenant-sandbox',
@@ -45,6 +45,8 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   });
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
+
+  readonly readonlyGroups = ['datasources', 'archive'];
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -90,8 +92,28 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
       localizationOverrides: this.localizationOverrides.filter(
         override => override.originalValue !== override.value
       ),
-      configurationProperties: this.value.configurationProperties
+      configurationProperties: this.getModifiedConfigProperties(
+        this.value.configurationProperties
+      )
     });
+  }
+
+  private getModifiedConfigProperties(configProperties: any) {
+    var modifiedProperties = {};
+    forOwn(configProperties, (group, key) => {
+      var props = <ConfigurationProperty[]>group;
+      if (props.some !== undefined) {
+        if (props.some(x => x.originalValue !== x.value)) {
+          modifiedProperties[key] = props.filter(
+            x => x.originalValue !== x.value
+          );
+        }
+      } else {
+        // Not an array of config props, msut be a sub group, i.e. datasources.reporting_rw
+        modifiedProperties[key] = this.getModifiedConfigProperties(group);
+      }
+    });
+    return modifiedProperties;
   }
 
   private mapLocalizationOverrides(localizationDefaults: any): void {

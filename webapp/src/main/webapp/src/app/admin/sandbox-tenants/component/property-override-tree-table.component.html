@@ -72,7 +72,7 @@
         <!-- Leaf Row -->
         <tr
           *ngIf="
-            !readonly &&
+            !rowNode.node.data.readonly &&
             rowNode.node.leaf &&
             ((showModifiedPropertiesOnly &&
               rowNode.node.data.originalValue !== rowNode.node.data.value) ||
@@ -155,7 +155,7 @@
         </tr>
         <tr
           *ngIf="
-            readonly &&
+            rowNode.node.data.readonly &&
             rowNode.node.leaf &&
             ((showModifiedPropertiesOnly &&
               rowNode.node.data.originalValue !== rowNode.node.data.value) ||
@@ -172,7 +172,7 @@
             {{ rowNode.node.data.key }}
           </td>
           <td>
-            <span *ngIf="readonly">
+            <span *ngIf="rowNode.node.data.readonly">
               {{ rowNode.node.data.value }}
             </span>
           </td>
