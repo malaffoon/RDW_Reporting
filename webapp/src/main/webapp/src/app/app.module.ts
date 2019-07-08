@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import {
   AlertModule,
@@ -16,11 +15,6 @@ import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { RdwRouteReuseStrategy } from './shared/rdw-route-reuse.strategy';
-import { OrganizationExportModule } from './organization-export/organization-export.module';
-import { AggregateReportsModule } from './aggregate-report/aggregate-reports.module';
-import { AdminModule } from './admin/admin.module';
-import { ApplicationSettingsService } from './app-settings.service';
-import { ApplicationSettingsResolve } from './app-settings.resolve';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HomeModule } from './home/home.module';
 import { HttpModule } from '@angular/http';
@@ -32,20 +26,19 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { translateModuleConfiguration } from './shared/translate-module-configuration';
 import { routes } from './app.routes';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    AdminModule,
-    AggregateReportsModule,
     BrowserModule,
     NoopAnimationsModule,
+    CommonModule,
+    HttpModule,
     ReportingCommonModule,
+    // TODO lazy load
     DashboardModule,
     HomeModule,
-    HttpModule,
-    OrganizationExportModule,
-    FormsModule,
     SandboxLoginModule,
     // ngx-bootstrap
     AlertModule.forRoot(),
@@ -61,9 +54,6 @@ import { routes } from './app.routes';
     RouterModule.forRoot(routes)
   ],
   providers: [
-    ApplicationSettingsService,
-    ApplicationSettingsResolve,
-    TranslateResolve,
     { provide: RouteReuseStrategy, useClass: RdwRouteReuseStrategy },
     {
       provide: SecuritySettingService,

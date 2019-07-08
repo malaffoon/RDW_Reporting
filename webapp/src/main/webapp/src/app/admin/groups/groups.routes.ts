@@ -9,7 +9,7 @@ import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/
 
 export const groupRoutes: Route[] = [
   {
-    path: 'admin-groups',
+    path: '',
     pathMatch: 'prefix',
     data: {
       breadcrumb: {

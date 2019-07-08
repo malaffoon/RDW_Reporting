@@ -8,7 +8,7 @@ import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has
 
 export const aggregateReportRoutes: Route[] = [
   {
-    path: 'aggregate-reports',
+    path: '',
     data: {
       breadcrumb: { translate: 'aggregate-reports.heading' },
       permissions: ['CUSTOM_AGGREGATE_READ']

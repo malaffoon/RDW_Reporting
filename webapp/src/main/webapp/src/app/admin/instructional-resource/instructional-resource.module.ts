@@ -12,6 +12,10 @@ import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { RdwMenuModule } from '../../shared/menu/rdw-menu.module';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
+import { RouterModule } from '@angular/router';
+import { instructionalResourceRoutes } from './instructional-resource.routes';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,9 @@ import { CommonModule } from '@angular/common';
     ModalModule,
     RdwMenuModule,
     TableModule,
-    TypeaheadModule
+    TypeaheadModule,
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(instructionalResourceRoutes)
   ],
   providers: [
     AssessmentService,

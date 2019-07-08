@@ -4,7 +4,7 @@ import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has
 
 export const organizationExportRoutes: Route[] = [
   {
-    path: 'custom-export',
+    path: '',
     pathMatch: 'full',
     data: {
       breadcrumb: { translate: 'organization-export.title' },

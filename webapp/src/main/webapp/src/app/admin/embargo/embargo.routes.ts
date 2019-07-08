@@ -5,7 +5,7 @@ import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/
 
 export const embargoRoutes: Route[] = [
   {
-    path: 'embargoes',
+    path: '',
     pathMatch: 'prefix',
     data: {
       breadcrumb: { translate: 'embargo.title' },

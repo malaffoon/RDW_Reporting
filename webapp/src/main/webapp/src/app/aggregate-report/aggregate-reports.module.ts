@@ -38,21 +38,12 @@ import { LongitudinalCohortFormComponent } from './query-forms/longitudinal-coho
 import { ClaimReportFormComponent } from './query-forms/claim-report-form.component';
 import { AggregateTargetOverviewComponent } from './results/aggregate-target-overview.component';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { aggregateReportRoutes } from './aggregate-report.routes';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from '../shared/translate-module-configuration';
 
 @NgModule({
-  declarations: [
-    AggregateQueryFormContainerComponent,
-    AggregateReportComponent,
-    AggregateReportTableComponent,
-    AggregateReportSummary,
-    AggregateTargetOverviewComponent,
-    ClaimReportFormComponent,
-    GeneralPopulationFormComponent,
-    LongitudinalCohortChartComponent,
-    LongitudinalCohortFormComponent,
-    TargetReportFormComponent,
-    WideRadioGroupComponent
-  ],
   imports: [
     AssessmentModule,
     Angulartics2Module,
@@ -67,7 +58,22 @@ import { CommonModule } from '@angular/common';
     SubgroupModule,
     TableModule,
     TabsModule,
-    TypeaheadModule
+    TypeaheadModule,
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(aggregateReportRoutes)
+  ],
+  declarations: [
+    AggregateQueryFormContainerComponent,
+    AggregateReportComponent,
+    AggregateReportTableComponent,
+    AggregateReportSummary,
+    AggregateTargetOverviewComponent,
+    ClaimReportFormComponent,
+    GeneralPopulationFormComponent,
+    LongitudinalCohortChartComponent,
+    LongitudinalCohortFormComponent,
+    TargetReportFormComponent,
+    WideRadioGroupComponent
   ],
   providers: [
     AggregateReportRequestMapper,

@@ -4,7 +4,7 @@ import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/
 
 export const instructionalResourceRoutes: Route[] = [
   {
-    path: 'instructional-resource',
+    path: '',
     pathMatch: 'prefix',
     data: {
       breadcrumb: { translate: 'instructional-resource.title' },

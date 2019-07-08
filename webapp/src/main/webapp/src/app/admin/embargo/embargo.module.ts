@@ -10,6 +10,10 @@ import { EmbargoResolve } from './embargo.resolve';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
+import { RouterModule } from '@angular/router';
+import { embargoRoutes } from './embargo.routes';
 
 @NgModule({
   imports: [
@@ -19,7 +23,9 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     HttpClientModule,
     ModalModule,
-    TableModule
+    TableModule,
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(embargoRoutes)
   ],
   declarations: [
     EmbargoComponent,
