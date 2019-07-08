@@ -1,14 +1,14 @@
 import { Route } from '@angular/router';
-import { TenantsComponent } from './pages/tenants/tenants.component';
-import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
+import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
+import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/has-any-permission.can-activate';
 
-export const tenantRoutes: Route[] = [
+export const sandboxRoutes: Route[] = [
   {
     path: '',
     pathMatch: 'prefix',
     data: {
-      breadcrumb: { translate: 'tenant-config.title' },
+      breadcrumb: { translate: 'sandbox-config.title' },
       permissions: ['TENANT_READ']
     },
     canActivate: [HasAnyPermissionCanActivate],
@@ -16,20 +16,21 @@ export const tenantRoutes: Route[] = [
       {
         path: '',
         pathMatch: 'prefix',
-        component: TenantsComponent
+        component: SandboxesComponent
       },
       {
         path: 'new',
         pathMatch: 'prefix',
         data: {
-          breadcrumb: { translate: 'tenant-config.new-tenant.header' },
+          breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
           permissions: ['TENANT_WRITE']
         },
+        canActivate: [HasAnyPermissionCanActivate],
         children: [
           {
             path: '',
             pathMatch: 'prefix',
-            component: NewTenantConfigurationComponent
+            component: NewSandboxConfigurationComponent
           }
         ]
       }
