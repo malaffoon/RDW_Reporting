@@ -32,17 +32,23 @@ export function toConfigProperties(apiModel: any): any {
     aggregate: apiModel.aggregate,
     archive: apiModel.archive,
     reporting: apiModel.reporting,
-    datasources: apiModel.datasources
+    ...(apiModel.datasources ? { datasources: apiModel.datasources } : {})
   };
 }
 
 export function mapSandbox(
   tenantConfiguration: any,
-  defaultApplicationSandboxConfiguration: any,
+  defaultConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
+  // intentionally exclude datasources here.
+  const defaults = {
+    aggregate: defaultConfiguration.aggregate,
+    archive: defaultConfiguration.archive,
+    reporting: defaultConfiguration.reporting
+  };
   return <SandboxConfiguration>{
-    ...mapTenant(tenantConfiguration, defaultApplicationSandboxConfiguration),
+    ...mapTenant(tenantConfiguration, defaults),
     dataSet: dataSets.find(
       dataSet => tenantConfiguration.tenant.sandboxDataset === dataSet.id
     )

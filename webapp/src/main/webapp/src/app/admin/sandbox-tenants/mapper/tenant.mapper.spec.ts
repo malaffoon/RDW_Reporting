@@ -1,12 +1,12 @@
-import {
-  mapTenant,
-  toTenantApiModel,
-  mapSandbox,
-  toSandboxApiModel
-} from './tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { TenantConfiguration } from '../model/tenant-configuration';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { TenantConfiguration } from '../model/tenant-configuration';
+import {
+  mapSandbox,
+  mapTenant,
+  toSandboxApiModel,
+  toTenantApiModel
+} from './tenant.mapper';
 
 const tenantApiModel = {
   tenant: {
@@ -29,9 +29,10 @@ const sandboxApiModel = {
     sandbox: true
   },
   administrationStatus: 'ACTIVE',
-  datasources: { reporting_rw: { urlParts: { database: 'reporting' } } }
+  reporting: { schoolYear: '2015' }
 };
 const defaultsApiModel = {
+  reporting: { schoolYear: '2018', state: { name: 'CA' } },
   datasources: {
     reporting_rw: {
       urlParts: { database: 'not_a_schema', protocol: 'jdbc:mysql:' }
@@ -142,20 +143,24 @@ describe('Tenant mapper', () => {
 
   it('should merge sandbox and default configurations', () => {
     const actual = mapSandbox(sandboxApiModel, defaultsApiModel, dataSets);
-    const reporting_rw =
-      actual.configurationProperties.datasources.reporting_rw;
-    const actualOverride: ConfigurationProperty = reporting_rw.find(
-      x => x.key === 'urlParts.database'
-    );
+    const reporting = actual.configurationProperties.reporting;
 
-    expect(actualOverride.value).toBe('reporting');
-    expect(actualOverride.originalValue).toBe('not_a_schema');
-
-    const actualDefault: ConfigurationProperty = reporting_rw.find(
-      x => x.key === 'urlParts.protocol'
+    const actualOverride: ConfigurationProperty = reporting.find(
+      x => x.key === 'schoolYear'
     );
-    expect(actualDefault.value).toBe('jdbc:mysql:');
-    expect(actualDefault.originalValue).toBe('jdbc:mysql:');
+    expect(actualOverride.value).toBe('2015');
+    expect(actualOverride.originalValue).toBe('2018');
+
+    const actualDefault: ConfigurationProperty = reporting.find(
+      x => x.key === 'state.name'
+    );
+    expect(actualDefault.value).toBe('CA');
+    expect(actualDefault.originalValue).toBe('CA');
+  });
+
+  it('should not map sandbox dataset configurations', () => {
+    const actual = mapSandbox(sandboxApiModel, defaultsApiModel, dataSets);
+    expect(actual.configurationProperties.datasources).toBeUndefined();
   });
 
   it('should map a sandbox ui model to an api model', () => {
