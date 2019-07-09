@@ -42,6 +42,9 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   readonly requiredFields = ['password'];
   readonly encryptedFields = ['password'];
 
+  // These fields should be lowercase for consistency with existing usernames and schema names in the database
+  readonly lowercaseFields = ['urlParts.database', 'username'];
+
   showModifiedPropertiesOnly = false;
   configurationPropertiesTreeNodes: TreeNode[] = [];
 
@@ -57,7 +60,9 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   updateOverride(override: ConfigurationProperty): void {
     const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
     const formControl = formGroup.controls[override.formControlName];
-    const newVal = formControl.value;
+    const newVal = override.lowercase
+      ? formControl.value.toLowerCase()
+      : formControl.value;
     this.setPropertyValue(override, newVal);
   }
 
@@ -194,9 +199,10 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
       // TODO: Move these to the mapper.
       group.encrypted = encrypted;
-      (group.readonly = readonly || this.readonly),
-        (group.secure = this.secureFields.some(x => x === group.key));
+      group.readonly = readonly || this.readonly;
+      group.secure = this.secureFields.some(x => x === group.key);
       group.required = this.requiredFields.some(x => x === group.key);
+      group.lowercase = this.lowercaseFields.some(x => x === group.key);
 
       childrenNodes.push({
         data: group, // assign object as a reference so other fields can trigger changes
