@@ -302,10 +302,14 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
   private loadReport(): void {
     this.spinnerModal.loading = true;
 
-    const observable =
+    // Need to load subject definitions in case they are not loaded yet
+    // this avoids race condition
+    const observable = forkJoin(
+      this.subjectService.getSubjectDefinitions(),
       this.effectiveReportType === 'Longitudinal'
         ? this.reportService.getLongitudinalReport(this.report.id)
-        : this.reportService.getAggregateReport(this.report.id);
+        : this.reportService.getAggregateReport(this.report.id)
+    );
 
     observable
       .pipe(
@@ -313,7 +317,8 @@ export class AggregateReportComponent implements OnInit, OnDestroy {
           this.spinnerModal.loading = false;
         })
       )
-      .subscribe(report => {
+      .subscribe(([subjectDefinitions, report]) => {
+        this._subjectDefinitions = subjectDefinitions;
         this._aggregateReport = report;
         this.reportViews = this.createReportViews(this.query, report);
       });
