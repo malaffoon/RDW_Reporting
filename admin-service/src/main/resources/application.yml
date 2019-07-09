@@ -169,8 +169,8 @@ spring:
       hosts: "${spring.admin_olap_datasource.url-server:localhost:5432}"
       database: "${spring.admin_olap_datasource.url-db:dev}"
       properties: "ApplicationName=rdw-reporting-aggregate-service\
-                   &loginTimeout=${spring.admin_datasource.connect-timeout:10}\
-                   &socketTimeout=${spring.admin_datasource.socket-timeout:0}\
+                   &loginTimeout=${spring.admin_olap_datasource.connect-timeout:10}\
+                   &socketTimeout=${spring.admin_olap_datasource.socket-timeout:0}\
                    "
     url: "${spring.admin_olap_datasource.url-parts.protocol}//${spring.admin_olap_datasource.url-parts.hosts}/${spring.admin_olap_datasource.url-parts.database}?${spring.admin_olap_datasource.url-parts.properties}"
     username: root
