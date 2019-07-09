@@ -38,13 +38,14 @@ import { Utils } from '../support/support';
           (click)="onButtonClickInternal()"
           [disabled]="buttonDisabledInternal"
         >
-          <span [ngClass]="{ gray: buttonDisabledInternal }"
+          <span [ngClass]="{ 'pointer-events-none': buttonDisabledInternal }"
             ><i class="fa fa-plus"></i> {{ buttonLabel }}</span
           >
         </button>
       </span>
     </span>
-  `
+  `,
+  styleUrls: ['./sb-button-typeahead.component.less']
 })
 export class SBButtonTypeahead extends SBTypeahead {
   @Output()
