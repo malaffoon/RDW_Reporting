@@ -58,7 +58,7 @@
             [title]="rowNode.node.data.key"
             colspan="2"
             [ngClass]="{ 'group-node': rowNode.node.data.groupNode }"
-            (click)="expandOrCollapse(rowNode.node)"
+            (click)="expandOrCollapse(rowNode, $event)"
           >
             <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
             <ng-container *ngIf="!rowNode.node.data.groupNode">{{

@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
@@ -15,11 +16,10 @@ import { Router } from '@angular/router';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
-import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
+import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
 import { TenantStore } from '../store/tenant.store';
-import { TenantConfiguration } from '../model/tenant-configuration';
 
 @Component({
   selector: 'new-tenant',
@@ -39,6 +39,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
+    private cdRef: ChangeDetectorRef,
     private router: Router,
     private store: TenantStore,
     private notificationService: NotificationService
@@ -100,7 +101,6 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   }
 
   updateConfigProperties() {
-    const updatedProperties = { ...this.configurationProperties };
     const key = this.tenantForm.get('key').value.toUpperCase();
     const defaultDataBaseName = `reporting_${key}`;
 
@@ -108,7 +108,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       Object.keys(this.configurationProperties.datasources).forEach(
         dataSourceKey => {
           const dbProperty = <ConfigurationProperty>(
-            updatedProperties.datasources[dataSourceKey].find(
+            this.configurationProperties.datasources[dataSourceKey].find(
               property => property.key === 'urlParts.database'
             )
           );
@@ -116,8 +116,6 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
           dbProperty.originalValue = defaultDataBaseName;
         }
       );
-
-      this.configurationProperties = updatedProperties;
     }
   }
 
