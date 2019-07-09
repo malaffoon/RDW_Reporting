@@ -6,10 +6,10 @@ import {
   Output
 } from '@angular/core';
 import {
-  ScriptError,
   Pipeline,
   PipelineScript,
-  PipelineTest
+  PipelineTest,
+  ScriptError
 } from '../../model/pipeline';
 import { Message, ThemeType } from '../code-editor/code-editor.component';
 import { Item } from '../pipeline-explorer/pipeline-explorer.component';
