@@ -485,11 +485,11 @@ sql:
     grantUserFile: >-
       GRANT FILE ON *.* TO :username @'%'
 
-    grantAllBasicPermissions: >-
-      GRANT ALL PRIVILEGES ON $[databaseName].* TO :username @'%',
-      GRANT SELECT ON mysql.proc TO :username @'%',
-      GRANT LOAD FROM S3 ON *.* TO :username @'%',
-      GRANT SELECT INTO S3 ON *.* to :username @'%',
+    grantAllBasicPermissions:
+      - GRANT ALL PRIVILEGES ON $[databaseName].* TO :username @'%'
+      - GRANT SELECT ON mysql.proc TO :username @'%'
+      - GRANT LOAD FROM S3 ON *.* TO :username @'%'
+      - GRANT SELECT INTO S3 ON *.* to :username @'%'
 
     olapDatabaseUserExists: >-
       SELECT COUNT(usename) FROM pg_user where usename = :username;
@@ -510,7 +510,6 @@ sql:
 
     grantAllOlapUserToSchemaTables: >-
       GRANT ALL ON ALL TABLES IN SCHEMA $[schema] to $[username]
-
 
     searchPathOlapUserToSchema: >-
       ALTER USER $[username] SET SEARCH_PATH TO  $[schema];
