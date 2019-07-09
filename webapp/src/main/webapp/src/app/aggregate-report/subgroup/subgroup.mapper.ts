@@ -1,5 +1,5 @@
 import { SubgroupFilters } from './subgroup-filters';
-import { isNullOrEmpty, Utils } from '../../shared/support/support';
+import { isNullOrEmpty } from '../../shared/support/support';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DimensionGroup, DimensionValue, Subgroup } from './subgroup';
@@ -190,21 +190,10 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     getTranslationCode: value => `common.ethnicity.${value}`
   },
   {
-    type: 'LimitedEnglishProficiency',
-    getDimensionValueCodes: settings => settings.limitedEnglishProficiencies,
-    getTranslationCode: value => `common.boolean.${value}`
-  },
-  {
     /** @deprecated */
     type: 'LEP',
     getDimensionValueCodes: settings => settings.limitedEnglishProficiencies,
     getTranslationCode: value => `common.boolean.${value}`
-  },
-  {
-    type: 'EnglishLanguageAcquisitionStatus',
-    getDimensionValueCodes: settings =>
-      settings.englishLanguageAcquisitionStatuses,
-    getTranslationCode: value => `common.elas.${value}`
   },
   {
     /** @deprecated */
@@ -224,20 +213,10 @@ const DimensionConfigurations: DimensionConfiguration[] = [
     getTranslationCode: value => `common.boolean.${value}`
   },
   {
-    type: 'PrimaryLanguage',
-    getDimensionValueCodes: settings => settings.languages,
-    getTranslationCode: value => `common.languages.${value}`
-  },
-  {
     /** @deprecated */
     type: 'Language',
     getDimensionValueCodes: settings => settings.languages,
     getTranslationCode: value => `common.languages.${value}`
-  },
-  {
-    type: 'IndividualEducationPlan',
-    getDimensionValueCodes: settings => settings.individualEducationPlans,
-    getTranslationCode: value => `common.boolean.${value}`
   },
   {
     /** @deprecated */
@@ -253,19 +232,44 @@ const DimensionConfigurations: DimensionConfiguration[] = [
   {
     type: 'StudentEnrolledGrade',
     getDimensionValueCodes: settings =>
-      Utils.isNullOrEmpty(settings.assessmentGrades)
+      isNullOrEmpty(settings.assessmentGrades)
         ? []
         : [settings.assessmentGrades[0]],
     getTranslationCode: value => `common.enrolled-grade.${value}`
   },
   {
-    type: 'MilitaryStudentIdentifier',
-    getDimensionValueCodes: settings => settings.militaryConnectedCodes,
-    getTranslationCode: value => `common.military-connected-code.${value}`
-  },
-  {
     /** @deprecated */
     type: 'MilitaryConnectedCode',
+    getDimensionValueCodes: settings => settings.militaryConnectedCodes,
+    getTranslationCode: value => `common.military-connected-code.${value}`
+  }
+];
+
+const DimensionConfigurationsWithAliases: DimensionConfiguration[] = [
+  ...DimensionConfigurations,
+  {
+    type: 'LimitedEnglishProficiency',
+    getDimensionValueCodes: settings => settings.limitedEnglishProficiencies,
+    getTranslationCode: value => `common.boolean.${value}`
+  },
+  {
+    type: 'EnglishLanguageAcquisitionStatus',
+    getDimensionValueCodes: settings =>
+      settings.englishLanguageAcquisitionStatuses,
+    getTranslationCode: value => `common.elas.${value}`
+  },
+  {
+    type: 'PrimaryLanguage',
+    getDimensionValueCodes: settings => settings.languages,
+    getTranslationCode: value => `common.languages.${value}`
+  },
+  {
+    type: 'IndividualEducationPlan',
+    getDimensionValueCodes: settings => settings.individualEducationPlans,
+    getTranslationCode: value => `common.boolean.${value}`
+  },
+  {
+    type: 'MilitaryStudentIdentifier',
     getDimensionValueCodes: settings => settings.militaryConnectedCodes,
     getTranslationCode: value => `common.military-connected-code.${value}`
   }
@@ -277,7 +281,7 @@ const DimensionConfigurations: DimensionConfiguration[] = [
  */
 const DimensionConfigurationByType: {
   [dimensionType: string]: DimensionConfiguration;
-} = DimensionConfigurations.reduce((byType, dimension) => {
+} = DimensionConfigurationsWithAliases.reduce((byType, dimension) => {
   byType[dimension.type] = dimension;
   return byType;
 }, {});

@@ -8,6 +8,13 @@ management:
     db:
       enabled: false
 
+# configure actuator endpoints to unmask "key" properties, but mask "s3SecretKey"
+endpoints:
+  env:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,s3SecretKey
+  configprops:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,s3SecretKey
+
 #needed to disable auto-configurations for flyway
 flyway:
   enabled: false
