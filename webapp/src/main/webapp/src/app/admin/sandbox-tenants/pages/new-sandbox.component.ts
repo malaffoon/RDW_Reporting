@@ -142,13 +142,13 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     );
     const newSandbox: SandboxConfiguration = {
       ...this.sandboxForm.value,
-      dataSet: this.sandboxForm.value.dataset.id,
+      dataSet: this.sandboxForm.value.dataset,
       parentTenantCode: this.sandboxForm.value.tenant.code,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };
 
-    this.service.create(newSandbox, this.dataSets).subscribe(
+    this.service.create(newSandbox).subscribe(
       () => {
         this.router.navigate(['sandboxes']);
       },
