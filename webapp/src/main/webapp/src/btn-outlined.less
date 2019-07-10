@@ -3,6 +3,8 @@
 // Easily pump out default styles, as well as :hover, :focus, :active,
 // and disabled options for all buttons
 
+@disabled-color: #555;
+
 .btn-outlined(@color; @background; @border) {
   color: @background;
   background-color: transparent;
@@ -22,7 +24,7 @@
   }
   &:active,
   &.active,
-  .open > .dropdown-toggle& {
+  .open > .dropdown-toggle {
     color: @background;
     background-color: darken(@color, 10%);
     border-color: darken(@background, 12%);
@@ -37,17 +39,18 @@
   }
   &:active,
   &.active,
-  .open > .dropdown-toggle& {
+  .open > .dropdown-toggle {
     background-image: none;
   }
   &.disabled,
   &[disabled],
-  fieldset[disabled] & {
+  fieldset[disabled] {
+    border-color: @disabled-color;
+    color: @disabled-color;
     &:hover,
     &:focus,
     &.focus {
       background-color: @color;
-      border-color: @background;
     }
   }
 }
