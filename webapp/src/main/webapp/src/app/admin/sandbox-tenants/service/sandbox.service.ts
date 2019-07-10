@@ -31,9 +31,16 @@ export class SandboxService {
    * Gets default configuration properties for a sandbox
    */
   getDefaultConfigurationProperties(): Observable<any> {
-    return this.dataService
-      .get(DefaultsRoute)
-      .pipe(catchError(ResponseUtils.throwError));
+    return this.dataService.get(DefaultsRoute).pipe(
+      map(config => {
+        return {
+          aggregate: config.aggregate,
+          archive: config.archive,
+          reporting: config.reporting
+        };
+      }),
+      catchError(ResponseUtils.throwError)
+    );
   }
 
   getAvailableDataSets(): Observable<DataSet[]> {

@@ -15,11 +15,10 @@ import { Router } from '@angular/router';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
-import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
+import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
 import { TenantStore } from '../store/tenant.store';
-import { TenantConfiguration } from '../model/tenant-configuration';
 
 @Component({
   selector: 'new-tenant',
@@ -100,24 +99,33 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   }
 
   updateConfigProperties() {
-    const updatedProperties = { ...this.configurationProperties };
-    const key = this.tenantForm.get('key').value.toUpperCase();
+    const key = this.tenantForm.get('key').value.toLowerCase();
     const defaultDataBaseName = `reporting_${key}`;
+    const defaultUsername = key;
 
     if (this.configurationProperties) {
       Object.keys(this.configurationProperties.datasources).forEach(
         dataSourceKey => {
-          const dbProperty = <ConfigurationProperty>(
-            updatedProperties.datasources[dataSourceKey].find(
-              property => property.key === 'urlParts.database'
-            )
+          const dataSource = this.configurationProperties.datasources[
+            dataSourceKey
+          ];
+          const urlPartsDatabase = <ConfigurationProperty>(
+            dataSource.find(property => property.key === 'urlParts.database')
           );
-          dbProperty.value = defaultDataBaseName;
-          dbProperty.originalValue = defaultDataBaseName;
+          if (!urlPartsDatabase.modified) {
+            urlPartsDatabase.value = defaultDataBaseName;
+          }
+          urlPartsDatabase.originalValue = defaultDataBaseName;
+
+          const username = <ConfigurationProperty>(
+            dataSource.find(property => property.key === 'username')
+          );
+          if (!username.modified) {
+            username.value = defaultUsername;
+          }
+          username.originalValue = defaultUsername;
         }
       );
-
-      this.configurationProperties = updatedProperties;
     }
   }
 

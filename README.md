@@ -192,6 +192,7 @@ If you want to run a particular service in your IDE, you'll need to tweak a coup
 in the webapp configuration section about changing the zuul routes
 1. Modify the `application.yml` for the service to have tenant information. For example, for the data in the dev
 mysql dump, we want CA and TS to be defined:
+
 ```
 tenantProperties:
   tenants:
@@ -214,3 +215,127 @@ sandbox-properties:
     - label: SBAC Dataset
       id: sbac-dataset
 **NOTE: do NOT check in this change to the file!**
+
+### Running sandbox / tenant administration locally
+
+In production tenant administration is dependent upon
+
+- [Spring Cloud Config](https://spring.io/projects/spring-cloud-config) 
+  - backed by a git repository to hold all the application configurations
+- S3 to store Datasets
+- Aurora and Redshift to have new schemas created and to load datasets from S3.
+
+#### Caveats
+
+- It is not possible to run the entire process locally, Redshift resources must be remote.
+- It isn't possible to run config-server off of a local git repo without some manual intervention
+- There is no automated way to remove missing sandbox or tenant databases from you local mysql, you will need to clean them up by hand.
+
+#### Datasets
+
+Datasets are used during Sandbox creation to pre-populate a sandbox with generated data.
+
+Datasets resolve within the application via the `archive.uri-root` configuration.  When running remotely the application will be using Aurora / Redshift calls directly to S3.  For local development they can be simulated with the local filesystems instead of S3 and mysql instead of Aurora.  In local mode no Redshift / OLAP schema creation or population will occur. 
+
+*Local Mode* is derived form the `archive.uri-root` being set to a `file://` prefix instead of `s3://`.
+
+By default for local development that is 
+
+```yaml
+archive:
+  uri-root: "file:///tmp/"
+```
+
+The root of the datasets are in a directory `sandbox-datasets` and the sub directory names must
+agree with the configured properties defined in `sandbox-properties.sandboxDatasets`.
+
+An expedient way of populating the simulated archive root directory populated with datasets is to copy the ones in use in the QA S3 archive. 
+
+```bash
+aws s3 sync s3://<archiveBucketName>/sandbox-datasets/ /tmp/sandbox-datasets
+```
+
+#### Git - Private Remote Fork (recommended)
+
+This is a sample for reference, depending on the git setup for your private fork the exact commands may vary.
+
+clone a base configuration
+
+`git clone https://gitlab.com/<baseRepoOwner>/rdw_config.git ~/projects/RDW/rdw_config`
+
+setup a private repository (Github, Bitbucket, Gitlab, etc) then set repo as a remote
+
+`git remote add fork https://github.com/<mygithubusername>/rdw_config.git`
+
+push the local clone to the fork
+
+`git push -f fork  master`
+
+At times it is worth resetting your fork to match base (origin) exactly
+
+```
+$ cd ~/projects/RDW/rdw_config
+$ git fetch origin
+$ git reset --hard origin/master
+$ git push -f fork master
+```
+
+It is probable that you will want to make changes to your fork that you do not want to make to the original rdw_config. I recommend an additional working copy for that purpose.
+
+`git clone https://github.com/<mygithubusername>/rdw_config.git ~/projects/RDW/rdw_config_fork`
+
+It is necessary to set the configuration for `tenant-configuration-persistence` in `~/projects/RDW/rdw_config_fork/rdw-reporting-admin-service.yml`, but before that you will need to encrypt your git user account (the one used for the fork) with the locally running config-server in docker.
+
+```
+$ curl localhost:8888/encrypt -d mygitpassword
+44b5d831427388b6d24751619a6cebd8392ac8d97f23a332700ed83e203b8288
+```
+
+then edit `~/projects/RDW/rdw_config_fork/rdw-reporting-admin-service.yml` make sure to set the  remote-repository-uri, git-username, and git-password.  remote-repository-uri needs to be https.
+
+```
+tenant-configuration-persistence:
+  local-repository-path: /tmp/rdw_config_local
+  remote-repository-uri: https://github.com/<mygithubusername>/rdw_config.git
+  git-username: <mygithubusername>
+  git-password: '{cipher}44b5d831427388b6d24751619a6cebd8392ac8d97f23a332700ed83e203b8288'
+  author: "RDW Admin System"
+  author-email: "rdwadmin@example.com"
+```
+
+After editing it may be worth saving a copy of  `~/projects/RDW/rdw_config_fork/rdw-reporting-admin-service.yml` so that you can easily update it again after resting your fork to the latest from the shared repository.
+
+The last thing to do is to make sure `$CONFIG_SERVICE_REPO` environment variable is set to your fork `https://github.com/<mygithubusername>/rdw_config.git` instead of the shared repo.  `$GIT_PASSWORD` and`$GIT_USER` also need to be set to your username and password.  The `$GIT_PASSWORD` environment variable is unencrypted unlike the one stored in the yml file.
+
+#### Git - Private Local Fork (requires manual intervention)
+
+set up your local fork
+
+```
+rm -rf  /tmp/rdw_config_remote
+git clone https://gitlab.com/<baseRepoOwner>/rdw_config.git /tmp/rdw_config_remote
+```
+
+The config-server will try and fetch remotes you have defined, disconnect them
+
+```
+cd /tmp/rdw_config_remote
+git remote rm origin
+```
+
+This would [theoretically](https://stackoverflow.com/questions/1764380/how-to-push-to-a-non-bare-git-repository) work, but it is currently unsupported by JGit.
+
+```
+git config --local receive.denyCurrentBranch updateInstead
+```
+
+The last thing to do is to make sure `$CONFIG_SERVICE_REPO` environment variable is set to your fork `file:///tmp/rdw_config_remote` instead of the shared repo. `$GIT_PASSWORD` and `$GIT_USER` are not used.
+
+The downside of this setup is that pushes to the simulated git repo are not reflected in the working copy, and need to be manually synced in order for the config server to pick them up (creating or updating a tenant or sandbox)
+
+```
+$ cd /tmp/rdw_config_remote
+$ git reset --hard HEAD 
+$ curl -d "path=*" http://localhost:8888/monitor
+```
+

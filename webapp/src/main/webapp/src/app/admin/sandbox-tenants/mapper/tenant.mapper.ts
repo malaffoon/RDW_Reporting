@@ -32,17 +32,23 @@ export function toConfigProperties(apiModel: any): any {
     aggregate: apiModel.aggregate,
     archive: apiModel.archive,
     reporting: apiModel.reporting,
-    datasources: apiModel.datasources
+    ...(apiModel.datasources ? { datasources: apiModel.datasources } : {})
   };
 }
 
 export function mapSandbox(
   tenantConfiguration: any,
-  defaultApplicationSandboxConfiguration: any,
+  defaultConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
+  // intentionally exclude datasources here.
+  const defaults = {
+    aggregate: defaultConfiguration.aggregate,
+    archive: defaultConfiguration.archive,
+    reporting: defaultConfiguration.reporting
+  };
   return <SandboxConfiguration>{
-    ...mapTenant(tenantConfiguration, defaultApplicationSandboxConfiguration),
+    ...mapTenant(tenantConfiguration, defaults),
     dataSet: dataSets.find(
       dataSet => tenantConfiguration.tenant.sandboxDataset === dataSet.id
     )
@@ -119,9 +125,10 @@ export function mapConfigurationProperties(
       const configProps: ConfigurationProperty[] = [];
 
       forOwn(flattenJsonObject(configGroup), (value, key) => {
+        const defaultVal = joinIfArray(value);
         if (!overrides) {
           configProps.push(
-            new ConfigurationProperty(key, joinIfArray(value), groupKey)
+            new ConfigurationProperty(key, defaultVal, groupKey)
           );
         } else {
           const groupOverrides = overrides[groupKey] || {};
@@ -132,12 +139,12 @@ export function mapConfigurationProperties(
                 key,
                 joinIfArray(override),
                 groupKey,
-                joinIfArray(value)
+                defaultVal
               )
             );
           } else {
             configProps.push(
-              new ConfigurationProperty(key, joinIfArray(value), groupKey)
+              new ConfigurationProperty(key, defaultVal, groupKey)
             );
           }
         }
@@ -156,9 +163,10 @@ export function mapConfigurationProperties(
         const configProps: ConfigurationProperty[] = [];
 
         forOwn(flattenJsonObject(databaseProperties), (value, key) => {
+          const defaultVal = key === 'password' ? '' : joinIfArray(value);
           if (!overrides) {
             configProps.push(
-              new ConfigurationProperty(key, joinIfArray(value), databaseName)
+              new ConfigurationProperty(key, defaultVal, databaseName)
             );
           } else {
             const groupOverrides = overrides[groupKey] || {};
@@ -169,12 +177,12 @@ export function mapConfigurationProperties(
                   key,
                   joinIfArray(override),
                   databaseName,
-                  joinIfArray(value)
+                  defaultVal
                 )
               );
             } else {
               configProps.push(
-                new ConfigurationProperty(key, joinIfArray(value), databaseName)
+                new ConfigurationProperty(key, defaultVal, databaseName)
               );
             }
           }
