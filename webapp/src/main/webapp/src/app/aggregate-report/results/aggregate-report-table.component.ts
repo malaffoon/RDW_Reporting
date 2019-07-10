@@ -127,7 +127,7 @@ function createOrderingByColumnField(
     claimCode:
       reportType === 'Target'
         ? createOrganizationalClaimOrdering(subjectDefinition.subject, preview)
-        : ordering(ranking(subjectDefinition.scorableClaims)).on(
+        : ordering(ranking(subjectDefinition.claimScore.codes)).on(
             row => row.claimCode
           )
   };
@@ -226,11 +226,11 @@ function createPerformanceLevelColumns(
   const performanceLevelsByDisplayType = {
     Separate:
       reportType === 'Claim'
-        ? subjectDefinition.scorableClaimPerformanceLevels
-        : subjectDefinition.performanceLevels,
+        ? subjectDefinition.claimScore.levels
+        : subjectDefinition.overallScore.levels,
     Grouped: [
-      subjectDefinition.performanceLevelStandardCutoff - 1,
-      subjectDefinition.performanceLevelStandardCutoff
+      subjectDefinition.overallScore.standardCutoff - 1,
+      subjectDefinition.overallScore.standardCutoff
     ]
   };
 
