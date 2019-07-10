@@ -12,6 +12,7 @@
   [totalRecords]="_rows.length"
   [lazy]="true"
   (onLazyLoad)="onLazyLoad($event)"
+
  -->
 <p-table
   #dataTable
@@ -22,10 +23,8 @@
   [sortMode]="sortMode"
   [customSort]="true"
   [autoLayout]="true"
-  [scrollable]="true"
-  scrollHeight="500px"
   [value]="_rows"
-  styleClass="table table-striped table-hover overflow rdw-scrollable-table"
+  styleClass="aggregate-report-table table table-striped table-hover overflow rdw-scrollable-table"
 >
   <ng-template pTemplate="header" let-columns>
     <tr>
