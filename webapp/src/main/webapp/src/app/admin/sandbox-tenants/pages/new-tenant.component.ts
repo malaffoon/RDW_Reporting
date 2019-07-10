@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
@@ -39,7 +38,6 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
-    private cdRef: ChangeDetectorRef,
     private router: Router,
     private store: TenantStore,
     private notificationService: NotificationService
@@ -101,19 +99,31 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   }
 
   updateConfigProperties() {
-    const key = this.tenantForm.get('key').value.toUpperCase();
+    const key = this.tenantForm.get('key').value.toLowerCase();
     const defaultDataBaseName = `reporting_${key}`;
+    const defaultUsername = key;
 
     if (this.configurationProperties) {
       Object.keys(this.configurationProperties.datasources).forEach(
         dataSourceKey => {
-          const dbProperty = <ConfigurationProperty>(
-            this.configurationProperties.datasources[dataSourceKey].find(
-              property => property.key === 'urlParts.database'
-            )
+          const dataSource = this.configurationProperties.datasources[
+            dataSourceKey
+          ];
+          const urlPartsDatabase = <ConfigurationProperty>(
+            dataSource.find(property => property.key === 'urlParts.database')
           );
-          dbProperty.value = defaultDataBaseName;
-          dbProperty.originalValue = defaultDataBaseName;
+          if (!urlPartsDatabase.modified) {
+            urlPartsDatabase.value = defaultDataBaseName;
+          }
+          urlPartsDatabase.originalValue = defaultDataBaseName;
+
+          const username = <ConfigurationProperty>(
+            dataSource.find(property => property.key === 'username')
+          );
+          if (!username.modified) {
+            username.value = defaultUsername;
+          }
+          username.originalValue = defaultUsername;
         }
       );
     }
