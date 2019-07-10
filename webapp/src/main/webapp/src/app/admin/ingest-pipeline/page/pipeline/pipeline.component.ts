@@ -76,6 +76,13 @@ function createItem<T>(type: ItemType, value: T, changed = false): Item<T> {
   };
 }
 
+function isTestLoadedAndInvalid(
+  test: PipelineTest,
+  inputType: string
+): boolean {
+  return test.input != null && !isValidPipelineTest(test, inputType);
+}
+
 @Component({
   selector: 'pipeline',
   templateUrl: './pipeline.component.html',
@@ -570,9 +577,12 @@ export class PipelineComponent implements ComponentCanDeactivate, OnDestroy {
     // dont run
     const hasInvalidTests =
       this.selectedItem.type === 'Test'
-        ? !isValidPipelineTest(this.selectedItem.value, this.pipeline.inputType)
-        : tests.some(
-            ({ value }) => !isValidPipelineTest(value, this.pipeline.inputType)
+        ? isTestLoadedAndInvalid(
+            this.selectedItem.value,
+            this.pipeline.inputType
+          )
+        : tests.some(({ value }) =>
+            isTestLoadedAndInvalid(value, this.pipeline.inputType)
           );
 
     this.testButtonDisabled =

@@ -1632,6 +1632,9 @@
     "activate": "Activate",
     "deactivate": "Deactivate"
   },
+  "code-editor": {
+    "keyboard-trap-prompt": "Press escape to navigate out of the editor"
+  },
   "score-table": {
     "average-scale-score": "Average Scale Score",
     "result-count": "for <strong>{{resultCount}}</strong> results"

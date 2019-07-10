@@ -59,7 +59,7 @@ export class AggregateReportItemMapper {
 
     for (
       let level = 1;
-      level <= subjectDefinition.performanceLevelCount;
+      level <= subjectDefinition.overallScore.levelCount;
       level++
     ) {
       const count = measures[`level${level}Count`] || 0;
@@ -77,11 +77,11 @@ export class AggregateReportItemMapper {
     }
 
     // If there is a rollup level, calculate the grouped values
-    if (subjectDefinition.performanceLevelStandardCutoff > 0) {
+    if (subjectDefinition.overallScore.standardCutoff > 0) {
       let belowCount = 0;
       let aboveCount = 0;
       for (let level = 0; level < itemPerformanceLevelCounts.length; level++) {
-        if (level < subjectDefinition.performanceLevelStandardCutoff - 1) {
+        if (level < subjectDefinition.overallScore.standardCutoff - 1) {
           belowCount += itemPerformanceLevelCounts[level];
         } else {
           aboveCount += itemPerformanceLevelCounts[level];

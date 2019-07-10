@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -44,7 +45,8 @@ const modesByInputType = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [controlValueAccessorProvider(CodeEditorComponent)]
 })
-export class CodeEditorComponent implements ControlValueAccessor {
+export class CodeEditorComponent
+  implements ControlValueAccessor, AfterViewInit {
   @Output()
   scrollTopChange: EventEmitter<number> = new EventEmitter();
 
@@ -52,6 +54,13 @@ export class CodeEditorComponent implements ControlValueAccessor {
   editorElementReference: ElementRef;
 
   _editor: any;
+
+  ngAfterViewInit(): void {
+    this.withEditor(editor => {
+      // makes room for the escape prompt
+      editor.renderer.setScrollMargin(20, 0);
+    });
+  }
 
   @Input()
   set language(value: string) {

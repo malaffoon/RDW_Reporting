@@ -60,6 +60,7 @@
 /**
  * Bootstrap additions
  */
+
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background-color: #f0f0f0; /* was #f8f8f8 */
@@ -2193,54 +2194,8 @@ fieldset.marginLeft50 {
 
 .rdw-scrollable-table {
   table,
-  tr td {
+  table > tbody > tr > td {
     border: 1px solid red;
-  }
-  tbody {
-    display: block;
-    overflow: auto;
-
-    tr {
-      td.aggregate-report-organization {
-        width: @agg-organization-width;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        text-align: left;
-        overflow: hidden;
-      }
-
-      td.aggregate-report-assessmentGrade {
-        width: @agg-assessmentGrade-width;
-      }
-
-      td.aggregate-report-schoolYear {
-        width: @agg-SchoolYear-width;
-      }
-
-      td.aggregate-report-dimension {
-        width: @agg-dimension-width;
-      }
-
-      td.aggregate-report-studentsTested {
-        width: @agg-studentsTested-width;
-      }
-
-      td.aggregate-report-assessmentLabel {
-        width: @agg-assessmentLabel-width;
-      }
-
-      td.aggregate-report-achievementComparison {
-        width: @agg-achievementComparision-width;
-      }
-
-      td.aggregate-report-avgScaleScore {
-        width: @agg-avgScaleScore-width;
-      }
-
-      td.aggregate-report-claim {
-        width: @agg-claim-width;
-      }
-    }
   }
   thead,
   tbody tr {
@@ -2248,35 +2203,93 @@ fieldset.marginLeft50 {
     width: 100%;
     table-layout: fixed; // even columns width , fix width of table too
   }
-  th {
-    white-space: normal !important;
-  }
-  th.aggregate-report-organization {
-    width: @agg-organization-width;
-  }
-  th.aggregate-report-assessmentGrade {
-    width: @agg-assessmentGrade-width;
-  }
-  th.aggregate-report-schoolYear {
-    width: @agg-SchoolYear-width;
-  }
-  th.aggregate-report-dimension {
-    width: @agg-dimension-width;
-  }
-  th.aggregate-report-studentsTested {
-    width: @agg-studentsTested-width;
-  }
-  th.aggregate-report-assessmentLabel {
-    width: @agg-assessmentLabel-width;
-  }
-  th.aggregate-report-achievementComparison {
-    width: @agg-achievementComparision-width;
-  }
-  th.aggregate-report-avgScaleScore {
-    width: @agg-avgScaleScore-width;
-  }
-  th.aggregate-report-claim {
-    width: @agg-claim-width;
+
+  table {
+    > thead {
+      > tr {
+        > th {
+          white-space: normal !important;
+          &.aggregate-report-organization {
+            width: @agg-organization-width;
+          }
+          &.aggregate-report-assessmentGrade {
+            width: @agg-assessmentGrade-width;
+          }
+          &.aggregate-report-schoolYear {
+            width: @agg-SchoolYear-width;
+          }
+          &.aggregate-report-dimension {
+            width: @agg-dimension-width;
+          }
+          &.aggregate-report-studentsTested {
+            width: @agg-studentsTested-width;
+          }
+          &.aggregate-report-assessmentLabel {
+            width: @agg-assessmentLabel-width;
+          }
+          &.aggregate-report-achievementComparison {
+            width: @agg-achievementComparision-width;
+          }
+          &.aggregate-report-avgScaleScore {
+            width: @agg-avgScaleScore-width;
+          }
+          &.aggregate-report-claim {
+            width: @agg-claim-width;
+          }
+        }
+      }
+    }
+    > tbody {
+      max-height: 500px;
+      overflow: auto;
+
+      display: block;
+      overflow: auto;
+
+      > tr {
+        > td {
+          &.aggregate-report-organization {
+            width: @agg-organization-width;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            text-align: left;
+            overflow: hidden;
+          }
+
+          &.aggregate-report-assessmentGrade {
+            width: @agg-assessmentGrade-width;
+          }
+
+          &.aggregate-report-schoolYear {
+            width: @agg-SchoolYear-width;
+          }
+
+          &.aggregate-report-dimension {
+            width: @agg-dimension-width;
+          }
+
+          &.aggregate-report-studentsTested {
+            width: @agg-studentsTested-width;
+          }
+
+          &.aggregate-report-assessmentLabel {
+            width: @agg-assessmentLabel-width;
+          }
+
+          &.aggregate-report-achievementComparison {
+            width: @agg-achievementComparision-width;
+          }
+
+          &.aggregate-report-avgScaleScore {
+            width: @agg-avgScaleScore-width;
+          }
+
+          &.aggregate-report-claim {
+            width: @agg-claim-width;
+          }
+        }
+      }
+    }
   }
 }
 
