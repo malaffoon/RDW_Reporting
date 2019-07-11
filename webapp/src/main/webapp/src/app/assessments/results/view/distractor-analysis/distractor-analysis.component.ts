@@ -7,8 +7,8 @@ import { AssessmentProvider } from '../../../assessment-provider.interface';
 import { ExportItemsRequest } from '../../../model/export-items-request.model';
 import { Assessment } from '../../../model/assessment';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
-import { ExportResults } from '../../assessment-results.component';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
+import { ExportResults } from '../export-results';
 
 @Component({
   selector: 'distractor-analysis',

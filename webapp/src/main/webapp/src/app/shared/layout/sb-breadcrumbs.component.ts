@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
   ActivatedRoute,
+  ActivatedRouteSnapshot,
   NavigationEnd,
   PRIMARY_OUTLET,
   Router
@@ -9,7 +10,8 @@ import {
 import { isEqual } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { Utils } from '../support/support';
-import { filter } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
 
 export const BreadCrumbsRouteDataKey = 'breadcrumb';
 export const BreadCrumbsTitleDelimiter = ' < ';
@@ -66,36 +68,158 @@ export interface Breadcrumb {
   routerLinkParameters: any[];
 }
 
+function createBreadcrumbs(
+  route: ActivatedRouteSnapshot,
+  translateService: TranslateService,
+  routerLinkParameters: any[] = [],
+  breadcrumbs: Breadcrumb[] = []
+): Breadcrumb[] {
+  const children: ActivatedRouteSnapshot[] = route.children;
+  if (children.length === 0) {
+    return breadcrumbs;
+  }
+
+  for (let child of children) {
+    if (child.outlet != PRIMARY_OUTLET) {
+      continue;
+    }
+
+    if (!child.data.hasOwnProperty(BreadCrumbsRouteDataKey)) {
+      return createBreadcrumbs(
+        child,
+        translateService,
+        routerLinkParameters,
+        breadcrumbs
+      );
+    }
+
+    const breadcrumbOptions: BreadcrumbOptions =
+      child.data[BreadCrumbsRouteDataKey];
+
+    child.url.forEach(segment => {
+      routerLinkParameters.push(segment.path);
+      routerLinkParameters.push(segment.parameters);
+    });
+
+    const breadcrumb = createBreadcrumb(
+      breadcrumbOptions,
+      child.data,
+      routerLinkParameters.concat(),
+      translateService
+    );
+    const existing = breadcrumbs.find(existing =>
+      isEqual(existing.routerLinkParameters, breadcrumb.routerLinkParameters)
+    );
+
+    if (existing) {
+      existing.text = breadcrumb.text;
+    } else {
+      breadcrumbs.push(breadcrumb);
+    }
+
+    return createBreadcrumbs(
+      child,
+      translateService,
+      routerLinkParameters,
+      breadcrumbs
+    );
+  }
+}
+
+function createBreadcrumb(
+  options: BreadcrumbOptions | BreadcrumbFactory,
+  routeData: any,
+  routerLinkParameters: any[],
+  translateService: TranslateService
+): Breadcrumb {
+  if (typeof options === 'function') {
+    return {
+      text: options({
+        data: routeData,
+        translateService
+      }),
+      routerLinkParameters
+    };
+  } else {
+    if (options.translate != null) {
+      const translateResolve =
+        options.translateResolve != null
+          ? Utils.getPropertyValue(options.translateResolve, routeData)
+          : undefined;
+
+      const translate =
+        typeof options.translate === 'function'
+          ? options.translate(translateResolve)
+          : options.translate;
+
+      const translateParameters =
+        options.translateParameters != null
+          ? options.translateParameters(translateResolve)
+          : {};
+
+      return {
+        text: translateService.instant(translate, translateParameters),
+        routerLinkParameters
+      };
+    }
+    if (options.resolve) {
+      return {
+        text: Utils.getPropertyValue(options.resolve, routeData),
+        routerLinkParameters: routerLinkParameters
+      };
+    }
+  }
+
+  throw new Error(
+    'Invalid route breadcrumb options. You must provide a "translate" or "resolve" property.'
+  );
+}
+
+function createTitle(
+  breadcrumbs: Breadcrumb[],
+  translateService: TranslateService
+): string {
+  return breadcrumbs
+    .concat()
+    .reverse()
+    .map(breadcrumb => breadcrumb.text)
+    .concat(translateService.instant('common-ngx.breadcrumbs.window-title'))
+    .join(BreadCrumbsTitleDelimiter);
+}
+
 @Component({
   selector: 'sb-breadcrumbs',
   template: `
-    <div [hidden]="breadcrumbs.length == 0">
-      <div class="container">
-        <ul class="breadcrumb">
-          <li>
-            <a routerLink="/">
-              <i class="fa fa-home"></i>
-              <span class="sr-only">{{
-                'common-ngx.breadcrumbs.home-sr' | translate
-              }}</span>
-            </a>
-          </li>
-          <li
-            *ngFor="let crumb of breadcrumbs; let last = last"
-            [ngClass]="{ active: last }"
-          >
-            <a *ngIf="!last" [routerLink]="crumb.routerLinkParameters">{{
-              crumb.text
-            }}</a>
-            <span *ngIf="last">{{ crumb.text }}</span>
-          </li>
-        </ul>
+    <ng-container *ngIf="(breadcrumbs$ | async) as breadcrumbs">
+      <div [hidden]="breadcrumbs.length === 0">
+        <div class="container">
+          <ul class="breadcrumb">
+            <li>
+              <a routerLink="/">
+                <i class="fa fa-home"></i>
+                <span class="sr-only">{{
+                  'common-ngx.breadcrumbs.home-sr' | translate
+                }}</span>
+              </a>
+            </li>
+            <li
+              *ngFor="let crumb of breadcrumbs; let last = last"
+              [ngClass]="{ active: last }"
+            >
+              <a *ngIf="!last" [routerLink]="crumb.routerLinkParameters">{{
+                crumb.text
+              }}</a>
+              <span *ngIf="last">{{ crumb.text }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </ng-container>
   `
 })
-export class SbBreadcrumbs implements OnInit {
-  private _breadcrumbs: Breadcrumb[] = [];
+export class SbBreadcrumbs implements OnInit, OnDestroy {
+  breadcrumbs$: Observable<Breadcrumb[]>;
+  private _destroyed: Subject<void> = new Subject();
 
   constructor(
     private router: Router,
@@ -105,131 +229,28 @@ export class SbBreadcrumbs implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
-      });
-    this.translateService.onLangChange.subscribe(() => {
-      this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
-    });
-  }
-
-  get breadcrumbs(): Breadcrumb[] {
-    return this._breadcrumbs;
-  }
-
-  set breadcrumbs(values: Breadcrumb[]) {
-    if (this._breadcrumbs !== values) {
-      this._breadcrumbs = values;
-      this.title.setTitle(this.createTitle(values));
-    }
-  }
-
-  private createBreadcrumbs(
-    route: ActivatedRoute,
-    routerLinkParameters: any[] = [],
-    breadcrumbs: Breadcrumb[] = []
-  ): Breadcrumb[] {
-    const children: ActivatedRoute[] = route.children;
-    if (children.length === 0) {
-      return breadcrumbs;
-    }
-
-    for (let child of children) {
-      if (child.outlet != PRIMARY_OUTLET) {
-        continue;
-      }
-
-      const route = child.snapshot;
-
-      if (!route.data.hasOwnProperty(BreadCrumbsRouteDataKey)) {
-        return this.createBreadcrumbs(child, routerLinkParameters, breadcrumbs);
-      }
-
-      const breadcrumbOptions: BreadcrumbOptions =
-        route.data[BreadCrumbsRouteDataKey];
-
-      route.url.forEach(segment => {
-        routerLinkParameters.push(segment.path);
-        routerLinkParameters.push(segment.parameters);
-      });
-
-      const breadcrumb = this.createBreadcrumb(
-        breadcrumbOptions,
-        route.data,
-        routerLinkParameters.concat()
-      );
-      const existing = breadcrumbs.find(existing =>
-        isEqual(existing.routerLinkParameters, breadcrumb.routerLinkParameters)
-      );
-
-      if (existing) {
-        existing.text = breadcrumb.text;
-      } else {
-        breadcrumbs.push(breadcrumb);
-      }
-
-      return this.createBreadcrumbs(child, routerLinkParameters, breadcrumbs);
-    }
-  }
-
-  private createBreadcrumb(
-    options: BreadcrumbOptions | BreadcrumbFactory,
-    routeData: any,
-    routerLinkParameters: any[]
-  ): Breadcrumb {
-    if (typeof options === 'function') {
-      return {
-        text: options({
-          data: routeData,
-          translateService: this.translateService
-        }),
-        routerLinkParameters
-      };
-    } else {
-      if (options.translate != null) {
-        const translateResolve =
-          options.translateResolve != null
-            ? Utils.getPropertyValue(options.translateResolve, routeData)
-            : undefined;
-
-        const translate =
-          typeof options.translate === 'function'
-            ? options.translate(translateResolve)
-            : options.translate;
-
-        const translateParameters =
-          options.translateParameters != null
-            ? options.translateParameters(translateResolve)
-            : {};
-
-        return {
-          text: this.translateService.instant(translate, translateParameters),
-          routerLinkParameters
-        };
-      }
-      if (options.resolve) {
-        return {
-          text: Utils.getPropertyValue(options.resolve, routeData),
-          routerLinkParameters: routerLinkParameters
-        };
-      }
-    }
-
-    throw new Error(
-      'Invalid route breadcrumb options. You must provide a "translate" or "resolve" property.'
-    );
-  }
-
-  private createTitle(breadcrumbs: any[]): string {
-    return breadcrumbs
-      .concat()
-      .reverse()
-      .map(breadcrumb => breadcrumb.text)
-      .concat(
-        this.translateService.instant('common-ngx.breadcrumbs.window-title')
+    this.breadcrumbs$ = combineLatest(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)),
+      this.translateService.onLangChange
+    ).pipe(
+      takeUntil(this._destroyed),
+      map(() =>
+        createBreadcrumbs(
+          this.activatedRoute.snapshot.root,
+          this.translateService
+        )
       )
-      .join(BreadCrumbsTitleDelimiter);
+    );
+
+    this.breadcrumbs$
+      .pipe(map(breadcrumbs => createTitle(breadcrumbs, this.translateService)))
+      .subscribe(title => {
+        this.title.setTitle(title);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed.next();
+    this._destroyed.complete();
   }
 }

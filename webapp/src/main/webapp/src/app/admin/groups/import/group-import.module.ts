@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'primeng/primeng';
 import { PopoverModule } from 'ngx-bootstrap/popover';
@@ -12,8 +10,9 @@ import { ImportHistoryComponent } from './history/import-history.component';
 import { ImportHistoryResolve } from './history/import-history.resolve';
 import { ImportTableComponent } from './import-table/import-table.component';
 import { GroupImportDeactivateGuard } from './group-import.deactivate';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { TableModule } from 'primeng/table';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -22,10 +21,9 @@ import { TableModule } from 'primeng/table';
     ImportTableComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
-    BrowserAnimationsModule,
-    BrowserModule,
+    Angulartics2Module,
     CommonModule,
+    ReportingCommonModule,
     FileUploadModule,
     FormsModule,
     PopoverModule,

@@ -38,9 +38,9 @@ import {
 } from '../../exam/model/score-statistics';
 import { toScoreTable } from '../../exam/component/score-table/score-tables';
 import { ScoreTable } from '../../exam/component/score-table/score-table';
-import { EmbargoService } from '../../admin/embargo/embargo.service';
 import { ReportingEmbargoService } from '../../shared/embargo/reporting-embargo.service';
 import { Embargo } from '../../shared/embargo/embargo';
+import { ExportResults } from './view/export-results';
 
 enum ResultsViewState {
   ByStudent = 1,
@@ -60,12 +60,6 @@ interface ResultsView {
   disabled: boolean;
   canExport: boolean;
   display: boolean;
-}
-
-export interface ExportResults {
-  exportToCsv(): void;
-
-  hasDataToExport(): boolean;
 }
 
 function createScoreTypeOptions(

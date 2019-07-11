@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemTabComponent } from './item-tab.component';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { TabsetConfig } from 'ngx-bootstrap';
 import { MockDataService } from '../../../test/mock.data.service';
 import { StudentScoreService } from './item-scores/student-score.service';
@@ -9,6 +9,7 @@ import { AssessmentItem } from '../model/assessment-item.model';
 import { TestModule } from '../../../test/test.module';
 import { Angulartics2 } from 'angulartics2';
 import { CachingDataService } from '../../shared/data/caching-data.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ItemTabComponent', () => {
   let component: ItemTabComponent;
@@ -24,7 +25,7 @@ describe('ItemTabComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [TestComponentWrapper, ItemTabComponent],
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       providers: [
         TabsetConfig,
         { provide: CachingDataService, useClass: MockDataService },

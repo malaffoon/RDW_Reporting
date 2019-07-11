@@ -1,66 +1,62 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ANALYZE_FOR_ENTRY_COMPONENTS, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import {
   AlertModule,
   BsDropdownModule,
+  ButtonsModule,
+  ModalModule,
   PopoverModule,
-  TabsModule
+  TabsModule,
+  TooltipModule,
+  TypeaheadModule
 } from 'ngx-bootstrap';
-import { CommonModule } from './shared/common.module';
-import { routes } from './app.routes';
-import { RouteReuseStrategy, RouterModule, ROUTES } from '@angular/router';
+import { ReportingCommonModule } from './shared/reporting-common.module';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { RdwRouteReuseStrategy } from './shared/rdw-route-reuse.strategy';
-import { OrganizationExportModule } from './organization-export/organization-export.module';
-import { AggregateReportsModule } from './aggregate-report/aggregate-reports.module';
-import { AdminModule } from './admin/admin.module';
-import { ApplicationSettingsService } from './app-settings.service';
-import { ApplicationSettingsResolve } from './app-settings.resolve';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HomeModule } from './home/home.module';
 import { HttpModule } from '@angular/http';
 import { SandboxLoginModule } from './sandbox/sandbox-login.module';
 import { ApplicationSecuritySettingService } from './app-security-setting.service';
 import { SecuritySettingService } from './shared/security/service/security-settings.service';
+import { InlineSVGModule } from 'ng-inline-svg';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from './shared/translate-module-configuration';
+import { routes } from './app.routes';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    AdminModule,
-    AggregateReportsModule,
-    AlertModule.forRoot(),
     BrowserModule,
+    NoopAnimationsModule,
     CommonModule,
+    HttpModule,
+    ReportingCommonModule,
+    // TODO lazy load
     DashboardModule,
     HomeModule,
-    HttpModule,
-    OrganizationExportModule,
-    RouterModule.forRoot([]),
-    FormsModule,
     SandboxLoginModule,
+    // ngx-bootstrap
+    AlertModule.forRoot(),
+    Angulartics2Module.forRoot(),
     BsDropdownModule.forRoot(),
-    TabsModule.forRoot(),
+    ButtonsModule.forRoot(),
+    InlineSVGModule.forRoot(),
+    ModalModule.forRoot(),
     PopoverModule.forRoot(),
-    Angulartics2Module.forRoot()
+    TooltipModule.forRoot(),
+    TypeaheadModule.forRoot(),
+    TabsModule.forRoot(),
+    TranslateModule.forRoot(translateModuleConfiguration),
+    RouterModule.forRoot(routes)
   ],
   providers: [
-    ApplicationSettingsService,
-    ApplicationSettingsResolve,
-    TranslateResolve,
     { provide: RouteReuseStrategy, useClass: RdwRouteReuseStrategy },
-    {
-      provide: ROUTES,
-      multi: true,
-      useValue: routes
-    },
-    {
-      provide: ANALYZE_FOR_ENTRY_COMPONENTS,
-      multi: true,
-      useValue: routes
-    },
     {
       provide: SecuritySettingService,
       useClass: ApplicationSecuritySettingService

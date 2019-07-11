@@ -1,7 +1,18 @@
 import { Organization } from '../shared/organization/organization';
-import { Claim, Subject } from './aggregate-report-options.service';
 import { ReportQueryType } from '../report/report';
 import { SubgroupFilterOptions } from './subgroup/subgroup-filter-options';
+
+export interface Claim {
+  readonly assessmentType: string;
+  readonly subject: string;
+  readonly code: string;
+}
+
+export interface Subject {
+  readonly code: string;
+  readonly assessmentType: string;
+  readonly targetReport?: boolean;
+}
 
 /**
  * Represents the aggregate report options as provided by the API

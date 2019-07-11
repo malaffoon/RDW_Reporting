@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { StudentComponent } from './student.component';
 import { StudentExamHistoryService } from './student-exam-history.service';
-import { CommonModule } from '../shared/common.module';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'primeng/components/common/shared';
 import { StudentResultsComponent } from './results/student-results.component';
@@ -26,6 +24,7 @@ import { TableModule } from 'primeng/table';
 import { DashboardModule } from '../dashboard/dashboard.module';
 import { StudentResultsFilterService } from './results/student-results-filter.service';
 import { StudentExamTableComponent } from './component/student-exam-table/student-exam-table.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -37,14 +36,13 @@ import { StudentExamTableComponent } from './component/student-exam-table/studen
     StudentHistoryTableComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     AssessmentsModule,
-    BrowserAnimationsModule,
-    BrowserModule,
     CommonModule,
+    ReportingCommonModule,
     CsvModule,
     FormsModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     ReactiveFormsModule,
     RdwMenuModule,
     ReportModule,

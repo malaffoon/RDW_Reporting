@@ -12,10 +12,7 @@ import { ApplicationSettingsService } from '../app-settings.service';
 import { UserOrganizationService } from './organization/user-organization.service';
 import { UserReportService } from '../report/user-report.service';
 import { UserQueryService } from '../report/user-query.service';
-import {
-  getQueryFromRouteQueryParameters,
-  isEqualReportQuery
-} from '../report/reports';
+import { isEqualReportQuery } from '../report/reports';
 import {
   DistrictSchoolExportReportQuery,
   ReportQuery,
@@ -30,6 +27,7 @@ import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
+import { getQueryFromRouteQueryParameters } from '../report/report-services';
 
 const byName = ordering(byString).on(({ name }) => name).compare;
 

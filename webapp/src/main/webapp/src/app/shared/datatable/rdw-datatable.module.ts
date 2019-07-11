@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { TableRowExpander } from './table-row-expander.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [TableRowExpander],
-  imports: [BrowserModule, FormsModule, TableModule],
+  imports: [CommonModule, FormsModule, TableModule],
   exports: [TableRowExpander]
 })
 export class RdwDataTableModule {}

@@ -177,8 +177,8 @@ spring:
       hosts: "${spring.admin_olap_datasource.url-server:localhost:5432}"
       database: "${spring.admin_olap_datasource.url-db:dev}"
       properties: "ApplicationName=rdw-reporting-aggregate-service\
-                   &loginTimeout=${spring.admin_olap_datasource.connect-timeout:10}\
-                   &socketTimeout=${spring.admin_olap_datasource.socket-timeout:0}\
+                   &loginTimeout=${spring.admin_datasource.connect-timeout:10}\
+                   &socketTimeout=${spring.admin_datasource.socket-timeout:0}\
                    "
     url: "${spring.admin_olap_datasource.url-parts.protocol}//${spring.admin_olap_datasource.url-parts.hosts}/${spring.admin_olap_datasource.url-parts.database}?${spring.admin_olap_datasource.url-parts.properties}"
     username: root
@@ -205,45 +205,10 @@ reporting:
     code: CA
     name: California
 
-# Setup to query each service using service name and configService port
+# Needed when running the admin-service locallly
 tenant-configuration-lookup:
   services:
-    # talking to itself
-    admin-service: http://localhost:8008
-    aggregate-service: http://aggregate-service:8008
-    report-processor: http://report-processor-service:8008
-    reporting-service: http://reporting-service:8008
-    rdw-ingest-import-service: http://import-service:8008
-    rdw-ingest-exam-processor: http://exam-processor:8008
-    rdw-ingest-group-processor: http://group-processor:8008
-    rdw-ingest-package-processor: http://package-processor:8008
-    rdw-ingest-task-service: http://task-server:8008
-    rdw-ingest-migrate-reporting: http://migrate-reporting:8008
-    rdw-ingest-migrate-olap: http://migrate-olap:8008
-    # When running all services locally through intellij use localhost and serverport
-    # when using docker for rdw reporting services - use settings in docker-compose.yml
-    #   and then run
-    #tenant-configuration-lookup:
-    #  services:
-    #    admin-service: http://localhost:8208
-    #    aggregate-service: http://localhost:8308
-    #    report-processor: http://localhost:8086
-    #    reporting-service: http://localhost:8108
-    # The ingest services to query for /configprops running services locally, set ports accordingly
-    #    rdw-ingest-import-service: http://localhost:8089
-    #    rdw-ingest-exam-processor: http://localhost:8090
-    #    rdw-ingest-group-processor: http://localhost:8087
-    #    rdw-ingest-package-processor: http://localhost:8083
-    #    rdw-ingest-task-service: http://localhost:8084
-    #    rdw-ingest-migrate-reporting: http://localhost:8088
-    #    rdw-ingest-migrate-olap: http://localhost:8091
-
-
-
-tenant-configuration-persistence:
-  local-repository-uri: file:///tmp/rdw_config_local
-  remote-repository-uri: file:///tmp/rdw_config_remote
-  git-username: test
-  git-password: test
-  author: "Zaphod Beeblebrox"
-  author-email: "zaphodb@example.com"
+    admin-service: http://localhost:8208
+    aggregate-service: http://localhost:8308
+    report-processor: http://localhost:8086
+    reporting-service: http://localhost:8108

@@ -1,7 +1,6 @@
 import { Angulartics2Module } from 'angulartics2';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '../shared/common.module';
-import { BrowserModule } from '@angular/platform-browser';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AggregateReportOptionsService } from './aggregate-report-options.service';
 import { AggregateReportOptionsMapper } from './aggregate-report-options.mapper';
@@ -38,8 +37,31 @@ import { GeneralPopulationFormComponent } from './query-forms/general-population
 import { LongitudinalCohortFormComponent } from './query-forms/longitudinal-cohort-form.component';
 import { ClaimReportFormComponent } from './query-forms/claim-report-form.component';
 import { AggregateTargetOverviewComponent } from './results/aggregate-target-overview.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { aggregateReportRoutes } from './aggregate-report.routes';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from '../shared/translate-module-configuration';
 
 @NgModule({
+  imports: [
+    AssessmentModule,
+    Angulartics2Module,
+    CommonModule,
+    ReportingCommonModule,
+    CsvModule,
+    FormsModule,
+    ModalModule,
+    PopoverModule,
+    ReactiveFormsModule,
+    ReportModule,
+    SubgroupModule,
+    TableModule,
+    TabsModule,
+    TypeaheadModule,
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(aggregateReportRoutes)
+  ],
   declarations: [
     AggregateQueryFormContainerComponent,
     AggregateReportComponent,
@@ -52,22 +74,6 @@ import { AggregateTargetOverviewComponent } from './results/aggregate-target-ove
     LongitudinalCohortFormComponent,
     TargetReportFormComponent,
     WideRadioGroupComponent
-  ],
-  imports: [
-    AssessmentModule,
-    Angulartics2Module.forRoot(),
-    BrowserModule,
-    CommonModule,
-    CsvModule,
-    FormsModule,
-    ModalModule,
-    PopoverModule.forRoot(),
-    ReactiveFormsModule,
-    ReportModule,
-    SubgroupModule,
-    TableModule,
-    TabsModule.forRoot(),
-    TypeaheadModule
   ],
   providers: [
     AggregateReportRequestMapper,

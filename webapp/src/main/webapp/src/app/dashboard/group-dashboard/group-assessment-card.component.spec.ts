@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GroupAssessmentCardComponent } from './group-assessment-card.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import {
   DetailsByPerformanceLevel,
   MeasuredAssessment
@@ -9,6 +9,7 @@ import {
 import { Assessment } from '../../assessments/model/assessment';
 import { Group } from '../../groups/group';
 import { ExamStatisticsCalculator } from '../../assessments/results/exam-statistics-calculator';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('GroupAssessmentCardComponent', () => {
   let component: GroupAssessmentCardComponent;
@@ -16,7 +17,7 @@ describe('GroupAssessmentCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot()],
       declarations: [GroupAssessmentCardComponent],
       providers: [ExamStatisticsCalculator],
       schemas: [NO_ERRORS_SCHEMA]
