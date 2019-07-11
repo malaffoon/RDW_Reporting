@@ -68,11 +68,7 @@ export class SandboxService {
       this.dataService.get(DefaultsRoute),
       this.dataService.get(DataSetsRoute)
     ]).pipe(
-      map(results => {
-        const sandboxConfigurations = results[0];
-        const defaultConfiguration = results[1];
-        const datasets = results[2];
-
+      map(([sandboxConfigurations, defaultConfiguration, datasets]) => {
         return sandboxConfigurations.map(sandboxConfiguration =>
           mapSandbox(sandboxConfiguration, defaultConfiguration, datasets)
         );
