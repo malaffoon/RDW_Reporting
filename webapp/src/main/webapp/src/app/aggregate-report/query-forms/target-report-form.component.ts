@@ -19,7 +19,6 @@ import {
 import { AggregateReportService } from '../aggregate-report.service';
 import { AggregateReportTableDataService } from '../aggregate-report-table-data.service';
 import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
-import { SubgroupFilterSupport } from '../subgroup/subgroup-filters';
 import { OrganizationTypeahead } from '../../shared/organization/organization-typeahead';
 import { mergeMap } from 'rxjs/operators';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
@@ -28,6 +27,7 @@ import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
 import { SubjectService } from '../../subject/subject.service';
 import { ReportQueryType } from '../../report/report';
 import { UserQueryService } from '../../report/user-query.service';
+import { SubgroupFilterSupport } from '../../shared/model/subgroup-filters';
 
 @Component({
   selector: 'target-report-form',

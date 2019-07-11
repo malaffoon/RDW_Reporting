@@ -18,15 +18,15 @@ import { AggregateReportOrganizationService } from '../aggregate-report-organiza
 import { map, mergeMap } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
-import {
-  SubgroupFilters,
-  SubgroupFilterSupport
-} from '../subgroup/subgroup-filters';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
-import { SubgroupItem } from '../subgroup/subgroup-item';
 import { SupportedRowCount } from '../results/aggregate-report-table.component';
 import { SubjectService } from '../../subject/subject.service';
 import { UserQueryService } from '../../report/user-query.service';
+import {
+  SubgroupFilters,
+  SubgroupFilterSupport
+} from '../../shared/model/subgroup-filters';
+import { SubgroupItem } from '../../shared/model/subgroup-item';
 
 const OrganizationComparator = (a: Organization, b: Organization) =>
   a.name.localeCompare(b.name);

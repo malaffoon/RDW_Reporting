@@ -1,5 +1,5 @@
 import { Organization } from '../../shared/organization/organization';
-import { Subgroup } from '../subgroup/subgroup';
+import { Subgroup } from '../../shared/model/subgroup';
 
 /**
  * Logical modal for the longitudinal cohort chart
