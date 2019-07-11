@@ -6,7 +6,9 @@ import { catchError, map } from 'rxjs/operators';
 
 const EmptySettings = of(<any>{});
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ApplicationSettingsService {
   constructor(private dataService: CachingDataService) {}
 

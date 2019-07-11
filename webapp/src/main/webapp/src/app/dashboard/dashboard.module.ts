@@ -7,13 +7,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AssessmentsModule } from '../assessments/assessments.module';
 import { FormsModule } from '@angular/forms';
 import { PopoverModule } from 'ngx-bootstrap';
-import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { TableModule } from 'primeng/table';
 import { SharedModule } from 'primeng/primeng';
 import { GroupDashboardService } from './group-dashboard/group-dashboard.service';
 import { MeasuredAssessmentMapper } from './measured-assessment.mapper';
 import { StudentAssessmentCardComponent } from './student-dashboard/student-assessment-card.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -22,13 +22,12 @@ import { StudentAssessmentCardComponent } from './student-dashboard/student-asse
     StudentAssessmentCardComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     AssessmentsModule,
-    BrowserModule,
-    BrowserAnimationsModule,
     CommonModule,
+    ReportingCommonModule,
     FormsModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     ReportModule,
     SharedModule,
     TableModule

@@ -1,10 +1,9 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { RdwCoreModule } from '../core/rdw-core.module';
 import { NgModule } from '@angular/core';
 import { Http } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { APP_BASE_HREF } from '@angular/common';
+import { APP_BASE_HREF, CommonModule } from '@angular/common';
 import { AccessDeniedComponent } from './component/access-denied/access-denied.component';
 import { SessionExpiredComponent } from './component/session-expired/session-expired.component';
 import { AuthorizationDirective } from './directive/authorization.directive';
@@ -23,7 +22,7 @@ import { DefaultSecuritySettingsService } from './service/default-security-setti
  */
 @NgModule({
   imports: [
-    BrowserModule,
+    CommonModule,
     RdwCoreModule,
     // These can be overridden in the consuming apps
     RouterModule,

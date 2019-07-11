@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PopoverModule, TypeaheadModule } from 'ngx-bootstrap';
 import { SBButtonTypeahead } from './sb-button-typeahead.component';
@@ -14,6 +13,7 @@ import { SBTypeaheadGroup } from './sb-typeahead-group';
 import { AutoCompleteModule } from 'primeng/primeng';
 import { FormFieldsComponent } from './component/form-fields/form-fields.component';
 import { InformationIconComponent } from './component/information-icon/information-icon.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -28,14 +28,14 @@ import { InformationIconComponent } from './component/information-icon/informati
     SBRadioGroup
   ],
   imports: [
-    BrowserModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     AutoCompleteModule,
-    PopoverModule.forRoot(),
-    TypeaheadModule.forRoot(),
-    TranslateModule.forRoot(),
-    Angulartics2Module.forRoot()
+    PopoverModule,
+    TypeaheadModule,
+    TranslateModule,
+    Angulartics2Module
   ],
   exports: [
     FormFieldsComponent,

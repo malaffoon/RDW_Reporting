@@ -8,21 +8,19 @@ import { Exam } from '../../../model/exam';
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
 import { Assessment } from '../../../model/assessment';
-import { ExportResults } from '../../assessment-results.component';
 import { WritingTraitScoreSummary } from '../../../model/writing-trait-score-summary.model';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { WritingTrait } from '../../../model/writing-trait.model';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
-import { BehaviorSubject, forkJoin, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { flatMap, map, share, shareReplay, takeUntil } from 'rxjs/operators';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { filter } from 'rxjs/internal/operators/filter';
 import { first } from 'rxjs/internal/operators/first';
 import { tap } from 'rxjs/internal/operators/tap';
 import { sum } from '../../../../exam/model/score-statistics';
-import { of } from 'rxjs/internal/observable/of';
-import { ExportRequest } from '../../../model/export-request.interface';
 import { ExportWritingTraitsRequest } from '../../../model/export-writing-trait-request.model';
+import { ExportResults } from '../export-results';
 
 interface ItemView {
   item: AssessmentItem;

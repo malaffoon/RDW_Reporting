@@ -5,12 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { Component } from '@angular/core';
 import { FilterBy } from '../../model/filter-by.model';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { ExamFilterOptions } from '../../model/exam-filter-options.model';
 import { Angulartics2, Angulartics2Module } from 'angulartics2';
 import { PopoverModule } from 'ngx-bootstrap';
 import { of } from 'rxjs';
 import { ApplicationSettingsService } from '../../../app-settings.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AdvFiltersComponent', () => {
   let component: AdvFiltersComponent;
@@ -34,7 +35,8 @@ describe('AdvFiltersComponent', () => {
       imports: [
         HttpModule,
         FormsModule,
-        CommonModule,
+        ReportingCommonModule,
+        TranslateModule.forRoot(),
         Angulartics2Module.forRoot(),
         PopoverModule.forRoot()
       ],

@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { AssessmentPercentileTable } from './assessment-percentile-table.component';
 import { AssessmentPercentileService } from './assessment-percentile.service';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { TableModule } from 'primeng/table';
-import { BrowserModule } from '@angular/platform-browser';
 import { AssessmentPercentileHistoryComponent } from './assessment-percentile-history.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
     AssessmentPercentileHistoryComponent,
     AssessmentPercentileTable
   ],
-  imports: [BrowserModule, CommonModule, TableModule],
+  imports: [CommonModule, ReportingCommonModule, TableModule],
   exports: [AssessmentPercentileHistoryComponent],
   providers: [AssessmentPercentileService]
 })

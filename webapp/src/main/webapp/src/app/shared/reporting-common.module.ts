@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { SBRadioButtonComponent } from './sb-radio-button-list.component';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule as AngularCommonModule } from '@angular/common';
 import { SBCheckboxList } from './sb-checkbox-list.component';
 import { Angulartics2Module } from 'angulartics2';
 import { AlertModule, BsDropdownModule, PopoverModule } from 'ngx-bootstrap';
@@ -21,7 +21,6 @@ import { RdwLayoutModule } from './layout/rdw-layout.module';
 import { RdwMenuModule } from './menu/rdw-menu.module';
 import { RdwPreferenceModule } from './preference/rdw-preference.module';
 import { RdwSecurityModule } from './security/rdw-security.module';
-import { RdwTranslateLoader } from './i18n/rdw-translate-loader';
 import { OrganizationModule } from './organization/organization.module';
 import { ScrollNavComponent } from './nav/scroll-nav.component';
 import { OptionalPipe } from './optional.pipe';
@@ -48,8 +47,8 @@ import { NavigationComponent } from './component/navigation/navigation.component
 @NgModule({
   imports: [
     AlertModule,
-    Angulartics2Module.forRoot(),
-    BrowserModule,
+    Angulartics2Module,
+    AngularCommonModule,
     CommonEmbargoModule,
     FormsModule,
     HttpModule,
@@ -58,7 +57,7 @@ import { NavigationComponent } from './component/navigation/navigation.component
     RouterModule,
     OrganizationModule,
     SchoolModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     RdwAssessmentModule,
     RdwCoreModule,
     RdwDataModule.forRoot(),
@@ -76,13 +75,8 @@ import { NavigationComponent } from './component/navigation/navigation.component
     RdwNotificationsModule,
     RdwPreferenceModule,
     RdwSecurityModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useClass: RdwTranslateLoader
-      }
-    }),
-    SubjectModule
+    SubjectModule,
+    TranslateModule
   ],
   declarations: [
     ConfirmationModalComponent,
@@ -128,12 +122,12 @@ import { NavigationComponent } from './component/navigation/navigation.component
     SBRadioButtonComponent,
     SBToggleComponent,
     ScaleScoreComponent,
-    TranslateModule,
     InViewDirective,
     InstructionalResourcePopoverComponent,
     SubjectModule,
-    NavigationComponent
+    NavigationComponent,
+    TranslateModule
   ],
   providers: [DataTableService, OrderingService, TargetService]
 })
-export class CommonModule {}
+export class ReportingCommonModule {}

@@ -1,4 +1,4 @@
-import { AggregateReportOptions } from './aggregate-report-options';
+import { AggregateReportOptions, Claim } from './aggregate-report-options';
 import { AggregateReportFormOptions } from './aggregate-report-form-options';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,7 +9,6 @@ import { ValueDisplayTypes } from '../shared/display-options/value-display-type'
 import { AssessmentDefinitionService } from './assessment/assessment-definition.service';
 import { Observable, of } from 'rxjs';
 import { ApplicationSettingsService } from '../app-settings.service';
-import { Claim } from './aggregate-report-options.service';
 import { ReportQueryType } from '../report/report';
 import { StudentFieldType } from '../app-settings';
 

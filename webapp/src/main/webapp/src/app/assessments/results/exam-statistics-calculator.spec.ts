@@ -2,7 +2,7 @@ import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { Exam } from '../model/exam';
 import { AssessmentItem } from '../model/assessment-item.model';
 import { ExamItemScore } from '../model/exam-item-score.model';
-import { ClaimStatistics } from '../model/claim-score.model';
+import { ClaimStatistics } from '../model/exam-statistics.model';
 
 describe('Exam Calculator', () => {
   it('should return only scored exams', () => {
