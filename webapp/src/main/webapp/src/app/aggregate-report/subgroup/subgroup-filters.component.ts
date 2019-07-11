@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SubgroupFilters } from './subgroup-filters';
 import { SubgroupFilterFormOptions } from './subgroup-filter-form-options';
 import { Option } from '../../shared/form/option';
 import { TranslateService } from '@ngx-translate/core';
+import { SubgroupFilters } from '../../shared/model/subgroup-filters';
 
 @Component({
   selector: 'subgroup-filters',

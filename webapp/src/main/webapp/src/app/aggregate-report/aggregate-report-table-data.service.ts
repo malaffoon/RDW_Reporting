@@ -15,10 +15,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { SubgroupMapper } from './subgroup/subgroup.mapper';
 import { computeEffectiveYears } from './support';
 import { AggregateReportOptions, Claim } from './aggregate-report-options';
-import { Subgroup } from './subgroup/subgroup';
 import { AggregateReportService } from './aggregate-report.service';
 import { Utils } from '../shared/support/support';
 import { SubjectDefinition } from '../subject/subject';
+import { Subgroup } from '../shared/model/subgroup';
 
 const MaximumOrganizations = 3;
 const DefaultMaximumRowCount = 100;

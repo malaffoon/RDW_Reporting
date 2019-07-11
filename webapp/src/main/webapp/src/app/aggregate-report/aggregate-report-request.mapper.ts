@@ -16,10 +16,6 @@ import { AggregateReportOrganizationService } from './aggregate-report-organizat
 import { ranking } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { map } from 'rxjs/operators';
-import {
-  SubgroupFilters,
-  SubgroupFilterSupport
-} from './subgroup/subgroup-filters';
 import { AggregateReportService } from './aggregate-report.service';
 import {
   AggregateReportQueryType,
@@ -29,6 +25,10 @@ import {
   TargetReportQuery
 } from '../report/report';
 import { SubjectDefinition } from '../subject/subject';
+import {
+  SubgroupFilters,
+  SubgroupFilterSupport
+} from '../shared/model/subgroup-filters';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);
 const idsOf = values => values.map(value => value.id);
