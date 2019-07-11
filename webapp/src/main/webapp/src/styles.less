@@ -60,6 +60,15 @@
 /**
  * Bootstrap additions
  */
+//.btn {
+//  &.btn-borderless,
+//  &.btn-primary,
+//  &.btn-default {
+//    &:focus-within {
+//      background-color: transparent;
+//    }
+//  }
+//}
 
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
@@ -153,6 +162,10 @@ h3 + p.pull-left,
 
 .toggle-group .btn-primary {
   color: @gray-mid;
+  &:focus-within:not(.active) {
+    color: @gray-mid;
+    background-color: transparent;
+  }
 }
 
 .nav-tabs > li.active > a,
