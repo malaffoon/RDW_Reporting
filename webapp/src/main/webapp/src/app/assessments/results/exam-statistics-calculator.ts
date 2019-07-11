@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AssessmentItem } from '../model/assessment-item.model';
-import { ExamStatisticsLevel } from '../model/exam-statistics.model';
+import {
+  ExamStatisticsLevel,
+  ClaimStatistics
+} from '../model/exam-statistics.model';
 import { Exam } from '../model/exam';
 import { DynamicItemField } from '../model/item-point-field.model';
-import * as math from 'mathjs';
 import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
-import { ClaimStatistics } from '../model/claim-score.model';
 import { ExamItemScore } from '../model/exam-item-score.model';
 
 @Injectable()

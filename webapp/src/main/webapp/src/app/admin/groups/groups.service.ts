@@ -14,7 +14,9 @@ import { AdminServiceRoute } from '../../shared/service-route';
 const ResourceContext = `${AdminServiceRoute}/groups`;
 const ALL = 'ALL';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class GroupService {
   constructor(private dataService: DataService) {}
 

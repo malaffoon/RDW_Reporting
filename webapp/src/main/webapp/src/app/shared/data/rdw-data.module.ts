@@ -1,12 +1,12 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { DATA_CONTEXT_URL, DataService } from './data.service';
 import { CachingDataService } from './caching-data.service';
 import { HttpModule } from '@angular/http';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, HttpModule]
+  imports: [CommonModule, FormsModule, HttpModule]
 })
 export class RdwDataModule {
   /**

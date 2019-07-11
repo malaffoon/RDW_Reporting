@@ -1,6 +1,6 @@
 import { StudentResultsComponent } from './student-results.component';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { ActivatedRoute } from '@angular/router';
 import { StudentExamHistory } from '../model/student-exam-history.model';
 import { Student } from '../model/student.model';
@@ -22,6 +22,7 @@ import { StudentResultsFilterService } from './student-results-filter.service';
 import { ReportFormService } from '../../report/service/report-form.service';
 import { ScaleScore } from '../../exam/model/scale-score';
 import { SubjectService } from '../../subject/subject.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('StudentResultsComponent', () => {
   let component: StudentResultsComponent;
@@ -97,7 +98,7 @@ describe('StudentResultsComponent', () => {
     );
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       declarations: [StudentResultsComponent],
       providers: [
         { provide: CsvExportService, useValue: exportService },

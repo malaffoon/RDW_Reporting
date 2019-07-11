@@ -4,7 +4,6 @@ import { PipelineResolve } from './resolve/pipeline.resolve';
 import { UnsavedChangesGuard } from './guard/unsaved-changes.guard';
 import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-history/pipeline-publishing-history.component';
 import { BreadcrumbContext } from '../../shared/layout/sb-breadcrumbs.component';
-import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/has-any-permission.can-activate';
 
 export const pipelineBreadcrumb = ({
   data: { pipeline },
@@ -14,45 +13,33 @@ export const pipelineBreadcrumb = ({
 
 export const ingestPipelineRoutes = [
   {
-    path: 'ingest-pipelines',
-    pathMatch: 'prefix',
+    path: '',
+    pathMatch: 'full',
+    component: PipelinesComponent
+  },
+  {
+    path: ':id',
     data: {
-      breadcrumb: { translate: 'pipelines.heading' },
-      permissions: ['PIPELINE_READ'],
-      denyAccess: true
+      breadcrumb: pipelineBreadcrumb
     },
-    canActivate: [HasAnyPermissionCanActivate],
+    resolve: {
+      pipeline: PipelineResolve
+    },
     children: [
       {
         path: '',
         pathMatch: 'full',
-        component: PipelinesComponent
+        component: PipelineComponent,
+        canDeactivate: [UnsavedChangesGuard]
       },
       {
-        path: ':id',
+        path: 'history',
+        component: PipelinePublishingHistoryComponent,
         data: {
-          breadcrumb: pipelineBreadcrumb
-        },
-        resolve: {
-          pipeline: PipelineResolve
-        },
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            component: PipelineComponent,
-            canDeactivate: [UnsavedChangesGuard]
-          },
-          {
-            path: 'history',
-            component: PipelinePublishingHistoryComponent,
-            data: {
-              breadcrumb: {
-                translate: 'pipeline-publishing-history.breadcrumb'
-              }
-            }
+          breadcrumb: {
+            translate: 'pipeline-publishing-history.breadcrumb'
           }
-        ]
+        }
       }
     ]
   }

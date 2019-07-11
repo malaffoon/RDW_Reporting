@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { CodeEditorComponent } from './component/code-editor/code-editor.component';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -7,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PipelinesComponent } from './page/pipelines/pipelines.component';
 import { PipelineCardComponent } from './component/pipeline-card/pipeline-card.component';
 import { PipelineComponent } from './page/pipeline/pipeline.component';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { PipelineEditorComponent } from './component/pipeline-editor/pipeline-editor.component';
 import {
   BsDropdownModule,
@@ -23,19 +22,22 @@ import { PipelineTestFormComponent } from './component/pipeline-test-form/pipeli
 import { PipelineTestResultComponent } from './component/pipeline-test-result/pipeline-test-result.component';
 import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-history/pipeline-publishing-history.component';
 import { PipelinePublishedScriptsComponent } from './component/pipeline-published-scripts/pipeline-published-scripts.component';
+import { CommonModule } from '@angular/common';
+import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
+import { ingestPipelineRoutes } from './ingest-pipeline.routes';
 
 @NgModule({
   imports: [
-    BrowserModule,
     CommonModule,
-    RouterModule,
-    TranslateModule,
+    ReportingCommonModule,
     FormsModule,
     ReactiveFormsModule,
     ButtonsModule,
-    BsDropdownModule.forRoot(),
+    BsDropdownModule,
     ModalModule,
-    TooltipModule.forRoot()
+    TooltipModule,
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(ingestPipelineRoutes)
   ],
   declarations: [
     CodeDifferenceComponent,

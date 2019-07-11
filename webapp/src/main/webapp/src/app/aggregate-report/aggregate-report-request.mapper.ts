@@ -4,7 +4,7 @@ import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AggregateReportFormOptions } from './aggregate-report-form-options';
 import { TranslateService } from '@ngx-translate/core';
 import { AssessmentDefinition } from './assessment/assessment-definition';
-import { AggregateReportOptions } from './aggregate-report-options';
+import { AggregateReportOptions, Claim } from './aggregate-report-options';
 import { Observable, forkJoin, of } from 'rxjs';
 import {
   District,
@@ -20,7 +20,6 @@ import {
   SubgroupFilters,
   SubgroupFilterSupport
 } from './subgroup/subgroup-filters';
-import { Claim } from './aggregate-report-options.service';
 import { AggregateReportService } from './aggregate-report.service';
 import {
   AggregateReportQueryType,
@@ -29,7 +28,6 @@ import {
   LongitudinalReportQuery,
   TargetReportQuery
 } from '../report/report';
-import { PerformanceLevelDisplayTypes } from '../shared/display-options/performance-level-display-type';
 import { SubjectDefinition } from '../subject/subject';
 
 const equalSize = (a: any[], b: any[]) => Utils.hasEqualLength(a, b);

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '../shared/common.module';
-import { BrowserModule } from '@angular/platform-browser';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { DataTableModule, SharedModule } from 'primeng/primeng';
@@ -41,6 +40,7 @@ import { TargetStatisticsCalculator } from './results/target-statistics-calculat
 import { SubgroupModule } from '../aggregate-report/subgroup/subgroup.module';
 import { AssessmentIconComponent } from './assessment-icon.component';
 import { ExamModule } from '../exam/exam.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -64,16 +64,15 @@ import { ExamModule } from '../exam/exam.module';
     TargetReportComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
     AssessmentPercentileModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    BsDropdownModule.forRoot(),
     CommonModule,
+    BsDropdownModule,
+    ReportingCommonModule,
     DataTableModule,
     ExamModule,
     FormsModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     RdwMenuModule,
     ReportModule,
     SharedModule,

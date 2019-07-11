@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
 import { AssessmentDefinitionService } from '../assessment/assessment-definition.service';
 import { AggregateReportOrganizationService } from '../aggregate-report-organization.service';
@@ -16,7 +16,6 @@ import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { MultiOrganizationQueryFormComponent } from './multi-organization-query-form.component';
 import { notEmpty } from '../../shared/form/validators';
 import { AggregateReportFormOptions } from '../aggregate-report-form-options';
-import { Claim } from '../aggregate-report-options.service';
 import { OrderingService } from '../../shared/ordering/ordering.service';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,6 +23,7 @@ import { SubjectService } from '../../subject/subject.service';
 import { ReportQueryType } from '../../report/report';
 import { UserQueryService } from '../../report/user-query.service';
 import { canGetEstimatedRowCount } from '../support';
+import { Claim } from '../aggregate-report-options';
 
 @Component({
   selector: 'claim-report-form',
