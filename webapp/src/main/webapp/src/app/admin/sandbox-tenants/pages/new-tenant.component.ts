@@ -12,6 +12,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { forOwn } from 'lodash';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
@@ -33,6 +34,9 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
+
+  // True if two or more different passwords has been set for the same username
+  passwordMismatch: boolean = false;
 
   constructor(
     private service: TenantService,
@@ -127,6 +131,35 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
         }
       );
     }
+  }
+
+  checkPasswordsAndUsernames(property: ConfigurationProperty) {
+    if (
+      property.formControlName.indexOf('.password') !== -1 ||
+      property.formControlName.indexOf('.username')
+    ) {
+      this.passwordMismatch = this.anyPasswordsNotMatchignUsernames(
+        this.configurationProperties.datasources
+      );
+    }
+  }
+
+  private anyPasswordsNotMatchignUsernames(datasources: any) {
+    const users = [];
+
+    forOwn(datasources, dataSource => {
+      users.push({
+        username: dataSource.find(x => x.key === 'username').value,
+        password: dataSource.find(x => x.key === 'password').value
+      });
+    });
+
+    const uniqueUsernamesAndPasswords = Array.from(
+      new Set(users.map(x => x.username + x.password))
+    );
+    const uniqueUsernames = Array.from(new Set(users.map(x => x.username)));
+
+    return uniqueUsernames.length !== uniqueUsernamesAndPasswords.length;
   }
 
   private mapLocalizationOverrides() {
