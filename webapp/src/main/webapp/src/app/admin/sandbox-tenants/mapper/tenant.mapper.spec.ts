@@ -74,6 +74,7 @@ const tenantUIModel: TenantConfiguration = {
 
 const sandboxUIModel: SandboxConfiguration = {
   ...tenantUIModel,
+  parentTenantCode: 'CA_001',
   dataSet: dataSets[0]
 };
 

@@ -5,10 +5,9 @@ import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import {
-  mapConfigurationProperties,
   mapSandbox,
-  toSandboxApiModel,
-  mapTenant
+  mapTenant,
+  toSandboxApiModel
 } from '../mapper/tenant.mapper';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';

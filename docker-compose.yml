@@ -40,8 +40,8 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
       interval: 10s
-      timeout: 2s
-      retries: 6
+      timeout: 30s
+      retries: 20
 
   webapp:
     image: smarterbalanced/rdw-reporting-webapp

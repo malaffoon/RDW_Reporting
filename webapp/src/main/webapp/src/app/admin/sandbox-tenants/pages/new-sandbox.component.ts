@@ -18,7 +18,7 @@ import { NotificationService } from '../../../shared/notification/notification.s
 import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { mapConfigurationProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { DataSet } from '../model/sandbox-configuration';
+import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { SandboxService } from '../service/sandbox.service';
 
@@ -140,14 +140,15 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    const newSandbox = {
+    const newSandbox: SandboxConfiguration = {
       ...this.sandboxForm.value,
-      dataSet: this.sandboxForm.value.dataset.id,
+      dataSet: this.sandboxForm.value.dataset,
+      parentTenantCode: this.sandboxForm.value.tenant.code,
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: this.configurationProperties
     };
 
-    this.service.create(newSandbox, this.dataSets).subscribe(
+    this.service.create(newSandbox).subscribe(
       () => {
         this.router.navigate(['sandboxes']);
       },

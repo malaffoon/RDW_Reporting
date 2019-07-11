@@ -49,6 +49,7 @@ export function mapSandbox(
   };
   return <SandboxConfiguration>{
     ...mapTenant(tenantConfiguration, defaults),
+    parentTenantCode: tenantConfiguration.parentTenantKey,
     dataSet: dataSets.find(
       dataSet => tenantConfiguration.tenant.sandboxDataset === dataSet.id
     )
@@ -58,6 +59,7 @@ export function mapSandbox(
 export function toSandboxApiModel(sandbox: SandboxConfiguration): any {
   const apiModel = toTenantApiModel(sandbox);
   apiModel.tenant.sandboxDataset = sandbox.dataSet.id;
+  apiModel.parentTenantKey = sandbox.parentTenantCode;
   return apiModel;
 }
 

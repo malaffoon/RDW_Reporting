@@ -1,5 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  ValidatorFn,
+  AbstractControl
+} from '@angular/forms';
 import { forOwn } from 'lodash';
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
@@ -179,6 +185,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     });
 
     this.configurationPropertiesTreeNodes = [...groupNodes];
+    // this.form.setValidators(this.passwordsAndUsernames());
   }
 
   private mapLeafNodes(
@@ -213,12 +220,50 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
       group.key.indexOf('password') > -1
         ? configPropertiesFormGroup.addControl(
             group.formControlName,
-            new FormControl(group.value, Validators.required)
+            new FormControl(group.value, this.getPasswordValidators())
           )
         : configPropertiesFormGroup.addControl(
             group.formControlName,
             new FormControl(group.value)
           );
     });
+  }
+
+  private getPasswordValidators(): ValidatorFn[] {
+    const validators = [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(64),
+      Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-zd].{8,}')
+    ];
+
+    return validators;
+  }
+
+  passwordsAndUsernames(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!this._configurationProperties) {
+        return null;
+      }
+
+      const datasources = this._configurationProperties['datasources'];
+      const users = [];
+
+      forOwn(datasources, dataSource => {
+        users.push({
+          username: dataSource.find(x => x.key === 'username').value,
+          password: dataSource.find(x => x.key === 'password').value
+        });
+      });
+
+      const uniqueUsers = Array.from(
+        new Set(users.map(x => x.username + x.password))
+      );
+      const uniqueUsernames = Array.from(new Set(users.map(x => x.username)));
+
+      return uniqueUsernames.length !== uniqueUsers.length
+        ? { passwordsAndUsernames: { value: control.value } }
+        : null;
+    };
   }
 }
