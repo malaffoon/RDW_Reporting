@@ -8,6 +8,7 @@ import {
   ModalModule,
   PopoverModule,
   TabsModule,
+  TooltipModule,
   TypeaheadModule
 } from 'ngx-bootstrap';
 import { ReportingCommonModule } from './shared/reporting-common.module';
@@ -48,6 +49,7 @@ import { CommonModule } from '@angular/common';
     InlineSVGModule.forRoot(),
     ModalModule.forRoot(),
     PopoverModule.forRoot(),
+    TooltipModule.forRoot(),
     TypeaheadModule.forRoot(),
     TabsModule.forRoot(),
     TranslateModule.forRoot(translateModuleConfiguration),

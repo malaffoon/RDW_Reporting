@@ -1,4 +1,6 @@
 import { Route } from '@angular/router';
+import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has-any-permission.can-activate';
+import { AggregateReportOptionsResolve } from '../aggregate-report/aggregate-report-options.resolve';
 
 export const aggregateReportsLoadChildren = () =>
   import('app/aggregate-report/aggregate-reports.module').then(
@@ -44,35 +46,80 @@ export const adminRoutes: Route[] = [
     children: [
       {
         path: 'aggregate-reports',
-        loadChildren: aggregateReportsLoadChildren
+        loadChildren: aggregateReportsLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: { translate: 'aggregate-reports.heading' },
+          permissions: ['CUSTOM_AGGREGATE_READ']
+        },
+        resolve: {
+          options: AggregateReportOptionsResolve
+        }
       },
       {
         path: 'embargoes',
-        loadChildren: embargoesLoadChildren
+        loadChildren: embargoesLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: { translate: 'embargo.title' },
+          permissions: ['EMBARGO_WRITE']
+        }
       },
       {
         path: 'custom-export',
-        loadChildren: organizationExportLoadChildren
+        loadChildren: organizationExportLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: { translate: 'organization-export.title' },
+          permissions: ['INDIVIDUAL_PII_READ']
+        }
       },
       {
         path: 'admin-groups',
-        loadChildren: groupsLoadChildren
+        loadChildren: groupsLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: {
+            translate: 'admin-groups.title'
+          },
+          permissions: ['GROUP_WRITE']
+        }
       },
       {
         path: 'instructional-resource',
-        loadChildren: instructionalResourcesLoadChildren
+        loadChildren: instructionalResourcesLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: { translate: 'instructional-resource.title' },
+          permissions: ['INSTRUCTIONAL_RESOURCE_WRITE']
+        }
       },
       {
         path: 'ingest-pipelines',
-        loadChildren: pipelinesLoadChildren
+        loadChildren: pipelinesLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: { translate: 'pipelines.heading' },
+          permissions: ['PIPELINE_READ']
+        }
       },
       {
         path: 'sandboxes',
-        loadChildren: sandboxesLoadChildren
+        loadChildren: sandboxesLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: { translate: 'sandbox-config.title' },
+          permissions: ['TENANT_READ']
+        }
       },
       {
         path: 'tenants',
-        loadChildren: tenantsLoadChildren
+        loadChildren: tenantsLoadChildren,
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: { translate: 'tenant-config.title' },
+          permissions: ['TENANT_READ']
+        }
       }
     ]
   }

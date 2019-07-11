@@ -7,32 +7,21 @@ export const sandboxRoutes: Route[] = [
   {
     path: '',
     pathMatch: 'prefix',
+    component: SandboxesComponent
+  },
+  {
+    path: 'new',
+    pathMatch: 'prefix',
     data: {
-      breadcrumb: { translate: 'sandbox-config.title' },
-      permissions: ['TENANT_READ']
+      breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
+      permissions: ['TENANT_WRITE']
     },
     canActivate: [HasAnyPermissionCanActivate],
     children: [
       {
         path: '',
         pathMatch: 'prefix',
-        component: SandboxesComponent
-      },
-      {
-        path: 'new',
-        pathMatch: 'prefix',
-        data: {
-          breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
-          permissions: ['TENANT_WRITE']
-        },
-        canActivate: [HasAnyPermissionCanActivate],
-        children: [
-          {
-            path: '',
-            pathMatch: 'prefix',
-            component: NewSandboxConfigurationComponent
-          }
-        ]
+        component: NewSandboxConfigurationComponent
       }
     ]
   }
