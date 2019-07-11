@@ -3,8 +3,7 @@ import {
   Component,
   ElementRef,
   OnInit,
-  ViewChild,
-  ChangeDetectorRef
+  ViewChild
 } from '@angular/core';
 import {
   FormBuilder,
@@ -21,6 +20,7 @@ import { ConfigurationProperty } from '../model/configuration-property';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { SandboxService } from '../service/sandbox.service';
+import { LanguageStore } from '../../../shared/i18n/language.store';
 
 @Component({
   selector: 'new-sandbox',
@@ -45,6 +45,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     private notificationService: NotificationService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
+    private languageStore: LanguageStore,
     private router: Router
   ) {}
 
@@ -98,7 +99,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
 
   private loadLocalizations() {
     this.translationLoader
-      .getFlattenedTranslations('en')
+      .getFlattenedTranslations(this.languageStore.currentLanguage)
       .subscribe(translations => {
         this.defaultLocalizations = translations;
         this.mapLocalizationOverrides(translations);

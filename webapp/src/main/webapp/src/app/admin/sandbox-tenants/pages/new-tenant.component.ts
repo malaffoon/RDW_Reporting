@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forOwn } from 'lodash';
+import { LanguageStore } from '../../../shared/i18n/language.store';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
@@ -42,6 +43,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
+    private languageStore: LanguageStore,
     private router: Router,
     private store: TenantStore,
     private notificationService: NotificationService
@@ -164,7 +166,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
 
   private mapLocalizationOverrides() {
     this.translationLoader
-      .getFlattenedTranslations('en')
+      .getFlattenedTranslations(this.languageStore.currentLanguage)
       .subscribe(translations => {
         const locationOverrideFormGroup = <FormGroup>(
           this.tenantForm.controls['localizationOverrides']
