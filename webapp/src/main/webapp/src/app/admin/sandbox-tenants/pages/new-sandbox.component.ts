@@ -15,7 +15,10 @@ import { Router } from '@angular/router';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
-import { mapConfigurationProperties } from '../mapper/tenant.mapper';
+import {
+  mapConfigurationProperties,
+  getModifiedConfigProperties
+} from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';
@@ -146,7 +149,9 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
       dataSet: this.sandboxForm.value.dataset,
       parentTenantCode: this.sandboxForm.value.tenant.code,
       localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: this.configurationProperties
+      configurationProperties: getModifiedConfigProperties(
+        this.configurationProperties
+      )
     };
 
     this.service.create(newSandbox).subscribe(

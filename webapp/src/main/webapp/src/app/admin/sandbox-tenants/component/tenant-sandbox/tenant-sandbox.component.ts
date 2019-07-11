@@ -13,6 +13,7 @@ import { cloneDeep, forOwn } from 'lodash';
 import { CustomValidators } from '../../../../shared/validator/custom-validators';
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
+import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
 
 @Component({
   selector: 'tenant-sandbox',
@@ -92,28 +93,10 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
       localizationOverrides: this.localizationOverrides.filter(
         override => override.originalValue !== override.value
       ),
-      configurationProperties: this.getModifiedConfigProperties(
+      configurationProperties: getModifiedConfigProperties(
         this.value.configurationProperties
       )
     });
-  }
-
-  private getModifiedConfigProperties(configProperties: any) {
-    var modifiedProperties = {};
-    forOwn(configProperties, (group, key) => {
-      var props = <ConfigurationProperty[]>group;
-      if (props.some !== undefined) {
-        if (props.some(x => x.originalValue !== x.value)) {
-          modifiedProperties[key] = props.filter(
-            x => x.originalValue !== x.value
-          );
-        }
-      } else {
-        // Not an array of config props, msut be a sub group, i.e. datasources.reporting_rw
-        modifiedProperties[key] = this.getModifiedConfigProperties(group);
-      }
-    });
-    return modifiedProperties;
   }
 
   private mapLocalizationOverrides(localizationDefaults: any): void {

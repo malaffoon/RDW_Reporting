@@ -21,6 +21,7 @@ import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
 import { TenantStore } from '../store/tenant.store';
+import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 
 @Component({
   selector: 'new-tenant',
@@ -88,7 +89,9 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       ...this.tenantForm.value,
       code: this.tenantForm.get('key').value.toUpperCase(),
       localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: this.configurationProperties
+      configurationProperties: getModifiedConfigProperties(
+        this.configurationProperties
+      )
     };
     this.service.create(newTenant).subscribe(
       createdTenant => {
@@ -121,15 +124,12 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
           if (!urlPartsDatabase.modified) {
             urlPartsDatabase.value = defaultDataBaseName;
           }
-          urlPartsDatabase.originalValue = defaultDataBaseName;
-
           const username = <ConfigurationProperty>(
             dataSource.find(property => property.key === 'username')
           );
           if (!username.modified) {
             username.value = defaultUsername;
           }
-          username.originalValue = defaultUsername;
         }
       );
     }
