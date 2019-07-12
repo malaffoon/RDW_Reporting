@@ -33,7 +33,7 @@ import { instructionalResourceRoutes } from './instructional-resource.routes';
     CommonModule,
     ReportingCommonModule,
     FormsModule,
-    ModalModule,
+    ModalModule.forRoot(), // this is needed in lazy modules for some reason
     RdwMenuModule,
     TableModule,
     TypeaheadModule,
