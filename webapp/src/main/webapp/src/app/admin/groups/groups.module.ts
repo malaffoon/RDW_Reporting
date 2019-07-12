@@ -19,7 +19,7 @@ import { FileFormatModule } from './import/fileformat/file-format.module';
     ReportingCommonModule,
     DropdownModule,
     FormsModule,
-    ModalModule,
+    ModalModule.forRoot(), // this is needed in lazy modules for some reason
     TableModule,
     GroupImportModule,
     FileFormatModule,
