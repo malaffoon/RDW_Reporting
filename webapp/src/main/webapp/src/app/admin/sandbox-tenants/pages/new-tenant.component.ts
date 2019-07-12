@@ -17,11 +17,11 @@ import { LanguageStore } from '../../../shared/i18n/language.store';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
+import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
 import { TenantStore } from '../store/tenant.store';
-import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 
 @Component({
   selector: 'new-tenant',
@@ -30,6 +30,8 @@ import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   @ViewChild('tenantKeyInput')
   tenantKeyInput: ElementRef;
+
+  saving: boolean = false;
 
   tenantForm: FormGroup;
   // Contains the full list of localization overrides, with default values
@@ -81,6 +83,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
+    this.saving = true;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
@@ -97,13 +100,22 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       createdTenant => {
         this.store.setState([createdTenant, ...this.store.state]);
         this.router.navigate(['tenants']);
+        this.saving = false;
       },
-      error =>
-        error.json().message
-          ? this.notificationService.error({ id: error.json().message })
-          : this.notificationService.error({
-              id: 'tenant-config.errors.create'
-            })
+      error => {
+        let errorMessage = '';
+        try {
+          errorMessage =
+            error && error.json() && error.json().message
+              ? error.json().message
+              : 'tenant-config.errors.create';
+        } catch (err) {
+          // unable to parse error?
+          errorMessage = 'tenant-config.errors.create';
+        }
+        this.notificationService.error({ id: errorMessage });
+        this.saving = false;
+      }
     );
   }
 
