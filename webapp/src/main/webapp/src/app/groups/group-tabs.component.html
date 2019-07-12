@@ -1,23 +1,30 @@
-<tabset *ngIf="initialized">
-  <tab>
-    <ng-template tabHeading>
-      {{ 'home.groups-well.assigned-groups-heading' | translate }}
-      <span class="badge ml-xs">{{ groups.length }}</span>
-    </ng-template>
-    <div class="well">
-      <groups [groups]="groups"></groups>
-    </div>
-  </tab>
-  <tab *ngIf="userGroups" [active]="userGroups.length">
-    <ng-template tabHeading>
-      {{ 'home.groups-well.created-groups-heading' | translate }}
-      <span class="badge ml-xs">{{ userGroups.length }}</span>
-    </ng-template>
-    <div class="well">
-      <user-groups
-        [groups]="userGroups"
-        [assignedGroups]="groups"
-      ></user-groups>
-    </div>
-  </tab>
+<tabset *ngIf="(initialized$ | async)">
+  <ng-container *hasPermission="'GROUP_PII_READ'">
+    <tab *ngIf="(groups$ | async) as groups">
+      <ng-template tabHeading>
+        {{ 'home.groups-well.assigned-groups-heading' | translate }}
+        <span class="badge ml-xs">{{ groups.length }}</span>
+      </ng-template>
+      <div class="well">
+        <groups [groups]="groups"></groups>
+      </div>
+    </tab>
+  </ng-container>
+  <ng-container *hasPermission="'TEACHER_GROUP_READ'">
+    <tab
+      *ngIf="(userGroups$ | async) as userGroups"
+      [active]="userGroups.length"
+    >
+      <ng-template tabHeading>
+        {{ 'home.groups-well.created-groups-heading' | translate }}
+        <span class="badge ml-xs">{{ userGroups.length }}</span>
+      </ng-template>
+      <div class="well">
+        <user-groups
+          [groups]="userGroups"
+          [assignedGroups]="groups$ | async"
+        ></user-groups>
+      </div>
+    </tab>
+  </ng-container>
 </tabset>

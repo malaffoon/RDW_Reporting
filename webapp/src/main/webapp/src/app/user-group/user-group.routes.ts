@@ -6,7 +6,7 @@ export const userGroupRoutes = [
   {
     path: 'user-groups',
     data: {
-      permissions: ['GROUP_PII_READ']
+      permissions: ['TEACHER_GROUP_READ']
     },
     canActivate: [HasAnyPermissionCanActivate],
     children: [

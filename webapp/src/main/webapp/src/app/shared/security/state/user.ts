@@ -5,4 +5,5 @@ export interface User {
   readonly anonymous?: boolean;
   readonly logoutUrl?: string;
   readonly sessionRefreshUrl?: string;
+  readonly sandboxUser?: boolean;
 }
