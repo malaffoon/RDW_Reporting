@@ -23,9 +23,7 @@ export class UserService {
       map(serverUser => ({
         firstName: serverUser.firstName,
         lastName: serverUser.lastName,
-        permissions: serverUser.permissions.filter(
-          x => x !== 'TEACHER_GROUP_WRITE'
-        ),
+        permissions: serverUser.permissions,
         anonymous: serverUser.anonymous,
         logoutUrl: serverUser.tenant.logoutUrl,
         sessionRefreshUrl: serverUser.tenant.sessionRefreshUrl,
