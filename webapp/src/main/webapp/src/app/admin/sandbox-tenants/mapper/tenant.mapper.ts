@@ -206,7 +206,7 @@ export function mapConfigurationProperties(
   return groupedProperties;
 }
 
-export function getModifiedConfigProperties(configProperties: any) {
+export function getModifiedConfigProperties(configProperties: any): any {
   var modifiedProperties = {};
   forOwn(configProperties, (group, key) => {
     var props = <ConfigurationProperty[]>group;

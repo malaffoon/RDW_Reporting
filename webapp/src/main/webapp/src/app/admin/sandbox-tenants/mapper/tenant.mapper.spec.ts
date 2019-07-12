@@ -5,7 +5,8 @@ import {
   mapSandbox,
   mapTenant,
   toSandboxApiModel,
-  toTenantApiModel
+  toTenantApiModel,
+  getModifiedConfigProperties
 } from './tenant.mapper';
 
 const tenantApiModel = {
@@ -68,7 +69,23 @@ const tenantUIModel: TenantConfiguration = {
           formControlName: 'reporting_rw.urlParts.protocol'
         }
       ]
-    }
+    },
+    reporting: [
+      {
+        key: 'state.name',
+        originalValue: 'California',
+        value: 'Florida',
+        formControlName: 'reporting'
+      }
+    ],
+    archive: [
+      {
+        key: 'prefix',
+        originalValue: 's3://',
+        value: 's3://',
+        formControlName: 'archive'
+      }
+    ]
   }
 };
 
@@ -185,5 +202,31 @@ describe('Tenant mapper', () => {
     expect(actual.datasources.reporting_rw.urlParts.protocol).toBe(
       'jdbc:mysql:'
     );
+  });
+
+  it('should get modified config properties', () => {
+    const actual = getModifiedConfigProperties(
+      tenantUIModel.configurationProperties
+    );
+
+    const actualReportingDatasource = actual.datasources.reporting_rw;
+    expect(actualReportingDatasource.length).toBe(1);
+
+    const actualDatabase = actualReportingDatasource[0];
+    expect(actualDatabase.key).toBe('urlParts.database');
+    expect(actualDatabase.value).toBe('new-reporting');
+    expect(actualDatabase.originalValue).toBe('not_a_schema');
+    expect(actualDatabase.group).toBe('reporting_rw');
+
+    const actualReporting = actual.reporting;
+    expect(actualReporting.length).toBe(1);
+
+    const actualStateName = actualReporting[0];
+    expect(actualStateName.key).toBe('state.name');
+    expect(actualStateName.value).toBe('Florida');
+    expect(actualStateName.originalValue).toBe('California');
+    expect(actualStateName.formControlName).toBe('reporting');
+
+    expect(actual.archive).toBeUndefined();
   });
 });
