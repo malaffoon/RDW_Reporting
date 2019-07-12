@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from '../../../../shared/common.module';
+import { ReportingCommonModule } from '../../../../shared/reporting-common.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TestModule } from '../../../../../test/test.module';
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
@@ -15,7 +15,7 @@ describe('DistractorAnalysisComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, TranslateModule.forRoot(), TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       declarations: [DistractorAnalysisComponent, TestComponentWrapper],
       providers: [ExamStatisticsCalculator],
       schemas: [NO_ERRORS_SCHEMA]

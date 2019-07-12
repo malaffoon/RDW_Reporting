@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AggregateReportOptions } from './aggregate-report-options';
+import {
+  AggregateReportOptions,
+  Claim,
+  Subject
+} from './aggregate-report-options';
 import { CachingDataService } from '../shared/data/caching-data.service';
 import { OrganizationMapper } from '../shared/organization/organization.mapper';
 import { map } from 'rxjs/operators';
@@ -111,16 +115,4 @@ export class AggregateReportOptionsService {
       }))
     );
   }
-}
-
-export interface Claim {
-  readonly assessmentType: string;
-  readonly subject: string;
-  readonly code: string;
-}
-
-export interface Subject {
-  readonly code: string;
-  readonly assessmentType: string;
-  readonly targetReport?: boolean;
 }

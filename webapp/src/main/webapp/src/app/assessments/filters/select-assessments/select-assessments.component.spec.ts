@@ -3,9 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SelectAssessmentsComponent } from './select-assessments.component';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { Assessment } from '../../model/assessment';
 import { Angulartics2Module } from 'angulartics2';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SelectAssessmentsComponent', () => {
   let component: SelectAssessmentsComponent;
@@ -17,7 +18,8 @@ describe('SelectAssessmentsComponent', () => {
       imports: [
         HttpModule,
         FormsModule,
-        CommonModule,
+        ReportingCommonModule,
+        TranslateModule.forRoot(),
         Angulartics2Module.forRoot()
       ]
     }).compileComponents();

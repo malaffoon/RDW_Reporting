@@ -3,8 +3,9 @@ import { ItemScoresComponent } from './item-scores.component';
 import { StudentScoreService } from './student-score.service';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { AssessmentItem } from '../../model/assessment-item.model';
-import { CommonModule } from '../../../shared/common.module';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { TestModule } from '../../../../test/test.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ItemScoresComponent', () => {
   let mockScoreService: any;
@@ -20,7 +21,7 @@ describe('ItemScoresComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [TestComponentWrapper, ItemScoresComponent],
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       providers: [{ provide: StudentScoreService, useValue: mockScoreService }],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();

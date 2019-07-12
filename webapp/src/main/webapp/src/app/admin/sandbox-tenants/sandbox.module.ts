@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
-import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
-import { TenantsComponent } from './pages/tenants/tenants.component';
+import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
+import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
+import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
 import { SandboxTenantSharedModule } from './sandbox-tenant-shared.module';
 import { RouterModule } from '@angular/router';
-import { tenantRoutes } from './tenant.routes';
+import { sandboxRoutes } from './sandbox.routes';
 import { TranslateModule } from '@ngx-translate/core';
 import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
 import { CommonModule } from '@angular/common';
@@ -40,13 +40,13 @@ import { TableModule } from 'primeng/table';
     TreeTableModule,
     SandboxTenantSharedModule,
     TranslateModule.forChild(translateModuleConfiguration),
-    RouterModule.forChild(tenantRoutes)
+    RouterModule.forChild(sandboxRoutes)
   ],
   declarations: [
-    DeleteTenantConfigurationModalComponent,
-    NewTenantConfigurationComponent,
-    TenantsComponent
+    DeleteSandboxConfigurationModalComponent,
+    NewSandboxConfigurationComponent,
+    SandboxesComponent
   ],
-  entryComponents: [DeleteTenantConfigurationModalComponent]
+  entryComponents: [DeleteSandboxConfigurationModalComponent]
 })
-export class TenantModule {}
+export class SandboxModule {}

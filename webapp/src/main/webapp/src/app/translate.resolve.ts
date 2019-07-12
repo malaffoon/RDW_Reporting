@@ -12,7 +12,9 @@ import { TranslateService } from '@ngx-translate/core';
  *
  * Resolver that only resolves once the translate getTranslation is complete.
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TranslateResolve implements Resolve<string> {
   constructor(private service: TranslateService) {}
 

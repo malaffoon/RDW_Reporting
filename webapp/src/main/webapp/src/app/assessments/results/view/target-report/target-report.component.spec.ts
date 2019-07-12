@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommonModule } from '../../../../shared/common.module';
+import { ReportingCommonModule } from '../../../../shared/reporting-common.module';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { TestModule } from '../../../../../test/test.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -58,7 +58,7 @@ xdescribe('TargetReportComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, TranslateModule.forRoot(), TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       declarations: [TargetReportComponent, TestComponentWrapper],
       providers: [
         {

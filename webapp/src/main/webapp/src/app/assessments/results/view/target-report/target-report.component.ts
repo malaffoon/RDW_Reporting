@@ -32,7 +32,6 @@ import {
   getOrganizationalClaimOrdering
 } from '../../../../shared/ordering/orderings';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
-import { ExportResults } from '../../assessment-results.component';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { ExamStatistics } from '../../../model/exam-statistics.model';
 import { Exam } from '../../../model/exam';
@@ -41,6 +40,7 @@ import { AggregateReportItem } from '../../../../aggregate-report/results/aggreg
 import { Utils } from '../../../../shared/support/support';
 import { SubjectDefinition } from '../../../../subject/subject';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
+import { ExportResults } from '../export-results';
 
 @Component({
   selector: 'target-report',

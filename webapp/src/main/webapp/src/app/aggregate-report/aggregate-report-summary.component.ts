@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolYearPipe } from '../shared/format/school-year.pipe';
-import { AggregateReportOptions } from './aggregate-report-options';
+import { AggregateReportOptions, Claim } from './aggregate-report-options';
 import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AssessmentDefinition } from './assessment/assessment-definition';
 import { isNullOrEmpty, Utils } from '../shared/support/support';
 import { SubgroupMapper } from './subgroup/subgroup.mapper';
 import { computeEffectiveYears } from './support';
-import { Claim } from './aggregate-report-options.service';
 import { AggregateReportService } from './aggregate-report.service';
 
 const createColumnProvider = (

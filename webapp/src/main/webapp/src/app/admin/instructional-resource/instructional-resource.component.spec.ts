@@ -5,9 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap';
 import { InstructionalResourceService } from './instructional-resource.service';
-import { CommonModule } from '../../shared/common.module';
+import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { of } from 'rxjs';
 import Spy = jasmine.Spy;
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('InstructionalResourceComponent', () => {
   let component: InstructionalResourceComponent;
@@ -25,7 +26,7 @@ describe('InstructionalResourceComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [InstructionalResourceComponent],
-      imports: [CommonModule, FormsModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), FormsModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: BsModalService, useValue: modalService },

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultsByStudentComponent } from './results-by-student.component';
-import { CommonModule } from '../../../../shared/common.module';
+import { ReportingCommonModule } from '../../../../shared/reporting-common.module';
 import { MenuActionBuilder } from '../../../menu/menu-action.builder';
 import { TestModule } from '../../../../../test/test.module';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -14,6 +14,7 @@ import { byString } from '@kourge/ordering/comparator';
 import { OrderingService } from '../../../../shared/ordering/ordering.service';
 import { ReportFormService } from '../../../../report/service/report-form.service';
 import { SubjectDefinition } from '../../../../subject/subject';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ResultsByStudentComponent', () => {
   let component: ResultsByStudentComponent;
@@ -28,7 +29,7 @@ describe('ResultsByStudentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, TestModule],
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
       declarations: [ResultsByStudentComponent, TestComponentWrapper],
       providers: [
         MenuActionBuilder,

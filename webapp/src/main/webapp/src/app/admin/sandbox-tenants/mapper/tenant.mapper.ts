@@ -206,6 +206,24 @@ export function mapConfigurationProperties(
   return groupedProperties;
 }
 
+export function getModifiedConfigProperties(configProperties: any) {
+  var modifiedProperties = {};
+  forOwn(configProperties, (group, key) => {
+    var props = <ConfigurationProperty[]>group;
+    if (props.some !== undefined) {
+      if (props.some(x => x.originalValue !== x.value)) {
+        modifiedProperties[key] = props.filter(
+          x => x.originalValue !== x.value
+        );
+      }
+    } else {
+      // Not an array of config props, must be a sub group, i.e. datasources.reporting_rw
+      modifiedProperties[key] = getModifiedConfigProperties(group);
+    }
+  });
+  return modifiedProperties;
+}
+
 function mapLocalizationOverrides(overrides: any): ConfigurationProperty[] {
   const flattenedOverrides = flattenJsonObject(overrides);
   const configProperties: ConfigurationProperty[] = [];
