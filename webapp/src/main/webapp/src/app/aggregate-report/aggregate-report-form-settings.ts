@@ -1,7 +1,7 @@
 import { District, School } from '../shared/organization/organization';
-import { SubgroupFilters } from './subgroup/subgroup-filters';
 import { ReportQueryType } from '../report/report';
 import { Claim, Subject } from './aggregate-report-options';
+import { SubgroupFilters } from '../shared/model/subgroup-filters';
 
 /**
  * Client side representation of a report request.

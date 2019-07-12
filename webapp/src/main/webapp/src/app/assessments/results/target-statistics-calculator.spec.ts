@@ -2,17 +2,15 @@ import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { TargetScoreExam } from '../model/target-score-exam.model';
 import { TargetReportingLevel } from '../model/aggregate-target-score-row.model';
 import { TargetStatisticsCalculator } from './target-statistics-calculator';
-import { SubgroupMapper } from '../../aggregate-report/subgroup/subgroup.mapper';
 import { Target } from '../model/target.model';
 
 describe('Target Calculator', () => {
-  let mockSubgroupMapper = jasmine.createSpyObj<SubgroupMapper>(
-    'subgroupMapper',
-    ['createOverall', 'fromTypeAndCode']
-  );
+  let mockTranslateService = jasmine.createSpyObj('TranslateService', [
+    'instant'
+  ]);
   let fixture = new TargetStatisticsCalculator(
     new ExamStatisticsCalculator(),
-    mockSubgroupMapper
+    mockTranslateService
   );
   let allTargets = [
     <Target>{

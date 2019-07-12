@@ -1,5 +1,5 @@
-import { Subgroup } from '../../aggregate-report/subgroup/subgroup';
 import { ranking } from '@kourge/ordering/comparator';
+import { Subgroup } from '../../shared/model/subgroup';
 
 export class AggregateTargetScoreRow {
   targetId: number;
