@@ -98,6 +98,15 @@ spring:
     type: SIMPLE
     cache-names: permissionsByRole, translations, translation_properties
 
+  cloud:
+    stream:
+      bindings:
+        ConfigpropsUpdated:
+          destination: ConfigpropsUpdated
+          group: default
+          producer:
+            requiredGroups: default
+
 datasources:
   reporting_ro:
     url-parts:

@@ -112,6 +112,11 @@ spring:
         output:
           destination: GROUPS
           group: default
+        ConfigpropsUpdated:
+          destination: ConfigpropsUpdated
+          group: default
+          producer:
+            requiredGroups: default
 
   admin_warehouse_datasource:
     url-parts:
@@ -134,8 +139,8 @@ spring:
     validationQueryTimeout: 10000
     driverClassName: com.mysql.jdbc.Driver
     initialize: false
-    initialSize: 4
-    maxActive: 10
+    initialSize: 0
+    maxActive: 1
     minIdle: ${spring.admin_warehouse_datasource.initialSize}
     maxIdle: ${spring.admin_warehouse_datasource.maxActive}
     removeAbandoned: false
@@ -163,8 +168,8 @@ spring:
     validationQueryTimeout: 10000
     driverClassName: com.mysql.jdbc.Driver
     initialize: false
-    initialSize: 4
-    maxActive: 10
+    initialSize: 0
+    maxActive: 1
     minIdle: ${spring.admin_reporting_datasource.initialSize}
     maxIdle: ${spring.admin_reporting_datasource.maxActive}
     removeAbandoned: false
@@ -187,6 +192,14 @@ spring:
     validationQuery: SELECT 1
     validationQueryTimeout: 30000
     driverClassName: com.amazon.redshift.jdbc42.Driver
+    initialize: false
+    initialSize: 0
+    maxActive: 1
+    minIdle: ${spring.admin_olap_datasource.initialSize}
+    maxIdle: ${spring.admin_olap_datasource.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
 
 archive:
   uri-root: "file:///tmp/"
