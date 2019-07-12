@@ -1,10 +1,16 @@
 <div
   #editor
   (keyup.escape)="escapePoint.focus()"
-  attr.aria-label="{{ 'code-editor.keyboard-trap-prompt' | translate }}"
+  role="editing"
+  aria-labelledby="editorLabel"
 ></div>
 
 <!-- addresses keyboard trap accessibility issue -->
-<a #escapePoint href="javascript:void(0)" class="escape-prompt">
+<a
+  #escapePoint
+  id="editorLabel"
+  href="javascript:void(0)"
+  class="escape-prompt"
+>
   {{ 'code-editor.keyboard-trap-prompt' | translate }}
 </a>
