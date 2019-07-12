@@ -142,6 +142,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
+    this.saving = true;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
