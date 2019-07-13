@@ -12,9 +12,12 @@ import {
   Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { forOwn } from 'lodash';
+import { LanguageStore } from '../../../shared/i18n/language.store';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { CustomValidators } from '../../../shared/validator/custom-validators';
+import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantService } from '../service/tenant.service';
@@ -28,16 +31,22 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   @ViewChild('tenantKeyInput')
   tenantKeyInput: ElementRef;
 
+  saving: boolean = false;
+
   tenantForm: FormGroup;
   // Contains the full list of localization overrides, with default values
   localizationOverrides: ConfigurationProperty[] = [];
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
 
+  // True if two or more different passwords has been set for the same username
+  passwordMismatch: boolean = false;
+
   constructor(
     private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
+    private languageStore: LanguageStore,
     private router: Router,
     private store: TenantStore,
     private notificationService: NotificationService
@@ -74,6 +83,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
+    this.saving = true;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
@@ -82,19 +92,30 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       ...this.tenantForm.value,
       code: this.tenantForm.get('key').value.toUpperCase(),
       localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: this.configurationProperties
+      configurationProperties: getModifiedConfigProperties(
+        this.configurationProperties
+      )
     };
     this.service.create(newTenant).subscribe(
       createdTenant => {
         this.store.setState([createdTenant, ...this.store.state]);
         this.router.navigate(['tenants']);
+        this.saving = false;
       },
-      error =>
-        error.json().message
-          ? this.notificationService.error({ id: error.json().message })
-          : this.notificationService.error({
-              id: 'tenant-config.errors.create'
-            })
+      error => {
+        let errorMessage = '';
+        try {
+          errorMessage =
+            error && error.json() && error.json().message
+              ? error.json().message
+              : 'tenant-config.errors.create';
+        } catch (err) {
+          // unable to parse error?
+          errorMessage = 'tenant-config.errors.create';
+        }
+        this.notificationService.error({ id: errorMessage });
+        this.saving = false;
+      }
     );
   }
 
@@ -115,23 +136,49 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
           if (!urlPartsDatabase.modified) {
             urlPartsDatabase.value = defaultDataBaseName;
           }
-          urlPartsDatabase.originalValue = defaultDataBaseName;
-
           const username = <ConfigurationProperty>(
             dataSource.find(property => property.key === 'username')
           );
           if (!username.modified) {
             username.value = defaultUsername;
           }
-          username.originalValue = defaultUsername;
         }
       );
     }
   }
 
+  checkPasswordsAndUsernames(property: ConfigurationProperty) {
+    if (
+      property.formControlName.indexOf('.password') !== -1 ||
+      property.formControlName.indexOf('.username')
+    ) {
+      this.passwordMismatch = this.anyPasswordsNotMatchignUsernames(
+        this.configurationProperties.datasources
+      );
+    }
+  }
+
+  private anyPasswordsNotMatchignUsernames(datasources: any) {
+    const users = [];
+
+    forOwn(datasources, dataSource => {
+      users.push({
+        username: dataSource.find(x => x.key === 'username').value,
+        password: dataSource.find(x => x.key === 'password').value
+      });
+    });
+
+    const uniqueUsernamesAndPasswords = Array.from(
+      new Set(users.map(x => x.username + x.password))
+    );
+    const uniqueUsernames = Array.from(new Set(users.map(x => x.username)));
+
+    return uniqueUsernames.length !== uniqueUsernamesAndPasswords.length;
+  }
+
   private mapLocalizationOverrides() {
     this.translationLoader
-      .getFlattenedTranslations('en')
+      .getFlattenedTranslations(this.languageStore.currentLanguage)
       .subscribe(translations => {
         const locationOverrideFormGroup = <FormGroup>(
           this.tenantForm.controls['localizationOverrides']

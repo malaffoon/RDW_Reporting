@@ -51,7 +51,7 @@ import { translateModuleConfiguration } from '../shared/translate-module-configu
     ReportingCommonModule,
     CsvModule,
     FormsModule,
-    ModalModule,
+    ModalModule.forRoot(), // this is needed in lazy modules for some reason
     PopoverModule,
     ReactiveFormsModule,
     ReportModule,

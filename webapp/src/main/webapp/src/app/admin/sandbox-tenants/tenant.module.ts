@@ -34,7 +34,7 @@ import { TableModule } from 'primeng/table';
     AccordionModule,
     ButtonsModule,
     MenuModule,
-    ModalModule,
+    ModalModule.forRoot(), // this is needed in lazy modules for some reason
     PopoverModule,
     TableModule,
     TreeTableModule,

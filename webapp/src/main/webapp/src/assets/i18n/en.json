@@ -259,6 +259,7 @@
       "go-home": "Go Home",
       "hide": "Hide",
       "save": "Save",
+      "saving": "Saving",
       "search": "Search",
       "select": "Select",
       "show": "Show",
@@ -824,7 +825,8 @@
     "button-save": "Yes, delete this group",
     "content-html": "<p>When a group is deleted, it is no longer available to any users.  This action cannot be undone.</p><p>Are you sure you would like to continue?</p>",
     "error": "Unable to delete this group.",
-    "title": "Delete {{name}}?"
+    "title": "Delete {{name}}?",
+    "sandbox-body": "Group deletion is disabled when working in a sandbox"
   },
   "delete-instructional-resource-modal": {
     "error": "Unable to delete instructional resource.",
@@ -1265,7 +1267,16 @@
       "description": "Description:",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
-      "search": "Search by key or value"
+      "search": "Search by key or value",
+      "status-title": "Status:",
+      "status": {
+        "Started": "Started",
+        "CreatingDatabases": "Creating Databases",
+        "PersistingConfiguration": "Persisting Configurations",
+        "NotifyingConfigServer": "Notifying Configuration Server",
+        "Failed": "Failed",
+        "Active": "Active"
+      }
     },
     "empty": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create New Tenant\" button",
     "properties": {
@@ -1287,7 +1298,8 @@
       "update": "An unknown error occurred when attempting to update the tenant",
       "create": "An unknown error occurred when attempting to create the tenant",
       "delete": "An unknown error occurred when attempting to delete the tenant",
-      "decrypt": "An error occurred while attempting to decrypt an encrypted password"
+      "decrypt": "An error occurred while attempting to decrypt an encrypted password",
+      "password-mismatch": "All passwords must be the same for each unique username."
     }
   },
   "user-query-table": {

@@ -51,9 +51,6 @@ export const adminRoutes: Route[] = [
         data: {
           breadcrumb: { translate: 'aggregate-reports.heading' },
           permissions: ['CUSTOM_AGGREGATE_READ']
-        },
-        resolve: {
-          options: AggregateReportOptionsResolve
         }
       },
       {

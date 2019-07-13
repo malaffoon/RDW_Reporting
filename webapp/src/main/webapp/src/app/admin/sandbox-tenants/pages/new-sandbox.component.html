@@ -99,9 +99,9 @@
       type="button"
       class="btn btn-primary pull-right mr-xs"
       (click)="onSubmit()"
-      [disabled]="sandboxForm.invalid"
+      [disabled]="sandboxForm.invalid || saving"
     >
-      {{ 'common.action.save' | translate }}
+      {{ (saving ? 'common.action.saving' : 'common.action.save') | translate }}
     </button>
   </div>
 </div>

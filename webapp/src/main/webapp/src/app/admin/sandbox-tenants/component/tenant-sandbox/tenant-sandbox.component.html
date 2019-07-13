@@ -12,12 +12,26 @@
         </h2>
       </div>
 
-      <div class="controls">
+      <div class="controls text-right">
         <ng-container *ngIf="!open; else openControls">
           <a href="javascript:void(0)" (click)="onOpenButtonClick()">
             <i class="fa fa-edit fa-2x"></i>
           </a>
         </ng-container>
+        <div>
+          <div
+            class="label border-only"
+            [ngClass]="{
+              'blue-dark': value.status === statusEnum.Active,
+              aqua:
+                value.status !== statusEnum.Active &&
+                value.status !== statusEnum.Failed,
+              maroon: value.status === statusEnum.Failed
+            }"
+          >
+            {{ 'tenant-config.fields.status.' + status | translate }}
+          </div>
+        </div>
 
         <ng-template #openControls>
           <ul class="list-unstyled list-inline">

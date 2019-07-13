@@ -7,8 +7,8 @@ import {
 import { Ordering, ordering } from '@kourge/ordering';
 import { byNumber, byString, join, ranking } from '@kourge/ordering/comparator';
 import { AggregateReportOptions } from './aggregate-report-options';
-import { Subgroup } from './subgroup/subgroup';
 import { isNullOrEmpty } from '../shared/support/support';
+import { Subgroup } from '../shared/model/subgroup';
 
 const OverallDimensionType: string = 'Overall';
 

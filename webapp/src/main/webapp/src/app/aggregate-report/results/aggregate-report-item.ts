@@ -1,6 +1,6 @@
 import { Organization } from '../../shared/organization/organization';
-import { Subgroup } from '../subgroup/subgroup';
 import { TargetReportingLevel } from '../../assessments/model/aggregate-target-score-row.model';
+import { Subgroup } from '../../shared/model/subgroup';
 
 /**
  * This model represents an aggregate report data table row result.

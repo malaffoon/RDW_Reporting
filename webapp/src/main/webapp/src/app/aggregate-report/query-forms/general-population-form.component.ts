@@ -11,7 +11,6 @@ import { AggregateReportOptionsMapper } from '../aggregate-report-options.mapper
 import { NotificationService } from '../../shared/notification/notification.service';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
-import { SubgroupFilterSupport } from '../subgroup/subgroup-filters';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { MultiOrganizationQueryFormComponent } from './multi-organization-query-form.component';
 import { notEmpty } from '../../shared/form/validators';
@@ -19,6 +18,7 @@ import { SubjectService } from '../../subject/subject.service';
 import { ReportQueryType } from '../../report/report';
 import { UserQueryService } from '../../report/user-query.service';
 import { canGetEstimatedRowCount } from '../support';
+import { SubgroupFilterSupport } from '../../shared/model/subgroup-filters';
 
 @Component({
   selector: 'general-population-form',

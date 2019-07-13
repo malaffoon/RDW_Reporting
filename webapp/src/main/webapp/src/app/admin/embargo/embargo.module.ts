@@ -22,7 +22,7 @@ import { embargoRoutes } from './embargo.routes';
     ReportingCommonModule,
     FormsModule,
     HttpClientModule,
-    ModalModule,
+    ModalModule.forRoot(), // this is needed in lazy modules for some reason
     TableModule,
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(embargoRoutes)

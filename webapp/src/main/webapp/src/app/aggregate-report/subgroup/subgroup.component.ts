@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Subgroup } from './subgroup';
+import { Subgroup } from '../../shared/model/subgroup';
 
 @Component({
   selector: 'subgroup',

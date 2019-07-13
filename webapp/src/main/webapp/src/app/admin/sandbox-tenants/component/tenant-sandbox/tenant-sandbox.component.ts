@@ -13,10 +13,13 @@ import { cloneDeep, forOwn } from 'lodash';
 import { CustomValidators } from '../../../../shared/validator/custom-validators';
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
+import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
+import { TenantStatus } from '../../model/tenant-status.enum';
 
 @Component({
   selector: 'tenant-sandbox',
-  templateUrl: './tenant-sandbox.component.html'
+  templateUrl: './tenant-sandbox.component.html',
+  styleUrls: ['./tenant-sandbox.component.less']
 })
 export class TenantSandboxComponent implements OnInit, OnChanges {
   @Input()
@@ -46,15 +49,21 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
 
+  status: string = '';
+
   readonly readonlyGroups = ['datasources', 'archive'];
 
   constructor(private cdRef: ChangeDetectorRef) {}
+
+  statusEnum = TenantStatus;
 
   ngOnInit(): void {
     this.formGroup.patchValue({
       label: this.value.label,
       description: this.value.description
     });
+
+    this.status = this.getEnum(this.value.status);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -92,28 +101,18 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
       localizationOverrides: this.localizationOverrides.filter(
         override => override.originalValue !== override.value
       ),
-      configurationProperties: this.getModifiedConfigProperties(
+      configurationProperties: getModifiedConfigProperties(
         this.value.configurationProperties
       )
     });
   }
 
-  private getModifiedConfigProperties(configProperties: any) {
-    var modifiedProperties = {};
-    forOwn(configProperties, (group, key) => {
-      var props = <ConfigurationProperty[]>group;
-      if (props.some !== undefined) {
-        if (props.some(x => x.originalValue !== x.value)) {
-          modifiedProperties[key] = props.filter(
-            x => x.originalValue !== x.value
-          );
-        }
-      } else {
-        // Not an array of config props, msut be a sub group, i.e. datasources.reporting_rw
-        modifiedProperties[key] = this.getModifiedConfigProperties(group);
+  private getEnum(enumValue: TenantStatus) {
+    for (let i in TenantStatus) {
+      if (TenantStatus[i] === enumValue) {
+        return i;
       }
-    });
-    return modifiedProperties;
+    }
   }
 
   private mapLocalizationOverrides(localizationDefaults: any): void {
