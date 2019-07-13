@@ -32,8 +32,8 @@ export function mapTenant(
 export function toConfigProperties(apiModel: any): any {
   return {
     aggregate: apiModel.aggregate,
-    archive: apiModel.archive,
     reporting: apiModel.reporting,
+    ...(apiModel.archive ? { archive: apiModel.archive } : {}),
     ...(apiModel.datasources ? { datasources: apiModel.datasources } : {})
   };
 }
@@ -43,10 +43,9 @@ export function mapSandbox(
   defaultConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
-  // intentionally exclude datasources here.
+  // intentionally exclude datasources and archived here.
   const defaults = {
     aggregate: defaultConfiguration.aggregate,
-    archive: defaultConfiguration.archive,
     reporting: defaultConfiguration.reporting
   };
   return <SandboxConfiguration>{
