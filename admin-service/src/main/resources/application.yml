@@ -113,10 +113,10 @@ spring:
           destination: GROUPS
           group: default
         ConfigpropsUpdated:
-          destination: ConfigpropsUpdated
-          group: default
           producer:
             requiredGroups: default
+#          destination: ConfigpropsUpdated
+#          group: default
 
   admin_warehouse_datasource:
     url-parts:
