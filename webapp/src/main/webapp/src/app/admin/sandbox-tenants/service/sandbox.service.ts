@@ -33,9 +33,8 @@ export class SandboxService {
     return this.dataService.get(DefaultsRoute).pipe(
       map(config => {
         return {
-          // intentionally excluding datasets here.
+          // intentionally excluding datasets and archived here.
           aggregate: config.aggregate,
-          archive: config.archive,
           reporting: config.reporting
         };
       }),

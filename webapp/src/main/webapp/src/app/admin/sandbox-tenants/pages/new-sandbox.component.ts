@@ -30,6 +30,7 @@ import { LanguageStore } from '../../../shared/i18n/language.store';
   templateUrl: './new-sandbox.component.html'
 })
 export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
+  saving: boolean = false;
   dataSets: DataSet[];
   tenants: TenantConfiguration[] = [];
   sandboxForm: FormGroup;
@@ -141,6 +142,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
+    this.saving = true;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
@@ -158,12 +160,20 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
       () => {
         this.router.navigate(['sandboxes']);
       },
-      error =>
-        error.json().message
-          ? this.notificationService.error({ id: error.json().message })
-          : this.notificationService.error({
-              id: 'sandbox-config.errors.create'
-            })
+      error => {
+        let errorMessage = '';
+        try {
+          errorMessage =
+            error && error.json() && error.json().message
+              ? error.json().message
+              : 'sandbox-config.errors.create';
+        } catch (err) {
+          // unable to parse error?
+          errorMessage = 'sandbox-config.errors.create';
+        }
+        this.notificationService.error({ id: errorMessage });
+        this.saving = false;
+      }
     );
   }
 }

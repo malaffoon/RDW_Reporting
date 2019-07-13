@@ -8,6 +8,7 @@ import {
   toTenantApiModel,
   getModifiedConfigProperties
 } from './tenant.mapper';
+import { TenantStatus } from '../model/tenant-status.enum';
 
 const tenantApiModel = {
   tenant: {
@@ -17,7 +18,7 @@ const tenantApiModel = {
     name: 'California',
     sandbox: false
   },
-  administrationStatus: 'ACTIVE',
+  administrationStatus: { tenantAdministrationStatus: 'ACTIVE' },
   datasources: { reporting_rw: { urlParts: { database: 'reporting' } } }
 };
 const sandboxApiModel = {
@@ -51,6 +52,7 @@ const tenantUIModel: TenantConfiguration = {
   code: 'AZ',
   description: 'AZ description',
   id: '34',
+  status: TenantStatus.Active,
   configurationProperties: {
     datasources: {
       reporting_rw: [
@@ -103,6 +105,7 @@ describe('Tenant mapper', () => {
     expect(actual.code).toBe('CALICODE');
     expect(actual.description).toBe('ca description');
     expect(actual.id).toBe('CA');
+    expect(actual.status).toBe(TenantStatus.Active);
     expect(actual.localizationOverrides).toBeDefined();
     expect(actual.configurationProperties).toBeDefined();
   });

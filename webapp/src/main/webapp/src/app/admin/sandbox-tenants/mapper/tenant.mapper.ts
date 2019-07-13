@@ -4,6 +4,7 @@ import { forOwn, get, isString } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
+import { TenantStatus } from '../model/tenant-status.enum';
 
 export function mapTenant(
   tenantConfiguration: any,
@@ -16,6 +17,7 @@ export function mapTenant(
     id: tenant.id,
     label: tenant.name,
     description: tenant.description,
+    status: tenantConfiguration.administrationStatus.tenantAdministrationStatus,
     configurationProperties: skipMappingConfigProperties
       ? toConfigProperties(tenantConfiguration)
       : mapConfigurationProperties(
@@ -30,8 +32,8 @@ export function mapTenant(
 export function toConfigProperties(apiModel: any): any {
   return {
     aggregate: apiModel.aggregate,
-    archive: apiModel.archive,
     reporting: apiModel.reporting,
+    ...(apiModel.archive ? { archive: apiModel.archive } : {}),
     ...(apiModel.datasources ? { datasources: apiModel.datasources } : {})
   };
 }
@@ -41,10 +43,9 @@ export function mapSandbox(
   defaultConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
-  // intentionally exclude datasources here.
+  // intentionally exclude datasources and archived here.
   const defaults = {
     aggregate: defaultConfiguration.aggregate,
-    archive: defaultConfiguration.archive,
     reporting: defaultConfiguration.reporting
   };
   return <SandboxConfiguration>{
