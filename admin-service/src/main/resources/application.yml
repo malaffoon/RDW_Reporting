@@ -112,11 +112,16 @@ spring:
         output:
           destination: GROUPS
           group: default
-        ConfigpropsUpdated:
+        configprops-update-input:
+          destination: configprops-update-exchange
+          group: configprops-update-queue
           producer:
-            requiredGroups: default
-#          destination: ConfigpropsUpdated
-#          group: default
+            requiredGroups: configprops-update-queue
+        configprops-update-output:
+          destination: configprops-update-exchange
+          group: configprops-update-queue
+          producer:
+            requiredGroups: configprops-update-queue
 
   admin_warehouse_datasource:
     url-parts:
