@@ -119,9 +119,6 @@ spring:
             requiredGroups: ConfigpropsUpdateQueue
         ConfigpropsUpdateOutput:
           destination: ConfigpropsUpdateExchange
-          group: ConfigpropsUpdateQueue
-          producer:
-            requiredGroups: ConfigpropsUpdateQueue
 
   admin_warehouse_datasource:
     url-parts:

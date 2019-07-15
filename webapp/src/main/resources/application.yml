@@ -103,9 +103,6 @@ spring:
       bindings:
         ConfigpropsUpdateOutput:
           destination: ConfigpropsUpdateExchange
-          group: ConfigpropsUpdateQueue
-          producer:
-            requiredGroups: ConfigpropsUpdateQueue
 
 datasources:
   reporting_ro:
