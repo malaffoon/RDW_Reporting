@@ -42,10 +42,7 @@ export class TenantService {
       this.dataService.get(ResourceRoute),
       this.dataService.get(DefaultsRoute)
     ]).pipe(
-      map(results => {
-        const tenantConfigurations = results[0];
-        const defaultConfig = results[1];
-
+      map(([tenantConfigurations, defaultConfig]) => {
         return tenantConfigurations.map(tenantConfiguration =>
           mapTenant(tenantConfiguration, defaultConfig)
         );

@@ -5,8 +5,10 @@ import {
   mapSandbox,
   mapTenant,
   toSandboxApiModel,
-  toTenantApiModel
+  toTenantApiModel,
+  getModifiedConfigProperties
 } from './tenant.mapper';
+import { TenantStatus } from '../model/tenant-status.enum';
 
 const tenantApiModel = {
   tenant: {
@@ -16,7 +18,7 @@ const tenantApiModel = {
     name: 'California',
     sandbox: false
   },
-  administrationStatus: 'ACTIVE',
+  administrationStatus: { tenantAdministrationStatus: 'ACTIVE' },
   datasources: { reporting_rw: { urlParts: { database: 'reporting' } } }
 };
 const sandboxApiModel = {
@@ -50,6 +52,7 @@ const tenantUIModel: TenantConfiguration = {
   code: 'AZ',
   description: 'AZ description',
   id: '34',
+  status: TenantStatus.Active,
   configurationProperties: {
     datasources: {
       reporting_rw: [
@@ -68,7 +71,23 @@ const tenantUIModel: TenantConfiguration = {
           formControlName: 'reporting_rw.urlParts.protocol'
         }
       ]
-    }
+    },
+    reporting: [
+      {
+        key: 'state.name',
+        originalValue: 'California',
+        value: 'Florida',
+        formControlName: 'reporting'
+      }
+    ],
+    archive: [
+      {
+        key: 'prefix',
+        originalValue: 's3://',
+        value: 's3://',
+        formControlName: 'archive'
+      }
+    ]
   }
 };
 
@@ -86,6 +105,7 @@ describe('Tenant mapper', () => {
     expect(actual.code).toBe('CALICODE');
     expect(actual.description).toBe('ca description');
     expect(actual.id).toBe('CA');
+    expect(actual.status).toBe(TenantStatus.Active);
     expect(actual.localizationOverrides).toBeDefined();
     expect(actual.configurationProperties).toBeDefined();
   });
@@ -185,5 +205,31 @@ describe('Tenant mapper', () => {
     expect(actual.datasources.reporting_rw.urlParts.protocol).toBe(
       'jdbc:mysql:'
     );
+  });
+
+  it('should get modified config properties', () => {
+    const actual = getModifiedConfigProperties(
+      tenantUIModel.configurationProperties
+    );
+
+    const actualReportingDatasource = actual.datasources.reporting_rw;
+    expect(actualReportingDatasource.length).toBe(1);
+
+    const actualDatabase = actualReportingDatasource[0];
+    expect(actualDatabase.key).toBe('urlParts.database');
+    expect(actualDatabase.value).toBe('new-reporting');
+    expect(actualDatabase.originalValue).toBe('not_a_schema');
+    expect(actualDatabase.group).toBe('reporting_rw');
+
+    const actualReporting = actual.reporting;
+    expect(actualReporting.length).toBe(1);
+
+    const actualStateName = actualReporting[0];
+    expect(actualStateName.key).toBe('state.name');
+    expect(actualStateName.value).toBe('Florida');
+    expect(actualStateName.originalValue).toBe('California');
+    expect(actualStateName.formControlName).toBe('reporting');
+
+    expect(actual.archive).toBeUndefined();
   });
 });

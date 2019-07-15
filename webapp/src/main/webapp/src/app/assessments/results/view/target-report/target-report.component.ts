@@ -25,7 +25,6 @@ import { DataTableService } from '../../../../shared/datatable/datatable-service
 import { ExamFilterOptionsService } from '../../../filters/exam-filters/exam-filter-options.service';
 import { ExamFilterOptions } from '../../../model/exam-filter-options.model';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
-import { Subgroup } from '../../../../aggregate-report/subgroup/subgroup';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
 import {
   byNumericString,
@@ -41,6 +40,7 @@ import { Utils } from '../../../../shared/support/support';
 import { SubjectDefinition } from '../../../../subject/subject';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
 import { ExportResults } from '../export-results';
+import { Subgroup } from '../../../../shared/model/subgroup';
 
 @Component({
   selector: 'target-report',

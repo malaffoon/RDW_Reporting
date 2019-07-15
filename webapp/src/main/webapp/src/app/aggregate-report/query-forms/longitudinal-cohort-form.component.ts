@@ -11,7 +11,6 @@ import { AggregateReportOptionsMapper } from '../aggregate-report-options.mapper
 import { NotificationService } from '../../shared/notification/notification.service';
 import { AssessmentDefinition } from '../assessment/assessment-definition';
 import { ScrollNavItem } from '../../shared/nav/scroll-nav.component';
-import { SubgroupFilterSupport } from '../subgroup/subgroup-filters';
 import { SubgroupMapper } from '../subgroup/subgroup.mapper';
 import { MultiOrganizationQueryFormComponent } from './multi-organization-query-form.component';
 import { isGreaterThan } from '../../shared/form/validators';
@@ -20,6 +19,7 @@ import { canGetEstimatedRowCount, computeEffectiveYears } from '../support';
 import { SchoolYearPipe } from '../../shared/format/school-year.pipe';
 import { ReportQueryType } from '../../report/report';
 import { UserQueryService } from '../../report/user-query.service';
+import { SubgroupFilterSupport } from '../../shared/model/subgroup-filters';
 
 /**
  * Disable StudentEnrolledGrade as a longitudinal dimension type

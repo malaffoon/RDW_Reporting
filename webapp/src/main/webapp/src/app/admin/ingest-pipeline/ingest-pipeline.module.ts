@@ -34,7 +34,7 @@ import { ingestPipelineRoutes } from './ingest-pipeline.routes';
     ReactiveFormsModule,
     ButtonsModule,
     BsDropdownModule,
-    ModalModule,
+    ModalModule.forRoot(), // this is needed in lazy modules for some reason
     TooltipModule,
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(ingestPipelineRoutes)

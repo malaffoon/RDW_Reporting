@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { SubgroupMapper } from '../../aggregate-report/subgroup/subgroup.mapper';
 import {
   AggregateTargetScoreRow,
   TargetReportingLevel
@@ -10,11 +9,28 @@ import { ExamStatisticsCalculator } from './exam-statistics-calculator';
 import { Target } from '../model/target.model';
 import * as deepEqual from 'fast-deep-equal';
 import { ExamFilterOptions } from '../model/exam-filter-options.model';
-import { Subgroup } from '../../aggregate-report/subgroup/subgroup';
 import {
   average,
   standardErrorOfMean
 } from '../../exam/model/score-statistics';
+import { Subgroup } from '../../shared/model/subgroup';
+import {
+  overallSubgroup,
+  subgroupFromTypeAndCode
+} from '../../shared/support/subgroups';
+import { TranslateService } from '@ngx-translate/core';
+
+export interface GroupedTargetScore {
+  subject: string;
+  targetId: number;
+  target: string;
+  targetNaturalId: string;
+  claim: string;
+  subgroup: Subgroup;
+  standardMetScores: number[];
+  studentScores: number[];
+  includeInReport: boolean;
+}
 
 @Injectable()
 export class TargetStatisticsCalculator {
@@ -22,7 +38,7 @@ export class TargetStatisticsCalculator {
 
   constructor(
     private examStatisticsCalculator: ExamStatisticsCalculator,
-    private subgroupMapper: SubgroupMapper
+    private translateService: TranslateService
   ) {}
 
   /**
@@ -98,9 +114,10 @@ export class TargetStatisticsCalculator {
 
         // always treat results as array since race/ethnicity will come back as array and we need to handle multiple as separate entries
         subgroupValues.forEach(examSubgroupValue => {
-          const subgroup = this.subgroupMapper.fromTypeAndCode(
+          const subgroup = subgroupFromTypeAndCode(
             subgroupCode,
-            examSubgroupValue
+            examSubgroupValue,
+            this.translateService
           );
           const scores = groupedScores.find(
             x => x.targetId == exam.targetId && deepEqual(x.subgroup, subgroup)
@@ -153,7 +170,7 @@ export class TargetStatisticsCalculator {
           targetId: target.id,
           targetNaturalId: target.naturalId,
           claim: target.claimCode,
-          subgroup: this.subgroupMapper.createOverall(),
+          subgroup: overallSubgroup(this.translateService),
           standardMetScores: [],
           studentScores: [],
           includeInReport: target.includeInReport
@@ -208,9 +225,10 @@ export class TargetStatisticsCalculator {
       }
 
       subgroupValues.forEach(subgroupValue => {
-        const subgroup = this.subgroupMapper.fromTypeAndCode(
+        const subgroup = subgroupFromTypeAndCode(
           subgroupCode,
-          subgroupValue
+          subgroupValue,
+          this.translateService
         );
 
         groupedScores.push(
@@ -243,7 +261,7 @@ export class TargetStatisticsCalculator {
 
     return this.mapTargetScoreDeltaToReportingLevel(
       average(scored),
-      standardErrorOfMean(scores)
+      standardErrorOfMean(scored)
     );
   }
 
@@ -294,16 +312,4 @@ export class TargetStatisticsCalculator {
     if (delta <= -standardError) return TargetReportingLevel.Below;
     return TargetReportingLevel.Near;
   }
-}
-
-export interface GroupedTargetScore {
-  subject: string;
-  targetId: number;
-  target: string;
-  targetNaturalId: string;
-  claim: string;
-  subgroup: Subgroup;
-  standardMetScores: number[];
-  studentScores: number[];
-  includeInReport: boolean;
 }

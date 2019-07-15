@@ -1,4 +1,5 @@
 import { ConfigurationProperty } from './configuration-property';
+import { TenantStatus } from './tenant-status.enum';
 
 /**
  * Holds information regarding an RDW tenant configuration
@@ -33,4 +34,9 @@ export interface TenantConfiguration {
    * The JSON containing configuration properties
    */
   configurationProperties?: any;
+
+  /**
+   * The current status of this tenant.
+   */
+  status: TenantStatus;
 }

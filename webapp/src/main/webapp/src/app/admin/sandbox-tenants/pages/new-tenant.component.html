@@ -18,6 +18,7 @@
             type="text"
             class="form-control text-uppercase"
             name="key"
+            maxlength="20"
             formControlName="key"
             (change)="updateConfigProperties()"
           />
@@ -95,6 +96,7 @@
             [configurationProperties]="configurationProperties"
             [readonly]="false"
             propertiesArrayName="configurationProperties"
+            (propertyValueChanged)="checkPasswordsAndUsernames($event)"
           >
           </property-override-tree-table>
         </p-accordionTab>
@@ -115,6 +117,9 @@
       </p-accordion>
     </form>
   </div>
+  <div *ngIf="passwordMismatch" class="text-danger text-right">
+    {{ 'tenant-config.errors.password-mismatch' | translate }}
+  </div>
   <div class="mt-md" style="height: 40px">
     <a class="btn btn-default pull-right mr-xs" routerLink="/tenants">{{
       'common.action.cancel' | translate
@@ -123,9 +128,9 @@
       type="button"
       class="btn btn-primary pull-right mr-xs"
       (click)="onSubmit()"
-      [disabled]="tenantForm.invalid"
+      [disabled]="tenantForm.invalid || passwordMismatch || saving"
     >
-      {{ 'common.action.save' | translate }}
+      {{ (saving ? 'common.action.saving' : 'common.action.save') | translate }}
     </button>
   </div>
 </div>
