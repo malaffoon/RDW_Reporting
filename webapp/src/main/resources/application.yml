@@ -101,11 +101,11 @@ spring:
   cloud:
     stream:
       bindings:
-        configprops-update-output:
-          destination: configprops-update-exchange
-          group: configprops-update-queue
+        ConfigpropsUpdateOutput:
+          destination: ConfigpropsUpdateExchange
+          group: ConfigpropsUpdateQueue
           producer:
-            requiredGroups: configprops-update-queue
+            requiredGroups: ConfigpropsUpdateQueue
 
 datasources:
   reporting_ro:
