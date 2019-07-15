@@ -1,13 +1,18 @@
-import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DataService } from '../../../shared/data/data.service';
-import { TenantConfiguration } from '../model/tenant-configuration';
-import { toTenantApiModel, mapTenant } from '../mapper/tenant.mapper';
+import { forkJoin, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { AdminServiceRoute } from '../../../shared/service-route';
+import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
+import { AdminServiceRoute } from '../../../shared/service-route';
+import {
+  mapTenant,
+  toTenantApiModel,
+  mapConfigurationProperties
+} from '../mapper/tenant.mapper';
+import { TenantConfiguration } from '../model/tenant-configuration';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
+const DefaultsRoute = `${ResourceRoute}/defaults`;
 
 /**
  * Service responsible for managing tenants
@@ -23,23 +28,26 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(): Observable<any> {
     return this.dataService
-      .get(`${ResourceRoute}`)
-      .pipe(map(apiTenants => apiTenants['applicationTenantConfiguration']));
+      .get(DefaultsRoute)
+      .pipe(
+        map(configProperties => mapConfigurationProperties(configProperties))
+      );
   }
 
   /**
    * Gets all sandbox configurations for the system
    */
   getAll(): Observable<TenantConfiguration[]> {
-    return this.dataService
-      .get(`${ResourceRoute}`)
-      .pipe(
-        map(apiTenants =>
-          apiTenants.tenants.map(apiTenant =>
-            mapTenant(apiTenant, apiTenants['applicationTenantConfiguration'])
-          )
-        )
-      );
+    return forkJoin([
+      this.dataService.get(ResourceRoute),
+      this.dataService.get(DefaultsRoute)
+    ]).pipe(
+      map(([tenantConfigurations, defaultConfig]) => {
+        return tenantConfigurations.map(tenantConfiguration =>
+          mapTenant(tenantConfiguration, defaultConfig)
+        );
+      })
+    );
   }
 
   /**

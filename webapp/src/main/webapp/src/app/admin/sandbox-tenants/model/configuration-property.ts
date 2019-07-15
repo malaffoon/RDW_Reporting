@@ -8,6 +8,12 @@ export class ConfigurationProperty {
   secure?: boolean;
   showSecure?: boolean;
   required?: boolean;
+  readonly: boolean;
+  lowercase: boolean;
+
+  get modified() {
+    return this.originalValue !== this.value;
+  }
 
   constructor(key, value, group = null, originalVal = value) {
     this.key = key;

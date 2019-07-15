@@ -4,8 +4,6 @@
       #tt
       [value]="configurationPropertiesTreeNodes"
       dataKey="key"
-      [scrollable]="true"
-      scrollHeight="400px"
       [globalFilterFields]="['key', 'value']"
       styleClass="table table-striped table-hover overflow rdw-scrollable-table"
       [paginator]="true"
@@ -58,7 +56,7 @@
             [title]="rowNode.node.data.key"
             colspan="2"
             [ngClass]="{ 'group-node': rowNode.node.data.groupNode }"
-            (click)="expandOrCollapse(rowNode.node)"
+            (click)="expandOrCollapse(rowNode, $event)"
           >
             <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
             <ng-container *ngIf="!rowNode.node.data.groupNode">{{
@@ -72,7 +70,7 @@
         <!-- Leaf Row -->
         <tr
           *ngIf="
-            !readonly &&
+            !rowNode.node.data.readonly &&
             rowNode.node.leaf &&
             ((showModifiedPropertiesOnly &&
               rowNode.node.data.originalValue !== rowNode.node.data.value) ||
@@ -80,11 +78,11 @@
           "
           [ttRow]="rowNode"
           [ngClass]="{
-            modified:
-              rowNode.node.data.value !== rowNode.node.data.originalValue,
+            modified: rowNode.node.data.modified,
             required:
-              rowNode.node.data.required &&
-              (!rowNode.node.data.value || rowNode.node.data.value === '')
+              form.controls[propertiesArrayName].controls[
+                rowNode.node.data.formControlName
+              ].errors
           }"
           (click)="overrideInput.focus()"
         >
@@ -105,6 +103,7 @@
               [formControlName]="rowNode.node.data.formControlName"
               (change)="updateOverride(rowNode.node.data)"
               class="property-input"
+              [ngClass]="{ 'text-lowercase': rowNode.node.data.lowercase }"
               [style.padding-right]="calculatePadding(rowNode.node.data)"
             />
             <div class="icon-container">
@@ -155,7 +154,7 @@
         </tr>
         <tr
           *ngIf="
-            readonly &&
+            rowNode.node.data.readonly &&
             rowNode.node.leaf &&
             ((showModifiedPropertiesOnly &&
               rowNode.node.data.originalValue !== rowNode.node.data.value) ||
@@ -172,7 +171,7 @@
             {{ rowNode.node.data.key }}
           </td>
           <td>
-            <span *ngIf="readonly">
+            <span *ngIf="rowNode.node.data.readonly">
               {{ rowNode.node.data.value }}
             </span>
           </td>

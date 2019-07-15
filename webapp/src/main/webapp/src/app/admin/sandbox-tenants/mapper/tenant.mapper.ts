@@ -4,58 +4,64 @@ import { forOwn, get, isString } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
+import { TenantStatus } from '../model/tenant-status.enum';
 
 export function mapTenant(
-  tenant: any,
-  defaultApplicationTenantConfiguration: any
+  tenantConfiguration: any,
+  defaultApplicationTenantConfiguration: any,
+  skipMappingConfigProperties?: boolean
 ): TenantConfiguration {
-  return <TenantConfiguration>{
-    code: tenant.tenant['key'],
-    id: tenant.tenant['id'],
-    label: tenant.tenant['name'],
-    description: tenant.tenant['description'],
-    configurationProperties: mapConfigurationProperties(
-      defaultApplicationTenantConfiguration,
-      tenant.applicationTenantConfiguration
-    ),
+  const tenant = tenantConfiguration.tenant;
+  return {
+    code: tenant.key,
+    id: tenant.id,
+    label: tenant.name,
+    description: tenant.description,
+    status: tenantConfiguration.administrationStatus.tenantAdministrationStatus,
+    configurationProperties: skipMappingConfigProperties
+      ? toConfigProperties(tenantConfiguration)
+      : mapConfigurationProperties(
+          toConfigProperties(defaultApplicationTenantConfiguration),
+          toConfigProperties(tenantConfiguration)
+        ),
     localizationOverrides: mapLocalizationOverrides(tenant.localization)
   };
 }
 
+// helper to return only the config props of an api model.
+export function toConfigProperties(apiModel: any): any {
+  return {
+    aggregate: apiModel.aggregate,
+    reporting: apiModel.reporting,
+    ...(apiModel.archive ? { archive: apiModel.archive } : {}),
+    ...(apiModel.datasources ? { datasources: apiModel.datasources } : {})
+  };
+}
+
 export function mapSandbox(
-  sandbox: any,
-  defaultApplicationSandboxConfiguration: any,
+  tenantConfiguration: any,
+  defaultConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
+  // intentionally exclude datasources and archived here.
+  const defaults = {
+    aggregate: defaultConfiguration.aggregate,
+    reporting: defaultConfiguration.reporting
+  };
   return <SandboxConfiguration>{
-    code: sandbox.sandbox['key'],
-    label: sandbox.sandbox['name'],
-    description: sandbox.sandbox['description'],
+    ...mapTenant(tenantConfiguration, defaults),
+    parentTenantCode: tenantConfiguration.parentTenantKey,
     dataSet: dataSets.find(
-      dataSet => sandbox.sandbox['dataSetId'] === dataSet.id
-    ),
-    configurationProperties: mapConfigurationProperties(
-      defaultApplicationSandboxConfiguration,
-      sandbox.applicationSandboxConfiguration
-    ),
-    localizationOverrides: mapLocalizationOverrides(sandbox.localization)
+      dataSet => tenantConfiguration.tenant.sandboxDataset === dataSet.id
+    )
   };
 }
 
 export function toSandboxApiModel(sandbox: SandboxConfiguration): any {
-  return {
-    sandbox: {
-      key: sandbox.code,
-      id: sandbox.code,
-      description: sandbox.description,
-      name: sandbox.label,
-      dataSetId: sandbox.dataSet.id
-    },
-    applicationSandboxConfiguration: toConfigurationPropertiesApiModel(
-      sandbox.configurationProperties
-    ),
-    localization: toLocalizationOverridesApiModel(sandbox.localizationOverrides)
-  };
+  const apiModel = toTenantApiModel(sandbox);
+  apiModel.tenant.sandboxDataset = sandbox.dataSet.id;
+  apiModel.parentTenantKey = sandbox.parentTenantCode;
+  return apiModel;
 }
 
 export function toTenantApiModel(tenant: TenantConfiguration): any {
@@ -66,9 +72,7 @@ export function toTenantApiModel(tenant: TenantConfiguration): any {
       description: tenant.description,
       name: tenant.label
     },
-    applicationTenantConfiguration: toConfigurationPropertiesApiModel(
-      tenant.configurationProperties
-    ),
+    ...toConfigurationPropertiesApiModel(tenant.configurationProperties),
     localization: toLocalizationOverridesApiModel(tenant.localizationOverrides)
   };
 }
@@ -124,9 +128,10 @@ export function mapConfigurationProperties(
       const configProps: ConfigurationProperty[] = [];
 
       forOwn(flattenJsonObject(configGroup), (value, key) => {
+        const defaultVal = joinIfArray(value);
         if (!overrides) {
           configProps.push(
-            new ConfigurationProperty(key, joinIfArray(value), groupKey)
+            new ConfigurationProperty(key, defaultVal, groupKey)
           );
         } else {
           const groupOverrides = overrides[groupKey] || {};
@@ -137,12 +142,12 @@ export function mapConfigurationProperties(
                 key,
                 joinIfArray(override),
                 groupKey,
-                joinIfArray(value)
+                defaultVal
               )
             );
           } else {
             configProps.push(
-              new ConfigurationProperty(key, joinIfArray(value), groupKey)
+              new ConfigurationProperty(key, defaultVal, groupKey)
             );
           }
         }
@@ -161,9 +166,10 @@ export function mapConfigurationProperties(
         const configProps: ConfigurationProperty[] = [];
 
         forOwn(flattenJsonObject(databaseProperties), (value, key) => {
+          const defaultVal = key === 'password' ? '' : joinIfArray(value);
           if (!overrides) {
             configProps.push(
-              new ConfigurationProperty(key, joinIfArray(value), databaseName)
+              new ConfigurationProperty(key, defaultVal, databaseName)
             );
           } else {
             const groupOverrides = overrides[groupKey] || {};
@@ -174,12 +180,12 @@ export function mapConfigurationProperties(
                   key,
                   joinIfArray(override),
                   databaseName,
-                  joinIfArray(value)
+                  defaultVal
                 )
               );
             } else {
               configProps.push(
-                new ConfigurationProperty(key, joinIfArray(value), databaseName)
+                new ConfigurationProperty(key, defaultVal, databaseName)
               );
             }
           }
@@ -199,6 +205,24 @@ export function mapConfigurationProperties(
   });
 
   return groupedProperties;
+}
+
+export function getModifiedConfigProperties(configProperties: any): any {
+  var modifiedProperties = {};
+  forOwn(configProperties, (group, key) => {
+    var props = <ConfigurationProperty[]>group;
+    if (props.some !== undefined) {
+      if (props.some(x => x.originalValue !== x.value)) {
+        modifiedProperties[key] = props.filter(
+          x => x.originalValue !== x.value
+        );
+      }
+    } else {
+      // Not an array of config props, must be a sub group, i.e. datasources.reporting_rw
+      modifiedProperties[key] = getModifiedConfigProperties(group);
+    }
+  });
+  return modifiedProperties;
 }
 
 function mapLocalizationOverrides(overrides: any): ConfigurationProperty[] {

@@ -34,12 +34,7 @@ export class TenantsComponent implements OnInit {
 
   ngOnInit(): void {
     this.tenants$ = this.store.getState();
-    this.service.getAll().subscribe(tenants => {
-      this.store.setState(
-        // TODO sort on backend
-        tenants.sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
+    this.loadTenants();
 
     this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
       this.languageStore.currentLanguage
@@ -66,13 +61,7 @@ export class TenantsComponent implements OnInit {
 
   onSave(value: TenantConfiguration): void {
     this.service.update(value).subscribe(
-      () => {
-        this.store.setState(
-          this.store.state.map(existing =>
-            existing.code === value.code ? value : existing
-          )
-        );
-      },
+      () => this.loadTenants(),
       error =>
         error.json().message
           ? this.notificationService.error({ id: error.json().message })
@@ -80,5 +69,13 @@ export class TenantsComponent implements OnInit {
               id: 'tenant-config.errors.update'
             })
     );
+  }
+
+  private loadTenants() {
+    this.service.getAll().subscribe(tenants => {
+      this.store.setState(
+        tenants.sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
   }
 }

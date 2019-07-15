@@ -1,16 +1,31 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ConfigurationProperty } from '../model/configuration-property';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import { forOwn } from 'lodash';
 import { TreeNode } from 'primeng/api';
-import { cloneDeep, forOwn } from 'lodash';
+import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { NotificationService } from '../../../shared/notification/notification.service';
 import { DecryptionService } from '../../decryption.service';
+import { ConfigurationProperty } from '../model/configuration-property';
 
 @Component({
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html'
 })
 export class PropertyOverrideTreeTableComponent implements OnInit {
+  @ViewChild('tt') tt: TreeTable;
+
   _configurationProperties: any;
 
   get configurationProperties(): any {
@@ -31,13 +46,20 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   form: FormGroup;
   @Input()
   readonly = true;
+  @Input()
+  readonlyGroups: string[] = [];
+  @Output()
+  propertyValueChanged: EventEmitter<
+    ConfigurationProperty
+  > = new EventEmitter();
 
   // Should these be data driven?
   readonly secureFields = ['password', 's3SecretKey'];
-
   readonly requiredFields = ['password'];
-
   readonly encryptedFields = ['password'];
+
+  // These fields should be lowercase for consistency with existing usernames and schema names in the database
+  readonly lowercaseFields = ['urlParts.database', 'username'];
 
   showModifiedPropertiesOnly = false;
   configurationPropertiesTreeNodes: TreeNode[] = [];
@@ -54,16 +76,19 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   updateOverride(override: ConfigurationProperty): void {
     const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
     const formControl = formGroup.controls[override.formControlName];
-    const newVal = formControl.value;
+    const newVal = override.lowercase
+      ? formControl.value.toLowerCase()
+      : formControl.value;
     this.setPropertyValue(override, newVal);
   }
 
-  expandOrCollapse(node: TreeNode): void {
-    node.expanded = !node.expanded;
-    // Change detection is not triggered unless the TreeNode array is replaced due to framework using setter-based change detection
-    this.configurationPropertiesTreeNodes = cloneDeep(
-      this.configurationPropertiesTreeNodes
-    );
+  expandOrCollapse(node: any, event): void {
+    // Manaully invoking the TreeTableToggler, as it seems there's more to it than just
+    // toggling the boolean value of expanded.
+    // https://github.com/primefaces/primeng/blob/6.0.0-rc.1/src/app/components/treetable/treetable.ts#L2266
+    const toggler = new TreeTableToggler(this.tt);
+    toggler.rowNode = node;
+    toggler.onClick(event);
   }
 
   resetClicked(override: ConfigurationProperty): void {
@@ -127,6 +152,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     );
     configurationProperty.value = newVal;
     override.value = newVal;
+    this.propertyValueChanged.emit(override);
   }
 
   private createConfigurationPropertyTree(): void {
@@ -134,12 +160,17 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
     forOwn(this._configurationProperties, (configGroup, groupKey) => {
       const childrenNodes: TreeNode[] = [];
+      const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
       // For each configuration group, create a root-level node
 
       if (groupKey === 'datasources') {
         forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
           const dataSourcePropertyNodes: TreeNode[] = [];
-          this.mapLeafNodes(dataSourceProperties, dataSourcePropertyNodes);
+          this.mapLeafNodes(
+            dataSourceProperties,
+            dataSourcePropertyNodes,
+            groupReadonly
+          );
 
           childrenNodes.push({
             data: {
@@ -149,7 +180,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
           });
         });
       } else {
-        this.mapLeafNodes(configGroup, childrenNodes);
+        this.mapLeafNodes(configGroup, childrenNodes, groupReadonly);
       }
 
       const groupNode = <TreeNode>{
@@ -164,12 +195,13 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
       groupNodes.push(groupNode);
     });
 
-    this.configurationPropertiesTreeNodes = groupNodes;
+    this.configurationPropertiesTreeNodes = [...groupNodes];
   }
 
   private mapLeafNodes(
     configGroup: ConfigurationProperty[],
-    childrenNodes: TreeNode[]
+    childrenNodes: TreeNode[],
+    readonly: boolean
   ): void {
     const configPropertiesFormGroup = <FormGroup>(
       this.form.controls[this.propertiesArrayName]
@@ -182,17 +214,15 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
         group.value.startsWith('{cipher}') &&
         this.encryptedFields.some(x => x === group.key);
 
+      // TODO: Move these to the mapper.
+      group.encrypted = encrypted;
+      group.readonly = readonly || this.readonly;
+      group.secure = this.secureFields.some(x => x === group.key);
+      group.required = this.requiredFields.some(x => x === group.key);
+      group.lowercase = this.lowercaseFields.some(x => x === group.key);
+
       childrenNodes.push({
-        data: <ConfigurationProperty>{
-          key: group.key,
-          value: group.value,
-          originalValue: group.originalValue,
-          group: group.group,
-          formControlName: group.formControlName,
-          encrypted: encrypted,
-          secure: this.secureFields.some(x => x === group.key),
-          required: this.requiredFields.some(x => x === group.key)
-        },
+        data: group, // assign object as a reference so other fields can trigger changes
         expanded: false,
         leaf: true
       });
@@ -200,12 +230,23 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
       group.key.indexOf('password') > -1
         ? configPropertiesFormGroup.addControl(
             group.formControlName,
-            new FormControl(group.value, Validators.required)
+            new FormControl(group.value, this.getPasswordValidators())
           )
         : configPropertiesFormGroup.addControl(
             group.formControlName,
             new FormControl(group.value)
           );
     });
+  }
+
+  private getPasswordValidators(): ValidatorFn[] {
+    const validators = [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(64),
+      Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-zd].{8,}')
+    ];
+
+    return validators;
   }
 }

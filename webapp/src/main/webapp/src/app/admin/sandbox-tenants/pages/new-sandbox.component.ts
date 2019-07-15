@@ -5,43 +5,51 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { DataSet } from '../model/sandbox-configuration';
-import { SandboxService } from '../service/sandbox.service';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
-  Validators,
-  FormControl
+  Validators
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
-import { ConfigurationProperty } from '../model/configuration-property';
-import { CustomValidators } from '../../../shared/validator/custom-validators';
-import { mapConfigurationProperties } from '../mapper/tenant.mapper';
-import { SandboxStore } from '../store/sandbox.store';
 import { NotificationService } from '../../../shared/notification/notification.service';
+import { CustomValidators } from '../../../shared/validator/custom-validators';
+import {
+  mapConfigurationProperties,
+  getModifiedConfigProperties
+} from '../mapper/tenant.mapper';
+import { ConfigurationProperty } from '../model/configuration-property';
+import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
+import { TenantConfiguration } from '../model/tenant-configuration';
+import { SandboxService } from '../service/sandbox.service';
+import { LanguageStore } from '../../../shared/i18n/language.store';
 
 @Component({
   selector: 'new-sandbox',
   templateUrl: './new-sandbox.component.html'
 })
 export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
+  saving: boolean = false;
   dataSets: DataSet[];
+  tenants: TenantConfiguration[] = [];
   sandboxForm: FormGroup;
   // Contains the full list of localization overrides, with default values
   localizationOverrides: ConfigurationProperty[] = [];
+  defaultLocalizations: any;
   // Contains the full list of configuration properties, with default values
   configurationProperties: any;
+  defaultConfigurationProperties: any;
 
   @ViewChild('sandboxLabelInput')
   sandboxLabelInput: ElementRef;
 
   constructor(
     private service: SandboxService,
-    private store: SandboxStore,
     private notificationService: NotificationService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
+    private languageStore: LanguageStore,
     private router: Router
   ) {}
 
@@ -49,76 +57,123 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.sandboxForm = this.formBuilder.group({
       label: [null, CustomValidators.notBlank],
       description: [null],
-      dataSetId: [null, Validators.required],
+      dataset: [null, Validators.required],
+      tenant: [null, Validators.required],
       configurationProperties: this.formBuilder.group({}),
       localizationOverrides: this.formBuilder.group({})
     });
 
-    this.service.getAvailableDataSets().subscribe(dataSets => {
-      this.dataSets = dataSets;
-    });
+    this.sandboxForm.controls.tenant.valueChanges.subscribe(
+      this.overridePropsFromTenenat.bind(this)
+    );
 
-    this.mapLocalizationOverrides();
+    this.service
+      .getAvailableDataSets()
+      .subscribe(dataSets => (this.dataSets = dataSets));
+    this.service.getTenants().subscribe(tenants => (this.tenants = tenants));
+    this.loadLocalizations();
 
     this.service
       .getDefaultConfigurationProperties()
-      .subscribe(
-        configProperties =>
-          (this.configurationProperties = mapConfigurationProperties(
-            configProperties
-          ))
-      );
+      .subscribe(configProperties => {
+        this.defaultConfigurationProperties = configProperties;
+        this.configurationProperties = mapConfigurationProperties(
+          configProperties
+        );
+      });
   }
 
   ngAfterViewInit() {
     setTimeout(() => this.sandboxLabelInput.nativeElement.focus());
   }
 
-  private mapLocalizationOverrides() {
+  private overridePropsFromTenenat(tenant: TenantConfiguration) {
+    this.configurationProperties = mapConfigurationProperties(
+      this.defaultConfigurationProperties,
+      tenant.configurationProperties
+    );
+
+    if (tenant.localizationOverrides) {
+      this.mapLocalizationOverrides(
+        this.defaultLocalizations,
+        tenant.localizationOverrides
+      );
+    }
+  }
+
+  private loadLocalizations() {
     this.translationLoader
-      .getFlattenedTranslations('en')
+      .getFlattenedTranslations(this.languageStore.currentLanguage)
       .subscribe(translations => {
-        let locationOverrideFormGroup = <FormGroup>(
-          this.sandboxForm.controls['localizationOverrides']
-        );
-        for (let key in translations) {
-          // check also if property is not inherited from prototype
-          if (translations.hasOwnProperty(key)) {
-            let value = translations[key];
-            this.localizationOverrides = [
-              ...this.localizationOverrides,
-              new ConfigurationProperty(key, value)
-            ];
-            locationOverrideFormGroup.controls[key] = new FormControl(value);
-          }
-        }
+        this.defaultLocalizations = translations;
+        this.mapLocalizationOverrides(translations);
       });
   }
 
+  private mapLocalizationOverrides(
+    defaults: any,
+    overrides?: ConfigurationProperty[]
+  ): void {
+    const localizations = [];
+    const localizationOverrides = overrides || [];
+    const locationOverrideFormGroup = <FormGroup>(
+      this.sandboxForm.controls.localizationOverrides
+    );
+
+    for (let key in defaults) {
+      if (defaults.hasOwnProperty(key)) {
+        const value = defaults[key];
+        const override = localizationOverrides.find(o => o.key === key);
+        if (override) {
+          localizations.push(
+            new ConfigurationProperty(key, override.value, undefined, value)
+          );
+          locationOverrideFormGroup.controls[key] = new FormControl(
+            override.value
+          );
+        } else {
+          localizations.push(new ConfigurationProperty(key, value));
+          locationOverrideFormGroup.controls[key] = new FormControl(value);
+        }
+      }
+    }
+
+    this.localizationOverrides = localizations;
+  }
+
   onSubmit(): void {
+    this.saving = true;
     const modifiedLocalizationOverrides = this.localizationOverrides.filter(
       override => override.originalValue !== override.value
     );
-    const newSandbox = {
+    const newSandbox: SandboxConfiguration = {
       ...this.sandboxForm.value,
-      dataSet: this.dataSets.find(
-        dataSet => dataSet.id === this.sandboxForm.value.dataSetId
-      ),
+      dataSet: this.sandboxForm.value.dataset,
+      parentTenantCode: this.sandboxForm.value.tenant.code,
       localizationOverrides: modifiedLocalizationOverrides,
-      configurationProperties: this.configurationProperties
+      configurationProperties: getModifiedConfigProperties(
+        this.configurationProperties
+      )
     };
 
-    this.service.create(newSandbox, this.dataSets).subscribe(
-      createdTenant => {
-        this.store.setState([createdTenant, ...this.store.state]);
+    this.service.create(newSandbox).subscribe(
+      () => {
         this.router.navigate(['sandboxes']);
       },
-      error =>
-        error.json().message
-          ? this.notificationService.error({ id: error.json().message })
-          : this.notificationService.error({
-              id: 'sandbox-config.errors.create'
-            })
+      error => {
+        let errorMessage = '';
+        try {
+          errorMessage =
+            error && error.json() && error.json().message
+              ? error.json().message
+              : 'sandbox-config.errors.create';
+        } catch (err) {
+          // unable to parse error?
+          errorMessage = 'sandbox-config.errors.create';
+        }
+        this.notificationService.error({ id: errorMessage });
+        this.saving = false;
+      }
     );
   }
 }
