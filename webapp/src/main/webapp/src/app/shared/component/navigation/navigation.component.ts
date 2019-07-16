@@ -11,6 +11,9 @@ export class NavigationComponent {
   title: string;
 
   @Input()
+  subtitle: string;
+
+  @Input()
   user: User;
 
   @Input()

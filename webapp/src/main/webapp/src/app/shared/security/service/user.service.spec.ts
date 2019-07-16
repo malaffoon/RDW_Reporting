@@ -9,6 +9,7 @@ let userStub: any = {
   permissions: ['ALL_STATES_READ'],
   anonymous: false,
   tenant: {
+    name: 'Cali',
     sandbox: false,
     logoutUrl: '/logout',
     sessionRefreshUrl: '/refresh'
@@ -41,6 +42,7 @@ describe('UserService', () => {
         firstName: userStub.firstName,
         lastName: userStub.lastName,
         permissions: userStub.permissions,
+        tenantName: userStub.tenant.name,
         logoutUrl: userStub.tenant.logoutUrl,
         sessionRefreshUrl: userStub.tenant.sessionRefreshUrl,
         anonymous: false,

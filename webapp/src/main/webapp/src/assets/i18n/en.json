@@ -759,7 +759,10 @@
         "title": "Reporting System Dashboard"
       },
       "logout": "Logout",
-      "title": "Reporting System",
+      "title": {
+        "sandbox": "Reporting System Sandbox",
+        "tenant": "Reporting System"
+      },
       "toggle-sr": "Toggle navigation",
       "user-dropdown": "{{firstName}} {{lastName}}"
     },
