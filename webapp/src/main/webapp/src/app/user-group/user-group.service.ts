@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
 import { ReportingServiceRoute } from '../shared/service-route';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, flatMap, map } from 'rxjs/operators';
 import { UserGroup, UserGroupRequest } from './user-group';
 import { Observable, of } from 'rxjs';
 import { DataService } from '../shared/data/data.service';
 import { Student } from '../student/search/student';
 import { Group } from '../groups/group';
+import { UserService } from '../shared/security/service/user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserGroupService {
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private userService: UserService
+  ) {}
 
   safelyGetUserGroupsAsGroups(): Observable<Group[]> {
     return this.getGroups().pipe(
@@ -56,19 +60,31 @@ export class UserGroupService {
   }
 
   getGroups(): Observable<UserGroup[]> {
-    return this.dataService
-      .get(`${ReportingServiceRoute}/userGroups`)
-      .pipe(
-        map(serverGroups =>
-          serverGroups.map(serverGroup => this.toUserGroup(serverGroup))
-        )
-      );
+    return this.hasReadPermission().pipe(
+      flatMap(hasPermission =>
+        hasPermission
+          ? this.dataService
+              .get(`${ReportingServiceRoute}/userGroups`)
+              .pipe(
+                map(serverGroups =>
+                  serverGroups.map(serverGroup => this.toUserGroup(serverGroup))
+                )
+              )
+          : of([])
+      )
+    );
   }
 
   getGroup(groupId: number): Observable<UserGroup> {
-    return this.dataService
-      .get(`${ReportingServiceRoute}/userGroups/${groupId}`)
-      .pipe(map(serverGroup => this.toUserGroup(serverGroup)));
+    return this.hasReadPermission().pipe(
+      flatMap(hasPermission =>
+        hasPermission
+          ? this.dataService
+              .get(`${ReportingServiceRoute}/userGroups/${groupId}`)
+              .pipe(map(serverGroup => this.toUserGroup(serverGroup)))
+          : of(undefined)
+      )
+    );
   }
 
   saveGroup(group: UserGroup): Observable<UserGroup> {
@@ -82,6 +98,14 @@ export class UserGroupService {
     return this.dataService.delete(
       `${ReportingServiceRoute}/userGroups/${group.id}`
     );
+  }
+
+  private hasReadPermission(): Observable<boolean> {
+    return this.userService
+      .getUser()
+      .pipe(
+        map(({ permissions }) => permissions.includes('TEACHER_GROUP_READ'))
+      );
   }
 
   private createGroup(group: UserGroup): Observable<UserGroup> {

@@ -45,16 +45,19 @@ export class UserGroupsComponent implements OnInit {
   ngOnInit(): void {
     forkJoin(
       this.subjectService.getSubjectCodes(),
-      this.userService.getUser().pipe(map(({ permissions }) => permissions))
-    ).subscribe(([subjects, permissions]) => {
+      this.userService
+        .getUser()
+        .pipe(
+          map(({ permissions }) => permissions.includes('INDIVIDUAL_PII_READ'))
+        )
+    ).subscribe(([subjects, hasPiiRead]) => {
       this.filteredGroups = this.groups.concat();
       if (this.groups.length !== 0) {
         this.defaultGroup = this.groups[0];
       }
       this.subjects = subjects;
       this.createButtonDisabled =
-        this.assignedGroups.length === 0 &&
-        !permissions.includes('INDIVIDUAL_PII_READ');
+        this.assignedGroups.length === 0 && !hasPiiRead;
       this.initialized = true;
     });
   }

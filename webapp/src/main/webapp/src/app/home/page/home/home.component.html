@@ -20,7 +20,9 @@
         <school-grade></school-grade>
       </div>
 
-      <ng-container *hasPermission="'GROUP_PII_READ'">
+      <ng-container
+        *hasAnyPermission="['GROUP_PII_READ', 'TEACHER_GROUP_READ']"
+      >
         <group-tabs></group-tabs>
       </ng-container>
     </ng-container>
