@@ -25,6 +25,7 @@ export class UserService {
         lastName: serverUser.lastName,
         permissions: serverUser.permissions,
         anonymous: serverUser.anonymous,
+        tenantName: serverUser.tenant.name,
         logoutUrl: serverUser.tenant.logoutUrl,
         sessionRefreshUrl: serverUser.tenant.sessionRefreshUrl,
         sandboxUser: serverUser.tenant.sandbox

@@ -7,11 +7,15 @@
   >
   <ng-container *ngIf="(user$ | async) as user">
     <ng-container *ngIf="(applicationSettings$ | async) as settings">
-      <!-- TODO pass in tenant name -->
       <app-navigation
         userGuideUrl="{{ settings.userGuideUrl }}"
         interpretiveGuideUrl="{{ settings.interpretiveGuideUrl }}"
         [user]="user"
+        title="{{ user.tenantName }}"
+        subtitle="{{
+          'common-ngx.navigation-bar.title.' +
+            (user.sandboxUser ? 'sandbox' : 'tenant') | translate
+        }}"
       >
         <ng-container links>
           <li *ngIf="languageStore.availableLanguages.length > 1">
