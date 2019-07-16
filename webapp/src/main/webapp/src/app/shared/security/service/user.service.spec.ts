@@ -7,7 +7,9 @@ let userStub: any = {
   firstName: 'Bob',
   lastName: 'Mack',
   permissions: ['ALL_STATES_READ'],
+  anonymous: false,
   tenant: {
+    sandbox: false,
     logoutUrl: '/logout',
     sessionRefreshUrl: '/refresh'
   }
@@ -40,7 +42,9 @@ describe('UserService', () => {
         lastName: userStub.lastName,
         permissions: userStub.permissions,
         logoutUrl: userStub.tenant.logoutUrl,
-        sessionRefreshUrl: userStub.tenant.sessionRefreshUrl
+        sessionRefreshUrl: userStub.tenant.sessionRefreshUrl,
+        anonymous: false,
+        sandboxUser: false
       });
     });
   }));
