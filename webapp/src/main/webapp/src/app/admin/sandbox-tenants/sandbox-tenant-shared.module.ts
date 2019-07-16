@@ -15,6 +15,7 @@ import { PropertyOverrideTreeTableComponent } from './component/property-overrid
 import { WellGroupListComponent } from './component/well-group-list/well-group-list.component';
 import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbox.component';
 import { CommonModule } from '@angular/common';
+import { TenantLinkComponent } from './component/tenant-link/tenant-link.component';
 
 /**
  * TODO join this with tenant.module and make the route structure this:
@@ -40,7 +41,8 @@ import { CommonModule } from '@angular/common';
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
     WellGroupListComponent,
-    TenantSandboxComponent
+    TenantSandboxComponent,
+    TenantLinkComponent
   ],
   exports: [
     PropertyOverrideTableComponent,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Observable } from 'rxjs';
 import { TenantConfiguration } from '../../model/tenant-configuration';
@@ -11,6 +11,7 @@ import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { map } from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { UserService } from '../../../../shared/security/service/user.service';
+import { SandboxConfiguration } from '../../model/sandbox-configuration';
 
 @Component({
   selector: 'tenants',
@@ -18,12 +19,13 @@ import { UserService } from '../../../../shared/security/service/user.service';
 })
 export class TenantsComponent implements OnInit {
   tenants$: Observable<TenantConfiguration[]>;
-  localizationDefaults$: Observable<any>;
-  writable$: Observable<boolean>;
+  // localizationDefaults$: Observable<any>;
+  // writable$: Observable<boolean>;
 
   constructor(
     private translationLoader: RdwTranslateLoader,
     private route: ActivatedRoute,
+    private router: Router,
     private service: TenantService,
     private store: TenantStore,
     private userService: UserService,
@@ -33,49 +35,56 @@ export class TenantsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tenants$ = this.store.getState();
-    this.loadTenants();
+    // TODO polling
+    this.tenants$ = this.service.getAll();
 
-    this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
-      this.languageStore.currentLanguage
-    );
-
-    this.writable$ = this.userService
-      .getUser()
-      .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
+    // this.tenants$ = this.store.getState();
+    // this.loadTenants();
+    //
+    // this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
+    //   this.languageStore.currentLanguage
+    // );
+    //
+    // this.writable$ = this.userService
+    //   .getUser()
+    //   .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
   }
 
-  onDelete(tenant: TenantConfiguration): void {
-    const modalReference: BsModalRef = this.modalService.show(
-      DeleteTenantConfigurationModalComponent
-    );
-    const modal: DeleteTenantConfigurationModalComponent =
-      modalReference.content;
-    modal.tenant = tenant;
-    modal.deleted.subscribe(() => {
-      this.store.setState(
-        this.store.state.filter(({ code }) => code !== tenant.code)
-      );
-    });
-  }
+  // onDelete(tenant: TenantConfiguration): void {
+  //   const modalReference: BsModalRef = this.modalService.show(
+  //     DeleteTenantConfigurationModalComponent
+  //   );
+  //   const modal: DeleteTenantConfigurationModalComponent =
+  //     modalReference.content;
+  //   modal.tenant = tenant;
+  //   modal.deleted.subscribe(() => {
+  //     this.store.setState(
+  //       this.store.state.filter(({ code }) => code !== tenant.code)
+  //     );
+  //   });
+  // }
+  //
+  // onSave(value: TenantConfiguration): void {
+  //   this.service.update(value).subscribe(
+  //     () => this.loadTenants(),
+  //     error =>
+  //       error.json().message
+  //         ? this.notificationService.error({ id: error.json().message })
+  //         : this.notificationService.error({
+  //             id: 'tenant-config.errors.update'
+  //           })
+  //   );
+  // }
+  //
+  // private loadTenants() {
+  //   this.service.getAll().subscribe(tenants => {
+  //     this.store.setState(
+  //       tenants.sort((a, b) => a.label.localeCompare(b.label))
+  //     );
+  //   });
+  // }
 
-  onSave(value: TenantConfiguration): void {
-    this.service.update(value).subscribe(
-      () => this.loadTenants(),
-      error =>
-        error.json().message
-          ? this.notificationService.error({ id: error.json().message })
-          : this.notificationService.error({
-              id: 'tenant-config.errors.update'
-            })
-    );
-  }
-
-  private loadTenants() {
-    this.service.getAll().subscribe(tenants => {
-      this.store.setState(
-        tenants.sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
+  onTenantClick(tenant: SandboxConfiguration): void {
+    this.router.navigate([tenant.id]);
   }
 }

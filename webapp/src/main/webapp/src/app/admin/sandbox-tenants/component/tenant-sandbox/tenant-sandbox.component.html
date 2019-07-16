@@ -22,14 +22,12 @@
           <div
             class="label border-only"
             [ngClass]="{
-              'blue-dark': value.status === statusEnum.Active,
-              aqua:
-                value.status !== statusEnum.Active &&
-                value.status !== statusEnum.Failed,
-              maroon: value.status === statusEnum.Failed
+              'blue-dark': value.status === 'ACTIVE',
+              aqua: value.status !== 'ACTIVE' && value.status !== 'FAILED',
+              maroon: value.status === 'FAILED'
             }"
           >
-            {{ 'tenant-config.fields.status.' + status | translate }}
+            {{ 'tenant-config.fields.status.' + value.status | translate }}
           </div>
         </div>
 

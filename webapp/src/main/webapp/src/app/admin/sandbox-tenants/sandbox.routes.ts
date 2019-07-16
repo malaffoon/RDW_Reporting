@@ -6,23 +6,16 @@ import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/
 export const sandboxRoutes: Route[] = [
   {
     path: '',
-    pathMatch: 'prefix',
+    pathMatch: 'full',
     component: SandboxesComponent
   },
   {
     path: 'new',
-    pathMatch: 'prefix',
     data: {
       breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
       permissions: ['TENANT_WRITE']
     },
     canActivate: [HasAnyPermissionCanActivate],
-    children: [
-      {
-        path: '',
-        pathMatch: 'prefix',
-        component: NewSandboxConfigurationComponent
-      }
-    ]
+    component: NewSandboxConfigurationComponent
   }
 ];

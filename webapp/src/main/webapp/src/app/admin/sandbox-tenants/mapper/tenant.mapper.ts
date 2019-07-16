@@ -4,7 +4,6 @@ import { forOwn, get, isString } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
-import { TenantStatus } from '../model/tenant-status.enum';
 
 export function mapTenant(
   tenantConfiguration: any,

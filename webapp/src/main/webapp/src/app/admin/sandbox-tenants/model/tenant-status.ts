@@ -1,0 +1,7 @@
+export type TenantStatus =
+  | 'STARTED'
+  | 'CREATING_DATABASES'
+  | 'PERSISTING_CONFIGURATION'
+  | 'NOTIFYING_CONFIG_SERVER'
+  | 'FAILED'
+  | 'ACTIVE';

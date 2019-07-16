@@ -7,12 +7,12 @@ export interface SandboxConfiguration extends TenantConfiguration {
   /**
    * The data template initially used to create the sandbox
    */
-  dataSet: DataSet;
+  dataSet?: DataSet;
 
   /**
    * The parent tenant code this sandbox is for.
    */
-  parentTenantCode: string;
+  parentTenantCode?: string;
 }
 
 export interface DataSet {

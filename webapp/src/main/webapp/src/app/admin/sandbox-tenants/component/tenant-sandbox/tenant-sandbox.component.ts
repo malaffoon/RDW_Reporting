@@ -9,12 +9,11 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { cloneDeep, forOwn } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { CustomValidators } from '../../../../shared/validator/custom-validators';
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
 import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
-import { TenantStatus } from '../../model/tenant-status.enum';
 
 @Component({
   selector: 'tenant-sandbox',
@@ -55,15 +54,11 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
-  statusEnum = TenantStatus;
-
   ngOnInit(): void {
     this.formGroup.patchValue({
       label: this.value.label,
       description: this.value.description
     });
-
-    this.status = this.getEnum(this.value.status);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -107,18 +102,10 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
     });
   }
 
-  private getEnum(enumValue: TenantStatus) {
-    for (let i in TenantStatus) {
-      if (TenantStatus[i] === enumValue) {
-        return i;
-      }
-    }
-  }
-
   private mapLocalizationOverrides(localizationDefaults: any): void {
     for (let key in localizationDefaults) {
       const locationOverrideFormGroup = <FormGroup>(
-        this.formGroup.controls['localizationOverrides']
+        this.formGroup.controls.localizationOverrides
       );
       if (localizationDefaults.hasOwnProperty(key)) {
         const value = localizationDefaults[key];

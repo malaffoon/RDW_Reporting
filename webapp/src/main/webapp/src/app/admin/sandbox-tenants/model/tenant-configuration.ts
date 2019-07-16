@@ -1,5 +1,5 @@
 import { ConfigurationProperty } from './configuration-property';
-import { TenantStatus } from './tenant-status.enum';
+import { TenantStatus } from './tenant-status';
 
 /**
  * Holds information regarding an RDW tenant configuration
