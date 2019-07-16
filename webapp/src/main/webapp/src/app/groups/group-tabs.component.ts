@@ -1,38 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Group } from './group';
 import { UserGroup } from '../user-group/user-group';
 import { UserGroupService } from '../user-group/user-group.service';
 import { GroupService } from './group.service';
-import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { UserService } from '../shared/security/service/user.service';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'group-tabs',
   templateUrl: './group-tabs.component.html'
 })
-export class GroupTabsComponent implements OnInit {
-  groups: Group[];
-  userGroups: UserGroup[];
-  initialized: boolean;
+export class GroupTabsComponent {
+  groups$: Observable<Group[]>;
+  userGroups$: Observable<UserGroup[]>;
+  initialized$: Observable<boolean>;
 
   constructor(
-    private userService: UserService,
     private groupService: GroupService,
     private userGroupService: UserGroupService
-  ) {}
-
-  ngOnInit(): void {
-    forkJoin(
-      this.groupService.getGroups(),
-      this.userGroupService.getGroups().pipe(
-        // interpret error as permission denied
-        catchError(() => of(null))
-      )
-    ).subscribe(([groups, userGroups]) => {
-      this.groups = groups;
-      this.userGroups = userGroups;
-      this.initialized = true;
-    });
+  ) {
+    this.groups$ = this.groupService.getGroups();
+    this.userGroups$ = this.userGroupService.getGroups();
+    this.initialized$ = forkJoin(this.groups$, this.userGroups$).pipe(
+      map(() => true)
+    );
   }
 }

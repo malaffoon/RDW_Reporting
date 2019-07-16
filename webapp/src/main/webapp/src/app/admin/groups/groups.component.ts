@@ -152,7 +152,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
   openDeleteGroupModal(group: Group): void {
     this.userService
       .getUser()
-      .pipe(map(user => user.sessionRefreshUrl.includes('sandbox')))
+      .pipe(map(user => user.sandboxUser))
       .subscribe(sandboxUser => {
         const { translateService, modalService } = this;
         const modalReference: BsModalRef = modalService.show(
