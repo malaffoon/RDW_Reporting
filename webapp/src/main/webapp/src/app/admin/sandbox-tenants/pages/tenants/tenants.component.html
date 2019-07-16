@@ -3,7 +3,7 @@
   <button
     controls
     *hasPermission="'TENANT_WRITE'"
-    class="btn btn-primary pull-right"
+    class="btn btn-primary"
     [routerLink]="['new']"
   >
     {{ 'tenant-config.new-tenant.header' | translate }}
@@ -14,18 +14,10 @@
   <ng-container *ngIf="tenants.length > 0; else empty">
     <app-well-group-list [items]="tenants">
       <ng-template #itemTemplate let-tenant="item">
-        <!--        <tenant-sandbox-->
-        <!--          class="sandbox-config"-->
-        <!--          [value]="tenant"-->
-        <!--          [localizationDefaults]="localizationDefaults$ | async"-->
-        <!--          [writable]="writable$ | async"-->
-        <!--          (delete)="onDelete($event)"-->
-        <!--          (save)="onSave($event)"-->
-        <!--        ></tenant-sandbox>-->
-        <tenant-link
+        <app-tenant-link
           [tenant]="tenant"
           (tenantClick)="onTenantClick(tenant)"
-        ></tenant-link>
+        ></app-tenant-link>
       </ng-template>
     </app-well-group-list>
   </ng-container>

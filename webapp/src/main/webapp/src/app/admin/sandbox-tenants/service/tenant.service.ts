@@ -56,7 +56,7 @@ export class TenantService {
    */
   create(tenant: TenantConfiguration): Observable<TenantConfiguration> {
     return this.dataService
-      .post(`${ResourceRoute}`, toTenantApiModel(tenant))
+      .post(ResourceRoute, toTenantApiModel(tenant))
       .pipe(map(() => tenant));
   }
 
@@ -66,7 +66,7 @@ export class TenantService {
    */
   update(tenant: TenantConfiguration): Observable<TenantConfiguration> {
     return this.dataService
-      .put(`${ResourceRoute}`, toTenantApiModel(tenant))
+      .put(ResourceRoute, toTenantApiModel(tenant))
       .pipe(map(() => tenant));
   }
 

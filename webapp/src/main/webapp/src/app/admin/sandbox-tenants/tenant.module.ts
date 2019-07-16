@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { AccordionModule, MenuModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
+import { TenantComponent } from './pages/tenant/tenant.component';
 
 /**
  * TODO join this with tenant.module and make the route structure this:
@@ -45,7 +46,8 @@ import { TableModule } from 'primeng/table';
   declarations: [
     DeleteTenantConfigurationModalComponent,
     NewTenantConfigurationComponent,
-    TenantsComponent
+    TenantsComponent,
+    TenantComponent
   ],
   entryComponents: [DeleteTenantConfigurationModalComponent]
 })

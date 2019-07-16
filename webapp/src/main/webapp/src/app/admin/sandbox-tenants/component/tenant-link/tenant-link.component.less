@@ -1,10 +1,28 @@
 a {
   text-decoration: none;
+  color: inherit;
+}
+
+h2 {
+  margin: 0;
+}
+
+.label {
+  font-size: 100%;
 }
 
 .head {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto;
   gap: 15px;
   align-items: center;
+}
+
+.body {
+  margin-top: 15px;
+}
+
+:host {
+  display: block;
+  padding-top: 10px;
 }

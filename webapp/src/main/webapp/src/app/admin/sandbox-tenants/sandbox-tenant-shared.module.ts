@@ -48,7 +48,8 @@ import { TenantLinkComponent } from './component/tenant-link/tenant-link.compone
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
     WellGroupListComponent,
-    TenantSandboxComponent
+    TenantSandboxComponent,
+    TenantLinkComponent
   ]
 })
 export class SandboxTenantSharedModule {}

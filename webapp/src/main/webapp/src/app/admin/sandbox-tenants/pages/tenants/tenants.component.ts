@@ -85,6 +85,6 @@ export class TenantsComponent implements OnInit {
   // }
 
   onTenantClick(tenant: SandboxConfiguration): void {
-    this.router.navigate([tenant.id]);
+    this.router.navigate([tenant.code]);
   }
 }
