@@ -9,7 +9,6 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { cloneDeep } from 'lodash';
 import { CustomValidators } from '../../../../shared/validator/custom-validators';
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
@@ -36,9 +35,7 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   @Output()
   delete: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
-  open: boolean;
-  valid: boolean;
-  formGroupOriginalValues: any;
+  // formGroupOriginalValues: any;
   formGroup: FormGroup = new FormGroup({
     label: new FormControl('', [CustomValidators.notBlank]),
     description: new FormControl(''),
@@ -48,16 +45,34 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   configurationProperties: any;
   localizationOverrides: ConfigurationProperty[] = [];
 
-  status: string = '';
-
   readonly readonlyGroups = ['datasources', 'archive'];
 
-  constructor(private cdRef: ChangeDetectorRef) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.formGroup.patchValue({
       label: this.value.label,
       description: this.value.description
+    });
+  }
+
+  onSaveButtonClick(): void {
+    const {
+      formGroup,
+      localizationOverrides,
+      value: { code, dataSet, configurationProperties }
+    } = this;
+
+    this.save.emit({
+      code,
+      dataSet,
+      ...formGroup.value,
+      localizationOverrides: localizationOverrides.filter(
+        override => override.originalValue !== override.value
+      ),
+      configurationProperties: getModifiedConfigProperties(
+        configurationProperties
+      )
     });
   }
 
@@ -75,31 +90,6 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
       });
       this.mapLocalizationOverrides(this.localizationDefaults);
     }
-  }
-
-  onOpenButtonClick(): void {
-    this.formGroupOriginalValues = cloneDeep(this.formGroup.value);
-    this.open = true;
-    this.cdRef.detectChanges();
-  }
-
-  onCloseButtonClick(): void {
-    this.formGroup.patchValue(this.formGroupOriginalValues);
-    this.open = false;
-  }
-
-  onSaveButtonClick(): void {
-    this.save.emit({
-      code: this.value.code,
-      dataSet: this.value.dataSet,
-      ...this.formGroup.value,
-      localizationOverrides: this.localizationOverrides.filter(
-        override => override.originalValue !== override.value
-      ),
-      configurationProperties: getModifiedConfigProperties(
-        this.value.configurationProperties
-      )
-    });
   }
 
   private mapLocalizationOverrides(localizationDefaults: any): void {
