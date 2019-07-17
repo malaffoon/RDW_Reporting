@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
-import { SandboxService } from '../../service/sandbox.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Observable } from 'rxjs';
 import { DeleteSandboxConfigurationModalComponent } from '../../modal/delete-sandbox.modal';
@@ -11,6 +9,7 @@ import { map } from 'rxjs/operators';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { UserService } from '../../../../shared/security/service/user.service';
+import { TenantService } from '../../service/tenant.service';
 
 @Component({
   selector: 'sandboxes',
@@ -22,7 +21,7 @@ export class SandboxesComponent implements OnInit {
   writable$: Observable<boolean>;
 
   constructor(
-    private service: SandboxService,
+    private service: TenantService,
     private store: SandboxStore,
     private userService: UserService,
     private languageStore: LanguageStore,
@@ -72,7 +71,7 @@ export class SandboxesComponent implements OnInit {
   }
 
   private loadSandboxes() {
-    this.service.getAll().subscribe(sandboxes => {
+    this.service.getAll('SANDBOX').subscribe(sandboxes => {
       this.store.setState(sandboxes);
     });
   }

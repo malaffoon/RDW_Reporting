@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
 
 @Component({
@@ -16,7 +10,4 @@ import { SandboxConfiguration } from '../../model/sandbox-configuration';
 export class TenantLinkComponent {
   @Input()
   tenant: SandboxConfiguration;
-
-  @Output()
-  tenantClick: EventEmitter<MouseEvent> = new EventEmitter();
 }

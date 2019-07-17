@@ -1,13 +1,18 @@
 import { Route } from '@angular/router';
-import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/has-any-permission.can-activate';
+import { TenantsComponent } from './pages/tenants/tenants.component';
+import { TenantComponent } from './pages/tenant/tenant.component';
+import { tenantBreadcrumb } from './tenant.routes';
 
 export const sandboxRoutes: Route[] = [
   {
     path: '',
     pathMatch: 'full',
-    component: SandboxesComponent
+    component: TenantsComponent,
+    data: {
+      type: 'SANDBOX'
+    }
   },
   {
     path: 'new',
@@ -17,5 +22,12 @@ export const sandboxRoutes: Route[] = [
     },
     canActivate: [HasAnyPermissionCanActivate],
     component: NewSandboxConfigurationComponent
+  },
+  {
+    path: ':id',
+    component: TenantComponent,
+    data: {
+      breadcrumb: tenantBreadcrumb
+    }
   }
 ];

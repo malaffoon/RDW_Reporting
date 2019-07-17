@@ -1,90 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Observable } from 'rxjs';
 import { TenantConfiguration } from '../../model/tenant-configuration';
 import { TenantService } from '../../service/tenant.service';
-import { DeleteTenantConfigurationModalComponent } from '../../modal/delete-tenant.modal';
-import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
-import { TenantStore } from '../../store/tenant.store';
-import { LanguageStore } from '../../../../shared/i18n/language.store';
-import { map } from 'rxjs/operators';
-import { NotificationService } from '../../../../shared/notification/notification.service';
-import { UserService } from '../../../../shared/security/service/user.service';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
+import { flatMap, map } from 'rxjs/operators';
+import { TenantType } from '../../model/tenant-type';
 
 @Component({
   selector: 'tenants',
   templateUrl: './tenants.component.html'
 })
-export class TenantsComponent implements OnInit {
+export class TenantsComponent {
+  tenantType$: Observable<TenantType>;
   tenants$: Observable<TenantConfiguration[]>;
-  // localizationDefaults$: Observable<any>;
-  // writable$: Observable<boolean>;
 
   constructor(
-    private translationLoader: RdwTranslateLoader,
     private route: ActivatedRoute,
     private router: Router,
-    private service: TenantService,
-    private store: TenantStore,
-    private userService: UserService,
-    private languageStore: LanguageStore,
-    private modalService: BsModalService,
-    private notificationService: NotificationService
-  ) {}
-
-  ngOnInit(): void {
+    private service: TenantService
+  ) {
     // TODO polling
-    this.tenants$ = this.service.getAll();
 
-    // this.tenants$ = this.store.getState();
-    // this.loadTenants();
-    //
-    // this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
-    //   this.languageStore.currentLanguage
-    // );
-    //
-    // this.writable$ = this.userService
-    //   .getUser()
-    //   .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
+    this.tenantType$ = this.route.data.pipe(map(({ type }) => type));
+
+    this.tenants$ = this.tenantType$.pipe(
+      flatMap(type =>
+        this.service
+          .getAll(type)
+          .pipe(
+            map(tenants =>
+              tenants.slice().sort((a, b) => a.label.localeCompare(b.label))
+            )
+          )
+      )
+    );
   }
 
-  // onDelete(tenant: TenantConfiguration): void {
-  //   const modalReference: BsModalRef = this.modalService.show(
-  //     DeleteTenantConfigurationModalComponent
-  //   );
-  //   const modal: DeleteTenantConfigurationModalComponent =
-  //     modalReference.content;
-  //   modal.tenant = tenant;
-  //   modal.deleted.subscribe(() => {
-  //     this.store.setState(
-  //       this.store.state.filter(({ code }) => code !== tenant.code)
-  //     );
-  //   });
-  // }
-  //
-  // onSave(value: TenantConfiguration): void {
-  //   this.service.update(value).subscribe(
-  //     () => this.loadTenants(),
-  //     error =>
-  //       error.json().message
-  //         ? this.notificationService.error({ id: error.json().message })
-  //         : this.notificationService.error({
-  //             id: 'tenant-config.errors.update'
-  //           })
-  //   );
-  // }
-  //
-  // private loadTenants() {
-  //   this.service.getAll().subscribe(tenants => {
-  //     this.store.setState(
-  //       tenants.sort((a, b) => a.label.localeCompare(b.label))
-  //     );
-  //   });
-  // }
-
   onTenantClick(tenant: SandboxConfiguration): void {
-    this.router.navigate([tenant.code]);
+    this.router.navigate(['.', tenant.code], {
+      relativeTo: this.route
+    });
   }
 }

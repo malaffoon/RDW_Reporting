@@ -5,23 +5,24 @@ import { TenantConfiguration } from '../model/tenant-configuration';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
 
-export function mapTenant(
-  tenantConfiguration: any,
-  defaultApplicationTenantConfiguration: any,
+export function toTenant(
+  serverTenant: any,
+  defaultApplicationTenantConfiguration: any = {},
   skipMappingConfigProperties?: boolean
 ): TenantConfiguration {
-  const tenant = tenantConfiguration.tenant;
+  const tenant = serverTenant.tenant;
   return {
     code: tenant.key,
     id: tenant.id,
     label: tenant.name,
     description: tenant.description,
-    status: tenantConfiguration.administrationStatus.tenantAdministrationStatus,
+    sandbox: serverTenant.tenant.sandbox,
+    status: serverTenant.administrationStatus.tenantAdministrationStatus,
     configurationProperties: skipMappingConfigProperties
-      ? toConfigProperties(tenantConfiguration)
+      ? toConfigProperties(serverTenant)
       : mapConfigurationProperties(
           toConfigProperties(defaultApplicationTenantConfiguration),
-          toConfigProperties(tenantConfiguration)
+          toConfigProperties(serverTenant)
         ),
     localizationOverrides: mapLocalizationOverrides(tenant.localization)
   };
@@ -37,8 +38,8 @@ export function toConfigProperties(apiModel: any): any {
   };
 }
 
-export function mapSandbox(
-  tenantConfiguration: any,
+export function toSandbox(
+  serverTenant: any,
   defaultConfiguration: any,
   dataSets: DataSet[]
 ): SandboxConfiguration {
@@ -48,10 +49,10 @@ export function mapSandbox(
     reporting: defaultConfiguration.reporting
   };
   return <SandboxConfiguration>{
-    ...mapTenant(tenantConfiguration, defaults),
-    parentTenantCode: tenantConfiguration.parentTenantKey,
+    ...toTenant(serverTenant, defaults),
+    parentTenantCode: serverTenant.parentTenantKey,
     dataSet: dataSets.find(
-      dataSet => tenantConfiguration.tenant.sandboxDataset === dataSet.id
+      dataSet => serverTenant.tenant.sandboxDataset === dataSet.id
     )
   };
 }

@@ -39,4 +39,6 @@ export interface TenantConfiguration {
    * The current status of this tenant.
    */
   status: TenantStatus;
+
+  sandbox?: boolean;
 }

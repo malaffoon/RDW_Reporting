@@ -2,8 +2,8 @@ import { ConfigurationProperty } from '../model/configuration-property';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import {
-  mapSandbox,
-  mapTenant,
+  toSandbox,
+  toTenant,
   toSandboxApiModel,
   toTenantApiModel,
   getModifiedConfigProperties
@@ -99,7 +99,7 @@ const sandboxUIModel: SandboxConfiguration = {
 
 describe('Tenant mapper', () => {
   it('should map a tenant from the api', () => {
-    const actual = mapTenant(tenantApiModel, {});
+    const actual = toTenant(tenantApiModel, {});
 
     expect(actual.label).toBe('California');
     expect(actual.code).toBe('CALICODE');
@@ -111,7 +111,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should merge tenant and default configurations', () => {
-    const actual = mapTenant(tenantApiModel, defaultsApiModel);
+    const actual = toTenant(tenantApiModel, defaultsApiModel);
     const reporting_rw =
       actual.configurationProperties.datasources.reporting_rw;
     const actualOverride: ConfigurationProperty = reporting_rw.find(
@@ -151,7 +151,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map a sandbox from the api', () => {
-    const actual = mapSandbox(sandboxApiModel, {}, dataSets);
+    const actual = toSandbox(sandboxApiModel, {}, dataSets);
     expect(actual.dataSet.label).toBe('CA Demo Data');
 
     expect(actual.label).toBe('CA-Sandbox');
@@ -163,7 +163,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should merge sandbox and default configurations', () => {
-    const actual = mapSandbox(sandboxApiModel, defaultsApiModel, dataSets);
+    const actual = toSandbox(sandboxApiModel, defaultsApiModel, dataSets);
     const reporting = actual.configurationProperties.reporting;
 
     const actualOverride: ConfigurationProperty = reporting.find(
@@ -180,7 +180,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should not map sandbox dataset configurations', () => {
-    const actual = mapSandbox(sandboxApiModel, defaultsApiModel, dataSets);
+    const actual = toSandbox(sandboxApiModel, defaultsApiModel, dataSets);
     expect(actual.configurationProperties.datasources).toBeUndefined();
   });
 

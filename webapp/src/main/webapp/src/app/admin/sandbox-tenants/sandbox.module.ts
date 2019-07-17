@@ -42,11 +42,6 @@ import { TableModule } from 'primeng/table';
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(sandboxRoutes)
   ],
-  declarations: [
-    DeleteSandboxConfigurationModalComponent,
-    NewSandboxConfigurationComponent,
-    SandboxesComponent
-  ],
   entryComponents: [DeleteSandboxConfigurationModalComponent]
 })
 export class SandboxModule {}

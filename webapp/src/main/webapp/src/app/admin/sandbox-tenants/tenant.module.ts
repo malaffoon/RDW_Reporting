@@ -42,13 +42,6 @@ import { TenantComponent } from './pages/tenant/tenant.component';
     SandboxTenantSharedModule,
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(tenantRoutes)
-  ],
-  declarations: [
-    DeleteTenantConfigurationModalComponent,
-    NewTenantConfigurationComponent,
-    TenantsComponent,
-    TenantComponent
-  ],
-  entryComponents: [DeleteTenantConfigurationModalComponent]
+  ]
 })
 export class TenantModule {}

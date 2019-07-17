@@ -1,3 +1,13 @@
-<p>
-  tenant works!
-</p>
+<ng-container *ngIf="(tenant$ | async) as tenant; else loading">
+  <tenant-sandbox
+    class="sandbox-config"
+    [value]="tenant"
+    [localizationDefaults]="localizationDefaults$ | async"
+    [writable]="writable$ | async"
+    (save)="onSave($event)"
+    (delete)="onDelete($event)"
+  ></tenant-sandbox>
+</ng-container>
+<ng-template #loading>
+  <spinner></spinner>
+</ng-template>

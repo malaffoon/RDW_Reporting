@@ -22,8 +22,8 @@ import {
 import { ConfigurationProperty } from '../model/configuration-property';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';
-import { SandboxService } from '../service/sandbox.service';
 import { LanguageStore } from '../../../shared/i18n/language.store';
+import { TenantService } from '../service/tenant.service';
 
 @Component({
   selector: 'new-sandbox',
@@ -45,7 +45,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
   sandboxLabelInput: ElementRef;
 
   constructor(
-    private service: SandboxService,
+    private service: TenantService,
     private notificationService: NotificationService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
@@ -70,7 +70,9 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.service
       .getAvailableDataSets()
       .subscribe(dataSets => (this.dataSets = dataSets));
-    this.service.getTenants().subscribe(tenants => (this.tenants = tenants));
+    this.service
+      .getAll('TENANT')
+      .subscribe(tenants => (this.tenants = tenants));
     this.loadLocalizations();
 
     this.service
@@ -153,7 +155,8 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
       localizationOverrides: modifiedLocalizationOverrides,
       configurationProperties: getModifiedConfigProperties(
         this.configurationProperties
-      )
+      ),
+      sandbox: true
     };
 
     this.service.create(newSandbox).subscribe(

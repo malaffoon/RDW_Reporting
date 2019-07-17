@@ -16,6 +16,13 @@ import { WellGroupListComponent } from './component/well-group-list/well-group-l
 import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbox.component';
 import { CommonModule } from '@angular/common';
 import { TenantLinkComponent } from './component/tenant-link/tenant-link.component';
+import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
+import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
+import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
+import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
+import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
+import { TenantsComponent } from './pages/tenants/tenants.component';
+import { TenantComponent } from './pages/tenant/tenant.component';
 
 /**
  * TODO join this with tenant.module and make the route structure this:
@@ -42,14 +49,29 @@ import { TenantLinkComponent } from './component/tenant-link/tenant-link.compone
     PropertyOverrideTreeTableComponent,
     WellGroupListComponent,
     TenantSandboxComponent,
-    TenantLinkComponent
+    TenantLinkComponent,
+    DeleteSandboxConfigurationModalComponent,
+    NewSandboxConfigurationComponent,
+    SandboxesComponent,
+    DeleteTenantConfigurationModalComponent,
+    NewTenantConfigurationComponent,
+    TenantsComponent,
+    TenantComponent
   ],
   exports: [
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
     WellGroupListComponent,
     TenantSandboxComponent,
-    TenantLinkComponent
-  ]
+    TenantLinkComponent,
+    DeleteSandboxConfigurationModalComponent,
+    NewSandboxConfigurationComponent,
+    SandboxesComponent,
+    DeleteTenantConfigurationModalComponent,
+    NewTenantConfigurationComponent,
+    TenantsComponent,
+    TenantComponent
+  ],
+  entryComponents: [DeleteTenantConfigurationModalComponent]
 })
 export class SandboxTenantSharedModule {}

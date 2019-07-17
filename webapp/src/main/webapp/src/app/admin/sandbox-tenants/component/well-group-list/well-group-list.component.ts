@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
+  EventEmitter,
   Input,
+  Output,
   TemplateRef
 } from '@angular/core';
 
@@ -15,6 +17,9 @@ import {
 export class WellGroupListComponent<T> {
   @Input()
   items: T[];
+
+  @Output()
+  itemClick: EventEmitter<T> = new EventEmitter();
 
   @ContentChild('itemTemplate')
   itemTemplate: TemplateRef<any>;
