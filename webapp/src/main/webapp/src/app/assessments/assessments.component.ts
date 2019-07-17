@@ -38,7 +38,8 @@ import { Embargo } from '../shared/embargo/embargo';
  */
 @Component({
   selector: 'assessments',
-  templateUrl: './assessments.component.html'
+  templateUrl: './assessments.component.html',
+  styleUrls: ['./assessments.component.less']
 })
 export class AssessmentsComponent implements OnChanges {
   readonly gradeColor = gradeColor;
