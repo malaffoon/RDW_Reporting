@@ -142,7 +142,7 @@ spring:
     driverClassName: com.mysql.jdbc.Driver
     initialize: false
     initialSize: 0
-    maxActive: 1
+    maxActive: 2
     minIdle: ${spring.admin_warehouse_datasource.initialSize}
     maxIdle: ${spring.admin_warehouse_datasource.maxActive}
     removeAbandoned: false
@@ -171,7 +171,7 @@ spring:
     driverClassName: com.mysql.jdbc.Driver
     initialize: false
     initialSize: 0
-    maxActive: 1
+    maxActive: 2
     minIdle: ${spring.admin_reporting_datasource.initialSize}
     maxIdle: ${spring.admin_reporting_datasource.maxActive}
     removeAbandoned: false
@@ -196,7 +196,7 @@ spring:
     driverClassName: com.amazon.redshift.jdbc42.Driver
     initialize: false
     initialSize: 0
-    maxActive: 1
+    maxActive: 2
     minIdle: ${spring.admin_olap_datasource.initialSize}
     maxIdle: ${spring.admin_olap_datasource.maxActive}
     removeAbandoned: false

@@ -496,6 +496,12 @@ sql:
       - GRANT SELECT ON mysql.proc TO :username @'%'
       - GRANT FILE ON *.* TO :username @'%'
 
+    dropSandboxDatabase: >-
+      DROP DATABASE IF EXISTS $[databaseName]
+
+    dropSandboxUser: >-
+      DROP USER $[username]
+
     olapDatabaseUserExists: >-
       SELECT COUNT(usename) FROM pg_user where usename = :username;
 
@@ -517,4 +523,12 @@ sql:
       GRANT ALL ON ALL TABLES IN SCHEMA $[schema] to $[username]
 
     searchPathOlapUserToSchema: >-
-      ALTER USER $[username] SET SEARCH_PATH TO  $[schema];
+      ALTER USER $[username] SET SEARCH_PATH TO $[schema];
+
+    # storing as array - may be some additional actions needed here
+    revokeOlapUser:
+      - REVOKE ALL ON SCHEMA $[schema] FROM $[username]
+
+    dropSandboxOlapSchemaAndUser:
+      - DROP SCHEMA IF EXISTS $[schema] CASCADE
+      - DROP USER IF EXISTS $[username]
