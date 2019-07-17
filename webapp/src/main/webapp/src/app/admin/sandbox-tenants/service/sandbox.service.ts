@@ -51,37 +51,28 @@ export class SandboxService {
       .pipe(catchError(ResponseUtils.throwError));
   }
 
-  // getTenants(): Observable<TenantConfiguration[]> {
-  //   return this.dataService
-  //     .get(TenantsRoute)
-  //     .pipe(
-  //       map(
-  //         apiModels => apiModels.map(apiModel => mapTenant(apiModel, {}, true)),
-  //         catchError(ResponseUtils.throwError)
-  //       )
-  //     );
-  // }
-
   /**
    * Gets all sandbox configurations for the system
    */
   getAll(type: TenantType): Observable<SandboxConfiguration[]> {
-    return forkJoin([
-      this.dataService.get(ResourceRoute),
-      this.dataService.get(DefaultsRoute),
-      type === 'TENANT' ? of([]) : this.dataService.get(DataSetsRoute)
-    ]).pipe(
-      map(([serverTenants, defaults, dataSets]) => {
-        if (type === 'TENANT') {
-          return serverTenants.map(serverTenant =>
-            mapTenant(serverTenant, defaults)
-          );
-        }
-        return serverTenants.map(serverTenant =>
-          mapSandbox(serverTenant, defaults, dataSets)
-        );
-      })
+    const tenants$ = this.dataService.get(ResourceRoute, { params: { type } });
+    const defaults$ = this.dataService.get(DefaultsRoute);
+    const dataSets$ = this.dataService.get(DataSetsRoute);
+    const allTenants$ = forkJoin(tenants$, defaults$).pipe(
+      map(([serverTenants, defaults]) =>
+        serverTenants.map(serverTenant => mapTenant(serverTenant, defaults))
+      )
     );
+
+    const allSandboxes$ = forkJoin(tenants$, defaults$, dataSets$).pipe(
+      map(([serverTenants, defaults, dataSets]) =>
+        serverTenants.map(serverTenant =>
+          mapSandbox(serverTenant, defaults, dataSets)
+        )
+      )
+    );
+
+    return type === 'TENANT' ? allTenants$ : allSandboxes$;
   }
 
   /**
