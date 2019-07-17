@@ -1,36 +1,34 @@
 <div class="well-group">
   <!-- Filter Options -->
   <div id="group-results-basic-filters" class="well">
-    <div class="well-body">
-      <div class="form-group row">
+    <div class="well-body filters">
+      <div class="content">
         <ng-content></ng-content>
-        <div class="col-md-2">
-          <!-- Advanced Filters Toggle -->
-          <div class="pull-right text-right">
-            <label for="advanced">{{ 'adv-filters.label' | translate }}</label>
-            <button
-              id="advanced"
-              class="form-control btn btn-default pull-right"
-              (click)="showAdvancedFilters = !showAdvancedFilters"
-              angulartics2On="click"
-              angularticsAction="ToggleAdvancedFilters"
-              angularticsCategory="AssessmentResults"
-            >
-              {{
-                'common.action.' + (showAdvancedFilters ? 'hide' : 'show')
-                  | translate
-              }}
-              <i
-                class="fa ml-xs"
-                [ngClass]="{
-                  'fa-caret-square-o-up': showAdvancedFilters,
-                  'fa-caret-square-o-down': !showAdvancedFilters
-                }"
-                aria-hidden="true"
-              ></i>
-            </button>
-          </div>
-        </div>
+      </div>
+      <div class="form-group">
+        <!-- Advanced Filters Toggle -->
+        <label for="advanced">{{ 'adv-filters.label' | translate }}</label>
+        <button
+          id="advanced"
+          class="form-control btn btn-default"
+          (click)="showAdvancedFilters = !showAdvancedFilters"
+          angulartics2On="click"
+          angularticsAction="ToggleAdvancedFilters"
+          angularticsCategory="AssessmentResults"
+        >
+          {{
+            'common.action.' + (showAdvancedFilters ? 'hide' : 'show')
+              | translate
+          }}
+          <i
+            class="fa ml-xs"
+            [ngClass]="{
+              'fa-caret-square-o-up': showAdvancedFilters,
+              'fa-caret-square-o-down': !showAdvancedFilters
+            }"
+            aria-hidden="true"
+          ></i>
+        </button>
       </div>
     </div>
   </div>
