@@ -11,6 +11,7 @@ import { gradeColor } from '../../shared/colors';
 @Component({
   selector: 'student-assessment-card',
   templateUrl: './student-assessment-card.component.html',
+  styleUrls: ['./student-assessment-card.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentAssessmentCardComponent {
