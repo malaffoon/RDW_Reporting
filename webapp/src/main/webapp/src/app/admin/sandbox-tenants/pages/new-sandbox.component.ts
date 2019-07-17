@@ -68,13 +68,15 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     );
 
     this.service
-      .getAvailableDataSets()
+      .getSandboxDataSets()
       .subscribe(dataSets => (this.dataSets = dataSets));
-    this.service.getTenants().subscribe(tenants => (this.tenants = tenants));
+    this.service
+      .getAll('TENANT')
+      .subscribe(tenants => (this.tenants = tenants));
     this.loadLocalizations();
 
     this.service
-      .getDefaultConfigurationProperties()
+      .getDefaultConfigurationProperties('SANDBOX')
       .subscribe(configProperties => {
         this.defaultConfigurationProperties = configProperties;
         this.configurationProperties = mapConfigurationProperties(

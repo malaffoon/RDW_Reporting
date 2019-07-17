@@ -6,7 +6,7 @@ import { AdminServiceRoute } from '../shared/service-route';
 import { DataService } from '../shared/data/data.service';
 import { ResponseUtils } from '../shared/response-utils';
 
-const ResourceRoute = `${AdminServiceRoute}/config/decrypt`;
+const ResourceRoute = `${AdminServiceRoute}/decryption`;
 
 /**
  * Service responsible for sandboxes

@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Observable } from 'rxjs';
 import { TenantConfiguration } from '../../model/tenant-configuration';
-import { TenantService } from '../../service/tenant.service';
 import { DeleteTenantConfigurationModalComponent } from '../../modal/delete-tenant.modal';
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
 import { TenantStore } from '../../store/tenant.store';
@@ -11,6 +10,8 @@ import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { map } from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { UserService } from '../../../../shared/security/service/user.service';
+import { SandboxService } from '../../service/sandbox.service';
+import { SandboxConfiguration } from '../../model/sandbox-configuration';
 
 @Component({
   selector: 'tenants',
@@ -24,7 +25,7 @@ export class TenantsComponent implements OnInit {
   constructor(
     private translationLoader: RdwTranslateLoader,
     private route: ActivatedRoute,
-    private service: TenantService,
+    private service: SandboxService,
     private store: TenantStore,
     private userService: UserService,
     private languageStore: LanguageStore,
@@ -59,7 +60,7 @@ export class TenantsComponent implements OnInit {
     });
   }
 
-  onSave(value: TenantConfiguration): void {
+  onSave(value: SandboxConfiguration): void {
     this.service.update(value).subscribe(
       () => this.loadTenants(),
       error =>
@@ -72,7 +73,7 @@ export class TenantsComponent implements OnInit {
   }
 
   private loadTenants() {
-    this.service.getAll().subscribe(tenants => {
+    this.service.getAll('TENANT').subscribe(tenants => {
       this.store.setState(
         tenants.sort((a, b) => a.label.localeCompare(b.label))
       );

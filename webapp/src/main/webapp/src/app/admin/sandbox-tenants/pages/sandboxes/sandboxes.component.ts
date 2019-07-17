@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
 import { SandboxService } from '../../service/sandbox.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
@@ -72,7 +71,7 @@ export class SandboxesComponent implements OnInit {
   }
 
   private loadSandboxes() {
-    this.service.getAll().subscribe(sandboxes => {
+    this.service.getAll('SANDBOX').subscribe(sandboxes => {
       this.store.setState(sandboxes);
     });
   }

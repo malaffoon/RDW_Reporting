@@ -10,12 +10,12 @@ import {
   toSandboxApiModel
 } from '../mapper/tenant.mapper';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
-import { TenantConfiguration } from '../model/tenant-configuration';
+import { TenantType } from '../model/tenant-type';
+import { of } from 'rxjs/internal/observable/of';
 
-const ResourceRoute = `${AdminServiceRoute}/sandboxes`;
-const TenantsRoute = `${AdminServiceRoute}/tenants`;
-const DefaultsRoute = `${TenantsRoute}/defaults`;
-const DataSetsRoute = `${ResourceRoute}/datasets`;
+const ResourceRoute = `${AdminServiceRoute}/tenants`;
+const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
+const DataSetsRoute = `${AdminServiceRoute}/sandboxDataSets`;
 
 /**
  * Service responsible for sandboxes
@@ -29,48 +29,56 @@ export class SandboxService {
   /**
    * Gets default configuration properties for a sandbox
    */
-  getDefaultConfigurationProperties(): Observable<any> {
+  getDefaultConfigurationProperties(type: TenantType): Observable<any> {
     return this.dataService.get(DefaultsRoute).pipe(
-      map(config => {
-        return {
-          // intentionally excluding datasets and archived here.
-          aggregate: config.aggregate,
-          reporting: config.reporting
-        };
+      map(defaults => {
+        if (type === 'SANDBOX') {
+          return {
+            // intentionally excluding datasets and archived here.
+            aggregate: defaults.aggregate,
+            reporting: defaults.reporting
+          };
+        }
+        return defaults;
       }),
       catchError(ResponseUtils.throwError)
     );
   }
 
-  getAvailableDataSets(): Observable<DataSet[]> {
+  getSandboxDataSets(): Observable<DataSet[]> {
     return this.dataService
       .get(DataSetsRoute)
       .pipe(catchError(ResponseUtils.throwError));
   }
 
-  getTenants(): Observable<TenantConfiguration[]> {
-    return this.dataService
-      .get(TenantsRoute)
-      .pipe(
-        map(
-          apiModels => apiModels.map(apiModel => mapTenant(apiModel, {}, true)),
-          catchError(ResponseUtils.throwError)
-        )
-      );
-  }
+  // getTenants(): Observable<TenantConfiguration[]> {
+  //   return this.dataService
+  //     .get(TenantsRoute)
+  //     .pipe(
+  //       map(
+  //         apiModels => apiModels.map(apiModel => mapTenant(apiModel, {}, true)),
+  //         catchError(ResponseUtils.throwError)
+  //       )
+  //     );
+  // }
 
   /**
    * Gets all sandbox configurations for the system
    */
-  getAll(): Observable<SandboxConfiguration[]> {
+  getAll(type: TenantType): Observable<SandboxConfiguration[]> {
     return forkJoin([
       this.dataService.get(ResourceRoute),
       this.dataService.get(DefaultsRoute),
-      this.dataService.get(DataSetsRoute)
+      type === 'TENANT' ? of([]) : this.dataService.get(DataSetsRoute)
     ]).pipe(
-      map(([sandboxConfigurations, defaultConfiguration, datasets]) => {
-        return sandboxConfigurations.map(sandboxConfiguration =>
-          mapSandbox(sandboxConfiguration, defaultConfiguration, datasets)
+      map(([serverTenants, defaults, dataSets]) => {
+        if (type === 'TENANT') {
+          return serverTenants.map(serverTenant =>
+            mapTenant(serverTenant, defaults)
+          );
+        }
+        return serverTenants.map(serverTenant =>
+          mapSandbox(serverTenant, defaults, dataSets)
         );
       })
     );
@@ -80,14 +88,11 @@ export class SandboxService {
    * Creates a new sandbox
    * @param sandbox - The sandbox to create
    */
-  create(
-    sandbox: SandboxConfiguration,
-    dataSets = []
-  ): Observable<SandboxConfiguration> {
+  create(sandbox: SandboxConfiguration): Observable<SandboxConfiguration> {
     return this.dataService
       .post(ResourceRoute, toSandboxApiModel(sandbox))
       .pipe(
-        // map(createdSandbox => mapSandbox(createdSandbox, {}, dataSets)),
+        map(() => sandbox),
         catchError(ResponseUtils.throwError)
       );
   }
@@ -105,11 +110,11 @@ export class SandboxService {
 
   /**
    * Deletes an existing sandbox
-   * @param sandboxCode - The code or "key" of the sandbox to delete
+   * @param code - The code or "key" of the sandbox to delete
    */
-  delete(sandboxCode: string): Observable<void> {
+  delete(code: string): Observable<void> {
     return this.dataService
-      .delete(`${ResourceRoute}/${sandboxCode}`)
+      .delete(`${ResourceRoute}/${code}`)
       .pipe(catchError(ResponseUtils.throwError));
   }
 }
