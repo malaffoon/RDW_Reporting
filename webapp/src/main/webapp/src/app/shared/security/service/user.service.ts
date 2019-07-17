@@ -25,8 +25,10 @@ export class UserService {
         lastName: serverUser.lastName,
         permissions: serverUser.permissions,
         anonymous: serverUser.anonymous,
-        logoutUrl: serverUser.logoutUrl,
-        sessionRefreshUrl: serverUser.sessionRefreshUrl
+        tenantName: serverUser.tenant.name,
+        logoutUrl: serverUser.tenant.logoutUrl,
+        sessionRefreshUrl: serverUser.tenant.sessionRefreshUrl,
+        sandboxUser: serverUser.tenant.sandbox
       })),
       catchError(() => UnauthenticatedUser)
     );

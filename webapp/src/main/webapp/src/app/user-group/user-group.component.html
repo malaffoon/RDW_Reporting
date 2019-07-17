@@ -9,28 +9,30 @@
       {{ 'user-group.student-search.find-students-prompt' | translate }}
     </h1>
     <ul controls class="list-unstyled list-inline">
-      <li *ngIf="group.id != null">
-        <button
-          type="button"
-          class="btn btn-danger btn-sm"
-          [disabled]="deleteButtonDisabled"
-          (click)="deleteModal.show()"
-        >
-          <i class="fa fa-trash"></i>
-          {{ 'common.action.delete' | translate }}
-        </button>
-      </li>
-      <li>
-        <button
-          type="submit"
-          class="btn btn-primary btn-sm"
-          [disabled]="saveButtonDisabled"
-          (click)="onSaveButtonClick()"
-        >
-          <i class="fa fa-save"></i>
-          {{ 'common.action.save' | translate }}
-        </button>
-      </li>
+      <ng-container *hasPermission="'TEACHER_GROUP_WRITE'">
+        <li *ngIf="group.id != null">
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            [disabled]="deleteButtonDisabled"
+            (click)="deleteModal.show()"
+          >
+            <i class="fa fa-trash"></i>
+            {{ 'common.action.delete' | translate }}
+          </button>
+        </li>
+        <li>
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm"
+            [disabled]="saveButtonDisabled"
+            (click)="onSaveButtonClick()"
+          >
+            <i class="fa fa-save"></i>
+            {{ 'common.action.save' | translate }}
+          </button>
+        </li>
+      </ng-container>
       <li>
         <button
           type="button"

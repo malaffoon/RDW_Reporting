@@ -6,7 +6,14 @@ import { CachingDataService } from '../../data/caching-data.service';
 let userStub: any = {
   firstName: 'Bob',
   lastName: 'Mack',
-  permissions: ['ALL_STATES_READ']
+  permissions: ['ALL_STATES_READ'],
+  anonymous: false,
+  tenant: {
+    name: 'Cali',
+    sandbox: false,
+    logoutUrl: '/logout',
+    sessionRefreshUrl: '/refresh'
+  }
 };
 let mockDataService = {
   get: () => of(userStub)
@@ -31,6 +38,16 @@ describe('UserService', () => {
       expect(actual.firstName).toBe(userStub.firstName);
       expect(actual.lastName).toBe(userStub.lastName);
       expect(actual.permissions.length).toBe(userStub.permissions.length);
+      expect(actual).toEqual({
+        firstName: userStub.firstName,
+        lastName: userStub.lastName,
+        permissions: userStub.permissions,
+        tenantName: userStub.tenant.name,
+        logoutUrl: userStub.tenant.logoutUrl,
+        sessionRefreshUrl: userStub.tenant.sessionRefreshUrl,
+        anonymous: false,
+        sandboxUser: false
+      });
     });
   }));
 });

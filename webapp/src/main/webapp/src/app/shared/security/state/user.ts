@@ -3,6 +3,8 @@ export interface User {
   readonly lastName: string;
   readonly permissions: string[];
   readonly anonymous?: boolean;
+  readonly tenantName?: string;
   readonly logoutUrl?: string;
   readonly sessionRefreshUrl?: string;
+  readonly sandboxUser?: boolean;
 }
