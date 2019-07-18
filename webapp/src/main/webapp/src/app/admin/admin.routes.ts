@@ -71,7 +71,8 @@ export const adminRoutes: Route[] = [
         canActivate: [HasAnyPermissionCanActivate],
         data: {
           breadcrumb: { translate: 'sandbox-config.title' },
-          permissions: ['TENANT_READ']
+          permissions: ['TENANT_READ'],
+          type: 'SANDBOX'
         }
       },
       {
@@ -80,7 +81,8 @@ export const adminRoutes: Route[] = [
         canActivate: [HasAnyPermissionCanActivate],
         data: {
           breadcrumb: { translate: 'tenant-config.title' },
-          permissions: ['TENANT_READ']
+          permissions: ['TENANT_READ'],
+          type: 'TENANT'
         }
       }
     ]

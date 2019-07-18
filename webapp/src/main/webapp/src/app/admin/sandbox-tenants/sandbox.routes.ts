@@ -9,16 +9,14 @@ export const sandboxRoutes: Route[] = [
   {
     path: '',
     pathMatch: 'full',
-    component: TenantsComponent,
-    data: {
-      type: 'SANDBOX'
-    }
+    component: TenantsComponent
   },
   {
     path: 'new',
     data: {
       breadcrumb: { translate: 'sandbox-config.new-sandbox.header' },
-      permissions: ['TENANT_WRITE']
+      permissions: ['TENANT_WRITE'],
+      mode: 'create'
     },
     canActivate: [HasAnyPermissionCanActivate],
     component: NewSandboxConfigurationComponent
@@ -27,7 +25,8 @@ export const sandboxRoutes: Route[] = [
     path: ':id',
     component: TenantComponent,
     data: {
-      breadcrumb: tenantBreadcrumb
+      breadcrumb: tenantBreadcrumb,
+      mode: 'update'
     }
   }
 ];

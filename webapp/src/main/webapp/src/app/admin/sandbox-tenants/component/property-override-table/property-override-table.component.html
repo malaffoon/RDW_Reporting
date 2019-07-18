@@ -1,13 +1,24 @@
-<app-property-override-table-controls
-  (search)="table.filterGlobal($event, 'contains')"
-  [modified]="showModifiedPropertiesOnly"
-  (modifiedChanged)="
-    showModifiedPropertiesOnly = !showModifiedPropertiesOnly;
-    updatePropertiesFilter()
-  "
->
-  <ng-content label select="[label]"></ng-content>
-</app-property-override-table-controls>
+<!-- TODO extract -->
+<div class="controls">
+  <input
+    id="search"
+    name="search"
+    type="text"
+    placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+    class="form-control"
+    (input)="table.filterGlobal($event, 'contains')"
+  />
+  <label>
+    <input
+      id="modified"
+      name="modified"
+      type="checkbox"
+      [value]="showModifiedPropertiesOnly"
+      (change)="showModifiedPropertiesOnly = !showModifiedPropertiesOnly"
+    />
+    {{ 'sandbox-config.config-properties.modified' | translate }}
+  </label>
+</div>
 
 <div [formGroup]="form">
   <div [formArrayName]="propertiesArrayName">

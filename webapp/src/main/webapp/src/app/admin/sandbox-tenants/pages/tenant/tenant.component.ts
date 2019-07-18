@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { flatMap, map } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
-import { SandboxConfiguration } from '../../model/sandbox-configuration';
+import {
+  DataSet,
+  SandboxConfiguration
+} from '../../model/sandbox-configuration';
 import { forkJoin, Observable } from 'rxjs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { UserService } from '../../../../shared/security/service/user.service';
@@ -11,6 +14,9 @@ import { NotificationService } from '../../../../shared/notification/notificatio
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
 import { ConfirmationModalComponent } from '../../../../shared/component/confirmation-modal/confirmation-modal.component';
 import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs/internal/observable/of';
+import { FormMode } from '../../component/tenant-sandbox/tenant-sandbox.component';
+import { TenantType } from '../../model/tenant-type';
 
 @Component({
   selector: 'app-tenant',
@@ -18,7 +24,11 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./tenant.component.less']
 })
 export class TenantComponent {
+  type$: Observable<TenantType>;
+  mode$: Observable<FormMode>;
   tenant$: Observable<SandboxConfiguration>;
+  tenants$: Observable<SandboxConfiguration[]>;
+  dataSets$: Observable<DataSet[]>;
   localizationDefaults$: Observable<any>;
   writable$: Observable<boolean>;
   initialized$: Observable<boolean>;
@@ -34,6 +44,10 @@ export class TenantComponent {
     private translationLoader: RdwTranslateLoader,
     private translateService: TranslateService
   ) {
+    this.type$ = this.route.data.pipe(map(({ type }) => type));
+
+    this.mode$ = this.route.data.pipe(map(({ mode }) => mode));
+
     this.tenant$ = this.route.params.pipe(
       flatMap(({ id }) => this.service.get(id))
     );
@@ -45,6 +59,18 @@ export class TenantComponent {
     this.writable$ = this.userService
       .getUser()
       .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
+
+    this.tenants$ = this.type$.pipe(
+      flatMap(type =>
+        type === 'SANDBOX' ? this.service.getAll('TENANT') : of([])
+      )
+    );
+
+    this.dataSets$ = this.type$.pipe(
+      flatMap(type =>
+        type === 'SANDBOX' ? this.service.getSandboxDataSets() : of([])
+      )
+    );
 
     // not working for some reason... may need to be combine latest?
     this.initialized$ = forkJoin(

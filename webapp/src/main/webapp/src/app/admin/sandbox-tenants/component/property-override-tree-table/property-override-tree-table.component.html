@@ -1,10 +1,36 @@
-<app-property-override-table-controls
-  (search)="table.filterGlobal($event, 'contains')"
-  [modified]="showModifiedPropertiesOnly"
-  (modifiedChanged)="showModifiedPropertiesOnly = !showModifiedPropertiesOnly"
->
-  <ng-content label select="[label]"></ng-content>
-</app-property-override-table-controls>
+<!-- TODO extract -->
+<div class="controls">
+  <input
+    id="search"
+    name="search"
+    type="text"
+    placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+    class="form-control"
+    (input)="table.filterGlobal($event, 'contains')"
+  />
+
+  <!--  <label>-->
+  <!--    <input-->
+  <!--      id="required"-->
+  <!--      name="required"-->
+  <!--      type="checkbox"-->
+  <!--      [value]="required"-->
+  <!--      (change)="requiredChanged.emit($event.target.value)"-->
+  <!--    />-->
+  <!--    {{ 'sandbox-config.config-properties.required' | translate }}-->
+  <!--  </label>-->
+
+  <label>
+    <input
+      id="modified"
+      name="modified"
+      type="checkbox"
+      [value]="showModifiedPropertiesOnly"
+      (change)="showModifiedPropertiesOnly = !showModifiedPropertiesOnly"
+    />
+    {{ 'sandbox-config.config-properties.modified' | translate }}
+  </label>
+</div>
 
 <div [formGroup]="form">
   <div [formArrayName]="propertiesArrayName">
@@ -59,9 +85,10 @@
           [ttRow]="rowNode"
           [ngClass]="{
             modified: rowNode.node.data.modified,
-            required: form
-              .get(propertiesArrayName)
-              .get(rowNode.node.data.formControlName).errors
+            required:
+              form.controls[propertiesArrayName].controls[
+                rowNode.node.data.formControlName
+              ].errors
           }"
           (click)="overrideInput.focus()"
         >

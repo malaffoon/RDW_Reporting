@@ -4,6 +4,10 @@
     [value]="tenant"
     [localizationDefaults]="localizationDefaults$ | async"
     [writable]="writable$ | async"
+    [tenants]="tenants$ | async"
+    [dataSets]="dataSets$ | async"
+    [configurationOpen]="(type$ | async) === 'TENANT'"
+    [mode]="mode$ | async"
     (save)="onSave($event)"
     (delete)="onDelete($event)"
   ></tenant-sandbox>

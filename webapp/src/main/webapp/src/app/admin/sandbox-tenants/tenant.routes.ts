@@ -15,16 +15,14 @@ export const tenantRoutes: Route[] = [
   {
     path: '',
     pathMatch: 'full',
-    component: TenantsComponent,
-    data: {
-      type: 'TENANT'
-    }
+    component: TenantsComponent
   },
   {
     path: 'new',
     data: {
       breadcrumb: { translate: 'tenant-config.new-tenant.header' },
-      permissions: ['TENANT_WRITE']
+      permissions: ['TENANT_WRITE'],
+      mode: 'create'
     },
     canActivate: [HasAnyPermissionCanActivate],
     component: NewTenantConfigurationComponent
@@ -33,7 +31,8 @@ export const tenantRoutes: Route[] = [
     path: ':id',
     component: TenantComponent,
     data: {
-      breadcrumb: tenantBreadcrumb
+      breadcrumb: tenantBreadcrumb,
+      mode: 'update'
     }
   }
 ];

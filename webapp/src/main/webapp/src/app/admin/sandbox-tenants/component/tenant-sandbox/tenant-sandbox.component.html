@@ -122,30 +122,45 @@
       </ng-template>
     </div>
 
-    <div class="form-group">
+    <app-toggle-label
+      [open]="configurationOpen"
+      (openChange)="configurationOpen = $event"
+      openLabel="{{
+        'sandbox-config.fields.configuration-properties' | translate
+      }}"
+      closedLabel="{{
+        'sandbox-config.fields.configuration-properties' | translate
+      }}"
+    ></app-toggle-label>
+
+    <div class="form-group" [hidden]="!configurationOpen">
       <property-override-tree-table
         [form]="formGroup"
         [configurationProperties]="value.configurationProperties"
         [readonly]="!writable"
         [readonlyGroups]="readonlyGroups"
         propertiesArrayName="configurationProperties"
-      >
-        <label label>
-          {{ 'sandbox-config.fields.configuration-properties' | translate }}
-        </label>
-      </property-override-tree-table>
+      ></property-override-tree-table>
     </div>
-    <div class="form-group">
+
+    <app-toggle-label
+      [open]="localizationOpen"
+      (openChange)="localizationOpen = $event"
+      openLabel="{{
+        'sandbox-config.fields.localization-overrides' | translate
+      }}"
+      closedLabel="{{
+        'sandbox-config.fields.localization-overrides' | translate
+      }}"
+    ></app-toggle-label>
+
+    <div class="form-group" [hidden]="!localizationOpen">
       <property-override-table
         [form]="formGroup"
         [configurationProperties]="localizationOverrides"
         [readonly]="!writable"
         propertiesArrayName="localizationOverrides"
-      >
-        <label label>
-          {{ 'sandbox-config.fields.localization-overrides' | translate }}
-        </label>
-      </property-override-table>
+      ></property-override-table>
     </div>
   </div>
 </form>

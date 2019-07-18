@@ -21,6 +21,7 @@ import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantComponent } from './pages/tenant/tenant.component';
 import { PropertyOverrideTableControlsComponent } from './component/property-override-table-controls/property-override-table-controls.component';
+import { ToggleLabelComponent } from './component/toggle-label/toggle-label.component';
 
 /**
  * TODO join this with tenant.module and make the route structure this:
@@ -52,7 +53,8 @@ import { PropertyOverrideTableControlsComponent } from './component/property-ove
     NewTenantConfigurationComponent,
     TenantsComponent,
     TenantComponent,
-    PropertyOverrideTableControlsComponent
+    PropertyOverrideTableControlsComponent,
+    ToggleLabelComponent
   ],
   exports: [
     PropertyOverrideTableComponent,
@@ -64,7 +66,8 @@ import { PropertyOverrideTableControlsComponent } from './component/property-ove
     NewTenantConfigurationComponent,
     TenantsComponent,
     TenantComponent,
-    PropertyOverrideTableControlsComponent
+    PropertyOverrideTableControlsComponent,
+    ToggleLabelComponent
   ]
 })
 export class SandboxTenantSharedModule {}

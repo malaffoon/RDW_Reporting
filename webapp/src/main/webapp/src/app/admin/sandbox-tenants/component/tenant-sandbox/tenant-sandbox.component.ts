@@ -17,12 +17,17 @@ import {
 } from '../../model/sandbox-configuration';
 import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
 
+export type FormMode = 'create' | 'update';
+
 @Component({
   selector: 'tenant-sandbox',
   templateUrl: './tenant-sandbox.component.html',
   styleUrls: ['./tenant-sandbox.component.less']
 })
 export class TenantSandboxComponent implements OnInit, OnChanges {
+  @Input()
+  mode: FormMode;
+
   @Input()
   value: SandboxConfiguration;
 
@@ -43,6 +48,12 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
 
   @Output()
   delete: EventEmitter<SandboxConfiguration> = new EventEmitter();
+
+  @Input()
+  configurationOpen: boolean = false;
+
+  @Input()
+  localizationOpen: boolean = false;
 
   // formGroupOriginalValues: any;
   formGroup: FormGroup = new FormGroup({
