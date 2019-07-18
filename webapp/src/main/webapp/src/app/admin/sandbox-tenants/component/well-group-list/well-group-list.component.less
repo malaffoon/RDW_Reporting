@@ -1,37 +1,14 @@
-@gray-darkest: #2a2b2d;
-@gray-darker: #84888d;
-@gray-dark: #a7a7a7;
-@gray: #b8b8b8;
-@gray-light: #d5d5d5;
-@gray-lighter: #e6e6e6;
-@gray-lightest: #f8f8f8;
-
 .well-group .well {
   box-shadow: none;
-  padding-bottom: 20px;
+  padding: 0px;
   &:not(:first-child) {
     box-shadow: none;
   }
   &:first-child {
-    padding: 15px 20px;
     > *:last-child,
     > .row > [class^='col-']:first-child > *:last-child,
     > .flex-children > .flex-child:first-child > *:last-child {
       margin-bottom: 0;
     }
   }
-
-  // link behavior
-  display: block;
-  &:hover {
-    background-color: @gray-lightest;
-  }
-  &:active {
-    background-color: @gray-lighter;
-  }
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
 }

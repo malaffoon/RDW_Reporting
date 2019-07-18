@@ -1,14 +1,8 @@
 <div class="well-group">
-  <a
-    *ngFor="let item of items"
-    class="well"
-    href="javascript:void(0)"
-    (click)="itemClick.emit(item)"
-  >
+  <div *ngFor="let item of items" class="well" href="javascript:void(0)">
     <ng-template
       [ngTemplateOutlet]="itemTemplate"
       [ngTemplateOutletContext]="{ item: item }"
-    >
-    </ng-template>
-  </a>
+    ></ng-template>
+  </div>
 </div>

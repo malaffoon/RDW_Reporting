@@ -15,12 +15,12 @@
 
   <ng-container *ngIf="(tenants$ | async) as tenants; else loading">
     <ng-container *ngIf="tenants.length > 0; else empty">
-      <app-well-group-list
-        [items]="tenants"
-        (itemClick)="onTenantClick($event)"
-      >
+      <app-well-group-list [items]="tenants">
         <ng-template #itemTemplate let-tenant="item">
-          <app-tenant-link [tenant]="tenant"></app-tenant-link>
+          <app-tenant-link
+            [tenant]="tenant"
+            (tenantClick)="onTenantClick($event)"
+          ></app-tenant-link>
         </ng-template>
       </app-well-group-list>
     </ng-container>

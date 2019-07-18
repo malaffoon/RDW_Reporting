@@ -18,9 +18,6 @@ export class WellGroupListComponent<T> {
   @Input()
   items: T[];
 
-  @Output()
-  itemClick: EventEmitter<T> = new EventEmitter();
-
   @ContentChild('itemTemplate')
   itemTemplate: TemplateRef<any>;
 }

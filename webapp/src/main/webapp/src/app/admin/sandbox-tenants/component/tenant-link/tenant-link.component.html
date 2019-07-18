@@ -1,24 +1,30 @@
-<div class="head">
-  <h2 class="h3">
-    {{ tenant.label }}
-    <span class="sandbox-key">({{ tenant.code }})</span>
-  </h2>
-  <div
-    class="label border-only"
-    [ngClass]="{
-      'blue-dark': tenant.status === 'ACTIVE',
-      aqua: tenant.status !== 'ACTIVE' && tenant.status !== 'FAILED',
-      maroon: tenant.status === 'FAILED'
-    }"
-  >
-    {{ 'tenant-config.fields.status.' + tenant.status | translate }}
+<a
+  href="javascript:void(0)"
+  class="status-{{ tenant.status.toLowerCase() }}"
+  (click)="tenantClick.emit(tenant)"
+>
+  <div class="head">
+    <h2 class="h3">
+      {{ tenant.label }}
+      <span class="sandbox-key">({{ tenant.code }})</span>
+    </h2>
+    <div
+      class="label border-only"
+      [ngClass]="{
+        'blue-dark': tenant.status === 'ACTIVE',
+        aqua: tenant.status !== 'ACTIVE' && tenant.status !== 'FAILED',
+        maroon: tenant.status === 'FAILED'
+      }"
+    >
+      {{ 'tenant-config.fields.status.' + tenant.status | translate }}
+    </div>
   </div>
-</div>
-<div class="body">
-  <p class="description">
-    {{ tenant.description }}
-  </p>
-  <strong class="data-set" *ngIf="tenant.dataSet != null">
-    {{ tenant.dataSet.label }}
-  </strong>
-</div>
+  <div class="body">
+    <p class="description">
+      {{ tenant.description }}
+    </p>
+    <strong class="data-set" *ngIf="tenant.dataSet != null">
+      {{ tenant.dataSet.label }}
+    </strong>
+  </div>
+</a>
