@@ -5,7 +5,9 @@
     showModifiedPropertiesOnly = !showModifiedPropertiesOnly;
     updatePropertiesFilter()
   "
-></app-property-override-table-controls>
+>
+  <ng-content label select="[label]"></ng-content>
+</app-property-override-table-controls>
 
 <div [formGroup]="form">
   <div [formArrayName]="propertiesArrayName">

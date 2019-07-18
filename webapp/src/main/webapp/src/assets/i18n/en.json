@@ -1205,10 +1205,10 @@
       "success": "Sandbox data was successfully reset"
     },
     "fields": {
-      "label": "Name:",
-      "description": "Description:",
-      "data-set": "Data Set:",
-      "tenant": "Tenant: ",
+      "label": "Name",
+      "description": "Description",
+      "data-set": "Data Set",
+      "tenant": "Tenant",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
@@ -1265,10 +1265,10 @@
       "success": "Tenant was successfully deleted"
     },
     "fields": {
-      "id": "ID:",
-      "key": "Key:",
-      "label": "Name:",
-      "description": "Description:",
+      "id": "ID",
+      "key": "Key",
+      "label": "Name",
+      "description": "Description",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value",

@@ -11,7 +11,10 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { CustomValidators } from '../../../../shared/validator/custom-validators';
 import { ConfigurationProperty } from '../../model/configuration-property';
-import { SandboxConfiguration } from '../../model/sandbox-configuration';
+import {
+  DataSet,
+  SandboxConfiguration
+} from '../../model/sandbox-configuration';
 import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
 
 @Component({
@@ -22,6 +25,12 @@ import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
 export class TenantSandboxComponent implements OnInit, OnChanges {
   @Input()
   value: SandboxConfiguration;
+
+  @Input()
+  tenants: SandboxConfiguration[] = [];
+
+  @Input()
+  dataSets: DataSet[] = [];
 
   @Input()
   localizationDefaults: any;

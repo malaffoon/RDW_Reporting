@@ -2,7 +2,9 @@
   (search)="table.filterGlobal($event, 'contains')"
   [modified]="showModifiedPropertiesOnly"
   (modifiedChanged)="showModifiedPropertiesOnly = !showModifiedPropertiesOnly"
-></app-property-override-table-controls>
+>
+  <ng-content label select="[label]"></ng-content>
+</app-property-override-table-controls>
 
 <div [formGroup]="form">
   <div [formArrayName]="propertiesArrayName">
@@ -12,9 +14,6 @@
       dataKey="key"
       [globalFilterFields]="['key', 'value']"
       styleClass="table table-striped table-hover overflow rdw-scrollable-table"
-      [paginator]="true"
-      [alwaysShowPaginator]="false"
-      [rows]="20"
     >
       <ng-template pTemplate="header">
         <tr>
@@ -60,10 +59,9 @@
           [ttRow]="rowNode"
           [ngClass]="{
             modified: rowNode.node.data.modified,
-            required:
-              form.controls[propertiesArrayName].controls[
-                rowNode.node.data.formControlName
-              ].errors
+            required: form
+              .get(propertiesArrayName)
+              .get(rowNode.node.data.formControlName).errors
           }"
           (click)="overrideInput.focus()"
         >

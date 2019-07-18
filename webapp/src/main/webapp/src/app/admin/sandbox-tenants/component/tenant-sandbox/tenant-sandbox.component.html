@@ -58,70 +58,94 @@
     </div>
   </page-heading>
 
-  <div class="sandbox-container well">
-    <div class="row mb-xs">
-      <div class="col-md-4">
-        <label>{{ 'sandbox-config.fields.label' | translate }}</label>
-      </div>
-      <div class="col-md-8">
-        <input
-          *ngIf="writable"
-          type="text"
-          class="form-control"
-          name="label"
-          formControlName="label"
-        />
-        <span *ngIf="!writable">
+  <div class="well">
+    <div class="primary-form-controls">
+      <div class="form-group">
+        <label for="label">{{
+          'sandbox-config.fields.label' | translate
+        }}</label>
+        <ng-container *ngIf="writable; else readonlyName">
+          <input
+            *ngIf="writable"
+            type="text"
+            class="form-control"
+            id="label"
+            name="label"
+            formControlName="label"
+          />
+        </ng-container>
+        <ng-template #readonlyName>
           {{ value.label }}
-        </span>
+        </ng-template>
+      </div>
+
+      <div class="form-group" *ngIf="value.sandbox">
+        <label for="tenant">{{
+          'sandbox-config.fields.tenant' | translate
+        }}</label>
+        <select id="tenant" class="form-control" formControlName="tenant">
+          <option *ngFor="let tenant of tenants" [ngValue]="tenant">
+            {{ tenant.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="value.sandbox">
+        <label for="dataSet">{{
+          'sandbox-config.fields.data-set' | translate
+        }}</label>
+        <ng-container *ngIf="writable; else readonlyDataSet">
+          <select id="dataSet" class="form-control" formControlName="dataset">
+            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
+              {{ dataSet.label }}
+            </option>
+          </select>
+        </ng-container>
+        <ng-template #readonlyDataSet>
+          {{ value.dataSet?.label }}
+        </ng-template>
       </div>
     </div>
-    <div class="row mb-xs">
-      <div class="col-md-4">
-        <label>{{ 'sandbox-config.fields.description' | translate }}</label>
-      </div>
-      <div class="col-md-8">
+
+    <div class="form-group">
+      <label>{{ 'sandbox-config.fields.description' | translate }}</label>
+      <ng-container *ngIf="writable; else readonlyDescription">
         <textarea
           *ngIf="writable"
           class="form-control"
           name="description"
           formControlName="description"
-        >
-        </textarea>
-        <span *ngIf="!writable">
-          {{ value.description }}
-        </span>
-      </div>
-    </div>
-    <div class="row mb-sm" *ngIf="value.dataSet != null">
-      <div class="col-md-4">
-        <label>{{ 'sandbox-config.fields.data-set' | translate }}</label>
-      </div>
-      <div class="col-md-8">{{ value.dataSet.label }}</div>
+        ></textarea>
+      </ng-container>
+      <ng-template #readonlyDescription>
+        {{ value.description }}
+      </ng-template>
     </div>
 
     <div class="form-group">
-      <label class="h4">
-        {{ 'sandbox-config.fields.configuration-properties' | translate }}
-      </label>
       <property-override-tree-table
         [form]="formGroup"
         [configurationProperties]="value.configurationProperties"
         [readonly]="!writable"
         [readonlyGroups]="readonlyGroups"
         propertiesArrayName="configurationProperties"
-      ></property-override-tree-table>
+      >
+        <label label>
+          {{ 'sandbox-config.fields.configuration-properties' | translate }}
+        </label>
+      </property-override-tree-table>
     </div>
     <div class="form-group">
-      <label class="h4">
-        {{ 'sandbox-config.fields.localization-overrides' | translate }}
-      </label>
       <property-override-table
         [form]="formGroup"
         [configurationProperties]="localizationOverrides"
         [readonly]="!writable"
         propertiesArrayName="localizationOverrides"
-      ></property-override-table>
+      >
+        <label label>
+          {{ 'sandbox-config.fields.localization-overrides' | translate }}
+        </label>
+      </property-override-table>
     </div>
   </div>
 </form>
