@@ -1,7 +1,6 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { ConfigurationProperty } from '../model/configuration-property';
+import { Component, Input } from '@angular/core';
+import { ConfigurationProperty } from '../../model/configuration-property';
 import { FormGroup } from '@angular/forms';
-import { DataTable } from 'primeng/primeng';
 
 @Component({
   selector: 'property-override-table',
@@ -33,11 +32,12 @@ export class PropertyOverrideTableComponent {
 
   @Input()
   propertiesArrayName: string;
+
   @Input()
   form: FormGroup;
+
   @Input()
   readonly = true;
-  @ViewChild('dt') dataTable: DataTable;
 
   showModifiedPropertiesOnly = false;
   filteredConfigurationProperties: ConfigurationProperty[];

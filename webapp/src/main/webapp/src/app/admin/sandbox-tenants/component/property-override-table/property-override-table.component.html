@@ -1,39 +1,16 @@
-<div class="controls">
-  <div class="input-group">
-    <span class="input-group-addon">
-      <i class="fa fa-search"></i>
-    </span>
-    <input
-      type="text"
-      class="form-control"
-      pInputText
-      size="50"
-      placeholder="{{ 'sandbox-config.fields.search' | translate }}"
-      (input)="dt.filterGlobal($event.target.value, 'contains')"
-    />
-  </div>
-
-  <label>
-    <input id="required-filter" name="required-filter" type="checkbox" />
-    {{ 'sandbox-config.config-properties.required' | translate }}
-  </label>
-
-  <label>
-    <input
-      id="modified-filter"
-      name="modified-filter"
-      type="checkbox"
-      (change)="updatePropertiesFilter()"
-      [(ngModel)]="showModifiedPropertiesOnly"
-    />
-    {{ 'sandbox-config.config-properties.modified' | translate }}
-  </label>
-</div>
+<app-property-override-table-controls
+  (search)="table.filterGlobal($event, 'contains')"
+  [modified]="showModifiedPropertiesOnly"
+  (modifiedChanged)="
+    showModifiedPropertiesOnly = !showModifiedPropertiesOnly;
+    updatePropertiesFilter()
+  "
+></app-property-override-table-controls>
 
 <div [formGroup]="form">
   <div [formArrayName]="propertiesArrayName">
     <p-table
-      #dt
+      #table
       [value]="filteredConfigurationProperties"
       dataKey="key"
       [globalFilterFields]="['key', 'value']"

@@ -15,16 +15,17 @@ import {
 import { forOwn } from 'lodash';
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
-import { NotificationService } from '../../../shared/notification/notification.service';
-import { DecryptionService } from '../../decryption.service';
-import { ConfigurationProperty } from '../model/configuration-property';
+import { NotificationService } from '../../../../shared/notification/notification.service';
+import { DecryptionService } from '../../../decryption.service';
+import { ConfigurationProperty } from '../../model/configuration-property';
 
 @Component({
   selector: 'property-override-tree-table',
-  templateUrl: './property-override-tree-table.component.html'
+  templateUrl: './property-override-tree-table.component.html',
+  styleUrls: ['./property-override-tree-table.component.less']
 })
 export class PropertyOverrideTreeTableComponent implements OnInit {
-  @ViewChild('tt') tt: TreeTable;
+  @ViewChild('table') table: TreeTable;
 
   _configurationProperties: any;
 
@@ -42,12 +43,16 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
   @Input()
   propertiesArrayName: string;
+
   @Input()
   form: FormGroup;
+
   @Input()
   readonly = true;
+
   @Input()
   readonlyGroups: string[] = [];
+
   @Output()
   propertyValueChanged: EventEmitter<
     ConfigurationProperty
@@ -86,7 +91,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     // Manaully invoking the TreeTableToggler, as it seems there's more to it than just
     // toggling the boolean value of expanded.
     // https://github.com/primefaces/primeng/blob/6.0.0-rc.1/src/app/components/treetable/treetable.ts#L2266
-    const toggler = new TreeTableToggler(this.tt);
+    const toggler = new TreeTableToggler(this.table);
     toggler.rowNode = node;
     toggler.onClick(event);
   }

@@ -1,7 +1,13 @@
+<app-property-override-table-controls
+  (search)="table.filterGlobal($event, 'contains')"
+  [modified]="showModifiedPropertiesOnly"
+  (modifiedChanged)="showModifiedPropertiesOnly = !showModifiedPropertiesOnly"
+></app-property-override-table-controls>
+
 <div [formGroup]="form">
   <div [formArrayName]="propertiesArrayName">
     <p-treeTable
-      #tt
+      #table
       [value]="configurationPropertiesTreeNodes"
       dataKey="key"
       [globalFilterFields]="['key', 'value']"
@@ -10,31 +16,6 @@
       [alwaysShowPaginator]="false"
       [rows]="20"
     >
-      <ng-template pTemplate="caption">
-        <div class="row">
-          <div class="col-md-9">
-            <i class="fa fa-search"></i>
-            <input
-              type="text"
-              class="form-control"
-              pInputText
-              size="50"
-              placeholder="{{ 'sandbox-config.fields.search' | translate }}"
-              (input)="tt.filterGlobal($event.target.value, 'contains')"
-            />
-          </div>
-          <div class="col-md-3 modified-properties-container">
-            <label class="inline-label">
-              <input
-                type="checkbox"
-                [(ngModel)]="showModifiedPropertiesOnly"
-                [ngModelOptions]="{ standalone: true }"
-              />
-              {{ 'sandbox-config.config-properties.modified' | translate }}
-            </label>
-          </div>
-        </div>
-      </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th>Key</th>
