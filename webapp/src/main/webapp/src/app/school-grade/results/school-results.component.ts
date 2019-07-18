@@ -26,7 +26,8 @@ import { AssessmentExamView } from '../../assessments/results/assessment-results
 
 @Component({
   selector: 'school-results',
-  templateUrl: './school-results.component.html'
+  templateUrl: './school-results.component.html',
+  styleUrls: ['./school-results.component.less']
 })
 /**
  * The component which displays the assessment results when

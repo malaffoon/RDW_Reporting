@@ -20,8 +20,9 @@ import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantConfiguration } from '../model/tenant-configuration';
-import { TenantService } from '../service/tenant.service';
 import { TenantStore } from '../store/tenant.store';
+import { TenantService } from '../service/tenant.service';
+import { SandboxConfiguration } from '../model/sandbox-configuration';
 
 @Component({
   selector: 'new-tenant',
@@ -72,7 +73,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
     this.mapLocalizationOverrides();
 
     this.service
-      .getDefaultConfigurationProperties()
+      .getDefaultConfigurationProperties('TENANT')
       .subscribe(
         configProperties => (this.configurationProperties = configProperties)
       );
@@ -88,7 +89,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       override => override.originalValue !== override.value
     );
 
-    const newTenant: TenantConfiguration = {
+    const newTenant: SandboxConfiguration = {
       ...this.tenantForm.value,
       code: this.tenantForm.get('key').value.toUpperCase(),
       localizationOverrides: modifiedLocalizationOverrides,

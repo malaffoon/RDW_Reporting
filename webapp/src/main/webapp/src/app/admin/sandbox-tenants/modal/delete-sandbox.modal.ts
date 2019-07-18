@@ -1,6 +1,6 @@
 import { BsModalRef } from 'ngx-bootstrap';
 import { Component, EventEmitter, OnDestroy } from '@angular/core';
-import { SandboxService } from '../service/sandbox.service';
+import { TenantService } from '../service/tenant.service';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
 import { NotificationService } from '../../../shared/notification/notification.service';
 
@@ -14,7 +14,7 @@ export class DeleteSandboxConfigurationModalComponent implements OnDestroy {
 
   constructor(
     public modal: BsModalRef,
-    private service: SandboxService,
+    private service: TenantService,
     private notificationService: NotificationService
   ) {}
 
