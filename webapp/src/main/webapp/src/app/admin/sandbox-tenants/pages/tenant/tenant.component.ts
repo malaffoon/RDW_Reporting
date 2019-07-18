@@ -4,12 +4,13 @@ import { flatMap, map } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
 import { forkJoin, Observable } from 'rxjs';
-import { DeleteTenantConfigurationModalComponent } from '../../modal/delete-tenant.modal';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { UserService } from '../../../../shared/security/service/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
+import { ConfirmationModalComponent } from '../../../../shared/component/confirmation-modal/confirmation-modal.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tenant',
@@ -30,7 +31,8 @@ export class TenantComponent {
     private languageStore: LanguageStore,
     private modalService: BsModalService,
     private notificationService: NotificationService,
-    private translationLoader: RdwTranslateLoader
+    private translationLoader: RdwTranslateLoader,
+    private translateService: TranslateService
   ) {
     this.tenant$ = this.route.params.pipe(
       flatMap(({ id }) => this.service.get(id))
@@ -44,38 +46,61 @@ export class TenantComponent {
       .getUser()
       .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
 
-    // this.initialized$ = forkJoin(
-    //   this.tenant$,
-    //   this.localizationDefaults$,
-    //   this.writable$
-    // ).pipe(
-    //   map(() => true)
-    // );
+    // not working for some reason... may need to be combine latest?
+    this.initialized$ = forkJoin(
+      this.tenant$,
+      this.localizationDefaults$,
+      this.writable$
+    ).pipe(map(() => true));
   }
 
   onDelete(tenant: SandboxConfiguration): void {
     const modalReference: BsModalRef = this.modalService.show(
-      DeleteTenantConfigurationModalComponent
+      ConfirmationModalComponent
     );
-    const modal: DeleteTenantConfigurationModalComponent =
-      modalReference.content;
-    modal.tenant = tenant;
-    modal.deleted.subscribe(() => {
-      this.router.navigate(['..'], {
-        relativeTo: this.route
-      });
+    const modal: ConfirmationModalComponent = modalReference.content;
+
+    modal.head = this.translateService.instant(
+      'sandbox-config.delete-modal.header',
+      tenant
+    );
+    modal.body = this.translateService.instant(
+      'sandbox-config.delete-modal.body',
+      tenant
+    );
+    modal.acceptButton = this.translateService.instant('common.action.delete');
+    modal.acceptButtonClass = 'danger';
+    modal.declineButton = this.translateService.instant('common.action.cancel');
+    modal.accept.subscribe(() => {
+      this.service.delete(tenant.code).subscribe(
+        () => {
+          this.notificationService.success({
+            id: 'sandbox-config.delete-modal.success'
+          });
+          this.router.navigate(['..'], {
+            relativeTo: this.route
+          });
+        },
+        error => {
+          this.notificationService.error({
+            id: 'sandbox-config.errors.delete'
+          });
+        }
+      );
     });
   }
 
   onSave(value: SandboxConfiguration): void {
     this.service.update(value).subscribe(
       () => {}, // TODO this used to reload from server
-      error =>
-        error.json().message
-          ? this.notificationService.error({ id: error.json().message })
+      error => {
+        const errorMessage = error.json().message;
+        errorMessage
+          ? this.notificationService.error({ id: errorMessage })
           : this.notificationService.error({
               id: 'tenant-config.errors.update'
-            })
+            });
+      }
     );
   }
 }
