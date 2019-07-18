@@ -23,12 +23,11 @@ import { AssessmentProvider } from '../../assessments/assessment-provider.interf
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { ReportFormService } from '../../report/service/report-form.service';
-import { map, mergeMap } from 'rxjs/operators';
-import { of } from 'rxjs/internal/observable/of';
 
 @Component({
   selector: 'group-results',
-  templateUrl: './group-results.component.html'
+  templateUrl: './group-results.component.html',
+  styleUrls: ['./group-results.component.less']
 })
 export class GroupResultsComponent implements OnInit, StateProvider {
   @ViewChild(AssessmentsComponent)

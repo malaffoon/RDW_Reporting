@@ -1,8 +1,8 @@
 import { BsModalRef } from 'ngx-bootstrap';
 import { Component, EventEmitter, OnDestroy } from '@angular/core';
+import { TenantService } from '../service/tenant.service';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
 import { NotificationService } from '../../../shared/notification/notification.service';
-import { TenantService } from '../service/tenant.service';
 
 @Component({
   selector: 'delete-sandbox-modal',

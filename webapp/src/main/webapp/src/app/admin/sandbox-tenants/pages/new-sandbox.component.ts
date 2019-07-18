@@ -64,11 +64,11 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     });
 
     this.sandboxForm.controls.tenant.valueChanges.subscribe(
-      this.overridePropsFromTenenat.bind(this)
+      this.overridePropsFromTenant.bind(this)
     );
 
     this.service
-      .getAvailableDataSets()
+      .getSandboxDataSets()
       .subscribe(dataSets => (this.dataSets = dataSets));
     this.service
       .getAll('TENANT')
@@ -76,7 +76,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     this.loadLocalizations();
 
     this.service
-      .getDefaultConfigurationProperties()
+      .getDefaultConfigurationProperties('SANDBOX')
       .subscribe(configProperties => {
         this.defaultConfigurationProperties = configProperties;
         this.configurationProperties = mapConfigurationProperties(
@@ -89,7 +89,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
     setTimeout(() => this.sandboxLabelInput.nativeElement.focus());
   }
 
-  private overridePropsFromTenenat(tenant: TenantConfiguration) {
+  private overridePropsFromTenant(tenant: TenantConfiguration) {
     this.configurationProperties = mapConfigurationProperties(
       this.defaultConfigurationProperties,
       tenant.configurationProperties

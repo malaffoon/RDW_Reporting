@@ -13,13 +13,12 @@ import {
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantType } from '../model/tenant-type';
 
-const TenantsRoute = `${AdminServiceRoute}/tenants`;
-const SandboxesRoute = `${AdminServiceRoute}/sandboxes`;
-const TenantDefaultsRoute = `${AdminServiceRoute}/tenants/defaults`;
-const SandboxDataSetsRoute = `${AdminServiceRoute}/sandboxes/datasets`;
+const ResourceRoute = `${AdminServiceRoute}/tenants`;
+const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
+const DataSetsRoute = `${AdminServiceRoute}/sandboxDataSets`;
 
 /**
- * Service responsible for managing tenants
+ * Service responsible for sandboxes
  */
 @Injectable({
   providedIn: 'root'
@@ -27,59 +26,59 @@ const SandboxDataSetsRoute = `${AdminServiceRoute}/sandboxes/datasets`;
 export class TenantService {
   constructor(private dataService: DataService) {}
 
-  getAvailableDataSets(): Observable<DataSet[]> {
-    return this.dataService
-      .get(SandboxDataSetsRoute)
-      .pipe(catchError(ResponseUtils.throwError));
-  }
-
   /**
-   * Gets default configuration properties for a tenant
+   * Gets default configuration properties for a sandbox
    */
-  getDefaultConfigurationProperties(
-    type: TenantType = 'TENANT'
-  ): Observable<any> {
-    return this.dataService.get(TenantDefaultsRoute).pipe(
-      map(configProperties => {
+  getDefaultConfigurationProperties(type: TenantType): Observable<any> {
+    return this.dataService.get(DefaultsRoute).pipe(
+      map(defaults => {
         if (type === 'SANDBOX') {
           return {
             // intentionally excluding datasets and archived here.
-            aggregate: configProperties.aggregate,
-            reporting: configProperties.reporting
+            aggregate: defaults.aggregate,
+            reporting: defaults.reporting
           };
         }
-        return mapConfigurationProperties(configProperties);
-      })
+        // TODO this needed?
+        return mapConfigurationProperties(defaults);
+      }),
+      catchError(ResponseUtils.throwError)
     );
   }
 
-  /**
-   * Gets all sandbox configurations for the system
-   */
-  getAll(type: TenantType = 'TENANT'): Observable<SandboxConfiguration[]> {
-    // TODO push to backend
-    const route = type === 'TENANT' ? TenantsRoute : SandboxesRoute;
+  getSandboxDataSets(): Observable<DataSet[]> {
     return this.dataService
-      .get(route)
-      .pipe(
-        map(serverTenants =>
-          serverTenants.map(serverTenant => toTenant(serverTenant))
+      .get(DataSetsRoute)
+      .pipe(catchError(ResponseUtils.throwError));
+  }
+
+  getAll(type: TenantType): Observable<SandboxConfiguration[]> {
+    const tenants$ = this.dataService.get(ResourceRoute, { params: { type } });
+    const defaults$ = this.dataService.get(DefaultsRoute);
+    const dataSets$ = this.dataService.get(DataSetsRoute);
+    const allTenants$ = forkJoin(tenants$, defaults$).pipe(
+      map(([serverTenants, defaults]) =>
+        serverTenants.map(serverTenant => toTenant(serverTenant, defaults))
+      )
+    );
+
+    const allSandboxes$ = forkJoin(tenants$, defaults$, dataSets$).pipe(
+      map(([serverTenants, defaults, dataSets]) =>
+        serverTenants.map(serverTenant =>
+          toSandbox(serverTenant, defaults, dataSets)
         )
-      );
+      )
+    );
+
+    return type === 'TENANT' ? allTenants$ : allSandboxes$;
   }
 
   get(code: string): Observable<SandboxConfiguration> {
-    // TODO open endpoint on backend
-    return forkJoin(
-      this.dataService.get(TenantsRoute),
-      this.dataService.get(SandboxesRoute),
-      this.dataService.get(TenantDefaultsRoute),
-      this.dataService.get(SandboxDataSetsRoute)
-    ).pipe(
-      map(([tenants, sandboxes, defaults, dataSets]) => {
-        const tenant: any = [...tenants, ...sandboxes].find(
-          tenant => tenant.tenant.key === code
-        );
+    const tenant$ = this.dataService.get(`${ResourceRoute}/${code}`);
+    const defaults$ = this.dataService.get(DefaultsRoute);
+    const dataSets$ = this.dataService.get(DataSetsRoute);
+    return forkJoin(tenant$, defaults$, dataSets$).pipe(
+      map(([tenant, defaults, dataSets]) => {
         if (tenant.tenant.sandbox) {
           return toSandbox(tenant, defaults, dataSets);
         }
@@ -89,24 +88,22 @@ export class TenantService {
   }
 
   /**
-   * Creates a new tenant
-   * @param tenant - The tenant to create
+   * Creates a new sandbox
+   * @param tenant - The sandbox to create
    */
   create(tenant: SandboxConfiguration): Observable<SandboxConfiguration> {
-    const route = tenant.sandbox ? SandboxesRoute : TenantsRoute;
     return this.dataService
-      .post(route, toTenantApiModel(tenant))
+      .post(ResourceRoute, toTenantApiModel(tenant))
       .pipe(map(() => tenant));
   }
 
   /**
-   * Updates an existing tenant
-   * @param tenant - The tenant to update
+   * Updates an existing sandbox
+   * @param tenant - The sandbox to update
    */
   update(tenant: SandboxConfiguration): Observable<SandboxConfiguration> {
-    const route = tenant.sandbox ? SandboxesRoute : TenantsRoute;
     return this.dataService
-      .put(route, toTenantApiModel(tenant))
+      .put(ResourceRoute, toTenantApiModel(tenant))
       .pipe(map(() => tenant));
   }
 
@@ -115,9 +112,8 @@ export class TenantService {
    * @param code - The code or "key" of the tenant to delete
    */
   delete(code: string): Observable<void> {
-    const route = SandboxesRoute; // cant delete tenants
     return this.dataService
-      .delete(`${route}/${code}`)
+      .delete(`${ResourceRoute}/${code}`)
       .pipe(catchError(ResponseUtils.throwError));
   }
 }

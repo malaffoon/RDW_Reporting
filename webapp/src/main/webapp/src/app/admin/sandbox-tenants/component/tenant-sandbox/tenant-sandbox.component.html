@@ -100,34 +100,28 @@
       <div class="col-md-8">{{ value.dataSet.label }}</div>
     </div>
 
-    <p-accordion [multiple]="true">
-      <p-accordionTab
-        header="{{
-          'sandbox-config.fields.configuration-properties' | translate
-        }}"
-      >
-        <property-override-tree-table
-          [form]="formGroup"
-          [configurationProperties]="value.configurationProperties"
-          [readonly]="!writable"
-          [readonlyGroups]="readonlyGroups"
-          propertiesArrayName="configurationProperties"
-        >
-        </property-override-tree-table>
-      </p-accordionTab>
-      <p-accordionTab
-        header="{{
-          'sandbox-config.fields.localization-overrides' | translate
-        }}"
-      >
-        <property-override-table
-          [form]="formGroup"
-          [configurationProperties]="localizationOverrides"
-          [readonly]="!writable"
-          propertiesArrayName="localizationOverrides"
-        >
-        </property-override-table>
-      </p-accordionTab>
-    </p-accordion>
+    <div class="form-group">
+      <label class="h4">
+        {{ 'sandbox-config.fields.configuration-properties' | translate }}
+      </label>
+      <property-override-tree-table
+        [form]="formGroup"
+        [configurationProperties]="value.configurationProperties"
+        [readonly]="!writable"
+        [readonlyGroups]="readonlyGroups"
+        propertiesArrayName="configurationProperties"
+      ></property-override-tree-table>
+    </div>
+    <div class="form-group">
+      <label class="h4">
+        {{ 'sandbox-config.fields.localization-overrides' | translate }}
+      </label>
+      <property-override-table
+        [form]="formGroup"
+        [configurationProperties]="localizationOverrides"
+        [readonly]="!writable"
+        propertiesArrayName="localizationOverrides"
+      ></property-override-table>
+    </div>
   </div>
 </form>

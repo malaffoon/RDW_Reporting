@@ -1219,7 +1219,8 @@
       "delete": "Delete"
     },
     "config-properties": {
-      "modified": "Show modified properties only",
+      "required": "Required",
+      "modified": "Modified",
       "empty": "No configuration properties found"
     },
     "empty": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create\" button",

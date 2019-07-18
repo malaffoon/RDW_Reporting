@@ -5,7 +5,8 @@ import { DataTable } from 'primeng/primeng';
 
 @Component({
   selector: 'property-override-table',
-  templateUrl: './property-override-table.component.html'
+  templateUrl: './property-override-table.component.html',
+  styleUrls: ['./property-override-table.component.less']
 })
 //TODO: Implement ControlValueAccessor
 export class PropertyOverrideTableComponent {
