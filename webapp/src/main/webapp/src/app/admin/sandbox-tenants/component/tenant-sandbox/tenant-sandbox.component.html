@@ -1,5 +1,5 @@
 <form
-  class="form-group"
+  *ngIf="formGroup"
   [formGroup]="formGroup"
   (ngSubmit)="onSaveButtonClick()"
 >

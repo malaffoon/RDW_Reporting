@@ -45,9 +45,7 @@ export class TenantComponent {
     private translateService: TranslateService
   ) {
     this.type$ = this.route.data.pipe(map(({ type }) => type));
-
     this.mode$ = this.route.data.pipe(map(({ mode }) => mode));
-
     this.tenant$ = this.route.params.pipe(
       flatMap(({ id }) => this.service.get(id))
     );
@@ -60,16 +58,14 @@ export class TenantComponent {
       .getUser()
       .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
 
-    this.tenants$ = this.type$.pipe(
-      flatMap(type =>
-        type === 'SANDBOX' ? this.service.getAll('TENANT') : of([])
-      )
+    const sandbox$ = this.type$.pipe(map(type => type === 'SANDBOX'));
+
+    this.tenants$ = sandbox$.pipe(
+      flatMap(sandbox => (sandbox ? this.service.getAll('TENANT') : of([])))
     );
 
-    this.dataSets$ = this.type$.pipe(
-      flatMap(type =>
-        type === 'SANDBOX' ? this.service.getSandboxDataSets() : of([])
-      )
+    this.dataSets$ = sandbox$.pipe(
+      flatMap(sandbox => (sandbox ? this.service.getSandboxDataSets() : of([])))
     );
 
     // not working for some reason... may need to be combine latest?
