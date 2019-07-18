@@ -47,47 +47,41 @@
       [allowFilterBySessions]="true"
       [allowTargetReport]="true"
     >
-      <!-- Group Select -->
-      <div class="col-md-3">
-        <label for="select-group">{{
-          'group-results.select-group' | translate
-        }}</label>
-        <!--TODO: type ahead? -->
-        <select
-          id="select-group"
-          class="form-control"
-          [(ngModel)]="group"
-          (change)="onGroupChange()"
-        >
-          <option *ngFor="let group of groups" [ngValue]="group">{{
-            group.name
-          }}</option>
-        </select>
-      </div>
-
-      <!-- School Year -->
-      <div class="col-md-3">
-        <label for="school-year">{{
-          'common.school-year-select-label' | translate
-        }}</label>
-        <select
-          id="school-year"
-          class="form-control"
-          [(ngModel)]="schoolYear"
-          (change)="onSchoolYearChange()"
-        >
-          <option
-            *ngFor="let year of filterOptions.schoolYears"
-            [ngValue]="year"
-            >{{ year | schoolYear }}</option
+      <div class="filters">
+        <div class="form-group">
+          <label for="select-group">{{
+            'group-results.select-group' | translate
+          }}</label>
+          <!--TODO: type ahead? -->
+          <select
+            id="select-group"
+            class="form-control"
+            [(ngModel)]="group"
+            (change)="onGroupChange()"
           >
-        </select>
-      </div>
+            <option *ngFor="let group of groups" [ngValue]="group">{{
+              group.name
+            }}</option>
+          </select>
+        </div>
 
-      <!-- TODO use flex group -->
-      <!-- spacer for pushing Advanced Filters to the right -->
-      <div class="col-md-4">
-        <!-- can't do it in the assessments.component because it depends on how many dropdowns there are here -->
+        <div class="form-group">
+          <label for="school-year">{{
+            'common.school-year-select-label' | translate
+          }}</label>
+          <select
+            id="school-year"
+            class="form-control"
+            [(ngModel)]="schoolYear"
+            (change)="onSchoolYearChange()"
+          >
+            <option
+              *ngFor="let year of filterOptions.schoolYears"
+              [ngValue]="year"
+              >{{ year | schoolYear }}</option
+            >
+          </select>
+        </div>
       </div>
     </assessments>
   </ng-container>

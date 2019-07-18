@@ -40,6 +40,12 @@ spring:
       enabled: true
       gzipped: true
 
+  cloud:
+    stream:
+      bindings:
+        ConfigpropsUpdateOutput:
+          destination: ConfigpropsUpdateExchange
+
 datasources:
   reporting_ro:
     url-parts:
