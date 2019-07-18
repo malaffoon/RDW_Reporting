@@ -1,17 +1,12 @@
 <div class="controls">
-  <div class="input-group">
-    <span class="input-group-addon">
-      <i class="fa fa-search"></i>
-    </span>
-    <input
-      id="search"
-      name="search"
-      type="text"
-      placeholder="{{ 'sandbox-config.fields.search' | translate }}"
-      class="form-control"
-      (input)="search.emit($event.target.value)"
-    />
-  </div>
+  <input
+    id="search"
+    name="search"
+    type="text"
+    placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+    class="form-control"
+    (input)="search.emit($event.target.value)"
+  />
 
   <label>
     <input

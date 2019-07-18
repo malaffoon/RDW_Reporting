@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
 import { SandboxTenantSharedModule } from './sandbox-tenant-shared.module';
 import { RouterModule } from '@angular/router';
 import { sandboxRoutes } from './sandbox.routes';
@@ -39,7 +38,6 @@ import { TableModule } from 'primeng/table';
     SandboxTenantSharedModule,
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(sandboxRoutes)
-  ],
-  entryComponents: [DeleteSandboxConfigurationModalComponent]
+  ]
 })
 export class SandboxModule {}

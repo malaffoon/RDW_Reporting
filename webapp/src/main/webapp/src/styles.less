@@ -824,22 +824,6 @@ aggregate-report-table {
     }
   }
 
-  .ui-table-caption,
-  .ui-treetable-caption {
-    i {
-      margin: 4px 8px 0 4px;
-    }
-
-    div {
-      text-align: left;
-
-      input[type='text'] {
-        width: calc(100% - 30px);
-        display: inline;
-      }
-    }
-  }
-
   .ui-table,
   .ui-treetable {
     tr.modified td {
@@ -851,23 +835,8 @@ aggregate-report-table {
     }
 
     td {
-      cursor: pointer;
       position: relative;
-
-      &.group-node {
-        line-height: 30px;
-        font-size: 16px;
-        font-weight: bold;
-        background-color: #e8f3f7;
-        border-bottom: 2px solid #5eb1ca;
-        color: #02799e;
-      }
-
-      i.pi-chevron-right,
-      i.pi-chevron-down {
-        margin-right: 2px;
-        color: #02799e;
-      }
+      cursor: pointer;
 
       .icon-container {
         position: absolute;

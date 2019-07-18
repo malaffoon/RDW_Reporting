@@ -1,7 +1,4 @@
 import { NgModule } from '@angular/core';
-import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
-import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
-import { TenantsComponent } from './pages/tenants/tenants.component';
 import { SandboxTenantSharedModule } from './sandbox-tenant-shared.module';
 import { RouterModule } from '@angular/router';
 import { tenantRoutes } from './tenant.routes';
@@ -18,7 +15,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { AccordionModule, MenuModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
-import { TenantComponent } from './pages/tenant/tenant.component';
 
 /**
  * TODO join this with tenant.module and make the route structure this:
