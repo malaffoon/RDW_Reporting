@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { flatMap, map } from 'rxjs/operators';
+import { flatMap, map, share, takeUntil } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import {
   DataSet,
   SandboxConfiguration
 } from '../../model/sandbox-configuration';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { UserService } from '../../../../shared/security/service/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
@@ -17,21 +17,25 @@ import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs/internal/observable/of';
 import { FormMode } from '../../component/tenant-sandbox/tenant-sandbox.component';
 import { TenantType } from '../../model/tenant-type';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
+import { tap } from 'rxjs/internal/operators/tap';
 
 @Component({
   selector: 'app-tenant',
   templateUrl: './tenant.component.html',
   styleUrls: ['./tenant.component.less']
 })
-export class TenantComponent {
+export class TenantComponent implements OnDestroy {
   type$: Observable<TenantType>;
   mode$: Observable<FormMode>;
   tenant$: Observable<SandboxConfiguration>;
   tenants$: Observable<SandboxConfiguration[]>;
   dataSets$: Observable<DataSet[]>;
+  configurationDefaults$: Observable<any>;
   localizationDefaults$: Observable<any>;
   writable$: Observable<boolean>;
   initialized$: Observable<boolean>;
+  destroyed$: Subject<void> = new Subject();
 
   constructor(
     private route: ActivatedRoute,
@@ -46,26 +50,58 @@ export class TenantComponent {
   ) {
     this.type$ = this.route.data.pipe(map(({ type }) => type));
     this.mode$ = this.route.data.pipe(map(({ mode }) => mode));
-    this.tenant$ = this.route.params.pipe(
-      flatMap(({ id }) => this.service.get(id))
+
+    this.tenants$ = this.type$.pipe(
+      flatMap(type =>
+        type === 'SANDBOX' ? this.service.getAll('TENANT') : of([])
+      ),
+      share()
     );
 
-    this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
-      this.languageStore.currentLanguage
+    this.dataSets$ = this.type$.pipe(
+      flatMap(type =>
+        type === 'SANDBOX' ? this.service.getSandboxDataSets() : of([])
+      ),
+      share()
+    );
+
+    this.tenant$ = this.route.params.pipe(
+      flatMap(({ id }) =>
+        id != null
+          ? this.service.get(id)
+          : combineLatest(this.type$, this.tenants$, this.dataSets$).pipe(
+              takeUntil(this.destroyed$),
+              map(([type, [firstTenant], [firstDataSet]]) =>
+                type === 'SANDBOX'
+                  ? {
+                      type,
+                      sandbox: true,
+                      label: firstTenant.label,
+                      tenant: firstTenant,
+                      dataSet: firstDataSet
+                    }
+                  : { type }
+              )
+            )
+      )
     );
 
     this.writable$ = this.userService
       .getUser()
       .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
 
-    const sandbox$ = this.type$.pipe(map(type => type === 'SANDBOX'));
-
-    this.tenants$ = sandbox$.pipe(
-      flatMap(sandbox => (sandbox ? this.service.getAll('TENANT') : of([])))
+    this.configurationDefaults$ = this.type$.pipe(
+      flatMap(type =>
+        type === 'SANDBOX'
+          ? this.tenants$.pipe(
+              map(tenants => tenants[0].configurationProperties)
+            )
+          : this.service.getDefaultConfigurationProperties(type)
+      )
     );
 
-    this.dataSets$ = sandbox$.pipe(
-      flatMap(sandbox => (sandbox ? this.service.getSandboxDataSets() : of([])))
+    this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
+      this.languageStore.currentLanguage
     );
 
     // not working for some reason... may need to be combine latest?
@@ -74,6 +110,11 @@ export class TenantComponent {
       this.localizationDefaults$,
       this.writable$
     ).pipe(map(() => true));
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   onDelete(tenant: SandboxConfiguration): void {

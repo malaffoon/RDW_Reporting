@@ -182,7 +182,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
       .getFlattenedTranslations(this.languageStore.currentLanguage)
       .subscribe(translations => {
         const locationOverrideFormGroup = <FormGroup>(
-          this.tenantForm.controls['localizationOverrides']
+          this.tenantForm.controls.localizationOverrides
         );
         for (const key in translations) {
           // check also if property is not inherited from prototype

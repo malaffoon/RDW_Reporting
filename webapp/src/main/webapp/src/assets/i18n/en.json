@@ -1296,6 +1296,7 @@
       "password": "The password field must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
     },
     "errors": {
+      "required": "Required",
       "duplicate-key": "A tenant with the same tenant key or ID already exists",
       "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
       "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",

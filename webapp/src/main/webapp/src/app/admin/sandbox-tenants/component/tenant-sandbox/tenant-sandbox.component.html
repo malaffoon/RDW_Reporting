@@ -5,9 +5,17 @@
 >
   <page-heading>
     <h1 class="h2" heading>
-      {{ value.label }}
-      <span class="sandbox-key">({{ value.code }})</span>
+      <ng-container *ngIf="mode === 'create'; else updateModeHeading">
+        {{ 'tenant-config.new-tenant.header' | translate }}
+      </ng-container>
+      <ng-template #updateModeHeading>
+        {{ value.label }}
+        <span *ngIf="value.type === 'SANDBOX'" class="sandbox-key">
+          ({{ value.code }})
+        </span>
+      </ng-template>
     </h1>
+
     <div controls>
       <ul class="list-unstyled list-inline">
         <li>
@@ -21,7 +29,7 @@
                 {{ 'common.action.save' | translate }}
               </button>
             </div>
-            <ng-container *ngIf="value.sandbox">
+            <ng-container *ngIf="value.type === 'SANDBOX'">
               <div class="btn-group" dropdown>
                 <button
                   id="dropdown-button"
@@ -59,110 +67,225 @@
   </page-heading>
 
   <div class="well">
-    <div class="primary-form-controls">
-      <div class="form-group">
-        <label for="label">{{
-          'sandbox-config.fields.label' | translate
-        }}</label>
-        <ng-container *ngIf="writable; else readonlyName">
+    <ng-container *ngIf="value.type === 'TENANT'">
+      <div
+        *ngIf="formGroup.get('key') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control)
+        }"
+      >
+        <label for="key">
+          {{ 'tenant-config.fields.key' | translate }}
+        </label>
+        <ng-container *ngIf="writable && mode === 'create'; else readonlyKey">
           <input
-            *ngIf="writable"
+            type="text"
+            class="form-control text-uppercase"
+            maxlength="20"
+            id="key"
+            name="key"
+            formControlName="key"
+            (change)="onKeyChange($event.target.value)"
+          />
+          <span class="help-block" *ngIf="showErrors(control)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-config.errors.required' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.errors.pattern">
+              {{ 'tenant-config.errors.invalid-key' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyKey>
+          <div>{{ value.code }}</div>
+        </ng-template>
+      </div>
+
+      <div
+        *ngIf="formGroup.get('id') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control)
+        }"
+      >
+        <label for="id">
+          {{ 'tenant-config.fields.id' | translate }}
+        </label>
+
+        <ng-container *ngIf="writable && mode === 'create'; else readonlyId">
+          <input
+            id="id"
+            name="id"
             type="text"
             class="form-control"
-            id="label"
-            name="label"
-            formControlName="label"
+            formControlName="id"
           />
+          <span class="help-block" *ngIf="showErrors(control)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-config.errors.required' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.errors.pattern">
+              {{ 'tenant-config.errors.invalid-id' | translate }}
+            </ng-container>
+          </span>
         </ng-container>
-        <ng-template #readonlyName>
-          {{ value.label }}
+        <ng-template #readonlyId>
+          <div>{{ value.id }}</div>
         </ng-template>
       </div>
+    </ng-container>
 
-      <div class="form-group" *ngIf="value.sandbox">
-        <label for="tenant">{{
-          'sandbox-config.fields.tenant' | translate
-        }}</label>
-        <select id="tenant" class="form-control" formControlName="tenant">
-          <option *ngFor="let tenant of tenants" [ngValue]="tenant">
-            {{ tenant.label }}
-          </option>
-        </select>
-      </div>
-
-      <div class="form-group" *ngIf="value.sandbox">
-        <label for="dataSet">{{
-          'sandbox-config.fields.data-set' | translate
-        }}</label>
-        <ng-container *ngIf="writable; else readonlyDataSet">
-          <select id="dataSet" class="form-control" formControlName="dataset">
-            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
-              {{ dataSet.label }}
-            </option>
-          </select>
-        </ng-container>
-        <ng-template #readonlyDataSet>
-          {{ value.dataSet?.label }}
-        </ng-template>
-      </div>
+    <div
+      *ngIf="formGroup.get('label') as control"
+      class="form-group"
+      [ngClass]="{
+        'has-error': showErrors(control)
+      }"
+    >
+      <label for="label">
+        {{ 'sandbox-config.fields.label' | translate }}
+      </label>
+      <ng-container *ngIf="writable; else readonlyName">
+        <input
+          *ngIf="writable"
+          type="text"
+          class="form-control"
+          id="label"
+          name="label"
+          formControlName="label"
+        />
+        <span class="help-block" *ngIf="showErrors(control)">
+          <ng-container *ngIf="control.errors.required">
+            {{ 'tenant-config.errors.required' | translate }}
+          </ng-container>
+        </span>
+      </ng-container>
+      <ng-template #readonlyName>
+        <div>{{ value.label }}</div>
+      </ng-template>
     </div>
 
     <div class="form-group">
-      <label>{{ 'sandbox-config.fields.description' | translate }}</label>
+      <label for="description">{{
+        'sandbox-config.fields.description' | translate
+      }}</label>
       <ng-container *ngIf="writable; else readonlyDescription">
         <textarea
-          *ngIf="writable"
           class="form-control"
+          id="description"
           name="description"
           formControlName="description"
         ></textarea>
       </ng-container>
       <ng-template #readonlyDescription>
-        {{ value.description }}
+        <p>{{ value.description }}</p>
       </ng-template>
     </div>
 
-    <app-toggle-label
-      [open]="configurationOpen"
-      (openChange)="configurationOpen = $event"
-      openLabel="{{
-        'sandbox-config.fields.configuration-properties' | translate
-      }}"
-      closedLabel="{{
-        'sandbox-config.fields.configuration-properties' | translate
-      }}"
-    ></app-toggle-label>
+    <ng-container *ngIf="value.sandbox">
+      <div
+        *ngIf="formGroup.get('tenant') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control)
+        }"
+      >
+        <label for="tenant">{{
+          'sandbox-config.fields.tenant' | translate
+        }}</label>
+        <ng-container
+          *ngIf="writable && mode === 'create'; else readonlyTenant"
+        >
+          <select id="tenant" class="form-control" formControlName="tenant">
+            <option *ngFor="let tenant of tenants" [ngValue]="tenant">
+              {{ tenant.label }}
+            </option>
+          </select>
+          <span class="help-block" *ngIf="showErrors(control)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-config.errors.required' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyTenant>
+          <div>{{ formGroup.get('tenant').value.label }}</div>
+        </ng-template>
+      </div>
 
-    <div class="form-group" [hidden]="!configurationOpen">
-      <property-override-tree-table
-        [form]="formGroup"
-        [configurationProperties]="value.configurationProperties"
-        [readonly]="!writable"
-        [readonlyGroups]="readonlyGroups"
-        [required]="requiredConfiguration"
-        [expanded]="requiredConfiguration"
-        propertiesArrayName="configurationProperties"
-      ></property-override-tree-table>
-    </div>
+      <div
+        *ngIf="formGroup.get('dataset') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control)
+        }"
+      >
+        <label for="dataSet">
+          {{ 'sandbox-config.fields.data-set' | translate }}
+        </label>
+        <ng-container
+          *ngIf="writable && mode === 'create'; else readonlyDataSet"
+        >
+          <select id="dataSet" class="form-control" formControlName="dataset">
+            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
+              {{ dataSet.label }}
+            </option>
+          </select>
+          <span class="help-block" *ngIf="showErrors(control)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-config.errors.required' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyDataSet>
+          <div>{{ value.dataSet?.label }}</div>
+        </ng-template>
+      </div>
+    </ng-container>
 
-    <app-toggle-label
-      [open]="localizationOpen"
-      (openChange)="localizationOpen = $event"
-      openLabel="{{
-        'sandbox-config.fields.localization-overrides' | translate
-      }}"
-      closedLabel="{{
-        'sandbox-config.fields.localization-overrides' | translate
-      }}"
-    ></app-toggle-label>
+    <div class="toggles">
+      <app-toggle-label
+        [open]="configurationOpen"
+        (openChange)="configurationOpen = $event"
+        openLabel="{{
+          'sandbox-config.fields.configuration-properties' | translate
+        }}"
+        closedLabel="{{
+          'sandbox-config.fields.configuration-properties' | translate
+        }}"
+      ></app-toggle-label>
 
-    <div class="form-group" [hidden]="!localizationOpen">
-      <property-override-table
-        [form]="formGroup"
-        [configurationProperties]="localizationOverrides"
-        [readonly]="!writable"
-        propertiesArrayName="localizationOverrides"
-      ></property-override-table>
+      <div class="form-group" [hidden]="!configurationOpen">
+        <property-override-tree-table
+          [form]="formGroup"
+          [configurationProperties]="value.configurationProperties"
+          [readonly]="!writable"
+          [readonlyGroups]="readonlyGroups"
+          [required]="requiredConfiguration"
+          [expanded]="requiredConfiguration"
+          propertiesArrayName="configurationProperties"
+        ></property-override-tree-table>
+      </div>
+
+      <app-toggle-label
+        [open]="localizationOpen"
+        (openChange)="localizationOpen = $event"
+        openLabel="{{
+          'sandbox-config.fields.localization-overrides' | translate
+        }}"
+        closedLabel="{{
+          'sandbox-config.fields.localization-overrides' | translate
+        }}"
+      ></app-toggle-label>
+
+      <div class="form-group" [hidden]="!localizationOpen">
+        <property-override-table
+          [form]="formGroup"
+          [configurationProperties]="localizationOverrides"
+          [readonly]="!writable"
+          propertiesArrayName="localizationOverrides"
+        ></property-override-table>
+      </div>
     </div>
   </div>
 </form>

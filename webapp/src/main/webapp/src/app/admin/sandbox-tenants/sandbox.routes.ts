@@ -1,5 +1,4 @@
 import { Route } from '@angular/router';
-import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { HasAnyPermissionCanActivate } from '../../shared/security/can-activate/has-any-permission.can-activate';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantComponent } from './pages/tenant/tenant.component';
@@ -19,7 +18,7 @@ export const sandboxRoutes: Route[] = [
       mode: 'create'
     },
     canActivate: [HasAnyPermissionCanActivate],
-    component: NewSandboxConfigurationComponent
+    component: TenantComponent
   },
   {
     path: ':id',

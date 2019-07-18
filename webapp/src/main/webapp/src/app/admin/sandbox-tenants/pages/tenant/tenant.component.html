@@ -2,15 +2,16 @@
   <tenant-sandbox
     class="sandbox-config"
     [value]="tenant"
-    [localizationDefaults]="localizationDefaults$ | async"
+    [mode]="mode$ | async"
     [writable]="writable$ | async"
     [tenants]="tenants$ | async"
     [dataSets]="dataSets$ | async"
+    [configurationDefaults]="configurationDefaults$ | async"
+    [localizationDefaults]="localizationDefaults$ | async"
     [configurationOpen]="(type$ | async) === 'TENANT'"
     [requiredConfiguration]="
       (type$ | async) === 'TENANT' && (mode$ | async) === 'create'
     "
-    [mode]="mode$ | async"
     (save)="onSave($event)"
     (delete)="onDelete($event)"
   ></tenant-sandbox>

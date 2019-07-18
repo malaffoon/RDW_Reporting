@@ -25,7 +25,7 @@ export const tenantRoutes: Route[] = [
       mode: 'create'
     },
     canActivate: [HasAnyPermissionCanActivate],
-    component: NewTenantConfigurationComponent
+    component: TenantComponent
   },
   {
     path: ':id',

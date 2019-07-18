@@ -1,5 +1,6 @@
 import { ConfigurationProperty } from './configuration-property';
 import { TenantStatus } from './tenant-status';
+import { TenantType } from './tenant-type';
 
 /**
  * Holds information regarding an RDW tenant configuration
@@ -13,12 +14,12 @@ export interface TenantConfiguration {
   /**
    * The unique internal key for the tenant
    */
-  code: string;
+  code?: string;
 
   /**
    * A human readable label, name, or description of the tenant
    */
-  label: string;
+  label?: string;
 
   /**
    * Optional additional description of the tenant configuration
@@ -38,7 +39,11 @@ export interface TenantConfiguration {
   /**
    * The current status of this tenant.
    */
-  status: TenantStatus;
+  status?: TenantStatus;
 
+  /**
+   * @deprecated use {@link #type}
+   */
   sandbox?: boolean;
+  type?: TenantType;
 }
