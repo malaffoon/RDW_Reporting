@@ -13,8 +13,8 @@
       id="modified"
       name="modified"
       type="checkbox"
-      [value]="showModifiedPropertiesOnly"
-      (change)="showModifiedPropertiesOnly = !showModifiedPropertiesOnly"
+      [(ngModel)]="modified"
+      (ngModelChange)="updatePropertiesFilter()"
     />
     {{ 'sandbox-config.config-properties.modified' | translate }}
   </label>

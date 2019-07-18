@@ -7,6 +7,9 @@
     [tenants]="tenants$ | async"
     [dataSets]="dataSets$ | async"
     [configurationOpen]="(type$ | async) === 'TENANT'"
+    [requiredConfiguration]="
+      (type$ | async) === 'TENANT' && (mode$ | async) === 'create'
+    "
     [mode]="mode$ | async"
     (save)="onSave($event)"
     (delete)="onDelete($event)"

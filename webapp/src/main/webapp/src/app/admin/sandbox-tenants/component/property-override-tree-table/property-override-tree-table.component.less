@@ -1,7 +1,17 @@
+// The !important is because somehow the global styles are applied after the component styles...
+
 :host {
   ::ng-deep {
+    table {
+      width: 100% !important;
+    }
     td:nth-child(2) {
       padding: 0 !important;
+      white-space: pre-wrap !important;
+      word-break: break-word;
+      input {
+        padding-right: 50px;
+      }
     }
     p-treeTableToggler > .ui-treetable-toggler {
       color: inherit;
@@ -22,7 +32,7 @@
 
 .controls {
   display: grid;
-  grid-template-columns: minmax(auto, 50%) auto;
+  grid-template-columns: 1fr max-content max-content;
   align-items: center;
   gap: 15px;
   margin-bottom: 15px;

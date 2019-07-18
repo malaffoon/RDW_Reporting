@@ -2,6 +2,10 @@ import { Component, Input } from '@angular/core';
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { FormGroup } from '@angular/forms';
 
+function rowTrackBy(index: number, value: ConfigurationProperty) {
+  return value.key;
+}
+
 @Component({
   selector: 'property-override-table',
   templateUrl: './property-override-table.component.html',
@@ -9,6 +13,8 @@ import { FormGroup } from '@angular/forms';
 })
 //TODO: Implement ControlValueAccessor
 export class PropertyOverrideTableComponent {
+  readonly rowTrackBy = rowTrackBy;
+
   private _configurationProperties: ConfigurationProperty[] = [];
 
   get configurationProperties(): ConfigurationProperty[] {
@@ -39,7 +45,10 @@ export class PropertyOverrideTableComponent {
   @Input()
   readonly = true;
 
-  showModifiedPropertiesOnly = false;
+  // filters in modified properties
+  @Input()
+  modified = false;
+
   filteredConfigurationProperties: ConfigurationProperty[];
   first = 0;
 
@@ -58,7 +67,7 @@ export class PropertyOverrideTableComponent {
   }
 
   updatePropertiesFilter(): void {
-    if (this.showModifiedPropertiesOnly) {
+    if (this.modified) {
       this.filteredConfigurationProperties = this.configurationProperties.filter(
         prop => prop.value !== prop.originalValue
       );

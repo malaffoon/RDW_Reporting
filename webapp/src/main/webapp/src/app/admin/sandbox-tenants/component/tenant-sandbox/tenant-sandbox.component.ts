@@ -55,6 +55,9 @@ export class TenantSandboxComponent implements OnInit, OnChanges {
   @Input()
   localizationOpen: boolean = false;
 
+  @Input()
+  requiredConfiguration: boolean = false;
+
   // formGroupOriginalValues: any;
   formGroup: FormGroup = new FormGroup({
     label: new FormControl('', [CustomValidators.notBlank]),

@@ -18,6 +18,46 @@ import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { DecryptionService } from '../../../decryption.service';
 import { ConfigurationProperty } from '../../model/configuration-property';
+import { mod } from 'ngx-bootstrap/chronos/utils';
+
+function passwordValidators(): ValidatorFn[] {
+  return [
+    Validators.required,
+    Validators.minLength(8),
+    Validators.maxLength(64),
+    Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-zd].{8,}')
+  ];
+}
+
+function hasModifiedDescendant(node: TreeNode): boolean {
+  const { children } = node;
+  if (children && children.length > 0) {
+    const modified = children.some(
+      ({ data }) => data.value !== data.originalValue
+    );
+    if (modified) {
+      return true;
+    }
+    return children.some(child => hasModifiedDescendant(child));
+  }
+  return false;
+}
+
+function hasRequiredDescendant(node: TreeNode): boolean {
+  const { children } = node;
+  if (children && children.length > 0) {
+    const required = children.some(({ data }) => data.required);
+    if (required) {
+      return true;
+    }
+    return children.some(child => hasRequiredDescendant(child));
+  }
+  return false;
+}
+
+function rowTrackBy(index: number, { node }: any) {
+  return (node.leaf ? 'leaf.' : 'parent.') + node.data.key;
+}
 
 @Component({
   selector: 'property-override-tree-table',
@@ -25,6 +65,10 @@ import { ConfigurationProperty } from '../../model/configuration-property';
   styleUrls: ['./property-override-tree-table.component.less']
 })
 export class PropertyOverrideTreeTableComponent implements OnInit {
+  readonly hasModifiedDescendant = hasModifiedDescendant;
+  readonly hasRequiredDescendant = hasRequiredDescendant;
+  readonly rowTrackBy = rowTrackBy;
+
   @ViewChild('table') table: TreeTable;
 
   _configurationProperties: any;
@@ -66,7 +110,15 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   // These fields should be lowercase for consistency with existing usernames and schema names in the database
   readonly lowercaseFields = ['urlParts.database', 'username'];
 
-  showModifiedPropertiesOnly = false;
+  @Input()
+  required = false;
+
+  @Input()
+  modified = false;
+
+  @Input()
+  expanded = true;
+
   configurationPropertiesTreeNodes: TreeNode[] = [];
 
   constructor(
@@ -111,34 +163,6 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     );
   }
 
-  childrenHaveOverrides(node: TreeNode): boolean {
-    if (node.children && node.children.length > 0) {
-      const hasOverride = node.children.some(
-        child => child.data.value !== child.data.originalValue
-      );
-      if (hasOverride) {
-        return true;
-      } else {
-        return node.children.some(child => this.childrenHaveOverrides(child));
-      }
-    }
-
-    return false;
-  }
-
-  calculatePadding(override: ConfigurationProperty): string {
-    if (!override.encrypted && override.value === override.originalValue) {
-      return '0px';
-    } else if (
-      override.encrypted &&
-      override.value !== override.originalValue
-    ) {
-      return '50px';
-    } else {
-      return '25px';
-    }
-  }
-
   private setPropertyValue(override: ConfigurationProperty, newVal: string) {
     let configurationProperties = <ConfigurationProperty[]>(
       this._configurationProperties[override.group]
@@ -181,7 +205,8 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
             data: {
               key: dataSourceKey
             },
-            children: dataSourcePropertyNodes
+            children: dataSourcePropertyNodes,
+            expanded: this.expanded
           });
         });
       } else {
@@ -194,7 +219,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
           groupNode: true
         },
         children: childrenNodes,
-        expanded: false,
+        expanded: this.expanded,
         leaf: false
       };
       groupNodes.push(groupNode);
@@ -235,23 +260,12 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
       group.key.indexOf('password') > -1
         ? configPropertiesFormGroup.addControl(
             group.formControlName,
-            new FormControl(group.value, this.getPasswordValidators())
+            new FormControl(group.value, passwordValidators())
           )
         : configPropertiesFormGroup.addControl(
             group.formControlName,
             new FormControl(group.value)
           );
     });
-  }
-
-  private getPasswordValidators(): ValidatorFn[] {
-    const validators = [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.maxLength(64),
-      Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-zd].{8,}')
-    ];
-
-    return validators;
   }
 }
