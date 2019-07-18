@@ -829,7 +829,7 @@
     "content-html": "<p>When a group is deleted, it is no longer available to any users.  This action cannot be undone.</p><p>Are you sure you would like to continue?</p>",
     "error": "Unable to delete this group.",
     "title": "Delete {{name}}?",
-    "sandbox-body": "Group deletion is disabled when working in a sandbox"
+    "sandbox-body": "Group deletion is disabled when working in the Sandbox"
   },
   "delete-instructional-resource-modal": {
     "error": "Unable to delete instructional resource.",
