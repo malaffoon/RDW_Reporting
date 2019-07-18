@@ -2,7 +2,7 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { Component, EventEmitter, OnDestroy } from '@angular/core';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { NotificationService } from '../../../shared/notification/notification.service';
-import { SandboxService } from '../service/sandbox.service';
+import { TenantService } from '../service/tenant.service';
 
 @Component({
   selector: 'delete-tenant-modal',
@@ -14,7 +14,7 @@ export class DeleteTenantConfigurationModalComponent implements OnDestroy {
 
   constructor(
     public modal: BsModalRef,
-    private service: SandboxService,
+    private service: TenantService,
     private notificationService: NotificationService
   ) {}
 

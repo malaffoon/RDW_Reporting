@@ -10,7 +10,7 @@ import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { map } from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { UserService } from '../../../../shared/security/service/user.service';
-import { SandboxService } from '../../service/sandbox.service';
+import { TenantService } from '../../service/tenant.service';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
 
 @Component({
@@ -25,7 +25,7 @@ export class TenantsComponent implements OnInit {
   constructor(
     private translationLoader: RdwTranslateLoader,
     private route: ActivatedRoute,
-    private service: SandboxService,
+    private service: TenantService,
     private store: TenantStore,
     private userService: UserService,
     private languageStore: LanguageStore,

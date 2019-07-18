@@ -21,7 +21,7 @@ import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantStore } from '../store/tenant.store';
-import { SandboxService } from '../service/sandbox.service';
+import { TenantService } from '../service/tenant.service';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
 
 @Component({
@@ -44,7 +44,7 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
   passwordMismatch: boolean = false;
 
   constructor(
-    private service: SandboxService,
+    private service: TenantService,
     private formBuilder: FormBuilder,
     private translationLoader: RdwTranslateLoader,
     private languageStore: LanguageStore,
