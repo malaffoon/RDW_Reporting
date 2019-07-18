@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { SandboxConfiguration } from '../../model/sandbox-configuration';
-import { SandboxService } from '../../service/sandbox.service';
+import { TenantService } from '../../service/tenant.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Observable } from 'rxjs';
 import { DeleteSandboxConfigurationModalComponent } from '../../modal/delete-sandbox.modal';
@@ -22,7 +21,7 @@ export class SandboxesComponent implements OnInit {
   writable$: Observable<boolean>;
 
   constructor(
-    private service: SandboxService,
+    private service: TenantService,
     private store: SandboxStore,
     private userService: UserService,
     private languageStore: LanguageStore,
@@ -72,7 +71,7 @@ export class SandboxesComponent implements OnInit {
   }
 
   private loadSandboxes() {
-    this.service.getAll().subscribe(sandboxes => {
+    this.service.getAll('SANDBOX').subscribe(sandboxes => {
       this.store.setState(sandboxes);
     });
   }
