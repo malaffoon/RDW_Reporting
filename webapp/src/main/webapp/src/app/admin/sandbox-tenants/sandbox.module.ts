@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
-import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
 import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
 import { SandboxTenantSharedModule } from './sandbox-tenant-shared.module';
 import { RouterModule } from '@angular/router';

@@ -18,7 +18,6 @@ import { CommonModule } from '@angular/common';
 import { TenantLinkComponent } from './component/tenant-link/tenant-link.component';
 import { DeleteSandboxConfigurationModalComponent } from './modal/delete-sandbox.modal';
 import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
-import { SandboxesComponent } from './pages/sandboxes/sandboxes.component';
 import { DeleteTenantConfigurationModalComponent } from './modal/delete-tenant.modal';
 import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
@@ -53,7 +52,6 @@ import { PropertyOverrideTableControlsComponent } from './component/property-ove
     TenantLinkComponent,
     DeleteSandboxConfigurationModalComponent,
     NewSandboxConfigurationComponent,
-    SandboxesComponent,
     DeleteTenantConfigurationModalComponent,
     NewTenantConfigurationComponent,
     TenantsComponent,
@@ -68,7 +66,6 @@ import { PropertyOverrideTableControlsComponent } from './component/property-ove
     TenantLinkComponent,
     DeleteSandboxConfigurationModalComponent,
     NewSandboxConfigurationComponent,
-    SandboxesComponent,
     DeleteTenantConfigurationModalComponent,
     NewTenantConfigurationComponent,
     TenantsComponent,
