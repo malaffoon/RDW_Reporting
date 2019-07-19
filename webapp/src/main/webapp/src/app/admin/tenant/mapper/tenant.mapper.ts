@@ -98,7 +98,7 @@ export function toTenantApiModel(tenant: TenantConfiguration): any {
 
   return {
     tenant: {
-      key,
+      key: key != null ? key.toUpperCase() : key,
       id,
       description,
       name,

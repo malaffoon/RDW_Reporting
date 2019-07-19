@@ -15,6 +15,7 @@ import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
 import { Resource } from '../../../shared/security/state/security-settings';
 import { of } from 'rxjs/internal/observable/of';
+import { tap } from 'rxjs/internal/operators/tap';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;

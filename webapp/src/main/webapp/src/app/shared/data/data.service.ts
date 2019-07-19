@@ -32,8 +32,8 @@ export class DataService {
     url: string,
     options?: RequestOptionsArgs
   ): Observable<Response> {
-    return throwError({ status: 404 });
-    // return this.http.head(`${this.contextUrl}${url}`, options);
+    // return throwError({ status: 404 });
+    return this.http.head(`${this.contextUrl}${url}`, options);
   }
 
   /**

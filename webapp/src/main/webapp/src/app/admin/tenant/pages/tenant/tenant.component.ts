@@ -48,7 +48,10 @@ export class TenantComponent implements OnDestroy {
     const sandboxDataSets$ = this.service.getSandboxDataSets().pipe(share());
     const tenants$ = this.service.getAll('TENANT').pipe(share());
 
-    this.tenantKeyAvailable = (value: string) => this.service.exists(value);
+    this.tenantKeyAvailable = (value: string) =>
+      this.service
+        .exists((value || '').toUpperCase())
+        .pipe(map(exists => !exists));
 
     this.type$ = this.route.data.pipe(map(({ type }) => type));
     this.mode$ = this.route.data.pipe(map(({ mode }) => mode));
