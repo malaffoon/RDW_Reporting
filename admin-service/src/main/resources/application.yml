@@ -122,11 +122,13 @@ spring:
           destination: ConfigpropsUpdateExchange
 
         TenantAdministrationInput:
+          content-type: application/json
           destination: TenantAdministrationExchange
           group: TenantAdministrationQueue
           producer:
             requiredGroups: TenantAdministrationQueue
         TenantAdministrationOutput:
+          content-type: application/json
           destination: TenantAdministrationExchange
 
   admin_warehouse_datasource:
