@@ -1,14 +1,4 @@
-<!-- TODO investigate why this spinner display logic isn't working -->
-<!--<ng-container *ngIf="-->
-<!--  (tenant$ | async) != null-->
-<!--  && (mode$ | async) != null-->
-<!--  && (writable$ | async) != null-->
-<!--  && (tenants$ | async) != null-->
-<!--  && (dataSets$ | async) != null-->
-<!--  && (configurationDefaults$ | async) != null-->
-<!--  && (localizationDefaults$ | async) != null-->
-<!--  ; else loading-->
-<!--">-->
+<!--<ng-container *ngIf="initialized$ | async; else loading">-->
 <app-tenant-form
   class="sandbox-config"
   [value]="tenant$ | async"

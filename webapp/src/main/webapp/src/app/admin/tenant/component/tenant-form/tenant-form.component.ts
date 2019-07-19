@@ -16,9 +16,9 @@ import {
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { showErrors } from '../../../../shared/form/forms';
+import { Forms, showErrors } from '../../../../shared/form/forms';
 import { cloneDeep, forOwn } from 'lodash';
-import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
+import { getModifiedConfigProperties } from '../../model/tenants';
 
 export type FormMode = 'create' | 'update';
 
@@ -292,6 +292,10 @@ export class TenantFormComponent implements OnChanges {
   }
 
   onKeyChange(code: string): void {
+    console.log({
+      errors: Forms.errors(this.formGroup)
+    });
+
     const key = (code || '').toLowerCase();
     const defaultDataBaseName = `reporting_${key}`;
     const defaultUsername = key;
