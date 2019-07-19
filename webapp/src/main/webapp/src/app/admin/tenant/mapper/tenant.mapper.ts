@@ -83,23 +83,31 @@ export function toSandbox(
   };
 }
 
-export function toSandboxApiModel(sandbox: TenantConfiguration): any {
-  const apiModel = toTenantApiModel(sandbox);
-  apiModel.tenant.sandboxDataset = sandbox.dataSet.id;
-  apiModel.parentTenantKey = sandbox.parentTenantCode;
-  return apiModel;
-}
-
 export function toTenantApiModel(tenant: TenantConfiguration): any {
+  const {
+    code: key,
+    id,
+    label: name,
+    description,
+    type,
+    parentTenantCode: parentTenantKey,
+    dataSet: { id: sandboxDataset } = <any>{},
+    configurationProperties,
+    localizationOverrides
+  } = tenant;
+
   return {
     tenant: {
-      key: tenant.code,
-      id: tenant.id,
-      description: tenant.description,
-      name: tenant.label
+      key,
+      id,
+      description,
+      name,
+      sandbox: type === 'SANDBOX',
+      sandboxDataset
     },
-    ...toConfigurationPropertiesApiModel(tenant.configurationProperties),
-    localization: toLocalizationOverridesApiModel(tenant.localizationOverrides)
+    parentTenantKey,
+    ...toConfigurationPropertiesApiModel(configurationProperties),
+    localization: toLocalizationOverridesApiModel(localizationOverrides)
   };
 }
 

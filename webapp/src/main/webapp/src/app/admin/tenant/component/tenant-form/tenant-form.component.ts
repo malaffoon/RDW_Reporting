@@ -238,7 +238,7 @@ export class TenantFormComponent implements OnChanges {
                   value.code || '',
                   [Validators.required, tenantKey, Validators.maxLength(20)]
                 ],
-                id: [value.id || '', [Validators.required, tenantKey]],
+                id: [value.id || '', [Validators.required]],
                 label: [value.label || '', [notBlank]],
                 description: [value.description || ''],
                 configurationProperties: this.formBuilder.group({}),
