@@ -102,6 +102,9 @@
             <ng-container *ngIf="control.errors.pattern">
               {{ 'tenant-form.field.key.error.pattern' | translate }}
             </ng-container>
+            <ng-container *ngIf="control.errors.unavailable">
+              {{ 'tenant-form.field.key.error.unavailable' | translate }}
+            </ng-container>
           </span>
         </ng-container>
         <ng-template #readonlyKey>

@@ -22,6 +22,7 @@
   [requiredConfiguration]="
     (type$ | async) === 'TENANT' && (mode$ | async) === 'create'
   "
+  [tenantKeyAvailable]="tenantKeyAvailable"
   (create)="onCreate($event)"
   (update)="onUpdate($event)"
   (delete)="onDelete($event)"

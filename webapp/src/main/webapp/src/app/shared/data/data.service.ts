@@ -5,7 +5,7 @@ import {
   Response,
   ResponseContentType
 } from '@angular/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Download } from './download.model';
 import { map } from 'rxjs/operators';
 
@@ -20,6 +20,21 @@ export class DataService {
     private http: Http,
     @Inject(DATA_CONTEXT_URL) private contextUrl: string = '/api'
   ) {}
+
+  /**
+   * Gets data from the API server
+   *
+   * @param url the API endpoint
+   * @param options parameters to communicate to the API
+   * @returns {Observable<R>}
+   */
+  head<T = any>(
+    url: string,
+    options?: RequestOptionsArgs
+  ): Observable<Response> {
+    return throwError({ status: 404 });
+    // return this.http.head(`${this.contextUrl}${url}`, options);
+  }
 
   /**
    * Gets data from the API server
