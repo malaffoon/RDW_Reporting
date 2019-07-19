@@ -247,6 +247,8 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
         group.value.startsWith('{cipher}') &&
         this.encryptedFields.some(x => x === group.key);
 
+      // TODO sometimes keys have "configurationProperties ->" in the key... is this a race condition?
+
       // TODO: Move these to the mapper.
       group.encrypted = encrypted;
       group.readonly = readonly || this.readonly;

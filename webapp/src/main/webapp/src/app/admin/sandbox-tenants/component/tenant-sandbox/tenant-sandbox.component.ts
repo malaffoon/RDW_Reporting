@@ -279,6 +279,7 @@ export class TenantSandboxComponent implements OnChanges {
       //   this.configurationDefaults,
       //   tenant.configurationProperties
       // );
+      // this will erase existing overrides...
       this.configurationOverrides = cloneDeep(tenant.configurationProperties);
     }
     if (tenant.localizationOverrides) {
