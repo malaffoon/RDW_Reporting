@@ -1193,6 +1193,9 @@
     },
     "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
   },
+  "decryption-service": {
+    "error": "Failed to decrypt value"
+  },
   "tenant": {
     "create": {
       "error": {
@@ -1215,7 +1218,6 @@
       }
     }
   },
-
   "tenants": {
     "heading": {
       "SANDBOX": "Sandboxes",

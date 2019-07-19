@@ -12,6 +12,7 @@ import {
 } from '../mapper/tenant.mapper';
 import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
+import { CachingDataService } from '../../../shared/data/caching-data.service';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -24,13 +25,16 @@ const DataSetsRoute = `${AdminServiceRoute}/sandboxDataSets`;
   providedIn: 'root'
 })
 export class TenantService {
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private cachingDataService: CachingDataService
+  ) {}
 
   /**
    * Gets default configuration properties for a sandbox
    */
   getDefaultConfigurationProperties(type: TenantType): Observable<any> {
-    return this.dataService.get(DefaultsRoute).pipe(
+    return this.cachingDataService.get(DefaultsRoute).pipe(
       map(({ archive, aggregate, datasources, reporting }) =>
         mapConfigurationProperties(
           type === 'SANDBOX'
@@ -51,15 +55,15 @@ export class TenantService {
   }
 
   getSandboxDataSets(): Observable<DataSet[]> {
-    return this.dataService
+    return this.cachingDataService
       .get(DataSetsRoute)
       .pipe(catchError(ResponseUtils.throwError));
   }
 
   getAll(type: TenantType): Observable<TenantConfiguration[]> {
     const tenants$ = this.dataService.get(ResourceRoute, { params: { type } });
-    const defaults$ = this.dataService.get(DefaultsRoute);
-    const dataSets$ = this.dataService.get(DataSetsRoute);
+    const defaults$ = this.cachingDataService.get(DefaultsRoute);
+    const dataSets$ = this.cachingDataService.get(DataSetsRoute);
     const allTenants$ = forkJoin(tenants$, defaults$).pipe(
       map(([serverTenants, defaults]) =>
         serverTenants.map(serverTenant => toTenant(serverTenant, defaults))
@@ -79,8 +83,8 @@ export class TenantService {
 
   get(code: string): Observable<TenantConfiguration> {
     const tenant$ = this.dataService.get(`${ResourceRoute}/${code}`);
-    const defaults$ = this.dataService.get(DefaultsRoute);
-    const dataSets$ = this.dataService.get(DataSetsRoute);
+    const defaults$ = this.cachingDataService.get(DefaultsRoute);
+    const dataSets$ = this.cachingDataService.get(DataSetsRoute);
     return forkJoin(tenant$, defaults$, dataSets$).pipe(
       map(([tenant, defaults, dataSets]) => {
         if (tenant.tenant.sandbox) {

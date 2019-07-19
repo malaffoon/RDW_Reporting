@@ -77,7 +77,9 @@
                 class="fa fa-undo fa-md"
                 *ngIf="overrides.value !== overrides.originalValue && !readonly"
                 (click)="resetClicked(overrides)"
-                popover="{{ 'tenant-config.reset-info' | translate }}"
+                popover="{{
+                  'tenant-configuration-override-form.popover.reset' | translate
+                }}"
                 placement="left"
                 container="body"
                 triggers="mouseenter:mouseleave"
