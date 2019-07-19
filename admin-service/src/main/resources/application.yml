@@ -112,6 +112,7 @@ spring:
         output:
           destination: GROUPS
           group: default
+
         ConfigpropsUpdateInput:
           destination: ConfigpropsUpdateExchange
           group: ConfigpropsUpdateQueue
@@ -119,6 +120,14 @@ spring:
             requiredGroups: ConfigpropsUpdateQueue
         ConfigpropsUpdateOutput:
           destination: ConfigpropsUpdateExchange
+
+        TenantAdministrationInput:
+          destination: TenantAdministrationExchange
+          group: TenantAdministrationQueue
+          producer:
+            requiredGroups: TenantAdministrationQueue
+        TenantAdministrationOutput:
+          destination: TenantAdministrationExchange
 
   admin_warehouse_datasource:
     url-parts:
