@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { flatMap, map, takeUntil } from 'rxjs/operators';
+import { map, mergeMap, share, takeUntil } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { Observable, Subject } from 'rxjs';
@@ -31,7 +31,6 @@ export class TenantComponent implements OnDestroy {
   configurationDefaults$: Observable<any>;
   localizationDefaults$: Observable<any>;
   writable$: Observable<boolean>;
-  initialized$: Observable<boolean>;
   destroyed$: Subject<void> = new Subject();
 
   constructor(
@@ -45,31 +44,33 @@ export class TenantComponent implements OnDestroy {
     private translationLoader: RdwTranslateLoader,
     private translateService: TranslateService
   ) {
+    const sandboxDataSets$ = this.service.getSandboxDataSets().pipe(share());
+    const tenants$ = this.service.getAll('TENANT').pipe(share());
+
     this.type$ = this.route.data.pipe(map(({ type }) => type));
     this.mode$ = this.route.data.pipe(map(({ mode }) => mode));
 
     this.tenants$ = this.type$.pipe(
-      flatMap(type =>
-        type === 'SANDBOX' ? this.service.getAll('TENANT') : of([])
-      )
+      mergeMap(type => (type === 'SANDBOX' ? tenants$ : of([]))),
+      share()
     );
 
     this.dataSets$ = this.type$.pipe(
-      flatMap(type =>
-        type === 'SANDBOX' ? this.service.getSandboxDataSets() : of([])
-      )
+      mergeMap(type => (type === 'SANDBOX' ? sandboxDataSets$ : of([]))),
+      share()
     );
 
     this.configurationDefaults$ = this.type$.pipe(
-      flatMap(type => this.service.getDefaultConfigurationProperties(type))
+      mergeMap(type => this.service.getDefaultConfigurationProperties(type)),
+      share()
     );
 
-    this.localizationDefaults$ = this.translationLoader.getFlattenedTranslations(
-      this.languageStore.currentLanguage
-    );
+    this.localizationDefaults$ = this.translationLoader
+      .getFlattenedTranslations(this.languageStore.currentLanguage)
+      .pipe(share());
 
     this.tenant$ = this.route.params.pipe(
-      flatMap(({ id }) =>
+      mergeMap(({ id }) =>
         id != null
           ? this.service.get(id)
           : combineLatest(
@@ -97,26 +98,13 @@ export class TenantComponent implements OnDestroy {
                   )
               )
             )
-      )
+      ),
+      share()
     );
 
     this.writable$ = this.userService
       .getUser()
       .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
-
-    this.initialized$ = combineLatest(
-      this.type$,
-      this.mode$,
-      this.tenants$,
-      this.dataSets$,
-      this.configurationDefaults$,
-      this.localizationDefaults$,
-      this.tenant$,
-      this.writable$
-    ).pipe(
-      takeUntil(this.destroyed$),
-      map(() => true)
-    );
   }
 
   ngOnDestroy(): void {

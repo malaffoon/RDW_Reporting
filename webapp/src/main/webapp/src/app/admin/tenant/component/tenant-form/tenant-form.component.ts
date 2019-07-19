@@ -204,9 +204,11 @@ export class TenantFormComponent implements OnChanges {
     });
   }
 
+  // TODO currently this causes mulitple rerenders and i am not able to present a loading spinner
+  // i think this needs to be reworked such that the @Input()s each have their own subject to push to
   ngOnChanges(changes: SimpleChanges): void {
-    // only initialize when all dependencies are received
     const { value, localizationDefaults, mode, tenants, dataSets } = this;
+
     if (
       value != null &&
       localizationDefaults != null &&

@@ -155,7 +155,7 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
         override.encrypted = false;
       },
       error =>
-        this.notificationService.error({ id: 'tenant-config.errors.decrypt' })
+        this.notificationService.error({ id: 'decryption-service.error' })
     );
   }
 

@@ -18,8 +18,8 @@ const defaultUserService = <UserService>{
 
 @Injectable()
 export class RdwTranslateLoader implements TranslateLoader {
-  private clientTranslationsLoader;
-  private serverTranslationsLoader;
+  private clientTranslationsLoader: TranslateLoader;
+  private serverTranslationsLoader: TranslateLoader;
 
   constructor(
     http: HttpClient,
