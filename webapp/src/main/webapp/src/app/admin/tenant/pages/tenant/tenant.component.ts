@@ -17,6 +17,7 @@ import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant } from '../../mapper/tenant.mapper';
 
+// TODO have diff checking to disable and enable the save button accordingly
 @Component({
   selector: 'app-tenant',
   templateUrl: './tenant.component.html',
@@ -114,7 +115,11 @@ export class TenantComponent implements OnDestroy {
 
   onCreate(value: TenantConfiguration): void {
     this.service.create(value).subscribe(
-      () => {}, // TODO this used to reload from server
+      () => {
+        this.router.navigate(['..'], {
+          relativeTo: this.route
+        });
+      },
       error => {
         try {
           this.notificationService.error({ id: error.json().message });
@@ -129,7 +134,7 @@ export class TenantComponent implements OnDestroy {
 
   onUpdate(value: TenantConfiguration): void {
     this.service.update(value).subscribe(
-      () => {}, // TODO this used to reload from server
+      () => {},
       error => {
         try {
           this.notificationService.error({ id: error.json().message });
