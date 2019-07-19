@@ -1188,7 +1188,7 @@
   "sandbox-config": {
     "title": "Sandbox Configuration",
     "new-sandbox": {
-      "header": "Create New Sandbox"
+      "header": "Create"
     },
     "delete-modal": {
       "header": "Delete <strong>{{label}}</strong>?",
@@ -1205,10 +1205,10 @@
       "success": "Sandbox data was successfully reset"
     },
     "fields": {
-      "label": "Name:",
-      "description": "Description:",
-      "data-set": "Data Set:",
-      "tenant": "Tenant: ",
+      "label": "Name",
+      "description": "Description",
+      "data-set": "Data Set",
+      "tenant": "Tenant",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value"
@@ -1219,10 +1219,11 @@
       "delete": "Delete"
     },
     "config-properties": {
-      "modified": "Show modified properties only",
+      "required": "Required",
+      "modified": "Modified",
       "empty": "No configuration properties found"
     },
-    "empty": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create New Sandbox\" button",
+    "empty": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create\" button",
     "errors": {
       "reset": "An unknown error occurred when attempting to reset the sandbox data",
       "update": "An unknown error occurred when attempting to update the sandbox",
@@ -1256,7 +1257,7 @@
   "tenant-config": {
     "title": "Tenant Configuration",
     "new-tenant": {
-      "header": "Create New Tenant"
+      "header": "Create"
     },
     "delete-modal": {
       "header": "Delete <strong>{{label}}</strong>?",
@@ -1264,24 +1265,24 @@
       "success": "Tenant was successfully deleted"
     },
     "fields": {
-      "id": "ID:",
-      "key": "Key:",
-      "label": "Name:",
-      "description": "Description:",
+      "id": "ID",
+      "key": "Key",
+      "label": "Name",
+      "description": "Description",
       "configuration-properties": "Configuration Properties",
       "localization-overrides": "Localization Overrides",
       "search": "Search by key or value",
       "status-title": "Status:",
       "status": {
-        "Started": "Started",
-        "CreatingDatabases": "Creating Databases",
-        "PersistingConfiguration": "Persisting Configurations",
-        "NotifyingConfigServer": "Notifying Configuration Server",
-        "Failed": "Failed",
-        "Active": "Active"
+        "STARTED": "Started",
+        "CREATING_DATABASES": "Creating Databases",
+        "PERSISTING_CONFIGURATION": "Persisting Configurations",
+        "NOTIFYING_CONFIG_SERVER": "Notifying Configuration Server",
+        "FAILED": "Failed",
+        "ACTIVE": "Active"
       }
     },
-    "empty": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create New Tenant\" button",
+    "empty": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create\" button",
     "properties": {
       "reporting": "Reporting",
       "datasources": "Data Sources",
@@ -1295,6 +1296,7 @@
       "password": "The password field must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
     },
     "errors": {
+      "required": "Required",
       "duplicate-key": "A tenant with the same tenant key or ID already exists",
       "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
       "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
@@ -1302,7 +1304,8 @@
       "create": "An unknown error occurred when attempting to create the tenant",
       "delete": "An unknown error occurred when attempting to delete the tenant",
       "decrypt": "An error occurred while attempting to decrypt an encrypted password",
-      "password-mismatch": "All passwords must be the same for each unique username."
+      "password-mismatch": "All passwords must be the same for each unique username.",
+      "onePasswordPerUser": "Multiple passwords were provided for the following user names: {{usernames}}"
     }
   },
   "user-query-table": {

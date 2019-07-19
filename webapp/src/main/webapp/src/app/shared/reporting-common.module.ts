@@ -43,6 +43,7 @@ import { InstructionalResourcePopoverComponent } from './component/instructional
 import { ConfirmationModalComponent } from './component/confirmation-modal/confirmation-modal.component';
 import { ErrorComponent } from './component/error/error.component';
 import { NavigationComponent } from './component/navigation/navigation.component';
+import { ReportingCommonComponentModule } from './component/component.module';
 
 @NgModule({
   imports: [
@@ -75,6 +76,7 @@ import { NavigationComponent } from './component/navigation/navigation.component
     RdwNotificationsModule,
     RdwPreferenceModule,
     RdwSecurityModule,
+    ReportingCommonComponentModule,
     SubjectModule,
     TranslateModule
   ],
@@ -118,6 +120,7 @@ import { NavigationComponent } from './component/navigation/navigation.component
     RdwNotificationsModule,
     RdwPreferenceModule,
     RdwSecurityModule,
+    ReportingCommonComponentModule,
     SBCheckboxList,
     SBRadioButtonComponent,
     SBToggleComponent,

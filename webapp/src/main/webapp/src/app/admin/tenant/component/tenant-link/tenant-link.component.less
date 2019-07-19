@@ -1,0 +1,39 @@
+@gray-lighter: #e6e6e6;
+@gray-lightest: #f8f8f8;
+
+a {
+  display: block;
+  padding: 30px 30px 15px 30px;
+  text-decoration: none;
+  color: inherit;
+  &:not(.status-active) {
+    pointer-events: none;
+  }
+  &.status-active {
+    &:hover {
+      background-color: @gray-lightest;
+    }
+    &:active {
+      background-color: @gray-lighter;
+    }
+  }
+}
+
+h2 {
+  margin: 0;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 15px;
+  align-items: center;
+}
+
+.body {
+  margin-top: 15px;
+}
+
+:host {
+  display: block;
+}

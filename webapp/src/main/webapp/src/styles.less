@@ -818,26 +818,6 @@ aggregate-report-table {
         margin-right: 10px;
       }
     }
-
-    .form-group {
-      margin-top: 35px;
-    }
-  }
-
-  .ui-table-caption,
-  .ui-treetable-caption {
-    i {
-      margin: 4px 8px 0 4px;
-    }
-
-    div {
-      text-align: left;
-
-      input[type='text'] {
-        width: calc(100% - 30px);
-        display: inline;
-      }
-    }
   }
 
   .ui-table,
@@ -851,23 +831,8 @@ aggregate-report-table {
     }
 
     td {
-      cursor: pointer;
       position: relative;
-
-      &.group-node {
-        line-height: 30px;
-        font-size: 16px;
-        font-weight: bold;
-        background-color: #e8f3f7;
-        border-bottom: 2px solid #5eb1ca;
-        color: #02799e;
-      }
-
-      i.pi-chevron-right,
-      i.pi-chevron-down {
-        margin-right: 2px;
-        color: #02799e;
-      }
+      cursor: pointer;
 
       .icon-container {
         position: absolute;
@@ -2342,4 +2307,10 @@ body .ui-paginator .ui-paginator-pages .ui-paginator-page {
 // Danger and error appear as red
 .btn-danger.btn-outlined {
   .btn-outlined(@btn-danger-color; @btn-danger-bg; @btn-danger-border);
+}
+
+.well {
+  app-divider {
+    margin: 0 -20px;
+  }
 }

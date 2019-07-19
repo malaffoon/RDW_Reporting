@@ -1,0 +1,197 @@
+<!-- TODO extract -->
+<div class="controls">
+  <input
+    id="search"
+    name="search"
+    type="text"
+    placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+    class="form-control"
+    (input)="table.filterGlobal($event.target.value, 'contains')"
+  />
+
+  <label>
+    <input
+      id="required"
+      name="required"
+      type="checkbox"
+      [(ngModel)]="required"
+    />
+    {{ 'sandbox-config.config-properties.required' | translate }}
+  </label>
+
+  <label>
+    <input
+      id="modified"
+      name="modified"
+      type="checkbox"
+      [(ngModel)]="modified"
+    />
+    {{ 'sandbox-config.config-properties.modified' | translate }}
+  </label>
+</div>
+
+<div [formGroup]="form">
+  <div [formArrayName]="propertiesArrayName">
+    <p-treeTable
+      #table
+      [value]="configurationPropertiesTreeNodes"
+      dataKey="key"
+      [globalFilterFields]="['key', 'value']"
+      styleClass="table table-striped table-hover"
+      [rowTrackBy]="rowTrackBy"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-i="rowIndex">
+        <ng-container *ngIf="rowNode.node as node">
+          <ng-container *ngIf="node.data as data">
+            <ng-container *ngIf="!node.leaf; else leafNode">
+              <tr
+                [hidden]="
+                  (modified && !hasModifiedDescendant(node)) ||
+                  (required && !hasRequiredDescendant(node))
+                "
+                [ttRow]="rowNode"
+              >
+                <td
+                  [title]="data.key"
+                  colspan="2"
+                  [ngClass]="{ 'group-node': data.groupNode }"
+                  (click)="expandOrCollapse(rowNode, $event)"
+                >
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <ng-container *ngIf="data.groupNode; else notGroupNode">
+                    {{ 'tenant-config.properties.' + data.key | translate }}
+                  </ng-container>
+                  <ng-template #notGroupNode>
+                    {{ data.key }}
+                  </ng-template>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-template #leafNode>
+              <ng-container *ngIf="data.readonly; else writableNode">
+                <tr
+                  [hidden]="
+                    (modified && data.originalValue === data.value) ||
+                    (required && !data.required)
+                  "
+                  [ttRow]="rowNode"
+                  [ngClass]="{
+                    modified: data.value !== data.originalValue
+                  }"
+                >
+                  <td [title]="data.key">
+                    <p-treeTableToggler
+                      [rowNode]="rowNode"
+                    ></p-treeTableToggler>
+                    {{ data.key }}
+                  </td>
+                  <td>{{ data.value }}</td>
+                </tr>
+              </ng-container>
+              <ng-template #writableNode>
+                <tr
+                  [hidden]="
+                    (modified && data.originalValue === data.value) ||
+                    (required && !data.required)
+                  "
+                  [ttRow]="rowNode"
+                  [ngClass]="{
+                    modified: data.modified,
+                    required:
+                      form.get(propertiesArrayName) != null &&
+                      form.get(propertiesArrayName).get(data.formControlName) !=
+                        null &&
+                      showErrors(
+                        form.get(propertiesArrayName).get(data.formControlName)
+                      )
+                  }"
+                  (click)="overrideInput.focus()"
+                >
+                  <td [title]="data.key">
+                    <p-treeTableToggler
+                      [rowNode]="rowNode"
+                    ></p-treeTableToggler>
+                    {{ data.key }}
+                  </td>
+                  <td>
+                    <input
+                      #overrideInput
+                      [type]="
+                        data.secure && !data.showSecure ? 'password' : 'text'
+                      "
+                      data-lpignore="true"
+                      [value]="data.value"
+                      [formControlName]="data.formControlName"
+                      (change)="updateOverride(data)"
+                      class="property-input"
+                      [ngClass]="{ 'text-lowercase': data.lowercase }"
+                    />
+                    <div class="icon-container">
+                      <i
+                        class="fa fa-undo fa-md"
+                        *ngIf="data.value !== data.originalValue"
+                        (click)="resetClicked(data)"
+                        popover="{{
+                          'tenant-config.popover.reset' | translate
+                        }}"
+                        placement="left"
+                        container="body"
+                        triggers="mouseenter:mouseleave"
+                      ></i>
+                      <i
+                        class="fa fa-md"
+                        [ngClass]="{
+                          'fa-eye-slash': data.showSecure,
+                          'fa-eye': !data.showSecure
+                        }"
+                        *ngIf="data.secure"
+                        (click)="data.showSecure = !data.showSecure"
+                        placement="left"
+                        container="body"
+                        triggers="mouseenter:mouseleave"
+                      ></i>
+                      <i
+                        class="fa fa-unlock fa-md"
+                        *ngIf="data.encrypted"
+                        (click)="decryptClicked(data)"
+                        popover="{{
+                          'tenant-config.popover.decrypt' | translate
+                        }}"
+                        placement="left"
+                        container="body"
+                        triggers="mouseenter:mouseleave"
+                      ></i>
+                      <i
+                        class="fa fa-asterisk fa-md"
+                        *ngIf="data.required"
+                        popover="{{
+                          'tenant-config.popover.password' | translate
+                        }}"
+                        placement="left"
+                        container="body"
+                        triggers="mouseenter:mouseleave"
+                      ></i>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="2">
+            {{ 'sandbox-config.config-properties.empty' | translate }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</div>
