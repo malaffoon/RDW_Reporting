@@ -42,8 +42,7 @@ export interface TenantConfiguration {
   status?: TenantStatus;
 
   /**
-   * @deprecated use {@link #type}
+   * The tenant type
    */
-  sandbox?: boolean;
   type?: TenantType;
 }

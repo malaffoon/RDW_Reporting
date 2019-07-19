@@ -16,7 +16,7 @@ export function toTenant(
     id: tenant.id,
     label: tenant.name,
     description: tenant.description,
-    sandbox: serverTenant.tenant.sandbox,
+    type: serverTenant.tenant.sandbox ? 'SANDBOX' : 'TENANT',
     status: serverTenant.administrationStatus.tenantAdministrationStatus,
     configurationProperties: skipMappingConfigProperties
       ? toConfigProperties(serverTenant)
@@ -29,12 +29,14 @@ export function toTenant(
 }
 
 // helper to return only the config props of an api model.
-export function toConfigProperties(apiModel: any): any {
+export function toConfigProperties(serverProperties: any): any {
   return {
-    aggregate: apiModel.aggregate,
-    reporting: apiModel.reporting,
-    ...(apiModel.archive ? { archive: apiModel.archive } : {}),
-    ...(apiModel.datasources ? { datasources: apiModel.datasources } : {})
+    aggregate: serverProperties.aggregate,
+    reporting: serverProperties.reporting,
+    ...(serverProperties.archive ? { archive: serverProperties.archive } : {}),
+    ...(serverProperties.datasources
+      ? { datasources: serverProperties.datasources }
+      : {})
   };
 }
 
@@ -118,12 +120,12 @@ function toConfigurationPropertiesApiModel(configProperties: any): any {
 }
 
 export function mapConfigurationProperties(
-  configProperties: any,
+  defaults: any,
   overrides: any = {}
 ): any {
-  let groupedProperties = {};
+  const groupedProperties = {};
 
-  forOwn(configProperties, (configGroup, groupKey) => {
+  forOwn(defaults, (configGroup, groupKey) => {
     if (groupKey !== 'datasources') {
       const configProps: ConfigurationProperty[] = [];
 
@@ -153,13 +155,10 @@ export function mapConfigurationProperties(
         }
       });
 
-      groupedProperties = {
-        ...groupedProperties,
-        [groupKey]: configProps
-      };
+      groupedProperties[groupKey] = configProps;
     } else {
       // current group is datasources
-      let databaseProps = {};
+      const databaseProps = {};
 
       // Iterate over the group of databases
       forOwn(configGroup, (databaseProperties, databaseName) => {
@@ -191,16 +190,10 @@ export function mapConfigurationProperties(
           }
         });
 
-        databaseProps = {
-          ...databaseProps,
-          [databaseName]: configProps
-        };
+        databaseProps[databaseName] = configProps;
       });
 
-      groupedProperties = {
-        ...groupedProperties,
-        [groupKey]: databaseProps
-      };
+      groupedProperties[groupKey] = databaseProps;
     }
   });
 
@@ -208,9 +201,9 @@ export function mapConfigurationProperties(
 }
 
 export function getModifiedConfigProperties(configProperties: any): any {
-  var modifiedProperties = {};
+  const modifiedProperties = {};
   forOwn(configProperties, (group, key) => {
-    var props = <ConfigurationProperty[]>group;
+    const props = <ConfigurationProperty[]>group;
     if (props.some !== undefined) {
       if (props.some(x => x.originalValue !== x.value)) {
         modifiedProperties[key] = props.filter(

@@ -1,7 +1,7 @@
-<ng-container *ngIf="(tenant$ | async) as tenant; else loading">
+<ng-container *ngIf="(initialized$ | async); else loading">
   <tenant-sandbox
     class="sandbox-config"
-    [value]="tenant"
+    [value]="tenant$ | async"
     [mode]="mode$ | async"
     [writable]="writable$ | async"
     [tenants]="tenants$ | async"

@@ -12,6 +12,7 @@ import {
 } from '../mapper/tenant.mapper';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantType } from '../model/tenant-type';
+import { of } from 'rxjs/internal/observable/of';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -31,25 +32,31 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(type: TenantType): Observable<any> {
     return this.dataService.get(DefaultsRoute).pipe(
-      map(defaults => {
-        if (type === 'SANDBOX') {
-          return {
-            // intentionally excluding datasets and archived here.
-            aggregate: defaults.aggregate,
-            reporting: defaults.reporting
-          };
-        }
-        // TODO this needed?
-        return mapConfigurationProperties(defaults);
-      }),
+      map(({ archive, aggregate, datasources, reporting }) =>
+        mapConfigurationProperties(
+          type === 'SANDBOX'
+            ? {
+                aggregate,
+                reporting
+              }
+            : {
+                archive,
+                datasources,
+                aggregate,
+                reporting
+              }
+        )
+      ),
       catchError(ResponseUtils.throwError)
     );
   }
 
   getSandboxDataSets(): Observable<DataSet[]> {
-    return this.dataService
-      .get(DataSetsRoute)
-      .pipe(catchError(ResponseUtils.throwError));
+    return of([{ id: 'Data Set 1', label: 'Data Set 1' }]);
+
+    // return this.dataService
+    //   .get(DataSetsRoute)
+    //   .pipe(catchError(ResponseUtils.throwError));
   }
 
   getAll(type: TenantType): Observable<SandboxConfiguration[]> {

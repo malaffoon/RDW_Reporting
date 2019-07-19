@@ -26,10 +26,17 @@
                 class="btn btn-primary"
                 [disabled]="formGroup.invalid"
               >
-                {{ 'common.action.save' | translate }}
+                <ng-container
+                  *ngIf="mode === 'create'; else updateSubmitButton"
+                >
+                  {{ 'tenant-config.new-tenant.header' | translate }}
+                </ng-container>
+                <ng-template #updateSubmitButton>
+                  {{ 'common.action.save' | translate }}
+                </ng-template>
               </button>
             </div>
-            <ng-container *ngIf="value.type === 'SANDBOX'">
+            <ng-container *ngIf="value.type === 'SANDBOX' && mode === 'update'">
               <div class="btn-group" dropdown>
                 <button
                   id="dropdown-button"
@@ -183,7 +190,7 @@
       </ng-template>
     </div>
 
-    <ng-container *ngIf="value.sandbox">
+    <ng-container *ngIf="value.type === 'SANDBOX'">
       <div
         *ngIf="formGroup.get('tenant') as control"
         class="form-group"
@@ -197,7 +204,12 @@
         <ng-container
           *ngIf="writable && mode === 'create'; else readonlyTenant"
         >
-          <select id="tenant" class="form-control" formControlName="tenant">
+          <select
+            id="tenant"
+            class="form-control"
+            formControlName="tenant"
+            (change)="onTenantChange($event.target.value)"
+          >
             <option *ngFor="let tenant of tenants" [ngValue]="tenant">
               {{ tenant.label }}
             </option>
@@ -209,7 +221,7 @@
           </span>
         </ng-container>
         <ng-template #readonlyTenant>
-          <div>{{ formGroup.get('tenant').value.label }}</div>
+          <div>{{ control.value.label }}</div>
         </ng-template>
       </div>
 
@@ -258,7 +270,7 @@
       <div class="form-group" [hidden]="!configurationOpen">
         <property-override-tree-table
           [form]="formGroup"
-          [configurationProperties]="value.configurationProperties"
+          [configurationProperties]="configurationOverrides"
           [readonly]="!writable"
           [readonlyGroups]="readonlyGroups"
           [required]="requiredConfiguration"

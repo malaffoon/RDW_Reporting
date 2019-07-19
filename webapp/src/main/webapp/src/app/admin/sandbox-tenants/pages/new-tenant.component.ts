@@ -16,13 +16,13 @@ import { forOwn } from 'lodash';
 import { LanguageStore } from '../../../shared/i18n/language.store';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
-import { CustomValidators } from '../../../shared/validator/custom-validators';
 import { getModifiedConfigProperties } from '../mapper/tenant.mapper';
 import { ConfigurationProperty } from '../model/configuration-property';
-import { TenantConfiguration } from '../model/tenant-configuration';
 import { TenantStore } from '../store/tenant.store';
 import { TenantService } from '../service/tenant.service';
 import { SandboxConfiguration } from '../model/sandbox-configuration';
+import { tenantKey } from '../component/tenant-sandbox/tenant-sandbox.component';
+import { notBlank } from '../../../shared/validator/custom-validators';
 
 @Component({
   selector: 'new-tenant',
@@ -55,16 +55,9 @@ export class NewTenantConfigurationComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.tenantForm = this.formBuilder.group({
-      key: [
-        null,
-        [
-          Validators.required,
-          CustomValidators.tenantKey,
-          Validators.maxLength(20)
-        ]
-      ],
-      id: [null, [Validators.required, CustomValidators.tenantKey]],
-      label: [null, CustomValidators.notBlank],
+      key: [null, [Validators.required, tenantKey, Validators.maxLength(20)]],
+      id: [null, [Validators.required, tenantKey]],
+      label: [null, notBlank],
       description: [null],
       configurationProperties: this.formBuilder.group({}),
       localizationOverrides: this.formBuilder.group({})

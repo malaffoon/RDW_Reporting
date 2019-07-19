@@ -14,7 +14,6 @@ import {
 import { Router } from '@angular/router';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { NotificationService } from '../../../shared/notification/notification.service';
-import { CustomValidators } from '../../../shared/validator/custom-validators';
 import {
   mapConfigurationProperties,
   getModifiedConfigProperties
@@ -24,6 +23,7 @@ import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { LanguageStore } from '../../../shared/i18n/language.store';
 import { TenantService } from '../service/tenant.service';
+import { notBlank } from '../../../shared/validator/custom-validators';
 
 @Component({
   selector: 'new-sandbox',
@@ -55,7 +55,7 @@ export class NewSandboxConfigurationComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.sandboxForm = this.formBuilder.group({
-      label: [null, CustomValidators.notBlank],
+      label: [null, notBlank],
       description: [null],
       dataset: [null, Validators.required],
       tenant: [null, Validators.required],
