@@ -21,7 +21,6 @@ import { TenantFormComponent } from './component/tenant-form/tenant-form.compone
 import { TenantLinkComponent } from './component/tenant-link/tenant-link.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantComponent } from './pages/tenant/tenant.component';
-import { PropertyOverrideTableControlsComponent } from './component/property-override-table-controls/property-override-table-controls.component';
 import { ToggleLabelComponent } from './component/toggle-label/toggle-label.component';
 
 @NgModule({
@@ -43,7 +42,6 @@ import { ToggleLabelComponent } from './component/toggle-label/toggle-label.comp
   declarations: [
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
-    PropertyOverrideTableControlsComponent,
     WellGroupListComponent,
     TenantFormComponent,
     TenantLinkComponent,
