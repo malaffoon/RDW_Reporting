@@ -116,12 +116,12 @@ function onePasswordPerUser(
 }
 
 @Component({
-  selector: 'tenant-sandbox',
-  templateUrl: './tenant-sandbox.component.html',
-  styleUrls: ['./tenant-sandbox.component.less'],
+  selector: 'app-tenant-form',
+  templateUrl: './tenant-form.component.html',
+  styleUrls: ['./tenant-form.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TenantSandboxComponent implements OnChanges {
+export class TenantFormComponent implements OnChanges {
   readonly showErrors = showErrors;
 
   @Input()

@@ -1,5 +1,5 @@
 <ng-container *ngIf="(initialized$ | async); else loading">
-  <tenant-sandbox
+  <app-tenant-form
     class="sandbox-config"
     [value]="tenant$ | async"
     [mode]="mode$ | async"
@@ -15,7 +15,7 @@
     (create)="onCreate($event)"
     (update)="onUpdate($event)"
     (delete)="onDelete($event)"
-  ></tenant-sandbox>
+  ></app-tenant-form>
 </ng-container>
 <ng-template #loading>
   <spinner></spinner>

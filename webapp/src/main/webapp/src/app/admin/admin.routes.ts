@@ -67,7 +67,7 @@ export const adminRoutes: Route[] = [
       },
       {
         path: 'sandboxes',
-        loadChildren: 'app/admin/sandbox-tenants/sandbox.module#SandboxModule',
+        loadChildren: 'app/admin/tenant/tenant.module#TenantModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
           breadcrumb: { translate: 'sandbox-config.title' },
@@ -77,7 +77,7 @@ export const adminRoutes: Route[] = [
       },
       {
         path: 'tenants',
-        loadChildren: 'app/admin/sandbox-tenants/tenant.module#TenantModule',
+        loadChildren: 'app/admin/tenant/tenant.module#TenantModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
           breadcrumb: { translate: 'tenant-config.title' },

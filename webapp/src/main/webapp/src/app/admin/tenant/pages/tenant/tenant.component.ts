@@ -1,16 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  flatMap,
-  map,
-  mergeMap,
-  share,
-  shareReplay,
-  takeUntil
-} from 'rxjs/operators';
+import { flatMap, map, takeUntil } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { forkJoin, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { UserService } from '../../../../shared/security/service/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
@@ -19,10 +12,9 @@ import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader
 import { ConfirmationModalComponent } from '../../../../shared/component/confirmation-modal/confirmation-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs/internal/observable/of';
-import { FormMode } from '../../component/tenant-sandbox/tenant-sandbox.component';
+import { FormMode } from '../../component/tenant-form/tenant-form.component';
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
-import { tap } from 'rxjs/internal/operators/tap';
 import { defaultTenant } from '../../mapper/tenant.mapper';
 
 @Component({

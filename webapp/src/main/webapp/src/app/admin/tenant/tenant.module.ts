@@ -1,31 +1,29 @@
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { tenantRoutes } from './tenant.routes';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
+import { CommonModule } from '@angular/common';
 import {
   BsDropdownModule,
   ButtonsModule,
   ModalModule,
   PopoverModule
 } from 'ngx-bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
+import { MenuModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
-import { MenuModule } from 'primeng/menu';
-import { AccordionModule, TreeTableModule } from 'primeng/primeng';
 import { PropertyOverrideTableComponent } from './component/property-override-table/property-override-table.component';
 import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table/property-override-tree-table.component';
 import { WellGroupListComponent } from './component/well-group-list/well-group-list.component';
-import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbox.component';
-import { CommonModule } from '@angular/common';
+import { TenantFormComponent } from './component/tenant-form/tenant-form.component';
 import { TenantLinkComponent } from './component/tenant-link/tenant-link.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantComponent } from './pages/tenant/tenant.component';
 import { PropertyOverrideTableControlsComponent } from './component/property-override-table-controls/property-override-table-controls.component';
 import { ToggleLabelComponent } from './component/toggle-label/toggle-label.component';
 
-/**
- * TODO join this with tenant.module and make the route structure this:
- *
- * tenants?sandbox=true|false to choose what tenants to display at any given time
- */
 @NgModule({
   imports: [
     CommonModule,
@@ -33,35 +31,25 @@ import { ToggleLabelComponent } from './component/toggle-label/toggle-label.comp
     FormsModule,
     ReactiveFormsModule,
     ReportingCommonModule,
-    AccordionModule,
     ButtonsModule,
     MenuModule,
-    ModalModule,
+    ModalModule.forRoot(), // this is needed in lazy modules for some reason
     PopoverModule,
     TableModule,
-    TreeTableModule
+    TreeTableModule,
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(tenantRoutes)
   ],
   declarations: [
     PropertyOverrideTableComponent,
     PropertyOverrideTreeTableComponent,
+    PropertyOverrideTableControlsComponent,
     WellGroupListComponent,
-    TenantSandboxComponent,
+    TenantFormComponent,
     TenantLinkComponent,
     TenantsComponent,
     TenantComponent,
-    PropertyOverrideTableControlsComponent,
-    ToggleLabelComponent
-  ],
-  exports: [
-    PropertyOverrideTableComponent,
-    PropertyOverrideTreeTableComponent,
-    WellGroupListComponent,
-    TenantSandboxComponent,
-    TenantLinkComponent,
-    TenantsComponent,
-    TenantComponent,
-    PropertyOverrideTableControlsComponent,
     ToggleLabelComponent
   ]
 })
-export class SandboxTenantSharedModule {}
+export class TenantModule {}
