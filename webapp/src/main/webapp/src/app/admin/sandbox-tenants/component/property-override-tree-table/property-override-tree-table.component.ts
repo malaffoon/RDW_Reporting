@@ -81,6 +81,8 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   @Input()
   set configurationProperties(properties: any) {
     this._configurationProperties = properties;
+
+    // TODO RACE CONDITION
     if (this.form) {
       this.createConfigurationPropertyTree();
     }

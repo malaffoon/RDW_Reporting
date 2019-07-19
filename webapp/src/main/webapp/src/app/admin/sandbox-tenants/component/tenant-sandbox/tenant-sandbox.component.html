@@ -267,6 +267,17 @@
         }}"
       ></app-toggle-label>
 
+      <span class="text-danger" *ngIf="showErrors(formGroup)">
+        <ng-container
+          *ngIf="formGroup.errors && formGroup.errors.onePasswordPerUser"
+        >
+          {{
+            'tenant-config.errors.onePasswordPerUser'
+              | translate: formGroup.errors
+          }}
+        </ng-container>
+      </span>
+
       <div class="form-group" [hidden]="!configurationOpen">
         <property-override-tree-table
           [form]="formGroup"

@@ -24,9 +24,7 @@ import { cloneDeep, forOwn } from 'lodash';
 
 export type FormMode = 'create' | 'update';
 
-export const tenantKey = Validators.pattern(
-  /^[a-zA-Z0-9][\w\-]*?[a-zA-Z0-9]?$/
-);
+export const tenantKey = Validators.pattern(/^\w+$/);
 
 /**
  * Has side effects on tenant.localizationOverrides and formGroup
@@ -74,38 +72,50 @@ function mapLocalizationOverrides(
   // }
 }
 
-/*
+const passwordKeyExpression = /^(\w+)\.password$/;
 
-  checkPasswordsAndUsernames(property: ConfigurationProperty) {
-    if (
-      property.formControlName.indexOf('.password') !== -1 ||
-      property.formControlName.indexOf('.username')
-    ) {
-      this.passwordMismatch = this.anyPasswordsNotMatchignUsernames(
-        this.configurationProperties.datasources
-      );
+function onePasswordPerUser(
+  formGroup: FormGroup
+): { onePasswordPerUser: boolean; usernames: string[] } | null {
+  const configurationProperties: FormGroup = formGroup.controls
+    .configurationProperties as FormGroup;
+
+  const controlNames = Object.keys(configurationProperties.controls);
+
+  const passwordKeys = controlNames.filter(controlName =>
+    passwordKeyExpression.test(controlName)
+  );
+
+  const passwordsByUsername: {
+    [username: string]: string[];
+  } = passwordKeys.reduce((byUsername, passwordKey) => {
+    // assumes username of same base path for every password
+    const usernameKey = `${
+      passwordKeyExpression.exec(passwordKey)[1]
+    }.username`;
+    // this is being run on every form control addition so we need to defensively set this
+    // TODO disconnected from the values because the formgroup has changed.... -NEED control value accessor....
+    const username = (configurationProperties.get(usernameKey) || <any>{})
+      .value;
+    const password = (configurationProperties.get(passwordKey) || <any>{})
+      .value;
+    const passwords = byUsername[username];
+    if (passwords != null) {
+      if (!passwords.includes(password)) {
+        passwords.push(password);
+      }
+    } else {
+      byUsername[username] = [password];
     }
-  }
+    return byUsername;
+  }, {});
 
-  private anyPasswordsNotMatchignUsernames(datasources: any) {
-    const users = [];
+  const usernames = Object.entries(passwordsByUsername)
+    .filter(([, passwords]) => passwords.length > 1)
+    .map(([username]) => username);
 
-    forOwn(datasources, dataSource => {
-      users.push({
-        username: dataSource.find(x => x.key === 'username').value,
-        password: dataSource.find(x => x.key === 'password').value
-      });
-    });
-
-    const uniqueUsernamesAndPasswords = Array.from(
-      new Set(users.map(x => x.username + x.password))
-    );
-    const uniqueUsernames = Array.from(new Set(users.map(x => x.username)));
-
-    return uniqueUsernames.length !== uniqueUsernamesAndPasswords.length;
-  }
-
- */
+  return usernames.length > 0 ? { onePasswordPerUser: true, usernames } : null;
+}
 
 @Component({
   selector: 'tenant-sandbox',
@@ -211,17 +221,22 @@ export class TenantSandboxComponent implements OnChanges {
               configurationProperties: this.formBuilder.group({}),
               localizationOverrides: this.formBuilder.group({})
             })
-          : this.formBuilder.group({
-              key: [
-                value.code || '',
-                [Validators.required, tenantKey, Validators.maxLength(20)]
-              ],
-              id: [value.id || '', [Validators.required, tenantKey]],
-              label: [value.label || '', [notBlank]],
-              description: [value.description || ''],
-              configurationProperties: this.formBuilder.group({}),
-              localizationOverrides: this.formBuilder.group({})
-            });
+          : this.formBuilder.group(
+              {
+                key: [
+                  value.code || '',
+                  [Validators.required, tenantKey, Validators.maxLength(20)]
+                ],
+                id: [value.id || '', [Validators.required, tenantKey]],
+                label: [value.label || '', [notBlank]],
+                description: [value.description || ''],
+                configurationProperties: this.formBuilder.group({}),
+                localizationOverrides: this.formBuilder.group({})
+              },
+              {
+                validators: [onePasswordPerUser]
+              }
+            );
 
       // this.configurationOverrides = mapConfigurationProperties(
       //   this.configurationDefaults,

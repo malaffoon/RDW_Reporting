@@ -1304,7 +1304,8 @@
       "create": "An unknown error occurred when attempting to create the tenant",
       "delete": "An unknown error occurred when attempting to delete the tenant",
       "decrypt": "An error occurred while attempting to decrypt an encrypted password",
-      "password-mismatch": "All passwords must be the same for each unique username."
+      "password-mismatch": "All passwords must be the same for each unique username.",
+      "onePasswordPerUser": "Multiple passwords were provided for the following user names: {{usernames}}"
     }
   },
   "user-query-table": {
