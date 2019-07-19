@@ -320,10 +320,6 @@ export class TenantFormComponent implements OnChanges {
   }
 
   onKeyChange(code: string): void {
-    console.log({
-      errors: Forms.errors(this.formGroup)
-    });
-
     const key = (code || '').toLowerCase();
     const defaultDataBaseName = `reporting_${key}`;
     const defaultUsername = key;
