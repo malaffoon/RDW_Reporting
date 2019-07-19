@@ -1,7 +1,7 @@
 <ng-container *ngIf="(tenantType$ | async) as type">
   <page-heading>
     <h1 class="h2" heading>
-      {{ type.toLowerCase() + '-config.title' | translate }}
+      {{ 'tenants.heading.' + type | translate }}
     </h1>
     <button
       controls
@@ -9,7 +9,7 @@
       class="btn btn-primary"
       [routerLink]="['new']"
     >
-      {{ 'tenant-config.new-tenant.header' | translate }}
+      {{ 'tenants.create.' + type | translate }}
     </button>
   </page-heading>
 
@@ -25,7 +25,7 @@
       </app-well-group-list>
     </ng-container>
     <ng-template #empty>
-      <p>{{ type.toLowerCase() + '-config.empty' | translate }}</p>
+      <p>{{ 'tenants.empty.' + type | translate }}</p>
     </ng-template>
   </ng-container>
   <ng-template #loading>

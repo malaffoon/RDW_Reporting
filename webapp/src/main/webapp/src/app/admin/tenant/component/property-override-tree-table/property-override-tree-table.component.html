@@ -4,7 +4,10 @@
     id="search"
     name="search"
     type="text"
-    placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+    placeholder="{{
+      'tenant-form.field.configurationOverrides.control.search.placeholder'
+        | translate
+    }}"
     class="form-control"
     (input)="table.filterGlobal($event.target.value, 'contains')"
   />
@@ -16,7 +19,10 @@
       type="checkbox"
       [(ngModel)]="required"
     />
-    {{ 'sandbox-config.config-properties.required' | translate }}
+    {{
+      'tenant-form.field.configurationOverrides.control.required.label'
+        | translate
+    }}
   </label>
 
   <label>
@@ -26,7 +32,10 @@
       type="checkbox"
       [(ngModel)]="modified"
     />
-    {{ 'sandbox-config.config-properties.modified' | translate }}
+    {{
+      'tenant-form.field.configurationOverrides.control.modified.label'
+        | translate
+    }}
   </label>
 </div>
 
@@ -42,8 +51,17 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>Key</th>
-          <th>Value</th>
+          <th>
+            {{
+              'tenant-configuration-override-form.column.key.label' | translate
+            }}
+          </th>
+          <th>
+            {{
+              'tenant-configuration-override-form.column.value.label'
+                | translate
+            }}
+          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowNode let-i="rowIndex">
@@ -65,7 +83,10 @@
                 >
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                   <ng-container *ngIf="data.groupNode; else notGroupNode">
-                    {{ 'tenant-config.properties.' + data.key | translate }}
+                    {{
+                      'tenant-configuration-override-form.group.' + data.key
+                        | translate
+                    }}
                   </ng-container>
                   <ng-template #notGroupNode>
                     {{ data.key }}
@@ -138,7 +159,8 @@
                         *ngIf="data.value !== data.originalValue"
                         (click)="resetClicked(data)"
                         popover="{{
-                          'tenant-config.popover.reset' | translate
+                          'tenant-configuration-override-form.popover.reset'
+                            | translate
                         }}"
                         placement="left"
                         container="body"
@@ -152,16 +174,14 @@
                         }"
                         *ngIf="data.secure"
                         (click)="data.showSecure = !data.showSecure"
-                        placement="left"
-                        container="body"
-                        triggers="mouseenter:mouseleave"
                       ></i>
                       <i
                         class="fa fa-unlock fa-md"
                         *ngIf="data.encrypted"
                         (click)="decryptClicked(data)"
                         popover="{{
-                          'tenant-config.popover.decrypt' | translate
+                          'tenant-configuration-override-form.popover.decrypt'
+                            | translate
                         }}"
                         placement="left"
                         container="body"
@@ -171,7 +191,8 @@
                         class="fa fa-asterisk fa-md"
                         *ngIf="data.required"
                         popover="{{
-                          'tenant-config.popover.password' | translate
+                          'tenant-configuration-override-form.popover.password'
+                            | translate
                         }}"
                         placement="left"
                         container="body"
@@ -188,7 +209,7 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="2">
-            {{ 'sandbox-config.config-properties.empty' | translate }}
+            {{ 'tenant-configuration-override-form.no-results' | translate }}
           </td>
         </tr>
       </ng-template>

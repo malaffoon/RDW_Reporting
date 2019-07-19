@@ -132,7 +132,7 @@ export class TenantComponent implements OnDestroy {
           this.notificationService.error({ id: error.json().message });
         } catch (exception) {
           this.notificationService.error({
-            id: 'tenant-config.errors.create'
+            id: `tenant.create.error.${value.type}`
           });
         }
       }
@@ -147,7 +147,7 @@ export class TenantComponent implements OnDestroy {
           this.notificationService.error({ id: error.json().message });
         } catch (exception) {
           this.notificationService.error({
-            id: 'tenant-config.errors.update'
+            id: `tenant.update.error.${value.type}`
           });
         }
       }
@@ -161,11 +161,11 @@ export class TenantComponent implements OnDestroy {
     const modal: ConfirmationModalComponent = modalReference.content;
 
     modal.head = this.translateService.instant(
-      'sandbox-config.delete-modal.header',
+      'tenant.delete.modal.head',
       tenant
     );
     modal.body = this.translateService.instant(
-      'sandbox-config.delete-modal.body',
+      'tenant.delete.modal.body',
       tenant
     );
     modal.acceptButton = this.translateService.instant('common.action.delete');
@@ -175,7 +175,7 @@ export class TenantComponent implements OnDestroy {
       this.service.delete(tenant.code).subscribe(
         () => {
           this.notificationService.success({
-            id: 'sandbox-config.delete-modal.success'
+            id: 'tenant.delete.success'
           });
           this.router.navigate(['..'], {
             relativeTo: this.route
@@ -183,7 +183,7 @@ export class TenantComponent implements OnDestroy {
         },
         error => {
           this.notificationService.error({
-            id: 'sandbox-config.errors.delete'
+            id: 'tenant.delete.error'
           });
         }
       );

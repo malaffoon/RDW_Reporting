@@ -4,7 +4,10 @@
     id="search"
     name="search"
     type="text"
-    placeholder="{{ 'sandbox-config.fields.search' | translate }}"
+    placeholder="{{
+      'tenant-form.field.localizationOverrides.control.search.placeholder'
+        | translate
+    }}"
     class="form-control"
     (input)="table.filterGlobal($event, 'contains')"
   />
@@ -16,7 +19,10 @@
       [(ngModel)]="modified"
       (ngModelChange)="updatePropertiesFilter()"
     />
-    {{ 'sandbox-config.config-properties.modified' | translate }}
+    {{
+      'tenant-form.field.localizationOverrides.control.modified.label'
+        | translate
+    }}
   </label>
 </div>
 
@@ -36,8 +42,16 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>Key</th>
-          <th>Value</th>
+          <th>
+            {{
+              'tenant-localization-override-form.column.key.label' | translate
+            }}
+          </th>
+          <th>
+            {{
+              'tenant-localization-override-form.column.value.label' | translate
+            }}
+          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-overrides>
@@ -88,7 +102,7 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="2">
-            {{ 'sandbox-config.config-properties.empty' | translate }}
+            {{ 'tenant-localization-override-form.no-results' | translate }}
           </td>
         </tr>
       </ng-template>
