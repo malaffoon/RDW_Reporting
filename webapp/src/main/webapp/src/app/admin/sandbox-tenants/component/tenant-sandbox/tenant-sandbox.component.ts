@@ -163,7 +163,7 @@ export class TenantSandboxComponent implements OnChanges {
 
   formGroup: FormGroup;
 
-  readonly readonlyGroups = ['datasources', 'archive'];
+  readonlyGroups: string[] = [];
 
   constructor(private formBuilder: FormBuilder) {}
 
@@ -227,7 +227,12 @@ export class TenantSandboxComponent implements OnChanges {
               localizationOverrides: this.formBuilder.group({})
             });
 
-      this.configurationOverrides = cloneDeep(
+      // this.configurationOverrides = mapConfigurationProperties(
+      //   this.configurationDefaults,
+      //   this.value.configurationProperties
+      // );
+
+      this.configurationOverrides = this.configurationOverrides = cloneDeep(
         this.value.configurationProperties
       );
 
@@ -237,15 +242,19 @@ export class TenantSandboxComponent implements OnChanges {
         this.localizationDefaults,
         this.localizationOverrides
       );
+
+      this.readonlyGroups =
+        this.mode === 'create' ? [] : ['datasources', 'archive'];
     }
   }
 
   private onTenantChange(tenant: SandboxConfiguration): void {
     if (tenant.configurationProperties) {
-      this.configurationOverrides = mapConfigurationProperties(
-        this.configurationDefaults,
-        tenant.configurationProperties
-      );
+      // this.configurationOverrides = mapConfigurationProperties(
+      //   this.configurationDefaults,
+      //   tenant.configurationProperties
+      // );
+      this.configurationOverrides = cloneDeep(tenant.configurationProperties);
     }
     if (tenant.localizationOverrides) {
       mapLocalizationOverrides(
