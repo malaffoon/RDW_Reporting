@@ -12,7 +12,6 @@ import {
 } from '../mapper/tenant.mapper';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantType } from '../model/tenant-type';
-import { of } from 'rxjs/internal/observable/of';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -52,11 +51,9 @@ export class TenantService {
   }
 
   getSandboxDataSets(): Observable<DataSet[]> {
-    return of([{ id: 'Data Set 1', label: 'Data Set 1' }]);
-
-    // return this.dataService
-    //   .get(DataSetsRoute)
-    //   .pipe(catchError(ResponseUtils.throwError));
+    return this.dataService
+      .get(DataSetsRoute)
+      .pipe(catchError(ResponseUtils.throwError));
   }
 
   getAll(type: TenantType): Observable<SandboxConfiguration[]> {

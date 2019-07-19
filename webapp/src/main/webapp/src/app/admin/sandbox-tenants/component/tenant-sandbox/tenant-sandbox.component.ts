@@ -21,6 +21,7 @@ import {
 } from '../../model/sandbox-configuration';
 import { showErrors } from '../../../../shared/form/forms';
 import { cloneDeep, forOwn } from 'lodash';
+import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
 
 export type FormMode = 'create' | 'update';
 
@@ -148,7 +149,10 @@ export class TenantSandboxComponent implements OnChanges {
   writable: boolean;
 
   @Output()
-  save: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  create: EventEmitter<SandboxConfiguration> = new EventEmitter();
+
+  @Output()
+  update: EventEmitter<SandboxConfiguration> = new EventEmitter();
 
   @Output()
   delete: EventEmitter<SandboxConfiguration> = new EventEmitter();
@@ -174,23 +178,33 @@ export class TenantSandboxComponent implements OnChanges {
   constructor(private formBuilder: FormBuilder) {}
 
   onSaveButtonClick(): void {
-    // const {
-    //   formGroup,
-    //   localizationOverrides,
-    //   value: { code, dataSet, configurationProperties }
-    // } = this;
-    //
-    // this.save.emit({
-    //   code,
-    //   dataSet,
-    //   ...formGroup.value,
-    //   localizationOverrides: localizationOverrides.filter(
-    //     override => override.originalValue !== override.value
-    //   ),
-    //   configurationProperties: getModifiedConfigProperties(
-    //     configurationProperties
-    //   )
-    // });
+    const {
+      formGroup: {
+        value: { id, key: code, label, description, tenant, dataSet }
+      },
+      // TODO these should come from the form too...
+      configurationOverrides,
+      localizationOverrides,
+      value: { type }
+    } = this;
+
+    const emitter = this.mode === 'create' ? this.create : this.update;
+
+    emitter.emit({
+      type,
+      code,
+      id,
+      label,
+      description,
+      parentTenantCode: (tenant || {}).code,
+      dataSet,
+      localizationOverrides: localizationOverrides.filter(
+        override => override.originalValue !== override.value
+      ),
+      configurationProperties: getModifiedConfigProperties(
+        configurationOverrides
+      )
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -208,7 +222,7 @@ export class TenantSandboxComponent implements OnChanges {
           ? this.formBuilder.group({
               label: [value.label || '', [notBlank]],
               description: [value.description || ''],
-              dataset: [
+              dataSet: [
                 dataSets.find(
                   ({ id }) => id === (value.dataSet || <DataSet>{}).id
                 ),

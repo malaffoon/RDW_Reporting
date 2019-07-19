@@ -226,7 +226,7 @@
       </div>
 
       <div
-        *ngIf="formGroup.get('dataset') as control"
+        *ngIf="formGroup.get('dataSet') as control"
         class="form-group"
         [ngClass]="{
           'has-error': showErrors(control)
@@ -238,7 +238,7 @@
         <ng-container
           *ngIf="writable && mode === 'create'; else readonlyDataSet"
         >
-          <select id="dataSet" class="form-control" formControlName="dataset">
+          <select id="dataSet" class="form-control" formControlName="dataSet">
             <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
               {{ dataSet.label }}
             </option>

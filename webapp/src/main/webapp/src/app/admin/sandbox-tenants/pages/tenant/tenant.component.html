@@ -12,7 +12,8 @@
     [requiredConfiguration]="
       (type$ | async) === 'TENANT' && (mode$ | async) === 'create'
     "
-    (save)="onSave($event)"
+    (create)="onCreate($event)"
+    (update)="onUpdate($event)"
     (delete)="onDelete($event)"
   ></tenant-sandbox>
 </ng-container>

@@ -135,6 +135,36 @@ export class TenantComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
+  onCreate(value: SandboxConfiguration): void {
+    this.service.create(value).subscribe(
+      () => {}, // TODO this used to reload from server
+      error => {
+        console.error(error);
+        // const errorMessage = error.json().message;
+        // errorMessage
+        //   ? this.notificationService.error({ id: errorMessage })
+        //   : this.notificationService.error({
+        //     id: 'tenant-config.errors.create'
+        //   });
+      }
+    );
+  }
+
+  onUpdate(value: SandboxConfiguration): void {
+    this.service.update(value).subscribe(
+      () => {}, // TODO this used to reload from server
+      error => {
+        console.error(error);
+        // const errorMessage = error.json().message;
+        // errorMessage
+        //   ? this.notificationService.error({ id: errorMessage })
+        //   : this.notificationService.error({
+        //     id: 'tenant-config.errors.update'
+        //   });
+      }
+    );
+  }
+
   onDelete(tenant: SandboxConfiguration): void {
     const modalReference: BsModalRef = this.modalService.show(
       ConfirmationModalComponent
@@ -169,19 +199,5 @@ export class TenantComponent implements OnDestroy {
         }
       );
     });
-  }
-
-  onSave(value: SandboxConfiguration): void {
-    this.service.update(value).subscribe(
-      () => {}, // TODO this used to reload from server
-      error => {
-        const errorMessage = error.json().message;
-        errorMessage
-          ? this.notificationService.error({ id: errorMessage })
-          : this.notificationService.error({
-              id: 'tenant-config.errors.update'
-            });
-      }
-    );
   }
 }
