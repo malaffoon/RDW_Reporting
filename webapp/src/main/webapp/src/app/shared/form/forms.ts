@@ -41,6 +41,15 @@ export function validate(formGroup: FormGroup): void {
 }
 
 /**
+ * True if the control has errors and has been touched or dirtied
+ *
+ * @param control the form control to test
+ */
+export function showErrors(control: AbstractControl): boolean {
+  return control.invalid && (control.dirty || control.touched);
+}
+
+/**
  * Holds common methods for dealing with angular form components
  */
 export class Forms {
@@ -85,12 +94,10 @@ export class Forms {
   }
 
   /**
-   * True if the control has errors and has been touched or dirtied
-   *
-   * @param control the form control to test
+   * @deprecated use {@link #showErrors}
    */
   public static showErrors(control: AbstractControl): boolean {
-    return control.invalid && (control.dirty || control.touched);
+    return showErrors(control);
   }
 
   public static submit(

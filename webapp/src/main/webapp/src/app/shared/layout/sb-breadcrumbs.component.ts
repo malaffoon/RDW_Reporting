@@ -37,7 +37,7 @@ export interface BreadcrumbContext {
   /**
    * Resolve data or router link parameters
    */
-  data?: any;
+  route: ActivatedRouteSnapshot;
 
   /**
    * The translate service
@@ -103,7 +103,7 @@ function createBreadcrumbs(
 
     const breadcrumb = createBreadcrumb(
       breadcrumbOptions,
-      child.data,
+      child,
       routerLinkParameters.concat(),
       translateService
     );
@@ -128,14 +128,15 @@ function createBreadcrumbs(
 
 function createBreadcrumb(
   options: BreadcrumbOptions | BreadcrumbFactory,
-  routeData: any,
+  route: ActivatedRouteSnapshot,
   routerLinkParameters: any[],
   translateService: TranslateService
 ): Breadcrumb {
+  const routeData = route.data;
   if (typeof options === 'function') {
     return {
       text: options({
-        data: routeData,
+        route,
         translateService
       }),
       routerLinkParameters

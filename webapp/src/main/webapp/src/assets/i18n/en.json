@@ -723,6 +723,14 @@
       "student-points": "Student Points"
     },
     "subject-select-label": "Subject",
+    "tenant-status": {
+      "STARTED": "Started",
+      "CREATING_DATABASES": "Creating Databases",
+      "PERSISTING_CONFIGURATION": "Persisting Configurations",
+      "NOTIFYING_CONFIG_SERVER": "Notifying Configuration Server",
+      "FAILED": "Failed",
+      "ACTIVE": "Active"
+    },
     "unknown": "Unknown",
     "unscored": "No Score Recorded",
     "value-display-type": {
@@ -993,12 +1001,12 @@
         "button": "Student Groups",
         "description": "Create and manage student groups for teachers."
       },
-      "sandbox-config": {
-        "button": "Sandbox Configuration",
+      "sandboxes": {
+        "button": "Sandboxes",
         "description": "Manage Reporting System Sandboxes"
       },
-      "tenant-config": {
-        "button": "Tenant Configuration",
+      "tenants": {
+        "button": "Tenants",
         "description": "Manage Reporting System Tenants"
       },
       "titles": {
@@ -1185,50 +1193,145 @@
     },
     "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
   },
-  "sandbox-config": {
-    "title": "Sandbox Configuration",
-    "new-sandbox": {
-      "header": "Create New Sandbox"
+  "tenant": {
+    "create": {
+      "error": {
+        "SANDBOX": "An unknown error occurred when attempting to create the sandbox",
+        "TENANT": "An unknown error occurred when attempting to create the tenant"
+      }
     },
-    "delete-modal": {
-      "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?",
-      "success": "Sandbox was successfully deleted"
+    "update": {
+      "error": {
+        "SANDBOX": "An unknown error occurred when attempting to update the sandbox",
+        "TENANT": "An unknown error occurred when attempting to update the tenant"
+      }
     },
-    "archive-modal": {
-      "header": "Archive <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to archive the sandbox <strong>{{label}}</strong>?"
-    },
-    "reset-modal": {
-      "header": "Reset data for <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to reset the data for the the sandbox <strong>{{label}}</strong>?",
-      "success": "Sandbox data was successfully reset"
-    },
-    "fields": {
-      "label": "Name:",
-      "description": "Description:",
-      "data-set": "Data Set:",
-      "tenant": "Tenant: ",
-      "configuration-properties": "Configuration Properties",
-      "localization-overrides": "Localization Overrides",
-      "search": "Search by key or value"
-    },
-    "actions": {
-      "reset": "Reset Data",
-      "archive": "Archive",
-      "delete": "Delete"
-    },
-    "config-properties": {
-      "modified": "Show modified properties only",
-      "empty": "No configuration properties found"
-    },
-    "empty": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create New Sandbox\" button",
-    "errors": {
-      "reset": "An unknown error occurred when attempting to reset the sandbox data",
-      "update": "An unknown error occurred when attempting to update the sandbox",
-      "create": "An unknown error occurred when attempting to create the sandbox",
-      "delete": "An unknown error occurred when attempting to delete the sandbox"
+    "delete": {
+      "error": "An unknown error occurred when attempting to delete the sandbox",
+      "success": "Sandbox was successfully deleted",
+      "modal": {
+        "head": "Delete <strong>{{label}}</strong>?",
+        "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?"
+      }
     }
+  },
+
+  "tenants": {
+    "heading": {
+      "SANDBOX": "Sandboxes",
+      "TENANT": "Tenants"
+    },
+    "create": {
+      "SANDBOX": "Create Sandbox",
+      "TENANT": "Create Tenant"
+    },
+    "empty": {
+      "SANDBOX": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create Sandbox\" button",
+      "TENANT": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create Tenant\" button"
+    }
+  },
+  "tenant-form": {
+    "field": {
+      "key": {
+        "label": "Key",
+        "error": {
+          "required": "Please enter a tenant key",
+          "exists": "A tenant with the same key already exists",
+          "pattern": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed"
+        }
+      },
+      "id": {
+        "label": "ID",
+        "error": {
+          "required": "Please enter a tenant ID",
+          "exists": "A tenant with the same ID already exists",
+          "pattern": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed"
+        }
+      },
+      "name": {
+        "label": "Name",
+        "error": {
+          "required": "Please provide a name"
+        }
+      },
+      "description": {
+        "label": "Description"
+      },
+      "tenant": {
+        "label": "Tenant",
+        "error": {
+          "required": "Please select a tenant to base the sandbox off of"
+        }
+      },
+      "dataSet": {
+        "label": "Data Set",
+        "error": {
+          "required": "Please select a data set to initialize the sandbox with"
+        }
+      },
+      "configurationOverrides": {
+        "label": "Configuration Overrides",
+        "error": {
+          "onePasswordPerUser": "Multiple passwords were provided for the following user names: {{usernames}}. Please provide the same password wherever the username is the same."
+        },
+        "control": {
+          "search": {
+            "placeholder": "Search properties by key or value"
+          },
+          "modified": {
+            "label": "Modified"
+          },
+          "required": {
+            "label": "Required"
+          }
+        }
+      },
+      "localizationOverrides": {
+        "label": "Localization Overrides",
+        "control": {
+          "search": {
+            "placeholder": "Search properties by key or value"
+          },
+          "modified": {
+            "label": "Modified"
+          }
+        }
+      }
+    }
+  },
+  "tenant-configuration-override-form": {
+    "column": {
+      "key": {
+        "label": "Key"
+      },
+      "value": {
+        "label": "Value"
+      }
+    },
+    "group": {
+      "reporting": "Reporting",
+      "datasources": "Data Sources",
+      "task": "Task",
+      "archive": "Archive",
+      "aggregate": "Aggregate"
+    },
+    "popover": {
+      "reset": "Click this button to reset the value back to its original default value",
+      "decrypt": "Click this button to decrypt the encrypted password",
+      "password": "The password must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
+    },
+    "no-results": "There are no configuration properties matching your search"
+  },
+  "tenant-localization-override-form": {
+    "column": {
+      "key": {
+        "label": "Key"
+      },
+      "value": {
+        "label": "Value"
+      }
+    },
+    "no-results": "There are no localization properties matching your search"
   },
   "sandbox-login": {
     "title": "Reporting System Sandbox",
@@ -1252,58 +1355,6 @@
     },
     "sandbox-info": "A Sandbox is an environment that allows users to explore the features of the reporting system using generated data",
     "sandbox-role-info": "Select a user role based on the reporting system functionality you would like to explore."
-  },
-  "tenant-config": {
-    "title": "Tenant Configuration",
-    "new-tenant": {
-      "header": "Create New Tenant"
-    },
-    "delete-modal": {
-      "header": "Delete <strong>{{label}}</strong>?",
-      "body": "Are you sure you wish to delete the tenant <strong>{{label}}</strong>?",
-      "success": "Tenant was successfully deleted"
-    },
-    "fields": {
-      "id": "ID:",
-      "key": "Key:",
-      "label": "Name:",
-      "description": "Description:",
-      "configuration-properties": "Configuration Properties",
-      "localization-overrides": "Localization Overrides",
-      "search": "Search by key or value",
-      "status-title": "Status:",
-      "status": {
-        "Started": "Started",
-        "CreatingDatabases": "Creating Databases",
-        "PersistingConfiguration": "Persisting Configurations",
-        "NotifyingConfigServer": "Notifying Configuration Server",
-        "Failed": "Failed",
-        "Active": "Active"
-      }
-    },
-    "empty": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create New Tenant\" button",
-    "properties": {
-      "reporting": "Reporting",
-      "datasources": "Data Sources",
-      "task": "Task",
-      "archive": "Archive",
-      "aggregate": "Aggregate"
-    },
-    "popover": {
-      "reset": "Click this button to reset the value back to its original default value",
-      "decrypt": "Click this button to decrypt the encrypted password",
-      "password": "The password field must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
-    },
-    "errors": {
-      "duplicate-key": "A tenant with the same tenant key or ID already exists",
-      "invalid-key": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
-      "invalid-id": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed",
-      "update": "An unknown error occurred when attempting to update the tenant",
-      "create": "An unknown error occurred when attempting to create the tenant",
-      "delete": "An unknown error occurred when attempting to delete the tenant",
-      "decrypt": "An error occurred while attempting to decrypt an encrypted password",
-      "password-mismatch": "All passwords must be the same for each unique username."
-    }
   },
   "user-query-table": {
     "column": {

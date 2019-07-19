@@ -45,13 +45,13 @@ const links: Link[] = [
     permission: 'PIPELINE_READ'
   },
   {
-    id: 'sandbox-config',
+    id: 'sandboxes',
     path: '/sandboxes',
     icon: 'fa-cog',
     permission: 'TENANT_READ'
   },
   {
-    id: 'tenant-config',
+    id: 'tenants',
     path: '/tenants',
     icon: 'fa-cog',
     permission: 'TENANT_READ'
