@@ -73,7 +73,7 @@ export class SubjectService {
   getSubjectCodes(): Observable<string[]> {
     return this.dataService
       .get(`${ServiceRoute}/subjects`)
-      .pipe(catchError(ResponseUtils.throwError));
+      .pipe(catchError(() => of([])));
   }
 
   /**

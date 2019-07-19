@@ -6,7 +6,9 @@ import { PipelinePublishingHistoryComponent } from './page/pipeline-publishing-h
 import { BreadcrumbContext } from '../../shared/layout/sb-breadcrumbs.component';
 
 export const pipelineBreadcrumb = ({
-  data: { pipeline },
+  route: {
+    data: { pipeline }
+  },
   translateService
 }: BreadcrumbContext) =>
   translateService.instant(`ingest-pipeline.${pipeline.code}.name`);

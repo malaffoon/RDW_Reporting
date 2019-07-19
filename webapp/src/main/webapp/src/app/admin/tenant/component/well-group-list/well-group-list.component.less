@@ -1,0 +1,14 @@
+.well-group .well {
+  box-shadow: none;
+  padding: 0px;
+  &:not(:first-child) {
+    box-shadow: none;
+  }
+  &:first-child {
+    > *:last-child,
+    > .row > [class^='col-']:first-child > *:last-child,
+    > .flex-children > .flex-child:first-child > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
