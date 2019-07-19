@@ -8,6 +8,8 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {
+  AbstractControl,
+  AsyncValidatorFn,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -19,10 +21,24 @@ import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { Forms, showErrors } from '../../../../shared/form/forms';
 import { cloneDeep, forOwn } from 'lodash';
 import { getModifiedConfigProperties } from '../../model/tenants';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export type FormMode = 'create' | 'update';
 
 export const tenantKey = Validators.pattern(/^\w+$/);
+
+export function available(
+  isAvailable: (value: string) => Observable<boolean>
+): AsyncValidatorFn {
+  return function(
+    control: AbstractControl
+  ): Observable<{ unavailable: boolean } | null> {
+    return isAvailable(control.value).pipe(
+      map(available => (available ? null : { unavailable: true }))
+    );
+  };
+}
 
 /**
  * Has side effects on tenant.localizationOverrides and formGroup
@@ -125,6 +141,9 @@ export class TenantFormComponent implements OnChanges {
   readonly showErrors = showErrors;
 
   @Input()
+  tenantKeyAvailable: (value: string) => Observable<boolean>;
+
+  @Input()
   mode: FormMode;
 
   @Input()
@@ -207,12 +226,20 @@ export class TenantFormComponent implements OnChanges {
   // TODO currently this causes mulitple rerenders and i am not able to present a loading spinner
   // i think this needs to be reworked such that the @Input()s each have their own subject to push to
   ngOnChanges(changes: SimpleChanges): void {
-    const { value, localizationDefaults, mode, tenants, dataSets } = this;
+    const {
+      value,
+      localizationDefaults,
+      mode,
+      tenants,
+      dataSets,
+      tenantKeyAvailable
+    } = this;
 
     if (
       value != null &&
       localizationDefaults != null &&
       mode != null &&
+      tenantKeyAvailable != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
       // setup sandbox/tenant specific form
@@ -238,7 +265,8 @@ export class TenantFormComponent implements OnChanges {
               {
                 key: [
                   value.code || '',
-                  [Validators.required, tenantKey, Validators.maxLength(20)]
+                  [Validators.required, tenantKey, Validators.maxLength(20)],
+                  [available(this.tenantKeyAvailable)]
                 ],
                 id: [value.id || '', [Validators.required]],
                 label: [value.label || '', [notBlank]],

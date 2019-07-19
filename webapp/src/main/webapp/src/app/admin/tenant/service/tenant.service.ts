@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { forkJoin, Observable, throwError } from 'rxjs';
+import { catchError, map, mapTo } from 'rxjs/operators';
 import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import {
-  toConfigurationProperties,
   toConfigurationOverrides,
+  toConfigurationProperties,
   toTenant,
   toTenantApiModel
 } from '../model/tenants';
 import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
+import { of } from 'rxjs/internal/observable/of';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -30,22 +31,16 @@ export class TenantService {
     private cachingDataService: CachingDataService
   ) {}
 
-  /**
-   * Gets default configuration properties for a sandbox
-   */
-  getDefaultConfigurationProperties(type: TenantType): Observable<any> {
-    return this.cachingDataService.get(DefaultsRoute).pipe(
-      map(defaults =>
-        toConfigurationProperties(toConfigurationOverrides(defaults, type))
-      ),
-      catchError(ResponseUtils.throwError)
+  exists(key: string): Observable<boolean> {
+    return this.dataService.head(`${ResourceRoute}/${key}`).pipe(
+      mapTo(true),
+      catchError(error => {
+        if (error.status === 404) {
+          return of(false);
+        }
+        return throwError(error);
+      })
     );
-  }
-
-  getSandboxDataSets(): Observable<DataSet[]> {
-    return this.cachingDataService
-      .get(DataSetsRoute)
-      .pipe(catchError(ResponseUtils.throwError));
   }
 
   getAll(type: TenantType): Observable<TenantConfiguration[]> {
@@ -107,6 +102,24 @@ export class TenantService {
   delete(code: string): Observable<void> {
     return this.dataService
       .delete(`${ResourceRoute}/${code}`)
+      .pipe(catchError(ResponseUtils.throwError));
+  }
+
+  /**
+   * Gets default configuration properties for a sandbox
+   */
+  getDefaultConfigurationProperties(type: TenantType): Observable<any> {
+    return this.cachingDataService.get(DefaultsRoute).pipe(
+      map(defaults =>
+        toConfigurationProperties(toConfigurationOverrides(defaults, type))
+      ),
+      catchError(ResponseUtils.throwError)
+    );
+  }
+
+  getSandboxDataSets(): Observable<DataSet[]> {
+    return this.cachingDataService
+      .get(DataSetsRoute)
       .pipe(catchError(ResponseUtils.throwError));
   }
 }
