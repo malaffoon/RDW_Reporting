@@ -3,7 +3,6 @@ import { TenantConfiguration } from '../model/tenant-configuration';
 import {
   toSandbox,
   toTenant,
-  toSandboxApiModel,
   toTenantApiModel,
   getModifiedConfigProperties
 } from './tenant.mapper';
@@ -183,7 +182,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map a sandbox ui model to an api model', () => {
-    const actual = toSandboxApiModel(sandboxUIModel);
+    const actual = toTenantApiModel(sandboxUIModel);
 
     expect(actual.tenant.sandboxDataset).toBe('ca-demo-data');
     expect(actual.tenant.name).toBe('Arizona');
@@ -193,7 +192,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map sandbox ui config props to api config props', () => {
-    const actual = toSandboxApiModel(sandboxUIModel);
+    const actual = toTenantApiModel(sandboxUIModel);
 
     expect(actual.datasources.reporting_rw.urlParts.database).toBe(
       'new-reporting'

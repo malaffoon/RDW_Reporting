@@ -262,7 +262,12 @@ tenant-configuration-lookup:
     #    rdw-ingest-migrate-reporting: http://localhost:8088
     #    rdw-ingest-migrate-olap: http://localhost:8091
 
-
+sandbox-properties:
+  sandboxDatasets:
+    - label: Demo Dataset
+      id: demo-dataset
+    - label: SBAC Dataset
+      id: sbac-dataset
 
 tenant-configuration-persistence:
   local-repository-uri: file:///tmp/rdw_config_local
