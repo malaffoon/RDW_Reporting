@@ -133,6 +133,10 @@ export class TenantComponent implements OnDestroy {
         this.router.navigate(['..'], {
           relativeTo: this.route
         });
+        this.notificationService.info({
+          id: `tenant.create.success.${value.type}`,
+          args: value
+        });
       },
       error => {
         try {
@@ -148,7 +152,12 @@ export class TenantComponent implements OnDestroy {
 
   onUpdate(value: TenantConfiguration): void {
     this.service.update(value).subscribe(
-      () => {},
+      () => {
+        this.notificationService.info({
+          id: `tenant.update.success.${value.type}`,
+          args: value
+        });
+      },
       error => {
         try {
           this.notificationService.error({ id: error.json().message });
