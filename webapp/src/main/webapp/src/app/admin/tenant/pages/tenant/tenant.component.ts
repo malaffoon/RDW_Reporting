@@ -1,16 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  flatMap,
-  map,
-  mergeMap,
-  publish,
-  publishReplay,
-  refCount,
-  share,
-  shareReplay,
-  takeUntil
-} from 'rxjs/operators';
+import { map, mergeMap, share, takeUntil } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { Observable, Subject } from 'rxjs';
@@ -26,8 +16,6 @@ import { FormMode } from '../../component/tenant-form/tenant-form.component';
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant } from '../../mapper/tenant.mapper';
-import { multicast } from 'rxjs/internal/operators/multicast';
-import { tap } from 'rxjs/internal/operators/tap';
 
 @Component({
   selector: 'app-tenant',
@@ -64,12 +52,12 @@ export class TenantComponent implements OnDestroy {
 
     this.tenants$ = this.type$.pipe(
       mergeMap(type => (type === 'SANDBOX' ? tenants$ : of([]))),
-      share() // worked!
+      share()
     );
 
     this.dataSets$ = this.type$.pipe(
       mergeMap(type => (type === 'SANDBOX' ? sandboxDataSets$ : of([]))),
-      share() // does not work - keeps getting called (OH)
+      share()
     );
 
     this.configurationDefaults$ = this.type$.pipe(
