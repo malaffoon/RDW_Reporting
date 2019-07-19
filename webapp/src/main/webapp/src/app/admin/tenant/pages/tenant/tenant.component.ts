@@ -169,7 +169,7 @@ export class TenantComponent implements OnDestroy {
       tenant
     );
     modal.acceptButton = this.translateService.instant('common.action.delete');
-    modal.acceptButtonClass = 'danger';
+    modal.acceptButtonClass = 'btn-danger';
     modal.declineButton = this.translateService.instant('common.action.cancel');
     modal.accept.subscribe(() => {
       this.service.delete(tenant.code).subscribe(
