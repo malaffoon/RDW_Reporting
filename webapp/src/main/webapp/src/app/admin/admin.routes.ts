@@ -1,6 +1,30 @@
 import { Route } from '@angular/router';
 import { HasAnyPermissionCanActivate } from '../shared/security/can-activate/has-any-permission.can-activate';
 
+export const aggregateReportBreadcrumb = ({ translateService }) =>
+  translateService.instant('aggregate-reports.heading');
+
+export const embargoBreadcrumb = ({ translateService }) =>
+  translateService.instant('embargo.title');
+
+export const organizationExportBreadcrumb = ({ translateService }) =>
+  translateService.instant('organization-export.title');
+
+export const groupsBreadcrumb = ({ translateService }) =>
+  translateService.instant('admin-groups.title');
+
+export const instructionalResourceBreadcrumb = ({ translateService }) =>
+  translateService.instant('instructional-resource.title');
+
+export const pipelinesBreadcrumb = ({ translateService }) =>
+  translateService.instant('pipelines.heading');
+
+export const sandboxesBreadcrumb = ({ translateService }) =>
+  translateService.instant('tenants.heading.SANDBOX');
+
+export const tenantsBreadcrumb = ({ translateService }) =>
+  translateService.instant('tenants.heading.TENANT');
+
 export const adminRoutes: Route[] = [
   {
     path: '',
@@ -11,7 +35,7 @@ export const adminRoutes: Route[] = [
           'app/aggregate-report/aggregate-reports.module#AggregateReportsModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: { translate: 'aggregate-reports.heading' },
+          breadcrumb: aggregateReportBreadcrumb,
           permissions: ['CUSTOM_AGGREGATE_READ']
         }
       },
@@ -20,7 +44,7 @@ export const adminRoutes: Route[] = [
         loadChildren: 'app/admin/embargo/embargo.module#EmbargoModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: { translate: 'embargo.title' },
+          breadcrumb: embargoBreadcrumb,
           permissions: ['EMBARGO_WRITE']
         }
       },
@@ -30,7 +54,7 @@ export const adminRoutes: Route[] = [
           'app/organization-export/organization-export.module#OrganizationExportModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: { translate: 'organization-export.title' },
+          breadcrumb: organizationExportBreadcrumb,
           permissions: ['INDIVIDUAL_PII_READ']
         }
       },
@@ -39,9 +63,7 @@ export const adminRoutes: Route[] = [
         loadChildren: 'app/admin/groups/groups.module#GroupsModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: {
-            translate: 'admin-groups.title'
-          },
+          breadcrumb: groupsBreadcrumb,
           permissions: ['GROUP_WRITE']
         }
       },
@@ -51,7 +73,7 @@ export const adminRoutes: Route[] = [
           'app/admin/instructional-resource/instructional-resource.module#InstructionalResourceModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: { translate: 'instructional-resource.title' },
+          breadcrumb: instructionalResourceBreadcrumb,
           permissions: ['INSTRUCTIONAL_RESOURCE_WRITE']
         }
       },
@@ -61,7 +83,7 @@ export const adminRoutes: Route[] = [
           'app/admin/ingest-pipeline/ingest-pipeline.module#IngestPipelineModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: { translate: 'pipelines.heading' },
+          breadcrumb: pipelinesBreadcrumb,
           permissions: ['PIPELINE_READ']
         }
       },
@@ -70,7 +92,7 @@ export const adminRoutes: Route[] = [
         loadChildren: 'app/admin/tenant/tenant.module#TenantModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: { translate: 'sandbox-config.title' },
+          breadcrumb: sandboxesBreadcrumb,
           permissions: ['TENANT_READ'],
           type: 'SANDBOX'
         }
@@ -80,7 +102,7 @@ export const adminRoutes: Route[] = [
         loadChildren: 'app/admin/tenant/tenant.module#TenantModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: { translate: 'tenant-config.title' },
+          breadcrumb: tenantsBreadcrumb,
           permissions: ['TENANT_READ'],
           type: 'TENANT'
         }

@@ -6,7 +6,7 @@
   <page-heading>
     <h1 class="h2" heading>
       <ng-container *ngIf="mode === 'create'; else updateModeHeading">
-        {{ 'tenant-config.new-tenant.header' | translate }}
+        {{ 'tenants.create.' + value.type | translate }}
       </ng-container>
       <ng-template #updateModeHeading>
         {{ value.label }}
@@ -29,7 +29,7 @@
                 <ng-container
                   *ngIf="mode === 'create'; else updateSubmitButton"
                 >
-                  {{ 'tenant-config.new-tenant.header' | translate }}
+                  {{ 'common.action.create' | translate }}
                 </ng-container>
                 <ng-template #updateSubmitButton>
                   {{ 'common.action.save' | translate }}
@@ -61,7 +61,7 @@
                       (click)="delete.emit(value)"
                     >
                       <i class="fa fa-trash"></i>
-                      {{ 'sandbox-config.actions.delete' | translate }}
+                      {{ 'common.action.delete' | translate }}
                     </a>
                   </li>
                 </ul>
@@ -83,7 +83,7 @@
         }"
       >
         <label for="key">
-          {{ 'tenant-config.fields.key' | translate }}
+          {{ 'tenant-form.field.key.label' | translate }}
         </label>
         <ng-container *ngIf="writable && mode === 'create'; else readonlyKey">
           <input
@@ -97,10 +97,10 @@
           />
           <span class="help-block" *ngIf="showErrors(control)">
             <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-config.errors.required' | translate }}
+              {{ 'tenant-form.field.key.error.required' | translate }}
             </ng-container>
             <ng-container *ngIf="control.errors.pattern">
-              {{ 'tenant-config.errors.invalid-key' | translate }}
+              {{ 'tenant-form.field.key.error.pattern' | translate }}
             </ng-container>
           </span>
         </ng-container>
@@ -117,7 +117,7 @@
         }"
       >
         <label for="id">
-          {{ 'tenant-config.fields.id' | translate }}
+          {{ 'tenant-form.field.id.label' | translate }}
         </label>
 
         <ng-container *ngIf="writable && mode === 'create'; else readonlyId">
@@ -130,10 +130,10 @@
           />
           <span class="help-block" *ngIf="showErrors(control)">
             <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-config.errors.required' | translate }}
+              {{ 'tenant-form.field.id.error.required' | translate }}
             </ng-container>
             <ng-container *ngIf="control.errors.pattern">
-              {{ 'tenant-config.errors.invalid-id' | translate }}
+              {{ 'tenant-form.field.id.error.pattern' | translate }}
             </ng-container>
           </span>
         </ng-container>
@@ -151,7 +151,7 @@
       }"
     >
       <label for="label">
-        {{ 'sandbox-config.fields.label' | translate }}
+        {{ 'tenant-form.field.name.label' | translate }}
       </label>
       <ng-container *ngIf="writable; else readonlyName">
         <input
@@ -164,7 +164,7 @@
         />
         <span class="help-block" *ngIf="showErrors(control)">
           <ng-container *ngIf="control.errors.required">
-            {{ 'tenant-config.errors.required' | translate }}
+            {{ 'tenant-form.field.name.error.required' | translate }}
           </ng-container>
         </span>
       </ng-container>
@@ -175,7 +175,7 @@
 
     <div class="form-group">
       <label for="description">{{
-        'sandbox-config.fields.description' | translate
+        'tenant-form.field.description.label' | translate
       }}</label>
       <ng-container *ngIf="writable; else readonlyDescription">
         <textarea
@@ -199,7 +199,7 @@
         }"
       >
         <label for="tenant">{{
-          'sandbox-config.fields.tenant' | translate
+          'tenant-form.fields.tenant' | translate
         }}</label>
         <ng-container
           *ngIf="writable && mode === 'create'; else readonlyTenant"
@@ -216,7 +216,7 @@
           </select>
           <span class="help-block" *ngIf="showErrors(control)">
             <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-config.errors.required' | translate }}
+              {{ 'tenant-form.field.tenant.required' | translate }}
             </ng-container>
           </span>
         </ng-container>
@@ -233,7 +233,7 @@
         }"
       >
         <label for="dataSet">
-          {{ 'sandbox-config.fields.data-set' | translate }}
+          {{ 'tenant-form.field.dataSet.label' | translate }}
         </label>
         <ng-container
           *ngIf="writable && mode === 'create'; else readonlyDataSet"
@@ -245,7 +245,7 @@
           </select>
           <span class="help-block" *ngIf="showErrors(control)">
             <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-config.errors.required' | translate }}
+              {{ 'tenant-form.field.dataSet.error.required' | translate }}
             </ng-container>
           </span>
         </ng-container>
@@ -260,10 +260,10 @@
         [open]="configurationOpen"
         (openChange)="configurationOpen = $event"
         openLabel="{{
-          'sandbox-config.fields.configuration-properties' | translate
+          'tenant-form.field.configurationOverrides.label' | translate
         }}"
         closedLabel="{{
-          'sandbox-config.fields.configuration-properties' | translate
+          'tenant-form.field.configurationOverrides.label' | translate
         }}"
       ></app-toggle-label>
 
@@ -272,7 +272,7 @@
           *ngIf="formGroup.errors && formGroup.errors.onePasswordPerUser"
         >
           {{
-            'tenant-config.errors.onePasswordPerUser'
+            'tenant-form.field.configurationOverrides.error.onePasswordPerUser'
               | translate: formGroup.errors
           }}
         </ng-container>
@@ -294,10 +294,10 @@
         [open]="localizationOpen"
         (openChange)="localizationOpen = $event"
         openLabel="{{
-          'sandbox-config.fields.localization-overrides' | translate
+          'tenant-form.field.localizationOverrides.label' | translate
         }}"
         closedLabel="{{
-          'sandbox-config.fields.localization-overrides' | translate
+          'tenant-form.field.localizationOverrides.label' | translate
         }}"
       ></app-toggle-label>
 

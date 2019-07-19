@@ -10,6 +10,13 @@ export const tenantBreadcrumb = ({
   }
 }: BreadcrumbContext) => id;
 
+export const newTenantBreadcrumb = ({
+  route: {
+    data: { type }
+  },
+  translateService
+}: BreadcrumbContext) => translateService.instant(`tenants.create.${type}`);
+
 export const tenantRoutes: Route[] = [
   {
     path: '',
@@ -19,7 +26,7 @@ export const tenantRoutes: Route[] = [
   {
     path: 'new',
     data: {
-      breadcrumb: { translate: 'tenant-config.new-tenant.header' },
+      breadcrumb: newTenantBreadcrumb,
       permissions: ['TENANT_WRITE'],
       mode: 'create'
     },
