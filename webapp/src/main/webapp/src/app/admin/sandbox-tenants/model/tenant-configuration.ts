@@ -3,9 +3,14 @@ import { TenantStatus } from './tenant-status';
 import { TenantType } from './tenant-type';
 
 /**
- * Holds information regarding an RDW tenant configuration
+ * Holds information regarding an RDW sandbox configuration
  */
 export interface TenantConfiguration {
+  /**
+   * The tenant type
+   */
+  type?: TenantType;
+
   /**
    * The unique external id for the tenant
    */
@@ -42,7 +47,24 @@ export interface TenantConfiguration {
   status?: TenantStatus;
 
   /**
-   * The tenant type
+   * The data template initially used to create the sandbox
    */
-  type?: TenantType;
+  dataSet?: DataSet;
+
+  /**
+   * The parent tenant code this sandbox is for.
+   */
+  parentTenantCode?: string;
+}
+
+export interface DataSet {
+  /**
+   * The unique key for a given data template
+   */
+  id: string;
+
+  /**
+   * A more human-readable label for a data template
+   */
+  label: string;
 }

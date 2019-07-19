@@ -15,10 +15,7 @@ import {
 } from '@angular/forms';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { ConfigurationProperty } from '../../model/configuration-property';
-import {
-  DataSet,
-  SandboxConfiguration
-} from '../../model/sandbox-configuration';
+import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { showErrors } from '../../../../shared/form/forms';
 import { cloneDeep, forOwn } from 'lodash';
 import { getModifiedConfigProperties } from '../../mapper/tenant.mapper';
@@ -31,7 +28,7 @@ export const tenantKey = Validators.pattern(/^\w+$/);
  * Has side effects on tenant.localizationOverrides and formGroup
  */
 function mapLocalizationOverrides(
-  tenant: SandboxConfiguration,
+  tenant: TenantConfiguration,
   formGroup: FormGroup,
   defaults: any,
   overrides: ConfigurationProperty[]
@@ -131,10 +128,10 @@ export class TenantSandboxComponent implements OnChanges {
   mode: FormMode;
 
   @Input()
-  value: SandboxConfiguration;
+  value: TenantConfiguration;
 
   @Input()
-  tenants: SandboxConfiguration[] = [];
+  tenants: TenantConfiguration[] = [];
 
   @Input()
   dataSets: DataSet[] = [];
@@ -149,13 +146,13 @@ export class TenantSandboxComponent implements OnChanges {
   writable: boolean;
 
   @Output()
-  create: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  create: EventEmitter<TenantConfiguration> = new EventEmitter();
 
   @Output()
-  update: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  update: EventEmitter<TenantConfiguration> = new EventEmitter();
 
   @Output()
-  delete: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  delete: EventEmitter<TenantConfiguration> = new EventEmitter();
 
   @Input()
   configurationOpen: boolean = false;
@@ -273,7 +270,7 @@ export class TenantSandboxComponent implements OnChanges {
     }
   }
 
-  private onTenantChange(tenant: SandboxConfiguration): void {
+  private onTenantChange(tenant: TenantConfiguration): void {
     if (tenant.configurationProperties) {
       // this.configurationOverrides = mapConfigurationProperties(
       //   this.configurationDefaults,

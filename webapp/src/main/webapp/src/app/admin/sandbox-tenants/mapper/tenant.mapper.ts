@@ -1,8 +1,7 @@
 import { ConfigurationProperty } from '../model/configuration-property';
 import { flattenJsonObject } from '../../../shared/support/support';
 import { forOwn, get, isString } from 'lodash';
-import { TenantConfiguration } from '../model/tenant-configuration';
-import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
+import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { object as expand } from 'dot-object';
 import { TenantType } from '../model/tenant-type';
 
@@ -10,7 +9,7 @@ export function defaultTenant(
   type: TenantType,
   configurationProperties: any,
   localization: any,
-  tenant?: SandboxConfiguration,
+  tenant?: TenantConfiguration,
   dataSet?: DataSet
 ) {
   const localizationOverrides = mapLocalizationOverrides(localization);
@@ -69,13 +68,13 @@ export function toSandbox(
   serverTenant: any,
   defaultConfiguration: any,
   dataSets: DataSet[]
-): SandboxConfiguration {
+): TenantConfiguration {
   // intentionally exclude datasources and archived here.
   const defaults = {
     aggregate: defaultConfiguration.aggregate,
     reporting: defaultConfiguration.reporting
   };
-  return <SandboxConfiguration>{
+  return <TenantConfiguration>{
     ...toTenant(serverTenant, defaults),
     parentTenantCode: serverTenant.parentTenantKey,
     dataSet: dataSets.find(
@@ -84,7 +83,7 @@ export function toSandbox(
   };
 }
 
-export function toSandboxApiModel(sandbox: SandboxConfiguration): any {
+export function toSandboxApiModel(sandbox: TenantConfiguration): any {
   const apiModel = toTenantApiModel(sandbox);
   apiModel.tenant.sandboxDataset = sandbox.dataSet.id;
   apiModel.parentTenantKey = sandbox.parentTenantCode;

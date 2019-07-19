@@ -2,8 +2,10 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {
@@ -16,9 +18,9 @@ import { forOwn } from 'lodash';
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { NotificationService } from '../../../../shared/notification/notification.service';
-import { DecryptionService } from '../../../decryption.service';
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { showErrors } from '../../../../shared/form/forms';
+import { DecryptionService } from '../../service/decryption.service';
 
 function passwordValidators(): ValidatorFn[] {
   return [
@@ -64,35 +66,23 @@ function rowTrackBy(index: number, { node }: any) {
   templateUrl: './property-override-tree-table.component.html',
   styleUrls: ['./property-override-tree-table.component.less']
 })
-export class PropertyOverrideTreeTableComponent implements OnInit {
+export class PropertyOverrideTreeTableComponent implements OnChanges {
   readonly showErrors = showErrors;
   readonly hasModifiedDescendant = hasModifiedDescendant;
   readonly hasRequiredDescendant = hasRequiredDescendant;
   readonly rowTrackBy = rowTrackBy;
 
-  @ViewChild('table') table: TreeTable;
-
-  _configurationProperties: any;
-
-  get configurationProperties(): any {
-    return this._configurationProperties;
-  }
-
-  @Input()
-  set configurationProperties(properties: any) {
-    this._configurationProperties = properties;
-
-    // TODO RACE CONDITION
-    if (this.form) {
-      this.createConfigurationPropertyTree();
-    }
-  }
-
-  @Input()
-  propertiesArrayName: string;
+  @ViewChild('table')
+  table: TreeTable;
 
   @Input()
   form: FormGroup;
+
+  @Input()
+  configurationProperties: any;
+
+  @Input()
+  propertiesArrayName: string;
 
   @Input()
   readonly = true;
@@ -129,8 +119,11 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     private notificationService: NotificationService
   ) {}
 
-  ngOnInit(): void {
-    this.createConfigurationPropertyTree();
+  ngOnChanges(changes: SimpleChanges): void {
+    const { configurationProperties, form } = this;
+    if (configurationProperties != null && form != null) {
+      this.createConfigurationPropertyTree();
+    }
   }
 
   updateOverride(override: ConfigurationProperty): void {
@@ -142,7 +135,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
     this.setPropertyValue(override, newVal);
   }
 
-  expandOrCollapse(node: any, event): void {
+  expandOrCollapse(node: any, event: Event): void {
     // Manaully invoking the TreeTableToggler, as it seems there's more to it than just
     // toggling the boolean value of expanded.
     // https://github.com/primefaces/primeng/blob/6.0.0-rc.1/src/app/components/treetable/treetable.ts#L2266
@@ -168,12 +161,12 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
 
   private setPropertyValue(override: ConfigurationProperty, newVal: string) {
     let configurationProperties = <ConfigurationProperty[]>(
-      this._configurationProperties[override.group]
+      this.configurationProperties[override.group]
     );
 
     if (!configurationProperties) {
       // If we couldn't find the group within the top-level property groups, lets peek at datasources...
-      const datasources = this._configurationProperties['datasources'];
+      const datasources = this.configurationProperties['datasources'];
       configurationProperties = <ConfigurationProperty[]>(
         datasources[override.group]
       );
@@ -190,7 +183,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
   private createConfigurationPropertyTree(): void {
     const groupNodes: TreeNode[] = [];
 
-    forOwn(this._configurationProperties, (configGroup, groupKey) => {
+    forOwn(this.configurationProperties, (configGroup, groupKey) => {
       const childrenNodes: TreeNode[] = [];
       const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
       // For each configuration group, create a root-level node

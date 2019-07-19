@@ -5,7 +5,7 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { SandboxConfiguration } from '../../model/sandbox-configuration';
+import { TenantConfiguration } from '../../model/tenant-configuration';
 
 @Component({
   selector: 'app-tenant-link',
@@ -15,8 +15,8 @@ import { SandboxConfiguration } from '../../model/sandbox-configuration';
 })
 export class TenantLinkComponent {
   @Input()
-  tenant: SandboxConfiguration;
+  tenant: TenantConfiguration;
 
   @Output()
-  tenantClick: EventEmitter<SandboxConfiguration> = new EventEmitter();
+  tenantClick: EventEmitter<TenantConfiguration> = new EventEmitter();
 }

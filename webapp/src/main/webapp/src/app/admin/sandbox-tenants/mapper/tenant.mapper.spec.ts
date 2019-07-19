@@ -1,5 +1,4 @@
 import { ConfigurationProperty } from '../model/configuration-property';
-import { SandboxConfiguration } from '../model/sandbox-configuration';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import {
   toSandbox,
@@ -8,7 +7,6 @@ import {
   toTenantApiModel,
   getModifiedConfigProperties
 } from './tenant.mapper';
-import { TenantStatus } from '../model/tenant-status.enum';
 
 const tenantApiModel = {
   tenant: {
@@ -52,7 +50,7 @@ const tenantUIModel: TenantConfiguration = {
   code: 'AZ',
   description: 'AZ description',
   id: '34',
-  status: TenantStatus.Active,
+  status: 'ACTIVE',
   configurationProperties: {
     datasources: {
       reporting_rw: [
@@ -91,7 +89,7 @@ const tenantUIModel: TenantConfiguration = {
   }
 };
 
-const sandboxUIModel: SandboxConfiguration = {
+const sandboxUIModel: TenantConfiguration = {
   ...tenantUIModel,
   parentTenantCode: 'CA_001',
   dataSet: dataSets[0]
@@ -105,7 +103,7 @@ describe('Tenant mapper', () => {
     expect(actual.code).toBe('CALICODE');
     expect(actual.description).toBe('ca description');
     expect(actual.id).toBe('CA');
-    expect(actual.status).toBe(TenantStatus.Active);
+    expect(actual.status).toBe('ACTIVE');
     expect(actual.localizationOverrides).toBeDefined();
     expect(actual.configurationProperties).toBeDefined();
   });

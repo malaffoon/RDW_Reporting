@@ -16,8 +16,6 @@ import { WellGroupListComponent } from './component/well-group-list/well-group-l
 import { TenantSandboxComponent } from './component/tenant-sandbox/tenant-sandbox.component';
 import { CommonModule } from '@angular/common';
 import { TenantLinkComponent } from './component/tenant-link/tenant-link.component';
-import { NewSandboxConfigurationComponent } from './pages/new-sandbox.component';
-import { NewTenantConfigurationComponent } from './pages/new-tenant.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantComponent } from './pages/tenant/tenant.component';
 import { PropertyOverrideTableControlsComponent } from './component/property-override-table-controls/property-override-table-controls.component';
@@ -49,8 +47,6 @@ import { ToggleLabelComponent } from './component/toggle-label/toggle-label.comp
     WellGroupListComponent,
     TenantSandboxComponent,
     TenantLinkComponent,
-    NewSandboxConfigurationComponent,
-    NewTenantConfigurationComponent,
     TenantsComponent,
     TenantComponent,
     PropertyOverrideTableControlsComponent,
@@ -62,8 +58,6 @@ import { ToggleLabelComponent } from './component/toggle-label/toggle-label.comp
     WellGroupListComponent,
     TenantSandboxComponent,
     TenantLinkComponent,
-    NewSandboxConfigurationComponent,
-    NewTenantConfigurationComponent,
     TenantsComponent,
     TenantComponent,
     PropertyOverrideTableControlsComponent,

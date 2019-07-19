@@ -9,10 +9,7 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
-import {
-  DataSet,
-  SandboxConfiguration
-} from '../../model/sandbox-configuration';
+import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { forkJoin, Observable, Subject } from 'rxjs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { UserService } from '../../../../shared/security/service/user.service';
@@ -36,8 +33,8 @@ import { defaultTenant } from '../../mapper/tenant.mapper';
 export class TenantComponent implements OnDestroy {
   type$: Observable<TenantType>;
   mode$: Observable<FormMode>;
-  tenant$: Observable<SandboxConfiguration>;
-  tenants$: Observable<SandboxConfiguration[]>;
+  tenant$: Observable<TenantConfiguration>;
+  tenants$: Observable<TenantConfiguration[]>;
   dataSets$: Observable<DataSet[]>;
   configurationDefaults$: Observable<any>;
   localizationDefaults$: Observable<any>;
@@ -135,37 +132,37 @@ export class TenantComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
-  onCreate(value: SandboxConfiguration): void {
+  onCreate(value: TenantConfiguration): void {
     this.service.create(value).subscribe(
       () => {}, // TODO this used to reload from server
       error => {
-        console.error(error);
-        // const errorMessage = error.json().message;
-        // errorMessage
-        //   ? this.notificationService.error({ id: errorMessage })
-        //   : this.notificationService.error({
-        //     id: 'tenant-config.errors.create'
-        //   });
+        try {
+          this.notificationService.error({ id: error.json().message });
+        } catch (exception) {
+          this.notificationService.error({
+            id: 'tenant-config.errors.create'
+          });
+        }
       }
     );
   }
 
-  onUpdate(value: SandboxConfiguration): void {
+  onUpdate(value: TenantConfiguration): void {
     this.service.update(value).subscribe(
       () => {}, // TODO this used to reload from server
       error => {
-        console.error(error);
-        // const errorMessage = error.json().message;
-        // errorMessage
-        //   ? this.notificationService.error({ id: errorMessage })
-        //   : this.notificationService.error({
-        //     id: 'tenant-config.errors.update'
-        //   });
+        try {
+          this.notificationService.error({ id: error.json().message });
+        } catch (exception) {
+          this.notificationService.error({
+            id: 'tenant-config.errors.update'
+          });
+        }
       }
     );
   }
 
-  onDelete(tenant: SandboxConfiguration): void {
+  onDelete(tenant: TenantConfiguration): void {
     const modalReference: BsModalRef = this.modalService.show(
       ConfirmationModalComponent
     );

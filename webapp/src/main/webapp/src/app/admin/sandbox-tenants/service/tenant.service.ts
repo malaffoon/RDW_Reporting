@@ -10,7 +10,7 @@ import {
   toTenant,
   toTenantApiModel
 } from '../mapper/tenant.mapper';
-import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
+import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
@@ -56,7 +56,7 @@ export class TenantService {
       .pipe(catchError(ResponseUtils.throwError));
   }
 
-  getAll(type: TenantType): Observable<SandboxConfiguration[]> {
+  getAll(type: TenantType): Observable<TenantConfiguration[]> {
     const tenants$ = this.dataService.get(ResourceRoute, { params: { type } });
     const defaults$ = this.dataService.get(DefaultsRoute);
     const dataSets$ = this.dataService.get(DataSetsRoute);
@@ -77,7 +77,7 @@ export class TenantService {
     return type === 'TENANT' ? allTenants$ : allSandboxes$;
   }
 
-  get(code: string): Observable<SandboxConfiguration> {
+  get(code: string): Observable<TenantConfiguration> {
     const tenant$ = this.dataService.get(`${ResourceRoute}/${code}`);
     const defaults$ = this.dataService.get(DefaultsRoute);
     const dataSets$ = this.dataService.get(DataSetsRoute);
@@ -95,7 +95,7 @@ export class TenantService {
    * Creates a new sandbox
    * @param tenant - The sandbox to create
    */
-  create(tenant: SandboxConfiguration): Observable<SandboxConfiguration> {
+  create(tenant: TenantConfiguration): Observable<TenantConfiguration> {
     return this.dataService
       .post(ResourceRoute, toTenantApiModel(tenant))
       .pipe(map(() => tenant));
@@ -105,7 +105,7 @@ export class TenantService {
    * Updates an existing sandbox
    * @param tenant - The sandbox to update
    */
-  update(tenant: SandboxConfiguration): Observable<SandboxConfiguration> {
+  update(tenant: TenantConfiguration): Observable<TenantConfiguration> {
     return this.dataService
       .put(ResourceRoute, toTenantApiModel(tenant))
       .pipe(map(() => tenant));
