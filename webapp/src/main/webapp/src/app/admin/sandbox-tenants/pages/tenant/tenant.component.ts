@@ -26,6 +26,7 @@ import { FormMode } from '../../component/tenant-sandbox/tenant-sandbox.componen
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { tap } from 'rxjs/internal/operators/tap';
+import { defaultTenant } from '../../mapper/tenant.mapper';
 
 @Component({
   selector: 'app-tenant',
@@ -98,20 +99,13 @@ export class TenantComponent implements OnDestroy {
                   configurationProperties,
                   localizationOverrides
                 ]) =>
-                  type === 'SANDBOX'
-                    ? {
-                        type,
-                        configurationProperties,
-                        localizationOverrides,
-                        label: firstTenant.label + ' Sandbox',
-                        parentTenantCode: firstTenant.code,
-                        dataSet: firstDataSet
-                      }
-                    : {
-                        type,
-                        configurationProperties,
-                        localizationOverrides
-                      }
+                  defaultTenant(
+                    type,
+                    configurationProperties,
+                    localizationOverrides,
+                    firstTenant,
+                    firstDataSet
+                  )
               )
             )
       )

@@ -4,6 +4,31 @@ import { forOwn, get, isString } from 'lodash';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import { DataSet, SandboxConfiguration } from '../model/sandbox-configuration';
 import { object as expand } from 'dot-object';
+import { TenantType } from '../model/tenant-type';
+
+export function defaultTenant(
+  type: TenantType,
+  configurationProperties: any,
+  localization: any,
+  tenant?: SandboxConfiguration,
+  dataSet?: DataSet
+) {
+  const localizationOverrides = mapLocalizationOverrides(localization);
+  return type === 'SANDBOX'
+    ? {
+        type,
+        configurationProperties,
+        localizationOverrides,
+        label: tenant.label + ' Sandbox',
+        parentTenantCode: tenant.code,
+        dataSet
+      }
+    : {
+        type,
+        configurationProperties,
+        localizationOverrides
+      };
+}
 
 export function toTenant(
   serverTenant: any,

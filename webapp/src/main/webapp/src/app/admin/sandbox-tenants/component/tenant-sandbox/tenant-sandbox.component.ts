@@ -19,10 +19,6 @@ import {
   DataSet,
   SandboxConfiguration
 } from '../../model/sandbox-configuration';
-import {
-  getModifiedConfigProperties,
-  mapConfigurationProperties
-} from '../../mapper/tenant.mapper';
 import { showErrors } from '../../../../shared/form/forms';
 import { cloneDeep, forOwn } from 'lodash';
 
@@ -41,7 +37,7 @@ function mapLocalizationOverrides(
   defaults: any,
   overrides: ConfigurationProperty[]
 ): void {
-  const { localizationOverrides = [] } = tenant;
+  const localizationOverrides = tenant.localizationOverrides || [];
   const overrideFormGroup: FormGroup = formGroup.controls
     .localizationOverrides as FormGroup;
 
@@ -168,23 +164,23 @@ export class TenantSandboxComponent implements OnChanges {
   constructor(private formBuilder: FormBuilder) {}
 
   onSaveButtonClick(): void {
-    const {
-      formGroup,
-      localizationOverrides,
-      value: { code, dataSet, configurationProperties }
-    } = this;
-
-    this.save.emit({
-      code,
-      dataSet,
-      ...formGroup.value,
-      localizationOverrides: localizationOverrides.filter(
-        override => override.originalValue !== override.value
-      ),
-      configurationProperties: getModifiedConfigProperties(
-        configurationProperties
-      )
-    });
+    // const {
+    //   formGroup,
+    //   localizationOverrides,
+    //   value: { code, dataSet, configurationProperties }
+    // } = this;
+    //
+    // this.save.emit({
+    //   code,
+    //   dataSet,
+    //   ...formGroup.value,
+    //   localizationOverrides: localizationOverrides.filter(
+    //     override => override.originalValue !== override.value
+    //   ),
+    //   configurationProperties: getModifiedConfigProperties(
+    //     configurationProperties
+    //   )
+    // });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

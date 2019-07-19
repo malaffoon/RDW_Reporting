@@ -106,11 +106,10 @@
                     required:
                       form.get(propertiesArrayName) != null &&
                       form.get(propertiesArrayName).get(data.formControlName) !=
-                        null
-                        ? form
-                            .get(propertiesArrayName)
-                            .get(data.formControlName).errors
-                        : false
+                        null &&
+                      showErrors(
+                        form.get(propertiesArrayName).get(data.formControlName)
+                      )
                   }"
                   (click)="overrideInput.focus()"
                 >

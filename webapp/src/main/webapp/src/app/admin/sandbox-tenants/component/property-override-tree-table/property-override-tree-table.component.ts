@@ -18,7 +18,7 @@ import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { DecryptionService } from '../../../decryption.service';
 import { ConfigurationProperty } from '../../model/configuration-property';
-import { mod } from 'ngx-bootstrap/chronos/utils';
+import { showErrors } from '../../../../shared/form/forms';
 
 function passwordValidators(): ValidatorFn[] {
   return [
@@ -65,6 +65,7 @@ function rowTrackBy(index: number, { node }: any) {
   styleUrls: ['./property-override-tree-table.component.less']
 })
 export class PropertyOverrideTreeTableComponent implements OnInit {
+  readonly showErrors = showErrors;
   readonly hasModifiedDescendant = hasModifiedDescendant;
   readonly hasRequiredDescendant = hasRequiredDescendant;
   readonly rowTrackBy = rowTrackBy;
@@ -247,9 +248,9 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
       // TODO: Move these to the mapper.
       group.encrypted = encrypted;
       group.readonly = readonly || this.readonly;
-      group.secure = this.secureFields.some(x => x === group.key);
-      group.required = this.requiredFields.some(x => x === group.key);
-      group.lowercase = this.lowercaseFields.some(x => x === group.key);
+      group.secure = this.secureFields.includes(group.key);
+      group.required = this.requiredFields.includes(group.key);
+      group.lowercase = this.lowercaseFields.includes(group.key);
 
       childrenNodes.push({
         data: group, // assign object as a reference so other fields can trigger changes
@@ -257,7 +258,7 @@ export class PropertyOverrideTreeTableComponent implements OnInit {
         leaf: true
       });
 
-      group.key.indexOf('password') > -1
+      group.key.includes('password')
         ? configPropertiesFormGroup.addControl(
             group.formControlName,
             new FormControl(group.value, passwordValidators())
