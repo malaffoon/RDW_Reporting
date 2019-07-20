@@ -5,10 +5,10 @@ import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import {
-  toConfigurationOverrides,
+  toConfigurations,
   toConfigurationProperties,
   toTenant,
-  toTenantApiModel
+  toServerTenant
 } from '../model/tenants';
 import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
@@ -81,7 +81,7 @@ export class TenantService {
    */
   create(tenant: TenantConfiguration): Observable<TenantConfiguration> {
     return this.dataService
-      .post(ResourceRoute, toTenantApiModel(tenant))
+      .post(ResourceRoute, toServerTenant(tenant))
       .pipe(map(() => tenant));
   }
 
@@ -91,7 +91,7 @@ export class TenantService {
    */
   update(tenant: TenantConfiguration): Observable<TenantConfiguration> {
     return this.dataService
-      .put(ResourceRoute, toTenantApiModel(tenant))
+      .put(ResourceRoute, toServerTenant(tenant))
       .pipe(map(() => tenant));
   }
 
@@ -111,7 +111,7 @@ export class TenantService {
   getDefaultConfigurationProperties(type: TenantType): Observable<any> {
     return this.cachingDataService.get(DefaultsRoute).pipe(
       map(defaults =>
-        toConfigurationProperties(toConfigurationOverrides(defaults, type))
+        toConfigurationProperties(toConfigurations(defaults, type))
       ),
       catchError(ResponseUtils.throwError)
     );

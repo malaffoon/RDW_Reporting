@@ -25,6 +25,7 @@ import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant } from '../../model/tenants';
 import { tap } from 'rxjs/internal/operators/tap';
+import { flatten } from '../../../../shared/support/support';
 
 // TODO have diff checking to disable and enable the save button accordingly
 @Component({
@@ -86,8 +87,9 @@ export class TenantComponent implements OnDestroy {
     );
 
     this.localizationDefaults$ = this.translationLoader
-      .getFlattenedTranslations(this.languageStore.currentLanguage)
+      .getTranslation(this.languageStore.currentLanguage)
       .pipe(
+        map(defaults => flatten(defaults)),
         publishReplay(),
         refCount()
       );

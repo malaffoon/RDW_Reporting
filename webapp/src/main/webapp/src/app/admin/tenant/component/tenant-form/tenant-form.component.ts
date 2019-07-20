@@ -23,6 +23,9 @@ import { cloneDeep, forOwn } from 'lodash';
 import { getModifiedConfigProperties } from '../../model/tenants';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { configurationsFormGroup } from '../property-override-tree-table/property-override-tree-table.component';
+import { localizationOverridesFormGroup } from '../property-override-table/property-override-table.component';
+import { rightDifference } from '../../../../shared/support/support';
 
 export type FormMode = 'create' | 'update';
 
@@ -40,50 +43,63 @@ export function available(
   };
 }
 
-/**
- * Has side effects on tenant.localizationOverrides and formGroup
- */
-function mapLocalizationOverrides(
-  tenant: TenantConfiguration,
-  formGroup: FormGroup,
-  defaults: any,
-  overrides: ConfigurationProperty[]
-): void {
-  const localizationOverrides = tenant.localizationOverrides || [];
-  const overrideFormGroup: FormGroup = formGroup.controls
-    .localizationOverrides as FormGroup;
+export function tenantFormGroup(
+  value: TenantConfiguration,
+  configurationDefaults: any,
+  localizationDefaults: any,
+  tenants: TenantConfiguration[] = [],
+  dataSets: DataSet[] = []
+): FormGroup {
+  const label = new FormControl(value.label || '', [Validators.required]);
 
-  // why is this impl different for each tenant type? also - it doesn't seem to work...
-  // if (tenant.type === 'TENANT') {
-  //   defaults.forEach(translations => {
-  //     const overrideFormGroup = <FormGroup>(
-  //       this.formGroup.controls.localizationOverrides
-  //     );
-  //     for (const key in translations) {
-  //       // check also if property is not inherited from prototype
-  //       if (translations.hasOwnProperty(key)) {
-  //         const value = translations[key];
-  //         overrides.push(new ConfigurationProperty(key, value));
-  //         overrideFormGroup.controls[key] = new FormControl(value);
-  //       }
-  //     }
-  //   });
-  // } else {
+  const description = new FormControl(value.description || '');
 
-  forOwn(defaults, (value, key) => {
-    const defaultValue = defaults[key];
-    const override = localizationOverrides.find(o => o.key === key);
-    if (override) {
-      overrides.push(
-        new ConfigurationProperty(key, override.value, undefined, defaultValue)
-      );
-      overrideFormGroup.controls[key] = new FormControl(override.value);
-    } else {
-      overrides.push(new ConfigurationProperty(key, defaultValue));
-      overrideFormGroup.controls[key] = new FormControl(defaultValue);
+  const configurations = configurationsFormGroup(
+    configurationDefaults,
+    value.configurationProperties
+  );
+
+  const localizations = localizationOverridesFormGroup(
+    localizationDefaults,
+    value.localizationOverrides
+  );
+
+  // setup sandbox/tenant specific form
+
+  // TODO bind change to update default passwords here?
+
+  return new FormGroup(
+    value.type === 'SANDBOX'
+      ? {
+          label,
+          description,
+          dataSet: new FormControl(
+            dataSets.find(({ id }) => id === (value.dataSet || <DataSet>{}).id),
+            [Validators.required]
+          ),
+          tenant: new FormControl(
+            tenants.find(({ code }) => code === value.parentTenantCode),
+            [Validators.required]
+          ),
+          configurations,
+          localizations
+        }
+      : {
+          key: new FormControl(
+            value.code || '',
+            [Validators.required, Validators.maxLength(20), tenantKey],
+            [available(this.tenantKeyAvailable)]
+          ),
+          id: new FormControl(value.id || '', [Validators.required]),
+          label,
+          description,
+          configurations,
+          localizations
+        },
+    {
+      validators: [onePasswordPerUser]
     }
-  });
-  // }
+  );
 }
 
 const passwordKeyExpression = /^(\w+)\.password$/;
@@ -150,10 +166,10 @@ export class TenantFormComponent implements OnChanges {
   value: TenantConfiguration;
 
   @Input()
-  tenants: TenantConfiguration[] = [];
+  tenants: TenantConfiguration[];
 
   @Input()
-  dataSets: DataSet[] = [];
+  dataSets: DataSet[];
 
   @Input()
   configurationDefaults: any;
@@ -184,8 +200,8 @@ export class TenantFormComponent implements OnChanges {
 
   // we make a copy of these for some reason instead of using the props on the tenant model - not sure why
   // seems like we are maybe not using the view-model pattern here
-  configurationOverrides: any = {};
-  localizationOverrides: ConfigurationProperty[] = [];
+  // configurationOverrides: any = {};
+  // localizationOverrides: ConfigurationProperty[] = [];
 
   formGroup: FormGroup;
 
@@ -196,11 +212,20 @@ export class TenantFormComponent implements OnChanges {
   onSaveButtonClick(): void {
     const {
       formGroup: {
-        value: { id, key: code, label, description, tenant, dataSet }
+        value: {
+          id,
+          key: code,
+          label,
+          description,
+          tenant,
+          dataSet,
+          configurations,
+          localizations
+        }
       },
       // TODO these should come from the form too...
-      configurationOverrides,
-      localizationOverrides,
+      // configurationOverrides,
+      // localizationOverrides,
       value: { type }
     } = this;
 
@@ -214,12 +239,15 @@ export class TenantFormComponent implements OnChanges {
       description,
       parentTenantCode: (tenant || {}).code,
       dataSet,
-      localizationOverrides: localizationOverrides.filter(
-        override => override.originalValue !== override.value
-      ),
-      configurationProperties: getModifiedConfigProperties(
-        configurationOverrides
-      )
+      // TODO only send diff
+      configurationProperties: rightDifference(
+        this.configurationDefaults,
+        localizations
+      ).middle,
+      localizationOverrides: rightDifference(
+        this.localizationDefaults,
+        configurations
+      ).middle
     });
   }
 
@@ -227,92 +255,60 @@ export class TenantFormComponent implements OnChanges {
   // i think this needs to be reworked such that the @Input()s each have their own subject to push to
   ngOnChanges(changes: SimpleChanges): void {
     const {
-      value,
-      localizationDefaults,
       mode,
+      value,
       tenants,
       dataSets,
+      configurationDefaults,
+      localizationDefaults,
       tenantKeyAvailable
     } = this;
 
     if (
       value != null &&
-      localizationDefaults != null &&
       mode != null &&
+      configurationDefaults != null &&
+      localizationDefaults != null &&
       tenantKeyAvailable != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
-      // setup sandbox/tenant specific form
-      this.formGroup =
-        value.type === 'SANDBOX'
-          ? this.formBuilder.group({
-              label: [value.label || '', [notBlank]],
-              description: [value.description || ''],
-              dataSet: [
-                dataSets.find(
-                  ({ id }) => id === (value.dataSet || <DataSet>{}).id
-                ),
-                [Validators.required]
-              ],
-              tenant: [
-                tenants.find(({ code }) => code === value.parentTenantCode),
-                [Validators.required]
-              ],
-              configurationProperties: this.formBuilder.group({}),
-              localizationOverrides: this.formBuilder.group({})
-            })
-          : this.formBuilder.group(
-              {
-                key: [
-                  value.code || '',
-                  [Validators.required, tenantKey, Validators.maxLength(20)],
-                  [available(this.tenantKeyAvailable)]
-                ],
-                id: [value.id || '', [Validators.required]],
-                label: [value.label || '', [notBlank]],
-                description: [value.description || ''],
-                configurationProperties: this.formBuilder.group({}),
-                localizationOverrides: this.formBuilder.group({})
-              },
-              {
-                validators: [onePasswordPerUser]
-              }
-            );
-
-      // TODO we should do this here or in the table view instead of the mapper
-      // this.configurationOverrides = mapConfigurationProperties(
-      //   this.configurationDefaults,
-      //   this.value.configurationProperties
-      // );
-
-      this.configurationOverrides = this.configurationOverrides = cloneDeep(
-        this.value.configurationProperties
-      );
-
-      mapLocalizationOverrides(
-        this.value,
-        this.formGroup,
-        this.localizationDefaults,
-        this.localizationOverrides
-      );
-
       this.readonlyGroups =
         this.mode === 'create' ? [] : ['datasources', 'archive'];
+
+      this.formGroup = tenantFormGroup(
+        value,
+        configurationDefaults,
+        localizationDefaults,
+        tenants,
+        dataSets
+      );
     }
   }
 
   private onTenantChange(tenant: TenantConfiguration): void {
-    if (tenant.configurationProperties) {
-      this.configurationOverrides = cloneDeep(tenant.configurationProperties);
-    }
-    if (tenant.localizationOverrides) {
-      mapLocalizationOverrides(
-        this.value,
-        this.formGroup,
+    // if (tenant.configurationProperties) {
+    //   this.configurationOverrides = cloneDeep(tenant.configurationProperties);
+    // }
+    // if (tenant.localizationOverrides) {
+    //   mapLocalizationOverrides(
+    //     this.value,
+    //     this.formGroup,
+    //     this.localizationDefaults,
+    //     this.localizationOverrides
+    //   );
+    // }
+
+    // reset form values to tenant overrides
+    this.formGroup.patchValue({
+      configurations: configurationsFormGroup(
+        this.configurationDefaults,
+        this.value.configurationProperties
+      ),
+      localizations: localizationOverridesFormGroup(
         this.localizationDefaults,
-        this.localizationOverrides
-      );
-    }
+        this.value.localizationOverrides
+      )
+    });
   }
 
   onKeyChange(code: string): void {
@@ -320,25 +316,27 @@ export class TenantFormComponent implements OnChanges {
     if (this.value.type !== 'TENANT') {
       return;
     }
-    const key = (code || '').toLowerCase();
-    const defaultDataBaseName = `reporting_${key}`;
-    const defaultUsername = key;
-    const { configurationOverrides: { datasources = [] } = {} } = this;
 
-    Object.keys(datasources).forEach(dataSourceKey => {
-      const dataSource = datasources[dataSourceKey];
-      const urlPartsDatabase: ConfigurationProperty = dataSource.find(
-        property => property.key === 'urlParts.database'
-      );
-      if (!urlPartsDatabase.modified) {
-        urlPartsDatabase.value = defaultDataBaseName;
-      }
-      const username = <ConfigurationProperty>(
-        dataSource.find(property => property.key === 'username')
-      );
-      if (!username.modified) {
-        username.value = defaultUsername;
-      }
-    });
+    // TODO apply default usernames
+    // const key = (code || '').toLowerCase();
+    // const defaultDataBaseName = `reporting_${key}`;
+    // const defaultUsername = key;
+    // const { configurationOverrides: { datasources = [] } = {} } = this;
+    //
+    // Object.keys(datasources).forEach(dataSourceKey => {
+    //   const dataSource = datasources[dataSourceKey];
+    //   const urlPartsDatabase: ConfigurationProperty = dataSource.find(
+    //     property => property.key === 'urlParts.database'
+    //   );
+    //   if (!urlPartsDatabase.modified) {
+    //     urlPartsDatabase.value = defaultDataBaseName;
+    //   }
+    //   const username = <ConfigurationProperty>(
+    //     dataSource.find(property => property.key === 'username')
+    //   );
+    //   if (!username.modified) {
+    //     username.value = defaultUsername;
+    //   }
+    // });
   }
 }

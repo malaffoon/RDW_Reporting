@@ -1,6 +1,30 @@
 import { Component, Input } from '@angular/core';
 import { ConfigurationProperty } from '../../model/configuration-property';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+
+export function localizationOverridesFormGroup(
+  defaults: any,
+  overrides: any
+): FormGroup {
+  const flattenedDefaults = defaults;
+  const flattenedOverrides = overrides;
+  return new FormGroup(
+    Object.entries(flattenedDefaults).reduce(
+      (controlsByName, [key, defaultValue]) => {
+        const overrideValue = flattenedOverrides[key];
+        const value = overrideValue != null ? overrideValue : defaultValue;
+
+        // TODO apply metadata
+        const validators = [];
+
+        controlsByName[key] = new FormControl(value, validators);
+
+        return controlsByName;
+      },
+      {}
+    )
+  );
+}
 
 function rowTrackBy(index: number, value: ConfigurationProperty) {
   return value.key;

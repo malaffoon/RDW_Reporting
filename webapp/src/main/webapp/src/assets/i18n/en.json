@@ -1279,8 +1279,8 @@
           "required": "Please select a data set to initialize the sandbox with"
         }
       },
-      "configurationOverrides": {
-        "label": "Configuration Overrides",
+      "configurations": {
+        "label": "Configurations",
         "error": {
           "onePasswordPerUser": "Multiple passwords were provided for the following user names: {{usernames}}. Please provide the same password wherever the username is the same."
         },
@@ -1296,8 +1296,8 @@
           }
         }
       },
-      "localizationOverrides": {
-        "label": "Localization Overrides",
+      "localizations": {
+        "label": "Localizations",
         "control": {
           "search": {
             "placeholder": "Search properties by key or value"

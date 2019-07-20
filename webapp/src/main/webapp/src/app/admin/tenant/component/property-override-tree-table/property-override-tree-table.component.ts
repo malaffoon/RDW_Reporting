@@ -21,6 +21,26 @@ import { NotificationService } from '../../../../shared/notification/notificatio
 import { ConfigurationProperty } from '../../model/configuration-property';
 import { showErrors } from '../../../../shared/form/forms';
 import { DecryptionService } from '../../service/decryption.service';
+import { flattenJsonObject } from '../../../../shared/support/support';
+
+export function configurationsFormGroup(
+  defaults: any,
+  overrides: any
+): FormGroup {
+  return new FormGroup(
+    Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
+      const overrideValue = overrides[key];
+      const value = overrideValue != null ? overrideValue : defaultValue;
+
+      // TODO apply metadata
+      const validators = [];
+
+      controlsByName[key] = new FormControl(value, validators);
+
+      return controlsByName;
+    }, {})
+  );
+}
 
 function passwordValidators(): ValidatorFn[] {
   return [

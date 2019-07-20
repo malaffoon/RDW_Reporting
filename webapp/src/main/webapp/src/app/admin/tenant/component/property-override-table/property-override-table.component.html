@@ -5,8 +5,7 @@
     name="search"
     type="text"
     placeholder="{{
-      'tenant-form.field.localizationOverrides.control.search.placeholder'
-        | translate
+      'tenant-form.field.localizations.control.search.placeholder' | translate
     }}"
     class="form-control"
     (input)="table.filterGlobal($event, 'contains')"
@@ -19,10 +18,7 @@
       [(ngModel)]="modified"
       (ngModelChange)="updatePropertiesFilter()"
     />
-    {{
-      'tenant-form.field.localizationOverrides.control.modified.label'
-        | translate
-    }}
+    {{ 'tenant-form.field.localizations.control.modified.label' | translate }}
   </label>
 </div>
 
@@ -43,14 +39,10 @@
       <ng-template pTemplate="header">
         <tr>
           <th>
-            {{
-              'tenant-localization-override-form.column.key.label' | translate
-            }}
+            {{ 'tenant-localization-form.column.key.label' | translate }}
           </th>
           <th>
-            {{
-              'tenant-localization-override-form.column.value.label' | translate
-            }}
+            {{ 'tenant-localization-form.column.value.label' | translate }}
           </th>
         </tr>
       </ng-template>
@@ -78,7 +70,7 @@
                 *ngIf="overrides.value !== overrides.originalValue && !readonly"
                 (click)="resetClicked(overrides)"
                 popover="{{
-                  'tenant-configuration-override-form.popover.reset' | translate
+                  'tenant-configuration-form.popover.reset' | translate
                 }}"
                 placement="left"
                 container="body"
@@ -104,7 +96,7 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="2">
-            {{ 'tenant-localization-override-form.no-results' | translate }}
+            {{ 'tenant-localization-form.no-results' | translate }}
           </td>
         </tr>
       </ng-template>

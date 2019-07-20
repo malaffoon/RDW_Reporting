@@ -262,12 +262,8 @@
       <app-toggle-label
         [open]="configurationOpen"
         (openChange)="configurationOpen = $event"
-        openLabel="{{
-          'tenant-form.field.configurationOverrides.label' | translate
-        }}"
-        closedLabel="{{
-          'tenant-form.field.configurationOverrides.label' | translate
-        }}"
+        openLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
+        closedLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
       ></app-toggle-label>
 
       <span class="text-danger" *ngIf="showErrors(formGroup)">
@@ -275,7 +271,7 @@
           *ngIf="formGroup.errors && formGroup.errors.onePasswordPerUser"
         >
           {{
-            'tenant-form.field.configurationOverrides.error.onePasswordPerUser'
+            'tenant-form.field.configurations.error.onePasswordPerUser'
               | translate: formGroup.errors
           }}
         </ng-container>
@@ -283,33 +279,27 @@
 
       <div class="form-group" [hidden]="!configurationOpen">
         <property-override-tree-table
-          [form]="formGroup"
-          [configurationProperties]="configurationOverrides"
+          formControlName="configurations"
+          [defaults]="configurationDefaults"
           [readonly]="!writable"
           [readonlyGroups]="readonlyGroups"
           [required]="requiredConfiguration"
           [expanded]="requiredConfiguration"
-          propertiesArrayName="configurationProperties"
         ></property-override-tree-table>
       </div>
 
       <app-toggle-label
         [open]="localizationOpen"
         (openChange)="localizationOpen = $event"
-        openLabel="{{
-          'tenant-form.field.localizationOverrides.label' | translate
-        }}"
-        closedLabel="{{
-          'tenant-form.field.localizationOverrides.label' | translate
-        }}"
+        openLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
+        closedLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
       ></app-toggle-label>
 
       <div class="form-group" [hidden]="!localizationOpen">
         <property-override-table
-          [form]="formGroup"
-          [configurationProperties]="localizationOverrides"
+          formControlName="localizations"
+          [defaults]="localizationDefaults"
           [readonly]="!writable"
-          propertiesArrayName="localizationOverrides"
         ></property-override-table>
       </div>
     </div>

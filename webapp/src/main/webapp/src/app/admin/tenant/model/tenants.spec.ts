@@ -2,7 +2,7 @@ import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import {
   toTenant,
-  toTenantApiModel,
+  toServerTenant,
   getModifiedConfigProperties
 } from './tenants';
 
@@ -125,7 +125,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map a tenant ui model to an api model', () => {
-    const actual = toTenantApiModel(tenantUIModel);
+    const actual = toServerTenant(tenantUIModel);
 
     expect(actual.tenant.name).toBe('Arizona');
     expect(actual.tenant.id).toBe('34');
@@ -134,7 +134,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map tenant ui config props to api config props', () => {
-    const actual = toTenantApiModel(tenantUIModel);
+    const actual = toServerTenant(tenantUIModel);
 
     expect(actual.datasources.reporting_rw.urlParts.database).toBe(
       'new-reporting'
@@ -181,7 +181,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map a sandbox ui model to an api model', () => {
-    const actual = toTenantApiModel(sandboxUIModel);
+    const actual = toServerTenant(sandboxUIModel);
 
     expect(actual.tenant.sandboxDataset).toBe('ca-demo-data');
     expect(actual.tenant.name).toBe('Arizona');
@@ -191,7 +191,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map sandbox ui config props to api config props', () => {
-    const actual = toTenantApiModel(sandboxUIModel);
+    const actual = toServerTenant(sandboxUIModel);
 
     expect(actual.datasources.reporting_rw.urlParts.database).toBe(
       'new-reporting'

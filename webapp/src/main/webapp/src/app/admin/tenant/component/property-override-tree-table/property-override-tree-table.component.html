@@ -5,8 +5,7 @@
     name="search"
     type="text"
     placeholder="{{
-      'tenant-form.field.configurationOverrides.control.search.placeholder'
-        | translate
+      'tenant-form.field.configurations.control.search.placeholder' | translate
     }}"
     class="form-control"
     (input)="table.filterGlobal($event.target.value, 'contains')"
@@ -19,10 +18,7 @@
       type="checkbox"
       [(ngModel)]="required"
     />
-    {{
-      'tenant-form.field.configurationOverrides.control.required.label'
-        | translate
-    }}
+    {{ 'tenant-form.field.configurations.control.required.label' | translate }}
   </label>
 
   <label>
@@ -32,10 +28,7 @@
       type="checkbox"
       [(ngModel)]="modified"
     />
-    {{
-      'tenant-form.field.configurationOverrides.control.modified.label'
-        | translate
-    }}
+    {{ 'tenant-form.field.configurations.control.modified.label' | translate }}
   </label>
 </div>
 
@@ -52,15 +45,10 @@
       <ng-template pTemplate="header">
         <tr>
           <th>
-            {{
-              'tenant-configuration-override-form.column.key.label' | translate
-            }}
+            {{ 'tenant-configuration-form.column.key.label' | translate }}
           </th>
           <th>
-            {{
-              'tenant-configuration-override-form.column.value.label'
-                | translate
-            }}
+            {{ 'tenant-configuration-form.column.value.label' | translate }}
           </th>
         </tr>
       </ng-template>
@@ -87,8 +75,7 @@
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                   <ng-container *ngIf="data.groupNode; else notGroupNode">
                     {{
-                      'tenant-configuration-override-form.group.' + data.key
-                        | translate
+                      'tenant-configuration-form.group.' + data.key | translate
                     }}
                   </ng-container>
                   <ng-template #notGroupNode>
@@ -163,8 +150,7 @@
                         href="javascript:void(0)"
                         (click)="onResetButtonClick(data)"
                         popover="{{
-                          'tenant-configuration-override-form.popover.reset'
-                            | translate
+                          'tenant-configuration-form.popover.reset' | translate
                         }}"
                         placement="left"
                         container="body"
@@ -190,7 +176,7 @@
                         href="javascript:void(0)"
                         (click)="onDecryptButtonClick(data)"
                         popover="{{
-                          'tenant-configuration-override-form.popover.decrypt'
+                          'tenant-configuration-form.popover.decrypt'
                             | translate
                         }}"
                         placement="left"
@@ -204,7 +190,7 @@
                         href="javascript:void(0)"
                         popover="{{
                           data.key.endsWith('password')
-                            ? ('tenant-configuration-override-form.popover.password'
+                            ? ('tenant-configuration-form.popover.password'
                               | translate)
                             : null
                         }}"
@@ -225,7 +211,7 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="2">
-            {{ 'tenant-configuration-override-form.no-results' | translate }}
+            {{ 'tenant-configuration-form.no-results' | translate }}
           </td>
         </tr>
       </ng-template>
