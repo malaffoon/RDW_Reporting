@@ -1,42 +1,13 @@
-<!-- TODO extract -->
-<div class="controls">
-  <input
-    id="search"
-    name="search"
-    type="text"
-    placeholder="{{
-      'tenant-form.field.configurations.control.search.placeholder' | translate
-    }}"
-    class="form-control"
-    (input)="table.filterGlobal($event.target.value, 'contains')"
-  />
-
-  <label>
-    <input
-      id="required"
-      name="required"
-      type="checkbox"
-      [(ngModel)]="required"
-    />
-    {{ 'tenant-form.field.configurations.control.required.label' | translate }}
-  </label>
-
-  <label>
-    <input
-      id="modified"
-      name="modified"
-      type="checkbox"
-      [(ngModel)]="modified"
-    />
-    {{ 'tenant-form.field.configurations.control.modified.label' | translate }}
-  </label>
-</div>
-
-<div [formGroup]="form">
-  <div [formArrayName]="propertiesArrayName">
+<ng-container
+  *ngIf="properties != null && properties.length === 0; else hasResults"
+>
+  {{ 'tenant-configuration-form.no-results' | translate }}
+</ng-container>
+<ng-template #hasResults>
+  <ng-container [formGroup]="formGroup">
     <p-treeTable
       #table
-      [value]="configurationPropertiesTreeNodes"
+      [value]="tree"
       dataKey="key"
       [globalFilterFields]="['key', 'value']"
       styleClass="table table-striped table-hover"
@@ -60,10 +31,6 @@
                 [ngClass]="{
                   leaf: node.leaf
                 }"
-                [hidden]="
-                  (modified && !hasModifiedDescendant(node)) ||
-                  (required && !hasRequiredDescendant(node))
-                "
                 [ttRow]="rowNode"
                 (click)="onRowClick(rowNode, $event)"
               >
@@ -73,13 +40,14 @@
                   [ngClass]="{ 'group-node': data.groupNode }"
                 >
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                  <ng-container *ngIf="data.groupNode; else notGroupNode">
+                  <ng-container *ngIf="node.leaf; else parentNode">
+                    {{ data.key }}
+                  </ng-container>
+                  <ng-template #parentNode>
+                    <!-- TODO this should just be for first layer -->
                     {{
                       'tenant-configuration-form.group.' + data.key | translate
                     }}
-                  </ng-container>
-                  <ng-template #notGroupNode>
-                    {{ data.key }}
                   </ng-template>
                 </td>
               </tr>
@@ -87,14 +55,10 @@
             <ng-template #leafNode>
               <ng-container *ngIf="data.readonly; else writableNode">
                 <tr
-                  [hidden]="
-                    (modified && data.originalValue === data.value) ||
-                    (required && !data.required)
-                  "
                   [ttRow]="rowNode"
                   [ngClass]="{
                     leaf: node.leaf,
-                    modified: data.value !== data.originalValue
+                    modified: data.defaultValue !== formGroup.value[data.key]
                   }"
                 >
                   <td [title]="data.key">
@@ -108,21 +72,11 @@
               </ng-container>
               <ng-template #writableNode>
                 <tr
-                  [hidden]="
-                    (modified && data.originalValue === data.value) ||
-                    (required && !data.required)
-                  "
                   [ttRow]="rowNode"
                   [ngClass]="{
                     leaf: node.leaf,
-                    modified: data.modified,
-                    required:
-                      form.get(propertiesArrayName) != null &&
-                      form.get(propertiesArrayName).get(data.formControlName) !=
-                        null &&
-                      showErrors(
-                        form.get(propertiesArrayName).get(data.formControlName)
-                      )
+                    modified: data.defaultValue !== formGroup.value[data.key],
+                    required: showErrors(formGroup.controls[data.key])
                   }"
                 >
                   <td [title]="data.key">
@@ -135,17 +89,17 @@
                     <input
                       #overrideInput
                       [type]="
-                        data.secure && !data.showSecure ? 'password' : 'text'
+                        data.password && !data.showSecure ? 'password' : 'text'
                       "
                       data-lpignore="true"
                       [value]="data.value"
-                      [formControlName]="data.formControlName"
+                      [formControlName]="data.key"
                       class="property-input"
                       [ngClass]="{ 'text-lowercase': data.lowercase }"
                     />
                     <div class="icon-container">
                       <a
-                        *ngIf="data.value !== data.originalValue"
+                        *ngIf="data.defaultValue !== formGroup.value[data.key]"
                         href="javascript:void(0)"
                         (click)="onResetButtonClick(data)"
                         popover="{{
@@ -158,7 +112,7 @@
                         <i class="fa fa-undo fa-md"></i>
                       </a>
                       <a
-                        *ngIf="data.secure"
+                        *ngIf="data.password"
                         href="javascript:void(0)"
                         (click)="data.showSecure = !data.showSecure"
                       >
@@ -188,7 +142,7 @@
                         *ngIf="data.required"
                         href="javascript:void(0)"
                         popover="{{
-                          data.key.endsWith('password')
+                          data.password
                             ? ('tenant-configuration-form.popover.password'
                               | translate)
                             : null
@@ -207,13 +161,6 @@
           </ng-container>
         </ng-container>
       </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="2">
-            {{ 'tenant-configuration-form.no-results' | translate }}
-          </td>
-        </tr>
-      </ng-template>
     </p-treeTable>
-  </div>
-</div>
+  </ng-container>
+</ng-template>

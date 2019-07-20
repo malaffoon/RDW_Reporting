@@ -24,7 +24,6 @@ import { FormMode } from '../../component/tenant-form/tenant-form.component';
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant } from '../../model/tenants';
-import { tap } from 'rxjs/internal/operators/tap';
 import { flatten } from '../../../../shared/support/support';
 
 // TODO have diff checking to disable and enable the save button accordingly
@@ -111,13 +110,13 @@ export class TenantComponent implements OnDestroy {
                   type,
                   [firstTenant],
                   [firstDataSet],
-                  configurationProperties,
-                  localizationOverrides
+                  configurations,
+                  localizations
                 ]) =>
                   defaultTenant(
                     type,
-                    configurationProperties,
-                    localizationOverrides,
+                    configurations,
+                    localizations,
                     firstTenant,
                     firstDataSet
                   )

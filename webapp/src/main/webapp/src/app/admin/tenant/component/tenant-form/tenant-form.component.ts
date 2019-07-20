@@ -1,9 +1,9 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
   SimpleChanges
 } from '@angular/core';
@@ -16,16 +16,22 @@ import {
 } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { showErrors } from '../../../../shared/form/forms';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { debounceTime, map, startWith } from 'rxjs/operators';
 import { configurationsFormGroup } from '../property-override-tree-table/property-override-tree-table.component';
-import { localizationOverridesFormGroup } from '../property-override-table/property-override-table.component';
-import { isBlank, rightDifference } from '../../../../shared/support/support';
-import { Property } from '../../model/property';
-import { toProperty } from '../../model/properties';
+import { localizationsFormGroup } from '../property-override-table/property-override-table.component';
+import {
+  isBlank,
+  rightDifference,
+  valued
+} from '../../../../shared/support/support';
+import { ConfigurationProperty, Property } from '../../model/property';
+import { toConfigurationProperty, toProperty } from '../../model/properties';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
-import { tap } from 'rxjs/internal/operators/tap';
+import { TreeNode } from 'primeng/api';
+
+const keyboardDebounceInMilliseconds = 300;
 
 export type FormMode = 'create' | 'update';
 
@@ -56,13 +62,13 @@ export function tenantFormGroup(
 
   const configurations = configurationsFormGroup(
     configurationDefaults,
-    value.configurationProperties,
+    value.configurations,
     [onePasswordPerUser]
   );
 
-  const localizations = localizationOverridesFormGroup(
+  const localizations = localizationsFormGroup(
     localizationDefaults,
-    value.localizationOverrides
+    value.localizations
   );
 
   // setup sandbox/tenant specific form
@@ -140,12 +146,51 @@ function onePasswordPerUser(
   return usernames.length > 0 ? { onePasswordPerUser: true, usernames } : null;
 }
 
+function toPropertiesProvider<T = any>(
+  searchFormGroup: FormGroup,
+  formGroup: FormGroup,
+  defaults: { [key: string]: T }
+): Observable<[string, T][]> {
+  return combineLatest(
+    ...Object.entries(searchFormGroup.controls).map(([key, control]) => {
+      const startValue = searchFormGroup.value[key];
+      switch (key) {
+        case 'search':
+          return control.valueChanges.pipe(
+            startWith(startValue),
+            debounceTime(keyboardDebounceInMilliseconds)
+          );
+        case 'required':
+        case 'modified':
+          return control.valueChanges.pipe(startWith(startValue));
+      }
+      throw new Error('unknown search field');
+    })
+  ).pipe(
+    map(([search, modified]) =>
+      Object.entries(defaults)
+        .filter(([key, defaultValue]) => {
+          const caseInsensitiveSearch = search.toLowerCase();
+          const value = formGroup.controls[key].value;
+          return (
+            (isBlank(search) ||
+              (key.toLowerCase().includes(caseInsensitiveSearch) ||
+                (typeof value === 'string' &&
+                  value.toLowerCase().includes(caseInsensitiveSearch)))) &&
+            (!modified || value !== defaultValue)
+          );
+        })
+        .sort(ordering(byString).on(([key]) => key).compare)
+    )
+  );
+}
+
 @Component({
   selector: 'app-tenant-form',
   templateUrl: './tenant-form.component.html',
   styleUrls: ['./tenant-form.component.less']
 })
-export class TenantFormComponent implements OnChanges {
+export class TenantFormComponent implements OnChanges, OnDestroy {
   readonly showErrors = showErrors;
 
   @Input()
@@ -188,12 +233,19 @@ export class TenantFormComponent implements OnChanges {
   localizationOpen: boolean = false;
 
   @Input()
-  requiredConfiguration: boolean = false;
+  requiredConfiguration: boolean;
 
   // internals
+  configurations$: Observable<TreeNode[]>;
   localizations$: Observable<Property[]>;
 
-  localizationFormGroup: FormGroup = new FormGroup({
+  configurationControlsFormGroup: FormGroup = new FormGroup({
+    search: new FormControl(''),
+    required: new FormControl(false),
+    modified: new FormControl(false)
+  });
+
+  localizationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
     modified: new FormControl(false)
   });
@@ -201,6 +253,7 @@ export class TenantFormComponent implements OnChanges {
   // computed values
   readonlyGroups: string[] = [];
   formGroup: FormGroup;
+  destroyed$: Subject<void> = new Subject();
 
   onSaveButtonClick(): void {
     const {
@@ -220,8 +273,7 @@ export class TenantFormComponent implements OnChanges {
     } = this;
 
     const emitter = this.mode === 'create' ? this.create : this.update;
-
-    emitter.emit({
+    const updated: TenantConfiguration = {
       type,
       code,
       id,
@@ -229,15 +281,17 @@ export class TenantFormComponent implements OnChanges {
       description,
       parentTenantCode: (tenant || <any>{}).code,
       dataSet,
-      configurationProperties: rightDifference(
-        this.configurationDefaults,
-        localizations
+      configurations: valued(
+        rightDifference(this.configurationDefaults, configurations)
       ),
-      localizationOverrides: rightDifference(
-        this.localizationDefaults,
-        configurations
+      localizations: valued(
+        rightDifference(this.localizationDefaults, localizations)
       )
-    });
+    };
+
+    console.log(updated);
+
+    emitter.emit(updated);
   }
 
   // TODO currently this causes mulitple rerenders and i am not able to present a loading spinner
@@ -250,7 +304,8 @@ export class TenantFormComponent implements OnChanges {
       dataSets,
       configurationDefaults,
       localizationDefaults,
-      tenantKeyAvailable
+      tenantKeyAvailable,
+      requiredConfiguration
     } = this;
 
     if (
@@ -259,6 +314,7 @@ export class TenantFormComponent implements OnChanges {
       configurationDefaults != null &&
       localizationDefaults != null &&
       tenantKeyAvailable != null &&
+      requiredConfiguration != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
       this.readonlyGroups =
@@ -272,49 +328,40 @@ export class TenantFormComponent implements OnChanges {
         dataSets
       );
 
-      // depends on localization defaults, formGroup.controls.localizations
-      const localizationFormGroup: FormGroup = this.formGroup.controls
-        .localizations as FormGroup;
-      this.localizations$ = this.localizationFormGroup.valueChanges.pipe(
-        startWith(this.localizationFormGroup.value),
-        tap(form => {
-          console.log(form);
-        }),
-        map(({ search, modified }) =>
-          Object.entries(localizationDefaults)
-            .filter(([key, defaultValue]) => {
-              const caseInsensitiveSearch = search.toLowerCase();
-              const control = localizationFormGroup.controls[key];
-              if (control == null) {
-                console.log('why?', localizationFormGroup);
-                return false;
-              }
-              const value = control.value;
-              return (
-                (isBlank(search) ||
-                  (key.toLowerCase().includes(caseInsensitiveSearch) ||
-                    (typeof value === 'string' &&
-                      value.toLowerCase().includes(caseInsensitiveSearch)))) &&
-                (!modified || value !== defaultValue)
-              );
-            })
-            .map(([key, defaultValue]) => toProperty(key, defaultValue))
-            .sort(ordering(byString).on(({ key }) => key).compare)
-        )
+      // set the defaults on the formGroup
+      this.localizationControlsFormGroup.patchValue({
+        required: this.requiredConfiguration
+      });
+
+      this.configurations$ = toPropertiesProvider(
+        this.configurationControlsFormGroup as FormGroup,
+        this.formGroup.controls.configurations as FormGroup,
+        configurationDefaults
+      );
+
+      this.localizations$ = toPropertiesProvider(
+        this.localizationControlsFormGroup as FormGroup,
+        this.formGroup.controls.localizations as FormGroup,
+        localizationDefaults
       );
     }
   }
 
-  private onTenantChange(tenant: TenantConfiguration): void {
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  onTenantChange(tenant: TenantConfiguration): void {
     // reset form values to tenant overrides
     this.formGroup.patchValue({
       configurations: configurationsFormGroup(
         this.configurationDefaults,
-        tenant.configurationProperties
+        tenant.configurations
       ),
-      localizations: localizationOverridesFormGroup(
+      localizations: localizationsFormGroup(
         this.localizationDefaults,
-        tenant.localizationOverrides
+        tenant.localizations
       )
     });
   }

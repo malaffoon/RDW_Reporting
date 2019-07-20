@@ -49,7 +49,7 @@ const tenantUIModel: TenantConfiguration = {
   description: 'AZ description',
   id: '34',
   status: 'ACTIVE',
-  configurationProperties: {
+  configurations: {
     datasources: {
       reporting_rw: [
         {
@@ -102,14 +102,13 @@ describe('Tenant mapper', () => {
     expect(actual.description).toBe('ca description');
     expect(actual.id).toBe('CA');
     expect(actual.status).toBe('ACTIVE');
-    expect(actual.localizationOverrides).toBeDefined();
-    expect(actual.configurationProperties).toBeDefined();
+    expect(actual.localizations).toBeDefined();
+    expect(actual.configurations).toBeDefined();
   });
 
   it('should merge tenant and default configurations', () => {
     const actual = toTenant(tenantApiModel, defaultsApiModel);
-    const reporting_rw =
-      actual.configurationProperties.datasources.reporting_rw;
+    const reporting_rw = actual.configurations.datasources.reporting_rw;
     const actualOverride: OldConfigProp = reporting_rw.find(
       x => x.key === 'urlParts.database'
     );
@@ -154,13 +153,13 @@ describe('Tenant mapper', () => {
     expect(actual.code).toBe('CA_S132');
     expect(actual.description).toBe('ca description');
     expect(actual.id).toBe('CA');
-    expect(actual.localizationOverrides).toBeDefined();
-    expect(actual.configurationProperties).toBeDefined();
+    expect(actual.localizations).toBeDefined();
+    expect(actual.configurations).toBeDefined();
   });
 
   it('should merge sandbox and default configurations', () => {
     const actual = toTenant(sandboxApiModel, defaultsApiModel, dataSets);
-    const reporting = actual.configurationProperties.reporting;
+    const reporting = actual.configurations.reporting;
 
     const actualOverride: OldConfigProp = reporting.find(
       x => x.key === 'schoolYear'
@@ -177,7 +176,7 @@ describe('Tenant mapper', () => {
 
   it('should not map sandbox dataset configurations', () => {
     const actual = toTenant(sandboxApiModel, defaultsApiModel, dataSets);
-    expect(actual.configurationProperties.datasources).toBeUndefined();
+    expect(actual.configurations.datasources).toBeUndefined();
   });
 
   it('should map a sandbox ui model to an api model', () => {
@@ -204,9 +203,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should get modified config properties', () => {
-    const actual = getModifiedConfigProperties(
-      tenantUIModel.configurationProperties
-    );
+    const actual = getModifiedConfigProperties(tenantUIModel.configurations);
 
     const actualReportingDatasource = actual.datasources.reporting_rw;
     expect(actualReportingDatasource.length).toBe(1);

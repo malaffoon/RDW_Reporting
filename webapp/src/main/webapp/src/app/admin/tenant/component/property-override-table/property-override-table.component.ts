@@ -2,7 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   forwardRef,
-  Input
+  Input,
+  SimpleChanges
 } from '@angular/core';
 import { OldConfigProp } from '../../model/old-config-prop';
 import {
@@ -14,8 +15,9 @@ import {
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { Property } from '../../model/property';
+import { propertyValidators } from '../../model/properties';
 
-export function localizationOverridesFormGroup(
+export function localizationsFormGroup(
   defaults: any,
   overrides: any
 ): FormGroup {
@@ -23,12 +25,8 @@ export function localizationOverridesFormGroup(
     Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
-
-      // TODO apply metadata
-      const validators = [];
-
+      const validators = []; // TODO?
       controlsByName[key] = new FormControl(value, validators);
-
       return controlsByName;
     }, {})
   );
@@ -64,23 +62,15 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
   defaults: any;
 
   @Input()
-  properties: Property[];
+  rows: Property[];
 
   @Input()
   readonly = true;
-
-  first = 0;
 
   constructor(public controlContainer: ControlContainer) {}
 
   get formGroup(): FormGroup {
     return this.controlContainer.control as FormGroup;
-  }
-
-  onResetButtonClick(property: Property): void {
-    this.formGroup.patchValue({
-      [property.key]: property.defaultValue
-    });
   }
 
   // control value accessor implementation:
@@ -103,5 +93,13 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     isDisabled ? this.formGroup.disable() : this.formGroup.enable();
+  }
+
+  // internals
+
+  onResetButtonClick(property: Property): void {
+    this.formGroup.patchValue({
+      [property.key]: property.defaultValue
+    });
   }
 }

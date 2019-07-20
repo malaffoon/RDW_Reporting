@@ -278,15 +278,55 @@
       </span>
 
       <div class="form-group" [hidden]="!configurationOpen">
-        TODO
-        <!--        <property-override-tree-table-->
-        <!--          formGroupName="configurations"-->
-        <!--          [defaults]="configurationDefaults"-->
-        <!--          [readonly]="!writable"-->
-        <!--          [readonlyGroups]="readonlyGroups"-->
-        <!--          [required]="requiredConfiguration"-->
-        <!--          [expanded]="requiredConfiguration"-->
-        <!--        ></property-override-tree-table>-->
+        <!-- TODO extract -->
+        <div class="configuration-controls">
+          <ng-container [formGroup]="configurationControlsFormGroup">
+            <input
+              id="configurationSearch"
+              name="configurationSearch"
+              type="text"
+              class="form-control"
+              placeholder="{{
+                'tenant-form.field.configurations.control.search.placeholder'
+                  | translate
+              }}"
+            />
+
+            <label>
+              <input
+                id="configurationRequired"
+                name="configurationRequired"
+                formControlName="required"
+                type="checkbox"
+              />
+              {{
+                'tenant-form.field.configurations.control.required.label'
+                  | translate
+              }}
+            </label>
+
+            <label>
+              <input
+                id="configurationModified"
+                name="configurationModified"
+                formControlName="modified"
+                type="checkbox"
+              />
+              {{
+                'tenant-form.field.configurations.control.modified.label'
+                  | translate
+              }}
+            </label>
+          </ng-container>
+        </div>
+        <property-override-tree-table
+          formGroupName="configurations"
+          [tree]="configurations$ | async"
+          [readonlyGroups]="readonlyGroups"
+          [defaults]="configurationDefaults"
+          [readonly]="!writable"
+          [expanded]="requiredConfiguration"
+        ></property-override-tree-table>
       </div>
 
       <app-toggle-label
@@ -296,20 +336,19 @@
         closedLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
       ></app-toggle-label>
 
-      <div class="form-group">
-        <!--      <div class="form-group" [hidden]="!localizationOpen">-->
-        <div class="controls">
-          <form [formGroup]="localizationFormGroup">
+      <div class="form-group" [hidden]="!localizationOpen">
+        <div class="localization-controls">
+          <ng-container [formGroup]="localizationControlsFormGroup">
             <input
               id="localizationSearch"
               name="localizationSearch"
               formControlName="search"
               type="text"
+              class="form-control"
               placeholder="{{
                 'tenant-form.field.localizations.control.search.placeholder'
                   | translate
               }}"
-              class="form-control"
             />
             <label>
               <input
@@ -323,11 +362,11 @@
                   | translate
               }}
             </label>
-          </form>
+          </ng-container>
         </div>
         <property-override-table
           formGroupName="localizations"
-          [properties]="localizations$ | async"
+          [rows]="localizations$ | async"
           [defaults]="localizationDefaults"
           [readonly]="!writable"
         ></property-override-table>

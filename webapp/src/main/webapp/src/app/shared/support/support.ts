@@ -556,3 +556,17 @@ function oneSidedDifference(a: any, b: any, side: 'left' | 'right'): any {
 export function rightDifference(a: any, b: any): any {
   return oneSidedDifference(a, b, 'right');
 }
+
+/**
+ * Returns the provided object but with only entries that have values other than null or undefined
+ *
+ * @param value The object to prune of null or undefined valued entries
+ */
+export function valued(value: { [key: string]: any }): { [key: string]: any } {
+  return Object.entries(value).reduce((valued, [key, value]) => {
+    if (value != null) {
+      valued[key] = value;
+    }
+    return valued;
+  }, {});
+}

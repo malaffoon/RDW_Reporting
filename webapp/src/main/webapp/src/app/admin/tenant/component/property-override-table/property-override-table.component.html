@@ -1,73 +1,73 @@
-<ng-container [formGroup]="formGroup">
-  <p-table
-    #table
-    [value]="properties"
-    dataKey="key"
-    [globalFilterFields]="['key', 'value']"
-    [paginator]="true"
-    [(first)]="first"
-    [alwaysShowPaginator]="false"
-    [rows]="20"
-    [rowTrackBy]="rowTrackBy"
-    styleClass="table table-striped table-hover overflow rdw-scrollable-table"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>
-          {{ 'tenant-localization-form.column.key.label' | translate }}
-        </th>
-        <th>
-          {{ 'tenant-localization-form.column.value.label' | translate }}
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-property>
-      <tr
-        [ngClass]="{
-          modified: property.defaultValue !== formGroup.value[property.key]
-        }"
-      >
-        <td [title]="property.key">
-          {{ property.key }}
-        </td>
-        <td>
-          <ng-container *ngIf="readonly; else writableValue">
-            <span>
-              {{ property.value }}
-            </span>
-          </ng-container>
-          <ng-template #writableValue>
-            <input
-              type="text"
-              [formControlName]="property.key"
-              class="property-input"
-            />
-            <div class="icon-container">
-              <i
-                class="fa fa-undo fa-md"
-                *ngIf="
-                  property.defaultValue !== formGroup.value[property.key] &&
-                  !readonly
-                "
-                (click)="onResetButtonClick(property)"
-                popover="{{
-                  'tenant-configuration-form.popover.reset' | translate
-                }}"
-                placement="left"
-                container="body"
-                triggers="mouseenter:mouseleave"
-              ></i>
-            </div>
-          </ng-template>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="2">
-          {{ 'tenant-localization-form.no-results' | translate }}
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+<ng-container
+  *ngIf="properties != null && properties.length === 0; else hasResults"
+>
+  {{ 'tenant-localization-form.no-results' | translate }}
 </ng-container>
+<ng-template #hasResults>
+  <ng-container [formGroup]="formGroup">
+    <p-table
+      #table
+      [value]="properties"
+      dataKey="key"
+      [globalFilterFields]="['key', 'value']"
+      [paginator]="true"
+      [(first)]="first"
+      [alwaysShowPaginator]="false"
+      [rows]="20"
+      [rowTrackBy]="rowTrackBy"
+      styleClass="table table-striped table-hover overflow rdw-scrollable-table"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            {{ 'tenant-localization-form.column.key.label' | translate }}
+          </th>
+          <th>
+            {{ 'tenant-localization-form.column.value.label' | translate }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-property>
+        <tr
+          [ngClass]="{
+            modified: property.defaultValue !== formGroup.value[property.key]
+          }"
+        >
+          <td [title]="property.key">
+            {{ property.key }}
+          </td>
+          <td>
+            <ng-container *ngIf="readonly; else writableValue">
+              <span>
+                {{ property.value }}
+              </span>
+            </ng-container>
+            <ng-template #writableValue>
+              <input
+                type="text"
+                [formControlName]="property.key"
+                class="property-input"
+              />
+              <div class="icon-container">
+                <i
+                  class="fa fa-undo fa-md"
+                  *ngIf="
+                    property.defaultValue !== formGroup.value[property.key] &&
+                    !readonly
+                  "
+                  (click)="onResetButtonClick(property)"
+                  popover="{{
+                    'tenant-configuration-form.popover.reset' | translate
+                  }}"
+                  placement="left"
+                  container="body"
+                  triggers="mouseenter:mouseleave"
+                ></i>
+              </div>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-container>
+</ng-template>

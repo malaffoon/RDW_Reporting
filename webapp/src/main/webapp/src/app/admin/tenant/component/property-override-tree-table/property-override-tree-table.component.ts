@@ -1,6 +1,8 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  forwardRef,
   Input,
   OnChanges,
   Output,
@@ -8,8 +10,10 @@ import {
   ViewChild
 } from '@angular/core';
 import {
+  ControlContainer,
   FormControl,
   FormGroup,
+  NG_VALUE_ACCESSOR,
   ValidatorFn,
   Validators
 } from '@angular/forms';
@@ -19,6 +23,13 @@ import { NotificationService } from '../../../../shared/notification/notificatio
 import { OldConfigProp } from '../../model/old-config-prop';
 import { showErrors } from '../../../../shared/form/forms';
 import { DecryptionService } from '../../service/decryption.service';
+import {
+  propertyValidators,
+  toConfigurationProperty,
+  toProperty
+} from '../../model/properties';
+import { ConfigurationProperty } from '../../model/property';
+import { unflatten } from '../../../../shared/support/support';
 
 export function configurationsFormGroup(
   defaults: any,
@@ -29,68 +40,57 @@ export function configurationsFormGroup(
     Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
-
-      // TODO apply metadata
-      const controlValidators = [];
-
-      controlsByName[key] = new FormControl(value, controlValidators);
-
+      controlsByName[key] = new FormControl(value, propertyValidators(key));
       return controlsByName;
     }, {}),
     validators
   );
 }
 
-function passwordValidators(): ValidatorFn[] {
-  return [
-    Validators.required,
-    Validators.minLength(8),
-    Validators.maxLength(64),
-    Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-zd].{8,}')
-  ];
+function rowTrackBy(index: number, { node }: any): string {
+  return node.key;
 }
 
-function hasModifiedDescendant(node: TreeNode): boolean {
-  const { children } = node;
-  if (children && children.length > 0) {
-    const modified = children.some(
-      ({ data }) => data.value !== data.originalValue
-    );
-    if (modified) {
-      return true;
-    }
-    return children.some(child => hasModifiedDescendant(child));
-  }
-  return false;
-}
-
-function hasRequiredDescendant(node: TreeNode): boolean {
-  const { children } = node;
-  if (children && children.length > 0) {
-    const required = children.some(({ data }) => data.required);
-    if (required) {
-      return true;
-    }
-    return children.some(child => hasRequiredDescendant(child));
-  }
-  return false;
-}
-
-function rowTrackBy(index: number, { node }: any) {
-  return (node.leaf ? 'leaf.' : 'parent.') + node.data.key;
-}
-
-function createTreeRecurse(
+function addTreeNodesRecursively(
   nodes: TreeNode[],
-  defaults: any,
-  formGroup: FormGroup
+  value: any,
+  absolutePath: string
 ): void {
   // TODO
+
+  // if primitive it is a leaf
+  if (Object(value) !== value) {
+    nodes.push({
+      leaf: true,
+      key: absolutePath,
+      data: value
+    });
+  } else if (typeof value === 'object') {
+    nodes.push(
+      ...Object.entries(value).map(([key, child]) => {
+        const children: TreeNode[] = [];
+        addTreeNodesRecursively(
+          children,
+          child,
+          absolutePath.length > 0 ? `${absolutePath}.${key}` : key
+        );
+        return {
+          key,
+          children
+        };
+      })
+    );
+  }
 }
 
-function createTree(defaults: any, formGroup: FormGroup): TreeNode[] {
+/**
+ * Creates a ng-prime tree table data structure from the given json object
+ *
+ * @param value The object to convert
+ */
+export function toTreeNodes(value: any): TreeNode[] {
   const nodes = [];
-  createTreeRecurse(nodes, defaults, formGroup);
+  addTreeNodesRecursively(nodes, value, '');
   return nodes;
 }
 // forOwn(this.configurationProperties, (configGroup, groupKey) => {
@@ -134,12 +134,23 @@ function createTree(defaults: any, formGroup: FormGroup): TreeNode[] {
 @Component({
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html',
-  styleUrls: ['./property-override-tree-table.component.less']
+  styleUrls: ['./property-override-tree-table.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PropertyOverrideTreeTableComponent),
+      multi: true
+    }
+    // {
+    //   provide: NG_VALIDATORS,
+    //   useExisting: forwardRef(() => PropertyOverrideTableComponent),
+    //   multi: true
+    // }
+  ]
 })
-export class PropertyOverrideTreeTableComponent implements OnChanges {
+export class PropertyOverrideTreeTableComponent {
   readonly showErrors = showErrors;
-  readonly hasModifiedDescendant = hasModifiedDescendant;
-  readonly hasRequiredDescendant = hasRequiredDescendant;
   readonly rowTrackBy = rowTrackBy;
 
   @ViewChild('table')
@@ -149,38 +160,50 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
   defaults: any;
 
   @Input()
-  readonly = true;
-
-  @Input()
   readonlyGroups: string[] = [];
-
-  @Output()
-  propertyValueChanged: EventEmitter<OldConfigProp> = new EventEmitter();
-
-  @Input()
-  required = false;
-
-  @Input()
-  modified = false;
 
   @Input()
   expanded = true;
 
-  formGroup: FormGroup;
+  @Input()
+  readonly = true;
+
+  @Input()
   tree: TreeNode[] = [];
 
   constructor(
+    private controlContainer: ControlContainer,
     private decryptionService: DecryptionService,
     private notificationService: NotificationService
   ) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const { defaults } = this;
-    if (defaults != null) {
-      this.formGroup = configurationsFormGroup(defaults);
-      this.tree = createTree(defaults, this.formGroup);
+  get formGroup(): FormGroup {
+    return this.controlContainer.control as FormGroup;
+  }
+
+  // control value accessor implementation:
+
+  public onTouched: () => void = () => {};
+
+  writeValue(value: any): void {
+    if (value) {
+      this.formGroup.setValue(value, { emitEvent: false });
     }
   }
+
+  registerOnChange(fn: any): void {
+    this.formGroup.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    isDisabled ? this.formGroup.disable() : this.formGroup.enable();
+  }
+
+  // internals
 
   //
   // updateOverride(override: ConfigurationProperty): void {
@@ -201,19 +224,24 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
     toggler.onClick(event);
   }
 
-  onResetButtonClick(override: OldConfigProp): void {
-    // this.setPropertyValue(override, override.originalValue);
+  onResetButtonClick(property: ConfigurationProperty): void {
+    this.formGroup.patchValue({
+      [property.key]: property.defaultValue
+    });
   }
 
-  onDecryptButtonClick(override: OldConfigProp): void {
-    // this.decryptionService.decrypt(override.value).subscribe(
-    //   password => {
-    //     override.value = password;
-    //     override.encrypted = false;
-    //   },
-    //   error =>
-    //     this.notificationService.error({ id: 'decryption-service.error' })
-    // );
+  onDecryptButtonClick(property: ConfigurationProperty): void {
+    const {
+      value: { [property.key]: value }
+    } = this.formGroup;
+    this.decryptionService.decrypt(value).subscribe(
+      decrypted => {
+        this.formGroup.patchValue({
+          [property.key]: decrypted
+        });
+      },
+      () => this.notificationService.error({ id: 'decryption-service.error' })
+    );
   }
 
   private setPropertyValue(override: OldConfigProp, newVal: string) {

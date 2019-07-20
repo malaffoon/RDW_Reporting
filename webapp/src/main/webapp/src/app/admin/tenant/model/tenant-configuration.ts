@@ -32,19 +32,9 @@ export interface TenantConfiguration {
   description?: string;
 
   /**
-   * The map containing text/i18n overrides
+   * The parent tenant code this sandbox is for.
    */
-  localizationOverrides?: OldConfigProp[];
-
-  /**
-   * The JSON containing configuration properties
-   */
-  configurationProperties?: any;
-
-  /**
-   * The current status of this tenant.
-   */
-  status?: TenantStatus;
+  parentTenantCode?: string;
 
   /**
    * The data template initially used to create the sandbox
@@ -52,9 +42,19 @@ export interface TenantConfiguration {
   dataSet?: DataSet;
 
   /**
-   * The parent tenant code this sandbox is for.
+   * Flat map of localization codes to messages
    */
-  parentTenantCode?: string;
+  localizations: { [key: string]: string };
+
+  /**
+   * Flat map of configuration properties to values
+   */
+  configurations: { [key: string]: string | boolean | number };
+
+  /**
+   * The current status of this tenant.
+   */
+  status?: TenantStatus;
 }
 
 export interface DataSet {

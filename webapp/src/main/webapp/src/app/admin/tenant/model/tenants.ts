@@ -7,6 +7,7 @@ import {
   UnflattenCustomizer
 } from '../../../shared/support/support';
 import { isEmpty } from 'lodash';
+import { ValidatorFn, Validators } from '@angular/forms';
 
 const joinIfArrayOfPrimitives: FlattenCustomizer = (
   result,
@@ -41,24 +42,24 @@ const splitIfNonPasswordCommaJoinedString: UnflattenCustomizer = (
 
 export function defaultTenant(
   type: TenantType,
-  configurationProperties: any,
-  localizationOverrides: any,
+  configurations: any,
+  localizations: any,
   tenant?: TenantConfiguration,
   dataSet?: DataSet
 ) {
   return type === 'SANDBOX'
     ? {
         type,
-        configurationProperties,
-        localizationOverrides,
+        configurations,
+        localizations,
         label: tenant.label + ' Sandbox',
         parentTenantCode: tenant.code,
         dataSet
       }
     : {
         type,
-        configurationProperties,
-        localizationOverrides
+        configurations,
+        localizations
       };
 }
 
@@ -78,7 +79,7 @@ export function toTenant(
     },
     administrationStatus: { tenantAdministrationStatus: status },
     parentTenantKey: parentTenantCode,
-    localization: localizationOverrides
+    localization: localizations
   } = serverTenant;
 
   const type = sandbox ? 'SANDBOX' : 'TENANT';
@@ -89,8 +90,8 @@ export function toTenant(
     description,
     type,
     status,
-    configurationProperties: toConfigurations(serverTenant, type),
-    localizationOverrides: localizationOverrides || {},
+    configurations: toConfigurations(serverTenant, type),
+    localizations: localizations || {},
     parentTenantCode,
     dataSet: (dataSets || []).find(dataSet => dataSetId === dataSet.id)
   };
@@ -132,8 +133,8 @@ export function toServerTenant(tenant: TenantConfiguration): any {
     type,
     parentTenantCode: parentTenantKey,
     dataSet: { id: sandboxDataset } = <any>{},
-    configurationProperties,
-    localizationOverrides: localization
+    configurations,
+    localizations: localization
   } = tenant;
 
   return {
@@ -147,7 +148,7 @@ export function toServerTenant(tenant: TenantConfiguration): any {
     },
     parentTenantKey,
     // this should be mapped back at form submit time
-    ...unflatten(configurationProperties, splitIfNonPasswordCommaJoinedString),
+    ...unflatten(configurations, splitIfNonPasswordCommaJoinedString),
     localization: isEmpty(localization) ? null : {}
   };
 }
