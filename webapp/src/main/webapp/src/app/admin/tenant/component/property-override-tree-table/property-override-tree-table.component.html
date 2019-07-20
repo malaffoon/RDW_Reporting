@@ -160,6 +160,7 @@
                     <div class="icon-container">
                       <a
                         *ngIf="data.value !== data.originalValue"
+                        href="javascript:void(0)"
                         (click)="onResetButtonClick(data)"
                         popover="{{
                           'tenant-configuration-override-form.popover.reset'
@@ -173,6 +174,7 @@
                       </a>
                       <a
                         *ngIf="data.secure"
+                        href="javascript:void(0)"
                         (click)="data.showSecure = !data.showSecure"
                       >
                         <i
@@ -185,6 +187,7 @@
                       </a>
                       <a
                         *ngIf="data.encrypted"
+                        href="javascript:void(0)"
                         (click)="onDecryptButtonClick(data)"
                         popover="{{
                           'tenant-configuration-override-form.popover.decrypt'
