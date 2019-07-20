@@ -12,7 +12,9 @@ export function defaultTenant(
   tenant?: TenantConfiguration,
   dataSet?: DataSet
 ) {
-  const localizationOverrides = mapLocalizationOverrides(localization);
+  const localizationOverrides = localizationToConfigurationProperties(
+    localization
+  );
   return type === 'SANDBOX'
     ? {
         type,
@@ -31,56 +33,57 @@ export function defaultTenant(
 
 export function toTenant(
   serverTenant: any,
-  defaultApplicationTenantConfiguration: any = {},
-  skipMappingConfigProperties?: boolean
+  defaults: any,
+  dataSets: DataSet[] = []
 ): TenantConfiguration {
-  const tenant = serverTenant.tenant;
+  const {
+    tenant: {
+      key: code,
+      id,
+      name: label,
+      description,
+      sandbox,
+      sandboxDataset: dataSetId
+    },
+    administrationStatus: { tenantAdministrationStatus: status },
+    parentTenantKey: parentTenantCode,
+    localization
+  } = serverTenant;
+
+  const type = sandbox ? 'SANDBOX' : 'TENANT';
   return {
-    code: tenant.key,
-    id: tenant.id,
-    label: tenant.name,
-    description: tenant.description,
-    type: serverTenant.tenant.sandbox ? 'SANDBOX' : 'TENANT',
-    status: serverTenant.administrationStatus.tenantAdministrationStatus,
-    configurationProperties: skipMappingConfigProperties
-      ? toConfigProperties(serverTenant)
-      : mapConfigurationProperties(
-          toConfigProperties(defaultApplicationTenantConfiguration),
-          toConfigProperties(serverTenant)
-        ),
-    localizationOverrides: mapLocalizationOverrides(tenant.localization)
+    code,
+    id,
+    label,
+    description,
+    type,
+    status,
+    configurationProperties: toConfigurationProperties(
+      toConfigurationOverrides(defaults, type),
+      toConfigurationOverrides(serverTenant, type)
+    ),
+    localizationOverrides: localizationToConfigurationProperties(localization),
+    parentTenantCode,
+    dataSet: (dataSets || []).find(dataSet => dataSetId === dataSet.id)
   };
 }
 
 // helper to return only the config props of an api model.
-export function toConfigProperties(serverProperties: any): any {
-  return {
-    aggregate: serverProperties.aggregate,
-    reporting: serverProperties.reporting,
-    ...(serverProperties.archive ? { archive: serverProperties.archive } : {}),
-    ...(serverProperties.datasources
-      ? { datasources: serverProperties.datasources }
-      : {})
-  };
-}
-
-export function toSandbox(
-  serverTenant: any,
-  defaultConfiguration: any,
-  dataSets: DataSet[]
-): TenantConfiguration {
-  // intentionally exclude datasources and archived here.
-  const defaults = {
-    aggregate: defaultConfiguration.aggregate,
-    reporting: defaultConfiguration.reporting
-  };
-  return <TenantConfiguration>{
-    ...toTenant(serverTenant, defaults),
-    parentTenantCode: serverTenant.parentTenantKey,
-    dataSet: dataSets.find(
-      dataSet => serverTenant.tenant.sandboxDataset === dataSet.id
-    )
-  };
+export function toConfigurationOverrides(
+  { archive, aggregate, datasources, reporting }: any,
+  type
+): any {
+  return type === 'SANDBOX'
+    ? {
+        aggregate,
+        reporting
+      }
+    : {
+        archive,
+        datasources,
+        aggregate,
+        reporting
+      };
 }
 
 export function toTenantApiModel(tenant: TenantConfiguration): any {
@@ -111,6 +114,13 @@ export function toTenantApiModel(tenant: TenantConfiguration): any {
   };
 }
 
+/**
+ * Maps configuration properties back to the server side representation
+ *
+ * TODO this impl assumes max depth of props
+ *
+ * @param configProperties
+ */
 function toConfigurationPropertiesApiModel(configProperties: any): any {
   const mappedGroup = {};
 
@@ -151,7 +161,15 @@ function toConfigurationPropertiesApiModel(configProperties: any): any {
   return mappedGroup;
 }
 
-export function mapConfigurationProperties(
+/**
+ * This creates configuration property models for each default property and applies the provided override on top of that
+ *
+ * TODO i feel it would be best to do this in the view as this is a view behavior concern and not a data modeling concern
+ *
+ * @param defaults
+ * @param overrides
+ */
+export function toConfigurationProperties(
   defaults: any,
   overrides: any = {}
 ): any {
@@ -228,7 +246,6 @@ export function mapConfigurationProperties(
       groupedProperties[groupKey] = databaseProps;
     }
   });
-
   return groupedProperties;
 }
 
@@ -250,7 +267,9 @@ export function getModifiedConfigProperties(configProperties: any): any {
   return modifiedProperties;
 }
 
-function mapLocalizationOverrides(overrides: any): ConfigurationProperty[] {
+function localizationToConfigurationProperties(
+  overrides: any
+): ConfigurationProperty[] {
   const flattenedOverrides = flattenJsonObject(overrides);
   const configProperties: ConfigurationProperty[] = [];
   forOwn(flattenedOverrides, (value, key) =>

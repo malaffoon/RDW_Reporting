@@ -1,33 +1,19 @@
-<!-- TODO investigate why this spinner display logic isn't working -->
-<!--<ng-container *ngIf="-->
-<!--  (tenant$ | async) != null-->
-<!--  && (mode$ | async) != null-->
-<!--  && (writable$ | async) != null-->
-<!--  && (tenants$ | async) != null-->
-<!--  && (dataSets$ | async) != null-->
-<!--  && (configurationDefaults$ | async) != null-->
-<!--  && (localizationDefaults$ | async) != null-->
-<!--  ; else loading-->
-<!--">-->
-<app-tenant-form
-  class="sandbox-config"
-  [value]="tenant$ | async"
-  [mode]="mode$ | async"
-  [writable]="writable$ | async"
-  [tenants]="tenants$ | async"
-  [dataSets]="dataSets$ | async"
-  [configurationDefaults]="configurationDefaults$ | async"
-  [localizationDefaults]="localizationDefaults$ | async"
-  [configurationOpen]="(type$ | async) === 'TENANT'"
-  [requiredConfiguration]="
-    (type$ | async) === 'TENANT' && (mode$ | async) === 'create'
-  "
-  [tenantKeyAvailable]="tenantKeyAvailable"
-  (create)="onCreate($event)"
-  (update)="onUpdate($event)"
-  (delete)="onDelete($event)"
-></app-tenant-form>
-<!--</ng-container>-->
-<!--<ng-template #loading>-->
-<!--  <spinner></spinner>-->
-<!--</ng-template>-->
+<ng-container *ngIf="(initialized$ | async); else loading">
+  <app-tenant-form
+    class="sandbox-config"
+    [value]="tenant$ | async"
+    [mode]="mode$ | async"
+    [tenants]="tenants$ | async"
+    [dataSets]="dataSets$ | async"
+    [configurationDefaults]="configurationDefaults$ | async"
+    [localizationDefaults]="localizationDefaults$ | async"
+    [tenantKeyAvailable]="tenantKeyAvailable"
+    [writable]="writable$ | async"
+    (create)="onCreate($event)"
+    (update)="onUpdate($event)"
+    (delete)="onDelete($event)"
+  ></app-tenant-form>
+</ng-container>
+<ng-template #loading>
+  <spinner></spinner>
+</ng-template>

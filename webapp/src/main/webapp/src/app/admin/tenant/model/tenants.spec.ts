@@ -1,11 +1,10 @@
 import { ConfigurationProperty } from '../model/configuration-property';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import {
-  toSandbox,
   toTenant,
   toTenantApiModel,
   getModifiedConfigProperties
-} from './tenant.mapper';
+} from './tenants';
 
 const tenantApiModel = {
   tenant: {
@@ -148,7 +147,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should map a sandbox from the api', () => {
-    const actual = toSandbox(sandboxApiModel, {}, dataSets);
+    const actual = toTenant(sandboxApiModel, {}, dataSets);
     expect(actual.dataSet.label).toBe('CA Demo Data');
 
     expect(actual.label).toBe('CA-Sandbox');
@@ -160,7 +159,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should merge sandbox and default configurations', () => {
-    const actual = toSandbox(sandboxApiModel, defaultsApiModel, dataSets);
+    const actual = toTenant(sandboxApiModel, defaultsApiModel, dataSets);
     const reporting = actual.configurationProperties.reporting;
 
     const actualOverride: ConfigurationProperty = reporting.find(
@@ -177,7 +176,7 @@ describe('Tenant mapper', () => {
   });
 
   it('should not map sandbox dataset configurations', () => {
-    const actual = toSandbox(sandboxApiModel, defaultsApiModel, dataSets);
+    const actual = toTenant(sandboxApiModel, defaultsApiModel, dataSets);
     expect(actual.configurationProperties.datasources).toBeUndefined();
   });
 

@@ -1198,12 +1198,20 @@
   },
   "tenant": {
     "create": {
+      "success": {
+        "SANDBOX": "Created sandbox \"{{label}}\"",
+        "TENANT": "Created tenant \"{{label}}\""
+      },
       "error": {
         "SANDBOX": "An unknown error occurred when attempting to create the sandbox",
         "TENANT": "An unknown error occurred when attempting to create the tenant"
       }
     },
     "update": {
+      "success": {
+        "SANDBOX": "Sandbox saved",
+        "TENANT": "Tenant saved"
+      },
       "error": {
         "SANDBOX": "An unknown error occurred when attempting to update the sandbox",
         "TENANT": "An unknown error occurred when attempting to update the tenant"

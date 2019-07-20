@@ -5,17 +5,15 @@ import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import {
-  mapConfigurationProperties,
-  toSandbox,
+  toConfigurationOverrides,
+  toConfigurationProperties,
   toTenant,
   toTenantApiModel
-} from '../mapper/tenant.mapper';
+} from '../model/tenants';
 import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
-import { Resource } from '../../../shared/security/state/security-settings';
 import { of } from 'rxjs/internal/observable/of';
-import { tap } from 'rxjs/internal/operators/tap';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -58,7 +56,7 @@ export class TenantService {
     const allSandboxes$ = forkJoin(tenants$, defaults$, dataSets$).pipe(
       map(([serverTenants, defaults, dataSets]) =>
         serverTenants.map(serverTenant =>
-          toSandbox(serverTenant, defaults, dataSets)
+          toTenant(serverTenant, defaults, dataSets)
         )
       )
     );
@@ -71,12 +69,9 @@ export class TenantService {
     const defaults$ = this.cachingDataService.get(DefaultsRoute);
     const dataSets$ = this.cachingDataService.get(DataSetsRoute);
     return forkJoin(tenant$, defaults$, dataSets$).pipe(
-      map(([tenant, defaults, dataSets]) => {
-        if (tenant.tenant.sandbox) {
-          return toSandbox(tenant, defaults, dataSets);
-        }
-        return toTenant(tenant, defaults);
-      })
+      map(([tenant, defaults, dataSets]) =>
+        toTenant(tenant, defaults, dataSets)
+      )
     );
   }
 
@@ -115,20 +110,8 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(type: TenantType): Observable<any> {
     return this.cachingDataService.get(DefaultsRoute).pipe(
-      map(({ archive, aggregate, datasources, reporting }) =>
-        mapConfigurationProperties(
-          type === 'SANDBOX'
-            ? {
-                aggregate,
-                reporting
-              }
-            : {
-                archive,
-                datasources,
-                aggregate,
-                reporting
-              }
-        )
+      map(defaults =>
+        toConfigurationProperties(toConfigurationOverrides(defaults, type))
       ),
       catchError(ResponseUtils.throwError)
     );
