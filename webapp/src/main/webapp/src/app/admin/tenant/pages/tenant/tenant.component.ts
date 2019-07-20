@@ -1,6 +1,14 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, mapTo, mergeMap, share, takeUntil } from 'rxjs/operators';
+import {
+  map,
+  mapTo,
+  mergeMap,
+  publishReplay,
+  refCount,
+  share,
+  takeUntil
+} from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { Observable, Subject } from 'rxjs';
@@ -16,6 +24,7 @@ import { FormMode } from '../../component/tenant-form/tenant-form.component';
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant } from '../../model/tenants';
+import { tap } from 'rxjs/internal/operators/tap';
 
 // TODO have diff checking to disable and enable the save button accordingly
 @Component({
@@ -60,22 +69,28 @@ export class TenantComponent implements OnDestroy {
 
     this.tenants$ = this.type$.pipe(
       mergeMap(type => (type === 'SANDBOX' ? tenants$ : of([]))),
-      share()
+      publishReplay(),
+      refCount()
     );
 
     this.dataSets$ = this.type$.pipe(
       mergeMap(type => (type === 'SANDBOX' ? sandboxDataSets$ : of([]))),
-      share()
+      publishReplay(),
+      refCount()
     );
 
     this.configurationDefaults$ = this.type$.pipe(
       mergeMap(type => this.service.getDefaultConfigurationProperties(type)),
-      share()
+      publishReplay(),
+      refCount()
     );
 
     this.localizationDefaults$ = this.translationLoader
       .getFlattenedTranslations(this.languageStore.currentLanguage)
-      .pipe(share());
+      .pipe(
+        publishReplay(),
+        refCount()
+      );
 
     this.tenant$ = this.route.params.pipe(
       mergeMap(({ id }) =>
@@ -107,7 +122,8 @@ export class TenantComponent implements OnDestroy {
               )
             )
       ),
-      share()
+      publishReplay(),
+      refCount()
     );
 
     this.writable$ = this.userService
