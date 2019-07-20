@@ -69,17 +69,20 @@
           <ng-container *ngIf="node.data as data">
             <ng-container *ngIf="!node.leaf; else leafNode">
               <tr
+                [ngClass]="{
+                  leaf: node.leaf
+                }"
                 [hidden]="
                   (modified && !hasModifiedDescendant(node)) ||
                   (required && !hasRequiredDescendant(node))
                 "
                 [ttRow]="rowNode"
+                (click)="onRowClick(rowNode, $event)"
               >
                 <td
                   [title]="data.key"
                   colspan="2"
                   [ngClass]="{ 'group-node': data.groupNode }"
-                  (click)="expandOrCollapse(rowNode, $event)"
                 >
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                   <ng-container *ngIf="data.groupNode; else notGroupNode">
@@ -103,6 +106,7 @@
                   "
                   [ttRow]="rowNode"
                   [ngClass]="{
+                    leaf: node.leaf,
                     modified: data.value !== data.originalValue
                   }"
                 >
@@ -123,6 +127,7 @@
                   "
                   [ttRow]="rowNode"
                   [ngClass]="{
+                    leaf: node.leaf,
                     modified: data.modified,
                     required:
                       form.get(propertiesArrayName) != null &&
@@ -132,7 +137,6 @@
                         form.get(propertiesArrayName).get(data.formControlName)
                       )
                   }"
-                  (click)="overrideInput.focus()"
                 >
                   <td [title]="data.key">
                     <p-treeTableToggler
@@ -154,10 +158,9 @@
                       [ngClass]="{ 'text-lowercase': data.lowercase }"
                     />
                     <div class="icon-container">
-                      <i
-                        class="fa fa-undo fa-md"
+                      <a
                         *ngIf="data.value !== data.originalValue"
-                        (click)="resetClicked(data)"
+                        (click)="onResetButtonClick(data)"
                         popover="{{
                           'tenant-configuration-override-form.popover.reset'
                             | translate
@@ -165,20 +168,24 @@
                         placement="left"
                         container="body"
                         triggers="mouseenter:mouseleave"
-                      ></i>
-                      <i
-                        class="fa fa-md"
-                        [ngClass]="{
-                          'fa-eye-slash': data.showSecure,
-                          'fa-eye': !data.showSecure
-                        }"
+                      >
+                        <i class="fa fa-undo fa-md"></i>
+                      </a>
+                      <a
                         *ngIf="data.secure"
                         (click)="data.showSecure = !data.showSecure"
-                      ></i>
-                      <i
-                        class="fa fa-unlock fa-md"
+                      >
+                        <i
+                          class="fa fa-md"
+                          [ngClass]="{
+                            'fa-eye-slash': data.showSecure,
+                            'fa-eye': !data.showSecure
+                          }"
+                        ></i>
+                      </a>
+                      <a
                         *ngIf="data.encrypted"
-                        (click)="decryptClicked(data)"
+                        (click)="onDecryptButtonClick(data)"
                         popover="{{
                           'tenant-configuration-override-form.popover.decrypt'
                             | translate
@@ -186,18 +193,24 @@
                         placement="left"
                         container="body"
                         triggers="mouseenter:mouseleave"
-                      ></i>
-                      <i
-                        class="fa fa-asterisk fa-md"
+                      >
+                        <i class="fa fa-unlock fa-md"></i>
+                      </a>
+                      <a
                         *ngIf="data.required"
+                        href="javascript:void(0)"
                         popover="{{
-                          'tenant-configuration-override-form.popover.password'
-                            | translate
+                          data.key.endsWith('password')
+                            ? ('tenant-configuration-override-form.popover.password'
+                              | translate)
+                            : null
                         }}"
                         placement="left"
                         container="body"
                         triggers="mouseenter:mouseleave"
-                      ></i>
+                      >
+                        <i class="fa fa-asterisk fa-md"></i>
+                      </a>
                     </div>
                   </td>
                 </tr>

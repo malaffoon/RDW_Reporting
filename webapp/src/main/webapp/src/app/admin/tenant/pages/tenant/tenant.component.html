@@ -9,6 +9,10 @@
     [localizationDefaults]="localizationDefaults$ | async"
     [tenantKeyAvailable]="tenantKeyAvailable"
     [writable]="writable$ | async"
+    [configurationOpen]="(type$ | async) === 'TENANT'"
+    [requiredConfiguration]="
+      (type$ | async) === 'TENANT' && (mode$ | async) === 'create'
+    "
     (create)="onCreate($event)"
     (update)="onUpdate($event)"
     (delete)="onDelete($event)"

@@ -279,6 +279,7 @@ export class TenantFormComponent implements OnChanges {
               }
             );
 
+      // TODO we should do this here or in the table view instead of the mapper
       // this.configurationOverrides = mapConfigurationProperties(
       //   this.configurationDefaults,
       //   this.value.configurationProperties
@@ -302,11 +303,6 @@ export class TenantFormComponent implements OnChanges {
 
   private onTenantChange(tenant: TenantConfiguration): void {
     if (tenant.configurationProperties) {
-      // this.configurationOverrides = mapConfigurationProperties(
-      //   this.configurationDefaults,
-      //   tenant.configurationProperties
-      // );
-      // this will erase existing overrides...
       this.configurationOverrides = cloneDeep(tenant.configurationProperties);
     }
     if (tenant.localizationOverrides) {
@@ -320,6 +316,10 @@ export class TenantFormComponent implements OnChanges {
   }
 
   onKeyChange(code: string): void {
+    // apply default passwords for sandboxes based on key
+    if (this.value.type !== 'TENANT') {
+      return;
+    }
     const key = (code || '').toLowerCase();
     const defaultDataBaseName = `reporting_${key}`;
     const defaultUsername = key;
