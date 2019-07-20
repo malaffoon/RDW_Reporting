@@ -97,7 +97,7 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
 
   // Should these be data driven?
   readonly secureFields = ['password', 's3SecretKey'];
-  readonly requiredFields = ['password'];
+  readonly requiredFields = ['username', 'password'];
   readonly encryptedFields = ['password'];
 
   // These fields should be lowercase for consistency with existing usernames and schema names in the database
@@ -135,7 +135,7 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
     this.setPropertyValue(override, newVal);
   }
 
-  expandOrCollapse(node: any, event: Event): void {
+  onRowClick(node: any, event: Event): void {
     // Manaully invoking the TreeTableToggler, as it seems there's more to it than just
     // toggling the boolean value of expanded.
     // https://github.com/primefaces/primeng/blob/6.0.0-rc.1/src/app/components/treetable/treetable.ts#L2266
@@ -144,11 +144,11 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
     toggler.onClick(event);
   }
 
-  resetClicked(override: ConfigurationProperty): void {
+  onResetButtonClick(override: ConfigurationProperty): void {
     this.setPropertyValue(override, override.originalValue);
   }
 
-  decryptClicked(override: ConfigurationProperty): void {
+  onDecryptButtonClick(override: ConfigurationProperty): void {
     this.decryptionService.decrypt(override.value).subscribe(
       password => {
         override.value = password;

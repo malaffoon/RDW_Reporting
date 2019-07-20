@@ -13,10 +13,27 @@
         padding-right: 50px;
       }
     }
+
     p-treeTableToggler > .ui-treetable-toggler {
       color: inherit;
       font-size: 14px;
       margin-right: 2px;
+    }
+
+    // pointer event corrections
+    p-treeTableToggler {
+      pointer-events: none;
+      cursor: pointer;
+    }
+
+    tr.leaf > td {
+      // TODO would like this
+      pointer-events: none;
+      a,
+      input,
+      button {
+        pointer-events: all;
+      }
     }
   }
 }
