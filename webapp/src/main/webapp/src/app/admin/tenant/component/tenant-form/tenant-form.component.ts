@@ -10,22 +10,22 @@ import {
 import {
   AbstractControl,
   AsyncValidatorFn,
-  FormBuilder,
   FormControl,
   FormGroup,
   Validators
 } from '@angular/forms';
-import { notBlank } from '../../../../shared/validator/custom-validators';
-import { ConfigurationProperty } from '../../model/configuration-property';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { Forms, showErrors } from '../../../../shared/form/forms';
-import { cloneDeep, forOwn } from 'lodash';
-import { getModifiedConfigProperties } from '../../model/tenants';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { showErrors } from '../../../../shared/form/forms';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { configurationsFormGroup } from '../property-override-tree-table/property-override-tree-table.component';
 import { localizationOverridesFormGroup } from '../property-override-table/property-override-table.component';
-import { rightDifference } from '../../../../shared/support/support';
+import { isBlank, rightDifference } from '../../../../shared/support/support';
+import { Property } from '../../model/property';
+import { toProperty } from '../../model/properties';
+import { byString } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
+import { tap } from 'rxjs/internal/operators/tap';
 
 export type FormMode = 'create' | 'update';
 
@@ -56,7 +56,8 @@ export function tenantFormGroup(
 
   const configurations = configurationsFormGroup(
     configurationDefaults,
-    value.configurationProperties
+    value.configurationProperties,
+    [onePasswordPerUser]
   );
 
   const localizations = localizationOverridesFormGroup(
@@ -95,10 +96,7 @@ export function tenantFormGroup(
           description,
           configurations,
           localizations
-        },
-    {
-      validators: [onePasswordPerUser]
-    }
+        }
   );
 }
 
@@ -107,10 +105,7 @@ const passwordKeyExpression = /^(\w+)\.password$/;
 function onePasswordPerUser(
   formGroup: FormGroup
 ): { onePasswordPerUser: boolean; usernames: string[] } | null {
-  const configurationProperties: FormGroup = formGroup.controls
-    .configurationProperties as FormGroup;
-
-  const controlNames = Object.keys(configurationProperties.controls);
+  const controlNames = Object.keys(formGroup.controls);
 
   const passwordKeys = controlNames.filter(controlName =>
     passwordKeyExpression.test(controlName)
@@ -125,10 +120,8 @@ function onePasswordPerUser(
     }.username`;
     // this is being run on every form control addition so we need to defensively set this
     // TODO disconnected from the values because the formgroup has changed.... -NEED control value accessor....
-    const username = (configurationProperties.get(usernameKey) || <any>{})
-      .value;
-    const password = (configurationProperties.get(passwordKey) || <any>{})
-      .value;
+    const username = (formGroup.get(usernameKey) || <any>{}).value;
+    const password = (formGroup.get(passwordKey) || <any>{}).value;
     const passwords = byUsername[username];
     if (passwords != null) {
       if (!passwords.includes(password)) {
@@ -150,8 +143,7 @@ function onePasswordPerUser(
 @Component({
   selector: 'app-tenant-form',
   templateUrl: './tenant-form.component.html',
-  styleUrls: ['./tenant-form.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./tenant-form.component.less']
 })
 export class TenantFormComponent implements OnChanges {
   readonly showErrors = showErrors;
@@ -198,19 +190,21 @@ export class TenantFormComponent implements OnChanges {
   @Input()
   requiredConfiguration: boolean = false;
 
-  // we make a copy of these for some reason instead of using the props on the tenant model - not sure why
-  // seems like we are maybe not using the view-model pattern here
-  // configurationOverrides: any = {};
-  // localizationOverrides: ConfigurationProperty[] = [];
+  // internals
+  localizations$: Observable<Property[]>;
 
-  formGroup: FormGroup;
+  localizationFormGroup: FormGroup = new FormGroup({
+    search: new FormControl(''),
+    modified: new FormControl(false)
+  });
 
+  // computed values
   readonlyGroups: string[] = [];
-
-  constructor(private formBuilder: FormBuilder) {}
+  formGroup: FormGroup;
 
   onSaveButtonClick(): void {
     const {
+      value: { type },
       formGroup: {
         value: {
           id,
@@ -222,11 +216,7 @@ export class TenantFormComponent implements OnChanges {
           configurations,
           localizations
         }
-      },
-      // TODO these should come from the form too...
-      // configurationOverrides,
-      // localizationOverrides,
-      value: { type }
+      }
     } = this;
 
     const emitter = this.mode === 'create' ? this.create : this.update;
@@ -237,17 +227,16 @@ export class TenantFormComponent implements OnChanges {
       id,
       label,
       description,
-      parentTenantCode: (tenant || {}).code,
+      parentTenantCode: (tenant || <any>{}).code,
       dataSet,
-      // TODO only send diff
       configurationProperties: rightDifference(
         this.configurationDefaults,
         localizations
-      ).middle,
+      ),
       localizationOverrides: rightDifference(
         this.localizationDefaults,
         configurations
-      ).middle
+      )
     });
   }
 
@@ -282,31 +271,50 @@ export class TenantFormComponent implements OnChanges {
         tenants,
         dataSets
       );
+
+      // depends on localization defaults, formGroup.controls.localizations
+      const localizationFormGroup: FormGroup = this.formGroup.controls
+        .localizations as FormGroup;
+      this.localizations$ = this.localizationFormGroup.valueChanges.pipe(
+        startWith(this.localizationFormGroup.value),
+        tap(form => {
+          console.log(form);
+        }),
+        map(({ search, modified }) =>
+          Object.entries(localizationDefaults)
+            .filter(([key, defaultValue]) => {
+              const caseInsensitiveSearch = search.toLowerCase();
+              const control = localizationFormGroup.controls[key];
+              if (control == null) {
+                console.log('why?', localizationFormGroup);
+                return false;
+              }
+              const value = control.value;
+              return (
+                (isBlank(search) ||
+                  (key.toLowerCase().includes(caseInsensitiveSearch) ||
+                    (typeof value === 'string' &&
+                      value.toLowerCase().includes(caseInsensitiveSearch)))) &&
+                (!modified || value !== defaultValue)
+              );
+            })
+            .map(([key, defaultValue]) => toProperty(key, defaultValue))
+            .sort(ordering(byString).on(({ key }) => key).compare)
+        )
+      );
     }
   }
 
   private onTenantChange(tenant: TenantConfiguration): void {
-    // if (tenant.configurationProperties) {
-    //   this.configurationOverrides = cloneDeep(tenant.configurationProperties);
-    // }
-    // if (tenant.localizationOverrides) {
-    //   mapLocalizationOverrides(
-    //     this.value,
-    //     this.formGroup,
-    //     this.localizationDefaults,
-    //     this.localizationOverrides
-    //   );
-    // }
-
     // reset form values to tenant overrides
     this.formGroup.patchValue({
       configurations: configurationsFormGroup(
         this.configurationDefaults,
-        this.value.configurationProperties
+        tenant.configurationProperties
       ),
       localizations: localizationOverridesFormGroup(
         this.localizationDefaults,
-        this.value.localizationOverrides
+        tenant.localizationOverrides
       )
     });
   }

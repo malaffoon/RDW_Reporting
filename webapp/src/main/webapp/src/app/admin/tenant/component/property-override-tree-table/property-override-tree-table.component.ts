@@ -3,7 +3,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild
@@ -14,18 +13,17 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { forOwn } from 'lodash';
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { NotificationService } from '../../../../shared/notification/notification.service';
-import { ConfigurationProperty } from '../../model/configuration-property';
+import { OldConfigProp } from '../../model/old-config-prop';
 import { showErrors } from '../../../../shared/form/forms';
 import { DecryptionService } from '../../service/decryption.service';
-import { flattenJsonObject } from '../../../../shared/support/support';
 
 export function configurationsFormGroup(
   defaults: any,
-  overrides: any
+  overrides: any = {},
+  validators: ValidatorFn | ValidatorFn[] = []
 ): FormGroup {
   return new FormGroup(
     Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
@@ -33,12 +31,13 @@ export function configurationsFormGroup(
       const value = overrideValue != null ? overrideValue : defaultValue;
 
       // TODO apply metadata
-      const validators = [];
+      const controlValidators = [];
 
-      controlsByName[key] = new FormControl(value, validators);
+      controlsByName[key] = new FormControl(value, controlValidators);
 
       return controlsByName;
-    }, {})
+    }, {}),
+    validators
   );
 }
 
@@ -81,6 +80,57 @@ function rowTrackBy(index: number, { node }: any) {
   return (node.leaf ? 'leaf.' : 'parent.') + node.data.key;
 }
 
+function createTreeRecurse(
+  nodes: TreeNode[],
+  defaults: any,
+  formGroup: FormGroup
+): void {
+  // TODO
+}
+
+function createTree(defaults: any, formGroup: FormGroup): TreeNode[] {
+  const nodes = [];
+  createTreeRecurse(nodes, defaults, formGroup);
+  return nodes;
+}
+// forOwn(this.configurationProperties, (configGroup, groupKey) => {
+//   const childrenNodes: TreeNode[] = [];
+//   const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
+//   // For each configuration group, create a root-level node
+//
+//   if (groupKey === 'datasources') {
+//     forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
+//       const dataSourcePropertyNodes: TreeNode[] = [];
+//       this.mapLeafNodes(
+//         dataSourceProperties,
+//         dataSourcePropertyNodes,
+//         groupReadonly
+//       );
+//
+//       childrenNodes.push({
+//         data: {
+//           key: dataSourceKey
+//         },
+//         children: dataSourcePropertyNodes,
+//         expanded: this.expanded
+//       });
+//     });
+//   } else {
+//     this.mapLeafNodes(configGroup, childrenNodes, groupReadonly);
+//   }
+//
+//   const groupNode = <TreeNode>{
+//     data: {
+//       key: groupKey,
+//       groupNode: true
+//     },
+//     children: childrenNodes,
+//     expanded: this.expanded,
+//     leaf: false
+//   };
+//   groupNodes.push(groupNode);
+// });
+
 @Component({
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html',
@@ -96,13 +146,7 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
   table: TreeTable;
 
   @Input()
-  form: FormGroup;
-
-  @Input()
-  configurationProperties: any;
-
-  @Input()
-  propertiesArrayName: string;
+  defaults: any;
 
   @Input()
   readonly = true;
@@ -111,17 +155,7 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
   readonlyGroups: string[] = [];
 
   @Output()
-  propertyValueChanged: EventEmitter<
-    ConfigurationProperty
-  > = new EventEmitter();
-
-  // Should these be data driven?
-  readonly secureFields = ['password', 's3SecretKey'];
-  readonly requiredFields = ['username', 'password'];
-  readonly encryptedFields = ['password'];
-
-  // These fields should be lowercase for consistency with existing usernames and schema names in the database
-  readonly lowercaseFields = ['urlParts.database', 'username'];
+  propertyValueChanged: EventEmitter<OldConfigProp> = new EventEmitter();
 
   @Input()
   required = false;
@@ -132,7 +166,8 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
   @Input()
   expanded = true;
 
-  configurationPropertiesTreeNodes: TreeNode[] = [];
+  formGroup: FormGroup;
+  tree: TreeNode[] = [];
 
   constructor(
     private decryptionService: DecryptionService,
@@ -140,20 +175,22 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    const { configurationProperties, form } = this;
-    if (configurationProperties != null && form != null) {
-      this.createConfigurationPropertyTree();
+    const { defaults } = this;
+    if (defaults != null) {
+      this.formGroup = configurationsFormGroup(defaults);
+      this.tree = createTree(defaults, this.formGroup);
     }
   }
 
-  updateOverride(override: ConfigurationProperty): void {
-    const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
-    const formControl = formGroup.controls[override.formControlName];
-    const newVal = override.lowercase
-      ? formControl.value.toLowerCase()
-      : formControl.value;
-    this.setPropertyValue(override, newVal);
-  }
+  //
+  // updateOverride(override: ConfigurationProperty): void {
+  //   const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
+  //   const formControl = formGroup.controls[override.formControlName];
+  //   const newVal = override.lowercase
+  //     ? formControl.value.toLowerCase()
+  //     : formControl.value;
+  //   this.setPropertyValue(override, newVal);
+  // }
 
   onRowClick(node: any, event: Event): void {
     // Manaully invoking the TreeTableToggler, as it seems there's more to it than just
@@ -164,126 +201,126 @@ export class PropertyOverrideTreeTableComponent implements OnChanges {
     toggler.onClick(event);
   }
 
-  onResetButtonClick(override: ConfigurationProperty): void {
-    this.setPropertyValue(override, override.originalValue);
+  onResetButtonClick(override: OldConfigProp): void {
+    // this.setPropertyValue(override, override.originalValue);
   }
 
-  onDecryptButtonClick(override: ConfigurationProperty): void {
-    this.decryptionService.decrypt(override.value).subscribe(
-      password => {
-        override.value = password;
-        override.encrypted = false;
-      },
-      error =>
-        this.notificationService.error({ id: 'decryption-service.error' })
-    );
+  onDecryptButtonClick(override: OldConfigProp): void {
+    // this.decryptionService.decrypt(override.value).subscribe(
+    //   password => {
+    //     override.value = password;
+    //     override.encrypted = false;
+    //   },
+    //   error =>
+    //     this.notificationService.error({ id: 'decryption-service.error' })
+    // );
   }
 
-  private setPropertyValue(override: ConfigurationProperty, newVal: string) {
-    let configurationProperties = <ConfigurationProperty[]>(
-      this.configurationProperties[override.group]
-    );
-
-    if (!configurationProperties) {
-      // If we couldn't find the group within the top-level property groups, lets peek at datasources...
-      const datasources = this.configurationProperties['datasources'];
-      configurationProperties = <ConfigurationProperty[]>(
-        datasources[override.group]
-      );
-    }
-
-    const configurationProperty = configurationProperties.find(
-      property => property.key === override.key
-    );
-    configurationProperty.value = newVal;
-    override.value = newVal;
-    this.propertyValueChanged.emit(override);
+  private setPropertyValue(override: OldConfigProp, newVal: string) {
+    // let configurationProperties = <ConfigurationProperty[]>(
+    //   this.configurationProperties[override.group]
+    // );
+    //
+    // if (!configurationProperties) {
+    //   // If we couldn't find the group within the top-level property groups, lets peek at datasources...
+    //   const datasources = this.configurationProperties['datasources'];
+    //   configurationProperties = <ConfigurationProperty[]>(
+    //     datasources[override.group]
+    //   );
+    // }
+    //
+    // const configurationProperty = configurationProperties.find(
+    //   property => property.key === override.key
+    // );
+    // configurationProperty.value = newVal;
+    // override.value = newVal;
+    // this.propertyValueChanged.emit(override);
   }
 
   private createConfigurationPropertyTree(): void {
     const groupNodes: TreeNode[] = [];
 
-    forOwn(this.configurationProperties, (configGroup, groupKey) => {
-      const childrenNodes: TreeNode[] = [];
-      const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
-      // For each configuration group, create a root-level node
+    // forOwn(this.configurationProperties, (configGroup, groupKey) => {
+    //   const childrenNodes: TreeNode[] = [];
+    //   const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
+    //   // For each configuration group, create a root-level node
+    //
+    //   if (groupKey === 'datasources') {
+    //     forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
+    //       const dataSourcePropertyNodes: TreeNode[] = [];
+    //       this.mapLeafNodes(
+    //         dataSourceProperties,
+    //         dataSourcePropertyNodes,
+    //         groupReadonly
+    //       );
+    //
+    //       childrenNodes.push({
+    //         data: {
+    //           key: dataSourceKey
+    //         },
+    //         children: dataSourcePropertyNodes,
+    //         expanded: this.expanded
+    //       });
+    //     });
+    //   } else {
+    //     this.mapLeafNodes(configGroup, childrenNodes, groupReadonly);
+    //   }
+    //
+    //   const groupNode = <TreeNode>{
+    //     data: {
+    //       key: groupKey,
+    //       groupNode: true
+    //     },
+    //     children: childrenNodes,
+    //     expanded: this.expanded,
+    //     leaf: false
+    //   };
+    //   groupNodes.push(groupNode);
+    // });
 
-      if (groupKey === 'datasources') {
-        forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
-          const dataSourcePropertyNodes: TreeNode[] = [];
-          this.mapLeafNodes(
-            dataSourceProperties,
-            dataSourcePropertyNodes,
-            groupReadonly
-          );
-
-          childrenNodes.push({
-            data: {
-              key: dataSourceKey
-            },
-            children: dataSourcePropertyNodes,
-            expanded: this.expanded
-          });
-        });
-      } else {
-        this.mapLeafNodes(configGroup, childrenNodes, groupReadonly);
-      }
-
-      const groupNode = <TreeNode>{
-        data: {
-          key: groupKey,
-          groupNode: true
-        },
-        children: childrenNodes,
-        expanded: this.expanded,
-        leaf: false
-      };
-      groupNodes.push(groupNode);
-    });
-
-    this.configurationPropertiesTreeNodes = [...groupNodes];
+    this.tree = [...groupNodes];
   }
 
   private mapLeafNodes(
-    configGroup: ConfigurationProperty[],
+    configGroup: OldConfigProp[],
     childrenNodes: TreeNode[],
     readonly: boolean
   ): void {
-    const configPropertiesFormGroup = <FormGroup>(
-      this.form.controls[this.propertiesArrayName]
-    );
-
-    configGroup.forEach(group => {
-      const encrypted =
-        group.value &&
-        typeof group.value === 'string' &&
-        group.value.startsWith('{cipher}') &&
-        this.encryptedFields.some(x => x === group.key);
-
-      // TODO sometimes keys have "configurationProperties ->" in the key... is this a race condition?
-
-      // TODO: Move these to the mapper.
-      group.encrypted = encrypted;
-      group.readonly = readonly || this.readonly;
-      group.secure = this.secureFields.includes(group.key);
-      group.required = this.requiredFields.includes(group.key);
-      group.lowercase = this.lowercaseFields.includes(group.key);
-
-      childrenNodes.push({
-        data: group, // assign object as a reference so other fields can trigger changes
-        expanded: false,
-        leaf: true
-      });
-
-      group.key.includes('password')
-        ? configPropertiesFormGroup.addControl(
-            group.formControlName,
-            new FormControl(group.value, passwordValidators())
-          )
-        : configPropertiesFormGroup.addControl(
-            group.formControlName,
-            new FormControl(group.value)
-          );
-    });
+    // const configPropertiesFormGroup = <FormGroup>(
+    //   this.form.controls[this.propertiesArrayName]
+    // );
+    //
+    // configGroup.forEach(group => {
+    //   const encrypted =
+    //     group.value &&
+    //     typeof group.value === 'string' &&
+    //     group.value.startsWith('{cipher}') &&
+    //     this.encryptedFields.some(x => x === group.key);
+    //
+    //   // TODO sometimes keys have "configurationProperties ->" in the key... is this a race condition?
+    //
+    //   // TODO: Move these to the mapper.
+    //   group.encrypted = encrypted;
+    //   group.readonly = readonly || this.readonly;
+    //   group.secure = this.secureFields.includes(group.key);
+    //   group.required = this.requiredFields.includes(group.key);
+    //   group.lowercase = this.lowercaseFields.includes(group.key);
+    //
+    //   childrenNodes.push({
+    //     data: group, // assign object as a reference so other fields can trigger changes
+    //     expanded: false,
+    //     leaf: true
+    //   });
+    //
+    //   group.key.includes('password')
+    //     ? configPropertiesFormGroup.addControl(
+    //         group.formControlName,
+    //         new FormControl(group.value, passwordValidators())
+    //       )
+    //     : configPropertiesFormGroup.addControl(
+    //         group.formControlName,
+    //         new FormControl(group.value)
+    //       );
+    // });
   }
 }

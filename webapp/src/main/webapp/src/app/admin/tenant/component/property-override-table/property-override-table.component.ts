@@ -1,109 +1,107 @@
-import { Component, Input } from '@angular/core';
-import { ConfigurationProperty } from '../../model/configuration-property';
-import { FormControl, FormGroup } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  Input
+} from '@angular/core';
+import { OldConfigProp } from '../../model/old-config-prop';
+import {
+  ControlContainer,
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR
+} from '@angular/forms';
+import { Property } from '../../model/property';
 
 export function localizationOverridesFormGroup(
   defaults: any,
   overrides: any
 ): FormGroup {
-  const flattenedDefaults = defaults;
-  const flattenedOverrides = overrides;
   return new FormGroup(
-    Object.entries(flattenedDefaults).reduce(
-      (controlsByName, [key, defaultValue]) => {
-        const overrideValue = flattenedOverrides[key];
-        const value = overrideValue != null ? overrideValue : defaultValue;
+    Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
+      const overrideValue = overrides[key];
+      const value = overrideValue != null ? overrideValue : defaultValue;
 
-        // TODO apply metadata
-        const validators = [];
+      // TODO apply metadata
+      const validators = [];
 
-        controlsByName[key] = new FormControl(value, validators);
+      controlsByName[key] = new FormControl(value, validators);
 
-        return controlsByName;
-      },
-      {}
-    )
+      return controlsByName;
+    }, {})
   );
 }
 
-function rowTrackBy(index: number, value: ConfigurationProperty) {
+function rowTrackBy(index: number, value: OldConfigProp) {
   return value.key;
 }
 
 @Component({
   selector: 'property-override-table',
   templateUrl: './property-override-table.component.html',
-  styleUrls: ['./property-override-table.component.less']
+  styleUrls: ['./property-override-table.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PropertyOverrideTableComponent),
+      multi: true
+    }
+    // {
+    //   provide: NG_VALIDATORS,
+    //   useExisting: forwardRef(() => PropertyOverrideTableComponent),
+    //   multi: true
+    // }
+  ]
 })
 //TODO: Implement ControlValueAccessor
-export class PropertyOverrideTableComponent {
+export class PropertyOverrideTableComponent implements ControlValueAccessor {
   readonly rowTrackBy = rowTrackBy;
 
-  private _configurationProperties: ConfigurationProperty[] = [];
-
-  get configurationProperties(): ConfigurationProperty[] {
-    return this._configurationProperties;
-  }
+  @Input()
+  defaults: any;
 
   @Input()
-  set configurationProperties(
-    configurationProperties: ConfigurationProperty[]
-  ) {
-    this._configurationProperties = configurationProperties;
-
-    if (
-      !this.filteredConfigurationProperties &&
-      configurationProperties.length > 0
-    ) {
-      this.filteredConfigurationProperties = configurationProperties;
-    }
-    this.updatePropertiesFilter();
-  }
-
-  @Input()
-  propertiesArrayName: string;
-
-  @Input()
-  form: FormGroup;
+  properties: Property[];
 
   @Input()
   readonly = true;
 
-  // filters in modified properties
-  @Input()
-  modified = false;
-
-  filteredConfigurationProperties: ConfigurationProperty[];
   first = 0;
 
-  constructor() {}
+  constructor(public controlContainer: ControlContainer) {}
 
-  updateOverride(override: ConfigurationProperty): void {
-    const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
-    const formControl = formGroup.controls[override.key];
-    const newVal = formControl.value;
-    const configurationProperty = this.configurationProperties.find(
-      property => property.key === override.key
-    );
-
-    configurationProperty.value = newVal;
-    override.value = newVal;
+  get formGroup(): FormGroup {
+    return this.controlContainer.control as FormGroup;
   }
 
-  updatePropertiesFilter(): void {
-    if (this.modified) {
-      this.filteredConfigurationProperties = this.configurationProperties.filter(
-        prop => prop.value !== prop.originalValue
-      );
-    } else {
-      this.filteredConfigurationProperties = this.configurationProperties;
+  onResetButtonClick(property: Property): void {
+    this.formGroup.patchValue({
+      [property.key]: property.defaultValue
+    });
+  }
+
+  // control value accessor implementation:
+
+  public onTouched: () => void = () => {};
+
+  writeValue(value: any): void {
+    if (value) {
+      this.formGroup.setValue(value, { emitEvent: false });
     }
-    // Reset the page back to the first page. Otherwise we can end up "trapped" in an empty page
-    this.first = 0;
   }
 
-  resetClicked(override: ConfigurationProperty) {
-    override.value = override.originalValue;
-    this.updatePropertiesFilter();
+  registerOnChange(fn: any): void {
+    this.formGroup.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    isDisabled ? this.formGroup.disable() : this.formGroup.enable();
   }
 }

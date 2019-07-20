@@ -1,4 +1,4 @@
-import { ConfigurationProperty } from '../model/configuration-property';
+import { OldConfigProp } from './old-config-prop';
 import { TenantConfiguration } from '../model/tenant-configuration';
 import {
   toTenant,
@@ -110,14 +110,14 @@ describe('Tenant mapper', () => {
     const actual = toTenant(tenantApiModel, defaultsApiModel);
     const reporting_rw =
       actual.configurationProperties.datasources.reporting_rw;
-    const actualOverride: ConfigurationProperty = reporting_rw.find(
+    const actualOverride: OldConfigProp = reporting_rw.find(
       x => x.key === 'urlParts.database'
     );
 
     expect(actualOverride.value).toBe('reporting');
     expect(actualOverride.originalValue).toBe('not_a_schema');
 
-    const actualDefault: ConfigurationProperty = reporting_rw.find(
+    const actualDefault: OldConfigProp = reporting_rw.find(
       x => x.key === 'urlParts.protocol'
     );
     expect(actualDefault.value).toBe('jdbc:mysql:');
@@ -162,13 +162,13 @@ describe('Tenant mapper', () => {
     const actual = toTenant(sandboxApiModel, defaultsApiModel, dataSets);
     const reporting = actual.configurationProperties.reporting;
 
-    const actualOverride: ConfigurationProperty = reporting.find(
+    const actualOverride: OldConfigProp = reporting.find(
       x => x.key === 'schoolYear'
     );
     expect(actualOverride.value).toBe('2015');
     expect(actualOverride.originalValue).toBe('2018');
 
-    const actualDefault: ConfigurationProperty = reporting.find(
+    const actualDefault: OldConfigProp = reporting.find(
       x => x.key === 'state.name'
     );
     expect(actualDefault.value).toBe('CA');

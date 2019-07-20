@@ -278,14 +278,15 @@
       </span>
 
       <div class="form-group" [hidden]="!configurationOpen">
-        <property-override-tree-table
-          formControlName="configurations"
-          [defaults]="configurationDefaults"
-          [readonly]="!writable"
-          [readonlyGroups]="readonlyGroups"
-          [required]="requiredConfiguration"
-          [expanded]="requiredConfiguration"
-        ></property-override-tree-table>
+        TODO
+        <!--        <property-override-tree-table-->
+        <!--          formGroupName="configurations"-->
+        <!--          [defaults]="configurationDefaults"-->
+        <!--          [readonly]="!writable"-->
+        <!--          [readonlyGroups]="readonlyGroups"-->
+        <!--          [required]="requiredConfiguration"-->
+        <!--          [expanded]="requiredConfiguration"-->
+        <!--        ></property-override-tree-table>-->
       </div>
 
       <app-toggle-label
@@ -295,9 +296,38 @@
         closedLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
       ></app-toggle-label>
 
-      <div class="form-group" [hidden]="!localizationOpen">
+      <div class="form-group">
+        <!--      <div class="form-group" [hidden]="!localizationOpen">-->
+        <div class="controls">
+          <form [formGroup]="localizationFormGroup">
+            <input
+              id="localizationSearch"
+              name="localizationSearch"
+              formControlName="search"
+              type="text"
+              placeholder="{{
+                'tenant-form.field.localizations.control.search.placeholder'
+                  | translate
+              }}"
+              class="form-control"
+            />
+            <label>
+              <input
+                id="localizationModified"
+                name="localizationModified"
+                formControlName="modified"
+                type="checkbox"
+              />
+              {{
+                'tenant-form.field.localizations.control.modified.label'
+                  | translate
+              }}
+            </label>
+          </form>
+        </div>
         <property-override-table
-          formControlName="localizations"
+          formGroupName="localizations"
+          [properties]="localizations$ | async"
           [defaults]="localizationDefaults"
           [readonly]="!writable"
         ></property-override-table>

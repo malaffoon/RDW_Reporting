@@ -1309,7 +1309,7 @@
       }
     }
   },
-  "tenant-configuration-override-form": {
+  "tenant-configuration-form": {
     "column": {
       "key": {
         "label": "Key"
@@ -1332,7 +1332,7 @@
     },
     "no-results": "There are no configuration properties matching your search"
   },
-  "tenant-localization-override-form": {
+  "tenant-localization-form": {
     "column": {
       "key": {
         "label": "Key"

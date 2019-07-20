@@ -1,74 +1,55 @@
-<!-- TODO extract -->
-<div class="controls">
-  <input
-    id="search"
-    name="search"
-    type="text"
-    placeholder="{{
-      'tenant-form.field.localizations.control.search.placeholder' | translate
-    }}"
-    class="form-control"
-    (input)="table.filterGlobal($event, 'contains')"
-  />
-  <label>
-    <input
-      id="modified"
-      name="modified"
-      type="checkbox"
-      [(ngModel)]="modified"
-      (ngModelChange)="updatePropertiesFilter()"
-    />
-    {{ 'tenant-form.field.localizations.control.modified.label' | translate }}
-  </label>
-</div>
-
-<div [formGroup]="form">
-  <div [formArrayName]="propertiesArrayName">
-    <p-table
-      #table
-      [value]="filteredConfigurationProperties"
-      dataKey="key"
-      [globalFilterFields]="['key', 'value']"
-      styleClass="table table-striped table-hover overflow rdw-scrollable-table"
-      [paginator]="true"
-      [(first)]="first"
-      [alwaysShowPaginator]="false"
-      [rows]="20"
-      [rowTrackBy]="rowTrackBy"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>
-            {{ 'tenant-localization-form.column.key.label' | translate }}
-          </th>
-          <th>
-            {{ 'tenant-localization-form.column.value.label' | translate }}
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-overrides>
-        <tr
-          *ngIf="!readonly"
-          [ngClass]="{
-            modified: overrides.value !== overrides.originalValue
-          }"
-          (click)="overrideInput.focus()"
-        >
-          <td [title]="overrides.key">{{ overrides.key }}</td>
-          <td>
+<ng-container [formGroup]="formGroup">
+  <p-table
+    #table
+    [value]="properties"
+    dataKey="key"
+    [globalFilterFields]="['key', 'value']"
+    [paginator]="true"
+    [(first)]="first"
+    [alwaysShowPaginator]="false"
+    [rows]="20"
+    [rowTrackBy]="rowTrackBy"
+    styleClass="table table-striped table-hover overflow rdw-scrollable-table"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          {{ 'tenant-localization-form.column.key.label' | translate }}
+        </th>
+        <th>
+          {{ 'tenant-localization-form.column.value.label' | translate }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-property>
+      <tr
+        [ngClass]="{
+          modified: property.defaultValue !== formGroup.value[property.key]
+        }"
+      >
+        <td [title]="property.key">
+          {{ property.key }}
+        </td>
+        <td>
+          <ng-container *ngIf="readonly; else writableValue">
+            <span>
+              {{ property.value }}
+            </span>
+          </ng-container>
+          <ng-template #writableValue>
             <input
-              #overrideInput
               type="text"
-              [value]="overrides.value"
-              [formControlName]="overrides.key"
+              [formControlName]="property.key"
               class="property-input"
-              (change)="updateOverride(overrides)"
             />
             <div class="icon-container">
               <i
                 class="fa fa-undo fa-md"
-                *ngIf="overrides.value !== overrides.originalValue && !readonly"
-                (click)="resetClicked(overrides)"
+                *ngIf="
+                  property.defaultValue !== formGroup.value[property.key] &&
+                  !readonly
+                "
+                (click)="onResetButtonClick(property)"
                 popover="{{
                   'tenant-configuration-form.popover.reset' | translate
                 }}"
@@ -77,29 +58,16 @@
                 triggers="mouseenter:mouseleave"
               ></i>
             </div>
-          </td>
-        </tr>
-        <tr
-          *ngIf="readonly"
-          [ngClass]="{
-            modified: overrides.value !== overrides.originalValue
-          }"
-        >
-          <td [title]="overrides.key">{{ overrides.key }}</td>
-          <td>
-            <span>
-              {{ overrides.value }}
-            </span>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="2">
-            {{ 'tenant-localization-form.no-results' | translate }}
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
-</div>
+          </ng-template>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="2">
+          {{ 'tenant-localization-form.no-results' | translate }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>

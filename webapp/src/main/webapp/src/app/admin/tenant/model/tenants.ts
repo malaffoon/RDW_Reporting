@@ -6,6 +6,7 @@ import {
   unflatten,
   UnflattenCustomizer
 } from '../../../shared/support/support';
+import { isEmpty } from 'lodash';
 
 const joinIfArrayOfPrimitives: FlattenCustomizer = (
   result,
@@ -89,7 +90,7 @@ export function toTenant(
     type,
     status,
     configurationProperties: toConfigurations(serverTenant, type),
-    localizationOverrides,
+    localizationOverrides: localizationOverrides || {},
     parentTenantCode,
     dataSet: (dataSets || []).find(dataSet => dataSetId === dataSet.id)
   };
@@ -147,7 +148,7 @@ export function toServerTenant(tenant: TenantConfiguration): any {
     parentTenantKey,
     // this should be mapped back at form submit time
     ...unflatten(configurationProperties, splitIfNonPasswordCommaJoinedString),
-    localization
+    localization: isEmpty(localization) ? null : {}
   };
 }
 

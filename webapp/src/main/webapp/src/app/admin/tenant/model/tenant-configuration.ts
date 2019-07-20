@@ -1,4 +1,4 @@
-import { ConfigurationProperty } from './configuration-property';
+import { OldConfigProp } from './old-config-prop';
 import { TenantStatus } from './tenant-status';
 import { TenantType } from './tenant-type';
 
@@ -34,7 +34,7 @@ export interface TenantConfiguration {
   /**
    * The map containing text/i18n overrides
    */
-  localizationOverrides?: ConfigurationProperty[];
+  localizationOverrides?: OldConfigProp[];
 
   /**
    * The JSON containing configuration properties
