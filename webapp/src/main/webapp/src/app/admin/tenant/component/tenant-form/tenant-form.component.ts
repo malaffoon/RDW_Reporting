@@ -146,6 +146,41 @@ function toPropertiesProvider<T = any>(
   );
 }
 
+function stateToTenant(
+  initialValue: TenantConfiguration,
+  configurationDefaults: any,
+  localizationDefaults: any,
+  formValue: any,
+  mode: FormMode
+): TenantConfiguration {
+  const { code: tenantCode, id: tenantId, type } = initialValue;
+  const {
+    id,
+    key: code,
+    label,
+    description,
+    tenant,
+    dataSet,
+    configurations = {},
+    localizations = {}
+  } = formValue;
+
+  const createMode = mode === 'create';
+  return {
+    type,
+    code: createMode ? code : tenantCode,
+    id: createMode ? id : tenantId,
+    label,
+    description,
+    parentTenantCode: (tenant || <any>{}).code,
+    dataSet,
+    configurations: lowercase(
+      valued(rightDifference(configurationDefaults, configurations))
+    ),
+    localizations: valued(rightDifference(localizationDefaults, localizations))
+  };
+}
+
 @Component({
   selector: 'app-tenant-form',
   templateUrl: './tenant-form.component.html',
@@ -214,47 +249,22 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   destroyed$: Subject<void> = new Subject();
 
   onSubmit(): void {
-    const {
-      value: { code: tenantCode, id: tenantId, type },
-      formGroup: {
-        invalid,
-        value: {
-          id,
-          key: code,
-          label,
-          description,
-          tenant,
-          dataSet,
-          configurations,
-          localizations
-        }
-      }
-    } = this;
-
-    if (invalid) {
+    if (this.formGroup.invalid) {
+      // TODO shouldn't have to do this.. but the submit action is not recursively marking things without it atm
       validate(this.formGroup);
       this.submitted$.next(true);
       return;
     }
-    const createMode = this.mode === 'create';
-    const emitter = createMode ? this.create : this.update;
-    const updated: TenantConfiguration = {
-      type,
-      code: createMode ? code : tenantCode,
-      id: createMode ? id : tenantId,
-      label,
-      description,
-      parentTenantCode: (tenant || <any>{}).code,
-      dataSet,
-      configurations: lowercase(
-        valued(rightDifference(this.configurationDefaults, configurations))
-      ),
-      localizations: valued(
-        rightDifference(this.localizationDefaults, localizations)
+    const emitter = this.mode === 'create' ? this.create : this.update;
+    emitter.emit(
+      stateToTenant(
+        this.value,
+        this.configurationDefaults,
+        this.localizationDefaults,
+        this.formGroup.value,
+        this.mode
       )
-    };
-
-    emitter.emit(updated);
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {

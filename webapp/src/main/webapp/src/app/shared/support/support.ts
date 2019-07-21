@@ -527,7 +527,7 @@ export function rightDifference(a: any, b: any): any {
  */
 export function valued(value: { [key: string]: any }): { [key: string]: any } {
   return Object.entries(value).reduce((valued, [key, value]) => {
-    if (value != null) {
+    if (value != null && !(typeof value === 'string' && value.length === 0)) {
       valued[key] = value;
     }
     return valued;

@@ -4,7 +4,8 @@ import {
   flatten,
   FlattenCustomizer,
   unflatten,
-  UnflattenCustomizer
+  UnflattenCustomizer,
+  valued
 } from '../../../shared/support/support';
 import { isEmpty, isObject } from 'lodash';
 
@@ -93,8 +94,8 @@ export function toTenant(
     description,
     type,
     status,
-    configurations: toConfigurations(serverTenant, type),
-    localizations: flatten(localizations || {}),
+    configurations: valued(toConfigurations(serverTenant, type)),
+    localizations: valued(flatten(localizations || {})),
     parentTenantCode,
     dataSet: (dataSets || []).find(dataSet => dataSetId === dataSet.id)
   };
