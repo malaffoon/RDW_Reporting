@@ -57,6 +57,17 @@ export function showErrors(control: AbstractControl): boolean {
   );
 }
 
+export function showErrorsRecursive(control: AbstractControl): boolean {
+  if (showErrors(control)) {
+    return true;
+  }
+  const { controls } = <FormGroup>control;
+  if (controls != null) {
+    return Object.values(controls).some(child => showErrorsRecursive(child));
+  }
+  return false;
+}
+
 /**
  * Holds common methods for dealing with angular form components
  */

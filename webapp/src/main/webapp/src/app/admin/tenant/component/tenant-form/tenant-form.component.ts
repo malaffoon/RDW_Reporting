@@ -9,9 +9,19 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { showErrors, validate } from '../../../../shared/form/forms';
+import {
+  showErrors,
+  showErrorsRecursive,
+  validate
+} from '../../../../shared/form/forms';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { debounceTime, map, mergeMap, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  map,
+  mergeMap,
+  startWith,
+  takeUntil
+} from 'rxjs/operators';
 import {
   configurationsFormGroup,
   toTreeNodes
@@ -37,6 +47,7 @@ import {
   tenantKey
 } from './tenant-form.validators';
 import { create } from 'domain';
+import { tap } from 'rxjs/internal/operators/tap';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -201,6 +212,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   localizations$: Observable<Property[]>;
   readonlyGroups: string[] = [];
   formGroup: FormGroup;
+  submitted$: Subject<boolean> = new Subject();
   destroyed$: Subject<void> = new Subject();
 
   onSubmit(): void {
@@ -223,6 +235,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
     if (invalid) {
       validate(this.formGroup);
+      this.submitted$.next(true);
       return;
     }
     const createMode = this.mode === 'create';
@@ -286,6 +299,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
       // hack to get config to open on search
       const configurationHasSearch$ = this.configurationControlsFormGroup.valueChanges.pipe(
+        takeUntil(this.destroyed$),
         startWith(this.configurationControlsFormGroup.value),
         map(
           ({ search, required, modified }) =>
@@ -293,20 +307,41 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         )
       );
 
+      const configurationsGroup = this.formGroup.controls.configurations;
+      const configurationsInvalid$ = this.submitted$.pipe(
+        takeUntil(this.destroyed$),
+        startWith(false),
+        map(
+          submitted =>
+            submitted &&
+            configurationsGroup.status === 'INVALID' &&
+            showErrorsRecursive(configurationsGroup)
+        )
+      );
+
+      const expandConfigurations$ = combineLatest(
+        configurationHasSearch$,
+        configurationsInvalid$
+      ).pipe(
+        takeUntil(this.destroyed$),
+        map(([hasSearch, invalid]) => hasSearch || invalid)
+      );
+
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
         configurationDefaults
       ).pipe(
+        takeUntil(this.destroyed$),
         mergeMap(entries =>
-          configurationHasSearch$.pipe(
-            map(hasSearch => {
+          expandConfigurations$.pipe(
+            map(expand => {
               const properties = entries.map(([key, defaultValue]) =>
                 toConfigurationProperty(key, defaultValue)
               );
               const flattened = keyBy(properties, ({ key }) => key);
               const unflattened = unflatten(flattened);
-              return toTreeNodes(unflattened, hasSearch);
+              return toTreeNodes(unflattened, expand);
             })
           )
         )
@@ -317,6 +352,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         this.formGroup.controls.localizations as FormGroup,
         localizationDefaults
       ).pipe(
+        takeUntil(this.destroyed$),
         map(entries =>
           entries.map(([key, defaultValue]) => toProperty(key, defaultValue))
         )
@@ -346,9 +382,10 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   // TODO apply default usernames - this can be done by checking pristine() form control state
   onKeyChange(code: string): void {
     // apply default passwords for sandboxes based on key
-    // const key = (code || '').toLowerCase();
-    // const defaultDataBaseName = `reporting_${key}`;
-    // const defaultUsername = key;
+    const key = (code || '').toLowerCase();
+    const defaultDataBaseName = `reporting_${key}`;
+    const defaultUsername = key;
+
     // const { configurationOverrides: { datasources = [] } = {} } = this;
     //
     // Object.keys(datasources).forEach(dataSourceKey => {
