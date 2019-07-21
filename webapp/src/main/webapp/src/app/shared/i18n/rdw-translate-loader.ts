@@ -7,7 +7,6 @@ import { EmbeddedLanguages } from './language-settings';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { SubjectService } from '../../subject/subject.service';
-import { flattenJsonObject, Utils } from '../support/support';
 import { UserService } from '../security/service/user.service';
 
 const EmptyObservable = of({});
@@ -51,12 +50,6 @@ export class RdwTranslateLoader implements TranslateLoader {
       );
   }
 
-  getFlattenedTranslations(languageCode: string): Observable<any> {
-    return this.getUserTranslations(languageCode).pipe(
-      map(translations => flattenJsonObject(translations))
-    );
-  }
-
   private getClientTranslations(languageCode: string): Observable<any> {
     return EmbeddedLanguages.indexOf(languageCode) != -1
       ? this.clientTranslationsLoader.getTranslation(languageCode)
@@ -95,8 +88,7 @@ export class RdwTranslateLoader implements TranslateLoader {
           serverTranslations,
           `subject.${subject}.asmt-type.${assessmentType}.name`
         );
-        if (Utils.isNullOrUndefined(label) || labels.indexOf(label) >= 0)
-          continue;
+        if (label == null || labels.indexOf(label) >= 0) continue;
 
         labels.push(label);
       }

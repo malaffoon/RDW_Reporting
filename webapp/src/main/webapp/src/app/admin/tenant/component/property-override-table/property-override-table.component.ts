@@ -1,85 +1,102 @@
-import { Component, Input } from '@angular/core';
-import { ConfigurationProperty } from '../../model/configuration-property';
-import { FormGroup } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  Input
+} from '@angular/core';
+import {
+  ControlContainer,
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  NG_VALUE_ACCESSOR
+} from '@angular/forms';
+import { Property } from '../../model/property';
 
-function rowTrackBy(index: number, value: ConfigurationProperty) {
+export function localizationsFormGroup(
+  defaults: any,
+  overrides: any
+): FormGroup {
+  return new FormGroup(
+    Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
+      const overrideValue = overrides[key];
+      const value = overrideValue != null ? overrideValue : defaultValue;
+      const validators = []; // TODO? do localizations need validation?
+      controlsByName[key] = new FormControl(value, validators);
+      return controlsByName;
+    }, {})
+  );
+}
+
+function rowTrackBy(index: number, value: Property) {
   return value.key;
 }
 
 @Component({
   selector: 'property-override-table',
   templateUrl: './property-override-table.component.html',
-  styleUrls: ['./property-override-table.component.less']
+  styleUrls: ['./property-override-table.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PropertyOverrideTableComponent),
+      multi: true
+    }
+  ]
 })
-//TODO: Implement ControlValueAccessor
-export class PropertyOverrideTableComponent {
+export class PropertyOverrideTableComponent implements ControlValueAccessor {
   readonly rowTrackBy = rowTrackBy;
 
-  private _configurationProperties: ConfigurationProperty[] = [];
-
-  get configurationProperties(): ConfigurationProperty[] {
-    return this._configurationProperties;
-  }
-
   @Input()
-  set configurationProperties(
-    configurationProperties: ConfigurationProperty[]
-  ) {
-    this._configurationProperties = configurationProperties;
-
-    if (
-      !this.filteredConfigurationProperties &&
-      configurationProperties.length > 0
-    ) {
-      this.filteredConfigurationProperties = configurationProperties;
-    }
-    this.updatePropertiesFilter();
-  }
-
-  @Input()
-  propertiesArrayName: string;
-
-  @Input()
-  form: FormGroup;
+  defaults: any;
 
   @Input()
   readonly = true;
 
-  // filters in modified properties
+  _rows: Property[];
+  _first = 0;
+
+  constructor(public controlContainer: ControlContainer) {}
+
   @Input()
-  modified = false;
-
-  filteredConfigurationProperties: ConfigurationProperty[];
-  first = 0;
-
-  constructor() {}
-
-  updateOverride(override: ConfigurationProperty): void {
-    const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
-    const formControl = formGroup.controls[override.key];
-    const newVal = formControl.value;
-    const configurationProperty = this.configurationProperties.find(
-      property => property.key === override.key
-    );
-
-    configurationProperty.value = newVal;
-    override.value = newVal;
+  set rows(values: Property[]) {
+    this._rows = values;
+    // reset the page back to the first page when the search changes
+    this._first = 0;
   }
 
-  updatePropertiesFilter(): void {
-    if (this.modified) {
-      this.filteredConfigurationProperties = this.configurationProperties.filter(
-        prop => prop.value !== prop.originalValue
-      );
-    } else {
-      this.filteredConfigurationProperties = this.configurationProperties;
+  get formGroup(): FormGroup {
+    return this.controlContainer.control as FormGroup;
+  }
+
+  // control value accessor implementation:
+
+  public onTouched: () => void = () => {};
+
+  writeValue(value: any): void {
+    if (value) {
+      this.formGroup.setValue(value, { emitEvent: false });
     }
-    // Reset the page back to the first page. Otherwise we can end up "trapped" in an empty page
-    this.first = 0;
   }
 
-  resetClicked(override: ConfigurationProperty) {
-    override.value = override.originalValue;
-    this.updatePropertiesFilter();
+  registerOnChange(fn: any): void {
+    this.formGroup.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    isDisabled ? this.formGroup.disable() : this.formGroup.enable();
+  }
+
+  // internals
+
+  onResetButtonClick(property: Property): void {
+    this.formGroup.patchValue({
+      [property.key]: property.defaultValue
+    });
   }
 }

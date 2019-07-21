@@ -1,4 +1,4 @@
-export class ConfigurationProperty {
+export class OldConfigProp {
   key: string;
   originalValue: string;
   value: string;

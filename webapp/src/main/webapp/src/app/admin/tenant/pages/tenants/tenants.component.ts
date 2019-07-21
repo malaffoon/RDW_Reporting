@@ -8,6 +8,7 @@ import { TenantType } from '../../model/tenant-type';
 import { tap } from 'rxjs/internal/operators/tap';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
+import { completedTenantStatuses } from '../../model/tenant-statuses';
 
 const pollingInterval = 2000;
 
@@ -30,6 +31,7 @@ export class TenantsComponent implements OnDestroy {
   ) {
     this.tenantType$ = this.route.data.pipe(map(({ type }) => type));
 
+    // TODO we should really only ping for status updates - not the entire tenant data
     this.tenants$ = combineLatest(
       this.tenantType$,
       timer(0, pollingInterval)
@@ -41,7 +43,11 @@ export class TenantsComponent implements OnDestroy {
           map(tenants => tenants.slice().sort(comparator)),
           // would like a less side-effecty way to do this but it works at least
           tap(tenants => {
-            if (tenants.every(({ status }) => status === 'ACTIVE')) {
+            if (
+              tenants.every(({ status }) =>
+                completedTenantStatuses.includes(status)
+              )
+            ) {
               this.pollingCompleted$.next();
               this.pollingCompleted$.complete();
             }
