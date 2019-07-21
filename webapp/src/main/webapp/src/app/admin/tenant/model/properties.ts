@@ -49,3 +49,17 @@ export function propertyValidators(key: string): ValidatorFn[] {
     ? passwordValidators()
     : [];
 }
+
+export function lowercase(values: {
+  [key: string]: any;
+}): { [key: string]: any } {
+  return Object.entries(values).reduce((lowercased, [key, value]) => {
+    lowercased[key] =
+      lowercaseFields.some(matcher => key.includes(matcher)) &&
+      value != null &&
+      typeof value === 'string'
+        ? value.toLowerCase()
+        : value;
+    return lowercased;
+  }, {});
+}

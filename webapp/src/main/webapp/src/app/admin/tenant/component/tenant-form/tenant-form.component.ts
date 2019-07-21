@@ -24,7 +24,11 @@ import {
   valued
 } from '../../../../shared/support/support';
 import { Property } from '../../model/property';
-import { toConfigurationProperty, toProperty } from '../../model/properties';
+import {
+  lowercase,
+  toConfigurationProperty,
+  toProperty
+} from '../../model/properties';
 import { TreeNode } from 'primeng/api';
 import { keyBy } from 'lodash';
 import {
@@ -32,6 +36,7 @@ import {
   onePasswordPerUser,
   tenantKey
 } from './tenant-form.validators';
+import { create } from 'domain';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -200,7 +205,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
   onSubmit(): void {
     const {
-      value: { type },
+      value: { code: tenantCode, id: tenantId, type },
       formGroup: {
         invalid,
         value: {
@@ -220,19 +225,18 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       validate(this.formGroup);
       return;
     }
-
-    const emitter = this.mode === 'create' ? this.create : this.update;
+    const createMode = this.mode === 'create';
+    const emitter = createMode ? this.create : this.update;
     const updated: TenantConfiguration = {
       type,
-      code,
-      id,
+      code: createMode ? code : tenantCode,
+      id: createMode ? id : tenantId,
       label,
       description,
       parentTenantCode: (tenant || <any>{}).code,
       dataSet,
-      // TODO apply lowercase requirement?
-      configurations: valued(
-        rightDifference(this.configurationDefaults, configurations)
+      configurations: lowercase(
+        valued(rightDifference(this.configurationDefaults, configurations))
       ),
       localizations: valued(
         rightDifference(this.localizationDefaults, localizations)
