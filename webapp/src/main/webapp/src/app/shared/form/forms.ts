@@ -32,12 +32,15 @@ export function controlValueAccessorProvider(reference: any): Provider {
   };
 }
 
+const options = { onlySelf: true };
 export function validate(formGroup: FormGroup): void {
-  // TODO this step should be recursive but there is currently no use case
   Object.values(formGroup.controls).forEach(control => {
-    control.markAsDirty();
+    control.markAsTouched(options);
+    control.updateValueAndValidity(options);
+    if ((<FormGroup>control).controls != null) {
+      validate(control as FormGroup);
+    }
   });
-  formGroup.updateValueAndValidity();
 }
 
 /**
@@ -46,7 +49,12 @@ export function validate(formGroup: FormGroup): void {
  * @param control the form control to test
  */
 export function showErrors(control: AbstractControl): boolean {
-  return control.invalid && (control.dirty || control.touched);
+  return (
+    control.invalid &&
+    (control.dirty || control.touched) &&
+    control.errors != null &&
+    Object.keys(control.errors).length > 0
+  );
 }
 
 /**

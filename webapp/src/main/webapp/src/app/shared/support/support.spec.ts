@@ -1,9 +1,13 @@
 import {
   deepEqualsIgnoringNullAndFalse,
+  difference,
   equalDate,
-  flattenJsonObject,
+  flatten,
+  rightDifference,
+  unflatten,
   Utils
 } from './support';
+import { isObject } from 'lodash';
 
 describe('Utils', () => {
   it('should pass isNullOrUndefined', () => {
@@ -33,44 +37,6 @@ describe('Utils', () => {
     expect(
       Utils.appendOrIncrementFileNameSuffix('an aggregateReport (1)')
     ).toEqual('an aggregateReport (2)');
-  });
-
-  it('should flatten JSON object', () => {
-    let mockJSON = {
-      foo: 'bar',
-      state: {
-        code: 'CA',
-        label: 'California'
-      }
-    };
-    expect(flattenJsonObject(mockJSON)).toEqual({
-      foo: 'bar',
-      'state.code': 'CA',
-      'state.label': 'California'
-    });
-  });
-
-  it('should flatten JSON object with an array of values', () => {
-    let mockJSON = {
-      foo: 'bar',
-      state: {
-        code: 'CA',
-        label: 'California',
-        description: null
-      },
-      languages: ['en', 'es']
-    };
-    expect(flattenJsonObject(mockJSON)).toEqual({
-      foo: 'bar',
-      'state.code': 'CA',
-      'state.label': 'California',
-      'state.description': null,
-      languages: 'en,es'
-    });
-  });
-
-  it('should return empty object for an undefined input', () => {
-    expect(flattenJsonObject(undefined)).toEqual({});
   });
 });
 
@@ -123,5 +89,153 @@ describe('equalDate', () => {
     const a = new Date(1, 2, 3, 4, 5, 6);
     const b = new Date(1, 2, 3, 5, 6, 7);
     expect(equalDate(a, b)).toBe(true);
+  });
+});
+
+describe('flatten', () => {
+  it('should flatten tree structure', () => {
+    expect(
+      flatten({
+        a: {
+          b: [
+            {
+              c: 1,
+              d: '3'
+            }
+          ],
+          bb: 2
+        }
+      })
+    ).toEqual({
+      'a.b.0.c': 1,
+      'a.b.0.d': '3',
+      'a.bb': 2
+    });
+  });
+
+  it('should run "primitive array value joining" customizer ', () => {
+    expect(
+      flatten(
+        {
+          a: {
+            b: [
+              {
+                c: 1,
+                d: ['3', '4']
+              }
+            ]
+          }
+        },
+        (result, object, property) => {
+          if (
+            Array.isArray(object) &&
+            object.every(value => !isObject(value))
+          ) {
+            result[property] = object.join(',');
+            return true;
+          }
+          return false;
+        }
+      )
+    ).toEqual({
+      'a.b.0.c': 1,
+      'a.b.0.d': '3,4'
+    });
+  });
+});
+
+describe('unflatten', () => {
+  it('should unflatten a flattened object', () => {
+    expect(
+      unflatten({
+        'a.b.0.c': 1,
+        'a.b.0.d': '3',
+        'a.bb': 2
+      })
+    ).toEqual({
+      a: {
+        b: [
+          {
+            c: 1,
+            d: '3'
+          }
+        ],
+        bb: 2
+      }
+    });
+  });
+  it('should run customizer', () => {
+    expect(
+      unflatten(
+        {
+          'a.b.0.c': '1',
+          'a.b.0.d': '3,4,5',
+          'a.bb': 2
+        },
+        value => {
+          if (typeof value === 'string') {
+            if (value.includes(',')) {
+              const array = value.split(',');
+              if (array.every(element => Object(element) !== element)) {
+                return array.map(element =>
+                  typeof element === 'string' ? element.trim() : element
+                );
+              }
+            }
+          }
+          return value;
+        }
+      )
+    ).toEqual({
+      a: {
+        b: [
+          {
+            c: '1',
+            d: ['3', '4', '5']
+          }
+        ],
+        bb: 2
+      }
+    });
+  });
+});
+
+const left = {
+  a: 1,
+  b: 2,
+  c: 3
+};
+
+const right = {
+  b: 2,
+  c: 4,
+  d: 5
+};
+
+describe('difference', () => {
+  it('should produce the difference of two flat objects', () => {
+    expect(difference(left, right)).toEqual({
+      left: {
+        a: 1
+      },
+      middle: {
+        c: {
+          left: 3,
+          right: 4
+        }
+      },
+      right: {
+        d: 5
+      }
+    });
+  });
+});
+
+describe('rightDifference', () => {
+  it('should only take the right difference', () => {
+    expect(rightDifference(left, right)).toEqual({
+      c: 4,
+      d: 5
+    });
   });
 });

@@ -1,143 +1,148 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
   SimpleChanges
 } from '@angular/core';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
-import { notBlank } from '../../../../shared/validator/custom-validators';
-import { ConfigurationProperty } from '../../model/configuration-property';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { Forms, showErrors } from '../../../../shared/form/forms';
-import { cloneDeep, forOwn } from 'lodash';
-import { getModifiedConfigProperties } from '../../model/tenants';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { showErrors, validate } from '../../../../shared/form/forms';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { debounceTime, map, mergeMap, startWith } from 'rxjs/operators';
+import {
+  configurationsFormGroup,
+  toTreeNodes
+} from '../property-override-tree-table/property-override-tree-table.component';
+import { localizationsFormGroup } from '../property-override-table/property-override-table.component';
+import {
+  isBlank,
+  rightDifference,
+  unflatten,
+  valued
+} from '../../../../shared/support/support';
+import { Property } from '../../model/property';
+import {
+  lowercase,
+  toConfigurationProperty,
+  toProperty
+} from '../../model/properties';
+import { TreeNode } from 'primeng/api';
+import { keyBy } from 'lodash';
+import {
+  available,
+  onePasswordPerUser,
+  tenantKey
+} from './tenant-form.validators';
+import { create } from 'domain';
 
 export type FormMode = 'create' | 'update';
+const keyboardDebounceInMilliseconds = 300;
 
-export const tenantKey = Validators.pattern(/^\w+$/);
+export function tenantFormGroup(
+  value: TenantConfiguration,
+  configurationDefaults: any,
+  localizationDefaults: any,
+  tenantKeyAvailable: (value: string) => Observable<boolean>,
+  tenants: TenantConfiguration[] = [],
+  dataSets: DataSet[] = []
+): FormGroup {
+  const label = new FormControl(value.label || '', [Validators.required]);
 
-export function available(
-  isAvailable: (value: string) => Observable<boolean>
-): AsyncValidatorFn {
-  return function(
-    control: AbstractControl
-  ): Observable<{ unavailable: boolean } | null> {
-    return isAvailable(control.value).pipe(
-      map(available => (available ? null : { unavailable: true }))
-    );
-  };
-}
+  const description = new FormControl(value.description || '');
 
-/**
- * Has side effects on tenant.localizationOverrides and formGroup
- */
-function mapLocalizationOverrides(
-  tenant: TenantConfiguration,
-  formGroup: FormGroup,
-  defaults: any,
-  overrides: ConfigurationProperty[]
-): void {
-  const localizationOverrides = tenant.localizationOverrides || [];
-  const overrideFormGroup: FormGroup = formGroup.controls
-    .localizationOverrides as FormGroup;
-
-  // why is this impl different for each tenant type? also - it doesn't seem to work...
-  // if (tenant.type === 'TENANT') {
-  //   defaults.forEach(translations => {
-  //     const overrideFormGroup = <FormGroup>(
-  //       this.formGroup.controls.localizationOverrides
-  //     );
-  //     for (const key in translations) {
-  //       // check also if property is not inherited from prototype
-  //       if (translations.hasOwnProperty(key)) {
-  //         const value = translations[key];
-  //         overrides.push(new ConfigurationProperty(key, value));
-  //         overrideFormGroup.controls[key] = new FormControl(value);
-  //       }
-  //     }
-  //   });
-  // } else {
-
-  forOwn(defaults, (value, key) => {
-    const defaultValue = defaults[key];
-    const override = localizationOverrides.find(o => o.key === key);
-    if (override) {
-      overrides.push(
-        new ConfigurationProperty(key, override.value, undefined, defaultValue)
-      );
-      overrideFormGroup.controls[key] = new FormControl(override.value);
-    } else {
-      overrides.push(new ConfigurationProperty(key, defaultValue));
-      overrideFormGroup.controls[key] = new FormControl(defaultValue);
-    }
-  });
-  // }
-}
-
-const passwordKeyExpression = /^(\w+)\.password$/;
-
-function onePasswordPerUser(
-  formGroup: FormGroup
-): { onePasswordPerUser: boolean; usernames: string[] } | null {
-  const configurationProperties: FormGroup = formGroup.controls
-    .configurationProperties as FormGroup;
-
-  const controlNames = Object.keys(configurationProperties.controls);
-
-  const passwordKeys = controlNames.filter(controlName =>
-    passwordKeyExpression.test(controlName)
+  const configurations = configurationsFormGroup(
+    configurationDefaults,
+    value.configurations,
+    [onePasswordPerUser]
   );
 
-  const passwordsByUsername: {
-    [username: string]: string[];
-  } = passwordKeys.reduce((byUsername, passwordKey) => {
-    // assumes username of same base path for every password
-    const usernameKey = `${
-      passwordKeyExpression.exec(passwordKey)[1]
-    }.username`;
-    // this is being run on every form control addition so we need to defensively set this
-    // TODO disconnected from the values because the formgroup has changed.... -NEED control value accessor....
-    const username = (configurationProperties.get(usernameKey) || <any>{})
-      .value;
-    const password = (configurationProperties.get(passwordKey) || <any>{})
-      .value;
-    const passwords = byUsername[username];
-    if (passwords != null) {
-      if (!passwords.includes(password)) {
-        passwords.push(password);
-      }
-    } else {
-      byUsername[username] = [password];
-    }
-    return byUsername;
-  }, {});
+  const localizations = localizationsFormGroup(
+    localizationDefaults,
+    value.localizations
+  );
 
-  const usernames = Object.entries(passwordsByUsername)
-    .filter(([, passwords]) => passwords.length > 1)
-    .map(([username]) => username);
+  // setup sandbox/tenant specific form
+  return new FormGroup(
+    value.type === 'SANDBOX'
+      ? {
+          label,
+          description,
+          dataSet: new FormControl(
+            dataSets.find(({ id }) => id === (value.dataSet || <DataSet>{}).id),
+            [Validators.required]
+          ),
+          tenant: new FormControl(
+            tenants.find(({ code }) => code === value.parentTenantCode),
+            [Validators.required]
+          ),
+          configurations,
+          localizations
+        }
+      : {
+          key: new FormControl(
+            value.code || '',
+            [Validators.required, Validators.maxLength(20), tenantKey],
+            [available(tenantKeyAvailable)]
+          ),
+          id: new FormControl(value.id || '', [Validators.required]),
+          label,
+          description,
+          configurations,
+          localizations
+        }
+  );
+}
 
-  return usernames.length > 0 ? { onePasswordPerUser: true, usernames } : null;
+function toPropertiesProvider<T = any>(
+  searchFormGroup: FormGroup,
+  formGroup: FormGroup,
+  defaults: { [key: string]: T }
+): Observable<[string, T][]> {
+  const { controls, value } = searchFormGroup;
+  const entries = Object.entries(defaults);
+  return combineLatest(
+    controls.search.valueChanges.pipe(
+      startWith(value.search),
+      debounceTime(keyboardDebounceInMilliseconds)
+    ),
+    controls.modified.valueChanges.pipe(startWith(value.modified)),
+    controls.required != null
+      ? controls.required.valueChanges.pipe(startWith(value.required))
+      : of(false)
+  ).pipe(
+    map(
+      ([search, modified, required]) =>
+        entries.filter(([key, defaultValue]) => {
+          const caseInsensitiveSearch = search.toLowerCase();
+          const value = formGroup.controls[key].value;
+          return (
+            (isBlank(search) ||
+              (key.toLowerCase().includes(caseInsensitiveSearch) ||
+                (typeof value === 'string' &&
+                  value.toLowerCase().includes(caseInsensitiveSearch)) ||
+                (Object(value) !== value &&
+                  String(value)
+                    .toLowerCase()
+                    .includes(caseInsensitiveSearch)))) &&
+            (!modified || value !== defaultValue) &&
+            (!required || /username|password/g.test(key)) // TODO this should really come from metadata
+          );
+        })
+      // TODO sort?
+      // .sort(ordering(byString).on(([key]) => key).compare)
+    )
+  );
 }
 
 @Component({
   selector: 'app-tenant-form',
   templateUrl: './tenant-form.component.html',
-  styleUrls: ['./tenant-form.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./tenant-form.component.less']
 })
-export class TenantFormComponent implements OnChanges {
+export class TenantFormComponent implements OnChanges, OnDestroy {
   readonly showErrors = showErrors;
 
   @Input()
@@ -150,10 +155,10 @@ export class TenantFormComponent implements OnChanges {
   value: TenantConfiguration;
 
   @Input()
-  tenants: TenantConfiguration[] = [];
+  tenants: TenantConfiguration[];
 
   @Input()
-  dataSets: DataSet[] = [];
+  dataSets: DataSet[];
 
   @Input()
   configurationDefaults: any;
@@ -180,165 +185,186 @@ export class TenantFormComponent implements OnChanges {
   localizationOpen: boolean = false;
 
   @Input()
-  requiredConfiguration: boolean = false;
+  requiredConfiguration: boolean;
 
-  // we make a copy of these for some reason instead of using the props on the tenant model - not sure why
-  // seems like we are maybe not using the view-model pattern here
-  configurationOverrides: any = {};
-  localizationOverrides: ConfigurationProperty[] = [];
+  configurationControlsFormGroup: FormGroup = new FormGroup({
+    search: new FormControl(''),
+    required: new FormControl(false),
+    modified: new FormControl(false)
+  });
+  configurations$: Observable<TreeNode[]>;
 
-  formGroup: FormGroup;
-
+  localizationControlsFormGroup: FormGroup = new FormGroup({
+    search: new FormControl(''),
+    modified: new FormControl(false)
+  });
+  localizations$: Observable<Property[]>;
   readonlyGroups: string[] = [];
+  formGroup: FormGroup;
+  destroyed$: Subject<void> = new Subject();
 
-  constructor(private formBuilder: FormBuilder) {}
-
-  onSaveButtonClick(): void {
+  onSubmit(): void {
     const {
+      value: { code: tenantCode, id: tenantId, type },
       formGroup: {
-        value: { id, key: code, label, description, tenant, dataSet }
-      },
-      // TODO these should come from the form too...
-      configurationOverrides,
-      localizationOverrides,
-      value: { type }
+        invalid,
+        value: {
+          id,
+          key: code,
+          label,
+          description,
+          tenant,
+          dataSet,
+          configurations,
+          localizations
+        }
+      }
     } = this;
 
-    const emitter = this.mode === 'create' ? this.create : this.update;
-
-    emitter.emit({
+    if (invalid) {
+      validate(this.formGroup);
+      return;
+    }
+    const createMode = this.mode === 'create';
+    const emitter = createMode ? this.create : this.update;
+    const updated: TenantConfiguration = {
       type,
-      code,
-      id,
+      code: createMode ? code : tenantCode,
+      id: createMode ? id : tenantId,
       label,
       description,
-      parentTenantCode: (tenant || {}).code,
+      parentTenantCode: (tenant || <any>{}).code,
       dataSet,
-      localizationOverrides: localizationOverrides.filter(
-        override => override.originalValue !== override.value
+      configurations: lowercase(
+        valued(rightDifference(this.configurationDefaults, configurations))
       ),
-      configurationProperties: getModifiedConfigProperties(
-        configurationOverrides
+      localizations: valued(
+        rightDifference(this.localizationDefaults, localizations)
       )
-    });
+    };
+
+    emitter.emit(updated);
   }
 
-  // TODO currently this causes mulitple rerenders and i am not able to present a loading spinner
-  // i think this needs to be reworked such that the @Input()s each have their own subject to push to
   ngOnChanges(changes: SimpleChanges): void {
     const {
-      value,
-      localizationDefaults,
       mode,
+      value,
       tenants,
       dataSets,
-      tenantKeyAvailable
+      configurationDefaults,
+      localizationDefaults,
+      tenantKeyAvailable,
+      requiredConfiguration
     } = this;
 
     if (
       value != null &&
-      localizationDefaults != null &&
       mode != null &&
+      configurationDefaults != null &&
+      localizationDefaults != null &&
       tenantKeyAvailable != null &&
+      requiredConfiguration != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
-      // setup sandbox/tenant specific form
-      this.formGroup =
-        value.type === 'SANDBOX'
-          ? this.formBuilder.group({
-              label: [value.label || '', [notBlank]],
-              description: [value.description || ''],
-              dataSet: [
-                dataSets.find(
-                  ({ id }) => id === (value.dataSet || <DataSet>{}).id
-                ),
-                [Validators.required]
-              ],
-              tenant: [
-                tenants.find(({ code }) => code === value.parentTenantCode),
-                [Validators.required]
-              ],
-              configurationProperties: this.formBuilder.group({}),
-              localizationOverrides: this.formBuilder.group({})
-            })
-          : this.formBuilder.group(
-              {
-                key: [
-                  value.code || '',
-                  [Validators.required, tenantKey, Validators.maxLength(20)],
-                  [available(this.tenantKeyAvailable)]
-                ],
-                id: [value.id || '', [Validators.required]],
-                label: [value.label || '', [notBlank]],
-                description: [value.description || ''],
-                configurationProperties: this.formBuilder.group({}),
-                localizationOverrides: this.formBuilder.group({})
-              },
-              {
-                validators: [onePasswordPerUser]
-              }
-            );
-
-      // TODO we should do this here or in the table view instead of the mapper
-      // this.configurationOverrides = mapConfigurationProperties(
-      //   this.configurationDefaults,
-      //   this.value.configurationProperties
-      // );
-
-      this.configurationOverrides = this.configurationOverrides = cloneDeep(
-        this.value.configurationProperties
-      );
-
-      mapLocalizationOverrides(
-        this.value,
-        this.formGroup,
-        this.localizationDefaults,
-        this.localizationOverrides
-      );
-
       this.readonlyGroups =
         this.mode === 'create' ? [] : ['datasources', 'archive'];
-    }
-  }
 
-  private onTenantChange(tenant: TenantConfiguration): void {
-    if (tenant.configurationProperties) {
-      this.configurationOverrides = cloneDeep(tenant.configurationProperties);
-    }
-    if (tenant.localizationOverrides) {
-      mapLocalizationOverrides(
-        this.value,
-        this.formGroup,
-        this.localizationDefaults,
-        this.localizationOverrides
+      this.formGroup = tenantFormGroup(
+        value,
+        configurationDefaults,
+        localizationDefaults,
+        tenantKeyAvailable,
+        tenants,
+        dataSets
+      );
+
+      // set the defaults on the formGroup
+      this.configurationControlsFormGroup.patchValue({
+        required: this.requiredConfiguration
+      });
+
+      // hack to get config to open on search
+      const configurationHasSearch$ = this.configurationControlsFormGroup.valueChanges.pipe(
+        startWith(this.configurationControlsFormGroup.value),
+        map(
+          ({ search, required, modified }) =>
+            !isBlank(search) || required || modified
+        )
+      );
+
+      this.configurations$ = toPropertiesProvider(
+        this.configurationControlsFormGroup as FormGroup,
+        this.formGroup.controls.configurations as FormGroup,
+        configurationDefaults
+      ).pipe(
+        mergeMap(entries =>
+          configurationHasSearch$.pipe(
+            map(hasSearch => {
+              const properties = entries.map(([key, defaultValue]) =>
+                toConfigurationProperty(key, defaultValue)
+              );
+              const flattened = keyBy(properties, ({ key }) => key);
+              const unflattened = unflatten(flattened);
+              return toTreeNodes(unflattened, hasSearch);
+            })
+          )
+        )
+      );
+
+      this.localizations$ = toPropertiesProvider(
+        this.localizationControlsFormGroup as FormGroup,
+        this.formGroup.controls.localizations as FormGroup,
+        localizationDefaults
+      ).pipe(
+        map(entries =>
+          entries.map(([key, defaultValue]) => toProperty(key, defaultValue))
+        )
       );
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  onTenantChange(tenant: TenantConfiguration): void {
+    // reset form values to tenant overrides
+    this.formGroup.patchValue({
+      configurations: configurationsFormGroup(
+        this.configurationDefaults,
+        tenant.configurations
+      ),
+      localizations: localizationsFormGroup(
+        this.localizationDefaults,
+        tenant.localizations
+      )
+    });
+  }
+
+  // TODO apply default usernames - this can be done by checking pristine() form control state
   onKeyChange(code: string): void {
     // apply default passwords for sandboxes based on key
-    if (this.value.type !== 'TENANT') {
-      return;
-    }
-    const key = (code || '').toLowerCase();
-    const defaultDataBaseName = `reporting_${key}`;
-    const defaultUsername = key;
-    const { configurationOverrides: { datasources = [] } = {} } = this;
-
-    Object.keys(datasources).forEach(dataSourceKey => {
-      const dataSource = datasources[dataSourceKey];
-      const urlPartsDatabase: ConfigurationProperty = dataSource.find(
-        property => property.key === 'urlParts.database'
-      );
-      if (!urlPartsDatabase.modified) {
-        urlPartsDatabase.value = defaultDataBaseName;
-      }
-      const username = <ConfigurationProperty>(
-        dataSource.find(property => property.key === 'username')
-      );
-      if (!username.modified) {
-        username.value = defaultUsername;
-      }
-    });
+    // const key = (code || '').toLowerCase();
+    // const defaultDataBaseName = `reporting_${key}`;
+    // const defaultUsername = key;
+    // const { configurationOverrides: { datasources = [] } = {} } = this;
+    //
+    // Object.keys(datasources).forEach(dataSourceKey => {
+    //   const dataSource = datasources[dataSourceKey];
+    //   const urlPartsDatabase: ConfigurationProperty = dataSource.find(
+    //     property => property.key === 'urlParts.database'
+    //   );
+    //   if (!urlPartsDatabase.modified) {
+    //     urlPartsDatabase.value = defaultDataBaseName;
+    //   }
+    //   const username = <ConfigurationProperty>(
+    //     dataSource.find(property => property.key === 'username')
+    //   );
+    //   if (!username.modified) {
+    //     username.value = defaultUsername;
+    //   }
+    // });
   }
 }

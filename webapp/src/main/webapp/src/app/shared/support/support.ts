@@ -1,4 +1,4 @@
-import { isEmpty, isEqual, omitBy } from 'lodash';
+import { isEmpty, isEqual, omitBy, isObject } from 'lodash';
 
 export function isBlank(value: string): boolean {
   return value.trim().length === 0;
@@ -353,37 +353,183 @@ export function range(start: number, end: number): number[] {
   return values;
 }
 
-/**
- * Flattens a (potentially deeply nested) JSON object to a single-level shallow JSON object
- *
- * @param {any} A potentially deeply nested JSON object
- * @returns {any} A flattened JSON object containing key/value pairings
- */
-export function flattenJsonObject(ob: any): any {
-  const toReturn = {};
+// https://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
 
-  for (const i in ob) {
-    if (!ob.hasOwnProperty(i)) {
-      continue;
-    }
+export interface FlattenCustomizer {
+  (result: any, value: any, property: string): boolean;
+}
 
-    if (typeof ob[i] == 'object') {
-      if (Array.isArray(ob[i])) {
-        toReturn[i] = ob[i].join();
-      } else if (ob[i] == null) {
-        toReturn[i] = null;
-      } else {
-        const flatObject = flattenJsonObject(ob[i]);
-        for (const x in flatObject) {
-          if (!flatObject.hasOwnProperty(x)) {
-            continue;
-          }
-          toReturn[i + '.' + x] = flatObject[x];
-        }
-      }
+export interface UnflattenCustomizer {
+  (value: any, property: string): any;
+}
+
+const nullFlattenCustomizer = () => false;
+const nullUnflattenCustomizer = value => value;
+
+function flattenRecurse(
+  result: any,
+  object: any,
+  property: string,
+  customizer: FlattenCustomizer
+) {
+  if (customizer(result, object, property)) {
+    // customizer handled it
+  } else if (!isObject(object)) {
+    // is primitive
+    result[property] = object;
+  } else if (Array.isArray(object)) {
+    const length = object.length;
+    if (length === 0) {
+      result[property] = [];
     } else {
-      toReturn[i] = ob[i];
+      for (let i = 0; i < length; i++) {
+        flattenRecurse(
+          result,
+          object[i],
+          property ? property + '.' + i : '' + i,
+          customizer
+        );
+      }
+    }
+  } else {
+    let isEmpty = true;
+    for (let key in object) {
+      isEmpty = false;
+      flattenRecurse(
+        result,
+        object[key],
+        property ? property + '.' + key : key,
+        customizer
+      );
+    }
+    if (isEmpty) {
+      result[property] = {};
     }
   }
-  return toReturn;
+}
+
+export function flatten(
+  object: any,
+  customizer: FlattenCustomizer = nullFlattenCustomizer
+): any {
+  const result = {};
+  flattenRecurse(result, object, '', customizer);
+  return result;
+}
+
+export function unflatten(
+  object: any,
+  customizer: UnflattenCustomizer = nullUnflattenCustomizer
+): any {
+  if (!isObject(object) || Array.isArray(object)) {
+    return object;
+  }
+  let result = {},
+    currentObject,
+    property,
+    i,
+    last,
+    temporaryProperty;
+  for (let key in object) {
+    (currentObject = result), (property = ''), (last = 0);
+    do {
+      i = key.indexOf('.', last);
+      temporaryProperty = key.substring(last, i !== -1 ? i : undefined);
+      currentObject =
+        currentObject[property] ||
+        (currentObject[property] = !isNaN(parseInt(temporaryProperty))
+          ? []
+          : {});
+      property = temporaryProperty;
+      last = i + 1;
+    } while (i >= 0);
+    currentObject[property] = customizer(object[key], key);
+  }
+  return result[''];
+}
+
+export interface ValueDifference {
+  left: any;
+  right: any;
+}
+
+export interface Difference {
+  left: { [key: string]: any };
+  middle: { [key: string]: ValueDifference };
+  right: { [key: string]: any };
+}
+
+/**
+ * Produces the difference between two flat objects
+ *
+ * @param a The first or "left" object
+ * @param b The second or "right" object
+ */
+export function difference(a: any, b: any): Difference {
+  const difference = {
+    left: {},
+    middle: {},
+    right: {}
+  };
+  for (let propertyA in a) {
+    if (!a.hasOwnProperty(propertyA)) {
+      continue;
+    }
+    const valueA = a[propertyA];
+    if (b.hasOwnProperty(propertyA)) {
+      const valueB = b[propertyA];
+      if (valueA !== valueB) {
+        difference.middle[propertyA] = {
+          left: valueA,
+          right: valueB
+        };
+      }
+    } else {
+      difference.left[propertyA] = valueA;
+    }
+  }
+  for (let propertyB in b) {
+    if (!b.hasOwnProperty(propertyB)) {
+      continue;
+    }
+    if (!a.hasOwnProperty(propertyB)) {
+      difference.right[propertyB] = b[propertyB];
+    }
+  }
+  return difference;
+}
+
+function oneSidedDifference(a: any, b: any, side: 'left' | 'right'): any {
+  const diff = difference(a, b);
+  return Object.entries(diff.middle).reduce(
+    (rightDifference, [key, { [side]: value }]) => {
+      rightDifference[key] = value;
+      return rightDifference;
+    },
+    { ...diff[side] }
+  );
+}
+
+/**
+ * Produces only the differences of the right with the left
+ *
+ * @param a The left
+ * @param b The right
+ */
+export function rightDifference(a: any, b: any): any {
+  return oneSidedDifference(a, b, 'right');
+}
+
+/**
+ * Returns the provided object but with only entries that have values other than null or undefined
+ *
+ * @param value The object to prune of null or undefined valued entries
+ */
+export function valued(value: { [key: string]: any }): { [key: string]: any } {
+  return Object.entries(value).reduce((valued, [key, value]) => {
+    if (value != null) {
+      valued[key] = value;
+    }
+    return valued;
+  }, {});
 }

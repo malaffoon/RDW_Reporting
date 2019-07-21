@@ -1,49 +1,11 @@
-<!-- TODO extract -->
-<div class="controls">
-  <input
-    id="search"
-    name="search"
-    type="text"
-    placeholder="{{
-      'tenant-form.field.configurationOverrides.control.search.placeholder'
-        | translate
-    }}"
-    class="form-control"
-    (input)="table.filterGlobal($event.target.value, 'contains')"
-  />
-
-  <label>
-    <input
-      id="required"
-      name="required"
-      type="checkbox"
-      [(ngModel)]="required"
-    />
-    {{
-      'tenant-form.field.configurationOverrides.control.required.label'
-        | translate
-    }}
-  </label>
-
-  <label>
-    <input
-      id="modified"
-      name="modified"
-      type="checkbox"
-      [(ngModel)]="modified"
-    />
-    {{
-      'tenant-form.field.configurationOverrides.control.modified.label'
-        | translate
-    }}
-  </label>
-</div>
-
-<div [formGroup]="form">
-  <div [formArrayName]="propertiesArrayName">
+<ng-container *ngIf="tree != null && tree.length === 0; else hasResults">
+  {{ 'tenant-configuration-form.no-results' | translate }}
+</ng-container>
+<ng-template #hasResults>
+  <ng-container [formGroup]="formGroup">
     <p-treeTable
       #table
-      [value]="configurationPropertiesTreeNodes"
+      [value]="tree"
       dataKey="key"
       [globalFilterFields]="['key', 'value']"
       styleClass="table table-striped table-hover"
@@ -52,15 +14,10 @@
       <ng-template pTemplate="header">
         <tr>
           <th>
-            {{
-              'tenant-configuration-override-form.column.key.label' | translate
-            }}
+            {{ 'tenant-configuration-form.column.key.label' | translate }}
           </th>
           <th>
-            {{
-              'tenant-configuration-override-form.column.value.label'
-                | translate
-            }}
+            {{ 'tenant-configuration-form.column.value.label' | translate }}
           </th>
         </tr>
       </ng-template>
@@ -72,27 +29,23 @@
                 [ngClass]="{
                   leaf: node.leaf
                 }"
-                [hidden]="
-                  (modified && !hasModifiedDescendant(node)) ||
-                  (required && !hasRequiredDescendant(node))
-                "
                 [ttRow]="rowNode"
                 (click)="onRowClick(rowNode, $event)"
               >
                 <td
                   [title]="data.key"
                   colspan="2"
-                  [ngClass]="{ 'group-node': data.groupNode }"
+                  [ngClass]="{ 'group-node': data.depth === 0 }"
                 >
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                  <ng-container *ngIf="data.groupNode; else notGroupNode">
+                  <ng-container *ngIf="data.depth === 0; else notRootNode">
                     {{
-                      'tenant-configuration-override-form.group.' + data.key
+                      'tenant-configuration-form.group.' + data.segment
                         | translate
                     }}
                   </ng-container>
-                  <ng-template #notGroupNode>
-                    {{ data.key }}
+                  <ng-template #notRootNode>
+                    {{ data.segment }}
                   </ng-template>
                 </td>
               </tr>
@@ -100,120 +53,120 @@
             <ng-template #leafNode>
               <ng-container *ngIf="data.readonly; else writableNode">
                 <tr
-                  [hidden]="
-                    (modified && data.originalValue === data.value) ||
-                    (required && !data.required)
-                  "
                   [ttRow]="rowNode"
                   [ngClass]="{
                     leaf: node.leaf,
-                    modified: data.value !== data.originalValue
+                    modified: data.defaultValue !== formGroup.value[data.key]
                   }"
                 >
                   <td [title]="data.key">
                     <p-treeTableToggler
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
-                    {{ data.key }}
+                    {{ data.segment }}
                   </td>
                   <td>{{ data.value }}</td>
                 </tr>
               </ng-container>
               <ng-template #writableNode>
                 <tr
-                  [hidden]="
-                    (modified && data.originalValue === data.value) ||
-                    (required && !data.required)
-                  "
                   [ttRow]="rowNode"
                   [ngClass]="{
                     leaf: node.leaf,
-                    modified: data.modified,
-                    required:
-                      form.get(propertiesArrayName) != null &&
-                      form.get(propertiesArrayName).get(data.formControlName) !=
-                        null &&
-                      showErrors(
-                        form.get(propertiesArrayName).get(data.formControlName)
-                      )
+                    modified: data.defaultValue !== formGroup.value[data.key],
+                    required: showErrors(formGroup.controls[data.key])
                   }"
                 >
                   <td [title]="data.key">
                     <p-treeTableToggler
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
-                    {{ data.key }}
+                    {{ data.segment }}
                   </td>
                   <td>
-                    <input
-                      #overrideInput
-                      [type]="
-                        data.secure && !data.showSecure ? 'password' : 'text'
-                      "
-                      data-lpignore="true"
-                      [value]="data.value"
-                      [formControlName]="data.formControlName"
-                      (change)="updateOverride(data)"
-                      class="property-input"
-                      [ngClass]="{ 'text-lowercase': data.lowercase }"
-                    />
-                    <div class="icon-container">
-                      <a
-                        *ngIf="data.value !== data.originalValue"
-                        href="javascript:void(0)"
-                        (click)="onResetButtonClick(data)"
-                        popover="{{
-                          'tenant-configuration-override-form.popover.reset'
-                            | translate
-                        }}"
-                        placement="left"
-                        container="body"
-                        triggers="mouseenter:mouseleave"
-                      >
-                        <i class="fa fa-undo fa-md"></i>
-                      </a>
-                      <a
-                        *ngIf="data.secure"
-                        href="javascript:void(0)"
-                        (click)="data.showSecure = !data.showSecure"
-                      >
-                        <i
-                          class="fa fa-md"
-                          [ngClass]="{
-                            'fa-eye-slash': data.showSecure,
-                            'fa-eye': !data.showSecure
-                          }"
-                        ></i>
-                      </a>
-                      <a
-                        *ngIf="data.encrypted"
-                        href="javascript:void(0)"
-                        (click)="onDecryptButtonClick(data)"
-                        popover="{{
-                          'tenant-configuration-override-form.popover.decrypt'
-                            | translate
-                        }}"
-                        placement="left"
-                        container="body"
-                        triggers="mouseenter:mouseleave"
-                      >
-                        <i class="fa fa-unlock fa-md"></i>
-                      </a>
-                      <a
-                        *ngIf="data.required"
-                        href="javascript:void(0)"
-                        popover="{{
-                          data.key.endsWith('password')
-                            ? ('tenant-configuration-override-form.popover.password'
-                              | translate)
-                            : null
-                        }}"
-                        placement="left"
-                        container="body"
-                        triggers="mouseenter:mouseleave"
-                      >
-                        <i class="fa fa-asterisk fa-md"></i>
-                      </a>
+                    <div
+                      class="form-group"
+                      [ngClass]="{
+                        'has-error': showErrors(formGroup.controls[data.key])
+                      }"
+                    >
+                      <input
+                        [type]="
+                          data.password && !data.showSecure
+                            ? 'password'
+                            : 'text'
+                        "
+                        [formControlName]="data.key"
+                        data-lpignore="true"
+                        class="form-control"
+                        [ngClass]="{ 'text-lowercase': data.lowercase }"
+                      />
+                      <div class="icon-container">
+                        <a
+                          *ngIf="
+                            data.defaultValue !== formGroup.value[data.key]
+                          "
+                          href="javascript:void(0)"
+                          (click)="onResetButtonClick(data)"
+                          popover="{{
+                            'tenant-configuration-form.popover.reset'
+                              | translate
+                          }}"
+                          placement="left"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-undo fa-md"></i>
+                        </a>
+                        <a
+                          *ngIf="data.password"
+                          href="javascript:void(0)"
+                          (click)="data.showSecure = !data.showSecure"
+                        >
+                          <i
+                            class="fa fa-md"
+                            [ngClass]="{
+                              'fa-eye-slash': data.showSecure,
+                              'fa-eye': !data.showSecure
+                            }"
+                          ></i>
+                        </a>
+                        <a
+                          *ngIf="data.encrypted"
+                          href="javascript:void(0)"
+                          (click)="onDecryptButtonClick(data)"
+                          popover="{{
+                            'tenant-configuration-form.popover.decrypt'
+                              | translate
+                          }}"
+                          placement="left"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i
+                            class="fa fa-md"
+                            [ngClass]="{
+                              'fa-lock': hasCipher(formGroup.value[data.key]),
+                              'fa-unlock': hasCipher(formGroup.value[data.key])
+                            }"
+                          ></i>
+                        </a>
+                        <a
+                          *ngIf="data.required"
+                          href="javascript:void(0)"
+                          popover="{{
+                            data.password
+                              ? ('tenant-configuration-form.popover.password'
+                                | translate)
+                              : null
+                          }}"
+                          placement="left"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-asterisk fa-md"></i>
+                        </a>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -222,13 +175,6 @@
           </ng-container>
         </ng-container>
       </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="2">
-            {{ 'tenant-configuration-override-form.no-results' | translate }}
-          </td>
-        </tr>
-      </ng-template>
     </p-treeTable>
-  </div>
-</div>
+  </ng-container>
+</ng-template>

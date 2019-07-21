@@ -1,8 +1,4 @@
-<form
-  *ngIf="formGroup"
-  [formGroup]="formGroup"
-  (ngSubmit)="onSaveButtonClick()"
->
+<form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <page-heading>
     <h1 class="h2" heading>
       <ng-container *ngIf="mode === 'create'; else updateModeHeading">
@@ -21,11 +17,7 @@
         <li>
           <div class="btn-group">
             <div class="btn-group">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                [disabled]="formGroup.invalid"
-              >
+              <button type="submit" class="btn btn-primary">
                 <ng-container
                   *ngIf="mode === 'create'; else updateSubmitButton"
                 >
@@ -262,54 +254,115 @@
       <app-toggle-label
         [open]="configurationOpen"
         (openChange)="configurationOpen = $event"
-        openLabel="{{
-          'tenant-form.field.configurationOverrides.label' | translate
-        }}"
-        closedLabel="{{
-          'tenant-form.field.configurationOverrides.label' | translate
-        }}"
+        openLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
+        closedLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
       ></app-toggle-label>
 
-      <span class="text-danger" *ngIf="showErrors(formGroup)">
-        <ng-container
-          *ngIf="formGroup.errors && formGroup.errors.onePasswordPerUser"
-        >
-          {{
-            'tenant-form.field.configurationOverrides.error.onePasswordPerUser'
-              | translate: formGroup.errors
-          }}
-        </ng-container>
-      </span>
-
       <div class="form-group" [hidden]="!configurationOpen">
+        <!-- TODO extract -->
+        <div class="configuration-controls">
+          <ng-container [formGroup]="configurationControlsFormGroup">
+            <input
+              id="configurationSearch"
+              name="configurationSearch"
+              formControlName="search"
+              type="text"
+              class="form-control"
+              placeholder="{{
+                'tenant-form.field.configurations.control.search.placeholder'
+                  | translate
+              }}"
+            />
+
+            <label>
+              <input
+                id="configurationRequired"
+                name="configurationRequired"
+                formControlName="required"
+                type="checkbox"
+              />
+              {{
+                'tenant-form.field.configurations.control.required.label'
+                  | translate
+              }}
+            </label>
+
+            <label>
+              <input
+                id="configurationModified"
+                name="configurationModified"
+                formControlName="modified"
+                type="checkbox"
+              />
+              {{
+                'tenant-form.field.configurations.control.modified.label'
+                  | translate
+              }}
+            </label>
+          </ng-container>
+        </div>
+
+        <ng-container *ngIf="formGroup.controls.configurations as control">
+          <span class="text-danger" *ngIf="showErrors(control)">
+            <ng-container *ngIf="control.errors.onePasswordPerUser">
+              {{
+                'tenant-form.field.configurations.error.onePasswordPerUser'
+                  | translate: control.errors.onePasswordPerUser
+              }}
+            </ng-container>
+          </span>
+        </ng-container>
+
         <property-override-tree-table
-          [form]="formGroup"
-          [configurationProperties]="configurationOverrides"
-          [readonly]="!writable"
+          formGroupName="configurations"
+          [tree]="configurations$ | async"
           [readonlyGroups]="readonlyGroups"
-          [required]="requiredConfiguration"
-          [expanded]="requiredConfiguration"
-          propertiesArrayName="configurationProperties"
+          [defaults]="configurationDefaults"
+          [readonly]="!writable"
         ></property-override-tree-table>
       </div>
 
       <app-toggle-label
         [open]="localizationOpen"
         (openChange)="localizationOpen = $event"
-        openLabel="{{
-          'tenant-form.field.localizationOverrides.label' | translate
-        }}"
-        closedLabel="{{
-          'tenant-form.field.localizationOverrides.label' | translate
-        }}"
+        openLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
+        closedLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
       ></app-toggle-label>
 
       <div class="form-group" [hidden]="!localizationOpen">
+        <div class="localization-controls">
+          <ng-container [formGroup]="localizationControlsFormGroup">
+            <input
+              formnovalidate
+              id="localizationSearch"
+              name="localizationSearch"
+              formControlName="search"
+              type="text"
+              class="form-control"
+              placeholder="{{
+                'tenant-form.field.localizations.control.search.placeholder'
+                  | translate
+              }}"
+            />
+            <label>
+              <input
+                id="localizationModified"
+                name="localizationModified"
+                formControlName="modified"
+                type="checkbox"
+              />
+              {{
+                'tenant-form.field.localizations.control.modified.label'
+                  | translate
+              }}
+            </label>
+          </ng-container>
+        </div>
         <property-override-table
-          [form]="formGroup"
-          [configurationProperties]="localizationOverrides"
+          formGroupName="localizations"
+          [rows]="localizations$ | async"
+          [defaults]="localizationDefaults"
           [readonly]="!writable"
-          propertiesArrayName="localizationOverrides"
         ></property-override-table>
       </div>
     </div>
