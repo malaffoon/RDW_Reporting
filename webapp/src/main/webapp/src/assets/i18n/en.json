@@ -1312,7 +1312,7 @@
   "tenant-configuration-form": {
     "column": {
       "key": {
-        "label": "Key"
+        "label": "Property"
       },
       "value": {
         "label": "Value"
@@ -1335,7 +1335,7 @@
   "tenant-localization-form": {
     "column": {
       "key": {
-        "label": "Key"
+        "label": "Property"
       },
       "value": {
         "label": "Value"

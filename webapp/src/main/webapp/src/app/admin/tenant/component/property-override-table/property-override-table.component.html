@@ -1,13 +1,11 @@
-<ng-container
-  *ngIf="properties != null && properties.length === 0; else hasResults"
->
+<ng-container *ngIf="rows != null && rows.length === 0; else hasResults">
   {{ 'tenant-localization-form.no-results' | translate }}
 </ng-container>
 <ng-template #hasResults>
   <ng-container [formGroup]="formGroup">
     <p-table
       #table
-      [value]="properties"
+      [value]="rows"
       dataKey="key"
       [globalFilterFields]="['key', 'value']"
       [paginator]="true"

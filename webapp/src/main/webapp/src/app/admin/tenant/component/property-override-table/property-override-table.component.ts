@@ -67,6 +67,9 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
   @Input()
   readonly = true;
 
+  // TODO still need this?
+  first = 0;
+
   constructor(public controlContainer: ControlContainer) {}
 
   get formGroup(): FormGroup {

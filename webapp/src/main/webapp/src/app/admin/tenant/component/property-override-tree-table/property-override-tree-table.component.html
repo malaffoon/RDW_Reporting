@@ -1,6 +1,4 @@
-<ng-container
-  *ngIf="properties != null && properties.length === 0; else hasResults"
->
+<ng-container *ngIf="tree != null && tree.length === 0; else hasResults">
   {{ 'tenant-configuration-form.no-results' | translate }}
 </ng-container>
 <ng-template #hasResults>
@@ -37,17 +35,17 @@
                 <td
                   [title]="data.key"
                   colspan="2"
-                  [ngClass]="{ 'group-node': data.groupNode }"
+                  [ngClass]="{ 'group-node': data.depth === 0 }"
                 >
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                  <ng-container *ngIf="node.leaf; else parentNode">
-                    {{ data.key }}
-                  </ng-container>
-                  <ng-template #parentNode>
-                    <!-- TODO this should just be for first layer -->
+                  <ng-container *ngIf="data.depth === 0; else notRootNode">
                     {{
-                      'tenant-configuration-form.group.' + data.key | translate
+                      'tenant-configuration-form.group.' + data.segment
+                        | translate
                     }}
+                  </ng-container>
+                  <ng-template #notRootNode>
+                    {{ data.segment }}
                   </ng-template>
                 </td>
               </tr>
@@ -65,7 +63,7 @@
                     <p-treeTableToggler
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
-                    {{ data.key }}
+                    {{ data.segment }}
                   </td>
                   <td>{{ data.value }}</td>
                 </tr>
@@ -83,7 +81,7 @@
                     <p-treeTableToggler
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
-                    {{ data.key }}
+                    {{ data.segment }}
                   </td>
                   <td>
                     <input
@@ -92,7 +90,6 @@
                         data.password && !data.showSecure ? 'password' : 'text'
                       "
                       data-lpignore="true"
-                      [value]="data.value"
                       [formControlName]="data.key"
                       class="property-input"
                       [ngClass]="{ 'text-lowercase': data.lowercase }"

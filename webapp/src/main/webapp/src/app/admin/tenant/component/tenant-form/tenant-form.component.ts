@@ -17,12 +17,16 @@ import {
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { showErrors } from '../../../../shared/form/forms';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
-import { configurationsFormGroup } from '../property-override-tree-table/property-override-tree-table.component';
+import { debounceTime, map, mergeMap, startWith } from 'rxjs/operators';
+import {
+  configurationsFormGroup,
+  toTreeNodes
+} from '../property-override-tree-table/property-override-tree-table.component';
 import { localizationsFormGroup } from '../property-override-table/property-override-table.component';
 import {
   isBlank,
   rightDifference,
+  unflatten,
   valued
 } from '../../../../shared/support/support';
 import { ConfigurationProperty, Property } from '../../model/property';
@@ -30,6 +34,8 @@ import { toConfigurationProperty, toProperty } from '../../model/properties';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { TreeNode } from 'primeng/api';
+import { keyBy } from 'lodash';
+import { tap } from 'rxjs/internal/operators/tap';
 
 const keyboardDebounceInMilliseconds = 300;
 
@@ -53,6 +59,7 @@ export function tenantFormGroup(
   value: TenantConfiguration,
   configurationDefaults: any,
   localizationDefaults: any,
+  tenantKeyAvailable: (value: string) => Observable<boolean>,
   tenants: TenantConfiguration[] = [],
   dataSets: DataSet[] = []
 ): FormGroup {
@@ -95,7 +102,7 @@ export function tenantFormGroup(
           key: new FormControl(
             value.code || '',
             [Validators.required, Validators.maxLength(20), tenantKey],
-            [available(this.tenantKeyAvailable)]
+            [available(tenantKeyAvailable)]
           ),
           id: new FormControl(value.id || '', [Validators.required]),
           label,
@@ -106,11 +113,11 @@ export function tenantFormGroup(
   );
 }
 
-const passwordKeyExpression = /^(\w+)\.password$/;
+const passwordKeyExpression = /(.+)\.password$/;
 
 function onePasswordPerUser(
   formGroup: FormGroup
-): { onePasswordPerUser: boolean; usernames: string[] } | null {
+): { onePasswordPerUser: { usernames: string[] } } | null {
   const controlNames = Object.keys(formGroup.controls);
 
   const passwordKeys = controlNames.filter(controlName =>
@@ -125,9 +132,8 @@ function onePasswordPerUser(
       passwordKeyExpression.exec(passwordKey)[1]
     }.username`;
     // this is being run on every form control addition so we need to defensively set this
-    // TODO disconnected from the values because the formgroup has changed.... -NEED control value accessor....
-    const username = (formGroup.get(usernameKey) || <any>{}).value;
-    const password = (formGroup.get(passwordKey) || <any>{}).value;
+    const username = (formGroup.controls[usernameKey] || <any>{}).value;
+    const password = (formGroup.controls[passwordKey] || <any>{}).value;
     const passwords = byUsername[username];
     if (passwords != null) {
       if (!passwords.includes(password)) {
@@ -143,7 +149,7 @@ function onePasswordPerUser(
     .filter(([, passwords]) => passwords.length > 1)
     .map(([username]) => username);
 
-  return usernames.length > 0 ? { onePasswordPerUser: true, usernames } : null;
+  return usernames.length > 0 ? { onePasswordPerUser: { usernames } } : null;
 }
 
 function toPropertiesProvider<T = any>(
@@ -151,36 +157,38 @@ function toPropertiesProvider<T = any>(
   formGroup: FormGroup,
   defaults: { [key: string]: T }
 ): Observable<[string, T][]> {
+  const { controls, value } = searchFormGroup;
+  const entries = Object.entries(defaults);
   return combineLatest(
-    ...Object.entries(searchFormGroup.controls).map(([key, control]) => {
-      const startValue = searchFormGroup.value[key];
-      switch (key) {
-        case 'search':
-          return control.valueChanges.pipe(
-            startWith(startValue),
-            debounceTime(keyboardDebounceInMilliseconds)
-          );
-        case 'required':
-        case 'modified':
-          return control.valueChanges.pipe(startWith(startValue));
-      }
-      throw new Error('unknown search field');
-    })
+    controls.search.valueChanges.pipe(
+      startWith(value.search),
+      debounceTime(keyboardDebounceInMilliseconds)
+    ),
+    controls.modified.valueChanges.pipe(startWith(value.modified)),
+    controls.required != null
+      ? controls.required.valueChanges.pipe(startWith(value.required))
+      : of(false)
   ).pipe(
-    map(([search, modified]) =>
-      Object.entries(defaults)
-        .filter(([key, defaultValue]) => {
+    map(
+      ([search, modified, required]) =>
+        entries.filter(([key, defaultValue]) => {
           const caseInsensitiveSearch = search.toLowerCase();
           const value = formGroup.controls[key].value;
           return (
             (isBlank(search) ||
               (key.toLowerCase().includes(caseInsensitiveSearch) ||
                 (typeof value === 'string' &&
-                  value.toLowerCase().includes(caseInsensitiveSearch)))) &&
-            (!modified || value !== defaultValue)
+                  value.toLowerCase().includes(caseInsensitiveSearch)) ||
+                (Object(value) !== value &&
+                  String(value)
+                    .toLowerCase()
+                    .includes(caseInsensitiveSearch)))) &&
+            (!modified || value !== defaultValue) &&
+            (!required || /username|password/g.test(key)) // TODO this should really come from metadata
           );
         })
-        .sort(ordering(byString).on(([key]) => key).compare)
+      // TODO sort?
+      // .sort(ordering(byString).on(([key]) => key).compare)
     )
   );
 }
@@ -289,8 +297,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       )
     };
 
-    console.log(updated);
-
     emitter.emit(updated);
   }
 
@@ -324,25 +330,53 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         value,
         configurationDefaults,
         localizationDefaults,
+        tenantKeyAvailable,
         tenants,
         dataSets
       );
 
       // set the defaults on the formGroup
-      this.localizationControlsFormGroup.patchValue({
+      this.configurationControlsFormGroup.patchValue({
         required: this.requiredConfiguration
       });
+
+      // hack to get config to open on search
+      const configurationHasSearch$ = this.configurationControlsFormGroup.valueChanges.pipe(
+        startWith(this.configurationControlsFormGroup.value),
+        map(
+          ({ search, required, modified }) =>
+            !isBlank(search) || required || modified
+        )
+      );
 
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
         configurationDefaults
+      ).pipe(
+        mergeMap(entries =>
+          configurationHasSearch$.pipe(
+            map(hasSearch => {
+              const properties = entries.map(([key, defaultValue]) =>
+                toConfigurationProperty(key, defaultValue)
+              );
+              const flattened = keyBy(properties, ({ key }) => key);
+              const unflattened = unflatten(flattened);
+              const tree = toTreeNodes(unflattened, hasSearch);
+              return tree;
+            })
+          )
+        )
       );
 
       this.localizations$ = toPropertiesProvider(
         this.localizationControlsFormGroup as FormGroup,
         this.formGroup.controls.localizations as FormGroup,
         localizationDefaults
+      ).pipe(
+        map(entries =>
+          entries.map(([key, defaultValue]) => toProperty(key, defaultValue))
+        )
       );
     }
   }

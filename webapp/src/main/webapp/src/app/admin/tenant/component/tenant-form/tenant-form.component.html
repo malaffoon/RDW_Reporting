@@ -266,17 +266,6 @@
         closedLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
       ></app-toggle-label>
 
-      <span class="text-danger" *ngIf="showErrors(formGroup)">
-        <ng-container
-          *ngIf="formGroup.errors && formGroup.errors.onePasswordPerUser"
-        >
-          {{
-            'tenant-form.field.configurations.error.onePasswordPerUser'
-              | translate: formGroup.errors
-          }}
-        </ng-container>
-      </span>
-
       <div class="form-group" [hidden]="!configurationOpen">
         <!-- TODO extract -->
         <div class="configuration-controls">
@@ -284,6 +273,7 @@
             <input
               id="configurationSearch"
               name="configurationSearch"
+              formControlName="search"
               type="text"
               class="form-control"
               placeholder="{{
@@ -319,13 +309,24 @@
             </label>
           </ng-container>
         </div>
+
+        <ng-container *ngIf="formGroup.controls.configurations as control">
+          <span class="text-danger" *ngIf="showErrors(control)">
+            <ng-container *ngIf="control.errors.onePasswordPerUser">
+              {{
+                'tenant-form.field.configurations.error.onePasswordPerUser'
+                  | translate: control.errors.onePasswordPerUser
+              }}
+            </ng-container>
+          </span>
+        </ng-container>
+
         <property-override-tree-table
           formGroupName="configurations"
           [tree]="configurations$ | async"
           [readonlyGroups]="readonlyGroups"
           [defaults]="configurationDefaults"
           [readonly]="!writable"
-          [expanded]="requiredConfiguration"
         ></property-override-tree-table>
       </div>
 

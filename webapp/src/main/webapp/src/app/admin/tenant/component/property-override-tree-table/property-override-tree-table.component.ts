@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import {
   ControlContainer,
+  ControlValueAccessor,
   FormControl,
   FormGroup,
   NG_VALUE_ACCESSOR,
@@ -53,33 +54,49 @@ function rowTrackBy(index: number, { node }: any): string {
 
 function addTreeNodesRecursively(
   nodes: TreeNode[],
-  value: any,
-  absolutePath: string
+  value: any, // first value must be object
+  parentPath: string,
+  expanded: boolean,
+  depth: number = 0
 ): void {
-  // TODO
+  for (let key in value) {
+    if (!value.hasOwnProperty(key)) {
+      continue;
+    }
 
-  // if primitive it is a leaf
-  if (Object(value) !== value) {
-    nodes.push({
-      leaf: true,
-      key: absolutePath,
-      data: value
-    });
-  } else if (typeof value === 'object') {
-    nodes.push(
-      ...Object.entries(value).map(([key, child]) => {
-        const children: TreeNode[] = [];
-        addTreeNodesRecursively(
-          children,
-          child,
-          absolutePath.length > 0 ? `${absolutePath}.${key}` : key
-        );
-        return {
-          key,
-          children
-        };
-      })
-    );
+    const child = value[key];
+    const path = parentPath.length > 0 ? `${parentPath}.${key}` : key;
+
+    // configuration property
+    if (child.key != null) {
+      nodes.push({
+        leaf: true,
+        key: path, // shortcut
+        data: {
+          segment: key,
+          ...child
+        },
+        expanded
+      });
+    } else if (typeof child === 'object' && child != null) {
+      const parent = {
+        key: path,
+        data: {
+          segment: key,
+          depth
+        },
+        expanded,
+        children: []
+      };
+      addTreeNodesRecursively(
+        parent.children,
+        child,
+        path,
+        expanded,
+        depth + 1
+      );
+      nodes.push(parent);
+    }
   }
 }
 
@@ -88,9 +105,9 @@ function addTreeNodesRecursively(
  *
  * @param value The object to convert
  */
-export function toTreeNodes(value: any): TreeNode[] {
+export function toTreeNodes(value: any, expanded: boolean = false): TreeNode[] {
   const nodes = [];
-  addTreeNodesRecursively(nodes, value, '');
+  addTreeNodesRecursively(nodes, value, '', expanded);
   return nodes;
 }
 // forOwn(this.configurationProperties, (configGroup, groupKey) => {
@@ -149,7 +166,8 @@ export function toTreeNodes(value: any): TreeNode[] {
     // }
   ]
 })
-export class PropertyOverrideTreeTableComponent {
+export class PropertyOverrideTreeTableComponent
+  implements ControlValueAccessor {
   readonly showErrors = showErrors;
   readonly rowTrackBy = rowTrackBy;
 
@@ -161,9 +179,6 @@ export class PropertyOverrideTreeTableComponent {
 
   @Input()
   readonlyGroups: string[] = [];
-
-  @Input()
-  expanded = true;
 
   @Input()
   readonly = true;
