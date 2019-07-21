@@ -1,8 +1,4 @@
-<form
-  *ngIf="formGroup"
-  [formGroup]="formGroup"
-  (ngSubmit)="onSaveButtonClick()"
->
+<form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <page-heading>
     <h1 class="h2" heading>
       <ng-container *ngIf="mode === 'create'; else updateModeHeading">
@@ -21,11 +17,7 @@
         <li>
           <div class="btn-group">
             <div class="btn-group">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                [disabled]="formGroup.invalid"
-              >
+              <button type="submit" class="btn btn-primary">
                 <ng-container
                   *ngIf="mode === 'create'; else updateSubmitButton"
                 >
@@ -341,6 +333,7 @@
         <div class="localization-controls">
           <ng-container [formGroup]="localizationControlsFormGroup">
             <input
+              formnovalidate
               id="localizationSearch"
               name="localizationSearch"
               formControlName="search"

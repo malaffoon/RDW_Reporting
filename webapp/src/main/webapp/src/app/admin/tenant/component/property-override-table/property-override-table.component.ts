@@ -2,8 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   forwardRef,
-  Input,
-  SimpleChanges
+  Input
 } from '@angular/core';
 import { OldConfigProp } from '../../model/old-config-prop';
 import {
@@ -11,11 +10,9 @@ import {
   ControlValueAccessor,
   FormControl,
   FormGroup,
-  NG_VALIDATORS,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { Property } from '../../model/property';
-import { propertyValidators } from '../../model/properties';
 
 export function localizationsFormGroup(
   defaults: any,
@@ -47,14 +44,8 @@ function rowTrackBy(index: number, value: OldConfigProp) {
       useExisting: forwardRef(() => PropertyOverrideTableComponent),
       multi: true
     }
-    // {
-    //   provide: NG_VALIDATORS,
-    //   useExisting: forwardRef(() => PropertyOverrideTableComponent),
-    //   multi: true
-    // }
   ]
 })
-//TODO: Implement ControlValueAccessor
 export class PropertyOverrideTableComponent implements ControlValueAccessor {
   readonly rowTrackBy = rowTrackBy;
 

@@ -7,15 +7,9 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { showErrors } from '../../../../shared/form/forms';
+import { Forms, showErrors, validate } from '../../../../shared/form/forms';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { debounceTime, map, mergeMap, startWith } from 'rxjs/operators';
 import {
@@ -29,31 +23,18 @@ import {
   unflatten,
   valued
 } from '../../../../shared/support/support';
-import { ConfigurationProperty, Property } from '../../model/property';
+import { Property } from '../../model/property';
 import { toConfigurationProperty, toProperty } from '../../model/properties';
-import { byString } from '@kourge/ordering/comparator';
-import { ordering } from '@kourge/ordering';
 import { TreeNode } from 'primeng/api';
 import { keyBy } from 'lodash';
-import { tap } from 'rxjs/internal/operators/tap';
-
-const keyboardDebounceInMilliseconds = 300;
+import {
+  available,
+  onePasswordPerUser,
+  tenantKey
+} from './tenant-form.validators';
 
 export type FormMode = 'create' | 'update';
-
-export const tenantKey = Validators.pattern(/^\w+$/);
-
-export function available(
-  isAvailable: (value: string) => Observable<boolean>
-): AsyncValidatorFn {
-  return function(
-    control: AbstractControl
-  ): Observable<{ unavailable: boolean } | null> {
-    return isAvailable(control.value).pipe(
-      map(available => (available ? null : { unavailable: true }))
-    );
-  };
-}
+const keyboardDebounceInMilliseconds = 300;
 
 export function tenantFormGroup(
   value: TenantConfiguration,
@@ -79,9 +60,6 @@ export function tenantFormGroup(
   );
 
   // setup sandbox/tenant specific form
-
-  // TODO bind change to update default passwords here?
-
   return new FormGroup(
     value.type === 'SANDBOX'
       ? {
@@ -111,45 +89,6 @@ export function tenantFormGroup(
           localizations
         }
   );
-}
-
-const passwordKeyExpression = /(.+)\.password$/;
-
-function onePasswordPerUser(
-  formGroup: FormGroup
-): { onePasswordPerUser: { usernames: string[] } } | null {
-  const controlNames = Object.keys(formGroup.controls);
-
-  const passwordKeys = controlNames.filter(controlName =>
-    passwordKeyExpression.test(controlName)
-  );
-
-  const passwordsByUsername: {
-    [username: string]: string[];
-  } = passwordKeys.reduce((byUsername, passwordKey) => {
-    // assumes username of same base path for every password
-    const usernameKey = `${
-      passwordKeyExpression.exec(passwordKey)[1]
-    }.username`;
-    // this is being run on every form control addition so we need to defensively set this
-    const username = (formGroup.controls[usernameKey] || <any>{}).value;
-    const password = (formGroup.controls[passwordKey] || <any>{}).value;
-    const passwords = byUsername[username];
-    if (passwords != null) {
-      if (!passwords.includes(password)) {
-        passwords.push(password);
-      }
-    } else {
-      byUsername[username] = [password];
-    }
-    return byUsername;
-  }, {});
-
-  const usernames = Object.entries(passwordsByUsername)
-    .filter(([, passwords]) => passwords.length > 1)
-    .map(([username]) => username);
-
-  return usernames.length > 0 ? { onePasswordPerUser: { usernames } } : null;
 }
 
 function toPropertiesProvider<T = any>(
@@ -243,30 +182,27 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   @Input()
   requiredConfiguration: boolean;
 
-  // internals
-  configurations$: Observable<TreeNode[]>;
-  localizations$: Observable<Property[]>;
-
   configurationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
     required: new FormControl(false),
     modified: new FormControl(false)
   });
+  configurations$: Observable<TreeNode[]>;
 
   localizationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
     modified: new FormControl(false)
   });
-
-  // computed values
+  localizations$: Observable<Property[]>;
   readonlyGroups: string[] = [];
   formGroup: FormGroup;
   destroyed$: Subject<void> = new Subject();
 
-  onSaveButtonClick(): void {
+  onSubmit(): void {
     const {
       value: { type },
       formGroup: {
+        invalid,
         value: {
           id,
           key: code,
@@ -280,6 +216,11 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       }
     } = this;
 
+    if (invalid) {
+      validate(this.formGroup);
+      return;
+    }
+
     const emitter = this.mode === 'create' ? this.create : this.update;
     const updated: TenantConfiguration = {
       type,
@@ -289,6 +230,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       description,
       parentTenantCode: (tenant || <any>{}).code,
       dataSet,
+      // TODO apply lowercase requirement?
       configurations: valued(
         rightDifference(this.configurationDefaults, configurations)
       ),
@@ -300,8 +242,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     emitter.emit(updated);
   }
 
-  // TODO currently this causes mulitple rerenders and i am not able to present a loading spinner
-  // i think this needs to be reworked such that the @Input()s each have their own subject to push to
   ngOnChanges(changes: SimpleChanges): void {
     const {
       mode,
@@ -400,13 +340,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     });
   }
 
+  // TODO apply default usernames
   onKeyChange(code: string): void {
     // apply default passwords for sandboxes based on key
-    if (this.value.type !== 'TENANT') {
-      return;
-    }
-
-    // TODO apply default usernames
     // const key = (code || '').toLowerCase();
     // const defaultDataBaseName = `reporting_${key}`;
     // const defaultUsername = key;

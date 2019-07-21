@@ -84,72 +84,89 @@
                     {{ data.segment }}
                   </td>
                   <td>
-                    <input
-                      #overrideInput
-                      [type]="
-                        data.password && !data.showSecure ? 'password' : 'text'
-                      "
-                      data-lpignore="true"
-                      [formControlName]="data.key"
-                      class="property-input"
-                      [ngClass]="{ 'text-lowercase': data.lowercase }"
-                    />
-                    <div class="icon-container">
-                      <a
-                        *ngIf="data.defaultValue !== formGroup.value[data.key]"
-                        href="javascript:void(0)"
-                        (click)="onResetButtonClick(data)"
-                        popover="{{
-                          'tenant-configuration-form.popover.reset' | translate
-                        }}"
-                        placement="left"
-                        container="body"
-                        triggers="mouseenter:mouseleave"
-                      >
-                        <i class="fa fa-undo fa-md"></i>
-                      </a>
-                      <a
-                        *ngIf="data.password"
-                        href="javascript:void(0)"
-                        (click)="data.showSecure = !data.showSecure"
-                      >
-                        <i
-                          class="fa fa-md"
-                          [ngClass]="{
-                            'fa-eye-slash': data.showSecure,
-                            'fa-eye': !data.showSecure
-                          }"
-                        ></i>
-                      </a>
-                      <a
-                        *ngIf="data.encrypted"
-                        href="javascript:void(0)"
-                        (click)="onDecryptButtonClick(data)"
-                        popover="{{
-                          'tenant-configuration-form.popover.decrypt'
-                            | translate
-                        }}"
-                        placement="left"
-                        container="body"
-                        triggers="mouseenter:mouseleave"
-                      >
-                        <i class="fa fa-unlock fa-md"></i>
-                      </a>
-                      <a
-                        *ngIf="data.required"
-                        href="javascript:void(0)"
-                        popover="{{
-                          data.password
-                            ? ('tenant-configuration-form.popover.password'
-                              | translate)
-                            : null
-                        }}"
-                        placement="left"
-                        container="body"
-                        triggers="mouseenter:mouseleave"
-                      >
-                        <i class="fa fa-asterisk fa-md"></i>
-                      </a>
+                    <div
+                      class="form-group"
+                      [ngClass]="{
+                        'has-error': showErrors(formGroup.controls[data.key])
+                      }"
+                    >
+                      <input
+                        [type]="
+                          data.password && !data.showSecure
+                            ? 'password'
+                            : 'text'
+                        "
+                        [formControlName]="data.key"
+                        data-lpignore="true"
+                        class="form-control"
+                        [ngClass]="{ 'text-lowercase': data.lowercase }"
+                      />
+                      <div class="icon-container">
+                        <a
+                          *ngIf="
+                            data.defaultValue !== formGroup.value[data.key]
+                          "
+                          href="javascript:void(0)"
+                          (click)="onResetButtonClick(data)"
+                          popover="{{
+                            'tenant-configuration-form.popover.reset'
+                              | translate
+                          }}"
+                          placement="left"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-undo fa-md"></i>
+                        </a>
+                        <a
+                          *ngIf="data.password"
+                          href="javascript:void(0)"
+                          (click)="data.showSecure = !data.showSecure"
+                        >
+                          <i
+                            class="fa fa-md"
+                            [ngClass]="{
+                              'fa-eye-slash': data.showSecure,
+                              'fa-eye': !data.showSecure
+                            }"
+                          ></i>
+                        </a>
+                        <a
+                          *ngIf="data.encrypted"
+                          href="javascript:void(0)"
+                          (click)="onDecryptButtonClick(data)"
+                          popover="{{
+                            'tenant-configuration-form.popover.decrypt'
+                              | translate
+                          }}"
+                          placement="left"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i
+                            class="fa fa-md"
+                            [ngClass]="{
+                              'fa-lock': hasCipher(formGroup.value[data.key]),
+                              'fa-unlock': hasCipher(formGroup.value[data.key])
+                            }"
+                          ></i>
+                        </a>
+                        <a
+                          *ngIf="data.required"
+                          href="javascript:void(0)"
+                          popover="{{
+                            data.password
+                              ? ('tenant-configuration-form.popover.password'
+                                | translate)
+                              : null
+                          }}"
+                          placement="left"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-asterisk fa-md"></i>
+                        </a>
+                      </div>
                     </div>
                   </td>
                 </tr>

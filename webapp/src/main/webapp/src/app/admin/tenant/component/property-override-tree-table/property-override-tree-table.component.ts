@@ -32,6 +32,12 @@ import {
 import { ConfigurationProperty } from '../../model/property';
 import { unflatten } from '../../../../shared/support/support';
 
+const cipherPattern = /^{cipher}.+/;
+
+function hasCipher(value: string): boolean {
+  return typeof value === 'string' && cipherPattern.test(value);
+}
+
 export function configurationsFormGroup(
   defaults: any,
   overrides: any = {},
@@ -110,65 +116,25 @@ export function toTreeNodes(value: any, expanded: boolean = false): TreeNode[] {
   addTreeNodesRecursively(nodes, value, '', expanded);
   return nodes;
 }
-// forOwn(this.configurationProperties, (configGroup, groupKey) => {
-//   const childrenNodes: TreeNode[] = [];
-//   const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
-//   // For each configuration group, create a root-level node
-//
-//   if (groupKey === 'datasources') {
-//     forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
-//       const dataSourcePropertyNodes: TreeNode[] = [];
-//       this.mapLeafNodes(
-//         dataSourceProperties,
-//         dataSourcePropertyNodes,
-//         groupReadonly
-//       );
-//
-//       childrenNodes.push({
-//         data: {
-//           key: dataSourceKey
-//         },
-//         children: dataSourcePropertyNodes,
-//         expanded: this.expanded
-//       });
-//     });
-//   } else {
-//     this.mapLeafNodes(configGroup, childrenNodes, groupReadonly);
-//   }
-//
-//   const groupNode = <TreeNode>{
-//     data: {
-//       key: groupKey,
-//       groupNode: true
-//     },
-//     children: childrenNodes,
-//     expanded: this.expanded,
-//     leaf: false
-//   };
-//   groupNodes.push(groupNode);
-// });
 
 @Component({
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html',
   styleUrls: ['./property-override-tree-table.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // taking this off so markAsDirty() works
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => PropertyOverrideTreeTableComponent),
       multi: true
     }
-    // {
-    //   provide: NG_VALIDATORS,
-    //   useExisting: forwardRef(() => PropertyOverrideTableComponent),
-    //   multi: true
-    // }
   ]
 })
 export class PropertyOverrideTreeTableComponent
   implements ControlValueAccessor {
   readonly showErrors = showErrors;
+  readonly hasCipher = hasCipher;
   readonly rowTrackBy = rowTrackBy;
 
   @ViewChild('table')
@@ -220,16 +186,6 @@ export class PropertyOverrideTreeTableComponent
 
   // internals
 
-  //
-  // updateOverride(override: ConfigurationProperty): void {
-  //   const formGroup = <FormGroup>this.form.controls[this.propertiesArrayName];
-  //   const formControl = formGroup.controls[override.formControlName];
-  //   const newVal = override.lowercase
-  //     ? formControl.value.toLowerCase()
-  //     : formControl.value;
-  //   this.setPropertyValue(override, newVal);
-  // }
-
   onRowClick(node: any, event: Event): void {
     // Manaully invoking the TreeTableToggler, as it seems there's more to it than just
     // toggling the boolean value of expanded.
@@ -249,6 +205,11 @@ export class PropertyOverrideTreeTableComponent
     const {
       value: { [property.key]: value }
     } = this.formGroup;
+
+    if (!hasCipher(value)) {
+      return;
+    }
+
     this.decryptionService.decrypt(value).subscribe(
       decrypted => {
         this.formGroup.patchValue({
@@ -257,113 +218,5 @@ export class PropertyOverrideTreeTableComponent
       },
       () => this.notificationService.error({ id: 'decryption-service.error' })
     );
-  }
-
-  private setPropertyValue(override: OldConfigProp, newVal: string) {
-    // let configurationProperties = <ConfigurationProperty[]>(
-    //   this.configurationProperties[override.group]
-    // );
-    //
-    // if (!configurationProperties) {
-    //   // If we couldn't find the group within the top-level property groups, lets peek at datasources...
-    //   const datasources = this.configurationProperties['datasources'];
-    //   configurationProperties = <ConfigurationProperty[]>(
-    //     datasources[override.group]
-    //   );
-    // }
-    //
-    // const configurationProperty = configurationProperties.find(
-    //   property => property.key === override.key
-    // );
-    // configurationProperty.value = newVal;
-    // override.value = newVal;
-    // this.propertyValueChanged.emit(override);
-  }
-
-  private createConfigurationPropertyTree(): void {
-    const groupNodes: TreeNode[] = [];
-
-    // forOwn(this.configurationProperties, (configGroup, groupKey) => {
-    //   const childrenNodes: TreeNode[] = [];
-    //   const groupReadonly = this.readonlyGroups.some(x => x === groupKey);
-    //   // For each configuration group, create a root-level node
-    //
-    //   if (groupKey === 'datasources') {
-    //     forOwn(configGroup, (dataSourceProperties, dataSourceKey) => {
-    //       const dataSourcePropertyNodes: TreeNode[] = [];
-    //       this.mapLeafNodes(
-    //         dataSourceProperties,
-    //         dataSourcePropertyNodes,
-    //         groupReadonly
-    //       );
-    //
-    //       childrenNodes.push({
-    //         data: {
-    //           key: dataSourceKey
-    //         },
-    //         children: dataSourcePropertyNodes,
-    //         expanded: this.expanded
-    //       });
-    //     });
-    //   } else {
-    //     this.mapLeafNodes(configGroup, childrenNodes, groupReadonly);
-    //   }
-    //
-    //   const groupNode = <TreeNode>{
-    //     data: {
-    //       key: groupKey,
-    //       groupNode: true
-    //     },
-    //     children: childrenNodes,
-    //     expanded: this.expanded,
-    //     leaf: false
-    //   };
-    //   groupNodes.push(groupNode);
-    // });
-
-    this.tree = [...groupNodes];
-  }
-
-  private mapLeafNodes(
-    configGroup: OldConfigProp[],
-    childrenNodes: TreeNode[],
-    readonly: boolean
-  ): void {
-    // const configPropertiesFormGroup = <FormGroup>(
-    //   this.form.controls[this.propertiesArrayName]
-    // );
-    //
-    // configGroup.forEach(group => {
-    //   const encrypted =
-    //     group.value &&
-    //     typeof group.value === 'string' &&
-    //     group.value.startsWith('{cipher}') &&
-    //     this.encryptedFields.some(x => x === group.key);
-    //
-    //   // TODO sometimes keys have "configurationProperties ->" in the key... is this a race condition?
-    //
-    //   // TODO: Move these to the mapper.
-    //   group.encrypted = encrypted;
-    //   group.readonly = readonly || this.readonly;
-    //   group.secure = this.secureFields.includes(group.key);
-    //   group.required = this.requiredFields.includes(group.key);
-    //   group.lowercase = this.lowercaseFields.includes(group.key);
-    //
-    //   childrenNodes.push({
-    //     data: group, // assign object as a reference so other fields can trigger changes
-    //     expanded: false,
-    //     leaf: true
-    //   });
-    //
-    //   group.key.includes('password')
-    //     ? configPropertiesFormGroup.addControl(
-    //         group.formControlName,
-    //         new FormControl(group.value, passwordValidators())
-    //       )
-    //     : configPropertiesFormGroup.addControl(
-    //         group.formControlName,
-    //         new FormControl(group.value)
-    //       );
-    // });
   }
 }
