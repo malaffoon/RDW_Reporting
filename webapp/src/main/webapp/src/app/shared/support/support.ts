@@ -1,5 +1,4 @@
-import { isEmpty, isEqual, omitBy } from 'lodash';
-import { diff } from 'ngx-bootstrap/chronos/moment/diff';
+import { isEmpty, isEqual, omitBy, isObject } from 'lodash';
 
 export function isBlank(value: string): boolean {
   return value.trim().length === 0;
@@ -354,42 +353,6 @@ export function range(start: number, end: number): number[] {
   return values;
 }
 
-/**
- * Flattens a (potentially deeply nested) JSON object to a single-level shallow JSON object
- *
- * @param value potentially deeply nested JSON object
- * @returns A flattened JSON object containing key/value pairings
- */
-export function flattenJsonObject(value: any): any {
-  const toReturn = {};
-
-  for (const property in value) {
-    const propertyValue = value[property];
-
-    if (typeof propertyValue === 'object') {
-      if (propertyValue == null) {
-        // coerce undefined to null
-        toReturn[property] = null;
-      } else if (
-        Array.isArray(propertyValue) &&
-        propertyValue.every(value => typeof value !== 'object')
-      ) {
-        // to avoid the .0 .1 .x index flattening of array values? this should only apply when there are no children
-        toReturn[property] = propertyValue.join();
-      } else {
-        const flatObject = flattenJsonObject(propertyValue);
-        for (const flatObjectProperty in flatObject) {
-          toReturn[property + '.' + flatObjectProperty] =
-            flatObject[flatObjectProperty];
-        }
-      }
-    } else {
-      toReturn[property] = propertyValue;
-    }
-  }
-  return toReturn;
-}
-
 // https://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
 
 export interface FlattenCustomizer {
@@ -411,7 +374,7 @@ function flattenRecurse(
 ) {
   if (customizer(result, object, property)) {
     // customizer handled it
-  } else if (Object(object) !== object) {
+  } else if (!isObject(object)) {
     // is primitive
     result[property] = object;
   } else if (Array.isArray(object)) {
@@ -458,7 +421,7 @@ export function unflatten(
   object: any,
   customizer: UnflattenCustomizer = nullUnflattenCustomizer
 ): any {
-  if (Object(object) !== object || Array.isArray(object)) {
+  if (!isObject(object) || Array.isArray(object)) {
     return object;
   }
   let result = {},

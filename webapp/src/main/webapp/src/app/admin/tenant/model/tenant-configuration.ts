@@ -1,4 +1,3 @@
-import { OldConfigProp } from './old-config-prop';
 import { TenantStatus } from './tenant-status';
 import { TenantType } from './tenant-type';
 

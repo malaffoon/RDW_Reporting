@@ -7,6 +7,7 @@ import {
   unflatten,
   Utils
 } from './support';
+import { isObject } from 'lodash';
 
 describe('Utils', () => {
   it('should pass isNullOrUndefined', () => {
@@ -128,7 +129,7 @@ describe('flatten', () => {
         (result, object, property) => {
           if (
             Array.isArray(object) &&
-            object.every(value => Object(value) !== value)
+            object.every(value => !isObject(value))
           ) {
             result[property] = object.join(',');
             return true;

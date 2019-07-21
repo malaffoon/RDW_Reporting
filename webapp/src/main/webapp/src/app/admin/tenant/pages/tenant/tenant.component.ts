@@ -26,7 +26,6 @@ import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant } from '../../model/tenants';
 import { flatten } from '../../../../shared/support/support';
 
-// TODO have diff checking to disable and enable the save button accordingly
 @Component({
   selector: 'app-tenant',
   templateUrl: './tenant.component.html',
@@ -151,46 +150,11 @@ export class TenantComponent implements OnDestroy {
   }
 
   onCreate(value: TenantConfiguration): void {
-    this.service.create(value).subscribe(
-      () => {
-        this.router.navigate(['..'], {
-          relativeTo: this.route
-        });
-        this.notificationService.info({
-          id: `tenant.create.success.${value.type}`,
-          args: value
-        });
-      },
-      error => {
-        try {
-          this.notificationService.error({ id: error.json().message });
-        } catch (exception) {
-          this.notificationService.error({
-            id: `tenant.create.error.${value.type}`
-          });
-        }
-      }
-    );
+    this.onSave('create', value);
   }
 
   onUpdate(value: TenantConfiguration): void {
-    this.service.update(value).subscribe(
-      () => {
-        this.notificationService.info({
-          id: `tenant.update.success.${value.type}`,
-          args: value
-        });
-      },
-      error => {
-        try {
-          this.notificationService.error({ id: error.json().message });
-        } catch (exception) {
-          this.notificationService.error({
-            id: `tenant.update.error.${value.type}`
-          });
-        }
-      }
-    );
+    this.onSave('update', value);
   }
 
   onDelete(tenant: TenantConfiguration): void {
@@ -227,5 +191,33 @@ export class TenantComponent implements OnDestroy {
         }
       );
     });
+  }
+
+  private onSave(mode: 'create' | 'update', value: TenantConfiguration): void {
+    const observable =
+      mode === 'create'
+        ? this.service.create(value)
+        : this.service.update(value);
+
+    observable.subscribe(
+      () => {
+        this.router.navigate(['..'], {
+          relativeTo: this.route
+        });
+        this.notificationService.info({
+          id: `tenant.${mode}.success.${value.type}`,
+          args: value
+        });
+      },
+      error => {
+        try {
+          this.notificationService.error({ id: error.json().message });
+        } catch (exception) {
+          this.notificationService.error({
+            id: `tenant.${mode}.error.${value.type}`
+          });
+        }
+      }
+    );
   }
 }

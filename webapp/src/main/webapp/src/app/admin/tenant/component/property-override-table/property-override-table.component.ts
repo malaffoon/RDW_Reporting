@@ -4,7 +4,6 @@ import {
   forwardRef,
   Input
 } from '@angular/core';
-import { OldConfigProp } from '../../model/old-config-prop';
 import {
   ControlContainer,
   ControlValueAccessor,
@@ -22,14 +21,14 @@ export function localizationsFormGroup(
     Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
-      const validators = []; // TODO?
+      const validators = []; // TODO? do localizations need validation?
       controlsByName[key] = new FormControl(value, validators);
       return controlsByName;
     }, {})
   );
 }
 
-function rowTrackBy(index: number, value: OldConfigProp) {
+function rowTrackBy(index: number, value: Property) {
   return value.key;
 }
 
@@ -53,15 +52,19 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
   defaults: any;
 
   @Input()
-  rows: Property[];
-
-  @Input()
   readonly = true;
 
-  // TODO still need this?
-  first = 0;
+  _rows: Property[];
+  _first = 0;
 
   constructor(public controlContainer: ControlContainer) {}
+
+  @Input()
+  set rows(values: Property[]) {
+    this._rows = values;
+    // reset the page back to the first page when the search changes
+    this._first = 0;
+  }
 
   get formGroup(): FormGroup {
     return this.controlContainer.control as FormGroup;

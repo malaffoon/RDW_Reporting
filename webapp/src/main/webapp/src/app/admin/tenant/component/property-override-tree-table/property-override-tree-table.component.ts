@@ -1,42 +1,19 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  forwardRef,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-  ViewChild
-} from '@angular/core';
+import { Component, forwardRef, Input, ViewChild } from '@angular/core';
 import {
   ControlContainer,
   ControlValueAccessor,
   FormControl,
   FormGroup,
   NG_VALUE_ACCESSOR,
-  ValidatorFn,
-  Validators
+  ValidatorFn
 } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { NotificationService } from '../../../../shared/notification/notification.service';
-import { OldConfigProp } from '../../model/old-config-prop';
 import { showErrors } from '../../../../shared/form/forms';
 import { DecryptionService } from '../../service/decryption.service';
-import {
-  propertyValidators,
-  toConfigurationProperty,
-  toProperty
-} from '../../model/properties';
+import { hasCipher, propertyValidators } from '../../model/properties';
 import { ConfigurationProperty } from '../../model/property';
-import { unflatten } from '../../../../shared/support/support';
-
-const cipherPattern = /^{cipher}.+/;
-
-function hasCipher(value: string): boolean {
-  return typeof value === 'string' && cipherPattern.test(value);
-}
 
 export function configurationsFormGroup(
   defaults: any,
@@ -52,10 +29,6 @@ export function configurationsFormGroup(
     }, {}),
     validators
   );
-}
-
-function rowTrackBy(index: number, { node }: any): string {
-  return node.key;
 }
 
 function addTreeNodesRecursively(
@@ -115,6 +88,10 @@ export function toTreeNodes(value: any, expanded: boolean = false): TreeNode[] {
   const nodes = [];
   addTreeNodesRecursively(nodes, value, '', expanded);
   return nodes;
+}
+
+function rowTrackBy(index: number, { node }: any): string {
+  return node.key;
 }
 
 @Component({

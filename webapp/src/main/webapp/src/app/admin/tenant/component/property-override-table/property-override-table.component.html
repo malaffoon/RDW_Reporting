@@ -1,15 +1,15 @@
-<ng-container *ngIf="rows != null && rows.length === 0; else hasResults">
+<ng-container *ngIf="_rows != null && _rows.length === 0; else hasResults">
   {{ 'tenant-localization-form.no-results' | translate }}
 </ng-container>
 <ng-template #hasResults>
   <ng-container [formGroup]="formGroup">
     <p-table
       #table
-      [value]="rows"
+      [value]="_rows"
       dataKey="key"
       [globalFilterFields]="['key', 'value']"
       [paginator]="true"
-      [(first)]="first"
+      [(first)]="_first"
       [alwaysShowPaginator]="false"
       [rows]="20"
       [rowTrackBy]="rowTrackBy"
@@ -43,8 +43,8 @@
             <ng-template #writableValue>
               <input
                 type="text"
+                class="form-control"
                 [formControlName]="property.key"
-                class="property-input"
               />
               <div class="icon-container">
                 <i

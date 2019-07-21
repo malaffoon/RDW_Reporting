@@ -7,6 +7,11 @@ const passwordFields = ['password'];
 const encryptedFields = ['password', 's3SecretKey'];
 // These fields should be lowercase for consistency with existing usernames and schema names in the database
 const lowercaseFields = ['urlParts.database', 'username'];
+const cipherPattern = /^{cipher}.+/;
+
+export function hasCipher(value: string): boolean {
+  return typeof value === 'string' && cipherPattern.test(value);
+}
 
 export function passwordValidators(): ValidatorFn[] {
   return [
@@ -15,7 +20,7 @@ export function passwordValidators(): ValidatorFn[] {
     Validators.maxLength(64),
     Validators.pattern(
       '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()-+])[A-Za-z].{8,}|^{cipher}.+'
-    ) // TODO test these
+    )
   ];
 }
 

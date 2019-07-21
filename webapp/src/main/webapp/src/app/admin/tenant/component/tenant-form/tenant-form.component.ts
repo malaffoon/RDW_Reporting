@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { Forms, showErrors, validate } from '../../../../shared/form/forms';
+import { showErrors, validate } from '../../../../shared/form/forms';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { debounceTime, map, mergeMap, startWith } from 'rxjs/operators';
 import {
@@ -302,8 +302,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
               );
               const flattened = keyBy(properties, ({ key }) => key);
               const unflattened = unflatten(flattened);
-              const tree = toTreeNodes(unflattened, hasSearch);
-              return tree;
+              return toTreeNodes(unflattened, hasSearch);
             })
           )
         )
@@ -340,7 +339,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     });
   }
 
-  // TODO apply default usernames
+  // TODO apply default usernames - this can be done by checking pristine() form control state
   onKeyChange(code: string): void {
     // apply default passwords for sandboxes based on key
     // const key = (code || '').toLowerCase();
