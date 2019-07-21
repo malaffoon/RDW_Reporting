@@ -46,8 +46,6 @@ import {
   onePasswordPerUser,
   tenantKey
 } from './tenant-form.validators';
-import { create } from 'domain';
-import { tap } from 'rxjs/internal/operators/tap';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -380,28 +378,22 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   // TODO apply default usernames - this can be done by checking pristine() form control state
-  onKeyChange(code: string): void {
+  onKeyInput(code: string): void {
     // apply default passwords for sandboxes based on key
     const key = (code || '').toLowerCase();
     const defaultDataBaseName = `reporting_${key}`;
     const defaultUsername = key;
+    const databaseKeyPattern = /.+\.urlParts\.database$/;
+    const usernameKeyPattern = /.+\.username$/;
 
-    // const { configurationOverrides: { datasources = [] } = {} } = this;
-    //
-    // Object.keys(datasources).forEach(dataSourceKey => {
-    //   const dataSource = datasources[dataSourceKey];
-    //   const urlPartsDatabase: ConfigurationProperty = dataSource.find(
-    //     property => property.key === 'urlParts.database'
-    //   );
-    //   if (!urlPartsDatabase.modified) {
-    //     urlPartsDatabase.value = defaultDataBaseName;
-    //   }
-    //   const username = <ConfigurationProperty>(
-    //     dataSource.find(property => property.key === 'username')
-    //   );
-    //   if (!username.modified) {
-    //     username.value = defaultUsername;
-    //   }
-    // });
+    Object.entries((<FormGroup>this.formGroup.controls.configurations).controls)
+      .filter(([, control]) => control.pristine)
+      .forEach(([key, control]) => {
+        if (databaseKeyPattern.test(key)) {
+          control.patchValue(defaultDataBaseName);
+        } else if (usernameKeyPattern.test(key)) {
+          control.patchValue(defaultUsername);
+        }
+      });
   }
 }

@@ -85,7 +85,7 @@
             id="key"
             name="key"
             formControlName="key"
-            (change)="onKeyChange($event.target.value)"
+            (input)="onKeyInput($event.target.value)"
           />
           <span class="help-block" *ngIf="showErrors(control)">
             <ng-container *ngIf="control.errors.required">
