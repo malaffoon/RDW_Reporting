@@ -1193,9 +1193,6 @@
     },
     "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
   },
-  "decryption-service": {
-    "error": "Failed to decrypt value"
-  },
   "tenant": {
     "create": {
       "success": {
@@ -1327,7 +1324,6 @@
     },
     "popover": {
       "reset": "Click this button to reset the value back to its original default value",
-      "decrypt": "Click this button to decrypt the encrypted password",
       "password": "The password must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
     },
     "no-results": "There are no configuration properties matching your search"

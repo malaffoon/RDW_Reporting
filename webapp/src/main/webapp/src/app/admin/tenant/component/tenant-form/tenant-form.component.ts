@@ -9,9 +9,15 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { showErrors, validate } from '../../../../shared/form/forms';
+import { showErrors, showErrorsRecursive } from '../../../../shared/form/forms';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { debounceTime, map, mergeMap, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  map,
+  mergeMap,
+  startWith,
+  takeUntil
+} from 'rxjs/operators';
 import {
   configurationsFormGroup,
   toTreeNodes
@@ -36,7 +42,6 @@ import {
   onePasswordPerUser,
   tenantKey
 } from './tenant-form.validators';
-import { create } from 'domain';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -137,6 +142,93 @@ function toPropertiesProvider<T = any>(
   );
 }
 
+function stateToTenant(
+  initialValue: TenantConfiguration,
+  configurationDefaults: any,
+  localizationDefaults: any,
+  formValue: any,
+  mode: FormMode
+): TenantConfiguration {
+  const { code: tenantCode, id: tenantId, type } = initialValue;
+  const {
+    id,
+    key: code,
+    label,
+    description,
+    tenant,
+    dataSet,
+    configurations = {},
+    localizations = {}
+  } = formValue;
+
+  const createMode = mode === 'create';
+  return {
+    type,
+    code: createMode ? code : tenantCode,
+    id: createMode ? id : tenantId,
+    label,
+    description,
+    parentTenantCode: (tenant || <any>{}).code,
+    dataSet,
+    configurations: lowercase(
+      valued(rightDifference(configurationDefaults, configurations))
+    ),
+    localizations: valued(rightDifference(localizationDefaults, localizations))
+  };
+}
+
+// lookup values
+const datasourcePattern = /^datasources\.(\w+)\..+$/;
+const defaultDatabaseNameProviderByDatasource = {
+  migrate_olap: key => `migrate_olap_${key}`,
+  olap: key => `reporting_${key}`, // the special case
+  reporting: key => `reporting_${key}`,
+  warehouse: key => `warehouse_${key}`
+};
+
+// TODO only issue with this is this doesn't change the defaultValue so the values
+// get marked as modified and using FormControl.dirty isn't enough because it doesn't
+// detect that the value is the same as it started
+// apply default passwords for sandboxes based on key
+function setDefaultDatabaseNameAndUsername(
+  formGroup: FormGroup,
+  inputKey: string
+): void {
+  const key = (inputKey || '').toLowerCase();
+  const defaultUsername = key;
+
+  Object.entries(formGroup.controls)
+    // find datasource controls
+    .filter(([key]) => datasourcePattern.test(key))
+    // extract the datasource names
+    .map(([key]) => datasourcePattern.exec(key)[1])
+    // reduce to a set of the names
+    .reduce((sources, source) => {
+      if (!sources.includes(source)) {
+        sources.push(source);
+      }
+      return sources;
+    }, [])
+    // for every datasource name apply defaults
+    .forEach(source => {
+      const usernameControl =
+        formGroup.controls[`datasources.${source}.username`];
+      if (usernameControl.pristine) {
+        usernameControl.patchValue(defaultUsername);
+      }
+
+      const databaseNameControl =
+        formGroup.controls[`datasources.${source}.urlParts.database`];
+      if (databaseNameControl.pristine) {
+        const sourceName = source.replace(/_r[o|w]$/, '');
+        const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
+          sourceName
+        ](key);
+        databaseNameControl.patchValue(defaultDatabaseName);
+      }
+    });
+}
+
 @Component({
   selector: 'app-tenant-form',
   templateUrl: './tenant-form.component.html',
@@ -201,49 +293,23 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   localizations$: Observable<Property[]>;
   readonlyGroups: string[] = [];
   formGroup: FormGroup;
+  submitted$: Subject<boolean> = new Subject();
   destroyed$: Subject<void> = new Subject();
 
   onSubmit(): void {
-    const {
-      value: { code: tenantCode, id: tenantId, type },
-      formGroup: {
-        invalid,
-        value: {
-          id,
-          key: code,
-          label,
-          description,
-          tenant,
-          dataSet,
-          configurations,
-          localizations
-        }
-      }
-    } = this;
-
-    if (invalid) {
-      validate(this.formGroup);
-      return;
+    this.submitted$.next(true);
+    if (this.formGroup.valid) {
+      const emitter = this.mode === 'create' ? this.create : this.update;
+      emitter.emit(
+        stateToTenant(
+          this.value,
+          this.configurationDefaults,
+          this.localizationDefaults,
+          this.formGroup.value,
+          this.mode
+        )
+      );
     }
-    const createMode = this.mode === 'create';
-    const emitter = createMode ? this.create : this.update;
-    const updated: TenantConfiguration = {
-      type,
-      code: createMode ? code : tenantCode,
-      id: createMode ? id : tenantId,
-      label,
-      description,
-      parentTenantCode: (tenant || <any>{}).code,
-      dataSet,
-      configurations: lowercase(
-        valued(rightDifference(this.configurationDefaults, configurations))
-      ),
-      localizations: valued(
-        rightDifference(this.localizationDefaults, localizations)
-      )
-    };
-
-    emitter.emit(updated);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -286,6 +352,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
       // hack to get config to open on search
       const configurationHasSearch$ = this.configurationControlsFormGroup.valueChanges.pipe(
+        takeUntil(this.destroyed$),
         startWith(this.configurationControlsFormGroup.value),
         map(
           ({ search, required, modified }) =>
@@ -293,20 +360,41 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         )
       );
 
+      const configurationsGroup = this.formGroup.controls.configurations;
+      const configurationsInvalid$ = this.submitted$.pipe(
+        takeUntil(this.destroyed$),
+        startWith(false),
+        map(
+          submitted =>
+            submitted &&
+            configurationsGroup.status === 'INVALID' &&
+            showErrorsRecursive(configurationsGroup, submitted)
+        )
+      );
+
+      const expandConfigurations$ = combineLatest(
+        configurationHasSearch$,
+        configurationsInvalid$
+      ).pipe(
+        takeUntil(this.destroyed$),
+        map(([hasSearch, invalid]) => hasSearch || invalid)
+      );
+
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
         configurationDefaults
       ).pipe(
+        takeUntil(this.destroyed$),
         mergeMap(entries =>
-          configurationHasSearch$.pipe(
-            map(hasSearch => {
+          expandConfigurations$.pipe(
+            map(expand => {
               const properties = entries.map(([key, defaultValue]) =>
                 toConfigurationProperty(key, defaultValue)
               );
               const flattened = keyBy(properties, ({ key }) => key);
               const unflattened = unflatten(flattened);
-              return toTreeNodes(unflattened, hasSearch);
+              return toTreeNodes(unflattened, expand);
             })
           )
         )
@@ -317,6 +405,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         this.formGroup.controls.localizations as FormGroup,
         localizationDefaults
       ).pipe(
+        takeUntil(this.destroyed$),
         map(entries =>
           entries.map(([key, defaultValue]) => toProperty(key, defaultValue))
         )
@@ -330,7 +419,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   onTenantChange(tenant: TenantConfiguration): void {
-    // reset form values to tenant overrides
+    // TODO should this not override non-pristine values?
+    // set form values to tenant values
     this.formGroup.patchValue({
       configurations: configurationsFormGroup(
         this.configurationDefaults,
@@ -343,28 +433,11 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     });
   }
 
-  // TODO apply default usernames - this can be done by checking pristine() form control state
-  onKeyChange(code: string): void {
-    // apply default passwords for sandboxes based on key
-    // const key = (code || '').toLowerCase();
-    // const defaultDataBaseName = `reporting_${key}`;
-    // const defaultUsername = key;
-    // const { configurationOverrides: { datasources = [] } = {} } = this;
-    //
-    // Object.keys(datasources).forEach(dataSourceKey => {
-    //   const dataSource = datasources[dataSourceKey];
-    //   const urlPartsDatabase: ConfigurationProperty = dataSource.find(
-    //     property => property.key === 'urlParts.database'
-    //   );
-    //   if (!urlPartsDatabase.modified) {
-    //     urlPartsDatabase.value = defaultDataBaseName;
-    //   }
-    //   const username = <ConfigurationProperty>(
-    //     dataSource.find(property => property.key === 'username')
-    //   );
-    //   if (!username.modified) {
-    //     username.value = defaultUsername;
-    //   }
-    // });
+  // TODO debounce this?
+  onKeyInput(key: string): void {
+    setDefaultDatabaseNameAndUsername(
+      this.formGroup.controls.configurations as FormGroup,
+      key
+    );
   }
 }

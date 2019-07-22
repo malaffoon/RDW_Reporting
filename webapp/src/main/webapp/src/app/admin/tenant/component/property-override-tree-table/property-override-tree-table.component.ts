@@ -9,10 +9,8 @@ import {
 } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
-import { NotificationService } from '../../../../shared/notification/notification.service';
 import { showErrors } from '../../../../shared/form/forms';
-import { DecryptionService } from '../../service/decryption.service';
-import { hasCipher, propertyValidators } from '../../model/properties';
+import { propertyValidators } from '../../model/properties';
 import { ConfigurationProperty } from '../../model/property';
 
 export function configurationsFormGroup(
@@ -111,7 +109,6 @@ function rowTrackBy(index: number, { node }: any): string {
 export class PropertyOverrideTreeTableComponent
   implements ControlValueAccessor {
   readonly showErrors = showErrors;
-  readonly hasCipher = hasCipher;
   readonly rowTrackBy = rowTrackBy;
 
   @ViewChild('table')
@@ -129,11 +126,7 @@ export class PropertyOverrideTreeTableComponent
   @Input()
   tree: TreeNode[] = [];
 
-  constructor(
-    private controlContainer: ControlContainer,
-    private decryptionService: DecryptionService,
-    private notificationService: NotificationService
-  ) {}
+  constructor(private controlContainer: ControlContainer) {}
 
   get formGroup(): FormGroup {
     return this.controlContainer.control as FormGroup;
@@ -176,24 +169,5 @@ export class PropertyOverrideTreeTableComponent
     this.formGroup.patchValue({
       [property.key]: property.defaultValue
     });
-  }
-
-  onDecryptButtonClick(property: ConfigurationProperty): void {
-    const {
-      value: { [property.key]: value }
-    } = this.formGroup;
-
-    if (!hasCipher(value)) {
-      return;
-    }
-
-    this.decryptionService.decrypt(value).subscribe(
-      decrypted => {
-        this.formGroup.patchValue({
-          [property.key]: decrypted
-        });
-      },
-      () => this.notificationService.error({ id: 'decryption-service.error' })
-    );
   }
 }
