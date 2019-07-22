@@ -313,12 +313,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       const configurationsInvalid$ = this.submitted$.pipe(
         takeUntil(this.destroyed$),
         startWith(false),
-        tap(() => {
-          console.log({
-            status: configurationsGroup.status,
-            showErrors: showErrorsRecursive(configurationsGroup, true)
-          });
-        }),
         map(
           submitted =>
             submitted &&
