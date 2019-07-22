@@ -1241,6 +1241,7 @@
     "field": {
       "key": {
         "label": "Key",
+        "info": "This is the internal identifier for the tenant, used in the configuration to uniquely identify the tenant. For consistency, it may be the same as the ID.",
         "error": {
           "required": "Please enter a tenant key",
           "unavailable": "A tenant with the same key already exists",
@@ -1249,6 +1250,7 @@
       },
       "id": {
         "label": "ID",
+        "info": "This is the external identifier for the tenant. It must match the ID in the tenancy chain. Typically, this is a state code.",
         "error": {
           "required": "Please enter a tenant ID",
           "exists": "A tenant with the same ID already exists",
@@ -1257,6 +1259,7 @@
       },
       "name": {
         "label": "Name",
+        "info": "The name that will be displayed in the UI for this tenant or sandbox",
         "error": {
           "required": "Please provide a name"
         }
@@ -1266,12 +1269,14 @@
       },
       "tenant": {
         "label": "Tenant",
+        "info": "The tenant to base the sandbox on. The selected tenant's configurations and localizations will be copied over to this sandbox.",
         "error": {
           "required": "Please select a tenant to base the sandbox off of"
         }
       },
       "dataSet": {
         "label": "Data Set",
+        "info": "The sample data that the sandbox will be initialized with",
         "error": {
           "required": "Please select a data set to initialize the sandbox with"
         }
