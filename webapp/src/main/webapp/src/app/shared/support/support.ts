@@ -525,7 +525,7 @@ export function rightDifference(a: any, b: any): any {
  *
  * @param value The object to prune of null or undefined valued entries
  */
-export function valued(value: { [key: string]: any }): { [key: string]: any } {
+export function valued(value: any): any {
   return Object.entries(value).reduce((valued, [key, value]) => {
     if (value != null && !(typeof value === 'string' && value.length === 0)) {
       valued[key] = value;

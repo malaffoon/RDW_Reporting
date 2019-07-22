@@ -87,7 +87,7 @@ export function toTenant(
   } = serverTenant;
 
   const type = sandbox ? 'SANDBOX' : 'TENANT';
-  return {
+  return valued({
     code,
     id,
     label,
@@ -98,7 +98,7 @@ export function toTenant(
     localizations: valued(flatten(localizations || {})),
     parentTenantCode,
     dataSet: (dataSets || []).find(dataSet => dataSetId === dataSet.id)
-  };
+  });
 }
 
 /**

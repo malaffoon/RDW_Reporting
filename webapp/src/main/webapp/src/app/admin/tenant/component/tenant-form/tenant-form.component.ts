@@ -374,6 +374,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   onTenantChange(tenant: TenantConfiguration): void {
+    // TODO should this not override non-pristine values?
     // reset form values to tenant overrides
     this.formGroup.patchValue({
       configurations: configurationsFormGroup(
@@ -387,7 +388,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     });
   }
 
-  // TODO apply default usernames - this can be done by checking pristine() form control state
+  // TODO debounce this?
   onKeyInput(code: string): void {
     // apply default passwords for sandboxes based on key
     const key = (code || '').toLowerCase();
