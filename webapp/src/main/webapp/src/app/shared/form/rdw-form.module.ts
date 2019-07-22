@@ -14,19 +14,9 @@ import { AutoCompleteModule } from 'primeng/primeng';
 import { FormFieldsComponent } from './component/form-fields/form-fields.component';
 import { InformationIconComponent } from './component/information-icon/information-icon.component';
 import { CommonModule } from '@angular/common';
+import { NestableFormGroup } from './directive/nestable-form-group.directive';
 
 @NgModule({
-  declarations: [
-    FormFieldsComponent,
-    InformationButtonComponent,
-    InformationIconComponent,
-    SBTypeahead,
-    SBButtonTypeahead,
-    SBTypeaheadGroup,
-    SBCheckboxGroup,
-    SBButtonGroup,
-    SBRadioGroup
-  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -37,10 +27,23 @@ import { CommonModule } from '@angular/common';
     TranslateModule,
     Angulartics2Module
   ],
+  declarations: [
+    FormFieldsComponent,
+    InformationButtonComponent,
+    InformationIconComponent,
+    NestableFormGroup,
+    SBTypeahead,
+    SBButtonTypeahead,
+    SBTypeaheadGroup,
+    SBCheckboxGroup,
+    SBButtonGroup,
+    SBRadioGroup
+  ],
   exports: [
     FormFieldsComponent,
     InformationButtonComponent,
     InformationIconComponent,
+    NestableFormGroup,
     SBTypeahead,
     SBButtonTypeahead,
     SBCheckboxGroup,

@@ -1,6 +1,6 @@
 import { joinIfArrayOfPrimitives, toConfigurations, toTenant } from './tenants';
 import { activeSandbox, activeTenant, dataSets } from './tenants.spec.data';
-import { flatten } from '../../../shared/support/support';
+import { flatten, valued } from '../../../shared/support/support';
 import { TenantConfiguration } from './tenant-configuration';
 import { TenantStatus } from './tenant-status';
 
@@ -60,14 +60,16 @@ describe('toTenant', () => {
         id: activeSandbox.tenant.sandboxDataset,
         label: 'ds1'
       },
-      configurations: flatten(
-        {
-          aggregate: activeSandbox.aggregate,
-          reporting: activeSandbox.reporting
-        },
-        joinIfArrayOfPrimitives
+      configurations: valued(
+        flatten(
+          {
+            aggregate: activeSandbox.aggregate,
+            reporting: activeSandbox.reporting
+          },
+          joinIfArrayOfPrimitives
+        )
       ),
-      localizations: flatten(activeSandbox.localization || {})
+      localizations: valued(flatten(activeSandbox.localization || {}))
     };
 
     expect(toTenant(activeSandbox, {}, dataSets)).toEqual(expected);
@@ -83,18 +85,18 @@ describe('toTenant', () => {
       status: <TenantStatus>(
         activeTenant.administrationStatus.tenantAdministrationStatus
       ),
-      parentTenantCode: null,
-      dataSet: undefined,
-      configurations: flatten(
-        {
-          archive: activeTenant.archive,
-          aggregate: activeTenant.aggregate,
-          datasources: activeTenant.datasources,
-          reporting: activeTenant.reporting
-        },
-        joinIfArrayOfPrimitives
+      configurations: valued(
+        flatten(
+          {
+            archive: activeTenant.archive,
+            aggregate: activeTenant.aggregate,
+            datasources: activeTenant.datasources,
+            reporting: activeTenant.reporting
+          },
+          joinIfArrayOfPrimitives
+        )
       ),
-      localizations: flatten(activeTenant.localization || {})
+      localizations: valued(flatten(activeTenant.localization || {}))
     };
 
     expect(toTenant(activeTenant, {}, dataSets)).toEqual(expected);

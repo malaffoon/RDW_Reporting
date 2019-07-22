@@ -16,7 +16,7 @@ export const activeSandbox = {
     id: 'TS_S001',
     key: 'TS_S001',
     name: 'Test Tenant Sandbox 001',
-    description: null,
+    description: 'desc',
     sandbox: true,
     sandboxDataset: 'DS1'
   },
@@ -101,7 +101,7 @@ export const activeTenant = {
     id: 'CA',
     key: 'CA',
     name: 'California',
-    description: null,
+    description: 'desc',
     sandbox: false,
     sandboxDataset: null
   },

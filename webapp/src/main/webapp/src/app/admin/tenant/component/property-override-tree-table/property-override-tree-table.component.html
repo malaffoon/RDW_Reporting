@@ -2,7 +2,7 @@
   {{ 'tenant-configuration-form.no-results' | translate }}
 </ng-container>
 <ng-template #hasResults>
-  <ng-container [formGroup]="formGroup">
+  <ng-container [formGroup]="formGroup" nestableFormGroup #form="ngForm">
     <p-treeTable
       #table
       [value]="tree"
@@ -74,7 +74,10 @@
                   [ngClass]="{
                     leaf: node.leaf,
                     modified: data.defaultValue !== formGroup.value[data.key],
-                    required: showErrors(formGroup.controls[data.key])
+                    required: showErrors(
+                      formGroup.controls[data.key],
+                      form.submitted
+                    )
                   }"
                 >
                   <td [title]="data.key">
@@ -87,7 +90,10 @@
                     <div
                       class="form-group"
                       [ngClass]="{
-                        'has-error': showErrors(formGroup.controls[data.key])
+                        'has-error': showErrors(
+                          formGroup.controls[data.key],
+                          form.submitted
+                        )
                       }"
                     >
                       <input
@@ -128,26 +134,6 @@
                             [ngClass]="{
                               'fa-eye-slash': data.showSecure,
                               'fa-eye': !data.showSecure
-                            }"
-                          ></i>
-                        </a>
-                        <a
-                          *ngIf="data.encrypted"
-                          href="javascript:void(0)"
-                          (click)="onDecryptButtonClick(data)"
-                          popover="{{
-                            'tenant-configuration-form.popover.decrypt'
-                              | translate
-                          }}"
-                          placement="left"
-                          container="body"
-                          triggers="mouseenter:mouseleave"
-                        >
-                          <i
-                            class="fa fa-md"
-                            [ngClass]="{
-                              'fa-lock': hasCipher(formGroup.value[data.key]),
-                              'fa-unlock': hasCipher(formGroup.value[data.key])
                             }"
                           ></i>
                         </a>

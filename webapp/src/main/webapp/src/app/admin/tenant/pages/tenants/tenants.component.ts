@@ -10,7 +10,7 @@ import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 import { completedTenantStatuses } from '../../model/tenant-statuses';
 
-const pollingInterval = 2000;
+const pollingInterval = 5000;
 
 const comparator = ordering(byString).on(({ label }) => label).compare;
 
