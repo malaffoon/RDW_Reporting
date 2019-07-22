@@ -8,9 +8,9 @@ import { FormGroupDirective } from '@angular/forms';
  * This helps when displaying form errors on submission
  */
 @Directive({
-  selector: '[nestedFormGroup]'
+  selector: '[nestableFormGroup]'
 })
-export class NestedFormGroupDirective implements OnDestroy {
+export class NestableFormGroup implements OnDestroy {
   private destroyed$ = new Subject<void>();
 
   constructor(

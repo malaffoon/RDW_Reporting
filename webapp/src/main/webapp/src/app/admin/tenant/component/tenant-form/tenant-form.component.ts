@@ -42,7 +42,6 @@ import {
   onePasswordPerUser,
   tenantKey
 } from './tenant-form.validators';
-import { tap } from 'rxjs/internal/operators/tap';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;

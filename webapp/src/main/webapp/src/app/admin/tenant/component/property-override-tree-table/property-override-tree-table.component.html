@@ -2,7 +2,7 @@
   {{ 'tenant-configuration-form.no-results' | translate }}
 </ng-container>
 <ng-template #hasResults>
-  <ng-container [formGroup]="formGroup" nestedFormGroup #form="ngForm">
+  <ng-container [formGroup]="formGroup" nestableFormGroup #form="ngForm">
     <p-treeTable
       #table
       [value]="tree"

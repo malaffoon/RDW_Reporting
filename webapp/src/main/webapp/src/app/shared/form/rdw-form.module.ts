@@ -14,7 +14,7 @@ import { AutoCompleteModule } from 'primeng/primeng';
 import { FormFieldsComponent } from './component/form-fields/form-fields.component';
 import { InformationIconComponent } from './component/information-icon/information-icon.component';
 import { CommonModule } from '@angular/common';
-import { NestedFormGroupDirective } from './directive/nested-form-group.directive';
+import { NestableFormGroup } from './directive/nestable-form-group.directive';
 
 @NgModule({
   imports: [
@@ -31,7 +31,7 @@ import { NestedFormGroupDirective } from './directive/nested-form-group.directiv
     FormFieldsComponent,
     InformationButtonComponent,
     InformationIconComponent,
-    NestedFormGroupDirective,
+    NestableFormGroup,
     SBTypeahead,
     SBButtonTypeahead,
     SBTypeaheadGroup,
@@ -43,7 +43,7 @@ import { NestedFormGroupDirective } from './directive/nested-form-group.directiv
     FormFieldsComponent,
     InformationButtonComponent,
     InformationIconComponent,
-    NestedFormGroupDirective,
+    NestableFormGroup,
     SBTypeahead,
     SBButtonTypeahead,
     SBCheckboxGroup,
