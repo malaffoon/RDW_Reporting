@@ -3,6 +3,7 @@ import {
   FormControl,
   FormGroup,
   NG_VALUE_ACCESSOR,
+  NgForm,
   ValidationErrors
 } from '@angular/forms';
 import { forwardRef, Provider } from '@angular/core';
@@ -47,25 +48,30 @@ export function validate(formGroup: FormGroup): void {
  * True if the control has errors and has been touched or dirtied
  *
  * @param control the form control to test
+ * @param submitted true if the form is submitted
  */
-export function showErrors(control: AbstractControl): boolean {
+export function showErrors(
+  control: AbstractControl,
+  submitted: boolean = false
+): boolean {
   return (
     control.invalid &&
-    (control.dirty || control.touched) &&
-    control.errors != null &&
-    Object.keys(control.errors).length > 0
+    control.errors != null && // should be redundant but this happens in the wild
+    (control.touched || control.dirty || submitted)
   );
 }
 
-export function showErrorsRecursive(control: AbstractControl): boolean {
-  if (showErrors(control)) {
-    return true;
-  }
-  const { controls } = <FormGroup>control;
-  if (controls != null) {
-    return Object.values(controls).some(child => showErrorsRecursive(child));
-  }
-  return false;
+export function showErrorsRecursive(
+  control: AbstractControl,
+  submitted: boolean = false
+): boolean {
+  return (
+    showErrors(control, submitted) ||
+    ((<FormGroup>control).controls != null &&
+      Object.values((control as FormGroup).controls).some(child =>
+        showErrors(child, submitted)
+      ))
+  );
 }
 
 /**

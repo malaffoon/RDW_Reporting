@@ -9,11 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import {
-  showErrors,
-  showErrorsRecursive,
-  validate
-} from '../../../../shared/form/forms';
+import { showErrors, showErrorsRecursive } from '../../../../shared/form/forms';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import {
   debounceTime,
@@ -46,6 +42,7 @@ import {
   onePasswordPerUser,
   tenantKey
 } from './tenant-form.validators';
+import { tap } from 'rxjs/internal/operators/tap';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -249,22 +246,19 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   destroyed$: Subject<void> = new Subject();
 
   onSubmit(): void {
-    if (this.formGroup.invalid) {
-      // TODO shouldn't have to do this.. but the submit action is not recursively marking things without it atm
-      validate(this.formGroup);
-      this.submitted$.next(true);
-      return;
+    this.submitted$.next(true);
+    if (this.formGroup.valid) {
+      const emitter = this.mode === 'create' ? this.create : this.update;
+      emitter.emit(
+        stateToTenant(
+          this.value,
+          this.configurationDefaults,
+          this.localizationDefaults,
+          this.formGroup.value,
+          this.mode
+        )
+      );
     }
-    const emitter = this.mode === 'create' ? this.create : this.update;
-    emitter.emit(
-      stateToTenant(
-        this.value,
-        this.configurationDefaults,
-        this.localizationDefaults,
-        this.formGroup.value,
-        this.mode
-      )
-    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -319,11 +313,17 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       const configurationsInvalid$ = this.submitted$.pipe(
         takeUntil(this.destroyed$),
         startWith(false),
+        tap(() => {
+          console.log({
+            status: configurationsGroup.status,
+            showErrors: showErrorsRecursive(configurationsGroup, true)
+          });
+        }),
         map(
           submitted =>
             submitted &&
             configurationsGroup.status === 'INVALID' &&
-            showErrorsRecursive(configurationsGroup)
+            showErrorsRecursive(configurationsGroup, submitted)
         )
       );
 
@@ -389,6 +389,10 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   // TODO debounce this?
+  // TODO change default naming pattern
+  // TODO only issue with this is this doesn't change the defaultValue so the values
+  // get marked as modified and using FormControl.dirty isn't enough because it doesn't
+  // detect that the value is the same as it started
   onKeyInput(code: string): void {
     // apply default passwords for sandboxes based on key
     const key = (code || '').toLowerCase();

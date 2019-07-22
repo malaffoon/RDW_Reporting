@@ -1,4 +1,9 @@
-<form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+<form
+  *ngIf="formGroup"
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+  #form="ngForm"
+>
   <page-heading>
     <h1 class="h2" heading>
       <ng-container *ngIf="mode === 'create'; else updateModeHeading">
@@ -71,7 +76,7 @@
         *ngIf="formGroup.get('key') as control"
         class="form-group"
         [ngClass]="{
-          'has-error': showErrors(control)
+          'has-error': showErrors(control, form.submitted)
         }"
       >
         <label for="key">
@@ -87,7 +92,7 @@
             formControlName="key"
             (input)="onKeyInput($event.target.value)"
           />
-          <span class="help-block" *ngIf="showErrors(control)">
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.required">
               {{ 'tenant-form.field.key.error.required' | translate }}
             </ng-container>
@@ -108,7 +113,7 @@
         *ngIf="formGroup.get('id') as control"
         class="form-group"
         [ngClass]="{
-          'has-error': showErrors(control)
+          'has-error': showErrors(control, form.submitted)
         }"
       >
         <label for="id">
@@ -123,7 +128,7 @@
             class="form-control"
             formControlName="id"
           />
-          <span class="help-block" *ngIf="showErrors(control)">
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.required">
               {{ 'tenant-form.field.id.error.required' | translate }}
             </ng-container>
@@ -142,7 +147,7 @@
       *ngIf="formGroup.get('label') as control"
       class="form-group"
       [ngClass]="{
-        'has-error': showErrors(control)
+        'has-error': showErrors(control, form.submitted)
       }"
     >
       <label for="label">
@@ -157,7 +162,7 @@
           name="label"
           formControlName="label"
         />
-        <span class="help-block" *ngIf="showErrors(control)">
+        <span class="help-block" *ngIf="showErrors(control, form.submitted)">
           <ng-container *ngIf="control.errors.required">
             {{ 'tenant-form.field.name.error.required' | translate }}
           </ng-container>
@@ -190,7 +195,7 @@
         *ngIf="formGroup.get('tenant') as control"
         class="form-group"
         [ngClass]="{
-          'has-error': showErrors(control)
+          'has-error': showErrors(control, form.submitted)
         }"
       >
         <label for="tenant">{{
@@ -209,7 +214,7 @@
               {{ tenant.label }}
             </option>
           </select>
-          <span class="help-block" *ngIf="showErrors(control)">
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.required">
               {{ 'tenant-form.field.tenant.required' | translate }}
             </ng-container>
@@ -224,7 +229,7 @@
         *ngIf="formGroup.get('dataSet') as control"
         class="form-group"
         [ngClass]="{
-          'has-error': showErrors(control)
+          'has-error': showErrors(control, form.submitted)
         }"
       >
         <label for="dataSet">
@@ -238,7 +243,7 @@
               {{ dataSet.label }}
             </option>
           </select>
-          <span class="help-block" *ngIf="showErrors(control)">
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.required">
               {{ 'tenant-form.field.dataSet.error.required' | translate }}
             </ng-container>
@@ -303,14 +308,14 @@
         </div>
 
         <ng-container *ngIf="formGroup.controls.configurations as control">
-          <span class="text-danger" *ngIf="showErrors(control)">
+          <p class="text-danger" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.onePasswordPerUser">
               {{
                 'tenant-form.field.configurations.error.onePasswordPerUser'
                   | translate: control.errors.onePasswordPerUser
               }}
             </ng-container>
-          </span>
+          </p>
         </ng-container>
 
         <property-override-tree-table
