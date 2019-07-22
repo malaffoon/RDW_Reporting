@@ -81,6 +81,9 @@
       >
         <label for="key">
           {{ 'tenant-form.field.key.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.key.info' | translate }}"
+          ></app-info>
         </label>
         <ng-container *ngIf="writable && mode === 'create'; else readonlyKey">
           <input
@@ -91,6 +94,7 @@
             name="key"
             formControlName="key"
             (input)="onKeyInput($event.target.value)"
+            data-lpignore
           />
           <span class="help-block" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.required">
@@ -118,6 +122,9 @@
       >
         <label for="id">
           {{ 'tenant-form.field.id.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.id.info' | translate }}"
+          ></app-info>
         </label>
 
         <ng-container *ngIf="writable && mode === 'create'; else readonlyId">
@@ -152,6 +159,9 @@
     >
       <label for="label">
         {{ 'tenant-form.field.name.label' | translate }}
+        <app-info
+          popoverContent="{{ 'tenant-form.field.name.info' | translate }}"
+        ></app-info>
       </label>
       <ng-container *ngIf="writable; else readonlyName">
         <input
@@ -198,9 +208,12 @@
           'has-error': showErrors(control, form.submitted)
         }"
       >
-        <label for="tenant">{{
-          'tenant-form.field.tenant.label' | translate
-        }}</label>
+        <label for="tenant">
+          {{ 'tenant-form.field.tenant.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.tenant.info' | translate }}"
+          ></app-info>
+        </label>
         <ng-container
           *ngIf="writable && mode === 'create'; else readonlyTenant"
         >
@@ -234,6 +247,9 @@
       >
         <label for="dataSet">
           {{ 'tenant-form.field.dataSet.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.dataSet.info' | translate }}"
+          ></app-info>
         </label>
         <ng-container
           *ngIf="writable && mode === 'create'; else readonlyDataSet"
