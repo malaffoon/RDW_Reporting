@@ -138,26 +138,6 @@
                           ></i>
                         </a>
                         <a
-                          *ngIf="data.encrypted"
-                          href="javascript:void(0)"
-                          (click)="onDecryptButtonClick(data)"
-                          popover="{{
-                            'tenant-configuration-form.popover.decrypt'
-                              | translate
-                          }}"
-                          placement="left"
-                          container="body"
-                          triggers="mouseenter:mouseleave"
-                        >
-                          <i
-                            class="fa fa-md"
-                            [ngClass]="{
-                              'fa-lock': hasCipher(formGroup.value[data.key]),
-                              'fa-unlock': !hasCipher(formGroup.value[data.key])
-                            }"
-                          ></i>
-                        </a>
-                        <a
                           *ngIf="data.required"
                           href="javascript:void(0)"
                           popover="{{

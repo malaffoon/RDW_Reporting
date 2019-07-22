@@ -178,6 +178,58 @@ function stateToTenant(
   };
 }
 
+// lookup values
+const datasourcePattern = /^datasources\.(\w+)\..+$/;
+const defaultDatabaseNameProviderByDatasource = {
+  migrate_olap: key => `migrate_olap_${key}`,
+  olap: key => `reporting_${key}`, // the special case
+  reporting: key => `reporting_${key}`,
+  warehouse: key => `warehouse_${key}`
+};
+
+// TODO only issue with this is this doesn't change the defaultValue so the values
+// get marked as modified and using FormControl.dirty isn't enough because it doesn't
+// detect that the value is the same as it started
+// apply default passwords for sandboxes based on key
+function setDefaultDatabaseNameAndUsername(
+  formGroup: FormGroup,
+  inputKey: string
+): void {
+  const key = (inputKey || '').toLowerCase();
+  const defaultUsername = key;
+
+  Object.entries(formGroup.controls)
+    // find datasource controls
+    .filter(([key]) => datasourcePattern.test(key))
+    // extract the datasource names
+    .map(([key]) => datasourcePattern.exec(key)[1])
+    // reduce to a set of the names
+    .reduce((sources, source) => {
+      if (!sources.includes(source)) {
+        sources.push(source);
+      }
+      return sources;
+    }, [])
+    // for every datasource name apply defaults
+    .forEach(source => {
+      const usernameControl =
+        formGroup.controls[`datasources.${source}.username`];
+      if (usernameControl.pristine) {
+        usernameControl.patchValue(defaultUsername);
+      }
+
+      const databaseNameControl =
+        formGroup.controls[`datasources.${source}.urlParts.database`];
+      if (databaseNameControl.pristine) {
+        const sourceName = source.replace(/_r[o|w]$/, '');
+        const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
+          sourceName
+        ](key);
+        databaseNameControl.patchValue(defaultDatabaseName);
+      }
+    });
+}
+
 @Component({
   selector: 'app-tenant-form',
   templateUrl: './tenant-form.component.html',
@@ -369,7 +421,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
   onTenantChange(tenant: TenantConfiguration): void {
     // TODO should this not override non-pristine values?
-    // reset form values to tenant overrides
+    // set form values to tenant values
     this.formGroup.patchValue({
       configurations: configurationsFormGroup(
         this.configurationDefaults,
@@ -383,26 +435,10 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   // TODO debounce this?
-  // TODO change default naming pattern
-  // TODO only issue with this is this doesn't change the defaultValue so the values
-  // get marked as modified and using FormControl.dirty isn't enough because it doesn't
-  // detect that the value is the same as it started
-  onKeyInput(code: string): void {
-    // apply default passwords for sandboxes based on key
-    const key = (code || '').toLowerCase();
-    const defaultDataBaseName = `reporting_${key}`;
-    const defaultUsername = key;
-    const databaseKeyPattern = /.+\.urlParts\.database$/;
-    const usernameKeyPattern = /.+\.username$/;
-
-    Object.entries((<FormGroup>this.formGroup.controls.configurations).controls)
-      .filter(([, control]) => control.pristine)
-      .forEach(([key, control]) => {
-        if (databaseKeyPattern.test(key)) {
-          control.patchValue(defaultDataBaseName);
-        } else if (usernameKeyPattern.test(key)) {
-          control.patchValue(defaultUsername);
-        }
-      });
+  onKeyInput(key: string): void {
+    setDefaultDatabaseNameAndUsername(
+      this.formGroup.controls.configurations as FormGroup,
+      key
+    );
   }
 }
