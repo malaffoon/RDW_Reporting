@@ -10,14 +10,8 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { showErrors, showErrorsRecursive } from '../../../../shared/form/forms';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import {
-  debounceTime,
-  map,
-  mergeMap,
-  startWith,
-  takeUntil
-} from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
 import {
   configurationsFormGroup,
   toTreeNodes
@@ -101,11 +95,28 @@ export function tenantFormGroup(
   );
 }
 
+interface PropertySearch<T> {
+  results: [string, T][];
+  hasSearch: boolean;
+  invalid: boolean;
+}
+
+/**
+ * Produces an observable of properties shared by the configuration and localization properties
+ *
+ * @param searchFormGroup The search parameter form
+ * @param formGroup The form being searched
+ * @param defaults The default values of the form
+ * @param submitted$ Observable that produces a signal when the form is submitted (used for configurations)
+ * @param keyTransform Transform placed on keys before matching them with the search word (used for configurations)
+ */
 function toPropertiesProvider<T = any>(
   searchFormGroup: FormGroup,
   formGroup: FormGroup,
-  defaults: { [key: string]: T }
-): Observable<[string, T][]> {
+  defaults: { [key: string]: T },
+  submitted$: Observable<boolean> = of(false),
+  keyTransform: (key: string) => string = value => value
+): Observable<PropertySearch<T>> {
   const { controls, value } = searchFormGroup;
   const entries = Object.entries(defaults);
   return combineLatest(
@@ -116,29 +127,35 @@ function toPropertiesProvider<T = any>(
     controls.modified.valueChanges.pipe(startWith(value.modified)),
     controls.required != null
       ? controls.required.valueChanges.pipe(startWith(value.required))
-      : of(false)
+      : of(false),
+    submitted$
   ).pipe(
-    map(
-      ([search, modified, required]) =>
-        entries.filter(([key, defaultValue]) => {
-          const caseInsensitiveSearch = search.toLowerCase();
-          const value = formGroup.controls[key].value;
-          return (
-            (isBlank(search) ||
-              (key.toLowerCase().includes(caseInsensitiveSearch) ||
-                (typeof value === 'string' &&
-                  value.toLowerCase().includes(caseInsensitiveSearch)) ||
-                (Object(value) !== value &&
-                  String(value)
-                    .toLowerCase()
-                    .includes(caseInsensitiveSearch)))) &&
-            (!modified || value !== defaultValue) &&
-            (!required || /username|password/g.test(key)) // TODO this should really come from metadata
-          );
-        })
+    map(([search, modified, required, submitted]) => ({
+      hasSearch: !isBlank(search) || modified || required,
+      invalid:
+        submitted &&
+        formGroup.invalid &&
+        showErrorsRecursive(formGroup, submitted),
+      results: entries.filter(([controlKey, defaultValue]) => {
+        const caseInsensitiveSearch = search.toLowerCase();
+        const key = keyTransform(controlKey);
+        const value = formGroup.controls[controlKey].value;
+        return (
+          (isBlank(search) ||
+            (key.toLowerCase().includes(caseInsensitiveSearch) ||
+              (typeof value === 'string' &&
+                value.toLowerCase().includes(caseInsensitiveSearch)) ||
+              (Object(value) !== value &&
+                String(value)
+                  .toLowerCase()
+                  .includes(caseInsensitiveSearch)))) &&
+          (!modified || value !== defaultValue) &&
+          (!required || /username|password/g.test(key)) // TODO this should really come from metadata
+        );
+      })
       // TODO sort?
       // .sort(ordering(byString).on(([key]) => key).compare)
-    )
+    }))
   );
 }
 
@@ -293,7 +310,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   localizations$: Observable<Property[]>;
   readonlyGroups: string[] = [];
   formGroup: FormGroup;
-  submitted$: Subject<boolean> = new Subject();
+  submitted$: Subject<boolean> = new BehaviorSubject(false);
   destroyed$: Subject<void> = new Subject();
 
   onSubmit(): void {
@@ -350,54 +367,22 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         required: this.requiredConfiguration
       });
 
-      // hack to get config to open on search
-      const configurationHasSearch$ = this.configurationControlsFormGroup.valueChanges.pipe(
-        takeUntil(this.destroyed$),
-        startWith(this.configurationControlsFormGroup.value),
-        map(
-          ({ search, required, modified }) =>
-            !isBlank(search) || required || modified
-        )
-      );
-
-      const configurationsGroup = this.formGroup.controls.configurations;
-      const configurationsInvalid$ = this.submitted$.pipe(
-        takeUntil(this.destroyed$),
-        startWith(false),
-        map(
-          submitted =>
-            submitted &&
-            configurationsGroup.status === 'INVALID' &&
-            showErrorsRecursive(configurationsGroup, submitted)
-        )
-      );
-
-      const expandConfigurations$ = combineLatest(
-        configurationHasSearch$,
-        configurationsInvalid$
-      ).pipe(
-        takeUntil(this.destroyed$),
-        map(([hasSearch, invalid]) => hasSearch || invalid)
-      );
-
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
-        configurationDefaults
+        configurationDefaults,
+        this.submitted$,
+        key => /^.*\.(\w+)$/.exec(key)[1] // only match last segment of key
       ).pipe(
         takeUntil(this.destroyed$),
-        mergeMap(entries =>
-          expandConfigurations$.pipe(
-            map(expand => {
-              const properties = entries.map(([key, defaultValue]) =>
-                toConfigurationProperty(key, defaultValue)
-              );
-              const flattened = keyBy(properties, ({ key }) => key);
-              const unflattened = unflatten(flattened);
-              return toTreeNodes(unflattened, expand);
-            })
-          )
-        )
+        map(({ results, hasSearch, invalid }) => {
+          const properties = results.map(([key, defaultValue]) =>
+            toConfigurationProperty(key, defaultValue)
+          );
+          const flattened = keyBy(properties, ({ key }) => key);
+          const unflattened = unflatten(flattened);
+          return toTreeNodes(unflattened, hasSearch || invalid);
+        })
       );
 
       this.localizations$ = toPropertiesProvider(
@@ -406,8 +391,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         localizationDefaults
       ).pipe(
         takeUntil(this.destroyed$),
-        map(entries =>
-          entries.map(([key, defaultValue]) => toProperty(key, defaultValue))
+        map(({ results }) =>
+          results.map(([key, defaultValue]) => toProperty(key, defaultValue))
         )
       );
     }
