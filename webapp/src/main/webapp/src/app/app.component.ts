@@ -33,11 +33,10 @@ export class AppComponent implements OnInit {
 
   user$: Observable<User>;
   applicationSettings$: Observable<ApplicationSettings>;
-  navbarOpen: boolean = false;
 
   constructor(
     public languageStore: LanguageStore,
-    private router: Router,
+    public router: Router,
     private location: Location,
     private userService: UserService,
     private applicationSettingsService: ApplicationSettingsService,

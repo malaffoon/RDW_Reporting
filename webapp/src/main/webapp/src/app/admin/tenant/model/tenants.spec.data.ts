@@ -50,8 +50,7 @@ export const activeSandbox = {
       LimitedEnglishProficiency: 'Disabled',
       PrimaryLanguage: 'Enabled',
       Gender: 'Enabled'
-    },
-    effectiveReportLanguages: ['en']
+    }
   },
   datasources: {},
   archive: null,
@@ -168,8 +167,7 @@ export const activeTenant = {
       LimitedEnglishProficiency: 'Disabled',
       PrimaryLanguage: 'Enabled',
       Gender: 'Disabled'
-    },
-    effectiveReportLanguages: ['en']
+    }
   },
   datasources: {
     reporting_rw: {
