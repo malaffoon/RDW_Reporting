@@ -12,7 +12,7 @@ const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   // 'boolean': 'checkbox',
   integer: 'input', // TODO support input constraints like number etc.
   float: 'input', // TODO support input constraints
-  // 'enumeration': 'select',
+  enumeration: 'select',
   'enumeration-list': 'multi-select',
   // 'enumeration-map': 'multi-select-modal',
   uri: 'input',

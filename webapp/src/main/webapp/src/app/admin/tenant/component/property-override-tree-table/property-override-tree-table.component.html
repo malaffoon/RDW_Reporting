@@ -128,7 +128,23 @@
                             }}
                           </label>
                         </ng-container>
+                        <ng-container *ngSwitchCase="'select'">
+                          <select
+                            id="{{ data.key }}"
+                            name="{{ data.key }}"
+                            formControlName="{{ data.key }}"
+                            class="form-control"
+                          >
+                            <option
+                              *ngFor="let option of data.values"
+                              [ngValue]="option.value"
+                            >
+                              {{ option.label }}
+                            </option>
+                          </select>
+                        </ng-container>
                         <ng-container *ngSwitchCase="'multi-select'">
+                          <!-- todo switch to typeahead based on amount of options -->
                           <p-multiSelect
                             tabindex="0"
                             inputId="{{ data.key }}"
@@ -138,6 +154,7 @@
                             appendTo="body"
                             defaultLabel="None"
                             [showHeader]="false"
+                            [maxSelectedLabels]="5"
                           ></p-multiSelect>
                         </ng-container>
                       </ng-container>

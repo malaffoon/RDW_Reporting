@@ -1,3 +1,6 @@
+import { languageCodes } from './data/languages';
+import { states } from './data/state';
+
 const assessmentTypes = translateService =>
   ['sum', 'ica', 'iab'].map(value => ({
     value,
@@ -6,14 +9,17 @@ const assessmentTypes = translateService =>
     )
   }));
 
-const reportLanguages = translateService =>
-  Object.entries(
-    translateService.instant('report-download.language-option')
-  ).map(([value, label]) => ({ value, label }));
+const stateOptions = translateService =>
+  states.map(({ name: label, abbreviation: value }) => ({
+    value,
+    label
+  }));
 
-const stateCodes = () => ['CA', 'NV']; // TODO
-
-const languageCodes = () => ['en']; // TODO
+const languageOptions = translateService =>
+  languageCodes.map(value => ({
+    value,
+    label: translateService.instant(`common.language.${value}`)
+  }));
 
 const studentFields = translateService =>
   Object.entries(translateService.instant('common.student-field')).map(
@@ -112,14 +118,16 @@ export const fieldConfigurationsByKey = {
   },
   'reporting.reportLanguages': {
     dataType: 'enumeration-list',
-    values: reportLanguages
+    values: languageOptions
   },
   'reporting.schoolYear': {
     dataType: 'integer'
   },
-  'reporting.state.code': {
+  // flatten state
+  'reporting.state': {
     dataType: 'enumeration',
-    values: stateCodes
+    required: true,
+    values: stateOptions
   },
   'reporting.transferAccessEnabled': {
     dataType: 'boolean'
@@ -129,7 +137,7 @@ export const fieldConfigurationsByKey = {
   },
   'reporting.uiLanguages': {
     dataType: 'enumeration-list',
-    values: languageCodes
+    values: languageOptions
   },
   'reporting.userGuideUrl': {
     dataType: 'url-fragment'

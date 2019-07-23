@@ -119,6 +119,7 @@
         [ngClass]="{
           'has-error': showErrors(control, form.submitted)
         }"
+        (input)="onIdInput($event.target.value)"
       >
         <label for="id">
           {{ 'tenant-form.field.id.label' | translate }}

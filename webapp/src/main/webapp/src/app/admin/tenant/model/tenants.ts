@@ -11,42 +11,42 @@ import {
 } from '../../../shared/support/support';
 import { isEmpty, isObject, omit } from 'lodash';
 
-function mapToString(value: any): string {
-  return Object.entries(value)
-    .map(entries => entries.join(':'))
-    .join(',');
-}
+// function mapToString(value: any): string {
+//   return Object.entries(value)
+//     .map(entries => entries.join(':'))
+//     .join(',');
+// }
+//
+// function stringToMap(value: string): any {
+//   value.split(',').reduce((map, entry) => {
+//     const [key, value] = entry.split(':');
+//     map[key] = value;
+//     return map;
+//   }, {});
+// }
 
-function stringToMap(value: string): any {
-  value.split(',').reduce((map, entry) => {
-    const [key, value] = entry.split(':');
-    map[key] = value;
-    return map;
-  }, {});
-}
+// export function mapToStringCustomizer(
+//   ...properties: string[]
+// ): FlattenCustomizer {
+//   return function(result, object, property) {
+//     if (properties.includes(property)) {
+//       result[property] = mapToString(object);
+//       return true;
+//     }
+//     return false;
+//   };
+// }
 
-export function mapToStringCustomizer(
-  ...properties: string[]
-): FlattenCustomizer {
-  return function(result, object, property) {
-    if (properties.includes(property)) {
-      result[property] = mapToString(object);
-      return true;
-    }
-    return false;
-  };
-}
-
-export function stringToMapCustomizer(
-  ...properties: string[]
-): UnflattenCustomizer {
-  return function(value, property) {
-    if (properties.includes(property)) {
-      return stringToMap(value);
-    }
-    return value;
-  };
-}
+// export function stringToMapCustomizer(
+//   ...properties: string[]
+// ): UnflattenCustomizer {
+//   return function(value, property) {
+//     if (properties.includes(property)) {
+//       return stringToMap(value);
+//     }
+//     return value;
+//   };
+// }
 
 /**
  * If it finds a value that is an array of primitives it joins it.
@@ -56,7 +56,7 @@ export function stringToMapCustomizer(
  * @param object
  * @param property
  */
-export const joinIfArrayOfPrimitives: FlattenCustomizer = (
+export const ignoreArraysOfPrimitives: FlattenCustomizer = (
   result,
   object,
   property
@@ -65,21 +65,17 @@ export const joinIfArrayOfPrimitives: FlattenCustomizer = (
     Array.isArray(object) &&
     (object.length === 0 || object.every(value => !isObject(value)))
   ) {
-    result[property] = object.join(',');
+    result[property] = object;
     return true;
   }
   return false;
 };
 
-export function ignoreLeafArraysAndProperties(
-  ...properties: string[]
+export function ignoreKeys(
+  keyMatcher: (key: string) => boolean
 ): FlattenCustomizer {
-  return function(result: any, object: any, property: string): boolean {
-    if (
-      (Array.isArray(object) &&
-        (object.length === 0 || object.every(value => !isObject(value)))) ||
-      properties.includes(property)
-    ) {
+  return function(result, object, property) {
+    if (keyMatcher(property)) {
       result[property] = object;
       return true;
     }
@@ -87,25 +83,25 @@ export function ignoreLeafArraysAndProperties(
   };
 }
 
-export const splitIfNonPasswordCommaJoinedString: UnflattenCustomizer = (
-  value,
-  key
-) => {
-  if (
-    // could this be placed somewhere better? so it can be controlled by metadata
-    !key.endsWith('password') &&
-    typeof value === 'string' &&
-    value.includes(',')
-  ) {
-    const array = value.split(',');
-    if (array.every(element => !isObject(element))) {
-      return array.map(element =>
-        typeof element === 'string' ? element.trim() : element
-      );
-    }
-  }
-  return value;
-};
+// export const splitIfNonPasswordCommaJoinedString: UnflattenCustomizer = (
+//   value,
+//   key
+// ) => {
+//   if (
+//     // could this be placed somewhere better? so it can be controlled by metadata
+//     !key.endsWith('password') &&
+//     typeof value === 'string' &&
+//     value.includes(',')
+//   ) {
+//     const array = value.split(',');
+//     if (array.every(element => !isObject(element))) {
+//       return array.map(element =>
+//         typeof element === 'string' ? element.trim() : element
+//       );
+//     }
+//   }
+//   return value;
+// };
 
 export function defaultTenant(
   type: TenantType,
@@ -195,14 +191,13 @@ export function toConfigurations(
             }
           },
       composeFlattenCustomizers(
-        // joinIfArrayOfPrimitives,
-        ignoreLeafArraysAndProperties('studentFields'),
-        mapToStringCustomizer('reporting.studentFields')
+        ignoreArraysOfPrimitives,
+        // we are going to collapse this..
+        ignoreKeys(key => key.startsWith('reporting.state'))
       )
     ),
     // remove tenant specific aggregate settings
-    'aggregate.tenants',
-    'reporting.effectiveReportLanguages'
+    'aggregate.tenants'
   );
 }
 
@@ -229,13 +224,9 @@ export function toServerTenant(tenant: TenantConfiguration): any {
       sandboxDataset
     },
     parentTenantKey,
-    // this should be mapped back at form submit time
     ...unflatten(
-      configurations,
-      composeUnflattenCustomizers(
-        // splitIfNonPasswordCommaJoinedString,
-        stringToMapCustomizer('reporting.studentFields')
-      )
+      configurations
+      // splitIfNonPasswordCommaJoinedString,
     ),
     localization: isEmpty(localization) ? null : unflatten(localization)
   };

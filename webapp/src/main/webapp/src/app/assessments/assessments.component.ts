@@ -314,7 +314,7 @@ export class AssessmentsComponent implements OnChanges {
   }
 
   removeLanguageCode(languageCode) {
-    this.clientFilterBy.languageCodes = this.clientFilterBy.languageCodes.filter(
+    this.clientFilterBy.languages = this.clientFilterBy.languageCodes.filter(
       value => Object.keys(value)[0] != languageCode
     );
   }

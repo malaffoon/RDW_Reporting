@@ -93,7 +93,7 @@ describe('FilterBy model', () => {
       actual = true;
     });
 
-    fixture.languageCodes = ['eng'];
+    fixture.languages = ['eng'];
     expect(actual).toBeTruthy();
   });
 

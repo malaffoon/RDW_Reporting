@@ -7,7 +7,12 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { showErrors, showErrorsRecursive } from '../../../../shared/form/forms';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -37,6 +42,8 @@ import {
   tenantKey
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
+import { Option } from '../../model/field';
+import { states } from '../../model/data/state';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -198,7 +205,7 @@ function stateToTenant(
 // lookup values
 const datasourcePattern = /^datasources\.(\w+)\..+$/;
 const defaultDatabaseNameProviderByDatasource = {
-  migrate_olap: key => `migrate_olap_${key}`,
+  migrate: key => `migrate_olap_${key}`,
   olap: key => `reporting_${key}`, // the special case
   reporting: key => `reporting_${key}`,
   warehouse: key => `warehouse_${key}`
@@ -238,13 +245,22 @@ function setDefaultDatabaseNameAndUsername(
       const databaseNameControl =
         formGroup.controls[`datasources.${source}.urlParts.database`];
       if (databaseNameControl.pristine) {
-        const sourceName = source.replace(/_r[o|w]$/, '');
+        const sourceName = source.replace(/_r(o|w)$/, '');
         const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
           sourceName
         ](key);
         databaseNameControl.patchValue(defaultDatabaseName);
       }
     });
+}
+
+function setDefaultState(control: AbstractControl, value: string): void {
+  const state = states.find(
+    ({ abbreviation }) => abbreviation.toLowerCase() === value.toLowerCase()
+  );
+  if (state != null && control.pristine) {
+    control.patchValue(state.abbreviation);
+  }
 }
 
 @Component({
@@ -367,8 +383,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
       // set the defaults on the formGroup
       this.configurationControlsFormGroup.patchValue({
-        search: 'language',
-        required: this.requiredConfiguration
+        search: 'state'
+        // required: this.requiredConfiguration
       });
 
       this.configurations$ = toPropertiesProvider(
@@ -425,10 +441,19 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   // TODO debounce this?
-  onKeyInput(key: string): void {
+  onKeyInput(value: string): void {
     setDefaultDatabaseNameAndUsername(
       this.formGroup.controls.configurations as FormGroup,
-      key
+      value
+    );
+  }
+
+  onIdInput(value: string): void {
+    setDefaultState(
+      (this.formGroup.controls.configurations as FormGroup).controls[
+        'reporting.state'
+      ],
+      value
     );
   }
 }
